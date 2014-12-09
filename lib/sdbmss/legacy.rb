@@ -115,7 +115,10 @@ module SDBMSS::Legacy
     # Do the migration
     def migrate
 
-      # XXX: disable logging somehow, which slows things down
+      # set log level above :debug, to suppress ActiveRecord query
+      # logging, which slows things down a lot. this only accepts
+      # integers, not symbols. 1 = info
+      Rails.logger.level = 1
 
       legacy_db = get_legacy_db_conn
 
