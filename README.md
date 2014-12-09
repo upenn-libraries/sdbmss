@@ -180,7 +180,18 @@ the latter to refer to environments where programmers do their work.
   bundle exec cap staging deploy
   ```
 
-* Start unicorn
+* Ssh into the dev VM and recreate the database and reindex Solr. You
+  only need to do this as necessary. (TODO: capistrano should be set
+  up to do this)
+
+  ```
+  cd ~/sdbmss
+  bundle exec rake sdbmss:migrate_legacy_data
+  bundle exec rake sunspot:solr:start
+  bundle exec rake sunspot:reindex
+  ```
+
+* Ssh into the dev VM and start unicorn
 
   ```
   cd ~/sdbmss/current
