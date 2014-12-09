@@ -1,0 +1,35 @@
+# SQLite version 3.x
+#   gem install sqlite3
+#
+#   Ensure the SQLite 3 gem is defined in your Gemfile
+#   gem 'sqlite3'
+#
+default: &default
+  adapter: sqlite3
+  pool: 5
+  timeout: 5000
+
+# rails mysql adapter always creates tables using InnoDB, there seems
+# to be no explicit way to set engine in this file.
+development: &development
+  adapter: mysql2
+  encoding: utf8
+  database: <%= ENV["SDBMSS_DB_NAME"] %>
+  pool: 5
+  username: <%= ENV["SDBMSS_DB_USER"] %>
+  password: <%= ENV["SDBMSS_DB_PASSWORD"] %>
+  host: <%= ENV["SDBMSS_DB_HOST"] %>
+
+staging:
+  <<: *development
+
+# Warning: The database defined as "test" will be erased and
+# re-generated from your development database when you run "rake".
+# Do not set this db to the same as development or production.
+test:
+  <<: *default
+  database: db/test.sqlite3
+
+production:
+  <<: *default
+  database: db/production.sqlite3

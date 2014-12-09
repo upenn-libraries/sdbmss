@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  entry_id: 
+  approved: false
+  approved_by_id: 
+  approved_date: 2014-11-25 19:33:23
+
+two:
+  name: MyString
+  entry_id: 
+  approved: false
+  approved_by_id: 
+  approved_date: 2014-11-25 19:33:23

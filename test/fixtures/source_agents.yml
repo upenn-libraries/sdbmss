@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  source_id: 
+  agent_id: 
+  role: MyString
+
+two:
+  source_id: 
+  agent_id: 
+  role: MyString

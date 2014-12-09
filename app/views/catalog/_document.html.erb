@@ -1,0 +1,136 @@
+<% # container for a single doc -%>
+<div class="document <%= render_document_class document %>" itemscope itemtype="<%= document.itemtype %>">
+
+    <% entry = document.get_model_object %>
+    <% if entry.nil? %>
+    <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
+    <% else %>
+    <dl class="document-metadata dl-horizontal dl-invert">
+	    <dt>ID</dt>
+        <dd><b><%= link_to_document document, :label=>"SDBM_" + entry.id.to_s %></b>
+            <div style="float: right">
+            <%= render_index_doc_actions document, :wrapping_class => "index-document-functions col-sm-3 col-lg-2" %>
+            </div>
+        </dd>
+
+        <% manuscript = entry.get_manuscript %>
+        <% if manuscript %>
+        <dt>Manuscript</dt>
+        <dd>This is 1 of <%= entry.get_num_entries_for_manuscript %> records referring to <a href="TODO">SDBM_MS_<%= manuscript.id %></a>
+        </dd>
+        <% end %>
+
+	    <dt>Source</dt>
+	    <dd><a href="TODO"><%= entry.source.get_display_value %></a></dd>
+
+        <% if entry.catalog_or_lot_number.present? %>
+	    <dt>Cat./Lot #</dt>
+	    <dd><%= entry.catalog_or_lot_number %></dd>
+        <% end %>
+
+        <% if entry.secondary_source.present? %>
+	    <dt>Secondary Source</dt>
+        <dd>
+            <%= entry.secondary_source %> (NOTE: this field will become obsolete)
+        </dd>
+        <% end %>
+
+        <% transaction = entry.get_transaction %>
+        <% if transaction %>
+
+          <% seller_agent = transaction.get_seller_agent %>
+          <% if seller_agent %>
+	        <dt>Seller Agent</dt>
+    	    <dd><%= seller_agent.agent.name %></dd>
+          <% end %>
+
+          <% seller_or_holder = transaction.get_seller_or_holder %>
+          <% if seller_or_holder %>
+	        <dt>Seller</dt>
+    	    <dd><%= seller_or_holder.agent.name %></dd>
+          <% end %>
+
+          <% buyer = transaction.get_buyer %>
+          <% if buyer %>
+	        <dt>Buyer</dt>
+    	    <dd><%= buyer.agent.name %></dd>
+          <% end %>
+
+        <% end %>
+
+        <% if entry.entry_titles.length > 0 %>
+	    <dt>Titles</dt>
+        <dd>
+        <% entry.entry_titles.each do |entry_title| %>
+          <%= entry_title.title %> <% if entry_title.common_title.present? %>[<%= entry_title.common_title %>]<% end %><br/>
+        <% end %>
+        </dd>
+        <% end %>
+
+        <% if entry.entry_authors.length > 0 %>
+        <dt>Authors</dt>
+        <dd>
+        <% entry.entry_authors.each do |entry_author| %>
+          <% if entry_author.observed_name.present? %>
+            <%= entry_author.observed_name %>
+            <% if entry_author.author %>
+            (<a href="TODO"><%= entry_author.author.name %></a>)
+            <% end %>
+          <% elsif entry_author.author %>
+            <a href="TODO"><%= entry_author.author.name %></a>
+          <% end %>
+          <br/>
+        <% end %>
+        </dd>
+        <% end %>
+
+        <% if entry.entry_dates.length > 0 %>
+        <dt>Dates</dt>
+        <dd>
+        <% entry.entry_dates.each do |entry_date| %>
+          <%= entry_date.get_display_value %><br/>
+        <% end %>
+        </dd>
+        <% end %>
+
+        <% if entry.entry_places.length > 0 %>
+        <dt>Places</dt>
+        <dd>
+        <% entry.entry_places.each do |entry_place| %>
+          <%= entry_place.place.name %><br/>
+        <% end %>
+        </dd>
+        <% end %>
+
+        <% if entry.folios.present? %>
+        <dt>Folios</dt>
+        <dd>
+            <%= entry.folios %>
+        </dd>
+        <% end %>
+
+        <% if entry.get_provenance.length > 0 %>
+        <dt>Provenance</dt>
+        <dd>
+        <% entry.get_provenance.each do |provenance| %>
+          <!-- TODO: incomplete -->
+          <% seller_or_holder = provenance.get_seller_or_holder %>
+          <% if seller_or_holder %>
+            <% if seller_or_holder.agent %>
+              <a href="TODO"><%= seller_or_holder.agent.name %></a>
+              <% if seller_or_holder.observed_name %> (as <%= seller_or_holder.observed_name %>)<% end %>
+            <% elsif seller_or_holder.observed_name.present? %>
+              <%= seller_or_holder.observed_name %>
+            <% end %>
+          <% end %>
+          <br/>
+        <% end %>
+        </dd>
+        <% end %>
+
+        <dt></dt>
+        <dd><%= link_to_document document, :label=>"View complete record..." %></dd>
+    </dl>
+    <% end %>
+
+</div>

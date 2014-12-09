@@ -1,0 +1,7 @@
+
+#header-navbar .navbar-brand { background: none; color: white; }
+
+/* .navbar-default { background-color: inherit; border-color: none; } */
+
+/* TODO: probably should remove this class from document instead of overriding style here */
+/* .navbar-inverse { background-color: inherit; border-color: none; } */

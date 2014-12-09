@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  entry_id: 
+  use: MyString
+
+two:
+  entry_id: 
+  use: MyString

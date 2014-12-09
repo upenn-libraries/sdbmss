@@ -1,0 +1,45 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  date: MyString
+  source_type: MyString
+  title: MyString
+  author: MyString
+  alt_date: MyString
+  whether_mss: MyString
+  current_location: MyString
+  location_city: MyString
+  location_country: MyString
+  link: MyString
+  electronic_catalog_format: MyString
+  electronic_catalog_open_access: MyString
+  deleted: false
+  added_on: 2014-11-27 11:51:44
+  added_by_id: 
+  last_modified: 2014-11-27 11:51:44
+  last_modified_by_id: 
+  comments: MyText
+  cataloging_type: MyString
+  status: MyString
+
+two:
+  date: MyString
+  source_type: MyString
+  title: MyString
+  author: MyString
+  alt_date: MyString
+  whether_mss: MyString
+  current_location: MyString
+  location_city: MyString
+  location_country: MyString
+  link: MyString
+  electronic_catalog_format: MyString
+  electronic_catalog_open_access: MyString
+  deleted: false
+  added_on: 2014-11-27 11:51:44
+  added_by_id: 
+  last_modified: 2014-11-27 11:51:44
+  last_modified_by_id: 
+  comments: MyText
+  cataloging_type: MyString
+  status: MyString
