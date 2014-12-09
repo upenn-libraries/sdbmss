@@ -166,9 +166,10 @@ the latter to refer to environments where programmers do their work.
   </VirtualHost>
   ```
 
-* Run ssh-add to add your key to your ssh agent. Your key should
-  already be registered with Github, so that capistrano can use it
-  (via ssh forwarding) to access the repo on the dev VM.
+* On your local machine, run "ssh-add" to add your key to your ssh
+  agent. This key should already be registered with Github, so that
+  capistrano can use it (via ssh forwarding) to access the repo on the
+  dev VM.
 
 * From your own machine, deploy the latest code to the dev VM using
   capistrano. This will put a copy of the code in ~/sdbmss/current on

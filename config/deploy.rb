@@ -1,6 +1,6 @@
 
 set :application, 'sdbmss'
-set :repo_url, 'jeff@codefork.com:git/blacklightproj.git'
+set :repo_url, 'git@github.com:upenn-libraries/sdbmss.git'
 set :branch, 'master'
 
 # Default deploy_to directory is /var/www/my_app_name
