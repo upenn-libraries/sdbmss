@@ -20,3 +20,5 @@
 /solr
 
 .capistrano
+
+.yardoc

@@ -194,6 +194,7 @@ GEM
       raindrops (~> 0.7)
     warden (1.2.3)
       rack (>= 1.0)
+    yard (0.8.7.6)
 
 PLATFORMS
   ruby
@@ -218,3 +219,4 @@ DEPENDENCIES
   turbolinks (~> 2.5.0)
   uglifier (~> 2.5.0)
   unicorn (~> 4.8.0)
+  yard (~> 0.8.0)
