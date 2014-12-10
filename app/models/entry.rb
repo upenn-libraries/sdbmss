@@ -4,6 +4,7 @@ class Entry < ActiveRecord::Base
   belongs_to :last_modified_by, class_name: 'User'
 
   has_many :entry_manuscripts
+  has_many :manuscripts, through: :entry_manuscripts
   has_many :entry_titles
   has_many :entry_authors
   has_many :entry_dates
@@ -31,21 +32,17 @@ class Entry < ActiveRecord::Base
   ]
 
   def get_manuscript
-    em = EntryManuscript.where(entry: self).first
-    em.manuscript if em
+    manuscripts.first
   end
 
   # returns all Entry objects for this entry's Manuscript
   def get_entries_for_manuscript
     manuscript = get_manuscript
-    if manuscript
-      return Entry.joins(:entry_manuscripts).where("entry_manuscripts.manuscript_id" => manuscript.id)
-    end
-    []
+    manuscript ? manuscript.entries : []
   end
 
   def get_num_entries_for_manuscript
-    get_entries_for_manuscript.length
+    get_entries_for_manuscript.count
   end
 
   def get_transaction
