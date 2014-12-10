@@ -13,29 +13,6 @@ class CatalogController < ApplicationController
     solr_parameters['q'] = "*" if user_parameters['q'].blank?
   end
 
-  # override Blacklight::SolrHelper.get_search_results
-  # to add model objects to documents
-  def get_search_results(user_params = params || {}, extra_controller_params = {})
-    retval = super(user_params, extra_controller_params)
-
-    documents = retval[1]
-
-    # fetch all objects in a single query for efficiency
-    entries = Entry.where(id: documents.map { |doc| doc[:entry_id_is] })
-    # TODO: preload relevant associations
-    entries = entries.includes(:entry_authors, :entry_dates, :entry_titles, :entry_places => [:place], :events => [{:event_agents => [:agent]} ], :source => [{:source_agents => [:agent]}])
-    ids_to_entries = Hash[entries.map { |entry| [entry.id, entry] }]
-
-    documents.each do |doc|
-      # creates a closure over ids_to_entries
-      doc.define_singleton_method(:get_model_object) do
-        ids_to_entries[doc[:entry_id_is]]
-      end
-    end
-
-    retval
-  end
-
   configure_blacklight do |config|
     ## Default parameters to send to solr for all search-like requests. See also SolrHelper#solr_search_params
     config.default_solr_params = { 
