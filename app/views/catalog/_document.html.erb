@@ -13,8 +13,7 @@
             </div>
         </dd>
 
-        <% manuscript = entry.get_manuscript %>
-        <% if manuscript %>
+        <% if (manuscript = entry.get_manuscript).present? %>
         <dt>Manuscript</dt>
         <dd>This is 1 of <%= entry.get_num_entries_for_manuscript %> records referring to <a href="TODO">SDBM_MS_<%= manuscript.id %></a>
         </dd>
@@ -35,23 +34,19 @@
         </dd>
         <% end %>
 
-        <% transaction = entry.get_transaction %>
-        <% if transaction %>
+        <% if (transaction = entry.get_transaction).present? %>
 
-          <% seller_agent = transaction.get_seller_agent %>
-          <% if seller_agent %>
+          <% if (seller_agent = transaction.get_seller_agent).present? %>
 	        <dt>Seller Agent</dt>
     	    <dd><%= seller_agent.agent.name %></dd>
           <% end %>
 
-          <% seller_or_holder = transaction.get_seller_or_holder %>
-          <% if seller_or_holder %>
+          <% if (seller_or_holder = transaction.get_seller_or_holder).present? %>
 	        <dt>Seller</dt>
     	    <dd><%= seller_or_holder.agent.name %></dd>
           <% end %>
 
-          <% buyer = transaction.get_buyer %>
-          <% if buyer %>
+          <% if (buyer = transaction.get_buyer).present? %>
 	        <dt>Buyer</dt>
     	    <dd><%= buyer.agent.name %></dd>
           <% end %>
@@ -114,8 +109,7 @@
         <dd>
         <% entry.get_provenance.each do |provenance| %>
           <!-- TODO: incomplete -->
-          <% seller_or_holder = provenance.get_seller_or_holder %>
-          <% if seller_or_holder %>
+          <% if (seller_or_holder = provenance.get_seller_or_holder).present? %>
             <% if seller_or_holder.agent %>
               <a href="TODO"><%= seller_or_holder.agent.name %></a>
               <% if seller_or_holder.observed_name %> (as <%= seller_or_holder.observed_name %>)<% end %>
