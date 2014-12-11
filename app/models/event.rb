@@ -44,4 +44,12 @@ class Event < ActiveRecord::Base
     ea.agent.name if ea && ea.agent
   end
 
+  def get_price_for_display
+    price_str = ""
+    price_str += price.to_s if price.present?
+    price_str += " " + currency.to_s if currency.present?
+    price_str = other_currency if price_str.blank?
+    price_str
+  end
+
 end

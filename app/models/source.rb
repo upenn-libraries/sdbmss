@@ -31,6 +31,11 @@ class Source < ActiveRecord::Base
     get_source_agent_with_role(SourceAgent::ROLE_INSTITUTION)
   end
 
+  def get_source_type_for_display
+    record = SOURCE_TYPES.select { |record| record[0] == source_type }.first
+    record ? record[1] : "Unknown"
+  end
+
   # Returns 3-part display string for Source
   def get_display_value
     date_str = ""
