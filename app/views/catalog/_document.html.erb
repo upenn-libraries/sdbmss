@@ -20,7 +20,9 @@
         <% end %>
 
 	    <dt>Source</dt>
-	    <dd><a href="TODO"><%= entry.source.get_display_value %></a></dd>
+	    <dd>
+            <%= link_to entry.source.get_display_value, source_path(entry.source) %> (<%= entry.source.get_source_type_for_display %>)
+        </dd>
 
         <% if entry.catalog_or_lot_number.present? %>
 	    <dt>Cat./Lot #</dt>

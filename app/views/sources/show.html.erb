@@ -1,0 +1,189 @@
+<div class="row">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-9">
+        
+        <div class="row">
+            <div class="col-sm-10">
+                <h2>SDBM_SOURCE_<%= @source.id %></h2>
+            </div>
+            <div class="col-sm-2 text-right">
+                <% if false %><!-- TODO -->
+                <% if user.is_authenticated %>
+                {# TODO #}
+                <a href="#"><span class="glyphicon glyphicon-pencil"></span></a>
+                <% end %>
+                <% end %>
+            </div>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-12" colspan="2"><b>Source Details</b></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Type</td>
+                    <td class="col-sm-10">
+                        <%= @source.get_source_type_for_display %>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Date</td>
+                    <td class="col-sm-10">
+                        <%= format_fuzzy_date(@source.date) %>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Title</td>
+                    <td class="col-sm-10">
+                        <%= @source.title %>
+                    </td>
+                </tr>
+
+                <% if (institution = @source.get_institution).present? %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Institution</td>
+                    <td class="col-sm-10">
+                        <a href="TODO"><%= institution.agent.name %></a>
+                    </td>
+                </tr>
+                <% end %>
+
+                <% if (seller_agent = @source.get_seller_agent).present? %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Seller Agent</td>
+                    <td class="col-sm-10">
+                        <a href="TODO"><%= seller_agent.agent.name %></a>
+                    </td>
+                </tr>
+                <% end %>
+
+                <% if (seller_or_holder = @source.get_seller_or_holder).present? %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Seller</td>
+                    <td class="col-sm-10">
+                        <a href="TODO"><%= seller_or_holder.agent.name %></a>
+                    </td>
+                </tr>
+                <% end %>
+
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Contains Manuscripts</td>
+                    <td class="col-sm-10">
+                        <%= @source.whether_mss||"Unknown" %>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-sm-2 text-right record-label"># Entries</td>
+                    <td class="col-sm-10">
+                        This source has <a href="TODO"><%= @source.entries.count %> entries</a> in the database.
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <% if @source.current_location || @source.location_city || @source.location_country || @source.link || @source.cataloging_type || @source.electronic_catalog_format || @source.electronic_catalog_open_access %>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-12" colspan="2"><b>Location</b></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <% if @source.current_location %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Current Location</td>
+                    <td class="col-sm-10">
+                        <%= @source.current_location %>
+                    </td>
+                </tr>
+                <% end %>
+
+                <% if @source.location_city || @source.location_country %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">City, Country</td>
+                    <td class="col-sm-10">
+                        <%= @source.location_city||"" %><% if @source.location_country %>, <%= @source.location_country||"" %><% end %>
+                    </td>
+                </tr>
+                <% end %>
+
+                <% if @source.link %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Online Link/<br/>Call No.</td>
+                    <td class="col-sm-10">
+                        <%= @source.link %>
+                    </td>
+                </tr>
+                <% end %>
+
+                <% if @source.cataloging_type %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Cataloging Type</td>
+                    <td class="col-sm-10">
+                        <%= @source.cataloging_type %>
+                    </td>
+                </tr>
+                <% end %>
+
+                <% if @source.electronic_catalog_format %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Electronic Cat Format</td>
+                    <td class="col-sm-10">
+                        <%= @source.electronic_catalog_format %>
+                    </td>
+                </tr>
+                <% end %>
+
+                <% if @source.electronic_catalog_open_access %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Electronic Cat Open Access</td>
+                    <td class="col-sm-10">
+                        <%= @source.electronic_catalog_open_access %>
+                    </td>
+                </tr>
+                <% end %>
+
+            </tbody>
+        </table>
+        <% end %>
+
+        <table class="table table-striped">
+            <thead>
+                <tr> <th class="col-sm-12" colspan="2"><b>About This Source Record</b></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <% if @source.added_by %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Created By</td>
+                    <td class="col-sm-10">
+                        <%= @source.added_by.username %>
+                    </td>
+                </tr>
+                <% end %>
+
+                <% if @source.status %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Status</td>
+                    <td class="col-sm-10">
+                        <%= @source.status||"Unknown" %>
+                    </td>
+                </tr>
+                <% end %>
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>

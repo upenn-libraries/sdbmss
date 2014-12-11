@@ -1,7 +1,8 @@
 <% content_for :head do %>
 <style type="text/css">
+    /* NOTE: bizarre bug: unless floats are placed on both content and sidebar, layout gets messed up on 1st load, but works on reload */
     #content { float: right; }
-    .record-label { color: #777 }
+    #sidebar { float: left; }
 </style>
 <% end %>
 
@@ -27,7 +28,7 @@
         <tr>
             <td class="col-sm-2 text-right record-label">Source</td>
             <td class="col-sm-10">
-                <a href="TODO"><%= source.get_display_value %></a> (<%= source.get_source_type_for_display %>)
+                <%= link_to source.get_display_value, source_path(source) %> (<%= source.get_source_type_for_display %>)
             </td>
         </tr>
         <% end %>

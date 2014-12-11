@@ -5,6 +5,7 @@ class Source < ActiveRecord::Base
   belongs_to :added_by, :class_name => 'User'
   belongs_to :last_modified_by, :class_name => 'User'
 
+  has_many :entries
   has_many :source_agents
 
   TYPE_AUCTION_CATALOG = 'auction_catalog'
@@ -21,6 +22,10 @@ class Source < ActiveRecord::Base
 
   def get_source_agent_with_role(role)
     source_agents.select { |sa| sa.role == role }.first
+  end
+
+  def get_seller_or_holder
+    get_source_agent_with_role(SourceAgent::ROLE_SELLER_OR_HOLDER)
   end
 
   def get_seller_agent
