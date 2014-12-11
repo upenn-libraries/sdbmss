@@ -57,4 +57,5 @@ gem "blacklight-marc", "~> 5.4.0"
 gem 'sunspot_rails', '~> 2.1.0'
 gem 'sunspot_solr', '~> 2.1.0'
 
-gem 'activerecord-import'
+gem 'activerecord-import', '~> 0.6.0'
+
