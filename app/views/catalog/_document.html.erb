@@ -7,14 +7,14 @@
     <% else %>
     <dl class="document-metadata dl-horizontal dl-invert">
 	    <dt>ID</dt>
-        <dd><b><%= link_to_document document, :label=>"SDBM_" + entry.id.to_s %></b>
+        <dd><b><%= link_to "SDBM_" + entry.id.to_s, entry_path(entry) %></b>
             <div style="float: right">
             <%= render_index_doc_actions document, :wrapping_class => "index-document-functions col-sm-3 col-lg-2" %>
             </div>
         </dd>
 
         <% if (manuscript = entry.get_manuscript).present? %>
-        <dt>Manuscript</dt>
+        <dt></dt>
         <dd>This is 1 of <%= entry.get_num_entries_for_manuscript %> records referring to <a href="TODO">SDBM_MS_<%= manuscript.id %></a>
         </dd>
         <% end %>
@@ -123,7 +123,7 @@
         <% end %>
 
         <dt></dt>
-        <dd><%= link_to_document document, :label=>"View complete record..." %></dd>
+        <dd><%= link_to "View complete record...", entry_path(entry) %></dd>
     </dl>
     <% end %>
 
