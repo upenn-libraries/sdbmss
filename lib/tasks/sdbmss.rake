@@ -3,7 +3,7 @@ require 'sdbmss'
 namespace :sdbmss do
 
   desc "Re-create database with new migration from a copy of the live Oracle db"
-  task migrate_legacy_data: :environment do
+  task :migrate_legacy_data, [:fast_flag] => [:environment] do |t, args|
 
     `echo "drop database sdbm_rails" | mysql -u root`
 
@@ -12,7 +12,7 @@ namespace :sdbmss do
     # Rake::Task['db:schema:load'].invoke
     Rake::Task['db:migrate'].invoke
 
-    SDBMSS::Legacy.migrate
+    SDBMSS::Legacy.migrate(fast: args[:fast_flag] == 'true')
 
   end
 
