@@ -7,6 +7,7 @@
     <% else %>
     <dl class="document-metadata dl-horizontal dl-invert">
 	    <dt>ID</dt>
+        <!-- TODO: link should have data-context-href attr, that does HTTP callback before loading the entry page; without it, the prev/next on Entry page won't work -->
         <dd><b><%= link_to "SDBM_" + entry.id.to_s, entry_path(entry) %></b>
             <div style="float: right">
             <%= render_index_doc_actions document, :wrapping_class => "index-document-functions col-sm-3 col-lg-2" %>
