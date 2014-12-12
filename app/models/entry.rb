@@ -17,6 +17,9 @@ class Entry < ActiveRecord::Base
   has_many :entry_comments
   has_many :events
 
+  # aggressively load all associations; useful for cases when you need to display complete info for the Entry
+  # TODO: fill this out
+  scope :load_associations, -> { includes(:entry_authors, :entry_dates, :entry_titles, :entry_places => [:place], :events => [{:event_agents => [:agent]} ], :source => [{:source_agents => [:agent]}]) }
 
   ALT_SIZE_TYPES = [
     ['F', 'Folio'],

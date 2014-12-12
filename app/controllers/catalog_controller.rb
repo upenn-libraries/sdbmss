@@ -16,14 +16,16 @@ class CatalogController < ApplicationController
   configure_blacklight do |config|
     ## Default parameters to send to solr for all search-like requests. See also SolrHelper#solr_search_params
     config.default_solr_params = { 
+      # we load entry fields from db, so these are the only fields we need returned from solr
+      :fl => 'id, entry_id_is',
       :qt => 'search',
       :rows => 10,
       'facet.mincount' => 1,
     }
-    
+
     # solr path which will be added to solr base url before the other solr params.
     #config.solr_path = 'select' 
-    
+
     # items to show per page, each number in the array represent another option to choose from.
     #config.per_page = [10,20,50,100]
 
@@ -34,7 +36,6 @@ class CatalogController < ApplicationController
       # definition; instead we use the params below.
       # :qt => 'document',
       ## These are hard-coded in the blacklight 'document' requestHandler
-      :fl => '*',
       :rows => 1,
       :q => '{!raw f=id v=$id}' 
     }
@@ -98,19 +99,19 @@ class CatalogController < ApplicationController
 
     # solr fields to be displayed in the index (search results) view
     #   The ordering of the field names is the order of the display 
-    config.add_index_field 'manuscript_id_is', :label => 'Manuscript'
-    config.add_index_field 'source_texts', :label => 'Source'
-    config.add_index_field 'catalog_or_lot_number_ss', :label => 'Cat./Lot #'
-    config.add_index_field 'secondary_source_ss', :label => 'Secondary Source'
-    config.add_index_field 'transaction_seller_agent_ss', :label => 'Seller Agent'
-    config.add_index_field 'transaction_seller_ss', :label => 'Seller'
-    config.add_index_field 'transaction_buyer_ss', :label => 'Buyer'
-    config.add_index_field 'title_sms', :label => 'Titles'
-    config.add_index_field 'author_sms', :label => 'Authors'
-    config.add_index_field 'manuscript_date_display_sms', :label => 'Manuscript Dates'
-    config.add_index_field 'place_sms', :label => 'Places'
-    config.add_index_field 'folios_is', :label => 'Folios'
-    config.add_index_field 'provenance_sms', :label => 'Provenance'
+    # config.add_index_field 'manuscript_id_is', :label => 'Manuscript'
+    # config.add_index_field 'source_texts', :label => 'Source'
+    # config.add_index_field 'catalog_or_lot_number_ss', :label => 'Cat./Lot #'
+    # config.add_index_field 'secondary_source_ss', :label => 'Secondary Source'
+    # config.add_index_field 'transaction_seller_agent_ss', :label => 'Seller Agent'
+    # config.add_index_field 'transaction_seller_ss', :label => 'Seller'
+    # config.add_index_field 'transaction_buyer_ss', :label => 'Buyer'
+    # config.add_index_field 'title_sms', :label => 'Titles'
+    # config.add_index_field 'author_sms', :label => 'Authors'
+    # config.add_index_field 'manuscript_date_display_sms', :label => 'Manuscript Dates'
+    # config.add_index_field 'place_sms', :label => 'Places'
+    # config.add_index_field 'folios_is', :label => 'Folios'
+    # config.add_index_field 'provenance_sms', :label => 'Provenance'
     
     # solr fields to be displayed in the show (single result) view
     #   The ordering of the field names is the order of the display 
@@ -120,47 +121,47 @@ class CatalogController < ApplicationController
     # and its very distracting and confusing.
 
     # Source section
-    config.add_show_field 'source_texts', :label => 'Source'
-    config.add_show_field 'catalog_or_lot_number_ss', :label => 'Cat./Lot #'
-    config.add_show_field 'secondary_source_ss', :label => 'Secondary Source'
-    # Transaction section
-    config.add_show_field 'transaction_seller_agent_ss', :label => 'Seller Agent'
-    config.add_show_field 'transaction_seller_ss', :label => 'Seller'
-    config.add_show_field 'transaction_buyer_ss', :label => 'Buyer'
-    config.add_show_field 'transaction_sold_ss', :label => 'Sold'
-    config.add_show_field 'transaction_price_es', :label => 'Price'
-    # Details
-    config.add_show_field 'title_sms', :label => 'Titles'
-    config.add_show_field 'author_sms', :label => 'Authors'
-    config.add_show_field 'manuscript_date_display_sms', :label => 'Manuscript Dates'
-    config.add_show_field 'artist_sms', :label => 'Artists'
-    config.add_show_field 'scribe_sms', :label => 'Scribes'
-    config.add_show_field 'language_sms', :label => 'Languages'
-    config.add_show_field 'material_sms', :label => 'Materials'
-    config.add_show_field 'place_sms', :label => 'Places'
-    config.add_show_field 'use_sms', :label => 'Uses'
+    # config.add_show_field 'source_texts', :label => 'Source'
+    # config.add_show_field 'catalog_or_lot_number_ss', :label => 'Cat./Lot #'
+    # config.add_show_field 'secondary_source_ss', :label => 'Secondary Source'
+    # # Transaction section
+    # config.add_show_field 'transaction_seller_agent_ss', :label => 'Seller Agent'
+    # config.add_show_field 'transaction_seller_ss', :label => 'Seller'
+    # config.add_show_field 'transaction_buyer_ss', :label => 'Buyer'
+    # config.add_show_field 'transaction_sold_ss', :label => 'Sold'
+    # config.add_show_field 'transaction_price_es', :label => 'Price'
+    # # Details
+    # config.add_show_field 'title_sms', :label => 'Titles'
+    # config.add_show_field 'author_sms', :label => 'Authors'
+    # config.add_show_field 'manuscript_date_display_sms', :label => 'Manuscript Dates'
+    # config.add_show_field 'artist_sms', :label => 'Artists'
+    # config.add_show_field 'scribe_sms', :label => 'Scribes'
+    # config.add_show_field 'language_sms', :label => 'Languages'
+    # config.add_show_field 'material_sms', :label => 'Materials'
+    # config.add_show_field 'place_sms', :label => 'Places'
+    # config.add_show_field 'use_sms', :label => 'Uses'
 
-    config.add_show_field 'current_location_ss', :label => 'Current Location'
-    config.add_show_field 'folios_is', :label => 'Folios'
-    config.add_show_field 'num_lines_is', :label => 'Lines'
-    config.add_show_field 'num_columns_is', :label => 'Columns'
-    config.add_show_field 'height_is', :label => 'Height'
-    config.add_show_field 'width_is', :label => 'Width'
-    config.add_show_field 'alt_size_ss', :label => 'Alt Size'
-    config.add_show_field 'miniatures_fullpage_is', :label => 'Miniatures Full-Page'
-    config.add_show_field 'miniatures_large_is', :label => 'Miniatures Large'
-    config.add_show_field 'miniatures_small_is', :label => 'Miniatures Small'
-    config.add_show_field 'miniatures_unspec_size_is', :label => 'Miniatures Unspec Size'
-    config.add_show_field 'initials_historiated_is', :label => 'Historiated Initials'
-    config.add_show_field 'initials_decorated_is', :label => 'Decorated Initials'
+    # config.add_show_field 'current_location_ss', :label => 'Current Location'
+    # config.add_show_field 'folios_is', :label => 'Folios'
+    # config.add_show_field 'num_lines_is', :label => 'Lines'
+    # config.add_show_field 'num_columns_is', :label => 'Columns'
+    # config.add_show_field 'height_is', :label => 'Height'
+    # config.add_show_field 'width_is', :label => 'Width'
+    # config.add_show_field 'alt_size_ss', :label => 'Alt Size'
+    # config.add_show_field 'miniatures_fullpage_is', :label => 'Miniatures Full-Page'
+    # config.add_show_field 'miniatures_large_is', :label => 'Miniatures Large'
+    # config.add_show_field 'miniatures_small_is', :label => 'Miniatures Small'
+    # config.add_show_field 'miniatures_unspec_size_is', :label => 'Miniatures Unspec Size'
+    # config.add_show_field 'initials_historiated_is', :label => 'Historiated Initials'
+    # config.add_show_field 'initials_decorated_is', :label => 'Decorated Initials'
 
-    config.add_show_field 'manuscript_binding_ss', :label => 'MS Binding'
-    config.add_show_field 'manuscript_link_ss', :label => 'MS Link'
-    config.add_show_field 'other_info_ss', :label => 'Other Info'
+    # config.add_show_field 'manuscript_binding_ss', :label => 'MS Binding'
+    # config.add_show_field 'manuscript_link_ss', :label => 'MS Link'
+    # config.add_show_field 'other_info_ss', :label => 'Other Info'
 
-    config.add_show_field 'provenance_sms', :label => 'Provenance'
+    # config.add_show_field 'provenance_sms', :label => 'Provenance'
 
-    config.add_show_field 'comment_sms', :label => 'Comments'
+    # config.add_show_field 'comment_sms', :label => 'Comments'
 
     # TODO: comments?
     
