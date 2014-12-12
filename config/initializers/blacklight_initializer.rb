@@ -13,16 +13,22 @@ class Blacklight::SolrResponse
   # has a singleton method called get_model_object. We could avoid
   # monkey patching this class, but I'm not (yet) convinced other ways
   # of doing this are any less invasive.
-  #
-  # TODO: Oddly, #documents gets called twice on a search, which is
-  # inefficient.
   def documents
     retval = old_documents
 
-    # fetch all objects in a single query for efficiency
-    entries = Entry.where(id: retval.map { |doc| doc[:entry_id_is] })
-    entries = entries.load_associations
-    ids_to_entries = Hash[entries.map { |entry| [entry.id, entry] }]
+    # Oddly, #documents gets called twice on a search, which is
+    # inefficient, so cache model objects for reuse
+    if !@entries_cached
+
+      # fetch all objects in a single query for efficiency
+      entries = Entry.where(id: retval.map { |doc| doc[:entry_id_is] })
+      entries = entries.load_associations
+      ids_to_entries = Hash[entries.map { |entry| [entry.id, entry] }]
+
+      @entries_cached = Hash[entries.map { |entry| [entry.id, entry] }]
+    else
+      ids_to_entries = @entries_cached
+    end
 
     retval.each do |doc|
       # creates a closure over ids_to_entries
