@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   get '/entries/:id', to: 'catalog#show', as: 'entry'
 
+  resources :agents
   resources :authors
   resources :sources
 
