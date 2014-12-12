@@ -48,7 +48,7 @@ gem 'capistrano-rails', '~> 1.1.0', group: :development
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-gem "blacklight", "~> 5.7.0"
+gem "blacklight", "~> 5.8.0"
 gem "jettywrapper", "~> 1.8.0"
 gem "devise", "~> 3.4.0"
 gem "devise-guests", "~> 0.3.0"
