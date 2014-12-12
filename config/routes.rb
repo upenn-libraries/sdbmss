@@ -4,8 +4,9 @@ Rails.application.routes.draw do
   Blacklight::Marc.add_routes(self)
   devise_for :users
 
-  get '/entry/:id', to: 'catalog#show', as: 'entry'
+  get '/entries/:id', to: 'catalog#show', as: 'entry'
 
+  resources :authors
   resources :sources
 
   # The priority is based upon order of creation: first created -> highest priority.

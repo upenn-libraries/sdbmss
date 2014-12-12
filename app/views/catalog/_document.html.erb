@@ -71,10 +71,10 @@
           <% if entry_author.observed_name.present? %>
             <%= entry_author.observed_name %>
             <% if entry_author.author %>
-            (<a href="TODO"><%= entry_author.author.name %></a>)
+            (<%= link_to entry_author.author.name, author_path(entry_author.author) %>)
             <% end %>
           <% elsif entry_author.author %>
-            <a href="TODO"><%= entry_author.author.name %></a>
+            <%= link_to entry_author.author.name, author_path(entry_author.author) %>
           <% end %>
           <br/>
         <% end %>

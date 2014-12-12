@@ -1,0 +1,62 @@
+<div class="row">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-9">
+        
+        <div class="row">
+            <div class="col-sm-10">
+                <h2>SDBM_AUTHOR_<%= @author.id %></h2>
+            </div>
+            <div class="col-sm-2 text-right">
+                <% if false %><!-- TODO -->
+                <% if user.is_authenticated %>
+                {# TODO #}
+                <a href="#"><span class="glyphicon glyphicon-pencil"></span></a>
+                <% end %>
+                <% end %>
+            </div>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-12" colspan="2"><b>Author Details</b></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td class="col-sm-2 text-right record-label">name</td>
+                    <td class="col-sm-10">
+                        <%= @author.name %>
+                    </td>
+                </tr>
+
+                <% if @author.viaf_id %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">VIAF ID</td>
+                    <td class="col-sm-10">
+                        <a href="http://viaf.org/viaf/<%= @author.viaf_id %>/"><%= @author.viaf_id %></a>
+                    </td>
+                </tr>
+                <% end %>
+
+                <tr>
+                    <td class="col-sm-2 text-right record-label"># Entries</td>
+                    <td class="col-sm-10">
+                        This author has <a href="TODO"><%= @author.entries.count %> entries</a> in the database.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-sm-2 text-right record-label"></td>
+                    <td class="col-sm-10">
+                        TODO: Other details will be displayed here eventually.
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
