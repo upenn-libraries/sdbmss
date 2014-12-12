@@ -21,8 +21,7 @@ class Blacklight::SolrResponse
 
     # fetch all objects in a single query for efficiency
     entries = Entry.where(id: retval.map { |doc| doc[:entry_id_is] })
-    # TODO: preload relevant associations
-    entries = entries.includes(:entry_authors, :entry_dates, :entry_titles, :entry_places => [:place], :events => [{:event_agents => [:agent]} ], :source => [{:source_agents => [:agent]}])
+    entries = entries.load_associations
     ids_to_entries = Hash[entries.map { |entry| [entry.id, entry] }]
 
     retval.each do |doc|
