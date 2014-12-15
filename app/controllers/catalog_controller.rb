@@ -190,6 +190,11 @@ class CatalogController < ApplicationController
       }
     end
 
+    config.add_search_field("source_date") do |field|
+      field.include_in_simple_select = false
+      field.solr_parameters = { :qf => "source_date_texts" }
+    end
+
     config.add_search_field('title') do |field|
       field.solr_local_parameters = {
         :df => 'title_texts',

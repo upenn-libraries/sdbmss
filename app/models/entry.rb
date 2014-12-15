@@ -166,11 +166,10 @@ class Entry < ActiveRecord::Base
       @__receiver__.id.to_i
     end
 
-    integer :manuscript_id, :stored => true do
-      manuscript = get_manuscript
-      manuscript.id if manuscript
+    integer :manuscripts, :stored => true, :multiple => true do
+      entry_manuscripts.map { |em| em.manuscript.id }
     end
-    
+
     #### Source info
 
     # this one's for keyword searching
@@ -181,6 +180,10 @@ class Entry < ActiveRecord::Base
     string :source, :stored => true do
       source.get_display_value
     end
+    text :source_date, :stored => true do
+      source.date
+    end
+
     string :catalog_or_lot_number, :stored => true
     string :secondary_source, :stored => true
     string :current_location, :stored => true

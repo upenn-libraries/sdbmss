@@ -27,7 +27,7 @@
                 <tr>
                     <td class="col-sm-2 text-right record-label"># Entries</td>
                     <td class="col-sm-10">
-                        This manuscript has <a href="TODO"><%= @manuscript.entries.count %> entries</a> in the database.
+                        This manuscript has <a href="<%= search_by_facet_value('manuscripts_ims', @manuscript.id) %>"><%= @manuscript.entries.count %> entries</a> in the database.
                     </td>
                 </tr>
 
