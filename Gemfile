@@ -53,6 +53,7 @@ gem "jettywrapper", "~> 1.8.0"
 gem "devise", "~> 3.4.0"
 gem "devise-guests", "~> 0.3.0"
 gem "blacklight-marc", "~> 5.4.0"
+gem "blacklight_advanced_search", "~> 5.1.1"
 
 gem 'sunspot_rails', '~> 2.1.0'
 gem 'sunspot_solr', '~> 2.1.0'

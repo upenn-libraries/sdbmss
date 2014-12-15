@@ -10,7 +10,10 @@
 /* TODO: probably should remove this class from document instead of overriding style here */
 /* .navbar-inverse { background-color: inherit; border-color: none; } */
 
+.search-input-group { width: 60%; }
+
 /* on Entry view page, move the content block to the right of the sidebar */
 .blacklight-catalog-show #content { float: right; }
 
 .record-label { color: #777 }
+
