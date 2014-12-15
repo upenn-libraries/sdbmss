@@ -700,6 +700,10 @@ module SDBMSS::Legacy
     def create_agent_entities_for_provenance(legacy_db)
       puts "Creating Agents for non-unique values in EventAgent.observed_name"
 
+      # We do this in order to 'conservatively' create Agent records:
+      # we only make Agents for Provenance if the agent name occurs
+      # more than once. This is actually a pretty good heuristic.
+
       results = ActiveRecord::Base.connection.execute("SELECT distinct observed_name, count(*) as mynum from event_agents where observed_name is not null group by observed_name")
 
       results.each do |row|
@@ -713,6 +717,10 @@ module SDBMSS::Legacy
       puts "Clearing EventAgent.observed_name if there's an agent"
 
       EventAgent.where("agent_id is not null").update_all({ observed_name: nil })
+
+      # TODO: Some very non-unique long provenance strings should be
+      # moved to comments. See entry 104980, which has str describing
+      # bequeathal.
     end
 
     def create_author_from_row_pass1(row, ctx)
