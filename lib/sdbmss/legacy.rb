@@ -544,10 +544,10 @@ module SDBMSS::Legacy
       else
         dates.each_index do |date_index|
           date = dates[date_index]
-          if date
-            # TODO: Lots of records have date == '0'. This might actually be meaningful as a year.
+          circa = circas[date_index]
+          # Lots of records have date == '0'. This might actually be meaningful as a year.
+          if (date && date.length > 0) || (circa && circa.length > 0)
 
-            circa = circas[date_index]
             if circa && !VALID_CIRCA_TYPES.member?(circa)
               # TODO: there's too many of these to print out; figure out what they mean
               # print "WARNING: record %s: invalid circa value: %s" % (row['MANUSCRIPT_ID'], circa)
