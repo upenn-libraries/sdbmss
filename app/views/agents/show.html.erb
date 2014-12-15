@@ -41,9 +41,16 @@
                 <% end %>
 
                 <tr>
-                    <td class="col-sm-2 text-right record-label"># Entries</td>
+                    <td class="col-sm-2 text-right record-label"># Transactions</td>
                     <td class="col-sm-10">
-                        This agent is found in the provenance of <a href="TODO"><%= @agent.events.count %> entries</a>.
+                        This agent is found in the transactions of <a href="TODO"><%= @agent.events.transactions.count %> entries</a>.
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-sm-2 text-right record-label"># Provenance</td>
+                    <td class="col-sm-10">
+                        This agent is found in the provenance of <a href="TODO"><%= @agent.events.provenance.count %> entries</a>.
                     </td>
                 </tr>
 

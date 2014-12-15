@@ -3,6 +3,9 @@ class Event < ActiveRecord::Base
 
   has_many :event_agents
 
+  scope :transactions, -> { where(primary: true) }
+  scope :provenance, -> { where(primary: false) }
+
   CURRENCY_TYPES = [
     ["EUR", "EUR"],
     ["GBP", "GBP"],
