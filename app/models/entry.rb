@@ -166,8 +166,8 @@ class Entry < ActiveRecord::Base
       @__receiver__.id.to_i
     end
 
-    integer :manuscripts, :stored => true, :multiple => true do
-      entry_manuscripts.map { |em| em.manuscript.id }
+    string :manuscript, :stored => true, :multiple => true do
+      entry_manuscripts.map { |em| em.manuscript.get_public_id }
     end
 
     #### Source info

@@ -4,7 +4,7 @@
         
         <div class="row">
             <div class="col-sm-10">
-                <h2>SDBM_MS_<%= @manuscript.id %></h2>
+                <h2><%= @manuscript.get_public_id %></h2>
             </div>
             <div class="col-sm-2 text-right">
                 <% if false %><!-- TODO -->
@@ -27,7 +27,7 @@
                 <tr>
                     <td class="col-sm-2 text-right record-label"># Entries</td>
                     <td class="col-sm-10">
-                        This manuscript has <a href="<%= search_by_facet_value('manuscripts_ims', @manuscript.id) %>"><%= @manuscript.entries.count %> entries</a> in the database.
+                        This manuscript has <a href="<%= search_by_facet_value('manuscript_sms', @manuscript.get_public_id) %>"><%= @manuscript.entries.count %> entries</a> in the database.
                     </td>
                 </tr>
 
@@ -46,7 +46,7 @@
                 <tr>
                     <td class="col-sm-2 text-right record-label"><%= format_fuzzy_date(provenance.acquire_date)||"(no date)" %></td>
                     <td class="col-sm-10">
-                        <% if (seller_or_holder = provenance.get_seller_or_holder).present? %>
+                        <% if (seller_or_holder = provenance.get_seller_or_holder).present? && seller_or_holder.agent.present? %>
                         <a href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a><br/>
                         <% end %>
                     </td>

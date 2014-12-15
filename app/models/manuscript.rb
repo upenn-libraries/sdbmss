@@ -10,4 +10,8 @@ class Manuscript < ActiveRecord::Base
     Event.provenance.where(entry_id: entry_manuscripts.map { |em| em.entry_id } )
   end
 
+  def get_public_id
+    return "SDBM_MS_" + id.to_s
+  end
+
 end

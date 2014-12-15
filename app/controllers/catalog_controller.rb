@@ -82,6 +82,7 @@ class CatalogController < ApplicationController
     config.add_facet_field 'transaction_seller_agent_ss', :label => 'Seller Agent', :limit => 3
     config.add_facet_field 'transaction_seller_ss', :label => 'Seller', :limit => 3
     config.add_facet_field 'transaction_buyer_ss', :label => 'Buyer', :limit => 3
+    config.add_facet_field 'manuscript_sms', :label => 'Manuscript', :limit => 3
 
     # config.add_facet_field 'example_pivot_field', :label => 'Pivot Field', :pivot => ['format', 'language_facet']
 
