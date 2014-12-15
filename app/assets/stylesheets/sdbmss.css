@@ -1,5 +1,9 @@
 
-#header-navbar .navbar-brand { background: none; color: white; }
+#header-navbar { background-color: #dddddd; border-color: #d0d0d0; }
+.navbar-inverse .navbar-nav > li > a { color: black }
+
+/* There's some tweaky stuff in "#header-navbar .navbar-brand" rule that we're overriding here, probably fragile */
+#header-navbar .navbar-brand { background: none; overflow: visible; text-indent: 0; color: black } /* color: white; } */
 
 /* .navbar-default { background-color: inherit; border-color: none; } */
 
@@ -8,3 +12,5 @@
 
 /* on Entry view page, move the content block to the right of the sidebar */
 .blacklight-catalog-show #content { float: right; }
+
+.record-label { color: #777 }
