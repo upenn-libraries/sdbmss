@@ -6,7 +6,7 @@
 <% else %>
 
 <% if (manuscript = entry.get_manuscript).present? %>
-<p>This is 1 of <%= entry.get_num_entries_for_manuscript %> records referring to <a href="TODO">SDBM_MS_<%= manuscript.id %></a>
+<p>This is 1 of <%= entry.get_num_entries_for_manuscript %> records referring to <a href="<%= url_for manuscript %>">SDBM_MS_<%= manuscript.id %></a>
 </p>
 <% end %>
 

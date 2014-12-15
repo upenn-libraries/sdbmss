@@ -43,6 +43,7 @@
                 <tr>
                     <td class="col-sm-2 text-right record-label"># Transactions</td>
                     <td class="col-sm-10">
+                        <!-- TODO: we need to expose a Transaction Agent facet for this to work -->
                         This agent is found in the transactions of <a href="TODO"><%= @agent.events.transactions.count %> entries</a>.
                     </td>
                 </tr>
@@ -50,13 +51,14 @@
                 <tr>
                     <td class="col-sm-2 text-right record-label"># Provenance</td>
                     <td class="col-sm-10">
-                        This agent is found in the provenance of <a href="TODO"><%= @agent.events.provenance.count %> entries</a>.
+                        This agent is found in the provenance of <a href="<%= search_by_facet_value('provenance_sms', @agent.name) %>"><%= @agent.events.provenance.count %> entries</a>.
                     </td>
                 </tr>
 
                 <tr>
                     <td class="col-sm-2 text-right record-label"># Sources</td>
                     <td class="col-sm-10">
+                        <!-- TODO: we need to expose a Source Agent facet for this to work -->
                         This agent is found in <a href="TODO"><%= @agent.sources.count %> sources</a>.
                     </td>
                 </tr>
