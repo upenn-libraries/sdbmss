@@ -1,0 +1,61 @@
+<div class="row">
+    <div class="col-sm-3"></div>
+    <div class="col-sm-9">
+        
+        <div class="row">
+            <div class="col-sm-10">
+                <h2>SDBM_MS_<%= @manuscript.id %></h2>
+            </div>
+            <div class="col-sm-2 text-right">
+                <% if false %><!-- TODO -->
+                <% if user.is_authenticated %>
+                {# TODO #}
+                <a href="#"><span class="glyphicon glyphicon-pencil"></span></a>
+                <% end %>
+                <% end %>
+            </div>
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-12" colspan="2">Manuscript Details</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td class="col-sm-2 text-right record-label"># Entries</td>
+                    <td class="col-sm-10">
+                        This manuscript has <a href="TODO"><%= @manuscript.entries.count %> entries</a> in the database.
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-12" colspan="2"><b>Composite provenance</b></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <% @manuscript.get_unique_provenance.each do |provenance| %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label"><%= format_fuzzy_date(provenance.acquire_date)||"(no date)" %></td>
+                    <td class="col-sm-10">
+                        <% if (seller_or_holder = provenance.get_seller_or_holder).present? %>
+                        <a href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a><br/>
+                        <% end %>
+                    </td>
+                </tr>
+                <% end %>
+
+            </tbody>
+        </table>
+
+    </div>
+
+</div>

@@ -8,6 +8,7 @@ Rails.application.routes.draw do
 
   resources :agents
   resources :authors
+  resources :manuscripts
   resources :sources
 
   # The priority is based upon order of creation: first created -> highest priority.
