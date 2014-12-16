@@ -21,7 +21,7 @@ class Blacklight::SolrResponse
     if !@entries_cached
 
       # fetch all objects in a single query for efficiency
-      entries = Entry.where(id: retval.map { |doc| doc[:entry_id_is] })
+      entries = Entry.where(id: retval.map { |doc| doc[:entry_id] })
       entries = entries.load_associations
       ids_to_entries = Hash[entries.map { |entry| [entry.id, entry] }]
 
@@ -33,7 +33,7 @@ class Blacklight::SolrResponse
     retval.each do |doc|
       # creates a closure over ids_to_entries
       doc.define_singleton_method(:get_model_object) do
-        ids_to_entries[doc[:entry_id_is]]
+        ids_to_entries[doc[:entry_id]]
       end
     end
 

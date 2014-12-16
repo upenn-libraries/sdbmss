@@ -88,18 +88,17 @@ class Entry < ActiveRecord::Base
     events.select { |event| !event.primary }
   end    
   
-  # for sunspot. these field names do NOT get defined in Solr's
-  # schema.xml. instead, they get appended with suffixes like '_is'
-  # and '_ss', which the generic schema.xml has been configured to
-  # recognize as dynamic fields. I'm not sure of the implications of
-  # doing it this way (or whether sunspot even supports 'normal'
-  # non-dynamic fields), just going with the flow for now.
+  # Tell Sunspot how to index fields from this model.
   #
-  # NOTE ABOUT FIELD TYPES:
+  # Note that we do NOT use sunspot's default dynamic fields (which
+  # append suffixes like '_is' and '_ss' to solr field
+  # names). Instead, we use the :as argument to specify the
+  # fieldname. Oddly enough, this isn't in the public documentation,
+  # but in the code, see Sunspot::Field#set_indexed_name.
   #
-  # :text gets tokenized, :string does NOT. sometimes (often?) we need
-  # two fields for the same piece of data, to support both faceting
-  # and keyword searches.
+  # :text gets tokenized, :string does NOT. often we need two solr
+  # fields for the same piece of data, to support both faceting and
+  # keyword searches.
   #
   #  TODO: set auto_index to false to prevent migration script from
   #  indexing, but we want it to be ON for normal operation. how to do
@@ -107,8 +106,8 @@ class Entry < ActiveRecord::Base
   searchable :auto_index => false do
     # complete_entry is for general full-text search, so dump
     # everything here
-    text :complete_entry, :stored => true do
-      [ 
+    text :complete_entry, :as => 'complete_entry', :stored => true do
+      [
         # id() method not available b/c of bug:
         # https://github.com/sunspot/sunspot/issues/331
         @__receiver__.id,
@@ -156,129 +155,114 @@ class Entry < ActiveRecord::Base
       ].map { |item| item.to_s }.select { |item| (!item.nil?) && (item.length > 0) }.join "\n"
     end
 
-    # for display
-    string :sdbm_id, :stored => true do
-      "SBDM_" + @__receiver__.id.to_s
-    end
-
     # for sorting
-    integer :entry_id, :stored => true do
+    integer :entry_id, :as => 'entry_id', :stored => true do
       @__receiver__.id.to_i
     end
 
-    string :manuscript, :stored => true, :multiple => true do
+    string :manuscript, :as => 'manuscript_facet', :stored => true, :multiple => true do
       entry_manuscripts.map { |em| em.manuscript.get_public_id }
     end
 
     #### Source info
 
-    # this one's for keyword searching
-    text :source, :stored => true do
+    text :source, :as => 'source', :stored => true do
       source.get_display_value
     end
-    # this one's for faceting
-    string :source, :stored => true do
+    string :source, :as => 'source_facet', :stored => true do
       source.get_display_value
     end
-    text :source_date, :stored => true do
+    text :source_date, :as => 'source_date', :stored => true do
+      # TODO: split this up?
       source.date
     end
 
-    string :catalog_or_lot_number, :stored => true
-    string :secondary_source, :stored => true
-    string :current_location, :stored => true
+    text :catalog_or_lot_number, :as => 'catalog_or_lot_number', :stored => true
+    text :secondary_source, :as => 'secondary_source', :stored => true
+    text :current_location, :as => 'current_location', :stored => true
 
     #### Transaction info
 
-    string :transaction_seller_agent, :stored => true do
+    string :transaction_seller_agent, :as => 'transaction_seller_agent_facet', :stored => true do
       get_transaction_seller_agent_name
     end
 
-    string :transaction_seller, :stored => true do
+    string :transaction_seller, :as => 'transaction_seller_facet', :stored => true do
       get_transaction_seller_or_holder_name
     end
 
-    string :transaction_buyer, :stored => true do
+    string :transaction_buyer, :as => 'transaction_buyer_facet', :stored => true do
       get_transaction_buyer_name
     end
 
-    string :transaction_sold, :stored => true do
+    string :transaction_sold, :as => 'transaction_sold_facet', :stored => true do
       get_transaction_sold
     end
 
-    double :transaction_price, :stored => true do
+    double :transaction_price, :as => 'transaction_price_facet', :stored => true do
       get_transaction_price
     end
 
     #### Details
 
-    text :title, :stored => true do
+    text :title, :as => 'title', :stored => true do
       entry_titles.map { |obj| obj.title }
     end
-    string :title, :stored => true, :multiple => true do
+    string :title, :as => 'title_facet', :stored => true, :multiple => true do
       entry_titles.map { |obj| obj.title }
     end
 
-    text :author, :stored => true do
+    text :author, :as => 'author', :stored => true do
       entry_authors.map { |obj| obj.author ? obj.author.name : nil }
     end
-    string :author, :stored => true, :multiple => true do
+    string :author, :as => 'author_facet', :stored => true, :multiple => true do
       entry_authors.map { |obj| obj.author ? obj.author.name : nil }
     end
 
     # TODO: fiddle with this for a better facet taking into account circa
-    integer :manuscript_date, :stored => true, :multiple => true do
+    integer :manuscript_date, :as => 'manuscript_date_facet', :stored => true, :multiple => true do
       entry_dates.map { |obj| obj.date }
     end
 
-    # this one's for display
-    string :manuscript_date_display, :stored => true, :multiple => true do
-      entry_dates.map { |obj| obj.get_display_value }
-    end
-
-    string :artist, :stored => true, :multiple => true do
+    string :artist, :as => 'artist_facet', :stored => true, :multiple => true do
       entry_artists.map { |obj| obj.artist.name }
     end
 
-    string :scribe, :stored => true, :multiple => true do
+    string :scribe, :as => 'scribe_facet', :stored => true, :multiple => true do
       entry_scribes.map { |obj| obj.scribe.name }
     end
 
-    string :language, :stored => true, :multiple => true do
+    string :language, :as => 'language_facet', :stored => true, :multiple => true do
       entry_languages.map { |obj| obj.language.name }
     end
 
-    string :material, :stored => true, :multiple => true do
+    string :material, :as => 'material_facet', :stored => true, :multiple => true do
       entry_materials.map { |obj| obj.material }
     end
 
-    string :place, :stored => true, :multiple => true do
+    string :place, :as => 'place_facet', :stored => true, :multiple => true do
       entry_places.map { |obj| obj.place.name }
     end
 
-    string :use, :stored => true, :multiple => true do
+    string :use, :as => 'use_facet', :stored => true, :multiple => true do
       entry_uses.map { |obj| obj.use }
     end
 
-    integer :folios, :stored => true
-    integer :num_columns, :stored => true
-    integer :num_lines, :stored => true
-    integer :height, :stored => true
-    integer :width, :stored => true
-    string :alt_size, :stored => true
-    string :manuscript_binding, :stored => true
-    string :other_info, :stored => true
-    string :manuscript_link, :stored => true
-    integer :miniatures_fullpage, :stored => true
-    integer :miniatures_large, :stored => true
-    integer :miniatures_small, :stored => true
-    integer :miniatures_unspec_size, :stored => true
-    integer :initials_historiated, :stored => true
-    integer :initials_decorated, :stored => true
+    integer :folios, :as => 'folios_facet', :stored => true
+    integer :num_columns, :as => 'num_columns_facet', :stored => true
+    integer :num_lines, :as => 'num_lines_facet', :stored => true
+    integer :height, :as => 'height_facet', :stored => true
+    integer :width, :as => 'width_facet', :stored => true
+    integer :miniatures_fullpage, :as => 'miniatures_fullpage_facet', :stored => true
+    integer :miniatures_large, :as => 'miniatures_large_facet', :stored => true
+    integer :miniatures_small, :as => 'miniatures_small_facet', :stored => true
+    integer :miniatures_unspec_size, :as => 'miniatures_unspec_size_facet', :stored => true
+    integer :initials_historiated, :as => 'initials_historiated_facet', :stored => true
+    integer :initials_decorated,  :as => 'initials_decorated_facet', :stored => true
 
     #### Provenance
 
-    string :provenance, :stored => true, :multiple => true do
+    string :provenance, :as => 'provenance_facet', :stored => true, :multiple => true do
       events = get_provenance
       names = []
       events.each { |event|

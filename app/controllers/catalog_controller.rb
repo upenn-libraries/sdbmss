@@ -10,15 +10,18 @@ class CatalogController < ApplicationController
   # a behavior for solr_search_params: if there's no query, default to
   # showing all results
   def show_all_if_no_query(solr_parameters, user_parameters)
-    solr_parameters['q'] = "*" if user_parameters['q'].blank?
+    # dismax itself doesn't understand '*' but we can pass in q.alt
+    # and it will work for some reason
+    solr_parameters['q.alt'] = "*:*" if user_parameters['q'].blank?
   end
 
   configure_blacklight do |config|
     ## Default parameters to send to solr for all search-like requests. See also SolrHelper#solr_search_params
-    config.default_solr_params = { 
+    config.default_solr_params = {
+      # use dismax query parser
+      :defType => 'dismax',
       # we load entry fields from db, so these are the only fields we need returned from solr
-      :fl => 'id, entry_id_is',
-      :qt => 'search',
+      :fl => 'id, entry_id',
       :rows => 10,
       'facet.mincount' => 1,
     }
@@ -41,7 +44,7 @@ class CatalogController < ApplicationController
     }
 
     # solr field configuration for search results/index views
-    config.index.title_field = 'sdbm_id_ss'
+    config.index.title_field = ''
     config.index.display_type_field = 'format'
 
     # solr field configuration for document/show views
@@ -74,15 +77,35 @@ class CatalogController < ApplicationController
     # this field." This behavior of facet counts is weird and
     # confusing, so we leave it off.
 
-    config.add_facet_field 'title_sms', :label => 'Title', :collapse => false, :limit => 3
-    config.add_facet_field 'author_sms', :label => 'Authors', :collapse => false, :limit => 3
-    config.add_facet_field 'provenance_sms', :label => 'Provenance', :collapse => false, :limit => 3
-    config.add_facet_field 'folios_is', :label => 'Folios', :collapse => false, :limit => 3
-    config.add_facet_field 'source_ss', :label => 'Source', :limit => 3
-    config.add_facet_field 'transaction_seller_agent_ss', :label => 'Seller Agent', :limit => 3
-    config.add_facet_field 'transaction_seller_ss', :label => 'Seller', :limit => 3
-    config.add_facet_field 'transaction_buyer_ss', :label => 'Buyer', :limit => 3
-    config.add_facet_field 'manuscript_sms', :label => 'Manuscript', :limit => 3
+    config.add_facet_field 'author_facet', :label => 'Authors', :collapse => false, :limit => 3
+    config.add_facet_field 'title_facet', :label => 'Title', :collapse => false, :limit => 3
+    config.add_facet_field 'transaction_seller_facet', :label => 'Seller', :limit => 3
+    config.add_facet_field 'transaction_seller_agent_facet', :label => 'Seller Agent', :limit => 3
+    config.add_facet_field 'transaction_buyer_facet', :label => 'Buyer', :limit => 3
+    # TODO: institution
+    config.add_facet_field 'source_facet', :label => 'Source', :limit => 3
+    # TODO: source date? store just the year?
+    config.add_facet_field 'provenance_facet', :label => 'Provenance', :limit => 3
+    config.add_facet_field 'manuscript_date_facet', :label => 'Manuscript Date', :limit => 3
+    config.add_facet_field 'place_facet', :label => 'Place', :limit => 3
+    config.add_facet_field 'language_facet', :label => 'Language', :limit => 3
+    config.add_facet_field 'use_facet', :label => 'Liturgical Use', :limit => 3
+    config.add_facet_field 'artist_facet', :label => 'Artist', :limit => 3
+    config.add_facet_field 'scribe_facet', :label => 'Scribe', :limit => 3
+    config.add_facet_field 'material_facet', :label => 'Material', :limit => 3
+
+    config.add_facet_field 'folios_facet', :label => 'Folios', :limit => 3
+    # TODO: range
+    config.add_facet_field 'num_lines_facet', :label => 'Lines', :limit => 3
+    config.add_facet_field 'num_columns_facet', :label => 'Columns', :limit => 3
+    config.add_facet_field 'height_facet', :label => 'Height', :limit => 3
+    config.add_facet_field 'width_facet', :label => 'Width', :limit => 3
+    config.add_facet_field 'miniatures_fullpage_facet', :label => 'Miniatures Full Page', :limit => 3
+    config.add_facet_field 'miniatures_large_facet', :label => 'Miniatures Large', :limit => 3
+    config.add_facet_field 'miniatures_small_facet', :label => 'Miniatures Small', :limit => 3
+    config.add_facet_field 'miniatures_unspec_size_facet', :label => 'Miniatures Unspec Size', :limit => 3
+    config.add_facet_field 'initials_historiated_facet', :label => 'Historiated Initials', :limit => 3
+    config.add_facet_field 'initials_decorated_facet', :label => 'Decorated Initials', :limit => 3
 
     # config.add_facet_field 'example_pivot_field', :label => 'Pivot Field', :pivot => ['format', 'language_facet']
 
@@ -183,34 +206,36 @@ class CatalogController < ApplicationController
     # This one uses all the defaults set by the solr request handler. Which
     # solr request handler? The one set in config[:default_solr_parameters][:qt],
     # since we aren't specifying it otherwise. 
-    
+
     config.add_search_field 'all_fields', :label => 'All Fields' do |field|
       field.solr_local_parameters = { 
         # default search field
-        :df => 'complete_entry_texts',
+        :qf => 'complete_entry',
       }
     end
 
     config.add_search_field("source_date") do |field|
       field.include_in_simple_select = false
-      field.solr_parameters = { :qf => "source_date_texts" }
+      field.solr_parameters = {
+        :qf => "source_date"
+      }
     end
 
     config.add_search_field('title') do |field|
-      field.solr_local_parameters = {
-        :df => 'title_texts',
+      field.solr_parameters = {
+        :qf => 'title',
       }
     end
 
     config.add_search_field('author') do |field|
-      field.solr_local_parameters = {
-        :df => 'author_texts',
+      field.solr_parameters = {
+        :qf => 'author',
       }
     end
 
     config.add_search_field('source') do |field|
       field.solr_local_parameters = {
-        :df => 'source_texts',
+        :qf => 'source',
       }
     end
 
@@ -231,7 +256,7 @@ class CatalogController < ApplicationController
     # whether the sort is ascending or descending (it must be asc or desc
     # except in the relevancy case).
 
-    config.add_sort_field 'entry_id_is asc', :label => 'ID'
+    config.add_sort_field 'entry_id asc', :label => 'ID'
 
     # config.add_sort_field 'score desc, pub_date_sort desc, title_sort asc', :label => 'relevance'
     # config.add_sort_field 'pub_date_sort desc, title_sort asc', :label => 'year'
