@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   Blacklight::Marc.add_routes(self)
   devise_for :users
 
+  get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
+
   get '/entries/:id', to: 'catalog#show', as: 'entry'
 
   resources :agents

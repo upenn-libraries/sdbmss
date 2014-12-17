@@ -8,6 +8,9 @@ class Source < ActiveRecord::Base
   has_many :entries
   has_many :source_agents
 
+  # returns 'count' number of most recent sources
+  scope :most_recent, ->(count = 5) { order(added_on: :desc).first(count) }
+
   TYPE_AUCTION_CATALOG = 'auction_catalog'
   TYPE_COLLECTION_CATALOG = 'collection_catalog'
   TYPE_OTHER_PUBLISHED = 'other_published'

@@ -26,6 +26,9 @@ class Entry < ActiveRecord::Base
   # TODO: fill this out
   scope :load_associations, -> { includes(:entry_authors, :entry_dates, :entry_titles, :entry_places => [:place], :events => [{:event_agents => [:agent]} ], :source => [{:source_agents => [:agent]}]) }
 
+  # returns 'count' number of most recent entries
+  scope :most_recent, ->(count = 5) { order(added_on: :desc).first(count) }
+
   ALT_SIZE_TYPES = [
     ['F', 'Folio'],
     ['Q', 'Quarto'],

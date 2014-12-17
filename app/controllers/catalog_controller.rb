@@ -275,6 +275,9 @@ class CatalogController < ApplicationController
     # If there are more than this many search results, no spelling ("did you 
     # mean") suggestion is offered.
     config.spell_max = 5
+
+    config.add_nav_action(:jeff, partial: 'nav/dashboard') # if: :render_bookmarks_control?)
+
   end
 
 end 
