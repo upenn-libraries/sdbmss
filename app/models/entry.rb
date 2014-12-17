@@ -7,12 +7,17 @@ class Entry < ActiveRecord::Base
   has_many :manuscripts, through: :entry_manuscripts
   has_many :entry_titles
   has_many :entry_authors
+  has_many :authors, through: :entry_authors
   has_many :entry_dates
   has_many :entry_artists
+  has_many :artists, through: :entry_artists
   has_many :entry_scribes
+  has_many :scribes, through: :entry_scribes
   has_many :entry_languages
+  has_many :languages, through: :entry_languages
   has_many :entry_materials
   has_many :entry_places
+  has_many :places, through: :entry_places
   has_many :entry_uses
   has_many :entry_comments
   has_many :events
@@ -137,16 +142,15 @@ class Entry < ActiveRecord::Base
         get_transaction_buyer_name,
         get_transaction_price,
         # details
-        entry_titles.map { |obj| obj.title },
-        entry_authors.map { |obj| obj.author ? obj.author.name : nil },
-        entry_dates.map { |obj| obj.date },
-        entry_dates.map { |obj| obj.get_display_value },
-        entry_artists.map { |obj| obj.artist.name },
-        entry_scribes.map { |obj| obj.scribe.name },
-        entry_languages.map { |obj| obj.language.name },
-        entry_materials.map { |obj| obj.material },
-        entry_places.map { |obj| obj.place.name },
-        entry_uses.map { |obj| obj.use },
+        entry_titles.map(&:title),
+        authors.map(&:name),
+        entry_dates.map(&:get_display_value),
+        artists.map(&:name),
+        scribes.map(&:name),
+        languages.map(&:name),
+        entry_materials.map(&:material),
+        places.map(&:name),
+        entry_uses.map(&:use),
         folios,
         num_columns,
         num_lines,
@@ -229,46 +233,46 @@ class Entry < ActiveRecord::Base
     #### Details
 
     define_field(:text, :title, :stored => true) do
-      entry_titles.map { |obj| obj.title }
+      entry_titles.map &:title
     end
     define_field(:string, :title_facet,:stored => true, :multiple => true) do
-      entry_titles.map { |obj| obj.title }
+      entry_titles.map &:title
     end
 
     define_field(:text, :author, :stored => true) do
-      entry_authors.map { |obj| obj.author ? obj.author.name : nil }
+      authors.map &:name
     end
     define_field(:string, :author_facet, :stored => true, :multiple => true) do
-      entry_authors.map { |obj| obj.author ? obj.author.name : nil }
+      authors.map &:name
     end
 
     # TODO: fiddle with this for a better facet taking into account circa
     define_field(:integer, :manuscript_date_facet, :stored => true, :multiple => true) do
-      entry_dates.map { |obj| obj.date }
+      entry_dates.map &:date
     end
 
     define_field(:string, :artist_facet, :stored => true, :multiple => true) do
-      entry_artists.map { |obj| obj.artist.name }
+      artists.map &:name
     end
 
     define_field(:string, :scribe_facet, :stored => true, :multiple => true) do
-      entry_scribes.map { |obj| obj.scribe.name }
+      scribes.map &:name
     end
 
     define_field(:string, :language_facet, :stored => true, :multiple => true) do
-      entry_languages.map { |obj| obj.language.name }
+      languages.map &:name
     end
 
     define_field(:string, :material_facet, :stored => true, :multiple => true) do
-      entry_materials.map { |obj| obj.material }
+      entry_materials.map &:material
     end
 
     define_field(:string, :place_facet, :stored => true, :multiple => true) do
-      entry_places.map { |obj| obj.place.name }
+      places.map &:name
     end
 
     define_field(:string, :use_facet, :stored => true, :multiple => true) do
-      entry_uses.map { |obj| obj.use }
+      entry_uses.map &:use
     end
 
     define_field(:integer, :folios_facet, :stored => true) { folios }
@@ -302,7 +306,7 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:text, :comment, :stored => true) do
-      entry_comments.select { |ec| ec.public }.map { |ec| ec.comment }.join("\n")
+      entry_comments.select(&:public).map(&:comment).join("\n")
     end
 
   end
