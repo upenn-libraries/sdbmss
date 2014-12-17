@@ -16,6 +16,8 @@ class CatalogController < ApplicationController
   end
 
   configure_blacklight do |config|
+    config.solr_response_model = SDBMSS::Blacklight::SolrResponse
+
     ## Default parameters to send to solr for all search-like requests. See also SolrHelper#solr_search_params
     config.default_solr_params = {
       # use dismax query parser

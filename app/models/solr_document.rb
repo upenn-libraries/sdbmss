@@ -33,4 +33,16 @@ class SolrDocument
   # Recommendation: Use field names from Dublin Core
   use_extension( Blacklight::Solr::Document::DublinCore)    
 
+  def initialize(*args)
+    super
+    raise "Error: solr_response doesn't have objects_resultset" if !@solr_response.respond_to? :objects_resultset
+    @solr_response.objects_resultset ||= SDBMSS::Blacklight::ResultSet.new
+    @solr_response.objects_resultset.add(self[:entry_id])
+  end
+
+  # returns the Entry object for this solr document
+  def get_model_object
+    @solr_response.objects_resultset.get(self[:entry_id])
+  end
+
 end
