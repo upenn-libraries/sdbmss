@@ -16,7 +16,7 @@
 
         <% if (manuscript = entry.get_manuscript).present? %>
         <dt></dt>
-        <dd>This record has been identified as <a href="<%= url_for manuscript %>"><%= manuscript.get_public_id %></a>, which has
+        <dd>This record has been identified as manuscript <a href="<%= url_for manuscript %>"><%= manuscript.get_public_id %></a>, which has
             <%= entry.get_num_entries_for_manuscript %> total records in this database.
         </dd>
         <% end %>
