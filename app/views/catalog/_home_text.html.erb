@@ -1,34 +1,58 @@
 
-<h4>Welcome to the Schoenberg Database of Manuscripts</h4>
-
-<p>The Schoenberg Database of Manuscripts (SDBM) is
-    a <b>metacatalog</b> of pre-1600 manuscripts containing at least 5
-    folios.
+<p class="lead">The Schoenberg Database of Manuscripts (SDBM) is a
+    unique <b>metacatalog</b> of medieval manuscript books of five or
+    more folios produced before 1600. Our records contain information
+    <b>as found</b> in diverse sources, including over 12,000 auction
+    and sales catalogues, inventories, catalogues from institutional
+    and private collections, and other sources that document the sales
+    and locations of manuscript books.
 </p>
 
-<p>Our records are structured data representations of manuscript
-    information from diverse sources, most notably auction and
-    collection catalogs.
-</p>
+<h3>Project Goals</h3>
+<p>
+    The SDBM aims to assist in locating and identifying particular
+    manuscripts, establishing provenance, and aggregating descriptive
+    information about specific classes or types of manuscripts. The
+    Schoenberg Database is a work in progress, with new material added
+    regularly. Penn Libraries Overseer and rare book enthusiast
+    Lawrence J. Schoenberg, C'53, WG'56, began this project with the
+    intent that it should become an online community resource. To this
+    end, we welcome the input of users regarding all aspects of the
+    database. <a href="#">(read more)</a></p>
 
-<p>This database contains the following primary entities:</p>
+<p>[TODO: Say something about user community here.]</p>
+    
+<h3>The Data Model</h3>
 
-<ul>
-    <li><b>Entries</b> - contain fields that describe features of a
-        manuscript, usually derived from a textual description. Every
-        entry comes from a particular <em>source</em> of
-        information.</li>
-    
-    <li><b>Sources</b> - a source of information containing
-        entries. These include auction catalogs, censuses, etc.</li>
-    
-    <li><b>Provenance Agents</b> - a person or organization involved
-        in the history of a manuscript's posession and transmission.
-        These include scriptoria, auction houses, dealers, collectors,
-        university collections, etc. </li>
-    
-    <li><b>Authors</b> - a historical person who was the author of a
-        manuscript</li>
-</ul>
+<p>The database contains the following primary entities:</p>
+
+<dl class="dl-horizontal">
+
+    <dt><b>Entries</b></dt>
+    <dd>An entry describes the features of a manuscript, as recorded in
+        a particular source of information.
+    </dd>
+
+    <dt><b>Manuscripts</b></dt>
+    <dd>A manuscript record associates entries together that refer to
+    the same physical object.</dd>
+
+    <dt><b>Sources</b></dt>
+    <dd>A source of information to which an entry belongs. These
+        include auction catalogs, inventories, censuses, an individual
+        making direct observations about manuscripts, etc.</dd>
+
+    <dt><b>Provenance Agents</b></dt>
+    <dd>A person or organization involved in the history of a
+    manuscript's posession and transmission.  These include
+    scriptoria, auction houses, dealers, collectors, university
+        collections, etc.</dd>
+
+    <dt><b>Authors</b></dt>
+    <dd>An author of a manuscript.</dd>
+
+</dl>
+
+[TODO: info about open data, getting downloadable exports, etc] <a href="#">(read more)</a>
 
 <% #Creates a bit space in the page -%>
