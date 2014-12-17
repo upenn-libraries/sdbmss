@@ -4,4 +4,7 @@ class EntriesController < ApplicationController
     @source = Source.find(params[:id])
   end
 
+  def edit
+  end
+
 end

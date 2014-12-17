@@ -1,0 +1,530 @@
+{% extends 'base.html' %}
+
+{% load bootstrap3 %}
+{% load static from staticfiles %}
+
+{% block ng-app %}sdbmApp{% endblock %}
+
+{% block title %}Add entry{% endblock %}
+
+{% block head_extra %}
+
+<script src="{% static "jquery-ui-1.11.1/jquery-ui.min.js" %}"></script>
+<link href="{% static "jquery-ui-1.11.1/jquery-ui.min.css" %}" rel="stylesheet" media="screen">
+
+<script src="{% static "qtip2/jquery.qtip.min.js" %}"></script>
+<link href="{% static "qtip2/jquery.qtip.css" %}" rel="stylesheet" media="screen">
+
+{# note that early RCs of 1.3.0 broke typeahead: https://github.com/angular-ui/bootstrap/issues/2681 #}
+<script src="{% static "angularjs/angular.1.3.0.js" %}"></script>
+<script src="{% static "angularjs/angular-resource.1.3.0.js" %}"></script>
+<script src="{% static "angularjs/angular-cookies.1.2.26.js" %}"></script>
+
+<script src="{% static "ui-bootstrap-tpls-0.11.2.js" %}"></script>
+
+<link href="{% static "angular-xeditable/css/xeditable.css" %}" rel="stylesheet">
+<script src="{% static "angular-xeditable/js/xeditable.min.js" %}"></script>
+
+<link href="{% static "entry_add.css" %}" rel="stylesheet" media="screen"/>
+
+{# TODO: instead of forcing reloads this way, tie it to app version #}
+<script src="{% static "sdbmApp.js" %}?{% now "U" %}"></script>
+
+{% endblock %}
+
+{% block content %}
+
+{# determines where angularjs code does editing or not #}
+<input type="hidden" id="entry_id" value="{{ entry_id|default:"" }}" />
+<input type="hidden" id="source_id" value="{{ source_id|default:"" }}" />
+
+{% verbatim %}
+<!-- we don't use form tag b/c that screws up xeditable -->
+<div class="form-horizontal" data-ng-controller="EntryCtrl">
+  <fieldset>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <legend>{{ pageTitle }}</legend>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-11 text-right">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-offset-2 col-sm-7">
+          <p>Please fill in as much information as possible from the record you are documenting. You can click on the field labels to get help. Known errors in the data should be preserved, but noted in the Comments at the bottom of the page.</p>
+
+          <div ng-show="badData.length > 0" style="color:red; font-weight: bold;">
+              WARNING: Bad data found in fields that can't be displayed in dropdowns: 
+              <span ng-repeat="badDataItem in badData">{{ badDataItem }}</span>. Saving the record on this page may cause data loss.
+          </div>
+      </div>
+      <div class="col-sm-2 text-right">
+          <button style="margin-bottom: 8px;" class="btn btn-sm btn-warning" ng-show="edit" ng-click="confirmClearChanges()">Clear changes</button><br/>
+          <a class="btn btn-sm btn-warning" ng-show="edit" href="/entry/{{ entry.id }}">Go to page</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <legend>Source</legend>
+      </div>
+    </div>
+
+    <div class="find-source-container">
+        <div class="form-group row">
+            <label class="col-sm-2 control-label">Source</label>
+            <div class="col-sm-8 editable-container">
+                {{ entry.source|label }}
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group">
+      <label for="cat_lot_no" class="col-sm-2 control-label"><span sdbm-tooltip="cat_lot_no">Cat. or Lot #</span></label>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" id="cat_lot_no" placeholder="" ng-model="entry.catalog_or_lot_number">
+      </div>
+      <div class="col-sm-7 text-right">
+          <a class="btn btn-sm btn-warning" ng-show="edit" href="/entry/add/source/{{ entry.source.id }}">Create a new Entry for this Source</a>
+      </div>
+    </div>
+
+    <div class="sale-information-container" ng-show="entry.source.source_type != 'collection_catalog'">
+
+        <div class="row">
+            <div class="col-sm-12">
+                <legend>Transaction Information</legend>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 control-label"><span sdbm-tooltip="seller">Seller Agent</span></label>
+            <div class="col-sm-4 editable-container">
+                <a href="#" editable-text="entry.sale.seller_agent.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/agent/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.seller_agent.agent|label }}</a>
+            </div>
+            <label class="col-sm-2 control-label"><span sdbm-tooltip="seller2">Seller</span></label>
+            <div class="col-sm-4 editable-container">
+                <a href="#" editable-text="entry.sale.seller_or_holder.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/agent/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.seller_or_holder.agent|label }}</a>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 control-label"><span sdbm-tooltip="buyer">Buyer</span></label>
+            <div class="col-sm-4 editable-container">
+                <a href="#" editable-text="entry.sale.buyer.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/agent/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.buyer.agent|label }}</a>
+            </div>
+            <label for="sold" class="col-sm-2 control-label"><span sdbm-tooltip="sold">Sold</span></label>
+            <div class="col-sm-3">
+                <select class="form-control" id="sold" ng-model="entry.sale.sold" ng-options="option[0] as option[1] for option in optionsSold"></select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="price" class="col-sm-2 control-label"><span sdbm-tooltip="price">Price</span></label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" id="price" ng-model="entry.sale.price">
+            </div>
+            <label for="currency" class="col-sm-1 control-label"><span sdbm-tooltip="currency">Currency</span></label>
+            <div class="col-sm-1">
+                <select name="currency" id="currency" class="form-control" ng-model="entry.sale.currency" ng-options="option[0] as option[1] for option in optionsCurrency"></select>
+            </div>
+            <label for="other-currency" class="col-sm-2 control-label"><span sdbm-tooltip="otherCurrency">Other Currency</span></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" id="other-currency" ng-model="entry.sale.other_currency">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <legend>Manuscript Details</legend>
+      </div>
+    </div>
+
+    <div class="form-group row" data-ng-repeat="title in entry.titles">
+      
+      <label class="col-sm-2 control-label">
+          <a class="clickable" data-ng-hide="!isFirst(entry.titles, title)" data-ng-click="addRecord(entry.titles)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <span sdbm-tooltip="title">Title</span>
+      </label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" id="title" data-ng-model="title.title">
+      </div>
+      <label class="col-sm-2 control-label">
+          <span sdbm-tooltip="title">Common Title</span>
+      </label>
+      <div class="col-sm-3">
+        <input type="text" class="form-control" id="title" data-ng-model="title.common_title">
+      </div>
+      <div class="col-sm-1 text-right">
+        <div class="control-label">
+        <a class="clickable" data-ng-hide="isFirst(entry.titles, title)" data-ng-click="removeRecord(entry.titles, title)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-group row entry-author-group" data-ng-repeat="author in entry.authors">
+        <label class="col-sm-2 control-label">
+            <a class="clickable" data-ng-hide="!isFirst(entry.authors, author)" data-ng-click="addRecord(entry.authors)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+            <span sdbm-tooltip="author">Author</span>
+        </label>
+      <div class="col-sm-4 editable-container">
+          <a href="#" editable-text="author.author" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/author/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAuthorModalCtrl">{{ author.author|label }}</a>
+      </div>
+
+      <label class="col-sm-2 control-label">
+          <span sdbm-tooltip="authorVariant">Author As Recorded</span>
+      </label>
+      <div class="col-sm-3">
+          <input type="text" class="form-control" id="author" data-ng-model="author.observed_name">
+      </div>
+
+      <div class="col-sm-1 text-right">
+        <div class="control-label">
+        <a class="clickable" data-ng-hide="isFirst(entry.authors, author)" data-ng-click="removeRecord(entry.authors, author)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row" data-ng-repeat="date in entry.dates">
+      <label class="col-sm-2 control-label">
+          <a class="clickable" data-ng-hide="!isFirst(entry.dates, date)" data-ng-click="addRecord(entry.dates)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <span sdbm-tooltip="year">Year</span>
+      </label>
+      <div class="col-sm-4">
+        <input type="text" class="form-control" id="year" data-ng-model="date.date">
+      </div>
+
+      <label class="col-sm-2 control-label">
+          <span sdbm-tooltip="circa">Circa</span>
+      </label>
+      <div class="col-sm-3">
+          <select name="circa" class="form-control" ng-model="date.circa" ng-options="option[0] as option[1] for option in optionsCirca"></select>
+      </div>
+
+      <div class="col-sm-1 text-right">
+        <div class="control-label">
+        <a class="clickable" data-ng-hide="isFirst(entry.dates, date)" data-ng-click="removeRecord(entry.dates, date)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group row" data-ng-repeat="artist in entry.artists">
+      
+      <label class="col-sm-2 control-label">
+          <a class="clickable" data-ng-hide="!isFirst(entry.artists, artist)" data-ng-click="addRecord(entry.artists)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <span sdbm-tooltip="artist">Artist</span>
+      </label>
+      <div class="col-sm-9 editable-container">
+          <a href="#" editable-text="artist.artist" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/artist/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateArtistModalCtrl">{{ artist.artist|label }}</a>
+      </div>
+      <div class="col-sm-1 text-right">
+        <div class="control-label">
+        <a class="clickable" data-ng-hide="isFirst(entry.artists, artist)" data-ng-click="removeRecord(entry.artists, artist)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-group row" data-ng-repeat="scribe in entry.scribes">
+      
+      <label class="col-sm-2 control-label">
+          <a class="clickable" data-ng-hide="!isFirst(entry.scribes, scribe)" data-ng-click="addRecord(entry.scribes)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <span sdbm-tooltip="scribe">Scribe</span>
+      </label>
+      <div class="col-sm-9 editable-container">
+          <a href="#" editable-text="scribe.scribe" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/scribe/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateScribeModalCtrl">{{ scribe.scribe|label }}</a>
+      </div>
+      <div class="col-sm-1 text-right">
+        <div class="control-label">
+        <a class="clickable" data-ng-hide="isFirst(entry.scribes, scribe)" data-ng-click="removeRecord(entry.scribes, scribe)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-group row" data-ng-repeat="entrylanguage in entry.entrylanguages">
+      
+      <label class="col-sm-2 control-label">
+          <a class="clickable" data-ng-hide="!isFirst(entry.entrylanguages, entrylanguage)" data-ng-click="addRecord(entry.entrylanguages)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <span sdbm-tooltip="language">Language</span>
+      </label>
+      <div class="col-sm-9 editable-container">
+          <a href="#" editable-text="entrylanguage.language" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/language/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateLanguageModalCtrl">{{ entrylanguage.language|label }}</a>
+      </div>
+      <div class="col-sm-1 text-right">
+        <div class="control-label">
+        <a class="clickable" data-ng-hide="isFirst(entry.entrylanguages, entrylanguage)" data-ng-click="removeRecord(entry.entrylanguages, entrylanguage)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-group row" data-ng-repeat="material in entry.materials">
+      
+      <label class="col-sm-2 control-label">
+          <a class="clickable" data-ng-hide="!isFirst(entry.materials, material)" data-ng-click="addRecord(entry.materials)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <span sdbm-tooltip="material">Material</span>
+      </label>
+      <div class="col-sm-4">
+        <select class="form-control" data-ng-model="material.material" ng-options="option[0] as option[1] for option in optionsMaterial"></select>
+      </div>
+      <div class="col-sm-5"></div>
+      <div class="col-sm-1 text-right">
+        <div class="control-label">
+        <a class="clickable" data-ng-hide="isFirst(entry.materials, material)" data-ng-click="removeRecord(entry.materials, material)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-group row" data-ng-repeat="entryplace in entry.entryplaces">
+      
+      <label class="col-sm-2 control-label">
+          <a class="clickable" data-ng-hide="!isFirst(entry.entryplaces, entryplace)" data-ng-click="addRecord(entry.entryplaces)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <span sdbm-tooltip="place">Place</span>
+      </label>
+      <div class="col-sm-9 editable-container">
+          <a href="#" editable-text="entryplace.place" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/place/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreatePlaceModalCtrl">{{ entryplace.place|label }}</a>
+      </div>
+      <div class="col-sm-1 text-right">
+        <div class="control-label">
+        <a class="clickable" data-ng-hide="isFirst(entry.entryplaces, entryplace)" data-ng-click="removeRecord(entry.entryplaces, entryplace)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-group row" data-ng-repeat="use in entry.uses">
+      
+      <label class="col-sm-2 control-label">
+          <a class="clickable" data-ng-hide="!isFirst(entry.uses, use)" data-ng-click="addRecord(entry.uses)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <span sdbm-tooltip="manuscript_use">Use</span>
+      </label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="title" data-ng-model="use.use">
+      </div>
+      <div class="col-sm-1 text-right">
+        <div class="control-label">
+        <a class="clickable" data-ng-hide="isFirst(entry.uses, use)" data-ng-click="removeRecord(entry.uses, use)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-group row">
+        <label for="folios" class="col-sm-2 control-label">
+            <span sdbm-tooltip="folios">Folios</span>
+        </label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="folios" data-ng-model="entry.folios">
+        </div>
+        <label for="lines" class="col-sm-1 control-label">
+            <span sdbm-tooltip="lines">Lines</span>
+        </label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="lines" data-ng-model="entry.num_lines">
+        </div>
+        <label for="columns" class="col-sm-1 control-label">
+            <span sdbm-tooltip="columns">Columns</span>
+        </label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="columns" data-ng-model="entry.num_columns">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="height" class="col-sm-2 control-label">
+            <span sdbm-tooltip="height">Height (mm)</span>
+        </label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="height" data-ng-model="entry.height">
+        </div>
+        <label for="width" class="col-sm-1 control-label">
+            <span sdbm-tooltip="width">Width (mm)</span>
+        </label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="width" data-ng-model="entry.width">
+        </div>
+        <label for="alt_size" class="col-sm-1 control-label">
+            <span sdbm-tooltip="?">Alt Size</span>
+        </label>
+        <div class="col-sm-3">
+            <select name="alt_size" id="alt_size" class="form-control" data-ng-model="entry.alt_size" ng-options="option[0] as option[1] for option in optionsAltSize"></select>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="min_fl" class="col-sm-2 control-label">
+            <span sdbm-tooltip="min_fl">Miniatures Full-Page</span>
+        </label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="min_fl" data-ng-model="entry.miniatures_fullpage">
+        </div>
+        <label for="min_lg" class="col-sm-1 control-label">
+            <span sdbm-tooltip="min_lg">Large</span>
+        </label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="min_lg" data-ng-model="entry.miniatures_large">
+        </div>
+        <label for="min_sm" class="col-sm-1 control-label">
+            <span sdbm-tooltip="min_sm">Small</span>
+        </label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="min_sm" data-ng-model="entry.miniatures_small">
+        </div>
+        <label for="min_un" class="col-sm-1 control-label">
+            <span sdbm-tooltip="min_un">Unspecified</span>
+        </label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="min_un" data-ng-model="entry.miniatures_unspec_size">
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="initials_historiated" class="col-sm-2 control-label">
+            <span sdbm-tooltip="h_init">Initials Historiated</span>
+        </label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="initials_historiated" data-ng-model="entry.initials_historiated">
+        </div>
+        <label for="initials_decorated" class="col-sm-1 control-label">
+            <span sdbm-tooltip="d_init">Decorated</span>
+        </label>
+        <div class="col-sm-1">
+            <input type="text" class="form-control" id="initials_decorated" data-ng-model="entry.initials_decorated">
+        </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="binding" class="col-sm-2 control-label">
+          <span sdbm-tooltip="binding">Binding</span>
+      </label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="binding" data-ng-model="entry.manuscript_binding">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="link" class="col-sm-2 control-label">
+          <span sdbm-tooltip="link">URL Link</span>
+      </label>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" id="link" data-ng-model="entry.manuscript_link">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="other_info" class="col-sm-2 control-label">
+          <span sdbm-tooltip="comments">Other information</span>
+      </label>
+      <div class="col-sm-9">
+        <textarea class="form-control" id="other_info" data-ng-model="entry.other_info"></textarea>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <legend>Provenance</legend>
+      </div>
+    </div>
+
+    <div class="provenance-group-container" data-ng-repeat="prov in entry.provenance">
+
+    <div class="form-group row">
+        <label class="col-sm-2 control-label">
+            <a class="clickable" data-ng-hide="!isFirst(entry.provenance, prov)" data-ng-click="addRecord(entry.provenance)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+            Begin/Acquire Date
+        </label>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" id="begindate" ng-model="prov.acquire_date">
+      </div>
+      <div class="col-sm-2"></div>
+      <label class="col-sm-2 control-label">End/Sale Date</label>
+      <div class="col-sm-2">
+        <input type="text" class="form-control" id="enddate" ng-model="prov.end_date">
+      </div>
+      <div class="col-sm-2 text-right">
+          <div class="control-label">
+              <a class="clickable" data-ng-hide="isFirst(entry.provenance, prov)" data-ng-click="removeRecord(entry.provenance, prov)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+          </div>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 control-label">Seller/Holder</label>
+      <div class="col-sm-4 editable-container">
+          <a href="#" editable-text="prov.seller_or_holder.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/agent/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ prov.seller_or_holder.agent|label }}</a>
+      </div>
+      <label class="col-sm-2 control-label">Seller/Holder As Recorded</label>
+      <div class="col-sm-3">
+          <input type="text" class="form-control" id="seller" data-ng-model="prov.seller_or_holder.observed_name">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2 control-label">Buyer</label>
+      <div class="col-sm-4 editable-container">
+          <a href="#" editable-text="prov.buyer.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/agent/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ prov.buyer.agent|label }}</a>
+      </div>
+      <label class="col-sm-2 control-label">Buyer As Recorded</label>
+      <div class="col-sm-3">
+          <input type="text" class="form-control" id="buyer" data-ng-model="prov.buyer.observed_name">
+      </div>
+    </div>
+
+    <div class="form-group row">
+
+      <label class="col-sm-2 control-label">
+          <span sdbm-tooltip="provenance">Evidence</span>
+      </label>
+      <div class="col-sm-9">
+        <textarea class="form-control" id="comment" ng-model="prov.comment"></textarea>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <legend>Editorial Notes</legend>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="editorial_comments" class="col-sm-2 control-label">
+          <span sdbm-tooltip="entry">Comments</span>
+      </label>
+      <div class="col-sm-9">
+        <textarea class="form-control" id="editorial_comments" data-ng-model="entry.entry_comments"></textarea>
+      </div>
+    </div>
+
+    <div class="row" style="padding-top: 20px;">
+      <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+            <button class="btn btn-primary" ng-click="save()" ng-disabled="currentlySaving">Save</button>
+            <a class="btn btn-warning" href="{% endverbatim %}{% url 'dashboard' %}{% verbatim %}">Cancel</a>
+        </div>
+    </div>
+
+  </fieldset>
+
+  <br/><br/>
+  <a href="#" data-ng-click="debug()">DEBUG: Print model to console</a>
+
+</div>
+
+{% endverbatim %}
+
+{# include 'inc_select_or_create_entity_with_name.html' #}
+{% include 'inc_create_entity_with_name.html' %}
+
+{% endblock %}

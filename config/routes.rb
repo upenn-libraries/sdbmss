@@ -10,6 +10,7 @@ Rails.application.routes.draw do
 
   resources :agents
   resources :authors
+  resources :entries
   resources :manuscripts
   resources :sources
 
