@@ -86,9 +86,9 @@ class CatalogController < ApplicationController
     config.add_facet_field 'transaction_seller_facet', :label => 'Seller', :limit => 3
     config.add_facet_field 'transaction_seller_agent_facet', :label => 'Seller Agent', :limit => 3
     config.add_facet_field 'transaction_buyer_facet', :label => 'Buyer', :limit => 3
-    # TODO: institution
+    # facet on source display str, instead of having separate facets for
+    # catalog/catalog date/institution
     config.add_facet_field 'source_facet', :label => 'Source', :limit => 3
-    # TODO: source date? store just the year?
     config.add_facet_field 'provenance_facet', :label => 'Provenance', :limit => 3
     config.add_facet_field 'manuscript_date_facet', :label => 'Manuscript Date', :limit => 3
     config.add_facet_field 'place_facet', :label => 'Place', :limit => 3
@@ -212,35 +212,41 @@ class CatalogController < ApplicationController
     # since we aren't specifying it otherwise. 
 
     config.add_search_field 'all_fields', :label => 'All Fields' do |field|
-      field.solr_local_parameters = { 
-        :qf => 'complete_entry',
-      }
-    end
-
-    config.add_search_field("source_date") do |field|
-      field.include_in_simple_select = false
-      field.solr_parameters = {
-        :qf => "source_date"
-      }
+      field.solr_local_parameters = { :qf => 'complete_entry' }
     end
 
     config.add_search_field('title') do |field|
-      field.solr_parameters = {
-        :qf => 'title',
-      }
+      field.solr_parameters = { :qf => 'title' }
     end
 
     config.add_search_field('author') do |field|
-      field.solr_parameters = {
-        :qf => 'author',
-      }
+      field.solr_parameters = { :qf => 'author' }
     end
 
     config.add_search_field('source') do |field|
-      field.solr_local_parameters = {
-        :qf => 'source',
-      }
+      field.solr_local_parameters = { :qf => 'source' }
     end
+
+    config.add_search_field('seller_agent') do |field|
+      field.include_in_simple_select = false
+      field.solr_local_parameters = { :qf => 'transaction_seller_agent' }
+    end
+
+    config.add_search_field('seller') do |field|
+      field.include_in_simple_select = false
+      field.solr_local_parameters = { :qf => 'transaction_seller' }
+    end
+
+    config.add_search_field('buyer') do |field|
+      field.include_in_simple_select = false
+      field.solr_local_parameters = { :qf => 'transaction_buyer' }
+    end
+
+    config.add_search_field('catalog_or_lot_number') do |field|
+      field.include_in_simple_select = false
+      field.solr_local_parameters = { :qf => 'catalog_or_lot_number' }
+    end
+
 
     # Specifying a :qt only to show it's possible, and so our internal automated
     # tests can test it. In this case it's the same as 

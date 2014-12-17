@@ -281,6 +281,9 @@
     <field name="secondary_source" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="current_location" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="transaction_price_facet" stored="true" type="sdouble" multiValued="false" indexed="true"/>
+    <field name="transaction_seller_agent" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="transaction_seller" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="transaction_buyer" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="author" stored="true" type="text" multiValued="true" indexed="true"/>
 
     <!-- for sorting -->

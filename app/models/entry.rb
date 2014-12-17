@@ -186,12 +186,21 @@ class Entry < ActiveRecord::Base
     string :transaction_seller_agent, :as => 'transaction_seller_agent_facet', :stored => true do
       get_transaction_seller_agent_name
     end
+    text :transaction_seller_agent, :as => 'transaction_seller_agent', :stored => true do
+      get_transaction_seller_agent_name
+    end
 
     string :transaction_seller, :as => 'transaction_seller_facet', :stored => true do
       get_transaction_seller_or_holder_name
     end
+    text :transaction_seller, :as => 'transaction_seller', :stored => true do
+      get_transaction_seller_or_holder_name
+    end
 
     string :transaction_buyer, :as => 'transaction_buyer_facet', :stored => true do
+      get_transaction_buyer_name
+    end
+    text :transaction_buyer, :as => 'transaction_buyer', :stored => true do
       get_transaction_buyer_name
     end
 
