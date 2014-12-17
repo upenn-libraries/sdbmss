@@ -104,9 +104,23 @@ class Entry < ActiveRecord::Base
   #  indexing, but we want it to be ON for normal operation. how to do
   #  this?
   searchable :auto_index => false do
+
+    # Simple wrapper around DSL field definition methods like #text,
+    # #string, #integer, etc that configures the field to have a solr
+    # fieldname that matches sunspot fieldname (using :as keyword
+    # arg). This helps with DRY.
+    #
+    # field_type should be a symbol that matches a DSL field, like
+    # :text or :integer
+    def define_field(field_type, *args, &block)
+      # last argument should be hash of options, so add to it
+      args.last[:as] = args[0].to_s
+      send(field_type, *args, &block)
+    end
+
     # complete_entry is for general full-text search, so dump
     # everything here
-    text :complete_entry, :as => 'complete_entry', :stored => true do
+    define_field(:text, :complete_entry, :stored => true) do
       [
         # id() method not available b/c of bug:
         # https://github.com/sunspot/sunspot/issues/331
@@ -156,122 +170,122 @@ class Entry < ActiveRecord::Base
     end
 
     # for sorting
-    integer :entry_id, :as => 'entry_id', :stored => true do
+    define_field(:integer, :entry_id, :stored => true) do
       @__receiver__.id.to_i
     end
 
-    string :manuscript, :as => 'manuscript_facet', :stored => true, :multiple => true do
+    define_field(:string, :manuscript_facet, :stored => true, :multiple => true) do
       entry_manuscripts.map { |em| em.manuscript.get_public_id }
     end
 
     #### Source info
 
-    text :source, :as => 'source', :stored => true do
+    define_field(:text, :source, :stored => true) do
       source.get_display_value
     end
-    string :source, :as => 'source_facet', :stored => true do
+    define_field(:string, :source_facet, :stored => true) do
       source.get_display_value
     end
-    text :source_date, :as => 'source_date', :stored => true do
+    define_field(:text, :source_date, :stored => true) do
       # TODO: split this up?
       source.date
     end
 
-    text :catalog_or_lot_number, :as => 'catalog_or_lot_number', :stored => true
-    text :secondary_source, :as => 'secondary_source', :stored => true
-    text :current_location, :as => 'current_location', :stored => true
+    define_field(:text, :catalog_or_lot_number, :stored => true)
+    define_field(:text, :secondary_source, :stored => true)
+    define_field(:text, :current_location, :stored => true)
 
     #### Transaction info
 
-    string :transaction_seller_agent, :as => 'transaction_seller_agent_facet', :stored => true do
+    define_field(:string, :transaction_seller_agent_facet, :stored => true) do
       get_transaction_seller_agent_name
     end
-    text :transaction_seller_agent, :as => 'transaction_seller_agent', :stored => true do
+    define_field(:text, :transaction_seller_agent, :stored => true) do
       get_transaction_seller_agent_name
     end
 
-    string :transaction_seller, :as => 'transaction_seller_facet', :stored => true do
+    define_field(:string, :transaction_seller_facet, :stored => true) do
       get_transaction_seller_or_holder_name
     end
-    text :transaction_seller, :as => 'transaction_seller', :stored => true do
+    define_field(:text, :transaction_seller, :stored => true) do
       get_transaction_seller_or_holder_name
     end
 
-    string :transaction_buyer, :as => 'transaction_buyer_facet', :stored => true do
+    define_field(:string, :transaction_buyer_facet, :stored => true) do
       get_transaction_buyer_name
     end
-    text :transaction_buyer, :as => 'transaction_buyer', :stored => true do
+    define_field(:text, :transaction_buyer, :stored => true) do
       get_transaction_buyer_name
     end
 
-    string :transaction_sold, :as => 'transaction_sold_facet', :stored => true do
+    define_field(:string, :transaction_sold_facet, :stored => true) do
       get_transaction_sold
     end
 
-    double :transaction_price, :as => 'transaction_price_facet', :stored => true do
+    define_field(:double, :transaction_price_facet, :stored => true) do
       get_transaction_price
     end
 
     #### Details
 
-    text :title, :as => 'title', :stored => true do
+    define_field(:text, :title, :stored => true) do
       entry_titles.map { |obj| obj.title }
     end
-    string :title, :as => 'title_facet', :stored => true, :multiple => true do
+    define_field(:string, :title_facet,:stored => true, :multiple => true) do
       entry_titles.map { |obj| obj.title }
     end
 
-    text :author, :as => 'author', :stored => true do
+    define_field(:text, :author, :stored => true) do
       entry_authors.map { |obj| obj.author ? obj.author.name : nil }
     end
-    string :author, :as => 'author_facet', :stored => true, :multiple => true do
+    define_field(:string, :author_facet, :stored => true, :multiple => true) do
       entry_authors.map { |obj| obj.author ? obj.author.name : nil }
     end
 
     # TODO: fiddle with this for a better facet taking into account circa
-    integer :manuscript_date, :as => 'manuscript_date_facet', :stored => true, :multiple => true do
+    define_field(:integer, :manuscript_date_facet, :stored => true, :multiple => true) do
       entry_dates.map { |obj| obj.date }
     end
 
-    string :artist, :as => 'artist_facet', :stored => true, :multiple => true do
+    define_field(:string, :artist_facet, :stored => true, :multiple => true) do
       entry_artists.map { |obj| obj.artist.name }
     end
 
-    string :scribe, :as => 'scribe_facet', :stored => true, :multiple => true do
+    define_field(:string, :scribe_facet, :stored => true, :multiple => true) do
       entry_scribes.map { |obj| obj.scribe.name }
     end
 
-    string :language, :as => 'language_facet', :stored => true, :multiple => true do
+    define_field(:string, :language_facet, :stored => true, :multiple => true) do
       entry_languages.map { |obj| obj.language.name }
     end
 
-    string :material, :as => 'material_facet', :stored => true, :multiple => true do
+    define_field(:string, :material_facet, :stored => true, :multiple => true) do
       entry_materials.map { |obj| obj.material }
     end
 
-    string :place, :as => 'place_facet', :stored => true, :multiple => true do
+    define_field(:string, :place_facet, :stored => true, :multiple => true) do
       entry_places.map { |obj| obj.place.name }
     end
 
-    string :use, :as => 'use_facet', :stored => true, :multiple => true do
+    define_field(:string, :use_facet, :stored => true, :multiple => true) do
       entry_uses.map { |obj| obj.use }
     end
 
-    integer :folios, :as => 'folios_facet', :stored => true
-    integer :num_columns, :as => 'num_columns_facet', :stored => true
-    integer :num_lines, :as => 'num_lines_facet', :stored => true
-    integer :height, :as => 'height_facet', :stored => true
-    integer :width, :as => 'width_facet', :stored => true
-    integer :miniatures_fullpage, :as => 'miniatures_fullpage_facet', :stored => true
-    integer :miniatures_large, :as => 'miniatures_large_facet', :stored => true
-    integer :miniatures_small, :as => 'miniatures_small_facet', :stored => true
-    integer :miniatures_unspec_size, :as => 'miniatures_unspec_size_facet', :stored => true
-    integer :initials_historiated, :as => 'initials_historiated_facet', :stored => true
-    integer :initials_decorated,  :as => 'initials_decorated_facet', :stored => true
+    define_field(:integer, :folios_facet, :stored => true) { folios }
+    define_field(:integer, :num_columns_facet, :stored => true) { num_columns }
+    define_field(:integer, :num_lines_facet, :stored => true) { num_lines }
+    define_field(:integer, :height_facet, :stored => true) { height }
+    define_field(:integer, :width_facet, :stored => true) { width }
+    define_field(:integer, :miniatures_fullpage_facet, :stored => true) { miniatures_fullpage }
+    define_field(:integer, :miniatures_large_facet, :stored => true) { miniatures_large }
+    define_field(:integer, :miniatures_small_facet, :stored => true) { miniatures_small }
+    define_field(:integer, :miniatures_unspec_size_facet, :stored => true) { miniatures_unspec_size }
+    define_field(:integer, :initials_historiated_facet, :stored => true) { initials_historiated }
+    define_field(:integer, :initials_decorated_facet, :stored => true) { initials_decorated }
 
     #### Provenance
 
-    string :provenance, :as => 'provenance_facet', :stored => true, :multiple => true do
+    define_field(:string, :provenance_facet, :stored => true, :multiple => true) do
       events = get_provenance
       names = []
       events.each { |event|
@@ -287,8 +301,8 @@ class Entry < ActiveRecord::Base
       names if names.length > 0
     end
 
-    string :comment, :stored => true, :multiple => true do
-      entry_comments.select { |ec| ec.public }.map { |ec| ec.comment }
+    define_field(:text, :comment, :stored => true) do
+      entry_comments.select { |ec| ec.public }.map { |ec| ec.comment }.join("\n")
     end
 
   end

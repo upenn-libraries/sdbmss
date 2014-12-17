@@ -285,6 +285,7 @@
     <field name="transaction_seller" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="transaction_buyer" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="author" stored="true" type="text" multiValued="true" indexed="true"/>
+    <field name="comment" stored="true" type="text" multiValued="false" indexed="true"/>
 
     <!-- for sorting -->
     <field name="entry_id" stored="true" type="sint" multiValued="false" indexed="true"/>
