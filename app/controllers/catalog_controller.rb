@@ -10,7 +10,7 @@ class CatalogController < ApplicationController
   # a behavior for solr_search_params: if there's no query, default to
   # showing all results
   def show_all_if_no_query(solr_parameters, user_parameters)
-    # dismax itself doesn't understand '*' but we can pass in q.alt
+    # edismax itself doesn't understand '*' but we can pass in q.alt
     # and it will work for some reason
     solr_parameters['q.alt'] = "*:*" if user_parameters['q'].blank?
   end
@@ -19,11 +19,15 @@ class CatalogController < ApplicationController
     ## Default parameters to send to solr for all search-like requests. See also SolrHelper#solr_search_params
     config.default_solr_params = {
       # use dismax query parser
-      :defType => 'dismax',
+      :defType => 'edismax',
       # we load entry fields from db, so these are the only fields we need returned from solr
       :fl => 'id, entry_id',
       :rows => 10,
       'facet.mincount' => 1,
+    }
+
+    config.advanced_search = {
+      :query_parser => "edismax"
     }
 
     # solr path which will be added to solr base url before the other solr params.
@@ -209,7 +213,6 @@ class CatalogController < ApplicationController
 
     config.add_search_field 'all_fields', :label => 'All Fields' do |field|
       field.solr_local_parameters = { 
-        # default search field
         :qf => 'complete_entry',
       }
     end
