@@ -42,11 +42,3 @@ class Blacklight::SolrResponse
 
 end
 
-# Fix for 5.8.0 bug
-class Blacklight::SolrRepository
-
-  def search params = {}
-    send_and_receive blacklight_config.solr_path, params.reverse_merge({ qt: blacklight_config.qt })
-  end
-
-end
