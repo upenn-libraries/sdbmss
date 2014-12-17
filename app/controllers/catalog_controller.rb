@@ -85,12 +85,12 @@ class CatalogController < ApplicationController
 
     config.add_facet_field 'author_facet', :label => 'Authors', :collapse => false, :limit => 3
     config.add_facet_field 'title_facet', :label => 'Title', :collapse => false, :limit => 3
-    config.add_facet_field 'transaction_seller_facet', :label => 'Seller', :limit => 3
-    config.add_facet_field 'transaction_seller_agent_facet', :label => 'Seller Agent', :limit => 3
-    config.add_facet_field 'transaction_buyer_facet', :label => 'Buyer', :limit => 3
+    config.add_facet_field 'transaction_seller_facet', :label => 'Seller', :collapse => false, :limit => 3
+    config.add_facet_field 'transaction_seller_agent_facet', :label => 'Seller Agent', :collapse => false, :limit => 3
+    config.add_facet_field 'transaction_buyer_facet', :label => 'Buyer', :collapse => false, :limit => 3
     # facet on source display str, instead of having separate facets for
     # catalog/catalog date/institution
-    config.add_facet_field 'source_facet', :label => 'Source', :limit => 3
+    config.add_facet_field 'source_facet', :label => 'Source', :collapse => false, :limit => 3
     config.add_facet_field 'provenance_facet', :label => 'Provenance', :limit => 3
     config.add_facet_field 'manuscript_date_facet', :label => 'Manuscript Date', :limit => 3
     config.add_facet_field 'place_facet', :label => 'Place', :limit => 3
