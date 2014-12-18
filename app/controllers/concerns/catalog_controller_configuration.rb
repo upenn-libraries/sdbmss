@@ -76,7 +76,7 @@ module CatalogControllerConfiguration
       # this field." This behavior of facet counts is weird and
       # confusing, so we leave it off.
 
-      config.add_facet_field 'author_facet', :label => 'Authors', :collapse => false, :limit => 3
+      config.add_facet_field 'author_facet', :label => 'Author', :collapse => false, :limit => 3
       config.add_facet_field 'title_facet', :label => 'Title', :collapse => false, :limit => 3
       config.add_facet_field 'transaction_seller_facet', :label => 'Seller', :collapse => false, :limit => 3
       config.add_facet_field 'transaction_seller_agent_facet', :label => 'Seller Agent', :collapse => false, :limit => 3
