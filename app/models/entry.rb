@@ -29,6 +29,9 @@ class Entry < ActiveRecord::Base
   # returns 'count' number of most recent entries
   scope :most_recent, ->(count = 5) { order(added_on: :desc).first(count) }
 
+  # returns the entries that have the specified author
+  scope :with_author, ->(author) { joins(:entry_authors).where("entry_authors.author_id = #{author.id}").distinct }
+
   ALT_SIZE_TYPES = [
     ['F', 'Folio'],
     ['Q', 'Quarto'],
