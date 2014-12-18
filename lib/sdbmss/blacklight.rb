@@ -43,4 +43,13 @@ module SDBMSS::Blacklight
 
   end
 
+  class SDBMSS::Blacklight::DocumentPresenter < Blacklight::DocumentPresenter
+
+    # used for html title element
+    def document_heading
+      return @document.get_model_object.get_public_id
+    end
+
+  end
+
 end

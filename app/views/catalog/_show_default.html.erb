@@ -398,7 +398,7 @@
 Other entries possibly describing the same manuscript:<br/>
 (This info will be moved elsewhere, and presented in a way to make comparison easier)<br/>
 <% similar_entries.each do |similar_entry| %>
-<a href="TODO">SDBM_<%= similar_entry.id %></a> - <%= similar_entry.get_titles_str %><br/>
+<a href="TODO"><%= similar_entry.get_public_id %></a> - <%= similar_entry.get_titles_str %><br/>
 <% end %>
 <% end %>
 

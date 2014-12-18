@@ -8,4 +8,8 @@ class Agent < ActiveRecord::Base
   has_many :source_agents
   has_many :sources, through: :source_agents
 
+  def get_public_id
+    "SDBM_AGENT_#{id}"
+  end
+
 end

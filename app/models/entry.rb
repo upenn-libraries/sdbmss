@@ -45,6 +45,10 @@ class Entry < ActiveRecord::Base
     ['64mo', 'Sexagesimo-quarto or Sixty-fourmo'],
   ]
 
+  def get_public_id
+    "SDBM_#{id}"
+  end
+
   def get_manuscript
     manuscripts.first
   end

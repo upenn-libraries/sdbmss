@@ -23,6 +23,10 @@ class Source < ActiveRecord::Base
     [TYPE_UNPUBLISHED, 'Unpublished'],
   ]
 
+  def get_public_id
+    "SDBM_SOURCE_#{id}"
+  end
+
   def get_source_agent_with_role(role)
     source_agents.select { |sa| sa.role == role }.first
   end
