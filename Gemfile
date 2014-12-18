@@ -60,3 +60,5 @@ gem 'sunspot_solr', '~> 2.1.0'
 
 gem 'activerecord-import', '~> 0.6.0'
 
+gem 'activerecord-session_store', '~> 0.1.0'
+

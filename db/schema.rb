@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141215194034) do
+ActiveRecord::Schema.define(version: 20141218192403) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -277,6 +277,16 @@ ActiveRecord::Schema.define(version: 20141215194034) do
   end
 
   add_index "searches", ["user_id"], name: "index_searches_on_user_id", using: :btree
+
+  create_table "sessions", force: true do |t|
+    t.string   "session_id", null: false
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
+  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
   create_table "source_agents", force: true do |t|
     t.integer  "source_id"
