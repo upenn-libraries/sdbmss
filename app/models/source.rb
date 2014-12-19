@@ -1,6 +1,4 @@
 
-require 'sdbmss/util'
-
 class Source < ActiveRecord::Base
   belongs_to :added_by, :class_name => 'User'
   belongs_to :last_modified_by, :class_name => 'User'
