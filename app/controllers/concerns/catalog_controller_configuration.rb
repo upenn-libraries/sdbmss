@@ -273,7 +273,7 @@ module CatalogControllerConfiguration
 
       config.add_nav_action(:dashboard, partial: 'nav/dashboard')
 
-      config.add_show_tools_partial(:edit_entry, partial: 'nav/edit_entry', if: :user_signed_in?)
+      config.add_show_tools_partial(:edit_entry, partial: 'nav/edit_entry', if: :show_edit_link?)
 
     end
 

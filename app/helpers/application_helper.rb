@@ -20,4 +20,9 @@ module ApplicationHelper
     struct[:data][:"context-href"]
   end
 
+  # determines whether edit link on displayed on show document view
+  def show_edit_link?
+    user_signed_in?
+  end
+
 end
