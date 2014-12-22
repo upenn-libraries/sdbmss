@@ -12,3 +12,43 @@
 
 .record-label { color: #777 }
 
+/**** Style for entry add pages */
+
+.entry-add-edit .provenance-group-container { border-width: 0 0 1px; border-style: none none solid; border-color: #e5e5e5; margin-bottom: 6px; }
+
+/* put on A elements without hrefs */
+.entry-add-edit .clickable { cursor: pointer; }
+
+.entry-add-edit label.col-sm-2, .entry-add-edit label.col-sm-1 { padding-right: 0px; }
+
+/* make editable-container have the same padding as a label element,
+so that editable text is aligned, BUT also make editable-controls have
+-7 margin so it's NOT a label. I don't think there's a cleaner way to
+do this.  */
+.entry-add-edit .editable-container { min-height: 30px; padding-top: 7px; }
+.entry-add-edit .editable-container .editable-controls { padding-left: 15px; margin-top: -7px; width: 80%; }
+
+/* without this rule, form compresses its child elements */
+.entry-add-edit .editable-container form  { width: 100% }
+
+/* make these buttons smaller so they don't jiggle the page when displayed */
+.entry-add-edit .editable-container .btn { font-size:12px; padding: 5px 12px; }
+
+/* editable's css overrides form-control, so override THAT */
+.entry-add-edit .editable-input.editable-has-buttons { width: 100%; }
+
+.entry-add-edit a.editable-empty, .entry-add-edit a.editable-empty:hover, .entry-add-edit a.editable-empty:focus { font-style: normal; }
+
+.entry-add-edit .qtip {
+font-size: inherit;
+line-height: 1.5em;
+max-width: inherit;
+}
+.entry-add-edit .qtip-content p {
+margin-bottom:2em;
+}
+
+.entry-add-edit .tooltip-label {
+cursor: help;
+}
+

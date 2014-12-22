@@ -6,6 +6,7 @@ Rails.application.routes.draw do
 
   get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
 
+  get '/entries/form_dropdown_values', to: 'entries#entry_form_dropdown_values'
   get '/entries/:id', to: 'catalog#show', as: 'entry'
 
   resources :agents
@@ -13,6 +14,10 @@ Rails.application.routes.draw do
   resources :entries
   resources :manuscripts
   resources :sources
+
+  scope path: "/api" do
+    resources :entries
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -10,6 +10,11 @@
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
  *
+ *= require jquery-ui
+ *= require xeditable
+ *= require jquery.qtip
+ *= require blacklight
+ *= require sdbmss
  *= require_tree .
  *= require_self
  

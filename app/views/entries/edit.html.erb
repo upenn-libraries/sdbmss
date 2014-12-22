@@ -1,46 +1,9 @@
-{% extends 'base.html' %}
+<%# determines where angularjs code does editing or not %>
+<input type="hidden" id="entry_id" value="<%= @entry.id %>" />
+<input type="hidden" id="source_id" value="<%= @entry.source.id %>" />
 
-{% load bootstrap3 %}
-{% load static from staticfiles %}
-
-{% block ng-app %}sdbmApp{% endblock %}
-
-{% block title %}Add entry{% endblock %}
-
-{% block head_extra %}
-
-<script src="{% static "jquery-ui-1.11.1/jquery-ui.min.js" %}"></script>
-<link href="{% static "jquery-ui-1.11.1/jquery-ui.min.css" %}" rel="stylesheet" media="screen">
-
-<script src="{% static "qtip2/jquery.qtip.min.js" %}"></script>
-<link href="{% static "qtip2/jquery.qtip.css" %}" rel="stylesheet" media="screen">
-
-{# note that early RCs of 1.3.0 broke typeahead: https://github.com/angular-ui/bootstrap/issues/2681 #}
-<script src="{% static "angularjs/angular.1.3.0.js" %}"></script>
-<script src="{% static "angularjs/angular-resource.1.3.0.js" %}"></script>
-<script src="{% static "angularjs/angular-cookies.1.2.26.js" %}"></script>
-
-<script src="{% static "ui-bootstrap-tpls-0.11.2.js" %}"></script>
-
-<link href="{% static "angular-xeditable/css/xeditable.css" %}" rel="stylesheet">
-<script src="{% static "angular-xeditable/js/xeditable.min.js" %}"></script>
-
-<link href="{% static "entry_add.css" %}" rel="stylesheet" media="screen"/>
-
-{# TODO: instead of forcing reloads this way, tie it to app version #}
-<script src="{% static "sdbmApp.js" %}?{% now "U" %}"></script>
-
-{% endblock %}
-
-{% block content %}
-
-{# determines where angularjs code does editing or not #}
-<input type="hidden" id="entry_id" value="{{ entry_id|default:"" }}" />
-<input type="hidden" id="source_id" value="{{ source_id|default:"" }}" />
-
-{% verbatim %}
 <!-- we don't use form tag b/c that screws up xeditable -->
-<div class="form-horizontal" data-ng-controller="EntryCtrl">
+<div class="form-horizontal entry-add-edit" data-ng-controller="EntryCtrl">
   <fieldset>
 
     <div class="row">
@@ -147,48 +110,48 @@
       </div>
     </div>
 
-    <div class="form-group row" data-ng-repeat="title in entry.titles">
+    <div class="form-group row" data-ng-repeat="entry_title in entry.entry_titles">
       
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.titles, title)" data-ng-click="addRecord(entry.titles)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <a class="clickable" data-ng-hide="!isFirst(entry.entry_titles, entry_title)" data-ng-click="addRecord(entry.entry_titles)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
           <span sdbm-tooltip="title">Title</span>
       </label>
       <div class="col-sm-4">
-        <input type="text" class="form-control" id="title" data-ng-model="title.title">
+        <input type="text" class="form-control" id="title" data-ng-model="entry_title.title">
       </div>
       <label class="col-sm-2 control-label">
           <span sdbm-tooltip="title">Common Title</span>
       </label>
       <div class="col-sm-3">
-        <input type="text" class="form-control" id="title" data-ng-model="title.common_title">
+        <input type="text" class="form-control" id="title" data-ng-model="entry_title.common_title">
       </div>
       <div class="col-sm-1 text-right">
         <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.titles, title)" data-ng-click="removeRecord(entry.titles, title)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        <a class="clickable" data-ng-hide="isFirst(entry.entry_titles, entry_title)" data-ng-click="removeRecord(entry.entry_titles, entry_title)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
         </div>
       </div>
 
     </div>
 
-    <div class="form-group row entry-author-group" data-ng-repeat="author in entry.authors">
+    <div class="form-group row entry-author-group" data-ng-repeat="entry_author in entry.entry_authors">
         <label class="col-sm-2 control-label">
-            <a class="clickable" data-ng-hide="!isFirst(entry.authors, author)" data-ng-click="addRecord(entry.authors)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+            <a class="clickable" data-ng-hide="!isFirst(entry.entry_authors, entry_author)" data-ng-click="addRecord(entry.entry_authors)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
             <span sdbm-tooltip="author">Author</span>
         </label>
       <div class="col-sm-4 editable-container">
-          <a href="#" editable-text="author.author" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/author/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAuthorModalCtrl">{{ author.author|label }}</a>
+          <a href="#" editable-text="entry_author.author" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/author/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAuthorModalCtrl">{{ entry_author.author|label }}</a>
       </div>
 
       <label class="col-sm-2 control-label">
           <span sdbm-tooltip="authorVariant">Author As Recorded</span>
       </label>
       <div class="col-sm-3">
-          <input type="text" class="form-control" id="author" data-ng-model="author.observed_name">
+          <input type="text" class="form-control" id="author" data-ng-model="entry_author.observed_name">
       </div>
 
       <div class="col-sm-1 text-right">
         <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.authors, author)" data-ng-click="removeRecord(entry.authors, author)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        <a class="clickable" data-ng-hide="isFirst(entry.entry_authors, entry_author)" data-ng-click="removeRecord(entry.entry_authors, entry_author)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
         </div>
       </div>
     </div>
@@ -522,9 +485,5 @@
 
 </div>
 
-{% endverbatim %}
-
 {# include 'inc_select_or_create_entity_with_name.html' #}
 {% include 'inc_create_entity_with_name.html' %}
-
-{% endblock %}

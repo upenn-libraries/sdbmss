@@ -271,7 +271,9 @@ module CatalogControllerConfiguration
       # mean") suggestion is offered.
       config.spell_max = 5
 
-      config.add_nav_action(:jeff, partial: 'nav/dashboard') # if: :render_bookmarks_control?)
+      config.add_nav_action(:dashboard, partial: 'nav/dashboard')
+
+      config.add_show_tools_partial(:edit_entry, partial: 'nav/edit_entry', if: :user_signed_in?)
 
     end
 
