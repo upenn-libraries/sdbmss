@@ -156,127 +156,127 @@
       </div>
     </div>
 
-    <div class="form-group row" data-ng-repeat="date in entry.dates">
+    <div class="form-group row" data-ng-repeat="entry_date in entry.entry_dates">
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.dates, date)" data-ng-click="addRecord(entry.dates)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <a class="clickable" data-ng-hide="!isFirst(entry.entry_dates, entry_date)" data-ng-click="addRecord(entry.entry_dates)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
           <span sdbm-tooltip="year">Year</span>
       </label>
       <div class="col-sm-4">
-        <input type="text" class="form-control" id="year" data-ng-model="date.date">
+        <input type="text" class="form-control" id="year" data-ng-model="entry_date.date">
       </div>
 
       <label class="col-sm-2 control-label">
           <span sdbm-tooltip="circa">Circa</span>
       </label>
       <div class="col-sm-3">
-          <select name="circa" class="form-control" ng-model="date.circa" ng-options="option[0] as option[1] for option in optionsCirca"></select>
+          <select name="circa" class="form-control" ng-model="entry_date.circa" ng-options="option[0] as option[1] for option in optionsCirca"></select>
       </div>
 
       <div class="col-sm-1 text-right">
         <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.dates, date)" data-ng-click="removeRecord(entry.dates, date)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        <a class="clickable" data-ng-hide="isFirst(entry.entry_dates, entry_date)" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
         </div>
       </div>
     </div>
 
-    <div class="form-group row" data-ng-repeat="artist in entry.artists">
+    <div class="form-group row" data-ng-repeat="entry_artist in entry.entry_artists">
       
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.artists, artist)" data-ng-click="addRecord(entry.artists)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <a class="clickable" data-ng-hide="!isFirst(entry.entry_artists, entry_artist)" data-ng-click="addRecord(entry.entry_artists)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
           <span sdbm-tooltip="artist">Artist</span>
       </label>
       <div class="col-sm-9 editable-container">
-          <a href="#" editable-text="artist.artist" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/artist/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateArtistModalCtrl">{{ artist.artist|label }}</a>
+          <a href="#" editable-text="artist.artist" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/artist/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateArtistModalCtrl">{{ entry_artist.artist|label }}</a>
       </div>
       <div class="col-sm-1 text-right">
         <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.artists, artist)" data-ng-click="removeRecord(entry.artists, artist)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        <a class="clickable" data-ng-hide="isFirst(entry.entry_artists, entry_artist)" data-ng-click="removeRecord(entry.entry_artists, entry_artist)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
         </div>
       </div>
 
     </div>
 
-    <div class="form-group row" data-ng-repeat="scribe in entry.scribes">
+    <div class="form-group row" data-ng-repeat="entry_scribe in entry.entry_scribes">
       
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.scribes, scribe)" data-ng-click="addRecord(entry.scribes)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <a class="clickable" data-ng-hide="!isFirst(entry.entry_scribes, entry_scribe)" data-ng-click="addRecord(entry.entry_scribes)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
           <span sdbm-tooltip="scribe">Scribe</span>
       </label>
       <div class="col-sm-9 editable-container">
-          <a href="#" editable-text="scribe.scribe" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/scribe/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateScribeModalCtrl">{{ scribe.scribe|label }}</a>
+          <a href="#" editable-text="scribe.scribe" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/scribe/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateScribeModalCtrl">{{ entry_scribe.scribe|label }}</a>
       </div>
       <div class="col-sm-1 text-right">
         <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.scribes, scribe)" data-ng-click="removeRecord(entry.scribes, scribe)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        <a class="clickable" data-ng-hide="isFirst(entry.entry_scribes, entry_scribe)" data-ng-click="removeRecord(entry.entry_scribes, entry_scribe)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
         </div>
       </div>
 
     </div>
 
-    <div class="form-group row" data-ng-repeat="entrylanguage in entry.entrylanguages">
+    <div class="form-group row" data-ng-repeat="entry_language in entry.entry_languages">
       
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.entrylanguages, entrylanguage)" data-ng-click="addRecord(entry.entrylanguages)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <a class="clickable" data-ng-hide="!isFirst(entry.entry_languages, entry_language)" data-ng-click="addRecord(entry.entry_languages)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
           <span sdbm-tooltip="language">Language</span>
       </label>
       <div class="col-sm-9 editable-container">
-          <a href="#" editable-text="entrylanguage.language" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/language/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateLanguageModalCtrl">{{ entrylanguage.language|label }}</a>
+          <a href="#" editable-text="entry_language.language" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/language/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateLanguageModalCtrl">{{ entry_language.language|label }}</a>
       </div>
       <div class="col-sm-1 text-right">
         <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.entrylanguages, entrylanguage)" data-ng-click="removeRecord(entry.entrylanguages, entrylanguage)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        <a class="clickable" data-ng-hide="isFirst(entry.entry_languages, entry_language)" data-ng-click="removeRecord(entry.entry_languages, entry_language)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
         </div>
       </div>
 
     </div>
 
-    <div class="form-group row" data-ng-repeat="material in entry.materials">
+    <div class="form-group row" data-ng-repeat="entry_material in entry.entry_materials">
       
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.materials, material)" data-ng-click="addRecord(entry.materials)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <a class="clickable" data-ng-hide="!isFirst(entry.entry_materials, entry_material)" data-ng-click="addRecord(entry.entry_materials)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
           <span sdbm-tooltip="material">Material</span>
       </label>
       <div class="col-sm-4">
-        <select class="form-control" data-ng-model="material.material" ng-options="option[0] as option[1] for option in optionsMaterial"></select>
+        <select class="form-control" data-ng-model="entry_material.material" ng-options="option[0] as option[1] for option in optionsMaterial"></select>
       </div>
       <div class="col-sm-5"></div>
       <div class="col-sm-1 text-right">
         <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.materials, material)" data-ng-click="removeRecord(entry.materials, material)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        <a class="clickable" data-ng-hide="isFirst(entry.entry_materials, entry_material)" data-ng-click="removeRecord(entry.entry_materials, entry_material)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
         </div>
       </div>
 
     </div>
 
-    <div class="form-group row" data-ng-repeat="entryplace in entry.entryplaces">
+    <div class="form-group row" data-ng-repeat="entry_place in entry.entry_places">
       
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.entryplaces, entryplace)" data-ng-click="addRecord(entry.entryplaces)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <a class="clickable" data-ng-hide="!isFirst(entry.entry_places, entry_place)" data-ng-click="addRecord(entry.entry_places)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
           <span sdbm-tooltip="place">Place</span>
       </label>
       <div class="col-sm-9 editable-container">
-          <a href="#" editable-text="entryplace.place" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/place/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreatePlaceModalCtrl">{{ entryplace.place|label }}</a>
+          <a href="#" editable-text="entry_place.place" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/place/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreatePlaceModalCtrl">{{ entry_place.place|label }}</a>
       </div>
       <div class="col-sm-1 text-right">
         <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.entryplaces, entryplace)" data-ng-click="removeRecord(entry.entryplaces, entryplace)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        <a class="clickable" data-ng-hide="isFirst(entry.entry_places, entry_place)" data-ng-click="removeRecord(entry.entry_places, entry_place)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
         </div>
       </div>
 
     </div>
 
-    <div class="form-group row" data-ng-repeat="use in entry.uses">
+    <div class="form-group row" data-ng-repeat="entry_use in entry.entry_uses">
       
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.uses, use)" data-ng-click="addRecord(entry.uses)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+          <a class="clickable" data-ng-hide="!isFirst(entry.entry_uses, entry_use)" data-ng-click="addRecord(entry.entry_uses)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
           <span sdbm-tooltip="manuscript_use">Use</span>
       </label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" id="title" data-ng-model="use.use">
+        <input type="text" class="form-control" id="title" data-ng-model="entry_use.use">
       </div>
       <div class="col-sm-1 text-right">
         <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.uses, use)" data-ng-click="removeRecord(entry.uses, use)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
+        <a class="clickable" data-ng-hide="isFirst(entry.entry_uses, entry_use)" data-ng-click="removeRecord(entry.entry_uses, entry_use)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
         </div>
       </div>
 

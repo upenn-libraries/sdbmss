@@ -336,15 +336,15 @@
 
             var objectArrays = [
                 'entry_titles',
-                'authors',
-                'dates',
-                'artists',
-                'scribes',
-                'entrylanguages',
-                'materials',
-                'entryplaces',
-                'uses',
-                'provenance'
+                'entry_authors',
+                'entry_dates',
+                'entry_artists',
+                'entry_scribes',
+                'entry_languages',
+                'entry_materials',
+                'entry_places',
+                'entry_uses',
+                'entry_provenance'
             ];
 
             // make blank initial rows, as needed, for user to fill out

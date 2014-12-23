@@ -62,3 +62,5 @@ gem 'activerecord-import', '~> 0.6.0'
 
 gem 'activerecord-session_store', '~> 0.1.0'
 
+# for serializing objects into JSON
+gem 'rabl', '~> 0.11.5'
