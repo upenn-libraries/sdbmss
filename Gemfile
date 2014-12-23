@@ -69,3 +69,5 @@ gem 'activerecord-session_store', '~> 0.1.0'
 
 # for serializing objects into JSON
 gem 'rabl', '~> 0.11.5'
+
+gem 'rspec-rails', '~> 3.1.0', group: :development

@@ -5,7 +5,7 @@
 #   gem 'sqlite3'
 #
 default: &default
-  adapter: sqlite3
+  adapter: mysql2
   pool: 5
   timeout: 5000
 
@@ -27,9 +27,8 @@ staging:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
-  <<: *default
-  database: db/test.sqlite3
+  <<: *development
+  database: <%= ENV["SDBMSS_DB_NAME"] %>_test
 
 production:
-  <<: *default
-  database: db/production.sqlite3
+  <<: *development
