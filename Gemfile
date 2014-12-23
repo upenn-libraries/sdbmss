@@ -48,18 +48,23 @@ gem 'capistrano-rails', '~> 1.1.0', group: :development
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+# Blacklight
 gem "blacklight", "~> 5.8.1"
 gem "jettywrapper", "~> 1.8.0"
-gem "devise", "~> 3.4.0"
-gem "devise-guests", "~> 0.3.0"
-gem "blacklight-marc", "~> 5.4.0"
 gem "blacklight_advanced_search", "~> 5.1.1"
 
+# use by Blacklight and by SDBMSS
+gem "devise", "~> 3.4.0"
+gem "devise-guests", "~> 0.3.0"
+
+# For indexing records in Solr
 gem 'sunspot_rails', '~> 2.1.0'
 gem 'sunspot_solr', '~> 2.1.0'
 
+# For batch importing records; this doesn't work very well
 gem 'activerecord-import', '~> 0.6.0'
 
+# Use database as session store
 gem 'activerecord-session_store', '~> 0.1.0'
 
 # for serializing objects into JSON

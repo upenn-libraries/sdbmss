@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   root :to => "catalog#index"
   blacklight_for :catalog
-  Blacklight::Marc.add_routes(self)
   devise_for :users
 
   get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
