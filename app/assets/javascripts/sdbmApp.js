@@ -46,7 +46,7 @@
 
     sdbmApp.factory('Entry', ['$resource',
                               function($resource){
-                                  return $resource('/api/entries/:id.json', { id: '@id' }, {
+                                  return $resource('/entries/:id.json', { id: '@id' }, {
                                       query: {
                                           method: 'GET',
                                           isArray: true
@@ -158,7 +158,7 @@
             replaceEntityObjectsWithIds: function (objectArray, relatedObjectName) {
                 objectArray.forEach(function (element, index, array) {
                     if(element[relatedObjectName]) {
-                        element[relatedObjectName] = element[relatedObjectName].id;
+                        element[relatedObjectName + "_id"] = element[relatedObjectName].id;
                     }
                 });
             },
