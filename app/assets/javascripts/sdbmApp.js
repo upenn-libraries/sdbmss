@@ -229,10 +229,10 @@
     /* Entry screen controller */
     sdbmApp.controller("EntryCtrl", function ($scope, $http, $cookies, typeAheadService, Entry, Source, sdbmutil) {
 
-        $scope.entry_joins = [
+        $scope.entry_associations = [
             {
                 field: 'entry_titles',
-                properties: ['title']
+                properties: ['title', 'common_title']
             },
             {
                 field: 'entry_authors',
@@ -380,8 +380,8 @@
             }
 
             // make blank initial rows, as needed, for user to fill out
-            $scope.entry_joins.concat({ field: 'entry_provenance' }).forEach(function (joinRecord) {
-                var fieldname = joinRecord.field;
+            $scope.entry_associations.concat({ field: 'entry_provenance' }).forEach(function (assoc) {
+                var fieldname = assoc.field;
                 var objArray = entry[fieldname];
                 if(!objArray || objArray.length === 0) {
                     entry[fieldname] = [ {} ];
@@ -483,9 +483,9 @@
             delete entryToSave.sale;
 
             // strip out blank objects
-            $scope.entry_joins.forEach(function (joinRecord, index, array) {
-                var objectArrayName = joinRecord.field;
-                var objectArrayPropertiesAndForeignKeys = (joinRecord.properties || []).concat(joinRecord.foreign_key_objects || []);
+            $scope.entry_associations.forEach(function (assoc, index, array) {
+                var objectArrayName = assoc.field;
+                var objectArrayPropertiesAndForeignKeys = (assoc.properties || []).concat(assoc.foreign_key_objects || []);
                 var objectArray = entryToSave[objectArrayName];
                 // filter out items in array that are either empty objects or are objects that have blank fields
                 entryToSave[objectArrayName] = objectArray.filter(function (object) {
