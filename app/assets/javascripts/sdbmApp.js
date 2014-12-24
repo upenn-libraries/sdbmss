@@ -16,9 +16,14 @@
     sdbmApp.run(function (editableOptions, $http, $cookies) {
         editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
 
-        // For Django CSRF
-        $http.defaults.headers.put['X-CSRFToken'] = $cookies.csrftoken;
-        $http.defaults.headers.post['X-CSRFToken'] = $cookies.csrftoken;
+        // For Rails CSRF
+        var csrf_token = $('meta[name="csrf-token"]').attr('content');
+        if(csrf_token) {
+            $http.defaults.headers.put['X-CSRF-Token'] = csrf_token;
+            $http.defaults.headers.post['X-CSRF-Token'] = csrf_token;
+        } else {
+            alert("Error: no meta tag found with csrf-token. Ajax calls won't work.");
+        }
     });
 
     /* This is a service that does the AJAX call for typeaheads */
@@ -224,6 +229,46 @@
     /* Entry screen controller */
     sdbmApp.controller("EntryCtrl", function ($scope, $http, $cookies, typeAheadService, Entry, Source, sdbmutil) {
 
+        $scope.entry_joins = [
+            {
+                field: 'entry_titles',
+                properties: ['title']
+            },
+            {
+                field: 'entry_authors',
+                properties: ['observed_name'],
+                foreign_key_objects: ['author']
+            },
+            {
+                field: 'entry_dates',
+                properties: ['date', 'circa']
+            },
+            {
+                field: 'entry_artists',
+                foreign_key_objects: ['artist']
+            },
+            {
+                field: 'entry_scribes',
+                foreign_key_objects: ['scribe']
+            },
+            {
+                field: 'entry_languages',
+                foreign_key_objects: ['language']
+            },
+            {
+                field: 'entry_materials',
+                properties: ['material']
+            },
+            {
+                field: 'entry_places',
+                foreign_key_objects: ['place']
+            },
+            {
+                field: 'entry_uses',
+                properties: ['use']
+            }
+        ];
+
         $scope.pageTitle = "";
 
         $scope.typeAheadService = typeAheadService;
@@ -275,7 +320,7 @@
         };
 
         $scope.redirectToEditPage = function(id)  {
-            window.location = "/entry/edit/" + id + "/";
+            window.location = "/entries/" + id + "/edit/";
         };
 
         /* An object is 'blank' if its keys don't have any meaningful
@@ -334,24 +379,12 @@
                 });
             }
 
-            var objectArrays = [
-                'entry_titles',
-                'entry_authors',
-                'entry_dates',
-                'entry_artists',
-                'entry_scribes',
-                'entry_languages',
-                'entry_materials',
-                'entry_places',
-                'entry_uses',
-                'entry_provenance'
-            ];
-
             // make blank initial rows, as needed, for user to fill out
-            objectArrays.forEach(function (item) {
-                var objArray = entry[item];
+            $scope.entry_joins.concat({ field: 'entry_provenance' }).forEach(function (joinRecord) {
+                var fieldname = joinRecord.field;
+                var objArray = entry[fieldname];
                 if(!objArray || objArray.length === 0) {
-                    entry[item] = [ {} ];
+                    entry[fieldname] = [ {} ];
                 }
             });
 
@@ -416,17 +449,17 @@
                     $scope.badData.push("Bad currency value: '" + entry.sale.currency + "'");
                 }
             }
-            entry.dates.forEach(function (date) {
-                if(date.circa) {
-                    if(! sdbmutil.inOptionsArray(date.circa, $scope.optionsCirca)) {
-                        $scope.badData.push("Bad circa value: '" + date.circa + "'");
+            entry.entry_dates.forEach(function (entry_date) {
+                if(entry_date.circa) {
+                    if(! sdbmutil.inOptionsArray(entry_date.circa, $scope.optionsCirca)) {
+                        $scope.badData.push("Bad circa value: '" + entry_date.circa + "'");
                     }
                 }
             });
-            entry.materials.forEach(function (material) {
-                if(material.material) {
-                    if(! sdbmutil.inOptionsArray(material.material, $scope.optionsMaterial)) {
-                        $scope.badData.push("Bad material value: '" + material.material + "'");
+            entry.entry_materials.forEach(function (entry_material) {
+                if(entry_material.material) {
+                    if(! sdbmutil.inOptionsArray(entry_material.material, $scope.optionsMaterial)) {
+                        $scope.badData.push("Bad material value: '" + entry_material.material + "'");
                     }
                 }
             });
@@ -449,34 +482,15 @@
             delete entryToSave.provenance;
             delete entryToSave.sale;
 
-            /* TODO: this sucks because the code is so tightly coupled
-             * to (potential) structure of Entry object. figure out if
-             * there's a way to make this entirely generic. */
-            var objectArrays = [
-                ['titles', ['title', 'common_title']],
-                ['authors', ['author' , 'observed_name']],
-                ['dates', ['date', 'circa']],
-                ['artists', ['artist']],
-                ['scribes', ['scribe']],
-                ['entrylanguages', ['language']],
-                ['materials', ['material']],
-                ['entryplaces', ['place']],
-                ['uses', ['use']]
-                // TODO: unfinished; this one's tricky
-                // ['events', ['acquire_date', 'end_date']]
-            ];
-
             // strip out blank objects
-            objectArrays.forEach(function (objectArrayRecord, index, array) {
-                var objectArrayName = objectArrayRecord[0];
-                var objectArrayProperties = objectArrayRecord[1];
+            $scope.entry_joins.forEach(function (joinRecord, index, array) {
+                var objectArrayName = joinRecord.field;
+                var objectArrayPropertiesAndForeignKeys = (joinRecord.properties || []).concat(joinRecord.foreign_key_objects || []);
                 var objectArray = entryToSave[objectArrayName];
                 // filter out items in array that are either empty objects or are objects that have blank fields
                 entryToSave[objectArrayName] = objectArray.filter(function (object) {
-                    //var objectIsEmpty = $scope.isBlankObject(object);
-                    //console.log('object in array ' + objectArrayName + ' => ' + objectIsEmpty);
                     var keep = false;
-                    objectArrayProperties.forEach(function (propertyName) {
+                    objectArrayPropertiesAndForeignKeys.forEach(function (propertyName) {
                         var propertyIsBlank = $scope.isBlankStringOrObject(object[propertyName]);
                         //console.log('is property ' + propertyName + ' blank? ' + propertyIsBlank);
                         if(!propertyIsBlank) {
@@ -499,17 +513,19 @@
                 });
             });
 
+            console.log(entryToSave);
+            
             // To satisfy the API: replace nested Object
             // representations of related entities with just their IDs
 
             entryToSave.source = entryToSave.source.id;
 
             var objectArraysWithRelatedObjects = [
-                [ entryToSave.authors, 'author' ],
-                [ entryToSave.artists, 'artist' ],
-                [ entryToSave.scribes, 'scribe' ],
-                [ entryToSave.entrylanguages, 'language' ],
-                [ entryToSave.entryplaces, 'place' ]
+                [ entryToSave.entry_authors, 'author' ],
+                [ entryToSave.entry_artists, 'artist' ],
+                [ entryToSave.entry_scribes, 'scribe' ],
+                [ entryToSave.entry_languages, 'language' ],
+                [ entryToSave.entry_places, 'place' ]
             ];
 
             for(var idx in entryToSave.events) {
@@ -528,7 +544,7 @@
 
             // Strip out blank records
 
-            entryToSave.artists = entryToSave.artists.filter(function (item) {
+            entryToSave.entry_artists = entryToSave.entry_artists.filter(function (item) {
                 if(item.id || item.artist) {
                     return true;
                 }
