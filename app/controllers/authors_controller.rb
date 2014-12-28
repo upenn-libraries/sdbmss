@@ -1,7 +1,7 @@
 class AuthorsController < ApplicationController
-  before_action :set_author, only: [:show, :show_json, :edit, :update, :destroy]
-
   include ResourceSearch
+
+  before_action :set_author, only: [:show, :show_json, :edit, :update, :destroy]
 
   def create
     @author = Author.new(params.permit(:name))

@@ -1,7 +1,7 @@
 class ScribesController < ApplicationController
-  before_action :set_scribe, only: [:show, :show_json, :edit, :update, :destroy]
-
   include ResourceSearch
+
+  before_action :set_scribe, only: [:show, :show_json, :edit, :update, :destroy]
 
   def create
     @scribe = Scribe.new(params.permit(:name))

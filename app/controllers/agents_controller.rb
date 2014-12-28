@@ -1,7 +1,7 @@
 class AgentsController < ApplicationController
-  before_action :set_agent, only: [:show, :show_json, :edit, :update, :destroy]
-
   include ResourceSearch
+
+  before_action :set_agent, only: [:show, :show_json, :edit, :update, :destroy]
 
   def create
     @agent = Agent.new(params.permit(:name))
