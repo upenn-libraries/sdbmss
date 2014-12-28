@@ -1,0 +1,26 @@
+<script type="text/ng-template" id="createEntityWithName.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Create {{ entityName }}</h3>
+    </div>
+    <div class="modal-body form-horizontal">
+        
+        <div class="form-group row">
+            <label class="col-sm-2 control-label">Name</label>
+            <div class="col-sm-5">
+                <input type="text" class="form-control" ng-model="entity.name">
+            </div>
+        </div>
+
+        <div class="form-group row" ng-show="hasViafId">
+            <label class="col-sm-2 control-label">VIAF ID</label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" ng-model="entity.viaf_id">
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="save()" ng-show="readyToCreate">Create</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

@@ -1,6 +1,8 @@
 <%# determines where angularjs code does editing or not %>
+<% if @entry.persisted? %>
 <input type="hidden" id="entry_id" value="<%= @entry.id %>" />
 <input type="hidden" id="source_id" value="<%= @entry.source.id %>" />
+<% end %>
 
 <!-- we don't use form tag b/c that screws up xeditable -->
 <div class="form-horizontal entry-add-edit" data-ng-controller="EntryCtrl">
@@ -68,18 +70,18 @@
         <div class="form-group row">
             <label class="col-sm-2 control-label"><span sdbm-tooltip="seller">Seller Agent</span></label>
             <div class="col-sm-4 editable-container">
-                <a href="#" editable-text="entry.sale.seller_agent.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/agent/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.seller_agent.agent|label }}</a>
+                <a href="#" editable-text="entry.sale.seller_agent.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.seller_agent.agent|label }}</a>
             </div>
             <label class="col-sm-2 control-label"><span sdbm-tooltip="seller2">Seller</span></label>
             <div class="col-sm-4 editable-container">
-                <a href="#" editable-text="entry.sale.seller_or_holder.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/agent/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.seller_or_holder.agent|label }}</a>
+                <a href="#" editable-text="entry.sale.seller_or_holder.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.seller_or_holder.agent|label }}</a>
             </div>
         </div>
 
         <div class="form-group row">
             <label class="col-sm-2 control-label"><span sdbm-tooltip="buyer">Buyer</span></label>
             <div class="col-sm-4 editable-container">
-                <a href="#" editable-text="entry.sale.buyer.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/agent/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.buyer.agent|label }}</a>
+                <a href="#" editable-text="entry.sale.buyer.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.buyer.agent|label }}</a>
             </div>
             <label for="sold" class="col-sm-2 control-label"><span sdbm-tooltip="sold">Sold</span></label>
             <div class="col-sm-3">
@@ -139,7 +141,7 @@
             <span sdbm-tooltip="author">Author</span>
         </label>
       <div class="col-sm-4 editable-container">
-          <a href="#" editable-text="entry_author.author" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/author/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAuthorModalCtrl">{{ entry_author.author|label }}</a>
+          <a href="#" editable-text="entry_author.author" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/authors/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAuthorModalCtrl">{{ entry_author.author|label }}</a>
       </div>
 
       <label class="col-sm-2 control-label">
@@ -186,7 +188,7 @@
           <span sdbm-tooltip="artist">Artist</span>
       </label>
       <div class="col-sm-9 editable-container">
-          <a href="#" editable-text="artist.artist" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/artist/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateArtistModalCtrl">{{ entry_artist.artist|label }}</a>
+          <a href="#" editable-text="entry_artist.artist" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/artists/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateArtistModalCtrl">{{ entry_artist.artist|label }}</a>
       </div>
       <div class="col-sm-1 text-right">
         <div class="control-label">
@@ -203,7 +205,7 @@
           <span sdbm-tooltip="scribe">Scribe</span>
       </label>
       <div class="col-sm-9 editable-container">
-          <a href="#" editable-text="scribe.scribe" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/scribe/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateScribeModalCtrl">{{ entry_scribe.scribe|label }}</a>
+          <a href="#" editable-text="entry_scribe.scribe" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/scribes/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateScribeModalCtrl">{{ entry_scribe.scribe|label }}</a>
       </div>
       <div class="col-sm-1 text-right">
         <div class="control-label">
@@ -220,7 +222,7 @@
           <span sdbm-tooltip="language">Language</span>
       </label>
       <div class="col-sm-9 editable-container">
-          <a href="#" editable-text="entry_language.language" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/language/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateLanguageModalCtrl">{{ entry_language.language|label }}</a>
+          <a href="#" editable-text="entry_language.language" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/languages/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateLanguageModalCtrl">{{ entry_language.language|label }}</a>
       </div>
       <div class="col-sm-1 text-right">
         <div class="control-label">
@@ -255,7 +257,7 @@
           <span sdbm-tooltip="place">Place</span>
       </label>
       <div class="col-sm-9 editable-container">
-          <a href="#" editable-text="entry_place.place" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/place/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreatePlaceModalCtrl">{{ entry_place.place|label }}</a>
+          <a href="#" editable-text="entry_place.place" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/places/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreatePlaceModalCtrl">{{ entry_place.place|label }}</a>
       </div>
       <div class="col-sm-1 text-right">
         <div class="control-label">
@@ -424,7 +426,7 @@
     <div class="form-group row">
       <label class="col-sm-2 control-label">Seller/Holder</label>
       <div class="col-sm-4 editable-container">
-          <a href="#" editable-text="prov.seller_or_holder.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/agent/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ prov.seller_or_holder.agent|label }}</a>
+          <a href="#" editable-text="prov.seller_or_holder.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ prov.seller_or_holder.agent|label }}</a>
       </div>
       <label class="col-sm-2 control-label">Seller/Holder As Recorded</label>
       <div class="col-sm-3">
@@ -435,7 +437,7 @@
     <div class="form-group row">
       <label class="col-sm-2 control-label">Buyer</label>
       <div class="col-sm-4 editable-container">
-          <a href="#" editable-text="prov.buyer.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/api/agent/search/')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ prov.buyer.agent|label }}</a>
+          <a href="#" editable-text="prov.buyer.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ prov.buyer.agent|label }}</a>
       </div>
       <label class="col-sm-2 control-label">Buyer As Recorded</label>
       <div class="col-sm-3">
@@ -460,13 +462,22 @@
         <legend>Editorial Notes</legend>
       </div>
     </div>
+    
+    <div class="row" ng-repeat="entry_comment in entry.entry_comments"> 
+        <label class="col-sm-2 control-label">
+            <span>by TODO</span>
+        </label>
+        <div class="col-sm-9">
+            {{ entry_comment.comment }}
+        </div>
+    </div>
 
     <div class="form-group row">
       <label for="editorial_comments" class="col-sm-2 control-label">
-          <span sdbm-tooltip="entry">Comments</span>
+          <span sdbm-tooltip="entry">Add Comment</span>
       </label>
       <div class="col-sm-9">
-        <textarea class="form-control" id="editorial_comments" data-ng-model="entry.entry_comments"></textarea>
+        <textarea class="form-control" id="editorial_comments" data-ng-model="entry.new_comment"></textarea>
       </div>
     </div>
 
@@ -485,5 +496,4 @@
 
 </div>
 
-{# include 'inc_select_or_create_entity_with_name.html' #}
-{% include 'inc_create_entity_with_name.html' %}
+<%= render "create_entity_with_name" %>

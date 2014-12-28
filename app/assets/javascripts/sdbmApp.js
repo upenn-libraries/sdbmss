@@ -59,7 +59,7 @@
 
     sdbmApp.factory('Source', ['$resource',
                               function($resource){
-                                  return $resource('/api/source/:id.json', { id: '@id' }, {
+                                  return $resource('/sources/:id.json', { id: '@id' }, {
                                       query: {
                                           method: 'GET',
                                           isArray: true
@@ -72,7 +72,7 @@
 
     sdbmApp.factory('Agent', ['$resource',
                               function($resource){
-                                  return $resource('/api/agent/:id.json', { id: '@id' }, {
+                                  return $resource('/agents/:id.json', { id: '@id' }, {
                                       query: {
                                           method: 'GET',
                                           isArray: true
@@ -85,7 +85,7 @@
 
     sdbmApp.factory('Artist', ['$resource',
                               function($resource){
-                                  return $resource('/api/artist/:id.json', { id: '@id' }, {
+                                  return $resource('/artists/:id.json', { id: '@id' }, {
                                       query: {
                                           method: 'GET',
                                           isArray: true
@@ -98,7 +98,7 @@
 
     sdbmApp.factory('Author', ['$resource',
                               function($resource){
-                                  return $resource('/api/author/:id.json', { id: '@id' }, {
+                                  return $resource('/authors/:id.json', { id: '@id' }, {
                                       query: {
                                           method: 'GET',
                                           isArray: true
@@ -111,7 +111,7 @@
 
     sdbmApp.factory('Language', ['$resource',
                               function($resource){
-                                  return $resource('/api/language/:id.json', { id: '@id' }, {
+                                  return $resource('/languages/:id.json', { id: '@id' }, {
                                       query: {
                                           method: 'GET',
                                           isArray: true
@@ -124,7 +124,7 @@
 
     sdbmApp.factory('Place', ['$resource',
                               function($resource){
-                                  return $resource('/api/place/:id.json', { id: '@id' }, {
+                                  return $resource('/places/:id.json', { id: '@id' }, {
                                       query: {
                                           method: 'GET',
                                           isArray: true
@@ -137,7 +137,7 @@
 
     sdbmApp.factory('Scribe', ['$resource',
                               function($resource){
-                                  return $resource('/api/scribe/:id.json', { id: '@id' }, {
+                                  return $resource('/scribes/:id.json', { id: '@id' }, {
                                       query: {
                                           method: 'GET',
                                           isArray: true
@@ -663,8 +663,8 @@
                 if(userWantsToCreate) {
                     $timeout(function() {
 
-                        var template = 'selectOrCreateEntityWithName.html';
-                        var newNameValue = newValue.display_value.substring(newValue.display_value.indexOf("'"), newValue.display_value.lastIndexOf("'"));
+                        var template = 'createEntityWithName.html';
+                        var newNameValue = newValue.display_value.substring(newValue.display_value.indexOf("'")+1, newValue.display_value.lastIndexOf("'"));
                         var originalModelValue = oldValue;
 
                         var modalInstance = $modal.open({

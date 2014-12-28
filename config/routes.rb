@@ -1,20 +1,40 @@
 Rails.application.routes.draw do
   root :to => "catalog#index"
+
+  resources :agents do
+    collection { get 'search' }
+  end
+  resources :artists do
+    collection { get 'search' }
+  end
+  resources :authors do
+    collection { get 'search' }
+  end
+
   blacklight_for :catalog
-  devise_for :users
 
   get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
 
+  # handle these /entries/... URLs before EntriesController
   get '/entries/form_dropdown_values', to: 'entries#entry_form_dropdown_values'
-  # handle JSON manually, and let Blacklight handle rest of /entries
+  get '/entries/new', to: 'entries#new'
   get '/entries/:id.json', to: 'entries#show_json', defaults: { format: 'json' }
   get '/entries/:id', to: 'catalog#show', as: 'entry'
-
-  resources :agents
-  resources :authors
   resources :entries
+
+  resources :languages do
+    collection { get 'search' }
+  end
   resources :manuscripts
+  resources :places do
+    collection { get 'search' }
+  end
+  resources :scribes do
+    collection { get 'search' }
+  end
   resources :sources
+
+  devise_for :users
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
