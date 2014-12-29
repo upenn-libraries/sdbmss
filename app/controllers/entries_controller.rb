@@ -15,9 +15,21 @@ class EntriesController < ApplicationController
 
   def new
     @entry = Entry.new
-    respond_to do |format|
-      format.html { render "edit" }
+    @source_id = params[:source_id]
+    if @source_id.present?
+      respond_to do |format|
+        format.html { render "edit" }
+      end
+    else
+      respond_to do |format|
+        format.html { render "select_source" }
+      end
     end
+  end
+
+  def create
+    @entry = Entry.new
+    update
   end
 
   def edit
@@ -45,7 +57,7 @@ class EntriesController < ApplicationController
         reconcile_assoc @entry, params["entry_materials"], EntryMaterial, 'entry_id', [:material]
         reconcile_assoc @entry, params["entry_places"], EntryPlace, 'entry_id', [:place_id]
         reconcile_assoc @entry, params["entry_uses"], EntryUse, 'entry_id', [:use]
-        reconcile_assoc @entry, params["events"], Event, 'entry_id', [:acquire_date, :end_date, :comment, :sold, :currency, :other_currency] do |event, model_params|
+        reconcile_assoc @entry, params["events"], Event, 'entry_id', [:primary, :acquire_date, :end_date, :comment, :sold, :price, :currency, :other_currency] do |event, model_params|
           reconcile_assoc event, model_params['event_agents'], EventAgent, 'event_id', [:observed_name, :agent_id, :role]
         end
 

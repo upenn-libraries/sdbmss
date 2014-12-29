@@ -207,7 +207,7 @@
         $scope.findSourceCandidates = function () {
             if($scope.title.length > 2 || $scope.date.length > 2 || $scope.agent.length > 2) {
                 $scope.searchAttempted = true;
-                return $http.get("/api/source/search/", {
+                return $http.get("/sources/search.json", {
                     params: {
                         date: $scope.date,
                         title: $scope.title,
@@ -507,8 +507,13 @@
                 event.event_agents = [];
                 ["buyer", "seller_agent", "seller_or_holder"].forEach(function (role) {
                     if(event[role]) {
-                        event[role].role = role;
-                        event.event_agents.push(event[role]);
+                        var event_agent = event[role];
+                        event_agent.role = role;
+                        if(event_agent.agent) {
+                            event_agent.agent_id = event_agent.agent.id;
+                        }
+                        event.event_agents.push(event_agent);
+                        delete event[role];
                     }
                 });
             });
@@ -518,7 +523,7 @@
             // To satisfy the API: replace nested Object
             // representations of related entities with just their IDs
 
-            entryToSave.source = entryToSave.source.id;
+            entryToSave.source_id = entryToSave.source.id;
 
             var objectArraysWithRelatedObjects = [
                 [ entryToSave.entry_authors, 'author' ],

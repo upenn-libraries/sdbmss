@@ -7,7 +7,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">Stuff you can do</div>
             <div class="panel-body">
-                <p><a href="TODO">Contribute an entry to the database</a></p>
+                <p><a href="<%= new_entry_path %>">Contribute an entry to the database</a></p>
             </div>
         </div>
     </div>
@@ -52,7 +52,7 @@
                       <% for source in sources %>
                       <tr class="row">
                           <td class="col-sm-10"><a href="<%= source_path(source) %>"><%= source.get_public_id %></a>: <%= source.get_display_value %></td>
-                          <td class="col-sm-2"><a href="<%= source_path(source) %>">add entry to source</a></td>
+                          <td class="col-sm-2"><a href="<%= new_entry_path(source_id: source) %>">add entry to source</a></td>
                       </tr>
                       <% end %>
                   </table>

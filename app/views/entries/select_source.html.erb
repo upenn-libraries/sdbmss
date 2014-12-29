@@ -1,0 +1,69 @@
+<div class="form-horizontal" data-ng-controller="SelectSourceCtrl">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <legend>Add an Entry - Identify the Source</legend>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <p>To start, identify the source (ex: the auction catalog,
+            census, etc.) of the entry or entries you are going to
+            enter.</p>
+            <p>Your source may already exist in our database. Search
+            for it by filling out the fields below:</p>
+        </div>
+
+    </div>
+
+    <div class="find-source-container">
+        <div class="form-group row">
+            <label class="col-sm-2 control-label">Source Date</label>
+            <div class="col-sm-2">
+                <input class="form-control" name="date" placeholder="YYYY-MM-DD" ng-model="date"/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 control-label">Seller Agent<br/>or Institution/Collection</label>
+            <div class="col-sm-6">
+                <input class="form-control" name="title" placeholder="ex: Sotheby's, University of Pennsylvania" ng-model="agent"/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 control-label">Source Title</label>
+            <div class="col-sm-6">
+                <input class="form-control" name="title" placeholder="ex: Rare books and manuscripts" ng-model="title"/>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10">
+          <p>If it doesn't exist in the database, click here to create it:
+            <a class="btn btn-primary" href="/sources/new">Create a new source</a></p>
+        </div>
+    </div>
+
+    <div ng-show="sources.length > 0">
+        <div ng-repeat="source in sources">
+            <div class="row">
+                <label class="col-sm-2 control-label" ng-show="$first">Select a search result:</label>
+                <div class="col-sm-2" ng-show="!$first"></div>
+                <div class="col-sm-8 editable-container">
+                    <a href="/entries/new/?source_id={{ source.id }}">{{ source.display_value }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div ng-show="searchAttempted && sources.length == 0">
+      <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10"><b>No source found matching your criteria.</b></div>
+    </div>
+
+</div>

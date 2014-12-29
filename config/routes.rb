@@ -32,7 +32,9 @@ Rails.application.routes.draw do
   resources :scribes do
     collection { get 'search' }
   end
-  resources :sources
+  resources :sources do
+    collection { get 'search' }
+  end
 
   devise_for :users
 
