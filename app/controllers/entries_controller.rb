@@ -29,6 +29,7 @@ class EntriesController < ApplicationController
 
   def create
     @entry = Entry.new
+    @entry.added_by_id = current_user.id
     update
   end
 
