@@ -21,6 +21,22 @@ class Source < ActiveRecord::Base
     [TYPE_UNPUBLISHED, 'Unpublished'],
   ]
 
+  HAS_MANUSCRIPT_TYPES = [
+    ['Yes', 'Yes'],
+    ['No', 'No'],
+    ['Likely', 'Likely'],
+    ['Not Likely', 'Not Likely'],
+    ['Uncertain', 'Uncertain'],
+  ]
+
+  STATUS_TYPES = [
+    ['To Be Checked', 'To Be Checked'],
+    ['Entered', 'Entered'],
+    ['To Be Entered', 'To Be Entered'],
+    ['Partially Entered', 'Partially Entered'],
+    ['Not Entered (No MSS)', 'Not Entered (No MSS)'],
+  ]
+
   def get_public_id
     "SDBM_SOURCE_#{id}"
   end

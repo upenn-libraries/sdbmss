@@ -731,7 +731,7 @@
 
         $scope.source = new Source();
 
-        $scope.sourceagents = [];
+        $scope.source_agents = [];
 
         $scope.showFields = function() {
             if($scope.source.source_type) {
@@ -745,20 +745,20 @@
 
             sourceToSave.date = sourceToSave.date.replace(/-/g, "");
 
-            sourceToSave.sourceagents = [];
+            sourceToSave.source_agents = [];
             ['institution', 'buyer', 'seller_or_holder', 'seller_agent'].forEach(function (role) {
                 if (sourceToSave[role]) {
                     sourceToSave[role].role = role;
-                    sourceToSave.sourceagents.push(sourceToSave[role]);
+                    sourceToSave.source_agents.push(sourceToSave[role]);
                     delete sourceToSave[role];
                 }
             });
 
-            sdbmutil.replaceEntityObjectsWithIds(sourceToSave.sourceagents, "agent");
+            sdbmutil.replaceEntityObjectsWithIds(sourceToSave.source_agents, "agent");
 
             sourceToSave.$save(
                 function (source) {
-                    window.location = "/entry/add/source/" + source.id + "/";
+                    window.location = "/entries/new/?source_id=" + source.id;
                 },
                 sdbmutil.promiseErrorHandlerFactory("Error saving Source")
             );

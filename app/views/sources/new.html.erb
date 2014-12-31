@@ -1,0 +1,279 @@
+
+<div name="form" class="form-horizontal sdbmss-form" ng-controller="CreateSourceCtrl" novalidate >
+
+    <div class="row">
+        <div class="col-sm-12">
+            <legend>Create a New Source</legend>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label for="source_type" class="col-sm-2 control-label">Source Type</label>
+        <div class="col-sm-3">
+            <select class="form-control" id="source_type" ng-model="source.source_type">
+                <option value="">Select one</option>
+                <option value="auction_catalog">Auction/Sale Catalog</option>
+                <option value="collection_catalog">Collection Catalog</option>
+                <option value="other_published">Other Published Source</option>
+                <option value="unpublished">Unpublished Source</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="source-fields-container" ng-show="showFields()">
+
+        <div class="form-group row">
+            <label for="source_date" class="col-sm-2 control-label"><span sdbm-tooltip="source_date">Date</span></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD" name="source_date" id="source_date" ng-model="source.date" required ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" />
+            </div>
+            <div class="col-sm-7 editable-container" ng-show="form.source_date.$error.pattern">
+                <span style="color: PaleVioletRed;">Date must be YYYY-MM-DD, YYYY-MM or YYYY</span>
+            </div>
+        </div>
+
+        <div class="auction-source-container" ng-show="source.source_type == 'auction_catalog'">
+
+            <div class="form-group row">
+                <label for="cat_title" class="col-sm-2 control-label">Publication Title</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="cat_title" ng-model="source.title" required />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="institution" class="col-sm-2 control-label">Seller Agent</label>
+                <div class="col-sm-6 editable-container">
+                    <a href="#" editable-text="source.seller_agent.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ source.seller_agent.agent|label }}</a>
+                </div>
+            </div>
+
+            <!-- I added this to support catalogs whose entire contents are the sale of a single person; but per 10/30 meeting, Lynn says we don't need this -->
+            <!--
+            <div class="form-group row">
+                <label for="institution" class="col-sm-2 control-label">Seller</label>
+                <div class="col-sm-6 editable-container">
+                </div>
+            </div>
+            -->
+
+        </div>
+
+        <div class="auction-source-container" ng-show="source.source_type == 'collection_catalog'">
+
+            <div class="form-group row">
+                <label for="institution" class="col-sm-2 control-label">Institution/Collection</label>
+                <div class="col-sm-6 editable-container">
+                    <a href="#" editable-text="source.institution.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ source.institution.agent|label }}</a>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cat_title" class="col-sm-2 control-label">Publication Title</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="cat_title" ng-model="source.title">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="cat_author">Publication Author</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="cat_author" ng-model="source.author">
+                </div>
+            </div>
+
+        </div>
+
+        <div class="other-published-container" ng-show="source.source_type == 'other_published'">
+
+            <div class="form-group row">
+                <label for="institution" class="col-sm-2 control-label">Institution/Collection</label>
+                <div class="col-sm-6 editable-container">
+                    <a href="#" editable-text="source.institution.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ source.institution.agent|label }}</a>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cat_title" class="col-sm-2 control-label">Publication Title</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="cat_title" ng-model="source.title">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="cat_author">Publication Author</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="cat_author" ng-model="source.author">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="institution" class="col-sm-2 control-label">Seller or Donor</label>
+                <div class="col-sm-6 editable-container">
+                    <a href="#" editable-text="source.seller_or_holder.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ source.seller_or_holder.agent|label }}</a>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="institution" class="col-sm-2 control-label">Buyer or Recipient</label>
+                <div class="col-sm-6 editable-container">
+                    <a href="#" editable-text="source.buyer.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ source.buyer.agent|label }}</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="auction-source-container" ng-show="source.source_type == 'unpublished'">
+
+            <div class="form-group row">
+                <label for="institution" class="col-sm-2 control-label">Institution/Collection</label>
+                <div class="col-sm-6 editable-container">
+                    <a href="#" editable-text="source.institution.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ source.institution.agent|label }}</a>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cat_title" class="col-sm-2 control-label">Source Name</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="cat_title" ng-model="source.title">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="cat_author">Observer</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="cat_author" ng-model="source.author">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="institution" class="col-sm-2 control-label">Seller or Donor</label>
+                <div class="col-sm-6 editable-container">
+                    <a href="#" editable-text="source.seller_or_holder.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ source.seller_or_holder.agent|label }}</a>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="institution" class="col-sm-2 control-label">Buyer or Recipient</label>
+                <div class="col-sm-6 editable-container">
+                    <a href="#" editable-text="source.buyer.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ source.buyer.agent|label }}</a>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <legend>Data Entry Status</legend>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="whether_mss" class="col-sm-2 control-label"><span sdbm-tooltip="source_date">Has Manuscripts</span></label>
+            <div class="col-sm-3">
+                <select class="form-control" name="whether_mss" id="whether_mss" ng-model="source.whether_mss">
+                    <%= options_for_select(Source::HAS_MANUSCRIPT_TYPES) %>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="status" class="col-sm-2 control-label"><span sdbm-tooltip="source_date">Status</span></label>
+            <div class="col-sm-3">
+                <select class="form-control" name="status" id="status" ng-model="source.status" >
+                    <%= options_for_select(Source::STATUS_TYPES) %>
+			    </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <legend>Location Details</legend>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="alt_date" class="col-sm-2 control-label"><span sdbm-tooltip="alt_date">Alternate Date</span></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" placeholder="YYYY-MM-DD" name="alt_date" id="alt_date" ng-model="source.alt_date" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" />
+            </div>
+            <div class="col-sm-7 editable-container" ng-show="form.source_date.$error.pattern">
+                <span style="color: PaleVioletRed;">Date must be YYYY-MM-DD, YYYY-MM or YYYY</span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Location</span></label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="location" id="location" ng-model="source.current_location" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">City</span></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" name="city" id="city" ng-model="source.location_city" />
+            </div>
+            <label for="country" class="col-sm-1 control-label"><span sdbm-tooltip="source_location">Country</span></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" name="country" id="country" ng-model="source.location_country" />
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Online Link / Call Num.</span></label>
+            <div class="col-sm-9">
+                <input type="text" class="form-control" name="location" id="location" ng-model="source.link" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="cataloging_type" class="col-sm-2 control-label"><span sdbm-tooltip="source.cataloging_type">Cataloging Type</span></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" name="cataloging_type" id="cataloging_type" ng-model="source.cataloging_type" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="electronic_catalog_format" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Electronic Catalog Format</span></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" name="electronic_catalog_format" id="electronic_catalog_format" ng-model="source.electronic_catalog_format" />
+            </div>
+        </div>
+        
+        <div class="form-group row">
+            <label for="electronic_catalog_open_access" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Electronic Catalog Open Access</span></label>
+            <div class="col-sm-3">
+                <input type="text" class="form-control" name="electronic_catalog_open_access" id="electronic_catalog_open_access" ng-model="source.electronic_catalog_open_access" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <legend>Comments</legend>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="editorial_comments" class="col-sm-2 control-label">
+                <span sdbm-tooltip="entry">Comments</span>
+            </label>
+            <div class="col-sm-9">
+                <textarea class="form-control" id="editorial_comments" data-ng-model="source.new_comment"></textarea>
+            </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-sm-2"></div>
+          <div class="col-sm-10">
+            <button class="btn btn-primary" ng-click="save()" ng-disabled="form.$invalid">Create</button>
+            <a class="btn btn-warning" href="<%= new_entry_path %>">Cancel</a>
+          </div>
+        </div>
+
+    </div>
+
+</form>
+
+<%= render "entries/create_entity_with_name" %>
