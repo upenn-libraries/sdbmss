@@ -91,5 +91,5 @@ child :events, :object_root => false do
 end
 
 child :entry_comments, :object_root => false do
-  attributes :id, :comment, :date, :added_by
+  attributes :id, :comment, :date, :created_by
 end

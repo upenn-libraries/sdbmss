@@ -1,13 +1,13 @@
 
 class Source < ActiveRecord::Base
-  belongs_to :added_by, :class_name => 'User'
-  belongs_to :last_modified_by, :class_name => 'User'
+  belongs_to :created_by, :class_name => 'User'
+  belongs_to :updated_by, :class_name => 'User'
 
   has_many :entries
   has_many :source_agents
 
   # returns 'count' number of most recent sources
-  scope :most_recent, ->(count = 5) { order(added_on: :desc).first(count) }
+  scope :most_recent, ->(count = 5) { order(created_at: :desc).first(count) }
 
   TYPE_AUCTION_CATALOG = 'auction_catalog'
   TYPE_COLLECTION_CATALOG = 'collection_catalog'

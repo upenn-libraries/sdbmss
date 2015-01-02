@@ -1,7 +1,7 @@
 class Entry < ActiveRecord::Base
   belongs_to :source
-  belongs_to :added_by, class_name: 'User'
-  belongs_to :last_modified_by, class_name: 'User'
+  belongs_to :created_by, class_name: 'User'
+  belongs_to :updated_by, class_name: 'User'
 
   has_many :entry_manuscripts
   has_many :manuscripts, through: :entry_manuscripts
@@ -27,7 +27,7 @@ class Entry < ActiveRecord::Base
   scope :load_associations, -> { includes(:entry_authors, :entry_dates, :entry_titles, :entry_places => [:place], :events => [{:event_agents => [:agent]} ], :source => [{:source_agents => [:agent]}]) }
 
   # returns 'count' number of most recent entries
-  scope :most_recent, ->(count = 5) { order(added_on: :desc).first(count) }
+  scope :most_recent, ->(count = 5) { order(created_at: :desc).first(count) }
 
   # returns the entries that have the specified author
   scope :with_author, ->(author) { joins(:entry_authors).where("entry_authors.author_id = #{author.id}").distinct }

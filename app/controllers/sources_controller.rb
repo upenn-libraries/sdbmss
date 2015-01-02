@@ -10,7 +10,7 @@ class SourcesController < ApplicationController
 
   def create
     @source = Source.new
-    @source.added_by_id = current_user.id
+    @source.created_by_id = current_user.id
     update
   end
 
@@ -35,7 +35,7 @@ class SourcesController < ApplicationController
         #   ec = EntryComment.new(
         #     entry_id: @entry.id,
         #     comment: params[:new_comment],
-        #     added_by: current_user)
+        #     created_by: current_user)
         #   ec.save!
         # end
 

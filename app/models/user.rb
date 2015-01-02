@@ -4,9 +4,9 @@ class User < ActiveRecord::Base
 
   attr_accessor :login
 
-  has_many :entries, foreign_key: "added_by_id"
+  has_many :entries, foreign_key: "created_by_id"
 
-  has_many :sources, foreign_key: "added_by_id"
+  has_many :sources, foreign_key: "created_by_id"
 
   def login
     @login || self.username || self.email

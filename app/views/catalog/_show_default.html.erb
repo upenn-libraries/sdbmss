@@ -379,7 +379,7 @@
         <tr>
             <td class="col-sm-2 text-right record-label">Created by</td>
             <td class="col-sm-10">
-                <%= entry.added_by.username %>
+                <%= entry.created_by.username %>
             </td>
         </tr>
         <tr>
@@ -415,8 +415,8 @@ Other entries possibly describing the same manuscript:<br/>
       <% entry_comments.each do |entry_comment| %>
       <tr>
         <td class="col-sm-2 text-right record-label">
-          By <%= entry_comment.added_by.username %><br/>
-          On <%= entry_comment.added_on %>
+          By <%= entry_comment.created_by.username %><br/>
+          On <%= entry_comment.created_at %>
         </td>
         <td class="col-sm-10">
           <%= entry_comment.comment %>

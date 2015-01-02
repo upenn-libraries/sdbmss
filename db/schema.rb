@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141218192403) do
+ActiveRecord::Schema.define(version: 20141231202026) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -21,11 +21,17 @@ ActiveRecord::Schema.define(version: 20141218192403) do
     t.boolean  "approved"
     t.integer  "approved_by_id"
     t.datetime "approved_date"
+    t.datetime "created_at"
+    t.integer  "created_by_id"
+    t.datetime "updated_at"
+    t.integer  "updated_by_id"
   end
 
   add_index "agents", ["approved_by_id"], name: "index_agents_on_approved_by_id", using: :btree
+  add_index "agents", ["created_by_id"], name: "index_agents_on_created_by_id", using: :btree
   add_index "agents", ["entry_id"], name: "index_agents_on_entry_id", using: :btree
   add_index "agents", ["name"], name: "index_agents_on_name", unique: true, using: :btree
+  add_index "agents", ["updated_by_id"], name: "index_agents_on_updated_by_id", using: :btree
 
   create_table "artists", force: true do |t|
     t.string   "name"
@@ -33,11 +39,17 @@ ActiveRecord::Schema.define(version: 20141218192403) do
     t.boolean  "approved"
     t.integer  "approved_by_id"
     t.datetime "approved_date"
+    t.datetime "created_at"
+    t.integer  "created_by_id"
+    t.datetime "updated_at"
+    t.integer  "updated_by_id"
   end
 
   add_index "artists", ["approved_by_id"], name: "index_artists_on_approved_by_id", using: :btree
+  add_index "artists", ["created_by_id"], name: "index_artists_on_created_by_id", using: :btree
   add_index "artists", ["entry_id"], name: "index_artists_on_entry_id", using: :btree
   add_index "artists", ["name"], name: "index_artists_on_name", unique: true, using: :btree
+  add_index "artists", ["updated_by_id"], name: "index_artists_on_updated_by_id", using: :btree
 
   create_table "authors", force: true do |t|
     t.string   "name"
@@ -46,11 +58,17 @@ ActiveRecord::Schema.define(version: 20141218192403) do
     t.boolean  "approved"
     t.integer  "approved_by_id"
     t.datetime "approved_date"
+    t.datetime "created_at"
+    t.integer  "created_by_id"
+    t.datetime "updated_at"
+    t.integer  "updated_by_id"
   end
 
   add_index "authors", ["approved_by_id"], name: "index_authors_on_approved_by_id", using: :btree
+  add_index "authors", ["created_by_id"], name: "index_authors_on_created_by_id", using: :btree
   add_index "authors", ["entry_id"], name: "index_authors_on_entry_id", using: :btree
   add_index "authors", ["name"], name: "index_authors_on_name", unique: true, using: :btree
+  add_index "authors", ["updated_by_id"], name: "index_authors_on_updated_by_id", using: :btree
 
   create_table "bookmarks", force: true do |t|
     t.integer  "user_id",       null: false
@@ -85,21 +103,23 @@ ActiveRecord::Schema.define(version: 20141218192403) do
     t.integer  "miniatures_unspec_size"
     t.integer  "initials_historiated"
     t.integer  "initials_decorated"
-    t.datetime "added_on"
-    t.integer  "added_by_id"
     t.boolean  "approved",                            default: false
     t.boolean  "deleted",                             default: false
-    t.datetime "last_modified"
-    t.integer  "last_modified_by_id"
+    t.datetime "created_at"
+    t.integer  "created_by_id"
+    t.datetime "updated_at"
+    t.integer  "updated_by_id"
   end
 
-  add_index "entries", ["added_by_id"], name: "index_entries_on_added_by_id", using: :btree
-  add_index "entries", ["last_modified_by_id"], name: "index_entries_on_last_modified_by_id", using: :btree
+  add_index "entries", ["created_by_id"], name: "index_entries_on_created_by_id", using: :btree
   add_index "entries", ["source_id"], name: "index_entries_on_source_id", using: :btree
+  add_index "entries", ["updated_by_id"], name: "index_entries_on_updated_by_id", using: :btree
 
   create_table "entry_artists", force: true do |t|
-    t.integer "entry_id"
-    t.integer "artist_id"
+    t.integer  "entry_id"
+    t.integer  "artist_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "entry_artists", ["artist_id"], name: "index_entry_artists_on_artist_id", using: :btree
@@ -136,24 +156,31 @@ ActiveRecord::Schema.define(version: 20141218192403) do
     t.text     "comment"
     t.boolean  "public"
     t.datetime "date"
-    t.datetime "added_on"
-    t.integer  "added_by_id"
+    t.datetime "created_at"
+    t.integer  "created_by_id"
+    t.datetime "updated_at"
+    t.integer  "updated_by_id"
   end
 
-  add_index "entry_comments", ["added_by_id"], name: "index_entry_comments_on_added_by_id", using: :btree
+  add_index "entry_comments", ["created_by_id"], name: "index_entry_comments_on_created_by_id", using: :btree
   add_index "entry_comments", ["entry_id"], name: "index_entry_comments_on_entry_id", using: :btree
+  add_index "entry_comments", ["updated_by_id"], name: "index_entry_comments_on_updated_by_id", using: :btree
 
   create_table "entry_dates", force: true do |t|
-    t.integer "entry_id"
-    t.string  "date"
-    t.string  "circa"
+    t.integer  "entry_id"
+    t.string   "date"
+    t.string   "circa"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "entry_dates", ["entry_id"], name: "index_entry_dates_on_entry_id", using: :btree
 
   create_table "entry_languages", force: true do |t|
-    t.integer "entry_id"
-    t.integer "language_id"
+    t.integer  "entry_id"
+    t.integer  "language_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "entry_languages", ["entry_id"], name: "index_entry_languages_on_entry_id", using: :btree
@@ -171,48 +198,60 @@ ActiveRecord::Schema.define(version: 20141218192403) do
   add_index "entry_manuscripts", ["manuscript_id"], name: "index_entry_manuscripts_on_manuscript_id", using: :btree
 
   create_table "entry_materials", force: true do |t|
-    t.integer "entry_id"
-    t.string  "material"
+    t.integer  "entry_id"
+    t.string   "material"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "entry_materials", ["entry_id"], name: "index_entry_materials_on_entry_id", using: :btree
 
   create_table "entry_places", force: true do |t|
-    t.integer "entry_id"
-    t.integer "place_id"
+    t.integer  "entry_id"
+    t.integer  "place_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "entry_places", ["entry_id"], name: "index_entry_places_on_entry_id", using: :btree
   add_index "entry_places", ["place_id"], name: "index_entry_places_on_place_id", using: :btree
 
   create_table "entry_scribes", force: true do |t|
-    t.integer "entry_id"
-    t.integer "scribe_id"
+    t.integer  "entry_id"
+    t.integer  "scribe_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "entry_scribes", ["entry_id"], name: "index_entry_scribes_on_entry_id", using: :btree
   add_index "entry_scribes", ["scribe_id"], name: "index_entry_scribes_on_scribe_id", using: :btree
 
   create_table "entry_titles", force: true do |t|
-    t.integer "entry_id"
-    t.string  "title",        limit: 2048
-    t.string  "common_title", limit: 2048
+    t.integer  "entry_id"
+    t.string   "title",        limit: 2048
+    t.string   "common_title", limit: 2048
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "entry_titles", ["entry_id"], name: "index_entry_titles_on_entry_id", using: :btree
 
   create_table "entry_uses", force: true do |t|
-    t.integer "entry_id"
-    t.string  "use"
+    t.integer  "entry_id"
+    t.string   "use"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "entry_uses", ["entry_id"], name: "index_entry_uses_on_entry_id", using: :btree
 
   create_table "event_agents", force: true do |t|
-    t.integer "event_id"
-    t.string  "observed_name"
-    t.integer "agent_id"
-    t.string  "role"
+    t.integer  "event_id"
+    t.string   "observed_name"
+    t.integer  "agent_id"
+    t.string   "role"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "event_agents", ["agent_id"], name: "index_event_agents_on_agent_id", using: :btree
@@ -220,23 +259,36 @@ ActiveRecord::Schema.define(version: 20141218192403) do
   add_index "event_agents", ["observed_name"], name: "index_event_agents_on_observed_name", using: :btree
 
   create_table "events", force: true do |t|
-    t.integer "entry_id"
-    t.boolean "primary",                                 default: false
-    t.text    "comment"
-    t.integer "order"
-    t.string  "acquire_date"
-    t.string  "end_date"
-    t.decimal "price",          precision: 20, scale: 2
-    t.string  "currency"
-    t.string  "other_currency"
-    t.string  "sold"
+    t.integer  "entry_id"
+    t.boolean  "primary",                                 default: false
+    t.text     "comment"
+    t.integer  "order"
+    t.string   "acquire_date"
+    t.string   "end_date"
+    t.decimal  "price",          precision: 20, scale: 2
+    t.string   "currency"
+    t.string   "other_currency"
+    t.string   "sold"
+    t.datetime "created_at"
+    t.integer  "created_by_id"
+    t.datetime "updated_at"
+    t.integer  "updated_by_id"
   end
 
+  add_index "events", ["created_by_id"], name: "index_events_on_created_by_id", using: :btree
   add_index "events", ["entry_id"], name: "index_events_on_entry_id", using: :btree
+  add_index "events", ["updated_by_id"], name: "index_events_on_updated_by_id", using: :btree
 
   create_table "languages", force: true do |t|
-    t.string "name"
+    t.string   "name"
+    t.datetime "created_at"
+    t.integer  "created_by_id"
+    t.datetime "updated_at"
+    t.integer  "updated_by_id"
   end
+
+  add_index "languages", ["created_by_id"], name: "index_languages_on_created_by_id", using: :btree
+  add_index "languages", ["updated_by_id"], name: "index_languages_on_updated_by_id", using: :btree
 
   create_table "legacy_data_issues", force: true do |t|
     t.string  "table_name"
@@ -248,7 +300,12 @@ ActiveRecord::Schema.define(version: 20141218192403) do
   create_table "manuscripts", force: true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "created_by_id"
+    t.integer  "updated_by_id"
   end
+
+  add_index "manuscripts", ["created_by_id"], name: "index_manuscripts_on_created_by_id", using: :btree
+  add_index "manuscripts", ["updated_by_id"], name: "index_manuscripts_on_updated_by_id", using: :btree
 
   create_table "places", force: true do |t|
     t.string   "name"
@@ -256,17 +313,29 @@ ActiveRecord::Schema.define(version: 20141218192403) do
     t.boolean  "approved"
     t.integer  "approved_by_id"
     t.datetime "approved_date"
+    t.datetime "created_at"
+    t.integer  "created_by_id"
+    t.datetime "updated_at"
+    t.integer  "updated_by_id"
   end
 
   add_index "places", ["approved_by_id"], name: "index_places_on_approved_by_id", using: :btree
+  add_index "places", ["created_by_id"], name: "index_places_on_created_by_id", using: :btree
   add_index "places", ["entry_id"], name: "index_places_on_entry_id", using: :btree
   add_index "places", ["name"], name: "index_places_on_name", unique: true, using: :btree
+  add_index "places", ["updated_by_id"], name: "index_places_on_updated_by_id", using: :btree
 
   create_table "scribes", force: true do |t|
-    t.string "name"
+    t.string   "name"
+    t.datetime "created_at"
+    t.integer  "created_by_id"
+    t.datetime "updated_at"
+    t.integer  "updated_by_id"
   end
 
+  add_index "scribes", ["created_by_id"], name: "index_scribes_on_created_by_id", using: :btree
   add_index "scribes", ["name"], name: "index_scribes_on_name", unique: true, using: :btree
+  add_index "scribes", ["updated_by_id"], name: "index_scribes_on_updated_by_id", using: :btree
 
   create_table "searches", force: true do |t|
     t.text     "query_params"
@@ -314,18 +383,18 @@ ActiveRecord::Schema.define(version: 20141218192403) do
     t.string   "electronic_catalog_open_access"
     t.boolean  "in_manuscript_table"
     t.boolean  "deleted"
-    t.datetime "added_on"
-    t.integer  "added_by_id"
-    t.datetime "last_modified"
-    t.integer  "last_modified_by_id"
     t.text     "comments"
     t.string   "cataloging_type"
     t.string   "status"
     t.string   "hidden"
+    t.datetime "created_at"
+    t.integer  "created_by_id"
+    t.datetime "updated_at"
+    t.integer  "updated_by_id"
   end
 
-  add_index "sources", ["added_by_id"], name: "index_sources_on_added_by_id", using: :btree
-  add_index "sources", ["last_modified_by_id"], name: "index_sources_on_last_modified_by_id", using: :btree
+  add_index "sources", ["created_by_id"], name: "index_sources_on_created_by_id", using: :btree
+  add_index "sources", ["updated_by_id"], name: "index_sources_on_updated_by_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "",    null: false

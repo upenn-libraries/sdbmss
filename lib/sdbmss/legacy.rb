@@ -1,8 +1,6 @@
 #
 # XXX: tweak models/migrations
 #
-# change column names for 'added_on' and 'last_modified' to conform to Rails conventions? use t.timestamps in migration scripts
-#
 # figure out indexes, constraints, FKs, default values (esp for booleans); and how to add them
 
 require 'date'
@@ -114,6 +112,8 @@ module SDBMSS::Legacy
 
     # Do the migration
     def migrate(fast: false)
+
+      ActiveRecord::Base.record_timestamps = false
 
       # add method ActiveRecord::Base#sdbm_create! which delegates to
       # either create! or import based on 'fast' flag
@@ -423,13 +423,12 @@ module SDBMSS::Legacy
         miniatures_unspec_size: row['MIN_UN'],
         initials_historiated: row['H_INIT'],
         initials_decorated: row['D_INIT'],
-        # XXX: handle timezones?
-        added_on: row['ADDEDON'],
-        added_by: get_or_create_user(row['ADDEDBY']),
+        created_at: row['ADDEDON'],
+        created_by: get_or_create_user(row['ADDEDBY']),
+        updated_at: row['LAST_MODIFIED'],
+        updated_by: get_or_create_user(row['LAST_MODIFIED_BY']),
         approved: approved,
         deleted: deleted,
-        last_modified: row['LAST_MODIFIED'],
-        last_modified_by: get_or_create_user(row['LAST_MODIFIED_BY']),
       )
 
       if row['ENTRY_COMMENTS'].present?
@@ -440,7 +439,7 @@ module SDBMSS::Legacy
           # we don't know who made the comment (it's possibly been
           # edited by several people), so set it to
           # manuscript_database
-          added_by: get_or_create_user('manuscript_database'),
+          created_by: get_or_create_user('manuscript_database'),
           )
       end
 
@@ -840,10 +839,10 @@ module SDBMSS::Legacy
         electronic_catalog_open_access: row['ELEC_CAT_OPENACCESS'],
         in_manuscript_table: in_manuscript_table,
         deleted: deleted,
-        added_on: row['ADDED_ON'],
-        added_by: get_or_create_user(row['ADDED_BY']),
-        last_modified: row['LAST_MODIFIED'],
-        last_modified_by: get_or_create_user(row['LAST_MODIFIED_BY']),
+        created_at: row['ADDED_ON'],
+        created_by: get_or_create_user(row['ADDED_BY']),
+        updated_at: row['LAST_MODIFIED'],
+        updated_by: get_or_create_user(row['LAST_MODIFIED_BY']),
         comments: row['COMMENTS'],
         cataloging_type: row['CATALOGING_TYPE'],
         status: row['SDBM_STATUS'],

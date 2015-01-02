@@ -155,11 +155,11 @@
             </thead>
             <tbody>
 
-                <% if @source.added_by %>
+                <% if @source.created_by %>
                 <tr>
                     <td class="col-sm-2 text-right record-label">Created By</td>
                     <td class="col-sm-10">
-                        <%= @source.added_by.username %>
+                        <%= @source.created_by.username %>
                     </td>
                 </tr>
                 <% end %>
