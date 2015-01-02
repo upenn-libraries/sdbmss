@@ -26,18 +26,10 @@ class SourcesController < ApplicationController
           :cataloging_type,
           :electronic_catalog_format,
           :electronic_catalog_open_access,
+          :sources,
         ))
 
         Reconciler.reconcile_assoc @source, params["source_agents"], SourceAgent, 'source_id', [:role, :agent_id]
-
-        # TODO
-        # if params[:new_comment].present?
-        #   ec = EntryComment.new(
-        #     entry_id: @entry.id,
-        #     comment: params[:new_comment],
-        #     created_by: current_user)
-        #   ec.save!
-        # end
 
       end
     rescue Exception => e
