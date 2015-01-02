@@ -79,7 +79,9 @@ module SDBMSS::ReconcileCSV
         cleaned_fieldvalue ||= ""
 
         if original_fieldvalue != cleaned_fieldvalue
-          return_val = "update #{table_name} set #{fieldname} = '#{oracle_escape_str(cleaned_fieldvalue)}' WHERE MANUSCRIPT_ID = #{manuscript_id};"
+          return_val = "update #{table_name} set #{fieldname} = '#{oracle_escape_str(cleaned_fieldvalue)}' WHERE MANUSCRIPT_ID = #{manuscript_id};\n"
+          return_val += "insert into COPY_MANUSCRIPT_CHANGE_LOG (CHANGEID, MANUSCRIPTID, CHANGEDCOLUMN, CHANGEDFROM, CHANGEDTO, CHANGETYPE, CHANGEDATE, CHANGEDBY) VALUES "
+          return_val += "(COPY_MS_CHANGE_LOG_ID_SEQ.NEXTVAL, #{manuscript_id}, '#{fieldname}', '#{oracle_escape_str(original_fieldvalue)}', '#{oracle_escape_str(cleaned_fieldvalue)}', 'C', SYSDATE, 'openrefine');"
         end
 
         return_val
