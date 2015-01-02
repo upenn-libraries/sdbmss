@@ -6,7 +6,7 @@ namespace :sdbmss do
   desc "Re-create database with new migration from a copy of the live Oracle db"
   task :migrate_legacy_data, [:fast_flag] => [:environment] do |t, args|
 
-    `echo "drop database sdbm_rails" | mysql -u root`
+    `echo "drop database #{ENV["SDBMSS_DB_NAME"]}" | mysql -u root`
 
     Rake::Task['db:create'].invoke
 
