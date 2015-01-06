@@ -13,16 +13,8 @@
 //= require jquery
 //= require 'blacklight_advanced_search'
 
-
 //= require jquery_ujs
-//= require angular.1.3.0
-//= require angular-cookies.1.2.26
-//= require angular-resource.1.3.0
-//= require xeditable
 //= require jquery-ui
-//= require jquery.qtip
-//= require ui-bootstrap-tpls-0.11.2
-//= require sdbmApp
 //
 // Required by Blacklight
 //= require blacklight/blacklight

@@ -16,4 +16,18 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:username, :email, :password, :password_confirmation, :current_password) }
   end
 
+  before_action :set_application_js
+
+  before_action :set_application_css
+
+  private
+
+  def set_application_js
+    @application_js = "application"
+  end
+
+  def set_application_css
+    @application_css = "application"
+  end
+
 end

@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
+
   root :to => "catalog#index"
+
+  get '/admin', to: "admin_search#index" # catalog#admin"
 
   resources :agents do
     collection { get 'search' }
