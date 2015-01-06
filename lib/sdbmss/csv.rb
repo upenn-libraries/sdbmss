@@ -2,7 +2,6 @@
 require 'csv'
 require 'set'
 
-# Various bits of code for working with .CSV files exported from DLA.
 module SDBMSS::CSV
 
   class << self
@@ -11,8 +10,8 @@ module SDBMSS::CSV
       s.gsub("'", "''")
     end
 
-    # prints report of frequency of chars in every value of every field.
-    # this is useful for identifying chars with non-UTF8 encoding
+    # Prints report of frequency of chars in every value of every field.
+    # This is useful for identifying chars with non-UTF8 encoding
     def find_infrequent_chars(csv_export_filename)
 
       chars_whitelist = Set.new([ "{", "}", "#" ])
@@ -37,9 +36,8 @@ module SDBMSS::CSV
           if !value.nil?
             bad_chars = value.chars.select { |ch| !chars_whitelist.member?(ch) }
             bad_chars.each do |char|
-              if freq[char].nil?
-                freq[char] = { char: char, freq: 0, ids: Set.new }
-              end
+              freq[char] = { char: char, freq: 0, ids: Set.new } if freq[char].nil?
+              # this check prevents memory usage from spiralling out of control
               if freq[char][:freq].to_i <= freq_threshold
                 freq[char][:freq] += 1
                 freq[char][:ids].add({ id: row['MANUSCRIPT_ID'], field: header })

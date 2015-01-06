@@ -1,5 +1,5 @@
 require 'sdbmss'
-require 'sdbmss/reconcilecsv'
+require 'sdbmss/csv'
 
 namespace :sdbmss do
 
@@ -23,7 +23,7 @@ namespace :sdbmss do
        args[:cleaned_filename].present? &&
        args[:table_name].present? &&
        args[:field_name].present?
-      SDBMSS::ReconcileCSV.reconcile_field(
+      SDBMSS::CSV.reconcile_field(
         args[:export_filename],
         args[:cleaned_filename],
         args[:table_name],
@@ -31,6 +31,10 @@ namespace :sdbmss do
     else
       puts "ERROR: an argument is missing"
     end
+  end
+
+  task :find_infrequent_chars, :export_filename do |t, args|
+    SDBMSS::CSV.find_infrequent_chars args[:export_filename]
   end
 
 end
