@@ -572,14 +572,18 @@ module SDBMSS::Legacy
       end
       authors.each_index do |author_index|
         atom = authors[author_index]
+        author_variant = author_variants[author_index]
         # TODO: does this skip over AuthorVariant entries that dont have AuthorAuthority entries?
-        if atom && atom.length > 0
+        if atom.present? || author_variant.present?
           bad_author = false
-          author = get_author(atom) #Author.where(name: atom).order(nil).first
-          # there are ~50 records where this occurs.
-          bad_author = true if author.nil?
 
-          author_variant = author_variants[author_index]
+          author = nil
+          if atom.present?
+            author = get_author(atom) #Author.where(name: atom).order(nil).first
+            # there are ~50 records where this occurs.
+            bad_author = true if author.nil?
+          end
+
           if author_variant.nil?
             puts "Warning: no author variant found for author in entry #{row['MANUSCRIPT_ID']}"
           end
@@ -597,12 +601,6 @@ module SDBMSS::Legacy
             author_variant = nil
           end
 
-          # TODO: do we really want to do this, or is it actually
-          # meaningful to duplicate names across these fields?
-          # if author and author.name == author_variant:
-          #     print "Found author variant that's exactly the same as author in %s" % (row['MANUSCRIPT_ID'],)
-          #     author_variant = None
-
           # If we found a non-matching name in Author field,
           # try to use it as the author_variant name instead if nothing's there yet.
           if bad_author
@@ -611,6 +609,12 @@ module SDBMSS::Legacy
             else
               create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'invalid_author_authority', "'#{atom}' in AUTHOR_AUTHORITY field not found in Authors lookup table; I'd move it to AUTHOR_VARIANT but something's there already.")
             end
+          end
+
+          # If there's a variant but no author, try finding an Author for it
+          if author_variant.present? && author.blank?
+            author = get_author(author_variant)
+            author_variant = nil if author.present?
           end
 
           entry_author = EntryAuthor.sdbm_create!(
