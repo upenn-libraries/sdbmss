@@ -153,6 +153,7 @@ class Entry < ActiveRecord::Base
         get_transaction_price,
         # details
         entry_titles.map(&:title),
+        entry_authors.map(&:observed_name),
         authors.map(&:name),
         entry_dates.map(&:get_display_value),
         artists.map(&:name),
