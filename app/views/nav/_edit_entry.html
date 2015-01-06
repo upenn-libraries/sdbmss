@@ -1,2 +1,8 @@
+<%# account for fact that this partial is rendered 2 diff ways: 1) in
+    Tools box on show entry page, where we get a 'document' variable,
+    2) on Bookmarks page, where we get a 'document_list' variable. We
+    ignore case 2. -%>
+<% if !document.nil? %>
 <% entry = document.get_model_object %>
 <a href="<%= edit_entry_path(entry) %>">Edit this entry</a>
+<% end %>
