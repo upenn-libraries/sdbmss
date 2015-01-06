@@ -1,3 +1,6 @@
+
+require 'io/console'
+
 require 'sdbmss'
 require 'sdbmss/csv'
 
@@ -33,8 +36,42 @@ namespace :sdbmss do
     end
   end
 
+  desc "Generate report of infrequently occuring chars"
   task :find_infrequent_chars, :export_filename do |t, args|
-    SDBMSS::CSV.find_infrequent_chars args[:export_filename]
+    if args[:export_filename].present?
+      SDBMSS::CSV.find_infrequent_chars args[:export_filename]
+    else
+      STDERR.puts "ERROR: specify a .csv file as argument"
+    end
+  end
+
+  desc "Change a user's password"
+  task :change_password => :environment do |t, args|
+    # devise doesn't seem to make available a rake task like this, so
+    # I made one.
+
+    print "Username: "
+    username = STDIN.gets.chomp
+    u = User.where(:username => username).first
+    if !u.nil?
+      print "Enter new password: "
+      password = STDIN.noecho(&:gets).chomp
+      puts
+      print "Confirm password: "
+      password_confirmation = STDIN.noecho(&:gets).chomp
+      puts
+
+      if password == password_confirmation
+        u.password = password
+        u.password_confirmation = password_confirmation
+        u.save!
+        puts "Password changed."
+      else
+        puts "Error: passwords didn't match"
+      end
+    else
+      puts "Couldn't find user '#{username}'"
+    end
   end
 
 end
