@@ -19,14 +19,21 @@ $(document).ready(function() {
         //console.log(dt_params);
 
         // TODO: Blacklight might only support ordering by 1 column?
-        var sort = "";
-        var order = dt_params.order[0]
-        // TODO: figure out elegant mapping of column indexes to names
-        if(order.column === 1) {
-            sort = "entry_id";
+        var sort;
+        if(dt_params.order.length > 0) {
+            var order = dt_params.order[0]
+            // TODO: figure out elegant mapping of column indexes to names
+            if(order.column === 1) {
+                sort = "entry_id";
+            } else if(order.column === 3) {
+                sort = "cat_or_lot_number";
+            }
+            if(sort) {
+                sort += " " + order.dir;
+            }
         }
-        if(sort) {
-            sort += " " + order.dir;
+        if(!sort) {
+            sort = "entry_id desc";
         }
 
         // translate dataTables params into ones that Blacklight search expects
