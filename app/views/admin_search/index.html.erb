@@ -1,10 +1,9 @@
-<%#= render_document_index %>
 <% content_for :head do %>
 <%= stylesheet_link_tag "extras", media: "all" %>
 <%= javascript_include_tag "extras" %>
 
 <style>
-    #search_results th, td { white-space: nowrap; }
+    #search_results th, td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
     #search_results { font-size: 12px; }
     #search_results tbody tr.selected { background-color: #b0bed9; }
 </style>
@@ -13,7 +12,11 @@
 $(document).ready(function() {
     $("input[name='search_value']").val("");
 
-    var viewportHeight = $(window).height();
+    var table_height_buffer = 360;
+    
+    var getViewportHeight = function() {
+        return $(window).height();
+    };
 
     var datatable_params_to_blacklight_params = function (dt_params) {
         //console.log(dt_params);
@@ -84,13 +87,17 @@ $(document).ready(function() {
         lengthMenu: [50, 100, 200, 500],
         order: [[ 1, "desc" ]],
         scrollX: true,
-        scrollY: (viewportHeight - 360) + "px",
+        scrollY: (getViewportHeight() - table_height_buffer) + "px",
         scrollCollapse: true,
         // extensions get activated via sDom codes
         sDom: 'C<"clear"><"H"lr>JRt<"F"ip>',
         serverSide: true
     });
 
+    new $.fn.dataTable.FixedColumns(table, {
+        "leftColumns": 2
+    });
+    
     $('#search_results tbody').on('click', 'tr', function (event) {
         // don't select if a link inside table was clicked
         if(event.target.tagName !== 'A') {
@@ -101,6 +108,18 @@ $(document).ready(function() {
     $('#search_submit').click(function() {
         table.ajax.reload();
     });
+
+    // TODO: this doesn't work
+    // $(window).bind('resize', function () {
+    //     console.log("RESIZED!");
+    //     var NewHeight = getViewportHeight() - table_height_buffer;
+    //     var oSettings = table.settings();
+    //     console.log(table.settings());
+    // next line is wrong: figure out where scrollY is stored?
+    //     oSettings.oScroll.sY = NewHeight + "px";
+    //     table.fnDraw();
+    // });
+
 });
 
 </script>
