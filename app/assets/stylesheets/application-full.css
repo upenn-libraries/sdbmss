@@ -4,4 +4,6 @@
  *= require jquery.qtip
  *= require dataTables.bootstrap
  *= require dataTables.colVis
+ *= require dataTables.colReorder
+ *= require dataTables.colResize
 */

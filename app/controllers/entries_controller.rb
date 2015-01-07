@@ -5,6 +5,8 @@ class EntriesController < ApplicationController
 
   before_action :set_application_includes_full, only: [:new, :edit]
 
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
+
   respond_to :html, :json
 
   def show
