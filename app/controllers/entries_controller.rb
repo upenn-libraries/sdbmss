@@ -1,6 +1,10 @@
 class EntriesController < ApplicationController
   before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy]
 
+  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy]
+
+  before_action :set_application_includes_full, only: [:new, :edit]
+
   respond_to :html, :json
 
   def show

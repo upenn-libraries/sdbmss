@@ -1,33 +1,69 @@
 <%#= render_document_index %>
 <% content_for :head do %>
+<style>
+    #search_results th, td { white-space: nowrap; }
+</style>
 <script>
 
 $(document).ready(function() {
-    $('#example').DataTable({
+    var viewportHeight = $(window).height();
+    
+    $('#search_results').DataTable({
+        columnDefs: [
+            {
+                "targets": 0,
+                "data": null,
+                "render": function (data, type, full, meta) {
+                    return '<a href="/entries/' + full[1] + '/edit" target="_new">Edit</a>';
+                }
+            }
+        ],
+        lengthMenu: [50, 100, 200, 500],
+        scrollX: true,
+        scrollY: (viewportHeight - 300) + "px",
+        scrollCollapse: true,
         serverSide: true,
-        "ajax": function (data, callback, settings) {
+        ajax: function (data, callback, settings) {
+            // console.log(data);
+            
+            // translate dataTables params into ones that Blacklight search expects
+            data.page = (data.start / data.length) + 1;
+            data.per_page = data.length;
+            data.utf8 = String.fromCharCode(0x2713);
+            data.search_field = "all_fields";
+            // TODO: don't use q, grab values from search form on page
+            data.q = data.search.value;
+
             $.ajax({
-                url: '/admin.json?utf8=%E2%9C%93&search_field=all_fields&q=',
+                url: '/admin.json',
+                data: data,
                 success: function(data, textStatus, jqXHR) {
-                    transformed = data.map(function(item) {
-                        return [ item.id, item.folios ]
-                    }, data);
-                    console.log(transformed);
-                    callback({ "draw": 1, "recordsTotal": 653, "recordsFiltered": 653, data: transformed });
+                    callback(data);
                 }
             });
         }
     });
+
 });
 
 </script>
 <% end %>
 
-<table id="example" class="table table-striped table-bordered" width="100%" cellspacing="0">
+<div>
+    Search form goes here
+</div>
+
+<table id="search_results" class="table table-striped table-bordered" width="100%" cellspacing="0">
     <thead>
         <tr>
+            <th></th>
             <th>ID</th>
+            <th>Source</th>
+            <th>Cat or Lot #</th>
+            <th>Price</th>
             <th>Folios</th>
+            <th># Columns</th>
+            <th># Lines</th>
         </tr>
     </thead>
     <tbody>

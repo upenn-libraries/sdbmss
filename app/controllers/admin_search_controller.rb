@@ -10,10 +10,35 @@ class AdminSearchController < CatalogController
 
   before_action :authenticate_user!
 
-  def index
-    @application_js = "application-full"
-    @application_css = "application-full"
-    super
+  before_action :set_application_includes_full
+
+  # override from superclass to provide search results in JSON format
+  # expected by datatables widget
+  def render_search_results_as_json
+    pinfo = pagination_info(@response)
+
+    data = @document_list.map do |doc|
+      entry = doc.get_model_object
+      source = entry.source
+      transaction = entry.get_transaction
+      [
+        nil,
+        entry.id,
+        source.get_display_value,
+        entry.catalog_or_lot_number,
+        transaction.price,
+        entry.folios,
+        entry.num_columns,
+        entry.num_lines,
+      ]
+    end
+
+    {
+      draw: params[:draw],
+      recordsTotal: pinfo[:total_count],
+      recordsFiltered: pinfo[:total_count],
+      data: data,
+    }
   end
 
 end
