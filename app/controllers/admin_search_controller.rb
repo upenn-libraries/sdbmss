@@ -26,7 +26,7 @@ class AdminSearchController < CatalogController
         entry.id,
         source.get_display_value,
         entry.catalog_or_lot_number,
-        transaction.price,
+        transaction ? transaction.price : nil,
         entry.folios,
         entry.num_columns,
         entry.num_lines,

@@ -3,4 +3,5 @@
  *= require xeditable
  *= require jquery.qtip
  *= require dataTables.bootstrap
+ *= require dataTables.colVis
 */

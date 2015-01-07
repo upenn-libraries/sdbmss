@@ -10,4 +10,5 @@
 //= require xeditable
 //= require jquery.dataTables
 //= require dataTables.bootstrap
+//= require dataTables.colVis
 //= require sdbmApp

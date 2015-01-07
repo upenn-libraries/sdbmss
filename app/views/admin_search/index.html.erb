@@ -2,61 +2,153 @@
 <% content_for :head do %>
 <style>
     #search_results th, td { white-space: nowrap; }
+    #search_results { font-size: 12px; }
+    #search_results tbody tr.selected { background-color: #b0bed9; }
 </style>
 <script>
 
 $(document).ready(function() {
     var viewportHeight = $(window).height();
+
+    var datatable_params_to_blacklight_params = function (dt_params) {
+        //console.log(dt_params);
+
+        // TODO: Blacklight might only support ordering by 1 column?
+        var sort = "";
+        var order = dt_params.order[0]
+        // TODO: figure out elegant mapping of column indexes to names
+        if(order.column === 1) {
+            sort = "entry_id";
+        }
+        if(sort) {
+            sort += " " + order.dir;
+        }
+        
+        // translate dataTables params into ones that Blacklight search expects
+        var blacklight_params = {
+            draw: dt_params.draw,
+            page: (dt_params.start / dt_params.length) + 1,
+            per_page: dt_params.length,
+            utf8: String.fromCharCode(0x2713),
+            search_field: "advanced",
+            sort: sort
+        };
+        blacklight_params[$("select[name='search_field']").val()] = $("input[name='search_value']").val();
+        return blacklight_params;
+    };
     
-    $('#search_results').DataTable({
+    var table = $('#search_results').DataTable({
+        ajax: function (data, callback, settings) {
+            $.ajax({
+                url: '/admin_search.json',
+                data: datatable_params_to_blacklight_params(data),
+                success: function(data, textStatus, jqXHR) {
+                    callback(data);
+                }
+            });
+        },
         columnDefs: [
             {
                 "targets": 0,
                 "data": null,
                 "render": function (data, type, full, meta) {
-                    return '<a href="/entries/' + full[1] + '/edit" target="_new">Edit</a>';
+                    return '<a href="/entries/' + full[1] + '" target="_new">View</a>' +
+                        ' <a href="/entries/' + full[1] + '/edit" target="_new">Edit</a>' +
+                        ' <a href="/entries/' + full[1] + '/edit" target="_new">Edit</a>';
                 }
             }
         ],
         lengthMenu: [50, 100, 200, 500],
         scrollX: true,
-        scrollY: (viewportHeight - 300) + "px",
+        scrollY: (viewportHeight - 360) + "px",
         scrollCollapse: true,
-        serverSide: true,
-        ajax: function (data, callback, settings) {
-            // console.log(data);
-            
-            // translate dataTables params into ones that Blacklight search expects
-            data.page = (data.start / data.length) + 1;
-            data.per_page = data.length;
-            data.utf8 = String.fromCharCode(0x2713);
-            data.search_field = "all_fields";
-            // TODO: don't use q, grab values from search form on page
-            data.q = data.search.value;
-
-            $.ajax({
-                url: '/admin.json',
-                data: data,
-                success: function(data, textStatus, jqXHR) {
-                    callback(data);
-                }
-            });
-        }
+        sDom: 'C<"clear"><"H"lr>t<"F"ip>',
+        serverSide: true
     });
 
+    $('#search_results tbody').on('click', 'tr', function () {
+        $(this).toggleClass('selected');
+    });
+
+    $('#search_submit').click(function() {
+        table.ajax.reload();
+    });
 });
 
 </script>
 <% end %>
 
-<div>
-    Search form goes here
-</div>
+<form class="form-horizontal">
+    <div class="row form-group">
+        <label class="col-sm-1 control-label" style="text-align: left">Search</label>
+        <div class="col-sm-4">
+            <input class="form-control" name="search_value" value="" size="70" type="text">
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control col-sm-4" name="search_field">
+	            <option value="all_fields">All Columns</option>
+                <!--
+                    <option value="manuscript_ID">ID</option>
+                <option value="duplicate_ms">Duplicate MS</option>
+                <option value="possible_dups">Possible Dups</option>
+                <option value="cat_date">Cat Date</option>
+                <option value="seller">Seller 1</option>
+                <option value="seller2">Seller 2</option>
+                <option value="buyer">Buyer/Recipient</option>
+                <option value="institution">Institution/Collection</option>
+                <option value="cat_ID">Cat ID</option>
+                <option value="cat_or_lot_num">Cat/Lot No.</option>
+                <option value="price">Price</option>
+                <option value="currency">Currency</option>
+                <option value="sold">Sold</option>
+                <option value="secondary_source">Source</option>
+                <option value="current_location">Current Location</option>
+                <option value="author_authority">Author</option>
+                <option value="author_variant">Author (Variant)</option>
+                <option value="title">Title</option>
+                <option value="lng">Language</option>
+                <option value="mat">Material</option>
+                <option value="place">Place</option>
+                <option value="manuscript_use">Use</option>
+                <option value="manuscript_date">Year</option>
+                <option value="circa">Circa</option>
+                <option value="artist">Artist</option>
+                <option value="scribe">Scribe</option>
+                <option value="folios">Folios</option>
+                <option value="col">Col</option>
+                <option value="lines">Lines</option>
+                <option value="hgt">Height</option>
+                <option value="wdt">Width</option>
+                <option value="alt_size">Alt Size</option>
+                <option value="min_fl">Min FL</option>
+                <option value="min_lg">Min LG</option>
+                <option value="min_sm">Min SM</option>
+                <option value="min_un">Min UN</option>
+                <option value="h_init">Init: Hist</option>
+                <option value="d_init">Init: Dec</option>
+                <option value="provenance">Provenance</option>
+                <option value="manuscript_binding">Binding</option>
+                <option value="manuscript_link">Link</option>
+                <option value="comments">Comments</option>
+                <option value="entry_comments">Editorial Notes</option>
+                
+                <option value="addedby">Added By</option>
+                
+                <option value="last_modified_by">Last Modified By</option>
+                <option value="isapproved">Is Approved</option>
+                -->
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <button id="search_submit" class="btn btn-primary">Search</button>
+        </div>
+    </div>
+</form>
 
 <table id="search_results" class="table table-striped table-bordered" width="100%" cellspacing="0">
     <thead>
         <tr>
-            <th></th>
+            <th>Actions</th>
             <th>ID</th>
             <th>Source</th>
             <th>Cat or Lot #</th>
