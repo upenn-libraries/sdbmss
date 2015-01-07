@@ -1,7 +1,6 @@
-// A superset of application.js that has everything needed
-// for pages with a lot of functionality
+// For pages (mostly post-login) with a lot of js functionality
+// This assumes application.js has been included.
 
-//= require application
 //= require jquery.qtip
 //= require angular.1.3.0
 //= require angular-cookies.1.2.26

@@ -1,5 +1,8 @@
 <%#= render_document_index %>
 <% content_for :head do %>
+<%= stylesheet_link_tag "extras", media: "all" %>
+<%= javascript_include_tag "extras" %>
+
 <style>
     #search_results th, td { white-space: nowrap; }
     #search_results { font-size: 12px; }
@@ -8,6 +11,8 @@
 <script>
 
 $(document).ready(function() {
+    $("input[name='search_value']").val("");
+
     var viewportHeight = $(window).height();
 
     var datatable_params_to_blacklight_params = function (dt_params) {
@@ -23,7 +28,7 @@ $(document).ready(function() {
         if(sort) {
             sort += " " + order.dir;
         }
-        
+
         // translate dataTables params into ones that Blacklight search expects
         var blacklight_params = {
             draw: dt_params.draw,
@@ -39,11 +44,19 @@ $(document).ready(function() {
     
     var table = $('#search_results').DataTable({
         ajax: function (data, callback, settings) {
+            $("#spinner").show();
             $.ajax({
                 url: '/admin_search.json',
                 data: datatable_params_to_blacklight_params(data),
                 success: function(data, textStatus, jqXHR) {
                     callback(data);
+                },
+                error: function() {
+                    // TODO: fill this out
+                    alert("An error occurred fetching search results");
+                },
+                complete: function() {
+                    $("#spinner").hide();
                 }
             });
         },
@@ -54,11 +67,15 @@ $(document).ready(function() {
                 "render": function (data, type, full, meta) {
                     return '<a href="/entries/' + full[1] + '" target="_new">View</a>' +
                         ' <a href="/entries/' + full[1] + '/edit" target="_new">Edit</a>' +
-                        ' <a href="/entries/' + full[1] + '/edit" target="_new">Edit</a>';
+                        ' <a href="/TODO" target="_new">Delete</a>';
                 }
             }
         ],
+        language: {
+            "emptyTable": "No records found for search query."
+        },
         lengthMenu: [50, 100, 200, 500],
+        order: [[ 1, "desc" ]],
         scrollX: true,
         scrollY: (viewportHeight - 360) + "px",
         scrollCollapse: true,
@@ -67,8 +84,11 @@ $(document).ready(function() {
         serverSide: true
     });
 
-    $('#search_results tbody').on('click', 'tr', function () {
-        $(this).toggleClass('selected');
+    $('#search_results tbody').on('click', 'tr', function (event) {
+        // don't select if a link inside table was clicked
+        if(event.target.tagName !== 'A') {
+            $(event.currentTarget).toggleClass('selected');
+        }
     });
 
     $('#search_submit').click(function() {
@@ -140,9 +160,13 @@ $(document).ready(function() {
                 -->
             </select>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-1">
             <button id="search_submit" class="btn btn-primary">Search</button>
         </div>
+        <div class="col-sm-1">
+            <img id="spinner" style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
+        </div>
+    
     </div>
 </form>
 
@@ -150,13 +174,13 @@ $(document).ready(function() {
     <thead>
         <tr>
             <th>Actions</th>
-            <th>ID</th>
+            <th width="50">ID</th>
             <th>Source</th>
-            <th>Cat or Lot #</th>
+            <th width="80">Cat or Lot #</th>
             <th>Price</th>
             <th>Folios</th>
-            <th># Columns</th>
-            <th># Lines</th>
+            <th width="70">Columns</th>
+            <th width="60">Lines</th>
         </tr>
     </thead>
     <tbody>

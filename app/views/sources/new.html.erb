@@ -1,3 +1,7 @@
+<% content_for :head do %>
+<%= stylesheet_link_tag "extras", media: "all" %>
+<%= javascript_include_tag "extras" %>
+<% end %>
 
 <div name="form" class="form-horizontal sdbmss-form" ng-controller="CreateSourceCtrl" novalidate >
 

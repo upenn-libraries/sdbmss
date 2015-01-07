@@ -16,21 +16,4 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:username, :email, :password, :password_confirmation, :current_password) }
   end
 
-  before_action :set_application_includes_default
-
-  private
-
-  # default top-level js/css assets to use in layout
-  def set_application_includes_default
-    @application_js = "application"
-    @application_css = "application"
-  end
-
-  # 'full' js/css assets to use in layout: this is for pages with a
-  # lot of client-side functionality
-  def set_application_includes_full
-    @application_js = "application-full"
-    @application_css = "application-full"
-  end
-
 end

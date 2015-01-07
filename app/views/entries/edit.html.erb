@@ -1,3 +1,8 @@
+<% content_for :head do %>
+<%= stylesheet_link_tag "extras", media: "all" %>
+<%= javascript_include_tag "extras" %>
+<% end %>
+
 <%# determines where angularjs code does editing or not %>
 <% if @entry.persisted? %>
 <input type="hidden" id="entry_id" value="<%= @entry.id %>" />

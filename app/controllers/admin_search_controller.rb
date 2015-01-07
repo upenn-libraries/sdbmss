@@ -10,8 +10,6 @@ class AdminSearchController < CatalogController
 
   before_action :authenticate_user!
 
-  before_action :set_application_includes_full
-
   # override from superclass to provide search results in JSON format
   # expected by datatables widget
   def render_search_results_as_json
