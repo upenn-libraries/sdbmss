@@ -41,10 +41,6 @@ class SourcesController < ApplicationController
     respond_with(@source)
   end
 
-  def show
-    @source = Source.find(params[:id])
-  end
-
   def find_by_search_terms class_name
     date = params.fetch(:date, '').gsub('-', '').gsub('/', '')
     title = params[:title]

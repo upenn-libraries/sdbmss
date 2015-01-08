@@ -1,14 +1,10 @@
 class EntriesController < ApplicationController
-  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy]
 
   before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy]
 
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
 
   respond_to :html, :json
-
-  def show
-  end
 
   # JSON data structure optimized for editing page
   def show_json
