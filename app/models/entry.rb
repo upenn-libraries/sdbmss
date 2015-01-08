@@ -22,8 +22,8 @@ class Entry < ActiveRecord::Base
   has_many :entry_comments
   has_many :events
 
-  # aggressively load all associations; useful for cases when you need to display complete info for the Entry
-  # TODO: fill this out
+  # aggressively load all associations; useful for cases where you
+  # want to display the complete info for Entries
   scope :load_associations, -> {
     includes(:entry_titles,
              :entry_dates,
@@ -118,11 +118,11 @@ class Entry < ActiveRecord::Base
     t = get_transaction
     t.price if t
   end
-  
+
   def get_provenance
     events.select { |event| !event.primary }
-  end    
-  
+  end
+
   # Tell Sunspot how to index fields from this model.
   #
   # Note that we do NOT use sunspot's default dynamic fields (which
@@ -220,10 +220,6 @@ class Entry < ActiveRecord::Base
     end
     define_field(:string, :source_facet, :stored => true) do
       source.get_display_value
-    end
-    define_field(:text, :source_date, :stored => true) do
-      # TODO: split this up?
-      source.date
     end
 
     define_field(:text, :catalog_or_lot_number, :stored => true)

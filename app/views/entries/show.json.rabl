@@ -91,5 +91,8 @@ child :events, :object_root => false do
 end
 
 child :entry_comments, :object_root => false do
-  attributes :id, :comment, :date, :created_by
+  attributes :id, :comment, :date
+  node :created_by do |entry_comment|
+    entry_comment.created_by ? "#{entry_comment.created_by.username}" : nil
+  end
 end

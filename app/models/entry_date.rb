@@ -1,7 +1,6 @@
 class EntryDate < ActiveRecord::Base
   belongs_to :entry
 
-  # TODO: brought over from Django
   CIRCA_TYPES = [
     ["C", "Circa"],
     ["C?", "Circa (Very Uncertain)"],

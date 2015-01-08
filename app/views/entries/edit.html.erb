@@ -472,10 +472,10 @@
     
     <div class="row" ng-repeat="entry_comment in entry.entry_comments"> 
         <label class="col-sm-2 control-label">
-            <span>by TODO</span>
+            <span>by {{ entry_comment.created_by }}</span>
         </label>
         <div class="col-sm-9">
-            {{ entry_comment.comment }}
+            {{ entry_comment.comment||"(none)" }}
         </div>
     </div>
 

@@ -416,10 +416,10 @@ Other entries possibly describing the same manuscript:<br/>
       <tr>
         <td class="col-sm-2 text-right record-label">
           By <%= entry_comment.created_by.username %><br/>
-          On <%= entry_comment.created_at %>
+          At <%= entry_comment.created_at.strftime("%Y-%m-%d %I:%M%P") %>
         </td>
         <td class="col-sm-10">
-          <%= entry_comment.comment %>
+          <%= entry_comment.comment||"(none)" %>
         </td>
       </tr>
       <% end %>
@@ -427,12 +427,9 @@ Other entries possibly describing the same manuscript:<br/>
 </table>
 <% end %>
 
-<% if false %><!-- TODO -->
-
-<% if request.user.is_authenticated %>
-{# TODO: make this work #}
+<% if user_signed_in? %>
+<!-- TODO: finish this -->
 <form method="post">
-  <% csrf_token %>
     <div class="row">
         <div class="col-sm-12 form-group">
             <h4>Leave a comment</h4>
@@ -443,8 +440,6 @@ Other entries possibly describing the same manuscript:<br/>
         </div>
     </div>
 </form>
-<% end %>
-
 <% end %>
 
 <% end %>

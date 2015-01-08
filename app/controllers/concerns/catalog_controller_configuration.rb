@@ -186,8 +186,6 @@ module CatalogControllerConfiguration
 
       # config.add_show_field 'comment_sms', :label => 'Comments'
 
-      # TODO: comments?
-      
       # "fielded" search configuration. Used by pulldown among other places.
       # For supported keys in hash, see rdoc for Blacklight::SearchFields
       #
