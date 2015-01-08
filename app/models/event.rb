@@ -29,16 +29,37 @@ class Event < ActiveRecord::Base
     event_agents.select { |ea| ea.role == role }.first
   end
 
+  # returns an EventAgent record
   def get_seller_agent
     get_event_agent_with_role(EventAgent::ROLE_SELLER_AGENT)
   end
 
+  # returns an Agent record
+  def get_seller_agent_as_agent
+    ea = get_event_agent_with_role(EventAgent::ROLE_SELLER_AGENT)
+    ea.agent if ea
+  end
+
+  # returns an EventAgent record
   def get_seller_or_holder
     get_event_agent_with_role(EventAgent::ROLE_SELLER_OR_HOLDER)
   end
 
+  # returns an Agent record
+  def get_seller_or_holder_as_agent
+    ea = get_event_agent_with_role(EventAgent::ROLE_SELLER_OR_HOLDER)
+    ea.agent if ea
+  end
+
+  # returns an EventAgent record
   def get_buyer
     get_event_agent_with_role(EventAgent::ROLE_BUYER)
+  end
+
+  # returns an Agent record
+  def get_buyer_as_agent
+    ea = get_event_agent_with_role(EventAgent::ROLE_BUYER)
+    ea.agent if ea
   end
 
   def get_display_value
@@ -48,11 +69,7 @@ class Event < ActiveRecord::Base
   end
 
   def get_price_for_display
-    price_str = ""
-    price_str += price.to_s if price.present?
-    price_str += " " + currency.to_s if currency.present?
-    price_str = other_currency if price_str.blank?
-    price_str
+    [price, currency, other_currency].join " "
   end
 
 end

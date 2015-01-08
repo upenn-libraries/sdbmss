@@ -3,13 +3,17 @@
 <%= javascript_include_tag "extras" %>
 
 <style>
-    #search_results th, td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } 
+    #main-container.container-fluid .row { padding-left: 15px; padding-right: 15px; }
+
+    #search_results th, td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    #search_results td { padding-top: 4px; padding-bottom: 4px; }
     #search_results { font-size: 12px; }
     #search_results tbody tr.selected { background-color: #b0bed9; }
 </style>
 <script>
 
 $(document).ready(function() {
+
     $("input[name='search_value']").val("");
 
     var table_height_buffer = 360;
@@ -59,7 +63,13 @@ $(document).ready(function() {
                 url: '/admin_search.json',
                 data: datatable_params_to_blacklight_params(data),
                 success: function(data, textStatus, jqXHR) {
-                    callback(data);
+                    if(!data.error) {
+                        $(".dataTables_scrollBody").scrollTop(0);
+                        $(".dataTables_scrollBody").scrollLeft(0);
+                        callback(data);
+                    } else {
+                        alert("An error occurred fetching search results: " + data.error);
+                    }
                 },
                 error: function() {
                     // TODO: fill this out
@@ -94,9 +104,14 @@ $(document).ready(function() {
         serverSide: true
     });
 
+    // this extension for fixed columns tends to mess up table redraws
+    // (col headers get misaligned with col data), so we've disabled
+    // it for now...
+    /*
     new $.fn.dataTable.FixedColumns(table, {
         "leftColumns": 2
     });
+    */
     
     $('#search_results tbody').on('click', 'tr', function (event) {
         // don't select if a link inside table was clicked
@@ -109,6 +124,20 @@ $(document).ready(function() {
         table.ajax.reload();
     });
 
+    $('#width-toggle').click(function() {
+        var old_class, new_class;
+        if($("#main-container").hasClass("container")) {
+            old_class = "container";
+            new_class = "container-fluid";
+        } else {
+            old_class = "container-fluid";
+            new_class = "container";
+        }
+        $("#main-container").removeClass(old_class);
+        $("#main-container").addClass(new_class);
+        return false;
+    });
+    
     // TODO: this doesn't work
     // $(window).bind('resize', function () {
     //     console.log("RESIZED!");
@@ -132,7 +161,7 @@ $(document).ready(function() {
             <input class="form-control" name="search_value" value="" size="70" type="text">
         </div>
         <div class="col-sm-2">
-            <select class="form-control col-sm-4" name="search_field">
+            <select class="form-control" name="search_field">
 	            <option value="all_fields">All Columns</option>
                 <!--
                     <option value="manuscript_ID">ID</option>
@@ -192,21 +221,63 @@ $(document).ready(function() {
         <div class="col-sm-1">
             <img id="spinner" style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
         </div>
-    
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-1" style="text-align: right">
+            <a href="#" id="width-toggle">Expand</a>
+        </div>
     </div>
 </form>
 
 <table id="search_results" class="table table-striped table-bordered" width="100%" cellspacing="0">
     <thead>
         <tr>
+            <!-- TODO: figure out how to get datatables to initialize
+            with reasonable static widths; widget seems to
+            automatically resize for data, which is not what we
+            want. this might require dynamically resizing after init
+            is finished? 
+              -->
             <th>Actions</th>
             <th width="50">ID</th>
-            <th>Source</th>
+            <th>Manuscript</th>
+            <th width="200">Source</th>
             <th width="80">Cat or Lot #</th>
+            <th width="80">Entry Date</th>
+            <th>Seller Agent</th>
+            <th>Seller</th>
+            <th>Buyer</th>
+            <th>Sold</th>
             <th>Price</th>
+            <th width="200">Title</th>
+            <th width="200">Author</th>
+            <th width="200">Date</th>
+            <th width="200">Artist</th>
+            <th width="200">Scribe</th>
+            <th width="200">Language</th>
+            <th width="200">Material</th>
+            <th width="200">Use</th>
             <th>Folios</th>
             <th width="70">Columns</th>
             <th width="60">Lines</th>
+            <th width="60">Height</th>
+            <th width="60">Width</th>
+            <th width="60">Alt Size</th>
+            <th width="60">Min Fl</th>
+            <th width="60">Min Lg</th>
+            <th width="60">Min Sm</th>
+            <th width="60">Min Un</th>
+            <th width="60">Init Hist</th>
+            <th width="60">Init Dec</th>
+            <th width="60">Binding</th>
+            <th width="60">URL</th>
+            <th width="60">Other Info</th>
+            <th>Provenance</th>
+            <th width="60">Added On</th>
+            <th width="60">Added By</th>
+            <th width="60">Last Modified</th>
+            <th width="60">Last Modified By</th>
+            <th width="60">Is Approved</th>
         </tr>
     </thead>
     <tbody>

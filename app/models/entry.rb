@@ -24,7 +24,27 @@ class Entry < ActiveRecord::Base
 
   # aggressively load all associations; useful for cases when you need to display complete info for the Entry
   # TODO: fill this out
-  scope :load_associations, -> { includes(:entry_authors, :entry_dates, :entry_titles, :entry_places => [:place], :events => [{:event_agents => [:agent]} ], :source => [{:source_agents => [:agent]}]) }
+  scope :load_associations, -> {
+    includes(:entry_titles,
+             :entry_dates,
+             :entry_materials,
+             :entry_uses,
+             :created_by,
+             :updated_by,
+             :entry_manuscripts => [:manuscript],
+             :entry_authors => [:author],
+             :entry_artists => [:artist],
+             :entry_scribes => [:scribe],
+             :entry_languages => [:language],
+             :entry_places => [:place],
+             :events => [
+               {:event_agents => [:agent]}
+             ],
+             :source => [
+               {:source_agents => [:agent]}
+             ]
+            )
+  }
 
   # returns 'count' number of most recent entries
   scope :most_recent, ->(count = 5) { order(created_at: :desc).first(count) }
@@ -50,7 +70,7 @@ class Entry < ActiveRecord::Base
   end
 
   def get_manuscript
-    manuscripts.first
+    entry_manuscripts.map(&:manuscript).first
   end
 
   # returns all Entry objects for this entry's Manuscript
