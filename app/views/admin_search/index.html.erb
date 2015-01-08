@@ -85,9 +85,9 @@ $(document).ready(function() {
                 "targets": 0,
                 "data": null,
                 "render": function (data, type, full, meta) {
-                    return '<a href="/entries/' + full[1] + '" target="_new">View</a>' +
-                        ' <a href="/entries/' + full[1] + '/edit" target="_new">Edit</a>' +
-                        ' <a href="/TODO" target="_new">Delete</a>';
+                    return '<a href="/entries/' + full[1] + '" target="_blank">View</a>' +
+                        ' <a href="/entries/' + full[1] + '/edit" target="_blank">Edit</a>' +
+                        ' <a href="/TODO" target="_blank">Delete</a>';
                 }
             }
         ],
