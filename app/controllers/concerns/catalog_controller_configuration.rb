@@ -76,35 +76,35 @@ module CatalogControllerConfiguration
       # this field." This behavior of facet counts is weird and
       # confusing, so we leave it off.
 
-      config.add_facet_field 'author_facet', :label => 'Author', :collapse => false, :limit => 3
-      config.add_facet_field 'title_facet', :label => 'Title', :collapse => false, :limit => 3
-      config.add_facet_field 'transaction_seller_facet', :label => 'Seller', :collapse => false, :limit => 3
-      config.add_facet_field 'transaction_seller_agent_facet', :label => 'Seller Agent', :collapse => false, :limit => 3
-      config.add_facet_field 'transaction_buyer_facet', :label => 'Buyer', :collapse => false, :limit => 3
+      config.add_facet_field 'author', :label => 'Author', :collapse => false, :limit => 3
+      config.add_facet_field 'title', :label => 'Title', :collapse => false, :limit => 3
+      config.add_facet_field 'transaction_seller', :label => 'Seller', :collapse => false, :limit => 3
+      config.add_facet_field 'transaction_seller_agent', :label => 'Seller Agent', :collapse => false, :limit => 3
+      config.add_facet_field 'transaction_buyer', :label => 'Buyer', :collapse => false, :limit => 3
       # facet on source display str, instead of having separate facets for
       # catalog/catalog date/institution
-      config.add_facet_field 'source_facet', :label => 'Source', :collapse => false, :limit => 3
-      config.add_facet_field 'provenance_facet', :label => 'Provenance', :limit => 3
-      config.add_facet_field 'manuscript_date_facet', :label => 'Manuscript Date', :limit => 3
-      config.add_facet_field 'place_facet', :label => 'Place', :limit => 3
-      config.add_facet_field 'language_facet', :label => 'Language', :limit => 3
-      config.add_facet_field 'use_facet', :label => 'Liturgical Use', :limit => 3
-      config.add_facet_field 'artist_facet', :label => 'Artist', :limit => 3
-      config.add_facet_field 'scribe_facet', :label => 'Scribe', :limit => 3
-      config.add_facet_field 'material_facet', :label => 'Material', :limit => 3
+      config.add_facet_field 'source', :label => 'Source', :collapse => false, :limit => 3
+      config.add_facet_field 'provenance', :label => 'Provenance', :limit => 3
+      config.add_facet_field 'manuscript_date', :label => 'Manuscript Date', :limit => 3
+      config.add_facet_field 'place', :label => 'Place', :limit => 3
+      config.add_facet_field 'language', :label => 'Language', :limit => 3
+      config.add_facet_field 'use', :label => 'Liturgical Use', :limit => 3
+      config.add_facet_field 'artist', :label => 'Artist', :limit => 3
+      config.add_facet_field 'scribe', :label => 'Scribe', :limit => 3
+      config.add_facet_field 'material', :label => 'Material', :limit => 3
 
-      config.add_facet_field 'folios_facet', :label => 'Folios', :limit => 3
-      # TODO: range
-      config.add_facet_field 'num_lines_facet', :label => 'Lines', :limit => 3
-      config.add_facet_field 'num_columns_facet', :label => 'Columns', :limit => 3
-      config.add_facet_field 'height_facet', :label => 'Height', :limit => 3
-      config.add_facet_field 'width_facet', :label => 'Width', :limit => 3
-      config.add_facet_field 'miniatures_fullpage_facet', :label => 'Miniatures Full Page', :limit => 3
-      config.add_facet_field 'miniatures_large_facet', :label => 'Miniatures Large', :limit => 3
-      config.add_facet_field 'miniatures_small_facet', :label => 'Miniatures Small', :limit => 3
-      config.add_facet_field 'miniatures_unspec_size_facet', :label => 'Miniatures Unspec Size', :limit => 3
-      config.add_facet_field 'initials_historiated_facet', :label => 'Historiated Initials', :limit => 3
-      config.add_facet_field 'initials_decorated_facet', :label => 'Decorated Initials', :limit => 3
+      config.add_facet_field 'folios', :label => 'Folios', :limit => 3
+      # these fields are used as range facets
+      config.add_facet_field 'num_lines', :label => 'Lines', :limit => 3
+      config.add_facet_field 'num_columns', :label => 'Columns', :limit => 3
+      config.add_facet_field 'height', :label => 'Height', :limit => 3
+      config.add_facet_field 'width', :label => 'Width', :limit => 3
+      config.add_facet_field 'miniatures_fullpage', :label => 'Miniatures Full Page', :limit => 3
+      config.add_facet_field 'miniatures_large', :label => 'Miniatures Large', :limit => 3
+      config.add_facet_field 'miniatures_small', :label => 'Miniatures Small', :limit => 3
+      config.add_facet_field 'miniatures_unspec_size', :label => 'Miniatures Unspec Size', :limit => 3
+      config.add_facet_field 'initials_historiated', :label => 'Historiated Initials', :limit => 3
+      config.add_facet_field 'initials_decorated', :label => 'Decorated Initials', :limit => 3
 
       # config.add_facet_field 'example_pivot_field', :label => 'Pivot Field', :pivot => ['format', 'language_facet']
 
@@ -209,37 +209,83 @@ module CatalogControllerConfiguration
       end
 
       config.add_search_field('title') do |field|
-        field.solr_parameters = { :qf => 'title' }
+        field.solr_parameters = { :qf => 'title_search' }
       end
 
       config.add_search_field('author') do |field|
-        field.solr_parameters = { :qf => 'author' }
+        field.solr_parameters = { :qf => 'author_search' }
       end
 
       config.add_search_field('source') do |field|
-        field.solr_local_parameters = { :qf => 'source' }
+        field.solr_local_parameters = { :qf => 'source_search' }
       end
 
       config.add_search_field('seller_agent') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'transaction_seller_agent' }
+        field.solr_local_parameters = { :qf => 'transaction_seller_agent_search' }
       end
 
       config.add_search_field('seller') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'transaction_seller' }
+        field.solr_local_parameters = { :qf => 'transaction_seller_search' }
       end
 
       config.add_search_field('buyer') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'transaction_buyer' }
+        field.solr_local_parameters = { :qf => 'transaction_buyer_search' }
       end
 
       config.add_search_field('catalog_or_lot_number') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'catalog_or_lot_number' }
+        field.solr_local_parameters = { :qf => 'catalog_or_lot_number_search' }
       end
 
+      config.add_search_field('num_lines') do |field|
+        field.include_in_simple_select = false
+        field.solr_local_parameters = { :qf => 'num_lines' }
+      end
+
+      config.add_search_field('language') do |field|
+        field.include_in_simple_select = false
+        field.solr_local_parameters = { :qf => 'language_search' }
+      end
+
+      config.add_search_field('material') do |field|
+        field.include_in_simple_select = false
+        field.solr_local_parameters = { :qf => 'material_search' }
+      end
+
+      config.add_search_field('place') do |field|
+        field.include_in_simple_select = false
+        field.solr_local_parameters = { :qf => 'place_search' }
+      end
+
+      config.add_search_field('liturgical_use') do |field|
+        field.include_in_simple_select = false
+        field.solr_local_parameters = { :qf => 'use_search' }
+      end
+
+      config.add_search_field('artist') do |field|
+        field.include_in_simple_select = false
+        field.solr_local_parameters = { :qf => 'artist_search' }
+      end
+
+      config.add_search_field('scribe') do |field|
+        field.include_in_simple_select = false
+        field.solr_local_parameters = { :qf => 'scribe_search' }
+      end
+
+      config.add_search_field('binding') do |field|
+        field.include_in_simple_select = false
+        field.solr_local_parameters = { :qf => 'binding_search' }
+      end
+
+      # TODO: provenance
+
+      config.add_search_field('comment') do |field|
+        field.include_in_simple_select = false
+        field.solr_local_parameters = { :qf => 'comment_search' }
+      end
 
       # Specifying a :qt only to show it's possible, and so our internal automated
       # tests can test it. In this case it's the same as 
