@@ -25,6 +25,8 @@ Rails.application.routes.draw do
   get '/entries/:id', to: 'catalog#show', as: 'entry'
   resources :entries
 
+  resources :entry_comments
+
   resources :languages do
     collection { get 'search' }
   end

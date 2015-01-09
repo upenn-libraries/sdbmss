@@ -428,18 +428,20 @@ Other entries possibly describing the same manuscript:<br/>
 <% end %>
 
 <% if user_signed_in? %>
-<!-- TODO: finish this -->
-<form method="post">
+<%= form_for EntryComment.new(entry: entry, public: true) do |f| %>
+<%= f.hidden_field :entry_id %>
+<%= f.hidden_field :public %>
+<input type="hidden" name="return_url" value="<%= entry_path entry %>"/>
     <div class="row">
         <div class="col-sm-12 form-group">
             <h4>Leave a comment</h4>
-            <textarea class="form-control" rows="5" name="comment"></textarea>
+            <%= f.text_area :comment, class: "form-control", rows: 5 %>
         </div>
         <div class="col-sm-12 text-right">
             <button class="btn btn-primary">Submit</button>
         </div>
     </div>
-</form>
+<% end %>
 <% end %>
 
 <% end %>
