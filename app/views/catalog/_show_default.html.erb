@@ -392,17 +392,30 @@
 
 </table>
 
-<% if false %><!-- TODO -->
+<% similar_entries = SDBMSS::SimilarEntries.new(entry) %>
+<% if similar_entries.count > 0 %>
 
-<% if get_similar_entries(entry).length > 0 %>
-Other entries possibly describing the same manuscript:<br/>
-(This info will be moved elsewhere, and presented in a way to make comparison easier)<br/>
-<% similar_entries.each do |similar_entry| %>
-<a href="TODO"><%= similar_entry.get_public_id %></a> - <%= similar_entry.get_titles_str %><br/>
-<% end %>
-<% end %>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th class="col-sm-12" colspan="2"><b>Top 10 other entries possibly describing the same manuscript</b></th>
+        </tr>
+    </thead>
 
-<% end %>
+    <tbody>
+        <tr>
+            <td class="col-sm-12">
+                <% similar_entries.first(10).each do |similar_entry| %>
+                <a href="<%= entry_path similar_entry[:entry] %>"><%= similar_entry[:entry].id %></a> - <%= similar_entry[:entry].entry_titles.map(&:title).join("; ") %> (score: <%= similar_entry[:distance] %>)<br/>
+                
+                <% end %>
+                <% end %>
+                <br/>
+                (TODO: This info will be moved elsewhere, and presented in a way to make comparison easier)
+            </td>
+        </tr>
+    </tbody>
+</table>
 
 <% if (entry_comments = entry.entry_comments.where(public: true)).present? %>
 <table class="table table-striped">
