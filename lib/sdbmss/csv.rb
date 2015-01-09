@@ -61,6 +61,24 @@ module SDBMSS::CSV
 
     end
 
+    def find_invalid_materials(csv_export_filename)
+
+      valid_materials = EntryMaterial::MATERIAL_TYPES.map { |record| record[0] }
+
+      CSV.foreach(File.expand_path(csv_export_filename), headers: true, skip_blanks: false) do |row|
+        materials = row['MAT']
+        if !materials.include?(",") && materials != 'PV' && materials != 'VP'
+          SDBMSS::Util.split_and_strip(materials).each do |mat|
+            mat.upcase!
+            if !valid_materials.member?(mat)
+              puts "#{row['MANUSCRIPT_ID']},#{row['MAT']},http://sceti.library.upenn.edu/sdm_admin/update.cfm?id=#{row['MANUSCRIPT_ID']}&fS=1"
+            end
+          end
+        end
+      end
+
+    end
+
     # Looks for changes in 2 CSV files and creates a .SQL file containing
     # update queries for making the changes in the Oracle database.
     #

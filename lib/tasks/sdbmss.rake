@@ -45,6 +45,11 @@ namespace :sdbmss do
     end
   end
 
+  desc "Generate report of invalid materials"
+  task :find_invalid_materials, [:export_filename] => :environment do |t, args|
+    SDBMSS::CSV.find_invalid_materials args[:export_filename]
+  end
+
   desc "Change a user's password"
   task :change_password => :environment do |t, args|
     # devise doesn't seem to make available a rake task like this, so
