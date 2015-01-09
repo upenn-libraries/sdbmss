@@ -243,49 +243,55 @@
     <!-- SDBMSS fields -->
 
     <!-- for facets -->
-    <field name="author_facet" stored="true" type="string" multiValued="true" indexed="true"/>
-    <field name="title_facet" stored="true" type="string" multiValued="true" indexed="true"/>
-    <field name="manuscript_facet" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="source_facet" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="transaction_seller_agent_facet" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="transaction_seller_facet" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="transaction_buyer_facet" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="transaction_sold_facet" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="provenance_facet" stored="true" type="string" multiValued="true" indexed="true"/>
-    <field name="manuscript_date_facet" stored="true" type="sint" multiValued="true" indexed="true"/>
-    <field name="artist_facet" stored="true" type="string" multiValued="true" indexed="true"/>
-    <field name="scribe_facet" stored="true" type="string" multiValued="true" indexed="true"/>
-    <field name="language_facet" stored="true" type="string" multiValued="true" indexed="true"/>
-    <field name="material_facet" stored="true" type="string" multiValued="true" indexed="true"/>
-    <field name="place_facet" stored="true" type="string" multiValued="true" indexed="true"/>
-    <field name="use_facet" stored="true" type="string" multiValued="true" indexed="true"/>
-    <field name="folios_facet" stored="true" type="sint" multiValued="false" indexed="true"/>
-    <field name="num_columns_facet" stored="true" type="sint" multiValued="false" indexed="true"/>
-    <field name="num_lines_facet" stored="true" type="sint" multiValued="false" indexed="true"/>
-    <field name="height_facet" stored="true" type="sint" multiValued="false" indexed="true"/>
-    <field name="width_facet" stored="true" type="sint" multiValued="false" indexed="true"/>
-
-    <field name="miniatures_fullpage_facet" stored="true" type="sint" multiValued="false" indexed="true"/>
-    <field name="miniatures_large_facet" stored="true" type="sint" multiValued="false" indexed="true"/>
-    <field name="miniatures_small_facet" stored="true" type="sint" multiValued="false" indexed="true"/>
-    <field name="miniatures_unspec_size_facet" stored="true" type="sint" multiValued="false" indexed="true"/>
-    <field name="initials_historiated_facet" stored="true" type="sint" multiValued="false" indexed="true"/>
-    <field name="initials_decorated_facet" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <field name="author" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="title" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="manuscript" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="source" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="transaction_seller_agent" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="transaction_seller" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="transaction_buyer" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="transaction_sold" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="transaction_price" stored="true" type="sdouble" multiValued="false" indexed="true"/>
+    <field name="provenance" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="manuscript_date" stored="true" type="sint" multiValued="true" indexed="true"/>
+    <field name="artist" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="scribe" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="language" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="material" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="place" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="use" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="folios" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <field name="num_columns" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <field name="num_lines" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="height" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="width" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="miniatures_fullpage" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="miniatures_large" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="miniatures_small" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="miniatures_unspec_size" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="initials_historiated" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="initials_decorated" stored="true" type="string" multiValued="false" indexed="true"/>
 
     <!-- for full text/keyword searches -->
     <field name="complete_entry" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="source" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="source_date" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="title" stored="true" type="text" multiValued="true" indexed="true"/>
-    <field name="catalog_or_lot_number" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="secondary_source" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="current_location" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="transaction_price_facet" stored="true" type="sdouble" multiValued="false" indexed="true"/>
-    <field name="transaction_seller_agent" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="transaction_seller" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="transaction_buyer" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="author" stored="true" type="text" multiValued="true" indexed="true"/>
-    <field name="comment" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="source_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="source_date_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="title_search" stored="true" type="text" multiValued="true" indexed="true"/>
+    <field name="catalog_or_lot_number_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="secondary_source_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="current_location_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="transaction_seller_agent_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="transaction_seller_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="transaction_buyer_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="author_search" stored="true" type="text" multiValued="true" indexed="true"/>
+    <field name="language_search" stored="true" type="text" multiValued="true" indexed="true"/>
+    <field name="material_search" stored="true" type="text" multiValued="true" indexed="true"/>
+    <field name="place_search" stored="true" type="text" multiValued="true" indexed="true"/>
+    <field name="use_search" stored="true" type="text" multiValued="true" indexed="true"/>
+    <field name="artist_search" stored="true" type="text" multiValued="true" indexed="true"/> 
+    <field name="scribe_search" stored="true" type="text" multiValued="true" indexed="true"/>   
+    <field name="binding_search" stored="true" type="text" multiValued="true" indexed="true"/>
+    <field name="comment_search" stored="true" type="text" multiValued="false" indexed="true"/>
 
     <!-- for sorting -->
     <field name="entry_id" stored="true" type="sint" multiValued="false" indexed="true"/>

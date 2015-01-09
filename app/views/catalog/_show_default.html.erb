@@ -392,9 +392,7 @@
 
 </table>
 
-<% similar_entries = SDBMSS::SimilarEntries.new(entry) %>
-<% if similar_entries.count > 0 %>
-
+<% if (similar_entries = SDBMSS::SimilarEntries.new(entry)).count > 0 %>
 <table class="table table-striped">
     <thead>
         <tr>
@@ -407,8 +405,6 @@
             <td class="col-sm-12">
                 <% similar_entries.first(10).each do |similar_entry| %>
                 <a href="<%= entry_path similar_entry[:entry] %>"><%= similar_entry[:entry].id %></a> - <%= similar_entry[:entry].entry_titles.map(&:title).join("; ") %> (score: <%= similar_entry[:distance] %>)<br/>
-                
-                <% end %>
                 <% end %>
                 <br/>
                 (TODO: This info will be moved elsewhere, and presented in a way to make comparison easier)
@@ -416,7 +412,8 @@
         </tr>
     </tbody>
 </table>
-
+<% end %>
+                
 <% if (entry_comments = entry.entry_comments.where(public: true)).present? %>
 <table class="table table-striped">
     <thead>

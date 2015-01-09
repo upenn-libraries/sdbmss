@@ -14,6 +14,9 @@
 
 $(document).ready(function() {
 
+    // TODO: hack to remove search nav; figure out a more elegant way
+    $("#search-navbar").remove();
+
     $("input[name='search_value']").val("");
 
     var table_height_buffer = 360;
@@ -65,7 +68,8 @@ $(document).ready(function() {
                 success: function(data, textStatus, jqXHR) {
                     if(!data.error) {
                         $(".dataTables_scrollBody").scrollTop(0);
-                        $(".dataTables_scrollBody").scrollLeft(0);
+                        // when paging, we probably don't want to reset horiz scroll
+                        // $(".dataTables_scrollBody").scrollLeft(0);
                         callback(data);
                     } else {
                         alert("An error occurred fetching search results: " + data.error);
@@ -162,57 +166,13 @@ $(document).ready(function() {
         </div>
         <div class="col-sm-2">
             <select class="form-control" name="search_field">
-	            <option value="all_fields">All Columns</option>
-                <!--
-                    <option value="manuscript_ID">ID</option>
-                <option value="duplicate_ms">Duplicate MS</option>
-                <option value="possible_dups">Possible Dups</option>
-                <option value="cat_date">Cat Date</option>
-                <option value="seller">Seller 1</option>
-                <option value="seller2">Seller 2</option>
-                <option value="buyer">Buyer/Recipient</option>
-                <option value="institution">Institution/Collection</option>
-                <option value="cat_ID">Cat ID</option>
-                <option value="cat_or_lot_num">Cat/Lot No.</option>
-                <option value="price">Price</option>
-                <option value="currency">Currency</option>
-                <option value="sold">Sold</option>
-                <option value="secondary_source">Source</option>
-                <option value="current_location">Current Location</option>
-                <option value="author_authority">Author</option>
-                <option value="author_variant">Author (Variant)</option>
-                <option value="title">Title</option>
-                <option value="lng">Language</option>
-                <option value="mat">Material</option>
-                <option value="place">Place</option>
-                <option value="manuscript_use">Use</option>
-                <option value="manuscript_date">Year</option>
-                <option value="circa">Circa</option>
-                <option value="artist">Artist</option>
-                <option value="scribe">Scribe</option>
-                <option value="folios">Folios</option>
-                <option value="col">Col</option>
-                <option value="lines">Lines</option>
-                <option value="hgt">Height</option>
-                <option value="wdt">Width</option>
-                <option value="alt_size">Alt Size</option>
-                <option value="min_fl">Min FL</option>
-                <option value="min_lg">Min LG</option>
-                <option value="min_sm">Min SM</option>
-                <option value="min_un">Min UN</option>
-                <option value="h_init">Init: Hist</option>
-                <option value="d_init">Init: Dec</option>
-                <option value="provenance">Provenance</option>
-                <option value="manuscript_binding">Binding</option>
-                <option value="manuscript_link">Link</option>
-                <option value="comments">Comments</option>
-                <option value="entry_comments">Editorial Notes</option>
-                
-                <option value="addedby">Added By</option>
-                
-                <option value="last_modified_by">Last Modified By</option>
-                <option value="isapproved">Is Approved</option>
-                -->
+
+            <%- search_fields_for_advanced_search.each do |key, field_def| -%>
+            <div class="form-group advanced-search-field">
+                <option value="<%= key %>"><%= field_def.label %></option>
+            </div>
+            <%- end -%>
+
             </select>
         </div>
         <div class="col-sm-1">

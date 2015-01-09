@@ -91,7 +91,16 @@ module SDBMSS
         end
         d
       end
-      
+
+      # helper method for solr indexing
+      def range_bucket(value, size=10)
+        if value.present?
+          x = (value / size * size) + 1
+          y = x + (size - 1)
+          return "#{x} - #{y}"
+        end
+      end
+
     end
 
   end

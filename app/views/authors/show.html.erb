@@ -35,7 +35,7 @@
                 <tr>
                     <td class="col-sm-2 text-right record-label"># Entries</td>
                     <td class="col-sm-10">
-                        This author has <a href="<%= search_by_facet_value('author_facet', @author.name) %>"><%= Entry.with_author(@author).count %> entries</a> in the database.
+                        This author has <a href="<%= search_by_facet_value('author', @author.name) %>"><%= Entry.with_author(@author).count %> entries</a> in the database.
                     </td>
                 </tr>
 

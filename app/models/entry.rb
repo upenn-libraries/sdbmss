@@ -209,114 +209,142 @@ class Entry < ActiveRecord::Base
       @__receiver__.id.to_i
     end
 
-    define_field(:string, :manuscript_facet, :stored => true, :multiple => true) do
+    define_field(:string, :manuscript, :stored => true, :multiple => true) do
       entry_manuscripts.map { |em| em.manuscript.get_public_id }
     end
 
     #### Source info
 
-    define_field(:text, :source, :stored => true) do
+    define_field(:string, :source, :stored => true) do
       source.get_display_value
     end
-    define_field(:string, :source_facet, :stored => true) do
+    define_field(:text, :source_search, :stored => true) do
       source.get_display_value
     end
 
-    define_field(:text, :catalog_or_lot_number, :stored => true)
-    define_field(:text, :secondary_source, :stored => true)
-    define_field(:text, :current_location, :stored => true)
+    define_field(:text, :catalog_or_lot_number_search, :stored => true) do
+      catalog_or_lot_number
+    end
+    define_field(:text, :secondary_source_search, :stored => true) do
+      secondary_source
+    end
+    define_field(:text, :current_location_search, :stored => true) do
+      current_location
+    end
 
     #### Transaction info
 
-    define_field(:string, :transaction_seller_agent_facet, :stored => true) do
+    define_field(:string, :transaction_seller_agent, :stored => true) do
       get_transaction_seller_agent_name
     end
-    define_field(:text, :transaction_seller_agent, :stored => true) do
+    define_field(:text, :transaction_seller_agent_search, :stored => true) do
       get_transaction_seller_agent_name
     end
 
-    define_field(:string, :transaction_seller_facet, :stored => true) do
+    define_field(:string, :transaction_seller, :stored => true) do
       get_transaction_seller_or_holder_name
     end
-    define_field(:text, :transaction_seller, :stored => true) do
+    define_field(:text, :transaction_seller_search, :stored => true) do
       get_transaction_seller_or_holder_name
     end
 
-    define_field(:string, :transaction_buyer_facet, :stored => true) do
+    define_field(:string, :transaction_buyer, :stored => true) do
       get_transaction_buyer_name
     end
-    define_field(:text, :transaction_buyer, :stored => true) do
+    define_field(:text, :transaction_buyer_search, :stored => true) do
       get_transaction_buyer_name
     end
 
-    define_field(:string, :transaction_sold_facet, :stored => true) do
+    define_field(:string, :transaction_sold, :stored => true) do
       get_transaction_sold
     end
 
-    define_field(:double, :transaction_price_facet, :stored => true) do
+    define_field(:double, :transaction_price, :stored => true) do
       get_transaction_price
     end
 
     #### Details
 
-    define_field(:text, :title, :stored => true) do
+    define_field(:string, :title,:stored => true, :multiple => true) do
       entry_titles.map &:title
     end
-    define_field(:string, :title_facet,:stored => true, :multiple => true) do
+    define_field(:text, :title_search, :stored => true) do
       entry_titles.map &:title
     end
 
-    define_field(:text, :author, :stored => true) do
+    define_field(:string, :author, :stored => true, :multiple => true) do
       authors.map &:name
     end
-    define_field(:string, :author_facet, :stored => true, :multiple => true) do
+    define_field(:text, :author_search, :stored => true) do
       authors.map &:name
     end
 
     # TODO: fiddle with this for a better facet taking into account circa
-    define_field(:integer, :manuscript_date_facet, :stored => true, :multiple => true) do
+    define_field(:integer, :manuscript_date, :stored => true, :multiple => true) do
       entry_dates.map &:date
     end
 
-    define_field(:string, :artist_facet, :stored => true, :multiple => true) do
+    define_field(:string, :artist, :stored => true, :multiple => true) do
+      artists.map &:name
+    end
+    define_field(:text, :artist_search, :stored => true) do
       artists.map &:name
     end
 
-    define_field(:string, :scribe_facet, :stored => true, :multiple => true) do
+    define_field(:string, :scribe, :stored => true, :multiple => true) do
+      scribes.map &:name
+    end
+    define_field(:text, :scribe_search, :stored => true) do
       scribes.map &:name
     end
 
-    define_field(:string, :language_facet, :stored => true, :multiple => true) do
+    define_field(:string, :language, :stored => true, :multiple => true) do
+      languages.map &:name
+    end
+    define_field(:text, :language_search, :stored => true) do
       languages.map &:name
     end
 
-    define_field(:string, :material_facet, :stored => true, :multiple => true) do
+    define_field(:string, :material, :stored => true, :multiple => true) do
+      entry_materials.map &:material
+    end
+    define_field(:text, :material_search, :stored => true) do
       entry_materials.map &:material
     end
 
-    define_field(:string, :place_facet, :stored => true, :multiple => true) do
+    define_field(:string, :place, :stored => true, :multiple => true) do
+      places.map &:name
+    end
+    define_field(:text, :place_search, :stored => true) do
       places.map &:name
     end
 
-    define_field(:string, :use_facet, :stored => true, :multiple => true) do
+    define_field(:string, :use, :stored => true, :multiple => true) do
+      entry_uses.map &:use
+    end
+    define_field(:text, :use_search, :stored => true) do
       entry_uses.map &:use
     end
 
-    define_field(:integer, :folios_facet, :stored => true) { folios }
-    define_field(:integer, :num_columns_facet, :stored => true) { num_columns }
-    define_field(:integer, :num_lines_facet, :stored => true) { num_lines }
-    define_field(:integer, :height_facet, :stored => true) { height }
-    define_field(:integer, :width_facet, :stored => true) { width }
-    define_field(:integer, :miniatures_fullpage_facet, :stored => true) { miniatures_fullpage }
-    define_field(:integer, :miniatures_large_facet, :stored => true) { miniatures_large }
-    define_field(:integer, :miniatures_small_facet, :stored => true) { miniatures_small }
-    define_field(:integer, :miniatures_unspec_size_facet, :stored => true) { miniatures_unspec_size }
-    define_field(:integer, :initials_historiated_facet, :stored => true) { initials_historiated }
-    define_field(:integer, :initials_decorated_facet, :stored => true) { initials_decorated }
+    define_field(:integer, :folios, :stored => true) { folios }
+    define_field(:integer, :num_columns, :stored => true) { num_columns }
+    define_field(:string, :num_lines, :stored => true) { SDBMSS::Util.range_bucket(num_lines) }
+    define_field(:string, :height, :stored => true) { SDBMSS::Util.range_bucket(height) }
+    define_field(:string, :width, :stored => true) { SDBMSS::Util.range_bucket(width) }
+    define_field(:string, :miniatures_fullpage, :stored => true) { SDBMSS::Util.range_bucket(miniatures_fullpage) }
+    define_field(:string, :miniatures_large, :stored => true) { SDBMSS::Util.range_bucket(miniatures_large) }
+    define_field(:string, :miniatures_small, :stored => true) { SDBMSS::Util.range_bucket(miniatures_small) }
+    define_field(:string, :miniatures_unspec_size, :stored => true) { SDBMSS::Util.range_bucket(miniatures_unspec_size) }
+    define_field(:string, :initials_historiated, :stored => true) { SDBMSS::Util.range_bucket(initials_historiated) }
+    define_field(:string, :initials_decorated, :stored => true) { SDBMSS::Util.range_bucket(initials_decorated) }
+
+    define_field(:text, :binding_search, :stored => true) do
+      manuscript_binding
+    end
 
     #### Provenance
 
-    define_field(:string, :provenance_facet, :stored => true, :multiple => true) do
+    define_field(:string, :provenance, :stored => true, :multiple => true) do
       events = get_provenance
       names = []
       events.each { |event|
@@ -332,7 +360,7 @@ class Entry < ActiveRecord::Base
       names if names.length > 0
     end
 
-    define_field(:text, :comment, :stored => true) do
+    define_field(:text, :comment_search, :stored => true) do
       entry_comments.select(&:public).map(&:comment).join("\n")
     end
 
