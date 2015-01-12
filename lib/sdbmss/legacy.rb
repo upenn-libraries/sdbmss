@@ -25,6 +25,16 @@ module SDBMSS::Legacy
     # XXX: from django
     VALID_MATERIALS = EntryMaterial::MATERIAL_TYPES.map { |item| item[0] }
 
+    LEGACY_MATERIAL_CODES = {
+      "C" => "Clay",
+      "P" => "Paper",
+      "PY" => "Papyrus",
+      "S" => "Silk",
+      "V" => "Parchment",
+      # TODO: create a code for Wood but FIRST disambiguate 'W' values in the db (there are 3, I think). we should probably spell it out in the legacy DB to avoid confusion.
+      # "W" => "Wood",
+    }
+
     REGEX_COMMON_TITLE = /\[(.+)\]/
 
     # Returns db connection to the legacy database in MySQL.
@@ -464,7 +474,9 @@ module SDBMSS::Legacy
 
         # although UI for legacy SDBM has an Other Currency field, it
         # was shoving the data into CURRENCY instead of a separate
-        # field. We treat 'currency' as always normalized and store
+        # field (I don't know what happens in the legacy SDBM if you
+        # fill in both Currency and Other Currency form fields!). Here
+        # we treat 'currency' as always normalized and store
         # everything else into a new 'other_currency' field.
         currency = row['CURRENCY']
         other_currency = nil
@@ -672,13 +684,16 @@ module SDBMSS::Legacy
 
       SDBMSS::Util.split_and_strip(row['MAT']).each do |atom|
         atom = 'P' if atom == 'Paper'
-        if !VALID_MATERIALS.member?(atom)
-          # too many of these
-          # create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'invalid_material', "Material '%s' is not valid" % (atom,))
+
+        material = LEGACY_MATERIAL_CODES[atom] || LEGACY_MATERIAL_CODES[atom.upcase] || atom
+
+        if !VALID_MATERIALS.member?(material)
+          # cleaned up materials on 1/11/2015, so there shouldn't be too many of these left
+          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'invalid_material', "Material '#{atom}' is not valid")
         end
         em = EntryMaterial.sdbm_create!(
           entry: entry,
-          material: atom,
+          material: material,
         )
       end
 
