@@ -55,8 +55,6 @@ module SDBMSS
     end
 
     def -(x)
-      # puts "diffing #{x.strings.inspect} with #{@strings.inspect}"
-
       # if one set is empty, give it a score of 5
       if x.strings.length == 0 || @strings.length == 0
         return 5
@@ -67,11 +65,11 @@ module SDBMSS
       score = 10
       @strings.each do |s1|
         x.strings.each do |s2|
-          d = Levenshtein.normalized_distance(s1, s2)
+          d = Levenshtein.normalized_distance(s1, s2) * 10
           score = d if d < score
         end
       end
-      # puts "score: #{score}"
+      Rails.logger.info("dist score: #{score}, '#{x.strings.inspect}' '#{@strings.inspect}'")
       score
     end
   end
