@@ -242,7 +242,11 @@
 
     <!-- SDBMSS fields -->
 
-    <!-- for facets -->
+    <!-- Naming conventions:
+         *_range = fields whose values are a range (like "1 - 10"); used for faceting only
+         *_search = fields configured for full-text searching (type=text, may need additional tokenization and such later on
+    -->
+
     <field name="author" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="title" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="manuscript" stored="true" type="string" multiValued="false" indexed="true"/>
@@ -283,8 +287,8 @@
     <field name="initials_historiated_range" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="initials_decorated_range" stored="true" type="string" multiValued="false" indexed="true"/>
 
-    <!-- for full text/keyword searches -->
     <field name="complete_entry" stored="true" type="text" multiValued="false" indexed="true"/>
+
     <field name="source_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="source_date_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="title_search" stored="true" type="text" multiValued="true" indexed="true"/>
