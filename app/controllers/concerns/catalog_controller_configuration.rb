@@ -7,6 +7,8 @@ module CatalogControllerConfiguration
 
     configure_blacklight do |config|
 
+      config.max_per_page = 500
+
       config.solr_response_model = SDBMSS::Blacklight::SolrResponse
 
       config.document_presenter_class = SDBMSS::Blacklight::DocumentPresenter

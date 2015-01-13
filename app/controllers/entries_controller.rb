@@ -92,6 +92,13 @@ class EntriesController < ApplicationController
     render json: data
   end
 
+  # we don't ever destroy anything, we just mark it as deleted
+  def destroy
+    @entry.deleted = true
+    @entry.save!
+    respond_with(@computer)
+  end
+
   private
 
   def set_entry
