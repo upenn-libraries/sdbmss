@@ -3,14 +3,19 @@
 <%= javascript_include_tag "extras" %>
 
 <style>
+    .navbar { margin-bottom: 10px; }
+
     #main-container.container-fluid .row { padding-left: 15px; padding-right: 15px; }
 
     #search_results th, td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     #search_results td { padding-top: 4px; padding-bottom: 4px; }
     #search_results { font-size: 12px; }
     #search_results tbody tr.selected { background-color: #b0bed9; }
+
+    .search-fieldset { margin-bottom: 8px; }
+    .cloned .hide-when-cloned { display: none; }
 </style>
-<script>
+<script type="text/javascript">
 
 $(document).ready(function() {
 
@@ -55,7 +60,15 @@ $(document).ready(function() {
             search_field: "advanced",
             sort: sort
         };
-        blacklight_params[$("select[name='search_field']").val()] = $("input[name='search_value']").val();
+
+        blacklight_params["op"] = $("select[name='op']").val();
+
+        $("select[name='search_field']").each(function (idx, element) {
+            var search_field = $(element).val();
+            var search_value = $($("input[name='search_value']")[idx]).val();
+            blacklight_params[search_field] = search_value;
+        });
+
         return blacklight_params;
     };
     
@@ -116,7 +129,7 @@ $(document).ready(function() {
         "leftColumns": 2
     });
     */
-    
+                
     $('#search_results tbody').on('click', 'tr', function (event) {
         // don't select if a link inside table was clicked
         if(event.target.tagName !== 'A') {
@@ -124,24 +137,18 @@ $(document).ready(function() {
         }
     });
 
-    $('#search_submit').click(function() {
+    $('.search_submit').click(function() {
         table.ajax.reload();
     });
 
-    $('#width-toggle').click(function() {
-        var old_class, new_class;
-        if($("#main-container").hasClass("container")) {
-            old_class = "container";
-            new_class = "container-fluid";
-        } else {
-            old_class = "container-fluid";
-            new_class = "container";
-        }
-        $("#main-container").removeClass(old_class);
-        $("#main-container").addClass(new_class);
-        return false;
-    });
-    
+    for(var i = 0; i < 2; i++) {
+        var cloned = $(".search-fieldset").first().clone().addClass("cloned");
+        $(".search-form").append(cloned);
+    }
+
+    // make this page take up full width of browser window
+    $("#main-container").removeClass("container").addClass("container-fluid");
+
     // TODO: this doesn't work
     // $(window).bind('resize', function () {
     //     console.log("RESIZED!");
@@ -158,9 +165,11 @@ $(document).ready(function() {
 </script>
 <% end %>
 
-<form class="form-horizontal">
-    <div class="row form-group">
-        <label class="col-sm-1 control-label" style="text-align: left">Search</label>
+<form class="form-horizontal search-form">
+    <div class="row form-group search-fieldset original">
+        <div class="col-sm-1">
+            <label class="control-label hide-when-cloned" style="text-align: left">Search</label>
+        </div>
         <div class="col-sm-4">
             <input class="form-control" name="search_value" value="" size="70" type="text">
         </div>
@@ -175,16 +184,19 @@ $(document).ready(function() {
 
             </select>
         </div>
-        <div class="col-sm-1">
-            <button id="search_submit" class="btn btn-primary">Search</button>
-        </div>
-        <div class="col-sm-1">
-            <img id="spinner" style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
-        </div>
         <div class="col-sm-2">
+            <div class="hide-when-cloned">
+                Match <select name="op"><option value="AND">all</option><option value="OR">any</option></select>
+                of these fields
+            </div>
         </div>
-        <div class="col-sm-1" style="text-align: right">
-            <a href="#" id="width-toggle">Expand</a>
+        <div class="col-sm-1">
+            <button class="search_submit hide-when-cloned btn btn-primary">Search</button>
+        </div>
+        <div class="col-sm-1">
+            <div class="hide-when-cloned">
+                <img id="spinner" style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
+            </div>
         </div>
     </div>
 </form>

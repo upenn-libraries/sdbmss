@@ -92,19 +92,17 @@ module CatalogControllerConfiguration
       config.add_facet_field 'artist', :label => 'Artist', :limit => 3
       config.add_facet_field 'scribe', :label => 'Scribe', :limit => 3
       config.add_facet_field 'material', :label => 'Material', :limit => 3
-
       config.add_facet_field 'folios', :label => 'Folios', :limit => 3
-      # these fields are used as range facets
-      config.add_facet_field 'num_lines', :label => 'Lines', :limit => 3
+      config.add_facet_field 'num_lines_range', :label => 'Lines', :limit => 3
       config.add_facet_field 'num_columns', :label => 'Columns', :limit => 3
-      config.add_facet_field 'height', :label => 'Height', :limit => 3
-      config.add_facet_field 'width', :label => 'Width', :limit => 3
-      config.add_facet_field 'miniatures_fullpage', :label => 'Miniatures Full Page', :limit => 3
-      config.add_facet_field 'miniatures_large', :label => 'Miniatures Large', :limit => 3
-      config.add_facet_field 'miniatures_small', :label => 'Miniatures Small', :limit => 3
-      config.add_facet_field 'miniatures_unspec_size', :label => 'Miniatures Unspec Size', :limit => 3
-      config.add_facet_field 'initials_historiated', :label => 'Historiated Initials', :limit => 3
-      config.add_facet_field 'initials_decorated', :label => 'Decorated Initials', :limit => 3
+      config.add_facet_field 'height_range', :label => 'Height', :limit => 3
+      config.add_facet_field 'width_range', :label => 'Width', :limit => 3
+      config.add_facet_field 'miniatures_fullpage_range', :label => 'Miniatures Full Page', :limit => 3
+      config.add_facet_field 'miniatures_large_range', :label => 'Miniatures Large', :limit => 3
+      config.add_facet_field 'miniatures_small_range', :label => 'Miniatures Small', :limit => 3
+      config.add_facet_field 'miniatures_unspec_size_range', :label => 'Miniatures Unspec Size', :limit => 3
+      config.add_facet_field 'initials_historiated_range', :label => 'Historiated Initials', :limit => 3
+      config.add_facet_field 'initials_decorated_range', :label => 'Decorated Initials', :limit => 3
 
       # config.add_facet_field 'example_pivot_field', :label => 'Pivot Field', :pivot => ['format', 'language_facet']
 
@@ -240,11 +238,6 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'catalog_or_lot_number_search' }
       end
 
-      config.add_search_field('num_lines') do |field|
-        field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'num_lines' }
-      end
-
       config.add_search_field('language') do |field|
         field.include_in_simple_select = false
         field.solr_local_parameters = { :qf => 'language_search' }
@@ -285,6 +278,82 @@ module CatalogControllerConfiguration
       config.add_search_field('comment') do |field|
         field.include_in_simple_select = false
         field.solr_local_parameters = { :qf => 'comment_search' }
+      end
+
+      # NOTE is_numeric_field is NOT part of Blacklight field
+      # configuration; it's a hash key we created, to support field
+      # display on the advanced search page.
+
+      config.add_search_field('folios') do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'folios' }
+      end
+
+      config.add_search_field('num_lines') do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'num_lines' }
+      end
+
+      config.add_search_field('num_columns') do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'num_columns' }
+      end
+
+      config.add_search_field('height') do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'height' }
+      end
+
+      config.add_search_field('width') do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'width' }
+      end
+
+      config.add_search_field('miniatures_fullpage') do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'miniatures_fullpage' }
+      end
+
+      config.add_search_field('miniatures_large') do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'miniatures_large' }
+      end
+
+      config.add_search_field('miniatures_small') do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'miniatures_small' }
+      end
+
+      config.add_search_field('miniatures_unspec_size') do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'miniatures_unspec_size' }
+      end
+
+      config.add_search_field('initials_historiated') do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'initials_historiated' }
+      end
+
+      config.add_search_field('initials_decorated') do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'initials_decorated' }
+      end
+
+      config.add_search_field('transaction_price') do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'transaction_price' }
       end
 
       # Specifying a :qt only to show it's possible, and so our internal automated

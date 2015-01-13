@@ -262,15 +262,26 @@
     <field name="use" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="folios" stored="true" type="sint" multiValued="false" indexed="true"/>
     <field name="num_columns" stored="true" type="sint" multiValued="false" indexed="true"/>
-    <field name="num_lines" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="height" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="width" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="miniatures_fullpage" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="miniatures_large" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="miniatures_small" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="miniatures_unspec_size" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="initials_historiated" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="initials_decorated" stored="true" type="string" multiValued="false" indexed="true"/>
+
+    <field name="num_lines" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <field name="height" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <field name="width" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <field name="miniatures_fullpage" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <field name="miniatures_large" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <field name="miniatures_small" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <field name="miniatures_unspec_size" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <field name="initials_historiated" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <field name="initials_decorated" stored="true" type="sint" multiValued="false" indexed="true"/>
+    
+    <field name="num_lines_range" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="height_range" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="width_range" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="miniatures_fullpage_range" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="miniatures_large_range" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="miniatures_small_range" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="miniatures_unspec_size_range" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="initials_historiated_range" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="initials_decorated_range" stored="true" type="string" multiValued="false" indexed="true"/>
 
     <!-- for full text/keyword searches -->
     <field name="complete_entry" stored="true" type="text" multiValued="false" indexed="true"/>

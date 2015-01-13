@@ -328,15 +328,33 @@ class Entry < ActiveRecord::Base
 
     define_field(:integer, :folios, :stored => true) { folios }
     define_field(:integer, :num_columns, :stored => true) { num_columns }
-    define_field(:string, :num_lines, :stored => true) { SDBMSS::Util.range_bucket(num_lines) }
-    define_field(:string, :height, :stored => true) { SDBMSS::Util.range_bucket(height) }
-    define_field(:string, :width, :stored => true) { SDBMSS::Util.range_bucket(width) }
-    define_field(:string, :miniatures_fullpage, :stored => true) { SDBMSS::Util.range_bucket(miniatures_fullpage) }
-    define_field(:string, :miniatures_large, :stored => true) { SDBMSS::Util.range_bucket(miniatures_large) }
-    define_field(:string, :miniatures_small, :stored => true) { SDBMSS::Util.range_bucket(miniatures_small) }
-    define_field(:string, :miniatures_unspec_size, :stored => true) { SDBMSS::Util.range_bucket(miniatures_unspec_size) }
-    define_field(:string, :initials_historiated, :stored => true) { SDBMSS::Util.range_bucket(initials_historiated) }
-    define_field(:string, :initials_decorated, :stored => true) { SDBMSS::Util.range_bucket(initials_decorated) }
+
+    define_field(:integer, :num_lines, :stored => true) { num_lines }
+    define_field(:string, :num_lines_range, :stored => true) { SDBMSS::Util.range_bucket(num_lines) }
+
+    define_field(:integer, :height, :stored => true) { height }
+    define_field(:string, :height_range, :stored => true) { SDBMSS::Util.range_bucket(height) }
+
+    define_field(:integer, :width, :stored => true) { width }
+    define_field(:string, :width_range, :stored => true) { SDBMSS::Util.range_bucket(width) }
+
+    define_field(:integer, :miniatures_fullpage, :stored => true) { miniatures_fullpage }
+    define_field(:string, :miniatures_fullpage_range, :stored => true) { SDBMSS::Util.range_bucket(miniatures_fullpage) }
+
+    define_field(:integer, :miniatures_large, :stored => true) { miniatures_large }
+    define_field(:string, :miniatures_large_range, :stored => true) { SDBMSS::Util.range_bucket(miniatures_large) }
+
+    define_field(:integer, :miniatures_small, :stored => true) { miniatures_small }
+    define_field(:string, :miniatures_small_range, :stored => true) { SDBMSS::Util.range_bucket(miniatures_small) }
+
+    define_field(:integer, :miniatures_unspec_size, :stored => true) { miniatures_unspec_size }
+    define_field(:string, :miniatures_unspec_size_range, :stored => true) { SDBMSS::Util.range_bucket(miniatures_unspec_size) }
+
+    define_field(:integer, :initials_historiated, :stored => true) { initials_historiated }
+    define_field(:string, :initials_historiated_range, :stored => true) { SDBMSS::Util.range_bucket(initials_historiated) }
+
+    define_field(:integer, :initials_decorated, :stored => true) { initials_decorated }
+    define_field(:string, :initials_decorated_range, :stored => true) { SDBMSS::Util.range_bucket(initials_decorated) }
 
     define_field(:text, :binding_search, :stored => true) do
       manuscript_binding

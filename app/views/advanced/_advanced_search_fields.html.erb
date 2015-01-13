@@ -1,0 +1,77 @@
+<% content_for :head do %>
+<script type="text/javascript">
+
+$(document).ready(function() {
+    $("form.advanced").submit(function() {
+        $(".advanced-search-field").each(function (idx, container) {
+            if($(container).find("input[type=text]").length == 2) {
+                // range search
+                var start = $(container).find("input.start").val();
+                var end = $(container).find("input.end").val();
+                var input_name = ""
+                var input_value = "";
+                if(start || end) {
+                    if (!start) { start = "*"; }
+                    if (!end) { end = "*"; }
+                    input_name = $(container).find("select").val();
+                    input_value = "[" + start + " TO " + end + "]";
+                }
+                $(container).find("input[type=hidden]").attr("name", input_name);
+                $(container).find("input[type=hidden]").attr("value", input_value);
+            } else {
+                // text search
+                var input_element = $(container).find("input").first();
+                var input_name = "";
+                if($(input_element).val()) {
+                    input_name = $(container).find("select").val();
+                }
+                $(input_element).attr("name", input_name);
+            }
+        });
+    });
+});
+
+</script>
+<% end %>
+
+<% text_search_fields = search_fields_for_advanced_search.reject { |key, field_def| field_def.is_numeric_field } %> 
+<% range_search_fields = search_fields_for_advanced_search.select { |key, field_def| field_def.is_numeric_field } %> 
+
+<% 5.times do |x| %>
+<div class="form-group advanced-search-field">
+    <div class="col-sm-7">
+        <input class="form-control" name="" type="text"/>
+    </div>
+    <div class="col-sm-1">in</div>
+    <div class="col-sm-4">
+        <select class="form-control col-sm-3">
+            <%- text_search_fields.each do |key, field_def| -%>
+            <option value="<%= key %>"><%= field_def.label %></option>
+            <%- end -%>
+        </select>
+    </div>
+</div>
+<% end %>
+
+<h3 class="query-criteria-heading">Numeric Fields:</h3>
+    
+<% 5.times do |x| %>
+<div class="form-group advanced-search-field">
+    <input type="hidden" name="" value=""/>
+    <div class="col-sm-3">
+        <input class="form-control start" type="text"/>
+    </div>
+    <div class="col-sm-1">to</div>
+    <div class="col-sm-3">
+        <input class="form-control end" type="text"/>
+    </div>
+    <div class="col-sm-1">in</div>
+    <div class="col-sm-4">
+        <select class="form-control col-sm-3">
+            <%- range_search_fields.each do |key, field_def| -%>
+            <option value="<%= key %>"><%= field_def.label %></option>
+            <%- end -%>
+        </select>
+    </div>
+</div>
+<% end %>
