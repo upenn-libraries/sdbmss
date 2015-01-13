@@ -725,13 +725,21 @@
         };
     });
 
-    sdbmApp.controller('CreateSourceCtrl', function ($scope, typeAheadService, sdbmutil, Source) {
+    sdbmApp.controller('SourceCtrl', function ($scope, typeAheadService, sdbmutil, Source) {
+
+        $scope.agent_role_types = ['institution', 'buyer', 'seller_or_holder', 'seller_agent'];
+        
+        $scope.pageTitle = "";
 
         $scope.typeAheadService = typeAheadService;
 
-        $scope.source = new Source();
+        $scope.source = undefined;
 
         $scope.source_agents = [];
+
+        $scope.redirectToEditPage = function(id)  {
+            window.location = "/sources/" + id + "/edit/";
+        };
 
         $scope.showFields = function() {
             if($scope.source.source_type) {
@@ -740,13 +748,25 @@
             return false;
         };
 
+        $scope.populateSourceViewModel = function (source) {
+            $scope.agent_role_types.forEach(function (role) {
+                source.source_agents.forEach(function (source_agent) {
+                    if (source_agent.role === role) {
+                        source[role] = source_agent;
+                    }
+                });
+            });
+            $scope.source_agents = [];
+            console.log(source);
+        };
+        
         $scope.save = function () {
             var sourceToSave = new Source(angular.copy($scope.source));
 
             sourceToSave.date = sourceToSave.date.replace(/-/g, "");
 
             sourceToSave.source_agents = [];
-            ['institution', 'buyer', 'seller_or_holder', 'seller_agent'].forEach(function (role) {
+            $scope.agent_role_types.forEach(function (role) {
                 if (sourceToSave[role]) {
                     sourceToSave[role].role = role;
                     sourceToSave.source_agents.push(sourceToSave[role]);
@@ -756,13 +776,46 @@
 
             sdbmutil.replaceEntityObjectsWithIds(sourceToSave.source_agents, "agent");
 
-            sourceToSave.$save(
-                function (source) {
-                    window.location = "/entries/new/?source_id=" + source.id;
-                },
-                sdbmutil.promiseErrorHandlerFactory("Error saving Source")
-            );
+            if(sourceToSave.id) {
+                console.log("updating record...");
+                sourceToSave.$update(
+                    function (source) {
+                        $scope.redirectToEditPage(source.id);
+                    },
+                    sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
+                );
+            } else {
+                console.log("saving new record...");
+                sourceToSave.$save(
+                    function (source) {
+                        if($("#create_entry").val().length > 0) {
+                            window.location = "/entries/new/?source_id=" + source.id;
+                        } else {
+                            $scope.redirectToEditPage(source.id);
+                        }
+                    },
+                    sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
+                );
+            }
         };
+
+        // "constructor" for controller goes here
+
+        if($("#source_id").val()) {
+            var sourceId = $("#source_id").val();
+            $scope.pageTitle = "Edit SDBM_SOURCE_" + sourceId;
+            $scope.edit = true;
+            $scope.source = Source.get(
+                {id: sourceId},
+                $scope.populateSourceViewModel,
+                sdbmutil.promiseErrorHandlerFactory("Error loading entry data for this page")
+            );
+        } else {
+            $scope.pageTitle = "Create a new Source";
+
+            $scope.source = new Source();
+        }
+        
     });
 
     // Base generic NG controller fn for all modal popups that allow

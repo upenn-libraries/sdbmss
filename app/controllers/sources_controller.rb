@@ -8,12 +8,19 @@ class SourcesController < ApplicationController
   respond_to :html, :json
 
   def new
+    @source = Source.new
+    respond_to do |format|
+      format.html { render "edit" }
+    end
   end
 
   def create
     @source = Source.new
     @source.created_by_id = current_user.id
     update
+  end
+
+  def edit
   end
 
   def update

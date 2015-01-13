@@ -3,7 +3,7 @@
 <p class="lead">This is your dashboard page, from which you can do some Very Useful Things.</p>
 
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-3">
         <div class="panel panel-default">
             <div class="panel-heading">Stuff you can do</div>
             <div class="panel-body">
@@ -12,7 +12,7 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-9">
         <div class="panel panel-default">
             <div class="panel-heading">Entries You've Contributed</div>
             <div class="panel-body">
@@ -52,8 +52,9 @@
                   <table class="table">
                       <% for source in sources %>
                       <tr class="row">
-                          <td class="col-sm-10"><a href="<%= source_path(source) %>"><%= source.get_public_id %></a>: <%= source.get_display_value %></td>
-                          <td class="col-sm-2"><a href="<%= new_entry_path(source_id: source) %>">add entry to source</a></td>
+                          <td class="col-sm-9"><a href="<%= source_path(source) %>"><%= source.get_public_id %></a>: <%= source.get_display_value %></td>
+                          <td class="col-sm-1"><a href="<%= edit_source_path(source) %>">edit</a></td>
+                          <td class="col-sm-2"><a href="<%= new_entry_path(source_id: source) %>">add an entry</a></td>
                       </tr>
                       <% end %>
                   </table>
