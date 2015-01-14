@@ -179,9 +179,14 @@ $(document).ready(function() {
         if(e.keyCode == 13) {
             jump_search = true;
             table.ajax.reload();
+            e.preventDefault();
+            return false;
         }
-        e.preventDefault();
-        return false;
+    });
+
+    $("#jump_submit").click(function () {
+        jump_search = true;
+        table.ajax.reload();
     });
 
     // TODO: this doesn't work
@@ -217,7 +222,7 @@ $(document).ready(function() {
         </div>
         <div class="col-sm-2">
             <div>
-                Match <select name="op"><option value="AND">all</option><option value="OR">any</option></select>
+                Match <select class="form-control" style="width: 100px; display: inline" name="op"><option value="AND">all</option><option value="OR">any</option></select>
                 of these fields
             </div>
         </div>
