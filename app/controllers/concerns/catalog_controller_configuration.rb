@@ -358,6 +358,12 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'transaction_price' }
       end
 
+      config.add_search_field 'entry_id', :label => 'Entry ID' do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'entry_id' }
+      end
+
       # Specifying a :qt only to show it's possible, and so our internal automated
       # tests can test it. In this case it's the same as 
       # config[:default_solr_parameters][:qt], so isn't actually neccesary. 

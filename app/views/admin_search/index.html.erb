@@ -35,18 +35,20 @@ table.dataTable.compact tbody td {
 
 .search-fieldset { margin-bottom: 8px; }
 
-.cloned .hide-when-cloned { display: none; }
-
 </style>
 <script type="text/javascript">
 
 $(document).ready(function() {
 
-    // TODO: hack to remove search nav; figure out a more elegant way
+    // TODO: hacks to tweak the Rails layout: figure out a more elegant way?
     $("#search-navbar").remove();
+    // make this page take up full width of browser window
+    $("#main-container").removeClass("container").addClass("container-fluid");
 
     $("input[name='search_value']").val("");
 
+    var jump_search = false;
+    
     var table_height_buffer = 360;
     
     var getViewportHeight = function() {
@@ -86,11 +88,18 @@ $(document).ready(function() {
 
         blacklight_params["op"] = $("select[name='op']").val();
 
-        $("select[name='search_field']").each(function (idx, element) {
-            var search_field = $(element).val();
-            var search_value = $($("input[name='search_value']")[idx]).val();
-            blacklight_params[search_field] = search_value;
-        });
+        if(jump_search) {
+            var entry_id = $("#jump_to").val();
+            blacklight_params['entry_id'] = "[* TO " + entry_id + "]";
+        } else {
+            $("select[name='search_field']").each(function (idx, element) {
+                var search_field = $(element).val();
+                var search_value = $($("input[name='search_value']")[idx]).val();
+                if(search_value) {
+                    blacklight_params[search_field] = search_value;
+                }
+            });
+        }
 
         return blacklight_params;
     };
@@ -161,17 +170,19 @@ $(document).ready(function() {
         }
     });
 
-    $('.search_submit').click(function() {
+    $('#search_submit').click(function() {
+        jump_search = false;
         table.ajax.reload();
     });
 
-    for(var i = 0; i < 2; i++) {
-        var cloned = $(".search-fieldset").first().clone().addClass("cloned");
-        $(".search-form").append(cloned);
-    }
-
-    // make this page take up full width of browser window
-    $("#main-container").removeClass("container").addClass("container-fluid");
+    $("#jump_to").keydown(function(e) {
+        if(e.keyCode == 13) {
+            jump_search = true;
+            table.ajax.reload();
+        }
+        e.preventDefault();
+        return false;
+    });
 
     // TODO: this doesn't work
     // $(window).bind('resize', function () {
@@ -192,37 +203,69 @@ $(document).ready(function() {
 <form class="form-horizontal search-form">
     <div class="row form-group search-fieldset original">
         <div class="col-sm-1">
-            <label class="control-label hide-when-cloned" style="text-align: left">Search</label>
+            <label class="control-label" style="text-align: left">Search</label>
         </div>
         <div class="col-sm-4">
             <input class="form-control" name="search_value" value="" size="70" type="text">
         </div>
         <div class="col-sm-2">
             <select class="form-control" name="search_field">
-
             <%- search_fields_for_advanced_search.each do |key, field_def| -%>
-            <div class="form-group advanced-search-field">
-                <option value="<%= key %>"><%= field_def.label %></option>
-            </div>
+            <option value="<%= key %>"><%= field_def.label %></option>
             <%- end -%>
-
             </select>
         </div>
         <div class="col-sm-2">
-            <div class="hide-when-cloned">
+            <div>
                 Match <select name="op"><option value="AND">all</option><option value="OR">any</option></select>
                 of these fields
             </div>
         </div>
-        <div class="col-sm-1">
-            <button class="search_submit hide-when-cloned btn btn-primary">Search</button>
+    </div>
+
+    <div class="row form-group search-fieldset">
+        <div class="col-sm-4 col-sm-offset-1">
+            <input class="form-control" name="search_value" value="" size="70" type="text">
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="search_field">
+            <%- search_fields_for_advanced_search.each do |key, field_def| -%>
+            <option value="<%= key %>"><%= field_def.label %></option>
+            <%- end -%>
+            </select>
+        </div>
+    </div>
+
+    <div class="row form-group search-fieldset">
+        <div class="col-sm-4 col-sm-offset-1">
+            <input class="form-control" name="search_value" value="" size="70" type="text">
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="search_field">
+            <%- search_fields_for_advanced_search.each do |key, field_def| -%>
+            <option value="<%= key %>"><%= field_def.label %></option>
+            <%- end -%>
+            </select>
         </div>
         <div class="col-sm-1">
-            <div class="hide-when-cloned">
+            <button id="search_submit" class="btn btn-primary">Search</button>
+        </div>
+        <div class="col-sm-1">
+            <div>
                 <img id="spinner" style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
             </div>
         </div>
+        <div class="col-sm-1 text-right">
+            <label class="control-label">Jump to ID</label>
+        </div>
+        <div class="col-sm-1">
+            <input class="form-control" type="text" id="jump_to"/>
+        </div>
+        <div class="col-sm-1">
+            <button id="jump_submit" class="btn btn-primary">Go</button>
+        </div>
     </div>
+
 </form>
 
 <table id="search_results" class="table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
