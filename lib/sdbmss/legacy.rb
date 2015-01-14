@@ -120,6 +120,28 @@ module SDBMSS::Legacy
       SOURCE_CACHE[id]
     end
 
+    CODES = ['Attr', 'Com', 'Comp', 'Ed', 'Gl', 'Intr', 'Pref', 'Tr']
+
+    # Splits an author string into name and roles.
+    # ie. for "Jeff (Ed) (Tr)", this returns ["Jeff", ["Ed", "Tr"]]
+    def split_author_role_codes(str)
+      # we're restrictive in our matching of role codes because
+      # there's all kinds of crap inside parens in these strings
+      author = str
+      roles = []
+      if str.present?
+        CODES.each do |code|
+          # sometimes there's a period.
+          author_portion = author.gsub("(#{code})", "").gsub("(#{code}.)", "")
+          if author != author_portion
+            author = author_portion.strip
+            roles << code
+          end
+        end
+      end
+      return [author, roles]
+    end
+
     # Do the migration
     def migrate(fast: false)
 
@@ -575,17 +597,38 @@ module SDBMSS::Legacy
         end
       end
 
-      # TODO: deal with roles in author records: ex: "Decembrio, Pier
-      # Candido (Tr)" there are roughly 1000 author records like these.
       authors = SDBMSS::Util.split_and_strip(row['AUTHOR_AUTHORITY'], filter_blanks: false)
       author_variants = SDBMSS::Util.split_and_strip(row['AUTHOR_VARIANT'], filter_blanks: false)
       if authors.length != author_variants.length
         puts "Warning: number of author variants doesn't match num of authors in entry #{row['MANUSCRIPT_ID']}"
       end
       authors.each_index do |author_index|
-        atom = authors[author_index]
-        author_variant = author_variants[author_index]
-        # TODO: does this skip over AuthorVariant entries that dont have AuthorAuthority entries?
+
+        # TODO: how to handle multiple role codes? right now, we just
+        # select one.
+
+        atom, author_roles = split_author_role_codes(authors[author_index] || "")
+        author_role = author_roles.first
+
+        author_variant, author_variant_roles = split_author_role_codes(author_variants[author_index] || "")
+        author_variant_role = author_variant_roles.first
+
+        if author_roles.count > 1 || author_variant_roles.count > 1
+          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'multiple_author_roles', "Multiple author role codes found: in AUTHOR_AUTHORITY: #{author_roles.join(",")}; in AUTHOR_VARIANT: #{author_variant_roles.join(",")}")
+        end
+
+        # if there are codes for both, they better match, or there's
+        # gonna be trouble
+        if author_role.present? && author_variant_role.present? && author_role != author_variant_role
+          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'author_role_mismatch', "Role codes in AUTHOR_AUTHORITY and AUTHOR_VARIANT don't match: '#{authors[author_index]}' and '#{author_variants[author_index]}'")
+        end
+
+        author_role = author_variant_role
+
+        if atom.gsub("(").count > 1
+          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'author_parens', "More than one set of parens found in AUTHOR_AUTHORITY: #{authors[author_index]}")
+        end
+
         if atom.present? || author_variant.present?
           bad_author = false
 
@@ -603,7 +646,7 @@ module SDBMSS::Legacy
           if author_variant == atom
             # variant is the same, so don't store it.
             author_variant = nil
-          elsif author_variant != ""
+          elsif author_variant.present?
             if author_variant.length > 255
               puts "Author variant too long for entry #{row['MANUSCRIPT_ID']} = #{author_variant}"
               author_variant = nil
@@ -633,6 +676,7 @@ module SDBMSS::Legacy
             entry: entry,
             observed_name: author_variant,
             author: author,
+            role: author_role,
           )
         end
       end
@@ -744,15 +788,19 @@ module SDBMSS::Legacy
     def create_author_from_row_pass1(row, ctx)
       # ignore AUTHOR_COUNT column since its redundant in new db.
       # there are 'dupes' because of collation rules.
-      author = Author.where(name: row['AUTHOR']).order(nil).first
+
+      # discard the role part when migrating authors
+      author_name, role = split_author_role_codes(row['AUTHOR'])
+
+      author = Author.where(name: author_name).order(nil).first
       if author.nil?
         author = Author.sdbm_create!(
-          name: row['AUTHOR'],
+          name: author_name,
           approved: row['ISAPPROVED'] == 'y',
           approved_by: get_or_create_user(row['APPROVEDBY']),
           approved_date: row['APPROVEDDATE'],
         )
-        AUTHOR_CACHE[row['AUTHOR']] = author
+        AUTHOR_CACHE[author_name] = author
       end
       author
     end

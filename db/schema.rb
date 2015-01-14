@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141231202026) do
+ActiveRecord::Schema.define(version: 20150114194834) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(version: 20141231202026) do
     t.string   "observed_name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "role"
   end
 
   add_index "entry_authors", ["author_id"], name: "index_entry_authors_on_author_id", using: :btree
