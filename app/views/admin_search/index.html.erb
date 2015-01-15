@@ -141,7 +141,7 @@ $(document).ready(function() {
                 "render": function (data, type, full, meta) {
                     return '<a href="/entries/' + full[1] + '" target="_blank">View</a>' +
                         ' <a href="/entries/' + full[1] + '/edit" target="_blank">Edit</a>' +
-                        ' <a href="/TODO" target="_blank">Delete</a>';
+                        ' <a class="entry-delete-link" href="#" target="_blank">Delete</a>';
                 }
             }
         ],
@@ -193,6 +193,25 @@ $(document).ready(function() {
         table.ajax.reload();
     });
 
+    $(document).on("click", ".entry-delete-link", function (event) {
+        var row_data = table.row($(event.target).closest("tr")).data();
+        var entry_id = row_data[1];
+        if(confirm("Are you sure you want to delete entry " + entry_id + "?")) {
+            $.ajax({
+                url: '/entries/' + entry_id,
+                type: 'DELETE',
+                error: function() {
+                    // TODO: fill this out
+                    alert("An error occurred deleting this record.");
+                },
+                complete: function() {
+                    table.ajax.reload();
+                }
+            });
+        }
+        return false;
+    });
+    
     // TODO: this doesn't work
     // $(window).bind('resize', function () {
     //     console.log("RESIZED!");
