@@ -877,6 +877,12 @@ module SDBMSS::Legacy
         source_type = 'other_published'
       end
 
+      # NOTE: there do exist Catalogs with no Entries, and that's
+      # ok. these can indicate that someone looked at a catalog and
+      # determined that there are no MSS relevant for SDBM (the
+      # "whether_mss" field). It is meaningful to know that, so don't
+      # delete them.
+
       # we don't import:
       # MS_COUNT = this is now redundant since we're using FKs
 
