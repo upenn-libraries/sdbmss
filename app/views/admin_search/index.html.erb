@@ -89,6 +89,10 @@ $(document).ready(function() {
         blacklight_params["op"] = $("select[name='op']").val();
 
         if(jump_search) {
+            /* TODO: this isn't quite right; jumping should conduct a
+             * search for all records, but jump to the page containing
+             * the ID. Not sure how to do that with a minimum of
+             * shenanigans. */
             var entry_id = $("#jump_to").val();
             blacklight_params['entry_id'] = "[* TO " + entry_id + "]";
         } else {

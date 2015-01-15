@@ -196,9 +196,7 @@
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Languages</td>
             <td class="col-sm-10" colspan="10">
-                <% entry_languages.each do |entry_language, i| %>
-                <%= entry_language.language.name %><%= ', ' if i == entry_languages.size - 1 %>
-                <% end %>
+                <%= entry_languages.map { |entry_language| entry_language.language.name }.join(", ") %>
             </td>
         </tr>
         <% end %>
@@ -207,9 +205,7 @@
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Materials</td>
             <td class="col-sm-10" colspan="10">
-                <% entry_materials.each do |entry_material| %>
-                <%= entry_material.material %>
-                <% end %>
+                <%= entry_materials.map { |entry_material| entry_material.material }.join(", ") %>
             </td>
         </tr>
         <% end %>

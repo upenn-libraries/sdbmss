@@ -258,7 +258,7 @@ module CatalogControllerConfiguration
       end
 
       config.add_search_field 'entry_id', :label => 'Entry ID' do |field|
-        field.include_in_simple_select = false
+        field.include_in_simple_select = true
         field.is_numeric_field = true
         field.solr_local_parameters = { :qf => 'entry_id' }
       end
