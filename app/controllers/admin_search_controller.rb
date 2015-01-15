@@ -22,6 +22,8 @@ class AdminSearchController < CatalogController
       pinfo = pagination_info(@response)
 
       data = @document_list.map do |doc|
+        as_array = nil
+
         # for performance, we avoid using has_many->through
         # associations because they always hit the db and circumvent
         # the preloading done in load_associations scope.
@@ -37,7 +39,7 @@ class AdminSearchController < CatalogController
           created_by = entry.created_by
           updated_at = entry.updated_at ? entry.updated_at.strftime(dateformat) : nil
           updated_by = entry.updated_by
-          [
+          as_array = [
             nil,
             entry.id,
             manuscript ? manuscript.get_public_id : nil,
@@ -80,10 +82,12 @@ class AdminSearchController < CatalogController
             (updated_by.username if updated_by),
             entry.approved,
           ]
+        else
+          # TODO: how to more elegantly handle errors finding entries
+          # from db?
+          as_array = row_error
         end
-        # TODO: how to more elegantly handle errors finding entries
-        # from db?
-        row_error
+        as_array
       end
 
       retval.merge!({
