@@ -1,14 +1,14 @@
-<p><%= @artists.count %> records found.</p>
+<p><%= @authors.count %> records found.</p>
 <table class="table">
     <thead>
         <th>ID</th>
         <th>Name</th>
     </thead>
     <tbody>
-        <% @artists.each do |artist| %>
+        <% @authors.each do |author| %>
         <tr>
-            <td><%= artist.id %></td>
-            <td><%= artist.name %></td>
+            <td><%= author.id %></td>
+            <td><%= author.name %></td>
         </tr>
         <% end %>
     </tbody>

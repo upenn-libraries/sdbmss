@@ -38,6 +38,7 @@ Rails.application.routes.draw do
 
   get '/reports/', to: 'reports#show'
   get '/reports/artists/', to: 'reports#artists'
+  get '/reports/authors/', to: 'reports#authors'
 
   resources :scribes do
     collection { get 'search' }

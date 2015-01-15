@@ -7,8 +7,10 @@
         <div class="panel panel-default">
             <div class="panel-heading">Stuff you can do</div>
             <div class="panel-body">
-                <p><a href="<%= new_entry_path %>">Contribute an entry to the database</a></p>
+                <p><a href="<%= new_source_path %>">Create a new source</a></p>
+                <p><a href="<%= new_entry_path %>">Create an entry</a></p>
                 <p><a href="<%= admin_search_path %>">Admin search interface</a></p>
+                <p><a href="<%= reports_path %>">Reports</a></p>
             </div>
         </div>
     </div>
@@ -28,7 +30,7 @@
                         <td class="col-sm-10"><a href="<%= entry_path(entry) %>"><%= entry.get_public_id %></a>: <%= entry.entry_titles.map(&:title).join("; ") %>
                           <% if !entry.approved %><em>(pending approval)</em><% end %>
                         </td>
-                        <td class="col-sm-2"><a href="<%= entry_path(entry) %>">edit</a></td>
+                        <td class="col-sm-2"><a href="<%= edit_entry_path(entry) %>">edit</a></td>
                     </tr>
                     <% end %>
                 </table>
