@@ -13,16 +13,12 @@ module SDBMSS::Legacy
   # module-level methods
   class << self
 
-    # XXX: from django
     VALID_ALT_SIZE_TYPES = Entry::ALT_SIZE_TYPES.map { |item| item[0] }
 
-    # XXX: from django
     VALID_CIRCA_TYPES = EntryDate::CIRCA_TYPES.map { |item| item[0] }
 
-    # XXX: from django
     VALID_CURRENCY_TYPES = Event::CURRENCY_TYPES.map { |item| item[0] }
 
-    # XXX: from django
     VALID_MATERIALS = EntryMaterial::MATERIAL_TYPES.map { |item| item[0] }
 
     LEGACY_MATERIAL_CODES = {
@@ -604,26 +600,22 @@ module SDBMSS::Legacy
       end
       authors.each_index do |author_index|
 
-        # TODO: how to handle multiple role codes? right now, we just
-        # select one.
+        # we create an EntryAuthor record for each role. Multiple
+        # roles exist in the legacy database in diff ways: sometimes
+        # there's already an author record per role; sometimes,
+        # multiple role codes have been glommed onto an author's name
+        # (ex: "Jeff (Tr) (Ed)")
 
         atom, author_roles = split_author_role_codes(authors[author_index] || "")
-        author_role = author_roles.first
 
         author_variant, author_variant_roles = split_author_role_codes(author_variants[author_index] || "")
-        author_variant_role = author_variant_roles.first
-
-        if author_roles.count > 1 || author_variant_roles.count > 1
-          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'multiple_author_roles', "Multiple author role codes found: in AUTHOR_AUTHORITY: #{author_roles.join(",")}; in AUTHOR_VARIANT: #{author_variant_roles.join(",")}")
-        end
 
         # if there are codes for both, they better match, or there's
-        # gonna be trouble
-        if author_role.present? && author_variant_role.present? && author_role != author_variant_role
+        # gonna be trouble (if there are codes for only one of these
+        # fields, we don't need to check)
+        if author_roles.count > 0 && author_variant_roles.count > 0 && author_roles != author_variant_roles
           create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'author_role_mismatch', "Role codes in AUTHOR_AUTHORITY and AUTHOR_VARIANT don't match: '#{authors[author_index]}' and '#{author_variants[author_index]}'")
         end
-
-        author_role = author_variant_role
 
         if atom.gsub("(").count > 1
           create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'author_parens', "More than one set of parens found in AUTHOR_AUTHORITY: #{authors[author_index]}")
@@ -639,16 +631,12 @@ module SDBMSS::Legacy
             bad_author = true if author.nil?
           end
 
-          if author_variant.nil?
-            puts "Warning: no author variant found for author in entry #{row['MANUSCRIPT_ID']}"
-          end
-
           if author_variant == atom
             # variant is the same, so don't store it.
             author_variant = nil
           elsif author_variant.present?
             if author_variant.length > 255
-              puts "Author variant too long for entry #{row['MANUSCRIPT_ID']} = #{author_variant}"
+              create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'author_variant_too_long', "Author variant too long for entry #{row['MANUSCRIPT_ID']} = #{author_variant}")
               author_variant = nil
             end
           else
@@ -672,12 +660,14 @@ module SDBMSS::Legacy
             author_variant = nil if author.present?
           end
 
-          entry_author = EntryAuthor.sdbm_create!(
-            entry: entry,
-            observed_name: author_variant,
-            author: author,
-            role: author_role,
-          )
+          Set.new(author_roles + author_variant_roles).each do |author_role|
+            entry_author = EntryAuthor.sdbm_create!(
+              entry: entry,
+              observed_name: author_variant,
+              author: author,
+              role: author_role,
+            )
+          end
         end
       end
 

@@ -146,10 +146,13 @@
             <a class="clickable" data-ng-hide="!isFirst(entry.entry_authors, entry_author)" data-ng-click="addRecord(entry.entry_authors)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
             <span sdbm-tooltip="author">Author</span>
         </label>
-      <div class="col-sm-4 editable-container">
+      <div class="col-sm-3 editable-container">
           <a href="#" editable-text="entry_author.author" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/authors/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAuthorModalCtrl">{{ entry_author.author|label }}</a>
       </div>
-
+      <div class="col-sm-1">
+          <input type="text" class="form-control" data-ng-model="entry_author.role" />
+      </div>
+      
       <label class="col-sm-2 control-label">
           <span sdbm-tooltip="authorVariant">Author As Recorded</span>
       </label>

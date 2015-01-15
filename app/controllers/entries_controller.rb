@@ -50,7 +50,7 @@ class EntriesController < ApplicationController
         ))
 
         Reconciler.reconcile_assoc @entry, params["entry_titles"], EntryTitle, 'entry_id', [:title, :common_title]
-        Reconciler.reconcile_assoc @entry, params["entry_authors"], EntryAuthor, 'entry_id', [:author_id, :observed_name]
+        Reconciler.reconcile_assoc @entry, params["entry_authors"], EntryAuthor, 'entry_id', [:author_id, :observed_name, :role]
         Reconciler.reconcile_assoc @entry, params["entry_dates"], EntryDate, 'entry_id', [:date, :circa]
         Reconciler.reconcile_assoc @entry, params["entry_artists"], EntryArtist, 'entry_id', [:artist_id]
         Reconciler.reconcile_assoc @entry, params["entry_scribes"], EntryScribe, 'entry_id', [:scribe_id]

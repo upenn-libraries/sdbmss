@@ -72,11 +72,13 @@
         <% entry.entry_authors.each do |entry_author| %>
           <% if entry_author.observed_name.present? %>
             <%= entry_author.observed_name %>
+            <% if entry_author.role %>(<%= entry_author.role %>)<% end %>
             <% if entry_author.author %>
             (<%= link_to entry_author.author.name, author_path(entry_author.author) %>)
             <% end %>
           <% elsif entry_author.author %>
             <%= link_to entry_author.author.name, author_path(entry_author.author) %>
+            <% if entry_author.role %>(<%= entry_author.role %>)<% end %>
           <% end %>
           <br/>
         <% end %>

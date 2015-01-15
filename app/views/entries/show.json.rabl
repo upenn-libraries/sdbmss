@@ -16,7 +16,7 @@ child :entry_titles, :object_root => false do
 end
 
 child :entry_authors, :object_root => false do
-  attributes :id, :author, :observed_name
+  attributes :id, :author, :observed_name, :role
   child :author do
     attributes :id, :name
     node :display_value do |author|

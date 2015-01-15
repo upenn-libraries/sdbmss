@@ -5,11 +5,11 @@ class EntryAuthor < ActiveRecord::Base
   def get_display_value
     case
     when author && observed_name
-      "#{author.name} #{observed_name}"
+      "#{author.name} (#{observed_name})" + (role ? " (" + role + ")": "")
     when author
-      "#{author.name}"
+      "#{author.name}" + (role ? " (" + role + ")" : "")
     when observed_name
-      "#{observed_name}"
+      "#{observed_name}" + (role ? " (" + role + ")" : "")
     end
   end
 
