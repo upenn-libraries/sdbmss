@@ -38,8 +38,11 @@ Rails.application.routes.draw do
   end
 
   get '/reports/', to: 'reports#show'
+  get '/reports/agents/', to: 'reports#agents'
   get '/reports/artists/', to: 'reports#artists'
   get '/reports/authors/', to: 'reports#authors'
+  get '/reports/languages/', to: 'reports#languages'
+  get '/reports/scribes/', to: 'reports#scribes'
 
   resources :scribes do
     collection { get 'search' }

@@ -1,25 +1,33 @@
 
 <h2>Reports</h2>
 
+<p>NOTE: The question marks '?' in data haven't been cleaned up yet,
+but they have been filtered out from these reports.</p>
+
 <table class="table">
     <tr>
         <td>List of artists</td>
         <td><a href="<%= reports_artists_path %>">HTML</a></td>
-        <td><a href="<%= reports_artists_path %>">CSV</a></td>
+        <td><a href="<%= reports_artists_path format: :csv %>">CSV</a></td>
     </tr>
     <tr>
         <td>List of authors</td>
         <td><a href="<%= reports_authors_path %>">HTML</a></td>
-        <td><a href="<%= reports_authors_path %>">CSV</a></td>
+        <td><a href="<%= reports_authors_path format: :csv %>">CSV</a></td>
+    </tr>
+    <tr>
+        <td>List of languages</td>
+        <td><a href="<%= reports_languages_path %>">HTML</a></td>
+        <td><a href="<%= reports_languages_path format: :csv %>">CSV</a></td>
     </tr>
     <tr>
         <td>List of provenance agents</td>
-        <td><a href="#TODO">HTML</a></td>
-        <td><a href="#TODO">CSV</a></td>
+        <td><a href="<%= reports_agents_path %>">HTML</a></td>
+        <td><a href="<%= reports_agents_path format: :csv %>">CSV</a></td>
     </tr>
     <tr>
         <td>List of scribes</td>
-        <td><a href="#TODO">HTML</a></td>
-        <td><a href="#TODO">CSV</a></td>
+        <td><a href="<%= reports_scribes_path %>">HTML</a></td>
+        <td><a href="<%= reports_scribes_path format: :csv %>">CSV</a></td>
     </tr>
 </p>

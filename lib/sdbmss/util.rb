@@ -1,4 +1,5 @@
 
+require 'csv'
 require 'date'
 
 module SDBMSS
@@ -101,9 +102,20 @@ module SDBMSS
         end
       end
 
+      # returns a string of CSV data representing the the passed-in
+      # 'objects' argument. The code block is a formatter that should
+      # return an array of values for the passed-in object.
+      def objects_to_csv(headers=nil, objects, &block)
+        csv_data = CSV.generate_line headers
+        objects.each do |object|
+          csv_data << CSV.generate_line(yield(object))
+        end
+        csv_data
+      end
+
     end
 
   end
-  
+
 end
 

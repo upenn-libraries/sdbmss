@@ -1,0 +1,15 @@
+<p><%= @objects.count %> records found.</p>
+<table class="table">
+    <thead>
+        <th>ID</th>
+        <th><%= @objects.first.class %> Name</th>
+    </thead>
+    <tbody>
+        <% @objects.each do |object| %>
+        <tr>
+            <td><%= object.id %></td>
+            <td><%= object.name %></td>
+        </tr>
+        <% end %>
+    </tbody>
+</table>
