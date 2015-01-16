@@ -103,4 +103,28 @@ class AdminSearchController < CatalogController
     retval
   end
 
+  # This is an AJAX endpoint to calculates the lower and upper bounds
+  # (inclusive) on entry_id for a "Jump To" search.
+  def calculate_bounds
+    per_page = params['per_page'].to_i
+    entry_id = params['entry_id'].to_i
+    if per_page.present? && entry_id.present?
+
+      offset = per_page / 2
+
+      lower = Entry.where("id < ? ", entry_id).order(id: :desc).offset(offset - 1).limit(1).first
+      lower_id = lower.present? ? lower.id : 1
+      upper = Entry.where("id > ? ", entry_id).order(id: :asc).offset(offset - 2).limit(1).first
+      upper_id = upper.present? ? upper.id : Entry.maximum(:id)
+
+      respond_to do |format|
+        format.json { render :json => { 'lower_bound' => lower_id, 'upper_bound' => upper_id }, :status => :ok }
+      end
+    else
+      respond_to do |format|
+        format.json { render :json => { 'error' => 'per_page, entry_id required' }, :status => 500 }
+      end
+    end
+  end
+
 end

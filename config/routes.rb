@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   root :to => "catalog#index"
 
   get '/admin_search', to: "admin_search#index"
+  post '/admin_search/calculate_bounds', to: "admin_search#calculate_bounds"
 
   resources :agents do
     collection { get 'search' }

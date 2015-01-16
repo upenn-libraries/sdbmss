@@ -47,18 +47,15 @@ $(document).ready(function() {
 
     $("input[name='search_value']").val("");
 
-    var jump_search = false;
-    
+    var jump_to_entry = null;
+        
     var table_height_buffer = 360;
     
     var getViewportHeight = function() {
         return $(window).height();
     };
 
-    var datatable_params_to_blacklight_params = function (dt_params) {
-        //console.log(dt_params);
-
-        // TODO: Blacklight might only support ordering by 1 column?
+    var getSort = function(dt_params) {
         var sort;
         if(dt_params.order.length > 0) {
             var order = dt_params.order[0]
@@ -75,6 +72,13 @@ $(document).ready(function() {
         if(!sort) {
             sort = "entry_id desc";
         }
+        return sort;
+    };
+
+    var datatable_params_to_blacklight_params = function (dt_params) {
+        //console.log(dt_params);
+
+        // TODO: Blacklight might only support ordering by 1 column?
 
         // translate dataTables params into ones that Blacklight search expects
         var blacklight_params = {
@@ -83,27 +87,18 @@ $(document).ready(function() {
             per_page: dt_params.length,
             utf8: String.fromCharCode(0x2713),
             search_field: "advanced",
-            sort: sort
+            sort: getSort(dt_params)
         };
 
         blacklight_params["op"] = $("select[name='op']").val();
 
-        if(jump_search) {
-            /* TODO: this isn't quite right; jumping should conduct a
-             * search for all records, but jump to the page containing
-             * the ID. Not sure how to do that with a minimum of
-             * shenanigans. */
-            var entry_id = $("#jump_to").val();
-            blacklight_params['entry_id'] = "[* TO " + entry_id + "]";
-        } else {
-            $("select[name='search_field']").each(function (idx, element) {
-                var search_field = $(element).val();
-                var search_value = $($("input[name='search_value']")[idx]).val();
-                if(search_value) {
-                    blacklight_params[search_field] = search_value;
-                }
-            });
-        }
+        $("select[name='search_field']").each(function (idx, element) {
+            var search_field = $(element).val();
+            var search_value = $($("input[name='search_value']")[idx]).val();
+            if(search_value) {
+                blacklight_params[search_field] = search_value;
+            }
+        });
 
         return blacklight_params;
     };
@@ -111,9 +106,10 @@ $(document).ready(function() {
     var table = $('#search_results').DataTable({
         ajax: function (data, callback, settings) {
             $("#spinner").show();
+            var blacklight_params = datatable_params_to_blacklight_params(data);
             $.ajax({
                 url: '/admin_search.json',
-                data: datatable_params_to_blacklight_params(data),
+                data: blacklight_params,
                 success: function(data, textStatus, jqXHR) {
                     if(!data.error) {
                         $(".dataTables_scrollBody").scrollTop(0);
@@ -166,7 +162,28 @@ $(document).ready(function() {
         "leftColumns": 2
     });
     */
-                
+
+    function getRowHeight() {
+        return $(table.rows().nodes().shift()).height();
+    }
+    
+    function getTableHeight() {
+        return table.rows().nodes().length * getRowHeight();
+    }
+    
+    $('#search_results').on('draw.dt', function () {
+        if(jump_to_entry) {
+            // highlight the row
+            table.rows().nodes().each(function (row, idx, api) {
+                var data = table.row(row).data();
+                if(String(data[1]) === String(jump_to_entry)) {
+                    $(row).addClass("selected");
+                    $(".dataTables_scrollBody").scrollTop(idx * getRowHeight());
+                }
+            });
+        }
+    });
+    
     $('#search_results tbody').on('click', 'tr', function (event) {
         // don't select if a link inside table was clicked
         if(event.target.tagName !== 'A') {
@@ -175,22 +192,55 @@ $(document).ready(function() {
     });
 
     $('#search_submit').click(function() {
-        jump_search = false;
+        jump_to_entry = null;
         table.ajax.reload();
     });
 
+    // Translate "Jump to" into a normal query using the search fields
+    var jump_to = function () {
+        var entry_id = $("#jump_to").val();
+        if(entry_id) {
+            jump_to_entry = entry_id;
+            $.ajax({
+                url: '/admin_search/calculate_bounds',
+                type: 'POST',
+                data: {
+                    entry_id: entry_id,
+                    per_page: $("select[name='search_results_length']").val(),
+                },
+                success: function(data, textStatus, jqXHR) {
+                    // reset the search form
+                    $("select[name='search_field']").each(function (idx, element) {
+                        $(element).val('all_fields');
+                    });
+                    $("input[name='search_value']").each(function (idx, element) {
+                        $(element).val('');
+                    });
+
+                    // fill out the search form with our custom search
+                    $("select[name='search_field']").first().val('entry_id');
+                    $("input[name='search_value']").first().val('[' + data.lower_bound + ' TO ' + data.upper_bound + ']');
+
+                    table.ajax.reload();
+                },
+                error: function() {
+                    // TODO: fill this out
+                    alert("An error occurred jumping to this record.");
+                }
+            });
+        }
+    };
+
     $("#jump_to").keydown(function(e) {
         if(e.keyCode == 13) {
-            jump_search = true;
-            table.ajax.reload();
+            jump_to();
             e.preventDefault();
             return false;
         }
     });
 
     $("#jump_submit").click(function () {
-        jump_search = true;
-        table.ajax.reload();
+        jump_to();
     });
 
     $(document).on("click", ".entry-delete-link", function (event) {
