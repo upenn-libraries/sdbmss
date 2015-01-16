@@ -47,7 +47,7 @@ $(document).ready(function() {
 
     $("input[name='search_value']").val("");
 
-    var jump_to_entry = null;
+    var jumpToEntry = null;
         
     var table_height_buffer = 360;
     
@@ -55,6 +55,7 @@ $(document).ready(function() {
         return $(window).height();
     };
 
+    // TODO: Blacklight might only support ordering by 1 column?
     var getSort = function(dt_params) {
         var sort;
         if(dt_params.order.length > 0) {
@@ -75,13 +76,10 @@ $(document).ready(function() {
         return sort;
     };
 
-    var datatable_params_to_blacklight_params = function (dt_params) {
-        //console.log(dt_params);
-
-        // TODO: Blacklight might only support ordering by 1 column?
-
-        // translate dataTables params into ones that Blacklight search expects
-        var blacklight_params = {
+    // Translates the common parameters from dataTables widget into
+    // URL params for Blacklight search
+    var commonParamsTranslate = function (dt_params) {
+        return {
             draw: dt_params.draw,
             page: (dt_params.start / dt_params.length) + 1,
             per_page: dt_params.length,
@@ -89,45 +87,65 @@ $(document).ready(function() {
             search_field: "advanced",
             sort: getSort(dt_params)
         };
+    };
 
-        blacklight_params["op"] = $("select[name='op']").val();
+    // Fielded search specific params
+    var searchParamsTranslate = function (data) {
+        params = commonParamsTranslate(data);
+
+        params["op"] = $("select[name='op']").val();
 
         $("select[name='search_field']").each(function (idx, element) {
             var search_field = $(element).val();
             var search_value = $($("input[name='search_value']")[idx]).val();
             if(search_value) {
-                blacklight_params[search_field] = search_value;
+                params[search_field] = search_value;
             }
         });
 
-        return blacklight_params;
+        return params;
+    };
+
+    // 'Jump to' specific params
+    var jumpToParamsTranslate = function (data) {
+        params = commonParamsTranslate(data);
+
+        params['entry_id'] = jumpToEntry.query;
+
+        return params;
+    };
+    
+    var searchAndUpdateTable = function(params, callback) {
+        $.ajax({
+            url: '/admin_search.json',
+            data: params,
+            success: function(data, textStatus, jqXHR) {
+                if(!data.error) {
+                    $(".dataTables_scrollBody").scrollTop(0);
+                    // when paging, we probably don't want to reset horiz scroll
+                    // $(".dataTables_scrollBody").scrollLeft(0);
+                    callback(data);
+                } else {
+                    alert("An error occurred fetching search results: " + data.error);
+                }
+            },
+            error: function() {
+                // TODO: fill this out
+                alert("An error occurred fetching search results");
+            },
+            complete: function() {
+                $("#spinner").hide();
+            }
+        });
     };
     
     var table = $('#search_results').DataTable({
         ajax: function (data, callback, settings) {
             $("#spinner").show();
-            var blacklight_params = datatable_params_to_blacklight_params(data);
-            $.ajax({
-                url: '/admin_search.json',
-                data: blacklight_params,
-                success: function(data, textStatus, jqXHR) {
-                    if(!data.error) {
-                        $(".dataTables_scrollBody").scrollTop(0);
-                        // when paging, we probably don't want to reset horiz scroll
-                        // $(".dataTables_scrollBody").scrollLeft(0);
-                        callback(data);
-                    } else {
-                        alert("An error occurred fetching search results: " + data.error);
-                    }
-                },
-                error: function() {
-                    // TODO: fill this out
-                    alert("An error occurred fetching search results");
-                },
-                complete: function() {
-                    $("#spinner").hide();
-                }
-            });
+
+            var params = jumpToEntry ? jumpToParamsTranslate(data) : searchParamsTranslate(data);
+
+            searchAndUpdateTable(params, callback);
         },
         columnDefs: [
             {
@@ -172,11 +190,12 @@ $(document).ready(function() {
     }
     
     $('#search_results').on('draw.dt', function () {
-        if(jump_to_entry) {
+        if(jumpToEntry !== null) {
+            var entry_id = String(jumpToEntry.entry_id);
             // highlight the row
             table.rows().nodes().each(function (row, idx, api) {
                 var data = table.row(row).data();
-                if(String(data[1]) === String(jump_to_entry)) {
+                if(String(data[1]) === entry_id) {
                     $(row).addClass("selected");
                     $(".dataTables_scrollBody").scrollTop(idx * getRowHeight());
                 }
@@ -192,15 +211,13 @@ $(document).ready(function() {
     });
 
     $('#search_submit').click(function() {
-        jump_to_entry = null;
+        jumpToEntry = null;
         table.ajax.reload();
     });
 
-    // Translate "Jump to" into a normal query using the search fields
-    var jump_to = function () {
+    var jumpTo = function () {
         var entry_id = $("#jump_to").val();
         if(entry_id) {
-            jump_to_entry = entry_id;
             $.ajax({
                 url: '/admin_search/calculate_bounds',
                 type: 'POST',
@@ -209,18 +226,10 @@ $(document).ready(function() {
                     per_page: $("select[name='search_results_length']").val(),
                 },
                 success: function(data, textStatus, jqXHR) {
-                    // reset the search form
-                    $("select[name='search_field']").each(function (idx, element) {
-                        $(element).val('all_fields');
-                    });
-                    $("input[name='search_value']").each(function (idx, element) {
-                        $(element).val('');
-                    });
-
-                    // fill out the search form with our custom search
-                    $("select[name='search_field']").first().val('entry_id');
-                    $("input[name='search_value']").first().val('[' + data.lower_bound + ' TO ' + data.upper_bound + ']');
-
+                    jumpToEntry = {
+                        entry_id: entry_id,
+                        query: '[' + data.lower_bound + ' TO ' + data.upper_bound + ']'
+                    };
                     table.ajax.reload();
                 },
                 error: function() {
@@ -233,14 +242,14 @@ $(document).ready(function() {
 
     $("#jump_to").keydown(function(e) {
         if(e.keyCode == 13) {
-            jump_to();
+            jumpTo();
             e.preventDefault();
             return false;
         }
     });
 
     $("#jump_submit").click(function () {
-        jump_to();
+        jumpTo();
     });
 
     $(document).on("click", ".entry-delete-link", function (event) {
