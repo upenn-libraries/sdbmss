@@ -47,7 +47,9 @@ $(document).ready(function() {
 
     $("input[name='search_value']").val("");
 
-    var jumpToEntry = null;
+    var jumpToEntry = {
+        search: false
+    };
         
     var table_height_buffer = 360;
     
@@ -140,12 +142,38 @@ $(document).ready(function() {
     };
     
     var table = $('#search_results').DataTable({
-        ajax: function (data, callback, settings) {
+        ajax: function (dt_params, callback, settings) {
             $("#spinner").show();
 
-            var params = jumpToEntry ? jumpToParamsTranslate(data) : searchParamsTranslate(data);
+            // seems like there should be a way to do this conditional
+            // ajax and subsequent searchAndUpdateTable using
+            // promises, but I can't figure that out right now
 
-            searchAndUpdateTable(params, callback);
+            if(jumpToEntry.search) {
+                var entry_id = $("#jump_to").val();
+                $.ajax({
+                    url: '/admin_search/calculate_bounds',
+                    type: 'POST',
+                    data: {
+                        entry_id: entry_id,
+                        per_page: $("select[name='search_results_length']").val(),
+                    },
+                    success: function(data, textStatus, jqXHR) {
+                        jumpToEntry.entry_id = entry_id;
+                        jumpToEntry.query = '[' + data.lower_bound + ' TO ' + data.upper_bound + ']';
+
+                        var params = jumpToParamsTranslate(dt_params);
+                        searchAndUpdateTable(params, callback);
+                    },
+                    error: function() {
+                        // TODO: fill this out
+                        alert("An error occurred jumping to this record.");
+                    }
+                });
+            } else {
+                var params = searchParamsTranslate(dt_params);                
+                searchAndUpdateTable(params, callback);
+            }
         },
         columnDefs: [
             {
@@ -181,16 +209,21 @@ $(document).ready(function() {
     });
     */
 
-    function getRowHeight() {
+    var getRowHeight = function() {
         return $(table.rows().nodes().shift()).height();
-    }
+    };
     
-    function getTableHeight() {
+    var getTableHeight = function() {
         return table.rows().nodes().length * getRowHeight();
-    }
+    };
+
+    var doSearch = function(isJumpSearch) {
+        jumpToEntry.search = isJumpSearch;
+        table.ajax.reload();
+    };
     
     $('#search_results').on('draw.dt', function () {
-        if(jumpToEntry !== null) {
+        if(jumpToEntry.search) {
             var entry_id = String(jumpToEntry.entry_id);
             // highlight the row
             table.rows().nodes().each(function (row, idx, api) {
@@ -211,45 +244,19 @@ $(document).ready(function() {
     });
 
     $('#search_submit').click(function() {
-        jumpToEntry = null;
-        table.ajax.reload();
+        doSearch(false);
     });
-
-    var jumpTo = function () {
-        var entry_id = $("#jump_to").val();
-        if(entry_id) {
-            $.ajax({
-                url: '/admin_search/calculate_bounds',
-                type: 'POST',
-                data: {
-                    entry_id: entry_id,
-                    per_page: $("select[name='search_results_length']").val(),
-                },
-                success: function(data, textStatus, jqXHR) {
-                    jumpToEntry = {
-                        entry_id: entry_id,
-                        query: '[' + data.lower_bound + ' TO ' + data.upper_bound + ']'
-                    };
-                    table.ajax.reload();
-                },
-                error: function() {
-                    // TODO: fill this out
-                    alert("An error occurred jumping to this record.");
-                }
-            });
-        }
-    };
 
     $("#jump_to").keydown(function(e) {
         if(e.keyCode == 13) {
-            jumpTo();
+            doSearch(true);
             e.preventDefault();
             return false;
         }
     });
 
     $("#jump_submit").click(function () {
-        jumpTo();
+        doSearch(true);
     });
 
     $(document).on("click", ".entry-delete-link", function (event) {
