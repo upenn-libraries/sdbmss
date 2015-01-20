@@ -474,7 +474,7 @@ $(document).ready(function() {
         </div>
         <div class="col-sm-2">
             <select class="form-control" name="search_field">
-            <%- search_fields_for_advanced_search.each do |key, field_def| -%>
+            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
             <option value="<%= key %>"><%= field_def.label %></option>
             <%- end -%>
             </select>
@@ -493,7 +493,7 @@ $(document).ready(function() {
         </div>
         <div class="col-sm-2">
             <select class="form-control" name="search_field">
-            <%- search_fields_for_advanced_search.each do |key, field_def| -%>
+            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
             <option value="<%= key %>"><%= field_def.label %></option>
             <%- end -%>
             </select>
@@ -506,7 +506,7 @@ $(document).ready(function() {
         </div>
         <div class="col-sm-2">
             <select class="form-control" name="search_field">
-            <%- search_fields_for_advanced_search.each do |key, field_def| -%>
+            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
             <option value="<%= key %>"><%= field_def.label %></option>
             <%- end -%>
             </select>
