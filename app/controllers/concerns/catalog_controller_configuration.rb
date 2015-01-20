@@ -269,6 +269,11 @@ module CatalogControllerConfiguration
       # except in the relevancy case).
 
       config.add_sort_field 'entry_id asc', :label => 'ID'
+      config.add_sort_field 'entry_id desc', :label => 'ID (descending)'
+      config.add_sort_field 'title_flat asc', :label => 'Title'
+      config.add_sort_field 'title_flat desc', :label => 'Title (descending)'
+      config.add_sort_field 'manuscript_date_flat asc', :label => 'Manuscript Date'
+      config.add_sort_field 'manuscript_date_flat desc', :label => 'Manuscript Date (descending)'
 
       # config.add_sort_field 'score desc, pub_date_sort desc, title_sort asc', :label => 'relevance'
       # config.add_sort_field 'pub_date_sort desc, title_sort asc', :label => 'year'

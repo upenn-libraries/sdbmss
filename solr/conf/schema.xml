@@ -245,31 +245,66 @@
     <!-- Naming conventions:
          *_range = fields whose values are a range (like "1 - 10"); used for faceting only
          *_search = fields configured for full-text searching (type=text, may need additional tokenization and such later on
+         *_id = fields usually used for numeric sorting
+         *_flat = 'flattened' str versions of multi-valued fields, used for sorting
     -->
 
-    <field name="author" stored="true" type="string" multiValued="true" indexed="true"/>
-    <field name="title" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="complete_entry" stored="true" type="text" multiValued="false" indexed="true"/>
+    
+    <field name="entry_id" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <!-- 'manuscript' is full manuscript ID (SDBM_MS_xxx), used for faceting; manuscript_id is for sorting  -->
     <field name="manuscript" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="manuscript_id" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <field name="source_date" stored="true" type="string" multiValued="false" indexed="true"/>
+    <!-- 'source' is a composite -->
     <field name="source" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="source_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="source_title" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="catalog_or_lot_number" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="catalog_or_lot_number_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="secondary_source_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="current_location_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="transaction_seller_agent" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="transaction_seller_agent_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="transaction_seller" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="transaction_seller_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="transaction_buyer" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="transaction_sold" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="transaction_buyer_search" stored="true" type="text" multiValued="false" indexed="true"/>    <field name="transaction_sold" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="transaction_price" stored="true" type="sdouble" multiValued="false" indexed="true"/>
     <field name="provenance" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="title" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="title_flat" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="title_search" stored="true" type="text" multiValued="true" indexed="true"/>
+    <field name="author" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="author_flat" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="author_search" stored="true" type="text" multiValued="true" indexed="true"/>
     <field name="manuscript_date" stored="true" type="sint" multiValued="true" indexed="true"/>
+    <field name="manuscript_date_flat" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="artist" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="artist_flat" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="artist_search" stored="true" type="text" multiValued="true" indexed="true"/>
     <field name="scribe" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="scribe_flat" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="scribe_search" stored="true" type="text" multiValued="true" indexed="true"/>
     <field name="language" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="language_flat" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="language_search" stored="true" type="text" multiValued="true" indexed="true"/>
     <field name="material" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="material_flat" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="material_search" stored="true" type="text" multiValued="true" indexed="true"/>
     <field name="place" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="place_flat" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="place_search" stored="true" type="text" multiValued="true" indexed="true"/>
     <field name="use" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="use_flat" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="use_search" stored="true" type="text" multiValued="true" indexed="true"/>
     <field name="folios" stored="true" type="sint" multiValued="false" indexed="true"/>
     <field name="num_columns" stored="true" type="sint" multiValued="false" indexed="true"/>
 
     <field name="num_lines" stored="true" type="sint" multiValued="false" indexed="true"/>
     <field name="height" stored="true" type="sint" multiValued="false" indexed="true"/>
     <field name="width" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <field name="alt_size" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="miniatures_fullpage" stored="true" type="sint" multiValued="false" indexed="true"/>
     <field name="miniatures_large" stored="true" type="sint" multiValued="false" indexed="true"/>
     <field name="miniatures_small" stored="true" type="sint" multiValued="false" indexed="true"/>
@@ -286,31 +321,16 @@
     <field name="miniatures_unspec_size_range" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="initials_historiated_range" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="initials_decorated_range" stored="true" type="string" multiValued="false" indexed="true"/>
-
-    <field name="complete_entry" stored="true" type="text" multiValued="false" indexed="true"/>
-
-    <field name="source_search" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="source_date_search" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="title_search" stored="true" type="text" multiValued="true" indexed="true"/>
-    <field name="catalog_or_lot_number_search" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="secondary_source_search" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="current_location_search" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="transaction_seller_agent_search" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="transaction_seller_search" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="transaction_buyer_search" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="author_search" stored="true" type="text" multiValued="true" indexed="true"/>
-    <field name="language_search" stored="true" type="text" multiValued="true" indexed="true"/>
-    <field name="material_search" stored="true" type="text" multiValued="true" indexed="true"/>
-    <field name="place_search" stored="true" type="text" multiValued="true" indexed="true"/>
-    <field name="use_search" stored="true" type="text" multiValued="true" indexed="true"/>
-    <field name="artist_search" stored="true" type="text" multiValued="true" indexed="true"/> 
-    <field name="scribe_search" stored="true" type="text" multiValued="true" indexed="true"/>   
     <field name="binding_search" stored="true" type="text" multiValued="true" indexed="true"/>
     <field name="comment_search" stored="true" type="text" multiValued="false" indexed="true"/>
 
-    <!-- for sorting -->
-    <field name="entry_id" stored="true" type="sint" multiValued="false" indexed="true"/>
-    
+    <field name="created_at" stored="true" type="date" multiValued="false" indexed="true"/>
+    <field name="created_by" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="updated_at" stored="true" type="date" multiValued="false" indexed="true"/>
+    <field name="updated_by" stored="true" type="string" multiValued="false" indexed="true"/>
+
+    <field name="approved" stored="true" type="boolean" multiValued="false" indexed="true"/>    
+
 </fields>
   
   <!-- Field to use to determine and enforce document uniqueness.

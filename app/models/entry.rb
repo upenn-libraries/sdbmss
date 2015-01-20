@@ -212,16 +212,28 @@ class Entry < ActiveRecord::Base
     define_field(:string, :manuscript, :stored => true, :multiple => true) do
       entry_manuscripts.map { |em| em.manuscript.get_public_id }
     end
+    define_field(:integer, :manuscript_id, :stored => true) do
+      (manuscript = get_manuscript) && manuscript.id
+    end
 
     #### Source info
 
+    define_field(:string, :source_date, :stored => true) do
+      source.date
+    end
     define_field(:string, :source, :stored => true) do
       source.get_display_value
     end
     define_field(:text, :source_search, :stored => true) do
       source.get_display_value
     end
+    define_field(:string, :source_title, :stored => true) do
+      source.title
+    end
 
+    define_field(:string, :catalog_or_lot_number, :stored => true) do
+      catalog_or_lot_number
+    end
     define_field(:text, :catalog_or_lot_number_search, :stored => true) do
       catalog_or_lot_number
     end
@@ -268,6 +280,9 @@ class Entry < ActiveRecord::Base
     define_field(:string, :title,:stored => true, :multiple => true) do
       entry_titles.map &:title
     end
+    define_field(:string, :title_flat,:stored => true) do
+      entry_titles.map(&:title).join("; ")
+    end
     define_field(:text, :title_search, :stored => true) do
       entry_titles.map &:title
     end
@@ -283,9 +298,15 @@ class Entry < ActiveRecord::Base
     define_field(:integer, :manuscript_date, :stored => true, :multiple => true) do
       entry_dates.map &:date
     end
+    define_field(:string, :manuscript_date_flat, :stored => true) do
+      entry_dates.map(&:date).join("; ")
+    end
 
     define_field(:string, :artist, :stored => true, :multiple => true) do
       artists.map &:name
+    end
+    define_field(:string, :artist_flat, :stored => true) do
+      artists.map(&:name).join("; ")
     end
     define_field(:text, :artist_search, :stored => true) do
       artists.map &:name
@@ -294,12 +315,18 @@ class Entry < ActiveRecord::Base
     define_field(:string, :scribe, :stored => true, :multiple => true) do
       scribes.map &:name
     end
+    define_field(:string, :scribe_flat, :stored => true) do
+      scribes.map(&:name).join("; ")
+    end
     define_field(:text, :scribe_search, :stored => true) do
       scribes.map &:name
     end
 
     define_field(:string, :language, :stored => true, :multiple => true) do
       languages.map &:name
+    end
+    define_field(:string, :language_flat, :stored => true) do
+      languages.map(&:name).join("; ")
     end
     define_field(:text, :language_search, :stored => true) do
       languages.map &:name
@@ -308,6 +335,9 @@ class Entry < ActiveRecord::Base
     define_field(:string, :material, :stored => true, :multiple => true) do
       entry_materials.map &:material
     end
+    define_field(:string, :material_flat, :stored => true, :multiple => true) do
+      entry_materials.map(&:material).join("; ")
+    end
     define_field(:text, :material_search, :stored => true) do
       entry_materials.map &:material
     end
@@ -315,12 +345,18 @@ class Entry < ActiveRecord::Base
     define_field(:string, :place, :stored => true, :multiple => true) do
       places.map &:name
     end
+    define_field(:string, :place_flat, :stored => true) do
+      places.map(&:name).join("; ")
+    end
     define_field(:text, :place_search, :stored => true) do
       places.map &:name
     end
 
     define_field(:string, :use, :stored => true, :multiple => true) do
       entry_uses.map &:use
+    end
+    define_field(:string, :use_flat, :stored => true) do
+      entry_uses.map(&:use).join("; ")
     end
     define_field(:text, :use_search, :stored => true) do
       entry_uses.map &:use
@@ -337,6 +373,8 @@ class Entry < ActiveRecord::Base
 
     define_field(:integer, :width, :stored => true) { width }
     define_field(:string, :width_range, :stored => true) { SDBMSS::Util.range_bucket(width) }
+
+    define_field(:string, :alt_size, :stored => true) { alt_size }
 
     define_field(:integer, :miniatures_fullpage, :stored => true) { miniatures_fullpage }
     define_field(:string, :miniatures_fullpage_range, :stored => true) { SDBMSS::Util.range_bucket(miniatures_fullpage) }
@@ -359,6 +397,12 @@ class Entry < ActiveRecord::Base
     define_field(:text, :binding_search, :stored => true) do
       manuscript_binding
     end
+
+    define_field(:date, :created_at, :stored => true) { created_at }
+    define_field(:string, :created_by, :stored => true) { created_by }
+    define_field(:date, :updated_at, :stored => true) { updated_at }
+    define_field(:string, :updated_by, :stored => true) { updated_by }
+    define_field(:boolean, :approved, :stored => true) { approved }
 
     #### Provenance
 

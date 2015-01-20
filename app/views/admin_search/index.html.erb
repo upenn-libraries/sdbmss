@@ -57,21 +57,20 @@ $(document).ready(function() {
         return $(window).height();
     };
 
-    // TODO: Blacklight might only support ordering by 1 column?
     var getSort = function(dt_params) {
-        var sort;
-        if(dt_params.order.length > 0) {
-            var order = dt_params.order[0]
-            // TODO: figure out elegant mapping of column indexes to names
-            if(order.column === 1) {
-                sort = "entry_id";
-            } else if(order.column === 3) {
-                sort = "cat_or_lot_number";
+        var sort = "";
+        $.each(dt_params.order, function(idx, order) {
+            var columnDefinition = optionsColumns[order.column];
+            var sortField = columnDefinition.blSortField;
+            if(sortField) {
+                if(sort) {
+                    sort += ", ";
+                }
+                sort += sortField + " " + order.dir;
+            } else {
+                alert("ERROR: no sort field found for column, so using ID; fix this!");
             }
-            if(sort) {
-                sort += " " + order.dir;
-            }
-        }
+        });
         if(!sort) {
             sort = "entry_id desc";
         }
@@ -141,6 +140,188 @@ $(document).ready(function() {
         });
     };
     
+    // NOTE: blSortField is our own custom attribute used to key
+    // columns to their solr field in blacklight for sorting
+    var optionsColumns = [
+        {
+            title: 'Actions',
+            "data": null,
+            "orderable": false,
+            "render": function (data, type, full, meta) {
+                return '<a href="/entries/' + full[1] + '" target="_blank">View</a>' +
+                    ' <a href="/entries/' + full[1] + '/edit" target="_blank">Edit</a>' +
+                    ' <a class="entry-delete-link" href="#" target="_blank">Delete</a>';
+            }
+        },
+        {
+            title: 'ID',
+            blSortField: 'entry_id'
+        },
+        {
+            title: 'Manuscript',
+            blSortField: 'manuscript_id'
+        },
+        {
+            title: 'Source Date',
+            blSortField: 'source_date'
+        },
+        {
+            title: 'Source Title',
+            blSortField: 'source_title'
+        },
+        {
+            title: 'Cat or Lot #',
+            blSortField: 'catalog_or_lot_number'
+        },
+        {
+            title: 'Entry Date'
+        },
+        {
+            title: 'Seller Agent',
+            blSortField: 'transaction_seller_agent'
+        },
+        {
+            title: 'Seller',
+            blSortField: 'transaction_seller'
+        },
+        {
+            title: 'Buyer',
+            blSortField: 'transaction_buyer'
+        },
+        {
+            title: 'Sold',
+            blSortField: 'transaction_sold'
+        },
+        {
+            title: 'Price',
+            blSortField: 'transaction_price'
+        },
+        {
+            title: 'Title',
+            blSortField: 'title_flat'
+        },
+        {
+            title: 'Author',
+            blSortField: 'author_flat'
+        },
+        {
+            title: 'Date',
+            blSortField: 'manuscript_date_flat'
+        },
+        {
+            title: 'Artist',
+            blSortField: 'artist_flat'
+        },
+        {
+            title: 'Scribe',
+            blSortField: 'scribe_flat'
+        },
+        {
+            title: 'Language',
+            blSortField: 'language_flat'
+        },
+        {
+            title: 'Material',
+            blSortField: 'material_flat'
+        },
+        {
+            title: 'Use',
+            blSortField: 'use_flat'
+        },
+        {
+            title: 'Folios',
+            blSortField: 'folios'
+        },
+        {
+            title: 'Columns',
+            blSortField: 'num_columns'
+        },
+        {
+            title: 'Lines',
+            blSortField: 'num_lines'
+        },
+        {
+            title: 'Height',
+            blSortField: 'height'
+        },
+        {
+            title: 'Width',
+            blSortField: 'width'
+        },
+        {
+            title: 'Alt Size',
+            blSortField: 'alt_size'
+        },
+        {
+            title: 'Min Fl',
+            blSortField: 'miniatures_fullpage'
+        },
+        {
+            title: 'Min Lg',
+            blSortField: 'miniatures_large'
+        },
+        {
+            title: 'Min Sm',
+            blSortField: 'miniatures_small'
+        },
+        {
+            title: 'Min Un',
+            blSortField: 'miniatures_unspec_size'
+        },
+        {
+            title: 'Init Hist',
+            blSortField: 'initials_historiated'
+        },
+        {
+            title: 'Init Dec',
+            blSortField: 'initials_decorated'
+        },
+        {
+            title: 'Binding',
+            "orderable": false
+        },
+        {
+            title: 'URL',
+            "orderable": false
+        },
+        {
+            title: 'Other Info',
+            "orderable": false
+        },
+        {
+            title: 'Provenance',
+            "orderable": false
+        },
+        {
+            title: 'Added On',
+            blSortField: 'created_at'
+        },
+        {
+            title: 'Added By',
+            blSortField: 'created_by'
+        },
+        {
+            title: 'Last Modified',
+            blSortField: 'updated_at'
+        },
+        {
+            title: 'Last Modified By',
+            blSortField: 'updated_at'
+        },
+        {
+            title: 'Is Approved',
+            blSortField: 'approved'
+        }
+    ];
+
+    // we have to create TH elements before dataTable init, otherwise
+    // col widths are messed up and drag-resizing is broken. it's
+    // possible I need additional option(s) for having dataTable
+    // properly create the THs but I don't know what they could be.
+    $.each(optionsColumns, function(idx, column) {
+        $('#search_results thead tr').append("<th>" + column.name + "</th>");
+    });
+
     var table = $('#search_results').DataTable({
         ajax: function (dt_params, callback, settings) {
             $("#spinner").show();
@@ -175,18 +356,7 @@ $(document).ready(function() {
                 searchAndUpdateTable(params, callback);
             }
         },
-        columnDefs: [
-            {
-                "targets": 0,
-                "data": null,
-                "orderable": false,
-                "render": function (data, type, full, meta) {
-                    return '<a href="/entries/' + full[1] + '" target="_blank">View</a>' +
-                        ' <a href="/entries/' + full[1] + '/edit" target="_blank">Edit</a>' +
-                        ' <a class="entry-delete-link" href="#" target="_blank">Delete</a>';
-                }
-            }
-        ],
+        columns: optionsColumns,
         language: {
             "emptyTable": "No records found for search query."
         },
@@ -365,53 +535,14 @@ $(document).ready(function() {
 <table id="search_results" class="table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
     <thead>
         <tr>
+            <!-- we populate TH elements dynamically -->
+            
             <!-- TODO: figure out how to get datatables to initialize
             with reasonable static widths; widget seems to
             automatically resize for data, which is not what we
             want. this might require dynamically resizing after init
             is finished? 
               -->
-            <th>Actions</th>
-            <th width="50">ID</th>
-            <th>Manuscript</th>
-            <th width="200">Source Date</th>
-            <th width="200">Source Title</th>
-            <th width="80">Cat or Lot #</th>
-            <th width="80">Entry Date</th>
-            <th>Seller Agent</th>
-            <th>Seller</th>
-            <th>Buyer</th>
-            <th>Sold</th>
-            <th>Price</th>
-            <th width="200">Title</th>
-            <th width="200">Author</th>
-            <th width="200">Date</th>
-            <th width="200">Artist</th>
-            <th width="200">Scribe</th>
-            <th width="200">Language</th>
-            <th width="200">Material</th>
-            <th width="200">Use</th>
-            <th>Folios</th>
-            <th width="70">Columns</th>
-            <th width="60">Lines</th>
-            <th width="60">Height</th>
-            <th width="60">Width</th>
-            <th width="60">Alt Size</th>
-            <th width="60">Min Fl</th>
-            <th width="60">Min Lg</th>
-            <th width="60">Min Sm</th>
-            <th width="60">Min Un</th>
-            <th width="60">Init Hist</th>
-            <th width="60">Init Dec</th>
-            <th width="60">Binding</th>
-            <th width="60">URL</th>
-            <th width="60">Other Info</th>
-            <th>Provenance</th>
-            <th width="60">Added On</th>
-            <th width="60">Added By</th>
-            <th width="60">Last Modified</th>
-            <th width="60">Last Modified By</th>
-            <th width="60">Is Approved</th>
         </tr>
     </thead>
     <tbody>
