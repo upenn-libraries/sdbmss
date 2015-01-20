@@ -1,7 +1,7 @@
 
 class Source < ActiveRecord::Base
-  belongs_to :created_by, :class_name => 'User'
-  belongs_to :updated_by, :class_name => 'User'
+
+  include UserFields
 
   has_many :entries
   has_many :source_agents

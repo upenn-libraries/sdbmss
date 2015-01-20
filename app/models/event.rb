@@ -1,6 +1,8 @@
 class Event < ActiveRecord::Base
   belongs_to :entry
 
+  include UserFields
+
   has_many :event_agents
 
   scope :transactions, -> { where(primary: true) }
