@@ -284,7 +284,10 @@ $(document).ready(function() {
             title: 'URL',
             "orderable": false,
             "render": function (data, type, full, meta) {
-                return '<a href="' + data + '" target="_blank">' + data + '</a>';
+                if(data) {
+                    return '<a href="' + data + '" target="_blank">' + data + '</a>';
+                }
+                return '';
             }
         },
         {
