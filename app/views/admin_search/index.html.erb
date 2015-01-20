@@ -282,7 +282,10 @@ $(document).ready(function() {
         },
         {
             title: 'URL',
-            "orderable": false
+            "orderable": false,
+            "render": function (data, type, full, meta) {
+                return '<a href="' + data + '" target="_blank">' + data + '</a>';
+            }
         },
         {
             title: 'Other Info',
@@ -516,7 +519,7 @@ $(document).ready(function() {
         </div>
         <div class="col-sm-1">
             <div>
-                <img id="spinner" style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
+                <img id="spinner" alt="working..." style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
             </div>
         </div>
         <div class="col-sm-1 text-right">
