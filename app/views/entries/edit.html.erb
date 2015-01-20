@@ -36,7 +36,7 @@
       </div>
       <div class="col-sm-2 text-right">
           <button style="margin-bottom: 8px;" class="btn btn-sm btn-warning" ng-show="edit" ng-click="confirmClearChanges()">Clear changes</button><br/>
-          <a class="btn btn-sm btn-warning" ng-show="edit" href="/entry/{{ entry.id }}">Go to page</a>
+          <a class="btn btn-sm btn-warning" ng-show="edit" href="/entries/{{ entry.id }}">Go to page</a>
       </div>
     </div>
 
@@ -61,7 +61,7 @@
         <input type="text" class="form-control" id="cat_lot_no" placeholder="" ng-model="entry.catalog_or_lot_number">
       </div>
       <div class="col-sm-7 text-right">
-          <a class="btn btn-sm btn-warning" ng-show="edit" href="/entry/add/source/{{ entry.source.id }}">Create a new Entry for this Source</a>
+          <a class="btn btn-sm btn-warning" ng-show="edit" href="/entries/new/?source_id={{ entry.source.id }}">Create a new Entry for this Source</a>
       </div>
     </div>
 
