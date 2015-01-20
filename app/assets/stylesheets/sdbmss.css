@@ -10,6 +10,11 @@
 /* on Entry view page, move the content block to the right of the sidebar */
 .blacklight-catalog-show #content { float: right; }
 
+.blacklight-catalog-show h1 { font-size: 30px; }
+
+/* tighten up whitespace */
+.blacklight-catalog-show table { margin-bottom: 5px; }
+
 .record-label { color: #777 }
 
 /**** Style for various data entry forms */
