@@ -5,27 +5,6 @@ require 'set'
 
 module SDBMSS
 
-# class DiffableString:
-#     """
-#     Wrapper around a string that overrides subtraction to calculate
-#     distance.
-#     """
-
-#     def __init__(self, s):
-#         self.s = s
-
-
-#     def __sub__(self, arg):
-#         # since similarity is inverse of distance, we invert result
-#         # from SequenceMatcher, which returns 0 for exact match, 1.0
-#         # for no match).
-
-#         # how much does this measure count? Keep in mind the scale of
-#         # other dimensions (number of folios, height and width, etc)
-#         WEIGHT = 10
-
-#         return (1.0 - difflib.SequenceMatcher(isjunk=lambda ch: ch in " \t", a=self.s, b=arg.s).ratio()) * WEIGHT
-
   class StringSet
 
     attr_accessor :strings
@@ -46,6 +25,8 @@ module SDBMSS
 
   end
 
+  # Encapsulates a set of strings for comparison to another set,
+  # according to Levenshtein algorithm for string similarity.
   class LevenshteinStringSet
 
     attr_accessor :strings
@@ -87,6 +68,7 @@ module SDBMSS
       @similar_entries = nil
     end
 
+    # iterates over similar entries
     def each(&block)
       find_similar_entries if @similar_entries.nil?
       @similar_entries.each do |candidate|
@@ -141,7 +123,6 @@ module SDBMSS
     private
 
     def create_point entry
-      # TODO: add ruby version of a DiffableString(entry.get_titles_str()))
       return [ entry.num_lines || 0, entry.folios || 0, entry.height || 0, entry.width || 0, LevenshteinStringSet.new(entry.entry_titles.map(&:title)) ]
     end
 
