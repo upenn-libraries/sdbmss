@@ -29,7 +29,7 @@ class SourcesController < ApplicationController
         @source.update!(
           params.permit(
           :source_type, :date, :title, :author,
-          :whether_mss, :status,
+          :whether_mss,
           :alt_date, :current_location, :location_city, :location_country,
           :link,
           :cataloging_type,
@@ -37,6 +37,14 @@ class SourcesController < ApplicationController
           :electronic_catalog_open_access,
           :sources,
         ))
+
+        if !@source.persisted?
+          if @source.whether_mss == 'No'
+            @source.status = 'No MSS'
+          else
+            @source.status = 'To Be Entered'
+          end
+        end
 
         Reconciler.reconcile_assoc @source, params["source_agents"], SourceAgent, 'source_id', [:role, :agent_id]
 

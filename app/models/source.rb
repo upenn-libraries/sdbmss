@@ -24,17 +24,15 @@ class Source < ActiveRecord::Base
   HAS_MANUSCRIPT_TYPES = [
     ['Yes', 'Yes'],
     ['No', 'No'],
-    ['Likely', 'Likely'],
-    ['Not Likely', 'Not Likely'],
-    ['Uncertain', 'Uncertain'],
+    ['Maybe', 'Maybe'],
   ]
 
+  # status can be either "No MSS" or "To Be Entered" => "Partially Entered" => "Entered"
   STATUS_TYPES = [
-    ['To Be Checked', 'To Be Checked'],
-    ['Entered', 'Entered'],
     ['To Be Entered', 'To Be Entered'],
     ['Partially Entered', 'Partially Entered'],
-    ['Not Entered (No MSS)', 'Not Entered (No MSS)'],
+    ['Entered', 'Entered'],
+    ['No MSS', 'No MSS'],
   ]
 
   def get_public_id

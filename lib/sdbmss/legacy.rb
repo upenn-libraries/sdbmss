@@ -877,6 +877,25 @@ module SDBMSS::Legacy
         source_type = 'other_published'
       end
 
+      whether_mss = row['WHETHER_MSS']
+      if ['Likely', 'Not Likely', 'Uncertain'].member? whether_mss
+        whether_mss = 'Maybe'
+      end
+
+      status = row['SDBM_STATUS']
+      if status == 'Not Entered (No MSS)'
+        if whether_mss.present?
+          if whether_mss != 'No'
+            create_issue('MANUSCRIPT_CATALOG', row['MANUSCRIPTCATALOGID'], "bad_status", "catalog SDBM_STATUS is #{row['SDBM_STATUS']} but WHETHER_MSS is #{row['WHETHER_MSS']}, which makes no sense")
+          end
+        else
+          whether_mss = 'No'
+        end
+      end
+      if (!status.present?) || status == 'To Be Checked'
+        status = 'To Be Entered'
+      end
+
       # NOTE: there do exist Catalogs with no Entries, and that's
       # ok. these can indicate that someone looked at a catalog and
       # determined that there are no MSS relevant for SDBM (the
@@ -893,7 +912,7 @@ module SDBMSS::Legacy
         title: row['CAT_ID'],
         alt_date: row['ALT_CAT_DATE'],
         author: row['CAT_AUTHOR'],
-        whether_mss: row['WHETHER_MSS'],
+        whether_mss: whether_mss,
         current_location: row['CURRENT_LOCATION'],
         location_city: row['LOCATION_CITY'],
         location_country: row['LOCATION_COUNTRY'],
@@ -908,7 +927,7 @@ module SDBMSS::Legacy
         updated_by: get_or_create_user(row['LAST_MODIFIED_BY']),
         comments: row['COMMENTS'],
         cataloging_type: row['CATALOGING_TYPE'],
-        status: row['SDBM_STATUS'],
+        status: status,
         hidden: hidden,
       )
 
