@@ -102,6 +102,9 @@ class EntriesController < ApplicationController
     @entry.deleted = true
     @entry.updated_by_id = current_user.id
     @entry.save!
+
+    Sunspot.remove(@entry)
+
     # if we call respond_with(@entry), which is more rails-ish, the
     # response is a 302 to a #show, but jquery's ajax code gets stuck
     # in an redirect loop, deleting the object over and over again. So
