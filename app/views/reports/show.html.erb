@@ -21,6 +21,11 @@ but they have been filtered out from these reports.</p>
         <td><a href="<%= reports_languages_path format: :csv %>">CSV</a></td>
     </tr>
     <tr>
+        <td>List of places</td>
+        <td><a href="<%= reports_places_path %>">HTML</a></td>
+        <td><a href="<%= reports_places_path format: :csv %>">CSV</a></td>
+    </tr>
+    <tr>
         <td>List of provenance agents</td>
         <td><a href="<%= reports_agents_path %>">HTML</a></td>
         <td><a href="<%= reports_agents_path format: :csv %>">CSV</a></td>
@@ -29,5 +34,10 @@ but they have been filtered out from these reports.</p>
         <td>List of scribes</td>
         <td><a href="<%= reports_scribes_path %>">HTML</a></td>
         <td><a href="<%= reports_scribes_path format: :csv %>">CSV</a></td>
+    </tr>
+    <tr>
+        <td>List of sources</td>
+        <td><a href="<%= reports_sources_path %>">HTML</a></td>
+        <td><a href="<%= reports_sources_path format: :csv %>">CSV</a></td>
     </tr>
 </p>
