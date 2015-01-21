@@ -1,7 +1,27 @@
 
 describe "SDBMSS::Util" do
 
-   describe "#split_and_strip" do
+  describe "#format_fuzzy_date" do
+
+    it "formats a basic date" do
+      expect(SDBMSS::Util.format_fuzzy_date("20141123")).to eq("2014-Nov-23")
+    end
+
+    it "formats a date without a day" do
+      expect(SDBMSS::Util.format_fuzzy_date("20141100")).to eq("2014-Nov")
+    end
+
+    it "formats a date with only year" do
+      expect(SDBMSS::Util.format_fuzzy_date("20140000")).to eq("2014")
+    end
+
+    it "returns garbage data as-is" do
+      expect(SDBMSS::Util.format_fuzzy_date("2014874872488")).to eq("2014874872488")
+    end
+
+  end
+
+  describe "#split_and_strip" do
 
      it "splits a string" do
        expect(SDBMSS::Util.split_and_strip("One String|Another String")).to eq(["One String", "Another String"])

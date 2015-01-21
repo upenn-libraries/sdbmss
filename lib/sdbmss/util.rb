@@ -67,10 +67,10 @@ module SDBMSS
         pieces
       end
 
-      # returns a reasonably formatted YYYY-MM-DD str based on a
+      # returns a reasonably formatted YYYY-Mon-DD str based on a
       # YYYYMMDD str value, which may have 0's in it
       def format_fuzzy_date(d)
-        if d
+        if d && d.length == 8
           year, mon, day = d.slice(0, 4), d.slice(4, 2), d.slice(6, 2)
           date = ''
           if year.to_s.length > 0 && year != '0000'

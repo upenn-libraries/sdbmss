@@ -43,7 +43,7 @@ class AdminSearchController < CatalogController
             nil,
             entry.id,
             manuscript ? manuscript.get_public_id : nil,
-            source.date,
+            SDBMSS::Util.format_fuzzy_date(source.date),
             source.title,
             entry.catalog_or_lot_number,
             entry.date,
