@@ -135,10 +135,10 @@ class Entry < ActiveRecord::Base
   # fields for the same piece of data, to support both faceting and
   # keyword searches.
   #
-  #  TODO: set auto_index to false to prevent migration script from
-  #  indexing, but we want it to be ON for normal operation. how to do
-  #  this?
-  searchable :auto_index => false do
+  # auto_index should be set to false (via ENV) to prevent migration
+  # script from indexing, but we want it to be ON for normal
+  # operation.
+  searchable :auto_index => (ENV.fetch('SDBMSS_SUNSPOT_AUTOINDEX', 'true') == 'true') do
 
     # Simple wrapper around DSL field definition methods like #text,
     # #string, #integer, etc that configures the field to have a solr

@@ -7,8 +7,19 @@ require 'sdbmss/csv'
 namespace :sdbmss do
 
   desc "Re-create database with new migration from a copy of the live Oracle db"
-  task :migrate_legacy_data, [:fast_flag] => [:environment] do |t, args|
+  task :migrate_legacy_data do |t, args|
 
+    # This wrapper task exists so we get a chance to set an
+    # environment variable before Rails bootstrap phrase (which is
+    # triggered by Rake's :environment arg).
+
+    ENV['SDBMSS_SUNSPOT_AUTOINDEX'] = 'false'
+
+    Rake::Task['sdbmss:migrate_legacy_data_real'].invoke
+  end
+
+  # DO NOT RUN THIS DIRECTLY: run migrate_legacy_data instead
+  task :migrate_legacy_data_real => :environment do |t, args|
     `echo "drop database #{ENV["SDBMSS_DB_NAME"]}" | mysql -u root`
 
     Rake::Task['db:create'].invoke
@@ -17,7 +28,6 @@ namespace :sdbmss do
     Rake::Task['db:migrate'].invoke
 
     SDBMSS::Legacy.migrate(fast: args[:fast_flag] == 'true')
-
   end
 
   desc "Generate SQL output of UPDATE queries for provenance data changed between the 2 files"

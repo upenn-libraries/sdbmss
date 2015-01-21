@@ -71,6 +71,11 @@ class EntriesController < ApplicationController
         end
 
       end
+
+      # Sunspot doesn't auto index here, probably bc it is hooked into
+      # after_save events, which aren't fired on #update! calls
+      Sunspot.index @entry
+
     rescue Exception => e
       puts e.backtrace.join("\n")
       render :json => { :errors => e.backtrace.to_s }, :status => 500
