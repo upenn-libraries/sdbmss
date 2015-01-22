@@ -14,4 +14,6 @@ describe "Public search" do
     expect(page).to have_selector("#documents")
   end
 
+  it "should 404 on request for deleted entry"
+
 end
