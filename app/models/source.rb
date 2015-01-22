@@ -35,6 +35,12 @@ class Source < ActiveRecord::Base
     ['No MSS', 'No MSS'],
   ]
 
+  PUBLICLY_AVAILABLE_TYPES = [
+    ['Yes', 'Yes'],
+    ['No', 'No'],
+    ['Maybe', 'Maybe'],
+  ]
+
   def get_public_id
     "SDBM_SOURCE_#{id}"
   end

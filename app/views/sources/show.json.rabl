@@ -1,5 +1,5 @@
 object @source
-attributes :id, :date, :title, :source_type, :author, :whether_mss, :status, :current_location, :location_city, :location_country, :link, :cataloging_type, :electronic_catalog_format, :electronic_catalog_open_access, :comments
+attributes :id, :date, :title, :source_type, :author, :whether_mss, :status, :current_location, :location_city, :location_country, :link, :cataloging_type, :electronic_catalog_format, :electronic_publicly_available, :comments
 
 node :display_value do |source|
   "#{source.get_display_value} (ID: #{source.id})"

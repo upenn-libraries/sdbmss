@@ -212,7 +212,7 @@
             <div class="col-sm-3">
                 <input type="text" class="form-control" name="city" id="city" ng-model="source.location_city" />
             </div>
-            <label for="country" class="col-sm-1 control-label"><span sdbm-tooltip="source_location">Country</span></label>
+            <label for="country" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Country</span></label>
             <div class="col-sm-3">
                 <input type="text" class="form-control" name="country" id="country" ng-model="source.location_country" />
             </div>
@@ -232,21 +232,26 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-sm-12">
+                <legend>Electronic Source Details</legend>
+            </div>
+        </div>
+
         <div class="form-group row">
             <label for="electronic_catalog_format" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Electronic Catalog Format</span></label>
             <div class="col-sm-3">
                 <input type="text" class="form-control" name="electronic_catalog_format" id="electronic_catalog_format" ng-model="source.electronic_catalog_format" />
             </div>
-        </div>
-        
-        <div class="form-group row">
-            <label for="electronic_catalog_open_access" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Electronic Catalog Open Access</span></label>
+            <label for="electronic_publicly_available" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Publicly Available</span></label>
             <div class="col-sm-3">
-                <input type="text" class="form-control" name="electronic_catalog_open_access" id="electronic_catalog_open_access" ng-model="source.electronic_catalog_open_access" />
+                <select class="form-control" name="electronic_publicly_available" id="electronic_publicly_available" ng-model="source.electronic_publicly_available">
+                    <%= options_for_select(Source::PUBLICLY_AVAILABLE_TYPES) %>
+                </select>
             </div>
         </div>
-
-        <div class="row">
+        
+         <div class="row">
             <div class="col-sm-12">
                 <legend>Comments</legend>
             </div>

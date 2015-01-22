@@ -911,7 +911,7 @@ module SDBMSS::Legacy
         location_country: row['LOCATION_COUNTRY'],
         link: row['ONLINE_LINK'],
         electronic_catalog_format: row['ELEC_CAT_FORMAT'],
-        electronic_catalog_open_access: row['ELEC_CAT_OPENACCESS'],
+        electronic_publicly_available: row['ELEC_CAT_OPENACCESS'],
         in_manuscript_table: in_manuscript_table,
         deleted: deleted,
         created_at: row['ADDED_ON'],

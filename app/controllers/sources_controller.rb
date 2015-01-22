@@ -34,7 +34,7 @@ class SourcesController < ApplicationController
           :link,
           :cataloging_type,
           :electronic_catalog_format,
-          :electronic_catalog_open_access,
+          :electronic_publicly_available,
           :sources,
         ))
 

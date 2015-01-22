@@ -81,7 +81,7 @@
             </tbody>
         </table>
 
-        <% if @source.current_location || @source.location_city || @source.location_country || @source.link || @source.cataloging_type || @source.electronic_catalog_format || @source.electronic_catalog_open_access %>
+        <% if @source.current_location || @source.location_city || @source.location_country || @source.link || @source.cataloging_type || @source.electronic_catalog_format || @source.electronic_publicly_available %>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -126,6 +126,18 @@
                 </tr>
                 <% end %>
 
+            </tbody>
+        </table>
+        <% end %>
+
+        <% if @source.electronic_catalog_format || @source.electronic_publicly_available %>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-12" colspan="2"><b>Electronic Source Details</b></th>
+                </tr>
+            </thead>
+            <tbody>
                 <% if @source.electronic_catalog_format %>
                 <tr>
                     <td class="col-sm-2 text-right record-label">Electronic Cat Format</td>
@@ -135,19 +147,18 @@
                 </tr>
                 <% end %>
 
-                <% if @source.electronic_catalog_open_access %>
+                <% if @source.electronic_publicly_available %>
                 <tr>
-                    <td class="col-sm-2 text-right record-label">Electronic Cat Open Access</td>
+                    <td class="col-sm-2 text-right record-label">Data is Publicly Available</td>
                     <td class="col-sm-10">
-                        <%= @source.electronic_catalog_open_access %>
+                        <%= @source.electronic_publicly_available %>
                     </td>
                 </tr>
                 <% end %>
-
             </tbody>
         </table>
         <% end %>
-
+                
         <table class="table table-striped">
             <thead>
                 <tr> <th class="col-sm-12" colspan="2"><b>About This Source Record</b></th>
