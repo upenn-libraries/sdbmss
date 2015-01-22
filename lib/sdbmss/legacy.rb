@@ -223,7 +223,7 @@ module SDBMSS::Legacy
 
       SDBMSS::Util.batch(legacy_db,
                          'SELECT * FROM MANUSCRIPT ORDER BY MANUSCRIPT_ID',
-                         ctx: {duplicates: duplicates, unknown_source: unknown_source, jordanus: jordanus},
+                         ctx: {duplicates: duplicates, unknown_source: unknown_source, jordanus: jordanus, db: legacy_db},
                          batch_wrapper: wrap_transaction) do |row,ctx|
         create_entry_from_row(row, ctx)
       end
@@ -359,7 +359,7 @@ module SDBMSS::Legacy
       duplicates = ctx[:duplicates]
 
       begin
-        entry = create_entry_and_all_associations(row, ctx[:unknown_source], ctx[:jordanus])
+        entry = create_entry_and_all_associations(row, ctx[:unknown_source], ctx[:jordanus], ctx[:db])
       rescue Exception => e
         puts "error on id=#{row['MANUSCRIPT_ID']}"
         raise
@@ -372,7 +372,7 @@ module SDBMSS::Legacy
       # TODO: handle "possible_dups"
     end
 
-    def create_entry_and_all_associations(row, unknown_source, jordanus)
+    def create_entry_and_all_associations(row, unknown_source, jordanus, db)
 
       date = row['CAT_DATE']
       date = nil if date == '00000000'
@@ -458,7 +458,7 @@ module SDBMSS::Legacy
       # there are a lot of records (as many as 1500?) with only Buyer
       # field filled in for entries in a collection catalog, and Buyer
       # more or less matches Institution/Collection. In these cases, I
-      # think we can ignore Buyer and skip creation of sale record
+      # think we can ignore Buyer and skip creation of transaction record
       if row['BUYER'].present? &&
          row['INSTITUTION'].present? &&
          !(row['SELLER'].present? ||
@@ -466,7 +466,7 @@ module SDBMSS::Legacy
            row['PRICE'].present? ||
            row['CURRENCY'].present? ||
            row['SOLD'].present?)
-        puts "WARNING: record #{row['MANUSCRIPT_ID']}: ignoring 'buyer' field since it's the only sale-related field populated, and there's a value in INSTITUTION, so I'm not creating a sale record."
+        puts "WARNING: record #{row['MANUSCRIPT_ID']}: ignoring 'buyer' field since it's the only transaction-related field populated, and there's a value in INSTITUTION, so I'm not creating a transaction record."
       elsif row['SELLER'].present? ||
             row['SELLER2'].present? ||
             row['BUYER'].present? ||
@@ -487,17 +487,26 @@ module SDBMSS::Legacy
           currency = nil
         end
 
-        # we suppress Sale info on UI for some source types, so make
+        # we suppress Transaction info on UI for some source types, so make
         # sure non-sale sources don't have sale info
         if source.source_type == 'collection_catalog' && row['SECONDARY_SOURCE'].blank?
           # this is probably a child record?
-          puts "ERROR: record #{row['MANUSCRIPT_ID']}: has 'collection_catalog' source and no secondary source, therefore it should not have sale info"
+          puts "ERROR: record #{row['MANUSCRIPT_ID']}: has 'collection_catalog' source and no secondary source, therefore it should not have transaction info"
         end
 
-        sale = Event.create!(
+        # the ALT_DATE field in MANUSCRIPT_CATALOG was used to
+        # indicate the actual transaction date, if any, which can be
+        # different from the date of the catalog. So we use that here,
+        # if we have it, otherwise we leave the date blank.
+        acquire_date = nil
+        if (catalog_row = db.query("""select ALT_CAT_DATE from MANUSCRIPT_CATALOG where MANUSCRIPTCATALOGID = #{source.id}""").first)
+          acquire_date = catalog_row['ALT_CAT_DATE'] if catalog_row['ALT_CAT_DATE'].present?
+        end
+
+        transaction = Event.create!(
           primary: true,
           entry: entry,
-          acquire_date: row['CAT_DATE'],
+          acquire_date: acquire_date,
           price: row['PRICE'],
           currency: currency,
           other_currency: other_currency,
@@ -506,7 +515,7 @@ module SDBMSS::Legacy
 
         if row['SELLER'].present?
           pa = EventAgent.create!(
-            event: sale,
+            event: transaction,
             agent: get_or_create_agent(row['SELLER']),
             role: EventAgent::ROLE_SELLER_AGENT,
           )
@@ -514,7 +523,7 @@ module SDBMSS::Legacy
 
         if row['SELLER2'].present?
           pa = EventAgent.create!(
-            event: sale,
+            event: transaction,
             agent: get_or_create_agent(row['SELLER2']),
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
           )
@@ -522,7 +531,7 @@ module SDBMSS::Legacy
 
         if row['BUYER'].present?
           pa = EventAgent.create!(
-            event: sale,
+            event: transaction,
             agent: get_or_create_agent(row['BUYER']),
             role: EventAgent::ROLE_BUYER,
           )
@@ -888,13 +897,13 @@ module SDBMSS::Legacy
 
       # we don't import:
       # MS_COUNT = this is now redundant since we're using FKs
+      # ALT_DATE = this has moved into Event.date on transaction records
 
       source = Source.create!(
         id: row['MANUSCRIPTCATALOGID'],
         source_type: source_type,
         date: date,
         title: row['CAT_ID'],
-        alt_date: row['ALT_CAT_DATE'],
         author: row['CAT_AUTHOR'],
         whether_mss: whether_mss,
         current_location: row['CURRENT_LOCATION'],

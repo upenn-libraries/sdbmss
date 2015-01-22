@@ -30,7 +30,7 @@ class SourcesController < ApplicationController
           params.permit(
           :source_type, :date, :title, :author,
           :whether_mss,
-          :alt_date, :current_location, :location_city, :location_country,
+          :current_location, :location_city, :location_country,
           :link,
           :cataloging_type,
           :electronic_catalog_format,

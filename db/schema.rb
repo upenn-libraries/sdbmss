@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150114194834) do
+ActiveRecord::Schema.define(version: 20150122210719) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -374,7 +374,6 @@ ActiveRecord::Schema.define(version: 20150114194834) do
     t.string   "source_type"
     t.string   "title",                          limit: 512
     t.string   "author"
-    t.string   "alt_date"
     t.string   "whether_mss"
     t.string   "current_location"
     t.string   "location_city"

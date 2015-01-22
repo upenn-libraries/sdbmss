@@ -477,6 +477,8 @@
 
             var entryToSave = new Entry(angular.copy($scope.entry));
 
+            entryToSave.sale.price = entryToSave.sale.price.replace(/,/, '');
+            
             // collapse Sale and Provenance into Events
             entryToSave.events = [].concat(entryToSave.provenance).concat([entryToSave.sale]);
             delete entryToSave.provenance;
