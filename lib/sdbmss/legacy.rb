@@ -40,13 +40,13 @@ module SDBMSS::Legacy
 
     def create_user(row, ctx)
       password = row['PENNKEYPASS']
-      # pw must be at least 8 chars
-      if password.length < 8
-        password = 'somethingunguessable'
-      end
-      user = User.sdbm_create!(username: row['PENNKEY'],
+      user = User.new(username: row['PENNKEY'],
                           email: row['PENNKEY'] + "@upenn.edu",
                           password: password)
+      # skip validations because Devise considers some existing
+      # passwords to be invalid, but we don't care.
+      user.save!(validate: false)
+
       # XXX: implement perm groups
       # case
       # when row['PERMISSION'] == 'entry'
@@ -65,7 +65,7 @@ module SDBMSS::Legacy
         if ! USER_CACHE.member?(username)
           user = User.where(username: username).first
           if user.nil?
-            user = User.sdbm_create!(
+            user = User.create!(
               username: username,
               email: username + '@nowhere.com',
               password: 'somethingunguessable'
@@ -96,7 +96,7 @@ module SDBMSS::Legacy
         if ! AGENT_CACHE.member?(name)
           agent = Agent.where(name: name).order(nil).first
           if agent.nil?
-            agent = Agent.sdbm_create!(name: name, agent_type: 'unknown', approved: true)
+            agent = Agent.create!(name: name, agent_type: 'unknown', approved: true)
           end
           AGENT_CACHE[name] = agent
         end
@@ -139,25 +139,9 @@ module SDBMSS::Legacy
     end
 
     # Do the migration
-    def migrate(fast: false)
+    def migrate
 
       ActiveRecord::Base.record_timestamps = false
-
-      # add method ActiveRecord::Base#sdbm_create! which delegates to
-      # either create! or import based on 'fast' flag
-      if fast
-        puts "WARNING: Using fast mode"
-        p = Proc.new { |**opts|
-          obj = new(**opts)
-          import [ obj ], :validate => false
-          obj
-        }
-      else
-        p = Proc.new { |**opts|
-          create!(**opts)
-        }
-      end
-      ActiveRecord::Base.class.send(:define_method, :sdbm_create!, p)
 
       # set log level above :debug, to suppress ActiveRecord query
       # logging, which slows things down a lot. this only accepts
@@ -205,13 +189,13 @@ module SDBMSS::Legacy
 
       # create an 'Unknown' source to attach to entries that don't
       # have one; do this before catalog migration so it's id=1
-      unknown_source = Source.sdbm_create!(
+      unknown_source = Source.create!(
         date: "00000000",
         title: "Unknown (entry record needs to be fixed)"
       )
 
       # special case for handling records from Jordanus
-      jordanus = Source.sdbm_create!(
+      jordanus = Source.create!(
         date: "00000000",
         title: "Jordanus",
       )
@@ -361,7 +345,7 @@ module SDBMSS::Legacy
     end
 
     def create_issue(table_name, record_id, issue_type, explanation)
-      LegacyDataIssue.sdbm_create!(
+      LegacyDataIssue.create!(
         table_name: table_name,
         record_id: record_id,
         issue_type: issue_type,
@@ -429,7 +413,7 @@ module SDBMSS::Legacy
       end
 
       # this is faster than manual begin/commit: why?
-      entry = Entry.sdbm_create!(
+      entry = Entry.create!(
         id: row['MANUSCRIPT_ID'],
         source: source,
         catalog_or_lot_number: row['CAT_OR_LOT_NUM'],
@@ -460,7 +444,7 @@ module SDBMSS::Legacy
       )
 
       if row['ENTRY_COMMENTS'].present?
-        EntryComment.sdbm_create!(
+        EntryComment.create!(
           entry: entry,
           comment: row['ENTRY_COMMENTS'],
           public: false,
@@ -510,7 +494,7 @@ module SDBMSS::Legacy
           puts "ERROR: record #{row['MANUSCRIPT_ID']}: has 'collection_catalog' source and no secondary source, therefore it should not have sale info"
         end
 
-        sale = Event.sdbm_create!(
+        sale = Event.create!(
           primary: true,
           entry: entry,
           acquire_date: row['CAT_DATE'],
@@ -521,7 +505,7 @@ module SDBMSS::Legacy
         )
 
         if row['SELLER'].present?
-          pa = EventAgent.sdbm_create!(
+          pa = EventAgent.create!(
             event: sale,
             agent: get_or_create_agent(row['SELLER']),
             role: EventAgent::ROLE_SELLER_AGENT,
@@ -529,7 +513,7 @@ module SDBMSS::Legacy
         end
 
         if row['SELLER2'].present?
-          pa = EventAgent.sdbm_create!(
+          pa = EventAgent.create!(
             event: sale,
             agent: get_or_create_agent(row['SELLER2']),
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
@@ -537,7 +521,7 @@ module SDBMSS::Legacy
         end
 
         if row['BUYER'].present?
-          pa = EventAgent.sdbm_create!(
+          pa = EventAgent.create!(
             event: sale,
             agent: get_or_create_agent(row['BUYER']),
             role: EventAgent::ROLE_BUYER,
@@ -557,7 +541,7 @@ module SDBMSS::Legacy
           title = title.strip()
         end
 
-        et = EntryTitle.sdbm_create!(
+        et = EntryTitle.create!(
           entry: entry,
           title: title,
           common_title: common_title,
@@ -584,7 +568,7 @@ module SDBMSS::Legacy
 
             # TODO: circas are not normalized in DB; their absence
             # in options in UI will cause data loss!
-            ed = EntryDate.sdbm_create!(
+            ed = EntryDate.create!(
               entry: entry,
               date: date,
               circa: circa,
@@ -661,7 +645,7 @@ module SDBMSS::Legacy
           end
 
           Set.new(author_roles + author_variant_roles).each do |author_role|
-            entry_author = EntryAuthor.sdbm_create!(
+            entry_author = EntryAuthor.create!(
               entry: entry,
               observed_name: author_variant,
               author: author,
@@ -673,7 +657,7 @@ module SDBMSS::Legacy
 
       SDBMSS::Util.split_and_strip(row['ARTIST']).each do |atom|
         artist = Artist.where(name: atom).order(nil).first_or_create!
-        ea = EntryArtist.sdbm_create!(
+        ea = EntryArtist.create!(
           entry: entry,
           artist: artist,
           )
@@ -681,7 +665,7 @@ module SDBMSS::Legacy
 
       SDBMSS::Util.split_and_strip(row['SCRIBE']).each do |atom|
         scribe = Scribe.where(name: atom).order(nil).first_or_create!
-        es = EntryScribe.sdbm_create!(
+        es = EntryScribe.create!(
           entry: entry,
           scribe: scribe,
         )
@@ -690,14 +674,14 @@ module SDBMSS::Legacy
       SDBMSS::Util.split_and_strip(row['PROVENANCE']).each do |atom|
         # TODO: we should fix the data in the db
         if atom.length < 255
-          provenance = Event.sdbm_create!(
+          provenance = Event.create!(
             # primary: false,
             entry: entry,
           )
 
           # store names as 'observed_name' and then turn non-unique
           # ones into Agent entities at a later pass
-          pa = EventAgent.sdbm_create!(
+          pa = EventAgent.create!(
             event: provenance,
             observed_name: atom,
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
@@ -710,7 +694,7 @@ module SDBMSS::Legacy
       SDBMSS::Util.split_and_strip(row['LNG']).each do |atom|
         validate_language(atom, row)
         language = get_or_create_language(atom)
-        entry_language = EntryLanguage.sdbm_create!(
+        entry_language = EntryLanguage.create!(
           entry: entry,
           language: language,
         )
@@ -725,7 +709,7 @@ module SDBMSS::Legacy
           # cleaned up materials on 1/11/2015, so there shouldn't be too many of these left
           create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'invalid_material', "Material '#{atom}' is not valid")
         end
-        em = EntryMaterial.sdbm_create!(
+        em = EntryMaterial.create!(
           entry: entry,
           material: material,
         )
@@ -733,14 +717,14 @@ module SDBMSS::Legacy
 
       SDBMSS::Util.split_and_strip(row['PLACE']).each do |atom|
         place = get_or_create_place(atom)
-        EntryPlace.sdbm_create!(
+        EntryPlace.create!(
           entry: entry,
           place: place,
         )
       end
 
       SDBMSS::Util.split_and_strip(row['MANUSCRIPT_USE']).each do |atom|
-        eu = EntryUse.sdbm_create!(
+        eu = EntryUse.create!(
           entry: entry,
           use: atom,
         )
@@ -784,7 +768,7 @@ module SDBMSS::Legacy
 
       author = Author.where(name: author_name).order(nil).first
       if author.nil?
-        author = Author.sdbm_create!(
+        author = Author.create!(
           name: author_name,
           approved: row['ISAPPROVED'] == 'y',
           approved_by: get_or_create_user(row['APPROVEDBY']),
@@ -812,7 +796,7 @@ module SDBMSS::Legacy
 
     def create_artist_from_row_pass1(row, ctx)
       # we ignore ARTIST_COUNT b/c it's redundant now
-      Artist.sdbm_create!(
+      Artist.create!(
         id: row['MANUSCRIPTARTISTID'],
         name: row['ARTIST'],
         approved: row['ISAPPROVED'] == 'y',
@@ -905,7 +889,7 @@ module SDBMSS::Legacy
       # we don't import:
       # MS_COUNT = this is now redundant since we're using FKs
 
-      source = Source.sdbm_create!(
+      source = Source.create!(
         id: row['MANUSCRIPTCATALOGID'],
         source_type: source_type,
         date: date,
@@ -932,7 +916,7 @@ module SDBMSS::Legacy
       )
 
       if institution
-        SourceAgent.sdbm_create!(
+        SourceAgent.create!(
           source: source,
           agent: institution,
           role: "institution",
@@ -940,7 +924,7 @@ module SDBMSS::Legacy
       end
 
       if seller
-        SourceAgent.sdbm_create!(
+        SourceAgent.create!(
           source: source,
           agent: seller,
           role: "seller_agent",
@@ -956,7 +940,7 @@ module SDBMSS::Legacy
 
       # there do exist a few dupes. sigh.
       if !Place.where(name: row['PLACE']).order(nil).first.nil?
-        Place.sdbm_create!(
+        Place.create!(
           id: row['MANUSCRIPTPLACEID'],
           name: row['PLACE'],
           approved: row['ISAPPROVED'] == 'y',
@@ -983,7 +967,7 @@ module SDBMSS::Legacy
     end
 
     def create_manuscript_changelog_from_row(row, ctx)
-      EntryChange.sdbm_create!(
+      EntryChange.create!(
         entry_id: row['MANUSCRIPTID'],
         column: row['CHANGEDCOLUMN'],
         changed_from: row['CHANGEDFROM'],
@@ -1018,10 +1002,10 @@ module SDBMSS::Legacy
             if manuscript.nil?
               em = EntryManuscript.where(entry: entry).order(nil).first
               manuscript = em.manuscript if em
-              manuscript = Manuscript.sdbm_create!() if manuscript.nil?
+              manuscript = Manuscript.create!() if manuscript.nil?
             end
 
-            manuscript_entry = EntryManuscript.sdbm_create!(
+            manuscript_entry = EntryManuscript.create!(
               entry: entry,
               manuscript: manuscript,
               relation_type: relation_type,

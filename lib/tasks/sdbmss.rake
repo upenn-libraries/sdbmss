@@ -27,7 +27,7 @@ namespace :sdbmss do
     # Rake::Task['db:schema:load'].invoke
     Rake::Task['db:migrate'].invoke
 
-    SDBMSS::Legacy.migrate(fast: args[:fast_flag] == 'true')
+    SDBMSS::Legacy.migrate
   end
 
   desc "Generate SQL output of UPDATE queries for provenance data changed between the 2 files"

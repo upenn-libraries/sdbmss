@@ -21,8 +21,6 @@ GEM
       activemodel (= 4.1.9)
       activesupport (= 4.1.9)
       arel (~> 5.0.0)
-    activerecord-import (0.6.0)
-      activerecord (>= 3.0)
     activerecord-session_store (0.1.0)
       actionpack (>= 4.0.0, < 5)
       activerecord (>= 4.0.0, < 5)
@@ -227,7 +225,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord-import (~> 0.6.0)
   activerecord-session_store (~> 0.1.0)
   blacklight (~> 5.8.1)
   blacklight_advanced_search (~> 5.1.1)
