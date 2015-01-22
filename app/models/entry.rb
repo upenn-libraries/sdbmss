@@ -22,6 +22,8 @@ class Entry < ActiveRecord::Base
   has_many :entry_comments
   has_many :events
 
+  validates_presence_of :source
+
   # aggressively load all associations; useful for cases where you
   # want to display the complete info for Entries
   scope :load_associations, -> {

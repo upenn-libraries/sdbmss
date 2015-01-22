@@ -564,7 +564,9 @@
                         $scope.redirectToEditPage(entry.id);
                     },
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
-                );
+                ).finally(function() {
+                    $scope.currentlySaving = false;
+                });
             } else {
                 console.log("saving new record...");
                 entryToSave.$save(
@@ -572,7 +574,9 @@
                         $scope.redirectToEditPage(entry.id);
                     },
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
-                );
+                ).finally(function() {
+                    $scope.currentlySaving = false;
+                });
             }
         };
 

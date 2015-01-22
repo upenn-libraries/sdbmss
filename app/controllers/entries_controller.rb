@@ -30,6 +30,7 @@ class EntriesController < ApplicationController
   def create
     @entry = Entry.new
     @entry.created_by_id = current_user.id
+    @entry.source_id = params[:source_id]
     update
   end
 
@@ -77,7 +78,7 @@ class EntriesController < ApplicationController
       Sunspot.index @entry
 
     rescue Exception => e
-      puts e.backtrace.join("\n")
+      logger.error(e.to_s + "\n\n" + e.backtrace.join("\n"))
       render :json => { :errors => e.backtrace.to_s }, :status => 500
       return
     end
