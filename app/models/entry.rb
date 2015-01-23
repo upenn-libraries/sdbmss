@@ -54,6 +54,8 @@ class Entry < ActiveRecord::Base
   # returns the entries that have the specified author
   scope :with_author, ->(author) { joins(:entry_authors).where("entry_authors.author_id = #{author.id}").distinct }
 
+  scope :with_transaction_agent_and_role, ->(agent, role) { joins(:events => :event_agents).where("events.primary = true and event_agents.agent_id = ? and role = ?", agent.id, role) }
+
   ALT_SIZE_TYPES = [
     ['F', 'Folio'],
     ['Q', 'Quarto'],

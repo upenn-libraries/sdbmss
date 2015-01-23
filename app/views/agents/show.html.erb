@@ -35,8 +35,9 @@
                 <tr>
                     <td class="col-sm-2 text-right record-label"># Transactions</td>
                     <td class="col-sm-10">
-                        <!-- TODO: we need to expose a Transaction Agent facet for this to work -->
-                        This agent is found in the transactions of <a href="TODO"><%= @agent.events.transactions.count %> entries</a>.
+                        This agent is the seller agent in <a href="<%= search_by_facet_value('transaction_seller_agent', @agent.name) %>"><%= Entry.with_transaction_agent_and_role(@agent, 'seller_agent').count %> entries</a>.<br/>
+                        This agent is the seller in <a href="<%= search_by_facet_value('transaction_seller', @agent.name) %>"><%= Entry.with_transaction_agent_and_role(@agent, 'seller_or_holder').count %> entries</a>.<br/>
+                        This agent is the buyer in <a href="<%= search_by_facet_value('transaction_buyer', @agent.name) %>"><%= Entry.with_transaction_agent_and_role(@agent, 'buyer').count %> entries</a>.
                     </td>
                 </tr>
 
@@ -50,8 +51,8 @@
                 <tr>
                     <td class="col-sm-2 text-right record-label"># Sources</td>
                     <td class="col-sm-10">
-                        <!-- TODO: we need to expose a Source Agent facet for this to work -->
-                        This agent is found in <a href="TODO"><%= @agent.sources.count %> sources</a>.
+                        <!-- there's no view of sources, so no link here. -->
+                        This agent is found in <%= @agent.sources.count %> sources.
                     </td>
                 </tr>
 

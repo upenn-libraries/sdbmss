@@ -93,11 +93,11 @@
 
         <div class="form-group row">
             <label for="sold" class="col-sm-2 control-label"><span sdbm-tooltip="sold">Sold</span></label>
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <select class="form-control" id="sold" ng-model="entry.sale.sold" ng-options="option[0] as option[1] for option in optionsSold"></select>
             </div>
             <div ng-show="entry.sale.sold == 'YES'">
-                <label for="sold" class="col-sm-3 control-label"><span sdbm-tooltip="sold">Date Sold</span></label>
+                <label for="sold" class="col-sm-4 control-label"><span sdbm-tooltip="sold">Date Sold</span></label>
                 <div class="col-sm-3">
                     <input type="text" class="form-control" id="sale_date" ng-model="entry.sale.acquire_date">
                 </div>
