@@ -10,6 +10,8 @@
 <input type="hidden" id="create_entry" value="1" />
 <% end %>
 
+<p>TODO: form validation is currently broken on this page because there's a conflict between angular validation and the editable input widget. For now, make sure you type in date as YYYY-MM-DD (with dashes) and fill in the title, or you won't be able to save.</p>
+
 <div name="form" class="form-horizontal sdbmss-form" ng-controller="SourceCtrl" novalidate >
 
     <div class="row">
@@ -278,6 +280,8 @@
     </div>
 
     <br/><br/>
+  <br/><br/>
+  <a href="#" data-ng-click="debug()">DEBUG: Print model to console</a>
 
 </form>
 

@@ -477,7 +477,9 @@
 
             var entryToSave = new Entry(angular.copy($scope.entry));
 
-            entryToSave.sale.price = entryToSave.sale.price.replace(/,/, '');
+            if (entryToSave.sale.price) {
+                entryToSave.sale.price = entryToSave.sale.price.replace(/,/, '');
+            }
             
             // collapse Sale and Provenance into Events
             entryToSave.events = [].concat(entryToSave.provenance).concat([entryToSave.sale]);
@@ -743,6 +745,10 @@
 
         $scope.source_agents = [];
 
+        $scope.debug = function () {
+            console.log($scope.source);
+        };
+
         $scope.redirectToEditPage = function(id)  {
             window.location = "/sources/" + id + "/edit/";
         };
@@ -769,6 +775,7 @@
         $scope.save = function () {
             var sourceToSave = new Source(angular.copy($scope.source));
 
+            //console.log(sourceToSave);
             sourceToSave.date = sourceToSave.date.replace(/-/g, "");
 
             sourceToSave.source_agents = [];
@@ -794,7 +801,7 @@
                 console.log("saving new record...");
                 sourceToSave.$save(
                     function (source) {
-                        if($("#create_entry").val().length > 0) {
+                        if($("#create_entry").val()) {
                             window.location = "/entries/new/?source_id=" + source.id;
                         } else {
                             $scope.redirectToEditPage(source.id);

@@ -442,6 +442,17 @@
     </div>
 
     <div class="form-group row">
+      <label class="col-sm-2 control-label">Seller Agent</label>
+      <div class="col-sm-4 editable-container">
+          <a href="#" editable-text="prov.seller_agent.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ prov.seller_agent.agent|label }}</a>
+      </div>
+      <label class="col-sm-2 control-label">Seller Agent As Recorded</label>
+      <div class="col-sm-3">
+          <input type="text" class="form-control" id="seller_agent" data-ng-model="prov.seller_agent.observed_name">
+      </div>
+    </div>
+
+    <div class="form-group row">
       <label class="col-sm-2 control-label">Seller/Holder</label>
       <div class="col-sm-4 editable-container">
           <a href="#" editable-text="prov.seller_or_holder.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ prov.seller_or_holder.agent|label }}</a>

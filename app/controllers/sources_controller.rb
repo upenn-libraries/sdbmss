@@ -35,7 +35,7 @@ class SourcesController < ApplicationController
           :cataloging_type,
           :electronic_catalog_format,
           :electronic_publicly_available,
-          :sources,
+          :comments,
         ))
 
         if !@source.persisted?
