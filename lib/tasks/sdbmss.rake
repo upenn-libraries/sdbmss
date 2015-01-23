@@ -89,4 +89,12 @@ namespace :sdbmss do
     end
   end
 
+  desc "Create reference data"
+  task :create_reference_data => :environment do |t, args|
+    # TODO
+
+    # this works:
+    # FactoryGirl.create :user
+  end
+
 end

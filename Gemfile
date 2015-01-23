@@ -70,6 +70,7 @@ gem 'rabl', '~> 0.11.5'
 # for testing
 gem 'rspec-rails', '~> 3.1.0', group: :development
 gem 'capybara', '~> 2.4.4', group: :development
+gem "factory_girl_rails", "~> 4.0", group: :development
 
 # for calculating string similarity
 gem 'levenshtein', '~> 0.2.2'
