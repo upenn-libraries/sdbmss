@@ -478,7 +478,7 @@
             var entryToSave = new Entry(angular.copy($scope.entry));
 
             if (entryToSave.sale.price) {
-                entryToSave.sale.price = entryToSave.sale.price.replace(/,/, '');
+                entryToSave.sale.price = entryToSave.sale.price.replace(/[$,]/, '');
             }
             
             // collapse Sale and Provenance into Events
