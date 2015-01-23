@@ -85,7 +85,7 @@ class AdminSearchController < CatalogController
         else
           # TODO: how to more elegantly handle errors finding entries
           # from db?
-          as_array = row_error
+          as_array = ([nil] * 41).tap { |a| a[1] = doc.id; a[4] = "Error loading this record from the database" }
         end
         as_array
       end
