@@ -1,13 +1,7 @@
 
 class Source < ActiveRecord::Base
 
-  include UserFields
-
-  has_many :entries
-  has_many :source_agents
-
-  # returns 'count' number of most recent sources
-  scope :most_recent, ->(count = 5) { order(created_at: :desc).first(count) }
+  TYPE_BLANK = nil
 
   TYPE_AUCTION_CATALOG = 'auction_catalog'
   TYPE_COLLECTION_CATALOG = 'collection_catalog'
@@ -21,10 +15,15 @@ class Source < ActiveRecord::Base
     [TYPE_UNPUBLISHED, 'Unpublished'],
   ]
 
+  TYPE_HAS_MANUSCRIPT_YES = 'Yes'
+  TYPE_HAS_MANUSCRIPT_NO = 'No'
+  TYPE_HAS_MANUSCRIPT_MAYBE = 'Maybe'
+
   HAS_MANUSCRIPT_TYPES = [
-    ['Yes', 'Yes'],
-    ['No', 'No'],
-    ['Maybe', 'Maybe'],
+    [TYPE_BLANK, ''],
+    [TYPE_HAS_MANUSCRIPT_YES, 'Yes'],
+    [TYPE_HAS_MANUSCRIPT_NO, 'No'],
+    [TYPE_HAS_MANUSCRIPT_MAYBE, 'Maybe'],
   ]
 
   # status can be either "No MSS" or "To Be Entered" => "Partially Entered" => "Entered"
@@ -35,11 +34,29 @@ class Source < ActiveRecord::Base
     ['No MSS', 'No MSS'],
   ]
 
+  TYPE_PUBLICLY_AVAILABLE_YES = 'Yes'
+  TYPE_PUBLICLY_AVAILABLE_NO = 'No'
+  TYPE_PUBLICLY_AVAILABLE_MAYBE = 'Maybe'
+
   PUBLICLY_AVAILABLE_TYPES = [
-    ['Yes', 'Yes'],
-    ['No', 'No'],
-    ['Maybe', 'Maybe'],
+    [TYPE_BLANK, ''],
+    [TYPE_PUBLICLY_AVAILABLE_YES, 'Yes'],
+    [TYPE_PUBLICLY_AVAILABLE_NO, 'No'],
+    [TYPE_PUBLICLY_AVAILABLE_MAYBE, 'Maybe'],
   ]
+
+  include UserFields
+
+  has_many :entries
+  has_many :source_agents
+
+  validates_inclusion_of :source_type, in: SOURCE_TYPES.map(&:first), message: 'source type is invalid'
+  validates_inclusion_of :whether_mss, in: HAS_MANUSCRIPT_TYPES.map(&:first), message: 'whether_mss is invalid'
+  validates_inclusion_of :electronic_publicly_available, in: PUBLICLY_AVAILABLE_TYPES.map(&:first), message: 'electronic_publicly_available is invalid'
+
+  # returns 'count' number of most recent sources
+  scope :most_recent, ->(count = 5) { order(created_at: :desc).first(count) }
+
 
   def get_public_id
     "SDBM_SOURCE_#{id}"
