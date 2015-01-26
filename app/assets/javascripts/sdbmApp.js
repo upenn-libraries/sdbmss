@@ -360,25 +360,6 @@
             console.log("entry from API retrieval");
             console.log(entry);
 
-            var sellerAgent;
-            var sellerOrHolder;
-            var buyer;
-
-            if(entry.source) {
-                var sourceagents = entry.source.sourceagents || [];
-                sourceagents.forEach(function (sourceagent) {
-                    if(sourceagent.role === 'seller_agent') {
-                        sellerAgent = sourceagent.agent;
-                    }
-                    else if(sourceagent.role === 'seller_or_holder') {
-                        sellerOrHolder = sourceagent.agent;
-                    }
-                    else if(sourceagent.role === 'buyer') {
-                        buyer = sourceagent.agent;
-                    }
-                });
-            }
-
             // make blank initial rows, as needed, for user to fill out
             $scope.entry_associations.concat({ field: 'entry_provenance' }).forEach(function (assoc) {
                 var fieldname = assoc.field;
@@ -417,21 +398,14 @@
                 entry.sale = {
                     primary: true
                 };
-                if(sellerAgent) {
-                    entry.sale.seller_agent = {
-                        agent: sellerAgent
+                // prepopulate sale agent fields with data from source_agents
+                var sourceAgents = entry.source.source_agents || [];
+                sourceAgents.forEach(function (sourceAgent) {
+                    var role = sourceAgent.role;
+                    entry.sale[role] = {
+                        agent: sourceAgent.agent
                     };
-                }
-                if(sellerOrHolder) {
-                    entry.sale.seller_or_holder = {
-                        agent: sellerOrHolder
-                    };
-                }
-                if(buyer) {
-                    entry.sale.buyer = {
-                        agent: buyer
-                    };
-                }
+                });
             }
             if(entry.provenance.length === 0) {
                 entry.provenance.push({});
