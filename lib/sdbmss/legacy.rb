@@ -412,9 +412,11 @@ module SDBMSS::Legacy
         # print "WARNING: entry ID=%s has bad alt_size value: %s" % (row['MANUSCRIPT_ID'], row['ALT_SIZE'])
       end
 
-      # TODO: do we need an observation_date field on Entry, so we can
-      # date entries from Sources that don't have a defined date? (ex:
-      # Ebay, or a constantly changing online catalog)
+      # We decided 1/22/15 that we don't need a date field on
+      # Entry. We do need to date entries from Sources that don't have
+      # a defined date (ex: Ebay, or a constantly changing online
+      # catalog), but we can just use the updated_at field if we need
+      # to know that.
 
       # this is faster than manual begin/commit: why?
       entry = Entry.create!(

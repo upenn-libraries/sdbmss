@@ -2,7 +2,7 @@
 # as possible, to facilitate using the same representation for
 # updating the database.
 object @entry
-attributes :id, :folios, :date, :catalog_or_lot_number, :secondary_source, :current_location, :folios, :num_columns, :num_lines, :height, :width, :alt_size, :manuscript_binding, :other_info, :manuscript_link, :miniatures_fullpage, :miniatures_large, :miniatures_small, :miniatures_unspec_size, :initials_historiated, :initials_decorated
+attributes :id, :folios, :catalog_or_lot_number, :secondary_source, :current_location, :folios, :num_columns, :num_lines, :height, :width, :alt_size, :manuscript_binding, :other_info, :manuscript_link, :miniatures_fullpage, :miniatures_large, :miniatures_small, :miniatures_unspec_size, :initials_historiated, :initials_decorated
 
 child :source do
   attributes :id, :title, :date, :source_type

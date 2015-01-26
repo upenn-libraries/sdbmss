@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150122212307) do
+ActiveRecord::Schema.define(version: 20150126154728) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -83,7 +83,6 @@ ActiveRecord::Schema.define(version: 20150122212307) do
   add_index "bookmarks", ["user_id"], name: "index_bookmarks_on_user_id", using: :btree
 
   create_table "entries", force: true do |t|
-    t.string   "date"
     t.integer  "source_id"
     t.string   "catalog_or_lot_number"
     t.string   "secondary_source"
