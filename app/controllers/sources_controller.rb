@@ -1,7 +1,7 @@
 class SourcesController < ApplicationController
   include ResourceSearch
 
-  before_action :set_source, only: [:show, :edit, :update, :destroy]
+  before_action :set_source, only: [:show, :edit, :update, :destroy, :update_status]
 
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
 
@@ -39,10 +39,10 @@ class SourcesController < ApplicationController
         ))
 
         if !@source.persisted?
-          if @source.whether_mss == 'No'
-            @source.status = 'No MSS'
+          if @source.whether_mss == Source::TYPE_HAS_MANUSCRIPT_NO
+            @source.status = Source::TYPE_STATUS_NO_MSS
           else
-            @source.status = 'To Be Entered'
+            @source.status = Source::TYPE_STATUS_TO_BE_ENTERED
           end
         end
 
@@ -69,6 +69,35 @@ class SourcesController < ApplicationController
 
   def display_value_for_search obj
     "#{obj.get_display_value}"
+  end
+
+  # change the status of a Source
+  def update_status
+    new_status = params[:status]
+    error = nil
+    if Source::STATUS_TYPES.map(&:first).member? new_status
+      @source.status = new_status
+      @source.save!
+    else
+      error = "Invalid status"
+    end
+
+    respond_to do |format|
+      format.html {
+        if error.blank?
+          render nothing: true
+        else
+          render status: 500, html: "Invalid status" if error.present?
+        end
+      }
+      format.json {
+        if error.blank?
+          render nothing: true
+        else
+          render status: 500, json: { "error" => "Invalid status" } if error.present?
+        end
+      }
+    end
   end
 
   private

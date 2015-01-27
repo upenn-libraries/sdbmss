@@ -272,7 +272,7 @@
         <div class="row">
           <div class="col-sm-2"></div>
           <div class="col-sm-10">
-            <button class="btn btn-primary" ng-click="save()" ng-disabled="form.$invalid">Create</button>
+            <button class="btn btn-primary" ng-click="save()" ng-disabled="form.$invalid || currentlySaving">Save</button>
             <a class="btn btn-warning" href="<%= new_entry_path %>">Cancel</a>
           </div>
         </div>
@@ -284,5 +284,26 @@
   <a href="#" data-ng-click="debug()">DEBUG: Print model to console</a>
 
 </form>
+
+<script type="text/ng-template" id="postSourceSave.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Successfully saved Source record</h3>
+    </div>
+    <div class="modal-body form-horizontal">
+        
+        <p>What do you want to do now?</p>
+
+        <p style="margin-left: 2em;">
+
+            <a ng-click="sdbmutil.redirectToEntryCreatePage(source.id)" href="#">Add entries for this source</a><br/><br/>
+
+            <a ng-click="sdbmutil.redirectToSourceEditPage(source.id)" href="#">Return to editing this source</a><br/><br/>
+            
+            <a href="/dashboard">Return to my dashboard</a>
+
+        </p>
+
+    </div>
+</script>
 
 <%= render "entries/create_entity_with_name" %>

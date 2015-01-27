@@ -6,7 +6,9 @@ class EntriesController < ApplicationController
 
   respond_to :html, :json
 
-  # JSON data structure optimized for editing page
+  # JSON data structure optimized for editing page. This weird action
+  # exists because we want CatalogController to handle #show, but we
+  # want to format the JSON differently from how it does it.
   def show_json
     respond_to do |format|
       format.json { render "show.json.rabl" }
@@ -82,7 +84,7 @@ class EntriesController < ApplicationController
       render :json => { :errors => e.backtrace.to_s }, :status => 500
       return
     end
-    respond_with(@entry)
+    render "show"
   end
 
   # returns JSON containing values for dropdowns on add/edit entry

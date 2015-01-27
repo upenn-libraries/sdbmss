@@ -179,6 +179,18 @@
                 return function(response) {
                     alert(msg + "; Server response:" + JSON.stringify(response.data));
                 };
+            },
+            redirectToSourceEditPage: function(source_id)  {
+                window.location = "/sources/" + source_id + "/edit/";
+            },
+            redirectToEntryCreatePage: function(source_id)  {
+                window.location = "/entries/new/?source_id=" + source_id;
+            },
+            redirectToEntryEditPage: function(entry_id)  {
+                window.location = "/entries/" + entry_id + "/edit/";
+            },
+            redirectToDashboard: function() {
+                window.location = "/dashboard";
             }
         };
     });
@@ -227,8 +239,10 @@
     });
 
     /* Entry screen controller */
-    sdbmApp.controller("EntryCtrl", function ($scope, $http, $cookies, typeAheadService, Entry, Source, sdbmutil) {
+    sdbmApp.controller("EntryCtrl", function ($scope, $http, $cookies, typeAheadService, Entry, Source, sdbmutil, $modal) {
 
+        $scope.sdbmutil = sdbmutil;
+        
         $scope.entry_associations = [
             {
                 field: 'entry_titles',
@@ -317,10 +331,6 @@
                     console.log($scope[key]);
                 }
             }
-        };
-
-        $scope.redirectToEditPage = function(id)  {
-            window.location = "/entries/" + id + "/edit/";
         };
 
         /* An object is 'blank' if its keys don't have any meaningful
@@ -444,6 +454,22 @@
             }
         };
 
+        $scope.postEntrySave = function(entry) {
+            $scope.entry = entry;
+            var modalInstance = $modal.open({
+                templateUrl: 'postEntrySave.html',
+                backdrop: 'static',
+                size: 'lg',
+                scope: $scope
+            });
+            modalInstance.result.then(function () {
+                // noop
+            }, function() {
+                // runs when promise is rejected (modal is dismissed)
+                sdbmutil.redirectToEntryEditPage(entry.id);
+            });
+        };
+
         $scope.save = function () {
             // Transform angular's view models to JSON payload that
             // API expects: attach a bunch of things to Entry resource
@@ -536,21 +562,15 @@
             console.log(entryToSave);
 
             if(entryToSave.id) {
-                console.log("updating record...");
                 entryToSave.$update(
-                    function (entry) {
-                        $scope.redirectToEditPage(entry.id);
-                    },
+                    $scope.postEntrySave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
                 ).finally(function() {
                     $scope.currentlySaving = false;
                 });
             } else {
-                console.log("saving new record...");
                 entryToSave.$save(
-                    function (entry) {
-                        $scope.redirectToEditPage(entry.id);
-                    },
+                    $scope.postEntrySave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
                 ).finally(function() {
                     $scope.currentlySaving = false;
@@ -558,6 +578,14 @@
             }
         };
 
+        $scope.markSourceAsEntered = function() {
+            $http.post("/sources/" + $scope.entry.source.id + "/update_status", { status: 'Entered' }).then(
+                function() {
+                    sdbmutil.redirectToDashboard();
+                },
+                sdbmutil.promiseErrorHandlerFactory("There was an error marking source as Entered")
+            );
+        };
 
         // "constructor" for controller goes here
 
@@ -592,9 +620,9 @@
                     $scope.entry = new Entry();
 
                     var sourceId = $("#source_id").val();
-                    var source = Source.get(
+                    Source.get(
                         {id: sourceId},
-                        function() {
+                        function(source) {
                             $scope.entry.source = source;
                             $scope.populateEntryViewModel($scope.entry);
                         },
@@ -707,8 +735,12 @@
         };
     });
 
-    sdbmApp.controller('SourceCtrl', function ($scope, typeAheadService, sdbmutil, Source) {
+    sdbmApp.controller('SourceCtrl', function ($scope, $modal, typeAheadService, sdbmutil, Source) {
 
+        $scope.sdbmutil = sdbmutil;
+        
+        $scope.currentlySaving = false;
+        
         $scope.agent_role_types = ['institution', 'buyer', 'seller_or_holder', 'seller_agent'];
         
         $scope.pageTitle = "";
@@ -721,10 +753,6 @@
 
         $scope.debug = function () {
             console.log($scope.source);
-        };
-
-        $scope.redirectToEditPage = function(id)  {
-            window.location = "/sources/" + id + "/edit/";
         };
 
         $scope.showFields = function() {
@@ -746,6 +774,22 @@
             console.log(source);
         };
         
+        $scope.postSourceSave = function(source) {
+            $scope.source = source;
+            var modalInstance = $modal.open({
+                templateUrl: 'postSourceSave.html',
+                backdrop: 'static',
+                size: 'lg',
+                scope: $scope
+            });
+            modalInstance.result.then(function () {
+                // noop
+            }, function() {
+                // runs when promise is rejected (modal is dismissed)
+                sdbmutil.redirectToSourceEditPage(source.id);
+            });
+        };
+
         $scope.save = function () {
             var sourceToSave = new Source(angular.copy($scope.source));
 
@@ -764,25 +808,19 @@
             sdbmutil.replaceEntityObjectsWithIds(sourceToSave.source_agents, "agent");
 
             if(sourceToSave.id) {
-                console.log("updating record...");
                 sourceToSave.$update(
-                    function (source) {
-                        $scope.redirectToEditPage(source.id);
-                    },
+                    $scope.postSourceSave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
-                );
+                ).finally(function() {
+                    $scope.currentlySaving = false;
+                });
             } else {
-                console.log("saving new record...");
                 sourceToSave.$save(
-                    function (source) {
-                        if($("#create_entry").val()) {
-                            window.location = "/entries/new/?source_id=" + source.id;
-                        } else {
-                            $scope.redirectToEditPage(source.id);
-                        }
-                    },
+                    $scope.postSourceSave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
-                );
+                ).finally(function() {
+                    $scope.currentlySaving = false;
+                });
             }
         };
 

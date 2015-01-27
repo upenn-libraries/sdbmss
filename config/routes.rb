@@ -51,6 +51,9 @@ Rails.application.routes.draw do
   end
   resources :sources do
     collection { get 'search' }
+    member do
+      post 'update_status'
+    end
   end
 
   devise_for :users

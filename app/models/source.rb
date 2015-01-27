@@ -21,17 +21,22 @@ class Source < ActiveRecord::Base
 
   HAS_MANUSCRIPT_TYPES = [
     [TYPE_BLANK, ''],
-    [TYPE_HAS_MANUSCRIPT_YES, 'Yes'],
-    [TYPE_HAS_MANUSCRIPT_NO, 'No'],
-    [TYPE_HAS_MANUSCRIPT_MAYBE, 'Maybe'],
+    [TYPE_HAS_MANUSCRIPT_YES, TYPE_HAS_MANUSCRIPT_YES],
+    [TYPE_HAS_MANUSCRIPT_NO, TYPE_HAS_MANUSCRIPT_NO],
+    [TYPE_HAS_MANUSCRIPT_MAYBE, TYPE_HAS_MANUSCRIPT_MAYBE],
   ]
+
+  TYPE_STATUS_TO_BE_ENTERED = 'To Be Entered'
+  TYPE_STATUS_PARTIALLY_ENTERED = 'Partially Entered'
+  TYPE_STATUS_ENTERED = 'Entered'
+  TYPE_STATUS_NO_MSS = 'No MSS'
 
   # status can be either "No MSS" or "To Be Entered" => "Partially Entered" => "Entered"
   STATUS_TYPES = [
-    ['To Be Entered', 'To Be Entered'],
-    ['Partially Entered', 'Partially Entered'],
-    ['Entered', 'Entered'],
-    ['No MSS', 'No MSS'],
+    [TYPE_STATUS_TO_BE_ENTERED, TYPE_STATUS_TO_BE_ENTERED],
+    [TYPE_STATUS_PARTIALLY_ENTERED, TYPE_STATUS_PARTIALLY_ENTERED],
+    [TYPE_STATUS_ENTERED, TYPE_STATUS_ENTERED],
+    [TYPE_STATUS_NO_MSS, TYPE_STATUS_NO_MSS],
   ]
 
   TYPE_PUBLICLY_AVAILABLE_YES = 'Yes'
@@ -40,9 +45,9 @@ class Source < ActiveRecord::Base
 
   PUBLICLY_AVAILABLE_TYPES = [
     [TYPE_BLANK, ''],
-    [TYPE_PUBLICLY_AVAILABLE_YES, 'Yes'],
-    [TYPE_PUBLICLY_AVAILABLE_NO, 'No'],
-    [TYPE_PUBLICLY_AVAILABLE_MAYBE, 'Maybe'],
+    [TYPE_PUBLICLY_AVAILABLE_YES, TYPE_PUBLICLY_AVAILABLE_YES],
+    [TYPE_PUBLICLY_AVAILABLE_NO, TYPE_PUBLICLY_AVAILABLE_NO],
+    [TYPE_PUBLICLY_AVAILABLE_MAYBE, TYPE_PUBLICLY_AVAILABLE_MAYBE],
   ]
 
   include UserFields
@@ -93,14 +98,14 @@ class Source < ActiveRecord::Base
     agent_str = ""
     if source_type == TYPE_AUCTION_CATALOG
       seller_agent = get_seller_agent
-      agent_str = seller_agent.agent.name if seller_agent
+      agent_str = seller_agent.agent.name if seller_agent && seller_agent.agent
     elsif source_type == TYPE_COLLECTION_CATALOG
       institution = get_institution
-      agent_str = institution.agent.name if institution
+      agent_str = institution.agent.name if institution && institution.agent
     else
       # institution takes precedence for display
       source_agent = get_institution || get_seller_agent
-      agent_str = source_agent.agent.name if source_agent
+      agent_str = source_agent.agent.name if source_agent && source_agent.agent
     end
 
     title_str = title || "(No title)"

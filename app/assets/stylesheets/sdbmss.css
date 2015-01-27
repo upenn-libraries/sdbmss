@@ -57,3 +57,13 @@ margin-bottom:2em;
 cursor: help;
 }
 
+/* tweak blacklight's .modal-backdrop rule, to fix its broken greying out of the window behind modals */
+.modal-backdrop {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    z-index: 1040;
+    background-color: #000;
+}
