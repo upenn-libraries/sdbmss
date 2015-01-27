@@ -46,7 +46,6 @@ class AdminSearchController < CatalogController
             SDBMSS::Util.format_fuzzy_date(source.date),
             source.title,
             entry.catalog_or_lot_number,
-            entry.date,
             transaction_seller_agent,
             transaction_seller_or_holder,
             transaction_buyer,
