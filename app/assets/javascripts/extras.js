@@ -2,7 +2,7 @@
 // This assumes application.js has been included.
 
 //= require jquery.qtip
-//= require angular.1.3.0
+//= require angular.1.3.11
 //= require angular-cookies.1.2.26
 //= require angular-resource.1.3.0
 //= require ui-bootstrap-tpls-0.11.2
