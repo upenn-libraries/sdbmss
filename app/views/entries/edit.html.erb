@@ -226,7 +226,14 @@
           <!--
           <a href="#" editable-text="entry_scribe.scribe" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/scribes/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateScribeModalCtrl">{{ entry_scribe.scribe|label }}</a>
           -->
-          <input class="form-control" type="text" sdbm-autocomplete="/scribes/search.json" sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateScribeModalCtrl"/>
+          <div class="input-group">
+              <input class="form-control" type="text" sdbm-autocomplete="/scribes/search.json" sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateScribeModalCtrl"/>
+              <div class="input-group-addon cog" sdbm-inference-flags-modal="entry_scribe"><span class="glyphicon glyphicon-cog"></span></div>
+          </div>
+      </div>
+      <div class="col-sm-1 inference-flags-container">
+          <span class="glyphicon glyphicon-exclamation-sign" title="inferred by source" ng-show="entry_scribe.inferred_by_source"></span>
+          <span class="glyphicon glyphicon-warning-sign" title="inferred by user" ng-show="entry_scribe.inferred_by_user"></span>
       </div>
       <div class="col-sm-1 text-right">
         <div class="control-label">
@@ -552,3 +559,5 @@
 </script>
 
 <%= render "create_entity_with_name" %>
+
+<%= render "shared/inference_flags" %>

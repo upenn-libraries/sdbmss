@@ -57,6 +57,14 @@ margin-bottom:2em;
 cursor: help;
 }
 
+.sdbmss-form .cog:hover {
+    cursor: pointer;
+}
+
+.sdbmss-form .inference-flags-container {
+    padding-top: 7px;
+}
+
 /* tweak .modal-backdrop rule on pages that use UI Bootstrap's modal,
 so that gray backdrop shows up correctly */
 .blacklight-entries-edit .modal-backdrop,

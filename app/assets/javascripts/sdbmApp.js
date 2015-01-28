@@ -648,7 +648,10 @@
      * jquery UI's autocomplete - this works best; we use this to
      * manage the INPUTs ourselves, and manually update the Angular
      * models. This is low-tech and violates Angular's philosophy of
-     * not touching the DOM, but it works, and works well.
+     * not touching the DOM, but 1) this isn't a problem since nothing
+     * else on the page is updating the Angular models, so we don't
+     * need to be concerned about keeping the INPUT in sync; 2) it
+     * works and works well.
      *
      * UI Bootstrap (which uses Angular)'s typeahead - I couldn't get
      * this to disallow invalid input. By design, setting
@@ -872,6 +875,26 @@
         };
     });
 
+    sdbmApp.directive("sdbmInferenceFlagsModal", function($modal, $parse) {
+        return function (scope, element, attrs) {
+            var modelName = attrs.sdbmInferenceFlagsModal;
+
+            $(element).click(function() {
+                var modalInstance = $modal.open({
+                    templateUrl: "inferenceFlags.html",
+                    controller: 'InferenceFlagsCtrl',
+                    size: 'lg',
+                    resolve: {
+                        objectWithFlags: function() {
+                            var model = $parse(modelName);
+                            return model(scope);
+                        }
+                    },
+                });
+            });
+        };
+    });
+
     /* To be used on elements that should get a tooltip when clicked */
     sdbmApp.directive("sdbmTooltip", function () {
         return function (scope, element, attrs) {
@@ -1084,4 +1107,8 @@
         $scope.entityName = "scribe";
     });
 
+    sdbmApp.controller('InferenceFlagsCtrl', function ($scope, $modalInstance, objectWithFlags) {
+        $scope.objectWithFlags = objectWithFlags;
+    });
+    
 }());
