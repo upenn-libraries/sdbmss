@@ -22,11 +22,15 @@ module ResourceSearch
   # need to search differently
   def find_by_search_terms class_name
     search_term = params[:term]
+    query = class_name.all
     if search_term.present?
-      class_name.where('name like ?', "%#{search_term}%")
+      search_term.split.each do |word|
+        query = query.where('name like ?', "%#{word}%")
+      end
     else
-      class_name.none
+      query = class_name.none
     end
+    query.order(:name)
   end
 
   # Returns a str to use for the 'display_value' field of the JSON
