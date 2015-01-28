@@ -313,6 +313,10 @@
                     break;
                 }
             }
+            // ensure that there's always one empty record
+            if(anArray.length === 0) {
+                anArray.push({});
+            }
         };
 
         /* Returns true if record is the first one */

@@ -128,98 +128,88 @@
     </div>
 
     <div class="form-group row" data-ng-repeat="entry_title in entry.entry_titles">
-      
-      <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.entry_titles, entry_title)" data-ng-click="addRecord(entry.entry_titles)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
-          <span sdbm-tooltip="title">Title</span>
+        <label class="col-sm-2 control-label">
+            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_titles); addRecord(entry.entry_authors)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
+            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_titles, entry_title)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
+            <span sdbm-tooltip="title">Title</span>
       </label>
       <div class="col-sm-4">
         <input type="text" class="form-control" id="title" data-ng-model="entry_title.title">
       </div>
-      <label class="col-sm-2 control-label">
-          <span sdbm-tooltip="title">Common Title</span>
+      <div class="col-sm-1">Flags
+      </div>
+      <label class="col-sm-1 control-label">
+          <span sdbm-tooltip="title">CommonTitle</span>
       </label>
       <div class="col-sm-3">
         <input type="text" class="form-control" id="title" data-ng-model="entry_title.common_title">
       </div>
-      <div class="col-sm-1 text-right">
-        <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.entry_titles, entry_title)" data-ng-click="removeRecord(entry.entry_titles, entry_title)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
-        </div>
-      </div>
-
     </div>
 
-    <div class="form-group row entry-author-group" data-ng-repeat="entry_author in entry.entry_authors">
+    <div data-ng-repeat="entry_author in entry.entry_authors">
+    <div class="form-group row entry-author-group">
         <label class="col-sm-2 control-label">
-            <a class="clickable" data-ng-hide="!isFirst(entry.entry_authors, entry_author)" data-ng-click="addRecord(entry.entry_authors)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_authors)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
+            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_authors, entry_author)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
             <span sdbm-tooltip="author">Author</span>
         </label>
-      <div class="col-sm-3 editable-container">
+      <div class="col-sm-4 editable-container">
           <a href="#" editable-text="entry_author.author" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/authors/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAuthorModalCtrl">{{ entry_author.author|label }}</a>
       </div>
-      <div class="col-sm-1">
-          <input type="text" class="form-control" data-ng-model="entry_author.role" />
+      <div class="col-sm-1">Flags
       </div>
-      
-      <label class="col-sm-2 control-label">
-          <span sdbm-tooltip="authorVariant">Author As Recorded</span>
+      <label class="col-sm-1 control-label">
+          <span sdbm-tooltip="authorVariant">As Recorded</span>
       </label>
       <div class="col-sm-3">
           <input type="text" class="form-control" id="author" data-ng-model="entry_author.observed_name">
       </div>
-
-      <div class="col-sm-1 text-right">
-        <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.entry_authors, entry_author)" data-ng-click="removeRecord(entry.entry_authors, entry_author)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
-        </div>
+    </div>
+    <div class="form-group row entry-author-group">
+      <label class="col-sm-2 control-label">
+          <span sdbm-tooltip="role">Role</span>
+      </label>
+      <div class="col-sm-1">
+          <input type="text" class="form-control" data-ng-model="entry_author.role" />
       </div>
+    </div>
     </div>
 
     <div class="form-group row" data-ng-repeat="entry_date in entry.entry_dates">
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.entry_dates, entry_date)" data-ng-click="addRecord(entry.entry_dates)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
-          <span sdbm-tooltip="year">Year</span>
+            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_dates)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
+            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
+            <span sdbm-tooltip="year">Year</span>
       </label>
       <div class="col-sm-4">
         <input type="text" class="form-control" id="year" data-ng-model="entry_date.date">
       </div>
-
-      <label class="col-sm-2 control-label">
+      <div class="col-sm-1">Flags</div>
+      <label class="col-sm-1 control-label">
           <span sdbm-tooltip="circa">Circa</span>
       </label>
       <div class="col-sm-3">
           <select name="circa" class="form-control" ng-model="entry_date.circa" ng-options="option[0] as option[1] for option in optionsCirca"></select>
-      </div>
-
-      <div class="col-sm-1 text-right">
-        <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.entry_dates, entry_date)" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
-        </div>
       </div>
     </div>
 
     <div class="form-group row" data-ng-repeat="entry_artist in entry.entry_artists">
       
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.entry_artists, entry_artist)" data-ng-click="addRecord(entry.entry_artists)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
-          <span sdbm-tooltip="artist">Artist</span>
+            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_artists)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
+            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_artists, entry_artist)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
+            <span sdbm-tooltip="artist">Artist</span>
       </label>
       <div class="col-sm-9 editable-container">
           <a href="#" editable-text="entry_artist.artist" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/artists/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateArtistModalCtrl">{{ entry_artist.artist|label }}</a>
       </div>
-      <div class="col-sm-1 text-right">
-        <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.entry_artists, entry_artist)" data-ng-click="removeRecord(entry.entry_artists, entry_artist)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
-        </div>
-      </div>
-
     </div>
 
     <div class="form-group row" data-ng-repeat="entry_scribe in entry.entry_scribes">
       
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.entry_scribes, entry_scribe)" data-ng-click="addRecord(entry.entry_scribes)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_scribes)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
+            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_scribes, entry_scribe)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
           <span sdbm-tooltip="scribe">Scribe</span>
       </label>
       <div class="col-sm-4">
@@ -235,81 +225,55 @@
           <span class="glyphicon glyphicon-exclamation-sign" title="inferred by source" ng-show="entry_scribe.inferred_by_source"></span>
           <span class="glyphicon glyphicon-warning-sign" title="inferred by user" ng-show="entry_scribe.inferred_by_user"></span>
       </div>
-      <div class="col-sm-1 text-right">
-        <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.entry_scribes, entry_scribe)" data-ng-click="removeRecord(entry.entry_scribes, entry_scribe)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
-        </div>
-      </div>
-
     </div>
 
     <div class="form-group row" data-ng-repeat="entry_language in entry.entry_languages">
       
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.entry_languages, entry_language)" data-ng-click="addRecord(entry.entry_languages)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_languages)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
+            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_languages, entry_language)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
           <span sdbm-tooltip="language">Language</span>
       </label>
       <div class="col-sm-9 editable-container">
           <a href="#" editable-text="entry_language.language" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/languages/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateLanguageModalCtrl">{{ entry_language.language|label }}</a>
       </div>
-      <div class="col-sm-1 text-right">
-        <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.entry_languages, entry_language)" data-ng-click="removeRecord(entry.entry_languages, entry_language)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
-        </div>
-      </div>
-
     </div>
 
     <div class="form-group row" data-ng-repeat="entry_material in entry.entry_materials">
       
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.entry_materials, entry_material)" data-ng-click="addRecord(entry.entry_materials)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_materials)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
+            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_materials, entry_material)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
           <span sdbm-tooltip="material">Material</span>
       </label>
       <div class="col-sm-4">
         <select class="form-control" data-ng-model="entry_material.material" ng-options="option[0] as option[1] for option in optionsMaterial"></select>
       </div>
       <div class="col-sm-5"></div>
-      <div class="col-sm-1 text-right">
-        <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.entry_materials, entry_material)" data-ng-click="removeRecord(entry.entry_materials, entry_material)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
-        </div>
-      </div>
-
     </div>
 
     <div class="form-group row" data-ng-repeat="entry_place in entry.entry_places">
       
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.entry_places, entry_place)" data-ng-click="addRecord(entry.entry_places)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_places)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
+            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_places, entry_place)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
           <span sdbm-tooltip="place">Place</span>
       </label>
       <div class="col-sm-9 editable-container">
           <a href="#" editable-text="entry_place.place" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/places/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreatePlaceModalCtrl">{{ entry_place.place|label }}</a>
       </div>
-      <div class="col-sm-1 text-right">
-        <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.entry_places, entry_place)" data-ng-click="removeRecord(entry.entry_places, entry_place)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
-        </div>
-      </div>
-
     </div>
 
     <div class="form-group row" data-ng-repeat="entry_use in entry.entry_uses">
       
       <label class="col-sm-2 control-label">
-          <a class="clickable" data-ng-hide="!isFirst(entry.entry_uses, entry_use)" data-ng-click="addRecord(entry.entry_uses)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_uses)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
+            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_uses, entry_use)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
           <span sdbm-tooltip="manuscript_use">Use</span>
       </label>
       <div class="col-sm-9">
         <input type="text" class="form-control" id="title" data-ng-model="entry_use.use">
       </div>
-      <div class="col-sm-1 text-right">
-        <div class="control-label">
-        <a class="clickable" data-ng-hide="isFirst(entry.entry_uses, entry_use)" data-ng-click="removeRecord(entry.entry_uses, entry_use)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
-        </div>
-      </div>
-
     </div>
 
     <div class="form-group row">
@@ -401,7 +365,7 @@
           <span sdbm-tooltip="binding">Binding</span>
       </label>
       <div class="col-sm-9">
-        <textarea class="form-control" id="binding" data-ng-model="entry.manuscript_binding"/></textarea>
+        <textarea class="form-control" id="binding" rows="2" data-ng-model="entry.manuscript_binding"/></textarea>
       </div>
     </div>
 
@@ -419,7 +383,7 @@
           <span sdbm-tooltip="comments">Other information</span>
       </label>
       <div class="col-sm-9">
-        <textarea class="form-control" id="other_info" data-ng-model="entry.other_info"></textarea>
+        <textarea class="form-control" id="other_info" rows="3" data-ng-model="entry.other_info"></textarea>
       </div>
     </div>
 
@@ -433,7 +397,8 @@
 
     <div class="form-group row">
         <label class="col-sm-2 control-label">
-            <a class="clickable" data-ng-hide="!isFirst(entry.provenance, prov)" data-ng-click="addRecord(entry.provenance)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
+            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
+            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.provenance, prov)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
             Begin/Acquire Date
         </label>
       <div class="col-sm-2">
@@ -443,11 +408,6 @@
       <label class="col-sm-2 control-label">End/Sale Date</label>
       <div class="col-sm-2">
         <input type="text" class="form-control" id="enddate" ng-model="prov.end_date">
-      </div>
-      <div class="col-sm-2 text-right">
-          <div class="control-label">
-              <a class="clickable" data-ng-hide="isFirst(entry.provenance, prov)" data-ng-click="removeRecord(entry.provenance, prov)" title="Remove" style="padding-right: 10px;"><span class="glyphicon glyphicon-remove"></span></a>
-          </div>
       </div>
     </div>
 
@@ -490,7 +450,7 @@
           <span sdbm-tooltip="provenance">Evidence</span>
       </label>
       <div class="col-sm-9">
-        <textarea class="form-control" id="comment" ng-model="prov.comment"></textarea>
+        <textarea class="form-control" rows="2" id="comment" ng-model="prov.comment"></textarea>
       </div>
     </div>
 
@@ -516,7 +476,7 @@
           <span sdbm-tooltip="entry">Add Comment</span>
       </label>
       <div class="col-sm-9">
-        <textarea class="form-control" id="editorial_comments" data-ng-model="entry.new_comment"></textarea>
+        <textarea class="form-control" rows="4" id="editorial_comments" data-ng-model="entry.new_comment"></textarea>
       </div>
     </div>
 

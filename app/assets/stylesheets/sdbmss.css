@@ -24,6 +24,66 @@
 /* put on A elements without hrefs */
 .sdbmss-form .clickable { cursor: pointer; }
 
+.sdbmss-form .add-link-container { min-width: 15px; min-height: 1px; float: left; }
+
+.sdbmss-form .remove-link-container { min-width: 15px; min-height: 1px; float: left; margin-left: 10px; }
+
+.sdbmss-form .form-group { margin-bottom: 10px; }
+
+.sdbmss-form .col-xs-1,
+.sdbmss-form .col-sm-1,
+.sdbmss-form .col-md-1,
+.sdbmss-form .col-lg-1,
+.sdbmss-form .col-xs-2,
+.sdbmss-form .col-sm-2,
+.sdbmss-form .col-md-2,
+.sdbmss-form .col-lg-2,
+.sdbmss-form .col-xs-3,
+.sdbmss-form .col-sm-3,
+.sdbmss-form .col-md-3,
+.sdbmss-form .col-lg-3,
+.sdbmss-form .col-xs-4,
+.sdbmss-form .col-sm-4,
+.sdbmss-form .col-md-4,
+.sdbmss-form .col-lg-4,
+.sdbmss-form .col-xs-5,
+.sdbmss-form .col-sm-5,
+.sdbmss-form .col-md-5,
+.sdbmss-form .col-lg-5,
+.sdbmss-form .col-xs-6,
+.sdbmss-form .col-sm-6,
+.sdbmss-form .col-md-6,
+.sdbmss-form .col-lg-6,
+.sdbmss-form .col-xs-7,
+.sdbmss-form .col-sm-7,
+.sdbmss-form .col-md-7,
+.sdbmss-form .col-lg-7,
+.sdbmss-form .col-xs-8,
+.sdbmss-form .col-sm-8,
+.sdbmss-form .col-md-8,
+.sdbmss-form .col-lg-8,
+.sdbmss-form .col-xs-9,
+.sdbmss-form .col-sm-9,
+.sdbmss-form .col-md-9,
+.sdbmss-form .col-lg-9,
+.sdbmss-form .col-xs-10,
+.sdbmss-form .col-sm-10,
+.sdbmss-form .col-md-10,
+.sdbmss-form .col-lg-10,
+.sdbmss-form .col-xs-11,
+.sdbmss-form .col-sm-11,
+.sdbmss-form .col-md-11,
+.sdbmss-form .col-lg-11,
+.sdbmss-form .col-xs-12,
+.sdbmss-form .col-sm-12,
+.sdbmss-form .col-md-12,
+.sdbmss-form .col-lg-12 {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.sdbmss-form legend { margin-bottom: 10px; }
+
 .sdbmss-form label.col-sm-2, .sdbmss-form label.col-sm-1 { padding-right: 0px; }
 
 /* make editable-container have the same padding as a label element,
