@@ -222,8 +222,11 @@
           <a class="clickable" data-ng-hide="!isFirst(entry.entry_scribes, entry_scribe)" data-ng-click="addRecord(entry.entry_scribes)" style="float: left;" title="Add"><span class="glyphicon glyphicon-plus"></span></a>
           <span sdbm-tooltip="scribe">Scribe</span>
       </label>
-      <div class="col-sm-9 editable-container">
+      <div class="col-sm-4">
+          <!--
           <a href="#" editable-text="entry_scribe.scribe" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/scribes/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateScribeModalCtrl">{{ entry_scribe.scribe|label }}</a>
+          -->
+          <input class="form-control" type="text" sdbm-autocomplete="/scribes/search.json" sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateScribeModalCtrl"/>
       </div>
       <div class="col-sm-1 text-right">
         <div class="control-label">

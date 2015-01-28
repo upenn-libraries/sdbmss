@@ -636,6 +636,169 @@
 
     });
 
+    /* 
+     * NOTES on different autocomplete widgets:
+     *
+     * We need a widget that allows autocompletion of entity names
+     * (prov agents, authors, scribes, etc), and can reject invalid
+     * values. Finding one that works well and is compatible with
+     * other things we use (namely Angular) is harder than it might
+     * first seem. I've experimented with the following:
+     *
+     * jquery UI's autocomplete - this works best; we use this to
+     * manage the INPUTs ourselves, and manually update the Angular
+     * models. This is low-tech and violates Angular's philosophy of
+     * not touching the DOM, but it works, and works well.
+     *
+     * UI Bootstrap (which uses Angular)'s typeahead - I couldn't get
+     * this to disallow invalid input. By design, setting
+     * typeahead-editable=false still lets you enter junk: see
+     * <http://stackoverflow.com/questions/18128793/set-input-invalid-when-typeahead-editable-is-false>.
+     * Writing various event handlers to detect invalid input is
+     * tricky, because of a chicken-and-egg problem of which thing
+     * gets modified first: the Angular models or the view
+     * model. Here's what the HTML would look like:
+     *
+     * <input class="form-control" ng-model="source.seller_agent.agent" typeahead-wait-ms="250" typeahead-editable="false" typeahead-min-length="2" typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl" />
+     *
+     * xeditable (uses UI Bootstrap) - this widget is clunky. clicking
+     * a hyperlink to turn it into a INPUT control is an extra step,
+     * it doesn't look that good visually, and it conflicts with
+     * Angular's validation capabilities.
+     */
+    
+    // this is an alternative to sdbm-submit-on-selection directive.
+    // it uses jquery ui's autocomplete instead of the xeditable
+    // widget.
+    sdbmApp.directive("sdbmAutocomplete", function ($http, $parse, $timeout, $modal) {
+        return function (scope, element, attrs) {
+            var modelName = attrs.sdbmAutocompleteModel;
+            var controller = attrs.sdbmAutocompleteModalController;
+
+            if(! (modelName && controller)) {
+                alert("Error on page: sdbm-autocomplete directive is missing attributes");
+            }
+            
+            // we need this watch to populate the input, which happens
+            // AFTER all the directives finish.
+            scope.$watch(modelName, function(newValue, oldValue) {
+                // initial value of undefined triggers an event to
+                // watch() so we ignore it
+                if(newValue) {
+                    $(element).val(newValue.display_value);
+                }
+            });
+
+            $(element).tooltip({
+                items: "input",
+                tooltipClass: "ui-state-highlight"
+            });
+
+            $(element).keypress(function(event) {
+                // prevent ENTER from submitting the form; just blur
+                // the input instead to trigger autocomplete
+                if (event.which == 13) {
+                    event.preventDefault();
+                    $(element).blur();
+                }
+            });
+            
+            $(element).autocomplete({
+                source: function (request, response_callback) {
+                    var url  = attrs.sdbmAutocomplete;
+                    var searchTerm = request.term;
+                    $http.get(url, {
+                        params: {
+                            term: searchTerm
+                        }
+                    }).then(function (response) {
+                        // transform data from API call into format expected by autocomplete
+                        var options = response.data;
+                        options.forEach(function(option) {
+                            option.label = option.display_value;
+                            option.value = option.id;
+                        });
+                        options.unshift({
+                            display_value: "\u00BB Create '" + searchTerm + "'",
+                            label: "\u00BB Create '" + searchTerm + "'",
+                            value: 'CREATE',
+                            id: 'CREATE'
+                        });
+                        response_callback(options);
+                    });
+                },
+                minLength: 2,
+                focus: function(event, ui) {
+                    // disable default behavior of populating input on focus
+                    event.preventDefault();
+                    // noop
+                },
+                change: function(event, ui) {
+                    // disallow input that wasn't a selection
+                    if(ui.item === null) {
+                        var badValue = $(element).val();
+                        $(element).val("");
+                        
+                        $(element)
+                            .tooltip("option", "content", badValue + " isn't valid input")
+                            .tooltip("option", "disabled", false)
+                            .tooltip("open");
+                        setTimeout(function() {
+                            $(element)
+                                .tooltip("option", "content", "")
+                                .tooltip("option", "disabled", true)
+                                .tooltip("close");
+                        }, 3000);
+                        
+                        var model = $parse(modelName);
+                        model.assign(scope, null);
+                        scope.$apply();
+                    }
+                },
+                select: function(event, ui) {
+                    // prevent autocomplete's default behavior of using value instead of label
+                    event.preventDefault();
+
+                    if(ui.item.value === 'CREATE') {
+                        $timeout(function() {
+
+                            var template = 'createEntityWithName.html';
+                            var newNameValue = ui.item.label.substring(ui.item.label.indexOf("'")+1, ui.item.label.lastIndexOf("'"));
+
+                            var modalInstance = $modal.open({
+                                templateUrl: template,
+                                controller: controller,
+                                resolve: {
+                                    newNameValue: function() { return newNameValue; }
+                                },
+                                size: 'lg'
+                            });
+
+                            /* callback for handling result */
+                            modalInstance.result.then(function (agent) {
+                                // $parse resolves the name in the current scope, which we
+                                // need to do to reference objects properly from inside
+                                // ng-repeat loops
+                                var model = $parse(modelName);
+                                model.assign(scope, agent);
+                            }, function () {
+                                $(element).val("");
+                                var model = $parse(modelName);
+                                model.assign(scope, null);
+                            });
+
+                        });
+                    } else {
+                        $(element).val(ui.item.label);
+                        var model = $parse(modelName);
+                        model.assign(scope, ui.item);
+                        scope.$apply();
+                    }
+                }
+            });
+        };
+    });
+
     /* To be used on editable typeahead elements: submits the form
      * when user makes a selection. We can't use typeahead-on-select
      * because that doesn't give us the DOM element.
