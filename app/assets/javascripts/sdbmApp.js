@@ -883,7 +883,47 @@
         return function (scope, element, attrs) {
             var modelName = attrs.sdbmInferenceFlagsModal;
 
+            $(element).tooltip({
+                items: "div",
+                tooltipClass: "ui-state-highlight",
+                content: function () {
+                    var model = $parse(modelName);
+                    var originalValue = model(scope);
+                    var s;
+                    if(modelName.search(/by_source/) !== -1) {
+                        if(originalValue) {
+                            s = "this information is NOT certain in the original source";
+                        } else {
+                            s = "this information is certain in the original source";
+                        }
+                    } else {
+                        if(originalValue) {
+                            s = "this information is a GUESS made by the user";
+                        } else {
+                            s = "this information is not a guess made by the user";
+                        }
+                    }
+                    return s += " (click to toggle)";
+                }
+            });
+
+            scope.$watch(modelName, function(newValue, oldValue) {
+                if(newValue) {
+                    $(element).removeClass("gray");
+                    $(element).addClass("red");
+                } else {
+                    $(element).removeClass("red");
+                    $(element).addClass("gray");
+                }
+            });
+            
             $(element).click(function() {
+                var model = $parse(modelName);
+                var originalValue = model(scope);
+                model.assign(scope, !originalValue);
+                scope.$apply();
+                $(element).tooltip("close").tooltip("open");
+                /*
                 var modalInstance = $modal.open({
                     templateUrl: "inferenceFlags.html",
                     controller: 'InferenceFlagsCtrl',
@@ -895,6 +935,7 @@
                         }
                     },
                 });
+                */
             });
         };
     });

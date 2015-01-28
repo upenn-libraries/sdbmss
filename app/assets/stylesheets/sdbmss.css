@@ -117,12 +117,16 @@ margin-bottom:2em;
 cursor: help;
 }
 
-.sdbmss-form .cog:hover {
-    cursor: pointer;
-}
-
 .sdbmss-form .inference-flags-container {
     padding-top: 7px;
+}
+
+.sdbmss-form .red {
+    color: red;
+}
+
+.sdbmss-form .gray {
+    color: gray;
 }
 
 /* tweak .modal-backdrop rule on pages that use UI Bootstrap's modal,

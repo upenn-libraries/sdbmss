@@ -75,19 +75,36 @@
 
         <div class="form-group row">
             <label class="col-sm-2 control-label"><span sdbm-tooltip="seller">Seller Agent</span></label>
-            <div class="col-sm-4 editable-container">
+            <div class="col-sm-5">
+                <!--
                 <a href="#" editable-text="entry.sale.seller_agent.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.seller_agent.agent|label }}</a>
+-->
+                <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.sale.seller_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
             </div>
-            <label class="col-sm-2 control-label"><span sdbm-tooltip="seller2">Seller</span></label>
-            <div class="col-sm-4 editable-container">
+            <label class="col-sm-1 control-label"><span sdbm-tooltip="seller2">Seller</span></label>
+            <div class="col-sm-4">
+                <!-- 
                 <a href="#" editable-text="entry.sale.seller_or_holder.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.seller_or_holder.agent|label }}</a>
+                -->
+                <div class="input-group">
+                    <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.sale.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+                    <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry.sale.seller_or_holder.inferred_by_source"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+                    <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry.sale.seller_or_holder.inferred_by_user"><span class="glyphicon glyphicon-warning-sign"></span></div>
+                </div>
             </div>
         </div>
 
         <div class="form-group row">
             <label class="col-sm-2 control-label"><span sdbm-tooltip="buyer">Buyer</span></label>
-            <div class="col-sm-4 editable-container">
+            <div class="col-sm-5">
+                <!--
                 <a href="#" editable-text="entry.sale.buyer.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.buyer.agent|label }}</a>
+                -->
+                <div class="input-group">
+                    <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.sale.buyer.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+                    <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry.sale.buyer.inferred_by_source"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+                    <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry.sale.buyer.inferred_by_user"><span class="glyphicon glyphicon-warning-sign"></span></div>
+                </div>
             </div>
         </div>
 
@@ -133,15 +150,18 @@
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_titles, entry_title)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
             <span sdbm-tooltip="title">Title</span>
       </label>
-      <div class="col-sm-4">
-        <input type="text" class="form-control" id="title" data-ng-model="entry_title.title">
-      </div>
-      <div class="col-sm-1">Flags
+      <div class="col-sm-5">
+          <div class="input-group">
+              <input type="text" class="form-control" id="title" data-ng-model="entry_title.title">
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_title.inferred_by_source"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_title.inferred_by_user"><span class="glyphicon glyphicon-warning-sign"></span></div>
+          </div>
+
       </div>
       <label class="col-sm-1 control-label">
           <span sdbm-tooltip="title">CommonTitle</span>
       </label>
-      <div class="col-sm-3">
+      <div class="col-sm-4">
         <input type="text" class="form-control" id="title" data-ng-model="entry_title.common_title">
       </div>
     </div>
@@ -153,15 +173,20 @@
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_authors, entry_author)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
             <span sdbm-tooltip="author">Author</span>
         </label>
-      <div class="col-sm-4 editable-container">
+      <div class="col-sm-5">
+<!--
           <a href="#" editable-text="entry_author.author" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/authors/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAuthorModalCtrl">{{ entry_author.author|label }}</a>
-      </div>
-      <div class="col-sm-1">Flags
+-->
+          <div class="input-group">
+              <input class="form-control" type="text" sdbm-autocomplete="/authors/search.json" sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateAuthorModalCtrl"/>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_author.inferred_by_source"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_author.inferred_by_user"><span class="glyphicon glyphicon-warning-sign"></span></div>
+          </div>
       </div>
       <label class="col-sm-1 control-label">
           <span sdbm-tooltip="authorVariant">As Recorded</span>
       </label>
-      <div class="col-sm-3">
+      <div class="col-sm-4">
           <input type="text" class="form-control" id="author" data-ng-model="entry_author.observed_name">
       </div>
     </div>
@@ -181,10 +206,10 @@
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
             <span sdbm-tooltip="year">Year</span>
       </label>
-      <div class="col-sm-4">
+      <div class="col-sm-2">
         <input type="text" class="form-control" id="year" data-ng-model="entry_date.date">
       </div>
-      <div class="col-sm-1">Flags</div>
+      <div class="col-sm-3"></div>
       <label class="col-sm-1 control-label">
           <span sdbm-tooltip="circa">Circa</span>
       </label>
@@ -200,8 +225,15 @@
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_artists, entry_artist)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
             <span sdbm-tooltip="artist">Artist</span>
       </label>
-      <div class="col-sm-9 editable-container">
+      <div class="col-sm-5">
+          <!--
           <a href="#" editable-text="entry_artist.artist" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/artists/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateArtistModalCtrl">{{ entry_artist.artist|label }}</a>
+          -->
+          <div class="input-group">
+              <input class="form-control" type="text" sdbm-autocomplete="/artists/search.json" sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateArtistModalCtrl"/>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_artist.inferred_by_source"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_artist.inferred_by_user"><span class="glyphicon glyphicon-warning-sign"></span></div>
+          </div>          
       </div>
     </div>
 
@@ -212,18 +244,15 @@
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_scribes, entry_scribe)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
           <span sdbm-tooltip="scribe">Scribe</span>
       </label>
-      <div class="col-sm-4">
+      <div class="col-sm-5">
           <!--
           <a href="#" editable-text="entry_scribe.scribe" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/scribes/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateScribeModalCtrl">{{ entry_scribe.scribe|label }}</a>
           -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/scribes/search.json" sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateScribeModalCtrl"/>
-              <div class="input-group-addon cog" sdbm-inference-flags-modal="entry_scribe"><span class="glyphicon glyphicon-cog"></span></div>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_scribe.inferred_by_source"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_scribe.inferred_by_user"><span class="glyphicon glyphicon-warning-sign"></span></div>
           </div>
-      </div>
-      <div class="col-sm-1 inference-flags-container">
-          <span class="glyphicon glyphicon-exclamation-sign" title="inferred by source" ng-show="entry_scribe.inferred_by_source"></span>
-          <span class="glyphicon glyphicon-warning-sign" title="inferred by user" ng-show="entry_scribe.inferred_by_user"></span>
       </div>
     </div>
 
@@ -234,8 +263,15 @@
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_languages, entry_language)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
           <span sdbm-tooltip="language">Language</span>
       </label>
-      <div class="col-sm-9 editable-container">
+      <div class="col-sm-5">
+          <!-- 
           <a href="#" editable-text="entry_language.language" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/languages/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateLanguageModalCtrl">{{ entry_language.language|label }}</a>
+          -->
+          <div class="input-group">
+              <input class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl"/>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_language.inferred_by_source"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_language.inferred_by_user"><span class="glyphicon glyphicon-warning-sign"></span></div>
+          </div>
       </div>
     </div>
 
@@ -246,10 +282,13 @@
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_materials, entry_material)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
           <span sdbm-tooltip="material">Material</span>
       </label>
-      <div class="col-sm-4">
-        <select class="form-control" data-ng-model="entry_material.material" ng-options="option[0] as option[1] for option in optionsMaterial"></select>
+      <div class="col-sm-5">
+          <div class="input-group">
+          <select class="form-control" data-ng-model="entry_material.material" ng-options="option[0] as option[1] for option in optionsMaterial"></select>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_scribe.inferred_by_source"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_scribe.inferred_by_user"><span class="glyphicon glyphicon-warning-sign"></span></div>
+          </div>
       </div>
-      <div class="col-sm-5"></div>
     </div>
 
     <div class="form-group row" data-ng-repeat="entry_place in entry.entry_places">
@@ -259,8 +298,15 @@
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_places, entry_place)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
           <span sdbm-tooltip="place">Place</span>
       </label>
-      <div class="col-sm-9 editable-container">
+      <div class="col-sm-5">
+          <!--
           <a href="#" editable-text="entry_place.place" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/places/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreatePlaceModalCtrl">{{ entry_place.place|label }}</a>
+          -->
+          <div class="input-group">
+              <input class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl"/>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_place.inferred_by_source"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_place.inferred_by_user"><span class="glyphicon glyphicon-warning-sign"></span></div>
+          </div>
       </div>
     </div>
 
@@ -413,33 +459,54 @@
 
     <div class="form-group row">
       <label class="col-sm-2 control-label">Seller Agent</label>
-      <div class="col-sm-4 editable-container">
+      <div class="col-sm-4">
+          <!--
           <a href="#" editable-text="prov.seller_agent.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ prov.seller_agent.agent|label }}</a>
+          -->
+          <div class="input-group">
+              <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.seller_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="prov.seller_agent.inferred_by_source"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="prov.seller_agent.inferred_by_user"><span class="glyphicon glyphicon-warning-sign"></span></div>
+          </div>
       </div>
       <label class="col-sm-2 control-label">Seller Agent As Recorded</label>
-      <div class="col-sm-3">
+      <div class="col-sm-4">
           <input type="text" class="form-control" id="seller_agent" data-ng-model="prov.seller_agent.observed_name">
       </div>
     </div>
 
     <div class="form-group row">
       <label class="col-sm-2 control-label">Seller/Holder</label>
-      <div class="col-sm-4 editable-container">
+      <div class="col-sm-4">
+          <!--
           <a href="#" editable-text="prov.seller_or_holder.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ prov.seller_or_holder.agent|label }}</a>
+          -->
+          <div class="input-group">
+              <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="prov.seller_or_holder.inferred_by_source"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="prov.seller_or_holder.inferred_by_user"><span class="glyphicon glyphicon-warning-sign"></span></div>
+          </div>
       </div>
       <label class="col-sm-2 control-label">Seller/Holder As Recorded</label>
-      <div class="col-sm-3">
+      <div class="col-sm-4">
           <input type="text" class="form-control" id="seller" data-ng-model="prov.seller_or_holder.observed_name">
       </div>
     </div>
 
     <div class="form-group row">
       <label class="col-sm-2 control-label">Buyer</label>
-      <div class="col-sm-4 editable-container">
+      <div class="col-sm-4">
+          <!--
           <a href="#" editable-text="prov.buyer.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ prov.buyer.agent|label }}</a>
+          -->
+          <div class="input-group">
+              <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.buyer.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="prov.buyer.inferred_by_source"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-inference-flags-modal="prov.buyer.inferred_by_user"><span class="glyphicon glyphicon-warning-sign"></span></div>
+          </div>
       </div>
       <label class="col-sm-2 control-label">Buyer As Recorded</label>
-      <div class="col-sm-3">
+      <div class="col-sm-4">
           <input type="text" class="form-control" id="buyer" data-ng-model="prov.buyer.observed_name">
       </div>
     </div>
@@ -449,7 +516,7 @@
       <label class="col-sm-2 control-label">
           <span sdbm-tooltip="provenance">Evidence</span>
       </label>
-      <div class="col-sm-9">
+      <div class="col-sm-10">
         <textarea class="form-control" rows="2" id="comment" ng-model="prov.comment"></textarea>
       </div>
     </div>
