@@ -57,8 +57,12 @@ margin-bottom:2em;
 cursor: help;
 }
 
-/* tweak blacklight's .modal-backdrop rule, to fix its broken greying out of the window behind modals */
-.modal-backdrop {
+/* tweak .modal-backdrop rule on pages that use UI Bootstrap's modal,
+so that gray backdrop shows up correctly */
+.blacklight-entries-edit .modal-backdrop,
+.blacklight-entries-new .modal-backdrop,
+.blacklight-sources-edit .modal-backdrop,
+.blacklight-sources-new .modal-backdrop {
     position: fixed;
     top: 0px;
     right: 0px;
