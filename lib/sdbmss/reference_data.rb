@@ -18,9 +18,14 @@ module SDBMSS::ReferenceData
   class JonathanHill
 
     def initialize
-      hill = Agent.find_or_create_by(name: "Jonathan A. Hill")
+      create_source
+      create_entry_one
+      create_entry_fourteen
+    end
 
-      source = Source.create!(
+    def create_source
+      @hill = Agent.find_or_create_by(name: "Jonathan A. Hill")
+      @source = Source.create!(
         source_type: Source::TYPE_AUCTION_CATALOG,
         date: "20150101",
         title: "Catalogue 213: Fine and Important Manuscripts and Printed Books",
@@ -30,13 +35,15 @@ module SDBMSS::ReferenceData
       )
 
       source_agent = SourceAgent.create!(
-        source: source,
-        agent: hill,
+        source: @source,
+        agent: @hill,
         role: SourceAgent::ROLE_SELLER_AGENT
       )
+    end
 
+    def create_entry_one
       entry = Entry.create!(
-        source: source,
+        source: @source,
         catalog_or_lot_number: "1",
         folios: 166,
         num_columns: 2,
@@ -55,7 +62,7 @@ module SDBMSS::ReferenceData
       )
       transaction_agent = EventAgent.create!(
         event: transaction,
-        agent: hill,
+        agent: @hill,
         role: EventAgent::ROLE_SELLER_AGENT
       )
 
@@ -142,6 +149,105 @@ module SDBMSS::ReferenceData
         event: provenance3,
         observed_name: "European private collection",
         role: EventAgent::ROLE_SELLER_OR_HOLDER,
+      )
+
+    end
+
+    def create_entry_fourteen
+      entry = Entry.create!(
+        source: @source,
+        catalog_or_lot_number: "14",
+        folios: 381,
+        num_lines: 46,
+        num_columns: 2,
+        height: 378,
+        width: 260,
+        initials_decorated: 179,
+        manuscript_binding: 'Early 19th-century diced Russia leather over wooden boards.',
+        other_info: 'Manuscript is dated in an inscription 30 December. 1480. Includes one full-length illuminated border.',
+      )
+
+      transaction = Event.create!(
+        primary: true,
+        entry: entry,
+        price: 800000,
+        currency: 'USD',
+        sold: 'NO'
+      )
+      transaction_agent = EventAgent.create!(
+        event: transaction,
+        agent: @hill,
+        role: EventAgent::ROLE_SELLER_AGENT
+      )
+
+      EntryTitle.create!(
+        entry: entry,
+        title: 'Quaestiones de potentia dei. Questiones de malo.',
+        common_title: 'Confessions',
+      )
+
+      EntryAuthor.create!(
+        entry: entry,
+        author: Author.find_or_create_by(name: 'Thomas Aquinas, Saint')
+      )
+
+      EntryDate.create!(entry: entry, date: '1480')
+
+      EntryArtist.create!(
+        entry: entry,
+        artist: Artist.find_or_create_by(name: 'Matteo Felice')
+      )
+
+      EntryScribe.create!(
+        entry: entry,
+        scribe: Scribe.find_or_create_by(name: 'Crispus, Venceslaus')
+      )
+
+      # TODO
+      EntryLanguage.create!(
+        entry: entry,
+        language: Language.find_or_create_by(name: '[Latin]')
+      )
+
+      EntryMaterial.create!(
+        entry: entry,
+        material: 'Parchment'
+      )
+
+      EntryPlace.create!(
+        entry: entry,
+        place: Place.find_or_create_by(name: 'Italy, Naples')
+      )
+
+      provenance1 = Event.create!(
+        entry: entry,
+        acquire_date: '14801230',
+        comment: "Royal arms on first leaf."
+      )
+      EventAgent.create!(
+        event: provenance1,
+        agent: Agent.find_or_create_by(name: "Ferdinand I of Aragon, King of Naples"),
+        role: EventAgent::ROLE_SELLER_OR_HOLDER
+      )
+
+      provenance2 = Event.create!(
+        entry: entry
+      )
+      EventAgent.create!(
+        event: provenance2,
+        agent: Agent.find_or_create_by(name: "Federico of Aragon"),
+        role: EventAgent::ROLE_SELLER_OR_HOLDER
+      )
+
+      provenance3 = Event.create!(
+        entry: entry,
+        acquire_date: '1508',
+        comment: "Listed in inventory of 1508.",
+      )
+      EventAgent.create!(
+        event: provenance3,
+        agent: Agent.find_or_create_by(name: "Amboise, Georges d'"),
+        role: EventAgent::ROLE_SELLER_OR_HOLDER
       )
 
     end
