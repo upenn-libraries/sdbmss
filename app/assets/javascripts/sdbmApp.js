@@ -741,22 +741,27 @@
                     // noop
                 },
                 change: function(event, ui) {
-                    // disallow input that wasn't a selection
+                    var inputValue = $(element).val();
+
+                    // if no actual selection was made, clear the data model
                     if(ui.item === null) {
-                        var badValue = $(element).val();
-                        $(element).val("");
-                        
-                        $(element)
-                            .tooltip("option", "content", badValue + " isn't valid input")
-                            .tooltip("option", "disabled", false)
-                            .tooltip("open");
-                        setTimeout(function() {
+
+                        // if user typed in junk, clear it out and warn
+                        if(inputValue) {
+                            $(element).val("");
+                            
                             $(element)
-                                .tooltip("option", "content", "")
-                                .tooltip("option", "disabled", true)
-                                .tooltip("close");
-                        }, 3000);
-                        
+                                .tooltip("option", "content", inputValue + " isn't valid input")
+                                .tooltip("option", "disabled", false)
+                                .tooltip("open");
+                            setTimeout(function() {
+                                $(element)
+                                    .tooltip("option", "content", "")
+                                    .tooltip("option", "disabled", true)
+                                    .tooltip("close");
+                            }, 3000);
+                        }
+                            
                         var model = $parse(modelName);
                         model.assign(scope, null);
                         scope.$apply();
