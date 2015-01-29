@@ -716,8 +716,14 @@ module SDBMSS::Legacy
       end
 
       SDBMSS::Util.split_and_strip(row['SCRIBE']).each do |atom|
+        if atom.scan(/scribe/i).length > 0
+          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'scribe', "Scribe name has word 'scribe' in it: #{atom}")
+        end
+
         name, inferred_by_source, inferred_by_user = parse_inference_indicators(atom)
+
         scribe = Scribe.where(name: name).order(nil).first_or_create!
+
         es = EntryScribe.create!(
           entry: entry,
           scribe: scribe,
