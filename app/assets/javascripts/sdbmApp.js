@@ -898,9 +898,9 @@
                         }
                     } else {
                         if(originalValue) {
-                            s = "this information is a GUESS made by the user";
+                            s = "this information is an INFERENCE made by the user";
                         } else {
-                            s = "this information is not a guess made by the user";
+                            s = "this information is recorded directly by the user";
                         }
                     }
                     return s += " (click to toggle)";
