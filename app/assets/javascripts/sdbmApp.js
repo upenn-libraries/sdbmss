@@ -892,23 +892,13 @@
                 items: "div",
                 tooltipClass: "ui-state-highlight",
                 content: function () {
-                    var model = $parse(modelName);
-                    var originalValue = model(scope);
                     var s;
                     if(modelName.search(/by_source/) !== -1) {
-                        if(originalValue) {
-                            s = "this information is NOT certain in the original source";
-                        } else {
-                            s = "this information is certain in the original source";
-                        }
+                        s = "red indicates this information is uncertain in the original source";
                     } else {
-                        if(originalValue) {
-                            s = "this information is an INFERENCE made by the user";
-                        } else {
-                            s = "this information is recorded directly by the user";
-                        }
+                        s = "red indicates this information is NOT present in the original source, but was inferred";
                     }
-                    return s += " (click to toggle)";
+                    return s += " - click the icon to toggle";
                 }
             });
 
@@ -927,7 +917,6 @@
                 var originalValue = model(scope);
                 model.assign(scope, !originalValue);
                 scope.$apply();
-                $(element).tooltip("close").tooltip("open");
                 /*
                 var modalInstance = $modal.open({
                     templateUrl: "inferenceFlags.html",
