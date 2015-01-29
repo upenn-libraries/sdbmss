@@ -138,6 +138,41 @@ module SDBMSS::Legacy
       return [author, roles]
     end
 
+    # parse the brackets and question marks from strings. returns an
+    # array of 3 items: a string stripped of inference marks, boolean
+    # indicating inferred_by_source, boolean indicating
+    # inferred_by_user.
+    def parse_inference_indicators(s)
+      # be very restrictive in our matching here: since there is all
+      # kinds of crazy stuff in strings, if we don't find EXACTLY what
+      # we're looking for, leave it alone
+
+      return [s, false, false] if s.blank?
+
+      inferred_by_user = false
+      inferred_by_source = false
+
+      # look for ? at end, brackets notwithstanding
+      if s.gsub(/[\[\]]/, "").strip.end_with?("?")
+        # replace last occurence of ?. this ignores any question marks
+        # in the middle of the string, which does happen
+        without_question_mark = s.reverse.sub("?", "").reverse
+        inferred_by_source = true
+      else
+        without_question_mark = s.dup
+      end
+
+      without_question_mark.strip!
+
+      if without_question_mark[0] == '[' && without_question_mark[-1] == ']'
+        inferred_by_user = true
+        bare = without_question_mark[1..-2].strip
+      else
+        bare = without_question_mark
+      end
+      return [bare, inferred_by_source, inferred_by_user]
+    end
+
     # Do the migration
     def migrate
 
@@ -191,13 +226,15 @@ module SDBMSS::Legacy
       # have one; do this before catalog migration so it's id=1
       unknown_source = Source.create!(
         date: "00000000",
-        title: "Unknown (entry record needs to be fixed)"
+        title: "Unknown (entry record needs to be fixed)",
+        source_type: Source::TYPE_UNPUBLISHED,
       )
 
       # special case for handling records from Jordanus
       jordanus = Source.create!(
         date: "00000000",
         title: "Jordanus",
+        source_type: Source::TYPE_OTHER_PUBLISHED,
       )
 
       puts "Migrating Source records"
@@ -495,7 +532,7 @@ module SDBMSS::Legacy
 
         # we suppress Transaction info on UI for some source types, so make
         # sure non-sale sources don't have sale info
-        if source.source_type == 'collection_catalog' && row['SECONDARY_SOURCE'].blank?
+        if source.source_type == Source::TYPE_COLLECTION_CATALOG && row['SECONDARY_SOURCE'].blank?
           # this is probably a child record?
           puts "ERROR: record #{row['MANUSCRIPT_ID']}: has 'collection_catalog' source and no secondary source, therefore it should not have transaction info"
         end
@@ -679,10 +716,13 @@ module SDBMSS::Legacy
       end
 
       SDBMSS::Util.split_and_strip(row['SCRIBE']).each do |atom|
-        scribe = Scribe.where(name: atom).order(nil).first_or_create!
+        name, inferred_by_source, inferred_by_user = parse_inference_indicators(atom)
+        scribe = Scribe.where(name: name).order(nil).first_or_create!
         es = EntryScribe.create!(
           entry: entry,
           scribe: scribe,
+          inferred_by_source: inferred_by_source,
+          inferred_by_user: inferred_by_user,
         )
       end
 
@@ -869,11 +909,11 @@ module SDBMSS::Legacy
       case
       when row['SELLER'].present?
         # TODO: assert that other fields are blank?
-        source_type = 'auction_catalog'
+        source_type = Source::TYPE_AUCTION_CATALOG
       when row['INSTITUTION'].present?
-        source_type = 'collection_catalog'
+        source_type = Source::TYPE_COLLECTION_CATALOG
       else
-        source_type = 'other_published'
+        source_type = Source::TYPE_OTHER_PUBLISHED
       end
 
       whether_mss = row['WHETHER_MSS']
