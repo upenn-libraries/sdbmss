@@ -168,32 +168,26 @@ the latter to refer to environments where programmers do their work.
 
 * On your local machine, run "ssh-add" to add your key to your ssh
   agent. This key should already be registered with Github, so that
-  capistrano can use it (via ssh forwarding) to access the repo on the
-  dev VM.
+  capistrano can use it (via ssh forwarding) to access the Github repo
+  from the dev VM.
 
-* From your own machine, deploy the latest code to the dev VM using
+* On your local machine, deploy the latest code to the dev VM using
   capistrano. This will put a copy of the code in ~/sdbmss/current on
-  the dev VM.
+  the dev VM, update the solr configuration and restart it, and
+  restart the unicorn server.
 
   ```
   cd ~/sdbmss
   bundle exec cap staging deploy
   ```
 
-* Ssh into the dev VM and recreate the database and reindex Solr. You
-  only need to do this as necessary. (TODO: capistrano should be set
-  up to do this)
+* On the remote dev VM, recreate the database and reindex Solr. You
+  only need to do this as necessary. (TODO: this takes way too long;
+  recreating the database should be done on a faster machine and
+  uploaded)
 
   ```
   cd ~/sdbmss
   bundle exec rake sdbmss:migrate_legacy_data
-  bundle exec rake sunspot:solr:start
   bundle exec rake sunspot:reindex
-  ```
-
-* Ssh into the dev VM and start unicorn
-
-  ```
-  cd ~/sdbmss/current
-  ./run_unicorn_daemon.sh
   ```
