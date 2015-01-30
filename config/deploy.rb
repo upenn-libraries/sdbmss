@@ -103,6 +103,39 @@ namespace :deploy do
     end
   end
 
+  desc "Upload the .SQL file to remote host, and recreate the database"
+  task :recreate_database, :database_file do |tasks, args|
+    if args[:database_file]
+      on roles(:all) do
+        set :confirm, ask("whether you REALLY want to do this", "n")
+        if fetch(:confirm) == 'y'
+
+          # monkey patch to supress upload status, which spews a lot
+          # of output and is REALLY annoying
+          class SSHKit::Backend::Netssh
+            def transfer_summarizer(action)
+              nil
+            end
+          end
+
+          puts "Uploading, please wait..."
+          upload!(args[:database_file], shared_path)
+
+          remote_path = File.join shared_path, File.basename(args[:database_file])
+          execute "cat #{remote_path} | mysql -u root sdbm"
+
+          within current_path do
+            execute :bundle, "exec rake sunspot:reindex"
+          end
+        else
+          puts "Aborting."
+        end
+      end
+    else
+      puts "Error: specify a database file to use, as a task argument"
+    end
+  end
+
   after 'deploy:started', 'deploy:solr_stop'
   after 'deploy:started', 'deploy:unicorn_stop'
   after 'deploy:publishing', 'deploy:solr_update'

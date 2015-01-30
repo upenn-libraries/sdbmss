@@ -131,7 +131,11 @@ Deploying to the Staging (Dev VM) Server
 Note: we call the dev VM 'staging' instead of 'development'; we use
 the latter to refer to environments where programmers do their work.
 
-* Configure Apache on the dev VM by creating a file
+We use capistrano to automate updating the staging server with the
+latest code, restarting the unicorn server, and recreating the
+database.
+
+* First, configure Apache on the dev VM by creating a file
   /etc/httpd/conf.d/sdbmss.conf with the following contents:
 
   ```
@@ -169,7 +173,7 @@ the latter to refer to environments where programmers do their work.
 * On your local machine, run "ssh-add" to add your key to your ssh
   agent. This key should already be registered with Github, so that
   capistrano can use it (via ssh forwarding) to access the Github repo
-  from the dev VM.
+  from the dev VM. This needs to happen for the next step to work.
 
 * On your local machine, deploy the latest code to the dev VM using
   capistrano. This will put a copy of the code in ~/sdbmss/current on
@@ -181,13 +185,12 @@ the latter to refer to environments where programmers do their work.
   bundle exec cap staging deploy
   ```
 
-* On the remote dev VM, recreate the database and reindex Solr. You
-  only need to do this as necessary. (TODO: this takes way too long;
-  recreating the database should be done on a faster machine and
-  uploaded)
+* On your local machine, you can run a task to refresh the database on
+  staging, using a SQL file (created on your local machine--doing
+  migrations from the legacy data takes way too long the VM), and
+  reindex Solr. You only need to do this as necessary.
 
   ```
   cd ~/sdbmss
-  bundle exec rake sdbmss:migrate_legacy_data
-  bundle exec rake sunspot:reindex
+  bundle exec cap staging deploy:recreate_database[../sdbm_rails_2015_01_29.sql]
   ```
