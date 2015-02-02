@@ -349,19 +349,39 @@
         <% if (provenance_all = entry.get_provenance).present? %>
         <% provenance_all.each do |provenance| %>
 
-        <% if (seller_or_holder = provenance.get_seller_or_holder).present? %>
+            <% seller_or_holder = provenance.get_seller_or_holder %>
+            <% seller_agent = provenance.get_seller_agent %>
+            <% buyer = provenance.get_buyer %>
         <tr>
-            <td class="col-sm-2 text-right record-label"><%= format_fuzzy_date(provenance.acquire_date)||"(no date)" %></td>
-            <td class="col-sm-10">
-                <% if seller_or_holder.agent %>
-                <a href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a>
-                <% if seller_or_holder.observed_name %> (as <%= seller_or_holder.observed_name %>)<% end %>
+            <td class="col-sm-2 text-right record-label">
+                <% if provenance.acquire_date.present? || provenance.end_date.present? %>
+                    <%= format_fuzzy_date(provenance.acquire_date) %>
+                    <% if provenance.acquire_date.present? && provenance.end_date.present? %><br/>to<br/><% end %>
+                    <%= format_fuzzy_date(provenance.end_date) %>
                 <% else %>
-                <%= seller_or_holder.observed_name %>
+                    (No date)
+                <% end %>
+            </td>
+            <td class="col-sm-10">
+                <% if seller_or_holder.present? && !buyer.present? %>
+                    Held or sold by <%= render partial: "shared/event_agent", object: seller_or_holder %>
+                    <% if seller_agent.present? %>
+                        through <%= render partial: "shared/event_agent", object: seller_agent %>
+                    <% end %>
+                <% elsif !seller_or_holder.present? && buyer.present? %>
+                    Purchased by <%= render partial: "shared/event_agent", object: buyer %>
+                    <% if seller_agent.present? %>
+                        through <%= render partial: "shared/event_agent", object: seller_agent %>
+                    <% end %>
+                <% elsif seller_or_holder.present? && buyer.present? %>
+                    Sold by <%= render partial: "shared/event_agent", object: seller_or_holder %> to
+                    <%= render partial: "shared/event_agent", object: buyer %>
+                    <% if seller_agent.present? %>
+                        through <%= render partial: "shared/event_agent", object: seller_agent %>
+                    <% end %>
                 <% end %>
             </td>
         </tr>
-        <% end %>
 
         <% end %>
         <% end %>

@@ -110,21 +110,20 @@
         </dd>
         <% end %>
 
-        <% if entry.get_provenance.length > 0 %>
+        <% if (provenance_count = entry.get_provenance.length) > 0 %>
         <dt>Provenance</dt>
         <dd>
-        <% entry.get_provenance.each do |provenance| %>
-          <!-- TODO: incomplete -->
-          <% if (seller_or_holder = provenance.get_seller_or_holder).present? %>
-            <% if seller_or_holder.agent %>
-              <a href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a>
-              <% if seller_or_holder.observed_name %> (as <%= seller_or_holder.observed_name %>)<% end %>
-            <% elsif seller_or_holder.observed_name.present? %>
-              <%= seller_or_holder.observed_name %>
+            <%= provenance_count %> records involving:<br/>
+            <% entry.get_provenance.each do |provenance| %>
+                <% seller_or_holder = provenance.get_seller_or_holder %>
+                <% buyer = provenance.get_buyer %>
+                <% if seller_or_holder.present? %>
+                    <%= render partial: "shared/event_agent", object: seller_or_holder %><br/>
+                <% end %>
+                <% if buyer.present? %>
+                    <%= render partial: "shared/event_agent", object: buyer %><br/>
+                <% end %>
             <% end %>
-          <% end %>
-          <br/>
-        <% end %>
         </dd>
         <% end %>
 
