@@ -37,6 +37,7 @@ class EntriesController < ApplicationController
   end
 
   def edit
+    expires_now
   end
 
   def update

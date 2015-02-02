@@ -143,3 +143,20 @@ so that gray backdrop shows up correctly */
     z-index: 1040;
     background-color: #000;
 }
+
+@media print {
+    /* TODO: these 2 rules are a hack to hide the sidebar and stretch out #content to 100%. the result is better than nothing, but it does cut off the right side a bit, for reasons I don't yet know. it also looks very different on Chrome than Firefox. there must be a better way... */
+    #sidebar {
+        width: 0%;
+        display: none;
+    }
+    .blacklight-catalog-show #content {
+        width: 100%;
+    }
+
+    /* bootstrap sets 'content' to print the links; turn it off */
+    a[href]:after {
+        content: "";
+    }
+
+}
