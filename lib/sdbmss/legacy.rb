@@ -13,6 +13,8 @@ module SDBMSS::Legacy
   # module-level methods
   class << self
 
+    VALID_SOLD_TYPES = Event::SOLD_TYPES.map(&:first)
+
     VALID_ALT_SIZE_TYPES = Entry::ALT_SIZE_TYPES.map { |item| item[0] }
 
     VALID_CIRCA_TYPES = EntryDate::CIRCA_TYPES.map { |item| item[0] }
@@ -546,6 +548,16 @@ module SDBMSS::Legacy
           acquire_date = catalog_row['ALT_CAT_DATE'] if catalog_row['ALT_CAT_DATE'].present?
         end
 
+        sold = row['SOLD']
+        if sold.present?
+          if !VALID_SOLD_TYPES.member?(sold)
+            create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'sold', "entry ID=#{row['MANUSCRIPT_ID']} had invalid value for Sold field: #{row['SOLD']}")
+            sold = Event::TYPE_SOLD_UNKNOWN
+          end
+        else
+          sold = Event::TYPE_SOLD_UNKNOWN
+        end
+
         transaction = Event.create!(
           primary: true,
           entry: entry,
@@ -553,7 +565,7 @@ module SDBMSS::Legacy
           price: row['PRICE'],
           currency: currency,
           other_currency: other_currency,
-          sold: row['SOLD'],
+          sold: sold,
         )
 
         if row['SELLER'].present?

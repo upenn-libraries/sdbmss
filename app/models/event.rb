@@ -1,12 +1,4 @@
 class Event < ActiveRecord::Base
-  belongs_to :entry
-
-  include UserFields
-
-  has_many :event_agents
-
-  scope :transactions, -> { where(primary: true) }
-  scope :provenance, -> { where(primary: false) }
 
   CURRENCY_TYPES = [
     ["EUR", "EUR"],
@@ -21,11 +13,28 @@ class Event < ActiveRecord::Base
     ["JPY", "JPY"],
   ]
 
+  TYPE_SOLD_UNKNOWN = "UNKNOWN"
+  TYPE_SOLD_YES = "YES"
+  TYPE_SOLD_NO = "NO"
+  TYPE_SOLD_GIFT = "GIFT"
+
   SOLD_TYPES =[
-    ["YES", "YES"],
-    ["NO", "NO"],
-    ["GIFT", "GIFT"],
+    [TYPE_SOLD_UNKNOWN, TYPE_SOLD_UNKNOWN],
+    [TYPE_SOLD_YES, TYPE_SOLD_YES],
+    [TYPE_SOLD_NO, TYPE_SOLD_NO],
+    [TYPE_SOLD_GIFT, TYPE_SOLD_GIFT],
   ]
+
+  belongs_to :entry
+
+  include UserFields
+
+  has_many :event_agents
+
+  scope :transactions, -> { where(primary: true) }
+  scope :provenance, -> { where(primary: false) }
+
+  validates :sold, inclusion: { in: SOLD_TYPES.map(&:first) }, if: :primary
 
   def get_event_agent_with_role(role)
     event_agents.select { |ea| ea.role == role }.first

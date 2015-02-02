@@ -410,7 +410,8 @@
             // TODO: only add 'sale' object if appropriate for source type
             if(!entry.sale) {
                 entry.sale = {
-                    primary: true
+                    primary: true,
+                    sold: 'UNKNOWN'
                 };
                 // prepopulate sale agent fields with data from source_agents
                 var sourceAgents = entry.source.source_agents || [];
@@ -427,10 +428,8 @@
 
             // sanity check that values we got for dropdowns are
             // actually valid options
-            if(entry.sale.sold) {
-                if(! sdbmutil.inOptionsArray(entry.sale.sold, $scope.optionsSold)) {
-                    $scope.badData.push("Bad sold value: '" + entry.sale.sold + "'");
-                }
+            if(! sdbmutil.inOptionsArray(entry.sale.sold, $scope.optionsSold)) {
+                $scope.badData.push("Bad sold value: '" + entry.sale.sold + "'");
             }
             if(entry.sale.currency) {
                 if(! sdbmutil.inOptionsArray(entry.sale.currency, $scope.optionsCurrency)) {
@@ -597,7 +596,6 @@
             function(result) {
 
                 $scope.optionsSold = result.data.sold;
-                $scope.optionsSold.unshift(["", ""]);
                 $scope.optionsCurrency = result.data.currency;
                 $scope.optionsCurrency.unshift(["", ""]);
                 $scope.optionsCirca = result.data.circa;
