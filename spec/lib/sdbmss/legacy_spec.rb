@@ -21,22 +21,22 @@ describe "SDBMSS::Legacy" do
 
    end
 
-   describe "#parse_inference_indicators" do
+   describe "#parse_certainty_indicators" do
 
      it "leaves weird data alone" do
-       expect(SDBMSS::Legacy.parse_inference_indicators(nil)).to eq([nil, false, false])
-       expect(SDBMSS::Legacy.parse_inference_indicators("")).to eq(["", false, false])
-       expect(SDBMSS::Legacy.parse_inference_indicators("Hello there")).to eq(["Hello there", false, false])
-       expect(SDBMSS::Legacy.parse_inference_indicators("[Hello there")).to eq(["[Hello there", false, false])
-       expect(SDBMSS::Legacy.parse_inference_indicators("Hello there]")).to eq(["Hello there]", false, false])
+       expect(SDBMSS::Legacy.parse_certainty_indicators(nil)).to eq([nil, false, false])
+       expect(SDBMSS::Legacy.parse_certainty_indicators("")).to eq(["", false, false])
+       expect(SDBMSS::Legacy.parse_certainty_indicators("Hello there")).to eq(["Hello there", false, false])
+       expect(SDBMSS::Legacy.parse_certainty_indicators("[Hello there")).to eq(["[Hello there", false, false])
+       expect(SDBMSS::Legacy.parse_certainty_indicators("Hello there]")).to eq(["Hello there]", false, false])
    end
 
      it "parses expected cases properly" do
-       expect(SDBMSS::Legacy.parse_inference_indicators("[Hello there]")).to eq(["Hello there", false, true])
-       expect(SDBMSS::Legacy.parse_inference_indicators("Hello there?")).to eq(["Hello there", true, false])
-       expect(SDBMSS::Legacy.parse_inference_indicators("Hello? there?")).to eq(["Hello? there", true, false])
-       expect(SDBMSS::Legacy.parse_inference_indicators("[Hello there?]")).to eq(["Hello there", true, true])
-       expect(SDBMSS::Legacy.parse_inference_indicators("[Hello there]?")).to eq(["Hello there", true, true])
+       expect(SDBMSS::Legacy.parse_certainty_indicators("[Hello there]")).to eq(["Hello there", false, true])
+       expect(SDBMSS::Legacy.parse_certainty_indicators("Hello there?")).to eq(["Hello there", true, false])
+       expect(SDBMSS::Legacy.parse_certainty_indicators("Hello? there?")).to eq(["Hello? there", true, false])
+       expect(SDBMSS::Legacy.parse_certainty_indicators("[Hello there?]")).to eq(["Hello there", true, true])
+       expect(SDBMSS::Legacy.parse_certainty_indicators("[Hello there]?")).to eq(["Hello there", true, true])
      end
 
    end

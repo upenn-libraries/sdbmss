@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150128142520) do
+ActiveRecord::Schema.define(version: 20150203001445) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -221,8 +221,8 @@ ActiveRecord::Schema.define(version: 20150128142520) do
     t.integer  "scribe_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "inferred_by_source", default: false
-    t.boolean  "inferred_by_user",   default: false
+    t.boolean  "uncertain_in_source",    default: false
+    t.boolean  "supplied_by_data_entry", default: false
   end
 
   add_index "entry_scribes", ["entry_id"], name: "index_entry_scribes_on_entry_id", using: :btree

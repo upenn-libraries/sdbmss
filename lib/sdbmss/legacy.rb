@@ -141,25 +141,25 @@ module SDBMSS::Legacy
     end
 
     # parse the brackets and question marks from strings. returns an
-    # array of 3 items: a string stripped of inference marks, boolean
-    # indicating inferred_by_source, boolean indicating
-    # inferred_by_user.
-    def parse_inference_indicators(s)
+    # array of 3 items: a string stripped of certainty marks, boolean
+    # indicating uncertain_in_source, boolean indicating
+    # supplied_by_data_entry.
+    def parse_certainty_indicators(s)
       # be very restrictive in our matching here: since there is all
       # kinds of crazy stuff in strings, if we don't find EXACTLY what
       # we're looking for, leave it alone
 
       return [s, false, false] if s.blank?
 
-      inferred_by_user = false
-      inferred_by_source = false
+      supplied_by_data_entry = false
+      uncertain_in_source = false
 
       # look for ? at end, brackets notwithstanding
       if s.gsub(/[\[\]]/, "").strip.end_with?("?")
         # replace last occurence of ?. this ignores any question marks
         # in the middle of the string, which does happen
         without_question_mark = s.reverse.sub("?", "").reverse
-        inferred_by_source = true
+        uncertain_in_source = true
       else
         without_question_mark = s.dup
       end
@@ -167,12 +167,12 @@ module SDBMSS::Legacy
       without_question_mark.strip!
 
       if without_question_mark[0] == '[' && without_question_mark[-1] == ']'
-        inferred_by_user = true
+        supplied_by_data_entry = true
         bare = without_question_mark[1..-2].strip
       else
         bare = without_question_mark
       end
-      return [bare, inferred_by_source, inferred_by_user]
+      return [bare, uncertain_in_source, supplied_by_data_entry]
     end
 
     # Do the migration
@@ -732,15 +732,15 @@ module SDBMSS::Legacy
           create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'scribe', "Scribe name has word 'scribe' in it: #{atom}")
         end
 
-        name, inferred_by_source, inferred_by_user = parse_inference_indicators(atom)
+        name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(atom)
 
         scribe = Scribe.where(name: name).order(nil).first_or_create!
 
         es = EntryScribe.create!(
           entry: entry,
           scribe: scribe,
-          inferred_by_source: inferred_by_source,
-          inferred_by_user: inferred_by_user,
+          uncertain_in_source: uncertain_in_source,
+          supplied_by_data_entry: supplied_by_data_entry,
         )
       end
 

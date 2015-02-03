@@ -882,38 +882,49 @@
         };
     });
 
-    sdbmApp.directive("sdbmInferenceFlagsModal", function($modal, $parse) {
+    sdbmApp.directive("sdbmCertaintyFlags", function($modal, $parse) {
         return function (scope, element, attrs) {
-            var modelName = attrs.sdbmInferenceFlagsModal;
+            var modelName = attrs.sdbmCertaintyFlags;
 
+            $(element).css("color", "black");
+                
             $(element).tooltip({
                 items: "div",
                 tooltipClass: "ui-state-highlight",
-                content: function () {
-                    var s;
-                    if(modelName.search(/by_source/) !== -1) {
-                        s = "red indicates this information is uncertain in the original source";
-                    } else {
-                        s = "red indicates this information is NOT present in the original source, but was inferred";
-                    }
-                    return s += " - click the icon to toggle";
-                }
-            });
-
-            scope.$watch(modelName, function(newValue, oldValue) {
-                if(newValue) {
-                    $(element).removeClass("gray");
-                    $(element).addClass("red");
-                } else {
-                    $(element).removeClass("red");
-                    $(element).addClass("gray");
-                }
+                content: "Click this icon to cycle through these options:<br/><br/>check mark = source contains this information.<br/><br/>question mark = source expresses doubt<br/><br/>asterisk = you are supplying this information, based on a strong inference"
             });
             
+            // use a single handler for model changes, so we can always
+            // account for both flags when cycling
+            var cycle = function() {
+                var uncertain_in_source = $parse(modelName + ".uncertain_in_source")(scope);
+                var supplied_by_data_entry = $parse(modelName + ".supplied_by_data_entry")(scope);
+                if(uncertain_in_source) {
+                    $(element).find("span").removeClass().addClass("glyphicon glyphicon-question-sign");
+                } else if(supplied_by_data_entry) {
+                    $(element).find("span").removeClass().addClass("glyphicon glyphicon-asterisk");
+                } else {
+                    $(element).find("span").removeClass().addClass("glyphicon glyphicon-ok");
+                }
+            };
+
+            scope.$watch(modelName + ".uncertain_in_source", cycle);
+            scope.$watch(modelName + ".supplied_by_data_entry", cycle);
+            
             $(element).click(function() {
-                var model = $parse(modelName);
-                var originalValue = model(scope);
-                model.assign(scope, !originalValue);
+                var uncertain_in_source = $parse(modelName + ".uncertain_in_source")(scope);
+                var supplied_by_data_entry = $parse(modelName + ".supplied_by_data_entry")(scope);
+
+                // cycle through flags
+                if(uncertain_in_source) {
+                    $parse(modelName + ".uncertain_in_source").assign(scope, false);
+                    $parse(modelName + ".supplied_by_data_entry").assign(scope, true);
+                } else if (supplied_by_data_entry) {
+                    $parse(modelName + ".uncertain_in_source").assign(scope, false);
+                    $parse(modelName + ".supplied_by_data_entry").assign(scope, false);
+                } else { 
+                    $parse(modelName + ".uncertain_in_source").assign(scope, true);
+                }
                 scope.$apply();
                 /*
                 var modalInstance = $modal.open({

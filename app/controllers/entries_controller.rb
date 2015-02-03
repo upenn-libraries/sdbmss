@@ -57,7 +57,7 @@ class EntriesController < ApplicationController
         Reconciler.reconcile_assoc @entry, params["entry_authors"], EntryAuthor, 'entry_id', [:author_id, :observed_name, :role]
         Reconciler.reconcile_assoc @entry, params["entry_dates"], EntryDate, 'entry_id', [:date, :circa]
         Reconciler.reconcile_assoc @entry, params["entry_artists"], EntryArtist, 'entry_id', [:artist_id]
-        Reconciler.reconcile_assoc @entry, params["entry_scribes"], EntryScribe, 'entry_id', [:scribe_id, :inferred_by_source, :inferred_by_user]
+        Reconciler.reconcile_assoc @entry, params["entry_scribes"], EntryScribe, 'entry_id', [:scribe_id, :uncertain_in_source, :supplied_by_data_entry]
         Reconciler.reconcile_assoc @entry, params["entry_languages"], EntryLanguage, 'entry_id', [:language_id]
         Reconciler.reconcile_assoc @entry, params["entry_materials"], EntryMaterial, 'entry_id', [:material]
         Reconciler.reconcile_assoc @entry, params["entry_places"], EntryPlace, 'entry_id', [:place_id]

@@ -85,8 +85,7 @@
                 -->
                 <div class="input-group">
                     <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.sale.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
-                    <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry.sale.seller_or_holder.inferred_by_source"><span class="glyphicon glyphicon-asterisk"></span></div>
-                    <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry.sale.seller_or_holder.inferred_by_user"><span class="glyphicon glyphicon-plus-sign"></span></div>
+                    <div class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.seller_or_holder"><span class="glyphicon"></span></div>
                 </div>
             </div>
         </div>
@@ -99,8 +98,7 @@
                 -->
                 <div class="input-group">
                     <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.sale.buyer.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
-                    <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry.sale.buyer.inferred_by_source"><span class="glyphicon glyphicon-asterisk"></span></div>
-                    <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry.sale.buyer.inferred_by_user"><span class="glyphicon glyphicon-plus-sign"></span></div>
+                    <div class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.buyer"><span class="glyphicon"></span></div>
                 </div>
             </div>
         </div>
@@ -150,10 +148,8 @@
       <div class="col-sm-5">
           <div class="input-group">
               <input type="text" class="form-control" id="title" data-ng-model="entry_title.title">
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_title.inferred_by_source"><span class="glyphicon glyphicon-asterisk"></span></div>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_title.inferred_by_user"><span class="glyphicon glyphicon-plus-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
           </div>
-
       </div>
       <label class="col-sm-1 control-label">
           <span sdbm-tooltip="title">CommonTitle</span>
@@ -176,8 +172,7 @@
 -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/authors/search.json" sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateAuthorModalCtrl"/>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_author.inferred_by_source"><span class="glyphicon glyphicon-asterisk"></span></div>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_author.inferred_by_user"><span class="glyphicon glyphicon-plus-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-certainty-flags="entry_author"><span class="glyphicon"></span></div>
           </div>
       </div>
       <label class="col-sm-1 control-label">
@@ -228,8 +223,7 @@
           -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/artists/search.json" sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateArtistModalCtrl"/>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_artist.inferred_by_source"><span class="glyphicon glyphicon-asterisk"></span></div>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_artist.inferred_by_user"><span class="glyphicon glyphicon-plus-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></div>
           </div>          
       </div>
     </div>
@@ -247,8 +241,7 @@
           -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/scribes/search.json" sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateScribeModalCtrl"/>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_scribe.inferred_by_source"><span class="glyphicon glyphicon-asterisk"></span></div>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_scribe.inferred_by_user"><span class="glyphicon glyphicon-plus-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
           </div>
       </div>
     </div>
@@ -266,8 +259,7 @@
           -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl"/>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_language.inferred_by_source"><span class="glyphicon glyphicon-asterisk"></span></div>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_language.inferred_by_user"><span class="glyphicon glyphicon-plus-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-certainty-flags="entry_language"><span class="glyphicon"></span></div>
           </div>
       </div>
     </div>
@@ -282,8 +274,7 @@
       <div class="col-sm-5">
           <div class="input-group">
           <select class="form-control" data-ng-model="entry_material.material" ng-options="option[0] as option[1] for option in optionsMaterial"></select>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_scribe.inferred_by_source"><span class="glyphicon glyphicon-asterisk"></span></div>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_scribe.inferred_by_user"><span class="glyphicon glyphicon-plus-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
           </div>
       </div>
     </div>
@@ -301,8 +292,7 @@
           -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl"/>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_place.inferred_by_source"><span class="glyphicon glyphicon-asterisk"></span></div>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="entry_place.inferred_by_user"><span class="glyphicon glyphicon-plus-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-certainty-flags="entry_place"><span class="glyphicon"></span></div>
           </div>
       </div>
     </div>
@@ -462,8 +452,7 @@
           -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.seller_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="prov.seller_agent.inferred_by_source"><span class="glyphicon glyphicon-asterisk"></span></div>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="prov.seller_agent.inferred_by_user"><span class="glyphicon glyphicon-plus-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-certainty-flags="prov.seller_agent"><span class="glyphicon"></span></div>
           </div>
       </div>
       <label class="col-sm-2 control-label">Seller Agent As Recorded</label>
@@ -480,8 +469,7 @@
           -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="prov.seller_or_holder.inferred_by_source"><span class="glyphicon glyphicon-asterisk"></span></div>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="prov.seller_or_holder.inferred_by_user"><span class="glyphicon glyphicon-plus-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-certainty-flags="prov.seller_or_holder"><span class="glyphicon"></span></div>
           </div>
       </div>
       <label class="col-sm-2 control-label">Seller/Holder As Recorded</label>
@@ -498,8 +486,7 @@
           -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.buyer.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="prov.buyer.inferred_by_source"><span class="glyphicon glyphicon-asterisk"></span></div>
-              <div class="input-group-addon clickable" sdbm-inference-flags-modal="prov.buyer.inferred_by_user"><span class="glyphicon glyphicon-plus-sign"></span></div>
+              <div class="input-group-addon clickable" sdbm-certainty-flags="prov.buyer"><span class="glyphicon"></span></div>
           </div>
       </div>
       <label class="col-sm-2 control-label">Buyer As Recorded</label>

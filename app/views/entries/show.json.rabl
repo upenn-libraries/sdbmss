@@ -40,7 +40,7 @@ child :entry_artists, :object_root => false do
 end
 
 child :entry_scribes, :object_root => false do
-  attributes :id, :inferred_by_source, :inferred_by_user
+  attributes :id, :uncertain_in_source, :supplied_by_data_entry
   child :scribe do
     attributes :id, :name
     node :display_value do |scribe|
