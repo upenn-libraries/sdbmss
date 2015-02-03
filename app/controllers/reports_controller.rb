@@ -48,10 +48,9 @@ class ReportsController < ApplicationController
   end
 
   def object_id_and_name(model_class, name_field: 'name')
-    # TODO: we filter out ? for now; eventually that data should be cleaned up
 
     @object_class = model_class
-    @objects = model_class.where("#{name_field} not like '%?%'").order(name_field)
+    @objects = model_class.order(name_field)
 
     @objects = @objects.map { |obj| ObjectWrapper.new(obj, name_field) } if name_field != 'name'
 
