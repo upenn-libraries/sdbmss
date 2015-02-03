@@ -10,7 +10,6 @@
 <input type="hidden" id="source_id" value="<%= @source_id %>" />
 <% end %>
 
-<!-- we don't use form tag b/c that screws up xeditable -->
 <div class="form-horizontal sdbmss-form" data-ng-controller="EntryCtrl">
   <fieldset>
 
@@ -49,7 +48,7 @@
     <div class="find-source-container">
         <div class="form-group row">
             <label class="col-sm-2 control-label">Source</label>
-            <div class="col-sm-8 editable-container">
+            <div class="col-sm-8 label-alignment">
                 {{ entry.source|label }}
             </div>
         </div>
@@ -73,9 +72,6 @@
         <div class="form-group row">
             <label class="col-sm-2 control-label"><span sdbm-tooltip="seller">Seller Agent</span></label>
             <div class="col-sm-5">
-                <!--
-                <a href="#" editable-text="entry.sale.seller_agent.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.seller_agent.agent|label }}</a>
--->
                 <div class="input-group">
                     <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.sale.seller_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
                     <div class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.seller_agent"><span class="glyphicon"></span></div>
@@ -83,9 +79,6 @@
             </div>
             <label class="col-sm-1 control-label"><span sdbm-tooltip="seller2">Seller</span></label>
             <div class="col-sm-4">
-                <!-- 
-                <a href="#" editable-text="entry.sale.seller_or_holder.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.seller_or_holder.agent|label }}</a>
-                -->
                 <div class="input-group">
                     <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.sale.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
                     <div class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.seller_or_holder"><span class="glyphicon"></span></div>
@@ -96,9 +89,6 @@
         <div class="form-group row">
             <label class="col-sm-2 control-label"><span sdbm-tooltip="buyer">Buyer</span></label>
             <div class="col-sm-5">
-                <!--
-                <a href="#" editable-text="entry.sale.buyer.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.buyer.agent|label }}</a>
-                -->
                 <div class="input-group">
                     <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.sale.buyer.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
                     <div class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.buyer"><span class="glyphicon"></span></div>
@@ -170,9 +160,6 @@
             <span sdbm-tooltip="author">Author</span>
         </label>
       <div class="col-sm-5">
-<!--
-          <a href="#" editable-text="entry_author.author" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/authors/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAuthorModalCtrl">{{ entry_author.author|label }}</a>
--->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/authors/search.json" sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateAuthorModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="entry_author"><span class="glyphicon"></span></div>
@@ -221,9 +208,6 @@
             <span sdbm-tooltip="artist">Artist</span>
       </label>
       <div class="col-sm-5">
-          <!--
-          <a href="#" editable-text="entry_artist.artist" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/artists/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateArtistModalCtrl">{{ entry_artist.artist|label }}</a>
-          -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/artists/search.json" sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateArtistModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></div>
@@ -239,9 +223,6 @@
           <span sdbm-tooltip="scribe">Scribe</span>
       </label>
       <div class="col-sm-5">
-          <!--
-          <a href="#" editable-text="entry_scribe.scribe" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/scribes/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateScribeModalCtrl">{{ entry_scribe.scribe|label }}</a>
-          -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/scribes/search.json" sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateScribeModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
@@ -257,9 +238,6 @@
           <span sdbm-tooltip="language">Language</span>
       </label>
       <div class="col-sm-5">
-          <!-- 
-          <a href="#" editable-text="entry_language.language" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/languages/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateLanguageModalCtrl">{{ entry_language.language|label }}</a>
-          -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="entry_language"><span class="glyphicon"></span></div>
@@ -290,9 +268,6 @@
           <span sdbm-tooltip="place">Place</span>
       </label>
       <div class="col-sm-5">
-          <!--
-          <a href="#" editable-text="entry_place.place" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/places/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreatePlaceModalCtrl">{{ entry_place.place|label }}</a>
-          -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="entry_place"><span class="glyphicon"></span></div>
@@ -450,9 +425,6 @@
     <div class="form-group row">
       <label class="col-sm-2 control-label">Seller Agent</label>
       <div class="col-sm-4">
-          <!--
-          <a href="#" editable-text="prov.seller_agent.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ prov.seller_agent.agent|label }}</a>
-          -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.seller_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="prov.seller_agent"><span class="glyphicon"></span></div>
@@ -467,9 +439,6 @@
     <div class="form-group row">
       <label class="col-sm-2 control-label">Seller/Holder</label>
       <div class="col-sm-4">
-          <!--
-          <a href="#" editable-text="prov.seller_or_holder.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ prov.seller_or_holder.agent|label }}</a>
-          -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="prov.seller_or_holder"><span class="glyphicon"></span></div>
@@ -484,9 +453,6 @@
     <div class="form-group row">
       <label class="col-sm-2 control-label">Buyer</label>
       <div class="col-sm-4">
-          <!--
-          <a href="#" editable-text="prov.buyer.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ prov.buyer.agent|label }}</a>
-          -->
           <div class="input-group">
               <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.buyer.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="prov.buyer"><span class="glyphicon"></span></div>

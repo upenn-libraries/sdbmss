@@ -86,23 +86,8 @@
 
 .sdbmss-form label.col-sm-2, .sdbmss-form label.col-sm-1 { padding-right: 0px; }
 
-/* make editable-container have the same padding as a label element,
-so that editable text is aligned, BUT also make editable-controls have
--7 margin so it's NOT a label. I don't think there's a cleaner way to
-do this.  */
-.sdbmss-form .editable-container { min-height: 30px; padding-top: 7px; }
-.sdbmss-form .editable-container .editable-controls { padding-left: 15px; margin-top: -7px; width: 80%; }
-
-/* without this rule, form compresses its child elements */
-.sdbmss-form .editable-container form  { width: 100% }
-
-/* make these buttons smaller so they don't jiggle the page when displayed */
-.sdbmss-form .editable-container .btn { font-size:12px; padding: 5px 12px; }
-
-/* editable's css overrides form-control, so override THAT */
-.sdbmss-form .editable-input.editable-has-buttons { width: 100%; }
-
-.sdbmss-form a.editable-empty, .sdbmss-form a.editable-empty:hover, .sdbmss-form a.editable-empty:focus { font-style: normal; }
+/* gives an element the same alignment as a label element */
+.sdbmss-form .label-alignment { min-height: 30px; padding-top: 7px; }
 
 .sdbmss-form .qtip {
 font-size: inherit;
@@ -130,7 +115,7 @@ cursor: help;
 }
 
 /* tweak .modal-backdrop rule on pages that use UI Bootstrap's modal,
-so that gray backdrop shows up correctly */
+so that gray backdrop shvows up correctly */
 .blacklight-entries-edit .modal-backdrop,
 .blacklight-entries-new .modal-backdrop,
 .blacklight-sources-edit .modal-backdrop,

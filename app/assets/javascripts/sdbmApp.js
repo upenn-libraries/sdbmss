@@ -11,11 +11,9 @@
 
     "use strict";
 
-    var sdbmApp = angular.module("sdbmApp", ["ngCookies", "ngResource", "xeditable", "ui.bootstrap"]);
+    var sdbmApp = angular.module("sdbmApp", ["ngCookies", "ngResource", "ui.bootstrap"]);
 
-    sdbmApp.run(function (editableOptions, $http, $cookies) {
-        editableOptions.theme = 'bs3'; // bootstrap3 theme. Can be also 'bs2', 'default'
-
+    sdbmApp.run(function ($http, $cookies) {
         // For Rails CSRF
         var csrf_token = $('meta[name="csrf-token"]').attr('content');
         if(csrf_token) {
@@ -804,79 +802,6 @@
                         model.assign(scope, ui.item);
                         scope.$apply();
                     }
-                }
-            });
-        };
-    });
-
-    /* To be used on editable typeahead elements: submits the form
-     * when user makes a selection. We can't use typeahead-on-select
-     * because that doesn't give us the DOM element.
-     */
-    sdbmApp.directive("sdbmSubmitOnSelection", function () {
-        return function (scope, element, attrs) {
-            // listen for all clicks on the parent
-            $(element).parent().on("click", function (event) {
-                // target might be anything inside the A, so find the A
-                var a = $(event.target).closest("a").get(0);
-                if (a && $(a).parent().get(0).tagName === "LI") {
-                    // if parent is LI, it means they made a selection
-                    $(event.currentTarget).find("form").submit();
-                } else {
-                    //console.log("click happened on a " + event.target.tagName +" that was not an A element whose parent is LI, so ignoring");
-                }
-            });
-        };
-    });
-
-    /** Directive to add a watch on the model for an editable */
-    sdbmApp.directive("sdbmShowCreateModalOnModelChange", function ($parse, $timeout, $modal) {
-        return function (scope, element, attrs) {
-            var modelProperty = attrs.editableText;
-            // attr value should be the name of the modal controller to use
-            var controller = attrs.sdbmShowCreateModalOnModelChange;
-
-            if(!modelProperty) {
-                alert("can't use sdbm-on-editable-model-change on an element without editable-text");
-            }
-
-            scope.$watch(modelProperty, function(newValue, oldValue) {
-                console.log("model value changed:");
-                console.log(newValue);
-
-                var userWantsToCreate = newValue !== undefined &&
-                    typeof(newValue) === 'object' &&
-                    newValue.id === 'CREATE';
-
-                if(userWantsToCreate) {
-                    $timeout(function() {
-
-                        var template = 'createEntityWithName.html';
-                        var newNameValue = newValue.display_value.substring(newValue.display_value.indexOf("'")+1, newValue.display_value.lastIndexOf("'"));
-                        var originalModelValue = oldValue;
-
-                        var modalInstance = $modal.open({
-                            templateUrl: template,
-                            controller: controller,
-                            resolve: {
-                                newNameValue: function() { return newNameValue; }
-                            },
-                            size: 'lg'
-                        });
-
-                        /* callback for handling result */
-                        modalInstance.result.then(function (agent) {
-                            // $parse resolves the name in the current scope, which we
-                            // need to do to reference objects properly from inside
-                            // ng-repeat loops
-                            var model = $parse(modelProperty);
-                            model.assign(scope, agent);
-                        }, function () {
-                            var model = $parse(modelProperty);
-                            model.assign(scope, originalModelValue);
-                        });
-
-                    });
                 }
             });
         };
