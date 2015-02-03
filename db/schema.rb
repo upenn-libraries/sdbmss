@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150203001445) do
+ActiveRecord::Schema.define(version: 20150203142003) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -119,6 +119,8 @@ ActiveRecord::Schema.define(version: 20150203001445) do
     t.integer  "artist_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "uncertain_in_source",    default: false
+    t.boolean  "supplied_by_data_entry", default: false
   end
 
   add_index "entry_artists", ["artist_id"], name: "index_entry_artists_on_artist_id", using: :btree
@@ -131,6 +133,8 @@ ActiveRecord::Schema.define(version: 20150203001445) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "role"
+    t.boolean  "uncertain_in_source",    default: false
+    t.boolean  "supplied_by_data_entry", default: false
   end
 
   add_index "entry_authors", ["author_id"], name: "index_entry_authors_on_author_id", using: :btree
@@ -181,6 +185,8 @@ ActiveRecord::Schema.define(version: 20150203001445) do
     t.integer  "language_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "uncertain_in_source",    default: false
+    t.boolean  "supplied_by_data_entry", default: false
   end
 
   add_index "entry_languages", ["entry_id"], name: "index_entry_languages_on_entry_id", using: :btree
@@ -202,6 +208,8 @@ ActiveRecord::Schema.define(version: 20150203001445) do
     t.string   "material"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "uncertain_in_source",    default: false
+    t.boolean  "supplied_by_data_entry", default: false
   end
 
   add_index "entry_materials", ["entry_id"], name: "index_entry_materials_on_entry_id", using: :btree
@@ -211,6 +219,8 @@ ActiveRecord::Schema.define(version: 20150203001445) do
     t.integer  "place_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "uncertain_in_source",    default: false
+    t.boolean  "supplied_by_data_entry", default: false
   end
 
   add_index "entry_places", ["entry_id"], name: "index_entry_places_on_entry_id", using: :btree
@@ -230,10 +240,12 @@ ActiveRecord::Schema.define(version: 20150203001445) do
 
   create_table "entry_titles", force: true do |t|
     t.integer  "entry_id"
-    t.string   "title",        limit: 2048
-    t.string   "common_title", limit: 2048
+    t.string   "title",                  limit: 2048
+    t.string   "common_title",           limit: 2048
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "uncertain_in_source",                 default: false
+    t.boolean  "supplied_by_data_entry",              default: false
   end
 
   add_index "entry_titles", ["entry_id"], name: "index_entry_titles_on_entry_id", using: :btree
@@ -254,6 +266,8 @@ ActiveRecord::Schema.define(version: 20150203001445) do
     t.string   "role"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "uncertain_in_source",    default: false
+    t.boolean  "supplied_by_data_entry", default: false
   end
 
   add_index "event_agents", ["agent_id"], name: "index_event_agents_on_agent_id", using: :btree

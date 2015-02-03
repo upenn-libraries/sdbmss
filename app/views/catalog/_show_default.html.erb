@@ -123,7 +123,7 @@
             <td class="col-sm-2 text-right record-label" colspan="2">Titles</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_titles.each do |entry_title| %>
-                <%= entry_title.title %> <% if entry_title.common_title %>[<%= entry_title.common_title %>]<% end %><br/>
+                <%= entry_title %><br/>
                 <% end %>
             </td>
         </tr>
@@ -134,26 +134,8 @@
             <td class="col-sm-2 text-right record-label" colspan="2">Authors</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_authors.each do |entry_author| %>
-
-                <% if entry_author.observed_name.present? %>
-                <%= entry_author.observed_name %>
-
-                <% if entry_author.role %>(<%= entry_author.role %>)<% end %>
-                
-                <% if entry_author.author %>
-                (<%= link_to entry_author.author.name, author_path(entry_author.author) %>)
-                <% end %>
-
-                <% else %>
-
-                <% if entry_author.author %>
-                <%= link_to entry_author.author.name, author_path(entry_author.author) %>
-                <% end %>
-
-                <% if entry_author.role %>(<%= entry_author.role %>)<% end %>
-
-                <% end %>
-                <br/>
+                    <%= render partial: "shared/entry_author", object: entry_author %>
+                    <br/>
                 <% end %>
             </td>
         </tr>
@@ -175,7 +157,7 @@
             <td class="col-sm-2 text-right record-label" colspan="2">Artists</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_artists.each do |entry_artist| %>
-                <%= entry_artist.artist.name %><br/>
+                <%= entry_artist %><br/>
                 <% end %>
             </td>
         </tr>
@@ -186,7 +168,7 @@
             <td class="col-sm-2 text-right record-label" colspan="2">Scribes</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_scribes.each do |entry_scribe| %>
-                <%= entry_scribe.scribe.name %><br/>
+                <%= entry_scribe %><br/>
                 <% end %>
             </td>
         </tr>
@@ -196,7 +178,7 @@
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Languages</td>
             <td class="col-sm-10" colspan="10">
-                <%= entry_languages.map { |entry_language| entry_language.language.name }.join(", ") %>
+                <%= entry_languages.map { |entry_language| entry_language }.join(", ") %>
             </td>
         </tr>
         <% end %>
@@ -205,7 +187,7 @@
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Materials</td>
             <td class="col-sm-10" colspan="10">
-                <%= entry_materials.map { |entry_material| entry_material.material }.join(", ") %>
+                <%= entry_materials.map { |entry_material| entry_material }.join(", ") %>
             </td>
         </tr>
         <% end %>
@@ -215,7 +197,7 @@
             <td class="col-sm-2 text-right record-label" colspan="2">Places</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_places.each do |entry_place| %>
-                <%= entry_place.place.name %><br/>
+                <%= entry_place %><br/>
                 <% end %>
             </td>
         </tr>

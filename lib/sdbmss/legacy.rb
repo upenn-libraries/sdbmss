@@ -166,6 +166,8 @@ module SDBMSS::Legacy
 
       without_question_mark.strip!
 
+      # match only if [] occur EXACTLY at beg and end, b/c there are
+      # strings with [] in the middle, which can mean God knows what.
       if without_question_mark[0] == '[' && without_question_mark[-1] == ']'
         supplied_by_data_entry = true
         bare = without_question_mark[1..-2].strip
@@ -173,6 +175,27 @@ module SDBMSS::Legacy
         bare = without_question_mark
       end
       return [bare, uncertain_in_source, supplied_by_data_entry]
+    end
+
+    def parse_common_title(title)
+      # a common title exists ONLY if it's a bracketed str that occurs
+      # at the end of the title. This restrictive match ensures we
+      # leave other kinds of funky data alone.
+
+      common_title = nil
+      if title.present?
+        if title.end_with?("]")
+          last_found = -1
+          while !(pos = title.index("[", last_found + 1)).nil?
+            last_found = pos
+          end
+          if last_found != -1
+            common_title = title[last_found + 1 .. -2]
+            title = title[0 .. last_found - 1].strip
+          end
+        end
+      end
+      return title, common_title
     end
 
     # Do the migration
@@ -569,46 +592,51 @@ module SDBMSS::Legacy
         )
 
         if row['SELLER'].present?
+          agent_name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(row['SELLER'])
           pa = EventAgent.create!(
             event: transaction,
-            agent: get_or_create_agent(row['SELLER']),
+            agent: get_or_create_agent(agent_name),
             role: EventAgent::ROLE_SELLER_AGENT,
+            uncertain_in_source: uncertain_in_source,
+            supplied_by_data_entry: supplied_by_data_entry,
           )
         end
 
         if row['SELLER2'].present?
+          agent_name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(row['SELLER2'])
           pa = EventAgent.create!(
             event: transaction,
-            agent: get_or_create_agent(row['SELLER2']),
+            agent: get_or_create_agent(agent_name),
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
+            uncertain_in_source: uncertain_in_source,
+            supplied_by_data_entry: supplied_by_data_entry,
           )
         end
 
         if row['BUYER'].present?
+          agent_name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(row['BUYER'])
           pa = EventAgent.create!(
             event: transaction,
-            agent: get_or_create_agent(row['BUYER']),
+            agent: get_or_create_agent(agent_name),
             role: EventAgent::ROLE_BUYER,
+            uncertain_in_source: uncertain_in_source,
+            supplied_by_data_entry: supplied_by_data_entry,
           )
         end
       end
 
       SDBMSS::Util.split_and_strip(row['TITLE']).each do |atom|
-        title = atom
-        common_title = nil
+        # this will match [] at ends of string
+        title, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(atom)
 
-        # TODO: needs tweaking, to be safe, we should probably only
-        # match [] at end of string
-        if match = REGEX_COMMON_TITLE.match(title)
-          common_title = match[1]
-          title = title[0..match.begin(0)-1] + title[match.end(0)..-1]
-          title = title.strip()
-        end
+        title, common_title = parse_common_title(title)
 
         et = EntryTitle.create!(
           entry: entry,
           title: title,
           common_title: common_title,
+          uncertain_in_source: uncertain_in_source,
+          supplied_by_data_entry: supplied_by_data_entry,
           )
       end
 
@@ -644,7 +672,7 @@ module SDBMSS::Legacy
       authors = SDBMSS::Util.split_and_strip(row['AUTHOR_AUTHORITY'], filter_blanks: false)
       author_variants = SDBMSS::Util.split_and_strip(row['AUTHOR_VARIANT'], filter_blanks: false)
       if authors.length != author_variants.length
-        puts "Warning: number of author variants doesn't match num of authors in entry #{row['MANUSCRIPT_ID']}"
+        create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'num_author_variants', "Number of author variants doesn't match num of authors in entry")
       end
       authors.each_index do |author_index|
 
@@ -654,7 +682,9 @@ module SDBMSS::Legacy
         # multiple role codes have been glommed onto an author's name
         # (ex: "Jeff (Tr) (Ed)")
 
-        atom, author_roles = split_author_role_codes(authors[author_index] || "")
+        atom, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(authors[author_index])
+
+        author_str, author_roles = split_author_role_codes(atom)
 
         author_variant, author_variant_roles = split_author_role_codes(author_variants[author_index] || "")
 
@@ -665,21 +695,21 @@ module SDBMSS::Legacy
           create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'author_role_mismatch', "Role codes in AUTHOR_AUTHORITY and AUTHOR_VARIANT don't match: '#{authors[author_index]}' and '#{author_variants[author_index]}'")
         end
 
-        if atom.gsub("(").count > 1
+        if author_str.gsub("(").count > 1
           create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'author_parens', "More than one set of parens found in AUTHOR_AUTHORITY: #{authors[author_index]}")
         end
 
-        if atom.present? || author_variant.present?
+        if author_str.present? || author_variant.present?
           bad_author = false
 
           author = nil
-          if atom.present?
-            author = get_author(atom) #Author.where(name: atom).order(nil).first
+          if author_str.present?
+            author = get_author(author_str)
             # there are ~50 records where this occurs.
             bad_author = true if author.nil?
           end
 
-          if author_variant == atom
+          if author_variant == author_str
             # variant is the same, so don't store it.
             author_variant = nil
           elsif author_variant.present?
@@ -696,9 +726,9 @@ module SDBMSS::Legacy
           # try to use it as the author_variant name instead if nothing's there yet.
           if bad_author
             if author_variant.nil?
-              author_variant = atom
+              author_variant = author_str
             else
-              create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'invalid_author_authority', "'#{atom}' in AUTHOR_AUTHORITY field not found in Authors lookup table; I'd move it to AUTHOR_VARIANT but something's there already.")
+              create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'invalid_author_authority', "'#{author_str}' in AUTHOR_AUTHORITY field not found in Authors lookup table; I'd move it to AUTHOR_VARIANT but something's there already.")
             end
           end
 
@@ -720,16 +750,21 @@ module SDBMSS::Legacy
               observed_name: author_variant,
               author: author,
               role: author_role,
+              uncertain_in_source: uncertain_in_source,
+              supplied_by_data_entry: supplied_by_data_entry,
             )
           end
         end
       end
 
       SDBMSS::Util.split_and_strip(row['ARTIST']).each do |atom|
-        artist = Artist.where(name: atom).order(nil).first_or_create!
+        name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(atom)
+        artist = Artist.where(name: name).order(nil).first_or_create!
         ea = EntryArtist.create!(
           entry: entry,
           artist: artist,
+          uncertain_in_source: uncertain_in_source,
+          supplied_by_data_entry: supplied_by_data_entry,
           )
       end
 
@@ -758,12 +793,16 @@ module SDBMSS::Legacy
             entry: entry,
           )
 
+          agent_name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(atom)
+
           # store names as 'observed_name' and then turn non-unique
           # ones into Agent entities at a later pass
           pa = EventAgent.create!(
             event: provenance,
-            observed_name: atom,
+            observed_name: agent_name,
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
+            uncertain_in_source: uncertain_in_source,
+            supplied_by_data_entry: supplied_by_data_entry
           )
         else
           puts "WARNING: skipping provenance entry for record #{row['MANUSCRIPT_ID']} because it's too long"
@@ -772,33 +811,48 @@ module SDBMSS::Legacy
 
       SDBMSS::Util.split_and_strip(row['LNG']).each do |atom|
         validate_language(atom, row)
-        language = get_or_create_language(atom)
+
+        language_str, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(atom)
+
+        language = get_or_create_language(language_str)
         entry_language = EntryLanguage.create!(
           entry: entry,
           language: language,
+          uncertain_in_source: uncertain_in_source,
+          supplied_by_data_entry: supplied_by_data_entry,
         )
       end
 
       SDBMSS::Util.split_and_strip(row['MAT']).each do |atom|
-        atom = 'P' if atom == 'Paper'
 
-        material = LEGACY_MATERIAL_CODES[atom] || LEGACY_MATERIAL_CODES[atom.upcase] || atom
+        material_str, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(atom)
+
+        material_str = 'P' if material_str == 'Paper'
+
+        material = LEGACY_MATERIAL_CODES[material_str] || LEGACY_MATERIAL_CODES[material_str.upcase] || material_str
 
         if !VALID_MATERIALS.member?(material)
           # cleaned up materials on 1/11/2015, so there shouldn't be too many of these left
-          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'invalid_material', "Material '#{atom}' is not valid")
+          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'invalid_material', "Material '#{material_str}' is not valid")
         end
         em = EntryMaterial.create!(
           entry: entry,
           material: material,
+          uncertain_in_source: uncertain_in_source,
+          supplied_by_data_entry: supplied_by_data_entry,
         )
       end
 
       SDBMSS::Util.split_and_strip(row['PLACE']).each do |atom|
-        place = get_or_create_place(atom)
+
+        place_str, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(atom)
+
+        place = get_or_create_place(place_str)
         EntryPlace.create!(
           entry: entry,
           place: place,
+          uncertain_in_source: uncertain_in_source,
+          supplied_by_data_entry: supplied_by_data_entry,
         )
       end
 
@@ -842,8 +896,10 @@ module SDBMSS::Legacy
       # ignore AUTHOR_COUNT column since its redundant in new db.
       # there are 'dupes' because of collation rules.
 
+      # flags were stored in Author table; discard them
+      author_str, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(row['AUTHOR'])
       # discard the role part when migrating authors
-      author_name, role = split_author_role_codes(row['AUTHOR'])
+      author_name, role = split_author_role_codes(author_str)
 
       author = Author.where(name: author_name).order(nil).first
       if author.nil?
@@ -874,14 +930,19 @@ module SDBMSS::Legacy
     end
 
     def create_artist_from_row_pass1(row, ctx)
-      # we ignore ARTIST_COUNT b/c it's redundant now
-      Artist.create!(
-        id: row['MANUSCRIPTARTISTID'],
-        name: row['ARTIST'],
-        approved: row['ISAPPROVED'] == 'y',
-        approved_by: get_or_create_user(row['APPROVEDBY']),
-        approved_date: row['APPROVEDDATE'],
+      # flags were stored in Artist table; discard them
+      artist_str, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(row['ARTIST'])
+
+      if Artist.where(name: artist_str).order(nil).first.nil?
+        # we ignore ARTIST_COUNT b/c it's redundant now
+        Artist.create!(
+          id: row['MANUSCRIPTARTISTID'],
+          name: artist_str,
+          approved: row['ISAPPROVED'] == 'y',
+          approved_by: get_or_create_user(row['APPROVEDBY']),
+          approved_date: row['APPROVEDDATE'],
         )
+      end
     end
 
     # 2nd pass after creation of Entry objects, so we can set the FK
@@ -1015,13 +1076,16 @@ module SDBMSS::Legacy
     end
 
     def create_place_from_row_pass1(row, ctx)
+      # flags were stored in Place table; discard them
+      place_str, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(row['PLACE'])
+
       # we ignore PLACE_COUNT b/c it's redundant now
 
       # there do exist a few dupes. sigh.
-      if !Place.where(name: row['PLACE']).order(nil).first.nil?
+      if !Place.where(name: place_str).order(nil).first.nil?
         Place.create!(
           id: row['MANUSCRIPTPLACEID'],
-          name: row['PLACE'],
+          name: place_str,
           approved: row['ISAPPROVED'] == 'y',
           approved_by: row['APPROVEDBY'],
           approved_date: row['APPROVEDDATE'],

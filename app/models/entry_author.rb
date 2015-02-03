@@ -1,4 +1,7 @@
 class EntryAuthor < ActiveRecord::Base
+
+  include CertaintyFlags
+
   belongs_to :entry
   belongs_to :author
 

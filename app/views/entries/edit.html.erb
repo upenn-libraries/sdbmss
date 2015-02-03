@@ -76,7 +76,10 @@
                 <!--
                 <a href="#" editable-text="entry.sale.seller_agent.agent" e-typeahead-wait-ms="250" e-typeahead-editable="false" e-typeahead-min-length="2" e-typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-submit-on-selection sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl">{{ entry.sale.seller_agent.agent|label }}</a>
 -->
-                <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.sale.seller_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+                <div class="input-group">
+                    <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.sale.seller_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+                    <div class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.seller_agent"><span class="glyphicon"></span></div>
+                </div>
             </div>
             <label class="col-sm-1 control-label"><span sdbm-tooltip="seller2">Seller</span></label>
             <div class="col-sm-4">

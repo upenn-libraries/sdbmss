@@ -110,10 +110,10 @@ module SDBMSS::ReferenceData
         material: 'Parchment'
       )
 
-      # TODO: account for ? using flag
       EntryPlace.create!(
         entry: entry,
-        place: Place.find_or_create_by(name: 'Italy, Tuscany, Florence?')
+        place: Place.find_or_create_by(name: 'Italy, Tuscany, Florence'),
+        uncertain_in_source: true,
       )
 
       provenance1 = Event.create!(
@@ -206,10 +206,10 @@ module SDBMSS::ReferenceData
         scribe: Scribe.find_or_create_by(name: 'Crispus, Venceslaus')
       )
 
-      # TODO
       EntryLanguage.create!(
         entry: entry,
-        language: Language.find_or_create_by(name: '[Latin]')
+        language: Language.find_or_create_by(name: 'Latin'),
+        supplied_by_data_entry: true
       )
 
       EntryMaterial.create!(

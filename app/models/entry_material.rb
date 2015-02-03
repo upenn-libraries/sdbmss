@@ -1,4 +1,7 @@
 class EntryMaterial < ActiveRecord::Base
+
+  include CertaintyFlags
+
   belongs_to :entry
 
   MATERIAL_TYPES = [
@@ -18,5 +21,9 @@ class EntryMaterial < ActiveRecord::Base
     ["Wood", "Wood"],
     ["Other", "Other"],
   ]
+
+  def to_s
+    (material || "") + certainty_flags
+  end
 
 end

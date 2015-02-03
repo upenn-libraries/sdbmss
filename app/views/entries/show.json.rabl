@@ -12,11 +12,11 @@ child :source do
 end
 
 child :entry_titles, :object_root => false do
-  attributes :id, :title, :common_title
+  attributes :id, :title, :common_title, :uncertain_in_source, :supplied_by_data_entry
 end
 
 child :entry_authors, :object_root => false do
-  attributes :id, :author, :observed_name, :role
+  attributes :id, :author, :observed_name, :role, :uncertain_in_source, :supplied_by_data_entry
   child :author do
     attributes :id, :name
     node :display_value do |author|
@@ -30,7 +30,7 @@ child :entry_dates, :object_root => false do
 end
 
 child :entry_artists, :object_root => false do
-  attributes :id
+  attributes :id, :uncertain_in_source, :supplied_by_data_entry
   child :artist do
     attributes :id, :name
     node :display_value do |artist|
@@ -50,7 +50,7 @@ child :entry_scribes, :object_root => false do
 end
 
 child :entry_languages, :object_root => false do
-  attributes :id
+  attributes :id, :uncertain_in_source, :supplied_by_data_entry
   child :language  do
     attributes :id, :name
     node :display_value do |language|
@@ -60,11 +60,11 @@ child :entry_languages, :object_root => false do
 end
 
 child :entry_materials, :object_root => false do
-  attributes :id, :material
+  attributes :id, :material, :uncertain_in_source, :supplied_by_data_entry
 end
 
 child :entry_places, :object_root => false do
-  attributes :id
+  attributes :id, :uncertain_in_source, :supplied_by_data_entry
   child :place do
     attributes :id, :name
     node :display_value do |place|
@@ -80,7 +80,7 @@ end
 child :events, :object_root => false do
   attributes :id, :primary, :comment, :acquire_date, :end_date, :price, :currency, :other_currency, :sold
   child :event_agents, :object_root => false do
-    attributes :id, :observed_name, :role
+    attributes :id, :observed_name, :role, :uncertain_in_source, :supplied_by_data_entry
     child :agent do |agent|
       attributes :id, :name
       node :display_value do |agent|
