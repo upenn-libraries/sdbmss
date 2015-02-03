@@ -5,6 +5,15 @@ class CatalogController < ApplicationController
 
   include CatalogControllerConfiguration
 
+  # Overrides #show to check for existence and send 404 if necessary
+  def show
+    if Entry.exists?(params[:id])
+      super
+    else
+      render_404
+    end
+  end
+
   # This override sets username field when devise creates the guest
   # user account. This gets called by BookmarksController (which
   # inherits from CatalogController) and possibly other code.
