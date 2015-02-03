@@ -708,7 +708,13 @@ module SDBMSS::Legacy
             author_variant = nil if author.present?
           end
 
-          Set.new(author_roles + author_variant_roles).each do |author_role|
+          # if there are no role codes, stick in a nil role code
+          all_roles = Set.new(author_roles + author_variant_roles)
+          if all_roles.blank?
+            all_roles = Set.new([nil])
+          end
+
+          all_roles.each do |author_role|
             entry_author = EntryAuthor.create!(
               entry: entry,
               observed_name: author_variant,
