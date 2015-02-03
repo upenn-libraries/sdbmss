@@ -23,6 +23,14 @@ module SDBMSS::Legacy
 
     VALID_MATERIALS = EntryMaterial::MATERIAL_TYPES.map { |item| item[0] }
 
+    LEGACY_SOLD_CODES = {
+      "UNKNOWN" => Event::TYPE_SOLD_UNKNOWN,
+      "YES" => Event::TYPE_SOLD_YES,
+      "NO" => Event::TYPE_SOLD_NO,
+      "GIFT" => Event::TYPE_SOLD_GIFT,
+      "WD" => Event::TYPE_SOLD_WITHDRAWN,
+    }
+
     LEGACY_MATERIAL_CODES = {
       "C" => "Clay",
       "P" => "Paper",
@@ -571,7 +579,7 @@ module SDBMSS::Legacy
           acquire_date = catalog_row['ALT_CAT_DATE'] if catalog_row['ALT_CAT_DATE'].present?
         end
 
-        sold = row['SOLD']
+        sold = LEGACY_SOLD_CODES[row['SOLD']] || row['SOLD']
         if sold.present?
           if !VALID_SOLD_TYPES.member?(sold)
             create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'sold', "entry ID=#{row['MANUSCRIPT_ID']} had invalid value for Sold field: #{row['SOLD']}")

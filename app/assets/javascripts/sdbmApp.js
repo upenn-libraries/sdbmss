@@ -409,7 +409,7 @@
             if(!entry.sale) {
                 entry.sale = {
                     primary: true,
-                    sold: 'UNKNOWN'
+                    sold: 'Unknown'
                 };
                 // prepopulate sale agent fields with data from source_agents
                 var sourceAgents = entry.source.source_agents || [];

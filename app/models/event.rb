@@ -13,16 +13,18 @@ class Event < ActiveRecord::Base
     ["JPY", "JPY"],
   ]
 
-  TYPE_SOLD_UNKNOWN = "UNKNOWN"
-  TYPE_SOLD_YES = "YES"
-  TYPE_SOLD_NO = "NO"
-  TYPE_SOLD_GIFT = "GIFT"
+  TYPE_SOLD_UNKNOWN = "Unknown"
+  TYPE_SOLD_YES = "Yes"
+  TYPE_SOLD_NO = "No"
+  TYPE_SOLD_GIFT = "Gift"
+  TYPE_SOLD_WITHDRAWN = "Withdrawn"
 
   SOLD_TYPES =[
     [TYPE_SOLD_UNKNOWN, TYPE_SOLD_UNKNOWN],
     [TYPE_SOLD_YES, TYPE_SOLD_YES],
     [TYPE_SOLD_NO, TYPE_SOLD_NO],
     [TYPE_SOLD_GIFT, TYPE_SOLD_GIFT],
+    [TYPE_SOLD_WITHDRAWN, TYPE_SOLD_WITHDRAWN],
   ]
 
   belongs_to :entry
