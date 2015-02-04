@@ -322,6 +322,10 @@
 
         $scope.entry = undefined;
 
+        $scope.originalEntryViewModel = undefined;
+
+        $scope.warnWhenLeavingPage = true;
+        
         $scope.edit = false;
 
         $scope.currentlySaving = false;
@@ -484,9 +488,15 @@
                     $scope.badData.push("Bad alt size value: '" + entry.alt_size + "'");
                 }
             }
+
+            // save copy at this point, so we have something to
+            // compare to, when navigating away from page
+            $scope.originalEntryViewModel = angular.copy(entry);
         };
 
         $scope.postEntrySave = function(entry) {
+            $scope.warnWhenLeavingPage = false;
+            
             $scope.entry = entry;
             var modalInstance = $modal.open({
                 templateUrl: 'postEntrySave.html',
@@ -646,6 +656,19 @@
 
         // "constructor" for controller goes here
 
+        $(window).bind('beforeunload', function() {
+            if ($scope.warnWhenLeavingPage && angular.toJson($scope.originalEntryViewModel) !== angular.toJson($scope.entry)) {1
+                /*
+                alert("NOT THE SAME!");
+                console.log("originalEntryViewModel=");
+                console.log(angular.toJson($scope.originalEntryViewModel));
+                console.log("current entry=");
+                console.log(angular.toJson($scope.entry));
+                */
+                return "You have unsaved changes";
+            }
+        });
+            
         $http.get("/entries/form_dropdown_values/").then(
             function(result) {
 
