@@ -60,7 +60,7 @@ module SDBMSS::ReferenceData
         entry: entry,
         price: 270000,
         currency: 'USD',
-        sold: 'NO'
+        sold: Event::TYPE_SOLD_NO,
       )
       transaction_agent = EventAgent.create!(
         event: transaction,
@@ -175,7 +175,7 @@ module SDBMSS::ReferenceData
         entry: entry,
         price: 800000,
         currency: 'USD',
-        sold: 'NO'
+        sold: Event::TYPE_SOLD_NO,
       )
       transaction_agent = EventAgent.create!(
         event: transaction,
