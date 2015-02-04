@@ -28,10 +28,16 @@ module Reconciler
 
         block.call(model_obj, model_params) if block_given?
       end
+
       # TODO: be more careful here: the records to delete should
       # probably be marked, instead of deleting the remaining records
       # in this way
-      child_model_name.where(fk_name => parent).where("id not in (?)", ids_persisted).destroy_all
+
+      delete_query = child_model_name.where(fk_name => parent)
+      if !ids_persisted.blank?
+        delete_query = delete_query.where("id not in (?)", ids_persisted)
+      end
+      delete_query.destroy_all
     end
 
   end

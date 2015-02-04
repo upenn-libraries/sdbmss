@@ -149,6 +149,16 @@
     /* Globally available utility functions */
     sdbmApp.factory('sdbmutil', function () {
         return {
+            /* returns a printable (ie. for use with console.log),
+             * snapshot the passed-in object. This exists because if
+             * you use console.log(obj), browsing that object in the
+             * Firefox console will always give you the CURRENT object
+             * state instead of its state at the time of printing. So
+             * do console.log(sdbmutil.objectSnapshot(obj)) instead.
+             */
+            objectSnapshot: function (object) {
+                return JSON.parse(JSON.stringify(object));
+            },
             /* for each object in objectArray, find the member referenced
              * by relatedObjectName, which should be a JS object, and
              * replace it with that object's 'id' attribute.
@@ -241,7 +251,9 @@
 
         $scope.sdbmutil = sdbmutil;
         
-        $scope.entry_associations = [
+        // this describes the (nested) associations inside an Entry;
+        // we use it, when saving, to identify and remove 'blank' records
+        $scope.entryAssociations = [
             {
                 field: 'entry_titles',
                 properties: ['title', 'common_title']
@@ -249,7 +261,7 @@
             {
                 field: 'entry_authors',
                 properties: ['observed_name'],
-                foreign_key_objects: ['author']
+                foreignKeyObjects: ['author']
             },
             {
                 field: 'entry_dates',
@@ -257,15 +269,15 @@
             },
             {
                 field: 'entry_artists',
-                foreign_key_objects: ['artist']
+                foreignKeyObjects: ['artist']
             },
             {
                 field: 'entry_scribes',
-                foreign_key_objects: ['scribe']
+                foreignKeyObjects: ['scribe']
             },
             {
                 field: 'entry_languages',
-                foreign_key_objects: ['language']
+                foreignKeyObjects: ['language']
             },
             {
                 field: 'entry_materials',
@@ -273,11 +285,26 @@
             },
             {
                 field: 'entry_places',
-                foreign_key_objects: ['place']
+                foreignKeyObjects: ['place']
             },
             {
                 field: 'entry_uses',
                 properties: ['use']
+            },
+            {
+                field: 'events',
+                skipChecking: function(object) {
+                    // skip 'primary' events (always keep them)
+                    return object.primary ? true : false;
+                },
+                properties: ['acquire_date', 'end_date', 'comment'],
+                entryAssociations: [
+                    {
+                        field: 'event_agents',
+                        properties: ['observed_name'],
+                        foreignKeyObjects: ['agent']
+                    }
+                ]
             }
         ];
 
@@ -350,9 +377,13 @@
             return blank;
         };
 
-        $scope.isBlankStringOrObject = function(obj) {
+        /* This horribly named function is meant to take any kind of
+         * input and test for its 'blankness', similar to Rails
+         * ActiveSupport's Object#blank? method.
+         */
+        $scope.isBlankThing = function(obj) {
             var blank = false;
-            if(obj === undefined || (typeof(obj) === 'string' && obj.length === 0)) {
+            if(obj === undefined || obj === null || (typeof(obj) === 'string' && obj.length === 0) || (Array.isArray(obj) && obj.length === 0)) {
                 blank = true;
             } else {
                 blank = $scope.isBlankObject(obj);
@@ -373,7 +404,7 @@
             console.log(entry);
 
             // make blank initial rows, as needed, for user to fill out
-            $scope.entry_associations.concat({ field: 'entry_provenance' }).forEach(function (assoc) {
+            $scope.entryAssociations.concat({ field: 'entry_provenance' }).forEach(function (assoc) {
                 var fieldname = assoc.field;
                 var objArray = entry[fieldname];
                 if(!objArray || objArray.length === 0) {
@@ -471,6 +502,55 @@
             });
         };
 
+        // assoc = an object from $scope.entryAssociations that
+        // describes the associations contained in
+        // objectWithAssociations
+        $scope.filterBlankRecords = function (objectWithAssociations, assoc) {
+            var objectArrayName = assoc.field;
+
+            // construct array of passed-in object's properties, FKs,
+            // and child associations, to check for blankness
+            var thingsToCheck = (assoc.properties || []).concat(assoc.foreignKeyObjects || [])
+            if(assoc.entryAssociations) {
+                thingsToCheck = thingsToCheck.concat(assoc.entryAssociations.map(function (item) {
+                    return item.field;
+                }));
+            }
+            
+            var objectArray = objectWithAssociations[objectArrayName];
+            if(objectArray === undefined) {
+                alert("error: couldn't find object array for '" + objectArrayName + "'");
+            }
+
+            // filter out items in array that are either empty objects or are objects that have blank fields
+            objectWithAssociations[objectArrayName] = objectArray.filter(function (childObject) {
+
+                // do depth-first recursion, so that records lower in
+                // the tree get removed first
+                var childAssociations = assoc.entryAssociations || [];
+                childAssociations.forEach(function (child_assoc) {
+                    $scope.filterBlankRecords(childObject, child_assoc);
+                });
+
+                if(assoc.skipChecking === undefined || !assoc.skipChecking(childObject)) {
+                    //console.log('checking ' + objectArrayName + ' record id = ' + childObject.id);
+                    var keep = false;
+                    thingsToCheck.forEach(function (propertyName) {
+                        var propertyIsBlank = $scope.isBlankThing(childObject[propertyName]);
+                        console.log('is property ' + propertyName + ' blank? ' + propertyIsBlank);
+                        if(!propertyIsBlank) {
+                            keep = true;
+                        }
+                    });
+                    //console.log("returning keep = " +  keep);
+                    return keep;
+                } else {
+                    //console.log("returning keep = true");
+                    return true;
+                }                    
+            });
+        };
+
         $scope.save = function () {
             // Transform angular's view models to JSON payload that
             // API expects: attach a bunch of things to Entry resource
@@ -486,26 +566,6 @@
             entryToSave.events = [].concat(entryToSave.provenance).concat([entryToSave.sale]);
             delete entryToSave.provenance;
             delete entryToSave.sale;
-
-            // strip out blank objects
-            $scope.entry_associations.forEach(function (assoc, index, array) {
-                var objectArrayName = assoc.field;
-                var objectArrayPropertiesAndForeignKeys = (assoc.properties || []).concat(assoc.foreign_key_objects || []);
-                var objectArray = entryToSave[objectArrayName];
-                // filter out items in array that are either empty objects or are objects that have blank fields
-                entryToSave[objectArrayName] = objectArray.filter(function (object) {
-                    var keep = false;
-                    objectArrayPropertiesAndForeignKeys.forEach(function (propertyName) {
-                        var propertyIsBlank = $scope.isBlankStringOrObject(object[propertyName]);
-                        //console.log('is property ' + propertyName + ' blank? ' + propertyIsBlank);
-                        if(!propertyIsBlank) {
-                            keep = true;
-                        }
-                    });
-                    //console.log("returning keep = " +  keep);
-                    return keep;
-                });
-            });
 
             // Transform fields back into EventAgent records
             entryToSave.events.forEach(function (event, index, array) {
@@ -523,8 +583,11 @@
                 });
             });
 
-            console.log(entryToSave);
-            
+            // strip out blank objects
+            $scope.entryAssociations.forEach(function (assoc) {
+                $scope.filterBlankRecords(entryToSave, assoc);
+            });
+
             // To satisfy the API: replace nested Object
             // representations of related entities with just their IDs
 
@@ -552,16 +615,9 @@
                 sdbmutil.replaceEntityObjectsWithIds(objectArray, relatedObjectName);
             }
 
-            // Strip out blank records
-
-            entryToSave.entry_artists = entryToSave.entry_artists.filter(function (item) {
-                if(item.id || item.artist) {
-                    return true;
-                }
-            });
-
-            console.log(entryToSave);
-
+            console.log("about to save this Entry: ");
+            console.log(sdbmutil.objectSnapshot(entryToSave));
+            
             if(entryToSave.id) {
                 entryToSave.$update(
                     $scope.postEntrySave,
