@@ -222,205 +222,212 @@ module SDBMSS::ReferenceData
         place: Place.find_or_create_by(name: 'Italy, Naples')
       )
 
-      provenance1 = Event.create!(
+      Event.create!(
         entry: entry,
         acquire_date: '14801230',
-        comment: "Royal arms on first leaf."
-      )
-      EventAgent.create!(
-        event: provenance1,
-        agent: Agent.find_or_create_by(name: "Ferdinand I of Aragon, King of Naples"),
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
-      )
-
-      provenance2 = Event.create!(
-        entry: entry
-      )
-      EventAgent.create!(
-        event: provenance2,
-        agent: Agent.find_or_create_by(name: "Federico of Aragon"),
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
+        comment: "Royal arms on first leaf.",
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Ferdinand I of Aragon, King of Naples"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          }
+        ]
       )
 
-      provenance3 = Event.create!(
+      Event.create!(
+        entry: entry,
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Federico of Aragon"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          }
+        ]
+      )
+
+      Event.create!(
         entry: entry,
         acquire_date: '15080000',
         comment: "Listed in inventory of his Chateau de Gaillon in 1508; his library.",
-      )
-      EventAgent.create!(
-        event: provenance3,
-        agent: Agent.find_or_create_by(name: "Amboise, Georges d'"),
-        observed_name: "Georges d'Amboise (1460-1510), Cardinal",
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
-      )
-      EventAgent.create!(
-        event: provenance3,
-        agent: Agent.find_or_create_by(name: "Archbishop's Library-Rouen"),
-        role: EventAgent::ROLE_BUYER
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Amboise, Georges d'"),
+            observed_name: "Georges d'Amboise (1460-1510), Cardinal",
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          },
+          {
+            agent: Agent.find_or_create_by(name: "Archbishop's Library-Rouen"),
+            role: EventAgent::ROLE_BUYER
+          },
+        ]
       )
 
-      provenance4 = Event.create!(
+      Event.create!(
         entry: entry,
-      )
-      EventAgent.create!(
-        event: provenance4,
-        agent: Agent.find_or_create_by(name: "Bourbon, Charles II de, Cardinal"),
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Bourbon, Charles II de, Cardinal"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          }
+        ]
       )
 
-      provenance5 = Event.create!(
+      Event.create!(
         entry: entry,
-      )
-      EventAgent.create!(
-        event: provenance5,
-        agent: Agent.find_or_create_by(name: "Bourbon, Charles III de, Cardinal"),
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
-      )
-      EventAgent.create!(
-        event: provenance5,
-        agent: Agent.find_or_create_by(name: "Henry IV, King of France"),
-        observed_name: "Henri IV, King of France (1589-1610)",
-        role: EventAgent::ROLE_BUYER,
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Bourbon, Charles III de, Cardinal"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          },
+          {
+            agent: Agent.find_or_create_by(name: "Henry IV, King of France"),
+            observed_name: "Henri IV, King of France (1589-1610)",
+            role: EventAgent::ROLE_BUYER,
+          }
+        ]
       )
 
-      provenance6 = Event.create!(
+      Event.create!(
         entry: entry,
-      )
-      EventAgent.create!(
-        event: provenance6,
-        agent: Agent.find_or_create_by(name: "Henry IV, King of France"),
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
-      )
-      EventAgent.create!(
-        event: provenance6,
-        agent: Agent.find_or_create_by(name: "Cabinet de Roi, King of France"),
-        role: EventAgent::ROLE_BUYER,
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Henry IV, King of France"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          },
+          {
+            agent: Agent.find_or_create_by(name: "Cabinet de Roi, King of France"),
+            role: EventAgent::ROLE_BUYER,
+          }
+        ]
       )
 
-      provenance7 = Event.create!(
+      Event.create!(
         entry: entry,
         acquire_date: "16040000",
         end_date: "1764000",
-        comment: "Jesuits reclaimed the College de Clermont and its library, which included the manuscript, in 1604. Ownership inscription on fol. 1r. Another note, \"Paraphe au desir de l'arrest du 5 juillet 1763/Mesnil,\" referring tothe closing of the College following suppression of the order. No. 539 in 1764 College de Claremont sale."
-      )
-      EventAgent.create!(
-        event: provenance7,
-        agent: Agent.find_or_create_by(name: "College de Clermont"),
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
-      )
-      EventAgent.create!(
-        event: provenance7,
-        agent: Agent.find_or_create_by(name: "Meerman, Gerard"),
-        observed_name: "Gerard Meerman (1722-71)",
-        role: EventAgent::ROLE_BUYER
+        comment: "Jesuits reclaimed the College de Clermont and its library, which included the manuscript, in 1604. Ownership inscription on fol. 1r. Another note, \"Paraphe au desir de l'arrest du 5 juillet 1763/Mesnil,\" referring tothe closing of the College following suppression of the order. No. 539 in 1764 College de Claremont sale.",
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "College de Clermont"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          },
+          {
+            agent: Agent.find_or_create_by(name: "Meerman, Gerard"),
+            observed_name: "Gerard Meerman (1722-71)",
+            role: EventAgent::ROLE_BUYER
+          }
+        ]
       )
 
-      provenance8 = Event.create!(
+      Event.create!(
         entry: entry,
         acquire_date: "17640000",
-      )
-      EventAgent.create!(
-        event: provenance8,
-        agent: Agent.find_or_create_by(name: "Meerman, Gerard"),
-        observed_name: "Gerard Meerman (1722-71)",
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Meerman, Gerard"),
+            observed_name: "Gerard Meerman (1722-71)",
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          }
+        ]
       )
 
-      provenance9 = Event.create!(
+      Event.create!(
         entry: entry,
         end_date: "18240702",
-        comment: "Sold in Part IV of sale, lot 480. Rebound."
-      )
-      EventAgent.create!(
-        event: provenance9,
-        agent: Agent.find_or_create_by(name: "Meerman, Johan"),
-        observed_name: "Meerman, Jean (1753-1815)",
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
+        comment: "Sold in Part IV of sale, lot 480. Rebound.",
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Meerman, Johan"),
+            observed_name: "Meerman, Jean (1753-1815)",
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          }
+        ]
       )
 
-      provenance10 = Event.create!(
+      Event.create!(
         entry: entry,
-        comment: "No. 88 in his Catalogue of the Manuscripts at Ashburnham Place, Appendix, [1861]."
-      )
-      EventAgent.create!(
-        event: provenance10,
-        agent: Agent.find_or_create_by(name: "Ashburnham, Bertram, 4th Earl of Ashburnham"),
-        observed_name: "Bertram, Fourth Early of Ashburnham (1797-1878)",
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
+        comment: "No. 88 in his Catalogue of the Manuscripts at Ashburnham Place, Appendix, [1861].",
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Ashburnham, Bertram, 4th Earl of Ashburnham"),
+            observed_name: "Bertram, Fourth Early of Ashburnham (1797-1878)",
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          }
+        ]
       )
 
-      provenance11 = Event.create!(
+      Event.create!(
         entry: entry,
         acquire_date: "1897000",
-      )
-      EventAgent.create!(
-        event: provenance11,
-        agent: Agent.find_or_create_by(name: "Thompson, Henry Yates"),
-        role: EventAgent::ROLE_BUYER
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Thompson, Henry Yates"),
+            role: EventAgent::ROLE_BUYER
+          }
+        ]
       )
 
-      provenance11 = Event.create!(
+      Event.create!(
         entry: entry,
         end_date: "18990501",
         comment: "Lot 39.",
-      )
-      EventAgent.create!(
-        event: provenance11,
-        agent: Agent.find_or_create_by(name: "Sotheby's"),
-        role: EventAgent::ROLE_SELLER_AGENT
-      )
-      EventAgent.create!(
-        event: provenance11,
-        agent: Agent.find_or_create_by(name: "Thompson, Henry Yates"),
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
-      )
-      EventAgent.create!(
-        event: provenance11,
-        agent: Agent.find_or_create_by(name: "Emich, Gustave R. von"),
-        role: EventAgent::ROLE_BUYER,
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Sotheby's"),
+            role: EventAgent::ROLE_SELLER_AGENT
+          },
+          {
+            agent: Agent.find_or_create_by(name: "Thompson, Henry Yates"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          },
+          {
+            agent: Agent.find_or_create_by(name: "Emich, Gustave R. von"),
+            role: EventAgent::ROLE_BUYER,
+          }
+        ]
       )
 
-      provenance12 = Event.create!(
+      Event.create!(
         entry: entry,
         end_date: "19251130",
         comment: "Lot 355.",
-      )
-      EventAgent.create!(
-        event: provenance12,
-        agent: Agent.find_or_create_by(name: "De Marinis, Tammaro"),
-        observed_name: "Tammaro De Marinis (1878-1969)",
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "De Marinis, Tammaro"),
+            observed_name: "Tammaro De Marinis (1878-1969)",
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          }
+        ]
       )
 
-      provenance13 = Event.create!(
+      Event.create!(
         entry: entry,
-        comment: '"Two engraved bookplates were affixed to front pastedown: that of the Prince de Soragna (1773-1865), and a large 18th-century engraved armorial bookplate."'
-      )
-      EventAgent.create!(
-        event: provenance13,
-        observed_name: "unidentified",
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
+        comment: '"Two engraved bookplates were affixed to front pastedown: that of the Prince de Soragna (1773-1865), and a large 18th-century engraved armorial bookplate."',
+        event_agents_attributes: [
+          {
+            observed_name: "unidentified",
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          }
+        ]
       )
 
-      provenance14 = Event.create!(
+      Event.create!(
         entry: entry,
         end_date: "19980623",
-        comment: "According to catalog entry purchased by present owner in the 1980s in Lugano from a private collection."
-      )
-      EventAgent.create!(
-        event: provenance14,
-        agent: Agent.find_or_create_by(name: "Sotheby's"),
-        role: EventAgent::ROLE_SELLER_AGENT
-      )
-      EventAgent.create!(
-        event: provenance14,
-        observed_name: "Anonymous",
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
-      )
-      EventAgent.create!(
-        event: provenance14,
-        agent: Agent.find_or_create_by(name: "Kraus, H.P."),
-        role: EventAgent::ROLE_BUYER
+        comment: "According to catalog entry purchased by present owner in the 1980s in Lugano from a private collection.",
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Sotheby's"),
+            role: EventAgent::ROLE_SELLER_AGENT
+          },
+          {
+            observed_name: "Anonymous",
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          },
+          {
+            agent: Agent.find_or_create_by(name: "Kraus, H.P."),
+            role: EventAgent::ROLE_BUYER
+          }
+        ]
       )
 
     end

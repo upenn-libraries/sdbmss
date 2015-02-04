@@ -33,6 +33,8 @@ class Event < ActiveRecord::Base
 
   has_many :event_agents
 
+  accepts_nested_attributes_for :event_agents
+
   scope :transactions, -> { where(primary: true) }
   scope :provenance, -> { where(primary: false) }
 
