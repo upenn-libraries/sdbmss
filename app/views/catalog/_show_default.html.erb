@@ -362,6 +362,9 @@
                         through <%= render partial: "shared/event_agent", object: seller_agent %>
                     <% end %>
                 <% end %>
+                <% if provenance.comment %>
+                    <br/><%= provenance.comment %>
+                <% end %>
             </td>
         </tr>
 
