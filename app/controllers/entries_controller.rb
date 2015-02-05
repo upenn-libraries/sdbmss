@@ -62,7 +62,7 @@ class EntriesController < ApplicationController
         Reconciler.reconcile_assoc @entry, params["entry_materials"], EntryMaterial, 'entry_id', [:material, :uncertain_in_source, :supplied_by_data_entry]
         Reconciler.reconcile_assoc @entry, params["entry_places"], EntryPlace, 'entry_id', [:place_id, :uncertain_in_source, :supplied_by_data_entry]
         Reconciler.reconcile_assoc @entry, params["entry_uses"], EntryUse, 'entry_id', [:use]
-        Reconciler.reconcile_assoc @entry, params["events"], Event, 'entry_id', [:primary, :acquire_date, :end_date, :comment, :sold, :price, :currency, :other_currency] do |event, model_params|
+        Reconciler.reconcile_assoc @entry, params["events"], Event, 'entry_id', [:primary, :start_date, :end_date, :comment, :sold, :price, :currency, :other_currency] do |event, model_params|
           Reconciler.reconcile_assoc event, model_params['event_agents'], EventAgent, 'event_id', [:observed_name, :agent_id, :role, :uncertain_in_source, :supplied_by_data_entry]
         end
 

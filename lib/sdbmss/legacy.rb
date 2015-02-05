@@ -574,9 +574,9 @@ module SDBMSS::Legacy
         # indicate the actual transaction date, if any, which can be
         # different from the date of the catalog. So we use that here,
         # if we have it, otherwise we leave the date blank.
-        acquire_date = nil
+        start_date = nil
         if (catalog_row = db.query("""select ALT_CAT_DATE from MANUSCRIPT_CATALOG where MANUSCRIPTCATALOGID = #{source.id}""").first)
-          acquire_date = catalog_row['ALT_CAT_DATE'] if catalog_row['ALT_CAT_DATE'].present?
+          start_date = catalog_row['ALT_CAT_DATE'] if catalog_row['ALT_CAT_DATE'].present?
         end
 
         sold = LEGACY_SOLD_CODES[row['SOLD']] || row['SOLD']
@@ -592,7 +592,7 @@ module SDBMSS::Legacy
         transaction = Event.create!(
           primary: true,
           entry: entry,
-          acquire_date: acquire_date,
+          start_date: start_date,
           price: row['PRICE'],
           currency: currency,
           other_currency: other_currency,

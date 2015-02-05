@@ -118,7 +118,7 @@ module SDBMSS::ReferenceData
 
       provenance1 = Event.create!(
         entry: entry,
-        end_date: '19220700',
+        start_date: '19220700',
         comment: "Bookplate. His sale Sotheby's, July 1922 (day of sale not given), lot. 1027."
       )
       EventAgent.create!(
@@ -224,7 +224,7 @@ module SDBMSS::ReferenceData
 
       Event.create!(
         entry: entry,
-        acquire_date: '14801230',
+        start_date: '14801230',
         comment: "Royal arms on first leaf.",
         event_agents_attributes: [
           {
@@ -246,7 +246,7 @@ module SDBMSS::ReferenceData
 
       Event.create!(
         entry: entry,
-        acquire_date: '15080000',
+        start_date: '15080000',
         comment: "Listed in inventory of his Chateau de Gaillon in 1508; his library.",
         event_agents_attributes: [
           {
@@ -302,7 +302,7 @@ module SDBMSS::ReferenceData
 
       Event.create!(
         entry: entry,
-        acquire_date: "16040000",
+        start_date: "16040000",
         end_date: "1764000",
         comment: "Jesuits reclaimed the College de Clermont and its library, which included the manuscript, in 1604. Ownership inscription on fol. 1r. Another note, \"Paraphe au desir de l'arrest du 5 juillet 1763/Mesnil,\" referring tothe closing of the College following suppression of the order. No. 539 in 1764 College de Claremont sale.",
         event_agents_attributes: [
@@ -320,7 +320,7 @@ module SDBMSS::ReferenceData
 
       Event.create!(
         entry: entry,
-        acquire_date: "17640000",
+        start_date: "17640000",
         event_agents_attributes: [
           {
             agent: Agent.find_or_create_by(name: "Meerman, Gerard"),
@@ -332,7 +332,7 @@ module SDBMSS::ReferenceData
 
       Event.create!(
         entry: entry,
-        end_date: "18240702",
+        start_date: "18240702",
         comment: "Sold in Part IV of sale, lot 480. Rebound.",
         event_agents_attributes: [
           {
@@ -357,7 +357,7 @@ module SDBMSS::ReferenceData
 
       Event.create!(
         entry: entry,
-        acquire_date: "1897000",
+        start_date: "1897000",
         event_agents_attributes: [
           {
             agent: Agent.find_or_create_by(name: "Thompson, Henry Yates"),
@@ -368,7 +368,7 @@ module SDBMSS::ReferenceData
 
       Event.create!(
         entry: entry,
-        end_date: "18990501",
+        start_date: "18990501",
         comment: "Lot 39.",
         event_agents_attributes: [
           {
@@ -388,7 +388,7 @@ module SDBMSS::ReferenceData
 
       Event.create!(
         entry: entry,
-        end_date: "19251130",
+        start_date: "19251130",
         comment: "Lot 355.",
         event_agents_attributes: [
           {
@@ -412,7 +412,7 @@ module SDBMSS::ReferenceData
 
       Event.create!(
         entry: entry,
-        end_date: "19980623",
+        start_date: "19980623",
         comment: "According to catalog entry purchased by present owner in the 1980s in Lugano from a private collection.",
         event_agents_attributes: [
           {

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150203142003) do
+ActiveRecord::Schema.define(version: 20150205194657) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -279,7 +279,6 @@ ActiveRecord::Schema.define(version: 20150203142003) do
     t.boolean  "primary",                                 default: false
     t.text     "comment"
     t.integer  "order"
-    t.string   "acquire_date"
     t.string   "end_date"
     t.decimal  "price",          precision: 20, scale: 2
     t.string   "currency"
@@ -289,6 +288,7 @@ ActiveRecord::Schema.define(version: 20150203142003) do
     t.integer  "created_by_id"
     t.datetime "updated_at"
     t.integer  "updated_by_id"
+    t.string   "start_date"
   end
 
   add_index "events", ["created_by_id"], name: "index_events_on_created_by_id", using: :btree

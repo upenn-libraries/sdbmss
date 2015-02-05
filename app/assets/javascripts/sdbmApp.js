@@ -297,7 +297,7 @@
                     // skip 'primary' events (always keep them)
                     return object.primary ? true : false;
                 },
-                properties: ['acquire_date', 'end_date', 'comment'],
+                properties: ['start_date', 'end_date', 'comment'],
                 entryAssociations: [
                     {
                         field: 'event_agents',

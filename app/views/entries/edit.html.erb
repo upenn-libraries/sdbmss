@@ -104,7 +104,7 @@
             <div ng-show="entry.sale.sold == 'YES'">
                 <label for="sold" class="col-sm-4 control-label"><span sdbm-tooltip="sold">Date Sold</span></label>
                 <div class="col-sm-3">
-                    <input type="text" class="form-control" id="sale_date" ng-model="entry.sale.acquire_date">
+                    <input type="text" class="form-control" id="sale_date" ng-model="entry.sale.start_date">
                 </div>
             </div>
         </div>
@@ -413,7 +413,7 @@
             Sale/Acquire Date
         </label>
       <div class="col-sm-2">
-        <input type="text" class="form-control" id="begindate" ng-model="prov.acquire_date">
+        <input type="text" class="form-control" id="begindate" ng-model="prov.start_date">
       </div>
       <div class="col-sm-2"></div>
       <label class="col-sm-2 control-label">End Date</label>

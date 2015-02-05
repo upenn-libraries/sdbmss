@@ -336,9 +336,9 @@
             <% buyer = provenance.get_buyer %>
         <tr>
             <td class="col-sm-2 text-right record-label">
-                <% if provenance.acquire_date.present? || provenance.end_date.present? %>
-                    <%= format_fuzzy_date(provenance.acquire_date) %>
-                    <% if provenance.acquire_date.present? && provenance.end_date.present? %><br/>to<br/><% end %>
+                <% if provenance.start_date.present? || provenance.end_date.present? %>
+                    <%= format_fuzzy_date(provenance.start_date) %>
+                    <% if provenance.start_date.present? && provenance.end_date.present? %><br/>to<br/><% end %>
                     <%= format_fuzzy_date(provenance.end_date) %>
                 <% else %>
                     (No date)

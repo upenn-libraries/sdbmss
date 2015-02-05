@@ -78,7 +78,7 @@ child :entry_uses, :object_root => false do
 end
 
 child :events, :object_root => false do
-  attributes :id, :primary, :comment, :acquire_date, :end_date, :price, :currency, :other_currency, :sold
+  attributes :id, :primary, :comment, :start_date, :end_date, :price, :currency, :other_currency, :sold
   child :event_agents, :object_root => false do
     attributes :id, :observed_name, :role, :uncertain_in_source, :supplied_by_data_entry
     child :agent do |agent|
