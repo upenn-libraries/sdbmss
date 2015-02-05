@@ -12,4 +12,5 @@
 //= require dataTables.colReorder
 //= require dataTables.colResize
 //= require dataTables.fixedColumns
+//= require sdbmTable
 //= require sdbmApp

@@ -1,0 +1,24 @@
+/** This section contains rules copied/modified from
+jquery.dataTables.css, which we don't use b/c we use
+dataTables.bootstrap.css instead. Weird things happen if you use both.
+*/
+table.dataTable.nowrap th, table.dataTable.nowrap td {
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+table.dataTable.compact thead th,
+table.dataTable.compact thead td {
+  padding: 5px 9px;
+}
+table.dataTable.compact tfoot th,
+table.dataTable.compact tfoot td {
+  padding: 5px 9px 3px 9px;
+}
+table.dataTable.compact tbody th,
+table.dataTable.compact tbody td {
+  padding: 4px 5px;
+}
+/* end stuff from jquery.dataTables.css */
+
+.sdbm-table { font-size: 12px; }
+
+.sdbm-table tbody tr.selected { background-color: #b0bed9; }

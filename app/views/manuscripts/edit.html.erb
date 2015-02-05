@@ -1,0 +1,81 @@
+<% content_for :head do %>
+<%= stylesheet_link_tag "extras", media: "all" %>
+<%= javascript_include_tag "extras" %>
+<style>
+
+.navbar { margin-bottom: 10px; }
+
+#main-container.container-fluid .row { padding-left: 15px; padding-right: 15px; }
+
+</style>
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+    var entryIds = [];
+
+    // TODO: hacks to tweak the Rails layout: figure out a more elegant way?
+    $("#search-navbar").remove();
+    // make this page take up full width of browser window
+    $("#main-container").removeClass("container").addClass("container-fluid");
+
+    var sdbmTable = new SDBMTable("#entries-for-manuscript", {
+        prependColumns: [
+            {
+                title: 'Actions',
+                "data": null,
+                "orderable": false,
+                "render": function (data, type, full, meta) {
+                    return '<a href="TODO" target="_blank">Unlink</a>';
+                }
+            }
+        ],
+        ajax: function (sdbmTable, dt_params, callback, settings) {
+            $("#spinner").show();
+
+            $.ajax({
+                url: '/manuscripts/' + $("#manuscript_id").val() + '.json',
+                type: 'GET',
+                success: function(data, textStatus, jqXHR) {
+                    entryIds = data.entry_manuscripts.map(function (entry_manuscript) {
+                        return entry_manuscript.entry_id;
+                    });
+                    var params = sdbmTable.translateParamsToBlacklight(dt_params);
+                    params['entry_id'] = entryIds.join(" OR ");
+                    sdbmTable.searchAndUpdateTable(params, callback);
+                },
+                error: function() {
+                    // TODO: fill this out
+                    alert("An error occurred jumping to this record.");
+                }
+            });
+        }
+    });
+
+ });
+
+</script>
+<% end %>
+
+<% if @manuscript.persisted? %>
+<input type="hidden" id="manuscript_id" value="<%= @manuscript.id %>" />
+<% end %>
+
+<h3>SDBM_MS_<%= @manuscript.id %> - Manage entries</h3>
+
+<table id="entries-for-manuscript" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <!-- we populate TH elements dynamically -->
+            
+            <!-- TODO: figure out how to get datatables to initialize
+            with reasonable static widths; widget seems to
+            automatically resize for data, which is not what we
+            want. this might require dynamically resizing after init
+            is finished? 
+              -->
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>

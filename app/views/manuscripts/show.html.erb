@@ -1,5 +1,20 @@
 <div class="row">
-    <div class="col-sm-3"></div>
+    <div class="col-sm-3">
+        <div class="panel panel-default show-tools">
+            <div class="panel-heading">
+                Tools
+            </div>
+            <div class="panel-body">
+                <ul class="nav">
+                    <% if user_signed_in? %>
+                    <li class="edit_entry">
+                        <a href="<%= edit_manuscript_path(@manuscript.id) %>">Edit this manuscript</a>
+                    </li>
+                    <% end %>
+                </ul>
+            </div>
+        </div>
+    </div>
     <div class="col-sm-9">
         
         <div class="row">

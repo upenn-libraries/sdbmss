@@ -4,34 +4,9 @@
 
 <style>
 
-/** This section contains rules copied/modified from
-jquery.dataTables.css, which we don't use b/c we use
-dataTables.bootstrap.css instead. Weird things happen if you use both.
-*/
-table.dataTable.nowrap th, table.dataTable.nowrap td {
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-table.dataTable.compact thead th,
-table.dataTable.compact thead td {
-  padding: 5px 9px;
-}
-table.dataTable.compact tfoot th,
-table.dataTable.compact tfoot td {
-  padding: 5px 9px 3px 9px;
-}
-table.dataTable.compact tbody th,
-table.dataTable.compact tbody td {
-  padding: 4px 5px;
-}
-/* end stuff from jquery.dataTables.css */
-
 .navbar { margin-bottom: 10px; }
 
 #main-container.container-fluid .row { padding-left: 15px; padding-right: 15px; }
-
-#search_results { font-size: 12px; }
-
-#search_results tbody tr.selected { background-color: #b0bed9; }
 
 .search-fieldset { margin-bottom: 8px; }
 
@@ -50,49 +25,10 @@ $(document).ready(function() {
     var jumpToEntry = {
         search: false
     };
-        
-    var table_height_buffer = 360;
-    
-    var getViewportHeight = function() {
-        return $(window).height();
-    };
-
-    var getSort = function(dt_params) {
-        var sort = "";
-        $.each(dt_params.order, function(idx, order) {
-            var columnDefinition = optionsColumns[order.column];
-            var sortField = columnDefinition.blSortField;
-            if(sortField) {
-                if(sort) {
-                    sort += ", ";
-                }
-                sort += sortField + " " + order.dir;
-            } else {
-                alert("ERROR: no sort field found for column, so using ID; fix this!");
-            }
-        });
-        if(!sort) {
-            sort = "entry_id desc";
-        }
-        return sort;
-    };
-
-    // Translates the common parameters from dataTables widget into
-    // URL params for Blacklight search
-    var commonParamsTranslate = function (dt_params) {
-        return {
-            draw: dt_params.draw,
-            page: (dt_params.start / dt_params.length) + 1,
-            per_page: dt_params.length,
-            utf8: String.fromCharCode(0x2713),
-            search_field: "advanced",
-            sort: getSort(dt_params)
-        };
-    };
 
     // Fielded search specific params
-    var searchParamsTranslate = function (data) {
-        params = commonParamsTranslate(data);
+    var translateSearchParams = function (sdbmTable, data) {
+        params = sdbmTable.translateParamsToBlacklight(data);
 
         params["op"] = $("select[name='op']").val();
 
@@ -108,231 +44,34 @@ $(document).ready(function() {
     };
 
     // 'Jump to' specific params
-    var jumpToParamsTranslate = function (data) {
-        params = commonParamsTranslate(data);
+    var translateJumpToParams = function (sdbmTable, data) {
+        params = sdbmTable.translateParamsToBlacklight(data);
 
         params['entry_id'] = jumpToEntry.query;
 
         return params;
     };
     
-    var searchAndUpdateTable = function(params, callback) {
-        $.ajax({
-            url: '/admin_search.json',
-            data: params,
-            success: function(data, textStatus, jqXHR) {
-                if(!data.error) {
-                    $(".dataTables_scrollBody").scrollTop(0);
-                    // when paging, we probably don't want to reset horiz scroll
-                    // $(".dataTables_scrollBody").scrollLeft(0);
-                    callback(data);
-                } else {
-                    alert("An error occurred fetching search results: " + data.error);
+    var sdbmTable = new SDBMTable("#search_results", {
+        prependColumns: [
+            {
+                title: 'Actions',
+                "data": null,
+                "orderable": false,
+                "render": function (data, type, full, meta) {
+                    return '<a href="/entries/' + full[1] + '" target="_blank">View</a>' +
+                        ' <a href="/entries/' + full[1] + '/edit" target="_blank">Edit</a>' +
+                        ' <a class="entry-delete-link" href="#" target="_blank">Delete</a>';
                 }
-            },
-            error: function() {
-                // TODO: fill this out
-                alert("An error occurred fetching search results");
-            },
-            complete: function() {
-                $("#spinner").hide();
             }
-        });
-    };
-    
-    // NOTE: blSortField is our own custom attribute used to key
-    // columns to their solr field in blacklight for sorting
-    var optionsColumns = [
-        {
-            title: 'Actions',
-            "data": null,
-            "orderable": false,
-            "render": function (data, type, full, meta) {
-                return '<a href="/entries/' + full[1] + '" target="_blank">View</a>' +
-                    ' <a href="/entries/' + full[1] + '/edit" target="_blank">Edit</a>' +
-                    ' <a class="entry-delete-link" href="#" target="_blank">Delete</a>';
-            }
-        },
-        {
-            title: 'ID',
-            blSortField: 'entry_id'
-        },
-        {
-            title: 'Manuscript',
-            blSortField: 'manuscript_id'
-        },
-        {
-            title: 'Source Date',
-            blSortField: 'source_date'
-        },
-        {
-            title: 'Source Title',
-            blSortField: 'source_title'
-        },
-        {
-            title: 'Cat or Lot #',
-            blSortField: 'catalog_or_lot_number'
-        },
-        {
-            title: 'Seller Agent',
-            blSortField: 'transaction_seller_agent'
-        },
-        {
-            title: 'Seller',
-            blSortField: 'transaction_seller'
-        },
-        {
-            title: 'Buyer',
-            blSortField: 'transaction_buyer'
-        },
-        {
-            title: 'Sold',
-            blSortField: 'transaction_sold'
-        },
-        {
-            title: 'Price',
-            blSortField: 'transaction_price'
-        },
-        {
-            title: 'Title',
-            blSortField: 'title_flat'
-        },
-        {
-            title: 'Author',
-            blSortField: 'author_flat'
-        },
-        {
-            title: 'Date',
-            blSortField: 'manuscript_date_flat'
-        },
-        {
-            title: 'Artist',
-            blSortField: 'artist_flat'
-        },
-        {
-            title: 'Scribe',
-            blSortField: 'scribe_flat'
-        },
-        {
-            title: 'Language',
-            blSortField: 'language_flat'
-        },
-        {
-            title: 'Material',
-            blSortField: 'material_flat'
-        },
-        {
-            title: 'Use',
-            blSortField: 'use_flat'
-        },
-        {
-            title: 'Folios',
-            blSortField: 'folios'
-        },
-        {
-            title: 'Columns',
-            blSortField: 'num_columns'
-        },
-        {
-            title: 'Lines',
-            blSortField: 'num_lines'
-        },
-        {
-            title: 'Height',
-            blSortField: 'height'
-        },
-        {
-            title: 'Width',
-            blSortField: 'width'
-        },
-        {
-            title: 'Alt Size',
-            blSortField: 'alt_size'
-        },
-        {
-            title: 'Min Fl',
-            blSortField: 'miniatures_fullpage'
-        },
-        {
-            title: 'Min Lg',
-            blSortField: 'miniatures_large'
-        },
-        {
-            title: 'Min Sm',
-            blSortField: 'miniatures_small'
-        },
-        {
-            title: 'Min Un',
-            blSortField: 'miniatures_unspec_size'
-        },
-        {
-            title: 'Init Hist',
-            blSortField: 'initials_historiated'
-        },
-        {
-            title: 'Init Dec',
-            blSortField: 'initials_decorated'
-        },
-        {
-            title: 'Binding',
-            "orderable": false
-        },
-        {
-            title: 'URL',
-            "orderable": false,
-            "render": function (data, type, full, meta) {
-                if(data) {
-                    return '<a href="' + data + '" target="_blank">' + data + '</a>';
-                }
-                return '';
-            }
-        },
-        {
-            title: 'Other Info',
-            "orderable": false
-        },
-        {
-            title: 'Provenance',
-            "orderable": false
-        },
-        {
-            title: 'Added On',
-            blSortField: 'created_at'
-        },
-        {
-            title: 'Added By',
-            blSortField: 'created_by'
-        },
-        {
-            title: 'Last Modified',
-            blSortField: 'updated_at'
-        },
-        {
-            title: 'Last Modified By',
-            blSortField: 'updated_at'
-        },
-        {
-            title: 'Is Approved',
-            blSortField: 'approved'
-        }
-    ];
-
-    // we have to create TH elements before dataTable init, otherwise
-    // col widths are messed up and drag-resizing is broken. it's
-    // possible I need additional option(s) for having dataTable
-    // properly create the THs but I don't know what they could be.
-    $.each(optionsColumns, function(idx, column) {
-        $('#search_results thead tr').append("<th>" + column.name + "</th>");
-    });
-
-    var table = $('#search_results').DataTable({
-        ajax: function (dt_params, callback, settings) {
+        ],
+        ajax: function (sdbmTable, dt_params, callback, settings) {
             $("#spinner").show();
 
             // seems like there should be a way to do this conditional
             // ajax and subsequent searchAndUpdateTable using
             // promises, but I can't figure that out right now
-
+            
             if(jumpToEntry.search) {
                 var entry_id = $("#jump_to").val();
                 $.ajax({
@@ -346,8 +85,12 @@ $(document).ready(function() {
                         jumpToEntry.entry_id = entry_id;
                         jumpToEntry.query = '[' + data.lower_bound + ' TO ' + data.upper_bound + ']';
 
-                        var params = jumpToParamsTranslate(dt_params);
-                        searchAndUpdateTable(params, callback);
+                        var params = translateJumpToParams(sdbmTable, dt_params);
+                        sdbmTable.searchAndUpdateTable(params, callback, {
+                            'complete': function () {
+                                $("#spinner").hide();
+                            }
+                        });
                     },
                     error: function() {
                         // TODO: fill this out
@@ -355,55 +98,30 @@ $(document).ready(function() {
                     }
                 });
             } else {
-                var params = searchParamsTranslate(dt_params);                
-                searchAndUpdateTable(params, callback);
+                var params = translateSearchParams(sdbmTable, dt_params);                
+                sdbmTable.searchAndUpdateTable(params, callback, {
+                    'complete': function () {
+                        $("#spinner").hide();
+                    }
+                });
             }
-        },
-        columns: optionsColumns,
-        language: {
-            "emptyTable": "No records found for search query."
-        },
-        lengthMenu: [50, 100, 200, 500],
-        order: [[ 1, "desc" ]],
-        scrollX: true,
-        scrollY: (getViewportHeight() - table_height_buffer) + "px",
-        scrollCollapse: false,
-        // extensions get activated via sDom codes
-        sDom: 'C<"clear"><"H"lr>JRt<"F"ip>',
-        serverSide: true
+        }
     });
-
-    // this extension for fixed columns tends to mess up table redraws
-    // (col headers get misaligned with col data), so we've disabled
-    // it for now...
-    /*
-    new $.fn.dataTable.FixedColumns(table, {
-        "leftColumns": 2
-    });
-    */
-
-    var getRowHeight = function() {
-        return $(table.rows().nodes().shift()).height();
-    };
-    
-    var getTableHeight = function() {
-        return table.rows().nodes().length * getRowHeight();
-    };
 
     var doSearch = function(isJumpSearch) {
         jumpToEntry.search = isJumpSearch;
-        table.ajax.reload();
+        sdbmTable.reload();
     };
     
     $('#search_results').on('draw.dt', function () {
         if(jumpToEntry.search) {
             var entry_id = String(jumpToEntry.entry_id);
             // highlight the row
-            table.rows().nodes().each(function (row, idx, api) {
-                var data = table.row(row).data();
+            sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
+                var data = sdbmTable.dataTable.row(row).data();
                 if(String(data[1]) === entry_id) {
                     $(row).addClass("selected");
-                    $(".dataTables_scrollBody").scrollTop(idx * getRowHeight());
+                    $(".dataTables_scrollBody").scrollTop(idx * sdbmTable.getRowHeight());
                 }
             });
         }
@@ -433,7 +151,7 @@ $(document).ready(function() {
     });
 
     $(document).on("click", ".entry-delete-link", function (event) {
-        var row_data = table.row($(event.target).closest("tr")).data();
+        var row_data = sdbmTable.dataTable.row($(event.target).closest("tr")).data();
         var entry_id = row_data[1];
         if(confirm("Are you sure you want to delete entry " + entry_id + "?")) {
             $.ajax({
@@ -444,7 +162,7 @@ $(document).ready(function() {
                     alert("An error occurred deleting this record.");
                 },
                 complete: function() {
-                    table.ajax.reload();
+                    sdbmTable.reload();
                 }
             });
         }
@@ -535,7 +253,7 @@ $(document).ready(function() {
 
 </form>
 
-<table id="search_results" class="table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
+<table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
     <thead>
         <tr>
             <!-- we populate TH elements dynamically -->

@@ -1,6 +1,6 @@
 class ManuscriptsController < ApplicationController
 
-  before_action :set_manuscript, only: [:show]
+  before_action :set_manuscript, only: [:show, :edit]
 
   private
 

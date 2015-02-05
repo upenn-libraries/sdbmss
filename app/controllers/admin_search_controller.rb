@@ -40,7 +40,6 @@ class AdminSearchController < CatalogController
           updated_at = entry.updated_at ? entry.updated_at.strftime(dateformat) : nil
           updated_by = entry.updated_by
           as_array = [
-            nil,
             entry.id,
             manuscript ? manuscript.get_public_id : nil,
             SDBMSS::Util.format_fuzzy_date(source.date),
