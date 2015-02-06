@@ -74,7 +74,7 @@ class Entry < ActiveRecord::Base
   end
 
   def get_manuscript
-    entry_manuscripts.map(&:manuscript).first
+    entry_manuscripts.select { |em| em.relation_type == EntryManuscript::TYPE_RELATION_IS}.map(&:manuscript).first
   end
 
   # returns all Entry objects for this entry's Manuscript
@@ -213,8 +213,9 @@ class Entry < ActiveRecord::Base
       @__receiver__.id.to_i
     end
 
-    define_field(:string, :manuscript, :stored => true, :multiple => true) do
-      entry_manuscripts.map { |em| em.manuscript.get_public_id }
+    # full display ID
+    define_field(:string, :manuscript, :stored => true) do
+      (manuscript = get_manuscript) && manuscript.get_public_id
     end
     define_field(:integer, :manuscript_id, :stored => true) do
       (manuscript = get_manuscript) && manuscript.id

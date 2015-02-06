@@ -2,6 +2,7 @@ class Manuscript < ActiveRecord::Base
 
   has_many :entry_manuscripts
   has_many :entries, through: :entry_manuscripts
+  has_many :linked_entries, -> { where entry_manuscripts: { relation_type: EntryManuscript::TYPE_RELATION_IS } }, source: :entry, through: :entry_manuscripts
 
   include UserFields
 
@@ -9,7 +10,7 @@ class Manuscript < ActiveRecord::Base
   def get_unique_provenance
     # TODO: how to make sure they're "unique" since these records are
     # complex? maybe we don't do that.
-    Event.provenance.where(entry_id: entry_manuscripts.map { |em| em.entry_id } )
+    Event.provenance.where(entry_id: linked_entries)
   end
 
   def get_public_id

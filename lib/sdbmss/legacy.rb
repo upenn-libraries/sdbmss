@@ -338,6 +338,16 @@ module SDBMSS::Legacy
 
       create_manuscripts_from_duplicates(duplicates)
 
+      puts "Making EntryManuscript records from 'POSSIBLE_DUPS' records"
+
+      # we need to have created Manuscript records in
+      # #create_manuscripts_from_duplicates before this step
+      SDBMSS::Util.batch(legacy_db,
+                         'select MANUSCRIPT_ID, POSSIBLE_DUPS from MANUSCRIPT where POSSIBLE_DUPS is not null OR length(POSSIBLE_DUPS) > 0',
+                         batch_wrapper: wrap_transaction) do |row,ctx|
+        create_entry_manuscripts_from_possible_dups(row, ctx)
+      end
+
     end
 
     CURRENT_YEAR = DateTime.now.year
@@ -439,7 +449,6 @@ module SDBMSS::Legacy
         duplicates.add(row['DUPLICATE_MS'])
       end
 
-      # TODO: handle "possible_dups"
     end
 
     def create_entry_and_all_associations(row, unknown_source, jordanus, db)
@@ -1136,10 +1145,10 @@ module SDBMSS::Legacy
         manuscript_entries = []
 
         SDBMSS::Util.split_and_strip(duplicate_list_str, delimiter: ",").each do |atom|
-          relation_type = nil
+          relation_type = EntryManuscript::TYPE_RELATION_IS
           if atom.include? 'X'
             atom = atom.sub("X", '')
-            relation_type = 'partial'
+            relation_type = EntryManuscript::TYPE_RELATION_PARTIAL
           end
 
           entry = nil
@@ -1159,12 +1168,58 @@ module SDBMSS::Legacy
             manuscript_entry = EntryManuscript.create!(
               entry: entry,
               manuscript: manuscript,
-              relation_type: relation_type,
+              relation_type: EntryManuscript::TYPE_RELATION_IS,
             )
           end
 
         end
 
+      end
+
+    end
+
+    def create_entry_manuscripts_from_possible_dups(row, ctx)
+      SDBMSS::Util.split_and_strip(row['POSSIBLE_DUPS'], delimiter: ",").each do |possible_dupe|
+        # find or create the MS for the possible dupe Entry
+        if Entry.exists?(possible_dupe)
+
+          em = EntryManuscript.where(entry_id: possible_dupe, relation_type: EntryManuscript::TYPE_RELATION_IS).first
+          manuscript_id = nil
+          if em
+            manuscript_id = em.manuscript_id
+          else
+            # TODO: These manuscripts will only have one 'confirmed'
+            # entry, which is annoying, and possibly even bad, but we
+            # need it to connect 2 Entries that potentially represent
+            # the same MS
+            puts "Warning: creating a Manuscript record for an entry #{possible_dupe} found in POSSIBLE_DUPS that doesn't yet have one"
+            manuscript = Manuscript.create!()
+
+            manuscript_entry = EntryManuscript.create!(
+              entry_id: possible_dupe,
+              manuscript_id: manuscript.id,
+              relation_type: EntryManuscript::TYPE_RELATION_IS,
+            )
+
+            manuscript_id = manuscript.id
+          end
+
+          already_linked = EntryManuscript.where(
+            entry_id: row['MANUSCRIPT_ID'],
+            manuscript_id: manuscript_id,
+            relation_type: EntryManuscript::TYPE_RELATION_POSSIBLE,
+          ).count > 0
+
+          if !already_linked
+            EntryManuscript.create!(
+              entry_id: row['MANUSCRIPT_ID'],
+              manuscript_id: manuscript_id,
+              relation_type: EntryManuscript::TYPE_RELATION_POSSIBLE,
+            )
+          end
+        else
+          puts "Warning: entry #{row['MANUSCRIPT_ID']} has id #{possible_dupe} in POSSIBLE_DUPS field, which doesn't exist"
+        end
       end
 
     end
