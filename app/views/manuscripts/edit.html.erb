@@ -12,12 +12,14 @@
 
 $(document).ready(function() {
 
-    var entryIds = [];
+    var entryIds = {};
 
     // TODO: hacks to tweak the Rails layout: figure out a more elegant way?
     $("#search-navbar").remove();
     // make this page take up full width of browser window
     $("#main-container").removeClass("container").addClass("container-fluid");
+
+    var firstTableLoad = true;
 
     var sdbmTable = new SDBMTable("#entries-for-manuscript", {
         fullHeight: false,
@@ -26,14 +28,16 @@ $(document).ready(function() {
                 title: 'Link',
                 "data": null,
                 "orderable": false,
+                "className": 'text-center',
                 "render": function (data, type, full, meta) {
-                    return '<input type="radio" name="entry_id_' + data[sdbmTable.getColumnIndex("ID")] + '" value="is" checked="checked"/>';
+                    return '<input type="radio" name="entry_id_' + data[sdbmTable.getColumnIndex("ID")] + '" checked value="is" />';
                 }
             },
             {
                 title: 'Fragment',
                 "data": null,
                 "orderable": false,
+                "className": 'text-center',
                 "render": function (data, type, full, meta) {
                     return '<input type="radio" name="entry_id_' + data[sdbmTable.getColumnIndex("ID")] + '" value="partial"/>';
                 }
@@ -42,6 +46,7 @@ $(document).ready(function() {
                 title: 'Possible',
                 "data": null,
                 "orderable": false,
+                "className": 'text-center',
                 "render": function (data, type, full, meta) {
                     return '<input type="radio" name="entry_id_' + data[sdbmTable.getColumnIndex("ID")] + '" value="possible"/>';
                 }
@@ -50,6 +55,7 @@ $(document).ready(function() {
                 title: 'Unlink',
                 "data": null,
                 "orderable": false,
+                "className": 'text-center',
                 "render": function (data, type, full, meta) {
                     return '<input type="radio" name="entry_id_' + data[sdbmTable.getColumnIndex("ID")] + '" value="unlink"/>';
                 }
@@ -58,23 +64,60 @@ $(document).ready(function() {
         ajax: function (sdbmTable, dt_params, callback, settings) {
             $("#spinner").show();
 
-            $.ajax({
-                url: '/manuscripts/' + $("#manuscript_id").val() + '.json',
-                type: 'GET',
-                success: function(data, textStatus, jqXHR) {
-                    entryIds = data.entry_manuscripts.map(function (entry_manuscript) {
-                        return entry_manuscript.entry_id;
-                    });
-                    var params = sdbmTable.translateParamsToBlacklight(dt_params);
-                    params['entry_id'] = entryIds.join(" OR ");
-                    sdbmTable.searchAndUpdateTable(params, callback);
-                },
-                error: function() {
-                    // TODO: fill this out
-                    alert("An error occurred jumping to this record.");
-                }
-            });
+            if(firstTableLoad) {
+                $.ajax({
+                    url: '/manuscripts/' + $("#manuscript_id").val() + '.json',
+                    type: 'GET',
+                    success: function(data, textStatus, jqXHR) {
+                        entryIds = data.entry_manuscripts.map(function (entry_manuscript) {
+                            return entry_manuscript.entry_id;
+                        }).reduce(function (prev, curr, idx, array) {
+                            prev[curr] = 1;
+                            return prev;
+                        }, {});
+                        var params = sdbmTable.translateParamsToBlacklight(dt_params);
+                        params['entry_id'] = Object.keys(entryIds).join(" OR ");
+                        sdbmTable.searchAndUpdateTable(params, callback);
+                    },
+                    error: function() {
+                        // TODO: fill this out
+                        alert("An error occurred jumping to this record.");
+                    }
+                });
+                firstTableLoad = false;
+            } else {
+                var params = sdbmTable.translateParamsToBlacklight(dt_params);
+                params['entry_id'] = Object.keys(entryIds).join(" OR ");
+                sdbmTable.searchAndUpdateTable(params, callback);
+            }
         }
+    });
+
+    var addEntryIds = function() {
+        var entry_id_list = $("#entry_ids").val().split(",");
+        $.each(entry_id_list, function (idx, id) {
+            entryIds[id] = 1;
+        });
+        sdbmTable.reload();
+    };
+
+    $("#entry_ids").keydown(function(e) {
+        if(e.keyCode == 13) {
+            addEntryIds();
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    $("#show").click(function () {
+        addEntryIds();
+    });
+
+    $("#save").click(function () {
+        $('*[name*="entry_id_"]').each(function (idx, element) {
+            var checked = $(element).is(":checked") ? "checked" : "NOT checked";
+            console.log($(element).attr("name") + " " + $(element).val() + " " + checked);
+        });
     });
 
  });
@@ -88,6 +131,23 @@ $(document).ready(function() {
 
 <h3>SDBM_MS_<%= @manuscript.id %> - Manage entries</h3>
 
+<div class="row form-group">
+    <label class="col-sm-2 text-right control-label">
+        Show these entries in table:
+    </label>
+    <div class="col-sm-1">
+        <input type="text" id="entry_ids" class="form-control"/>
+    </div>
+    <div class="col-sm-1">
+        <button id="show" class="btn btn-primary">Show</button>
+    </div>
+    <div class="col-sm-7"></div>
+    <div class="col-sm-1">
+        <button id="save" class="btn btn-primary">Save Changes</button>
+    </div>
+</div>
+
+<form>
 <table id="entries-for-manuscript" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
     <thead>
         <tr>
@@ -104,3 +164,5 @@ $(document).ready(function() {
     <tbody>
     </tbody>
 </table>
+</form>
+
