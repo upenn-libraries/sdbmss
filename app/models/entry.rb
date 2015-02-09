@@ -169,7 +169,6 @@ class Entry < ActiveRecord::Base
         source.get_display_value,
         catalog_or_lot_number,
         secondary_source,
-        current_location,
         # transaction
         get_transaction_seller_agent_name,
         get_transaction_seller_or_holder_name,
@@ -244,9 +243,6 @@ class Entry < ActiveRecord::Base
     end
     define_field(:text, :secondary_source_search, :stored => true) do
       secondary_source
-    end
-    define_field(:text, :current_location_search, :stored => true) do
-      current_location
     end
 
     #### Transaction info

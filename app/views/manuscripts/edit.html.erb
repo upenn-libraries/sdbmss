@@ -20,13 +20,38 @@ $(document).ready(function() {
     $("#main-container").removeClass("container").addClass("container-fluid");
 
     var sdbmTable = new SDBMTable("#entries-for-manuscript", {
+        fullHeight: false,
         prependColumns: [
             {
-                title: 'Actions',
+                title: 'Link',
                 "data": null,
                 "orderable": false,
                 "render": function (data, type, full, meta) {
-                    return '<a href="TODO" target="_blank">Unlink</a>';
+                    return '<input type="radio" name="entry_id_' + data[sdbmTable.getColumnIndex("ID")] + '" value="is" checked="checked"/>';
+                }
+            },
+            {
+                title: 'Fragment',
+                "data": null,
+                "orderable": false,
+                "render": function (data, type, full, meta) {
+                    return '<input type="radio" name="entry_id_' + data[sdbmTable.getColumnIndex("ID")] + '" value="partial"/>';
+                }
+            },
+            {
+                title: 'Possible',
+                "data": null,
+                "orderable": false,
+                "render": function (data, type, full, meta) {
+                    return '<input type="radio" name="entry_id_' + data[sdbmTable.getColumnIndex("ID")] + '" value="possible"/>';
+                }
+            },
+            {
+                title: 'Unlink',
+                "data": null,
+                "orderable": false,
+                "render": function (data, type, full, meta) {
+                    return '<input type="radio" name="entry_id_' + data[sdbmTable.getColumnIndex("ID")] + '" value="unlink"/>';
                 }
             }
         ],

@@ -12,12 +12,20 @@
  *
  *  prependColumns: array of objects describing column options, to
  *  pass to DataTable.
+ * 
+ *  fullHeight: if true, takes up the full height of the
+ *  viewport. defaults to true.
  *
  */
 function SDBMTable(selector, options) {
     
-    this.options = options || {};
-    
+    this.options = $.extend({}, {
+        // defaults
+        ajax: null,
+        prependColumns: null,
+        fullHeight: true
+    }, options);
+
     this.table_height_buffer = 360;
 
     this.selector = selector;
@@ -203,6 +211,13 @@ function SDBMTable(selector, options) {
         $(selector).find('thead tr').append("<th>" + column.name + "</th>");
     });
 
+    var initialOrderColumn = 1;
+    if(options.prependColumns) {
+        initialOrderColumn = options.prependColumns.length;
+    }
+    
+    var scrollY = this.options.fullHeight ? (this.getViewportHeight() - this.table_height_buffer) + "px" : "";
+
     this.dataTable = $(selector).DataTable({
         ajax: function (dt_params, callback, settings) {
             options.ajax(sdbmTable, dt_params, callback, settings);
@@ -212,9 +227,9 @@ function SDBMTable(selector, options) {
             "emptyTable": "No records found for search query."
         },
         lengthMenu: [50, 100, 200, 500],
-        order: [[ 1, "desc" ]],
+        order: [[ initialOrderColumn, "desc" ]],
         scrollX: true,
-        scrollY: (this.getViewportHeight() - this.table_height_buffer) + "px",
+        scrollY: scrollY,
         scrollCollapse: false,
         // extensions get activated via sDom codes
         sDom: 'C<"clear"><"H"lr>JRt<"F"ip>',
@@ -283,6 +298,12 @@ SDBMTable.prototype.getTableHeight = function() {
 
 SDBMTable.prototype.reload = function() {
     this.dataTable.ajax.reload();
+};
+
+// given a row that's an Array, find the value at the index for the columnName
+SDBMTable.prototype.getColumnIndex = function(columnName) {
+    var columnNames = this.columnOptions.map(function (item) { return item.title; });
+    return columnNames.indexOf(columnName);
 };
 
 SDBMTable.prototype.searchAndUpdateTable = function(params, dtCallback, ajaxOptions) {

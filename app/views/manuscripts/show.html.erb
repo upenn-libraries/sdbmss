@@ -31,6 +31,24 @@
             </thead>
             <tbody>
 
+                <% if @manuscript.name.present? %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Name</td>
+                    <td class="col-sm-10">
+                        <%= @manuscript.name %>
+                    </td>
+                </tr>
+                <% end %>
+
+                <% if @manuscript.current_location.present? %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Current Location</td>
+                    <td class="col-sm-10">
+                        <%= @manuscript.current_location %>
+                    </td>
+                </tr>
+                <% end %>
+
                 <tr>
                     <td class="col-sm-2 text-right record-label"># Entries</td>
                     <td class="col-sm-10">

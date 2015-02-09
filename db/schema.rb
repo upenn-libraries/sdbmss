@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150205194657) do
+ActiveRecord::Schema.define(version: 20150209171535) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -86,7 +86,6 @@ ActiveRecord::Schema.define(version: 20150205194657) do
     t.integer  "source_id"
     t.string   "catalog_or_lot_number"
     t.string   "secondary_source"
-    t.string   "current_location"
     t.integer  "folios"
     t.integer  "num_columns"
     t.integer  "num_lines"
@@ -318,6 +317,8 @@ ActiveRecord::Schema.define(version: 20150205194657) do
     t.datetime "updated_at"
     t.integer  "created_by_id"
     t.integer  "updated_by_id"
+    t.string   "name"
+    t.string   "current_location"
   end
 
   add_index "manuscripts", ["created_by_id"], name: "index_manuscripts_on_created_by_id", using: :btree

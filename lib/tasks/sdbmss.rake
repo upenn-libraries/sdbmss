@@ -24,8 +24,7 @@ namespace :sdbmss do
 
     Rake::Task['db:create'].invoke
 
-    # Rake::Task['db:schema:load'].invoke
-    Rake::Task['db:migrate'].invoke
+    Rake::Task['db:schema:load'].invoke
 
     SDBMSS::Legacy.migrate
   end

@@ -328,11 +328,11 @@ module SDBMSS::Legacy
 
       puts "Migrating MANUSCRIPT_CHANGE_LOG records"
 
-      SDBMSS::Util.batch(legacy_db,
-                         'SELECT * FROM MANUSCRIPT_CHANGE_LOG ORDER BY CHANGEID',
-                         batch_wrapper: wrap_transaction) do |row,ctx|
-        create_manuscript_changelog_from_row(row, ctx)
-      end
+      # SDBMSS::Util.batch(legacy_db,
+      #                    'SELECT * FROM MANUSCRIPT_CHANGE_LOG ORDER BY CHANGEID',
+      #                    batch_wrapper: wrap_transaction) do |row,ctx|
+      #   create_manuscript_changelog_from_row(row, ctx)
+      # end
 
       puts "Making Manuscript records from 'DUPLICATE_MS' records (#{duplicates.length} total)"
 
@@ -346,6 +346,35 @@ module SDBMSS::Legacy
                          'select MANUSCRIPT_ID, POSSIBLE_DUPS from MANUSCRIPT where POSSIBLE_DUPS is not null OR length(POSSIBLE_DUPS) > 0',
                          batch_wrapper: wrap_transaction) do |row,ctx|
         create_entry_manuscripts_from_possible_dups(row, ctx)
+      end
+
+      puts "Migrating current_location to Manuscripts"
+
+      SDBMSS::Util.batch(legacy_db,
+                         'select MANUSCRIPT_ID, CURRENT_LOCATION from MANUSCRIPT where CURRENT_LOCATION is not null and length(CURRENT_LOCATION) > 0',
+                         batch_wrapper: wrap_transaction) do |row,ctx|
+        manuscript = Entry.find(row['MANUSCRIPT_ID']).get_manuscript
+        if manuscript.blank?
+          puts "WARNING: creating a Manuscript so that current_location can be migrated"
+          manuscript = Manuscript.create!
+
+          manuscript_entry = EntryManuscript.create!(
+            entry_id: row['MANUSCRIPT_ID'],
+            manuscript: manuscript,
+            relation_type: EntryManuscript::TYPE_RELATION_IS,
+          )
+        end
+
+        if manuscript.current_location != row['CURRENT_LOCATION']
+          if manuscript.current_location.present?
+            create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], "current_location", "More than one current_location found for Manuscript ID = #{manuscript.id}")
+          else
+            manuscript.current_location = ""
+          end
+          manuscript.current_location << row['CURRENT_LOCATION']
+          manuscript.save!
+        end
+
       end
 
     end
@@ -497,13 +526,11 @@ module SDBMSS::Legacy
       # catalog), but we can just use the updated_at field if we need
       # to know that.
 
-      # this is faster than manual begin/commit: why?
       entry = Entry.create!(
         id: row['MANUSCRIPT_ID'],
         source: source,
         catalog_or_lot_number: row['CAT_OR_LOT_NUM'],
         secondary_source: row['SECONDARY_SOURCE'],
-        current_location: row['CURRENT_LOCATION'],
         folios: row['FOLIOS'],
         num_columns: row['COL'],
         num_lines: row['NUM_LINES'],
@@ -512,7 +539,10 @@ module SDBMSS::Legacy
         alt_size: row['ALT_SIZE'],
         manuscript_binding: row['MANUSCRIPT_BINDING'],
         other_info: row['COMMENTS'],
-        # TODO: move to MS?
+        # if the source is electronic, manuscript_link probably is a
+        # link to the catalog entry itself, or to a digitial version
+        # of the MS. so this link should stay here and not move to
+        # Manuscripts table.
         manuscript_link: row['MANUSCRIPT_LINK'],
         miniatures_fullpage: row['MIN_FL'],
         miniatures_large: row['MIN_LG'],
