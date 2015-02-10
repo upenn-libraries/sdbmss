@@ -31,7 +31,12 @@ Rails.application.routes.draw do
   resources :languages do
     collection { get 'search' }
   end
-  resources :manuscripts
+
+  resources :manuscripts do
+    member do
+      get 'entry_candidates'
+    end
+  end
 
   resources :places do
     collection { get 'search' }

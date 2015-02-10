@@ -219,6 +219,12 @@ function SDBMTable(selector, options) {
     var scrollY = this.options.fullHeight ? (this.getViewportHeight() - this.table_height_buffer) + "px" : "";
 
     this.dataTable = $(selector).DataTable({
+        // we MUST set autoWidth=false to prevent a layout quirk that
+        // prevents the 1st radio button (any form inputs containing
+        // state in the 1st row, really) in the table from rendering
+        // properly.
+        // https://datatables.net/forums/discussion/24675/radio-button-checked-problem
+        autoWidth: false,
         ajax: function (dt_params, callback, settings) {
             options.ajax(sdbmTable, dt_params, callback, settings);
         },

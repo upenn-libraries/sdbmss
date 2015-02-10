@@ -12,7 +12,24 @@
 
 $(document).ready(function() {
 
-    var entryIds = {};
+    var manuscriptId = $("#manuscript_id").val();
+    var manuscriptPublicId = 'SDBM_MS_' + manuscriptId;
+
+    // data structure containing entry <-> MS associations that user
+    // manipulates through UI. This is initially populated out of the
+    // database but can contain entries that user just wants to view.
+    var entryManuscripts;
+
+    // returns an Object whose keys are all entry ids that should be
+    // displayed in the table
+    var getEntryIds = function() {
+        return entryManuscripts.map(function (entry_manuscript) {
+            return entry_manuscript.entry_id;
+        }).reduce(function (prev, curr, idx, array) {
+            prev[curr] = 1;
+            return prev;
+        }, {});
+    };
 
     // TODO: hacks to tweak the Rails layout: figure out a more elegant way?
     $("#search-navbar").remove();
@@ -20,6 +37,17 @@ $(document).ready(function() {
     $("#main-container").removeClass("container").addClass("container-fluid");
 
     var firstTableLoad = true;
+
+    var radioButtonsShouldBeVisible = function (sdbmTable, row) {
+        return !row[sdbmTable.getColumnIndex("Manuscript")] || row[sdbmTable.getColumnIndex("Manuscript")] === manuscriptPublicId;
+    };
+
+    var getRadioButtonHTML = function(sdbmTable, data, value) {
+        if (radioButtonsShouldBeVisible(sdbmTable, data)) {
+            return '<input type="radio" name="entry_id_' + data[sdbmTable.getColumnIndex("ID")] + '" value="' + value + '" />';
+        }
+        return '';
+    };
 
     var sdbmTable = new SDBMTable("#entries-for-manuscript", {
         fullHeight: false,
@@ -30,7 +58,7 @@ $(document).ready(function() {
                 "orderable": false,
                 "className": 'text-center',
                 "render": function (data, type, full, meta) {
-                    return '<input type="radio" name="entry_id_' + data[sdbmTable.getColumnIndex("ID")] + '" checked value="is" />';
+                    return getRadioButtonHTML(sdbmTable, data, "is");
                 }
             },
             {
@@ -39,7 +67,7 @@ $(document).ready(function() {
                 "orderable": false,
                 "className": 'text-center',
                 "render": function (data, type, full, meta) {
-                    return '<input type="radio" name="entry_id_' + data[sdbmTable.getColumnIndex("ID")] + '" value="partial"/>';
+                    return getRadioButtonHTML(sdbmTable, data, "partial");
                 }
             },
             {
@@ -48,7 +76,7 @@ $(document).ready(function() {
                 "orderable": false,
                 "className": 'text-center',
                 "render": function (data, type, full, meta) {
-                    return '<input type="radio" name="entry_id_' + data[sdbmTable.getColumnIndex("ID")] + '" value="possible"/>';
+                    return getRadioButtonHTML(sdbmTable, data, "possible");
                 }
             },
             {
@@ -57,60 +85,94 @@ $(document).ready(function() {
                 "orderable": false,
                 "className": 'text-center',
                 "render": function (data, type, full, meta) {
-                    return '<input type="radio" name="entry_id_' + data[sdbmTable.getColumnIndex("ID")] + '" value="unlink"/>';
+                    return getRadioButtonHTML(sdbmTable, data, "unlink");
                 }
             }
         ],
         ajax: function (sdbmTable, dt_params, callback, settings) {
-            $("#spinner").show();
-
             if(firstTableLoad) {
+                $("#spinner").show();
                 $.ajax({
-                    url: '/manuscripts/' + $("#manuscript_id").val() + '.json',
+                    url: '/manuscripts/' + manuscriptId + '.json',
                     type: 'GET',
                     success: function(data, textStatus, jqXHR) {
-                        entryIds = data.entry_manuscripts.map(function (entry_manuscript) {
-                            return entry_manuscript.entry_id;
-                        }).reduce(function (prev, curr, idx, array) {
-                            prev[curr] = 1;
-                            return prev;
-                        }, {});
+                        entryManuscripts = data.entry_manuscripts;
+                        console.log(entryManuscripts);
                         var params = sdbmTable.translateParamsToBlacklight(dt_params);
-                        params['entry_id'] = Object.keys(entryIds).join(" OR ");
+                        params['entry_id'] = Object.keys(getEntryIds()).join(" OR ");
                         sdbmTable.searchAndUpdateTable(params, callback);
                     },
                     error: function() {
                         // TODO: fill this out
                         alert("An error occurred jumping to this record.");
+                    },
+                    complete: function() {
+                        $("#spinner").hide();
                     }
                 });
                 firstTableLoad = false;
             } else {
                 var params = sdbmTable.translateParamsToBlacklight(dt_params);
-                params['entry_id'] = Object.keys(entryIds).join(" OR ");
+                params['entry_id'] = Object.keys(getEntryIds()).join(" OR ");
                 sdbmTable.searchAndUpdateTable(params, callback);
             }
         }
     });
 
-    var addEntryIds = function() {
-        var entry_id_list = $("#entry_ids").val().split(",");
-        $.each(entry_id_list, function (idx, id) {
-            entryIds[id] = 1;
+    // since table rows are re-created on reloads, we have to set the
+    // state of the radio buttons after redraw
+    $("#entries-for-manuscript").on('draw.dt', function () {
+        $.each(entryManuscripts, function (idx, entryManuscript) {
+            if(entryManuscript.relation_type) {
+                $("input[name='entry_id_" + entryManuscript.entry_id + "'][value='" + entryManuscript.relation_type + "']").prop("checked", true);
+            };
+        });
+    });
+
+    // entryIds is an array of ids
+    var addEntryIds = function(entryIds) {
+        var existingEntryIds = getEntryIds();
+        $.each(entryIds, function (idx, id) {
+            if (!existingEntryIds[id]) {
+                entryManuscripts.push({ entry_id: id });
+            }
         });
         sdbmTable.reload();
     };
 
+    var addEntryIdsFromInput = function () {
+        addEntryIds($("#entry_ids").val().split(","));
+    };
+
     $("#entry_ids").keydown(function(e) {
         if(e.keyCode == 13) {
-            addEntryIds();
+            addEntryIdsFromInput();
             e.preventDefault();
             return false;
         }
     });
 
     $("#show").click(function () {
-        addEntryIds();
+        addEntryIdsFromInput();
+    });
+
+    $("#show-matches").click(function () {
+        $("#spinner").show();
+        $.ajax({
+            url: '/manuscripts/' + manuscriptId + '/entry_candidates.json',
+            type: 'GET',
+            success: function(data, textStatus, jqXHR) {
+                entry_ids = data.entry_candidates;
+                addEntryIds(entry_ids);
+            },
+            error: function() {
+                // TODO: fill this out
+                alert("An error occurred finding matches.");
+            },
+            complete: function() {
+                $("#spinner").hide();
+            }
+        });
     });
 
     $("#save").click(function () {
@@ -118,6 +180,18 @@ $(document).ready(function() {
             var checked = $(element).is(":checked") ? "checked" : "NOT checked";
             console.log($(element).attr("name") + " " + $(element).val() + " " + checked);
         });
+    });
+
+    // when user selects a radio button, update our entryManuscripts data structure
+    $(document).on("change", "input[type=radio]", function(event) {
+        if($(event.target).is(":checked")) {
+            var entryId = parseInt($(event.target).attr("name").replace("entry_id_", ""));
+            $.each(entryManuscripts, function (idx, entryManuscript) {
+                if(entryManuscript.entry_id === entryId) {
+                    entryManuscript.relation_type = $(event.target).val();
+                }
+            });
+        }
     });
 
  });
@@ -131,23 +205,32 @@ $(document).ready(function() {
 
 <h3>SDBM_MS_<%= @manuscript.id %> - Manage entries</h3>
 
-<div class="row form-group">
-    <label class="col-sm-2 text-right control-label">
-        Show these entries in table:
-    </label>
-    <div class="col-sm-1">
-        <input type="text" id="entry_ids" class="form-control"/>
-    </div>
-    <div class="col-sm-1">
-        <button id="show" class="btn btn-primary">Show</button>
-    </div>
-    <div class="col-sm-7"></div>
-    <div class="col-sm-1">
-        <button id="save" class="btn btn-primary">Save Changes</button>
+<div class="form-horizontal">
+    <div class="row form-group">
+        <label class="col-sm-2 text-right control-label">
+            Show these entries in table:
+        </label>
+        <div class="col-sm-1">
+            <input type="text" id="entry_ids" class="form-control"/>
+        </div>
+        <div class="col-sm-1">
+            <button id="show" class="btn btn-primary">Show</button>
+        </div>
+        <div class="col-sm-3">
+            <button id="show-matches" class="btn btn-primary">Show potential matches</button>
+        </div>
+        <div class="col-sm-1">
+            <div>
+                <img id="spinner" alt="working..." style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
+            </div>
+        </div>
+        <div class="col-sm-3"></div>
+        <div class="col-sm-1">
+            <button id="save" class="btn btn-primary">Save Changes</button>
+        </div>
     </div>
 </div>
 
-<form>
 <table id="entries-for-manuscript" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
     <thead>
         <tr>
@@ -164,5 +247,4 @@ $(document).ready(function() {
     <tbody>
     </tbody>
 </table>
-</form>
 

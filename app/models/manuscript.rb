@@ -1,3 +1,5 @@
+require 'set'
+
 class Manuscript < ActiveRecord::Base
 
   has_many :entry_manuscripts
@@ -15,6 +17,19 @@ class Manuscript < ActiveRecord::Base
 
   def get_public_id
     return "SDBM_MS_" + id.to_s
+  end
+
+  def entry_candidates
+    candidate_ids = Set.new
+    linked_entries.each do |entry|
+      SDBMSS::SimilarEntries.new(entry).each do |similar_entry|
+        entry = similar_entry[:entry]
+        if entry.get_manuscript.blank?
+          candidate_ids.add entry.id
+        end
+      end
+    end
+    candidate_ids
   end
 
 end
