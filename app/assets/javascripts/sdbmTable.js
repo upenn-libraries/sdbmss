@@ -104,6 +104,10 @@ function SDBMTable(selector, options) {
             blSortField: 'material_flat'
         },
         {
+            title: 'Place',
+            blSortField: 'place_flat'
+        },
+        {
             title: 'Use',
             blSortField: 'use_flat'
         },
@@ -213,7 +217,7 @@ function SDBMTable(selector, options) {
 
     var initialOrderColumn = 1;
     if(options.prependColumns) {
-        initialOrderColumn = options.prependColumns.length;
+        initialOrderColumn += options.prependColumns.length - 1;
     }
     
     var scrollY = this.options.fullHeight ? (this.getViewportHeight() - this.table_height_buffer) + "px" : "";

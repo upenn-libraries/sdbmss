@@ -57,6 +57,7 @@ class AdminSearchController < CatalogController
             entry.entry_scribes.map(&:scribe).map(&:name).join("; "),
             entry.entry_languages.map(&:language).map(&:name).join("; "),
             entry.entry_materials.map(&:material).join("; "),
+            entry.entry_places.map(&:place).map(&:name).join("; "),
             entry.entry_uses.map(&:use).join("; "),
             entry.folios,
             entry.num_columns,
