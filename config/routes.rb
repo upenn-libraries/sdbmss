@@ -28,6 +28,10 @@ Rails.application.routes.draw do
 
   resources :entry_comments
 
+  resources :entry_manuscripts do
+    collection { put 'update_multiple' }
+  end
+
   resources :languages do
     collection { get 'search' }
   end

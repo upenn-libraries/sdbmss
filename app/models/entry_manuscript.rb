@@ -2,6 +2,8 @@ class EntryManuscript < ActiveRecord::Base
   belongs_to :entry
   belongs_to :manuscript
 
+  validates_presence_of :entry
+  validates_presence_of :manuscript
   validates_presence_of :relation_type
 
   TYPE_RELATION_IS = 'is'

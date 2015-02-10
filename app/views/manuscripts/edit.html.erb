@@ -12,7 +12,7 @@
 
 $(document).ready(function() {
 
-    var manuscriptId = $("#manuscript_id").val();
+    var manuscriptId = parseInt($("#manuscript_id").val());
     var manuscriptPublicId = 'SDBM_MS_' + manuscriptId;
 
     // data structure containing entry <-> MS associations that user
@@ -133,7 +133,10 @@ $(document).ready(function() {
         var existingEntryIds = getEntryIds();
         $.each(entryIds, function (idx, id) {
             if (!existingEntryIds[id]) {
-                entryManuscripts.push({ entry_id: id });
+                entryManuscripts.push({
+                    entry_id: parseInt(id),
+                    manuscript_id: manuscriptId
+                });
             }
         });
         sdbmTable.reload();
@@ -177,8 +180,37 @@ $(document).ready(function() {
     $("#save").click(function () {
         $('*[name*="entry_id_"]').each(function (idx, element) {
             var checked = $(element).is(":checked") ? "checked" : "NOT checked";
-            console.log($(element).attr("name") + " " + $(element).val() + " " + checked);
+            //console.log($(element).attr("name") + " " + $(element).val() + " " + checked);
         });
+
+        var entryManuscriptsFiltered = JSON.parse(JSON.stringify(entryManuscripts));
+
+        $.each(entryManuscriptsFiltered, function(idx, entryManuscript) {
+            if(entryManuscript.id && entryManuscript.relation_type === 'unlink') {
+                entryManuscript._destroy = '1';
+            }
+        });
+
+        console.log(entryManuscriptsFiltered);
+
+        $.ajax({
+            contentType: 'application/json',
+            url: '/entry_manuscripts/update_multiple.json',
+            type: 'PUT',
+            dataType: 'json',
+            data: JSON.stringify({
+                manuscript_id: manuscriptId,
+                entry_manuscripts: entryManuscriptsFiltered
+            }),
+            success: function(data, textStatus, jqXHR) {
+                alert("Hooray!");
+            },
+            error: function() {
+                // TODO: fill this out
+                alert("An error occurred finding matches.");
+            }
+        });
+
     });
 
     // when user selects a radio button, update our entryManuscripts data structure
