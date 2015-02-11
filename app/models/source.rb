@@ -88,6 +88,12 @@ class Source < ActiveRecord::Base
     record ? record[1] : "Unknown"
   end
 
+  # returns true if entries should have a transaction record
+  # associated with them
+  def entries_have_a_transaction
+    !(source_type == TYPE_COLLECTION_CATALOG)
+  end
+
   # Returns 3-part display string for Source
   def get_display_value
     date_str = ""

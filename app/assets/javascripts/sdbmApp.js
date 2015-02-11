@@ -441,7 +441,7 @@
                 }
             }
             // TODO: only add 'sale' object if appropriate for source type
-            if(!entry.sale) {
+            if(!entry.sale && entry.source.entries_have_a_transaction) {
                 entry.sale = {
                     primary: true,
                     sold: 'Unknown'
@@ -461,14 +461,17 @@
 
             // sanity check that values we got for dropdowns are
             // actually valid options
-            if(! sdbmutil.inOptionsArray(entry.sale.sold, $scope.optionsSold)) {
-                $scope.badData.push("Bad sold value: '" + entry.sale.sold + "'");
-            }
-            if(entry.sale.currency) {
-                if(! sdbmutil.inOptionsArray(entry.sale.currency, $scope.optionsCurrency)) {
-                    $scope.badData.push("Bad currency value: '" + entry.sale.currency + "'");
+            if(entry.sale) {
+                if(!sdbmutil.inOptionsArray(entry.sale.sold, $scope.optionsSold)) {
+                    $scope.badData.push("Bad sold value: '" + entry.sale.sold + "'");
+                }
+                if(entry.sale.currency) {
+                    if(! sdbmutil.inOptionsArray(entry.sale.currency, $scope.optionsCurrency)) {
+                        $scope.badData.push("Bad currency value: '" + entry.sale.currency + "'");
+                    }
                 }
             }
+
             entry.entry_dates.forEach(function (entry_date) {
                 if(entry_date.circa) {
                     if(! sdbmutil.inOptionsArray(entry_date.circa, $scope.optionsCirca)) {
@@ -568,14 +571,16 @@
 
             var entryToSave = new Entry(angular.copy($scope.entry));
 
-            if (entryToSave.sale.price) {
-                entryToSave.sale.price = entryToSave.sale.price.replace(/[$,]/, '');
-            }
-            
-            // collapse Sale and Provenance into Events
-            entryToSave.events = [].concat(entryToSave.provenance).concat([entryToSave.sale]);
+            // collapse Sale and Provenance back into Events
+            entryToSave.events = [].concat(entryToSave.provenance)
             delete entryToSave.provenance;
-            delete entryToSave.sale;
+            if(entryToSave.sale) {
+                if (entryToSave.sale.price) {
+                    entryToSave.sale.price = entryToSave.sale.price.replace(/[$,]/, '');
+                }
+                entryToSave.events = entryToSave.events.concat([entryToSave.sale]);
+                delete entryToSave.sale;
+            }
 
             // Transform fields back into EventAgent records
             entryToSave.events.forEach(function (event, index, array) {

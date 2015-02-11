@@ -22,6 +22,7 @@ gem 'coffee-rails', '~> 4.0.0'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 3.1.0'
+gem 'jquery-ui-rails', '~> 5.0.3'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks', '~> 2.5.0'
@@ -72,6 +73,7 @@ group :test, :development do
   gem 'rspec-rails', '~> 3.1.0'
   gem 'capybara', '~> 2.4.4'
   gem "factory_girl_rails", "~> 4.0"
+  gem 'poltergeist', '~> 1.6.0'
 end
 
 # for calculating string similarity
