@@ -20,13 +20,17 @@ namespace :sdbmss do
 
   # DO NOT RUN THIS DIRECTLY: run migrate_legacy_data instead
   task :migrate_legacy_data_real => :environment do |t, args|
-    `echo "drop database #{ENV["SDBMSS_DB_NAME"]}" | mysql -u root`
+    if Rails.env == "development"
+      Rake::Task['db:drop'].invoke
 
-    Rake::Task['db:create'].invoke
+      Rake::Task['db:create'].invoke
 
-    Rake::Task['db:schema:load'].invoke
+      Rake::Task['db:schema:load'].invoke
 
-    SDBMSS::Legacy.migrate
+      SDBMSS::Legacy.migrate
+    else
+      puts "ERROR: You can only run this task in development. Doing nothing and exiting."
+    end
   end
 
   desc "Generate SQL output of UPDATE queries for provenance data changed between the 2 files"
