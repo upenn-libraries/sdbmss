@@ -20,6 +20,8 @@ $(document).ready(function() {
     // database but can contain entries that user just wants to view.
     var entryManuscripts;
 
+    var firstTableLoad = true;
+
     // returns an Object whose keys are all entry ids that should be
     // displayed in the table
     var getEntryIds = function() {
@@ -35,8 +37,6 @@ $(document).ready(function() {
     $("#search-navbar").remove();
     // make this page take up full width of browser window
     $("#main-container").removeClass("container").addClass("container-fluid");
-
-    var firstTableLoad = true;
 
     var radioButtonsShouldBeVisible = function (sdbmTable, row) {
         return !row[sdbmTable.getColumnIndex("Manuscript")] || row[sdbmTable.getColumnIndex("Manuscript")] === manuscriptPublicId;
@@ -188,11 +188,6 @@ $(document).ready(function() {
     });
 
     $("#save").click(function () {
-        $('*[name*="entry_id_"]').each(function (idx, element) {
-            var checked = $(element).is(":checked") ? "checked" : "NOT checked";
-            //console.log($(element).attr("name") + " " + $(element).val() + " " + checked);
-        });
-
         var entryManuscriptsFiltered = JSON.parse(JSON.stringify(entryManuscripts));
 
         entryManuscriptsFiltered = entryManuscriptsFiltered.filter(function (entryManuscript) {
