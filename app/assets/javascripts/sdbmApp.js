@@ -434,23 +434,23 @@
                 for(var key in entry.events) {
                     var event = entry.events[key];
                     if(event.primary) {
-                        entry.sale = event;
+                        entry.transaction = event;
                     } else {
                         entry.provenance.push(event);
                     }
                 }
             }
-            // TODO: only add 'sale' object if appropriate for source type
-            if(!entry.sale && entry.source.entries_have_a_transaction) {
-                entry.sale = {
+            // TODO: only add 'transaction' object if appropriate for source type
+            if(!entry.transaction && entry.source.entries_have_a_transaction) {
+                entry.transaction = {
                     primary: true,
                     sold: 'Unknown'
                 };
-                // prepopulate sale agent fields with data from source_agents
+                // prepopulate transaction agent fields with data from source_agents
                 var sourceAgents = entry.source.source_agents || [];
                 sourceAgents.forEach(function (sourceAgent) {
                     var role = sourceAgent.role;
-                    entry.sale[role] = {
+                    entry.transaction[role] = {
                         agent: sourceAgent.agent
                     };
                 });
@@ -461,13 +461,13 @@
 
             // sanity check that values we got for dropdowns are
             // actually valid options
-            if(entry.sale) {
-                if(!sdbmutil.inOptionsArray(entry.sale.sold, $scope.optionsSold)) {
-                    $scope.badData.push("Bad sold value: '" + entry.sale.sold + "'");
+            if(entry.transaction) {
+                if(!sdbmutil.inOptionsArray(entry.transaction.sold, $scope.optionsSold)) {
+                    $scope.badData.push("Bad sold value: '" + entry.transaction.sold + "'");
                 }
-                if(entry.sale.currency) {
-                    if(! sdbmutil.inOptionsArray(entry.sale.currency, $scope.optionsCurrency)) {
-                        $scope.badData.push("Bad currency value: '" + entry.sale.currency + "'");
+                if(entry.transaction.currency) {
+                    if(! sdbmutil.inOptionsArray(entry.transaction.currency, $scope.optionsCurrency)) {
+                        $scope.badData.push("Bad currency value: '" + entry.transaction.currency + "'");
                     }
                 }
             }
@@ -571,15 +571,15 @@
 
             var entryToSave = new Entry(angular.copy($scope.entry));
 
-            // collapse Sale and Provenance back into Events
+            // collapse Transaction and Provenance back into Events
             entryToSave.events = [].concat(entryToSave.provenance)
             delete entryToSave.provenance;
-            if(entryToSave.sale) {
-                if (entryToSave.sale.price) {
-                    entryToSave.sale.price = entryToSave.sale.price.replace(/[$,]/, '');
+            if(entryToSave.transaction) {
+                if (entryToSave.transaction.price) {
+                    entryToSave.transaction.price = entryToSave.transaction.price.replace(/[$,]/, '');
                 }
-                entryToSave.events = entryToSave.events.concat([entryToSave.sale]);
-                delete entryToSave.sale;
+                entryToSave.events = entryToSave.events.concat([entryToSave.transaction]);
+                delete entryToSave.transaction;
             }
 
             // Transform fields back into EventAgent records
