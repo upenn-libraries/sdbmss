@@ -292,7 +292,8 @@ module CatalogControllerConfiguration
 
       config.add_nav_action(:dashboard, partial: 'nav/dashboard')
 
-      config.add_show_tools_partial(:edit_entry, partial: 'nav/edit_entry', if: :show_edit_link?)
+      config.add_show_tools_partial(:edit_entry, partial: 'nav/edit_entry', if: :show_edit_entry_link?)
+      config.add_show_tools_partial(:edit_manuscript, partial: 'nav/edit_manuscript', if: :show_edit_manuscript_link?)
 
     end
 

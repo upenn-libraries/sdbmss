@@ -21,9 +21,18 @@ module ApplicationHelper
     struct[:data][:"context-href"]
   end
 
-  # determines whether edit link on displayed on show document view
-  def show_edit_link?
+  # determines whether edit entry link should be displayed; this is
+  # used multiple places, which is why it's here in ApplicationHelper
+  def show_edit_entry_link?
     user_signed_in?
+  end
+
+  # determines whether edit ms link should be displayed; this is used
+  # multiple places, which is why it's here in ApplicationHelper
+  def show_edit_manuscript_link?
+    return false if !@document
+    entry = @document.get_model_object
+    entry.present? && (manuscript = entry.get_manuscript).present?
   end
 
 end
