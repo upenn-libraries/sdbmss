@@ -50,6 +50,7 @@ $(document).ready(function() {
     };
 
     var sdbmTable = new SDBMTable("#entries-for-manuscript", {
+        order: [["Manuscript", "desc"]],
         prependColumns: [
             {
                 title: 'Link',
@@ -125,6 +126,15 @@ $(document).ready(function() {
             if(entryManuscript.relation_type) {
                 $("input[name='entry_id_" + entryManuscript.entry_id + "'][value='" + entryManuscript.relation_type + "']").prop("checked", true);
             };
+        });
+
+        // highlight the original rows linked to the MS
+        sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
+            var data = sdbmTable.dataTable.row(row).data();
+            var colIdx = sdbmTable.getColumnIndex("Manuscript");
+            if(data[colIdx] === "SDBM_MS_" + manuscriptId) {
+                $(row).css("font-style", "italic");
+            }
         });
     });
 

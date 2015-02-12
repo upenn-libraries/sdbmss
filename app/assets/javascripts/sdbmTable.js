@@ -10,6 +10,10 @@
  *  table. This has the signature: function (sdbmTable, dt_params,
  *  callback, settings)
  *
+ *  order: this gets passed to datatable for its 'order' option,
+ *  except that we also translate column name strings to integer
+ *  indexes.
+
  *  prependColumns: array of objects describing column options, to
  *  pass to DataTable.
  * 
@@ -215,9 +219,17 @@ function SDBMTable(selector, options) {
         $(selector).find('thead tr').append("<th>" + column.name + "</th>");
     });
 
-    var initialOrderColumn = 1;
-    if(options.prependColumns) {
-        initialOrderColumn += options.prependColumns.length - 1;
+    var colOffset = options.prependColumns ? options.prependColumns.length : 0;
+    var order = [[ 0 + colOffset, "desc" ]];
+    if(options.order) {
+        order = options.order;
+        $.each(order, function(idx, orderItem) {
+            // if it's a string column name, look it up
+            var col = orderItem[0];
+            if (col !== parseInt(col)) {
+                orderItem[0] = sdbmTable.getColumnIndex(col);
+            }
+        });
     }
     
     var scrollY = this.options.fullHeight ? (this.getViewportHeight() - this.table_height_buffer) + "px" : "";
@@ -237,7 +249,7 @@ function SDBMTable(selector, options) {
             "emptyTable": "No records found for search query."
         },
         lengthMenu: [50, 100, 200, 500],
-        order: [[ initialOrderColumn, "desc" ]],
+        order: order,
         scrollX: true,
         scrollY: scrollY,
         scrollCollapse: false,
