@@ -182,6 +182,13 @@ module SDBMSS::Legacy
       else
         bare = without_question_mark
       end
+
+      # Lynn says flags should be mutually exclusive: if both are
+      # true, use supplied_by_data_entry and discard uncertain_in_source
+      if uncertain_in_source && supplied_by_data_entry
+        uncertain_in_source = false
+      end
+
       return [bare, uncertain_in_source, supplied_by_data_entry]
     end
 

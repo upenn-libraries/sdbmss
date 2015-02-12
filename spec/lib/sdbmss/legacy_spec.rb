@@ -37,8 +37,8 @@ describe "SDBMSS::Legacy" do
        expect(SDBMSS::Legacy.parse_certainty_indicators("Hello there?")).to eq(["Hello there", true, false])
        expect(SDBMSS::Legacy.parse_certainty_indicators("Hello there ?")).to eq(["Hello there", true, false])
        expect(SDBMSS::Legacy.parse_certainty_indicators("Hello? there?")).to eq(["Hello? there", true, false])
-       expect(SDBMSS::Legacy.parse_certainty_indicators("[Hello there?]")).to eq(["Hello there", true, true])
-       expect(SDBMSS::Legacy.parse_certainty_indicators("[Hello there]?")).to eq(["Hello there", true, true])
+       expect(SDBMSS::Legacy.parse_certainty_indicators("[Hello there?]")).to eq(["Hello there", false, true])
+       expect(SDBMSS::Legacy.parse_certainty_indicators("[Hello there]?")).to eq(["Hello there", false, true])
      end
 
    end
