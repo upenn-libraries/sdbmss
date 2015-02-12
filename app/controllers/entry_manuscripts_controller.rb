@@ -15,15 +15,24 @@ class EntryManuscriptsController < ApplicationController
       entry_manuscript_params.permit(:id, :entry_id, :manuscript_id, :relation_type, :_destroy)
     end
 
-    manuscript.update_attributes(
+    success = manuscript.update_attributes(
       {
         entry_manuscripts_attributes: entry_manuscripts_attributes,
       }
     )
-    # TODO: update solr
 
-    respond_to do |format|
-      format.json { render :json => {}, :status => :ok }
+    if success
+      # reindex in Solr
+      manuscript.entries.each do |entry|
+        Sunspot.index entry
+      end
+      respond_to do |format|
+        format.json { render :json => {}, :status => :ok }
+      end
+    else
+      respond_to do |format|
+        format.json { render :json => {}, :status => 500 }
+      end
     end
   end
 

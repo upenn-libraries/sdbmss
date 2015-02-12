@@ -195,6 +195,12 @@ $(document).ready(function() {
 
         var entryManuscriptsFiltered = JSON.parse(JSON.stringify(entryManuscripts));
 
+        entryManuscriptsFiltered = entryManuscriptsFiltered.filter(function (entryManuscript) {
+            if(!entryManuscript.id && !entryManuscript.relation_type) {
+                return false;
+            }
+            return true;
+        });
         $.each(entryManuscriptsFiltered, function(idx, entryManuscript) {
             if(entryManuscript.id && entryManuscript.relation_type === 'unlink') {
                 entryManuscript._destroy = '1';
@@ -217,7 +223,7 @@ $(document).ready(function() {
             },
             error: function() {
                 // TODO: fill this out
-                alert("An error occurred finding matches.");
+                alert("An error occurred saving associations.");
             }
         });
 
