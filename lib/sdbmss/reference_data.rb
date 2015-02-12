@@ -15,6 +15,13 @@
 
 module SDBMSS::ReferenceData
 
+  class << self
+    def create_all
+      JonathanHill.new
+      PennCatalog.new
+    end
+  end
+
   class JonathanHill
 
     def initialize
@@ -116,41 +123,37 @@ module SDBMSS::ReferenceData
         uncertain_in_source: true,
       )
 
-      provenance1 = Event.create!(
+      Event.create!(
         entry: entry,
         start_date: '19220700',
-        comment: "Bookplate. His sale Sotheby's, July 1922 (day of sale not given), lot. 1027."
-      )
-      EventAgent.create!(
-        event: provenance1,
-        agent: Agent.find_or_create_by(name: "Sotheby's"),
-        role: EventAgent::ROLE_SELLER_AGENT
-      )
-      EventAgent.create!(
-        event: provenance1,
-        agent: Agent.find_or_create_by(name: "Tomkinson, Michael"),
-        observed_name: "Michael Tomkinson",
-        role: EventAgent::ROLE_SELLER_OR_HOLDER
+        comment: "Bookplate. His sale Sotheby's, July 1922 (day of sale not given), lot. 1027.",
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Sotheby's"),
+            role: EventAgent::ROLE_SELLER_AGENT
+          },
+          {
+            agent: Agent.find_or_create_by(name: "Tomkinson, Michael"),
+            observed_name: "Michael Tomkinson",
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          }
+        ]
       )
 
-      provenance2 = Event.create!(
+      Event.create!(
         entry: entry,
         comment: "Bookplate.",
-      )
-      EventAgent.create!(
-        event: provenance2,
-        agent: Agent.find_or_create_by(name: "Ritman, J. R."),
-        observed_name: "Bibliotheca Philosophica Hermetica, J. R. Ritman, Amsterdam",
-        role: EventAgent::ROLE_SELLER_OR_HOLDER,
-      )
-
-      provenance3 = Event.create!(
-        entry: entry
-      )
-      EventAgent.create!(
-        event: provenance3,
-        observed_name: "European private collection",
-        role: EventAgent::ROLE_SELLER_OR_HOLDER,
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Ritman, J. R."),
+            observed_name: "Bibliotheca Philosophica Hermetica, J. R. Ritman, Amsterdam",
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+          },
+          {
+            observed_name: "European private collection",
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+          }
+        ]
       )
 
     end
@@ -426,6 +429,111 @@ module SDBMSS::ReferenceData
           {
             agent: Agent.find_or_create_by(name: "Kraus, H.P."),
             role: EventAgent::ROLE_BUYER
+          }
+        ]
+      )
+
+    end
+
+  end
+
+  class PennCatalog
+    def initialize
+      create_source
+      create_entry_one
+    end
+
+    def create_source
+      @upenn = Agent.find_or_create_by(name: "University of Pennsylvania")
+      @source = Source.create!(
+        source_type: Source::TYPE_AUCTION_CATALOG,
+        date: "1965",
+        title: "Catalogue of Manuscripts in the Libraries of the University of Pennsylvania",
+        author: "Norman P. Zacour and Rudolf Hirsch",
+        whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
+        current_location: "University of Pennsylvania Libraries",
+        location_city: "Philadelphia",
+        location_country: "US",
+        link: "Z6621 P44 cop. 2",
+        cataloging_type: "print",
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      source_agent = SourceAgent.create!(
+        source: @source,
+        agent: @upenn,
+        role: SourceAgent::ROLE_INSTITUTION,
+      )
+    end
+
+    def create_entry_one
+      entry = Entry.create!(
+        source: @source,
+        catalog_or_lot_number: "Greek 1",
+        folios: 105,
+        height: 205,
+        width: 150,
+        manuscript_binding: 'Contemporary (?) boards.',
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      EntryTitle.create!(
+        entry: entry,
+        title: 'Addresses and letters',
+      )
+      EntryTitle.create!(
+        entry: entry,
+        title: 'Orations and letters',
+      )
+      EntryTitle.create!(
+        entry: entry,
+        title: 'Encomia',
+      )
+
+      EntryAuthor.create!(
+        entry: entry,
+        author: Author.find_or_create_by(name: 'Dokeianos, Ioannes'),
+        observed_name: 'Ioannes Dokeianus (Johannes Docianus)',
+      )
+      EntryAuthor.create!(
+        entry: entry,
+        author: Author.find_or_create_by(name: 'Gregoras, Nicephorus'),
+      )
+      EntryAuthor.create!(
+        entry: entry,
+        author: Author.find_or_create_by(name: 'Gregorios III, Patriarch of Constantinople'),
+        observed_name: "Gregorios of Constantinople (Georgios of Cyprus)",
+      )
+
+      EntryDate.create!(entry: entry, date: '1550', circa: 'CCENT')
+
+      EntryLanguage.create!(
+        entry: entry,
+        language: Language.find_or_create_by(name: 'Greek')
+      )
+
+      EntryMaterial.create!(
+        entry: entry,
+        material: 'Paper'
+      )
+
+      Event.create!(
+        entry: entry,
+        comment: "MS 51.",
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Notre Dame of Pilar, Salamanca"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          }
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Lakon, Andreas Darmarios Epidaurios"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
           }
         ]
       )

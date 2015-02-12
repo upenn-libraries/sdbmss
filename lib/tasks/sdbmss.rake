@@ -95,10 +95,10 @@ namespace :sdbmss do
   desc "Create reference data"
   task :create_reference_data => :environment do |t, args|
 
-    ActiveRecord::Base.transaction do 
-      SDBMSS::ReferenceData::JonathanHill.new
+    ActiveRecord::Base.transaction do
+      SDBMSS::ReferenceData.create_all
     end
-    
+
   end
 
 end

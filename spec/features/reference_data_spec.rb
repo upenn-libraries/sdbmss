@@ -5,8 +5,8 @@ require "sdbmss/reference_data"
 
 describe "Reference data" do
 
-  describe "should create Jonathan Hill catalog and entries" do
-    SDBMSS::ReferenceData::JonathanHill.new
+  describe "should create all reference data" do
+    SDBMSS::ReferenceData.create_all
   end
 
 end
