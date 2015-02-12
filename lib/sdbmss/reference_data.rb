@@ -446,7 +446,7 @@ module SDBMSS::ReferenceData
     def create_source
       @upenn = Agent.find_or_create_by(name: "University of Pennsylvania")
       @source = Source.create!(
-        source_type: Source::TYPE_AUCTION_CATALOG,
+        source_type: Source::TYPE_COLLECTION_CATALOG,
         date: "1965",
         title: "Catalogue of Manuscripts in the Libraries of the University of Pennsylvania",
         author: "Norman P. Zacour and Rudolf Hirsch",
