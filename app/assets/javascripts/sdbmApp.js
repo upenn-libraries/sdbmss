@@ -956,8 +956,11 @@
     sdbmApp.directive("sdbmTooltip", function () {
         return function (scope, element, attrs) {
             var templateName = attrs.sdbmTooltip;
-            element.addClass('tooltip-label');
+            element.addClass('sdbmss-tooltip-label');
             $(element).qtip({
+                style: {
+                    classes: 'sdbmss-tooltip'
+                },
                 content: {
                     text: 'Loading...',
                     ajax: {
@@ -970,9 +973,6 @@
                 },
                 hide: {
                     event: 'unfocus'
-                },
-                style: {
-                    width: "500px"
                 }
             });
         };

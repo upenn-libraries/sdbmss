@@ -89,19 +89,6 @@
 /* gives an element the same alignment as a label element */
 .sdbmss-form .label-alignment { min-height: 30px; padding-top: 7px; }
 
-.sdbmss-form .qtip {
-font-size: inherit;
-line-height: 1.5em;
-max-width: inherit;
-}
-.sdbmss-form .qtip-content p {
-margin-bottom:2em;
-}
-
-.sdbmss-form .tooltip-label {
-cursor: help;
-}
-
 .sdbmss-form .inference-flags-container {
     padding-top: 7px;
 }
@@ -112,6 +99,24 @@ cursor: help;
 
 .sdbmss-form .gray {
     color: gray;
+}
+
+.sdbmss-tooltip.qtip {
+    width: 500px;
+    padding: 10px 13px;
+    /*max-width: none;*/
+    font-size: 12px;
+    font-size: inherit;
+    line-height: 1.5em;
+    max-width: inherit;
+}
+
+.sdbmss-tooltip .qtip-content p {
+    margin-bottom:2em;
+}
+
+.sdbmss-tooltip-label {
+    cursor: help;
 }
 
 /* tweak .modal-backdrop rule on pages that use UI Bootstrap's modal,
