@@ -4,6 +4,10 @@
 object @entry
 attributes :id, :folios, :catalog_or_lot_number, :secondary_source, :folios, :num_columns, :num_lines, :height, :width, :alt_size, :manuscript_binding, :other_info, :manuscript_link, :miniatures_fullpage, :miniatures_large, :miniatures_small, :miniatures_unspec_size, :initials_historiated, :initials_decorated
 
+node :manuscript_id, if: @entry.get_manuscript.present? do
+  @entry.get_manuscript.id
+end
+
 child :source do
   attributes :id, :title, :date, :source_type, :entries_have_a_transaction
   node :display_value do |source|

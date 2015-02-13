@@ -45,7 +45,13 @@ function SDBMTable(selector, options) {
         },
         {
             title: 'Manuscript',
-            blSortField: 'manuscript_id'
+            blSortField: 'manuscript_id',
+            render: function (data, type, full, meta) {
+                if(data) {
+                    return '<a href="/manuscripts/' + data + '/edit/" target="_blank">SDBM_MS_' + data + '</a>';
+                }
+                return '';
+            }
         },
         {
             title: 'Source Date',
@@ -165,12 +171,12 @@ function SDBMTable(selector, options) {
         },
         {
             title: 'Binding',
-            "orderable": false
+            orderable: false
         },
         {
             title: 'URL',
-            "orderable": false,
-            "render": function (data, type, full, meta) {
+            orderable: false,
+            render: function (data, type, full, meta) {
                 if(data) {
                     return '<a href="' + data + '" target="_blank">' + data + '</a>';
                 }
@@ -179,11 +185,11 @@ function SDBMTable(selector, options) {
         },
         {
             title: 'Other Info',
-            "orderable": false
+            orderable: false
         },
         {
             title: 'Provenance',
-            "orderable": false
+            orderable: false
         },
         {
             title: 'Added On',

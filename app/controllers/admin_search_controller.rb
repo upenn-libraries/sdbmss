@@ -41,7 +41,7 @@ class AdminSearchController < CatalogController
           updated_by = entry.updated_by
           as_array = [
             entry.id,
-            manuscript ? manuscript.get_public_id : nil,
+            manuscript ? manuscript.id : nil,
             SDBMSS::Util.format_fuzzy_date(source.date),
             source.title,
             entry.catalog_or_lot_number,

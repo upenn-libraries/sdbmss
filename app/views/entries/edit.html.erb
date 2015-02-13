@@ -25,7 +25,7 @@
     </div>
 
     <div class="row">
-      <div class="col-sm-offset-2 col-sm-7">
+      <div class="col-sm-offset-2 col-sm-8">
           <p>Please fill in as much information as possible from the record you are documenting. You can click on the field labels to get help. Known errors in the data should be preserved, but noted in the Comments at the bottom of the page.</p>
 
           <div ng-show="badData.length > 0" style="color:red; font-weight: bold;">
@@ -34,8 +34,17 @@
           </div>
       </div>
       <div class="col-sm-2 text-right">
-          <button style="margin-bottom: 8px;" class="btn btn-sm btn-warning" ng-show="edit" ng-click="confirmClearChanges()">Clear changes</button><br/>
-          <a class="btn btn-sm btn-warning" ng-show="edit" href="/entries/{{ entry.id }}">Go to page</a>
+          <div class="dropdown">
+              <button class="btn btn-default" type="button" id="actionsMenu" data-toggle="dropdown" aria-expanded="true">
+                  Actions
+                  <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="actionsMenu">
+                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToEntryViewPage(entry.id)">Go to public page for SDBM_{{ entry.id }}</a></li>
+                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToSourceEditPage(entry.source.id)">Edit source SDBM_SOURCE_{{ entry.source.id }}</a></li>
+                  <li role="presentation" ng-show="entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToManuscriptEditPage(entry.manuscript_id)">Edit manuscript SDBM_MS_{{ entry.manuscript_id }}</a></li>
+              </ul>
+          </div>
       </div>
     </div>
 

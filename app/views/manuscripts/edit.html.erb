@@ -13,7 +13,6 @@
 $(document).ready(function() {
 
     var manuscriptId = parseInt($("#manuscript_id").val());
-    var manuscriptPublicId = 'SDBM_MS_' + manuscriptId;
 
     // data structure containing entry <-> MS associations that user
     // manipulates through UI. This is initially populated out of the
@@ -39,7 +38,7 @@ $(document).ready(function() {
     $("#main-container").removeClass("container").addClass("container-fluid");
 
     var radioButtonsShouldBeVisible = function (sdbmTable, row) {
-        return !row[sdbmTable.getColumnIndex("Manuscript")] || row[sdbmTable.getColumnIndex("Manuscript")] === manuscriptPublicId;
+        return !row[sdbmTable.getColumnIndex("Manuscript")] || row[sdbmTable.getColumnIndex("Manuscript")] === manuscriptId;
     };
 
     var getRadioButtonHTML = function(sdbmTable, data, value) {

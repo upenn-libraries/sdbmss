@@ -197,6 +197,12 @@
             redirectToEntryEditPage: function(entry_id)  {
                 window.location = "/entries/" + entry_id + "/edit/";
             },
+            redirectToEntryViewPage: function(entry_id)  {
+                window.location = "/entries/" + entry_id;
+            },
+            redirectToManuscriptEditPage: function(manuscript_id)  {
+                window.location = "/manuscripts/" + manuscript_id + "/edit/";
+            },
             redirectToDashboard: function() {
                 window.location = "/dashboard";
             }
