@@ -272,6 +272,14 @@ function SDBMTable(selector, options) {
         "leftColumns": 2
     });
     */
+
+    $(selector).on('draw.dt', function () {
+        sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
+            var data = sdbmTable.dataTable.row(row).data();
+            $(row).attr("title", "SDBM_" + data[sdbmTable.getColumnIndex("ID")]);
+        });
+    });
+
 }
 
 /**

@@ -152,7 +152,7 @@ $(document).ready(function() {
     };
 
     var addEntryIdsFromInput = function () {
-        addEntryIds($("#entry_ids").val().split(","));
+        addEntryIds($("#entry_ids").val().split(/[,\s]/));
     };
 
     $("#entry_ids").keydown(function(e) {
