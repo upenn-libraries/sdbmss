@@ -21,7 +21,7 @@ class EntryDate < ActiveRecord::Base
     option[1] if option
   end
 
-  def get_display_value
+  def display_value
     sep = date.to_s.length > 0 && circa.to_s.length > 0 ? " " : ""
     get_circa_verbose.to_s + sep + date
   end

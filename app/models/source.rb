@@ -95,7 +95,7 @@ class Source < ActiveRecord::Base
   end
 
   # Returns 3-part display string for Source
-  def get_display_value
+  def display_value
     date_str = ""
     if date
       date_str = SDBMSS::Util.format_fuzzy_date(date)

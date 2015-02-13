@@ -166,7 +166,7 @@ class Entry < ActiveRecord::Base
         @__receiver__.id,
         "SBDM_" + @__receiver__.id.to_s,
         # source info
-        source.get_display_value,
+        source.display_value,
         catalog_or_lot_number,
         secondary_source,
         # transaction
@@ -178,7 +178,7 @@ class Entry < ActiveRecord::Base
         entry_titles.map(&:title),
         entry_authors.map(&:observed_name),
         authors.map(&:name),
-        entry_dates.map(&:get_display_value),
+        entry_dates.map(&:display_value),
         artists.map(&:name),
         scribes.map(&:name),
         languages.map(&:name),
@@ -201,7 +201,7 @@ class Entry < ActiveRecord::Base
         initials_historiated,
         initials_decorated,
         # provenance
-        get_provenance.map { |p| p.get_display_value },
+        get_provenance.map { |p| p.display_value },
         # comments
         entry_comments.select { |ec| ec.public }.map { |ec| ec.comment },
       ].map { |item| item.to_s }.select { |item| (!item.nil?) && (item.length > 0) }.join "\n"
@@ -226,10 +226,10 @@ class Entry < ActiveRecord::Base
       source.date
     end
     define_field(:string, :source, :stored => true) do
-      source.get_display_value
+      source.display_value
     end
     define_field(:text, :source_search, :stored => true) do
-      source.get_display_value
+      source.display_value
     end
     define_field(:string, :source_title, :stored => true) do
       source.title

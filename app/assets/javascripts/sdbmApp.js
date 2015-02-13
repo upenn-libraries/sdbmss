@@ -400,8 +400,8 @@
         // retrieved via API
         $scope.populateEntryViewModel = function(entry) {
 
-            console.log("entry from API retrieval");
-            console.log(entry);
+            //console.log("entry from API retrieval");
+            //console.log(entry);
 
             // make blank initial rows, as needed, for user to fill out
             $scope.entryAssociations.concat({ field: 'entry_provenance' }).forEach(function (assoc) {
@@ -546,7 +546,7 @@
                     var keep = false;
                     thingsToCheck.forEach(function (propertyName) {
                         var propertyIsBlank = $scope.isBlankThing(childObject[propertyName]);
-                        console.log('is property ' + propertyName + ' blank? ' + propertyIsBlank);
+                        //console.log('is property ' + propertyName + ' blank? ' + propertyIsBlank);
                         if(!propertyIsBlank) {
                             keep = true;
                         }
@@ -626,8 +626,8 @@
                 sdbmutil.replaceEntityObjectsWithIds(objectArray, relatedObjectName);
             }
 
-            console.log("about to save this Entry: ");
-            console.log(sdbmutil.objectSnapshot(entryToSave));
+            //console.log("about to save this Entry: ");
+            //console.log(sdbmutil.objectSnapshot(entryToSave));
             
             if(entryToSave.id) {
                 entryToSave.$update(
@@ -687,14 +687,12 @@
                     var entryId = $("#entry_id").val();
                     $scope.pageTitle = "Edit entry SDBM_" + entryId;
                     $scope.edit = true;
-                    console.log("loading " + entryId);
                     $scope.entry = Entry.get(
                         {id: entryId},
                         $scope.populateEntryViewModel,
                         sdbmutil.promiseErrorHandlerFactory("Error loading entry data for this page")
                     );
                 } else {
-                    console.log("initializing");
                     $scope.pageTitle = "Add an Entry - Fill out details";
 
                     $scope.entry = new Entry();

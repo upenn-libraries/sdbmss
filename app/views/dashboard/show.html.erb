@@ -53,7 +53,7 @@
                   <table class="table">
                       <% for source in sources %>
                       <tr class="row">
-                          <td class="col-sm-9"><a href="<%= source_path(source) %>"><%= source.get_public_id %></a>: <%= source.get_display_value %></td>
+                          <td class="col-sm-9"><a href="<%= source_path(source) %>"><%= source.get_public_id %></a>: <%= source.display_value %></td>
                           <td class="col-sm-1"><a href="<%= edit_source_path(source) %>">edit</a></td>
                           <td class="col-sm-2"><a href="<%= new_entry_path(source_id: source) %>">add an entry</a></td>
                       </tr>

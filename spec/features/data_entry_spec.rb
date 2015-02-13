@@ -10,6 +10,12 @@ describe "Data entry", :js => true do
       username: 'testuser',
       password: 'somethingunguessable'
     )
+
+    @source = Source.find_or_create_by(
+      title: "A Sample Test Source With a Highly Unique Name",
+      date: "2013-11-12",
+      source_type: Source::TYPE_AUCTION_CATALOG
+    )
   end
 
   before :each do
@@ -19,6 +25,17 @@ describe "Data entry", :js => true do
     click_button 'Log in'
     expect(page).to have_content 'Signed in successfully'
   end
+
+  it "should find source on Select Source page" do
+    visit new_entry_path
+    fill_in 'date', :with => '2013'
+    sleep(1)
+    expect(page).to have_content @source.title
+    click_link('create-entry-link-' + @source.id.to_s)
+    expect(page).to have_content "Add an Entry - Fill out details"
+  end
+
+  it "should load New Entry page with Transaction fields prepopulated"
 
   it "should load New Entry page correctly with an auction catalog Source" do
     source = Source.new(
@@ -56,7 +73,10 @@ describe "Data entry", :js => true do
 
   it "should save a Source correctly"
 
-  it "should save an Entry correctly"
+  it "should save an Entry correctly" do
+    visit new_entry_path :source_id => @source.id
+
+  end
 
   it "should disallow creating Entries if not logged in"
 

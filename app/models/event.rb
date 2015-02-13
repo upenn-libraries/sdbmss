@@ -77,7 +77,7 @@ class Event < ActiveRecord::Base
     ea.agent if ea
   end
 
-  def get_display_value
+  def display_value
     # TODO: fill out
     ea = get_seller_or_holder
     ea.agent.name if ea && ea.agent

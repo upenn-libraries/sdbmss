@@ -11,7 +11,7 @@ module ResourceSearch
   # Classes should override this is they want to return a different
   # set of keys for each result object
   def search_results_keys
-    return [:id, :name]
+    [:id, :name]
   end
 
   def search

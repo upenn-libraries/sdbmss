@@ -68,7 +68,9 @@ class SourcesController < ApplicationController
   end
 
   def search_results_keys
-    return [:id, :date, :title]
+    # this is the only place we return a 'display_value' b/c it is a
+    # composite field that needs to be generated server-side
+    [:id, :date, :title, :display_value]
   end
 
   # change the status of a Source
