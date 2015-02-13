@@ -335,16 +335,18 @@
         };
 
         $scope.removeRecord = function (anArray, record) {
-            var i;
-            for (i = 0; i < anArray.length; i++) {
-                if (anArray[i] === record) {
-                    anArray.splice(i, 1);
-                    break;
+            if(window.confirm("Are you sure you want to remove this record?")) {
+                var i;
+                for (i = 0; i < anArray.length; i++) {
+                    if (anArray[i] === record) {
+                        anArray.splice(i, 1);
+                        break;
+                    }
                 }
-            }
-            // ensure that there's always one empty record
-            if(anArray.length === 0) {
-                anArray.push({});
+                // ensure that there's always one empty record
+                if(anArray.length === 0) {
+                    anArray.push({});
+                }
             }
         };
 
