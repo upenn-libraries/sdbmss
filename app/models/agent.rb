@@ -16,4 +16,8 @@ class Agent < ActiveRecord::Base
     "SDBM_AGENT_#{id}"
   end
 
+  def to_s
+    name
+  end
+
 end

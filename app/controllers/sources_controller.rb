@@ -67,8 +67,8 @@ class SourcesController < ApplicationController
     query
   end
 
-  def display_value_for_search obj
-    "#{obj.get_display_value}"
+  def search_results_keys
+    return [:id, :date, :title]
   end
 
   # change the status of a Source

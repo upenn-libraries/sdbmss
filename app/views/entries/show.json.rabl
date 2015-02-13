@@ -10,9 +10,6 @@ end
 
 child :source do
   attributes :id, :title, :date, :source_type, :entries_have_a_transaction
-  node :display_value do |source|
-      "#{source.get_display_value} (ID: #{source.id})"
-    end
 end
 
 child :entry_titles, :object_root => false do
@@ -23,9 +20,6 @@ child :entry_authors, :object_root => false do
   attributes :id, :author, :observed_name, :role, :uncertain_in_source, :supplied_by_data_entry
   child :author do
     attributes :id, :name
-    node :display_value do |author|
-      "#{author.name} (ID: #{author.id})"
-    end
   end
 end
 
@@ -37,9 +31,6 @@ child :entry_artists, :object_root => false do
   attributes :id, :uncertain_in_source, :supplied_by_data_entry
   child :artist do
     attributes :id, :name
-    node :display_value do |artist|
-      "#{artist.name} (ID: #{artist.id})"
-    end
   end
 end
 
@@ -47,9 +38,6 @@ child :entry_scribes, :object_root => false do
   attributes :id, :uncertain_in_source, :supplied_by_data_entry
   child :scribe do
     attributes :id, :name
-    node :display_value do |scribe|
-      "#{scribe.name} (ID: #{scribe.id})"
-    end
   end
 end
 
@@ -57,9 +45,6 @@ child :entry_languages, :object_root => false do
   attributes :id, :uncertain_in_source, :supplied_by_data_entry
   child :language  do
     attributes :id, :name
-    node :display_value do |language|
-      "#{language.name} (ID: #{language.id})"
-    end
   end
 end
 
@@ -71,9 +56,6 @@ child :entry_places, :object_root => false do
   attributes :id, :uncertain_in_source, :supplied_by_data_entry
   child :place do
     attributes :id, :name
-    node :display_value do |place|
-      "#{place.name} (ID: #{place.id})"
-    end
   end
 end
 
@@ -87,9 +69,6 @@ child :events, :object_root => false do
     attributes :id, :observed_name, :role, :uncertain_in_source, :supplied_by_data_entry
     child :agent do |agent|
       attributes :id, :name
-      node :display_value do |agent|
-        "#{agent.name} (ID: #{agent.id})"
-      end
     end
   end
 end

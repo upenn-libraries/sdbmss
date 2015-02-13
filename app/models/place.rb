@@ -4,4 +4,9 @@ class Place < ActiveRecord::Base
   include UserFields
 
   belongs_to :approved_by, :class_name => 'User'
+
+  def to_s
+    name
+  end
+
 end

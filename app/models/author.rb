@@ -12,4 +12,8 @@ class Author < ActiveRecord::Base
     "SDBM_AUTHOR_#{id}"
   end
 
+  def to_s
+    name
+  end
+
 end

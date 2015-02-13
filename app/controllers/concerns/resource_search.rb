@@ -8,10 +8,20 @@ module ResourceSearch
     25
   end
 
+  # Classes should override this is they want to return a different
+  # set of keys for each result object
+  def search_results_keys
+    return [:id, :name]
+  end
+
   def search
     class_name = send(:class).to_s.sub('Controller', '').singularize.constantize
     objects = find_by_search_terms(class_name).limit(max_search_results).map do |obj|
-      { id: obj.id, display_value: "#{display_value_for_search(obj)} (ID: #{obj.id})" }
+      result = Hash.new
+      search_results_keys.each do |key|
+        result[key] = obj.send key
+      end
+      result
     end
     respond_to do |format|
       format.json { render json: objects }
@@ -31,12 +41,6 @@ module ResourceSearch
       query = class_name.none
     end
     query.order(:name)
-  end
-
-  # Returns a str to use for the 'display_value' field of the JSON
-  # representation of passed-in object
-  def display_value_for_search obj
-    "#{obj.name}"
   end
 
 end

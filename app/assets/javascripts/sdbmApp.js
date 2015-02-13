@@ -209,18 +209,6 @@
         };
     });
 
-    // filter for objects that are serialized database records; outputs
-    // value in the field called 'display_value', otherwise 'None'
-    sdbmApp.filter('label', function() {
-        return function(input) {
-            var displayValue;
-            if(input) {
-                displayValue = input.display_value;
-            }
-            return displayValue || 'Select...';
-        };
-    });
-
     /* Controller for selecting a source*/
     sdbmApp.controller("SelectSourceCtrl", function ($scope, $http) {
 
@@ -780,7 +768,7 @@
                 // initial value of undefined triggers an event to
                 // watch() so we ignore it
                 if(newValue) {
-                    $(element).val(newValue.display_value);
+                    $(element).val(newValue.name);
                 }
             });
 
@@ -810,11 +798,10 @@
                         // transform data from API call into format expected by autocomplete
                         var options = response.data;
                         options.forEach(function(option) {
-                            option.label = option.display_value;
+                            option.label = option.name;
                             option.value = option.id;
                         });
                         options.unshift({
-                            display_value: "\u00BB Create '" + searchTerm + "'",
                             label: "\u00BB Create '" + searchTerm + "'",
                             value: 'CREATE',
                             id: 'CREATE'
