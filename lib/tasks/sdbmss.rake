@@ -101,4 +101,17 @@ namespace :sdbmss do
 
   end
 
+  # requested by Toby Burrows
+  desc "Export legacy catalog table as CSV to stdout"
+  task :export_catalogs => :environment do |t, args|
+    columns = %w[MANUSCRIPTCATALOGID CAT_DATE CAT_ID SELLER SELLER2 INSTITUTION MS_COUNT CAT_AUTHOR WHETHER_MSS CURRENT_LOCATION LOCATION_CITY LOCATION_COUNTRY ONLINE_LINK ELEC_CAT_FORMAT ELEC_CAT_OPENACCESS ALT_CAT_DATE ADDED_ON LAST_MODIFIED COMMENTS CATALOGING_TYPE SDBM_STATUS]
+    puts CSV.generate_line columns
+    SDBMSS::Util.batch(SDBMSS::Legacy.get_legacy_db_conn,
+                       'select * from MANUSCRIPT_CATALOG where HIDDEN_CAT is null and ISDELETED is null ORDER BY CAT_DATE, CAT_ID',
+                       silent: true) do |row, ctx|
+      values = columns.map { |col| row[col] }
+      puts CSV.generate_line values
+    end
+  end
+
 end

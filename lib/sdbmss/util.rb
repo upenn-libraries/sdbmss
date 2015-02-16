@@ -10,7 +10,7 @@ module SDBMSS
 
       # Does a SQL select query in batches, passing each row to the
       # code block
-      def batch(conn, sql, ctx: nil, limit: 1000, batch_wrapper: nil, &block)
+      def batch(conn, sql, ctx: nil, limit: 1000, batch_wrapper: nil, silent: false, &block)
         ctx ||= {}
         ctx.update({:count => 0, :start_time => Time::now.to_f })
 
@@ -43,7 +43,7 @@ module SDBMSS
             if elapsed > 0
               rate = ctx[:count] / elapsed
             end
-            puts "Processed #{ctx[:count]} records so far in batch(): overall rate: #{rate} records/sec"
+            puts "Processed #{ctx[:count]} records so far in batch(): overall rate: #{rate} records/sec" unless silent
 
             offset += limit
           else
