@@ -1,0 +1,201 @@
+<% content_for :head do %>
+<%= stylesheet_link_tag "extras", media: "all" %>
+<%= javascript_include_tag "extras" %>
+
+<style>
+
+.navbar { margin-bottom: 10px; }
+
+#main-container.container-fluid .row { padding-left: 15px; padding-right: 15px; }
+
+.search-fieldset { margin-bottom: 8px; }
+
+</style>
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+    // TODO: hacks to tweak the Rails layout: figure out a more elegant way?
+    $("#search-navbar").remove();
+    // make this page take up full width of browser window
+    $("#main-container").removeClass("container").addClass("container-fluid");
+
+    $("input[name='search_value']").val("");
+
+    // Fielded search specific params
+    var translateSearchParams = function (sdbmTable, data) {
+        params = sdbmTable.translateParamsToBlacklight(data);
+
+        params["op"] = $("select[name='op']").val();
+
+        $("select[name='search_field']").each(function (idx, element) {
+            var search_field = $(element).val();
+            var search_value = $($("input[name='search_value']")[idx]).val();
+            if(search_value) {
+                params[search_field] = search_value;
+            }
+        });
+
+        return params;
+    };
+
+    var sdbmTable = new SDBMTable("#search_results", {
+        prependColumns: [
+            {
+                title: 'Actions',
+                "data": null,
+                "orderable": false,
+                "render": function (data, type, full, meta) {
+                    return '<a href="/entries/' + full[1] + '" target="_blank">Link this MS</a>';
+                }
+            }
+        ],
+        ajax: function (sdbmTable, dt_params, callback, settings) {
+            $("#spinner").show();
+
+            // seems like there should be a way to do this conditional
+            // ajax and subsequent searchAndUpdateTable using
+            // promises, but I can't figure that out right now
+            
+            var params = translateSearchParams(sdbmTable, dt_params);                
+            sdbmTable.searchAndUpdateTable(params, callback, {
+                'complete': function () {
+                    $("#spinner").hide();
+                }
+            });
+        }
+    });
+
+    var doSearch = function() {
+        sdbmTable.reload();
+    };
+    
+    $('#search_results tbody').on('click', 'tr', function (event) {
+        // don't select if a link inside table was clicked
+        if(event.target.tagName !== 'A') {
+            $(event.currentTarget).toggleClass('selected');
+        }
+    });
+
+    $('#search_submit').click(function() {
+        doSearch();
+    });
+
+    $(document).on("click", ".entry-delete-link", function (event) {
+        var row_data = sdbmTable.dataTable.row($(event.target).closest("tr")).data();
+        var entry_id = row_data[1];
+        if(confirm("Are you sure you want to delete entry " + entry_id + "?")) {
+            $.ajax({
+                url: '/entries/' + entry_id,
+                type: 'DELETE',
+                error: function() {
+                    // TODO: fill this out
+                    alert("An error occurred deleting this record.");
+                },
+                complete: function() {
+                    sdbmTable.reload();
+                }
+            });
+        }
+        return false;
+    });
+    
+    // TODO: this doesn't work
+    // $(window).bind('resize', function () {
+    //     console.log("RESIZED!");
+    //     var NewHeight = getViewportHeight() - table_height_buffer;
+    //     var oSettings = table.settings();
+    //     console.log(table.settings());
+    // next line is wrong: figure out where scrollY is stored?
+    //     oSettings.oScroll.sY = NewHeight + "px";
+    //     table.fnDraw();
+    // });
+
+});
+
+</script>
+<% end %>
+
+<h3>Link a Manuscript to SDBM_<%= @entry.id %></h3>
+
+<form class="form-horizontal search-form">
+    <div class="row form-group search-fieldset original">
+        <div class="col-sm-1">
+            <label class="control-label" style="text-align: left">Search</label>
+        </div>
+        <div class="col-sm-4">
+            <input class="form-control" name="search_value" value="" size="70" type="text">
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="search_field">
+            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
+            <option value="<%= key %>"><%= field_def.label %></option>
+            <%- end -%>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <div>
+                Match <select class="form-control" style="width: 100px; display: inline" name="op"><option value="AND">all</option><option value="OR">any</option></select>
+                of these fields
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group search-fieldset">
+        <div class="col-sm-4 col-sm-offset-1">
+            <input class="form-control" name="search_value" value="" size="70" type="text">
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="search_field">
+            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
+            <option value="<%= key %>"><%= field_def.label %></option>
+            <%- end -%>
+            </select>
+        </div>
+    </div>
+
+    <div class="row form-group search-fieldset">
+        <div class="col-sm-4 col-sm-offset-1">
+            <input class="form-control" name="search_value" value="" size="70" type="text">
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="search_field">
+            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
+            <option value="<%= key %>"><%= field_def.label %></option>
+            <%- end -%>
+            </select>
+        </div>
+        <div class="col-sm-1">
+            <button id="search_submit" class="btn btn-primary">Search</button>
+        </div>
+        <div class="col-sm-1">
+            <div>
+                <img id="spinner" alt="working..." style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
+            </div>
+        </div>
+        <div class="col-sm-1 text-right">
+        </div>
+        <div class="col-sm-1">
+        </div>
+        <div class="col-sm-1">
+        </div>
+    </div>
+
+</form>
+
+<table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <!-- we populate TH elements dynamically -->
+            
+            <!-- TODO: figure out how to get datatables to initialize
+            with reasonable static widths; widget seems to
+            automatically resize for data, which is not what we
+            want. this might require dynamically resizing after init
+            is finished? 
+              -->
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>

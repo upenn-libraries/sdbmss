@@ -19,9 +19,14 @@ Rails.application.routes.draw do
 
   get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
 
-  # handle these /entries/... URLs before EntriesController
-  get '/entries/form_dropdown_values', to: 'entries#entry_form_dropdown_values'
+  # TODO: this is gross, but we want some /entries[...] URLs to be
+  # handled by CatalogController and some by EntriesController and it
+  # is difficult to tweak the 'resources' DSL to get the exact desired
+  # behavior.
+  get '/entries/form_dropdown_values', to: 'entries#form_dropdown_values'
   get '/entries/new', to: 'entries#new'
+  get '/entries/:id/create_manuscript', to: 'entries#create_manuscript'
+  get '/entries/:id/manuscript_candidates', to: 'entries#manuscript_candidates'
   get '/entries/:id.json', to: 'entries#show_json', defaults: { format: 'json' }
   get '/entries/:id', to: 'catalog#show', as: 'entry'
   resources :entries

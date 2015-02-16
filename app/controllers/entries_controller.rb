@@ -1,6 +1,6 @@
 class EntriesController < ApplicationController
 
-  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy]
+  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :create_manuscript]
 
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
 
@@ -90,7 +90,7 @@ class EntriesController < ApplicationController
 
   # returns JSON containing values for dropdowns on add/edit entry
   # page
-  def entry_form_dropdown_values
+  def form_dropdown_values
     data = {
         'circa' => EntryDate::CIRCA_TYPES,
         'currency' => Event::CURRENCY_TYPES,
@@ -117,6 +117,9 @@ class EntriesController < ApplicationController
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }
     end
+  end
+
+  def create_manuscript
   end
 
   private
