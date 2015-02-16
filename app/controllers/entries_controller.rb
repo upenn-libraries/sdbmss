@@ -11,7 +11,7 @@ class EntriesController < ApplicationController
   # want to format the JSON differently from how it does it.
   def show_json
     respond_to do |format|
-      format.json { render "show.json.rabl" }
+      format.json { render "show.json" }
     end
   end
 

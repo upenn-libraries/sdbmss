@@ -1,0 +1,1 @@
+json.(@scribe, :id, :name)

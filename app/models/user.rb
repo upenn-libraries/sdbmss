@@ -29,7 +29,7 @@ class User < ActiveRecord::Base
   # user class to get a user-displayable login/identifier for
   # the account.
   def to_s
-    email
+    username
   end
 
   # override

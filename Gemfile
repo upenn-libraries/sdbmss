@@ -65,9 +65,6 @@ gem 'sunspot_solr', '~> 2.1.0'
 # Use database as session store
 gem 'activerecord-session_store', '~> 0.1.0'
 
-# for serializing objects into JSON
-gem 'rabl', '~> 0.11.5'
-
 # for testing
 group :test, :development do
   gem 'rspec-rails', '~> 3.1.0'

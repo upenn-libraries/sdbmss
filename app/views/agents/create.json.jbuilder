@@ -1,0 +1,1 @@
+json.(@agent, :id, :name)
