@@ -119,7 +119,7 @@ $(document).ready(function() {
             // highlight the row
             sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
                 var data = sdbmTable.dataTable.row(row).data();
-                if(String(data[getColumnIndex("ID")]) === entry_id) {
+                if(String(data[sdbmTable.getColumnIndex("ID")]) === entry_id) {
                     $(row).addClass("selected");
                     $(".dataTables_scrollBody").scrollTop(idx * sdbmTable.getRowHeight());
                 }
