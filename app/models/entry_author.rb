@@ -5,6 +5,8 @@ class EntryAuthor < ActiveRecord::Base
   belongs_to :entry
   belongs_to :author
 
+  validates_presence_of :entry
+
   def display_value
     case
     when author && observed_name

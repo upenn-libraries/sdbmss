@@ -5,6 +5,9 @@ class EntryArtist < ActiveRecord::Base
   belongs_to :entry
   belongs_to :artist
 
+  validates_presence_of :entry
+  validates_presence_of :artist
+
   def to_s
     (artist ? artist.name : "") + certainty_flags
   end

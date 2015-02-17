@@ -5,6 +5,8 @@ class EventAgent < ActiveRecord::Base
   belongs_to :event
   belongs_to :agent
 
+  validates_presence_of :event
+
   ROLE_SELLER_OR_HOLDER = "seller_or_holder"
   ROLE_SELLER_AGENT = "seller_agent"
   ROLE_BUYER = "buyer"

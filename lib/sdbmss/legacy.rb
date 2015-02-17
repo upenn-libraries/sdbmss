@@ -868,13 +868,15 @@ module SDBMSS::Legacy
 
         language_str, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(atom)
 
-        language = get_or_create_language(language_str)
-        entry_language = EntryLanguage.create!(
-          entry: entry,
-          language: language,
-          uncertain_in_source: uncertain_in_source,
-          supplied_by_data_entry: supplied_by_data_entry,
-        )
+        if language_str.present?
+          language = get_or_create_language(language_str)
+          entry_language = EntryLanguage.create!(
+            entry: entry,
+            language: language,
+            uncertain_in_source: uncertain_in_source,
+            supplied_by_data_entry: supplied_by_data_entry,
+          )
+        end
       end
 
       SDBMSS::Util.split_and_strip(row['MAT']).each do |atom|
@@ -885,16 +887,19 @@ module SDBMSS::Legacy
 
         material = LEGACY_MATERIAL_CODES[material_str] || LEGACY_MATERIAL_CODES[material_str.upcase] || material_str
 
-        if !VALID_MATERIALS.member?(material)
-          # cleaned up materials on 1/11/2015, so there shouldn't be too many of these left
-          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'invalid_material', "Material '#{material_str}' is not valid")
+        # there exists at least one record whose value is just '?'
+        if material.present?
+          if !VALID_MATERIALS.member?(material)
+            # cleaned up materials on 1/11/2015, so there shouldn't be too many of these left
+            create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'invalid_material', "Material '#{material_str}' is not valid")
+          end
+          em = EntryMaterial.create!(
+            entry: entry,
+            material: material,
+            uncertain_in_source: uncertain_in_source,
+            supplied_by_data_entry: supplied_by_data_entry,
+          )
         end
-        em = EntryMaterial.create!(
-          entry: entry,
-          material: material,
-          uncertain_in_source: uncertain_in_source,
-          supplied_by_data_entry: supplied_by_data_entry,
-        )
       end
 
       SDBMSS::Util.split_and_strip(row['PLACE']).each do |atom|
@@ -927,7 +932,7 @@ module SDBMSS::Legacy
       # we only make Agents for Provenance if the agent name occurs
       # more than once. This is actually a pretty good heuristic.
 
-      results = ActiveRecord::Base.connection.execute("SELECT distinct observed_name, count(*) as mynum from event_agents where observed_name is not null group by observed_name")
+      results = ActiveRecord::Base.connection.execute("SELECT distinct observed_name, count(*) as mynum from event_agents where observed_name is not null and length(observed_name) > 1 group by observed_name")
 
       results.each do |row|
         observed_name, count = row[0], row[1]

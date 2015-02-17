@@ -18,4 +18,6 @@ class SourceAgent < ActiveRecord::Base
     [ROLE_RECIPIENT, "Recipient"],
   ]
 
+  validates_presence_of :source
+
 end

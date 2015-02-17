@@ -12,6 +12,8 @@ class Agent < ActiveRecord::Base
   has_many :source_agents
   has_many :sources, through: :source_agents
 
+  validates_presence_of :name
+
   def get_public_id
     "SDBM_AGENT_#{id}"
   end

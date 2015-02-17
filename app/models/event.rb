@@ -27,9 +27,9 @@ class Event < ActiveRecord::Base
     [TYPE_SOLD_WITHDRAWN, TYPE_SOLD_WITHDRAWN],
   ]
 
-  belongs_to :entry
-
   include UserFields
+
+  belongs_to :entry
 
   has_many :event_agents
 
@@ -39,6 +39,7 @@ class Event < ActiveRecord::Base
   scope :provenance, -> { where(primary: false) }
 
   validates :sold, inclusion: { in: SOLD_TYPES.map(&:first) }, if: :primary
+  validates_presence_of :entry
 
   def get_event_agent_with_role(role)
     event_agents.select { |ea| ea.role == role }.first
