@@ -113,7 +113,7 @@
         <% if (provenance_count = entry.get_provenance.length) > 0 %>
         <dt>Provenance</dt>
         <dd>
-            <%= provenance_count %> records involving:<br/>
+            This entry has <%= provenance_count %> provenance records involving:<br/>
             <% entry.get_provenance.each do |provenance| %>
                 <% seller_or_holder = provenance.get_seller_or_holder %>
                 <% buyer = provenance.get_buyer %>
