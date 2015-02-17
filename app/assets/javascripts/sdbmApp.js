@@ -797,16 +797,20 @@
                         }
                     }).then(function (response) {
                         // transform data from API call into format expected by autocomplete
+                        var exactMatch = false;
                         var options = response.data;
                         options.forEach(function(option) {
                             option.label = option.name;
                             option.value = option.id;
+                            exactMatch = searchTerm == option.label;
                         });
-                        options.unshift({
-                            label: "\u00BB Create '" + searchTerm + "'",
-                            value: 'CREATE',
-                            id: 'CREATE'
-                        });
+                        if (!exactMatch) {
+                            options.unshift({
+                                label: "\u00BB Create '" + searchTerm + "'",
+                                value: 'CREATE',
+                                id: 'CREATE'
+                            });
+                        }
                         response_callback(options);
                     });
                 },
