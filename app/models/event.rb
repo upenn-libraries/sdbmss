@@ -31,7 +31,7 @@ class Event < ActiveRecord::Base
 
   belongs_to :entry
 
-  has_many :event_agents
+  has_many :event_agents, inverse_of: :event
 
   accepts_nested_attributes_for :event_agents
 

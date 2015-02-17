@@ -27,6 +27,7 @@ module SDBMSS::ReferenceData
     def initialize
       create_source
       create_entry_one
+      create_entry_nine
       create_entry_fourteen
     end
 
@@ -152,6 +153,103 @@ module SDBMSS::ReferenceData
           {
             observed_name: "European private collection",
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
+          }
+        ]
+      )
+
+    end
+
+    def create_entry_nine
+      entry = Entry.create!(
+        source: @source,
+        catalog_or_lot_number: "9",
+        folios: 61,
+        num_lines: 32,
+        num_columns: 1,
+        height: 237,
+        width: 172,
+        manuscript_binding: 'Italian paneled brow leather over wooden boards, tooled in blind with ropework border.',
+        other_info: 'Manuscript is dated in an inscription 30 December. 1480. Includes one full-length illuminated border.',
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      transaction = Event.create!(
+        primary: true,
+        entry: entry,
+        price: 120000,
+        currency: 'USD',
+        sold: Event::TYPE_SOLD_UNKNOWN,
+        event_agents_attributes: [
+          {
+            agent: @hill,
+            role: EventAgent::ROLE_SELLER_AGENT
+          }
+        ]
+      )
+
+      EntryTitle.create!(
+        entry: entry,
+        title: 'Saturae I-XVI',
+        common_title: 'Satires I-XVI',
+      )
+      EntryTitle.create!(
+        entry: entry,
+        title: 'Introductory hexameter to Satires II, IV-VIII',
+      )
+
+      EntryAuthor.create!(
+        entry: entry,
+        author: Author.find_or_create_by(name: 'Juvenal'),
+        observed_name: 'Iuvenalis, Decimus Iunius',
+      )
+      EntryAuthor.create!(
+        entry: entry,
+        author: Author.find_or_create_by(name: 'Guarino Veronese'),
+        observed_name: 'Guarino da Verona',
+      )
+
+      EntryDate.create!(
+        entry: entry,
+        date: '1460',
+        circa: 'C',
+      )
+
+      EntryLanguage.create!(
+        entry: entry,
+        language: Language.find_or_create_by(name: 'Latin'),
+      )
+
+      EntryMaterial.create!(
+        entry: entry,
+        material: 'Parchment'
+      )
+
+      EntryPlace.create!(
+        entry: entry,
+        place: Place.find_or_create_by(name: 'Italy, Ferrara'),
+        uncertain_in_source: true,
+      )
+
+      Event.create!(
+        entry: entry,
+        start_date: '17040000',
+        comment: "Inscription on flyleaf",
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Malfatti, Valeriano, Baron"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+            observed_name: 'Valeriano Malfatti Barone',
+          }
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        comment: 'Cites SDBM 11842',
+        event_agents_attributes: [
+          {
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+            observed_name: 'European private collection',
           }
         ]
       )
@@ -398,6 +496,10 @@ module SDBMSS::ReferenceData
             agent: Agent.find_or_create_by(name: "De Marinis, Tammaro"),
             observed_name: "Tammaro De Marinis (1878-1969)",
             role: EventAgent::ROLE_SELLER_OR_HOLDER
+          },
+          {
+            agent: Agent.find_or_create_by(name: "Hoepli"),
+            role: EventAgent::ROLE_SELLER_AGENT
           }
         ]
       )
