@@ -5,7 +5,8 @@ class CatalogController < ApplicationController
 
   include CatalogControllerConfiguration
 
-  # Overrides #show to check for existence and send 404 if necessary
+  # Overrides Blacklight::Catalog#show to check for existence and send
+  # 404 if necessary
   def show
     if Entry.exists?(params[:id])
       super
@@ -35,13 +36,21 @@ class CatalogController < ApplicationController
     u
   end
 
-  # override from superclass:
+  # Overrides Blacklight::Catalog#render_search_results_as_json
   # custom JSON response for search results
   def render_search_results_as_json
     entries_as_json = @document_list.map do |doc|
       Rabl.render(doc.get_model_object, 'entries/show', :view_path => 'app/views', :format => :json)
     end
     "[" + entries_as_json.join(",") + "]"
+  end
+
+  # Overrides Blacklight::Catalog::SearchContext#add_to_search_history
+  def add_to_search_history search
+    # don't save searches that return everything
+    unless search.query_params["search_field"] == "all_fields" && search.query_params["q"].blank?
+      super search
+    end
   end
 
 end

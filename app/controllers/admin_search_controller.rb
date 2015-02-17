@@ -102,6 +102,12 @@ class AdminSearchController < CatalogController
     retval
   end
 
+  # Overrides Blacklight::Catalog::SearchContext#add_to_search_history
+  def add_to_search_history search
+    # this is a noop: prevent this controller's searches from being
+    # saved, because that's confusing to end users.
+  end
+
   # This is an AJAX endpoint to calculates the lower and upper bounds
   # (inclusive) on entry_id for a "Jump To" search.
   def calculate_bounds
