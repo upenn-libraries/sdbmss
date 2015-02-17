@@ -127,6 +127,29 @@ class Entry < ActiveRecord::Base
     events.select { |event| !event.primary }
   end
 
+  # returns list of the hashes representing unique Agents found in
+  # this Entry's provenance, ordered alphabetically. Each hash
+  # has :name key and optionally an :agent key.
+  def unique_provenance_agents
+    unique_agents = {}
+    get_provenance.each do |event|
+      event.event_agents.each do |event_agent|
+        agent = event_agent.agent
+        if agent.present?
+          unique_agents[agent.id] = {
+            agent: agent,
+            name: agent.name
+          }
+        else
+          unique_agents[event_agent.observed_name] = {
+            name: event_agent.observed_name,
+          }
+        end
+      end
+    end
+    unique_agents.values.sort_by { |record| record[:name] }
+  end
+
   # Tell Sunspot how to index fields from this model.
   #
   # Note that we do NOT use sunspot's default dynamic fields (which

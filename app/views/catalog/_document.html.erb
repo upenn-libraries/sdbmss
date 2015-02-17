@@ -114,15 +114,13 @@
         <dt>Provenance</dt>
         <dd>
             This entry has <%= provenance_count %> provenance records involving:<br/>
-            <% entry.get_provenance.each do |provenance| %>
-                <% seller_or_holder = provenance.get_seller_or_holder %>
-                <% buyer = provenance.get_buyer %>
-                <% if seller_or_holder.present? %>
-                    <%= render partial: "shared/event_agent", object: seller_or_holder %><br/>
+            <% entry.unique_provenance_agents.each do |unique_provenance_agent| %>
+                <% if unique_provenance_agent[:agent].present? %>
+                <a href="<%= url_for unique_provenance_agent[:agent] %>"><%= unique_provenance_agent[:agent] %></a>
+                <% else %>
+                  <%= unique_provenance_agent[:name] %>
                 <% end %>
-                <% if buyer.present? %>
-                    <%= render partial: "shared/event_agent", object: buyer %><br/>
-                <% end %>
+                <br/>
             <% end %>
         </dd>
         <% end %>
