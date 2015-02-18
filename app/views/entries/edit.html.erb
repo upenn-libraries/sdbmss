@@ -83,14 +83,14 @@
             <label class="col-sm-2 control-label"><span sdbm-tooltip="seller">Seller Agent</span></label>
             <div class="col-sm-5">
                 <div class="input-group">
-                    <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.transaction.seller_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+                    <input id="transaction_seller_agent" class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.transaction.seller_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
                     <div class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.seller_agent"><span class="glyphicon"></span></div>
                 </div>
             </div>
             <label class="col-sm-1 control-label"><span sdbm-tooltip="seller2">Seller</span></label>
             <div class="col-sm-4">
                 <div class="input-group">
-                    <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.transaction.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+                    <input id="transaction_seller" class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.transaction.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
                     <div class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.seller_or_holder"><span class="glyphicon"></span></div>
                 </div>
             </div>
@@ -100,7 +100,7 @@
             <label class="col-sm-2 control-label"><span sdbm-tooltip="buyer">Buyer</span></label>
             <div class="col-sm-5">
                 <div class="input-group">
-                    <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.transaction.buyer.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+                    <input id="transaction_buyer" class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.transaction.buyer.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
                     <div class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.buyer"><span class="glyphicon"></span></div>
                 </div>
             </div>
@@ -109,7 +109,7 @@
         <div class="form-group row">
             <label for="sold" class="col-sm-2 control-label"><span sdbm-tooltip="sold">Sold</span></label>
             <div class="col-sm-2">
-                <select class="form-control" id="sold" ng-model="entry.transaction.sold" ng-options="option[0] as option[1] for option in optionsSold"></select>
+                <select class="form-control" id="transaction_sold" ng-model="entry.transaction.sold" ng-options="option[0] as option[1] for option in optionsSold"></select>
             </div>
             <div ng-show="entry.transaction.sold == 'YES'">
                 <label for="sold" class="col-sm-4 control-label"><span sdbm-tooltip="sold">Date Sold</span></label>
@@ -122,11 +122,11 @@
         <div class="form-group row">
             <label for="price" class="col-sm-2 control-label"><span sdbm-tooltip="price">Price</span></label>
             <div class="col-sm-2">
-                <input type="text" class="form-control" id="price" ng-model="entry.transaction.price">
+                <input type="text" class="form-control" id="transaction_price" ng-model="entry.transaction.price">
             </div>
             <label for="currency" class="col-sm-1 control-label"><span sdbm-tooltip="currency">Currency</span></label>
             <div class="col-sm-1">
-                <select name="currency" id="currency" class="form-control" ng-model="entry.transaction.currency" ng-options="option[0] as option[1] for option in optionsCurrency"></select>
+                <select name="currency" id="transaction_currency" class="form-control" ng-model="entry.transaction.currency" ng-options="option[0] as option[1] for option in optionsCurrency"></select>
             </div>
             <label for="other-currency" class="col-sm-2 control-label"><span sdbm-tooltip="otherCurrency">Other Currency</span></label>
             <div class="col-sm-3">
@@ -150,7 +150,7 @@
       </label>
       <div class="col-sm-5">
           <div class="input-group">
-              <input type="text" class="form-control" id="title" data-ng-model="entry_title.title">
+              <input id="title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.title">
               <div class="input-group-addon clickable" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
           </div>
       </div>
@@ -158,7 +158,7 @@
           <span sdbm-tooltip="title">CommonTitle</span>
       </label>
       <div class="col-sm-4">
-        <input type="text" class="form-control" id="title" data-ng-model="entry_title.common_title">
+        <input id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
       </div>
     </div>
 
@@ -171,7 +171,7 @@
         </label>
       <div class="col-sm-5">
           <div class="input-group">
-              <input class="form-control" type="text" sdbm-autocomplete="/authors/search.json" sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateAuthorModalCtrl"/>
+              <input id="author_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/authors/search.json" sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateAuthorModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="entry_author"><span class="glyphicon"></span></div>
           </div>
       </div>
@@ -179,7 +179,7 @@
           <span sdbm-tooltip="authorVariant">As Recorded</span>
       </label>
       <div class="col-sm-4">
-          <input type="text" class="form-control" id="author" data-ng-model="entry_author.observed_name">
+          <input id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
       </div>
     </div>
     <div class="form-group row entry-author-group">
@@ -187,7 +187,7 @@
           <span sdbm-tooltip="role">Role</span>
       </label>
       <div class="col-sm-1">
-          <input type="text" class="form-control" data-ng-model="entry_author.role" />
+          <input id="author_role_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.role" />
       </div>
     </div>
     </div>
@@ -199,14 +199,14 @@
             <span sdbm-tooltip="year">Year</span>
       </label>
       <div class="col-sm-2">
-        <input type="text" class="form-control" id="year" data-ng-model="entry_date.date">
+        <input id="date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.date">
       </div>
       <div class="col-sm-3"></div>
       <label class="col-sm-1 control-label">
           <span sdbm-tooltip="circa">Circa</span>
       </label>
       <div class="col-sm-3">
-          <select name="circa" class="form-control" ng-model="entry_date.circa" ng-options="option[0] as option[1] for option in optionsCirca"></select>
+          <select id="circa_{{ $index }}" name="circa" class="form-control" ng-model="entry_date.circa" ng-options="option[0] as option[1] for option in optionsCirca"></select>
       </div>
     </div>
 
@@ -219,8 +219,8 @@
       </label>
       <div class="col-sm-5">
           <div class="input-group">
-              <input class="form-control" type="text" sdbm-autocomplete="/artists/search.json" sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateArtistModalCtrl"/>
-              <div class="input-group-addon clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></div>
+              <input id="artist_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/artists/search.json" sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateArtistModalCtrl"/>
+              <div id="artist_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></div>
           </div>          
       </div>
     </div>
@@ -234,7 +234,7 @@
       </label>
       <div class="col-sm-5">
           <div class="input-group">
-              <input class="form-control" type="text" sdbm-autocomplete="/scribes/search.json" sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateScribeModalCtrl"/>
+              <input id="scribe_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/scribes/search.json" sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateScribeModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
           </div>
       </div>
@@ -249,7 +249,7 @@
       </label>
       <div class="col-sm-5">
           <div class="input-group">
-              <input class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl"/>
+              <input id="language_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="entry_language"><span class="glyphicon"></span></div>
           </div>
       </div>
@@ -264,7 +264,7 @@
       </label>
       <div class="col-sm-5">
           <div class="input-group">
-          <select class="form-control" data-ng-model="entry_material.material" ng-options="option[0] as option[1] for option in optionsMaterial"></select>
+          <select id="material_{{ $index }}" class="form-control" data-ng-model="entry_material.material" ng-options="option[0] as option[1] for option in optionsMaterial"></select>
               <div class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
           </div>
       </div>
