@@ -802,7 +802,9 @@
                         options.forEach(function(option) {
                             option.label = option.name;
                             option.value = option.id;
-                            exactMatch = searchTerm == option.label;
+                            if(!exactMatch) {
+                                exactMatch = searchTerm == option.label;
+                            }
                         });
                         if (!exactMatch) {
                             options.unshift({
