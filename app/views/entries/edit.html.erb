@@ -279,7 +279,7 @@
       </label>
       <div class="col-sm-5">
           <div class="input-group">
-              <input class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl"/>
+              <input id="place_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="entry_place"><span class="glyphicon"></span></div>
           </div>
       </div>
@@ -293,7 +293,7 @@
           <span sdbm-tooltip="manuscript_use">Use</span>
       </label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" id="title" data-ng-model="entry_use.use">
+        <input id="use_{{ $index }}" type="text" class="form-control" data-ng-model="entry_use.use">
       </div>
     </div>
 
@@ -308,13 +308,13 @@
             <span sdbm-tooltip="lines">Lines</span>
         </label>
         <div class="col-sm-1">
-            <input type="text" class="form-control" id="lines" data-ng-model="entry.num_lines">
+            <input type="text" class="form-control" id="num_lines" data-ng-model="entry.num_lines">
         </div>
         <label for="columns" class="col-sm-1 control-label">
             <span sdbm-tooltip="columns">Columns</span>
         </label>
         <div class="col-sm-1">
-            <input type="text" class="form-control" id="columns" data-ng-model="entry.num_columns">
+            <input type="text" class="form-control" id="num_columns" data-ng-model="entry.num_columns">
         </div>
     </div>
 
@@ -344,25 +344,25 @@
             <span sdbm-tooltip="min_fl">Miniatures Full-Page</span>
         </label>
         <div class="col-sm-1">
-            <input type="text" class="form-control" id="min_fl" data-ng-model="entry.miniatures_fullpage">
+            <input type="text" class="form-control" id="miniatures_fullpage" data-ng-model="entry.miniatures_fullpage">
         </div>
         <label for="min_lg" class="col-sm-1 control-label">
             <span sdbm-tooltip="min_lg">Large</span>
         </label>
         <div class="col-sm-1">
-            <input type="text" class="form-control" id="min_lg" data-ng-model="entry.miniatures_large">
+            <input type="text" class="form-control" id="miniatures_large" data-ng-model="entry.miniatures_large">
         </div>
         <label for="min_sm" class="col-sm-1 control-label">
             <span sdbm-tooltip="min_sm">Small</span>
         </label>
         <div class="col-sm-1">
-            <input type="text" class="form-control" id="min_sm" data-ng-model="entry.miniatures_small">
+            <input type="text" class="form-control" id="miniatures_small" data-ng-model="entry.miniatures_small">
         </div>
         <label for="min_un" class="col-sm-1 control-label">
             <span sdbm-tooltip="min_un">Unspecified</span>
         </label>
         <div class="col-sm-1">
-            <input type="text" class="form-control" id="min_un" data-ng-model="entry.miniatures_unspec_size">
+            <input type="text" class="form-control" id="miniatures_unspec_size" data-ng-model="entry.miniatures_unspec_size">
         </div>
     </div>
 
@@ -386,7 +386,7 @@
           <span sdbm-tooltip="binding">Binding</span>
       </label>
       <div class="col-sm-9">
-        <textarea class="form-control" id="binding" rows="2" data-ng-model="entry.manuscript_binding"/></textarea>
+        <textarea class="form-control" id="manuscript_binding" rows="2" data-ng-model="entry.manuscript_binding"/></textarea>
       </div>
     </div>
 
@@ -395,7 +395,7 @@
           <span sdbm-tooltip="link">URL Link</span>
       </label>
       <div class="col-sm-9">
-        <input type="text" class="form-control" id="link" data-ng-model="entry.manuscript_link">
+        <input type="text" class="form-control" id="manuscript_link" data-ng-model="entry.manuscript_link">
       </div>
     </div>
 
@@ -423,12 +423,12 @@
             Sale/Acquire Date
         </label>
       <div class="col-sm-2">
-        <input type="text" class="form-control" id="begindate" ng-model="prov.start_date">
+        <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date">
       </div>
       <div class="col-sm-2"></div>
       <label class="col-sm-2 control-label">End Date</label>
       <div class="col-sm-2">
-        <input type="text" class="form-control" id="enddate" ng-model="prov.end_date">
+        <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date">
       </div>
     </div>
 
@@ -436,13 +436,13 @@
       <label class="col-sm-2 control-label">Seller Agent</label>
       <div class="col-sm-5">
           <div class="input-group">
-              <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.seller_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+              <input id="provenance_seller_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.seller_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="prov.seller_agent"><span class="glyphicon"></span></div>
           </div>
       </div>
       <label class="col-sm-1 control-label">As Recorded</label>
       <div class="col-sm-4">
-          <input type="text" class="form-control" id="seller_agent" data-ng-model="prov.seller_agent.observed_name">
+          <input id="provenance_seller_agent_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.seller_agent.observed_name">
       </div>
     </div>
 
@@ -450,13 +450,13 @@
       <label class="col-sm-2 control-label">Seller/Holder</label>
       <div class="col-sm-5">
           <div class="input-group">
-              <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+              <input id="provenance_seller_or_holder_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="prov.seller_or_holder"><span class="glyphicon"></span></div>
           </div>
       </div>
       <label class="col-sm-1 control-label">As Recorded</label>
       <div class="col-sm-4">
-          <input type="text" class="form-control" id="seller" data-ng-model="prov.seller_or_holder.observed_name">
+          <input id="provenance_seller_or_holder_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.seller_or_holder.observed_name">
       </div>
     </div>
 
@@ -464,13 +464,13 @@
       <label class="col-sm-2 control-label">Buyer</label>
       <div class="col-sm-5">
           <div class="input-group">
-              <input class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.buyer.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+              <input id="provenance_buyer_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.buyer.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
               <div class="input-group-addon clickable" sdbm-certainty-flags="prov.buyer"><span class="glyphicon"></span></div>
           </div>
       </div>
       <label class="col-sm-1 control-label">As Recorded</label>
       <div class="col-sm-4">
-          <input type="text" class="form-control" id="buyer" data-ng-model="prov.buyer.observed_name">
+          <input id="provenance_buyer_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.buyer.observed_name">
       </div>
     </div>
 
@@ -480,7 +480,7 @@
           <span sdbm-tooltip="provenance">Evidence</span>
       </label>
       <div class="col-sm-10">
-        <textarea class="form-control" rows="2" id="comment" ng-model="prov.comment"></textarea>
+        <textarea id="provenance_comment_{{ $index }}" class="form-control" rows="2" id="comment" ng-model="prov.comment"></textarea>
       </div>
     </div>
 
@@ -506,7 +506,7 @@
           <span sdbm-tooltip="entry">Add Comment</span>
       </label>
       <div class="col-sm-9">
-        <textarea class="form-control" rows="4" id="editorial_comments" data-ng-model="entry.new_comment"></textarea>
+        <textarea class="form-control" rows="4" id="comment" data-ng-model="entry.new_comment"></textarea>
       </div>
     </div>
 

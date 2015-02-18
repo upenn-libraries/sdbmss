@@ -3,19 +3,14 @@ require "rails_helper"
 
 describe "Data entry", :js => true do
 
-  # Fill an autocomplete field and select an option.
-  # option keys:
-  # :with = value to use for filling in field
-  # :select = select the element with given text value
-  # :select_nth = select the nth element in options
-  # :wait = seconds to sleep after DOM events
+  # Fill an autocomplete field using value in :with option. If a
+  # block is given, yields to it to allow for selection.
   def fill_autocomplete(field, options = {})
     # adapted from http://ruby-journal.com/how-to-do-jqueryui-autocomplete-with-capybara-2/
-    #
+
     # This version here works with the autocomplete in jQuery UI
     # 1.11.2. WARNING: This code is very fragile! We have to simulate
     # interaction with DOM EXACTLY.
-    wait = options[:wait] || 1
 
     page.execute_script %Q{ $('##{field}').trigger('focus') }
 
@@ -26,30 +21,37 @@ describe "Data entry", :js => true do
     # wait for an autocomplete UL element to appear
     find('ul.ui-autocomplete', visible: true)
 
-    if options[:select] || options[:select_nth]
-      if options[:select]
-        selector = %Q{ul.ui-autocomplete:visible li.ui-menu-item:contains("#{options[:select]}")}
-      elsif options[:select_nth]
-        selector = %Q{ul.ui-autocomplete:visible li.ui-menu-item:eq(#{options[:select_nth]})}
-      end
-      page.execute_script %Q{ $('#{selector}').click() }
-      # give browser time to process the click
-      sleep(wait)
+    # yield to block to handle the selection
+    if block_given?
+      yield field, options
     end
   end
 
-  # This triggers autocomplete, selects the 1st item, and clicks Save
-  # on the popup that should appear
+  # Specialized case of #fill_autocomplete for inputs that show a
+  # modal popup for creating new entities. This selects the value
+  # given in :with option if it's available, otherwise creates it in
+  # the modal popup that should appear.
   def fill_autocomplete_select_or_create_entity(field, options = {})
-    options[:select_nth] = 0
+    value = options[:with]
 
-    # TODO: logic for select OR create
-    fill_autocomplete(field, options)
+    fill_autocomplete(field, options) do
+      found = all("ul.ui-autocomplete li.ui-menu-item", visible: true).any? { |li| li.text == value }
+      if found
+        value_escaped = value.gsub("'", "\\\\'")
+        selector = %Q{ul.ui-autocomplete:visible li.ui-menu-item:contains("#{value_escaped}")}
+      else
+        # select the 1st option, which should pop up the modal to create an entity
+        selector = %Q{ul.ui-autocomplete:visible li.ui-menu-item:eq(0)}
+      end
+      page.execute_script %Q{ $('#{selector}').click() }
 
-    page.save_screenshot("screenshot_#{field}.png")
-
-    click_button('Create')
-    sleep(1)
+      if !found
+        find(".modal-title", visible: true).text.include? "Create"
+        click_button('Create')
+        sleep(0.5)
+      end
+    end
+    #page.save_screenshot("screenshot_#{field}.png")
   end
 
   before :all do
@@ -125,11 +127,13 @@ describe "Data entry", :js => true do
   it "should save a Source correctly"
 
   it "should save an Entry correctly" do
+    # fill out all the fields and make sure they save to the database
+
     count = Entry.count
 
     visit new_entry_path :source_id => @source.id
     fill_in 'cat_lot_no', with: '123'
-    fill_autocomplete_select_or_create_entity 'transaction_seller_agent', with: 'Joe1'
+    fill_autocomplete_select_or_create_entity 'transaction_seller_agent', with: "Sotheby's"
     fill_autocomplete_select_or_create_entity 'transaction_seller', with: 'Joe2'
     fill_autocomplete_select_or_create_entity 'transaction_buyer', with: 'Joe3'
     select 'No', from: 'transaction_sold'
@@ -144,15 +148,42 @@ describe "Data entry", :js => true do
     select 'Circa Century', from: 'circa_0'
     fill_autocomplete_select_or_create_entity 'artist_0', with: 'Schultz, Charles'
     fill_autocomplete_select_or_create_entity 'scribe_0', with: 'Brother Francis'
-
-    page.driver.scroll_to(0, 2000)
-
-    fill_autocomplete_select_or_create_entity 'language_0', with: 'Chinese'
+    fill_autocomplete_select_or_create_entity 'language_0', with: 'Latin'
     select 'Parchment', from: 'material_0'
+    fill_autocomplete_select_or_create_entity 'place_0', with: 'Italy'
+    fill_in 'use_0', with: 'Some mysterious office or other'
+
+    fill_in 'folios', with: '123'
+    fill_in 'num_lines', with: '3'
+    fill_in 'num_columns', with: '2'
+    fill_in 'height', with: '200'
+    fill_in 'width', with: '300'
+    select 'Folio', from: 'alt_size'
+    fill_in 'miniatures_fullpage', with: '6'
+    fill_in 'miniatures_large', with: '7'
+    fill_in 'miniatures_small', with: '8'
+    fill_in 'miniatures_unspec_size', with: '9'
+    fill_in 'initials_historiated', with: '10'
+    fill_in 'initials_decorated', with: '11'
+    fill_in 'manuscript_binding', with: 'Velvet'
+    fill_in 'manuscript_link', with: 'http://something.com'
+    fill_in 'other_info', with: 'Other stuff'
+
+    fill_in 'provenance_start_date_0', with: '19450615'
+    fill_in 'provenance_end_date_0', with: '19651123'
+    fill_autocomplete_select_or_create_entity 'provenance_seller_agent_0', with: "Sotheby's"
+    fill_in 'provenance_seller_agent_observed_name_0', with: "Sotheby's Fine Things"
+    fill_autocomplete_select_or_create_entity 'provenance_seller_or_holder_0', with: 'Somebody, Joseph'
+    fill_in 'provenance_seller_or_holder_observed_name_0', with: 'Joseph H. Somebody'
+    fill_autocomplete_select_or_create_entity 'provenance_buyer_0', with: 'Collector, William'
+    fill_in 'provenance_buyer_observed_name_0', with: 'Wild Bill Collector'
+    fill_in 'provenance_comment_0', with: 'An historic sale'
+
+    fill_in 'comment', with: 'This info is correct'
 
     click_button('Save')
 
-    # it really does take 2s
+    # save really can take as long as 2s
     sleep(2)
 
     find(".modal-title", visible: true).text.include? "Successfully saved"
@@ -163,7 +194,7 @@ describe "Data entry", :js => true do
     transaction = entry.get_transaction
 
     expect(entry.catalog_or_lot_number).to eq('123')
-    expect(transaction.get_seller_agent.agent.name).to eq('Joe1')
+    expect(transaction.get_seller_agent.agent.name).to eq("Sotheby's")
     expect(transaction.get_seller_or_holder.agent.name).to eq('Joe2')
     expect(transaction.get_buyer.agent.name).to eq('Joe3')
     expect(transaction.sold).to eq('No')
@@ -186,13 +217,47 @@ describe "Data entry", :js => true do
     expect(entry_scribe.scribe.name).to eq('Brother Francis')
 
     entry_language = entry.entry_languages.first
-    expect(entry_language.language.name).to eq('Chinese')
+    expect(entry_language.language.name).to eq('Latin')
 
     entry_material = entry.entry_materials.first
     expect(entry_material.material).to eq('Parchment')
 
+    entry_use = entry.entry_uses.first
+    expect(entry_use.use).to eq('Some mysterious office or other')
+
+    expect(entry.folios).to eq(123)
+    expect(entry.num_lines).to eq(3)
+    expect(entry.num_columns).to eq(2)
+    expect(entry.height).to eq(200)
+    expect(entry.width).to eq(300)
+    expect(entry.alt_size).to eq('F')
+    expect(entry.miniatures_fullpage).to eq(6)
+    expect(entry.miniatures_large).to eq(7)
+    expect(entry.miniatures_small).to eq(8)
+    expect(entry.miniatures_unspec_size).to eq(9)
+    expect(entry.initials_historiated).to eq(10)
+    expect(entry.initials_decorated).to eq(11)
+    expect(entry.manuscript_binding).to eq('Velvet')
+    expect(entry.manuscript_link).to eq('http://something.com')
+    expect(entry.other_info).to eq('Other stuff')
+
+    provenance = entry.get_provenance.first
+    expect(provenance.start_date).to eq('19450615')
+    expect(provenance.end_date).to eq('19651123')
+    expect(provenance.get_seller_agent.agent.name).to eq("Sotheby's")
+    expect(provenance.get_seller_agent.observed_name).to eq("Sotheby's Fine Things")
+    expect(provenance.get_seller_or_holder.agent.name).to eq('Somebody, Joseph')
+    expect(provenance.get_seller_or_holder.observed_name).to eq('Joseph H. Somebody')
+    expect(provenance.get_buyer.agent.name).to eq('Collector, William')
+    expect(provenance.get_buyer.observed_name).to eq('Wild Bill Collector')
+    expect(provenance.comment).to eq('An historic sale')
+
+    entry_comment = entry.entry_comments.first
+    expect(entry_comment.comment).to eq('This info is correct')
     #puts "TEST FINISHED"
   end
+
+  it "should prepopulate Edit Entry page"
 
   it "should disallow creating Entries if not logged in"
 
