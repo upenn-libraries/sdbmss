@@ -40,7 +40,7 @@
                   <span class="caret"></span>
               </button>
               <ul class="dropdown-menu" role="menu" aria-labelledby="actionsMenu">
-                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToEntryViewPage(entry.id)">Go to public page for SDBM_{{ entry.id }}</a></li>
+                  <li role="presentation" ng-show="entry.id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToEntryViewPage(entry.id)">Go to public page for SDBM_{{ entry.id }}</a></li>
                   <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToSourceEditPage(entry.source.id)">Edit source SDBM_SOURCE_{{ entry.source.id }}</a></li>
                   <li role="presentation" ng-show="entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToManuscriptEditPage(entry.manuscript_id)">Manage entries for SDBM_MS_{{ entry.manuscript_id }}</a></li>
                   <li role="presentation" ng-show="entry.id && !entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToCreateManuscriptForEntryPage(entry.id)">Create a manuscript record for this entry</a></li>
