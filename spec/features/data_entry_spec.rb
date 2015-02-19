@@ -141,8 +141,11 @@ describe "Data entry", :js => true do
     select 'USD', from: 'transaction_currency'
 
     fill_in 'title_0', with: 'Book of Hours'
+    find_by_id("add_title_0").click
+    fill_in 'title_1', with: 'Bible'
     fill_autocomplete_select_or_create_entity 'author_0', with: 'Schmoe, Joe'
     fill_in 'author_observed_name_0', with: 'Joe Schmoe'
+    find_by_id('author_certainty_flags_0').click
     select 'Tr', from: 'author_role_0'
     fill_in 'date_0', with: '1425'
     select 'Circa Century', from: 'circa_0'
@@ -201,13 +204,15 @@ describe "Data entry", :js => true do
     expect(transaction.price).to eq(130000)
     expect(transaction.currency).to eq('USD')
 
-    entry_title = entry.entry_titles.first
-    expect(entry_title.title).to eq('Book of Hours')
+    entry_titles = entry.entry_titles
+    expect(entry_titles[0].title).to eq('Book of Hours')
+    expect(entry_titles[1].title).to eq('Bible')
 
     entry_author = entry.entry_authors.first
     expect(entry_author.author.name).to eq('Schmoe, Joe')
     expect(entry_author.observed_name).to eq('Joe Schmoe')
     expect(entry_author.role).to eq('Tr')
+    expect(entry_author.uncertain_in_source).to eq(true)
 
     entry_date = entry.entry_dates.first
     expect(entry_date.date).to eq('1425')
