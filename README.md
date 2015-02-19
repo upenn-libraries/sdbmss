@@ -61,13 +61,20 @@ You only need to do the steps in this section once.
   ```
 
 * Set some environment variables in your .bashrc file (or similar
-  shell init file). Log out and log back in for them to take effect.
+  shell init file). Generate values for the secret keys by running
+  "bundle exec rake secret". Log out and log back in for them to take
+  effect.
 
   ```
   export SDBMSS_DB_NAME="sdbm"
   export SDBMSS_DB_USER="xxx"
   export SDBMSS_DB_PASSWORD="xxx"
   export SDBMSS_DB_HOST="xxx"
+  export SDBMSS_BLACKLIGHT_SECRET_KEY="..."
+  export SDBMSS_DEVISE_SECRET_KEY="..."
+  export SDBMSS_SECRET_KEY_BASE="..."
+  export SDBMSS_SECRET_TOKEN="..."
+  export SDBMSS_SOLR_URL="http://127.0.0.1:8983/solr/development"
   ```
 
 * Now you should be ready to run the application and its scripts.
@@ -178,7 +185,9 @@ database.
 * On your local machine, deploy the latest code to the dev VM using
   capistrano. This will put a copy of the code in ~/sdbmss/current on
   the dev VM, update the solr configuration and restart it, and
-  restart the unicorn server.
+  restart the unicorn server. (The account on the dev VM will need the
+  SDBMSS_ environment variables mentioned above; set them in .bashrc
+  or some other way? TODO)
 
   ```
   cd ~/sdbmss
