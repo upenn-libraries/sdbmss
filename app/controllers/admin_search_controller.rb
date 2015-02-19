@@ -74,7 +74,7 @@ class AdminSearchController < CatalogController
             entry.manuscript_binding,
             entry.manuscript_link,
             entry.other_info,
-            entry.get_provenance.map(&:display_value).join("; "),
+            entry.unique_provenance_agents.map { |unique_agent| unique_agent[:name] }.join("; "),
             created_at,
             (created_by.username if created_by),
             updated_at,
