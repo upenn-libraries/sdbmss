@@ -98,7 +98,7 @@ namespace :deploy do
   task :unicorn_start do
     on roles(:all) do
       within current_path do
-        execute :bundle, "exec unicorn_rails -c config/unicorn.rb -D"
+        execute :bundle, "exec unicorn -c config/unicorn.rb -D"
       end
     end
   end
