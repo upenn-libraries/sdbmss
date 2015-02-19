@@ -461,6 +461,14 @@
 
             // sanity check that values we got for dropdowns are
             // actually valid options
+            entry.entry_authors.forEach(function (entry_author) {
+                if(entry_author.role) {
+                    if(! sdbmutil.inOptionsArray(entry_author.role, $scope.optionsAuthorRole)) {
+                        $scope.badData.push("Bad author role value: '" + entry_author.role + "'");
+                    }
+                }
+            });
+
             if(entry.transaction) {
                 if(!sdbmutil.inOptionsArray(entry.transaction.sold, $scope.optionsSold)) {
                     $scope.badData.push("Bad sold value: '" + entry.transaction.sold + "'");
