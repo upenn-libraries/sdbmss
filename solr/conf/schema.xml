@@ -268,9 +268,11 @@
     <field name="transaction_seller" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="transaction_seller_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="transaction_buyer" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="transaction_buyer_search" stored="true" type="text" multiValued="false" indexed="true"/>    <field name="transaction_sold" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="transaction_buyer_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="transaction_sold" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="transaction_price" stored="true" type="sdouble" multiValued="false" indexed="true"/>
     <field name="provenance" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="provenance_search" stored="true" type="text" multiValued="true" indexed="true"/>
     <field name="title" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="title_flat" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="title_search" stored="true" type="text" multiValued="true" indexed="true"/>

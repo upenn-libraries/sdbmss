@@ -174,7 +174,9 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'binding_search' }
       end
 
-      # TODO: provenance
+      config.add_search_field('provenance') do |field|
+        field.solr_local_parameters = { :qf => 'provenance_search' }
+      end
 
       config.add_search_field('comment') do |field|
         field.include_in_simple_select = false

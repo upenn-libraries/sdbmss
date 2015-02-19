@@ -17,4 +17,12 @@ class EventAgent < ActiveRecord::Base
     [ROLE_BUYER, "Buyer"],
   ]
 
+  # returns true if this EventAgent record should be (conceptually)
+  # considered part of the Entry's provenance. This is used for
+  # faceting/search on "Provenance" field.
+  def is_provenance
+    # don't include seller agents
+    [ROLE_SELLER_OR_HOLDER, ROLE_BUYER].member? role
+  end
+
 end

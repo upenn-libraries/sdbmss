@@ -150,6 +150,20 @@ class Entry < ActiveRecord::Base
     unique_agents.values.sort_by { |record| record[:name] }
   end
 
+  # returns list of provenance names for Solr indexing
+  def provenance_names
+    events = get_provenance
+    names = []
+    events.each { |event|
+      event.event_agents.select(&:is_provenance).each { |ea|
+        if ea.agent
+          names << ea.agent.name
+        end
+      }
+    }
+    names if names.length > 0
+  end
+
   # Tell Sunspot how to index fields from this model.
   #
   # Note that we do NOT use sunspot's default dynamic fields (which
@@ -431,19 +445,11 @@ class Entry < ActiveRecord::Base
     #### Provenance
 
     define_field(:string, :provenance, :stored => true, :multiple => true) do
-      events = get_provenance
-      names = []
-      events.each { |event|
-        event.event_agents.each { |ea|
-          if ea.observed_name.present?
-            names << ea.observed_name
-          end
-          if ea.agent
-            names << ea.agent.name
-          end
-        }
-      }
-      names if names.length > 0
+      provenance_names
+    end
+
+    define_field(:text, :provenance_search, :stored => true) do
+      provenance_names
     end
 
     define_field(:text, :comment_search, :stored => true) do
