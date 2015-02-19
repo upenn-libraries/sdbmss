@@ -685,13 +685,15 @@ module SDBMSS::Legacy
 
         title, common_title = parse_common_title(title)
 
-        et = EntryTitle.create!(
-          entry: entry,
-          title: title,
-          common_title: common_title,
-          uncertain_in_source: uncertain_in_source,
-          supplied_by_data_entry: supplied_by_data_entry,
+        if title.present? || common_title.present?
+          et = EntryTitle.create!(
+            entry: entry,
+            title: title,
+            common_title: common_title,
+            uncertain_in_source: uncertain_in_source,
+            supplied_by_data_entry: supplied_by_data_entry,
           )
+        end
       end
 
       # there are 38 rows in db that use , instead of | for some of the delimiters
