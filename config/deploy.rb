@@ -98,6 +98,8 @@ namespace :deploy do
   task :unicorn_start do
     on roles(:all) do
       within current_path do
+        pids_dir = File.join(current_path, "tmp", "pids")
+        execute :mkdir, "-p #{pids_dir}"
         execute :bundle, "exec unicorn -c config/unicorn.rb -D"
       end
     end
