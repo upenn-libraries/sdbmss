@@ -311,6 +311,7 @@
 
         $scope.badData = [];
 
+        $scope.optionsAuthorRole = undefined;
         $scope.optionsSold = undefined;
         $scope.optionsCurrency = undefined;
         $scope.optionsCirca = undefined;
@@ -676,6 +677,8 @@
         $http.get("/entries/form_dropdown_values/").then(
             function(result) {
 
+                $scope.optionsAuthorRole = result.data.author_role;
+                $scope.optionsAuthorRole.unshift(["", ""]);
                 $scope.optionsSold = result.data.sold;
                 $scope.optionsCurrency = result.data.currency;
                 $scope.optionsCurrency.unshift(["", ""]);

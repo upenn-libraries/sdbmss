@@ -92,11 +92,12 @@ class EntriesController < ApplicationController
   # page
   def form_dropdown_values
     data = {
-        'circa' => EntryDate::CIRCA_TYPES,
-        'currency' => Event::CURRENCY_TYPES,
-        'sold' => Event::SOLD_TYPES,
-        'material' => EntryMaterial::MATERIAL_TYPES,
-        'alt_size' => Entry::ALT_SIZE_TYPES,
+      'author_role' => EntryAuthor::TYPES_ROLES,
+      'circa' => EntryDate::CIRCA_TYPES,
+      'currency' => Event::CURRENCY_TYPES,
+      'sold' => Event::SOLD_TYPES,
+      'material' => EntryMaterial::MATERIAL_TYPES,
+      'alt_size' => Entry::ALT_SIZE_TYPES,
     }
     render json: data
   end

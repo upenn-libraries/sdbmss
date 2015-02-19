@@ -187,7 +187,7 @@
           <span sdbm-tooltip="role">Role</span>
       </label>
       <div class="col-sm-1">
-          <input id="author_role_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.role" />
+          <select id="author_role_{{ $index }}" name="author_role" class="form-control" ng-model="entry_author.role" ng-options="option[0] as option[1] for option in optionsAuthorRole"></select>
       </div>
     </div>
     </div>

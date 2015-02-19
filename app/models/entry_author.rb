@@ -7,6 +7,17 @@ class EntryAuthor < ActiveRecord::Base
 
   validates_presence_of :entry
 
+  TYPES_ROLES = [
+    ['Attr', 'Attr'],
+    ['Tr', 'Tr'],
+    ['Com', 'Com'],
+    ['Comp', 'Comp'],
+    ['Ed', 'Ed'],
+    ['Gl', 'Gl'],
+    ['Pref', 'Pref'],
+    ['Intr', 'Intr']
+  ]
+
   def display_value
     case
     when author && observed_name

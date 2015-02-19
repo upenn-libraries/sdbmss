@@ -143,7 +143,7 @@ describe "Data entry", :js => true do
     fill_in 'title_0', with: 'Book of Hours'
     fill_autocomplete_select_or_create_entity 'author_0', with: 'Schmoe, Joe'
     fill_in 'author_observed_name_0', with: 'Joe Schmoe'
-    fill_in 'author_role_0', with: 'Tr'
+    select 'Tr', from: 'author_role_0'
     fill_in 'date_0', with: '1425'
     select 'Circa Century', from: 'circa_0'
     fill_autocomplete_select_or_create_entity 'artist_0', with: 'Schultz, Charles'
