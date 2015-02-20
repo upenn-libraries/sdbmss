@@ -420,7 +420,7 @@
         <label class="col-sm-2 control-label">
             <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.provenance, prov)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-            Sale/Acquire Date
+            Start Date
         </label>
       <div class="col-sm-2">
         <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date">
@@ -447,7 +447,7 @@
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-2 control-label">Seller/Holder</label>
+      <label class="col-sm-2 control-label">Holder</label>
       <div class="col-sm-5">
           <div class="input-group">
               <input id="provenance_seller_or_holder_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
