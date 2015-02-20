@@ -60,16 +60,22 @@ You only need to do the steps in this section once.
   FLUSH PRIVILEGES
   ```
 
-* Set some environment variables in your .bashrc file (or similar
-  shell init file). Generate values for the secret keys by running
-  "bundle exec rake secret". Log out and log back in for them to take
-  effect.
+* Set environment variables in your .bashrc file (or similar shell
+  init file). Generate values for the secret keys by running "bundle
+  exec rake secret". Log out and log back in for them to take effect.
 
   ```
+  # used by data migration script only
+  export SDBMSS_LEGACY_DB_NAME="sdbm_live_copy"
+  export SDBMSS_LEGACY_DB_USER="xxx"
+  export SDBMSS_LEGACY_DB_PASSWORD="xxx"
+  export SDBMSS_LEGACY_DB_HOST="xxx"
+  # used by app
   export SDBMSS_DB_NAME="sdbm"
   export SDBMSS_DB_USER="xxx"
   export SDBMSS_DB_PASSWORD="xxx"
   export SDBMSS_DB_HOST="xxx"
+  # secrets only used in production env
   export SDBMSS_BLACKLIGHT_SECRET_KEY="..."
   export SDBMSS_DEVISE_SECRET_KEY="..."
   export SDBMSS_SECRET_KEY_BASE="..."

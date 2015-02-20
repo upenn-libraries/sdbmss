@@ -45,7 +45,11 @@ module SDBMSS::Legacy
 
     # Returns db connection to the legacy database in MySQL.
     def get_legacy_db_conn
-      Mysql2::Client.new(:host => "localhost", :username => "root", :database => 'sdbm_live_copy')
+      Mysql2::Client.new(:host => ENV["SDBMSS_LEGACY_DB_HOST"],
+                         :username => ENV["SDBMSS_LEGACY_DB_USER"],
+                         :database => ENV["SDBMSS_LEGACY_DB_NAME"],
+                         :password => ENV["SDBMSS_LEGACY_DB_PASSWORD"],
+                        )
     end
 
     def create_user(row, ctx)
