@@ -851,7 +851,6 @@
                     // noop
                 },
                 change: function(event, ui) {
-                    console.log("autocomplete change event fired");
                     var inputValue = $(element).val();
 
                     // if no actual selection was made
