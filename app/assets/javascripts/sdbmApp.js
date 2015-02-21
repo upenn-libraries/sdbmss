@@ -769,7 +769,18 @@
         return function (scope, element, attrs) {
             var modelName = attrs.sdbmAutocompleteModel;
             var controller = attrs.sdbmAutocompleteModalController;
+            var options;
+            var invalidInput = false;
 
+            // WARNING: there be dragons here. Much of this code is
+            // here to keep data in sync between INPUT and Angular
+            // models and to limit text to valid selections only.
+            
+            var assignToModel = function(value) {
+                var model = $parse(modelName);
+                model.assign(scope, value);
+            };
+            
             if(! (modelName && controller)) {
                 alert("Error on page: sdbm-autocomplete directive is missing attributes");
             }
@@ -795,9 +806,15 @@
                 if (event.which == 13) {
                     event.preventDefault();
                     $(element).blur();
+                } else if (invalidInput && (event.which == 9 || event.keyCode == 9)) {
+                    // prevent tab from being processed when input is invalid
+                    event.preventDefault();
+                } else {
+                    // user typed something, so reset invalid flag
+                    invalidInput = false;
                 }
             });
-            
+                
             $(element).autocomplete({
                 source: function (request, response_callback) {
                     var url  = attrs.sdbmAutocomplete;
@@ -809,7 +826,7 @@
                     }).then(function (response) {
                         // transform data from API call into format expected by autocomplete
                         var exactMatch = false;
-                        var options = response.data;
+                        options = response.data;
                         options.forEach(function(option) {
                             option.label = option.name;
                             option.value = option.id;
@@ -834,30 +851,55 @@
                     // noop
                 },
                 change: function(event, ui) {
+                    console.log("autocomplete change event fired");
                     var inputValue = $(element).val();
 
-                    // if no actual selection was made, clear the data model
+                    // if no actual selection was made
                     if(ui.item === null) {
+                        var match = false;
 
-                        // if user typed in junk, clear it out and warn
-                        if(inputValue) {
-                            $(element).val("");
-                            
-                            $(element)
-                                .tooltip("option", "content", inputValue + " isn't valid input")
-                                .tooltip("option", "disabled", false)
-                                .tooltip("open");
-                            setTimeout(function() {
+                        // did user type in something that actually
+                        // matches an option? if so, select it.
+                        options.forEach(function (option) {
+                            if(inputValue === option.label) {
+                                assignToModel(option);
+                                scope.$apply();
+                                match = true;
+                            }
+                        });
+
+                        if(!match) {
+                            // force user to fix the value
+                            if(inputValue) {
+                                // TODO: calling focus() directly here
+                                // doesn't work in Firefox (but works
+                                // in Chrome). Using setTimeout() is
+                                // susceptible to race conditions with
+                                // the browser's default handling of
+                                // tab key, but in practice, it works.
+                                // Need to find a better way.
+                                setTimeout(function() {
+                                    $(element).focus();
+                                }, 100);
+
                                 $(element)
-                                    .tooltip("option", "content", "")
-                                    .tooltip("option", "disabled", true)
-                                    .tooltip("close");
-                            }, 3000);
+                                    .tooltip("option", "content", inputValue + " isn't valid input, please change it or select a value from the suggestion box")
+                                    .tooltip("option", "disabled", false)
+                                    .tooltip("open");
+                                setTimeout(function() {
+                                    $(element)
+                                        .tooltip("option", "content", "")
+                                        .tooltip("option", "disabled", true)
+                                        .tooltip("close");
+                                }, 3000);
+
+                                invalidInput = true;
+                            }
+                            assignToModel(null);
+                            scope.$apply();
                         }
-                            
-                        var model = $parse(modelName);
-                        model.assign(scope, null);
-                        scope.$apply();
+                    } else {
+                        invalidInput = false;
                     }
                 },
                 select: function(event, ui) {
@@ -881,22 +923,16 @@
 
                             /* callback for handling result */
                             modalInstance.result.then(function (agent) {
-                                // $parse resolves the name in the current scope, which we
-                                // need to do to reference objects properly from inside
-                                // ng-repeat loops
-                                var model = $parse(modelName);
-                                model.assign(scope, agent);
+                                assignToModel(agent);
                             }, function () {
                                 $(element).val("");
-                                var model = $parse(modelName);
-                                model.assign(scope, null);
+                                assignToModel(null);
                             });
 
                         });
                     } else {
                         $(element).val(ui.item.label);
-                        var model = $parse(modelName);
-                        model.assign(scope, ui.item);
+                        assignToModel(ui.item);
                         scope.$apply();
                     }
                 }
