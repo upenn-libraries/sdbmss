@@ -1,9 +1,41 @@
 
 require "rails_helper"
+require 'net/http'
 
-describe "Public search" do
+# There's JS on most of these pages. Not all features use JS, but
+# there's no good reason NOT to use the js driver, so we do.
+describe "Search", :js => true do
 
-  it "should load successfully" do
+  before :all do
+    # since we already have a set of reference data, we use that here
+    # instead of creating another set of test data. The consequence is
+    # that these tests don't exercise everything as thoroughly as they
+    # should, but they're probably good enough.
+    SDBMSS::ReferenceData.create_all
+
+    # wait for Solr to be 'current' (ie caught up with indexing). this
+    # really can take 5 secs, if not more.
+    current = false
+    count = 0
+    while (!current && count < 5)
+      sleep(1)
+      result = Net::HTTP.get(URI('http://localhost:8983/solr/admin/cores?action=STATUS&core=test'))
+      current_str = /<bool name="current">(.+?)<\/bool>/.match(result)[1]
+      current = current_str == 'true'
+      count += 1
+    end
+  end
+
+  # Returns a record from Hill catalog
+  def get_hill_entry_by_cat_num cat_num
+    Entry
+      .joins(:source => [:source_agents => :agent])
+      .where(:agents => { :name => "Jonathan A. Hill" },
+             :catalog_or_lot_number => cat_num)
+      .first
+  end
+
+  it "should load main landing page" do
     visit root_path
     expect(page).to have_selector("input#q")
   end
@@ -12,8 +44,92 @@ describe "Public search" do
     visit root_path
     click_button('search')
     expect(page).to have_selector("#documents")
+
+    Entry.all.order(id: :desc).limit(5).each do |entry|
+      expect(page).to have_link(entry.get_public_id)
+    end
   end
 
-  it "should 404 on request for deleted entry"
+  it "should search on Provenance" do
+    visit root_path
+    select "Provenance", from: "search_field"
+    fill_in "q", with: "Tomkinson"
+    click_button('search')
+
+    entry_one = get_hill_entry_by_cat_num(1)
+    entry_nine = get_hill_entry_by_cat_num(9)
+
+    expect(page).to have_link(entry_one.get_public_id)
+    expect(page).not_to have_link(entry_nine.get_public_id)
+  end
+
+  # This page uses javascript
+  it "should do advanced search using numeric range on Height" do
+    visit advanced_search_path
+
+    fill_in "numeric_start_0", with: 250
+    fill_in "numeric_end_0", with: 260
+    select "Height", from: "numeric_field_0"
+
+    find_by_id('advanced-search-submit').click
+
+    entry_one = get_hill_entry_by_cat_num(1)
+    entry_nine = get_hill_entry_by_cat_num(9)
+
+    expect(page).to have_link(entry_one.get_public_id)
+    expect(page).not_to have_link(entry_nine.get_public_id)
+  end
+
+  it "should load show Entry page" do
+    entry = Entry.last
+    visit entry_path(entry)
+    expect(page).to have_xpath("//h1[contains(.,'#{entry.get_public_id}')]")
+  end
+
+  it "should load show Source page" do
+    source = Source.last
+    visit source_path(source)
+    expect(page).to have_xpath("//h1[contains(.,'#{source.get_public_id}')]")
+  end
+
+  it "should load show Agent page" do
+    agent = Agent.last
+    visit agent_path(agent)
+    expect(page).to have_xpath("//h1[contains(.,'#{agent.get_public_id}')]")
+  end
+
+  it "should load show Author page" do
+    author = Author.last
+    visit author_path(author)
+    expect(page).to have_xpath("//h1[contains(.,'#{author.get_public_id}')]")
+  end
+
+  it "should 404 on show Entry page for deleted entry"
+
+  it "should bookmark an Entry" do
+    visit root_path
+    fill_in "q", with: "Tomkinson"
+    click_button('search')
+    expect(page).to have_selector("#documents")
+
+    entry_one = get_hill_entry_by_cat_num 1
+    find_by_id("toggle_bookmark_" + entry_one.id.to_s).click
+    sleep(1)
+
+    visit bookmarks_path
+
+    expect(page).to have_link(entry_one.get_public_id)
+  end
+
+  it "should add search to History" do
+    visit root_path
+    fill_in "q", with: "My Unique Search"
+    click_button('search')
+    expect(page).to have_selector("#documents")
+
+    visit search_history_path
+
+    expect(page).to have_content("My Unique Search")
+  end
 
 end

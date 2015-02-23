@@ -29,6 +29,9 @@ module SDBMSS::ReferenceData
       create_entry_one
       create_entry_nine
       create_entry_fourteen
+
+      # reindex everything because we create associations after Entry
+      Sunspot.index Entry.all
     end
 
     def create_source

@@ -102,7 +102,7 @@ module SDBMSS
       end
 
       count = entries.count()
-      puts "Calculating record's similarity to other #{count} records"
+      #puts "Calculating record's similarity to other #{count} records"
 
       if count < 500
 

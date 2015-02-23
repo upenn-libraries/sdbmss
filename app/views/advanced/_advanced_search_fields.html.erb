@@ -59,15 +59,15 @@ $(document).ready(function() {
 <div class="form-group advanced-search-field">
     <input type="hidden" name="" value=""/>
     <div class="col-sm-3">
-        <input class="form-control start" type="text"/>
+        <input class="form-control start" id="numeric_start_<%= x %>" type="text"/>
     </div>
     <div class="col-sm-1">to</div>
     <div class="col-sm-3">
-        <input class="form-control end" type="text"/>
+        <input class="form-control end" id="numeric_end_<%= x %>" type="text"/>
     </div>
     <div class="col-sm-1">in</div>
     <div class="col-sm-4">
-        <select class="form-control col-sm-3">
+        <select class="form-control col-sm-3" id="numeric_field_<%= x %>">
             <%- range_search_fields.each do |key, field_def| -%>
             <option value="<%= key %>"><%= field_def.label %></option>
             <%- end -%>
