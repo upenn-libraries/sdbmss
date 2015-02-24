@@ -391,9 +391,9 @@
 
     <tbody>
         <tr>
-            <td class="col-sm-2 text-right record-label">Created by</td>
+            <td class="col-sm-2 text-right record-label">Created</td>
             <td class="col-sm-10">
-                <%= entry.created_by ? entry.created_by.username : "Unknown" %>
+                by <%= entry.created_by ? entry.created_by.username : "Unknown" %> on <%= entry.created_at %>
             </td>
         </tr>
         <tr>
