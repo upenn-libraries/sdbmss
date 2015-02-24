@@ -46,6 +46,7 @@ class EntriesController < ApplicationController
         @entry.update!(
           params.permit(
           :catalog_or_lot_number,
+          :institution_id,
           :folios, :num_lines, :num_columns,
           :height, :width, :alt_size,
           :miniatures_fullpage, :miniatures_large, :miniatures_small, :miniatures_unspec_size,

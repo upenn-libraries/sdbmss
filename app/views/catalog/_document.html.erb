@@ -31,6 +31,11 @@
 	    <dd><%= entry.catalog_or_lot_number %></dd>
         <% end %>
 
+        <% if entry.institution.present? %>
+	    <dt>Institution/Collection</dt>
+	    <dd><%= entry.institution %></dd>
+        <% end %>
+        
         <% if entry.secondary_source.present? %>
 	    <dt>Secondary Source</dt>
         <dd>

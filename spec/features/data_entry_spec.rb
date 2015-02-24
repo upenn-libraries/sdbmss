@@ -141,6 +141,23 @@ describe "Data entry", :js => true do
       expect(page).to have_no_content 'Transaction Information'
     end
 
+    it "should load New Entry page with other published Source" do
+      source = Source.find_or_create_by(
+        title: "Some Other Published Source",
+        date: "2013-11-12",
+        source_type: Source::TYPE_OTHER_PUBLISHED
+      )
+      source.save!
+
+      visit new_entry_path :source_id => source.id
+
+      expect(page).to have_content 'Add an Entry - Fill out details'
+
+      find_by_id("institution")
+
+      expect(page).to have_no_content 'Transaction Information'
+    end
+
     it "should save an auction catalog Source" do
       count = Source.count
 
@@ -182,7 +199,48 @@ describe "Data entry", :js => true do
       expect(source.comments).to eq('This info is correct')
     end
 
-    it "should save an Entry" do
+    it "should save Other Published Source" do
+      count = Source.count
+
+      visit new_source_path
+
+      select 'Other Published Source', from: 'source_type'
+      fill_in 'source_date', with: '2014-02-34'
+      fill_in 'title', with: 'DeRicci Census'
+      fill_in 'author', with: 'Seymour DeRicci'
+      select "Yes", from: 'whether_mss'
+      fill_in 'current_location', with: "University of Pennsylvania"
+      fill_in 'location_city', with: "Philadelphia"
+      fill_in 'location_country', with: "USA"
+      fill_in 'link', with: "HM851 .L358 2010"
+      fill_in 'cataloging_type', with: "print"
+      fill_in 'electronic_catalog_format', with: "test"
+      select "No", from: 'electronic_publicly_available'
+      fill_in 'comments', with: 'This info is correct'
+
+      click_button('Save')
+
+      sleep(1)
+
+      expect(Source.count).to eq(count + 1)
+
+      source = Source.last
+      expect(source.source_type).to eq(Source::TYPE_OTHER_PUBLISHED)
+      expect(source.date).to eq('20140234')
+      expect(source.title).to eq('DeRicci Census')
+      expect(source.author).to eq('Seymour DeRicci')
+      expect(source.whether_mss).to eq("Yes")
+      expect(source.current_location).to eq("University of Pennsylvania")
+      expect(source.location_city).to eq("Philadelphia")
+      expect(source.location_country).to eq("USA")
+      expect(source.link).to eq("HM851 .L358 2010")
+      expect(source.cataloging_type).to eq("print")
+      expect(source.electronic_catalog_format).to eq("test")
+      expect(source.electronic_publicly_available).to eq("No")
+      expect(source.comments).to eq('This info is correct')
+    end
+
+    it "should save an auction catalog Entry" do
       # fill out all the fields and make sure they save to the database
 
       count = Entry.count

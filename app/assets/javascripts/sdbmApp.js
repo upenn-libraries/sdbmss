@@ -616,6 +616,10 @@
 
             entryToSave.source_id = entryToSave.source.id;
 
+            if(entryToSave.institution) {
+                entryToSave.institution_id = entryToSave.institution.id;
+            }
+            
             var objectArraysWithRelatedObjects = [
                 [ entryToSave.entry_authors, 'author' ],
                 [ entryToSave.entry_artists, 'artist' ],

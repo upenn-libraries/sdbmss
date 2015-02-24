@@ -9,9 +9,13 @@ class Source < ActiveRecord::Base
   TYPE_UNPUBLISHED = 'unpublished'
 
   SOURCE_TYPES = [
+    # Auction Catalogs include Sotheby's
     [TYPE_AUCTION_CATALOG, 'Auction/Sale Catalog'],
+    # Collection Catalogs include things like Penn's published catalog
     [TYPE_COLLECTION_CATALOG, 'Collection Catalog'],
+    # Other Published Source includes DeRicci, censuses, journal articles
     [TYPE_OTHER_PUBLISHED, 'Other Published Source'],
+    # TODO: ???
     [TYPE_UNPUBLISHED, 'Unpublished'],
   ]
 
@@ -93,7 +97,12 @@ class Source < ActiveRecord::Base
   # returns true if entries should have a transaction record
   # associated with them
   def entries_have_a_transaction
-    !(source_type == TYPE_COLLECTION_CATALOG)
+    !(source_type == TYPE_COLLECTION_CATALOG || source_type == TYPE_OTHER_PUBLISHED)
+  end
+
+  # returns true if entries should use institution/collection field
+  def entries_have_institution
+    source_type == TYPE_OTHER_PUBLISHED
   end
 
   # Returns 3-part display string for Source

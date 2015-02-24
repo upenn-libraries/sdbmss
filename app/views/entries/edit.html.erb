@@ -71,6 +71,13 @@
       </div>
     </div>
 
+    <div class="row form-group" ng-show="entry.source.entries_have_institution">
+      <label for="cat_lot_no" class="col-sm-2 control-label"><span sdbm-tooltip="institution">Institution/Collection</span></label>
+      <div class="col-sm-5">
+          <input id="institution" class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.institution" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+      </div>
+    </div>
+
     <div class="transaction-information-container" ng-show="entry.source.entries_have_a_transaction">
 
         <div class="row">

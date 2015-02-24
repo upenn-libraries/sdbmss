@@ -1,6 +1,9 @@
 class Entry < ActiveRecord::Base
   belongs_to :source
 
+  # entries have institution/collection for "Other published sources" only
+  belongs_to :institution, class_name: "Agent"
+
   include UserFields
 
   has_many :entry_manuscripts
