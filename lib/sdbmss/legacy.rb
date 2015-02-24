@@ -654,7 +654,7 @@ module SDBMSS::Legacy
           pa = EventAgent.create!(
             event: transaction,
             agent: get_or_create_agent(agent_name),
-            role: EventAgent::ROLE_SELLER_AGENT,
+            role: EventAgent::ROLE_SELLING_AGENT,
             uncertain_in_source: uncertain_in_source,
             supplied_by_data_entry: supplied_by_data_entry,
           )
@@ -1124,7 +1124,7 @@ module SDBMSS::Legacy
         SourceAgent.create!(
           source: source,
           agent: institution,
-          role: "institution",
+          role: SourceAgent::ROLE_INSTITUTION,
         )
       end
 
@@ -1132,7 +1132,7 @@ module SDBMSS::Legacy
         SourceAgent.create!(
           source: source,
           agent: seller,
-          role: "seller_agent",
+          role: SourceAgent::ROLE_SELLING_AGENT,
         )
       end
 

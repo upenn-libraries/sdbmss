@@ -417,7 +417,7 @@
             });
 
             // Transform EventAgent records into buyer, seller,
-            // seller_agent fields on the Event, so that UI can bind
+            // selling_agent fields on the Event, so that UI can bind
             // to that data easily
             for(var idx in entry.events) {
                 var event = entry.events[idx];
@@ -593,7 +593,7 @@
             // Transform fields back into EventAgent records
             entryToSave.events.forEach(function (event, index, array) {
                 event.event_agents = [];
-                ["buyer", "seller_agent", "seller_or_holder"].forEach(function (role) {
+                ["buyer", "selling_agent", "seller_or_holder"].forEach(function (role) {
                     if(event[role]) {
                         var event_agent = event[role];
                         event_agent.role = role;
@@ -758,7 +758,7 @@
      * gets modified first: the Angular models or the view
      * model. Here's what the HTML would look like:
      *
-     * <input class="form-control" ng-model="source.seller_agent.agent" typeahead-wait-ms="250" typeahead-editable="false" typeahead-min-length="2" typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl" />
+     * <input class="form-control" ng-model="source.selling_agent.agent" typeahead-wait-ms="250" typeahead-editable="false" typeahead-min-length="2" typeahead="choice as choice.display_value for choice in typeAheadService.getOptions($viewValue, '/agents/search.json')" sdbm-show-create-modal-on-model-change="CreateAgentModalCtrl" />
      *
      * xeditable (uses UI Bootstrap) - this widget is clunky. clicking
      * a hyperlink to turn it into a INPUT control is an extra step,
@@ -1041,7 +1041,7 @@
         
         $scope.currentlySaving = false;
         
-        $scope.agent_role_types = ['institution', 'buyer', 'seller_or_holder', 'seller_agent'];
+        $scope.agent_role_types = ['institution', 'buyer', 'seller_or_holder', 'selling_agent'];
         
         $scope.pageTitle = "";
 

@@ -32,7 +32,7 @@ class AdminSearchController < CatalogController
           manuscript = entry.get_manuscript
           source = entry.source
           transaction = entry.get_transaction
-          transaction_seller_agent = (transaction.get_seller_agent_as_agent.name if transaction && transaction.get_seller_agent_as_agent)
+          transaction_selling_agent = (transaction.get_selling_agent_as_agent.name if transaction && transaction.get_selling_agent_as_agent)
           transaction_seller_or_holder = (transaction.get_seller_or_holder_as_agent.name if transaction && transaction.get_seller_or_holder_as_agent)
           transaction_buyer = (transaction.get_buyer_as_agent.name if transaction && transaction.get_buyer_as_agent)
           created_at = entry.created_at ? entry.created_at.strftime(dateformat) : nil
@@ -45,7 +45,7 @@ class AdminSearchController < CatalogController
             SDBMSS::Util.format_fuzzy_date(source.date),
             source.title,
             entry.catalog_or_lot_number,
-            transaction_seller_agent,
+            transaction_selling_agent,
             transaction_seller_or_holder,
             transaction_buyer,
             (transaction.sold if transaction),

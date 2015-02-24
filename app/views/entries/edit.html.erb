@@ -87,11 +87,11 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 control-label"><span sdbm-tooltip="seller">Seller Agent</span></label>
+            <label class="col-sm-2 control-label"><span sdbm-tooltip="seller">Selling Agent</span></label>
             <div class="col-sm-5">
                 <div class="input-group">
-                    <input id="transaction_seller_agent" class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.transaction.seller_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
-                    <div id="transaction_seller_agent_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.seller_agent"><span class="glyphicon"></span></div>
+                    <input id="transaction_selling_agent" class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="entry.transaction.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+                    <div id="transaction_selling_agent_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.selling_agent"><span class="glyphicon"></span></div>
                 </div>
             </div>
             <label class="col-sm-1 control-label"><span sdbm-tooltip="seller2">Seller</span></label>
@@ -440,16 +440,16 @@
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-2 control-label">Seller Agent</label>
+      <label class="col-sm-2 control-label">Selling Agent</label>
       <div class="col-sm-5">
           <div class="input-group">
-              <input id="provenance_seller_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.seller_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
-              <div id="provenance_seller_agent_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov.seller_agent"><span class="glyphicon"></span></div>
+              <input id="provenance_selling_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/agents/search.json" sdbm-autocomplete-model="prov.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateAgentModalCtrl"/>
+              <div id="provenance_selling_agent_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov.selling_agent"><span class="glyphicon"></span></div>
           </div>
       </div>
       <label class="col-sm-1 control-label">As Recorded</label>
       <div class="col-sm-4">
-          <input id="provenance_seller_agent_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.seller_agent.observed_name">
+          <input id="provenance_selling_agent_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.selling_agent.observed_name">
       </div>
     </div>
 

@@ -101,7 +101,7 @@ describe "Data entry", :js => true do
         source_agents_attributes: [
           {
             agent: Agent.find_or_create_by(name: "aaa"),
-            role: SourceAgent::ROLE_SELLER_AGENT,
+            role: SourceAgent::ROLE_SELLING_AGENT,
           },
           {
             agent: Agent.find_or_create_by(name: "bbb"),
@@ -122,7 +122,7 @@ describe "Data entry", :js => true do
       expect(page).to have_content 'Transaction Information'
 
       # should prepopulate Transaction fields
-      expect(find_by_id("transaction_seller_agent").value).to eq("aaa")
+      expect(find_by_id("transaction_selling_agent").value).to eq("aaa")
       expect(find_by_id("transaction_seller").value).to eq("bbb")
       expect(find_by_id("transaction_buyer").value).to eq("ccc")
     end
@@ -166,7 +166,7 @@ describe "Data entry", :js => true do
       select 'Auction/Sale Catalog', from: 'source_type'
       fill_in 'source_date', with: '2014-02-34'
       fill_in 'title', with: 'Very Rare Books'
-      fill_autocomplete_select_or_create_entity 'seller_agent', with: "Sotheby's"
+      fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
       select "Yes", from: 'whether_mss'
       fill_in 'current_location', with: "University of Pennsylvania"
       fill_in 'location_city', with: "Philadelphia"
@@ -187,7 +187,7 @@ describe "Data entry", :js => true do
       expect(source.source_type).to eq(Source::TYPE_AUCTION_CATALOG)
       expect(source.date).to eq('20140234')
       expect(source.title).to eq('Very Rare Books')
-      expect(source.get_seller_agent.agent.name).to eq("Sotheby's")
+      expect(source.get_selling_agent.agent.name).to eq("Sotheby's")
       expect(source.whether_mss).to eq("Yes")
       expect(source.current_location).to eq("University of Pennsylvania")
       expect(source.location_city).to eq("Philadelphia")
@@ -247,7 +247,7 @@ describe "Data entry", :js => true do
 
       visit new_entry_path :source_id => @source.id
       fill_in 'cat_lot_no', with: '123'
-      fill_autocomplete_select_or_create_entity 'transaction_seller_agent', with: "Sotheby's"
+      fill_autocomplete_select_or_create_entity 'transaction_selling_agent', with: "Sotheby's"
       fill_autocomplete_select_or_create_entity 'transaction_seller', with: 'Joe2'
       fill_autocomplete_select_or_create_entity 'transaction_buyer', with: 'Joe3'
       select 'No', from: 'transaction_sold'
@@ -288,8 +288,8 @@ describe "Data entry", :js => true do
 
       fill_in 'provenance_start_date_0', with: '19450615'
       fill_in 'provenance_end_date_0', with: '19651123'
-      fill_autocomplete_select_or_create_entity 'provenance_seller_agent_0', with: "Sotheby's"
-      fill_in 'provenance_seller_agent_observed_name_0', with: "Sotheby's Fine Things"
+      fill_autocomplete_select_or_create_entity 'provenance_selling_agent_0', with: "Sotheby's"
+      fill_in 'provenance_selling_agent_observed_name_0', with: "Sotheby's Fine Things"
       fill_autocomplete_select_or_create_entity 'provenance_seller_or_holder_0', with: 'Somebody, Joseph'
       fill_in 'provenance_seller_or_holder_observed_name_0', with: 'Joseph H. Somebody'
       fill_autocomplete_select_or_create_entity 'provenance_buyer_0', with: 'Collector, William'
@@ -311,7 +311,7 @@ describe "Data entry", :js => true do
       transaction = entry.get_transaction
 
       expect(entry.catalog_or_lot_number).to eq('123')
-      expect(transaction.get_seller_agent.agent.name).to eq("Sotheby's")
+      expect(transaction.get_selling_agent.agent.name).to eq("Sotheby's")
       expect(transaction.get_seller_or_holder.agent.name).to eq('Joe2')
       expect(transaction.get_buyer.agent.name).to eq('Joe3')
       expect(transaction.sold).to eq('No')
@@ -363,8 +363,8 @@ describe "Data entry", :js => true do
       provenance = entry.get_provenance.first
       expect(provenance.start_date).to eq('19450615')
       expect(provenance.end_date).to eq('19651123')
-      expect(provenance.get_seller_agent.agent.name).to eq("Sotheby's")
-      expect(provenance.get_seller_agent.observed_name).to eq("Sotheby's Fine Things")
+      expect(provenance.get_selling_agent.agent.name).to eq("Sotheby's")
+      expect(provenance.get_selling_agent.observed_name).to eq("Sotheby's Fine Things")
       expect(provenance.get_seller_or_holder.agent.name).to eq('Somebody, Joseph')
       expect(provenance.get_seller_or_holder.observed_name).to eq('Joseph H. Somebody')
       expect(provenance.get_buyer.agent.name).to eq('Collector, William')

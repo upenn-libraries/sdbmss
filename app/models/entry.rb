@@ -104,8 +104,8 @@ class Entry < ActiveRecord::Base
     end
   end
 
-  def get_transaction_seller_agent_name
-    get_transaction_agent_name(EventAgent::ROLE_SELLER_AGENT)
+  def get_transaction_selling_agent_name
+    get_transaction_agent_name(EventAgent::ROLE_SELLING_AGENT)
   end
 
   def get_transaction_seller_or_holder_name
@@ -210,7 +210,7 @@ class Entry < ActiveRecord::Base
         catalog_or_lot_number,
         secondary_source,
         # transaction
-        get_transaction_seller_agent_name,
+        get_transaction_selling_agent_name,
         get_transaction_seller_or_holder_name,
         get_transaction_buyer_name,
         get_transaction_price,
@@ -287,11 +287,11 @@ class Entry < ActiveRecord::Base
 
     #### Transaction info
 
-    define_field(:string, :transaction_seller_agent, :stored => true) do
-      get_transaction_seller_agent_name
+    define_field(:string, :transaction_selling_agent, :stored => true) do
+      get_transaction_selling_agent_name
     end
-    define_field(:text, :transaction_seller_agent_search, :stored => true) do
-      get_transaction_seller_agent_name
+    define_field(:text, :transaction_selling_agent_search, :stored => true) do
+      get_transaction_selling_agent_name
     end
 
     define_field(:string, :transaction_seller, :stored => true) do

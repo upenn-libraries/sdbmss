@@ -46,13 +46,13 @@ class Event < ActiveRecord::Base
   end
 
   # returns an EventAgent record
-  def get_seller_agent
-    get_event_agent_with_role(EventAgent::ROLE_SELLER_AGENT)
+  def get_selling_agent
+    get_event_agent_with_role(EventAgent::ROLE_SELLING_AGENT)
   end
 
   # returns an Agent record
-  def get_seller_agent_as_agent
-    ea = get_event_agent_with_role(EventAgent::ROLE_SELLER_AGENT)
+  def get_selling_agent_as_agent
+    ea = get_event_agent_with_role(EventAgent::ROLE_SELLING_AGENT)
     ea.agent if ea
   end
 

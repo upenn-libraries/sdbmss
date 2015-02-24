@@ -49,7 +49,7 @@ module SDBMSS::ReferenceData
       source_agent = SourceAgent.create!(
         source: @source,
         agent: @hill,
-        role: SourceAgent::ROLE_SELLER_AGENT
+        role: SourceAgent::ROLE_SELLING_AGENT
       )
     end
 
@@ -76,7 +76,7 @@ module SDBMSS::ReferenceData
       transaction_agent = EventAgent.create!(
         event: transaction,
         agent: @hill,
-        role: EventAgent::ROLE_SELLER_AGENT
+        role: EventAgent::ROLE_SELLING_AGENT
       )
 
       EntryTitle.create!(
@@ -134,7 +134,7 @@ module SDBMSS::ReferenceData
         event_agents_attributes: [
           {
             agent: Agent.find_or_create_by(name: "Sotheby's"),
-            role: EventAgent::ROLE_SELLER_AGENT
+            role: EventAgent::ROLE_SELLING_AGENT
           },
           {
             agent: Agent.find_or_create_by(name: "Tomkinson, Michael"),
@@ -185,7 +185,7 @@ module SDBMSS::ReferenceData
         event_agents_attributes: [
           {
             agent: @hill,
-            role: EventAgent::ROLE_SELLER_AGENT
+            role: EventAgent::ROLE_SELLING_AGENT
           }
         ]
       )
@@ -284,7 +284,7 @@ module SDBMSS::ReferenceData
       transaction_agent = EventAgent.create!(
         event: transaction,
         agent: @hill,
-        role: EventAgent::ROLE_SELLER_AGENT
+        role: EventAgent::ROLE_SELLING_AGENT
       )
 
       EntryTitle.create!(
@@ -477,7 +477,7 @@ module SDBMSS::ReferenceData
         event_agents_attributes: [
           {
             agent: Agent.find_or_create_by(name: "Sotheby's"),
-            role: EventAgent::ROLE_SELLER_AGENT
+            role: EventAgent::ROLE_SELLING_AGENT
           },
           {
             agent: Agent.find_or_create_by(name: "Thompson, Henry Yates"),
@@ -502,7 +502,7 @@ module SDBMSS::ReferenceData
           },
           {
             agent: Agent.find_or_create_by(name: "Hoepli"),
-            role: EventAgent::ROLE_SELLER_AGENT
+            role: EventAgent::ROLE_SELLING_AGENT
           }
         ]
       )
@@ -525,7 +525,7 @@ module SDBMSS::ReferenceData
         event_agents_attributes: [
           {
             agent: Agent.find_or_create_by(name: "Sotheby's"),
-            role: EventAgent::ROLE_SELLER_AGENT
+            role: EventAgent::ROLE_SELLING_AGENT
           },
           {
             observed_name: "Anonymous",

@@ -81,8 +81,8 @@ class Source < ActiveRecord::Base
     get_source_agent_with_role(SourceAgent::ROLE_SELLER_OR_HOLDER)
   end
 
-  def get_seller_agent
-    get_source_agent_with_role(SourceAgent::ROLE_SELLER_AGENT)
+  def get_selling_agent
+    get_source_agent_with_role(SourceAgent::ROLE_SELLING_AGENT)
   end
 
   def get_institution
@@ -114,14 +114,14 @@ class Source < ActiveRecord::Base
 
     agent_str = ""
     if source_type == TYPE_AUCTION_CATALOG
-      seller_agent = get_seller_agent
-      agent_str = seller_agent.agent.name if seller_agent && seller_agent.agent
+      selling_agent = get_selling_agent
+      agent_str = selling_agent.agent.name if selling_agent && selling_agent.agent
     elsif source_type == TYPE_COLLECTION_CATALOG
       institution = get_institution
       agent_str = institution.agent.name if institution && institution.agent
     else
       # institution takes precedence for display
-      source_agent = get_institution || get_seller_agent
+      source_agent = get_institution || get_selling_agent
       agent_str = source_agent.agent.name if source_agent && source_agent.agent
     end
 

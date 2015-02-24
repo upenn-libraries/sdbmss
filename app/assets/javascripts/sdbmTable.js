@@ -66,8 +66,8 @@ function SDBMTable(selector, options) {
             blSortField: 'catalog_or_lot_number'
         },
         {
-            title: 'Seller Agent',
-            blSortField: 'transaction_seller_agent'
+            title: 'Selling Agent',
+            blSortField: 'transaction_selling_agent'
         },
         {
             title: 'Seller',

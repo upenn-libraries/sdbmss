@@ -45,9 +45,9 @@
 
         <% if (transaction = entry.get_transaction).present? %>
 
-          <% if (seller_agent = transaction.get_seller_agent).present? %>
-	        <dt>Seller Agent</dt>
-    	    <dd><a href="<%= url_for seller_agent.agent %>"><%= seller_agent.agent.name %></a></dd>
+          <% if (selling_agent = transaction.get_selling_agent).present? %>
+	        <dt>Selling Agent</dt>
+    	    <dd><a href="<%= url_for selling_agent.agent %>"><%= selling_agent.agent.name %></a></dd>
           <% end %>
 
           <% if (seller_or_holder = transaction.get_seller_or_holder).present? %>
