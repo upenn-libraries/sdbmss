@@ -1,3 +1,4 @@
+# coding: utf-8
 
 # This is a library that creates "reference data", containing entries
 # from actual catalogs.
@@ -19,19 +20,28 @@ module SDBMSS::ReferenceData
     def create_all
       JonathanHill.new
       PennCatalog.new
+      Pirages.new
+      DeRicci.new
     end
   end
 
-  class JonathanHill
+  class RefDataBase
+    def reindex (entry)
+      entry.reload
+      Sunspot.index entry
+    end
+  end
+
+  class JonathanHill < RefDataBase
 
     def initialize
       create_source
-      create_entry_one
-      create_entry_nine
-      create_entry_fourteen
-
-      # reindex everything because we create associations after Entry
-      Sunspot.index Entry.all
+      reindex create_entry_one
+      reindex create_entry_three
+      reindex create_entry_four
+      reindex create_entry_five
+      reindex create_entry_nine
+      reindex create_entry_fourteen
     end
 
     def create_source
@@ -160,6 +170,349 @@ module SDBMSS::ReferenceData
         ]
       )
 
+      entry
+    end
+
+    def create_entry_three
+      entry = Entry.create!(
+        source: @source,
+        catalog_or_lot_number: "3",
+        folios: 72,
+        num_lines: 34,
+        num_columns: 2,
+        height: 530,
+        width: 230,
+        miniatures_small: 32,
+        manuscript_binding: 'End of 15th-early 16th century, panelled leather, blind stamped (including a roll stamp, with fleur-de-lys, crowned fleur-de-lys, and a crowned dolphin), with metal corners & centerpieces',
+        other_info: 'Written in black ink in Littera batarda',
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      transaction = Event.create!(
+        primary: true,
+        entry: entry,
+        price: 1650000,
+        sold: Event::TYPE_SOLD_UNKNOWN,
+      )
+      transaction_agent = EventAgent.create!(
+        event: transaction,
+        agent: @hill,
+        role: EventAgent::ROLE_SELLING_AGENT
+      )
+
+      EntryTitle.create!(
+        entry: entry,
+        title: 'Histoire de la Premiere Guerre Punique',
+      )
+
+      EntryAuthor.create!(
+        entry: entry,
+        author: Author.find_or_create_by(name: 'Bruni, Leonardo')
+      )
+
+      EntryAuthor.create!(
+        entry: entry,
+        author: Author.find_or_create_by(name: 'Lebegue, Jean'),
+        role: 'Tr',
+      )
+
+      EntryDate.create!(entry: entry, date: '1450', circa: 'CCENT')
+
+      EntryLanguage.create!(
+        entry: entry,
+        language: Language.find_or_create_by(name: 'French')
+      )
+
+      EntryMaterial.create!(
+        entry: entry,
+        material: 'Parchment'
+      )
+
+      EntryPlace.create!(
+        entry: entry,
+        place: Place.find_or_create_by(name: 'France, Paris')
+      )
+
+      # TODO: I'm not convinced it's a good idea to be able to specify
+      # end dates without start dates, but this is what Lynn wants.
+
+      Event.create!(
+        entry: entry,
+        end_date: '18030000',
+        comment: "He died in 1803.",
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "d'Oultremont, Charles, Comte"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+            observed_name: "Comte Charles d'Oultremont (1753-1803)",
+          }
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        start_date: "18030000",
+        end_date: "18300426",
+        comment: "Catalogue title: Catalogus van eene fraye verzameling historische, letterkundige, ...boeken, nagalaten door wylen mevrowe de gravin douairiere d'Oultremont...op maendag 26 April 1830.",
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "P. H. Carpentiers"),
+            role: EventAgent::ROLE_SELLING_AGENT
+          },
+          {
+            agent: Agent.find_or_create_by(name: "d'Oultremont, Anne-Henriette, Comtesse"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          }
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        comment: 'Loose letter to "Dear Yates," datable to 1884 or later with related British Museum request slips (Thompson and Bright: A Family of "Bibliophiles, see also New York, PML. M 266.',
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Thompson-Yates, Samuel Ashton"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          },
+        ]
+      )
+
+      entry
+    end
+
+    def create_entry_four
+      entry = Entry.create!(
+        source: @source,
+        catalog_or_lot_number: "4",
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      transaction = Event.create!(
+        primary: true,
+        entry: entry,
+        price: 2400000,
+        sold: Event::TYPE_SOLD_UNKNOWN,
+      )
+      transaction_agent = EventAgent.create!(
+        event: transaction,
+        agent: @hill,
+        role: EventAgent::ROLE_SELLING_AGENT
+      )
+
+      EntryTitle.create!(
+        entry: entry,
+        title: 'De officiis',
+      )
+
+      EntryTitle.create!(
+        entry: entry,
+        title: 'Paradoxa stoicorum',
+      )
+
+      EntryAuthor.create!(
+        entry: entry,
+        author: Author.find_or_create_by(name: 'Cicero, Marcus Tullius')
+      )
+
+      # WARNING: we didn't fill in all MS details; we concentrated on
+      # provenance instead
+
+      Event.create!(
+        entry: entry,
+        comment: "Arms of Engelhard of Swabia in lower margin fol. 1r: gules, three shamrocks argent (Rietstap, Armorial general, I. P. 614, pl. CCLXIX",
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Engelhard of Swabia"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+          }
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        end_date: "19071113",
+        comment: "Armorial ink-stamped collector's mark: three coquilles, two and one, surounded by the Garter of the Golden Fleece and surmounted by a prince's coronet (fol. Ir, Riestap, pl. CXCVIIII). Catalogue without manuscripts.",
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Metternich, Clemens Wenzel Lothar, Fürst von"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+            observed_name: "Clemens Lothar von Wenzel, Furst von Metternich (1773-1859)"
+          }
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        comment: 'Bell lived in Gwynned Valley, Pennsylvania.',
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Bell, Edward Henry"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+            observed_name: "Dr. Edward Henry Bell"
+          },
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        end_date: "19911212",
+        comment: 'lot 162',
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Sotheby's"),
+            role: EventAgent::ROLE_SELLING_AGENT,
+          },
+          {
+            agent: Agent.find_or_create_by(name: "Hartz, Raymond and Elizabeth"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+          },
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        event_agents_attributes: [
+          {
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+            observed_name: "European Private Collection",
+          },
+        ]
+      )
+
+      entry
+    end
+
+    def create_entry_five
+      entry = Entry.create!(
+        source: @source,
+        catalog_or_lot_number: "5",
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      transaction = Event.create!(
+        primary: true,
+        entry: entry,
+        price: 180000,
+        currency: "USD",
+        sold: Event::TYPE_SOLD_UNKNOWN,
+      )
+      transaction_agent = EventAgent.create!(
+        event: transaction,
+        agent: @hill,
+        role: EventAgent::ROLE_SELLING_AGENT
+      )
+
+      EntryTitle.create!(
+        entry: entry,
+        title: 'Epistolae ad Familiares',
+      )
+
+      EntryAuthor.create!(
+        entry: entry,
+        author: Author.find_or_create_by(name: 'Cicero, Marcus Tullius')
+      )
+
+      EntryDate.create!(entry: entry, date: '1460', circa: 'C')
+
+      EntryArtist.create!(
+        entry: entry,
+        artist: Artist.find_or_create_by(name: 'Francesco di Antonio del Chierico')
+      )
+
+      EntryScribe.create!(
+        entry: entry,
+        scribe: Scribe.find_or_create_by(name: 'Ser Pietro Di Bernardo Cennini')
+      )
+
+      EntryLanguage.create!(
+        entry: entry,
+        language: Language.find_or_create_by(name: 'Latin'),
+      )
+
+      EntryMaterial.create!(
+        entry: entry,
+        material: 'Parchment'
+      )
+
+      EntryPlace.create!(
+        entry: entry,
+        place: Place.find_or_create_by(name: 'Italy, Florence')
+      )
+
+      # WARNING: we didn't fill in all MS details; we concentrated on
+      # provenance instead
+
+      Event.create!(
+        entry: entry,
+        comment: "unidentified coat of arms on fol. 2r, now erased.",
+        event_agents_attributes: [
+          {
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+            observed_name: "Unidentified original owner",
+          }
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        comment: 'Perhaps a Sicilian owner by the late 16th-17th century when manuscript received present binding; presumably contemorary to the inscriptions on the flyleaf: "Di don Francesco st.st.lia. Di Don Domenico."',
+        event_agents_attributes: [
+          {
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+            observed_name: "Sicilian collector"
+          }
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        comment: 'Book label with initials (gilt on blue).',
+        event_agents_attributes: [
+          {
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+            observed_name: "R. I. A."
+          },
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        end_date: "19971203",
+        comment: 'bookplate; F. 159 in her library.',
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Christie's London"),
+            role: EventAgent::ROLE_SELLING_AGENT,
+          },
+          {
+            agent: Agent.find_or_create_by(name: "Feltrinelli, Giannalisa"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+          },
+          {
+            agent: Agent.find_or_create_by(name: "Bernard Quaritch Ltd."),
+            role: EventAgent::ROLE_BUYER,
+            observed_name: "Bernard Quaritch",
+          },
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        end_date: "20010423",
+        comment: "Bookplate.",
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Christie's NY"),
+            role: EventAgent::ROLE_SELLING_AGENT,
+          },
+          {
+            agent: Agent.find_or_create_by(name: "Friedlaender, Helmut N."),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+          },
+        ]
+      )
+
+      entry
     end
 
     def create_entry_nine
@@ -257,6 +610,7 @@ module SDBMSS::ReferenceData
         ]
       )
 
+      entry
     end
 
     def create_entry_fourteen
@@ -538,14 +892,15 @@ module SDBMSS::ReferenceData
         ]
       )
 
+      entry
     end
 
   end
 
-  class PennCatalog
+  class PennCatalog < RefDataBase
     def initialize
       create_source
-      create_entry_one
+      reindex create_entry_one
     end
 
     def create_source
@@ -643,6 +998,123 @@ module SDBMSS::ReferenceData
         ]
       )
 
+      entry
+    end
+
+  end
+
+  class Pirages < RefDataBase
+
+    def initialize
+      create_source
+      reindex create_entry_two
+    end
+
+    def create_source
+      @pirages = Agent.find_or_create_by(name: "Pirages")
+      @source = Source.create!(
+        source_type: Source::TYPE_AUCTION_CATALOG,
+        date: "20150100",
+        title: "Sampling of the illuminated material, incunabula, fine bindings, private press, plate books, early English works, and other interesting items we'll have on display at the 2015 California Antiquarian Book Fair.",
+        whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
+        current_location: "Schoenberg Institute for Manuscript Studies",
+        cataloging_type: "Print",
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      source_agent = SourceAgent.create!(
+        source: @source,
+        agent: @pirages,
+        role: SourceAgent::ROLE_SELLING_AGENT
+      )
+    end
+
+    def create_entry_two
+      entry = Entry.create!(
+        source: @source,
+        catalog_or_lot_number: "2",
+        height: 254,
+        width: 210,
+        initials_historiated: 1,
+        initials_decorated: 19,
+        manuscript_binding: 'Contemporary blind-stamped calf over wooden boards, four brass cornerplates, each with a long petal-like extension stamped with "Maria", complex central brass medallion with the Christogram "Y H S" against a radiating sun and with eight surrounding circles stamped with a starburst, one brass and leather clasp, brass catches for three other clasps (now lacking)',
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      transaction = Event.create!(
+        primary: true,
+        entry: entry,
+        price: 45000,
+        currency: 'USD',
+        sold: Event::TYPE_SOLD_UNKNOWN,
+        event_agents_attributes: [
+          {
+            agent: @pirages,
+            role: EventAgent::ROLE_SELLING_AGENT
+          }
+        ]
+      )
+
+      EntryTitle.create!(
+        entry: entry,
+        title: 'Missale Secundum Morem Curie cum calendario',
+        common_title: "Missal",
+      )
+
+      EntryDate.create!(
+        entry: entry,
+        date: '1450',
+        circa: 'C1H',
+      )
+
+      EntryArtist.create!(
+        entry: entry,
+        artist: Artist.find_or_create_by(name: 'Cortese, Cristoforo, style'),
+      )
+
+      EntryPlace.create!(
+        entry: entry,
+        place: Place.find_or_create_by(name: 'Italy, Venice'),
+      )
+
+      Event.create!(
+        entry: entry,
+        event_agents_attributes: [
+          {
+            agent: Agent.find_or_create_by(name: "Monastery of San Giorgio Maggiore (Venice, Italy)"),
+            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+            observed_name: 'San Giorgio Maggiore',
+            uncertain_in_source: true,
+          }
+        ]
+      )
+
+      entry
+    end
+
+  end
+
+  class DeRicci < RefDataBase
+
+    def initialize
+      create_source
+      #reindex create_entry_one
+    end
+
+    def create_source
+      @source = Source.create!(
+        source_type: Source::TYPE_OTHER_PUBLISHED,
+        date: "19350000",
+        title: "Census of Medieval and Renaissance Manuscrits in the United States and Canada, Vol. 1",
+        author: "De Ricci, Seymour and Wilson, H. J.",
+        whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
+        current_location: "University of Pennsylvania Libraries",
+        location_city: "Philadelphia",
+        location_country: "US",
+        link: "RBC Ref. Z 6620 U% R5 v. 1",
+        cataloging_type: "print",
+        created_by: User.where(username: 'lransom').first,
+      )
     end
 
   end
