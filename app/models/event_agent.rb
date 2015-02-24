@@ -13,7 +13,7 @@ class EventAgent < ActiveRecord::Base
 
   ROLE_TYPES = [
     [ROLE_SELLER_OR_HOLDER, "Seller or Holder"],
-    [ROLE_SELLING_AGENT, "selling agent"],
+    [ROLE_SELLING_AGENT, "Selling Agent"],
     [ROLE_BUYER, "Buyer"],
   ]
 
