@@ -780,6 +780,28 @@
                 var model = $parse(modelName);
                 model.assign(scope, value);
             };
+
+            var refocus = function(badValue) {
+                // TODO: calling focus() directly here doesn't work in
+                // Firefox (but works in Chrome). Using setTimeout()
+                // is susceptible to race conditions with the
+                // browser's default handling of tab key, but in
+                // practice, it works.  Need to find a better way.
+                setTimeout(function() {
+                    $(element).focus();
+                }, 100);
+
+                $(element)
+                    .tooltip("option", "content", badValue + " isn't valid input, please change it or select a value from the suggestion box")
+                    .tooltip("option", "disabled", false)
+                    .tooltip("open");
+                setTimeout(function() {
+                    $(element)
+                        .tooltip("option", "content", "")
+                        .tooltip("option", "disabled", true)
+                        .tooltip("close");
+                }, 3000);
+            };
             
             if(! (modelName && controller)) {
                 alert("Error on page: sdbm-autocomplete directive is missing attributes");
@@ -806,15 +828,19 @@
                 if (event.which == 13) {
                     event.preventDefault();
                     $(element).blur();
-                } else if (invalidInput && (event.which == 9 || event.keyCode == 9)) {
-                    // prevent tab from being processed when input is invalid
-                    event.preventDefault();
-                } else {
-                    // user typed something, so reset invalid flag
+                } else if (event.which !== 0 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+                    // if user typed an actual char, reset invalid flag
                     invalidInput = false;
                 }
             });
                 
+            // if user tries to leave input, make sure value is valid
+            $(element).focusout(function(event) {
+                if(invalidInput) {
+                    refocus($(element).val());
+                }
+            });
+
             $(element).autocomplete({
                 source: function (request, response_callback) {
                     var url  = attrs.sdbmAutocomplete;
@@ -870,28 +896,7 @@
                         if(!match) {
                             // force user to fix the value
                             if(inputValue) {
-                                // TODO: calling focus() directly here
-                                // doesn't work in Firefox (but works
-                                // in Chrome). Using setTimeout() is
-                                // susceptible to race conditions with
-                                // the browser's default handling of
-                                // tab key, but in practice, it works.
-                                // Need to find a better way.
-                                setTimeout(function() {
-                                    $(element).focus();
-                                }, 100);
-
-                                $(element)
-                                    .tooltip("option", "content", inputValue + " isn't valid input, please change it or select a value from the suggestion box")
-                                    .tooltip("option", "disabled", false)
-                                    .tooltip("open");
-                                setTimeout(function() {
-                                    $(element)
-                                        .tooltip("option", "content", "")
-                                        .tooltip("option", "disabled", true)
-                                        .tooltip("close");
-                                }, 3000);
-
+                                refocus(inputValue);
                                 invalidInput = true;
                             }
                             assignToModel(null);
