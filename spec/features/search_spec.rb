@@ -1,4 +1,5 @@
 
+require 'json'
 require "rails_helper"
 require 'net/http'
 
@@ -63,7 +64,6 @@ describe "Search", :js => true do
     expect(page).not_to have_link(entry_nine.get_public_id)
   end
 
-  # This page uses javascript
   it "should do advanced search using numeric range on Height" do
     visit advanced_search_path
 
@@ -84,6 +84,15 @@ describe "Search", :js => true do
     entry = Entry.last
     visit entry_path(entry)
     expect(page).to have_xpath("//h1[contains(.,'#{entry.get_public_id}')]")
+  end
+
+  # poltergeist's implementation of page.source wraps the JSON
+  # response in HTML for display, so we set js: false for this test.
+  it "should load show Entry page (json format)", js: false do
+    entry = Entry.last
+    visit entry_path(entry, format: :json)
+    data = JSON.parse(page.source)
+    expect(data["id"]).to eq(entry.id)
   end
 
   it "should load show Source page" do

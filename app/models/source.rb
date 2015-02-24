@@ -53,11 +53,13 @@ class Source < ActiveRecord::Base
   include UserFields
 
   has_many :entries
-  has_many :source_agents
+  has_many :source_agents, inverse_of: :source
 
   validates_inclusion_of :source_type, in: SOURCE_TYPES.map(&:first), message: 'source type is invalid'
   validates_inclusion_of :whether_mss, in: HAS_MANUSCRIPT_TYPES.map(&:first), message: 'whether_mss is invalid'
   validates_inclusion_of :electronic_publicly_available, in: PUBLICLY_AVAILABLE_TYPES.map(&:first), message: 'electronic_publicly_available is invalid'
+
+  accepts_nested_attributes_for :source_agents
 
   # returns 'count' number of most recent sources
   scope :most_recent, ->(count = 5) { order(created_at: :desc).first(count) }
