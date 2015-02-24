@@ -355,7 +355,7 @@
             </td>
             <td class="col-sm-10">
                 <% if seller_or_holder.present? && !buyer.present? %>
-                    Held or sold by <%= render partial: "shared/event_agent", object: seller_or_holder %>
+                    Held by <%= render partial: "shared/event_agent", object: seller_or_holder %>
                     <% if selling_agent.present? %>
                         through <%= render partial: "shared/event_agent", object: selling_agent %>
                     <% end %>
