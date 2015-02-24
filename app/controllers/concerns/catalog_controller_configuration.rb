@@ -51,7 +51,7 @@ module CatalogControllerConfiguration
       config.add_facet_field 'author', :label => 'Author', :collapse => false, :limit => 3
       config.add_facet_field 'title', :label => 'Title', :collapse => false, :limit => 3
       config.add_facet_field 'transaction_seller', :label => 'Seller', :collapse => false, :limit => 3
-      config.add_facet_field 'transaction_selling_agent', :label => 'selling agent', :collapse => false, :limit => 3
+      config.add_facet_field 'transaction_selling_agent', :label => 'Selling Agent', :collapse => false, :limit => 3
       config.add_facet_field 'transaction_buyer', :label => 'Buyer', :collapse => false, :limit => 3
       # facet on source display str, instead of having separate facets for
       # catalog/catalog date/institution
