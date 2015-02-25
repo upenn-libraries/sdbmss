@@ -1,0 +1,1 @@
+json.manuscript_candidates @candidate_ids

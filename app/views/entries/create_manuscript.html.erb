@@ -42,13 +42,25 @@ $(document).ready(function() {
     var sdbmTable = new SDBMTable("#search_results", {
         prependColumns: [
             {
-                title: 'Actions',
+                title: 'Link',
                 "data": null,
                 "orderable": false,
                 "render": function (data, type, full, meta) {
-                    return '<a href="/entries/' + full[1] + '" target="_blank">Link this MS</a>';
+                    var manuscript = data[sdbmTable.getColumnIndex("Manuscript")];
+                    return manuscript ? '<a href="/entries/' + full[1] + '" target="_blank">Link this MS</a>' : '';
                 }
-            }
+            },
+            {
+                title: 'Link new MS',
+                "data": null,
+                "orderable": false,
+                "className": 'text-center',
+                "render": function (data, type, full, meta) {
+                    var manuscript = data[sdbmTable.getColumnIndex("Manuscript")];
+                    return !manuscript ? '<input type="checkbox"/>' : '';
+                }
+            },
+            
         ],
         ajax: function (sdbmTable, dt_params, callback, settings) {
             $("#spinner").show();
@@ -116,7 +128,7 @@ $(document).ready(function() {
 </script>
 <% end %>
 
-<h3>Link a Manuscript to SDBM_<%= @entry.id %></h3>
+<h3>Find or Create a Manuscript to link to <%= @entry.get_public_id %></h3>
 
 <form class="form-horizontal search-form">
     <div class="row form-group search-fieldset original">
