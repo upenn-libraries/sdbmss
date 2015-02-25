@@ -182,6 +182,18 @@
                 }
                 return false;
             },
+            /* optionsObjectsArray is an array of objects containing
+             * key 'value', which we use to check for membership 
+             */
+            inOptionsObjectsArray: function(value, optionsObjectsArray) {
+                for(var i in optionsObjectsArray) {
+                    var option = optionsObjectsArray[i];
+                    if(option.value === value) {
+                        return true;
+                    }
+                }
+                return false;
+            },
             /* Returns a fn that can be used as error callback on angular promises */
             promiseErrorHandlerFactory: function(msg) {
                 return function(response) {
@@ -359,7 +371,7 @@
         $scope.debug = function () {
             for (var key in $scope) {
                 // don't display angular prefixed keys, and don't display methods
-                if(!key.startsWith("$") && typeof $scope[key] !== "function") {
+                if(!key.substr(0,1) == "$" && typeof $scope[key] !== "function") {
                     console.log(key);
                     console.log($scope[key]);
                 }
@@ -489,7 +501,7 @@
             });
             entry.entry_materials.forEach(function (entry_material) {
                 if(entry_material.material) {
-                    if(! sdbmutil.inOptionsArray(entry_material.material, $scope.optionsMaterial)) {
+                    if(! sdbmutil.inOptionsObjectsArray(entry_material.material, $scope.optionsMaterial)) {
                         $scope.badData.push("Bad material value: '" + entry_material.material + "'");
                     }
                 }
@@ -696,11 +708,17 @@
                 $scope.optionsCurrency.unshift(["", ""]);
                 $scope.optionsCirca = result.data.circa;
                 $scope.optionsCirca.unshift(["", ""]);
-                $scope.optionsMaterial = result.data.material;
-                $scope.optionsMaterial.unshift(["", ""]);
                 $scope.optionsAltSize = result.data.alt_size;
                 $scope.optionsAltSize.unshift(["", ""]);
 
+                // material needs to be an array of objects that autocomplete can use
+                $scope.optionsMaterial = $.map(result.data.material, function (material) {
+                    return {
+                        label: material[0],
+                        value: material[1]
+                    }
+                });
+                
                 if($("#entry_id").val()) {
                     var entryId = $("#entry_id").val();
                     $scope.pageTitle = "Edit entry SDBM_" + entryId;
@@ -766,23 +784,57 @@
      * Angular's validation capabilities.
      */
     
-    // this is an alternative to sdbm-submit-on-selection directive.
-    // it uses jquery ui's autocomplete instead of the xeditable
-    // widget.
+    /**
+     * Angular directive that decorates an element with jQuery UI's
+     * autocomplete. This is designed to support showing a modal for
+     * creation of new entities not found in autocomplete. Attributes:
+     *
+     * sdbm-autocomplete = (required) should specify either a URL or name of a
+     * scope variable containing an array of autocomplete candidates.
+     *
+     * sdbm-autocomplete-model = (required) angular model to update with
+     * autocomplete selection.
+     * 
+     * sdbm-autocomplete-assign-value-attr = (optional) flag for
+     * whether 'value' attribute of selection should be assigned to
+     * angular model. defaults to 'false' (assigns the ui.item
+     * instead).
+     *
+     * sdbm-autocomplete-min-length = (optional) minimum length of str
+     * to trigger autocomplete dropdown (defaults to 2).
+     *
+     * sdbm-autocomplete-modal-controller = (optional) controller to
+     * use for displaying modal for entity creation.
+     */
     sdbmApp.directive("sdbmAutocomplete", function ($http, $parse, $timeout, $modal) {
         return function (scope, element, attrs) {
             var modelName = attrs.sdbmAutocompleteModel;
+            var assignValueAttr = attrs.sdbmAutocompleteAssignValueAttr;
+            var minLength = parseInt(attrs.sdbmAutocompleteMinLength || "2");
             var controller = attrs.sdbmAutocompleteModalController;
+            var sourceStr = attrs.sdbmAutocomplete;
             var options;
             var invalidInput = false;
-
+            
             // WARNING: there be dragons here. Much of this code is
             // here to keep data in sync between INPUT and Angular
             // models and to limit text to valid selections only.
             
+            if(!modelName) {
+                alert("Error on page: sdbm-autocomplete directive is missing attributes");
+            }
+
+            /** 
+             * value argument is the ui.item or object representing a
+             * database entity 
+             */
             var assignToModel = function(value) {
                 var model = $parse(modelName);
-                model.assign(scope, value);
+                var valueToAssign = value;
+                if(value && assignValueAttr === 'true') {
+                    valueToAssign = value.value;
+                } 
+                model.assign(scope, valueToAssign);
             };
 
             var refocus = function(badValue) {
@@ -806,18 +858,54 @@
                         .tooltip("close");
                 }, 3000);
             };
-            
-            if(! (modelName && controller)) {
-                alert("Error on page: sdbm-autocomplete directive is missing attributes");
+
+            // determine if source is a URL or a scope var
+            var autocompleteSource;
+            var sourceIsUrl = sourceStr.substr(0, 1) == "/";
+            if(!sourceIsUrl) {
+                autocompleteSource = $parse(sourceStr)(scope);
+            } else {
+                autocompleteSource = function (request, response_callback) {
+                    var url  = sourceStr;
+                    var searchTerm = request.term;
+                    $http.get(url, {
+                        params: {
+                            term: searchTerm
+                        }
+                    }).then(function (response) {
+                        // transform data from API call into format expected by autocomplete
+                        var exactMatch = false;
+                        options = response.data;
+                        options.forEach(function(option) {
+                            option.label = option.name;
+                            option.value = option.id;
+                            if(!exactMatch) {
+                                exactMatch = searchTerm == option.label;
+                            }
+                        });
+                        if (!exactMatch && controller) {
+                            options.unshift({
+                                label: "\u00BB Create '" + searchTerm + "'",
+                                value: 'CREATE',
+                                id: 'CREATE'
+                            });
+                        }
+                        response_callback(options);
+                    });
+                };
             }
-            
+
             // we need this watch to populate the input, which happens
             // AFTER all the directives finish.
             scope.$watch(modelName, function(newValue, oldValue) {
                 // initial value of undefined triggers an event to
                 // watch() so we ignore it
                 if(newValue) {
-                    $(element).val(newValue.name);
+                    if(typeof newValue === 'object') {
+                        $(element).val(newValue.label || newValue.name);
+                    } else {
+                        $(element).val(newValue);
+                    }
                 }
             });
 
@@ -846,35 +934,8 @@
             });
 
             $(element).autocomplete({
-                source: function (request, response_callback) {
-                    var url  = attrs.sdbmAutocomplete;
-                    var searchTerm = request.term;
-                    $http.get(url, {
-                        params: {
-                            term: searchTerm
-                        }
-                    }).then(function (response) {
-                        // transform data from API call into format expected by autocomplete
-                        var exactMatch = false;
-                        options = response.data;
-                        options.forEach(function(option) {
-                            option.label = option.name;
-                            option.value = option.id;
-                            if(!exactMatch) {
-                                exactMatch = searchTerm == option.label;
-                            }
-                        });
-                        if (!exactMatch) {
-                            options.unshift({
-                                label: "\u00BB Create '" + searchTerm + "'",
-                                value: 'CREATE',
-                                id: 'CREATE'
-                            });
-                        }
-                        response_callback(options);
-                    });
-                },
-                minLength: 2,
+                source: autocompleteSource,
+                minLength: minLength,
                 focus: function(event, ui) {
                     // disable default behavior of populating input on focus
                     event.preventDefault();
@@ -889,13 +950,15 @@
 
                         // did user type in something that actually
                         // matches an option? if so, select it.
-                        options.forEach(function (option) {
-                            if(inputValue === option.label) {
-                                assignToModel(option);
-                                scope.$apply();
-                                match = true;
-                            }
-                        });
+                        if(options) {
+                            options.forEach(function (option) {
+                                if(inputValue === option.label) {
+                                    assignToModel(option);
+                                    scope.$apply();
+                                    match = true;
+                                }
+                            });
+                        }
 
                         if(!match) {
                             // force user to fix the value

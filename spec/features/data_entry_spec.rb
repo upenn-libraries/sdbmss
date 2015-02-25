@@ -266,7 +266,7 @@ describe "Data entry", :js => true do
       fill_autocomplete_select_or_create_entity 'artist_0', with: 'Schultz, Charles'
       fill_autocomplete_select_or_create_entity 'scribe_0', with: 'Brother Francis'
       fill_autocomplete_select_or_create_entity 'language_0', with: 'Latin'
-      select 'Parchment', from: 'material_0'
+      fill_autocomplete_select_or_create_entity 'material_0', with: 'Parchment'
       fill_autocomplete_select_or_create_entity 'place_0', with: 'Italy'
       fill_in 'use_0', with: 'Some mysterious office or other'
 

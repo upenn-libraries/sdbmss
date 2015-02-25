@@ -271,7 +271,7 @@
       </label>
       <div class="col-sm-5">
           <div class="input-group">
-          <select id="material_{{ $index }}" class="form-control" data-ng-model="entry_material.material" ng-options="option[0] as option[1] for option in optionsMaterial"></select>
+              <input id="material_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="optionsMaterial" sdbm-autocomplete-model="entry_material.material" sdbm-autocomplete-assign-value-attr="true" sdbm-autocomplete-min-length="0" />
               <div id="material_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
           </div>
       </div>
