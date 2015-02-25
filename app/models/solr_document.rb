@@ -26,7 +26,7 @@ class SolrDocument
   end
 
   # returns the Entry object for this solr document
-  def get_model_object
+  def model_object
     @solr_response.objects_resultset.get(self[:entry_id])
   end
 

@@ -3,6 +3,6 @@
     2) on Bookmarks page, where we get a 'document_list' variable. We
     ignore case 2. -%>
 <% if document.present? %>
-<% manuscript = document.get_model_object.get_manuscript %>
-<a href="<%= edit_manuscript_path(manuscript) %>">Manage entries for <%= manuscript.get_public_id %></a>
+<% manuscript = document.model_object.get_manuscript %>
+<a href="<%= edit_manuscript_path(manuscript) %>">Manage entries for <%= manuscript.public_id %></a>
 <% end %>

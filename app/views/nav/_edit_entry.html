@@ -3,6 +3,6 @@
     2) on Bookmarks page, where we get a 'document_list' variable. We
     ignore case 2. -%>
 <% if document.present? %>
-<% entry = document.get_model_object %>
+<% entry = document.model_object %>
 <a href="<%= edit_entry_path(entry) %>">Edit this entry</a>
 <% end %>

@@ -72,7 +72,7 @@ class Entry < ActiveRecord::Base
     ['64mo', 'Sexagesimo-quarto or Sixty-fourmo'],
   ]
 
-  def get_public_id
+  def public_id
     "SDBM_#{id}"
   end
 
@@ -254,7 +254,7 @@ class Entry < ActiveRecord::Base
 
     # full display ID
     define_field(:string, :manuscript, :stored => true) do
-      (manuscript = get_manuscript) && manuscript.get_public_id
+      (manuscript = get_manuscript) && manuscript.public_id
     end
     define_field(:integer, :manuscript_id, :stored => true) do
       (manuscript = get_manuscript) && manuscript.id

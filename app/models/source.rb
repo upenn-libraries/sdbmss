@@ -69,7 +69,7 @@ class Source < ActiveRecord::Base
   scope :most_recent, ->(count = 5) { order(created_at: :desc).first(count) }
 
 
-  def get_public_id
+  def public_id
     "SDBM_SOURCE_#{id}"
   end
 

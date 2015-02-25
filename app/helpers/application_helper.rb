@@ -31,7 +31,7 @@ module ApplicationHelper
   # multiple places, which is why it's here in ApplicationHelper
   def show_edit_manuscript_link?
     return false if !@document
-    entry = @document.get_model_object
+    entry = @document.model_object
     entry.present? && (manuscript = entry.get_manuscript).present?
   end
 

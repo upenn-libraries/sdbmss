@@ -19,7 +19,7 @@
         
         <div class="row">
             <div class="col-sm-12">
-                <h2><%= @manuscript.get_public_id %></h2>
+                <h2><%= @manuscript.public_id %></h2>
             </div>
         </div>
 
@@ -52,7 +52,7 @@
                 <tr>
                     <td class="col-sm-2 text-right record-label"># Entries</td>
                     <td class="col-sm-10">
-                        This manuscript has <a href="<%= search_by_facet_value('manuscript', @manuscript.get_public_id) %>"><%= @manuscript.entries.count %> entries</a> in the database.
+                        This manuscript has <a href="<%= search_by_facet_value('manuscript', @manuscript.public_id) %>"><%= @manuscript.entries.count %> entries</a> in the database.
                     </td>
                 </tr>
 

@@ -40,7 +40,7 @@ class CatalogController < ApplicationController
   # custom JSON response for search results
   def render_search_results_as_json
     entries_as_json = @document_list.map do |doc|
-      Rabl.render(doc.get_model_object, 'entries/show', :view_path => 'app/views', :format => :json)
+      Rabl.render(doc.model_object, 'entries/show', :view_path => 'app/views', :format => :json)
     end
     "[" + entries_as_json.join(",") + "]"
   end

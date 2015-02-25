@@ -1,12 +1,12 @@
 
-<% entry = document.get_model_object %>
+<% entry = document.model_object %>
 
 <% if entry.nil? %>
 <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
 <% else %>
 
 <% if (manuscript = entry.get_manuscript).present? %>
-<p>This record has been identified as manuscript <a href="<%= url_for manuscript %>"><%= manuscript.get_public_id %></a>, which has
+<p>This record has been identified as manuscript <a href="<%= url_for manuscript %>"><%= manuscript.public_id %></a>, which has
     <%= entry.get_num_entries_for_manuscript %> total records in this database.
 </p>
 <% end %>

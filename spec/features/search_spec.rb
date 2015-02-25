@@ -47,7 +47,7 @@ describe "Search", :js => true do
     expect(page).to have_selector("#documents")
 
     Entry.all.order(id: :desc).limit(5).each do |entry|
-      expect(page).to have_link(entry.get_public_id)
+      expect(page).to have_link(entry.public_id)
     end
   end
 
@@ -60,8 +60,8 @@ describe "Search", :js => true do
     entry_one = get_hill_entry_by_cat_num(1)
     entry_nine = get_hill_entry_by_cat_num(9)
 
-    expect(page).to have_link(entry_one.get_public_id)
-    expect(page).not_to have_link(entry_nine.get_public_id)
+    expect(page).to have_link(entry_one.public_id)
+    expect(page).not_to have_link(entry_nine.public_id)
   end
 
   it "should do advanced search using numeric range on Height" do
@@ -76,14 +76,14 @@ describe "Search", :js => true do
     entry_one = get_hill_entry_by_cat_num(1)
     entry_nine = get_hill_entry_by_cat_num(9)
 
-    expect(page).to have_link(entry_one.get_public_id)
-    expect(page).not_to have_link(entry_nine.get_public_id)
+    expect(page).to have_link(entry_one.public_id)
+    expect(page).not_to have_link(entry_nine.public_id)
   end
 
   it "should load show Entry page" do
     entry = Entry.last
     visit entry_path(entry)
-    expect(page).to have_xpath("//h1[contains(.,'#{entry.get_public_id}')]")
+    expect(page).to have_xpath("//h1[contains(.,'#{entry.public_id}')]")
   end
 
   # poltergeist's implementation of page.source wraps the JSON
@@ -98,19 +98,19 @@ describe "Search", :js => true do
   it "should load show Source page" do
     source = Source.last
     visit source_path(source)
-    expect(page).to have_xpath("//h1[contains(.,'#{source.get_public_id}')]")
+    expect(page).to have_xpath("//h1[contains(.,'#{source.public_id}')]")
   end
 
   it "should load show Agent page" do
     agent = Agent.last
     visit agent_path(agent)
-    expect(page).to have_xpath("//h1[contains(.,'#{agent.get_public_id}')]")
+    expect(page).to have_xpath("//h1[contains(.,'#{agent.public_id}')]")
   end
 
   it "should load show Author page" do
     author = Author.last
     visit author_path(author)
-    expect(page).to have_xpath("//h1[contains(.,'#{author.get_public_id}')]")
+    expect(page).to have_xpath("//h1[contains(.,'#{author.public_id}')]")
   end
 
   it "should 404 on show Entry page for deleted entry"
@@ -127,7 +127,7 @@ describe "Search", :js => true do
 
     visit bookmarks_path
 
-    expect(page).to have_link(entry_one.get_public_id)
+    expect(page).to have_link(entry_one.public_id)
   end
 
   it "should add search to History" do

@@ -47,7 +47,7 @@ module SDBMSS::Blacklight
 
     # used for html title element
     def document_heading
-      return @document.get_model_object.get_public_id
+      return @document.model_object.public_id
     end
 
   end

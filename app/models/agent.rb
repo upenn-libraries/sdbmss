@@ -14,7 +14,7 @@ class Agent < ActiveRecord::Base
 
   validates_presence_of :name
 
-  def get_public_id
+  def public_id
     "SDBM_AGENT_#{id}"
   end
 

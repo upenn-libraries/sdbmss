@@ -27,7 +27,7 @@ class AdminSearchController < CatalogController
         # for performance, we avoid using has_many->through
         # associations because they always hit the db and circumvent
         # the preloading done in load_associations scope.
-        entry = doc.get_model_object
+        entry = doc.model_object
         if !entry.nil?
           manuscript = entry.get_manuscript
           source = entry.source

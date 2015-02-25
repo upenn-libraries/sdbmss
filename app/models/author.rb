@@ -10,7 +10,7 @@ class Author < ActiveRecord::Base
 
   validates_presence_of :name
 
-  def get_public_id
+  def public_id
     "SDBM_AUTHOR_#{id}"
   end
 

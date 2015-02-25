@@ -17,7 +17,7 @@ class Manuscript < ActiveRecord::Base
     Event.provenance.where(entry_id: linked_entries)
   end
 
-  def get_public_id
+  def public_id
     return "SDBM_MS_" + id.to_s
   end
 
