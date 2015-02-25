@@ -78,12 +78,6 @@ class Event < ActiveRecord::Base
     ea.agent if ea
   end
 
-  def display_value
-    # TODO: fill out
-    ea = get_seller_or_holder
-    ea.agent.name if ea && ea.agent
-  end
-
   def get_price_for_display
     [price, currency, other_currency].join " "
   end

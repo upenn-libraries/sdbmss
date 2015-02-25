@@ -241,7 +241,11 @@ class Entry < ActiveRecord::Base
         initials_historiated,
         initials_decorated,
         # provenance
-        get_provenance.map { |p| p.display_value },
+        get_provenance.map { |p|
+          p.event_agents.select { |event_agent| event_agent.agent }.map do |event_agent|
+            event_agent.agent.name
+          end
+        },
         # comments
         entry_comments.select { |ec| ec.public }.map { |ec| ec.comment },
       ].map { |item| item.to_s }.select { |item| (!item.nil?) && (item.length > 0) }.join "\n"
