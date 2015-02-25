@@ -452,7 +452,6 @@
                     }
                 }
             }
-            // TODO: only add 'transaction' object if appropriate for source type
             if(!entry.transaction && entry.source.entries_have_a_transaction) {
                 entry.transaction = {
                     primary: true,
