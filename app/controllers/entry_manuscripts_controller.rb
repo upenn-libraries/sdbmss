@@ -21,6 +21,8 @@ class EntryManuscriptsController < ApplicationController
       }
     )
 
+    manuscript.reload
+
     # reindex in Solr
     manuscript.entries.each do |entry|
       Sunspot.index entry
