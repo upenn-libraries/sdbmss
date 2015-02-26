@@ -58,7 +58,7 @@ namespace :deploy do
   desc "Stop solr"
   task :solr_stop do
     on roles(:all) do
-      if Dir.exists current_path
+      if Dir.exists? current_path
         within current_path do
           begin
             execute :bundle, "exec rake sunspot:solr:stop"
