@@ -15,6 +15,10 @@ Rails.application.routes.draw do
     collection { get 'search' }
   end
 
+  # it would be cleaner to have :entries here and merge
+  # CatalogController into EntriesController, but that doesn't work,
+  # because Rails won't be able to find the catalog view files from
+  # the blacklight gem.
   blacklight_for :catalog
 
   get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
