@@ -5,7 +5,7 @@
 # property set.  Don't declare `role :all`, it's a meta role.
 
 role :app, %w{jeffchiu@sdbmdev}
-#role :web, %w{jeffchiu@sdbmdev}
+role :web, %w{jeffchiu@sdbmdev}
 
 # Extended Server Syntax
 # ======================
