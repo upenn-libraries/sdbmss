@@ -50,9 +50,9 @@ gem 'capistrano-rails', '~> 1.1.0', group: :development
 # gem 'debugger', group: [:development, :test]
 
 # Blacklight
-gem "blacklight", "~> 5.8.1"
+gem "blacklight", "~> 5.9.3"
 gem "jettywrapper", "~> 1.8.0"
-gem "blacklight_advanced_search", "~> 5.1.1"
+gem "blacklight_advanced_search", "~> 5.1.2"
 
 # For authentication; used by Blacklight and by SDBMSS
 gem "devise", "~> 3.4.0"
