@@ -58,11 +58,13 @@ namespace :deploy do
   desc "Stop solr"
   task :solr_stop do
     on roles(:all) do
-      within current_path do
-        begin
-          execute :bundle, "exec rake sunspot:solr:stop"
-        rescue Exception => e
-          execute :echo, "Ignoring error when trying to stop solr"
+      if Dir.exists current_path
+        within current_path do
+          begin
+            execute :bundle, "exec rake sunspot:solr:stop"
+          rescue Exception => e
+            execute :echo, "Ignoring error when trying to stop solr"
+          end
         end
       end
     end
