@@ -1,0 +1,124 @@
+<% content_for :head do %>
+<%= stylesheet_link_tag "extras", media: "all" %>
+<%= javascript_include_tag "extras" %>
+
+<style>
+
+.navbar { margin-bottom: 10px; }
+
+#main-container.container-fluid .row { padding-left: 15px; padding-right: 15px; }
+
+.search-fieldset { margin-bottom: 8px; }
+
+</style>
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+    // TODO: hacks to tweak the Rails layout: figure out a more elegant way?
+    $("#search-navbar").remove();
+
+    $("input[name='search_value']").val("");
+
+    var dataTable = $(".sdbm-table").DataTable({
+        ajax: function (dt_params, callback, settings) {
+
+            var params = {
+                term: $("input[name='search_value']").val(),
+                offset: dt_params.start,
+                limit: dt_params.length,
+                order: "name " + dt_params.order[0].dir
+            };
+
+            $.ajax({
+                url: '/languages/search.json',
+                data: params,
+                success: function(data, textStatus, jqXHR) {
+                    if(!data.error) {
+                        $(".dataTables_scrollBody").scrollTop(0);
+                        var rows = [];
+                        data.results.forEach(function(item) {
+                            rows.push([ item.name, item.count, item.id ]);
+                        });
+                        callback({
+                            draw: dt_params.draw,
+                            data: rows,
+                            recordsTotal: data.total,
+                            recordsFiltered: data.total,
+                        });
+                    } else {
+                        alert("An error occurred fetching search results: " + data.error);
+                    }
+                },
+                error: function() {
+                    // TODO: fill this out
+                    alert("An error occurred fetching search results");
+                }
+            });
+        },
+        columns: [
+            {
+                title: 'Name'
+            },
+            {
+                title: 'Count'
+            },
+            {
+                title: 'Options',
+                render: function (data, type, full, meta) {
+                    var str = '<a href="/languages/' + data + '/edit/">Edit</a> ';
+                    if (!full[1]) {
+                        str += '| <a href="/languages/' + data + '/delete/">Delete</a>';
+                    }
+                    return str;
+                }
+            }
+        ],
+        language: {
+            "emptyTable": "No records found for search query."
+        },
+        lengthMenu: [25, 50, 100, 200, 500],
+        //order: order,
+        // extensions get activated via sDom codes
+        sDom: 'C<"clear"><"H"lr>JRt<"F"ip>',
+        serverSide: true
+    });
+
+    console.log("after table init");
+    $('#search_submit').click(function() {
+        dataTable.ajax.reload();
+    });
+    
+});
+</script>
+<% end %>
+
+<h1>Manage Languages</h1>
+
+<form class="form-horizontal search-form">
+    <div class="row form-group search-fieldset original">
+        <div class="col-sm-1" style="text-align: right">
+            <label class="control-label">Search</label>
+        </div>
+        <div class="col-sm-4">
+            <input class="form-control" name="search_value" value="" size="70" type="text">
+        </div>
+        <div class="col-sm-1"> <button id="search_submit" class="btn btn-primary">Search</button>
+        </div>
+        <div class="col-sm-1 col-sm-offset-1">
+            <a id="search_submit" class="btn btn-primary" href="<%= new_language_path %>">Add New Record</a>
+        </div>
+    </div>
+</form>
+
+<table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Count</th>
+            <th>Options</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>

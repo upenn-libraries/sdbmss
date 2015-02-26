@@ -105,6 +105,10 @@ class Source < ActiveRecord::Base
     source_type == TYPE_OTHER_PUBLISHED
   end
 
+  def to_s
+    display_value
+  end
+
   # Returns 3-part display string for Source
   def display_value
     date_str = ""

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150224150456) do
+ActiveRecord::Schema.define(version: 20150226194432) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -305,6 +305,7 @@ ActiveRecord::Schema.define(version: 20150224150456) do
   end
 
   add_index "languages", ["created_by_id"], name: "index_languages_on_created_by_id", using: :btree
+  add_index "languages", ["name"], name: "index_languages_on_name", unique: true, using: :btree
   add_index "languages", ["updated_by_id"], name: "index_languages_on_updated_by_id", using: :btree
 
   create_table "legacy_data_issues", force: true do |t|

@@ -10,7 +10,7 @@
 /* on Entry view page, move the content block to the right of the sidebar */
 .blacklight-catalog-show #content { float: right; }
 
-h1 { font-size: 30px; }
+h1 { font-size: 30px; margin-top: 10px; }
 
 /* tighten up whitespace */
 .blacklight-catalog-show table { margin-bottom: 5px; }

@@ -1,6 +1,9 @@
 class Language < ActiveRecord::Base
   belongs_to :entry
 
+  has_many :entry_languages
+  has_many :entries, through: :entry_languages
+
   include UserFields
 
   validates_presence_of :name

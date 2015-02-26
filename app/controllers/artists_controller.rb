@@ -4,7 +4,7 @@ class ArtistsController < ApplicationController
   before_action :set_artist, only: [:show, :show_json, :edit, :update, :destroy]
 
   def create
-    @artist = Artist.new(params.permit(:name))
+    @artist = Artist.new(artist_params)
     @artist.save!
   end
 
@@ -12,6 +12,10 @@ class ArtistsController < ApplicationController
 
   def set_artist
     @artist = Artist.find(params[:id])
+  end
+
+  def artist_params
+    params.require(:artist).permit(:name)
   end
 
 end

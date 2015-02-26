@@ -4,7 +4,7 @@ class PlacesController < ApplicationController
   before_action :set_place, only: [:show, :show_json, :edit, :update, :destroy]
 
   def create
-    @place = Place.new(params.permit(:name))
+    @place = Place.new(place_params)
     @place.save!
   end
 
@@ -12,6 +12,10 @@ class PlacesController < ApplicationController
 
   def set_place
     @place = Place.find(params[:id])
+  end
+
+  def place_params
+    params.require(:place).permit(:name)
   end
 
 end
