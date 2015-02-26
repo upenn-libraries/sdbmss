@@ -4,7 +4,7 @@ set :repo_url, 'git@github.com:upenn-libraries/sdbmss.git'
 set :branch, 'master'
 
 # Default deploy_to directory is /var/www/my_app_name
-set :deploy_to, '/home/jeffchiu/sdbmss/'
+set :deploy_to, '/var/www/sdbmss/'
 
 # Default value for :scm is :git
 # set :scm, :git
