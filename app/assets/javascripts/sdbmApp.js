@@ -243,7 +243,7 @@
                         agent: $scope.agent
                     }
                 }).then(function (response) {
-                    $scope.sources = response.data;
+                    $scope.sources = response.data.results;
                 });
             } else {
                 $scope.sources = [];
@@ -874,7 +874,7 @@
                     }).then(function (response) {
                         // transform data from API call into format expected by autocomplete
                         var exactMatch = false;
-                        options = response.data;
+                        options = response.data.results;
                         options.forEach(function(option) {
                             option.label = option.name;
                             option.value = option.id;
@@ -1155,7 +1155,6 @@
         $scope.save = function () {
             var sourceToSave = new Source(angular.copy($scope.source));
 
-            //console.log(sourceToSave);
             sourceToSave.date = sourceToSave.date.replace(/-/g, "");
 
             sourceToSave.source_agents = [];

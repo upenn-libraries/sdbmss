@@ -1,6 +1,8 @@
 class SourcesController < ApplicationController
   include ResourceSearch
 
+  wrap_parameters include: Source.attribute_names - ['created_at', 'created_by', 'updated_at', 'updated_by'] + ['source_agents']
+
   before_action :set_source, only: [:show, :edit, :update, :destroy, :update_status]
 
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
@@ -27,7 +29,7 @@ class SourcesController < ApplicationController
     begin
       ActiveRecord::Base.transaction do
         @source.update!(
-          params.permit(
+          source_params.permit(
           :source_type, :date, :title, :author,
           :whether_mss,
           :current_location, :location_city, :location_country,
@@ -46,7 +48,7 @@ class SourcesController < ApplicationController
           end
         end
 
-        Reconciler.reconcile_assoc @source, params["source_agents"], SourceAgent, 'source_id', [:role, :agent_id]
+        Reconciler.reconcile_assoc @source, source_params["source_agents"], SourceAgent, 'source_id', [:role, :agent_id]
 
       end
     rescue Exception => e
@@ -56,15 +58,19 @@ class SourcesController < ApplicationController
     respond_with(@source)
   end
 
-  def find_by_search_terms class_name
+  def search_query
     date = params.fetch(:date, '').gsub('-', '').gsub('/', '')
     title = params[:title]
     agent = params[:agent]
-    query = class_name.all.order('date desc', 'title')
+    query = Source.all
     query = query.where('date like ?', "#{date}%") if date.present?
     query = query.where('title like ?', "%#{title}%") if title.present?
     query = query.joins(source_agents: [ :agent ] ).where('agents.name like ?', "%#{agent}%") if agent.present?
     query
+  end
+
+  def search_results_order
+    ["date desc", "title"]
   end
 
   def search_results_keys
@@ -106,6 +112,10 @@ class SourcesController < ApplicationController
 
   def set_source
     @source = Source.find(params[:id])
+  end
+
+  def source_params
+    params.require(:source)
   end
 
 end

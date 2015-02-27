@@ -1,0 +1,25 @@
+<%= form_for(@language, html: { class: "form-horizontal" }) do |f| %>
+  <% if @language.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@language.errors.count, "error") %> prohibited this language from being saved:</h2>
+
+      <ul>
+      <% @language.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field form-group row">
+      <%= f.label :name, class: "col-sm-2 control-label" %>
+      <div class="col-sm-4">
+          <%= f.text_field :name, :class => 'form-control' %>
+      </div>
+  </div>
+  <div class="actions row">
+      <div class="col-sm-4 col-sm-offset-2">
+          <%= f.submit :class => 'btn btn-primary' %>
+      </div>
+  </div>
+<% end %>

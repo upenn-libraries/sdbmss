@@ -1,11 +1,33 @@
 
-# Adds a 'search' method to a standard resource controller
+# Provides flexible search functionality for entities in a standard
+# Rails resource controller.
+#
+# Accepts the following certain URL parameters: term, limit, offset,
+# order, order_dir
+#
+# This is used by autocomplete as well as to load tables via AJAX in
+# the management screens for some entities.
 module ResourceSearch
 
   extend ActiveSupport::Concern
 
-  def max_search_results
-    25
+  def search_results_limit
+    params["limit"] || 25
+  end
+
+  def search_results_offset
+    params["offset"] || 0
+  end
+
+  def search_results_order
+    [params["order"] || "name asc"]
+  end
+
+  # Returns the constant of the Model handled by this controller.
+  # Classes should override this if the name of the controller doesn't
+  # conform to the Rails convention of 'ModelController'.
+  def search_model_class
+    send(:class).to_s.sub('Controller', '').singularize.constantize
   end
 
   # Classes should override this is they want to return a different
@@ -14,33 +36,51 @@ module ResourceSearch
     [:id, :name]
   end
 
+  # Classes can override this to modify the results with additional
+  # attributes. 'results' is an Array of Hashes of results that have
+  # already been offset/limited/ordered.
+  def search_results_map(results)
+    # by default, don't do anything to results
+    results
+  end
+
+  # Main callpoint: this should be exposed in routes
   def search
-    class_name = send(:class).to_s.sub('Controller', '').singularize.constantize
-    objects = find_by_search_terms(class_name).limit(max_search_results).map do |obj|
+    query = search_query
+    query = query.order(*search_results_order)
+    total = query.count
+    objects = query.offset(search_results_offset).limit(search_results_limit).map do |obj|
       result = Hash.new
       search_results_keys.each do |key|
         result[key] = obj.send key
       end
       result
     end
+    objects = search_results_map(objects)
     respond_to do |format|
-      format.json { render json: objects }
+      format.json {
+        render json: {
+                 limit: search_results_limit,
+                 offset: search_results_offset,
+                 total: total,
+                 results: objects,
+               }
+      }
     end
   end
 
-  # Classes that include this module should override this if they
-  # need to search differently
-  def find_by_search_terms class_name
+  # Classes should override this if they need to search differently.
+  # This should return an ActiveRecord query, on which
+  # offseting/limiting/ordering will subsequently be done.
+  def search_query
     search_term = params[:term]
-    query = class_name.all
+    query = search_model_class.all
     if search_term.present?
       search_term.split.each do |word|
         query = query.where('name like ?', "%#{word}%")
       end
-    else
-      query = class_name.none
     end
-    query.order(:name)
+    query
   end
 
 end
