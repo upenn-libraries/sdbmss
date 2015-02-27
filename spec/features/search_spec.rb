@@ -5,7 +5,7 @@ require 'net/http'
 
 # There's JS on most of these pages. Not all features use JS, but
 # there's no good reason NOT to use the js driver, so we do.
-describe "Search", :js => true do
+describe "Blacklight Search", :js => true do
 
   before :all do
     # since we already have a set of reference data, we use that here
@@ -115,7 +115,7 @@ describe "Search", :js => true do
 
   it "should 404 on show Entry page for deleted entry"
 
-  it "should bookmark an Entry" do
+  it "should bookmark an Entry and remove it" do
     visit root_path
     fill_in "q", with: "Tomkinson"
     click_button('search')
@@ -126,8 +126,12 @@ describe "Search", :js => true do
     sleep(1)
 
     visit bookmarks_path
-
     expect(page).to have_link(entry_one.public_id)
+    find_by_id("toggle_bookmark_" + entry_one.id.to_s).click
+    sleep(1)
+
+    visit bookmarks_path
+    expect(page).not_to have_link(entry_one.public_id)
   end
 
   it "should add search to History" do
