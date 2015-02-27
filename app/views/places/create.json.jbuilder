@@ -1,1 +1,0 @@
-json.(@place, :id, :name)
