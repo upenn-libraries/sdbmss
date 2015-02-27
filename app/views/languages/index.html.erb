@@ -61,14 +61,16 @@ $(document).ready(function() {
                 title: 'Name'
             },
             {
-                title: 'Count'
+                title: 'Count',
+                orderable: false
             },
             {
                 title: 'Options',
+                orderable: false,
                 render: function (data, type, full, meta) {
                     var str = '<a href="/languages/' + data + '/edit/">Edit</a> ';
                     if (!full[1]) {
-                        str += '| <a href="/languages/' + data + '/delete/">Delete</a>';
+                        str += '| <a class="delete-link" href="/languages/' + data + '.json">Delete</a>';
                     }
                     return str;
                 }
@@ -78,13 +80,24 @@ $(document).ready(function() {
             "emptyTable": "No records found for search query."
         },
         lengthMenu: [25, 50, 100, 200, 500],
-        //order: order,
         // extensions get activated via sDom codes
         sDom: 'C<"clear"><"H"lr>JRt<"F"ip>',
         serverSide: true
     });
 
-    console.log("after table init");
+    $(".sdbm-table").on("click", ".delete-link", function(event) {
+        if(confirm("Are you sure you want to delete this record?")) {
+            $.ajax({
+                url: $(event.target).attr("href"),
+                method: 'DELETE',
+                success: function(data, textStatus, jqXHR) {
+                    dataTable.ajax.reload();                    
+                },
+            });
+        }
+        return false;
+    });
+    
     $('#search_submit').click(function() {
         dataTable.ajax.reload();
     });

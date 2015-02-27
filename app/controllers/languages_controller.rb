@@ -25,10 +25,15 @@ class LanguagesController < ApplicationController
     respond_with(@language)
   end
 
+  def destroy
+    @language.destroy
+    respond_with(@language)
+  end
+
   def search_results_map(results)
     ids = results.map { |h| h[:id] }
     counts = Language.joins(:entry_languages).where(id: ids).group("languages.id").count("entry_languages.id")
-    results.map { |h| h[:count] = counts[h[:id]] || 0; h }
+    results.each { |h| h[:count] = counts[h[:id]] || 0 }
   end
 
   private
