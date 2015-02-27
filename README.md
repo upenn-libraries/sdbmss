@@ -94,13 +94,12 @@ migrated data.
 * Get a copy of the Oracle database into MySQL. You can do this one of
   two ways:
 
-    * If your host can access the Oracle db: run oracle2mysql from the
-    old SDBM Python project to create a copy of it. You will be
-    prompted for the location of the Oracle database and credentials.
+    * If your host can access the Oracle db: run [oracle2mysql](https://github.com/codeforkjeff/oracle2mysql)
+    to create a copy of it. You will be prompted for the location of
+    the Oracle database and credentials.
 
     ```
-    source ~/env_sdbm/bin/activate
-    cd ~/sdbm/oracle2mysql
+    cd ~/oracle2mysql
     python oracle2mysql.py oracle2mysql_conf
     ```
 
