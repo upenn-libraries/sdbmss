@@ -62,6 +62,7 @@ class Source < ActiveRecord::Base
   validates_inclusion_of :source_type, in: SOURCE_TYPES.map(&:first), message: 'source type is invalid'
   validates_inclusion_of :whether_mss, in: HAS_MANUSCRIPT_TYPES.map(&:first), message: 'whether_mss is invalid'
   validates_inclusion_of :electronic_publicly_available, in: PUBLICLY_AVAILABLE_TYPES.map(&:first), message: 'electronic_publicly_available is invalid'
+  validates_presence_of :date, if: :date_required
 
   accepts_nested_attributes_for :source_agents
 
@@ -71,6 +72,11 @@ class Source < ActiveRecord::Base
 
   def public_id
     "SDBM_SOURCE_#{id}"
+  end
+
+  # date field is only required for certain types of sources
+  def date_required
+    [TYPE_UNPUBLISHED].member? source_type
   end
 
   def get_source_agent_with_role(role)

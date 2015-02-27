@@ -1099,6 +1099,10 @@
 
     sdbmApp.controller('SourceCtrl', function ($scope, $modal, typeAheadService, sdbmutil, Source) {
 
+        /* TODO: source validation is complex: date is required only
+           sometimes; review other fields as well, once all source
+           types have been finalized */
+
         $scope.sdbmutil = sdbmutil;
         
         $scope.currentlySaving = false;
