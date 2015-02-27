@@ -1,21 +1,13 @@
-class PlacesController < ApplicationController
-  include ResourceSearch
+class PlacesController < SimpleNamedModelsController
 
-  before_action :set_place, only: [:show, :show_json, :edit, :update, :destroy]
-
-  def create
-    @place = Place.new(place_params)
-    @place.save!
+  def model_class
+    Place
   end
 
-  private
-
-  def set_place
-    @place = Place.find(params[:id])
-  end
-
-  def place_params
-    params.require(:place).permit(:name)
+  def search_results_map(results)
+    ids = results.map { |h| h[:id] }
+    counts = model_class.joins(:entry_places).where(id: ids).group("places.id").count("entry_places.id")
+    results.each { |h| h[:count] = counts[h[:id]] || 0 }
   end
 
 end

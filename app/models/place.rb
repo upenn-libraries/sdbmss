@@ -1,6 +1,9 @@
 class Place < ActiveRecord::Base
   belongs_to :entry
 
+  has_many :entry_places
+  has_many :entries, through: :entry_places
+
   include UserFields
 
   belongs_to :approved_by, :class_name => 'User'

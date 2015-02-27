@@ -1,1 +1,0 @@
-json.(@language, :id, :name)

@@ -15,6 +15,8 @@
 
 $(document).ready(function() {
 
+    var model_class = "<%= model_class.to_s.downcase.pluralize %>";
+
     // TODO: hacks to tweak the Rails layout: figure out a more elegant way?
     $("#search-navbar").remove();
 
@@ -31,7 +33,7 @@ $(document).ready(function() {
             };
 
             $.ajax({
-                url: '/languages/search.json',
+                url: '/' + model_class + '/search.json',
                 data: params,
                 success: function(data, textStatus, jqXHR) {
                     if(!data.error) {
@@ -68,9 +70,9 @@ $(document).ready(function() {
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var str = '<a href="/languages/' + data + '/edit/">Edit</a> ';
+                    var str = '<a href="/' + model_class + '/' + data + '/edit/">Edit</a> ';
                     if (!full[1]) {
-                        str += '| <a class="delete-link" href="/languages/' + data + '.json">Delete</a>';
+                        str += '| <a class="delete-link" href="/' + model_class + '/' + data + '.json">Delete</a>';
                     }
                     return str;
                 }
@@ -106,7 +108,7 @@ $(document).ready(function() {
 </script>
 <% end %>
 
-<h1>Manage Languages</h1>
+<h1>Manage <%= model_class.to_s.pluralize %></h1>
 
 <form class="form-horizontal search-form">
     <div class="row form-group search-fieldset original">
@@ -119,7 +121,7 @@ $(document).ready(function() {
         <div class="col-sm-1"> <button id="search_submit" class="btn btn-primary">Search</button>
         </div>
         <div class="col-sm-1 col-sm-offset-1">
-            <a id="search_submit" class="btn btn-primary" href="<%= new_language_path %>">Add New Record</a>
+            <a id="search_submit" class="btn btn-primary" href="<%= new_model_path %>">Add New Record</a>
         </div>
     </div>
 </form>

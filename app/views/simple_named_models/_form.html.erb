@@ -1,10 +1,10 @@
-<%= form_for(@language, html: { class: "form-horizontal" }) do |f| %>
-  <% if @language.errors.any? %>
+<%= form_for(@model, html: { class: "form-horizontal" }) do |f| %>
+  <% if @model.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@language.errors.count, "error") %> prohibited this language from being saved:</h2>
+      <h2><%= pluralize(@model.errors.count, "error") %> prohibited this model from being saved:</h2>
 
       <ul>
-      <% @language.errors.full_messages.each do |message| %>
+      <% @model.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>
       </ul>
