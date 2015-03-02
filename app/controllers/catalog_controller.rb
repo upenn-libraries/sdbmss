@@ -36,15 +36,6 @@ class CatalogController < ApplicationController
     u
   end
 
-  # Overrides Blacklight::Catalog#render_search_results_as_json
-  # custom JSON response for search results
-  def render_search_results_as_json
-    entries_as_json = @document_list.map do |doc|
-      Rabl.render(doc.model_object, 'entries/show', :view_path => 'app/views', :format => :json)
-    end
-    "[" + entries_as_json.join(",") + "]"
-  end
-
   # Overrides Blacklight::Catalog::SearchContext#add_to_search_history
   def add_to_search_history search
     # don't save searches that return everything
