@@ -93,6 +93,11 @@ module SDBMSS
         d
       end
 
+      # Takes a date string 'd' and returns it in the YYYY-MM-DD format
+      def date_dashes(d)
+        d && d.length == 8 ? d.slice(0, 4) + "-" + d.slice(4, 2) + "-" + d.slice(6, 2) : d
+      end
+
       # helper method for solr indexing
       def range_bucket(value, size=10)
         if value.present?

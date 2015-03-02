@@ -31,6 +31,8 @@ class Event < ActiveRecord::Base
 
   belongs_to :entry
 
+  before_validation :normalize
+
   has_many :event_agents, inverse_of: :event
 
   accepts_nested_attributes_for :event_agents
@@ -40,6 +42,15 @@ class Event < ActiveRecord::Base
 
   validates :sold, inclusion: { in: SOLD_TYPES.map(&:first) }, if: :primary
   validates_presence_of :entry
+
+  def normalize
+    if self.start_date
+      self.start_date.gsub!("-", "")
+    end
+    if self.end_date
+      self.end_date.gsub!("-", "")
+    end
+  end
 
   def get_event_agent_with_role(role)
     event_agents.select { |ea| ea.role == role }.first

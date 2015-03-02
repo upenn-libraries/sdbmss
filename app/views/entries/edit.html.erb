@@ -118,7 +118,7 @@
             <div class="col-sm-2">
                 <select class="form-control" id="transaction_sold" ng-model="entry.transaction.sold" ng-options="option[0] as option[1] for option in optionsSold"></select>
             </div>
-            <div ng-show="entry.transaction.sold == 'YES'">
+            <div ng-show="entry.transaction.sold == 'Yes'">
                 <label for="sold" class="col-sm-4 control-label"><span sdbm-tooltip="sold">Date Sold</span></label>
                 <div class="col-sm-3">
                     <input type="text" class="form-control" id="transaction_date" ng-model="entry.transaction.start_date">

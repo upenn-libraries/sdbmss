@@ -56,6 +56,8 @@ class Source < ActiveRecord::Base
 
   include UserFields
 
+  before_validation :normalize
+
   has_many :entries
   has_many :source_agents, inverse_of: :source
 
@@ -69,9 +71,14 @@ class Source < ActiveRecord::Base
   # returns 'count' number of most recent sources
   scope :most_recent, ->(count = 5) { order(created_at: :desc).first(count) }
 
-
   def public_id
     "SDBM_SOURCE_#{id}"
+  end
+
+  def normalize
+    if self.date
+      self.date.gsub!("-", "")
+    end
   end
 
   # date field is only required for certain types of sources

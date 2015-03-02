@@ -250,7 +250,8 @@ describe "Data entry", :js => true do
       fill_autocomplete_select_or_create_entity 'transaction_selling_agent', with: "Sotheby's"
       fill_autocomplete_select_or_create_entity 'transaction_seller', with: 'Joe2'
       fill_autocomplete_select_or_create_entity 'transaction_buyer', with: 'Joe3'
-      select 'No', from: 'transaction_sold'
+      select 'Yes', from: 'transaction_sold'
+      fill_in 'transaction_date', with: '2014-03-03'
       fill_in 'transaction_price', with: '130000'
       select 'USD', from: 'transaction_currency'
 
@@ -314,7 +315,8 @@ describe "Data entry", :js => true do
       expect(transaction.get_selling_agent.agent.name).to eq("Sotheby's")
       expect(transaction.get_seller_or_holder.agent.name).to eq('Joe2')
       expect(transaction.get_buyer.agent.name).to eq('Joe3')
-      expect(transaction.sold).to eq('No')
+      expect(transaction.sold).to eq('Yes')
+      expect(transaction.start_date).to eq('20140303')
       expect(transaction.price).to eq(130000)
       expect(transaction.currency).to eq('USD')
 
