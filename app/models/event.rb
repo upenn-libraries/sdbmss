@@ -56,36 +56,36 @@ class Event < ActiveRecord::Base
     event_agents.select { |ea| ea.role == role }.first
   end
 
-  # returns an EventAgent record
+  # returns an EventAgent object
   def get_selling_agent
     get_event_agent_with_role(EventAgent::ROLE_SELLING_AGENT)
   end
 
-  # returns an Agent record
+  # returns an Agent object
   def get_selling_agent_as_agent
-    ea = get_event_agent_with_role(EventAgent::ROLE_SELLING_AGENT)
+    ea = get_selling_agent
     ea.agent if ea
   end
 
-  # returns an EventAgent record
+  # returns an EventAgent object
   def get_seller_or_holder
     get_event_agent_with_role(EventAgent::ROLE_SELLER_OR_HOLDER)
   end
 
-  # returns an Agent record
+  # returns an Agent object
   def get_seller_or_holder_as_agent
-    ea = get_event_agent_with_role(EventAgent::ROLE_SELLER_OR_HOLDER)
+    ea = get_seller_or_holder
     ea.agent if ea
   end
 
-  # returns an EventAgent record
+  # returns an EventAgent object
   def get_buyer
     get_event_agent_with_role(EventAgent::ROLE_BUYER)
   end
 
-  # returns an Agent record
+  # returns an Agent object
   def get_buyer_as_agent
-    ea = get_event_agent_with_role(EventAgent::ROLE_BUYER)
+    ea = get_buyer
     ea.agent if ea
   end
 

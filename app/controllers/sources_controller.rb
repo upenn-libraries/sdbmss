@@ -5,7 +5,7 @@ class SourcesController < ApplicationController
 
   before_action :set_source, only: [:show, :edit, :update, :destroy, :update_status]
 
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :index]
 
   respond_to :html, :json
 
@@ -70,13 +70,29 @@ class SourcesController < ApplicationController
   end
 
   def search_results_order
-    ["date desc", "title"]
+    ["id desc", "title"]
   end
 
-  def search_results_keys
-    # this is the only place we return a 'display_value' b/c it is a
-    # composite field that needs to be generated server-side
-    [:id, :date, :title, :display_value]
+  def search_result_format(obj)
+    {
+      id: obj.id,
+      date: obj.date,
+      source_type: obj.source_type,
+      title: obj.title,
+      display_value: obj.display_value,
+      author: obj.author,
+      selling_agent: (selling_agent = obj.get_selling_agent_as_agent).present? ? selling_agent.name : "",
+      institution: (institution_agent = obj.get_institution_as_agent).present? ? institution_agent.name : "",
+      whether_mss: obj.whether_mss,
+      current_location: obj.current_location,
+      location_city: obj.location_city,
+      location_country: obj.location_country,
+      link: obj.link,
+      cataloging_type: obj.cataloging_type,
+      electronic_catalog_format: obj.electronic_catalog_format,
+      electronic_publicly_available: obj.electronic_publicly_available,
+      comments: obj.comments,
+    }
   end
 
   # change the status of a Source

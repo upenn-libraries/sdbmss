@@ -60,8 +60,8 @@ $(document).ready(function() {
                 "orderable": false,
                 "render": function (data, type, full, meta) {
                     return '<a href="/entries/' + full[1] + '" target="_blank">View</a>' +
-                        ' <a href="/entries/' + full[1] + '/edit" target="_blank">Edit</a>' +
-                        ' <a class="entry-delete-link" href="#" target="_blank">Delete</a>';
+                        ' &middot; <a href="/entries/' + full[1] + '/edit" target="_blank">Edit</a>' +
+                        ' &middot; <a class="entry-delete-link" href="#" target="_blank">Delete</a>';
                 }
             }
         ],

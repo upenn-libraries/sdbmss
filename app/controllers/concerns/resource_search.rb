@@ -1,6 +1,7 @@
 
-# Provides flexible search functionality for entities in a standard
-# Rails resource controller.
+# Provides search functionality for entities in a standard Rails
+# resource controller. This is designed to allow overriding of various
+# methods to custom tailor various parameters and behaviors.
 #
 # Accepts the following certain URL parameters: term, limit, offset,
 # order, order_dir
@@ -31,9 +32,20 @@ module ResourceSearch
   end
 
   # Classes should override this is they want to return a different
-  # set of keys for each result object
+  # set of keys for each result object. Used by the default
+  # implementation of #search_results_format.
   def search_results_keys
     [:id, :name]
+  end
+
+  # Formats the passed-in search result object, returning it as a hash.
+  # This default implementation uses #search_results_keys.
+  def search_result_format(obj)
+    result = Hash.new
+    search_results_keys.each do |key|
+      result[key] = obj.send key
+    end
+    result
   end
 
   # Classes can override this to modify the results with additional
@@ -50,11 +62,7 @@ module ResourceSearch
     query = query.order(*search_results_order)
     total = query.count
     objects = query.offset(search_results_offset).limit(search_results_limit).map do |obj|
-      result = Hash.new
-      search_results_keys.each do |key|
-        result[key] = obj.send key
-      end
-      result
+      search_result_format(obj)
     end
     objects = search_results_map(objects)
     respond_to do |format|
