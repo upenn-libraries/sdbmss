@@ -40,7 +40,7 @@ $(document).ready(function() {
                         $(".dataTables_scrollBody").scrollTop(0);
                         var rows = [];
                         data.results.forEach(function(item) {
-                            rows.push([ item.name, item.count, item.id ]);
+                            rows.push([ item.id, item.name, item.count ]);
                         });
                         callback({
                             draw: dt_params.draw,
@@ -60,13 +60,6 @@ $(document).ready(function() {
         },
         columns: [
             {
-                title: 'Name'
-            },
-            {
-                title: 'Count',
-                orderable: false
-            },
-            {
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -75,7 +68,17 @@ $(document).ready(function() {
                         str += '| <a class="delete-link" href="/' + model_class + '/' + data + '.json">Delete</a>';
                     }
                     return str;
-                }
+                },
+                width: "10%"
+            },
+            {
+                title: 'Name',
+                width: "70%"
+            },
+            {
+                title: 'Count',
+                orderable: false,
+                width: "20%"
             }
         ],
         language: {
@@ -129,9 +132,9 @@ $(document).ready(function() {
 <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
     <thead>
         <tr>
+            <th>Options</th>
             <th>Name</th>
             <th>Count</th>
-            <th>Options</th>
         </tr>
     </thead>
     <tbody>
