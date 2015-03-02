@@ -5,8 +5,8 @@ sdbmss
 The Schoenberg Database of Manuscripts. This is the Ruby on Rails /
 Blacklight project reboot, started in late Nov 2014.
 
-Note that 'sdbm' is the name of a built-in Ruby package; that's why we
-use 'sdbmss' instead.
+Note that we use 'sdbmss' everywhere in the code because 'sdbm' is the
+name of a package in Ruby's standard library.
 
 Installation Notes
 ------------------
@@ -126,7 +126,7 @@ migrated data.
   bundle exec rake sunspot:reindex
   ```
 
-How to Run the Development Server
+Running the Development Server
 ---------------------------------
 
 * Run Rails
@@ -137,18 +137,41 @@ How to Run the Development Server
 
 * Load http://localhost:3000 in your browser.
 
+Running the Test Suite
+----------------------
+
+* Install [PhantomJS](http://phantomjs.org/) 1.9.8 or higher. You can
+  get precompiled Linux binaries
+  [here](https://bitbucket.org/ariya/phantomjs/downloads/). After you
+  unzip it somewhere, make sure phantomjs is in your path.
+
+* Create a database for the tests to use. This should be the value of
+  SDBMSS_DB_NAME with "_test" appended to it.
+
+  ```
+  echo "CREATE DATABASE sdbm_test;" | mysql -u root
+  ```
+
+* Run this script:
+
+  ```
+  ./run_tests.sh
+  ```
+
 Deploying to the Staging (Dev VM) Server
 ----------------------------------------
 
-Note: we call the dev VM 'staging' instead of 'development'; we use
-the latter to refer to environments where programmers do their work.
+Note: we use 'staging' and the 'dev VM' to refer to the same machine
+and environment. We use 'development' to refer to local development
+environments.
 
 We use capistrano to automate updating the staging server with the
 latest code, restarting the unicorn server, and recreating the
 database.
 
-* First, configure Apache on the dev VM by creating a file
-  /etc/httpd/conf.d/sdbmss.conf with the following contents:
+* If Apache hasn't already been configured on the dev VM, do so:
+  create a file /etc/httpd/conf.d/sdbmss.conf with the following
+  contents:
 
   ```
   <VirtualHost *:80>
@@ -157,23 +180,24 @@ database.
       ServerAlias sdbmdev
       ServerAdmin jeffchiu@upenn.edu
 
-      # we should eventually not proxy static assets
-      # ProxyPass /assets !
-      ProxyPass / http://127.0.0.1:8080/
-      ProxyPassReverse / http://127.0.0.1:8080/
+      ProxyPass /assets !
+      ProxyPass /static !
+      ProxyPass / http://127.0.0.1:8080/ retry=1
       ProxyPreserveHost on
+      ProxyTimeout 300
 
       <Proxy *>
       Order deny,allow
       Allow from all
       </Proxy> 
 
-      Alias /assets/ /home/jeffchiu/sdbmss/current/public/assets/
-
-      <Directory /usr/local/www/wsgi-scripts>
+      <Directory "/var/www/sdbmss/current/public">
       Order allow,deny
       Allow from all
       </Directory>
+
+      Alias /assets/ /var/www/sdbmss/current/public/assets/
+      Alias /static/ /var/www/sdbmss/current/public/static/
 
       <IfModule mod_deflate.c>
           AddOutputFilterByType DEFLATE text/css application/x-javascript text/x-component text/html text/plain text/xml application/javascript
