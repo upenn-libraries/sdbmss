@@ -100,15 +100,15 @@ describe "Data entry", :js => true do
         source_type: Source::TYPE_AUCTION_CATALOG,
         source_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "aaa"),
+            agent: Name.find_or_create_agent("aaa"),
             role: SourceAgent::ROLE_SELLING_AGENT,
           },
           {
-            agent: Agent.find_or_create_by(name: "bbb"),
+            agent: Name.find_or_create_agent("bbb"),
             role: SourceAgent::ROLE_SELLER_OR_HOLDER,
           },
           {
-            agent: Agent.find_or_create_by(name: "ccc"),
+            agent: Name.find_or_create_agent("ccc"),
             role: SourceAgent::ROLE_BUYER,
           }
         ]
@@ -264,7 +264,9 @@ describe "Data entry", :js => true do
       select 'Tr', from: 'author_role_0'
       fill_in 'date_0', with: '1425'
       select 'Circa Century', from: 'circa_0'
+      fill_in 'artist_observed_name_0', with: 'Chuck'
       fill_autocomplete_select_or_create_entity 'artist_0', with: 'Schultz, Charles'
+      fill_in 'scribe_observed_name_0', with: 'Brother Francisco'
       fill_autocomplete_select_or_create_entity 'scribe_0', with: 'Brother Francis'
       fill_autocomplete_select_or_create_entity 'language_0', with: 'Latin'
       fill_autocomplete_select_or_create_entity 'material_0', with: 'Parchment'
@@ -334,7 +336,12 @@ describe "Data entry", :js => true do
       expect(entry_date.date).to eq('1425')
       expect(entry_date.circa).to eq('CCENT')
 
+      entry_artist = entry.entry_artists.first
+      expect(entry_artist.observed_name).to eq('Chuck')
+      expect(entry_artist.artist.name).to eq('Schultz, Charles')
+
       entry_scribe = entry.entry_scribes.first
+      expect(entry_scribe.observed_name).to eq('Brother Francisco')
       expect(entry_scribe.scribe.name).to eq('Brother Francis')
 
       entry_language = entry.entry_languages.first

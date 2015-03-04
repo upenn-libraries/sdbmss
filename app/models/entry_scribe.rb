@@ -3,7 +3,7 @@ class EntryScribe < ActiveRecord::Base
   include CertaintyFlags
 
   belongs_to :entry
-  belongs_to :scribe
+  belongs_to :scribe, class_name: 'Name'
 
   validates_presence_of :entry
   validates_presence_of :scribe

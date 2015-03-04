@@ -33,9 +33,9 @@ class AdminSearchController < CatalogController
           manuscript = entry.get_manuscript
           source = entry.source
           transaction = entry.get_transaction
-          transaction_selling_agent = (transaction.get_selling_agent_as_agent.name if transaction && transaction.get_selling_agent_as_agent)
-          transaction_seller_or_holder = (transaction.get_seller_or_holder_as_agent.name if transaction && transaction.get_seller_or_holder_as_agent)
-          transaction_buyer = (transaction.get_buyer_as_agent.name if transaction && transaction.get_buyer_as_agent)
+          transaction_selling_agent = (transaction.get_selling_agent_as_name.name if transaction && transaction.get_selling_agent_as_name)
+          transaction_seller_or_holder = (transaction.get_seller_or_holder_as_name.name if transaction && transaction.get_seller_or_holder_as_name)
+          transaction_buyer = (transaction.get_buyer_as_name.name if transaction && transaction.get_buyer_as_name)
           created_at = entry.created_at ? entry.created_at.strftime(dateformat) : nil
           created_by = entry.created_by
           updated_at = entry.updated_at ? entry.updated_at.strftime(dateformat) : nil

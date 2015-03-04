@@ -37,4 +37,6 @@ describe "Manage languages", :js => true do
     expect(Language.where(name: "Klingon").count).to eq(1)
   end
 
+  it "should delete a Language"
+
 end

@@ -1,1 +1,0 @@
-json.(@artist, :id, :name)

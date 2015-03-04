@@ -5,15 +5,7 @@ Rails.application.routes.draw do
   get '/admin_search', to: "admin_search#index"
   post '/admin_search/calculate_bounds', to: "admin_search#calculate_bounds"
 
-  resources :agents do
-    collection { get 'search' }
-  end
-  resources :artists do
-    collection { get 'search' }
-  end
-  resources :authors do
-    collection { get 'search' }
-  end
+  resources :agents, only: [:show]
 
   # it would be cleaner to have :entries here and merge
   # CatalogController into EntriesController, but that doesn't work,
@@ -51,22 +43,20 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :names do
+    collection { get 'search' }
+  end
+
   resources :places do
     collection { get 'search' }
   end
 
   get '/reports/', to: 'reports#show'
-  get '/reports/agents/', to: 'reports#agents'
-  get '/reports/artists/', to: 'reports#artists'
-  get '/reports/authors/', to: 'reports#authors'
+  get '/reports/names/', to: 'reports#names'
   get '/reports/languages/', to: 'reports#languages'
   get '/reports/places/', to: 'reports#places'
-  get '/reports/scribes/', to: 'reports#scribes'
   get '/reports/sources/', to: 'reports#sources'
 
-  resources :scribes do
-    collection { get 'search' }
-  end
   resources :sources do
     collection { get 'search' }
     member do

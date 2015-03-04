@@ -31,7 +31,7 @@ describe "Blacklight Search", :js => true do
   def get_hill_entry_by_cat_num cat_num
     Entry
       .joins(:source => [:source_agents => :agent])
-      .where(:agents => { :name => "Jonathan A. Hill" },
+      .where(:names => { :name => "Jonathan A. Hill" },
              :catalog_or_lot_number => cat_num)
       .first
   end
@@ -102,15 +102,15 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should load show Agent page" do
-    agent = Agent.last
+    agent = Name.where(is_provenance_agent: true).last
     visit agent_path(agent)
     expect(page).to have_xpath("//h1[contains(.,'#{agent.public_id}')]")
   end
 
-  it "should load show Author page" do
-    author = Author.last
-    visit author_path(author)
-    expect(page).to have_xpath("//h1[contains(.,'#{author.public_id}')]")
+  it "should load show Name page" do
+    name = Name.last
+    visit name_path(name)
+    expect(page).to have_xpath("//h1[contains(.,'#{name.public_id}')]")
   end
 
   it "should 404 on show Entry page for deleted entry"

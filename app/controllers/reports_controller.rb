@@ -5,28 +5,16 @@ class ReportsController < ApplicationController
 
   before_action :authenticate_user!
 
-  def agents
-    object_id_and_name(Agent)
-  end
-
-  def artists
-    object_id_and_name(Artist)
-  end
-
-  def authors
-    object_id_and_name(Author)
-  end
-
   def languages
     object_id_and_name(Language)
   end
 
-  def places
-    object_id_and_name(Place)
+  def names
+    object_id_and_name(Name)
   end
 
-  def scribes
-    object_id_and_name(Scribe)
+  def places
+    object_id_and_name(Place)
   end
 
   def sources

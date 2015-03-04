@@ -68,35 +68,9 @@
                                   });
                               }]);
 
-    sdbmApp.factory('Agent', ['$resource',
+    sdbmApp.factory('Name', ['$resource',
                               function($resource){
-                                  return $resource('/agents/:id.json', { id: '@id' }, {
-                                      query: {
-                                          method: 'GET',
-                                          isArray: true
-                                      },
-                                      update: {
-                                          method:'PUT'
-                                      }
-                                  });
-                              }]);
-
-    sdbmApp.factory('Artist', ['$resource',
-                              function($resource){
-                                  return $resource('/artists/:id.json', { id: '@id' }, {
-                                      query: {
-                                          method: 'GET',
-                                          isArray: true
-                                      },
-                                      update: {
-                                          method:'PUT'
-                                      }
-                                  });
-                              }]);
-
-    sdbmApp.factory('Author', ['$resource',
-                              function($resource){
-                                  return $resource('/authors/:id.json', { id: '@id' }, {
+                                  return $resource('/names/:id.json', { id: '@id' }, {
                                       query: {
                                           method: 'GET',
                                           isArray: true
@@ -123,19 +97,6 @@
     sdbmApp.factory('Place', ['$resource',
                               function($resource){
                                   return $resource('/places/:id.json', { id: '@id' }, {
-                                      query: {
-                                          method: 'GET',
-                                          isArray: true
-                                      },
-                                      update: {
-                                          method:'PUT'
-                                      }
-                                  });
-                              }]);
-
-    sdbmApp.factory('Scribe', ['$resource',
-                              function($resource){
-                                  return $resource('/scribes/:id.json', { id: '@id' }, {
                                       query: {
                                           method: 'GET',
                                           isArray: true
@@ -278,10 +239,12 @@
             },
             {
                 field: 'entry_artists',
+                properties: ['observed_name'],
                 foreignKeyObjects: ['artist']
             },
             {
                 field: 'entry_scribes',
+                properties: ['observed_name'],
                 foreignKeyObjects: ['scribe']
             },
             {
@@ -794,6 +757,11 @@
      * sdbm-autocomplete-model = (required) angular model to update with
      * autocomplete selection.
      * 
+     * sdbm-autocomplete-params = (optional) an object containing
+     * additional URL parameters to merge into the AJAX request. For name 
+     * lookups, this is usually an object containing key "type", used
+     * for both search and modal popup.
+     *
      * sdbm-autocomplete-assign-value-attr = (optional) flag for
      * whether 'value' attribute of selection should be assigned to
      * angular model. defaults to 'false' (assigns the ui.item
@@ -812,6 +780,7 @@
             var minLength = parseInt(attrs.sdbmAutocompleteMinLength || "2");
             var controller = attrs.sdbmAutocompleteModalController;
             var sourceStr = attrs.sdbmAutocomplete;
+            var params = JSON.parse(attrs.sdbmAutocompleteParams || "{}");
             var options;
             var invalidInput = false;
             
@@ -868,9 +837,7 @@
                     var url  = sourceStr;
                     var searchTerm = request.term;
                     $http.get(url, {
-                        params: {
-                            term: searchTerm
-                        }
+                        params: $.extend({ term: searchTerm }, params)
                     }).then(function (response) {
                         // transform data from API call into format expected by autocomplete
                         var exactMatch = false;
@@ -986,7 +953,12 @@
                                 templateUrl: template,
                                 controller: controller,
                                 resolve: {
-                                    newNameValue: function() { return newNameValue; }
+                                    modalParams: function() {
+                                        return {
+                                            "name": newNameValue,
+                                            "type": params["type"],
+                                        };
+                                    }
                                 },
                                 size: 'lg'
                             });
@@ -1212,7 +1184,7 @@
     // you to search for a database object and create one. Specialized
     // controllers should call this fn and modify/supply anything in
     // $scope it needs to.
-    var baseCreateEntityModalCtrl = function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, newNameValue) {
+    var baseCreateEntityModalCtrl = function ($scope, $http, $modalInstance, typeAheadService, sdbmutil) {
 
         $scope.typeAheadService = typeAheadService;
 
@@ -1221,8 +1193,13 @@
         $scope.candidates = [];
 
         $scope.entity = $scope.entityFactory();
-        $scope.entity.name = newNameValue;
 
+        // if calling code provides entity_attributes() in scope,
+        // use it to do any modifications of the entity
+        if($scope.entity_attributes) {
+            $scope.entity_attributes($scope.entity);
+        }
+                  
         $scope.save = function () {
             $scope.entity.$save(
                 function (entity) {
@@ -1237,53 +1214,42 @@
         };
     };
 
-    sdbmApp.controller('CreateAgentModalCtrl', function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, newNameValue, Agent) {
-        $scope.entityFactory = function() { return new Agent(); };
+    sdbmApp.controller('CreateNameModalCtrl', function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, modalParams, Name) {
+        $scope.entityFactory = function() { return new Name(); };
 
-        baseCreateEntityModalCtrl($scope, $http, $modalInstance, typeAheadService, sdbmutil, newNameValue);
+        $scope.entity_attributes = function(entity) {
+            entity.name = modalParams.name;
+            entity[modalParams["type"]] = true;
+        };
+        
+        baseCreateEntityModalCtrl($scope, $http, $modalInstance, typeAheadService, sdbmutil);
 
-        $scope.entityName = "agent";
+        $scope.entityName = "name";
         $scope.hasViafId = true;
     });
 
-    sdbmApp.controller('CreateArtistModalCtrl', function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, newNameValue, Artist) {
-        $scope.entityFactory = function() { return new Artist(); };
-
-        baseCreateEntityModalCtrl($scope, $http, $modalInstance, typeAheadService, sdbmutil, newNameValue);
-
-        $scope.entityName = "artist";
-    });
-
-    sdbmApp.controller('CreateAuthorModalCtrl', function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, newNameValue, Author) {
-        $scope.entityFactory = function() { return new Author(); };
-
-        baseCreateEntityModalCtrl($scope, $http, $modalInstance, typeAheadService, sdbmutil, newNameValue);
-
-        $scope.entityName = "author";
-    });
-
-    sdbmApp.controller('CreateLanguageModalCtrl', function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, newNameValue, Language) {
+    sdbmApp.controller('CreateLanguageModalCtrl', function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, modalParams, Language) {
         $scope.entityFactory = function() { return new Language(); };
 
-        baseCreateEntityModalCtrl($scope, $http, $modalInstance, typeAheadService, sdbmutil, newNameValue);
+        $scope.entity_attributes = function(entity) {
+            entity.name = modalParams.name;
+        };
+        
+        baseCreateEntityModalCtrl($scope, $http, $modalInstance, typeAheadService, sdbmutil);
 
         $scope.entityName = "language";
     });
 
-    sdbmApp.controller('CreatePlaceModalCtrl', function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, newNameValue, Place) {
+    sdbmApp.controller('CreatePlaceModalCtrl', function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, modalParams, Place) {
         $scope.entityFactory = function() { return new Place(); };
 
-        baseCreateEntityModalCtrl($scope, $http, $modalInstance, typeAheadService, sdbmutil, newNameValue);
+        $scope.entity_attributes = function(entity) {
+            entity.name = modalParams.name;
+        };
+
+        baseCreateEntityModalCtrl($scope, $http, $modalInstance, typeAheadService, sdbmutil);
 
         $scope.entityName = "place";
-    });
-
-    sdbmApp.controller('CreateScribeModalCtrl', function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, newNameValue, Scribe) {
-        $scope.entityFactory = function() { return new Scribe(); };
-
-        baseCreateEntityModalCtrl($scope, $http, $modalInstance, typeAheadService, sdbmutil, newNameValue);
-
-        $scope.entityName = "scribe";
     });
 
     sdbmApp.controller('InferenceFlagsCtrl', function ($scope, $modalInstance, objectWithFlags) {

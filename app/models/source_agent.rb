@@ -1,6 +1,6 @@
 class SourceAgent < ActiveRecord::Base
   belongs_to :source
-  belongs_to :agent
+  belongs_to :agent, class_name: 'Name'
 
   ROLE_SELLER_OR_HOLDER = "seller_or_holder"
   ROLE_SELLING_AGENT = "selling_agent"

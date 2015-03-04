@@ -103,25 +103,58 @@ module SDBMSS::Legacy
       LANGUAGE_CACHE[name] ||= Language.where(name: name).order(nil).first_or_create!
     end
 
-    AGENT_CACHE = {}
+    NAME_CACHE = {}
 
-    def get_or_create_agent(name)
-      if name
-        if ! AGENT_CACHE.member?(name)
-          agent = Agent.where(name: name).order(nil).first
-          if agent.nil?
-            agent = Agent.create!(name: name, agent_type: 'unknown', approved: true)
+    # This get_or_create first checks that the name exists with ANY
+    # role; if it does, it sets the role, otherwise it creates that
+    # name. role is a symbol that corresponds to one of Name's flags
+    # (is_artist, is_scribe, etc)
+    def get_or_create_name(name_str, role, extra_attrs: nil)
+      name_obj = nil
+      if name_str
+        if ! NAME_CACHE.member?(name_str)
+          name_obj = Name.where(name: name_str).order(nil).first
+          if name_obj.nil?
+            attrs = {
+              name: name_str,
+              approved: true
+            }
+            attrs[role] = true
+            attrs.merge!(extra_attrs) if !extra_attrs.nil?
+            name_obj = Name.create!(attrs)
           end
-          AGENT_CACHE[name] = agent
+          NAME_CACHE[name_str] = name_obj
+        else
+          name_obj = NAME_CACHE[name_str]
+        end
+        # if name doesn't have that role set yet, set it
+        if !name_obj.send(role)
+          # puts "adding role #{role} to name '#{name_obj}'"
+          name_obj.send("#{role}=", true)
+          name_obj.save!
         end
       end
-      AGENT_CACHE[name]
+      name_obj
     end
 
-    AUTHOR_CACHE = {}
+    def get_or_create_agent(name)
+      get_or_create_name(name, :is_provenance_agent)
+    end
+
+    def get_or_create_artist(name, extra_attrs: nil)
+      get_or_create_name(name, :is_artist, extra_attrs: extra_attrs)
+    end
+
+    def get_or_create_author(name, extra_attrs: nil)
+      get_or_create_name(name, :is_author, extra_attrs: extra_attrs)
+    end
+
+    def get_or_create_scribe(name)
+      get_or_create_name(name, :is_scribe)
+    end
 
     def get_author(name)
-      AUTHOR_CACHE[name]
+      NAME_CACHE[name]
     end
 
     SOURCE_CACHE = {}
@@ -313,21 +346,24 @@ module SDBMSS::Legacy
 
       create_agent_entities_for_provenance(legacy_db)
 
-      puts "Second pass over Author records"
+      # puts "Second pass over Author records"
 
-      SDBMSS::Util.batch(legacy_db,
-                         'SELECT * FROM MANUSCRIPT_AUTHOR ORDER BY MANUSCRIPTAUTHORID',
-                         batch_wrapper: wrap_transaction) do |row,ctx|
-        create_author_from_row_pass2(row, ctx)
-      end
+      # SDBMSS::Util.batch(legacy_db,
+      #                    'SELECT * FROM MANUSCRIPT_AUTHOR ORDER BY MANUSCRIPTAUTHORID',
+      #                    batch_wrapper: wrap_transaction) do |row,ctx|
+      #   create_author_from_row_pass2(row, ctx)
+      # end
 
-      puts "Second pass over Artist records"
+      # puts "Second pass over Artist records"
 
-      SDBMSS::Util.batch(legacy_db,
-                         'SELECT * FROM MANUSCRIPT_ARTIST ORDER BY MANUSCRIPTARTISTID',
-                         batch_wrapper: wrap_transaction) do |row,ctx|
-        create_artist_from_row_pass2(row, ctx)
-      end
+      # SDBMSS::Util.batch(legacy_db,
+      #                    'SELECT * FROM MANUSCRIPT_ARTIST ORDER BY MANUSCRIPTARTISTID',
+      #                    batch_wrapper: wrap_transaction) do |row,ctx|
+      #   create_artist_from_row_pass2(row, ctx)
+      # end
+
+      # TODO: do a pass over Names to set IDs for Entrys where they
+      # were created. Do we really need to keep this data?
 
       puts "Second pass over Place records"
 
@@ -819,13 +855,12 @@ module SDBMSS::Legacy
 
       SDBMSS::Util.split_and_strip(row['ARTIST']).each do |atom|
         name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(atom)
-        artist = Artist.where(name: name).order(nil).first_or_create!
         ea = EntryArtist.create!(
           entry: entry,
-          artist: artist,
+          artist: get_or_create_artist(name),
           uncertain_in_source: uncertain_in_source,
           supplied_by_data_entry: supplied_by_data_entry,
-          )
+        )
       end
 
       SDBMSS::Util.split_and_strip(row['SCRIBE']).each do |atom|
@@ -835,11 +870,9 @@ module SDBMSS::Legacy
 
         name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(atom)
 
-        scribe = Scribe.where(name: name).order(nil).first_or_create!
-
         es = EntryScribe.create!(
           entry: entry,
-          scribe: scribe,
+          scribe: get_or_create_scribe(name),
           uncertain_in_source: uncertain_in_source,
           supplied_by_data_entry: supplied_by_data_entry,
         )
@@ -966,17 +999,15 @@ module SDBMSS::Legacy
       # discard the role part when migrating authors
       author_name, role = split_author_role_codes(author_str)
 
-      author = Author.where(name: author_name).order(nil).first
-      if author.nil?
-        author = Author.create!(
-          name: author_name,
+      get_or_create_author(
+        author_name,
+        extra_attrs:
+          {
           approved: row['ISAPPROVED'] == 'y',
           approved_by: get_or_create_user(row['APPROVEDBY']),
           approved_date: row['APPROVEDDATE'],
-        )
-        AUTHOR_CACHE[author_name] = author
-      end
-      author
+          }
+      )
     end
 
     def create_author_from_row_pass2(row, ctx)
@@ -989,7 +1020,7 @@ module SDBMSS::Legacy
           puts "Author #{row['MANUSCRIPTAUTHORID']} has bad manuscript FK id=#{row['MANUSCRIPT_ID']}, so skipping it."
         end
         if !entry.nil?
-          Author.where(id: row['MANUSCRIPTAUTHORID']).update_all({ entry_id: entry.id })
+          Name.where(id: row['MANUSCRIPTAUTHORID']).update_all({ entry_id: entry.id })
         end
       end
     end
@@ -998,16 +1029,15 @@ module SDBMSS::Legacy
       # flags were stored in Artist table; discard them
       artist_str, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(row['ARTIST'])
 
-      if Artist.where(name: artist_str).order(nil).first.nil?
-        # we ignore ARTIST_COUNT b/c it's redundant now
-        Artist.create!(
-          id: row['MANUSCRIPTARTISTID'],
-          name: artist_str,
-          approved: row['ISAPPROVED'] == 'y',
-          approved_by: get_or_create_user(row['APPROVEDBY']),
-          approved_date: row['APPROVEDDATE'],
-        )
-      end
+      get_or_create_artist(
+        artist_str,
+        extra_attrs:
+          {
+            approved: row['ISAPPROVED'] == 'y',
+            approved_by: get_or_create_user(row['APPROVEDBY']),
+            approved_date: row['APPROVEDDATE'],
+          }
+      )
     end
 
     # 2nd pass after creation of Entry objects, so we can set the FK
@@ -1022,7 +1052,7 @@ module SDBMSS::Legacy
         end
 
         if !entry.nil?
-          Artist.where(id: row['MANUSCRIPTARTISTID']).update_all({ entry_id: entry.id })
+          Name.where(id: row['MANUSCRIPTARTISTID']).update_all({ entry_id: entry.id })
         end
       end
     end

@@ -29,7 +29,7 @@ namespace :sdbmss do
 
       SDBMSS::Legacy.migrate
     else
-      puts "ERROR: You can only run this task in development. Doing nothing and exiting."
+      puts "ERROR: Rails environment is set to #{Rails.env}. but you're only allowed to run this task in development. Doing nothing and exiting."
     end
   end
 

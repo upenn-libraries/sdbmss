@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150226194432) do
+ActiveRecord::Schema.define(version: 20150303213042) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -50,25 +50,6 @@ ActiveRecord::Schema.define(version: 20150226194432) do
   add_index "artists", ["entry_id"], name: "index_artists_on_entry_id", using: :btree
   add_index "artists", ["name"], name: "index_artists_on_name", unique: true, using: :btree
   add_index "artists", ["updated_by_id"], name: "index_artists_on_updated_by_id", using: :btree
-
-  create_table "authors", force: true do |t|
-    t.string   "name"
-    t.integer  "entry_id"
-    t.string   "viaf_id"
-    t.boolean  "approved"
-    t.integer  "approved_by_id"
-    t.datetime "approved_date"
-    t.datetime "created_at"
-    t.integer  "created_by_id"
-    t.datetime "updated_at"
-    t.integer  "updated_by_id"
-  end
-
-  add_index "authors", ["approved_by_id"], name: "index_authors_on_approved_by_id", using: :btree
-  add_index "authors", ["created_by_id"], name: "index_authors_on_created_by_id", using: :btree
-  add_index "authors", ["entry_id"], name: "index_authors_on_entry_id", using: :btree
-  add_index "authors", ["name"], name: "index_authors_on_name", unique: true, using: :btree
-  add_index "authors", ["updated_by_id"], name: "index_authors_on_updated_by_id", using: :btree
 
   create_table "bookmarks", force: true do |t|
     t.integer  "user_id",       null: false
@@ -122,6 +103,7 @@ ActiveRecord::Schema.define(version: 20150226194432) do
     t.datetime "updated_at"
     t.boolean  "uncertain_in_source",    default: false
     t.boolean  "supplied_by_data_entry", default: false
+    t.string   "observed_name"
   end
 
   add_index "entry_artists", ["artist_id"], name: "index_entry_artists_on_artist_id", using: :btree
@@ -234,6 +216,7 @@ ActiveRecord::Schema.define(version: 20150226194432) do
     t.datetime "updated_at"
     t.boolean  "uncertain_in_source",    default: false
     t.boolean  "supplied_by_data_entry", default: false
+    t.string   "observed_name"
   end
 
   add_index "entry_scribes", ["entry_id"], name: "index_entry_scribes_on_entry_id", using: :btree
@@ -326,6 +309,33 @@ ActiveRecord::Schema.define(version: 20150226194432) do
 
   add_index "manuscripts", ["created_by_id"], name: "index_manuscripts_on_created_by_id", using: :btree
   add_index "manuscripts", ["updated_by_id"], name: "index_manuscripts_on_updated_by_id", using: :btree
+
+  create_table "names", force: true do |t|
+    t.string   "name"
+    t.integer  "entry_id"
+    t.integer  "viaf_id"
+    t.boolean  "is_artist",           default: false
+    t.boolean  "is_author",           default: false
+    t.boolean  "is_scribe",           default: false
+    t.boolean  "is_provenance_agent", default: false
+    t.boolean  "approved"
+    t.integer  "approved_by_id"
+    t.datetime "approved_date"
+    t.datetime "created_at"
+    t.integer  "created_by_id"
+    t.datetime "updated_at"
+    t.integer  "updated_by_id"
+  end
+
+  add_index "names", ["approved_by_id"], name: "index_names_on_approved_by_id", using: :btree
+  add_index "names", ["created_by_id"], name: "index_names_on_created_by_id", using: :btree
+  add_index "names", ["entry_id"], name: "index_names_on_entry_id", using: :btree
+  add_index "names", ["is_artist"], name: "index_names_on_is_artist", using: :btree
+  add_index "names", ["is_author"], name: "index_names_on_is_author", using: :btree
+  add_index "names", ["is_provenance_agent"], name: "index_names_on_is_provenance_agent", using: :btree
+  add_index "names", ["is_scribe"], name: "index_names_on_is_scribe", using: :btree
+  add_index "names", ["name"], name: "index_names_on_name", unique: true, using: :btree
+  add_index "names", ["updated_by_id"], name: "index_names_on_updated_by_id", using: :btree
 
   create_table "places", force: true do |t|
     t.string   "name"

@@ -45,7 +45,7 @@ module SDBMSS::ReferenceData
     end
 
     def create_source
-      @hill = Agent.find_or_create_by(name: "Jonathan A. Hill")
+      @hill = Name.find_or_create_agent("Jonathan A. Hill")
       @source = Source.create!(
         source_type: Source::TYPE_AUCTION_CATALOG,
         date: "20150101",
@@ -105,18 +105,18 @@ module SDBMSS::ReferenceData
 
       EntryAuthor.create!(
         entry: entry,
-        author: Author.find_or_create_by(name: 'Augustine, Saint, Bishop of Hippo')
+        author: Name.find_or_create_author('Augustine, Saint, Bishop of Hippo')
       )
 
       EntryAuthor.create!(
         entry: entry,
-        author: Author.find_or_create_by(name: 'Pseudo-Augustine, Saint, Bishop of Hippo'),
+        author: Name.find_or_create_author('Pseudo-Augustine, Saint, Bishop of Hippo'),
         observed_name: 'Pseudo-Augustine'
       )
 
       EntryAuthor.create!(
         entry: entry,
-        author: Author.find_or_create_by(name: 'Valerius, Bishop of Hippo')
+        author: Name.find_or_create_author('Valerius, Bishop of Hippo')
       )
 
       EntryDate.create!(entry: entry, date: '1425', circa: 'C2Q')
@@ -143,11 +143,11 @@ module SDBMSS::ReferenceData
         comment: "Bookplate. His sale Sotheby's, July 1922 (day of sale not given), lot. 1027.",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Sotheby's"),
+            agent: Name.find_or_create_agent("Sotheby's"),
             role: EventAgent::ROLE_SELLING_AGENT
           },
           {
-            agent: Agent.find_or_create_by(name: "Tomkinson, Michael"),
+            agent: Name.find_or_create_agent("Tomkinson, Michael"),
             observed_name: "Michael Tomkinson",
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           }
@@ -159,7 +159,7 @@ module SDBMSS::ReferenceData
         comment: "Bookplate.",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Ritman, J. R."),
+            agent: Name.find_or_create_agent("Ritman, J. R."),
             observed_name: "Bibliotheca Philosophica Hermetica, J. R. Ritman, Amsterdam",
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
           },
@@ -207,12 +207,12 @@ module SDBMSS::ReferenceData
 
       EntryAuthor.create!(
         entry: entry,
-        author: Author.find_or_create_by(name: 'Bruni, Leonardo')
+        author: Name.find_or_create_author('Bruni, Leonardo')
       )
 
       EntryAuthor.create!(
         entry: entry,
-        author: Author.find_or_create_by(name: 'Lebegue, Jean'),
+        author: Name.find_or_create_author('Lebegue, Jean'),
         role: 'Tr',
       )
 
@@ -242,7 +242,7 @@ module SDBMSS::ReferenceData
         comment: "He died in 1803.",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "d'Oultremont, Charles, Comte"),
+            agent: Name.find_or_create_agent("d'Oultremont, Charles, Comte"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
             observed_name: "Comte Charles d'Oultremont (1753-1803)",
           }
@@ -256,11 +256,11 @@ module SDBMSS::ReferenceData
         comment: "Catalogue title: Catalogus van eene fraye verzameling historische, letterkundige, ...boeken, nagalaten door wylen mevrowe de gravin douairiere d'Oultremont...op maendag 26 April 1830.",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "P. H. Carpentiers"),
+            agent: Name.find_or_create_agent("P. H. Carpentiers"),
             role: EventAgent::ROLE_SELLING_AGENT
           },
           {
-            agent: Agent.find_or_create_by(name: "d'Oultremont, Anne-Henriette, Comtesse"),
+            agent: Name.find_or_create_agent("d'Oultremont, Anne-Henriette, Comtesse"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           }
         ]
@@ -271,7 +271,7 @@ module SDBMSS::ReferenceData
         comment: 'Loose letter to "Dear Yates," datable to 1884 or later with related British Museum request slips (Thompson and Bright: A Family of "Bibliophiles, see also New York, PML. M 266.',
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Thompson-Yates, Samuel Ashton"),
+            agent: Name.find_or_create_agent("Thompson-Yates, Samuel Ashton"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           },
         ]
@@ -311,7 +311,7 @@ module SDBMSS::ReferenceData
 
       EntryAuthor.create!(
         entry: entry,
-        author: Author.find_or_create_by(name: 'Cicero, Marcus Tullius')
+        author: Name.find_or_create_author('Cicero, Marcus Tullius')
       )
 
       # WARNING: we didn't fill in all MS details; we concentrated on
@@ -322,7 +322,7 @@ module SDBMSS::ReferenceData
         comment: "Arms of Engelhard of Swabia in lower margin fol. 1r: gules, three shamrocks argent (Rietstap, Armorial general, I. P. 614, pl. CCLXIX",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Engelhard of Swabia"),
+            agent: Name.find_or_create_agent("Engelhard of Swabia"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
           }
         ]
@@ -334,7 +334,7 @@ module SDBMSS::ReferenceData
         comment: "Armorial ink-stamped collector's mark: three coquilles, two and one, surounded by the Garter of the Golden Fleece and surmounted by a prince's coronet (fol. Ir, Riestap, pl. CXCVIIII). Catalogue without manuscripts.",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Metternich, Clemens Wenzel Lothar, Fürst von"),
+            agent: Name.find_or_create_agent("Metternich, Clemens Wenzel Lothar, Fürst von"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
             observed_name: "Clemens Lothar von Wenzel, Furst von Metternich (1773-1859)"
           }
@@ -346,7 +346,7 @@ module SDBMSS::ReferenceData
         comment: 'Bell lived in Gwynned Valley, Pennsylvania.',
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Bell, Edward Henry"),
+            agent: Name.find_or_create_agent("Bell, Edward Henry"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
             observed_name: "Dr. Edward Henry Bell"
           },
@@ -359,11 +359,11 @@ module SDBMSS::ReferenceData
         comment: 'lot 162',
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Sotheby's"),
+            agent: Name.find_or_create_agent("Sotheby's"),
             role: EventAgent::ROLE_SELLING_AGENT,
           },
           {
-            agent: Agent.find_or_create_by(name: "Hartz, Raymond and Elizabeth"),
+            agent: Name.find_or_create_agent("Hartz, Raymond and Elizabeth"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
           },
         ]
@@ -409,19 +409,19 @@ module SDBMSS::ReferenceData
 
       EntryAuthor.create!(
         entry: entry,
-        author: Author.find_or_create_by(name: 'Cicero, Marcus Tullius')
+        author: Name.find_or_create_author('Cicero, Marcus Tullius')
       )
 
       EntryDate.create!(entry: entry, date: '1460', circa: 'C')
 
       EntryArtist.create!(
         entry: entry,
-        artist: Artist.find_or_create_by(name: 'Francesco di Antonio del Chierico')
+        artist: Name.find_or_create_artist('Francesco di Antonio del Chierico')
       )
 
       EntryScribe.create!(
         entry: entry,
-        scribe: Scribe.find_or_create_by(name: 'Ser Pietro Di Bernardo Cennini')
+        scribe: Name.find_or_create_scribe('Ser Pietro Di Bernardo Cennini')
       )
 
       EntryLanguage.create!(
@@ -481,15 +481,15 @@ module SDBMSS::ReferenceData
         comment: 'bookplate; F. 159 in her library.',
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Christie's London"),
+            agent: Name.find_or_create_agent("Christie's London"),
             role: EventAgent::ROLE_SELLING_AGENT,
           },
           {
-            agent: Agent.find_or_create_by(name: "Feltrinelli, Giannalisa"),
+            agent: Name.find_or_create_agent("Feltrinelli, Giannalisa"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
           },
           {
-            agent: Agent.find_or_create_by(name: "Bernard Quaritch Ltd."),
+            agent: Name.find_or_create_agent("Bernard Quaritch Ltd."),
             role: EventAgent::ROLE_BUYER,
             observed_name: "Bernard Quaritch",
           },
@@ -502,11 +502,11 @@ module SDBMSS::ReferenceData
         comment: "Bookplate.",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Christie's NY"),
+            agent: Name.find_or_create_agent("Christie's NY"),
             role: EventAgent::ROLE_SELLING_AGENT,
           },
           {
-            agent: Agent.find_or_create_by(name: "Friedlaender, Helmut N."),
+            agent: Name.find_or_create_agent("Friedlaender, Helmut N."),
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
           },
         ]
@@ -555,12 +555,12 @@ module SDBMSS::ReferenceData
 
       EntryAuthor.create!(
         entry: entry,
-        author: Author.find_or_create_by(name: 'Juvenal'),
+        author: Name.find_or_create_author('Juvenal'),
         observed_name: 'Iuvenalis, Decimus Iunius',
       )
       EntryAuthor.create!(
         entry: entry,
-        author: Author.find_or_create_by(name: 'Guarino Veronese'),
+        author: Name.find_or_create_author('Guarino Veronese'),
         observed_name: 'Guarino da Verona',
       )
 
@@ -592,7 +592,7 @@ module SDBMSS::ReferenceData
         comment: "Inscription on flyleaf",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Malfatti, Valeriano, Baron"),
+            agent: Name.find_or_create_agent("Malfatti, Valeriano, Baron"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
             observed_name: 'Valeriano Malfatti Barone',
           }
@@ -649,19 +649,19 @@ module SDBMSS::ReferenceData
 
       EntryAuthor.create!(
         entry: entry,
-        author: Author.find_or_create_by(name: 'Thomas Aquinas, Saint')
+        author: Name.find_or_create_author('Thomas Aquinas, Saint')
       )
 
       EntryDate.create!(entry: entry, date: '1480')
 
       EntryArtist.create!(
         entry: entry,
-        artist: Artist.find_or_create_by(name: 'Matteo Felice')
+        artist: Name.find_or_create_artist('Matteo Felice')
       )
 
       EntryScribe.create!(
         entry: entry,
-        scribe: Scribe.find_or_create_by(name: 'Crispus, Venceslaus')
+        scribe: Name.find_or_create_scribe('Crispus, Venceslaus')
       )
 
       EntryLanguage.create!(
@@ -686,7 +686,7 @@ module SDBMSS::ReferenceData
         comment: "Royal arms on first leaf.",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Ferdinand I of Aragon, King of Naples"),
+            agent: Name.find_or_create_agent("Ferdinand I of Aragon, King of Naples"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           }
         ]
@@ -696,7 +696,7 @@ module SDBMSS::ReferenceData
         entry: entry,
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Federico of Aragon"),
+            agent: Name.find_or_create_agent("Federico of Aragon"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           }
         ]
@@ -708,12 +708,12 @@ module SDBMSS::ReferenceData
         comment: "Listed in inventory of his Chateau de Gaillon in 1508; his library.",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Amboise, Georges d'"),
+            agent: Name.find_or_create_agent("Amboise, Georges d'"),
             observed_name: "Georges d'Amboise (1460-1510), Cardinal",
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           },
           {
-            agent: Agent.find_or_create_by(name: "Archbishop's Library-Rouen"),
+            agent: Name.find_or_create_agent("Archbishop's Library-Rouen"),
             role: EventAgent::ROLE_BUYER
           },
         ]
@@ -723,7 +723,7 @@ module SDBMSS::ReferenceData
         entry: entry,
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Bourbon, Charles II de, Cardinal"),
+            agent: Name.find_or_create_agent("Bourbon, Charles II de, Cardinal"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           }
         ]
@@ -733,11 +733,11 @@ module SDBMSS::ReferenceData
         entry: entry,
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Bourbon, Charles III de, Cardinal"),
+            agent: Name.find_or_create_agent("Bourbon, Charles III de, Cardinal"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           },
           {
-            agent: Agent.find_or_create_by(name: "Henry IV, King of France"),
+            agent: Name.find_or_create_agent("Henry IV, King of France"),
             observed_name: "Henri IV, King of France (1589-1610)",
             role: EventAgent::ROLE_BUYER,
           }
@@ -748,11 +748,11 @@ module SDBMSS::ReferenceData
         entry: entry,
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Henry IV, King of France"),
+            agent: Name.find_or_create_agent("Henry IV, King of France"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           },
           {
-            agent: Agent.find_or_create_by(name: "Cabinet de Roi, King of France"),
+            agent: Name.find_or_create_agent("Cabinet de Roi, King of France"),
             role: EventAgent::ROLE_BUYER,
           }
         ]
@@ -765,11 +765,11 @@ module SDBMSS::ReferenceData
         comment: "Jesuits reclaimed the College de Clermont and its library, which included the manuscript, in 1604. Ownership inscription on fol. 1r. Another note, \"Paraphe au desir de l'arrest du 5 juillet 1763/Mesnil,\" referring tothe closing of the College following suppression of the order. No. 539 in 1764 College de Claremont sale.",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "College de Clermont"),
+            agent: Name.find_or_create_agent("College de Clermont"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           },
           {
-            agent: Agent.find_or_create_by(name: "Meerman, Gerard"),
+            agent: Name.find_or_create_agent("Meerman, Gerard"),
             observed_name: "Gerard Meerman (1722-71)",
             role: EventAgent::ROLE_BUYER
           }
@@ -781,7 +781,7 @@ module SDBMSS::ReferenceData
         start_date: "17640000",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Meerman, Gerard"),
+            agent: Name.find_or_create_agent("Meerman, Gerard"),
             observed_name: "Gerard Meerman (1722-71)",
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           }
@@ -794,7 +794,7 @@ module SDBMSS::ReferenceData
         comment: "Sold in Part IV of sale, lot 480. Rebound.",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Meerman, Johan"),
+            agent: Name.find_or_create_agent("Meerman, Johan"),
             observed_name: "Meerman, Jean (1753-1815)",
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           }
@@ -806,7 +806,7 @@ module SDBMSS::ReferenceData
         comment: "No. 88 in his Catalogue of the Manuscripts at Ashburnham Place, Appendix, [1861].",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Ashburnham, Bertram, 4th Earl of Ashburnham"),
+            agent: Name.find_or_create_agent("Ashburnham, Bertram, 4th Earl of Ashburnham"),
             observed_name: "Bertram, Fourth Early of Ashburnham (1797-1878)",
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           }
@@ -818,7 +818,7 @@ module SDBMSS::ReferenceData
         start_date: "1897000",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Thompson, Henry Yates"),
+            agent: Name.find_or_create_agent("Thompson, Henry Yates"),
             role: EventAgent::ROLE_BUYER
           }
         ]
@@ -830,15 +830,15 @@ module SDBMSS::ReferenceData
         comment: "Lot 39.",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Sotheby's"),
+            agent: Name.find_or_create_agent("Sotheby's"),
             role: EventAgent::ROLE_SELLING_AGENT
           },
           {
-            agent: Agent.find_or_create_by(name: "Thompson, Henry Yates"),
+            agent: Name.find_or_create_agent("Thompson, Henry Yates"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           },
           {
-            agent: Agent.find_or_create_by(name: "Emich, Gustave R. von"),
+            agent: Name.find_or_create_agent("Emich, Gustave R. von"),
             role: EventAgent::ROLE_BUYER,
           }
         ]
@@ -850,12 +850,12 @@ module SDBMSS::ReferenceData
         comment: "Lot 355.",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "De Marinis, Tammaro"),
+            agent: Name.find_or_create_agent("De Marinis, Tammaro"),
             observed_name: "Tammaro De Marinis (1878-1969)",
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           },
           {
-            agent: Agent.find_or_create_by(name: "Hoepli"),
+            agent: Name.find_or_create_agent("Hoepli"),
             role: EventAgent::ROLE_SELLING_AGENT
           }
         ]
@@ -878,7 +878,7 @@ module SDBMSS::ReferenceData
         comment: "According to catalog entry purchased by present owner in the 1980s in Lugano from a private collection.",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Sotheby's"),
+            agent: Name.find_or_create_agent("Sotheby's"),
             role: EventAgent::ROLE_SELLING_AGENT
           },
           {
@@ -886,7 +886,7 @@ module SDBMSS::ReferenceData
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           },
           {
-            agent: Agent.find_or_create_by(name: "Kraus, H.P."),
+            agent: Name.find_or_create_agent("Kraus, H.P."),
             role: EventAgent::ROLE_BUYER
           }
         ]
@@ -904,7 +904,7 @@ module SDBMSS::ReferenceData
     end
 
     def create_source
-      @upenn = Agent.find_or_create_by(name: "University of Pennsylvania")
+      @upenn = Name.find_or_create_agent("University of Pennsylvania")
       @source = Source.create!(
         source_type: Source::TYPE_COLLECTION_CATALOG,
         date: "1965",
@@ -952,16 +952,16 @@ module SDBMSS::ReferenceData
 
       EntryAuthor.create!(
         entry: entry,
-        author: Author.find_or_create_by(name: 'Dokeianos, Ioannes'),
+        author: Name.find_or_create_author('Dokeianos, Ioannes'),
         observed_name: 'Ioannes Dokeianus (Johannes Docianus)',
       )
       EntryAuthor.create!(
         entry: entry,
-        author: Author.find_or_create_by(name: 'Gregoras, Nicephorus'),
+        author: Name.find_or_create_author('Gregoras, Nicephorus'),
       )
       EntryAuthor.create!(
         entry: entry,
-        author: Author.find_or_create_by(name: 'Gregorios III, Patriarch of Constantinople'),
+        author: Name.find_or_create_author('Gregorios III, Patriarch of Constantinople'),
         observed_name: "Gregorios of Constantinople (Georgios of Cyprus)",
       )
 
@@ -982,7 +982,7 @@ module SDBMSS::ReferenceData
         comment: "MS 51.",
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Notre Dame of Pilar, Salamanca"),
+            agent: Name.find_or_create_agent("Notre Dame of Pilar, Salamanca"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           }
         ]
@@ -992,7 +992,7 @@ module SDBMSS::ReferenceData
         entry: entry,
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Lakon, Andreas Darmarios Epidaurios"),
+            agent: Name.find_or_create_agent("Lakon, Andreas Darmarios Epidaurios"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER
           }
         ]
@@ -1011,7 +1011,7 @@ module SDBMSS::ReferenceData
     end
 
     def create_source
-      @pirages = Agent.find_or_create_by(name: "Pirages")
+      @pirages = Name.find_or_create_agent("Pirages")
       @source = Source.create!(
         source_type: Source::TYPE_AUCTION_CATALOG,
         date: "20150100",
@@ -1069,7 +1069,7 @@ module SDBMSS::ReferenceData
 
       EntryArtist.create!(
         entry: entry,
-        artist: Artist.find_or_create_by(name: 'Cortese, Cristoforo, style'),
+        artist: Name.find_or_create_artist('Cortese, Cristoforo, style'),
       )
 
       EntryPlace.create!(
@@ -1081,7 +1081,7 @@ module SDBMSS::ReferenceData
         entry: entry,
         event_agents_attributes: [
           {
-            agent: Agent.find_or_create_by(name: "Monastery of San Giorgio Maggiore (Venice, Italy)"),
+            agent: Name.find_or_create_agent("Monastery of San Giorgio Maggiore (Venice, Italy)"),
             role: EventAgent::ROLE_SELLER_OR_HOLDER,
             observed_name: 'San Giorgio Maggiore',
             uncertain_in_source: true,

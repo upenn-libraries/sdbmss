@@ -40,7 +40,7 @@ $(document).ready(function() {
                         $(".dataTables_scrollBody").scrollTop(0);
                         var rows = [];
                         data.results.forEach(function(item) {
-                            rows.push([ item.id, item.name, item.count ]);
+                            rows.push([ item.id, item.name, item.count || 0 ]);
                         });
                         callback({
                             draw: dt_params.draw,

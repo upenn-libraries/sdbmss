@@ -72,7 +72,7 @@
         <tr>
             <td class="col-sm-2 text-right record-label">Selling Agent</td>
             <td class="col-sm-10">
-                <a href="<%= url_for selling_agent.agent %>"><%= selling_agent.agent.name %></a>
+                <a href="<%= agent_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a>
             </td>
         </tr>
         <% end %>
@@ -81,7 +81,7 @@
         <tr>
             <td class="col-sm-2 text-right record-label">Seller</td>
             <td class="col-sm-10">
-                <a href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a>
+                <a href="<%= agent_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a>
             </td>
         </tr>
         <% end %>
@@ -90,7 +90,7 @@
         <tr>
             <td class="col-sm-2 text-right record-label">Buyer</td>
             <td class="col-sm-10">
-                <a href="<%= url_for buyer.agent %>"><%= buyer.agent.name %></a>
+                <a href="<%= agent_path(buyer.agent) %>"><%= buyer.agent.name %></a>
             </td>
         </tr>
         <% end %>

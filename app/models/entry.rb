@@ -2,7 +2,7 @@ class Entry < ActiveRecord::Base
   belongs_to :source
 
   # entries have institution/collection for "Other published sources" only
-  belongs_to :institution, class_name: "Agent"
+  belongs_to :institution, class_name: "Name"
 
   include UserFields
 
@@ -55,8 +55,9 @@ class Entry < ActiveRecord::Base
   scope :most_recent, ->(count = 5) { order(id: :desc).first(count) }
 
   # returns the entries that have the specified author
-  scope :with_author, ->(author) { joins(:entry_authors).where("entry_authors.author_id = #{author.id}").distinct }
+  scope :with_author, ->(name) { joins(:entry_authors).where("entry_authors.author_id = #{name.id}").distinct }
 
+  # an agent is a Name object; role is a string
   scope :with_transaction_agent_and_role, ->(agent, role) { joins(:events => :event_agents).where("events.primary = true and event_agents.agent_id = ? and role = ?", agent.id, role) }
 
   ALT_SIZE_TYPES = [

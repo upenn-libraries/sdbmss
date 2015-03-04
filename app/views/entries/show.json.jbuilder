@@ -43,7 +43,7 @@ end
 
 if @entry.entry_artists.present?
   json.entry_artists @entry.entry_artists do |entry_artist|
-    json.(entry_artist, :id, :uncertain_in_source, :supplied_by_data_entry)
+    json.(entry_artist, :id, :observed_name, :uncertain_in_source, :supplied_by_data_entry)
     if entry_artist.artist
       json.artist do
         json.(entry_artist.artist, :id, :name)
@@ -54,7 +54,7 @@ end
 
 if @entry.entry_scribes.present?
   json.entry_scribes @entry.entry_scribes do |entry_scribe|
-    json.(entry_scribe, :id, :uncertain_in_source, :supplied_by_data_entry)
+    json.(entry_scribe, :id, :observed_name, :uncertain_in_source, :supplied_by_data_entry)
     if entry_scribe.scribe
       json.scribe do
         json.(entry_scribe.scribe, :id, :name)

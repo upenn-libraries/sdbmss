@@ -95,8 +95,8 @@ class Source < ActiveRecord::Base
     get_source_agent_with_role(SourceAgent::ROLE_SELLER_OR_HOLDER)
   end
 
-  # returns an Agent object
-  def get_seller_or_holder_as_agent
+  # returns an Name object
+  def get_seller_or_holder_as_name
     sa = get_seller_or_holder
     sa.agent if sa
   end
@@ -106,8 +106,8 @@ class Source < ActiveRecord::Base
     get_source_agent_with_role(SourceAgent::ROLE_SELLING_AGENT)
   end
 
-  # returns an Agent object
-  def get_selling_agent_as_agent
+  # returns an Name object
+  def get_selling_agent_as_name
     sa = get_selling_agent
     sa.agent if sa
   end
@@ -117,8 +117,8 @@ class Source < ActiveRecord::Base
     get_source_agent_with_role(SourceAgent::ROLE_INSTITUTION)
   end
 
-  # returns an Agent object
-  def get_institution_as_agent
+  # returns an Name object
+  def get_institution_as_name
     sa = get_institution
     sa.agent if sa
   end

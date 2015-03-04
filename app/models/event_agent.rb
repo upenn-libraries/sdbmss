@@ -3,7 +3,7 @@ class EventAgent < ActiveRecord::Base
   include CertaintyFlags
 
   belongs_to :event
-  belongs_to :agent
+  belongs_to :agent, class_name: 'Name'
 
   validates_presence_of :event
 

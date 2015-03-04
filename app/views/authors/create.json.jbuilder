@@ -1,1 +1,0 @@
-json.(@author, :id, :name)
