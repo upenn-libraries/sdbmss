@@ -1226,6 +1226,18 @@
 
         $scope.entityName = "name";
         $scope.hasViafId = true;
+
+        $scope.$watch("entity.name", function(newValue, oldValue) {
+            if(newValue) {
+                $http.get("/names/suggest.json", {
+                    params: {
+                        term: newValue
+                    }
+                }).then(function (response) {
+                    console.log(response.data);
+                });
+            }
+        });
     });
 
     sdbmApp.controller('CreateLanguageModalCtrl', function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, modalParams, Language) {

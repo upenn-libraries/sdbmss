@@ -45,7 +45,10 @@ Rails.application.routes.draw do
   end
 
   resources :names do
-    collection { get 'search' }
+    collection do
+      get 'search'
+      get 'suggest'
+    end
   end
 
   resources :places do

@@ -8,6 +8,10 @@ gem 'rails', '~>4.1.7'
 
 gem 'mysql2', '~> 0.3.0'
 
+# XML parsing. Other gems require nokogiri as well, but we may as well
+# require it too.
+gem 'nokogiri', '~> 1.6'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 

@@ -24,10 +24,8 @@ $(document).ready(function() {
             render: function (data, type, full, meta) { 
                 var str = '<a href="/' + model_class + '/' + data + '">View</a>' +
                           ' &middot; <a href="/' + model_class + '/' + data + '/edit/">Edit</a>' +
+                          ' &middot; <a href="/entries/new/?source_id=' + data + '">Add an Entry</a>' +
                           ' &middot; <a class="delete-link" href="/' + model_class + '/' + data + '.json">Delete</a>';
-                if (!full[1]) {
-                    str += ' &middot; <a class="delete-link" href="/' + model_class + '/' + data + '.json">Delete</a>';
-                }
                 return str;
             },
             width: "10%"

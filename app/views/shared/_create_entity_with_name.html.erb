@@ -18,6 +18,11 @@
             </div>
         </div>
 
+        <p>Suggestions:</p>
+        <div data-ng-repeat="suggestion in suggestions">
+            {{ suggestion.name }} {{ suggestion.viaf_id }}
+        </div>
+        
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="save()" ng-show="readyToCreate">Create</button>
