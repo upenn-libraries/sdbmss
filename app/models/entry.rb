@@ -1,4 +1,7 @@
 class Entry < ActiveRecord::Base
+
+  default_scope { where(deleted: false) }
+
   belongs_to :source
 
   # entries have institution/collection for "Other published sources" only

@@ -1,4 +1,7 @@
 class Place < ActiveRecord::Base
+
+  default_scope { where(deleted: false) }
+
   belongs_to :entry
 
   has_many :entry_places

@@ -2,11 +2,14 @@
 # This is the place where all the names of people and institutions,
 # associated with Entries in various ways, are stored.
 class Name < ActiveRecord::Base
+
+  default_scope { where(deleted: false) }
+
   belongs_to :entry
 
-  include UserFields
-
   belongs_to :approved_by, :class_name => 'User'
+
+  include UserFields
 
   has_many :entry_artists, foreign_key: "artist_id"
 

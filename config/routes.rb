@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   end
 
   resources :manuscripts do
+    collection { get 'search' }
     member do
       get 'entry_candidates'
     end

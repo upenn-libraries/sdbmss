@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150303213042) do
+ActiveRecord::Schema.define(version: 20150304165914) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -285,6 +285,8 @@ ActiveRecord::Schema.define(version: 20150303213042) do
     t.integer  "created_by_id"
     t.datetime "updated_at"
     t.integer  "updated_by_id"
+    t.integer  "entries_count"
+    t.boolean  "deleted",       default: false
   end
 
   add_index "languages", ["created_by_id"], name: "index_languages_on_created_by_id", using: :btree
@@ -305,6 +307,7 @@ ActiveRecord::Schema.define(version: 20150303213042) do
     t.integer  "updated_by_id"
     t.string   "name"
     t.string   "current_location"
+    t.integer  "entries_count"
   end
 
   add_index "manuscripts", ["created_by_id"], name: "index_manuscripts_on_created_by_id", using: :btree
@@ -325,6 +328,12 @@ ActiveRecord::Schema.define(version: 20150303213042) do
     t.integer  "created_by_id"
     t.datetime "updated_at"
     t.integer  "updated_by_id"
+    t.integer  "authors_count"
+    t.integer  "artists_count"
+    t.integer  "scribes_count"
+    t.integer  "source_agents_count"
+    t.integer  "event_agents_count"
+    t.boolean  "deleted",             default: false
   end
 
   add_index "names", ["approved_by_id"], name: "index_names_on_approved_by_id", using: :btree
@@ -347,6 +356,8 @@ ActiveRecord::Schema.define(version: 20150303213042) do
     t.integer  "created_by_id"
     t.datetime "updated_at"
     t.integer  "updated_by_id"
+    t.integer  "entries_count"
+    t.boolean  "deleted",        default: false
   end
 
   add_index "places", ["approved_by_id"], name: "index_places_on_approved_by_id", using: :btree

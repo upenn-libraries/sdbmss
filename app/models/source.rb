@@ -54,6 +54,8 @@ class Source < ActiveRecord::Base
     [TYPE_PUBLICLY_AVAILABLE_MAYBE, TYPE_PUBLICLY_AVAILABLE_MAYBE],
   ]
 
+  default_scope { where(deleted: false) }
+
   include UserFields
 
   before_validation :normalize

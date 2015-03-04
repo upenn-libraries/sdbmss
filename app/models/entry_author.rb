@@ -3,7 +3,7 @@ class EntryAuthor < ActiveRecord::Base
   include CertaintyFlags
 
   belongs_to :entry
-  belongs_to :author, class_name: 'Name'
+  belongs_to :author, class_name: 'Name', counter_cache: :authors_count
 
   validates_presence_of :entry
 

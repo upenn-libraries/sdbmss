@@ -1,4 +1,4 @@
-<h2>Welcome, <%= current_user.username %>!</h2>
+<h1>Welcome, <%= current_user.username %>!</h1>
 
 <p class="lead">This is your dashboard page, from which you can do some Very Useful Things.</p>
 
@@ -7,7 +7,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">Stuff you can do</div>
             <div class="panel-body">
-                <p><a href="<%= new_entry_path %>">Enter new records</a></p>
+                <p><a href="<%= new_entry_path %>">Enter New Records</a></p>
                 <p><a href="<%= admin_search_path %>">Manage Entries</a></p>
                 <p><a href="<%= reports_path %>">Reports</a></p>
 
@@ -17,6 +17,7 @@
             <div class="panel-heading">Manage other data</div>
             <div class="panel-body">
                 <p><a href="<%= sources_path %>">Manage Sources</a></p>
+                <p><a href="<%= manuscripts_path %>">Manage Manuscripts</a></p>
                 <p><a href="<%= names_path %>">Manage Names</a></p>
                 <p><a href="<%= languages_path %>">Manage Languages</a></p>
                 <p><a href="<%= places_path %>">Manage Places</a></p>

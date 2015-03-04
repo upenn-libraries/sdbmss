@@ -7,11 +7,6 @@ class NamesController < SimpleNamedModelsController
     Name
   end
 
-  def create
-    @name = Name.new(name_params)
-    @name.save!
-  end
-
   def search_results_keys
     [:id, :name, :is_artist, :is_author, :is_provenance_agent, :is_scribe]
   end
@@ -30,10 +25,19 @@ class NamesController < SimpleNamedModelsController
     @name = Name.find(params[:id])
   end
 
-  def name_params
-    # we don't use wrapped parameters here b/c Rails won't wrap if
-    # fieldname is same as class
-    params.permit(:name, :is_artist, :is_author, :is_provenance_agent, :is_scribe)
+  def model_params
+    # wrapped parameters don't work when class name is the same as one
+    # of the fields. BUT Rails' HTML form helpers send URL parameters
+    # in a format that Rails WILL translate into a wrapped format. So
+    # we have to account for both cases, which is this grossness here.
+
+    # if 'name' contains something other than a string, treat it as wrapped parameters
+    if params[:name].present? && params[:name].class != String
+      p = params.require(:name)
+    else
+      p = params
+    end
+    p.permit(:name, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe)
   end
 
 end

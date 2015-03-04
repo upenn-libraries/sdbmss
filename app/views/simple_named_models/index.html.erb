@@ -22,14 +22,42 @@ $(document).ready(function() {
 
     $("input[name='search_value']").val("");
 
+    var columnOptions = [
+        {
+            title: 'Options',
+            orderable: false,
+            render: function (data, type, full, meta) {
+                var str = '<a href="/' + model_class + '/' + data + '/edit/">Edit</a> '
+                        + '| <a class="delete-link" href="/' + model_class + '/' + data + '.json">Delete</a>';
+                return str;
+            },
+            width: "10%"
+        },
+        {
+            title: 'Name',
+            width: "70%",
+            dbSortField: 'name'
+        },
+        {
+            title: 'Count',
+            width: "20%",
+            dbSortField: 'entries_count'
+        }
+    ];
+    
     var dataTable = $(".sdbm-table").DataTable({
         ajax: function (dt_params, callback, settings) {
 
+            var orderStr = "";
+            dt_params.order.forEach(function(item) {
+                orderStr += columnOptions[item.column].dbSortField + " " + item.dir;
+            });
+                
             var params = {
                 term: $("input[name='search_value']").val(),
                 offset: dt_params.start,
                 limit: dt_params.length,
-                order: "name " + dt_params.order[0].dir
+                order: orderStr
             };
 
             $.ajax({
@@ -40,7 +68,7 @@ $(document).ready(function() {
                         $(".dataTables_scrollBody").scrollTop(0);
                         var rows = [];
                         data.results.forEach(function(item) {
-                            rows.push([ item.id, item.name, item.count || 0 ]);
+                            rows.push([ item.id, item.name, item.entries_count || 0 ]);
                         });
                         callback({
                             draw: dt_params.draw,
@@ -58,29 +86,8 @@ $(document).ready(function() {
                 }
             });
         },
-        columns: [
-            {
-                title: 'Options',
-                orderable: false,
-                render: function (data, type, full, meta) {
-                    var str = '<a href="/' + model_class + '/' + data + '/edit/">Edit</a> ';
-                    if (!full[1]) {
-                        str += '| <a class="delete-link" href="/' + model_class + '/' + data + '.json">Delete</a>';
-                    }
-                    return str;
-                },
-                width: "10%"
-            },
-            {
-                title: 'Name',
-                width: "70%"
-            },
-            {
-                title: 'Count',
-                orderable: false,
-                width: "20%"
-            }
-        ],
+        columns: columnOptions,
+        order: [[ 1, "asc" ]],
         language: {
             "emptyTable": "No records found for search query."
         },

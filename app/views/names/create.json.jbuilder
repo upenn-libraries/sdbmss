@@ -1,1 +1,1 @@
-json.(@name, :id, :name)
+json.(@model, :id, :name)

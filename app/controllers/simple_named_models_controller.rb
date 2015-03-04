@@ -39,7 +39,9 @@ class SimpleNamedModelsController < ApplicationController
   end
 
   def destroy
-    @model.destroy
+    # mark as deleted, don't actually destroy the record
+    @model.deleted = true
+    @model.save!
     respond_with(@model)
   end
 
