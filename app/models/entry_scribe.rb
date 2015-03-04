@@ -6,7 +6,6 @@ class EntryScribe < ActiveRecord::Base
   belongs_to :scribe, class_name: 'Name', counter_cache: :scribes_count
 
   validates_presence_of :entry
-  validates_presence_of :scribe
 
   def to_s
     (scribe ? scribe.name : "") + certainty_flags

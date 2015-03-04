@@ -6,7 +6,6 @@ class EntryArtist < ActiveRecord::Base
   belongs_to :artist, class_name: 'Name', counter_cache: :artists_count
 
   validates_presence_of :entry
-  validates_presence_of :artist
 
   def to_s
     (artist ? artist.name : "") + certainty_flags

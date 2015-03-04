@@ -855,27 +855,46 @@ module SDBMSS::Legacy
 
       SDBMSS::Util.split_and_strip(row['ARTIST']).each do |atom|
         name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(atom)
-        ea = EntryArtist.create!(
-          entry: entry,
-          artist: get_or_create_artist(name),
-          uncertain_in_source: uncertain_in_source,
-          supplied_by_data_entry: supplied_by_data_entry,
-        )
+
+        if name.present?
+          if name =~ /workshop/i || name =~ /style/i || name =~ /artist/i || name =~ /school/i || name =~ /group/i
+            observed_name = name
+            artist = nil
+          else
+            observed_name = nil
+            artist = get_or_create_artist(name)
+          end
+
+          ea = EntryArtist.create!(
+            entry: entry,
+            artist: artist,
+            observed_name: observed_name,
+            uncertain_in_source: uncertain_in_source,
+            supplied_by_data_entry: supplied_by_data_entry,
+          )
+        end
       end
 
       SDBMSS::Util.split_and_strip(row['SCRIBE']).each do |atom|
-        if atom.scan(/scribe/i).length > 0
-          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'scribe', "Scribe name has word 'scribe' in it: #{atom}")
-        end
-
         name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(atom)
 
-        es = EntryScribe.create!(
-          entry: entry,
-          scribe: get_or_create_scribe(name),
-          uncertain_in_source: uncertain_in_source,
-          supplied_by_data_entry: supplied_by_data_entry,
-        )
+        if name.present?
+          if name =~ /scribe/i
+            observed_name = name
+            scribe = nil
+          else
+            observed_name = nil
+            scribe = get_or_create_scribe(name)
+          end
+
+          es = EntryScribe.create!(
+            entry: entry,
+            scribe: scribe,
+            observed_name: observed_name,
+            uncertain_in_source: uncertain_in_source,
+            supplied_by_data_entry: supplied_by_data_entry,
+          )
+        end
       end
 
       SDBMSS::Util.split_and_strip(row['PROVENANCE']).each do |atom|
