@@ -77,5 +77,9 @@ group :test, :development do
   gem 'poltergeist', '~> 1.6.0'
 end
 
+# This can autogenerate ERD diagrams from ActiveRecord models and
+# schema.
+# gem 'rails-erd', group: :development
+
 # for calculating string similarity
 gem 'levenshtein', '~> 0.2.2'

@@ -42,12 +42,12 @@ class EntriesController < ApplicationController
 
   def update
 
-    # TODO: Note that we don't access an "entry" param, which is the
-    # typical Rails convention. This is because there's deeply nested
-    # data here that would require a lot of annoying twiddling with
-    # params.permit to filter through. When I get around to converting
-    # this to using accept_nested_attributes_for, I might want to use
-    # wrap_parameters.
+    # TODO: Note that we don't access an "entry" wrapped param, which
+    # is the typical Rails convention. This is because there's deeply
+    # nested data here that would require a lot of annoying twiddling
+    # with params.permit to filter through. When I get around to
+    # converting this to using accept_nested_attributes_for, I might
+    # want to use wrap_parameters.
 
     begin
       ActiveRecord::Base.transaction do
