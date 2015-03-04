@@ -28,7 +28,7 @@ $(document).ready(function() {
             orderable: false,
             render: function (data, type, full, meta) {
                 var str = '<a href="/' + model_class + '/' + data + '/edit/">Edit</a> '
-                        + '| <a class="delete-link" href="/' + model_class + '/' + data + '.json">Delete</a>';
+                        + '&middot; <a class="delete-link" href="/' + model_class + '/' + data + '.json">Delete</a>';
                 return str;
             },
             width: "10%"
