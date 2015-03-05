@@ -12,13 +12,17 @@ describe "Admin search", :js => true do
   end
 
   before :each do
-    page.driver.resize_window(1024, 768)
-
     visit new_user_session_path
     fill_in 'user_login', :with => @user.username
     fill_in 'user_password', :with => 'somethingunguessable'
     click_button 'Log in'
     expect(page).to have_content 'Signed in successfully'
+  end
+
+  it "should return JSON results successfully", js: false do
+    visit admin_search_path(format: :json)
+    data = JSON.parse(page.source)
+    expect(data['error']).to be_nil
   end
 
   xit "should show table of entries" do

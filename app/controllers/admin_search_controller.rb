@@ -12,7 +12,9 @@ class AdminSearchController < CatalogController
 
   # Overrides Blacklight::Catalog#render_search_results_as_json to
   # provide search results in JSON format expected by datatables
-  # widget
+  # widget, which is the only thing that uses (or should use) this,
+  # since we return arrays instead of objects with more meaningful
+  # keys.
   def render_search_results_as_json
     dateformat = "%Y-%m-%d %I:%M%P"
     row_error = ([nil] * 41).tap { |a| a[1]="Error loading" }
