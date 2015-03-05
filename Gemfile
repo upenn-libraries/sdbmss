@@ -75,6 +75,7 @@ group :test, :development do
   gem 'capybara', '~> 2.4.4'
   gem "factory_girl_rails", "~> 4.0"
   gem 'poltergeist', '~> 1.6.0'
+  gem 'simplecov', :require => false
 end
 
 # This can autogenerate ERD diagrams from ActiveRecord models and
