@@ -25,7 +25,7 @@ $(document).ready(function() {
                 var str = '<a href="/' + model_class + '/' + data + '">View</a>' +
                           ' &middot; <a href="/' + model_class + '/' + data + '/edit/">Edit</a>' +
                           ' &middot; <a href="/entries/new/?source_id=' + data + '">Add an Entry</a>' +
-                          ' &middot; <a class="delete-link" href="/' + model_class + '/' + data + '.json">Delete</a>';
+                          ' &middot; <a class="source-delete-link" href="/' + model_class + '/' + data + '.json">Delete</a>';
                 return str;
             },
             width: "10%"
@@ -99,7 +99,7 @@ $(document).ready(function() {
         ajax: function (dt_params, callback, settings) {
 
             var params = {
-                term: $("input[name='search_value']").val(),
+                title: $("input[name='search_value']").val(),
                 offset: dt_params.start,
                 limit: dt_params.length,
                 order: "name " + dt_params.order[0].dir
@@ -163,7 +163,7 @@ $(document).ready(function() {
         serverSide: true
     });
 
-    $(".sdbm-table").on("click", ".delete-link", function(event) {
+    $(".sdbm-table").on("click", ".source-delete-link", function(event) {
         if(confirm("Are you sure you want to delete this record?")) {
             $.ajax({
                 url: $(event.target).attr("href"),

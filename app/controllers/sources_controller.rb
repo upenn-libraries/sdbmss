@@ -124,6 +124,22 @@ class SourcesController < ApplicationController
     end
   end
 
+  # we don't ever destroy anything, we just mark it as deleted
+  def destroy
+    @source.deleted = true
+    @source.updated_by_id = current_user.id
+    @source.save!
+
+    # if we call respond_with(@entry), which is more rails-ish, the
+    # response is a 302 to a #show, but jquery's ajax code gets stuck
+    # in an redirect loop, deleting the object over and over again. So
+    # we force-return a 200 with an empty body for JSON calls to this
+    # action.
+    respond_to do |format|
+      format.json { render :json => {}, :status => :ok }
+    end
+  end
+
   private
 
   def set_source
