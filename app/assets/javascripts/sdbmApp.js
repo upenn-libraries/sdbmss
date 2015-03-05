@@ -1229,17 +1229,20 @@
         $scope.entityName = "name";
         $scope.hasViafId = true;
 
-        $scope.$watch("entity.name", function(newValue, oldValue) {
-            if(newValue) {
-                $http.get("/names/suggest.json", {
-                    params: {
-                        term: newValue
-                    }
-                }).then(function (response) {
-                    console.log(response.data);
-                });
-            }
-        });
+        $scope.show_suggestions = function(name) {
+            $http.get("/names/suggest.json", {
+                params: {
+                    name: name
+                }
+            }).then(function (response) {
+                $scope.suggestions = response.data.results;
+            });
+        };
+
+        $scope.use_suggestion = function(suggestion) {
+            $scope.entity.name = suggestion.name;
+            $scope.entity.viaf_id = suggestion.viaf_id;
+        }
     });
 
     sdbmApp.controller('CreateLanguageModalCtrl', function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, modalParams, Language) {

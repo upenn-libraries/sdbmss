@@ -5,6 +5,12 @@ require 'net/http'
 # https://www.oclc.org/developer/develop/web-services/viaf/authority-cluster.en.html
 module VIAF
 
+  # Namespaces found in VIAF XML
+  module NS
+    LC = "http://www.loc.gov/zing/srw/"
+    VIAF = "http://viaf.org/viaf/terms#"
+  end
+
   module Constants
     HOST = "viaf.org"
 

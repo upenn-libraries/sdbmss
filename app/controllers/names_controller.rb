@@ -22,29 +22,10 @@ class NamesController < SimpleNamedModelsController
   def suggest
     name = params[:name]
 
-    suggestions = []
-
-    # check that name doesn't already exist
-    name_exists = Name.exists?(name: name)
-
-    if !name_exists
-      # VIAF's autosuggest returns confusing info, so we use
-      # sru_search instead
-      xmldoc = Nokogiri::XML(VIAF.sru_search("local.names all \"#{name}\" and local.sources = \"lc\""))
-
-      xmldoc.xpath("//*[local-name() = 'records']").children.each do |record|
-        # record.xpath("//*[local-name() = 'viafID']")
-        # TODO: finish this
-      end
-    end
-
-    json_response = {
-      name_exists: name_exists,
-      suggestions: suggestions
-    }
+    suggestions = Name.suggestions(name)
 
     respond_to do |format|
-      format.json { render :json => json_response, :status => :ok }
+      format.json { render :json => suggestions, :status => :ok }
     end
   end
 
