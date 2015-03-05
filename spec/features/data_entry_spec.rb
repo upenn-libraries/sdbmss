@@ -158,7 +158,7 @@ describe "Data entry", :js => true do
       expect(page).to have_no_content 'Transaction Information'
     end
 
-    it "should save an auction catalog Source" do
+    it "should save a new Source (auction catalog)" do
       count = Source.count
 
       visit new_source_path
@@ -199,7 +199,7 @@ describe "Data entry", :js => true do
       expect(source.comments).to eq('This info is correct')
     end
 
-    it "should save Other Published Source" do
+    it "should save a new Source (other published source)" do
       count = Source.count
 
       visit new_source_path
@@ -238,6 +238,27 @@ describe "Data entry", :js => true do
       expect(source.electronic_catalog_format).to eq("test")
       expect(source.electronic_publicly_available).to eq("No")
       expect(source.comments).to eq('This info is correct')
+    end
+
+    it "should save a new Source with no date" do
+      count = Source.count
+
+      visit new_source_path
+
+      select 'Other Published Source', from: 'source_type'
+      fill_in 'title', with: 'Test source wirh no date'
+      fill_in 'author', with: 'Jeff'
+
+      click_button('Save')
+
+      sleep(1)
+
+      expect(Source.count).to eq(count + 1)
+
+      source = Source.last
+      expect(source.source_type).to eq(Source::TYPE_OTHER_PUBLISHED)
+      expect(source.title).to eq('Test source wirh no date')
+      expect(source.author).to eq('Jeff')
     end
 
     it "should save an auction catalog Entry" do

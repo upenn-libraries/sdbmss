@@ -1131,7 +1131,9 @@
         $scope.save = function () {
             var sourceToSave = new Source(angular.copy($scope.source));
 
-            sourceToSave.date = sourceToSave.date.replace(/-/g, "");
+            if(sourceToSave.date) {
+                sourceToSave.date = sourceToSave.date.replace(/-/g, "");
+            }
 
             sourceToSave.source_agents = [];
             $scope.agent_role_types.forEach(function (role) {
