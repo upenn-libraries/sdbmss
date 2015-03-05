@@ -166,7 +166,8 @@
             <td class="col-sm-2 text-right record-label" colspan="2">Artists</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_artists.each do |entry_artist| %>
-                <%= entry_artist %><br/>
+                    <%= render partial: "shared/entry_artist", object: entry_artist %>
+                    <br/>
                 <% end %>
             </td>
         </tr>
@@ -177,7 +178,8 @@
             <td class="col-sm-2 text-right record-label" colspan="2">Scribes</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_scribes.each do |entry_scribe| %>
-                <%= entry_scribe %><br/>
+                    <%= render partial: "shared/entry_scribe", object: entry_scribe %>
+                    <br/>
                 <% end %>
             </td>
         </tr>

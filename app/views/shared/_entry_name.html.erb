@@ -1,0 +1,2 @@
+<%# This partial is for entry_ association records that contain a reference to a Name, an observed_name field, and certainty flags. this is the pattern for author, artist, and scribe %>
+<% if record.author %><%= link_to record.author.name, name_path(record.author) -%><% if record.observed_name.present? %> (recorded as <%= record.observed_name %>)<%- end -%><%- else -%><%= record.observed_name %><%- end -%><% if record.role.present? %> (<%= record.role %>)<% end %><%= record.certainty_flags %>
