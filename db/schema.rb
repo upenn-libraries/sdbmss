@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150304165914) do
+ActiveRecord::Schema.define(version: 20150305151109) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -431,6 +431,7 @@ ActiveRecord::Schema.define(version: 20150304165914) do
     t.datetime "updated_at"
     t.integer  "updated_by_id"
     t.string   "electronic_publicly_available"
+    t.integer  "entries_count"
   end
 
   add_index "sources", ["created_by_id"], name: "index_sources_on_created_by_id", using: :btree

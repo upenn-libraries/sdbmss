@@ -38,6 +38,9 @@ $(document).ready(function() {
             title: 'Source Type'
         },
         {
+            title: '# Entries'
+        },
+        {
             title: 'Date',
             width: "10%"
         },
@@ -117,6 +120,7 @@ $(document).ready(function() {
                                 item.id,
                                 'SDBM_SOURCE_' + item.id,
                                 item.source_type,
+                                item.entries_count || 0,
                                 item.date,
                                 item.title,
                                 item.author,

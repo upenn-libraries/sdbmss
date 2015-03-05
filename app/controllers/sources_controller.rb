@@ -78,6 +78,7 @@ class SourcesController < ApplicationController
       id: obj.id,
       date: obj.date,
       source_type: obj.source_type,
+      entries_count: obj.entries_count,
       title: obj.title,
       display_value: obj.display_value,
       author: obj.author,
