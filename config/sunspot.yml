@@ -1,3 +1,7 @@
+
+# TODO: figure out a way to pull this configuration from environment
+# variables; right now, it duplicates SDBMSS_SOLR_URL
+
 production:
   solr:
     hostname: localhost
@@ -14,10 +18,16 @@ development:
     log_level: INFO
     path: /solr/development
 
+staging:
+  solr:
+    hostname: localhost
+    port: 8983
+    log_level: INFO
+    path: /solr/development
+
 test:
   solr:
     hostname: localhost
     port: 8983
     log_level: WARNING
     path: /solr/test
-    
