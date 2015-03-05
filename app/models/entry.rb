@@ -168,7 +168,7 @@ class Entry < ActiveRecord::Base
         end
       }
     }
-    names if names.length > 0
+    names
   end
 
   # Tell Sunspot how to index fields from this model.
@@ -204,7 +204,8 @@ class Entry < ActiveRecord::Base
     # complete_entry is for general full-text search, so dump
     # everything here
     define_field(:text, :complete_entry, :stored => true) do
-      [
+
+      fields = [
         # id() method not available b/c of bug:
         # https://github.com/sunspot/sunspot/issues/331
         @__receiver__.id,
@@ -217,18 +218,20 @@ class Entry < ActiveRecord::Base
         get_transaction_selling_agent_name,
         get_transaction_seller_or_holder_name,
         get_transaction_buyer_name,
-        get_transaction_price,
-        # details
-        entry_titles.map(&:title),
-        entry_authors.map(&:observed_name),
-        authors.map(&:name),
-        entry_dates.map(&:display_value),
-        artists.map(&:name),
-        scribes.map(&:name),
-        languages.map(&:name),
-        entry_materials.map(&:material),
-        places.map(&:name),
-        entry_uses.map(&:use),
+        get_transaction_price
+      ] +
+      # details
+      entry_titles.map(&:title) +
+      entry_authors.map(&:observed_name) +
+      authors.map(&:name) +
+      entry_dates.map(&:display_value) +
+      entry_artists.map(&:display_value) +
+      entry_scribes.map(&:display_value) +
+      languages.map(&:name) +
+      entry_materials.map(&:material) +
+      places.map(&:name) +
+      entry_uses.map(&:use) +
+      [
         folios,
         num_columns,
         num_lines,
@@ -244,11 +247,13 @@ class Entry < ActiveRecord::Base
         miniatures_unspec_size,
         initials_historiated,
         initials_decorated,
-        # provenance
-        provenance_names,
-        # comments
-        entry_comments.select { |ec| ec.public }.map { |ec| ec.comment },
-      ].map { |item| item.to_s }.select { |item| (!item.nil?) && (item.length > 0) }.join "\n"
+      ] +
+      # provenance
+      provenance_names +
+      # comments
+      entry_comments.select { |ec| ec.public }.map { |ec| ec.comment }
+
+      fields.map { |item| item.to_s }.select { |item| (!item.nil?) && (item.length > 0) }.join "\n"
     end
 
     # for sorting
