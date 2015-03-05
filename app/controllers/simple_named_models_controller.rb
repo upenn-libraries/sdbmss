@@ -35,7 +35,16 @@ class SimpleNamedModelsController < ApplicationController
 
   def update
     @model.update(model_params)
-    respond_with(@model)
+
+    respond_to do |format|
+      format.html {
+        flash[:notice] = "Your changes have been saved."
+        redirect_to :action => "edit", :id => @model.id
+      }
+      format.json {
+        render json: @model
+      }
+    end
   end
 
   def destroy
