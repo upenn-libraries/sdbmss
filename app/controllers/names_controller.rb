@@ -25,7 +25,7 @@ class NamesController < SimpleNamedModelsController
     suggestions = []
 
     # check that name doesn't already exist
-    name_exists = Name.exists(name: name)
+    name_exists = Name.exists?(name: name)
 
     if !name_exists
       # VIAF's autosuggest returns confusing info, so we use
