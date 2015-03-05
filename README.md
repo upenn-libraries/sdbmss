@@ -8,14 +8,12 @@ Blacklight project reboot, started in late Nov 2014.
 Note that we use 'sdbmss' everywhere in the code because 'sdbm' is the
 name of a package in Ruby's standard library.
 
-Installation Notes
-------------------
+Setting up for Development
+--------------------------
 
-You only need to do the steps in this section once.
-
-* Install Ruby 2.x on your system, preferably 2.1.5. Rails 4.x only
-  requires Ruby 1.9.3, but the code here uses 2.x features like
-  keyword arguments.
+* Install Ruby 2.x on your system, preferably at least 2.1.5. Rails
+  4.x only requires Ruby 1.9.3, but the code here uses 2.x features
+  like keyword arguments and probably other stuff.
 
 * Install the following libraries from the system packages. (These are
   the package names in Debian; the names will probably differ on other
@@ -32,7 +30,7 @@ You only need to do the steps in this section once.
   ```
   
 * Clone the git repository into your home directory. This will give
-  you a folder called ~/sdbm
+  you a folder called ~/sdbmss
 
   ```
   cd ~
@@ -128,7 +126,7 @@ migrated data.
   ```
 
 Running the Development Server
----------------------------------
+------------------------------
 
 * Run Rails
 
@@ -136,7 +134,7 @@ Running the Development Server
   bundle exec rails s
   ```
 
-* Load http://localhost:3000 in your browser.
+* Load <http://localhost:3000> in your browser.
 
 Running the Test Suite
 ----------------------
@@ -163,9 +161,9 @@ Running the Test Suite
 Deploying to the Staging (Dev VM) Server
 ----------------------------------------
 
-Note: we use 'staging' and the 'dev VM' to refer to the same machine
-and environment. We use 'development' to refer to local development
-environments.
+Note: 'staging' aka 'dev VM' refers to the virtual machine provided by
+Libraries IT for the exclusive purpose of SDBM development. We use the
+term 'development' to refer to local development environments.
 
 We use capistrano to automate updating the staging server with the
 latest code, restarting the unicorn server, and recreating the
