@@ -1,6 +1,7 @@
 class EntryAuthor < ActiveRecord::Base
 
   include CertaintyFlags
+  include DisplayableName
 
   belongs_to :entry
   belongs_to :author, class_name: 'Name', counter_cache: :authors_count
@@ -19,14 +20,8 @@ class EntryAuthor < ActiveRecord::Base
   ]
 
   def display_value
-    case
-    when author && observed_name
-      "#{author.name} (#{observed_name})" + (role ? " (" + role + ")": "")
-    when author
-      "#{author.name}" + (role ? " (" + role + ")" : "")
-    when observed_name
-      "#{observed_name}" + (role ? " (" + role + ")" : "")
-    end
+    val = super(author)
+    val += role ? " (" + role + ")": ""
   end
 
 end
