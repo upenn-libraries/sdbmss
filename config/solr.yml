@@ -11,7 +11,7 @@
 # how to start up solr, generally for automated testing. 
 
 default: &default
-  url: <%= ENV['SDBMSS_SOLR_URL'] %>
+  url: <%= ENV['SOLR_URL'] %>
 
 development:
   <<: *default
@@ -21,6 +21,4 @@ staging:
   <<: *default
 production:
   <<: *default
-
-# TODO: these fields should be kept in sync with sunspot.yml somehow
 

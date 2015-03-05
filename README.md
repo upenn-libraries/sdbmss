@@ -80,7 +80,8 @@ You only need to do the steps in this section once.
   export SDBMSS_DEVISE_SECRET_KEY="..."
   export SDBMSS_SECRET_KEY_BASE="..."
   export SDBMSS_SECRET_TOKEN="..."
-  export SDBMSS_SOLR_URL="http://127.0.0.1:8983/solr/development"
+  # note there's no SDBMSS_ prefix here
+  export SOLR_URL="http://127.0.0.1:8983/solr/development"
   ```
 
 * Now you should be ready to run the application and its scripts.

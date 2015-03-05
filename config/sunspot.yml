@@ -1,33 +1,25 @@
 
-# TODO: figure out a way to pull this configuration from environment
-# variables; right now, it duplicates SDBMSS_SOLR_URL
+# Sunspot looks for environment variable SOLR_URL, so to avoid
+# confusion, we use that instead of storing the Solr hostname, port,
+# and path here.
 
 production:
   solr:
-    hostname: localhost
-    port: 8983
+    # hostname: localhost
+    # port: 8983
     log_level: WARNING
-    path: /solr/production
+    # path: /solr/production
     # read_timeout: 2
     # open_timeout: 0.5
 
 development:
   solr:
-    hostname: localhost
-    port: 8983
     log_level: INFO
-    path: /solr/development
 
 staging:
   solr:
-    hostname: localhost
-    port: 8983
     log_level: INFO
-    path: /solr/development
 
 test:
   solr:
-    hostname: localhost
-    port: 8983
     log_level: WARNING
-    path: /solr/test
