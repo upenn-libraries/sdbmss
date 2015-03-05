@@ -153,7 +153,8 @@ Running the Test Suite
   echo "CREATE DATABASE sdbm_test;" | mysql -u root
   ```
 
-* Run this script:
+* Run this script, which sets up a proper testing environment and
+  creates fresh tables in the database.
 
   ```
   ./run_tests.sh
