@@ -59,9 +59,13 @@ $(document).ready(function() {
                 "data": null,
                 "orderable": false,
                 "render": function (data, type, full, meta) {
-                    return '<a href="/entries/' + full[1] + '" target="_blank">View</a>' +
-                        ' &middot; <a href="/entries/' + full[1] + '/edit" target="_blank">Edit</a>' +
-                        ' &middot; <a class="entry-delete-link" href="#" target="_blank">Delete</a>';
+                    var entryId = full[sdbmTable.getColumnIndex("ID")];
+                    var manuscriptId = full[sdbmTable.getColumnIndex("Manuscript")];
+                    var findOrCreateManuscriptLink = !manuscriptId ? ' &middot; <a class="find-or-create-manuscript-link" href="/entries/' + entryId + '/find_or_create_manuscript" target="_blank">Find or Create MS</a>' : "";
+                    return '<a href="/entries/' + entryId + '" target="_blank">View</a>' +
+                        ' &middot; <a href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +
+                        ' &middot; <a class="entry-delete-link" href="#" target="_blank">Delete</a>' +
+                        findOrCreateManuscriptLink;
                 }
             }
         ],

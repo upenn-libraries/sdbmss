@@ -22,6 +22,9 @@ $(document).ready(function() {
 
     $("input[name='search_value']").val("");
 
+    var entryId = <%= @entry.id %>;
+    var queuedEntries = [ entryId ];
+
     // Fielded search specific params
     var translateSearchParams = function (sdbmTable, data) {
         params = sdbmTable.translateParamsToBlacklight(data);
@@ -46,10 +49,16 @@ $(document).ready(function() {
                 "data": null,
                 "orderable": false,
                 "render": function (data, type, full, meta) {
-                    var manuscript = data[sdbmTable.getColumnIndex("Manuscript")];
-                    return manuscript ? '<a href="/entries/' + full[1] + '" target="_blank">Link this MS</a>' : '';
+                    var manuscriptId = data[sdbmTable.getColumnIndex("Manuscript")];
+                    var entryId = data[sdbmTable.getColumnIndex("ID")];
+                    if(manuscriptId) {
+                        return '<a href="#" class="link-to-manuscript-link">Link to SDBM_MS_' + manuscriptId + '</a>';
+                    } else {
+                        return '<a href="#" class="queue-entry-link">Queue SDBM_' + entryId + '</a>';
+                    }
                 }
             },
+            /*
             {
                 title: 'Link new MS',
                 "data": null,
@@ -60,7 +69,7 @@ $(document).ready(function() {
                     return !manuscript ? '<input type="checkbox"/>' : '';
                 }
             },
-            
+            */
         ],
         ajax: function (sdbmTable, dt_params, callback, settings) {
             $("#spinner").show();
@@ -93,25 +102,83 @@ $(document).ready(function() {
         doSearch();
     });
 
-    $(document).on("click", ".entry-delete-link", function (event) {
+    var displayQueuedEntries = function() {
+        var html = $.map(queuedEntries, function (entryId) {
+            return "<a href='/entries/" + entryId + "' target='_blank'>SDBM_" + entryId + "</a>";
+        }).join(", ");
+        $("#queued-entries").html(html);
+    };
+    
+    $(document).on("click", ".queue-entry-link", function (event) {
         var row_data = sdbmTable.dataTable.row($(event.target).closest("tr")).data();
-        var entry_id = row_data[1];
-        if(confirm("Are you sure you want to delete entry " + entry_id + "?")) {
+        var entryId = row_data[sdbmTable.getColumnIndex("ID")];
+        queuedEntries.push(entryId);
+        //console.log(queuedEntries);
+        displayQueuedEntries();
+        return false;
+    });
+
+    $(document).on("click", ".link-to-manuscript-link", function (event) {
+        var row_data = sdbmTable.dataTable.row($(event.target).closest("tr")).data();
+        var manuscriptId = row_data[sdbmTable.getColumnIndex("Manuscript")];
+
+        $.ajax({
+            url: "/entry_manuscripts.json",
+            type: 'POST',
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify({
+                entry_manuscript: {
+                    manuscript_id: manuscriptId,
+                    entry_id: entryId,
+                    relation_type: 'is',
+                }
+            }),
+            success: function(data, textStatus, jqXHR) {
+                alert("Link between SDBM_" + entryId + "and SDBM_MS_" + manuscriptId + " successfully created! Redirecting to manuscript page now.");
+                window.location = "/manuscripts/" + manuscriptId + "/edit";
+            },
+            error: function() {
+                // TODO: fill this out
+                alert("An error occurred creating a manuscript.");
+            }
+        });
+
+        return false;
+    });
+
+    $("#create-manuscript-link").click(function (event) {
+        if(queuedEntries.length > 1) {
             $.ajax({
-                url: '/entries/' + entry_id,
-                type: 'DELETE',
+                url: '/manuscripts.json',
+                type: 'POST',
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
+                    entry_manuscripts: $.map(queuedEntries, function(entryId) {
+                        return {
+                            entry_id: entryId,
+                            relation_type: 'is',
+                        }
+                    })
+                }),
+                success: function(data, textStatus, jqXHR) {
+                    alert("Manuscript " + data.manuscript_id + " successfully created! Redirecting to manuscript page now.");
+                    window.location = "/manuscripts/" + data.manuscript_id + "/edit";
+                },
                 error: function() {
                     // TODO: fill this out
-                    alert("An error occurred deleting this record.");
-                },
-                complete: function() {
-                    sdbmTable.reload();
+                    alert("An error occurred creating a manuscript.");
                 }
             });
+        } else {
+            alert("Creating a Manuscript requires more than 1 entry. Queue some entries and try again.");
         }
         return false;
     });
-    
+
+    displayQueuedEntries();
+
     // TODO: this doesn't work
     // $(window).bind('resize', function () {
     //     console.log("RESIZED!");
@@ -145,11 +212,14 @@ $(document).ready(function() {
             <%- end -%>
             </select>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-2">
             <div>
                 Match <select class="form-control" style="width: 100px; display: inline" name="op"><option value="AND">all</option><option value="OR">any</option></select>
                 of these fields
             </div>
+        </div>
+        <div class="col-sm-3 text-right">
+            <a class="btn btn-primary" href="#" id="create-manuscript-link">Create new Manuscript with these Entries</a>
         </div>
     </div>
 
@@ -163,6 +233,9 @@ $(document).ready(function() {
             <option value="<%= key %>"><%= field_def.label %></option>
             <%- end -%>
             </select>
+        </div>
+        <div class="col-sm-5 text-right">
+            Queued: <span id="queued-entries"></span>
         </div>
     </div>
 
@@ -184,12 +257,6 @@ $(document).ready(function() {
             <div>
                 <img id="spinner" alt="working..." style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
             </div>
-        </div>
-        <div class="col-sm-1 text-right">
-        </div>
-        <div class="col-sm-1">
-        </div>
-        <div class="col-sm-1">
         </div>
     </div>
 

@@ -5,6 +5,16 @@ class EntryManuscriptsController < ApplicationController
 
 #  respond_to :html, :json
 
+  def create
+    @entry_manuscript = EntryManuscript.new(entry_manuscript_params)
+    @entry_manuscript.save!
+    respond_to do |format|
+      format.json {
+        render json: @entry_manuscript
+      }
+    end
+  end
+
   # updates multiple EntryManuscript records at once; this is used for
   # the Entry <-> Manuscript management tool
   def update_multiple
@@ -30,6 +40,12 @@ class EntryManuscriptsController < ApplicationController
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }
     end
+  end
+
+  private
+
+  def entry_manuscript_params
+    params.require(:entry_manuscript).permit(:entry_id, :manuscript_id, :relation_type)
   end
 
 end

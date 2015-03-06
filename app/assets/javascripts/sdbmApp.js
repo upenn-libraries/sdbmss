@@ -160,8 +160,8 @@
             redirectToManuscriptEditPage: function(manuscript_id)  {
                 window.location = "/manuscripts/" + manuscript_id + "/edit/";
             },
-            redirectToCreateManuscriptForEntryPage: function(entry_id) {
-                window.location = "/entries/" + entry_id + "/create_manuscript";
+            redirectToFindOrCreateManuscriptForEntryPage: function(entry_id) {
+                window.location = "/entries/" + entry_id + "/find_or_create_manuscript";
             },
             redirectToDashboard: function() {
                 window.location = "/dashboard";
