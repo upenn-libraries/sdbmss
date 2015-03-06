@@ -333,14 +333,14 @@ class Entry < ActiveRecord::Base
       entry_titles.map(&:title).join("; ")
     end
     define_field(:text, :title_search, :stored => true) do
-      entry_titles.map &:title
+      entry_titles.map(&:display_value)
     end
 
     define_field(:string, :author, :stored => true, :multiple => true) do
       authors.map &:name
     end
     define_field(:text, :author_search, :stored => true) do
-      authors.map &:name
+      entry_authors.map(&:display_value)
     end
 
     # TODO: fiddle with this for a better facet taking into account circa
@@ -358,7 +358,7 @@ class Entry < ActiveRecord::Base
       artists.map(&:name).join("; ")
     end
     define_field(:text, :artist_search, :stored => true) do
-      artists.map &:name
+      entry_artists.map(&:display_value)
     end
 
     define_field(:string, :scribe, :stored => true, :multiple => true) do
@@ -368,7 +368,7 @@ class Entry < ActiveRecord::Base
       scribes.map(&:name).join("; ")
     end
     define_field(:text, :scribe_search, :stored => true) do
-      scribes.map &:name
+      entry_scribes.map(&:display_value)
     end
 
     define_field(:string, :language, :stored => true, :multiple => true) do
