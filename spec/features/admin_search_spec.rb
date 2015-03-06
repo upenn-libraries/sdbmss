@@ -25,7 +25,7 @@ describe "Admin search", :js => true do
     expect(data['error']).to be_nil
   end
 
-  xit "should show table of entries" do
+  it "should show table of entries" do
     visit admin_search_path
   end
 
