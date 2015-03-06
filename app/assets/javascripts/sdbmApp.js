@@ -1,7 +1,9 @@
 /**
  * sdbmApp module for angular.js
  *
- * This contains code for public-facing pages.
+ * We only Angular for a few data entry pages, so all of the code
+ * lives here instead of being broken out further into smaller modules
+ * or files.
  */
 
 /* Hints for eslint: */
@@ -22,24 +24,6 @@
         } else {
             alert("Error: no meta tag found with csrf-token. Ajax calls won't work.");
         }
-    });
-
-    /* This is a service that does the AJAX call for typeaheads */
-    sdbmApp.factory('typeAheadService', function($http) {
-        /* return an object */
-        return {
-            getOptions: function (val, url) {
-                return $http.get(url, {
-                    params: {
-                        term: val
-                    }
-                }).then(function (response) {
-                    var options = response.data;
-                    options.unshift({'id': 'CREATE', 'display_value': "&raquo; Create '" + val + "'"});
-                    return response.data;
-                });
-            }
-        };
     });
 
     sdbmApp.factory('Entry', ['$resource',
@@ -217,7 +201,7 @@
     });
 
     /* Entry screen controller */
-    sdbmApp.controller("EntryCtrl", function ($scope, $http, $cookies, typeAheadService, Entry, Source, sdbmutil, $modal) {
+    sdbmApp.controller("EntryCtrl", function ($scope, $http, $cookies, Entry, Source, sdbmutil, $modal) {
 
         $scope.sdbmutil = sdbmutil;
         
@@ -281,8 +265,6 @@
         ];
 
         $scope.pageTitle = "";
-
-        $scope.typeAheadService = typeAheadService;
 
         $scope.badData = [];
 
@@ -1026,19 +1008,6 @@
                     $parse(modelName + ".uncertain_in_source").assign(scope, true);
                 }
                 scope.$apply();
-                /*
-                var modalInstance = $modal.open({
-                    templateUrl: "inferenceFlags.html",
-                    controller: 'InferenceFlagsCtrl',
-                    size: 'lg',
-                    resolve: {
-                        objectWithFlags: function() {
-                            var model = $parse(modelName);
-                            return model(scope);
-                        }
-                    },
-                });
-                */
             });
         };
     });
@@ -1069,7 +1038,7 @@
         };
     });
 
-    sdbmApp.controller('SourceCtrl', function ($scope, $modal, typeAheadService, sdbmutil, Source) {
+    sdbmApp.controller('SourceCtrl', function ($scope, $modal, sdbmutil, Source) {
 
         /* TODO: source validation is complex: date is required only
            sometimes; review other fields as well, once all source
@@ -1082,8 +1051,6 @@
         $scope.agent_role_types = ['institution', 'buyer', 'seller_or_holder', 'selling_agent'];
         
         $scope.pageTitle = "";
-
-        $scope.typeAheadService = typeAheadService;
 
         $scope.source = undefined;
 
@@ -1186,9 +1153,7 @@
     // you to search for a database object and create one. Specialized
     // controllers should call this fn and modify/supply anything in
     // $scope it needs to.
-    var baseCreateEntityModalCtrl = function ($scope, $http, $modalInstance, typeAheadService, sdbmutil) {
-
-        $scope.typeAheadService = typeAheadService;
+    var baseCreateEntityModalCtrl = function ($scope, $http, $modalInstance, sdbmutil) {
 
         $scope.readyToCreate = true;
 
@@ -1216,7 +1181,7 @@
         };
     };
 
-    sdbmApp.controller('CreateNameModalCtrl', function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, modalParams, Name) {
+    sdbmApp.controller('CreateNameModalCtrl', function ($scope, $http, $modalInstance, sdbmutil, modalParams, Name) {
         $scope.entityFactory = function() { return new Name(); };
 
         $scope.entity_attributes = function(entity) {
@@ -1224,7 +1189,7 @@
             entity[modalParams["type"]] = true;
         };
         
-        baseCreateEntityModalCtrl($scope, $http, $modalInstance, typeAheadService, sdbmutil);
+        baseCreateEntityModalCtrl($scope, $http, $modalInstance, sdbmutil);
 
         $scope.entityName = "name";
         $scope.hasViafId = true;
@@ -1245,26 +1210,26 @@
         }
     });
 
-    sdbmApp.controller('CreateLanguageModalCtrl', function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, modalParams, Language) {
+    sdbmApp.controller('CreateLanguageModalCtrl', function ($scope, $http, $modalInstance, sdbmutil, modalParams, Language) {
         $scope.entityFactory = function() { return new Language(); };
 
         $scope.entity_attributes = function(entity) {
             entity.name = modalParams.name;
         };
         
-        baseCreateEntityModalCtrl($scope, $http, $modalInstance, typeAheadService, sdbmutil);
+        baseCreateEntityModalCtrl($scope, $http, $modalInstance, sdbmutil);
 
         $scope.entityName = "language";
     });
 
-    sdbmApp.controller('CreatePlaceModalCtrl', function ($scope, $http, $modalInstance, typeAheadService, sdbmutil, modalParams, Place) {
+    sdbmApp.controller('CreatePlaceModalCtrl', function ($scope, $http, $modalInstance, sdbmutil, modalParams, Place) {
         $scope.entityFactory = function() { return new Place(); };
 
         $scope.entity_attributes = function(entity) {
             entity.name = modalParams.name;
         };
 
-        baseCreateEntityModalCtrl($scope, $http, $modalInstance, typeAheadService, sdbmutil);
+        baseCreateEntityModalCtrl($scope, $http, $modalInstance, sdbmutil);
 
         $scope.entityName = "place";
     });
