@@ -13,6 +13,8 @@ module DisplayableName
       "#{name_obj.name}"
     when observed_name
       "#{observed_name}"
+    else
+      ""
     end
   end
 

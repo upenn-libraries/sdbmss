@@ -8,6 +8,12 @@ class EntryScribe < ActiveRecord::Base
 
   validates_presence_of :entry
 
+  validate do |entry_scribe|
+    if !(entry_scribe.scribe.present? || entry_scribe.observed_name.present?)
+      errors[:base] << "EntryScribe objects must have either Name association or observed_name value"
+    end
+  end
+
   def display_value
     super scribe
   end

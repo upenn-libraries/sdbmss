@@ -8,6 +8,12 @@ class EntryArtist < ActiveRecord::Base
 
   validates_presence_of :entry
 
+  validate do |entry_artist|
+    if !(entry_artist.artist.present? || entry_artist.observed_name.present?)
+      errors[:base] << "EntryArtist objects must have either Name association or observed_name value"
+    end
+  end
+
   def display_value
     super artist
   end

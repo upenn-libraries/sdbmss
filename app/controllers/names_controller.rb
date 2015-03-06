@@ -42,7 +42,7 @@ class NamesController < SimpleNamedModelsController
     # we have to account for both cases, which is this grossness here.
 
     # if 'name' contains something other than a string, treat it as wrapped parameters
-    if params[:name].present? && params[:name].class != String
+    if params[:name].present? && !params[:name].is_a?(String)
       p = params.require(:name)
     else
       p = params

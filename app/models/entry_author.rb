@@ -8,6 +8,12 @@ class EntryAuthor < ActiveRecord::Base
 
   validates_presence_of :entry
 
+  validate do |entry_author|
+    if !(entry_author.author.present? || entry_author.observed_name.present?)
+      errors[:base] << "EntryAuthor objects must have either Name association or observed_name value"
+    end
+  end
+
   TYPES_ROLES = [
     ['Attr', 'Attr'],
     ['Tr', 'Tr'],

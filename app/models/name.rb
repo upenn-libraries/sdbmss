@@ -31,24 +31,32 @@ class Name < ActiveRecord::Base
     end
   end
 
-  # constructor for a Provenance Agent
-  def self.agent
-    new(is_provenance_agent: true)
+  # constructor for a Provenance Agent. takes same args as #new
+  def self.agent(*args)
+    hash = args.pop || {}
+    hash.merge!(is_provenance_agent: true) if hash.is_a? Hash
+    new(*(args << hash))
   end
 
-  # constructor for an Artist
-  def self.artist
-    new(is_artist: true)
+  # constructor for an Artist. takes same args as #new
+  def self.artist(*args)
+    hash = args.pop || {}
+    hash.merge!(is_artist: true) if hash.is_a? Hash
+    new(*(args << hash))
   end
 
-  # constructor for an Author
-  def self.author
-    new(is_author: true)
+  # constructor for an Author. takes same args as #new
+  def self.author(*args)
+    hash = args.pop || {}
+    hash.merge!(is_author: true) if hash.is_a? Hash
+    new(*(args << hash))
   end
 
-  # constructor for a Scribe
-  def self.scribe
-    new(is_scribe: true)
+  # constructor for a Scribe. takes same args as #new
+  def self.scribe(*args)
+    hash = args.pop || {}
+    hash.merge!(is_scribe: true) if hash.is_a? Hash
+    new(*(args << hash))
   end
 
   # This find_or_create constructor looks for a name, creating it if

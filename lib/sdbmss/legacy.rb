@@ -811,7 +811,8 @@ module SDBMSS::Legacy
           elsif author_variant.present?
             if author_variant.length > 255
               create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'author_variant_too_long', "Author variant too long for entry #{row['MANUSCRIPT_ID']} = #{author_variant}")
-              author_variant = nil
+              # this data needs to be fixed eventually; for now, though, we truncate, so entry_author validates for manuscript id=119296
+              author_variant = author_variant[0..254]
             end
           else
             # use NULLs instead of blank strs
