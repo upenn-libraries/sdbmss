@@ -454,44 +454,44 @@
     </div>
 
     <div class="form-group row">
+      <label class="col-sm-2 control-label">Selling Agent As Recorded</label>
+      <div class="col-sm-4">
+          <input id="provenance_selling_agent_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.selling_agent.observed_name">
+      </div>
       <label class="col-sm-2 control-label">Selling Agent</label>
-      <div class="col-sm-5">
+      <div class="col-sm-4">
           <div class="input-group">
               <input id="provenance_selling_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
               <div id="provenance_selling_agent_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov.selling_agent"><span class="glyphicon"></span></div>
           </div>
       </div>
-      <label class="col-sm-1 control-label">As Recorded</label>
-      <div class="col-sm-4">
-          <input id="provenance_selling_agent_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.selling_agent.observed_name">
-      </div>
     </div>
 
     <div class="form-group row">
+      <label class="col-sm-2 control-label">Holder As Recorded</label>
+        <div class="col-sm-4">
+          <input id="provenance_seller_or_holder_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.seller_or_holder.observed_name">
+      </div>
       <label class="col-sm-2 control-label">Holder</label>
-      <div class="col-sm-5">
+      <div class="col-sm-4">
           <div class="input-group">
               <input id="provenance_seller_or_holder_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
               <div id="provenance_seller_or_holder_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov.seller_or_holder"><span class="glyphicon"></span></div>
           </div>
       </div>
-      <label class="col-sm-1 control-label">As Recorded</label>
-      <div class="col-sm-4">
-          <input id="provenance_seller_or_holder_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.seller_or_holder.observed_name">
-      </div>
     </div>
 
     <div class="form-group row">
+      <label class="col-sm-2 control-label">Buyer As Recorded</label>
+      <div class="col-sm-4">
+          <input id="provenance_buyer_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.buyer.observed_name">
+      </div>
       <label class="col-sm-2 control-label">Buyer</label>
-      <div class="col-sm-5">
+      <div class="col-sm-4">
           <div class="input-group">
               <input id="provenance_buyer_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
               <div id="provenance_buyer_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov.buyer"><span class="glyphicon"></span></div>
           </div>
-      </div>
-      <label class="col-sm-1 control-label">As Recorded</label>
-      <div class="col-sm-4">
-          <input id="provenance_buyer_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.buyer.observed_name">
       </div>
     </div>
 
