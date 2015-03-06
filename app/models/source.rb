@@ -74,6 +74,12 @@ class Source < ActiveRecord::Base
   # returns 'count' number of most recent sources
   scope :most_recent, ->(count = 5) { order(created_at: :desc).first(count) }
 
+  # aggressively load all associations; useful for cases where you
+  # want to display the 'complete' info
+  scope :load_associations, -> {
+    includes(:source_agents => [:agent])
+  }
+
   def public_id
     "SDBM_SOURCE_#{id}"
   end
