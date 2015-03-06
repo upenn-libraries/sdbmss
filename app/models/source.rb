@@ -67,6 +67,7 @@ class Source < ActiveRecord::Base
   validates_inclusion_of :whether_mss, in: HAS_MANUSCRIPT_TYPES.map(&:first), message: 'whether_mss is invalid'
   validates_inclusion_of :electronic_publicly_available, in: PUBLICLY_AVAILABLE_TYPES.map(&:first), message: 'electronic_publicly_available is invalid'
   validates_presence_of :date, if: :date_required
+  validate :source_type_not_changed
 
   accepts_nested_attributes_for :source_agents
 
@@ -168,6 +169,12 @@ class Source < ActiveRecord::Base
     title_str = title || "(No title)"
 
     pieces = [date_str, agent_str, title_str].select { |x| x.to_s.length > 0 }.join(" - ")
+  end
+
+  def source_type_not_changed
+    if source_type_changed? && self.persisted?
+      errors.add(:activity_id, "Change of source_type not allowed")
+    end
   end
 
 end
