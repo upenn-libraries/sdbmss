@@ -34,6 +34,10 @@ $(document).ready(function() {
             width: "10%"
         },
         {
+            title: 'ID',
+            dbSortField: 'id'
+        },
+        {
             title: 'Name',
             width: "70%",
             dbSortField: 'name'
@@ -68,7 +72,7 @@ $(document).ready(function() {
                         $(".dataTables_scrollBody").scrollTop(0);
                         var rows = [];
                         data.results.forEach(function(item) {
-                            rows.push([ item.id, item.name, item.entries_count || 0 ]);
+                            rows.push([ item.id, item.id, item.name, item.entries_count || 0 ]);
                         });
                         callback({
                             draw: dt_params.draw,
@@ -87,7 +91,7 @@ $(document).ready(function() {
             });
         },
         columns: columnOptions,
-        order: [[ 1, "asc" ]],
+        order: [[ 2, "asc" ]],
         language: {
             "emptyTable": "No records found for search query."
         },
@@ -140,6 +144,7 @@ $(document).ready(function() {
     <thead>
         <tr>
             <th>Options</th>
+            <th>ID</th>
             <th>Name</th>
             <th>Count</th>
         </tr>
