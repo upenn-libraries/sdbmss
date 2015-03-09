@@ -560,7 +560,11 @@
 
             <a href="/dashboard">Not right now. I'll enter the rest later</a><br/><br/>
 
-            <a ng-click="markSourceAsEntered()" href="#">No, there are no more manuscripts to enter from this source</a><br/><br/>
+            <a ng-click="markSourceAsEntered()" href="#">No, there are no more entries to enter from this source</a><br/><br/>
+
+            <span ng-show="!entry.manuscript_id"><a ng-click="sdbmutil.redirectToFindOrCreateManuscriptForEntryPage(entry.id)" href="#">No, but let me find or create a manuscript for this entry</a><br/><br/></span>
+
+            <span ng-show="entry.manuscript_id"><a ng-click="sdbmutil.redirectToManuscriptEditPage(entry.manuscript_id)" href="#">No, but let me manage the entries for SDBM_MS_{{ entry.manuscript_id }}</a><br/><br/></span>
 
             <a ng-click="sdbmutil.redirectToEntryEditPage(entry.id)" href="#">Return to editing this entry</a><br/><br/>
 
