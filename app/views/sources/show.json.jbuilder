@@ -1,5 +1,5 @@
 
-json.(@source, :id, :title, :source_type, :author, :whether_mss, :status, :current_location, :location_city, :location_country, :link, :cataloging_type, :electronic_catalog_format, :electronic_publicly_available, :comments, :entries_have_a_transaction, :entries_have_institution)
+json.(@source, :id, :title, :source_type, :author, :whether_mss, :status, :medium, :date_accessed, :location_institution, :location, :link, :comments, :entries_have_a_transaction, :entries_have_institution)
 
 json.date SDBMSS::Util::date_dashes(@source.date)
 

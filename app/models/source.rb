@@ -43,15 +43,22 @@ class Source < ActiveRecord::Base
     [TYPE_STATUS_NO_MSS, TYPE_STATUS_NO_MSS],
   ]
 
-  TYPE_PUBLICLY_AVAILABLE_YES = 'Yes'
-  TYPE_PUBLICLY_AVAILABLE_NO = 'No'
-  TYPE_PUBLICLY_AVAILABLE_MAYBE = 'Maybe'
+  # These are not all media, but this is the weird list we came up
+  # with on 3/9/2015 meeting
+  TYPE_MEDIUM_INTERNET = "Internet"
+  TYPE_MEDIUM_LIBRARY = "Library"
+  TYPE_MEDIUM_PUBLIC_INSTITUTION = "Public Institution"
+  TYPE_MEDIUM_PRIVATE_INSTITUTION = "Private Collection"
+  TYPE_MEDIUM_PERSONAL_COMMUNICATION = "Personal Communication"
+  TYPE_MEDIUM_OTHER = "Other"
 
-  PUBLICLY_AVAILABLE_TYPES = [
-    [TYPE_BLANK, ''],
-    [TYPE_PUBLICLY_AVAILABLE_YES, TYPE_PUBLICLY_AVAILABLE_YES],
-    [TYPE_PUBLICLY_AVAILABLE_NO, TYPE_PUBLICLY_AVAILABLE_NO],
-    [TYPE_PUBLICLY_AVAILABLE_MAYBE, TYPE_PUBLICLY_AVAILABLE_MAYBE],
+  MEDIUM_TYPES = [
+    [TYPE_MEDIUM_INTERNET, TYPE_MEDIUM_INTERNET],
+    [TYPE_MEDIUM_LIBRARY, TYPE_MEDIUM_LIBRARY],
+    [TYPE_MEDIUM_PUBLIC_INSTITUTION, TYPE_MEDIUM_PUBLIC_INSTITUTION],
+    [TYPE_MEDIUM_PRIVATE_INSTITUTION, TYPE_MEDIUM_PRIVATE_INSTITUTION],
+    [TYPE_MEDIUM_PERSONAL_COMMUNICATION, TYPE_MEDIUM_PERSONAL_COMMUNICATION],
+    [TYPE_MEDIUM_OTHER, TYPE_MEDIUM_OTHER],
   ]
 
   default_scope { where(deleted: false) }
@@ -65,7 +72,7 @@ class Source < ActiveRecord::Base
 
   validates_inclusion_of :source_type, in: SOURCE_TYPES.map(&:first), message: 'source type is invalid'
   validates_inclusion_of :whether_mss, in: HAS_MANUSCRIPT_TYPES.map(&:first), message: 'whether_mss is invalid'
-  validates_inclusion_of :electronic_publicly_available, in: PUBLICLY_AVAILABLE_TYPES.map(&:first), message: 'electronic_publicly_available is invalid'
+  validates_inclusion_of :medium, in: MEDIUM_TYPES.map(&:first), message: 'medium is invalid', allow_nil: true
   validates_presence_of :date, if: :date_required
   validate :source_type_not_changed
 

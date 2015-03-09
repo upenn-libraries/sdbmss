@@ -1135,6 +1135,11 @@ module SDBMSS::Legacy
         status = 'To Be Entered'
       end
 
+      medium = nil
+      if row['ONLINE_LINK'].present? && (row['ONLINE_LINK'].include?("www") || row['ONLINE_LINK'].include?("http"))
+        medium = Source::TYPE_MEDIUM_INTERNET;
+      end
+
       # NOTE: there do exist Catalogs with no Entries, and that's
       # ok. these can indicate that someone looked at a catalog and
       # determined that there are no MSS relevant for SDBM (the
@@ -1152,12 +1157,10 @@ module SDBMSS::Legacy
         title: row['CAT_ID'],
         author: row['CAT_AUTHOR'],
         whether_mss: whether_mss,
-        current_location: row['CURRENT_LOCATION'],
-        location_city: row['LOCATION_CITY'],
-        location_country: row['LOCATION_COUNTRY'],
+        location_institution: row['CURRENT_LOCATION'],
+        location: [row['LOCATION_CITY'], row['LOCATION_COUNTRY']].select { |s| s.present? }.join(",") || nil,
         link: row['ONLINE_LINK'],
-        electronic_catalog_format: row['ELEC_CAT_FORMAT'],
-        electronic_publicly_available: row['ELEC_CAT_OPENACCESS'],
+        medium: medium,
         in_manuscript_table: in_manuscript_table,
         deleted: deleted,
         created_at: row['ADDED_ON'],
@@ -1165,7 +1168,6 @@ module SDBMSS::Legacy
         updated_at: row['LAST_MODIFIED'],
         updated_by: get_or_create_user(row['LAST_MODIFIED_BY']),
         comments: row['COMMENTS'],
-        cataloging_type: row['CATALOGING_TYPE'],
         status: status,
         hidden: hidden,
       )

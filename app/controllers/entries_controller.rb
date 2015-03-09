@@ -97,9 +97,8 @@ class EntriesController < ApplicationController
     render "show"
   end
 
-  # returns JSON containing values for dropdowns on add/edit entry
-  # page
-  def form_dropdown_values
+  # returns JSON containing type constants
+  def types
     data = {
       'author_role' => EntryAuthor::TYPES_ROLES,
       'circa' => EntryDate::CIRCA_TYPES,

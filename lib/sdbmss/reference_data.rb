@@ -52,7 +52,7 @@ module SDBMSS::ReferenceData
         title: "Catalogue 213: Fine and Important Manuscripts and Printed Books",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
         link: "https://www.jonathanahill.com/lists/HomePageFiles/Cat%20213%20unillustrated%20proofs.pdf",
-        cataloging_type: "pdf",
+        medium: Source::TYPE_MEDIUM_INTERNET,
         created_by: User.where(username: 'lransom').first,
       )
 
@@ -911,11 +911,10 @@ module SDBMSS::ReferenceData
         title: "Catalogue of Manuscripts in the Libraries of the University of Pennsylvania",
         author: "Norman P. Zacour and Rudolf Hirsch",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
-        current_location: "University of Pennsylvania Libraries",
-        location_city: "Philadelphia",
-        location_country: "US",
+        medium: Source::TYPE_MEDIUM_LIBRARY,
+        location_institution: "University of Pennsylvania Libraries",
+        location: "Philadelphia, US",
         link: "Z6621 P44 cop. 2",
-        cataloging_type: "print",
         created_by: User.where(username: 'lransom').first,
       )
 
@@ -1017,8 +1016,8 @@ module SDBMSS::ReferenceData
         date: "20150100",
         title: "Sampling of the illuminated material, incunabula, fine bindings, private press, plate books, early English works, and other interesting items we'll have on display at the 2015 California Antiquarian Book Fair.",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
-        current_location: "Schoenberg Institute for Manuscript Studies",
-        cataloging_type: "Print",
+        location_institution: "Schoenberg Institute for Manuscript Studies",
+        medium: Source::TYPE_MEDIUM_LIBRARY,
         created_by: User.where(username: 'lransom').first,
       )
 
@@ -1108,11 +1107,10 @@ module SDBMSS::ReferenceData
         title: "Census of Medieval and Renaissance Manuscrits in the United States and Canada, Vol. 1",
         author: "De Ricci, Seymour and Wilson, H. J.",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
-        current_location: "University of Pennsylvania Libraries",
-        location_city: "Philadelphia",
-        location_country: "US",
+        location_institution: "University of Pennsylvania Libraries",
+        location: "Philadelphia, US",
         link: "RBC Ref. Z 6620 U% R5 v. 1",
-        cataloging_type: "print",
+        medium: Source::TYPE_MEDIUM_LIBRARY,
         created_by: User.where(username: 'lransom').first,
       )
     end

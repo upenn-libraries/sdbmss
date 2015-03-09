@@ -642,18 +642,14 @@
             }
         });
             
-        $http.get("/entries/form_dropdown_values/").then(
+        $http.get("/entries/types/").then(
             function(result) {
 
                 $scope.optionsAuthorRole = result.data.author_role;
-                $scope.optionsAuthorRole.unshift(["", ""]);
                 $scope.optionsSold = result.data.sold;
                 $scope.optionsCurrency = result.data.currency;
-                $scope.optionsCurrency.unshift(["", ""]);
                 $scope.optionsCirca = result.data.circa;
-                $scope.optionsCirca.unshift(["", ""]);
                 $scope.optionsAltSize = result.data.alt_size;
-                $scope.optionsAltSize.unshift(["", ""]);
 
                 // material needs to be an array of objects that autocomplete can use
                 $scope.optionsMaterial = $.map(result.data.material, function (material) {
@@ -1038,7 +1034,7 @@
         };
     });
 
-    sdbmApp.controller('SourceCtrl', function ($scope, $modal, sdbmutil, Source) {
+    sdbmApp.controller('SourceCtrl', function ($scope, $http, $modal, sdbmutil, Source) {
 
         /* TODO: source validation is complex: date is required only
            sometimes; review other fields as well, once all source
@@ -1061,7 +1057,7 @@
         };
 
         $scope.showFields = function() {
-            if($scope.source.source_type) {
+            if($scope.source && $scope.source.source_type) {
                 return true;
             }
             return false;
@@ -1132,20 +1128,30 @@
 
         // "constructor" for controller goes here
 
-        if($("#source_id").val()) {
-            var sourceId = $("#source_id").val();
-            $scope.pageTitle = "Edit SDBM_SOURCE_" + sourceId;
-            $scope.edit = true;
-            $scope.source = Source.get(
-                {id: sourceId},
-                $scope.populateSourceViewModel,
-                sdbmutil.promiseErrorHandlerFactory("Error loading entry data for this page")
-            );
-        } else {
-            $scope.pageTitle = "Create a new Source";
+        $http.get("/sources/types/").then(
+            function(result) {
 
-            $scope.source = new Source();
-        }
+                $scope.optionsSourceType = result.data.source_type;
+                $scope.optionsMedium = result.data.medium;
+
+                if($("#source_id").val()) {
+                    var sourceId = $("#source_id").val();
+                    $scope.pageTitle = "Edit SDBM_SOURCE_" + sourceId;
+                    $scope.edit = true;
+                    $scope.source = Source.get(
+                        {id: sourceId},
+                        $scope.populateSourceViewModel,
+                        sdbmutil.promiseErrorHandlerFactory("Error loading entry data for this page")
+                    );
+                } else {
+                    $scope.pageTitle = "Create a new Source";
+
+                    $scope.source = new Source({ source_type: "" });
+                }
+            },
+            // error callback
+            sdbmutil.promiseErrorHandlerFactory("Error initializing dropdown options on this page, can't proceed.")
+        );
         
     });
 

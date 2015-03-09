@@ -99,7 +99,7 @@
             </tbody>
         </table>
 
-        <% if @source.current_location || @source.location_city || @source.location_country || @source.link || @source.cataloging_type || @source.electronic_catalog_format || @source.electronic_publicly_available %>
+        <% if @source.medium || @source.date_accessed || @source.institution || @source.location || @source.link %>
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -107,21 +107,38 @@
                 </tr>
             </thead>
             <tbody>
-
-                <% if @source.current_location %>
+                <% if @source.medium %>
                 <tr>
-                    <td class="col-sm-2 text-right record-label">Current Location</td>
+                    <td class="col-sm-2 text-right record-label"></td>
                     <td class="col-sm-10">
-                        <%= @source.current_location %>
+                        <%= @source.medium %>
                     </td>
                 </tr>
                 <% end %>
 
-                <% if @source.location_city || @source.location_country %>
+                <% if @source.date_accessed %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Date Accessed</td>
+                    <td class="col-sm-10">
+                        <%= @source.date_accessed %>
+                    </td>
+                </tr>
+                <% end %>
+                
+                <% if @source.location_institution %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Institution</td>
+                    <td class="col-sm-10">
+                        <%= @source.location_institution %>
+                    </td>
+                </tr>
+                <% end %>
+
+                <% if @source.location %>
                 <tr>
                     <td class="col-sm-2 text-right record-label">City, Country</td>
                     <td class="col-sm-10">
-                        <%= @source.location_city||"" %><% if @source.location_country %>, <%= @source.location_country||"" %><% end %>
+                        <%= @source.location %>
                     </td>
                 </tr>
                 <% end %>
@@ -135,48 +152,10 @@
                 </tr>
                 <% end %>
 
-                <% if @source.cataloging_type %>
-                <tr>
-                    <td class="col-sm-2 text-right record-label">Cataloging Type</td>
-                    <td class="col-sm-10">
-                        <%= @source.cataloging_type %>
-                    </td>
-                </tr>
-                <% end %>
-
             </tbody>
         </table>
         <% end %>
 
-        <% if @source.electronic_catalog_format || @source.electronic_publicly_available %>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th class="col-sm-12" colspan="2"><b>Electronic Source Details</b></th>
-                </tr>
-            </thead>
-            <tbody>
-                <% if @source.electronic_catalog_format %>
-                <tr>
-                    <td class="col-sm-2 text-right record-label">Electronic Cat Format</td>
-                    <td class="col-sm-10">
-                        <%= @source.electronic_catalog_format %>
-                    </td>
-                </tr>
-                <% end %>
-
-                <% if @source.electronic_publicly_available %>
-                <tr>
-                    <td class="col-sm-2 text-right record-label">Data is Publicly Available</td>
-                    <td class="col-sm-10">
-                        <%= @source.electronic_publicly_available %>
-                    </td>
-                </tr>
-                <% end %>
-            </tbody>
-        </table>
-        <% end %>
-                
         <table class="table table-striped">
             <thead>
                 <tr> <th class="col-sm-12" colspan="2"><b>About This Source Record</b></th>

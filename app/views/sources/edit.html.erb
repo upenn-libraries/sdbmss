@@ -21,12 +21,8 @@
     <div class="form-group row">
         <label for="source_type" class="col-sm-2 control-label">Source Type</label>
         <div class="col-sm-3">
-            <select class="form-control" id="source_type" ng-model="source.source_type">
-                <option value="">Select one</option>
-                <option value="auction_catalog">Auction/Sale Catalog</option>
-                <option value="collection_catalog">Collection Catalog</option>
-                <option value="other_published">Other Published Source</option>
-                <option value="unpublished">Unpublished Source</option>
+            <select class="form-control" id="source_type" ng-model="source.source_type" ng-options="option[0] as option[1] for option in optionsSourceType">
+                <option value="">Select One</option>
             </select>
         </div>
     </div>
@@ -175,58 +171,44 @@
 
         <div class="row">
             <div class="col-sm-12">
-                <legend>Location Details</legend>
+                <legend>Where did you see this source?</legend>
             </div>
         </div>
 
         <div class="form-group row">
-            <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Location</span></label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" name="current_location" id="current_location" ng-model="source.current_location" />
+            <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_medium"></span></label>
+            <div class="col-sm-3">
+                <select class="form-control" id="medium" ng-model="source.medium" ng-options="option[0] as option[1] for option in optionsMedium">
+                    <option value="">Select One</option>
+                </select>
             </div>
         </div>
 
         <div class="form-group row">
-            <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">City</span></label>
+            <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_date_accessed">Date Accessed</span></label>
             <div class="col-sm-3">
-                <input type="text" class="form-control" name="location_city" id="location_city" ng-model="source.location_city" />
-            </div>
-            <label for="country" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Country</span></label>
-            <div class="col-sm-3">
-                <input type="text" class="form-control" name="location_country" id="location_country" ng-model="source.location_country" />
+                <input type="text" class="form-control" name="date_accessed" id="date_accessed" ng-model="source.date_accessed" />
             </div>
         </div>
-        
+
         <div class="form-group row">
-            <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Online Link / Call Num.</span></label>
+            <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_institution">Institution</span></label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" name="location_institution" id="location_institution" ng-model="source.location_institution" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Location (City, Country)</span></label>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" name="location" id="location" ng-model="source.location" />
+            </div>
+        </div>
+                
+        <div class="form-group row">
+            <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_link">Online Link / Call Num.</span></label>
             <div class="col-sm-9">
                 <input type="text" class="form-control" name="link" id="link" ng-model="source.link" />
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label for="cataloging_type" class="col-sm-2 control-label"><span sdbm-tooltip="source.cataloging_type">Cataloging Type</span></label>
-            <div class="col-sm-3">
-                <input type="text" class="form-control" name="cataloging_type" id="cataloging_type" ng-model="source.cataloging_type" />
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <legend>Electronic Source Details</legend>
-            </div>
-        </div>
-
-        <div class="form-group row">
-            <label for="electronic_catalog_format" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Electronic Catalog Format</span></label>
-            <div class="col-sm-3">
-                <input type="text" class="form-control" name="electronic_catalog_format" id="electronic_catalog_format" ng-model="source.electronic_catalog_format" />
-            </div>
-            <label for="electronic_publicly_available" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Publicly Available</span></label>
-            <div class="col-sm-3">
-                <select class="form-control" name="electronic_publicly_available" id="electronic_publicly_available" ng-model="source.electronic_publicly_available">
-                    <%= options_for_select(Source::PUBLICLY_AVAILABLE_TYPES) %>
-                </select>
             </div>
         </div>
         

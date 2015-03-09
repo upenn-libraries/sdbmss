@@ -32,11 +32,9 @@ class SourcesController < ApplicationController
           source_params.permit(
           :source_type, :date, :title, :author,
           :whether_mss,
-          :current_location, :location_city, :location_country,
+          :medium, :date_accessed,
+          :location_institution, :location,
           :link,
-          :cataloging_type,
-          :electronic_catalog_format,
-          :electronic_publicly_available,
           :comments,
         ))
 
@@ -85,13 +83,11 @@ class SourcesController < ApplicationController
       selling_agent: (selling_agent = obj.get_selling_agent_as_name).present? ? selling_agent.name : "",
       institution: (institution_agent = obj.get_institution_as_name).present? ? institution_agent.name : "",
       whether_mss: obj.whether_mss,
-      current_location: obj.current_location,
-      location_city: obj.location_city,
-      location_country: obj.location_country,
+      medium: obj.medium,
+      date_accessed: obj.date_accessed,
+      location_institution: obj.location_institution,
+      location: obj.location,
       link: obj.link,
-      cataloging_type: obj.cataloging_type,
-      electronic_catalog_format: obj.electronic_catalog_format,
-      electronic_publicly_available: obj.electronic_publicly_available,
       comments: obj.comments,
     }
   end
@@ -123,6 +119,15 @@ class SourcesController < ApplicationController
         end
       }
     end
+  end
+
+  # returns JSON containing type constants
+  def types
+    data = {
+      'source_type' => Source::SOURCE_TYPES,
+      'medium' => Source::MEDIUM_TYPES,
+    }
+    render json: data
   end
 
   # we don't ever destroy anything, we just mark it as deleted

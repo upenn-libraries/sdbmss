@@ -133,7 +133,9 @@
             </div>
             <label for="currency" class="col-sm-1 control-label"><span sdbm-tooltip="currency">Currency</span></label>
             <div class="col-sm-1">
-                <select name="currency" id="transaction_currency" class="form-control" ng-model="entry.transaction.currency" ng-options="option[0] as option[1] for option in optionsCurrency"></select>
+                <select name="currency" id="transaction_currency" class="form-control" ng-model="entry.transaction.currency" ng-options="option[0] as option[1] for option in optionsCurrency">
+                    <option value=""></option>
+                </select>
             </div>
             <label for="other-currency" class="col-sm-2 control-label"><span sdbm-tooltip="otherCurrency">Other Currency</span></label>
             <div class="col-sm-3">
@@ -213,7 +215,9 @@
           <span sdbm-tooltip="circa">Circa</span>
       </label>
       <div class="col-sm-3">
-          <select id="circa_{{ $index }}" name="circa" class="form-control" ng-model="entry_date.circa" ng-options="option[0] as option[1] for option in optionsCirca"></select>
+          <select id="circa_{{ $index }}" name="circa" class="form-control" ng-model="entry_date.circa" ng-options="option[0] as option[1] for option in optionsCirca">
+              <option value=""></option>
+          </select>
       </div>
     </div>
 
@@ -356,7 +360,9 @@
             <span sdbm-tooltip="?">Alt Size</span>
         </label>
         <div class="col-sm-3">
-            <select name="alt_size" id="alt_size" class="form-control" data-ng-model="entry.alt_size" ng-options="option[0] as option[1] for option in optionsAltSize"></select>
+            <select name="alt_size" id="alt_size" class="form-control" data-ng-model="entry.alt_size" ng-options="option[0] as option[1] for option in optionsAltSize">
+                <option value=""></option>                
+            </select>
         </div>
     </div>
 

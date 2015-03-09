@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   # handled by CatalogController and some by EntriesController and it
   # is difficult to tweak the 'resources' DSL to get the exact desired
   # behavior.
-  get '/entries/form_dropdown_values', to: 'entries#form_dropdown_values'
+  get '/entries/types', to: 'entries#types'
   get '/entries/new', to: 'entries#new'
   get '/entries/:id/find_or_create_manuscript', to: 'entries#find_or_create_manuscript'
   get '/entries/:id/manuscript_candidates', to: 'entries#manuscript_candidates'
@@ -62,7 +62,10 @@ Rails.application.routes.draw do
   get '/reports/sources/', to: 'reports#sources'
 
   resources :sources do
-    collection { get 'search' }
+    collection do
+      get 'search'
+      get 'types'
+    end
     member do
       post 'update_status'
     end

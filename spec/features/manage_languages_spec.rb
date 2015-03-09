@@ -24,7 +24,7 @@ describe "Manage languages", :js => true do
     expect(page).to have_content 'Signed in successfully'
   end
 
-  xit "should show list of Languages" do
+  it "should show list of Languages" do
     visit languages_path
     expect(page).to have_content @language.name
   end

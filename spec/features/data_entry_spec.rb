@@ -168,13 +168,11 @@ describe "Data entry", :js => true do
       fill_in 'title', with: 'Very Rare Books'
       fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
       select "Yes", from: 'whether_mss'
-      fill_in 'current_location', with: "University of Pennsylvania"
-      fill_in 'location_city', with: "Philadelphia"
-      fill_in 'location_country', with: "USA"
+      select "Library", from: 'medium'
+      fill_in 'date_accessed', with: "05/01/1990"
+      fill_in 'location_institution', with: "University of Pennsylvania"
+      fill_in 'location', with: "Philadelphia, USA"
       fill_in 'link', with: "HM851 .L358 2010"
-      fill_in 'cataloging_type', with: "print"
-      fill_in 'electronic_catalog_format', with: "test"
-      select "No", from: 'electronic_publicly_available'
       fill_in 'comments', with: 'This info is correct'
 
       click_button('Save')
@@ -189,13 +187,11 @@ describe "Data entry", :js => true do
       expect(source.title).to eq('Very Rare Books')
       expect(source.get_selling_agent.agent.name).to eq("Sotheby's")
       expect(source.whether_mss).to eq("Yes")
-      expect(source.current_location).to eq("University of Pennsylvania")
-      expect(source.location_city).to eq("Philadelphia")
-      expect(source.location_country).to eq("USA")
+      expect(source.medium).to eq("Library")
+      expect(source.date_accessed).to eq("05/01/1990")
+      expect(source.location_institution).to eq("University of Pennsylvania")
+      expect(source.location).to eq("Philadelphia, USA")
       expect(source.link).to eq("HM851 .L358 2010")
-      expect(source.cataloging_type).to eq("print")
-      expect(source.electronic_catalog_format).to eq("test")
-      expect(source.electronic_publicly_available).to eq("No")
       expect(source.comments).to eq('This info is correct')
     end
 
@@ -209,13 +205,11 @@ describe "Data entry", :js => true do
       fill_in 'title', with: 'DeRicci Census'
       fill_in 'author', with: 'Seymour DeRicci'
       select "Yes", from: 'whether_mss'
-      fill_in 'current_location', with: "University of Pennsylvania"
-      fill_in 'location_city', with: "Philadelphia"
-      fill_in 'location_country', with: "USA"
+      select "Library", from: 'medium'
+      fill_in 'date_accessed', with: "10/09/2011"
+      fill_in 'location_institution', with: "University of Pennsylvania"
+      fill_in 'location', with: "Philadelphia, USA"
       fill_in 'link', with: "HM851 .L358 2010"
-      fill_in 'cataloging_type', with: "print"
-      fill_in 'electronic_catalog_format', with: "test"
-      select "No", from: 'electronic_publicly_available'
       fill_in 'comments', with: 'This info is correct'
 
       click_button('Save')
@@ -230,13 +224,11 @@ describe "Data entry", :js => true do
       expect(source.title).to eq('DeRicci Census')
       expect(source.author).to eq('Seymour DeRicci')
       expect(source.whether_mss).to eq("Yes")
-      expect(source.current_location).to eq("University of Pennsylvania")
-      expect(source.location_city).to eq("Philadelphia")
-      expect(source.location_country).to eq("USA")
+      expect(source.medium).to eq("Library")
+      expect(source.date_accessed).to eq("10/09/2011")
+      expect(source.location_institution).to eq("University of Pennsylvania")
+      expect(source.location).to eq("Philadelphia, USA")
       expect(source.link).to eq("HM851 .L358 2010")
-      expect(source.cataloging_type).to eq("print")
-      expect(source.electronic_catalog_format).to eq("test")
-      expect(source.electronic_publicly_available).to eq("No")
       expect(source.comments).to eq('This info is correct')
     end
 

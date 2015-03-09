@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150305151109) do
+ActiveRecord::Schema.define(version: 20150309171622) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -412,26 +412,24 @@ ActiveRecord::Schema.define(version: 20150305151109) do
   create_table "sources", force: true do |t|
     t.string   "date"
     t.string   "source_type"
-    t.string   "title",                         limit: 512
+    t.string   "title",                limit: 512
     t.string   "author"
     t.string   "whether_mss"
-    t.string   "current_location"
-    t.string   "location_city"
-    t.string   "location_country"
-    t.string   "link",                          limit: 512
-    t.string   "electronic_catalog_format"
+    t.string   "link",                 limit: 512
     t.boolean  "in_manuscript_table"
     t.boolean  "deleted"
     t.text     "comments"
-    t.string   "cataloging_type"
     t.string   "status"
     t.string   "hidden"
     t.datetime "created_at"
     t.integer  "created_by_id"
     t.datetime "updated_at"
     t.integer  "updated_by_id"
-    t.string   "electronic_publicly_available"
     t.integer  "entries_count"
+    t.string   "location_institution"
+    t.string   "location"
+    t.string   "medium"
+    t.string   "date_accessed"
   end
 
   add_index "sources", ["created_by_id"], name: "index_sources_on_created_by_id", using: :btree
