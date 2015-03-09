@@ -44,6 +44,11 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
+  # clear out database after each group of tests
+  config.after :all do
+    ActiveRecord::Base.subclasses.each(&:delete_all)
+  end
+
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
 =begin
