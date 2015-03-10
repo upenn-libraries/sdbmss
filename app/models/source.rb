@@ -45,20 +45,20 @@ class Source < ActiveRecord::Base
 
   # These are not all media, but this is the weird list we came up
   # with on 3/9/2015 meeting
-  TYPE_MEDIUM_INTERNET = "Internet"
-  TYPE_MEDIUM_LIBRARY = "Library"
-  TYPE_MEDIUM_PUBLIC_INSTITUTION = "Public Institution"
-  TYPE_MEDIUM_PRIVATE_INSTITUTION = "Private Collection"
-  TYPE_MEDIUM_PERSONAL_COMMUNICATION = "Personal Communication"
-  TYPE_MEDIUM_OTHER = "Other"
+  TYPE_MEDIUM_INTERNET = "internet"
+  TYPE_MEDIUM_LIBRARY = "library"
+  TYPE_MEDIUM_PUBLIC_INSTITUTION = "public_institution"
+  TYPE_MEDIUM_PRIVATE_INSTITUTION = "private_collection"
+  TYPE_MEDIUM_PERSONAL_COMMUNICATION = "personal_communication"
+  TYPE_MEDIUM_OTHER = "other"
 
   MEDIUM_TYPES = [
-    [TYPE_MEDIUM_INTERNET, TYPE_MEDIUM_INTERNET],
-    [TYPE_MEDIUM_LIBRARY, TYPE_MEDIUM_LIBRARY],
-    [TYPE_MEDIUM_PUBLIC_INSTITUTION, TYPE_MEDIUM_PUBLIC_INSTITUTION],
-    [TYPE_MEDIUM_PRIVATE_INSTITUTION, TYPE_MEDIUM_PRIVATE_INSTITUTION],
-    [TYPE_MEDIUM_PERSONAL_COMMUNICATION, TYPE_MEDIUM_PERSONAL_COMMUNICATION],
-    [TYPE_MEDIUM_OTHER, TYPE_MEDIUM_OTHER],
+    [TYPE_MEDIUM_INTERNET, "Internet"],
+    [TYPE_MEDIUM_LIBRARY, "Library"],
+    [TYPE_MEDIUM_PUBLIC_INSTITUTION, "Public Institution"],
+    [TYPE_MEDIUM_PRIVATE_INSTITUTION, "Private Collection"],
+    [TYPE_MEDIUM_PERSONAL_COMMUNICATION, "Personal Communication"],
+    [TYPE_MEDIUM_OTHER, "Other"],
   ]
 
   default_scope { where(deleted: false) }

@@ -400,26 +400,38 @@ module SDBMSS::Legacy
       SDBMSS::Util.batch(legacy_db,
                          'select MANUSCRIPT_ID, CURRENT_LOCATION from MANUSCRIPT where CURRENT_LOCATION is not null and length(CURRENT_LOCATION) > 0',
                          batch_wrapper: wrap_transaction) do |row,ctx|
-        manuscript = Entry.find(row['MANUSCRIPT_ID']).get_manuscript
-        if manuscript.blank?
-          puts "WARNING: creating a Manuscript so that current_location can be migrated"
-          manuscript = Manuscript.create!
+        entry = Entry.find(row['MANUSCRIPT_ID'])
+        manuscript = entry.get_manuscript
 
-          manuscript_entry = EntryManuscript.create!(
-            entry_id: row['MANUSCRIPT_ID'],
-            manuscript: manuscript,
-            relation_type: EntryManuscript::TYPE_RELATION_IS,
-          )
-        end
-
-        if manuscript.current_location != row['CURRENT_LOCATION']
-          if manuscript.current_location.present?
-            create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], "current_location", "More than one current_location found for Manuscript ID = #{manuscript.id}")
-          else
-            manuscript.current_location = ""
+        # if there's a Manuscript, tack the current_location info to
+        # it. Otherwise, tack the info on to 'other_info' field.
+        if manuscript.present?
+          if manuscript.current_location != row['CURRENT_LOCATION']
+            if manuscript.current_location.present?
+              create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], "current_location", "More than one current_location found for Manuscript ID = #{manuscript.id}")
+            else
+              manuscript.current_location = ""
+            end
+            manuscript.current_location << row['CURRENT_LOCATION']
+            manuscript.save!
           end
-          manuscript.current_location << row['CURRENT_LOCATION']
-          manuscript.save!
+        else
+          # Note that we do NOT create a Manuscript (code commented
+          # out below) for Entries that don't already have one, bc
+          # this creates a lot of nonsensical Manuscript records whose
+          # only purpose is to contain this piece of data.
+
+          # puts "WARNING: creating a Manuscript so that current_location can be migrated"
+          # manuscript = Manuscript.create!
+
+          # manuscript_entry = EntryManuscript.create!(
+          #   entry_id: row['MANUSCRIPT_ID'],
+          #   manuscript: manuscript,
+          #   relation_type: EntryManuscript::TYPE_RELATION_IS,
+          # )
+          entry.other_info = "" if !entry.other_info.present?
+          entry.other_info += "\nLast known location is #{row['CURRENT_LOCATION']}"
+          entry.save!
         end
 
       end
