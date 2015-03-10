@@ -750,6 +750,9 @@
      *
      * sdbm-autocomplete-modal-controller = (optional) controller to
      * use for displaying modal for entity creation.
+     *
+     * sdbm-autocomplete-modal-template = (optional) template use for
+     * displaying modal for entity creation.
      */
     sdbmApp.directive("sdbmAutocomplete", function ($http, $parse, $timeout, $modal) {
         return function (scope, element, attrs) {
@@ -757,6 +760,7 @@
             var assignValueAttr = attrs.sdbmAutocompleteAssignValueAttr;
             var minLength = parseInt(attrs.sdbmAutocompleteMinLength || "2");
             var controller = attrs.sdbmAutocompleteModalController;
+            var template = attrs.sdbmAutocompleteModalTemplate;
             var sourceStr = attrs.sdbmAutocomplete;
             var params = JSON.parse(attrs.sdbmAutocompleteParams || "{}");
             var options;
@@ -924,7 +928,6 @@
                     if(ui.item.value === 'CREATE') {
                         $timeout(function() {
 
-                            var template = 'createEntityWithName.html';
                             var newNameValue = ui.item.label.substring(ui.item.label.indexOf("'")+1, ui.item.label.lastIndexOf("'"));
 
                             var modalInstance = $modal.open({
@@ -1162,8 +1165,7 @@
     var baseCreateEntityModalCtrl = function ($scope, $http, $modalInstance, sdbmutil) {
 
         $scope.readyToCreate = true;
-
-        $scope.candidates = [];
+        $scope.saveError = null;
 
         $scope.entity = $scope.entityFactory();
 
@@ -1178,7 +1180,9 @@
                 function (entity) {
                     $modalInstance.close(entity);
                 },
-                sdbmutil.promiseErrorHandlerFactory("Error saving entity")
+                function(response) {
+                    $scope.saveError = response.data.error || "Unknown Error";
+                }
             );
         };
 
@@ -1200,13 +1204,26 @@
         $scope.entityName = "name";
         $scope.hasViafId = true;
 
+        $scope.suggestions = [];
+        
+        $scope.loading = false;
+        $scope.errorLoadingSuggestions = false;
+        $scope.showSuggestions = false;
+        
         $scope.show_suggestions = function(name) {
+            $scope.showSuggestions = true;
+            $scope.loading = true;
+            $scope.errorLoadingSuggestions = false;
             $http.get("/names/suggest.json", {
                 params: {
                     name: name
                 }
             }).then(function (response) {
                 $scope.suggestions = response.data.results;
+            }, function() {
+                $scope.errorLoadingSuggestions = true;
+            }).finally(function () {
+                $scope.loading = false;
             });
         };
 

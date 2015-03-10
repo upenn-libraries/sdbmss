@@ -74,7 +74,7 @@
     <div class="row form-group" ng-show="entry.source.entries_have_institution">
       <label for="cat_lot_no" class="col-sm-2 control-label"><span sdbm-tooltip="institution">Institution/Collection</span></label>
       <div class="col-sm-5">
-          <input id="institution" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.institution" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+          <input id="institution" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.institution" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
       </div>
     </div>
 
@@ -90,14 +90,14 @@
             <label class="col-sm-2 control-label"><span sdbm-tooltip="seller">Selling Agent</span></label>
             <div class="col-sm-5">
                 <div class="input-group">
-                    <input id="transaction_selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+                    <input id="transaction_selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
                     <div id="transaction_selling_agent_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.selling_agent"><span class="glyphicon"></span></div>
                 </div>
             </div>
             <label class="col-sm-1 control-label"><span sdbm-tooltip="seller2">Seller</span></label>
             <div class="col-sm-4">
                 <div class="input-group">
-                    <input id="transaction_seller" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+                    <input id="transaction_seller" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
                     <div id="transaction_seller_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.seller_or_holder"><span class="glyphicon"></span></div>
                 </div>
             </div>
@@ -107,7 +107,7 @@
             <label class="col-sm-2 control-label"><span sdbm-tooltip="buyer">Buyer</span></label>
             <div class="col-sm-5">
                 <div class="input-group">
-                    <input id="transaction_buyer" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+                    <input id="transaction_buyer" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
                     <div id="transaction_buyer_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.buyer"><span class="glyphicon"></span></div>
                 </div>
             </div>
@@ -186,7 +186,7 @@
       </label>
       <div class="col-sm-4">
           <div class="input-group">
-              <input id="author_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_author" }' sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+              <input id="author_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_author" }' sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
               <div id="author_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_author"><span class="glyphicon"></span></div>
           </div>
       </div>
@@ -236,7 +236,7 @@
       </label>
       <div class="col-sm-4">
           <div class="input-group">
-              <input id="artist_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_artist" }' sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+              <input id="artist_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_artist" }' sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
               <div id="artist_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></div>
           </div>          
       </div>
@@ -258,7 +258,7 @@
       </label>
       <div class="col-sm-4">
           <div class="input-group">
-              <input id="scribe_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_scribe" }' sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+              <input id="scribe_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_scribe" }' sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
               <div id="scribe_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
           </div>
       </div>
@@ -274,7 +274,7 @@
       </label>
       <div class="col-sm-5">
           <div class="input-group">
-              <input id="language_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl"/>
+              <input id="language_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
               <div id="language_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_language"><span class="glyphicon"></span></div>
           </div>
       </div>
@@ -304,7 +304,7 @@
       </label>
       <div class="col-sm-5">
           <div class="input-group">
-              <input id="place_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl"/>
+              <input id="place_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
               <div id="place_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_place"><span class="glyphicon"></span></div>
           </div>
       </div>
@@ -467,7 +467,7 @@
       <label class="col-sm-2 control-label">Selling Agent</label>
       <div class="col-sm-4">
           <div class="input-group">
-              <input id="provenance_selling_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+              <input id="provenance_selling_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
               <div id="provenance_selling_agent_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov.selling_agent"><span class="glyphicon"></span></div>
           </div>
       </div>
@@ -481,7 +481,7 @@
       <label class="col-sm-2 control-label">Holder</label>
       <div class="col-sm-4">
           <div class="input-group">
-              <input id="provenance_seller_or_holder_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+              <input id="provenance_seller_or_holder_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
               <div id="provenance_seller_or_holder_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov.seller_or_holder"><span class="glyphicon"></span></div>
           </div>
       </div>
@@ -495,7 +495,7 @@
       <label class="col-sm-2 control-label">Buyer</label>
       <div class="col-sm-4">
           <div class="input-group">
-              <input id="provenance_buyer_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+              <input id="provenance_buyer_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
               <div id="provenance_buyer_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov.buyer"><span class="glyphicon"></span></div>
           </div>
       </div>
@@ -580,3 +580,4 @@
 </script>
 
 <%= render "shared/create_entity_with_name" %>
+<%= render "shared/create_name" %>

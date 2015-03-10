@@ -28,9 +28,25 @@ class SimpleNamedModelsController < ApplicationController
   end
 
   def create
+    error = nil
     @model = model_class.new(model_params)
-    @model.save!
-    respond_with(@model)
+    begin
+      @model.save!
+    rescue Exception => e
+      error = e.to_s
+    end
+    respond_to do |format|
+      format.html {
+        respond_with(@model)
+      }
+      format.json {
+        if !error
+          render json: @model
+        else
+          render json: { error: error }, status: :unprocessable_entity
+        end
+      }
+    end
   end
 
   def update

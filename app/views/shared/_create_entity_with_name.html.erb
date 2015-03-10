@@ -11,32 +11,6 @@
             </div>
         </div>
 
-        <div class="form-group row" ng-show="hasViafId">
-            <label class="col-sm-2 control-label">VIAF ID</label>
-            <div class="col-sm-2">
-                <input type="text" class="form-control" ng-model="entity.viaf_id">
-            </div>
-            <div class="col-sm-offset-5 col-sm-3">
-                <button ng-click="show_suggestions(entity.name)" class="btn btn-primary">Show suggestions</button>
-            </div>
-        </div>
-
-        <table ng-show="suggestions.length > 0" class="table table-striped table-suggestions">
-            <thead>
-                <tr>
-                    <th class="col-sm-6"><b>Name</b></th>
-                    <th class="col-sm-2"><b>VIAF ID</b></th>
-                    <th class="col-sm-2"></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr data-ng-repeat="suggestion in suggestions">
-                    <td class="col-sm-6">{{ suggestion.name }}</td>
-                    <td class="col-sm-2"><a target="_blank" href="http://viaf.org/viaf/{{ suggestion.viaf_id }}/">{{ suggestion.viaf_id }}</a></td>
-                    <td class="col-sm-2"><a ng-click="use_suggestion(suggestion)" href="#">Use this info</a></td>
-                </tr>
-            </tbody>
-        </table>
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="save()" ng-show="readyToCreate">Create</button>

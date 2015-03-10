@@ -51,7 +51,7 @@
             <div class="form-group row">
                 <label for="institution" class="col-sm-2 control-label">Selling Agent</label>
                 <div class="col-sm-6">
-                    <input id="selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+                    <input id="selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
                 </div>
             </div>
 
@@ -71,7 +71,7 @@
             <div class="form-group row">
                 <label for="institution" class="col-sm-2 control-label">Institution/Collection</label>
                 <div class="col-sm-6">
-                    <input class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.institution.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+                    <input class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.institution.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
                 </div>
             </div>
 
@@ -114,7 +114,7 @@
             <div class="form-group row">
                 <label for="institution" class="col-sm-2 control-label">Institution/Collection</label>
                 <div class="col-sm-6">
-                    <input class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.institution.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+                    <input class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.institution.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
                 </div>
             </div>
 
@@ -135,14 +135,14 @@
             <div class="form-group row">
                 <label for="institution" class="col-sm-2 control-label">Seller or Donor</label>
                 <div class="col-sm-6">
-                    <input class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+                    <input class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
                 </div>
             </div>
 
             <div class="form-group row">
                 <label for="institution" class="col-sm-2 control-label">Buyer or Recipient</label>
                 <div class="col-sm-6">
-                    <input class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl"/>
+                    <input class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
                 </div>
             </div>
 
@@ -266,3 +266,4 @@
 </script>
 
 <%= render "shared/create_entity_with_name" %>
+<%= render "shared/create_name" %>
