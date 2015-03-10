@@ -412,7 +412,7 @@ module SDBMSS::Legacy
             else
               manuscript.current_location = ""
             end
-            manuscript.current_location += "; " if manuscript.current_location.length > ""
+            manuscript.current_location += "; " if manuscript.current_location.length > 0
             manuscript.current_location << row['CURRENT_LOCATION']
             manuscript.save!
           end
