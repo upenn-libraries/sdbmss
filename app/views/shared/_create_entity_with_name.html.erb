@@ -11,6 +11,8 @@
             </div>
         </div>
 
+        <p ng-show="saveError">Error saving this name: {{ saveError }}</p>
+        
     </div>
     <div class="modal-footer">
         <button class="btn btn-primary" ng-click="save()" ng-show="readyToCreate">Create</button>
