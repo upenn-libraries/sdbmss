@@ -103,7 +103,7 @@ class Name < ActiveRecord::Base
     if !name_exists
       # we don't use VIAF's autosuggest because what it returns isn't
       # really useful here. so we use sru_search instead.
-      xmldoc = Nokogiri::XML(VIAF.sru_search("local.names all \"#{name}\" and local.sources = \"lc\""))
+      xmldoc = Nokogiri::XML(VIAF.sru_search("local.personalNames all \"#{name}\" and local.sources = \"lc\""))
 
       number_of_records = xmldoc.xpath("//ns:numberOfRecords", "ns" => VIAF::NS::LC).first
       if number_of_records

@@ -41,7 +41,7 @@
                     </tr>
                 </tbody>
             </table>
-            <div ng-show="suggestions.length == 0">No suggestions found.</div>
+            <div ng-show="!loading && suggestions.length == 0">No suggestions found.</div>
         </div>
 
         <p ng-show="errorLoadingSuggestions">Sorry, there was an error loading suggestions.</p>
