@@ -1207,7 +1207,7 @@
         $scope.suggestions = [];
         
         $scope.loading = false;
-        $scope.errorLoadingSuggestions = false;
+        $scope.message = "";
         $scope.showSuggestions = false;
         
         $scope.show_suggestions = function(name) {
@@ -1219,9 +1219,13 @@
                     name: name
                 }
             }).then(function (response) {
+                if(response.data.already_exists) {
+                    $scope.showSuggestions = false;
+                    $scope.message = "The name \"" + $scope.entity.name + "\" already exists in this database, you can't create it here.";
+                }
                 $scope.suggestions = response.data.results;
             }, function() {
-                $scope.errorLoadingSuggestions = true;
+                $scope.message = "Error loading suggestions.";
             }).finally(function () {
                 $scope.loading = false;
             });

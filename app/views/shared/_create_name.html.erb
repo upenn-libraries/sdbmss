@@ -44,7 +44,7 @@
             <div ng-show="!loading && suggestions.length == 0">No suggestions found.</div>
         </div>
 
-        <p ng-show="errorLoadingSuggestions">Sorry, there was an error loading suggestions.</p>
+        <p ng-show="message">{{ message }}</p>
 
         <p ng-show="saveError">Error saving this name: {{ saveError }}</p>
         
