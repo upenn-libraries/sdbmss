@@ -83,7 +83,7 @@ class SourcesController < ApplicationController
       selling_agent: (selling_agent = obj.get_selling_agent_as_name).present? ? selling_agent.name : "",
       institution: (institution_agent = obj.get_institution_as_name).present? ? institution_agent.name : "",
       whether_mss: obj.whether_mss,
-      medium: obj.medium,
+      medium: obj.medium_for_display,
       date_accessed: obj.date_accessed,
       location_institution: obj.location_institution,
       location: obj.location,

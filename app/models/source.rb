@@ -21,7 +21,8 @@ class Source < ActiveRecord::Base
     [TYPE_OBSERVATION, 'Personal Observation'],
     # Other Published Source includes DeRicci, censuses, journal articles
     [TYPE_OTHER_PUBLISHED, 'Other Published Source'],
-    # TODO: ???
+    # Unpublished includes spreadsheet of Duke Univ. collection,
+    # Benjy's spreadsheet, and pretty much everything else.
     [TYPE_UNPUBLISHED, 'Unpublished'],
   ]
 
@@ -147,6 +148,11 @@ class Source < ActiveRecord::Base
 
   def get_source_type_for_display
     record = SOURCE_TYPES.select { |record| record[0] == source_type }.first
+    record ? record[1] : "Unknown"
+  end
+
+  def medium_for_display
+    record = MEDIUM_TYPES.select { |record| record[0] == medium }.first
     record ? record[1] : "Unknown"
   end
 
