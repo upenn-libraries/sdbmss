@@ -5,6 +5,8 @@ class Source < ActiveRecord::Base
 
   TYPE_AUCTION_CATALOG = 'auction_catalog'
   TYPE_COLLECTION_CATALOG = 'collection_catalog'
+  TYPE_ONLINE = 'online'
+  TYPE_OBSERVATION = 'observation'
   TYPE_OTHER_PUBLISHED = 'other_published'
   TYPE_UNPUBLISHED = 'unpublished'
 
@@ -13,6 +15,10 @@ class Source < ActiveRecord::Base
     [TYPE_AUCTION_CATALOG, 'Auction/Sale Catalog'],
     # Collection Catalogs include things like Penn's published catalog
     [TYPE_COLLECTION_CATALOG, 'Collection Catalog'],
+    # This includes sites like Ebay and private bookseller websites
+    [TYPE_ONLINE, 'Online-only Auction or Bookseller Website'],
+    # An individual's set of personal (direct) observations
+    [TYPE_OBSERVATION, 'Personal Observation'],
     # Other Published Source includes DeRicci, censuses, journal articles
     [TYPE_OTHER_PUBLISHED, 'Other Published Source'],
     # TODO: ???
