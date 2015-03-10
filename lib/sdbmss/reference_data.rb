@@ -22,6 +22,9 @@ module SDBMSS::ReferenceData
       PennCatalog.new
       Pirages.new
       DeRicci.new
+      Ader.new
+      Email.new
+      PersonalObservation.new
     end
   end
 
@@ -1097,7 +1100,8 @@ module SDBMSS::ReferenceData
 
     def initialize
       create_source
-      #reindex create_entry_one
+      reindex create_saint_bernard_entry_one
+      reindex create_allsop_entry_one
     end
 
     def create_source
@@ -1107,11 +1111,189 @@ module SDBMSS::ReferenceData
         title: "Census of Medieval and Renaissance Manuscrits in the United States and Canada, Vol. 1",
         author: "De Ricci, Seymour and Wilson, H. J.",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
+        date_accessed: "2015-03-10",
         location_institution: "University of Pennsylvania Libraries",
         location: "Philadelphia, US",
         link: "RBC Ref. Z 6620 U% R5 v. 1",
         medium: Source::TYPE_MEDIUM_LIBRARY,
         created_by: User.where(username: 'lransom').first,
+      )
+    end
+
+    def create_saint_bernard_entry_one
+      entry = Entry.create!(
+        source: @source,
+        catalog_or_lot_number: "1",
+        institution: Name.find_or_create_artist('Libary of Saint Bernard College, Saint Bernard, Alabama'),
+        folios: 192,
+        height: 140,
+        width: 100,
+        miniatures_unspec_size: 9,
+        manuscript_binding: '18th-century brown calf.',
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      EntryTitle.create!(
+        entry: entry,
+        title: 'Horae',
+        common_title: "Hours",
+      )
+
+      EntryDate.create!(
+        entry: entry,
+        date: '1450',
+        circa: 'CCENT',
+      )
+
+      EntryLanguage.create!(
+        entry: entry,
+        language: Language.find_or_create_by(name: 'Dutch')
+      )
+
+      EntryUse.create!(
+        entry: entry,
+        use: 'Utrecht',
+      )
+
+      entry
+    end
+
+    def create_allsop_entry_one
+      entry = Entry.create!(
+        source: @source,
+        catalog_or_lot_number: "1",
+        institution: Name.find_or_create_artist('Allsopp, Fred W.'),
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      EntryTitle.create!(
+        entry: entry,
+        title: 'Breviarium',
+        common_title: "Breviary",
+      )
+
+      EntryDate.create!(
+        entry: entry,
+        date: '1510',
+        circa: 'C',
+      )
+
+      EntryLanguage.create!(
+        entry: entry,
+        language: Language.find_or_create_by(name: 'Latin')
+      )
+
+      EntryMaterial.create!(
+        entry: entry,
+        material: 'Parchment',
+      )
+
+      EntryPlace.create!(
+        entry: entry,
+        place: Place.find_or_create_by(name: 'England')
+      )
+
+      Event.create!(
+        entry: entry,
+        event_agents_attributes: [
+          {
+            observed_name: 'not finished',
+            role: EventAgent::ROLE_SELLING_AGENT
+          }
+        ]
+      )
+
+      entry
+    end
+
+  end
+
+  # Example of an online auction catalog
+  class Ader < RefDataBase
+    def initialize
+      create_source
+    end
+
+    def create_source
+      @source = Source.create!(
+        source_type: Source::TYPE_AUCTION_CATALOG,
+        date: "2015-03-19",
+        title: "Livres ancienes et modernes",
+        whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
+        medium: Source::TYPE_MEDIUM_INTERNET,
+        date_accessed: "2015-03-10",
+        link: "http://www.ader-paris.fr/flash/index.jsp?id=21247&idCp=97&lng=fr",
+        created_by: User.where(username: 'lransom').first,
+      )
+    end
+
+  end
+
+  # Example of an online auction catalog
+  class Ader < RefDataBase
+    def initialize
+      create_source
+    end
+
+    def create_source
+      @source = Source.create!(
+        source_type: Source::TYPE_AUCTION_CATALOG,
+        date: "2015-03-19",
+        title: "Livres ancienes et modernes",
+        whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
+        medium: Source::TYPE_MEDIUM_INTERNET,
+        date_accessed: "2015-03-10",
+        link: "http://www.ader-paris.fr/flash/index.jsp?id=21247&idCp=97&lng=fr",
+        created_by: User.where(username: 'lransom').first,
+      )
+    end
+
+  end
+
+  # Example of an email
+  class Email < RefDataBase
+    def initialize
+      create_source
+    end
+
+    def create_source
+      @source = Source.create!(
+        source_type: Source::TYPE_UNPUBLISHED,
+        date: "2015-03-10",
+        title: "Email sent by Jeff Chiu",
+        author: "Lynn Ransom",
+        whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
+        medium: Source::TYPE_MEDIUM_PERSONAL_COMMUNICATION,
+        date_accessed: "2015-03-10",
+        created_by: User.where(username: 'lransom').first,
+      )
+    end
+
+  end
+
+  # Example of a personal observation
+  class PersonalObservation < RefDataBase
+    def initialize
+      create_source
+    end
+
+    def create_source
+      @source = Source.create!(
+        source_type: Source::TYPE_UNPUBLISHED,
+        date: "2015-03-10",
+        title: "not required in personal observation OR March 9, 2015, visit",
+        author: "Ransom, Lynn",
+        whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
+        medium: Source::TYPE_MEDIUM_PRIVATE_COLLECTION,
+        date_accessed: "2015-03-09",
+        location: "Philadelphia, PA",
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      source_agent = SourceAgent.create!(
+        source: @source,
+        agent: Name.find_or_create_agent("Chiu, Jeff"),
+        role: SourceAgent::ROLE_INSTITUTION,
       )
     end
 
