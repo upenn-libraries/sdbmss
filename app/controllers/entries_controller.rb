@@ -91,7 +91,7 @@ class EntriesController < ApplicationController
 
     rescue Exception => e
       logger.error(e.to_s + "\n\n" + e.backtrace.join("\n"))
-      render :json => { :errors => e.backtrace.to_s }, :status => 500
+      render :json => { :errors => e.backtrace.to_s }, :status => :unprocessable_entity
       return
     end
     render "show"

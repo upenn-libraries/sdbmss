@@ -130,7 +130,7 @@ class AdminSearchController < CatalogController
       end
     else
       respond_to do |format|
-        format.json { render :json => { 'error' => 'per_page, entry_id required' }, :status => 500 }
+        format.json { render :json => { 'error' => 'per_page, entry_id required' }, :status => :unprocessable_entity }
       end
     end
   end

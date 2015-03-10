@@ -50,7 +50,7 @@ class SourcesController < ApplicationController
 
       end
     rescue Exception => e
-      render :json => { :errors => e.to_s + "\n" + e.backtrace.to_s }, :status => 500
+      render :json => { :errors => e.to_s + "\n" + e.backtrace.to_s }, :status => :unprocessable_entity
       return
     end
     respond_with(@source)
@@ -108,14 +108,14 @@ class SourcesController < ApplicationController
         if error.blank?
           render nothing: true
         else
-          render status: 500, html: "Invalid status" if error.present?
+          render status: :unprocessable_entity, html: "Invalid status" if error.present?
         end
       }
       format.json {
         if error.blank?
           render nothing: true
         else
-          render status: 500, json: { "error" => "Invalid status" } if error.present?
+          render status: :unprocessable_entity, json: { "error" => "Invalid status" } if error.present?
         end
       }
     end
