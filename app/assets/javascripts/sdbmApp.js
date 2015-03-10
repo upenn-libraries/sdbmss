@@ -1210,10 +1210,10 @@
         $scope.message = "";
         $scope.showSuggestions = false;
         
-        $scope.show_suggestions = function(name) {
+        $scope.find_suggestions = function(name) {
+            $scope.message = "";
             $scope.showSuggestions = true;
             $scope.loading = true;
-            $scope.errorLoadingSuggestions = false;
             $http.get("/names/suggest.json", {
                 params: {
                     name: name
