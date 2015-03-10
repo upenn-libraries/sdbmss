@@ -130,6 +130,13 @@
         <div class="auction-source-container" ng-show="source.source_type == 'unpublished'">
 
             <div class="form-group row">
+                <label for="institution" class="col-sm-2 control-label">Institution/Collection</label>
+                <div class="col-sm-6">
+                    <input class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.institution.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
                 <label for="cat_title" class="col-sm-2 control-label">Source Name</label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" id="title" ng-model="source.title">

@@ -55,7 +55,7 @@ class Source < ActiveRecord::Base
   TYPE_MEDIUM_INTERNET = "internet"
   TYPE_MEDIUM_LIBRARY = "library"
   TYPE_MEDIUM_PUBLIC_INSTITUTION = "public_institution"
-  TYPE_MEDIUM_PRIVATE_INSTITUTION = "private_collection"
+  TYPE_MEDIUM_PRIVATE_COLLECTION = "private_collection"
   TYPE_MEDIUM_PERSONAL_COMMUNICATION = "personal_communication"
   TYPE_MEDIUM_OTHER = "other"
 
@@ -63,7 +63,7 @@ class Source < ActiveRecord::Base
     [TYPE_MEDIUM_INTERNET, "Internet"],
     [TYPE_MEDIUM_LIBRARY, "Library"],
     [TYPE_MEDIUM_PUBLIC_INSTITUTION, "Public Institution"],
-    [TYPE_MEDIUM_PRIVATE_INSTITUTION, "Private Collection"],
+    [TYPE_MEDIUM_PRIVATE_COLLECTION, "Private Collection"],
     [TYPE_MEDIUM_PERSONAL_COMMUNICATION, "Personal Communication"],
     [TYPE_MEDIUM_OTHER, "Other"],
   ]
