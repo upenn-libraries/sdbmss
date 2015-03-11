@@ -82,6 +82,7 @@ class Source < ActiveRecord::Base
   validates_inclusion_of :medium, in: MEDIUM_TYPES.map(&:first), message: 'medium is invalid', allow_nil: true
   validates_presence_of :date, if: :date_required
   validate :source_type_not_changed
+  # TODO: validate that irrelevant fields for the source_type are NOT populated
 
   accepts_nested_attributes_for :source_agents
 
