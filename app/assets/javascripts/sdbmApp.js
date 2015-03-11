@@ -487,7 +487,7 @@
 
             // construct array of passed-in object's properties, FKs,
             // and child associations, to check for blankness
-            var thingsToCheck = (assoc.properties || []).concat(assoc.foreignKeyObjects || [])
+            var thingsToCheck = (assoc.properties || []).concat(assoc.foreignKeyObjects || []);
             if(assoc.entryAssociations) {
                 thingsToCheck = thingsToCheck.concat(assoc.entryAssociations.map(function (item) {
                     return item.field;
@@ -536,7 +536,7 @@
             var entryToSave = new Entry(angular.copy($scope.entry));
 
             // collapse Transaction and Provenance back into Events
-            entryToSave.events = [].concat(entryToSave.provenance)
+            entryToSave.events = [].concat(entryToSave.provenance);
             delete entryToSave.provenance;
             if(entryToSave.transaction) {
                 if (entryToSave.transaction.price) {
@@ -656,7 +656,7 @@
                     return {
                         label: material[0],
                         value: material[1]
-                    }
+                    };
                 });
                 
                 if($("#entry_id").val()) {
@@ -937,7 +937,7 @@
                                     modalParams: function() {
                                         return {
                                             "name": newNameValue,
-                                            "type": params["type"],
+                                            "type": params["type"]
                                         };
                                     }
                                 },
@@ -1234,7 +1234,7 @@
         $scope.use_suggestion = function(suggestion) {
             $scope.entity.name = suggestion.name;
             $scope.entity.viaf_id = suggestion.viaf_id;
-        }
+        };
     });
 
     sdbmApp.controller('CreateLanguageModalCtrl', function ($scope, $http, $modalInstance, sdbmutil, modalParams, Language) {
