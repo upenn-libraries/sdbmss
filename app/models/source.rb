@@ -198,7 +198,7 @@ class Source < ActiveRecord::Base
 
   def source_type_not_changed
     if source_type_changed? && self.persisted?
-      errors.add(:activity_id, "Change of source_type not allowed")
+      errors.add(:source_type, "Change of source_type not allowed")
     end
   end
 
