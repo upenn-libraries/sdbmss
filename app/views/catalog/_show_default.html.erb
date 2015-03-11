@@ -372,6 +372,8 @@
                     <% if selling_agent.present? %>
                         through <%= render partial: "shared/event_agent", object: selling_agent %>
                     <% end %>
+                <% else %>
+                    <%= render partial: "shared/event_agent", object: selling_agent %>
                 <% end %>
                 <% if provenance.comment %>
                     <br/><%= provenance.comment %>
