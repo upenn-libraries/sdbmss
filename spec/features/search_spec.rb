@@ -95,6 +95,19 @@ describe "Blacklight Search", :js => true do
     expect(data["id"]).to eq(entry.id)
   end
 
+  it "should 404 on show Entry page for deleted entry" do
+    entry = Entry.new(
+      source: Source.last,
+      deleted: true
+    )
+    entry.save!
+
+    sleep(1)
+
+    visit entry_path(entry)
+    expect(page.status_code).to eq(404)
+  end
+
   it "should load show Source page" do
     source = Source.last
     visit source_path(source)
@@ -112,8 +125,6 @@ describe "Blacklight Search", :js => true do
     visit name_path(name)
     expect(page).to have_xpath("//h1[contains(.,'#{name.public_id}')]")
   end
-
-  it "should 404 on show Entry page for deleted entry"
 
   it "should bookmark an Entry and remove it" do
     visit root_path

@@ -3,10 +3,14 @@ require "rails_helper"
 
 describe Entry do
 
+  before :all do
+    SDBMSS::ReferenceData.create_all
+  end
+
   describe "associations" do
 
-    xit "should scope :load_associations" do
-      expect(Entry.find(1).load_associations).to be_nil
+    it "should use scope :load_associations" do
+      Entry.load_associations.last
     end
 
   end

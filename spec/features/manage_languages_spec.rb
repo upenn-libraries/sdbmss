@@ -36,7 +36,19 @@ describe "Manage languages", :js => true do
     expect(Language.where(name: "Klingon").count).to eq(1)
   end
 
-  it "should delete a Language"
+  it "should delete a Language" do
+    # this is a very rough test!
+    count = Language.count
+
+    # mock out the confirm dialogue
+    page.evaluate_script('window.confirm = function() { return true; }')
+
+    visit languages_path
+    first(".delete-link").click
+    sleep(1)
+
+    expect(Language.count).to eq(count-1)
+  end
 
   # poltergeist has trouble loading the csv, so we don't use it
   it "should export CSV", :js => false do

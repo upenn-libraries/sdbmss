@@ -28,6 +28,18 @@ describe "Manage sources", :js => true do
     expect(page).to have_content @source.title
   end
 
-  it "should delete a Source"
+  it "should delete a Source" do
+    # this is a very rough test!
+    count = Source.count
+
+    # mock out the confirm dialogue
+    page.evaluate_script('window.confirm = function() { return true; }')
+
+    visit sources_path
+    first(".source-delete-link").click
+    sleep(1)
+
+    expect(Source.count).to eq(count-1)
+  end
 
 end
