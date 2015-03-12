@@ -432,8 +432,12 @@ module SDBMSS::Legacy
           #   manuscript: manuscript,
           #   relation_type: EntryManuscript::TYPE_RELATION_IS,
           # )
-          entry.other_info = "" if !entry.other_info.present?
-          entry.other_info += "\nLast known location is #{row['CURRENT_LOCATION']}"
+          if entry.other_info.present?
+            entry.other_info += "\n"
+          else
+            entry.other_info = ""
+          end
+          entry.other_info += "Last known location is #{row['CURRENT_LOCATION']}"
           entry.save!
         end
 
