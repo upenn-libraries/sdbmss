@@ -5,7 +5,7 @@ class SourcesController < ApplicationController
 
   before_action :set_source, only: [:show, :edit, :update, :destroy, :update_status]
 
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :index]
+  before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy, :search]
 
   respond_to :html, :json
 
