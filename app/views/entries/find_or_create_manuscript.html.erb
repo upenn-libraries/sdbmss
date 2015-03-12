@@ -103,8 +103,9 @@ $(document).ready(function() {
     });
 
     var displayQueuedEntries = function() {
+        queuedEntries.sort();
         var html = $.map(queuedEntries, function (entryId) {
-            return "<a href='/entries/" + entryId + "' target='_blank'>SDBM_" + entryId + "</a>";
+            return "<a href='/entries/" + entryId + "' target='_blank'>SDBM_" + entryId + "</a> (<a class='dequeue-entry-link' data-entry-id='" + entryId + "' href='#'>remove</a>)";
         }).join(", ");
         $("#queued-entries").html(html);
     };
@@ -112,12 +113,24 @@ $(document).ready(function() {
     $(document).on("click", ".queue-entry-link", function (event) {
         var row_data = sdbmTable.dataTable.row($(event.target).closest("tr")).data();
         var entryId = row_data[sdbmTable.getColumnIndex("ID")];
-        queuedEntries.push(entryId);
+        if(queuedEntries.indexOf(entryId) == -1) {
+            queuedEntries.push(entryId);
+        }
         //console.log(queuedEntries);
         displayQueuedEntries();
         return false;
     });
 
+    $(document).on("click", ".dequeue-entry-link", function (event) {
+        var idxToDelete = queuedEntries.indexOf($(event.target).data("entryId"));
+        if(idxToDelete != -1) {
+            queuedEntries.splice(idxToDelete, 1);
+        }
+        displayQueuedEntries();
+        return false;
+    });
+
+    
     $(document).on("click", ".link-to-manuscript-link", function (event) {
         var row_data = sdbmTable.dataTable.row($(event.target).closest("tr")).data();
         var manuscriptId = row_data[sdbmTable.getColumnIndex("Manuscript")];
