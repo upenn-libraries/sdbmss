@@ -259,7 +259,9 @@ function SDBMTable(selector, options) {
         scrollX: true,
         scrollY: scrollY,
         scrollCollapse: false,
-        // extensions get activated via sDom codes
+        // extensions get activated via these codes in sDOM
+        // J = colResize
+        // R = colReorder
         sDom: 'C<"clear"><"H"lr>JRt<"F"ip>',
         serverSide: true
     });
