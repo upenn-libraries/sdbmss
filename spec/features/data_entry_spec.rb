@@ -72,8 +72,6 @@ describe "Data entry", :js => true do
   context "when user is logged in" do
 
     before :each do
-      page.driver.resize_window(1024, 768)
-
       visit new_user_session_path
       fill_in 'user_login', :with => @user.username
       fill_in 'user_password', :with => 'somethingunguessable'

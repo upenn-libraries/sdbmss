@@ -185,7 +185,8 @@
                     params: {
                         date: $scope.date,
                         title: $scope.title,
-                        agent: $scope.agent
+                        agent: $scope.agent,
+                        limit: 20
                     }
                 }).then(function (response) {
                     $scope.sources = response.data.results;
@@ -819,7 +820,7 @@
                     var url  = sourceStr;
                     var searchTerm = request.term;
                     $http.get(url, {
-                        params: $.extend({ term: searchTerm }, params)
+                        params: $.extend({ term: searchTerm, limit: 25 }, params)
                     }).then(function (response) {
                         // transform data from API call into format expected by autocomplete
                         var exactMatch = false;

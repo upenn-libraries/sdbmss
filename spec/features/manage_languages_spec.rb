@@ -1,5 +1,6 @@
 
 require "rails_helper"
+require "csv"
 
 describe "Manage languages", :js => true do
 
@@ -15,8 +16,6 @@ describe "Manage languages", :js => true do
   end
 
   before :each do
-    page.driver.resize_window(1024, 768)
-
     visit new_user_session_path
     fill_in 'user_login', :with => @user.username
     fill_in 'user_password', :with => 'somethingunguessable'
@@ -38,5 +37,15 @@ describe "Manage languages", :js => true do
   end
 
   it "should delete a Language"
+
+  # poltergeist has trouble loading the csv, so we don't use it
+  it "should export CSV", :js => false do
+    visit search_languages_path(format: :csv)
+    contains_martian = false
+    CSV.parse(page.source, headers: true) do |row|
+      contains_martian = true if row["name"] == "Martian"
+    end
+    expect(contains_martian).to eq(true)
+  end
 
 end

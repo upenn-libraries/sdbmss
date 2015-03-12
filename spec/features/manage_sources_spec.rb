@@ -16,8 +16,6 @@ describe "Manage sources", :js => true do
   end
 
   before :each do
-    page.driver.resize_window(1024, 768)
-
     visit new_user_session_path
     fill_in 'user_login', :with => @user.username
     fill_in 'user_password', :with => 'somethingunguessable'
