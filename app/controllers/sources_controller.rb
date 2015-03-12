@@ -108,14 +108,14 @@ class SourcesController < ApplicationController
         if error.blank?
           render nothing: true
         else
-          render status: :unprocessable_entity, html: "Invalid status" if error.present?
+          render status: :unprocessable_entity, html: "Invalid status"
         end
       }
       format.json {
         if error.blank?
           render nothing: true
         else
-          render status: :unprocessable_entity, json: { "error" => "Invalid status" } if error.present?
+          render status: :unprocessable_entity, json: { "error" => "Invalid status" }
         end
       }
     end
@@ -132,9 +132,14 @@ class SourcesController < ApplicationController
 
   # we don't ever destroy anything, we just mark it as deleted
   def destroy
-    @source.deleted = true
-    @source.updated_by_id = current_user.id
-    @source.save!
+    error = nil
+    if @source.entries_count.to_i == 0
+      @source.deleted = true
+      @source.updated_by_id = current_user.id
+      @source.save!
+    else
+      error = "Can't mark a source as deleted if it has entries"
+    end
 
     # if we call respond_with(@entry), which is more rails-ish, the
     # response is a 302 to a #show, but jquery's ajax code gets stuck
@@ -142,7 +147,13 @@ class SourcesController < ApplicationController
     # we force-return a 200 with an empty body for JSON calls to this
     # action.
     respond_to do |format|
-      format.json { render :json => {}, :status => :ok }
+      format.json {
+        if !error
+          render :json => {}, :status => :ok
+        else
+          render status: :unprocessable_entity, json: { "error" => error }
+        end
+      }
     end
   end
 

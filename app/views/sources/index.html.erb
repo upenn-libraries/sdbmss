@@ -26,6 +26,7 @@ $(document).ready(function() {
                           ' &middot; <a href="/' + model_class + '/' + data + '/edit/">Edit</a>' +
                           ' &middot; <a href="/entries/new/?source_id=' + data + '">Add an Entry</a>' +
                           ' &middot; <a class="source-delete-link" href="/' + model_class + '/' + data + '.json">Delete</a>';
+                // TODO: display delete link only if entries_count is 0
                 return str;
             },
             width: "10%"
