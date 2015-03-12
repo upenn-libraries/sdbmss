@@ -41,7 +41,13 @@ function SDBMTable(selector, options) {
     this.columnOptions = [
         {
             title: 'ID',
-            blSortField: 'entry_id'
+            blSortField: 'entry_id',
+            render: function (data, type, full, meta) {
+                if(data) {
+                    return '<a href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
+                }
+                return '';
+            }
         },
         {
             title: 'Manuscript',

@@ -22,8 +22,7 @@ $(document).ready(function() {
             title: 'Options',
             orderable: false,
             render: function (data, type, full, meta) { 
-                var str = '<a href="/' + model_class + '/' + data + '">View</a>' +
-                          ' &middot; <a href="/' + model_class + '/' + data + '/edit/">Edit</a>' +
+                var str = '<a href="/' + model_class + '/' + data + '/edit/">Edit</a>' +
                           ' &middot; <a href="/entries/new/?source_id=' + data + '">Add an Entry</a>' +
                           ' &middot; <a class="source-delete-link" href="/' + model_class + '/' + data + '.json">Delete</a>';
                 // TODO: display delete link only if entries_count is 0
@@ -33,7 +32,11 @@ $(document).ready(function() {
         },
         {
             title: 'ID',
-            width: "10%"
+            width: "10%",
+            render: function (data, type, full, meta) { 
+                var str = '<a href="/' + model_class + '/' + data + '/">SDBM_SOURCE_' + data + '</a>';
+                return str;
+            },
         },
         {
             title: 'Source Type'
@@ -113,7 +116,7 @@ $(document).ready(function() {
                         data.results.forEach(function(item) {
                             rows.push([
                                 item.id,
-                                'SDBM_SOURCE_' + item.id,
+                                item.id,
                                 item.source_type,
                                 item.entries_count || 0,
                                 item.date,
