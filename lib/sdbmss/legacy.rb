@@ -406,16 +406,16 @@ module SDBMSS::Legacy
         # if there's a Manuscript, tack the current_location info to
         # it. Otherwise, tack the info on to 'other_info' field.
         if manuscript.present?
-          if !manuscript.current_location.present?
-            manuscript.current_location = ""
-          else
-            create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], "current_location", "More than one current_location found for Manuscript ID = #{manuscript.id}")
-          end
+          location_already_populated = manuscript.location.present?
+          manuscript.location = "" if !location_already_populated
 
           # only append str if it's not already included in the field
-          if !manuscript.current_location.include?(row['CURRENT_LOCATION'])
-            manuscript.current_location += "; " if manuscript.current_location.length > 0
-            manuscript.current_location << row['CURRENT_LOCATION']
+          if !manuscript.location.include?(row['CURRENT_LOCATION'])
+            if !location_already_populated
+              create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], "current_location", "Warning: more than one current_location found for Manuscript ID = #{manuscript.id}")
+            end
+            manuscript.location += "; " if manuscript.location.length > 0
+            manuscript.location << row['CURRENT_LOCATION']
             manuscript.save!
           end
         else
