@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   # behavior.
   get '/entries/types', to: 'entries#types'
   get '/entries/new', to: 'entries#new'
-  get '/entries/:id/find_or_create_manuscript', to: 'entries#find_or_create_manuscript'
+  get '/entries/:id/find_or_create_manuscript', to: 'entries#find_or_create_manuscript', as: 'find_or_create_manuscript'
   get '/entries/:id/manuscript_candidates', to: 'entries#manuscript_candidates'
   get '/entries/:id.json', to: 'entries#show_json', defaults: { format: 'json' }
   get '/entries/:id', to: 'catalog#show', as: 'entry'
