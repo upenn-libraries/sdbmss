@@ -92,12 +92,21 @@ module ResourceSearch
   # Classes should override this if they need to search differently.
   # This should return an ActiveRecord query, on which
   # offseting/limiting/ordering will subsequently be done.
+  #
+  # This implementation looks at 'term' param, splits it, and searches
+  # 'name' model field for its parts. If any integers are present, it
+  # looks for them in the 'id' model field.
   def search_query
     search_term = params[:term]
     query = search_model_class.all
     if search_term.present?
       search_term.split.each do |word|
-        query = query.where('name like ?', "%#{word}%")
+        # look at ID column for integers
+        if !SDBMSS::Util.int?(word)
+          query = query.where('name like ?', "%#{word}%")
+        else
+          query = query.where('name like ? or id = ?', "%#{word}%", word.to_s)
+        end
       end
     end
     query
