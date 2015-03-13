@@ -24,21 +24,27 @@ $(document).ready(function() {
 
     var entryId = <%= @entry.id %>;
     var queuedEntries = [ entryId ];
-
+    var potentialMatches = null;
+    
     // Fielded search specific params
     var translateSearchParams = function (sdbmTable, data) {
         params = sdbmTable.translateParamsToBlacklight(data);
 
-        params["op"] = $("select[name='op']").val();
+        if(potentialMatches == null) {
+            params["op"] = $("select[name='op']").val();
 
-        $("select[name='search_field']").each(function (idx, element) {
-            var search_field = $(element).val();
-            var search_value = $($("input[name='search_value']")[idx]).val();
-            if(search_value) {
-                params[search_field] = search_value;
-            }
-        });
-
+            $("select[name='search_field']").each(function (idx, element) {
+                var search_field = $(element).val();
+                var search_value = $($("input[name='search_value']")[idx]).val();
+                if(search_value) {
+                    params[search_field] = search_value;
+                }
+            });
+        } else {
+            console.log("Doing Potential Match search");
+            params["entry_id"] = potentialMatches.join(" OR ");
+        }
+        
         return params;
     };
 
@@ -88,6 +94,7 @@ $(document).ready(function() {
     });
 
     var doSearch = function() {
+        potentialMatches = null;
         sdbmTable.reload();
     };
     
@@ -190,6 +197,29 @@ $(document).ready(function() {
         return false;
     });
 
+    $("#show-matches").click(function () {
+        $("#spinner").show();
+        $.ajax({
+            url: '/entries/' + entryId + '/similar.json',
+            type: 'GET',
+            success: function(data, textStatus, jqXHR) {
+                potentialMatches = data.similar;
+                if(potentialMatches.length > 0)  {
+                    sdbmTable.reload();
+                } else {
+                    alert("No matches found");
+                }
+            },
+            error: function() {
+                // TODO: fill this out
+                alert("An error occurred finding matches.");
+            },
+            complete: function() {
+                $("#spinner").hide();
+            }
+        });
+    });
+    
     displayQueuedEntries();
 
     // TODO: this doesn't work
@@ -270,6 +300,9 @@ $(document).ready(function() {
             <div>
                 <img id="spinner" alt="working..." style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
             </div>
+        </div>
+        <div class="col-sm-3">
+            <button id="show-matches" class="btn btn-primary">Show potential matches</button>
         </div>
     </div>
 

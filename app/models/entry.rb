@@ -80,6 +80,16 @@ class Entry < ActiveRecord::Base
     "SDBM_#{id}"
   end
 
+  # Returns an array of similar Entry IDs
+  def similar
+    candidate_ids = Set.new
+    SDBMSS::SimilarEntries.new(self).each do |similar_entry|
+      entry = similar_entry[:entry]
+      candidate_ids.add entry.id
+    end
+    candidate_ids
+  end
+
   def get_manuscript
     entry_manuscripts.select { |em| em.relation_type == EntryManuscript::TYPE_RELATION_IS}.map(&:manuscript).first
   end

@@ -21,6 +21,7 @@ class Manuscript < ActiveRecord::Base
     return "SDBM_MS_" + id.to_s
   end
 
+  # returns an array of entry IDs
   def entry_candidates
     candidate_ids = Set.new
     linked_entries.each do |entry|

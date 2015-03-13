@@ -55,6 +55,41 @@ module SDBMSS
     end
   end
 
+  # Represents a point in a space of n dimensions used to calculate
+  # the similarity between Entries.
+  class Point < Hash
+
+    def initialize(entry)
+      # extract info from entry relevant for similarity matching
+
+      # TODO: match provenance dates with Entry dates
+
+      store(:num_lines, entry.num_lines)
+      store(:folios, entry.folios)
+      store(:height, entry.height)
+      store(:width, entry.width)
+      store(:titles, LevenshteinStringSet.new(entry.entry_titles.map(&:title)))
+    end
+
+    # Calculates euclidean distance of 2 points. A distance of 0 means
+    # exact match; as value increases, similarity decreases.
+    def -(x)
+      sum_of_squares = 0
+      each do |k, v|
+        v2 = x.fetch(k)
+        # only calculate score if both values are present; this
+        # prevents missing info on one of the entries from generating
+        # a large difference and throwing off the calculation
+        if v.present? && v2.present?
+          score = (v - v2).abs
+          # puts "score for key=#{k} = #{score}"
+          sum_of_squares += score ** 2
+        end
+      end
+      Math.sqrt(sum_of_squares)
+    end
+  end
+
   class SimilarEntries
 
     include Enumerable
@@ -64,7 +99,7 @@ module SDBMSS
       @entry = entry
       # list of IDs of already matched manuscripts
       @already_matched = @entry.get_entries_for_manuscript.map(&:id)
-      @p1 = create_point(@entry)
+      @p1 = Point.new(@entry)
       @similar_entries = nil
     end
 
@@ -82,9 +117,9 @@ module SDBMSS
 
       @similar_entries = []
 
-      buffer_folios = 10
-      buffer_width = 10
-      buffer_height = 10
+      buffer_folios = 5
+      buffer_width = 5
+      buffer_height = 5
 
       # Narrow down pool of possible candidates to something reasonable
       entries = Entry.all.order('id')
@@ -108,33 +143,20 @@ module SDBMSS
 
         entries.each do |entry|
           if (entry.id != @entry.id) && (! @already_matched.member?(entry.id))
-            p2 = create_point(entry)
-            distance = distance(@p1, p2)
+            p2 = Point.new(entry)
+            distance = @p1 - p2
+            Rails.logger.debug "distance=#{distance}"
             @similar_entries << { distance: distance, entry: entry }
           end
         end
 
         @similar_entries.sort! { |x,y| x[:distance] <=> y[:distance] }
       else
-        print "Too many similar candidates for entry #{@entry.id}, skipping"
+        Rails.logger.info "Too many similar candidates for entry #{@entry.id}, skipping"
       end
     end
 
     private
-
-    def create_point entry
-      return [ entry.num_lines || 0, entry.folios || 0, entry.height || 0, entry.width || 0, LevenshteinStringSet.new(entry.entry_titles.map(&:title)) ]
-    end
-
-    # Calculates euclidean distance of 2 points. A distance of 0 means
-    # exact match; as value increases, similarity decreases.
-    def distance p1, p2
-      sum_of_squares = 0
-      p1.each_index do |i|
-        sum_of_squares += (p1[i] - p2[i]).abs ** 2
-      end
-      Math.sqrt(sum_of_squares)
-    end
 
   end
 
