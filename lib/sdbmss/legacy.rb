@@ -1122,6 +1122,7 @@ module SDBMSS::Legacy
 
       deleted = row['ISDELETED'] == 'y'
 
+      # TODO: get rid of hidden field, it no longer makes sense
       hidden = row['HIDDEN_CAT'] == 'y'
 
       source_type = nil
