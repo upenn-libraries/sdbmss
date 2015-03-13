@@ -118,6 +118,15 @@ module SDBMSS
         csv_data
       end
 
+      def int? s
+        begin
+          Integer(s)
+        rescue Exception => e
+          return false
+        end
+        return true
+      end
+
     end
 
   end

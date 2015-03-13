@@ -17,6 +17,12 @@ h1 { font-size: 30px; margin-top: 10px; }
 
 .record-label { color: #777 }
 
+/* advanced search page */
+
+.advanced .form-group {
+    margin-bottom: 5px;
+}
+
 /**** Style for various data entry forms */
 
 .sdbmss-form .provenance-group-container { border-width: 0 0 1px; border-style: none none solid; border-color: #e5e5e5; margin-bottom: 6px; }

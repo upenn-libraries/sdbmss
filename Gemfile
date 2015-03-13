@@ -54,9 +54,10 @@ gem 'capistrano-rails', '~> 1.1.0', group: :development
 # gem 'debugger', group: [:development, :test]
 
 # Blacklight
-# NOTE: A bunch of interfaces are deprecated in 5.10; that upgrade will take a bit of tweaking
-gem "blacklight", "~> 5.9.3"
+gem "blacklight", "~> 5.10.2"
 gem "jettywrapper", "~> 1.8.0"
+# TODO: blacklight_advanced_search 5.1.3 gets rid of deprecation
+# warnings from blacklight 5.10.2 but it hasn't been released yet
 gem "blacklight_advanced_search", "~> 5.1.2"
 
 # For authentication; used by Blacklight and by SDBMSS

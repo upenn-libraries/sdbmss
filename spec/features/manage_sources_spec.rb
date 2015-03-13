@@ -16,8 +16,6 @@ describe "Manage sources", :js => true do
   end
 
   before :each do
-    page.driver.resize_window(1024, 768)
-
     visit new_user_session_path
     fill_in 'user_login', :with => @user.username
     fill_in 'user_password', :with => 'somethingunguessable'
@@ -30,6 +28,18 @@ describe "Manage sources", :js => true do
     expect(page).to have_content @source.title
   end
 
-  it "should delete a Source"
+  it "should delete a Source" do
+    # this is a very rough test!
+    count = Source.count
+
+    # mock out the confirm dialogue
+    page.evaluate_script('window.confirm = function() { return true; }')
+
+    visit sources_path
+    first(".source-delete-link").click
+    sleep(1)
+
+    expect(Source.count).to eq(count-1)
+  end
 
 end

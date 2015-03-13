@@ -82,11 +82,12 @@ class Source < ActiveRecord::Base
   validates_inclusion_of :medium, in: MEDIUM_TYPES.map(&:first), message: 'medium is invalid', allow_nil: true
   validates_presence_of :date, if: :date_required
   validate :source_type_not_changed
+  # TODO: validate that irrelevant fields for the source_type are NOT populated
 
   accepts_nested_attributes_for :source_agents
 
   # returns 'count' number of most recent sources
-  scope :most_recent, ->(count = 5) { order(created_at: :desc).first(count) }
+  scope :most_recent, ->(count = 5) { order(created_at: :desc, id: :desc).first(count) }
 
   # aggressively load all associations; useful for cases where you
   # want to display the 'complete' info
@@ -198,7 +199,7 @@ class Source < ActiveRecord::Base
 
   def source_type_not_changed
     if source_type_changed? && self.persisted?
-      errors.add(:activity_id, "Change of source_type not allowed")
+      errors.add(:source_type, "Change of source_type not allowed")
     end
   end
 

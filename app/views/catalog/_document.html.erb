@@ -14,10 +14,11 @@
             </div>
         </dd>
 
-        <% if (manuscript = entry.get_manuscript).present? %>
+        <% manuscripts_str = render partial: "shared/entry_manuscripts", object: entry.entry_manuscripts %>
+        <% if manuscripts_str.present? %>
         <dt></dt>
-        <dd>This record has been identified as manuscript <a href="<%= url_for manuscript %>"><%= manuscript.public_id %></a>, which has
-            <%= entry.get_num_entries_for_manuscript %> total records in this database.
+        <dd>
+            <%= manuscripts_str %>
         </dd>
         <% end %>
 

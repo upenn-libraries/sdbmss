@@ -13,11 +13,11 @@ module ResourceSearch
   extend ActiveSupport::Concern
 
   def search_results_limit
-    params["limit"] || 25
+    params["limit"]
   end
 
   def search_results_offset
-    params["offset"] || 0
+    params["offset"]
   end
 
   def search_results_order
@@ -59,9 +59,12 @@ module ResourceSearch
   # Main callpoint: this should be exposed in routes
   def search
     query = search_query
-    query = query.order(*search_results_order)
     total = query.count
-    objects = query.offset(search_results_offset).limit(search_results_limit).map do |obj|
+
+    query = query.order(*search_results_order) if search_results_order
+    query = query.offset(search_results_offset) if search_results_offset
+    query = query.limit(search_results_limit) if search_results_limit
+    objects = query.map do |obj|
       search_result_format(obj)
     end
     objects = search_results_map(objects)
@@ -74,18 +77,36 @@ module ResourceSearch
                  results: objects,
                }
       }
+      format.csv {
+        formatter = Proc.new do |object|
+          search_results_keys.map { |key| object[key] }
+        end
+        render csv: objects,
+               filename: "#{search_model_class.to_s.downcase.pluralize}.csv",
+               headers: search_results_keys.map(&:to_s),
+               format: formatter
+      }
     end
   end
 
   # Classes should override this if they need to search differently.
   # This should return an ActiveRecord query, on which
   # offseting/limiting/ordering will subsequently be done.
+  #
+  # This implementation looks at 'term' param, splits it, and searches
+  # 'name' model field for its parts. If any integers are present, it
+  # looks for them in the 'id' model field.
   def search_query
     search_term = params[:term]
     query = search_model_class.all
     if search_term.present?
       search_term.split.each do |word|
-        query = query.where('name like ?', "%#{word}%")
+        # look at ID column for integers
+        if !SDBMSS::Util.int?(word)
+          query = query.where('name like ?', "%#{word}%")
+        else
+          query = query.where('name like ? or id = ?', "%#{word}%", word.to_s)
+        end
       end
     end
     query

@@ -1,0 +1,12 @@
+<% entry_manuscripts.each do |entry_manuscript| %>
+    <% case entry_manuscript.relation_type %>
+    <% when EntryManuscript::TYPE_RELATION_IS %>
+        <% id_str = "" %>
+    <% when EntryManuscript::TYPE_RELATION_PARTIAL %>
+        <% id_str = "a <em>fragment</em> of " %>
+    <% when EntryManuscript::TYPE_RELATION_POSSIBLE %>
+        <% id_str = "<em>possibly</em>" %>
+    <% end %>
+    <% manuscript = entry_manuscript.manuscript %>
+    <p>This record has been identified as <%= simple_format(id_str, {}, { wrapper_tag: "span" }) %> manuscript <a href="<%= url_for manuscript %>"><%= manuscript.public_id %></a>, which has <%= manuscript.entries.count %> total records in this database.</p>
+<% end %>

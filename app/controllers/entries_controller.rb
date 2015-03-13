@@ -1,8 +1,8 @@
 class EntriesController < ApplicationController
 
-  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :find_or_create_manuscript]
+  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :find_or_create_manuscript, :similar]
 
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :find_or_create_manuscript]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :find_or_create_manuscript, :similar]
 
   respond_to :html, :json
 
@@ -125,6 +125,13 @@ class EntriesController < ApplicationController
     # action.
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }
+    end
+  end
+
+  def similar
+    @similar_ids = @entry.similar
+    respond_to do |format|
+      format.json
     end
   end
 

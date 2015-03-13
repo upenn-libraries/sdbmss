@@ -22,6 +22,10 @@ $(document).ready(function() {
 
     $("input[name='search_value']").val("");
 
+    var getSearchValue = function() {
+        return $("input[name='search_value']").val();
+    };
+    
     var columnOptions = [
         {
             title: 'Options',
@@ -58,7 +62,7 @@ $(document).ready(function() {
             });
                 
             var params = {
-                term: $("input[name='search_value']").val(),
+                term: getSearchValue(),
                 offset: dt_params.start,
                 limit: dt_params.length,
                 order: orderStr
@@ -117,6 +121,15 @@ $(document).ready(function() {
     $('#search_submit').click(function() {
         dataTable.ajax.reload();
     });
+
+    $('#export-csv').click(function() {
+        var url = '/' + model_class + '/search.csv?';
+        if(getSearchValue()) {
+            url += "term=" + encodeURIComponent(getSearchValue());
+        }
+        window.location = url;
+        return false;
+    });
     
 });
 </script>
@@ -152,3 +165,7 @@ $(document).ready(function() {
     <tbody>
     </tbody>
 </table>
+
+<div style="text-align: right">
+    <a id="export-csv" href="#">Export search results as csv</a>
+</div>

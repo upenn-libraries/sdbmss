@@ -41,7 +41,13 @@ function SDBMTable(selector, options) {
     this.columnOptions = [
         {
             title: 'ID',
-            blSortField: 'entry_id'
+            blSortField: 'entry_id',
+            render: function (data, type, full, meta) {
+                if(data) {
+                    return '<a href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
+                }
+                return '';
+            }
         },
         {
             title: 'Manuscript',
@@ -259,7 +265,9 @@ function SDBMTable(selector, options) {
         scrollX: true,
         scrollY: scrollY,
         scrollCollapse: false,
-        // extensions get activated via sDom codes
+        // extensions get activated via these codes in sDOM
+        // J = colResize
+        // R = colReorder
         sDom: 'C<"clear"><"H"lr>JRt<"F"ip>',
         serverSide: true
     });

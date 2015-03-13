@@ -185,7 +185,8 @@
                     params: {
                         date: $scope.date,
                         title: $scope.title,
-                        agent: $scope.agent
+                        agent: $scope.agent,
+                        limit: 20
                     }
                 }).then(function (response) {
                     $scope.sources = response.data.results;
@@ -487,7 +488,7 @@
 
             // construct array of passed-in object's properties, FKs,
             // and child associations, to check for blankness
-            var thingsToCheck = (assoc.properties || []).concat(assoc.foreignKeyObjects || [])
+            var thingsToCheck = (assoc.properties || []).concat(assoc.foreignKeyObjects || []);
             if(assoc.entryAssociations) {
                 thingsToCheck = thingsToCheck.concat(assoc.entryAssociations.map(function (item) {
                     return item.field;
@@ -536,7 +537,7 @@
             var entryToSave = new Entry(angular.copy($scope.entry));
 
             // collapse Transaction and Provenance back into Events
-            entryToSave.events = [].concat(entryToSave.provenance)
+            entryToSave.events = [].concat(entryToSave.provenance);
             delete entryToSave.provenance;
             if(entryToSave.transaction) {
                 if (entryToSave.transaction.price) {
@@ -656,7 +657,7 @@
                     return {
                         label: material[0],
                         value: material[1]
-                    }
+                    };
                 });
                 
                 if($("#entry_id").val()) {
@@ -819,7 +820,7 @@
                     var url  = sourceStr;
                     var searchTerm = request.term;
                     $http.get(url, {
-                        params: $.extend({ term: searchTerm }, params)
+                        params: $.extend({ term: searchTerm, limit: 25 }, params)
                     }).then(function (response) {
                         // transform data from API call into format expected by autocomplete
                         var exactMatch = false;
@@ -937,7 +938,7 @@
                                     modalParams: function() {
                                         return {
                                             "name": newNameValue,
-                                            "type": params["type"],
+                                            "type": params["type"]
                                         };
                                     }
                                 },
@@ -1234,7 +1235,7 @@
         $scope.use_suggestion = function(suggestion) {
             $scope.entity.name = suggestion.name;
             $scope.entity.viaf_id = suggestion.viaf_id;
-        }
+        };
     });
 
     sdbmApp.controller('CreateLanguageModalCtrl', function ($scope, $http, $modalInstance, sdbmutil, modalParams, Language) {

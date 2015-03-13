@@ -35,4 +35,11 @@ module ApplicationHelper
     entry.present? && (manuscript = entry.get_manuscript).present?
   end
 
+  # determines whether Find or Create MS link should be displayed;
+  # this is used multiple places, which is why it's here in
+  # ApplicationHelper
+  def show_find_or_create_manuscript_link?
+    return !show_edit_manuscript_link?
+  end
+
 end

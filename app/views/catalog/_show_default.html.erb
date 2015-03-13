@@ -5,11 +5,7 @@
 <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
 <% else %>
 
-<% if (manuscript = entry.get_manuscript).present? %>
-<p>This record has been identified as manuscript <a href="<%= url_for manuscript %>"><%= manuscript.public_id %></a>, which has
-    <%= entry.get_num_entries_for_manuscript %> total records in this database.
-</p>
-<% end %>
+<%= render partial: "shared/entry_manuscripts", object: entry.entry_manuscripts %>
 
 <table class="table table-striped">
     <thead>
@@ -322,7 +318,7 @@
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Other Info</td>
             <td class="col-sm-10" colspan="10">
-                <%= entry.other_info %>
+                <%= simple_format(entry.other_info) %>
             </td>
         </tr>
         <% end %>

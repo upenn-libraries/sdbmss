@@ -213,7 +213,8 @@ $(document).ready(function() {
                 entry_manuscripts: entryManuscriptsFiltered
             }),
             success: function(data, textStatus, jqXHR) {
-                alert("Hooray!");
+                alert("Your changes have been saved");
+                location.reload(true);
             },
             error: function() {
                 // TODO: fill this out

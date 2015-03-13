@@ -21,7 +21,7 @@
     <div class="form-group row">
         <label for="source_type" class="col-sm-2 control-label">Source Type</label>
         <div class="col-sm-3">
-            <select class="form-control" id="source_type" ng-model="source.source_type" ng-options="option[0] as option[1] for option in optionsSourceType">
+            <select class="form-control" id="source_type" ng-model="source.source_type" ng-options="option[0] as option[1] for option in optionsSourceType" ng-disabled="source.id">
                 <option value="">Select One</option>
             </select>
         </div>

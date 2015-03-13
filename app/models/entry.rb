@@ -55,7 +55,7 @@ class Entry < ActiveRecord::Base
   }
 
   # returns 'count' number of most recent entries
-  scope :most_recent, ->(count = 5) { order(id: :desc).first(count) }
+  scope :most_recent, ->(count = 5) { order(created_at: :desc, id: :desc).first(count) }
 
   # returns the entries that have the specified author
   scope :with_author, ->(name) { joins(:entry_authors).where("entry_authors.author_id = #{name.id}").distinct }
@@ -78,6 +78,16 @@ class Entry < ActiveRecord::Base
 
   def public_id
     "SDBM_#{id}"
+  end
+
+  # Returns an array of similar Entry IDs
+  def similar
+    candidate_ids = Set.new
+    SDBMSS::SimilarEntries.new(self).each do |similar_entry|
+      entry = similar_entry[:entry]
+      candidate_ids.add entry.id
+    end
+    candidate_ids
   end
 
   def get_manuscript

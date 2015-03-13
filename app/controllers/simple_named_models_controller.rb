@@ -6,7 +6,7 @@ class SimpleNamedModelsController < ApplicationController
 
   before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy]
 
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy, :search]
 
   respond_to :html, :json
 

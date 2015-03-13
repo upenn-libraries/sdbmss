@@ -33,26 +33,26 @@ class Name < ActiveRecord::Base
 
   # constructor for a Provenance Agent. takes same args as #new
   def self.agent(*args)
-    hash = args.pop || {}
-    new(*(args << hash.merge!(is_provenance_agent: true)))
+    hash = args.last.is_a?(Hash) ? args.pop : {}
+    new(*(args << hash.merge(is_provenance_agent: true)))
   end
 
   # constructor for an Artist. takes same args as #new
   def self.artist(*args)
-    hash = args.pop || {}
-    new(*(args << hash.merge!(is_artist: true)))
+    hash = args.last.is_a?(Hash) ? args.pop : {}
+    new(*(args << hash.merge(is_artist: true)))
   end
 
   # constructor for an Author. takes same args as #new
   def self.author(*args)
-    hash = args.pop || {}
-    new(*(args << hash.merge!(is_author: true)))
+    hash = args.last.is_a?(Hash) ? args.pop : {}
+    new(*(args << hash.merge(is_author: true)))
   end
 
   # constructor for a Scribe. takes same args as #new
   def self.scribe(*args)
-    hash = args.pop || {}
-    new(*(args << hash.merge!(is_scribe: true)))
+    hash = args.last.is_a?(Hash) ? args.pop : {}
+    new(*(args << hash.merge(is_scribe: true)))
   end
 
   # This find_or_create constructor looks for a name, creating it if
@@ -150,7 +150,7 @@ class Name < ActiveRecord::Base
   end
 
   def public_id
-    "SDBM_NAME_#{id}"
+    is_provenance_agent ?  "SDBM_AGENT_#{id}" : "SDBM_NAME_#{id}"
   end
 
   def to_s
