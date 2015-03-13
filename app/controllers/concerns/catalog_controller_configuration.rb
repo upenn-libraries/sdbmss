@@ -9,11 +9,13 @@ module CatalogControllerConfiguration
 
       config.max_per_page = 500
 
-      config.solr_response_model = SDBMSS::Blacklight::SolrResponse
+      config.response_model = SDBMSS::Blacklight::SolrResponse
 
       config.document_presenter_class = SDBMSS::Blacklight::DocumentPresenter
 
-      ## Default parameters to send to solr for all search-like requests. See also SolrHelper#solr_search_params
+      config.search_builder_class = SDBMSS::Blacklight::SearchBuilder
+
+        ## Default parameters to send to solr for all search-like requests. See also SolrHelper#solr_search_params
       config.default_solr_params = {
         # use dismax query parser
         :defType => 'edismax',
@@ -300,15 +302,7 @@ module CatalogControllerConfiguration
 
     end
 
-    self.solr_search_params_logic << :show_all_if_no_query
-
-    # a behavior for solr_search_params: if there's no query, default to
-    # showing all results
-    def show_all_if_no_query(solr_parameters, user_parameters)
-      # edismax itself doesn't understand '*' but we can pass in q.alt
-      # and it will work for some reason
-      solr_parameters['q.alt'] = "*:*" if user_parameters['q'].blank?
-    end
+    self.search_params_logic << :show_all_if_no_query
 
   end
 

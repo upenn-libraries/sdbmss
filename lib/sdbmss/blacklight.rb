@@ -43,13 +43,21 @@ module SDBMSS::Blacklight
 
   end
 
-  class SDBMSS::Blacklight::DocumentPresenter < Blacklight::DocumentPresenter
+  class DocumentPresenter < Blacklight::DocumentPresenter
 
     # used for html title element
     def document_heading
       return @document.model_object.public_id
     end
 
+  end
+
+  class SearchBuilder < Blacklight::Solr::SearchBuilder
+    def show_all_if_no_query(solr_parameters)
+      # edismax itself doesn't understand '*' but we can pass in q.alt
+      # and it will work for some reason
+      solr_parameters['q.alt'] = "*:*" if blacklight_params['q'].blank?
+    end
   end
 
 end
