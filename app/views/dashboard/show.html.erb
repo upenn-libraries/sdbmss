@@ -30,7 +30,7 @@
                 <% if num_entries > 0 %>
                 <% num_entries_to_show = 5 %>
                 <% entries = current_user.entries.most_recent(num_entries_to_show) %>
-                <p>You've contributed <%= num_entries %> entries to date. The last <%= entries.count %> entries you created:</p>
+                <p>You've contributed <a href="<%= search_by_facet_value("created_by", current_user.to_s) %>"><%= num_entries %></a> entries to date. The last <%= entries.count %> entries you created:</p>
 
                 <table class="table">
                     <% entries.each do |entry| %>
