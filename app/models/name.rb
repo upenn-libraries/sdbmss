@@ -150,7 +150,7 @@ class Name < ActiveRecord::Base
   end
 
   def public_id
-    "SDBM_NAME_#{id}"
+    is_provenance_agent ?  "SDBM_AGENT_#{id}" : "SDBM_NAME_#{id}"
   end
 
   def to_s
