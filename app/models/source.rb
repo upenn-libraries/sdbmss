@@ -87,7 +87,7 @@ class Source < ActiveRecord::Base
   accepts_nested_attributes_for :source_agents
 
   # returns 'count' number of most recent sources
-  scope :most_recent, ->(count = 5) { order(created_at: :desc).first(count) }
+  scope :most_recent, ->(count = 5) { order(created_at: :desc, id: :desc).first(count) }
 
   # aggressively load all associations; useful for cases where you
   # want to display the 'complete' info

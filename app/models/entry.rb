@@ -55,7 +55,7 @@ class Entry < ActiveRecord::Base
   }
 
   # returns 'count' number of most recent entries
-  scope :most_recent, ->(count = 5) { order(id: :desc).first(count) }
+  scope :most_recent, ->(count = 5) { order(created_at: :desc, id: :desc).first(count) }
 
   # returns the entries that have the specified author
   scope :with_author, ->(name) { joins(:entry_authors).where("entry_authors.author_id = #{name.id}").distinct }
