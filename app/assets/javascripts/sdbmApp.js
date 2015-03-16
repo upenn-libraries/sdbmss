@@ -1049,6 +1049,8 @@
            sometimes; review other fields as well, once all source
            types have been finalized */
 
+        // store in scope, otherwise angular template code can't
+        // get a reference to this
         $scope.sdbmutil = sdbmutil;
         
         $scope.currentlySaving = false;
