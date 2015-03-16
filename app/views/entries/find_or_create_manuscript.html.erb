@@ -20,11 +20,14 @@ $(document).ready(function() {
     // make this page take up full width of browser window
     $("#main-container").removeClass("container").addClass("container-fluid");
 
-    $("input[name='search_value']").val("");
-
     var entryId = <%= @entry.id %>;
     var queuedEntries = [ entryId ];
     var potentialMatches = null;
+
+    // prefill the search form
+    $("input[name='search_value']").first().val(entryId);
+    $("select[name='search_field']").first().val("entry_id");
+    $("select[name='op']").val("OR");
     
     // Fielded search specific params
     var translateSearchParams = function (sdbmTable, data) {
@@ -204,6 +207,7 @@ $(document).ready(function() {
             type: 'GET',
             success: function(data, textStatus, jqXHR) {
                 potentialMatches = data.similar;
+                potentialMatches.push(entryId);
                 if(potentialMatches.length > 0)  {
                     sdbmTable.reload();
                 } else {
