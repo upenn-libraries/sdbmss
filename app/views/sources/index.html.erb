@@ -103,7 +103,7 @@ $(document).ready(function() {
                 title: $("input[name='search_value']").val(),
                 offset: dt_params.start,
                 limit: dt_params.length,
-                order: "name " + dt_params.order[0].dir
+                order: "id " + dt_params.order[0].dir
             };
 
             $.ajax({

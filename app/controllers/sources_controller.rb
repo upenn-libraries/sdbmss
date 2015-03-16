@@ -68,7 +68,7 @@ class SourcesController < ApplicationController
   end
 
   def search_results_order
-    ["id desc", "title"]
+    [params["order"] || ["date desc", "title"]]
   end
 
   def search_result_format(obj)
