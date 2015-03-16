@@ -64,6 +64,15 @@ describe "Blacklight Search", :js => true do
     expect(page).not_to have_link(entry_nine.public_id)
   end
 
+  it "should load advanced search page" do
+    visit advanced_search_path
+
+    # all text search fields should show up in dropdown
+    expect(find_by_id('text_field_0').all("option").length).to eq(19)
+    # all numeric search fields should show up in dropdown
+    expect(find_by_id('numeric_field_0').all("option").length).to eq(12)
+  end
+
   it "should do advanced search using numeric range on Height" do
     visit advanced_search_path
 

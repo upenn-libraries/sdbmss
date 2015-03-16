@@ -891,30 +891,35 @@
                     // noop
                 },
                 change: function(event, ui) {
-                    var inputValue = $(element).val();
+                    var inputValue = $(element).val() || "";
 
                     // if no actual selection was made
                     if(ui.item === null) {
-                        var match = false;
-
-                        // did user type in something that actually
-                        // matches an option? if so, select it.
-                        if(options) {
-                            options.forEach(function (option) {
-                                if(inputValue === option.label) {
-                                    assignToModel(option);
-                                    scope.$apply();
-                                    match = true;
-                                }
-                            });
-                        }
-
-                        if(!match) {
-                            // force user to fix the value
-                            if(inputValue) {
-                                refocus(inputValue);
-                                invalidInput = true;
+                        if(inputValue.trim().length > 0) {
+                            var match = false;
+                            // did user type in something that actually
+                            // matches an option? if so, select it.
+                            if(options) {
+                                options.forEach(function (option) {
+                                    if(inputValue.toLowerCase() === option.label.toLowerCase()) {
+                                        assignToModel(option);
+                                        scope.$apply();
+                                        match = true;
+                                    }
+                                });
                             }
+                            if(!match) {
+                                // force user to fix the value
+                                if(inputValue) {
+                                    refocus(inputValue);
+                                    invalidInput = true;
+                                }
+                                assignToModel(null);
+                                scope.$apply();
+                            }
+                        } else {
+                            // it's just whitespace, so erase it
+                            $(element).val("");
                             assignToModel(null);
                             scope.$apply();
                         }
@@ -1044,6 +1049,8 @@
            sometimes; review other fields as well, once all source
            types have been finalized */
 
+        // store in scope, otherwise angular template code can't
+        // get a reference to this
         $scope.sdbmutil = sdbmutil;
         
         $scope.currentlySaving = false;

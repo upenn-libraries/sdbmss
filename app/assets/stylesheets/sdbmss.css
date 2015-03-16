@@ -95,10 +95,6 @@ h1 { font-size: 30px; margin-top: 10px; }
 /* gives an element the same alignment as a label element */
 .sdbmss-form .label-alignment { min-height: 30px; padding-top: 7px; }
 
-.sdbmss-form .inference-flags-container {
-    padding-top: 7px;
-}
-
 .sdbmss-form .red {
     color: red;
 }

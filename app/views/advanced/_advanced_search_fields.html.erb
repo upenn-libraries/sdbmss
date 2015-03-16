@@ -44,7 +44,7 @@ $(document).ready(function() {
     </div>
     <div class="col-sm-1">in</div>
     <div class="col-sm-4">
-        <select class="form-control col-sm-3">
+        <select class="form-control col-sm-3" id="text_field_<%= x %>">
             <%- text_search_fields.each do |key, field_def| -%>
             <option value="<%= key %>"><%= field_def.label %></option>
             <%- end -%>

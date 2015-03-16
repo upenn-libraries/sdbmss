@@ -78,12 +78,13 @@ module ResourceSearch
                }
       }
       format.csv {
+        headers = objects.first.keys
         formatter = Proc.new do |object|
-          search_results_keys.map { |key| object[key] }
+          headers.map { |key| object[key] }
         end
         render csv: objects,
                filename: "#{search_model_class.to_s.downcase.pluralize}.csv",
-               headers: search_results_keys.map(&:to_s),
+               headers: headers,
                format: formatter
       }
     end

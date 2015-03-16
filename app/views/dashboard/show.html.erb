@@ -60,7 +60,7 @@
                   <p>You've contributed <%= num_sources %> sources to date. The last <%= sources.count %> sources you created:</p>
 
                   <table class="table">
-                      <% for source in sources %>
+                      <% sources.each do |source| %>
                       <tr class="row">
                           <td class="col-sm-9"><a href="<%= source_path(source) %>"><%= source.public_id %></a>: <%= source.display_value %></td>
                           <td class="col-sm-1"><a href="<%= edit_source_path(source) %>">edit</a></td>

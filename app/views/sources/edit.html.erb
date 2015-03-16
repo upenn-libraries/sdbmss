@@ -39,7 +39,7 @@
             </div>
         </div>
 
-        <div class="auction-source-container" ng-show="source.source_type == 'auction_catalog' || source.source_type == 'online'">
+        <div class="auction-source-container" ng-show="source.source_type == 'auction_catalog'">
 
             <div class="form-group row">
                 <label for="cat_title" class="col-sm-2 control-label">Publication Title</label>
@@ -66,6 +66,22 @@
 
         </div>
 
+        <div class="auction-source-container" ng-show="source.source_type == 'online'">
+            <div class="form-group row">
+                <label for="cat_title" class="col-sm-2 control-label">Website Name</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" id="title" ng-model="source.title" required />
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="institution" class="col-sm-2 control-label">Selling Agent</label>
+                <div class="col-sm-6">
+                    <input id="selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                </div>
+            </div>
+        </div>
+        
         <div class="auction-source-container" ng-show="source.source_type == 'collection_catalog'">
 
             <div class="form-group row">
