@@ -56,9 +56,7 @@ gem 'capistrano-rails', '~> 1.1.0', group: :development
 # Blacklight
 gem "blacklight", "~> 5.10.2"
 gem "jettywrapper", "~> 1.8.0"
-# TODO: blacklight_advanced_search 5.1.3 gets rid of deprecation
-# warnings from blacklight 5.10.2 but it hasn't been released yet
-gem "blacklight_advanced_search", "~> 5.1.2"
+gem "blacklight_advanced_search", "~> 5.1.3"
 
 # For authentication; used by Blacklight and by SDBMSS
 gem "devise", "~> 3.4.0"
