@@ -29,7 +29,7 @@
 
     <div class="source-fields-container" ng-show="showFields()">
 
-        <div class="form-group row" ng-show="source.source_type != 'online'">
+        <div class="form-group row" ng-show="source.source_type != 'online' && source.source_type != 'unpublished'">
             <label for="source_date" class="col-sm-2 control-label"><span sdbm-tooltip="source_date">Date</span></label>
             <div class="col-sm-3">
                 <input type="text" class="form-control" placeholder="YYYY-MM-DD" name="source_date" id="source_date" ng-model="source.date" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" />

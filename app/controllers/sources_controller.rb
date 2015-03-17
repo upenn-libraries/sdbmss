@@ -56,6 +56,10 @@ class SourcesController < ApplicationController
     respond_with(@source)
   end
 
+  def search_exact_enabled
+    false
+  end
+
   def search_query
     date = params.fetch(:date, '').gsub('-', '').gsub('/', '')
     title = params[:title]
