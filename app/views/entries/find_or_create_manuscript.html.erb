@@ -285,9 +285,11 @@ $(document).ready(function() {
             url: '/entries/' + entryId + '/similar.json',
             type: 'GET',
             success: function(data, textStatus, jqXHR) {
-                potentialMatches = data.similar;
-                potentialMatches.push(entryId);
-                if(potentialMatches.length > 0)  {
+                if(data.similar > 0)  {
+                    potentialMatches = data.similar;
+                    potentialMatches.push.apply(potentialMatches, $.map(queuedEntries, function (queuedEntry) {
+                        return queuedEntry.entry_id;
+                    }));
                     sdbmTable.reload();
                 } else {
                     alert("No matches found");
