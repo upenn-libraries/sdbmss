@@ -21,14 +21,73 @@ $(document).ready(function() {
     $("#main-container").removeClass("container").addClass("container-fluid");
 
     var entryId = <%= @entry.id %>;
-    var queuedEntries = [ entryId ];
+
+    var queuedEntries = [
+        {
+            entry_id: entryId,
+            relation_type: 'is'
+        }
+    ];
+
+    var deleteQueuedEntry = function(entryId) {
+        var idxToDelete = -1;
+        $.each(queuedEntries, function (idx, queuedEntry) {
+            if(queuedEntry.entry_id == entryId) {
+                idxToDelete = idx;
+            }
+        });
+        if (idxToDelete != -1) {
+            queuedEntries.splice(idxToDelete, 1);
+        }
+    };
+
+    var isQueued = function(entryId, relationType) {
+        var queued = false;
+        $.each(queuedEntries, function (idx, queuedEntry) {
+            if(queuedEntry.entry_id == entryId && queuedEntry.relation_type == relationType) {
+                queued = true;
+            }
+        });
+        return queued;
+    };
+    
+    var displayQueuedEntries = function() {
+        queuedEntries.sort(function (a, b) {
+            if(a.entry_id > b.entry_id) return 1;
+            if(a.entry_id < b.entry_id) return -1;
+            return 0;
+        });
+        var html = $.map(queuedEntries, function (record) {
+            var entryId = record.entry_id;
+            var relation_str = "";
+            if(record.relation_type != 'is') {
+                relation_str = " (" + record.relation_type + ")";
+            }
+            return "<a href='/entries/" + entryId + "' target='_blank'>SDBM_" + entryId + relation_str + "</a> (<a class='dequeue-entry-link' data-entry-id='" + entryId + "' href='#'>remove</a>)";
+        }).join(", ");
+        $("#queued-entries").html(html);
+    };
+
     var potentialMatches = null;
 
     // prefill the search form
     $("input[name='search_value']").first().val(entryId);
     $("select[name='search_field']").first().val("entry_id");
     $("select[name='op']").val("OR");
-    
+
+    var radioButtonsShouldBeVisible = function (sdbmTable, row) {
+        return !row[sdbmTable.getColumnIndex("Manuscript")];
+    };
+
+    var getRadioButtonHTML = function(sdbmTable, data, value) {
+        if (radioButtonsShouldBeVisible(sdbmTable, data)) {
+            var entryId = data[sdbmTable.getColumnIndex("ID")];
+            var checked = isQueued(entryId, value) ? "checked='checked'" : "";
+            return '<input type="radio" class="toggle-entry-link" data-entry-id="' + entryId + '" name="entry_id_' + entryId + '" value="' + value + '" ' + checked + '/>';
+        }
+        return '';
+    };
+
     // Fielded search specific params
     var translateSearchParams = function (sdbmTable, data) {
         params = sdbmTable.translateParamsToBlacklight(data);
@@ -57,28 +116,51 @@ $(document).ready(function() {
                 title: 'Link',
                 "data": null,
                 "orderable": false,
+                "className": 'text-center',
                 "render": function (data, type, full, meta) {
-                    var manuscriptId = data[sdbmTable.getColumnIndex("Manuscript")];
-                    var entryId = data[sdbmTable.getColumnIndex("ID")];
-                    if(manuscriptId) {
-                        return '<a href="#" class="link-to-manuscript-link">Link to SDBM_MS_' + manuscriptId + '</a>';
-                    } else {
-                        return '<a href="#" class="queue-entry-link">Queue SDBM_' + entryId + '</a>';
-                    }
+                    return getRadioButtonHTML(sdbmTable, data, "is");
                 }
             },
-            /*
             {
-                title: 'Link new MS',
+                title: 'Fragment',
                 "data": null,
                 "orderable": false,
                 "className": 'text-center',
                 "render": function (data, type, full, meta) {
-                    var manuscript = data[sdbmTable.getColumnIndex("Manuscript")];
-                    return !manuscript ? '<input type="checkbox"/>' : '';
+                    return getRadioButtonHTML(sdbmTable, data, "partial");
                 }
             },
-            */
+            {
+                title: 'Possible',
+                "data": null,
+                "orderable": false,
+                "className": 'text-center',
+                "render": function (data, type, full, meta) {
+                    return getRadioButtonHTML(sdbmTable, data, "possible");
+                }
+            },
+            {
+                title: 'Unlink',
+                "data": null,
+                "orderable": false,
+                "className": 'text-center',
+                "render": function (data, type, full, meta) {
+                    return getRadioButtonHTML(sdbmTable, data, "unlink");
+                }
+            },
+            {
+                title: 'Existing',
+                "data": null,
+                "orderable": false,
+                "render": function (data, type, full, meta) {
+                    console.log("in render");
+                    var manuscriptId = data[sdbmTable.getColumnIndex("Manuscript")];
+                    if(manuscriptId) {
+                        return '<a href="#" data-manuscript-id="' + manuscriptId + '" class="link-to-manuscript-link">Link to SDBM_MS_' + manuscriptId + '</a>';
+                    }
+                    return "";
+                }
+            }
         ],
         ajax: function (sdbmTable, dt_params, callback, settings) {
             $("#spinner").show();
@@ -112,38 +194,40 @@ $(document).ready(function() {
         doSearch();
     });
 
-    var displayQueuedEntries = function() {
-        queuedEntries.sort();
-        var html = $.map(queuedEntries, function (entryId) {
-            return "<a href='/entries/" + entryId + "' target='_blank'>SDBM_" + entryId + "</a> (<a class='dequeue-entry-link' data-entry-id='" + entryId + "' href='#'>remove</a>)";
-        }).join(", ");
-        $("#queued-entries").html(html);
-    };
-    
-    $(document).on("click", ".queue-entry-link", function (event) {
-        var row_data = sdbmTable.dataTable.row($(event.target).closest("tr")).data();
-        var entryId = row_data[sdbmTable.getColumnIndex("ID")];
-        if(queuedEntries.indexOf(entryId) == -1) {
-            queuedEntries.push(entryId);
+    $(document).on("click", ".toggle-entry-link", function (event) {
+        var entryId = $(event.target).data("entryId");
+        var value = $(event.target).val();
+        //console.log("changed " + entryId + ", value=" + value);
+
+        if(value != 'unlink') {
+            var idAlreadyExists = false;
+            $.each(queuedEntries, function (idx, queuedEntry) {
+                if(queuedEntry.entry_id == entryId) {
+                    queuedEntry.relation_type = value;
+                    idAlreadyExists = true;
+                }
+            });
+            if (!idAlreadyExists) {
+                queuedEntries.push({
+                    entry_id: entryId,
+                    relation_type: value
+                });
+            }
+        } else {
+            deleteQueuedEntry(entryId);            
         }
-        //console.log(queuedEntries);
         displayQueuedEntries();
-        return false;
     });
 
     $(document).on("click", ".dequeue-entry-link", function (event) {
-        var idxToDelete = queuedEntries.indexOf($(event.target).data("entryId"));
-        if(idxToDelete != -1) {
-            queuedEntries.splice(idxToDelete, 1);
-        }
+        var entryId = $(event.target).data("entryId");
+        deleteQueuedEntry(entryId);
         displayQueuedEntries();
         return false;
     });
 
-    
     $(document).on("click", ".link-to-manuscript-link", function (event) {
-        var row_data = sdbmTable.dataTable.row($(event.target).closest("tr")).data();
-        var manuscriptId = row_data[sdbmTable.getColumnIndex("Manuscript")];
+        var manuscriptId = $(event.target).data("manuscriptId");
 
         $.ajax({
             url: "/entry_manuscripts.json",
@@ -178,12 +262,7 @@ $(document).ready(function() {
                 contentType: "application/json",
                 dataType: "json",
                 data: JSON.stringify({
-                    entry_manuscripts: $.map(queuedEntries, function(entryId) {
-                        return {
-                            entry_id: entryId,
-                            relation_type: 'is',
-                        }
-                    })
+                    entry_manuscripts: queuedEntries
                 }),
                 success: function(data, textStatus, jqXHR) {
                     alert("Manuscript " + data.manuscript_id + " successfully created! Redirecting to manuscript page now.");
