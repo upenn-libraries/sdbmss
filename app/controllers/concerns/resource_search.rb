@@ -58,16 +58,29 @@ module ResourceSearch
 
   # Main callpoint: this should be exposed in routes
   def search
+
+    exact = search_exact
+    has_exact = exact.length > 0
+
     query = search_query
     total = query.count
 
     query = query.order(*search_results_order) if search_results_order
     query = query.offset(search_results_offset) if search_results_offset
     query = query.limit(search_results_limit) if search_results_limit
-    objects = query.map do |obj|
+
+    objects = query
+    # prepend the exact match only if it's not in the normal results
+    if has_exact && !query.any? { |result| search_exact_match(result) }
+      objects = exact + objects
+    end
+
+    objects = objects.map do |obj|
       search_result_format(obj)
     end
+
     objects = search_results_map(objects)
+
     respond_to do |format|
       format.json {
         render json: {
@@ -88,6 +101,30 @@ module ResourceSearch
                format: formatter
       }
     end
+  end
+
+  # Classes should override and return false to disable search_exact
+  # behavior.
+  def search_exact_enabled
+    true
+  end
+
+  # Search for an exact match, which gets prepended to search results
+  # list. This is so that autocomplete can show a result for an exact
+  # match that may not appear in a search because it's too far down
+  # the list.
+  def search_exact
+    exact = []
+    search_term = params[:term] || ""
+    if search_exact_enabled && search_term.length > 0
+      exact = search_model_class.where("name = ?", search_term)
+    end
+    exact
+  end
+
+  # returns true if this result is an exact match for search performed
+  def search_exact_match(result)
+    result.name == params[:term]
   end
 
   # Classes should override this if they need to search differently.
