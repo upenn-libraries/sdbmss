@@ -80,7 +80,7 @@ class Source < ActiveRecord::Base
   validates_inclusion_of :source_type, in: SOURCE_TYPES.map(&:first), message: 'source type is invalid'
   validates_inclusion_of :whether_mss, in: HAS_MANUSCRIPT_TYPES.map(&:first), message: 'whether_mss is invalid'
   validates_inclusion_of :medium, in: MEDIUM_TYPES.map(&:first), message: 'medium is invalid', allow_nil: true
-  validates_presence_of :date, if: :date_required
+  #validates_presence_of :date, if: :date_required
   validate :source_type_not_changed
   # TODO: validate that irrelevant fields for the source_type are NOT populated
 
@@ -106,9 +106,9 @@ class Source < ActiveRecord::Base
   end
 
   # date field is only required for certain types of sources
-  def date_required
-    [TYPE_UNPUBLISHED].member? source_type
-  end
+  # def date_required
+  #   [TYPE_UNPUBLISHED].member? source_type
+  # end
 
   def get_source_agent_with_role(role)
     source_agents.select { |sa| sa.role == role }.first
@@ -165,7 +165,7 @@ class Source < ActiveRecord::Base
 
   # returns true if entries should use institution/collection field
   def entries_have_institution
-    source_type == TYPE_OTHER_PUBLISHED
+    source_type == TYPE_OTHER_PUBLISHED || source_type == TYPE_UNPUBLISHED
   end
 
   def to_s
