@@ -3,7 +3,10 @@
 .navbar-inverse .navbar-nav > li > a { color: black }
 
 /* There's some tweaky stuff in "#header-navbar .navbar-brand" rule that we're overriding here, probably fragile */
-#header-navbar .navbar-brand { background: none; overflow: visible; text-indent: 0; color: black } /* color: white; } */
+#header-navbar .navbar-brand { background: none; overflow: visible; text-indent: 0; color: black; width: auto; }
+
+/* Development link */
+#header-navbar .development { display: inline-block; padding-top: 15px; color: red; }
 
 .search-input-group { width: 60%; }
 

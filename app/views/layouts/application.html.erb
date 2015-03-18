@@ -22,6 +22,9 @@
     <%= favicon_link_tag 'favicon.ico' %>
     <%= stylesheet_link_tag "application", media: "all" %>
     <%= javascript_include_tag "application" %>
+    <% if Rails.env.development? || Rails.env.staging? %>
+      <%= javascript_include_tag "development", media: "all" %>
+    <% end %>
     <%= csrf_meta_tags %>
     <%= content_for(:head) %>
 
@@ -35,6 +38,10 @@
   <%= render :partial => 'shared/header_navbar' %>
 
   <%= render partial: 'shared/ajax_modal' %>
+
+  <% if Rails.env.development? || Rails.env.staging? %>
+    <%= render partial: 'shared/development_dialog' %>
+  <% end %>
 
   <div id="main-container" class="container">
     <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
