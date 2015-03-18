@@ -36,12 +36,13 @@ function SDBMTable(selector, options) {
 
     var sdbmTable = this;
 
-    // NOTE: blSortField is our own custom attribute used to key
-    // columns to their solr field in blacklight for sorting
+    // NOTE: fields prefixed by 'sdbmss' are our own options, not
+    // native to dataTables.
     this.columnOptions = [
         {
+            sdbmssMinWidth: "100px",
+            sdbmssSortField: 'entry_id',
             title: 'ID',
-            blSortField: 'entry_id',
             render: function (data, type, full, meta) {
                 if(data) {
                     return '<a href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
@@ -50,8 +51,9 @@ function SDBMTable(selector, options) {
             }
         },
         {
+            sdbmssMinWidth: "100px",
+            sdbmssSortField: 'manuscript_id',
             title: 'Manuscript',
-            blSortField: 'manuscript_id',
             render: function (data, type, full, meta) {
                 if(data) {
                     return '<a href="/manuscripts/' + data + '/edit/" target="_blank">SDBM_MS_' + data + '</a>';
@@ -60,126 +62,168 @@ function SDBMTable(selector, options) {
             }
         },
         {
-            title: 'Source Date',
-            blSortField: 'source_date'
+            sdbmssMinWidth: "100px",
+            sdbmssSortField: 'source_date',
+            title: 'Source Date'
         },
         {
-            title: 'Source Title',
-            blSortField: 'source_title'
+            sdbmssMaxWidth: "350px",
+            sdbmssSortField: 'source_title',
+            title: 'Source Title'
         },
         {
-            title: 'Cat or Lot #',
-            blSortField: 'catalog_or_lot_number'
+            sdbmssMinWidth: "100px",
+            sdbmssSortField: 'catalog_or_lot_number',
+            title: 'Cat or Lot #'
         },
         {
-            title: 'Selling Agent',
-            blSortField: 'transaction_selling_agent'
+            sdbmssMinWidth: "150px",
+            sdbmssSortField: 'transaction_selling_agent',
+            title: 'Selling Agent'
         },
         {
-            title: 'Seller',
-            blSortField: 'transaction_seller'
+            sdbmssMinWidth: "150px",
+            sdbmssSortField: 'transaction_seller',
+            title: 'Seller'
         },
         {
-            title: 'Buyer',
-            blSortField: 'transaction_buyer'
+            sdbmssMinWidth: "150px",
+            sdbmssSortField: 'transaction_buyer',
+            title: 'Buyer'
         },
         {
-            title: 'Sold',
-            blSortField: 'transaction_sold'
+            sdbmssMinWidth: "100px",
+            sdbmssSortField: 'transaction_sold',
+            title: 'Sold'
         },
         {
-            title: 'Price',
-            blSortField: 'transaction_price'
+            sdbmssMinWidth: "100px",
+            sdbmssSortField: 'transaction_price',
+            title: 'Price'
         },
         {
-            title: 'Title',
-            blSortField: 'title_flat'
+            sdbmssMinWidth: "200px",
+            sdbmssMaxWidth: "400px",
+            sdbmssSortField: 'title_flat',
+            title: 'Title'
         },
         {
-            title: 'Author',
-            blSortField: 'author_flat'
+            sdbmssMinWidth: "200px",
+            sdbmssMaxWidth: "400px",
+            sdbmssSortField: 'author_flat',
+            title: 'Author'
         },
         {
-            title: 'Date',
-            blSortField: 'manuscript_date_flat'
+            sdbmssMinWidth: "100px",
+            sdbmssMinWidth: "200px",
+            sdbmssSortField: 'manuscript_date_flat',
+            title: 'Date'
         },
         {
-            title: 'Artist',
-            blSortField: 'artist_flat'
+            sdbmssMinWidth: "200px",
+            sdbmssMaxWidth: "400px",
+            sdbmssSortField: 'artist_flat',
+            title: 'Artist'
         },
         {
-            title: 'Scribe',
-            blSortField: 'scribe_flat'
+            sdbmssMinWidth: "200px",
+            sdbmssMaxWidth: "400px",
+            sdbmssSortField: 'scribe_flat',
+            title: 'Scribe'
         },
         {
-            title: 'Language',
-            blSortField: 'language_flat'
+            sdbmssMinWidth: "100px",
+            sdbmssMaxWidth: "200px",
+            sdbmssSortField: 'language_flat',
+            title: 'Language'
         },
         {
-            title: 'Material',
-            blSortField: 'material_flat'
+            sdbmssMinWidth: "100px",
+            sdbmssMaxWidth: "200px",
+            sdbmssSortField: 'material_flat',
+            title: 'Material'
         },
         {
-            title: 'Place',
-            blSortField: 'place_flat'
+            sdbmssMinWidth: "100px",
+            sdbmssMaxWidth: "200px",
+            sdbmssSortField: 'place_flat',
+            title: 'Place'
         },
         {
-            title: 'Use',
-            blSortField: 'use_flat'
+            sdbmssMinWidth: "100px",
+            sdbmssMaxWidth: "200px",
+            sdbmssSortField: 'use_flat',
+            title: 'Use'
         },
         {
-            title: 'Folios',
-            blSortField: 'folios'
+            sdbmssMinWidth: "70px",
+            sdbmssSortField: 'folios',
+            title: 'Folios'
         },
         {
-            title: 'Columns',
-            blSortField: 'num_columns'
+            sdbmssMinWidth: "70px",
+            sdbmssSortField: 'num_columns',
+            title: 'Columns'
         },
         {
-            title: 'Lines',
-            blSortField: 'num_lines'
+            sdbmssMinWidth: "70px",
+            sdbmssSortField: 'num_lines',
+            title: 'Lines'
         },
         {
-            title: 'Height',
-            blSortField: 'height'
+            sdbmssMinWidth: "70px",
+            sdbmssSortField: 'height',
+            title: 'Height'
         },
         {
-            title: 'Width',
-            blSortField: 'width'
+            sdbmssMinWidth: "70px",
+            sdbmssSortField: 'width',
+            title: 'Width'
         },
         {
-            title: 'Alt Size',
-            blSortField: 'alt_size'
+            sdbmssMinWidth: "70px",
+            sdbmssSortField: 'alt_size',
+            title: 'Alt Size'
         },
         {
-            title: 'Min Fl',
-            blSortField: 'miniatures_fullpage'
+            sdbmssMinWidth: "70px",
+            sdbmssSortField: 'miniatures_fullpage',
+            title: 'Min Fl'
         },
         {
-            title: 'Min Lg',
-            blSortField: 'miniatures_large'
+            sdbmssMinWidth: "70px",
+            sdbmssSortField: 'miniatures_large',
+            title: 'Min Lg'
         },
         {
-            title: 'Min Sm',
-            blSortField: 'miniatures_small'
+            sdbmssMinWidth: "70px",
+            sdbmssSortField: 'miniatures_small',
+            title: 'Min Sm'
         },
         {
-            title: 'Min Un',
-            blSortField: 'miniatures_unspec_size'
+            sdbmssMinWidth: "70px",
+            sdbmssSortField: 'miniatures_unspec_size',
+            title: 'Min Un'
         },
         {
-            title: 'Init Hist',
-            blSortField: 'initials_historiated'
+            sdbmssMinWidth: "70px",
+            sdbmssSortField: 'initials_historiated',
+            title: 'Init Hist'
         },
         {
-            title: 'Init Dec',
-            blSortField: 'initials_decorated'
+            sdbmssMinWidth: "70px",
+            sdbmssSortField: 'initials_decorated',
+            title: 'Init Dec'
         },
         {
+            sdbmssMinWidth: "400px",
+            sdbmssMaxWidth: "400px",
             title: 'Binding',
             orderable: false
         },
         {
+            sdbmssMinWidth: "400px",
+            sdbmssMaxWidth: "400px",
             title: 'URL',
             orderable: false,
             render: function (data, type, full, meta) {
@@ -190,32 +234,46 @@ function SDBMTable(selector, options) {
             }
         },
         {
+            sdbmssMinWidth: "400px",
+            sdbmssMaxWidth: "400px",
             title: 'Other Info',
             orderable: false
         },
         {
+            sdbmssMinWidth: "500px",
+            sdbmssMaxWidth: "500px",
             title: 'Provenance',
             orderable: false
         },
         {
+            sdbmssMinWidth: "130px",
+            sdbmssMaxWidth: "130px",
             title: 'Added On',
-            blSortField: 'created_at'
+            sdbmssSortField: 'created_at'
         },
         {
+            sdbmssMinWidth: "130px",
+            sdbmssMaxWidth: "130px",
             title: 'Added By',
-            blSortField: 'created_by'
+            sdbmssSortField: 'created_by'
         },
         {
+            sdbmssMinWidth: "130px",
+            sdbmssMaxWidth: "130px",
             title: 'Last Modified',
-            blSortField: 'updated_at'
+            sdbmssSortField: 'updated_at'
         },
         {
+            sdbmssMinWidth: "130px",
+            sdbmssMaxWidth: "130px",
             title: 'Last Modified By',
-            blSortField: 'updated_at'
+            sdbmssSortField: 'updated_at'
         },
         {
+            sdbmssMinWidth: "130px",
+            sdbmssMaxWidth: "130px",
             title: 'Is Approved',
-            blSortField: 'approved'
+            sdbmssSortField: 'approved'
         }
     ];
 
@@ -262,6 +320,38 @@ function SDBMTable(selector, options) {
         },
         lengthMenu: [50, 100, 200, 500],
         order: order,
+        rowCallback: function( row, data ) {
+            /* 
+             * We have the following requirements for column widths:
+             *
+             * 1) reasonable initial col width even if there's no data
+             * for all cells in the column (because subsequent ajax
+             * calls may load data into it).
+             *
+             * 2) text in cells should no wrap and not overflow (this
+             * is controlled by our custom css rules).
+             *
+             * 3) the resize extension should work (ie manually
+             * resized widths should 'stick'), regardless of however
+             * we set the initial widths.
+             *
+             * I wasn't able to do all of these things with
+             * dataTables' built-in mechanisms for setting column
+             * widths. This solution here does satisfy all the above.
+             * We set min-width and max-width on TD elements (NOT TH),
+             * which has the effect of constraining TH widths as
+             * calculated by dataTables.
+             */
+            $('td', row).each(function (idx, e) {
+                var opts = sdbmTable.columnOptions[idx];
+                if(opts.sdbmssMinWidth) {
+                    $(e).css("min-width", opts.sdbmssMinWidth);
+                }
+                if(opts.sdbmssMaxWidth) {
+                    $(e).css("max-width", opts.sdbmssMaxWidth);
+                }
+            });
+        },
         scrollX: true,
         scrollY: scrollY,
         scrollCollapse: false,
@@ -316,7 +406,7 @@ SDBMTable.prototype.getSort = function(dt_params) {
     var sdbmTableInstance = this;
     $.each(dt_params.order, function(idx, order) {
         var columnDefinition = sdbmTableInstance.columnOptions[order.column];
-        var sortField = columnDefinition.blSortField;
+        var sortField = columnDefinition.sdbmssSortField;
         if(sortField) {
             if(sort) {
                 sort += ", ";
