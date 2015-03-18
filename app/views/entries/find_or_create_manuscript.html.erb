@@ -286,7 +286,7 @@ $(document).ready(function() {
             url: '/entries/' + entryId + '/similar.json',
             type: 'GET',
             success: function(data, textStatus, jqXHR) {
-                if(data.similar > 0)  {
+                if(data.similar.length > 0)  {
                     potentialMatches = data.similar;
                     potentialMatches.push.apply(potentialMatches, $.map(queuedEntries, function (queuedEntry) {
                         return queuedEntry.entry_id;
