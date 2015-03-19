@@ -4,6 +4,8 @@ require "rails_helper"
 describe "Admin search", :js => true do
 
   before :all do
+    SDBMSS::ReferenceData.create_all
+
     @user = User.create!(
       email: 'testuser@testadminsearch.com',
       username: 'testadminsearch',
