@@ -54,6 +54,19 @@ describe "Data entry", :js => true do
     #page.save_screenshot("screenshot_#{field}.png")
   end
 
+  # clicks the certainty flag icon to toggle it to its next state.
+  # Since clicking also brings up the mouseover tooltip, which
+  # overlaps over DOM elements and can interfere with subsequent
+  # interactions with the page, we have this abstraction to hover out
+  # of it afterwards.
+  def click_certainty_flag(field)
+    find_by_id(field).click
+    # hover over something else--the navbar element here is just
+    # arbitrary
+    first(".navbar-brand").hover
+    sleep(2)
+  end
+
   before :all do
     User.where(username: 'testuser').delete_all
     @user = User.create!(
@@ -271,7 +284,7 @@ describe "Data entry", :js => true do
       fill_in 'title_1', with: 'Bible'
       fill_autocomplete_select_or_create_entity 'author_0', with: 'Schmoe, Joe'
       fill_in 'author_observed_name_0', with: 'Joe Schmoe'
-      find_by_id('author_certainty_flags_0').click
+      click_certainty_flag('author_certainty_flags_0')
       select 'Tr', from: 'author_role_0'
       fill_in 'date_0', with: '1425'
       select 'Circa Century', from: 'circa_0'
