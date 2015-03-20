@@ -63,6 +63,32 @@ namespace :sdbmss do
     SDBMSS::CSV.find_invalid_materials args[:export_filename]
   end
 
+  desc "Generate report of 'duplicates'"
+  task :report_duplicates, [:export_filename] => :environment do |t, args|
+    first = true
+    Rails.logger.level = 1
+    count = 0
+    # Note that at batch_size=100, the process stops growing at
+    # ~260M. At batch_size=1000, proc grows to 1G.
+    Manuscript.all.order(:id).find_each(batch_size: 100) do |manuscript|
+      entries = manuscript.entries
+
+      needs_review = entries.any? { |entry| entry.secondary_source.present? }
+      # TODO: more logic here to determine which clusters of entries
+      # need review. look for identical fields?
+
+      entries.each do |entry|
+        hash = entry.as_flat_hash
+        if first
+          puts CSV.generate_line(["needs_review"] + hash.keys)
+          first = false
+        end
+        puts CSV.generate_line([needs_review] + hash.values)
+      end
+      count += 1
+    end
+  end
+
   desc "Change a user's password"
   task :change_password => :environment do |t, args|
     # devise doesn't seem to make available a rake task like this, so

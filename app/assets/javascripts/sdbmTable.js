@@ -452,6 +452,51 @@ SDBMTable.prototype.searchAndUpdateTable = function(params, dtCallback, ajaxOpti
                 // when paging, we probably don't want to reset horiz scroll
                 // $(".dataTables_scrollBody").scrollLeft(0);
 
+                data.data = data.data.map(function (result) {
+                    return [
+                        result.id,
+                        result.manuscript,
+                        result.source_date,
+                        result.source_title,
+                        result.source_catalog_or_lot_number,
+                        result.transaction_selling_agent,
+                        result.transaction_seller_or_holder,
+                        result.transaction_buyer,
+                        result.transaction_sold,
+                        result.transaction_price,
+                        result.titles,
+                        result.authors,
+                        result.dates,
+                        result.artists,
+                        result.scribes,
+                        result.languages,
+                        result.materials,
+                        result.places,
+                        result.uses,
+                        result.folios,
+                        result.num_columns,
+                        result.num_lines,
+                        result.height,
+                        result.width,
+                        result.alt_size,
+                        result.miniatures_fullpage,
+                        result.miniatures_large,
+                        result.miniatures_small,
+                        result.miniatures_unspec_size,
+                        result.initials_historiated,
+                        result.initials_decorated,
+                        result.manuscript_binding,
+                        result.manuscript_link,
+                        result.other_info,
+                        result.provenance,
+                        result.created_at,
+                        result.created_by,
+                        result.updated_at,
+                        result.updated_by,
+                        result.approved
+                    ];
+                });
+                
                 // pad data with null entries so that columns are aligned
                 var columnsToPrepend = [];
                 if(sdbmTableInstance.options.prependColumns) {

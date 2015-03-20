@@ -181,6 +181,69 @@ class Entry < ActiveRecord::Base
     names
   end
 
+  # returns a "complete" representation of this entry, including
+  # associated data, as a flat (ie non-nested) Hash. This is used to
+  # return rows for the table view, and also used for CSV
+  # export. Obviously, decisions have to be made here about how to
+  # represent the nested associations for display and there has to be
+  # some information tweaking/loss.
+  def as_flat_hash
+    dateformat = "%Y-%m-%d %I:%M%P"
+
+    # for performance, we avoid using has_many->through associations
+    # because they always hit the db and circumvent the preloading
+    # done in load_associations scope.
+
+    manuscript = get_manuscript
+    transaction = get_transaction
+    transaction_selling_agent = (transaction.get_selling_agent_as_name.name if transaction && transaction.get_selling_agent_as_name)
+    transaction_seller_or_holder = (transaction.get_seller_or_holder_as_name.name if transaction && transaction.get_seller_or_holder_as_name)
+    transaction_buyer = (transaction.get_buyer_as_name.name if transaction && transaction.get_buyer_as_name)
+    {
+      id: id,
+      manuscript: manuscript ? manuscript.id : nil,
+      source_date: source.date ? SDBMSS::Util.format_fuzzy_date(source.date) : nil,
+      source_title: source.title,
+      source_catalog_or_lot_number: catalog_or_lot_number,
+      secondary_source: secondary_source,
+      transaction_selling_agent: transaction_selling_agent,
+      transaction_seller_or_holder: transaction_seller_or_holder,
+      transaction_buyer: transaction_buyer,
+      transaction_sold: (transaction.sold if transaction),
+      transaction_price: (transaction.get_price_for_display if transaction),
+      titles: entry_titles.map(&:title).join("; "),
+      authors: entry_authors.map(&:display_value).join("; "),
+      dates: entry_dates.map(&:display_value).join("; "),
+      artists: entry_artists.map(&:display_value).join("; "),
+      scribes: entry_scribes.map(&:display_value).join("; "),
+      languages: entry_languages.map(&:language).map(&:name).join("; "),
+      materials: entry_materials.map(&:material).join("; "),
+      places: entry_places.map(&:place).map(&:name).join("; "),
+      uses: entry_uses.map(&:use).join("; "),
+      folios: folios,
+      num_columns: num_columns,
+      num_lines: num_lines,
+      height: height,
+      width: width,
+      alt_size: alt_size,
+      miniatures_fullpage: miniatures_fullpage,
+      miniatures_large: miniatures_large,
+      miniatures_small: miniatures_small,
+      miniatures_unspec_size: miniatures_unspec_size,
+      initials_historiated: initials_historiated,
+      initials_decorated: initials_decorated,
+      manuscript_binding: manuscript_binding,
+      manuscript_link: manuscript_link,
+      other_info: other_info,
+      provenance: unique_provenance_agents.map { |unique_agent| unique_agent[:name] }.join("; "),
+      created_at: created_at ? created_at.strftime(dateformat) : nil,
+      created_by: (created_by.username if created_by),
+      updated_at: updated_at ? updated_at.strftime(dateformat) : nil,
+      updated_by: (updated_by.username if updated_by),
+      approved: approved
+    }
+  end
+
   # Tell Sunspot how to index fields from this model.
   #
   # Note that we do NOT use sunspot's default dynamic fields (which
