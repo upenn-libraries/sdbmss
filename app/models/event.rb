@@ -90,7 +90,7 @@ class Event < ActiveRecord::Base
   end
 
   def get_price_for_display
-    [price, currency, other_currency].join " "
+    [price, currency, other_currency].select { |o| o.present? }.join(" ")
   end
 
 end
