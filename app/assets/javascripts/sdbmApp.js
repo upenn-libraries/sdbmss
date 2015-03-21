@@ -112,6 +112,7 @@
                 objectArray.forEach(function (element, index, array) {
                     if(element[relatedObjectName]) {
                         element[relatedObjectName + "_id"] = element[relatedObjectName].id;
+                        delete element[relatedObjectName];
                     }
                 });
             },
@@ -366,7 +367,7 @@
             //console.log(entry);
 
             // make blank initial rows, as needed, for user to fill out
-            $scope.entryAssociations.concat({ field: 'entry_provenance' }).forEach(function (assoc) {
+            $scope.entryAssociations.forEach(function (assoc) {
                 var fieldname = assoc.field;
                 var objArray = entry[fieldname];
                 if(!objArray || objArray.length === 0) {
@@ -529,6 +530,22 @@
             });
         };
 
+        // append '_attributes' for Rails' accept_nested_attributes
+        $scope.changeNestedAttributesNames = function(associations, obj) {
+            associations.forEach(function (assoc) {
+                if(obj[assoc.field]) {
+                    var childObjects = obj[assoc.field];
+                    obj[assoc.field + "_attributes"] = childObjects;
+                    delete obj[assoc.field];
+                    if(assoc.entryAssociations) {
+                        childObjects.forEach(function (childObj) {
+                            $scope.changeNestedAttributesNames(assoc.entryAssociations, childObj);
+                        });
+                    }
+                }
+            });
+        };
+
         $scope.save = function () {
             // Transform angular's view models to JSON payload that
             // API expects: attach a bunch of things to Entry resource
@@ -566,15 +583,20 @@
             // strip out blank objects
             $scope.entryAssociations.forEach(function (assoc) {
                 $scope.filterBlankRecords(entryToSave, assoc);
+                if(entryToSave[assoc.field].length == 0) {
+                    delete entryToSave[assoc.field];
+                }
             });
 
             // To satisfy the API: replace nested Object
             // representations of related entities with just their IDs
 
             entryToSave.source_id = entryToSave.source.id;
+            delete entryToSave.source;
 
             if(entryToSave.institution) {
                 entryToSave.institution_id = entryToSave.institution.id;
+                delete entrytoSave.institution;
             }
             
             var objectArraysWithRelatedObjects = [
@@ -596,9 +618,13 @@
                 var record = objectArraysWithRelatedObjects[idx];
                 var objectArray = record[0];
                 var relatedObjectName = record[1];
-                sdbmutil.replaceEntityObjectsWithIds(objectArray, relatedObjectName);
+                if(objectArray) {
+                    sdbmutil.replaceEntityObjectsWithIds(objectArray, relatedObjectName);
+                }
             }
 
+            $scope.changeNestedAttributesNames($scope.entryAssociations, entryToSave);
+            
             //console.log("about to save this Entry: ");
             //console.log(sdbmutil.objectSnapshot(entryToSave));
             

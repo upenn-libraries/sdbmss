@@ -10,6 +10,10 @@
 
 .search-input-group { width: 60%; }
 
+.search-form { font-size: 12px; }
+
+.search-form .form-control { font-size: 12px; }
+
 /* on Entry view page, move the content block to the right of the sidebar */
 .blacklight-catalog-show #content { float: right; }
 

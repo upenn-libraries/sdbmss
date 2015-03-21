@@ -11,22 +11,33 @@ class Entry < ActiveRecord::Base
 
   has_many :entry_manuscripts
   has_many :manuscripts, through: :entry_manuscripts
-  has_many :entry_titles
-  has_many :entry_authors
+  has_many :entry_titles, inverse_of: :entry
+  has_many :entry_authors, inverse_of: :entry
   has_many :authors, through: :entry_authors
-  has_many :entry_dates
-  has_many :entry_artists
+  has_many :entry_dates, inverse_of: :entry
+  has_many :entry_artists, inverse_of: :entry
   has_many :artists, through: :entry_artists
-  has_many :entry_scribes
+  has_many :entry_scribes, inverse_of: :entry
   has_many :scribes, through: :entry_scribes
-  has_many :entry_languages
+  has_many :entry_languages, inverse_of: :entry
   has_many :languages, through: :entry_languages
-  has_many :entry_materials
-  has_many :entry_places
+  has_many :entry_materials, inverse_of: :entry
+  has_many :entry_places, inverse_of: :entry
   has_many :places, through: :entry_places
-  has_many :entry_uses
+  has_many :entry_uses, inverse_of: :entry
   has_many :entry_comments
-  has_many :events
+  has_many :events, inverse_of: :entry
+
+  accepts_nested_attributes_for :entry_titles
+  accepts_nested_attributes_for :entry_authors
+  accepts_nested_attributes_for :entry_dates
+  accepts_nested_attributes_for :entry_artists
+  accepts_nested_attributes_for :entry_scribes
+  accepts_nested_attributes_for :entry_languages
+  accepts_nested_attributes_for :entry_materials
+  accepts_nested_attributes_for :entry_places
+  accepts_nested_attributes_for :entry_uses
+  accepts_nested_attributes_for :events
 
   validates_presence_of :source
 
