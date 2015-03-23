@@ -189,7 +189,11 @@ class Source < ActiveRecord::Base
     else
       # institution takes precedence for display
       source_agent = get_institution || get_selling_agent
-      agent_str = source_agent.agent.name if source_agent && source_agent.agent
+      if source_agent && source_agent.agent
+        agent_str = source_agent.agent.name
+      else
+        agent_str = author if author
+      end
     end
 
     title_str = title || "(No title)"
