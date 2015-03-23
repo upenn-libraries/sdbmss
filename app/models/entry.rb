@@ -28,16 +28,16 @@ class Entry < ActiveRecord::Base
   has_many :entry_comments
   has_many :events, inverse_of: :entry
 
-  accepts_nested_attributes_for :entry_titles
-  accepts_nested_attributes_for :entry_authors
-  accepts_nested_attributes_for :entry_dates
-  accepts_nested_attributes_for :entry_artists
-  accepts_nested_attributes_for :entry_scribes
-  accepts_nested_attributes_for :entry_languages
-  accepts_nested_attributes_for :entry_materials
-  accepts_nested_attributes_for :entry_places
-  accepts_nested_attributes_for :entry_uses
-  accepts_nested_attributes_for :events
+  accepts_nested_attributes_for :entry_titles, allow_destroy: true
+  accepts_nested_attributes_for :entry_authors, allow_destroy: true
+  accepts_nested_attributes_for :entry_dates, allow_destroy: true
+  accepts_nested_attributes_for :entry_artists, allow_destroy: true
+  accepts_nested_attributes_for :entry_scribes, allow_destroy: true
+  accepts_nested_attributes_for :entry_languages, allow_destroy: true
+  accepts_nested_attributes_for :entry_materials, allow_destroy: true
+  accepts_nested_attributes_for :entry_places, allow_destroy: true
+  accepts_nested_attributes_for :entry_uses, allow_destroy: true
+  accepts_nested_attributes_for :events, allow_destroy: true
 
   validates_presence_of :source
 

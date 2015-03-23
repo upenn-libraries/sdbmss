@@ -264,11 +264,8 @@ describe "Data entry", :js => true do
       expect(source.author).to eq('Jeff')
     end
 
-    it "should save an auction catalog Entry" do
-      # fill out all the fields and make sure they save to the database
-
-      count = Entry.count
-
+    # create an entry, filling out all fields
+    def create_entry
       visit new_entry_path :source_id => @source.id
       fill_in 'cat_lot_no', with: '123'
       fill_autocomplete_select_or_create_entity 'transaction_selling_agent', with: "Sotheby's"
@@ -331,10 +328,9 @@ describe "Data entry", :js => true do
       sleep(2)
 
       find(".modal-title", visible: true).text.include? "Successfully saved"
+    end
 
-      expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
+    def verify_entry(entry)
       transaction = entry.get_transaction
 
       expect(entry.catalog_or_lot_number).to eq('123')
@@ -406,10 +402,69 @@ describe "Data entry", :js => true do
 
       entry_comment = entry.entry_comments.first
       expect(entry_comment.comment).to eq('This info is correct')
-      #puts "TEST FINISHED"
     end
 
-    it "should prepopulate Edit Entry page"
+    it "should save an auction catalog Entry" do
+      # fill out all the fields and make sure they save to the database
+
+      count = Entry.count
+
+      create_entry
+
+      expect(Entry.count).to eq(count + 1)
+
+      entry = Entry.last
+
+      verify_entry(entry)
+    end
+
+    it "should preserve entry when saving it without making any changes" do
+      count = Entry.count
+
+      create_entry
+
+      expect(Entry.count).to eq(count + 1)
+
+      entry = Entry.last
+
+      visit edit_entry_path :id => entry.id
+      click_button('Save')
+
+      # save really can take as long as 2s
+      sleep(2)
+
+      find(".modal-title", visible: true).text.include? "Successfully saved"
+
+      verify_entry(entry)
+    end
+
+    it "should remove a title" do
+      count = Entry.count
+
+      create_entry
+
+      expect(Entry.count).to eq(count + 1)
+
+      entry = Entry.last
+
+      visit edit_entry_path :id => entry.id
+
+      # mock out the confirm dialogue
+      page.evaluate_script('window.confirm = function() { return true; }')
+
+      find_by_id("delete_title_0").click
+      click_button('Save')
+
+      # save really can take as long as 2s
+      sleep(2)
+
+      find(".modal-title", visible: true).text.include? "Successfully saved"
+
+      entry.reload
+
+      expect(entry.entry_titles.count).to eq(1)
+      expect(entry.entry_titles.first.title).to eq("Bible")
+    end
 
     it "should validate when saving Entry"
   end

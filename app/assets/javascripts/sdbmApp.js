@@ -291,17 +291,26 @@
             anArray.push({});
         };
 
+        // filter used by ng-repeat to hide records marked for deletion
+        $scope.activeRecords = function(element) {
+            return !element._destroy;
+        }
+        
         $scope.removeRecord = function (anArray, record) {
             if(window.confirm("Are you sure you want to remove this record?")) {
                 var i;
                 for (i = 0; i < anArray.length; i++) {
                     if (anArray[i] === record) {
-                        anArray.splice(i, 1);
+                        if(record.id) {
+                            record._destroy = 1;
+                        } else {
+                            anArray.splice(i, 1);
+                        }
                         break;
                     }
                 }
                 // ensure that there's always one empty record
-                if(anArray.length === 0) {
+                if($.grep(anArray, $scope.activeRecords).length === 0) {
                     anArray.push({});
                 }
             }
@@ -318,7 +327,7 @@
         $scope.debug = function () {
             for (var key in $scope) {
                 // don't display angular prefixed keys, and don't display methods
-                if(!key.substr(0,1) == "$" && typeof $scope[key] !== "function") {
+                if(key.substr(0,1) != "$" && typeof $scope[key] !== "function") {
                     console.log(key);
                     console.log($scope[key]);
                 }
@@ -359,6 +368,49 @@
             alert("Not yet implemented");
         };
 
+        // sanity check that values in Entry are actually valid
+        // options for dropdowns.
+        $scope.sanityCheckFields = function(entry) {
+            entry.entry_authors.forEach(function (entry_author) {
+                if(entry_author.role) {
+                    if(! sdbmutil.inOptionsArray(entry_author.role, $scope.optionsAuthorRole)) {
+                        $scope.badData.push("Bad author role value: '" + entry_author.role + "'");
+                    }
+                }
+            });
+
+            if(entry.transaction) {
+                if(!sdbmutil.inOptionsArray(entry.transaction.sold, $scope.optionsSold)) {
+                    $scope.badData.push("Bad sold value: '" + entry.transaction.sold + "'");
+                }
+                if(entry.transaction.currency) {
+                    if(! sdbmutil.inOptionsArray(entry.transaction.currency, $scope.optionsCurrency)) {
+                        $scope.badData.push("Bad currency value: '" + entry.transaction.currency + "'");
+                    }
+                }
+            }
+
+            entry.entry_dates.forEach(function (entry_date) {
+                if(entry_date.circa) {
+                    if(! sdbmutil.inOptionsArray(entry_date.circa, $scope.optionsCirca)) {
+                        $scope.badData.push("Bad circa value: '" + entry_date.circa + "'");
+                    }
+                }
+            });
+            entry.entry_materials.forEach(function (entry_material) {
+                if(entry_material.material) {
+                    if(! sdbmutil.inOptionsObjectsArray(entry_material.material, $scope.optionsMaterial)) {
+                        $scope.badData.push("Bad material value: '" + entry_material.material + "'");
+                    }
+                }
+            });
+            if(entry.alt_size) {
+                if(! sdbmutil.inOptionsArray(entry.alt_size, $scope.optionsAltSize)) {
+                    $scope.badData.push("Bad alt size value: '" + entry.alt_size + "'");
+                }
+            }
+        };
+        
         // populates angular view models from the Entry object
         // retrieved via API
         $scope.populateEntryViewModel = function(entry) {
@@ -417,47 +469,8 @@
                 entry.provenance.push({});
             }
 
-            // sanity check that values we got for dropdowns are
-            // actually valid options
-            entry.entry_authors.forEach(function (entry_author) {
-                if(entry_author.role) {
-                    if(! sdbmutil.inOptionsArray(entry_author.role, $scope.optionsAuthorRole)) {
-                        $scope.badData.push("Bad author role value: '" + entry_author.role + "'");
-                    }
-                }
-            });
-
-            if(entry.transaction) {
-                if(!sdbmutil.inOptionsArray(entry.transaction.sold, $scope.optionsSold)) {
-                    $scope.badData.push("Bad sold value: '" + entry.transaction.sold + "'");
-                }
-                if(entry.transaction.currency) {
-                    if(! sdbmutil.inOptionsArray(entry.transaction.currency, $scope.optionsCurrency)) {
-                        $scope.badData.push("Bad currency value: '" + entry.transaction.currency + "'");
-                    }
-                }
-            }
-
-            entry.entry_dates.forEach(function (entry_date) {
-                if(entry_date.circa) {
-                    if(! sdbmutil.inOptionsArray(entry_date.circa, $scope.optionsCirca)) {
-                        $scope.badData.push("Bad circa value: '" + entry_date.circa + "'");
-                    }
-                }
-            });
-            entry.entry_materials.forEach(function (entry_material) {
-                if(entry_material.material) {
-                    if(! sdbmutil.inOptionsObjectsArray(entry_material.material, $scope.optionsMaterial)) {
-                        $scope.badData.push("Bad material value: '" + entry_material.material + "'");
-                    }
-                }
-            });
-            if(entry.alt_size) {
-                if(! sdbmutil.inOptionsArray(entry.alt_size, $scope.optionsAltSize)) {
-                    $scope.badData.push("Bad alt size value: '" + entry.alt_size + "'");
-                }
-            }
-
+            $scope.sanityCheckFields(entry);
+                
             // save copy at this point, so we have something to
             // compare to, when navigating away from page
             $scope.originalEntryViewModel = angular.copy(entry);
@@ -596,7 +609,7 @@
 
             if(entryToSave.institution) {
                 entryToSave.institution_id = entryToSave.institution.id;
-                delete entrytoSave.institution;
+                delete entryToSave.institution;
             }
             
             var objectArraysWithRelatedObjects = [

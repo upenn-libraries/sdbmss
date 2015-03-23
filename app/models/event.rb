@@ -33,7 +33,7 @@ class Event < ActiveRecord::Base
 
   before_validation :normalize
 
-  has_many :event_agents, inverse_of: :event
+  has_many :event_agents, dependent: :destroy, inverse_of: :event
 
   accepts_nested_attributes_for :event_agents
 

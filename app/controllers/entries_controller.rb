@@ -144,19 +144,19 @@ class EntriesController < ApplicationController
       :miniatures_fullpage, :miniatures_large, :miniatures_small, :miniatures_unspec_size,
       :initials_historiated, :initials_decorated,
       :manuscript_binding, :manuscript_link, :other_info,
-      :entry_titles_attributes => [ :title, :common_title, :uncertain_in_source, :supplied_by_data_entry ],
-      :entry_authors_attributes => [ :observed_name, :author_id, :role, :uncertain_in_source, :supplied_by_data_entry ],
-      :entry_dates_attributes => [ :date, :circa ],
-      :entry_artists_attributes => [ :observed_name, :artist_id, :uncertain_in_source, :supplied_by_data_entry ],
-      :entry_scribes_attributes => [ :observed_name, :scribe_id, :uncertain_in_source, :supplied_by_data_entry ],
-      :entry_languages_attributes => [ :language_id, :uncertain_in_source, :supplied_by_data_entry ],
-      :entry_materials_attributes => [ :material, :uncertain_in_source, :supplied_by_data_entry ],
-      :entry_places_attributes => [ :place_id, :uncertain_in_source, :supplied_by_data_entry ],
-      :entry_uses_attributes => [ :use ],
+      :entry_titles_attributes => [ :id, :title, :common_title, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_authors_attributes => [ :id, :observed_name, :author_id, :role, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_dates_attributes => [ :id, :date, :circa, :_destroy ],
+      :entry_artists_attributes => [ :id, :observed_name, :artist_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_scribes_attributes => [ :id, :observed_name, :scribe_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_languages_attributes => [ :id, :language_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_materials_attributes => [ :id, :material, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_places_attributes => [ :id, :place_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_uses_attributes => [ :id, :use, :_destroy ],
       :events_attributes  => [
-        :primary, :start_date, :end_date, :comment, :sold, :price, :currency, :other_currency,
+        :id, :primary, :start_date, :end_date, :comment, :sold, :price, :currency, :other_currency, :_destroy,
         {
-          :event_agents_attributes => [:observed_name, :agent_id, :role, :uncertain_in_source, :supplied_by_data_entry]
+          :event_agents_attributes => [:id, :observed_name, :agent_id, :role, :uncertain_in_source, :supplied_by_data_entry, :_destroy]
         }
       ]
     )
