@@ -93,6 +93,86 @@
 
     /* Globally available utility functions */
     sdbmApp.factory('sdbmutil', function () {
+
+        /* An object is 'blank' if its keys don't have any meaningful
+         * values. We use this to filter out records that user has
+         * added on UI but not populated.
+         */
+        var isBlankObject = function(obj) {
+            var blank = true;
+            if(obj !== undefined) {
+                // TODO: deal with nesting?
+                for(var key in obj) {
+                    if(obj[key]) { blank = false; }
+                }
+            }
+            return blank;
+        };
+
+        /* This horribly named function is meant to take any kind of
+         * input and test for its 'blankness', similar to Rails
+         * ActiveSupport's Object#blank? method.
+         */
+        var isBlankThing = function(obj) {
+            var blank = false;
+            if(obj === undefined || obj === null || (typeof(obj) === 'string' && obj.length === 0) || (Array.isArray(obj) && obj.length === 0)) {
+                blank = true;
+            } else {
+                blank = isBlankObject(obj);
+            }
+            return blank;
+        };
+
+        /* This fn filters out 'blank' records from objectWithAssociations,
+         * using the (meta)data in the 'assoc' object, which specifies what 
+         * properties and child associations exist.
+         */                                                                                                                                             
+        var filterBlankRecords = function (objectWithAssociations, assoc) {
+            var objectArrayName = assoc.field;
+
+            // construct array of passed-in object's properties, FKs,
+            // and child associations, to check for blankness
+            var thingsToCheck = (assoc.properties || []).concat(assoc.foreignKeyObjects || []);
+            if(assoc.associations) {
+                thingsToCheck = thingsToCheck.concat(assoc.associations.map(function (item) {
+                    return item.field;
+                }));
+            }
+            
+            var objectArray = objectWithAssociations[objectArrayName];
+            if(objectArray === undefined) {
+                alert("error: couldn't find object array for '" + objectArrayName + "'");
+            }
+
+            // filter out items in array that are either empty objects or are objects that have blank fields
+            objectArray.forEach(function (childObject) {
+
+                // do depth-first recursion, so that records lower in
+                // the tree get removed first
+                var childAssociations = assoc.associations || [];
+                childAssociations.forEach(function (child_assoc) {
+                    filterBlankRecords(childObject, child_assoc);
+                });
+
+                var keep = true;
+                if(assoc.skipChecking === undefined || !assoc.skipChecking(childObject)) {
+                    //console.log('checking ' + objectArrayName + ' record id = ' + childObject.id);
+                    keep = false;
+                    thingsToCheck.forEach(function (propertyName) {
+                        var propertyIsBlank = isBlankThing(childObject[propertyName]);
+                        //console.log('is property ' + propertyName + ' blank? ' + propertyIsBlank);
+                        if(!propertyIsBlank) {
+                            keep = true;
+                        }
+                    });
+                }
+                //console.log("returning keep = " +  keep);
+                if(!keep) {
+                    childObject._destroy = 1;
+                }
+            });
+        };
+
         return {
             /* returns a printable (ie. for use with console.log),
              * snapshot the passed-in object. This exists because if
@@ -116,6 +196,10 @@
                     }
                 });
             },
+            /* 
+             * assoc = a data object describing associations contained in objectWithAssociations
+             */
+            filterBlankRecords: filterBlankRecords,
             /* optionsArray is an array of two-item arrays (a Django
              * 'choices' data struct)
              */
@@ -209,7 +293,7 @@
         
         // this describes the (nested) associations inside an Entry;
         // we use it, when saving, to identify and remove 'blank' records
-        $scope.entryAssociations = [
+        $scope.associations = [
             {
                 field: 'entry_titles',
                 properties: ['title', 'common_title']
@@ -256,7 +340,7 @@
                     return object.primary ? true : false;
                 },
                 properties: ['start_date', 'end_date', 'comment'],
-                entryAssociations: [
+                associations: [
                     {
                         field: 'event_agents',
                         properties: ['observed_name'],
@@ -334,35 +418,6 @@
             }
         };
 
-        /* An object is 'blank' if its keys don't have any meaningful
-         * values. We use this to filter out records that user has
-         * added on UI but not populated.
-         */
-        $scope.isBlankObject = function(obj) {
-            var blank = true;
-            if(obj !== undefined) {
-                // TODO: deal with nesting?
-                for(var key in obj) {
-                    if(obj[key]) { blank = false; }
-                }
-            }
-            return blank;
-        };
-
-        /* This horribly named function is meant to take any kind of
-         * input and test for its 'blankness', similar to Rails
-         * ActiveSupport's Object#blank? method.
-         */
-        $scope.isBlankThing = function(obj) {
-            var blank = false;
-            if(obj === undefined || obj === null || (typeof(obj) === 'string' && obj.length === 0) || (Array.isArray(obj) && obj.length === 0)) {
-                blank = true;
-            } else {
-                blank = $scope.isBlankObject(obj);
-            }
-            return blank;
-        };
-
         $scope.confirmClearChanges = function() {
             // TODO
             alert("Not yet implemented");
@@ -419,7 +474,7 @@
             //console.log(entry);
 
             // make blank initial rows, as needed, for user to fill out
-            $scope.entryAssociations.forEach(function (assoc) {
+            $scope.associations.forEach(function (assoc) {
                 var fieldname = assoc.field;
                 var objArray = entry[fieldname];
                 if(!objArray || objArray.length === 0) {
@@ -494,55 +549,6 @@
             });
         };
 
-        // assoc = an object from $scope.entryAssociations that
-        // describes the associations contained in
-        // objectWithAssociations
-        $scope.filterBlankRecords = function (objectWithAssociations, assoc) {
-            var objectArrayName = assoc.field;
-
-            // construct array of passed-in object's properties, FKs,
-            // and child associations, to check for blankness
-            var thingsToCheck = (assoc.properties || []).concat(assoc.foreignKeyObjects || []);
-            if(assoc.entryAssociations) {
-                thingsToCheck = thingsToCheck.concat(assoc.entryAssociations.map(function (item) {
-                    return item.field;
-                }));
-            }
-            
-            var objectArray = objectWithAssociations[objectArrayName];
-            if(objectArray === undefined) {
-                alert("error: couldn't find object array for '" + objectArrayName + "'");
-            }
-
-            // filter out items in array that are either empty objects or are objects that have blank fields
-            objectWithAssociations[objectArrayName] = objectArray.filter(function (childObject) {
-
-                // do depth-first recursion, so that records lower in
-                // the tree get removed first
-                var childAssociations = assoc.entryAssociations || [];
-                childAssociations.forEach(function (child_assoc) {
-                    $scope.filterBlankRecords(childObject, child_assoc);
-                });
-
-                if(assoc.skipChecking === undefined || !assoc.skipChecking(childObject)) {
-                    //console.log('checking ' + objectArrayName + ' record id = ' + childObject.id);
-                    var keep = false;
-                    thingsToCheck.forEach(function (propertyName) {
-                        var propertyIsBlank = $scope.isBlankThing(childObject[propertyName]);
-                        //console.log('is property ' + propertyName + ' blank? ' + propertyIsBlank);
-                        if(!propertyIsBlank) {
-                            keep = true;
-                        }
-                    });
-                    //console.log("returning keep = " +  keep);
-                    return keep;
-                } else {
-                    //console.log("returning keep = true");
-                    return true;
-                }                    
-            });
-        };
-
         // append '_attributes' for Rails' accept_nested_attributes
         $scope.changeNestedAttributesNames = function(associations, obj) {
             associations.forEach(function (assoc) {
@@ -550,9 +556,9 @@
                     var childObjects = obj[assoc.field];
                     obj[assoc.field + "_attributes"] = childObjects;
                     delete obj[assoc.field];
-                    if(assoc.entryAssociations) {
+                    if(assoc.associations) {
                         childObjects.forEach(function (childObj) {
-                            $scope.changeNestedAttributesNames(assoc.entryAssociations, childObj);
+                            $scope.changeNestedAttributesNames(assoc.associations, childObj);
                         });
                     }
                 }
@@ -594,8 +600,8 @@
             });
 
             // strip out blank objects
-            $scope.entryAssociations.forEach(function (assoc) {
-                $scope.filterBlankRecords(entryToSave, assoc);
+            $scope.associations.forEach(function (assoc) {
+                sdbmutil.filterBlankRecords(entryToSave, assoc);
                 if(entryToSave[assoc.field].length == 0) {
                     delete entryToSave[assoc.field];
                 }
@@ -636,7 +642,7 @@
                 }
             }
 
-            $scope.changeNestedAttributesNames($scope.entryAssociations, entryToSave);
+            $scope.changeNestedAttributesNames($scope.associations, entryToSave);
             
             //console.log("about to save this Entry: ");
             //console.log(sdbmutil.objectSnapshot(entryToSave));
@@ -1095,6 +1101,14 @@
         $scope.currentlySaving = false;
         
         $scope.agent_role_types = ['institution', 'buyer', 'seller_or_holder', 'selling_agent'];
+
+        $scope.associations = [
+            {
+                field: 'source_agents',
+                properties: ['role'],
+                foreignKeyObjects: ['agent']
+            }
+        ];
         
         $scope.pageTitle = "";
 
@@ -1122,7 +1136,7 @@
                 });
             });
             $scope.source_agents = [];
-            console.log(source);
+            //console.log(source);
         };
         
         $scope.postSourceSave = function(source) {
@@ -1159,6 +1173,18 @@
 
             sdbmutil.replaceEntityObjectsWithIds(sourceToSave.source_agents, "agent");
 
+            // strip out blank objects
+            $scope.associations.forEach(function (assoc) {
+                sdbmutil.filterBlankRecords(sourceToSave, assoc);
+                if(sourceToSave[assoc.field].length == 0) {
+                    delete sourceToSave[assoc.field];
+                }
+            });
+            
+            // append '_attributes' for Rails' accept_nested_attributes
+            sourceToSave.source_agents_attributes = sourceToSave.source_agents;
+            delete sourceToSave.source_agents;
+            
             if(sourceToSave.id) {
                 sourceToSave.$update(
                     $scope.postSourceSave,

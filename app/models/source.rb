@@ -84,7 +84,7 @@ class Source < ActiveRecord::Base
   validate :source_type_not_changed
   # TODO: validate that irrelevant fields for the source_type are NOT populated
 
-  accepts_nested_attributes_for :source_agents
+  accepts_nested_attributes_for :source_agents, allow_destroy: true
 
   # returns 'count' number of most recent sources
   scope :most_recent, ->(count = 5) { order(created_at: :desc, id: :desc).first(count) }

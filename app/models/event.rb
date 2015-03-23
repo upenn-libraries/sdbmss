@@ -35,7 +35,7 @@ class Event < ActiveRecord::Base
 
   has_many :event_agents, dependent: :destroy, inverse_of: :event
 
-  accepts_nested_attributes_for :event_agents
+  accepts_nested_attributes_for :event_agents, allow_destroy: true
 
   scope :transactions, -> { where(primary: true) }
   scope :provenance, -> { where(primary: false) }

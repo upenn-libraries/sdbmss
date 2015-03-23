@@ -17,9 +17,16 @@ class SourcesController < ApplicationController
   end
 
   def create
-    @source = Source.new
+    filtered = source_params_for_create_and_edit
+    @source = Source.new(filtered)
+    if @source.whether_mss == Source::TYPE_HAS_MANUSCRIPT_NO
+      @source.status = Source::TYPE_STATUS_NO_MSS
+    else
+      @source.status = Source::TYPE_STATUS_TO_BE_ENTERED
+    end
     @source.created_by_id = current_user.id
-    update
+    @source.save!
+    render "show"
   end
 
   def edit
@@ -28,32 +35,14 @@ class SourcesController < ApplicationController
   def update
     begin
       ActiveRecord::Base.transaction do
-        @source.update!(
-          source_params.permit(
-          :source_type, :date, :title, :author,
-          :whether_mss,
-          :medium, :date_accessed,
-          :location_institution, :location,
-          :link,
-          :comments,
-        ))
-
-        if !@source.persisted?
-          if @source.whether_mss == Source::TYPE_HAS_MANUSCRIPT_NO
-            @source.status = Source::TYPE_STATUS_NO_MSS
-          else
-            @source.status = Source::TYPE_STATUS_TO_BE_ENTERED
-          end
-        end
-
-        Reconciler.reconcile_assoc @source, source_params["source_agents"], SourceAgent, 'source_id', [:role, :agent_id]
-
+        filtered = source_params_for_create_and_edit
+        @source.update!(filtered)
       end
     rescue Exception => e
       render :json => { :errors => e.to_s + "\n" + e.backtrace.to_s }, :status => :unprocessable_entity
       return
     end
-    respond_with(@source)
+    render "show"
   end
 
   def search_exact_enabled
@@ -169,6 +158,26 @@ class SourcesController < ApplicationController
 
   def source_params
     params.require(:source)
+  end
+
+  def source_params_for_create_and_edit
+    # Note that we don't call require(:source), which is the typical
+    # Rails convention, because Rails' wrapped parameters feature
+    # doesn't pick up the *_attributes fields that way.
+    params.permit(
+      :source_type,
+      :date,
+      :title,
+      :author,
+      :whether_mss,
+      :medium,
+      :date_accessed,
+      :location,
+      :location_institution,
+      :link,
+      :comments,
+      :source_agents_attributes => [ :id, :agent_id, :role, :_destroy ],
+    )
   end
 
 end

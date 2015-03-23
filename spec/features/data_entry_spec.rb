@@ -466,6 +466,33 @@ describe "Data entry", :js => true do
       expect(entry.entry_titles.first.title).to eq("Bible")
     end
 
+    it "should clear out a title" do
+      count = Entry.count
+
+      create_entry
+
+      expect(Entry.count).to eq(count + 1)
+
+      entry = Entry.last
+
+      visit edit_entry_path :id => entry.id
+
+      # clear out the title field; this should result in deletion of
+      # underlying entry_title record
+      fill_in 'title_0', with: ''
+      click_button('Save')
+
+      # save really can take as long as 2s
+      sleep(2)
+
+      find(".modal-title", visible: true).text.include? "Successfully saved"
+
+      entry.reload
+
+      expect(entry.entry_titles.count).to eq(1)
+      expect(entry.entry_titles.first.title).to eq("Bible")
+    end
+
     it "should validate when saving Entry"
   end
 
