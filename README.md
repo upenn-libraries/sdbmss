@@ -186,6 +186,12 @@ database.
       ProxyPreserveHost on
       ProxyTimeout 300
 
+      CustomLog /var/log/httpd/sdbmdev-access.log combined
+      ErrorLog /var/log/httpd/sdbmdev-error.log
+      # Possible values include: debug, info, notice, warn, error, crit,
+      # alert, emerg.
+      LogLevel warn
+
       <Proxy *>
       Order deny,allow
       Allow from all
