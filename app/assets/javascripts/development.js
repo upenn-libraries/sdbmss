@@ -7,7 +7,7 @@ $(document).ready(function () {
     var dialog = $("#development-dialog").dialog({
         autoOpen: false,
         modal: true,
-        height: 300,
+        height: 400,
         width: 500
     });
     
