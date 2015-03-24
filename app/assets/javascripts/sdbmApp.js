@@ -865,7 +865,7 @@
                     var url  = sourceStr;
                     var searchTerm = request.term;
                     $http.get(url, {
-                        params: $.extend({ term: searchTerm, limit: 25 }, params)
+                        params: $.extend({ autocomplete: 1, term: searchTerm, limit: 25 }, params)
                     }).then(function (response) {
                         // transform data from API call into format expected by autocomplete
                         var exactMatch = false;

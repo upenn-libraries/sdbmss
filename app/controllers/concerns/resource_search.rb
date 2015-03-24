@@ -4,7 +4,7 @@
 # methods to custom tailor various parameters and behaviors.
 #
 # Accepts the following certain URL parameters: term, limit, offset,
-# order, order_dir
+# order, order_dir, autocomplete (for autocomplete mode)
 #
 # This is used by autocomplete as well as to load tables via AJAX in
 # the management screens for some entities.
@@ -59,8 +59,9 @@ module ResourceSearch
   # Main callpoint: this should be exposed in routes
   def search
 
-    exact = search_exact
-    has_exact = exact.length > 0
+    # in autocomplete mode, look for exact match so we can prepend it
+    # if we need to
+    exact = params[:autocomplete].present? ? search_exact : []
 
     query = search_query
     total = query.count
@@ -71,7 +72,7 @@ module ResourceSearch
 
     objects = query
     # prepend the exact match only if it's not in the normal results
-    if has_exact && !query.any? { |result| search_exact_match(result) }
+    if exact.length > 0 && !query.any? { |result| search_exact_match(result) }
       objects = exact + objects
     end
 
