@@ -21,5 +21,7 @@ module SDBMSS
     # config.i18n.default_locale = :de
 
     config.autoload_paths << Rails.root.join('lib')
+
+    config.sdbmss_allow_user_signup = false
   end
 end
