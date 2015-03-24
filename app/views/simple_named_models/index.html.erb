@@ -26,7 +26,7 @@ $(document).ready(function() {
         return $("input[name='search_value']").val();
     };
     
-    var columnOptions = [
+    var columns = [
         {
             title: 'Options',
             orderable: false,
@@ -53,12 +53,12 @@ $(document).ready(function() {
         }
     ];
     
-    var dataTable = $(".sdbm-table").DataTable({
-        ajax: function (dt_params, callback, settings) {
+    var dataTable = new SDBMTable(".sdbm-table", {
+        ajax: function (sdbmTable, dt_params, callback, settings) {
 
             var orderStr = "";
             dt_params.order.forEach(function(item) {
-                orderStr += columnOptions[item.column].dbSortField + " " + item.dir;
+                orderStr += columns[item.column].dbSortField + " " + item.dir;
             });
                 
             var params = {
@@ -94,15 +94,8 @@ $(document).ready(function() {
                 }
             });
         },
-        columns: columnOptions,
-        order: [[ 2, "asc" ]],
-        language: {
-            "emptyTable": "No records found for search query."
-        },
-        lengthMenu: [25, 50, 100, 200, 500],
-        // extensions get activated via sDom codes
-        sDom: 'C<"clear"><"H"lr>JRt<"F"ip>',
-        serverSide: true
+        columns: columns,
+        order: [[ 2, "asc" ]]
     });
 
     $(".sdbm-table").on("click", ".delete-link", function(event) {
@@ -111,7 +104,7 @@ $(document).ready(function() {
                 url: $(event.target).attr("href"),
                 method: 'DELETE',
                 success: function(data, textStatus, jqXHR) {
-                    dataTable.ajax.reload();                    
+                    dataTable.reload();                    
                 },
             });
         }
@@ -119,7 +112,7 @@ $(document).ready(function() {
     });
     
     $('#search_submit').click(function() {
-        dataTable.ajax.reload();
+        dataTable.reload();
     });
 
     $('#export-csv').click(function() {
@@ -156,14 +149,8 @@ $(document).ready(function() {
 <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
     <thead>
         <tr>
-            <th>Options</th>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Count</th>
         </tr>
     </thead>
-    <tbody>
-    </tbody>
 </table>
 
 <div style="text-align: right">

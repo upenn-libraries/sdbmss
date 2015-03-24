@@ -21,7 +21,7 @@ $(document).ready(function() {
         return $("input[name='search_value']").val();
     };
 
-    var columnOptions = [
+    var columns = [
         {
             title: 'Options',
             orderable: false,
@@ -35,6 +35,7 @@ $(document).ready(function() {
             width: "10%"
         },
         {
+            sdbmssMinWidth: "150px",
             title: 'ID',
             width: "10%",
             render: function (data, type, full, meta) { 
@@ -43,47 +44,69 @@ $(document).ready(function() {
             },
         },
         {
+            sdbmssMinWidth: "120px",
             title: 'Source Type'
         },
         {
+            sdbmssMinWidth: "80px",
             title: '# Entries'
         },
         {
+            sdbmssMinWidth: "100px",
             title: 'Date',
             width: "10%"
         },
         {
+            sdbmssMinWidth: "400px",
+            sdbmssMaxWidth: "400px",            
             title: 'Title',
             width: "70%"
         },
         {
+            sdbmssMinWidth: "200px",
+            sdbmssMaxWidth: "200px",            
             title: 'Author'
         },
         {
+            sdbmssMinWidth: "200px",
+            sdbmssMaxWidth: "200px",            
             title: 'Selling Agent'
         },
         {
+            sdbmssMinWidth: "200px",
+            sdbmssMaxWidth: "200px",            
             title: 'Institution'
         },
         {
+            sdbmssMinWidth: "100px",
             title: 'Has MSS'
         },
         {
+            sdbmssMinWidth: "150px",
             title: 'Medium'
         },
         {
+            sdbmssMinWidth: "100px",
             title: "Date Accessed"
         },
         {
+            sdbmssMinWidth: "200px",
+            sdbmssMaxWidth: "200px",            
             title: "Institution"
         },
         {
+            sdbmssMinWidth: "200px",
+            sdbmssMaxWidth: "200px",            
             title: "Location"
         },
         {
+            sdbmssMinWidth: "200px",
+            sdbmssMaxWidth: "200px",            
             title: "Link"
         },
         {
+            sdbmssMinWidth: "300px",
+            sdbmssMaxWidth: "300px",            
             title: "Comments"
         }
     ];
@@ -95,13 +118,8 @@ $(document).ready(function() {
     
     $("input[name='search_value']").val("");
 
-    $.each(columnOptions, function(idx, column) {
-        $(".sdbm-table").find('thead tr').append("<th>" + column.name + "</th>");
-    });
-
-    var dataTable = $(".sdbm-table").DataTable({
-        autoWidth: false,
-        ajax: function (dt_params, callback, settings) {
+    var dataTable = new SDBMTable(".sdbm-table", {
+        ajax: function (sdbmTable, dt_params, callback, settings) {
 
             var params = {
                 title: getSearchValue(),
@@ -153,18 +171,8 @@ $(document).ready(function() {
                 }
             });
         },
-        columns: columnOptions,
-        language: {
-            "emptyTable": "No records found for search query."
-        },
-        lengthMenu: [25, 50, 100, 200, 500],
-        order: [[ 1, "desc" ]],
-        scrollX: true,
-        scrollY: scrollY,
-        scrollCollapse: false,
-        // extensions get activated via sDom codes
-        sDom: 'C<"clear"><"H"lr>JRt<"F"ip>',
-        serverSide: true
+        columns: columns,
+        order: [[ 1, "desc" ]]
     });
 
     $(".sdbm-table").on("click", ".source-delete-link", function(event) {
@@ -173,7 +181,7 @@ $(document).ready(function() {
                 url: $(event.target).attr("href"),
                 method: 'DELETE',
                 success: function(data, textStatus, jqXHR) {
-                    dataTable.ajax.reload();                    
+                    dataTable.reload();                    
                 },
             });
         }
@@ -181,7 +189,7 @@ $(document).ready(function() {
     });
     
     $('#search_submit').click(function() {
-        dataTable.ajax.reload();
+        dataTable.reload();
     });
 
     $('#export-csv').click(function() {

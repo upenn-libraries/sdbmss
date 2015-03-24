@@ -1,9 +1,10 @@
 
 /*
- * Table widget for viewing Entries. This is used in a few different
- * places, and needs to be somewhat customizable.
+ * Generic dataTable widget that loads rows using server-side
+ * processing, with many reasonable defaults.
  * 
  * selector = jquery selector string specifying the table element
+ *
  * options = object containing the following keys:
  *
  *  ajax: callback used by SDBMTable to fetch results and populated
@@ -13,9 +14,12 @@
  *  order: this gets passed to datatable for its 'order' option,
  *  except that we also translate column name strings to integer
  *  indexes.
-
- *  prependColumns: array of objects describing column options, to
- *  pass to DataTable.
+ *
+ *  columns: array of column definitions to pass to DataTable. This
+ *  can include sdbmss extension options.
+ *
+ *  prependColumns: array of objects describing column options, which
+ *  will get prepended to 'columns' before passing in to DataTable.
  * 
  *  fullHeight: if true, takes up the full height of the
  *  viewport. defaults to true.
@@ -26,6 +30,7 @@ function SDBMTable(selector, options) {
     this.options = $.extend({}, {
         // defaults
         ajax: null,
+        columns: null,
         prependColumns: null,
         fullHeight: true
     }, options);
@@ -38,254 +43,15 @@ function SDBMTable(selector, options) {
 
     // NOTE: fields prefixed by 'sdbmss' are our own options, not
     // native to dataTables.
-    this.columnOptions = [
-        {
-            sdbmssMinWidth: "100px",
-            sdbmssSortField: 'entry_id',
-            title: 'ID',
-            render: function (data, type, full, meta) {
-                if(data) {
-                    return '<a href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
-                }
-                return '';
-            }
-        },
-        {
-            sdbmssMinWidth: "100px",
-            sdbmssSortField: 'manuscript_id',
-            title: 'Manuscript',
-            render: function (data, type, full, meta) {
-                if(data) {
-                    return '<a href="/manuscripts/' + data + '/edit/" target="_blank">SDBM_MS_' + data + '</a>';
-                }
-                return '';
-            }
-        },
-        {
-            sdbmssMinWidth: "100px",
-            sdbmssSortField: 'source_date',
-            title: 'Source Date'
-        },
-        {
-            sdbmssMaxWidth: "350px",
-            sdbmssSortField: 'source_title',
-            title: 'Source Title'
-        },
-        {
-            sdbmssMinWidth: "100px",
-            sdbmssSortField: 'catalog_or_lot_number',
-            title: 'Cat or Lot #'
-        },
-        {
-            sdbmssMinWidth: "150px",
-            sdbmssSortField: 'transaction_selling_agent',
-            title: 'Selling Agent'
-        },
-        {
-            sdbmssMinWidth: "150px",
-            sdbmssSortField: 'transaction_seller',
-            title: 'Seller'
-        },
-        {
-            sdbmssMinWidth: "150px",
-            sdbmssSortField: 'transaction_buyer',
-            title: 'Buyer'
-        },
-        {
-            sdbmssMinWidth: "100px",
-            sdbmssSortField: 'transaction_sold',
-            title: 'Sold'
-        },
-        {
-            sdbmssMinWidth: "100px",
-            sdbmssSortField: 'transaction_price',
-            title: 'Price'
-        },
-        {
-            sdbmssMinWidth: "200px",
-            sdbmssMaxWidth: "400px",
-            sdbmssSortField: 'title_flat',
-            title: 'Title'
-        },
-        {
-            sdbmssMinWidth: "200px",
-            sdbmssMaxWidth: "400px",
-            sdbmssSortField: 'author_flat',
-            title: 'Author'
-        },
-        {
-            sdbmssMinWidth: "100px",
-            sdbmssMinWidth: "200px",
-            sdbmssSortField: 'manuscript_date_flat',
-            title: 'Date'
-        },
-        {
-            sdbmssMinWidth: "200px",
-            sdbmssMaxWidth: "400px",
-            sdbmssSortField: 'artist_flat',
-            title: 'Artist'
-        },
-        {
-            sdbmssMinWidth: "200px",
-            sdbmssMaxWidth: "400px",
-            sdbmssSortField: 'scribe_flat',
-            title: 'Scribe'
-        },
-        {
-            sdbmssMinWidth: "100px",
-            sdbmssMaxWidth: "200px",
-            sdbmssSortField: 'language_flat',
-            title: 'Language'
-        },
-        {
-            sdbmssMinWidth: "100px",
-            sdbmssMaxWidth: "200px",
-            sdbmssSortField: 'material_flat',
-            title: 'Material'
-        },
-        {
-            sdbmssMinWidth: "100px",
-            sdbmssMaxWidth: "200px",
-            sdbmssSortField: 'place_flat',
-            title: 'Place'
-        },
-        {
-            sdbmssMinWidth: "100px",
-            sdbmssMaxWidth: "200px",
-            sdbmssSortField: 'use_flat',
-            title: 'Use'
-        },
-        {
-            sdbmssMinWidth: "70px",
-            sdbmssSortField: 'folios',
-            title: 'Folios'
-        },
-        {
-            sdbmssMinWidth: "70px",
-            sdbmssSortField: 'num_columns',
-            title: 'Columns'
-        },
-        {
-            sdbmssMinWidth: "70px",
-            sdbmssSortField: 'num_lines',
-            title: 'Lines'
-        },
-        {
-            sdbmssMinWidth: "70px",
-            sdbmssSortField: 'height',
-            title: 'Height'
-        },
-        {
-            sdbmssMinWidth: "70px",
-            sdbmssSortField: 'width',
-            title: 'Width'
-        },
-        {
-            sdbmssMinWidth: "70px",
-            sdbmssSortField: 'alt_size',
-            title: 'Alt Size'
-        },
-        {
-            sdbmssMinWidth: "70px",
-            sdbmssSortField: 'miniatures_fullpage',
-            title: 'Min Fl'
-        },
-        {
-            sdbmssMinWidth: "70px",
-            sdbmssSortField: 'miniatures_large',
-            title: 'Min Lg'
-        },
-        {
-            sdbmssMinWidth: "70px",
-            sdbmssSortField: 'miniatures_small',
-            title: 'Min Sm'
-        },
-        {
-            sdbmssMinWidth: "70px",
-            sdbmssSortField: 'miniatures_unspec_size',
-            title: 'Min Un'
-        },
-        {
-            sdbmssMinWidth: "70px",
-            sdbmssSortField: 'initials_historiated',
-            title: 'Init Hist'
-        },
-        {
-            sdbmssMinWidth: "70px",
-            sdbmssSortField: 'initials_decorated',
-            title: 'Init Dec'
-        },
-        {
-            sdbmssMinWidth: "400px",
-            sdbmssMaxWidth: "400px",
-            title: 'Binding',
-            orderable: false
-        },
-        {
-            sdbmssMinWidth: "400px",
-            sdbmssMaxWidth: "400px",
-            title: 'URL',
-            orderable: false,
-            render: function (data, type, full, meta) {
-                if(data) {
-                    return '<a href="' + data + '" target="_blank">' + data + '</a>';
-                }
-                return '';
-            }
-        },
-        {
-            sdbmssMinWidth: "400px",
-            sdbmssMaxWidth: "400px",
-            title: 'Other Info',
-            orderable: false
-        },
-        {
-            sdbmssMinWidth: "500px",
-            sdbmssMaxWidth: "500px",
-            title: 'Provenance',
-            orderable: false
-        },
-        {
-            sdbmssMinWidth: "130px",
-            sdbmssMaxWidth: "130px",
-            title: 'Added On',
-            sdbmssSortField: 'created_at'
-        },
-        {
-            sdbmssMinWidth: "130px",
-            sdbmssMaxWidth: "130px",
-            title: 'Added By',
-            sdbmssSortField: 'created_by'
-        },
-        {
-            sdbmssMinWidth: "130px",
-            sdbmssMaxWidth: "130px",
-            title: 'Last Modified',
-            sdbmssSortField: 'updated_at'
-        },
-        {
-            sdbmssMinWidth: "130px",
-            sdbmssMaxWidth: "130px",
-            title: 'Last Modified By',
-            sdbmssSortField: 'updated_at'
-        },
-        {
-            sdbmssMinWidth: "130px",
-            sdbmssMaxWidth: "130px",
-            title: 'Is Approved',
-            sdbmssSortField: 'approved'
-        }
-    ];
+    this.columns = this.options.columns;
 
     if(options.prependColumns) {
-        this.columnOptions = [].concat(options.prependColumns).concat(this.columnOptions);
+        this.columns = [].concat(options.prependColumns).concat(this.columns);
     }
     
-    // we have to create TH elements before dataTable init, otherwise
-    // col widths are messed up and drag-resizing is broken. it's
-    // possible I need additional option(s) for having dataTable
-    // properly create the THs but I don't know what they could be.
-    $.each(this.columnOptions, function(idx, column) {
+    // create THEAD elements using 'columns' data struct. dataTables
+    // doesn't seem to be able to autogenerate this.
+    $.each(this.columns, function(idx, column) {
         $(selector).find('thead tr').append("<th>" + column.name + "</th>");
     });
 
@@ -314,13 +80,13 @@ function SDBMTable(selector, options) {
         ajax: function (dt_params, callback, settings) {
             options.ajax(sdbmTable, dt_params, callback, settings);
         },
-        columns: this.columnOptions,
+        columns: this.columns,
         language: {
             "emptyTable": "No records found for search query."
         },
         lengthMenu: [50, 100, 200, 500],
         order: order,
-        rowCallback: function( row, data ) {
+        rowCallback: function(row, data) {
             /* 
              * We have the following requirements for column widths:
              *
@@ -343,7 +109,7 @@ function SDBMTable(selector, options) {
              * calculated by dataTables.
              */
             $('td', row).each(function (idx, e) {
-                var opts = sdbmTable.columnOptions[idx];
+                var opts = sdbmTable.columns[idx];
                 if(opts.sdbmssMinWidth) {
                     $(e).css("min-width", opts.sdbmssMinWidth);
                 }
@@ -370,13 +136,6 @@ function SDBMTable(selector, options) {
         "leftColumns": 2
     });
     */
-
-    $(selector).on('draw.dt', function () {
-        sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
-            var data = sdbmTable.dataTable.row(row).data();
-            $(row).attr("title", "SDBM_" + data[sdbmTable.getColumnIndex("ID")]);
-        });
-    });
 
 }
 
@@ -405,7 +164,7 @@ SDBMTable.prototype.getSort = function(dt_params) {
     var sort = "";
     var sdbmTableInstance = this;
     $.each(dt_params.order, function(idx, order) {
-        var columnDefinition = sdbmTableInstance.columnOptions[order.column];
+        var columnDefinition = sdbmTableInstance.columns[order.column];
         var sortField = columnDefinition.sdbmssSortField;
         if(sortField) {
             if(sort) {
@@ -416,9 +175,6 @@ SDBMTable.prototype.getSort = function(dt_params) {
             alert("ERROR: no sort field found for column, so using ID; fix this!");
         }
     });
-    if(!sort) {
-        sort = "entry_id desc";
-    }
     return sort;
 };
 
@@ -436,11 +192,286 @@ SDBMTable.prototype.reload = function() {
 
 // given a row that's an Array, find the value at the index for the columnName
 SDBMTable.prototype.getColumnIndex = function(columnName) {
-    var columnNames = this.columnOptions.map(function (item) { return item.title; });
+    var columnNames = this.columns.map(function (item) { return item.title; });
     return columnNames.indexOf(columnName);
 };
 
-SDBMTable.prototype.searchAndUpdateTable = function(params, dtCallback, ajaxOptions) {
+
+/*
+ * Subclass of SDBMTable for displaying Entries specifically.
+ */
+function SDBMEntryTable(selector, options) {
+
+    var defaultOptions = {
+        // NOTE: fields prefixed by 'sdbmss' are our own options, not
+        // native to dataTables.
+        columns: [
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssSortField: 'entry_id',
+                title: 'ID',
+                render: function (data, type, full, meta) {
+                    if(data) {
+                        return '<a href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
+                    }
+                    return '';
+                }
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssSortField: 'manuscript_id',
+                title: 'Manuscript',
+                render: function (data, type, full, meta) {
+                    if(data) {
+                        return '<a href="/manuscripts/' + data + '/edit/" target="_blank">SDBM_MS_' + data + '</a>';
+                    }
+                    return '';
+                }
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssSortField: 'source_date',
+                title: 'Source Date'
+            },
+            {
+                sdbmssMaxWidth: "350px",
+                sdbmssSortField: 'source_title',
+                title: 'Source Title'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssSortField: 'catalog_or_lot_number',
+                title: 'Cat or Lot #'
+            },
+            {
+                sdbmssMinWidth: "150px",
+                sdbmssSortField: 'transaction_selling_agent',
+                title: 'Selling Agent'
+            },
+            {
+                sdbmssMinWidth: "150px",
+                sdbmssSortField: 'transaction_seller',
+                title: 'Seller'
+            },
+            {
+                sdbmssMinWidth: "150px",
+                sdbmssSortField: 'transaction_buyer',
+                title: 'Buyer'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssSortField: 'transaction_sold',
+                title: 'Sold'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssSortField: 'transaction_price',
+                title: 'Price'
+            },
+            {
+                sdbmssMinWidth: "200px",
+                sdbmssMaxWidth: "400px",
+                sdbmssSortField: 'title_flat',
+                title: 'Title'
+            },
+            {
+                sdbmssMinWidth: "200px",
+                sdbmssMaxWidth: "400px",
+                sdbmssSortField: 'author_flat',
+                title: 'Author'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssMinWidth: "200px",
+                sdbmssSortField: 'manuscript_date_flat',
+                title: 'Date'
+            },
+            {
+                sdbmssMinWidth: "200px",
+                sdbmssMaxWidth: "400px",
+                sdbmssSortField: 'artist_flat',
+                title: 'Artist'
+            },
+            {
+                sdbmssMinWidth: "200px",
+                sdbmssMaxWidth: "400px",
+                sdbmssSortField: 'scribe_flat',
+                title: 'Scribe'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "200px",
+                sdbmssSortField: 'language_flat',
+                title: 'Language'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "200px",
+                sdbmssSortField: 'material_flat',
+                title: 'Material'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "200px",
+                sdbmssSortField: 'place_flat',
+                title: 'Place'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "200px",
+                sdbmssSortField: 'use_flat',
+                title: 'Use'
+            },
+            {
+                sdbmssMinWidth: "70px",
+                sdbmssSortField: 'folios',
+                title: 'Folios'
+            },
+            {
+                sdbmssMinWidth: "70px",
+                sdbmssSortField: 'num_columns',
+                title: 'Columns'
+            },
+            {
+                sdbmssMinWidth: "70px",
+                sdbmssSortField: 'num_lines',
+                title: 'Lines'
+            },
+            {
+                sdbmssMinWidth: "70px",
+                sdbmssSortField: 'height',
+                title: 'Height'
+            },
+            {
+                sdbmssMinWidth: "70px",
+                sdbmssSortField: 'width',
+                title: 'Width'
+            },
+            {
+                sdbmssMinWidth: "70px",
+                sdbmssSortField: 'alt_size',
+                title: 'Alt Size'
+            },
+            {
+                sdbmssMinWidth: "70px",
+                sdbmssSortField: 'miniatures_fullpage',
+                title: 'Min Fl'
+            },
+            {
+                sdbmssMinWidth: "70px",
+                sdbmssSortField: 'miniatures_large',
+                title: 'Min Lg'
+            },
+            {
+                sdbmssMinWidth: "70px",
+                sdbmssSortField: 'miniatures_small',
+                title: 'Min Sm'
+            },
+            {
+                sdbmssMinWidth: "70px",
+                sdbmssSortField: 'miniatures_unspec_size',
+                title: 'Min Un'
+            },
+            {
+                sdbmssMinWidth: "70px",
+                sdbmssSortField: 'initials_historiated',
+                title: 'Init Hist'
+            },
+            {
+                sdbmssMinWidth: "70px",
+                sdbmssSortField: 'initials_decorated',
+                title: 'Init Dec'
+            },
+            {
+                sdbmssMinWidth: "400px",
+                sdbmssMaxWidth: "400px",
+                title: 'Binding',
+                orderable: false
+            },
+            {
+                sdbmssMinWidth: "400px",
+                sdbmssMaxWidth: "400px",
+                title: 'URL',
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if(data) {
+                        return '<a href="' + data + '" target="_blank">' + data + '</a>';
+                    }
+                    return '';
+                }
+            },
+            {
+                sdbmssMinWidth: "400px",
+                sdbmssMaxWidth: "400px",
+                title: 'Other Info',
+                orderable: false
+            },
+            {
+                sdbmssMinWidth: "500px",
+                sdbmssMaxWidth: "500px",
+                title: 'Provenance',
+                orderable: false
+            },
+            {
+                sdbmssMinWidth: "130px",
+                sdbmssMaxWidth: "130px",
+                title: 'Added On',
+                sdbmssSortField: 'created_at'
+            },
+            {
+                sdbmssMinWidth: "130px",
+                sdbmssMaxWidth: "130px",
+                title: 'Added By',
+                sdbmssSortField: 'created_by'
+            },
+            {
+                sdbmssMinWidth: "130px",
+                sdbmssMaxWidth: "130px",
+                title: 'Last Modified',
+                sdbmssSortField: 'updated_at'
+            },
+            {
+                sdbmssMinWidth: "130px",
+                sdbmssMaxWidth: "130px",
+                title: 'Last Modified By',
+                sdbmssSortField: 'updated_at'
+            },
+            {
+                sdbmssMinWidth: "130px",
+                sdbmssMaxWidth: "130px",
+                title: 'Is Approved',
+                sdbmssSortField: 'approved'
+            }
+        ]
+    };
+
+    SDBMTable.call(this, selector, $.extend({}, defaultOptions, options));
+
+    var sdbmTable = this;
+
+    $(selector).on('draw.dt', function () {
+        sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
+            var data = sdbmTable.dataTable.row(row).data();
+            $(row).attr("title", "SDBM_" + data[sdbmTable.getColumnIndex("ID")]);
+        });
+    });
+};
+
+SDBMEntryTable.prototype = Object.create(SDBMTable.prototype);
+
+SDBMEntryTable.prototype.getSort = function(dt_params) {
+    var sort = SDBMTable.prototype.getSort.call(this, dt_params);
+    if(!sort) {
+        sort = "entry_id desc";
+    }
+    return sort;
+};
+
+/**
+ * Callers of SDBMEntryTable can call this in their implementation of
+ * the 'ajax' function option.
+ */
+SDBMEntryTable.prototype.searchAndUpdateTable = function(params, dtCallback, ajaxOptions) {
     var sdbmTableInstance = this;
     
     var defaults = {
