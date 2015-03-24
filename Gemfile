@@ -34,21 +34,11 @@ gem 'turbolinks', '~> 2.5.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.2.0'
 
-# bundle exec rake doc:rails generates the API under doc/api.
-gem 'sdoc', '~> 0.4.0', group: :doc
-gem 'yard', '~> 0.8.0', group: :doc
-
-# Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-gem 'spring', '~> 1.1.0', group: :development
-
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
 # Use unicorn as the app server
 gem 'unicorn', '~> 4.8.0'
-
-# Use Capistrano for deployment
-gem 'capistrano-rails', '~> 1.1.0', group: :development
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
@@ -69,7 +59,26 @@ gem 'sunspot_solr', '~> 2.1.0'
 # Use database as session store
 gem 'activerecord-session_store', '~> 0.1.0'
 
-# for testing
+# This can autogenerate ERD diagrams from ActiveRecord models and
+# schema.
+# gem 'rails-erd', group: :development
+
+# for calculating string similarity
+gem 'levenshtein', '~> 0.2.2'
+
+# bundle exec rake doc:rails generates the Rails API under doc/api.
+group :doc do
+  gem 'sdoc', '~> 0.4.0'
+  gem 'yard', '~> 0.8.0'
+end
+
+group :development do
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'spring', '~> 1.1.0'
+  # Use Capistrano for deployment
+  gem 'capistrano-rails', '~> 1.1.0'
+end
+
 group :test, :development do
   gem 'rspec-rails', '~> 3.1.0'
   gem 'capybara', '~> 2.4.4'
@@ -77,10 +86,3 @@ group :test, :development do
   gem 'poltergeist', '~> 1.6.0'
   gem 'simplecov', :require => false
 end
-
-# This can autogenerate ERD diagrams from ActiveRecord models and
-# schema.
-# gem 'rails-erd', group: :development
-
-# for calculating string similarity
-gem 'levenshtein', '~> 0.2.2'
