@@ -293,7 +293,7 @@ class Entry < ActiveRecord::Base
         # id() method not available b/c of bug:
         # https://github.com/sunspot/sunspot/issues/331
         @__receiver__.id,
-        "SBDM_" + @__receiver__.id.to_s,
+        public_id,
         # source info
         source.display_value,
         catalog_or_lot_number,
