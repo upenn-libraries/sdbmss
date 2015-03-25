@@ -10,6 +10,14 @@ module ApplicationHelper
     search_action_path(add_facet_params(facet_name, value, {}))
   end
 
+  # returns a URL for an advanced search; options is a hash that
+  # should contain a key corresponding to a field name, hashed to a
+  # search value
+  def search_advanced_url(options)
+    checkmark = "\u2713".encode('utf-8')
+    catalog_index_path({ "utf8" => checkmark, "op" => "AND", "search_field" => "advanced", "commit" => "Search" }.merge(options))
+  end
+
   # returns a URL to use for the data-context-href link attribute, on
   # items on the search results page. This is the mechanism that makes
   # pagination work on the individual Entry view.

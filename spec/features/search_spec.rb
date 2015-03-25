@@ -135,6 +135,8 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_xpath("//h1[contains(.,'#{name.public_id}')]")
   end
 
+  it "should load show Manuscript page"
+
   it "should bookmark an Entry and remove it" do
     visit root_path
     fill_in "q", with: "Tomkinson"

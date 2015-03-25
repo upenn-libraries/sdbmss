@@ -267,10 +267,10 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'entry_id' }
       end
 
-      config.add_search_field 'manuscript_id', :label => 'Manuscript ID' do |field|
+      config.add_search_field 'manuscript', :label => 'Manuscript ID' do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = false
-        field.solr_local_parameters = { :qf => 'manuscript_id' }
+        field.solr_local_parameters = { :qf => 'manuscript' }
       end
 
       # "sort results by" select (pulldown)
