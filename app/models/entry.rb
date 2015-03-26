@@ -192,6 +192,27 @@ class Entry < ActiveRecord::Base
     names
   end
 
+  # returns the most recent updated_at timestamp, as an integer, of
+  # this Entry AND all its pertinent associations. This is used as a
+  # mechanism to prevent the user from saving changes when another
+  # change was made to the data.
+  def cumulative_updated_at
+    most_recent = updated_at.to_i
+    associations = [ :entry_titles, :entry_authors, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_materials, :entry_places, :entry_uses, :events ]
+    associations.each do |association|
+      records = send(association)
+      records.each do |record|
+        if record.respond_to?(:updated_at)
+          record_updated_at = record.updated_at.to_i
+          if record_updated_at > most_recent
+            most_recent = record_updated_at
+          end
+        end
+      end
+    end
+    most_recent || 0
+  end
+
   # returns a "complete" representation of this entry, including
   # associated data, as a flat (ie non-nested) Hash. This is used to
   # return rows for the table view, and also used for CSV

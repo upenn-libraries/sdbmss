@@ -13,6 +13,8 @@ require 'rspec/rails'
 require 'capybara/rails'
 require 'factory_girl_rails'
 
+require_relative './helpers'
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -64,5 +66,7 @@ RSpec.configure do |config|
 
   # FactoryGirl support
   config.include FactoryGirl::Syntax::Methods
+
+  config.include SDBMSS::Capybara::AlertConfirmer
 
 end

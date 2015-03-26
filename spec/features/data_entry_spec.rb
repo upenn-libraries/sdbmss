@@ -418,7 +418,7 @@ describe "Data entry", :js => true do
       verify_entry(entry)
     end
 
-    it "should preserve entry when saving it without making any changes" do
+    it "should preserve entry on Edit page when saving without making any changes" do
       count = Entry.count
 
       create_entry
@@ -438,7 +438,7 @@ describe "Data entry", :js => true do
       verify_entry(entry)
     end
 
-    it "should remove a title" do
+    it "should remove a title on Edit page" do
       count = Entry.count
 
       create_entry
@@ -466,7 +466,7 @@ describe "Data entry", :js => true do
       expect(entry.entry_titles.first.title).to eq("Bible")
     end
 
-    it "should clear out a title" do
+    it "should clear out a title on Edit Page" do
       count = Entry.count
 
       create_entry
@@ -491,6 +491,100 @@ describe "Data entry", :js => true do
 
       expect(entry.entry_titles.count).to eq(1)
       expect(entry.entry_titles.first.title).to eq("Bible")
+    end
+
+    it "should clear out a title on Edit Page" do
+      count = Entry.count
+
+      create_entry
+
+      expect(Entry.count).to eq(count + 1)
+
+      entry = Entry.last
+
+      visit edit_entry_path :id => entry.id
+
+      # clear out the title field; this should result in deletion of
+      # underlying entry_title record
+      fill_in 'title_0', with: ''
+      click_button('Save')
+
+      # save really can take as long as 2s
+      sleep(2)
+
+      find(".modal-title", visible: true).text.include? "Successfully saved"
+
+      entry.reload
+
+      expect(entry.entry_titles.count).to eq(1)
+      expect(entry.entry_titles.first.title).to eq("Bible")
+    end
+
+    it "should disallow saving on Edit Page when another change was made" do
+      create_entry
+
+      entry = Entry.last
+
+      visit edit_entry_path :id => entry.id
+
+      sleep(2)
+
+      # change folios and try to modify folios
+
+      entry.folios = 6666
+      entry.save!
+
+      fill_in 'folios', with: '7777'
+
+      text = get_alert_text_from do
+        click_button('Save')
+      end
+      expect(text).to match(/Another change was made to the record while you were working/)
+    end
+
+    it "should disallow saving on Edit Page when another change was made (variation 1)" do
+      create_entry
+
+      entry = Entry.last
+
+      visit edit_entry_path :id => entry.id
+
+      sleep(2)
+
+      # change folios and try to modify title association record
+
+      entry.folios = 6666
+      entry.save!
+
+      fill_in 'title_0', with: 'changed title'
+
+      text = get_alert_text_from do
+        click_button('Save')
+      end
+      expect(text).to match(/Another change was made to the record while you were working/)
+    end
+
+    it "should disallow saving on Edit Page when another change was made (variation 2)" do
+      create_entry
+
+      entry = Entry.last
+
+      visit edit_entry_path :id => entry.id
+
+      sleep(2)
+
+      # change title association record and try to modify folios
+
+      entry_title = entry.entry_titles.last
+      entry_title.title = "changed title"
+      entry_title.save!
+
+      fill_in 'folios', with: '11111'
+
+      text = get_alert_text_from do
+        click_button('Save')
+      end
+      expect(text).to match(/Another change was made to the record while you were working/)
     end
 
     it "should validate when saving Entry"

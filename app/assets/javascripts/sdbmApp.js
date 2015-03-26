@@ -227,7 +227,13 @@
             /* Returns a fn that can be used as error callback on angular promises */
             promiseErrorHandlerFactory: function(msg) {
                 return function(response) {
-                    alert(msg + "; Server response:" + JSON.stringify(response.data));
+                    var append_str;
+                    if(response.data && response.data.errors) {
+                        append_str = response.data.errors;
+                    } else {
+                        append_str = "Server response:" + JSON.stringify(response.data);
+                    }
+                    alert(msg + "; " + append_str);
                 };
             },
             redirectToSourceEditPage: function(source_id)  {

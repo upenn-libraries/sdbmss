@@ -53,19 +53,25 @@ class EntriesController < ApplicationController
   end
 
   def update
+    errors = nil
     begin
-      ActiveRecord::Base.transaction do
-        filtered = entry_params_for_create_and_edit
-        @entry.update!(filtered)
+      if params[:cumulative_updated_at].to_s == @entry.cumulative_updated_at.to_s
 
-        if params[:new_comment].present?
-          ec = EntryComment.new(
-            entry_id: @entry.id,
-            comment: params[:new_comment],
-            created_by: current_user)
-          ec.save!
+        ActiveRecord::Base.transaction do
+          filtered = entry_params_for_create_and_edit
+          @entry.update!(filtered)
+
+          if params[:new_comment].present?
+            ec = EntryComment.new(
+              entry_id: @entry.id,
+              comment: params[:new_comment],
+              created_by: current_user)
+            ec.save!
+          end
         end
 
+      else
+        errors = "Another change was made to the record while you were working. Re-load the page and start over."
       end
 
       # Sunspot doesn't auto index here, probably bc it is hooked into
@@ -74,10 +80,14 @@ class EntriesController < ApplicationController
 
     rescue Exception => e
       logger.error(e.to_s + "\n\n" + e.backtrace.join("\n"))
-      render :json => { :errors => e.backtrace.to_s }, :status => :unprocessable_entity
-      return
+      errors = e.backtrace.to_s
     end
-    render "show"
+
+    if errors
+      render :json => { :errors => errors }, :status => :unprocessable_entity
+    else
+      render "show"
+    end
   end
 
   # returns JSON containing type constants
