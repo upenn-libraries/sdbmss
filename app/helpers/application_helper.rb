@@ -6,7 +6,7 @@ module ApplicationHelper
 
   # returns a URL for a new search on a given facet and value. This
   # should probably ONLY be used for Names. Links for other searches
-  # should probably use #search_advanced_url.
+  # should use #search_advanced_url.
   def search_by_facet_value facet_name, value
     # call helpers from BlacklightUrlHelper
     search_action_path(add_facet_params(facet_name, value, {}))

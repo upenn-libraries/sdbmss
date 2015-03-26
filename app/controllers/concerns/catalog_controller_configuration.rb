@@ -57,7 +57,7 @@ module CatalogControllerConfiguration
       config.add_facet_field 'transaction_buyer', :label => 'Buyer', :collapse => false, :limit => 3
       # facet on source display str, instead of having separate facets for
       # catalog/catalog date/institution
-      config.add_facet_field 'source', :label => 'Source', :collapse => false, :limit => 3
+      config.add_facet_field 'source_display', :label => 'Source', :collapse => false, :limit => 3
       config.add_facet_field 'provenance', :label => 'Provenance', :limit => 3
       config.add_facet_field 'manuscript_date', :label => 'Manuscript Date', :limit => 3
       config.add_facet_field 'place', :label => 'Place', :limit => 3
@@ -117,8 +117,13 @@ module CatalogControllerConfiguration
         field.solr_parameters = { :qf => 'author_search' }
       end
 
-      config.add_search_field('source') do |field|
+      config.add_search_field('source_display', label: "Source") do |field|
         field.solr_local_parameters = { :qf => 'source_search' }
+      end
+
+      config.add_search_field('source', label: "Source ID") do |field|
+        field.include_in_simple_select = false
+        field.solr_local_parameters = { :qf => 'source' }
       end
 
       config.add_search_field('selling_agent') do |field|
@@ -271,6 +276,12 @@ module CatalogControllerConfiguration
         field.include_in_simple_select = false
         field.is_numeric_field = false
         field.solr_local_parameters = { :qf => 'manuscript' }
+      end
+
+      config.add_search_field 'created_by' do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = false
+        field.solr_local_parameters = { :qf => 'created_by' }
       end
 
       # "sort results by" select (pulldown)

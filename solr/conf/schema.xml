@@ -256,8 +256,10 @@
     <field name="manuscript" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="manuscript_id" stored="true" type="sint" multiValued="false" indexed="true"/>
     <field name="source_date" stored="true" type="string" multiValued="false" indexed="true"/>
-    <!-- 'source' is a composite -->
+    <!-- 'source' is full source ID (SDBM_SOURCE_xxx) for search -->
     <field name="source" stored="true" type="string" multiValued="false" indexed="true"/>
+    <!-- 'source_display' is a composite -->
+    <field name="source_display" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="source_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="source_title" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="catalog_or_lot_number" stored="true" type="string" multiValued="false" indexed="true"/>

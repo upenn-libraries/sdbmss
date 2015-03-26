@@ -379,6 +379,9 @@ class Entry < ActiveRecord::Base
       source.date
     end
     define_field(:string, :source, :stored => true) do
+      source.public_id
+    end
+    define_field(:string, :source_display, :stored => true) do
       source.display_value
     end
     define_field(:text, :source_search, :stored => true) do
