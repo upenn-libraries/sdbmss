@@ -32,11 +32,11 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
     arel (5.0.1.20140414130214)
-    autoprefixer-rails (5.1.7.1)
+    autoprefixer-rails (5.1.8)
       execjs
       json
     bcrypt (3.1.10)
-    blacklight (5.10.2)
+    blacklight (5.10.3)
       bootstrap-sass (~> 3.2)
       deprecation
       kaminari (~> 0.13)
