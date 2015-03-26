@@ -521,7 +521,7 @@
     
     <div class="row" ng-repeat="entry_comment in entry.entry_comments"> 
         <label class="col-sm-2 control-label">
-            <span>by {{ entry_comment.created_by }}</span>
+            <span>by {{ entry_comment.created_by }} at {{ entry_comment.date }}</span>
         </label>
         <div class="col-sm-9">
             {{ entry_comment.comment||"(none)" }}

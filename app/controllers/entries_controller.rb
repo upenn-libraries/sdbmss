@@ -41,6 +41,7 @@ class EntriesController < ApplicationController
         ec = EntryComment.new(
           entry_id: @entry.id,
           comment: params[:new_comment],
+          public: true,
           created_by: current_user)
         ec.save!
       end
