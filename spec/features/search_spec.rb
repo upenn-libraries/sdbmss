@@ -135,6 +135,12 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_xpath("//h1[contains(.,'#{name.public_id}')]")
   end
 
+  it "should load show Profile page" do
+    user = User.last
+    visit profile_path(user.username)
+    expect(page).to have_xpath("//h1[contains(.,'#{user.username}')]")
+  end
+
   it "should load show Manuscript page"
 
   it "should bookmark an Entry and remove it" do

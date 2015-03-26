@@ -1,0 +1,5 @@
+<% if user.present? %>
+<a href="<%= profile_path(username: user.username) %>"><%= user.username %></a>
+<% else %>
+Unknown
+<% end %>

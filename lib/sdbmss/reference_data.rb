@@ -37,6 +37,19 @@ module SDBMSS::ReferenceData
       entry.reload
       Sunspot.index entry
     end
+
+    def lransom
+      user = User.find_by(username: "lransom")
+      if user.blank?
+        user = User.create!(
+          username: "lransom",
+          email: "lransom@upenn.edu",
+          password: "12345678",
+          password_confirmation: "12345678"
+        )
+      end
+      user
+    end
   end
 
   class JonathanHill < RefDataBase
@@ -60,7 +73,7 @@ module SDBMSS::ReferenceData
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
         link: "https://www.jonathanahill.com/lists/HomePageFiles/Cat%20213%20unillustrated%20proofs.pdf",
         medium: Source::TYPE_MEDIUM_INTERNET,
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       source_agent = SourceAgent.create!(
@@ -80,7 +93,7 @@ module SDBMSS::ReferenceData
         width: 185,
         initials_decorated: 15,
         manuscript_binding: 'Ca. 1900, with the gilt stamp of "L. Broca" (Lucien Broca), red morocco over pasteboard, upper and lower cover with gilt double fillet borders enclosing a gilt central medallion; five raised bands on spine, compartments repeating gilt motif, edges and turn-ins gilt.',
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       transaction = Event.create!(
@@ -192,7 +205,7 @@ module SDBMSS::ReferenceData
         miniatures_small: 32,
         manuscript_binding: 'End of 15th-early 16th century, panelled leather, blind stamped (including a roll stamp, with fleur-de-lys, crowned fleur-de-lys, and a crowned dolphin), with metal corners & centerpieces',
         other_info: 'Written in black ink in Littera batarda',
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       transaction = Event.create!(
@@ -291,7 +304,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "4",
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       transaction = Event.create!(
@@ -393,7 +406,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "5",
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       transaction = Event.create!(
@@ -533,7 +546,7 @@ module SDBMSS::ReferenceData
         width: 172,
         manuscript_binding: 'Italian paneled brow leather over wooden boards, tooled in blind with ropework border.',
         other_info: 'Manuscript is dated in an inscription 30 December. 1480. Includes one full-length illuminated border.',
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       transaction = Event.create!(
@@ -632,7 +645,7 @@ module SDBMSS::ReferenceData
         initials_decorated: 179,
         manuscript_binding: 'Early 19th-century diced Russia leather over wooden boards.',
         other_info: 'Manuscript is dated in an inscription 30 December. 1480. Includes one full-length illuminated border.',
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       transaction = Event.create!(
@@ -922,7 +935,7 @@ module SDBMSS::ReferenceData
         location_institution: "University of Pennsylvania Libraries",
         location: "Philadelphia, US",
         link: "Z6621 P44 cop. 2",
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       source_agent = SourceAgent.create!(
@@ -940,7 +953,7 @@ module SDBMSS::ReferenceData
         height: 205,
         width: 150,
         manuscript_binding: 'Contemporary (?) boards.',
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       EntryTitle.create!(
@@ -1025,7 +1038,7 @@ module SDBMSS::ReferenceData
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
         location_institution: "Schoenberg Institute for Manuscript Studies",
         medium: Source::TYPE_MEDIUM_LIBRARY,
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       source_agent = SourceAgent.create!(
@@ -1044,7 +1057,7 @@ module SDBMSS::ReferenceData
         initials_historiated: 1,
         initials_decorated: 19,
         manuscript_binding: 'Contemporary blind-stamped calf over wooden boards, four brass cornerplates, each with a long petal-like extension stamped with "Maria", complex central brass medallion with the Christogram "Y H S" against a radiating sun and with eight surrounding circles stamped with a starburst, one brass and leather clasp, brass catches for three other clasps (now lacking)',
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       transaction = Event.create!(
@@ -1120,7 +1133,7 @@ module SDBMSS::ReferenceData
         location: "Philadelphia, US",
         link: "RBC Ref. Z 6620 U% R5 v. 1",
         medium: Source::TYPE_MEDIUM_LIBRARY,
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
     end
 
@@ -1134,7 +1147,7 @@ module SDBMSS::ReferenceData
         width: 100,
         miniatures_unspec_size: 9,
         manuscript_binding: '18th-century brown calf.',
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       EntryTitle.create!(
@@ -1167,7 +1180,7 @@ module SDBMSS::ReferenceData
         source: @source,
         catalog_or_lot_number: "1",
         institution: Name.find_or_create_artist('Allsopp, Fred W.'),
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       EntryTitle.create!(
@@ -1227,7 +1240,7 @@ module SDBMSS::ReferenceData
         medium: Source::TYPE_MEDIUM_INTERNET,
         date_accessed: "2015-03-10",
         link: "http://www.ader-paris.fr/flash/index.jsp?id=21247&idCp=97&lng=fr",
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
     end
 
@@ -1248,7 +1261,7 @@ module SDBMSS::ReferenceData
         medium: Source::TYPE_MEDIUM_INTERNET,
         date_accessed: "2015-03-10",
         link: "http://www.ader-paris.fr/flash/index.jsp?id=21247&idCp=97&lng=fr",
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
     end
 
@@ -1269,7 +1282,7 @@ module SDBMSS::ReferenceData
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
         medium: Source::TYPE_MEDIUM_PERSONAL_COMMUNICATION,
         date_accessed: "2015-03-10",
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
     end
 
@@ -1291,7 +1304,7 @@ module SDBMSS::ReferenceData
         medium: Source::TYPE_MEDIUM_PRIVATE_COLLECTION,
         date_accessed: "2015-03-09",
         location: "Philadelphia, PA",
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       source_agent = SourceAgent.create!(
@@ -1317,7 +1330,7 @@ module SDBMSS::ReferenceData
         medium: Source::TYPE_MEDIUM_INTERNET,
         date_accessed: "2015-03-16",
         link: "www.ebay.com",
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       source_agent = SourceAgent.create!(
@@ -1337,7 +1350,7 @@ module SDBMSS::ReferenceData
         manuscript_binding: 'Original wooden boards',
         manuscript_link: "http://www.ebay.com/itm/MEDIEVAL-Miniature-CRUCIFIXION-c1450-A-D-Book-of-Hours-Vellum-MISSAL-MANUSCRIPT-/371277701327?pt=LH_DefaultDomain_0&hash=item5671e020cf",
         other_info: "This is a fragment. Folio count not provided.",
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       transaction = Event.create!(
@@ -1387,7 +1400,7 @@ module SDBMSS::ReferenceData
         comment: "A google search on \"sharrock ushaw\" returned a website from Ushaw College Library Special Collections Catalogue. The Ushaw College History Papers archive contains this reference: UC/H306 13 November 1815 Letter from J.B. Marsh to William Hogarth: financial affairs of P.J. Sharrock, and the offer of his books to Ushaw's library. (see http://reed.dur.ac.uk/xtf/view?docId=ead/ush/uchistor.xml).",
         public: true,
         date: DateTime.now,
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       entry
@@ -1410,7 +1423,7 @@ module SDBMSS::ReferenceData
         medium: Source::TYPE_MEDIUM_INTERNET,
         date_accessed: "20150317",
         link: "http://www.marcvandewiele.com",
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       source_agent = SourceAgent.create!(
@@ -1437,7 +1450,7 @@ module SDBMSS::ReferenceData
         medium: Source::TYPE_MEDIUM_PERSONAL_COMMUNICATION,
         date_accessed: "20150317",
         location: "Philadelphia, PA",
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
         comments: "Spreadsheet created and shared by curators at David Rubenstein Library, Duke University.",
       )
 
@@ -1460,7 +1473,7 @@ module SDBMSS::ReferenceData
         width: 227,
         manuscript_binding: 'Clam-shell box',
         other_info: "Complete New Testament in Greek. Order of Books:  Gospels, Acts, James, Pauline Epistles, general epistles except for James, Apocalypse. Gregory-Aland 1780.",
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       EntryTitle.create!(
@@ -1503,7 +1516,7 @@ module SDBMSS::ReferenceData
         date_accessed: "20150323",
         location_institution: "University of Pennsylvania Libraries",
         location: "Philadelphia, PA",
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
     end
 
@@ -1519,7 +1532,7 @@ module SDBMSS::ReferenceData
         width: 56,
         initials_decorated: 1,
         manuscript_binding: 'modern light brown inlaid morocco with red and gold floral and leaf decoration',
-        created_by: User.where(username: 'lransom').first,
+        created_by: lransom,
       )
 
       EntryTitle.create!(

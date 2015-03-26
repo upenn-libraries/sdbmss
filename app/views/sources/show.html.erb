@@ -177,7 +177,7 @@
                 <tr>
                     <td class="col-sm-2 text-right record-label">Created By</td>
                     <td class="col-sm-10">
-                        <%= @source.created_by || "N/A" %>
+                        <%= render partial: "shared/username_with_profile_link", locals: { user: @source.created_by } %>
                     </td>
                 </tr>
 

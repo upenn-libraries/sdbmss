@@ -57,6 +57,8 @@ Rails.application.routes.draw do
     collection { get 'search' }
   end
 
+  get '/profiles/:username', to: 'profiles#show', as: 'profile'
+
   get '/reports/', to: 'reports#show'
   get '/reports/names/', to: 'reports#names'
   get '/reports/languages/', to: 'reports#languages'
