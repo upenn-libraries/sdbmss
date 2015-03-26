@@ -25,6 +25,10 @@ module SDBMSS::ReferenceData
       Ader.new
       Email.new
       PersonalObservation.new
+      EBay.new
+      VanDeWiele.new
+      Duke.new
+      Steinhauser.new
     end
   end
 
@@ -1295,6 +1299,315 @@ module SDBMSS::ReferenceData
         agent: Name.find_or_create_agent("Chiu, Jeff"),
         role: SourceAgent::ROLE_INSTITUTION,
       )
+    end
+  end
+
+  # Example of EBay
+  class EBay < RefDataBase
+    def initialize
+      create_source
+      reindex create_entry
+    end
+
+    def create_source
+      @source = Source.create!(
+        source_type: Source::TYPE_ONLINE,
+        title: "Ebay",
+        whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
+        medium: Source::TYPE_MEDIUM_INTERNET,
+        date_accessed: "2015-03-16",
+        link: "www.ebay.com",
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      source_agent = SourceAgent.create!(
+        source: @source,
+        agent: Name.find_or_create_agent("Ebay"),
+        role: SourceAgent::ROLE_SELLING_AGENT,
+      )
+    end
+
+    def create_entry
+      entry = Entry.create!(
+        source: @source,
+        catalog_or_lot_number: "371277701327",
+        height: 100,
+        width: 68,
+        miniatures_fullpage: 1,
+        manuscript_binding: 'Original wooden boards',
+        manuscript_link: "http://www.ebay.com/itm/MEDIEVAL-Miniature-CRUCIFIXION-c1450-A-D-Book-of-Hours-Vellum-MISSAL-MANUSCRIPT-/371277701327?pt=LH_DefaultDomain_0&hash=item5671e020cf",
+        other_info: "This is a fragment. Folio count not provided.",
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      transaction = Event.create!(
+        primary: true,
+        entry: entry,
+        price: 3299.0,
+        currency: 'USD',
+        sold: Event::TYPE_SOLD_UNKNOWN,
+      )
+      EventAgent.create!(
+        event: transaction,
+        agent: Name.find_or_create_agent("Ebay"),
+        role: EventAgent::ROLE_SELLING_AGENT
+      )
+      EventAgent.create!(
+        event: transaction,
+        # TODO: we need a way to indicate this is an ebay account name in the Name record
+        agent: Name.find_or_create_agent("weisse-lilie-art"),
+        role: EventAgent::ROLE_SELLER_OR_HOLDER
+      )
+
+      EntryTitle.create!(
+        entry: entry,
+        title: 'Book of Hours or Missal, fragment',
+      )
+
+      EntryDate.create!(entry: entry, date: '1450', circa: 'C?')
+
+      EntryPlace.create!(
+        entry: entry,
+        place: Place.find_or_create_by(name: 'France'),
+      )
+
+      Event.create!(
+        entry: entry,
+        comment: "Inscription on a leaf: Missale m S. P. Sharrock Ushaw. [Ushaw is possible reference to Ushaw College, Durham University?].",
+        event_agents_attributes: [
+          {
+            observed_name: "S. P. Sharrock Ushaw",
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          }
+        ]
+      )
+
+      EntryComment.create!(
+        entry: entry,
+        comment: "A google search on \"sharrock ushaw\" returned a website from Ushaw College Library Special Collections Catalogue. The Ushaw College History Papers archive contains this reference: UC/H306 13 November 1815 Letter from J.B. Marsh to William Hogarth: financial affairs of P.J. Sharrock, and the offer of his books to Ushaw's library. (see http://reed.dur.ac.uk/xtf/view?docId=ead/ush/uchistor.xml).",
+        public: true,
+        date: DateTime.now,
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      entry
+    end
+
+  end
+
+  # Example of auction catalog that is online
+  class VanDeWiele < RefDataBase
+    def initialize
+      create_source
+    end
+
+    def create_source
+      @source = Source.create!(
+        source_type: Source::TYPE_AUCTION_CATALOG,
+        date: "2015",
+        title: "Brafa 2015",
+        whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
+        medium: Source::TYPE_MEDIUM_INTERNET,
+        date_accessed: "20150317",
+        link: "http://www.marcvandewiele.com",
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      source_agent = SourceAgent.create!(
+        source: @source,
+        agent: Name.find_or_create_agent("Marc Van de Wiele"),
+        role: SourceAgent::ROLE_SELLING_AGENT,
+      )
+    end
+
+  end
+
+  # Example of spreadsheet emailed to Lynn (unpublished source)
+  class Duke < RefDataBase
+    def initialize
+      create_source
+      reindex create_entry
+    end
+
+    def create_source
+      @source = Source.create!(
+        source_type: Source::TYPE_UNPUBLISHED,
+        title: "Duke Greek MS codex MSS.xls",
+        whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
+        medium: Source::TYPE_MEDIUM_PERSONAL_COMMUNICATION,
+        date_accessed: "20150317",
+        location: "Philadelphia, PA",
+        created_by: User.where(username: 'lransom').first,
+        comments: "Spreadsheet created and shared by curators at David Rubenstein Library, Duke University.",
+      )
+
+      source_agent = SourceAgent.create!(
+        source: @source,
+        agent: Name.find_or_create_agent("Duke University, David Rubenstein Library"),
+        role: SourceAgent::ROLE_INSTITUTION,
+      )
+    end
+
+    def create_entry
+      entry = Entry.create!(
+        source: @source,
+        catalog_or_lot_number: "Greek MS 001",
+        institution: Name.find_or_create_agent("Duke University, David Rubenstein Library"),
+        folios: 198,
+        num_lines: 41,
+        num_columns: 1,
+        height: 306,
+        width: 227,
+        manuscript_binding: 'Clam-shell box',
+        other_info: "Complete New Testament in Greek. Order of Books:  Gospels, Acts, James, Pauline Epistles, general epistles except for James, Apocalypse. Gregory-Aland 1780.",
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      EntryTitle.create!(
+        entry: entry,
+        title: 'New Testament',
+      )
+
+      EntryDate.create!(entry: entry, date: '1200')
+
+      EntryLanguage.create!(
+        entry: entry,
+        language: Language.find_or_create_by(name: 'Greek')
+      )
+
+      EntryMaterial.create!(
+        entry: entry,
+        material: 'Parchment'
+      )
+
+      entry
+    end
+
+  end
+
+  # Example of a journal article
+  class Steinhauser < RefDataBase
+    def initialize
+      create_source
+      reindex create_entry
+    end
+
+    def create_source
+      @source = Source.create!(
+        source_type: Source::TYPE_OTHER_PUBLISHED,
+        date: "2014",
+        title: '"A Catalogue of Medieval and Renaissance Manuscripts Located at Villanova University," Manuscripta, vol. 58:2',
+        author: "Kenneth B. Steinhauser",
+        whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
+        medium: Source::TYPE_MEDIUM_LIBRARY,
+        date_accessed: "20150323",
+        location_institution: "University of Pennsylvania Libraries",
+        location: "Philadelphia, PA",
+        created_by: User.where(username: 'lransom').first,
+      )
+    end
+
+    def create_entry
+      entry = Entry.create!(
+        source: @source,
+        catalog_or_lot_number: "OM 1",
+        institution: Name.find_or_create_agent("Villanova University, Falvey Memorial Library"),
+        folios: 212,
+        num_lines: 26,
+        num_columns: 1,
+        height: 96,
+        width: 56,
+        initials_decorated: 1,
+        manuscript_binding: 'modern light brown inlaid morocco with red and gold floral and leaf decoration',
+        created_by: User.where(username: 'lransom').first,
+      )
+
+      EntryTitle.create!(
+        entry: entry,
+        title: 'Opera minora',
+      )
+
+      EntryAuthor.create!(
+        entry: entry,
+        observed_name: "(pseudo-) Augustine",
+        author: Name.find_or_create_author('Pseudo-Augustine, Saint, Bishop of Hippo')
+      )
+
+      EntryDate.create!(entry: entry, date: '1450', circa: 'CCENT')
+
+      EntryMaterial.create!(
+        entry: entry,
+        material: 'Parchment'
+      )
+
+      Event.create!(
+        entry: entry,
+        comment: '"E.H." is an unknown 19th century or early 20th century owner.',
+        event_agents_attributes: [
+          {
+            observed_name: "E.H.",
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          }
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        start_date: "19181114",
+        comment: 'Provenance info given in De Ricci, II: 2132.',
+        event_agents_attributes: [
+          {
+            agent: Name.find_or_create_agent("Sotheby's"),
+            role: EventAgent::ROLE_SELLING_AGENT
+          },
+          {
+            agent: Name.find_or_create_agent("Leighton, W. J."),
+            observed_name: "Leighton, W. J.",
+            role: EventAgent::ROLE_SELLER_OR_HOLDER
+          },
+          {
+            agent: Name.find_or_create_agent("James Tregaskis (Firm)"),
+            observed_name: "Tregaskis",
+            role: EventAgent::ROLE_BUYER,
+          },
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        start_date: "1925",
+        comment: 'Provenance info given in De Ricci, II: 2132.',
+        event_agents_attributes: [
+          {
+            agent: Name.find_or_create_agent("Tregaskis, James"),
+            observed_name: "James Tregaskis",
+            role: EventAgent::ROLE_SELLING_AGENT
+          },
+          {
+            agent: Name.find_or_create_agent("John F. Lewis"),
+            observed_name: "John F. Lewis",
+            role: EventAgent::ROLE_BUYER,
+          },
+        ]
+      )
+
+      Event.create!(
+        entry: entry,
+        comment: 'Provenance info given in De Ricci, II: 2132.',
+        event_agents_attributes: [
+          {
+            agent: Name.find_or_create_agent("John F. Lewis"),
+            role: EventAgent::ROLE_SELLING_AGENT
+          },
+          {
+            agent: Name.find_or_create_agent("Villanova College"),
+            observed_name: "Villanova College",
+            role: EventAgent::ROLE_BUYER,
+          },
+        ]
+      )
+
+      entry
     end
 
   end
