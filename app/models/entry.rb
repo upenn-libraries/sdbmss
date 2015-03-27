@@ -360,6 +360,9 @@ class Entry < ActiveRecord::Base
       fields.map { |item| item.to_s }.select { |item| (!item.nil?) && (item.length > 0) }.join "\n"
     end
 
+    define_field(:string, :entry, :stored => true) do
+      public_id
+    end
     # for sorting
     define_field(:integer, :entry_id, :stored => true) do
       @__receiver__.id.to_i
