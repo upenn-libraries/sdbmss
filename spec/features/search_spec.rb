@@ -51,6 +51,15 @@ describe "Blacklight Search", :js => true do
     end
   end
 
+  it "should display Author facet" do
+    visit root_path
+    click_button('search')
+    expect(page).to have_selector("#documents")
+
+    first(:css, "#facet-author .facet_select").click
+    expect(page).to have_selector("#documents")
+  end
+
   it "should search on Provenance" do
     visit root_path
     select "Provenance", from: "search_field"

@@ -44,7 +44,7 @@ gem 'unicorn', '~> 4.8.0'
 # gem 'debugger', group: [:development, :test]
 
 # Blacklight
-gem "blacklight", "~> 5.10.2"
+gem "blacklight", "~> 5.12.0"
 gem "jettywrapper", "~> 1.8.0"
 gem "blacklight_advanced_search", "~> 5.1.3"
 

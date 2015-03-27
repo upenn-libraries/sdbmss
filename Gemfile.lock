@@ -36,10 +36,10 @@ GEM
       execjs
       json
     bcrypt (3.1.10)
-    blacklight (5.10.3)
+    blacklight (5.12.1)
       bootstrap-sass (~> 3.2)
       deprecation
-      kaminari (~> 0.13)
+      kaminari (>= 0.15)
       nokogiri (~> 1.6)
       rails (>= 3.2.6, < 5)
       rsolr (~> 1.0.11)
@@ -248,7 +248,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord-session_store (~> 0.1.0)
-  blacklight (~> 5.10.2)
+  blacklight (~> 5.12.0)
   blacklight_advanced_search (~> 5.1.3)
   capistrano-rails (~> 1.1.0)
   capybara (~> 2.4.4)
