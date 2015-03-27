@@ -10,6 +10,10 @@
                     <li class="edit_entry">
                         <a href="<%= edit_manuscript_path(@manuscript.id) %>">Edit this manuscript</a>
                     </li>
+
+                    <li class="manage_entry">
+                        <a href="<%= manage_entries_manuscript_path(@manuscript.id) %>">Manage entries</a>
+                    </li>
                     <% end %>
                 </ul>
             </div>

@@ -43,6 +43,7 @@ Rails.application.routes.draw do
     collection { get 'search' }
     member do
       get 'entry_candidates'
+      get 'manage_entries'
     end
   end
 

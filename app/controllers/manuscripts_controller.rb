@@ -1,6 +1,6 @@
 class ManuscriptsController < SimpleNamedModelsController
 
-  before_action :set_manuscript, only: [:show, :edit, :entry_candidates]
+  before_action :set_manuscript, only: [:show, :edit, :entry_candidates, :manage_entries]
 
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
 
