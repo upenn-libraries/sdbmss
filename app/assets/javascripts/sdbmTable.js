@@ -455,6 +455,14 @@ function SDBMEntryTable(selector, options) {
             $(row).attr("title", "SDBM_" + data[sdbmTable.getColumnIndex("ID")]);
         });
     });
+
+    $(selector).on('click', 'tr', function (event) {
+        // don't select if a link inside table was clicked
+        if(event.target.tagName !== 'A') {
+            $(event.currentTarget).toggleClass('selected');
+        }
+    });
+
 };
 
 SDBMEntryTable.prototype = Object.create(SDBMTable.prototype);
