@@ -121,7 +121,7 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'source_search' }
       end
 
-      config.add_search_field('source', label: "Source ID") do |field|
+      config.add_search_field('source', label: "Source ID (Full)") do |field|
         field.include_in_simple_select = false
         field.solr_local_parameters = { :qf => 'source' }
       end
@@ -267,12 +267,18 @@ module CatalogControllerConfiguration
       end
 
       config.add_search_field 'entry_id', :label => 'Entry ID' do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = false
+        field.solr_local_parameters = { :qf => 'entry_id' }
+      end
+
+      config.add_search_field 'entry', :label => 'Entry ID (Full)' do |field|
         field.include_in_simple_select = true
         field.is_numeric_field = false
         field.solr_local_parameters = { :qf => 'entry' }
       end
 
-      config.add_search_field 'manuscript', :label => 'Manuscript ID' do |field|
+      config.add_search_field 'manuscript', :label => 'Manuscript ID (Full)' do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = false
         field.solr_local_parameters = { :qf => 'manuscript' }
