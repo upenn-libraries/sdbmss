@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150327182517) do
+ActiveRecord::Schema.define(version: 20150327203149) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -298,6 +298,19 @@ ActiveRecord::Schema.define(version: 20150327182517) do
     t.string  "issue_type"
     t.string  "explanation", limit: 1024
   end
+
+  create_table "manuscript_comments", force: true do |t|
+    t.integer  "manuscript_id"
+    t.text     "comment"
+    t.datetime "created_at"
+    t.integer  "created_by_id"
+    t.datetime "updated_at"
+    t.integer  "updated_by_id"
+  end
+
+  add_index "manuscript_comments", ["created_by_id"], name: "index_manuscript_comments_on_created_by_id", using: :btree
+  add_index "manuscript_comments", ["manuscript_id"], name: "index_manuscript_comments_on_manuscript_id", using: :btree
+  add_index "manuscript_comments", ["updated_by_id"], name: "index_manuscript_comments_on_updated_by_id", using: :btree
 
   create_table "manuscripts", force: true do |t|
     t.datetime "created_at"

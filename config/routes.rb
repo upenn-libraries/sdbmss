@@ -47,6 +47,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :manuscript_comments
+
   resources :names do
     collection do
       get 'search'

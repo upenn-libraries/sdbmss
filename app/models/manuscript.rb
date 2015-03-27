@@ -4,6 +4,7 @@ class Manuscript < ActiveRecord::Base
 
   has_many :entry_manuscripts
   has_many :entries, through: :entry_manuscripts
+  has_many :manuscript_comments
   has_many :linked_entries, -> { where entry_manuscripts: { relation_type: EntryManuscript::TYPE_RELATION_IS } }, source: :entry, through: :entry_manuscripts
 
   accepts_nested_attributes_for :entry_manuscripts, allow_destroy: true

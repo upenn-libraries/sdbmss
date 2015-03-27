@@ -85,6 +85,45 @@
             </tbody>
         </table>
 
+        <% if (manuscript_comments = @manuscript.manuscript_comments).present? %>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-12" colspan="2"><b>Comments</b></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% manuscript_comments.each do |manuscript_comment| %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">
+                        By <%= render partial: "shared/username_with_profile_link", locals: { user: manuscript_comment.created_by } %><br/>
+                        At <%= manuscript_comment.created_at.strftime("%Y-%m-%d %I:%M%P") %>
+                    </td>
+                    <td class="col-sm-10">
+                        <%= manuscript_comment.comment||"(none)" %>
+                    </td>
+                </tr>
+                <% end %>
+            </tbody>
+        </table>
+        <% end %>
+
+        <% if user_signed_in? %>
+        <%= form_for ManuscriptComment.new(manuscript: @manuscript) do |f| %>
+        <%= f.hidden_field :manuscript_id %>
+        <input type="hidden" name="return_url" value="<%= manuscript_path @manuscript %>"/>
+        <div class="row">
+            <div class="col-sm-12 form-group">
+                <h4>Leave a comment</h4>
+                <%= f.text_area :comment, class: "form-control", rows: 5 %>
+            </div>
+            <div class="col-sm-12 text-right">
+                <button class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+        <% end %>
+        <% end %>
+
     </div>
 
 </div>
