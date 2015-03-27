@@ -47,7 +47,7 @@ class NamesController < SimpleNamedModelsController
     else
       p = params
     end
-    p.permit(:name, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe)
+    p.permit(:name, :comment, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe)
   end
 
 end

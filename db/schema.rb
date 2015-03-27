@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150312194828) do
+ActiveRecord::Schema.define(version: 20150327131406) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -334,6 +334,7 @@ ActiveRecord::Schema.define(version: 20150312194828) do
     t.integer  "source_agents_count"
     t.integer  "event_agents_count"
     t.boolean  "deleted",             default: false
+    t.text     "comment"
   end
 
   add_index "names", ["approved_by_id"], name: "index_names_on_approved_by_id", using: :btree

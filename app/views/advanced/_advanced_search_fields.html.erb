@@ -37,6 +37,8 @@ $(document).ready(function() {
 <% text_search_fields = search_fields_for_advanced_search.reject { |key, field_def| field_def.is_numeric_field }.sort %> 
 <% range_search_fields = search_fields_for_advanced_search.select { |key, field_def| field_def.is_numeric_field }.sort %> 
 
+<div class="compress-whitespace">
+
 <% 5.times do |x| %>
 <div class="form-group advanced-search-field">
     <div class="col-sm-7">
@@ -75,3 +77,5 @@ $(document).ready(function() {
     </div>
 </div>
 <% end %>
+
+</div>

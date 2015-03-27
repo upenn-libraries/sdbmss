@@ -23,6 +23,12 @@
           <%= f.text_field :viaf_id, :class => 'form-control' %>
       </div>
   </div>
+  <div class="field form-group row">
+      <%= f.label :comment, class: "col-sm-2 control-label" %>
+      <div class="col-sm-8">
+          <%= f.text_field :comment, :class => 'form-control' %>
+      </div>
+  </div>
   <div class="actions row">
       <div class="col-sm-4 col-sm-offset-2">
           <%= f.submit :class => 'btn btn-primary' %>

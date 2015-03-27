@@ -24,10 +24,10 @@ h1 { font-size: 30px; margin-top: 10px; }
 
 .record-label { color: #777 }
 
-/* advanced search page */
+/* use .compress-whitespace to surround .form-group class elements to tighten up whitespace */
 
-.advanced .form-group {
-    margin-bottom: 5px;
+.compress-whitespace .form-group {
+    margin-bottom: 10px;
 }
 
 /**** Style for various data entry forms */
