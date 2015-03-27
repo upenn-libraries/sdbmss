@@ -629,6 +629,7 @@ module SDBMSS::Legacy
           entry: entry,
           comment: row['ENTRY_COMMENTS'],
           public: false,
+          created_at: row['LAST_MODIFIED'],
           # we don't know who made the comment (it's possibly been
           # edited by several people), so set it to
           # manuscript_database

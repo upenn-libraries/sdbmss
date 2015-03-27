@@ -65,6 +65,7 @@ class EntriesController < ApplicationController
           if params[:new_comment].present?
             ec = EntryComment.new(
               entry_id: @entry.id,
+              public: true,
               comment: params[:new_comment],
               created_by: current_user)
             ec.save!

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150327131406) do
+ActiveRecord::Schema.define(version: 20150327182517) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -142,7 +142,6 @@ ActiveRecord::Schema.define(version: 20150327131406) do
     t.integer  "entry_id"
     t.text     "comment"
     t.boolean  "public"
-    t.datetime "date"
     t.datetime "created_at"
     t.integer  "created_by_id"
     t.datetime "updated_at"
