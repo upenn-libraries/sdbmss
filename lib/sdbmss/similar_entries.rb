@@ -68,6 +68,7 @@ module SDBMSS
       store(:folios, entry.folios)
       store(:height, entry.height)
       store(:width, entry.width)
+      store(:languages, LevenshteinStringSet.new(entry.entry_languages.map { |entry_language| entry_language.language.to_s }))
       store(:titles, LevenshteinStringSet.new(entry.entry_titles.map(&:title)))
     end
 
