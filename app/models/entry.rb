@@ -58,6 +58,7 @@ class Entry < ActiveRecord::Base
                {:event_agents => [:agent]}
              ],
              :source => [
+               :source_type,
                {:source_agents => [:agent]}
              ]
             )
