@@ -28,7 +28,7 @@ module ResourceSearch
   # Classes should override this if the name of the controller doesn't
   # conform to the Rails convention of 'ModelController'.
   def search_model_class
-    send(:class).to_s.sub('Controller', '').singularize.constantize
+    self.class.to_s.sub('Controller', '').singularize.constantize
   end
 
   # Classes should override this is they want to return a different
@@ -41,11 +41,10 @@ module ResourceSearch
   # Formats the passed-in search result object, returning it as a hash.
   # This default implementation uses #search_results_keys.
   def search_result_format(obj)
-    result = Hash.new
-    search_results_keys.each do |key|
+    search_results_keys.reduce({ }) do |result, key|
       result[key] = obj.send key
+      result
     end
-    result
   end
 
   # Classes can override this to modify the results with additional
