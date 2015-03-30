@@ -522,6 +522,9 @@
 
             if(entry.source.source_type.entries_transaction_field != 'choose') {
                 entry.transaction_type = entry.source.source_type.entries_transaction_field;
+            } else {
+                // select the first one
+                entry.transaction_type = $scope.optionsTransactionType[0][0];
             }
 
             if(!entry.transaction) {
