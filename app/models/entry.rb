@@ -39,8 +39,6 @@ class Entry < ActiveRecord::Base
   accepts_nested_attributes_for :entry_uses, allow_destroy: true
   accepts_nested_attributes_for :events, allow_destroy: true
 
-  validates_presence_of :source
-
   # aggressively load all associations; useful for cases where you
   # want to display the complete info for Entries
   scope :load_associations, -> {
@@ -86,6 +84,32 @@ class Entry < ActiveRecord::Base
     ['48mo', 'Quadragesimo-octavo or Forty-eightmo'],
     ['64mo', 'Sexagesimo-quarto or Sixty-fourmo'],
   ]
+
+  TYPE_TRANSACTION_SALE = 'sale'
+  TYPE_TRANSACTION_GIFT = 'gift'
+  TYPE_TRANSACTION_NONE = 'no_transaction'
+
+  TYPES_TRANSACTION = [
+    [TYPE_TRANSACTION_SALE, 'Sale'],
+    [TYPE_TRANSACTION_GIFT, 'Gift'],
+    [TYPE_TRANSACTION_NONE, 'Not a transaction'],
+  ]
+
+  validates_presence_of :source
+
+  validate do |entry|
+    if entry.transaction_type
+      # validate transaction_type based on source_type
+      transaction_field = entry.source.source_type.entries_transaction_field
+      if transaction_field != 'choose' && entry.transaction_type != transaction_field
+        errors[:transaction_type] = "transaction_type '#{entry.transaction_type}' isn't valid for source type '#{entry.source.source_type.name}'"
+      end
+      # make sure it's one of the listed values
+      if !TYPES_TRANSACTION.map(&:first).member?(entry.transaction_type)
+        errors[:transaction_type] = "transaction_type '#{entry.transaction_type}' isn't in the list of valid values"
+      end
+    end
+  end
 
   def public_id
     "SDBM_#{id}"

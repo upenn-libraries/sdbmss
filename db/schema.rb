@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150327203149) do
+ActiveRecord::Schema.define(version: 20150330164757) do
 
   create_table "agents", force: true do |t|
     t.integer  "entry_id"
@@ -89,6 +89,7 @@ ActiveRecord::Schema.define(version: 20150327203149) do
     t.datetime "updated_at"
     t.integer  "updated_by_id"
     t.integer  "institution_id"
+    t.string   "transaction_type"
   end
 
   add_index "entries", ["created_by_id"], name: "index_entries_on_created_by_id", using: :btree
@@ -422,9 +423,15 @@ ActiveRecord::Schema.define(version: 20150327203149) do
   add_index "source_agents", ["agent_id"], name: "index_source_agents_on_agent_id", using: :btree
   add_index "source_agents", ["source_id"], name: "index_source_agents_on_source_id", using: :btree
 
+  create_table "source_types", force: true do |t|
+    t.string  "name"
+    t.string  "display_name"
+    t.string  "entries_transaction_field"
+    t.boolean "entries_have_institution_field"
+  end
+
   create_table "sources", force: true do |t|
     t.string   "date"
-    t.string   "source_type"
     t.string   "title",                limit: 512
     t.string   "author"
     t.string   "whether_mss"
@@ -443,9 +450,11 @@ ActiveRecord::Schema.define(version: 20150327203149) do
     t.string   "location"
     t.string   "medium"
     t.string   "date_accessed"
+    t.integer  "source_type_id"
   end
 
   add_index "sources", ["created_by_id"], name: "index_sources_on_created_by_id", using: :btree
+  add_index "sources", ["source_type_id"], name: "index_sources_on_source_type_id", using: :btree
   add_index "sources", ["updated_by_id"], name: "index_sources_on_updated_by_id", using: :btree
 
   create_table "users", force: true do |t|

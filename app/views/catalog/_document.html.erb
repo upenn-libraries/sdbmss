@@ -24,7 +24,7 @@
 
 	    <dt>Source</dt>
 	    <dd>
-            <%= link_to entry.source.display_value, source_path(entry.source) %> (<%= entry.source.get_source_type_for_display %>)
+            <%= link_to entry.source.display_value, source_path(entry.source) %> (<%= entry.source.source_type.display_name %>)
         </dd>
 
         <% if entry.catalog_or_lot_number.present? %>

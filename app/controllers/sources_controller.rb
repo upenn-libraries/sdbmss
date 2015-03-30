@@ -68,7 +68,7 @@ class SourcesController < ApplicationController
     {
       id: obj.id,
       date: obj.date,
-      source_type: obj.source_type,
+      source_type: obj.source_type.display_name,
       entries_count: obj.entries_count || 0,
       title: obj.title,
       display_value: obj.display_value,
@@ -117,7 +117,7 @@ class SourcesController < ApplicationController
   # returns JSON containing type constants
   def types
     data = {
-      'source_type' => Source::SOURCE_TYPES,
+      'source_type' => SourceType.all,
       'medium' => Source::MEDIUM_TYPES,
     }
     render json: data
@@ -165,7 +165,7 @@ class SourcesController < ApplicationController
     # Rails convention, because Rails' wrapped parameters feature
     # doesn't pick up the *_attributes fields that way.
     params.permit(
-      :source_type,
+      :source_type_id,
       :date,
       :title,
       :author,

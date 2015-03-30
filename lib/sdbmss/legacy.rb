@@ -27,7 +27,6 @@ module SDBMSS::Legacy
       "UNKNOWN" => Event::TYPE_SOLD_UNKNOWN,
       "YES" => Event::TYPE_SOLD_YES,
       "NO" => Event::TYPE_SOLD_NO,
-      "GIFT" => Event::TYPE_SOLD_GIFT,
       "WD" => Event::TYPE_SOLD_WITHDRAWN,
     }
 
@@ -304,14 +303,14 @@ module SDBMSS::Legacy
       unknown_source = Source.create!(
         date: "00000000",
         title: "Unknown (entry record needs to be fixed)",
-        source_type: Source::TYPE_UNPUBLISHED,
+        source_type: SourceType.unpublished,
       )
 
       # special case for handling records from Jordanus
       jordanus = Source.create!(
         date: "00000000",
         title: "Jordanus",
-        source_type: Source::TYPE_OTHER_PUBLISHED,
+        source_type: SourceType.other_published,
       )
 
       puts "Migrating Source records"
@@ -581,6 +580,14 @@ module SDBMSS::Legacy
         end
       end
 
+      transaction_type = source.source_type.entries_transaction_field
+      if transaction_type == 'choose'
+        transaction_type = Entry::TYPE_TRANSACTION_NONE
+        if row['SOLD'].present?
+          transaction_type = (row['SOLD'] == 'GIFT') ? Entry::TYPE_TRANSACTION_GIFT : Entry::TYPE_TRANSACTION_SALE
+        end
+      end
+
       if row['ALT_SIZE'].present? and ! VALID_ALT_SIZE_TYPES.member? row['ALT_SIZE']
         # TODO: these can be cleaned up programmatically, no need to warn
         # print "WARNING: entry ID=%s has bad alt_size value: %s" % (row['MANUSCRIPT_ID'], row['ALT_SIZE'])
@@ -596,6 +603,7 @@ module SDBMSS::Legacy
         id: row['MANUSCRIPT_ID'],
         source: source,
         catalog_or_lot_number: row['CAT_OR_LOT_NUM'],
+        transaction_type: transaction_type,
         secondary_source: row['SECONDARY_SOURCE'],
         folios: row['FOLIOS'],
         num_columns: row['COL'],
@@ -671,7 +679,7 @@ module SDBMSS::Legacy
 
         # we suppress Transaction info on UI for some source types, so make
         # sure non-sale sources don't have sale info
-        if source.source_type == Source::TYPE_COLLECTION_CATALOG && row['SECONDARY_SOURCE'].blank?
+        if source.source_type.name == SourceType::COLLECTION_CATALOG && row['SECONDARY_SOURCE'].blank?
           # this is probably a child record?
           puts "ERROR: record #{row['MANUSCRIPT_ID']}: has 'collection_catalog' source and no secondary source, therefore it should not have transaction info"
         end
@@ -687,12 +695,17 @@ module SDBMSS::Legacy
 
         sold = LEGACY_SOLD_CODES[row['SOLD']] || row['SOLD']
         if sold.present?
-          if !VALID_SOLD_TYPES.member?(sold)
-            create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'sold', "entry ID=#{row['MANUSCRIPT_ID']} had invalid value for Sold field: #{row['SOLD']}")
-            sold = Event::TYPE_SOLD_UNKNOWN
+          if sold == 'GIFT'
+            # gifts are now represented in Entry.transaction_type field
+            sold = nil
+          else
+            if !VALID_SOLD_TYPES.member?(sold)
+              create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'sold', "entry ID=#{row['MANUSCRIPT_ID']} had invalid value for Sold field: #{row['SOLD']}")
+              sold = nil
+            end
           end
         else
-          sold = Event::TYPE_SOLD_UNKNOWN
+          sold = nil
         end
 
         transaction = Event.create!(
@@ -1130,11 +1143,11 @@ module SDBMSS::Legacy
       case
       when row['SELLER'].present?
         # TODO: assert that other fields are blank?
-        source_type = Source::TYPE_AUCTION_CATALOG
+        source_type = SourceType.auction_catalog
       when row['INSTITUTION'].present?
-        source_type = Source::TYPE_COLLECTION_CATALOG
+        source_type = SourceType.collection_catalog
       else
-        source_type = Source::TYPE_OTHER_PUBLISHED
+        source_type = SourceType.other_published
       end
 
       whether_mss = row['WHETHER_MSS']

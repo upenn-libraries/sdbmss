@@ -10,7 +10,7 @@ describe "Manage sources", :js => true do
       password: 'somethingunguessable'
     )
     @source = Source.create!(
-      source_type: Source::TYPE_AUCTION_CATALOG,
+      source_type: SourceType.auction_catalog,
       title: "my test source"
     )
   end

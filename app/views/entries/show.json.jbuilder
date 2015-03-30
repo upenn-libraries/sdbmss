@@ -17,7 +17,11 @@ if @entry.get_manuscript.present?
 end
 
 json.source do
-  json.(@entry.source, :id, :display_value, :title, :date, :source_type, :entries_have_a_transaction, :entries_have_institution)
+  json.(@entry.source, :id, :display_value, :title, :date, :source_type_id)
+
+  json.source_type do
+    json.(@entry.source.source_type, :id, :name, :display_name, :entries_have_institution_field, :entries_transaction_field)
+  end
 end
 
 if @entry.entry_titles.present?

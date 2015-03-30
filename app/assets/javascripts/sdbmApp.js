@@ -360,6 +360,7 @@
 
         $scope.badData = [];
 
+        $scope.optionsTransactionType = undefined;
         $scope.optionsAuthorRole = undefined;
         $scope.optionsSold = undefined;
         $scope.optionsCurrency = undefined;
@@ -429,6 +430,10 @@
             alert("Not yet implemented");
         };
 
+        $scope.transactionTypeDisabled = function() {
+            return $scope.entry && $scope.entry.source && $scope.entry.source.source_type.entries_transaction_field != 'choose';
+        };
+
         // sanity check that values in Entry are actually valid
         // options for dropdowns.
         $scope.sanityCheckFields = function(entry) {
@@ -441,8 +446,10 @@
             });
 
             if(entry.transaction) {
-                if(!sdbmutil.inOptionsArray(entry.transaction.sold, $scope.optionsSold)) {
-                    $scope.badData.push("Bad sold value: '" + entry.transaction.sold + "'");
+                if(entry.transaction.sold) {
+                    if(!sdbmutil.inOptionsArray(entry.transaction.sold, $scope.optionsSold)) {
+                        $scope.badData.push("Bad sold value: '" + entry.transaction.sold + "'");
+                    }
                 }
                 if(entry.transaction.currency) {
                     if(! sdbmutil.inOptionsArray(entry.transaction.currency, $scope.optionsCurrency)) {
@@ -512,10 +519,15 @@
                     }
                 }
             }
-            if(!entry.transaction && entry.source.entries_have_a_transaction) {
+
+            if(entry.source.source_type.entries_transaction_field != 'choose') {
+                entry.transaction_type = entry.source.source_type.entries_transaction_field;
+            }
+
+            if(!entry.transaction) {
                 entry.transaction = {
                     primary: true,
-                    sold: 'Unknown'
+                    sold: null,
                 };
                 // prepopulate transaction agent fields with data from source_agents
                 var sourceAgents = entry.source.source_agents || [];
@@ -577,6 +589,11 @@
             $scope.currentlySaving = true;
 
             var entryToSave = new Entry(angular.copy($scope.entry));
+
+            // don't store a transaction if it's not applicable
+            if(entryToSave.transaction_type == 'no_transaction') {
+                entryToSave.transaction = null;
+            }
 
             // collapse Transaction and Provenance back into Events
             entryToSave.events = [].concat(entryToSave.provenance);
@@ -697,6 +714,7 @@
         $http.get("/entries/types/").then(
             function(result) {
 
+                $scope.optionsTransactionType = result.data.transaction_type;
                 $scope.optionsAuthorRole = result.data.author_role;
                 $scope.optionsSold = result.data.sold;
                 $scope.optionsCurrency = result.data.currency;
@@ -1164,6 +1182,9 @@
         $scope.save = function () {
             var sourceToSave = new Source(angular.copy($scope.source));
 
+            sourceToSave.source_type_id = sourceToSave.source_type.id;
+            delete sourceToSave.source_type;
+
             if(sourceToSave.date) {
                 sourceToSave.date = sourceToSave.date.replace(/-/g, "");
             }
@@ -1210,7 +1231,7 @@
 
         // "constructor" for controller goes here
 
-        $http.get("/sources/types/").then(
+        $http.get("/sources/types.json").then(
             function(result) {
 
                 $scope.optionsSourceType = result.data.source_type;

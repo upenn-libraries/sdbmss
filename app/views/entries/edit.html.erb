@@ -59,7 +59,7 @@
         <div class="form-group row">
             <label class="col-sm-2 control-label">Source</label>
             <div class="col-sm-8 label-alignment">
-                {{ entry.source.display_value }}
+                {{ entry.source.display_value }} ({{ entry.source.source_type.display_name }})
             </div>
         </div>
     </div>
@@ -71,14 +71,14 @@
       </div>
     </div>
 
-    <div class="row form-group" ng-show="entry.source.entries_have_institution">
+    <div class="row form-group" ng-show="entry.source.source_type.entries_have_institution_field">
       <label for="cat_lot_no" class="col-sm-2 control-label"><span sdbm-tooltip="institution">Institution/Collection</span></label>
       <div class="col-sm-5">
           <input id="institution" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.institution" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
       </div>
     </div>
 
-    <div class="transaction-information-container" ng-show="entry.source.entries_have_a_transaction">
+    <div class="transaction-information-container">
 
         <div class="row">
             <div class="col-sm-12">
@@ -87,62 +87,79 @@
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 control-label"><span sdbm-tooltip="seller">Selling Agent</span></label>
-            <div class="col-sm-5">
-                <div class="input-group">
-                    <input id="transaction_selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-                    <div id="transaction_selling_agent_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.selling_agent"><span class="glyphicon"></span></div>
-                </div>
-            </div>
-            <label class="col-sm-1 control-label"><span sdbm-tooltip="seller2">Seller</span></label>
-            <div class="col-sm-4">
-                <div class="input-group">
-                    <input id="transaction_seller" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-                    <div id="transaction_seller_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.seller_or_holder"><span class="glyphicon"></span></div>
-                </div>
+            <label class="col-sm-2 control-label"><span sdbm-tooltip="seller">This entry describes a</span></label>
+            <div class="col-sm-3">
+                <select class="form-control" id="transaction_type" ng-model="entry.transaction_type" ng-options="option[0] as option[1] for option in optionsTransactionType" ng-disabled="transactionTypeDisabled()"></select>
             </div>
         </div>
 
-        <div class="form-group row">
-            <label class="col-sm-2 control-label"><span sdbm-tooltip="buyer">Buyer</span></label>
-            <div class="col-sm-5">
-                <div class="input-group">
-                    <input id="transaction_buyer" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-                    <div id="transaction_buyer_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.buyer"><span class="glyphicon"></span></div>
+        <div ng-show="entry.transaction_type == 'sale' || entry.transaction_type == 'gift'">
+        
+            <div class="form-group row">
+                <label class="col-sm-2 control-label"><span sdbm-tooltip="seller">Selling Agent</span></label>
+                <div class="col-sm-5">
+                    <div class="input-group">
+                        <input id="transaction_selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                        <div id="transaction_selling_agent_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.selling_agent"><span class="glyphicon"></span></div>
+                    </div>
+                </div>
+                <label class="col-sm-1 control-label"><span sdbm-tooltip="seller2">Seller</span></label>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <input id="transaction_seller" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                        <div id="transaction_seller_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.seller_or_holder"><span class="glyphicon"></span></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="form-group row">
-            <label for="sold" class="col-sm-2 control-label"><span sdbm-tooltip="sold">Sold</span></label>
-            <div class="col-sm-2">
-                <select class="form-control" id="transaction_sold" ng-model="entry.transaction.sold" ng-options="option[0] as option[1] for option in optionsSold"></select>
-            </div>
-            <div ng-show="entry.transaction.sold == 'Yes'">
-                <label for="sold" class="col-sm-4 control-label"><span sdbm-tooltip="sold">Date Sold</span></label>
-                <div class="col-sm-3">
-                    <input type="text" class="form-control" id="transaction_date" ng-model="entry.transaction.start_date">
+            <div class="form-group row">
+                <label class="col-sm-2 control-label"><span sdbm-tooltip="buyer">Buyer</span></label>
+                <div class="col-sm-5">
+                    <div class="input-group">
+                        <input id="transaction_buyer" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                        <div id="transaction_buyer_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.buyer"><span class="glyphicon"></span></div>
+                    </div>
                 </div>
             </div>
+
+            <div ng-show="entry.transaction_type == 'sale'">
+
+                <div class="form-group row">
+                    <label for="sold" class="col-sm-2 control-label"><span sdbm-tooltip="sold">Sold</span></label>
+                    <div class="col-sm-2">
+                        <select class="form-control" id="transaction_sold" ng-model="entry.transaction.sold" ng-options="option[0] as option[1] for option in optionsSold">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div ng-show="entry.transaction.sold == 'Yes'">
+                        <label for="sold" class="col-sm-4 control-label"><span sdbm-tooltip="sold">Date Sold</span></label>
+                        <div class="col-sm-3">
+                            <input type="text" class="form-control" id="transaction_date" ng-model="entry.transaction.start_date">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label for="price" class="col-sm-2 control-label"><span sdbm-tooltip="price">Price</span></label>
+                    <div class="col-sm-2">
+                        <input type="text" class="form-control" id="transaction_price" ng-model="entry.transaction.price">
+                    </div>
+                    <label for="currency" class="col-sm-1 control-label"><span sdbm-tooltip="currency">Currency</span></label>
+                    <div class="col-sm-1">
+                        <select name="currency" id="transaction_currency" class="form-control" ng-model="entry.transaction.currency" ng-options="option[0] as option[1] for option in optionsCurrency">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <label for="other-currency" class="col-sm-2 control-label"><span sdbm-tooltip="otherCurrency">Other Currency</span></label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" id="other-currency" ng-model="entry.transaction.other_currency">
+                    </div>
+                </div>
+
+            </div>
+
         </div>
         
-        <div class="form-group row">
-            <label for="price" class="col-sm-2 control-label"><span sdbm-tooltip="price">Price</span></label>
-            <div class="col-sm-2">
-                <input type="text" class="form-control" id="transaction_price" ng-model="entry.transaction.price">
-            </div>
-            <label for="currency" class="col-sm-1 control-label"><span sdbm-tooltip="currency">Currency</span></label>
-            <div class="col-sm-1">
-                <select name="currency" id="transaction_currency" class="form-control" ng-model="entry.transaction.currency" ng-options="option[0] as option[1] for option in optionsCurrency">
-                    <option value=""></option>
-                </select>
-            </div>
-            <label for="other-currency" class="col-sm-2 control-label"><span sdbm-tooltip="otherCurrency">Other Currency</span></label>
-            <div class="col-sm-3">
-                <input type="text" class="form-control" id="other-currency" ng-model="entry.transaction.other_currency">
-            </div>
-        </div>
-
     </div>
 
     <div class="row">

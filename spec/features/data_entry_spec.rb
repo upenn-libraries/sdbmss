@@ -78,7 +78,7 @@ describe "Data entry", :js => true do
     @source = Source.find_or_create_by(
       title: "A Sample Test Source With a Highly Unique Name",
       date: "2013-11-12",
-      source_type: Source::TYPE_AUCTION_CATALOG
+      source_type: SourceType.auction_catalog,
     )
   end
 
@@ -108,7 +108,7 @@ describe "Data entry", :js => true do
     it "should load New Entry page with an auction catalog Source" do
       source = Source.new(
         title: "xxx",
-        source_type: Source::TYPE_AUCTION_CATALOG,
+        source_type: SourceType.auction_catalog,
         source_agents_attributes: [
           {
             agent: Name.find_or_create_agent("aaa"),
@@ -130,7 +130,9 @@ describe "Data entry", :js => true do
 
       expect(page).to have_content 'Add an Entry - Fill out details'
 
-      expect(page).to have_content 'Transaction Information'
+      expect(page).to have_no_field("institution")
+
+      expect(page).to have_select('transaction_type', selected: 'Sale', disabled: true)
 
       # should prepopulate Transaction fields
       expect(find_by_id("transaction_selling_agent").value).to eq("aaa")
@@ -138,10 +140,10 @@ describe "Data entry", :js => true do
       expect(find_by_id("transaction_buyer").value).to eq("ccc")
     end
 
-    it "should load New Entry page with a institutional catalog Source" do
+    it "should load New Entry page with a collection catalog Source" do
       source = Source.new(
         title: "xxx",
-        source_type: Source::TYPE_COLLECTION_CATALOG
+        source_type: SourceType.collection_catalog
       )
       source.save!
 
@@ -149,14 +151,16 @@ describe "Data entry", :js => true do
 
       expect(page).to have_content 'Add an Entry - Fill out details'
 
-      expect(page).to have_no_content 'Transaction Information'
+      expect(page).to have_no_field("institution")
+
+      expect(page).to have_select('transaction_type', selected: 'Not a transaction', disabled: true)
     end
 
     it "should load New Entry page with other published Source" do
       source = Source.find_or_create_by(
         title: "Some Other Published Source",
         date: "2013-11-12",
-        source_type: Source::TYPE_OTHER_PUBLISHED
+        source_type: SourceType.other_published
       )
       source.save!
 
@@ -164,9 +168,9 @@ describe "Data entry", :js => true do
 
       expect(page).to have_content 'Add an Entry - Fill out details'
 
-      find_by_id("institution")
+      expect(page).to have_field("institution")
 
-      expect(page).to have_no_content 'Transaction Information'
+      expect(page).to have_select('transaction_type', disabled: false)
     end
 
     it "should save a new Source (auction catalog)" do
@@ -193,7 +197,7 @@ describe "Data entry", :js => true do
       expect(Source.count).to eq(count + 1)
 
       source = Source.last
-      expect(source.source_type).to eq(Source::TYPE_AUCTION_CATALOG)
+      expect(source.source_type).to eq(SourceType.auction_catalog)
       expect(source.date).to eq('20140234')
       expect(source.title).to eq('Very Rare Books')
       expect(source.get_selling_agent.agent.name).to eq("Sotheby's")
@@ -230,7 +234,7 @@ describe "Data entry", :js => true do
       expect(Source.count).to eq(count + 1)
 
       source = Source.last
-      expect(source.source_type).to eq(Source::TYPE_OTHER_PUBLISHED)
+      expect(source.source_type).to eq(SourceType.other_published)
       expect(source.date).to eq('20140234')
       expect(source.title).to eq('DeRicci Census')
       expect(source.author).to eq('Seymour DeRicci')
@@ -259,7 +263,7 @@ describe "Data entry", :js => true do
       expect(Source.count).to eq(count + 1)
 
       source = Source.last
-      expect(source.source_type).to eq(Source::TYPE_OTHER_PUBLISHED)
+      expect(source.source_type).to eq(SourceType.other_published)
       expect(source.title).to eq('Test source wirh no date')
       expect(source.author).to eq('Jeff')
     end
@@ -416,6 +420,29 @@ describe "Data entry", :js => true do
       entry = Entry.last
 
       verify_entry(entry)
+    end
+
+    it "should save a collection catalog Entry" do
+
+      source = Source.create!(
+        title: "my collection catalog!",
+        source_type: SourceType.collection_catalog,
+      )
+
+      visit new_entry_path :source_id => source.id
+
+      fill_in 'folios', with: '666'
+
+      click_button('Save')
+
+      # save really can take as long as 2s
+      sleep(2)
+
+      find(".modal-title", visible: true).text.include? "Successfully saved"
+
+      entry = Entry.last
+      expect(entry.folios).to eq(666)
+      expect(entry.get_transaction).to be_nil
     end
 
     it "should preserve entry on Edit page when saving without making any changes" do

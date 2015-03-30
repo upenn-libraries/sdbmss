@@ -16,14 +16,12 @@ class Event < ActiveRecord::Base
   TYPE_SOLD_UNKNOWN = "Unknown"
   TYPE_SOLD_YES = "Yes"
   TYPE_SOLD_NO = "No"
-  TYPE_SOLD_GIFT = "Gift"
   TYPE_SOLD_WITHDRAWN = "Withdrawn"
 
   SOLD_TYPES =[
     [TYPE_SOLD_UNKNOWN, TYPE_SOLD_UNKNOWN],
     [TYPE_SOLD_YES, TYPE_SOLD_YES],
     [TYPE_SOLD_NO, TYPE_SOLD_NO],
-    [TYPE_SOLD_GIFT, TYPE_SOLD_GIFT],
     [TYPE_SOLD_WITHDRAWN, TYPE_SOLD_WITHDRAWN],
   ]
 
@@ -40,7 +38,7 @@ class Event < ActiveRecord::Base
   scope :transactions, -> { where(primary: true) }
   scope :provenance, -> { where(primary: false) }
 
-  validates :sold, inclusion: { in: SOLD_TYPES.map(&:first) }, if: :primary
+  validates :sold, inclusion: { in: SOLD_TYPES.map(&:first) }, if: :primary, allow_nil: true
   validates_presence_of :entry
 
   def normalize

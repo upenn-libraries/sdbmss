@@ -67,7 +67,7 @@ module SDBMSS::ReferenceData
     def create_source
       @hill = Name.find_or_create_agent("Jonathan A. Hill")
       @source = Source.create!(
-        source_type: Source::TYPE_AUCTION_CATALOG,
+        source_type: SourceType.auction_catalog,
         date: "20150101",
         title: "Catalogue 213: Fine and Important Manuscripts and Printed Books",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
@@ -87,6 +87,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "1",
+        transaction_type: Entry::TYPE_TRANSACTION_SALE,
         folios: 166,
         num_columns: 2,
         height: 255,
@@ -197,6 +198,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "3",
+        transaction_type: Entry::TYPE_TRANSACTION_SALE,
         folios: 72,
         num_lines: 34,
         num_columns: 2,
@@ -304,6 +306,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "4",
+        transaction_type: Entry::TYPE_TRANSACTION_SALE,
         created_by: lransom,
       )
 
@@ -406,6 +409,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "5",
+        transaction_type: Entry::TYPE_TRANSACTION_SALE,
         created_by: lransom,
       )
 
@@ -539,6 +543,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "9",
+        transaction_type: Entry::TYPE_TRANSACTION_SALE,
         folios: 61,
         num_lines: 32,
         num_columns: 1,
@@ -637,6 +642,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "14",
+        transaction_type: Entry::TYPE_TRANSACTION_SALE,
         folios: 381,
         num_lines: 46,
         num_columns: 2,
@@ -926,7 +932,7 @@ module SDBMSS::ReferenceData
     def create_source
       @upenn = Name.find_or_create_agent("University of Pennsylvania")
       @source = Source.create!(
-        source_type: Source::TYPE_COLLECTION_CATALOG,
+        source_type: SourceType.collection_catalog,
         date: "1965",
         title: "Catalogue of Manuscripts in the Libraries of the University of Pennsylvania",
         author: "Norman P. Zacour and Rudolf Hirsch",
@@ -949,6 +955,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "Greek 1",
+        transaction_type: Entry::TYPE_TRANSACTION_NONE,
         folios: 105,
         height: 205,
         width: 150,
@@ -1032,7 +1039,7 @@ module SDBMSS::ReferenceData
     def create_source
       @pirages = Name.find_or_create_agent("Pirages")
       @source = Source.create!(
-        source_type: Source::TYPE_AUCTION_CATALOG,
+        source_type: SourceType.auction_catalog,
         date: "20150100",
         title: "Sampling of the illuminated material, incunabula, fine bindings, private press, plate books, early English works, and other interesting items we'll have on display at the 2015 California Antiquarian Book Fair.",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
@@ -1052,6 +1059,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "2",
+        transaction_type: Entry::TYPE_TRANSACTION_SALE,
         height: 254,
         width: 210,
         initials_historiated: 1,
@@ -1123,7 +1131,7 @@ module SDBMSS::ReferenceData
 
     def create_source
       @source = Source.create!(
-        source_type: Source::TYPE_OTHER_PUBLISHED,
+        source_type: SourceType.other_published,
         date: "19350000",
         title: "Census of Medieval and Renaissance Manuscrits in the United States and Canada, Vol. 1",
         author: "De Ricci, Seymour and Wilson, H. J.",
@@ -1141,6 +1149,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "1",
+        transaction_type: Entry::TYPE_TRANSACTION_NONE,
         institution: Name.find_or_create_artist('Libary of Saint Bernard College, Saint Bernard, Alabama'),
         folios: 192,
         height: 140,
@@ -1179,6 +1188,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "1",
+        transaction_type: Entry::TYPE_TRANSACTION_NONE,
         institution: Name.find_or_create_artist('Allsopp, Fred W.'),
         created_by: lransom,
       )
@@ -1233,7 +1243,7 @@ module SDBMSS::ReferenceData
 
     def create_source
       @source = Source.create!(
-        source_type: Source::TYPE_AUCTION_CATALOG,
+        source_type: SourceType.auction_catalog,
         date: "2015-03-19",
         title: "Livres ancienes et modernes",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
@@ -1254,7 +1264,7 @@ module SDBMSS::ReferenceData
 
     def create_source
       @source = Source.create!(
-        source_type: Source::TYPE_AUCTION_CATALOG,
+        source_type: SourceType.auction_catalog,
         date: "2015-03-19",
         title: "Livres ancienes et modernes",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
@@ -1275,7 +1285,7 @@ module SDBMSS::ReferenceData
 
     def create_source
       @source = Source.create!(
-        source_type: Source::TYPE_UNPUBLISHED,
+        source_type: SourceType.unpublished,
         date: "2015-03-10",
         title: "Email sent by Jeff Chiu",
         author: "Lynn Ransom",
@@ -1296,7 +1306,7 @@ module SDBMSS::ReferenceData
 
     def create_source
       @source = Source.create!(
-        source_type: Source::TYPE_UNPUBLISHED,
+        source_type: SourceType.unpublished,
         date: "2015-03-10",
         title: "not required in personal observation OR March 9, 2015, visit",
         author: "Ransom, Lynn",
@@ -1324,7 +1334,7 @@ module SDBMSS::ReferenceData
 
     def create_source
       @source = Source.create!(
-        source_type: Source::TYPE_ONLINE,
+        source_type: SourceType.online,
         title: "Ebay",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
         medium: Source::TYPE_MEDIUM_INTERNET,
@@ -1344,6 +1354,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "371277701327",
+        transaction_type: Entry::TYPE_TRANSACTION_SALE,
         height: 100,
         width: 68,
         miniatures_fullpage: 1,
@@ -1416,7 +1427,7 @@ module SDBMSS::ReferenceData
 
     def create_source
       @source = Source.create!(
-        source_type: Source::TYPE_AUCTION_CATALOG,
+        source_type: SourceType.auction_catalog,
         date: "2015",
         title: "Brafa 2015",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
@@ -1444,7 +1455,7 @@ module SDBMSS::ReferenceData
 
     def create_source
       @source = Source.create!(
-        source_type: Source::TYPE_UNPUBLISHED,
+        source_type: SourceType.unpublished,
         title: "Duke Greek MS codex MSS.xls",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
         medium: Source::TYPE_MEDIUM_PERSONAL_COMMUNICATION,
@@ -1465,6 +1476,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "Greek MS 001",
+        transaction_type: Entry::TYPE_TRANSACTION_NONE,
         institution: Name.find_or_create_agent("Duke University, David Rubenstein Library"),
         folios: 198,
         num_lines: 41,
@@ -1507,7 +1519,7 @@ module SDBMSS::ReferenceData
 
     def create_source
       @source = Source.create!(
-        source_type: Source::TYPE_OTHER_PUBLISHED,
+        source_type: SourceType.other_published,
         date: "2014",
         title: '"A Catalogue of Medieval and Renaissance Manuscripts Located at Villanova University," Manuscripta, vol. 58:2',
         author: "Kenneth B. Steinhauser",
@@ -1524,6 +1536,7 @@ module SDBMSS::ReferenceData
       entry = Entry.create!(
         source: @source,
         catalog_or_lot_number: "OM 1",
+        transaction_type: Entry::TYPE_TRANSACTION_NONE,
         institution: Name.find_or_create_agent("Villanova University, Falvey Memorial Library"),
         folios: 212,
         num_lines: 26,

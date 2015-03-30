@@ -27,6 +27,8 @@ namespace :sdbmss do
 
       Rake::Task['db:schema:load'].invoke
 
+      Rake::Task['db:seed'].invoke
+
       SDBMSS::Legacy.migrate
     else
       puts "ERROR: Rails environment is set to #{Rails.env}. but you're only allowed to run this task in development. Doing nothing and exiting."

@@ -18,7 +18,7 @@
         <tr>
             <td class="col-sm-2 text-right record-label">Source</td>
             <td class="col-sm-10">
-                <%= link_to source.display_value, source_path(source) %> (<%= source.get_source_type_for_display %>)
+                <%= link_to source.display_value, source_path(source) %> (<%= source.source_type.display_name %>)
             </td>
         </tr>
         <% end %>

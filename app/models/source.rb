@@ -3,29 +3,6 @@ class Source < ActiveRecord::Base
 
   TYPE_BLANK = nil
 
-  TYPE_AUCTION_CATALOG = 'auction_catalog'
-  TYPE_COLLECTION_CATALOG = 'collection_catalog'
-  TYPE_ONLINE = 'online'
-  TYPE_OBSERVATION = 'observation'
-  TYPE_OTHER_PUBLISHED = 'other_published'
-  TYPE_UNPUBLISHED = 'unpublished'
-
-  SOURCE_TYPES = [
-    # Auction Catalogs include Sotheby's
-    [TYPE_AUCTION_CATALOG, 'Auction/Sale Catalog'],
-    # Collection Catalogs include things like Penn's published catalog
-    [TYPE_COLLECTION_CATALOG, 'Collection Catalog'],
-    # This includes sites like Ebay and private bookseller websites
-    [TYPE_ONLINE, 'Online-only Auction or Bookseller Website'],
-    # An individual's set of personal (direct) observations
-    [TYPE_OBSERVATION, 'Personal Observation'],
-    # Other Published Source includes DeRicci, censuses, journal articles
-    [TYPE_OTHER_PUBLISHED, 'Other Published Source'],
-    # Unpublished includes spreadsheet of Duke Univ. collection,
-    # Benjy's spreadsheet, and pretty much everything else.
-    [TYPE_UNPUBLISHED, 'Unpublished'],
-  ]
-
   TYPE_HAS_MANUSCRIPT_YES = 'Yes'
   TYPE_HAS_MANUSCRIPT_NO = 'No'
   TYPE_HAS_MANUSCRIPT_MAYBE = 'Maybe'
@@ -74,13 +51,15 @@ class Source < ActiveRecord::Base
 
   before_validation :normalize
 
+  belongs_to :source_type
+
   has_many :entries
   has_many :source_agents, inverse_of: :source
 
-  validates_inclusion_of :source_type, in: SOURCE_TYPES.map(&:first), message: 'source type is invalid'
   validates_inclusion_of :whether_mss, in: HAS_MANUSCRIPT_TYPES.map(&:first), message: 'whether_mss is invalid'
   validates_inclusion_of :medium, in: MEDIUM_TYPES.map(&:first), message: 'medium is invalid', allow_nil: true
   #validates_presence_of :date, if: :date_required
+  validates_presence_of :source_type
   validate :source_type_not_changed
   # TODO: validate that irrelevant fields for the source_type are NOT populated
 
@@ -147,25 +126,9 @@ class Source < ActiveRecord::Base
     sa.agent if sa
   end
 
-  def get_source_type_for_display
-    record = SOURCE_TYPES.select { |record| record[0] == source_type }.first
-    record ? record[1] : "Unknown"
-  end
-
   def medium_for_display
     record = MEDIUM_TYPES.select { |record| record[0] == medium }.first
     record ? record[1] : "Unknown"
-  end
-
-  # returns true if entries should have a transaction record
-  # associated with them
-  def entries_have_a_transaction
-    !(source_type == TYPE_COLLECTION_CATALOG || source_type == TYPE_OTHER_PUBLISHED)
-  end
-
-  # returns true if entries should use institution/collection field
-  def entries_have_institution
-    source_type == TYPE_OTHER_PUBLISHED || source_type == TYPE_UNPUBLISHED
   end
 
   def to_s
@@ -180,10 +143,10 @@ class Source < ActiveRecord::Base
     end
 
     agent_str = ""
-    if source_type == TYPE_AUCTION_CATALOG
+    if source_type.name == SourceType::AUCTION_CATALOG
       selling_agent = get_selling_agent
       agent_str = selling_agent.agent.name if selling_agent && selling_agent.agent
-    elsif source_type == TYPE_COLLECTION_CATALOG
+    elsif source_type.name == SourceType::COLLECTION_CATALOG
       institution = get_institution
       agent_str = institution.agent.name if institution && institution.agent
     else
@@ -202,7 +165,7 @@ class Source < ActiveRecord::Base
   end
 
   def source_type_not_changed
-    if source_type_changed? && self.persisted?
+    if source_type_id_changed? && self.persisted?
       errors.add(:source_type, "Change of source_type not allowed")
     end
   end

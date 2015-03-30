@@ -95,6 +95,7 @@ class EntriesController < ApplicationController
   # returns JSON containing type constants
   def types
     data = {
+      'transaction_type' => Entry::TYPES_TRANSACTION,
       'author_role' => EntryAuthor::TYPES_ROLES,
       'circa' => EntryDate::CIRCA_TYPES,
       'currency' => Event::CURRENCY_TYPES,
@@ -151,6 +152,7 @@ class EntriesController < ApplicationController
     params.permit(
       :catalog_or_lot_number,
       :institution_id,
+      :transaction_type,
       :folios, :num_lines, :num_columns,
       :height, :width, :alt_size,
       :miniatures_fullpage, :miniatures_large, :miniatures_small, :miniatures_unspec_size,
