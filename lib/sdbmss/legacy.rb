@@ -664,6 +664,19 @@ module SDBMSS::Legacy
             row['CURRENCY'].present? ||
             row['SOLD'].present?
 
+        # Make sure it makes sense for a Transaction to exist, given the
+        # transaction_type
+        if transaction_type == Entry::TYPE_TRANSACTION_NONE
+          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'transaction', "entry ID=#{row['MANUSCRIPT_ID']} has transaction fields populated, but the transaction_type is NONE")
+        end
+
+        # we suppress Transaction info on UI for some source types, so make
+        # sure non-sale sources don't have sale info
+        if source.source_type.name == SourceType::COLLECTION_CATALOG && row['SECONDARY_SOURCE'].blank?
+          # this is probably a child record?
+          puts "ERROR: record #{row['MANUSCRIPT_ID']}: has 'collection_catalog' source and no secondary source, therefore it should not have transaction info"
+        end
+
         # although UI for legacy SDBM has an Other Currency field, it
         # was shoving the data into CURRENCY instead of a separate
         # field (I don't know what happens in the legacy SDBM if you
@@ -675,13 +688,6 @@ module SDBMSS::Legacy
         if currency.present? && !VALID_CURRENCY_TYPES.member?(currency)
           other_currency = currency
           currency = nil
-        end
-
-        # we suppress Transaction info on UI for some source types, so make
-        # sure non-sale sources don't have sale info
-        if source.source_type.name == SourceType::COLLECTION_CATALOG && row['SECONDARY_SOURCE'].blank?
-          # this is probably a child record?
-          puts "ERROR: record #{row['MANUSCRIPT_ID']}: has 'collection_catalog' source and no secondary source, therefore it should not have transaction info"
         end
 
         # the ALT_DATE field in MANUSCRIPT_CATALOG was used to
