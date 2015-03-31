@@ -126,14 +126,14 @@ class Entry < ActiveRecord::Base
     candidate_ids
   end
 
-  def get_manuscript
+  def manuscript
     entry_manuscripts.select { |em| em.relation_type == EntryManuscript::TYPE_RELATION_IS}.map(&:manuscript).first
   end
 
   # returns all Entry objects for this entry's Manuscript
   def get_entries_for_manuscript
-    manuscript = get_manuscript
-    manuscript ? manuscript.entries : []
+    ms = manuscript
+    ms ? ms.entries : []
   end
 
   def get_num_entries_for_manuscript
@@ -176,7 +176,7 @@ class Entry < ActiveRecord::Base
     t.price if t
   end
 
-  def get_provenance
+  def provenance
     events.select { |event| !event.primary }
   end
 
@@ -185,7 +185,7 @@ class Entry < ActiveRecord::Base
   # has :name key and optionally an :agent key.
   def unique_provenance_agents
     unique_agents = {}
-    get_provenance.each do |event|
+    provenance.each do |event|
       event.event_agents.each do |event_agent|
         agent = event_agent.agent
         if agent.present?
@@ -205,7 +205,7 @@ class Entry < ActiveRecord::Base
 
   # returns list of provenance names for Solr indexing
   def provenance_names
-    events = get_provenance
+    events = provenance
     names = []
     events.each { |event|
       event.event_agents.select(&:is_provenance).each { |ea|
@@ -251,7 +251,6 @@ class Entry < ActiveRecord::Base
     # because they always hit the db and circumvent the preloading
     # done in with_associations scope.
 
-    manuscript = get_manuscript
     transaction = get_transaction
     transaction_selling_agent = (transaction.get_selling_agent_as_name.name if transaction && transaction.get_selling_agent_as_name)
     transaction_seller_or_holder = (transaction.get_seller_or_holder_as_name.name if transaction && transaction.get_seller_or_holder_as_name)
@@ -395,10 +394,10 @@ class Entry < ActiveRecord::Base
 
     # full display ID
     define_field(:string, :manuscript, :stored => true) do
-      (manuscript = get_manuscript) && manuscript.public_id
+      (ms = manuscript) && ms.public_id
     end
     define_field(:integer, :manuscript_id, :stored => true) do
-      (manuscript = get_manuscript) && manuscript.id
+      (ms = manuscript) && ms.id
     end
 
     #### Source info

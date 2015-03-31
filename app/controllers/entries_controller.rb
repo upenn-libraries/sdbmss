@@ -132,7 +132,7 @@ class EntriesController < ApplicationController
   end
 
   def find_or_create_manuscript
-    if @entry.get_manuscript
+    if @entry.manuscript
       respond_to do |format|
         format.html { render "manuscript_already_exists" }
       end

@@ -393,7 +393,7 @@ describe "Data entry", :js => true do
       expect(entry.manuscript_link).to eq('http://something.com')
       expect(entry.other_info).to eq('Other stuff')
 
-      provenance = entry.get_provenance.first
+      provenance = entry.provenance.first
       expect(provenance.start_date).to eq('19450615')
       expect(provenance.end_date).to eq('19651123')
       expect(provenance.get_selling_agent.agent.name).to eq("Sotheby's")

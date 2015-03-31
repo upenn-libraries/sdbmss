@@ -4,7 +4,7 @@
     ignore case 2. -%>
 <% if document.present? %>
 <% entry = document.model_object %>
-<% manuscript = entry.get_manuscript %>
+<% manuscript = entry.manuscript %>
 <% if manuscript.blank? %>
 <a href="<%= find_or_create_manuscript_path(entry) %>">Find or create Manuscript for <%= entry.public_id %></a>
 <% end %>

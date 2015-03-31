@@ -18,14 +18,14 @@ class EntryDate < ActiveRecord::Base
     ["CLATE", "Circa Late Part of Century"],
   ]
 
-  def get_circa_verbose
+  def circa_verbose
     option = CIRCA_TYPES.select { |option| option[0] == circa }.first
     option[1] if option
   end
 
   def display_value
     sep = date.to_s.length > 0 && circa.to_s.length > 0 ? " " : ""
-    get_circa_verbose.to_s + sep + date
+    circa_verbose.to_s + sep + date
   end
 
 end

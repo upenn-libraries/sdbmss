@@ -3,6 +3,6 @@
 
 <p>You are trying to reach the page to find or create a manuscript,
 but <a href="<%= edit_entry_path(@entry) %>"><%= @entry.public_id %></a> is already linked to
-<a href="<%= edit_manuscript_path(@entry.get_manuscript) %>"><%= @entry.get_manuscript.public_id %></a>.
+<a href="<%= edit_manuscript_path(@entry.manuscript) %>"><%= @entry.manuscript.public_id %></a>.
 </p>
 

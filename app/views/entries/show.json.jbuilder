@@ -12,8 +12,8 @@ if @entry.institution.present?
   end
 end
 
-if @entry.get_manuscript.present?
-  json.manuscript_id @entry.get_manuscript.id
+if @entry.manuscript.present?
+  json.manuscript_id @entry.manuscript.id
 end
 
 json.source do

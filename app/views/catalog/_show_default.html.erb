@@ -151,7 +151,7 @@
             <td class="col-sm-2 text-right record-label" colspan="2">Manuscript Dates</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_dates.each do |entry_date| %>
-                <%= entry_date.get_circa_verbose %> <%= entry_date.date %><br/>
+                <%= entry_date.circa_verbose %> <%= entry_date.date %><br/>
                 <% end %>
             </td>
         </tr>
@@ -335,7 +335,7 @@
     </thead>
 
     <tbody>
-        <% if (provenance_all = entry.get_provenance).present? %>
+        <% if (provenance_all = entry.provenance).present? %>
         <% provenance_all.each do |provenance| %>
 
             <% seller_or_holder = provenance.get_seller_or_holder %>

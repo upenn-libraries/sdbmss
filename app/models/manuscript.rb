@@ -12,7 +12,7 @@ class Manuscript < ActiveRecord::Base
   include UserFields
 
   # returns all the Event objects associated with all the entries for this MS
-  def get_unique_provenance
+  def unique_provenance
     # TODO: how to make sure they're "unique" since these records are
     # complex? maybe we don't do that.
     Event.provenance.where(entry_id: linked_entries)
@@ -28,7 +28,7 @@ class Manuscript < ActiveRecord::Base
     linked_entries.each do |entry|
       SDBMSS::SimilarEntries.new(entry).each do |similar_entry|
         entry = similar_entry[:entry]
-        if entry.get_manuscript.blank?
+        if entry.manuscript.blank?
           candidate_ids.add entry.id
         end
       end

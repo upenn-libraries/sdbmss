@@ -42,7 +42,7 @@ module ApplicationHelper
   def show_edit_manuscript_link?
     return false if !user_signed_in? || !@document
     entry = @document.model_object
-    entry.present? && (manuscript = entry.get_manuscript).present?
+    entry.present? && entry.manuscript.present?
   end
 
   # determines whether Find or Create MS link should be displayed;

@@ -71,7 +71,7 @@
             </thead>
             <tbody>
 
-                <% @manuscript.get_unique_provenance.each do |provenance| %>
+                <% @manuscript.unique_provenance.each do |provenance| %>
                 <tr>
                     <td class="col-sm-2 text-right record-label"><%= format_fuzzy_date(provenance.start_date)||"(no date)" %></td>
                     <td class="col-sm-10">
