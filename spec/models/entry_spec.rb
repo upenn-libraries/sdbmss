@@ -9,8 +9,8 @@ describe Entry do
 
   describe "associations" do
 
-    it "should use scope :load_associations" do
-      Entry.load_associations.last
+    it "should use scope :with_associations" do
+      Entry.with_associations.last
     end
 
   end

@@ -70,7 +70,7 @@ class Source < ActiveRecord::Base
 
   # aggressively load all associations; useful for cases where you
   # want to display the 'complete' info
-  scope :load_associations, -> {
+  scope :with_associations, -> {
     includes(:source_agents => [:agent])
   }
 

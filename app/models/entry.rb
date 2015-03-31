@@ -41,7 +41,7 @@ class Entry < ActiveRecord::Base
 
   # aggressively load all associations; useful for cases where you
   # want to display the complete info for Entries
-  scope :load_associations, -> {
+  scope :with_associations, -> {
     includes(:entry_titles,
              :entry_dates,
              :entry_materials,
@@ -249,7 +249,7 @@ class Entry < ActiveRecord::Base
 
     # for performance, we avoid using has_many->through associations
     # because they always hit the db and circumvent the preloading
-    # done in load_associations scope.
+    # done in with_associations scope.
 
     manuscript = get_manuscript
     transaction = get_transaction

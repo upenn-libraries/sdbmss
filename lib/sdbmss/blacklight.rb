@@ -26,7 +26,7 @@ module SDBMSS::Blacklight
 
         # fetch all objects in a single query for efficiency
         entries = Entry.where(id: ids_to_load)
-        entries = entries.load_associations
+        entries = entries.with_associations
 
         entries.each do |entry|
           @ids_to_entries[entry.id] = entry
