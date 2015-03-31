@@ -12,10 +12,10 @@ class Manuscript < ActiveRecord::Base
   include UserFields
 
   # returns all the Event objects associated with all the entries for this MS
-  def unique_provenance
+  def all_provenance
     # TODO: how to make sure they're "unique" since these records are
     # complex? maybe we don't do that.
-    Event.provenance.where(entry_id: linked_entries)
+    Event.provenance.where(entry_id: linked_entries).order(start_date: :desc)
   end
 
   def public_id
