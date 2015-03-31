@@ -465,6 +465,25 @@ describe "Data entry", :js => true do
       verify_entry(entry)
     end
 
+    it "should pre-populate transaction_type on Edit page" do
+      count = Entry.count
+
+      # create an Unpublished source, which allows selection of
+      # transaction_type
+      source = Source.create!(
+        title: "test unpublished source",
+        source_type: SourceType.unpublished,
+      )
+      entry = Entry.create!(
+        transaction_type: Entry::TYPE_TRANSACTION_GIFT,
+        source: source
+      )
+
+      visit edit_entry_path :id => entry.id
+
+      expect(page).to have_select('transaction_type', selected: 'Gift')
+    end
+
     it "should remove a title on Edit page" do
       count = Entry.count
 
