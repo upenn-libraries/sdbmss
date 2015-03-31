@@ -404,7 +404,7 @@ module SDBMSS::Legacy
                          'select MANUSCRIPT_ID, CURRENT_LOCATION from MANUSCRIPT where CURRENT_LOCATION is not null and length(CURRENT_LOCATION) > 0',
                          batch_wrapper: wrap_transaction) do |row,ctx|
         entry = Entry.find(row['MANUSCRIPT_ID'])
-        manuscript = entry.get_manuscript
+        manuscript = entry.manuscript
 
         # if there's a Manuscript, tack the current_location info to
         # it. Otherwise, tack the info on to 'other_info' field.
