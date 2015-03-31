@@ -381,7 +381,7 @@ class Entry < ActiveRecord::Base
       # comments
       entry_comments.select { |ec| ec.public }.map { |ec| ec.comment }
 
-      fields.map { |item| item.to_s }.select { |item| (!item.nil?) && (item.length > 0) }.join "\n"
+      fields.map(&:to_s).select(&:present?).join "\n"
     end
 
     define_field(:string, :entry, :stored => true) do
