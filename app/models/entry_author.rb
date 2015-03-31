@@ -14,6 +14,8 @@ class EntryAuthor < ActiveRecord::Base
     end
   end
 
+  has_paper_trail skip: [:created_at, :updated_at]
+
   TYPES_ROLES = [
     ['Attr', 'Attr'],
     ['Tr', 'Tr'],

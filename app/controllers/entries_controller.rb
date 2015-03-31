@@ -1,6 +1,6 @@
 class EntriesController < ApplicationController
 
-  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :find_or_create_manuscript, :similar]
+  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :find_or_create_manuscript, :similar, :history]
 
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :find_or_create_manuscript, :similar]
 

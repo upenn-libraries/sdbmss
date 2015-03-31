@@ -45,6 +45,14 @@ module ApplicationHelper
     entry.present? && entry.manuscript.present?
   end
 
+  # determines whether entry history link should be displayed; this is
+  # used multiple places, which is why it's here in ApplicationHelper
+  def show_entry_history_link?
+    return false if !user_signed_in? || !@document
+    entry = @document.model_object
+    entry.present? && entry.versions.count > 0
+  end
+
   # determines whether Find or Create MS link should be displayed;
   # this is used multiple places, which is why it's here in
   # ApplicationHelper

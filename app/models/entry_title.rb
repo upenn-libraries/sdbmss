@@ -6,6 +6,8 @@ class EntryTitle < ActiveRecord::Base
 
   validates_presence_of :entry
 
+  has_paper_trail skip: [:created_at, :updated_at]
+
   def display_value
     (title || "") + (common_title.present? ? " [#{common_title}]" : "") + certainty_flags
   end

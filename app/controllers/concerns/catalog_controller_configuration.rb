@@ -315,6 +315,7 @@ module CatalogControllerConfiguration
 
       config.add_show_tools_partial(:edit_entry, partial: 'nav/edit_entry', if: :show_edit_entry_link?)
       config.add_show_tools_partial(:edit_manuscript, partial: 'nav/edit_manuscript', if: :show_edit_manuscript_link?)
+      config.add_show_tools_partial(:entry_history, partial: 'nav/entry_history', if: :show_entry_history_link?)
       config.add_show_tools_partial(:find_or_create_manuscript, partial: 'nav/find_or_create_manuscript', if: :show_find_or_create_manuscript_link?)
 
     end

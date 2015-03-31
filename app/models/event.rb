@@ -41,6 +41,8 @@ class Event < ActiveRecord::Base
   validates :sold, inclusion: { in: SOLD_TYPES.map(&:first) }, if: :primary, allow_nil: true
   validates_presence_of :entry
 
+  has_paper_trail skip: [:created_at, :updated_at]
+
   def normalize
     if self.start_date
       self.start_date.gsub!("-", "")

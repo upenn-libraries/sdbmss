@@ -252,6 +252,10 @@ module SDBMSS::Legacy
     # Do the migration
     def migrate
 
+      # paper_trail slows down migration by 4x's; we don't need to
+      # audit anything here, so disable it.
+      PaperTrail.enabled = false
+
       ActiveRecord::Base.record_timestamps = false
 
       # set log level above :debug, to suppress ActiveRecord query

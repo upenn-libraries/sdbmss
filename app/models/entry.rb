@@ -73,6 +73,8 @@ class Entry < ActiveRecord::Base
   # an agent is a Name object; role is a string
   scope :with_transaction_agent_and_role, ->(agent, role) { joins(:events => :event_agents).where("events.primary = true and event_agents.agent_id = ? and role = ?", agent.id, role) }
 
+  has_paper_trail skip: [:created_at, :updated_at]
+
   ALT_SIZE_TYPES = [
     ['F', 'Folio'],
     ['Q', 'Quarto'],

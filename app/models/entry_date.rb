@@ -3,6 +3,8 @@ class EntryDate < ActiveRecord::Base
 
   validates_presence_of :entry
 
+  has_paper_trail skip: [:created_at, :updated_at]
+
   CIRCA_TYPES = [
     ["C", "Circa"],
     ["C?", "Circa (Very Uncertain)"],

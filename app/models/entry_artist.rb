@@ -14,6 +14,8 @@ class EntryArtist < ActiveRecord::Base
     end
   end
 
+  has_paper_trail skip: [:created_at, :updated_at]
+
   def display_value
     super artist
   end

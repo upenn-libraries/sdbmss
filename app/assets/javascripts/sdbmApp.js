@@ -248,6 +248,9 @@
             redirectToEntryViewPage: function(entry_id)  {
                 window.location = "/entries/" + entry_id;
             },
+            redirectToEntryHistoryPage: function(entry_id)  {
+                window.location = "/entries/" + entry_id + "/history/";
+            },
             redirectToManuscriptEditPage: function(manuscript_id)  {
                 window.location = "/manuscripts/" + manuscript_id + "/edit/";
             },

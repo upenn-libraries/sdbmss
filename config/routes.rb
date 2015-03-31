@@ -22,6 +22,7 @@ Rails.application.routes.draw do
 
   get '/entries/types', to: 'entries#types'
   get '/entries/new', to: 'entries#new'
+  get '/entries/:id/history', to: 'entries#history', as: 'entry_history'
   get '/entries/:id/similar', to: 'entries#similar'
   get '/entries/:id/find_or_create_manuscript', to: 'entries#find_or_create_manuscript', as: 'find_or_create_manuscript'
   get '/entries/:id/manuscript_candidates', to: 'entries#manuscript_candidates'
