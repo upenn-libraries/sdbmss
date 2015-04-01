@@ -17,7 +17,7 @@ module ApplicationHelper
   # search value
   def search_advanced_url(options)
     checkmark = "\u2713".encode('utf-8')
-    catalog_index_path({ "utf8" => checkmark, "op" => "AND", "search_field" => "advanced", "commit" => "Search" }.merge(options))
+    search_action_path({ "utf8" => checkmark, "op" => "AND", "search_field" => "advanced", "commit" => "Search" }.merge(options))
   end
 
   # returns a URL to use for the data-context-href link attribute, on
