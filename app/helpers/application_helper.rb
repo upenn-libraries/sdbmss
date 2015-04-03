@@ -53,11 +53,4 @@ module ApplicationHelper
     entry.present? && entry.versions.count > 0
   end
 
-  # determines whether Find or Create MS link should be displayed;
-  # this is used multiple places, which is why it's here in
-  # ApplicationHelper
-  def show_find_or_create_manuscript_link?
-    return !show_manage_links_for_manuscript?
-  end
-
 end
