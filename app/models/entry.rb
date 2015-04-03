@@ -42,7 +42,8 @@ class Entry < ActiveRecord::Base
   # aggressively load all associations; useful for cases where you
   # want to display the complete info for Entries
   scope :with_associations, -> {
-    includes(:entry_titles,
+    includes(:institution,
+             :entry_titles,
              :entry_dates,
              :entry_materials,
              :entry_uses,
