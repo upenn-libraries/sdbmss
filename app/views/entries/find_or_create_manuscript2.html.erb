@@ -91,9 +91,6 @@ $(document).ready(function() {
     
     var potentialMatches = null;
 
-    // prefill the search form
-    $("select[name='op']").val("OR");
-
     var getRadioButtonHTML = function(sdbmTable, data, value) {
         var entryId = data[sdbmTable.getColumnIndex("ID")];
         var checked = isQueued(entryId, value) ? "checked='checked'" : "";
