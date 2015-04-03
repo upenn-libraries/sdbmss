@@ -1,7 +1,10 @@
-/** This section contains rules copied/modified from
-jquery.dataTables.css, which we don't use b/c we use
-dataTables.bootstrap.css instead. Weird things happen if you use both.
-*/
+/*
+ * This section contains rules either copied or modified from
+ * jquery.dataTables.css, a file which we don't include b/c we use
+ * dataTables.bootstrap.css instead and weird things happen if you use
+ * both.
+ *
+ */
 table.dataTable.nowrap th, table.dataTable.nowrap td {
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
@@ -19,6 +22,28 @@ table.dataTable.compact tbody td {
 }
 /* end stuff from jquery.dataTables.css */
 
+/**** begin SDBM specific customizations to table styling ****/
+
+/*
+ * put left and right borders on this container, otherwise a tall table
+ *  without enough rows to fill it completely looks weird.
+ */
+.dataTables_scroll {
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+}
+
+/*
+ * eliminate margin-top otherwise the surrounding .dataTables_scroll
+ * element with left and right borders extend above the table and
+ * makes it look weird.  
+ */
+table.sdbm-table { margin-top: 0px !important; }
+
 .sdbm-table { font-size: 12px; }
 
 .sdbm-table tbody tr.selected { background-color: #b0bed9; }
+
+/* show info and pagination at same horizontal level */
+.dataTables_info { float: left; }
+.dataTables_paginate { padding-top: 8px; } 
