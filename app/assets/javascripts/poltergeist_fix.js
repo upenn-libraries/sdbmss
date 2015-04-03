@@ -1,7 +1,9 @@
 // TODO: PhantomJS, as of 1.9.8, doesn't support
-// Function.prototype.bind() so we use this shim. This may be fixed in
-// newer versions of PhantomJS/Webkit but no known (newer) version is
-// specified in the bug.
+// Function.prototype.bind() so we use this shim. The dataTables
+// library, and maybe other things, needs this in order to work.
+//
+// This may be fixed in newer versions of PhantomJS/Webkit but no
+// known (newer) version is specified in the bug.
 
 // https://github.com/teampoltergeist/poltergeist/issues/292
 if(typeof Function.prototype.bind == 'undefined') {
