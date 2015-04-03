@@ -39,7 +39,7 @@ module ApplicationHelper
 
   # determines whether edit ms link should be displayed; this is used
   # multiple places, which is why it's here in ApplicationHelper
-  def show_edit_manuscript_link?
+  def show_manage_links_for_manuscript?
     return false if !user_signed_in? || !@document
     entry = @document.model_object
     entry.present? && entry.manuscript.present?
@@ -57,7 +57,7 @@ module ApplicationHelper
   # this is used multiple places, which is why it's here in
   # ApplicationHelper
   def show_find_or_create_manuscript_link?
-    return !show_edit_manuscript_link?
+    return !show_manage_links_for_manuscript?
   end
 
 end

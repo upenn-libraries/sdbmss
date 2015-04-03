@@ -1,0 +1,8 @@
+<%# account for fact that this partial is rendered 2 diff ways: 1) in
+    Tools box on show entry page, where we get a 'document' variable,
+    2) on Bookmarks page, where we get a 'document_list' variable. We
+    ignore case 2. -%>
+<% if document.present? %>
+<% manuscript = document.model_object.manuscript %>
+<a href="<%= manage_entries_manuscript_path(manuscript) %>">Manage links for <%= manuscript.public_id %></a>
+<% end %>
