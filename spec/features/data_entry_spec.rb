@@ -132,7 +132,7 @@ describe "Data entry", :js => true do
 
       expect(page).to have_no_field("institution")
 
-      expect(page).to have_select('transaction_type', selected: 'Sale', disabled: true)
+      expect(page).to have_select('transaction_type', selected: 'A Sale', disabled: true)
 
       # should prepopulate Transaction fields
       expect(find_by_id("transaction_selling_agent").value).to eq("aaa")
@@ -481,7 +481,7 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => entry.id
 
-      expect(page).to have_select('transaction_type', selected: 'Gift')
+      expect(page).to have_select('transaction_type', selected: 'A Gift')
     end
 
     it "should remove a title on Edit page" do
