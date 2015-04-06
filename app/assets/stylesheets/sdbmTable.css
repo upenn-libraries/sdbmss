@@ -34,9 +34,8 @@ table.dataTable.compact tbody td {
 }
 
 /*
- * eliminate margin-top otherwise the surrounding .dataTables_scroll
- * element with left and right borders extend above the table and
- * makes it look weird.  
+ * eliminate margin-top, otherwise the left & right borders of surrounding
+ * .dataTables_scroll element extend above the table and make it look weird.  
  */
 table.sdbm-table { margin-top: 0px !important; }
 
