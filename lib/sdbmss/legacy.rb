@@ -378,6 +378,7 @@ module SDBMSS::Legacy
 
       puts "Migrating MANUSCRIPT_CHANGE_LOG records"
 
+      # TODO: do something with this data
       # SDBMSS::Util.batch(legacy_db,
       #                    'SELECT * FROM MANUSCRIPT_CHANGE_LOG ORDER BY CHANGEID',
       #                    batch_wrapper: wrap_transaction) do |row,ctx|
@@ -1309,10 +1310,14 @@ module SDBMSS::Legacy
               manuscript = Manuscript.create!() if manuscript.nil?
             end
 
+            if EntryManuscript.where(entry: entry, relation_type: EntryManuscript::TYPE_RELATION_IS).count > 0
+              create_issue('MANUSCRIPT', entry.id, "multiple_manuscripts", "Warning: entry ID = #{entry.id} was assigned to more than one Manuscript")
+            end
+
             manuscript_entry = EntryManuscript.create!(
               entry: entry,
               manuscript: manuscript,
-              relation_type: EntryManuscript::TYPE_RELATION_IS,
+              relation_type: relation_type,
             )
           end
 
