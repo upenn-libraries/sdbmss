@@ -22,24 +22,6 @@ $(document).ready(function() {
 
     var entryId = <%= @entry.id %>;
 
-    // TODO: need a mechanism to update this
-    var manuscriptIds = [];
-    <% @entry.entry_manuscripts.each do |entry_manuscript| %>
-    manuscriptIds.push(<%= entry_manuscript.manuscript_id %>);
-    <% end %>
-
-    var displayManuscriptIds = function() {
-        if(manuscriptIds.length > 0) {
-            console.log(manuscriptIds.join(","));
-            $("#manuscript-ids").html(manuscriptIds.map(function (manuscriptId) {
-                return "<a href='/manuscripts/" + manuscriptId + "/'>SDBM_MS_" + manuscriptId + "</a>";
-            }).join(","));
-            $("#manuscript-list").show();
-        } else {
-            $("#manuscript-list").hide();
-        }
-    };
-    
     var queuedEntries = [
         {
             entry_id: entryId,
@@ -125,7 +107,7 @@ $(document).ready(function() {
         fixedColumns: 5,
         prependColumns: [
             {
-                sdbmssMinWidth: "60px",
+                sdbmssMinWidth: "50px",
                 title: 'Link',
                 "data": null,
                 "orderable": false,
@@ -135,7 +117,7 @@ $(document).ready(function() {
                 }
             },
             {
-                sdbmssMinWidth: "70px",
+                sdbmssMinWidth: "60px",
                 title: 'Fragment',
                 "data": null,
                 "orderable": false,
@@ -145,7 +127,7 @@ $(document).ready(function() {
                 }
             },
             {
-                sdbmssMinWidth: "70px",
+                sdbmssMinWidth: "60px",
                 title: 'Possible',
                 "data": null,
                 "orderable": false,
@@ -155,7 +137,7 @@ $(document).ready(function() {
                 }
             },
             {
-                sdbmssMinWidth: "60px",
+                sdbmssMinWidth: "50px",
                 title: 'Unlink',
                 "data": null,
                 "orderable": false,
@@ -193,7 +175,7 @@ $(document).ready(function() {
         fixedColumns: 2,
         prependColumns: [
             {
-                sdbmssMinWidth: "290px",
+                sdbmssMinWidth: "255px",
                 title: 'Options',
                 "data": null,
                 "orderable": false,
@@ -201,11 +183,7 @@ $(document).ready(function() {
                     var entryId = data[resultsTable.getColumnIndex("ID")];
                     var manuscriptId = data[resultsTable.getColumnIndex("Manuscript")];
                     if(manuscriptId) {
-                        if (manuscriptIds.indexOf(manuscriptId) == -1) {
-                            return '<a href="#" data-manuscript-id="' + manuscriptId + '" class="link-to-manuscript-link">Link to SDBM_MS_' + manuscriptId + '</a>';
-                        } else {
-                            return 'Already linked';
-                        }
+                        return '<a href="#" data-manuscript-id="' + manuscriptId + '" class="link-to-manuscript-link">Link to SDBM_MS_' + manuscriptId + '</a>';
                     } else {
                         return '<a href="#" data-entry-id="' + entryId + '" class="queue-entry-link">Add to queue</a>';
                     }
@@ -249,6 +227,7 @@ $(document).ready(function() {
         var entryId = $(event.target).data("entryId");
         changeQueueEntry(entryId, "is");
         queueTable.reload();
+        return false;
     });
 
     $(document).on("click", ".toggle-entry-link", function (event) {
@@ -256,6 +235,7 @@ $(document).ready(function() {
         var value = $(event.target).val();
         changeQueueEntry(entryId, value);
         queueTable.reload();
+        return false;
     });
 
     $(document).on("click", ".dequeue-entry-link", function (event) {
@@ -283,8 +263,9 @@ $(document).ready(function() {
             success: function(data, textStatus, jqXHR) {
                 $("#linked-to-manuscript-modal .entry-id").text(entryId);
                 $("#linked-to-manuscript-modal .manuscript-id").text(manuscriptId);
+                $("#linked-to-manuscript-modal .manuscript-link").attr("href", "/manuscripts/" + manuscriptId + " /manage_entries");
+                $("#linked-to-manuscript-modal").modal({ keyboard: false, backdrop: 'static' });
                 $("#linked-to-manuscript-modal").modal('show');
-                resultsTable.reload();
             },
             error: function() {
                 // TODO: fill this out
@@ -307,7 +288,7 @@ $(document).ready(function() {
                 }),
                 success: function(data, textStatus, jqXHR) {
                     alert("Manuscript " + data.manuscript_id + " successfully created! Redirecting to manuscript page now.");
-                    window.location = "/manuscripts/" + data.manuscript_id + "/edit";
+                    window.location = "/manuscripts/" + data.manuscript_id + "/manage_entries";
                 },
                 error: function() {
                     // TODO: fill this out
@@ -361,8 +342,6 @@ $(document).ready(function() {
         $("#queue_wrapper .dataTables_scrollBody").scrollLeft($(event.target).scrollLeft());
     });
     
-    displayManuscriptIds();
-
     // TODO: this doesn't work
     // $(window).bind('resize', function () {
     //     console.log("RESIZED!");
@@ -381,7 +360,6 @@ $(document).ready(function() {
 
 <div style="width: 100%;">
     <h4 style="float: left">Linking Tool: <%= @entry.public_id %> (find and create manuscripts)</h4>
-    <h4 id="manuscript-list" style="float: right">NOTE: entry is already linked to <span id="manuscript-ids"></span></h4>
 </div>
 <div style="clear: both"/>
 
@@ -458,16 +436,13 @@ $(document).ready(function() {
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Successfully Linked</h4>
             </div>
             <div class="modal-body">
 
                 <p>Link between SDBM_<span class="entry-id"></span> and SDBM_MS_<span class="manuscript-id"></span> successfully created.</p>
 
-                <p><a href="#"  data-dismiss="modal">Return to linking tool</a></p>
-
-                <p><a href="">Go to page for SDBM_MS_<span class="manuscript-id"></span> now</a></p>
+                <p><a class="manuscript-link" href="">Go to page for SDBM_MS_<span class="manuscript-id"></span> now</a></p>
             </div>
             <!--
             <div class="modal-footer">

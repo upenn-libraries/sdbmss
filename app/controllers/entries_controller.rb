@@ -132,11 +132,13 @@ class EntriesController < ApplicationController
   end
 
   def find_or_create_manuscript
-    # if @entry.manuscript
-    #   respond_to do |format|
-    #     format.html { render "manuscript_already_exists" }
-    #   end
-    render "find_or_create_manuscript2"
+    if @entry.manuscript.blank?
+      render "find_or_create_manuscript2"
+    else
+      respond_to do |format|
+        format.html { render "manuscript_already_exists" }
+      end
+    end
   end
 
   private

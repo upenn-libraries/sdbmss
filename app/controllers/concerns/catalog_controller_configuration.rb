@@ -314,7 +314,7 @@ module CatalogControllerConfiguration
       config.add_nav_action(:dashboard, partial: 'nav/dashboard')
 
       config.add_show_tools_partial(:edit_entry, partial: 'nav/edit_entry', if: :show_edit_entry_link?)
-      config.add_show_tools_partial(:linking_tool, partial: 'nav/linking_tool')
+      config.add_show_tools_partial(:linking_tool, partial: 'nav/linking_tool', if: :show_linking_tool?)
       # we probably don't want to show a "Manage Links for MS" link, but I'm not sure, so just commenting out for now
       # config.add_show_tools_partial(:manage_links_for_manuscript, partial: 'nav/manage_links_for_manuscript', if: :show_manage_links_for_manuscript?)
       config.add_show_tools_partial(:entry_history, partial: 'nav/entry_history', if: :show_entry_history_link?)

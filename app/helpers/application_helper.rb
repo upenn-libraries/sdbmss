@@ -45,6 +45,10 @@ module ApplicationHelper
     entry.present? && entry.manuscript.present?
   end
 
+  def show_linking_tool?
+    !show_manage_links_for_manuscript?
+  end
+
   # determines whether entry history link should be displayed; this is
   # used multiple places, which is why it's here in ApplicationHelper
   def show_entry_history_link?
