@@ -23,7 +23,7 @@
     <%= stylesheet_link_tag "application", media: "all" %>
     <%= javascript_include_tag "application" %>
     <% if Rails.env.development? || Rails.env.staging? %>
-      <%= javascript_include_tag "development", media: "all" %>
+      <%= javascript_include_tag "development" %>
     <% end %>
     <%= csrf_meta_tags %>
     <%= content_for(:head) %>
