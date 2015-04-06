@@ -1,12 +1,17 @@
-<% entry_manuscripts.each do |entry_manuscript| %>
-    <% case entry_manuscript.relation_type %>
-    <% when EntryManuscript::TYPE_RELATION_IS %>
-        <% id_str = "" %>
-    <% when EntryManuscript::TYPE_RELATION_PARTIAL %>
-        <% id_str = "a <em>fragment</em> of " %>
-    <% when EntryManuscript::TYPE_RELATION_POSSIBLE %>
-        <% id_str = "<em>possibly</em>" %>
-    <% end %>
-    <% manuscript = entry_manuscript.manuscript %>
-    <p>This record has been identified as <%= simple_format(id_str, {}, { wrapper_tag: "span" }) %> manuscript <a href="<%= url_for manuscript %>"><%= manuscript.public_id %></a>, which has <%= manuscript.entries.count %> total records in this database.</p>
+<% if (manuscript = entry.manuscript).present? %>
+<p>This record has been identified as manuscript <a href="<%= url_for manuscript %>"><%= manuscript.public_id %></a>, which has <%= manuscript.entries.count %> total records in this database.</p>
+<% end %>
+
+<% fragments = entry.entry_manuscripts.select { |em| em.relation_type == EntryManuscript::TYPE_RELATION_PARTIAL } %>
+<% if fragments.length > 0 %>
+<p>This record has been identified as a <em>fragment</em> of these manuscripts:
+    <%= fragments.map { |fragment| '<a href="' + url_for(fragment.manuscript) + '">' + fragment.manuscript.public_id + '</a>' }.join(", ").html_safe %>
+</p>
+<% end %>
+
+<% possible = entry.entry_manuscripts.select { |em| em.relation_type == EntryManuscript::TYPE_RELATION_POSSIBLE } %>
+<% if possible.length > 0 %>
+<p>This record has been identified as <em>possibly</em> being these manuscripts:
+    <%= possible.map { |possible| '<a href="' + url_for(possible.manuscript) + '">' + possible.manuscript.public_id + '</a>' }.join(", ").html_safe %>
+</p>
 <% end %>

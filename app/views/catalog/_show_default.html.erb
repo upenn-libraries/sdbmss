@@ -5,7 +5,7 @@
 <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
 <% else %>
 
-<%= render partial: "shared/entry_manuscripts", object: entry.entry_manuscripts %>
+<%= render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
 
 <table class="table table-striped">
     <thead>

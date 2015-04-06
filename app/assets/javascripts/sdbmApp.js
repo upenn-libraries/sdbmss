@@ -255,7 +255,7 @@
                 window.location = "/manuscripts/" + manuscript_id + "/edit/";
             },
             redirectToFindOrCreateManuscriptForEntryPage: function(entry_id) {
-                window.location = "/entries/" + entry_id + "/find_or_create_manuscript";
+                window.location = "/linkingtool/entry/" + entry_id;
             },
             redirectToDashboard: function() {
                 window.location = "/dashboard";

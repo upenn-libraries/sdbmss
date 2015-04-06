@@ -37,16 +37,16 @@ module ApplicationHelper
     user_signed_in?
   end
 
-  # determines whether edit ms link should be displayed; this is used
-  # multiple places, which is why it's here in ApplicationHelper
-  def show_manage_links_for_manuscript?
+  def show_linking_tool_by_entry?
+    return false if !user_signed_in? || !@document
+    entry = @document.model_object
+    entry.present? && !entry.manuscript.present?
+  end
+
+  def show_linking_tool_by_manuscript?
     return false if !user_signed_in? || !@document
     entry = @document.model_object
     entry.present? && entry.manuscript.present?
-  end
-
-  def show_linking_tool?
-    !show_manage_links_for_manuscript?
   end
 
   # determines whether entry history link should be displayed; this is

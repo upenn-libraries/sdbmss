@@ -1,8 +1,8 @@
 class EntriesController < ApplicationController
 
-  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :find_or_create_manuscript, :similar, :history]
+  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history]
 
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :find_or_create_manuscript, :similar]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :similar]
 
   respond_to :html, :json
 
@@ -128,16 +128,6 @@ class EntriesController < ApplicationController
     @similar_ids = @entry.similar
     respond_to do |format|
       format.json
-    end
-  end
-
-  def find_or_create_manuscript
-    if @entry.manuscript.blank?
-      render "find_or_create_manuscript2"
-    else
-      respond_to do |format|
-        format.html { render "manuscript_already_exists" }
-      end
     end
   end
 
