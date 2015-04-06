@@ -1,0 +1,28 @@
+<%# renders verbose text string for an Event (ie provenance) record %>
+<% seller_or_holder = event.get_seller_or_holder %>
+<% selling_agent = event.get_selling_agent %>
+<% buyer = event.get_buyer %>
+
+<% if seller_or_holder.present? && !buyer.present? %>
+Held by <%= render partial: "shared/event_agent", object: seller_or_holder %>
+  <% if selling_agent.present? %>
+  through <%= render partial: "shared/event_agent", object: selling_agent %>
+  <% end %>
+<% elsif !seller_or_holder.present? && buyer.present? %>
+  Purchased by <%= render partial: "shared/event_agent", object: buyer %>
+  <% if selling_agent.present? %>
+  through <%= render partial: "shared/event_agent", object: selling_agent %>
+  <% end %>
+<% elsif seller_or_holder.present? && buyer.present? %>
+  Sold by <%= render partial: "shared/event_agent", object: seller_or_holder %> to
+  <%= render partial: "shared/event_agent", object: buyer %>
+  <% if selling_agent.present? %>
+  through <%= render partial: "shared/event_agent", object: selling_agent %>
+  <% end %>
+<% else %>
+  <%= render partial: "shared/event_agent", object: selling_agent %>
+<% end %>
+
+<% if event.comment %>
+<br/><%= event.comment %>
+<% end %>

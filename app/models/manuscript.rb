@@ -15,7 +15,7 @@ class Manuscript < ActiveRecord::Base
   def all_provenance
     # TODO: how to make sure they're "unique" since these records are
     # complex? maybe we don't do that.
-    Event.provenance.where(entry_id: linked_entries).order(start_date: :desc)
+    Event.provenance.where(entry_id: linked_entries).order(start_date: :desc, entry_id: :desc)
   end
 
   def public_id

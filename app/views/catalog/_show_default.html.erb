@@ -337,10 +337,6 @@
     <tbody>
         <% if (provenance_all = entry.provenance).present? %>
         <% provenance_all.each do |provenance| %>
-
-            <% seller_or_holder = provenance.get_seller_or_holder %>
-            <% selling_agent = provenance.get_selling_agent %>
-            <% buyer = provenance.get_buyer %>
         <tr>
             <td class="col-sm-2 text-right record-label">
                 <% if provenance.start_date.present? || provenance.end_date.present? %>
@@ -352,32 +348,17 @@
                 <% end %>
             </td>
             <td class="col-sm-10">
-                <% if seller_or_holder.present? && !buyer.present? %>
-                    Held by <%= render partial: "shared/event_agent", object: seller_or_holder %>
-                    <% if selling_agent.present? %>
-                        through <%= render partial: "shared/event_agent", object: selling_agent %>
-                    <% end %>
-                <% elsif !seller_or_holder.present? && buyer.present? %>
-                    Purchased by <%= render partial: "shared/event_agent", object: buyer %>
-                    <% if selling_agent.present? %>
-                        through <%= render partial: "shared/event_agent", object: selling_agent %>
-                    <% end %>
-                <% elsif seller_or_holder.present? && buyer.present? %>
-                    Sold by <%= render partial: "shared/event_agent", object: seller_or_holder %> to
-                    <%= render partial: "shared/event_agent", object: buyer %>
-                    <% if selling_agent.present? %>
-                        through <%= render partial: "shared/event_agent", object: selling_agent %>
-                    <% end %>
-                <% else %>
-                    <%= render partial: "shared/event_agent", object: selling_agent %>
-                <% end %>
-                <% if provenance.comment %>
-                    <br/><%= provenance.comment %>
-                <% end %>
+                <%= render partial: "shared/event", object: provenance %>
             </td>
         </tr>
 
         <% end %>
+
+        <% else %>
+        <tr>
+            <td class="col-sm-2"></td>
+            <td class="col-sm-10">There is no provenance information in this entry.</td>
+        </tr>
         <% end %>
     </tbody>
 </table>
