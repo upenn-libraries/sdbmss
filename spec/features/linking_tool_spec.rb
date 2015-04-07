@@ -49,7 +49,7 @@ describe "Linking Tool", :js => true do
     expect(find_by_id("search_results").find("tbody").all("tr").length).to be > 0
   end
 
-  xit "should show potential matches" do
+  it "should show potential matches" do
     entry = Entry.last
     visit linking_tool_by_entry_path id: entry.id
     click_button('Show potential matches')
