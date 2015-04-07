@@ -28,6 +28,24 @@ describe "Manage languages", :js => true do
     expect(page).to have_content @language.name
   end
 
+  # poltergeist has trouble loading JSON, so we don't use it
+  it "should do search for Language", js: false do
+    Language.create!(name: "Something new")
+    Language.create!(name: "Something old")
+    Language.create!(name: "Something else")
+    Language.create!(name: "Something zzz")
+
+    visit search_languages_path(term: "thing", format: "json")
+    response = JSON.parse(page.source)
+    expect(response).to be_a(Hash)
+    expect(response["results"].length).to eq(4)
+
+    visit search_languages_path(term: "Something old", format: "json")
+    response = JSON.parse(page.source)
+    expect(response).to be_a(Hash)
+    expect(response["results"].length).to eq(1)
+  end
+
   it "should add a new Language" do
     expect(Language.where(name: "Klingon").count).to eq(0)
     visit new_language_path
