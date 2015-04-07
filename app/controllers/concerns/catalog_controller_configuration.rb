@@ -121,6 +121,10 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'source_search' }
       end
 
+      config.add_search_field('source_date', label: "Source Date") do |field|
+        field.solr_local_parameters = { :qf => 'source_date' }
+      end
+
       config.add_search_field('source', label: "Source ID (Full)") do |field|
         field.include_in_simple_select = false
         field.solr_local_parameters = { :qf => 'source' }
