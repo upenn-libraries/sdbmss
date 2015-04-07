@@ -56,7 +56,7 @@ class SourcesController < ApplicationController
     query = Source.all
     query = query.where('date like ?', "#{date}%") if date.present?
     query = query.where('title like ?', "%#{title}%") if title.present?
-    query = query.joins(source_agents: [ :agent ] ).where('agents.name like ?', "%#{agent}%") if agent.present?
+    query = query.joins(source_agents: [ :agent ] ).where('names.name like ?', "%#{agent}%") if agent.present?
     query.with_associations
   end
 

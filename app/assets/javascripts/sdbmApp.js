@@ -284,6 +284,8 @@
                     }
                 }).then(function (response) {
                     $scope.sources = response.data.results;
+                }, function(response) {
+                    alert("An error occurred searching for sources");
                 });
             } else {
                 $scope.sources = [];

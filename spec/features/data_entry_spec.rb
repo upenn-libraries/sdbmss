@@ -14,6 +14,9 @@ describe "Data entry", :js => true do
 
     page.execute_script %Q{ $('##{field}').trigger('focus') }
 
+    # clear the field first
+    fill_in field, :with => ""
+
     # capybara's fill_in doesn't trigger the DOM events autocomplete
     # listens for; use send_keys instead
     find_by_id(field).native.send_keys(options[:with])
@@ -80,6 +83,11 @@ describe "Data entry", :js => true do
       date: "2013-11-12",
       source_type: SourceType.auction_catalog,
     )
+    source_agent = SourceAgent.create!(
+      source: @source,
+      role: SourceAgent::ROLE_SELLING_AGENT,
+      agent: Name.find_or_create_agent("Sotheby's")
+    )
   end
 
   context "when user is logged in" do
@@ -96,9 +104,27 @@ describe "Data entry", :js => true do
       page.reset!
     end
 
-    it "should find source on Select Source page" do
+    it "should find source by date on Select Source page" do
       visit new_entry_path
       fill_in 'date', :with => '2013'
+      sleep(1)
+      expect(page).to have_content @source.title
+      click_link('create-entry-link-' + @source.id.to_s)
+      expect(page).to have_content "Add an Entry - Fill out details"
+    end
+
+    it "should find source by agent on Select Source page" do
+      visit new_entry_path
+      fill_in 'agent', :with => 'Soth'
+      sleep(1)
+      expect(page).to have_content @source.title
+      click_link('create-entry-link-' + @source.id.to_s)
+      expect(page).to have_content "Add an Entry - Fill out details"
+    end
+
+    it "should find source by title on Select Source page" do
+      visit new_entry_path
+      fill_in 'title', :with => 'uniq'
       sleep(1)
       expect(page).to have_content @source.title
       click_link('create-entry-link-' + @source.id.to_s)
@@ -272,7 +298,7 @@ describe "Data entry", :js => true do
     def create_entry
       visit new_entry_path :source_id => @source.id
       fill_in 'cat_lot_no', with: '123'
-      fill_autocomplete_select_or_create_entity 'transaction_selling_agent', with: "Sotheby's"
+      # transaction_selling_agent should be auto-populated from source, so we skip it
       fill_autocomplete_select_or_create_entity 'transaction_seller', with: 'Joe2'
       fill_autocomplete_select_or_create_entity 'transaction_buyer', with: 'Joe3'
       select 'Yes', from: 'transaction_sold'
