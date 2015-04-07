@@ -1,4 +1,5 @@
 
+require 'set'
 require "rails_helper"
 
 describe Entry do
@@ -13,12 +14,32 @@ describe Entry do
       Entry.with_associations.last
     end
 
+    it "should use scope :most_recent" do
+      expect(Entry.most_recent(3).length). to eq(3)
+    end
+
   end
 
   describe "access methods" do
 
     it "should get_entries_for_manuscript" do
-      expect(subject.get_entries_for_manuscript).to eq([])
+      entry = Entry.last
+      expect(entry.get_entries_for_manuscript).to eq([])
+    end
+
+    it "should get similar entries" do
+      entry = Entry.last
+      expect(entry.similar).to be_a(Set)
+    end
+
+    it "should get as flat hash" do
+      entry = Entry.last
+      expect(entry.as_flat_hash).to be_a(Hash)
+    end
+
+    it "should get cumulative_updated_at" do
+      entry = Entry.last
+      expect(entry.cumulative_updated_at).to be_a(Fixnum)
     end
 
   end

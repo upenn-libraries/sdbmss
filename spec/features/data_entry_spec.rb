@@ -46,7 +46,7 @@ describe "Data entry", :js => true do
       page.execute_script %Q{ $('#{selector}').click() }
 
       if !found
-        find(".modal-title", visible: true).text.include? "Create"
+        expect(find(".modal-title", visible: true).text.include?("Create")).to be_truthy
         click_button('Create')
         sleep(0.5)
       end
@@ -331,7 +331,8 @@ describe "Data entry", :js => true do
       # save really can take as long as 2s
       sleep(2)
 
-      find(".modal-title", visible: true).text.include? "Successfully saved"
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+
     end
 
     def verify_entry(entry)
@@ -438,7 +439,7 @@ describe "Data entry", :js => true do
       # save really can take as long as 2s
       sleep(2)
 
-      find(".modal-title", visible: true).text.include? "Successfully saved"
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
       entry = Entry.last
       expect(entry.folios).to eq(666)
@@ -460,7 +461,7 @@ describe "Data entry", :js => true do
       # save really can take as long as 2s
       sleep(2)
 
-      find(".modal-title", visible: true).text.include? "Successfully saved"
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
       verify_entry(entry)
     end
@@ -504,7 +505,7 @@ describe "Data entry", :js => true do
       # save really can take as long as 2s
       sleep(2)
 
-      find(".modal-title", visible: true).text.include? "Successfully saved"
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
       entry.reload
 
@@ -531,7 +532,7 @@ describe "Data entry", :js => true do
       # save really can take as long as 2s
       sleep(2)
 
-      find(".modal-title", visible: true).text.include? "Successfully saved"
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
       entry.reload
 
@@ -558,7 +559,7 @@ describe "Data entry", :js => true do
       # save really can take as long as 2s
       sleep(2)
 
-      find(".modal-title", visible: true).text.include? "Successfully saved"
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
       entry.reload
 

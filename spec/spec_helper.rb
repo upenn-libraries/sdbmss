@@ -45,10 +45,13 @@ RSpec.configure do |config|
   end
 
   # clear out database after each group of tests and re-create seed data
-  config.after :all do
+  config.before :all do
     # it's tricky to call rake tasks programmatically from here, so we
     # invoke a subprocess. ugly and slow, but it works.
     `bundle exec rake db:drop db:create db:schema:load db:seed RAILS_ENV=test`
+
+    # Start with empty Solr collection
+    Sunspot::remove_all!
   end
 
 # The settings below are suggested to provide a good initial experience

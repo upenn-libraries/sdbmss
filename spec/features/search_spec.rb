@@ -14,17 +14,7 @@ describe "Blacklight Search", :js => true do
     # should, but they're probably good enough.
     SDBMSS::ReferenceData.create_all
 
-    # wait for Solr to be 'current' (ie caught up with indexing). this
-    # really can take 5 secs, if not more.
-    current = false
-    count = 0
-    while (!current && count < 5)
-      sleep(1)
-      result = Net::HTTP.get(URI('http://localhost:8983/solr/admin/cores?action=STATUS&core=test'))
-      current_str = /<bool name="current">(.+?)<\/bool>/.match(result)[1]
-      current = current_str == 'true'
-      count += 1
-    end
+    SDBMSS::Util.wait_for_solr_to_be_current
   end
 
   # Returns a record from Hill catalog

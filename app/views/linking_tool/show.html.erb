@@ -46,6 +46,25 @@ $(document).ready(function() {
                                                                             }).html_safe %>;
     <% end %>
 
+    var showModal = function(options) {
+        var defaults = {
+            allowDismiss: false,
+            showFooter: true,
+            body: "",
+            title: ""
+        };
+        options = $.extend({}, defaults, options);
+        $("#modal").find(".modal-title").html(options.title);
+        $("#modal").find(".modal-body").html(options.body);
+        if(!options.showFooter) {
+            $("#modal").find(".modal-footer").hide();
+        }
+        if(!options.allowDismiss) {
+            $("#modal").modal({ keyboard: false, backdrop: 'static' });
+        }
+        $("#modal").modal('show');
+    };
+
     var getActiveEntryManuscripts = function() {
         return entryManuscripts.filter(function (entry_manuscript) {
             return !entry_manuscript._destroy;
@@ -287,11 +306,16 @@ $(document).ready(function() {
                 }
             }),
             success: function(data, textStatus, jqXHR) {
-                $("#linked-to-manuscript-modal .entry-id").text(entryId);
-                $("#linked-to-manuscript-modal .manuscript-id").text(manuscriptId);
-                $("#linked-to-manuscript-modal .manuscript-link").attr("href", "/linkingtool/manuscript/" + manuscriptId);
-                $("#linked-to-manuscript-modal").modal({ keyboard: false, backdrop: 'static' });
-                $("#linked-to-manuscript-modal").modal('show');
+                var title = "Successfully Linked";
+                var body = '<p>Link between SDBM_' + entryId + ' and SDBM_MS_' + manuscriptId + ' successfully created.</p>' +
+                           '<p><a class="manuscript-link" href="/linkingtool/manuscript/' + manuscriptId + '">Go to page for SDBM_MS_' + manuscriptId + ' now</a></p>';
+
+                showModal({
+                    allowDismiss: false,
+                    showFooter: false,
+                    title: title,
+                    body: body
+                });
             },
             error: function() {
                 // TODO: fill this out
@@ -368,7 +392,10 @@ $(document).ready(function() {
                     potentialMatches = data[key];
                     resultsTable.reload();
                 } else {
-                    alert("No matches found");
+                    showModal({
+                        title: "No matches found",
+                        body: "No matches found"
+                    });
                 }
             },
             error: function() {
@@ -495,24 +522,19 @@ $(document).ready(function() {
     </tbody>
 </table>
 
-<div class="modal fade" id="linked-to-manuscript-modal">
+<div class="modal fade" id="modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Successfully Linked</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"></h4>
             </div>
             <div class="modal-body">
-
-                <p>Link between SDBM_<span class="entry-id"></span> and SDBM_MS_<span class="manuscript-id"></span> successfully created.</p>
-
-                <p><a class="manuscript-link" href="">Go to page for SDBM_MS_<span class="manuscript-id"></span> now</a></p>
             </div>
-            <!--
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                <!--<button type="button" class="btn btn-primary">Save changes</button> -->
             </div>
-            -->
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

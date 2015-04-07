@@ -1,6 +1,7 @@
 
 require 'csv'
 require 'date'
+require 'net/http'
 
 module SDBMSS
 
@@ -125,6 +126,20 @@ module SDBMSS
           return false
         end
         return true
+      end
+
+      # wait for Solr to be 'current' (ie caught up with indexing). this
+      # really can take 5 secs, if not more.
+      def wait_for_solr_to_be_current
+        current = false
+        count = 0
+        while (!current && count < 5)
+          sleep(1)
+          result = Net::HTTP.get(URI('http://localhost:8983/solr/admin/cores?action=STATUS&core=test'))
+          current_str = /<bool name="current">(.+?)<\/bool>/.match(result)[1]
+          current = current_str == 'true'
+          count += 1
+        end
       end
 
     end
