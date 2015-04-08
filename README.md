@@ -139,8 +139,9 @@ Running the Development Server
 Running the Test Suite
 ----------------------
 
-* Install [PhantomJS](http://phantomjs.org/) 1.9.8 or higher. You can
-  get precompiled Linux binaries
+* Install [PhantomJS](http://phantomjs.org/) 1.9.8 (poltergeist
+  library does NOT work with 2.0 yet, as of Apr 2015, so don't use
+  it). You can get precompiled Linux binaries
   [here](https://bitbucket.org/ariya/phantomjs/downloads/). After you
   unzip it somewhere, make sure phantomjs is in your path.
 
