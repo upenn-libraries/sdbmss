@@ -44,12 +44,10 @@ module SDBMSS
       # we take the lowest (best) score, since a good match of any one
       # memebr of the set is a good indicator
       score = 10
-      @strings.each do |s1|
-        x.strings.each do |s2|
-          d = Levenshtein.normalized_distance(s1, s2) * 10
-          score = d if d < score
-        end
-      end
+      # cartesian product of arrays
+      pairs = @strings.product(x.strings)
+      scores = pairs.map { |pair| Levenshtein.normalized_distance(pair[0], pair[1]) * 10 }
+      score = scores.sort.first < 10 ? scores.sort.first : 10
       Rails.logger.info("dist score: #{score}, '#{x.strings.inspect}' '#{@strings.inspect}'")
       score
     end
