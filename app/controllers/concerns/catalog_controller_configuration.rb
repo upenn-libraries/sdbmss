@@ -204,6 +204,12 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'folios' }
       end
 
+      config.add_search_field('manuscript_date', label: "Manuscript Date") do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'manuscript_date' }
+      end
+
       config.add_search_field('num_lines') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
