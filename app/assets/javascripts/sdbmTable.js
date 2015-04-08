@@ -1,7 +1,10 @@
 
 /*
- * Generic dataTable widget that loads rows using server-side
- * processing, with many reasonable defaults.
+ * This is a wrapper class around a dataTable that configures the
+ * widget with reasonable defaults for most tables on the website, and
+ * allows customization. It loads rows using server-side processing.
+ * 
+ * Arguments:
  * 
  * selector = jquery selector string specifying the table element
  *
