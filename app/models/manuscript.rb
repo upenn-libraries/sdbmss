@@ -22,6 +22,10 @@ class Manuscript < ActiveRecord::Base
     return "SDBM_MS_" + id.to_s
   end
 
+  def display_value
+    public_id + (name.present? ? ": " + name : "")
+  end
+
   # returns an array of entry IDs
   def entry_candidates
     candidate_ids = Set.new

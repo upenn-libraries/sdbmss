@@ -1,5 +1,5 @@
 <% if (manuscript = entry.manuscript).present? %>
-<p>This record has been identified as manuscript <a href="<%= url_for manuscript %>"><%= manuscript.public_id %></a>, which has <%= manuscript.entries.count %> total records in this database.</p>
+<p>This record has been identified as manuscript <a href="<%= url_for manuscript %>"><%= manuscript.display_value %></a>, which has <%= manuscript.entries.count %> total records in this database.</p>
 <% end %>
 
 <% fragments = entry.entry_manuscripts.select { |em| em.relation_type == EntryManuscript::TYPE_RELATION_PARTIAL } %>

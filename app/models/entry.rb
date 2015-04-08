@@ -342,6 +342,7 @@ class Entry < ActiveRecord::Base
         # https://github.com/sunspot/sunspot/issues/331
         @__receiver__.id,
         public_id,
+        manuscript ? manuscript.display_value : nil,
         # source info
         source.display_value,
         catalog_or_lot_number,
