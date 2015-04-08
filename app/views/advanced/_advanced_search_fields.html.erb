@@ -34,21 +34,18 @@ $(document).ready(function() {
 </script>
 <% end %>
 
-<% text_search_fields = search_fields_for_advanced_search.reject { |key, field_def| field_def.is_numeric_field }.sort %> 
-<% range_search_fields = search_fields_for_advanced_search.select { |key, field_def| field_def.is_numeric_field }.sort %> 
-
 <div class="compress-whitespace">
 
-<% 5.times do |x| %>
+<% prepopulated_search_fields_for_advanced_search(5, is_numeric: false).each do |fieldstruct| %>
 <div class="form-group advanced-search-field">
     <div class="col-sm-7">
-        <input class="form-control" name="" type="text"/>
+        <input class="form-control" name="" type="text" value="<%= fieldstruct.value %>"/>
     </div>
     <div class="col-sm-1">in</div>
     <div class="col-sm-4">
-        <select class="form-control col-sm-3" id="text_field_<%= x %>">
-            <%- text_search_fields.each do |key, field_def| -%>
-            <option value="<%= key %>"><%= field_def.label %></option>
+        <select class="form-control col-sm-3" id="text_field_<%= fieldstruct.index %>">
+            <%- fieldstruct.fields.each do |key, field_def| -%>
+            <option value="<%= key %>" <% if fieldstruct.selected_field == key %>selected="selected"<% end %>><%= field_def.label %></option>
             <%- end -%>
         </select>
     </div>
@@ -57,21 +54,21 @@ $(document).ready(function() {
 
 <h3 class="query-criteria-heading">Numeric Fields:</h3>
     
-<% 5.times do |x| %>
+<% prepopulated_search_fields_for_advanced_search(5, is_numeric: true).each do |fieldstruct| %>
 <div class="form-group advanced-search-field">
     <input type="hidden" name="" value=""/>
     <div class="col-sm-3">
-        <input class="form-control start" id="numeric_start_<%= x %>" type="text"/>
+        <input class="form-control start" id="numeric_start_<%= fieldstruct.index %>" type="text" value="<%= fieldstruct.value %>"/>
     </div>
     <div class="col-sm-1">to</div>
     <div class="col-sm-3">
-        <input class="form-control end" id="numeric_end_<%= x %>" type="text"/>
+        <input class="form-control end" id="numeric_end_<%= fieldstruct.index %>" type="text" value="<%= fieldstruct.value2 %>"/>
     </div>
     <div class="col-sm-1">in</div>
     <div class="col-sm-4">
-        <select class="form-control col-sm-3" id="numeric_field_<%= x %>">
-            <%- range_search_fields.each do |key, field_def| -%>
-            <option value="<%= key %>"><%= field_def.label %></option>
+        <select class="form-control col-sm-3" id="numeric_field_<%= fieldstruct.index %>">
+            <%- fieldstruct.fields.each do |key, field_def| -%>
+            <option value="<%= key %>" <% if fieldstruct.selected_field == key %>selected="selected"<% end %>><%= field_def.label %></option>
             <%- end -%>
         </select>
     </div>

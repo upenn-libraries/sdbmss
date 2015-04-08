@@ -57,4 +57,53 @@ module ApplicationHelper
     entry.present? && entry.versions.count > 0
   end
 
+  # this method returns a data structure used to prepopulate the
+  # advanced search form.
+  def prepopulated_search_fields_for_advanced_search(num_fields, is_numeric: true)
+    # get all the search fields defined in Blacklight config, as a
+    # Hash of string field names to Field objects
+    fields = search_fields_for_advanced_search.select { |key, field_def|
+      is_numeric ? field_def.is_numeric_field : !field_def.is_numeric_field
+    }
+
+    # create an array of just the string field names
+    fieldnames = fields.keys
+
+    # figure out, from #params, what user actually queried
+    queried_fields = params.dup
+    if queried_fields["search_field"] == 'all_fields'
+      queried_fields["all_fields"] = queried_fields["q"]
+    end
+    queried_fields = queried_fields.select { |k,v| fieldnames.member? k }
+    queried_fields.sort
+
+    # now make an Array of OpenStructs for each row corresponding to a
+    # set of form inputs, for advanced search page
+    5.times.map do |i|
+      selected_field, value, value2 = nil, nil, nil
+      if queried_fields.length > 0
+        fieldname = queried_fields.keys.first
+        selected_field = fieldname
+
+        if !fields[fieldname].is_numeric_field
+          value = queried_fields[fieldname]
+        else
+          range_str = queried_fields[fieldname]
+          match = /\[(\d+)\s+TO\s+(\d+)\]/.match(range_str)
+          if match
+            value, value2 = match[1], match[2]
+          end
+        end
+        queried_fields.delete(fieldname)
+      end
+      OpenStruct.new(
+        index: i,
+        fields: fields,
+        selected_field: selected_field,
+        value: value,
+        value2: value2,
+      )
+    end
+  end
+
 end
