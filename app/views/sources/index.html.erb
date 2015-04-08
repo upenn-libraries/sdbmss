@@ -23,6 +23,7 @@ $(document).ready(function() {
 
     var columns = [
         {
+            sdbmssMinWidth: "150px",
             title: 'Options',
             orderable: false,
             render: function (data, type, full, meta) { 
@@ -31,8 +32,7 @@ $(document).ready(function() {
                           ' &middot; <a class="source-delete-link" href="/' + model_class + '/' + data + '.json">Delete</a>';
                 // TODO: display delete link only if entries_count is 0
                 return str;
-            },
-            width: "10%"
+            }
         },
         {
             sdbmssMinWidth: "150px",
