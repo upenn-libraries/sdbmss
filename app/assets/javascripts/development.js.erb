@@ -20,7 +20,7 @@ $(document).ready(function () {
     <%# check for revision file created by Capistrano deployment %>
     <% if (revision_file = Rails.root.join("REVISION")).exist? %>
     '<p>' + 
-    'This server is running revision <%= revision_file.read %>.' + 
+    'This server is running revision <%= revision_file.read.strip %>.' + 
     '</p>' +
     <% end %>
     '<p>' +
