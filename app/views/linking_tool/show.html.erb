@@ -72,10 +72,20 @@ $(document).ready(function() {
         }
     };
 
-    var deleteWorkspaceEntry = function(entryId) {
+    var deleteWorkspaceEntry = function(entryIdToDelete) {
+        if(mode == 'by_entry' && entryId == entryIdToDelete) {
+            SDBM.showErrorModal("#modal", "You can't unlink the main entry.");
+            return;
+        }
+
+        if(getActiveEntryManuscripts().length == 1) {
+            SDBM.showErrorModal("#modal", "You can't unlink that record. There must be at least one entry in the table.");
+            return;
+        }
+        
         var idxToDelete = -1;
         $.each(entryManuscripts, function (idx, workspaceEntry) {
-            if(workspaceEntry.entry_id == entryId) {
+            if(workspaceEntry.entry_id == entryIdToDelete) {
                 idxToDelete = idx;
             }
         });
