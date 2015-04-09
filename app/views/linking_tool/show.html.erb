@@ -440,7 +440,7 @@ $(document).ready(function() {
 
 <div style="margin-bottom: 6px">
     <span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>
-    <button id="persist-entries-manuscript-link" style="margin-left: 40px"></button>
+    <button id="persist-entries-manuscript-link" class="btn btn-primary btn-xs" style="margin-left: 40px"></button>
 </div>
 
 <table id="workspace" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
@@ -466,9 +466,9 @@ $(document).ready(function() {
             <option value="<%= key %>"><%= field_def.label %></option>
             <%- end -%>
             </select>
-            <button id="search_submit">Search</button>
+            <button id="search_submit" class="btn btn-primary btn-xs">Search</button>
             <img id="spinner" alt="working..." style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
-            <button id="show-matches" style="margin-left: 40px">Show potential matches</button>
+            <button id="show-matches" class="btn btn-primary btn-xs" style="margin-left: 40px">Show potential matches</button>
         </div>
         <div style="display: none; height: 28px" class="more-search-fields">
             <span style="width: 60px; display: inline-block;">&nbsp;</span>
