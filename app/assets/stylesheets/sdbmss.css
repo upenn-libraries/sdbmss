@@ -4,6 +4,8 @@
 
 .navbar { margin-bottom: 10px; }
 
+.container-fluid .row { padding-left: 15px; padding-right: 15px; }
+
 /* There's some tweaky stuff in "#header-navbar .navbar-brand" rule that we're overriding here, probably fragile */
 #header-navbar .navbar-brand { background: none; overflow: visible; text-indent: 0; color: black; width: auto; }
 
@@ -15,6 +17,8 @@
 .search-form { font-size: 12px; }
 
 .search-form .form-control { font-size: 12px; }
+
+.search-form .search-fieldset { margin-bottom: 8px; }
 
 /* on Entry view page, move the content block to the right of the sidebar */
 .blacklight-catalog-show #content { float: right; }

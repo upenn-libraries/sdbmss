@@ -1,19 +1,11 @@
 <% content_for :head do %>
 <%= stylesheet_link_tag "extras", media: "all" %>
 <%= javascript_include_tag "extras" %>
-
-<style>
-
-.navbar { margin-bottom: 10px; }
-
-#main-container.container-fluid .row { padding-left: 15px; padding-right: 15px; }
-
-.search-fieldset { margin-bottom: 8px; }
-
-</style>
 <script type="text/javascript">
 
 $(document).ready(function() {
+
+    SDBM.setPageFullWidth();
 
     var model_class = "sources";
 
@@ -110,11 +102,6 @@ $(document).ready(function() {
             title: "Comments"
         }
     ];
-    
-    // TODO: hacks to tweak the Rails layout: figure out a more elegant way?
-    $("#search-navbar").remove();
-    // make this page take up full width of browser window
-    $("#main-container").removeClass("container").addClass("container-fluid");
     
     $("input[name='search_value']").val("");
 

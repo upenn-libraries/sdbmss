@@ -42,3 +42,13 @@ SDBM.showErrorModal = function(selector_str, msg) {
         body: msg
     });
 };
+
+SDBM.hideNavBar = function() {
+    $("#search-navbar").hide();
+};
+
+SDBM.setPageFullWidth = function() {
+    SDBM.hideNavBar();
+    // make this page take up full width of browser window
+    $("#main-container").removeClass("container").addClass("container-fluid");
+};
