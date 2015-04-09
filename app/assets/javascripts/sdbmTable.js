@@ -10,8 +10,8 @@
  *
  * options = object containing the following keys:
  *
- *  ajax: callback used by SDBMTable to fetch results and populated
- *  table. This has the signature: function (sdbmTable, dt_params,
+ *  ajax: callback used to fetch results and populate table. 
+ *  This has the signature: function (sdbmTable, dt_params,
  *  callback, settings)
  *
  *  order: this gets passed to datatable for its 'order' option,
@@ -34,7 +34,9 @@
  *  takes up the full height of the viewport; a function; or a string
  *  describing a fixed height. defaults to 'full'.
  */
-function SDBMTable(selector, options) {
+var SDBM = SDBM || {};
+
+SDBM.Table = function(selector, options) {
     
     var defaults = {
         ajax: null,
@@ -168,9 +170,9 @@ function SDBMTable(selector, options) {
  * Translates the common parameters from dataTables widget into URL
  * params for Blacklight search. This object knows how to do this for
  * params related to the table state (such as pagination); other
- * params need to be added by specialized uses of SDBMTable.
+ * params need to be added by specialized uses of SDBM.Table.
  */
-SDBMTable.prototype.translateParamsToBlacklight = function (dt_params) {
+SDBM.Table.prototype.translateParamsToBlacklight = function (dt_params) {
     return {
         draw: dt_params.draw,
         page: (dt_params.start / dt_params.length) + 1,
@@ -181,11 +183,11 @@ SDBMTable.prototype.translateParamsToBlacklight = function (dt_params) {
     };
 };
 
-SDBMTable.prototype.getViewportHeight = function() {
+SDBM.Table.prototype.getViewportHeight = function() {
     return $(window).height();
 };
 
-SDBMTable.prototype.getSort = function(dt_params) {
+SDBM.Table.prototype.getSort = function(dt_params) {
     var sort = "";
     var sdbmTableInstance = this;
     $.each(dt_params.order, function(idx, order) {
@@ -203,29 +205,29 @@ SDBMTable.prototype.getSort = function(dt_params) {
     return sort;
 };
 
-SDBMTable.prototype.getRowHeight = function() {
+SDBM.Table.prototype.getRowHeight = function() {
     return $(this.dataTable.rows().nodes().shift()).height();
 };
 
-SDBMTable.prototype.getTableHeight = function() {
+SDBM.Table.prototype.getTableHeight = function() {
     return this.dataTable.rows().nodes().length * this.getRowHeight();
 };
 
-SDBMTable.prototype.reload = function() {
+SDBM.Table.prototype.reload = function() {
     this.dataTable.ajax.reload();
 };
 
 // given a row that's an Array, find the value at the index for the columnName
-SDBMTable.prototype.getColumnIndex = function(columnName) {
+SDBM.Table.prototype.getColumnIndex = function(columnName) {
     var columnNames = this.columns.map(function (item) { return item.title; });
     return columnNames.indexOf(columnName);
 };
 
 
 /*
- * Subclass of SDBMTable for displaying Entries specifically.
+ * Subclass of SDBM.Table for displaying Entries specifically.
  */
-function SDBMEntryTable(selector, options) {
+SDBM.EntryTable = function(selector, options) {
 
     var defaultOptions = {
         // NOTE: fields prefixed by 'sdbmss' are our own options, not
@@ -492,7 +494,7 @@ function SDBMEntryTable(selector, options) {
         ]
     };
 
-    SDBMTable.call(this, selector, $.extend({}, defaultOptions, options));
+    SDBM.Table.call(this, selector, $.extend({}, defaultOptions, options));
 
     var sdbmTable = this;
 
@@ -518,10 +520,10 @@ function SDBMEntryTable(selector, options) {
 
 };
 
-SDBMEntryTable.prototype = Object.create(SDBMTable.prototype);
+SDBM.EntryTable.prototype = Object.create(SDBM.Table.prototype);
 
-SDBMEntryTable.prototype.getSort = function(dt_params) {
-    var sort = SDBMTable.prototype.getSort.call(this, dt_params);
+SDBM.EntryTable.prototype.getSort = function(dt_params) {
+    var sort = SDBM.Table.prototype.getSort.call(this, dt_params);
     if(!sort) {
         sort = "entry_id desc";
     }
@@ -529,10 +531,10 @@ SDBMEntryTable.prototype.getSort = function(dt_params) {
 };
 
 /**
- * Callers of SDBMEntryTable can call this in their implementation of
+ * Callers of SDBM.EntryTable can call this in their implementation of
  * the 'ajax' function option.
  */
-SDBMEntryTable.prototype.searchAndUpdateTable = function(params, dtCallback, ajaxOptions) {
+SDBM.EntryTable.prototype.searchAndUpdateTable = function(params, dtCallback, ajaxOptions) {
     var sdbmTableInstance = this;
     
     var defaults = {

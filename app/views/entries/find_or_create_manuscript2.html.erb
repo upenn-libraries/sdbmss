@@ -101,7 +101,7 @@ $(document).ready(function() {
         return params;
     };
 
-    var queueTable = new SDBMEntryTable("#queue", {
+    var queueTable = new SDBM.EntryTable("#queue", {
         dom: '<"clear">JRt',
         height: '135px',
         fixedColumns: 5,
@@ -162,7 +162,7 @@ $(document).ready(function() {
         }
     });
 
-    var resultsTable = new SDBMEntryTable("#search_results", {
+    var resultsTable = new SDBM.EntryTable("#search_results", {
         dom: '<"clear"><"H"r>JRt<"F"ip>',
         height: function() {
             // height gets passed into dataTables constructor before

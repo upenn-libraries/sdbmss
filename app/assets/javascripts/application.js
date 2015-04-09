@@ -19,3 +19,6 @@
 //
 // Required by Blacklight
 //= require blacklight/blacklight
+
+//= require sdbm
+
