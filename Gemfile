@@ -59,10 +59,6 @@ gem 'sunspot_solr', '~> 2.1.0'
 # Use database as session store
 gem 'activerecord-session_store', '~> 0.1.0'
 
-# This can autogenerate ERD diagrams from ActiveRecord models and
-# schema.
-# gem 'rails-erd', group: :development
-
 # for calculating string similarity
 gem 'levenshtein', '~> 0.2.2'
 
@@ -81,6 +77,9 @@ group :development do
   gem 'spring', '~> 1.1.0'
   # Use Capistrano for deployment
   gem 'capistrano-rails', '~> 1.1.0'
+  # This can autogenerate ERD diagrams from ActiveRecord models and
+  # schema.
+  #gem 'rails-erd', '~> 1.3.1'
 end
 
 group :test, :development do
