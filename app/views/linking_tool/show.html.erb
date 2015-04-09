@@ -435,11 +435,29 @@ $(document).ready(function() {
 <% end %>
 
 <div style="width: 100%;">
-    <span style="font-size: 16px; font-weight: bold;">Linking Tool: <span id="linking-tool-heading-id"></span></span>
+    <span style="font-size: 18px; font-weight: bold;">Linking Tool: <span id="linking-tool-heading-id"></span></span>
 </div>
-<div style="clear: both"/>
 
-<form class="form-horizontal search-form">
+<div style="margin-bottom: 6px">
+    <span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>
+    <button id="persist-entries-manuscript-link" style="margin-left: 40px"></button>
+</div>
+
+<table id="workspace" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
+    <thead>
+        <tr>
+            <!-- we populate TH elements dynamically -->
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+<div style="margin-bottom: 6px; margin-top: 15px;">
+    <span style="font-size: 14px; font-weight: bold;">Search for Entries</span>
+</div>
+
+<form class="form-horizontal search-form" style="margin-top: 10px;">
         <div style="height: 28px">
             <label style="width: 60px">Search</label>
             <input name="search_value" value="" size="30" type="text">
@@ -478,25 +496,6 @@ $(document).ready(function() {
             <a href="#" id="show-more-search-fields-link">Show more search fields</a>
         </div>
 </form>
-
-<div style="margin-bottom: 6px">
-    <span style="font-size: 16px; font-weight: bold;"><span id="workspace-table-title"></span></span>
-    <button id="persist-entries-manuscript-link" style="margin-left: 40px"></button>
-</div>
-
-<table id="workspace" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
-    <thead>
-        <tr>
-            <!-- we populate TH elements dynamically -->
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-
-<div style="margin-bottom: 6px; margin-top: 15px;">
-    <span style="font-size: 16px; font-weight: bold;">Search Results</span>
-</div>
 
 <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
     <thead>
