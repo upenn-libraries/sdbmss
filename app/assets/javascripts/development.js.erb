@@ -1,0 +1,38 @@
+
+/* JS to run in development only */
+
+$(document).ready(function () {
+    $("<a href='#' class='development'>&#9733;DEVELOPMENT&#9733;</a>").insertAfter(".navbar-brand");
+
+    var body = 
+    '<p>' +
+    'This is the development version of the New Schoenberg ' + 
+    'Database project, for use by SIMS and related ' +
+    'individuals only. Feel free to look around and ' +
+    'experiment, but please do not distribute the address ' +
+    'publicly.' +
+    '</p>' +
+    '<p style="color:red">' +
+    'NOTE: Data entry and changes made here are completely separate ' +
+    'from the current live database. This data will be discarded ' +
+    'when the new version of the project goes live. ' +
+    '</p>' +
+    <%# check for revision file created by Capistrano deployment %>
+    <% if (revision_file = Rails.root.join("REVISION")).exist? %>
+    '<p>' + 
+    'This server is running revision <%= revision_file.read %>.' + 
+    '</p>' +
+    <% end %>
+    '<p>' +
+    'Please <a href="mailto:jeffchiu@upenn.edu">email Jeff</a> with ' +
+    'bug reports, suggestions, questions, or other concerns.' +
+    '</p>';
+    
+    $(document).on('click', '.development', function() {
+        SDBM.showModal("#modal", {
+            title: "Welcome",
+            body: body
+        });
+        return false;
+    });
+});

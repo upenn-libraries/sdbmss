@@ -37,6 +37,7 @@
   <body class="<%= render_body_class %>">
   <%= render :partial => 'shared/header_navbar' %>
 
+  <%# this is from blacklight %>
   <%= render partial: 'shared/ajax_modal' %>
 
   <% if Rails.env.development? || Rails.env.staging? %>
@@ -51,6 +52,9 @@
     </div>
   </div>
 
+  <%# this is SDBM-specific modal code %>
+  <%= render :partial => 'shared/modal' %>
+  
   <%= render :partial => 'shared/footer' %>
   </body>
 </html>
