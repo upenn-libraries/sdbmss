@@ -69,10 +69,10 @@ module ApplicationHelper
     # create an array of just the string field names
     fieldnames = fields.keys
 
-    # figure out, from #params, what user actually queried
+    # figure out, from #params, the 'simple search' that user did
     queried_fields = params.dup
-    if queried_fields["search_field"] == 'all_fields'
-      queried_fields["all_fields"] = queried_fields["q"]
+    if queried_fields["search_field"].present?
+      queried_fields[queried_fields["search_field"]] = queried_fields["q"]
     end
     queried_fields = queried_fields.select { |k,v| fieldnames.member? k }
     queried_fields.sort
