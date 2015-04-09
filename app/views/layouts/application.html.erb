@@ -40,10 +40,6 @@
   <%# this is from blacklight %>
   <%= render partial: 'shared/ajax_modal' %>
 
-  <% if Rails.env.development? || Rails.env.staging? %>
-    <%= render partial: 'shared/development_dialog' %>
-  <% end %>
-
   <div id="main-container" class="container">
     <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
 
