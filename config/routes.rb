@@ -31,6 +31,12 @@ Rails.application.routes.draw do
 
   resources :entry_comments
 
+  resources :entry_dates do
+    collection {
+      get 'normalize'
+    }
+  end
+
   resources :entry_manuscripts do
     collection { put 'update_multiple' }
   end

@@ -1048,6 +1048,35 @@
         };
     });
 
+    // attribute value should be the ID of the element to populate
+    // with a normalized date
+    sdbmApp.directive("sdbmApproximateDateString", function ($http) {
+        return function (scope, element, attrs) {
+            var targetId = attrs.sdbmApproximateDateString;
+
+            var getTargetValue = function() {
+                return $("#" + targetId).val();
+            };
+
+            $(element).focusout(function(event) {
+                var observedDate = $(element).val();
+                if(observedDate && !getTargetValue()) {
+                    $http.get("/entry_dates/normalize.json", {
+                        params: {
+                            date: observedDate
+                        }
+                    }).then(function (response) {
+                        if(!getTargetValue() && response.data.date && response.data.date.date) {
+                            $("#" + targetId).val(response.data.date.date);
+                        }
+                    }, function(response) {
+                        alert("An error occurred trying to normalize date");
+                    });
+                }
+            });
+        };
+    });
+    
     sdbmApp.directive("sdbmCertaintyFlags", function($modal, $parse) {
         return function (scope, element, attrs) {
             var modelName = attrs.sdbmCertaintyFlags;

@@ -226,7 +226,7 @@
             <span sdbm-tooltip="observed_date">Date As Recorded</span>
       </label>
       <div class="col-sm-5">
-        <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date">
+        <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_{{ $index }}">
       </div>
 
       <label class="col-sm-1 control-label">

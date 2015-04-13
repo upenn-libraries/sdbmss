@@ -3,6 +3,8 @@ require 'csv'
 require 'date'
 require 'net/http'
 
+require 'active_support/all'
+
 module SDBMSS
 
   module Util
@@ -97,6 +99,31 @@ module SDBMSS
       # Takes a date string 'd' and returns it in the YYYY-MM-DD format
       def date_dashes(d)
         d && d.length == 8 ? d.slice(0, 4) + "-" + d.slice(4, 2) + "-" + d.slice(6, 2) : d
+      end
+
+      # Takes a date_str like 'early 19th century' and returns a
+      # normalized date value for it, like '1825'. returns nil if date
+      # str can't be normalized.
+      def normalize_approximate_date_str(date_str)
+        if (exact_date_match = /(\d{4})/.match(date_str)).present?
+          return exact_date_match[1]
+        else
+          century, decade = "", "00"
+          qualifier_match = /(early|mid|late)/.match(date_str)
+          century_match = /(\d{1,2})/.match(date_str)
+          if century_match
+            century = (century_match[1].to_i - 1).to_s
+          end
+          case
+          when /early/.match(date_str)
+            decade = "25"
+          when /mid/.match(date_str)
+            decade = "50"
+          when /late/.match(date_str)
+            decade = "75"
+          end
+          century.present? ? century + decade : nil
+        end
       end
 
       # helper method for solr indexing

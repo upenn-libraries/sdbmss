@@ -1,4 +1,6 @@
 
+require 'sdbmss'
+
 describe "SDBMSS::Util" do
 
   describe "#format_fuzzy_date" do
@@ -17,6 +19,30 @@ describe "SDBMSS::Util" do
 
     it "returns garbage data as-is" do
       expect(SDBMSS::Util.format_fuzzy_date("2014874872488")).to eq("2014874872488")
+    end
+
+  end
+
+  describe "#normalize_approximate_date_str" do
+
+    it "normalizes a century date" do
+      expect(SDBMSS::Util.normalize_approximate_date_str("11th century")).to eq("1000")
+    end
+
+    it "normalizes an early century date" do
+      expect(SDBMSS::Util.normalize_approximate_date_str("early 11th century")).to eq("1025")
+    end
+
+    it "normalizes a late century date" do
+      expect(SDBMSS::Util.normalize_approximate_date_str("late 6th century")).to eq("575")
+    end
+
+    it "normalizes a mid century date" do
+      expect(SDBMSS::Util.normalize_approximate_date_str("mid 12th century")).to eq("1150")
+    end
+
+    it "normalizes an exact date" do
+      expect(SDBMSS::Util.normalize_approximate_date_str("circa 1324")).to eq("1324")
     end
 
   end
