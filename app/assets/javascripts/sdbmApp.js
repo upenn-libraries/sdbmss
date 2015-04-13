@@ -1,13 +1,13 @@
 /**
  * sdbmApp module for angular.js
  *
- * We only Angular for a few data entry pages, so all of the code
+ * We only use Angular for a few data entry pages, so all of the code
  * lives here instead of being broken out further into smaller modules
  * or files.
  */
 
 /* Hints for eslint: */
-/* global alert, angular, console, window, $ */
+/* global alert, angular, console, window, setTimeout, $ */
 
 (function () {
 
@@ -15,7 +15,7 @@
 
     var sdbmApp = angular.module("sdbmApp", ["ngCookies", "ngResource", "ui.bootstrap"]);
 
-    sdbmApp.run(function ($http, $cookies) {
+    sdbmApp.run(function ($http) {
         // For Rails CSRF
         var csrf_token = $('meta[name="csrf-token"]').attr('content');
         if(csrf_token) {
@@ -124,9 +124,9 @@
         };
 
         /* This fn filters out 'blank' records from objectWithAssociations,
-         * using the (meta)data in the 'assoc' object, which specifies what 
+         * using the (meta)data in the 'assoc' object, which specifies what
          * properties and child associations exist.
-         */                                                                                                                                             
+         */
         var filterBlankRecords = function (objectWithAssociations, assoc) {
             var objectArrayName = assoc.field;
 
@@ -138,7 +138,7 @@
                     return item.field;
                 }));
             }
-            
+
             var objectArray = objectWithAssociations[objectArrayName];
             if(objectArray === undefined) {
                 alert("error: couldn't find object array for '" + objectArrayName + "'");
@@ -150,8 +150,8 @@
                 // do depth-first recursion, so that records lower in
                 // the tree get removed first
                 var childAssociations = assoc.associations || [];
-                childAssociations.forEach(function (child_assoc) {
-                    filterBlankRecords(childObject, child_assoc);
+                childAssociations.forEach(function (childAssoc) {
+                    filterBlankRecords(childObject, childAssoc);
                 });
 
                 var keep = true;
@@ -196,7 +196,7 @@
                     }
                 });
             },
-            /* 
+            /*
              * assoc = a data object describing associations contained in objectWithAssociations
              */
             filterBlankRecords: filterBlankRecords,
@@ -213,7 +213,7 @@
                 return false;
             },
             /* optionsObjectsArray is an array of objects containing
-             * key 'value', which we use to check for membership 
+             * key 'value', which we use to check for membership
              */
             inOptionsObjectsArray: function(value, optionsObjectsArray) {
                 for(var i in optionsObjectsArray) {
@@ -275,7 +275,7 @@
         $scope.findSourceCandidates = function () {
             if($scope.title.length > 2 || $scope.date.length > 2 || $scope.agent.length > 2) {
                 $scope.searchAttempted = true;
-                return $http.get("/sources/search.json", {
+                $http.get("/sources/search.json", {
                     params: {
                         date: $scope.date,
                         title: $scope.title,
@@ -301,7 +301,7 @@
     sdbmApp.controller("EntryCtrl", function ($scope, $http, $cookies, Entry, Source, sdbmutil, $modal) {
 
         $scope.sdbmutil = sdbmutil;
-        
+
         // this describes the (nested) associations inside an Entry;
         // we use it, when saving, to identify and remove 'blank' records
         $scope.associations = [
@@ -378,7 +378,7 @@
         $scope.originalEntryViewModel = undefined;
 
         $scope.warnWhenLeavingPage = true;
-        
+
         $scope.edit = false;
 
         $scope.currentlySaving = false;
@@ -390,8 +390,8 @@
         // filter used by ng-repeat to hide records marked for deletion
         $scope.activeRecords = function(element) {
             return !element._destroy;
-        }
-        
+        };
+
         $scope.removeRecord = function (anArray, record) {
             if(window.confirm("Are you sure you want to remove this record?")) {
                 var i;
@@ -423,7 +423,7 @@
         $scope.debug = function () {
             for (var key in $scope) {
                 // don't display angular prefixed keys, and don't display methods
-                if(key.substr(0,1) != "$" && typeof $scope[key] !== "function") {
+                if(key.substr(0,1) !== "$" && typeof $scope[key] !== "function") {
                     console.log(key);
                     console.log($scope[key]);
                 }
@@ -436,7 +436,7 @@
         };
 
         $scope.transactionTypeDisabled = function() {
-            return $scope.entry && $scope.entry.source && $scope.entry.source.source_type.entries_transaction_field != 'choose';
+            return $scope.entry && $scope.entry.source && $scope.entry.source.source_type.entries_transaction_field !== 'choose';
         };
 
         // sanity check that values in Entry are actually valid
@@ -483,7 +483,7 @@
                 }
             }
         };
-        
+
         // populates angular view models from the Entry object
         // retrieved via API
         $scope.populateEntryViewModel = function(entry) {
@@ -526,7 +526,7 @@
             }
 
             if(!entry.transaction_type) {
-                if(entry.source.source_type.entries_transaction_field != 'choose') {
+                if(entry.source.source_type.entries_transaction_field !== 'choose') {
                     entry.transaction_type = entry.source.source_type.entries_transaction_field;
                 } else {
                     // select the first one
@@ -537,7 +537,7 @@
             if(!entry.transaction) {
                 entry.transaction = {
                     primary: true,
-                    sold: null,
+                    sold: null
                 };
                 // prepopulate transaction agent fields with data from source_agents
                 var sourceAgents = entry.source.source_agents || [];
@@ -553,7 +553,7 @@
             }
 
             $scope.sanityCheckFields(entry);
-                
+
             // save copy at this point, so we have something to
             // compare to, when navigating away from page
             $scope.originalEntryViewModel = angular.copy(entry);
@@ -561,7 +561,7 @@
 
         $scope.postEntrySave = function(entry) {
             $scope.warnWhenLeavingPage = false;
-            
+
             $scope.entry = entry;
             var modalInstance = $modal.open({
                 templateUrl: 'postEntrySave.html',
@@ -601,7 +601,7 @@
             var entryToSave = new Entry(angular.copy($scope.entry));
 
             // don't store a transaction if it's not applicable
-            if(entryToSave.transaction_type == 'no_transaction') {
+            if(entryToSave.transaction_type === 'no_transaction') {
                 entryToSave.transaction = null;
             }
 
@@ -635,7 +635,7 @@
             // strip out blank objects
             $scope.associations.forEach(function (assoc) {
                 sdbmutil.filterBlankRecords(entryToSave, assoc);
-                if(entryToSave[assoc.field].length == 0) {
+                if(entryToSave[assoc.field].length === 0) {
                     delete entryToSave[assoc.field];
                 }
             });
@@ -650,7 +650,7 @@
                 entryToSave.institution_id = entryToSave.institution.id;
                 delete entryToSave.institution;
             }
-            
+
             var objectArraysWithRelatedObjects = [
                 [ entryToSave.entry_authors, 'author' ],
                 [ entryToSave.entry_artists, 'artist' ],
@@ -676,10 +676,10 @@
             }
 
             $scope.changeNestedAttributesNames($scope.associations, entryToSave);
-            
+
             //console.log("about to save this Entry: ");
             //console.log(sdbmutil.objectSnapshot(entryToSave));
-            
+
             if(entryToSave.id) {
                 entryToSave.$update(
                     $scope.postEntrySave,
@@ -709,7 +709,7 @@
         // "constructor" for controller goes here
 
         $(window).bind('beforeunload', function() {
-            if ($scope.warnWhenLeavingPage && angular.toJson($scope.originalEntryViewModel) !== angular.toJson($scope.entry)) {1
+            if ($scope.warnWhenLeavingPage && angular.toJson($scope.originalEntryViewModel) !== angular.toJson($scope.entry)) {
                 /*
                 alert("NOT THE SAME!");
                 console.log("originalEntryViewModel=");
@@ -719,8 +719,9 @@
                 */
                 return "You have unsaved changes";
             }
+            return null;
         });
-            
+
         $http.get("/entries/types/").then(
             function(result) {
 
@@ -738,7 +739,7 @@
                         value: material[1]
                     };
                 });
-                
+
                 if($("#entry_id").val()) {
                     var entryId = $("#entry_id").val();
                     $scope.pageTitle = "Edit entry SDBM_" + entryId;
@@ -770,7 +771,7 @@
 
     });
 
-    /* 
+    /*
      * NOTES on different autocomplete widgets:
      *
      * We need a widget that allows autocompletion of entity names
@@ -803,7 +804,7 @@
      * it doesn't look that good visually, and it conflicts with
      * Angular's validation capabilities.
      */
-    
+
     /**
      * Angular directive that decorates an element with jQuery UI's
      * autocomplete. This is designed to support showing a modal for
@@ -814,9 +815,9 @@
      *
      * sdbm-autocomplete-model = (required) angular model to update with
      * autocomplete selection.
-     * 
+     *
      * sdbm-autocomplete-params = (optional) an object containing
-     * additional URL parameters to merge into the AJAX request. For name 
+     * additional URL parameters to merge into the AJAX request. For name
      * lookups, this is usually an object containing key "type", used
      * for both search and modal popup.
      *
@@ -845,25 +846,25 @@
             var params = JSON.parse(attrs.sdbmAutocompleteParams || "{}");
             var options;
             var invalidInput = false;
-            
+
             // WARNING: there be dragons here. Much of this code is
             // here to keep data in sync between INPUT and Angular
             // models and to limit text to valid selections only.
-            
+
             if(!modelName) {
                 alert("Error on page: sdbm-autocomplete directive is missing attributes");
             }
 
-            /** 
+            /**
              * value argument is the ui.item or object representing a
-             * database entity 
+             * database entity
              */
             var assignToModel = function(value) {
                 var model = $parse(modelName);
                 var valueToAssign = value;
                 if(value && assignValueAttr === 'true') {
                     valueToAssign = value.value;
-                } 
+                }
                 model.assign(scope, valueToAssign);
             };
 
@@ -891,7 +892,7 @@
 
             // determine if source is a URL or a scope var
             var autocompleteSource;
-            var sourceIsUrl = sourceStr.substr(0, 1) == "/";
+            var sourceIsUrl = sourceStr.substr(0, 1) === "/";
             if(!sourceIsUrl) {
                 autocompleteSource = $parse(sourceStr)(scope);
             } else {
@@ -908,7 +909,7 @@
                             option.label = option.name;
                             option.value = option.id;
                             if(!exactMatch) {
-                                exactMatch = searchTerm == option.label;
+                                exactMatch = searchTerm === option.label;
                             }
                         });
                         if (!exactMatch && controller) {
@@ -945,7 +946,7 @@
             $(element).keypress(function(event) {
                 // prevent ENTER from submitting the form; just blur
                 // the input instead to trigger autocomplete
-                if (event.which == 13) {
+                if (event.which === 13) {
                     event.preventDefault();
                     $(element).blur();
                 } else if (event.which !== 0 && !event.ctrlKey && !event.metaKey && !event.altKey) {
@@ -953,7 +954,7 @@
                     invalidInput = false;
                 }
             });
-                
+
             // if user tries to leave input, make sure value is valid
             $(element).focusout(function(event) {
                 if(invalidInput) {
@@ -1013,7 +1014,7 @@
                     if(ui.item.value === 'CREATE') {
                         $timeout(function() {
 
-                            var newNameValue = ui.item.label.substring(ui.item.label.indexOf("'")+1, ui.item.label.lastIndexOf("'"));
+                            var newNameValue = ui.item.label.substring(ui.item.label.indexOf("'") + 1, ui.item.label.lastIndexOf("'"));
 
                             var modalInstance = $modal.open({
                                 templateUrl: template,
@@ -1022,7 +1023,7 @@
                                     modalParams: function() {
                                         return {
                                             "name": newNameValue,
-                                            "type": params["type"]
+                                            "type": params.type
                                         };
                                     }
                                 },
@@ -1076,19 +1077,19 @@
             });
         };
     });
-    
+
     sdbmApp.directive("sdbmCertaintyFlags", function($modal, $parse) {
         return function (scope, element, attrs) {
             var modelName = attrs.sdbmCertaintyFlags;
 
             $(element).css("color", "black");
-                
+
             $(element).tooltip({
                 items: "div",
                 tooltipClass: "ui-state-highlight",
                 content: "Click this icon to cycle through these options:<br/><br/>check mark = source contains this information.<br/><br/>question mark = source expresses doubt<br/><br/>asterisk = you are supplying this information, based on a strong inference"
             });
-            
+
             // use a single handler for model changes, so we can always
             // account for both flags when cycling
             var cycle = function() {
@@ -1105,7 +1106,7 @@
 
             scope.$watch(modelName + ".uncertain_in_source", cycle);
             scope.$watch(modelName + ".supplied_by_data_entry", cycle);
-            
+
             $(element).click(function() {
                 var uncertain_in_source = $parse(modelName + ".uncertain_in_source")(scope);
                 var supplied_by_data_entry = $parse(modelName + ".supplied_by_data_entry")(scope);
@@ -1117,7 +1118,7 @@
                 } else if (supplied_by_data_entry) {
                     $parse(modelName + ".uncertain_in_source").assign(scope, false);
                     $parse(modelName + ".supplied_by_data_entry").assign(scope, false);
-                } else { 
+                } else {
                     $parse(modelName + ".uncertain_in_source").assign(scope, true);
                 }
                 scope.$apply();
@@ -1160,9 +1161,9 @@
         // store in scope, otherwise angular template code can't
         // get a reference to this
         $scope.sdbmutil = sdbmutil;
-        
+
         $scope.currentlySaving = false;
-        
+
         $scope.agent_role_types = ['institution', 'buyer', 'seller_or_holder', 'selling_agent'];
 
         $scope.associations = [
@@ -1172,7 +1173,7 @@
                 foreignKeyObjects: ['agent']
             }
         ];
-        
+
         $scope.pageTitle = "";
 
         $scope.source = undefined;
@@ -1195,12 +1196,12 @@
             // optionsSourceType, so that angular's preselection
             // works.
             source.source_type = $.grep($scope.optionsSourceType, function(item) {
-                return item.id == source.source_type_id;
+                return item.id === source.source_type_id;
             })[0];
 
             source.date = SDBM.dateDashes(source.date);
             source.date_accessed = SDBM.dateDashes(source.date_accessed);
-            
+
             $scope.agent_role_types.forEach(function (role) {
                 source.source_agents.forEach(function (source_agent) {
                     if (source_agent.role === role) {
@@ -1211,7 +1212,7 @@
             $scope.source_agents = [];
             //console.log(source);
         };
-        
+
         $scope.postSourceSave = function(source) {
             $scope.source = source;
             var modalInstance = $modal.open({
@@ -1241,7 +1242,7 @@
             if(sourceToSave.date_accessed) {
                 sourceToSave.date_accessed = sourceToSave.date_accessed.replace(/-/g, "");
             }
-            
+
             sourceToSave.source_agents = [];
             $scope.agent_role_types.forEach(function (role) {
                 if (sourceToSave[role]) {
@@ -1256,15 +1257,15 @@
             // strip out blank objects
             $scope.associations.forEach(function (assoc) {
                 sdbmutil.filterBlankRecords(sourceToSave, assoc);
-                if(sourceToSave[assoc.field].length == 0) {
+                if(sourceToSave[assoc.field].length === 0) {
                     delete sourceToSave[assoc.field];
                 }
             });
-            
+
             // append '_attributes' for Rails' accept_nested_attributes
             sourceToSave.source_agents_attributes = sourceToSave.source_agents;
             delete sourceToSave.source_agents;
-            
+
             if(sourceToSave.id) {
                 sourceToSave.$update(
                     $scope.postSourceSave,
@@ -1308,14 +1309,14 @@
             // error callback
             sdbmutil.promiseErrorHandlerFactory("Error initializing dropdown options on this page, can't proceed.")
         );
-        
+
     });
 
     // Base generic NG controller fn for all modal popups that allow
     // you to search for a database object and create one. Specialized
     // controllers should call this fn and modify/supply anything in
     // $scope it needs to.
-    var baseCreateEntityModalCtrl = function ($scope, $http, $modalInstance, sdbmutil) {
+    var baseCreateEntityModalCtrl = function ($scope, $http, $modalInstance) {
 
         $scope.readyToCreate = true;
         $scope.saveError = null;
@@ -1327,7 +1328,7 @@
         if($scope.entity_attributes) {
             $scope.entity_attributes($scope.entity);
         }
-                  
+
         $scope.save = function () {
             $scope.entity.$save(
                 function (entity) {
@@ -1349,21 +1350,21 @@
 
         $scope.entity_attributes = function(entity) {
             entity.name = modalParams.name;
-            entity[modalParams["type"]] = true;
+            entity[modalParams.type] = true;
         };
-        
+
         baseCreateEntityModalCtrl($scope, $http, $modalInstance, sdbmutil);
 
         $scope.entityName = "name";
         $scope.hasViafId = true;
 
         $scope.suggestions = [];
-        
+
         $scope.loading = false;
         $scope.message = "";
         $scope.showSuggestions = false;
-        
-        $scope.find_suggestions = function(name) {
+
+        $scope.findSuggestions = function(name) {
             $scope.message = "";
             $scope.showSuggestions = true;
             $scope.loading = true;
@@ -1384,7 +1385,7 @@
             });
         };
 
-        $scope.use_suggestion = function(suggestion) {
+        $scope.useSuggestion = function(suggestion) {
             $scope.entity.name = suggestion.name;
             $scope.entity.viaf_id = suggestion.viaf_id;
         };
@@ -1396,7 +1397,7 @@
         $scope.entity_attributes = function(entity) {
             entity.name = modalParams.name;
         };
-        
+
         baseCreateEntityModalCtrl($scope, $http, $modalInstance, sdbmutil);
 
         $scope.entityName = "language";
@@ -1417,5 +1418,5 @@
     sdbmApp.controller('InferenceFlagsCtrl', function ($scope, $modalInstance, objectWithFlags) {
         $scope.objectWithFlags = objectWithFlags;
     });
-    
+
 }());

@@ -10,7 +10,7 @@
                 <input type="text" class="form-control" ng-model="entity.name">
             </div>
             <div class="col-sm-3">
-                <button ng-click="find_suggestions(entity.name)" ng-disabled="loading" class="btn btn-primary">Find suggestions</button>
+                <button ng-click="findSuggestions(entity.name)" ng-disabled="loading" class="btn btn-primary">Find suggestions</button>
             </div>
             <div class="col-sm-1">
                 <img id="spinner" alt="working..." src="<%= asset_path "spinner.gif" %>" ng-show="loading"/>
@@ -45,7 +45,7 @@
                     <tr data-ng-repeat="suggestion in suggestions">
                         <td class="col-sm-6">{{ suggestion.name }}</td>
                         <td class="col-sm-2"><a target="_blank" href="http://viaf.org/viaf/{{ suggestion.viaf_id }}/">{{ suggestion.viaf_id }}</a></td>
-                        <td class="col-sm-2"><a ng-click="use_suggestion(suggestion)" href="#">Use this info</a></td>
+                        <td class="col-sm-2"><a ng-click="useSuggestion(suggestion)" href="#">Use this info</a></td>
                     </tr>
                 </tbody>
             </table>
