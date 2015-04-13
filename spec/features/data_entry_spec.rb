@@ -210,7 +210,7 @@ describe "Data entry", :js => true do
       fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
       select "Yes", from: 'whether_mss'
       select "Library", from: 'medium'
-      fill_in 'date_accessed', with: "05/01/1990"
+      fill_in 'date_accessed', with: "1990-05-01"
       fill_in 'location_institution', with: "University of Pennsylvania"
       fill_in 'location', with: "Philadelphia, USA"
       fill_in 'link', with: "HM851 .L358 2010"
@@ -229,7 +229,7 @@ describe "Data entry", :js => true do
       expect(source.get_selling_agent.agent.name).to eq("Sotheby's")
       expect(source.whether_mss).to eq("Yes")
       expect(source.medium).to eq(Source::TYPE_MEDIUM_LIBRARY)
-      expect(source.date_accessed).to eq("05/01/1990")
+      expect(source.date_accessed).to eq("19900501")
       expect(source.location_institution).to eq("University of Pennsylvania")
       expect(source.location).to eq("Philadelphia, USA")
       expect(source.link).to eq("HM851 .L358 2010")
@@ -247,7 +247,7 @@ describe "Data entry", :js => true do
       fill_in 'author', with: 'Seymour DeRicci'
       select "Yes", from: 'whether_mss'
       select "Library", from: 'medium'
-      fill_in 'date_accessed', with: "10/09/2011"
+      fill_in 'date_accessed', with: "2011-10-09"
       fill_in 'location_institution', with: "University of Pennsylvania"
       fill_in 'location', with: "Philadelphia, USA"
       fill_in 'link', with: "HM851 .L358 2010"
@@ -266,7 +266,7 @@ describe "Data entry", :js => true do
       expect(source.author).to eq('Seymour DeRicci')
       expect(source.whether_mss).to eq("Yes")
       expect(source.medium).to eq(Source::TYPE_MEDIUM_LIBRARY)
-      expect(source.date_accessed).to eq("10/09/2011")
+      expect(source.date_accessed).to eq("20111009")
       expect(source.location_institution).to eq("University of Pennsylvania")
       expect(source.location).to eq("Philadelphia, USA")
       expect(source.link).to eq("HM851 .L358 2010")

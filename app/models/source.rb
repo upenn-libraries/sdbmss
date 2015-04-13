@@ -79,13 +79,11 @@ class Source < ActiveRecord::Base
   end
 
   def normalize
-    if !self.persisted?
-      if date.present?
-        date.gsub!("-", "")
-        if date.length < 8
-          pad = 8 - date.length
-          self.date += "0" * pad
-        end
+    if date.present?
+      date.gsub!("-", "")
+      if date.length < 8
+        pad = 8 - date.length
+        self.date += "0" * pad
       end
     end
   end

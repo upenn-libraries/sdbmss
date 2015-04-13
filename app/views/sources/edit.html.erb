@@ -207,7 +207,10 @@
         <div class="form-group row">
             <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_date_accessed">Date Accessed</span></label>
             <div class="col-sm-3">
-                <input type="text" class="form-control" name="date_accessed" id="date_accessed" ng-model="source.date_accessed" />
+                <input type="text" class="form-control" name="date_accessed" id="date_accessed" ng-model="source.date_accessed" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/"/>
+            </div>
+            <div class="col-sm-7" ng-show="form.date_accessed.$error.pattern">
+                <span style="color: PaleVioletRed;">Date must be YYYY-MM-DD, YYYY-MM or YYYY</span>
             </div>
         </div>
 

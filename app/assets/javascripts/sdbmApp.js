@@ -1169,6 +1169,9 @@
                 return item.id == source.source_type_id;
             })[0];
 
+            source.date = SDBM.dateDashes(source.date);
+            source.date_accessed = SDBM.dateDashes(source.date_accessed);
+            
             $scope.agent_role_types.forEach(function (role) {
                 source.source_agents.forEach(function (source_agent) {
                     if (source_agent.role === role) {
@@ -1206,6 +1209,10 @@
                 sourceToSave.date = sourceToSave.date.replace(/-/g, "");
             }
 
+            if(sourceToSave.date_accessed) {
+                sourceToSave.date_accessed = sourceToSave.date_accessed.replace(/-/g, "");
+            }
+            
             sourceToSave.source_agents = [];
             $scope.agent_role_types.forEach(function (role) {
                 if (sourceToSave[role]) {

@@ -1,7 +1,5 @@
 
-json.(@source, :id, :display_value, :title, :source_type_id, :author, :whether_mss, :status, :medium, :date_accessed, :location_institution, :location, :link, :comments)
-
-json.date SDBMSS::Util::date_dashes(@source.date)
+json.(@source, :id, :date, :display_value, :title, :source_type_id, :author, :whether_mss, :status, :medium, :date_accessed, :location_institution, :location, :link, :comments)
 
 json.source_type do
   json.(@source.source_type, :id, :name, :display_name, :entries_have_institution_field, :entries_transaction_field)
