@@ -316,7 +316,7 @@
             },
             {
                 field: 'entry_dates',
-                properties: ['date', 'circa']
+                properties: ['observed_date', 'date', 'circa']
             },
             {
                 field: 'entry_artists',

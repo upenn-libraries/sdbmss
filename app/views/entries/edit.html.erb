@@ -223,16 +223,23 @@
       <label class="col-sm-2 control-label">
             <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_dates)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-            <span sdbm-tooltip="year">Year</span>
+            <span sdbm-tooltip="observed_date">Date As Recorded</span>
       </label>
-      <div class="col-sm-2">
-        <input id="date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.date">
+      <div class="col-sm-5">
+        <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date">
       </div>
-      <div class="col-sm-3"></div>
+
+      <label class="col-sm-1 control-label">
+          <span sdbm-tooltip="year">Year</span>
+      </label>
+      <div class="col-sm-1">
+          <input id="date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.date">
+      </div>
+      
       <label class="col-sm-1 control-label">
           <span sdbm-tooltip="circa">Circa</span>
       </label>
-      <div class="col-sm-3">
+      <div class="col-sm-2">
           <select id="circa_{{ $index }}" name="circa" class="form-control" ng-model="entry_date.circa" ng-options="option[0] as option[1] for option in optionsCirca">
               <option value=""></option>
           </select>

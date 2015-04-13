@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150331184021) do
+ActiveRecord::Schema.define(version: 20150413134140) do
 
   create_table "agents", force: :cascade do |t|
     t.integer  "entry_id",       limit: 4
@@ -154,11 +154,12 @@ ActiveRecord::Schema.define(version: 20150331184021) do
   add_index "entry_comments", ["updated_by_id"], name: "index_entry_comments_on_updated_by_id", using: :btree
 
   create_table "entry_dates", force: :cascade do |t|
-    t.integer  "entry_id",   limit: 4
-    t.string   "date",       limit: 255
-    t.string   "circa",      limit: 255
+    t.integer  "entry_id",      limit: 4
+    t.string   "date",          limit: 255
+    t.string   "circa",         limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "observed_date", limit: 255
   end
 
   add_index "entry_dates", ["entry_id"], name: "index_entry_dates_on_entry_id", using: :btree

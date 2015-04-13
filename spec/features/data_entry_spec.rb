@@ -313,6 +313,7 @@ describe "Data entry", :js => true do
       fill_in 'author_observed_name_0', with: 'Joe Schmoe'
       click_certainty_flag('author_certainty_flags_0')
       select 'Tr', from: 'author_role_0'
+      fill_in 'date_observed_date_0', with: 'early 15th century'
       fill_in 'date_0', with: '1425'
       select 'Circa Century', from: 'circa_0'
       fill_in 'artist_observed_name_0', with: 'Chuck'
@@ -384,6 +385,7 @@ describe "Data entry", :js => true do
       expect(entry_author.uncertain_in_source).to eq(true)
 
       entry_date = entry.entry_dates.first
+      expect(entry_date.observed_date).to eq('early 15th century')
       expect(entry_date.date).to eq('1425')
       expect(entry_date.circa).to eq('CCENT')
 
