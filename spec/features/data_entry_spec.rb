@@ -294,6 +294,31 @@ describe "Data entry", :js => true do
       expect(source.author).to eq('Jeff')
     end
 
+    it "should edit an existing Source" do
+      source = Source.create!(
+        date: "20141215",
+        title: "my existing source",
+        source_type: SourceType.auction_catalog
+      )
+
+      visit edit_source_path :id => source.id
+
+      sleep(0.5)
+
+      expect(page).to have_select('source_type', disabled: true, selected: 'Auction/Sale Catalog')
+      expect(page).to have_field('source_date', with: '2014-12-15')
+      expect(page).to have_field('title', with: 'my existing source')
+
+      click_button('Save')
+
+      sleep(1)
+
+      source = Source.last
+      expect(source.source_type).to eq(SourceType.auction_catalog)
+      expect(source.date).to eq('20141215')
+      expect(source.title).to eq('my existing source')
+    end
+
     # create an entry, filling out all fields
     def create_entry
       visit new_entry_path :source_id => @source.id

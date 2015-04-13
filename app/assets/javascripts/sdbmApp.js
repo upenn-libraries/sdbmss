@@ -1162,6 +1162,13 @@
         };
 
         $scope.populateSourceViewModel = function (source) {
+            // set source.source_type to object from
+            // optionsSourceType, so that angular's preselection
+            // works.
+            source.source_type = $.grep($scope.optionsSourceType, function(item) {
+                return item.id == source.source_type_id;
+            })[0];
+
             $scope.agent_role_types.forEach(function (role) {
                 source.source_agents.forEach(function (source_agent) {
                     if (source_agent.role === role) {
