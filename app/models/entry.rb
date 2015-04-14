@@ -39,30 +39,34 @@ class Entry < ActiveRecord::Base
   accepts_nested_attributes_for :entry_uses, allow_destroy: true
   accepts_nested_attributes_for :events, allow_destroy: true
 
+  # list of args to pass to Entry.includes in various places, for fetching a 'complete' entry
+  @@includes = [
+    :institution,
+    :entry_titles,
+    :entry_dates,
+    :entry_materials,
+    :entry_uses,
+    :created_by,
+    :updated_by,
+    :entry_manuscripts => [:manuscript],
+    :entry_authors => [:author],
+    :entry_artists => [:artist],
+    :entry_scribes => [:scribe],
+    :entry_languages => [:language],
+    :entry_places => [:place],
+    :events => [
+      {:event_agents => [:agent]}
+    ],
+    :source => [
+      :source_type,
+      {:source_agents => [:agent]}
+    ]
+  ]
+
   # aggressively load all associations; useful for cases where you
   # want to display the complete info for Entries
   scope :with_associations, -> {
-    includes(:institution,
-             :entry_titles,
-             :entry_dates,
-             :entry_materials,
-             :entry_uses,
-             :created_by,
-             :updated_by,
-             :entry_manuscripts => [:manuscript],
-             :entry_authors => [:author],
-             :entry_artists => [:artist],
-             :entry_scribes => [:scribe],
-             :entry_languages => [:language],
-             :entry_places => [:place],
-             :events => [
-               {:event_agents => [:agent]}
-             ],
-             :source => [
-               :source_type,
-               {:source_agents => [:agent]}
-             ]
-            )
+    includes(@@includes)
   }
 
   # returns 'count' number of most recent entries
@@ -318,7 +322,8 @@ class Entry < ActiveRecord::Base
   # auto_index should be set to false (via ENV) to prevent migration
   # script from indexing, but we want it to be ON for normal
   # operation.
-  searchable :auto_index => (ENV.fetch('SDBMSS_SUNSPOT_AUTOINDEX', 'true') == 'true') do
+  searchable :auto_index => (ENV.fetch('SDBMSS_SUNSPOT_AUTOINDEX', 'true') == 'true'),
+             :include => @@includes do
 
     # Simple wrapper around DSL field definition methods like #text,
     # #string, #integer, etc that configures the field to have a solr
