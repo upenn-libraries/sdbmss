@@ -329,17 +329,6 @@ $(document).ready(function() {
         $("#queue_wrapper .dataTables_scrollBody").scrollLeft($(event.target).scrollLeft());
     });
     
-    // TODO: this doesn't work
-    // $(window).bind('resize', function () {
-    //     console.log("RESIZED!");
-    //     var NewHeight = getViewportHeight() - table_height_buffer;
-    //     var oSettings = table.settings();
-    //     console.log(table.settings());
-    // next line is wrong: figure out where scrollY is stored?
-    //     oSettings.oScroll.sY = NewHeight + "px";
-    //     table.fnDraw();
-    // });
-
 });
 
 </script>
