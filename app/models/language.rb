@@ -8,6 +8,7 @@ class Language < ActiveRecord::Base
   has_many :entries, through: :entry_languages
 
   include UserFields
+  include ReviewedByField
 
   validates_presence_of :name
 

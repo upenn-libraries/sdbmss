@@ -10,6 +10,7 @@ class Name < ActiveRecord::Base
   belongs_to :approved_by, :class_name => 'User'
 
   include UserFields
+  include ReviewedByField
 
   has_many :entry_artists, foreign_key: "artist_id"
 

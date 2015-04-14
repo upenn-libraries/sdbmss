@@ -116,7 +116,7 @@ module SDBMSS::Legacy
           if name_obj.nil?
             attrs = {
               name: name_str,
-              approved: true
+              reviewed: true
             }
             attrs[role] = true
             attrs.merge!(extra_attrs) if !extra_attrs.nil?
@@ -1067,9 +1067,9 @@ module SDBMSS::Legacy
         author_name,
         extra_attrs:
           {
-          approved: row['ISAPPROVED'] == 'y',
-          approved_by: get_or_create_user(row['APPROVEDBY']),
-          approved_date: row['APPROVEDDATE'],
+          reviewed: row['ISAPPROVED'] == 'y',
+          reviewed_by: get_or_create_user(row['APPROVEDBY']),
+          reviewed_date: row['APPROVEDDATE'],
           }
       )
     end
@@ -1097,9 +1097,9 @@ module SDBMSS::Legacy
         artist_str,
         extra_attrs:
           {
-            approved: row['ISAPPROVED'] == 'y',
-            approved_by: get_or_create_user(row['APPROVEDBY']),
-            approved_date: row['APPROVEDDATE'],
+            reviewed: row['ISAPPROVED'] == 'y',
+            reviewed_by: get_or_create_user(row['APPROVEDBY']),
+            reviewed_date: row['APPROVEDDATE'],
           }
       )
     end
@@ -1248,9 +1248,9 @@ module SDBMSS::Legacy
         Place.create!(
           id: row['MANUSCRIPTPLACEID'],
           name: place_str,
-          approved: row['ISAPPROVED'] == 'y',
-          approved_by: row['APPROVEDBY'],
-          approved_date: row['APPROVEDDATE'],
+          reviewed: row['ISAPPROVED'] == 'y',
+          reviewed_by: row['APPROVEDBY'],
+          reviewed_date: row['APPROVEDDATE'],
         )
       end
     end

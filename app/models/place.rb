@@ -8,6 +8,7 @@ class Place < ActiveRecord::Base
   has_many :entries, through: :entry_places
 
   include UserFields
+  include ReviewedByField
 
   belongs_to :approved_by, :class_name => 'User'
 
