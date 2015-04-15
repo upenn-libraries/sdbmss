@@ -79,7 +79,7 @@ module ApplicationHelper
 
     # now make an Array of OpenStructs for each row corresponding to a
     # set of form inputs, for advanced search page
-    5.times.map do |i|
+    num_fields.times.map do |i|
       selected_field, value, value2 = nil, nil, nil
       if queried_fields.length > 0
         fieldname = queried_fields.keys.first
