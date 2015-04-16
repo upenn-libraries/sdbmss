@@ -719,7 +719,7 @@
                 */
                 return "You have unsaved changes";
             }
-            return null;
+            return;
         });
 
         $http.get("/entries/types/").then(
