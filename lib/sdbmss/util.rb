@@ -101,29 +101,97 @@ module SDBMSS
         d && d.length == 8 ? d.slice(0, 4) + "-" + d.slice(4, 2) + "-" + d.slice(6, 2) : d
       end
 
+      def resembles_approximate_date_str(date_str)
+        /(early|mid|late|century|to)/.match(date_str).present?
+      end
+
       # Takes a date_str like 'early 19th century' and returns a
-      # normalized date value for it, like '1825'. returns nil if date
+      # normalized year value for it, like '1825'. returns nil if date
       # str can't be normalized.
-      def normalize_approximate_date_str(date_str)
+      def normalize_approximate_date_str_to_year_range(date_str)
+
+        date_str = date_str.strip
+
+        # handle case of 'to'
+        if / to /.match(date_str)
+          pieces = date_str.split(/\s+to\s+/)
+          if pieces.length == 2
+            start_date_range = normalize_approximate_date_str_to_year_range(pieces[0])
+            end_date_range = normalize_approximate_date_str_to_year_range(pieces[1])
+            return [start_date_range[0], end_date_range[1] || end_date_range[0]]
+          end
+        end
+
+        # handle case of something like 1860s
+        if /\ds/.match(date_str)
+          start_date = date_str.sub('s', '')
+          end_date = nil
+          if (m = /0+$/.match(start_date)).present?
+            num_zeroes = m[0].length
+            end_date = start_date[0..((num_zeroes * -1) - 1)] + ("9" * num_zeroes)
+          end
+          return [start_date, end_date]
+        end
+
+        # find any 4-digit number in the str
         if (exact_date_match = /(\d{4})/.match(date_str)).present?
-          return exact_date_match[1]
-        else
-          century, decade = "", "00"
-          qualifier_match = /(early|mid|late)/.match(date_str)
+          year = exact_date_match[1]
+          return [year, year]
+        end
+
+        # if entire str is a number, return it
+        if (exact_date_match = /^(\d{4})$/.match(date_str)).present? ||
+           (exact_date_match = /^(\d{3})$/.match(date_str)).present? ||
+           (exact_date_match = /^(\d{2})$/.match(date_str)).present?
+          year = exact_date_match[1]
+          return [year, year]
+        end
+
+        start_date, end_date = nil, nil
+        # TODO: be more restrictive, look for patten like '5th cent'
+        if /cent/.match(date_str)
+          century = ""
           century_match = /(\d{1,2})/.match(date_str)
           if century_match
             century = (century_match[1].to_i - 1).to_s
           end
+
+          # look for qualifiers
           case
-          when /early/.match(date_str)
-            decade = "25"
+          when /early/.match(date_str) || /first half/.match(date_str)
+            start_date = century + "00"
+            end_date = century + "50"
           when /mid/.match(date_str)
-            decade = "50"
-          when /late/.match(date_str)
-            decade = "75"
+            start_date = century + "25"
+            end_date = century + "75"
+          when /late/.match(date_str) || /second half/.match(date_str)
+            start_date = century + "50"
+            end_date = century + "99"
+          when /first quarter/.match(date_str)
+            start_date = century + "00"
+            end_date = century + "25"
+          when /second quarter/.match(date_str)
+            start_date = century + "26"
+            end_date = century + "50"
+          when /third quarter/.match(date_str)
+            start_date = century + "51"
+            end_date = century + "75"
+          when /fourth quarter/.match(date_str)
+            start_date = century + "76"
+            end_date = century + "99"
+          else
+            if century.present?
+              start_date = century + "00"
+              end_date = century + "99"
+            end
           end
-          century.present? ? century + decade : nil
         end
+
+        if end_date.blank?
+          end_date = start_date
+        end
+
+        [ start_date, end_date ]
       end
 
       # helper method for solr indexing

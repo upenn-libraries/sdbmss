@@ -59,6 +59,7 @@ module CatalogControllerConfiguration
       # catalog/catalog date/institution
       config.add_facet_field 'source_display', :label => 'Source', :collapse => false, :limit => 3
       config.add_facet_field 'provenance', :label => 'Provenance', :limit => 3
+      # TODO: manuscript_date facet is broken, fix it
       config.add_facet_field 'manuscript_date', :label => 'Manuscript Date', :limit => 3
       config.add_facet_field 'place', :label => 'Place', :limit => 3
       config.add_facet_field 'language', :label => 'Language', :limit => 3
@@ -331,6 +332,8 @@ module CatalogControllerConfiguration
     end
 
     self.search_params_logic << :show_all_if_no_query
+
+    self.search_params_logic << :translate_manuscript_date
 
   end
 

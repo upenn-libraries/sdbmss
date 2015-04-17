@@ -1049,26 +1049,30 @@
         };
     });
 
-    // attribute value should be the ID of the element to populate
-    // with a normalized date
+    // attribute value should be the two IDs, comma-separated, of the
+    // elements to populate with normalized dates
     sdbmApp.directive("sdbmApproximateDateString", function ($http) {
         return function (scope, element, attrs) {
-            var targetId = attrs.sdbmApproximateDateString;
+            var targets = attrs.sdbmApproximateDateString;
+            var targetIds = targets.split(",").map(function (s) { return s.trim(); });
+            var startTargetId = targetIds[0];
+            var endTargetId = targetIds[1];
 
-            var getTargetValue = function() {
-                return $("#" + targetId).val();
+            var areTargetsPopulated = function() {
+                return $("#" + startTargetId).val() || $("#" + endTargetId).val();
             };
 
             $(element).focusout(function(event) {
                 var observedDate = $(element).val();
-                if(observedDate && !getTargetValue()) {
+                if(observedDate && !areTargetsPopulated()) {
                     $http.get("/entry_dates/normalize.json", {
                         params: {
                             date: observedDate
                         }
                     }).then(function (response) {
-                        if(!getTargetValue() && response.data.date && response.data.date.date) {
-                            $("#" + targetId).val(response.data.date.date);
+                        if(!areTargetsPopulated() && response.data.date) {
+                            $("#" + startTargetId).val(response.data.date.date_start);
+                            $("#" + endTargetId).val(response.data.date.date_end);
                         }
                     }, function(response) {
                         alert("An error occurred trying to normalize date");

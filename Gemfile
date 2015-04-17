@@ -66,6 +66,9 @@ gem 'levenshtein', '~> 0.2.2'
 #gem 'paper_trail', '~> 3.0.7'
 gem 'paper_trail', '~> 4.0.0.beta'
 
+# natural language date parser
+gem 'chronic', '~> 0.10.2'
+
 # bundle exec rake doc:rails generates the Rails API under doc/api.
 group :doc do
   gem 'sdoc', '~> 0.4.0'

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150414172649) do
+ActiveRecord::Schema.define(version: 20150415195531) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,   null: false
@@ -119,12 +119,14 @@ ActiveRecord::Schema.define(version: 20150414172649) do
   add_index "entry_comments", ["updated_by_id"], name: "index_entry_comments_on_updated_by_id", using: :btree
 
   create_table "entry_dates", force: :cascade do |t|
-    t.integer  "entry_id",      limit: 4
-    t.string   "date",          limit: 255
-    t.string   "circa",         limit: 255
+    t.integer  "entry_id",              limit: 4
+    t.string   "date",                  limit: 255
+    t.string   "circa",                 limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "observed_date", limit: 255
+    t.string   "observed_date",         limit: 255
+    t.string   "date_normalized_start", limit: 255
+    t.string   "date_normalized_end",   limit: 255
   end
 
   add_index "entry_dates", ["entry_id"], name: "index_entry_dates_on_entry_id", using: :btree
@@ -225,20 +227,24 @@ ActiveRecord::Schema.define(version: 20150414172649) do
   add_index "event_agents", ["observed_name"], name: "index_event_agents_on_observed_name", using: :btree
 
   create_table "events", force: :cascade do |t|
-    t.integer  "entry_id",       limit: 4
-    t.boolean  "primary",        limit: 1,                              default: false
-    t.text     "comment",        limit: 65535
-    t.integer  "order",          limit: 4
-    t.string   "end_date",       limit: 255
-    t.decimal  "price",                        precision: 20, scale: 2
-    t.string   "currency",       limit: 255
-    t.string   "other_currency", limit: 255
-    t.string   "sold",           limit: 255
+    t.integer  "entry_id",                    limit: 4
+    t.boolean  "primary",                     limit: 1,                              default: false
+    t.text     "comment",                     limit: 65535
+    t.integer  "order",                       limit: 4
+    t.string   "end_date",                    limit: 255
+    t.decimal  "price",                                     precision: 20, scale: 2
+    t.string   "currency",                    limit: 255
+    t.string   "other_currency",              limit: 255
+    t.string   "sold",                        limit: 255
     t.datetime "created_at"
-    t.integer  "created_by_id",  limit: 4
+    t.integer  "created_by_id",               limit: 4
     t.datetime "updated_at"
-    t.integer  "updated_by_id",  limit: 4
-    t.string   "start_date",     limit: 255
+    t.integer  "updated_by_id",               limit: 4
+    t.string   "start_date",                  limit: 255
+    t.string   "start_date_normalized_start", limit: 255
+    t.string   "start_date_normalized_end",   limit: 255
+    t.string   "end_date_normalized_start",   limit: 255
+    t.string   "end_date_normalized_end",     limit: 255
   end
 
   add_index "events", ["created_by_id"], name: "index_events_on_created_by_id", using: :btree

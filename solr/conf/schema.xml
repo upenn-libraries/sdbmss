@@ -88,6 +88,39 @@
 
     <!-- A specialized field for geospatial search. If indexed, this fieldType must not be multivalued. -->
     <fieldType name="location" class="solr.LatLonType" subFieldSuffix="_coordinate"/>
+
+    <!--
+        These are spatial types that we use to store date ranges
+        (consisting of 2 integer values). We can then figure out
+        whether a search for a range overlaps with a stored range by
+        using the Intersects function.
+
+        Note that in Solr 5.0, there's a DateRangeField but I'm pretty
+        sure Libraries IT isn't up to that version yet.
+    -->
+
+    <!-- for storing ranges of 4-digit years -->
+    <fieldType name="daterange_year"
+               class="solr.SpatialRecursivePrefixTreeFieldType"
+               multiValued="true"
+               geo="false"
+               worldBounds="-10000 -10000 10000 10000"
+               distErrPct="0"
+               maxDistErr="0.1"
+               units="degrees"
+               />
+
+    <!-- for storing ranges of 8-digit YYYYMMDD dates -->
+    <fieldType name="daterange_full"
+               class="solr.SpatialRecursivePrefixTreeFieldType"
+               multiValued="true"
+               geo="false"
+               worldBounds="-99999999 -99999999 99999999 99999999"
+               distErrPct="0"
+               maxDistErr="0.1"
+               units="degrees"
+               />
+    
   </types>
   <fields>
     <!-- Valid attributes for fields:
@@ -283,7 +316,7 @@
     <field name="author" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="author_flat" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="author_search" stored="true" type="text" multiValued="true" indexed="true"/>
-    <field name="manuscript_date" stored="true" type="sint" multiValued="true" indexed="true"/>
+    <field name="manuscript_date" stored="true" type="daterange_year" multiValued="true" indexed="true"/>
     <field name="manuscript_date_flat" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="artist" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="artist_flat" stored="true" type="string" multiValued="false" indexed="true"/>

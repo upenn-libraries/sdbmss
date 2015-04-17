@@ -487,9 +487,14 @@ class Entry < ActiveRecord::Base
       entry_authors.map(&:display_value)
     end
 
-    # TODO: fiddle with this for a better facet taking into account circa
-    define_field(:integer, :manuscript_date, :stored => true, :multiple => true) do
-      entry_dates.map &:date
+    define_field(:string, :manuscript_date, :stored => true, :multiple => true) do
+      entry_dates.select {
+        |ed| ed.date_normalized_start.present? && ed.date_normalized_end.present? &&
+          ed.date_normalized_start.to_i >= SDBMSS::Blacklight::DATE_RANGE_YEAR_MIN &&
+          ed.date_normalized_end.to_i <= SDBMSS::Blacklight::DATE_RANGE_YEAR_MAX
+      }.map {
+        |entry_date| entry_date.date_normalized_start + " " + entry_date.date_normalized_end
+      }
     end
     define_field(:string, :manuscript_date_flat, :stored => true) do
       entry_dates.map(&:date).join("; ")

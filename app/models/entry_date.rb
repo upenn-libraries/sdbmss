@@ -3,6 +3,16 @@ class EntryDate < ActiveRecord::Base
 
   validates_presence_of :entry
 
+  validate do |entry_date|
+    # both must be present if either is present
+    if entry_date.date_normalized_start.present? && !entry_date.date_normalized_end.present?
+      errors[:date_normalized_end] = "date_normalized_end is required if date_normalized_start is present"
+    end
+    if !entry_date.date_normalized_start.present? && entry_date.date_normalized_end.present?
+      errors[:date_normalized_start] = "date_normalized_start is required if date_normalized_end is present"
+    end
+  end
+
   has_paper_trail skip: [:created_at, :updated_at]
 
   CIRCA_TYPES = [

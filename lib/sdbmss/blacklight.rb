@@ -4,6 +4,13 @@
 
 module SDBMSS::Blacklight
 
+  # These hardcoded bounds MUST correspond to Solr field definition or
+  # things might break or behave weirdly.
+  DATE_RANGE_YEAR_MIN = -10000
+  DATE_RANGE_YEAR_MAX =  10000
+  DATE_RANGE_FULL_MIN = -99999999
+  DATE_RANGE_FULL_MAX =  99999999
+
   # This queues up object ids when #add is called, and fetches
   # everything that's been queued up on a #get for any object
   class ResultSet
@@ -57,6 +64,32 @@ module SDBMSS::Blacklight
       # edismax itself doesn't understand '*' but we can pass in q.alt
       # and it will work for some reason
       solr_parameters['q.alt'] = "*:*" if blacklight_params['q'].blank?
+    end
+
+    # This translates a query str of "[year1 TO year2]" in the
+    # manuscript_date blacklight parameters field to a str of the form
+    # '["minX minY" TO "maxX maxY"]'. We do this translation so that
+    # BL params are kept readable and front-end JS can treat date
+    # range queries exactly the same as other numeric range queries.
+    def translate_manuscript_date(solr_parameters)
+      manuscript_date = blacklight_params['manuscript_date']
+      if manuscript_date.present?
+        m = /\[(.+?) TO (.+?)\]/.match(manuscript_date)
+        if m
+          from, to = m[1], m[2]
+
+          # we need to buffer, otherwise Solr won't return points that
+          # lie exactly on the edge of the search region
+          buffer = 0.5
+          from = from == '*' ? DATE_RANGE_YEAR_MIN : from.to_i - buffer
+          to = to == '*' ? DATE_RANGE_YEAR_MAX : to.to_i + buffer
+
+          # This checks that a stored range OVERLAPS with range
+          # specified in query. see
+          # https://people.apache.org/~hossman/spatial-for-non-spatial-meetup-20130117/
+          blacklight_params['manuscript_date'] = "[\"#{DATE_RANGE_YEAR_MIN} #{from}\" TO \"#{to} #{DATE_RANGE_YEAR_MAX}\"]"
+        end
+      end
     end
   end
 

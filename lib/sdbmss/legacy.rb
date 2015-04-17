@@ -42,6 +42,73 @@ module SDBMSS::Legacy
 
     REGEX_COMMON_TITLE = /\[(.+)\]/
 
+    # returns a 2-item Array of start and end normalized dates, given
+    # a circa str and a date from the legacy data.
+    def normalize_date(circa, date)
+      circa_original = circa
+
+      # ignore crazy qualifiers like ? and +, the meanings of which
+      # elude me
+      circa = circa.gsub(/[\?\+]/, '').upcase.strip
+      circa = 'CEARLY' if circa == 'C EARLY'
+      circa = 'CMID' if circa == 'C MID'
+      circa = 'CLATE' if circa == 'C LATE'
+
+      if circa.present?
+        if !date.present?
+          return [nil, nil]
+        end
+
+        if VALID_CIRCA_TYPES.member?(circa)
+          century = (date[0..-3].to_i + 1).to_s
+          decade = date[-2,2]
+
+          # check that circa/date combos conform to entry standards
+          if [ "CCENT" ].member?(circa)
+            if !['00', '50'].member?(decade)
+              puts "Weird combo: #{circa_original} #{date}"
+            end
+          end
+          if (circa == "C1H" && !['25', '50'].member?(decade)) ||
+             (circa == "C2H" && !['50', '75'].member?(decade)) ||
+             (circa == "C1Q" && !['25', '50'].member?(decade)) ||
+             (circa == "C2Q" && !['50'].member?(decade))
+             puts "Weird combo: #{circa_original} #{date}"
+          end
+
+          # if we get a weird combo like C2Q 1465, which does happen a
+          # lot, the circa takes precedence in determining the
+          # normalized date range
+
+          case circa
+          when 'CCENT'
+            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("#{century} century")
+          when 'C1H'
+            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("first half of #{century} century")
+          when 'C2H'
+            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("second half of #{century} century")
+          when 'C1Q'
+            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("first quarter of #{century} century")
+          when 'C2Q'
+            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("second quarter of #{century} century")
+          when 'C3Q'
+            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("third quarter of #{century} century")
+          when 'C4Q'
+            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("fourth quarter of #{century} century")
+          when 'CEARLY'
+            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("early #{century} century")
+          when 'CMID'
+            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("mid #{century} century")
+          when 'CLATE'
+            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("late #{century} century")
+          end
+        else
+          puts "bad circa: #{circa_original} #{date}"
+        end
+      end
+      return [date, date]
+    end
+
     # Returns db connection to the legacy database in MySQL.
     def get_legacy_db_conn
       Mysql2::Client.new(:host => ENV["SDBMSS_LEGACY_DB_HOST"],
@@ -788,8 +855,10 @@ module SDBMSS::Legacy
         create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'circas_mismatch', "number of dates doesn't match num of circas")
       else
         dates.each_index do |date_index|
-          date = dates[date_index]
-          circa = circas[date_index]
+          # there DOES exist trailing whitespace in circa values
+          date = dates[date_index].strip
+          circa = circas[date_index].strip
+
           # Lots of records have date == '0'. This might actually be meaningful as a year.
           if (date && date.length > 0) || (circa && circa.length > 0)
 
@@ -798,12 +867,18 @@ module SDBMSS::Legacy
               # print "WARNING: record %s: invalid circa value: %s" % (row['MANUSCRIPT_ID'], circa)
             end
 
+            date_normalized_start, date_normalized_end = normalize_date(circa, date)
+
             # TODO: circas are not normalized in DB; their absence
             # in options in UI will cause data loss!
             ed = EntryDate.create!(
               entry: entry,
+              # TODO: these 2 fields will go away
               date: date,
               circa: circa,
+              observed_date: (circa.present? ? circa + " " : "") + date,
+              date_normalized_start: date_normalized_start,
+              date_normalized_end: date_normalized_end,
             )
           end
         end
