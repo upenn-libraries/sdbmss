@@ -78,7 +78,7 @@ module SDBMSS::Legacy
 
           # if we get a weird combo like C2Q 1465, which does happen a
           # lot, the circa takes precedence in determining the
-          # normalized date range
+          # normalized date range. TODO: is that right??
 
           case circa
           when 'CCENT'

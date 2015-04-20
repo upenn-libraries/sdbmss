@@ -496,6 +496,19 @@ class Entry < ActiveRecord::Base
         |entry_date| entry_date.date_normalized_start + " " + entry_date.date_normalized_end
       }
     end
+    define_field(:string, :manuscript_date_range, :stored => true, :multiple => true) do
+      entry_dates.select {
+        |ed| ed.date_normalized_start.present? && ed.date_normalized_end.present? &&
+          ed.date_normalized_start.to_i >= SDBMSS::Blacklight::DATE_RANGE_YEAR_MIN &&
+          ed.date_normalized_end.to_i <= SDBMSS::Blacklight::DATE_RANGE_YEAR_MAX
+      }.map { |entry_date|
+        if entry_date.date_normalized_start != entry_date.date_normalized_end
+          entry_date.date_normalized_start + " - " + entry_date.date_normalized_end
+        else
+          entry_date.date_normalized_start
+        end
+      }
+    end
     define_field(:string, :manuscript_date_flat, :stored => true) do
       entry_dates.map(&:date).join("; ")
     end
