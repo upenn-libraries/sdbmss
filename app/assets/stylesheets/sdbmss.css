@@ -25,6 +25,8 @@
 
 h1 { font-size: 30px; margin-top: 10px; }
 
+.facet_extended_list .facet-values li:nth-child(odd) { background: #f9f9f9 }
+
 /* tighten up whitespace */
 .blacklight-catalog-show table { margin-bottom: 5px; }
 

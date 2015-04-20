@@ -1,0 +1,39 @@
+<%# Customized HTML page (ie. non-ajax modal) version of facet listing %>
+
+<%= render 'constraints' %>
+
+<div class="facet_pagination top">
+  <%= render :partial=>'facet_pagination' %>
+</div>
+
+<button type="button" class="ajax-modal-close close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3>Browsing facet: <%= facet_field_label(@facet.key) %></h3>
+
+<% if params[:"facet.sort"] == 'index' %>
+<div style="margin-bottom: 10px">
+Prefix: 
+<% prefix = params[:prefix] || 'all' %>
+<% (prefixes = ['all'] + ('A'..'Z').to_a).each do |ch| %>
+    <% if ch == prefix %><b><% end %><%= link_to_if(ch != prefix, ch, params_for_prefix_url(ch)) %><% if ch == prefix %></b><% end %>
+    <% if ch != prefixes.last %> | <% end %>
+<% end %>
+</div>
+<% end %>
+
+<div>
+  <div class="facet_extended_list">
+      <%= (facet_values = render_facet_limit(@display_facet, layout: false)) %>
+      <% if facet_values.blank? %>
+          Nothing to display.
+      <% end %>
+  </div>
+</div>
+  
+<div>
+  <div class="facet_pagination bottom">
+    <%= render :partial=>'facet_pagination' %>
+  </div>
+</div>
+
+<div style="margin-bottom: 20px">
+</div>

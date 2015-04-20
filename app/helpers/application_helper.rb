@@ -31,6 +31,21 @@ module ApplicationHelper
     struct[:data][:"context-href"]
   end
 
+  # for facet listing page, returns a URL for current search with prefix parameter added
+  def params_for_prefix_url prefix
+    if @pagination == nil
+      raise "params_for_prefix_url called from view where @pagination isn't available"
+    end
+    new_params = @pagination.params_for_resort_url('index', params)
+    if prefix != 'all'
+      new_params["prefix"] = prefix
+    else
+      # 'all' should clear prefix
+      new_params.delete "prefix"
+    end
+    new_params
+  end
+
   # determines whether edit entry link should be displayed; this is
   # used multiple places, which is why it's here in ApplicationHelper
   def show_edit_entry_link?
