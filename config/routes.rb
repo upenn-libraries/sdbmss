@@ -15,19 +15,19 @@ Rails.application.routes.draw do
 
   get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
 
-  # TODO: this is gross, but we want some /entries[...] URLs to be
-  # handled by CatalogController and some by EntriesController and it
-  # is difficult to tweak the 'resources' DSL to get the exact desired
-  # behavior.
-
-  get '/entries/types', to: 'entries#types'
-  get '/entries/new', to: 'entries#new'
-  get '/entries/:id/history', to: 'entries#history', as: 'entry_history'
-  get '/entries/:id/similar', to: 'entries#similar'
-  get '/entries/:id/manuscript_candidates', to: 'entries#manuscript_candidates'
+  # Note here that we point #show to BL's CatalogController
+  resources :entries, except: [:show] do
+    collection {
+      get 'types'
+    }
+    member {
+      get 'history'
+      get 'similar'
+      get 'manuscript_candidates'
+    }
+  end
   get '/entries/:id.json', to: 'entries#show_json', defaults: { format: 'json' }
-  get '/entries/:id', to: 'catalog#show', as: 'entry'
-  resources :entries
+  get '/entries/:id', to: 'catalog#show'
 
   resources :entry_comments
 
@@ -88,5 +88,8 @@ Rails.application.routes.draw do
   end
 
   devise_for :users
+  resources :users do
+    collection { get 'search' }
+  end
 
 end

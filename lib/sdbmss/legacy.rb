@@ -120,23 +120,26 @@ module SDBMSS::Legacy
     end
 
     def create_user(row, ctx)
+
+      role = nil
+      case
+      when row['PERMISSION'] == 'entry'
+        role = 'contributor'
+      when row['PERMISSION'] == 'edit'
+        role = 'editor'
+      when row['PERMISSION'] == 'admin'
+        role = 'admin'
+      end
+
       password = row['PENNKEYPASS']
       user = User.new(username: row['PENNKEY'],
                           email: row['PENNKEY'] + "@upenn.edu",
-                          password: password)
+                          password: password,
+                          role: role)
       # skip validations because Devise considers some existing
       # passwords to be invalid, but we don't care.
       user.save!(validate: false)
 
-      # XXX: implement perm groups
-      # case
-      # when row['PERMISSION'] == 'entry'
-      #   user.groups.add(Group.objects.get(name='Staff'))
-      # when row['PERMISSION'] == 'edit'
-      #   user.groups.add(Group.objects.get(name='Editor'))
-      # when row['PERMISSION'] == 'admin'
-      #   user.groups.add(Group.objects.get(name='Administrator'))
-      # end
     end
 
     USER_CACHE = {}
@@ -344,10 +347,6 @@ module SDBMSS::Legacy
       verify_catalog_data(legacy_db)
 
       puts "Migrating Users"
-
-      # XXX: implement perm groups
-      # for group_name in ('Regular User', 'Staff', 'Editor', 'Administrator'):
-      #     Group.objects.create(name=group_name)
 
       SDBMSS::Util.batch(legacy_db,
                          'SELECT * FROM MANUSCRIPT_USER') do |row,ctx|

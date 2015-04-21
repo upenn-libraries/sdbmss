@@ -12,6 +12,14 @@ module ResourceSearch
 
   extend ActiveSupport::Concern
 
+  def self.included(base)
+    base.helper_method :search_name_field
+  end
+
+  def search_name_field
+    "name"
+  end
+
   def search_results_limit
     params["limit"]
   end
@@ -21,7 +29,7 @@ module ResourceSearch
   end
 
   def search_results_order
-    [params["order"] || "name asc"]
+    [params["order"] || "#{search_name_field} asc"]
   end
 
   # Returns the constant of the Model handled by this controller.
@@ -35,7 +43,7 @@ module ResourceSearch
   # set of keys for each result object. Used by the default
   # implementation of #search_results_format.
   def search_results_keys
-    [:id, :name]
+    [:id, search_name_field.to_s]
   end
 
   # Formats the passed-in search result object, returning it as a hash.
@@ -117,14 +125,14 @@ module ResourceSearch
     exact = []
     search_term = params[:term] || ""
     if search_exact_enabled && search_term.length > 0
-      exact = search_model_class.where("name = ?", search_term)
+      exact = search_model_class.where("#{search_name_field} = ?", search_term)
     end
     exact
   end
 
   # returns true if this result is an exact match for search performed
   def search_exact_match(result)
-    result.name == params[:term]
+    result.send(search_name_field.to_s) == params[:term]
   end
 
   # Classes should override this if they need to search differently.
@@ -141,9 +149,9 @@ module ResourceSearch
       search_term.split.each do |word|
         # look at ID column for integers
         if !SDBMSS::Util.int?(word)
-          query = query.where('name like ?', "%#{word}%")
+          query = query.where("#{search_name_field} like ?", "%#{word}%")
         else
-          query = query.where('name like ? or id = ?', "%#{word}%", word.to_s)
+          query = query.where("#{search_name_field} like ? or id = ?", "%#{word}%", word.to_s)
         end
       end
     end

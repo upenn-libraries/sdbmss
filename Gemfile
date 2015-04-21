@@ -52,6 +52,9 @@ gem "blacklight_advanced_search", "~> 5.1.3"
 gem "devise", "~> 3.4.0"
 gem "devise-guests", "~> 0.3.0"
 
+# For roles and permissions checking
+gem "cancancan", "~> 1.10.1"
+
 # For indexing records in Solr
 gem 'sunspot_rails', '~> 2.1.0'
 gem 'sunspot_solr', '~> 2.1.0'

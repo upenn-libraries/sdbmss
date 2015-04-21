@@ -21,6 +21,15 @@
                 <p><a href="<%= places_path %>">Manage Places</a></p>
             </div>
         </div>
+
+        <% if can? :manage, User %>
+        <div class="panel panel-default">
+            <div class="panel-heading">Admin</div>
+            <div class="panel-body">
+                <p><a href="<%= users_path %>">Manage Users</a></p>
+            </div>
+        </div>
+        <% end %>
     </div>
     <div class="col-sm-9">
         <div class="panel panel-default">

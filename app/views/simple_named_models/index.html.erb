@@ -33,7 +33,7 @@ $(document).ready(function() {
         {
             title: 'Name',
             width: "70%",
-            dbSortField: 'name'
+            dbSortField: '<%= search_name_field %>'
         },
         {
             title: 'Count',
@@ -65,7 +65,7 @@ $(document).ready(function() {
                         $(".dataTables_scrollBody").scrollTop(0);
                         var rows = [];
                         data.results.forEach(function(item) {
-                            rows.push([ item.id, item.id, item.name, item.entries_count || 0 ]);
+                            rows.push([ item.id, item.id, item.<%= search_name_field %>, item.entries_count || 0 ]);
                         });
                         callback({
                             draw: dt_params.draw,

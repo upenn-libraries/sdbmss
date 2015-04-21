@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
 
+  ROLES = %i[contributor editor admin]
+
   attr_accessible :username, :email, :password, :password_confirmation if Rails::VERSION::MAJOR < 4
 
   attr_accessor :login
@@ -7,6 +9,8 @@ class User < ActiveRecord::Base
   has_many :entries, foreign_key: "created_by_id"
 
   has_many :sources, foreign_key: "created_by_id"
+
+  before_save :assign_default_role
 
   def login
     @login || self.username || self.email
@@ -39,6 +43,18 @@ class User < ActiveRecord::Base
       where(conditions).where(["lower(username) = :value OR lower(email) = :value", { :value => login.downcase }]).first
     else
       where(conditions).first
+    end
+  end
+
+  def role?(role_to_check)
+    role == role_to_check
+  end
+
+  private
+
+  def assign_default_role
+    if !persisted? && role.blank?
+      self.role = 'contributor'
     end
   end
 
