@@ -1,0 +1,43 @@
+<%= form_for(@model, html: { class: "form-horizontal" }) do |f| %>
+  <% if @model.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@model.errors.count, "error") %> prohibited this model from being saved:</h2>
+
+      <ul>
+      <% @model.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field form-group row">
+      <%= f.label :username, class: "col-sm-2 control-label" %>
+      <div class="col-sm-4">
+          <%= f.text_field :username, :class => 'form-control' %>
+      </div>
+  </div>
+  <div class="field form-group row">
+      <%= f.label :email, class: "col-sm-2 control-label" %>
+      <div class="col-sm-4">
+          <%= f.email_field :email, :class => 'form-control' %>
+      </div>
+  </div>
+  <div class="field form-group row">
+      <%= f.label :email_is_public, class: "col-sm-2 control-label" %>
+      <div class="col-sm-4">
+          <%= f.check_box :email_is_public, :class => 'form-control' %>
+      </div>
+  </div>
+  <div class="field form-group row">
+      <%= f.label :bio, class: "col-sm-2 control-label" %>
+      <div class="col-sm-4">
+          <%= f.text_area :bio, :class => 'form-control' %>
+      </div>
+  </div>
+  <div class="actions row">
+      <div class="col-sm-4 col-sm-offset-2">
+          <%= f.submit :class => 'btn btn-primary' %>
+      </div>
+  </div>
+<% end %>

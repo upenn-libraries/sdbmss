@@ -1,11 +1,16 @@
 
 <h1><%= @user.username %></h1>
 
-<!-- TODO! -->
-<p>TODO: this is the public profile page for users, which will show
-gamified statistics, the user's role, and other public info.</p>
+<p>(TODO: this is the public profile page for users, which will show
+gamified statistics, the user's role, and other public info.)</p>
     
-<p><%= @user.username %> is an Editor.</p>
+<p>Role: <%= @user.role.capitalize %></p>
+
+<p>Email: <% if @user.email_is_public %><%= mail_to @user.email %><% else %>(Private)<% end %></p>
+
+<% if @user.bio.present? %>
+<p>Bio: <%= @user.bio %></p>
+<% end %>
 
 <p>This user has contributed:</p>
 

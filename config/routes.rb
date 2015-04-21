@@ -69,6 +69,7 @@ Rails.application.routes.draw do
     collection { get 'search' }
   end
 
+  # Note that we use 'username' as identifier here for nicer URLs
   get '/profiles/:username', to: 'profiles#show', as: 'profile'
 
   get '/reports/', to: 'reports#show'
@@ -88,7 +89,9 @@ Rails.application.routes.draw do
   end
 
   devise_for :users
-  resources :users do
+
+  # there is no #show action for users; use profiles#show instead
+  resources :users, except: [:show] do
     collection { get 'search' }
   end
 
