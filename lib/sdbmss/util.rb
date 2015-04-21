@@ -101,8 +101,11 @@ module SDBMSS
         d && d.length == 8 ? d.slice(0, 4) + "-" + d.slice(4, 2) + "-" + d.slice(6, 2) : d
       end
 
+      # does a preliminary check and returns true if str is parseable
+      # by #normalize_approximate_date_str_to_year_range
       def resembles_approximate_date_str(date_str)
-        /(early|mid|late|century|to)/.match(date_str).present?
+        /(circa|early|mid|late|century|to)/.match(date_str).present? ||
+          /\ds/.match(date_str).present?
       end
 
       # Takes a date_str like 'early 19th century' and returns a

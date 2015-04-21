@@ -42,9 +42,10 @@ module SDBMSS::Legacy
 
     REGEX_COMMON_TITLE = /\[(.+)\]/
 
-    # returns a 2-item Array of start and end normalized dates, given
-    # a circa str and a date from the legacy data.
-    def normalize_date(circa, date)
+    # Converts the legacy circa/year combination to a human-readable
+    # string that it is PROBABLY what that combo means, then uses that
+    # str to return a 2-item Array of start and end normalized dates.
+    def normalize_circa_and_date(circa, date)
       circa_original = circa
 
       # ignore crazy qualifiers like ? and +, the meanings of which
@@ -82,25 +83,25 @@ module SDBMSS::Legacy
 
           case circa
           when 'CCENT'
-            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("#{century} century")
+            return EntryDate.normalize_date("#{century} century")
           when 'C1H'
-            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("first half of #{century} century")
+            return EntryDate.normalize_date("first half of #{century} century")
           when 'C2H'
-            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("second half of #{century} century")
+            return EntryDate.normalize_date("second half of #{century} century")
           when 'C1Q'
-            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("first quarter of #{century} century")
+            return EntryDate.normalize_date("first quarter of #{century} century")
           when 'C2Q'
-            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("second quarter of #{century} century")
+            return EntryDate.normalize_date("second quarter of #{century} century")
           when 'C3Q'
-            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("third quarter of #{century} century")
+            return EntryDate.normalize_date("third quarter of #{century} century")
           when 'C4Q'
-            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("fourth quarter of #{century} century")
+            return EntryDate.normalize_date("fourth quarter of #{century} century")
           when 'CEARLY'
-            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("early #{century} century")
+            return EntryDate.normalize_date("early #{century} century")
           when 'CMID'
-            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("mid #{century} century")
+            return EntryDate.normalize_date("mid #{century} century")
           when 'CLATE'
-            return SDBMSS::Util.normalize_approximate_date_str_to_year_range("late #{century} century")
+            return EntryDate.normalize_date("late #{century} century")
           end
         else
           puts "bad circa: #{circa_original} #{date}"
@@ -867,7 +868,7 @@ module SDBMSS::Legacy
               # print "WARNING: record %s: invalid circa value: %s" % (row['MANUSCRIPT_ID'], circa)
             end
 
-            date_normalized_start, date_normalized_end = normalize_date(circa, date)
+            date_normalized_start, date_normalized_end = normalize_circa_and_date(circa, date)
 
             # TODO: circas are not normalized in DB; their absence
             # in options in UI will cause data loss!

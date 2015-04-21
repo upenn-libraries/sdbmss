@@ -57,21 +57,21 @@ describe "SDBMSS::Legacy" do
 
    end
 
-   describe "#normalize_date" do
+   describe "#normalize_circa_and_date" do
 
      it "parses normalizes dates properly" do
-       expect(SDBMSS::Legacy.normalize_date("CCENT", "1550")).to eq(["1500", "1599"])
+       expect(SDBMSS::Legacy.normalize_circa_and_date("CCENT", "1550")).to eq(["1500", "1599"])
        # TODO: is this really right?
-       expect(SDBMSS::Legacy.normalize_date("CCENT", "1200")).to eq(["1200", "1299"])
-       expect(SDBMSS::Legacy.normalize_date("C1H", "1250")).to eq(["1200", "1250"])
-       expect(SDBMSS::Legacy.normalize_date("C2H", "1250")).to eq(["1250", "1299"])
-       expect(SDBMSS::Legacy.normalize_date("C1Q", "1250")).to eq(["1200", "1225"])
-       expect(SDBMSS::Legacy.normalize_date("C2Q", "1250")).to eq(["1226", "1250"])
-       expect(SDBMSS::Legacy.normalize_date("C3Q", "1250")).to eq(["1251", "1275"])
-       expect(SDBMSS::Legacy.normalize_date("C4Q", "1250")).to eq(["1276", "1299"])
-       expect(SDBMSS::Legacy.normalize_date("CEARLY", "350")).to eq(["300", "350"])
-       expect(SDBMSS::Legacy.normalize_date("CMID", "350")).to eq(["325", "375"])
-       expect(SDBMSS::Legacy.normalize_date("CLATE", "350")).to eq(["350", "399"])
+       expect(SDBMSS::Legacy.normalize_circa_and_date("CCENT", "1200")).to eq(["1200", "1299"])
+       expect(SDBMSS::Legacy.normalize_circa_and_date("C1H", "1250")).to eq(["1200", "1250"])
+       expect(SDBMSS::Legacy.normalize_circa_and_date("C2H", "1250")).to eq(["1250", "1299"])
+       expect(SDBMSS::Legacy.normalize_circa_and_date("C1Q", "1250")).to eq(["1200", "1225"])
+       expect(SDBMSS::Legacy.normalize_circa_and_date("C2Q", "1250")).to eq(["1226", "1250"])
+       expect(SDBMSS::Legacy.normalize_circa_and_date("C3Q", "1250")).to eq(["1251", "1275"])
+       expect(SDBMSS::Legacy.normalize_circa_and_date("C4Q", "1250")).to eq(["1276", "1299"])
+       expect(SDBMSS::Legacy.normalize_circa_and_date("CEARLY", "350")).to eq(["300", "350"])
+       expect(SDBMSS::Legacy.normalize_circa_and_date("CMID", "350")).to eq(["325", "375"])
+       expect(SDBMSS::Legacy.normalize_circa_and_date("CLATE", "350")).to eq(["350", "399"])
      end
 
    end

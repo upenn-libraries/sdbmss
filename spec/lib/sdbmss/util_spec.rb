@@ -23,50 +23,6 @@ describe "SDBMSS::Util" do
 
   end
 
-  describe "#normalize_approximate_date_str_to_year_range" do
-
-    it "normalizes a century date" do
-      expect(SDBMSS::Util.normalize_approximate_date_str_to_year_range("11th century")).to eq(["1000", "1099"])
-    end
-
-    it "normalizes an early century date" do
-      expect(SDBMSS::Util.normalize_approximate_date_str_to_year_range("early 11th century")).to eq(["1000", "1050"])
-    end
-
-    it "normalizes a late century date" do
-      expect(SDBMSS::Util.normalize_approximate_date_str_to_year_range("late 6th century")).to eq(["550", "599"])
-    end
-
-    it "normalizes a mid century date" do
-      expect(SDBMSS::Util.normalize_approximate_date_str_to_year_range("mid 12th century")).to eq(["1125", "1175"])
-    end
-
-    it "normalizes an approximate decade date" do
-      expect(SDBMSS::Util.normalize_approximate_date_str_to_year_range("1870s")).to eq(["1870", "1879"])
-    end
-
-    it "normalizes a date range" do
-      expect(SDBMSS::Util.normalize_approximate_date_str_to_year_range("567 to 1205")).to eq(["567", "1205"])
-    end
-
-    it "normalizes a date range with decade" do
-      expect(SDBMSS::Util.normalize_approximate_date_str_to_year_range("567 to 1200s")).to eq(["567", "1299"])
-    end
-
-    it "normalizes a circa date" do
-      expect(SDBMSS::Util.normalize_approximate_date_str_to_year_range("circa 1324")).to eq(["1324", "1324"])
-    end
-
-    it "normalizes an exact date" do
-      expect(SDBMSS::Util.normalize_approximate_date_str_to_year_range("276")).to eq(["276", "276"])
-    end
-
-    it "normalizes a nonsense string" do
-      expect(SDBMSS::Util.normalize_approximate_date_str_to_year_range("blah de blah")).to eq([nil,nil])
-    end
-
-  end
-
   describe "#split_and_strip" do
 
      it "splits a string" do

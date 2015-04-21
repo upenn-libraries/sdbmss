@@ -1,3 +1,5 @@
+require 'chronic'
+
 class EntryDate < ActiveRecord::Base
   belongs_to :entry
 
@@ -30,9 +32,42 @@ class EntryDate < ActiveRecord::Base
     ["CLATE", "Circa Late Part of Century"],
   ]
 
+  # returns a 2-item Array with start_date and end_date
+  def self.normalize_date(date_str)
+
+    date_str = date_str.strip
+
+    # if entire str is a number, return it
+    if (exact_date_match = /^(\d{1,4})$/.match(date_str)).present?
+      year = exact_date_match[1]
+      return [year, year]
+    elsif SDBMSS::Util.resembles_approximate_date_str(date_str)
+      date = SDBMSS::Util.normalize_approximate_date_str_to_year_range(date_str)
+      return [date[0], date[1]]
+    else
+      parsed = Chronic.parse(date_str)
+      if parsed.present?
+        return [parsed.strftime("%Y-%m-%d"), parsed.strftime("%Y-%m-%d")]
+      end
+    end
+    return [nil, nil]
+  end
+
   def circa_verbose
     option = CIRCA_TYPES.select { |option| option[0] == circa }.first
     option[1] if option
+  end
+
+  # examines observed_date and based on it, populates
+  # date_normalized_start and date_normalized_end fields with
+  # reasonable values. This is a handy thing to call from data
+  # import/migration scripts after setting observed_date.
+  def normalize_observed_date
+    if observed_date.present?
+      start_date, end_date = self.class.normalize_date(observed_date)
+      self.date_normalized_start = start_date
+      self.date_normalized_end = end_date
+    end
   end
 
   def display_value

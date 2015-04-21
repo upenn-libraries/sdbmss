@@ -152,7 +152,7 @@ class EntriesController < ApplicationController
       :manuscript_binding, :manuscript_link, :other_info,
       :entry_titles_attributes => [ :id, :title, :common_title, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_authors_attributes => [ :id, :observed_name, :author_id, :role, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_dates_attributes => [ :id, :observed_date, :date, :circa, :_destroy ],
+      :entry_dates_attributes => [ :id, :observed_date, :date_normalized_start, :date_normalized_end, :date, :circa, :_destroy ],
       :entry_artists_attributes => [ :id, :observed_name, :artist_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_scribes_attributes => [ :id, :observed_name, :scribe_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_languages_attributes => [ :id, :language_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
@@ -160,7 +160,7 @@ class EntriesController < ApplicationController
       :entry_places_attributes => [ :id, :place_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_uses_attributes => [ :id, :use, :_destroy ],
       :events_attributes  => [
-        :id, :primary, :start_date, :end_date, :comment, :sold, :price, :currency, :other_currency, :_destroy,
+        :id, :primary, :start_date, :start_date_normalized_start, :start_date_normalized_end, :end_date, :end_date_normalized_start, :end_date_normalized_end, :comment, :sold, :price, :currency, :other_currency, :_destroy,
         {
           :event_agents_attributes => [:id, :observed_name, :agent_id, :role, :uncertain_in_source, :supplied_by_data_entry, :_destroy]
         }
