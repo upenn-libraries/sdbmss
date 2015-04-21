@@ -339,8 +339,8 @@ describe "Data entry", :js => true do
       click_certainty_flag('author_certainty_flags_0')
       select 'Tr', from: 'author_role_0'
       fill_in 'date_observed_date_0', with: 'early 15th century'
-      fill_in 'date_0', with: '1425'
-      select 'Circa Century', from: 'circa_0'
+      # move focus out of observed_date in order to trigger auto-populate of normalized dates
+      page.execute_script %Q{ $('#date_normalized_start_0').trigger('focus') }
       fill_in 'artist_observed_name_0', with: 'Chuck'
       fill_autocomplete_select_or_create_entity 'artist_0', with: 'Schultz, Charles'
       fill_in 'scribe_observed_name_0', with: 'Brother Francisco'
@@ -411,8 +411,8 @@ describe "Data entry", :js => true do
 
       entry_date = entry.entry_dates.first
       expect(entry_date.observed_date).to eq('early 15th century')
-      expect(entry_date.date).to eq('1425')
-      expect(entry_date.circa).to eq('CCENT')
+      expect(entry_date.date_normalized_start).to eq('1400')
+      expect(entry_date.date_normalized_end).to eq('1450')
 
       entry_artist = entry.entry_artists.first
       expect(entry_artist.observed_name).to eq('Chuck')

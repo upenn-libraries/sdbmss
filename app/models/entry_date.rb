@@ -72,7 +72,7 @@ class EntryDate < ActiveRecord::Base
 
   def display_value
     sep = date.to_s.length > 0 && circa.to_s.length > 0 ? " " : ""
-    circa_verbose.to_s + sep + date
+    circa_verbose.to_s + sep + date.to_s
   end
 
 end

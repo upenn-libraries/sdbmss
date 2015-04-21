@@ -316,7 +316,7 @@
             },
             {
                 field: 'entry_dates',
-                properties: ['observed_date', 'date', 'circa']
+                properties: ['observed_date', 'date_normalized_start', 'date_normalized_end', 'date', 'circa']
             },
             {
                 field: 'entry_artists',
@@ -678,7 +678,7 @@
             $scope.changeNestedAttributesNames($scope.associations, entryToSave);
 
             //console.log("about to save this Entry: ");
-            //console.log(sdbmutil.objectSnapshot(entryToSave));
+            //console.log(JSON.stringify(entryToSave));
 
             if(entryToSave.id) {
                 entryToSave.$update(
@@ -1071,8 +1071,12 @@
                         }
                     }).then(function (response) {
                         if(!areTargetsPopulated() && response.data.date) {
+                            // we MUST manually trigger 'change' events here
+                            // otherwise Angular bindings won't pick up these values
                             $("#" + startTargetId).val(response.data.date.date_start);
+                            $("#" + startTargetId).change();
                             $("#" + endTargetId).val(response.data.date.date_end);
+                            $("#" + endTargetId).change();
                         }
                     }, function(response) {
                         alert("An error occurred trying to normalize date");
