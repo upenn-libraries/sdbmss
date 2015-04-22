@@ -27,7 +27,7 @@ class UsersController < SimpleNamedModelsController
   end
 
   def model_params
-    params.require(model_class_lstr.to_sym).permit(:username, :email, :email_is_public, :bio)
+    params.require(model_class_lstr.to_sym).permit(:username, :email, :email_is_public, :password, :password_confirmation, :bio)
   end
 
 end

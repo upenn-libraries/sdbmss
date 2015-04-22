@@ -24,9 +24,26 @@
       </div>
   </div>
   <div class="field form-group row">
-      <%= f.label :email_is_public, class: "col-sm-2 control-label" %>
+      <div class="col-sm-2"></div>
+      <div class="col-sm-4 checkbox">
+          <label>
+              <%= f.check_box :email_is_public %> Email address is publicly visible
+          </label>
+      </div>
+  </div>
+  <div class="field form-group row">
+      <%= f.label :password, class: "col-sm-2 control-label" %>
       <div class="col-sm-4">
-          <%= f.check_box :email_is_public, :class => 'form-control' %>
+          <%= f.password_field :password, :class => 'form-control' %>
+      </div>
+      <div class="col-sm-4">
+          Leave blank to leave password unchanged
+      </div>
+  </div>
+  <div class="field form-group row">
+      <%= f.label :password_confirmation, class: "col-sm-2 control-label" %>
+      <div class="col-sm-4">
+          <%= f.password_field :password_confirmation, :class => 'form-control' %>
       </div>
   </div>
   <div class="field form-group row">

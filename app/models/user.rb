@@ -24,6 +24,10 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  # one of the devise class methods above seems to give us
+  # "validates_confirmation_of :password" so we don't need it
+  # explicitly
+
   validates :username,
             :uniqueness => {
               :case_sensitive => false
