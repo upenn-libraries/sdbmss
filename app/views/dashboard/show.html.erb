@@ -38,15 +38,24 @@
                 <% if num_entries > 0 %>
                 <% num_entries_to_show = 5 %>
                 <% entries = current_user.entries.most_recent(num_entries_to_show) %>
-                <p>You've contributed <a href="<%= search_advanced_url(created_by: current_user.to_s) %>"><%= num_entries %></a> entries to date. The last <%= entries.count %> entries you created:</p>
+                <% search_url = search_advanced_url(created_by: current_user.to_s) %>
+                <p>You've contributed <a href="<%= search_url %>"><%= num_entries %> entries</a> to date. The last <%= entries.count %> entries you created:</p>
 
                 <table class="table">
                     <% entries.each do |entry| %>
                     <tr class="row">
-                        <td class="col-sm-10"><a href="<%= entry_path(entry) %>"><%= entry.public_id %></a>: <%= entry.entry_titles.map(&:title).join("; ") %>
+                        <td class="col-sm-11"><a href="<%= entry_path(entry) %>"><%= entry.public_id %></a>: <%= entry.entry_titles.map(&:title).join("; ") %>
                           <% if !entry.approved %><em>(pending approval)</em><% end %>
                         </td>
-                        <td class="col-sm-2"><a href="<%= edit_entry_path(entry) %>">edit</a></td>
+                        <td class="col-sm-1"><a href="<%= edit_entry_path(entry) %>">edit</a></td>
+                    </tr>
+                    <% end %>
+                    <% if num_entries > 5 %>
+                    <tr class="row">
+                        <td class="col-sm-11">
+                            <a href="<%= search_url %>">View all...</a>
+                        </td>
+                        <td class="col-sm-1"></td>
                     </tr>
                     <% end %>
                 </table>
