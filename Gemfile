@@ -56,8 +56,8 @@ gem "devise-guests", "~> 0.3.0"
 gem "cancancan", "~> 1.10.1"
 
 # For indexing records in Solr
-gem 'sunspot_rails', '~> 2.1.0'
-gem 'sunspot_solr', '~> 2.1.0'
+gem 'sunspot_rails', '~> 2.2.0'
+gem 'sunspot_solr', '~> 2.2.0'
 
 # Use database as session store
 gem 'activerecord-session_store', '~> 0.1.0'
