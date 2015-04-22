@@ -20,6 +20,14 @@ class SimpleNamedModelsController < ApplicationController
     model_class.to_s.downcase
   end
 
+  # Name of the resource that this controller controls. By default,
+  # this is the same as the model class, but subclasses may want to
+  # override if the REST resource name isn't the same, for various
+  # reasons. This should be plural.
+  def resource_name
+    model_class_lstr.pluralize
+  end
+
   def index
   end
 
@@ -32,7 +40,7 @@ class SimpleNamedModelsController < ApplicationController
     if @model.save
       respond_to do |format|
         format.html {
-          respond_with(@model)
+          redirect_to model_path(@model.id)
         }
         format.json {
           render json: @model
@@ -51,7 +59,12 @@ class SimpleNamedModelsController < ApplicationController
   end
 
   def update
-    if @model.update(model_params)
+    if model_params[:password].blank?
+      result = @model.update_without_password(model_params)
+    else
+      result = @model.update(model_params)
+    end
+    if result
       respond_to do |format|
         format.html {
           flash[:notice] = "Your changes have been saved."
@@ -88,21 +101,21 @@ class SimpleNamedModelsController < ApplicationController
   # subclasses.
 
   def models_path
-    send((model_class_lstr.pluralize + "_path").to_sym)
+    send((resource_name + "_path").to_sym)
   end
 
   def new_model_path
-    send(("new_" + model_class_lstr + "_path").to_sym)
+    send(("new_" + resource_name.singularize + "_path").to_sym)
   end
 
   def edit_model_path(id)
-    send(("edit_" + model_class_lstr + "_path").to_sym, id)
+    send(("edit_" + resource_name.singularize + "_path").to_sym, id)
   end
 
   def model_path(id)
-    send((model_class_lstr + "_path").to_sym, id)
+    send((resource_name.singularize + "_path").to_sym, id)
   end
 
-  helper_method :models_path, :new_model_path, :edit_model_path, :model_path, :model_class
+  helper_method :models_path, :new_model_path, :edit_model_path, :model_path, :model_class, :resource_name
 
 end

@@ -5,7 +5,7 @@
 
 $(document).ready(function() {
 
-    var model_class = "<%= model_class.to_s.downcase.pluralize %>";
+    var resourceName = "<%= resource_name %>";
 
     SDBM.hideNavBar();
 
@@ -20,8 +20,8 @@ $(document).ready(function() {
             title: 'Options',
             orderable: false,
             render: function (data, type, full, meta) {
-                var str = '<a href="/' + model_class + '/' + data + '/edit/">Edit</a> '
-                        + '&middot; <a class="delete-link" href="/' + model_class + '/' + data + '.json">Delete</a>';
+                var str = '<a href="/' + resourceName + '/' + data + '/edit/">Edit</a> '
+                        + '&middot; <a class="delete-link" href="/' + resourceName + '/' + data + '.json">Delete</a>';
                 return str;
             },
             width: "10%"
@@ -58,7 +58,7 @@ $(document).ready(function() {
             };
 
             $.ajax({
-                url: '/' + model_class + '/search.json',
+                url: '/' + resourceName + '/search.json',
                 data: params,
                 success: function(data, textStatus, jqXHR) {
                     if(!data.error) {
@@ -105,7 +105,7 @@ $(document).ready(function() {
     });
 
     $('#export-csv').click(function() {
-        var url = '/' + model_class + '/search.csv?';
+        var url = '/' + resourceName + '/search.csv?';
         if(getSearchValue()) {
             url += "term=" + encodeURIComponent(getSearchValue());
         }
@@ -117,7 +117,7 @@ $(document).ready(function() {
 </script>
 <% end %>
 
-<h1>Manage <%= model_class.to_s.pluralize %></h1>
+<h1>Manage <%= resource_name.pluralize %></h1>
 
 <form class="form-horizontal search-form">
     <div class="row form-group search-fieldset original">

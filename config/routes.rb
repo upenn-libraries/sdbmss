@@ -2,6 +2,10 @@ Rails.application.routes.draw do
 
   root :to => "catalog#index"
 
+  resources :accounts, except: [:show] do
+    collection { get 'search' }
+  end
+
   get '/admin_search', to: "admin_search#index"
   post '/admin_search/calculate_bounds', to: "admin_search#calculate_bounds"
 
@@ -89,10 +93,5 @@ Rails.application.routes.draw do
   end
 
   devise_for :users
-
-  # there is no #show action for users; use profiles#show instead
-  resources :users, except: [:show] do
-    collection { get 'search' }
-  end
 
 end
