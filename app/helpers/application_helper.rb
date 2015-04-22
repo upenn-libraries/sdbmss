@@ -49,27 +49,21 @@ module ApplicationHelper
   # determines whether edit entry link should be displayed; this is
   # used multiple places, which is why it's here in ApplicationHelper
   def show_edit_entry_link?
-    user_signed_in?
+    user_signed_in? && @document.present? && (entry = @document.model_object).present? && can?(:edit, entry)
   end
 
   def show_linking_tool_by_entry?
-    return false if !user_signed_in? || !@document
-    entry = @document.model_object
-    entry.present? && !entry.manuscript.present?
+    user_signed_in? && @document.present? && (entry = @document.model_object).present? && !entry.manuscript.present? && can?(:link, entry)
   end
 
   def show_linking_tool_by_manuscript?
-    return false if !user_signed_in? || !@document
-    entry = @document.model_object
-    entry.present? && entry.manuscript.present?
+    user_signed_in? && @document.present? && (entry = @document.model_object).present? && entry.manuscript.present? && can?(:link, entry)
   end
 
   # determines whether entry history link should be displayed; this is
   # used multiple places, which is why it's here in ApplicationHelper
   def show_entry_history_link?
-    return false if !user_signed_in? || !@document
-    entry = @document.model_object
-    entry.present? && entry.versions.count > 0
+    @document.present? && (entry = @document.model_object).present? && entry.versions.count > 0 && can?(:link, entry)
   end
 
   # this method returns a data structure used to prepopulate the
