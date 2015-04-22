@@ -73,8 +73,8 @@ Rails.application.routes.draw do
     collection { get 'search' }
   end
 
-  # Note that we use 'username' as identifier here for nicer URLs
-  get '/profiles/:username', to: 'profiles#show', as: 'profile'
+  # use 'username' as identifier here for nicer URLs
+  resources :profiles, only: [:show], param: :username
 
   get '/reports/', to: 'reports#show'
   get '/reports/names/', to: 'reports#names'
