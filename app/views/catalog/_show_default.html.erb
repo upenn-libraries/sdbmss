@@ -401,7 +401,7 @@
         <tr>
             <td class="col-sm-12">
                 <% similar_entries.first(10).each do |similar_entry| %>
-                <a href="<%= entry_path similar_entry[:entry] %>"><%= similar_entry[:entry].id %></a> - <%= similar_entry[:entry].entry_titles.map(&:title).join("; ") %> (score: <%= similar_entry[:distance] %>)<br/>
+                <a href="<%= entry_path similar_entry[:entry] %>"><%= similar_entry[:entry].public_id %></a> - <%= similar_entry[:entry].entry_titles.map(&:title).join("; ") %> (score: <%= similar_entry[:distance] %>)<br/>
                 <% end %>
                 <br/>
                 (TODO: This info will be moved elsewhere, and presented in a way to make comparison easier)
