@@ -166,10 +166,15 @@
                         }
                     });
                 }
-                //console.log("returning keep = " +  keep);
                 if(!keep) {
                     childObject._destroy = 1;
                 }
+            });
+            objectWithAssociations[objectArrayName] = objectArray.filter(function(childObject) {
+                if(childObject._destroy && !childObject.id) {
+                    return false;
+                }
+                return true;
             });
         };
 
