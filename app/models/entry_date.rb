@@ -71,8 +71,11 @@ class EntryDate < ActiveRecord::Base
   end
 
   def display_value
-    sep = date.to_s.length > 0 && circa.to_s.length > 0 ? " " : ""
-    circa_verbose.to_s + sep + date.to_s
+    val = observed_date
+    if date_normalized_start != observed_date
+      val += " (#{date_normalized_start} to #{date_normalized_end})"
+    end
+    val
   end
 
 end

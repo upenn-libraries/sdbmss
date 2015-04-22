@@ -151,7 +151,7 @@
             <td class="col-sm-2 text-right record-label" colspan="2">Manuscript Dates</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_dates.each do |entry_date| %>
-                <%= entry_date.circa_verbose %> <%= entry_date.date %><br/>
+                    <%= entry_date.display_value %><br/>
                 <% end %>
             </td>
         </tr>
