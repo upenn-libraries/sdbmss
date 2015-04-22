@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  ROLES = %i[contributor editor admin]
+  ROLES = %w[contributor editor admin]
 
   attr_accessible :username, :email, :password, :password_confirmation if Rails::VERSION::MAJOR < 4
 
@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
 
   has_many :sources, foreign_key: "created_by_id"
 
-  before_save :assign_default_role
+  before_validation :assign_default_role
 
   def login
     @login || self.username || self.email
@@ -32,6 +32,8 @@ class User < ActiveRecord::Base
             :uniqueness => {
               :case_sensitive => false
             }
+
+  validates_inclusion_of :role, in: ROLES
 
   # Method added by Blacklight; Blacklight uses #to_s on your
   # user class to get a user-displayable login/identifier for
