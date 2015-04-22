@@ -6,6 +6,8 @@ class EntriesController < ApplicationController
 
   respond_to :html, :json
 
+  load_and_authorize_resource :only => [:edit, :update, :destroy]
+
   # JSON data structure optimized for editing page. This weird action
   # exists because we want CatalogController to handle #show, but we
   # want to format the JSON differently from how it does it.

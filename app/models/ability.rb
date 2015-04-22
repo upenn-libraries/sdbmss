@@ -33,6 +33,9 @@ class Ability
 
     if ['contributor', 'editor', 'admin'].member? user.role
       can :create, Entry
+      can :new, Entry
+      can :edit, Entry, :created_by_id => user.id
+      can :update, Entry, :created_by_id => user.id
     end
 
     if ['editor', 'admin'].member? user.role
@@ -40,8 +43,7 @@ class Ability
     end
 
     if ['admin'].member? user.role
-      can :edit, Entry
-      can :manage, User
+      can :manage, :all
     end
 
   end

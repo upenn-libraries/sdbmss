@@ -530,7 +530,8 @@ describe "Data entry", :js => true do
       )
       entry = Entry.create!(
         transaction_type: Entry::TYPE_TRANSACTION_GIFT,
-        source: source
+        source: source,
+        created_by_id: @user.id,
       )
 
       visit edit_entry_path :id => entry.id

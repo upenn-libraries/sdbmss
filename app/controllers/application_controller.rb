@@ -12,6 +12,8 @@ class ApplicationController < ActionController::Base
 
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  rescue_from CanCan::AccessDenied, with: :render_access_denied
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :password, :password_confirmation, :remember_me) }
     devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :username, :email, :password, :remember_me) }
@@ -24,6 +26,13 @@ class ApplicationController < ActionController::Base
       format.xml  { head :not_found }
       format.any  { head :not_found }
     end
+  end
+
+  def render_access_denied
+    respond_to do |format|
+      format.html { render :template => "errors/access_denied", :status => 403 }
+    end
+    true
   end
 
 end
