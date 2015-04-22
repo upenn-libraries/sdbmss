@@ -18,10 +18,10 @@ $(document).ready(function() {
         params = sdbmTable.translateParamsToBlacklight(data);
 
         params["op"] = $("select[name='op']").val();
-
-        $("select[name='search_field']").each(function (idx, element) {
-            var search_field = $(element).val();
-            var search_value = $($("input[name='search_value']")[idx]).val();
+    
+        $(".search-fieldset").each(function(idx, element) {
+            var search_field = $(element).find("select[name='search_field']").first().val();
+            var search_value = $(element).find("input[name='search_value']").first().val();
             if(search_value) {
                 params[search_field] = search_value;
             }
