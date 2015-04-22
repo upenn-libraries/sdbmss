@@ -93,7 +93,7 @@
         These are spatial types that we use to store date ranges
         (consisting of 2 integer values). We can then figure out
         whether a search for a range overlaps with a stored range by
-        using the Intersects function.
+        using a special range query of the form [X,Y TO X,Y]
 
         Note that in Solr 5.0, there's a DateRangeField but I'm pretty
         sure Libraries IT isn't up to that version yet.
@@ -276,7 +276,7 @@
     <!-- SDBMSS fields -->
 
     <!-- Naming conventions:
-         *_range = fields whose values are a range (like "1 - 10"); used for faceting only
+         *_range = fields whose values are a string range (like "1 - 10"); used for faceting only
          *_search = fields configured for full-text searching (type=text, may need additional tokenization and such later on
          *_id = fields usually used for numeric sorting
          *_flat = 'flattened' str versions of multi-valued fields, used for sorting
