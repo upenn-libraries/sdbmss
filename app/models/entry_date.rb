@@ -1,19 +1,19 @@
 require 'chronic'
 
+# Important note about dates:
+
+# The date range represented by the date_normalized_start and
+# date_normalized_end fields are end-exclusive: ie. a value falls
+# within the range if start <= value < end. We do this to avoid
+# problems with boundaries down the line.
+#
+# One such discussion can be found here:
+# http://qedcode.com/content/exclusive-end-dates
+#
 class EntryDate < ActiveRecord::Base
   belongs_to :entry
 
   validates_presence_of :entry
-
-  validate do |entry_date|
-    # both must be present if either is present
-    if entry_date.date_normalized_start.present? && !entry_date.date_normalized_end.present?
-      errors[:date_normalized_end] = "date_normalized_end is required if date_normalized_start is present"
-    end
-    if !entry_date.date_normalized_start.present? && entry_date.date_normalized_end.present?
-      errors[:date_normalized_start] = "date_normalized_start is required if date_normalized_end is present"
-    end
-  end
 
   has_paper_trail skip: [:created_at, :updated_at]
 
@@ -40,14 +40,14 @@ class EntryDate < ActiveRecord::Base
     # if entire str is a number, return it
     if (exact_date_match = /^(\d{1,4})$/.match(date_str)).present?
       year = exact_date_match[1]
-      return [year, year]
+      return [year, (year.to_i + 1).to_s]
     elsif SDBMSS::Util.resembles_approximate_date_str(date_str)
       date = SDBMSS::Util.normalize_approximate_date_str_to_year_range(date_str)
       return [date[0], date[1]]
     else
       parsed = Chronic.parse(date_str)
       if parsed.present?
-        return [parsed.strftime("%Y-%m-%d"), parsed.strftime("%Y-%m-%d")]
+        return [parsed.strftime("%Y-%m-%d"), (parsed + 1.day).strftime("%Y-%m-%d")]
       end
     end
     return [nil, nil]

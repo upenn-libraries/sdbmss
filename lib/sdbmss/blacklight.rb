@@ -78,11 +78,12 @@ module SDBMSS::Blacklight
         if m
           from, to = m[1], m[2]
 
-          # we need to buffer, otherwise Solr won't return points that
-          # lie exactly on the edge of the search region
+          # we need to buffer the 'from' date (used to query along the
+          # Y axis of end dates) so that we don't pick up end dates
+          # themselves (ranges are end-exclusive)
           buffer = 0.5
-          from = from == '*' ? DATE_RANGE_YEAR_MIN : from.to_i - buffer
-          to = to == '*' ? DATE_RANGE_YEAR_MAX : to.to_i + buffer
+          from = from == '*' ? DATE_RANGE_YEAR_MIN : from.to_i + buffer
+          to = to == '*' ? DATE_RANGE_YEAR_MAX : to.to_i
 
           # This checks that a stored range OVERLAPS with range
           # specified in query. see

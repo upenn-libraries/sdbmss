@@ -104,13 +104,15 @@ module SDBMSS
       # does a preliminary check and returns true if str is parseable
       # by #normalize_approximate_date_str_to_year_range
       def resembles_approximate_date_str(date_str)
-        /(circa|early|mid|late|century|to)/.match(date_str).present? ||
+        /(circa|before|after|early|mid|late|century|to)/.match(date_str).present? ||
           /\ds/.match(date_str).present?
       end
 
       # Takes a date_str like 'early 19th century' and returns a
       # normalized year value for it, like '1825'. returns nil if date
       # str can't be normalized.
+      #
+      # TODO: handle negative dates
       def normalize_approximate_date_str_to_year_range(date_str)
 
         date_str = date_str.strip
@@ -125,33 +127,43 @@ module SDBMSS
           end
         end
 
-        # handle case of something like 1860s
+        # handle case of something like 1860s.
+        # this always assumes decade granularity: ie. 900s means the 1st decade of 10th century
         if /\ds/.match(date_str)
           start_date = date_str.sub('s', '')
           end_date = nil
-          if (m = /0+$/.match(start_date)).present?
-            num_zeroes = m[0].length
-            end_date = start_date[0..((num_zeroes * -1) - 1)] + ("9" * num_zeroes)
+          if start_date[-1] == '0'
+            end_date = (((start_date.to_i / 10) + 1) * 10).to_s
           end
           return [start_date, end_date]
         end
 
-        # find any 4-digit number in the str
-        if (exact_date_match = /(\d{4})/.match(date_str)).present?
-          year = exact_date_match[1]
-          return [year, year]
+        # handle before and after by stripping out that qualifier and
+        # running through this fn again
+        if /before/.match(date_str)
+          range = normalize_approximate_date_str_to_year_range(date_str.sub('before', '').strip)
+          return [nil, range[1]]
+        end
+        if /after/.match(date_str)
+          range = normalize_approximate_date_str_to_year_range(date_str.sub('after', '').strip)
+          return [range[0], nil]
         end
 
-        # if entire str is a number, return it
-        if (exact_date_match = /^(\d{4})$/.match(date_str)).present? ||
+        circa = !! /circa/.match(date_str)
+
+        # find any 4-digit number in the str or if entire str is a
+        # number
+        if (exact_date_match = /(\d{4})/.match(date_str)).present? ||
+           (exact_date_match = /^(\d{4})$/.match(date_str)).present? ||
            (exact_date_match = /^(\d{3})$/.match(date_str)).present? ||
            (exact_date_match = /^(\d{2})$/.match(date_str)).present?
           year = exact_date_match[1]
-          return [year, year]
+          buffer = circa ? 10 : 0;
+          return [(year.to_i - buffer).to_s, (year.to_i + 1 + buffer).to_s]
         end
 
         start_date, end_date = nil, nil
-        # TODO: be more restrictive, look for patten like '5th cent'
+        # TODO: be more restrictive, look for pattern like '5th cent'
         if /cent/.match(date_str)
           century = ""
           century_match = /(\d{1,2})/.match(date_str)
@@ -161,37 +173,39 @@ module SDBMSS
 
           # look for qualifiers
           case
-          when /early/.match(date_str) || /first half/.match(date_str)
+          when /early/.match(date_str)
             start_date = century + "00"
-            end_date = century + "50"
+            end_date = century + "26"
           when /mid/.match(date_str)
-            start_date = century + "25"
-            end_date = century + "75"
-          when /late/.match(date_str) || /second half/.match(date_str)
-            start_date = century + "50"
-            end_date = century + "99"
+            start_date = century + "26"
+            end_date = century + "76"
+          when /late/.match(date_str)
+            start_date = century + "76"
+            end_date = (century.to_i + 1).to_s + "00"
           when /first quarter/.match(date_str)
             start_date = century + "00"
-            end_date = century + "25"
+            end_date = century + "26"
           when /second quarter/.match(date_str)
             start_date = century + "26"
-            end_date = century + "50"
+            end_date = century + "51"
           when /third quarter/.match(date_str)
             start_date = century + "51"
-            end_date = century + "75"
+            end_date = century + "76"
           when /fourth quarter/.match(date_str)
             start_date = century + "76"
-            end_date = century + "99"
+            end_date = (century.to_i + 1).to_s + "00"
+          when /first half/.match(date_str)
+            start_date = century + "00"
+            end_date = century + "51"
+          when /second half/.match(date_str)
+            start_date = century + "51"
+            end_date = (century.to_i + 1).to_s + "00"
           else
             if century.present?
               start_date = century + "00"
-              end_date = century + "99"
+              end_date = (century.to_i + 1).to_s + "00"
             end
           end
-        end
-
-        if end_date.blank?
-          end_date = start_date
         end
 
         [ start_date, end_date ]

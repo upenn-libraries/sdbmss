@@ -412,7 +412,7 @@ describe "Data entry", :js => true do
       entry_date = entry.entry_dates.first
       expect(entry_date.observed_date).to eq('early 15th century')
       expect(entry_date.date_normalized_start).to eq('1400')
-      expect(entry_date.date_normalized_end).to eq('1450')
+      expect(entry_date.date_normalized_end).to eq('1426')
 
       entry_artist = entry.entry_artists.first
       expect(entry_artist.observed_name).to eq('Chuck')
