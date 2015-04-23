@@ -1155,6 +1155,11 @@
                         type: 'GET'
                     }
                 },
+                position: {
+                    my: 'center',
+                    at: 'center',
+                    target: $(window)
+                },
                 show: {
                     event: 'click'
                 },
