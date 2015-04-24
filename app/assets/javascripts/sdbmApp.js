@@ -1151,6 +1151,8 @@
                 content: {
                     text: 'Loading...',
                     ajax: {
+                        // force reload
+                        cache: false,
                         url: '/static/tooltips/' + templateName + '.html',
                         type: 'GET'
                     }

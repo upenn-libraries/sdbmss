@@ -119,13 +119,19 @@ h1 { font-size: 30px; margin-top: 10px; }
 }
 
 .sdbmss-tooltip.qtip {
-    width: 500px;
+    width: 600px;
     padding: 10px 13px;
     /*max-width: none;*/
     font-size: 12px;
     font-size: inherit;
     line-height: 1.5em;
     max-width: inherit;
+}
+
+.sdbmss-tooltip .qtip-content h1 {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 1em;
 }
 
 .sdbmss-tooltip .qtip-content p {
