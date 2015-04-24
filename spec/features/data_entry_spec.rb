@@ -52,6 +52,8 @@ describe "Data entry", :js => true do
         expect(find(".modal-title", visible: true).text.include?("Create")).to be_truthy
         click_button('Create')
         sleep(0.5)
+        # this next line should be used instead of a sleep, but doesn't work for some reason
+        # expect(page).to have_no_selector(".modal-title", visible: true)
       end
     end
     #page.save_screenshot("screenshot_#{field}.png")
@@ -107,7 +109,6 @@ describe "Data entry", :js => true do
     it "should find source by date on Select Source page" do
       visit new_entry_path
       fill_in 'date', :with => '2013'
-      sleep(1)
       expect(page).to have_content @source.title
       click_link('create-entry-link-' + @source.id.to_s)
       expect(page).to have_content "Add an Entry - Fill out details"
@@ -116,7 +117,6 @@ describe "Data entry", :js => true do
     it "should find source by agent on Select Source page" do
       visit new_entry_path
       fill_in 'agent', :with => 'Soth'
-      sleep(1)
       expect(page).to have_content @source.title
       click_link('create-entry-link-' + @source.id.to_s)
       expect(page).to have_content "Add an Entry - Fill out details"
@@ -125,7 +125,6 @@ describe "Data entry", :js => true do
     it "should find source by title on Select Source page" do
       visit new_entry_path
       fill_in 'title', :with => 'uniq'
-      sleep(1)
       expect(page).to have_content @source.title
       click_link('create-entry-link-' + @source.id.to_s)
       expect(page).to have_content "Add an Entry - Fill out details"
@@ -218,7 +217,7 @@ describe "Data entry", :js => true do
 
       click_button('Save')
 
-      sleep(1)
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
       expect(Source.count).to eq(count + 1)
 
@@ -255,7 +254,7 @@ describe "Data entry", :js => true do
 
       click_button('Save')
 
-      sleep(1)
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
       expect(Source.count).to eq(count + 1)
 
@@ -284,7 +283,7 @@ describe "Data entry", :js => true do
 
       click_button('Save')
 
-      sleep(1)
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
       expect(Source.count).to eq(count + 1)
 
@@ -303,7 +302,7 @@ describe "Data entry", :js => true do
 
       visit edit_source_path :id => source.id
 
-      sleep(0.5)
+      expect(page).to have_content("Edit " + source.public_id)
 
       expect(page).to have_select('source_type', disabled: true, selected: 'Auction/Sale Catalog')
       expect(page).to have_field('source_date', with: '2014-12-15')
@@ -311,7 +310,7 @@ describe "Data entry", :js => true do
 
       click_button('Save')
 
-      sleep(1)
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
       source = Source.last
       expect(source.source_type).to eq(SourceType.auction_catalog)
@@ -379,9 +378,6 @@ describe "Data entry", :js => true do
       fill_in 'comment', with: 'This info is correct'
 
       click_button('Save')
-
-      # save really can take as long as 2s
-      sleep(2)
 
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
@@ -489,9 +485,6 @@ describe "Data entry", :js => true do
 
       click_button('Save')
 
-      # save really can take as long as 2s
-      sleep(2)
-
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
       entry = Entry.last
@@ -510,9 +503,6 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => entry.id
       click_button('Save')
-
-      # save really can take as long as 2s
-      sleep(2)
 
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
@@ -556,9 +546,6 @@ describe "Data entry", :js => true do
       find_by_id("delete_title_0").click
       click_button('Save')
 
-      # save really can take as long as 2s
-      sleep(2)
-
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
       entry.reload
@@ -583,9 +570,6 @@ describe "Data entry", :js => true do
       fill_in 'title_0', with: ''
       click_button('Save')
 
-      # save really can take as long as 2s
-      sleep(2)
-
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
       entry.reload
@@ -609,9 +593,6 @@ describe "Data entry", :js => true do
       # underlying entry_title record
       fill_in 'title_0', with: ''
       click_button('Save')
-
-      # save really can take as long as 2s
-      sleep(2)
 
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
@@ -628,7 +609,8 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => entry.id
 
-      sleep(2)
+      # wait for AJAX to finish
+      expect(find(".source-name").text.length).to be > 0
 
       # change folios and try to modify folios
 
@@ -650,7 +632,8 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => entry.id
 
-      sleep(2)
+      # wait for AJAX to finish
+      expect(find(".source-name").text.length).to be > 0
 
       # change folios and try to modify title association record
 
@@ -672,7 +655,8 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => entry.id
 
-      sleep(2)
+      # wait for AJAX to finish
+      expect(find(".source-name").text.length).to be > 0
 
       # change title association record and try to modify folios
 
@@ -716,8 +700,6 @@ describe "Data entry", :js => true do
 
       fill_in 'entry_comment_comment', with: "this entry is so crazy"
       click_button('Submit')
-
-      sleep(0.5)
 
       expect(page).to have_content "this entry is so crazy"
     end
