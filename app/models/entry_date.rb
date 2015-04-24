@@ -15,6 +15,16 @@ class EntryDate < ActiveRecord::Base
 
   validates_presence_of :entry
 
+  validates :date_normalized_start, numericality: { only_integer: true }, allow_blank: true
+  validates :date_normalized_end, numericality: { only_integer: true }, allow_blank: true
+
+  validate do |entry_date|
+    if entry_date.date_normalized_start.present? && !entry_date.date_normalized_end.present? &&
+       entry_date.date_normalized_start.to_i >= entry_date.date_normalized_end.to_i
+      errors[:date_normalized_start] = "date_normalized_start must be earlier than date_normalized_end"
+    end
+  end
+
   has_paper_trail skip: [:created_at, :updated_at]
 
   CIRCA_TYPES = [
