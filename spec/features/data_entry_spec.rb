@@ -688,17 +688,29 @@ describe "Data entry", :js => true do
       expect(text).to match(/Another change was made to the record while you were working/)
     end
 
+    it "should leave a comment successfully" do
+      entry = Entry.first
+      visit entry_path(entry)
+
+      fill_in 'entry_comment_comment', with: "this entry is so crazy"
+      click_button('Submit')
+
+      sleep(0.5)
+
+      expect(page).to have_content "this entry is so crazy"
+    end
+
     it "should validate when saving Entry"
   end
 
   context "when user is not logged in" do
 
-    it "should disallow creating Sources if not logged in", :skip_before do
+    it "should disallow creating Sources if not logged in" do
       visit new_source_path
       expect(page).to have_content("You need to sign in")
     end
 
-    it "should disallow creating Entries if not logged in", :skip_before do
+    it "should disallow creating Entries if not logged in" do
       visit new_entry_path :source_id => @source.id
       expect(page).to have_content("You need to sign in")
     end

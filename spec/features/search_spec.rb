@@ -41,13 +41,33 @@ describe "Blacklight Search", :js => true do
     end
   end
 
-  it "should display Author facet" do
+  it "should display results for an Author facet" do
     visit root_path
     click_button('search')
     expect(page).to have_selector("#documents")
 
     first(:css, "#facet-author .facet_select").click
     expect(page).to have_selector("#documents")
+  end
+
+  it "should display list of Author facet values" do
+    visit root_path
+    click_button('search')
+    expect(page).to have_selector("#documents")
+
+    first(:css, ".more_facets_link a").click
+
+    expect(page).to have_content "Browsing facet: Author"
+
+    first(:css, ".az").click
+
+    expect(page).to have_content "Browsing facet: Author"
+    expect(page).to have_content "Prefix"
+
+    click_link("D")
+
+    expect(page).to have_content "Browsing facet: Author"
+    expect(page).to have_content "Dokeianos"
   end
 
   it "should search on Provenance" do
