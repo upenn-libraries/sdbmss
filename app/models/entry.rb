@@ -471,7 +471,7 @@ class Entry < ActiveRecord::Base
     #### Details
 
     define_field(:string, :title,:stored => true, :multiple => true) do
-      entry_titles.map &:title
+      entry_titles.map(&:title)
     end
     define_field(:string, :title_flat,:stored => true) do
       entry_titles.map(&:title).join("; ")
@@ -481,7 +481,7 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:string, :author, :stored => true, :multiple => true) do
-      authors.map &:name
+      authors.map(&:name)
     end
     define_field(:text, :author_search, :stored => true) do
       entry_authors.map(&:display_value)
@@ -515,7 +515,7 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:string, :artist, :stored => true, :multiple => true) do
-      artists.map &:name
+      artists.map(&:name)
     end
     define_field(:string, :artist_flat, :stored => true) do
       artists.map(&:name).join("; ")
@@ -525,7 +525,7 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:string, :scribe, :stored => true, :multiple => true) do
-      scribes.map &:name
+      scribes.map(&:name)
     end
     define_field(:string, :scribe_flat, :stored => true) do
       scribes.map(&:name).join("; ")
@@ -535,43 +535,43 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:string, :language, :stored => true, :multiple => true) do
-      languages.map &:name
+      languages.map(&:name)
     end
     define_field(:string, :language_flat, :stored => true) do
       languages.map(&:name).join("; ")
     end
     define_field(:text, :language_search, :stored => true) do
-      languages.map &:name
+      languages.map(&:name)
     end
 
     define_field(:string, :material, :stored => true, :multiple => true) do
-      entry_materials.map &:material
+      entry_materials.map(&:material)
     end
     define_field(:string, :material_flat, :stored => true, :multiple => true) do
       entry_materials.map(&:material).join("; ")
     end
     define_field(:text, :material_search, :stored => true) do
-      entry_materials.map &:material
+      entry_materials.map(&:material)
     end
 
     define_field(:string, :place, :stored => true, :multiple => true) do
-      places.map &:name
+      places.map(&:name)
     end
     define_field(:string, :place_flat, :stored => true) do
       places.map(&:name).join("; ")
     end
     define_field(:text, :place_search, :stored => true) do
-      places.map &:name
+      places.map(&:name)
     end
 
     define_field(:string, :use, :stored => true, :multiple => true) do
-      entry_uses.map &:use
+      entry_uses.map(&:use)
     end
     define_field(:string, :use_flat, :stored => true) do
       entry_uses.map(&:use).join("; ")
     end
     define_field(:text, :use_search, :stored => true) do
-      entry_uses.map &:use
+      entry_uses.map(&:use)
     end
 
     define_field(:integer, :folios, :stored => true) { folios }
