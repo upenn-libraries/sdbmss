@@ -138,7 +138,7 @@ module SDBMSS
       count = entries.count()
       #puts "Calculating record's similarity to other #{count} records"
 
-      if count < 500
+      if count < 250
 
         entries.each do |entry|
           if (entry.id != @entry.id) && (! @already_matched.member?(entry.id))
