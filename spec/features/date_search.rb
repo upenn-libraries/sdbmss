@@ -3,7 +3,9 @@ require 'json'
 require "rails_helper"
 require 'net/http'
 
-# Test manuscript date search in Solr, mostly to verify end-exclusive date ranges work as expected
+# Test manuscript date search in Solr, mostly to verify end-exclusive
+# date ranges work as expected. This is separate from other search
+# tests because we use a different set of test data.
 describe "Date Search", :js => true do
 
   before :all do
@@ -16,9 +18,8 @@ describe "Date Search", :js => true do
     source = Source.create!(
       source_type: SourceType.auction_catalog,
       date: "20150101",
-      title: "Catalogue 213: Fine and Important Manuscripts and Printed Books",
+      title: "Test catalog",
       whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
-      link: "https://www.jonathanahill.com/lists/HomePageFiles/Cat%20213%20unillustrated%20proofs.pdf",
       medium: Source::TYPE_MEDIUM_INTERNET,
       created_by: user,
     )
@@ -57,215 +58,73 @@ describe "Date Search", :js => true do
 
   end
 
+  def date_search start_date, end_date, num_expected_results
+    visit advanced_search_path
+    if start_date.present?
+      fill_in 'numeric_start_0', with: start_date
+    end
+    if end_date.present?
+      fill_in 'numeric_end_0', with: end_date
+    end
+    select 'Manuscript Date', from: 'numeric_field_0'
+    click_button('advanced-search-submit')
+
+    expect(all(".document").length).to eq(num_expected_results)
+  end
+
   it "should handle entry_date with range 1900-1950" do
 
     # search for single dates outside range
 
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1899"
-    fill_in 'numeric_end_0', with: "1899"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(0)
-
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1951"
-    fill_in 'numeric_end_0', with: "1951"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(0)
+    date_search "1899", "1899", 0
+    date_search "1951", "1951", 0
 
     # search for single dates that fall inside range
 
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1900"
-    fill_in 'numeric_end_0', with: "1900"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(1)
-
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1950"
-    fill_in 'numeric_end_0', with: "1950"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(1)
+    date_search "1900", "1900", 1
+    date_search "1950", "1950", 1
 
     # search for ranges that intersect
 
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1875"
-    fill_in 'numeric_end_0', with: "1900"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(1)
-
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1910"
-    fill_in 'numeric_end_0', with: "1915"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(1)
-
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1950"
-    fill_in 'numeric_end_0', with: "1960"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(1)
+    date_search "1875", "1900", 1
+    date_search "1910", "1915", 1
+    date_search "1950", "1960", 1
 
     # search for ranges that DON'T intersect
 
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1951"
-    fill_in 'numeric_end_0', with: "1960"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(0)
-
-    visit advanced_search_path
+    date_search "1800", "1899", 0
+    date_search "1951", "1960", 0
 
     # searches with infinity on one side
 
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1890"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(1)
-
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1900"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(1)
-
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1950"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(1)
-
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1951"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(0)
-
-    visit advanced_search_path
-    fill_in 'numeric_end_0', with: "1899"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(1)
-
-    visit advanced_search_path
-    fill_in 'numeric_end_0', with: "1900"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(2)
-
-    visit advanced_search_path
-    fill_in 'numeric_end_0', with: "1950"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(2)
-
-    visit advanced_search_path
-    fill_in 'numeric_end_0', with: "1960"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(2)
+    date_search "1890", nil, 1
+    date_search "1900", nil, 1
+    date_search "1950", nil, 1
+    date_search "1951", nil, 0
+    date_search nil, "1899", 1
+    date_search nil, "1900", 2
+    date_search nil, "1950", 2
+    date_search nil, "1960", 2
   end
 
   it "should handle entry_date with exact date 1502" do
 
-    # search for non-matching exact dates
+    # search for exact match and exact non-match
 
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1501"
-    fill_in 'numeric_end_0', with: "1501"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(0)
-
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1503"
-    fill_in 'numeric_end_0', with: "1503"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(0)
-
-    # search for exact match
-
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1502"
-    fill_in 'numeric_end_0', with: "1502"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(1)
+    date_search "1501", "1501", 0
+    date_search "1502", "1502", 1
+    date_search "1503", "1503", 0
 
     # search for range that intersects
 
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1475"
-    fill_in 'numeric_end_0', with: "1502"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(1)
-
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1475"
-    fill_in 'numeric_end_0', with: "1550"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(1)
-
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1502"
-    fill_in 'numeric_end_0', with: "1510"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(1)
+    date_search "1475", "1502", 1
+    date_search "1475", "1550", 1
+    date_search "1502", "1510", 1
 
     # search for range that doesn't intersect
 
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1400"
-    fill_in 'numeric_end_0', with: "1501"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(0)
-
-    visit advanced_search_path
-    fill_in 'numeric_start_0', with: "1503"
-    fill_in 'numeric_end_0', with: "1510"
-    select 'Manuscript Date', from: 'numeric_field_0'
-    click_button('advanced-search-submit')
-
-    expect(all(".document").length).to eq(0)
-
+    date_search "1400", "1501", 0
+    date_search "1503", "1510", 0
   end
 
 end
