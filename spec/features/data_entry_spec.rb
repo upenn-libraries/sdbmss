@@ -688,6 +688,28 @@ describe "Data entry", :js => true do
       expect(text).to match(/Another change was made to the record while you were working/)
     end
 
+    it "should prevent another contributor from editing an entry" do
+      user = User.create!(
+        email: 'another_contributor@test.com',
+        username: 'another_contributor',
+        password: 'somethingunguessable',
+        role: 'contributor',
+      )
+
+      source = Source.create!(
+        title: "some unpublished source",
+        source_type: SourceType.unpublished,
+      )
+      entry = Entry.create!(
+        transaction_type: Entry::TYPE_TRANSACTION_GIFT,
+        source: source,
+        created_by_id: user.id,
+      )
+
+      visit edit_entry_path :id => entry.id
+      expect(page.status_code).to be(403)
+    end
+
     it "should leave a comment successfully" do
       entry = Entry.first
       visit entry_path(entry)
