@@ -491,6 +491,17 @@ class Entry < ActiveRecord::Base
       entry_dates.select {
         |ed|
         ed.date_normalized_start.present? || ed.date_normalized_end.present?
+      }.select {
+        |ed|
+        retval = true
+        if ed.date_normalized_start.to_i > SDBMSS::Blacklight::DATE_RANGE_YEAR_MAX ||
+           ed.date_normalized_start.to_i < SDBMSS::Blacklight::DATE_RANGE_YEAR_MIN ||
+           ed.date_normalized_end.to_i > SDBMSS::Blacklight::DATE_RANGE_YEAR_MAX ||
+           ed.date_normalized_end.to_i < SDBMSS::Blacklight::DATE_RANGE_YEAR_MIN
+          Rails.logger.warn "normalized dates for entry #{ed.entry_id} are out of bounds: #{ed.date_normalized_start}, #{ed.date_normalized_end}"
+          retval = false
+        end
+        retval
       }.map {
         |entry_date|
         (entry_date.date_normalized_start || SDBMSS::Blacklight::DATE_RANGE_YEAR_MIN.to_s) + " " +
