@@ -11,6 +11,9 @@ require 'chronic'
 # http://qedcode.com/content/exclusive-end-dates
 #
 class EntryDate < ActiveRecord::Base
+
+  include CertaintyFlags
+
   belongs_to :entry
 
   validates_presence_of :entry
@@ -81,11 +84,17 @@ class EntryDate < ActiveRecord::Base
   end
 
   def display_value
-    val = observed_date
+    val = observed_date || ""
     if date_normalized_start != observed_date
-      val += " (#{date_normalized_start} to #{date_normalized_end})"
+      if date_normalized_end.blank?
+        val += " (after #{date_normalized_start})"
+      elsif date_normalized_start.blank?
+        val += " (before #{date_normalized_end})"
+      else
+        val += " (#{date_normalized_start} to #{date_normalized_end})"
+      end
     end
-    val
+    val + certainty_flags
   end
 
 end

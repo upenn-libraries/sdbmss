@@ -45,7 +45,7 @@ module SDBMSS::Legacy
     # Converts the legacy circa/year combination to a human-readable
     # string that it is PROBABLY what that combo means, then uses that
     # str to return a 2-item Array of start and end normalized dates.
-    def normalize_circa_and_date(circa, date)
+    def normalize_circa_and_date(manuscript_id, circa, date)
       circa_original = circa
 
       # ignore crazy qualifiers like ? and +, the meanings of which
@@ -67,14 +67,14 @@ module SDBMSS::Legacy
           # check that circa/date combos conform to entry standards
           if [ "CCENT" ].member?(circa)
             if !['00', '50'].member?(decade)
-              puts "Weird combo: #{circa_original} #{date}"
+              create_issue('MANUSCRIPT', manuscript_id, "circa_date_combo", "Weird combo: #{circa_original} #{date}")
             end
           end
           if (circa == "C1H" && !['25', '50'].member?(decade)) ||
              (circa == "C2H" && !['50', '75'].member?(decade)) ||
              (circa == "C1Q" && !['25', '50'].member?(decade)) ||
              (circa == "C2Q" && !['50'].member?(decade))
-             puts "Weird combo: #{circa_original} #{date}"
+              create_issue('MANUSCRIPT', manuscript_id, "circa_date_combo", "Weird combo: #{circa_original} #{date}")
           end
 
           # if we get a weird combo like C2Q 1465, which does happen a
@@ -867,7 +867,7 @@ module SDBMSS::Legacy
               # print "WARNING: record %s: invalid circa value: %s" % (row['MANUSCRIPT_ID'], circa)
             end
 
-            date_normalized_start, date_normalized_end = normalize_circa_and_date(circa, date)
+            date_normalized_start, date_normalized_end = normalize_circa_and_date(row['MANUSCRIPT_ID'], circa, date)
 
             # TODO: circas are not normalized in DB; their absence
             # in options in UI will cause data loss!

@@ -284,7 +284,10 @@ label.col-sm-2-and-half {
             <span sdbm-tooltip="observed_date">Date As Recorded</span>
       </label>
       <div class="col-sm-4-and-half">
-        <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}">
+          <div class="input-group">
+              <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}">
+              <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
+          </div>
       </div>
 
       <label class="col-sm-1-and-half control-label">

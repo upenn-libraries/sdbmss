@@ -43,7 +43,7 @@ end
 
 if @entry.entry_dates.present?
   json.entry_dates @entry.entry_dates do |entry_date|
-    json.(entry_date, :id, :observed_date, :date_normalized_start, :date_normalized_end, :date, :circa)
+    json.(entry_date, :id, :observed_date, :date_normalized_start, :date_normalized_end, :date, :circa, :uncertain_in_source, :supplied_by_data_entry)
   end
 end
 
