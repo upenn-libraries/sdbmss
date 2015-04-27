@@ -130,7 +130,7 @@ describe "Blacklight Search", :js => true do
     )
     entry.save!
 
-    sleep(1)
+    sleep(0.5)
 
     visit entry_path(entry)
     expect(page.status_code).to eq(404)
@@ -170,12 +170,16 @@ describe "Blacklight Search", :js => true do
 
     entry_one = get_hill_entry_by_cat_num 1
     find_by_id("toggle_bookmark_" + entry_one.id.to_s).click
-    sleep(1)
+
+    # page does ajax call; wait for toggle to be checked
+    expect(page).to have_selector("#toggle_bookmark_" + entry_one.id.to_s + ":checked")
 
     visit bookmarks_path
     expect(page).to have_link(entry_one.public_id)
     find_by_id("toggle_bookmark_" + entry_one.id.to_s).click
-    sleep(1)
+
+    # page does ajax call; wait for toggle to be checked
+    expect(page).not_to have_selector("#toggle_bookmark_" + entry_one.id.to_s + ":checked")
 
     visit bookmarks_path
     expect(page).not_to have_link(entry_one.public_id)
