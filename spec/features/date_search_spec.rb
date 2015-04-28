@@ -82,6 +82,7 @@ describe "Date Search", :js => true do
     # search for single dates that fall inside range
 
     date_search "1900", "1900", 1
+    date_search "1921", "1921", 1
     date_search "1950", "1950", 1
 
     # search for ranges that intersect

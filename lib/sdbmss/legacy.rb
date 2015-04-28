@@ -1,13 +1,9 @@
-#
-# XXX: tweak models/migrations
-#
-# figure out indexes, constraints, FKs, default values (esp for booleans); and how to add them
 
 require 'date'
 require 'set'
 
-# Code pertaining to the legacy Oracle database, that's been copied
-# into MySQL for ease of handling.
+# Code pertaining to migration of legacy data, which we fetch from a
+# MySQL database that's a copy of the Oracle production database.
 module SDBMSS::Legacy
 
   # module-level methods
@@ -42,72 +38,105 @@ module SDBMSS::Legacy
 
     REGEX_COMMON_TITLE = /\[(.+)\]/
 
-    # Converts the legacy circa/year combination to a human-readable
-    # string that it is PROBABLY what that combo means, then uses that
-    # str to return a 2-item Array of start and end normalized dates.
+    # Converts the legacy circa/year combination to an Array of
+    # [normalized start date, normalized end date, uncertain_in_source
+    # flag, supplied_by_data_entry flag]
     def normalize_circa_and_date(manuscript_id, circa, date)
       circa_original = circa
 
-      # ignore crazy qualifiers like ? and +, the meanings of which
-      # elude me
-      circa = circa.gsub(/[\?\+]/, '').upcase.strip
-      circa = 'CEARLY' if circa == 'C EARLY'
-      circa = 'CMID' if circa == 'C MID'
-      circa = 'CLATE' if circa == 'C LATE'
+      circa, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(circa)
+
+      start_date, end_date = date, date
+      before, after = false, false
 
       if circa.present?
-        if !date.present?
-          return [nil, nil]
-        end
-
-        if VALID_CIRCA_TYPES.member?(circa)
-          century = (date[0..-3].to_i + 1).to_s
-          decade = date[-2,2]
-
-          # check that circa/date combos conform to entry standards
-          if [ "CCENT" ].member?(circa)
-            if !['00', '50'].member?(decade)
-              create_issue('MANUSCRIPT', manuscript_id, "circa_date_combo", "Weird combo: #{circa_original} #{date}")
-            end
+        # see if we can match to a valid circa type if we ignore spaces
+        # and case
+        circa_normalized = circa.upcase.gsub(/ /, '')
+        VALID_CIRCA_TYPES.each do |valid_type|
+          if circa_normalized == valid_type
+            circa = valid_type
           end
-          if (circa == "C1H" && !['25', '50'].member?(decade)) ||
-             (circa == "C2H" && !['50', '75'].member?(decade)) ||
-             (circa == "C1Q" && !['25', '50'].member?(decade)) ||
-             (circa == "C2Q" && !['50'].member?(decade))
-              create_issue('MANUSCRIPT', manuscript_id, "circa_date_combo", "Weird combo: #{circa_original} #{date}")
-          end
-
-          # if we get a weird combo like C2Q 1465, which does happen a
-          # lot, the circa takes precedence in determining the
-          # normalized date range. TODO: is that right??
-
-          case circa
-          when 'CCENT'
-            return EntryDate.normalize_date("#{century} century")
-          when 'C1H'
-            return EntryDate.normalize_date("first half of #{century} century")
-          when 'C2H'
-            return EntryDate.normalize_date("second half of #{century} century")
-          when 'C1Q'
-            return EntryDate.normalize_date("first quarter of #{century} century")
-          when 'C2Q'
-            return EntryDate.normalize_date("second quarter of #{century} century")
-          when 'C3Q'
-            return EntryDate.normalize_date("third quarter of #{century} century")
-          when 'C4Q'
-            return EntryDate.normalize_date("fourth quarter of #{century} century")
-          when 'CEARLY'
-            return EntryDate.normalize_date("early #{century} century")
-          when 'CMID'
-            return EntryDate.normalize_date("mid #{century} century")
-          when 'CLATE'
-            return EntryDate.normalize_date("late #{century} century")
-          end
-        else
-          puts "bad circa: #{circa_original} #{date}"
         end
       end
-      return [date, date]
+
+      if circa == '+'
+        return EntryDate.normalize_date("after #{date}")
+      elsif circa == '-'
+        return EntryDate.normalize_date("before #{date}")
+      elsif circa == '+/-'
+        return EntryDate.normalize_date("circa #{date}")
+      elsif circa.present?
+        if date.present?
+          before = !! /-/.match(circa)
+          after = !! /\+/.match(circa)
+          circa_without_modifier = circa.upcase.gsub(/[\-\+]/, '')
+
+          if VALID_CIRCA_TYPES.member?(circa_without_modifier)
+            century = (date[0..-3].to_i + 1).to_s
+            decade = date[-2,2]
+
+            # check that circa/date combos conform to entry standards
+            if [ "CCENT" ].member?(circa)
+              if !['00', '50'].member?(decade)
+                create_issue('MANUSCRIPT', manuscript_id, "circa_date_combo", "Weird combo: #{circa_original} #{date}")
+              end
+            end
+            if (circa == "C1H" && !['25', '50'].member?(decade)) ||
+               (circa == "C2H" && !['50', '75'].member?(decade)) ||
+               (circa == "C1Q" && !['25', '50'].member?(decade)) ||
+               (circa == "C2Q" && !['50'].member?(decade))
+              create_issue('MANUSCRIPT', manuscript_id, "circa_date_combo", "Weird combo: #{circa_original} #{date}")
+            end
+
+            # if we get a weird combo like C2Q 1465, which does happen a
+            # lot, the circa takes precedence in determining the
+            # normalized date range. TODO: is that right?? probably not.
+
+            case circa_without_modifier
+            when 'C'
+              start_date, end_date = EntryDate.normalize_date("circa #{date}")
+            when 'CCENT'
+              start_date, end_date = EntryDate.normalize_date("#{century} century")
+            when 'C1H'
+              start_date, end_date = EntryDate.normalize_date("first half of #{century} century")
+            when 'C2H'
+              start_date, end_date = EntryDate.normalize_date("second half of #{century} century")
+            when 'C1Q'
+              start_date, end_date = EntryDate.normalize_date("first quarter of #{century} century")
+            when 'C2Q'
+              start_date, end_date = EntryDate.normalize_date("second quarter of #{century} century")
+            when 'C3Q'
+              start_date, end_date = EntryDate.normalize_date("third quarter of #{century} century")
+            when 'C4Q'
+              start_date, end_date = EntryDate.normalize_date("fourth quarter of #{century} century")
+            when 'CEARLY'
+              start_date, end_date = EntryDate.normalize_date("early #{century} century")
+            when 'CMID'
+              start_date, end_date = EntryDate.normalize_date("mid #{century} century")
+            when 'CLATE'
+              start_date, end_date = EntryDate.normalize_date("late #{century} century")
+            end
+
+            if before
+              start_date = nil
+            elsif after
+              end_date = nil
+            end
+          else
+            create_issue('MANUSCRIPT', manuscript_id, "bad_circa", "can't handle: #{circa_original} #{date}, treating this as date without a circa")
+            start_date = date
+            end_date = (start_date.to_i + 1).to_s
+          end
+        end
+      else
+        # no circa
+        if date.present?
+          start_date = date
+          end_date = (start_date.to_i + 1).to_s
+        end
+      end
+      return [start_date, end_date, uncertain_in_source, supplied_by_data_entry]
     end
 
     # Returns db connection to the legacy database in MySQL.
@@ -867,10 +896,8 @@ module SDBMSS::Legacy
               # print "WARNING: record %s: invalid circa value: %s" % (row['MANUSCRIPT_ID'], circa)
             end
 
-            date_normalized_start, date_normalized_end = normalize_circa_and_date(row['MANUSCRIPT_ID'], circa, date)
+            date_normalized_start, date_normalized_end, uncertain_in_source, supplied_by_data_entry = normalize_circa_and_date(row['MANUSCRIPT_ID'], circa, date)
 
-            # TODO: circas are not normalized in DB; their absence
-            # in options in UI will cause data loss!
             ed = EntryDate.create!(
               entry: entry,
               # TODO: these 2 fields will go away
@@ -879,6 +906,8 @@ module SDBMSS::Legacy
               observed_date: (circa.present? ? circa + " " : "") + date,
               date_normalized_start: date_normalized_start,
               date_normalized_end: date_normalized_end,
+              uncertain_in_source: uncertain_in_source,
+              supplied_by_data_entry: supplied_by_data_entry,
             )
           end
         end

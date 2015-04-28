@@ -60,18 +60,24 @@ describe "SDBMSS::Legacy" do
    describe "#normalize_circa_and_date" do
 
      it "parses normalizes dates properly" do
-       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "CCENT", "1550")).to eq(["1500", "1600"])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, nil, "1272")).to eq(["1272", "1273", false, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "CCENT", "1550")).to eq(["1500", "1600", false, false])
        # TODO: is this really right?
-       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "CCENT", "1200")).to eq(["1200", "1300"])
-       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "C1H", "1250")).to eq(["1200", "1251"])
-       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "C2H", "1250")).to eq(["1251", "1300"])
-       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "C1Q", "1250")).to eq(["1200", "1226"])
-       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "C2Q", "1250")).to eq(["1226", "1251"])
-       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "C3Q", "1250")).to eq(["1251", "1276"])
-       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "C4Q", "1250")).to eq(["1276", "1300"])
-       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "CEARLY", "350")).to eq(["300", "326"])
-       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "CMID", "350")).to eq(["326", "376"])
-       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "CLATE", "350")).to eq(["376", "400"])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "CCENT", "1200")).to eq(["1200", "1300", false, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "ccent-?", "1200")).to eq([nil, "1300", true, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "C1H", "1250")).to eq(["1200", "1251", false, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "c1h+", "1250")).to eq(["1200", nil, false, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "C2H", "1250")).to eq(["1251", "1300", false, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "c2h+?", "1250")).to eq(["1251", nil, true, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "C1Q", "1250")).to eq(["1200", "1226", false, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "C2Q", "1250")).to eq(["1226", "1251", false, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "C3Q", "1250")).to eq(["1251", "1276", false, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "C4Q", "1250")).to eq(["1276", "1300", false, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "CEARLY?", "350")).to eq(["300", "326", true, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "CEARLY", "350")).to eq(["300", "326", false, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "CMID", "350")).to eq(["326", "376", false, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "CLATE", "350")).to eq(["376", "400", false, false])
+       expect(SDBMSS::Legacy.normalize_circa_and_date(nil, "unrecognized_code", "350")).to eq(["350", "351", false, false])
      end
 
    end
