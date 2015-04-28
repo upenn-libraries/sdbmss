@@ -40,9 +40,26 @@ module SDBMSS::Legacy
 
     # Converts the legacy circa/year combination to an Array of
     # [normalized start date, normalized end date, uncertain_in_source
-    # flag, supplied_by_data_entry flag]
+    # flag, supplied_by_data_entry flag].
+    #
+    # Important note: the logic here takes into account the data entry
+    # standards used in the SDBM: for example, when paired with a
+    # circa code, date values ending in 50 are used to indicate a
+    # century ("1250" = 13th century). It also accounts for other
+    # idiosyncracies that were unearthed in discussions with Lynn and
+    # others. So stuff that might seem arbitrary probably isn't.
+    #
+    # If a circa has an exact date that falls within its range, we
+    # normalize to the full range.
+    #
+    # If the date doesn't end with a 50 to indicate the century, and
+    # is outside the range, then use the exact date for normalization.
     def normalize_circa_and_date(manuscript_id, circa, date)
       circa_original = circa
+
+      if circa == 'c1h2'
+        circa = 'C1H'
+      end
 
       circa, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(circa)
 
@@ -60,11 +77,11 @@ module SDBMSS::Legacy
         end
       end
 
-      if circa == '+'
+      if circa == '+' || circa == 'after'
         return EntryDate.normalize_date("after #{date}")
-      elsif circa == '-'
+      elsif circa == '-' || circa == 'before'
         return EntryDate.normalize_date("before #{date}")
-      elsif circa == '+/-'
+      elsif circa == '+/-' || circa == 'c+/-'
         return EntryDate.normalize_date("circa #{date}")
       elsif circa.present?
         if date.present?
@@ -76,40 +93,52 @@ module SDBMSS::Legacy
             century = (date[0..-3].to_i + 1).to_s
             decade = date[-2,2]
 
-            # check that circa/date combos conform to entry standards
-            if [ "CCENT" ].member?(circa)
-              if !['00', '50'].member?(decade)
-                create_issue('MANUSCRIPT', manuscript_id, "circa_date_combo", "Weird combo: #{circa_original} #{date}")
-              end
-            end
-            if (circa == "C1H" && !['25', '50'].member?(decade)) ||
-               (circa == "C2H" && !['50', '75'].member?(decade)) ||
-               (circa == "C1Q" && !['25', '50'].member?(decade)) ||
-               (circa == "C2Q" && !['50'].member?(decade))
-              create_issue('MANUSCRIPT', manuscript_id, "circa_date_combo", "Weird combo: #{circa_original} #{date}")
-            end
-
-            # if we get a weird combo like C2Q 1465, which does happen a
-            # lot, the circa takes precedence in determining the
-            # normalized date range. TODO: is that right?? probably not.
+            date_is_out_of_circa_period = false
 
             case circa_without_modifier
             when 'C'
               start_date, end_date = EntryDate.normalize_date("circa #{date}")
             when 'CCENT'
+              # note: we treat 'CCENT 1200' as meaning the 13th
+              # century though it's ambiguous (could be used to mean
+              # 12th century)
               start_date, end_date = EntryDate.normalize_date("#{century} century")
             when 'C1H'
-              start_date, end_date = EntryDate.normalize_date("first half of #{century} century")
+              if decade.to_i <= 50
+                start_date, end_date = EntryDate.normalize_date("first half of #{century} century")
+              else
+                date_is_out_of_circa_period = true
+              end
             when 'C2H'
-              start_date, end_date = EntryDate.normalize_date("second half of #{century} century")
+              if decade.to_i >= 50
+                start_date, end_date = EntryDate.normalize_date("second half of #{century} century")
+              else
+                date_is_out_of_circa_period = true
+              end
             when 'C1Q'
-              start_date, end_date = EntryDate.normalize_date("first quarter of #{century} century")
+              if (decade.to_i >= 0 && decade.to_i <= 25) || decade.to_i == 50
+                start_date, end_date = EntryDate.normalize_date("first quarter of #{century} century")
+              else
+                date_is_out_of_circa_period = true
+              end
             when 'C2Q'
-              start_date, end_date = EntryDate.normalize_date("second quarter of #{century} century")
+              if (decade.to_i >= 25 && decade.to_i <= 50) || decade.to_i == 50
+                start_date, end_date = EntryDate.normalize_date("second quarter of #{century} century")
+              else
+                date_is_out_of_circa_period = true
+              end
             when 'C3Q'
-              start_date, end_date = EntryDate.normalize_date("third quarter of #{century} century")
+              if (decade.to_i >= 50 && decade.to_i <= 75) || decade.to_i == 50
+                start_date, end_date = EntryDate.normalize_date("third quarter of #{century} century")
+              else
+                date_is_out_of_circa_period = true
+              end
             when 'C4Q'
-              start_date, end_date = EntryDate.normalize_date("fourth quarter of #{century} century")
+              if (decade.to_i >= 75 && decade.to_i <= 99) || decade.to_i == 50
+                start_date, end_date = EntryDate.normalize_date("fourth quarter of #{century} century")
+              else
+                date_is_out_of_circa_period = true
+              end
             when 'CEARLY'
               start_date, end_date = EntryDate.normalize_date("early #{century} century")
             when 'CMID'
@@ -118,10 +147,22 @@ module SDBMSS::Legacy
               start_date, end_date = EntryDate.normalize_date("late #{century} century")
             end
 
+            # if date value is weirdly outside the circa period,
+            # normalize it as a single date.
+            if date_is_out_of_circa_period
+              start_date = date
+              end_date = (start_date.to_i + 1).to_s
+            end
+
             if before
-              start_date = nil
+              start_date = (end_date.to_i - 100).to_s
             elsif after
-              end_date = nil
+              if circa_without_modifier != 'CCENT'
+                end_date = (start_date.to_i + 100).to_s
+              else
+                # we want "ccent+ 1250" to normalize to "13th to 14th century"
+                end_date = EntryDate.normalize_date("#{century.to_i + 1} century")[1]
+              end
             end
           else
             create_issue('MANUSCRIPT', manuscript_id, "bad_circa", "can't handle: #{circa_original} #{date}, treating this as date without a circa")
@@ -890,11 +931,6 @@ module SDBMSS::Legacy
 
           # Lots of records have date == '0'. This might actually be meaningful as a year.
           if (date && date.length > 0) || (circa && circa.length > 0)
-
-            if circa && !VALID_CIRCA_TYPES.member?(circa)
-              # TODO: there's too many of these to print out; figure out what they mean
-              # print "WARNING: record %s: invalid circa value: %s" % (row['MANUSCRIPT_ID'], circa)
-            end
 
             date_normalized_start, date_normalized_end, uncertain_in_source, supplied_by_data_entry = normalize_circa_and_date(row['MANUSCRIPT_ID'], circa, date)
 

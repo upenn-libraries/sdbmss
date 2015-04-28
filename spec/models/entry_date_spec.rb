@@ -8,11 +8,11 @@ describe Entry do
     # Note that date ranges are end-exclusive
 
     it "normalizes a before date" do
-      expect(EntryDate.normalize_date("before 1132")).to eq([nil, "1133"])
+      expect(EntryDate.normalize_date("before 1132")).to eq(["1033", "1133"])
     end
 
     it "normalizes an after date" do
-      expect(EntryDate.normalize_date("after 1132")).to eq(["1132", nil])
+      expect(EntryDate.normalize_date("after 1132")).to eq(["1132", "1232"])
     end
 
     it "normalizes a century date" do

@@ -139,14 +139,16 @@ module SDBMSS
         end
 
         # handle before and after by stripping out that qualifier and
-        # running through this fn again
+        # running through this fn again. we bound start and end dates
+        # with +/- 100 years to prevent odd search results
+        # (ie. searching for 1500-1600 probably shouldn't pick up "after 1000")
         if /before/.match(date_str)
           range = normalize_approximate_date_str_to_year_range(date_str.sub('before', '').strip)
-          return [nil, range[1]]
+          return [(range[1].to_i - 100).to_s, range[1]]
         end
         if /after/.match(date_str)
           range = normalize_approximate_date_str_to_year_range(date_str.sub('after', '').strip)
-          return [range[0], nil]
+          return [range[0], (range[0].to_i + 100).to_s]
         end
 
         circa = !! /circa/.match(date_str)
