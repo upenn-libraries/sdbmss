@@ -1,5 +1,5 @@
 <%# renders an EventAgent object in the form "Name (as OtherName)" or simply "OtherName" if no Agent record is present. %>
 <% if event_agent.agent.present? %>
-  <a href="<%= url_for event_agent.agent %>"><%= event_agent.agent.name %></a> <% if event_agent.observed_name %> (recorded as <%= event_agent.observed_name %>)<% end %>
+  <a href="<%= url_for event_agent.agent %>"><%= event_agent.agent.name %></a> <% if event_agent.observed_name != event_agent.agent.name %> (recorded as <%= event_agent.observed_name %>)<% end %>
 <%- else -%>
 <%= event_agent.observed_name %><%- end -%><%= event_agent.certainty_flags %>
