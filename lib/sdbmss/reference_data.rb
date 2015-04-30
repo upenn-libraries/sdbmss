@@ -1256,27 +1256,6 @@ module SDBMSS::ReferenceData
 
   end
 
-  # Example of an online auction catalog
-  class Ader < RefDataBase
-    def initialize
-      create_source
-    end
-
-    def create_source
-      @source = Source.create!(
-        source_type: SourceType.auction_catalog,
-        date: "2015-03-19",
-        title: "Livres ancienes et modernes",
-        whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
-        medium: Source::TYPE_MEDIUM_INTERNET,
-        date_accessed: "2015-03-10",
-        link: "http://www.ader-paris.fr/flash/index.jsp?id=21247&idCp=97&lng=fr",
-        created_by: lransom,
-      )
-    end
-
-  end
-
   # Example of an email
   class Email < RefDataBase
     def initialize
@@ -1521,7 +1500,7 @@ module SDBMSS::ReferenceData
       @source = Source.create!(
         source_type: SourceType.other_published,
         date: "2014",
-        title: '"A Catalogue of Medieval and Renaissance Manuscripts Located at Villanova University," Manuscripta, vol. 58:2',
+        title: '"A Catalogue of Medieval and Renaissance Manuscripts Located at Villanova University," Manuscripta, vol. 57:2',
         author: "Kenneth B. Steinhauser",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
         medium: Source::TYPE_MEDIUM_LIBRARY,
