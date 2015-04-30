@@ -129,14 +129,6 @@ namespace :sdbmss do
 
   end
 
-  desc "Report of records with bad manuscript dates"
-  task :bad_manuscript_dates => :environment do |t, args|
-    circa_list = (['"+"', '"?"'] + EntryDate::CIRCA_TYPES.map(&:first).map { |c| "\"" + c + "\"" }).join(",")
-    EntryDate.where("length(circa) > 0 and circa not in ( #{circa_list} )").each do |entry_date|
-      puts "#{entry_date.entry_id},#{entry_date.circa},#{entry_date.date},http://sceti.library.upenn.edu/sdm_admin/update.cfm?id=#{entry_date.entry_id}&fS=1"
-    end
-  end
-
   # requested by Toby Burrows
   desc "Export legacy catalog table as CSV to stdout"
   task :export_catalogs => :environment do |t, args|

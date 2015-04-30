@@ -321,7 +321,7 @@
             },
             {
                 field: 'entry_dates',
-                properties: ['observed_date', 'date_normalized_start', 'date_normalized_end', 'date', 'circa']
+                properties: ['observed_date', 'date_normalized_start', 'date_normalized_end']
             },
             {
                 field: 'entry_artists',
@@ -374,7 +374,6 @@
         $scope.optionsAuthorRole = undefined;
         $scope.optionsSold = undefined;
         $scope.optionsCurrency = undefined;
-        $scope.optionsCirca = undefined;
         $scope.optionsMaterial = undefined;
         $scope.optionsAltSize = undefined;
 
@@ -468,13 +467,6 @@
                 }
             }
 
-            entry.entry_dates.forEach(function (entry_date) {
-                if(entry_date.circa) {
-                    if(! sdbmutil.inOptionsArray(entry_date.circa, $scope.optionsCirca)) {
-                        $scope.badData.push("Bad circa value: '" + entry_date.circa + "'");
-                    }
-                }
-            });
             entry.entry_materials.forEach(function (entry_material) {
                 if(entry_material.material) {
                     if(! sdbmutil.inOptionsObjectsArray(entry_material.material, $scope.optionsMaterial)) {
@@ -734,7 +726,6 @@
                 $scope.optionsAuthorRole = result.data.author_role;
                 $scope.optionsSold = result.data.sold;
                 $scope.optionsCurrency = result.data.currency;
-                $scope.optionsCirca = result.data.circa;
                 $scope.optionsAltSize = result.data.alt_size;
 
                 // material needs to be an array of objects that autocomplete can use

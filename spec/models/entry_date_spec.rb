@@ -19,6 +19,14 @@ describe Entry do
       expect(EntryDate.normalize_date("11th century")).to eq(["1000", "1100"])
     end
 
+    it "normalizes a cent. date" do
+      expect(EntryDate.normalize_date("11th cent.")).to eq(["1000", "1100"])
+    end
+
+    it "normalizes a c. date" do
+      expect(EntryDate.normalize_date("11th c.")).to eq(["1000", "1100"])
+    end
+
     it "normalizes an early century date" do
       expect(EntryDate.normalize_date("early 11th century")).to eq(["1000", "1026"])
     end
@@ -39,6 +47,10 @@ describe Entry do
       expect(EntryDate.normalize_date("first half of the 14th century")).to eq(["1300", "1351"])
     end
 
+    it "normalizes first third of century date" do
+      expect(EntryDate.normalize_date("first third of the 14th century")).to eq(["1300", "1334"])
+    end
+
     it "normalizes an approximate decade date" do
       expect(EntryDate.normalize_date("1870s")).to eq(["1870", "1880"])
     end
@@ -53,6 +65,14 @@ describe Entry do
 
     it "normalizes a circa date" do
       expect(EntryDate.normalize_date("circa 1324")).to eq(["1314", "1335"])
+    end
+
+    it "normalizes a ca. date" do
+      expect(EntryDate.normalize_date("ca. 1324")).to eq(["1314", "1335"])
+    end
+
+    it "normalizes an 'about' date" do
+      expect(EntryDate.normalize_date("about 1324")).to eq(["1314", "1335"])
     end
 
     it "normalizes an exact year" do

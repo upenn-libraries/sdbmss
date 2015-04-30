@@ -140,7 +140,9 @@ module SDBMSS::ReferenceData
         author: Name.find_or_create_author('Valerius, Bishop of Hippo')
       )
 
-      EntryDate.create!(entry: entry, date: '1425', circa: 'C2Q')
+      ed = EntryDate.new(entry: entry, observed_date: "ca. 1425-1450")
+      ed.normalize_observed_date
+      ed.save!
 
       EntryLanguage.create!(
         entry: entry,
@@ -238,7 +240,9 @@ module SDBMSS::ReferenceData
         role: 'Tr',
       )
 
-      EntryDate.create!(entry: entry, date: '1450', circa: 'CCENT')
+      ed = EntryDate.new(entry: entry, observed_date: "ca. 1450")
+      ed.normalize_observed_date
+      ed.save!
 
       EntryLanguage.create!(
         entry: entry,
@@ -436,7 +440,9 @@ module SDBMSS::ReferenceData
         author: Name.find_or_create_author('Cicero, Marcus Tullius')
       )
 
-      EntryDate.create!(entry: entry, date: '1460', circa: 'C')
+      ed = EntryDate.new(entry: entry, observed_date: "ca. 1460-1470")
+      ed.normalize_observed_date
+      ed.save!
 
       EntryArtist.create!(
         entry: entry,
@@ -589,11 +595,9 @@ module SDBMSS::ReferenceData
         observed_name: 'Guarino da Verona',
       )
 
-      EntryDate.create!(
-        entry: entry,
-        date: '1460',
-        circa: 'C',
-      )
+      ed = EntryDate.create!(entry: entry, observed_date: "ca. 1450-70")
+      ed.normalize_observed_date
+      ed.save!
 
       EntryLanguage.create!(
         entry: entry,
@@ -678,7 +682,9 @@ module SDBMSS::ReferenceData
         author: Name.find_or_create_author('Thomas Aquinas, Saint')
       )
 
-      EntryDate.create!(entry: entry, date: '1480')
+      ed = EntryDate.new(entry: entry, observed_date: '1480')
+      ed.normalize_observed_date
+      ed.save!
 
       EntryArtist.create!(
         entry: entry,
@@ -991,7 +997,9 @@ module SDBMSS::ReferenceData
         observed_name: "Gregorios of Constantinople (Georgios of Cyprus)",
       )
 
-      EntryDate.create!(entry: entry, date: '1550', circa: 'CCENT')
+      ed = EntryDate.new(entry: entry, observed_date: "16th cent.")
+      ed.normalize_observed_date
+      ed.save!
 
       EntryLanguage.create!(
         entry: entry,
@@ -1088,11 +1096,9 @@ module SDBMSS::ReferenceData
         common_title: "Missal",
       )
 
-      EntryDate.create!(
-        entry: entry,
-        date: '1450',
-        circa: 'C1H',
-      )
+      ed = EntryDate.new(entry: entry, observed_date: "first third of the 15th century")
+      ed.normalize_observed_date
+      ed.save!
 
       EntryArtist.create!(
         entry: entry,
@@ -1165,11 +1171,11 @@ module SDBMSS::ReferenceData
         common_title: "Hours",
       )
 
-      EntryDate.create!(
-        entry: entry,
-        date: '1450',
-        circa: 'CCENT',
-      )
+      # TODO: source actually says "XVth c." but we don't yet support
+      # parsing roman numerals
+      ed = EntryDate.new(entry: entry, observed_date: "15th c.")
+      ed.normalize_observed_date
+      ed.save!
 
       EntryLanguage.create!(
         entry: entry,
@@ -1199,11 +1205,9 @@ module SDBMSS::ReferenceData
         common_title: "Breviary",
       )
 
-      EntryDate.create!(
-        entry: entry,
-        date: '1510',
-        circa: 'C',
-      )
+      ed = EntryDate.new(entry: entry, observed_date: "ca. 1510")
+      ed.normalize_observed_date
+      ed.save!
 
       EntryLanguage.create!(
         entry: entry,
@@ -1367,7 +1371,9 @@ module SDBMSS::ReferenceData
         title: 'Book of Hours or Missal, fragment',
       )
 
-      EntryDate.create!(entry: entry, date: '1450', circa: 'C?')
+      ed = EntryDate.new(entry: entry, observed_date: 'about 1450 A.D.')
+      ed.normalize_observed_date
+      ed.save!
 
       EntryPlace.create!(
         entry: entry,
@@ -1472,7 +1478,9 @@ module SDBMSS::ReferenceData
         title: 'New Testament',
       )
 
-      EntryDate.create!(entry: entry, date: '1200')
+      ed = EntryDate.new(entry: entry, observed_date: '1200')
+      ed.normalize_observed_date
+      ed.save!
 
       EntryLanguage.create!(
         entry: entry,
@@ -1538,7 +1546,9 @@ module SDBMSS::ReferenceData
         author: Name.find_or_create_author('Pseudo-Augustine, Saint, Bishop of Hippo')
       )
 
-      EntryDate.create!(entry: entry, date: '1450', circa: 'CCENT')
+      ed = EntryDate.new(entry: entry, observed_date: "14th century")
+      ed.normalize_observed_date
+      ed.save!
 
       EntryMaterial.create!(
         entry: entry,

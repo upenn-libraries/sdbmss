@@ -30,21 +30,6 @@ class EntryDate < ActiveRecord::Base
 
   has_paper_trail skip: [:created_at, :updated_at]
 
-  CIRCA_TYPES = [
-    ["C", "Circa"],
-    ["C?", "Circa (Very Uncertain)"],
-    ["CCENT", "Circa Century"],
-    ["C1H", "Circa 1st Half of Century"],
-    ["C2H", "Circa 2nd Half of Century"],
-    ["C1Q", "Circa 1st Quarter or Century"],
-    ["C2Q", "Circa 2nd Quarter of Century"],
-    ["C3Q", "Circa 3rd Quarter of Century"],
-    ["C4Q", "Circa 4th Quarter of Century"],
-    ["CEARLY", "Circa Early Part of Century"],
-    ["CMID", "Circa Mid Century"],
-    ["CLATE", "Circa Late Part of Century"],
-  ]
-
   # returns a 2-item Array with start_date and end_date
   def self.normalize_date(date_str)
 
@@ -64,11 +49,6 @@ class EntryDate < ActiveRecord::Base
       end
     end
     return [nil, nil]
-  end
-
-  def circa_verbose
-    option = CIRCA_TYPES.select { |option| option[0] == circa }.first
-    option[1] if option
   end
 
   # examines observed_date and based on it, populates
@@ -95,6 +75,14 @@ class EntryDate < ActiveRecord::Base
       end
     end
     val + certainty_flags
+  end
+
+  # returns a str of the normalized date range
+  def normalized_date_range_str
+    if date_normalized_start.present? || date_normalized_end.present?
+      return "#{date_normalized_start} - #{date_normalized_end}"
+    end
+    return ""
   end
 
 end

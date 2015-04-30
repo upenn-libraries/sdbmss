@@ -13,7 +13,20 @@ module SDBMSS::Legacy
 
     VALID_ALT_SIZE_TYPES = Entry::ALT_SIZE_TYPES.map { |item| item[0] }
 
-    VALID_CIRCA_TYPES = EntryDate::CIRCA_TYPES.map { |item| item[0] }
+    VALID_CIRCA_TYPES = [
+      "C",
+      "C?",
+      "CCENT",
+      "C1H",
+      "C2H",
+      "C1Q",
+      "C2Q",
+      "C3Q",
+      "C4Q",
+      "CEARLY",
+      "CMID",
+      "CLATE",
+    ]
 
     VALID_CURRENCY_TYPES = Event::CURRENCY_TYPES.map { |item| item[0] }
 
@@ -936,9 +949,6 @@ module SDBMSS::Legacy
 
             ed = EntryDate.create!(
               entry: entry,
-              # TODO: these 2 fields will go away
-              date: date,
-              circa: circa,
               observed_date: (circa.present? ? circa + " " : "") + date,
               date_normalized_start: date_normalized_start,
               date_normalized_end: date_normalized_end,

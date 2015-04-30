@@ -104,7 +104,7 @@ module SDBMSS
       # does a preliminary check and returns true if str is parseable
       # by #normalize_approximate_date_str_to_year_range
       def resembles_approximate_date_str(date_str)
-        /(circa|before|after|early|mid|late|century|to)/.match(date_str).present? ||
+        /(about|circa|ca|before|after|early|mid|late|cent|c\.|to)/.match(date_str).present? ||
           /\ds/.match(date_str).present?
       end
 
@@ -151,7 +151,7 @@ module SDBMSS
           return [range[0], (range[0].to_i + 100).to_s]
         end
 
-        circa = !! /circa/.match(date_str)
+        circa = !! (/circa/.match(date_str) || /ca\./.match(date_str) || /about/.match(date_str))
 
         # find any 4-digit number in the str or if entire str is a
         # number
@@ -166,7 +166,7 @@ module SDBMSS
 
         start_date, end_date = nil, nil
         # TODO: be more restrictive, look for pattern like '5th cent'
-        if /cent/.match(date_str)
+        if /cent/.match(date_str) || /c\./.match(date_str)
           century = ""
           century_match = /(\d{1,2})/.match(date_str)
           if century_match
@@ -195,6 +195,15 @@ module SDBMSS
             end_date = century + "76"
           when /fourth quarter/.match(date_str)
             start_date = century + "76"
+            end_date = (century.to_i + 1).to_s + "00"
+          when /first third/.match(date_str)
+            start_date = century + "00"
+            end_date = century + "34"
+          when /second third/.match(date_str)
+            start_date = century + "34"
+            end_date = century + "67"
+          when /last third/.match(date_str)
+            start_date = century + "67"
             end_date = (century.to_i + 1).to_s + "00"
           when /first half/.match(date_str)
             start_date = century + "00"
