@@ -37,6 +37,7 @@ class SimpleNamedModelsController < ApplicationController
 
   def create
     @model = model_class.new(model_params)
+    @model.created_by = current_user
     if @model.save
       respond_to do |format|
         format.html {

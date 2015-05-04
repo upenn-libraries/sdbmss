@@ -1,11 +1,11 @@
 class PlacesController < SimpleNamedModelsController
 
+  include LanguagesAndPlaces
+
+  load_and_authorize_resource :only => [:edit, :update, :destroy]
+
   def model_class
     Place
-  end
-
-  def search_results_keys
-    [:id, :name, :entries_count]
   end
 
 end

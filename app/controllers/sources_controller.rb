@@ -9,6 +9,8 @@ class SourcesController < ApplicationController
 
   respond_to :html, :json
 
+  load_and_authorize_resource :only => [:edit, :update, :destroy]
+
   def new
     @source = Source.new
     respond_to do |format|

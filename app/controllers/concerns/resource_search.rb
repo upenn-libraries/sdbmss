@@ -135,6 +135,13 @@ module ResourceSearch
     result.send(search_name_field.to_s) == params[:term]
   end
 
+  # A 'base' query returning all records, to which search criteria are
+  # applied. Subclasses can override this in order to tack on an
+  # #includes for better performance.
+  def search_query_base
+    search_model_class.all
+  end
+
   # Classes should override this if they need to search differently.
   # This should return an ActiveRecord query, on which
   # offseting/limiting/ordering will subsequently be done.
@@ -144,7 +151,7 @@ module ResourceSearch
   # looks for them in the 'id' model field.
   def search_query
     search_term = params[:term]
-    query = search_model_class.all
+    query = search_query_base
     if search_term.present?
       search_term.split.each do |word|
         # look at ID column for integers

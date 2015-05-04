@@ -11,7 +11,8 @@ describe "Manage languages", :js => true do
       password: 'somethingunguessable'
     )
     @language = Language.create!(
-      name: "Martian"
+      name: "Martian",
+      created_by: @user,
     )
   end
 

@@ -7,13 +7,38 @@ $(document).ready(function() {
 
     var resourceName = "<%= resource_name %>";
 
+    // flag = show all records, or only those that the user created
+    <% if can? :manage, model_class  %>
+    var createdByUser = 0;
+    <% else %>
+    var createdByUser = 1;
+    <% end %>
+    
     SDBM.hideNavBar();
-
-    $("input[name='search_value']").val("");
 
     var getSearchValue = function() {
         return $("input[name='search_value']").val();
     };
+
+    var getUnreviewedOnly = function() {
+        return $("input[name='unreviewed_only']").is(':checked') ? 1 : 0;
+    };
+    
+    var setFormStateFromURL = function() {
+        var qs = new URI().query(true);
+        $("input[name='search_value']").val(qs.term);
+        if(qs.unreviewed_only === 1) {
+            $("input[name='unreviewed_only']").prop('checked', true);
+        }
+    };
+
+    window.onpopstate = function(event) {
+        // load the data from URL into page
+        setFormStateFromURL();
+        dataTable.reload();
+    };
+
+    setFormStateFromURL();
     
     var columns = [
         {
@@ -39,6 +64,16 @@ $(document).ready(function() {
             title: 'Count',
             width: "20%",
             dbSortField: 'entries_count'
+        },
+        {
+            title: 'Reviewed',
+            width: "20%",
+            dbSortField: 'reviewed'
+        },
+        {
+            title: 'Created By',
+            width: "20%",
+            dbSortField: 'created_by_id'
         }
     ];
     
@@ -52,6 +87,8 @@ $(document).ready(function() {
                 
             var params = {
                 term: getSearchValue(),
+                unreviewed_only: getUnreviewedOnly(),
+                created_by_user: createdByUser,
                 offset: dt_params.start,
                 limit: dt_params.length,
                 order: orderStr
@@ -65,7 +102,7 @@ $(document).ready(function() {
                         $(".dataTables_scrollBody").scrollTop(0);
                         var rows = [];
                         data.results.forEach(function(item) {
-                            rows.push([ item.id, item.id, item.<%= search_name_field %>, item.entries_count || 0 ]);
+                            rows.push([ item.id, item.id, item.<%= search_name_field %>, item.entries_count || 0, item.reviewed, item.created_by || "" ]);
                         });
                         callback({
                             draw: dt_params.draw,
@@ -101,39 +138,56 @@ $(document).ready(function() {
     });
     
     $('#search_submit').click(function() {
+        var url = URI('/' + resourceName + '/').search({ term: getSearchValue(), unreviewed_only: getUnreviewedOnly() });
+
+        history.pushState({ url: url }, '', url);
+
         dataTable.reload();
+        return false;
     });
 
     $('#export-csv').click(function() {
-        var url = '/' + resourceName + '/search.csv?';
-        if(getSearchValue()) {
-            url += "term=" + encodeURIComponent(getSearchValue());
-        }
+        var qs = new URI().query(true);
+
+        var url = URI('/' + resourceName + '/search.csv').search({ term: getSearchValue(), unreviewed_only: getUnreviewedOnly() });
+
         window.location = url;
         return false;
     });
-    
-});
+
+ });
 </script>
 <% end %>
 
-<h1>Manage <%= resource_name.pluralize %></h1>
+<% if !can? :manage, model_class %> 
+    <h1>Manage <%= resource_name %> records you've created</h1>
+<% else %>
+    <h1>Manage all <%= resource_name %> records</h1>
+<% end %>
 
-<form class="form-horizontal search-form">
+<%= form_tag(request.path, method: :get, class: "form-horizontal search-form") do %>
     <div class="row form-group search-fieldset original">
-        <div class="col-sm-1" style="text-align: right">
+        <div class="col-sm-1">
             <label class="control-label">Search</label>
         </div>
         <div class="col-sm-4">
-            <input class="form-control" name="search_value" value="" size="70" type="text">
+            <%= text_field_tag :search_value, params[:search_value], sizze: 70, class: "form-control" %>
         </div>
-        <div class="col-sm-1"> <button id="search_submit" class="btn btn-primary">Search</button>
+        <div class="col-sm-3 checkbox">
+        <% if can? :manage, model_class  %>
+            <label>
+                <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
+            </label>
+        <% end %>
         </div>
-        <div class="col-sm-1 col-sm-offset-1">
-            <a id="search_submit" class="btn btn-primary" href="<%= new_model_path %>">Add New Record</a>
+        <div class="col-sm-1">
+            <input id="search_submit" type="submit" class="btn btn-primary" name="submit" value="Search">
+        </div>
+        <div class="col-sm-2 col-sm-offset-1 text-right">
+            <a class="btn btn-primary" href="<%= new_model_path %>">Add New Record</a>
         </div>
     </div>
-</form>
+<% end %>
 
 <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
     <thead>

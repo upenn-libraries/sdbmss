@@ -11,7 +11,8 @@ describe "Manage sources", :js => true do
     )
     @source = Source.create!(
       source_type: SourceType.auction_catalog,
-      title: "my test source"
+      title: "my test source",
+      created_by: @user,
     )
   end
 

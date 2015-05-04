@@ -3,18 +3,35 @@ class NamesController < SimpleNamedModelsController
 
   before_action :set_name, only: [:show, :show_json, :edit, :update, :destroy]
 
+  load_and_authorize_resource :only => [:edit, :update, :destroy]
+
   def model_class
     Name
   end
 
-  def search_results_keys
-    [:id, :name, :is_artist, :is_author, :is_provenance_agent, :is_scribe]
+  def search_result_format(obj)
+    {
+      id: obj.id,
+      name: obj.name,
+      is_artist: obj.is_artist,
+      is_author: obj.is_author,
+      is_provenance_agent: obj.is_provenance_agent,
+      is_scribe: obj.is_scribe,
+      reviewed: obj.reviewed,
+      created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
+    }
   end
 
   def search_query
     query = super
     if params[:type].present?
       query = query.where(params[:type].to_sym => true)
+    end
+    if params[:unreviewed_only].to_s == '1'
+      query = query.where(reviewed: false)
+    end
+    if params[:created_by_user].to_s == '1'
+      query = query.where(created_by_id: current_user.id)
     end
     query
   end

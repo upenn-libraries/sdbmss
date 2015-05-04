@@ -32,10 +32,14 @@ class Ability
     # TODO: fill this out
 
     if ['contributor', 'editor', 'admin'].member? user.role
-      can :create, Entry
-      can :new, Entry
-      can :edit, Entry, :created_by_id => user.id
-      can :update, Entry, :created_by_id => user.id
+      [Entry, Source, Place, Language].each do |clazz|
+        can :create, clazz
+        can :new, clazz
+        can :edit, clazz, :created_by_id => user.id
+        can :update, clazz, :created_by_id => user.id
+        # TODO: should users be able to delete their own records?
+        can :destroy, clazz, :created_by_id => user.id
+      end
     end
 
     if ['editor', 'admin'].member? user.role

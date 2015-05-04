@@ -4,6 +4,8 @@ class ManuscriptsController < SimpleNamedModelsController
 
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
 
+  load_and_authorize_resource :only => [:edit, :update, :destroy]
+
   def model_class
     Manuscript
   end
@@ -42,8 +44,25 @@ class ManuscriptsController < SimpleNamedModelsController
     end
   end
 
-  def search_results_keys
-    [:id, :name, :entries_count]
+  def search_result_format(obj)
+    {
+      id: obj.id,
+      name: obj.name,
+      entries_count: obj.entries_count,
+      reviewed: obj.reviewed,
+      created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
+    }
+  end
+
+  def search_query
+    query = super
+    if params[:unreviewed_only].to_s == '1'
+      query = query.where(reviewed: false)
+    end
+    if params[:created_by_user].to_s == '1'
+      query = query.where(created_by_id: current_user.id)
+    end
+    query
   end
 
   private

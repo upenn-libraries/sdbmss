@@ -297,7 +297,8 @@ describe "Data entry", :js => true do
       source = Source.create!(
         date: "20141215",
         title: "my existing source",
-        source_type: SourceType.auction_catalog
+        source_type: SourceType.auction_catalog,
+        created_by: @user,
       )
 
       visit edit_source_path :id => source.id
