@@ -60,7 +60,7 @@ class SimpleNamedModelsController < ApplicationController
   end
 
   def update
-    if model_params[:password].blank?
+    if model_class.column_names.include?(:password) && model_params[:password].blank?
       result = @model.update_without_password(model_params)
     else
       result = @model.update(model_params)

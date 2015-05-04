@@ -29,6 +29,27 @@
           <%= f.text_field :comment, :class => 'form-control' %>
       </div>
   </div>
+  <div class="field form-group row">
+      <%= f.label :flags, class: "col-sm-2 control-label" %>
+      <div class="col-sm-8 checkbox">
+          Allow this name to be used as:<br/>
+          <label>
+              <%= f.check_box :is_artist %> Artist
+          </label>
+          <br/>
+          <label>
+              <%= f.check_box :is_author %> Author
+          </label>
+          <br/>
+          <label>
+              <%= f.check_box :is_scribe %> Scribe
+          </label>
+          <br/>
+          <label>
+              <%= f.check_box :is_provenance_agent %> Provenance Agent
+          </label>
+      </div>
+  </div>
   <div class="actions row">
       <div class="col-sm-4 col-sm-offset-2">
           <%= f.submit :class => 'btn btn-primary' %>
