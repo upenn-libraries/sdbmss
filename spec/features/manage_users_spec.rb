@@ -29,7 +29,7 @@ describe "Manage Users", :js => true do
 
   it "should load" do
     visit accounts_path
-    expect(page).to have_content("Manage accounts")
+    expect(page).to have_content("Manage all account records")
   end
 
   it "should create a user" do

@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
 
+  include UserFields
+
   ROLES = %w[contributor editor admin]
 
   attr_accessible :username, :email, :password, :password_confirmation if Rails::VERSION::MAJOR < 4

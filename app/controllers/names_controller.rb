@@ -1,9 +1,11 @@
 class NamesController < SimpleNamedModelsController
+
   include ResourceSearch
+  include MarkAsReviewed
 
   before_action :set_name, only: [:show, :show_json, :edit, :update, :destroy]
 
-  load_and_authorize_resource :only => [:edit, :update, :destroy]
+  load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_reviewed]
 
   def model_class
     Name

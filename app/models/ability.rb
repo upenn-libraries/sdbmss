@@ -32,7 +32,7 @@ class Ability
     # TODO: fill this out
 
     if ['contributor', 'editor', 'admin'].member? user.role
-      [Entry, Source, Place, Language].each do |clazz|
+      [Entry, Event, Language, Manuscript, Name, Place, Source].each do |clazz|
         can :create, clazz
         can :new, clazz
         can :edit, clazz, :created_by_id => user.id

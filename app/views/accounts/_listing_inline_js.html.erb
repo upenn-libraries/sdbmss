@@ -1,0 +1,70 @@
+<script type="text/javascript">
+
+ $(document).ready(function() {
+
+     var resourceName = "<%= resource_name %>";
+
+     // flag = show all records, or only those that the user created
+     <% if can? :manage, model_class  %>
+     var showOnlyRecordsCreatedByUser = 0;
+     <% else %>
+     var showOnlyRecordsCreatedByUser = 1;
+     <% end %>
+
+     // Subclass of SDBM.ManageRecords tailored for display of accounts (ie users)
+     var ManageAccounts = function(options) {
+         SDBM.ManageRecords.call(this, options);
+     };
+     
+     ManageAccounts.prototype = Object.create(SDBM.ManageRecords.prototype);
+
+     ManageAccounts.prototype.getColumns = function() {
+        var manageRecords = this;
+
+        return [
+            {
+                title: 'Options',
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a> '
+                            + '&middot; <a class="delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
+                    return str;
+                },
+                width: "10%"
+            },
+            {
+                title: 'ID',
+                width: "8%",
+                dbSortField: 'id'
+            },
+            {
+                title: 'Name',
+                width: "45%",
+                dbSortField: manageRecords.options.searchNameField
+            },
+            {
+                title: 'Reviewed',
+                width: "10%",
+                dbSortField: 'reviewed'
+            },
+            {
+                title: 'Created By',
+                width: "10%",
+                dbSortField: 'created_by_id'
+            }
+        ];
+     };
+
+     ManageAccounts.prototype.searchResultToTableRow = function (result) {
+         return [ result.id, result.id, result[this.options.searchNameField], result.reviewed || "", result.created_by || "" ];
+     };
+
+     new ManageAccounts({
+         resourceName: "<%= resource_name %>",
+         showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
+         searchNameField: "username"
+     });
+
+ });
+
+</script>

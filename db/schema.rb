@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150428205621) do
+ActiveRecord::Schema.define(version: 20150505184311) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,   null: false
@@ -261,7 +261,7 @@ ActiveRecord::Schema.define(version: 20150428205621) do
     t.boolean  "deleted",        limit: 1,   default: false
     t.boolean  "reviewed",       limit: 1,   default: false
     t.integer  "reviewed_by_id", limit: 4
-    t.datetime "reviewed_date"
+    t.datetime "reviewed_at"
   end
 
   add_index "languages", ["created_by_id"], name: "index_languages_on_created_by_id", using: :btree
@@ -299,7 +299,7 @@ ActiveRecord::Schema.define(version: 20150428205621) do
     t.string   "location",       limit: 255
     t.boolean  "reviewed",       limit: 1,   default: false
     t.integer  "reviewed_by_id", limit: 4
-    t.datetime "reviewed_date"
+    t.datetime "reviewed_at"
   end
 
   add_index "manuscripts", ["created_by_id"], name: "index_manuscripts_on_created_by_id", using: :btree
@@ -327,7 +327,7 @@ ActiveRecord::Schema.define(version: 20150428205621) do
     t.text     "comment",             limit: 65535
     t.boolean  "reviewed",            limit: 1,     default: false
     t.integer  "reviewed_by_id",      limit: 4
-    t.datetime "reviewed_date"
+    t.datetime "reviewed_at"
   end
 
   add_index "names", ["created_by_id"], name: "index_names_on_created_by_id", using: :btree
@@ -351,7 +351,7 @@ ActiveRecord::Schema.define(version: 20150428205621) do
     t.boolean  "deleted",        limit: 1,   default: false
     t.boolean  "reviewed",       limit: 1,   default: false
     t.integer  "reviewed_by_id", limit: 4
-    t.datetime "reviewed_date"
+    t.datetime "reviewed_at"
   end
 
   add_index "places", ["created_by_id"], name: "index_places_on_created_by_id", using: :btree
@@ -421,7 +421,7 @@ ActiveRecord::Schema.define(version: 20150428205621) do
     t.integer  "source_type_id",       limit: 4
     t.boolean  "reviewed",             limit: 1,     default: false
     t.integer  "reviewed_by_id",       limit: 4
-    t.datetime "reviewed_date"
+    t.datetime "reviewed_at"
   end
 
   add_index "sources", ["created_by_id"], name: "index_sources_on_created_by_id", using: :btree
@@ -447,10 +447,18 @@ ActiveRecord::Schema.define(version: 20150428205621) do
     t.string   "role",                   limit: 255
     t.boolean  "email_is_public",        limit: 1,     default: false
     t.text     "bio",                    limit: 65535
+    t.boolean  "reviewed",               limit: 1,     default: false
+    t.integer  "reviewed_by_id",         limit: 4
+    t.datetime "reviewed_at"
+    t.integer  "created_by_id",          limit: 4
+    t.integer  "updated_by_id",          limit: 4
   end
 
+  add_index "users", ["created_by_id"], name: "index_users_on_created_by_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["reviewed_by_id"], name: "index_users_on_reviewed_by_id", using: :btree
+  add_index "users", ["updated_by_id"], name: "index_users_on_updated_by_id", using: :btree
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
   create_table "version_associations", force: :cascade do |t|
@@ -530,4 +538,7 @@ ActiveRecord::Schema.define(version: 20150428205621) do
   add_foreign_key "sources", "users", column: "created_by_id"
   add_foreign_key "sources", "users", column: "reviewed_by_id"
   add_foreign_key "sources", "users", column: "updated_by_id"
+  add_foreign_key "users", "users", column: "created_by_id"
+  add_foreign_key "users", "users", column: "reviewed_by_id"
+  add_foreign_key "users", "users", column: "updated_by_id"
 end

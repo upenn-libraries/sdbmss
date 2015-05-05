@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   # Note here that we point #show to BL's CatalogController
   resources :entries, except: [:show] do
     collection {
+      post 'mark_as_reviewed'
       get 'types'
     }
     member {
@@ -46,7 +47,10 @@ Rails.application.routes.draw do
   end
 
   resources :languages do
-    collection { get 'search' }
+    collection {
+      post 'mark_as_reviewed'
+      get 'search'
+    }
   end
 
   get '/linkingtool/entry/:id', to: 'linking_tool#by_entry', as: 'linking_tool_by_entry'
@@ -57,6 +61,7 @@ Rails.application.routes.draw do
     member do
       get 'entry_candidates'
       get 'manage_entries'
+      post 'mark_as_reviewed'
     end
   end
 
@@ -64,6 +69,7 @@ Rails.application.routes.draw do
 
   resources :names do
     collection do
+      post 'mark_as_reviewed'
       get 'search'
       get 'suggest'
     end
@@ -84,6 +90,7 @@ Rails.application.routes.draw do
 
   resources :sources do
     collection do
+      post 'mark_as_reviewed'
       get 'search'
       get 'types'
     end

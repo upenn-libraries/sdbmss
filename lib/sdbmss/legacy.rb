@@ -1219,7 +1219,7 @@ module SDBMSS::Legacy
           {
           reviewed: row['ISAPPROVED'] == 'y',
           reviewed_by: get_or_create_user(row['APPROVEDBY']),
-          reviewed_date: row['APPROVEDDATE'],
+          reviewed_at: row['APPROVEDDATE'],
           }
       )
     end
@@ -1249,7 +1249,7 @@ module SDBMSS::Legacy
           {
             reviewed: row['ISAPPROVED'] == 'y',
             reviewed_by: get_or_create_user(row['APPROVEDBY']),
-            reviewed_date: row['APPROVEDDATE'],
+            reviewed_at: row['APPROVEDDATE'],
           }
       )
     end
@@ -1400,7 +1400,7 @@ module SDBMSS::Legacy
           name: place_str,
           reviewed: row['ISAPPROVED'] == 'y',
           reviewed_by: row['APPROVEDBY'],
-          reviewed_date: row['APPROVEDDATE'],
+          reviewed_at: row['APPROVEDDATE'],
         )
       end
     end

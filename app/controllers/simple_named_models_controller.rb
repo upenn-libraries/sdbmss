@@ -37,7 +37,9 @@ class SimpleNamedModelsController < ApplicationController
 
   def create
     @model = model_class.new(model_params)
-    @model.created_by = current_user
+    if model_class.column_names.include?("created_by_id")
+      @model.created_by = current_user
+    end
     if @model.save
       respond_to do |format|
         format.html {
@@ -60,7 +62,7 @@ class SimpleNamedModelsController < ApplicationController
   end
 
   def update
-    if model_class.column_names.include?(:password) && model_params[:password].blank?
+    if model_class.column_names.include?("encrypted_password") && model_params[:password].blank?
       result = @model.update_without_password(model_params)
     else
       result = @model.update(model_params)

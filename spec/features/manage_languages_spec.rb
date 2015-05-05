@@ -71,12 +71,13 @@ describe "Manage languages", :js => true do
 
   # poltergeist has trouble loading the csv, so we don't use it
   it "should export CSV", :js => false do
+    Language.create!(name: "Should appear in export")
     visit search_languages_path(format: :csv)
-    contains_martian = false
+    found = false
     CSV.parse(page.source, headers: true) do |row|
-      contains_martian = true if row["name"] == "Martian"
+      found = true if row["name"] == "Should appear in export"
     end
-    expect(contains_martian).to eq(true)
+    expect(found).to eq(true)
   end
 
 end

@@ -6,8 +6,9 @@
 # Accepts the following certain URL parameters: term, limit, offset,
 # order, order_dir, autocomplete (for autocomplete mode)
 #
-# This is used by autocomplete as well as to load tables via AJAX in
-# the management screens for some entities.
+# This is used by autocomplete as well as to load tables via AJAX on
+# the management screens, so there is some flexibility here to
+# accommodate that.
 module ResourceSearch
 
   extend ActiveSupport::Concern
