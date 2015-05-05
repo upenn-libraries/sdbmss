@@ -15,6 +15,11 @@ class NamesController < SimpleNamedModelsController
     {
       id: obj.id,
       name: obj.name,
+      authors_count: obj.authors_count || 0,
+      artists_count: obj.artists_count || 0,
+      scribes_count: obj.scribes_count || 0,
+      source_agents_count: obj.source_agents_count || 0,
+      event_agents_count: obj.event_agents_count || 0,
       is_artist: obj.is_artist,
       is_author: obj.is_author,
       is_provenance_agent: obj.is_provenance_agent,
