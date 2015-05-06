@@ -1399,7 +1399,7 @@ module SDBMSS::Legacy
           id: row['MANUSCRIPTPLACEID'],
           name: place_str,
           reviewed: row['ISAPPROVED'] == 'y',
-          reviewed_by: row['APPROVEDBY'],
+          reviewed_by: get_or_create_user(row['APPROVEDBY']),
           reviewed_at: row['APPROVEDDATE'],
         )
       end
