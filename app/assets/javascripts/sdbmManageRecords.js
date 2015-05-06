@@ -87,7 +87,7 @@ var SDBM = SDBM || {};
                 });
             },
             columns: columns,
-            order: [[ 2, "asc" ]]
+            order: manageRecords.getDefaultSort()
         });
 
         $(".sdbm-table").on("click", ".delete-link", function(event) {
@@ -176,6 +176,10 @@ var SDBM = SDBM || {};
             limit: dt_params.length,
             order: orderStr
         };
+    };
+
+    SDBM.ManageRecords.prototype.getDefaultSort = function () {
+        return [[ 2, "desc" ]];
     };
     
     SDBM.ManageRecords.prototype.getResourceIndexURL = function () {
