@@ -35,7 +35,9 @@
         <div class="panel panel-default">
             <div class="panel-heading">Admin</div>
             <div class="panel-body">
-                <p><a href="<%= accounts_path %>">Manage Users</a></p>
+                <p><a href="<%= accounts_path %>">Manage Users</a>
+                    <%= render partial: "unreviewed_count", locals: { model_class: User } %>
+                </p>
             </div>
         </div>
         <% end %>

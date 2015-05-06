@@ -44,8 +44,13 @@
                 width: "10%"
             },
             {
+                sdbmssMinWidth: "150px",
                 title: 'ID',
-                width: "8%",
+                width: "10%",
+                render: function (data, type, full, meta) { 
+                    var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/">SDBM_NAME_' + data + '</a>';
+                    return str;
+                },
                 dbSortField: 'id'
             },
             {

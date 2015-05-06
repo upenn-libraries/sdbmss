@@ -1,5 +1,7 @@
 class ManuscriptsController < SimpleNamedModelsController
 
+  include MarkAsReviewed
+
   before_action :set_manuscript, only: [:show, :edit, :entry_candidates]
 
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]

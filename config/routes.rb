@@ -60,11 +60,13 @@ Rails.application.routes.draw do
   get '/linkingtool/manuscript/:id', to: 'linking_tool#by_manuscript', as: 'linking_tool_by_manuscript'
 
   resources :manuscripts do
-    collection { get 'search' }
+    collection do
+      post 'mark_as_reviewed'
+      get 'search'
+    end
     member do
       get 'entry_candidates'
       get 'manage_entries'
-      post 'mark_as_reviewed'
     end
   end
 

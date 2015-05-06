@@ -57,11 +57,15 @@ class SourcesController < SimpleNamedModelsController
     false
   end
 
+  def search_query_base
+    search_model_class.all.includes([:created_by])
+  end
+
   def search_query
     date = params.fetch(:date, '').gsub('-', '').gsub('/', '')
     title = params[:title]
     agent = params[:agent]
-    query = Source.all
+    query = search_query_base
     query = query.where('date like ?', "#{date}%") if date.present?
     query = query.where('title like ?', "%#{title}%") if title.present?
     if params[:unreviewed_only].to_s == '1'

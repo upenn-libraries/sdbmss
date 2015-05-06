@@ -29,6 +29,10 @@ class NamesController < SimpleNamedModelsController
     }
   end
 
+  def search_query_base
+    search_model_class.all.includes([:created_by])
+  end
+
   def search_query
     query = super
     if params[:type].present?
