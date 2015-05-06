@@ -35,7 +35,7 @@ var SDBM = SDBM || {};
         var setFormStateFromURL = function() {
             var qs = new URI().query(true);
             $("input[name='search_value']").val(qs.term);
-            if(qs.unreviewed_only === 1) {
+            if(qs.unreviewed_only === '1') {
                 $("input[name='unreviewed_only']").prop('checked', true);
             }
             manageRecords.showOrHideMarkCheckedRecordsButton();

@@ -31,4 +31,14 @@ describe "Admin search", :js => true do
     visit admin_search_path
   end
 
+  it "should search" do
+    visit admin_search_path
+
+    first("input[name='search_value']").native.send_keys "de ricci"
+    click_button "Search"
+    expect(page).not_to have_selector("#spinner", visible: true)
+
+    expect(all("#search_results tbody tr").count).to eq(2)
+  end
+
 end

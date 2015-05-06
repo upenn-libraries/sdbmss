@@ -29,6 +29,21 @@ describe "Manage sources", :js => true do
     expect(page).to have_content @source.title
   end
 
+  it "should search for Sources" do
+    visit sources_path
+    expect(page).to have_content @source.title
+
+    fill_in 'search_value', :with => "test"
+    click_button "Search"
+
+    expect(page).to have_content @source.title
+
+    fill_in 'search_value', :with => "junk"
+    click_button "Search"
+
+    expect(page).not_to have_content @source.title
+  end
+
   it "should delete a Source" do
     # this is a very rough test!
     count = Source.count
