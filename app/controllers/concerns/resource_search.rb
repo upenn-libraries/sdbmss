@@ -6,9 +6,12 @@
 # Accepts the following certain URL parameters: term, limit, offset,
 # order, order_dir, autocomplete (for autocomplete mode)
 #
-# This is used by autocomplete as well as to load tables via AJAX on
-# the management screens, so there is some flexibility here to
-# accommodate that.
+# This is used by autocomplete as well as the listings on the
+# management screens. This maximizes code reuse, but on the flip side,
+# the results returned are "full" records not well optimized for
+# autocomplete. In practice, I don't think this matters: if it does,
+# it speaks to the need to have separate controller actions for these
+# 2 types of searches.
 module ResourceSearch
 
   extend ActiveSupport::Concern
