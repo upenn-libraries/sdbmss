@@ -14,11 +14,21 @@
         <div class="panel panel-default">
             <div class="panel-heading">Manage other data</div>
             <div class="panel-body">
-                <p><a href="<%= sources_path %>">Manage Sources</a></p>
-                <p><a href="<%= manuscripts_path %>">Manage Manuscripts</a></p>
-                <p><a href="<%= names_path %>">Manage Names</a></p>
-                <p><a href="<%= languages_path %>">Manage Languages</a></p>
-                <p><a href="<%= places_path %>">Manage Places</a></p>
+                <p><a href="<%= sources_path %>">Manage Sources</a>
+                    <%= render partial: "unreviewed_count", locals: { model_class: Source } %>
+                </p>
+                <p><a href="<%= manuscripts_path %>">Manage Manuscripts</a>
+                    <%= render partial: "unreviewed_count", locals: { model_class: Manuscript } %>
+                </p>
+                <p><a href="<%= names_path %>">Manage Names</a>
+                    <%= render partial: "unreviewed_count", locals: { model_class: Name } %>
+                </p>
+                <p><a href="<%= languages_path %>">Manage Languages</a>
+                    <%= render partial: "unreviewed_count", locals: { model_class: Language } %>
+                </p>
+                <p><a href="<%= places_path %>">Manage Places</a>
+                    <%= render partial: "unreviewed_count", locals: { model_class: Place } %>
+                </p>
             </div>
         </div>
         <% if can? :manage, User %>

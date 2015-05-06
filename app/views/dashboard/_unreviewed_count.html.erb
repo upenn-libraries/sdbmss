@@ -1,0 +1,3 @@
+<% if can? :manage, model_class %>
+    <br/>(<span style="color: red;"><%= model_class.where(reviewed: false).count %> unreviewed</span>)
+<% end %>
