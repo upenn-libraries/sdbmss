@@ -23,6 +23,17 @@
 
         return [
             {
+                title: '',
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if(manageRecords.getUnreviewedOnly() === 1) {
+                        return '<input type="checkbox" checked="checked" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                    }
+                    return '';
+                },
+                width: "5%"
+            },
+            {
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -56,7 +67,7 @@
      };
 
      ManageAccounts.prototype.searchResultToTableRow = function (result) {
-         return [ result.id, result.id, result[this.options.searchNameField], result.reviewed || "", result.created_by || "" ];
+         return [ null, result.id, result.id, result[this.options.searchNameField], result.reviewed || "", result.created_by || "" ];
      };
 
      new ManageAccounts({

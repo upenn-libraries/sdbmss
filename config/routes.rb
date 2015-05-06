@@ -3,7 +3,10 @@ Rails.application.routes.draw do
   root :to => "catalog#index"
 
   resources :accounts, except: [:show] do
-    collection { get 'search' }
+    collection do
+      post 'mark_as_reviewed'
+      get 'search'
+    end
   end
 
   get '/admin_search', to: "admin_search#index"

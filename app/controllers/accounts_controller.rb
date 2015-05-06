@@ -4,6 +4,8 @@
 # models into a single controller makes things hairy.
 class AccountsController < SimpleNamedModelsController
 
+  include MarkAsReviewed
+
   before_action :require_admin
 
   def model_class
@@ -12,6 +14,26 @@ class AccountsController < SimpleNamedModelsController
 
   def search_model_class
     User
+  end
+
+  def search_result_format(obj)
+    {
+      id: obj.id,
+      username: obj.username,
+      reviewed: obj.reviewed,
+      created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
+    }
+  end
+
+  def search_query
+    query = super
+    if params[:unreviewed_only].to_s == '1'
+      query = query.where(reviewed: false)
+    end
+    if params[:created_by_user].to_s == '1'
+      query = query.where(created_by_id: current_user.id)
+    end
+    query
   end
 
   def resource_name
