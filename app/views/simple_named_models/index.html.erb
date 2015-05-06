@@ -10,34 +10,7 @@
     <h1>Manage all <%= resource_name.singularize %> records</h1>
 <% end %>
 
-<%= form_tag(request.path, method: :get, class: "form-horizontal search-form") do %>
-    <div class="row form-group search-fieldset">
-        <div class="col-sm-1">
-            <label class="control-label">Search</label>
-        </div>
-        <div class="col-sm-4">
-            <%= text_field_tag :search_value, params[:search_value], sizze: 70, class: "form-control" %>
-        </div>
-        <div class="col-sm-3 checkbox">
-        <% if can? :manage, model_class  %>
-            <label>
-                <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
-            </label>
-        <% end %>
-        </div>
-        <div class="col-sm-1">
-            <input id="search_submit" type="submit" class="btn btn-primary" name="submit" value="Search">
-        </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-sm-2">
-            <a class="btn btn-primary btn-xs" href="<%= new_model_path %>">Add New Record</a>
-        </div>
-        <div class="col-sm-2">
-            <a class="btn btn-primary btn-xs" id="mark_as_reviewed" class="btn btn-primary" style="display: none;">Mark checked records as reviewed</a>
-        </div>
-    </div>
-<% end %>
+<%= render partial: "search_form" %>
 
 <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
     <thead>

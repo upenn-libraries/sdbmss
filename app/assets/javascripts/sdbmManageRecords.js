@@ -54,20 +54,9 @@ var SDBM = SDBM || {};
         this.dataTable = new SDBM.Table(".sdbm-table", {
             ajax: function (sdbmTable, dt_params, callback, settings) {
 
-                var orderStr = "";
-                dt_params.order.forEach(function(item) {
-                    orderStr += columns[item.column].dbSortField + " " + item.dir;
-                });
-                
-                var params = {
-                    term: manageRecords.getSearchValue(),
-                    unreviewed_only: manageRecords.getUnreviewedOnly(),
-                    created_by_user: manageRecords.options.showOnlyRecordsCreatedByUser,
-                    offset: dt_params.start,
-                    limit: dt_params.length,
-                    order: orderStr
-                };
+                var params = manageRecords.createSearchParams(dt_params);
 
+                $("#spinner").show();
                 $.ajax({
                     url: '/' + manageRecords.options.resourceName + '/search.json',
                     data: params,
@@ -91,6 +80,9 @@ var SDBM = SDBM || {};
                     error: function() {
                         // TODO: fill this out
                         alert("An error occurred fetching search results");
+                    },
+                    complete: function() {
+                        $("#spinner").hide();
                     }
                 });
             },
@@ -103,6 +95,10 @@ var SDBM = SDBM || {};
                 $.ajax({
                     url: $(event.target).attr("href"),
                     method: 'DELETE',
+                    error: function(xhr) {
+                        var error = $.parseJSON(xhr.responseText).error;
+                        alert("An error occurred deleting this record: " + error);
+                    },
                     success: function(data, textStatus, jqXHR) {
                         manageRecords.dataTable.reload();                    
                     }
@@ -164,6 +160,24 @@ var SDBM = SDBM || {};
         });
     };
 
+    // returns an object to pass to jquery $.ajax() call
+    SDBM.ManageRecords.prototype.createSearchParams = function (dt_params) {
+        var columns = this.getColumns();
+        var orderStr = "";
+        dt_params.order.forEach(function(item) {
+            orderStr += columns[item.column].dbSortField + " " + item.dir;
+        });
+
+        return {
+            term: this.getSearchValue(),
+            unreviewed_only: this.getUnreviewedOnly(),
+            created_by_user: this.options.showOnlyRecordsCreatedByUser,
+            offset: dt_params.start,
+            limit: dt_params.length,
+            order: orderStr
+        };
+    };
+    
     SDBM.ManageRecords.prototype.getResourceIndexURL = function () {
         return '/' + this.options.resourceName + '/';
     };

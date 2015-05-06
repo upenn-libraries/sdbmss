@@ -35,6 +35,7 @@ class AdminSearchController < CatalogController
                       data: data,
                     })
     rescue Exception => e
+      puts e.backtrace
       retval.merge!({
                       error: e.to_s
                     })

@@ -37,7 +37,7 @@ describe "Manage sources", :js => true do
     page.evaluate_script('window.confirm = function() { return true; }')
 
     visit sources_path
-    first(".source-delete-link").click
+    first(".delete-link").click
     sleep(1)
 
     expect(Source.count).to eq(count-1)

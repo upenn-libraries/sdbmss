@@ -1,6 +1,8 @@
 
-# Base controller to provide data management functions for Models with
-# just a name field. This is used for Languages and Places.
+# Base controller to provide data management actions (listing, edit,
+# add, delete) for simple Models with just a name field. This suits
+# Languages and Places; other more complex models need subclass this
+# and customize both actions and the views.
 class SimpleNamedModelsController < ApplicationController
   include ResourceSearch
 
@@ -84,8 +86,10 @@ class SimpleNamedModelsController < ApplicationController
 
   def destroy
     # mark as deleted, don't actually destroy the record
-    @model.deleted = true
-    @model.save!
+    if deletable?(@model)
+      @model.deleted = true
+      @model.save!
+    end
     respond_with(@model)
   end
 
@@ -97,6 +101,15 @@ class SimpleNamedModelsController < ApplicationController
 
   def model_params
     params.require(model_class_lstr.to_sym).permit(:name)
+  end
+
+  # this implementation checks the entries_count field if it exists
+  def deletable?(object)
+    deletable = true
+    if object.respond_to?(:entries_count) && (object.entries_count || 0)  > 0
+      deletable = false
+    end
+    deletable
   end
 
   # _path helpers are usually automatically added to controllers by

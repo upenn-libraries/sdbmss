@@ -1,0 +1,186 @@
+<script type="text/javascript">
+
+ $(document).ready(function() {
+
+     SDBM.setPageFullWidth();
+
+     var resourceName = "<%= resource_name %>";
+
+     // flag = show all records, or only those that the user created
+     <% if can? :manage, model_class  %>
+     var showOnlyRecordsCreatedByUser = 0;
+     <% else %>
+     var showOnlyRecordsCreatedByUser = 1;
+     <% end %>
+
+     // Subclass of SDBM.ManageRecords tailored for display of names (ie users)
+     var ManageSources = function(options) {
+         SDBM.ManageRecords.call(this, options);
+     };
+     
+     ManageSources.prototype = Object.create(SDBM.ManageRecords.prototype);
+
+     ManageSources.prototype.getColumns = function() {
+         var manageRecords = this;
+
+         return [
+             {
+                 title: '',
+                 orderable: false,
+                 render: function (data, type, full, meta) {
+                     if(manageRecords.getUnreviewedOnly() === 1) {
+                         return '<input type="checkbox" checked="checked" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                     }
+                     return '';
+                 },
+                 sdbmssMinWidth: "30px",
+             },
+             {
+                 sdbmssMinWidth: "150px",
+                 title: 'Options',
+                 orderable: false,
+                 render: function (data, type, full, meta) { 
+                     var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>' +
+                               ' &middot; <a href="/entries/new/?source_id=' + data + '">Add an Entry</a>' +
+                               ' &middot; <a class="delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
+                     // TODO: display delete link only if entries_count is 0
+                     return str;
+                 }
+             },
+             {
+                 sdbmssMinWidth: "150px",
+                 title: 'ID',
+                 width: "10%",
+                 render: function (data, type, full, meta) { 
+                     var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/">SDBM_SOURCE_' + data + '</a>';
+                     return str;
+                 },
+                 dbSortField: 'id'
+             },
+             {
+                 sdbmssMinWidth: "120px",
+                 title: 'Source Type',
+                 dbSortField: 'source_type_id'
+             },
+             {
+                 sdbmssMinWidth: "80px",
+                 title: '# Entries',
+                 dbSortField: 'entries_count'
+             },
+             {
+                 sdbmssMinWidth: "100px",
+                 title: 'Date',
+                 width: "10%",
+                 dbSortField: 'date'
+             },
+             {
+                 sdbmssMinWidth: "400px",
+                 sdbmssMaxWidth: "400px",            
+                 title: 'Title',
+                 width: "70%",
+                 dbSortField: 'title'
+             },
+             {
+                 sdbmssMinWidth: "200px",
+                 sdbmssMaxWidth: "200px",            
+                 title: 'Author',
+                 dbSortField: 'author'
+             },
+             {
+                 sdbmssMinWidth: "200px",
+                 sdbmssMaxWidth: "200px",            
+                 orderable: false, // too difficult to sort by this
+                 title: 'Selling Agent'
+             },
+             {
+                 sdbmssMinWidth: "200px",
+                 sdbmssMaxWidth: "200px",            
+                 orderable: false, // too difficult to sort by this
+                 title: 'Institution'
+             },
+             {
+                 sdbmssMinWidth: "100px",
+                 title: 'Has MSS',
+                 dbSortField: 'whether_mss'
+             },
+             {
+                 sdbmssMinWidth: "150px",
+                 title: 'Medium',
+                 dbSortField: 'medium'
+             },
+             {
+                 sdbmssMinWidth: "100px",
+                 title: "Date Accessed",
+                 dbSortField: 'date_accessed'
+             },
+             {
+                 sdbmssMinWidth: "200px",
+                 sdbmssMaxWidth: "200px",            
+                 title: "Institution",
+                 dbSortField: 'location_institution'
+             },
+             {
+                 sdbmssMinWidth: "200px",
+                 sdbmssMaxWidth: "200px",            
+                 title: "Location",
+                 dbSortField: 'location'
+             },
+             {
+                 sdbmssMinWidth: "200px",
+                 sdbmssMaxWidth: "200px",            
+                 title: "Link",
+                 dbSortField: 'link'
+             },
+             {
+                 sdbmssMinWidth: "300px",
+                 sdbmssMaxWidth: "300px",            
+                 title: "Comments",
+                 dbSortField: 'comments'
+             },
+             {
+                 sdbmssMinWidth: "100px",
+                 sdbmssMaxWidth: "100px",            
+                 title: 'Created By',
+                 dbSortField: 'created_by_id'
+             }
+         ];
+     };
+
+     ManageSources.prototype.searchResultToTableRow = function (result) {
+         return [
+             null,
+             result.id,
+             result.id,
+             result.source_type,
+             result.entries_count || 0,
+             result.date,
+             result.title,
+             result.author,
+             result.selling_agent,
+             result.institution,
+             result.whether_mss,
+             result.medium,
+             result.date_accessed,
+             result.location_institution,
+             result.location,
+             result.link,
+             result.comments,
+             result.created_by
+         ];
+     };
+
+     ManageSources.prototype.createSearchParams = function (dt_params) {
+         var params = SDBM.ManageRecords.prototype.createSearchParams.call(this, dt_params);
+         params['title'] = this.getSearchValue();
+         return params;
+     };
+
+     new ManageSources({
+         resourceName: "<%= resource_name %>",
+         showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
+         searchNameField: "name"
+     });
+
+ });
+
+</script>

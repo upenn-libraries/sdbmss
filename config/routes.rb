@@ -76,7 +76,10 @@ Rails.application.routes.draw do
   end
 
   resources :places do
-    collection { get 'search' }
+    collection {
+      post 'mark_as_reviewed'
+      get 'search'
+    }
   end
 
   # use 'username' as identifier here for nicer URLs

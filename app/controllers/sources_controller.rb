@@ -1,5 +1,7 @@
-class SourcesController < ApplicationController
-  include ResourceSearch
+
+class SourcesController < SimpleNamedModelsController
+
+  include MarkAsReviewed
 
   wrap_parameters include: Source.attribute_names - ['created_at', 'created_by', 'updated_at', 'updated_by'] + ['source_agents']
 
@@ -47,6 +49,10 @@ class SourcesController < ApplicationController
     render "show"
   end
 
+  def model_class
+    Source
+  end
+
   def search_exact_enabled
     false
   end
@@ -58,6 +64,12 @@ class SourcesController < ApplicationController
     query = Source.all
     query = query.where('date like ?', "#{date}%") if date.present?
     query = query.where('title like ?', "%#{title}%") if title.present?
+    if params[:unreviewed_only].to_s == '1'
+      query = query.where(reviewed: false)
+    end
+    if params[:created_by_user].to_s == '1'
+      query = query.where(created_by_id: current_user.id)
+    end
     query = query.joins(source_agents: [ :agent ] ).where('names.name like ?', "%#{agent}%") if agent.present?
     query.with_associations
   end
@@ -84,6 +96,7 @@ class SourcesController < ApplicationController
       location: obj.location,
       link: obj.link,
       comments: obj.comments,
+      created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
     }
   end
 
