@@ -20,7 +20,8 @@ $(document).ready(function () {
     <%# check for revision file created by Capistrano deployment %>
     <% if (revision_file = Rails.root.join("REVISION")).exist? %>
     '<p>' + 
-    'This server is running revision <%= revision_file.read.strip %>.' + 
+    'This application was last updated at <%= revision_file.ctime.to_s[0..-7] %> ' +
+    'and is running revision <%= revision_file.read.strip %>.' + 
     '</p>' +
     <% end %>
     '<p>' +
