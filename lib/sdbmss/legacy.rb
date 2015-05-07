@@ -45,8 +45,6 @@ module SDBMSS::Legacy
       "PY" => "Papyrus",
       "S" => "Silk",
       "V" => "Parchment",
-      # TODO: create a code for Wood but FIRST disambiguate 'W' values in the db (there are 3, I think). we should probably spell it out in the legacy DB to avoid confusion.
-      # "W" => "Wood",
     }
 
     REGEX_COMMON_TITLE = /\[(.+)\]/
@@ -749,6 +747,7 @@ module SDBMSS::Legacy
       if row['ALT_SIZE'].present? and ! VALID_ALT_SIZE_TYPES.member? row['ALT_SIZE']
         # TODO: these can be cleaned up programmatically, no need to warn
         # print "WARNING: entry ID=%s has bad alt_size value: %s" % (row['MANUSCRIPT_ID'], row['ALT_SIZE'])
+        create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'bad_alt_size', "non-normalized value for alt size = #{row['ALT_SIZE']}")
       end
 
       # We decided 1/22/15 that we don't need a date field on
@@ -936,7 +935,6 @@ module SDBMSS::Legacy
       # there are 38 rows in db that use , instead of | for some of the delimiters
       dates = SDBMSS::Util.split_and_strip(row['MANUSCRIPT_DATE'], delimiter: /[\,\|]/, filter_blanks: false)
       circas = SDBMSS::Util.split_and_strip(row['CIRCA'], delimiter: /[\,\|]/, filter_blanks: false)
-      # TODO: do NOT skip dates if they don't match, fix the damn data
       if dates.length != circas.length
         create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'circas_mismatch', "number of dates doesn't match num of circas")
       else
@@ -1008,7 +1006,7 @@ module SDBMSS::Legacy
           elsif author_variant.present?
             if author_variant.length > 255
               create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'author_variant_too_long', "Author variant too long for entry #{row['MANUSCRIPT_ID']} = #{author_variant}")
-              # this data needs to be fixed eventually; for now, though, we truncate, so entry_author validates for manuscript id=119296
+              # TODO: this data needs to be fixed eventually; for now, though, we truncate, so entry_author validates for manuscript id=119296
               author_variant = author_variant[0..254]
             end
           else
@@ -1096,7 +1094,6 @@ module SDBMSS::Legacy
       end
 
       SDBMSS::Util.split_and_strip(row['PROVENANCE']).each do |atom|
-        # TODO: we should fix the data in the db
         if atom.length < 255
           provenance = Event.create!(
             # primary: false,
@@ -1115,7 +1112,7 @@ module SDBMSS::Legacy
             supplied_by_data_entry: supplied_by_data_entry
           )
         else
-          puts "WARNING: skipping provenance entry for record #{row['MANUSCRIPT_ID']} because it's too long"
+          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], "provenance_too_long", "didn't migrate provenance name '#{atom}' because it's too long")
         end
       end
 
@@ -1278,7 +1275,7 @@ module SDBMSS::Legacy
       date = row['CAT_DATE']
       if date == '00000000'
         date = nil
-      elsif !date.nil? && ![4, 6, 8].member?(date.length)
+      elsif !date.nil? && ![4, 6, 8].member?(date.length) && row['ISDELETED'] != 'y'
         create_issue('MANUSCRIPT_CATALOG', row['MANUSCRIPTCATALOGID'], "bad_date", "bad date #{date}: should be either YYYY, YYYYMM or YYYYMMDD")
       end
 
