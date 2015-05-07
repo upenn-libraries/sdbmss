@@ -182,6 +182,9 @@ module SDBMSS::Legacy
             start_date = date
             end_date = (start_date.to_i + 1).to_s
           end
+        else
+          # has circa but no date
+          create_issue('MANUSCRIPT', manuscript_id, "circa_without_date", "#{circa_original} #{date}")
         end
       else
         # no circa
