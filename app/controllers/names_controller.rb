@@ -78,4 +78,16 @@ class NamesController < SimpleNamedModelsController
     p.permit(:name, :comment, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe)
   end
 
+  def deletable?(object)
+    deletable = true
+    if (object.authors_count || 0) > 0 ||
+       (object.artists_count || 0) > 0 ||
+       (object.scribes_count || 0) > 0 ||
+       (object.source_agents_count || 0) > 0 ||
+       (object.event_agents_count || 0) > 0
+      deletable = false
+    end
+    deletable
+  end
+
 end

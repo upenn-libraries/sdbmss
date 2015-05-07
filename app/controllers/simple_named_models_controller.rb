@@ -88,9 +88,26 @@ class SimpleNamedModelsController < ApplicationController
     # mark as deleted, don't actually destroy the record
     if deletable?(@model)
       @model.deleted = true
-      @model.save!
+      if @model.save
+        respond_to do |format|
+          format.json {
+            render status: :ok, json: {}
+          }
+        end
+      else
+        respond_to do |format|
+          format.json {
+            render status: :unprocessable_entity, json: { "error" => @model.errors.join("; ") }
+          }
+        end
+      end
+    else
+      respond_to do |format|
+        format.json {
+          render status: :unprocessable_entity, json: { "error" => "Record is not deletable, probably because other records are associated with it" }
+        }
+      end
     end
-    respond_with(@model)
   end
 
   private
