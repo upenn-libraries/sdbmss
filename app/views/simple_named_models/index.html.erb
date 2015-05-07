@@ -2,6 +2,9 @@
 <%= stylesheet_link_tag "extras", media: "all" %>
 <%= javascript_include_tag "extras" %>
 <%= render partial: "listing_inline_js" %>
+<style type="text/css">
+ input[type="checkbox"] { margin: 0; }
+</style>
 <% end %>
 
 <% if !can? :manage, model_class %> 
