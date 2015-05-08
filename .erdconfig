@@ -13,7 +13,7 @@ orientation: horizontal
 polymorphism: false
 sort: true
 warn: true
-title: sample title
+title: Schoenberg Database of Manuscripts
 exclude: null
 # if we don't explicitly list our models here, rails-erd chokes. I don't know why.
 only: Entry,Source,User,EntryArtist,Name,EntryAuthor,EntryChange,EntryComment,EntryDate,EntryLanguage,Language,EntryManuscript,Manuscript,EntryMaterial,EntryPlace,Place,EntryScribe,EntryTitle,EntryUse,Event,EventAgent,LegacyDataIssue,ManuscriptComment,SourceAgent,SourceType
