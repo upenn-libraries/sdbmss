@@ -732,7 +732,9 @@ module SDBMSS::Legacy
           source = jordanus
         elsif
           source = unknown_source
-          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'unknown_source', "entry ID=#{row['MANUSCRIPT_ID']} assigned Unknown source because it doesn't have a Catalog entry")
+          if !deleted
+            create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'unknown_source', "entry ID=#{row['MANUSCRIPT_ID']} assigned Unknown source because it doesn't have a Catalog entry")
+          end
         end
       end
 
