@@ -1156,7 +1156,7 @@ module SDBMSS::ReferenceData
         source: @source,
         catalog_or_lot_number: "1",
         transaction_type: Entry::TYPE_TRANSACTION_NONE,
-        institution: Name.find_or_create_artist('Libary of Saint Bernard College, Saint Bernard, Alabama'),
+        institution: Name.find_or_create_artist('Library of Saint Bernard College, Saint Bernard, Alabama'),
         folios: 192,
         height: 140,
         width: 100,
