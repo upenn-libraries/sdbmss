@@ -123,8 +123,8 @@ describe "Manage languages", :js => true do
       expect(page).to have_selector("#select-all", visible: true)
       find("#select-all").click
 
-      expect(page).to have_selector("#mark_as_reviewed")
-      find("#mark_as_reviewed").click
+      expect(page).to have_selector("#mark-as-reviewed")
+      find("#mark-as-reviewed").click
 
       expect(page).to have_content("No records found")
 

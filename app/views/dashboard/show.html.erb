@@ -8,7 +8,13 @@
             <div class="panel-heading">Stuff you can do</div>
             <div class="panel-body">
                 <p><a href="<%= new_entry_path %>">Enter New Records</a></p>
-                <p><a href="<%= admin_search_path %>">Manage Entries</a></p>
+                <p><a href="<%= admin_search_path %>">Manage Entries</a>
+                    <% if can? :manage, Entry %>
+                        <% if (unapproved_count = Entry.where(approved: false).count) > 0 %>
+                            <br/>(<span style="color: red;"><%= unapproved_count %> unapproved</span>)
+                        <% end %>
+                    <% end %>
+                </p>
             </div>
         </div>
         <div class="panel panel-default">

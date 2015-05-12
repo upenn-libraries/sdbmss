@@ -13,6 +13,10 @@ $(document).ready(function() {
         search: false
     };
 
+    var showUnapprovedOnly = function() {
+        return $("input[name='unapproved_only']").is(":checked");
+    };
+    
     // Fielded search specific params
     var translateSearchParams = function (sdbmTable, data) {
         params = sdbmTable.translateParamsToBlacklight(data);
@@ -27,6 +31,8 @@ $(document).ready(function() {
             }
         });
 
+        params["approved"] = showUnapprovedOnly() ? "false" : "*";
+        
         return params;
     };
 
@@ -42,16 +48,33 @@ $(document).ready(function() {
     var sdbmTable = new SDBM.EntryTable("#search_results", {
         prependColumns: [
             {
+                sdbmssMinWidth: "25px",
+                sdbmssMaxWidth: "25px",
+                title: '',
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if(showUnapprovedOnly()) {
+                        return '<input type="checkbox" name="approve" value="' + full[sdbmTable.getColumnIndex("ID")] + '"/>';
+                    }
+                    return '';
+                }
+            },
+            {
+                sdbmssMinWidth: "150px",
+                sdbmssMaxWidth: "150px",
                 title: 'Actions',
-                "data": null,
-                "orderable": false,
-                "render": function (data, type, full, meta) {
+                orderable: false,
+                render: function (data, type, full, meta) {
                     var entryId = full[sdbmTable.getColumnIndex("ID")];
                     var manuscriptId = full[sdbmTable.getColumnIndex("Manuscript")];
                     var linkingToolURL = manuscriptId ? '/linkingtool/manuscript/' + manuscriptId : '/linkingtool/entry/' + entryId;
+
+                    var showLinkingTool = full[sdbmTable.getColumnIndex("Is Approved")] === true;
+                    var linkingToolHTMLLink = ' &middot; <a class="find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
+
                     return '<a href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +
-                        ' &middot; <a class="entry-delete-link" href="#" target="_blank">Delete</a>' +
-                        ' &middot; <a class="find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
+                           ' &middot; <a class="entry-delete-link" href="#" target="_blank">Delete</a>' +
+                           (showLinkingTool ? linkingToolHTMLLink : '');
                 }
             }
         ],
@@ -90,8 +113,14 @@ $(document).ready(function() {
             } else {
                 var params = translateSearchParams(sdbmTable, dt_params);                
                 sdbmTable.searchAndUpdateTable(params, callback, {
-                    'complete': function () {
+                    complete: function () {
                         $("#spinner").hide();
+
+                        if(showUnapprovedOnly()) {
+                            $(".approve-control").show();
+                        } else {
+                            $(".approve-control").hide();
+                        }
                     }
                 });
             }
@@ -152,6 +181,41 @@ $(document).ready(function() {
         return false;
     });
 
+    $(document).on('click', "#select-all", function(event) {
+        $("input[name='approve']").prop("checked", true);
+        return false;
+    });
+
+    $(document).on('click', "#deselect-all", function(event) {
+        $("input[name='approve']").prop("checked", false);
+        return false;
+    });
+
+    $(document).on('click', "#mark-as-approved", function(event) {
+        var ids = [];
+        $("input[name='approve']:checked").each(function (idx, element) {
+            ids.push($(element).val());
+        });
+        
+        if(ids.length > 0) {
+            // TODO: spinner
+            $.ajax({
+                url: '/entries/mark_as_approved.json',
+                type: 'POST',
+                data: { ids: ids },
+                success: function(data, textStatus, jqXHR) {
+                    sdbmTable.reload();
+                },
+                error: function() {
+                    // TODO: fill this out
+                    alert("An error occurred marking records as reviewed");
+                }
+            });
+        }
+
+        return false;
+    });
+
 });
 
 </script>
@@ -191,6 +255,11 @@ $(document).ready(function() {
             <%- end -%>
             </select>
         </div>
+        <div class="col-sm-3">
+            <label class="checkbox-inline">
+                <input id="unapproved_only" name="unapproved_only" type="checkbox" value="1" />Limit to records needing approval
+            </label>
+        </div>
     </div>
 
     <div class="row form-group search-fieldset">
@@ -220,6 +289,15 @@ $(document).ready(function() {
         </div>
         <div class="col-sm-1">
             <button id="jump_submit" class="btn btn-primary">Go</button>
+        </div>
+    </div>
+
+    <div class="row form-group search-fieldset approve-control" style="display: none;">
+        <div class="col-sm-2 col-sm-offset-1">
+            <a href="#" id="select-all">Select All</a> / <a href="#" id="deselect-all">Deselect All</a>
+        </div>
+        <div class="col-sm-2 col-sm-offset-1">
+            <a class="btn btn-primary btn-xs" id="mark-as-approved" class="btn btn-primary">Mark checked records as approved</a>
         </div>
     </div>
 

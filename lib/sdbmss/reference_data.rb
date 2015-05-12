@@ -95,6 +95,7 @@ module SDBMSS::ReferenceData
         initials_decorated: 15,
         manuscript_binding: 'Ca. 1900, with the gilt stamp of "L. Broca" (Lucien Broca), red morocco over pasteboard, upper and lower cover with gilt double fillet borders enclosing a gilt central medallion; five raised bands on spine, compartments repeating gilt motif, edges and turn-ins gilt.',
         created_by: lransom,
+        approved: true
       )
 
       transaction = Event.create!(
@@ -210,6 +211,7 @@ module SDBMSS::ReferenceData
         manuscript_binding: 'End of 15th-early 16th century, panelled leather, blind stamped (including a roll stamp, with fleur-de-lys, crowned fleur-de-lys, and a crowned dolphin), with metal corners & centerpieces',
         other_info: 'Written in black ink in Littera batarda',
         created_by: lransom,
+        approved: true
       )
 
       transaction = Event.create!(
@@ -312,6 +314,7 @@ module SDBMSS::ReferenceData
         catalog_or_lot_number: "4",
         transaction_type: Entry::TYPE_TRANSACTION_SALE,
         created_by: lransom,
+        approved: true
       )
 
       transaction = Event.create!(
@@ -415,6 +418,7 @@ module SDBMSS::ReferenceData
         catalog_or_lot_number: "5",
         transaction_type: Entry::TYPE_TRANSACTION_SALE,
         created_by: lransom,
+        approved: true
       )
 
       transaction = Event.create!(
@@ -558,6 +562,7 @@ module SDBMSS::ReferenceData
         manuscript_binding: 'Italian paneled brow leather over wooden boards, tooled in blind with ropework border.',
         other_info: 'Manuscript is dated in an inscription 30 December. 1480. Includes one full-length illuminated border.',
         created_by: lransom,
+        approved: true
       )
 
       transaction = Event.create!(
@@ -656,6 +661,7 @@ module SDBMSS::ReferenceData
         manuscript_binding: 'Early 19th-century diced Russia leather over wooden boards.',
         other_info: 'Manuscript is dated in an inscription 30 December. 1480. Includes one full-length illuminated border.',
         created_by: lransom,
+        approved: true
       )
 
       transaction = Event.create!(
@@ -967,6 +973,7 @@ module SDBMSS::ReferenceData
         width: 150,
         manuscript_binding: 'Contemporary (?) boards.',
         created_by: lransom,
+        approved: true
       )
 
       EntryTitle.create!(
@@ -1074,6 +1081,7 @@ module SDBMSS::ReferenceData
         initials_decorated: 19,
         manuscript_binding: 'Contemporary blind-stamped calf over wooden boards, four brass cornerplates, each with a long petal-like extension stamped with "Maria", complex central brass medallion with the Christogram "Y H S" against a radiating sun and with eight surrounding circles stamped with a starburst, one brass and leather clasp, brass catches for three other clasps (now lacking)',
         created_by: lransom,
+        approved: true
       )
 
       transaction = Event.create!(
@@ -1163,6 +1171,7 @@ module SDBMSS::ReferenceData
         miniatures_unspec_size: 9,
         manuscript_binding: '18th-century brown calf.',
         created_by: lransom,
+        approved: true
       )
 
       EntryTitle.create!(
@@ -1197,6 +1206,7 @@ module SDBMSS::ReferenceData
         transaction_type: Entry::TYPE_TRANSACTION_NONE,
         institution: Name.find_or_create_artist('Allsopp, Fred W.'),
         created_by: lransom,
+        approved: true
       )
 
       EntryTitle.create!(
@@ -1345,6 +1355,7 @@ module SDBMSS::ReferenceData
         manuscript_link: "http://www.ebay.com/itm/MEDIEVAL-Miniature-CRUCIFIXION-c1450-A-D-Book-of-Hours-Vellum-MISSAL-MANUSCRIPT-/371277701327?pt=LH_DefaultDomain_0&hash=item5671e020cf",
         other_info: "This is a fragment. Folio count not provided.",
         created_by: lransom,
+        approved: true
       )
 
       transaction = Event.create!(
@@ -1471,6 +1482,7 @@ module SDBMSS::ReferenceData
         manuscript_binding: 'Clam-shell box',
         other_info: "Complete New Testament in Greek. Order of Books:  Gospels, Acts, James, Pauline Epistles, general epistles except for James, Apocalypse. Gregory-Aland 1780.",
         created_by: lransom,
+        approved: true
       )
 
       EntryTitle.create!(
@@ -1533,6 +1545,7 @@ module SDBMSS::ReferenceData
         initials_decorated: 1,
         manuscript_binding: 'modern light brown inlaid morocco with red and gold floral and leaf decoration',
         created_by: lransom,
+        approved: true
       )
 
       EntryTitle.create!(

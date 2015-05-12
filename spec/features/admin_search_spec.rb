@@ -6,10 +6,20 @@ describe "Admin search", :js => true do
   before :all do
     SDBMSS::ReferenceData.create_all
 
+    @unapproved_entry = Entry.new(
+      source: Source.last,
+      created_by: @user,
+      folios: 15,
+    )
+    @unapproved_entry.save!
+
+    SDBMSS::Util.wait_for_solr_to_be_current
+
     @user = User.create!(
       email: 'testuser@testadminsearch.com',
       username: 'testadminsearch',
-      password: 'somethingunguessable'
+      password: 'somethingunguessable',
+      role: 'admin'
     )
   end
 
@@ -39,6 +49,25 @@ describe "Admin search", :js => true do
     expect(page).not_to have_selector("#spinner", visible: true)
 
     expect(all("#search_results tbody tr").count).to eq(2)
+  end
+
+  it "should mark entry as approved" do
+
+    visit admin_search_path
+    first("#unapproved_only").click
+    click_button "Search"
+
+    expect(page).to have_selector("#select-all", visible: true)
+    find("#select-all").click
+
+    expect(page).to have_selector("#mark-as-approved")
+    find("#mark-as-approved").click
+
+    expect(page).to have_content("No records found")
+
+    @unapproved_entry.reload
+    expect(@unapproved_entry.approved).to be true
+    expect(@unapproved_entry.approved_by_id).to eq(@user.id)
   end
 
 end

@@ -25,7 +25,7 @@ Rails.application.routes.draw do
   # Note here that we point #show to BL's CatalogController
   resources :entries, except: [:show] do
     collection {
-      post 'mark_as_reviewed'
+      post 'mark_as_approved'
       get 'types'
     }
     member {

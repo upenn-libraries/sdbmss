@@ -300,6 +300,15 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'created_by' }
       end
 
+      # don't show this anywhere; this is defined only so that table
+      # view of Entries can filter on approved flag
+      config.add_search_field 'approved' do |field|
+        field.include_in_simple_select = false
+        field.include_in_advanced_search = false
+        field.is_numeric_field = false
+        field.solr_local_parameters = { :qf => 'approved' }
+      end
+
       # "sort results by" select (pulldown)
       # label in pulldown is followed by the name of the SOLR field to sort by and
       # whether the sort is ascending or descending (it must be asc or desc
@@ -331,6 +340,8 @@ module CatalogControllerConfiguration
     end
 
     self.search_params_logic << :show_all_if_no_query
+
+    self.search_params_logic << :show_approved
 
     self.search_params_logic << :translate_manuscript_date
 

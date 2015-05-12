@@ -66,6 +66,14 @@ module SDBMSS::Blacklight
       solr_parameters['q.alt'] = "*:*" if blacklight_params['q'].blank?
     end
 
+    def show_approved(solr_parameters)
+      # unless a query is specifically filtering on approved field,
+      # only show approved records.
+      if blacklight_params['approved'].blank?
+        solr_parameters['fq'] << 'approved:true'
+      end
+    end
+
     # This translates a query str of "[year1 TO year2]" in the
     # manuscript_date blacklight parameters field to a str of the form
     # '["minX minY" TO "maxX maxY"]'. We do this translation so that

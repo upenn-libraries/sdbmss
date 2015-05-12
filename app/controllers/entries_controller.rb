@@ -2,11 +2,11 @@ class EntriesController < ApplicationController
 
   before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history]
 
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :similar]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :similar, :mark_as_approved]
 
   respond_to :html, :json
 
-  load_and_authorize_resource :only => [:edit, :update, :destroy]
+  load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_approved]
 
   # JSON data structure optimized for editing page. This weird action
   # exists because we want CatalogController to handle #show, but we
@@ -129,6 +129,22 @@ class EntriesController < ApplicationController
     @similar_ids = @entry.similar
     respond_to do |format|
       format.json
+    end
+  end
+
+  def mark_as_approved
+    ids = params[:ids]
+    if ids.present?
+      ids = ids.map(&:to_i)
+      Entry.where('id IN (?)', ids).update_all(
+        approved: true,
+        approved_by_id: current_user.id,
+        approved_at: DateTime.now,
+      )
+      Sunspot.index Entry.where('id IN (?)', ids)
+    end
+    respond_to do |format|
+      format.json { render :json => {}, :status => :ok }
     end
   end
 

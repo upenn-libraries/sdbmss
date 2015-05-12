@@ -144,7 +144,7 @@ var SDBM = SDBM || {};
             return false;
         });
 
-        $(document).on('click', "#mark_as_reviewed", function(event) {
+        $(document).on('click', "#mark-as-reviewed", function(event) {
             var ids = [];
             $("input[name='review']:checked").each(function (idx, element) {
                 ids.push($(element).val());

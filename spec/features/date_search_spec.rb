@@ -35,7 +35,8 @@ describe "Date Search", :js => true do
           date_normalized_end: "1951",
         },
       ],
-      created_by: user
+      created_by: user,
+      approved: true
     )
 
     Entry.create!(
@@ -49,7 +50,8 @@ describe "Date Search", :js => true do
           date_normalized_end: "1503",
         },
       ],
-      created_by: user
+      created_by: user,
+      approved: true
     )
 
     SDBMSS::Util.wait_for_solr_to_be_current
