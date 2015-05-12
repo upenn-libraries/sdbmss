@@ -514,11 +514,7 @@ class Entry < ActiveRecord::Base
           ed.date_normalized_start.to_i >= SDBMSS::Blacklight::DATE_RANGE_YEAR_MIN &&
           ed.date_normalized_end.to_i <= SDBMSS::Blacklight::DATE_RANGE_YEAR_MAX
       }.map { |entry_date|
-        if entry_date.date_normalized_start != entry_date.date_normalized_end
-          entry_date.normalized_date_range_str
-        else
-          entry_date.date_normalized_start
-        end
+        entry_date.normalized_date_range_str
       }
     end
     define_field(:string, :manuscript_date_flat, :stored => true) do

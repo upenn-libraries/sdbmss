@@ -79,7 +79,9 @@ class EntryDate < ActiveRecord::Base
 
   # returns a str of the normalized date range
   def normalized_date_range_str
-    if date_normalized_start.present? || date_normalized_end.present?
+    if date_normalized_start.to_i + 1 == date_normalized_end.to_i
+      return "#{date_normalized_start}"
+    elsif date_normalized_start.present? || date_normalized_end.present?
       return "#{date_normalized_start} - #{date_normalized_end}"
     end
     return ""
