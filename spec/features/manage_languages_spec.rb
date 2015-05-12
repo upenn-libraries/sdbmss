@@ -120,6 +120,9 @@ describe "Manage languages", :js => true do
       first("#unreviewed_only").click
       click_button 'Search'
 
+      expect(page).to have_selector("#select-all", visible: true)
+      find("#select-all").click
+
       expect(page).to have_selector("#mark_as_reviewed")
       find("#mark_as_reviewed").click
 
@@ -127,6 +130,7 @@ describe "Manage languages", :js => true do
 
       @language.reload
       expect(@language.reviewed).to be true
+      expect(@language.reviewed_by_id).to eq(@admin.id)
     end
 
   end

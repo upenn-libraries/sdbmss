@@ -29,7 +29,7 @@
                  orderable: false,
                  render: function (data, type, full, meta) {
                      if(manageRecords.getUnreviewedOnly() === 1) {
-                         return '<input type="checkbox" checked="checked" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                         return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                      }
                      return '';
                  },

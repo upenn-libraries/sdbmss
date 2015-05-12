@@ -134,6 +134,16 @@ var SDBM = SDBM || {};
             return false;
         });
 
+        $(document).on('click', "#select-all", function(event) {
+            $("input[name='review']").prop("checked", true);
+            return false;
+        });
+
+        $(document).on('click', "#deselect-all", function(event) {
+            $("input[name='review']").prop("checked", false);
+            return false;
+        });
+
         $(document).on('click', "#mark_as_reviewed", function(event) {
             var ids = [];
             $("input[name='review']:checked").each(function (idx, element) {
@@ -211,7 +221,7 @@ var SDBM = SDBM || {};
                 orderable: false,
                 render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {
-                        return '<input type="checkbox" checked="checked" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     }
                     return '';
                 },
@@ -262,9 +272,9 @@ var SDBM = SDBM || {};
 
     SDBM.ManageRecords.prototype.showOrHideMarkCheckedRecordsButton = function() {
         if(this.getUnreviewedOnly() === 1) {
-            $("#mark_as_reviewed").show();
+            $(".review-control").show();
         } else {
-            $("#mark_as_reviewed").hide();
+            $(".review-control").hide();
         }
     };
     
