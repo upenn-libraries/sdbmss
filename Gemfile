@@ -72,6 +72,13 @@ gem 'paper_trail', '~> 4.0.0.beta'
 # natural language date parser
 gem 'chronic', '~> 0.10.2'
 
+# async background job processing
+gem 'delayed_job', '~> 4.0.6'
+gem 'delayed_job_active_record', '~> 4.0.3'
+
+# neeeded for delayed_job script to run in background
+gem "daemons", '~> 1.2.2'
+
 # bundle exec rake doc:rails generates the Rails API under doc/api.
 group :doc do
   gem 'sdoc', '~> 0.4.0'

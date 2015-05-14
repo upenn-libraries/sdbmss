@@ -78,10 +78,6 @@ class EntriesController < ApplicationController
         errors = "Another change was made to the record while you were working. Re-load the page and start over."
       end
 
-      # Sunspot doesn't auto index here, probably bc it is hooked into
-      # after_save events, which aren't fired on #update! calls
-      Sunspot.index @entry
-
     rescue Exception => e
       logger.error(e.to_s + "\n\n" + e.backtrace.join("\n"))
       errors = e.backtrace.to_s
@@ -141,6 +137,8 @@ class EntriesController < ApplicationController
         approved_by_id: current_user.id,
         approved_at: DateTime.now,
       )
+      # do this immediately, rather than use delayed_job, so that
+      # admin UI reloads with accurate data
       Sunspot.index Entry.where('id IN (?)', ids)
     end
     respond_to do |format|

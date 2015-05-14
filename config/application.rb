@@ -22,6 +22,10 @@ module SDBMSS
 
     config.autoload_paths << Rails.root.join('lib')
 
+    config.eager_load_paths << Rails.root.join('lib')
+
     config.sdbmss_allow_user_signup = false
+
+    config.active_job.queue_adapter = :delayed_job
   end
 end

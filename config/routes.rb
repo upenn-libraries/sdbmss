@@ -22,6 +22,8 @@ Rails.application.routes.draw do
 
   get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
 
+  resources :delayed_jobs, only: [:index]
+
   # Note here that we point #show to BL's CatalogController
   resources :entries, except: [:show] do
     collection {

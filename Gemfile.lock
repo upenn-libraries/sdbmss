@@ -91,7 +91,13 @@ GEM
       execjs
     coffee-script-source (1.9.1.1)
     colorize (0.7.7)
+    daemons (1.2.2)
     debug_inspector (0.0.2)
+    delayed_job (4.0.6)
+      activesupport (>= 3.0, < 5.0)
+    delayed_job_active_record (4.0.3)
+      activerecord (>= 3.0, < 5.0)
+      delayed_job (>= 3.0, < 4.1)
     deprecation (0.2.2)
       activesupport
     devise (3.4.1)
@@ -290,6 +296,9 @@ DEPENDENCIES
   capybara (~> 2.4.4)
   chronic (~> 0.10.2)
   coffee-rails (~> 4.0.0)
+  daemons (~> 1.2.2)
+  delayed_job (~> 4.0.6)
+  delayed_job_active_record (~> 4.0.3)
   devise (~> 3.4.0)
   devise-guests (~> 0.3.0)
   factory_girl_rails (~> 4.0)

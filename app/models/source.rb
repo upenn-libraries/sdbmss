@@ -48,6 +48,7 @@ class Source < ActiveRecord::Base
   default_scope { where(deleted: false) }
 
   include UserFields
+  include IndexAfterUpdate
 
   before_validation :normalize
 
@@ -172,6 +173,10 @@ class Source < ActiveRecord::Base
     if source_type_id_changed? && self.persisted?
       errors.add(:source_type, "Change of source_type not allowed")
     end
+  end
+
+  def entries_to_index_on_update
+    Entry.with_associations.where(source_id: id)
   end
 
 end

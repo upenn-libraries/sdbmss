@@ -10,6 +10,7 @@ class Manuscript < ActiveRecord::Base
   accepts_nested_attributes_for :entry_manuscripts, allow_destroy: true
 
   include UserFields
+  include IndexAfterUpdate
 
   # returns all the Event objects associated with all the entries for this MS
   def all_provenance
@@ -38,6 +39,10 @@ class Manuscript < ActiveRecord::Base
       end
     end
     candidate_ids
+  end
+
+  def entries_to_index_on_update
+    Entry.with_associations.joins(:entry_manuscripts).where({ entry_manuscripts: { manuscript_id: id} })
   end
 
 end
