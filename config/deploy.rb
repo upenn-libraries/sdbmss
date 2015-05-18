@@ -143,15 +143,44 @@ namespace :deploy do
     end
   end
 
+  desc "Start foreman"
+  task :foreman_start do
+    on roles(:all) do
+      within current_path do
+        pid = File.join(current_path, "tmp", "pids", "foreman.pid")
+        execute "bundle exec foreman start >> log/foreman.log 2>> log/foreman.log && echo \"$!\" > #{pid}"
+      end
+    end
+  end
+
+  desc "Stop foreman"
+  task :foreman_stop do
+    on roles(:all) do
+      within current_path do
+        pid_file = File.join(current_path, "tmp", "pids", "foreman.pid")
+        if test("[ -f #{pid_file} ]")
+          within current_path do
+            begin
+              execute :kill, "`cat #{pid_file}`"
+            rescue Exception => e
+              # this can happen if last unicorn start failed and left a stale pid file.
+              execute :echo, "Ignoring error when trying to kill unicorn"
+            end
+          end
+        end
+      end
+    end
+  end
+
   # after 'deploy:started', 'deploy:solr_stop'
   # after 'deploy:started', 'deploy:unicorn_stop'
   # after 'deploy:publishing', 'deploy:solr_update'
   # after 'deploy:publishing', 'deploy:solr_start'
   # after 'deploy:publishing', 'deploy:unicorn_start'
 
-  #after 'deploy:started', 'deploy:foreman_stop'
+  after 'deploy:started', 'deploy:foreman_stop'
   after 'deploy:publishing', 'deploy:unicorn_prep'
-  after 'deploy:publishing', 'deploy:solr_update'
+  after 'deploy:started', 'deploy:foreman_start'
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
