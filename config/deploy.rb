@@ -180,7 +180,7 @@ namespace :deploy do
 
   after 'deploy:started', 'deploy:foreman_stop'
   after 'deploy:publishing', 'deploy:unicorn_prep'
-  after 'deploy:started', 'deploy:foreman_start'
+  after 'deploy:publishing', 'deploy:foreman_start'
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
