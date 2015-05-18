@@ -139,6 +139,9 @@ namespace :deploy do
   # after 'deploy:publishing', 'deploy:solr_start'
   # after 'deploy:publishing', 'deploy:unicorn_start'
 
+  after 'deploy:started', 'foreman:stop'
+  after 'deploy:publishing', 'foreman:start'
+
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
       # Here we can do anything such as:
