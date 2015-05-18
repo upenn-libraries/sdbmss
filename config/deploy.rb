@@ -159,7 +159,7 @@ namespace :deploy do
   task :foreman_stop do
     on roles(:all) do
       within current_path do
-        execute :kill, "`ps aux | grep foreman | grep master | grep -v grep | awk '{print $2}'`"
+        execute "ps aux | grep foreman | grep master | grep -v grep | awk '{print $2}' | xargs kill"
       end
     end
   end
