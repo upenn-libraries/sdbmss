@@ -148,7 +148,7 @@ namespace :deploy do
     on roles(:all) do
       within current_path do
         # do not run using bundle exec, b/c foreman isn't in Gemfile
-        execute "foreman start >> log/foreman.log 2>> log/foreman.log &"
+        run "nohup foreman start >> log/foreman.log 2>> log/foreman.log &"
       end
     end
   end
@@ -157,17 +157,7 @@ namespace :deploy do
   task :foreman_stop do
     on roles(:all) do
       within current_path do
-        pid_file = File.join(current_path, "tmp", "pids", "foreman.pid")
-        if test("[ -f #{pid_file} ]")
-          within current_path do
-            begin
-              execute :kill, "`cat #{pid_file}`"
-            rescue Exception => e
-              # this can happen if last unicorn start failed and left a stale pid file.
-              execute :echo, "Ignoring error when trying to kill unicorn"
-            end
-          end
-        end
+        execute :kill, `ps aux | grep foreman | grep master | awk '{print $2}'`
       end
     end
   end
