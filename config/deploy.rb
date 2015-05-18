@@ -89,6 +89,16 @@ namespace :deploy do
     end
   end
 
+  desc "Prep unicorn"
+  task :unicorn_prep do
+    on roles(:all) do
+      within current_path do
+        pids_dir = File.join(current_path, "tmp", "pids")
+        execute :mkdir, "-p #{pids_dir}"
+      end
+    end
+  end
+
   desc "Start unicorn"
   task :unicorn_start do
     on roles(:all) do
@@ -139,8 +149,9 @@ namespace :deploy do
   # after 'deploy:publishing', 'deploy:solr_start'
   # after 'deploy:publishing', 'deploy:unicorn_start'
 
-  after 'deploy:started', 'foreman:stop'
-  after 'deploy:publishing', 'foreman:start'
+  #after 'deploy:started', 'deploy:foreman_stop'
+  after 'deploy:publishing', 'deploy:unicorn_prep'
+  after 'deploy:publishing', 'deploy:solr_update'
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
