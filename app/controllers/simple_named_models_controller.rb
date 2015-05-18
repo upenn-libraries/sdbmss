@@ -72,7 +72,7 @@ class SimpleNamedModelsController < ApplicationController
     if result
       respond_to do |format|
         format.html {
-          flash[:notice] = "Your changes have been saved."
+          flash[:notice] = "Your changes have been saved. It may take a minute or two for your changes to show up in the public search results."
           redirect_to :action => "edit", :id => @model.id
         }
         format.json {
