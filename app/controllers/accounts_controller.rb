@@ -52,7 +52,7 @@ class AccountsController < SimpleNamedModelsController
   end
 
   def require_admin
-    authorize! :list, User
+    authorize! :manage, User
   end
 
   def model_params
