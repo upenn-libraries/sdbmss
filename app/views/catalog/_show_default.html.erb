@@ -435,14 +435,18 @@
 <% end %>
 
 <% if user_signed_in? %>
-<%= form_for EntryComment.new(entry: entry, public: true) do |f| %>
+<%= form_for EntryComment.new(entry: entry) do |f| %>
 <%= f.hidden_field :entry_id %>
-<%= f.hidden_field :public %>
 <input type="hidden" name="return_url" value="<%= entry_path entry %>"/>
     <div class="row">
         <div class="col-sm-12 form-group">
             <h4>Leave a comment</h4>
             <%= f.text_area :comment, class: "form-control", rows: 5 %>
+        </div>
+        <div class="col-sm-12 checkbox">
+            <label>
+                <%= f.check_box :is_correction %> I am leaving a comment that notes a correction to this record
+            </label>
         </div>
         <div class="col-sm-12 text-right">
             <button class="btn btn-primary">Submit</button>

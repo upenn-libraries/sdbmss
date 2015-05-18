@@ -19,7 +19,7 @@ class EntryCommentsController < ApplicationController
   private
 
   def entry_comment_params
-    params.require(:entry_comment).permit(:entry_id, :comment, :public)
+    params.require(:entry_comment).permit(:entry_id, :comment, :public, :is_correction)
   end
 
 end

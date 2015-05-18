@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150514143854) do
+ActiveRecord::Schema.define(version: 20150518171932) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,   null: false
@@ -123,11 +123,12 @@ ActiveRecord::Schema.define(version: 20150514143854) do
   create_table "entry_comments", force: :cascade do |t|
     t.integer  "entry_id",      limit: 4
     t.text     "comment",       limit: 65535
-    t.boolean  "public",        limit: 1
     t.datetime "created_at"
     t.integer  "created_by_id", limit: 4
     t.datetime "updated_at"
     t.integer  "updated_by_id", limit: 4
+    t.boolean  "public",        limit: 1,     default: true
+    t.boolean  "is_correction", limit: 1,     default: false
   end
 
   add_index "entry_comments", ["created_by_id"], name: "index_entry_comments_on_created_by_id", using: :btree

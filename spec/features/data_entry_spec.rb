@@ -700,9 +700,14 @@ describe "Data entry", :js => true do
       visit entry_path(entry)
 
       fill_in 'entry_comment_comment', with: "this entry is so crazy"
+      check 'entry_comment_is_correction'
       click_button('Submit')
 
       expect(page).to have_content "this entry is so crazy"
+
+      comment = EntryComment.last
+      expect(comment.comment).to eq("this entry is so crazy")
+      expect(comment.is_correction).to eq(true)
     end
 
     it "should validate when saving Entry"

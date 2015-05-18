@@ -17,6 +17,10 @@ gamified statistics, the user's role, and other public info.)</p>
 <ul>
     <li><%= Source.where(created_by: @user).count %> sources</li>
     <li><%= Entry.where(created_by: @user).count %> entries</li>
-    <li><%= EntryComment.where(created_by: @user).count %> comments</li>
+    <li><%= EntryComment.where(created_by: @user).count %> comments
+        <% if (num_corrections = EntryComment.where(created_by: @user, is_correction: true)).count > 0 %>
+        (<%= num_corrections %> of which are corrections to entries)
+        <% end %>
+    </li>
     <li>etc.
 </ul>
