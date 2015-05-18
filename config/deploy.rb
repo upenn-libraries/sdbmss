@@ -149,7 +149,7 @@ namespace :deploy do
       within current_path do
         puts "about to start"
         # do not run using bundle exec, b/c foreman isn't in Gemfile
-        execute "foreman start > log/foreman.log 2>&1 &"
+        execute "foreman start > log/foreman.log 2>&1 &", pty: false
         puts "after start"
       end
     end
