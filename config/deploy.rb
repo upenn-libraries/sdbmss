@@ -133,11 +133,11 @@ namespace :deploy do
     end
   end
 
-  after 'deploy:started', 'deploy:solr_stop'
-  after 'deploy:started', 'deploy:unicorn_stop'
-  after 'deploy:publishing', 'deploy:solr_update'
-  after 'deploy:publishing', 'deploy:solr_start'
-  after 'deploy:publishing', 'deploy:unicorn_start'
+  # after 'deploy:started', 'deploy:solr_stop'
+  # after 'deploy:started', 'deploy:unicorn_stop'
+  # after 'deploy:publishing', 'deploy:solr_update'
+  # after 'deploy:publishing', 'deploy:solr_start'
+  # after 'deploy:publishing', 'deploy:unicorn_start'
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do

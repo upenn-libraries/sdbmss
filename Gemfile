@@ -92,6 +92,8 @@ group :development do
   gem 'spring', '~> 1.1.0'
   # Use Capistrano for deployment
   gem 'capistrano-rails', '~> 1.1.0'
+  # Use foreman for process management
+  gem 'capistrano-foreman', '~> 1.2.0'
   # This can autogenerate ERD diagrams from ActiveRecord models and
   # schema.
   #gem 'rails-erd', '~> 1.3.1'
