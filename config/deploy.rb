@@ -148,7 +148,7 @@ namespace :deploy do
     on roles(:all) do
       within current_path do
         pid = File.join(current_path, "tmp", "pids", "foreman.pid")
-        execute "bundle exec foreman start >> log/foreman.log 2>> log/foreman.log" # && echo \"$!\" > #{pid}"
+        execute "bundle exec foreman start >> log/foreman.log 2>> log/foreman.log &" # && echo \"$!\" > #{pid}"
       end
     end
   end
