@@ -147,8 +147,8 @@ namespace :deploy do
   task :foreman_start do
     on roles(:all) do
       within current_path do
-        pid = File.join(current_path, "tmp", "pids", "foreman.pid")
-        execute "bundle exec foreman start >> log/foreman.log 2>> log/foreman.log &" # && echo \"$!\" > #{pid}"
+        # do not run using bundle exec, b/c foreman isn't in Gemfile
+        execute "foreman start >> log/foreman.log 2>> log/foreman.log &"
       end
     end
   end
