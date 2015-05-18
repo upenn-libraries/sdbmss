@@ -147,8 +147,10 @@ namespace :deploy do
   task :foreman_start do
     on roles(:all) do
       within current_path do
+        puts "about to start"
         # do not run using bundle exec, b/c foreman isn't in Gemfile
         run "nohup foreman start >> log/foreman.log 2>> log/foreman.log &"
+        puts "after start"
       end
     end
   end
@@ -157,7 +159,7 @@ namespace :deploy do
   task :foreman_stop do
     on roles(:all) do
       within current_path do
-        execute :kill, "`ps aux | grep foreman | grep master | awk '{print $2}'`"
+        execute :kill, "`ps aux | grep foreman | grep master | grep -v grep | awk '{print $2}'`"
       end
     end
   end
