@@ -66,7 +66,6 @@ gem 'activerecord-session_store', '~> 0.1.0'
 gem 'levenshtein', '~> 0.2.2'
 
 # for auditing model changes
-#gem 'paper_trail', '~> 3.0.7'
 gem 'paper_trail', '~> 4.0.0.beta'
 
 # natural language date parser
@@ -79,7 +78,7 @@ gem 'delayed_job_active_record', '~> 4.0.3'
 # neeeded for delayed_job script to run in background
 gem "daemons", '~> 1.2.2'
 
-# process monitoring and easy app startup
+# manage and monitor application processes
 gem "god", "~> 0.13.6"
 
 # bundle exec rake doc:rails generates the Rails API under doc/api.
