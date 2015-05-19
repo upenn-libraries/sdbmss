@@ -144,7 +144,9 @@ namespace :deploy do
   end
 
   def god_is_running
-    !capture("bundle exec god status >/dev/null 2>/dev/null || echo 'not running'").start_with?('not running')
+    within current_path do
+      !capture("bundle exec god status >/dev/null 2>/dev/null || echo 'not running'").start_with?('not running')
+    end
   end
 
   desc "Start god"
@@ -159,8 +161,8 @@ namespace :deploy do
   desc "Stop god"
   task :god_stop do
     on roles(:all) do
-      within current_path do
-        if god_is_running
+      if god_is_running
+        within current_path do
           # quits god and terminates all tasks
           execute "bundle exec god terminate"
         end
