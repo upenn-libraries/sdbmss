@@ -89,8 +89,8 @@ namespace :deploy do
     end
   end
 
-  desc "Prep unicorn"
-  task :unicorn_prep do
+  desc "Make pids directory"
+  task :mkdir_pids do
     on roles(:all) do
       within current_path do
         pids_dir = File.join(current_path, "tmp", "pids")
@@ -148,7 +148,7 @@ namespace :deploy do
     on roles(:all) do
       puts "about to start"
       # do not run using bundle exec, b/c foreman isn't in Gemfile
-      execute "cd #{deploy_to}current && nohup foreman start > log/foreman.log 2>&1 &", pty: false
+      execute "cd #{deploy_to}current && nohup foreman start > log/foreman.log 2>&1 &", pty: true
       puts "after start"
     end
   end
@@ -162,15 +162,35 @@ namespace :deploy do
     end
   end
 
+  desc "Start god"
+  task :god_start do
+    on roles(:all) do
+      # do not run using bundle exec, b/c foreman isn't in Gemfile
+      within current_path do
+        execute :bundle, "exec god -c sdbmss.god"
+      end
+    end
+  end
+
+  desc "Stop god"
+  task :god_stop do
+    on roles(:all) do
+      within current_path do
+        # quits god and terminates all tasks
+        execute :bundle, "exec god terminate"
+      end
+    end
+  end
+
   # after 'deploy:started', 'deploy:solr_stop'
   # after 'deploy:started', 'deploy:unicorn_stop'
   # after 'deploy:publishing', 'deploy:solr_update'
   # after 'deploy:publishing', 'deploy:solr_start'
   # after 'deploy:publishing', 'deploy:unicorn_start'
 
-  after 'deploy:started', 'deploy:foreman_stop'
-  after 'deploy:publishing', 'deploy:unicorn_prep'
-  after 'deploy:publishing', 'deploy:foreman_start'
+  after 'deploy:started', 'deploy:god_stop'
+  after 'deploy:publishing', 'deploy:mkdir_pids'
+  after 'deploy:publishing', 'deploy:god_start'
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
