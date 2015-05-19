@@ -177,7 +177,7 @@ namespace :deploy do
     on roles(:all) do
       within current_path do
         # quits god and terminates all tasks
-        execute :bundle, "exec god terminate"
+        execute "if [ `pgrep node` ]; then bundle exec god terminate; fi"
       end
     end
   end
