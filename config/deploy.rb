@@ -93,7 +93,7 @@ namespace :deploy do
   task :mkdir_pids do
     on roles(:all) do
       within current_path do
-        pids_dir = File.join(current_path, "tmp", "pids")
+        pids_dir = File.join(shared_path, "pids")
         execute :mkdir, "-p #{pids_dir}"
       end
     end
