@@ -179,6 +179,7 @@ namespace :deploy do
 
   after 'deploy:started', 'deploy:god_stop'
   after 'deploy:publishing', 'deploy:mkdir_pids'
+  after 'deploy:publishing', 'deploy:solr_update'
   after 'deploy:publishing', 'deploy:god_start'
 
   after :restart, :clear_cache do
