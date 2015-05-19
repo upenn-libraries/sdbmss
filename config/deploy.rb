@@ -162,7 +162,7 @@ namespace :deploy do
       if god_is_running
         within current_path do
           # quits god and terminates all tasks
-          execute "bundle exec god terminate"
+          execute :bundle, "exec god terminate"
         end
       end
     end
