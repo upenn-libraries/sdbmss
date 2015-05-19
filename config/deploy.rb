@@ -148,7 +148,7 @@ namespace :deploy do
     on roles(:all) do
       puts "about to start"
       # do not run using bundle exec, b/c foreman isn't in Gemfile
-      execute "(cd #{deploy_to}/current && /usr/bin/env nohup foreman start > log/foreman.log 2>&1 &) && sleep 1", pty: true
+      execute "cd #{deploy_to}current && nohup foreman start > log/foreman.log 2>&1 &", pty: false
       puts "after start"
     end
   end
