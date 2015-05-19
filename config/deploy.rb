@@ -144,9 +144,11 @@ namespace :deploy do
   end
 
   def god_is_running
+    running = false
     within current_path do
-      !capture("bundle exec god status >/dev/null 2>/dev/null || echo 'not running'").start_with?('not running')
+      running = !capture("bundle exec god status >/dev/null 2>/dev/null || echo 'not running'").start_with?('not running')
     end
+    running
   end
 
   desc "Start god"
