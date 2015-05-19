@@ -379,6 +379,15 @@
                 on <%= entry.created_at %>
             </td>
         </tr>
+        <% if entry.updated_at.present? && entry.updated_at != entry.created_at %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Last Updated</td>
+            <td class="col-sm-10">
+                by <%= render partial: "shared/username_with_profile_link", locals: { user: entry.updated_by } %>
+                on <%= entry.updated_at %>
+            </td>
+        </tr>
+        <% end %>
         <tr>
             <td class="col-sm-2 text-right record-label">Editors</td>
             <td class="col-sm-10">
