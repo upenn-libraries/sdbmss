@@ -151,7 +151,7 @@ namespace :deploy do
   task :god_start do
     on roles(:all) do
       within current_path do
-        execute :bundle, "exec god -c sdbmss.god"
+        execute :bundle, "exec god -c sdbmss.god -l log/god.log"
       end
     end
   end
