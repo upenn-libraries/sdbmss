@@ -1,26 +1,35 @@
 
-<h1><%= @user.username %></h1>
+<h1>User Profile</h1>
 
-<p>(TODO: this is the public profile page for users, which will show
-gamified statistics, the user's role, and other public info.)</p>
-    
-<p>Role: <%= @user.role.capitalize %></p>
-
-<p>Email: <% if @user.email_is_public %><%= mail_to @user.email %><% else %>(Private)<% end %></p>
-
-<% if @user.bio.present? %>
-<p>Bio: <%= @user.bio %></p>
-<% end %>
-
-<p>This user has contributed:</p>
-
-<ul>
-    <li><%= Source.where(created_by: @user).count %> sources</li>
-    <li><%= Entry.where(created_by: @user).count %> entries</li>
-    <li><%= EntryComment.where(created_by: @user).count %> comments
+<dl class="dl-horizontal dl-invert">
+    <dt>Username</dt>
+    <dd>
+        <%= @user.username %>
+    </dd>
+    <dt>Name</dt>
+    <dd>
+        <%= @user.fullname %>
+    </dd>
+    <dt>Role</dt>
+    <dd>
+        <%= @user.role.capitalize %>
+    </dd>
+    <dt>Email</dt>
+    <dd>
+        <% if @user.email_is_public %><%= mail_to @user.email %><% else %>(Private)<% end %>
+    </dd>
+    <dt>Bio</dt>
+    <dd>
+        <%= @user.bio || "N/A" %>
+    </dd>
+    <dt>Contributions</dt>
+    <dd>
+        <%= Source.where(created_by: @user).count %> sources<br/>
+        <a href="<%= search_advanced_url(created_by: @user.to_s) %>"><%= Entry.where(created_by: @user).count %> entries</a><br/>
+        <%= EntryComment.where(created_by: @user).count %> comments
         <% if (num_corrections = EntryComment.where(created_by: @user, is_correction: true)).count > 0 %>
-        (<%= num_corrections %> of which are corrections to entries)
-        <% end %>
-    </li>
-    <li>etc.
-</ul>
+            (<%= num_corrections %> of which are corrections to entries)
+        <% end %><br/>
+        </ul>
+    </dd>
+</dl>

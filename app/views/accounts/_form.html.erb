@@ -19,6 +19,12 @@
       </div>
   </div>
   <div class="field form-group row">
+      <%= f.label :fullname, "Full Name", class: "col-sm-2 control-label" %>
+      <div class="col-sm-4">
+          <%= f.text_field :fullname, :class => 'form-control' %>
+      </div>
+  </div>
+  <div class="field form-group row">
       <%= f.label :email, class: "col-sm-2 control-label" %>
       <div class="col-sm-4">
           <%= f.email_field :email, :class => 'form-control' %>

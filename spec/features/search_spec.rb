@@ -157,7 +157,7 @@ describe "Blacklight Search", :js => true do
   it "should load show Profile page" do
     user = User.last
     visit profile_path(user.username)
-    expect(page).to have_xpath("//h1[contains(.,'#{user.username}')]")
+    expect(page).to have_content(user.username)
   end
 
   it "should load show Manuscript page"

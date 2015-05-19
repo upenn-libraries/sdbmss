@@ -56,7 +56,7 @@ class AccountsController < SimpleNamedModelsController
   end
 
   def model_params
-    params.require(model_class_lstr.to_sym).permit(:username, :email, :email_is_public, :password, :password_confirmation, :role, :bio)
+    params.require(model_class_lstr.to_sym).permit(:username, :fullname, :email, :email_is_public, :password, :password_confirmation, :role, :bio)
   end
 
 end

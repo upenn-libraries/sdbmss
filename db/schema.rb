@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150518171932) do
+ActiveRecord::Schema.define(version: 20150519151319) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,   null: false
@@ -469,6 +469,7 @@ ActiveRecord::Schema.define(version: 20150518171932) do
     t.datetime "reviewed_at"
     t.integer  "created_by_id",          limit: 4
     t.integer  "updated_by_id",          limit: 4
+    t.string   "fullname",               limit: 255
   end
 
   add_index "users", ["created_by_id"], name: "index_users_on_created_by_id", using: :btree
