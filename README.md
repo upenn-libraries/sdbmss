@@ -117,13 +117,7 @@ migrated data.
   bundle exec rake sdbmss:migrate_legacy_data
   ```
 
-* Start up Solr and reindex records so that searching works.
-
-  ```
-  cd ~/sdbmss
-  bundle exec rake sunspot:solr:start
-  bundle exec rake sunspot:reindex
-  ```
+* Solr will need to be re-indexed. See below for notes on that.
 
 Running the Development Server
 ------------------------------
@@ -167,8 +161,8 @@ Libraries IT for the exclusive purpose of SDBM development. We use the
 term 'development' to refer to local development environments.
 
 We use capistrano to automate updating the staging server with the
-latest code, restarting the unicorn server, and recreating the
-database.
+latest code. We use god to do application process monitoring (the
+processes being unicorn, solr, and a delayed_job worker).
 
 * If Apache hasn't already been configured on the dev VM, do so:
   create a file /etc/httpd/conf.d/sdbmss.conf with the following

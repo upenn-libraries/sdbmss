@@ -79,6 +79,7 @@ gem 'delayed_job_active_record', '~> 4.0.3'
 # neeeded for delayed_job script to run in background
 gem "daemons", '~> 1.2.2'
 
+# process monitoring and easy app startup
 gem "god", "~> 0.13.6"
 
 # bundle exec rake doc:rails generates the Rails API under doc/api.
@@ -94,8 +95,7 @@ group :development do
   gem 'spring', '~> 1.1.0'
   # Use Capistrano for deployment
   gem 'capistrano-rails', '~> 1.1.0'
-  # Use foreman for process management
-  #gem 'capistrano-foreman', '~> 1.2.0'
+
   # This can autogenerate ERD diagrams from ActiveRecord models and
   # schema.
   #gem 'rails-erd', '~> 1.3.1'

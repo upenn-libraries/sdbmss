@@ -143,29 +143,9 @@ namespace :deploy do
     end
   end
 
-  desc "Start foreman"
-  task :foreman_start do
-    on roles(:all) do
-      puts "about to start"
-      # do not run using bundle exec, b/c foreman isn't in Gemfile
-      execute "cd #{deploy_to}current && nohup foreman start > log/foreman.log 2>&1 &", pty: true
-      puts "after start"
-    end
-  end
-
-  desc "Stop foreman"
-  task :foreman_stop do
-    on roles(:all) do
-      within current_path do
-        execute "ps aux | grep foreman | grep master | grep -v grep | awk '{print $2}' | xargs -r kill"
-      end
-    end
-  end
-
   desc "Start god"
   task :god_start do
     on roles(:all) do
-      # do not run using bundle exec, b/c foreman isn't in Gemfile
       within current_path do
         execute :bundle, "exec god -c sdbmss.god"
       end
@@ -182,6 +162,9 @@ namespace :deploy do
     end
   end
 
+  # this set of tasks does manual starting/stopping of solr and
+  # unicorn, which we no longer need since we use god. but keeping it
+  # around just in case...
   # after 'deploy:started', 'deploy:solr_stop'
   # after 'deploy:started', 'deploy:unicorn_stop'
   # after 'deploy:publishing', 'deploy:solr_update'
