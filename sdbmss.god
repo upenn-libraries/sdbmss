@@ -35,6 +35,9 @@ God.watch do |w|
   w.name = "solr"
   w.dir = rails_root
   w.start = "bundle exec rake sunspot:solr:run"
-  w.stop = "bundle exec rake sunspot:solr:stop"
+  # solr isn't writing pid files out correctly for some reason, so we
+  # let god track the PID and kill the process, instead of specifying
+  # a stop command
+  # w.stop = "bundle exec rake sunspot:solr:stop"
   w.keepalive
 end
