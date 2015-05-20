@@ -37,6 +37,16 @@ class User < ActiveRecord::Base
 
   validates_inclusion_of :role, in: ROLES
 
+  def self.statistics
+    results = ActiveRecord::Base.connection.execute("select username, count(*) from users inner join entries on entries.created_by_id = users.id where entries.deleted = 0 group by username")
+    results.map do |row|
+      {
+        username: row[0],
+        num_entries: row[1]
+      }
+    end
+  end
+
   # Method added by Blacklight; Blacklight uses #to_s on your
   # user class to get a user-displayable login/identifier for
   # the account.

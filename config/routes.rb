@@ -27,6 +27,7 @@ Rails.application.routes.draw do
     }
   end
 
+  get '/community/', to: 'community#show', as: 'community'
   get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
 
   resources :delayed_jobs, only: [:index]

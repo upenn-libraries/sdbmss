@@ -155,8 +155,8 @@ so that gray backdrop shvows up correctly */
     background-color: #000;
 }
 
-.table-suggestions > tbody > tr > td,
-.table-suggestions > thead > tr > th {
+.table-compressed > tbody > tr > td,
+.table-compressed > thead > tr > th {
     padding: 4px;
 }
 
