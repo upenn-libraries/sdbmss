@@ -121,7 +121,7 @@ class Entry < ActiveRecord::Base
   end
 
   def self.where_provenance_includes(name)
-    joins(:events => :event_agents).where(events: { primary: false }).where(event_agents: { agent_id: name.id })
+    joins(:events => :event_agents).where(events: { primary: false }).where(event_agents: { agent_id: name.id }).distinct
   end
 
   def public_id
