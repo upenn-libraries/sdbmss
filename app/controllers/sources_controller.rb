@@ -68,9 +68,6 @@ class SourcesController < SimpleNamedModelsController
     query = search_query_base
     query = query.where('date like ?', "#{date}%") if date.present?
     query = query.where('title like ?', "%#{title}%") if title.present?
-    if params[:unreviewed_only].to_s == '1'
-      query = query.where(reviewed: false)
-    end
     if params[:created_by_user].to_s == '1'
       query = query.where(created_by_id: current_user.id)
     end

@@ -9,6 +9,8 @@ class CatalogController < ApplicationController
   # 404 if necessary
   def show
     if Entry.exists?(params[:id])
+      @entry_comment = EntryComment.new(entry: Entry.find(params[:id]))
+      @entry_comment.build_comment
       super
     else
       render_404

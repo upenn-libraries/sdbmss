@@ -12,6 +12,11 @@ class ManuscriptsController < SimpleNamedModelsController
     Manuscript
   end
 
+  def show
+    @manuscript_comment = ManuscriptComment.new(manuscript: @manuscript)
+    @manuscript_comment.build_comment
+  end
+
   def create
     entry_manuscripts = params[:entry_manuscripts]
     entry_manuscripts_attributes = entry_manuscripts.map do |entry_manuscript_params|
@@ -58,9 +63,6 @@ class ManuscriptsController < SimpleNamedModelsController
 
   def search_query
     query = super
-    if params[:unreviewed_only].to_s == '1'
-      query = query.where(reviewed: false)
-    end
     if params[:created_by_user].to_s == '1'
       query = query.where(created_by_id: current_user.id)
     end

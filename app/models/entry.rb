@@ -26,6 +26,7 @@ class Entry < ActiveRecord::Base
   has_many :places, through: :entry_places
   has_many :entry_uses, inverse_of: :entry
   has_many :entry_comments
+  has_many :comments, through: :entry_comments
   has_many :events, inverse_of: :entry
 
   accepts_nested_attributes_for :entry_titles, allow_destroy: true
@@ -388,7 +389,7 @@ class Entry < ActiveRecord::Base
       # provenance
       provenance_names +
       # comments
-      entry_comments.select { |ec| ec.public }.map { |ec| ec.comment }
+      comments.select(&:public).map(&:comment)
 
       fields.map(&:to_s).select(&:present?).join "\n"
     end
@@ -634,7 +635,7 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:text, :comment_search, :stored => true) do
-      entry_comments.select(&:public).map(&:comment).join("\n")
+      comments.select(&:public).map(&:comment).join("\n")
     end
 
   end

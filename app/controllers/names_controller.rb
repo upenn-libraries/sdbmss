@@ -38,9 +38,6 @@ class NamesController < SimpleNamedModelsController
     if params[:type].present?
       query = query.where(params[:type].to_sym => true)
     end
-    if params[:unreviewed_only].to_s == '1'
-      query = query.where(reviewed: false)
-    end
     if params[:created_by_user].to_s == '1'
       query = query.where(created_by_id: current_user.id)
     end

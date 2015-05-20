@@ -457,7 +457,7 @@ module SDBMSS::Legacy
       # have one; do this before catalog migration so it's id=1
       unknown_source = Source.create!(
         date: "00000000",
-        title: "Unknown (entry record needs to be fixed)",
+        title: "Unknown - This source is a container for legacy records missing valid source information",
         source_type: SourceType.unpublished,
       )
 
@@ -794,13 +794,15 @@ module SDBMSS::Legacy
       if row['ENTRY_COMMENTS'].present?
         EntryComment.create!(
           entry: entry,
-          comment: row['ENTRY_COMMENTS'],
-          created_at: row['LAST_MODIFIED'] || row['ADDEDON'],
-          # we don't know who made the comment (it's possibly been
-          # edited by several people), so set it to
-          # manuscript_database
-          created_by: get_or_create_user('manuscript_database'),
-          )
+          comment_attributes: {
+            comment: row['ENTRY_COMMENTS'],
+            created_at: row['LAST_MODIFIED'] || row['ADDEDON'],
+            # we don't know who made the comment (it's possibly been
+            # edited by several people), so set it to
+            # manuscript_database
+            created_by_id: get_or_create_user('manuscript_database').id,
+          }
+        )
       end
 
       # there are a lot of records (as many as 1500?) with only Buyer
@@ -1321,7 +1323,9 @@ module SDBMSS::Legacy
       if status == 'Not Entered (No MSS)'
         if whether_mss.present?
           if whether_mss != 'No'
-            create_issue('MANUSCRIPT_CATALOG', row['MANUSCRIPTCATALOGID'], "bad_status", "catalog SDBM_STATUS is #{row['SDBM_STATUS']} but WHETHER_MSS is #{row['WHETHER_MSS']}, which makes no sense")
+            if !deleted
+              create_issue('MANUSCRIPT_CATALOG', row['MANUSCRIPTCATALOGID'], "bad_status", "catalog SDBM_STATUS is #{row['SDBM_STATUS']} but WHETHER_MSS is #{row['WHETHER_MSS']}, which makes no sense")
+            end
           end
         else
           whether_mss = 'No'

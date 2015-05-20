@@ -20,6 +20,13 @@ Rails.application.routes.draw do
   # the blacklight gem.
   blacklight_for :catalog
 
+  resources :comments do
+    collection {
+      post 'mark_as_reviewed'
+      get 'search'
+    }
+  end
+
   get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
 
   resources :delayed_jobs, only: [:index]

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150519151319) do
+ActiveRecord::Schema.define(version: 20150519171309) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,   null: false
@@ -24,6 +24,24 @@ ActiveRecord::Schema.define(version: 20150519151319) do
   end
 
   add_index "bookmarks", ["user_id"], name: "index_bookmarks_on_user_id", using: :btree
+
+  create_table "comments", force: :cascade do |t|
+    t.text     "comment",        limit: 65535
+    t.boolean  "public",         limit: 1,     default: true
+    t.boolean  "is_correction",  limit: 1,     default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "reviewed",       limit: 1,     default: false
+    t.datetime "reviewed_at"
+    t.boolean  "deleted",        limit: 1,     default: false
+    t.integer  "created_by_id",  limit: 4
+    t.integer  "updated_by_id",  limit: 4
+    t.integer  "reviewed_by_id", limit: 4
+  end
+
+  add_index "comments", ["created_by_id"], name: "index_comments_on_created_by_id", using: :btree
+  add_index "comments", ["reviewed_by_id"], name: "index_comments_on_reviewed_by_id", using: :btree
+  add_index "comments", ["updated_by_id"], name: "index_comments_on_updated_by_id", using: :btree
 
   create_table "delayed_jobs", force: :cascade do |t|
     t.integer  "priority",   limit: 4,     default: 0, null: false
@@ -121,19 +139,12 @@ ActiveRecord::Schema.define(version: 20150519151319) do
   add_index "entry_changes", ["entry_id"], name: "index_entry_changes_on_entry_id", using: :btree
 
   create_table "entry_comments", force: :cascade do |t|
-    t.integer  "entry_id",      limit: 4
-    t.text     "comment",       limit: 65535
-    t.datetime "created_at"
-    t.integer  "created_by_id", limit: 4
-    t.datetime "updated_at"
-    t.integer  "updated_by_id", limit: 4
-    t.boolean  "public",        limit: 1,     default: true
-    t.boolean  "is_correction", limit: 1,     default: false
+    t.integer "entry_id",   limit: 4
+    t.integer "comment_id", limit: 4
   end
 
-  add_index "entry_comments", ["created_by_id"], name: "index_entry_comments_on_created_by_id", using: :btree
+  add_index "entry_comments", ["comment_id"], name: "index_entry_comments_on_comment_id", using: :btree
   add_index "entry_comments", ["entry_id"], name: "index_entry_comments_on_entry_id", using: :btree
-  add_index "entry_comments", ["updated_by_id"], name: "index_entry_comments_on_updated_by_id", using: :btree
 
   create_table "entry_dates", force: :cascade do |t|
     t.integer  "entry_id",               limit: 4
@@ -294,17 +305,12 @@ ActiveRecord::Schema.define(version: 20150519151319) do
   end
 
   create_table "manuscript_comments", force: :cascade do |t|
-    t.integer  "manuscript_id", limit: 4
-    t.text     "comment",       limit: 65535
-    t.datetime "created_at"
-    t.integer  "created_by_id", limit: 4
-    t.datetime "updated_at"
-    t.integer  "updated_by_id", limit: 4
+    t.integer "manuscript_id", limit: 4
+    t.integer "comment_id",    limit: 4
   end
 
-  add_index "manuscript_comments", ["created_by_id"], name: "index_manuscript_comments_on_created_by_id", using: :btree
+  add_index "manuscript_comments", ["comment_id"], name: "index_manuscript_comments_on_comment_id", using: :btree
   add_index "manuscript_comments", ["manuscript_id"], name: "index_manuscript_comments_on_manuscript_id", using: :btree
-  add_index "manuscript_comments", ["updated_by_id"], name: "index_manuscript_comments_on_updated_by_id", using: :btree
 
   create_table "manuscripts", force: :cascade do |t|
     t.datetime "created_at"
@@ -502,6 +508,9 @@ ActiveRecord::Schema.define(version: 20150519151319) do
   add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
   add_index "versions", ["transaction_id"], name: "index_versions_on_transaction_id", using: :btree
 
+  add_foreign_key "comments", "users", column: "created_by_id"
+  add_foreign_key "comments", "users", column: "reviewed_by_id"
+  add_foreign_key "comments", "users", column: "updated_by_id"
   add_foreign_key "entries", "names", column: "institution_id"
   add_foreign_key "entries", "sources"
   add_foreign_key "entries", "users", column: "approved_by_id"
@@ -513,9 +522,8 @@ ActiveRecord::Schema.define(version: 20150519151319) do
   add_foreign_key "entry_authors", "names", column: "author_id"
   add_foreign_key "entry_changes", "entries", on_delete: :cascade
   add_foreign_key "entry_changes", "users", column: "changed_by_id"
-  add_foreign_key "entry_comments", "entries", on_delete: :cascade
-  add_foreign_key "entry_comments", "users", column: "created_by_id"
-  add_foreign_key "entry_comments", "users", column: "updated_by_id"
+  add_foreign_key "entry_comments", "comments"
+  add_foreign_key "entry_comments", "entries"
   add_foreign_key "entry_dates", "entries", on_delete: :cascade
   add_foreign_key "entry_languages", "entries", on_delete: :cascade
   add_foreign_key "entry_languages", "languages"
@@ -536,9 +544,8 @@ ActiveRecord::Schema.define(version: 20150519151319) do
   add_foreign_key "languages", "users", column: "created_by_id"
   add_foreign_key "languages", "users", column: "reviewed_by_id"
   add_foreign_key "languages", "users", column: "updated_by_id"
+  add_foreign_key "manuscript_comments", "comments"
   add_foreign_key "manuscript_comments", "manuscripts"
-  add_foreign_key "manuscript_comments", "users", column: "created_by_id"
-  add_foreign_key "manuscript_comments", "users", column: "updated_by_id"
   add_foreign_key "manuscripts", "users", column: "created_by_id"
   add_foreign_key "manuscripts", "users", column: "reviewed_by_id"
   add_foreign_key "manuscripts", "users", column: "updated_by_id"

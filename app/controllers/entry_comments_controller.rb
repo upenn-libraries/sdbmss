@@ -7,7 +7,7 @@ class EntryCommentsController < ApplicationController
 
   def create
     @entry_comment = EntryComment.new(entry_comment_params)
-    @entry_comment.created_by = current_user
+    @entry_comment.comment.created_by_id = current_user.id
     @entry_comment.save
     if params[:return_url]
       redirect_to params[:return_url]
@@ -19,7 +19,7 @@ class EntryCommentsController < ApplicationController
   private
 
   def entry_comment_params
-    params.require(:entry_comment).permit(:entry_id, :comment, :public, :is_correction)
+    params.require(:entry_comment).permit(:entry_id, :comment_attributes => [ :comment,  :public, :is_correction ])
   end
 
 end

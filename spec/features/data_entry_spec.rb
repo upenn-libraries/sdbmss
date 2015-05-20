@@ -455,8 +455,8 @@ describe "Data entry", :js => true do
       expect(provenance.get_buyer.observed_name).to eq('Wild Bill Collector')
       expect(provenance.comment).to eq('An historic sale')
 
-      entry_comment = entry.entry_comments.first
-      expect(entry_comment.comment).to eq('This info is correct')
+      comment = entry.comments.first
+      expect(comment.comment).to eq('This info is correct')
     end
 
     it "should save an auction catalog Entry" do
@@ -699,13 +699,14 @@ describe "Data entry", :js => true do
       entry = Entry.first
       visit entry_path(entry)
 
-      fill_in 'entry_comment_comment', with: "this entry is so crazy"
-      check 'entry_comment_is_correction'
+      fill_in 'entry_comment_comment_attributes_comment', with: "this entry is so crazy"
+      check 'entry_comment_comment_attributes_is_correction'
       click_button('Submit')
 
       expect(page).to have_content "this entry is so crazy"
 
-      comment = EntryComment.last
+      comment = Comment.last
+      expect(comment.entries.first.id).to eq(entry.id)
       expect(comment.comment).to eq("this entry is so crazy")
       expect(comment.is_correction).to eq(true)
     end

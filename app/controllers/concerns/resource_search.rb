@@ -146,13 +146,18 @@ module ResourceSearch
     search_model_class.all
   end
 
-  # Classes should override this if they need to search differently.
-  # This should return an ActiveRecord query, on which
-  # offseting/limiting/ordering will subsequently be done.
+  # Classes should override or extend this if they need to search
+  # differently. This should return an ActiveRecord query.
+  # Offseting/limiting/ordering should NOT be done here, only
+  # filtering.
   #
-  # This implementation looks at 'term' param, splits it, and searches
-  # 'name' model field for its parts. If any integers are present, it
-  # looks for them in the 'id' model field.
+  # This implementation looks at the followin params:
+  #
+  # 'term' = splits it, and searches 'name' model field for its
+  # parts. If any integers are present, it looks for them in the 'id'
+  # model field.
+  #
+  # 'unreviewed_only' = if set to 1, only returns unreviewed records
   def search_query
     search_term = params[:term]
     query = search_query_base
@@ -166,6 +171,11 @@ module ResourceSearch
         end
       end
     end
+
+    if params[:unreviewed_only].to_s == '1'
+      query = query.where(reviewed: false)
+    end
+
     query
   end
 

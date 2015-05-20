@@ -26,8 +26,8 @@
     <dd>
         <%= Source.where(created_by: @user).count %> sources<br/>
         <a href="<%= search_advanced_url(created_by: @user.to_s) %>"><%= Entry.where(created_by: @user).count %> entries</a><br/>
-        <%= EntryComment.where(created_by: @user).count %> comments
-        <% if (num_corrections = EntryComment.where(created_by: @user, is_correction: true)).count > 0 %>
+        <%= Comment.where(created_by: @user).count %> comments
+        <% if (num_corrections = Comment.where(created_by: @user, is_correction: true)).count > 0 %>
             (<%= num_corrections %> of which are corrections to entries)
         <% end %><br/>
         </ul>

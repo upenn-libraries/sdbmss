@@ -42,9 +42,10 @@ class EntriesController < ApplicationController
       if params[:new_comment].present?
         ec = EntryComment.new(
           entry_id: @entry.id,
-          comment: params[:new_comment],
-          public: true,
-          created_by: current_user)
+          comment_attributes: {
+            comment: params[:new_comment],
+            created_by_id: current_user.id
+          })
         ec.save!
       end
     end
@@ -67,9 +68,10 @@ class EntriesController < ApplicationController
           if params[:new_comment].present?
             ec = EntryComment.new(
               entry_id: @entry.id,
-              public: true,
-              comment: params[:new_comment],
-              created_by: current_user)
+              comment_attributes: {
+                comment: params[:new_comment],
+                created_by: current_user
+              })
             ec.save!
           end
         end
