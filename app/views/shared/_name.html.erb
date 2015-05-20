@@ -96,8 +96,7 @@
                 </tr>
                 <% end %>
 
-                <!-- TODO: This is wrong, fix it: query should start on Entry... -->
-                <% count_provenance = name.events.provenance.count %>
+                <% count_provenance = Entry.where_provenance_includes(name).count %>
                 <% if count_provenance > 0 %>
                 <tr>
                     <td class="col-sm-2 text-right record-label"># Provenance</td>
