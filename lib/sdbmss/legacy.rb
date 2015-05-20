@@ -317,7 +317,7 @@ module SDBMSS::Legacy
       SOURCE_CACHE[id]
     end
 
-    CODES = ['Attr', 'Com', 'Comp', 'Ed', 'Gl', 'Intr', 'Pref', 'Tr']
+    ROLE_CODES = ['Attr', 'Com', 'Comp', 'Ed', 'Gl', 'Intr', 'Pref', 'Tr']
 
     # Splits an author string into name and roles.
     # ie. for "Jeff (Ed) (Tr)", this returns ["Jeff", ["Ed", "Tr"]]
@@ -327,7 +327,7 @@ module SDBMSS::Legacy
       author = str
       roles = []
       if str.present?
-        CODES.each do |code|
+        ROLE_CODES.each do |code|
           # sometimes there's a period.
           author_portion = author.gsub("(#{code})", "").gsub("(#{code}.)", "")
           if author != author_portion
@@ -553,7 +553,7 @@ module SDBMSS::Legacy
       puts "Migrating current_location to Manuscripts"
 
       SDBMSS::Util.batch(legacy_db,
-                         'select MANUSCRIPT_ID, CURRENT_LOCATION from MANUSCRIPT where CURRENT_LOCATION is not null and length(CURRENT_LOCATION) > 0',
+                         'select MANUSCRIPT_ID, CURRENT_LOCATION from MANUSCRIPT where ISDELETED != "y" and CURRENT_LOCATION is not null and length(CURRENT_LOCATION) > 0',
                          batch_wrapper: wrap_transaction) do |row,ctx|
         entry = Entry.find(row['MANUSCRIPT_ID'])
         manuscript = entry.manuscript
@@ -1212,9 +1212,9 @@ module SDBMSS::Legacy
       # there are 'dupes' because of collation rules.
 
       # flags were stored in Author table; discard them
-      author_str, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(row['AUTHOR'])
+      author_str, _, _ = parse_certainty_indicators(row['AUTHOR'])
       # discard the role part when migrating authors
-      author_name, role = split_author_role_codes(author_str)
+      author_name, _ = split_author_role_codes(author_str)
 
       get_or_create_author(
         author_name,
@@ -1244,7 +1244,7 @@ module SDBMSS::Legacy
 
     def create_artist_from_row_pass1(row, ctx)
       # flags were stored in Artist table; discard them
-      artist_str, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(row['ARTIST'])
+      artist_str, _, _ = parse_certainty_indicators(row['ARTIST'])
 
       get_or_create_artist(
         artist_str,
@@ -1394,7 +1394,7 @@ module SDBMSS::Legacy
 
     def create_place_from_row_pass1(row, ctx)
       # flags were stored in Place table; discard them
-      place_str, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(row['PLACE'])
+      place_str, _, _ = parse_certainty_indicators(row['PLACE'])
 
       # we ignore PLACE_COUNT b/c it's redundant now
 
@@ -1442,7 +1442,6 @@ module SDBMSS::Legacy
 
       duplicates.each do |duplicate_list_str|
         manuscript = nil
-        manuscript_entries = []
 
         SDBMSS::Util.split_and_strip(duplicate_list_str, delimiter: ",").each do |atom|
           relation_type = EntryManuscript::TYPE_RELATION_IS
