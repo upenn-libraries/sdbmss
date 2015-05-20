@@ -5,15 +5,15 @@ require 'set'
 # associated with Entries in various ways, are stored.
 class Name < ActiveRecord::Base
 
+  include UserFields
+  include ReviewedByField
+  include IndexAfterUpdate
+
   default_scope { where(deleted: false) }
 
   belongs_to :entry
 
   belongs_to :approved_by, :class_name => 'User'
-
-  include UserFields
-  include ReviewedByField
-  include IndexAfterUpdate
 
   has_many :entry_artists, foreign_key: "artist_id"
 

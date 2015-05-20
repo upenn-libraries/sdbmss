@@ -45,10 +45,10 @@ class Source < ActiveRecord::Base
     [TYPE_MEDIUM_OTHER, "Other"],
   ]
 
-  default_scope { where(deleted: false) }
-
   include UserFields
   include IndexAfterUpdate
+
+  default_scope { where(deleted: false) }
 
   before_validation :normalize
 

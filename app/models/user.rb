@@ -1,7 +1,5 @@
 class User < ActiveRecord::Base
 
-  include UserFields
-
   ROLES = %w[contributor editor admin]
 
   attr_accessible :username, :email, :password, :password_confirmation if Rails::VERSION::MAJOR < 4
@@ -14,18 +12,6 @@ class User < ActiveRecord::Base
 
   before_validation :assign_default_role
 
-  def login
-    @login || self.username || self.email
-  end
-
-  # Connects this user object to Blacklights Bookmarks. 
-  include Blacklight::User
-
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
-
   # one of the devise class methods above seems to give us
   # "validates_confirmation_of :password" so we don't need it
   # explicitly
@@ -37,6 +23,15 @@ class User < ActiveRecord::Base
 
   validates_inclusion_of :role, in: ROLES
 
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :trackable, :validatable
+
+  # Connects this user object to Blacklights Bookmarks. 
+  include Blacklight::User
+  include UserFields
+
   def self.statistics
     results = ActiveRecord::Base.connection.execute("select username, count(*) from users inner join entries on entries.created_by_id = users.id where entries.deleted = 0 group by username")
     results.map do |row|
@@ -47,13 +42,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  # Method added by Blacklight; Blacklight uses #to_s on your
-  # user class to get a user-displayable login/identifier for
-  # the account.
-  def to_s
-    username
-  end
-
   # override
   def self.find_for_database_authentication(warden_conditions)
     conditions = warden_conditions.dup
@@ -62,6 +50,17 @@ class User < ActiveRecord::Base
     else
       where(conditions).first
     end
+  end
+
+  def login
+    @login || self.username || self.email
+  end
+
+  # Method added by Blacklight; Blacklight uses #to_s on your
+  # user class to get a user-displayable login/identifier for
+  # the account.
+  def to_s
+    username
   end
 
   def role?(role_to_check)
