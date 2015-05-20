@@ -165,19 +165,13 @@ class Name < ActiveRecord::Base
     # because Name is used in many places, we build an array of IDs
     # and construct a single Relation which callers can whittle down
     # into batches.
-    #
-    # TODO: This probably breaks if the generated SQL is too long. A
-    # better solution would be to write an Enumerable class that loads
-    # entries from the list of ids, one at a time, which is slow but
-    # uses very little memory, which is what we care about when
-    # indexing.
     ids = Set.new
     ids.merge(Entry.joins(:artists).where({ names: { id: id }}).select(:id).map(&:id))
     ids.merge(Entry.joins(:authors).where({ names: { id: id }}).select(:id).map(&:id))
     ids.merge(Entry.joins(:scribes).where({ names: { id: id }}).select(:id).map(&:id))
     ids.merge(Entry.joins(:events => :event_agents).where({ event_agents: { agent_id: id }}).select(:id).map(&:id))
     ids.merge(Entry.joins(:source => :source_agents).where({ source_agents: { agent_id: id }}).select(:id).map(&:id))
-    Entry.with_associations.where("id IN (?)", ids.to_a)
+    SDBMSS::ModelBatch.new(Entry, ids.to_a)
   end
 
 end

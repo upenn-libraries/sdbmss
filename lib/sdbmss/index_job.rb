@@ -23,7 +23,7 @@ module SDBMSS
           entries_count += entries.count
           # we might get a Relation or an Array. if it's a Relation,
           # try to batch it so we don't use up a lot of memory.
-          if entries.respond_to?(:find_each)
+          if entries.respond_to?(:find_in_batches)
             entries.find_in_batches(batch_size: 500) do |batch|
               Sunspot.index batch
             end
