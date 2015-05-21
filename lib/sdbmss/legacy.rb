@@ -413,6 +413,8 @@ module SDBMSS::Legacy
 
       ActiveRecord::Base.record_timestamps = false
 
+      Rails.configuration.sdbmss_index_after_update_enabled = false
+
       # set log level above :debug, to suppress ActiveRecord query
       # logging, which slows things down a lot. this only accepts
       # integers, not symbols. 1 = info
@@ -465,7 +467,7 @@ module SDBMSS::Legacy
       jordanus = Source.create!(
         date: "00000000",
         title: "Jordanus",
-        source_type: SourceType.other_published,
+        source_type: SourceType.unpublished,
       )
 
       puts "Migrating Source records"
@@ -714,6 +716,8 @@ module SDBMSS::Legacy
 
       deleted = row['ISDELETED'] == 'y'
 
+      other_info = row['COMMENTS'] || ""
+
       # entries MUST have a source.
 
       source = nil
@@ -726,10 +730,21 @@ module SDBMSS::Legacy
       end
 
       if source.nil?
-        # about 9000 Manuscript records with Jordanus as
-        # SECONDARY_SOURCE have CAT_TBL_ID = null
-        if row['SECONDARY_SOURCE'] == 'Jordanus'
+        # about 9000 Manuscript records with Jordanus in SECONDARY_SOURCE have CAT_TBL_ID = null
+        # There are also 464 records that DO have CAT_TBL_ID
+        if row['SECONDARY_SOURCE'] =~ /Jordanus/
           source = jordanus
+
+          # If these catalog fields are filled out, retain that info
+          # in the other_info field otherwise it'll get lost. This
+          # means we will end up migrating Sources with no records
+          # (whatever was in CAT_TBL_ID originally), but that's the
+          # best we can do.
+          if row['CAT_DATE'].present? || row['INSTITUTION'].present?
+            other_info += "\n" if other_info.present?
+            other_info += "Catalog: #{row['CAT_DATE']} #{row['INSTITUTION']}"
+          end
+
         elsif
           source = unknown_source
           if !deleted
@@ -771,7 +786,7 @@ module SDBMSS::Legacy
         width: row['WDT'],
         alt_size: row['ALT_SIZE'],
         manuscript_binding: row['MANUSCRIPT_BINDING'],
-        other_info: row['COMMENTS'],
+        other_info: other_info.present? ? other_info : nil,
         # if the source is electronic, manuscript_link probably is a
         # link to the catalog entry itself, or to a digitial version
         # of the MS. so this link should stay here and not move to

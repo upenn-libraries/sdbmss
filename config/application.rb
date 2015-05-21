@@ -24,8 +24,13 @@ module SDBMSS
 
     config.eager_load_paths << Rails.root.join('lib')
 
+    config.active_job.queue_adapter = :delayed_job
+
+    # custom SDBM variables
+
     config.sdbmss_allow_user_signup = false
 
-    config.active_job.queue_adapter = :delayed_job
+    config.sdbmss_index_after_update_enabled = true
+
   end
 end
