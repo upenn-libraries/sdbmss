@@ -82,7 +82,7 @@ Setting up for Development
   export SOLR_URL="http://127.0.0.1:8983/solr/development"
   ```
 
-* Now you should be ready to run the application and its scripts.
+* Now you should be ready to run the application (see below).
 
 Data Migration
 --------------
@@ -122,13 +122,39 @@ migrated data.
 Running the Development Server
 ------------------------------
 
-* Run Rails
+The application is comprised of several processes you'll need to
+run. Using 'screen' is helpful here.
+
+* Run Rails (this will not daemonize)
 
   ```
   bundle exec rails s
   ```
 
-* Load <http://localhost:3000> in your browser.
+* Run a delayed_job worker (this will not daemonize). Note that you
+  will need to kill and restart this process for jobs to pick up code
+  changes.
+
+  ```
+  bundle exec rake jobs:work
+  ```
+
+* Run a Solr instance (this WILL daemonize). You only need to restart
+  this process when there are changes to the Solr configuration or
+  schema files.
+
+  ```
+  bundle exec rake sunspot:solr:start
+  ```
+
+  To stop Solr:
+
+  ```
+  bundle exec rake sunspot:solr:stop
+  ```
+
+* Now you should be able to load <http://localhost:3000> in your
+  browser.
 
 Running the Test Suite
 ----------------------
