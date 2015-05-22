@@ -748,10 +748,11 @@ module SDBMSS::Legacy
         elsif
           source = unknown_source
           if !deleted
-            create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'unknown_source', "entry ID=#{row['MANUSCRIPT_ID']} assigned Unknown source because it doesn't have a Catalog entry")
-          end
-          if row['CAT_DATE'].present? || row['CAT_ID'].present? || row['INSTITUTION'].present?
-            create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'no_source_but_has_catalog_info', "entry ID=#{row['MANUSCRIPT_ID']} assigned Unknown source but its catalog fields have data")
+            if row['CAT_DATE'].present? || row['CAT_ID'].present? || row['INSTITUTION'].present?
+              create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'no_source_but_has_catalog_info', "entry ID=#{row['MANUSCRIPT_ID']} assigned Unknown source but its catalog fields have data")
+            else
+              create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'unknown_source', "entry ID=#{row['MANUSCRIPT_ID']} assigned Unknown source because it doesn't have a Catalog entry")
+            end
           end
         end
       end
