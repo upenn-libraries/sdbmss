@@ -740,9 +740,9 @@ module SDBMSS::Legacy
           # means we will end up migrating Sources with no records
           # (whatever was in CAT_TBL_ID originally), but that's the
           # best we can do.
-          if row['CAT_DATE'].present? || row['INSTITUTION'].present?
+          if row['CAT_DATE'].present? || row['CAT_ID'].present? || row['INSTITUTION'].present?
             other_info += "\n" if other_info.present?
-            other_info += "Catalog: #{row['CAT_DATE']} #{row['INSTITUTION']}"
+            other_info += "Catalog: #{row['CAT_DATE']} #{row['CAT_ID']} #{row['INSTITUTION']}"
           end
 
         elsif
