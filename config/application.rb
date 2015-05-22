@@ -28,7 +28,7 @@ module SDBMSS
 
     # custom SDBM variables
 
-    config.sdbmss_allow_user_signup = false
+    config.sdbmss_allow_user_signup = true
 
     config.sdbmss_index_after_update_enabled = true
 
