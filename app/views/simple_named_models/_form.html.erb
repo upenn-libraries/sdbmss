@@ -1,15 +1,5 @@
 <%= form_for(@model, html: { class: "form-horizontal" }) do |f| %>
-  <% if @model.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@model.errors.count, "error") %> prohibited this model from being saved:</h2>
-
-      <ul>
-      <% @model.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= render partial: "errors" %>
 
   <div class="field form-group row">
       <%= f.label :name, class: "col-sm-2 control-label" %>

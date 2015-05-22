@@ -105,8 +105,8 @@ h1 { font-size: 30px; margin-top: 10px; }
 
 .sdbmss-form label.col-sm-2, .sdbmss-form label.col-sm-1 { padding-right: 0px; }
 
-/* gives an element the same alignment as a label element */
-.sdbmss-form .label-alignment { min-height: 30px; padding-top: 7px; }
+/* put this on a div or other container, to make its text content aligned with a label element */
+.label-alignment { min-height: 30px; padding-top: 7px; }
 
 .sdbmss-form .red {
     color: red;

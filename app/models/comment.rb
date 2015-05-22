@@ -29,4 +29,9 @@ class Comment < ActiveRecord::Base
     manuscripts.first
   end
 
+  # returns the model object to which this comment pertains
+  def subject
+    entry || manuscript
+  end
+
 end

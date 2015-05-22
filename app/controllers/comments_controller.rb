@@ -30,4 +30,10 @@ class CommentsController < SimpleNamedModelsController
     }
   end
 
+  private
+
+  def model_params
+    params.require(model_class_lstr.to_sym).permit(:comment, :is_correction)
+  end
+
 end

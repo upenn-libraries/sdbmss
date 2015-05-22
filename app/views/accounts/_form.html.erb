@@ -1,16 +1,6 @@
 <% url = @model.persisted? ? account_path(@model) : accounts_path %>
 <%= form_for(@model, url: url, html: { class: "form-horizontal" }) do |f| %>
-  <% if @model.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@model.errors.count, "error") %> prohibited this model from being saved:</h2>
-
-      <ul>
-      <% @model.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+  <%= render partial: "errors" %>
 
   <div class="field form-group row">
       <%= f.label :username, class: "col-sm-2 control-label" %>

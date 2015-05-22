@@ -1,0 +1,33 @@
+<%= form_for(@model, html: { class: "form-horizontal" }) do |f| %>
+  <%= render partial: "errors" %>
+
+  <div class="field form-group row">
+      <label class="col-sm-2 control-label">
+          Created By
+      </label>
+      <div class="col-sm-6 label-alignment">
+          <%= @model.created_by.username %>
+      </div>
+  </div>
+
+  <div class="field form-group row">
+      <%= f.label :comment, class: "col-sm-2 control-label" %>
+      <div class="col-sm-6">
+          <%= f.text_area :comment, :rows => 5, :class => 'form-control' %>
+      </div>
+  </div>
+
+  <div class="field form-group row">
+      <div class="col-sm-offset-2 col-sm-6">
+          <label>
+              <%= f.check_box :is_correction %> This comment is a correction
+          </label>
+      </div>
+  </div>
+
+  <div class="actions row">
+      <div class="col-sm-4 col-sm-offset-2">
+          <%= f.submit :class => 'btn btn-primary' %>
+      </div>
+  </div>
+<% end %>
