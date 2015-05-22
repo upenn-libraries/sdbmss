@@ -53,6 +53,10 @@ class SourcesController < SimpleNamedModelsController
     Source
   end
 
+  def search_name_field
+    "title"
+  end
+
   def search_exact_enabled
     false
   end
@@ -65,12 +69,9 @@ class SourcesController < SimpleNamedModelsController
     date = params.fetch(:date, '').gsub('-', '').gsub('/', '')
     title = params[:title]
     agent = params[:agent]
-    query = search_query_base
+    query = super
     query = query.where('date like ?', "#{date}%") if date.present?
     query = query.where('title like ?', "%#{title}%") if title.present?
-    if params[:created_by_user].to_s == '1'
-      query = query.where(created_by_id: current_user.id)
-    end
     query = query.joins(source_agents: [ :agent ] ).where('names.name like ?', "%#{agent}%") if agent.present?
     query.with_associations
   end

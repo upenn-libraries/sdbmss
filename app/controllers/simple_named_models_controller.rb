@@ -110,6 +110,23 @@ class SimpleNamedModelsController < ApplicationController
     end
   end
 
+  # extend from superclass to modify query based on these URL params
+  # (which are set from JS in views for this controller and its
+  # subclasses):
+  #
+  # 'unreviewed_only' = if set to 1, only returns unreviewed records
+  # 'created_by_user' = if set to 1, only returns records created by current user
+  def search_query
+    query = super
+    if params[:created_by_user].to_s == '1'
+      query = query.where(created_by_id: current_user.id)
+    end
+    if params[:unreviewed_only].to_s == '1'
+      query = query.where(reviewed: false)
+    end
+    query
+  end
+
   private
 
   def set_model

@@ -156,11 +156,9 @@ module ResourceSearch
   # 'term' = splits it, and searches 'name' model field for its
   # parts. If any integers are present, it looks for them in the 'id'
   # model field.
-  #
-  # 'unreviewed_only' = if set to 1, only returns unreviewed records
   def search_query
-    search_term = params[:term]
     query = search_query_base
+    search_term = params[:term]
     if search_term.present?
       search_term.split.each do |word|
         # look at ID column for integers
@@ -171,11 +169,6 @@ module ResourceSearch
         end
       end
     end
-
-    if params[:unreviewed_only].to_s == '1'
-      query = query.where(reviewed: false)
-    end
-
     query
   end
 

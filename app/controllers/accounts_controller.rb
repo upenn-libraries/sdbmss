@@ -25,14 +25,6 @@ class AccountsController < SimpleNamedModelsController
     }
   end
 
-  def search_query
-    query = super
-    if params[:created_by_user].to_s == '1'
-      query = query.where(created_by_id: current_user.id)
-    end
-    query
-  end
-
   def resource_name
     "accounts"
   end
