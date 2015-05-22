@@ -1,13 +1,36 @@
 class Entry < ActiveRecord::Base
 
+  ALT_SIZE_TYPES = [
+    ['F', 'Folio'],
+    ['Q', 'Quarto'],
+    ['O', 'Octavo'],
+    ['12mo', 'Duodecimo or Twelvemo'],
+    ['16mo', 'Decimo-sexto or Sixteenmo'],
+    ['18mo', 'Decimo-octavo or Eighteenmo'],
+    ['24mo', 'Vingesimo-quarto or Twenty-fourmo'],
+    ['32mo', 'Trigesimo-secundo or Thirty-twomo'],
+    ['48mo', 'Quadragesimo-octavo or Forty-eightmo'],
+    ['64mo', 'Sexagesimo-quarto or Sixty-fourmo'],
+  ]
+
+  TYPE_TRANSACTION_SALE = 'sale'
+  TYPE_TRANSACTION_GIFT = 'gift'
+  TYPE_TRANSACTION_NONE = 'no_transaction'
+
+  TYPES_TRANSACTION = [
+    [TYPE_TRANSACTION_SALE, 'A Sale'],
+    [TYPE_TRANSACTION_GIFT, 'A Gift'],
+    [TYPE_TRANSACTION_NONE, 'Not a transaction'],
+  ]
+
+  include UserFields
+
   default_scope { where(deleted: false) }
 
   belongs_to :source, counter_cache: :entries_count
 
   # entries have institution/collection for "Other published sources" only
   belongs_to :institution, class_name: "Name"
-
-  include UserFields
 
   has_many :entry_manuscripts
   has_many :manuscripts, through: :entry_manuscripts
@@ -80,29 +103,6 @@ class Entry < ActiveRecord::Base
   scope :with_transaction_agent_and_role, ->(agent, role) { joins(:events => :event_agents).where("events.primary = true and event_agents.agent_id = ? and role = ?", agent.id, role) }
 
   has_paper_trail skip: [:created_at, :updated_at]
-
-  ALT_SIZE_TYPES = [
-    ['F', 'Folio'],
-    ['Q', 'Quarto'],
-    ['O', 'Octavo'],
-    ['12mo', 'Duodecimo or Twelvemo'],
-    ['16mo', 'Decimo-sexto or Sixteenmo'],
-    ['18mo', 'Decimo-octavo or Eighteenmo'],
-    ['24mo', 'Vingesimo-quarto or Twenty-fourmo'],
-    ['32mo', 'Trigesimo-secundo or Thirty-twomo'],
-    ['48mo', 'Quadragesimo-octavo or Forty-eightmo'],
-    ['64mo', 'Sexagesimo-quarto or Sixty-fourmo'],
-  ]
-
-  TYPE_TRANSACTION_SALE = 'sale'
-  TYPE_TRANSACTION_GIFT = 'gift'
-  TYPE_TRANSACTION_NONE = 'no_transaction'
-
-  TYPES_TRANSACTION = [
-    [TYPE_TRANSACTION_SALE, 'A Sale'],
-    [TYPE_TRANSACTION_GIFT, 'A Gift'],
-    [TYPE_TRANSACTION_NONE, 'Not a transaction'],
-  ]
 
   validates_presence_of :source
 
