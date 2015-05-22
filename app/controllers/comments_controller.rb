@@ -1,5 +1,5 @@
 
-class CommentsController < SimpleNamedModelsController
+class CommentsController < ManageModelsController
 
   include MarkAsReviewed
 

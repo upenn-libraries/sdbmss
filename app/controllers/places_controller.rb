@@ -1,4 +1,4 @@
-class PlacesController < SimpleNamedModelsController
+class PlacesController < ManageModelsController
 
   include LanguagesAndPlaces
   include MarkAsReviewed

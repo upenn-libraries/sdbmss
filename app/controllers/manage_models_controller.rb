@@ -1,9 +1,10 @@
 
 # Base controller to provide data management actions (listing, edit,
-# add, delete) for simple Models with just a name field. This suits
-# Languages and Places; other more complex models need subclass this
-# and customize both actions and the views.
-class SimpleNamedModelsController < ApplicationController
+# add, delete). This provides enough functionality for simple Models
+# with just a name field, like Languages and Places; other more
+# complex models need to subclass this and customize both the actions
+# and views.
+class ManageModelsController < ApplicationController
   include ResourceSearch
 
   before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy]

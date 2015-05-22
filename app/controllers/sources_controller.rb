@@ -1,5 +1,5 @@
 
-class SourcesController < SimpleNamedModelsController
+class SourcesController < ManageModelsController
 
   include MarkAsReviewed
 

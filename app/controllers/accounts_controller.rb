@@ -2,7 +2,7 @@
 # We have an 'Accounts' resource b/c devise uses 'Users' by default
 # and combining all the stuff we want to be able to do with User
 # models into a single controller makes things hairy.
-class AccountsController < SimpleNamedModelsController
+class AccountsController < ManageModelsController
 
   include MarkAsReviewed
 
@@ -35,7 +35,7 @@ class AccountsController < SimpleNamedModelsController
 
   private
 
-  # override from SimpleNamedModelsController: use profile#show
+  # override from ManageModelsController: use profile#show
   def model_path(id)
     profile_path(@model.username)
   end

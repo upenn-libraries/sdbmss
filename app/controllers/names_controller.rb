@@ -1,4 +1,4 @@
-class NamesController < SimpleNamedModelsController
+class NamesController < ManageModelsController
 
   include ResourceSearch
   include MarkAsReviewed

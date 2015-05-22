@@ -1,4 +1,4 @@
-class ManuscriptsController < SimpleNamedModelsController
+class ManuscriptsController < ManageModelsController
 
   include MarkAsReviewed
 
