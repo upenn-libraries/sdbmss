@@ -37,13 +37,6 @@
 	    <dd><%= entry.institution %></dd>
         <% end %>
         
-        <% if entry.secondary_source.present? %>
-	    <dt>Secondary Source</dt>
-        <dd>
-            <%= entry.secondary_source %> (NOTE: this field will become obsolete)
-        </dd>
-        <% end %>
-
         <% if (transaction = entry.get_transaction).present? %>
 
           <% if (selling_agent = transaction.get_selling_agent).present? %>

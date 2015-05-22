@@ -771,6 +771,11 @@ module SDBMSS::Legacy
         create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'bad_alt_size', "non-normalized value for alt size = #{row['ALT_SIZE']}")
       end
 
+      if row['SECONDARY_SOURCE'].present?
+        other_info += "\n" if other_info.present?
+        other_info += "Secondary source field in the old database was '#{row['SECONDARY_SOURCE']}'"
+      end
+
       # We decided 1/22/15 that we don't need a date field on
       # Entry. We do need to date entries from Sources that don't have
       # a defined date (ex: Ebay, or a constantly changing online
@@ -782,7 +787,6 @@ module SDBMSS::Legacy
         source: source,
         catalog_or_lot_number: row['CAT_OR_LOT_NUM'],
         transaction_type: transaction_type,
-        secondary_source: row['SECONDARY_SOURCE'],
         folios: row['FOLIOS'],
         num_columns: row['COL'],
         num_lines: row['NUM_LINES'],

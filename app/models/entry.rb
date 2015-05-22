@@ -273,7 +273,6 @@ class Entry < ActiveRecord::Base
       source_date: source.date ? SDBMSS::Util.format_fuzzy_date(source.date) : nil,
       source_title: source.title,
       source_catalog_or_lot_number: catalog_or_lot_number,
-      secondary_source: secondary_source,
       transaction_selling_agent: transaction_selling_agent,
       transaction_seller_or_holder: transaction_seller_or_holder,
       transaction_buyer: transaction_buyer,
@@ -356,7 +355,6 @@ class Entry < ActiveRecord::Base
         # source info
         source.display_value,
         catalog_or_lot_number,
-        secondary_source,
         # transaction
         get_transaction_selling_agent_name,
         get_transaction_seller_or_holder_name,
@@ -437,9 +435,6 @@ class Entry < ActiveRecord::Base
     end
     define_field(:text, :catalog_or_lot_number_search, :stored => true) do
       catalog_or_lot_number
-    end
-    define_field(:text, :secondary_source_search, :stored => true) do
-      secondary_source
     end
 
     #### Transaction info

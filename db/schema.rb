@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150519171309) do
+ActiveRecord::Schema.define(version: 20150522190009) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,   null: false
@@ -62,7 +62,6 @@ ActiveRecord::Schema.define(version: 20150519171309) do
   create_table "entries", force: :cascade do |t|
     t.integer  "source_id",              limit: 4
     t.string   "catalog_or_lot_number",  limit: 255
-    t.string   "secondary_source",       limit: 255
     t.integer  "folios",                 limit: 4
     t.integer  "num_columns",            limit: 4
     t.integer  "num_lines",              limit: 4
