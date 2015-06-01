@@ -41,7 +41,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     arel (6.0.0)
-    autoprefixer-rails (5.1.11)
+    autoprefixer-rails (5.2.0)
       execjs
       json
     bcrypt (3.1.10)
@@ -148,9 +148,9 @@ GEM
       nokogiri (>= 1.5.9)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
-    mime-types (2.5)
+    mime-types (2.6.1)
     mini_portile (0.6.2)
-    minitest (5.6.1)
+    minitest (5.7.0)
     multi_json (1.11.0)
     mysql2 (0.3.18)
     net-scp (1.2.1)
