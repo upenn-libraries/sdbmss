@@ -14,19 +14,72 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <legend>{{ pageTitle }}</legend>
+            <legend>{{ getPageTitle() }}</legend>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div ng-show="!source.source_type.name">
+                <p>A source is the origin of information for an entry. Sources can include auction and sale catalogs, collection catalogues, published or unpublished inventories, censuses, an individual (you or someone else) who has made direct observations about a manuscript(s), etc. From the dropdown menu, select one of six Source Types (see definitions below) that best describes your source.</p>
+            </div>
+            <div ng-show="source.source_type.name">
+                <p ng-show="source.source_type.name == 'auction_catalog'">Use this type for auction or sale catalogs for a specific sale event. For online-only auctions (such as eBay) or sale events, use the SOURCE TYPE: Online-only Auction or Bookseller Website.</p>
+                <p ng-show="source.source_type.name == 'collection_catalog'">Use this type for published catalogs of institutional or private individual collections. For individuals, use SDBM PERSONAL NAME STANDARDS.</p>
+                <p ng-show="source.source_type.name == 'online'">Use this type for online-only auctions, such as eBay, or for bookseller websites providing non-dated sale lists. This field is intended for information found only online and not referring to a specific, dated sale.</p>
+                <p ng-show="source.source_type.name == 'observation'">Use this type when recording data acquired via direct personal observation of a manuscript.</p>
+                <p ng-show="source.source_type.name == 'other_published'">Use this type for any other published source not applicable to the previous SOURCE TYPES (e.g., an inventory published in a journal article).</p>
+                <p ng-show="source.source_type.name == 'unpublished'">Use for any unpublished data sources (e.g. in-house finding aids or inventories, personal communications via email, etc). When recording names of individuals, use SDBM PERSONAL NAME STANDARDS.</p>
+                <p>Complete as many fields as possible to create the source. No fields are mandatory.</p>
+            </div>
         </div>
     </div>
 
     <div class="form-group row">
         <label for="source_type" class="col-sm-2 control-label">Source Type</label>
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <select class="form-control" id="source_type" ng-model="source.source_type" ng-options="option as option.display_name for option in optionsSourceType" ng-disabled="source.id">
                 <option value="">Select One</option>
             </select>
         </div>
     </div>
     
+    <div class="row" >
+        <div class="col-sm-12">
+            <div ng-show="!showFields()">
+                <p><b>Auction/Sale Catalog</b>: Use for auction or sale catalogs for a specific sale event. For online-only auctions (such as eBay) or sale events, use the SOURCE TYPE: Online-only Auction or Bookseller Website.</p>
+
+                <p><b>Collection Catalog</b>: Use for published catalogs
+                    of institutional or private individual collections. For individuals,
+                    use SDBM PERSONAL NAME STANDARDS.</p>
+
+                <p><b>Online-only Auction or Bookseller Website</b>: Use
+                    for online-only auctions, such as eBay, or for
+                    bookseller websites providing non-dated sale
+                    lists. This field is intended for information found
+                    only online and not referring to a specific, dated
+                    sale. When the data source is an online version of a
+                    print catalog (e.g. a pdf), use the SOURCE TYPE:
+                    Auction/Sale Catalog.</p>
+
+                <p><b>Personal Observation</b>: Use when recording data
+                    acquired via direct personal observation of a
+                    manuscript, either by yourself or someone else.</p>
+
+                <p><b>Other Published Source</b>: Use for any other
+                    published source not applicable to the previous SOURCE TYPES (e.g., an
+                    inventory published in a journal article).</p>
+
+                <p><b>Unpublished</b>: Use for any unpublished data
+                    sources (e.g. in-house finding aids or inventories,
+                    personal communications via email, etc). For
+                    individuals, use SDBM PERSONAL NAME STANDARDS.</p>
+                
+                <p>Not sure what your source type is? Email us at <a href=""mailto:sdbm@upenn.edu">sdbm@upenn.edu</a>.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="source-fields-container" ng-show="showFields()">
 
         <div class="form-group row" ng-show="source.source_type.name != 'online' && source.source_type.name != 'unpublished'">
@@ -195,6 +248,12 @@
             </div>
         </div>
 
+        <div class="row">
+            <div class="col-sm-12">
+                <p>Complete as many fields as possible. This data gives other users the ability to consult your source and provides an audit trail to ensure quality of data entry.</p>
+            </div>
+        </div>
+
         <div class="form-group row">
             <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_medium"></span></label>
             <div class="col-sm-3">
@@ -264,9 +323,11 @@
 
     </div>
 
-    <br/><br/>
-  <br/><br/>
-  <a href="#" data-ng-click="debug()">DEBUG: Print model to console</a>
+    <% if Rails.env.development? %>
+        <br/><br/>
+        <br/><br/>
+        <a href="#" data-ng-click="debug()">DEBUG: Print model to console</a>
+    <% end %>
 
 </form>
 

@@ -8,7 +8,7 @@
 <% end %>
 
 <% if !can? :manage, model_class %> 
-    <h1>Manage <%= resource_name.singularize %> records you've created</h1>
+    <h1>Manage Your <%= resource_name.pluralize.capitalize %></h1>
 <% else %>
     <h1>Manage all <%= resource_name.singularize %> records</h1>
 <% end %>

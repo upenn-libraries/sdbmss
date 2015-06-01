@@ -1195,6 +1195,21 @@
             console.log($scope.source);
         };
 
+        $scope.getPageTitle = function() {
+            if ($scope.edit) {
+                return "Edit SDBM_SOURCE_" + $scope.source.id;
+            }
+            var sourceTypeForTitle = "Source";
+            if($scope.source && $scope.source.source_type) {
+                $scope.optionsSourceType.forEach(function (item) {
+                    if(item.name === $scope.source.source_type.name) {
+                        sourceTypeForTitle = item.display_name;
+                    }
+                });
+            }
+            return "Create a New " + sourceTypeForTitle;
+        };
+
         $scope.showFields = function() {
             if($scope.source && $scope.source.source_type) {
                 return true;
@@ -1304,7 +1319,6 @@
 
                 if($("#source_id").val()) {
                     var sourceId = $("#source_id").val();
-                    $scope.pageTitle = "Edit SDBM_SOURCE_" + sourceId;
                     $scope.edit = true;
                     $scope.source = Source.get(
                         {id: sourceId},
@@ -1312,8 +1326,6 @@
                         sdbmutil.promiseErrorHandlerFactory("Error loading entry data for this page")
                     );
                 } else {
-                    $scope.pageTitle = "Create a new Source";
-
                     $scope.source = new Source({ source_type: "" });
                 }
             },

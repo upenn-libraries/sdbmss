@@ -11,14 +11,14 @@
      var showOnlyRecordsCreatedByUser = 1;
      <% end %>
 
-     // Subclass of SDBM.ManageRecords tailored for display of names (ie users)
-     var ManageNames = function(options) {
+     // Subclass of SDBM.ManageRecords tailored for display of comments (ie users)
+     var ManageComments = function(options) {
          SDBM.ManageRecords.call(this, options);
      };
      
-     ManageNames.prototype = Object.create(SDBM.ManageRecords.prototype);
+     ManageComments.prototype = Object.create(SDBM.ManageRecords.prototype);
 
-     ManageNames.prototype.getColumns = function() {
+     ManageComments.prototype.getColumns = function() {
         var manageRecords = this;
 
         return [
@@ -95,7 +95,7 @@
         ];
      };
 
-     ManageNames.prototype.searchResultToTableRow = function (result) {
+     ManageComments.prototype.searchResultToTableRow = function (result) {
          return [
              null,
              result.id,
@@ -109,8 +109,14 @@
          ];
      };
 
-     new ManageNames({
+     ManageComments.prototype.getButtonTextForAddNewRecord = function () {
+         return null;
+     };
+
+     new ManageComments({
          resourceName: "<%= resource_name %>",
+         resourceNameSingular: "<%= resource_name.singularize %>",
+         resourceNamePlural: "<%= resource_name.pluralize %>",
          showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
          searchNameField: "name"
      });

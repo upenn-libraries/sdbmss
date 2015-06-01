@@ -22,6 +22,8 @@ var SDBM = SDBM || {};
 
         var defaults = {
             resourceName: null,
+            resourceNameSingular: null,
+            resourceNamePlural: null,
             showOnlyRecordsCreatedByUser: false,
             searchNameField: "name"
         };
@@ -168,6 +170,12 @@ var SDBM = SDBM || {};
 
             return false;
         });
+
+        if(this.getButtonTextForAddNewRecord()) {
+            $(".add-new-record").text(this.getButtonTextForAddNewRecord());
+        } else {
+            $(".add-new-record").hide();
+        }
     };
 
     // returns an object to pass to jquery $.ajax() call
@@ -276,6 +284,11 @@ var SDBM = SDBM || {};
         } else {
             $(".review-control").hide();
         }
+    };
+
+    // should return null if button should not be displayed
+    SDBM.ManageRecords.prototype.getButtonTextForAddNewRecord = function() {
+        return "Add New " + this.options.resourceNameSingular.charAt(0).toUpperCase() + this.options.resourceNameSingular.slice(1);
     };
     
 }());

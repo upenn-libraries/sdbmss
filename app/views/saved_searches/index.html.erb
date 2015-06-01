@@ -1,0 +1,43 @@
+<%# copied from blacklight gem so that instructional text can be inserted %>
+<div id="content" class="col-md-9">
+
+<h1 class='page-heading'><%= t('blacklight.saved_searches.title') %></h1>
+
+<p>This page lists all search facets you have saved in current and past sessions. You can delete saved searches by clicking <b>delete (forget)</b>.</p>
+
+<p>How to save your searches:</p>
+
+<ol>
+    <li><b>Search</b> for entries.</li>
+    <li>Click the <b>History</b> link, located in the top horizontal navigation.</li>
+    <li>Click the <b>save</b> button next to each search you wish to save.</li>
+    <li>To view your saved searches, click the <b>Saved Searches</b> link located in the top horizontal navigation.</li>
+</ol>
+
+<%- if current_or_guest_user.blank? -%>
+  
+  <h2 class='section-heading'><%= t('blacklight.saved_searches.need_login') %></h2>
+  
+<%- elsif @searches.blank? -%>
+  
+  <h2 class='section-heading'><%= t('blacklight.saved_searches.no_searches') %></h2>
+  
+<%- else -%>
+  <p>
+  <%= link_to t('blacklight.saved_searches.clear.action_title'), clear_saved_searches_path, :method => :delete, :data => { :confirm => t('blacklight.saved_searches.clear.action_confirm') } %>
+  </p>
+
+  <h2 class='section-heading'><%= t('blacklight.saved_searches.list_title') %></h2>
+
+  <table class="table table-striped">
+  <%- @searches.each do |search| -%>
+    <tr>
+      <td><%= link_to_previous_search(search.query_params) %></td>
+      <td><%= button_to t('blacklight.saved_searches.delete'), forget_search_path(search.id) %></td>
+    </tr>
+  <%- end -%>
+  </table>
+
+<%- end -%>
+
+</div>

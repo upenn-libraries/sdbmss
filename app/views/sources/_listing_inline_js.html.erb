@@ -177,6 +177,8 @@
 
      new ManageSources({
          resourceName: "<%= resource_name %>",
+         resourceNameSingular: "<%= resource_name.singularize %>",
+         resourceNamePlural: "<%= resource_name.pluralize %>",
          showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
          searchNameField: "name"
      });

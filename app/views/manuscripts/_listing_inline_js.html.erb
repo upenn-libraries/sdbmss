@@ -11,7 +11,18 @@
      var showOnlyRecordsCreatedByUser = 1;
      <% end %>
 
-     new SDBM.ManageRecords({
+     // Subclass of SDBM.ManageRecords tailored for display of mss
+     var ManageManuscripts = function(options) {
+         SDBM.ManageRecords.call(this, options);
+     };
+     
+     ManageManuscripts.prototype = Object.create(SDBM.ManageRecords.prototype);
+
+     ManageManuscripts.prototype.getButtonTextForAddNewRecord = function () {
+         return null;
+     };
+
+     new ManageManuscripts({
          resourceName: "<%= resource_name %>",
          resourceNameSingular: "<%= resource_name.singularize %>",
          resourceNamePlural: "<%= resource_name.pluralize %>",
@@ -19,7 +30,7 @@
          searchNameField: "name"
      });
 
-
  });
 
 </script>
+

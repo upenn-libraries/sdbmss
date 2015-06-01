@@ -316,7 +316,7 @@ $(document).ready(function() {
                         entry_manuscripts: entryManuscripts
                     }),
                     success: function(data, textStatus, jqXHR) {
-                        var body = "<p>Manuscript SDBM_MS_" + data.manuscript_id + " successfully created!</p><p><a href='/linkingtool/manuscript/" + data.manuscript_id + "'>Click here</a> to go to the linking tool for that manuscript now.";
+                        var body = "<p>Manuscript record SDBM_MS_" + data.manuscript_id + " successfully created!</p><p><a href='/linkingtool/manuscript/" + data.manuscript_id + "'>Click here</a> to add more or edit links to SDBM_MS_" + data.manuscript_id + "</p><p>or</p><p><a href='/dashboard'>Return to your dashboard</a></p>";
                         SDBM.showModal("#modal", {
                             allowDismiss: false,
                             showFooter: false,

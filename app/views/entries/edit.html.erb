@@ -84,8 +84,36 @@ label.col-sm-2-and-half {
 
     <div class="row">
       <div class="col-sm-offset-2 col-sm-8">
-          <p>Please fill in as much information as possible from the record you are documenting. You can click on the field labels to get help. Known errors in the data should be preserved, but noted in the Comments at the bottom of the page.</p>
 
+          <p ng-show="!edit">Please fill in as much information as possible from the
+              record you are documenting. Click on a <b>data field label</b>
+              to open a pop-up window containing definitions and data
+              standards for that field. Depending on the type of <b>transaction</b>
+              you select, the available data fields will change.
+          </p>
+
+          <p ng-show="edit">You can make edits to your entries in the
+              data fields below. Click on a <b>data field</b>
+              label to open a pop-up window containing definitions and
+              data standards for that field. Depending on the type of
+              <b>transaction</b> you select, the available data fields will
+              change.
+          </p>
+
+          <p>Remember that entries reflect what the <b>source</b>
+              provides, not necessarily the reality of what the <b>manuscript</b>
+              is. You should not try to correct a source. Known errors in
+              the data should be preserved but can be noted in the
+              <b>Comments</b> at the bottom of the page. If you believe the
+              source description is in error, create a new <b>Personal
+                  Observation</b> entry. If there is not already a <b>Manuscript
+                  Record</b> created, you will be asked to create this record.
+          </p>
+
+          <div ng-show="edit">
+              <p>Use the Action dropdown menu to navigate to related pages.</p>
+          </div>
+          
           <div ng-show="badData.length > 0" style="color:red; font-weight: bold;">
               WARNING: Bad data found in fields that can't be displayed in dropdowns: 
               <span ng-repeat="badDataItem in badData">{{ badDataItem }}</span>. Saving the record on this page may cause data loss.
@@ -646,8 +674,10 @@ label.col-sm-2-and-half {
 
   </fieldset>
 
+  <% if Rails.env.development? %>
   <br/><br/>
   <a href="#" data-ng-click="debug()">DEBUG: Print model to console</a>
+  <% end %>
 
 </div>
 
@@ -667,7 +697,7 @@ label.col-sm-2-and-half {
 
             <a ng-click="markSourceAsEntered()" href="#">No, there are no more entries to enter from this source</a><br/><br/>
 
-            <span ng-show="!entry.manuscript_id"><a ng-click="sdbmutil.redirectToFindOrCreateManuscriptForEntryPage(entry.id)" href="#">No, but let me find or create a manuscript for this entry</a><br/><br/></span>
+            <span ng-show="!entry.manuscript_id"><a ng-click="sdbmutil.redirectToFindOrCreateManuscriptForEntryPage(entry.id)" href="#">No, but let me link to another entry</a><br/><br/></span>
 
             <span ng-show="entry.manuscript_id"><a ng-click="sdbmutil.redirectToManuscriptEditPage(entry.manuscript_id)" href="#">No, but let me manage the entries for SDBM_MS_{{ entry.manuscript_id }}</a><br/><br/></span>
 
