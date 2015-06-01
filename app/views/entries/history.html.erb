@@ -5,6 +5,7 @@
         <tr>
             <th>Date</th>
             <th>User</th>
+            <th>Change Type</th>
             <th>Field</th>
             <th>Old Value</th>
             <th>New Value</th>
@@ -18,14 +19,16 @@
             <td></td>
             <td></td>
             <td></td>
+            <td></td>
         </tr>
         <% changeset.changes.each do |change| %>
         <tr>
             <td></td>
             <td></td>
-            <td><%= change[:field] %></td>
-            <td><%= change[:values].first %></td>
-            <td><%= change[:values].second %></td>
+            <td><%= change.change_type %> <%= change.object_class %></td>
+            <td><%= change.field %></td>
+            <td><%= change.values.first %></td>
+            <td><%= change.values.second %></td>
         </tr> 
        <% end %>
        <% end %>
