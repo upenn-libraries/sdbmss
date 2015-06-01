@@ -12,7 +12,7 @@
             <div class="panel-heading">Data Entry Tasks</div>
             <div class="panel-body">
                 <p><a href="<%= new_entry_path %>">Add New Entry</a></p>
-                <p><a href="<%= admin_search_path %>">Manage <%= possessive %> Entries</a>
+                <p><a href="<%= entries_path %>">Manage <%= possessive %> Entries</a>
                     <% if can? :manage, Entry %>
                         <% if (unapproved_count = Entry.where(approved: false).count) > 0 %>
                             <br/>(<span style="color: red;"><%= unapproved_count %> unapproved</span>)

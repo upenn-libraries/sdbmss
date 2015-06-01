@@ -341,7 +341,10 @@ module CatalogControllerConfiguration
 
     self.search_params_logic << :show_all_if_no_query
 
+    # These two builder methods modify the Solr query based on query
+    # params on EntryController page
     self.search_params_logic << :show_approved
+    self.search_params_logic << :show_created_by_user
 
     self.search_params_logic << :translate_manuscript_date
 

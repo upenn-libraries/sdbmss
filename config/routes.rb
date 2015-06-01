@@ -9,9 +9,6 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/admin_search', to: "admin_search#index"
-  post '/admin_search/calculate_bounds', to: "admin_search#calculate_bounds"
-
   resources :agents, only: [:show]
 
   # it would be cleaner to have :entries here and merge
@@ -35,6 +32,7 @@ Rails.application.routes.draw do
   # Note here that we point #show to BL's CatalogController
   resources :entries, except: [:show] do
     collection {
+      post 'calculate_bounds'
       post 'mark_as_approved'
       get 'types'
     }

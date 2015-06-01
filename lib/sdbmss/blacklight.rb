@@ -74,6 +74,13 @@ module SDBMSS::Blacklight
       end
     end
 
+    def show_created_by_user(solr_parameters)
+      if blacklight_params['created_by_user'].to_s == '1'
+        # scope is the Blacklight-configured rails controller
+        solr_parameters['fq'] << 'created_by:' + scope.current_user.username.to_s
+      end
+    end
+
     # This translates a query str of "[year1 TO year2]" in the
     # manuscript_date blacklight parameters field to a str of the form
     # '["minX minY" TO "maxX maxY"]'. We do this translation so that

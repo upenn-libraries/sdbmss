@@ -546,7 +546,7 @@ var SDBM = SDBM || {};
         var sdbmTableInstance = this;
 
         var defaults = {
-            url: '/admin_search.json',
+            url: '/entries.json',
             data: params,
             success: function(data, textStatus, jqXHR) {
                 if(!data.error) {

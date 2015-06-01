@@ -1,7 +1,7 @@
 
 require "rails_helper"
 
-describe "Admin search", :js => true do
+describe "Manage entries", :js => true do
 
   before :all do
     SDBMSS::ReferenceData.create_all
@@ -32,17 +32,17 @@ describe "Admin search", :js => true do
   end
 
   it "should return JSON results successfully", js: false do
-    visit admin_search_path(format: :json)
+    visit entries_path(format: :json)
     data = JSON.parse(page.source)
     expect(data['error']).to be_nil
   end
 
   it "should show table of entries" do
-    visit admin_search_path
+    visit entries_path
   end
 
   it "should search" do
-    visit admin_search_path
+    visit entries_path
 
     first("input[name='search_value']").native.send_keys "de ricci"
     click_button "Search"
@@ -51,9 +51,19 @@ describe "Admin search", :js => true do
     expect(all("#search_results tbody tr").count).to eq(2)
   end
 
+  it "should jump to ID" do
+    visit entries_path
+
+    fill_in 'jump_to', :with => "10"
+    click_button "Go"
+    expect(page).not_to have_selector("#spinner", visible: true)
+
+    expect(all("#search_results tbody tr").count).to eq(13)
+  end
+
   it "should mark entry as approved" do
 
-    visit admin_search_path
+    visit entries_path
     first("#unapproved_only").click
     click_button "Search"
 

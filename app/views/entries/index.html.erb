@@ -99,7 +99,7 @@ $(document).ready(function() {
             if(jumpToEntry.search) {
                 var entry_id = $("#jump_to").val();
                 $.ajax({
-                    url: '/admin_search/calculate_bounds',
+                    url: '/entries/calculate_bounds',
                     type: 'POST',
                     data: {
                         entry_id: entry_id,
