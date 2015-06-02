@@ -7,7 +7,8 @@
  */
 
 /* Hints for eslint: */
-/* global alert, angular, console, window, setTimeout, $ */
+/* eslint camelcase:0, no-underscore-dangle:0 */
+/* global alert, angular, console, window, setTimeout, $, SDBM */
 
 (function () {
 
