@@ -1,0 +1,81 @@
+<form class="form-horizontal search-form">
+    <div class="row form-group search-fieldset original">
+        <div class="col-sm-1">
+            <label class="control-label">Search</label>
+        </div>
+        <div class="col-sm-4">
+            <input class="form-control" name="search_value" value="" size="70" type="text">
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="search_field">
+            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
+            <option value="<%= key %>"><%= field_def.label %></option>
+            <%- end -%>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <div>
+                Match <select class="form-control" style="width: 100px; display: inline" name="op"><option value="AND">all</option><option value="OR">any</option></select>
+                of these fields
+            </div>
+        </div>
+    </div>
+
+    <div class="row form-group search-fieldset">
+        <div class="col-sm-4 col-sm-offset-1">
+            <input class="form-control" name="search_value" value="" size="70" type="text">
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="search_field">
+            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
+            <option value="<%= key %>"><%= field_def.label %></option>
+            <%- end -%>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <label class="checkbox-inline">
+                <input id="unapproved_only" name="unapproved_only" type="checkbox" value="1" />Limit to records needing approval
+            </label>
+        </div>
+    </div>
+
+    <div class="row form-group search-fieldset">
+        <div class="col-sm-4 col-sm-offset-1">
+            <input class="form-control" name="search_value" value="" size="70" type="text">
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="search_field">
+            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
+            <option value="<%= key %>"><%= field_def.label %></option>
+            <%- end -%>
+            </select>
+        </div>
+        <div class="col-sm-1">
+            <button id="search_submit" class="btn btn-primary">Search</button>
+        </div>
+        <div class="col-sm-1">
+            <div>
+                <img id="spinner" alt="working..." style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
+            </div>
+        </div>
+        <div class="col-sm-1 text-right">
+            <label class="control-label">Jump to ID</label>
+        </div>
+        <div class="col-sm-1">
+            <input class="form-control" type="text" id="jump_to"/>
+        </div>
+        <div class="col-sm-1">
+            <button id="jump_submit" class="btn btn-primary">Go</button>
+        </div>
+    </div>
+
+    <div class="row form-group search-fieldset approve-control" style="display: none;">
+        <div class="col-sm-2 col-sm-offset-1">
+            <a href="#" id="select-all">Select All</a> / <a href="#" id="deselect-all">Deselect All</a>
+        </div>
+        <div class="col-sm-2 col-sm-offset-1">
+            <a class="btn btn-primary btn-xs" id="mark-as-approved" class="btn btn-primary">Mark checked records as approved</a>
+        </div>
+    </div>
+
+</form>

@@ -1,8 +1,20 @@
 
-# This is a subclass of CatalogController so we can take advantage of
-# the search functionality in the #index action for the table view of
-# Entries.
-class EntriesController < CatalogController
+# Manage Entries screen is much more complicated than other screens
+# that subclass from ManageModelsController, but we use it anyway
+# for consistency.
+class EntriesController < ManageModelsController
+
+  # include Blacklight modules so that we get the same search
+  # functionality as in CatalogController, except that in this
+  # controller, we customize a few things about how search works.
+
+  include Blacklight::Catalog
+
+  include CatalogControllerConfiguration
+
+  # the blacklight_advanced_search gem includes this automatically in
+  # CatalogController but not here, so we include it explicitly
+  include BlacklightAdvancedSearch::Controller
 
   before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history]
 
@@ -11,6 +23,10 @@ class EntriesController < CatalogController
   respond_to :html, :json
 
   load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_approved]
+
+  def model_class
+    Entry
+  end
 
   # JSON data structure optimized for editing page. This weird action
   # exists because we want CatalogController to handle #show, but we

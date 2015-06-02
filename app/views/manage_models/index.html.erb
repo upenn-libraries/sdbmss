@@ -13,6 +13,8 @@
     <h1>Manage all <%= resource_name.singularize %> records</h1>
 <% end %>
 
+<%= render partial: "instructions" %>
+
 <%= render partial: "search_form" %>
 
 <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">

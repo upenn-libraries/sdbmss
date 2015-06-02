@@ -1,0 +1,272 @@
+<script type="text/javascript">
+
+ $(document).ready(function() {
+
+     var resourceName = "<%= resource_name %>";
+
+     // flag = show all records, or only those that the user created
+     <% if can? :manage, model_class  %>
+     var showOnlyRecordsCreatedByUser = 0;
+     <% else %>
+     var showOnlyRecordsCreatedByUser = 1;
+     <% end %>
+
+     var jumpToEntry = {
+         search: false
+     };
+
+     // Subclass of SDBM.ManageRecords tailored for display of entries
+     var ManageEntries = function(options) {
+         SDBM.ManageRecords.call(this, options);
+     };
+     
+     ManageEntries.prototype = Object.create(SDBM.ManageRecords.prototype);
+
+     ManageEntries.prototype.createTable = function (selector) {
+
+         var manageEntries = this;
+         
+         var sdbmTable = new SDBM.EntryTable("#search_results", {
+             heightBuffer: 450,
+             prependColumns: [
+                 {
+                     sdbmssMinWidth: "25px",
+                     sdbmssMaxWidth: "25px",
+                     title: '',
+                     orderable: false,
+                     render: function (data, type, full, meta) {
+                         if(showApprovalControls()) {
+                             return '<input type="checkbox" name="approve" value="' + full[sdbmTable.getColumnIndex("ID")] + '"/>';
+                         }
+                         return '';
+                     }
+                 },
+                 {
+                     sdbmssMinWidth: "150px",
+                     sdbmssMaxWidth: "150px",
+                     title: 'Actions',
+                     orderable: false,
+                     render: function (data, type, full, meta) {
+                         var entryId = full[sdbmTable.getColumnIndex("ID")];
+                         var manuscriptId = full[sdbmTable.getColumnIndex("Manuscript")];
+                         var linkingToolURL = manuscriptId ? '/linkingtool/manuscript/' + manuscriptId : '/linkingtool/entry/' + entryId;
+
+                         var showLinkingTool = full[sdbmTable.getColumnIndex("Is Approved")] === true;
+                         var linkingToolHTMLLink = ' &middot; <a class="find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
+
+                         return '<a href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +
+                                ' &middot; <a class="entry-delete-link" href="#" target="_blank">Delete</a>' +
+                            (showLinkingTool ? linkingToolHTMLLink : '');
+                     }
+                 }
+             ],
+             ajax: function (sdbmTable, dt_params, callback, settings) {
+                 $("#spinner").show();
+
+                 // seems like there should be a way to do this conditional
+                 // ajax and subsequent searchAndUpdateTable using
+                 // promises, but I can't figure that out right now
+                 
+                 if(jumpToEntry.search) {
+                     var entry_id = $("#jump_to").val();
+                     $.ajax({
+                         url: '/entries/calculate_bounds',
+                         type: 'POST',
+                         data: {
+                             entry_id: entry_id,
+                             per_page: $("select[name='search_results_length']").val(),
+                         },
+                         success: function(data, textStatus, jqXHR) {
+                             jumpToEntry.entry_id = entry_id;
+                             jumpToEntry.query = '[' + data.lower_bound + ' TO ' + data.upper_bound + ']';
+
+                             var params = manageEntries.translateJumpToParams(sdbmTable, dt_params);
+                             sdbmTable.searchAndUpdateTable(params, callback, {
+                                 'complete': function () {
+                                     $("#spinner").hide();
+                                 }
+                             });
+                         },
+                         error: function() {
+                             // TODO: fill this out
+                             alert("An error occurred jumping to this record.");
+                         }
+                     });
+                 } else {
+                     var params = manageEntries.translateSearchParams(sdbmTable, dt_params);                
+                     sdbmTable.searchAndUpdateTable(params, callback, {
+                         complete: function () {
+                             $("#spinner").hide();
+
+                             if(showApprovalControls()) {
+                                 $(".approve-control").show();
+                             } else {
+                                 $(".approve-control").hide();
+                             }
+                         }
+                     });
+                 }
+             }
+         });
+
+         return sdbmTable;
+     };
+
+     var showUnapprovedOnly = function() {
+         return $("input[name='unapproved_only']").is(":checked");
+     };
+
+     var showApprovalControls = function() {
+         return showUnapprovedOnly() && !showOnlyRecordsCreatedByUser;         
+     };
+     
+     // Fielded search specific params
+     ManageEntries.prototype.translateSearchParams = function (sdbmTable, data) {
+         params = sdbmTable.translateParamsToBlacklight(data);
+
+         params["op"] = $("select[name='op']").val();
+         
+         $(".search-fieldset").each(function(idx, element) {
+             var search_field = $(element).find("select[name='search_field']").first().val();
+             var search_value = $(element).find("input[name='search_value']").first().val();
+             if(search_value) {
+                 params[search_field] = search_value;
+             }
+         });
+
+         params["approved"] = showUnapprovedOnly() ? "false" : "*";
+
+         if(showOnlyRecordsCreatedByUser) {
+             params["created_by_user"] = 1;
+         }
+
+         return params;
+     };
+
+     // 'Jump to' specific params
+     ManageEntries.prototype.translateJumpToParams = function (sdbmTable, data) {
+         params = sdbmTable.translateParamsToBlacklight(data);
+
+         params['entry_id'] = jumpToEntry.query;
+
+         return params;
+     };
+     
+     ManageEntries.prototype.getButtonTextForAddNewRecord = function () {
+         return null;
+     };
+
+     ManageEntries.prototype.createFormSubmitHandler = function () {
+         var manageEntries = this;
+         return function(event) {
+             manageEntries.doSearch(false);
+         };
+     };
+
+     ManageEntries.prototype.doSearch = function (isJumpSearch) {
+         var manageEntries = this;
+         jumpToEntry.search = isJumpSearch;
+         manageEntries.dataTable.reload();
+     };
+     
+     var manageEntries = new ManageEntries({
+         resourceName: "<%= resource_name %>",
+         resourceNameSingular: "<%= resource_name.singularize %>",
+         resourceNamePlural: "<%= resource_name.pluralize %>",
+         showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
+         searchNameField: "name"
+     });
+
+     SDBM.setPageFullWidth();
+
+     $("input[name='search_value']").val("");
+
+     $('#search_results').on('draw.dt', function () {
+         if(jumpToEntry.search) {
+             var sdbmTable = manageEntries.dataTable;
+             var entry_id = String(jumpToEntry.entry_id);
+             // highlight the row
+             sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
+                 var data = sdbmTable.dataTable.row(row).data();
+                 if(String(data[sdbmTable.getColumnIndex("ID")]) === entry_id) {
+                     $(row).addClass("selected");
+                     $(".dataTables_scrollBody").scrollTop(idx * sdbmTable.getRowHeight());
+                 }
+             });
+         }
+     });
+     
+     $("#jump_to").keydown(function(e) {
+         if(e.keyCode == 13) {
+             manageEntries.doSearch(true);
+             e.preventDefault();
+             return false;
+         }
+     });
+
+     $("#jump_submit").click(function () {
+         manageEntries.doSearch(true);
+         // prevent form submit handler from firing
+         return false;
+     });
+
+     $(document).on("click", ".entry-delete-link", function (event) {
+         var sdbmTable = manageEntries.dataTable;
+         var row_data = sdbmTable.dataTable.row($(event.target).closest("tr")).data();
+         var entry_id = row_data[1];
+         if(confirm("Are you sure you want to delete entry " + entry_id + "?")) {
+             $.ajax({
+                 url: '/entries/' + entry_id,
+                 type: 'DELETE',
+                 error: function() {
+                     // TODO: fill this out
+                     alert("An error occurred deleting this record.");
+                 },
+                 complete: function() {
+                     sdbmTable.reload();
+                 }
+             });
+         }
+         return false;
+     });
+
+     $(document).on('click', "#select-all", function(event) {
+         $("input[name='approve']").prop("checked", true);
+         return false;
+     });
+
+     $(document).on('click', "#deselect-all", function(event) {
+         $("input[name='approve']").prop("checked", false);
+         return false;
+     });
+
+     $(document).on('click', "#mark-as-approved", function(event) {
+         var sdbmTable = manageEntries.dataTable;
+         var ids = [];
+         $("input[name='approve']:checked").each(function (idx, element) {
+             ids.push($(element).val());
+         });
+         
+         if(ids.length > 0) {
+             // TODO: spinner
+             $.ajax({
+                 url: '/entries/mark_as_approved.json',
+                 type: 'POST',
+                 data: { ids: ids },
+                 success: function(data, textStatus, jqXHR) {
+                     sdbmTable.reload();
+                 },
+                 error: function() {
+                     // TODO: fill this out
+                     alert("An error occurred marking records as reviewed");
+                 }
+             });
+         }
+
+         return false;
+     });
+
+ });
+
+</script>
+

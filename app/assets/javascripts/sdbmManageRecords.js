@@ -51,46 +51,7 @@ var SDBM = SDBM || {};
 
         setFormStateFromURL();
         
-        var columns = this.getColumns();
-        
-        this.dataTable = new SDBM.Table(".sdbm-table", {
-            ajax: function (sdbmTable, dt_params, callback, settings) {
-
-                var params = manageRecords.createSearchParams(dt_params);
-
-                $("#spinner").show();
-                $.ajax({
-                    url: '/' + manageRecords.options.resourceName + '/search.json',
-                    data: params,
-                    success: function(data, textStatus, jqXHR) {
-                        if(!data.error) {
-                            $(".dataTables_scrollBody").scrollTop(0);
-                            var rows = [];
-                            data.results.forEach(function(item) {
-                                rows.push(manageRecords.searchResultToTableRow(item));
-                            });
-                            callback({
-                                draw: dt_params.draw,
-                                data: rows,
-                                recordsTotal: data.total,
-                                recordsFiltered: data.total
-                            });
-                        } else {
-                            alert("An error occurred fetching search results: " + data.error);
-                        }
-                    },
-                    error: function() {
-                        // TODO: fill this out
-                        alert("An error occurred fetching search results");
-                    },
-                    complete: function() {
-                        $("#spinner").hide();
-                    }
-                });
-            },
-            columns: columns,
-            order: manageRecords.getDefaultSort()
-        });
+        this.dataTable = manageRecords.createTable(".sdbm-table");
 
         $(".sdbm-table").on("click", ".delete-link", function(event) {
             if(confirm("Are you sure you want to delete this record?")) {
@@ -109,20 +70,7 @@ var SDBM = SDBM || {};
             return false;
         });
         
-        $('form.search-form').submit(function() {
-            var url = URI(manageRecords.getResourceIndexURL()).search({
-                term: manageRecords.getSearchValue(),
-                unreviewed_only: manageRecords.getUnreviewedOnly()
-            });
-
-            history.pushState({ url: url }, '', url);
-
-            manageRecords.dataTable.reload();
-
-            manageRecords.showOrHideMarkCheckedRecordsButton();
-
-            return false;
-        });
+        $('form.search-form').submit(manageRecords.createFormSubmitHandler());
 
         $('#export-csv').click(function() {
             var qs = new URI().query(true);
@@ -178,6 +126,54 @@ var SDBM = SDBM || {};
         }
     };
 
+    /** Creates the table object instance */
+    SDBM.ManageRecords.prototype.createTable = function(selector) {
+
+        var manageRecords = this;
+
+        var sdbmTable = new SDBM.Table(selector, {
+            ajax: function (sdbmTable, dt_params, callback, settings) {
+
+                var params = manageRecords.createSearchParams(dt_params);
+
+                $("#spinner").show();
+                $.ajax({
+                    url: '/' + manageRecords.options.resourceName + '/search.json',
+                    data: params,
+                    success: function(data, textStatus, jqXHR) {
+                        if(!data.error) {
+                            $(".dataTables_scrollBody").scrollTop(0);
+                            var rows = [];
+                            data.results.forEach(function(item) {
+                                rows.push(manageRecords.searchResultToTableRow(item));
+                            });
+                            callback({
+                                draw: dt_params.draw,
+                                data: rows,
+                                recordsTotal: data.total,
+                                recordsFiltered: data.total
+                            });
+                        } else {
+                            alert("An error occurred fetching search results: " + data.error);
+                        }
+                    },
+                    error: function() {
+                        // TODO: fill this out
+                        alert("An error occurred fetching search results");
+                    },
+                    complete: function() {
+                        $("#spinner").hide();
+                    }
+                });
+            },
+            heightBuffer: 400,
+            columns: manageRecords.getColumns(),
+            order: manageRecords.getDefaultSort()
+        });
+
+        return sdbmTable;
+    };
+
     // returns an object to pass to jquery $.ajax() call
     SDBM.ManageRecords.prototype.createSearchParams = function (dt_params) {
         var columns = this.getColumns();
@@ -193,6 +189,27 @@ var SDBM = SDBM || {};
             offset: dt_params.start,
             limit: dt_params.length,
             order: orderStr
+        };
+    };
+
+    // factory method that returns a function used for search form
+    // submit handler
+    SDBM.ManageRecords.prototype.createFormSubmitHandler = function () {
+        var manageRecords = this;
+
+        return function() {
+            var url = URI(manageRecords.getResourceIndexURL()).search({
+                term: manageRecords.getSearchValue(),
+                unreviewed_only: manageRecords.getUnreviewedOnly()
+            });
+
+            history.pushState({ url: url }, '', url);
+
+            manageRecords.dataTable.reload();
+
+            manageRecords.showOrHideMarkCheckedRecordsButton();
+
+            return false;
         };
     };
 

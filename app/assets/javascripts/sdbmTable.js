@@ -33,6 +33,10 @@
  *  height: this can be one of several values: the string 'full',
  *  takes up the full height of the viewport; a function; or a string
  *  describing a fixed height. defaults to 'full'.
+ *
+ *  heightBuffer: used only when height is 'full'. This is the size,
+ *  as an integer, in pixels, to subtract from viewport height, to use
+ *  for the scrollY value.
  */
 
 /* Hints for eslint: */
@@ -52,12 +56,11 @@ var SDBM = SDBM || {};
             fixedColumns: null,
             prependColumns: null,
             height: 'full',
+            heightBuffer: 360,
             dom: 'C<"clear"><"H"lr>JRt<"F"ip>'
         };
 
         this.options = $.extend({}, defaults, options);
-
-        this.table_height_buffer = 360;
 
         this.selector = selector;
 
@@ -92,7 +95,7 @@ var SDBM = SDBM || {};
 
         var scrollY = "";
         if(this.options.height === 'full') {
-            scrollY = (this.getViewportHeight() - this.table_height_buffer) + "px";
+            scrollY = (this.getViewportHeight() - this.options.heightBuffer) + "px";
         } else if($.isFunction(this.options.height)) {
             scrollY = this.options.height();
         } else if(this.options.height) {
