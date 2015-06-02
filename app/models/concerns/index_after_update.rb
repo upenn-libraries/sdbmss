@@ -1,4 +1,8 @@
 
+# Module to include on Models that should trigger a Solr reindex on
+# (associated) Entry records. The including model class needs to have
+# a #entries_to_index_on_update method that returns the object
+# instance's related Entries to reindex.
 module IndexAfterUpdate
 
   extend ActiveSupport::Concern
