@@ -36,7 +36,7 @@
     </div>
 
     <div class="form-group row">
-        <label for="source_type" class="col-sm-2 control-label">Source Type</label>
+        <label for="source_type" class="col-sm-2 control-label"><span sdbm-tooltip="source_type">Source Type</span></label>
         <div class="col-sm-4">
             <select class="form-control" id="source_type" ng-model="source.source_type" ng-options="option as option.display_name for option in optionsSourceType" ng-disabled="source.id">
                 <option value="">Select One</option>
@@ -95,14 +95,14 @@
         <div class="auction-source-container" ng-show="source.source_type.name == 'auction_catalog'">
 
             <div class="form-group row">
-                <label for="cat_title" class="col-sm-2 control-label">Publication Title</label>
+                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" id="title" ng-model="source.title" required />
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="institution" class="col-sm-2 control-label">Selling Agent</label>
+                <label for="institution" class="col-sm-2 control-label"><span sdbm-tooltip="source_selling_agent">Selling Agent</span></label>
                 <div class="col-sm-6">
                     <input id="selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
                 </div>
@@ -121,14 +121,14 @@
 
         <div class="auction-source-container" ng-show="source.source_type.name == 'online'">
             <div class="form-group row">
-                <label for="cat_title" class="col-sm-2 control-label">Website Name</label>
+                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_website_name">Website Name</span></label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" id="title" ng-model="source.title" required />
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="institution" class="col-sm-2 control-label">Selling Agent</label>
+                <label for="institution" class="col-sm-2 control-label"><span sdbm-tooltip="source_selling_agent">Selling Agent</span></label>
                 <div class="col-sm-6">
                     <input id="selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
                 </div>
@@ -138,21 +138,21 @@
         <div class="auction-source-container" ng-show="source.source_type.name == 'collection_catalog'">
 
             <div class="form-group row">
-                <label for="institution" class="col-sm-2 control-label">Institution/Collection</label>
+                <label for="institution" class="col-sm-2 control-label"><span sdbm-tooltip="source_institution">Institution/Collection</span></label>
                 <div class="col-sm-6">
                     <input class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.institution.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="cat_title" class="col-sm-2 control-label">Publication Title</label>
+                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" id="title" ng-model="source.title">
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="cat_author">Publication Author</span></label>
+                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_author">Publication Author</span></label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" id="author" ng-model="source.author">
                 </div>
@@ -163,14 +163,14 @@
         <div class="auction-source-container" ng-show="source.source_type.name == 'observation'">
 
             <div class="form-group row">
-                <label for="cat_title" class="col-sm-2 control-label">Source Name</label>
+                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_source_name">Source Name</label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" id="title" ng-model="source.title">
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="cat_author">Observer</span></label>
+                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_observer">Observer</span></label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" id="author" ng-model="source.author">
                 </div>
@@ -181,14 +181,14 @@
         <div class="other-published-container" ng-show="source.source_type.name == 'other_published'">
 
             <div class="form-group row">
-                <label for="cat_title" class="col-sm-2 control-label">Publication Title</label>
+                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" id="title" ng-model="source.title">
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="cat_author">Publication Author</span></label>
+                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_author">Publication Author</span></label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" id="author" ng-model="source.author">
                 </div>
@@ -199,21 +199,21 @@
         <div class="auction-source-container" ng-show="source.source_type.name == 'unpublished'">
 
             <div class="form-group row">
-                <label for="institution" class="col-sm-2 control-label">Institution/Collection</label>
+                <label for="institution" class="col-sm-2 control-label"><span sdbm-tooltip="source_institution">Institution/Collection</label>
                 <div class="col-sm-6">
                     <input class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.institution.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="cat_title" class="col-sm-2 control-label">Source Name</label>
+                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_source_name">Source Name</span></label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" id="title" ng-model="source.title">
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="cat_author">Author/Creator</span></label>
+                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_author_creator">Author/Creator</span></label>
                 <div class="col-sm-6">
                     <input type="text" class="form-control" id="author" ng-model="source.author">
                 </div>
@@ -222,7 +222,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="whether_mss" class="col-sm-2 control-label"><span sdbm-tooltip="source_date">Has Manuscripts</span></label>
+            <label for="whether_mss" class="col-sm-2 control-label"><span sdbm-tooltip="source_has_manuscripts">Has Manuscripts</span></label>
             <div class="col-sm-3">
                 <select class="form-control" name="whether_mss" id="whether_mss" ng-model="source.whether_mss">
                     <%= options_for_select(Source::HAS_MANUSCRIPT_TYPES) %>
@@ -255,7 +255,7 @@
         </div>
 
         <div class="form-group row">
-            <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_medium"></span></label>
+            <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_medium">Location</span></label>
             <div class="col-sm-3">
                 <select class="form-control" id="medium" ng-model="source.medium" ng-options="option[0] as option[1] for option in optionsMedium">
                     <option value="">Select One</option>
@@ -275,8 +275,8 @@
 
         <div class="form-group row" ng-show="source.medium != 'internet' && source.medium != 'personal_communication'">
             <label for="city" class="col-sm-2 control-label">
-                <span sdbm-tooltip="source_institution" ng-show="source.medium != 'private_collection'">Institution</span>
-                <span sdbm-tooltip="source_institution" ng-show="source.medium == 'private_collection'">Collection</span>
+                <span sdbm-tooltip="source_institution_location_seen" ng-show="source.medium != 'private_collection'">Institution</span>
+                <span sdbm-tooltip="source_institution_location_seen" ng-show="source.medium == 'private_collection'">Collection</span>
             </label>
             <div class="col-sm-6">
                 <input type="text" class="form-control" name="location_institution" id="location_institution" ng-model="source.location_institution" />
@@ -284,7 +284,7 @@
         </div>
 
         <div class="form-group row" ng-show="source.medium != 'internet'">
-            <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_location">Location (City, Country)</span></label>
+            <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_location_seen">Location (City, Country)</span></label>
             <div class="col-sm-6">
                 <input type="text" class="form-control" name="location" id="location" ng-model="source.location" />
             </div>
@@ -305,7 +305,7 @@
 
         <div class="form-group row">
             <label for="editorial_comments" class="col-sm-2 control-label">
-                <span sdbm-tooltip="entry">Comments</span>
+                <span sdbm-tooltip="source_comments">Comments</span>
             </label>
             <div class="col-sm-9">
                 <textarea class="form-control" id="comments" data-ng-model="source.comments"></textarea>
