@@ -152,7 +152,7 @@ label.col-sm-2-and-half {
     </div>
 
     <div class="row form-group">
-      <label for="cat_lot_no" class="col-sm-2 control-label"><span sdbm-tooltip="cat_lot_no">Cat. or Lot #</span></label>
+      <label for="cat_lot_no" class="col-sm-2 control-label"><span sdbm-tooltip="entry_cat_lot_no">Cat. or Lot #</span></label>
       <div class="col-sm-2">
         <input type="text" class="form-control" id="cat_lot_no" placeholder="" ng-model="entry.catalog_or_lot_number">
       </div>
@@ -174,7 +174,7 @@ label.col-sm-2-and-half {
         </div>
 
         <div class="form-group row">
-            <label class="col-sm-2 control-label"><span sdbm-tooltip="seller">This entry is</span></label>
+            <label class="col-sm-2 control-label">This entry is</label>
             <div class="col-sm-3">
                 <select class="form-control" id="transaction_type" ng-model="entry.transaction_type" ng-options="option[0] as option[1] for option in optionsTransactionType" ng-disabled="transactionTypeDisabled()"></select>
             </div>
@@ -183,14 +183,14 @@ label.col-sm-2-and-half {
         <div ng-show="entry.transaction_type == 'sale' || entry.transaction_type == 'gift'">
         
             <div class="form-group row">
-                <label class="col-sm-2 control-label"><span sdbm-tooltip="seller">Selling Agent</span></label>
+                <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_selling_agent">Selling Agent</span></label>
                 <div class="col-sm-5">
                     <div class="input-group">
                         <input id="transaction_selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
                         <div id="transaction_selling_agent_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.selling_agent"><span class="glyphicon"></span></div>
                     </div>
                 </div>
-                <label class="col-sm-1 control-label"><span sdbm-tooltip="seller2">Seller</span></label>
+                <label class="col-sm-1 control-label"><span sdbm-tooltip="entry_seller">Seller</span></label>
                 <div class="col-sm-4">
                     <div class="input-group">
                         <input id="transaction_seller" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
@@ -200,7 +200,7 @@ label.col-sm-2-and-half {
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-2 control-label"><span sdbm-tooltip="buyer">Buyer</span></label>
+                <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_buyer">Buyer</span></label>
                 <div class="col-sm-5">
                     <div class="input-group">
                         <input id="transaction_buyer" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
@@ -212,14 +212,14 @@ label.col-sm-2-and-half {
             <div ng-show="entry.transaction_type == 'sale'">
 
                 <div class="form-group row">
-                    <label for="sold" class="col-sm-2 control-label"><span sdbm-tooltip="sold">Sold</span></label>
+                    <label for="sold" class="col-sm-2 control-label"><span sdbm-tooltip="entry_sold">Sold</span></label>
                     <div class="col-sm-2">
                         <select class="form-control" id="transaction_sold" ng-model="entry.transaction.sold" ng-options="option[0] as option[1] for option in optionsSold">
                             <option value=""></option>
                         </select>
                     </div>
                     <div ng-show="entry.transaction.sold == 'Yes'">
-                        <label for="sold" class="col-sm-4 control-label"><span sdbm-tooltip="sold">Date Sold</span></label>
+                        <label for="sold" class="col-sm-4 control-label">Date Sold</span></label>
                         <div class="col-sm-3">
                             <input type="text" class="form-control" id="transaction_date" ng-model="entry.transaction.start_date">
                         </div>
@@ -227,17 +227,17 @@ label.col-sm-2-and-half {
                 </div>
                 
                 <div class="form-group row">
-                    <label for="price" class="col-sm-2 control-label"><span sdbm-tooltip="price">Price</span></label>
+                    <label for="price" class="col-sm-2 control-label"><span sdbm-tooltip="entry_price">Price</span></label>
                     <div class="col-sm-2">
                         <input type="text" class="form-control" id="transaction_price" ng-model="entry.transaction.price">
                     </div>
-                    <label for="currency" class="col-sm-1 control-label"><span sdbm-tooltip="currency">Currency</span></label>
+                    <label for="currency" class="col-sm-1 control-label"><span sdbm-tooltip="entry_currency">Currency</span></label>
                     <div class="col-sm-1">
                         <select name="currency" id="transaction_currency" class="form-control" ng-model="entry.transaction.currency" ng-options="option[0] as option[1] for option in optionsCurrency">
                             <option value=""></option>
                         </select>
                     </div>
-                    <label for="other-currency" class="col-sm-2 control-label"><span sdbm-tooltip="otherCurrency">Other Currency</span></label>
+                    <label for="other-currency" class="col-sm-2 control-label"><span sdbm-tooltip="entry_other_currency">Other Currency</span></label>
                     <div class="col-sm-3">
                         <input type="text" class="form-control" id="other-currency" ng-model="entry.transaction.other_currency">
                     </div>
@@ -259,7 +259,7 @@ label.col-sm-2-and-half {
         <label class="col-sm-2 control-label">
             <div class="add-link-container"><a id="add_title_{{ $index }}" class="clickable" data-ng-click="addRecord(entry.entry_titles); addRecord(entry.entry_authors)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a id="delete_title_{{ $index }}" class="clickable" data-ng-click="removeRecord(entry.entry_titles, entry_title)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-            <span sdbm-tooltip="title">Title As Recorded</span>
+            <span sdbm-tooltip="entry_title_as_recorded">Title As Recorded</span>
       </label>
       <div class="col-sm-5">
           <div class="input-group">
@@ -268,7 +268,7 @@ label.col-sm-2-and-half {
           </div>
       </div>
       <label class="col-sm-1 control-label">
-          <span sdbm-tooltip="title">CommonTitle</span>
+          <span sdbm-tooltip="entry_common_title">CommonTitle</span>
       </label>
       <div class="col-sm-4">
         <input id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
@@ -280,13 +280,13 @@ label.col-sm-2-and-half {
         <label class="col-sm-2 control-label">
             <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_authors)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_authors, entry_author)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-            <span sdbm-tooltip="authorVariant">Author As Recorded</span>
+            <span sdbm-tooltip="entry_author_as_recorded">Author As Recorded</span>
         </label>
       <div class="col-sm-5">
           <input id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
       </div>
       <label class="col-sm-1 control-label">
-          <span sdbm-tooltip="author">Author</span>
+          <span sdbm-tooltip="entry_author">Author</span>
       </label>
       <div class="col-sm-4">
           <div class="input-group">
@@ -297,7 +297,7 @@ label.col-sm-2-and-half {
     </div>
     <div class="form-group row entry-author-group">
       <label class="col-sm-2 control-label">
-          <span sdbm-tooltip="role">Role</span>
+          <span sdbm-tooltip="entry_author_role">Role</span>
       </label>
       <div class="col-sm-1">
           <select id="author_role_{{ $index }}" name="author_role" class="form-control" ng-model="entry_author.role" ng-options="option[0] as option[1] for option in optionsAuthorRole"></select>
@@ -309,7 +309,7 @@ label.col-sm-2-and-half {
       <label class="col-sm-2 control-label">
             <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_dates)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-            <span sdbm-tooltip="observed_date">Date As Recorded</span>
+            <span sdbm-tooltip="entry_date_as_recorded">Date As Recorded</span>
       </label>
       <div class="col-sm-4-and-half">
           <div class="input-group">
@@ -319,7 +319,7 @@ label.col-sm-2-and-half {
       </div>
 
       <label class="col-sm-1-and-half control-label">
-          <span sdbm-tooltip="date_for_search">Date for Search</span>
+          <span sdbm-tooltip="entry_date_for_search">Date for Search</span>
       </label>
       <div class="col-sm-2">
           <input id="date_normalized_start_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.date_normalized_start">
