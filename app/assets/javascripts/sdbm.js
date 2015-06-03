@@ -50,6 +50,38 @@ var SDBM = SDBM || {};
         });
     };
 
+    /**
+     * registers the qtip tooltip plugin on specified elements, using
+     * the given template filename
+     */
+    SDBM.registerTooltip = function(selector, template) {
+        $(selector).qtip({
+            style: {
+                classes: 'sdbmss-tooltip'
+            },
+            content: {
+                text: 'Loading...',
+                ajax: {
+                    // force reload
+                    cache: false,
+                    url: '/static/tooltips/' + template + '.html',
+                    type: 'GET'
+                }
+            },
+            position: {
+                my: 'center',
+                at: 'center',
+                target: $(window)
+            },
+            show: {
+                event: 'click'
+            },
+            hide: {
+                event: 'unfocus'
+            }
+        });
+    };
+
     SDBM.hideNavBar = function() {
         $("#search-navbar").hide();
     };

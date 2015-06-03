@@ -747,7 +747,7 @@
                         sdbmutil.promiseErrorHandlerFactory("Error loading entry data for this page")
                     );
                 } else {
-                    $scope.pageTitle = "Add an Entry - Fill out details";
+                    $scope.pageTitle = "Add an Entry";
 
                     $scope.entry = new Entry();
 
@@ -1136,31 +1136,7 @@
         return function (scope, element, attrs) {
             var templateName = attrs.sdbmTooltip;
             element.addClass('sdbmss-tooltip-label');
-            $(element).qtip({
-                style: {
-                    classes: 'sdbmss-tooltip'
-                },
-                content: {
-                    text: 'Loading...',
-                    ajax: {
-                        // force reload
-                        cache: false,
-                        url: '/static/tooltips/' + templateName + '.html',
-                        type: 'GET'
-                    }
-                },
-                position: {
-                    my: 'center',
-                    at: 'center',
-                    target: $(window)
-                },
-                show: {
-                    event: 'click'
-                },
-                hide: {
-                    event: 'unfocus'
-                }
-            });
+            SDBM.registerTooltip(element, templateName);
         };
     });
 
