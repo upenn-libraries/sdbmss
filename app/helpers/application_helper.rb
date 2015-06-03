@@ -57,7 +57,7 @@ module ApplicationHelper
   end
 
   def show_linking_tool_by_manuscript?
-    user_signed_in? && @document.present? && (entry = @document.model_object).present? && entry.manuscript.present? && can?(:link, entry)
+    user_signed_in? && @document.present? && (entry = @document.model_object).present? && entry.manuscript.present? && can?(:link, entry.manuscript)
   end
 
   # determines whether entry history link should be displayed; this is

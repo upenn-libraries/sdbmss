@@ -51,7 +51,11 @@
                          var manuscriptId = full[sdbmTable.getColumnIndex("Manuscript")];
                          var linkingToolURL = manuscriptId ? '/linkingtool/manuscript/' + manuscriptId : '/linkingtool/entry/' + entryId;
 
-                         var showLinkingTool = full[sdbmTable.getColumnIndex("Is Approved")] === true;
+                         // always show Linking Tool. I have a feeling
+                         // this will change, so leaving this code
+                         // here for now.
+                         // var showLinkingTool = full[sdbmTable.getColumnIndex("Is Approved")] === true;
+                         var showLinkingTool = true; 
                          var linkingToolHTMLLink = ' &middot; <a class="find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
 
                          return '<a href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +

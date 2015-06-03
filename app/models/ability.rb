@@ -40,6 +40,8 @@ class Ability
         # TODO: should users be able to delete their own records?
         can :destroy, clazz, :created_by_id => user.id
       end
+      can :link, Entry
+      can :link, Manuscript
     end
 
     if ['editor', 'admin'].member? user.role

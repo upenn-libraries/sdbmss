@@ -263,7 +263,7 @@ var SDBM = SDBM || {};
                     title: 'Manuscript',
                     render: function (data, type, full, meta) {
                         if(data) {
-                            return '<a href="/manuscripts/' + data + '/edit/" target="_blank">SDBM_MS_' + data + '</a>';
+                            return '<a href="/manuscripts/' + data + '/" target="_blank">SDBM_MS_' + data + '</a>';
                         }
                         return '';
                     }
