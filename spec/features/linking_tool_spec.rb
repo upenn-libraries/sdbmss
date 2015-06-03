@@ -41,8 +41,8 @@ describe "Linking Tool", :js => true do
     entry = Entry.last
 
     visit linking_tool_by_entry_path id: entry.id
-    expect(page).to have_content("Entries Queued")
-    expect(page).to have_content("Search for Entries")
+    expect(page).to have_content("Entry Queue for creating Links")
+    expect(page).to have_content("Search for possible links")
 
     expect(find_by_id("workspace").find("tbody").all("tr").length).to eq(1)
 
@@ -52,7 +52,7 @@ describe "Linking Tool", :js => true do
   it "should show potential matches" do
     entry = Entry.last
     visit linking_tool_by_entry_path id: entry.id
-    click_button('Show potential matches')
+    click_button('Show potential links')
     sleep 2
 
     expect(find(".modal-title", visible: true).text.include?("No matches found")).to be_truthy

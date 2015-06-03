@@ -111,7 +111,7 @@ describe "Data entry", :js => true do
       fill_in 'date', :with => '2013'
       expect(page).to have_content @source.title
       click_link('create-entry-link-' + @source.id.to_s)
-      expect(page).to have_content "Add an Entry - Fill out details"
+      expect(page).to have_content "Add an Entry"
     end
 
     it "should find source by agent on Select Source page" do
@@ -119,7 +119,7 @@ describe "Data entry", :js => true do
       fill_in 'agent', :with => 'Soth'
       expect(page).to have_content @source.title
       click_link('create-entry-link-' + @source.id.to_s)
-      expect(page).to have_content "Add an Entry - Fill out details"
+      expect(page).to have_content "Add an Entry"
     end
 
     it "should find source by title on Select Source page" do
@@ -127,7 +127,7 @@ describe "Data entry", :js => true do
       fill_in 'title', :with => 'uniq'
       expect(page).to have_content @source.title
       click_link('create-entry-link-' + @source.id.to_s)
-      expect(page).to have_content "Add an Entry - Fill out details"
+      expect(page).to have_content "Add an Entry"
     end
 
     it "should load New Entry page with an auction catalog Source" do
@@ -153,7 +153,7 @@ describe "Data entry", :js => true do
 
       visit new_entry_path :source_id => source.id
 
-      expect(page).to have_content 'Add an Entry - Fill out details'
+      expect(page).to have_content 'Add an Entry'
 
       expect(page).to have_no_field("institution")
 
@@ -174,7 +174,7 @@ describe "Data entry", :js => true do
 
       visit new_entry_path :source_id => source.id
 
-      expect(page).to have_content 'Add an Entry - Fill out details'
+      expect(page).to have_content 'Add an Entry'
 
       expect(page).to have_no_field("institution")
 
@@ -191,7 +191,7 @@ describe "Data entry", :js => true do
 
       visit new_entry_path :source_id => source.id
 
-      expect(page).to have_content 'Add an Entry - Fill out details'
+      expect(page).to have_content 'Add an Entry'
 
       expect(page).to have_field("institution")
 
