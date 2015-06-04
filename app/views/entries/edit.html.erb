@@ -159,7 +159,7 @@ label.col-sm-2-and-half {
     </div>
 
     <div class="row form-group" ng-show="entry.source.source_type.entries_have_institution_field">
-      <label for="cat_lot_no" class="col-sm-2 control-label"><span sdbm-tooltip="institution">Institution/Collection</span></label>
+      <label for="cat_lot_no" class="col-sm-2 control-label"><span sdbm-tooltip="entry_institution">Institution/Collection</span></label>
       <div class="col-sm-5">
           <input id="institution" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.institution" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
       </div>
@@ -631,7 +631,7 @@ label.col-sm-2-and-half {
     <div class="form-group row">
 
       <label class="col-sm-2-and-half control-label">
-          <span sdbm-tooltip="provenance">Evidence</span>
+          <span sdbm-tooltip="entry_provenance_evidence">Evidence</span>
       </label>
       <div class="col-sm-9-and-half">
         <textarea id="provenance_comment_{{ $index }}" class="form-control" rows="2" id="comment" ng-model="prov.comment"></textarea>
@@ -657,7 +657,7 @@ label.col-sm-2-and-half {
 
     <div class="form-group row">
       <label for="editorial_comments" class="col-sm-2 control-label">
-          <span sdbm-tooltip="entry">Add Comment</span>
+          <span sdbm-tooltip="entry_editorial_notes">Add Comment</span>
       </label>
       <div class="col-sm-9">
         <textarea class="form-control" rows="4" id="comment" data-ng-model="entry.new_comment"></textarea>
