@@ -773,7 +773,7 @@ module SDBMSS::Legacy
 
       if row['SECONDARY_SOURCE'].present?
         other_info += "\n" if other_info.present?
-        other_info += "Secondary source field in the old database was '#{row['SECONDARY_SOURCE']}'"
+        other_info += "'Secondary Source' field in the legacy database was '#{row['SECONDARY_SOURCE']}'"
       end
 
       # We decided 1/22/15 that we don't need a date field on
@@ -886,6 +886,11 @@ module SDBMSS::Legacy
         if sold.present?
           if sold == 'GIFT'
             # gifts are now represented in Entry.transaction_type field
+            sold = nil
+          elsif sold == 'NF'
+            entry.other_info += "\n" if entry.other_info.present?
+            entry.other_info += "'Sold' field in the legacy database was '#{sold}'"
+            entry.save!
             sold = nil
           else
             if !VALID_SOLD_TYPES.member?(sold)
