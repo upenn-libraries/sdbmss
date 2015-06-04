@@ -2,9 +2,12 @@
     <%= render_hash_as_hidden_fields(params_for_search().except(:q, :search_field, :qt, :page, :utf8)) %>
 
     <% unless search_fields.empty? %>
-      <label for="search_field" class="sr-only"><%= t('blacklight.search.form.search_field.label') %></label>
+      <label for="search_field" style="margin-right: 10px;"><%= t('blacklight.search.form.search_field.label') %> </label>
+      <% if false %>
       <%= select_tag(:search_field, options_for_select(search_fields, h(params[:search_field])), :title => t('blacklight.search.form.search_field.title'), :class=>"search_field form-control") %>
       <span class="sr-only"><%= t('blacklight.search.form.search_field.post_label') %></span>
+      <% end %>
+      <input type="hidden" name="search_field" value="all_fields"/>
     <% end %>
     <div class="input-group search-input-group">
         <label for="q" class="sr-only"><%= t('blacklight.search.form.q') %></label>

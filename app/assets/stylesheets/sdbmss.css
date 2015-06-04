@@ -10,6 +10,8 @@
 /* Development link */
 #header-navbar .development { display: inline-block; padding-top: 15px; color: red; float: left; }
 
+#search-navbar { margin-bottom: 10px; }
+
 .search-input-group { width: 60%; }
 
 .search-form { font-size: 12px; }
@@ -21,7 +23,10 @@
 /* on Entry view page, move the content block to the right of the sidebar */
 .blacklight-catalog-show #content { float: right; }
 
-h1 { font-size: 30px; margin-top: 10px; }
+/* overrides blacklight css */
+.page-header { margin: 0 0 10px; }
+
+h1 { font-size: 30px; margin-top: 0; }
 
 .facet_extended_list .facet-values li:nth-child(odd) { background: #f9f9f9 }
 

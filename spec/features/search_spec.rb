@@ -70,18 +70,19 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_content "Dokeianos"
   end
 
-  it "should search on Provenance" do
-    visit root_path
-    select "Provenance", from: "search_field"
-    fill_in "q", with: "Tomkinson"
-    click_button('search')
+  # this test disabled because we removed the search field dropdown
+  # it "should search on Provenance" do
+  #   visit root_path
+  #   select "Provenance", from: "search_field"
+  #   fill_in "q", with: "Tomkinson"
+  #   click_button('search')
 
-    entry_one = get_hill_entry_by_cat_num(1)
-    entry_nine = get_hill_entry_by_cat_num(9)
+  #   entry_one = get_hill_entry_by_cat_num(1)
+  #   entry_nine = get_hill_entry_by_cat_num(9)
 
-    expect(page).to have_link(entry_one.public_id)
-    expect(page).not_to have_link(entry_nine.public_id)
-  end
+  #   expect(page).to have_link(entry_one.public_id)
+  #   expect(page).not_to have_link(entry_nine.public_id)
+  # end
 
   it "should load advanced search page" do
     visit advanced_search_path
