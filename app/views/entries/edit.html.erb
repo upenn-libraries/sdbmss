@@ -335,13 +335,13 @@ label.col-sm-2-and-half {
       <label class="col-sm-2 control-label">
             <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_artists)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_artists, entry_artist)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-            <span sdbm-tooltip="artist">Artist As Recorded</span>            
+            <span sdbm-tooltip="entry_artist_as_recorded">Artist As Recorded</span>
       </label>
       <div class="col-sm-5">
           <input id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
       </div>
       <label class="col-sm-1 control-label">
-            <span sdbm-tooltip="artist">Artist</span>
+            <span sdbm-tooltip="entry_artist">Artist</span>
       </label>
       <div class="col-sm-4">
           <div class="input-group">
@@ -357,13 +357,13 @@ label.col-sm-2-and-half {
       <label class="col-sm-2 control-label">
             <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_scribes)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_scribes, entry_scribe)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-          <span sdbm-tooltip="scribe">Scribe As Recorded</span>
+          <span sdbm-tooltip="entry_scribe_as_recorded">Scribe As Recorded</span>
       </label>
       <div class="col-sm-5">
           <input id="scribe_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_scribe.observed_name">
       </div>
       <label class="col-sm-1 control-label">
-            <span sdbm-tooltip="scribe">Scribe</span>
+            <span sdbm-tooltip="entry_scribe">Scribe</span>
       </label>
       <div class="col-sm-4">
           <div class="input-group">
@@ -379,7 +379,7 @@ label.col-sm-2-and-half {
       <label class="col-sm-2 control-label">
             <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_languages)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_languages, entry_language)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-          <span sdbm-tooltip="language">Language</span>
+          <span sdbm-tooltip="entry_language">Language</span>
       </label>
       <div class="col-sm-5">
           <div class="input-group">
@@ -394,7 +394,7 @@ label.col-sm-2-and-half {
       <label class="col-sm-2 control-label">
             <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_materials)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_materials, entry_material)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-          <span sdbm-tooltip="material">Material</span>
+          <span sdbm-tooltip="entry_material">Material</span>
       </label>
       <div class="col-sm-5">
           <div class="input-group">
@@ -409,7 +409,7 @@ label.col-sm-2-and-half {
       <label class="col-sm-2 control-label">
             <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_places)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_places, entry_place)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-          <span sdbm-tooltip="place">Place</span>
+          <span sdbm-tooltip="entry_place">Place</span>
       </label>
       <div class="col-sm-5">
           <div class="input-group">
@@ -424,7 +424,7 @@ label.col-sm-2-and-half {
       <label class="col-sm-2 control-label">
             <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_uses)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_uses, entry_use)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-          <span sdbm-tooltip="manuscript_use">Use</span>
+          <span sdbm-tooltip="entry_use">Use</span>
       </label>
       <div class="col-sm-9">
         <input id="use_{{ $index }}" type="text" class="form-control" data-ng-model="entry_use.use">
@@ -433,19 +433,19 @@ label.col-sm-2-and-half {
 
     <div class="form-group row">
         <label for="folios" class="col-sm-2 control-label">
-            <span sdbm-tooltip="folios">Folios</span>
+            <span sdbm-tooltip="entry_folios">Folios</span>
         </label>
         <div class="col-sm-1">
             <input type="text" class="form-control" id="folios" data-ng-model="entry.folios">
         </div>
         <label for="lines" class="col-sm-1 control-label">
-            <span sdbm-tooltip="lines">Lines</span>
+            <span sdbm-tooltip="entry_lines">Lines</span>
         </label>
         <div class="col-sm-1">
             <input type="text" class="form-control" id="num_lines" data-ng-model="entry.num_lines">
         </div>
         <label for="columns" class="col-sm-1 control-label">
-            <span sdbm-tooltip="columns">Columns</span>
+            <span sdbm-tooltip="entry_columns">Columns</span>
         </label>
         <div class="col-sm-1">
             <input type="text" class="form-control" id="num_columns" data-ng-model="entry.num_columns">
@@ -454,19 +454,19 @@ label.col-sm-2-and-half {
 
     <div class="form-group row">
         <label for="height" class="col-sm-2 control-label">
-            <span sdbm-tooltip="height">Height (mm)</span>
+            <span sdbm-tooltip="entry_height">Height (mm)</span>
         </label>
         <div class="col-sm-1">
             <input type="text" class="form-control" id="height" data-ng-model="entry.height">
         </div>
         <label for="width" class="col-sm-1 control-label">
-            <span sdbm-tooltip="width">Width (mm)</span>
+            <span sdbm-tooltip="entry_width">Width (mm)</span>
         </label>
         <div class="col-sm-1">
             <input type="text" class="form-control" id="width" data-ng-model="entry.width">
         </div>
         <label for="alt_size" class="col-sm-1 control-label">
-            <span sdbm-tooltip="?">Alt Size</span>
+            <span sdbm-tooltip="entry_alt_size">Alt Size</span>
         </label>
         <div class="col-sm-3">
             <select name="alt_size" id="alt_size" class="form-control" data-ng-model="entry.alt_size" ng-options="option[0] as option[1] for option in optionsAltSize">
@@ -477,25 +477,25 @@ label.col-sm-2-and-half {
 
     <div class="form-group row">
         <label for="min_fl" class="col-sm-2 control-label">
-            <span sdbm-tooltip="min_fl">Miniatures Full-Page</span>
+            <span sdbm-tooltip="entry_min_fl">Miniatures Full-Page</span>
         </label>
         <div class="col-sm-1">
             <input type="text" class="form-control" id="miniatures_fullpage" data-ng-model="entry.miniatures_fullpage">
         </div>
         <label for="min_lg" class="col-sm-1 control-label">
-            <span sdbm-tooltip="min_lg">Large</span>
+            <span sdbm-tooltip="entry_min_lg">Large</span>
         </label>
         <div class="col-sm-1">
             <input type="text" class="form-control" id="miniatures_large" data-ng-model="entry.miniatures_large">
         </div>
         <label for="min_sm" class="col-sm-1 control-label">
-            <span sdbm-tooltip="min_sm">Small</span>
+            <span sdbm-tooltip="entry_min_sm">Small</span>
         </label>
         <div class="col-sm-1">
             <input type="text" class="form-control" id="miniatures_small" data-ng-model="entry.miniatures_small">
         </div>
         <label for="min_un" class="col-sm-1 control-label">
-            <span sdbm-tooltip="min_un">Unspecified</span>
+            <span sdbm-tooltip="entry_min_un">Unspecified</span>
         </label>
         <div class="col-sm-1">
             <input type="text" class="form-control" id="miniatures_unspec_size" data-ng-model="entry.miniatures_unspec_size">
@@ -504,13 +504,13 @@ label.col-sm-2-and-half {
 
     <div class="form-group row">
         <label for="initials_historiated" class="col-sm-2 control-label">
-            <span sdbm-tooltip="h_init">Initials Historiated</span>
+            <span sdbm-tooltip="entry_initials_historiated">Initials Historiated</span>
         </label>
         <div class="col-sm-1">
             <input type="text" class="form-control" id="initials_historiated" data-ng-model="entry.initials_historiated">
         </div>
         <label for="initials_decorated" class="col-sm-1 control-label">
-            <span sdbm-tooltip="d_init">Decorated</span>
+            <span sdbm-tooltip="entry_initials_decorated">Decorated</span>
         </label>
         <div class="col-sm-1">
             <input type="text" class="form-control" id="initials_decorated" data-ng-model="entry.initials_decorated">
@@ -519,7 +519,7 @@ label.col-sm-2-and-half {
 
     <div class="form-group row">
       <label for="binding" class="col-sm-2 control-label">
-          <span sdbm-tooltip="binding">Binding</span>
+          <span sdbm-tooltip="entry_binding">Binding</span>
       </label>
       <div class="col-sm-9">
         <textarea class="form-control" id="manuscript_binding" rows="2" data-ng-model="entry.manuscript_binding"/></textarea>
@@ -528,7 +528,7 @@ label.col-sm-2-and-half {
 
     <div class="form-group row">
       <label for="link" class="col-sm-2 control-label">
-          <span sdbm-tooltip="link">URL Link</span>
+          <span sdbm-tooltip="entry_link">URL Link</span>
       </label>
       <div class="col-sm-9">
         <input type="text" class="form-control" id="manuscript_link" data-ng-model="entry.manuscript_link">
@@ -537,7 +537,7 @@ label.col-sm-2-and-half {
 
     <div class="form-group row">
       <label for="other_info" class="col-sm-2 control-label">
-          <span sdbm-tooltip="comments">Other information</span>
+          <span sdbm-tooltip="entry_other_info">Other information</span>
       </label>
       <div class="col-sm-9">
         <textarea class="form-control" id="other_info" rows="3" data-ng-model="entry.other_info"></textarea>
@@ -587,11 +587,11 @@ label.col-sm-2-and-half {
     </div>
     
     <div class="form-group row">
-      <label class="col-sm-2-and-half control-label">Selling Agent As Recorded</label>
+        <label class="col-sm-2-and-half control-label"><span sdbm-tooltip="entry_provenance_selling_agent_as_recorded">Selling Agent As Recorded</span></label>
       <div class="col-sm-3-and-half">
           <input id="provenance_selling_agent_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.selling_agent.observed_name">
       </div>
-      <label class="col-sm-2 control-label">Selling Agent</label>
+      <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_provenance_selling_agent">Selling Agent</span></label>
       <div class="col-sm-4">
           <div class="input-group">
               <input id="provenance_selling_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
@@ -601,11 +601,11 @@ label.col-sm-2-and-half {
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-2-and-half control-label">Holder As Recorded</label>
+        <label class="col-sm-2-and-half control-label"><span sdbm-tooltip="entry_provenance_holder_as_recorded">Holder As Recorded</span></label>
         <div class="col-sm-3-and-half">
           <input id="provenance_seller_or_holder_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.seller_or_holder.observed_name">
       </div>
-      <label class="col-sm-2 control-label">Holder</label>
+      <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_provenance_holder">Holder</span></label>
       <div class="col-sm-4">
           <div class="input-group">
               <input id="provenance_seller_or_holder_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
@@ -615,11 +615,11 @@ label.col-sm-2-and-half {
     </div>
 
     <div class="form-group row">
-      <label class="col-sm-2-and-half control-label">Buyer As Recorded</label>
+        <label class="col-sm-2-and-half control-label"><span sdbm-tooltip="entry_provenance_buyer_as_recorded">Buyer As Recorded</span></label>
       <div class="col-sm-3-and-half">
           <input id="provenance_buyer_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.buyer.observed_name">
       </div>
-      <label class="col-sm-2 control-label">Buyer</label>
+      <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_provenance_buyer">Buyer</span></label>
       <div class="col-sm-4">
           <div class="input-group">
               <input id="provenance_buyer_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>

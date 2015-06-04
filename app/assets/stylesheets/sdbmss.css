@@ -133,11 +133,14 @@ h1 { font-size: 30px; margin-top: 10px; }
 }
 
 .sdbmss-tooltip .qtip-content p {
-    margin-bottom:2em;
+    margin-bottom:1em;
 }
 
 .sdbmss-tooltip-label {
     cursor: help;
+    border-bottom-width: 2px; // double;
+    border-bottom-style: dotted;
+    border-bottom-color: red;
 }
 
 /* tweak .modal-backdrop rule on pages that use UI Bootstrap's modal,
