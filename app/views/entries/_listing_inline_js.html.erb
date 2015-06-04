@@ -234,16 +234,6 @@
          return false;
      });
 
-     $(document).on('click', "#select-all", function(event) {
-         $("input[name='approve']").prop("checked", true);
-         return false;
-     });
-
-     $(document).on('click', "#deselect-all", function(event) {
-         $("input[name='approve']").prop("checked", false);
-         return false;
-     });
-
      $(document).on('click', "#mark-as-approved", function(event) {
          var sdbmTable = manageEntries.dataTable;
          var ids = [];
