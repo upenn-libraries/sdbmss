@@ -41,6 +41,11 @@ h1 { font-size: 30px; margin-top: 0; }
     margin-bottom: 10px;
 }
 
+/* useful for sticking at the bottom of pages so content doesn't butt right up against bottom */
+.spacer-40px {
+    height: 40px;
+}
+
 /**** Style for various data entry forms */
 
 .sdbmss-form .provenance-group-container { border-width: 0 0 1px; border-style: none none solid; border-color: #e5e5e5; margin-bottom: 6px; }

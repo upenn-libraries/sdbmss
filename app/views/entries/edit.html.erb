@@ -68,8 +68,8 @@ label.col-sm-2-and-half {
 <input type="hidden" id="source_id" value="<%= @source_id %>" />
 <% end %>
 
-<div class="form-horizontal sdbmss-form" data-ng-controller="EntryCtrl">
-  <fieldset>
+<form id="entry-form" class="form-horizontal sdbmss-form" autocomplete="off" data-ng-controller="EntryCtrl">
+    <fieldset>
 
     <div class="row">
       <div class="col-sm-12">
@@ -672,14 +672,16 @@ label.col-sm-2-and-half {
         </div>
     </div>
 
-  </fieldset>
+    <div class="spacer-40px"/>
+
+    </fieldset>
 
   <% if Rails.env.development? %>
   <br/><br/>
   <a href="#" data-ng-click="debug()">DEBUG: Print model to console</a>
   <% end %>
 
-</div>
+</form>
 
 <script type="text/ng-template" id="postEntrySave.html">
     <div class="modal-header">

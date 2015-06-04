@@ -10,7 +10,7 @@
 <input type="hidden" id="create_entry" value="1" />
 <% end %>
 
-<form name="form" class="form-horizontal sdbmss-form" ng-controller="SourceCtrl" novalidate >
+<form id="source-form" name="form" class="form-horizontal sdbmss-form" autocomplete="off" ng-controller="SourceCtrl" novalidate >
 
     <div class="row">
         <div class="col-sm-12">
@@ -322,6 +322,8 @@
         </div>
 
     </div>
+
+    <div class="spacer-40px"/>
 
     <% if Rails.env.development? %>
         <br/><br/>

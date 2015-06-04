@@ -720,6 +720,8 @@
             return;
         });
 
+        SDBM.disableFormSubmissionOnEnter('#entry-form');
+
         $http.get("/entries/types/").then(
             function(result) {
 
@@ -1287,6 +1289,8 @@
         };
 
         // "constructor" for controller goes here
+
+        SDBM.disableFormSubmissionOnEnter('#source-form');
 
         $http.get("/sources/types.json").then(
             function(result) {
