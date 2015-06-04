@@ -27,7 +27,7 @@
          var manageEntries = this;
          
          var sdbmTable = new SDBM.EntryTable("#search_results", {
-             heightBuffer: 390,
+             heightBuffer: 420,
              prependColumns: [
                  {
                      sdbmssMinWidth: "25px",
@@ -172,7 +172,15 @@
          jumpToEntry.search = isJumpSearch;
          manageEntries.dataTable.reload();
      };
-     
+
+     ManageEntries.prototype.getSearchURL = function (format) {
+         var url =  '/' + this.options.resourceName;
+         if(format) {
+             url += "." + format;
+         }
+         return url;
+     };
+
      var manageEntries = new ManageEntries({
          resourceName: "<%= resource_name %>",
          resourceNameSingular: "<%= resource_name.singularize %>",
@@ -231,6 +239,16 @@
                  }
              });
          }
+         return false;
+     });
+
+     $(document).on('click', "#select-all", function(event) {
+         $("input[name='approve']").prop("checked", true);
+         return false;
+     });
+
+     $(document).on('click', "#deselect-all", function(event) {
+         $("input[name='approve']").prop("checked", false);
          return false;
      });
 
