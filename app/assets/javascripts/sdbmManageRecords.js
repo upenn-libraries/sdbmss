@@ -73,14 +73,7 @@ var SDBM = SDBM || {};
         $('form.search-form').submit(manageRecords.createFormSubmitHandler());
 
         $('#export-csv').click(function() {
-            var qs = new URI().query(true);
-
-            var url = URI(manageRecords.getSearchURL('csv')).search({
-                term: manageRecords.getSearchValue(),
-                unreviewed_only: manageRecords.getUnreviewedOnly()
-            });
-
-            window.location = url;
+            manageRecords.exportCSV();
             return false;
         });
 
@@ -306,6 +299,20 @@ var SDBM = SDBM || {};
     // should return null if button should not be displayed
     SDBM.ManageRecords.prototype.getButtonTextForAddNewRecord = function() {
         return "Add New " + this.options.resourceNameSingular.charAt(0).toUpperCase() + this.options.resourceNameSingular.slice(1);
+    };
+    
+    // handler called when "export csv" link is clicked; this
+    // implementation uses #search action on the Rails resource
+    // controller
+    SDBM.ManageRecords.exportCSV = function() {
+        var qs = new URI().query(true);
+
+        var url = URI(manageRecords.getSearchURL('csv')).search({
+            term: manageRecords.getSearchValue(),
+            unreviewed_only: manageRecords.getUnreviewedOnly()
+        });
+
+        window.location = url;
     };
     
 }());

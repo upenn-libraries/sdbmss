@@ -19,13 +19,13 @@
      var ManageEntries = function(options) {
          SDBM.ManageRecords.call(this, options);
      };
-     
+
      ManageEntries.prototype = Object.create(SDBM.ManageRecords.prototype);
 
      ManageEntries.prototype.createTable = function (selector) {
 
          var manageEntries = this;
-         
+
          var sdbmTable = new SDBM.EntryTable("#search_results", {
              heightBuffer: 420,
              prependColumns: [
@@ -55,7 +55,7 @@
                          // this will change, so leaving this code
                          // here for now.
                          // var showLinkingTool = full[sdbmTable.getColumnIndex("Is Approved")] === true;
-                         var showLinkingTool = true; 
+                         var showLinkingTool = true;
                          var linkingToolHTMLLink = ' &middot; <a class="find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
 
                          return '<a href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +
@@ -70,7 +70,7 @@
                  // seems like there should be a way to do this conditional
                  // ajax and subsequent searchAndUpdateTable using
                  // promises, but I can't figure that out right now
-                 
+
                  if(jumpToEntry.search) {
                      var entry_id = $("#jump_to").val();
                      $.ajax({
@@ -97,7 +97,7 @@
                          }
                      });
                  } else {
-                     var params = manageEntries.translateSearchParams(sdbmTable, dt_params);                
+                     var params = manageEntries.translateSearchParams(sdbmTable, dt_params);
                      sdbmTable.searchAndUpdateTable(params, callback, {
                          complete: function () {
                              $("#spinner").hide();
@@ -121,15 +121,22 @@
      };
 
      var showApprovalControls = function() {
-         return showUnapprovedOnly() && !showOnlyRecordsCreatedByUser;         
+         return showUnapprovedOnly() && !showOnlyRecordsCreatedByUser;
      };
-     
+
      // Fielded search specific params
      ManageEntries.prototype.translateSearchParams = function (sdbmTable, data) {
-         params = sdbmTable.translateParamsToBlacklight(data);
+         return $.extend(
+             {},
+             sdbmTable.translateParamsToBlacklight(data),
+             this.getSearchFields()
+         );
+     };
 
+     ManageEntries.prototype.getSearchFields = function () {
+         var params = {};
          params["op"] = $("select[name='op']").val();
-         
+
          $(".search-fieldset").each(function(idx, element) {
              var search_field = $(element).find("select[name='search_field']").first().val();
              var search_value = $(element).find("input[name='search_value']").first().val();
@@ -155,7 +162,7 @@
 
          return params;
      };
-     
+
      ManageEntries.prototype.getButtonTextForAddNewRecord = function () {
          return null;
      };
@@ -179,6 +186,16 @@
              url += "." + format;
          }
          return url;
+     };
+
+     ManageEntries.prototype.exportCSV = function () {
+         var qs = new URI().query(true);
+
+         var params = manageEntries.getSearchFields();
+         params["search_field"] = "advanced";
+         var url = URI("/entries.csv").search(params);
+
+         window.location = url;
      };
 
      var manageEntries = new ManageEntries({
@@ -207,7 +224,7 @@
              });
          }
      });
-     
+
      $("#jump_to").keydown(function(e) {
          if(e.keyCode == 13) {
              manageEntries.doSearch(true);
@@ -258,7 +275,7 @@
          $("input[name='approve']:checked").each(function (idx, element) {
              ids.push($(element).val());
          });
-         
+
          if(ids.length > 0) {
              // TODO: spinner
              $.ajax({

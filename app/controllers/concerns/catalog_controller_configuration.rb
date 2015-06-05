@@ -44,6 +44,21 @@ module CatalogControllerConfiguration
       config.index.title_field = ''
       config.index.display_type_field = 'format'
 
+      config.index.respond_to.csv = Proc.new {
+        # this gets executed within a format.csv { ... } scope
+
+        objects = @document_list.map { |document| document.model_object.as_flat_hash }
+
+        headers = objects.first.keys
+        formatter = Proc.new do |object|
+          headers.map { |key| object[key] }
+        end
+        render csv: objects,
+               filename: "#{search_model_class.to_s.downcase.pluralize}.csv",
+               headers: headers,
+               format: formatter
+      }
+
       # NOTE: the wiki docs say about the :single option that "Only one
       # value can be selected at a time. When the value is selected, the
       # value of this field is ignored when calculating facet counts for
