@@ -888,8 +888,12 @@ module SDBMSS::Legacy
             # gifts are now represented in Entry.transaction_type field
             sold = nil
           elsif sold == 'NF'
-            entry.other_info += "\n" if entry.other_info.present?
-            entry.other_info += "'Sold' field in the legacy database was '#{sold}'"
+            if entry.other_info.present?
+              entry.other_info += "\n"
+            else
+              entry.other_info = ""
+            end
+            entry.other_info += "'Sold' field in the legacy database had unknown code: '#{sold}'"
             entry.save!
             sold = nil
           else
