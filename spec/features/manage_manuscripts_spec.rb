@@ -7,7 +7,8 @@ describe "Manage manuscripts", :js => true do
     @user = User.create!(
       email: 'testuser@testmanuscript.com',
       username: 'manuscripttestuser',
-      password: 'somethingunguessable'
+      password: 'somethingunguessable',
+      role: 'admin'
     )
     @source = Source.create!(
       source_type: SourceType.auction_catalog,
@@ -23,6 +24,9 @@ describe "Manage manuscripts", :js => true do
     expect(page).to have_content 'Signed in successfully'
   end
 
-  it "should show list of Manuscripts"
+  it "should load" do
+    visit manuscripts_path
+    expect(page).to have_content("Manage all manuscript records")
+  end
 
 end
