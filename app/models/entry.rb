@@ -229,6 +229,10 @@ class Entry < ActiveRecord::Base
     names
   end
 
+  def display_value
+    entry_titles.map(&:title).join("; ")
+  end
+
   # returns the most recent updated_at timestamp, as an integer, of
   # this Entry AND all its pertinent associations. This is used as a
   # mechanism to prevent the user from saving changes when another
@@ -257,8 +261,6 @@ class Entry < ActiveRecord::Base
   # represent the nested associations for display and there has to be
   # some information tweaking/loss.
   def as_flat_hash
-    dateformat = "%Y-%m-%d %I:%M%P"
-
     # for performance, we avoid using has_many->through associations
     # because they always hit the db and circumvent the preloading
     # done in with_associations scope.
@@ -303,9 +305,9 @@ class Entry < ActiveRecord::Base
       manuscript_link: manuscript_link,
       other_info: other_info,
       provenance: unique_provenance_agents.map { |unique_agent| unique_agent[:name] }.join("; "),
-      created_at: created_at ? created_at.strftime(dateformat) : nil,
+      created_at: created_at ? created_at.to_formatted_s(:date_and_time) : nil,
       created_by: (created_by.username if created_by),
-      updated_at: updated_at ? updated_at.strftime(dateformat) : nil,
+      updated_at: updated_at ? updated_at.to_formatted_s(:date_and_time) : nil,
       updated_by: (updated_by.username if updated_by),
       approved: approved
     }

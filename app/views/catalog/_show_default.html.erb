@@ -401,7 +401,7 @@
         <tr>
             <td class="col-sm-12">
                 <% similar_entries.first(10).each do |similar_entry| %>
-                <a href="<%= entry_path similar_entry[:entry] %>"><%= similar_entry[:entry].public_id %></a> - <%= similar_entry[:entry].entry_titles.map(&:title).join("; ") %> (score: <%= similar_entry[:distance] %>)<br/>
+                <a href="<%= entry_path similar_entry[:entry] %>"><%= similar_entry[:entry].public_id %></a> - <%= similar_entry[:entry].display_value %> (score: <%= similar_entry[:distance] %>)<br/>
                 <% end %>
                 <br/>
                 (TODO: This info will be moved elsewhere, and presented in a way to make comparison easier)
@@ -423,7 +423,7 @@
       <tr>
         <td class="col-sm-2 text-right record-label">
             By <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
-            At <%= comment.created_at.strftime("%Y-%m-%d %I:%M%P") %>
+            At <%= comment.created_at.to_formatted_s(:date_and_time) %>
         </td>
         <td class="col-sm-10">
           <%= comment.comment||"(none)" %>

@@ -18,7 +18,7 @@
           <p>This manuscript record has the following entries linked to it:</p>
           <ul>
               <% @model.entries.each do |entry| %>
-                  <li><a href="<%= url_for entry %>"><%= entry.public_id %></a>: <%= entry.entry_titles.map(&:title).join("; ") %></li>
+                  <li><a href="<%= url_for entry %>"><%= entry.public_id %></a>: <%= entry.display_value %></li>
               <% end %>
           </ul>
       </div>

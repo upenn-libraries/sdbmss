@@ -75,7 +75,7 @@
                 <table class="table">
                     <% entries.each do |entry| %>
                     <tr class="row">
-                        <td class="col-sm-11"><a href="<%= entry_path(entry) %>"><%= entry.public_id %></a>: <%= entry.entry_titles.map(&:title).join("; ") %>
+                        <td class="col-sm-11"><a href="<%= entry_path(entry) %>"><%= entry.public_id %></a>: <%= entry.display_value %>
                           <% if !entry.approved %><em>(pending approval)</em><% end %>
                         </td>
                         <td class="col-sm-1"><a href="<%= edit_entry_path(entry) %>">edit</a></td>
@@ -120,6 +120,28 @@
         </div>
         <% end %>
 
+        <% comments = Comment.with_entries_belonging_to(current_user).limit(5) %>
+        <% if comments.count > 0 %>
+        <div class="panel panel-default">
+            <div class="panel-heading">Recent Comments on Entries You've Contributed</div>
+            <div class="panel-body">
+                  <table class="table">
+                      <% comments.each do |comment| %>
+                      <% entry = comment.entry %>
+                      <tr class="row">
+                          <td class="col-sm-12">
+                              <a href="<%= url_for entry %>"><%= entry.public_id %></a>: <%= entry.display_value %><br/>
+                              <div style="margin-left: 3em;">
+                                  <a href="<%= profile_path comment.created_by.username %>"><%= comment.created_by %></a> posted a comment on <%= comment.created_at.to_formatted_s(:date_and_time) %>:<br/>
+                                  <%= comment.comment.truncate(80) %>
+                              </div>
+                          </td>
+                      </tr>
+                      <% end %>
+                  </table>
+            </div>
+        </div>
+        <% end %>
     </div>
 </div>
     

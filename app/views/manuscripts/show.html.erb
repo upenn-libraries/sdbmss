@@ -96,7 +96,7 @@
                 <tr>
                     <td class="col-sm-2 text-right record-label">
                         By <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
-                        At <%= comment.created_at.strftime("%Y-%m-%d %I:%M%P") %>
+                        At <%= comment.created_at.to_formatted_s(:date_and_time) %>
                     </td>
                     <td class="col-sm-10">
                         <%= comment.comment||"(none)" %>
