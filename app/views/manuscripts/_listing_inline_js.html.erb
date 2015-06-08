@@ -15,8 +15,87 @@
      var ManageManuscripts = function(options) {
          SDBM.ManageRecords.call(this, options);
      };
-     
+
      ManageManuscripts.prototype = Object.create(SDBM.ManageRecords.prototype);
+
+     ManageManuscripts.prototype.getColumns = function() {
+        var manageManuscripts = this;
+
+        return [
+            {
+                title: '',
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if(manageManuscripts.getUnreviewedOnly() === 1) {
+                        return '<input type="checkbox" name="review" value="' + full[manageManuscripts.dataTable.getColumnIndex("ID")] + '"/>';
+                    }
+                    return '';
+                },
+                width: "5%"
+            },
+            {
+                title: 'Options',
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    var str = '<a href="/' + manageManuscripts.options.resourceName + '/' + data + '/edit/">Edit</a> '
+                            + '&middot; <a class="delete-link" href="/' + manageManuscripts.options.resourceName + '/' + data + '.json">Delete</a>';
+                    return str;
+                },
+                width: "10%"
+            },
+            {
+                sdbmssMinWidth: "130px",
+                sdbmssMaxWidth: "130px",
+                title: 'Manuscript ID',
+                dbSortField: 'id',
+                render: function (data, type, full, meta) {
+                    var str = '<a target="_blank" href="/manuscripts/' + data + '/">SDBM_MS_' + data + '</a>';
+                    return str;
+                }
+            },
+            {
+                sdbmssMinWidth: "400px",
+                sdbmssMaxWidth: "400px",
+                title: 'Name'
+            },
+            {
+                sdbmssMinWidth: "200px",
+                sdbmssMaxWidth: "200px",
+                title: 'Location',
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "100px",
+                orderable: true,
+                title: '# Entries',
+            },
+            {
+                sdbmssMinWidth: "90px",
+                sdbmssMaxWidth: "90px",
+                title: 'Reviewed',
+                dbSortField: 'reviewed'
+            },
+            {
+                sdbmssMinWidth: "130px",
+                sdbmssMaxWidth: "130px",
+                title: 'Created By',
+                dbSortField: 'created_by_id'
+            }
+        ];
+     };
+
+     ManageManuscripts.prototype.searchResultToTableRow = function (result) {
+         return [
+             null,
+             result.id,
+             result.id,
+             result.name,
+             result.location,
+             result.entries_count,
+             result.reviewed.toString(),
+             result.created_by || ""
+         ];
+     };
 
      ManageManuscripts.prototype.getButtonTextForAddNewRecord = function () {
          return null;

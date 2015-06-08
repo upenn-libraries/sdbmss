@@ -55,6 +55,7 @@ class ManuscriptsController < ManageModelsController
     {
       id: obj.id,
       name: obj.name,
+      location: obj.location,
       entries_count: obj.entries_count,
       reviewed: obj.reviewed,
       created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
