@@ -54,6 +54,11 @@
                 dbSortField: manageRecords.options.searchNameField
             },
             {
+                title: 'Active',
+                width: "10%",
+                dbSortField: 'active'
+            },
+            {
                 title: 'Reviewed',
                 width: "10%",
                 dbSortField: 'reviewed'
@@ -67,7 +72,7 @@
      };
 
      ManageAccounts.prototype.searchResultToTableRow = function (result) {
-         return [ null, result.id, result.id, result[this.options.searchNameField], result.reviewed.toString(), result.created_by || "" ];
+         return [ null, result.id, result.id, result[this.options.searchNameField], result.active.toString(), result.reviewed.toString(), result.created_by || "" ];
      };
 
      new ManageAccounts({

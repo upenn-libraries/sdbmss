@@ -20,6 +20,7 @@ class AccountsController < ManageModelsController
     {
       id: obj.id,
       username: obj.username,
+      active: obj.active,
       reviewed: obj.reviewed,
       created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
     }
@@ -45,7 +46,7 @@ class AccountsController < ManageModelsController
   end
 
   def model_params
-    params.require(model_class_lstr.to_sym).permit(:username, :fullname, :email, :email_is_public, :password, :password_confirmation, :role, :bio)
+    params.require(model_class_lstr.to_sym).permit(:username, :fullname, :email, :email_is_public, :password, :password_confirmation, :role, :bio, :active)
   end
 
 end

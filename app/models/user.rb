@@ -52,6 +52,19 @@ class User < ActiveRecord::Base
     end
   end
 
+  # override devise's mechanism for checking if user is allowed to
+  # authenticate. Note that in addition to preventing the user from
+  # being able to login, this also de-authorizes any active sessions,
+  # so user is immediately kicked out.
+  def active_for_authentication?
+    super && active
+  end
+
+  # override devise's msg to display if user is prevented from logging in
+  def inactive_message
+    active ? super : "Your account has been de-activated."
+  end
+
   def login
     @login || self.username || self.email
   end
