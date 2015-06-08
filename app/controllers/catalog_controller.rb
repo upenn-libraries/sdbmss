@@ -40,9 +40,22 @@ class CatalogController < ApplicationController
 
   # Overrides Blacklight::Catalog::SearchContext#add_to_search_history
   def add_to_search_history search
-    # don't save searches that return everything
-    unless search.query_params["search_field"] == "all_fields" && search.query_params["q"].blank?
-      super search
+    # only add to search history (ie. call this method in the
+    # superclass) if the user provided some search parameters
+    if search.query_params["search_field"] != "advanced"
+      if search.query_params["q"].present?
+        super search
+      end
+    else
+      empty = true
+      advanced_query.config.search_fields.select do |key, field_def|
+        if search.query_params[key].present?
+          empty = false
+        end
+      end
+      if !empty
+        super search
+      end
     end
   end
 
