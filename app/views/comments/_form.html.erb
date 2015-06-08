@@ -1,12 +1,30 @@
 <%= form_for(@model, html: { class: "form-horizontal" }) do |f| %>
   <%= render partial: "errors" %>
 
+    <div class="field form-group row">
+      <label class="col-sm-2 control-label">
+          Comment For
+      </label>
+      <div class="col-sm-6 label-alignment">
+          <a href="<%= url_for @model.subject %>"><%= @model.subject.public_id %></a>
+      </div>
+  </div>
+
   <div class="field form-group row">
       <label class="col-sm-2 control-label">
           Created By
       </label>
       <div class="col-sm-6 label-alignment">
           <%= @model.created_by.username %>
+      </div>
+  </div>
+
+  <div class="field form-group row">
+      <label class="col-sm-2 control-label">
+          Created At
+      </label>
+      <div class="col-sm-6 label-alignment">
+          <%= @model.created_at.to_formatted_s(:date_and_time) %>
       </div>
   </div>
 
