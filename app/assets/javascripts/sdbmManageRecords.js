@@ -304,7 +304,8 @@ var SDBM = SDBM || {};
     // handler called when "export csv" link is clicked; this
     // implementation uses #search action on the Rails resource
     // controller
-    SDBM.ManageRecords.exportCSV = function() {
+    SDBM.ManageRecords.prototype.exportCSV = function() {
+        var manageRecords = this;
         var qs = new URI().query(true);
 
         var url = URI(manageRecords.getSearchURL('csv')).search({
