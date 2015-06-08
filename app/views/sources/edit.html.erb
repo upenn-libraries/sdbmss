@@ -4,6 +4,12 @@
 <% end %>
 
 <% if @source.persisted? %>
+    <% @page_title = "Edit #{@source.public_id} - " + application_name %>
+<% else %>
+    <% @page_title = "Create new source - " + application_name %>
+<% end %>
+
+<% if @source.persisted? %>
 <input type="hidden" id="source_id" value="<%= @source.id %>" />
 <% end %>
 <% if !params[:create_entry].nil? %>

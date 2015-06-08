@@ -62,6 +62,12 @@ label.col-sm-2-and-half {
 <% end %>
 
 <% if @entry.persisted? %>
+    <% @page_title = "Edit #{@entry.public_id} - " + application_name %>
+<% else %>
+    <% @page_title = "Create new entry - " + application_name %>
+<% end %>
+
+<% if @entry.persisted? %>
 <input type="hidden" id="entry_id" value="<%= @entry.id %>" />
 <% end %>
 <% if @source_id %>
