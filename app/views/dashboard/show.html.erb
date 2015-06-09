@@ -71,8 +71,7 @@
                 <% if num_entries > 0 %>
                 <% num_entries_to_show = 5 %>
                 <% entries = current_user.entries.most_recent(num_entries_to_show) %>
-                <% search_url = search_advanced_url(created_by: current_user.to_s) %>
-                <p>You've contributed <a href="<%= search_url %>"><%= num_entries %> entries</a> to date<% if num_entries_needing_approval > 0 %> (<%= num_entries_needing_approval %> of them <%= num_entries_needing_approval > 1 ? "are" : "is" %> not yet approved)<% end %>. The last <%= entries.count %> entries you created:</p>
+                <p>You've contributed <a href="<%= entries_path %>"><%= num_entries %> entries</a> to date<% if num_entries_needing_approval > 0 %> (<%= num_entries_needing_approval %> of them <%= num_entries_needing_approval > 1 ? "are" : "is" %> not yet approved)<% end %>. The last <%= entries.count %> entries you created:</p>
 
                 <table class="table">
                     <% entries.each do |entry| %>
@@ -86,7 +85,7 @@
                     <% if num_entries > 5 %>
                     <tr class="row">
                         <td class="col-sm-11">
-                            <a href="<%= search_url %>">View all...</a>
+                            <a href="<%= entries_path %>">View all...</a>
                         </td>
                         <td class="col-sm-1"></td>
                     </tr>
