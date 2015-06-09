@@ -23,6 +23,7 @@ $(document).ready(function() {
     ];
     <% else %>
     manuscriptId = <%= @manuscript.id %>;
+    cumulativeUpdatedAt = <%= @manuscript.cumulative_updated_at %>;
     entryManuscripts = <%= JSON.generate(@manuscript.entry_manuscripts.map { |entry_manuscript|
                                                                             {
                                                                              id: entry_manuscript.id,
@@ -342,15 +343,16 @@ $(document).ready(function() {
                 dataType: 'json',
                 data: JSON.stringify({
                     manuscript_id: manuscriptId,
+                    cumulative_updated_at: cumulativeUpdatedAt,
                     entry_manuscripts: entryManuscripts
                 }),
                 success: function(data, textStatus, jqXHR) {
                     alert("Your changes have been saved");
                     location.reload(true);
                 },
-                error: function() {
-                    // TODO: fill this out
-                    alert("An error occurred saving associations.");
+                error: function(xhr) {
+                    var error = $.parseJSON(xhr.responseText).error;
+                    SDBM.showErrorModal("#modal", error);
                 }
             });
         }

@@ -28,6 +28,12 @@ class Manuscript < ActiveRecord::Base
     public_id + (name.present? ? ": " + name : "")
   end
 
+  # returns the most recent updated_at timestamp, as an integer, of
+  # this Manuscript AND all its pertinent associations.
+  def cumulative_updated_at
+    SDBMSS::Util.cumulative_updated_at(self, [:entry_manuscripts])
+  end
+
   # returns an array of entry IDs
   def entry_candidates
     candidate_ids = Set.new

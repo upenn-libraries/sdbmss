@@ -58,4 +58,47 @@ describe "Linking Tool", :js => true do
     expect(find(".modal-title", visible: true).text.include?("No matches found")).to be_truthy
   end
 
+  it "should show error message when overwriting changes" do
+
+    last_two_entries = Entry.last(2)
+
+    manuscript = Manuscript.new
+    manuscript.save!
+    manuscript_id = manuscript.id
+
+    manuscript.update_attributes!(
+      entry_manuscripts_attributes: [
+        {
+          entry_id: last_two_entries[0].id,
+          relation_type: EntryManuscript::TYPE_RELATION_IS
+        },
+        {
+          entry_id: last_two_entries[1].id,
+          relation_type: EntryManuscript::TYPE_RELATION_IS
+        }
+      ]
+    )
+
+    visit linking_tool_by_manuscript_path id: manuscript.id
+
+    sleep(2)
+
+    # it's crucial that we load a fresh object
+    manuscript = Manuscript.find(manuscript_id)
+    em = manuscript.entry_manuscripts[0]
+    em.relation_type = EntryManuscript::TYPE_RELATION_PARTIAL
+    em.save!
+
+    # there are actually TWO inputs that match here, because of some
+    # HTML craziness that happens with th datatable's fixed
+    # columns. whatever. just click one.
+    all("input[name='entry_id_#{last_two_entries[0].id}'][value='possible']")[1].click
+
+    click_button "Save changes"
+
+    sleep(1)
+
+    expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
+  end
+
 end

@@ -16,29 +16,37 @@ class EntryManuscriptsController < ApplicationController
   end
 
   # updates multiple EntryManuscript records at once; this is used for
-  # the Entry <-> Manuscript management tool
+  # the Linking Tool
   def update_multiple
     manuscript = Manuscript.find params[:manuscript_id]
 
-    entry_manuscripts = params[:entry_manuscripts]
-    entry_manuscripts_attributes = entry_manuscripts.map do |entry_manuscript_params|
-      entry_manuscript_params.permit(:id, :entry_id, :manuscript_id, :relation_type, :_destroy)
-    end
+    if params[:cumulative_updated_at].to_s == manuscript.cumulative_updated_at.to_s
+      entry_manuscripts = params[:entry_manuscripts]
+      entry_manuscripts_attributes = entry_manuscripts.map do |entry_manuscript_params|
+        entry_manuscript_params.permit(:id, :entry_id, :manuscript_id, :relation_type, :_destroy)
+      end
 
-    manuscript.update_attributes!(
-      {
-        entry_manuscripts_attributes: entry_manuscripts_attributes,
-      }
-    )
+      manuscript.update_attributes!(
+        {
+          entry_manuscripts_attributes: entry_manuscripts_attributes,
+        }
+      )
 
-    manuscript.reload
+      manuscript.reload
 
-    # reindex in Solr
-    manuscript.entries.each do |entry|
-      Sunspot.index entry
-    end
-    respond_to do |format|
-      format.json { render :json => {}, :status => :ok }
+      # reindex in Solr
+      manuscript.entries.each do |entry|
+        Sunspot.index entry
+      end
+      respond_to do |format|
+        format.json { render :json => {}, :status => :ok }
+      end
+    else
+      respond_to do |format|
+        format.json {
+          render :json => { :error => "Another change was made to the record while you were working. Re-load the page and start over." }, :status => :unprocessable_entity
+        }
+      end
     end
   end
 

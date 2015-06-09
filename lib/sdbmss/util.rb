@@ -70,6 +70,26 @@ module SDBMSS
         pieces
       end
 
+      # returns the most recent updated_at timestamp field, as an
+      # integer, of the model_object AND all its pertinent
+      # associations. This is used as a mechanism to prevent the user
+      # from saving changes when another change was made to the data.
+      def cumulative_updated_at(model_object, associations)
+        most_recent = model_object.updated_at.to_i
+        associations.each do |association|
+          records = model_object.send(association)
+          records.each do |record|
+            if record.respond_to?(:updated_at)
+              record_updated_at = record.updated_at.to_i
+              if record_updated_at > most_recent
+                most_recent = record_updated_at
+              end
+            end
+          end
+        end
+        most_recent || 0
+      end
+
       # returns a reasonably formatted YYYY-Mon-DD str based on a
       # YYYYMMDD str value, which may have 0's in it
       def format_fuzzy_date(d)
