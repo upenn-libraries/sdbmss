@@ -67,6 +67,9 @@ Rails.application.routes.draw do
   get '/linkingtool/entry/:id', to: 'linking_tool#by_entry', as: 'linking_tool_by_entry'
   get '/linkingtool/manuscript/:id', to: 'linking_tool#by_manuscript', as: 'linking_tool_by_manuscript'
 
+  # helpful for debugging
+  get '/login_as/:username', to: 'accounts#login_as', as: 'login_as'
+
   resources :manuscripts do
     collection do
       post 'mark_as_reviewed'

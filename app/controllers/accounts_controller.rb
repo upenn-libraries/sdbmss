@@ -36,6 +36,20 @@ class AccountsController < ManageModelsController
     return "username"
   end
 
+  def login_as
+    if current_user.role == 'admin'
+      user = User.find_by(username: params[:username])
+      if user.present?
+        sign_in(:user, user)
+        redirect_to dashboard_url
+      else
+        render body: "ERROR: User not found: #{params[:username]}"
+      end
+    else
+      render :status => :forbidden
+    end
+  end
+
   private
 
   # override from ManageModelsController: use profile#show
