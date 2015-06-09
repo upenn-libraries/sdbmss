@@ -494,6 +494,27 @@ describe "Data entry", :js => true do
       expect(entry.get_transaction).to be_nil
     end
 
+    it "should update status field on Source when adding an Entry" do
+
+      # Creating a new source defaults its status to 'To Be Entered'
+      source = Source.create!(
+        title: "a new source",
+        source_type: SourceType.collection_catalog,
+      )
+
+      visit new_entry_path :source_id => source.id
+
+      fill_in 'folios', with: '666'
+
+      first(".save-button").click
+
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+
+      source.reload
+
+      expect(source.status).to eq(Source::TYPE_STATUS_PARTIALLY_ENTERED)
+    end
+
     it "should preserve entry on Edit page when saving without making any changes" do
       count = Entry.count
 

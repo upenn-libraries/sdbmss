@@ -51,6 +51,7 @@ class Source < ActiveRecord::Base
   default_scope { where(deleted: false) }
 
   before_validation :normalize
+  before_validation :assign_default_status
 
   belongs_to :source_type
 
@@ -177,6 +178,14 @@ class Source < ActiveRecord::Base
 
   def entries_to_index_on_update
     Entry.with_associations.where(source_id: id)
+  end
+
+  private
+
+  def assign_default_status
+    if !persisted? && status.blank?
+      self.status = TYPE_STATUS_TO_BE_ENTERED
+    end
   end
 
 end

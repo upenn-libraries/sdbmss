@@ -236,9 +236,7 @@
             </div>
         </div>
 
-        <!-- TODO: add this back in, but only show it when editing a source, not when creating one -->
-        <!--
-        <div class="form-group row">
+        <div class="form-group row" ng-show="source.id">
             <label for="status" class="col-sm-2 control-label"><span sdbm-tooltip="source_date">Status</span></label>
             <div class="col-sm-3">
                 <select class="form-control" name="status" id="status" ng-model="source.status" >
@@ -246,7 +244,6 @@
 			    </select>
             </div>
         </div>
-        -->
 
         <div class="row">
             <div class="col-sm-12">

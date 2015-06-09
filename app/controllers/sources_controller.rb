@@ -193,6 +193,7 @@ class SourcesController < ManageModelsController
       :location_institution,
       :link,
       :comments,
+      :status,
       :source_agents_attributes => [ :id, :agent_id, :role, :_destroy ],
     )
   end

@@ -120,6 +120,8 @@ class Entry < ActiveRecord::Base
     end
   end
 
+  after_create :update_source_status
+
   def self.where_provenance_includes(name)
     joins(:events => :event_agents).where(events: { primary: false }).where(event_agents: { agent_id: name.id }).distinct
   end
@@ -639,6 +641,14 @@ class Entry < ActiveRecord::Base
       comments.select(&:public).map(&:comment).join("\n")
     end
 
+  end
+
+  private
+
+  def update_source_status
+    if source.status == Source::TYPE_STATUS_TO_BE_ENTERED
+      source.update!(status: Source::TYPE_STATUS_PARTIALLY_ENTERED)
+    end
   end
 
 end
