@@ -42,6 +42,11 @@ class Ability
       end
       can :link, Entry
       can :link, Manuscript
+
+      # Decided by Lynn on 6/9/2015: A contributor can edit ANY
+      # manuscript. The thinking here is that a Manuscript isn't
+      # "owned" by the user in the same way as an Entry.
+      can :edit, Manuscript
     end
 
     if ['editor', 'admin'].member? user.role
