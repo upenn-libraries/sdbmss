@@ -227,6 +227,7 @@ describe "Data entry", :js => true do
       expect(source.title).to eq('Very Rare Books')
       expect(source.get_selling_agent.agent.name).to eq("Sotheby's")
       expect(source.whether_mss).to eq("Yes")
+      expect(source.status).to eq(Source::TYPE_STATUS_TO_BE_ENTERED)
       expect(source.medium).to eq(Source::TYPE_MEDIUM_LIBRARY)
       expect(source.date_accessed).to eq("19900501")
       expect(source.location_institution).to eq("University of Pennsylvania")
@@ -378,7 +379,7 @@ describe "Data entry", :js => true do
 
       fill_in 'comment', with: 'This info is correct'
 
-      click_button('Save')
+      first(".save-button").click
 
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
@@ -484,7 +485,7 @@ describe "Data entry", :js => true do
 
       fill_in 'folios', with: '666'
 
-      click_button('Save')
+      first(".save-button").click
 
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
@@ -503,7 +504,8 @@ describe "Data entry", :js => true do
       entry = Entry.last
 
       visit edit_entry_path :id => entry.id
-      click_button('Save')
+
+      first(".save-button").click
 
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
@@ -545,7 +547,8 @@ describe "Data entry", :js => true do
       page.evaluate_script('window.confirm = function() { return true; }')
 
       find_by_id("delete_title_0").click
-      click_button('Save')
+
+      first(".save-button").click
 
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
@@ -569,7 +572,8 @@ describe "Data entry", :js => true do
       # clear out the title field; this should result in deletion of
       # underlying entry_title record
       fill_in 'title_0', with: ''
-      click_button('Save')
+
+      first(".save-button").click
 
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
@@ -593,7 +597,8 @@ describe "Data entry", :js => true do
       # clear out the title field; this should result in deletion of
       # underlying entry_title record
       fill_in 'title_0', with: ''
-      click_button('Save')
+
+      first(".save-button").click
 
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
@@ -621,7 +626,7 @@ describe "Data entry", :js => true do
       fill_in 'folios', with: '7777'
 
       text = get_alert_text_from do
-        click_button('Save')
+        first(".save-button").click
       end
       expect(text).to match(/Another change was made to the record while you were working/)
     end
@@ -644,7 +649,7 @@ describe "Data entry", :js => true do
       fill_in 'title_0', with: 'changed title'
 
       text = get_alert_text_from do
-        click_button('Save')
+        first(".save-button").click
       end
       expect(text).to match(/Another change was made to the record while you were working/)
     end
@@ -668,7 +673,7 @@ describe "Data entry", :js => true do
       fill_in 'folios', with: '11111'
 
       text = get_alert_text_from do
-        click_button('Save')
+        first(".save-button").click
       end
       expect(text).to match(/Another change was made to the record while you were working/)
     end
