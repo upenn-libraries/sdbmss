@@ -23,6 +23,8 @@
 
         return [
             {
+                sdbmssMinWidth: "20px",
+                sdbmssMaxWidth: "20px",
                 title: '',
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -30,18 +32,18 @@
                         return '<input type="checkbox" name="review" value="' + full[manageManuscripts.dataTable.getColumnIndex("ID")] + '"/>';
                     }
                     return '';
-                },
-                width: "5%"
+                }
             },
             {
+                sdbmssMinWidth: "170px",
+                sdbmssMaxWidth: "170px",
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
                     var str = '<a href="/' + manageManuscripts.options.resourceName + '/' + data + '/edit/">Edit</a> '
                             + '&middot; <a class="delete-link" href="/' + manageManuscripts.options.resourceName + '/' + data + '.json">Delete</a>';
                     return str;
-                },
-                width: "10%"
+                }
             },
             {
                 sdbmssMinWidth: "130px",

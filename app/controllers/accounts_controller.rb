@@ -20,6 +20,8 @@ class AccountsController < ManageModelsController
     {
       id: obj.id,
       username: obj.username,
+      fullname: obj.fullname,
+      role: obj.role,
       active: obj.active,
       reviewed: obj.reviewed,
       created_by: obj.created_by.present? ? obj.created_by.username : "(none)",

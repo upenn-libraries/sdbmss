@@ -23,6 +23,8 @@
 
         return [
             {
+                sdbmssMinWidth: "20px",
+                sdbmssMaxWidth: "20px",
                 title: '',
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -30,49 +32,66 @@
                         return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     }
                     return '';
-                },
-                width: "5%"
+                }
             },
             {
+                sdbmssMinWidth: "120px",
+                sdbmssMaxWidth: "120px",
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
                     var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a> '
                             + '&middot; <a class="delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
                     return str;
-                },
-                width: "10%"
+                }
             },
             {
+                sdbmssMinWidth: "50px",
+                sdbmssMaxWidth: "50px",
                 title: 'ID',
-                width: "8%",
                 dbSortField: 'id'
             },
             {
-                title: 'Name',
-                width: "45%",
+                sdbmssMinWidth: "150px",
+                sdbmssMaxWidth: "150px",
+                title: 'Username',
                 dbSortField: manageRecords.options.searchNameField
             },
             {
+                sdbmssMinWidth: "150px",
+                sdbmssMaxWidth: "150px",
+                title: 'Fullname',
+                dbSortField: 'fullname'
+            },
+            {
+                sdbmssMinWidth: "150px",
+                sdbmssMaxWidth: "150px",
+                title: 'Role',
+                dbSortField: 'role'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "100px",
                 title: 'Active',
-                width: "10%",
                 dbSortField: 'active'
             },
             {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "100px",
                 title: 'Reviewed',
-                width: "10%",
                 dbSortField: 'reviewed'
             },
             {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "100px",
                 title: 'Created By',
-                width: "10%",
                 dbSortField: 'created_by_id'
             }
         ];
      };
 
      ManageAccounts.prototype.searchResultToTableRow = function (result) {
-         return [ null, result.id, result.id, result[this.options.searchNameField], result.active.toString(), result.reviewed.toString(), result.created_by || "" ];
+         return [ null, result.id, result.id, result[this.options.searchNameField], result.fullname, result.role, result.active.toString(), result.reviewed.toString(), result.created_by || "" ];
      };
 
      new ManageAccounts({
