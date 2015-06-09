@@ -13,6 +13,15 @@ module SDBMSS::Legacy
 
     VALID_ALT_SIZE_TYPES = Entry::ALT_SIZE_TYPES.map { |item| item[0] }
 
+    # TODO: fill in mapping of 'rogue' codes to normalized values
+    ALT_SIZE_CODES_TO_NORMALIZE = {
+      "[O]" => "O",
+      "[Q]" => "Q",
+      "32ND" => "32mo",
+      "32NDS" => "32mo",
+      "D" => "12mo",
+    }
+
     VALID_CIRCA_TYPES = [
       "C",
       "C?",
@@ -766,9 +775,12 @@ module SDBMSS::Legacy
         end
       end
 
-      if row['ALT_SIZE'].present? and ! VALID_ALT_SIZE_TYPES.member? row['ALT_SIZE']
-        # TODO: these can be cleaned up programmatically, no need to warn
-        # print "WARNING: entry ID=%s has bad alt_size value: %s" % (row['MANUSCRIPT_ID'], row['ALT_SIZE'])
+      alt_size = ALT_SIZE_CODES_TO_NORMALIZE[alt_size] || row['ALT_SIZE']
+      if alt_size.present? && ! VALID_ALT_SIZE_TYPES.member?(alt_size)
+        other_info += "\n" if other_info.present?
+        other_info += "'Alt Size' field in the legacy database was '#{alt_size}'"
+        alt_size = nil
+        # TODO: for now, we still log the issue, but after ALT_SIZE_CODES_TO_NORMALIZE is finalized, we can remove this line
         create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'bad_alt_size', "non-normalized value for alt size = #{row['ALT_SIZE']}")
       end
 
@@ -793,7 +805,7 @@ module SDBMSS::Legacy
         num_lines: row['NUM_LINES'],
         height: row['HGT'],
         width: row['WDT'],
-        alt_size: row['ALT_SIZE'],
+        alt_size: alt_size,
         manuscript_binding: row['MANUSCRIPT_BINDING'],
         other_info: other_info.present? ? other_info : nil,
         # if the source is electronic, manuscript_link probably is a
