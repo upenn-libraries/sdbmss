@@ -167,13 +167,7 @@ class Source < ActiveRecord::Base
 
     title_str = title || "(No title)"
 
-    pieces = [date_str, agent_str, title_str].select { |x| x.to_s.length > 0 }.join(" - ")
-  end
-
-  def source_type_not_changed
-    if source_type_id_changed? && self.persisted?
-      errors.add(:source_type, "Change of source_type not allowed")
-    end
+    [title_str, agent_str, date_str].select { |x| x.to_s.length > 0 }.join(" - ")
   end
 
   def entries_to_index_on_update
@@ -181,6 +175,12 @@ class Source < ActiveRecord::Base
   end
 
   private
+
+  def source_type_not_changed
+    if source_type_id_changed? && self.persisted?
+      errors.add(:source_type, "Change of source_type not allowed")
+    end
+  end
 
   def assign_default_status
     if !persisted? && status.blank?
