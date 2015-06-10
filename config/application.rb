@@ -32,5 +32,9 @@ module SDBMSS
 
     config.sdbmss_index_after_update_enabled = true
 
+    # this is passed into Blacklight configuration and used by our own
+    # ResourceSearch mechanism
+    config.sdbmss_max_search_results = 5000
+
   end
 end

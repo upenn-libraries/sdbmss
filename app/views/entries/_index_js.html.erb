@@ -193,6 +193,8 @@
 
          var params = manageEntries.getSearchFields();
          params["search_field"] = "advanced";
+         params["per_page"] = <%= Rails.configuration.sdbmss_max_search_results %>;
+
          var url = URI("/entries.csv").search(params);
 
          window.location = url;

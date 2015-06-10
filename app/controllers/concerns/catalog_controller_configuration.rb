@@ -7,7 +7,7 @@ module CatalogControllerConfiguration
 
     configure_blacklight do |config|
 
-      config.max_per_page = 500
+      config.max_per_page = Rails.configuration.sdbmss_max_search_results
 
       config.response_model = SDBMSS::Blacklight::SolrResponse
 
@@ -47,16 +47,22 @@ module CatalogControllerConfiguration
       config.index.respond_to.csv = Proc.new {
         # this gets executed within a format.csv { ... } scope
 
-        objects = @document_list.map { |document| document.model_object.as_flat_hash }
+        count = @response["response"]["numFound"]
+        if count <= search_results_max
+          objects = @document_list.map { |document| document.model_object.as_flat_hash }
 
-        headers = objects.first.keys
-        formatter = Proc.new do |object|
-          headers.map { |key| object[key] }
+          headers = objects.first.keys
+          formatter = Proc.new do |object|
+            headers.map { |key| object[key] }
+          end
+          render csv: objects,
+                 filename: "#{search_model_class.to_s.downcase.pluralize}.csv",
+                 headers: headers,
+                 format: formatter
+        else
+          error_msg = "Result set has #{count} records, cannot return more than #{search_results_max}"
+          render status: :request_entity_too_large, content_type: "text/html", body: error_msg
         end
-        render csv: objects,
-               filename: "#{search_model_class.to_s.downcase.pluralize}.csv",
-               headers: headers,
-               format: formatter
       }
 
       # NOTE: the wiki docs say about the :single option that "Only one

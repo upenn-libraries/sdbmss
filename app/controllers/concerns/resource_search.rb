@@ -20,6 +20,10 @@ module ResourceSearch
     base.helper_method :search_name_field
   end
 
+  def search_results_max
+    5000
+  end
+
   def search_name_field
     "name"
   end
@@ -87,31 +91,44 @@ module ResourceSearch
       objects = exact + objects
     end
 
-    objects = objects.map do |obj|
-      search_result_format(obj)
-    end
+    count = objects.respond_to?(:count) ? objects.count : objects.length
+    if count <= search_results_max
+      objects = objects.map do |obj|
+        search_result_format(obj)
+      end
 
-    objects = search_results_map(objects)
+      objects = search_results_map(objects)
 
-    respond_to do |format|
-      format.json {
-        render json: {
-                 limit: search_results_limit,
-                 offset: search_results_offset,
-                 total: total,
-                 results: objects,
-               }
-      }
-      format.csv {
-        headers = objects.first.keys
-        formatter = Proc.new do |object|
-          headers.map { |key| object[key] }
-        end
-        render csv: objects,
-               filename: "#{search_model_class.to_s.downcase.pluralize}.csv",
-               headers: headers,
-               format: formatter
-      }
+      respond_to do |format|
+        format.json {
+          render json: {
+                   limit: search_results_limit,
+                   offset: search_results_offset,
+                   total: total,
+                   results: objects,
+                 }
+        }
+        format.csv {
+          headers = objects.first.keys
+          formatter = Proc.new do |object|
+            headers.map { |key| object[key] }
+          end
+          render csv: objects,
+                 filename: "#{search_model_class.to_s.downcase.pluralize}.csv",
+                 headers: headers,
+                 format: formatter
+        }
+      end
+    else
+      error_msg = "Result set has #{count} records, cannot return more than #{search_results_max}"
+      respond_to do |format|
+        format.json {
+          render json: { error: error_msg }, status: :request_entity_too_large
+        }
+        format.csv {
+          render status: :request_entity_too_large, content_type: "text/html", body: error_msg
+        }
+      end
     end
   end
 
