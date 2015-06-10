@@ -6,11 +6,12 @@
             </div>
             <div class="panel-body">
                 <ul class="nav">
-                    <% if user_signed_in? %>
+                    <% if can? :edit, @manuscript %>
                     <li class="edit_entry">
                         <a href="<%= edit_manuscript_path(@manuscript.id) %>">Edit this manuscript</a>
                     </li>
-
+                    <% end %>
+                    <% if can? :link, @manuscript %>
                     <li class="manage_entry">
                         <a href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Linking tool for <%= @manuscript.public_id %></a>
                     </li>
