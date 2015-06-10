@@ -81,6 +81,7 @@ describe "Linking Tool", :js => true do
 
     visit linking_tool_by_manuscript_path id: manuscript.id
 
+    # MUST sleep so that updating EntryManuscript changes updated_at
     sleep(2)
 
     # it's crucial that we load a fresh object
@@ -95,8 +96,6 @@ describe "Linking Tool", :js => true do
     all("input[name='entry_id_#{last_two_entries[0].id}'][value='possible']")[1].click
 
     click_button "Save changes"
-
-    sleep(1)
 
     expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
   end
