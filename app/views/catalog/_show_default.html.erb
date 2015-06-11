@@ -18,7 +18,7 @@
              }
          },
          complete: function() {
-             $("#spinner").hide();
+             $("#loading-message").hide();
          }
      });
 
@@ -415,7 +415,9 @@
 
 </table>
 
-<img id="spinner" alt="working..." src="<%= asset_path "spinner.gif" %>"/>
+<div id="loading-message">
+    <img id="spinner" alt="working..." src="<%= asset_path "spinner.gif" %>"/> Loading, please wait...
+</div>
 
 <table id="similar-entries-table" class="table table-striped" style="display: none">
     <thead>
