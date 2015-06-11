@@ -1,26 +1,28 @@
+<p>This page allows you to add or update a manuscript’s common name and its last known location. Tip: The last known location may not necessarily be its current location.</p>
+
 <%= form_for(@model, html: { class: "form-horizontal" }) do |f| %>
   <%= render partial: "errors" %>
   <div class="field form-group row">
       <%= f.label :name, "Common Name", class: "col-sm-2 control-label" %>
-      <div class="col-sm-4">
+      <div class="col-sm-5">
           <%= f.text_field :name, :class => 'form-control', :placeholder => "e.g. Archimedes Palimpsest, Book of Kells" %>
       </div>
   </div>
   <div class="field form-group row">
       <%= f.label :location, "Last Known Location", class: "col-sm-2 control-label" %>
-      <div class="col-sm-4">
-          <%= f.text_field :location, :class => 'form-control' %>
+      <div class="col-sm-5">
+          <%= f.text_field :location, :class => 'form-control', :placeholder => "e.g. Philadelphia, University of Pennsylvania Libraries, LJS 101" %>
       </div>
   </div>
   <div class="field form-group row">
       <%= f.label :entries, class: "col-sm-2 control-label" %>
       <div class="col-sm-6 label-alignment">
           <p>This manuscript record has the following entries linked to it:</p>
-          <ul>
+          <p>
               <% @model.entries.each do |entry| %>
-                  <li><a href="<%= url_for entry %>"><%= entry.public_id %></a>: <%= entry.display_value %></li>
+                  <a href="<%= url_for entry %>"><%= entry.public_id %></a>: <%= entry.display_value %><br/>
               <% end %>
-          </ul>
+          </p>
       </div>
   </div>
   <div class="actions row">

@@ -3,7 +3,65 @@
         <h3 class="modal-title">Create {{ entityName }}</h3>
     </div>
     <div class="modal-body form-horizontal">
-        
+
+        <div ng-show="entityName == 'place'">
+            <p>This window asks you to create an authorized name to
+            facilitate standardization and searchability for this
+            entity. Type the name of a place into the Place field,
+            following the SDBM standards for place names.</p>
+
+            <p>Enter country of origin first, using modern political
+            boundaries.  Exceptions might include regions, such as
+            Persia, Flanders, Rhaetia. If a location is identified
+            with an empire or dynasty, give the name of the empire or
+            dynasty first, e.g. Ottoman Turkey or Safavid
+            Persia. After country, enter all locations as given in the
+            catalogue from the largest geographical unit to the
+            smallest.</p>
+
+            <p>
+                <div style="float: left;">e.g.:</div>
+                <div style="padding-left: 40px;">
+                    Germany<br/>
+                    Germany, southern<br/>
+                    Italy, Tuscany<br/>
+                    France, Paris<br/>
+                    France, northern, Arras?<br/>
+                    Persia<br/>
+                    Safavid Persia<br/>
+                    Mamluk Egypt<br/>
+                    Ottoman Empire<br/>
+                </div>
+            </p>
+
+            <p>Tip: Remember that a place name can have variations. If
+            you don’t find a place, consider other possible spelling
+            variations.</p>
+        </div>
+
+        <div ng-show="entityName == 'language'">
+            <p>This window asks you to create an authorized name to
+            facilitate standardization and searchability for this
+            entity. Type the name of a language into the Language
+            field, following the SDBM standards for language names.</p>
+
+            <p>Enter the language. If a dialect, give the primary language group first, then the dialect.</p>
+
+            <p>
+                <div style="float: left;">e.g.:</div>
+                <div style="padding-left: 40px;">
+                    French, Norman<br/>
+                    English, Old<br/>
+                    German, Swabian<br/>
+                </div>
+            </p>
+
+            <p>Tip: Remember that a language name can have
+                variations. If you don’t find a language, consider
+                other possible spelling variations.</p>
+
+        </div>
+
         <div class="form-group row">
             <label class="col-sm-2 control-label">Name</label>
             <div class="col-sm-5">

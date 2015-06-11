@@ -351,7 +351,11 @@ module CatalogControllerConfiguration
       # mean") suggestion is offered.
       config.spell_max = 5
 
-      config.add_nav_action(:dashboard, partial: 'nav/dashboard')
+      # this re-adds the search history, already included by the
+      # default config, so we can specify the 'if' part
+      config.add_nav_action(:search_history, partial: 'blacklight/nav/search_history', if: :render_search_history_control?)
+
+      config.add_nav_action(:dashboard, partial: 'nav/dashboard', if: :show_dashboard_link?)
 
       config.add_show_tools_partial(:edit_entry, partial: 'nav/edit_entry', if: :show_edit_entry_link?)
       config.add_show_tools_partial(:linking_tool_by_entry, partial: 'nav/linking_tool_by_entry', if: :show_linking_tool_by_entry?)

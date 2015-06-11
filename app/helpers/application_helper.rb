@@ -46,6 +46,25 @@ module ApplicationHelper
     new_params
   end
 
+  # overrides Blacklight::BlacklightHelperBehavior#render_bookmarks_control?
+  def render_bookmarks_control?
+    user_signed_in?
+  end
+
+  # overrides Blacklight::BlacklightHelperBehavior#render_saved_searches?
+  def render_saved_searches?
+    user_signed_in?
+  end
+
+  # NOT overridden from blacklight
+  def render_search_history_control?
+    user_signed_in?
+  end
+
+  def show_dashboard_link?
+    user_signed_in?
+  end
+
   # determines whether edit entry link should be displayed; this is
   # used multiple places, which is why it's here in ApplicationHelper
   def show_edit_entry_link?

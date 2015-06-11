@@ -1,10 +1,7 @@
 <div class="navbar-right">
   <ul class="nav navbar-nav">
-    <%= render_nav_actions do |config, action|%>
-      <li><%= action %></li>
-    <% end %>
     <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Help <span class="caret"></span></a>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">The New SDBM <span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">
             <li><a href="#TODO">About</a></li>
             <li><a href="#TODO">User Manual</a></li>
@@ -16,6 +13,9 @@
             -->
         </ul>
     </li>
+    <%= render_nav_actions do |config, action|%>
+      <li><%= action %></li>
+    <% end %>
   </ul>
 
   <% if has_user_authentication_provider? %>
