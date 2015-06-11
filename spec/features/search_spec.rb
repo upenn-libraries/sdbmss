@@ -15,6 +15,12 @@ describe "Blacklight Search", :js => true do
     SDBMSS::ReferenceData.create_all
 
     SDBMSS::Util.wait_for_solr_to_be_current
+
+    @user = User.create!(
+      email: 'search@search.com',
+      username: 'search',
+      password: 'somethingunguessable',
+    )
   end
 
   # Returns a record from Hill catalog
@@ -164,6 +170,12 @@ describe "Blacklight Search", :js => true do
   it "should load show Manuscript page"
 
   it "should bookmark an Entry and remove it" do
+    visit new_user_session_path
+    fill_in 'user_login', :with => @user.username
+    fill_in 'user_password', :with => 'somethingunguessable'
+    click_button 'Log in'
+    expect(page).to have_content 'Signed in successfully'
+
     visit root_path
     fill_in "q", with: "Tomkinson"
     click_button('search')
