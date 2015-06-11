@@ -2,6 +2,10 @@
 # Manage Entries screen is much more complicated than other screens
 # that subclass from ManageModelsController, but we use it anyway
 # for consistency.
+#
+# Note: CSV Export from Manage Entries page makes use of Blacklight
+# search; see CatalogControllerConfiguration to see how search results
+# are rendered in CSV format.
 class EntriesController < ManageModelsController
 
   # include Blacklight modules so that we get the same search
