@@ -243,14 +243,9 @@ $(document).ready(function() {
         potentialMatches = null;
         resultsTable.reload();
     };
-    
-    $('#search_results tbody').on('click', 'tr', function (event) {
-        // don't select if a link inside table was clicked
-        if(event.target.tagName !== 'A') {
-            $(event.currentTarget).toggleClass('selected');
-        }
-    });
-    
+
+    // TODO: fix row highlighting broken by fixed column datatable plugin
+
     $('#search_submit').click(function() {
         doSearch();
     });
