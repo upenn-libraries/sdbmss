@@ -1,5 +1,31 @@
-
 <% entry = document.model_object %>
+
+<% content_for :head do %>
+<script type="text/javascript">
+
+ $(document).ready(function() {
+
+     $.ajax({
+         url: '/entries/' + <%= entry.id %> + '/similar.json?full=1',
+         type: 'GET',
+         success: function(data, textStatus, jqXHR) {
+             if(data.total && data.total > 0) {
+                 $("#total-similar-entries").html(data.total);
+                 data.similar.forEach(function(record) {
+                     $("#similar-entries").append("<a href='/entries/" + record.id + "'>SDBM_" + record.id + "</a> - " + record.titles + "<br/>");
+                 });
+                 $("#similar-entries-table").show();
+             }
+         },
+         complete: function() {
+             $("#spinner").hide();
+         }
+     });
+
+ });
+
+</script>
+<% end %>
 
 <% if entry.nil? %>
 <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
@@ -389,28 +415,28 @@
 
 </table>
 
-<% if (similar_entries = SDBMSS::SimilarEntries.new(entry)).count > 0 %>
-<table class="table table-striped">
+<img id="spinner" alt="working..." src="<%= asset_path "spinner.gif" %>"/>
+
+<table id="similar-entries-table" class="table table-striped" style="display: none">
     <thead>
         <tr>
-            <th class="col-sm-12" colspan="2"><b>Top 10 other entries possibly describing the same manuscript</b></th>
+            <th class="col-sm-12" colspan="2"><b>There are <span id="total-similar-entries"></span> other entries that might describe the same manuscript as this entry. Here are the top candidates:</b></th>
         </tr>
     </thead>
 
     <tbody>
         <tr>
             <td class="col-sm-12">
-                <% similar_entries.first(10).each do |similar_entry| %>
-                <a href="<%= entry_path similar_entry[:entry] %>"><%= similar_entry[:entry].public_id %></a> - <%= similar_entry[:entry].display_value %> (score: <%= similar_entry[:distance] %>)<br/>
-                <% end %>
+                <div id="similar-entries">
+
+                </div>
                 <br/>
-                (TODO: This info will be moved elsewhere, and presented in a way to make comparison easier)
+                To link these entries, use the <a href="<%= linking_tool_by_entry_path(entry.id) %>">Linking tool</a>.
             </td>
         </tr>
     </tbody>
 </table>
-<% end %>
-                
+
 <% if (comments = entry.comments.where(public: true)).present? %>
 <table class="table table-striped">
     <thead>

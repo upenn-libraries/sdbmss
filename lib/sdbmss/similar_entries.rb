@@ -31,6 +31,10 @@ module SDBMSS
 
     attr_accessor :strings
 
+    # use a scale of 0 to this value, for determining best to worst
+    # similarity.
+    @@scale_to = 10
+
     def initialize strings
       @strings = strings.map(&:upcase)
     end
@@ -41,13 +45,13 @@ module SDBMSS
         return 5
       end
 
-      # we take the lowest (best) score, since a good match of any one
-      # memebr of the set is a good indicator
-      score = 10
+      # we take the lowest (best) score, since a good match of ANY
+      # memver of the set is a good indicator
+      score = @@scale_to
       # cartesian product of arrays
       pairs = @strings.product(x.strings)
-      scores = pairs.map { |pair| Levenshtein.normalized_distance(pair[0], pair[1]) * 10 }
-      score = scores.sort.first < 10 ? scores.sort.first : 10
+      scores = pairs.map { |pair| Levenshtein.normalized_distance(pair[0], pair[1]) * @@scale_to }
+      score = scores.sort.first < @@scale_to ? scores.sort.first : @@scale_to
       Rails.logger.info("dist score: #{score}, '#{x.strings.inspect}' '#{@strings.inspect}'")
       score
     end
@@ -59,8 +63,6 @@ module SDBMSS
 
     def initialize(entry)
       # extract info from entry relevant for similarity matching
-
-      # TODO: match provenance dates with Entry dates
 
       store(:num_lines, entry.num_lines)
       store(:folios, entry.folios)
@@ -81,9 +83,13 @@ module SDBMSS
         # a large difference and throwing off the calculation
         if v.present? && v2.present?
           score = (v - v2).abs
-          # puts "score for key=#{k} = #{score}"
-          sum_of_squares += score ** 2
+        else
+          # one or both values are missing in the two Entries, so
+          # give it a score of 7
+          score = 7
         end
+        # puts "score for key=#{k} = #{score}"
+        sum_of_squares += score ** 2
       end
       Math.sqrt(sum_of_squares)
     end
@@ -116,30 +122,28 @@ module SDBMSS
 
       @similar_entries = []
 
-      buffer_folios = 5
-      buffer_width = 5
-      buffer_height = 5
+      #### Possible candidates by similar dimension
 
-      # Narrow down pool of possible candidates to something reasonable
-      entries = Entry.all.order('id')
-      if @entry.folios.present?
-        entries = entries.where("folios > #{@entry.folios - buffer_folios}")
-        entries = entries.where("folios < #{@entry.folios + buffer_folios}")
+      candidates_by_dimension = find_by_similar_dimenions
+      count_by_dimension = candidates_by_dimension.count
+
+      #### Possible candidates where candidate is catalog entry for a sale in this entry's provenance
+
+      provenance_dates = @entry.events.map(&:start_date).select { |d| d.present? }
+
+      candidates_by_provenance_date = find_by_provenance_dates(provenance_dates)
+      count_by_provenance_date = candidates_by_provenance_date.count
+
+      if candidates_by_provenance_date.count > 0
+        provenance_dates_sql = provenance_dates.map { |d| "'#{d}'" }.join(",")
+        candidates_by_provenance_date = Entry.joins(:source).where("sources.date in (#{provenance_dates_sql})")
+        count_by_provenance_date = candidates_by_provenance_date.count
       end
-      if @entry.width.present?
-        entries = entries.where("width > #{@entry.width - buffer_width}")
-        entries = entries.where("width < #{@entry.width + buffer_width}")
-      end
-      if @entry.height.present?
-        entries = entries.where("height > #{@entry.height - buffer_height}")
-        entries = entries.where("height < #{@entry.height + buffer_height}")
-      end
 
-      count = entries.count()
-      #puts "Calculating record's similarity to other #{count} records"
+      Rails.logger.info "SimilarEntries: # of candidates found: (#{count_by_dimension} by dimension; #{count_by_provenance_date} by prov date) for entry #{@entry.id}"
 
-      if count < 250
-
+      if count_by_dimension < 250 && count_by_provenance_date < 500
+        entries = candidates_by_dimension + candidates_by_provenance_date
         entries.each do |entry|
           if (entry.id != @entry.id) && (! @already_matched.member?(entry.id))
             p2 = Point.new(entry)
@@ -149,13 +153,42 @@ module SDBMSS
           end
         end
 
+        @similar_entries.select! { |e| e[:distance] <= 20 }
+
         @similar_entries.sort! { |x,y| x[:distance] <=> y[:distance] }
-      else
-        Rails.logger.info "Too many similar candidates for entry #{@entry.id}, skipping"
       end
     end
 
-    private
+    def find_by_similar_dimenions
+      buffer_folios = 5
+      buffer_width = 5
+      buffer_height = 5
+
+      candidates_by_dimension = Entry.all.with_associations.order('id')
+      if @entry.folios.present?
+        candidates_by_dimension = candidates_by_dimension.where("folios > #{@entry.folios - buffer_folios}")
+        candidates_by_dimension = candidates_by_dimension.where("folios < #{@entry.folios + buffer_folios}")
+      end
+      if @entry.width.present?
+        candidates_by_dimension = candidates_by_dimension.where("width > #{@entry.width - buffer_width}")
+        candidates_by_dimension = candidates_by_dimension.where("width < #{@entry.width + buffer_width}")
+      end
+      if @entry.height.present?
+        candidates_by_dimension = candidates_by_dimension.where("height > #{@entry.height - buffer_height}")
+        candidates_by_dimension = candidates_by_dimension.where("height < #{@entry.height + buffer_height}")
+      end
+      candidates_by_dimension
+    end
+
+    def find_by_provenance_dates(provenance_dates)
+      candidates_by_provenance_date = []
+
+      if provenance_dates.count > 0
+        provenance_dates_sql = provenance_dates.map { |d| "'#{d}'" }.join(",")
+        candidates_by_provenance_date = Entry.all.with_associations.joins(:source).where("sources.date in (#{provenance_dates_sql})")
+      end
+      candidates_by_provenance_date
+    end
 
   end
 

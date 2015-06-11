@@ -29,7 +29,7 @@ describe Entry do
 
     it "should get similar entries" do
       entry = Entry.last
-      expect(entry.similar).to be_a(Set)
+      SDBMSS::SimilarEntries.new(entry)
     end
 
     it "should get as flat hash" do
