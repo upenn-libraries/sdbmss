@@ -63,7 +63,7 @@ class Source < ActiveRecord::Base
   #validates_presence_of :date, if: :date_required
   validates_presence_of :source_type
   validate :source_type_not_changed
-  # TODO: validate that irrelevant fields for the source_type are NOT populated
+  validate :disallow_irrelevant_fields_for_source_type
 
   accepts_nested_attributes_for :source_agents, allow_destroy: true
 
@@ -174,6 +174,23 @@ class Source < ActiveRecord::Base
     Entry.with_associations.where(source_id: id)
   end
 
+  def invalid_source_fields
+    case source_type.name
+    when SourceType::AUCTION_CATALOG
+      disallowed_fields = ["author"]
+    when SourceType::COLLECTION_CATALOG
+      disallowed_fields = []
+    when SourceType::ONLINE
+      disallowed_fields = ["date", "author"]
+    when SourceType::OBSERVATION
+      disallowed_fields = ["link"]
+    when SourceType::OTHER_PUBLISHED
+      disallowed_fields = []
+    when SourceType::UNPUBLISHED
+      disallowed_fields = ["date"]
+    end
+  end
+
   private
 
   def source_type_not_changed
@@ -185,6 +202,16 @@ class Source < ActiveRecord::Base
   def assign_default_status
     if !persisted? && status.blank?
       self.status = TYPE_STATUS_TO_BE_ENTERED
+    end
+  end
+
+  def disallow_irrelevant_fields_for_source_type
+    invalid_source_fields.each do |field|
+      field_symbol = field.to_sym
+      value = self.send(field_symbol)
+      if value.present?
+        errors.add(field_symbol, "Value '#{value}' not allowed in field #{field} when source_type = #{source_type.name}")
+      end
     end
   end
 

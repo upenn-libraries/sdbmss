@@ -138,14 +138,6 @@ describe "Data entry", :js => true do
           {
             agent: Name.find_or_create_agent("aaa"),
             role: SourceAgent::ROLE_SELLING_AGENT,
-          },
-          {
-            agent: Name.find_or_create_agent("bbb"),
-            role: SourceAgent::ROLE_SELLER_OR_HOLDER,
-          },
-          {
-            agent: Name.find_or_create_agent("ccc"),
-            role: SourceAgent::ROLE_BUYER,
           }
         ]
       )
@@ -161,8 +153,6 @@ describe "Data entry", :js => true do
 
       # should prepopulate Transaction fields
       expect(find_by_id("transaction_selling_agent").value).to eq("aaa")
-      expect(find_by_id("transaction_seller").value).to eq("bbb")
-      expect(find_by_id("transaction_buyer").value).to eq("ccc")
     end
 
     it "should load New Entry page with a collection catalog Source" do

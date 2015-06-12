@@ -2,6 +2,8 @@ class SourceAgent < ActiveRecord::Base
   belongs_to :source
   belongs_to :agent, class_name: 'Name', counter_cache: :source_agents_count
 
+  validate :validate_role
+
   ROLE_SELLER_OR_HOLDER = "seller_or_holder"
   ROLE_SELLING_AGENT = "selling_agent"
   ROLE_BUYER = "buyer"
@@ -19,5 +21,31 @@ class SourceAgent < ActiveRecord::Base
   ]
 
   validates_presence_of :source
+
+  def valid_roles_for_source_type
+    case source.source_type.name
+    when SourceType::AUCTION_CATALOG
+      valid_roles = [ROLE_SELLING_AGENT]
+    when SourceType::COLLECTION_CATALOG
+      valid_roles = [ROLE_INSTITUTION]
+    when SourceType::ONLINE
+      valid_roles = [ROLE_SELLING_AGENT]
+    when SourceType::OBSERVATION
+      valid_roles = []
+    when SourceType::OTHER_PUBLISHED
+      valid_roles = []
+    when SourceType::UNPUBLISHED
+      valid_roles = [ROLE_INSTITUTION]
+    end
+    valid_roles
+  end
+
+  private
+
+  def validate_role
+    if !valid_roles_for_source_type.include?(role)
+      errors.add(:role, "'#{role}' role not allowed in SourceAgent records for sources whose source_type = #{source.source_type.name}")
+    end
+  end
 
 end

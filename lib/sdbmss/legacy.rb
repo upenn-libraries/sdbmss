@@ -467,14 +467,12 @@ module SDBMSS::Legacy
       # create an 'Unknown' source to attach to entries that don't
       # have one; do this before catalog migration so it's id=1
       unknown_source = Source.create!(
-        date: "00000000",
         title: "Unknown - This source is a container for legacy records missing valid source information",
         source_type: SourceType.unpublished,
       )
 
       # special case for handling records from Jordanus
       jordanus = Source.create!(
-        date: "00000000",
         title: "Jordanus",
         source_type: SourceType.unpublished,
       )
@@ -484,7 +482,12 @@ module SDBMSS::Legacy
       SDBMSS::Util.batch(legacy_db,
                          'SELECT * FROM MANUSCRIPT_CATALOG ORDER BY MANUSCRIPTCATALOGID',
                          batch_wrapper: wrap_transaction) do |row,ctx|
-        create_source_from_row(row, ctx)
+        begin
+          create_source_from_row(row, ctx)
+        rescue
+          puts "ERROR ON CATALOG ID=#{row["MANUSCRIPTCATALOGID"]}"
+          raise
+        end
       end
 
       puts "Migrating Place records (first pass)"
@@ -1347,16 +1350,23 @@ module SDBMSS::Legacy
       # TODO: get rid of hidden field, it no longer makes sense
       hidden = row['HIDDEN_CAT'] == 'y'
 
+      # Determine the SourceType and null out irrelevant fields; this
+      # means we will lose some data. but since these fields are
+      # duplicated in Manuscript, they should get migrated there and
+      # it should be fine. I think. TODO
       source_type = nil
       case
       when row['SELLER'].present?
-        # TODO: assert that other fields are blank?
         source_type = SourceType.auction_catalog
+        institution = nil
       when row['INSTITUTION'].present?
         source_type = SourceType.collection_catalog
+        seller = nil
       else
         source_type = SourceType.other_published
       end
+
+      author = row['CAT_AUTHOR']
 
       whether_mss = row['WHETHER_MSS']
       if ['Likely', 'Not Likely', 'Uncertain'].member? whether_mss
@@ -1384,6 +1394,8 @@ module SDBMSS::Legacy
         medium = Source::TYPE_MEDIUM_INTERNET;
       end
 
+      comments = row['COMMENTS']
+
       # NOTE: there do exist Catalogs with no Entries, and that's
       # ok. these can indicate that someone looked at a catalog and
       # determined that there are no MSS relevant for SDBM (the
@@ -1394,12 +1406,12 @@ module SDBMSS::Legacy
       # MS_COUNT = this is now redundant since we're using FKs
       # ALT_DATE = this has moved into Event.date on transaction records
 
-      source = Source.create!(
+      source = Source.new(
         id: row['MANUSCRIPTCATALOGID'],
         source_type: source_type,
         date: date,
         title: row['CAT_ID'],
-        author: row['CAT_AUTHOR'],
+        author: author,
         whether_mss: whether_mss,
         location_institution: row['CURRENT_LOCATION'],
         location: [row['LOCATION_CITY'], row['LOCATION_COUNTRY']].select { |s| s.present? }.join(",") || nil,
@@ -1411,10 +1423,22 @@ module SDBMSS::Legacy
         created_by: get_or_create_user(row['ADDED_BY']),
         updated_at: row['LAST_MODIFIED'],
         updated_by: get_or_create_user(row['LAST_MODIFIED_BY']),
-        comments: row['COMMENTS'],
+        comments: comments,
         status: status,
         hidden: hidden,
       )
+
+      # move values in invalid fields to comments field
+      source.invalid_source_fields.each do |field|
+        value = source.send(field.to_sym)
+        if value.present?
+          source.comments = source.comments.present? ? source.comments + "\n" : ""
+          source.comments += "'#{field}' field with value '#{value}' in the legacy database could not be migrated into an appropriate field for this source type"
+          source.send((field + "=").to_sym, nil)
+        end
+      end
+
+      source.save!
 
       if institution
         SourceAgent.create!(

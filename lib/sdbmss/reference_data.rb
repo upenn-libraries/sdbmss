@@ -1279,7 +1279,6 @@ module SDBMSS::ReferenceData
     def create_source
       @source = Source.create!(
         source_type: SourceType.unpublished,
-        date: "2015-03-10",
         title: "Email sent by Jeff Chiu",
         author: "Lynn Ransom",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
@@ -1300,7 +1299,6 @@ module SDBMSS::ReferenceData
     def create_source
       @source = Source.create!(
         source_type: SourceType.unpublished,
-        date: "2015-03-10",
         title: "not required in personal observation OR March 9, 2015, visit",
         author: "Ransom, Lynn",
         whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
