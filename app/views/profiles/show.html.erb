@@ -11,6 +11,10 @@
     <dd>
         <%= @user.fullname || "(None)" %>
     </dd>
+    <dt>Institutional Affiliation</dt>
+    <dd>
+        <%= @user.institutional_affiliation || "(None/Unknown)" %>
+    </dd>
     <dt>Role</dt>
     <dd>
         <%= @user.role.capitalize %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150608203207) do
+ActiveRecord::Schema.define(version: 20150612173552) do
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,   null: false
@@ -452,30 +452,31 @@ ActiveRecord::Schema.define(version: 20150608203207) do
   add_index "sources", ["updated_by_id"], name: "index_sources_on_updated_by_id", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                  limit: 255,   default: "",    null: false
-    t.string   "encrypted_password",     limit: 255,   default: "",    null: false
-    t.string   "reset_password_token",   limit: 255
+    t.string   "email",                     limit: 255,   default: "",    null: false
+    t.string   "encrypted_password",        limit: 255,   default: "",    null: false
+    t.string   "reset_password_token",      limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          limit: 4,     default: 0,     null: false
+    t.integer  "sign_in_count",             limit: 4,     default: 0,     null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip",     limit: 255
-    t.string   "last_sign_in_ip",        limit: 255
+    t.string   "current_sign_in_ip",        limit: 255
+    t.string   "last_sign_in_ip",           limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "guest",                  limit: 1,     default: false
-    t.string   "username",               limit: 255
-    t.string   "role",                   limit: 255
-    t.boolean  "email_is_public",        limit: 1,     default: false
-    t.text     "bio",                    limit: 65535
-    t.boolean  "reviewed",               limit: 1,     default: false
-    t.integer  "reviewed_by_id",         limit: 4
+    t.boolean  "guest",                     limit: 1,     default: false
+    t.string   "username",                  limit: 255
+    t.string   "role",                      limit: 255
+    t.boolean  "email_is_public",           limit: 1,     default: false
+    t.text     "bio",                       limit: 65535
+    t.boolean  "reviewed",                  limit: 1,     default: false
+    t.integer  "reviewed_by_id",            limit: 4
     t.datetime "reviewed_at"
-    t.integer  "created_by_id",          limit: 4
-    t.integer  "updated_by_id",          limit: 4
-    t.string   "fullname",               limit: 255
-    t.boolean  "active",                 limit: 1,     default: true
+    t.integer  "created_by_id",             limit: 4
+    t.integer  "updated_by_id",             limit: 4
+    t.string   "fullname",                  limit: 255
+    t.boolean  "active",                    limit: 1,     default: true
+    t.string   "institutional_affiliation", limit: 255
   end
 
   add_index "users", ["created_by_id"], name: "index_users_on_created_by_id", using: :btree

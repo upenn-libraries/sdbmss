@@ -3,6 +3,15 @@
 <h1>Edit My Profile Information</h1>
 
 <div class="row">
+    <div class="col-sm-8">
+        <p>Please provide some information about yourself to help us and other
+            users get to know you. Your profile information will be accessible to
+            other users from your user name as it appears in entries, manuscript
+            records, or comments that you have created or responded to.</p>
+    </div>
+</div>
+
+<div class="row">
     <div class="col-sm-6">
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
   <%= devise_error_messages! %>
@@ -17,12 +26,17 @@
           <%= f.check_box :email_is_public, autofocus: true %> My email address is publicly visible 
       </label>
   </div>
-  
+
   <div class="field form-group">
-      <%= f.label :fullname, "Full Name" %>
+      <%= f.label :fullname, "Full Name (as you want it to appear to other users)" %>
       <%= f.text_field :fullname, autofocus: true, class: "form-control" %>
   </div>
-  
+
+  <div class="field form-group">
+      <%= f.label :institutional_affiliation, "Institutional affiliation (if any)" %>
+      <%= f.text_field :institutional_affiliation, class: "form-control" %>
+  </div>
+
   <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
     <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
   <% end %>
@@ -43,7 +57,7 @@
   </div>
 
   <div class="field form-group">
-    <%= f.label :bio %>
+    <%= f.label :bio, "Tell us something about yourself and your interests in becoming a member of the New SDBM user-community (this info will be visible to other users):" %>
     <%= f.text_area :bio, rows: 5, autocomplete: "off", class: "form-control" %>
   </div>
   
