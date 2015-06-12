@@ -668,8 +668,7 @@ module SDBMSS::Legacy
         OR MANUSCRIPT.CAT_ID != MANUSCRIPT_CATALOG.CAT_ID)""")
 
       if results.first['mycount'] != 0
-        # TODO: disabled 'raise'--fix actual bad data (2 records, as of 7/1)
-        puts "ERROR: There are MANUSCRIPT records whose source fields don't match correspoending fields in MANUSCRIPT_CATALOG table"
+        raise "ERROR: There are MANUSCRIPT records whose source fields don't match correspoending fields in MANUSCRIPT_CATALOG table"
       end
 
       results = db.query("""select count(*) as mycount from MANUSCRIPT
