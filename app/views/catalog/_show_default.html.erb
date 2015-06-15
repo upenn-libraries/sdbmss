@@ -1,9 +1,11 @@
 <% entry = document.model_object %>
 
 <% content_for :head do %>
+<% if user_signed_in? %>
 <script type="text/javascript">
 
  $(document).ready(function() {
+     $("#loading-message").show();
 
      $.ajax({
          url: '/entries/' + <%= entry.id %> + '/similar.json?full=1',
@@ -25,6 +27,7 @@
  });
 
 </script>
+<% end %>
 <% end %>
 
 <% if entry.nil? %>
@@ -415,7 +418,7 @@
 
 </table>
 
-<div id="loading-message">
+<div id="loading-message" style="display: none">
     <img id="spinner" alt="working..." src="<%= asset_path "spinner.gif" %>"/> Loading, please wait...
 </div>
 
@@ -484,5 +487,7 @@
 <% end %>
 <% end %>
 <% end %>
+
+<div class="spacer-40px"></div>
 
 <% end %>
