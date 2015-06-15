@@ -41,7 +41,7 @@ $(document).ready(function() {
     <div class="col-sm-7">
         <input class="form-control" name="" type="text" value="<%= fieldstruct.value %>"/>
     </div>
-    <div class="col-sm-1">in</div>
+    <div class="col-sm-1 label-alignment">in</div>
     <div class="col-sm-4">
         <select class="form-control col-sm-3" id="text_field_<%= fieldstruct.index %>">
             <%- fieldstruct.fields.each do |key, field_def| -%>
@@ -60,11 +60,11 @@ $(document).ready(function() {
     <div class="col-sm-3">
         <input class="form-control start" id="numeric_start_<%= fieldstruct.index %>" type="text" value="<%= fieldstruct.value %>"/>
     </div>
-    <div class="col-sm-1">to</div>
+    <div class="col-sm-1 label-alignment">to</div>
     <div class="col-sm-3">
         <input class="form-control end" id="numeric_end_<%= fieldstruct.index %>" type="text" value="<%= fieldstruct.value2 %>"/>
     </div>
-    <div class="col-sm-1">in</div>
+    <div class="col-sm-1 label-alignment">in</div>
     <div class="col-sm-4">
         <select class="form-control col-sm-3" id="numeric_field_<%= fieldstruct.index %>">
             <%- fieldstruct.fields.each do |key, field_def| -%>
