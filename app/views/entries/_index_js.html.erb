@@ -244,7 +244,7 @@
      $(document).on("click", ".entry-delete-link", function (event) {
          var sdbmTable = manageEntries.dataTable;
          var row_data = sdbmTable.dataTable.row($(event.target).closest("tr")).data();
-         var entry_id = row_data[1];
+         var entry_id = row_data[sdbmTable.getColumnIndex("ID")];
          if(confirm("Are you sure you want to delete entry " + entry_id + "?")) {
              $.ajax({
                  url: '/entries/' + entry_id,
