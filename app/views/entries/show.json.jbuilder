@@ -123,7 +123,8 @@ if @entry.entry_comments.present?
   json.entry_comments @entry.entry_comments do |entry_comment|
     json.(entry_comment, :id)
     json.comment do
-      json.(entry_comment.comment, :id, :comment, :created_at)
+      json.(entry_comment.comment, :id, :comment)
+      json.created_at entry_comment.comment.created_at.to_formatted_s(:date_and_time)
       json.created_by entry_comment.comment.created_by.username
     end
   end
