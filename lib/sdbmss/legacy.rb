@@ -580,7 +580,7 @@ module SDBMSS::Legacy
 
           # only append str if it's not already included in the field
           if !manuscript.location.include?(row['CURRENT_LOCATION'])
-            if !location_already_populated
+            if location_already_populated
               create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], "current_location", "Warning: more than one current_location found for Manuscript ID = #{manuscript.id}")
             end
             manuscript.location += "; " if manuscript.location.length > 0
