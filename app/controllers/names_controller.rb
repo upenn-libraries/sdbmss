@@ -2,8 +2,7 @@ class NamesController < ManageModelsController
 
   include ResourceSearch
   include MarkAsReviewed
-
-  before_action :set_name, only: [:show, :show_json, :edit, :update, :destroy]
+  include ResetReviewedAfterUpdate
 
   load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_reviewed]
 
@@ -52,10 +51,6 @@ class NamesController < ManageModelsController
   end
 
   private
-
-  def set_name
-    @name = Name.find(params[:id])
-  end
 
   def model_params
     # wrapped parameters don't work when class name is the same as one

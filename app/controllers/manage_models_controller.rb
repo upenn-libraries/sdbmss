@@ -6,6 +6,7 @@
 # and views.
 class ManageModelsController < ApplicationController
   include ResourceSearch
+  include ResetReviewedAfterUpdate
 
   before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy]
 
@@ -21,6 +22,10 @@ class ManageModelsController < ApplicationController
 
   def model_class_lstr
     model_class.to_s.downcase
+  end
+
+  def model_object_for_reset_reviewed_after_update
+    @model
   end
 
   # Name of the resource that this controller controls. By default,

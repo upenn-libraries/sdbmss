@@ -60,7 +60,23 @@ describe "Manage languages", :js => true do
       visit new_language_path
       fill_in "language_name", with: "Klingon"
       click_button "Create Language"
+
       expect(Language.where(name: "Klingon").count).to eq(1)
+      language = Language.where(name: "Klingon").first
+      expect(language.reviewed).to eq(false)
+    end
+
+    it "should edit a Language" do
+      language = Language.create(name: "Already reviewed", reviewed: true, created_by: @user)
+
+      visit edit_language_path :id => language.id
+      fill_in "language_name", with: "This should change to unreviewed"
+      click_button "Update Language"
+
+      expect(page).to have_content 'Your changes have been saved'
+
+      language = Language.find(language.id)
+      expect(language.reviewed).to be(false)
     end
 
     it "should delete a Language" do
