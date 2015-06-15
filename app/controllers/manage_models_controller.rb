@@ -41,9 +41,11 @@ class ManageModelsController < ApplicationController
   def create
     @model = model_class.new(model_params)
     if model_class.column_names.include?("created_by_id")
-      @model.created_by = current_user
+      result = @model.save_by(current_user)
+    else
+      result = @model.save
     end
-    if @model.save
+    if result
       respond_to do |format|
         format.html {
           redirect_to model_path(@model.id)
@@ -65,11 +67,7 @@ class ManageModelsController < ApplicationController
   end
 
   def update
-    if model_class.column_names.include?("encrypted_password") && model_params[:password].blank?
-      result = @model.update_without_password(model_params)
-    else
-      result = @model.update(model_params)
-    end
+    result = do_update
     if result
       respond_to do |format|
         format.html {
@@ -83,6 +81,10 @@ class ManageModelsController < ApplicationController
     else
       render 'edit'
     end
+  end
+
+  def do_update
+    @model.update_by(current_user, model_params)
   end
 
   def destroy

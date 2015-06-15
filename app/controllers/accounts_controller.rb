@@ -50,6 +50,16 @@ class AccountsController < ManageModelsController
     end
   end
 
+  def do_update
+    if model_class.column_names.include?("encrypted_password") && model_params[:password].blank?
+      result = @model.update_without_password(model_params)
+      @model.updated_by = current_user
+    else
+      result = super
+    end
+    result
+  end
+
   private
 
   # override from ManageModelsController: use profile#show

@@ -28,8 +28,7 @@ class SourcesController < ManageModelsController
     else
       @source.status = Source::TYPE_STATUS_TO_BE_ENTERED
     end
-    @source.created_by_id = current_user.id
-    @source.save!
+    @source.save_by(current_user)
     render "show"
   end
 
@@ -145,8 +144,9 @@ class SourcesController < ManageModelsController
     error = nil
     if @source.entries_count.to_i == 0
       @source.deleted = true
-      @source.updated_by_id = current_user.id
-      @source.save!
+      if !@source.save_by(current_user)
+        error = @source.errors.to_s
+      end
     else
       error = "Can't mark a source as deleted if it has entries"
     end

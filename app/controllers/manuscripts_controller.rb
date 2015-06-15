@@ -26,13 +26,14 @@ class ManuscriptsController < ManageModelsController
     begin
       ActiveRecord::Base.transaction do
         @manuscript = Manuscript.new
-        @manuscript.created_by_id = current_user.id
-        @manuscript.save!
-        @manuscript.update_attributes!(
-          {
-            entry_manuscripts_attributes: entry_manuscripts_attributes,
-          }
-        )
+        result = @manuscript.save_by(current_user)
+        if result
+          @manuscript.update_attributes!(
+            {
+              entry_manuscripts_attributes: entry_manuscripts_attributes,
+            }
+          )
+        end
       end
     rescue Exception => e
     end
