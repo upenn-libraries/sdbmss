@@ -64,12 +64,12 @@ describe "Manage entries", :js => true do
   it "should delete an entry" do
     count = Entry.all.count
 
-    visit entries_path
-
     # mock out the confirm dialogue
     page.evaluate_script('window.confirm = function() { return true; }')
 
-    first(".entry-delete-link").click
+    visit entries_path
+    all(".entry-delete-link").last.click
+    sleep(1)
 
     expect(Entry.all.count).to eq(count - 1)
   end
