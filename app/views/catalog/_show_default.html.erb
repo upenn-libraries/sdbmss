@@ -34,6 +34,11 @@
 <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
 <% else %>
 
+<p>
+    Note: This entry records a mention or observation of a manuscript
+    in a source. Do not assume that the manuscript is held by the
+    University of Pennsylvania Libraries.</p>
+
 <%= render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
 
 <!-- TODO: use a DL element here instead of a table? or use bootstrap rows and cols? layout will be tricky -->

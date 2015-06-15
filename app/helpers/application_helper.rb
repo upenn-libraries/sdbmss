@@ -61,10 +61,6 @@ module ApplicationHelper
     user_signed_in?
   end
 
-  def show_dashboard_link?
-    user_signed_in?
-  end
-
   # determines whether edit entry link should be displayed; this is
   # used multiple places, which is why it's here in ApplicationHelper
   def show_edit_entry_link?

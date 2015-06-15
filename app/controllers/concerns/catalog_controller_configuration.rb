@@ -355,8 +355,6 @@ module CatalogControllerConfiguration
       # default config, so we can specify the 'if' part
       config.add_nav_action(:search_history, partial: 'blacklight/nav/search_history', if: :render_search_history_control?)
 
-      config.add_nav_action(:dashboard, partial: 'nav/dashboard', if: :show_dashboard_link?)
-
       config.add_show_tools_partial(:edit_entry, partial: 'nav/edit_entry', if: :show_edit_entry_link?)
       config.add_show_tools_partial(:linking_tool_by_entry, partial: 'nav/linking_tool_by_entry', if: :show_linking_tool_by_entry?)
       config.add_show_tools_partial(:linking_tool_by_manuscript, partial: 'nav/linking_tool_by_manuscript', if: :show_linking_tool_by_manuscript?)
