@@ -5,7 +5,7 @@
 <% fragments = entry.entry_manuscripts.select { |em| em.relation_type == EntryManuscript::TYPE_RELATION_PARTIAL } %>
 <% if fragments.length > 0 %>
     <% fragments.each do |fragment| %>
-        <p>This <b>entry</b> has been identified as a <em>fragment</em> of this <b>manuscript record</b>:
+        <p>This <b>entry</b> has been identified as a <em>fragment</em> of the manuscript cited in this <b>manuscript record</b>:
             <a href="<%= url_for(fragment.manuscript) %>"><%= fragment.manuscript.public_id %></a>
         </p>
     <% end %>
@@ -14,7 +14,7 @@
 <% possible = entry.entry_manuscripts.select { |em| em.relation_type == EntryManuscript::TYPE_RELATION_POSSIBLE } %>
 <% if possible.length > 0 %>
     <% possible.each do |possible| %>
-        <p>This <b>entry</b> has been identified as <em>possibly</em> belonging to this <b>manuscript record</b>:
+        <p>This <b>entry</b> has been identified as <em>possibly</em> belonging to the manuscript cited in this <b>manuscript record</b>:
             <a href="<%= url_for(possible.manuscript) %>"><%= possible.manuscript.public_id %></a>
         </p>
     <% end %>

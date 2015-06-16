@@ -8,7 +8,7 @@
                 <ul class="nav">
                     <% if can? :edit, @manuscript %>
                     <li class="edit_entry">
-                        <a href="<%= edit_manuscript_path(@manuscript.id) %>">Edit this manuscript</a>
+                        <a href="<%= edit_manuscript_path(@manuscript.id) %>">Edit this Manuscript Record</a>
                     </li>
                     <% end %>
                     <% if can? :link, @manuscript %>
