@@ -47,6 +47,20 @@ Setting up for Development
 * Install Java 1.7 so Solr can run. Do this in whatever way makes
   sense.
 
+* Run a Solr instance (this WILL daemonize). Note that you will need
+  to restart Solr whenever there are changes to the Solr configuration
+  or schema files.
+
+  ```
+  bundle exec rake sunspot:solr:start
+  ```
+
+  To stop Solr:
+
+  ```
+  bundle exec rake sunspot:solr:stop
+  ```
+
 * Create a MySQL account and some databases.
 
   ```
@@ -82,42 +96,59 @@ Setting up for Development
   export SOLR_URL="http://127.0.0.1:8983/solr/development"
   ```
 
-* Now you should be ready to run the application (see below).
+* Now you should be ready to create the database and run the
+  application (see below).
 
 Data Migration
 --------------
 
-Follow these steps when you want to recreate your database with newly
-migrated data.
+You will need to migrate the data from the Oracle production database
+into a database that the Rails application can use. This is a 3 step
+process.
 
-* Get a copy of the Oracle database into MySQL. You can do this one of
-  two ways:
+* STEP 1: Make a straight copy of the tables from Oracle to MySQL.
 
-    * If your host can access the Oracle db: run [oracle2mysql](https://github.com/codeforkjeff/oracle2mysql)
-    to create a copy of it. You will be prompted for the location of
-    the Oracle database and credentials.
+  Run the [oracle2mysql](https://github.com/codeforkjeff/oracle2mysql)
+  script to copy all the tables from Oracle to a MySQL database. The
+  script uses the SDBMSS_LEGACY_* environment variables mentioned
+  above, so be sure those are set correctly (you'll need to get that
+  info from IT).
+
+  On the development VM, run these commands:
 
     ```
     cd ~/oracle2mysql
     python oracle2mysql.py oracle2mysql_conf
+    cd ~
+    mysqldump -u root sdbm_live_copy > sdbm_live_copy_`date +%Y_%m_%d`.sql
     ```
 
-    * If you can't access Oracle, or if you've done the above before
-    on another machine, get a .sql dump from it by running mysqldump,
-    and import it. This method is also a lot faster.
+* STEP 2: Load the MySQL file into your own locally running
+  development database.
+
+  On your own machine, run these commands:
   
     ```
-    cat sdbm_live_copy_dump.sql | mysql -u user sdbm_live_copy
+    # do this on YOUR own machine
+    # copy the file from the dev VM
+    scp username@dev_vm_hostname:sdbm_live_copy_2015_06_15.sql .
+    # load the data
+    cat sdbm_live_copy_2015_06_15.sql | mysql -u user sdbm_live_copy
     ```
 
-* Create the new database by running the data migration script.
+* STEP 3: Migrate the legacy data into a new database by running the
+  data migration script.
+
+  On your own machine, run these commands:
 
   ```
   cd ~/sdbmss
   bundle exec rake sdbmss:migrate_legacy_data
+  # OPTIONAL: create some reference data for development use
+  bundle exec rake sdbmss:create_reference_data
+  # index the data in Solr
+  bundle exec rake sunspot:reindex
   ```
-
-* Solr will need to be re-indexed. See below for notes on that.
 
 Running the Development Server
 ------------------------------
@@ -137,20 +168,6 @@ run. Using 'screen' is helpful here.
 
   ```
   bundle exec rake jobs:work
-  ```
-
-* Run a Solr instance (this WILL daemonize). You only need to restart
-  this process when there are changes to the Solr configuration or
-  schema files.
-
-  ```
-  bundle exec rake sunspot:solr:start
-  ```
-
-  To stop Solr:
-
-  ```
-  bundle exec rake sunspot:solr:stop
   ```
 
 * Now you should be able to load <http://localhost:3000> in your
