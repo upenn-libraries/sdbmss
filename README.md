@@ -87,6 +87,9 @@ Setting up for Development
   export SDBMSS_DB_USER="xxx"
   export SDBMSS_DB_PASSWORD="xxx"
   export SDBMSS_DB_HOST="xxx"
+  # hostname of app itself
+  export SDBMSS_APP_HOST=somehost.somewhere.com
+  export SDBMSS_SMTP_HOST=mail.somewhere.com
   # secrets only used in production env
   export SDBMSS_BLACKLIGHT_SECRET_KEY="..."
   export SDBMSS_DEVISE_SECRET_KEY="..."
