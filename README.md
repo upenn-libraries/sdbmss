@@ -102,9 +102,12 @@ Setting up for Development
 Data Migration
 --------------
 
-You will need to migrate the data from the Oracle production database
-into a database that the Rails application can use. This is a 3 step
-process.
+You will need to migrate the data from the legacy Oracle production
+database into your own locally running MySQL database that the Rails
+application can use. To do this, you'll need access to the development
+virtual machine (VM) set up by Libraries IT for this project's use.
+
+This is a 3 step process.
 
 * STEP 1: Make a straight copy of the tables from Oracle to MySQL.
 
@@ -129,7 +132,6 @@ process.
   On your own machine, run these commands:
   
     ```
-    # do this on YOUR own machine
     # copy the file from the dev VM
     scp username@dev_vm_hostname:sdbm_live_copy_2015_06_15.sql .
     # load the data
