@@ -133,10 +133,20 @@ class SourcesController < ManageModelsController
   # returns JSON containing type constants
   def types
     data = {
-      'source_type' => SourceType.all,
+      'source_type' => SourceType.all.map { |source_type|
+        hash = source_type.attributes
+        hash['invalid_source_fields'] = Source.invalid_source_fields_for_source_type(source_type.name)
+        hash['valid_roles_for_source_agents'] = SourceAgent.valid_roles_for_source_type(source_type.name)
+        hash
+      },
       'medium' => Source::MEDIUM_TYPES,
     }
-    render json: data
+
+    respond_to do |format|
+      format.json {
+        render json: data
+      }
+    end
   end
 
   # we don't ever destroy anything, we just mark it as deleted

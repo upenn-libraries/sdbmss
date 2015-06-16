@@ -174,8 +174,8 @@ class Source < ActiveRecord::Base
     Entry.with_associations.where(source_id: id)
   end
 
-  def invalid_source_fields
-    case source_type.name
+  def self.invalid_source_fields_for_source_type(source_type_code)
+    case source_type_code
     when SourceType::AUCTION_CATALOG
       disallowed_fields = ["author"]
     when SourceType::COLLECTION_CATALOG
@@ -189,6 +189,10 @@ class Source < ActiveRecord::Base
     when SourceType::UNPUBLISHED
       disallowed_fields = ["date"]
     end
+  end
+
+  def invalid_source_fields
+    self.class.invalid_source_fields_for_source_type(source_type.name)
   end
 
   private

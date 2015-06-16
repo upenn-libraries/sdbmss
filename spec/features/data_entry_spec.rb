@@ -284,6 +284,35 @@ describe "Data entry", :js => true do
       expect(source.author).to eq('Jeff')
     end
 
+    it "should save a new Source, filtering out invalid fields" do
+      visit new_source_path
+
+      # first, fill out author and institution...
+      select 'Collection Catalog', from: 'source_type'
+      fill_in 'author', with: 'Jeff'
+      fill_autocomplete_select_or_create_entity 'institution', with: "Harvard"
+
+      # now change source type to Auction Catalog
+      select 'Auction/Sale Catalog', from: 'source_type'
+      fill_in 'title', with: 'my catalog'
+      fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
+      click_button('Save')
+
+      # expect that page has filtered out the field values that are
+      # not valid for the new source type
+
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+
+      source = Source.last
+      expect(source.source_type).to eq(SourceType.auction_catalog)
+      expect(source.author).to be_nil
+      expect(source.title).to eq('my catalog')
+
+      expect(source.source_agents.count).to eq(1)
+      expect(source.source_agents.first.role).to eq('selling_agent')
+      expect(source.source_agents.first.agent.name).to eq("Sotheby's")
+    end
+
     it "should edit an existing Source" do
       source = Source.create!(
         date: "20141215",

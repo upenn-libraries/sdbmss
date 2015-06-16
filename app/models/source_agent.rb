@@ -22,8 +22,8 @@ class SourceAgent < ActiveRecord::Base
 
   validates_presence_of :source
 
-  def valid_roles_for_source_type
-    case source.source_type.name
+  def self.valid_roles_for_source_type(source_type_code)
+    case source_type_code
     when SourceType::AUCTION_CATALOG
       valid_roles = [ROLE_SELLING_AGENT]
     when SourceType::COLLECTION_CATALOG
@@ -38,6 +38,10 @@ class SourceAgent < ActiveRecord::Base
       valid_roles = [ROLE_INSTITUTION]
     end
     valid_roles
+  end
+
+  def valid_roles_for_source_type
+    self.class.valid_roles_for_source_type(source.source_type.name)
   end
 
   private

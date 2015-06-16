@@ -1237,6 +1237,8 @@
         $scope.save = function () {
             var sourceToSave = new Source(angular.copy($scope.source));
 
+            var sourceType = sourceToSave.source_type;
+
             sourceToSave.source_type_id = sourceToSave.source_type.id;
             delete sourceToSave.source_type;
 
@@ -1255,6 +1257,24 @@
                     sourceToSave.source_agents.push(sourceToSave[role]);
                     delete sourceToSave[role];
                 }
+            });
+
+            // filter out irrelevant fields and source_agent records
+            // with invalid roles; these can be populated because user
+            // started filling out the form but then changed the
+            // source_type, causing stale data to be leftover in the
+            // data structure
+            sourceType.invalid_source_fields.forEach(function (field) {
+                delete sourceToSave[field];
+            });
+            sourceToSave.source_agents = sourceToSave.source_agents.filter(function (source_agent) {
+                var valid = false;
+                sourceType.valid_roles_for_source_agents.forEach(function (role) {
+                    if(source_agent.role === role) {
+                        valid = true;
+                    }
+                });
+                return valid;
             });
 
             sdbmutil.replaceEntityObjectsWithIds(sourceToSave.source_agents, "agent");
