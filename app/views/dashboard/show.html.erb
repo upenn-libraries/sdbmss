@@ -76,8 +76,10 @@
                 <table class="table">
                     <% entries.each do |entry| %>
                     <tr class="row">
-                        <td class="col-sm-11"><a href="<%= entry_path(entry) %>"><%= entry.public_id %></a>: <%= entry.display_value %>
-                          <% if !entry.approved %><em>(pending approval)</em><% end %>
+                        <td class="col-sm-11">
+                            <% if entry.approved %><a href="<%= entry_path(entry) %>"><%= entry.public_id %></a><% else %><%= entry.public_id %><% end %>:
+                            <%= entry.display_value %>
+                            <% if !entry.approved %><em>(pending approval)</em><% end %>
                         </td>
                         <td class="col-sm-1"><a href="<%= edit_entry_path(entry) %>">edit</a></td>
                     </tr>

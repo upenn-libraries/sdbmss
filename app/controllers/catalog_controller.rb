@@ -8,8 +8,9 @@ class CatalogController < ApplicationController
   # Overrides Blacklight::Catalog#show to check for existence and send
   # 404 if necessary
   def show
-    if Entry.exists?(params[:id])
-      @entry_comment = EntryComment.new(entry: Entry.find(params[:id]))
+    entry = Entry.find_by(id: params[:id], approved: true)
+    if entry.present?
+      @entry_comment = EntryComment.new(entry: entry)
       @entry_comment.build_comment
       super
     else

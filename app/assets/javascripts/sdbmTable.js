@@ -240,6 +240,8 @@ var SDBM = SDBM || {};
      */
     SDBM.EntryTable = function(selector, options) {
 
+        var sdbmTable = this;
+
         var defaultOptions = {
             // NOTE: fields prefixed by 'sdbmss' are our own options, not
             // native to dataTables.
@@ -251,7 +253,11 @@ var SDBM = SDBM || {};
                     title: 'ID',
                     render: function (data, type, full, meta) {
                         if(data) {
-                            return '<a href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
+                            if(full[sdbmTable.getColumnIndex("Is Approved")]) {
+                                return '<a href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
+                            } else {
+                                return 'SDBM_' + data;
+                            }
                         }
                         return '';
                     }
@@ -506,8 +512,6 @@ var SDBM = SDBM || {};
         };
 
         SDBM.Table.call(this, selector, $.extend({}, defaultOptions, options));
-
-        var sdbmTable = this;
 
         $(selector).on('draw.dt', function () {
             sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {

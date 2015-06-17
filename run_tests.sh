@@ -5,6 +5,9 @@
 export RAILS_ENV=test
 export SOLR_URL="http://127.0.0.1:8983/solr/test"
 
-# bundle exec rake tmp:clear db:drop db:create db:schema:load db:seed
+bundle exec god -c sdbmss_test.god -l log/god_test.log
 
 bundle exec rspec $@
+
+bundle exec god stop
+bundle exec god terminate

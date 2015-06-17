@@ -741,7 +741,12 @@ describe "Data entry", :js => true do
     end
 
     it "should leave a comment successfully" do
-      entry = Entry.first
+      entry = Entry.create!(
+        source: Source.first,
+        created_by_id: @user.id,
+        approved: true
+      )
+      SDBMSS::Util.wait_for_solr_to_be_current
       visit entry_path(entry)
 
       fill_in 'entry_comment_comment_attributes_comment', with: "this entry is so crazy"
