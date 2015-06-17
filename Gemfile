@@ -84,6 +84,8 @@ gem "god", "~> 0.13.6"
 # ability to put entire app in maintenance mode
 gem "turnout", "~> 2.1.0"
 
+gem "exception_notification", "~> 4.1.1"
+
 # bundle exec rake doc:rails generates the Rails API under doc/api.
 group :doc do
   gem 'sdoc', '~> 0.4.0'
