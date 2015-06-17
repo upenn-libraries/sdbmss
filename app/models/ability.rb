@@ -47,6 +47,7 @@ class Ability
       # manuscript. The thinking here is that a Manuscript isn't
       # "owned" by the user in the same way as an Entry.
       can :edit, Manuscript
+      can :update, Manuscript
     end
 
     if ['editor', 'admin'].member? user.role
