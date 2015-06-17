@@ -341,7 +341,14 @@
         <h3 class="modal-title">Successfully saved Source record</h3>
     </div>
     <div class="modal-body form-horizontal">
-        
+        <% if Rails.configuration.sdbmss_show_testing_message %>
+            <p style="color: red">
+                Please remember that this system is in development;
+                the data you enter and changes you make will NOT be
+                retained after the test period.
+            </p>
+        <% end %>
+
         <p>What do you want to do now?</p>
 
         <p style="margin-left: 2em;">

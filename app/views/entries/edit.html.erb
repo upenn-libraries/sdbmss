@@ -709,7 +709,14 @@ label.col-sm-2-and-half {
         <h3 class="modal-title">Successfully saved Entry record</h3>
     </div>
     <div class="modal-body form-horizontal">
-        
+        <% if Rails.configuration.sdbmss_show_testing_message %>
+            <p style="color: red">
+                Please remember that this system is in development;
+                the data you enter and changes you make will NOT be
+                retained after the test period.
+            </p>
+        <% end %>
+
         <p>Would you like to add another Entry for this Source?</p>
 
         <p style="margin-left: 2em;">

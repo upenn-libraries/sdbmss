@@ -36,5 +36,7 @@ module SDBMSS
     # ResourceSearch mechanism
     config.sdbmss_max_search_results = 5000
 
+    config.sdbmss_show_testing_message = true
+
   end
 end
