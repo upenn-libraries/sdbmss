@@ -12,7 +12,7 @@ describe "Sign up / Edit Profile", :js => true do
     click_button 'Sign up'
     expect(page).to have_content 'You have signed up successfully.'
 
-    visit dashboard_path
+    expect(current_path).to eq("/dashboard")
   end
 
   it "should allow changing user profile" do
