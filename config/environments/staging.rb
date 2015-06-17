@@ -97,6 +97,6 @@ end
 Rails.application.config.middleware.use ExceptionNotification::Rack,
                                         :email => {
                                           :email_prefix => "[SDBMSS] ",
-                                          :sender_address => ENV['SDBMSS_EMAIL_FROM'],
+                                          :sender_address => %{"notifier" <#{ENV['SDBMSS_EMAIL_FROM']}>},
                                           :exception_recipients => ENV['SDBMSS_EMAIL_EXCEPTIONS_TO']
                                         }

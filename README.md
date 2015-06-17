@@ -90,6 +90,9 @@ Setting up for Development
   # hostname of app itself
   export SDBMSS_APP_HOST=somehost.somewhere.com
   export SDBMSS_SMTP_HOST=mail.somewhere.com
+  # email configuration
+  export SDBMSS_EMAIL_FROM="someone@mail.com"
+  export SDBMSS_EMAIL_EXCEPTIONS_TO="admin@mail.com"
   # secrets only used in production env
   export SDBMSS_BLACKLIGHT_SECRET_KEY="..."
   export SDBMSS_DEVISE_SECRET_KEY="..."
