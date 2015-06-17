@@ -19,7 +19,7 @@ Held by <%= render partial: "shared/event_agent", object: seller_or_holder %>
   <% if selling_agent.present? %>
   through <%= render partial: "shared/event_agent", object: selling_agent %>
   <% end %>
-<% else %>
+<% elsif selling_agent.present? %>
   <%= render partial: "shared/event_agent", object: selling_agent %>
 <% end %>
 
