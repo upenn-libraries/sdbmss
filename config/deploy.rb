@@ -161,7 +161,8 @@ namespace :deploy do
     on roles(:all) do
       if god_is_running
         within current_path do
-          # quits god and terminates all tasks
+          # doing stop then terminate is a bit more reliable
+          execute :bundle, "exec god stop"
           execute :bundle, "exec god terminate"
         end
       end
