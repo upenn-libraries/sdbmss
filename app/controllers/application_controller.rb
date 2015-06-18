@@ -20,6 +20,11 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:username, :email, :email_is_public, :fullname, :institutional_affiliation, :password, :password_confirmation, :current_password, :bio) }
   end
 
+  # used by devise
+  def after_sign_in_path_for(resource)
+    return dashboard_path
+  end
+
   def render_404
     respond_to do |format|
       format.html { render :file => "#{Rails.root}/public/404", :layout => false, :status => :not_found }
