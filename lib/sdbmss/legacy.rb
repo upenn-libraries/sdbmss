@@ -326,7 +326,7 @@ module SDBMSS::Legacy
       SOURCE_CACHE[id]
     end
 
-    ROLE_CODES = ['Attr', 'Com', 'Comp', 'Ed', 'Gl', 'Intr', 'Pref', 'Tr']
+    ROLE_CODES = EntryAuthor::TYPES_ROLES.map(&:first)
 
     # Splits an author string into name and roles.
     # ie. for "Jeff (Ed) (Tr)", this returns ["Jeff", ["Ed", "Tr"]]

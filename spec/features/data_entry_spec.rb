@@ -357,7 +357,7 @@ describe "Data entry", :js => true do
       fill_autocomplete_select_or_create_entity 'author_0', with: 'Schmoe, Joe'
       fill_in 'author_observed_name_0', with: 'Joe Schmoe'
       click_certainty_flag('author_certainty_flags_0')
-      select 'Tr', from: 'author_role_0'
+      select 'Translator', from: 'author_role_0'
       fill_in 'date_observed_date_0', with: 'early 15th century'
       # move focus out of observed_date in order to trigger auto-populate of normalized dates
       page.execute_script %Q{ $('#date_normalized_start_0').trigger('focus') }

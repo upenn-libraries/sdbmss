@@ -17,14 +17,14 @@ class EntryAuthor < ActiveRecord::Base
   has_paper_trail skip: [:created_at, :updated_at]
 
   TYPES_ROLES = [
-    ['Attr', 'Attr'],
-    ['Tr', 'Tr'],
-    ['Com', 'Com'],
-    ['Comp', 'Comp'],
-    ['Ed', 'Ed'],
-    ['Gl', 'Gl'],
-    ['Pref', 'Pref'],
-    ['Intr', 'Intr']
+    ['Attr', 'Attributed'],
+    ['Tr', 'Translator'],
+    ['Com', 'Commentator'],
+    ['Comp', 'Compiler'],
+    ['Ed', 'Editor'],
+    ['Gl', 'Glossator'],
+    ['Pref', 'Preface'],
+    ['Intr', 'Introduction']
   ]
 
   def display_value
