@@ -15,7 +15,10 @@ describe "SDBMSS::Legacy" do
      end
 
      it "splits an author with two codes" do
-       expect(SDBMSS::Legacy.split_author_role_codes("Jerome, Saint (Ed) (Tr)")).to eq(["Jerome, Saint", ["Ed", "Tr"]])
+       result = SDBMSS::Legacy.split_author_role_codes("Jerome, Saint (Ed) (Tr)")
+       expect(result[0]).to eq("Jerome, Saint")
+       # ignore order
+       expect(Set.new(result[1])).to eq(Set.new(["Ed", "Tr"]))
      end
 
      it "splits an author with a code and some other junk" do

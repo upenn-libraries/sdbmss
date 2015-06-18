@@ -39,6 +39,8 @@ class Event < ActiveRecord::Base
   scope :provenance, -> { where(primary: false) }
 
   validates :sold, inclusion: { in: SOLD_TYPES.map(&:first) }, if: :primary, allow_nil: true
+  validates :currency, inclusion: { in: CURRENCY_TYPES.map(&:first) }, allow_nil: true
+  validates_numericality_of :price, allow_nil: true
   validates_presence_of :entry
 
   has_paper_trail skip: [:created_at, :updated_at]

@@ -120,6 +120,19 @@ class Entry < ActiveRecord::Base
     end
   end
 
+  validates_numericality_of :folios, allow_nil: true
+  validates_numericality_of :num_lines, allow_nil: true
+  validates_numericality_of :num_columns, allow_nil: true
+  validates_numericality_of :height, allow_nil: true
+  validates_numericality_of :width, allow_nil: true
+  validates :alt_size, inclusion: { in: ALT_SIZE_TYPES.map(&:first) }, allow_nil: true
+  validates_numericality_of :miniatures_fullpage, allow_nil: true
+  validates_numericality_of :miniatures_large, allow_nil: true
+  validates_numericality_of :miniatures_small, allow_nil: true
+  validates_numericality_of :miniatures_unspec_size, allow_nil: true
+  validates_numericality_of :initials_historiated, allow_nil: true
+  validates_numericality_of :initials_decorated, allow_nil: true
+
   after_create :update_source_status
 
   def self.where_provenance_includes(name)

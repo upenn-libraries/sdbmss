@@ -13,13 +13,57 @@ module SDBMSS::Legacy
 
     VALID_ALT_SIZE_TYPES = Entry::ALT_SIZE_TYPES.map { |item| item[0] }
 
-    # TODO: fill in mapping of 'rogue' codes to normalized values
+    # mapping of 'rogue' codes to normalized values
     ALT_SIZE_CODES_TO_NORMALIZE = {
       "[O]" => "O",
       "[Q]" => "Q",
+      "12" => "12mo",
+      "16" => "16mo",
+      "18" => "18mo",
+      "24" => "24mo",
+      "32," => "32mo",
       "32ND" => "32mo",
       "32NDS" => "32mo",
       "D" => "12mo",
+      "LD" => "12mo",
+      "LF" => "F",
+      "LF," => "F",
+      "LF, 2" => "F",
+      "LO" => "O",
+      "LO," => "O",
+      "LQ" => "Q",
+      "LSQF" => "F",
+      "LSQQ" => "Q",
+      "OBD" => "12mo",
+      "OBF" => "F",
+      "OBO" => "O",
+      "OBQ" => "Q",
+      "OF" => "F",
+      "OQ" => "Q",
+      "Q,F" => "Q",
+      "S" => "16mo",
+      "S32," => "32mo",
+      "SD" => "12mo",
+      "SF" => "F",
+      "SF," => "F",
+      "SF/Q" => "F",
+      "Sm F" => "F",
+      "Sm Q" => "Q",
+      "SO" => "O",
+      "SOBQ" => "Q",
+      "SQ" => "Q",
+      "SQ12" => "12mo",
+      "SQ18" => "18mo",
+      "SQ24" => "24mo",
+      "SQ32" => "32mo",
+      "SQD" => "12mo",
+      "SQF" => "F",
+      "SQO" => "O",
+      "SQS" => "16mo",
+      "SQSF" => "F",
+      "SSQQ" => "Q",
+      "T" => "32mo",
+      "TQ" => "Q",
     }
 
     VALID_CIRCA_TYPES = [
@@ -777,13 +821,15 @@ module SDBMSS::Legacy
         end
       end
 
-      alt_size = ALT_SIZE_CODES_TO_NORMALIZE[alt_size] || row['ALT_SIZE']
+      alt_size = ALT_SIZE_CODES_TO_NORMALIZE[row['ALT_SIZE']] || row['ALT_SIZE']
+      # there are LOTS of codes with trailing whitespace
+      alt_size.strip! if alt_size
       if alt_size.present? && ! VALID_ALT_SIZE_TYPES.member?(alt_size)
         other_info += "\n" if other_info.present?
         other_info += "'Alt Size' field in the legacy database was '#{alt_size}'"
         alt_size = nil
         # TODO: for now, we still log the issue, but after ALT_SIZE_CODES_TO_NORMALIZE is finalized, we can remove this line
-        create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'bad_alt_size', "non-normalized value for alt size = #{row['ALT_SIZE']}")
+        create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'bad_alt_size', "non-normalized value for alt size = '#{row['ALT_SIZE']}'")
       end
 
       if row['SECONDARY_SOURCE'].present?
@@ -1152,15 +1198,17 @@ module SDBMSS::Legacy
 
           agent_name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(atom)
 
-          # store names as 'observed_name' and then turn non-unique
-          # ones into Agent entities at a later pass
-          pa = EventAgent.create!(
-            event: provenance,
-            observed_name: agent_name,
-            role: EventAgent::ROLE_SELLER_OR_HOLDER,
-            uncertain_in_source: uncertain_in_source,
-            supplied_by_data_entry: supplied_by_data_entry
-          )
+          if agent_name.present?
+            # store names as 'observed_name' and then turn non-unique
+            # ones into Agent entities at a later pass
+            pa = EventAgent.create!(
+              event: provenance,
+              observed_name: agent_name,
+              role: EventAgent::ROLE_SELLER_OR_HOLDER,
+              uncertain_in_source: uncertain_in_source,
+              supplied_by_data_entry: supplied_by_data_entry
+            )
+          end
         else
           create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], "provenance_too_long", "didn't migrate provenance name '#{atom}' because it's too long")
         end

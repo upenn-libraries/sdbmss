@@ -7,6 +7,12 @@ class EventAgent < ActiveRecord::Base
 
   validates_presence_of :event
 
+  validate do |event_agent|
+    if !(event_agent.agent.present? || event_agent.observed_name.present?)
+      errors[:base] << "EventAgent objects must have either Agent association or observed_name value"
+    end
+  end
+
   ROLE_SELLER_OR_HOLDER = "seller_or_holder"
   ROLE_SELLING_AGENT = "selling_agent"
   ROLE_BUYER = "buyer"
