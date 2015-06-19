@@ -12,6 +12,8 @@ class ApplicationController < ActionController::Base
 
   before_action :configure_permitted_parameters, if: :devise_controller?
 
+  before_action :expire_login_page, if: :devise_controller?
+
   rescue_from CanCan::AccessDenied, with: :render_access_denied
 
   def configure_permitted_parameters
@@ -23,6 +25,17 @@ class ApplicationController < ActionController::Base
   # used by devise
   def after_sign_in_path_for(resource)
     return dashboard_path
+  end
+
+  def expire_login_page
+    # expire the login page, otherwise users can back button to it and
+    # use an expired CSRF token, raising
+    # ActionController::InvalidAuthenticityToken exceptions
+    if controller_name == "sessions" && action_name == "new"
+      response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
+      response.headers["Pragma"] = "no-cache"
+      response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
+    end
   end
 
   def render_404
