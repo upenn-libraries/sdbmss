@@ -13,7 +13,7 @@ gem 'mysql2', '~> 0.3.0'
 gem 'nokogiri', '~> 1.6'
 
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.3'
+gem 'sass-rails', '~> 5.0.3'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '~> 2.5.0'
@@ -84,6 +84,7 @@ gem "god", "~> 0.13.6"
 # ability to put entire app in maintenance mode
 gem "turnout", "~> 2.1.0"
 
+# send email notifications on app exceptions
 gem "exception_notification", "~> 4.1.1"
 
 # bundle exec rake doc:rails generates the Rails API under doc/api.
