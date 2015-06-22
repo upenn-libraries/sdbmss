@@ -36,16 +36,24 @@ class SourcesController < ManageModelsController
   end
 
   def update
-    begin
-      ActiveRecord::Base.transaction do
-        filtered = source_params_for_create_and_edit
-        @source.update!(filtered)
-      end
-    rescue Exception => e
-      render :json => { :errors => e.to_s + "\n" + e.backtrace.to_s }, :status => :unprocessable_entity
-      return
+    success = false
+    ActiveRecord::Base.transaction do
+      filtered = source_params_for_create_and_edit
+      success = @source.update_by(current_user, filtered)
     end
-    render "show"
+    respond_to do |format|
+      format.json {
+        if !success
+          errors_data = @source.errors.messages
+          render :json => { :errors => errors_data }, :status => :unprocessable_entity
+        else
+          render "show"
+        end
+      }
+      format.html {
+        render "edit"
+      }
+    end
   end
 
   def model_class
@@ -107,7 +115,7 @@ class SourcesController < ManageModelsController
     error = nil
     if Source::STATUS_TYPES.map(&:first).member? new_status
       @source.status = new_status
-      @source.save!
+      @source.save
     else
       error = "Invalid status"
     end
@@ -124,7 +132,7 @@ class SourcesController < ManageModelsController
         if error.blank?
           render nothing: true
         else
-          render status: :unprocessable_entity, json: { "error" => "Invalid status" }
+          render status: :unprocessable_entity, json: { "errors" => { base: "Invalid status" } }
         end
       }
     end

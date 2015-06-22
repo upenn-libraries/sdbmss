@@ -117,24 +117,36 @@ class EntriesController < ManageModelsController
   end
 
   def create
+    success = false
     ActiveRecord::Base.transaction do
       filtered = entry_params_for_create_and_edit
       @entry = Entry.new(filtered)
       @entry.created_by_id = current_user.id
       @entry.source_id = params[:source_id]
-      @entry.save!
+      success = @entry.save
 
-      if params[:new_comment].present?
-        ec = EntryComment.new(
-          entry_id: @entry.id,
-          comment_attributes: {
-            comment: params[:new_comment],
-            created_by_id: current_user.id
-          })
-        ec.save!
+      if success
+        if params[:new_comment].present?
+          ec = EntryComment.new(
+            entry_id: @entry.id,
+            comment_attributes: {
+              comment: params[:new_comment],
+              created_by_id: current_user.id
+            })
+          ec.save!
+        end
       end
     end
-    render "show"
+    respond_to do |format|
+      format.json {
+        if success
+          render "show"
+        else
+          json_response = { errors: @entry.errors.messages }
+          render json: json_response, status: :unprocessable_entity
+        end
+      }
+    end
   end
 
   def edit
@@ -142,14 +154,14 @@ class EntriesController < ManageModelsController
   end
 
   def update
+    success = false
     errors = nil
-    begin
-      if params[:cumulative_updated_at].to_s == @entry.cumulative_updated_at.to_s
 
-        ActiveRecord::Base.transaction do
-          filtered = entry_params_for_create_and_edit
-          @entry.update!(filtered)
-
+    if params[:cumulative_updated_at].to_s == @entry.cumulative_updated_at.to_s
+      ActiveRecord::Base.transaction do
+        filtered = entry_params_for_create_and_edit
+        success = @entry.update_by(current_user, filtered)
+        if success
           if params[:new_comment].present?
             ec = EntryComment.new(
               entry_id: @entry.id,
@@ -160,20 +172,21 @@ class EntriesController < ManageModelsController
             ec.save!
           end
         end
-
-      else
-        errors = "Another change was made to the record while you were working. Re-load the page and start over."
       end
-
-    rescue Exception => e
-      logger.error(e.to_s + "\n\n" + e.backtrace.join("\n"))
-      errors = e.backtrace.to_s
+    else
+      errors = { base: "Another change was made to the record while you were working. Re-load the page and start over." }
     end
 
-    if errors
-      render :json => { :errors => errors }, :status => :unprocessable_entity
-    else
-      render "show"
+    respond_to do |format|
+      format.json {
+        if success
+          render "show"
+        else
+          errors_data = errors.present? ? errors : @entry.errors.messages
+          json_response = { errors: errors_data }
+          render json: json_response, status: :unprocessable_entity
+        end
+      }
     end
   end
 
@@ -194,7 +207,7 @@ class EntriesController < ManageModelsController
   def destroy
     @entry.deleted = true
     @entry.updated_by_id = current_user.id
-    @entry.save!
+    @entry.save
 
     Sunspot.remove(@entry)
 

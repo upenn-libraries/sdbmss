@@ -233,13 +233,22 @@
             /* Returns a fn that can be used as error callback on angular promises */
             promiseErrorHandlerFactory: function(msg) {
                 return function(response) {
-                    var append_str;
+                    var append_str = "";
                     if(response.data && response.data.errors) {
-                        append_str = response.data.errors;
+                        // interpret Rails validation errors
+                        var errors = [];
+                        for(var key in response.data.errors) {
+                            if(key === 'base') {
+                                errors.push(response.data.errors[key]);
+                            } else {
+                                errors.push(key + " " + response.data.errors[key]);
+                            }
+                        }
+                        append_str = errors.join("; ");
                     } else {
                         append_str = "Server response:" + JSON.stringify(response.data);
                     }
-                    alert(msg + "; " + append_str);
+                    alert(msg + ": " + append_str);
                 };
             },
             redirectToSourceEditPage: function(source_id)  {
