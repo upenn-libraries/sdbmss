@@ -1,4 +1,6 @@
 
+require 'set'
+
 # Represents the history of changes made to an Entry, including its
 # associations.
 class EntryHistory
@@ -59,12 +61,26 @@ class EntryHistory
       assoc.collection? && assoc.klass.paper_trail_enabled_for_model?
     end
 
+    # keep running list of transaction ids of ANY version of anything
+    # we find: this allows us to get 'destroy' events (those records
+    # wouldn't be attached to anything otherwise)
+    transaction_ids = Set.new
+
     all_versions = [].concat(@entry.versions)
 
+    transaction_ids.merge(@entry.versions.map(&:transaction_id))
+
     associations.each do |association|
-      puts "doing #{association}"
       @entry.send(association.name).each do |related_object|
         all_versions.concat(related_object.versions)
+        transaction_ids.merge(related_object.versions.map(&:transaction_id))
+      end
+    end
+
+    versions = PaperTrail::Version.where("transaction_id IN (?)", transaction_ids)
+    versions.each do |v|
+      if !all_versions.include?(v)
+        all_versions << v
       end
     end
 
@@ -74,8 +90,12 @@ class EntryHistory
     @changesets = groups.map do |key, versions|
       changes = []
       versions.each do |version|
-        version.changeset.each do |field, values|
-          changes << Change.new(version.event, version.item_type, field, values)
+        if version.event == 'destroy'
+          changes << Change.new(version.event, version.item_type, 'id', [version.item_id, version.item_id])
+        else
+          version.changeset.each do |field, values|
+            changes << Change.new(version.event, version.item_type, field, values)
+          end
         end
       end
       ChangeSet.new(versions.first.created_at, versions.first.whodunnit, changes)
