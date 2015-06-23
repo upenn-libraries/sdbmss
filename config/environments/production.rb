@@ -94,6 +94,7 @@ Rails.application.configure do
 end
 
 Rails.application.config.middleware.use ExceptionNotification::Rack,
+                                        :ignore_exceptions => ExceptionNotifier.ignored_exceptions - ["ActionController::RoutingError"],
                                         :email => {
                                           :email_prefix => "[SDBMSS] ",
                                           :sender_address => %{"notifier" <#{ENV['SDBMSS_EMAIL_FROM']}>},
