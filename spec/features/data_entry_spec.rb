@@ -51,7 +51,7 @@ describe "Data entry", :js => true do
       if !found
         expect(find(".modal-title", visible: true).text.include?("Create")).to be_truthy
         click_button('Create')
-        sleep(0.5)
+        sleep(0.75)
         # this next line should be used instead of a sleep, but doesn't work for some reason
         # expect(page).to have_no_selector(".modal-title", visible: true)
       end
