@@ -587,12 +587,11 @@ module SDBMSS::Legacy
 
       puts "Migrating MANUSCRIPT_CHANGE_LOG records"
 
-      # TODO: do something with this data
-      # SDBMSS::Util.batch(legacy_db,
-      #                    'SELECT * FROM MANUSCRIPT_CHANGE_LOG ORDER BY CHANGEID',
-      #                    batch_wrapper: wrap_transaction) do |row,ctx|
-      #   create_manuscript_changelog_from_row(row, ctx)
-      # end
+      SDBMSS::Util.batch(legacy_db,
+                         'SELECT * FROM MANUSCRIPT_CHANGE_LOG ORDER BY CHANGEID',
+                         batch_wrapper: wrap_transaction) do |row,ctx|
+        create_manuscript_changelog_from_row(row, ctx)
+      end
 
       puts "Making Manuscript records from 'DUPLICATE_MS' records (#{duplicates.length} total)"
 
@@ -1543,15 +1542,17 @@ module SDBMSS::Legacy
     end
 
     def create_manuscript_changelog_from_row(row, ctx)
-      EntryChange.create!(
-        entry_id: row['MANUSCRIPTID'],
-        column: row['CHANGEDCOLUMN'],
-        changed_from: row['CHANGEDFROM'],
-        changed_to: row['CHANGEDTO'],
-        change_type: row['CHANGETYPE'],
-        change_date: row['CHANGEDATE'],
-        changed_by: get_or_create_user(row['CHANGEDBY']),
-      )
+      if row['MANUSCRIPTID'].present? && Entry.exists?(row['MANUSCRIPTID'])
+        EntryChange.create!(
+          entry_id: row['MANUSCRIPTID'],
+          column: row['CHANGEDCOLUMN'],
+          changed_from: row['CHANGEDFROM'],
+          changed_to: row['CHANGEDTO'],
+          change_type: row['CHANGETYPE'],
+          change_date: row['CHANGEDATE'],
+          changed_by: get_or_create_user(row['CHANGEDBY']),
+        )
+      end
     end
 
     def create_manuscripts_from_duplicates(duplicates)

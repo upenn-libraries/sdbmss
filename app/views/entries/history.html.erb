@@ -2,6 +2,9 @@
 
 <p>TODO: This is unfinished and probably inaccurate.</p>
 
+<% changesets = EntryHistory.new(@entry).changesets %>
+<% legacy = EntryChange.where(entry_id: @entry.id).order(change_date: :desc) %>
+<% if changesets.count > 0 || legacy.count > 0 %>
 <table class="table"> 
     <thead>
         <tr>
@@ -14,7 +17,7 @@
         </tr>
     </thead>
     <tbody>
-        <% EntryHistory.new(@entry).changesets.each do |changeset| %>
+        <% changesets.each do |changeset| %>
         <tr>
             <td><%= changeset.date %></td>
             <td><%= changeset.user %></td>
@@ -32,7 +35,21 @@
             <td><%= change.values.first %></td>
             <td><%= change.values.second %></td>
         </tr> 
-       <% end %>
-       <% end %>
+        <% end %>
+        <% end %>
+
+        <% legacy.each do |entry_change| %>
+        <tr>
+            <td><%= entry_change.change_date.to_formatted_s(:date_and_time) %></td>
+            <td><%= entry_change.changed_by.username %></td>
+            <td><%= entry_change.change_type %></td>
+            <td><%= entry_change.column %></td>
+            <td><%= entry_change.changed_from %></td>
+            <td><%= entry_change.changed_to %></td>
+        </tr>
+        <% end %>
     </tbody>
 </table>
+<% else %>
+<p>There is no history to display for this entry.</p>
+<% end %>

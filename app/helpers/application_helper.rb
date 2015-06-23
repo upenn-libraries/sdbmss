@@ -78,7 +78,8 @@ module ApplicationHelper
   # determines whether entry history link should be displayed; this is
   # used multiple places, which is why it's here in ApplicationHelper
   def show_entry_history_link?
-    @document.present? && (entry = @document.model_object).present? && entry.versions.count > 0 && can?(:link, entry)
+    # @document.present? && (entry = @document.model_object).present? && entry.versions.count > 0 && can?(:link, entry)
+    user_signed_in? && @document.present? && (entry = @document.model_object).present?
   end
 
   # this method returns a data structure used to prepopulate the
