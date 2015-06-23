@@ -90,8 +90,8 @@ module SDBMSS
         most_recent || 0
       end
 
-      # returns a reasonably formatted YYYY-Mon-DD str based on a
-      # YYYYMMDD str value, which may have 0's in it
+      # returns a reasonably formatted date string based on a YYYYMMDD
+      # str value, which may have 0's in it. Resulting string is in one of these formats: YYYY, YYYY-MM, YYYY-MM-DD
       def format_fuzzy_date(d)
         if d && d.length == 8
           year, mon, day = d.slice(0, 4), d.slice(4, 2), d.slice(6, 2)
@@ -100,16 +100,13 @@ module SDBMSS
             date += year
           end
           if mon.to_s.length && mon != '00'
-            # gracefully handle bad months, which do exist in the data
             mon_int = mon.to_i
-            if mon_int >= 1 && mon_int <= 12
-              date += '-' + Date::ABBR_MONTHNAMES[mon_int]
-            else
-              date += '-' + mon
+            date += '-' + sprintf("%02d", mon_int)
+
+            if day.to_s.length && day != '00'
+              day_int = day.to_i
+              date += '-' + sprintf("%02d", day_int)
             end
-          end
-          if day.to_s.length && day != '00'
-            date += '-' + day
           end
           return date
         end

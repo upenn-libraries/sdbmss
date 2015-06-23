@@ -1,16 +1,16 @@
 
-require 'sdbmss'
+require 'sdbmss/util'
 
 describe "SDBMSS::Util" do
 
   describe "#format_fuzzy_date" do
 
     it "formats a basic date" do
-      expect(SDBMSS::Util.format_fuzzy_date("20141123")).to eq("2014-Nov-23")
+      expect(SDBMSS::Util.format_fuzzy_date("20141123")).to eq("2014-11-23")
     end
 
     it "formats a date without a day" do
-      expect(SDBMSS::Util.format_fuzzy_date("20141100")).to eq("2014-Nov")
+      expect(SDBMSS::Util.format_fuzzy_date("20141100")).to eq("2014-11")
     end
 
     it "formats a date with only year" do
