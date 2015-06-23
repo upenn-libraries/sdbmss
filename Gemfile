@@ -87,6 +87,9 @@ gem "turnout", "~> 2.1.0"
 # send email notifications on app exceptions
 gem "exception_notification", "~> 4.1.1"
 
+# converts fixnums to string equivalents
+gem "number_to", "~> 0.7.1"
+
 # bundle exec rake doc:rails generates the Rails API under doc/api.
 group :doc do
   gem 'sdoc', '~> 0.4.0'

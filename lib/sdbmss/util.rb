@@ -126,7 +126,7 @@ module SDBMSS
       end
 
       # Takes a date_str like 'early 19th century' and returns a
-      # normalized year value for it, like '1825'. returns nil if date
+      # normalized year range for it, like ['1800', '1825']. returns nil if date
       # str can't be normalized.
       #
       # TODO: handle negative dates
@@ -183,13 +183,19 @@ module SDBMSS
 
         start_date, end_date = nil, nil
         # TODO: be more restrictive, look for pattern like '5th cent'
-        if /cent/.match(date_str) || /c\./.match(date_str)
-          century = ""
-          century_match = /(\d{1,2})/.match(date_str)
-          if century_match
-            century = (century_match[1].to_i - 1).to_s
-          end
 
+        century = nil
+        if (match = /(\d{1,2})(st|nd|rd|th|) c/.match(date_str)).present?
+          century = (match[1].to_i - 1).to_s
+        end
+
+        (1..20).each do |n|
+          if (match = /#{NumberTo.to_word_ordinal(n)} c/.match(date_str)).present?
+            century = (n - 1).to_s
+          end
+        end
+
+        if century.present?
           # look for qualifiers
           case
           when /early/.match(date_str)

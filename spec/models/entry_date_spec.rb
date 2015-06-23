@@ -1,7 +1,7 @@
 
 require "rails_helper"
 
-describe Entry do
+describe EntryDate do
 
   describe "#normalize_date" do
 
@@ -13,6 +13,10 @@ describe Entry do
 
     it "normalizes an after date" do
       expect(EntryDate.normalize_date("after 1132")).to eq(["1132", "1232"])
+    end
+
+    it "normalizes a century date" do
+      expect(EntryDate.normalize_date("eleventh century")).to eq(["1000", "1100"])
     end
 
     it "normalizes a century date" do
@@ -37,6 +41,10 @@ describe Entry do
 
     it "normalizes a late century date" do
       expect(EntryDate.normalize_date("late 6th century")).to eq(["576", "600"])
+    end
+
+    it "normalizes a late century date" do
+      expect(EntryDate.normalize_date("late sixth century")).to eq(["576", "600"])
     end
 
     it "normalizes second quarter of century date" do
