@@ -101,6 +101,10 @@ Rails.application.routes.draw do
   # use 'username' as identifier here for nicer URLs
   resources :profiles, only: [:show], param: :username
 
+  if !Rails.env.production?
+    get '/raise_error/', to: 'debug#raise_error'
+  end
+
   get '/reports/', to: 'reports#show'
   get '/reports/names/', to: 'reports#names'
   get '/reports/languages/', to: 'reports#languages'
