@@ -65,6 +65,11 @@ class User < ActiveRecord::Base
     active ? super : "Your account has been de-activated."
   end
 
+  # devise hook
+  def after_database_authentication
+    Rails.logger.info "#{username} logged in at #{DateTime.now.to_formatted_s(:date_and_time)}"
+  end
+
   def login
     @login || self.username || self.email
   end
