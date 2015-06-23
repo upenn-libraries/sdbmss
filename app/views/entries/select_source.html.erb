@@ -50,21 +50,30 @@
         <div class="form-group row">
             <label class="col-sm-2 control-label"><span sdbm-tooltip="identify_source_source_date">Source Date</span></label>
             <div class="col-sm-2">
-                <input class="form-control" name="date" placeholder="YYYY-MM-DD" ng-model="date"/>
+                <input class="form-control" name="date" ng-model="date"/>
+            </div>
+            <div class="col-sm-4 col-sm-offset-3 label-alignment">
+                <span style="color: PaleVioletRed;">Enter a date in YYYY-MM-DD, YYYY-MM or YYYY</span>
             </div>
         </div>
 
         <div class="form-group row">
             <label class="col-sm-2 control-label"><span sdbm-tooltip="identify_source_selling_agent">Selling Agent<br/>or Institution/Collection</span></label>
-            <div class="col-sm-6">
-                <input class="form-control" name="agent" placeholder="ex: Sotheby's, University of Pennsylvania" ng-model="agent"/>
+            <div class="col-sm-5">
+                <input class="form-control" name="agent" ng-model="agent"/>
+            </div>
+            <div class="col-sm-5 label-alignment">
+                <span style="color: PaleVioletRed;">ex: Sotheby's, University of Pennsylvania</span>
             </div>
         </div>
 
         <div class="form-group row">
             <label class="col-sm-2 control-label"><span sdbm-tooltip="identify_source_source_title">Source Title</span></label>
-            <div class="col-sm-6">
-                <input class="form-control" name="title" placeholder="ex: Rare books and manuscripts" ng-model="title"/>
+            <div class="col-sm-5">
+                <input class="form-control" name="title" ng-model="title"/>
+            </div>
+            <div class="col-sm-5 label-alignment">
+                <span style="color: PaleVioletRed;">ex: Rare books and manuscripts</span>
             </div>
         </div>
 
