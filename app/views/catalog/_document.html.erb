@@ -8,7 +8,7 @@
     <dl class="document-metadata dl-horizontal dl-invert">
 	    <dt>ID</dt>
         <%# data-context-href triggers an HTTP callback before loading the entry page; this makes prev/next links on individual Entry page work %>
-        <dd><b><a href="<%= url_for entry %>" data-context-href="<%= track_url document, document_counter %>"><%= entry.public_id %></a></b>
+        <dd><b><a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a></b>
             <div style="float: right">
             <%= render_index_doc_actions document, :wrapping_class => "index-document-functions col-sm-3 col-lg-2" %>
             </div>

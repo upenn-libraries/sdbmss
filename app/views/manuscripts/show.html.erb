@@ -63,7 +63,7 @@
                 <tr>
                     <td class="col-sm-2 text-right record-label"># Entries</td>
                     <td class="col-sm-10">
-                        This manuscript has <a href="<%= search_advanced_url('manuscript' => @manuscript.public_id) %>"><%= @manuscript.entries.count %> entries</a> in the database.
+                        This manuscript has <a href="<%= search_advanced_path('manuscript' => @manuscript.public_id) %>"><%= @manuscript.entries.count %> entries</a> in the database.
                         <br/>
                         <% @manuscript.entries.each do |entry| %>
                             <div class="hanging-indent"><a href="<%= url_for entry %>"><%= entry.public_id %></a>: <%= entry.display_value %></div>

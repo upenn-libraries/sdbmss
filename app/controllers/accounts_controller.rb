@@ -41,7 +41,7 @@ class AccountsController < ManageModelsController
       user = User.find_by(username: params[:username])
       if user.present?
         sign_in(:user, user)
-        redirect_to dashboard_url
+        redirect_to dashboard_path
       else
         render body: "ERROR: User not found: #{params[:username]}"
       end
