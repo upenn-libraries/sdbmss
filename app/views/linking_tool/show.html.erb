@@ -39,20 +39,38 @@ $(document).ready(function() {
             return !entry_manuscript._destroy;
         });
     };
-    
+
+    var entryIdAlreadyExistsInWorkspace = function(entryId) {
+        var idAlreadyExists = false;
+        $.each(entryManuscripts, function (idx, workspaceEntry) {
+            if(workspaceEntry.entry_id == entryId) {
+                idAlreadyExists = true;
+            }
+        });
+        return idAlreadyExists;
+    };
+
+    var addWorkspaceEntry = function(entryId, relation) {
+        if (!entryIdAlreadyExistsInWorkspace(entryId)) {
+            entryManuscripts.push({
+                entry_id: entryId,
+                relation_type: relation
+            });
+        }
+    };
+
     var changeWorkspaceEntry = function (entryId, relation) {
         if(relation != 'unlink') {
-            var idAlreadyExists = false;
-            $.each(entryManuscripts, function (idx, workspaceEntry) {
-                if(workspaceEntry.entry_id == entryId) {
-                    workspaceEntry.relation_type = relation;
-                    idAlreadyExists = true;
-                }
-            });
-            if (!idAlreadyExists) {
+            if (!entryIdAlreadyExistsInWorkspace(entryId)) {
                 entryManuscripts.push({
                     entry_id: entryId,
                     relation_type: relation
+                });
+            } else {
+                $.each(entryManuscripts, function (idx, workspaceEntry) {
+                    if(workspaceEntry.entry_id == entryId) {
+                        workspaceEntry.relation_type = relation;
+                    }
                 });
             }
         } else {
@@ -252,7 +270,7 @@ $(document).ready(function() {
 
     $(document).on("click", ".add-entry-link", function (event) {
         var entryId = $(event.target).data("entryId");
-        changeWorkspaceEntry(entryId, "is");
+        addWorkspaceEntry(entryId, "is");
         workspaceTable.reload();
         return false;
     });
