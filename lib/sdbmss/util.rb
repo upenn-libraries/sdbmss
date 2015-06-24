@@ -170,8 +170,8 @@ module SDBMSS
 
         circa = !! (/circa/.match(date_str) || /ca\./.match(date_str) || /about/.match(date_str))
 
-        # find any 4-digit number in the str or if entire str is a
-        # number
+        # match any 4-digit number in the str or test if entire str is
+        # a number
         if (exact_date_match = /(\d{4})/.match(date_str)).present? ||
            (exact_date_match = /^(\d{4})$/.match(date_str)).present? ||
            (exact_date_match = /^(\d{3})$/.match(date_str)).present? ||
@@ -182,13 +182,14 @@ module SDBMSS
         end
 
         start_date, end_date = nil, nil
-        # TODO: be more restrictive, look for pattern like '5th cent'
 
+        # match strs like "3rd century"
         century = nil
         if (match = /(\d{1,2})(st|nd|rd|th|) c/.match(date_str)).present?
           century = (match[1].to_i - 1).to_s
         end
 
+        # # match strs like "third century"
         (1..20).each do |n|
           if (match = /#{NumberTo.to_word_ordinal(n)} c/.match(date_str)).present?
             century = (n - 1).to_s
@@ -196,7 +197,7 @@ module SDBMSS
         end
 
         if century.present?
-          # look for qualifiers
+          # match qualifiers
           case
           when /early/.match(date_str)
             start_date = century + "00"
