@@ -70,6 +70,8 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = { host: ENV.fetch('SDBMSS_APP_HOST') }
 
+  config.action_mailer.default_options = { from: ENV.fetch('SDBMSS_EMAIL_FROM') }
+
   config.action_mailer.smtp_settings = {
     :address => ENV.fetch('SDBMSS_SMTP_HOST'),
     :port    => 25,
