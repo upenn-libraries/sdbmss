@@ -8,58 +8,59 @@ Blacklight project reboot, started in late Nov 2014.
 Note that we use 'sdbmss' everywhere in the code because 'sdbm' is the
 name of a package in Ruby's standard library.
 
-Setting up for Development
---------------------------
+Basic Host Setup
+----------------
 
-* Install Ruby 2.x on your system, preferably at least 2.1.5. Rails
-  4.x only requires Ruby 1.9.3, but the code here uses 2.x features
-  like keyword arguments and probably other stuff.
+This application should run on any Linux system and on MacOS.
 
-* Install the following libraries from the system packages. (These are
-  the package names in Debian; the names will probably differ on other
-  systems.)
-  
-  ```
-  g++
-  make
-  ruby-dev
-  mysql-server
-  mysql-client-5.5
-  libmysqlclient-dev
-  nodejs
-  ```
-  
-* Clone the git repository into your home directory. This will give
-  you a folder called ~/sdbmss
+A good way to start fresh is to begin with a clean CentOS 6
+installation and do the following:
+
+* Create a user account and give it sudo access
+
+* Update yum and install some packages you'll need.
 
   ```
-  cd ~
-  git clone git@github.com:upenn-libraries/sdbmss.git
+  yum update
+  yum install screen git mysql mysql-server mysql-devel java-1.7.0-openjdk
   ```
 
-* Run this to install the Ruby gems needed by the project:
+* Configure CentOS to start up MySQL when the system boots.
 
   ```
-  cd ~/sdbmss
-  bundle install
+  chkconfig --level 345 mysqld on
   ```
 
-* Install Java 1.7 so Solr can run. Do this in whatever way makes
-  sense.
+* CentOS installs iptables with strict rules by default. Edit
+  /etc/sysconfig/iptables to allow traffic on the ports you want.
 
-* Run a Solr instance (this WILL daemonize). Note that you will need
-  to restart Solr whenever there are changes to the Solr configuration
-  or schema files.
+Installing Ruby and Other Requirements
+--------------------------------------
+
+* It's recommended that you use [rvm](https://rvm.io/) to manage your
+  Ruby installation, instead of using a system package. You'll need at
+  least Ruby 2.1.5 but 2.2.x is preferred.
+
+  Run these commands as a regular user. rvm will prompt you for a
+  password for sudo.
 
   ```
-  bundle exec rake sunspot:solr:start
+  gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+  \curl -sSL https://get.rvm.io | bash -s stable
+  rvm install 2.2.1
   ```
 
-  To stop Solr:
+* rvm installs an older version of bundler. You'll need to upgrade to
+  at least 1.10.x to recognize the new Gemfile format.
 
   ```
-  bundle exec rake sunspot:solr:stop
+  gem install bundler
   ```
+
+* Install [Node](https://nodejs.org/) (Rails requires a Javascript
+  runtime). The easiest way to do this is to download the latest
+  tarball, unzip it somehere, and make sure its bin/node executable is
+  in your PATH.
 
 * Create a MySQL account and some databases.
 
@@ -71,6 +72,9 @@ Setting up for Development
   GRANT ALL PRIVILEGES ON *.* TO 'sdbm'@'localhost';
   FLUSH PRIVILEGES
   ```
+
+  The application is comprised of several processes you'll need to
+  run. Using 'screen' is helpful here.
 
 * Set environment variables in your .bashrc file (or similar shell
   init file). Generate values for the secret keys by running "bundle
@@ -102,6 +106,23 @@ Setting up for Development
   export SOLR_URL="http://127.0.0.1:8983/solr/development"
   ```
 
+* Clone the git repository into your home directory. (You'll need to
+  set up <a href="https://help.github.com/articles/generating-ssh-keys/">ssh
+  access</a> to github from your host.) This will give you a folder
+  called ~/sdbmss
+
+  ```
+  cd ~
+  git clone git@github.com:upenn-libraries/sdbmss.git
+  ```
+
+* Run this to install the Ruby gems needed by the project:
+
+  ```
+  cd ~/sdbmss
+  bundle install
+  ```
+
 * Now you should be ready to create the database and run the
   application (see below).
 
@@ -110,8 +131,9 @@ Data Migration
 
 You will need to migrate the data from the legacy Oracle production
 database into your own locally running MySQL database that the Rails
-application can use. To do this, you'll need access to the development
-virtual machine (VM) set up by Libraries IT for this project's use.
+application can use. This migration can ONLY be done on the
+development virtual machine (VM) set up by Libraries IT for this
+project's use.
 
 This is a 3 step process.
 
@@ -138,7 +160,7 @@ This is a 3 step process.
   On your own machine, run these commands:
   
     ```
-    # copy the file from the dev VM
+    # copy the file you made in step 1, from the dev VM to your machine
     scp username@dev_vm_hostname:sdbm_live_copy_2015_06_15.sql .
     # load the data
     cat sdbm_live_copy_2015_06_15.sql | mysql -u user sdbm_live_copy
@@ -161,8 +183,19 @@ This is a 3 step process.
 Running the Development Server
 ------------------------------
 
-The application is comprised of several processes you'll need to
-run. Using 'screen' is helpful here.
+* Run a Solr instance (this WILL daemonize). Note that you will need
+  to restart Solr whenever there are changes to the Solr configuration
+  or schema files.
+
+  ```
+  bundle exec rake sunspot:solr:start
+  ```
+
+  To stop Solr:
+
+  ```
+  bundle exec rake sunspot:solr:stop
+  ```
 
 * Run Rails (this will not daemonize)
 
@@ -207,13 +240,14 @@ Running the Test Suite
 Deploying to the Staging (Dev VM) Server
 ----------------------------------------
 
-Note: 'staging' aka 'dev VM' refers to the virtual machine provided by
-Libraries IT for the exclusive purpose of SDBM development. We use the
-term 'development' to refer to local development environments.
+Note: 'staging' aka the 'dev VM' refers to the virtual machine
+provided by Libraries IT for the exclusive purpose of SDBM
+development.
 
 We use capistrano to automate updating the staging server with the
-latest code. We use god to do application process monitoring (the
-processes being unicorn, solr, and a delayed_job worker).
+latest code. We use [god](http://godrb.com/) to do application process
+monitoring (the processes being unicorn, solr, and a delayed_job
+worker).
 
 * If Apache hasn't already been configured on the dev VM, do so:
   create a file /etc/httpd/conf.d/sdbmss.conf with the following
@@ -221,11 +255,23 @@ processes being unicorn, solr, and a delayed_job worker).
 
   ```
   <VirtualHost *:80>
+      ServerName sdbmdev.library.upenn.edu
+      Redirect permanent / https://sdbmdev.library.upenn.edu/
+  </VirtualHost>
+
+  <VirtualHost *:443>
+      SSLEngine On
+
+      SSLProtocol all -SSLv2
+      SSLCipherSuite ALL:!ADH:!EXPORT:!SSLv2:RC4+RSA:+HIGH:+MEDIUM:+LOW
+      SSLCertificateFile /path/to/file
+      SSLCertificateKeyFile /path/to/file
 
       ServerName sdbmdev.library.upenn.edu
       ServerAlias sdbmdev
       ServerAdmin jeffchiu@upenn.edu
 
+      ProxyPass /favicon.ico !
       ProxyPass /assets !
       ProxyPass /static !
       ProxyPass / http://127.0.0.1:8080/ retry=1
