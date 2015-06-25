@@ -235,7 +235,7 @@ class Entry < ActiveRecord::Base
   end
 
   def display_value
-    entry_titles.map(&:title).join("; ")
+    entry_titles.map(&:title).join("; ") || "(No title)"
   end
 
   # returns the most recent updated_at timestamp, as an integer, of
