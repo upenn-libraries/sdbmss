@@ -50,6 +50,7 @@
             },
             {
                 sdbmssMinWidth: "100px",
+                orderable: false,
                 title: 'Entry ID',
                 render: function (data, type, full, meta) { 
                     if (data) {
@@ -60,6 +61,7 @@
             },
             {
                 sdbmssMinWidth: "100px",
+                orderable: false,
                 title: 'Manuscript ID',
                 render: function (data, type, full, meta) { 
                     if(data) {
@@ -77,8 +79,8 @@
             {
                 sdbmssMinWidth: "100px",
                 sdbmssMaxWidth: "100px",
-                orderable: true,
                 title: 'Is Correction',
+                dbSortField: 'is_correction'
             },
             {
                 sdbmssMinWidth: "90px",
@@ -91,6 +93,12 @@
                 sdbmssMaxWidth: "130px",
                 title: 'Created By',
                 dbSortField: 'created_by_id'
+            },
+            {
+                sdbmssMinWidth: "130px",
+                sdbmssMaxWidth: "130px",
+                title: 'Created At',
+                dbSortField: 'created_at'
             }
         ];
      };
@@ -105,7 +113,8 @@
              result.comment,
              result.is_correction,
              result.reviewed.toString(),
-             result.created_by || ""
+             result.created_by || "",
+             result.created_at || ""
          ];
      };
 

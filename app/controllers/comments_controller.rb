@@ -27,6 +27,7 @@ class CommentsController < ManageModelsController
       is_correction: obj.is_correction,
       reviewed: obj.reviewed,
       created_by: obj.created_by.username,
+      created_at: obj.created_at.to_formatted_s(:date_and_time)
     }
   end
 
