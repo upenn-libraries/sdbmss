@@ -198,6 +198,35 @@ describe "Blacklight Search", :js => true do
     expect(page).not_to have_link(entry_one.public_id)
   end
 
+  # poltergeist has trouble loading the csv, so we don't use it
+  it "should export bookmarks as CSV", :js => false do
+    entry = Entry.first
+
+    Bookmark.create!(
+      user_id: @user.id,
+      user_type: 'User',
+      document_id: entry.id,
+      document_type: "SolrDocument"
+    )
+
+    visit new_user_session_path
+    fill_in 'user_login', :with => @user.username
+    fill_in 'user_password', :with => 'somethingunguessable'
+    click_button 'Log in'
+    expect(page).to have_content 'Signed in successfully'
+
+    visit bookmarks_path
+    expect(page).to have_link(entry.public_id)
+
+    click_link("Download as CSV")
+
+    found = false
+    CSV.parse(page.source, headers: true) do |row|
+      found = true if row["id"] == entry.id.to_s
+    end
+    expect(found).to eq(true)
+  end
+
   it "should add search to History" do
     visit root_path
     fill_in "q", with: "My Unique Search"

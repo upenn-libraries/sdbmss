@@ -82,6 +82,11 @@ module ApplicationHelper
     user_signed_in? && @document.present? && (entry = @document.model_object).present?
   end
 
+  # only show on Bookmarks page (check for document_list)
+  def show_export_csv_link?
+    user_signed_in? && @document_list.present?
+  end
+
   # this method returns a data structure used to prepopulate the
   # advanced search form.
   def prepopulated_search_fields_for_advanced_search(num_fields, is_numeric: true)

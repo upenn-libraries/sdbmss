@@ -359,6 +359,7 @@ module CatalogControllerConfiguration
       config.add_show_tools_partial(:linking_tool_by_entry, partial: 'nav/linking_tool_by_entry', if: :show_linking_tool_by_entry?)
       config.add_show_tools_partial(:linking_tool_by_manuscript, partial: 'nav/linking_tool_by_manuscript', if: :show_linking_tool_by_manuscript?)
       config.add_show_tools_partial(:entry_history, partial: 'nav/entry_history', if: :show_entry_history_link?)
+      config.add_show_tools_partial(:export_csv, partial: 'nav/export_csv', if: :show_export_csv_link?)
 
     end
 

@@ -1,0 +1,7 @@
+<%# account for fact that this partial is rendered 2 diff ways: 1) in
+    Tools box on show entry page, where we get a 'document' variable,
+    2) on Bookmarks page, where we get a 'document_list' variable. We
+    ignore case 2. -%>
+<% if document_list.present? %>
+<a id="export-csv-link" href="/bookmarks/export.csv">Download as CSV</a>
+<% end %>
