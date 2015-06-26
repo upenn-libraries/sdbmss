@@ -663,12 +663,12 @@ describe "Data entry", :js => true do
       entry.folios = 6666
       entry.save!
 
-      fill_in 'folios', with: '7777'
+      sleep 1.1
 
-      text = get_alert_text_from do
-        first(".save-button").click
-      end
-      expect(text).to match(/Another change was made to the record while you were working/)
+      fill_in 'folios', with: '7777'
+      first(".save-button").click
+
+      expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
     end
 
     it "should disallow saving on Edit Page when another change was made (variation 1)" do
@@ -686,12 +686,12 @@ describe "Data entry", :js => true do
       entry.folios = 6666
       entry.save!
 
-      fill_in 'title_0', with: 'changed title'
+      sleep 1.1
 
-      text = get_alert_text_from do
-        first(".save-button").click
-      end
-      expect(text).to match(/Another change was made to the record while you were working/)
+      fill_in 'title_0', with: 'changed title'
+      first(".save-button").click
+
+      expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
     end
 
     it "should disallow saving on Edit Page when another change was made (variation 2)" do
@@ -710,12 +710,12 @@ describe "Data entry", :js => true do
       entry_title.title = "changed title"
       entry_title.save!
 
-      fill_in 'folios', with: '11111'
+      sleep 1.1
 
-      text = get_alert_text_from do
-        first(".save-button").click
-      end
-      expect(text).to match(/Another change was made to the record while you were working/)
+      fill_in 'folios', with: '11111'
+      first(".save-button").click
+
+      expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
     end
 
     it "should prevent another contributor from editing an entry" do

@@ -248,7 +248,7 @@
                     } else {
                         append_str = "Server response:" + JSON.stringify(response.data);
                     }
-                    alert(msg + ": " + append_str);
+                    SDBM.showErrorModal("#modal", msg + ": " + append_str);
                 };
             },
             redirectToSourceEditPage: function(source_id)  {
