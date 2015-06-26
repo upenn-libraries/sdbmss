@@ -217,21 +217,21 @@ Running the Development Server
 Running the Test Suite
 ----------------------
 
-* Install [PhantomJS](http://phantomjs.org/) 1.9.8 (poltergeist
-  library does NOT work with 2.0 yet, as of Apr 2015, so don't use
-  it). You can get precompiled Linux binaries
+* Install [PhantomJS](http://phantomjs.org/) 1.9.8 (the poltergeist
+  1.6.0 gem does NOT work with PhantomJS 2.0, so don't use that). You
+  can get precompiled Linux binaries
   [here](https://bitbucket.org/ariya/phantomjs/downloads/). After you
   unzip it somewhere, make sure phantomjs is in your path.
 
 * Create a database for the tests to use. This should be the value of
-  SDBMSS_DB_NAME with "_test" appended to it.
+  the SDBMSS_DB_NAME environment variable with "_test" appended to it.
 
   ```
   echo "CREATE DATABASE sdbm_test;" | mysql -u root
   ```
 
-* Run this script, which sets up a proper testing environment and
-  creates fresh tables in the database.
+* Run this script, which sets up a proper testing environment before
+  running rspec.
 
   ```
   ./run_tests.sh
@@ -244,14 +244,16 @@ Note: 'staging' aka the 'dev VM' refers to the virtual machine
 provided by Libraries IT for the exclusive purpose of SDBM
 development.
 
-We use capistrano to automate updating the staging server with the
-latest code. We use [god](http://godrb.com/) to do application process
-monitoring (the processes being unicorn, solr, and a delayed_job
-worker).
+We use [capistrano](http://capistranorb.com/) to automate updating the
+staging server with the latest code. We use [god](http://godrb.com/)
+to do application process monitoring (the processes being unicorn,
+solr, and a delayed_job worker).
 
-* If Apache hasn't already been configured on the dev VM, do so:
-  create a file /etc/httpd/conf.d/sdbmss.conf with the following
-  contents:
+* Your account on the dev VM will need the SDBMSS_ environment
+  variables mentioned above; set them in .bashrc or some other way.
+
+* The Apache config file /etc/httpd/conf.d/sdbmss.conf should look
+  something like the following:
 
   ```
   <VirtualHost *:80>
@@ -309,22 +311,21 @@ worker).
   capistrano can use it (via ssh forwarding) to access the Github repo
   from the dev VM. This needs to happen for the next step to work.
 
-* On your local machine, deploy the latest code to the dev VM using
-  capistrano. This will put a copy of the code in ~/sdbmss/current on
-  the dev VM, update the solr configuration and restart it, and
-  restart the unicorn server. (The account on the dev VM will need the
-  SDBMSS_ environment variables mentioned above; set them in .bashrc
-  or some other way? TODO)
+* On your local machine, run capistrano to deploy the latest code to
+  the dev VM.  This will perform a number of tasks on the dev VM,
+  including putting a copy of the code in /var/www/sdbmss/current,
+  updating the solr configuration and restarting it, and restarting
+  the unicorn server. 
 
   ```
   cd ~/sdbmss
   bundle exec cap staging deploy
   ```
 
-* On your local machine, you can run a task to refresh the database on
-  staging, using a SQL file (created on your local machine--doing
-  migrations from the legacy data takes way too long the VM), and
-  reindex Solr. You only need to do this as necessary.
+* OPTIONAL: On your local machine, you can run a task to refresh the
+  database on staging, using a SQL file (created on your local
+  machine--doing migrations from the legacy data takes way too long
+  the VM), and reindex Solr. You only need to do this as necessary.
 
   ```
   cd ~/sdbmss
