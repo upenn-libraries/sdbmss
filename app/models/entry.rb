@@ -628,6 +628,36 @@ class Entry < ActiveRecord::Base
       provenance_names
     end
 
+    define_field(:string, :provenance_date, :stored => true, :multiple => true) do
+      # NOTE: this logic is slightly weird, as there may be a start
+      # date but no end date, or vice versa.
+      events.map { | event|
+        retval = nil
+        start_date = event.start_date_normalized_start || event.end_date_normalized_start
+        end_date = event.start_date_normalized_end || event.end_date_normalized_end
+        # only take the events with either a start OR end date
+        if start_date.present? || end_date.present?
+          # make sure they both have values? TODO: this probably isn't
+          # right: if only one date exists, we should probably use
+          # that by itself (for end date, we would use that date + 1
+          # day)
+          start_date = start_date || SDBMSS::Blacklight::DATE_RANGE_FULL_MIN.to_s
+          end_date = end_date || SDBMSS::Blacklight::DATE_RANGE_FULL_MAX.to_s
+          if start_date.to_i > SDBMSS::Blacklight::DATE_RANGE_FULL_MAX ||
+             start_date.to_i < SDBMSS::Blacklight::DATE_RANGE_FULL_MIN ||
+             end_date.to_i > SDBMSS::Blacklight::DATE_RANGE_FULL_MAX ||
+             end_date.to_i < SDBMSS::Blacklight::DATE_RANGE_FULL_MIN
+            Rails.logger.warn "normalized dates for event #{event.id} are out of bounds: #{start_date}, #{end_date}"
+          else
+            retval = "#{start_date} #{end_date}"
+          end
+        end
+        retval
+      }.select { |date_range_str|
+        date_range_str.present?
+      }
+    end
+
     define_field(:text, :comment_search, :stored => true) do
       comments.select(&:public).map(&:comment).join("\n")
     end

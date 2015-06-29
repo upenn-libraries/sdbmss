@@ -74,7 +74,7 @@ label.col-sm-2-and-half {
 <input type="hidden" id="source_id" value="<%= @source_id %>" />
 <% end %>
 
-<form id="entry-form" class="form-horizontal sdbmss-form" autocomplete="off" data-ng-controller="EntryCtrl">
+<form id="entry-form" name="entryForm" class="form-horizontal sdbmss-form" autocomplete="off" data-ng-controller="EntryCtrl">
     <fieldset>
 
     <div class="row">
@@ -325,28 +325,28 @@ label.col-sm-2-and-half {
     </div>
 
     <div class="form-group row" data-ng-repeat="entry_date in entry.entry_dates | filter: activeRecords">
-      <label class="col-sm-2 control-label">
+        <label class="col-sm-2 control-label">
             <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_dates)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
             <span sdbm-tooltip="entry_date_as_recorded">Date As Recorded</span>
-      </label>
-      <div class="col-sm-4-and-half">
-          <div class="input-group">
-              <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}">
-              <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
-          </div>
-      </div>
+        </label>
+        <div class="col-sm-4-and-half">
+            <div class="input-group">
+                <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}">
+                <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
+            </div>
+        </div>
 
-      <label class="col-sm-1-and-half control-label">
-          <span sdbm-tooltip="entry_date_for_search">Date for Search</span>
-      </label>
-      <div class="col-sm-2">
-          <input id="date_normalized_start_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.date_normalized_start">
-      </div>
-      <div class="col-sm-2">
-          <input id="date_normalized_end_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.date_normalized_end">
-      </div>
-      
+        <label class="col-sm-1-and-half control-label">
+            <span sdbm-tooltip="entry_date_for_search">Date for Search</span>
+        </label>
+        <div class="col-sm-2">
+            <input id="date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY" data-ng-model="entry_date.date_normalized_start">
+        </div>
+        <div class="col-sm-2">
+            <input id="date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY" data-ng-model="entry_date.date_normalized_end">
+        </div>
+
     </div>
 
     <div class="form-group row" data-ng-repeat="entry_artist in entry.entry_artists | filter: activeRecords">
@@ -627,11 +627,11 @@ label.col-sm-2-and-half {
       <label class="col-sm-2 control-label">
           <span sdbm-tooltip="entry_provenance_start_date_for_search">Start Date for Search</span>
       </label>
-      <div class="col-sm-2">
-        <input id="start_date_normalized_start_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start">
+      <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['start_date_normalized_start_' + $index].$valid }">
+        <input id="start_date_normalized_start_{{ $index }}" name="start_date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-model="prov.start_date_normalized_start">
       </div>
-      <div class="col-sm-2">
-        <input id="start_date_normalized_end_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_end">
+      <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['start_date_normalized_end_' + $index].$valid }">
+        <input id="start_date_normalized_end_{{ $index }}" name="start_date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-model="prov.start_date_normalized_end">
       </div>
     </div>
 
@@ -645,11 +645,11 @@ label.col-sm-2-and-half {
       <label class="col-sm-2 control-label">
           <span sdbm-tooltip="entry_provenance_end_date_for_search">End Date for Search</span>
       </label>
-      <div class="col-sm-2">
-        <input id="end_date_normalized_start_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date_normalized_start">
+      <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['end_date_normalized_start_' + $index].$valid }">
+        <input id="end_date_normalized_start_{{ $index }}" name="end_date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-model="prov.end_date_normalized_start">
       </div>
-      <div class="col-sm-2">
-        <input id="end_date_normalized_end_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date_normalized_end">
+      <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['end_date_normalized_end_' + $index].$valid }">
+        <input id="end_date_normalized_end_{{ $index }}" name="end_date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-model="prov.end_date_normalized_end">
       </div>
     </div>
 

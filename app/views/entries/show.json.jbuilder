@@ -105,7 +105,11 @@ end
 
 if @entry.events.present?
   json.events @entry.events do |event|
-    json.(event, :id, :primary, :comment, :start_date, :start_date_normalized_start, :start_date_normalized_end, :end_date, :end_date_normalized_start, :end_date_normalized_end, :price, :currency, :other_currency, :sold)
+    json.(event, :id, :primary, :comment, :start_date, :end_date, :price, :currency, :other_currency, :sold)
+    json.start_date_normalized_start SDBMSS::Util.format_fuzzy_date(event.start_date_normalized_start)
+    json.start_date_normalized_end SDBMSS::Util.format_fuzzy_date(event.start_date_normalized_end)
+    json.end_date_normalized_start SDBMSS::Util.format_fuzzy_date(event.end_date_normalized_start)
+    json.end_date_normalized_end SDBMSS::Util.format_fuzzy_date(event.end_date_normalized_end)
     if event.event_agents.present?
       json.event_agents event.event_agents do |event_agent|
         json.(event_agent, :id, :observed_name, :role, :uncertain_in_source, :supplied_by_data_entry)

@@ -52,6 +52,10 @@ class Event < ActiveRecord::Base
     if self.end_date
       self.end_date.gsub!("-", "")
     end
+    self.start_date_normalized_start = SDBMSS::Util.normalize_fuzzy_date(start_date_normalized_start)
+    self.start_date_normalized_end = SDBMSS::Util.normalize_fuzzy_date(start_date_normalized_end)
+    self.end_date_normalized_start = SDBMSS::Util.normalize_fuzzy_date(end_date_normalized_start)
+    self.end_date_normalized_end = SDBMSS::Util.normalize_fuzzy_date(end_date_normalized_end)
   end
 
   def get_event_agent_with_role(role)

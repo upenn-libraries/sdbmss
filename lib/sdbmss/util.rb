@@ -113,6 +113,19 @@ module SDBMSS
         d
       end
 
+      # takes a date string as YYYY, YYYY-MM or YYYY-MM-DD and returns
+      # it as YYYYMMDD, using 0s for MM and DD if appropriate.
+      def normalize_fuzzy_date(date_str)
+        if date_str.present?
+          date_str = date_str.gsub("-", "")
+          if date_str.length < 8
+            pad = 8 - date_str.length
+            date_str += "0" * pad
+          end
+        end
+        date_str
+      end
+
       # Takes a date string 'd' and returns it in the YYYY-MM-DD format
       def date_dashes(d)
         d && d.length == 8 ? d.slice(0, 4) + "-" + d.slice(4, 2) + "-" + d.slice(6, 2) : d

@@ -81,30 +81,38 @@ module SDBMSS::Blacklight
       end
     end
 
-    # This translates a query str of "[year1 TO year2]" in the
-    # manuscript_date blacklight parameters field to a str of the form
-    # '["minX minY" TO "maxX maxY"]'. We do this translation so that
-    # BL params are kept readable and front-end JS can treat date
-    # range queries exactly the same as other numeric range queries.
-    def translate_manuscript_date(solr_parameters)
-      manuscript_date = blacklight_params['manuscript_date']
-      if manuscript_date.present?
-        m = /\[(.+?) TO (.+?)\]/.match(manuscript_date)
+    # This translates a query str of "[year1 TO year2]" in the date
+    # range parameter field to a str of the form '["minX minY" TO
+    # "maxX maxY"]'. We do this translation so that BL params are kept
+    # readable and front-end JS can treat date range queries exactly
+    # the same as other numeric range queries.
+    def translate_daterange_param(solr_parameters, param_name, min, max)
+      date = blacklight_params[param_name]
+      if date.present?
+        m = /\[(.+?) TO (.+?)\]/.match(date)
         if m
           from, to = m[1], m[2]
 
           # buffer the dates so that we don't pick up end dates
           # themselves (ranges are end-exclusive)
           buffer = 0.5
-          from = from == '*' ? DATE_RANGE_YEAR_MIN : from.to_i + buffer
-          to = to == '*' ? DATE_RANGE_YEAR_MAX : to.to_i + buffer
+          from = from == '*' ? min : from.to_i + buffer
+          to = to == '*' ? max : to.to_i + buffer
 
           # This checks that a stored range OVERLAPS with range
           # specified in query. see
           # https://people.apache.org/~hossman/spatial-for-non-spatial-meetup-20130117/
-          blacklight_params['manuscript_date'] = "[\"#{DATE_RANGE_YEAR_MIN} #{from}\" TO \"#{to} #{DATE_RANGE_YEAR_MAX}\"]"
+          blacklight_params[param_name] = "[\"#{min} #{from}\" TO \"#{to} #{max}\"]"
         end
       end
+    end
+
+    def translate_manuscript_date(solr_parameters)
+      translate_daterange_param(solr_parameters, 'manuscript_date', DATE_RANGE_YEAR_MIN, DATE_RANGE_YEAR_MAX)
+    end
+
+    def translate_provenance_date(solr_parameters)
+      translate_daterange_param(solr_parameters, 'provenance_date', DATE_RANGE_FULL_MIN, DATE_RANGE_FULL_MAX)
     end
   end
 

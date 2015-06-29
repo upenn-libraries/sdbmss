@@ -81,13 +81,7 @@ class Source < ActiveRecord::Base
   end
 
   def normalize
-    if date.present?
-      date.gsub!("-", "")
-      if date.length < 8
-        pad = 8 - date.length
-        self.date += "0" * pad
-      end
-    end
+    self.date = SDBMSS::Util.normalize_fuzzy_date(date)
   end
 
   # date field is only required for certain types of sources

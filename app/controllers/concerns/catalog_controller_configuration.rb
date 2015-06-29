@@ -297,6 +297,12 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'transaction_price' }
       end
 
+      config.add_search_field('provenance_date', label: "Provenance Date") do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = true
+        field.solr_local_parameters = { :qf => 'provenance_date' }
+      end
+
       config.add_search_field 'entry_id', :label => 'Entry ID' do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = false
@@ -371,6 +377,7 @@ module CatalogControllerConfiguration
     self.search_params_logic << :show_created_by_user
 
     self.search_params_logic << :translate_manuscript_date
+    self.search_params_logic << :translate_provenance_date
 
   end
 
