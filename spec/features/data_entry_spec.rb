@@ -38,9 +38,14 @@ describe "Data entry", :js => true do
     value = options[:with]
 
     fill_autocomplete(field, options) do
-      found = all("ul.ui-autocomplete li.ui-menu-item", visible: true).any? { |li| li.text == value }
-      if found
-        value_escaped = value.gsub("'", "\\\\'")
+      found_value = nil
+      all("ul.ui-autocomplete li.ui-menu-item", visible: true).each do |li|
+        if li.text == value || li.text == value + " (unreviewed)"
+          found_value = li.text
+        end
+      end
+      if found_value.present?
+        value_escaped = found_value.gsub("'", "\\\\'")
         selector = %Q{ul.ui-autocomplete:visible li.ui-menu-item:contains("#{value_escaped}")}
       else
         # select the 1st option, which should pop up the modal to create an entity
@@ -48,7 +53,7 @@ describe "Data entry", :js => true do
       end
       page.execute_script %Q{ $('#{selector}').click() }
 
-      if !found
+      if !found_value.present?
         expect(find(".modal-title", visible: true).text.include?("Create")).to be_truthy
         click_button('Create')
         sleep(0.75)

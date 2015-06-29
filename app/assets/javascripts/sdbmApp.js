@@ -1053,7 +1053,15 @@
                         scope.$apply();
                     }
                 }
-            });
+            }).data("ui-autocomplete")._renderItem = function( ul, item ) {
+                // if there's an 'unreviewed' attribute set to false,
+                // tack on additional text indicating that.
+                var text = item.label;
+                if(item.reviewed === false) {
+                    text += " (unreviewed)";
+                }
+                return $("<li>").text(text).appendTo(ul);
+            };
         };
     });
 

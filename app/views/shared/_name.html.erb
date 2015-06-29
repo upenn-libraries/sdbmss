@@ -9,6 +9,14 @@
             </div>
         </div>
 
+        <% if !name.reviewed %>
+        <div class="row">
+            <div class="col-sm-12">
+                NOTE: This name record was recently created and has not yet been reviewed.
+            </div>
+        </div>
+        <% end %>
+
         <table class="table table-striped">
             <thead>
                 <tr>
