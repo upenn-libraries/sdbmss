@@ -2,9 +2,9 @@
 // This assumes application.js has been included.
 
 //= require jquery.qtip.min
-//= require angular.1.3.15
-//= require angular-cookies.1.2.26
-//= require angular-resource.1.3.0.min
+//= require angular.1.3.16
+//= require angular-cookies.1.3.16.min
+//= require angular-resource.1.3.16.min
 //= require ui-bootstrap-tpls-0.12.1.min
 //= require jquery.dataTables.min
 //= require dataTables.bootstrap

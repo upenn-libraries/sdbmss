@@ -14,7 +14,7 @@
 
     "use strict";
 
-    var sdbmApp = angular.module("sdbmApp", ["ngCookies", "ngResource", "ui.bootstrap"]);
+    var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap"]);
 
     sdbmApp.run(function ($http) {
         // For Rails CSRF
@@ -313,7 +313,7 @@
     });
 
     /* Entry screen controller */
-    sdbmApp.controller("EntryCtrl", function ($scope, $http, $cookies, Entry, Source, sdbmutil, $modal) {
+    sdbmApp.controller("EntryCtrl", function ($scope, $http, Entry, Source, sdbmutil, $modal) {
 
         $scope.sdbmutil = sdbmutil;
 
