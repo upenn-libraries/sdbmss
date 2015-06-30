@@ -135,6 +135,15 @@ class EntriesController < ManageModelsController
             })
           ec.save!
         end
+        # link to manuscript
+        if params[:manuscript_id].present?
+          em = EntryManuscript.new(
+            entry_id: @entry.id,
+            manuscript_id: params[:manuscript_id],
+            relation_type: EntryManuscript::TYPE_RELATION_IS
+          )
+          em.save
+        end
       end
     end
     respond_to do |format|

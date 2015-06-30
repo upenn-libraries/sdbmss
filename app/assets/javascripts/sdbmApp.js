@@ -8,7 +8,7 @@
 
 /* Hints for eslint: */
 /* eslint camelcase:0, no-underscore-dangle:0 */
-/* global alert, angular, console, window, setTimeout, $, SDBM */
+/* global alert, angular, console, window, setTimeout, $, SDBM, URI */
 
 (function () {
 
@@ -179,6 +179,24 @@
             });
         };
 
+        /* returns the URL parameter 'manuscript_id' from the currently loaded page's URL */
+        var getManuscriptId = function() {
+            return URI().search(true).manuscript_id;
+        };
+
+        /* returns the path to the Create Entry page for a source,
+           optionally passing along the 'manuscript_id' parameter if
+           there is one.
+         */
+        var getEntryCreateURL = function (source_id) {
+            var path = "/entries/new/?source_id=" + source_id;
+            var manuscript_id = getManuscriptId();
+            if(manuscript_id) {
+                path += "&manuscript_id=" + manuscript_id;
+            }
+            return path;
+        };
+
         return {
             /* returns a printable (ie. for use with console.log),
              * snapshot the passed-in object. This exists because if
@@ -230,6 +248,7 @@
                 }
                 return false;
             },
+            getManuscriptId: getManuscriptId,
             /* Returns a fn that can be used as error callback on angular promises */
             promiseErrorHandlerFactory: function(msg) {
                 return function(response) {
@@ -251,11 +270,12 @@
                     SDBM.showErrorModal("#modal", msg + ": " + append_str);
                 };
             },
+            getEntryCreateURL: getEntryCreateURL,
             redirectToSourceEditPage: function(source_id)  {
                 window.location = "/sources/" + source_id + "/edit/";
             },
             redirectToEntryCreatePage: function(source_id)  {
-                window.location = "/entries/new/?source_id=" + source_id;
+                window.location = getEntryCreateURL(source_id);
             },
             redirectToEntryEditPage: function(entry_id)  {
                 window.location = "/entries/" + entry_id + "/edit/";
@@ -279,13 +299,24 @@
     });
 
     /* Controller for selecting a source*/
-    sdbmApp.controller("SelectSourceCtrl", function ($scope, $http) {
+    sdbmApp.controller("SelectSourceCtrl", function ($scope, $http, sdbmutil) {
+
+        $scope.sdbmutil = sdbmutil;
 
         $scope.searchAttempted = false;
         $scope.title = "";
         $scope.date = "";
         $scope.agent = "";
         $scope.sources = [];
+
+        $scope.createSourceURL = function () {
+            var path = "/sources/new?create_entry=1";
+            var manuscript_id = sdbmutil.getManuscriptId();
+            if(manuscript_id) {
+                path += "&manuscript_id=" + manuscript_id;
+            }
+            return path;
+        };
 
         $scope.findSourceCandidates = function () {
             if($scope.title.length > 2 || $scope.date.length > 2 || $scope.agent.length > 2) {
@@ -695,6 +726,13 @@
                     $scope.currentlySaving = false;
                 });
             } else {
+
+                // link to Manuscript ID if present
+                var manuscript_id = sdbmutil.getManuscriptId();
+                if(manuscript_id) {
+                    entryToSave.manuscript_id = manuscript_id;
+                }
+
                 entryToSave.$save(
                     $scope.postEntrySave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
