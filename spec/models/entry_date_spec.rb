@@ -92,6 +92,10 @@ describe EntryDate do
     end
 
     it "normalizes an exact date" do
+      expect(EntryDate.normalize_date("December 1st, 1982")).to eq(["1982-12-01", "1982-12-02"])
+    end
+
+    it "normalizes an exact date" do
       expect(EntryDate.normalize_date("January 7th, 1509")).to eq(["1509-01-07", "1509-01-08"])
     end
 

@@ -135,7 +135,7 @@ module SDBMSS
       # by #normalize_approximate_date_str_to_year_range
       def resembles_approximate_date_str(date_str)
         /(about|circa|ca|before|after|early|mid|late|cent|c\.|to)/.match(date_str).present? ||
-          /\ds/.match(date_str).present?
+          /\d{3,}s/.match(date_str).present?
       end
 
       # Takes a date_str like 'early 19th century' and returns a
