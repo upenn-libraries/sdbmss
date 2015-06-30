@@ -104,6 +104,11 @@ class Entry < ActiveRecord::Base
 
   has_paper_trail skip: [:created_at, :updated_at]
 
+  # Note that there is separate front-end Javascript/AngularJS code
+  # that does validation, which should be kept in sync with the
+  # validations here. I haven't found a good way to automatically
+  # couple and keep the two sets of validation specifications in sync.
+
   validates_presence_of :source
 
   validate do |entry|
@@ -643,13 +648,18 @@ class Entry < ActiveRecord::Base
           # day)
           start_date = start_date || SDBMSS::Blacklight::DATE_RANGE_FULL_MIN.to_s
           end_date = end_date || SDBMSS::Blacklight::DATE_RANGE_FULL_MAX.to_s
-          if start_date.to_i > SDBMSS::Blacklight::DATE_RANGE_FULL_MAX ||
-             start_date.to_i < SDBMSS::Blacklight::DATE_RANGE_FULL_MIN ||
-             end_date.to_i > SDBMSS::Blacklight::DATE_RANGE_FULL_MAX ||
-             end_date.to_i < SDBMSS::Blacklight::DATE_RANGE_FULL_MIN
-            Rails.logger.warn "normalized dates for event #{event.id} are out of bounds: #{start_date}, #{end_date}"
+
+          if SDBMSS::Util.int?(start_date) && SDBMSS::Util.int?(end_date)
+            if start_date.to_i <= SDBMSS::Blacklight::DATE_RANGE_FULL_MAX ||
+               start_date.to_i >= SDBMSS::Blacklight::DATE_RANGE_FULL_MIN ||
+               end_date.to_i <= SDBMSS::Blacklight::DATE_RANGE_FULL_MAX ||
+               end_date.to_i >= SDBMSS::Blacklight::DATE_RANGE_FULL_MIN
+              retval = "#{start_date} #{end_date}"
+            else
+              Rails.logger.warn "normalized dates for event #{event.id} are out of bounds: #{start_date}, #{end_date}"
+            end
           else
-            retval = "#{start_date} #{end_date}"
+            Rails.logger.warn "non-integer date values for event #{event.id}: #{start_date}, #{end_date}"
           end
         end
         retval

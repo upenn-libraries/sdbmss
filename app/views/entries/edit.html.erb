@@ -145,13 +145,7 @@ label.col-sm-2-and-half {
       </div>
     </div>
 
-    <div class="row" style="padding-top: 20px;">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-10">
-            <button class="btn btn-primary save-button" ng-click="save()" ng-disabled="currentlySaving">Save</button>
-            <a class="btn btn-warning" href="/dashboard">Cancel</a>
-        </div>
-    </div>
+    <%= render partial: "edit_buttons" %>
 
     <div class="row">
       <div class="col-sm-12">
@@ -245,8 +239,8 @@ label.col-sm-2-and-half {
                 
                 <div class="form-group row">
                     <label for="price" class="col-sm-2 control-label"><span sdbm-tooltip="entry_price">Price</span></label>
-                    <div class="col-sm-2">
-                        <input type="text" class="form-control" id="transaction_price" ng-model="entry.transaction.price">
+                    <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['transaction_price'].$valid }">
+                        <input type="text" class="form-control" id="transaction_price" name="transaction_price" ng-pattern="/^[0-9,\.]*$/" ng-model="entry.transaction.price">
                     </div>
                     <label for="currency" class="col-sm-1 control-label"><span sdbm-tooltip="entry_currency">Currency</span></label>
                     <div class="col-sm-1">
@@ -340,11 +334,11 @@ label.col-sm-2-and-half {
         <label class="col-sm-1-and-half control-label">
             <span sdbm-tooltip="entry_date_for_search">Date for Search</span>
         </label>
-        <div class="col-sm-2">
-            <input id="date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY" data-ng-model="entry_date.date_normalized_start">
+        <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['date_normalized_start_' + $index].$valid }">
+            <input id="date_normalized_start_{{ $index }}" name="date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_start">
         </div>
-        <div class="col-sm-2">
-            <input id="date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY" data-ng-model="entry_date.date_normalized_end">
+        <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['date_normalized_end_' + $index].$valid }">
+            <input id="date_normalized_end_{{ $index }}" name="date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_end">
         </div>
 
     </div>
@@ -454,20 +448,20 @@ label.col-sm-2-and-half {
         <label for="folios" class="col-sm-2 control-label">
             <span sdbm-tooltip="entry_folios">Folios</span>
         </label>
-        <div class="col-sm-1">
-            <input type="text" class="form-control" id="folios" data-ng-model="entry.folios">
+        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['folios'].$valid }">
+            <input type="text" class="form-control" id="folios" name="folios" ng-pattern="/^[0-9]*$/" data-ng-model="entry.folios">
         </div>
         <label for="lines" class="col-sm-1 control-label">
             <span sdbm-tooltip="entry_lines">Lines</span>
         </label>
-        <div class="col-sm-1">
-            <input type="text" class="form-control" id="num_lines" data-ng-model="entry.num_lines">
+        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['num_lines'].$valid }">
+            <input type="text" class="form-control" id="num_lines" name="num_lines" ng-pattern="/^[0-9]*$/" data-ng-model="entry.num_lines">
         </div>
         <label for="columns" class="col-sm-1 control-label">
             <span sdbm-tooltip="entry_columns">Columns</span>
         </label>
-        <div class="col-sm-1">
-            <input type="text" class="form-control" id="num_columns" data-ng-model="entry.num_columns">
+        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['num_columns'].$valid }">
+            <input type="text" class="form-control" id="num_columns" name="num_columns" ng-pattern="/^[0-9]*$/" data-ng-model="entry.num_columns">
         </div>
     </div>
 
@@ -475,19 +469,19 @@ label.col-sm-2-and-half {
         <label for="height" class="col-sm-2 control-label">
             <span sdbm-tooltip="entry_height">Height (mm)</span>
         </label>
-        <div class="col-sm-1">
-            <input type="text" class="form-control" id="height" data-ng-model="entry.height">
+        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['height'].$valid }">
+            <input type="text" class="form-control" id="height" name="height" ng-pattern="/^[0-9]*$/" data-ng-model="entry.height">
         </div>
         <label for="width" class="col-sm-1 control-label">
             <span sdbm-tooltip="entry_width">Width (mm)</span>
         </label>
-        <div class="col-sm-1">
-            <input type="text" class="form-control" id="width" data-ng-model="entry.width">
+        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['width'].$valid }">
+            <input type="text" class="form-control" id="width" name="width" ng-pattern="/^[0-9]*$/" data-ng-model="entry.width">
         </div>
         <label for="alt_size" class="col-sm-1 control-label">
             <span sdbm-tooltip="entry_alt_size">Alt Size</span>
         </label>
-        <div class="col-sm-3">
+        <div class="col-sm-3"">
             <select name="alt_size" id="alt_size" class="form-control" data-ng-model="entry.alt_size" ng-options="option[0] as option[1] for option in optionsAltSize">
                 <option value=""></option>                
             </select>
@@ -498,26 +492,26 @@ label.col-sm-2-and-half {
         <label for="min_fl" class="col-sm-2 control-label">
             <span sdbm-tooltip="entry_min_fl">Miniatures Full-Page</span>
         </label>
-        <div class="col-sm-1">
-            <input type="text" class="form-control" id="miniatures_fullpage" data-ng-model="entry.miniatures_fullpage">
+        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['miniatures_fullpage'].$valid }">
+            <input type="text" class="form-control" id="miniatures_fullpage" name="miniatures_fullpage" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_fullpage">
         </div>
         <label for="min_lg" class="col-sm-1 control-label">
             <span sdbm-tooltip="entry_min_lg">Large</span>
         </label>
-        <div class="col-sm-1">
-            <input type="text" class="form-control" id="miniatures_large" data-ng-model="entry.miniatures_large">
+        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['miniatures_large'].$valid }">
+            <input type="text" class="form-control" id="miniatures_large" name="miniatures_large" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_large">
         </div>
         <label for="min_sm" class="col-sm-1 control-label">
             <span sdbm-tooltip="entry_min_sm">Small</span>
         </label>
-        <div class="col-sm-1">
-            <input type="text" class="form-control" id="miniatures_small" data-ng-model="entry.miniatures_small">
+        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['miniatures_small'].$valid }">
+            <input type="text" class="form-control" id="miniatures_small" name="miniatures_small" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_small">
         </div>
         <label for="min_un" class="col-sm-1 control-label">
             <span sdbm-tooltip="entry_min_un">Unspecified</span>
         </label>
-        <div class="col-sm-1">
-            <input type="text" class="form-control" id="miniatures_unspec_size" data-ng-model="entry.miniatures_unspec_size">
+        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['miniatures_unspec_size'].$valid }">
+            <input type="text" class="form-control" id="miniatures_unspec_size" name="miniatures_unspec_size" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_unspec_size">
         </div>
     </div>
 
@@ -525,14 +519,14 @@ label.col-sm-2-and-half {
         <label for="initials_historiated" class="col-sm-2 control-label">
             <span sdbm-tooltip="entry_initials_historiated">Initials Historiated</span>
         </label>
-        <div class="col-sm-1">
-            <input type="text" class="form-control" id="initials_historiated" data-ng-model="entry.initials_historiated">
+        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['initials_historiated'].$valid }">
+            <input type="text" class="form-control" id="initials_historiated" name="initials_historiated" ng-pattern="/^[0-9]*$/" data-ng-model="entry.initials_historiated">
         </div>
         <label for="initials_decorated" class="col-sm-1 control-label">
             <span sdbm-tooltip="entry_initials_decorated">Decorated</span>
         </label>
-        <div class="col-sm-1">
-            <input type="text" class="form-control" id="initials_decorated" data-ng-model="entry.initials_decorated">
+        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['initials_decorated'].$valid }">
+            <input type="text" class="form-control" id="initials_decorated" name="initials_decorated" ng-pattern="/^[0-9]*$/" data-ng-model="entry.initials_decorated">
         </div>
     </div>
 
@@ -689,13 +683,7 @@ label.col-sm-2-and-half {
       </div>
     </div>
 
-    <div class="row" style="padding-top: 20px;">
-      <div class="col-sm-2"></div>
-        <div class="col-sm-10">
-            <button class="btn btn-primary save-button" ng-click="save()" ng-disabled="currentlySaving">Save</button>
-            <a class="btn btn-warning" href="/dashboard">Cancel</a>
-        </div>
-    </div>
+    <%= render partial: "edit_buttons" %>
 
     <div class="spacer-40px"/>
 

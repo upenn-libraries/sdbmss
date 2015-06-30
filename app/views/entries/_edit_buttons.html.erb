@@ -1,0 +1,12 @@
+    <div class="row" style="padding-top: 20px;">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-2">
+            <button class="btn btn-primary save-button" ng-click="save()" ng-disabled="entryForm.$invalid || currentlySaving">Save</button>
+            <a class="btn btn-warning" href="/dashboard">Cancel</a>
+        </div>
+        <div class="col-sm-8 label-alignment">
+            <div ng-show="entryForm.$invalid" style="color: red;">
+                You must correct the form inputs highlighted in red before you can save this form.
+            </div>
+        </div>
+    </div>
