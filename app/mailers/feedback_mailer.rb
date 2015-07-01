@@ -1,5 +1,5 @@
 
-class FeedbackMailer < ApplicationMailer
+class FeedbackMailer < ActionMailer::Base
 
   def feedback_email(from, subject, body)
     @body = body
