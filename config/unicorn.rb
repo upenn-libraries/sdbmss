@@ -5,3 +5,4 @@ pid Pathname.new(File.expand_path("../../../..", __FILE__)).join("shared", "pids
 
 worker_processes 4
 
+logger Logger.new(File.expand_path("../../log/unicorn.log", __FILE__))
