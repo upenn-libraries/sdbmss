@@ -12,7 +12,7 @@ class FeedbackController < ApplicationController
           from = current_user.email
         end
       end
-      FeedbackMailer.feedback_email(from, subject, message)
+      FeedbackMailer.feedback_email(from, subject, message).deliver_later
       redirect_to :action => "thanks"
     else
       respond_to do |format|
