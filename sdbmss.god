@@ -9,7 +9,7 @@ God.watch do |w|
   w.dir = rails_root
   w.start = "cd #{rails_root} && bundle exec unicorn -c config/unicorn.rb -D"
 
-  unicorn_pid_file = File.expand_path(File.join(rails_root, "../../shared/pids/unicorn.pid"))
+  unicorn_pid_file = "/var/www/sdbmss/shared/pids/unicorn.pid"
 
   # QUIT gracefully shuts down workers
   w.stop = "kill -QUIT `cat #{unicorn_pid_file}`"
