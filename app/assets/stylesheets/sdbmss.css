@@ -12,7 +12,9 @@
 
 #search-navbar { margin-bottom: 10px; }
 
-.search-input-group { width: 60%; }
+#search-navbar .search-query-form { width: 90%; }
+
+.search-input-group { width: 45%; }
 
 .search-form { font-size: 12px; }
 

@@ -1,5 +1,7 @@
 module ApplicationHelper
 
+  CHECKMARK = "\u2713".encode('utf-8')
+
   def format_fuzzy_date(d)
     SDBMSS::Util.format_fuzzy_date(d)
   end
@@ -16,8 +18,12 @@ module ApplicationHelper
   # should contain a key corresponding to a field name, hashed to a
   # search value
   def search_advanced_path(options)
-    checkmark = "\u2713".encode('utf-8')
-    search_action_path({ "utf8" => checkmark, "op" => "AND", "search_field" => "advanced", "commit" => "Search" }.merge(options))
+    search_action_path({ "utf8" => CHECKMARK, "op" => "AND", "search_field" => "advanced", "commit" => "Search" }.merge(options))
+  end
+
+  # this just takes you to a blank search, which shows you all entries ordered by most recent
+  def recent_additions_path
+    search_action_path({ "utf8" => CHECKMARK, "search_field" => "all_fields", "q" => "" })
   end
 
   # returns a URL to use for the data-context-href link attribute, on

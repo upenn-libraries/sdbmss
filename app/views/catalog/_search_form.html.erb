@@ -21,7 +21,8 @@
       </span>
     </div>
 
-    <%# this is really the only part that's different from stock _search_form.html.erb %>
-    <a href="<%= advanced_search_path(params_for_search) %>" class="advanced_search">Advanced search</a>
+    <a href="<%= advanced_search_path(params_for_search) %>" class="advanced_search">Advanced Search</a>
+
+    <a style="margin-left: 20px;" href="<%= recent_additions_path %>" class="recent_additions">Recent Additions</a>
 
     <% end %>
