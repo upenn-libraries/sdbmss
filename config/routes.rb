@@ -59,6 +59,10 @@ Rails.application.routes.draw do
     collection { put 'update_multiple' }
   end
 
+  get '/feedback/', to: 'feedback#index', as: 'feedback'
+  post '/feedback/', to: 'feedback#send_email', as: 'send_feedback'
+  get '/feedback/thanks', to: 'feedback#thanks', as: 'feedback_thanks'
+
   resources :languages do
     collection {
       post 'mark_as_reviewed'

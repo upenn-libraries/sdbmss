@@ -1,0 +1,64 @@
+
+<div class="row">
+    <div class="col-sm-8">
+        <h1>Please Give Us Feedback!</h1>
+
+        <p>
+            Tell us what you like, what you dislike, what you think is
+            missing, what seems broken, and what you find confusing,
+            unexpected, or inconsistent. We especially value specific
+            suggestions on how to make something work better.
+        </p>
+
+        <h2>Option 1: Use our Google Group</h2>
+
+        <p>
+            The best way to provide feedback is to post a message on
+            the <a href="https://groups.google.com/forum/#!forum/new-sdbm-feedback">new-sdbm-feedback</a>
+            Google Group. This requires a Google account, but it is
+            our preferred option, since it allows participants to view
+            and discuss feedback from others.
+        </p>
+
+        <h2>Option 2: Send an Email</h2>
+
+        <p>Send an email to <%= mail_to (ENV.fetch('SDBMSS_EMAIL_FROM') || "Error: email address is not defined!") %>.</p>
+
+        <p>You can also use the form below to send an email.</p>
+
+        <%= form_tag(send_feedback_path, method: :post, class: "form-horizontal") do %>
+            <% if @errors.present? %>
+                <div id="error_explanation" style="color: red">
+                    <ul>
+                        <% @errors.each do |message| %>
+                            <li><%= message %></li>
+                        <% end %>
+                    </ul>
+                </div>
+            <% end %>
+            <div class="field form-group row">
+                <%= label_tag :subject, "Subject", class: "col-sm-2 control-label" %>
+                <div class="col-sm-10">
+                    <%= text_field_tag :subject, nil, :class => 'form-control' %>
+                </div>
+            </div>
+            <div class="field form-group row">
+                <%= label_tag :message, "Message", class: "col-sm-2 control-label" %>
+                <div class="col-sm-10">
+                    <%= text_area_tag :message, nil, :rows => 10, :class => 'form-control' %>
+                </div>
+            </div>
+            <div class="field form-group row">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <%= check_box_tag :anonymous, "1", false %>
+                    Send semi-anonymously
+                </div>
+            </div>
+            <div class="field form-group row">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button class="btn btn-default">Submit Feedback</button>
+                </div>
+            </div>
+        <% end %>
+    </div>
+</div>
