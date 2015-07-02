@@ -7,9 +7,11 @@
             <div class="panel-body">
                 <ul class="nav">
                     <% if user_signed_in? %>
-                    <li class="edit_source">
-                        <a href="<%= edit_source_path(@source.id) %>">Edit this source</a>
-                    </li>
+                        <% if can?(:edit, @source) %>
+                            <li class="edit_source">
+                                <a href="<%= edit_source_path(@source.id) %>">Edit this source</a>
+                            </li>
+                        <% end %>
                     <li class="edit_source">
                         <a href="<%= new_entry_path(source_id: @source) %>">Add entry for this Source</a>
                     </li>
