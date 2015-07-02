@@ -767,7 +767,48 @@ describe "Data entry", :js => true do
     end
 
     it "should validate when saving Entry"
-  end
+
+    it "should let user create an Entry for an existing Manuscript" do
+      entry1 = Entry.create!(
+        source: Source.first,
+        created_by_id: @user.id,
+        approved: true
+      )
+      entry2 = Entry.create!(
+        source: Source.first,
+        created_by_id: @user.id,
+        approved: true
+      )
+      manuscript = Manuscript.create!
+      manuscript_id = manuscript.id
+      EntryManuscript.create!(entry: entry1, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
+      EntryManuscript.create!(entry: entry2, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
+
+      visit manuscript_path(manuscript)
+
+      click_link "Create your own personal observation"
+
+      click_link "Click here to CREATE A NEW SOURCE"
+
+      select 'Auction/Sale Catalog', from: 'source_type'
+      fill_in 'source_date', with: '2015-02-28'
+      fill_in 'title', with: 'Sample Catalog'
+      click_button 'Save'
+
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+
+      click_link "Add entries for this source"
+
+      fill_in 'cat_lot_no', with: '9090'
+
+      first(".save-button").click
+
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+
+      manuscript = Manuscript.find(manuscript_id)
+      expect(manuscript.entries.order(id: :desc).first.catalog_or_lot_number).to eq("9090")
+    end
+end
 
   context "when user is not logged in" do
 
