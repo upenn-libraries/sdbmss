@@ -265,7 +265,11 @@
                         }
                         append_str = errors.join("; ");
                     } else {
-                        append_str = "Server response:" + JSON.stringify(response.data);
+                        var errorData = response.data;
+                        if(errorData && errorData.length > 1000) {
+                            errorData = errorData.substring(0, 1000) + " [truncated] ..."
+                        }
+                        append_str = "Unknown server error:" + SDBM.escapeHtml(errorData);
                     }
                     SDBM.showErrorModal("#modal", msg + ": " + append_str);
                 };
