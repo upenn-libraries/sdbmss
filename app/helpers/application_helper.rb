@@ -23,7 +23,9 @@ module ApplicationHelper
 
   # this just takes you to a blank search, which shows you all entries ordered by most recent
   def recent_additions_path
-    search_action_path({ "utf8" => CHECKMARK, "search_field" => "all_fields", "q" => "" })
+    # don't use search_action_path here; it gets redefined by advanced
+    # search controller, breaking the link on that page
+    root_path({ "utf8" => CHECKMARK, "search_field" => "all_fields", "q" => "" })
   end
 
   # returns a URL to use for the data-context-href link attribute, on
