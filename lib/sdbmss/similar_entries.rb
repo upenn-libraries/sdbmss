@@ -36,7 +36,7 @@ module SDBMSS
     @@scale_to = 10
 
     def initialize strings
-      @strings = strings.map(&:upcase)
+      @strings = strings.select(&:present?).map(&:upcase)
     end
 
     def -(x)
