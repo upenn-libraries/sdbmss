@@ -272,9 +272,9 @@ module SDBMSS
       # 'objects' argument. The code block is a formatter that should
       # return an array of values for the passed-in object.
       def objects_to_csv(headers=nil, objects, &block)
-        csv_data = CSV.generate_line headers
+        csv_data = ::CSV.generate_line headers
         objects.each do |object|
-          csv_data << CSV.generate_line(yield(object))
+          csv_data << ::CSV.generate_line(yield(object))
         end
         csv_data
       end
