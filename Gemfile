@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~>4.2.1'
+gem 'rails', '~>4.2.3'
 
 # Use sqlite3 as the database for Active Record
 # gem 'sqlite3', group: :development
 
-gem 'mysql2', '~> 0.3.0'
+gem 'mysql2', '~> 0.3.18'
 
 # XML parsing. Other gems require nokogiri as well, but we may as well
 # require it too.
@@ -38,14 +38,14 @@ gem 'jbuilder', '~> 2.2.0'
 # gem 'bcrypt', '~> 3.1.7'
 
 # Use unicorn as the app server
-gem 'unicorn', '~> 4.8.0'
+gem 'unicorn', '~> 4.9.0'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
 # Blacklight
-gem "blacklight", "~> 5.13.0"
-gem "jettywrapper", "~> 1.8.0"
+gem "blacklight", "~> 5.14.0"
+gem "jettywrapper", "~> 2.0.3"
 gem "blacklight_advanced_search", "~> 5.1.3"
 
 # For authentication; used by Blacklight and by SDBMSS
@@ -53,7 +53,7 @@ gem "devise", "~> 3.4.0"
 gem "devise-guests", "~> 0.3.0"
 
 # For roles and permissions checking
-gem "cancancan", "~> 1.10.1"
+gem "cancancan", "~> 1.12.0"
 
 # For indexing records in Solr
 gem 'sunspot_rails', '~> 2.2.0'
