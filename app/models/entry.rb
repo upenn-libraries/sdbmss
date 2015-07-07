@@ -25,8 +25,6 @@ class Entry < ActiveRecord::Base
 
   include UserFields
 
-  default_scope { where(deleted: false) }
-
   belongs_to :source, counter_cache: :entries_count
 
   # entries have institution/collection for "Other published sources" only
@@ -87,6 +85,8 @@ class Entry < ActiveRecord::Base
     ]
   ]
 
+  default_scope { where(deleted: false) }
+
   # aggressively load all associations; useful for cases where you
   # want to display the complete info for Entries
   scope :with_associations, -> {
@@ -101,6 +101,8 @@ class Entry < ActiveRecord::Base
 
   # an agent is a Name object; role is a string
   scope :with_transaction_agent_and_role, ->(agent, role) { joins(:events => :event_agents).where("events.primary = true and event_agents.agent_id = ? and role = ?", agent.id, role) }
+
+  scope :approved_only, -> { where(approved: true) }
 
   has_paper_trail skip: [:created_at, :updated_at]
 
