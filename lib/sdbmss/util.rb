@@ -183,9 +183,9 @@ module SDBMSS
 
         circa = !! (/circa/.match(date_str) || /ca\./.match(date_str) || /about/.match(date_str))
 
-        # match any 4-digit number in the str or test if entire str is
-        # a number
+        # match a year in the str or test if entire str is a year
         if (exact_date_match = /(\d{4})/.match(date_str)).present? ||
+           (exact_date_match = /(\d{3})/.match(date_str)).present? ||
            (exact_date_match = /^(\d{4})$/.match(date_str)).present? ||
            (exact_date_match = /^(\d{3})$/.match(date_str)).present? ||
            (exact_date_match = /^(\d{2})$/.match(date_str)).present?

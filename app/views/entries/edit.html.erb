@@ -335,10 +335,10 @@ label.col-sm-2-and-half {
             <span sdbm-tooltip="entry_date_for_search">Date for Search</span>
         </label>
         <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['date_normalized_start_' + $index].$valid }">
-            <input id="date_normalized_start_{{ $index }}" name="date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" ng-required="!!entry_date.date_normalized_end" data-ng-model="entry_date.date_normalized_start">
+            <input id="date_normalized_start_{{ $index }}" name="date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_start">
         </div>
         <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['date_normalized_end_' + $index].$valid }">
-            <input id="date_normalized_end_{{ $index }}" name="date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" ng-required="!!entry_date.date_normalized_start" data-ng-model="entry_date.date_normalized_end">
+            <input id="date_normalized_end_{{ $index }}" name="date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_end">
         </div>
 
     </div>
