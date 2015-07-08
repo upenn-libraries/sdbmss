@@ -73,6 +73,7 @@ class Event < ActiveRecord::Base
     # provenance records, the date fields are "as observed" fields.
     # TODO: this might be bad, since now start_date means 2 different
     # things; maybe we should have a separate sale_date field?
+    # provenance records, the date fields are "as observed" fields
     if self.primary
       if self.start_date
         self.start_date.gsub!("-", "")
