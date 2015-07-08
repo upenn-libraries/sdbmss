@@ -1,7 +1,10 @@
 require 'chronic'
 
-# Important note about dates:
-
+# Important notes about dates:
+#
+# In this model, The date range fields for searching are in years only
+# (YYYY).
+#
 # The date range represented by the date_normalized_start and
 # date_normalized_end fields are end-exclusive: ie. a value falls
 # within the range if start <= value < end. We do this to avoid

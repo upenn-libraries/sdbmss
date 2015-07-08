@@ -1,3 +1,6 @@
+
+# In this model, the date range fields for searching are whole dates
+# (YYYY-MM-DD).
 class Event < ActiveRecord::Base
 
   CURRENCY_TYPES = [
