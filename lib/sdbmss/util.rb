@@ -265,7 +265,7 @@ module SDBMSS
       # Array of start and end dates in the form YYYY-MM-DD (i.e
       # ["1830-06-01", "1830-06-31"]). If date string isn't parseable,
       # returns nil.
-      def parse_month_and_year(date_str)
+      def parse_month_and_year_into_date_range(date_str)
         month, year = nil, nil
         (1..12).each do |i|
           m = Date::MONTHNAMES[i]
@@ -289,7 +289,7 @@ module SDBMSS
 
         if month.present? && year.present?
           start_date = DateTime.new(year, month, 1)
-          end_date = Date.civil(year, month, -1)
+          end_date = Date.civil(year, month, -1) + 1.day
           return [start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d")]
         end
         return nil

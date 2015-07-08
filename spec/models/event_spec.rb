@@ -88,7 +88,7 @@ describe Event do
     end
 
     it "parses a month and year" do
-      expect(Event.parse_observed_date("June 1302")).to eq(["1302-06-01", "1302-06-30"])
+      expect(Event.parse_observed_date("June 1302")).to eq(["1302-06-01", "1302-07-01"])
     end
 
     it "parses an exact date" do
