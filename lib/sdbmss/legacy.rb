@@ -142,11 +142,11 @@ module SDBMSS::Legacy
       end
 
       if circa == '+' || circa == 'after'
-        return EntryDate.normalize_date("after #{date}")
+        return EntryDate.parse_observed_date("after #{date}")
       elsif circa == '-' || circa == 'before'
-        return EntryDate.normalize_date("before #{date}")
+        return EntryDate.parse_observed_date("before #{date}")
       elsif circa == '+/-' || circa == 'c+/-'
-        return EntryDate.normalize_date("circa #{date}")
+        return EntryDate.parse_observed_date("circa #{date}")
       elsif circa.present?
         if date.present?
           before = !! /-/.match(circa)
@@ -161,54 +161,54 @@ module SDBMSS::Legacy
 
             case circa_without_modifier
             when 'C'
-              start_date, end_date = EntryDate.normalize_date("circa #{date}")
+              start_date, end_date = EntryDate.parse_observed_date("circa #{date}")
             when 'CCENT'
               # note: we treat 'CCENT 1200' as meaning the 13th
               # century though it's ambiguous (could be used to mean
               # 12th century)
-              start_date, end_date = EntryDate.normalize_date("#{century} century")
+              start_date, end_date = EntryDate.parse_observed_date("#{century} century")
             when 'C1H'
               if decade.to_i <= 50
-                start_date, end_date = EntryDate.normalize_date("first half of #{century} century")
+                start_date, end_date = EntryDate.parse_observed_date("first half of #{century} century")
               else
                 date_is_out_of_circa_period = true
               end
             when 'C2H'
               if decade.to_i >= 50
-                start_date, end_date = EntryDate.normalize_date("second half of #{century} century")
+                start_date, end_date = EntryDate.parse_observed_date("second half of #{century} century")
               else
                 date_is_out_of_circa_period = true
               end
             when 'C1Q'
               if (decade.to_i >= 0 && decade.to_i <= 25) || decade.to_i == 50
-                start_date, end_date = EntryDate.normalize_date("first quarter of #{century} century")
+                start_date, end_date = EntryDate.parse_observed_date("first quarter of #{century} century")
               else
                 date_is_out_of_circa_period = true
               end
             when 'C2Q'
               if (decade.to_i >= 25 && decade.to_i <= 50) || decade.to_i == 50
-                start_date, end_date = EntryDate.normalize_date("second quarter of #{century} century")
+                start_date, end_date = EntryDate.parse_observed_date("second quarter of #{century} century")
               else
                 date_is_out_of_circa_period = true
               end
             when 'C3Q'
               if (decade.to_i >= 50 && decade.to_i <= 75) || decade.to_i == 50
-                start_date, end_date = EntryDate.normalize_date("third quarter of #{century} century")
+                start_date, end_date = EntryDate.parse_observed_date("third quarter of #{century} century")
               else
                 date_is_out_of_circa_period = true
               end
             when 'C4Q'
               if (decade.to_i >= 75 && decade.to_i <= 99) || decade.to_i == 50
-                start_date, end_date = EntryDate.normalize_date("fourth quarter of #{century} century")
+                start_date, end_date = EntryDate.parse_observed_date("fourth quarter of #{century} century")
               else
                 date_is_out_of_circa_period = true
               end
             when 'CEARLY'
-              start_date, end_date = EntryDate.normalize_date("early #{century} century")
+              start_date, end_date = EntryDate.parse_observed_date("early #{century} century")
             when 'CMID'
-              start_date, end_date = EntryDate.normalize_date("mid #{century} century")
+              start_date, end_date = EntryDate.parse_observed_date("mid #{century} century")
             when 'CLATE'
-              start_date, end_date = EntryDate.normalize_date("late #{century} century")
+              start_date, end_date = EntryDate.parse_observed_date("late #{century} century")
             end
 
             # if date value is weirdly outside the circa period,
@@ -225,7 +225,7 @@ module SDBMSS::Legacy
                 end_date = (start_date.to_i + 100).to_s
               else
                 # we want "ccent+ 1250" to normalize to "13th to 14th century"
-                end_date = EntryDate.normalize_date("#{century.to_i + 1} century")[1]
+                end_date = EntryDate.parse_observed_date("#{century.to_i + 1} century")[1]
               end
             end
           else

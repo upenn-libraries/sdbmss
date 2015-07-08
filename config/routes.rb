@@ -51,12 +51,18 @@ Rails.application.routes.draw do
 
   resources :entry_dates do
     collection {
-      get 'normalize'
+      get 'parse_observed_date'
     }
   end
 
   resources :entry_manuscripts do
     collection { put 'update_multiple' }
+  end
+
+  resources :events do
+    collection {
+      get 'parse_observed_date'
+    }
   end
 
   get '/feedback/', to: 'feedback#index', as: 'feedback'

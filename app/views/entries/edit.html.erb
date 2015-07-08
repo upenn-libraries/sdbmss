@@ -326,7 +326,7 @@ label.col-sm-2-and-half {
         </label>
         <div class="col-sm-4-and-half">
             <div class="input-group">
-                <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}">
+                <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/entry_dates/parse_observed_date.json">
                 <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
             </div>
         </div>
@@ -616,7 +616,7 @@ label.col-sm-2-and-half {
             <span sdbm-tooltip="entry_provenance_start_date_as_recorded">Start Date As Recorded</span>
         </label>
       <div class="col-sm-3-and-half">
-        <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date" sdbm-approximate-date-string="start_date_normalized_start_{{ $index }}, start_date_normalized_end_{{ $index }}">
+        <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date" sdbm-approximate-date-string="start_date_normalized_start_{{ $index }}, start_date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/events/parse_observed_date.json">
       </div>
       <label class="col-sm-2 control-label">
           <span sdbm-tooltip="entry_provenance_start_date_for_search">Start Date for Search</span>
@@ -634,7 +634,7 @@ label.col-sm-2-and-half {
             <span sdbm-tooltip="entry_provenance_end_date_as_recorded">End Date As Recorded</span>
         </label>
       <div class="col-sm-3-and-half">
-        <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date" sdbm-approximate-date-string="end_date_normalized_start_{{ $index }}, end_date_normalized_end_{{ $index }}">
+        <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date" sdbm-approximate-date-string="end_date_normalized_start_{{ $index }}, end_date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/events/parse_observed_date.json">
       </div>
       <label class="col-sm-2 control-label">
           <span sdbm-tooltip="entry_provenance_end_date_for_search">End Date for Search</span>

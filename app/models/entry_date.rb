@@ -30,22 +30,21 @@ class EntryDate < ActiveRecord::Base
 
   has_paper_trail skip: [:created_at, :updated_at]
 
-  # returns a 2-item Array with start_date and end_date
-  def self.normalize_date(date_str)
-
+  # returns a 2-item Array with start_date and end_date in the format
+  # YYYY.
+  def self.parse_observed_date(date_str)
     date_str = date_str.strip
 
     # if entire str is a number, return it
     if (exact_date_match = /^(\d{1,4})$/.match(date_str)).present?
       year = exact_date_match[1]
       return [year, (year.to_i + 1).to_s]
-    elsif SDBMSS::Util.resembles_approximate_date_str(date_str)
-      date = SDBMSS::Util.normalize_approximate_date_str_to_year_range(date_str)
-      return [date[0], date[1]]
+    elsif (dates = SDBMSS::Util.parse_approximate_date_str_into_year_range(date_str)).present?
+      return [dates[0], dates[1]]
     else
       parsed = Chronic.parse(date_str)
       if parsed.present?
-        return [parsed.strftime("%Y-%m-%d"), (parsed + 1.day).strftime("%Y-%m-%d")]
+        return [parsed.strftime("%Y"), (parsed + 1.year).strftime("%Y")]
       end
     end
     return [nil, nil]
@@ -57,7 +56,7 @@ class EntryDate < ActiveRecord::Base
   # import/migration scripts after setting observed_date.
   def normalize_observed_date
     if observed_date.present?
-      start_date, end_date = self.class.normalize_date(observed_date)
+      start_date, end_date = self.class.parse_observed_date(observed_date)
       self.date_normalized_start = start_date
       self.date_normalized_end = end_date
     end

@@ -131,19 +131,12 @@ module SDBMSS
         d && d.length == 8 ? d.slice(0, 4) + "-" + d.slice(4, 2) + "-" + d.slice(6, 2) : d
       end
 
-      # does a preliminary check and returns true if str is parseable
-      # by #normalize_approximate_date_str_to_year_range
-      def resembles_approximate_date_str(date_str)
-        /(about|circa|ca|before|after|early|mid|late|cent|c\.|to)/.match(date_str).present? ||
-          /\d{3,}s/.match(date_str).present?
-      end
-
       # Takes a date_str like 'early 19th century' and returns a
       # normalized year range for it, like ['1800', '1825']. returns nil if date
       # str can't be normalized.
       #
       # TODO: handle negative dates
-      def normalize_approximate_date_str_to_year_range(date_str)
+      def parse_approximate_date_str_into_year_range(date_str)
 
         date_str = date_str.strip
 
@@ -151,15 +144,15 @@ module SDBMSS
         if / to /.match(date_str)
           pieces = date_str.split(/\s+to\s+/)
           if pieces.length == 2
-            start_date_range = normalize_approximate_date_str_to_year_range(pieces[0])
-            end_date_range = normalize_approximate_date_str_to_year_range(pieces[1])
+            start_date_range = parse_approximate_date_str_into_year_range(pieces[0])
+            end_date_range = parse_approximate_date_str_into_year_range(pieces[1])
             return [start_date_range[0], end_date_range[1] || end_date_range[0]]
           end
         end
 
         # handle case of something like 1860s.
         # this always assumes decade granularity: ie. 900s means the 1st decade of 10th century
-        if /\ds/.match(date_str)
+        if /^\d+s$/.match(date_str)
           start_date = date_str.sub('s', '')
           end_date = nil
           if start_date[-1] == '0'
@@ -173,26 +166,35 @@ module SDBMSS
         # with +/- 100 years to prevent odd search results
         # (ie. searching for 1500-1600 probably shouldn't pick up "after 1000")
         if /before/.match(date_str)
-          range = normalize_approximate_date_str_to_year_range(date_str.sub('before', '').strip)
+          range = parse_approximate_date_str_into_year_range(date_str.sub('before', '').strip)
           return [(range[1].to_i - 100).to_s, range[1]]
         end
         if /after/.match(date_str)
-          range = normalize_approximate_date_str_to_year_range(date_str.sub('after', '').strip)
+          range = parse_approximate_date_str_into_year_range(date_str.sub('after', '').strip)
           return [range[0], (range[0].to_i + 100).to_s]
         end
 
-        circa = !! (/circa/.match(date_str) || /ca\./.match(date_str) || /about/.match(date_str))
+        # handle circa and exact years
+        circa = false
+        date_str_without_circa = date_str.dup
+        ["circa", "ca.", "about"].each do |circa_str|
+          match = /#{circa_str}/.match(date_str)
+          if !circa && match.present?
+            circa = true
+            date_str_without_circa = date_str.sub(circa_str, "").strip
+          end
+        end
 
-        # match a year in the str or test if entire str is a year
-        if (exact_date_match = /(\d{4})/.match(date_str)).present? ||
-           (exact_date_match = /(\d{3})/.match(date_str)).present? ||
-           (exact_date_match = /^(\d{4})$/.match(date_str)).present? ||
-           (exact_date_match = /^(\d{3})$/.match(date_str)).present? ||
-           (exact_date_match = /^(\d{2})$/.match(date_str)).present?
+        # handle case of a year in the str / entire str is a year
+        if (exact_date_match = /^(\d{4})$/.match(date_str_without_circa)).present? ||
+           (exact_date_match = /^(\d{3})$/.match(date_str_without_circa)).present? ||
+           (exact_date_match = /^(\d{2})$/.match(date_str_without_circa)).present?
           year = exact_date_match[1]
           buffer = circa ? 10 : 0;
           return [(year.to_i - buffer).to_s, (year.to_i + 1 + buffer).to_s]
         end
+
+        # rest of this block handles centuries
 
         start_date, end_date = nil, nil
 
@@ -256,7 +258,41 @@ module SDBMSS
           end
         end
 
-        [ start_date, end_date ]
+        start_date.present? ? [ start_date, end_date ] : nil
+      end
+
+      # parse a month and year string (ie. "June 1830") into 2-item
+      # Array of start and end dates in the form YYYY-MM-DD (i.e
+      # ["1830-06-01", "1830-06-31"]). If date string isn't parseable,
+      # returns nil.
+      def parse_month_and_year(date_str)
+        month, year = nil, nil
+        (1..12).each do |i|
+          m = Date::MONTHNAMES[i]
+          if (match = /#{m}/i.match(date_str)).present?
+            month = i
+            date_str = date_str.sub(match[0], "").strip
+          end
+        end
+        if month.blank?
+          (1..12).each do |i|
+            m = Date::ABBR_MONTHNAMES[i]
+            if (match = /#{m}/i.match(date_str)).present?
+              month = i
+              date_str = date_str.sub(match[0], "").strip
+            end
+          end
+        end
+        if (match = /^(\d+)$/.match(date_str)).present?
+          year = match[1].to_i
+        end
+
+        if month.present? && year.present?
+          start_date = DateTime.new(year, month, 1)
+          end_date = Date.civil(year, month, -1)
+          return [start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d")]
+        end
+        return nil
       end
 
       # helper method for solr indexing

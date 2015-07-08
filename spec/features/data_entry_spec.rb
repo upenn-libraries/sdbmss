@@ -391,8 +391,8 @@ describe "Data entry", :js => true do
       fill_in 'manuscript_link', with: 'http://something.com'
       fill_in 'other_info', with: 'Other stuff'
 
-      fill_in 'provenance_start_date_0', with: '19450615'
-      fill_in 'provenance_end_date_0', with: '19651123'
+      fill_in 'provenance_start_date_0', with: '1945-06-15'
+      fill_in 'provenance_end_date_0', with: '1965-11-23'
       fill_autocomplete_select_or_create_entity 'provenance_selling_agent_0', with: "Sotheby's"
       fill_in 'provenance_selling_agent_observed_name_0', with: "Sotheby's Fine Things"
       fill_autocomplete_select_or_create_entity 'provenance_seller_or_holder_0', with: 'Somebody, Joseph'
@@ -470,8 +470,12 @@ describe "Data entry", :js => true do
       expect(entry.other_info).to eq('Other stuff')
 
       provenance = entry.provenance.first
-      expect(provenance.start_date).to eq('19450615')
-      expect(provenance.end_date).to eq('19651123')
+      expect(provenance.start_date).to eq('1945-06-15')
+      expect(provenance.end_date).to eq('1965-11-23')
+      expect(provenance.start_date_normalized_start).to eq('1945-06-15')
+      expect(provenance.start_date_normalized_end).to eq('1945-06-16')
+      expect(provenance.end_date_normalized_start).to eq('1965-11-23')
+      expect(provenance.end_date_normalized_end).to eq('1965-11-24')
       expect(provenance.get_selling_agent.agent.name).to eq("Sotheby's")
       expect(provenance.get_selling_agent.observed_name).to eq("Sotheby's Fine Things")
       expect(provenance.get_seller_or_holder.agent.name).to eq('Somebody, Joseph')

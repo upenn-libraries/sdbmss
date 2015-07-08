@@ -45,17 +45,44 @@ class Event < ActiveRecord::Base
 
   has_paper_trail skip: [:created_at, :updated_at]
 
+  # Returns a 2-item Array with start_date and end_date in the format
+  # YYYY or YYYY-MM-DD, depending on how much information is in the
+  # approximate date string.
+  def self.parse_observed_date(date_str)
+    date_str = date_str.strip
+
+    # if entire str is a number, return it
+    if (exact_date_match = /^(\d{1,4})$/.match(date_str)).present?
+      year = exact_date_match[1]
+      return [year, (year.to_i + 1).to_s]
+    elsif (dates = SDBMSS::Util.parse_month_and_year(date_str)).present?
+      return [dates[0], dates[1]]
+    elsif (dates = SDBMSS::Util.parse_approximate_date_str_into_year_range(date_str)).present?
+      return [dates[0], dates[1]]
+    else
+      parsed = Chronic.parse(date_str)
+      if parsed.present?
+        return [parsed.strftime("%Y-%m-%d"), (parsed + 1.day).strftime("%Y-%m-%d")]
+      end
+    end
+    return [nil, nil]
+  end
+
   def normalize
-    if self.start_date
-      self.start_date.gsub!("-", "")
+    # only normalize dates for Transaction records, since for
+    # provenance records, the date fields are "as observed" fields
+    if self.primary
+      if self.start_date
+        self.start_date.gsub!("-", "")
+      end
+      if self.end_date
+        self.end_date.gsub!("-", "")
+      end
+      self.start_date_normalized_start = SDBMSS::Util.normalize_fuzzy_date(start_date_normalized_start)
+      self.start_date_normalized_end = SDBMSS::Util.normalize_fuzzy_date(start_date_normalized_end)
+      self.end_date_normalized_start = SDBMSS::Util.normalize_fuzzy_date(end_date_normalized_start)
+      self.end_date_normalized_end = SDBMSS::Util.normalize_fuzzy_date(end_date_normalized_end)
     end
-    if self.end_date
-      self.end_date.gsub!("-", "")
-    end
-    self.start_date_normalized_start = SDBMSS::Util.normalize_fuzzy_date(start_date_normalized_start)
-    self.start_date_normalized_end = SDBMSS::Util.normalize_fuzzy_date(start_date_normalized_end)
-    self.end_date_normalized_start = SDBMSS::Util.normalize_fuzzy_date(end_date_normalized_start)
-    self.end_date_normalized_end = SDBMSS::Util.normalize_fuzzy_date(end_date_normalized_end)
   end
 
   def get_event_agent_with_role(role)
