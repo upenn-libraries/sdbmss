@@ -1108,10 +1108,12 @@
     });
 
     // attribute value should be the two IDs, comma-separated, of the
-    // elements to populate with normalized dates
+    // elements to populate with normalized dates.
     sdbmApp.directive("sdbmApproximateDateString", function ($http) {
         return function (scope, element, attrs) {
             var targets = attrs.sdbmApproximateDateString;
+            var url = attrs.sdbmApproximateDateStringUrl;
+
             var targetIds = targets.split(",").map(function (s) { return s.trim(); });
             var startTargetId = targetIds[0];
             var endTargetId = targetIds[1];
@@ -1123,7 +1125,7 @@
             $(element).focusout(function(event) {
                 var observedDate = $(element).val();
                 if(observedDate && !areTargetsPopulated()) {
-                    $http.get("/entry_dates/normalize.json", {
+                    $http.get(url , {
                         params: {
                             date: observedDate
                         }
