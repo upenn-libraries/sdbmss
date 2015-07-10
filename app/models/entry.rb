@@ -115,10 +115,15 @@ class Entry < ActiveRecord::Base
 
   validate do |entry|
     if entry.transaction_type
+      source_type = entry.source.source_type
       # validate transaction_type based on source_type
-      transaction_field = entry.source.source_type.entries_transaction_field
+      transaction_field = source_type.entries_transaction_field
       if transaction_field != 'choose' && entry.transaction_type != transaction_field
         errors[:transaction_type] = "transaction_type '#{entry.transaction_type}' isn't valid for source type '#{entry.source.source_type.name}'"
+      end
+      entries_have_institution_field = source_type.entries_have_institution_field
+      if !entries_have_institution_field && entry.institution
+        errors[:institution] = "institution field has '#{entry.institution}' but isn't allowed to be populated for source type '#{entry.source.source_type.name}'"
       end
       # make sure it's one of the listed values
       if !TYPES_TRANSACTION.map(&:first).member?(entry.transaction_type)
