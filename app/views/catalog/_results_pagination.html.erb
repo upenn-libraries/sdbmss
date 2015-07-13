@@ -1,0 +1,17 @@
+<div class="row record-padding">
+    <div class="col-md-9">
+        <% if show_pagination? and @response.total_pages > 1 %>
+            <div class="pagination">
+                <%= paginate @response, :outer_window => 2, :theme => 'blacklight' %>
+            </div>
+        <% end %>
+    </div>
+    <div class="col-md-3">
+        <% if !@response.empty? %>
+        <!-- line up this text with pagination -->
+        <div style="margin: 40px 0; line-height: 1.42857; text-align: right;">
+            <a class="btn btn-default export-csv" href="<%= search_results_as_csv_path %>">Download results as CSV</a>
+        </div>
+        <% end %>
+    </div>
+</div>

@@ -21,7 +21,7 @@ module ResourceSearch
   end
 
   def search_results_max
-    5000
+    Rails.configuration.sdbmss_max_search_results
   end
 
   def search_name_field

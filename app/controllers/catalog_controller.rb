@@ -76,4 +76,28 @@ class CatalogController < ApplicationController
     solr_params
   end
 
+  # required by CatalogControllerConfiguration
+  def search_results_max
+    Rails.configuration.sdbmss_max_search_results
+  end
+
+  # required by CatalogControllerConfiguration
+  def search_model_class
+    Entry
+  end
+
+  # returns a URL for the current search, in CSV format. I's safe to
+  # embed this URL in a page; if users manually tweak the per_page
+  # param to try to get more results, blacklight will complain, since
+  # the max is specified in the BL config.
+  def search_results_as_csv_path
+    p = params.dup
+    p.delete "page"
+    p["per_page"] = search_results_max
+    p["format"] = "csv"
+    search_action_path(p)
+  end
+
+  helper_method :search_results_as_csv_path
+
 end

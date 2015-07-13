@@ -45,6 +45,8 @@ describe "Blacklight Search", :js => true do
     Entry.all.order(id: :desc).limit(5).each do |entry|
       expect(page).to have_link(entry.public_id)
     end
+
+    expect(page).to have_selector(".export-csv")
   end
 
   it "should display results for an Author facet" do
