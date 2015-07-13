@@ -189,8 +189,6 @@
      };
 
      ManageEntries.prototype.exportCSV = function () {
-         var qs = new URI().query(true);
-
          var params = manageEntries.getSearchFields();
          params["search_field"] = "advanced";
          params["per_page"] = <%= Rails.configuration.sdbmss_max_search_results %>;
