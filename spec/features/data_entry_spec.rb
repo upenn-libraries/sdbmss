@@ -543,6 +543,15 @@ describe "Data entry", :js => true do
       expect(source.status).to eq(Source::TYPE_STATUS_PARTIALLY_ENTERED)
     end
 
+    it "should show creator on Edit page" do
+      entry = Entry.last
+
+      visit edit_entry_path :id => entry.id
+
+      expect(page).to have_content "About This Entry Record"
+      expect(page).to have_content "by #{entry.created_by.username}"
+    end
+
     it "should preserve entry on Edit page when saving without making any changes" do
       count = Entry.count
 
