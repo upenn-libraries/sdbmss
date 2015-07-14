@@ -24,7 +24,7 @@
         <div class="form-group row">
             <label class="col-sm-2 control-label">Name</label>
             <div class="col-sm-5">
-                <input type="text" class="form-control" ng-model="entity.name">
+                <input type="text" name="name" class="form-control" ng-model="entity.name">
             </div>
             <div class="col-sm-3">
                 <button ng-click="findSuggestions(entity.name)" ng-disabled="loading" class="btn btn-primary">Find suggestions</button>
@@ -75,7 +75,7 @@
         
     </div>
     <div class="modal-footer">
-        <button class="btn btn-primary" ng-click="save()" ng-show="readyToCreate">Create</button>
+        <button class="btn btn-primary create-name-button" ng-click="save()" ng-show="readyToCreate">Create</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>

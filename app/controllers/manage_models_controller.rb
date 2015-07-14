@@ -65,7 +65,7 @@ class ManageModelsController < ApplicationController
           render 'new'
         }
         format.json {
-          render json: @model
+          render status: :bad_request, json: { errors: @model.errors.messages }
         }
       end
     end

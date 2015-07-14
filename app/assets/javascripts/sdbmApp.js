@@ -197,6 +197,25 @@
             return path;
         };
 
+        /* 'errors' is a data structure found in a Rails model
+         * object's model.errors.messages attribute when validation fails
+         * for it. This fn transforms that data structure into an array
+         * of strings.
+         */
+        var parseRailsErrors = function(errors) {
+            var strings = [];
+            if(errors) {
+                for(var key in errors) {
+                    if(key === 'base') {
+                        strings.push(errors[key]);
+                    } else {
+                        strings.push(key + " " + errors[key]);
+                    }
+                }
+            }
+            return strings;
+        };
+
         return {
             /* returns a printable (ie. for use with console.log),
              * snapshot the passed-in object. This exists because if
@@ -220,6 +239,7 @@
                     }
                 });
             },
+            parseRailsErrors: parseRailsErrors,
             /*
              * assoc = a data object describing associations contained in objectWithAssociations
              */
@@ -255,14 +275,7 @@
                     var append_str = "";
                     if(response.data && response.data.errors) {
                         // interpret Rails validation errors
-                        var errors = [];
-                        for(var key in response.data.errors) {
-                            if(key === 'base') {
-                                errors.push(response.data.errors[key]);
-                            } else {
-                                errors.push(key + " " + response.data.errors[key]);
-                            }
-                        }
+                        var errors = parseRailsErrors(response.data.errors);
                         append_str = errors.join("; ");
                     } else {
                         var errorData = response.data;
@@ -1401,7 +1414,7 @@
     // you to search for a database object and create one. Specialized
     // controllers should call this fn and modify/supply anything in
     // $scope it needs to.
-    var baseCreateEntityModalCtrl = function ($scope, $http, $modalInstance) {
+    var baseCreateEntityModalCtrl = function ($scope, $http, $modalInstance, sdbmutil) {
 
         $scope.readyToCreate = true;
         $scope.saveError = null;
@@ -1420,7 +1433,7 @@
                     $modalInstance.close(entity);
                 },
                 function(response) {
-                    $scope.saveError = response.data.error || "Unknown Error";
+                    $scope.saveError = sdbmutil.parseRailsErrors(response.data.errors).join("; ") || "Unknown Error";
                 }
             );
         };

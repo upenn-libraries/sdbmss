@@ -33,6 +33,22 @@ class Name < ActiveRecord::Base
     if !(name_obj.is_artist || name_obj.is_author || name_obj.is_scribe || name_obj.is_provenance_agent)
       errors[:base] << "Name objects must have at least one flag set"
     end
+
+    if name_obj.name.present? && (!name_obj.persisted? || name_obj.name_changed?)
+      if (existing_name = self.class.find_by(name: name_obj.name)).present?
+        errors[:name] << "is already used by record ##{existing_name.id} for '#{existing_name.name}'"
+      elsif self.class.unscoped.exists?(name: name_obj.name, deleted: true)
+        errors[:name] << "is already used by a record that has been deleted"
+      end
+    end
+
+    if name_obj.viaf_id.present? && (!name_obj.persisted? || name_obj.viaf_id_changed?)
+      if (existing_name = self.class.find_by(viaf_id: name_obj.viaf_id)).present?
+        errors[:viaf_id] << "is already used by record ##{existing_name.id} for '#{existing_name.name}'"
+      elsif self.class.unscoped.exists?(viaf_id: name_obj.viaf_id, deleted: true)
+        errors[:viaf_id] << "is already used by a record that has been deleted"
+      end
+    end
   end
 
   # constructor for a Provenance Agent. takes same args as #new

@@ -736,6 +736,28 @@ describe "Data entry", :js => true do
       expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
     end
 
+    it "should show error message when trying to create a duplicate Name" do
+      existing_name = Name.create(name: "my test name", is_artist: true)
+
+      visit new_entry_path :source_id => @source.id
+
+      # fill in a non-existent name first, to get the modal
+      fill_autocomplete 'author_0', with: "non-existent name" do
+        # should pop up the modal to create an entity
+        selector = %Q{ul.ui-autocomplete:visible li.ui-menu-item:eq(0)}
+        page.execute_script %Q{ $('#{selector}').click() }
+
+        expect(find(".modal-title", visible: true).text.include?("Create")).to be_truthy
+
+        # now change the name to something that already exists
+        fill_in 'name', with: 'my test name'
+        # click_button doesn't work here. I have NO IDEA why.
+        find('.create-name-button').trigger('click')
+      end
+
+      expect(page).to have_content "name is already used by record ##{existing_name.id}"
+    end
+
     it "should prevent another contributor from editing an entry" do
       user = User.create!(
         email: 'another_contributor@test.com',
