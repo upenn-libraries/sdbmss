@@ -67,12 +67,12 @@ module VIAF
     format = VIAF::Constants::FORMATS.select { |f| f[:name] == format || f[:mime_type] == format }.first
     url_suffix = format[:url_suffix]
     path = "/viaf/#{id}/#{url_suffix}"
-    Net::HTTP.get(VIAF::Constants::HOST, path)
+    Net::HTTP.get_response(VIAF::Constants::HOST, path)
   end
 
   def self.sru_search(query, maximumRecords: 10, startRecord: 1, sortKeys: "holdingscount", httpAccept: "text/xml")
     path = "/viaf/search?query=#{CGI::escape(query)}&maximumRecords=#{CGI::escape(maximumRecords.to_s)}&startRecord=#{CGI::escape(startRecord.to_s)}&sortKeys=#{CGI::escape(sortKeys.to_s)}&httpAccept=#{CGI::escape(httpAccept.to_s)}"
-    Net::HTTP.get(VIAF::Constants::HOST, path)
+    Net::HTTP.get_response(VIAF::Constants::HOST, path)
   end
 
   def self.autosuggest(query, callback: nil)
@@ -80,7 +80,7 @@ module VIAF
     if !callback.nil?
       path += "&callback=#{callback}"
     end
-    Net::HTTP.get(VIAF::Constants::HOST, path)
+    Net::HTTP.get_response(VIAF::Constants::HOST, path)
   end
 
 end

@@ -114,58 +114,69 @@ class Name < ActiveRecord::Base
   # Finds suggestions for the passed-in name string, based on results
   # from searching VIAF. return value is a Hash with keys
   # "already_exists" and "results".
-  def self.suggestions(name)
+  def self.suggestions(name, check_if_name_already_exists: true)
+    error = nil
     results = []
 
     # check that name doesn't already exist
-    name_exists = exists?(name: name)
+    name_exists = false
+    if check_if_name_already_exists
+      name_exists = exists?(name: name)
+    end
 
-    if !name_exists
+    if !check_if_name_already_exists || !name_exists
       # we don't use VIAF's autosuggest because what it returns isn't
       # really useful here. so we use sru_search instead.
 
       # include both People (personalNames) and Organizations (corporateNames)
       cql = "(local.personalNames all \"#{name}\" or local.corporateNames all \"#{name}\")"
 
-      xmldoc = Nokogiri::XML(VIAF.sru_search(cql))
+      response = VIAF.sru_search(cql)
 
-      number_of_records = xmldoc.xpath("//ns:numberOfRecords", "ns" => VIAF::NS::LC).first
-      if number_of_records
-        xmldoc.xpath("//ns:record/ns:recordData", "ns" => VIAF::NS::LC).each do |record_data|
-          cluster = record_data.xpath("ns:VIAFCluster", "ns" => VIAF::NS::VIAF).first
+      if response.code == '200'
+        xmldoc = Nokogiri::XML(response.body)
 
-          name_type = cluster.xpath("ns:nameType", "ns" => VIAF::NS::VIAF).first
-          viaf_id = cluster.xpath("ns:viafID", "ns" => VIAF::NS::VIAF).first
+        number_of_records = xmldoc.xpath("//ns:numberOfRecords", "ns" => VIAF::NS::LC).first
+        if number_of_records
+          xmldoc.xpath("//ns:record/ns:recordData", "ns" => VIAF::NS::LC).each do |record_data|
+            cluster = record_data.xpath("ns:VIAFCluster", "ns" => VIAF::NS::VIAF).first
 
-          found_lc_name = false
+            name_type = cluster.xpath("ns:nameType", "ns" => VIAF::NS::VIAF).first
+            viaf_id = cluster.xpath("ns:viafID", "ns" => VIAF::NS::VIAF).first
 
-          if name_type.text == "Personal" || name_type.text == "Corporate"
-            # each 'data' element contains a name and the sources that use them,
-            # so look through them
-            cluster.xpath("ns:mainHeadings/ns:data", "ns" => VIAF::NS::VIAF).each do |data|
-              break if found_lc_name
-              has_lc = data.xpath("ns:sources", "ns" => VIAF::NS::VIAF).children.select { |s| s.text == "LC" }.length > 0
-              if has_lc
-                name = data.xpath("ns:text", "ns" => VIAF::NS::VIAF).first.text
-                found_lc_name = true
-                results << {
-                  name: name,
-                  viaf_id: viaf_id.text,
-                }
+            found_lc_name = false
+
+            if name_type.text == "Personal" || name_type.text == "Corporate"
+              # each 'data' element contains a name and the sources that use them,
+              # so look through them
+              cluster.xpath("ns:mainHeadings/ns:data", "ns" => VIAF::NS::VIAF).each do |data|
+                break if found_lc_name
+                has_lc = data.xpath("ns:sources", "ns" => VIAF::NS::VIAF).children.select { |s| s.text == "LC" }.length > 0
+                if has_lc
+                  name = data.xpath("ns:text", "ns" => VIAF::NS::VIAF).first.text
+                  found_lc_name = true
+                  results << {
+                    name: name,
+                    viaf_id: viaf_id.text,
+                  }
+                end
               end
+            else
+              puts "Don't known how to deal with nameType=#{name_type.text}"
             end
-          else
-            puts "Don't known how to deal with nameType=#{name_type.text}"
           end
+        else
+          Rails.logger.warn "numberOfRecords element not found in VIAF XML"
         end
       else
-        Rails.logger.warn "numberOfRecords element not found in VIAF XML"
+        error = "HTTP response error code: #{r.code}"
       end
     end
 
     {
       already_exists: name_exists,
       results: results,
+      error: error,
     }
   end
 

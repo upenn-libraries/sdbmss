@@ -82,10 +82,10 @@ namespace :sdbmss do
       entries.each do |entry|
         hash = entry.as_flat_hash
         if first
-          puts CSV.generate_line(["needs_review"] + hash.keys)
+          puts ::CSV.generate_line(["needs_review"] + hash.keys)
           first = false
         end
-        puts CSV.generate_line([needs_review] + hash.values)
+        puts ::CSV.generate_line([needs_review] + hash.values)
       end
       count += 1
     end
@@ -133,12 +133,71 @@ namespace :sdbmss do
   desc "Export legacy catalog table as CSV to stdout"
   task :export_catalogs => :environment do |t, args|
     columns = %w[MANUSCRIPTCATALOGID CAT_DATE CAT_ID SELLER SELLER2 INSTITUTION MS_COUNT CAT_AUTHOR WHETHER_MSS CURRENT_LOCATION LOCATION_CITY LOCATION_COUNTRY ONLINE_LINK ELEC_CAT_FORMAT ELEC_CAT_OPENACCESS ALT_CAT_DATE ADDED_ON LAST_MODIFIED COMMENTS CATALOGING_TYPE SDBM_STATUS]
-    puts CSV.generate_line columns
+    puts ::CSV.generate_line columns
     SDBMSS::Util.batch(SDBMSS::Legacy.get_legacy_db_conn,
                        'select * from MANUSCRIPT_CATALOG where HIDDEN_CAT is null and ISDELETED is null ORDER BY CAT_DATE, CAT_ID',
                        silent: true) do |row, ctx|
       values = columns.map { |col| row[col] }
-      puts CSV.generate_line values
+      puts ::CSV.generate_line values
+    end
+  end
+
+  desc "Create VIAF Name file"
+  task :create_viaf_name_file, [:filename] => :environment do |t, args|
+    filename = args[:filename]
+    if filename.present?
+
+      count = 0
+      names_and_viaf_ids = {}
+
+      if File.exist?(filename)
+        ::CSV.read(filename).each do |row|
+          names_and_viaf_ids[row[0]] = row[1]
+        end
+      end
+
+      names = Name.where("viaf_id is null").limit(10)
+      names.find_each(batch_size: 100) do |name|
+        if names_and_viaf_ids[name.name].blank?
+          puts "checking #{name}"
+
+          try = 0
+          request_successful = false
+
+          while !request_successful && try < 3
+            suggestions = Name.suggestions(name.name, check_if_name_already_exists: false)
+            found = false
+
+            if suggestions[:error].blank?
+              request_successful = true
+              suggestions[:results].each do |result|
+                if !found && (name.name == result[:name] || result[:name].include?(name.name))
+                  puts "matched: #{result[:name]}, viaf id= #{result[:viaf_id]}"
+                  names_and_viaf_ids[name.name] = result[:viaf_id]
+                  found = true
+                  count += 1
+
+                  # write out to disk
+                  if count % 10 == 0
+                    ::CSV.open(filename, "wb") do |csv|
+                      names_and_viaf_ids.each do |key, val|
+                        csv << [key, val]
+                      end
+                    end
+                  end
+                end
+              end
+            else
+              puts "got http error, sleeping and trying again"
+              sleep 5
+              try += 1
+            end
+          end
+
+        end
+      end
+    else
+      puts "Error: specify a file"
     end
   end
 
