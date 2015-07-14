@@ -251,7 +251,8 @@ class Entry < ActiveRecord::Base
   end
 
   # returns the most recent updated_at timestamp, as an integer, of
-  # this Entry AND all its pertinent associations.
+  # this Entry AND all its pertinent associations. Since this is used
+  # for the data entry page, this EXCLUDES entry-manuscript links.
   def cumulative_updated_at
     SDBMSS::Util.cumulative_updated_at(
       self,
