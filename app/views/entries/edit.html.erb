@@ -682,11 +682,11 @@ label.col-sm-2-and-half {
         </div>
     </div>
 
-    <div class="row" ng-repeat="entry_comment in entry.entry_comments"> 
+    <div class="row" ng-repeat="entry_comment in entry.entry_comments" style="margin-bottom: 10px;">
         <label class="col-sm-2 control-label">
-            <span>by {{ entry_comment.comment.created_by }} at {{ entry_comment.comment.created_at }}</span>
+            by {{ entry_comment.comment.created_by }}<br/>at {{ entry_comment.comment.created_at }}
         </label>
-        <div class="col-sm-9">
+        <div class="col-sm-9 label-alignment">
             {{ entry_comment.comment.comment||"(none)" }}
         </div>
     </div>
