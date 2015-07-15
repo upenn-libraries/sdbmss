@@ -14,6 +14,7 @@ class NamesController < ManageModelsController
     {
       id: obj.id,
       name: obj.name,
+      viaf_id: obj.viaf_id,
       authors_count: obj.authors_count || 0,
       artists_count: obj.artists_count || 0,
       scribes_count: obj.scribes_count || 0,

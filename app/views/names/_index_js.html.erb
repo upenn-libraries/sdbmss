@@ -23,6 +23,8 @@
 
         return [
             {
+                sdbmssMinWidth: "20px",
+                sdbmssMaxWidth: "20px",
                 title: '',
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -30,10 +32,11 @@
                         return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     }
                     return '';
-                },
-                width: "5%"
+                }
             },
             {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "100px",
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
@@ -41,12 +44,11 @@
                             + '&middot; <a class="delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
                     return str;
                 },
-                width: "10%"
             },
             {
                 sdbmssMinWidth: "150px",
+                sdbmssMaxWidth: "150px",
                 title: 'ID',
-                width: "10%",
                 render: function (data, type, full, meta) { 
                     var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/">SDBM_NAME_' + data + '</a>';
                     return str;
@@ -54,43 +56,64 @@
                 dbSortField: 'id'
             },
             {
+                sdbmssMinWidth: "250px",
+                sdbmssMaxWidth: "250px",
                 title: 'Name',
-                width: "45%",
                 dbSortField: manageRecords.options.searchNameField
             },
             {
+                sdbmssMinWidth: "90px",
+                sdbmssMaxWidth: "90px",
+                title: 'VIAF ID',
+                render: function (data, type, full, meta) {
+                    var str = "";
+                    if(data) {
+                        str = '<a target="_blank" href="http://viaf.org/viaf/' + data + '/">' + data + '</a>';
+                    }
+                    return str;
+                },
+                dbSortField: 'viaf_id'
+            },
+            {
+                sdbmssMinWidth: "90px",
+                sdbmssMaxWidth: "90px",
                 title: 'As Author',
-                width: "10%",
                 dbSortField: 'authors_count'
             },
             {
+                sdbmssMinWidth: "90px",
+                sdbmssMaxWidth: "90px",
                 title: 'As Artist',
-                width: "10%",
                 dbSortField: 'artists_count'
             },
             {
+                sdbmssMinWidth: "90px",
+                sdbmssMaxWidth: "90px",
                 title: 'As Scribe',
-                width: "10%",
                 dbSortField: 'scribes_count'
             },
             {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "100px",
                 title: 'As Source Agent',
-                width: "10%",
                 dbSortField: 'source_agents_count'
             },
             {
+                sdbmssMinWidth: "90px",
+                sdbmssMaxWidth: "90px",
                 title: 'As Prov Agent',
-                width: "10%",
                 dbSortField: 'event_agents_count'
             },
             {
+                sdbmssMinWidth: "90px",
+                sdbmssMaxWidth: "90px",
                 title: 'Reviewed',
-                width: "10%",
                 dbSortField: 'reviewed'
             },
             {
+                sdbmssMinWidth: "90px",
+                sdbmssMaxWidth: "90px",
                 title: 'Created By',
-                width: "10%",
                 dbSortField: 'created_by_id'
             }
         ];
@@ -102,6 +125,7 @@
              result.id,
              result.id,
              result[this.options.searchNameField],
+             result.viaf_id,
              result.authors_count,
              result.artists_count,
              result.scribes_count,

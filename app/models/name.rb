@@ -114,7 +114,7 @@ class Name < ActiveRecord::Base
   # Finds suggestions for the passed-in name string, based on results
   # from searching VIAF. return value is a Hash with keys
   # "already_exists" and "results".
-  def self.suggestions(name, check_if_name_already_exists: true)
+  def self.suggestions(name, check_if_name_already_exists: true, debug: false)
     error = nil
     results = []
 
@@ -132,6 +132,12 @@ class Name < ActiveRecord::Base
       cql = "(local.personalNames all \"#{name}\" or local.corporateNames all \"#{name}\")"
 
       response = VIAF.sru_search(cql)
+
+      if debug
+        File.open("/tmp/names/#{response.code} - #{name.gsub('/', '')}", "wb") do |f|
+          f.write(response.body)
+        end
+      end
 
       if response.code == '200'
         xmldoc = Nokogiri::XML(response.body)

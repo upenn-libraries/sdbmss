@@ -146,56 +146,17 @@ namespace :sdbmss do
   task :create_viaf_name_file, [:filename] => :environment do |t, args|
     filename = args[:filename]
     if filename.present?
+      SDBMSS::VIAFReconciliation.reconcile_names(filename)
+    else
+      puts "Error: specify a file"
+    end
+  end
 
-      count = 0
-      names_and_viaf_ids = {}
-
-      if File.exist?(filename)
-        ::CSV.read(filename).each do |row|
-          names_and_viaf_ids[row[0]] = row[1]
-        end
-      end
-
-      names = Name.where("viaf_id is null").limit(10)
-      names.find_each(batch_size: 100) do |name|
-        if names_and_viaf_ids[name.name].blank?
-          puts "checking #{name}"
-
-          try = 0
-          request_successful = false
-
-          while !request_successful && try < 3
-            suggestions = Name.suggestions(name.name, check_if_name_already_exists: false)
-            found = false
-
-            if suggestions[:error].blank?
-              request_successful = true
-              suggestions[:results].each do |result|
-                if !found && (name.name == result[:name] || result[:name].include?(name.name))
-                  puts "matched: #{result[:name]}, viaf id= #{result[:viaf_id]}"
-                  names_and_viaf_ids[name.name] = result[:viaf_id]
-                  found = true
-                  count += 1
-
-                  # write out to disk
-                  if count % 10 == 0
-                    ::CSV.open(filename, "wb") do |csv|
-                      names_and_viaf_ids.each do |key, val|
-                        csv << [key, val]
-                      end
-                    end
-                  end
-                end
-              end
-            else
-              puts "got http error, sleeping and trying again"
-              sleep 5
-              try += 1
-            end
-          end
-
-        end
-      end
+  desc "Update Name records with VIAF IDs"
+  task :update_names, [:filename] => :environment do |t, args|
+    filename = args[:filename]
+    if filename.present?
+      SDBMSS::VIAFReconciliation.update_names(filename)
     else
       puts "Error: specify a file"
     end
