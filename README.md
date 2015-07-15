@@ -176,6 +176,8 @@ This is a 3 step process.
   bundle exec rake sdbmss:migrate_legacy_data
   # OPTIONAL: create some reference data for development use
   bundle exec rake sdbmss:create_reference_data
+  # populate VIAF ID field in Name records
+  bundle exec rake sdbmss:update_names[seed_data/names.csv]
   # index the data in Solr
   bundle exec rake sunspot:reindex
   ```
