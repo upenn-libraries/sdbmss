@@ -2,7 +2,12 @@
 require 'set'
 
 # This is the place where all the names of people and institutions,
-# associated with Entries in various ways, are stored.
+# associated with Entries in various ways (as authors, artists,
+# scribes, provenance agents, source agents), are stored.
+#
+# There are a number of counter_cache fields on this model, which
+# usually get updated when there are changes to related data, but NOT
+# always. In particular, note that #update_all skips callbacks.
 class Name < ActiveRecord::Base
 
   include UserFields
@@ -19,7 +24,7 @@ class Name < ActiveRecord::Base
 
   has_many :entry_authors, foreign_key: "author_id"
 
-  has_many :entry_scribes, foreign_key: "scribes_id"
+  has_many :entry_scribes, foreign_key: "scribe_id"
 
   has_many :event_agents, foreign_key: "agent_id"
   has_many :events, through: :event_agents
