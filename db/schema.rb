@@ -11,7 +11,64 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150612173552) do
+ActiveRecord::Schema.define(version: 20150716175241) do
+
+  create_table "agents", force: :cascade do |t|
+    t.integer  "entry_id",       limit: 4
+    t.integer  "viaf_id",        limit: 4
+    t.string   "name",           limit: 255
+    t.string   "agent_type",     limit: 255
+    t.boolean  "approved"
+    t.integer  "approved_by_id", limit: 4
+    t.datetime "approved_date"
+    t.datetime "created_at"
+    t.integer  "created_by_id",  limit: 4
+    t.datetime "updated_at"
+    t.integer  "updated_by_id",  limit: 4
+  end
+
+  add_index "agents", ["approved_by_id"], name: "index_agents_on_approved_by_id", using: :btree
+  add_index "agents", ["created_by_id"], name: "index_agents_on_created_by_id", using: :btree
+  add_index "agents", ["entry_id"], name: "index_agents_on_entry_id", using: :btree
+  add_index "agents", ["name"], name: "index_agents_on_name", unique: true, using: :btree
+  add_index "agents", ["updated_by_id"], name: "index_agents_on_updated_by_id", using: :btree
+
+  create_table "artists", force: :cascade do |t|
+    t.string   "name",           limit: 255
+    t.integer  "entry_id",       limit: 4
+    t.boolean  "approved"
+    t.integer  "approved_by_id", limit: 4
+    t.datetime "approved_date"
+    t.datetime "created_at"
+    t.integer  "created_by_id",  limit: 4
+    t.datetime "updated_at"
+    t.integer  "updated_by_id",  limit: 4
+  end
+
+  add_index "artists", ["approved_by_id"], name: "index_artists_on_approved_by_id", using: :btree
+  add_index "artists", ["created_by_id"], name: "index_artists_on_created_by_id", using: :btree
+  add_index "artists", ["entry_id"], name: "index_artists_on_entry_id", using: :btree
+  add_index "artists", ["name"], name: "index_artists_on_name", unique: true, using: :btree
+  add_index "artists", ["updated_by_id"], name: "index_artists_on_updated_by_id", using: :btree
+
+  create_table "authors", force: :cascade do |t|
+    t.string   "name",           limit: 255
+    t.integer  "entry_id",       limit: 4
+    t.string   "viaf_id",        limit: 255
+    t.boolean  "approved"
+    t.integer  "approved_by_id", limit: 4
+    t.datetime "approved_date"
+    t.datetime "created_at"
+    t.integer  "created_by_id",  limit: 4
+    t.datetime "updated_at"
+    t.integer  "updated_by_id",  limit: 4
+  end
+
+  add_index "authors", ["approved_by_id"], name: "index_authors_on_approved_by_id", using: :btree
+  add_index "authors", ["created_by_id"], name: "index_authors_on_created_by_id", using: :btree
+  add_index "authors", ["entry_id"], name: "index_authors_on_entry_id", using: :btree
+  add_index "authors", ["name"], name: "index_authors_on_name", unique: true, using: :btree
+  add_index "authors", ["updated_by_id"], name: "index_authors_on_updated_by_id", using: :btree
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,   null: false
@@ -27,13 +84,13 @@ ActiveRecord::Schema.define(version: 20150612173552) do
 
   create_table "comments", force: :cascade do |t|
     t.text     "comment",        limit: 65535
-    t.boolean  "public",         limit: 1,     default: true
-    t.boolean  "is_correction",  limit: 1,     default: false
+    t.boolean  "public",                       default: true
+    t.boolean  "is_correction",                default: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "reviewed",       limit: 1,     default: false
+    t.boolean  "reviewed",                     default: false
     t.datetime "reviewed_at"
-    t.boolean  "deleted",        limit: 1,     default: false
+    t.boolean  "deleted",                      default: false
     t.integer  "created_by_id",  limit: 4
     t.integer  "updated_by_id",  limit: 4
     t.integer  "reviewed_by_id", limit: 4
@@ -77,8 +134,8 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.integer  "miniatures_unspec_size", limit: 4
     t.integer  "initials_historiated",   limit: 4
     t.integer  "initials_decorated",     limit: 4
-    t.boolean  "approved",               limit: 1,     default: false
-    t.boolean  "deleted",                limit: 1,     default: false
+    t.boolean  "approved",                             default: false
+    t.boolean  "deleted",                              default: false
     t.datetime "created_at"
     t.integer  "created_by_id",          limit: 4
     t.datetime "updated_at"
@@ -100,8 +157,8 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.integer  "artist_id",              limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "uncertain_in_source",    limit: 1,   default: false
-    t.boolean  "supplied_by_data_entry", limit: 1,   default: false
+    t.boolean  "uncertain_in_source",                default: false
+    t.boolean  "supplied_by_data_entry",             default: false
     t.string   "observed_name",          limit: 255
   end
 
@@ -115,8 +172,8 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "role",                   limit: 255
-    t.boolean  "uncertain_in_source",    limit: 1,   default: false
-    t.boolean  "supplied_by_data_entry", limit: 1,   default: false
+    t.boolean  "uncertain_in_source",                default: false
+    t.boolean  "supplied_by_data_entry",             default: false
   end
 
   add_index "entry_authors", ["author_id"], name: "index_entry_authors_on_author_id", using: :btree
@@ -152,8 +209,8 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.string   "observed_date",          limit: 255
     t.string   "date_normalized_start",  limit: 255
     t.string   "date_normalized_end",    limit: 255
-    t.boolean  "uncertain_in_source",    limit: 1,   default: false
-    t.boolean  "supplied_by_data_entry", limit: 1,   default: false
+    t.boolean  "uncertain_in_source",                default: false
+    t.boolean  "supplied_by_data_entry",             default: false
   end
 
   add_index "entry_dates", ["entry_id"], name: "index_entry_dates_on_entry_id", using: :btree
@@ -163,8 +220,8 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.integer  "language_id",            limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "uncertain_in_source",    limit: 1, default: false
-    t.boolean  "supplied_by_data_entry", limit: 1, default: false
+    t.boolean  "uncertain_in_source",              default: false
+    t.boolean  "supplied_by_data_entry",           default: false
   end
 
   add_index "entry_languages", ["entry_id"], name: "index_entry_languages_on_entry_id", using: :btree
@@ -186,8 +243,8 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.string   "material",               limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "uncertain_in_source",    limit: 1,   default: false
-    t.boolean  "supplied_by_data_entry", limit: 1,   default: false
+    t.boolean  "uncertain_in_source",                default: false
+    t.boolean  "supplied_by_data_entry",             default: false
   end
 
   add_index "entry_materials", ["entry_id"], name: "index_entry_materials_on_entry_id", using: :btree
@@ -197,8 +254,8 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.integer  "place_id",               limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "uncertain_in_source",    limit: 1, default: false
-    t.boolean  "supplied_by_data_entry", limit: 1, default: false
+    t.boolean  "uncertain_in_source",              default: false
+    t.boolean  "supplied_by_data_entry",           default: false
   end
 
   add_index "entry_places", ["entry_id"], name: "index_entry_places_on_entry_id", using: :btree
@@ -209,8 +266,8 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.integer  "scribe_id",              limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "uncertain_in_source",    limit: 1,   default: false
-    t.boolean  "supplied_by_data_entry", limit: 1,   default: false
+    t.boolean  "uncertain_in_source",                default: false
+    t.boolean  "supplied_by_data_entry",             default: false
     t.string   "observed_name",          limit: 255
   end
 
@@ -223,8 +280,8 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.string   "common_title",           limit: 2048
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "uncertain_in_source",    limit: 1,    default: false
-    t.boolean  "supplied_by_data_entry", limit: 1,    default: false
+    t.boolean  "uncertain_in_source",                 default: false
+    t.boolean  "supplied_by_data_entry",              default: false
   end
 
   add_index "entry_titles", ["entry_id"], name: "index_entry_titles_on_entry_id", using: :btree
@@ -245,8 +302,8 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.string   "role",                   limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "uncertain_in_source",    limit: 1,   default: false
-    t.boolean  "supplied_by_data_entry", limit: 1,   default: false
+    t.boolean  "uncertain_in_source",                default: false
+    t.boolean  "supplied_by_data_entry",             default: false
   end
 
   add_index "event_agents", ["agent_id"], name: "index_event_agents_on_agent_id", using: :btree
@@ -255,7 +312,7 @@ ActiveRecord::Schema.define(version: 20150612173552) do
 
   create_table "events", force: :cascade do |t|
     t.integer  "entry_id",                    limit: 4
-    t.boolean  "primary",                     limit: 1,                              default: false
+    t.boolean  "primary",                                                            default: false
     t.text     "comment",                     limit: 65535
     t.integer  "order",                       limit: 4
     t.string   "end_date",                    limit: 255
@@ -284,9 +341,9 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.integer  "created_by_id",  limit: 4
     t.datetime "updated_at"
     t.integer  "updated_by_id",  limit: 4
-    t.integer  "entries_count",  limit: 4
-    t.boolean  "deleted",        limit: 1,   default: false
-    t.boolean  "reviewed",       limit: 1,   default: false
+    t.integer  "entries_count",  limit: 4,   default: 0,     null: false
+    t.boolean  "deleted",                    default: false
+    t.boolean  "reviewed",                   default: false
     t.integer  "reviewed_by_id", limit: 4
     t.datetime "reviewed_at"
   end
@@ -317,9 +374,9 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.integer  "created_by_id",  limit: 4
     t.integer  "updated_by_id",  limit: 4
     t.string   "name",           limit: 255
-    t.integer  "entries_count",  limit: 4
+    t.integer  "entries_count",  limit: 4,   default: 0,     null: false
     t.string   "location",       limit: 255
-    t.boolean  "reviewed",       limit: 1,   default: false
+    t.boolean  "reviewed",                   default: false
     t.integer  "reviewed_by_id", limit: 4
     t.datetime "reviewed_at"
   end
@@ -332,22 +389,22 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.string   "name",                limit: 255
     t.integer  "entry_id",            limit: 4
     t.integer  "viaf_id",             limit: 4
-    t.boolean  "is_artist",           limit: 1,     default: false
-    t.boolean  "is_author",           limit: 1,     default: false
-    t.boolean  "is_scribe",           limit: 1,     default: false
-    t.boolean  "is_provenance_agent", limit: 1,     default: false
+    t.boolean  "is_artist",                         default: false
+    t.boolean  "is_author",                         default: false
+    t.boolean  "is_scribe",                         default: false
+    t.boolean  "is_provenance_agent",               default: false
     t.datetime "created_at"
     t.integer  "created_by_id",       limit: 4
     t.datetime "updated_at"
     t.integer  "updated_by_id",       limit: 4
-    t.integer  "authors_count",       limit: 4
-    t.integer  "artists_count",       limit: 4
-    t.integer  "scribes_count",       limit: 4
-    t.integer  "source_agents_count", limit: 4
-    t.integer  "event_agents_count",  limit: 4
-    t.boolean  "deleted",             limit: 1,     default: false
+    t.integer  "authors_count",       limit: 4,     default: 0,     null: false
+    t.integer  "artists_count",       limit: 4,     default: 0,     null: false
+    t.integer  "scribes_count",       limit: 4,     default: 0,     null: false
+    t.integer  "source_agents_count", limit: 4,     default: 0,     null: false
+    t.integer  "event_agents_count",  limit: 4,     default: 0,     null: false
+    t.boolean  "deleted",                           default: false
     t.text     "comment",             limit: 65535
-    t.boolean  "reviewed",            limit: 1,     default: false
+    t.boolean  "reviewed",                          default: false
     t.integer  "reviewed_by_id",      limit: 4
     t.datetime "reviewed_at"
   end
@@ -369,9 +426,9 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.integer  "created_by_id",  limit: 4
     t.datetime "updated_at"
     t.integer  "updated_by_id",  limit: 4
-    t.integer  "entries_count",  limit: 4
-    t.boolean  "deleted",        limit: 1,   default: false
-    t.boolean  "reviewed",       limit: 1,   default: false
+    t.integer  "entries_count",  limit: 4,   default: 0,     null: false
+    t.boolean  "deleted",                    default: false
+    t.boolean  "reviewed",                   default: false
     t.integer  "reviewed_by_id", limit: 4
     t.datetime "reviewed_at"
   end
@@ -381,6 +438,18 @@ ActiveRecord::Schema.define(version: 20150612173552) do
   add_index "places", ["name"], name: "index_places_on_name", unique: true, using: :btree
   add_index "places", ["reviewed_by_id"], name: "index_places_on_reviewed_by_id", using: :btree
   add_index "places", ["updated_by_id"], name: "index_places_on_updated_by_id", using: :btree
+
+  create_table "scribes", force: :cascade do |t|
+    t.string   "name",          limit: 255
+    t.datetime "created_at"
+    t.integer  "created_by_id", limit: 4
+    t.datetime "updated_at"
+    t.integer  "updated_by_id", limit: 4
+  end
+
+  add_index "scribes", ["created_by_id"], name: "index_scribes_on_created_by_id", using: :btree
+  add_index "scribes", ["name"], name: "index_scribes_on_name", unique: true, using: :btree
+  add_index "scribes", ["updated_by_id"], name: "index_scribes_on_updated_by_id", using: :btree
 
   create_table "searches", force: :cascade do |t|
     t.text     "query_params", limit: 65535
@@ -417,7 +486,7 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.string  "name",                           limit: 255
     t.string  "display_name",                   limit: 255
     t.string  "entries_transaction_field",      limit: 255
-    t.boolean "entries_have_institution_field", limit: 1
+    t.boolean "entries_have_institution_field"
   end
 
   create_table "sources", force: :cascade do |t|
@@ -426,8 +495,8 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.string   "author",               limit: 255
     t.string   "whether_mss",          limit: 255
     t.string   "link",                 limit: 512
-    t.boolean  "in_manuscript_table",  limit: 1
-    t.boolean  "deleted",              limit: 1
+    t.boolean  "in_manuscript_table"
+    t.boolean  "deleted"
     t.text     "comments",             limit: 65535
     t.string   "status",               limit: 255
     t.string   "hidden",               limit: 255
@@ -435,13 +504,13 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.integer  "created_by_id",        limit: 4
     t.datetime "updated_at"
     t.integer  "updated_by_id",        limit: 4
-    t.integer  "entries_count",        limit: 4
+    t.integer  "entries_count",        limit: 4,     default: 0,     null: false
     t.string   "location_institution", limit: 255
     t.string   "location",             limit: 255
     t.string   "medium",               limit: 255
     t.string   "date_accessed",        limit: 255
     t.integer  "source_type_id",       limit: 4
-    t.boolean  "reviewed",             limit: 1,     default: false
+    t.boolean  "reviewed",                           default: false
     t.integer  "reviewed_by_id",       limit: 4
     t.datetime "reviewed_at"
   end
@@ -464,18 +533,18 @@ ActiveRecord::Schema.define(version: 20150612173552) do
     t.string   "last_sign_in_ip",           limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "guest",                     limit: 1,     default: false
+    t.boolean  "guest",                                   default: false
     t.string   "username",                  limit: 255
     t.string   "role",                      limit: 255
-    t.boolean  "email_is_public",           limit: 1,     default: false
+    t.boolean  "email_is_public",                         default: false
     t.text     "bio",                       limit: 65535
-    t.boolean  "reviewed",                  limit: 1,     default: false
+    t.boolean  "reviewed",                                default: false
     t.integer  "reviewed_by_id",            limit: 4
     t.datetime "reviewed_at"
     t.integer  "created_by_id",             limit: 4
     t.integer  "updated_by_id",             limit: 4
     t.string   "fullname",                  limit: 255
-    t.boolean  "active",                    limit: 1,     default: true
+    t.boolean  "active",                                  default: true
     t.string   "institutional_affiliation", limit: 255
   end
 
