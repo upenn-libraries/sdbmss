@@ -90,6 +90,39 @@ module SDBMSS
         most_recent || 0
       end
 
+      def update_counter_cache_all
+        Rails.application.eager_load!
+        ActiveRecord::Base.descendants.each do |many_class|
+          update_counter_cache(many_class)
+        end
+        nil
+      end
+
+      # Given a class, updates all the counter_cache fields on it, for
+      # all records.
+      #
+      # This is a modified version of the code found here:
+      # https://www.krautcomputing.com/blog/2015/01/13/recalculate-counter-cache-columns-in-rails/
+      def update_counter_cache(clazz)
+        clazz.reflections.each do |name, reflection|
+          if reflection.options[:counter_cache]
+            count_field_name = reflection.options[:counter_cache]
+            one_class = reflection.class_name.constantize
+            one_table, many_table = [one_class, clazz].map(&:table_name)
+            ids = one_class
+                  .joins(many_table.to_sym)
+                  .group("#{one_table}.id", "#{one_table}.#{count_field_name}")
+                  .having("#{one_table}.#{count_field_name} != COUNT(#{many_table}.id)")
+                  .pluck("#{one_table}.id")
+            ids.each do |id|
+              puts "#{one_class} #{id}"
+              one_class.reset_counters id, many_table
+            end
+          end
+        end
+        nil
+      end
+
       # returns a reasonably formatted date string based on a YYYYMMDD
       # str value, which may have 0's in it. Resulting string is in one of these formats: YYYY, YYYY-MM, YYYY-MM-DD
       def format_fuzzy_date(d)

@@ -1288,7 +1288,10 @@ module SDBMSS::Legacy
         observed_name, count = row[0], row[1]
         if count > 1
           agent = get_or_create_agent(observed_name)
-          EventAgent.where(observed_name: observed_name).update_all({ agent_id: agent.id })
+          EventAgent.where(observed_name: observed_name).find_each(batch_size: 200) do |event_agent|
+            event_agent.agent = agent
+            event_agent.save!
+          end
         end
       end
 

@@ -162,4 +162,11 @@ namespace :sdbmss do
     end
   end
 
+  desc "Update all counter_cache fields"
+  task :update_counter_cache => :environment do |t, args|
+    puts "WARNING: this won't work for counter_cache fields that should account for soft deletions"
+    SDBMSS::Util.update_counter_cache_all
+    puts "Done."
+  end
+
 end
