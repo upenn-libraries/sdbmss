@@ -1,0 +1,8 @@
+
+<% @documents.each do |document| %>
+
+  <h3 class="modal-title"><%= document_heading(document) %></h3>
+
+  <%= document.model_object.to_citation  %><br/><br/>
+
+<% end %>

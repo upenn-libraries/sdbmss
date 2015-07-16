@@ -6,6 +6,10 @@
             </div>
             <div class="panel-body">
                 <ul class="nav">
+                    <li>
+                        <a data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
+                    </li>
+
                     <% if can? :edit, @manuscript %>
                     <li class="edit_entry">
                         <a href="<%= edit_manuscript_path(@manuscript.id) %>">Edit this Manuscript Record</a>

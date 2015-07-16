@@ -319,6 +319,11 @@ class Entry < ActiveRecord::Base
     }
   end
 
+  def to_citation
+    now = DateTime.now.to_formatted_s(:date_mla)
+    "Schoenberg Database of Manuscripts. The Schoenberg Institute for Manuscript Studies, University of Pennsylvania Libraries. Web. #{now}: #{public_id}."
+  end
+
   # Tell Sunspot how to index fields from this model.
   #
   # Note that we do NOT use sunspot's default dynamic fields (which

@@ -1,0 +1,17 @@
+<%# It's weird that we return this fragment in a .js file but that's
+how blacklight does citations, so we follow along. %>
+<div class="modal-header">
+  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+  <h3><%= t('blacklight.tools.citation') %></h3>
+</div>
+<div class="modal-body">
+
+    <h3 class="modal-title"><%= @manuscript.public_id %></h3>
+
+    <%= @manuscript.to_citation %><br/><br/>
+
+    <p><em><b>Warning</b>: Manuscript Record id numbers are not
+    permanent. Manuscript records may disappear if entries are
+    unlinked.</em></p>
+    
+</div>

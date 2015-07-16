@@ -88,6 +88,7 @@ Rails.application.routes.draw do
       get 'search'
     end
     member do
+      get 'citation'
       get 'entry_candidates'
       get 'manage_entries'
     end

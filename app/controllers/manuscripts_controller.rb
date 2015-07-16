@@ -2,7 +2,7 @@ class ManuscriptsController < ManageModelsController
 
   include MarkAsReviewed
 
-  before_action :set_manuscript, only: [:show, :edit, :entry_candidates]
+  before_action :set_manuscript, only: [:show, :edit, :entry_candidates, :citation]
 
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
 
@@ -61,6 +61,12 @@ class ManuscriptsController < ManageModelsController
       reviewed: obj.reviewed,
       created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
     }
+  end
+
+  def citation
+    respond_to do |format|
+      format.js
+    end
   end
 
   private

@@ -52,4 +52,9 @@ class Manuscript < ActiveRecord::Base
     Entry.with_associations.joins(:entry_manuscripts).where({ entry_manuscripts: { manuscript_id: id} })
   end
 
+  def to_citation
+    now = DateTime.now.to_formatted_s(:date_mla)
+    "Schoenberg Database of Manuscripts. The Schoenberg Institute for Manuscript Studies, University of Pennsylvania Libraries. Web. #{now}: #{public_id}."
+  end
+
 end
