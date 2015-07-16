@@ -106,9 +106,9 @@ module SDBMSS
       def update_counter_cache(clazz)
         clazz.reflections.each do |name, reflection|
           if reflection.options[:counter_cache]
-            count_field_name = reflection.options[:counter_cache]
             one_class = reflection.class_name.constantize
             one_table, many_table = [one_class, clazz].map(&:table_name)
+            count_field_name = reflection.options[:counter_cache] != true ? reflection.options[:counter_cache] : "#{many_table}_count"
             ids = one_class
                   .joins(many_table.to_sym)
                   .group("#{one_table}.id", "#{one_table}.#{count_field_name}")
