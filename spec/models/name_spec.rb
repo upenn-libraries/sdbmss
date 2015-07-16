@@ -30,6 +30,28 @@ describe Name do
       expect(artist.is_artist).to eq(true)
     end
 
+    # I don't quite trust Rails' counter_cache to behave correctly
+    it "should update authors_count appropriately" do
+      author = Name.author
+      author.name = "Some Author"
+      author.save!
+
+      source = Source.new(source_type: SourceType.auction_catalog)
+      source.save!
+      entry = Entry.new(source: source)
+      entry.save!
+      entry.update_attributes(
+        entry_authors_attributes: [
+          {
+            author: author
+          }
+        ]
+      )
+
+      author = Name.find(author.id)
+      expect(author.authors_count).to eq(1)
+    end
+
   end
 
 end
