@@ -112,7 +112,7 @@ module SDBMSS
             ids = one_class
                   .joins(many_table.to_sym)
                   .group("#{one_table}.id", "#{one_table}.#{count_field_name}")
-                  .having("#{one_table}.#{count_field_name} != COUNT(#{many_table}.id)")
+                  .having("COALESCE(#{one_table}.#{count_field_name}, 0) != COUNT(#{many_table}.id)")
                   .pluck("#{one_table}.id")
             ids.each do |id|
               puts "#{one_class} #{id}"
