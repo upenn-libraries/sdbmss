@@ -83,6 +83,12 @@
                 dbSortField: 'is_correction'
             },
             {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "100px",
+                title: 'Is Accepted',
+                dbSortField: 'is_accepted'
+            },
+            {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Reviewed',
@@ -112,6 +118,7 @@
              result.manuscript_id,
              result.comment,
              result.is_correction,
+             result.is_accepted,
              result.reviewed.toString(),
              result.created_by || "",
              result.created_at || ""

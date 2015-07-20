@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150716175241) do
+ActiveRecord::Schema.define(version: 20150720183430) do
 
   create_table "agents", force: :cascade do |t|
     t.integer  "entry_id",       limit: 4
@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(version: 20150716175241) do
     t.integer  "created_by_id",  limit: 4
     t.integer  "updated_by_id",  limit: 4
     t.integer  "reviewed_by_id", limit: 4
+    t.boolean  "is_accepted",                  default: false
   end
 
   add_index "comments", ["created_by_id"], name: "index_comments_on_created_by_id", using: :btree

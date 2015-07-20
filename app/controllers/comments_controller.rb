@@ -25,6 +25,7 @@ class CommentsController < ManageModelsController
       manuscript_id: obj.manuscript.try(:id),
       comment: obj.comment,
       is_correction: obj.is_correction,
+      is_accepted: obj.is_accepted,
       reviewed: obj.reviewed,
       created_by: obj.created_by.username,
       created_at: obj.created_at.to_formatted_s(:date_and_time)
@@ -34,7 +35,7 @@ class CommentsController < ManageModelsController
   private
 
   def model_params
-    params.require(model_class_lstr.to_sym).permit(:comment, :is_correction)
+    params.require(model_class_lstr.to_sym).permit(:comment, :is_correction, :is_accepted)
   end
 
 end
