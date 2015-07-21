@@ -128,8 +128,12 @@ class Event < ActiveRecord::Base
     ea.agent if ea
   end
 
-  def get_price_for_display
-    [price, currency, other_currency].select { |o| o.present? }.join(" ")
+  def get_price_normalized
+    price.present? ? ('%.2f' % price) : price
+  end
+
+  def get_complete_price_for_display
+    [get_price_normalized, currency, other_currency].select { |o| o.present? }.join(" ")
   end
 
 end

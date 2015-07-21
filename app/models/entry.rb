@@ -285,7 +285,7 @@ class Entry < ActiveRecord::Base
       transaction_seller_or_holder: transaction_seller_or_holder,
       transaction_buyer: transaction_buyer,
       transaction_sold: (transaction.sold if transaction),
-      transaction_price: (transaction.get_price_for_display if transaction),
+      transaction_price: (transaction.get_complete_price_for_display if transaction),
       titles: entry_titles.map(&:title).join("; "),
       authors: entry_authors.map(&:display_value).join("; "),
       dates: entry_dates.map(&:display_value).join("; "),
