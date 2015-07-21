@@ -1151,7 +1151,7 @@
             $(element).tooltip({
                 items: "div",
                 tooltipClass: "ui-state-highlight",
-                content: "Click this icon to cycle through these options:<br/><br/>check mark = source contains this information.<br/><br/>question mark = source expresses doubt<br/><br/>asterisk = you are supplying this information, based on a strong inference"
+                content: "Click this icon to cycle through these options:<br/><br/>check mark = source contains this information.<br/><br/>question mark = source expresses doubt<br/><br/>asterisk = source does not explicitly provide this data but you infer it from the source description"
             });
 
             // use a single handler for model changes, so we can always
