@@ -1072,6 +1072,11 @@ module SDBMSS::Legacy
 
         author_str, author_roles = split_author_role_codes(atom)
 
+        if author_roles.length > 1 && author_roles.include?("Attr")
+          # this shouldn't happen because in new system, we currently treat 'Attr' as meaning 'Attributed as Author'
+          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'author_role_conflict', "Author name '#{author_str}' is marked as Attr and ALSO another code!")
+        end
+
         author_variant, author_variant_roles = split_author_role_codes(author_variants[author_index] || "")
 
         # if there are codes for both, they better match, or there's
@@ -1311,7 +1316,12 @@ module SDBMSS::Legacy
       # flags were stored in Author table; discard them
       author_str, _, _ = parse_certainty_indicators(row['AUTHOR'])
       # discard the role part when migrating authors
-      author_name, _ = split_author_role_codes(author_str)
+      author_name, author_roles = split_author_role_codes(author_str)
+
+      if author_roles.length > 1 && author_roles.include?("Attr")
+        # this shouldn't happen because in new system, we currently treat 'Attr' as meaning 'Attributed as Author'
+        create_issue('MANUSCRIPT_AUTHOR', row['MANUSCRIPTAUTHORID'], 'author_role_conflict', "Author name '#{author_str}' is marked as Attr and ALSO another code!")
+      end
 
       get_or_create_author(
         author_name,
