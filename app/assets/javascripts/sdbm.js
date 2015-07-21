@@ -142,4 +142,23 @@ var SDBM = SDBM || {};
         });
     };
 
+    /* 'errors' is a data structure found in a Rails model
+     * object's model.errors.messages attribute when validation fails
+     * for it. This fn transforms that data structure into an array
+     * of strings.
+     */
+    SDBM.parseRailsErrors = function(errors) {
+        var strings = [];
+        if(errors) {
+            for(var key in errors) {
+                if(key === 'base') {
+                    strings.push(errors[key]);
+                } else {
+                    strings.push(key + " " + errors[key]);
+                }
+            }
+        }
+        return strings;
+    };
+
 }());

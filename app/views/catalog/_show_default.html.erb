@@ -24,6 +24,17 @@
          }
      });
 
+     $("#new_entry_comment").submit(function(event) {
+         event.preventDefault();
+         $.post($("#new_entry_comment").attr("action"), $("#new_entry_comment").serialize(), function() {
+             window.location = "/entries/" + <%= entry.id %>;
+         })
+          .fail(function (jqXHR, textStatus, errorThrown) {
+              var errorString = SDBM.parseRailsErrors($.parseJSON(jqXHR.responseText).errors).join("; ");
+              alert(errorString);
+          });
+     });
+
  });
 
 </script>
@@ -471,7 +482,7 @@
 <% end %>
 
 <% if user_signed_in? %>
-<%= form_for @entry_comment do |f| %>
+<%= form_for(@entry_comment, format: :json) do |f| %>
 <%= f.hidden_field :entry_id %>
 <%= f.fields_for :comment do |comment_form| %>
     <input type="hidden" name="return_url" value="<%= entry_path entry %>"/>

@@ -22,6 +22,8 @@ class Comment < ActiveRecord::Base
   has_many :manuscript_comments
   has_many :manuscripts, through: :manuscript_comments
 
+  validates_presence_of :comment
+
   include UserFields
 
   def entry
