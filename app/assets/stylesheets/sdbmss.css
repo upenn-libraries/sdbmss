@@ -53,6 +53,11 @@ h1 { font-size: 30px; margin-top: 0; }
     height: 40px;
 }
 
+/* override blacklight/bootstrap to highlight error fields more prominently */
+.has-error .form-control {
+    border-width: 2px;
+}
+
 /**** Style for various data entry forms */
 
 .sdbmss-form .provenance-group-container { border-width: 0 0 1px; border-style: none none solid; border-color: #e5e5e5; margin-bottom: 6px; }
