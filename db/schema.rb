@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150722135846) do
+ActiveRecord::Schema.define(version: 20150722203210) do
 
   create_table "agents", force: :cascade do |t|
     t.integer  "entry_id",       limit: 4
