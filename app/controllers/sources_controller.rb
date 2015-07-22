@@ -56,6 +56,46 @@ class SourcesController < ManageModelsController
     end
   end
 
+  # TODO: this is kinda slow and needs to be optimized
+  def similar
+    filtered = source_params_for_create_and_edit
+    title = filtered['title']
+    date = filtered['date']
+
+    query = Source.none
+
+    if date.present? || title.present?
+      query = Source.all
+
+      if date.present?
+        # use only the year so we get broadest possible matches
+        broad_date = date.dup
+        broad_date = broad_date[0..3] if broad_date.length > 4
+        query = query.where("date LIKE '#{broad_date}%'")
+      end
+
+      if title.present?
+        # NOTE: the order in which we add criteria to query seems to
+        # make a difference in performance.
+
+        # find titles that have ANY words in new title
+        query = query.where(title.split.select { |word| word.length > 3 }.map { |word| "title LIKE '%#{word}%'" }.join(" OR "))
+
+        # whittle them down by string similarity
+        len = title.length
+        query = query.where("length(title) <= #{len+8} AND length(title) >= #{len-8} AND levenshtein_ratio(title, ?) <= 40", title)
+      end
+
+      query = query.limit(5)
+    end
+
+    @similar = query
+
+    respond_to do |format|
+      format.json
+    end
+  end
+
   def model_class
     Source
   end

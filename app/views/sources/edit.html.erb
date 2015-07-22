@@ -321,6 +321,9 @@
           <div class="col-sm-10">
             <button class="btn btn-primary" ng-click="save()" ng-disabled="form.$invalid || currentlySaving">Save</button>
             <a class="btn btn-warning" href="<%= new_entry_path %>">Cancel</a>
+            <div ng-show="currentlySaving" style="display: inline;">
+                <img id="spinner" alt="working..." src="<%= asset_path "spinner.gif" %>" style="margin-left: 10px; margin-right: 10px;"/> Working, please wait...
+            </div>
           </div>
         </div>
 
@@ -335,6 +338,26 @@
     <% end %>
 
 </form>
+
+<script type="text/ng-template" id="similarSources.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Warning: similar sources found!</h3>
+    </div>
+    <div class="modal-body form-horizontal">
+
+        <p>There already exist sources in the database similar to the
+        one you are trying to create. Click an existing source below
+        to use it, or confirm that you really want to create your
+        source.</p>
+
+        <p style="margin-left: 2em;">
+            <div ng-repeat="source in similarSources"><a ng-click="sdbmutil.redirectToEntryCreatePage(source.id)"" href="#">SDBM_SOURCE_{{ source.id }} - {{ source.display_value }}</a></div>
+        </p>
+
+        <button class="btn btn-primary" ng-click="confirmCreate()">Create my new source anyway</button>
+
+    </div>
+</script>
 
 <script type="text/ng-template" id="postSourceSave.html">
     <div class="modal-header">

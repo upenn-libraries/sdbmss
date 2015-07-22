@@ -128,6 +128,7 @@ Rails.application.routes.draw do
     collection do
       post 'mark_as_reviewed'
       get 'search'
+      get 'similar'
       get 'types'
     end
     member do

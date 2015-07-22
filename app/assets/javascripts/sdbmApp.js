@@ -1291,9 +1291,41 @@
             });
         };
 
-        $scope.save = function () {
-            var sourceToSave = new Source(angular.copy($scope.source));
+        $scope.similarSourcesModal = null;
 
+        $scope.showSimilarSources = function() {
+            $scope.similarSourcesModal = $modal.open({
+                templateUrl: 'similarSources.html',
+                backdrop: 'static',
+                size: 'lg',
+                keyboard: false,
+                scope: $scope
+            });
+        };
+
+        $scope.confirmCreate = function() {
+            $scope.similarSourcesModal.close();
+            $scope.createSource($scope.sourceToSave);
+        };
+
+        /* source argument should be an Angular resource object */
+        $scope.createSource = function(source) {
+            source.$save(
+                $scope.postSourceSave,
+                sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
+            ).finally(function() {
+                $scope.currentlySaving = false;
+            });
+        };
+        
+        $scope.sourceToSave = null;
+
+        $scope.save = function () {
+            $scope.currentlySaving = true;
+
+            $scope.sourceToSave = new Source(angular.copy($scope.source));
+            var sourceToSave = $scope.sourceToSave;
+            
             var sourceType = sourceToSave.source_type;
 
             sourceToSave.source_type_id = sourceToSave.source_type.id;
@@ -1356,11 +1388,26 @@
                     $scope.currentlySaving = false;
                 });
             } else {
-                sourceToSave.$save(
-                    $scope.postSourceSave,
-                    sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
-                ).finally(function() {
-                    $scope.currentlySaving = false;
+                // check if similar sources exist before saving new one
+                $.ajax("/sources/similar.json", {
+                    data: {
+                        date: sourceToSave.date,
+                        title: sourceToSave.title
+                    },
+                    success: function(data, textStatus, jqXHR) {
+                        if(data.similar && data.similar.length > 0) {
+                            $scope.similarSources = data.similar;
+                            $scope.showSimilarSources();
+                        } else {
+                            $scope.createSource($scope.sourceToSave);
+                        }
+                    },
+                    error: function() {
+                        alert("Error confirming that this new source doesn't already exist");
+                    },
+                    complete: function() {
+                        $scope.currentlySaving = false;
+                    }
                 });
             }
         };

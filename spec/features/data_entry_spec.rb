@@ -318,6 +318,27 @@ describe "Data entry", :js => true do
       expect(source.source_agents.first.agent.name).to eq("Sotheby's")
     end
 
+    it "should warn about existing Source" do
+      source = Source.create!(
+        date: "19501205",
+        title: "a very long title for an existent source",
+        source_type: SourceType.auction_catalog,
+        created_by: @user,
+      )
+
+      visit new_source_path
+
+      select 'Auction/Sale Catalog', from: 'source_type'
+      # similar but not exactly the same title
+      fill_in 'title', with: 'A very Long Title for an Existing Source'
+      fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
+      click_button('Save')
+
+      expect(find(".modal-title", visible: true).text.include?("Warning: similar sources found!")).to be_truthy
+
+      expect(find(".modal-body", visible: true).text.include?(source.public_id)).to be_truthy
+    end
+
     it "should edit an existing Source" do
       source = Source.create!(
         date: "20141215",
