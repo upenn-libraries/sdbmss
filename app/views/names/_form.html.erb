@@ -12,6 +12,11 @@
       <div class="col-sm-2">
           <%= f.text_field :viaf_id, :class => 'form-control' %>
       </div>
+      <% if @model.viaf_id.present? %>
+      <div class="col-sm-4 label-alignment">
+          <a target="_blank" href="http://viaf.org/viaf/<%= @model.viaf_id %>/">View VIAF record</a>
+      </div>
+      <% end %>
   </div>
   <div class="field form-group row">
       <%= f.label :comment, class: "col-sm-2 control-label" %>
