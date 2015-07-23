@@ -78,8 +78,11 @@ class SourcesController < ManageModelsController
         # NOTE: the order in which we add criteria to query seems to
         # make a difference in performance.
 
+        # remove leading and trailing quotation marks and apostrophes
+        words = title.split.select { |word| word.length > 3 }.map { |word| word.gsub(/^['"]/, '').gsub(/['"]$/, '') }
+
         # find titles that have ANY words in new title
-        query = query.where(title.split.select { |word| word.length > 3 }.map { |word| "title LIKE '%#{word}%'" }.join(" OR "))
+        query = query.where(words.map { |word| "title LIKE '%#{word}%'" }.join(" OR "))
 
         # whittle them down by string similarity
         len = title.length
