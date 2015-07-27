@@ -102,6 +102,10 @@ Rails.application.routes.draw do
       get 'search'
       get 'suggest'
     end
+    member do
+      get 'merge'
+      post 'merge'
+    end
   end
 
   resources :places do

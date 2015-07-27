@@ -11,6 +11,12 @@
      var showOnlyRecordsCreatedByUser = 1;
      <% end %>
 
+     <% if can? :merge, model_class  %>
+     var canMerge = 1;
+     <% else %>
+     var canMerge = 0;
+     <% end %>
+
      // Subclass of SDBM.ManageRecords tailored for display of names (ie users)
      var ManageNames = function(options) {
          SDBM.ManageRecords.call(this, options);
@@ -35,13 +41,16 @@
                 }
             },
             {
-                sdbmssMinWidth: "100px",
-                sdbmssMaxWidth: "100px",
+                sdbmssMinWidth: "125px",
+                sdbmssMaxWidth: "125px",
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a> '
-                            + '&middot; <a class="delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
+                    var mergeLink = canMerge ? ' &middot; <a class="merge-link" href="/' + manageRecords.options.resourceName + '/' + data + '/merge">Merge</a>' : '';
+
+                    var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>'
+                            + ' &middot; <a class="delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>'
+                            + mergeLink;
                     return str;
                 },
             },

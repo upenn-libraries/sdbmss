@@ -52,6 +52,18 @@ describe Name do
       expect(author.authors_count).to eq(1)
     end
 
+    it "should merge records" do
+      author1 = Name.author
+      author1.name = "Some Author 1"
+      author1.save!
+
+      author2 = Name.author
+      author2.name = "Some Author 2"
+      author2.save!
+
+      author1.merge_into(author2)
+    end
+
   end
 
 end

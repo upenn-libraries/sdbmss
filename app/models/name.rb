@@ -199,17 +199,53 @@ class Name < ActiveRecord::Base
     name
   end
 
-  def entries_to_index_on_update
-    # because Name is used in many places, we build an array of IDs
-    # and construct a single Relation which callers can whittle down
-    # into batches.
+  def entry_ids_to_index_on_update
     ids = Set.new
     ids.merge(Entry.joins(:artists).where({ names: { id: id }}).select(:id).map(&:id))
     ids.merge(Entry.joins(:authors).where({ names: { id: id }}).select(:id).map(&:id))
     ids.merge(Entry.joins(:scribes).where({ names: { id: id }}).select(:id).map(&:id))
     ids.merge(Entry.joins(:events => :event_agents).where({ event_agents: { agent_id: id }}).select(:id).map(&:id))
     ids.merge(Entry.joins(:source => :source_agents).where({ source_agents: { agent_id: id }}).select(:id).map(&:id))
-    SDBMSS::ModelBatch.new(Entry, ids.to_a)
+    ids.to_a
+  end
+
+  def entries_to_index_on_update
+    # because Name is used in many places, we build an array of IDs
+    # and construct a single Relation which callers can whittle down
+    # into batches.
+    SDBMSS::ModelBatch.new(Entry, entry_ids_to_index_on_update)
+  end
+
+  # merges this record into target, soft-deleting this record.
+  def merge_into(target)
+    target_id = target.id
+
+    # Find all the Entries attached to this name, that will need to be
+    # reindexed after the merge
+    entry_ids = entry_ids_to_index_on_update
+
+    EntryArtist.where(artist_id: self.id).update_all({ artist_id: target_id })
+    EntryAuthor.where(author_id: self.id).update_all({ author_id: target_id })
+    EntryScribe.where(scribe_id: self.id).update_all({ scribe_id: target_id })
+    EventAgent.where(agent_id: self.id).update_all({ agent_id: target_id })
+    SourceAgent.where(agent_id: self.id).update_all({ agent_id: target_id })
+
+    # update flags on the target
+    target.is_artist ||= self.is_artist
+    target.is_author ||= self.is_author
+    target.is_scribe ||= self.is_scribe
+    target.is_provenance_agent ||= self.is_provenance_agent
+    target.save
+
+    # we MUST clear out the fields in this soft-deleted record to
+    # avoid problems with uniqueness constraints.
+    self.name = nil
+    self.viaf_id = nil
+    self.deleted = true
+    self.save
+
+    # reindex affected entries
+    SDBMSS::IndexJob.perform_later(Entry.to_s, entry_ids)
   end
 
 end

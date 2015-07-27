@@ -1,0 +1,99 @@
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-12" colspan="2"><b>Details</b></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr>
+                    <td class="col-sm-2 text-right record-label">Name</td>
+                    <td class="col-sm-10">
+                        <%= name.name %>
+                    </td>
+                </tr>
+
+                <% if name.viaf_id.present? %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">VIAF ID</td>
+                    <td class="col-sm-10">
+                        <a href="http://viaf.org/viaf/<%= name.viaf_id %>/"><%= name.viaf_id %></a>
+                    </td>
+                </tr>
+                <% end %>
+                
+                <% if name.source_agents_count || 0 > 0 %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label"># Sources</td>
+                    <td class="col-sm-10">
+                        <!-- there's no view of sources, so no link here. -->
+                        This agent is found in <%= name.source_agents_count %> sources.
+                    </td>
+                </tr>
+                <% end %>
+
+                <% count_authors = name.authors_count || 0 %>
+                <% count_artists = name.artists_count || 0 %>
+                <% count_scribes = name.scribes_count || 0 %>
+                <% has_entries = (count_authors + count_artists + count_scribes) > 0 %>
+
+                <% if (!name.is_provenance_agent) || has_entries %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label"># Entries</td>
+                    <td class="col-sm-10">
+                        <% if count_authors > 0 %>
+                        This name is listed as the author of <a href="<%= search_by_facet_value('author', name.name) %>"><%= count_authors %> entries</a>.<br/>
+                        <% end %>
+
+                        <% if count_artists > 0 %>
+                        This name is listed as the artist of <a href="<%= search_by_facet_value('artist', name.name) %>"><%= count_artists %> entries</a>.<br/>
+                        <% end %>
+
+                        <% if count_scribes > 0 %>
+                        This name is listed as the scribe of <a href="<%= search_by_facet_value('scribe', name.name) %>"><%= count_scribes %> entries</a>.<br/>
+                        <% end %>
+
+                        <% if !has_entries %>
+                        No entries found containing this name as an author, artist, or scribe.
+                        <% end %>
+                    </td>
+                </tr>
+                <% end %>
+                
+                <% count_selling_agent = Entry.approved_only.with_transaction_agent_and_role(name, 'selling_agent').count || 0 %>
+                <% count_seller_or_holder = Entry.approved_only.with_transaction_agent_and_role(name, 'seller_or_holder').count || 0 %>
+                <% count_buyer = Entry.approved_only.with_transaction_agent_and_role(name, 'buyer').count || 0 %>
+                <% has_transactions = (count_selling_agent + count_seller_or_holder + count_buyer) > 0 %>
+
+                <% if has_transactions %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label"># Transactions</td>
+                    <td class="col-sm-10">
+
+                        <% if count_selling_agent > 0 %>
+                        This agent is the selling agent in <a href="<%= search_by_facet_value('transaction_selling_agent', name.name) %>"><%= count_selling_agent %> entries</a>.<br/>
+                        <% end %>
+
+                        <% if count_seller_or_holder > 0 %>
+                        This agent is the seller in <a href="<%= search_by_facet_value('transaction_seller', name.name) %>"><%= count_seller_or_holder %> entries</a>.<br/>
+                        <% end %>
+                        
+                        <% if count_buyer > 0 %>
+                        This agent is the buyer in <a href="<%= search_by_facet_value('transaction_buyer', name.name) %>"><%= count_buyer %> entries</a>.
+                        <% end %>
+                    </td>
+                </tr>
+                <% end %>
+
+                <% count_provenance = Entry.approved_only.where_provenance_includes(name).count %>
+                <% if count_provenance > 0 %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label"># Provenance</td>
+                    <td class="col-sm-10">
+                        This agent is found in the provenance of <a href="<%= search_by_facet_value('provenance', name.name) %>"><%= count_provenance %> entries</a>.
+                    </td>
+                </tr>
+                <% end %>
+
+            </tbody>
+        </table>

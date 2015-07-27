@@ -52,6 +52,9 @@ class Ability
 
     if ['editor', 'admin'].member? user.role
       can :edit, Entry
+      [Entry, Event, Language, Manuscript, Name, Place, Source].each do |clazz|
+        can :merge, clazz
+      end
     end
 
     if ['admin'].member? user.role

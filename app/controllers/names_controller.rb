@@ -4,7 +4,9 @@ class NamesController < ManageModelsController
   include MarkAsReviewed
   include ResetReviewedAfterUpdate
 
-  load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_reviewed]
+  load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_reviewed, :merge]
+
+  before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy, :merge]
 
   def model_class
     Name
@@ -48,6 +50,18 @@ class NamesController < ManageModelsController
 
     respond_to do |format|
       format.json { render :json => suggestions, :status => :ok }
+    end
+  end
+
+  def merge
+    @target_id = params[:target_id]
+    @target = nil
+    if @target_id.present?
+      @target = Name.find_by(id: @target_id)
+    end
+    if params[:confirm] == "yes"
+      @model.merge_into(@target)
+      render "merge_success"
     end
   end
 
