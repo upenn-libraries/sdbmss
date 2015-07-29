@@ -40,18 +40,18 @@ class Name < ActiveRecord::Base
     end
 
     if name_obj.name.present? && (!name_obj.persisted? || name_obj.name_changed?)
-      if (existing_name = self.class.find_by(name: name_obj.name)).present?
-        errors[:name] << "is already used by record ##{existing_name.id} for '#{existing_name.name}'"
-      elsif self.class.unscoped.exists?(name: name_obj.name, deleted: true)
+      if self.class.unscoped.exists?(name: name_obj.name, deleted: true)
         errors[:name] << "is already used by a record that has been deleted"
+      elsif (existing_name = self.class.find_by(name: name_obj.name)).present?
+        errors[:name] << "is already used by record ##{existing_name.id} for '#{existing_name.name}'"
       end
     end
 
     if name_obj.viaf_id.present? && (!name_obj.persisted? || name_obj.viaf_id_changed?)
-      if (existing_name = self.class.find_by(viaf_id: name_obj.viaf_id)).present?
-        errors[:viaf_id] << "is already used by record ##{existing_name.id} for '#{existing_name.name}'"
-      elsif self.class.unscoped.exists?(viaf_id: name_obj.viaf_id, deleted: true)
+      if self.class.unscoped.exists?(viaf_id: name_obj.viaf_id, deleted: true)
         errors[:viaf_id] << "is already used by a record that has been deleted"
+      elsif (existing_name = self.class.find_by(viaf_id: name_obj.viaf_id)).present?
+        errors[:viaf_id] << "is already used by record ##{existing_name.id} for '#{existing_name.name}'"
       end
     end
   end

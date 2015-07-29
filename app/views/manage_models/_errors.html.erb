@@ -1,10 +1,11 @@
   <% if @model.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@model.errors.count, "error") %> prohibited this model from being saved:</h2>
+      <h2><%= pluralize(@model.errors.count, "error") %> prevented this model from being saved:</h2>
 
       <ul>
       <% @model.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
+          <%# this partial allows for another layer to intercept, so that messages can be customized at template level %>
+          <li><%= render partial: "error_message", locals: { message: message } %></li>
       <% end %>
       </ul>
     </div>
