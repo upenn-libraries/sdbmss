@@ -1,7 +1,5 @@
 module ApplicationHelper
 
-  CHECKMARK = "\u2713".encode('utf-8')
-
   def format_fuzzy_date(d)
     SDBMSS::Util.format_fuzzy_date(d)
   end
@@ -11,21 +9,21 @@ module ApplicationHelper
   # should use #search_advanced_path.
   def search_by_facet_value facet_name, value
     # call helpers from BlacklightUrlHelper
-    search_action_path(add_facet_params(facet_name, value, {}))
+    sdbmss_search_action_path(add_facet_params(facet_name, value, {}))
   end
 
   # returns a URL for an advanced search; options is a hash that
   # should contain a key corresponding to a field name, hashed to a
   # search value
   def search_advanced_path(options)
-    search_action_path({ "utf8" => CHECKMARK, "op" => "AND", "search_field" => "advanced", "commit" => "Search" }.merge(options))
+    sdbmss_search_action_path({ "utf8" => SDBMSS::Util::CHECKMARK, "op" => "AND", "search_field" => "advanced", "commit" => "Search" }.merge(options))
   end
 
   # this just takes you to a blank search, which shows you all entries ordered by most recent
   def recent_additions_path
     # don't use search_action_path here; it gets redefined by advanced
     # search controller, breaking the link on that page
-    root_path({ "utf8" => CHECKMARK, "search_field" => "all_fields", "q" => "" })
+    root_path({ "utf8" => SDBMSS::Util::CHECKMARK, "search_field" => "all_fields", "q" => "" })
   end
 
   # returns a URL to use for the data-context-href link attribute, on

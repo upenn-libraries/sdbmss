@@ -95,7 +95,7 @@ class CatalogController < ApplicationController
     p.delete "page"
     p["per_page"] = search_results_max
     p["format"] = "csv"
-    search_action_path(p)
+    sdbmss_search_action_path(p)
   end
 
   helper_method :search_results_as_csv_path

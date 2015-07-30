@@ -9,6 +9,8 @@ module SDBMSS
 
   module Util
 
+    CHECKMARK = "\u2713".encode('utf-8')
+
     class << self
 
       # Does a SQL select query in batches, passing each row to the

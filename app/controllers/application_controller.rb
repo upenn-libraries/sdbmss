@@ -16,6 +16,8 @@ class ApplicationController < ActionController::Base
 
   rescue_from CanCan::AccessDenied, with: :render_access_denied
 
+  helper_method :sdbmss_search_action_path
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :password, :password_confirmation, :remember_me) }
     devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :username, :email, :password, :remember_me) }
@@ -51,6 +53,22 @@ class ApplicationController < ActionController::Base
       format.html { render :template => "errors/access_denied", :status => 403 }
     end
     true
+  end
+
+  # This generates a consistent path for the search URL and should be
+  # used in place of Blacklight's #search_action_path which makes a
+  # contextually determined path. The latter breaks the top nav search
+  # box on any page that uses a controller besides CatalogController.
+  def sdbmss_search_action_path(options = {})
+    opts = options.dup
+    # prevent deprecation warnings from Rails
+    ["action", "controller"].each do |key|
+      if opts.has_key? key
+        opts[key.to_s] = opts[key]
+        opts.delete key
+      end
+    end
+    root_path({ "utf8" => SDBMSS::Util::CHECKMARK, "search_field" => "all_fields" }.merge(opts))
   end
 
 end
