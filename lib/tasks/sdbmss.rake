@@ -169,4 +169,42 @@ namespace :sdbmss do
     puts "Done."
   end
 
+  # Fix data in a bad migration of the legacy db; this task is a one-time fix, can be safely removed later.
+  desc "Fix dupe entry_authors"
+  task :fix_entry_authors_dupes => :environment do |t, args|
+    puts "This permanently deletes duplicate entry_author records for Entries! Are you SURE you want to do this ? [y/n] "
+    if STDIN.gets.chomp != 'y'
+      puts "Aborting and exiting."
+    end
+
+    puts "Looking for duplicates"
+    sql = "select * from (select distinct entry_id, count(*) as x from entry_authors group by entry_id, observed_name, author_id, role) t where x > 1;"
+    ActiveRecord::Base.connection.execute(sql).each do |row|
+      puts "examining Entry #{row[0]}"
+      entry = Entry.find(row[0])
+      unique = []
+      entry.entry_authors.each do |entry_author|
+        deleted = false
+        unique.each do |unique_entry_author|
+          if entry_author.entry_id == unique_entry_author.entry_id &&
+             entry_author.author_id == unique_entry_author.author_id &&
+             entry_author.observed_name == unique_entry_author.observed_name &&
+             entry_author.role == unique_entry_author.role
+            puts "Deleting entry_author id=#{entry_author.id}"
+            entry_author.destroy!
+            deleted = true
+          end
+        end
+        if !deleted
+          unique << entry_author
+        end
+      end
+    end
+    puts "Resetting counters"
+    Name.unscoped.find_each(batch_size: 500).each do |name|
+      Name.reset_counters(name.id, :entry_authors)
+    end
+    puts "You should now run 'bundle exec rake sunspot:reindex'"
+  end
+
 end

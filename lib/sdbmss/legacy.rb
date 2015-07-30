@@ -1137,14 +1137,19 @@ module SDBMSS::Legacy
           end
 
           all_roles.each do |author_role|
-            entry_author = EntryAuthor.create!(
-              entry: entry,
-              observed_name: author_variant,
-              author: author,
-              role: author_role,
-              uncertain_in_source: uncertain_in_source,
-              supplied_by_data_entry: supplied_by_data_entry,
-            )
+            # don't create duplicate EntryAuthor records: these exist
+            # because legacy data sometimes repeats Authors in an
+            # attempt to align them with Titles
+            if EntryAuthor.where(entry: entry, observed_name: author_variant, author: author, role: author_role).count == 0
+              entry_author = EntryAuthor.create!(
+                entry: entry,
+                observed_name: author_variant,
+                author: author,
+                role: author_role,
+                uncertain_in_source: uncertain_in_source,
+                supplied_by_data_entry: supplied_by_data_entry,
+              )
+            end
           end
         end
       end
