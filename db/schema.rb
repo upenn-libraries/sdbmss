@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150722203210) do
+ActiveRecord::Schema.define(version: 20150731200944) do
 
   create_table "agents", force: :cascade do |t|
     t.integer  "entry_id",       limit: 4
@@ -126,7 +126,7 @@ ActiveRecord::Schema.define(version: 20150722203210) do
     t.integer  "height",                 limit: 4
     t.integer  "width",                  limit: 4
     t.string   "alt_size",               limit: 255
-    t.string   "manuscript_binding",     limit: 512
+    t.string   "manuscript_binding",     limit: 1024
     t.text     "other_info",             limit: 65535
     t.string   "manuscript_link",        limit: 1024
     t.integer  "miniatures_fullpage",    limit: 4

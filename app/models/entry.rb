@@ -144,6 +144,8 @@ class Entry < ActiveRecord::Base
   validates_numericality_of :miniatures_unspec_size, allow_nil: true
   validates_numericality_of :initials_historiated, allow_nil: true
   validates_numericality_of :initials_decorated, allow_nil: true
+  validates_length_of :manuscript_binding, maximum: 1024
+  validates_length_of :manuscript_link, maximum: 1024
 
   after_create :update_source_status
 
