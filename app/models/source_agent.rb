@@ -20,13 +20,8 @@ class SourceAgent < ActiveRecord::Base
     [ROLE_RECIPIENT, "Recipient"],
   ]
 
+  validates_presence_of :agent
   validates_presence_of :source
-
-  validate do |source_agent|
-    if !(source_agent.agent.present? || source_agent.observed_name.present?)
-      errors[:base] << "SourceAgent objects must have either Agent association or observed_name value"
-    end
-  end
 
   def self.valid_roles_for_source_type(source_type_code)
     case source_type_code

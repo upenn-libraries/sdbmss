@@ -28,8 +28,20 @@ class SourcesController < ManageModelsController
     else
       @source.status = Source::TYPE_STATUS_TO_BE_ENTERED
     end
-    @source.save_by(current_user)
-    render "show"
+    success = @source.save_by(current_user)
+    respond_to do |format|
+      format.json {
+        if !success
+          errors_data = @source.errors.messages
+          render :json => { :errors => errors_data }, :status => :unprocessable_entity
+        else
+          render "show"
+        end
+      }
+      format.html {
+        render "show"
+      }
+    end
   end
 
   def edit

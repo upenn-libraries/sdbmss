@@ -116,8 +116,12 @@
          */
         var isBlankThing = function(obj) {
             var blank = false;
-            if(obj === undefined || obj === null || (typeof(obj) === 'string' && obj.length === 0) || (Array.isArray(obj) && obj.length === 0)) {
+            if(obj === undefined || obj === null ||
+               (typeof(obj) === 'string' && obj.length === 0) ||
+               (Array.isArray(obj) && obj.length === 0)) {
                 blank = true;
+            } else if (typeof(obj) === 'number') {
+                // noop: treat all numbers as non-blank
             } else {
                 blank = isBlankObject(obj);
             }
@@ -161,7 +165,7 @@
                     keep = false;
                     thingsToCheck.forEach(function (propertyName) {
                         var propertyIsBlank = isBlankThing(childObject[propertyName]);
-                        //console.log('is property ' + propertyName + ' blank? ' + propertyIsBlank);
+                        //console.log('is property ' + propertyName + ' (value=[' + childObject[propertyName] + ']) blank? ' + propertyIsBlank);
                         if(!propertyIsBlank) {
                             keep = true;
                         }
@@ -1216,7 +1220,7 @@
         $scope.associations = [
             {
                 field: 'source_agents',
-                properties: ['role'],
+                properties: ['agent_id'],
                 foreignKeyObjects: ['agent']
             }
         ];
