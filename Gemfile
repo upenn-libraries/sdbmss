@@ -66,7 +66,7 @@ gem 'activerecord-session_store', '~> 0.1.0'
 gem 'levenshtein', '~> 0.2.2'
 
 # for auditing model changes
-gem 'paper_trail', '~> 4.0.0.beta'
+gem 'paper_trail', '~> 4.0.0'
 
 # natural language date parser
 gem 'chronic', '~> 0.10.2'
