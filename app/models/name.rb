@@ -18,7 +18,7 @@ class Name < ActiveRecord::Base
 
   belongs_to :entry
 
-  belongs_to :approved_by, :class_name => 'User'
+  belongs_to :reviewed_by, :class_name => 'User'
 
   has_many :entry_artists, foreign_key: "artist_id"
 
