@@ -94,8 +94,10 @@ class SourcesController < ManageModelsController
         # remove leading and trailing quotation marks and apostrophes
         words = title.split.select { |word| word.length > 3 }.map { |word| word.gsub(/^['"]/, '').gsub(/['"]$/, '') }
 
+        words = words.map { |word| word.gsub(/"/, '\"') }
+
         # find titles that have ANY words in new title
-        query = query.where(words.map { |word| "title LIKE '%#{word}%'" }.join(" OR "))
+        query = query.where(words.map { |word| "title LIKE \"%#{word}%\"" }.join(" OR "))
 
         # whittle them down by string similarity
         len = title.length
