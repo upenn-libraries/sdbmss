@@ -810,8 +810,8 @@ describe "Data entry", :js => true do
       SDBMSS::Util.wait_for_solr_to_be_current
       visit entry_path(entry)
 
-      fill_in 'entry_comment_comment_attributes_comment', with: "this entry is so crazy"
-      check 'entry_comment_comment_attributes_is_correction'
+      fill_in 'comment_comment', with: "this entry is so crazy"
+      check 'comment_is_correction'
       click_button('Submit')
 
       expect(page).to have_content "this entry is so crazy"

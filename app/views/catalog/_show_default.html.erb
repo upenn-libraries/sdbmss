@@ -24,9 +24,9 @@
          }
      });
 
-     $("#new_entry_comment").submit(function(event) {
+     $("#new_comment").submit(function(event) {
          event.preventDefault();
-         $.post($("#new_entry_comment").attr("action"), $("#new_entry_comment").serialize(), function() {
+         $.post($("#new_comment").attr("action"), $("#new_comment").serialize(), function() {
              window.location = "/entries/" + <%= entry.id %>;
          })
           .fail(function (jqXHR, textStatus, errorThrown) {
@@ -482,25 +482,28 @@
 <% end %>
 
 <% if user_signed_in? %>
-<%= form_for(@entry_comment, format: :json) do |f| %>
-<%= f.hidden_field :entry_id %>
-<%= f.fields_for :comment do |comment_form| %>
+<% comment = Comment.new %>
+<% entry_comment = comment.entry_comments.build %>
+<% entry_comment.entry_id = entry.id %>
+<%= form_for(comment, format: :json) do |f| %>
     <input type="hidden" name="return_url" value="<%= entry_path entry %>"/>
+    <%= f.fields_for :entry_comments do |entry_comment| %>
+        <%= entry_comment.hidden_field :entry_id %>
+    <% end %>
     <div class="row">
         <div class="col-sm-12 form-group">
             <h4>Leave a comment</h4>
-            <%= comment_form.text_area :comment, class: "form-control", rows: 5 %>
+            <%= f.text_area :comment, class: "form-control", rows: 5 %>
         </div>
         <div class="col-sm-12 checkbox">
             <label>
-                <%= comment_form.check_box :is_correction %> I am leaving a comment that notes a correction to this record
+                <%= f.check_box :is_correction %> I am leaving a comment that notes a correction to this record
             </label>
         </div>
         <div class="col-sm-12 text-right">
             <button class="btn btn-primary">Submit</button>
         </div>
     </div>
-<% end %>
 <% end %>
 <% end %>
 

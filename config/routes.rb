@@ -47,8 +47,6 @@ Rails.application.routes.draw do
   get '/entries/:id.json', to: 'entries#show_json', defaults: { format: 'json' }
   get '/entries/:id', to: 'catalog#show'
 
-  resources :entry_comments
-
   resources :entry_dates do
     collection {
       get 'parse_observed_date'
@@ -93,8 +91,6 @@ Rails.application.routes.draw do
       get 'manage_entries'
     end
   end
-
-  resources :manuscript_comments
 
   resources :names do
     collection do

@@ -129,13 +129,15 @@ class EntriesController < ManageModelsController
 
       if success
         if params[:new_comment].present?
-          ec = EntryComment.new(
-            entry_id: @entry.id,
-            comment_attributes: {
-              comment: params[:new_comment],
-              created_by_id: current_user.id
-            })
-          ec.save!
+          c = Comment.new(
+            comment: params[:new_comment],
+            created_by_id: current_user.id,
+            entry_comments_attributes: [
+              {
+                entry_id: @entry.id,
+              }
+            ])
+          c.save!
         end
         # link to manuscript
         if params[:manuscript_id].present?
@@ -174,13 +176,15 @@ class EntriesController < ManageModelsController
         success = @entry.update_by(current_user, filtered)
         if success
           if params[:new_comment].present?
-            ec = EntryComment.new(
-              entry_id: @entry.id,
-              comment_attributes: {
-                comment: params[:new_comment],
-                created_by: current_user
-              })
-            ec.save!
+            c = Comment.new(
+              comment: params[:new_comment],
+              created_by_id: current_user.id,
+              entry_comments_attributes: [
+                {
+                  entry_id: @entry.id,
+                }
+              ])
+            c.save!
           end
         end
       end

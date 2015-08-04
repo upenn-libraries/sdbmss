@@ -16,13 +16,21 @@ class Comment < ActiveRecord::Base
   # returns the comments on all Entries created by passed-in User
   scope :with_entries_belonging_to, ->(user) { joins(:entries).where(entries: { created_by: user }).order(created_at: :desc) }
 
-  has_many :entry_comments
+  # inverse_of is required for accepts_nested_attributes_for to
+  # populate the FK to the Comment object. See these pages:
+  #
+  # https://github.com/rails/rails/issues/20451
+  # http://viget.com/extend/exploring-the-inverse-of-option-on-rails-model-associations
+  has_many :entry_comments, inverse_of: :comment
   has_many :entries, through: :entry_comments
 
-  has_many :manuscript_comments
+  has_many :manuscript_comments, inverse_of: :comment
   has_many :manuscripts, through: :manuscript_comments
 
   validates_presence_of :comment
+
+  accepts_nested_attributes_for :entry_comments, allow_destroy: true
+  accepts_nested_attributes_for :manuscript_comments, allow_destroy: true
 
   include UserFields
   include HasPaperTrail

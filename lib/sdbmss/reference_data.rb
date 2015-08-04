@@ -1400,13 +1400,15 @@ module SDBMSS::ReferenceData
         ]
       )
 
-      EntryComment.create!(
-        entry: entry,
-        comment_attributes: {
-          comment: "A google search on \"sharrock ushaw\" returned a website from Ushaw College Library Special Collections Catalogue. The Ushaw College History Papers archive contains this reference: UC/H306 13 November 1815 Letter from J.B. Marsh to William Hogarth: financial affairs of P.J. Sharrock, and the offer of his books to Ushaw's library. (see http://reed.dur.ac.uk/xtf/view?docId=ead/ush/uchistor.xml).",
-          created_at: DateTime.now,
-          created_by_id: lransom.id,
-        }
+      Comment.create!(
+        comment: "A google search on \"sharrock ushaw\" returned a website from Ushaw College Library Special Collections Catalogue. The Ushaw College History Papers archive contains this reference: UC/H306 13 November 1815 Letter from J.B. Marsh to William Hogarth: financial affairs of P.J. Sharrock, and the offer of his books to Ushaw's library. (see http://reed.dur.ac.uk/xtf/view?docId=ead/ush/uchistor.xml).",
+        created_at: DateTime.now,
+        created_by_id: lransom.id,
+        entry_comments_attributes: [
+          {
+            entry: entry,
+          }
+        ]
       )
 
       entry

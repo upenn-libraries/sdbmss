@@ -36,7 +36,11 @@ class CommentsController < ManageModelsController
   private
 
   def model_params
-    params.require(model_class_lstr.to_sym).permit(:comment, :is_correction, :is_accepted)
+    params.require(model_class_lstr.to_sym).permit(
+      :comment, :is_correction, :is_accepted,
+      :entry_comments_attributes => [ :id, :entry_id ],
+      :manuscript_comments_attributes => [ :manuscript_id ],
+    )
   end
 
 end

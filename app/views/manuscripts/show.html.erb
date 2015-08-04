@@ -1,3 +1,26 @@
+<% content_for :head do %>
+<% if user_signed_in? %>
+<script type="text/javascript">
+
+ $(document).ready(function() {
+
+     $("#new_comment").submit(function(event) {
+         event.preventDefault();
+         $.post($("#new_comment").attr("action"), $("#new_comment").serialize(), function() {
+             window.location = "/manuscripts/" + <%= @manuscript.id %>;
+         })
+          .fail(function (jqXHR, textStatus, errorThrown) {
+              var errorString = SDBM.parseRailsErrors($.parseJSON(jqXHR.responseText).errors).join("; ");
+              alert(errorString);
+          });
+     });
+
+ });
+
+</script>
+<% end %>
+<% end %>
+
 <div class="row">
     <div class="col-sm-3">
         <div class="panel panel-default show-tools">
@@ -126,25 +149,28 @@
         <% end %>
 
         <% if user_signed_in? %>
-        <%= form_for @manuscript_comment do |f| %>
-        <%= f.hidden_field :manuscript_id %>
-        <%= f.fields_for :comment do |comment_form| %>
+        <% comment = Comment.new %>
+        <% manuscript_comment = comment.manuscript_comments.build %>
+        <% manuscript_comment.manuscript_id = @manuscript.id %>
+        <%= form_for(comment, format: :json) do |f| %>
         <input type="hidden" name="return_url" value="<%= manuscript_path @manuscript %>"/>
+        <%= f.fields_for :manuscript_comments do |manuscript_comment| %>
+            <%= manuscript_comment.hidden_field :manuscript_id %>
+        <% end %>
         <div class="row">
             <div class="col-sm-12 form-group">
                 <h4>Leave a comment</h4>
-                <%= comment_form.text_area :comment, class: "form-control", rows: 5 %>
+                <%= f.text_area :comment, class: "form-control", rows: 5 %>
             </div>
             <div class="col-sm-12 checkbox">
                 <label>
-                    <%= comment_form.check_box :is_correction %> I am leaving a comment that notes a correction to this record
+                    <%= f.check_box :is_correction %> I am leaving a comment that notes a correction to this record
                 </label>
             </div>
             <div class="col-sm-12 text-right">
                 <button class="btn btn-primary">Submit</button>
             </div>
         </div>
-        <% end %>
         <% end %>
         <% end %>
 
