@@ -2,6 +2,7 @@ class PlacesController < ManageModelsController
 
   include LanguagesAndPlaces
   include MarkAsReviewed
+  include LogActivity
 
   load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_reviewed]
 

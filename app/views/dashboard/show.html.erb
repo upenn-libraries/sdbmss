@@ -48,6 +48,8 @@
                     <%= render partial: "unreviewed_count", locals: { model_class: User } %>
                 </p>
                 <% end %>
+
+                <p><a href="<%= recent_activity_path %>">Recent Activity</a></p>
             </div>
         </div>
         <% end %>

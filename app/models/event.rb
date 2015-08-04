@@ -29,6 +29,7 @@ class Event < ActiveRecord::Base
   ]
 
   include UserFields
+  include HasPaperTrail
 
   belongs_to :entry
 
@@ -45,8 +46,6 @@ class Event < ActiveRecord::Base
   validates :currency, inclusion: { in: CURRENCY_TYPES.map(&:first) }, allow_nil: true
   validates_numericality_of :price, allow_nil: true
   validates_presence_of :entry
-
-  has_paper_trail skip: [:created_at, :updated_at]
 
   # Returns a 2-item Array with start_date and end_date in the format
   # YYYY or YYYY-MM-DD, depending on how much information is in the

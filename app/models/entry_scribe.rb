@@ -2,6 +2,7 @@ class EntryScribe < ActiveRecord::Base
 
   include CertaintyFlags
   include DisplayableName
+  include HasPaperTrail
 
   belongs_to :entry
   belongs_to :scribe, class_name: 'Name', counter_cache: :scribes_count
@@ -13,8 +14,6 @@ class EntryScribe < ActiveRecord::Base
       errors[:base] << "EntryScribe objects must have either Name association or observed_name value"
     end
   end
-
-  has_paper_trail skip: [:created_at, :updated_at]
 
   def display_value
     super scribe

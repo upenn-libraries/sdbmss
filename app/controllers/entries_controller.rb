@@ -20,6 +20,8 @@ class EntriesController < ManageModelsController
   # CatalogController but not here, so we include it explicitly
   include BlacklightAdvancedSearch::Controller
 
+  include LogActivity
+
   before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history]
 
   before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :similar, :mark_as_approved]

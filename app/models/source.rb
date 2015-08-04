@@ -47,6 +47,7 @@ class Source < ActiveRecord::Base
 
   include UserFields
   include IndexAfterUpdate
+  include HasPaperTrail
 
   default_scope { where(deleted: false) }
 

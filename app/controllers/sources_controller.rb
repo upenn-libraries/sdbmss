@@ -2,6 +2,7 @@
 class SourcesController < ManageModelsController
 
   include MarkAsReviewed
+  include LogActivity
 
   wrap_parameters include: Source.attribute_names - ['created_at', 'created_by', 'updated_at', 'updated_by'] + ['source_agents']
 

@@ -25,6 +25,7 @@ class Comment < ActiveRecord::Base
   validates_presence_of :comment
 
   include UserFields
+  include HasPaperTrail
 
   def entry
     entries.first

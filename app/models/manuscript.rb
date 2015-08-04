@@ -12,6 +12,7 @@ class Manuscript < ActiveRecord::Base
 
   include UserFields
   include IndexAfterUpdate
+  include HasPaperTrail
 
   # returns all the Event objects associated with all the entries for this MS
   def all_provenance

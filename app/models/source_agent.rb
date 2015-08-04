@@ -4,6 +4,8 @@ class SourceAgent < ActiveRecord::Base
 
   validate :validate_role
 
+  include HasPaperTrail
+
   ROLE_SELLER_OR_HOLDER = "seller_or_holder"
   ROLE_SELLING_AGENT = "selling_agent"
   ROLE_BUYER = "buyer"

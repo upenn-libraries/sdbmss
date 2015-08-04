@@ -16,6 +16,7 @@ require 'chronic'
 class EntryDate < ActiveRecord::Base
 
   include CertaintyFlags
+  include HasPaperTrail
 
   belongs_to :entry
 
@@ -30,8 +31,6 @@ class EntryDate < ActiveRecord::Base
       errors[:date_normalized_start] = "date_normalized_start must be earlier than date_normalized_end"
     end
   end
-
-  has_paper_trail skip: [:created_at, :updated_at]
 
   # returns a 2-item Array with start_date and end_date in the format
   # YYYY.

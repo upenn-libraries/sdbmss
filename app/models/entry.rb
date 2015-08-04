@@ -24,6 +24,7 @@ class Entry < ActiveRecord::Base
   ]
 
   include UserFields
+  include HasPaperTrail
 
   belongs_to :source, counter_cache: :entries_count
 
@@ -103,8 +104,6 @@ class Entry < ActiveRecord::Base
   scope :with_transaction_agent_and_role, ->(agent, role) { joins(:events => :event_agents).where("events.primary = true and event_agents.agent_id = ? and role = ?", agent.id, role) }
 
   scope :approved_only, -> { where(approved: true) }
-
-  has_paper_trail skip: [:created_at, :updated_at]
 
   # Note that there is separate front-end Javascript/AngularJS code
   # that does validation, which should be kept in sync with the

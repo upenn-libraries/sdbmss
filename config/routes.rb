@@ -122,6 +122,8 @@ Rails.application.routes.draw do
     get '/raise_error/', to: 'debug#raise_error'
   end
 
+  get '/recent_activity/', to: 'recent_activity#show'
+
   get '/reports/', to: 'reports#show'
   get '/reports/names/', to: 'reports#names'
   get '/reports/languages/', to: 'reports#languages'

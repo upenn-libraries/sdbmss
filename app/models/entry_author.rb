@@ -2,6 +2,7 @@ class EntryAuthor < ActiveRecord::Base
 
   include CertaintyFlags
   include DisplayableName
+  include HasPaperTrail
 
   TYPES_ROLES = [
     ['Attr', 'Attributed'],
@@ -25,8 +26,6 @@ class EntryAuthor < ActiveRecord::Base
       errors[:base] << "EntryAuthor objects must have either Name association or observed_name value"
     end
   end
-
-  has_paper_trail skip: [:created_at, :updated_at]
 
   def display_value
     val = super(author)

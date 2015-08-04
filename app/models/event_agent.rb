@@ -1,6 +1,7 @@
 class EventAgent < ActiveRecord::Base
 
   include CertaintyFlags
+  include HasPaperTrail
 
   belongs_to :event
   belongs_to :agent, class_name: 'Name', counter_cache: :event_agents_count

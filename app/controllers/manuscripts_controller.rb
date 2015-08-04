@@ -1,6 +1,7 @@
 class ManuscriptsController < ManageModelsController
 
   include MarkAsReviewed
+  include LogActivity
 
   before_action :set_manuscript, only: [:show, :edit, :entry_candidates, :citation]
 

@@ -10,4 +10,5 @@ class EntryManuscript < ActiveRecord::Base
   TYPE_RELATION_PARTIAL = 'partial'
   TYPE_RELATION_POSSIBLE = 'possible'
 
+  include HasPaperTrail
 end

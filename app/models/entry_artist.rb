@@ -2,6 +2,7 @@ class EntryArtist < ActiveRecord::Base
 
   include CertaintyFlags
   include DisplayableName
+  include HasPaperTrail
 
   belongs_to :entry
   belongs_to :artist, class_name: 'Name', counter_cache: :artists_count
@@ -13,8 +14,6 @@ class EntryArtist < ActiveRecord::Base
       errors[:base] << "EntryArtist objects must have either Name association or observed_name value"
     end
   end
-
-  has_paper_trail skip: [:created_at, :updated_at]
 
   def display_value
     super artist

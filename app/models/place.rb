@@ -3,6 +3,7 @@ class Place < ActiveRecord::Base
   include UserFields
   include ReviewedByField
   include IndexAfterUpdate
+  include HasPaperTrail
 
   default_scope { where(deleted: false) }
 
