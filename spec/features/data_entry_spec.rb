@@ -543,6 +543,16 @@ describe "Data entry", :js => true do
       expect(entry.get_transaction).to be_nil
     end
 
+    it "should save an Entry and log it in Recent Activity" do
+      create_entry
+
+      entry = Entry.last
+
+      visit recent_activity_path
+
+      expect(page).to have_content "#{entry.created_by.username} created Entry #{entry.id}"
+    end
+
     it "should update status field on Source when adding an Entry" do
 
       # Creating a new source defaults its status to 'To Be Entered'
@@ -801,7 +811,7 @@ describe "Data entry", :js => true do
       expect(page.status_code).to be(403)
     end
 
-    it "should leave a comment successfully" do
+    it "should leave a comment on an Entry successfully" do
       entry = Entry.create!(
         source: Source.first,
         created_by_id: @user.id,
@@ -819,6 +829,37 @@ describe "Data entry", :js => true do
       comment = Comment.last
       expect(comment.entries.first.id).to eq(entry.id)
       expect(comment.comment).to eq("this entry is so crazy")
+      expect(comment.is_correction).to eq(true)
+    end
+
+    it "should leave a comment on a Manuscript successfully" do
+      entry1 = Entry.create!(
+        source: Source.first,
+        created_by_id: @user.id,
+        approved: true
+      )
+      entry2 = Entry.create!(
+        source: Source.first,
+        created_by_id: @user.id,
+        approved: true
+      )
+      manuscript = Manuscript.create!
+      manuscript_id = manuscript.id
+      EntryManuscript.create!(entry: entry1, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
+      EntryManuscript.create!(entry: entry2, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
+      SDBMSS::Util.wait_for_solr_to_be_current
+
+      visit manuscript_path(manuscript)
+
+      fill_in 'comment_comment', with: "this entry is nuts"
+      check 'comment_is_correction'
+      click_button('Submit')
+
+      expect(page).to have_content "this entry is nuts"
+
+      comment = Comment.last
+      expect(comment.manuscripts.first.id).to eq(manuscript_id)
+      expect(comment.comment).to eq("this entry is nuts")
       expect(comment.is_correction).to eq(true)
     end
 
