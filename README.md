@@ -131,7 +131,7 @@ Data Migration
 
 You will need to migrate the data from the legacy Oracle production
 database into your own locally running MySQL database that the Rails
-application can use. This migration can ONLY be done on the
+application can use. Copying the Oracle db can ONLY be done on the
 development virtual machine (VM) set up by Libraries IT for this
 project's use.
 
