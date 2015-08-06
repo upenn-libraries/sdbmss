@@ -49,6 +49,8 @@ class EntryHistory
 
   private
 
+  IGNORE_FIELDS = ['updated_at', 'touch_count']
+
   def load
 
     # TODO: this doesn't yet account for:
@@ -58,7 +60,8 @@ class EntryHistory
     # get all the entry's associations that have paper trail
     # enabled. this is an array of AssociationReflection objects.
     associations = Entry.reflect_on_all_associations.select do |assoc|
-      assoc.collection? && assoc.klass.paper_trail_enabled_for_model?
+      # reject "has_many through" relations
+      assoc.collection? && !assoc.options.has_key?(:through) && assoc.klass.paper_trail_enabled_for_model?
     end
 
     # keep running list of transaction ids of ANY version of anything
@@ -94,7 +97,9 @@ class EntryHistory
           changes << Change.new(version.event, version.item_type, 'id', [version.item_id, version.item_id])
         else
           version.changeset.each do |field, values|
-            changes << Change.new(version.event, version.item_type, field, values)
+            if !IGNORE_FIELDS.include?(field)
+              changes << Change.new(version.event, version.item_type, field, values)
+            end
           end
         end
       end

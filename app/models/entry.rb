@@ -25,6 +25,7 @@ class Entry < ActiveRecord::Base
 
   include UserFields
   include HasPaperTrail
+  include HasTouchCount
 
   belongs_to :source, counter_cache: :entries_count
 

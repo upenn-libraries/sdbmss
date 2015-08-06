@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150804184051) do
+ActiveRecord::Schema.define(version: 20150806145731) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",  limit: 255, null: false
@@ -153,6 +153,7 @@ ActiveRecord::Schema.define(version: 20150804184051) do
     t.string   "transaction_type",       limit: 255
     t.integer  "approved_by_id",         limit: 4
     t.datetime "approved_at"
+    t.integer  "touch_count",            limit: 4,     default: 0,     null: false
   end
 
   add_index "entries", ["approved_by_id"], name: "index_entries_on_approved_by_id", using: :btree

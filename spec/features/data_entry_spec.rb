@@ -601,6 +601,40 @@ describe "Data entry", :js => true do
       verify_entry(entry)
     end
 
+    it "should create history when updating an Entry" do
+      count = Entry.count
+
+      create_entry
+
+      expect(Entry.count).to eq(count + 1)
+
+      entry = Entry.last
+
+      visit edit_entry_path :id => entry.id
+
+      fill_in 'title_0', with: 'Changed Book'
+
+      first(".save-button").click
+
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+
+      entry.reload
+
+      changesets = EntryHistory.new(entry).changesets
+
+      expect(changesets.count).to eq(2)
+
+      expect(changesets[0].changes[0].change_type).to eq("update")
+      expect(changesets[0].changes[0].object_class).to eq("Entry")
+      expect(changesets[0].changes[0].field).to eq("updated_by_id")
+      expect(changesets[0].changes[0].values).to eq([nil, @user.id])
+
+      expect(changesets[0].changes[1].change_type).to eq("update")
+      expect(changesets[0].changes[1].object_class).to eq("EntryTitle")
+      expect(changesets[0].changes[1].field).to eq("title")
+      expect(changesets[0].changes[1].values).to eq(["Book of Hours", "Changed Book"])
+    end
+
     it "should pre-populate transaction_type on Edit page" do
       count = Entry.count
 
