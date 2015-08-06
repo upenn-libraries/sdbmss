@@ -84,7 +84,14 @@ class ManageModelsController < ApplicationController
         }
       end
     else
-      render 'edit'
+      respond_to do |format|
+        format.html {
+          render 'edit'
+        }
+        format.json {
+          render status: :bad_request, json: { errors: @model.errors.messages }
+        }
+      end
     end
   end
 

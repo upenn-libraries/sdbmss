@@ -53,10 +53,6 @@ Rails.application.routes.draw do
     }
   end
 
-  resources :entry_manuscripts do
-    collection { put 'update_multiple' }
-  end
-
   resources :events do
     collection {
       get 'parse_observed_date'

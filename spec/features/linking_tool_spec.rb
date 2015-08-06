@@ -58,6 +58,101 @@ describe "Linking Tool", :js => true do
     expect(find(".modal-title", visible: true).text.include?("No matches found")).to be_truthy
   end
 
+  # NOTE: tests here rely on data created by previous tests
+
+  it "should create a new Manuscript out of two entries" do
+    count = Manuscript.count
+
+    entry = Entry.first
+    visit linking_tool_by_entry_path id: entry.id
+
+    second_entry_id = first(".add-entry-link", visible: true)["data-entry-id".to_sym].to_i
+    first(".add-entry-link", visible: true).trigger('click')
+
+    click_button "Create Manuscript Record"
+
+    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+
+    expect(Manuscript.count).to eq(count + 1)
+
+    entries = Manuscript.last.entries
+    entry_ids = entries.map(&:id)
+    expect(entry_ids.count).to eq(2)
+    expect(entry_ids.include?(entry.id)).to be_truthy
+    expect(entry_ids.include?(second_entry_id)).to be_truthy
+  end
+
+  it "should link an Entry to an existing Manuscript" do
+    entry = Entry.find(2)
+    visit linking_tool_by_entry_path id: entry.id
+
+    # use manuscript created in previous test
+    first(".link-to-manuscript-link", visible: true).trigger('click')
+
+    expect(find(".modal-title", visible: true).text.include?("Successfully Linked")).to be_truthy
+
+    entry.reload
+
+    expect(entry.manuscripts.count).to eq(1)
+  end
+
+  it "should add an entry to an existing Manuscript" do
+    # use manuscript created in previous test
+    manuscript = Manuscript.last
+    count = manuscript.entries.count
+
+    visit linking_tool_by_manuscript_path id: manuscript.id
+    entry_id = first(".add-entry-link", visible: true)["data-entry-id".to_sym].to_i
+    first(".add-entry-link", visible: true).trigger('click')
+
+    click_button "Save changes"
+
+    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+
+    entries = Manuscript.last.entries
+    entry_ids = entries.map(&:id)
+    expect(entry_ids.count).to eq(count + 1)
+    expect(entry_ids.include?(entry_id)).to be_truthy
+  end
+
+  it "should change an Entry's relation to a Manuscript to 'possible'" do
+    manuscript = Manuscript.last
+    visit linking_tool_by_manuscript_path id: manuscript.id
+
+    entry = manuscript.entries.first
+    entry_id = entry.id
+
+    first("input[name='entry_id_#{entry.id}'][value='possible']").trigger('click')
+
+    click_button "Save changes"
+
+    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+
+    manuscript.reload
+
+    em = manuscript.entry_manuscripts.select { |em| em.entry_id == entry_id }.first
+    expect(em.relation_type).to eq('possible')
+  end
+
+  it "should remove an entry from an existing Manuscript" do
+    manuscript = Manuscript.last
+    visit linking_tool_by_manuscript_path id: manuscript.id
+
+    entry = manuscript.entries.first
+    entry_id = entry.id
+
+    first("input[name='entry_id_#{entry.id}'][value='unlink']").trigger('click')
+
+    click_button "Save changes"
+
+    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+
+    manuscript.reload
+
+    entry_ids = manuscript.entries.map(&:id)
+    expect(entry_ids.include?(entry_id)).to eq(false)
+  end
+
   it "should show error message when overwriting changes" do
 
     last_two_entries = Entry.last(2)
@@ -93,7 +188,7 @@ describe "Linking Tool", :js => true do
     # there are actually TWO inputs that match here, because of some
     # HTML craziness that happens with th datatable's fixed
     # columns. whatever. just click one.
-    all("input[name='entry_id_#{last_two_entries[0].id}'][value='possible']")[1].click
+    first("input[name='entry_id_#{last_two_entries[0].id}'][value='possible']").trigger('click')
 
     click_button "Save changes"
 

@@ -17,7 +17,7 @@ module LogActivity
   end
 
   def log_activity
-    if status == 200
+    if [200, 302].include?(status)
       model_name = controller_name.singularize.capitalize
 
       # in most cases, model object will be an instance var named
