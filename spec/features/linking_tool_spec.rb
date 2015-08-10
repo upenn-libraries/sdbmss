@@ -188,7 +188,7 @@ describe "Linking Tool", :js => true do
     # there are actually TWO inputs that match here, because of some
     # HTML craziness that happens with th datatable's fixed
     # columns. whatever. just click one.
-    first("input[name='entry_id_#{last_two_entries[0].id}'][value='possible']").trigger('click')
+    all("input[name='entry_id_#{last_two_entries[0].id}'][value='possible']")[1].click
 
     click_button "Save changes"
 

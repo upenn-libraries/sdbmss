@@ -32,7 +32,7 @@ class Entry < ActiveRecord::Base
   # entries have institution/collection for "Other published sources" only
   belongs_to :institution, class_name: "Name"
 
-  has_many :entry_manuscripts, inverse_of: :entry
+  has_many :entry_manuscripts
   has_many :manuscripts, through: :entry_manuscripts
   has_many :entry_titles, inverse_of: :entry
   has_many :entry_authors, inverse_of: :entry

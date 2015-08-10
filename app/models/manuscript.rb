@@ -2,15 +2,13 @@ require 'set'
 
 class Manuscript < ActiveRecord::Base
 
-  has_many :entry_manuscripts, inverse_of: :manuscript
+  has_many :entry_manuscripts
   has_many :entries, through: :entry_manuscripts
   has_many :manuscript_comments
   has_many :comments, through: :manuscript_comments
   has_many :linked_entries, -> { where entry_manuscripts: { relation_type: EntryManuscript::TYPE_RELATION_IS } }, source: :entry, through: :entry_manuscripts
 
   accepts_nested_attributes_for :entry_manuscripts, allow_destroy: true
-
-  after_create :index_after_update
 
   include UserFields
   include IndexAfterUpdate

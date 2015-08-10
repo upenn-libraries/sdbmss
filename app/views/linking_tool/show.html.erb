@@ -287,20 +287,15 @@ $(document).ready(function() {
         var manuscriptId = $(event.target).data("manuscriptId");
 
         $.ajax({
-            url: "/manuscripts/" + manuscriptId + ".json",
-            type: 'PUT',
+            url: "/entry_manuscripts.json",
+            type: 'POST',
             contentType: "application/json",
             dataType: "json",
             data: JSON.stringify({
-                manuscript: {
-                    id: manuscriptId,
-                    entry_manuscripts_attributes: [
-                        {
-                            manuscript_id: manuscriptId,
-                            entry_id: entryId,
-                            relation_type: 'is',
-                        }
-                    ]
+                entry_manuscript: {
+                    manuscript_id: manuscriptId,
+                    entry_id: entryId,
+                    relation_type: 'is',
                 }
             }),
             success: function(data, textStatus, jqXHR) {
@@ -333,12 +328,10 @@ $(document).ready(function() {
                     contentType: "application/json",
                     dataType: "json",
                     data: JSON.stringify({
-                        manuscript: {
-                            entry_manuscripts_attributes: entryManuscripts
-                        }
+                        entry_manuscripts: entryManuscripts
                     }),
                     success: function(data, textStatus, jqXHR) {
-                        var body = "<p>Manuscript record SDBM_MS_" + data.id + " successfully created!</p><p><a href='/linkingtool/manuscript/" + data.id + "'>Click here</a> to add more or edit links to SDBM_MS_" + data.id + "</p><p>or</p><p><a href='/dashboard'>Return to your dashboard</a></p>";
+                        var body = "<p>Manuscript record SDBM_MS_" + data.manuscript_id + " successfully created!</p><p><a href='/linkingtool/manuscript/" + data.manuscript_id + "'>Click here</a> to add more or edit links to SDBM_MS_" + data.manuscript_id + "</p><p>or</p><p><a href='/dashboard'>Return to your dashboard</a></p>";
                         SDBM.showModal("#modal", {
                             allowDismiss: false,
                             showFooter: false,
@@ -357,15 +350,13 @@ $(document).ready(function() {
         } else {
             $.ajax({
                 contentType: 'application/json',
-                url: '/manuscripts/' + manuscriptId + '.json',
+                url: '/entry_manuscripts/update_multiple.json',
                 type: 'PUT',
                 dataType: 'json',
                 data: JSON.stringify({
+                    manuscript_id: manuscriptId,
                     cumulative_updated_at: cumulativeUpdatedAt,
-                    manuscript: {
-                        id: manuscriptId,
-                        entry_manuscripts_attributes: entryManuscripts
-                    }
+                    entry_manuscripts: entryManuscripts
                 }),
                 success: function(data, textStatus, jqXHR) {
                     var body = '<p>Your changes have been saved.<p><a href="/linkingtool/manuscript/' + manuscriptId + '">Click here</a> to reload this page</p>';
