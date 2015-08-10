@@ -1,18 +1,16 @@
 
-class EntryManuscriptsController < ApplicationController
+class EntryManuscriptsController < ManageModelsController
 
   before_action :authenticate_user!, only: [:update_multiple]
 
-#  respond_to :html, :json
+  include ResourceSearch
+  include MarkAsReviewed
+  include LogActivity
 
-  def create
-    @entry_manuscript = EntryManuscript.new(entry_manuscript_params)
-    @entry_manuscript.save!
-    respond_to do |format|
-      format.json {
-        render json: @entry_manuscript
-      }
-    end
+  #  respond_to :html, :json
+
+  def index
+    @page_title = "Manage Links"
   end
 
   # updates multiple EntryManuscript records at once; this is used for
@@ -20,24 +18,25 @@ class EntryManuscriptsController < ApplicationController
   def update_multiple
     manuscript = Manuscript.find params[:manuscript_id]
 
+    @entry_manuscripts = []
+
     if params[:cumulative_updated_at].to_s == manuscript.cumulative_updated_at.to_s
-      entry_manuscripts = params[:entry_manuscripts]
-      entry_manuscripts_attributes = entry_manuscripts.map do |entry_manuscript_params|
-        entry_manuscript_params.permit(:id, :entry_id, :manuscript_id, :relation_type, :_destroy)
+      params[:entry_manuscripts].each do |record|
+        attrs = record.permit(:id, :entry_id, :manuscript_id, :relation_type, :_destroy)
+        if record["_destroy"]
+          em = EntryManuscript.find(record["id"])
+          em.destroy!
+        elsif record["id"]
+          em = EntryManuscript.find(record["id"])
+          em.update_attributes!(attrs)
+        else
+          em = EntryManuscript.new(attrs)
+          em.manuscript_id = manuscript.id
+          em.save!
+        end
+        @entry_manuscripts << em
       end
 
-      manuscript.update_attributes!(
-        {
-          entry_manuscripts_attributes: entry_manuscripts_attributes,
-        }
-      )
-
-      manuscript.reload
-
-      # reindex in Solr
-      manuscript.entries.each do |entry|
-        Sunspot.index entry
-      end
       respond_to do |format|
         format.json { render :json => {}, :status => :ok }
       end
@@ -50,9 +49,25 @@ class EntryManuscriptsController < ApplicationController
     end
   end
 
+  def search_name_field
+    # This is weird, but we don't have a name field in this model
+    "id"
+  end
+
+  def search_result_format(obj)
+    {
+      id: obj.id,
+      entry_id: obj.entry_id,
+      manuscript_id: obj.manuscript_id,
+      relation_type: obj.relation_type,
+      reviewed: obj.reviewed,
+      created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
+    }
+  end
+
   private
 
-  def entry_manuscript_params
+  def model_params
     params.require(:entry_manuscript).permit(:entry_id, :manuscript_id, :relation_type)
   end
 

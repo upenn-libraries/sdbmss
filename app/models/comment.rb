@@ -34,6 +34,7 @@ class Comment < ActiveRecord::Base
 
   include UserFields
   include HasPaperTrail
+  include CreatesActivity
 
   def entry
     entries.first

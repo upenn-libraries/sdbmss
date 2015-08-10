@@ -9,6 +9,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :activities, only: [:index]
+
   resources :agents, only: [:show]
 
   get '/bookmarks/export', to: 'bookmarks#export', as: 'export_bookmarks'
@@ -54,7 +56,11 @@ Rails.application.routes.draw do
   end
 
   resources :entry_manuscripts do
-    collection { put 'update_multiple' }
+    collection {
+      post 'mark_as_reviewed'
+      get 'search'
+      put 'update_multiple'
+    }
   end
 
   resources :events do
@@ -117,8 +123,6 @@ Rails.application.routes.draw do
   if !Rails.env.production?
     get '/raise_error/', to: 'debug#raise_error'
   end
-
-  get '/recent_activity/', to: 'recent_activity#show'
 
   get '/reports/', to: 'reports#show'
   get '/reports/names/', to: 'reports#names'

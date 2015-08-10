@@ -18,34 +18,6 @@ class ManuscriptsController < ManageModelsController
     @manuscript_comment.build_comment
   end
 
-  def create
-    entry_manuscripts = params[:entry_manuscripts]
-    entry_manuscripts_attributes = entry_manuscripts.map do |entry_manuscript_params|
-      entry_manuscript_params.permit(:entry_id, :relation_type)
-    end
-
-    begin
-      ActiveRecord::Base.transaction do
-        @manuscript = Manuscript.new
-        result = @manuscript.save_by(current_user)
-        if result
-          @manuscript.update_attributes!(
-            {
-              entry_manuscripts_attributes: entry_manuscripts_attributes,
-            }
-          )
-        end
-      end
-    rescue Exception => e
-    end
-
-    respond_to do |format|
-      format.json {
-        render json: { manuscript_id: @manuscript.id }, status: :ok
-      }
-    end
-  end
-
   def entry_candidates
     @candidate_ids = @manuscript.entry_candidates
     respond_to do |format|
@@ -74,6 +46,13 @@ class ManuscriptsController < ManageModelsController
 
   def set_manuscript
     @manuscript = Manuscript.find(params[:id])
+  end
+
+  def model_params
+    params.require(model_class_lstr.to_sym).permit(
+      :name, :location,
+      :entry_manuscripts_attributes => [ :id, :manuscript_id, :entry_id, :relation_type, :_destroy ]
+    )
   end
 
 end

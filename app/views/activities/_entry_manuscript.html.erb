@@ -1,0 +1,7 @@
+<%= activity.user_id.present? ? User.find(activity.user_id).username : "Unknown user" %> <%= activity.event + (activity.event.end_with?("e") ? "" : "e") + "d" %>
+<% em_activity = EntryManuscriptActivity.find_by(activity_id: activity.id) %>
+<% if em_activity.present? %>
+    <% if em_activity.present? %>
+        link from SDBM_<%= em_activity.entry_id %> to SDBM_MS_<%= em_activity.manuscript_id %>
+    <% end %>
+<% end %>

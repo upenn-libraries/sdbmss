@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150806145731) do
+ActiveRecord::Schema.define(version: 20150811143327) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",  limit: 255, null: false
@@ -237,16 +237,32 @@ ActiveRecord::Schema.define(version: 20150806145731) do
   add_index "entry_languages", ["entry_id"], name: "index_entry_languages_on_entry_id", using: :btree
   add_index "entry_languages", ["language_id"], name: "index_entry_languages_on_language_id", using: :btree
 
-  create_table "entry_manuscripts", force: :cascade do |t|
-    t.integer  "entry_id",      limit: 4
-    t.integer  "manuscript_id", limit: 4
-    t.string   "relation_type", limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
+  create_table "entry_manuscript_activities", force: :cascade do |t|
+    t.integer "activity_id",   limit: 4
+    t.integer "entry_id",      limit: 4
+    t.integer "manuscript_id", limit: 4
   end
 
+  add_index "entry_manuscript_activities", ["activity_id"], name: "index_entry_manuscript_activities_on_activity_id", using: :btree
+
+  create_table "entry_manuscripts", force: :cascade do |t|
+    t.integer  "entry_id",       limit: 4
+    t.integer  "manuscript_id",  limit: 4
+    t.string   "relation_type",  limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "reviewed",                   default: false
+    t.integer  "reviewed_by_id", limit: 4
+    t.datetime "reviewed_at"
+    t.integer  "created_by_id",  limit: 4
+    t.integer  "updated_by_id",  limit: 4
+  end
+
+  add_index "entry_manuscripts", ["created_by_id"], name: "index_entry_manuscripts_on_created_by_id", using: :btree
   add_index "entry_manuscripts", ["entry_id"], name: "index_entry_manuscripts_on_entry_id", using: :btree
   add_index "entry_manuscripts", ["manuscript_id"], name: "index_entry_manuscripts_on_manuscript_id", using: :btree
+  add_index "entry_manuscripts", ["reviewed_by_id"], name: "index_entry_manuscripts_on_reviewed_by_id", using: :btree
+  add_index "entry_manuscripts", ["updated_by_id"], name: "index_entry_manuscripts_on_updated_by_id", using: :btree
 
   create_table "entry_materials", force: :cascade do |t|
     t.integer  "entry_id",               limit: 4
@@ -607,8 +623,12 @@ ActiveRecord::Schema.define(version: 20150806145731) do
   add_foreign_key "entry_dates", "entries", on_delete: :cascade
   add_foreign_key "entry_languages", "entries", on_delete: :cascade
   add_foreign_key "entry_languages", "languages"
+  add_foreign_key "entry_manuscript_activities", "activities"
   add_foreign_key "entry_manuscripts", "entries", on_delete: :cascade
   add_foreign_key "entry_manuscripts", "manuscripts"
+  add_foreign_key "entry_manuscripts", "users", column: "created_by_id"
+  add_foreign_key "entry_manuscripts", "users", column: "reviewed_by_id"
+  add_foreign_key "entry_manuscripts", "users", column: "updated_by_id"
   add_foreign_key "entry_materials", "entries", on_delete: :cascade
   add_foreign_key "entry_places", "entries", on_delete: :cascade
   add_foreign_key "entry_places", "places"

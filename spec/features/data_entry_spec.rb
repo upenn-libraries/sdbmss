@@ -548,9 +548,9 @@ describe "Data entry", :js => true do
 
       entry = Entry.last
 
-      visit recent_activity_path
+      visit activities_path
 
-      expect(page).to have_content "#{entry.created_by.username} created Entry #{entry.id}"
+      expect(page).to have_content "#{entry.created_by.username} created SDBM_#{entry.id}"
     end
 
     it "should update status field on Source when adding an Entry" do

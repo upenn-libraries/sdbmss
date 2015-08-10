@@ -286,6 +286,7 @@ $(document).ready(function() {
     $(document).on("click", ".link-to-manuscript-link", function (event) {
         var manuscriptId = $(event.target).data("manuscriptId");
 
+        // create a single EntryManuscript record
         $.ajax({
             url: "/entry_manuscripts.json",
             type: 'POST',
@@ -322,16 +323,19 @@ $(document).ready(function() {
     $("#persist-entries-manuscript-link").click(function (event) {
         if(mode == 'by_entry') {
             if(entryManuscripts.length > 1) {
+                // create a Manuscript and its EntryManuscripts
                 $.ajax({
                     url: '/manuscripts.json',
                     type: 'POST',
                     contentType: "application/json",
                     dataType: "json",
                     data: JSON.stringify({
-                        entry_manuscripts: entryManuscripts
+                        manuscript: {
+                            entry_manuscripts_attributes: entryManuscripts
+                        }
                     }),
                     success: function(data, textStatus, jqXHR) {
-                        var body = "<p>Manuscript record SDBM_MS_" + data.manuscript_id + " successfully created!</p><p><a href='/linkingtool/manuscript/" + data.manuscript_id + "'>Click here</a> to add more or edit links to SDBM_MS_" + data.manuscript_id + "</p><p>or</p><p><a href='/dashboard'>Return to your dashboard</a></p>";
+                        var body = "<p>Manuscript record SDBM_MS_" + data.id + " successfully created!</p><p><a href='/linkingtool/manuscript/" + data.id + "'>Click here</a> to add more or edit links to SDBM_MS_" + data.id + "</p><p>or</p><p><a href='/dashboard'>Return to your dashboard</a></p>";
                         SDBM.showModal("#modal", {
                             allowDismiss: false,
                             showFooter: false,
@@ -340,8 +344,8 @@ $(document).ready(function() {
                         });
                     },
                     error: function(xhr) {
-                        // TODO: fill this out
-                        alert("An error occurred creating a manuscript: " + xhr.responseText);
+                        var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
+                        SDBM.showErrorModal("#modal", error);
                     }
                 });
             } else {

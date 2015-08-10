@@ -142,4 +142,13 @@ module ApplicationHelper
     end
   end
 
+  def render_partial_if_exists(path_to_partial, fall_through, *args)
+    if lookup_context.template_exists?(path_to_partial, [], true)
+      args[0][:partial] = path_to_partial
+    else
+      args[0][:partial] = fall_through
+    end
+    render(*args)
+  end
+
 end

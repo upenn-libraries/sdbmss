@@ -30,10 +30,13 @@
                 </p>
             </div>
         </div>
-        <% if can?(:manage, Name) || can?(:manage, Language) || can?(:manage, Place) || can?(:manage, User) %>
+        <% if can?(:manage, EntryManuscript) || can?(:manage, Name) || can?(:manage, Language) || can?(:manage, Place) || can?(:manage, User) %>
         <div class="panel panel-default">
             <div class="panel-heading">Admin</div>
             <div class="panel-body">
+                <p><a href="<%= entry_manuscripts_path %>">Manage Links</a>
+                    <%= render partial: "unreviewed_count", locals: { model_class: EntryManuscript } %>
+                </p>
                 <p><a href="<%= names_path %>">Manage Names</a>
                     <%= render partial: "unreviewed_count", locals: { model_class: Name } %>
                 </p>
@@ -49,7 +52,7 @@
                 </p>
                 <% end %>
 
-                <p><a href="<%= recent_activity_path %>">Recent Activity</a></p>
+                <p><a href="<%= activities_path %>">Recent Activity</a></p>
             </div>
         </div>
         <% end %>

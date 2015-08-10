@@ -14,6 +14,7 @@ class Name < ActiveRecord::Base
   include ReviewedByField
   include IndexAfterUpdate
   include HasPaperTrail
+  include CreatesActivity
 
   default_scope { where(deleted: false) }
 
@@ -193,7 +194,7 @@ class Name < ActiveRecord::Base
   end
 
   def public_id
-    is_provenance_agent ?  "SDBM_AGENT_#{id}" : "SDBM_NAME_#{id}"
+    is_provenance_agent ?  "SDBM_AGENT_#{id}" : SDBMSS::IDS.get_public_id_for_model(self.class, id)
   end
 
   def to_s

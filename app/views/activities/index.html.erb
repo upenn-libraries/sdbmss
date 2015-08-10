@@ -1,0 +1,31 @@
+<h3>Recent Activity</h3>
+<table class="table table-striped">
+<% @activities.each do |activity| %>
+    <tr>
+        <td>
+            <div><%= activity.created_at.to_formatted_s(:date_and_time) %></div>
+            <div style="margin-left: 20px;">
+                <%= render_partial_if_exists "activities/#{activity.item_type.underscore.singularize}", "default", locals: { activity: activity }  %>
+            </div>
+        </td>
+    </tr>
+<% end %>
+</table>
+
+<nav>
+  <ul class="pagination">
+    <li class="<% if @page == 1 %>disabled<% end %>">
+        <% if @page > 1 %><a href="<%= activities_path page: @page - 1 %>" aria-label="Previous"><% end %>
+            <span aria-hidden="true">&laquo;</span>
+        <% if @page > 1 %></a><% end %>
+    </li>
+    <% @num_pages.times do |page| %>
+    <li><a href="<%= activities_path page: page + 1 %>"><%= page + 1 %></a></li>
+    <% end %>
+    <li class="<% if @page == @num_pages %>disabled<% end %>">
+        <% if @page < @num_pages %><a href="<%= activities_path page: @page + 1 %>" aria-label="Next"><% end %>
+            <span aria-hidden="true">&raquo;</span>
+        <% if @page < @num_pages %></a><% end %>
+    </li>
+  </ul>
+</nav>

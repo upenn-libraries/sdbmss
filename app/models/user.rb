@@ -32,6 +32,7 @@ class User < ActiveRecord::Base
   include Blacklight::User
   include UserFields
   include HasPaperTrail
+  include CreatesActivity
 
   def self.statistics
     results = ActiveRecord::Base.connection.execute("select username, count(*) from users inner join entries on entries.created_by_id = users.id where entries.deleted = 0 group by username")

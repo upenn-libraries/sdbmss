@@ -7,12 +7,16 @@
 </style>
 <% end %>
 
+<% if @page_title %>
+    <h1><%= @page_title %></h1>
+<% else %>
 <% if !can? :manage, model_class %>
     <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
     <h1>Manage Your <%= resource_name.pluralize.capitalize %></h1>
 <% else %>
     <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
     <h1>Manage all <%= resource_name.singularize %> records</h1>
+<% end %>
 <% end %>
 
 <%= render partial: "instructions" %>

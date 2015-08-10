@@ -26,13 +26,14 @@ class Entry < ActiveRecord::Base
   include UserFields
   include HasPaperTrail
   include HasTouchCount
+  include CreatesActivity
 
   belongs_to :source, counter_cache: :entries_count
 
   # entries have institution/collection for "Other published sources" only
   belongs_to :institution, class_name: "Name"
 
-  has_many :entry_manuscripts
+  has_many :entry_manuscripts, inverse_of: :entry
   has_many :manuscripts, through: :entry_manuscripts
   has_many :entry_titles, inverse_of: :entry
   has_many :entry_authors, inverse_of: :entry
@@ -154,7 +155,7 @@ class Entry < ActiveRecord::Base
   end
 
   def public_id
-    "SDBM_#{id}"
+    SDBMSS::IDS.get_public_id_for_model(self.class, id)
   end
 
   def manuscript

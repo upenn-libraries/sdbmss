@@ -9,6 +9,7 @@ class Language < ActiveRecord::Base
   include ReviewedByField
   include IndexAfterUpdate
   include HasPaperTrail
+  include CreatesActivity
 
   validates_presence_of :name
 

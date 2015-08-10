@@ -17,11 +17,11 @@ class ManageModelsController < ApplicationController
   # Subclasses must implement this and return a Model class for the
   # controller
   def model_class
-    raise "model_class not implemented"
+    controller_name.camelize.singularize.constantize
   end
 
   def model_class_lstr
-    model_class.to_s.downcase
+    model_class.to_s.underscore
   end
 
   def model_object_for_reset_reviewed_after_update

@@ -4,6 +4,7 @@ class Place < ActiveRecord::Base
   include ReviewedByField
   include IndexAfterUpdate
   include HasPaperTrail
+  include CreatesActivity
 
   default_scope { where(deleted: false) }
 

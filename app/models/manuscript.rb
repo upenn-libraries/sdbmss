@@ -2,7 +2,7 @@ require 'set'
 
 class Manuscript < ActiveRecord::Base
 
-  has_many :entry_manuscripts
+  has_many :entry_manuscripts, inverse_of: :manuscript
   has_many :entries, through: :entry_manuscripts
   has_many :manuscript_comments
   has_many :comments, through: :manuscript_comments
@@ -13,6 +13,7 @@ class Manuscript < ActiveRecord::Base
   include UserFields
   include IndexAfterUpdate
   include HasPaperTrail
+  include CreatesActivity
 
   # returns all the Event objects associated with all the entries for this MS
   def all_provenance
@@ -22,7 +23,7 @@ class Manuscript < ActiveRecord::Base
   end
 
   def public_id
-    return "SDBM_MS_" + id.to_s
+    return SDBMSS::IDS.get_public_id_for_model(self.class, id)
   end
 
   def display_value

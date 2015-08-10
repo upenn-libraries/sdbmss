@@ -1,0 +1,130 @@
+<script type="text/javascript">
+
+ $(document).ready(function() {
+
+     var resourceName = "<%= resource_name %>";
+
+     // flag = show all records, or only those that the user created
+     <% if can? :manage, model_class  %>
+     var showOnlyRecordsCreatedByUser = 0;
+     <% else %>
+     var showOnlyRecordsCreatedByUser = 1;
+     <% end %>
+
+     <% if can? :merge, model_class  %>
+     var canMerge = 1;
+     <% else %>
+     var canMerge = 0;
+     <% end %>
+
+     // Subclass of SDBM.ManageRecords tailored for display of names (ie users)
+     var ManageEntryManuscripts = function(options) {
+         SDBM.ManageRecords.call(this, options);
+     };
+     
+     ManageEntryManuscripts.prototype = Object.create(SDBM.ManageRecords.prototype);
+
+     ManageEntryManuscripts.prototype.getColumns = function() {
+        var manageRecords = this;
+
+        return [
+            {
+                sdbmssMinWidth: "20px",
+                sdbmssMaxWidth: "20px",
+                title: '',
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    if(manageRecords.getUnreviewedOnly() === 1) {
+                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                    }
+                    return '';
+                }
+            },
+            {
+                sdbmssMinWidth: "50px",
+                sdbmssMaxWidth: "50px",
+                title: 'Options',
+                orderable: false,
+                render: function (data, type, full, meta) {
+                    var str = '<a href="/linkingtool/manuscript/' + full[manageRecords.dataTable.getColumnIndex("Manuscript")] + '/">Edit</a>';
+                    return str;
+                },
+            },
+            {
+                sdbmssMinWidth: "50px",
+                sdbmssMaxWidth: "50px",
+                title: 'ID',
+                dbSortField: 'id'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "100px",
+                title: 'Entry',
+                render: function (data, type, full, meta) {
+                    var str = "";
+                    if(data) {
+                        str = '<a target="_blank" href="/entries/' + data + '/">SDBM_' + data + '</a>';
+                    }
+                    return str;
+                },
+                dbSortField: 'entry_id'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "100px",
+                title: 'Manuscript',
+                render: function (data, type, full, meta) {
+                    var str = "";
+                    if(data) {
+                        str = '<a target="_blank" href="/manuscripts/' + data + '/">SDBM_MS_' + data + '</a>';
+                    }
+                    return str;
+                },
+                dbSortField: 'manuscript_id'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "100px",
+                title: 'Relation',
+                dbSortField: 'relation_type'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "100px",
+                title: 'Reviewed',
+                dbSortField: 'reviewed'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "100px",
+                title: 'Created By',
+                dbSortField: 'created_by'
+            },
+        ];
+     };
+
+     ManageEntryManuscripts.prototype.searchResultToTableRow = function (result) {
+         return [
+             null,
+             null,
+             result.id,
+             result.entry_id,
+             result.manuscript_id,
+             result.relation_type,
+             result.reviewed,
+             result.created_by
+         ];
+     };
+
+     new ManageEntryManuscripts({
+         resourceName: "<%= resource_name %>",
+         resourceNameSingular: "<%= resource_name.singularize %>",
+         resourceNamePlural: "<%= resource_name.pluralize %>",
+         showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
+         searchNameField: "id"
+     });
+
+ });
+
+</script>
+

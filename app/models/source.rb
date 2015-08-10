@@ -48,6 +48,7 @@ class Source < ActiveRecord::Base
   include UserFields
   include IndexAfterUpdate
   include HasPaperTrail
+  include CreatesActivity
 
   default_scope { where(deleted: false) }
 
@@ -78,7 +79,7 @@ class Source < ActiveRecord::Base
   }
 
   def public_id
-    "SDBM_SOURCE_#{id}"
+    SDBMSS::IDS.get_public_id_for_model(self.class, id)
   end
 
   def normalize
