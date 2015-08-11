@@ -311,9 +311,9 @@ $(document).ready(function() {
                     body: body
                 });
             },
-            error: function() {
-                // TODO: fill this out
-                alert("An error occurred creating a manuscript.");
+            error: function(xhr) {
+                var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
+                SDBM.showErrorModal("#modal", error);
             }
         });
 
@@ -406,9 +406,9 @@ $(document).ready(function() {
                     });
                 }
             },
-            error: function() {
-                // TODO: fill this out
-                alert("An error occurred finding matches.");
+            error: function(xhr) {
+                var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
+                SDBM.showErrorModal("#modal", error);
             },
             complete: function() {
                 $("#spinner").hide();
