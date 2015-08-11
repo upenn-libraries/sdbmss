@@ -75,6 +75,7 @@ describe "Blacklight Search", :js => true do
     click_link("D")
 
     expect(page).to have_content "Browsing facet: Author"
+    expect(page).not_to have_content "Augustine"
     expect(page).to have_content "Dokeianos"
   end
 

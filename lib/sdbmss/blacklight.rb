@@ -81,6 +81,13 @@ module SDBMSS::Blacklight
       end
     end
 
+    def handle_facet_prefix(solr_parameters)
+      if blacklight_params[:prefix].present?
+        # 'id' key probably comes from routing setup internal to Blacklight
+        solr_parameters[:"f.#{blacklight_params[:id]}.facet.prefix"] = blacklight_params[:prefix]
+      end
+    end
+
     # This translates a query str of "[year1 TO year2]" in the date
     # range parameter field to a str of the form '["minX minY" TO
     # "maxX maxY"]'. We do this translation so that BL params are kept

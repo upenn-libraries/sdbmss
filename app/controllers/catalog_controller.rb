@@ -66,16 +66,6 @@ class CatalogController < ApplicationController
     return params[:limit] || 100
   end
 
-  # Extend Blacklight::RequestBuilders#solr_facet_params so that
-  # we can add 'facet.prefix' to solr params
-  def solr_facet_params(facet_field, user_params=params || {}, extra_controller_params={})
-    solr_params = super(facet_field, user_params, extra_controller_params)
-    if params[:prefix].present?
-      solr_params[:"f.#{facet_field}.facet.prefix"] = params[:prefix]
-    end
-    solr_params
-  end
-
   # required by CatalogControllerConfiguration
   def search_results_max
     Rails.configuration.sdbmss_max_search_results

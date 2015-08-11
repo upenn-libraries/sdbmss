@@ -375,6 +375,8 @@ module CatalogControllerConfiguration
 
     self.search_params_logic << :show_all_if_no_query
 
+    self.search_params_logic << :handle_facet_prefix
+
     # These two builder methods modify the Solr query based on query
     # params on EntryController page
     self.search_params_logic << :show_approved
