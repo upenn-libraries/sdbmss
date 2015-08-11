@@ -445,6 +445,12 @@ class Entry < ActiveRecord::Base
     define_field(:string, :source_title, :stored => true) do
       source.title
     end
+    define_field(:string, :institution, :stored => true) do
+      source.get_institution_as_name.try(:name) || institution.try(:name)
+    end
+    define_field(:string, :institution_search, :stored => true) do
+      source.get_institution_as_name.try(:name) || institution.try(:name)
+    end
 
     define_field(:string, :catalog_or_lot_number, :stored => true) do
       catalog_or_lot_number

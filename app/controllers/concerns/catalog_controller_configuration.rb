@@ -76,8 +76,7 @@ module CatalogControllerConfiguration
       config.add_facet_field 'transaction_seller', :label => 'Seller', :collapse => false, :limit => 3
       config.add_facet_field 'transaction_selling_agent', :label => 'Selling Agent', :collapse => false, :limit => 3
       config.add_facet_field 'transaction_buyer', :label => 'Buyer', :collapse => false, :limit => 3
-      # facet on source display str, instead of having separate facets for
-      # catalog/catalog date/institution
+      config.add_facet_field 'institution', :label => 'Institution', :collapse => false, :limit => 3
       config.add_facet_field 'source_display', :label => 'Source', :collapse => false, :limit => 3
       config.add_facet_field 'provenance', :label => 'Provenance', :limit => 3
       config.add_facet_field 'manuscript_date_range', :label => 'Manuscript Date', :limit => 3
@@ -149,6 +148,11 @@ module CatalogControllerConfiguration
       config.add_search_field('source', label: "Source ID (Full)") do |field|
         field.include_in_simple_select = false
         field.solr_local_parameters = { :qf => 'source' }
+      end
+
+      config.add_search_field('institution', label: "Institution") do |field|
+        field.include_in_simple_select = false
+        field.solr_local_parameters = { :qf => 'institution_search' }
       end
 
       config.add_search_field('selling_agent') do |field|
