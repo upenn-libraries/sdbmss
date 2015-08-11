@@ -26,6 +26,10 @@ describe "Manage Names", :js => true do
   end
 
   it "should load" do
+    author = Name.author
+    author.name = "Jane Doe"
+    author.save!
+
     visit names_path
     expect(page).to have_content("Manage all name records")
   end
