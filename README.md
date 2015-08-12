@@ -242,17 +242,17 @@ Running the Test Suite
 Deploying to the Staging (Dev VM) Server
 ----------------------------------------
 
-Note: 'staging' aka the 'dev VM' refers to the virtual machine
-provided by Libraries IT for the exclusive purpose of SDBM
-development.
+Note: 'staging' (aka the 'dev VM' which is confusing, so we don't call
+it that here) refers to the virtual machine provided by Libraries IT
+for the exclusive purpose of SDBM development.
 
 We use [capistrano](http://capistranorb.com/) to automate updating the
 staging server with the latest code. We use [god](http://godrb.com/)
 to do application process monitoring (the processes being unicorn,
 solr, and a delayed_job worker).
 
-* Your account on the dev VM will need the SDBMSS_ environment
-  variables mentioned above; set them in .bashrc or some other way.
+* Your account on staging will need the SDBMSS_ environment variables
+  mentioned above; set them in .bashrc or some other way.
 
 * The Apache config file /etc/httpd/conf.d/sdbmss.conf should look
   something like the following:
@@ -311,23 +311,33 @@ solr, and a delayed_job worker).
 * On your local machine, run "ssh-add" to add your key to your ssh
   agent. This key should already be registered with Github, so that
   capistrano can use it (via ssh forwarding) to access the Github repo
-  from the dev VM. This needs to happen for the next step to work.
+  from the staging server. This needs to happen for the next step to
+  work.
 
 * On your local machine, run capistrano to deploy the latest code to
-  the dev VM.  This will perform a number of tasks on the dev VM,
+  the staging server. This will perform a number of tasks on staging,
   including putting a copy of the code in /var/www/sdbmss/current,
   updating the solr configuration and restarting it, and restarting
-  the unicorn server. 
+  the unicorn server.
 
   ```
   cd ~/sdbmss
   bundle exec cap staging deploy
   ```
 
-* OPTIONAL: On your local machine, you can run a task to refresh the
-  database on staging, using a SQL file (created on your local
-  machine--doing migrations from the legacy data takes way too long
-  the VM), and reindex Solr. You only need to do this as necessary.
+  Note that capistrano does not run database migrations, so if you
+  created any, you'll need to run them manually on staging afterwards:
+ 
+  ```
+  cd ~/sdbmss/current
+  bundle exec rake db:migrate
+  ```
+
+* OPTIONAL: From your local machine, you can run a task to load a new
+  copy of the database on staging, using a SQL file (created on your
+  local machine--doing migrations from the legacy data takes way too
+  long the VM), and reindex Solr. You only need to do this as
+  necessary.
 
   ```
   cd ~/sdbmss
