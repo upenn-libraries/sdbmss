@@ -34,22 +34,13 @@ var SDBM = SDBM || {};
         
         SDBM.hideNavBar();
 
-        var setFormStateFromURL = function() {
-            var qs = new URI().query(true);
-            $("input[name='search_value']").val(qs.term);
-            if(qs.unreviewed_only === '1') {
-                $("input[name='unreviewed_only']").prop('checked', true);
-            }
-            manageRecords.showOrHideMarkCheckedRecordsButton();
-        };
-
         window.onpopstate = function(event) {
             // load the data from URL into page
-            setFormStateFromURL();
+            manageRecords.setFormStateFromURL();
             manageRecords.dataTable.reload();
         };
 
-        setFormStateFromURL();
+        manageRecords.setFormStateFromURL();
         
         this.dataTable = manageRecords.createTable(".sdbm-table");
 
@@ -130,34 +121,8 @@ var SDBM = SDBM || {};
                 var params = manageRecords.createSearchParams(dt_params);
 
                 $("#spinner").show();
-                $.ajax({
-                    url: '/' + manageRecords.options.resourceName + '/search.json',
-                    data: params,
-                    success: function(data, textStatus, jqXHR) {
-                        if(!data.error) {
-                            $(".dataTables_scrollBody").scrollTop(0);
-                            var rows = [];
-                            data.results.forEach(function(item) {
-                                rows.push(manageRecords.searchResultToTableRow(item));
-                            });
-                            callback({
-                                draw: dt_params.draw,
-                                data: rows,
-                                recordsTotal: data.total,
-                                recordsFiltered: data.total
-                            });
-                        } else {
-                            alert("An error occurred fetching search results: " + data.error);
-                        }
-                    },
-                    error: function() {
-                        // TODO: fill this out
-                        alert("An error occurred fetching search results");
-                    },
-                    complete: function() {
-                        $("#spinner").hide();
-                    }
-                });
+
+                manageRecords.searchAjax(params, dt_params, callback);
             },
             heightBuffer: 400,
             columns: manageRecords.getColumns(),
@@ -167,6 +132,38 @@ var SDBM = SDBM || {};
         return sdbmTable;
     };
 
+    SDBM.ManageRecords.prototype.searchAjax = function(params, dt_params, callback) {
+        var manageRecords = this;
+        $.ajax({
+            url: '/' + manageRecords.options.resourceName + '/search.json',
+            data: params,
+            success: function(data, textStatus, jqXHR) {
+                if(!data.error) {
+                    $(".dataTables_scrollBody").scrollTop(0);
+                    var rows = [];
+                    data.results.forEach(function(item) {
+                        rows.push(manageRecords.searchResultToTableRow(item));
+                    });
+                    callback({
+                        draw: dt_params.draw,
+                        data: rows,
+                        recordsTotal: data.total,
+                        recordsFiltered: data.total
+                    });
+                } else {
+                    alert("An error occurred fetching search results: " + data.error);
+                }
+            },
+            error: function() {
+                // TODO: fill this out
+                alert("An error occurred fetching search results");
+            },
+            complete: function() {
+                $("#spinner").hide();
+            }
+        });
+    };
+    
     // returns an object to pass to jquery $.ajax() call
     SDBM.ManageRecords.prototype.createSearchParams = function (dt_params) {
         var columns = this.getColumns();
@@ -185,25 +182,46 @@ var SDBM = SDBM || {};
         };
     };
 
+    // returns a bookmarkable URL that contains current state of page
+    // and search form
+    SDBM.ManageRecords.prototype.persistFormStateToURL = function () {
+        var manageRecords = this;
+        return URI(manageRecords.getResourceIndexURL()).search({
+            term: manageRecords.getSearchValue(),
+            unreviewed_only: manageRecords.getUnreviewedOnly()
+        });
+    };
+
+    SDBM.ManageRecords.prototype.setFormStateFromURL = function() {
+        var manageRecords = this;
+        var qs = new URI().query(true);
+        $("input[name='search_value']").first().val(qs.term);
+        if(qs.unreviewed_only === '1') {
+            $("input[name='unreviewed_only']").prop('checked', true);
+        }
+        manageRecords.showOrHideMarkCheckedRecordsButton();
+    };
+    
     // factory method that returns a function used for search form
     // submit handler
     SDBM.ManageRecords.prototype.createFormSubmitHandler = function () {
         var manageRecords = this;
 
         return function() {
-            var url = URI(manageRecords.getResourceIndexURL()).search({
-                term: manageRecords.getSearchValue(),
-                unreviewed_only: manageRecords.getUnreviewedOnly()
-            });
-
+            var url = manageRecords.persistFormStateToURL();
             history.pushState({ url: url }, '', url);
 
-            manageRecords.dataTable.reload();
-
+            manageRecords.reloadTable();
+            
             manageRecords.showOrHideMarkCheckedRecordsButton();
 
             return false;
         };
+    };
+
+    SDBM.ManageRecords.prototype.reloadTable = function() {
+        var manageRecords = this;
+        manageRecords.dataTable.reload();
     };
 
     SDBM.ManageRecords.prototype.getDefaultSort = function () {

@@ -132,6 +132,7 @@ Rails.application.routes.draw do
 
   resources :sources do
     collection do
+      post 'calculate_bounds'
       post 'mark_as_reviewed'
       get 'search'
       get 'similar'

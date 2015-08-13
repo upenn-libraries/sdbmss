@@ -13,6 +13,10 @@
      var showOnlyRecordsCreatedByUser = 1;
      <% end %>
 
+     var jumpToSource = {
+         search: false
+     };
+
      // Subclass of SDBM.ManageRecords tailored for display of names (ie users)
      var ManageSources = function(options) {
          SDBM.ManageRecords.call(this, options);
@@ -169,18 +173,151 @@
          ];
      };
 
-     ManageSources.prototype.createSearchParams = function (dt_params) {
-         var params = SDBM.ManageRecords.prototype.createSearchParams.call(this, dt_params);
-         params['title'] = this.getSearchValue();
+     ManageSources.prototype.getSearchFields = function () {
+         var params = {};
+         params["op"] = $("select[name='op']").val();
+
+         $(".search-fieldset").each(function(idx, element) {
+             var search_field = $(element).find("select[name='search_field']").first().val();
+             var search_value = $(element).find("input[name='search_value']").first().val();
+             if(search_value) {
+                 params[search_field] = search_value;
+             }
+         });
+
+         if(showOnlyRecordsCreatedByUser) {
+             params["created_by_user"] = 1;
+         }
+
          return params;
      };
 
-     new ManageSources({
+     ManageSources.prototype.createSearchParams = function (dt_params) {
+         var params = $.extend(
+             {},
+             SDBM.ManageRecords.prototype.createSearchParams.call(this, dt_params),
+             this.getSearchFields()
+         );
+         // don't send 'term'
+         delete params["term"];
+         return params;
+     };
+
+     ManageSources.prototype.persistFormStateToURL = function () {
+         var manageSources = this;
+
+         var params = {
+             unreviewed_only: manageSources.getUnreviewedOnly()
+         };
+
+         $(".search-fieldset").each(function(idx, element) {
+             var search_field = $(element).find("select[name='search_field']").first().val();
+             var search_value = $(element).find("input[name='search_value']").first().val();
+             if(search_value) {
+                 params[search_field] = search_value;
+             }
+         });
+
+         return URI(manageSources.getResourceIndexURL()).search(params);
+     };
+
+    SDBM.ManageRecords.prototype.setFormStateFromURL = function() {
+        var manageRecords = this;
+        var qs = new URI().query(true);
+
+         $(".search-fieldset").each(function(idx, element) {
+             var search_field = $(element).find("select[name='search_field']").first();
+             var search_value = $(element).find("input[name='search_value']").first();
+             var populated = false;
+             search_field.children().each(function (idx, option) {
+                 if(!populated && qs[option.value]) {
+                     search_field.val(option.value);
+                     search_value.val(qs[option.value]);
+                     delete qs[option.value];
+                     populated = true;
+                 }
+             });
+         });
+        if(qs.unreviewed_only === '1') {
+            $("input[name='unreviewed_only']").prop('checked', true);
+        }
+        manageRecords.showOrHideMarkCheckedRecordsButton();
+    };
+
+     ManageSources.prototype.reloadTable = function () {
+         manageSources.doSearch(false);
+     };
+
+     ManageSources.prototype.doSearch = function (isJumpSearch) {
+         var manageSources = this;
+         jumpToSource.search = isJumpSearch;
+         manageSources.dataTable.reload();
+     };
+
+     ManageSources.prototype.searchAjax = function(params, dt_params, callback) {
+         var manageSources = this;
+         if(jumpToSource.search) {
+             var source_id = $("#jump_to").val();
+             $.ajax({
+                 url: '/sources/calculate_bounds',
+                 type: 'POST',
+                 data: {
+                     id: source_id,
+                     per_page: $("select[name='search_results_length']").val(),
+                 },
+                 success: function(data, textStatus, jqXHR) {
+                     jumpToSource.source_id = source_id;
+
+                     params['from'] = data.lower_bound;
+                     params['to'] = data.upper_bound;
+
+                     SDBM.ManageRecords.prototype.searchAjax.call(manageSources, params, dt_params, callback);
+                 },
+                 error: function() {
+                     // TODO: fill this out
+                     alert("An error occurred jumping to this record.");
+                 }
+             });
+         } else {
+             SDBM.ManageRecords.prototype.searchAjax.call(manageSources, params, dt_params, callback);
+         }
+     };
+
+     var manageSources = new ManageSources({
          resourceName: "<%= resource_name %>",
          resourceNameSingular: "<%= resource_name.singularize %>",
          resourceNamePlural: "<%= resource_name.pluralize %>",
          showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
          searchNameField: "name"
+     });
+
+     $('#search_results').on('draw.dt', function () {
+         if(jumpToSource.search) {
+             var sdbmTable = manageSources.dataTable;
+             var entry_id = String(jumpToSource.source_id);
+             // highlight the row
+             sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
+                 var data = sdbmTable.dataTable.row(row).data();
+                 if(String(data[sdbmTable.getColumnIndex("ID")]) === entry_id) {
+                     $(row).addClass("selected");
+                     $(".dataTables_scrollBody").scrollTop(idx * sdbmTable.getRowHeight());
+                 }
+             });
+         }
+     });
+
+     $("#jump_to").keydown(function(e) {
+         if(e.keyCode == 13) {
+             manageSources.doSearch(true);
+             e.preventDefault();
+             return false;
+         }
+     });
+
+     $("#jump_submit").click(function () {
+         manageSources.doSearch(true);
+         // prevent form submit handler from firing
+         return false;
      });
 
  });

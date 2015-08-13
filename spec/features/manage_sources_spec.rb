@@ -33,13 +33,15 @@ describe "Manage sources", :js => true do
     visit sources_path
     expect(page).to have_content @source.title
 
-    fill_in 'search_value', :with => "test"
+    first("input[name='search_value']").native.send_keys "test"
     click_button "Search"
+    expect(page).not_to have_selector("#spinner", visible: true)
 
     expect(page).to have_content @source.title
 
-    fill_in 'search_value', :with => "junk"
+    first("input[name='search_value']").native.send_keys "junk"
     click_button "Search"
+    expect(page).not_to have_selector("#spinner", visible: true)
 
     expect(page).not_to have_content @source.title
   end

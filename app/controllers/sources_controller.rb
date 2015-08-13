@@ -1,6 +1,7 @@
 
 class SourcesController < ManageModelsController
 
+  include CalculateBounds
   include MarkAsReviewed
   include LogActivity
 
@@ -14,11 +15,36 @@ class SourcesController < ManageModelsController
 
   load_and_authorize_resource :only => [:edit, :update, :destroy]
 
+  DEFAULT_SEARCH_FIELD_HANDLER = Proc.new { |fieldname, params, query|
+    query.where("#{fieldname} like ?", "%#{params[fieldname]}%")
+  }
+
+  SEARCH_FIELDS = [
+    ["title", "Title", DEFAULT_SEARCH_FIELD_HANDLER ],
+    ["date", "Date", Proc.new { |fieldname, params, query|
+       query.where("#{fieldname} like ?", "%#{params[fieldname].gsub('-', '').gsub('/', '')}%")
+     }
+    ],
+    ["selling_agent", "Selling Agent", Proc.new { |fieldname, params, query|
+       query.joins(source_agents: [ :agent ] ).where("source_agents.role = \"#{SourceAgent::ROLE_SELLING_AGENT}\" AND names.name like ?", "%#{params[fieldname]}%")
+     }
+    ],
+    ["institution", "Institution", Proc.new { |fieldname, params, query|
+       query.joins(source_agents: [ :agent ] ).where("source_agents.role = \"#{SourceAgent::ROLE_INSTITUTION}\" AND names.name like ?", "%#{params[fieldname]}%")
+     }
+    ],
+    ["author", "Author", DEFAULT_SEARCH_FIELD_HANDLER ],
+  ]
+
   def new
     @source = Source.new
     respond_to do |format|
       format.html { render "edit" }
     end
+  end
+
+  def index
+    @search_fields = SEARCH_FIELDS
   end
 
   def create
@@ -131,24 +157,38 @@ class SourcesController < ManageModelsController
   end
 
   def search_query
-    date = params.fetch(:date, '').gsub('-', '').gsub('/', '')
-    title = params[:title]
-    agent = params[:agent]
     query = super
-    query = query.where('date like ?', "#{date}%") if date.present?
-    query = query.where('title like ?', "%#{title}%") if title.present?
-    query = query.joins(source_agents: [ :agent ] ).where('names.name like ?', "%#{agent}%") if agent.present?
+    if params["from"] && params["to"]
+      # handle range of IDs for a 'Jump To' search
+      query = query.where("id >= ? and id <= ?", params["from"], params["to"])
+    elsif params["agent"]
+      # handle queries for either Institution or Selling Agent (this
+      # happens from the Add New Entry workflow)
+      query = query.joins(source_agents: [ :agent ] ).where('names.name like ?', "%#{params["agent"]}%")
+    else
+      SEARCH_FIELDS.each do |field|
+        fieldname = field[0]
+        handler = field[2]
+        if params[fieldname].present?
+          query = handler.call(fieldname, params, query)
+        end
+      end
+    end
     query.with_associations
   end
 
   def search_results_order
-    [params["order"] || ["date desc", "title"]]
+    if params["order"]
+      return [ search_model_class.to_s.underscore.pluralize + "." + params["order"] ]
+    else
+      return ["date desc", "title"]
+    end
   end
 
   def search_result_format(obj)
     {
       id: obj.id,
-      date: obj.date,
+      date: SDBMSS::Util.format_fuzzy_date(obj.date),
       source_type: obj.source_type.display_name,
       entries_count: obj.entries_count || 0,
       title: obj.title,
