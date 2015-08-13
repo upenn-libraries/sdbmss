@@ -281,7 +281,7 @@ class Entry < ActiveRecord::Base
     {
       id: id,
       manuscript: manuscript ? manuscript.id : nil,
-      source_date: source.date ? SDBMSS::Util.format_fuzzy_date(source.date) : nil,
+      source_date: SDBMSS::Util.format_fuzzy_date(source.date),
       source_title: source.title,
       source_catalog_or_lot_number: catalog_or_lot_number,
       transaction_selling_agent: transaction_selling_agent,
