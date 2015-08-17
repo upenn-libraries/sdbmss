@@ -439,6 +439,9 @@ class Entry < ActiveRecord::Base
     define_field(:string, :source_display, :stored => true) do
       source.display_value
     end
+    define_field(:string, :source_type, :stored => true) do
+      source.source_type.display_name
+    end
     define_field(:text, :source_search, :stored => true) do
       source.display_value
     end
