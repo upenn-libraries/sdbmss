@@ -1146,6 +1146,45 @@
         };
     });
 
+    sdbmApp.directive("sdbmCatLotNoCheck", function($http) {
+        return function (scope, element, attrs) {
+            $(element).focusout(function(event) {
+                $("#cat_lot_no_warning").text("");
+                var cat_lot_no = $(element).val();
+                if(cat_lot_no) {
+                    $.ajax("/entries.json", {
+                        data: {
+                            search_field: "advanced",
+                            op: "AND",
+                            approved: "*",
+                            source: "SDBM_SOURCE_" + scope.entry.source.id,
+                            catalog_or_lot_number: cat_lot_no
+                        },
+                        success: function(data, textStatus, jqXHR) {
+                            var results = data.data || [];
+                            if(results.length > 0) {
+                                var msg = "Warning! An entry with that catalog number already exists.";
+                                var editMode = !!scope.entry.id;
+                                if (editMode) {
+                                    msg = "Warning! Another entry with that catalog number already exists.";
+                                    results.forEach(function (result) {
+                                        if(result.id == scope.entry.id) {
+                                            // search returned the entry we're editing, so don't warn
+                                            msg = null;
+                                        }
+                                    });
+                                }
+                                if(msg) {
+                                    $("#cat_lot_no_warning").text(msg);
+                                }
+                            }
+                        }
+                    });
+                };
+            });
+        };
+    });
+    
     sdbmApp.directive("sdbmCertaintyFlags", function($modal, $parse) {
         return function (scope, element, attrs) {
             var modelName = attrs.sdbmCertaintyFlags;

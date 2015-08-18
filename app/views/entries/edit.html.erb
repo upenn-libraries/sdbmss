@@ -157,7 +157,7 @@ label.col-sm-2-and-half {
         <div class="form-group row">
             <label class="col-sm-2 control-label">Source</label>
             <div class="col-sm-8 label-alignment source-name">
-                {{ entry.source.display_value }} ({{ entry.source.source_type.display_name }})
+                <a href="/sources/{{ entry.source.id }}">SDBM_SOURCE_{{ entry.source.id }}</a> - {{ entry.source.display_value }} ({{ entry.source.source_type.display_name }})
             </div>
         </div>
     </div>
@@ -168,7 +168,10 @@ label.col-sm-2-and-half {
             <span ng-show="entry.source.source_type.name == 'online'" sdbm-tooltip="entry_listing_id">Listing ID</span>
         </label>
       <div class="col-sm-2">
-        <input type="text" class="form-control" id="cat_lot_no" placeholder="" ng-model="entry.catalog_or_lot_number">
+        <input type="text" class="form-control" id="cat_lot_no" placeholder="" ng-model="entry.catalog_or_lot_number" sdbm-cat-lot-no-check="">
+      </div>
+      <div class="col-sm-5 label-alignment">
+          <span id="cat_lot_no_warning" style="color: red;"></span>
       </div>
     </div>
 

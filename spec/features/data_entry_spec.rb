@@ -739,6 +739,40 @@ describe "Data entry", :js => true do
       expect(entry.entry_titles.first.title).to eq("Bible")
     end
 
+    it "should warn when new Entry has same catalog number as existing Entry" do
+      create_entry
+
+      visit new_entry_path :source_id => @source.id
+
+      fill_in 'cat_lot_no', with: "123"
+      find_by_id('title_0').trigger('focus')
+
+      expect(page).to have_content "Warning! An entry with that catalog number already exists."
+    end
+
+    it "should warn when editing Entry to have same catalog number as existing Entry" do
+      create_entry
+
+      visit new_entry_path :source_id => @source.id
+
+      # make a new entry w/ same Source but diff catalog number
+      fill_in 'cat_lot_no', with: "124"
+      first(".save-button").click
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+
+      visit edit_entry_path :id => Entry.last.id
+      fill_in 'cat_lot_no', with: "123"
+      find_by_id('title_0').trigger('focus')
+
+      expect(page).to have_content "Warning! Another entry with that catalog number already exists."
+
+      # change it back to a new number so msg goes away
+      fill_in 'cat_lot_no', with: "124"
+      find_by_id('title_0').trigger('focus')
+
+      expect(page).not_to have_content "Warning! Another entry with that catalog number already exists."
+    end
+
     it "should disallow saving on Edit Page when another change was made" do
       create_entry
 
