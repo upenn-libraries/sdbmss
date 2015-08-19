@@ -1,8 +1,7 @@
 
 require 'pathname'
 
-# TODO: cleanup: use tmp/pids in the app root
-pid Pathname.new(File.expand_path("../../../..", __FILE__)).join("shared", "pids", "unicorn.pid").to_s
+pid File.expand_path("../../tmp/pids/unicorn.pid", __FILE__)
 
 worker_processes 4
 
