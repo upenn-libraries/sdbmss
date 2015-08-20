@@ -70,6 +70,7 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.start
     SDBMSS::SeedData.create
+    SDBMSS::Mysql.create_functions
   end
 
   config.after(:all) do
