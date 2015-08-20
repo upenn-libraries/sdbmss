@@ -1,4 +1,8 @@
 # Rename this file to .docker-environment and fill in values
+#
+# Note that containers will get network hostnames based on their
+# names in the docker-compose.yml file.
+#
 SDBMSS_LEGACY_DB_NAME=sdbm_live_copy
 SDBMSS_LEGACY_DB_USER=root
 SDBMSS_LEGACY_DB_PASSWORD=fillthisin

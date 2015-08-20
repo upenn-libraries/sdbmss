@@ -73,7 +73,7 @@ Step 1: Setup
   mysqldump -u root sdbm_live_copy > sdbm_live_copy_`date +%Y_%m_%d`.sql
   ```
 
-  Now, on your own machine, import the sdbm_live_copy database:
+* Now, on your own machine, import the sdbm_live_copy database:
 
   ```
   # copy the file you made on the dev VM in the previous step
