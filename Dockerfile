@@ -19,14 +19,15 @@ RUN bundle install
 
 WORKDIR /usr/src/app
 
-# uncomment next section if you want to write the app files to the
-# image; as it stands, docker-compose will mount a volume to
-# /usr/src/app so changes get picked up immediately
+# Copy files so that this image contains a full copy of the
+# application code. In development, docker-compose should define a
+# volume mounting a local directory to /usr/src/app, "overlaying" the
+# files, so that you can edit local files and changes get picked up
+# immediately
 
-#COPY . /usr/src/app
-#RUN mkdir -p tmp/pids
-#RUN bundle exec bin/rake assets:precompile
-#CMD ["bundle", "exec", "rails", "s", "-b", "0.0.0.0"]
+COPY . /usr/src/app
+RUN mkdir -p tmp/pids
+RUN bundle exec bin/rake assets:precompile
 
 # we make sure to rm stale pid file
 CMD rm -f /usr/src/app/tmp/pids/server.pid && bundle exec rails s -b 0.0.0.0
