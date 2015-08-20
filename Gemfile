@@ -94,6 +94,9 @@ gem "number_to", "~> 0.7.1"
 # http://stackoverflow.com/questions/31793791/push-to-heroku-fails-could-not-find-net-ssh-2-10-0-in-any-of-the-sources-faile
 gem "net-ssh", "~> 2.10.1.rc1"
 
+# empties db after each group of tests
+gem "database_cleaner", "~> 1.4.1"
+
 # bundle exec rake doc:rails generates the Rails API under doc/api.
 group :doc do
   gem 'sdoc', '~> 0.4.0'

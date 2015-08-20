@@ -66,13 +66,14 @@ RSpec.configure do |config|
 
   config.include SDBMSS::Capybara::AlertConfirmer
 
-    # clear out database after each group of tests and re-create seed data
-  config.before :all do
-    # it's tricky to call rake tasks programmatically from here, so we
-    # invoke a subprocess. ugly and slow, but it works.
-    `bundle exec rake db:drop db:create db:schema:load db:seed RAILS_ENV=test`
+  config.before(:all) do
+    DatabaseCleaner.strategy = :truncation
+    DatabaseCleaner.start
+    SDBMSS::SeedData.create
+  end
 
-    # Start with empty Solr collection
+  config.after(:all) do
+    DatabaseCleaner.clean
     Sunspot::remove_all!
   end
 
