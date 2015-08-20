@@ -8,7 +8,7 @@ FROM rails:4.2.3
 RUN apt-get update && apt-get install -y openjdk-7-jdk
 
 WORKDIR /opt
-RUN wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 && tar xjf phantomjs-1.9.8-linux-x86_64.tar.bz2 && ln -s phantomjs-1.9.8-linux-x86_64 phantomjs
+RUN curl -L -O https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 && tar xjf phantomjs-1.9.8-linux-x86_64.tar.bz2 && ln -s phantomjs-1.9.8-linux-x86_64 phantomjs
 ENV PATH "$PATH:/opt/phantomjs/bin"
 
 # copying Gemfiles first takes advantage of image caching

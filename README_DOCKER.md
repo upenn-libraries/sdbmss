@@ -19,53 +19,46 @@ Important notes:
 
 - for persistent storage, we map volumes to directories on the host.
 
-Step 1: Migrate legacy data or load an existing database
---------------------------------------------------------
+Step 1: Initialize databases and create user accounts
+----------------------------------------------------
 
 * In your cloned repository, copy the .docker-environment-sample file
   to .docker-environment and fill in the appropriate values.
 
-* In a terminal, start up the MySQL container (Docker will need to
-  build some images, that's okay):
-
   ```
-  docker-compose run db
-  ```
-
-  Your host's port 3306 should now be routed to the MySQL process
-  running inside the container, which is how we are able to use
-  "127.0.0.1" in the steps below. For some reason, Docker doesn't
-  always set up this mapping correctly (it won't give you any
-  message), and I don't know why. If this is the case, use the IP of
-  the container you just started, which you can find out by typing:
-
-  ```
-  # look for the mysql container ID in this listing
-  docker ps
-  # now use that container ID in this command to find the IP address
-  docker inspect CONTAINER_ID | grep IPAddress
+  cd ~/sdbmss
+  cp .docker-environment-sample .docker-environment
+  vi .docker-environment
   ```
 
-* In another terminal, connect to the database and run these commands
-  to create the databases and user account (change the passwords):
+* Run a MySQL client in the container and type in these commands to
+  create the databases and user account (change the passwords):
 
   ```
-  mysql -u root -h 127.0.0.1 -P 3306 -pfillthisin
+  # password should match the root password in .docker-environment
+  docker-compose run db mysql -u root -P 3306 -pPASSWORD
   CREATE DATABASE sdbm_live_copy;
   CREATE DATABASE sdbm;
-  CREATE USER 'sdbm'@'%' IDENTIFIED BY 'fillthisin';
+  CREATE USER 'sdbm'@'%' IDENTIFIED BY 'PASSWORD';
   GRANT ALL PRIVILEGES ON *.* TO 'sdbm'@'%';
   FLUSH PRIVILEGES;
   ```
 
-* Now copy over the legacy data from Oracle into a MySQL database
-  called sdbm_live_copy:
+  Type \q to quit the client when you're done.
 
-  First, make a straight copy of the tables from Oracle to MySQL, by
-  running the
+
+Step 2a: Migrate legacy data
+----------------------------
+
+NOTE: If you have an already migrated database that you want to load,
+do step 2b instead.
+
+* This step MUST be done on the development virtual machine (VM) set
+  up by Libraries IT for this project's use:
+
+  Copy the legacy data from Oracle into a MySQL database called
+  sdbm_live_copy, using the
   [oracle2mysql](https://github.com/codeforkjeff/oracle2mysql) script.
-  This MUST be done on the development virtual machine (VM) set up by
-  Libraries IT for this project's use:
 
   ```
   # MUST be run on the dev VM with access to Oracle!
@@ -75,20 +68,13 @@ Step 1: Migrate legacy data or load an existing database
   mysqldump -u root sdbm_live_copy > sdbm_live_copy_`date +%Y_%m_%d`.sql
   ```
 
-* Now, on your host machine, import the sdbm_live_copy database:
+* Now, back on your host machine, import the sdbm_live_copy database:
 
   ```
   # copy the file you made on the dev VM in the previous step
   scp username@dev_vm_hostname:sdbm_live_copy_2015_07_30.sql .
   # load it into MySQL running in the docker container
-  cat sdbm_live_copy_2015_07_30.sql | mysql -u sdbm -h 127.0.0.1 -P 3306 -pfillthisin sdbm_live_copy
-  ```
-
-* Stop the database container (the next steps will cause Docker to
-  automatically start it back up, which is what you want):
-
-  ```
-  docker-compose stop db
+  cat sdbm_live_copy_2015_07_30.sql | docker-compose run db mysql -u sdbm -pPASSWORD sdbm_live_copy
   ```
 
 * Run the data migration tasks to create a working Rails database out
@@ -105,15 +91,18 @@ Step 1: Migrate legacy data or load an existing database
   docker-compose run solr bundle exec rake sunspot:reindex
   ```
 
-  OR, as an alternative to doing the migration, if you have a copy of
-  an already-migrated Rails database and want to import it:
+Step 2b: Migrate legacy data
+----------------------------
+
+As an ALTERNATIVE to Step 2a above, if you have a copy of an
+already-migrated Rails database (created by mysqldump) and want to
+import it:
 
   ```
-  mysqldump -u root sdbm > sdbm_dump.sql
-  cat sdbm_dump.sql | mysql -u sdbm -h 127.0.0.1 -pyourpassword sdbm
+  cat sdbm_dump.sql | docker-compose run db mysql -u sdbm -pPASSWORD sdbm
   ```
 
-Step 2: Run the application
+Step 3: Run the application
 ---------------------------
 
 * Rebuild your containers. You only need to do this step when Gemfile
@@ -141,4 +130,3 @@ tests when run in a container this way.
   ```
   docker-compose run -e SOLR_URL=http://solr:8983/solr/test rails bundle exec rspec
   ```
-
