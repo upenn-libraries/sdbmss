@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150811143327) do
+ActiveRecord::Schema.define(version: 20150820184432) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",  limit: 255, null: false
@@ -20,63 +20,6 @@ ActiveRecord::Schema.define(version: 20150811143327) do
     t.integer  "user_id",    limit: 4
     t.datetime "created_at"
   end
-
-  create_table "agents", force: :cascade do |t|
-    t.integer  "entry_id",       limit: 4
-    t.integer  "viaf_id",        limit: 4
-    t.string   "name",           limit: 255
-    t.string   "agent_type",     limit: 255
-    t.boolean  "approved"
-    t.integer  "approved_by_id", limit: 4
-    t.datetime "approved_date"
-    t.datetime "created_at"
-    t.integer  "created_by_id",  limit: 4
-    t.datetime "updated_at"
-    t.integer  "updated_by_id",  limit: 4
-  end
-
-  add_index "agents", ["approved_by_id"], name: "index_agents_on_approved_by_id", using: :btree
-  add_index "agents", ["created_by_id"], name: "index_agents_on_created_by_id", using: :btree
-  add_index "agents", ["entry_id"], name: "index_agents_on_entry_id", using: :btree
-  add_index "agents", ["name"], name: "index_agents_on_name", unique: true, using: :btree
-  add_index "agents", ["updated_by_id"], name: "index_agents_on_updated_by_id", using: :btree
-
-  create_table "artists", force: :cascade do |t|
-    t.string   "name",           limit: 255
-    t.integer  "entry_id",       limit: 4
-    t.boolean  "approved"
-    t.integer  "approved_by_id", limit: 4
-    t.datetime "approved_date"
-    t.datetime "created_at"
-    t.integer  "created_by_id",  limit: 4
-    t.datetime "updated_at"
-    t.integer  "updated_by_id",  limit: 4
-  end
-
-  add_index "artists", ["approved_by_id"], name: "index_artists_on_approved_by_id", using: :btree
-  add_index "artists", ["created_by_id"], name: "index_artists_on_created_by_id", using: :btree
-  add_index "artists", ["entry_id"], name: "index_artists_on_entry_id", using: :btree
-  add_index "artists", ["name"], name: "index_artists_on_name", unique: true, using: :btree
-  add_index "artists", ["updated_by_id"], name: "index_artists_on_updated_by_id", using: :btree
-
-  create_table "authors", force: :cascade do |t|
-    t.string   "name",           limit: 255
-    t.integer  "entry_id",       limit: 4
-    t.string   "viaf_id",        limit: 255
-    t.boolean  "approved"
-    t.integer  "approved_by_id", limit: 4
-    t.datetime "approved_date"
-    t.datetime "created_at"
-    t.integer  "created_by_id",  limit: 4
-    t.datetime "updated_at"
-    t.integer  "updated_by_id",  limit: 4
-  end
-
-  add_index "authors", ["approved_by_id"], name: "index_authors_on_approved_by_id", using: :btree
-  add_index "authors", ["created_by_id"], name: "index_authors_on_created_by_id", using: :btree
-  add_index "authors", ["entry_id"], name: "index_authors_on_entry_id", using: :btree
-  add_index "authors", ["name"], name: "index_authors_on_name", unique: true, using: :btree
-  add_index "authors", ["updated_by_id"], name: "index_authors_on_updated_by_id", using: :btree
 
   create_table "bookmarks", force: :cascade do |t|
     t.integer  "user_id",       limit: 4,   null: false
@@ -464,18 +407,6 @@ ActiveRecord::Schema.define(version: 20150811143327) do
   add_index "places", ["name"], name: "index_places_on_name", unique: true, using: :btree
   add_index "places", ["reviewed_by_id"], name: "index_places_on_reviewed_by_id", using: :btree
   add_index "places", ["updated_by_id"], name: "index_places_on_updated_by_id", using: :btree
-
-  create_table "scribes", force: :cascade do |t|
-    t.string   "name",          limit: 255
-    t.datetime "created_at"
-    t.integer  "created_by_id", limit: 4
-    t.datetime "updated_at"
-    t.integer  "updated_by_id", limit: 4
-  end
-
-  add_index "scribes", ["created_by_id"], name: "index_scribes_on_created_by_id", using: :btree
-  add_index "scribes", ["name"], name: "index_scribes_on_name", unique: true, using: :btree
-  add_index "scribes", ["updated_by_id"], name: "index_scribes_on_updated_by_id", using: :btree
 
   create_table "searches", force: :cascade do |t|
     t.text     "query_params", limit: 65535
