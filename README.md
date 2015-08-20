@@ -68,8 +68,8 @@ Installing Ruby and Other Requirements
   mysql -u root
   CREATE DATABASE sdbm_live_copy;
   CREATE DATABASE sdbm;
-  CREATE USER 'sdbm'@'localhost' IDENTIFIED BY 'xxx';
-  GRANT ALL PRIVILEGES ON *.* TO 'sdbm'@'localhost';
+  CREATE USER 'sdbm'@'%' IDENTIFIED BY 'xxx';
+  GRANT ALL PRIVILEGES ON *.* TO 'sdbm'@'%';
   FLUSH PRIVILEGES
   ```
 

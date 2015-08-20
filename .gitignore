@@ -20,3 +20,6 @@
 .capistrano
 
 .yardoc
+
+.docker-environment
+/docker_data

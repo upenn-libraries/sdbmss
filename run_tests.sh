@@ -1,6 +1,8 @@
 #!/bin/sh
 #
-# Wrapper script around rspec that does some prep so tests run fresh
+# Wrapper script around rspec to ensure we get a Solr instance
+#
+# Do NOT use this when running in a Docker container!
 
 export RAILS_ENV=test
 export SOLR_URL="http://127.0.0.1:8983/solr/test"

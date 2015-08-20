@@ -1,0 +1,41 @@
+
+db:
+  image: mysql/mysql-server:5.5
+  env_file: .docker-environment
+  ports:
+    - "3306:3306"
+  volumes:
+    - my.cnf:/etc/my.cnf
+    - docker_data/mysql:/var/lib/mysql
+
+solr:
+  build: .
+  ports:
+    - "8983:8983"
+  env_file: .docker-environment
+  links:
+    - db
+  volumes:
+    - .:/usr/src/app
+  command: bundle exec rake sunspot:solr:run
+
+rails:
+  build: .
+  ports:
+    - "3000:3000"
+  links:
+    - db
+    - solr
+  volumes:
+    - .:/usr/src/app
+  env_file: .docker-environment
+  
+delayedjob:
+  build: .
+  links:
+    - db
+    - solr
+  volumes:
+    - .:/usr/src/app
+  env_file: .docker-environment
+  command: bundle exec rake jobs:work

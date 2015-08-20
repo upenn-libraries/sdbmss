@@ -1,0 +1,19 @@
+# Rename this file to .docker-environment and fill in values
+SDBMSS_LEGACY_DB_NAME=sdbm_live_copy
+SDBMSS_LEGACY_DB_USER=root
+SDBMSS_LEGACY_DB_PASSWORD=fillthisin
+SDBMSS_LEGACY_DB_HOST=db
+SDBMSS_DB_NAME=sdbm
+SDBMSS_DB_USER=sdbm
+SDBMSS_DB_PASSWORD=fillthisin
+SDBMSS_DB_HOST=db
+SDBMSS_APP_HOST=fillthisin
+SDBMSS_SMTP_HOST=fillthisin
+SDBMSS_EMAIL_FROM=fillthisin
+SDBMSS_EMAIL_EXCEPTIONS_TO=fillthisin
+SDBMSS_BLACKLIGHT_SECRET_KEY=fillthisin
+SDBMSS_DEVISE_SECRET_KEY=fillthisin
+SDBMSS_SECRET_KEY_BASE=fillthisin
+SDBMSS_SECRET_TOKEN=fillthisin
+SOLR_URL=http://solr:8983/solr/development
+MYSQL_ROOT_PASSWORD=fillthisin
