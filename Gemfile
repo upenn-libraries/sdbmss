@@ -112,7 +112,9 @@ group :development do
   gem 'capistrano-rails', '~> 1.1.0'
 
   # This can autogenerate ERD diagrams from ActiveRecord models and
-  # schema.
+  # schema. This causes problems when it's enabled for anything
+  # besides running "bundle exec erd" (but I can't remember exactly
+  # what the probs were) which is why it's commented out.
   #gem 'rails-erd', '~> 1.3.1'
 end
 
