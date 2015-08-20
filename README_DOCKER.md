@@ -2,7 +2,7 @@
 Running SDBM using Docker
 =========================
 
-These are some preliminary instructions on running the SDBM app in
+These are some preliminary instructions on running the SDBM app in a
 multi-container configuration using docker-compose.
 
 Important notes:
@@ -19,8 +19,8 @@ Important notes:
 
 - for persistent storage, we map volumes to directories on the host.
 
-Step 1: Setup
--------------
+Step 1: Migrate legacy data or load an existing database
+--------------------------------------------------------
 
 * In your cloned repository, copy the .docker-environment-sample file
   to .docker-environment and fill in the appropriate values.
@@ -58,7 +58,8 @@ Step 1: Setup
   FLUSH PRIVILEGES;
   ```
 
-* Now copy over the legacy data:
+* Now copy over the legacy data from Oracle into a MySQL database
+  called sdbm_live_copy:
 
   First, make a straight copy of the tables from Oracle to MySQL, by
   running the
@@ -67,18 +68,19 @@ Step 1: Setup
   Libraries IT for this project's use:
 
   ```
+  # MUST be run on the dev VM with access to Oracle!
   cd ~/oracle2mysql
   python oracle2mysql.py oracle2mysql_conf
   cd ~
   mysqldump -u root sdbm_live_copy > sdbm_live_copy_`date +%Y_%m_%d`.sql
   ```
 
-* Now, on your own machine, import the sdbm_live_copy database:
+* Now, on your host machine, import the sdbm_live_copy database:
 
   ```
   # copy the file you made on the dev VM in the previous step
   scp username@dev_vm_hostname:sdbm_live_copy_2015_07_30.sql .
-  # load it into MySQL
+  # load it into MySQL running in the docker container
   cat sdbm_live_copy_2015_07_30.sql | mysql -u sdbm -h 127.0.0.1 -P 3306 -pfillthisin sdbm_live_copy
   ```
 
@@ -89,10 +91,11 @@ Step 1: Setup
   docker-compose stop db
   ```
 
-* Run the data migration tasks (this takes a long time):
+* Run the data migration tasks to create a working Rails database out
+  of the data in sdbm_live_copy (this takes a long time):
 
   ```
-  # migrate it into new Rails schema
+  # migrate sdbm_live_copy into new Rails schema
   docker-compose run rails bundle exec rake sdbmss:migrate_legacy_data
   # OPTIONAL: create some reference data for development use
   docker-compose run rails bundle exec rake sdbmss:create_reference_data
