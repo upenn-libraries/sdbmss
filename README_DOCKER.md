@@ -3,9 +3,7 @@ Running SDBM using Docker
 =========================
 
 These are some preliminary instructions on running the SDBM app in a
-multi-container configuration using docker-compose.
-
-Important notes:
+multi-container configuration using docker-compose. Important notes:
 
 - docker-compose is
   ["not yet considered production-ready"](https://docs.docker.com/compose/production/)
@@ -91,7 +89,7 @@ do step 2b instead.
   docker-compose run solr bundle exec rake sunspot:reindex
   ```
 
-Step 2b: Migrate legacy data
+Step 2b: Load an existing database
 ----------------------------
 
 As an ALTERNATIVE to Step 2a above, if you have a copy of an
@@ -106,7 +104,8 @@ Step 3: Run the application
 ---------------------------
 
 * Rebuild your containers. You only need to do this step when Gemfile
-  dependencies change, but it never hurts to run this.
+  dependencies change, but it doesn't hurt to run this even if it's
+  not necessary.
 
   ```
   docker-compose build
@@ -121,9 +120,6 @@ Step 3: Run the application
 
 Running The Test Suite
 ----------------------
-
-For some reason, Capybara doesn't correctly display the progress of
-tests when run in a container this way.
 
 * Run the following (note that we do NOT use the run_tests.sh script when running in a container):
 
