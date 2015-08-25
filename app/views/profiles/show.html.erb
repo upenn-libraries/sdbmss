@@ -30,7 +30,11 @@
     <dt>Contributions</dt>
     <dd>
         <%= Source.where(created_by: @user).count %> sources<br/>
-        <a href="<%= search_advanced_path(created_by: @user.to_s) %>"><%= Entry.where(created_by: @user).count %> entries</a><br/>
+        <% num_approved = Entry.where(created_by: @user, approved: true).count %>
+	<% num_unapproved = Entry.where(created_by: @user, approved: false).count %>
+        <a href="<%= search_advanced_path(created_by: @user.to_s) %>"><%= num_approved %> entries</a>
+	<% if num_unapproved > 0 %>(<%= num_unapproved %> not yet approved)<% end %>
+	<br/>
         <%= Comment.where(created_by: @user).count %> comments
         <% if (num_corrections = Comment.where(created_by: @user, is_correction: true)).count > 0 %>
             (<%= num_corrections %> of which are corrections to entries)
