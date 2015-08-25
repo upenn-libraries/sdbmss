@@ -29,12 +29,23 @@ Step 1: Initialize databases and create user accounts
   vi .docker-environment
   ```
 
-* Run a MySQL client in the container and type in these commands to
-  create the databases and user account (change the passwords):
+* In separate terminal windows, start the database container, and then
+  run docker ps to find out its container ID (you'll need it for the
+  next step).
+  
+  ```
+  # do this in one window
+  docker-compose run db
+  # do this in another
+  docker ps
+  ```
+
+* Run a MySQL client in the running database container and type in
+  these commands to create the databases and user account (root
+  password must match what's in the .docker-environment file):
 
   ```
-  # password should match the root password in .docker-environment
-  docker-compose run db mysql -u root -P 3306 -pPASSWORD
+  docker exec -it CONTAINER_ID mysql -u root -P 3306 -pPASSWORD
   CREATE DATABASE sdbm_live_copy;
   CREATE DATABASE sdbm;
   CREATE USER 'sdbm'@'%' IDENTIFIED BY 'PASSWORD';
@@ -43,7 +54,6 @@ Step 1: Initialize databases and create user accounts
   ```
 
   Type \q to quit the client when you're done.
-
 
 Step 2a: Migrate legacy data
 ----------------------------
@@ -71,8 +81,8 @@ do step 2b instead.
   ```
   # copy the file you made on the dev VM in the previous step
   scp username@dev_vm_hostname:sdbm_live_copy_2015_07_30.sql .
-  # load it into MySQL running in the docker container
-  cat sdbm_live_copy_2015_07_30.sql | docker-compose run db mysql -u sdbm -pPASSWORD sdbm_live_copy
+  # load it into MySQL running in the docker container from Step 1
+  cat sdbm_live_copy_2015_07_30.sql | docker exec -i CONTAINER_ID mysql -u sdbm -pPASSWORD sdbm_live_copy
   ```
 
 * Run the data migration tasks to create a working Rails database out
@@ -90,14 +100,15 @@ do step 2b instead.
   ```
 
 Step 2b: Load an existing database
-----------------------------
+----------------------------------
 
 As an ALTERNATIVE to Step 2a above, if you have a copy of an
 already-migrated Rails database (created by mysqldump) and want to
 import it:
 
   ```
-  cat sdbm_dump.sql | docker-compose run db mysql -u sdbm -pPASSWORD sdbm
+  # load it into MySQL running in the docker container from Step 1
+  cat sdbm_dump.sql | docker exec -i CONTAINER_ID mysql -u sdbm -pPASSWORD sdbm
   ```
 
 Step 3: Run the application
@@ -111,7 +122,14 @@ Step 3: Run the application
   docker-compose build
   ```
 
-* Run:
+* If you have a running database container from Step 1 or 2, shut it
+  down first or it will conflict with the next command.
+
+  ```
+  docker stop CONTAINER_ID
+  ```
+
+* To run the application:
 
   ```
   docker-compose up
