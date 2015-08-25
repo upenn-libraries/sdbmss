@@ -142,6 +142,13 @@ describe "Data entry", :js => true do
       expect(page).to have_content "Add an Entry"
     end
 
+    it "should NOT find source by title on Select Source page" do
+      visit new_entry_path
+      fill_in 'title', :with => 'nonexistentjunk'
+      sleep 0.5
+      expect(page).to have_content "No source found matching your criteria."
+    end
+
     it "should load New Entry page with an auction catalog Source" do
       source = Source.new(
         title: "xxx",

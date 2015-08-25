@@ -165,15 +165,18 @@ class SourcesController < ManageModelsController
       # handle queries for either Institution or Selling Agent (this
       # happens from the Add New Entry workflow)
       query = query.joins(source_agents: [ :agent ] ).where('names.name like ?', "%#{params["agent"]}%")
-    else
-      SEARCH_FIELDS.each do |field|
-        fieldname = field[0]
-        handler = field[2]
-        if params[fieldname].present?
-          query = handler.call(fieldname, params, query)
-        end
+    end
+    
+    # always process these fields (used on both Add New Entry workflow and
+    # Manage Sources screen)
+    SEARCH_FIELDS.each do |field|
+      fieldname = field[0]
+      handler = field[2]
+      if params[fieldname].present?
+        query = handler.call(fieldname, params, query)
       end
     end
+
     query.with_associations
   end
 
