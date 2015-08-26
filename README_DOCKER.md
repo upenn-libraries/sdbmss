@@ -135,6 +135,16 @@ Step 3: Run the application
   docker-compose up
   ```
 
+Running Rails commands and other programs
+-----------------------------------------
+
+Any commands you would normally run in a development environment need
+to run in one of the containers. For example, to run the Rails
+migration task ("rake db:migrate"), you can spin up a new container:
+
+  ```
+  docker-compose run rails rake db:migrate
+  ```
 
 Running The Test Suite
 ----------------------
