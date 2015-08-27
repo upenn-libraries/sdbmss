@@ -168,8 +168,15 @@ module SDBMSS
       end
 
       # Takes a date_str like 'early 19th century' and returns a
-      # normalized year range for it, like ['1800', '1825']. returns nil if date
-      # str can't be normalized.
+      # normalized year range for it, like ['1800', '1826']. returns nil if date
+      # str can't be normalized. Note that ranges are end-exclusive.
+      #
+      # Following Hanno Wijsman's feedback at the advisory board
+      # meeting, centuries should include the "zero" year of the
+      # "next" century. example: 15th century should include 1500
+      # (therefore, its end date in an end-exclusive range would be
+      # 1501). This is consistent with how incunables are popularly
+      # understood as being written before 1501.
       #
       # TODO: handle negative dates
       def parse_approximate_date_str_into_year_range(date_str)
@@ -258,7 +265,7 @@ module SDBMSS
             end_date = century + "76"
           when /late/.match(date_str)
             start_date = century + "76"
-            end_date = (century.to_i + 1).to_s + "00"
+            end_date = (century.to_i + 1).to_s + "01"
           when /first quarter/.match(date_str)
             start_date = century + "00"
             end_date = century + "26"
@@ -270,7 +277,7 @@ module SDBMSS
             end_date = century + "76"
           when /fourth quarter/.match(date_str)
             start_date = century + "76"
-            end_date = (century.to_i + 1).to_s + "00"
+            end_date = (century.to_i + 1).to_s + "01"
           when /first third/.match(date_str)
             start_date = century + "00"
             end_date = century + "34"
@@ -279,17 +286,17 @@ module SDBMSS
             end_date = century + "67"
           when /last third/.match(date_str)
             start_date = century + "67"
-            end_date = (century.to_i + 1).to_s + "00"
+            end_date = (century.to_i + 1).to_s + "01"
           when /first half/.match(date_str)
             start_date = century + "00"
             end_date = century + "51"
           when /second half/.match(date_str)
             start_date = century + "51"
-            end_date = (century.to_i + 1).to_s + "00"
+            end_date = (century.to_i + 1).to_s + "01"
           else
             if century.present?
               start_date = century + "00"
-              end_date = (century.to_i + 1).to_s + "00"
+              end_date = (century.to_i + 1).to_s + "01"
             end
           end
         end

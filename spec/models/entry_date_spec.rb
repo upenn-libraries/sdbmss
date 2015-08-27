@@ -16,19 +16,19 @@ describe EntryDate do
     end
 
     it "parses a century date" do
-      expect(EntryDate.parse_observed_date("eleventh century")).to eq(["1000", "1100"])
+      expect(EntryDate.parse_observed_date("eleventh century")).to eq(["1000", "1101"])
     end
 
     it "parses a century date" do
-      expect(EntryDate.parse_observed_date("11th century")).to eq(["1000", "1100"])
+      expect(EntryDate.parse_observed_date("11th century")).to eq(["1000", "1101"])
     end
 
     it "parses a cent. date" do
-      expect(EntryDate.parse_observed_date("11th cent.")).to eq(["1000", "1100"])
+      expect(EntryDate.parse_observed_date("11th cent.")).to eq(["1000", "1101"])
     end
 
     it "parses a c. date" do
-      expect(EntryDate.parse_observed_date("11th c.")).to eq(["1000", "1100"])
+      expect(EntryDate.parse_observed_date("11th c.")).to eq(["1000", "1101"])
     end
 
     it "parses an early century date" do
@@ -40,11 +40,11 @@ describe EntryDate do
     end
 
     it "parses a late century date" do
-      expect(EntryDate.parse_observed_date("late 6th century")).to eq(["576", "600"])
+      expect(EntryDate.parse_observed_date("late 6th century")).to eq(["576", "601"])
     end
 
     it "parses a late century date" do
-      expect(EntryDate.parse_observed_date("late sixth century")).to eq(["576", "600"])
+      expect(EntryDate.parse_observed_date("late sixth century")).to eq(["576", "601"])
     end
 
     it "parses second quarter of century date" do
