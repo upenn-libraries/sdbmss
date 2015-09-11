@@ -15,11 +15,11 @@ class Manuscript < ActiveRecord::Base
   include HasPaperTrail
   include CreatesActivity
 
-  # returns all the Event objects associated with all the entries for this MS
+  # returns all the Provenance objects associated with EVERY entry for this MS
   def all_provenance
     # TODO: how to make sure they're "unique" since these records are
     # complex? maybe we don't do that.
-    Event.provenance.where(entry_id: linked_entries).order(start_date: :desc, entry_id: :desc)
+    Provenance.where(entry_id: linked_entries).order(start_date: :desc, entry_id: :desc)
   end
 
   def public_id

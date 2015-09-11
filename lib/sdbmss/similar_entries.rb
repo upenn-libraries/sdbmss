@@ -129,7 +129,7 @@ module SDBMSS
 
       #### Possible candidates where candidate is catalog entry for a sale in this entry's provenance
 
-      provenance_dates = @entry.events.map(&:start_date).select { |d| d.present? }
+      provenance_dates = @entry.provenance.map(&:start_date).select { |d| d.present? }
 
       candidates_by_provenance_date = find_by_provenance_dates(provenance_dates)
       count_by_provenance_date = candidates_by_provenance_date.count

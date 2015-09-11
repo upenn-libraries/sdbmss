@@ -63,12 +63,6 @@ Rails.application.routes.draw do
     }
   end
 
-  resources :events do
-    collection {
-      get 'parse_observed_date'
-    }
-  end
-
   get '/feedback/', to: 'feedback#index', as: 'feedback'
   post '/feedback/', to: 'feedback#send_email', as: 'send_feedback'
   get '/feedback/thanks', to: 'feedback#thanks', as: 'feedback_thanks'
@@ -119,6 +113,12 @@ Rails.application.routes.draw do
 
   # use 'username' as identifier here for nicer URLs
   resources :profiles, only: [:show], param: :username
+
+  resources :provenance do
+    collection {
+      get 'parse_observed_date'
+    }
+  end
 
   if !Rails.env.production?
     get '/raise_error/', to: 'debug#raise_error'

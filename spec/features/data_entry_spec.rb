@@ -171,7 +171,7 @@ describe "Data entry", :js => true do
       expect(page).to have_select('transaction_type', selected: 'A Sale', disabled: true)
 
       # should prepopulate Transaction fields
-      expect(find_by_id("transaction_selling_agent").value).to eq("aaa")
+      expect(find_by_id("sale_selling_agent").value).to eq("aaa")
     end
 
     it "should load New Entry page with a collection catalog Source" do
@@ -383,13 +383,13 @@ describe "Data entry", :js => true do
     def create_entry
       visit new_entry_path :source_id => @source.id
       fill_in 'cat_lot_no', with: '123'
-      # transaction_selling_agent should be auto-populated from source, so we skip it
-      fill_autocomplete_select_or_create_entity 'transaction_seller', with: 'Joe2'
-      fill_autocomplete_select_or_create_entity 'transaction_buyer', with: 'Joe3'
-      select 'Yes', from: 'transaction_sold'
-      fill_in 'transaction_date', with: '2014-03-03'
-      fill_in 'transaction_price', with: '130000'
-      select 'USD', from: 'transaction_currency'
+      # sale_selling_agent should be auto-populated from source, so we skip it
+      fill_autocomplete_select_or_create_entity 'sale_seller', with: 'Joe2'
+      fill_autocomplete_select_or_create_entity 'sale_buyer', with: 'Joe3'
+      select 'Yes', from: 'sale_sold'
+      fill_in 'sale_date', with: '2014-03-03'
+      fill_in 'sale_price', with: '130000'
+      select 'USD', from: 'sale_currency'
 
       fill_in 'title_0', with: 'Book of Hours'
       find_by_id("add_title_0").click
@@ -426,15 +426,22 @@ describe "Data entry", :js => true do
       fill_in 'manuscript_link', with: 'http://something.com'
       fill_in 'other_info', with: 'Other stuff'
 
+      fill_in 'provenance_observed_name_0', with: 'Somebody, Joe'
+      fill_autocomplete_select_or_create_entity 'provenance_agent_0', with: 'Somebody, Joseph'
       fill_in 'provenance_start_date_0', with: '1945-06-15'
       fill_in 'provenance_end_date_0', with: '1965-11-23'
-      fill_autocomplete_select_or_create_entity 'provenance_selling_agent_0', with: "Sotheby's"
-      fill_in 'provenance_selling_agent_observed_name_0', with: "Sotheby's Fine Things"
-      fill_autocomplete_select_or_create_entity 'provenance_seller_or_holder_0', with: 'Somebody, Joseph'
-      fill_in 'provenance_seller_or_holder_observed_name_0', with: 'Joseph H. Somebody'
-      fill_autocomplete_select_or_create_entity 'provenance_buyer_0', with: 'Collector, William'
-      fill_in 'provenance_buyer_observed_name_0', with: 'Wild Bill Collector'
-      fill_in 'provenance_comment_0', with: 'An historic sale'
+      check 'provenance_direct_transfer_0'
+
+      find_by_id("add_provenance_0").click
+      fill_autocomplete_select_or_create_entity 'provenance_agent_1', with: "Sotheby's"
+      fill_in 'provenance_start_date_1', with: '1965-11-23'
+      fill_in 'provenance_comment_1', with: 'An historic sale'
+      select 'For Sale', from: 'provenance_acquisition_method_1'
+      check 'provenance_direct_transfer_1'
+
+      find_by_id("add_provenance_0").click
+      fill_in 'provenance_observed_name_2', with: 'Wild Bill Collector'
+      fill_in 'provenance_comment_2', with: 'This is some unknown dude'
 
       fill_in 'comment', with: 'This info is correct'
 
@@ -446,16 +453,16 @@ describe "Data entry", :js => true do
     end
 
     def verify_entry(entry)
-      transaction = entry.get_transaction
+      sale = entry.get_sale
 
       expect(entry.catalog_or_lot_number).to eq('123')
-      expect(transaction.get_selling_agent.agent.name).to eq("Sotheby's")
-      expect(transaction.get_seller_or_holder.agent.name).to eq('Joe2')
-      expect(transaction.get_buyer.agent.name).to eq('Joe3')
-      expect(transaction.sold).to eq('Yes')
-      expect(transaction.start_date).to eq('20140303')
-      expect(transaction.price).to eq(130000)
-      expect(transaction.currency).to eq('USD')
+      expect(sale.get_selling_agent.agent.name).to eq("Sotheby's")
+      expect(sale.get_seller_or_holder.agent.name).to eq('Joe2')
+      expect(sale.get_buyer.agent.name).to eq('Joe3')
+      expect(sale.sold).to eq('Yes')
+      expect(sale.date).to eq('20140303')
+      expect(sale.price).to eq(130000)
+      expect(sale.currency).to eq('USD')
 
       entry_titles = entry.entry_titles
       expect(entry_titles[0].title).to eq('Book of Hours')
@@ -505,20 +512,27 @@ describe "Data entry", :js => true do
       expect(entry.manuscript_link).to eq('http://something.com')
       expect(entry.other_info).to eq('Other stuff')
 
+      expect(entry.provenance.count).to eq(3)
+
       provenance = entry.provenance.first
+      expect(provenance.observed_name).to eq('Somebody, Joe')
+      expect(provenance.provenance_agent.name).to eq('Somebody, Joseph')
       expect(provenance.start_date).to eq('1945-06-15')
       expect(provenance.end_date).to eq('1965-11-23')
       expect(provenance.start_date_normalized_start).to eq('1945-06-15')
       expect(provenance.start_date_normalized_end).to eq('1945-06-16')
-      expect(provenance.end_date_normalized_start).to eq('1965-11-23')
-      expect(provenance.end_date_normalized_end).to eq('1965-11-24')
-      expect(provenance.get_selling_agent.agent.name).to eq("Sotheby's")
-      expect(provenance.get_selling_agent.observed_name).to eq("Sotheby's Fine Things")
-      expect(provenance.get_seller_or_holder.agent.name).to eq('Somebody, Joseph')
-      expect(provenance.get_seller_or_holder.observed_name).to eq('Joseph H. Somebody')
-      expect(provenance.get_buyer.agent.name).to eq('Collector, William')
-      expect(provenance.get_buyer.observed_name).to eq('Wild Bill Collector')
+      expect(provenance.direct_transfer).to eq(true)
+
+      provenance = entry.provenance[1]
+      expect(provenance.provenance_agent.name).to eq("Sotheby's")
+      expect(provenance.start_date).to eq('1965-11-23')
       expect(provenance.comment).to eq('An historic sale')
+      expect(provenance.acquisition_method).to eq(Provenance::TYPE_ACQUISITION_METHOD_FOR_SALE)
+      expect(provenance.direct_transfer).to eq(true)
+
+      provenance = entry.provenance[2]
+      expect(provenance.observed_name).to eq('Wild Bill Collector')
+      expect(provenance.comment).to eq('This is some unknown dude')
 
       comment = entry.comments.first
       expect(comment.comment).to eq('This info is correct')
@@ -555,7 +569,7 @@ describe "Data entry", :js => true do
 
       entry = Entry.last
       expect(entry.folios).to eq(666)
-      expect(entry.get_transaction).to be_nil
+      expect(entry.get_sale).to be_nil
     end
 
     it "should save an Entry and log it in Recent Activity" do

@@ -188,10 +188,11 @@ class EntriesController < ManageModelsController
     data = {
       'transaction_type' => Entry::TYPES_TRANSACTION,
       'author_role' => EntryAuthor::TYPES_ROLES,
-      'currency' => Event::CURRENCY_TYPES,
-      'sold' => Event::SOLD_TYPES,
+      'currency' => Sale::CURRENCY_TYPES,
+      'sold' => Sale::SOLD_TYPES,
       'material' => EntryMaterial::MATERIAL_TYPES,
       'alt_size' => Entry::ALT_SIZE_TYPES,
+      'acquisition_method' => Provenance::ACQUISITION_METHOD_TYPES,
     }
     render json: data
   end
@@ -285,12 +286,15 @@ class EntriesController < ManageModelsController
       :entry_materials_attributes => [ :id, :material, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_places_attributes => [ :id, :place_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_uses_attributes => [ :id, :use, :_destroy ],
-      :events_attributes  => [
-        :id, :primary, :start_date, :start_date_normalized_start, :start_date_normalized_end, :end_date, :end_date_normalized_start, :end_date_normalized_end, :comment, :sold, :price, :currency, :other_currency, :_destroy,
+      :sales_attributes  => [
+        :id, :date, :sold, :price, :currency, :other_currency, :_destroy,
         {
-          :event_agents_attributes => [:id, :observed_name, :agent_id, :role, :uncertain_in_source, :supplied_by_data_entry, :_destroy]
+          :sale_agents_attributes => [:id, :observed_name, :agent_id, :role, :uncertain_in_source, :supplied_by_data_entry, :_destroy]
         }
-      ]
+      ],
+      :provenance_attributes => [
+        :id, :observed_name, :provenance_agent_id, :start_date, :start_date_normalized_start, :start_date_normalized_end, :end_date, :end_date_normalized_start, :end_date_normalized_end, :acquisition_method, :direct_transfer, :comment, :_destroy
+      ],
     )
   end
 

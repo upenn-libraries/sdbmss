@@ -9,7 +9,7 @@ module SDBMSS::Legacy
   # module-level methods
   class << self
 
-    VALID_SOLD_TYPES = Event::SOLD_TYPES.map(&:first)
+    VALID_SOLD_TYPES = Sale::SOLD_TYPES.map(&:first)
 
     VALID_ALT_SIZE_TYPES = Entry::ALT_SIZE_TYPES.map { |item| item[0] }
 
@@ -81,15 +81,15 @@ module SDBMSS::Legacy
       "CLATE",
     ]
 
-    VALID_CURRENCY_TYPES = Event::CURRENCY_TYPES.map { |item| item[0] }
+    VALID_CURRENCY_TYPES = Sale::CURRENCY_TYPES.map { |item| item[0] }
 
     VALID_MATERIALS = EntryMaterial::MATERIAL_TYPES.map { |item| item[0] }
 
     LEGACY_SOLD_CODES = {
-      "UNKNOWN" => Event::TYPE_SOLD_UNKNOWN,
-      "YES" => Event::TYPE_SOLD_YES,
-      "NO" => Event::TYPE_SOLD_NO,
-      "WD" => Event::TYPE_SOLD_WITHDRAWN,
+      "UNKNOWN" => Sale::TYPE_SOLD_UNKNOWN,
+      "YES" => Sale::TYPE_SOLD_YES,
+      "NO" => Sale::TYPE_SOLD_NO,
+      "WD" => Sale::TYPE_SOLD_WITHDRAWN,
     }
 
     LEGACY_MATERIAL_CODES = {
@@ -556,7 +556,7 @@ module SDBMSS::Legacy
         create_entry_from_row(row, ctx)
       end
 
-      puts "Creating Agent entities for non-unique names in EventAgent"
+      puts "Creating Agent entities for non-unique names in Provenance"
 
       create_agent_entities_for_provenance(legacy_db)
 
@@ -968,10 +968,9 @@ module SDBMSS::Legacy
           sold = nil
         end
 
-        transaction = Event.create!(
-          primary: true,
+        sale = Sale.create!(
           entry: entry,
-          start_date: start_date,
+          date: start_date,
           price: row['PRICE'],
           currency: currency,
           other_currency: other_currency,
@@ -980,10 +979,10 @@ module SDBMSS::Legacy
 
         if row['SELLER'].present?
           agent_name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(row['SELLER'])
-          pa = EventAgent.create!(
-            event: transaction,
+          sa = SaleAgent.create!(
+            sale: sale,
             agent: get_or_create_agent(agent_name),
-            role: EventAgent::ROLE_SELLING_AGENT,
+            role: SaleAgent::ROLE_SELLING_AGENT,
             uncertain_in_source: uncertain_in_source,
             supplied_by_data_entry: supplied_by_data_entry,
           )
@@ -991,10 +990,10 @@ module SDBMSS::Legacy
 
         if row['SELLER2'].present?
           agent_name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(row['SELLER2'])
-          pa = EventAgent.create!(
-            event: transaction,
+          sa = SaleAgent.create!(
+            sale: sale,
             agent: get_or_create_agent(agent_name),
-            role: EventAgent::ROLE_SELLER_OR_HOLDER,
+            role: SaleAgent::ROLE_SELLER_OR_HOLDER,
             uncertain_in_source: uncertain_in_source,
             supplied_by_data_entry: supplied_by_data_entry,
           )
@@ -1002,10 +1001,10 @@ module SDBMSS::Legacy
 
         if row['BUYER'].present?
           agent_name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(row['BUYER'])
-          pa = EventAgent.create!(
-            event: transaction,
+          sa = SaleAgent.create!(
+            sale: sale,
             agent: get_or_create_agent(agent_name),
-            role: EventAgent::ROLE_BUYER,
+            role: SaleAgent::ROLE_BUYER,
             uncertain_in_source: uncertain_in_source,
             supplied_by_data_entry: supplied_by_data_entry,
           )
@@ -1202,20 +1201,14 @@ module SDBMSS::Legacy
 
       SDBMSS::Util.split_and_strip(row['PROVENANCE']).each do |atom|
         if atom.length < 255
-          provenance = Event.create!(
-            # primary: false,
-            entry: entry,
-          )
-
           agent_name, uncertain_in_source, supplied_by_data_entry = parse_certainty_indicators(atom)
 
           if agent_name.present?
             # store names as 'observed_name' and then turn non-unique
             # ones into Agent entities at a later pass
-            pa = EventAgent.create!(
-              event: provenance,
+            Provenance.create!(
+              entry: entry,
               observed_name: agent_name,
-              role: EventAgent::ROLE_SELLER_OR_HOLDER,
               uncertain_in_source: uncertain_in_source,
               supplied_by_data_entry: supplied_by_data_entry
             )
@@ -1288,28 +1281,28 @@ module SDBMSS::Legacy
     end
 
     def create_agent_entities_for_provenance(legacy_db)
-      puts "Creating Agents for non-unique values in EventAgent.observed_name"
+      puts "Creating Agents for non-unique values in Provenance.observed_name"
 
       # We do this in order to 'conservatively' create Agent records:
       # we only make Agents for Provenance if the agent name occurs
       # more than once. This is actually a pretty good heuristic.
 
-      results = ActiveRecord::Base.connection.execute("SELECT distinct observed_name, count(*) as mynum from event_agents where observed_name is not null and length(observed_name) > 1 group by observed_name")
+      results = ActiveRecord::Base.connection.execute("SELECT distinct observed_name, count(*) as mynum from provenance where observed_name is not null and length(observed_name) > 1 group by observed_name")
 
       results.each do |row|
         observed_name, count = row[0], row[1]
         if count > 1
           agent = get_or_create_agent(observed_name)
-          EventAgent.where(observed_name: observed_name).find_each(batch_size: 200) do |event_agent|
-            event_agent.agent = agent
-            event_agent.save!
+          Provenance.where(observed_name: observed_name).find_each(batch_size: 200) do |p|
+            p.provenance_agent = agent
+            p.save!
           end
         end
       end
 
-      puts "Clearing EventAgent.observed_name if there's an agent"
+      puts "Clearing Provenance.observed_name if there's an agent"
 
-      EventAgent.where("agent_id is not null").update_all({ observed_name: nil })
+      Provenance.where("provenance_agent_id is not null").update_all({ observed_name: nil })
 
       # TODO: Some very non-unique long provenance strings should be
       # moved to comments. See entry 104980, which has str describing
@@ -1471,7 +1464,7 @@ module SDBMSS::Legacy
 
       # we don't import:
       # MS_COUNT = this is now redundant since we're using FKs
-      # ALT_DATE = this has moved into Event.date on transaction records
+      # ALT_DATE = this has moved into Sale.date on transaction records
 
       source = Source.new(
         id: row['MANUSCRIPTCATALOGID'],

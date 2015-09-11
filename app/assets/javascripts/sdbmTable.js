@@ -295,31 +295,31 @@ var SDBM = SDBM || {};
                 {
                     sdbmssMinWidth: "150px",
                     sdbmssMaxWidth: "150px",
-                    sdbmssSortField: 'transaction_selling_agent',
+                    sdbmssSortField: 'sale_selling_agent',
                     title: 'Selling Agent'
                 },
                 {
                     sdbmssMinWidth: "150px",
                     sdbmssMaxWidth: "150px",
-                    sdbmssSortField: 'transaction_seller',
+                    sdbmssSortField: 'sale_seller',
                     title: 'Seller'
                 },
                 {
                     sdbmssMinWidth: "150px",
                     sdbmssMaxWidth: "150px",
-                    sdbmssSortField: 'transaction_buyer',
+                    sdbmssSortField: 'sale_buyer',
                     title: 'Buyer'
                 },
                 {
                     sdbmssMinWidth: "100px",
                     sdbmssMaxWidth: "100px",
-                    sdbmssSortField: 'transaction_sold',
+                    sdbmssSortField: 'sale_sold',
                     title: 'Sold'
                 },
                 {
                     sdbmssMinWidth: "100px",
                     sdbmssMaxWidth: "100px",
-                    sdbmssSortField: 'transaction_price',
+                    sdbmssSortField: 'sale_price',
                     title: 'Price'
                 },
                 {
@@ -568,11 +568,11 @@ var SDBM = SDBM || {};
                             result.source_date,
                             result.source_title,
                             result.source_catalog_or_lot_number,
-                            result.transaction_selling_agent,
-                            result.transaction_seller_or_holder,
-                            result.transaction_buyer,
-                            result.transaction_sold,
-                            result.transaction_price,
+                            result.sale_selling_agent,
+                            result.sale_seller_or_holder,
+                            result.sale_buyer,
+                            result.sale_sold,
+                            result.sale_price,
                             result.titles,
                             result.authors,
                             result.dates,

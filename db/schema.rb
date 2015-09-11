@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150820184432) do
+ActiveRecord::Schema.define(version: 20150909180416) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",  limit: 255, null: false
@@ -264,46 +264,6 @@ ActiveRecord::Schema.define(version: 20150820184432) do
 
   add_index "entry_uses", ["entry_id"], name: "index_entry_uses_on_entry_id", using: :btree
 
-  create_table "event_agents", force: :cascade do |t|
-    t.integer  "event_id",               limit: 4
-    t.string   "observed_name",          limit: 255
-    t.integer  "agent_id",               limit: 4
-    t.string   "role",                   limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "uncertain_in_source",                default: false
-    t.boolean  "supplied_by_data_entry",             default: false
-  end
-
-  add_index "event_agents", ["agent_id"], name: "index_event_agents_on_agent_id", using: :btree
-  add_index "event_agents", ["event_id"], name: "index_event_agents_on_event_id", using: :btree
-  add_index "event_agents", ["observed_name"], name: "index_event_agents_on_observed_name", using: :btree
-
-  create_table "events", force: :cascade do |t|
-    t.integer  "entry_id",                    limit: 4
-    t.boolean  "primary",                                                            default: false
-    t.text     "comment",                     limit: 65535
-    t.integer  "order",                       limit: 4
-    t.string   "end_date",                    limit: 255
-    t.decimal  "price",                                     precision: 20, scale: 2
-    t.string   "currency",                    limit: 255
-    t.string   "other_currency",              limit: 255
-    t.string   "sold",                        limit: 255
-    t.datetime "created_at"
-    t.integer  "created_by_id",               limit: 4
-    t.datetime "updated_at"
-    t.integer  "updated_by_id",               limit: 4
-    t.string   "start_date",                  limit: 255
-    t.string   "start_date_normalized_start", limit: 255
-    t.string   "start_date_normalized_end",   limit: 255
-    t.string   "end_date_normalized_start",   limit: 255
-    t.string   "end_date_normalized_end",     limit: 255
-  end
-
-  add_index "events", ["created_by_id"], name: "index_events_on_created_by_id", using: :btree
-  add_index "events", ["entry_id"], name: "index_events_on_entry_id", using: :btree
-  add_index "events", ["updated_by_id"], name: "index_events_on_updated_by_id", using: :btree
-
   create_table "languages", force: :cascade do |t|
     t.string   "name",           limit: 255
     t.datetime "created_at"
@@ -370,12 +330,13 @@ ActiveRecord::Schema.define(version: 20150820184432) do
     t.integer  "artists_count",       limit: 4,     default: 0,     null: false
     t.integer  "scribes_count",       limit: 4,     default: 0,     null: false
     t.integer  "source_agents_count", limit: 4,     default: 0,     null: false
-    t.integer  "event_agents_count",  limit: 4,     default: 0,     null: false
+    t.integer  "sale_agents_count",   limit: 4,     default: 0,     null: false
     t.boolean  "deleted",                           default: false
     t.text     "comment",             limit: 65535
     t.boolean  "reviewed",                          default: false
     t.integer  "reviewed_by_id",      limit: 4
     t.datetime "reviewed_at"
+    t.integer  "provenance_count",    limit: 4,     default: 0,     null: false
   end
 
   add_index "names", ["created_by_id"], name: "index_names_on_created_by_id", using: :btree
@@ -407,6 +368,63 @@ ActiveRecord::Schema.define(version: 20150820184432) do
   add_index "places", ["name"], name: "index_places_on_name", unique: true, using: :btree
   add_index "places", ["reviewed_by_id"], name: "index_places_on_reviewed_by_id", using: :btree
   add_index "places", ["updated_by_id"], name: "index_places_on_updated_by_id", using: :btree
+
+  create_table "provenance", force: :cascade do |t|
+    t.integer  "entry_id",                    limit: 4
+    t.integer  "order",                       limit: 4
+    t.string   "observed_name",               limit: 255
+    t.integer  "provenance_agent_id",         limit: 4
+    t.string   "acquisition_method",          limit: 255
+    t.boolean  "direct_transfer",                           default: false
+    t.datetime "created_at"
+    t.integer  "created_by_id",               limit: 4
+    t.datetime "updated_at"
+    t.integer  "updated_by_id",               limit: 4
+    t.string   "start_date",                  limit: 255
+    t.string   "start_date_normalized_start", limit: 255
+    t.string   "start_date_normalized_end",   limit: 255
+    t.string   "end_date",                    limit: 255
+    t.string   "end_date_normalized_start",   limit: 255
+    t.string   "end_date_normalized_end",     limit: 255
+    t.text     "comment",                     limit: 65535
+    t.boolean  "uncertain_in_source",                       default: false
+    t.boolean  "supplied_by_data_entry",                    default: false
+  end
+
+  add_index "provenance", ["entry_id"], name: "index_provenance_on_entry_id", using: :btree
+  add_index "provenance", ["provenance_agent_id"], name: "index_provenance_on_provenance_agent_id", using: :btree
+
+  create_table "sale_agents", force: :cascade do |t|
+    t.integer  "sale_id",                limit: 4
+    t.string   "observed_name",          limit: 255
+    t.integer  "agent_id",               limit: 4
+    t.string   "role",                   limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "uncertain_in_source",                default: false
+    t.boolean  "supplied_by_data_entry",             default: false
+  end
+
+  add_index "sale_agents", ["agent_id"], name: "index_sale_agents_on_agent_id", using: :btree
+  add_index "sale_agents", ["observed_name"], name: "index_sale_agents_on_observed_name", using: :btree
+  add_index "sale_agents", ["sale_id"], name: "index_sale_agents_on_sale_id", using: :btree
+
+  create_table "sales", force: :cascade do |t|
+    t.integer  "entry_id",       limit: 4
+    t.string   "date",           limit: 255
+    t.decimal  "price",                      precision: 20, scale: 2
+    t.string   "currency",       limit: 255
+    t.string   "other_currency", limit: 255
+    t.string   "sold",           limit: 255
+    t.datetime "created_at"
+    t.integer  "created_by_id",  limit: 4
+    t.datetime "updated_at"
+    t.integer  "updated_by_id",  limit: 4
+  end
+
+  add_index "sales", ["created_by_id"], name: "index_sales_on_created_by_id", using: :btree
+  add_index "sales", ["entry_id"], name: "index_sales_on_entry_id", using: :btree
+  add_index "sales", ["updated_by_id"], name: "index_sales_on_updated_by_id", using: :btree
 
   create_table "searches", force: :cascade do |t|
     t.text     "query_params", limit: 65535
@@ -567,11 +585,6 @@ ActiveRecord::Schema.define(version: 20150820184432) do
   add_foreign_key "entry_scribes", "names", column: "scribe_id"
   add_foreign_key "entry_titles", "entries", on_delete: :cascade
   add_foreign_key "entry_uses", "entries", on_delete: :cascade
-  add_foreign_key "event_agents", "events", on_delete: :cascade
-  add_foreign_key "event_agents", "names", column: "agent_id"
-  add_foreign_key "events", "entries", on_delete: :cascade
-  add_foreign_key "events", "users", column: "created_by_id"
-  add_foreign_key "events", "users", column: "updated_by_id"
   add_foreign_key "languages", "users", column: "created_by_id"
   add_foreign_key "languages", "users", column: "reviewed_by_id"
   add_foreign_key "languages", "users", column: "updated_by_id"
@@ -588,6 +601,12 @@ ActiveRecord::Schema.define(version: 20150820184432) do
   add_foreign_key "places", "users", column: "created_by_id"
   add_foreign_key "places", "users", column: "reviewed_by_id"
   add_foreign_key "places", "users", column: "updated_by_id"
+  add_foreign_key "provenance", "names", column: "provenance_agent_id"
+  add_foreign_key "sale_agents", "names", column: "agent_id"
+  add_foreign_key "sale_agents", "sales", on_delete: :cascade
+  add_foreign_key "sales", "entries", on_delete: :cascade
+  add_foreign_key "sales", "users", column: "created_by_id"
+  add_foreign_key "sales", "users", column: "updated_by_id"
   add_foreign_key "source_agents", "names", column: "agent_id"
   add_foreign_key "source_agents", "sources", on_delete: :cascade
   add_foreign_key "sources", "source_types"

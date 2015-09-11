@@ -203,15 +203,15 @@ label.col-sm-2-and-half {
                 <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_selling_agent">Selling Agent</span></label>
                 <div class="col-sm-5">
                     <div class="input-group">
-                        <input id="transaction_selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-                        <div id="transaction_selling_agent_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.selling_agent"><span class="glyphicon"></span></div>
+                        <input id="sale_selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                        <div id="sale_selling_agent_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.selling_agent"><span class="glyphicon"></span></div>
                     </div>
                 </div>
                 <label class="col-sm-1 control-label"><span sdbm-tooltip="entry_seller">Seller</span></label>
                 <div class="col-sm-4">
                     <div class="input-group">
-                        <input id="transaction_seller" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-                        <div id="transaction_seller_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.seller_or_holder"><span class="glyphicon"></span></div>
+                        <input id="sale_seller" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                        <div id="sale_seller_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.seller_or_holder"><span class="glyphicon"></span></div>
                     </div>
                 </div>
             </div>
@@ -220,8 +220,8 @@ label.col-sm-2-and-half {
                 <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_buyer">Buyer</span></label>
                 <div class="col-sm-5">
                     <div class="input-group">
-                        <input id="transaction_buyer" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.transaction.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-                        <div id="transaction_buyer_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.transaction.buyer"><span class="glyphicon"></span></div>
+                        <input id="sale_buyer" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                        <div id="sale_buyer_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.buyer"><span class="glyphicon"></span></div>
                     </div>
                 </div>
             </div>
@@ -231,32 +231,32 @@ label.col-sm-2-and-half {
                 <div class="form-group row">
                     <label for="sold" class="col-sm-2 control-label"><span sdbm-tooltip="entry_sold">Sold</span></label>
                     <div class="col-sm-2">
-                        <select class="form-control" id="transaction_sold" ng-model="entry.transaction.sold" ng-options="option[0] as option[1] for option in optionsSold">
+                        <select class="form-control" id="sale_sold" ng-model="entry.sale.sold" ng-options="option[0] as option[1] for option in optionsSold">
                             <option value=""></option>
                         </select>
                     </div>
-                    <div ng-show="entry.transaction.sold == 'Yes'">
+                    <div ng-show="entry.sale.sold == 'Yes'">
                         <label for="sold" class="col-sm-4 control-label">Date Sold</span></label>
                         <div class="col-sm-3">
-                            <input type="text" class="form-control" id="transaction_date" ng-model="entry.transaction.start_date">
+                            <input type="text" class="form-control" id="sale_date" ng-model="entry.sale.date">
                         </div>
                     </div>
                 </div>
                 
                 <div class="form-group row">
                     <label for="price" class="col-sm-2 control-label"><span sdbm-tooltip="entry_price">Price</span></label>
-                    <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['transaction_price'].$valid }">
-                        <input type="text" class="form-control" id="transaction_price" name="transaction_price" ng-pattern="/^[0-9,\.]*$/" ng-model="entry.transaction.price">
+                    <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['sale_price'].$valid }">
+                        <input type="text" class="form-control" id="sale_price" name="sale_price" ng-pattern="/^[0-9,\.]*$/" ng-model="entry.sale.price">
                     </div>
                     <label for="currency" class="col-sm-1 control-label"><span sdbm-tooltip="entry_currency">Currency</span></label>
                     <div class="col-sm-1">
-                        <select name="currency" id="transaction_currency" class="form-control" ng-model="entry.transaction.currency" ng-options="option[0] as option[1] for option in optionsCurrency">
+                        <select name="currency" id="sale_currency" class="form-control" ng-model="entry.sale.currency" ng-options="option[0] as option[1] for option in optionsCurrency">
                             <option value=""></option>
                         </select>
                     </div>
                     <label for="other-currency" class="col-sm-2 control-label"><span sdbm-tooltip="entry_other_currency">Other Currency</span></label>
                     <div class="col-sm-3">
-                        <input type="text" class="form-control" id="other-currency" ng-model="entry.transaction.other_currency">
+                        <input type="text" class="form-control" id="other-currency" ng-model="entry.sale.other_currency">
                     </div>
                 </div>
 
@@ -573,46 +573,19 @@ label.col-sm-2-and-half {
 
     <div class="form-group row">
         <label class="col-sm-2-and-half control-label">
-            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
+            <div class="add-link-container"><a id="add_provenance_{{ $index }}" class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.provenance, prov)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-            <span sdbm-tooltip="entry_provenance_selling_agent_as_recorded">Selling Agent As Recorded</span>
+            <span sdbm-tooltip="entry_provenance_as_recorded">Prov Agent As Recorded</span>
         </label>
         <div class="col-sm-3-and-half">
-          <input id="provenance_selling_agent_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.selling_agent.observed_name">
+          <input id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name">
       </div>
-      <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_provenance_selling_agent">Selling Agent</span></label>
-      <div class="col-sm-4">
-          <div class="input-group">
-              <input id="provenance_selling_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-              <div id="provenance_selling_agent_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov.selling_agent"><span class="glyphicon"></span></div>
-          </div>
-      </div>
-    </div>
 
-    <div class="form-group row">
-        <label class="col-sm-2-and-half control-label"><span sdbm-tooltip="entry_provenance_holder_as_recorded">Holder As Recorded</span></label>
-        <div class="col-sm-3-and-half">
-          <input id="provenance_seller_or_holder_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.seller_or_holder.observed_name">
-      </div>
-      <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_provenance_holder">Holder</span></label>
+      <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_provenance_agent">Prov Agent</span></label>
       <div class="col-sm-4">
           <div class="input-group">
-              <input id="provenance_seller_or_holder_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-              <div id="provenance_seller_or_holder_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov.seller_or_holder"><span class="glyphicon"></span></div>
-          </div>
-      </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-sm-2-and-half control-label"><span sdbm-tooltip="entry_provenance_buyer_as_recorded">Buyer As Recorded</span></label>
-      <div class="col-sm-3-and-half">
-          <input id="provenance_buyer_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.buyer.observed_name">
-      </div>
-      <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_provenance_buyer">Buyer</span></label>
-      <div class="col-sm-4">
-          <div class="input-group">
-              <input id="provenance_buyer_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-              <div id="provenance_buyer_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov.buyer"><span class="glyphicon"></span></div>
+              <input id="provenance_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.provenance_agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+              <div id="provenance_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov"><span class="glyphicon"></span></div>
           </div>
       </div>
     </div>
@@ -622,7 +595,7 @@ label.col-sm-2-and-half {
             <span sdbm-tooltip="entry_provenance_start_date_as_recorded">Start Date As Recorded</span>
         </label>
       <div class="col-sm-3-and-half">
-        <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date" sdbm-approximate-date-string="start_date_normalized_start_{{ $index }}, start_date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/events/parse_observed_date.json">
+        <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date" sdbm-approximate-date-string="start_date_normalized_start_{{ $index }}, start_date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/provenance/parse_observed_date.json">
       </div>
       <label class="col-sm-2 control-label">
           <span sdbm-tooltip="entry_provenance_start_date_for_search">Start Date for Search</span>
@@ -640,7 +613,7 @@ label.col-sm-2-and-half {
             <span sdbm-tooltip="entry_provenance_end_date_as_recorded">End Date As Recorded</span>
         </label>
       <div class="col-sm-3-and-half">
-        <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date" sdbm-approximate-date-string="end_date_normalized_start_{{ $index }}, end_date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/events/parse_observed_date.json">
+        <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date" sdbm-approximate-date-string="end_date_normalized_start_{{ $index }}, end_date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/provenance/parse_observed_date.json">
       </div>
       <label class="col-sm-2 control-label">
           <span sdbm-tooltip="entry_provenance_end_date_for_search">End Date for Search</span>
@@ -650,6 +623,23 @@ label.col-sm-2-and-half {
       </div>
       <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['end_date_normalized_end_' + $index].$valid }">
         <input id="end_date_normalized_end_{{ $index }}" name="end_date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-required="!!prov.end_date_normalized_start" ng-model="prov.end_date_normalized_end">
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label class="col-sm-2-and-half control-label">
+          <span sdbm-tooltip="entry_provenance_evidence">Acquisition Method</span>
+      </label>
+      <div class="col-sm-3-and-half">
+          <select class="form-control" id="provenance_acquisition_method_{{ $index }}" ng-model="prov.acquisition_method" ng-options="option[0] as option[1] for option in optionsAcquisitionMethod">
+              <option value=""></option>
+          </select>
+      </div>
+      <label class="col-sm-3 control-label">
+          Directly Transfered to Next?
+      </label>
+      <div class="col-sm-2 label-alignment">
+          <input id="provenance_direct_transfer_{{ $index }}" type="checkbox" ng-model="prov.direct_transfer"/>
       </div>
     </div>
 

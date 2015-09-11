@@ -5,6 +5,12 @@ require 'set'
 # associated with Entries in various ways (as authors, artists,
 # scribes, provenance agents, source agents), are stored.
 #
+# Flags such as is_author, is_artist, etc indicate the context in
+# which the name was created; autocomplete widgets use this role when
+# searching so they get the types of names they are interested in.
+# IMPORTANT: Note that the is_provenance_agent flag covers any name
+# created for Provenance, SourceAgent, and SaleAgent records.
+#
 # There are a number of counter_cache fields on this model, which
 # usually get updated when there are changes to related data, but NOT
 # always. In particular, note that #update_all skips callbacks.
@@ -28,8 +34,10 @@ class Name < ActiveRecord::Base
 
   has_many :entry_scribes, foreign_key: "scribe_id"
 
-  has_many :event_agents, foreign_key: "agent_id"
-  has_many :events, through: :event_agents
+  has_many :sale_agents, foreign_key: "agent_id"
+  has_many :sales, through: :sale_agents
+
+  has_many :provenance, foreign_key: "provenance_agent_id"
 
   has_many :source_agents, foreign_key: "agent_id"
   has_many :sources, through: :source_agents
@@ -206,7 +214,8 @@ class Name < ActiveRecord::Base
     ids.merge(Entry.joins(:artists).where({ names: { id: id }}).select(:id).map(&:id))
     ids.merge(Entry.joins(:authors).where({ names: { id: id }}).select(:id).map(&:id))
     ids.merge(Entry.joins(:scribes).where({ names: { id: id }}).select(:id).map(&:id))
-    ids.merge(Entry.joins(:events => :event_agents).where({ event_agents: { agent_id: id }}).select(:id).map(&:id))
+    ids.merge(Entry.joins(:sales => :sale_agents).where({ sale_agents: { agent_id: id }}).select(:id).map(&:id))
+    ids.merge(Entry.joins(:provenance).where({ provenance: { provenance_agent_id: id }}).select(:id).map(&:id))
     ids.merge(Entry.joins(:source => :source_agents).where({ source_agents: { agent_id: id }}).select(:id).map(&:id))
     ids.to_a
   end
@@ -229,8 +238,9 @@ class Name < ActiveRecord::Base
     EntryArtist.where(artist_id: self.id).update_all({ artist_id: target_id })
     EntryAuthor.where(author_id: self.id).update_all({ author_id: target_id })
     EntryScribe.where(scribe_id: self.id).update_all({ scribe_id: target_id })
-    EventAgent.where(agent_id: self.id).update_all({ agent_id: target_id })
+    SaleAgent.where(agent_id: self.id).update_all({ agent_id: target_id })
     SourceAgent.where(agent_id: self.id).update_all({ agent_id: target_id })
+    Provenance.where(provenance_agent_id: self.id).update_all({ provenance_agent_id: target_id })
 
     # update flags on the target
     target.is_artist ||= self.is_artist

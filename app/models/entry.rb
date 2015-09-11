@@ -51,7 +51,8 @@ class Entry < ActiveRecord::Base
   has_many :entry_uses, inverse_of: :entry
   has_many :entry_comments
   has_many :comments, through: :entry_comments
-  has_many :events, inverse_of: :entry
+  has_many :sales, inverse_of: :entry
+  has_many :provenance, inverse_of: :entry
 
   accepts_nested_attributes_for :entry_titles, allow_destroy: true
   accepts_nested_attributes_for :entry_authors, allow_destroy: true
@@ -62,7 +63,8 @@ class Entry < ActiveRecord::Base
   accepts_nested_attributes_for :entry_materials, allow_destroy: true
   accepts_nested_attributes_for :entry_places, allow_destroy: true
   accepts_nested_attributes_for :entry_uses, allow_destroy: true
-  accepts_nested_attributes_for :events, allow_destroy: true
+  accepts_nested_attributes_for :sales, allow_destroy: true
+  accepts_nested_attributes_for :provenance, allow_destroy: true
 
   # list of args to pass to Entry.includes in various places, for fetching a 'complete' entry
   @@includes = [
@@ -79,9 +81,10 @@ class Entry < ActiveRecord::Base
     :entry_scribes => [:scribe],
     :entry_languages => [:language],
     :entry_places => [:place],
-    :events => [
-      {:event_agents => [:agent]}
+    :sales => [
+      {:sale_agents => [:agent]}
     ],
+    :provenance => [:provenance_agent],
     :source => [
       :source_type,
       {:source_agents => [:agent]}
@@ -103,7 +106,7 @@ class Entry < ActiveRecord::Base
   scope :with_author, ->(name) { joins(:entry_authors).where("entry_authors.author_id = #{name.id}").distinct }
 
   # an agent is a Name object; role is a string
-  scope :with_transaction_agent_and_role, ->(agent, role) { joins(:events => :event_agents).where("events.primary = true and event_agents.agent_id = ? and role = ?", agent.id, role) }
+  scope :with_sale_agent_and_role, ->(agent, role) { joins(:sales => :sale_agents).where("sale_agents.agent_id = ? and role = ?", agent.id, role) }
 
   scope :approved_only, -> { where(approved: true) }
 
@@ -151,7 +154,7 @@ class Entry < ActiveRecord::Base
   after_create :update_source_status
 
   def self.where_provenance_includes(name)
-    joins(:events => :event_agents).where(events: { primary: false }).where(event_agents: { agent_id: name.id }).distinct
+    joins(:provenance).where(provenance: { provenance_agent_id: name.id }).distinct
   end
 
   def public_id
@@ -172,44 +175,40 @@ class Entry < ActiveRecord::Base
     get_entries_for_manuscript.count
   end
 
-  def get_transaction
-    events.select { |event| event.primary }.first
+  def get_sale
+    sales.first
   end
 
-  def get_transaction_agent_name(role)
-    t = get_transaction
+  def get_sale_agent_name(role)
+    t = get_sale
     if t
-      ea = t.get_event_agent_with_role(role)
-      if ea && ea.agent
-        return ea.agent.name
+      sa = t.get_sale_agent_with_role(role)
+      if sa && sa.agent
+        return sa.agent.name
       end
     end
   end
 
-  def get_transaction_selling_agent_name
-    get_transaction_agent_name(EventAgent::ROLE_SELLING_AGENT)
+  def get_sale_selling_agent_name
+    get_sale_agent_name(SaleAgent::ROLE_SELLING_AGENT)
   end
 
-  def get_transaction_seller_or_holder_name
-    get_transaction_agent_name(EventAgent::ROLE_SELLER_OR_HOLDER)
+  def get_sale_seller_or_holder_name
+    get_sale_agent_name(SaleAgent::ROLE_SELLER_OR_HOLDER)
   end
 
-  def get_transaction_buyer_name
-    get_transaction_agent_name(EventAgent::ROLE_BUYER)
+  def get_sale_buyer_name
+    get_sale_agent_name(SaleAgent::ROLE_BUYER)
   end
 
-  def get_transaction_sold
-    t = get_transaction
+  def get_sale_sold
+    t = get_sale
     t.sold if t
   end
 
-  def get_transaction_price
-    t = get_transaction
+  def get_sale_price
+    t = get_sale
     t.price if t
-  end
-
-  def provenance
-    events.select { |event| !event.primary }
   end
 
   # returns list of the hashes representing unique Agents found in
@@ -217,19 +216,17 @@ class Entry < ActiveRecord::Base
   # has :name key and optionally an :agent key.
   def unique_provenance_agents
     unique_agents = {}
-    provenance.each do |event|
-      event.event_agents.each do |event_agent|
-        agent = event_agent.agent
-        if agent.present?
-          unique_agents[agent.id] = {
-            agent: agent,
-            name: agent.name
-          }
-        else
-          unique_agents[event_agent.observed_name] = {
-            name: event_agent.observed_name,
-          }
-        end
+    provenance.each do |p|
+      agent = p.provenance_agent
+      if agent.present?
+        unique_agents[agent.id] = {
+          agent: agent,
+          name: agent.name
+        }
+      else
+        unique_agents[p.observed_name] = {
+          name: p.observed_name,
+        }
       end
     end
     unique_agents.values.sort_by { |record| record[:name] }
@@ -237,15 +234,15 @@ class Entry < ActiveRecord::Base
 
   # returns list of provenance names for Solr indexing
   def provenance_names
-    events = provenance
     names = []
-    events.each { |event|
-      event.event_agents.select(&:is_provenance).each { |ea|
-        if ea.agent
-          names << ea.agent.name
-        end
-      }
-    }
+    provenance.each do |provenance_item|
+      if provenance_item.provenance_agent
+        names << provenance_item.provenance_agent.name
+      end
+      if provenance_item.observed_name.present?
+        names << provenance_item.observed_name
+      end
+    end
     names
   end
 
@@ -259,7 +256,7 @@ class Entry < ActiveRecord::Base
   def cumulative_updated_at
     SDBMSS::Util.cumulative_updated_at(
       self,
-      [ :entry_titles, :entry_authors, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_materials, :entry_places, :entry_uses, :events ]
+      [ :entry_titles, :entry_authors, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_materials, :entry_places, :entry_uses, :sales, :provenance ]
     )
   end
 
@@ -274,21 +271,21 @@ class Entry < ActiveRecord::Base
     # because they always hit the db and circumvent the preloading
     # done in with_associations scope.
 
-    transaction = get_transaction
-    transaction_selling_agent = (transaction.get_selling_agent_as_name.name if transaction && transaction.get_selling_agent_as_name)
-    transaction_seller_or_holder = (transaction.get_seller_or_holder_as_name.name if transaction && transaction.get_seller_or_holder_as_name)
-    transaction_buyer = (transaction.get_buyer_as_name.name if transaction && transaction.get_buyer_as_name)
+    sale = get_sale
+    sale_selling_agent = (sale.get_selling_agent_as_name.name if sale && sale.get_selling_agent_as_name)
+    sale_seller_or_holder = (sale.get_seller_or_holder_as_name.name if sale && sale.get_seller_or_holder_as_name)
+    sale_buyer = (sale.get_buyer_as_name.name if sale && sale.get_buyer_as_name)
     {
       id: id,
       manuscript: manuscript ? manuscript.id : nil,
       source_date: SDBMSS::Util.format_fuzzy_date(source.date),
       source_title: source.title,
       source_catalog_or_lot_number: catalog_or_lot_number,
-      transaction_selling_agent: transaction_selling_agent,
-      transaction_seller_or_holder: transaction_seller_or_holder,
-      transaction_buyer: transaction_buyer,
-      transaction_sold: (transaction.sold if transaction),
-      transaction_price: (transaction.get_complete_price_for_display if transaction),
+      sale_selling_agent: sale_selling_agent,
+      sale_seller_or_holder: sale_seller_or_holder,
+      sale_buyer: sale_buyer,
+      sale_sold: (sale.sold if sale),
+      sale_price: (sale.get_complete_price_for_display if sale),
       titles: entry_titles.map(&:title).join("; "),
       authors: entry_authors.map(&:display_value).join("; "),
       dates: entry_dates.map(&:display_value).join("; "),
@@ -371,11 +368,11 @@ class Entry < ActiveRecord::Base
         # source info
         source.display_value,
         catalog_or_lot_number,
-        # transaction
-        get_transaction_selling_agent_name,
-        get_transaction_seller_or_holder_name,
-        get_transaction_buyer_name,
-        get_transaction_price
+        # sale
+        get_sale_selling_agent_name,
+        get_sale_seller_or_holder_name,
+        get_sale_buyer_name,
+        get_sale_price
       ] +
       # details
       entry_titles.map(&:display_value) +
@@ -462,35 +459,35 @@ class Entry < ActiveRecord::Base
       catalog_or_lot_number
     end
 
-    #### Transaction info
+    #### Sale info
 
-    define_field(:string, :transaction_selling_agent, :stored => true) do
-      get_transaction_selling_agent_name
+    define_field(:string, :sale_selling_agent, :stored => true) do
+      get_sale_selling_agent_name
     end
-    define_field(:text, :transaction_selling_agent_search, :stored => true) do
-      get_transaction_selling_agent_name
-    end
-
-    define_field(:string, :transaction_seller, :stored => true) do
-      get_transaction_seller_or_holder_name
-    end
-    define_field(:text, :transaction_seller_search, :stored => true) do
-      get_transaction_seller_or_holder_name
+    define_field(:text, :sale_selling_agent_search, :stored => true) do
+      get_sale_selling_agent_name
     end
 
-    define_field(:string, :transaction_buyer, :stored => true) do
-      get_transaction_buyer_name
+    define_field(:string, :sale_seller, :stored => true) do
+      get_sale_seller_or_holder_name
     end
-    define_field(:text, :transaction_buyer_search, :stored => true) do
-      get_transaction_buyer_name
-    end
-
-    define_field(:string, :transaction_sold, :stored => true) do
-      get_transaction_sold
+    define_field(:text, :sale_seller_search, :stored => true) do
+      get_sale_seller_or_holder_name
     end
 
-    define_field(:double, :transaction_price, :stored => true) do
-      get_transaction_price
+    define_field(:string, :sale_buyer, :stored => true) do
+      get_sale_buyer_name
+    end
+    define_field(:text, :sale_buyer_search, :stored => true) do
+      get_sale_buyer_name
+    end
+
+    define_field(:string, :sale_sold, :stored => true) do
+      get_sale_sold
+    end
+
+    define_field(:double, :sale_price, :stored => true) do
+      get_sale_price
     end
 
     #### Details
@@ -661,11 +658,11 @@ class Entry < ActiveRecord::Base
     define_field(:string, :provenance_date, :stored => true, :multiple => true) do
       # NOTE: this logic is slightly weird, as there may be a start
       # date but no end date, or vice versa.
-      events.map { | event|
+      provenance.map { | provenance_item|
         retval = nil
-        start_date = event.start_date_normalized_start || event.end_date_normalized_start
-        end_date = event.start_date_normalized_end || event.end_date_normalized_end
-        # only take the events with either a start OR end date
+        start_date = provenance_item.start_date_normalized_start || provenance_item.end_date_normalized_start
+        end_date = provenance_item.start_date_normalized_end || provenance_item.end_date_normalized_end
+        # only take the provenance_items with either a start OR end date
         if start_date.present? || end_date.present?
           # make sure they both have values? TODO: this probably isn't
           # right: if only one date exists, we should probably use
@@ -681,10 +678,10 @@ class Entry < ActiveRecord::Base
                end_date.to_i >= SDBMSS::Blacklight::DATE_RANGE_FULL_MIN
               retval = "#{start_date} #{end_date}"
             else
-              Rails.logger.warn "normalized dates for event #{event.id} are out of bounds: #{start_date}, #{end_date}"
+              Rails.logger.warn "normalized dates for provenance #{provenance_item.id} are out of bounds: #{start_date}, #{end_date}"
             end
           else
-            Rails.logger.warn "non-integer date values for event #{event.id}: #{start_date}, #{end_date}"
+            Rails.logger.warn "non-integer date values for provenance #{provenance_item.id}: #{start_date}, #{end_date}"
           end
         end
         retval

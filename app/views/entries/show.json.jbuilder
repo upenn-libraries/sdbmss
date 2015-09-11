@@ -106,22 +106,35 @@ if @entry.entry_uses.present?
   end
 end
 
-if @entry.events.present?
-  json.events @entry.events do |event|
-    json.(event, :id, :primary, :comment, :start_date, :end_date, :currency, :other_currency, :sold)
-    json.price event.price.present? ? ('%.2f' % event.price) : event.price
-    json.start_date_normalized_start SDBMSS::Util.format_fuzzy_date(event.start_date_normalized_start)
-    json.start_date_normalized_end SDBMSS::Util.format_fuzzy_date(event.start_date_normalized_end)
-    json.end_date_normalized_start SDBMSS::Util.format_fuzzy_date(event.end_date_normalized_start)
-    json.end_date_normalized_end SDBMSS::Util.format_fuzzy_date(event.end_date_normalized_end)
-    if event.event_agents.present?
-      json.event_agents event.event_agents do |event_agent|
-        json.(event_agent, :id, :observed_name, :role, :uncertain_in_source, :supplied_by_data_entry)
-        if event_agent.agent
+# structurally in the db, Entry -> Sale is a One -> Many relationship
+# (an artifact of some refactoring) but we provide it as a single hash
+# here, instead of an array with one item.
+if @entry.get_sale.present?
+  json.sale do
+    json.(@entry.get_sale, :id, :date, :price, :currency, :other_currency, :sold)
+    if @entry.get_sale.sale_agents.present?
+      json.sale_agents @entry.get_sale.sale_agents do |sale_agent|
+        json.(sale_agent, :id, :observed_name, :role, :uncertain_in_source, :supplied_by_data_entry)
+        if sale_agent.agent
           json.agent do |agent|
-            json.(event_agent.agent, :id, :name)
+            json.(sale_agent.agent, :id, :name)
           end
         end
+      end
+    end
+  end
+end
+
+if @entry.provenance.present?
+  json.provenance @entry.provenance do |provenance_item|
+    json.(provenance_item, :id, :observed_name, :acquisition_method, :direct_transfer, :comment, :start_date, :end_date, :uncertain_in_source, :supplied_by_data_entry)
+    json.start_date_normalized_start SDBMSS::Util.format_fuzzy_date(provenance_item.start_date_normalized_start)
+    json.start_date_normalized_end SDBMSS::Util.format_fuzzy_date(provenance_item.start_date_normalized_end)
+    json.end_date_normalized_start SDBMSS::Util.format_fuzzy_date(provenance_item.end_date_normalized_start)
+    json.end_date_normalized_end SDBMSS::Util.format_fuzzy_date(provenance_item.end_date_normalized_end)
+    if provenance_item.provenance_agent.present?
+      json.provenance_agent do
+        json.(provenance_item.provenance_agent, :id, :name)
       end
     end
   end

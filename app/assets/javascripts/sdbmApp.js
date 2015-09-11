@@ -353,7 +353,10 @@
         $scope.sdbmutil = sdbmutil;
 
         // this describes the (nested) associations inside an Entry;
-        // we use it, when saving, to identify and remove 'blank' records
+        // we use it, when saving, to identify and remove 'blank'
+        // records, set foreign key ID fields, and rename the keys for
+        // array values to follow the Rails '_attributes' convention
+        // for nested attributes
         $scope.associations = [
             {
                 field: 'entry_titles',
@@ -395,19 +398,21 @@
                 properties: ['use']
             },
             {
-                field: 'events',
-                skipChecking: function(object) {
-                    // skip 'primary' events (always keep them)
-                    return object.primary ? true : false;
-                },
-                properties: ['start_date', 'end_date', 'comment'],
+                field: 'sales',
+                skipChecking: function(object) { return true; },
                 associations: [
                     {
-                        field: 'event_agents',
+                        field: 'sale_agents',
+                        skipChecking: function(object) { return true; },
                         properties: ['observed_name'],
                         foreignKeyObjects: ['agent']
                     }
                 ]
+            },
+            {
+                field: 'provenance',
+                properties: ['start_date', 'end_date', 'comment'],
+                foreignKeyObjects: ['provenance_agent']
             }
         ];
 
@@ -499,15 +504,15 @@
                 }
             });
 
-            if(entry.transaction) {
-                if(entry.transaction.sold) {
-                    if(!sdbmutil.inOptionsArray(entry.transaction.sold, $scope.optionsSold)) {
-                        $scope.badData.push("Bad sold value: '" + entry.transaction.sold + "'");
+            if(entry.sale) {
+                if(entry.sale.sold) {
+                    if(!sdbmutil.inOptionsArray(entry.sale.sold, $scope.optionsSold)) {
+                        $scope.badData.push("Bad sold value: '" + entry.sale.sold + "'");
                     }
                 }
-                if(entry.transaction.currency) {
-                    if(! sdbmutil.inOptionsArray(entry.transaction.currency, $scope.optionsCurrency)) {
-                        $scope.badData.push("Bad currency value: '" + entry.transaction.currency + "'");
+                if(entry.sale.currency) {
+                    if(! sdbmutil.inOptionsArray(entry.sale.currency, $scope.optionsCurrency)) {
+                        $scope.badData.push("Bad currency value: '" + entry.sale.currency + "'");
                     }
                 }
             }
@@ -526,8 +531,8 @@
             }
         };
 
-        // populates angular view models from the Entry object
-        // retrieved via API
+        // does some processing on Entry data structure retrieved via
+        // API so that it can be used with the Angular form bindings
         $scope.populateEntryViewModel = function(entry) {
 
             //console.log("entry from API retrieval");
@@ -545,28 +550,15 @@
             // Transform EventAgent records into buyer, seller,
             // selling_agent fields on the Event, so that UI can bind
             // to that data easily
-            for(var idx in entry.events) {
-                var event = entry.events[idx];
-                for(var idx2 in event.event_agents) {
-                    var event_agent = event.event_agents[idx2];
-                    event[event_agent.role] = event_agent;
+            if(entry.sale && entry.sale.sale_agents) {
+                var sale_agents = entry.sale.sale_agents;
+                for(var idx in sale_agents) {
+                    var sale_agent = sale_agents[idx];
+                    entry.sale[sale_agent.role] = sale_agent;
                 }
-                delete event.event_agents;
+                delete entry.sale.sale_agents;
             }
-
-            entry.provenance = [];
-
-            if(entry.events && entry.events.length > 0) {
-                for(var key in entry.events) {
-                    var event = entry.events[key];
-                    if(event.primary) {
-                        entry.transaction = event;
-                    } else {
-                        entry.provenance.push(event);
-                    }
-                }
-            }
-
+            
             if(!entry.transaction_type) {
                 if(entry.source.source_type.entries_transaction_field !== 'choose') {
                     entry.transaction_type = entry.source.source_type.entries_transaction_field;
@@ -576,22 +568,18 @@
                 }
             }
 
-            if(!entry.transaction) {
-                entry.transaction = {
-                    primary: true,
+            if(!entry.sale) {
+                entry.sale = {
                     sold: null
                 };
-                // prepopulate transaction agent fields with data from source_agents
+                // prepopulate sale agent fields with data from source_agents
                 var sourceAgents = entry.source.source_agents || [];
                 sourceAgents.forEach(function (sourceAgent) {
                     var role = sourceAgent.role;
-                    entry.transaction[role] = {
+                    entry.sale[role] = {
                         agent: sourceAgent.agent
                     };
                 });
-            }
-            if(entry.provenance.length === 0) {
-                entry.provenance.push({});
             }
 
             $scope.sanityCheckFields(entry);
@@ -642,37 +630,34 @@
 
             var entryToSave = new Entry(angular.copy($scope.entry));
 
-            // don't store a transaction if it's not applicable
+            // don't store a sale if it's not applicable
             if(entryToSave.transaction_type === 'no_transaction') {
-                entryToSave.transaction = null;
+                entryToSave.sale = null;
             }
 
-            // collapse Transaction and Provenance back into Events
-            entryToSave.events = [].concat(entryToSave.provenance);
-            delete entryToSave.provenance;
-            if(entryToSave.transaction) {
-                if (entryToSave.transaction.price) {
-                    entryToSave.transaction.price = entryToSave.transaction.price.replace(/[$,]/, '');
+            if(entryToSave.sale) {
+                if(entryToSave.sale.price) {
+                    entryToSave.sale.price = entryToSave.sale.price.replace(/[$,]/, '');
                 }
-                entryToSave.events = entryToSave.events.concat([entryToSave.transaction]);
-                delete entryToSave.transaction;
-            }
-
-            // Transform fields back into EventAgent records
-            entryToSave.events.forEach(function (event, index, array) {
-                event.event_agents = [];
+                // Transform fields back into SaleAgent records
+                entryToSave.sale.sale_agents = [];
                 ["buyer", "selling_agent", "seller_or_holder"].forEach(function (role) {
-                    if(event[role]) {
-                        var event_agent = event[role];
-                        event_agent.role = role;
-                        if(event_agent.agent) {
-                            event_agent.agent_id = event_agent.agent.id;
+                    if(entryToSave.sale[role]) {
+                        var sale_agent = entryToSave.sale[role];
+                        sale_agent.role = role;
+                        if(sale_agent.agent) {
+                            sale_agent.agent_id = sale_agent.agent.id;
+                            delete sale_agent.agent;
                         }
-                        event.event_agents.push(event_agent);
-                        delete event[role];
+                        entryToSave.sale.sale_agents.push(sale_agent);
+                        delete entryToSave.sale[role];
                     }
                 });
-            });
+                entryToSave.sales = [ entryToSave.sale ];
+                delete entryToSave.sale;
+            } else {
+                entryToSave.sales = [];
+            }
 
             // strip out blank objects
             $scope.associations.forEach(function (assoc) {
@@ -698,15 +683,9 @@
                 [ entryToSave.entry_artists, 'artist' ],
                 [ entryToSave.entry_scribes, 'scribe' ],
                 [ entryToSave.entry_languages, 'language' ],
-                [ entryToSave.entry_places, 'place' ]
+                [ entryToSave.entry_places, 'place' ],
+                [ entryToSave.provenance, 'provenance_agent' ]                
             ];
-
-            for(var idx in entryToSave.events) {
-                var event = entryToSave.events[idx];
-                objectArraysWithRelatedObjects.push(
-                    [ event.event_agents, 'agent' ]
-                );
-            }
 
             for(var idx in objectArraysWithRelatedObjects) {
                 var record = objectArraysWithRelatedObjects[idx];
@@ -781,6 +760,7 @@
                 $scope.optionsSold = result.data.sold;
                 $scope.optionsCurrency = result.data.currency;
                 $scope.optionsAltSize = result.data.alt_size;
+                $scope.optionsAcquisitionMethod = result.data.acquisition_method;
 
                 // material needs to be an array of objects that autocomplete can use
                 $scope.optionsMaterial = $.map(result.data.material, function (material) {

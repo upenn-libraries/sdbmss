@@ -1,12 +1,12 @@
 
 require 'sdbmss'
 
-class EventsController < ApplicationController
+class ProvenanceController < ApplicationController
 
   def parse_observed_date
     date_str = params[:date]
 
-    date_start, date_end = Event.parse_observed_date(date_str)
+    date_start, date_end = Provenance.parse_observed_date(date_str)
 
     respond_to do |format|
       format.json {

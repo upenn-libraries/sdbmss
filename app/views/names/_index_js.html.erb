@@ -110,8 +110,14 @@
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
+                title: 'As Sale Agent',
+                dbSortField: 'sale_agents_count'
+            },
+            {
+                sdbmssMinWidth: "90px",
+                sdbmssMaxWidth: "90px",
                 title: 'As Prov Agent',
-                dbSortField: 'event_agents_count'
+                dbSortField: 'provenance_count'
             },
             {
                 sdbmssMinWidth: "90px",
@@ -139,7 +145,8 @@
              result.artists_count,
              result.scribes_count,
              result.source_agents_count,
-             result.event_agents_count,
+             result.sale_agents_count,
+             result.provenance_count,
              result.reviewed.toString(),
              result.created_by || ""
          ];

@@ -69,13 +69,10 @@ RSpec.configure do |config|
   config.before(:all) do
     DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.start
-    SDBMSS::SeedData.create
-    SDBMSS::Mysql.create_functions
-  end
-
-  config.after(:all) do
     DatabaseCleaner.clean
     Sunspot::remove_all!
+    SDBMSS::SeedData.create
+    SDBMSS::Mysql.create_functions
   end
 
 end

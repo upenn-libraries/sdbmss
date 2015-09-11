@@ -73,9 +73,9 @@ module CatalogControllerConfiguration
 
       config.add_facet_field 'author', :label => 'Author', :collapse => false, :limit => 3
       config.add_facet_field 'title', :label => 'Title', :collapse => false, :limit => 3
-      config.add_facet_field 'transaction_seller', :label => 'Seller', :collapse => false, :limit => 3
-      config.add_facet_field 'transaction_selling_agent', :label => 'Selling Agent', :collapse => false, :limit => 3
-      config.add_facet_field 'transaction_buyer', :label => 'Buyer', :collapse => false, :limit => 3
+      config.add_facet_field 'sale_seller', :label => 'Seller', :collapse => false, :limit => 3
+      config.add_facet_field 'sale_selling_agent', :label => 'Selling Agent', :collapse => false, :limit => 3
+      config.add_facet_field 'sale_buyer', :label => 'Buyer', :collapse => false, :limit => 3
       config.add_facet_field 'institution', :label => 'Institution', :collapse => false, :limit => 3
       config.add_facet_field 'source_display', :label => 'Source', :collapse => false, :limit => 3
       config.add_facet_field 'source_type', :label => 'Source Type', :collapse => false, :limit => 3
@@ -158,17 +158,17 @@ module CatalogControllerConfiguration
 
       config.add_search_field('selling_agent') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'transaction_selling_agent_search' }
+        field.solr_local_parameters = { :qf => 'sale_selling_agent_search' }
       end
 
       config.add_search_field('seller') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'transaction_seller_search' }
+        field.solr_local_parameters = { :qf => 'sale_seller_search' }
       end
 
       config.add_search_field('buyer') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'transaction_buyer_search' }
+        field.solr_local_parameters = { :qf => 'sale_buyer_search' }
       end
 
       config.add_search_field('catalog_or_lot_number') do |field|
@@ -299,7 +299,7 @@ module CatalogControllerConfiguration
       config.add_search_field('price') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'transaction_price' }
+        field.solr_local_parameters = { :qf => 'sale_price' }
       end
 
       config.add_search_field('provenance_date', label: "Provenance Date") do |field|

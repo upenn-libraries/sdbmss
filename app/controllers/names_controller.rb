@@ -22,7 +22,8 @@ class NamesController < ManageModelsController
       artists_count: obj.artists_count || 0,
       scribes_count: obj.scribes_count || 0,
       source_agents_count: obj.source_agents_count || 0,
-      event_agents_count: obj.event_agents_count || 0,
+      sale_agents_count: obj.sale_agents_count || 0,
+      provenance_count: obj.provenance_count || 0,
       is_artist: obj.is_artist,
       is_author: obj.is_author,
       is_provenance_agent: obj.is_provenance_agent,
@@ -89,7 +90,8 @@ class NamesController < ManageModelsController
        (object.artists_count || 0) > 0 ||
        (object.scribes_count || 0) > 0 ||
        (object.source_agents_count || 0) > 0 ||
-       (object.event_agents_count || 0) > 0
+       (object.sale_agents_count || 0) > 0 ||
+       (object.provenance_count || 0) > 0
       deletable = false
     end
     deletable
