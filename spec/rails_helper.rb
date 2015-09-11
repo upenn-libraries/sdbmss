@@ -75,4 +75,20 @@ RSpec.configure do |config|
     SDBMSS::Mysql.create_functions
   end
 
+  # This is commented out b/c it seems the browser doesn't always hang
+  # around long enough after each scenario to capture a screenshot:
+  # many failures generate blank screenshot images.
+  #
+  # config.after(:each) do |scenario|
+  #   if scenario.exception && scenario.metadata[:js]
+  #     meta = scenario.metadata
+  #     filename = File.basename(meta[:file_path])
+  #     line_number = meta[:line_number]
+  #     screenshot_name = "screenshot-#{filename}-#{line_number}.png"
+  #     screenshot_path = "#{Rails.root.join("tmp")}/#{screenshot_name}"
+  #     page.save_screenshot(screenshot_path, :full => true)
+  #     puts meta[:full_description] + "\n Screenshot: #{screenshot_path}"
+  #   end
+  # end
+
 end
