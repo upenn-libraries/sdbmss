@@ -273,7 +273,7 @@ solr, and a delayed_job worker).
 
       ServerName sdbmdev.library.upenn.edu
       ServerAlias sdbmdev
-      ServerAdmin jeffchiu@upenn.edu
+      ServerAdmin sdbm@pobox.upenn.edu
 
       ProxyPass /favicon.ico !
       ProxyPass /assets !
