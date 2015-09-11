@@ -112,12 +112,19 @@
             </thead>
             <tbody>
 
-                <% @manuscript.all_provenance.each do |provenance| %>
+                <% @manuscript.all_provenance_grouped_by_name.each do |record| %>
+                    <% name, provenance_list = record %>
                 <tr>
-                    <td class="col-sm-2 text-right record-label"><%= format_fuzzy_date(provenance.start_date)||"(no date)" %></td>
+                    <td class="col-sm-2 text-right record-label"><%= name %></td>
                     <td class="col-sm-10">
-                        <a href="<%= url_for provenance.entry %>"><%= provenance.entry.public_id %></a>:
-                        <%= render partial: "shared/provenance_name", locals: { provenance: provenance } %>
+                        <% provenance_list.each do |provenance| %>
+                            <% entry = provenance.entry %>
+                            <a href="<%= url_for entry %>"><%= entry.public_id %></a>: <%= entry.display_value %>
+                            <% if provenance.observed_name.present? && provenance.observed_name != name %>
+                                (as <%= provenance.observed_name %>)
+                            <% end %>
+                            <br/>
+                        <% end %>
                     </td>
                 </tr>
                 <% end %>

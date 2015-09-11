@@ -15,11 +15,26 @@ class Manuscript < ActiveRecord::Base
   include HasPaperTrail
   include CreatesActivity
 
-  # returns all the Provenance objects associated with EVERY entry for this MS
-  def all_provenance
-    # TODO: how to make sure they're "unique" since these records are
-    # complex? maybe we don't do that.
-    Provenance.where(entry_id: linked_entries).order(start_date: :desc, entry_id: :desc)
+  # Fetches the Provenance records for ALL entries for this MS, and
+  # returns an array of 2-item arrays of name string and array of
+  # provenance records containing that name. ie:
+  #
+  # [
+  #  [ 'Joe', [ Provenance #1, Provenance #2 ] ],
+  #  [ 'Bob', [ Provenance #2, Provenance #3 ] ],
+  # ]
+  def all_provenance_grouped_by_name
+    groups = Hash.new
+    Provenance.where(entry_id: linked_entries).order(start_date: :desc, entry_id: :desc).each do |provenance|
+      name = provenance.provenance_agent.present? ? provenance.provenance_agent.name : provenance.observed_name
+      if name.present?
+        if groups[name] == nil
+          groups[name] = []
+        end
+        groups[name] << provenance
+      end
+    end
+    groups.sort { |a,b| a[0].downcase <=> b[0].downcase }
   end
 
   def public_id
