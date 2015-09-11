@@ -447,7 +447,7 @@ describe "Data entry", :js => true do
 
       first(".save-button").click
 
-      sleep(1)
+      sleep(1.5)
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
     end

@@ -170,7 +170,20 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_content(user.username)
   end
 
-  it "should load show Manuscript page"
+  it "should load show Manuscript page" do
+    # randomly link 2 entries together in a MS
+    entries = Entry.last(2)
+    ms = Manuscript.create!(
+      entry_manuscripts_attributes: [
+        { entry_id: entries[0].id, relation_type: EntryManuscript::TYPE_RELATION_IS },
+        { entry_id: entries[1].id, relation_type: EntryManuscript::TYPE_RELATION_IS },
+      ]
+    )
+
+    visit manuscript_path(ms)
+
+    expect(page).to have_content(ms.public_id)
+  end
 
   it "should bookmark an Entry and remove it" do
     visit new_user_session_path
