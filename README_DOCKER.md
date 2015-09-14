@@ -2,8 +2,7 @@
 Running SDBM using Docker
 =========================
 
-These are some preliminary instructions on running the SDBM app in a
-multi-container configuration using docker-compose. Important notes:
+Things to know:
 
 - docker-compose is
   ["not yet considered production-ready"](https://docs.docker.com/compose/production/)
@@ -15,7 +14,8 @@ multi-container configuration using docker-compose. Important notes:
   same ports on the host, so none of these processes should already be
   running on the host.
 
-- for persistent storage, we map volumes to directories on the host.
+- for persistent storage, we map volumes to directories on the host
+  (we do not use data containers).
 
 Step 1: Initialize databases and create user accounts
 ----------------------------------------------------
@@ -55,11 +55,15 @@ Step 1: Initialize databases and create user accounts
 
   Type \q to quit the client when you're done.
 
+Step 2: Load data into the database
+-----------------------------------
+
+You can either load data by migrating it from the legacy database
+(step 2a) OR by loading a .sql file containing already-migrated data
+(step 2b).
+
 Step 2a: Migrate legacy data
 ----------------------------
-
-NOTE: If you have an already migrated database that you want to load,
-do step 2b instead.
 
 * This step MUST be done on the development virtual machine (VM) set
   up by Libraries IT for this project's use:
@@ -146,6 +150,10 @@ migration task ("rake db:migrate"), you can spin up a new container:
   docker-compose run rails rake db:migrate
   ```
 
+Note that you use docker-compose here (rather than just docker) so
+that the container has the appropriate mount points and network
+connections to other containerized processes.
+
 Running The Test Suite
 ----------------------
 
@@ -153,4 +161,40 @@ Running The Test Suite
 
   ```
   docker-compose run -e SOLR_URL=http://solr:8983/solr/test rails bundle exec rspec
+  ```
+
+Deploying to the Staging (Dev VM) Server
+----------------------------------------
+
+See [README_STAGING.md](README_STAGING.md) for details on how the
+staging environment works. The instructions here are for how to deploy
+to it.
+
+* Run "ssh-add" to add your key to your ssh agent. This key should
+  already be registered with Github, so that capistrano can use it
+  (via ssh forwarding) to access the Github repo from the staging
+  server. This needs to happen for the next step to work.
+
+* Run capistrano, via the container, to deploy the latest code to the
+  staging server. This will perform a number of tasks on staging,
+  including putting a copy of the code in /var/www/sdbmss/current,
+  updating the solr configuration and restarting it, and restarting
+  the unicorn server.
+
+  ```
+  cd ~/sdbmss
+  docker run -it -v $(readlink -f $SSH_AUTH_SOCK):/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent 597d4def585a bundle exec cap staging deploy
+  ```
+
+  Note that we use docker rather than docker-compose to run this
+  command, because docker-compose won't allow us to to mount the
+  /ssh-agent file via the command line.
+
+* Note that capistrano does not run database migrations, so if you
+  created any, you'll need to run them manually on staging afterwards:
+ 
+  ```
+  # Do this on staging
+  cd ~/sdbmss/current
+  bundle exec rake db:migrate
   ```
