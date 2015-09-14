@@ -183,7 +183,7 @@ to it.
 
   ```
   cd ~/sdbmss
-  docker run -it -v $(readlink -f $SSH_AUTH_SOCK):/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent 597d4def585a bundle exec cap staging deploy
+  docker run -it -v $(readlink -f $SSH_AUTH_SOCK):/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent sdbmss_rails bundle exec cap staging deploy
   ```
 
   Note that we use docker rather than docker-compose to run this
