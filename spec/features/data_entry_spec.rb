@@ -429,6 +429,7 @@ describe "Data entry", :js => true do
 
       fill_in 'provenance_observed_name_0', with: 'Somebody, Joe'
       fill_autocomplete_select_or_create_entity 'provenance_agent_0', with: 'Somebody, Joseph'
+      click_certainty_flag('provenance_certainty_flags_0')
       fill_in 'provenance_start_date_0', with: '1945-06-15'
       fill_in 'provenance_end_date_0', with: '1965-11-23'
       check 'provenance_direct_transfer_0'
@@ -522,6 +523,7 @@ describe "Data entry", :js => true do
       provenance = entry.provenance.first
       expect(provenance.observed_name).to eq('Somebody, Joe')
       expect(provenance.provenance_agent.name).to eq('Somebody, Joseph')
+      expect(provenance.uncertain_in_source).to be_truthy
       expect(provenance.start_date).to eq('1945-06-15')
       expect(provenance.end_date).to eq('1965-11-23')
       expect(provenance.start_date_normalized_start).to eq('1945-06-15')
