@@ -293,7 +293,7 @@ class Entry < ActiveRecord::Base
       scribes: entry_scribes.map(&:display_value).join("; "),
       languages: entry_languages.map(&:language).map(&:name).join("; "),
       materials: entry_materials.map(&:material).join("; "),
-      places: entry_places.map(&:place).map(&:name).join("; "),
+      places: entry_places.map(&:display_value).join("; "),
       uses: entry_uses.map(&:use).join("; "),
       folios: folios,
       num_columns: num_columns,

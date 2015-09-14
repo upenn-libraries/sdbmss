@@ -407,6 +407,7 @@ describe "Data entry", :js => true do
       fill_autocomplete_select_or_create_entity 'scribe_0', with: 'Brother Francis'
       fill_autocomplete_select_or_create_entity 'language_0', with: 'Latin'
       fill_autocomplete_select_or_create_entity 'material_0', with: 'Parchment'
+      fill_in 'place_observed_name_0', with: 'Somewhere in Italy'
       fill_autocomplete_select_or_create_entity 'place_0', with: 'Italy'
       fill_in 'use_0', with: 'Some mysterious office or other'
 
@@ -492,6 +493,10 @@ describe "Data entry", :js => true do
 
       entry_material = entry.entry_materials.first
       expect(entry_material.material).to eq('Parchment')
+
+      entry_place = entry.entry_places.first
+      expect(entry_place.observed_name).to eq('Somewhere in Italy')
+      expect(entry_place.place.name).to eq('Italy')
 
       entry_use = entry.entry_uses.first
       expect(entry_use.use).to eq('Some mysterious office or other')
@@ -997,6 +1002,7 @@ describe "Data entry", :js => true do
 
       first(".save-button").click
 
+      sleep(1)
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
       manuscript = Manuscript.find(manuscript_id)

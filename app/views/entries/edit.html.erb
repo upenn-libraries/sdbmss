@@ -428,9 +428,15 @@ label.col-sm-2-and-half {
       <label class="col-sm-2 control-label">
             <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_places)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_places, entry_place)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-          <span sdbm-tooltip="entry_place">Place</span>
+          <span sdbm-tooltip="entry_place">Place As Recorded</span>
       </label>
       <div class="col-sm-5">
+          <input id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name">
+      </div>
+      <label class="col-sm-1 control-label">
+            <span sdbm-tooltip="entry_place">Place</span>
+      </label>
+      <div class="col-sm-4">
           <div class="input-group">
               <input id="place_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
               <div id="place_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_place"><span class="glyphicon"></span></div>

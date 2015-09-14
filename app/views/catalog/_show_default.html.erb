@@ -241,7 +241,7 @@
             <td class="col-sm-2 text-right record-label" colspan="2">Places</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_places.each do |entry_place| %>
-                <%= entry_place %><br/>
+                <%= entry_place.display_value %><br/>
                 <% end %>
             </td>
         </tr>

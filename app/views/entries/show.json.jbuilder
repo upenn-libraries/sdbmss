@@ -91,7 +91,7 @@ end
 
 if @entry.entry_places.present?
   json.entry_places @entry.entry_places do |entry_place|
-    json.(entry_place, :id, :uncertain_in_source, :supplied_by_data_entry)
+    json.(entry_place, :id, :observed_name, :uncertain_in_source, :supplied_by_data_entry)
     if entry_place.place
       json.place do
         json.(entry_place.place, :id, :name)

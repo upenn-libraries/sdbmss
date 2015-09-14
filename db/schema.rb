@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150909180416) do
+ActiveRecord::Schema.define(version: 20150914190148) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",  limit: 255, null: false
@@ -223,8 +223,9 @@ ActiveRecord::Schema.define(version: 20150909180416) do
     t.integer  "place_id",               limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "uncertain_in_source",              default: false
-    t.boolean  "supplied_by_data_entry",           default: false
+    t.boolean  "uncertain_in_source",                default: false
+    t.boolean  "supplied_by_data_entry",             default: false
+    t.string   "observed_name",          limit: 255
   end
 
   add_index "entry_places", ["entry_id"], name: "index_entry_places_on_entry_id", using: :btree

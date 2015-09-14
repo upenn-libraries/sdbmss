@@ -391,6 +391,7 @@
             },
             {
                 field: 'entry_places',
+                properties: ['observed_name'],
                 foreignKeyObjects: ['place']
             },
             {

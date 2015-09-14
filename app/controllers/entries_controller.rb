@@ -284,7 +284,7 @@ class EntriesController < ManageModelsController
       :entry_scribes_attributes => [ :id, :observed_name, :scribe_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_languages_attributes => [ :id, :language_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_materials_attributes => [ :id, :material, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_places_attributes => [ :id, :place_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_places_attributes => [ :id, :observed_name, :place_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_uses_attributes => [ :id, :use, :_destroy ],
       :sales_attributes  => [
         :id, :date, :sold, :price, :currency, :other_currency, :_destroy,

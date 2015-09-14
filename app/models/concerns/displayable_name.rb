@@ -5,12 +5,13 @@ module DisplayableName
 
   extend ActiveSupport::Concern
 
-  def display_value(name_obj)
+  # 'obj' arg should be a Model object with a 'name' property
+  def display_value(obj)
     case
-    when name_obj && observed_name
-      "#{name_obj.name} (#{observed_name})"
-    when name_obj
-      "#{name_obj.name}"
+    when obj && observed_name
+      "#{obj.name} (#{observed_name})"
+    when obj
+      "#{obj.name}"
     when observed_name
       "#{observed_name}"
     else
