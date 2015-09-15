@@ -646,6 +646,8 @@ describe "Data entry", :js => true do
 
       entry = Entry.last
 
+      old_title = entry.entry_titles.first.title
+
       visit edit_entry_path :id => entry.id
 
       fill_in 'title_0', with: 'Changed Book'
@@ -656,19 +658,11 @@ describe "Data entry", :js => true do
 
       entry.reload
 
-      changesets = EntryHistory.new(entry).changesets
+      visit history_entry_path :id => entry.id
 
-      expect(changesets.count).to eq(2)
-
-      expect(changesets[0].changes[0].change_type).to eq("update")
-      expect(changesets[0].changes[0].object_class).to eq("Entry")
-      expect(changesets[0].changes[0].field).to eq("updated_by_id")
-      expect(changesets[0].changes[0].values).to eq([nil, @user.id])
-
-      expect(changesets[0].changes[1].change_type).to eq("update")
-      expect(changesets[0].changes[1].object_class).to eq("EntryTitle")
-      expect(changesets[0].changes[1].field).to eq("title")
-      expect(changesets[0].changes[1].values).to eq(["Book of Hours", "Changed Book"])
+      # should display in 3rd row
+      expect(all(:xpath, "//tr")[2].all(:xpath, ".//td")[2].text).to eq("changed Title")
+      expect(all(:xpath, "//tr")[2].all(:xpath, ".//td")[3].text).to eq("Title: from #{old_title} to Changed Book")
     end
 
     it "should pre-populate transaction_type on Edit page" do

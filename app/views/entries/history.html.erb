@@ -1,49 +1,48 @@
 <h1>History of changes to <%= @entry.public_id %></h1>
 
-<p>TODO: This is unfinished and probably inaccurate.</p>
-
-<% changesets = EntryHistory.new(@entry).changesets %>
+<% changesets = ModelHistory.new(@entry).changesets %>
 <% legacy = EntryChange.where(entry_id: @entry.id).order(change_date: :desc) %>
 <% if changesets.count > 0 || legacy.count > 0 %>
-<table class="table"> 
+<table class="table">
     <thead>
         <tr>
-            <th>Date</th>
-            <th>User</th>
-            <th>Change Type</th>
-            <th>Field</th>
-            <th>Old Value</th>
-            <th>New Value</th>
+            <th width="15%">Date</th>
+            <th width="15%">User</th>
+            <th width="20%">Action</th>
+            <th width="25%">Details</th>
+            <th width="25%"></th>
         </tr>
     </thead>
     <tbody>
         <% changesets.each do |changeset| %>
         <tr>
-            <td><%= changeset.date %></td>
+            <td><%= changeset.date.to_formatted_s(:date_and_time) %></td>
             <td><%= changeset.user %></td>
             <td></td>
             <td></td>
-            <td></td>
-            <td></td>
         </tr>
-        <% changeset.changes.each do |change| %>
-        <tr>
-            <td></td>
-            <td></td>
-            <td><%= change.change_type %> <%= change.object_class %></td>
-            <td><%= change.field %></td>
-            <td><%= change.values.first %></td>
-            <td><%= change.values.second %></td>
-        </tr> 
-        <% end %>
+        <% changeset.versions.each do |version| %>
+            <% formatter = EntryVersionFormatter.new(version) %>
+                <% if formatter.details.count > 0 %>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td><%= formatter.action %></td>
+                            <td colspan="2">
+                                <% formatter.details.each do |detail| %>
+                                    <%= detail %></br>
+                                <% end %>
+                            </td>
+                    </tr>
+            <% end %>
+            <% end %>
         <% end %>
 
         <% legacy.each do |entry_change| %>
         <tr>
             <td><%= entry_change.change_date.to_formatted_s(:date_and_time) %></td>
             <td><%= entry_change.changed_by.username %></td>
-            <td><%= entry_change.change_type %></td>
-            <td><%= entry_change.column %></td>
+            <td><%= entry_change.change_type %> <%= entry_change.column %></td>
             <td><%= entry_change.changed_from %></td>
             <td><%= entry_change.changed_to %></td>
         </tr>
