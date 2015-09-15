@@ -6,6 +6,11 @@ class EntryVersionFormatter
   attr_reader :version
 
   IGNORE_FIELDS = [
+    'Sale.id',
+    'Sale.entry_id',
+    'SaleAgent.id',
+    'SaleAgent.sale_id',
+    'Entry.id',
     'Entry.touch_count',
     'Entry.updated_by_id',
     'EntryArtist.id',
@@ -30,10 +35,13 @@ class EntryVersionFormatter
     'EntryTitle.entry_id',
     'EntryUse.id',
     'EntryUse.entry_id',
+    'Provenance.id',
+    'Provenance.entry_id',
   ]
 
   def initialize(version)
     @version = version
+    @details = nil
   end
 
   # returns string
@@ -60,29 +68,37 @@ class EntryVersionFormatter
 
   # returns an array of strings
   def details
-    details = []
-    if version.event == 'update'
-      version.changeset.each do |field, values|
-        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}")
-          details << "#{field.titlecase}: from #{values[0] || "(blank)"} to #{values[1]}"
+    # cache 'details' b/c this method gets called several times
+    if @details == nil
+
+      # TODO: for FK fields to things like names, we should display
+      # something more meaningful than just numeric ID
+
+      details = []
+      if version.event == 'update'
+        version.changeset.each do |field, values|
+          if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}")
+            details << "#{field.titlecase}: from #{values[0] || "(blank)"} to #{values[1]}"
+          end
+        end
+      elsif version.event == 'create'
+        version.changeset.each do |field, values|
+          value = values[1]
+          if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
+            details << "#{field.titlecase}: #{value}"
+          end
+        end
+      elsif version.event == 'destroy'
+        obj = version.reify
+        obj.attributes.each do |field, value|
+          if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
+            details << "#{field.titlecase}: #{value}"
+          end
         end
       end
-    elsif version.event == 'create'
-      version.changeset.each do |field, values|
-        value = values[1]
-        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
-          details << "#{field.titlecase}: #{value}"
-        end
-      end
-    elsif version.event == 'destroy'
-      obj = version.reify
-      obj.attributes.each do |field, value|
-        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
-          details << "#{field.titlecase}: #{value}"
-        end
-      end
+      @details = details
     end
-    details
+    @details
   end
 
 end
