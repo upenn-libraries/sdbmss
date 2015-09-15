@@ -1,6 +1,8 @@
 
 class Provenance < ActiveRecord::Base
 
+  include HasPaperTrail
+
   belongs_to :entry
   belongs_to :provenance_agent, class_name: 'Name', counter_cache: :provenance_count
 
