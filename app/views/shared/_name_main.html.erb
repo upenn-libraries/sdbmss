@@ -71,15 +71,15 @@
                     <td class="col-sm-10">
 
                         <% if count_selling_agent > 0 %>
-                        This agent is the selling agent in <a href="<%= search_by_facet_value('transaction_selling_agent', name.name) %>"><%= count_selling_agent %> entries</a>.<br/>
+                        This agent is the selling agent in <a href="<%= search_by_facet_value('sale_selling_agent', name.name) %>"><%= count_selling_agent %> entries</a>.<br/>
                         <% end %>
 
                         <% if count_seller_or_holder > 0 %>
-                        This agent is the seller in <a href="<%= search_by_facet_value('transaction_seller', name.name) %>"><%= count_seller_or_holder %> entries</a>.<br/>
+                        This agent is the seller in <a href="<%= search_by_facet_value('sale_seller', name.name) %>"><%= count_seller_or_holder %> entries</a>.<br/>
                         <% end %>
                         
                         <% if count_buyer > 0 %>
-                        This agent is the buyer in <a href="<%= search_by_facet_value('transaction_buyer', name.name) %>"><%= count_buyer %> entries</a>.
+                        This agent is the buyer in <a href="<%= search_by_facet_value('sale_buyer', name.name) %>"><%= count_buyer %> entries</a>.
                         <% end %>
                     </td>
                 </tr>
