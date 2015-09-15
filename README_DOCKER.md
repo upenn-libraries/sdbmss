@@ -147,12 +147,23 @@ to run in one of the containers. For example, to run the Rails
 migration task ("rake db:migrate"), you can spin up a new container:
 
   ```
-  docker-compose run rails rake db:migrate
+  docker-compose run rails bundle exec rake db:migrate
   ```
 
 Note that you use docker-compose here (rather than just docker) so
 that the container has the appropriate mount points and network
 connections to other containerized processes.
+
+Alternatively, you can start a shell and run commands in a more
+natural way without having to 'wrap' your command using
+docker-compose:
+
+  ```
+  # run a shell inside the container
+  docker-compose run rails /bin/bash
+  # once in the new shell, you can run your commands as normal
+  bundle exec rake db:migrate
+  ```
 
 Running The Test Suite
 ----------------------
