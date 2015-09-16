@@ -2,13 +2,17 @@
 Running SDBM using Docker
 =========================
 
-Things to know:
+This instructions are for running the SDBM application in development.
 
-- docker-compose is
+Things to know / known issues:
+
+- Need to figure out how all this would work in production, including
+  how Apache would fit in. docker-compose is
   ["not yet considered production-ready"](https://docs.docker.com/compose/production/)
-  so this is only intended as a proof of concept of Docker usage for
-  development.  We would need to figure out how all this would work in
-  production, including how Apache would fit in.
+
+- docker-compose orchestrates processes, but doesn't manage them,
+  ie. restart them if they die. If a process dies, docker-compose will
+  stop the entire group. Need a way to do process management.
 
 - this setup maps the standard ports used by MySQL, Solr, Rails to the
   same ports on the host, so none of these processes should already be
@@ -16,6 +20,8 @@ Things to know:
 
 - for persistent storage, we map volumes to directories on the host
   (we do not use data containers).
+
+- need a way to sync user IDs inside containers to IDs outside.
 
 Step 1: Initialize databases and create user accounts
 ----------------------------------------------------
