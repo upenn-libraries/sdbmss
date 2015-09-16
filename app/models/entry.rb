@@ -33,26 +33,26 @@ class Entry < ActiveRecord::Base
   # entries have institution/collection for "Other published sources" only
   belongs_to :institution, class_name: "Name"
 
-  has_many :entry_manuscripts, inverse_of: :entry
+  has_many :entry_manuscripts, inverse_of: :entry, dependent: :destroy
   has_many :manuscripts, through: :entry_manuscripts
-  has_many :entry_titles, inverse_of: :entry
-  has_many :entry_authors, inverse_of: :entry
+  has_many :entry_titles, inverse_of: :entry, dependent: :destroy
+  has_many :entry_authors, inverse_of: :entry, dependent: :destroy
   has_many :authors, through: :entry_authors
-  has_many :entry_dates, inverse_of: :entry
-  has_many :entry_artists, inverse_of: :entry
+  has_many :entry_dates, inverse_of: :entry, dependent: :destroy
+  has_many :entry_artists, inverse_of: :entry, dependent: :destroy
   has_many :artists, through: :entry_artists
-  has_many :entry_scribes, inverse_of: :entry
+  has_many :entry_scribes, inverse_of: :entry, dependent: :destroy
   has_many :scribes, through: :entry_scribes
-  has_many :entry_languages, inverse_of: :entry
+  has_many :entry_languages, inverse_of: :entry, dependent: :destroy
   has_many :languages, through: :entry_languages
-  has_many :entry_materials, inverse_of: :entry
-  has_many :entry_places, inverse_of: :entry
+  has_many :entry_materials, inverse_of: :entry, dependent: :destroy
+  has_many :entry_places, inverse_of: :entry, dependent: :destroy
   has_many :places, through: :entry_places
-  has_many :entry_uses, inverse_of: :entry
-  has_many :entry_comments
+  has_many :entry_uses, inverse_of: :entry, dependent: :destroy
+  has_many :entry_comments, dependent: :destroy
   has_many :comments, through: :entry_comments
-  has_many :sales, inverse_of: :entry
-  has_many :provenance, inverse_of: :entry
+  has_many :sales, inverse_of: :entry, dependent: :destroy
+  has_many :provenance, inverse_of: :entry, dependent: :destroy
 
   accepts_nested_attributes_for :entry_titles, allow_destroy: true
   accepts_nested_attributes_for :entry_authors, allow_destroy: true

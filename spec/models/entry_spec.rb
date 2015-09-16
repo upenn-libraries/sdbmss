@@ -44,4 +44,15 @@ describe Entry do
 
   end
 
+  describe "CRUD operations" do
+
+    it "should delete properly" do
+      # this exercises cascading deletes and FK constraints
+      Entry.all.each do |entry|
+        entry.destroy!
+      end
+    end
+
+  end
+
 end
