@@ -33,6 +33,8 @@ class Entry < ActiveRecord::Base
   # entries have institution/collection for "Other published sources" only
   belongs_to :institution, class_name: "Name"
 
+  belongs_to :superceded_by, class_name: "Entry"
+
   has_many :entry_manuscripts, inverse_of: :entry, dependent: :destroy
   has_many :manuscripts, through: :entry_manuscripts
   has_many :entry_titles, inverse_of: :entry, dependent: :destroy
@@ -315,7 +317,8 @@ class Entry < ActiveRecord::Base
       created_by: (created_by.username if created_by),
       updated_at: updated_at ? updated_at.to_formatted_s(:date_and_time) : nil,
       updated_by: (updated_by.username if updated_by),
-      approved: approved
+      approved: approved,
+      deprecated: deprecated
     }
   end
 
@@ -644,6 +647,7 @@ class Entry < ActiveRecord::Base
     define_field(:date, :updated_at, :stored => true) { updated_at }
     define_field(:string, :updated_by, :stored => true) { updated_by }
     define_field(:boolean, :approved, :stored => true) { approved }
+    define_field(:boolean, :deprecated, :stored => true) { deprecated }
 
     #### Provenance
 

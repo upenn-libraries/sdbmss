@@ -41,6 +41,7 @@ Rails.application.routes.draw do
       get 'types'
     }
     member {
+      post 'deprecate'
       get 'history'
       get 'similar'
       get 'manuscript_candidates'

@@ -93,4 +93,21 @@ describe "Manage entries", :js => true do
     expect(@unapproved_entry.approved_by_id).to eq(@user.id)
   end
 
+  it "should mark entry as deprecated" do
+
+    expect(Entry.where(deprecated: true).count).to be(0)
+
+    visit entries_path
+    first(".entry-deprecate-link").click
+
+    superceded_by_id = Entry.first.id
+    fill_in 'superceded_by_id', :with => superceded_by_id
+    find("#deprecate").click
+    sleep(1)
+    expect(page).to have_content("Entry marked as deprecated.")
+
+    entry = Entry.find_by(deprecated: true)
+    expect(entry.superceded_by_id).to be(superceded_by_id)
+  end
+
 end

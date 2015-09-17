@@ -507,6 +507,12 @@ var SDBM = SDBM || {};
                     sdbmssMaxWidth: "130px",
                     title: 'Is Approved',
                     sdbmssSortField: 'approved'
+                },
+                {
+                    sdbmssMinWidth: "130px",
+                    sdbmssMaxWidth: "130px",
+                    title: 'Deprecated',
+                    sdbmssSortField: 'deprecated'
                 }
             ]
         };
@@ -602,10 +608,11 @@ var SDBM = SDBM || {};
                             result.created_by,
                             result.updated_at,
                             result.updated_by,
-                            result.approved
+                            result.approved,
+                            result.deprecated
                         ];
                     });
-
+                    
                     // pad data with null entries so that columns are aligned
                     var columnsToPrepend = [];
                     if(sdbmTableInstance.options.prependColumns) {

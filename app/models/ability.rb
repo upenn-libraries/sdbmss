@@ -52,6 +52,7 @@ class Ability
 
     if ['editor', 'admin'].member? user.role
       can :edit, Entry
+      can :deprecate, Entry
       [Entry, Sale, Language, Manuscript, Name, Place, Source].each do |clazz|
         can :merge, clazz
       end

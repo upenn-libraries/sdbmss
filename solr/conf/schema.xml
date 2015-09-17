@@ -374,6 +374,7 @@
     <field name="updated_by" stored="true" type="string" multiValued="false" indexed="true"/>
 
     <field name="approved" stored="true" type="boolean" multiValued="false" indexed="true"/>    
+    <field name="deprecated" stored="true" type="boolean" multiValued="false" indexed="true"/>
 
 </fields>
   

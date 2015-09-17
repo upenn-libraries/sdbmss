@@ -74,7 +74,7 @@ module ApplicationHelper
   end
 
   def show_linking_tool_by_entry?
-    user_signed_in? && @document.present? && (entry = @document.model_object).present? && !entry.manuscript.present? && can?(:link, entry)
+    user_signed_in? && @document.present? && (entry = @document.model_object).present? && !entry.manuscript.present? && can?(:link, entry) && !entry.deprecated
   end
 
   def show_linking_tool_by_manuscript?

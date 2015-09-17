@@ -677,6 +677,22 @@ label.col-sm-2-and-half {
             </div>
         </div>
 
+        <div class="form-group row" ng-show="entry.deprecated">
+            <label for="link" class="col-sm-2 control-label">
+                Deprecated
+            </label>
+            <div class="col-sm-2 label-alignment">
+                {{ entry.deprecated }}
+            </div>
+
+            <label for="link" class="col-sm-2 control-label">
+                Superceded By
+            </label>
+            <div class="col-sm-2">
+                <input type="text" class="form-control" id="superceded_by_id" placeholder="" ng-model="entry.superceded_by_id"/>
+            </div>
+        </div>
+
         <div class="row">
             <div class="col-sm-12">
                 <legend>Editorial Notes</legend>

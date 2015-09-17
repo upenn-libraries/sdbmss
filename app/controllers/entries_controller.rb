@@ -24,13 +24,13 @@ class EntriesController < ManageModelsController
 
   include LogActivity
 
-  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history]
+  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate]
 
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :similar, :mark_as_approved]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :similar, :mark_as_approved, :deprecate]
 
   respond_to :html, :json
 
-  load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_approved]
+  load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_approved, :deprecate]
 
   def model_class
     Entry
@@ -258,6 +258,59 @@ class EntriesController < ManageModelsController
     end
   end
 
+  def deprecate
+    success = false
+    errors = []
+
+    ActiveRecord::Base.transaction do
+      has_entries_superceded_by_this_one = Entry.where(superceded_by_id: @entry.id).count > 0
+
+      if @entry.deprecated
+        errors = [ "Entry #{@entry.public_id} is already deprecated" ]
+      elsif has_entries_superceded_by_this_one
+        errors = [ "Can't deprecate #{@entry.public_id} because there exist entries #{@entry.public_id} that are superceded by it" ]
+      else
+        @entry.deprecated = true
+        superceded_by_id = params[:superceded_by_id]
+        if superceded_by_id.present?
+          @entry.superceded_by_id = superceded_by_id
+        end
+        success = @entry.save
+        if !success
+          errors = @entry.errors.messages
+        end
+
+        # update manuscript links
+        if superceded_by_id.present?
+          # TODO: It may be better to delete the EntryManuscripts and
+          # create new ones for the superceding entry, especially
+          # since EntryManuscript may expand to include other fields.
+          EntryManuscript.where(entry_id: @entry.id).each do |em|
+            em.entry_id = superceded_by_id
+            em.save
+          end
+        else
+          EntryManuscript.where(entry_id: @entry.id).each do |em|
+            em.destroy
+          end
+        end
+
+        Sunspot.index @entry
+      end
+    end
+
+    respond_to do |format|
+      format.json {
+        if success
+          render :json => {}, :status => :ok
+        else
+          json_response = { errors: errors }
+          render json: json_response, status: :unprocessable_entity
+        end
+      }
+    end
+  end
+
   private
 
   def set_entry
@@ -276,7 +329,7 @@ class EntriesController < ManageModelsController
       :height, :width, :alt_size,
       :miniatures_fullpage, :miniatures_large, :miniatures_small, :miniatures_unspec_size,
       :initials_historiated, :initials_decorated,
-      :manuscript_binding, :manuscript_link, :other_info,
+      :manuscript_binding, :manuscript_link, :other_info, :superceded_by_id,
       :entry_titles_attributes => [ :id, :title, :common_title, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_authors_attributes => [ :id, :observed_name, :author_id, :role, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_dates_attributes => [ :id, :observed_date, :date_normalized_start, :date_normalized_end, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],

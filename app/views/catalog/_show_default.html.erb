@@ -50,6 +50,15 @@
     in a source. Do not assume that the manuscript is held by the
     University of Pennsylvania Libraries.</p>
 
+<% if entry.deprecated %>
+    <p style="color: red;">
+        This entry has been deprecated. The data on this page considered incorrect or unreliable and should NOT be cited or used.
+        <% if (superceded_by = entry.superceded_by).present? %>
+            <br/>The following entry supercedes it: <a href="<%= entry_path superceded_by %>"><%= superceded_by.public_id %></a>
+        <% end %>
+    </p>
+<% end %>
+
 <%= render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
 
 <!-- TODO: use a DL element here instead of a table? or use bootstrap rows and cols? layout will be tricky -->

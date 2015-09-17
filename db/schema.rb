@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150914190148) do
+ActiveRecord::Schema.define(version: 20150916135026) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",  limit: 255, null: false
@@ -97,12 +97,15 @@ ActiveRecord::Schema.define(version: 20150914190148) do
     t.integer  "approved_by_id",         limit: 4
     t.datetime "approved_at"
     t.integer  "touch_count",            limit: 4,     default: 0,     null: false
+    t.boolean  "deprecated",                           default: false
+    t.integer  "superceded_by_id",       limit: 4
   end
 
   add_index "entries", ["approved_by_id"], name: "index_entries_on_approved_by_id", using: :btree
   add_index "entries", ["created_by_id"], name: "index_entries_on_created_by_id", using: :btree
   add_index "entries", ["institution_id"], name: "index_entries_on_institution_id", using: :btree
   add_index "entries", ["source_id"], name: "index_entries_on_source_id", using: :btree
+  add_index "entries", ["superceded_by_id"], name: "index_entries_on_superceded_by_id", using: :btree
   add_index "entries", ["updated_by_id"], name: "index_entries_on_updated_by_id", using: :btree
 
   create_table "entry_artists", force: :cascade do |t|
@@ -557,6 +560,7 @@ ActiveRecord::Schema.define(version: 20150914190148) do
   add_foreign_key "comments", "users", column: "created_by_id"
   add_foreign_key "comments", "users", column: "reviewed_by_id"
   add_foreign_key "comments", "users", column: "updated_by_id"
+  add_foreign_key "entries", "entries", column: "superceded_by_id"
   add_foreign_key "entries", "names", column: "institution_id"
   add_foreign_key "entries", "sources"
   add_foreign_key "entries", "users", column: "approved_by_id"

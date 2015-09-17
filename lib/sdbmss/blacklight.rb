@@ -81,6 +81,14 @@ module SDBMSS::Blacklight
       end
     end
 
+    def show_deprecated(solr_parameters)
+      # unless a query is specifically filtering on approved field,
+      # only show approved records.
+      if blacklight_params['deprecated'].blank?
+        solr_parameters['fq'] << 'deprecated:false'
+      end
+    end
+
     def handle_facet_prefix(solr_parameters)
       if blacklight_params[:prefix].present?
         # 'id' key probably comes from routing setup internal to Blacklight
