@@ -143,6 +143,8 @@ This is a 3 step process.
 
     ```
     cd ~/oracle2mysql
+    echo "drop database sdbm_live_copy; CREATE DATABASE sdbm_live_copy CHARACTER SET utf8 COLLATE utf8_unicode_ci;" | mysql -u root
+    # this will prompt you for connection information
     python oracle2mysql.py oracle2mysql_conf
     cd ~
     mysqldump -u root sdbm_live_copy > sdbm_live_copy_`date +%Y_%m_%d`.sql
