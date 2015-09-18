@@ -775,6 +775,9 @@ module SDBMSS::Legacy
 
       other_info = row['COMMENTS'] || ""
 
+      sale_fields = [ 'SELLER', 'SELLER2', 'BUYER', 'PRICE', 'CURRENCY', 'SOLD' ]
+      has_sale_information = sale_fields.any? { |field| row[field].present? }
+
       # entries MUST have a source.
 
       source = nil
@@ -817,9 +820,17 @@ module SDBMSS::Legacy
       transaction_type = source.source_type.entries_transaction_field
       if transaction_type == 'choose'
         transaction_type = Entry::TYPE_TRANSACTION_NONE
-        if row['SOLD'].present?
+        if has_sale_information
           transaction_type = (row['SOLD'] == 'GIFT') ? Entry::TYPE_TRANSACTION_GIFT : Entry::TYPE_TRANSACTION_SALE
         end
+      end
+
+      # we also record institution in the Source, so if the SourceType
+      # doesn't support institution in the entries, it should be okay
+      # to skip it.
+      institution = nil
+      if source.source_type.entries_have_institution_field && row['INSTITUTION'].present?
+        institution = get_or_create_agent(row['INSTITUTION'])
       end
 
       alt_size = ALT_SIZE_CODES_TO_NORMALIZE[row['ALT_SIZE']] || row['ALT_SIZE']
@@ -848,6 +859,7 @@ module SDBMSS::Legacy
         id: row['MANUSCRIPT_ID'],
         source: source,
         catalog_or_lot_number: row['CAT_OR_LOT_NUM'],
+        institution: institution,
         transaction_type: transaction_type,
         folios: row['FOLIOS'],
         num_columns: row['COL'],
@@ -890,29 +902,17 @@ module SDBMSS::Legacy
         )
       end
 
-      # there are a lot of records (as many as 1500?) with only Buyer
-      # field filled in for entries in a collection catalog, and Buyer
-      # more or less matches Institution/Collection. In these cases, I
-      # think we can ignore Buyer and skip creation of transaction record
-      if row['BUYER'].present? &&
-         row['INSTITUTION'].present? &&
-         !(row['SELLER'].present? ||
-           row['SELLER2'].present? ||
-           row['PRICE'].present? ||
-           row['CURRENCY'].present? ||
-           row['SOLD'].present?)
-        puts "WARNING: record #{row['MANUSCRIPT_ID']}: ignoring 'buyer' field since it's the only transaction-related field populated, and there's a value in INSTITUTION, so I'm not creating a transaction record."
-      elsif row['SELLER'].present? ||
-            row['SELLER2'].present? ||
-            row['BUYER'].present? ||
-            row['PRICE'].present? ||
-            row['CURRENCY'].present? ||
-            row['SOLD'].present?
+      if has_sale_information
+
+        if institution.present?
+          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'transaction_institution_conflict', "entry ID=#{row['MANUSCRIPT_ID']} has both institution and transaction fields populated, which isn't allowed")
+        end
 
         # Make sure it makes sense for a Transaction to exist, given the
         # transaction_type
-        if transaction_type == Entry::TYPE_TRANSACTION_NONE
-          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'transaction', "entry ID=#{row['MANUSCRIPT_ID']} has transaction fields populated, but the transaction_type is NONE")
+        if !deleted && transaction_type == Entry::TYPE_TRANSACTION_NONE
+          populated = sale_fields.select { |field| row[field].present? }.join(", ")
+          create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'transaction', "entry ID=#{row['MANUSCRIPT_ID']} has transaction fields #{populated} populated, but the transaction_type is NONE")
         end
 
         # we suppress Transaction info on UI for some source types, so make
