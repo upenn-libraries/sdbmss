@@ -581,7 +581,7 @@ label.col-sm-2-and-half {
         <label class="col-sm-2-and-half control-label">
             <div class="add-link-container"><a id="add_provenance_{{ $index }}" class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
             <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.provenance, prov)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-            <span sdbm-tooltip="entry_provenance_as_recorded">Prov Agent As Recorded</span>
+            <span sdbm-tooltip="entry_provenance_agent_as_recorded">Prov Agent As Recorded</span>
         </label>
         <div class="col-sm-3-and-half">
           <input id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name">
@@ -634,7 +634,7 @@ label.col-sm-2-and-half {
 
     <div class="form-group row">
       <label class="col-sm-2-and-half control-label">
-          <span sdbm-tooltip="entry_provenance_evidence">Acquisition Method</span>
+          <span sdbm-tooltip="entry_provenance_acquisition_method">Acquisition Method</span>
       </label>
       <div class="col-sm-3-and-half">
           <select class="form-control" id="provenance_acquisition_method_{{ $index }}" ng-model="prov.acquisition_method" ng-options="option[0] as option[1] for option in optionsAcquisitionMethod">
@@ -642,7 +642,7 @@ label.col-sm-2-and-half {
           </select>
       </div>
       <label class="col-sm-3 control-label">
-          Directly Transfered to Next?
+          <span sdbm-tooltip="entry_provenance_direct_transfer">Directly Transfered to Next?</span>
       </label>
       <div class="col-sm-2 label-alignment">
           <input id="provenance_direct_transfer_{{ $index }}" type="checkbox" ng-model="prov.direct_transfer"/>
