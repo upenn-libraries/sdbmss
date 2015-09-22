@@ -459,6 +459,21 @@ module SDBMSS::Legacy
       return title, common_title
     end
 
+    # given an Entry object, appends str to the other_info str,
+    # prepending the searchable token MIGRATION_ISSUE.  We use this to
+    # store pieces of information that couldn't be migrated into
+    # normalized fields, or that don't have a proper place in the new
+    # data model.
+     def append_comment_to_other_info(other_info, str)
+      if other_info.present?
+        other_info += "\n"
+      else
+        other_info = ""
+      end
+      other_info += "MIGRATION_ISSUE: #{str}"
+      other_info
+     end
+
     # Do the migration
     def migrate
 
@@ -625,9 +640,9 @@ module SDBMSS::Legacy
 
           # only append str if it's not already included in the field
           if !manuscript.location.include?(row['CURRENT_LOCATION'])
-            if location_already_populated
-              create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], "current_location", "Warning: more than one current_location found for Manuscript ID = #{manuscript.id}")
-            end
+            # if location_already_populated
+            #   create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], "current_location", "Warning: more than one current_location found for Manuscript ID = #{manuscript.id}")
+            # end
             manuscript.location += "; " if manuscript.location.length > 0
             manuscript.location << row['CURRENT_LOCATION']
             manuscript.save!
@@ -646,12 +661,7 @@ module SDBMSS::Legacy
           #   manuscript: manuscript,
           #   relation_type: EntryManuscript::TYPE_RELATION_IS,
           # )
-          if entry.other_info.present?
-            entry.other_info += "\n"
-          else
-            entry.other_info = ""
-          end
-          entry.other_info += "Last known location is #{row['CURRENT_LOCATION']}"
+          entry.other_info = append_comment_to_other_info(entry.other_info, "Last known location for this Entry is #{row['CURRENT_LOCATION']}, couldn't store this in the Manuscript record because there is none.")
           entry.save!
         end
 
@@ -801,8 +811,7 @@ module SDBMSS::Legacy
           # (whatever was in CAT_TBL_ID originally), but that's the
           # best we can do.
           if row['CAT_DATE'].present? || row['CAT_ID'].present? || row['INSTITUTION'].present?
-            other_info += "\n" if other_info.present?
-            other_info += "Catalog: #{row['CAT_DATE']} #{row['CAT_ID']} #{row['INSTITUTION']}"
+            other_info = append_comment_to_other_info(other_info, "Catalog info for this Jordanus record: #{row['CAT_DATE']} #{row['CAT_ID']} #{row['INSTITUTION']}")
           end
 
         elsif
@@ -837,16 +846,13 @@ module SDBMSS::Legacy
       # there are LOTS of codes with trailing whitespace
       alt_size.strip! if alt_size
       if alt_size.present? && ! VALID_ALT_SIZE_TYPES.member?(alt_size)
-        other_info += "\n" if other_info.present?
-        other_info += "'Alt Size' field in the legacy database was '#{alt_size}'"
+        other_info = append_comment_to_other_info(other_info, "'Alt Size' field in the legacy database was '#{alt_size}'")
         alt_size = nil
-        # TODO: for now, we still log the issue, but after ALT_SIZE_CODES_TO_NORMALIZE is finalized, we can remove this line
-        create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'bad_alt_size', "non-normalized value for alt size = '#{row['ALT_SIZE']}'")
+        # create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'bad_alt_size', "non-normalized value for alt size = '#{row['ALT_SIZE']}'")
       end
 
       if row['SECONDARY_SOURCE'].present?
-        other_info += "\n" if other_info.present?
-        other_info += "'Secondary Source' field in the legacy database was '#{row['SECONDARY_SOURCE']}'"
+        other_info = append_comment_to_other_info(other_info, "'Secondary Source' field in the legacy database was '#{row['SECONDARY_SOURCE']}'")
       end
 
       # We decided 1/22/15 that we don't need a date field on
@@ -915,13 +921,6 @@ module SDBMSS::Legacy
           create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'transaction', "entry ID=#{row['MANUSCRIPT_ID']} has transaction fields #{populated} populated, but the transaction_type is NONE")
         end
 
-        # we suppress Transaction info on UI for some source types, so make
-        # sure non-sale sources don't have sale info
-        if source.source_type.name == SourceType::COLLECTION_CATALOG && row['SECONDARY_SOURCE'].blank?
-          # this is probably a child record?
-          puts "ERROR: record #{row['MANUSCRIPT_ID']}: has 'collection_catalog' source and no secondary source, therefore it should not have transaction info"
-        end
-
         # although UI for legacy SDBM has an Other Currency field, it
         # was shoving the data into CURRENCY instead of a separate
         # field (I don't know what happens in the legacy SDBM if you
@@ -950,12 +949,7 @@ module SDBMSS::Legacy
             # gifts are now represented in Entry.transaction_type field
             sold = nil
           elsif sold == 'NF'
-            if entry.other_info.present?
-              entry.other_info += "\n"
-            else
-              entry.other_info = ""
-            end
-            entry.other_info += "'Sold' field in the legacy database had unknown code: '#{sold}'"
+            entry.other_info = append_comment_to_other_info(entry.other_info, "'Sold' field in the legacy database had unknown code: '#{sold}'")
             entry.save!
             sold = nil
           else
@@ -1107,7 +1101,6 @@ module SDBMSS::Legacy
           elsif author_variant.present?
             if author_variant.length > 255
               create_issue('MANUSCRIPT', row['MANUSCRIPT_ID'], 'author_variant_too_long', "Author variant too long for entry #{row['MANUSCRIPT_ID']} = #{author_variant}")
-              # TODO: this data needs to be fixed eventually; for now, though, we truncate, so entry_author validates for manuscript id=119296
               author_variant = author_variant[0..254]
             end
           else
@@ -1304,9 +1297,6 @@ module SDBMSS::Legacy
 
       Provenance.where("provenance_agent_id is not null").update_all({ observed_name: nil })
 
-      # TODO: Some very non-unique long provenance strings should be
-      # moved to comments. See entry 104980, which has str describing
-      # bequeathal.
     end
 
     def create_author_from_row_pass1(row, ctx)
@@ -1316,12 +1306,11 @@ module SDBMSS::Legacy
       # flags were stored in Author table; discard them
       author_str, _, _ = parse_certainty_indicators(row['AUTHOR'])
       # discard the role part when migrating authors
-      author_name, author_roles = split_author_role_codes(author_str)
+      author_name, _ = split_author_role_codes(author_str)
 
-      if author_roles.length > 1 && author_roles.include?("Attr")
-        # this shouldn't happen because in new system, we currently treat 'Attr' as meaning 'Attributed as Author'
-        create_issue('MANUSCRIPT_AUTHOR', row['MANUSCRIPTAUTHORID'], 'author_role_conflict', "Author name '#{author_str}' is marked as Attr and ALSO another code!")
-      end
+      # there are a few records in this table that have Attr combined
+      # with other codes, but we do NOT log an author_role_conflict in
+      # the legacy_data_issues b/c this is just a lookup table.
 
       get_or_create_author(
         author_name,
@@ -1388,10 +1377,6 @@ module SDBMSS::Legacy
       elsif !date.nil? && ![4, 6, 8].member?(date.length) && row['ISDELETED'] != 'y'
         create_issue('MANUSCRIPT_CATALOG', row['MANUSCRIPTCATALOGID'], "bad_date", "bad date #{date}: should be either YYYY, YYYYMM or YYYYMMDD")
       end
-
-      # TODO: seller2 MIGHT (but not always) indicate that all records
-      # for the source were sold by that seller. how do we know when
-      # that is the case?
 
       seller = nil
       if row['SELLER'].present?
