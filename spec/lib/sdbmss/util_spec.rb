@@ -21,6 +21,10 @@ describe "SDBMSS::Util" do
       expect(SDBMSS::Util.format_fuzzy_date("2014874872488")).to eq("2014874872488")
     end
 
+    it "returns circa date" do
+      expect(SDBMSS::Util.format_fuzzy_date("ca. 1830")).to eq("ca. 1830")
+    end
+
   end
 
   describe "#split_and_strip" do

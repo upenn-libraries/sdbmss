@@ -126,10 +126,23 @@ module SDBMSS
         nil
       end
 
+      # returns true if passed-in string 's' is exactly the specified
+      # length and consists of all numeric digits
+      def is_numeric_string(s, length)
+        begin
+          if s && s.length == length && Integer(s)
+            return true
+          end
+        rescue
+          # noop
+        end
+        return false
+      end
+
       # returns a reasonably formatted date string based on a YYYYMMDD
       # str value, which may have 0's in it. Resulting string is in one of these formats: YYYY, YYYY-MM, YYYY-MM-DD
       def format_fuzzy_date(d)
-        if d && d.length == 8
+        if is_numeric_string(d, 8)
           year, mon, day = d.slice(0, 4), d.slice(4, 2), d.slice(6, 2)
           date = ''
           if year.to_s.length > 0 && year != '0000'
