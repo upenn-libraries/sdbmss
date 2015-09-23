@@ -52,11 +52,6 @@ class Sale < ActiveRecord::Base
   validates_presence_of :entry
 
   def normalize
-    # only normalize dates for Sale records, since for
-    # provenance records, the date fields are "as observed" fields.
-    # TODO: this might be bad, since now start_date means 2 different
-    # things; maybe we should have a separate sale_date field?
-    # provenance records, the date fields are "as observed" fields
     if date
       date.gsub!("-", "")
     end

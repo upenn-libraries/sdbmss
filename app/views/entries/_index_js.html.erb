@@ -102,8 +102,7 @@
                              });
                          },
                          error: function() {
-                             // TODO: fill this out
-                             alert("An error occurred jumping to this record.");
+                             SDBM.showErrorModal("#modal", "An error occurred jumping to this record.");
                          }
                      });
                  } else {
@@ -260,8 +259,7 @@
                  url: '/entries/' + entry_id,
                  type: 'DELETE',
                  error: function() {
-                     // TODO: fill this out
-                     alert("An error occurred deleting this record.");
+                     SDBM.showErrorModal("#modal", "An error occurred deleting this record.");
                  },
                  complete: function() {
                      sdbmTable.reload();
@@ -306,7 +304,7 @@
          });
 
          if(ids.length > 0) {
-             // TODO: spinner
+             $("#spinner").show();
              $.ajax({
                  url: '/entries/mark_as_approved.json',
                  type: 'POST',
@@ -315,8 +313,10 @@
                      sdbmTable.reload();
                  },
                  error: function() {
-                     // TODO: fill this out
-                     alert("An error occurred marking records as reviewed");
+                     SDBM.showErrorModal("#modal", "An error occurred marking records as reviewed");
+                 },
+                 complete: function() {
+                     $("#spinner").hide();
                  }
              });
          }

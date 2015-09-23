@@ -29,8 +29,6 @@ class Ability
     # will want more fine-grained control for our roles as the system
     # grows.
 
-    # TODO: fill this out
-
     if ['contributor', 'editor', 'admin'].member? user.role
       [Entry, Sale, Language, Manuscript, Name, Place, Source, Comment].each do |clazz|
         can :create, clazz

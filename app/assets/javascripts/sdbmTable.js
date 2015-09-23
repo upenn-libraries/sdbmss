@@ -637,8 +637,7 @@ var SDBM = SDBM || {};
                 }
             },
             error: function() {
-                // TODO: fill this out
-                alert("An error occurred fetching search results");
+                SDBM.showErrorModal("#modal", "An error occurred fetching search results");
             }
         };
 

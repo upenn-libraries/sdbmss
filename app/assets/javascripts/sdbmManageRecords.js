@@ -85,7 +85,7 @@ var SDBM = SDBM || {};
             });
             
             if(ids.length > 0) {
-                // TODO: spinner
+                $("#spinner").show();
                 $.ajax({
                     url: '/' + manageRecords.options.resourceName + '/mark_as_reviewed.json',
                     type: 'POST',
@@ -94,8 +94,10 @@ var SDBM = SDBM || {};
                         manageRecords.dataTable.reload();
                     },
                     error: function() {
-                        // TODO: fill this out
-                        alert("An error occurred marking records as reviewed");
+                        SDBM.showErrorModal("#modal", "An error occurred marking records as reviewed");
+                    },
+                    complete: function() {
+                        $("#spinner").hide();
                     }
                 });
             }
@@ -155,8 +157,7 @@ var SDBM = SDBM || {};
                 }
             },
             error: function() {
-                // TODO: fill this out
-                alert("An error occurred fetching search results");
+                SDBM.showErrorModal("#modal", "An error occurred fetching search results");
             },
             complete: function() {
                 $("#spinner").hide();

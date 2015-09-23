@@ -35,6 +35,11 @@ class ModelHistory
     load
   end
 
+  # returns Array of all the Users who have ever touched this object
+  def editors
+    changesets.map(&:user_id).select(&:present?).uniq.map { |user_id| User.find(user_id) }
+  end
+
   private
 
   def load

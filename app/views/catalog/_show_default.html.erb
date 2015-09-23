@@ -440,12 +440,17 @@
             </td>
         </tr>
         <% end %>
+        <% editors = ModelHistory.new(entry).editors %>
+        <% if editors.length > 0 %>
         <tr>
             <td class="col-sm-2 text-right record-label">Editors</td>
             <td class="col-sm-10">
-                TODO
+                <% editors.each_with_index do |editor, index| %>
+                    <%= render partial: "shared/username_with_profile_link", locals: { user: editor } %><% if index != editors.size - 1 %>, <% end %>
+                <% end %>
             </td>
         </tr>
+        <% end %>
     </tbody>
 
 </table>

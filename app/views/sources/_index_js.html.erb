@@ -274,8 +274,7 @@
                      SDBM.ManageRecords.prototype.searchAjax.call(manageSources, params, dt_params, callback);
                  },
                  error: function() {
-                     // TODO: fill this out
-                     alert("An error occurred jumping to this record.");
+                     SDBM.showErrorModal("#modal", "An error occurred jumping to this record.");
                  }
              });
          } else {

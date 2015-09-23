@@ -485,11 +485,6 @@
             }
         };
 
-        $scope.confirmClearChanges = function() {
-            // TODO
-            alert("Not yet implemented");
-        };
-
         $scope.transactionTypeDisabled = function() {
             return $scope.entry && $scope.entry.source && $scope.entry.source.source_type.entries_transaction_field !== 'choose';
         };
