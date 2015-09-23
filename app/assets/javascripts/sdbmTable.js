@@ -513,6 +513,12 @@ var SDBM = SDBM || {};
                     sdbmssMaxWidth: "130px",
                     title: 'Deprecated',
                     sdbmssSortField: 'deprecated'
+                },
+                {
+                    sdbmssMinWidth: "130px",
+                    sdbmssMaxWidth: "130px",
+                    title: 'Superceded By',
+                    sdbmssSortField: 'superceded_by_id'
                 }
             ]
         };
@@ -609,7 +615,8 @@ var SDBM = SDBM || {};
                             result.updated_at,
                             result.updated_by,
                             result.approved,
-                            result.deprecated
+                            result.deprecated,
+                            result.superceded_by_id
                         ];
                     });
                     

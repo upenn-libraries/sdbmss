@@ -64,7 +64,7 @@
                          var showLinkingTool = full[sdbmTable.getColumnIndex("Deprecated")] === false;
                          var linkingToolHTMLLink = ' &middot; <a class="find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
 
-                         var showDeprecateLink = canDeprecate && full[sdbmTable.getColumnIndex("Deprecated")] === false;
+                         var showDeprecateLink = canDeprecate;
                          var deprecateHTMLLink = ' &middot; <a href="#" class="entry-deprecate-link">Deprecate</a>';
 
                          return '<a href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +
@@ -277,56 +277,15 @@
          var sdbmTable = manageEntries.dataTable;
          var row_data = sdbmTable.dataTable.row($(event.target).closest("tr")).data();
          var entry_id = row_data[sdbmTable.getColumnIndex("ID")];
+         var superceded_by_id = row_data[sdbmTable.getColumnIndex("Superceded By")];
 
          entryIdToDeprecate = entry_id;
-         $(".entry-id-to-deprecate").text(entry_id);
 
-         // reset some state in the modal
-         $('#deprecate').prop('disabled', false);
-         $("#superceded_by_id").val('');
-
-         $("#entry-deprecate-modal").modal({
-             backdrop: 'static',
+         SDBM.openDeprecateModal(entry_id, superceded_by_id, function() {
+             manageEntries.dataTable.reload();
          });
 
          return false;
-     });
-
-     $(document).on('click', "#deprecate", function(event) {
-         $('#deprecate').prop('disabled', true);
-
-         $.ajax({
-             url: '/entries/' + entryIdToDeprecate + '/deprecate.json',
-             type: 'POST',
-             data: {
-                 superceded_by_id: $("#superceded_by_id").val()
-             },
-             success: function(data, textStatus, jqXHR) {
-                 // convoluted callbacks
-                 $('#entry-deprecate-modal').on('hidden.bs.modal', function (e) {
-                     $("#modal").on('hidden.bs.modal', function (e) {
-                         manageEntries.dataTable.reload();
-                         $("#modal").off('hidden.bs.modal');
-                         $('#entry-deprecate-modal').off('hidden.bs.modal');
-                     });
-                     SDBM.showModal("#modal", {
-                         allowDismiss: false,
-                         showFooter: true,
-                         body: "Entry marked as deprecated.",
-                         title: "Success"
-                     });
-                 });
-                 $('#entry-deprecate-modal').modal('hide');
-             },
-             error: function(xhr) {
-                 var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
-                 $('#entry-deprecate-modal').on('hidden.bs.modal', function (e) {
-                     SDBM.showErrorModal("#modal", error);
-                     $('#entry-deprecate-modal').off('hidden.bs.modal');
-                 });
-                 $('#entry-deprecate-modal').modal('hide');
-             }
-         });
      });
 
      $(document).on('click', "#select-all", function(event) {

@@ -1,0 +1,114 @@
+<%#
+This partial has both JS and HTML, as these are tightly coupled.
+Files including this partial are responsible for calling
+SDBM.openDeprecateModal() as appropriate to display the modal when
+needed.
+%>
+<script type="text/javascript">
+
+ $(document).ready(function() {
+     var entryIdToDeprecate;
+     var postSuccessCallback;
+
+     $(document).on('click', "#deprecate", function(event) {
+         $('#deprecate').prop('disabled', true);
+
+         $.ajax({
+             url: '/entries/' + entryIdToDeprecate + '/deprecate.json',
+             type: 'POST',
+             data: {
+                 superceded_by_id: $("#superceded_by_id").val()
+             },
+             success: function(data, textStatus, jqXHR) {
+                 // convoluted callbacks
+                 $('#entry-deprecate-modal').on('hidden.bs.modal', function (e) {
+                     $("#modal").on('hidden.bs.modal', function (e) {
+                         postSuccessCallback();
+
+                         $("#modal").off('hidden.bs.modal');
+                         $('#entry-deprecate-modal').off('hidden.bs.modal');
+                     });
+                     SDBM.showModal("#modal", {
+                         allowDismiss: false,
+                         showFooter: true,
+                         body: "Entry marked as deprecated.",
+                         title: "Success"
+                     });
+                 });
+                 $('#entry-deprecate-modal').modal('hide');
+             },
+             error: function(xhr) {
+                 var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
+                 $('#entry-deprecate-modal').on('hidden.bs.modal', function (e) {
+                     SDBM.showErrorModal("#modal", error);
+                     $('#entry-deprecate-modal').off('hidden.bs.modal');
+                 });
+                 $('#entry-deprecate-modal').modal('hide');
+             }
+         });
+     });
+
+     SDBM.openDeprecateModal = function(entry_id, superceded_by_id, post_success_callback) {
+         entryIdToDeprecate = entry_id;
+         postSuccessCallback = post_success_callback;
+         $(".entry-id-to-deprecate").text(entry_id);
+
+         // reset some state in the modal
+         $('#deprecate').prop('disabled', false);
+         $("#superceded_by_id").val(superceded_by_id);
+         if(superceded_by_id) {
+             $(".instructions-new-deprecation").hide();
+             $(".instructions-already-deprecated").show();
+         } else {
+             $(".instructions-new-deprecation").show();
+             $(".instructions-already-deprecated").hide();
+         }
+
+         $("#entry-deprecate-modal").modal({
+             backdrop: 'static',
+         });
+     };
+ });
+
+</script>
+<div class="modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" id="entry-deprecate-modal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Deprecate Entry SDBM_<span class="entry-id-to-deprecate"></span></h4>
+        </div>
+        <div class="modal-body">
+
+            <div class="instructions-new-deprecation" style="display: none;">
+            <p>Deprecating this entry will remove it from the search
+                results. The single Entry page will still work to
+                preserve existing links, but it will show a notice.</p>
+
+            <p>If you enter an ID below, then the Entry page will
+                point the user to that record.</p>
+            </div>
+
+            <div class="instructions-already-deprecated" style="display: none;">
+                <p>This entry is already deprecated.</p>
+
+                <p>Enter an ID below to change the Entry that supercedes this one.</p>
+            </div>
+
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <label for="superceded_by_id" class="col-sm-5 control-label">Entry ID that supercedes this one (optional):</label>
+                    <div class="col-sm-3">
+                        <input class="form-control" type="text" id="superceded_by_id">
+                    </div>
+                </div>
+            </form>
+
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="deprecate">Deprecate</button>
+        </div>
+    </div>
+  </div>
+</div>

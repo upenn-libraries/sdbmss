@@ -123,6 +123,10 @@ label.col-sm-2-and-half {
               <p>Use the Action dropdown menu to navigate to related pages.</p>
           </div>
           
+          <div ng-show="entry.deprecated" style="color:red; font-weight: bold;">
+              This entry has been deprecated; you cannot make changes to it. <span ng-show="entry.superceded_by_id">SDBM_{{ entry.superceded_by_id }} supercedes this entry.</span>
+          </div>
+
           <div ng-show="badData.length > 0" style="color:red; font-weight: bold;">
               WARNING: Bad data found in fields that can't be displayed in dropdowns: 
               <span ng-repeat="badDataItem in badData">{{ badDataItem }}</span>. Saving the record on this page may cause data loss.
@@ -677,27 +681,6 @@ label.col-sm-2-and-half {
             </div>
         </div>
 
-        <div class="form-group row" ng-show="entry.deprecated">
-            <label for="link" class="col-sm-2 control-label">
-                Deprecated
-            </label>
-            <div class="col-sm-2 label-alignment">
-                {{ entry.deprecated }}
-            </div>
-
-            <label for="link" class="col-sm-2 control-label">
-                Superceded By
-            </label>
-            <div class="col-sm-2">
-                <input type="text" class="form-control" id="superceded_by_id" placeholder="" ng-model="entry.superceded_by_id"/>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <legend>Editorial Notes</legend>
-            </div>
-        </div>
     </div>
 
     <div class="row" ng-repeat="entry_comment in entry.entry_comments" style="margin-bottom: 10px;">

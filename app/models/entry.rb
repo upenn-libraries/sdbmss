@@ -318,7 +318,8 @@ class Entry < ActiveRecord::Base
       updated_at: updated_at ? updated_at.to_formatted_s(:date_and_time) : nil,
       updated_by: (updated_by.username if updated_by),
       approved: approved,
-      deprecated: deprecated
+      deprecated: deprecated,
+      superceded_by_id: superceded_by_id
     }
   end
 

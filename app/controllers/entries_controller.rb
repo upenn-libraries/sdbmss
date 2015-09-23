@@ -264,14 +264,20 @@ class EntriesController < ManageModelsController
 
     ActiveRecord::Base.transaction do
       has_entries_superceded_by_this_one = Entry.where(superceded_by_id: @entry.id).count > 0
+      superceded_by_id = params[:superceded_by_id]
 
       if @entry.deprecated
-        errors = [ "Entry #{@entry.public_id} is already deprecated" ]
+        # if entry is already deprecated, just change the superceded_by_id field
+        @entry.superceded_by_id = superceded_by_id
+        success = @entry.save
+
+        if !success
+          errors = @entry.errors.messages
+        end
       elsif has_entries_superceded_by_this_one
         errors = [ "Can't deprecate #{@entry.public_id} because there exist entries #{@entry.public_id} that are superceded by it" ]
       else
         @entry.deprecated = true
-        superceded_by_id = params[:superceded_by_id]
         if superceded_by_id.present?
           @entry.superceded_by_id = superceded_by_id
         end

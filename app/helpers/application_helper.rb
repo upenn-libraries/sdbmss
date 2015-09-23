@@ -81,6 +81,10 @@ module ApplicationHelper
     user_signed_in? && @document.present? && (entry = @document.model_object).present? && entry.manuscript.present? && can?(:link, entry.manuscript)
   end
 
+  def show_deprecate_entry?
+    user_signed_in? && @document.present? && (entry = @document.model_object).present? && can?(:deprecate, entry)
+  end
+
   # determines whether entry history link should be displayed; this is
   # used multiple places, which is why it's here in ApplicationHelper
   def show_entry_history_link?

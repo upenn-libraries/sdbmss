@@ -35,6 +35,13 @@
           });
      });
 
+     $(document).on("click", ".entry-deprecate-link", function (event) {
+         SDBM.openDeprecateModal(<%= entry.id %>, <%= entry.superceded_by_id || 'null' %>, function() {
+             window.location = "/entries/" + <%= entry.id %>;
+         });
+         return false;
+     });
+
  });
 
 </script>
@@ -519,3 +526,5 @@
 <div class="spacer-40px"></div>
 
 <% end %>
+
+<%= render :partial => 'shared/deprecate_entry_modal' %>
