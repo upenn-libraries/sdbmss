@@ -28,6 +28,7 @@ Step 1: Initialize databases and create user accounts
 
 * In your cloned repository, copy the .docker-environment-sample file
   to .docker-environment and fill in the appropriate values.
+  Instructions for values in `.docker-environment-sample`.
 
   ```
   cd ~/sdbmss
@@ -35,16 +36,20 @@ Step 1: Initialize databases and create user accounts
   vi .docker-environment
   ```
 
+
 * In separate terminal windows, start the database container, and then
   run docker ps to find out its container ID (you'll need it for the
   next step).
-  
+
   ```
   # do this in one window
   docker-compose run db
   # do this in another
   docker ps
   ```
+
+  Normally you would do a single docker-compose, but for set up, we
+  have to first set up the database.
 
 * Run a MySQL client in the running database container and type in
   these commands to create the databases and user account (root
@@ -211,7 +216,7 @@ to it.
 
 * Note that capistrano does not run database migrations, so if you
   created any, you'll need to run them manually on staging afterwards:
- 
+
   ```
   # Do this on staging
   cd ~/sdbmss/current
