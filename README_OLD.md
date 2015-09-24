@@ -16,7 +16,8 @@ installation and do the following:
 
   ```
   yum update
-  yum install screen git mysql mysql-server mysql-devel java-1.7.0-openjdk
+  # NOTE: older versions of CentOS will not have nodejs
+  yum install screen git mysql mysql-server mysql-devel java-1.7.0-openjdk nodejs
   ```
 
 * Configure CentOS to start up MySQL when the system boots.
@@ -39,8 +40,10 @@ Installing Ruby and Other Requirements
   password for sudo.
 
   ```
+  # these two commands install rvm; if you can install it some other way, great.
   gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
   \curl -sSL https://get.rvm.io | bash -s stable
+  # now tell rvm to install the latest 2.2.x version
   rvm install 2.2.1
   ```
 
@@ -51,10 +54,10 @@ Installing Ruby and Other Requirements
   gem install bundler
   ```
 
-* Install [Node](https://nodejs.org/) (Rails requires a Javascript
-  runtime). The easiest way to do this is to download the latest
-  tarball, unzip it somehere, and make sure its bin/node executable is
-  in your PATH.
+* If you didn't install [Node](https://nodejs.org/) in the Basic Host
+  Setup section above, do it by downloading the latest tarball,
+  unzipping it somewhere, and make sure its bin/node executable is in
+  your PATH.
 
 * Create a MySQL account and some databases.
 
