@@ -64,11 +64,25 @@ Installing Ruby and Other Requirements
   CREATE DATABASE sdbm;
   CREATE USER 'sdbm'@'%' IDENTIFIED BY 'xxx';
   GRANT ALL PRIVILEGES ON *.* TO 'sdbm'@'%';
-  FLUSH PRIVILEGES
+  FLUSH PRIVILEGES;
   ```
 
-  The application is comprised of several processes you'll need to
-  run. Using 'screen' is helpful here.
+* Clone the git repository into your home directory. (You'll need to
+  set up <a href="https://help.github.com/articles/generating-ssh-keys/">ssh
+  access</a> to github from your host.) This will give you a folder
+  called ~/sdbmss
+
+  ```
+  cd ~
+  git clone git@github.com:upenn-libraries/sdbmss.git
+  ```
+
+* Run this to install the Ruby gems needed by the project:
+
+  ```
+  cd ~/sdbmss
+  bundle install
+  ```
 
 * Set environment variables in your .bashrc file (or similar shell
   init file). Generate values for the secret keys by running "bundle
@@ -91,7 +105,7 @@ Installing Ruby and Other Requirements
   # email configuration
   export SDBMSS_EMAIL_FROM="someone@mail.com"
   export SDBMSS_EMAIL_EXCEPTIONS_TO="admin@mail.com"
-  # secrets only used in production env
+  # generate these keys using 'bundle exec rake secret'
   export SDBMSS_BLACKLIGHT_SECRET_KEY="..."
   export SDBMSS_DEVISE_SECRET_KEY="..."
   export SDBMSS_SECRET_KEY_BASE="..."
@@ -100,25 +114,8 @@ Installing Ruby and Other Requirements
   export SOLR_URL="http://127.0.0.1:8983/solr/development"
   ```
 
-* Clone the git repository into your home directory. (You'll need to
-  set up <a href="https://help.github.com/articles/generating-ssh-keys/">ssh
-  access</a> to github from your host.) This will give you a folder
-  called ~/sdbmss
-
-  ```
-  cd ~
-  git clone git@github.com:upenn-libraries/sdbmss.git
-  ```
-
-* Run this to install the Ruby gems needed by the project:
-
-  ```
-  cd ~/sdbmss
-  bundle install
-  ```
-
 * Now you should be ready to create the database and run the
-  application (see below).
+  application (see below). 
 
 Data Migration
 --------------
@@ -181,6 +178,9 @@ This is a 3 step process.
 Running the Development Server
 ------------------------------
 
+Note that the application is comprised of several processes you'll
+need to run. Using 'screen' is helpful here.
+  
 * Run a Solr instance (this WILL daemonize). Note that you will need
   to restart Solr whenever there are changes to the Solr configuration
   or schema files.
