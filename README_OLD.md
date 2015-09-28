@@ -65,8 +65,8 @@ Installing Ruby and Other Requirements
   mysql -u root
   CREATE DATABASE sdbm_live_copy;
   CREATE DATABASE sdbm;
-  CREATE USER 'sdbm'@'%' IDENTIFIED BY 'xxx';
-  GRANT ALL PRIVILEGES ON *.* TO 'sdbm'@'%';
+  CREATE USER 'sdbm'@'localhost' IDENTIFIED BY 'xxx';
+  GRANT ALL PRIVILEGES ON *.* TO 'sdbm'@'localhost';
   FLUSH PRIVILEGES;
   ```
 
@@ -118,7 +118,7 @@ Installing Ruby and Other Requirements
   ```
 
 * Now you should be ready to create the database and run the
-  application (see below). 
+  application (see below).
 
 Data Migration
 --------------
@@ -154,7 +154,7 @@ This is a 3 step process.
   development database.
 
   On your own machine, run these commands:
-  
+
     ```
     # copy the file you made in step 1, from the dev VM to your machine
     scp username@dev_vm_hostname:sdbm_live_copy_2015_06_15.sql .
@@ -183,7 +183,7 @@ Running the Development Server
 
 Note that the application is comprised of several processes you'll
 need to run. Using 'screen' is helpful here.
-  
+
 * Run a Solr instance (this WILL daemonize). Note that you will need
   to restart Solr whenever there are changes to the Solr configuration
   or schema files.
@@ -264,7 +264,7 @@ to it.
 
   Note that capistrano does not run database migrations, so if you
   created any, you'll need to run them manually on staging afterwards:
- 
+
   ```
   # Do this on staging
   cd ~/sdbmss/current
