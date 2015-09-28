@@ -125,12 +125,6 @@ Rails.application.routes.draw do
     get '/raise_error/', to: 'debug#raise_error'
   end
 
-  get '/reports/', to: 'reports#show'
-  get '/reports/names/', to: 'reports#names'
-  get '/reports/languages/', to: 'reports#languages'
-  get '/reports/places/', to: 'reports#places'
-  get '/reports/sources/', to: 'reports#sources'
-
   resources :sources do
     collection do
       post 'calculate_bounds'
