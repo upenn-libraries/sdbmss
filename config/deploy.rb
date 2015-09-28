@@ -56,6 +56,7 @@ namespace :deploy do
     end
   end
 
+  # OBSOLETE: we now use god to start/stop solr
   desc "Stop solr"
   task :solr_stop do
     on roles(:all) do
@@ -64,6 +65,7 @@ namespace :deploy do
     end
   end
 
+  # OBSOLETE: we now use god to start/stop solr
   desc "Start solr"
   task :solr_start do
     on roles(:all) do
@@ -73,6 +75,7 @@ namespace :deploy do
     end
   end
 
+  # OBSOLETE: we now use god to start/stop unicorn
   desc "Stop unicorn"
   task :unicorn_stop do
     on roles(:all) do
@@ -90,16 +93,7 @@ namespace :deploy do
     end
   end
 
-  desc "Make pids directory"
-  task :mkdir_pids do
-    on roles(:all) do
-      within current_path do
-        pids_dir = File.join(shared_path, "pids")
-        execute :mkdir, "-p #{pids_dir}"
-      end
-    end
-  end
-
+  # OBSOLETE: we now use god to start/stop unicorn
   desc "Start unicorn"
   task :unicorn_start do
     on roles(:all) do
@@ -107,6 +101,16 @@ namespace :deploy do
         pids_dir = File.join(current_path, "tmp", "pids")
         execute :mkdir, "-p #{pids_dir}"
         execute :bundle, "exec unicorn -c config/unicorn.rb -D"
+      end
+    end
+  end
+
+  desc "Make pids directory"
+  task :mkdir_pids do
+    on roles(:all) do
+      within current_path do
+        pids_dir = File.join(shared_path, "pids")
+        execute :mkdir, "-p #{pids_dir}"
       end
     end
   end
@@ -169,15 +173,6 @@ namespace :deploy do
       end
     end
   end
-
-  # this set of tasks does manual starting/stopping of solr and
-  # unicorn, which we no longer need since we use god. but keeping it
-  # around just in case...
-  # after 'deploy:started', 'deploy:solr_stop'
-  # after 'deploy:started', 'deploy:unicorn_stop'
-  # after 'deploy:publishing', 'deploy:solr_update'
-  # after 'deploy:publishing', 'deploy:solr_start'
-  # after 'deploy:publishing', 'deploy:unicorn_start'
 
   after 'deploy:started', 'deploy:god_stop'
   after 'deploy:publishing', 'deploy:mkdir_pids'
