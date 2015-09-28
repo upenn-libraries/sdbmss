@@ -90,10 +90,6 @@ gem "exception_notification", "~> 4.1.1"
 # converts fixnums to string equivalents
 gem "number_to", "~> 0.7.1"
 
-# TODO: temporary fix: without this line, bundler will try to grab 2.10.0 which no longer exists
-# http://stackoverflow.com/questions/31793791/push-to-heroku-fails-could-not-find-net-ssh-2-10-0-in-any-of-the-sources-faile
-gem "net-ssh", "~> 2.10.1.rc1"
-
 # empties db after each group of tests
 gem "database_cleaner", "~> 1.4.1"
 
