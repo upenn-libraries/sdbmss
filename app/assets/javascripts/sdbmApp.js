@@ -1558,8 +1558,4 @@
         $scope.entityName = "place";
     });
 
-    sdbmApp.controller('InferenceFlagsCtrl', function ($scope, $modalInstance, objectWithFlags) {
-        $scope.objectWithFlags = objectWithFlags;
-    });
-
 }());
