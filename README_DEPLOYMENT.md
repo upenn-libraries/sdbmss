@@ -1,37 +1,64 @@
 
-Staging Server
---------------
+Deploying the App
+-----------------
+
+These are notes on the setup and configuration of the staging and
+production deployment environments.
+
+Currently these are the only two deployment environments that
+exist. These notes are intended to facilitate creating other
+deployment environments or to recreate existing ones.
+
+We use [capistrano](http://capistranorb.com/) to automate
+deployment. The staging and production environments use
+[god](http://godrb.com/) to do application process orchestration and
+monitoring (the processes being unicorn, solr, and a delayed_job
+worker).
+
+TODO: Eventually, we should use Docker, but we don't have a virtual
+machine set up for that yet.
 
 Note: 'staging' (aka the 'dev VM' which is confusing, so we don't call
 it that here) refers to the virtual machine provided by Libraries IT
 for the exclusive purpose of SDBM development.
 
-We use [capistrano](http://capistranorb.com/) to automate updating the
-staging server with the latest code. The staging environment uses
-[god](http://godrb.com/) to do application process monitoring (the
-processes being unicorn, solr, and a delayed_job worker).
+## Requirements
 
-TODO: Eventually, we want staging to use Docker, but we don't have a
-virtual machine set up for that yet.
+For both staging and production, LTS has set up virtual machines
+running CentOS and installed the following:
+
+- Apache
+- MySQL
+- Java
+- rvm
+
+LT has also set up an 'sdbm' user account who should run the
+application.
 
 ## Ruby version
 
+Use rvm to install a Ruby.
+
 The current production machine is setup with Ruby version
-2.2.1p85. This is installed through rvm (which was already installed
-on the machine). This was installed by the `sdbm` user, which was
-added to the `rvm` group. The `rvm` group has write permission on the
-rvm directory, which is `/usr/local/rvm/`. This is where ruby versions
-are installed.
+2.2.1p85. This was installed by the `sdbm` user, which was added to
+the `rvm` group. The `rvm` group has write permission on the rvm
+directory, which is `/usr/local/rvm/`. This is where ruby versions are
+installed.
+
+## NodeJS
+
+Install NodeJS using yum. Rails requires this.
 
 ## Environment variables
 
-* Your account on staging will need the SDBMSS_ environment variables;
-  set them in .bashrc or some other way. See the `README_OLD.md` file
-  for these. Be sure to add `RAILS_ENV=production` to the env vars.
+The 'sdbm' account will need the SDBMSS_ environment variables; set
+them in .bashrc or some other way. See the `README_OLD.md` file for
+these. Be sure to add `RAILS_ENV=production` to the env vars.
 
-## Starting CentOS
+## Starting Apache at Boot
 
-This is probably already set up, but in case it's not, see:
+Apache should already be configured to start up at boot time, but in
+case it's not, see:
 
 For starting Apache on CentOS at boot, see this page:
 <http://www.liquidweb.com/kb/how-to-install-apache-on-centos-7/>
@@ -93,14 +120,19 @@ something like the following:
   ```
 
 1. Change every instance of `sdbmdev` to match the correct hostname.
+
 2. Note the correct path needs to be added for the SSL cert and key.
 
-Restart Apache.
+You'll need to restart Apache after creating this file and placing the
+keys on the machine.
 
-## Capistrano
+## Configuring Capistrano
 
-In `config/deploy/production.rb` make the following changes (if not
-already made).
+Capistrano needs to know about the target machine to which it is
+deploying.
+
+For production, the file `config/deploy/production.rb` should look
+like the following:
 
     ```ruby
     # Replace these lines:
@@ -119,9 +151,9 @@ already made).
 
 ## Set up database
 
-Create database (see `README_OLD.md`).
+Create database and user account (see `README_OLD.md`).
 
-Upload copy of database to server.
+Upload copy of database file to server using scp.
 
 Load database:
 
@@ -131,18 +163,22 @@ Load database:
 
 ### Optimizing MySQL
 
-For this use mysqltuner <http://mysqltuner.com> after the database has
-been running for some time.  This will generate a report and recommend
-optimizations.
+Production runs the stock MySQL configuration that ships with
+CentOS. It should probably be tuned so it runs optimally.
+
+For this, use mysqltuner <http://mysqltuner.com> after the database
+has been running for some time.  This will generate a report and
+recommend changes to make to the /etc/my.cnf file to optimize .
 
 ## Reindex solr
 
-In the `current` directory (`/var/www/sdbmss/current`) as the `sdbm`
-user, run this task (without argument):
+In the `/var/www/sdbmss/current` directory, as the `sdbm` user, run
+this task (without argument):
 
 ```
 rake sunspot:reindex[batch_size,models,silence]  # Drop and then reindex all solr models that are located in your application's models dir...
 ```
+
 ## Deploy to production
 
 Note: Be sure to add your ssh public key to the

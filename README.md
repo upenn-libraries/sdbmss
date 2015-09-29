@@ -16,6 +16,9 @@ There are two ways to install, setup, and run this code.
 * See [README_OLD.md](README_OLD.md) for how to configure a Linux
   machine from scratch to run the application.
 
+For notes on deploying the app to staging and production, see
+[README_DEPLOYMENT.md](README_DEPLOYMENT.md).
+
 Technical Documentation
 -----------------------
 

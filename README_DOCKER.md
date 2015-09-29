@@ -190,9 +190,9 @@ Running The Test Suite
 Deploying to the Staging (Dev VM) Server
 ----------------------------------------
 
-See [README_STAGING.md](README_STAGING.md) for details on how the
-staging environment works. The instructions here are for how to deploy
-to it.
+See [README_DEPLOYMENT.md](README_DEPLOYMENT.md) for details on the
+deployment environments works. The instructions here are for how to
+deploy to it.
 
 * Run "ssh-add" to add your key to your ssh agent. This key should
   already be registered with Github, so that capistrano can use it
