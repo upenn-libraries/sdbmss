@@ -12,8 +12,8 @@
 # Think of this as an "integration test" of all our models as a
 # organic whole.
 #
-# This gets called via rspec for testing, and also in development
-# to re-create data in case we want to examine something.
+# This gets used by the test suite, and also in development to
+# re-create data in case we want to examine something.
 
 module SDBMSS::ReferenceData
 
