@@ -37,7 +37,12 @@ module SDBMSS
             # Proc closure over local vars
             process_batch = Proc.new do
               results.each do |row|
-                block.call row, ctx
+                begin
+                  block.call row, ctx
+                rescue
+                  puts "ERROR in #batch, processing row=#{row}"
+                  raise
+                end
                 ctx[:count] += 1
               end
             end
