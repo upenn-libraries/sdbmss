@@ -95,6 +95,16 @@ module SDBMSS
     end
   end
 
+  # After instantiation, objects of this class are meant to be used as
+  # an enumerable. e.g.:
+  #
+  # SimilarEntries.new(entry_id).each do |similar_entry|
+  #   do something
+  # end
+  #
+  # Each record is a hash containing two keys: 'distance', which is a
+  # numeric measure of how 'far' (how dissimilar) an entry is, and
+  # 'entry', which is keyed to the entry Object.
   class SimilarEntries
 
     include Enumerable
