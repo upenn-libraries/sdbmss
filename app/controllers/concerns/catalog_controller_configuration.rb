@@ -1,4 +1,8 @@
 
+# Configuration for controllers that use Blacklight.
+#
+# This should probably be renamed BlacklightControllerConfiguration
+# for better clarity.
 module CatalogControllerConfiguration
 
   extend ActiveSupport::Concern
