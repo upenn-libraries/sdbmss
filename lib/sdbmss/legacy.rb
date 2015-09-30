@@ -619,7 +619,7 @@ module SDBMSS::Legacy
       # we need to have created Manuscript records in
       # #create_manuscripts_from_duplicates before this step
       SDBMSS::Util.batch(legacy_db,
-                         'select MANUSCRIPT_ID, POSSIBLE_DUPS from MANUSCRIPT where POSSIBLE_DUPS is not null OR length(POSSIBLE_DUPS) > 0',
+                         'select MANUSCRIPT_ID, POSSIBLE_DUPS from MANUSCRIPT where (ISDELETED IS NULL OR ISDELETED != "y") and (POSSIBLE_DUPS is not null OR length(POSSIBLE_DUPS) > 0)',
                          batch_wrapper: wrap_transaction) do |row,ctx|
         create_entry_manuscripts_from_possible_dups(row, ctx)
       end
@@ -1599,7 +1599,7 @@ module SDBMSS::Legacy
     def create_entry_manuscripts_from_possible_dups(row, ctx)
       SDBMSS::Util.split_and_strip(row['POSSIBLE_DUPS'], delimiter: ",").each do |possible_dupe|
         # find or create the MS for the possible dupe Entry
-        if Entry.exists?(possible_dupe)
+        if possible_dupe.present? && Entry.exists?(possible_dupe)
 
           em = EntryManuscript.where(entry_id: possible_dupe, relation_type: EntryManuscript::TYPE_RELATION_IS).first
           manuscript_id = nil
