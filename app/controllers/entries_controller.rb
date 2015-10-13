@@ -292,8 +292,15 @@ class EntriesController < ManageModelsController
           # create new ones for the superceding entry, especially
           # since EntryManuscript may expand to include other fields.
           EntryManuscript.where(entry_id: @entry.id).each do |em|
-            em.entry_id = superceded_by_id
-            em.save
+            # DE 2015-10-13 Delete the existing EM if one already
+            # exists between the superceding entry and the manuscript
+            # record.
+            if EntryManuscript.where(entry_id: superceded_by_id, manuscript_id: em.manuscript_id).count > 0
+              em.destroy
+            else
+              em.entry_id = superceded_by_id
+              em.save
+            end
           end
         else
           EntryManuscript.where(entry_id: @entry.id).each do |em|
