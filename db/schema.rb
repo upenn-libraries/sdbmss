@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150916135026) do
+ActiveRecord::Schema.define(version: 20150930190623) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",  limit: 255, null: false
@@ -69,36 +69,37 @@ ActiveRecord::Schema.define(version: 20150916135026) do
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
   create_table "entries", force: :cascade do |t|
-    t.integer  "source_id",              limit: 4
-    t.string   "catalog_or_lot_number",  limit: 255
-    t.integer  "folios",                 limit: 4
-    t.integer  "num_columns",            limit: 4
-    t.integer  "num_lines",              limit: 4
-    t.integer  "height",                 limit: 4
-    t.integer  "width",                  limit: 4
-    t.string   "alt_size",               limit: 255
-    t.string   "manuscript_binding",     limit: 1024
-    t.text     "other_info",             limit: 65535
-    t.string   "manuscript_link",        limit: 1024
-    t.integer  "miniatures_fullpage",    limit: 4
-    t.integer  "miniatures_large",       limit: 4
-    t.integer  "miniatures_small",       limit: 4
-    t.integer  "miniatures_unspec_size", limit: 4
-    t.integer  "initials_historiated",   limit: 4
-    t.integer  "initials_decorated",     limit: 4
-    t.boolean  "approved",                             default: false
-    t.boolean  "deleted",                              default: false
+    t.integer  "source_id",                limit: 4
+    t.string   "catalog_or_lot_number",    limit: 255
+    t.integer  "folios",                   limit: 4
+    t.integer  "num_columns",              limit: 4
+    t.integer  "num_lines",                limit: 4
+    t.integer  "height",                   limit: 4
+    t.integer  "width",                    limit: 4
+    t.string   "alt_size",                 limit: 255
+    t.string   "manuscript_binding",       limit: 1024
+    t.text     "other_info",               limit: 65535
+    t.string   "manuscript_link",          limit: 1024
+    t.integer  "miniatures_fullpage",      limit: 4
+    t.integer  "miniatures_large",         limit: 4
+    t.integer  "miniatures_small",         limit: 4
+    t.integer  "miniatures_unspec_size",   limit: 4
+    t.integer  "initials_historiated",     limit: 4
+    t.integer  "initials_decorated",       limit: 4
+    t.boolean  "approved",                               default: false
+    t.boolean  "deleted",                                default: false
     t.datetime "created_at"
-    t.integer  "created_by_id",          limit: 4
+    t.integer  "created_by_id",            limit: 4
     t.datetime "updated_at"
-    t.integer  "updated_by_id",          limit: 4
-    t.integer  "institution_id",         limit: 4
-    t.string   "transaction_type",       limit: 255
-    t.integer  "approved_by_id",         limit: 4
+    t.integer  "updated_by_id",            limit: 4
+    t.integer  "institution_id",           limit: 4
+    t.string   "transaction_type",         limit: 255
+    t.integer  "approved_by_id",           limit: 4
     t.datetime "approved_at"
-    t.integer  "touch_count",            limit: 4,     default: 0,     null: false
-    t.boolean  "deprecated",                           default: false
-    t.integer  "superceded_by_id",       limit: 4
+    t.integer  "touch_count",              limit: 4,     default: 0,     null: false
+    t.boolean  "deprecated",                             default: false
+    t.integer  "superceded_by_id",         limit: 4
+    t.boolean  "unverified_legacy_record",               default: false
   end
 
   add_index "entries", ["approved_by_id"], name: "index_entries_on_approved_by_id", using: :btree

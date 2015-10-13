@@ -892,6 +892,7 @@ module SDBMSS::Legacy
         updated_by: get_or_create_user(row['LAST_MODIFIED_BY']),
         approved: approved,
         deleted: deleted,
+        unverified_legacy_record: true,
       )
 
       if row['ENTRY_COMMENTS'].present?
