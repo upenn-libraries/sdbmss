@@ -1,5 +1,10 @@
 # -*- encoding : utf-8 -*-
 #
+# THIS HAS NOTHING TO DO WITH 'CATALOGS'!
+#
+# This is called 'CatalogController' because that's what Blacklight
+# requires us to call its search controller; it's not customizable
+# (because the name is tied to the views directory).
 class CatalogController < ApplicationController  
   include Blacklight::Catalog
 
