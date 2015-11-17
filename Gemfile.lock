@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/mojombo/chronic.git
+  revision: 1b93e33592c388ca098cce3b28df064cd0d12061
+  specs:
+    chronic (0.10.2)
+      numerizer (~> 0.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -81,7 +88,6 @@ GEM
       xpath (~> 2.0)
     childprocess (0.5.6)
       ffi (~> 1.0, >= 1.0.11)
-    chronic (0.10.2)
     cliver (0.3.2)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
@@ -163,6 +169,7 @@ GEM
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     number_to (0.7.1)
+    numerizer (0.2.0)
     orm_adapter (0.5.0)
     paper_trail (4.0.0)
       activerecord (>= 3.0, < 6.0)
@@ -305,7 +312,7 @@ DEPENDENCIES
   cancancan (~> 1.12.0)
   capistrano-rails (~> 1.1.0)
   capybara (~> 2.4.4)
-  chronic (~> 0.10.2)
+  chronic!
   coffee-rails (~> 4.0.0)
   daemons (~> 1.2.2)
   database_cleaner (~> 1.4.1)
@@ -342,4 +349,4 @@ DEPENDENCIES
   yard (~> 0.8.0)
 
 BUNDLED WITH
-   1.10.5
+   1.10.6
