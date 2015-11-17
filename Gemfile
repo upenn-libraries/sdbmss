@@ -69,8 +69,7 @@ gem 'levenshtein', '~> 0.2.2'
 gem 'paper_trail', '~> 4.0.0'
 
 # natural language date parser
-# gem 'chronic', '~> 0.10.2'
-gem 'chronic', git: 'https://github.com/mojombo/chronic.git'
+gem 'chronic', '~> 0.10.2'
 
 # async background job processing
 gem 'delayed_job', '~> 4.0.6'
