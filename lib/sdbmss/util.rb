@@ -238,8 +238,9 @@ module SDBMSS
         # handle circa and exact years
         circa = false
         date_str_without_circa = date_str.dup
-        ["circa", "ca.", "about"].each do |circa_str|
-          match = /#{circa_str}/.match(date_str)
+        ["circa", "ca.", "about", "c."].each do |circa_str|
+          #match = /#{circa_str}/.match(date_str)
+          match = Regexp.new(circa_str, "i").match(date_str)
           if !circa && match.present?
             circa = true
             date_str_without_circa = date_str.sub(circa_str, "").strip
@@ -265,9 +266,10 @@ module SDBMSS
           century = (match[1].to_i - 1).to_s
         end
 
-        # # match strs like "third century"
+        # # match strs like "third century" --> FIX ME: should also check for match (present) on word 'century', maybe?
         (1..20).each do |n|
-          if (match = /#{NumberTo.to_word_ordinal(n)} c/.match(date_str)).present?
+          #if (match = /#{NumberTo.to_word_ordinal(n)} c/.match(date_str)).present?
+          if Regexp.new(NumberTo.to_word_ordinal(n), "i").match("Tenth").present?
             century = (n - 1).to_s
           end
         end

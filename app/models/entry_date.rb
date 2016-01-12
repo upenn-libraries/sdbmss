@@ -41,12 +41,17 @@ class EntryDate < ActiveRecord::Base
     if (exact_date_match = /^(\d{1,4})$/.match(date_str)).present?
       year = exact_date_match[1]
       return [year, (year.to_i + 1).to_s]
+    # otherwise attempt to parse it based on certain conventions (circa, century, etc.)
     elsif (dates = SDBMSS::Util.parse_approximate_date_str_into_year_range(date_str)).present?
       return [dates[0], dates[1]]
     else
-      parsed = Chronic.parse(date_str)
-      if parsed.present?
-        return [parsed.strftime("%Y"), (parsed + 1.year).strftime("%Y")]
+      begin
+        parsed = Chronic.parse(date_str)
+        if parsed.present?
+          return [parsed.strftime("%Y"), (parsed + 1.year).strftime("%Y")]
+        end
+      rescue ArgumentError
+        puts "WARNING: No time information in '#{date_str}', and convention is not recognized by date parser."
       end
     end
     return [nil, nil]
