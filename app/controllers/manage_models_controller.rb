@@ -60,6 +60,7 @@ class ManageModelsController < ApplicationController
         }
       end
     else
+      # if creating new NAME, and NAME already exists, simply create ERROR (no merge)
       respond_to do |format|
         format.html {
           render 'new'

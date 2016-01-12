@@ -62,6 +62,8 @@ describe Name do
       author2.save!
 
       author1.merge_into(author2)
+
+      expect(author1.deleted).to eq(true)
     end
 
   end

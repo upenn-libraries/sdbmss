@@ -12,7 +12,7 @@ module CreatesActivity
     )
     success = activity.save
     if !success
-      Rails.logger.error "Error saving Activity object (#{controller_name}): #{activity.errors.messages}"
+      Rails.logger.error "Error saving Activity object (): #{activity.errors.messages}"
     end
     activity
   end

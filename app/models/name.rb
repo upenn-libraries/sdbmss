@@ -230,7 +230,6 @@ class Name < ActiveRecord::Base
   # merges this record into target, soft-deleting this record.
   def merge_into(target)
     target_id = target.id
-
     # Find all the Entries attached to this name, that will need to be
     # reindexed after the merge
     entry_ids = entry_ids_to_index_on_update
@@ -251,10 +250,12 @@ class Name < ActiveRecord::Base
 
     # we MUST clear out the fields in this soft-deleted record to
     # avoid problems with uniqueness constraints.
-    self.name = nil
+    
+    # but ... CAN't SAVE when name is BLANK (nil)
+    # self.name = nil
     self.viaf_id = nil
     self.deleted = true
-    self.save
+    self.save!
 
     # reindex affected entries
     SDBMSS::IndexJob.perform_later(Entry.to_s, entry_ids)
