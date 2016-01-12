@@ -19,6 +19,10 @@ describe EntryDate do
       expect(EntryDate.parse_observed_date("eleventh century")).to eq(["1000", "1101"])
     end
 
+    it "parses a century data CAPITALIZED" do
+      expect(EntryDate.parse_observed_date("Tenth century")).to eq(["900", "1001"])
+    end
+
     it "parses a century date" do
       expect(EntryDate.parse_observed_date("11th century")).to eq(["1000", "1101"])
     end
