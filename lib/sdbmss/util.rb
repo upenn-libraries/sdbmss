@@ -199,7 +199,7 @@ module SDBMSS
       # TODO: handle negative dates
       def parse_approximate_date_str_into_year_range(date_str)
 
-        date_str = date_str.strip
+        date_str = date_str.strip.downcase
 
         # handle case of 'to'
         if / to /.match(date_str)
@@ -238,9 +238,8 @@ module SDBMSS
         # handle circa and exact years
         circa = false
         date_str_without_circa = date_str.dup
-        ["circa", "ca.", "about", "c."].each do |circa_str|
-          #match = /#{circa_str}/.match(date_str)
-          match = Regexp.new(circa_str, "i").match(date_str)
+        ["circa", "ca.", "about"].each do |circa_str|
+          match = /#{circa_str}/.match(date_str)
           if !circa && match.present?
             circa = true
             date_str_without_circa = date_str.sub(circa_str, "").strip
@@ -266,10 +265,9 @@ module SDBMSS
           century = (match[1].to_i - 1).to_s
         end
 
-        # # match strs like "third century" --> FIX ME: should also check for match (present) on word 'century', maybe?
+        # # match strs like "third century"
         (1..20).each do |n|
-          #if (match = /#{NumberTo.to_word_ordinal(n)} c/.match(date_str)).present?
-          if Regexp.new(NumberTo.to_word_ordinal(n), "i").match("Tenth").present?
+          if (match = /#{NumberTo.to_word_ordinal(n)} c/.match(date_str)).present?
             century = (n - 1).to_s
           end
         end
@@ -391,7 +389,7 @@ module SDBMSS
       # really can take 5 secs, if not more.
       def wait_for_solr_to_be_current
         host = ENV['SOLR_URL'].present? ? URI(ENV['SOLR_URL']).host : 'localhost'
-        uri = "http://#{host}:8983/solr/admin/cores?action=STATUS&core=test"
+        uri = "http://#{host}:8982/solr/admin/cores?action=STATUS&core=test"
         
         current = false
         count = 0

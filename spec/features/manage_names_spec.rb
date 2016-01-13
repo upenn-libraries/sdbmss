@@ -32,6 +32,7 @@ describe "Manage Names", :js => true do
 
     visit names_path
     expect(page).to have_content("Manage all name records")
+    expect(page).to have_content(author.name)
   end
 
   it "should show merge link when new name already exists" do
@@ -49,5 +50,4 @@ describe "Manage Names", :js => true do
 
     expect(page).to have_content("Click here to merge")
   end
-
 end

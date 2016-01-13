@@ -50,6 +50,7 @@ class EntryDate < ActiveRecord::Base
         if parsed.present?
           return [parsed.strftime("%Y"), (parsed + 1.year).strftime("%Y")]
         end
+      # catch argument error sent to Chronic, for some reason was triggered by "Tenth", and similar strings
       rescue ArgumentError
         puts "WARNING: No time information in '#{date_str}', and convention is not recognized by date parser."
       end
