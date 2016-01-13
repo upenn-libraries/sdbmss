@@ -60,14 +60,8 @@ class ManageModelsController < ApplicationController
         }
       end
     else
-      # FIX ME - New MODEL has conflict with existing one, so was not saved.
-      #  - therefore, it does not have an ID to use with MERGE
-      #  - possibilities:
-      #      1. alternative MERGE that does not look up first (@model) in database?
-      #      2. force the MODEL to save in database, then merge?
+      # if creating new NAME, and NAME already exists, simply create ERROR (no merge)
       respond_to do |format|
-        #sets a temporary ID
-        @model.id = -1
         format.html {
           render 'new'
         }

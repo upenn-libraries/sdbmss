@@ -251,11 +251,11 @@ class Name < ActiveRecord::Base
     # we MUST clear out the fields in this soft-deleted record to
     # avoid problems with uniqueness constraints.
     
-    # CAN't SAVE when name is BLANK (nil)
+    # but ... CAN't SAVE when name is BLANK (nil)
     # self.name = nil
     self.viaf_id = nil
     self.deleted = true
-    self.save
+    self.save!
 
     # reindex affected entries
     SDBMSS::IndexJob.perform_later(Entry.to_s, entry_ids)
