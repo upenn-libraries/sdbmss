@@ -46,7 +46,6 @@ class EntryDate < ActiveRecord::Base
       return [dates[0], dates[1]]
     else
       begin
-        puts "parsing via Chronic: #{date_str}"
         parsed = Chronic.parse(date_str)
         if parsed.present?
           return [parsed.strftime("%Y"), (parsed + 1.year).strftime("%Y")]

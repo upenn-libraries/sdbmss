@@ -1094,8 +1094,12 @@
             var startTargetId = targetIds[0];
             var endTargetId = targetIds[1];
 
+
+        // we may not care if the DATE fields are already populated, we still want to correct them
+        // modify function below to revert back
             var areTargetsPopulated = function() {
-                return $("#" + startTargetId).val() || $("#" + endTargetId).val();
+              return false;
+//            return $("#" + startTargetId).val() || $("#" + endTargetId).val();
             };
 
             $(element).focusout(function(event) {
