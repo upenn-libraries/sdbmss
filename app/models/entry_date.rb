@@ -52,7 +52,7 @@ class EntryDate < ActiveRecord::Base
         end
       # catch argument error sent to Chronic, for some reason was triggered by "Tenth", and similar strings
       rescue ArgumentError
-        puts "WARNING: No time information in '#{date_str}', and convention is not recognized by date parser."
+        puts "WARNING: No time information in '#{date_str}', and convention is not recognized by CHRONIC date parser."
       end
     end
     return [nil, nil]
