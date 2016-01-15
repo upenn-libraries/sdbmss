@@ -87,7 +87,7 @@ describe EntryDate do
       expect(EntryDate.parse_observed_date("about 1324")).to eq(["1314", "1335"])
     end
 
-    # roman numerals
+    # roman numerals - added by hellerb
 
     it "parses a roman numeral year" do
       expect(EntryDate.parse_observed_date("MCXX")).to eq(["1120", "1121"])
@@ -177,6 +177,12 @@ describe EntryDate do
 
     it "parses a nonsense string" do
       expect(EntryDate.parse_observed_date("blah de blah")).to eq([nil,nil])
+    end
+
+    it "parses returns nil upon default date parsing (Chronic) exception" do
+      expect(EntryDate.parse_observed_date("December 1st, 1982")).to eq(["1982", "1983"])
+      allow(EntryDate).to receive(:parse_default_date).and_raise(ArgumentError);
+      expect(EntryDate.parse_observed_date("December 1st, 1982")).to eq([nil, nil])
     end
 
   end

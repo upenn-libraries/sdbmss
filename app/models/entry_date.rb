@@ -46,16 +46,22 @@ class EntryDate < ActiveRecord::Base
       return [dates[0], dates[1]]
     else
       begin
-        parsed = Chronic.parse(date_str)
-        if parsed.present?
-          return [parsed.strftime("%Y"), (parsed + 1.year).strftime("%Y")]
-        end
+        return self.parse_default_date(date_str)
       # catch argument error sent to Chronic, for some reason was triggered by "Tenth", and similar strings
       rescue ArgumentError
         puts "WARNING: No time information in '#{date_str}', and convention is not recognized by CHRONIC date parser."
       end
     end
     return [nil, nil]
+  end
+
+  def self.parse_default_date(date_str)
+    parsed = Chronic.parse(date_str)
+    if parsed.present?
+      return [parsed.strftime("%Y"), (parsed + 1.year).strftime("%Y")]
+    else
+      return [nil, nil]
+    end
   end
 
   # examines observed_date and based on it, populates
