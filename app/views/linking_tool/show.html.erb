@@ -322,7 +322,7 @@ $(document).ready(function() {
 
     $("#persist-entries-manuscript-link").click(function (event) {
         if(mode == 'by_entry') {
-            if(entryManuscripts.length > 1) {
+            if(entryManuscripts.length > 0) {
                 // create a Manuscript and its EntryManuscripts
                 $.ajax({
                     url: '/manuscripts.json',
@@ -349,7 +349,7 @@ $(document).ready(function() {
                     }
                 });
             } else {
-                SDBM.showErrorModal("#modal", "Creating a Manuscript requires more than 1 entry. Queue some entries and try again.");
+                SDBM.showErrorModal("#modal", "Creating a Manuscript requires at least 1 entry. Queue some entries and try again.");
             }
         } else {
             $.ajax({
