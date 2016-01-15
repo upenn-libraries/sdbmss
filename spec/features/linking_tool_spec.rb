@@ -60,10 +60,28 @@ describe "Linking Tool", :js => true do
 
   # NOTE: tests here rely on data created by previous tests
 
-  it "should create a new Manuscript out of two entries" do
+  it "should create a new Manuscript out of ONE entry" do
     count = Manuscript.count
 
     entry = Entry.first
+    visit linking_tool_by_entry_path id: entry.id
+
+    click_button "Create Manuscript Record"
+
+    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+
+    expect(Manuscript.count).to eq(count + 1)
+
+    entries = Manuscript.last.entries
+    entry_ids = entries.map(&:id)
+    expect(entry_ids.count).to eq(1)
+    expect(entry_ids.include?(entry.id)).to be_truthy
+  end
+
+  it "should create a new Manuscript out of two entries" do
+    count = Manuscript.count
+
+    entry = Entry.find(3)
     visit linking_tool_by_entry_path id: entry.id
 
     second_entry_id = first(".add-entry-link", visible: true)["data-entry-id".to_sym].to_i
