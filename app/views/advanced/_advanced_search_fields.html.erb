@@ -23,7 +23,7 @@ $(document).ready(function() {
                 var input_element = $(container).find("input").first();
                 var input_name = "";
                 if($(input_element).val()) {
-                    input_name = $(container).find("select").val();
+                    input_name = $(container).find("select").val() + "[]";
                 }
                 $(input_element).attr("name", input_name);
             }

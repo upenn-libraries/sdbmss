@@ -10,7 +10,7 @@ module CatalogControllerConfiguration
   included do
 
     configure_blacklight do |config|
-
+      
       config.max_per_page = Rails.configuration.sdbmss_max_search_results
 
       config.response_model = SDBMSS::Blacklight::SolrResponse
@@ -392,6 +392,7 @@ module CatalogControllerConfiguration
 
     self.search_params_logic << :translate_manuscript_date
     self.search_params_logic << :translate_provenance_date
+    self.search_params_logic << :translate_source_date
 
   end
 

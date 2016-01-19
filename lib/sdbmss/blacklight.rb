@@ -122,6 +122,20 @@ module SDBMSS::Blacklight
       end
     end
 
+    def translate_date_string_to_search_query(solr_parameters, param_name)
+      date = blacklight_params[param_name]
+      if date.present?
+        date = date.gsub("-", "")
+        short = 8 - date.length
+        date = date + "*" * short
+        blacklight_params[param_name] = date
+      end
+    end
+
+    def translate_source_date(solr_parameters)
+      translate_date_string_to_search_query(solr_parameters, 'source_date')
+    end
+
     def translate_manuscript_date(solr_parameters)
       translate_daterange_param(solr_parameters, 'manuscript_date', DATE_RANGE_YEAR_MIN, DATE_RANGE_YEAR_MAX)
     end
