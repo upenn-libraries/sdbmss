@@ -123,11 +123,11 @@ module ApplicationHelper
     i = 0
     result = []
     while i < limit do
-      value = value2 = nil 
+      value = value2 = nil
+      selected_field = fields.keys.first 
       if queried_fields.length > 0
         fieldname = queried_fields.keys.first
         selected_field = fieldname
-
         # if there are multiple searches under the same field name
         if queried_fields[fieldname].kind_of? Array
           range_str = queried_fields[fieldname].first
@@ -142,7 +142,7 @@ module ApplicationHelper
           end            
           i += 1
           queried_fields[fieldname].delete(range_str)
-          if queried_fields.length <= 0
+          if queried_fields[fieldname].length <= 0
             queried_fields.delete(fieldname)
           end
         # otherwise, for non-numeric fields
@@ -163,7 +163,7 @@ module ApplicationHelper
         i += 1
       end
       result += [OpenStruct.new(
-        index: i,
+        index: i - 1,
         fields: fields,
         selected_field: selected_field,
         value: value,
