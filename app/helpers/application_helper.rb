@@ -121,6 +121,7 @@ module ApplicationHelper
     # set of form inputs, for advanced search page
     limit = 5
     i = 0
+    result = []
     while i < limit do
       if queried_fields.length > 0
         fieldname = queried_fields.key.first
@@ -149,14 +150,15 @@ module ApplicationHelper
       else
         i += 1
       end
-      OpenStruct.new(
+      result += [OpenStruct.new(
         index: i,
         fields: fields,
         selected_field: selected_field,
         value: value,
         value2: value2,
-      )
+      )]
     end
+    return result
   end
 
   def render_partial_if_exists(path_to_partial, fall_through, *args)
