@@ -119,22 +119,35 @@ module ApplicationHelper
 
     # now make an Array of OpenStructs for each row corresponding to a
     # set of form inputs, for advanced search page
-    num_fields.times.map do |i|
-      selected_field, value, value2 = nil, nil, nil
+    limit = 5
+    i = 0
+    while i < limit do
       if queried_fields.length > 0
-        fieldname = queried_fields.keys.first
+        fieldname = queried_fields.key.first
         selected_field = fieldname
 
-        if !fields[fieldname].is_numeric_field
+        if queried_fields[fieldname].kind_of? Array
+          value = queried_fields[fieldname].first
+          i += 1
+          queried_fields[fieldname].delete(value)
+          if queried_fields.length <= 0
+            queried_fields.delete(fieldname)
+          end
+        elsif !fields[fieldname].is_numeric_field
           value = queried_fields[fieldname]
+          queried_fields.delete(fieldname)
+          i += 1
         else
           range_str = queried_fields[fieldname]
           match = /\[(\d+)\s+TO\s+(\d+)\]/.match(range_str)
           if match
             value, value2 = match[1], match[2]
           end
+          queried_fields.delete(fieldname)
+          i += 1
         end
-        queried_fields.delete(fieldname)
+      else
+        i += 1
       end
       OpenStruct.new(
         index: i,

@@ -14,12 +14,12 @@ class EntriesController < ManageModelsController
 
   include Blacklight::Catalog
 
+  include CatalogControllerConfiguration
 
   # the blacklight_advanced_search gem includes this automatically in
   # CatalogController but not here, so we include it explicitly
   include BlacklightAdvancedSearch::Controller
 
-  include CatalogControllerConfiguration
   
   include CalculateBounds
 
