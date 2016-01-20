@@ -13,7 +13,7 @@ $(document).ready(function() {
                 if(start || end) {
                     if (!start) { start = "*"; }
                     if (!end) { end = "*"; }
-                    input_name = $(container).find("select").val();
+                    input_name = $(container).find("select").val() + "[]";
                     input_value = "[" + start + " TO " + end + "]";
                 }
                 $(container).find("input[type=hidden]").attr("name", input_name);
@@ -36,52 +36,21 @@ $(document).ready(function() {
 
 <div class="compress-whitespace">
 
-<!-- this is meant to handle populating the fields when there are multiple keywords for the same field.  LIMIT is used because there could be only one field, but many search terms -->
-
-<% limit = 0 %>
 <% prepopulated_search_fields_for_advanced_search(5, is_numeric: false).each do |fieldstruct| %>
-    <%
-    if fieldstruct.value.kind_of? Array
-        fieldstruct.value.each do |val|
-    %>
-    <div class="form-group advanced-search-field">
-        <div class="col-sm-7">
-            <input class="form-control" name="" type="text" value="<%= val %>"/>
-        </div>
-        <div class="col-sm-1 label-alignment">in</div>
-        <div class="col-sm-4">
-            <select class="form-control col-sm-3" id="text_field_<%= limit %>">
-                <%- fieldstruct.fields.each do |key, field_def| -%>
-                <option value="<%= key %>" <% if fieldstruct.selected_field == key %>selected="selected"<% end %>><%= field_def.label %></option>
-                <%- end -%>
-            </select>
-        </div>
+<div class="form-group advanced-search-field">
+    <div class="col-sm-7">
+        <input class="form-control" name="" type="text" value="<%= fieldstruct.value %>"/>
     </div>
-    <%
-            limit += 1
-            break if limit >= 5
-        end
-    else
-    %>
-    <div class="form-group advanced-search-field">
-        <div class="col-sm-7">
-            <input class="form-control" name="" type="text" value="<%= fieldstruct.value %>"/>
-        </div>
-        <div class="col-sm-1 label-alignment">in</div>
-        <div class="col-sm-4">
-            <select class="form-control col-sm-3" id="text_field_<%= limit %>">
-                <%- fieldstruct.fields.each do |key, field_def| -%>
-                <option value="<%= key %>" <% if fieldstruct.selected_field == key %>selected="selected"<% end %>><%= field_def.label %></option>
-                <%- end -%>
-            </select>
-        </div>
+    <div class="col-sm-1 label-alignment">in</div>
+    <div class="col-sm-4">
+        <select class="form-control col-sm-3" id="text_field_<%= fieldstruct.index %>">
+            <%- fieldstruct.fields.each do |key, field_def| -%>
+            <option value="<%= key %>" <% if fieldstruct.selected_field == key %>selected="selected"<% end %>><%= field_def.label %></option>
+            <%- end -%>
+        </select>
     </div>
-<%  
-        limit += 1
-        break if limit >= 5
-    end
-end
-%>
+</div>
+<% end %>
 
 <h3 class="query-criteria-heading">Numeric Fields:</h3>
     
@@ -104,6 +73,7 @@ end
         </select>
     </div>
 </div>
-<% end %>
+
+<%- end -%>
 
 </div>

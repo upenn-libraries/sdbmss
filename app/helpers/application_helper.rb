@@ -123,19 +123,30 @@ module ApplicationHelper
     i = 0
     result = []
     while i < limit do
+      value = value2 = nil 
       if queried_fields.length > 0
         fieldname = queried_fields.keys.first
         selected_field = fieldname
 
+        # if there are multiple searches under the same field name
         if queried_fields[fieldname].kind_of? Array
-          value = queried_fields[fieldname].first
+          range_str = queried_fields[fieldname].first
+          if !fields[fieldname].is_numeric_field
+            value = range_str
+          else
+            range_str = queried_fields[fieldname].first
+            match = /\[(\d+)\s+TO\s+(\d+)\]/.match(range_str)
+            if match
+              value, value2 = match[1], match[2]
+            end
+          end            
           i += 1
-          queried_fields[fieldname].delete(value)
+          queried_fields[fieldname].delete(range_str)
           if queried_fields.length <= 0
             queried_fields.delete(fieldname)
           end
-          
-        if !fields[fieldname].is_numeric_field
+        # otherwise, for non-numeric fields
+        elsif !fields[fieldname].is_numeric_field
           value = queried_fields[fieldname]
           queried_fields.delete(fieldname)
           i += 1
