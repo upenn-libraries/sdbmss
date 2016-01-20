@@ -255,8 +255,12 @@ module SDBMSS
             circa = true
             date_str_without_circa = date_str.sub(circa_str, "").strip
             result = parse_approximate_date_str_into_year_range(date_str_without_circa)
-            result = [(result[0].to_i - 10).to_s, (result[1].to_i + 10).to_s]
-            return result
+            if result
+              result = [(result[0].to_i - 10).to_s, (result[1].to_i + 10).to_s]
+              return result
+            else
+              return [nil, nil]
+            end
           end
         end
 
