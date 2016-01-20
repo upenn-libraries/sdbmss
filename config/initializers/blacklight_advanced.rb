@@ -17,8 +17,47 @@ module BlacklightAdvancedSearch
       end
       queries.join( ' ' + keyword_op + ' ')
     end
-    def self.is_adding
-      puts "no!?"
+  end
+
+  module RenderConstraintsOverride
+    def render_constraints_query(my_params = params)
+      if (advanced_query.nil? || advanced_query.keyword_queries.empty? )
+        return super(my_params)
+      else
+        content = []
+        advanced_query.keyword_queries.each_pair do |field, query|
+          label = search_field_def_for_key(field)[:label]
+          if query.kind_of? Array
+            query.each do |q|
+              content << render_constraint_element(label, q, :remove => catalog_index_path(remove_advanced_multiple_keyword_query(field, q, my_params)))
+            end
+          else
+            content << render_constraint_element(
+              label, query,
+              :remove =>
+                catalog_index_path(remove_advanced_keyword_query(field,my_params))
+            )
+          end
+          puts "HI!", field, my_params, remove_advanced_keyword_query(field, my_params), "END"
+        end
+        if (advanced_query.keyword_op == "OR" &&
+            advanced_query.keyword_queries.length > 1)
+          content.unshift content_tag(:span, "Any of:", class:'operator')
+          content_tag :span, class: "inclusive_or appliedFilter well" do
+            safe_join(content.flatten, "\n")
+          end
+        else
+          safe_join(content.flatten, "\n")    
+        end
+      end
+    end
+    def remove_advanced_multiple_keyword_query(field, query, params)
+      my_p = params.dup
+      puts "BEFORE",  my_p
+      my_p[field] =  my_p[field] - [query]
+      my_p.delete("controller")
+      puts "AFTER",  my_p
+      return my_p
     end
   end
 end
