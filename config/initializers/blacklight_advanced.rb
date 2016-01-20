@@ -38,7 +38,6 @@ module BlacklightAdvancedSearch
                 catalog_index_path(remove_advanced_keyword_query(field,my_params))
             )
           end
-          puts "HI!", field, my_params, remove_advanced_keyword_query(field, my_params), "END"
         end
         if (advanced_query.keyword_op == "OR" &&
             advanced_query.keyword_queries.length > 1)
@@ -53,10 +52,8 @@ module BlacklightAdvancedSearch
     end
     def remove_advanced_multiple_keyword_query(field, query, params)
       my_p = params.dup
-      puts "BEFORE",  my_p
       my_p[field] =  my_p[field] - [query]
       my_p.delete("controller")
-      puts "AFTER",  my_p
       return my_p
     end
   end
