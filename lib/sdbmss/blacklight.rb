@@ -101,8 +101,7 @@ module SDBMSS::Blacklight
     # "maxX maxY"]'. We do this translation so that BL params are kept
     # readable and front-end JS can treat date range queries exactly
     # the same as other numeric range queries.
-    def translate_daterange_param(solr_parameters, param_name, min, max)
-      date = blacklight_params[param_name]
+    def translate_daterange_string(date, min, max)
       if date.present?
         m = /\[(.+?) TO (.+?)\]/.match(date)
         if m
@@ -117,8 +116,21 @@ module SDBMSS::Blacklight
           # This checks that a stored range OVERLAPS with range
           # specified in query. see
           # https://people.apache.org/~hossman/spatial-for-non-spatial-meetup-20130117/
-          blacklight_params[param_name] = "[\"#{min} #{from}\" TO \"#{to} #{max}\"]"
+          return "[\"#{min} #{from}\" TO \"#{to} #{max}\"]"
         end
+      end
+    end
+
+    def translate_daterange_param(solr_parameters, param_name, min, max)
+      date = blacklight_params[param_name]
+      if date.kind_of? Array
+        result = []
+        date.each do |d|
+          result += [translate_daterange_string(d, min, max)]
+        end
+        blacklight_params[param_name] = result
+      else
+        blacklight_params[param_name] = translate_daterange_string(date, min, max)
       end
     end
 

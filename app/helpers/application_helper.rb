@@ -119,31 +119,58 @@ module ApplicationHelper
 
     # now make an Array of OpenStructs for each row corresponding to a
     # set of form inputs, for advanced search page
-    num_fields.times.map do |i|
-      selected_field, value, value2 = nil, nil, nil
+    limit = 5
+    i = 0
+    result = []
+    while i < limit do
+      value = value2 = nil
+      selected_field = fields.keys.first 
       if queried_fields.length > 0
         fieldname = queried_fields.keys.first
         selected_field = fieldname
-
-        if !fields[fieldname].is_numeric_field
+        # if there are multiple searches under the same field name
+        if queried_fields[fieldname].kind_of? Array
+          range_str = queried_fields[fieldname].first
+          if !fields[fieldname].is_numeric_field
+            value = range_str
+          else
+            range_str = queried_fields[fieldname].first
+            match = /\[(\d+)\s+TO\s+(\d+)\]/.match(range_str)
+            if match
+              value, value2 = match[1], match[2]
+            end
+          end            
+          i += 1
+          queried_fields[fieldname].delete(range_str)
+          if queried_fields[fieldname].length <= 0
+            queried_fields.delete(fieldname)
+          end
+        # otherwise, for non-numeric fields
+        elsif !fields[fieldname].is_numeric_field
           value = queried_fields[fieldname]
+          queried_fields.delete(fieldname)
+          i += 1
         else
           range_str = queried_fields[fieldname]
           match = /\[(\d+)\s+TO\s+(\d+)\]/.match(range_str)
           if match
             value, value2 = match[1], match[2]
           end
+          queried_fields.delete(fieldname)
+          i += 1
         end
-        queried_fields.delete(fieldname)
+      else
+        i += 1
       end
-      OpenStruct.new(
-        index: i,
+      result += [OpenStruct.new(
+        index: i - 1,
         fields: fields,
         selected_field: selected_field,
         value: value,
         value2: value2,
-      )
+      )]
     end
+    return result
   end
 
   def render_partial_if_exists(path_to_partial, fall_through, *args)
