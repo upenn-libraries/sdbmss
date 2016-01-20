@@ -124,7 +124,7 @@ module ApplicationHelper
     result = []
     while i < limit do
       if queried_fields.length > 0
-        fieldname = queried_fields.key.first
+        fieldname = queried_fields.keys.first
         selected_field = fieldname
 
         if queried_fields[fieldname].kind_of? Array
@@ -134,7 +134,8 @@ module ApplicationHelper
           if queried_fields.length <= 0
             queried_fields.delete(fieldname)
           end
-        elsif !fields[fieldname].is_numeric_field
+          
+        if !fields[fieldname].is_numeric_field
           value = queried_fields[fieldname]
           queried_fields.delete(fieldname)
           i += 1
