@@ -1,7 +1,5 @@
 # Customize the Blacklight Advanced Search parser to handle multiple inputs for the same field (i.e. author[]="Cicero"&author[]="Sallust" )
 
-puts BlacklightAdvancedSearch, BlacklightAdvancedSearch::ParsingNestingParser
-
 module BlacklightAdvancedSearch
   module ParsingNestingParser
     def process_query(params,config)

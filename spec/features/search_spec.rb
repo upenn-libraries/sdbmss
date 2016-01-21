@@ -118,6 +118,25 @@ describe "Blacklight Search", :js => true do
     expect(page).not_to have_link(entry_nine.public_id)
   end
 
+  it "should do a search using two Authors" do
+    visit advanced_search_path
+
+    search_fields = page.all('.advanced-search-field')
+
+    puts "hmm", search_fields[0], "mmh"
+
+    fill_in(search_fields[0].find('input').first, with: "Cicero")
+
+    #fill_in, with: "Cicero"
+    #search_fields[1].fill_in, with: "Sallust"
+
+    select 'Author', from: "text_field_0"
+    select 'Author', from: "text_field_1"
+
+    find_by_id('advanced-search-submit').click    
+
+  end
+
   it "should load show Entry page" do
     entry = Entry.last
     visit entry_path(entry)
