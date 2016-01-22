@@ -171,6 +171,41 @@ describe "Linking Tool", :js => true do
     expect(entry_ids.include?(entry_id)).to eq(false)
   end
 
+  it "should remove the last entry from an existing Manuscript" do
+    manuscript = Manuscript.last
+    visit linking_tool_by_manuscript_path id: manuscript.id
+
+    # remove all except the last entry
+
+    entryCount = manuscript.entries.length
+    (entryCount - 1).times do |i|
+      entry_id = manuscript.entries[i].id
+      first("input[name='entry_id_#{entry_id}'][value='unlink']").trigger('click')
+    end
+
+    click_button "Save changes"
+    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+    manuscript.reload
+
+    # remove the last entry
+
+    entry = manuscript.entries.first
+    entry_id = entry.id
+
+    first("input[name='entry_id_#{entry_id}'][value='unlink']").trigger('click')
+    click_button "Save changes"
+    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+
+    manuscript.reload
+
+    expect(manuscript.entries.length).to eq(0)
+
+  end
+
+  it "should warn the user that there are unsaved changes before leaving page" do
+    expect(pending("test not created yet")).to fail
+  end
+
   it "should show error message when overwriting changes" do
 
     last_two_entries = Entry.last(2)

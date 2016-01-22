@@ -134,18 +134,30 @@ module SDBMSS::Blacklight
       end
     end
 
-    def translate_date_string_to_search_query(solr_parameters, param_name)
-      date = blacklight_params[param_name]
+    def translate_date_string_to_search_query(date)
       if date.present?
         date = date.gsub("-", "")
         short = 8 - date.length
         date = date + "*" * short
-        blacklight_params[param_name] = date
+        return date
+      end
+    end
+
+    def translate_date_to_search_query(solr_parameters, param_name)
+      date = blacklight_params[param_name]
+      if date.kind_of? Array
+        result = []
+        date.each do |d|
+          result += [translate_date_string_to_search_query(d)]
+        end
+        blacklight_params[param_name] = result
+      else
+        blacklight_params[param_name] = translate_date_string_to_search_query(date)
       end
     end
 
     def translate_source_date(solr_parameters)
-      translate_date_string_to_search_query(solr_parameters, 'source_date')
+      translate_date_to_search_query(solr_parameters, 'source_date')
     end
 
     def translate_manuscript_date(solr_parameters)

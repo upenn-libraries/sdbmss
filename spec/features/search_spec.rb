@@ -12,6 +12,8 @@ describe "Blacklight Search", :js => true do
     # instead of creating another set of test data. The consequence is
     # that these tests don't exercise everything as thoroughly as they
     # should, but they're probably good enough.
+    puts "Search"
+
     SDBMSS::ReferenceData.create_all
 
     SDBMSS::Util.wait_for_solr_to_be_current
@@ -116,25 +118,6 @@ describe "Blacklight Search", :js => true do
 
     expect(page).to have_link(entry_one.public_id)
     expect(page).not_to have_link(entry_nine.public_id)
-  end
-
-  it "should do a search using two Authors" do
-    visit advanced_search_path
-
-    search_fields = page.all('.advanced-search-field')
-
-    puts "hmm", search_fields[0], "mmh"
-
-    fill_in(search_fields[0].find('input').first, with: "Cicero")
-
-    #fill_in, with: "Cicero"
-    #search_fields[1].fill_in, with: "Sallust"
-
-    select 'Author', from: "text_field_0"
-    select 'Author', from: "text_field_1"
-
-    find_by_id('advanced-search-submit').click    
-
   end
 
   it "should load show Entry page" do

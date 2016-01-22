@@ -157,6 +157,11 @@ describe EntryDate do
       expect(EntryDate.parse_observed_date("about MCCCXXIV")).to eq(["1314", "1335"])
     end
 
+    it "parses roman numeral dates - case insensitive" do
+      expect(EntryDate.parse_observed_date("about MccCxxIv")).to eq(["1314", "1335"])
+      expect(EntryDate.parse_observed_date("First hALf of the xivTH century")).to eq(["1300", "1351"])
+    end
+
     # exact years
 
     it "parses an exact year" do
