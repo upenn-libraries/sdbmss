@@ -1102,7 +1102,7 @@
 //            return $("#" + startTargetId).val() || $("#" + endTargetId).val();
             };
 
-            $(element).focusout(function(event) {
+            $(element).change(function(event) {
                 var observedDate = $(element).val();
                 if(observedDate && !areTargetsPopulated()) {
                     $http.get(url , {
@@ -1117,6 +1117,7 @@
                             $("#" + startTargetId).change();
                             $("#" + endTargetId).val(response.data.date.date_end);
                             $("#" + endTargetId).change();
+                            $("#" + startTargetId).select();
                         }
                     }, function(response) {
                         alert("An error occurred trying to normalize date");

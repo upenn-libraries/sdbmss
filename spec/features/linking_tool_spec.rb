@@ -199,7 +199,6 @@ describe "Linking Tool", :js => true do
     manuscript.reload
 
     expect(manuscript.entries.length).to eq(0)
-
   end
 
   it "should warn the user that there are unsaved changes before leaving page" do

@@ -79,12 +79,14 @@ $(document).ready(function() {
     };
 
     var deleteWorkspaceEntry = function(entryIdToDelete) {
+        // FIX ME - what is the purpose of this?
         if(mode == 'by_entry' && entryId == entryIdToDelete) {
             SDBM.showErrorModal("#modal", "You can't unlink the main entry.");
             return;
         }
 
-        if(getActiveEntryManuscripts().length == 1) {
+        // FIX ME - should the last entry be removeable?  I think it should...
+        if(getActiveEntryManuscripts().length < 1) {
             SDBM.showErrorModal("#modal", "You can't unlink that record. There must be at least one entry in the table.");
             return;
         }
@@ -195,7 +197,9 @@ $(document).ready(function() {
             var params = sdbmTable.translateParamsToBlacklight(dt_params);
 
             params["approved"] = "*";
-            params.entry_id = $.map(getActiveEntryManuscripts(), function(item) { return item.entry_id; }).join(" OR ");
+
+            // prevent an empty search from returning ALL entries
+            params.entry_id = getActiveEntryManuscripts().length > 0 ? $.map(getActiveEntryManuscripts(), function(item) { return item.entry_id; }).join(" OR ") : "Nil";
 
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {
