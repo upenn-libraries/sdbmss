@@ -117,6 +117,8 @@ module SDBMSS::Blacklight
           # specified in query. see
           # https://people.apache.org/~hossman/spatial-for-non-spatial-meetup-20130117/
           return "[\"#{min} #{from}\" TO \"#{to} #{max}\"]"
+        else
+          return translate_date_string_to_search_query(date)
         end
       end
     end
@@ -159,6 +161,8 @@ module SDBMSS::Blacklight
     def translate_source_date(solr_parameters)
       translate_date_to_search_query(solr_parameters, 'source_date')
     end
+
+    # FIX ME: should these be 'translated'?  Or just searched as strings
 
     def translate_manuscript_date(solr_parameters)
       translate_daterange_param(solr_parameters, 'manuscript_date', DATE_RANGE_YEAR_MIN, DATE_RANGE_YEAR_MAX)

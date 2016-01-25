@@ -224,6 +224,8 @@ describe "Blacklight Advanced Search", :js => true do
   	fill_in "numeric_start_1", with: 2
   	fill_in "numeric_end_1", with: 3
   	select "Folios", from: "numeric_field_1"
+  	select 'any', from: 'op'
+
    	find_by_id('advanced-search-submit').click()
 
   	filters = page.all('.appliedFilter')

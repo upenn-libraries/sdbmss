@@ -156,6 +156,8 @@ class SourcesController < ManageModelsController
     search_model_class.all.includes([:created_by])
   end
 
+  # FIX ME - add support for OR queries as well as AND
+
   def search_query
     query = super
     if params["from"] && params["to"]
@@ -172,8 +174,17 @@ class SourcesController < ManageModelsController
     SEARCH_FIELDS.each do |field|
       fieldname = field[0]
       handler = field[2]
+      # modified to handle multiple field names, again, as in advanced search
       if params[fieldname].present?
-        query = handler.call(fieldname, params, query)
+        if params[fieldname].kind_of? Array
+          params[fieldname].each do |q|
+            p = params.dup
+            p[fieldname] = q
+            query = handler.call(fieldname, p, query)
+          end
+        else
+          query = handler.call(fieldname, params, query)
+        end
       end
     end
 

@@ -5,6 +5,7 @@ module BlacklightAdvancedSearch
     def process_query(params,config)
       queries = []
       keyword_queries.each do |field,query|
+        puts "Query: #{query}, Field: #{field} . . . "
         if query.kind_of? Array
           query.each do |q|
             queries << ParsingNesting::Tree.parse(q, config.advanced_search[:query_parser]).to_query( local_param_hash(field, config) )
