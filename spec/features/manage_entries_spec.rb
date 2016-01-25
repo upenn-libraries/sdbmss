@@ -110,4 +110,96 @@ describe "Manage entries", :js => true do
     expect(entry.superceded_by_id).to be(superceded_by_id)
   end
 
+  it "should load all entries from the Manage Entries page" do
+    visit entries_path
+
+    expect(page.find('#search_results_info')).to have_content(ActiveSupport::NumberHelper::number_to_delimited(Entry.all.count))
+  end
+
+  it "should perform a search on any field without error" do
+    visit entries_path
+
+    expect(page.first("select[name='search_field']").all("option").length).to eq(38)
+
+    38.times do |i|
+      page.first("input[name='search_value']").set "Test String"
+      option = page.first("select[name='search_field']").all("option")[i]
+      option.select_option
+      click_button("Search")
+      # puts "Option: #{option.value}, success"
+    end
+  end
+
+  it "should perform a search with multiple values for the same field (AND)" do
+    visit entries_path
+
+    textInputs = page.all("input[name='search_value']")
+    searchOptions = page.all("select[name='search_field']")
+
+    textInputs[0].set "Augustine"
+    searchOptions[0].set "Author"
+
+    textInputs[1].set "Hippo"
+    searchOptions[1].set "Author"
+
+    click_button("Search")
+
+    sleep 2
+
+    count = page.find('#search_results_info').text.match(/of\s([\d,]+)\s/)[1].gsub(",", "").to_i
+
+    visit entries_path
+
+    textInputs = page.all("input[name='search_value']")
+    searchOptions = page.all("select[name='search_field']")
+
+    textInputs[0].set "Augustine AND Hippo"
+    searchOptions[0].set "Author"
+
+    click_button("Search")
+
+    sleep 2
+
+    count2 = page.find('#search_results_info').text.match(/of\s([\d,]+)\s/)[1].gsub(",", "").to_i
+
+    expect(count).to eq(count2)
+  end
+
+  it "should perform a search with multiple values for the same field (ANY)" do
+    visit entries_path
+
+    textInputs = page.all("input[name='search_value']")
+    searchOptions = page.all("select[name='search_field']")
+
+    textInputs[0].set "Augustine"
+    searchOptions[0].set "Author"
+
+    textInputs[1].set "Cicero"
+    searchOptions[1].set "Author"
+
+    select 'any', from: 'op'
+
+    click_button("Search")
+
+    sleep 2
+
+    count = page.find('#search_results_info').text.match(/of\s([\d,]+)\s/)[1].gsub(",", "").to_i
+
+    visit entries_path
+
+    textInputs = page.all("input[name='search_value']")
+    searchOptions = page.all("select[name='search_field']")
+
+    textInputs[0].set "Augustine OR Cicero"
+    searchOptions[0].set "Author"
+
+    click_button("Search")
+
+    sleep 2
+
+    count2 = page.find('#search_results_info').text.match(/of\s([\d,]+)\s/)[1].gsub(",", "").to_i
+
+    expect(count).to eq(count2)
+  end
+
 end

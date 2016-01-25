@@ -1,7 +1,5 @@
 # Customize the Blacklight Advanced Search parser to handle multiple inputs for the same field (i.e. author[]="Cicero"&author[]="Sallust" )
 
-puts BlacklightAdvancedSearch, BlacklightAdvancedSearch::ParsingNestingParser
-
 module BlacklightAdvancedSearch
   module ParsingNestingParser
     def process_query(params,config)
@@ -24,10 +22,12 @@ module BlacklightAdvancedSearch
       if (advanced_query.nil? || advanced_query.keyword_queries.empty? )
         return super(my_params)
       else
+        numberOfQueries = advanced_query.keyword_queries.length
         content = []
         advanced_query.keyword_queries.each_pair do |field, query|
           label = search_field_def_for_key(field)[:label]
           if query.kind_of? Array
+            numberOfQueries += (query.length - 1)
             query.each do |q|
               content << render_constraint_element(label, q, :remove => catalog_index_path(remove_advanced_multiple_keyword_query(field, q, my_params)))
             end
@@ -40,7 +40,7 @@ module BlacklightAdvancedSearch
           end
         end
         if (advanced_query.keyword_op == "OR" &&
-            advanced_query.keyword_queries.length > 1)
+            numberOfQueries > 1)
           content.unshift content_tag(:span, "Any of:", class:'operator')
           content_tag :span, class: "inclusive_or appliedFilter well" do
             safe_join(content.flatten, "\n")
