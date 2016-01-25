@@ -139,7 +139,7 @@ module SDBMSS::Blacklight
     def translate_date_string_to_search_query(date)
       if date.present?
         date = date.gsub("-", "")
-        short = 8 - date.length
+        short = [8 - date.length, 0].max
         date = date + "*" * short
         return date
       end

@@ -210,7 +210,6 @@ module SDBMSS
       # TODO: handle negative dates
       def parse_approximate_date_str_into_year_range(date_str)
 
-        puts "parsing date"
         date_str = date_str.strip.downcase
 
         # handle case of 'to'

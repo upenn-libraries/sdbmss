@@ -60,4 +60,20 @@ describe "Manage sources", :js => true do
     expect(Source.count).to eq(count-1)
   end
 
+  it "should perform a search with multiple values for the same field" do
+    visit entries_path
+
+    textInputs = page.all("input[name='search_value']")
+    searchOptions = page.all("select[name='search_field']")
+
+    textInputs[0].set "Morgan"
+    searchOptions[0].set "Title"
+
+    textInputs[1].set "Libreria"
+    searchOptions[1].set "Title"
+
+    select 'any', from: 'op'
+
+    click_button("Search")
+  end
 end
