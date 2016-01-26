@@ -70,6 +70,8 @@ class Provenance < ActiveRecord::Base
   # Returns a 2-item Array with start_date and end_date in the format
   # YYYY or YYYY-MM-DD, depending on how much information is in the
   # approximate date string.
+  
+  #FIX ME: can throw same error (on 'Tenth', say) as util method (parse_approximate_date_str_into_year_range)
   def self.parse_observed_date(date_str)
     date_str = date_str.strip
 
