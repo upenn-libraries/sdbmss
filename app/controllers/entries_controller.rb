@@ -307,8 +307,14 @@ class EntriesController < ManageModelsController
           EntryManuscript.where(entry_id: @entry.id).each do |em|
             em.destroy
           end
+          # is this necessary?  for every source, language, place, name, etc. -> go through and update the COUNTER?
+          # FIX ME - updating counts for dependant data structures ... what to do...?
+          Source.where(id: @entry.source_id).each do |src|
+            src.entries_count = Entry.where(source_id: src.id, deprecated: false).count 
+          end
+          # Update entries_count for all Sources for the deprecated entry
+          # NOTE: we only need to do this if the entry was NOT superceded
         end
-
         Sunspot.index @entry
       end
     end

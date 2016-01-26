@@ -257,6 +257,16 @@ class Name < ActiveRecord::Base
     self.deleted = true
     self.save!
 
+    # need to update entry count for target Agent record
+    target.artists_count = EntryArtist.where(artist_id: target.id).count
+    target.authors_count = EntryAuthor.where(author_id: target.id).count
+    target.scribes_count = EntryScribe.where(scribe_id: target.id).count
+    target.sale_agents_count = SaleAgent.where(agent_id: target.id).count
+    target.source_agents_count = SourceAgent.where(agent_id: target.id).count
+    target.provenance_count = Provenance.where(provenance_agent_id: target.id).count
+
+    puts ">> #{target.artists_count} #{target.authors_count}"
+
     # reindex affected entries
     SDBMSS::IndexJob.perform_later(Entry.to_s, entry_ids)
   end

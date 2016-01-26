@@ -202,4 +202,17 @@ describe "Manage entries", :js => true do
     expect(count).to eq(count2)
   end
 
+  it "should deprecate an entry and have that change reflected in the Source" do
+    visit entries_path
+    first(".entry-deprecate-link").click
+    find("#deprecate").click
+    sleep(1)
+    expect(page).to have_content("Entry marked as deprecated.")
+
+    entry = Entry.find_by(deprecated: true)
+    source = Source.where(id: entry.source_id)[0]
+    entry_count = Entry.where(source_id: source.id).count
+    expect(entry_count).to eq(source.entries_count)
+  end
+
 end

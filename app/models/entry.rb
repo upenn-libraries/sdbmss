@@ -502,7 +502,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :title_flat,:stored => true) do
       entry_titles.map(&:title).join("; ")
     end
-    # FIX ME: change format (string, array?) to allow multiple titles to be searched for at once?
+
     define_field(:text, :title_search, :stored => true) do
       entry_titles.map(&:display_value)
     end
