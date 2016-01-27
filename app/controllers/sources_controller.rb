@@ -159,7 +159,9 @@ class SourcesController < ManageModelsController
   # FIX ME - add support for OR queries as well as AND
 
   def search_query
+
     query = super
+
     if params["from"] && params["to"]
       # handle range of IDs for a 'Jump To' search
       query = query.where("id >= ? and id <= ?", params["from"], params["to"])
@@ -169,6 +171,7 @@ class SourcesController < ManageModelsController
       query = query.joins(source_agents: [ :agent ] ).where('names.name like ?', "%#{params["agent"]}%")
     end
     
+    queries = []
     # always process these fields (used on both Add New Entry workflow and
     # Manage Sources screen)
     SEARCH_FIELDS.each do |field|
@@ -187,7 +190,6 @@ class SourcesController < ManageModelsController
         end
       end
     end
-
     query.with_associations
   end
 
