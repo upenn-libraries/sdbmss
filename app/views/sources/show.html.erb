@@ -193,6 +193,23 @@
             </tbody>
         </table>
 
+        <% if (comments = @source.comments).present? %>
+        <table class="table table-striped">
+            <thead>
+              <tr>
+                <th class="col-sm-12" colspan="2"><b>Comments</b></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                    <%= comments %>
+                </td>
+              </tr>
+            </tbody>
+        </table>
+        <% end %>
+
     </div>
 
 </div>
