@@ -246,10 +246,9 @@ class Name < ActiveRecord::Base
     target.is_author ||= self.is_author
     target.is_scribe ||= self.is_scribe
     target.is_provenance_agent ||= self.is_provenance_agent
-    target.save
 
-    # we MUST clear out the fields in this soft-deleted record to
-    # avoid problems with uniqueness constraints.
+    target.update_count
+    target.save
     
     # but ... CAN't SAVE when name is BLANK (nil)
     # self.name = nil
@@ -259,6 +258,11 @@ class Name < ActiveRecord::Base
 
     # reindex affected entries
     SDBMSS::IndexJob.perform_later(Entry.to_s, entry_ids)
+  end
+
+  def update_count()
+    Name.reset_counters(self.id, :entry_authors, :entry_artists, :entry_scribes, :sale_agents, :source_agents, :provenance)
+
   end
 
 end
