@@ -1,0 +1,7 @@
+a {
+  <% if Rails.env == 'development' %>
+    color: <%= 'darkmagenta' %>
+  <% elsif Rails.env == 'staging' %>
+    color: <%= 'darkgreen' %>
+  <% end %>
+}

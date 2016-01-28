@@ -7,6 +7,8 @@
 role :app, %w{jeffchiu@sdbmdev}
 role :web, %w{jeffchiu@sdbmdev}
 
+set :branch, 'development'
+
 # Extended Server Syntax
 # ======================
 # This can be used to drop a more detailed server definition into the
