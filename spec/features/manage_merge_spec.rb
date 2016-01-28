@@ -60,21 +60,29 @@ describe "Manage Names", :js => true do
   end
 
   it "should update counters correctly on merge" do
-    visit names_path
+    name_count = Name.count
+    puts "Count: #{name_count}"
 
-    first('.merge-link').click
+    author = Name.author
+    author.name = "John Updike"
+    author.save!
 
-    fill_in "target_id", :with => Name.first.id
-    click_button "Show"
+    artist = Name.artist
+    artist.name = "Updike, John"
+    artist.save!
 
-    click_button "Yes"
+    expect(name_count + 2).to eq(Name.count)
 
-    expect(Name.first.authors_count).to eq(EntryAuthor.where(author_id: Name.first.id).count)
-    expect(Name.first.artists_count).to eq(EntryArtist.where(artist_id: Name.first.id).count)
-    expect(Name.first.scribes_count).to eq(EntryScribe.where(scribe_id: Name.first.id).count)
-    expect(Name.first.sale_agents_count).to eq(SaleAgent.where(agent_id: Name.first.id).count)
-    expect(Name.first.source_agents_count).to eq(SourceAgent.where(agent_id: Name.first.id).count)
-    #expect(Name.last.provenance_count).to eq(0)
-    #expect(Name.first.provenance_count).to eq(Provenance.where(provenance_agent_id: Name.first.id).count)
+    e1 = Entry.last(2)[0]
+    e2 = Entry.last(2)[1]
+
+    e_author = EntryAuthor.create(entry_id: e1.id, author_id: author.id)
+    e_artist = EntryArtist.create(entry_id: e2.id, artist_id: artist.id)
+
+    author = Name.last(2)[0]
+    artist = Name.last(2)[1]
+
+    expect(author.authors_count).to eq(1)
+    expect(artist.artists_count).to eq(1)
   end
 end
