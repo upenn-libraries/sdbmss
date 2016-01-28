@@ -84,12 +84,23 @@ class Provenance < ActiveRecord::Base
     elsif (dates = SDBMSS::Util.parse_approximate_date_str_into_year_range(date_str)).present?
       return [dates[0], dates[1]]
     else
-      parsed = Chronic.parse(date_str)
-      if parsed.present?
-        return [parsed.strftime("%Y-%m-%d"), (parsed + 1.day).strftime("%Y-%m-%d")]
+      begin
+        return self.parse_default_date(date_str)
+      # catch argument error sent to Chronic, for some reason was triggered by "Tenth", and similar strings
+      rescue ArgumentError
+        puts "WARNING: No time information in '#{date_str}', and convention is not recognized by CHRONIC date parser."
       end
     end
     return [nil, nil]
+  end
+
+  def self.parse_default_date(date_str)
+    parsed = Chronic.parse(date_str)
+    if parsed.present?
+      return [parsed.strftime("%Y-%m-%d"), (parsed + 1.day).strftime("%Y-%m-%d")]
+    else
+      return [nil, nil]
+    end
   end
 
   def get_acquisition_method_for_display
