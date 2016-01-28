@@ -10,3 +10,4 @@ Rails.application.config.assets.precompile += %w( extras.js extras.css developme
 # image assets aren't precompiled by default (this is a change in
 # Rails 4, possibly?) so we add them here.
 Rails.application.config.assets.precompile << /\.(?:png|jpg|jpeg|gif)\z/
+Rails.application.config.assets.precompile += %w( favicon.ico )

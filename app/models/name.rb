@@ -262,7 +262,6 @@ class Name < ActiveRecord::Base
 
   def update_count()
     Name.reset_counters(self.id, :entry_authors, :entry_artists, :entry_scribes, :sale_agents, :source_agents, :provenance)
-
   end
 
 end

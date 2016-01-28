@@ -11,6 +11,7 @@ describe "Manage Names", :js => true do
       password: 'somethingunguessable',
       role: 'admin'
     )
+    SDBMSS::ReferenceData.create_all
   end
 
   before :each do
@@ -56,5 +57,24 @@ describe "Manage Names", :js => true do
     #author2 should no longer appear in NAME LIST
     visit names_path
     expect(page).to have_no_content(author2.name)
+  end
+
+  it "should update counters correctly on merge" do
+    visit names_path
+
+    first('.merge-link').click
+
+    fill_in "target_id", :with => Name.first.id
+    click_button "Show"
+
+    click_button "Yes"
+
+    expect(Name.first.authors_count).to eq(EntryAuthor.where(author_id: Name.first.id).count)
+    expect(Name.first.artists_count).to eq(EntryArtist.where(artist_id: Name.first.id).count)
+    expect(Name.first.scribes_count).to eq(EntryScribe.where(scribe_id: Name.first.id).count)
+    expect(Name.first.sale_agents_count).to eq(SaleAgent.where(agent_id: Name.first.id).count)
+    expect(Name.first.source_agents_count).to eq(SourceAgent.where(agent_id: Name.first.id).count)
+    #expect(Name.last.provenance_count).to eq(0)
+    #expect(Name.first.provenance_count).to eq(Provenance.where(provenance_agent_id: Name.first.id).count)
   end
 end
