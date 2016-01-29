@@ -294,12 +294,12 @@ module SDBMSS
         end
 
         # roman numeral century like "XVth century"
-        if (match = /^([mdclxvi]+)(st|nd|rd|th|) c/i.match(date_str)).present?
+        if (match = /\b([mdclxvi]+)(st|nd|rd|th|) c/i.match(date_str)).present?
           century = (roman_to_arabic(match[1]) - 1).to_s
         end
 
         #roman numeral century like "S. XIV"
-        if (match = /^(s\.\s([mdclxvi]+)(?!.))/i.match(date_str)).present?
+        if (match = /(s\.\s([mdclxvi]+)(?!.))/i.match(date_str)).present?
           century = (roman_to_arabic(match[2]) - 1).to_s
         end
 
@@ -353,7 +353,6 @@ module SDBMSS
             if century.present?
               start_date = century + "00"
               end_date = (century.to_i + 1).to_s + "01"
-              puts "CENTURY #{century}, #{start_date}, #{end_date}"
             end
           end
         end
