@@ -36,6 +36,21 @@ class SourcesController < ManageModelsController
     ["author", "Author", DEFAULT_SEARCH_FIELD_HANDLER ],
   ]
 
+  # return just the query strings which are combined in an array, then joined with either AND or OR to create one final query - but will it work with the unique cases above?
+
+  A_DEFAULT_SEARCH_HANDLER = Proc.new{ |fieldname, params, query| 
+    return "#{fieldname} like #{params[fieldname]}"
+  }
+
+  A_SEARCH_FIELDS = [
+    ["title", "Title", A_DEFAULT_SEARCH_HANDLER ],
+    ["date", "Date", Proc.new { |fieldname, params, query| 
+        return "#{fieldname} like #{params[fieldname].gsub('-', '').gsub('/', '')}"
+      }
+    ],
+    ["author", "Author", A_DEFAULT_SEARCH_HANDLER]
+  ]
+
   def new
     @source = Source.new
     respond_to do |format|
@@ -174,7 +189,7 @@ class SourcesController < ManageModelsController
     queries = []
     # always process these fields (used on both Add New Entry workflow and
     # Manage Sources screen)
-    SEARCH_FIELDS.each do |field|
+    A_SEARCH_FIELDS.each do |field|
       fieldname = field[0]
       handler = field[2]
       # modified to handle multiple field names, again, as in advanced search

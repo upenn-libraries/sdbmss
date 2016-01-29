@@ -61,7 +61,7 @@ describe "Manage sources", :js => true do
   end
 
   it "should perform a search with multiple values for the same field" do
-    visit entries_path
+    visit sources_path
 
     textInputs = page.all("input[name='search_value']")
     searchOptions = page.all("select[name='search_field']")
@@ -72,8 +72,25 @@ describe "Manage sources", :js => true do
     textInputs[1].set "Libreria"
     searchOptions[1].set "Title"
 
-    select 'any', from: 'op'
+    click_button("Search")
+  end
+
+  it "should perform a search with multiple values for the same field" do
+    visit sources_path
+
+    textInputs = page.all("input[name='search_value']")
+    searchOptions = page.all("select[name='search_field']")
+
+    textInputs[0].set "Morgan"
+    searchOptions[0].set "Title"
+
+    textInputs[1].set "test"
+    searchOptions[1].set "Title"
+
+    select "any", from: "op"
 
     click_button("Search")
+
+    expect(page).to have_content @source.title 
   end
 end
