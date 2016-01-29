@@ -46,20 +46,6 @@ describe "Manage sources", :js => true do
     expect(page).not_to have_content @source.title
   end
 
-  it "should delete a Source" do
-    # this is a very rough test!
-    count = Source.count
-
-    # mock out the confirm dialogue
-    page.evaluate_script('window.confirm = function() { return true; }')
-
-    visit sources_path
-    first(".delete-link").click
-    sleep(1)
-
-    expect(Source.count).to eq(count-1)
-  end
-
   it "should perform a search with multiple values for the same field" do
     visit sources_path
 
@@ -82,15 +68,26 @@ describe "Manage sources", :js => true do
     searchOptions = page.all("select[name='search_field']")
 
     textInputs[0].set "Morgan"
-    searchOptions[0].set "Title"
-
     textInputs[1].set "test"
-    searchOptions[1].set "Title"
 
     select "any", from: "op"
 
     click_button("Search")
 
     expect(page).to have_content @source.title 
+  end
+
+  it "should delete a Source" do
+    # this is a very rough test!
+    count = Source.count
+
+    # mock out the confirm dialogue
+    page.evaluate_script('window.confirm = function() { return true; }')
+
+    visit sources_path
+    first(".delete-link").click
+    sleep(1)
+
+    expect(Source.count).to eq(count-1)
   end
 end

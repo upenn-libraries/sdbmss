@@ -38,17 +38,27 @@ class SourcesController < ManageModelsController
 
   # return just the query strings which are combined in an array, then joined with either AND or OR to create one final query - but will it work with the unique cases above?
 
-  A_DEFAULT_SEARCH_HANDLER = Proc.new{ |fieldname, params, query| 
-    return "#{fieldname} like #{params[fieldname]}"
+  A_DEFAULT_SEARCH_HANDLER = lambda { |fieldname, params, query| 
+    return "#{fieldname} like '%#{params[fieldname]}%'"
   }
 
   A_SEARCH_FIELDS = [
     ["title", "Title", A_DEFAULT_SEARCH_HANDLER ],
-    ["date", "Date", Proc.new { |fieldname, params, query| 
-        return "#{fieldname} like #{params[fieldname].gsub('-', '').gsub('/', '')}"
+    ["date", "Date", lambda { |fieldname, params, query| 
+        return "#{fieldname} like '%#{params[fieldname].gsub('-', '').gsub('/', '')}%'"
       }
     ],
-    ["author", "Author", A_DEFAULT_SEARCH_HANDLER]
+    ["author", "Author", A_DEFAULT_SEARCH_HANDLER],
+    ["selling_agent", "Selling Agent", lambda { |fieldname, params, query| 
+        return "source_agents.role = \"#{SourceAgent::ROLE_SELLING_AGENT}\" AND names.name like '%#{params[fieldname]}%'"
+      },
+      lambda { |query|  return query.joins(source_agents: [ :agent] ) }
+    ],
+    ["institution", "Institution", lambda { |fieldname, params, query| 
+        return "source_agents.role = \"#{SourceAgent::ROLE_INSTITUTION}\" AND names.name like '%#{params[fieldname]}%'"
+      },
+      lambda { |query|  return query.joins(source_agents: [ :agent] ) }
+    ]
   ]
 
   def new
@@ -187,6 +197,8 @@ class SourcesController < ManageModelsController
     end
     
     queries = []
+
+    j = params['op'] && params['op'] == 'OR' ? " OR " : " AND "
     # always process these fields (used on both Add New Entry workflow and
     # Manage Sources screen)
     A_SEARCH_FIELDS.each do |field|
@@ -194,18 +206,22 @@ class SourcesController < ManageModelsController
       handler = field[2]
       # modified to handle multiple field names, again, as in advanced search
       if params[fieldname].present?
+        if field[3]
+          query = field[3].call(query)
+        end
         if params[fieldname].kind_of? Array
           params[fieldname].each do |q|
             p = params.dup
             p[fieldname] = q
-            query = handler.call(fieldname, p, query)
+            queries += [handler.call(fieldname, p, query)]
           end
         else
-          query = handler.call(fieldname, params, query)
+          queries  += [handler.call(fieldname, params, query)]
         end
       end
     end
-    query.with_associations
+    query.where(queries.join(j)).with_associations
+#    query.with_associations
   end
 
   def search_results_order

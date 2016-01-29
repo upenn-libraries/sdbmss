@@ -211,7 +211,6 @@ var SDBM = SDBM || {};
         return function() {
             var url = manageRecords.persistFormStateToURL();
             history.pushState({ url: url }, '', url);
-
             manageRecords.reloadTable();
             
             manageRecords.showOrHideMarkCheckedRecordsButton();
