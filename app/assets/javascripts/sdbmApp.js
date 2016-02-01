@@ -412,7 +412,7 @@
             },
             {
                 field: 'provenance',
-                properties: ['start_date', 'end_date', 'comment'],
+                properties: ['start_date', 'end_date', 'comment', 'observed_name'],
                 foreignKeyObjects: ['provenance_agent']
             }
         ];
@@ -694,8 +694,8 @@
 
             $scope.changeNestedAttributesNames($scope.associations, entryToSave);
 
-            //console.log("about to save this Entry: ");
-            //console.log(JSON.stringify(entryToSave));
+            console.log("about to save this Entry: ");
+            console.log(JSON.stringify(entryToSave));
 
             if(entryToSave.id) {
                 entryToSave.$update(

@@ -497,7 +497,7 @@ label.col-sm-2-and-half {
         <label for="alt_size" class="col-sm-1 control-label">
             <span sdbm-tooltip="entry_alt_size">Alt Size</span>
         </label>
-        <div class="col-sm-3"">
+        <div class="col-sm-3">
             <select name="alt_size" id="alt_size" class="form-control" data-ng-model="entry.alt_size" ng-options="option[0] as option[1] for option in optionsAltSize">
                 <option value=""></option>                
             </select>
@@ -578,6 +578,8 @@ label.col-sm-2-and-half {
         <legend>Provenance Information</legend>
       </div>
     </div>
+
+    <!-- beginning of providence section -->
 
     <div class="provenance-group-container" data-ng-repeat="prov in entry.provenance | filter: activeRecords">
 
@@ -664,6 +666,8 @@ label.col-sm-2-and-half {
     </div>
 
     </div>
+
+    <!-- end of provenance section -->
 
     <div ng-show="entry.created_by">
         <div class="row">
