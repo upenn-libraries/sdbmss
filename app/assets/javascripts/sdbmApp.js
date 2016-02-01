@@ -694,8 +694,8 @@
 
             $scope.changeNestedAttributesNames($scope.associations, entryToSave);
 
-            console.log("about to save this Entry: ");
-            console.log(JSON.stringify(entryToSave));
+        //  console.log("about to save this Entry: ");
+        //  console.log(JSON.stringify(entryToSave));
 
             if(entryToSave.id) {
                 entryToSave.$update(
