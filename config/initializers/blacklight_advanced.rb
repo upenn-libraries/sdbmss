@@ -29,13 +29,13 @@ module BlacklightAdvancedSearch
           if query.kind_of? Array
             numberOfQueries += (query.length - 1)
             query.each do |q|
-              content << render_constraint_element(label, q, :remove => catalog_index_path(remove_advanced_multiple_keyword_query(field, q, my_params)))
+              content << render_constraint_element(label, q, :remove =>  search_action_path(remove_advanced_multiple_keyword_query(field, q, my_params)))
             end
           else
             content << render_constraint_element(
               label, query,
               :remove =>
-                catalog_index_path(remove_advanced_keyword_query(field,my_params))
+                 search_action_path(remove_advanced_keyword_query(field,my_params))
             )
           end
         end

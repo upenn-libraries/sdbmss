@@ -154,7 +154,6 @@ class EntriesController < ManageModelsController
         filtered = entry_params_for_create_and_edit
         success = @entry.update_by(current_user, filtered)
         if success
-          puts "This is what you did: #{filtered}"
           if params[:new_comment].present?
             c = Comment.new(
               comment: params[:new_comment],
