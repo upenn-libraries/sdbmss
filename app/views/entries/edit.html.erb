@@ -276,25 +276,34 @@ label.col-sm-2-and-half {
       </div>
     </div>
 
-    <div class="form-group row" data-ng-repeat="entry_title in entry.entry_titles | filter: activeRecords">
-        <label class="col-sm-2 control-label">
-            <div class="add-link-container"><a id="add_title_{{ $index }}" class="clickable" data-ng-click="addRecord(entry.entry_titles); addRecord(entry.entry_authors)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
-            <div class="remove-link-container"><a id="delete_title_{{ $index }}" class="clickable" data-ng-click="removeRecord(entry.entry_titles, entry_title)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-            <span sdbm-tooltip="entry_title_as_recorded">Title As Recorded</span>
-      </label>
-      <div class="col-sm-5">
-          <div class="input-group">
-              <input id="title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.title">
-              <div id="title_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
-          </div>
+    <div class='form-group row'>
+    <label class="col-sm-1">
+        <span sdbm-tooltip="entry_title_as_recorded"><h3>Title(s)</h3></span>
+        <div class="add-link-container"><a id="add_title_{{ $index }}" class="clickable" data-ng-click="addRecord(entry.entry_titles); addRecord(entry.entry_authors)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
+        <div class="remove-link-container"><a id="delete_title_{{ $index }}" class="clickable" data-ng-click="removeRecord(entry.entry_titles, entry_title)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
+    </label>
+    <div class="form-group col-sm-5" data-ng-repeat="entry_title in entry.entry_titles | filter: activeRecords">
+      <div class='row'>
+        <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_title_as_recorded">As Recorded:</span>
+        </label>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <input id="title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.title">
+                <div id="title_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
+            </div>
+        </div>
       </div>
-      <label class="col-sm-1 control-label">
-          <span sdbm-tooltip="entry_common_title">CommonTitle</span>
-      </label>
-      <div class="col-sm-4">
-        <input id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
+      <div class='row'>
+        <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_common_title">Common:</span>
+        </label>
+        <div class="col-sm-9">
+          <input id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
+        </div>
       </div>
     </div>
+  </div>
 
     <div data-ng-repeat="entry_author in entry.entry_authors | filter: activeRecords">
     <div class="form-group row entry-author-group">
