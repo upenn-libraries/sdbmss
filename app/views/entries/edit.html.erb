@@ -56,6 +56,32 @@ label.col-sm-1-and-half {
 label.col-sm-2-and-half {
     padding-right: 0;
  }
+
+.input-block .row {
+    margin: 2px;
+}
+.input-block {
+  padding: 4px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #F8F8F8;
+}
+.remove-link-container {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 30px;
+  height: 30px;
+  border: 2px solid #dddddd;
+  text-align: center;
+  border-radius: 16px;
+  line-height: 30px;
+  background: white;
+  font-size: 20px;
+}
+.form-group.row {
+  border-bottom: 1px #eee dashed;
+}
  
 </style>
 
@@ -276,16 +302,24 @@ label.col-sm-2-and-half {
       </div>
     </div>
 
-    <div class='form-group row'>
-    <label class="col-sm-1">
-        <span sdbm-tooltip="entry_title_as_recorded"><h3>Title(s)</h3></span>
-        <div class="add-link-container"><a id="add_title_{{ $index }}" class="clickable" data-ng-click="addRecord(entry.entry_titles); addRecord(entry.entry_authors)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
-        <div class="remove-link-container"><a id="delete_title_{{ $index }}" class="clickable" data-ng-click="removeRecord(entry.entry_titles, entry_title)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
+  <div class='form-group row'>
+    <label class="col-sm-3">
+      <h3>Title(s)</h3>
+      <div class="add-link-container">
+        <a id="add_title_{{ $index }}" class="clickable" data-ng-click="addRecord(entry.entry_titles); addRecord(entry.entry_authors)" title="Add">
+          Add new <span class="glyphicon glyphicon-plus"></span>
+        </a>
+      </div>
     </label>
-    <div class="form-group col-sm-5" data-ng-repeat="entry_title in entry.entry_titles | filter: activeRecords">
+    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_title in entry.entry_titles | filter: activeRecords">
+        <div class="remove-link-container">
+          <a id="delete_title_{{ $index }}" class="clickable" data-ng-click="removeRecord(entry.entry_titles, entry_title)" title="Remove">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
+        </div>
       <div class='row'>
         <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_title_as_recorded">As Recorded:</span>
+            <span sdbm-tooltip="entry_title_as_recorded">As Recorded</span>
         </label>
         <div class="col-sm-9">
             <div class="input-group">
@@ -296,7 +330,7 @@ label.col-sm-2-and-half {
       </div>
       <div class='row'>
         <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_common_title">Common:</span>
+            <span sdbm-tooltip="entry_common_title">Common</span>
         </label>
         <div class="col-sm-9">
           <input id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
@@ -305,169 +339,304 @@ label.col-sm-2-and-half {
     </div>
   </div>
 
-    <div data-ng-repeat="entry_author in entry.entry_authors | filter: activeRecords">
-    <div class="form-group row entry-author-group">
-        <label class="col-sm-2 control-label">
-            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_authors)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
-            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_authors, entry_author)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-            <span sdbm-tooltip="entry_author_as_recorded">Author As Recorded</span>
-        </label>
-      <div class="col-sm-5">
-          <input id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
+  <div class="form-group row entry-author-group">
+    <label class="col-sm-3">
+      <h3>
+        <span>Author(s)</span>
+      </h3>
+      <div class="add-link-container">
+        <a class="clickable" data-ng-click="addRecord(entry.entry_authors)" title="Add">
+          Add new <span class="glyphicon glyphicon-plus"></span>
+        </a>
       </div>
-      <label class="col-sm-1 control-label">
-          <span sdbm-tooltip="entry_author">Author</span>
-      </label>
-      <div class="col-sm-4">
-          <div class="input-group">
+    </label>
+    <div class='form-group col-sm-9 input-block pull-right' data-ng-repeat="entry_author in entry.entry_authors | filter: activeRecords">
+      <div class="remove-link-container">
+        <a class="clickable" data-ng-click="removeRecord(entry.entry_authors, entry_author)" title="Remove">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+      </div>
+      <div class='row'>
+        <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_author_as_recorded">As Recorded</span>
+        </label>
+        <div class="col-sm-9">
+            <input id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
+        </div>
+      </div>
+      <div class='row'>
+        <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_author">Find in Name Authority</span>
+        </label>
+        <div class="col-sm-9">
+           <div class="input-group">
               <input id="author_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_author" }' sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
               <div id="author_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_author"><span class="glyphicon"></span></div>
-          </div>
-      </div>
-    </div>
-    <div class="form-group row entry-author-group">
-      <label class="col-sm-2 control-label">
-          <span sdbm-tooltip="entry_author_role">Role</span>
-      </label>
-      <div class="col-sm-2">
-          <select id="author_role_{{ $index }}" name="author_role" class="form-control" ng-model="entry_author.role" ng-options="option[0] as option[1] for option in optionsAuthorRole">
-              <option value=""></option>
-          </select>
-      </div>
-    </div>
-    </div>
-
-    <div class="form-group row" data-ng-repeat="entry_date in entry.entry_dates | filter: activeRecords">
-        <label class="col-sm-2 control-label">
-            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_dates)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
-            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-            <span sdbm-tooltip="entry_date_as_recorded">Date As Recorded</span>
-        </label>
-        <div class="col-sm-4-and-half">
-            <div class="input-group">
-                <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/entry_dates/parse_observed_date.json">
-                <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
             </div>
         </div>
-
-        <label class="col-sm-1-and-half control-label">
-            <span sdbm-tooltip="entry_date_for_search">Date for Search</span>
+      </div>
+      <div class='row'>
+        <label class="col-sm-3 control-label">
+          <span sdbm-tooltip="entry_author_role">Role</span>
         </label>
-        <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['date_normalized_start_' + $index].$valid }">
+        <div class="col-sm-9">
+          <select id="author_role_{{ $index }}" name="author_role" class="form-control" ng-model="entry_author.role" ng-options="option[0] as option[1] for option in optionsAuthorRole">
+            <option value=""></option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class='form-group row'>
+    <label class="col-sm-3">
+      <h3>
+        <span>Date(s)</span>
+      </h3>
+      <div class="add-link-container">
+        <a class="clickable" data-ng-click="addRecord(entry.entry_dates)" title="Add">
+          Add new <span class="glyphicon glyphicon-plus"></span>
+        </a>
+      </div>
+    </label>
+
+    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_date in entry.entry_dates | filter: activeRecords">
+      <div class="remove-link-container">
+        <a class="clickable" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+      </div>
+      <div class="row">
+        <label class="col-sm-3 control-label">
+          <span sdbm-tooltip="entry_date_as_recorded">As Recorded</span>
+        </label>
+        <div class="col-sm-9">
+          <div class="input-group">
+              <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/entry_dates/parse_observed_date.json">
+              <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_date_for_search">Range for Search</span>
+        </label>
+        <div class="col-sm-4" ng-class="{ 'has-error': !entryForm['date_normalized_start_' + $index].$valid }">
             <input id="date_normalized_start_{{ $index }}" name="date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_start">
         </div>
-        <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['date_normalized_end_' + $index].$valid }">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-4" ng-class="{ 'has-error': !entryForm['date_normalized_end_' + $index].$valid }">
             <input id="date_normalized_end_{{ $index }}" name="date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_end">
         </div>
-
-    </div>
-
-    <div class="form-group row" data-ng-repeat="entry_artist in entry.entry_artists | filter: activeRecords">
-      
-      <label class="col-sm-2 control-label">
-            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_artists)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
-            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_artists, entry_artist)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-            <span sdbm-tooltip="entry_artist_as_recorded">Artist As Recorded</span>
-      </label>
-      <div class="col-sm-5">
-          <input id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
       </div>
-      <label class="col-sm-1 control-label">
-            <span sdbm-tooltip="entry_artist">Artist</span>
-      </label>
-      <div class="col-sm-4">
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label class="col-sm-3">
+        <h3>
+          <span>Artist(s)</span>
+        </h3>
+        <div class="add-link-container">
+          <a class="clickable" data-ng-click="addRecord(entry.entry_artists)" title="Add">
+            Add new <span class="glyphicon glyphicon-plus"></span>
+          </a>
+        </div>
+    </label>
+    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_artist in entry.entry_artists | filter: activeRecords">
+      <div class="remove-link-container">
+        <a class="clickable" data-ng-click="removeRecord(entry.entry_artists, entry_artist)" title="Remove">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+      </div>
+      <div class="row">
+        <label class="col-sm-3 control-label">
+              <span sdbm-tooltip="entry_artist">As Recorded</span>
+        </label>
+        <div class="col-sm-9">
+            <input id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
+        </div>
+      </div>
+      <div class="row">
+        <label class="col-sm-3 control-label">
+          <span sdbm-tooltip="entry_artist_as_recorded">Find in Name Authority</span>
+        </label>
+        <div class="col-sm-9">
           <div class="input-group">
               <input id="artist_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_artist" }' sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
               <div id="artist_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></div>
-          </div>          
-      </div>
-
-    </div>
-
-    <div class="form-group row" data-ng-repeat="entry_scribe in entry.entry_scribes | filter: activeRecords">
-      
-      <label class="col-sm-2 control-label">
-            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_scribes)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
-            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_scribes, entry_scribe)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-          <span sdbm-tooltip="entry_scribe_as_recorded">Scribe As Recorded</span>
-      </label>
-      <div class="col-sm-5">
-          <input id="scribe_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_scribe.observed_name">
-      </div>
-      <label class="col-sm-1 control-label">
-            <span sdbm-tooltip="entry_scribe">Scribe</span>
-      </label>
-      <div class="col-sm-4">
-          <div class="input-group">
-              <input id="scribe_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_scribe" }' sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-              <div id="scribe_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
           </div>
+        </div>          
       </div>
-
     </div>
+  </div>
 
-    <div class="form-group row" data-ng-repeat="entry_language in entry.entry_languages | filter: activeRecords">
-      
-      <label class="col-sm-2 control-label">
-            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_languages)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
-            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_languages, entry_language)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
+  <div class="form-group row">
+    <label class="col-sm-3">
+      <h3>
+        <span>Scribe(s)</span>
+      </h3>
+      <div class="add-link-container">
+        <a class="clickable" data-ng-click="addRecord(entry.entry_scribes)" title="Add">
+          Add new <span class="glyphicon glyphicon-plus"></span>
+        </a>
+      </div>
+    </label>
+    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_scribe in entry.entry_scribes | filter: activeRecords">
+      <div class="remove-link-container">
+        <a class="clickable" data-ng-click="removeRecord(entry.entry_scribes, entry_scribe)" title="Remove">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+      </div>
+      <div class="row">
+        <label class="col-sm-3 control-label">
+          <span sdbm-tooltip="entry_scribe_as_recorded">As Recorded</span>
+        </label>
+        <div class="col-sm-9">
+            <input id="scribe_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_scribe.observed_name">
+        </div>
+      </div>
+      <div class="row">
+        <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_scribe">Find in Name Authority</span>
+        </label>
+        <div class="col-sm-9">
+            <div class="input-group">
+                <input id="scribe_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_scribe" }' sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                <div id="scribe_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label class="col-sm-3">
+      <h3>
+        <span>Language(s)</span>
+      </h3>
+      <div class="add-link-container">
+        <a class="clickable" data-ng-click="addRecord(entry.entry_languages)" title="Add">
+          Add new <span class="glyphicon glyphicon-plus"></span>
+        </a>
+      </div>
+    </label>
+    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_language in entry.entry_languages | filter: activeRecords">
+      <div class="remove-link-container">
+        <a class="clickable" data-ng-click="removeRecord(entry.entry_languages, entry_language)" title="Remove">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+      </div>
+      <div class="row">
+        <label class="col-sm-3 control-label">
           <span sdbm-tooltip="entry_language">Language</span>
-      </label>
-      <div class="col-sm-5">
+        </label>
+        <div class="col-sm-9">
           <div class="input-group">
               <input id="language_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
               <div id="language_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_language"><span class="glyphicon"></span></div>
           </div>
+        </div>
       </div>
     </div>
+  </div>
 
-    <div class="form-group row" data-ng-repeat="entry_material in entry.entry_materials | filter: activeRecords">
-      
-      <label class="col-sm-2 control-label">
-            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_materials)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
-            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_materials, entry_material)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
+  <div class="form-group row">
+    <label class="col-sm-3">
+      <h3>
+        <span>Material(s)</span>
+      </h3>
+      <div class="add-link-container">
+        <a class="clickable" data-ng-click="addRecord(entry.entry_materials)" title="Add">
+          Add new <span class="glyphicon glyphicon-plus"></span>
+        </a>
+      </div>
+    </label>
+    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_material in entry.entry_materials | filter: activeRecords">
+      <div class="remove-link-container">
+        <a class="clickable" data-ng-click="removeRecord(entry.entry_materials, entry_material)" title="Remove">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+      </div>
+      <div class="row">
+        <label class="col-sm-3 control-label">
           <span sdbm-tooltip="entry_material">Material</span>
-      </label>
-      <div class="col-sm-5">
+        </label>
+        <div class="col-sm-9">
           <div class="input-group">
               <input id="material_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="optionsMaterial" sdbm-autocomplete-model="entry_material.material" sdbm-autocomplete-assign-value-attr="true" sdbm-autocomplete-min-length="0" />
               <div id="material_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
           </div>
+        </div>
       </div>
     </div>
+  </div>
 
-    <div class="form-group row" data-ng-repeat="entry_place in entry.entry_places | filter: activeRecords">
-      
-      <label class="col-sm-2 control-label">
-            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_places)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
-            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_places, entry_place)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
-          <span sdbm-tooltip="entry_place">Place As Recorded</span>
-      </label>
-      <div class="col-sm-5">
-          <input id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name">
+  <div class="form-group row">
+    <label class="col-sm-3">
+      <h3>
+        <span>Place(s)</span>
+      </h3>
+      <div class="add-link-container">
+        <a class="clickable" data-ng-click="addRecord(entry.entry_places)" title="Add">
+          Add new <span class="glyphicon glyphicon-plus"></span>
+        </a>
       </div>
-      <label class="col-sm-1 control-label">
-            <span sdbm-tooltip="entry_place">Place</span>
-      </label>
-      <div class="col-sm-4">
+    </label>
+    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_place in entry.entry_places | filter: activeRecords">
+      <div class="remove-link-container">
+        <a class="clickable" data-ng-click="removeRecord(entry.entry_places, entry_place)" title="Remove">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+      </div>
+      <div class="row">
+        <label class="col-sm-3 control-label">
+          <span sdbm-tooltip="entry_place">As Recorded</span>
+        </label>
+        <div class="col-sm-9">
+          <input id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name">
+        </div>
+      </div>
+      <div class="row">
+        <label class="col-sm-3 control-label">
+          <span sdbm-tooltip="entry_place">Find in Name Authority</span>
+        </label>
+        <div class="col-sm-9">
           <div class="input-group">
               <input id="place_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
               <div id="place_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_place"><span class="glyphicon"></span></div>
           </div>
+        </div>
       </div>
     </div>
+  </div>
 
-    <div class="form-group row" data-ng-repeat="entry_use in entry.entry_uses | filter: activeRecords">
-      
-      <label class="col-sm-2 control-label">
-            <div class="add-link-container"><a class="clickable" data-ng-click="addRecord(entry.entry_uses)" title="Add"><span class="glyphicon glyphicon-plus"></span></a></div>
-            <div class="remove-link-container"><a class="clickable" data-ng-click="removeRecord(entry.entry_uses, entry_use)" title="Remove"><span class="glyphicon glyphicon-remove"></span></a></div>
+  <div class="form-group row">
+    <label class="col-sm-3">
+      <h3>Use(s)</h3>
+      <div class="add-link-container">
+        <a class="clickable" data-ng-click="addRecord(entry.entry_uses)" title="Add">
+          Add new <span class="glyphicon glyphicon-plus"></span>
+        </a>
+      </div>
+    </label>
+    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_use in entry.entry_uses | filter: activeRecords">
+      <div class="remove-link-container">
+        <a class="clickable" data-ng-click="removeRecord(entry.entry_uses, entry_use)" title="Remove">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+      </div>
+      <div class="row">
+        <label class="col-sm-3 control-label">
           <span sdbm-tooltip="entry_use">Use</span>
-      </label>
-      <div class="col-sm-9">
-        <input id="use_{{ $index }}" type="text" class="form-control" data-ng-model="entry_use.use">
+        </label>
+        <div class="col-sm-9">
+          <input id="use_{{ $index }}" type="text" class="form-control" data-ng-model="entry_use.use">
+        </div>
       </div>
     </div>
+  </div>
 
     <div class="form-group row">
         <label for="folios" class="col-sm-2 control-label">

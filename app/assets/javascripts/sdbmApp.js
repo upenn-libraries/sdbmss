@@ -438,8 +438,15 @@
 
         $scope.currentlySaving = false;
 
+/*
+        $(document).bind('DOMNodeInserted',function(e){
+          var target = $(e.target);
+          target.hide();
+          target.slideDown();
+        });*/
+
         $scope.addRecord = function (anArray) {
-            anArray.push({});
+          anArray.push({});
         };
 
         // filter used by ng-repeat to hide records marked for deletion
@@ -462,7 +469,7 @@
                 }
                 // ensure that there's always one empty record
                 if($.grep(anArray, $scope.activeRecords).length === 0) {
-                    anArray.push({});
+                    //anArray.push({});
                 }
             }
         };
@@ -539,7 +546,9 @@
                 var fieldname = assoc.field;
                 var objArray = entry[fieldname];
                 if(!objArray || objArray.length === 0) {
-                    entry[fieldname] = [ {} ];
+                    // FIX ME: load one blank form field, or none
+                    //entry[fieldname] = [ {} ];
+                    entry[fieldname] = [];
                 }
             });
 
