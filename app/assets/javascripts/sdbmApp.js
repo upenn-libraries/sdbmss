@@ -9,12 +9,14 @@
 /* Hints for eslint: */
 /* eslint camelcase:0, no-underscore-dangle:0 */
 /* global alert, angular, console, window, setTimeout, $, SDBM, URI */
+var sdbmapp;
 
 (function () {
 
     "use strict";
 
     var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap", "ngAnimate"]);
+    sdbmapp = sdbmApp;
 
     sdbmApp.run(function ($http) {
         // For Rails CSRF
