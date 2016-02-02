@@ -14,7 +14,7 @@
 
     "use strict";
 
-    var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap"]);
+    var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap", "ngAnimate"]);
 
     sdbmApp.run(function ($http) {
         // For Rails CSRF
@@ -548,7 +548,10 @@
                 if(!objArray || objArray.length === 0) {
                     // FIX ME: load one blank form field, or none
                     //entry[fieldname] = [ {} ];
-                    entry[fieldname] = [];
+                    if (fieldname == 'provenance')
+                      entry[fieldname] = [ {} ]
+                    else
+                      entry[fieldname] = [];
                 }
             });
 
