@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150930190623) do
+ActiveRecord::Schema.define(version: 20160203175620) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",  limit: 255, null: false
@@ -375,25 +375,28 @@ ActiveRecord::Schema.define(version: 20150930190623) do
   add_index "places", ["updated_by_id"], name: "index_places_on_updated_by_id", using: :btree
 
   create_table "provenance", force: :cascade do |t|
-    t.integer  "entry_id",                    limit: 4
-    t.integer  "order",                       limit: 4
-    t.string   "observed_name",               limit: 255
-    t.integer  "provenance_agent_id",         limit: 4
-    t.string   "acquisition_method",          limit: 255
-    t.boolean  "direct_transfer",                           default: false
+    t.integer  "entry_id",                         limit: 4
+    t.integer  "order",                            limit: 4
+    t.string   "observed_name",                    limit: 255
+    t.integer  "provenance_agent_id",              limit: 4
+    t.string   "acquisition_method",               limit: 255
+    t.boolean  "direct_transfer",                                default: false
     t.datetime "created_at"
-    t.integer  "created_by_id",               limit: 4
+    t.integer  "created_by_id",                    limit: 4
     t.datetime "updated_at"
-    t.integer  "updated_by_id",               limit: 4
-    t.string   "start_date",                  limit: 255
-    t.string   "start_date_normalized_start", limit: 255
-    t.string   "start_date_normalized_end",   limit: 255
-    t.string   "end_date",                    limit: 255
-    t.string   "end_date_normalized_start",   limit: 255
-    t.string   "end_date_normalized_end",     limit: 255
-    t.text     "comment",                     limit: 65535
-    t.boolean  "uncertain_in_source",                       default: false
-    t.boolean  "supplied_by_data_entry",                    default: false
+    t.integer  "updated_by_id",                    limit: 4
+    t.string   "start_date",                       limit: 255
+    t.string   "start_date_normalized_start",      limit: 255
+    t.string   "start_date_normalized_end",        limit: 255
+    t.string   "end_date",                         limit: 255
+    t.string   "end_date_normalized_start",        limit: 255
+    t.string   "end_date_normalized_end",          limit: 255
+    t.text     "comment",                          limit: 65535
+    t.boolean  "uncertain_in_source",                            default: false
+    t.boolean  "supplied_by_data_entry",                         default: false
+    t.string   "associated_date",                  limit: 255
+    t.string   "associated_date_normalized_start", limit: 255
+    t.string   "associated_date_normalized_end",   limit: 255
   end
 
   add_index "provenance", ["entry_id"], name: "index_provenance_on_entry_id", using: :btree

@@ -360,7 +360,7 @@ class EntriesController < ManageModelsController
         }
       ],
       :provenance_attributes => [
-        :id, :observed_name, :provenance_agent_id, :start_date, :start_date_normalized_start, :start_date_normalized_end, :end_date, :end_date_normalized_start, :end_date_normalized_end, :acquisition_method, :direct_transfer, :comment, :uncertain_in_source, :supplied_by_data_entry, :_destroy
+        :id, :observed_name, :provenance_agent_id, :start_date, :start_date_normalized_start, :start_date_normalized_end, :end_date, :end_date_normalized_start, :end_date_normalized_end, :associated_date, :associated_date_normalized_start, :associated_date_normalized_end, :acquisition_method, :direct_transfer, :comment, :uncertain_in_source, :supplied_by_data_entry, :_destroy
       ],
     )
   end
