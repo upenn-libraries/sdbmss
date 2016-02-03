@@ -15,7 +15,7 @@ var sdbmapp;
 
     "use strict";
 
-    var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap", "ngAnimate"]);
+    var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap", "ngAnimate", "ui.sortable"]);
     sdbmapp = sdbmApp;
 
     sdbmApp.run(function ($http) {

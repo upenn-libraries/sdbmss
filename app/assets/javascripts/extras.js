@@ -6,6 +6,7 @@
 //= require angular-cookies.1.3.16.min
 //= require angular-resource.1.3.16.min
 //= require angular-animate.min
+//= require sortable
 //= require ui-bootstrap-tpls-0.12.1.min
 //= require jquery.dataTables.min
 //= require dataTables.bootstrap
