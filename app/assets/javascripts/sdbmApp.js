@@ -414,7 +414,7 @@ var sdbmapp;
             },
             {
                 field: 'provenance',
-                properties: ['start_date', 'end_date', 'comment', 'observed_name'],
+                properties: ['start_date', 'end_date', 'associated_date', 'comment', 'observed_name'],
                 foreignKeyObjects: ['provenance_agent']
             }
         ];

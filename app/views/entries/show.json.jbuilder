@@ -127,9 +127,11 @@ end
 
 if @entry.provenance.present?
   json.provenance @entry.provenance do |provenance_item|
-    json.(provenance_item, :id, :observed_name, :acquisition_method, :direct_transfer, :comment, :start_date, :end_date, :uncertain_in_source, :supplied_by_data_entry)
+    json.(provenance_item, :id, :observed_name, :acquisition_method, :direct_transfer, :comment, :start_date, :end_date, :associated_date, :uncertain_in_source, :supplied_by_data_entry)
     json.start_date_normalized_start SDBMSS::Util.format_fuzzy_date(provenance_item.start_date_normalized_start)
     json.start_date_normalized_end SDBMSS::Util.format_fuzzy_date(provenance_item.start_date_normalized_end)
+    json.associated_date_normalized_start SDBMSS::Util.format_fuzzy_date(provenance_item.associated_date_normalized_start)
+    json.associated_date_normalized_end SDBMSS::Util.format_fuzzy_date(provenance_item.associated_date_normalized_end)
     json.end_date_normalized_start SDBMSS::Util.format_fuzzy_date(provenance_item.end_date_normalized_start)
     json.end_date_normalized_end SDBMSS::Util.format_fuzzy_date(provenance_item.end_date_normalized_end)
     if provenance_item.provenance_agent.present?

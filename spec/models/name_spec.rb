@@ -66,6 +66,16 @@ describe Name do
       expect(author1.deleted).to eq(true)
     end
 
+    it "should save an extremely large viaf_id" do
+      nm = Name.author
+      nm.name = "Roger Zelazny"
+      vi = 31897056431875614369418736543213451349875981745987605187436598716430581451435143
+      nm.viaf_id = vi
+      nm.save!
+
+      expect(Name.last.viaf_id).to eq(vi.to_s)
+    end
+
   end
 
 end
