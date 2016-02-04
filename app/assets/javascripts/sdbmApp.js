@@ -923,6 +923,7 @@
             };
 
             // determine if source is a URL or a scope var
+
             var autocompleteSource;
             var sourceIsUrl = sourceStr.substr(0, 1) === "/";
             if(!sourceIsUrl) {
@@ -940,6 +941,7 @@
                         options.forEach(function(option) {
                             option.label = option.name;
                             option.value = option.id;
+
                             if(!exactMatch) {
                                 exactMatch = searchTerm === option.label;
                             }
