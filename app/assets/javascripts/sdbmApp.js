@@ -894,6 +894,11 @@
                 model.assign(scope, valueToAssign);
             };
 
+            var eraseModel = function() {
+              var model = $parse(modelName);
+              model.assign(scope, null);
+            }
+
             var refocus = function(badValue) {
                 // TODO: calling focus() directly here doesn't work in
                 // Firefox (but works in Chrome). Using setTimeout()
@@ -998,7 +1003,6 @@
                 },
                 change: function(event, ui) {
                     var inputValue = $(element).val() || "";
-
                     // if no actual selection was made
                     if(ui.item === null) {
                         if(inputValue.trim().length > 0) {
@@ -1024,9 +1028,10 @@
                                 scope.$apply();
                             }
                         } else {
-                            // it's just whitespace, so erase it
+                            // whitespace or empty field - the user tried to erase the name entered, so let them
                             $(element).val("");
-                            assignToModel(null);
+                            eraseModel();
+//                            assignToModel(null);
                             scope.$apply();
                         }
                     } else {
@@ -1037,6 +1042,7 @@
                     // prevent autocomplete's default behavior of using value instead of label
                     event.preventDefault();
 
+                    console.log('create', ui);
                     if(ui.item.value === 'CREATE') {
                         $timeout(function() {
 
