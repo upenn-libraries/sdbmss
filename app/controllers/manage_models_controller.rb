@@ -135,7 +135,7 @@ class ManageModelsController < ApplicationController
     end
     #autocomplete - improved sorting, important for names, places, languages, etc.
     if params[:autocomplete].present? && params[:term].present?
-      query = query.order("CASE WHEN name LIKE '#{params[:term]}%' THEN 1 ELSE 0 END DESC");
+      query = query.order("CASE WHEN name LIKE '" + params[:term].gsub("'", "''") + "%' THEN 1 ELSE 0 END DESC");
     end
     query
   end
