@@ -134,7 +134,6 @@
          */
         var filterBlankRecords = function (objectWithAssociations, assoc) {
             var objectArrayName = assoc.field;
-
             // construct array of passed-in object's properties, FKs,
             // and child associations, to check for blankness
             var thingsToCheck = (assoc.properties || []).concat(assoc.foreignKeyObjects || []);
@@ -148,7 +147,6 @@
             if(objectArray === undefined) {
                 alert("error: couldn't find object array for '" + objectArrayName + "'");
             }
-
             // filter out items in array that are either empty objects or are objects that have blank fields
             objectArray.forEach(function (childObject) {
 
@@ -222,6 +220,9 @@
                 objectArray.forEach(function (element, index, array) {
                     if(element[relatedObjectName]) {
                         element[relatedObjectName + "_id"] = element[relatedObjectName].id;
+                        delete element[relatedObjectName];
+                    } else if (element[relatedObjectName] === null) {
+                        element[relatedObjectName + "_id"] = null;
                         delete element[relatedObjectName];
                     }
                 });
@@ -1042,7 +1043,6 @@
                     // prevent autocomplete's default behavior of using value instead of label
                     event.preventDefault();
 
-                    console.log('create', ui);
                     if(ui.item.value === 'CREATE') {
                         $timeout(function() {
 
