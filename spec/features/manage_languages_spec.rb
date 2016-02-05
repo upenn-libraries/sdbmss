@@ -136,6 +136,8 @@ describe "Manage languages", :js => true do
       first("#unreviewed_only").click
       click_button 'Search'
 
+      puts "Languages: #{Language.count}"
+
       expect(page).to have_selector("#select-all", visible: true)
       find("#select-all").click
 

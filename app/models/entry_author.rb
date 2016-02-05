@@ -27,6 +27,13 @@ class EntryAuthor < ActiveRecord::Base
     end
   end
 
+  after_save do |entry_author|
+    if entry_author.author
+      entry_author.author.is_author = true
+      entry_author.author.save!
+    end
+  end
+
   def display_value
     val = super(author)
     val += role ? " (" + role + ")": ""

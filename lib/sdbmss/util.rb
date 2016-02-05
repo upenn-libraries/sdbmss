@@ -130,7 +130,7 @@ module SDBMSS
         end
         nil
       end
-
+      
       # returns true if passed-in string 's' is exactly the specified
       # length and consists of all numeric digits
       def is_numeric_string(s, length)

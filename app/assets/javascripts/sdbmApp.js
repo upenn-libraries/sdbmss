@@ -135,7 +135,6 @@ var sdbmapp;
          */
         var filterBlankRecords = function (objectWithAssociations, assoc) {
             var objectArrayName = assoc.field;
-
             // construct array of passed-in object's properties, FKs,
             // and child associations, to check for blankness
             var thingsToCheck = (assoc.properties || []).concat(assoc.foreignKeyObjects || []);
@@ -149,7 +148,6 @@ var sdbmapp;
             if(objectArray === undefined) {
                 alert("error: couldn't find object array for '" + objectArrayName + "'");
             }
-
             // filter out items in array that are either empty objects or are objects that have blank fields
             objectArray.forEach(function (childObject) {
 
@@ -223,6 +221,9 @@ var sdbmapp;
                 objectArray.forEach(function (element, index, array) {
                     if(element[relatedObjectName]) {
                         element[relatedObjectName + "_id"] = element[relatedObjectName].id;
+                        delete element[relatedObjectName];
+                    } else if (element[relatedObjectName] === null) {
+                        element[relatedObjectName + "_id"] = null;
                         delete element[relatedObjectName];
                     }
                 });
@@ -916,6 +917,11 @@ var sdbmapp;
                 model.assign(scope, valueToAssign);
             };
 
+            var eraseModel = function() {
+              var model = $parse(modelName);
+              model.assign(scope, null);
+            }
+
             var refocus = function(badValue) {
                 // TODO: calling focus() directly here doesn't work in
                 // Firefox (but works in Chrome). Using setTimeout()
@@ -939,6 +945,7 @@ var sdbmapp;
             };
 
             // determine if source is a URL or a scope var
+
             var autocompleteSource;
             var sourceIsUrl = sourceStr.substr(0, 1) === "/";
             if(!sourceIsUrl) {
@@ -956,6 +963,7 @@ var sdbmapp;
                         options.forEach(function(option) {
                             option.label = option.name;
                             option.value = option.id;
+
                             if(!exactMatch) {
                                 exactMatch = searchTerm === option.label;
                             }
@@ -1020,7 +1028,6 @@ var sdbmapp;
                 },
                 change: function(event, ui) {
                     var inputValue = $(element).val() || "";
-
                     // if no actual selection was made
                     if(ui.item === null) {
                         if(inputValue.trim().length > 0) {
@@ -1046,9 +1053,10 @@ var sdbmapp;
                                 scope.$apply();
                             }
                         } else {
-                            // it's just whitespace, so erase it
+                            // whitespace or empty field - the user tried to erase the name entered, so let them
                             $(element).val("");
-                            assignToModel(null);
+                            eraseModel();
+//                            assignToModel(null);
                             scope.$apply();
                         }
                     } else {

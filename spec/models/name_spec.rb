@@ -76,6 +76,59 @@ describe Name do
       expect(Name.last.viaf_id).to eq(vi.to_s)
     end
 
+    it "should update 'flags' for name once it has been used in a new place" do
+      artist = Name.artist
+      artist.name = "Franz Marc"
+      artist.save!
+
+      author = Name.author
+      author.name = "Ursula Leguin"
+      author.save!
+
+      scribe = Name.scribe
+      scribe.name = "A Scribe"
+      scribe.save!
+
+      provenance = Name.new
+      provenance.is_provenance_agent = true
+      provenance.name = "Owner"
+      provenance.save!
+
+      expect(Name.last.is_author).to eq(false)
+
+      source = Source.new(source_type: SourceType.auction_catalog)
+      source.save!
+      entry = Entry.new(source: source)
+      entry.save!
+      entry.update_attributes(
+        entry_authors_attributes: [
+          {
+            author: artist
+          }
+        ],
+        entry_artists_attributes: [
+          {
+            artist: provenance
+          }
+        ],
+        entry_scribes_attributes: [
+          {
+            scribe: author
+          }
+        ],
+        provenance_attributes: [
+          {
+            provenance_agent: scribe
+          }
+        ]
+      )
+
+      expect(artist.is_author).to eq(true)
+      expect(provenance.is_artist).to eq(true)
+      expect(author.is_scribe).to eq(true)
+      expect(scribe.is_provenance_agent).to eq(true)
+    end
+
   end
 
 end

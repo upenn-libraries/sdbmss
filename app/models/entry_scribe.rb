@@ -15,6 +15,14 @@ class EntryScribe < ActiveRecord::Base
     end
   end
 
+
+  after_save do |entry_scribe|
+    if entry_scribe.scribe
+      entry_scribe.scribe.is_scribe = true
+      entry_scribe.scribe.save!
+    end
+  end
+
   def display_value
     super scribe
   end

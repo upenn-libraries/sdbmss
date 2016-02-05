@@ -12,7 +12,6 @@ describe "Blacklight Search", :js => true do
     # instead of creating another set of test data. The consequence is
     # that these tests don't exercise everything as thoroughly as they
     # should, but they're probably good enough.
-    puts "Search"
 
     SDBMSS::ReferenceData.create_all
 

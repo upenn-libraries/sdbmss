@@ -231,7 +231,9 @@ class Entry < ActiveRecord::Base
         }
       end
     end
-    unique_agents.values.sort_by { |record| record[:name] }
+# for sorting alphabetically, if that's what you want
+#    unique_agents.values.sort_by { |record| record[:name] }
+    unique_agents.values.sort_by { }
   end
 
   # returns list of provenance names for Solr indexing

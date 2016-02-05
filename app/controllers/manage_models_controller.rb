@@ -133,6 +133,10 @@ class ManageModelsController < ApplicationController
     if params[:unreviewed_only].to_s == '1'
       query = query.where(reviewed: false)
     end
+    #autocomplete - improved sorting, important for names, places, languages, etc.
+    if params[:autocomplete].present? && params[:term].present?
+      query = query.order("CASE WHEN name LIKE '" + params[:term].gsub("'", "''") + "%' THEN 1 ELSE 0 END DESC");
+    end
     query
   end
 

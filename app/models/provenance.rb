@@ -71,6 +71,13 @@ class Provenance < ActiveRecord::Base
   # YYYY or YYYY-MM-DD, depending on how much information is in the
   # approximate date string.
   
+  after_save do |agent|
+    if agent.provenance_agent
+      agent.provenance_agent.is_provenance_agent = true
+      agent.provenance_agent.save!
+    end
+  end
+
   #FIX ME: can throw same error (on 'Tenth', say) as util method (parse_approximate_date_str_into_year_range)
   def self.parse_observed_date(date_str)
     date_str = date_str.strip

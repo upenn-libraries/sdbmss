@@ -1,4 +1,3 @@
-
 require "rails_helper"
 
 describe "Data entry", :js => true do
@@ -111,248 +110,6 @@ describe "Data entry", :js => true do
       page.reset!
     end
 
-    it "should find source by date on Select Source page" do
-      visit new_entry_path
-      fill_in 'date', :with => '2013'
-      expect(page).to have_content @source.title
-      click_link('create-entry-link-' + @source.id.to_s)
-      expect(page).to have_content "Add an Entry"
-    end
-
-    it "should find source by agent on Select Source page" do
-      visit new_entry_path
-      fill_in 'agent', :with => 'Soth'
-      expect(page).to have_content @source.title
-      click_link('create-entry-link-' + @source.id.to_s)
-      expect(page).to have_content "Add an Entry"
-    end
-
-    it "should NOT find source by agent on Select Source page" do
-      visit new_entry_path
-      fill_in 'agent', :with => 'Nonexistent'
-      sleep 0.5
-      expect(page).to have_content "No source found matching your criteria."
-    end
-
-    it "should find source by title on Select Source page" do
-      visit new_entry_path
-      fill_in 'title', :with => 'uniq'
-      expect(page).to have_content @source.title
-      click_link('create-entry-link-' + @source.id.to_s)
-      expect(page).to have_content "Add an Entry"
-    end
-
-    it "should NOT find source by title on Select Source page" do
-      visit new_entry_path
-      fill_in 'title', :with => 'nonexistentjunk'
-      sleep 0.5
-      expect(page).to have_content "No source found matching your criteria."
-    end
-
-    it "should load New Entry page with an auction catalog Source" do
-      source = Source.new(
-        title: "xxx",
-        source_type: SourceType.auction_catalog,
-        source_agents_attributes: [
-          {
-            agent: Name.find_or_create_agent("aaa"),
-            role: SourceAgent::ROLE_SELLING_AGENT,
-          }
-        ]
-      )
-      source.save!
-
-      visit new_entry_path :source_id => source.id
-
-      expect(page).to have_content 'Add an Entry'
-
-      expect(page).to have_no_field("institution")
-
-      expect(page).to have_select('transaction_type', selected: 'A Sale', disabled: true)
-
-      # should prepopulate Transaction fields
-      expect(find_by_id("sale_selling_agent").value).to eq("aaa")
-    end
-
-    it "should load New Entry page with a collection catalog Source" do
-      source = Source.new(
-        title: "xxx",
-        source_type: SourceType.collection_catalog
-      )
-      source.save!
-
-      visit new_entry_path :source_id => source.id
-
-      expect(page).to have_content 'Add an Entry'
-
-      expect(page).to have_no_field("institution")
-
-      expect(page).to have_select('transaction_type', selected: 'Not a transaction', disabled: true)
-    end
-
-    it "should load New Entry page with other published Source" do
-      source = Source.find_or_create_by(
-        title: "Some Other Published Source",
-        date: "2013-11-12",
-        source_type: SourceType.other_published
-      )
-      source.save!
-
-      visit new_entry_path :source_id => source.id
-
-      expect(page).to have_content 'Add an Entry'
-
-      expect(page).to have_field("institution")
-
-      expect(page).to have_select('transaction_type', disabled: false)
-    end
-
-    it "should save a new Source (auction catalog)" do
-      count = Source.count
-
-      visit new_source_path
-
-      select 'Auction/Sale Catalog', from: 'source_type'
-      fill_in 'source_date', with: '2014-02-34'
-      fill_in 'title', with: 'Very Rare Books'
-      fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
-      select "Yes", from: 'whether_mss'
-      select "Library", from: 'medium'
-      fill_in 'date_accessed', with: "1990-05-01"
-      fill_in 'location_institution', with: "University of Pennsylvania"
-      fill_in 'location', with: "Philadelphia, USA"
-      fill_in 'link', with: "HM851 .L358 2010"
-      fill_in 'comments', with: 'This info is correct'
-
-      click_button('Save')
-
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      expect(Source.count).to eq(count + 1)
-
-      source = Source.last
-      expect(source.source_type).to eq(SourceType.auction_catalog)
-      expect(source.date).to eq('20140234')
-      expect(source.title).to eq('Very Rare Books')
-      expect(source.get_selling_agent.agent.name).to eq("Sotheby's")
-      expect(source.whether_mss).to eq("Yes")
-      expect(source.status).to eq(Source::TYPE_STATUS_TO_BE_ENTERED)
-      expect(source.medium).to eq(Source::TYPE_MEDIUM_LIBRARY)
-      expect(source.date_accessed).to eq("19900501")
-      expect(source.location_institution).to eq("University of Pennsylvania")
-      expect(source.location).to eq("Philadelphia, USA")
-      expect(source.link).to eq("HM851 .L358 2010")
-      expect(source.comments).to eq('This info is correct')
-    end
-
-    it "should save a new Source (other published source)" do
-      count = Source.count
-
-      visit new_source_path
-
-      select 'Other Published Source', from: 'source_type'
-      fill_in 'source_date', with: '2014-02-34'
-      fill_in 'title', with: 'DeRicci Census'
-      fill_in 'author', with: 'Seymour DeRicci'
-      select "Yes", from: 'whether_mss'
-      select "Library", from: 'medium'
-      fill_in 'date_accessed', with: "2011-10-09"
-      fill_in 'location_institution', with: "University of Pennsylvania"
-      fill_in 'location', with: "Philadelphia, USA"
-      fill_in 'link', with: "HM851 .L358 2010"
-      fill_in 'comments', with: 'This info is correct'
-
-      click_button('Save')
-
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      expect(Source.count).to eq(count + 1)
-
-      source = Source.last
-      expect(source.source_type).to eq(SourceType.other_published)
-      expect(source.date).to eq('20140234')
-      expect(source.title).to eq('DeRicci Census')
-      expect(source.author).to eq('Seymour DeRicci')
-      expect(source.whether_mss).to eq("Yes")
-      expect(source.medium).to eq(Source::TYPE_MEDIUM_LIBRARY)
-      expect(source.date_accessed).to eq("20111009")
-      expect(source.location_institution).to eq("University of Pennsylvania")
-      expect(source.location).to eq("Philadelphia, USA")
-      expect(source.link).to eq("HM851 .L358 2010")
-      expect(source.comments).to eq('This info is correct')
-    end
-
-    it "should save a new Source with no date" do
-      count = Source.count
-
-      visit new_source_path
-
-      select 'Other Published Source', from: 'source_type'
-      fill_in 'title', with: 'Test source wirh no date'
-      fill_in 'author', with: 'Jeff'
-
-      click_button('Save')
-
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      expect(Source.count).to eq(count + 1)
-
-      source = Source.last
-      expect(source.source_type).to eq(SourceType.other_published)
-      expect(source.title).to eq('Test source wirh no date')
-      expect(source.author).to eq('Jeff')
-    end
-
-    it "should save a new Source, filtering out invalid fields" do
-      visit new_source_path
-
-      # first, fill out author and institution...
-      select 'Collection Catalog', from: 'source_type'
-      fill_in 'author', with: 'Jeff'
-      fill_autocomplete_select_or_create_entity 'institution', with: "Harvard"
-
-      # now change source type to Auction Catalog
-      select 'Auction/Sale Catalog', from: 'source_type'
-      fill_in 'title', with: 'my catalog'
-      fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
-      click_button('Save')
-
-      # expect that page has filtered out the field values that are
-      # not valid for the new source type
-
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      source = Source.last
-      expect(source.source_type).to eq(SourceType.auction_catalog)
-      expect(source.author).to be_nil
-      expect(source.title).to eq('my catalog')
-
-      expect(source.source_agents.count).to eq(1)
-      expect(source.source_agents.first.role).to eq('selling_agent')
-      expect(source.source_agents.first.agent.name).to eq("Sotheby's")
-    end
-
-    it "should warn about existing Source" do
-      source = Source.create!(
-        date: "19501205",
-        title: "a very long title for an existent source",
-        source_type: SourceType.auction_catalog,
-        created_by: @user,
-      )
-
-      visit new_source_path
-
-      select 'Auction/Sale Catalog', from: 'source_type'
-      # similar but not exactly the same title
-      fill_in 'title', with: 'A very Long Title for an Existing Source'
-      fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
-      click_button('Save')
-
-      expect(find(".modal-title", visible: true).text.include?("Warning: similar sources found!")).to be_truthy
-
-      expect(find(".modal-body", visible: true).text.include?(source.public_id)).to be_truthy
-    end
-
     # create an entry, filling out all fields
     def create_entry
       visit new_entry_path :source_id => @source.id
@@ -365,34 +122,24 @@ describe "Data entry", :js => true do
       fill_in 'sale_price', with: '130000'
       select 'USD', from: 'sale_currency'
 
-      find_by_id('add_title').click
       fill_in 'title_0', with: 'Book of Hours'
-      #find_by_id("add_title_0").click
-      find_by_id('add_title').click
+      find_by_id("add_title_0").click
       fill_in 'title_1', with: 'Bible'
       fill_autocomplete_select_or_create_entity 'author_0', with: 'Schmoe, Joe'
-      find_by_id('add_author').click
       fill_in 'author_observed_name_0', with: 'Joe Schmoe'
       click_certainty_flag('author_certainty_flags_0')
       select 'Translator', from: 'author_role_0'
-      find_by_id('add_date').click
       fill_in 'date_observed_date_0', with: 'early 15th century'
       # move focus out of observed_date in order to trigger auto-populate of normalized dates
       page.execute_script %Q{ $('#date_normalized_start_0').trigger('focus') }
-      find_by_id('add_artist').click
       fill_in 'artist_observed_name_0', with: 'Chuck'
       fill_autocomplete_select_or_create_entity 'artist_0', with: 'Schultz, Charles'
-      find_by_id('add_scribe').click
       fill_in 'scribe_observed_name_0', with: 'Brother Francisco'
       fill_autocomplete_select_or_create_entity 'scribe_0', with: 'Brother Francis'
-      find_by_id('add_language').click
       fill_autocomplete_select_or_create_entity 'language_0', with: 'Latin'
-      find_by_id('add_material').click
       fill_autocomplete_select_or_create_entity 'material_0', with: 'Parchment'
-      find_by_id('add_place').click
       fill_in 'place_observed_name_0', with: 'Somewhere in Italy'
       fill_autocomplete_select_or_create_entity 'place_0', with: 'Italy'
-      find_by_id('add_use').click
       fill_in 'use_0', with: 'Some mysterious office or other'
 
       fill_in 'folios', with: '123'
@@ -411,7 +158,6 @@ describe "Data entry", :js => true do
       fill_in 'manuscript_link', with: 'http://something.com'
       fill_in 'other_info', with: 'Other stuff'
 
-      find_by_id('add_provenance').click
       fill_in 'provenance_observed_name_0', with: 'Somebody, Joe'
       fill_autocomplete_select_or_create_entity 'provenance_agent_0', with: 'Somebody, Joseph'
       click_certainty_flag('provenance_certainty_flags_0')
@@ -419,14 +165,14 @@ describe "Data entry", :js => true do
       fill_in 'provenance_end_date_0', with: '1965-11-23'
       check 'provenance_direct_transfer_0'
 
-      find_by_id('add_provenance').click
+      find_by_id("add_provenance_0").click
       fill_autocomplete_select_or_create_entity 'provenance_agent_1', with: "Sotheby's"
       fill_in 'provenance_start_date_1', with: '1965-11-23'
       fill_in 'provenance_comment_1', with: 'An historic sale'
       select 'For Sale', from: 'provenance_acquisition_method_1'
       check 'provenance_direct_transfer_1'
 
-      find_by_id('add_provenance').click
+      find_by_id("add_provenance_0").click
       fill_in 'provenance_observed_name_2', with: 'Wild Bill Collector'
       fill_in 'provenance_comment_2', with: 'This is some unknown dude'
 
@@ -530,73 +276,36 @@ describe "Data entry", :js => true do
       expect(comment.comment).to eq('This info is correct')
     end
 
-    it "should save an auction catalog Entry" do
-      # fill out all the fields and make sure they save to the database
-
-      count = Entry.count
-
-      create_entry
-
-      expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
-
-      verify_entry(entry)
-    end
-
-    it "should save a collection catalog Entry" do
-
+    it "should edit an existing Source" do
       source = Source.create!(
-        title: "my collection catalog!",
-        source_type: SourceType.collection_catalog,
+        date: "20141215",
+        title: "my existing source",
+        source_type: SourceType.auction_catalog,
+        created_by: @user,
       )
 
-      visit new_entry_path :source_id => source.id
+      visit edit_source_path :id => source.id
 
-      fill_in 'folios', with: '666'
+      expect(page).to have_content("Edit " + source.public_id)
 
-      first(".save-button").click
+      expect(page).to have_select('source_type', disabled: true, selected: 'Auction/Sale Catalog')
+      expect(page).to have_field('source_date', with: '2014-12-15')
+      expect(page).to have_field('title', with: 'my existing source')
+
+      click_button('Save')
 
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
-      entry = Entry.last
-      expect(entry.folios).to eq(666)
-      expect(entry.get_sale).to be_nil
+      source = Source.last
+      expect(source.source_type).to eq(SourceType.auction_catalog)
+      expect(source.date).to eq('20141215')
+      expect(source.title).to eq('my existing source')
     end
 
-    it "should save an Entry and log it in Recent Activity" do
-      create_entry
 
-      entry = Entry.last
-
-      visit activities_path
-
-      expect(page).to have_content "#{entry.created_by.username} created SDBM_#{entry.id}"
-    end
-
-    it "should update status field on Source when adding an Entry" do
-
-      # Creating a new source defaults its status to 'To Be Entered'
-      source = Source.create!(
-        title: "a new source",
-        source_type: SourceType.collection_catalog,
-      )
-
-      visit new_entry_path :source_id => source.id
-
-      fill_in 'folios', with: '666'
-
-      first(".save-button").click
-
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      source.reload
-
-      expect(source.status).to eq(Source::TYPE_STATUS_PARTIALLY_ENTERED)
-    end
-
-<<<<<<< HEAD
     it "should show creator on Edit page" do
+      create_entry
+
       entry = Entry.last
 
       visit edit_entry_path :id => entry.id
@@ -636,7 +345,6 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => entry.id
 
-      find_by_id('add_title').click
       fill_in 'title_0', with: 'Changed Book'
 
       first(".save-button").click
@@ -711,7 +419,6 @@ describe "Data entry", :js => true do
 
       # clear out the title field; this should result in deletion of
       # underlying entry_title record
-      find_by_id('add_title').click
       fill_in 'title_0', with: ''
 
       first(".save-button").click
@@ -737,8 +444,6 @@ describe "Data entry", :js => true do
 
       # clear out the title field; this should result in deletion of
       # underlying entry_title record
-      
-      find_by_id('add_title').click
       fill_in 'title_0', with: ''
 
       first(".save-button").click
@@ -751,21 +456,35 @@ describe "Data entry", :js => true do
       expect(entry.entry_titles.first.title).to eq("Bible")
     end
 
-=======
->>>>>>> development
-    it "should warn when new Entry has same catalog number as existing Entry" do
+    it "should clear out a Name Authority (autocomplete) field" do
+      count = Entry.count
+
       create_entry
 
-      visit new_entry_path :source_id => @source.id
+      expect(Entry.count).to eq(count + 1)
 
-      fill_in 'cat_lot_no', with: "123"
-      find_by_id('add_title').click
-      find_by_id('title_0').trigger('focus')
+      entry = Entry.last
 
-      expect(page).to have_content "Warning! An entry with that catalog number already exists."
+      visit edit_entry_path :id => entry.id
+
+      fill_in 'author_observed_name_0', with: "Joe"
+      fill_in 'author_0', with: '     '
+      fill_autocomplete('author_0', with: '     ')
+
+      expect(find_field('author_0').value).to eq('     ')
+
+      first(".save-button").click
+
+      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+
+      entry.reload
+
+      entry = Entry.last
+
+      expect(entry.entry_authors.count).to eq(1)
+      expect(entry.entry_authors.first.author_id).to eq(nil)
     end
 
-<<<<<<< HEAD
     it "should warn when editing Entry to have same catalog number as existing Entry" do
       create_entry
 
@@ -778,14 +497,12 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => Entry.last.id
       fill_in 'cat_lot_no', with: "123"
-      find_by_id('add_title').click
       find_by_id('title_0').trigger('focus')
 
       expect(page).to have_content "Warning! Another entry with that catalog number already exists."
 
       # change it back to a new number so msg goes away
       fill_in 'cat_lot_no', with: "124"
-      find_by_id('add_title').click
       find_by_id('title_0').trigger('focus')
 
       expect(page).not_to have_content "Warning! Another entry with that catalog number already exists."
@@ -830,9 +547,7 @@ describe "Data entry", :js => true do
       entry.save!
 
       sleep 1.1
-      
-      find_by_id('add_title').click
-      
+
       fill_in 'title_0', with: 'changed title'
       first(".save-button").click
 
@@ -863,147 +578,7 @@ describe "Data entry", :js => true do
       expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
     end
 
-    it "should show error message when trying to create a duplicate Name" do
-      existing_name = Name.create(name: "my test name", is_artist: true)
-
-      visit new_entry_path :source_id => @source.id
-
-      # fill in a non-existent name first, to get the modal
-      find_by_id('add_author').click
-      fill_autocomplete 'author_0', with: "non-existent name" do
-        # should pop up the modal to create an entity
-        selector = %Q{ul.ui-autocomplete:visible li.ui-menu-item:eq(0)}
-        page.execute_script %Q{ $('#{selector}').click() }
-
-        expect(find(".modal-title", visible: true).text.include?("Create")).to be_truthy
-
-        # now change the name to something that already exists
-        fill_in 'name', with: 'my test name'
-        # click_button doesn't work here. I have NO IDEA why.
-        find('.create-name-button').trigger('click')
-      end
-
-      expect(page).to have_content "name is already used by record ##{existing_name.id}"
-    end
-
-    it "should prevent another contributor from editing an entry" do
-      user = User.create!(
-        email: 'another_contributor@test.com',
-        username: 'another_contributor',
-        password: 'somethingunguessable',
-        role: 'contributor',
-      )
-
-      source = Source.create!(
-        title: "some unpublished source",
-        source_type: SourceType.unpublished,
-      )
-      entry = Entry.create!(
-        transaction_type: Entry::TYPE_TRANSACTION_GIFT,
-        source: source,
-        created_by_id: user.id,
-      )
-
-      visit edit_entry_path :id => entry.id
-      expect(page.status_code).to be(403)
-    end
-
-    it "should leave a comment on an Entry successfully" do
-      entry = Entry.create!(
-        source: Source.first,
-        created_by_id: @user.id,
-        approved: true
-      )
-      SDBMSS::Util.wait_for_solr_to_be_current
-      visit entry_path(entry)
-
-      fill_in 'comment_comment', with: "this entry is so crazy"
-      check 'comment_is_correction'
-      click_button('Submit')
-
-      expect(page).to have_content "this entry is so crazy"
-
-      comment = Comment.last
-      expect(comment.entries.first.id).to eq(entry.id)
-      expect(comment.comment).to eq("this entry is so crazy")
-      expect(comment.is_correction).to eq(true)
-    end
-
-    it "should leave a comment on a Manuscript successfully" do
-      entry1 = Entry.create!(
-        source: Source.first,
-        created_by_id: @user.id,
-        approved: true
-      )
-      entry2 = Entry.create!(
-        source: Source.first,
-        created_by_id: @user.id,
-        approved: true
-      )
-      manuscript = Manuscript.create!
-      manuscript_id = manuscript.id
-      EntryManuscript.create!(entry: entry1, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
-      EntryManuscript.create!(entry: entry2, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
-      SDBMSS::Util.wait_for_solr_to_be_current
-
-      visit manuscript_path(manuscript)
-
-      fill_in 'comment_comment', with: "this entry is nuts"
-      check 'comment_is_correction'
-      click_button('Submit')
-
-      expect(page).to have_content "this entry is nuts"
-
-      comment = Comment.last
-      expect(comment.manuscripts.first.id).to eq(manuscript_id)
-      expect(comment.comment).to eq("this entry is nuts")
-      expect(comment.is_correction).to eq(true)
-    end
-
-    it "should validate when saving Entry"
-
-    it "should let user create an Entry for an existing Manuscript" do
-      entry1 = Entry.create!(
-        source: Source.first,
-        created_by_id: @user.id,
-        approved: true
-      )
-      entry2 = Entry.create!(
-        source: Source.first,
-        created_by_id: @user.id,
-        approved: true
-      )
-      manuscript = Manuscript.create!
-      manuscript_id = manuscript.id
-      EntryManuscript.create!(entry: entry1, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
-      EntryManuscript.create!(entry: entry2, manuscript: manuscript, relation_type: EntryManuscript::TYPE_RELATION_IS)
-
-      visit manuscript_path(manuscript)
-
-      click_link "Create your own personal observation"
-
-      click_link "Click here to CREATE A NEW SOURCE"
-
-      select 'Auction/Sale Catalog', from: 'source_type'
-      fill_in 'source_date', with: '2015-02-28'
-      fill_in 'title', with: 'Sample Catalog'
-      click_button 'Save'
-
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      click_link "Add entries for this source"
-
-      fill_in 'cat_lot_no', with: '9090'
-
-      first(".save-button").click
-
-      sleep(1)
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      manuscript = Manuscript.find(manuscript_id)
-      expect(manuscript.entries.order(id: :desc).first.catalog_or_lot_number).to eq("9090")
-    end
-end
+  end
 
   context "when user is not logged in" do
 
