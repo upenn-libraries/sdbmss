@@ -391,24 +391,34 @@ describe "Data entry", :js => true do
       fill_in 'sale_price', with: '130000'
       select 'USD', from: 'sale_currency'
 
+      find_by_id('add_title').click
       fill_in 'title_0', with: 'Book of Hours'
-      find_by_id("add_title_0").click
+      #find_by_id("add_title_0").click
+      find_by_id('add_title').click
       fill_in 'title_1', with: 'Bible'
       fill_autocomplete_select_or_create_entity 'author_0', with: 'Schmoe, Joe'
+      find_by_id('add_author').click
       fill_in 'author_observed_name_0', with: 'Joe Schmoe'
       click_certainty_flag('author_certainty_flags_0')
       select 'Translator', from: 'author_role_0'
+      find_by_id('add_date').click
       fill_in 'date_observed_date_0', with: 'early 15th century'
       # move focus out of observed_date in order to trigger auto-populate of normalized dates
       page.execute_script %Q{ $('#date_normalized_start_0').trigger('focus') }
+      find_by_id('add_artist').click
       fill_in 'artist_observed_name_0', with: 'Chuck'
       fill_autocomplete_select_or_create_entity 'artist_0', with: 'Schultz, Charles'
+      find_by_id('add_scribe').click
       fill_in 'scribe_observed_name_0', with: 'Brother Francisco'
       fill_autocomplete_select_or_create_entity 'scribe_0', with: 'Brother Francis'
+      find_by_id('add_language').click
       fill_autocomplete_select_or_create_entity 'language_0', with: 'Latin'
+      find_by_id('add_material').click
       fill_autocomplete_select_or_create_entity 'material_0', with: 'Parchment'
+      find_by_id('add_place').click
       fill_in 'place_observed_name_0', with: 'Somewhere in Italy'
       fill_autocomplete_select_or_create_entity 'place_0', with: 'Italy'
+      find_by_id('add_use').click
       fill_in 'use_0', with: 'Some mysterious office or other'
 
       fill_in 'folios', with: '123'
@@ -427,6 +437,7 @@ describe "Data entry", :js => true do
       fill_in 'manuscript_link', with: 'http://something.com'
       fill_in 'other_info', with: 'Other stuff'
 
+      find_by_id('add_provenance').click
       fill_in 'provenance_observed_name_0', with: 'Somebody, Joe'
       fill_autocomplete_select_or_create_entity 'provenance_agent_0', with: 'Somebody, Joseph'
       click_certainty_flag('provenance_certainty_flags_0')
@@ -434,14 +445,14 @@ describe "Data entry", :js => true do
       fill_in 'provenance_end_date_0', with: '1965-11-23'
       check 'provenance_direct_transfer_0'
 
-      find_by_id("add_provenance_0").click
+      find_by_id('add_provenance').click
       fill_autocomplete_select_or_create_entity 'provenance_agent_1', with: "Sotheby's"
       fill_in 'provenance_start_date_1', with: '1965-11-23'
       fill_in 'provenance_comment_1', with: 'An historic sale'
       select 'For Sale', from: 'provenance_acquisition_method_1'
       check 'provenance_direct_transfer_1'
 
-      find_by_id("add_provenance_0").click
+      find_by_id('add_provenance').click
       fill_in 'provenance_observed_name_2', with: 'Wild Bill Collector'
       fill_in 'provenance_comment_2', with: 'This is some unknown dude'
 
@@ -650,6 +661,7 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => entry.id
 
+      find_by_id('add_title').click
       fill_in 'title_0', with: 'Changed Book'
 
       first(".save-button").click
@@ -724,6 +736,7 @@ describe "Data entry", :js => true do
 
       # clear out the title field; this should result in deletion of
       # underlying entry_title record
+      find_by_id('add_title').click
       fill_in 'title_0', with: ''
 
       first(".save-button").click
@@ -749,6 +762,8 @@ describe "Data entry", :js => true do
 
       # clear out the title field; this should result in deletion of
       # underlying entry_title record
+      
+      find_by_id('add_title').click
       fill_in 'title_0', with: ''
 
       first(".save-button").click
@@ -767,6 +782,7 @@ describe "Data entry", :js => true do
       visit new_entry_path :source_id => @source.id
 
       fill_in 'cat_lot_no', with: "123"
+      find_by_id('add_title').click
       find_by_id('title_0').trigger('focus')
 
       expect(page).to have_content "Warning! An entry with that catalog number already exists."
@@ -784,12 +800,14 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => Entry.last.id
       fill_in 'cat_lot_no', with: "123"
+      find_by_id('add_title').click
       find_by_id('title_0').trigger('focus')
 
       expect(page).to have_content "Warning! Another entry with that catalog number already exists."
 
       # change it back to a new number so msg goes away
       fill_in 'cat_lot_no', with: "124"
+      find_by_id('add_title').click
       find_by_id('title_0').trigger('focus')
 
       expect(page).not_to have_content "Warning! Another entry with that catalog number already exists."
@@ -834,7 +852,9 @@ describe "Data entry", :js => true do
       entry.save!
 
       sleep 1.1
-
+      
+      find_by_id('add_title').click
+      
       fill_in 'title_0', with: 'changed title'
       first(".save-button").click
 
@@ -871,6 +891,7 @@ describe "Data entry", :js => true do
       visit new_entry_path :source_id => @source.id
 
       # fill in a non-existent name first, to get the modal
+      find_by_id('add_author').click
       fill_autocomplete 'author_0', with: "non-existent name" do
         # should pop up the modal to create an entity
         selector = %Q{ul.ui-autocomplete:visible li.ui-menu-item:eq(0)}

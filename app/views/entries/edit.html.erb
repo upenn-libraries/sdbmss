@@ -280,7 +280,7 @@ label.col-sm-2-and-half {
     <label class="col-sm-3">
       <h3>Title(s)</h3>
       <div class="add-link-container">
-        <a id="add_title_{{ $index }}" class="clickable" data-ng-click="addRecord(entry.entry_titles); addRecord(entry.entry_authors)" title="Add">
+        <a id="add_title" class="clickable" data-ng-click="addRecord(entry.entry_titles); addRecord(entry.entry_authors)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
         </a>
       </div>
@@ -319,7 +319,7 @@ label.col-sm-2-and-half {
         <span>Author(s)</span>
       </h3>
       <div class="add-link-container">
-        <a class="clickable" data-ng-click="addRecord(entry.entry_authors)" title="Add">
+        <a a id="add_author" class="clickable" data-ng-click="addRecord(entry.entry_authors)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
         </a>
       </div>
@@ -368,7 +368,7 @@ label.col-sm-2-and-half {
         <span>Date(s)</span>
       </h3>
       <div class="add-link-container">
-        <a class="clickable" data-ng-click="addRecord(entry.entry_dates)" title="Add">
+        <a a id="add_date" class="clickable" data-ng-click="addRecord(entry.entry_dates)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
         </a>
       </div>
@@ -413,7 +413,7 @@ label.col-sm-2-and-half {
           <span>Artist(s)</span>
         </h3>
         <div class="add-link-container">
-          <a class="clickable" data-ng-click="addRecord(entry.entry_artists)" title="Add">
+          <a a id="add_artist" class="clickable" data-ng-click="addRecord(entry.entry_artists)" title="Add">
             Add new <span class="glyphicon glyphicon-plus"></span>
           </a>
         </div>
@@ -452,7 +452,7 @@ label.col-sm-2-and-half {
         <span>Scribe(s)</span>
       </h3>
       <div class="add-link-container">
-        <a class="clickable" data-ng-click="addRecord(entry.entry_scribes)" title="Add">
+        <a a id="add_scribe" class="clickable" data-ng-click="addRecord(entry.entry_scribes)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
         </a>
       </div>
@@ -491,7 +491,7 @@ label.col-sm-2-and-half {
         <span>Language(s)</span>
       </h3>
       <div class="add-link-container">
-        <a class="clickable" data-ng-click="addRecord(entry.entry_languages)" title="Add">
+        <a a id="add_language" class="clickable" data-ng-click="addRecord(entry.entry_languages)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
         </a>
       </div>
@@ -522,7 +522,7 @@ label.col-sm-2-and-half {
         <span>Material(s)</span>
       </h3>
       <div class="add-link-container">
-        <a class="clickable" data-ng-click="addRecord(entry.entry_materials)" title="Add">
+        <a a id="add_material" class="clickable" data-ng-click="addRecord(entry.entry_materials)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
         </a>
       </div>
@@ -553,7 +553,7 @@ label.col-sm-2-and-half {
         <span>Place(s)</span>
       </h3>
       <div class="add-link-container">
-        <a class="clickable" data-ng-click="addRecord(entry.entry_places)" title="Add">
+        <a a id="add_place" class="clickable" data-ng-click="addRecord(entry.entry_places)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
         </a>
       </div>
@@ -590,7 +590,7 @@ label.col-sm-2-and-half {
     <label class="col-sm-3">
       <h3>Use(s)</h3>
       <div class="add-link-container">
-        <a class="clickable" data-ng-click="addRecord(entry.entry_uses)" title="Add">
+        <a a id="add_use" class="clickable" data-ng-click="addRecord(entry.entry_uses)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
         </a>
       </div>
@@ -737,7 +737,7 @@ label.col-sm-2-and-half {
     <label class='col-sm-3'>
       <h3>Agent(s)</h3>
       <div class="add-link-container">
-        <a id="add_provenance_{{ $index }}" class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add">
+        <a id="add_provenance" class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
         </a>
       </div>
