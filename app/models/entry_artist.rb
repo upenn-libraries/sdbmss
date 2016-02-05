@@ -15,6 +15,13 @@ class EntryArtist < ActiveRecord::Base
     end
   end
 
+  after_save do |entry_artist|
+    if entry_artist.artist
+      entry_artist.artist.is_artist = true
+      entry_artist.artist.save!
+    end
+  end
+
   def display_value
     super artist
   end

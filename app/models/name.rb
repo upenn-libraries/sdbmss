@@ -64,8 +64,8 @@ class Name < ActiveRecord::Base
         errors[:viaf_id] << "is already used by record ##{existing_name.id} for '#{existing_name.name}'"
       end
     end
-  end
-
+  end 
+  
   # constructor for a Provenance Agent. takes same args as #new
   def self.agent(*args)
     hash = args.last.is_a?(Hash) ? args.pop : {}
