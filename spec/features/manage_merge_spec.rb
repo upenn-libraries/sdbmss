@@ -61,7 +61,6 @@ describe "Manage Names", :js => true do
 
   it "should update counters correctly on merge" do
     name_count = Name.count
-    puts "Count: #{name_count}"
 
     author = Name.author
     author.name = "John Updike"
