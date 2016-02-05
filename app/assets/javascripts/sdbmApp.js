@@ -16,8 +16,7 @@ var sdbmapp;
     "use strict";
 
     var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap", "ngAnimate", "ui.sortable"]);
-    sdbmapp = sdbmApp;
-
+    
     sdbmApp.run(function ($http) {
         // For Rails CSRF
         var csrf_token = $('meta[name="csrf-token"]').attr('content');
@@ -351,6 +350,15 @@ var sdbmapp;
 
     /* Entry screen controller */
     sdbmApp.controller("EntryCtrl", function ($scope, $http, Entry, Source, sdbmutil, $modal) {
+
+        sdbmapp = $scope;
+        $scope.sortableOptions = {
+          //stop: function () {}
+          axis: 'y',
+          stop: function () {
+            console.log($scope.entry.entry_titles);
+          }
+        }
 
         $scope.sdbmutil = sdbmutil;
 
