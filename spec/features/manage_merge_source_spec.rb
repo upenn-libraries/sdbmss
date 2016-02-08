@@ -53,11 +53,9 @@ describe "Manage Merging Sources", :js => true do
 
     visit new_entry_path :source_id => source.id
 
-    fill_in 'folios', with: '666'
+    fill_in 'folios', with: '7'
 
     first(".save-button").click
-
-
   end
 
 end

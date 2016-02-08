@@ -38,6 +38,7 @@ describe "Date Entry Workflow", :js => true do
 
     find_by_id('add_date').click
     fill_in "date_observed_date_0", with: "XVth century"
+    find_by_id('date_normalized_start_0').click
 
     expect(find('#date_normalized_start_0').value).to eq('1400')
     expect(find('#date_normalized_end_0').value).to eq('1501')
@@ -66,19 +67,4 @@ describe "Date Entry Workflow", :js => true do
     expect(find('#date_normalized_start_0').value).to eq('1234')
   end
 
-  it "should auto-select normalized_date field after date-parse has occurred" do
-    visit edit_entry_path :id => 13
-
-    expect(page).to have_content("Edit entry")
-
-    find_by_id('add_date').click
-
-    fill_in "date_observed_date_0", with: "XVth c"
-
-    expect(pending("Cannot check this using rspec.")).to fail
-
-#    sleep(1.5)
-#    expect(page.evaluate_script("document.activeElement.id")).to eq('date_normalized_start_0')
-  end
-  
 end
