@@ -42,6 +42,11 @@
                                 <th>Merge</th>
                                 <th>ID</th>
                                 <th>Name</th>
+                                <th>Author</th>
+                                <th>Artist</th>
+                                <th>Scribe</th>
+                                <th>Sale</th>
+                                <th>Provenance</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -51,6 +56,11 @@
                                     <td><a class='btn btn-primary' href="<%= name_path(id: @model.id)%>/merge?target_id=<%= nm.id %>">Select</a></td>
                                     <td><%= nm.id %></td>
                                     <td><%= nm.name %></td>
+                                    <td><%= nm.authors_count %></td>
+                                    <td><%= nm.artists_count %></td>
+                                    <td><%= nm.scribes_count %></td>
+                                    <td><%= nm.sale_agents_count %></td>
+                                    <td><%= nm.provenance_count %></td>
                                 </tr>
                                 <% end %>
                             <% end %>
