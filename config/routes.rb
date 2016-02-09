@@ -134,6 +134,8 @@ Rails.application.routes.draw do
       get 'types'
     end
     member do
+      get 'merge'
+      post 'merge'
       post 'update_status'
     end
   end

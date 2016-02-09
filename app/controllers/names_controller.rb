@@ -59,6 +59,8 @@ class NamesController < ManageModelsController
   def merge
     @target_id = params[:target_id]
     @target = nil
+    params[:name] = @model.name
+    get_similar
     if @target_id.present?
       @target = Name.find_by(id: @target_id)
     end
@@ -69,6 +71,33 @@ class NamesController < ManageModelsController
   end
 
   private
+
+  def get_similar
+    filtered = params.permit(:name, :is_author, :is_scribe, :is_artist, :is_provenance_agent)
+    name = filtered['name']
+
+    query = Name.none
+
+    if name.present?
+      query = Name.all
+
+      # remove leading and trailing quotation marks and apostrophes
+      words = name.split.select { |word| word.length > 3 }.map { |word| word.gsub(/^['"]/, '').gsub(/['"]$/, '') }
+
+      words = words.map { |word| word.gsub(/"/, '\"') }
+
+      # find titles that have ANY words in new title
+      query = query.where(words.map { |word| "name LIKE \"%#{word}%\"" }.join(" OR "))
+
+      # whittle them down by string similarity
+      len = name.length
+      query = query.where("length(name) <= #{len+8} AND length(name) >= #{len-8} AND levenshtein_ratio(name, ?) <= 40", name)
+
+      query = query.limit(5)
+    end
+
+    @similar = query
+  end
 
   def model_params
     # wrapped parameters don't work when class name is the same as one

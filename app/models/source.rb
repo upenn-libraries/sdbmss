@@ -191,6 +191,32 @@ class Source < ActiveRecord::Base
     self.class.invalid_source_fields_for_source_type(source_type.name)
   end
 
+  def entry_ids_to_index_on_merge
+    ids = Set.new
+    ids.merge(Entry.where(source_id: self.id).select(:id).map(&:id))
+    ids.to_a
+  end
+
+  def update_count
+    Source.reset_counters(self.id, :entries)
+  end
+
+  def merge_into (target)
+    target_id = target.id
+
+    entry_ids = entry_ids_to_index_on_merge
+
+    Entry.where(source_id: self.id).update_all(source_id: target_id)
+
+    target.update_count
+    target.save!
+
+    self.deleted = true
+    self.save!
+
+    SDBMSS::IndexJob.perform_later(Entry.to_s, entry_ids)
+  end
+
   private
 
   def source_type_not_changed

@@ -26,7 +26,9 @@ describe "Manage Merging Sources", :js => true do
     page.reset!
   end
 
-  it "should successfully merge two sources together, combining all their entries" do
+  def create_sources
+    ct = Entry.count
+
     source = Source.new(
       title: "The Book Repository",
       source_type: SourceType.auction_catalog,
@@ -52,10 +54,37 @@ describe "Manage Merging Sources", :js => true do
     source2.save!
 
     visit new_entry_path :source_id => source.id
-
     fill_in 'folios', with: '7'
-
     first(".save-button").click
+    
+    sleep 1.1
+
+    visit new_entry_path :source_id => source2.id
+
+    find_by_id('add_title').click
+    fill_in 'title_0', with: 'Test Title'
+    first(".save-button").click
+
+    sleep 1.1
+
+    expect(Entry.count).to eq(ct + 2)
+  end
+
+# for some reason the indexes are not updating fast enough, or at all?
+
+  it "should successfully merge two sources together, combining all their entries" do
+    create_sources
+    source = Source.last
+    source2 = Source.last(2)[1]
+
+    c1 = Entry.where(source_id: source.id).count
+    c2 = Entry.where(source_id: source2.id).count
+
+    source.merge_into(source2)
+
+    expect(source.deleted).to be_truthy
+
+    expect(source2.entries_count).to eq(Entry.where(source_id: source2.id).count)
   end
 
 end

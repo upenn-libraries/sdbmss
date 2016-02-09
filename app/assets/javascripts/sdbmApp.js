@@ -352,7 +352,6 @@ var sdbmapp;
     /* Entry screen controller */
     sdbmApp.controller("EntryCtrl", function ($scope, $http, Entry, Source, sdbmutil, $modal) {
 
-        sdbmapp = $scope;
         $scope.sortableOptions = {
           //stop: function () {}
           axis: 'y',
@@ -1255,6 +1254,8 @@ var sdbmapp;
 
     sdbmApp.controller('SourceCtrl', function ($scope, $http, $modal, sdbmutil, Source) {
 
+        sdbmapp = $scope;
+
         // store in scope, otherwise angular template code can't
         // get a reference to this
         $scope.sdbmutil = sdbmutil;
@@ -1370,6 +1371,28 @@ var sdbmapp;
         
         $scope.sourceToSave = null;
 
+        $scope.getSimilarSources = function (source, callback) {
+          $.ajax("/sources/similar.json", {
+              data: {
+                  date: source.date,
+                  title: source.title
+              },
+              success: function(data, textStatus, jqXHR) {
+                  if (callback) callback(data);
+              },
+              error: function() {
+                  alert("Error confirming that this new source doesn't already exist");
+              },
+              complete: function() {
+                  $scope.currentlySaving = false;
+              }
+          });
+        }
+
+        $scope.showSimilar = function (data) {
+          $scope.similarSources = data.similar;
+        }
+
         $scope.save = function () {
             $scope.currentlySaving = true;
 
@@ -1439,25 +1462,13 @@ var sdbmapp;
                 });
             } else {
                 // check if similar sources exist before saving new one
-                $.ajax("/sources/similar.json", {
-                    data: {
-                        date: sourceToSave.date,
-                        title: sourceToSave.title
-                    },
-                    success: function(data, textStatus, jqXHR) {
-                        if(data.similar && data.similar.length > 0) {
-                            $scope.similarSources = data.similar;
-                            $scope.showSimilarSources();
-                        } else {
-                            $scope.createSource($scope.sourceToSave);
-                        }
-                    },
-                    error: function() {
-                        alert("Error confirming that this new source doesn't already exist");
-                    },
-                    complete: function() {
-                        $scope.currentlySaving = false;
-                    }
+                $scope.getSimilarSources(sourceToSave, function (data) {
+                  if(data.similar && data.similar.length > 0) {
+                      $scope.similarSources = data.similar;
+                      $scope.showSimilarSources();
+                  } else {
+                      $scope.createSource($scope.sourceToSave);
+                  }
                 });
             }
         };

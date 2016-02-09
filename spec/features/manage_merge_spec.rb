@@ -83,5 +83,7 @@ describe "Manage Names", :js => true do
 
     expect(author.authors_count).to eq(1)
     expect(artist.artists_count).to eq(1)
+
+    
   end
 end

@@ -122,43 +122,7 @@ class SourcesController < ManageModelsController
 
   # TODO: this is kinda slow and needs to be optimized
   def similar
-    filtered = source_params_for_create_and_edit
-    title = filtered['title']
-    date = filtered['date']
-
-    query = Source.none
-
-    if date.present? || title.present?
-      query = Source.all
-
-      if date.present?
-        # use only the year so we get broadest possible matches
-        broad_date = date.dup
-        broad_date = broad_date[0..3] if broad_date.length > 4
-        query = query.where("date LIKE '#{broad_date}%'")
-      end
-
-      if title.present?
-        # NOTE: the order in which we add criteria to query seems to
-        # make a difference in performance.
-
-        # remove leading and trailing quotation marks and apostrophes
-        words = title.split.select { |word| word.length > 3 }.map { |word| word.gsub(/^['"]/, '').gsub(/['"]$/, '') }
-
-        words = words.map { |word| word.gsub(/"/, '\"') }
-
-        # find titles that have ANY words in new title
-        query = query.where(words.map { |word| "title LIKE \"%#{word}%\"" }.join(" OR "))
-
-        # whittle them down by string similarity
-        len = title.length
-        query = query.where("length(title) <= #{len+8} AND length(title) >= #{len-8} AND levenshtein_ratio(title, ?) <= 40", title)
-      end
-
-      query = query.limit(5)
-    end
-
-    @similar = query
+    get_similar
 
     respond_to do |format|
       format.json
@@ -302,6 +266,22 @@ class SourcesController < ManageModelsController
     end
   end
 
+  def merge
+    @source = Source.find(params[:id])
+    @target_id = params[:target_id]
+    @target = nil
+    params[:title] = @source.title
+    params[:date] = @source.date
+    get_similar 
+    if @target_id.present?
+      @target = Source.find_by(id: @target_id)
+    end
+    if params[:confirm] == "yes"
+      @source.merge_into(@target)
+      render "merge_success"
+    end
+  end
+
   # we don't ever destroy anything, we just mark it as deleted
   def destroy
     error = nil
@@ -331,6 +311,46 @@ class SourcesController < ManageModelsController
   end
 
   private
+
+  def get_similar
+    filtered = source_params_for_create_and_edit
+    title = filtered['title']
+    date = filtered['date']
+
+    query = Source.none
+
+    if date.present? || title.present?
+      query = Source.all
+
+      if date.present?
+        # use only the year so we get broadest possible matches
+        broad_date = date.dup
+        broad_date = broad_date[0..3] if broad_date.length > 4
+        query = query.where("date LIKE '#{broad_date}%'")
+      end
+
+      if title.present?
+        # NOTE: the order in which we add criteria to query seems to
+        # make a difference in performance.
+
+        # remove leading and trailing quotation marks and apostrophes
+        words = title.split.select { |word| word.length > 3 }.map { |word| word.gsub(/^['"]/, '').gsub(/['"]$/, '') }
+
+        words = words.map { |word| word.gsub(/"/, '\"') }
+
+        # find titles that have ANY words in new title
+        query = query.where(words.map { |word| "title LIKE \"%#{word}%\"" }.join(" OR "))
+
+        # whittle them down by string similarity
+        len = title.length
+        query = query.where("length(title) <= #{len+8} AND length(title) >= #{len-8} AND levenshtein_ratio(title, ?) <= 40", title)
+      end
+
+      query = query.limit(5)
+    end
+
+    @similar = query
+  end
 
   def set_source
     @source = Source.find(params[:id])

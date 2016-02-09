@@ -1,22 +1,23 @@
-<div class='panel panel-primary'>
+<div class='panel panel-primary'><!--<%= @target.present? ? "panel-warning" : "panel-primary" %>'>-->
     <div class='panel-heading'>
-        <h3 class='h3'>Merge <%= @model.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h3>
+        <h3 class='h3'>Merge <%= @source.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h3>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-sm-6">
+<div class='row'>
+    <div class='col-sm-6'>
         <div class='panel <%= @target.present? ? "panel-danger" : "panel-default" %>'>
-            <div class='panel-heading'><b><%= @model.public_id %> <%= @target.present? ? "(Will be deleted)" : "" %></b></div>
-            <%= %>
-            <%= render partial: "shared/name_main", locals: { name: @model } %>
+            <div class='panel-heading'><b><%= @source.public_id %> <%= @target.present? ? " (Will be deleted)" : "" %></b></div>
+            <%= render partial: "source_details", locals: {source: @source } %>
         </div>
     </div>
-    <div class="col-sm-6">
+
+    <div class='col-sm-6'>
+        
         <% if @target_id.present? && @target.present? %>
             <div class='panel <%= @target.present? ? "panel-success" : "panel-default" %>'>
                 <div class='panel-heading'><b><%= @target.public_id %></b></div>
-                <%= render partial: "shared/name_main", locals: { name: @target } %>
+                <%= render partial: "source_details", locals: {source: @target} %>
             </div>
         <% else %>
             <% if @target_id.present? %>
@@ -24,7 +25,7 @@
             <% end %>
             <%= form_tag(request.path, method: :get, class: "form-horizontal sdbmss-form") do %>
                 <div class="row">
-                    <label class="col-sm-3 control-label">Find by unique ID</label>
+                    <label class="col-sm-3 control-label">By Unique Id: </label>
                     <div class="col-sm-6">
                         <input type="text" name="target_id" class="form-control"></p>
                     </div>
@@ -41,46 +42,51 @@
                             <tr>
                                 <th>Merge</th>
                                 <th>ID</th>
-                                <th>Name</th>
+                                <th>Title</th>
+                                <th>Date</th>
+                                <th>Entries</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <% @similar.each do |nm| %>
-                                <% if nm.id != @model.id %>
+                            <% @similar.each do |src| %>
+                                <% if src.id != @source.id %>
                                 <tr>
-                                    <td><a class='btn btn-primary' href="<%= name_path(id: @model.id)%>/merge?target_id=<%= nm.id %>">Select</a></td>
-                                    <td><%= nm.id %></td>
-                                    <td><%= nm.name %></td>
+                                    <td><a class='btn btn-primary' href="<%= source_path(id: @source.id)%>/merge?target_id=<%= src.id %>">Select</a></td>
+                                    <td><%= src.id %></td>
+                                    <td><%= src.title %></td>
+                                    <td><%= format_fuzzy_date(src.date) %></td>
+                                    <td><a href="<%= search_advanced_path(source: src.public_id) %>"><%= src.entries.approved_only.count %> entries</a></td>
                                 </tr>
                                 <% end %>
                             <% end %>
                         </tbody>
                     </table>
                 <% else %>
-                    <b>No suggested names found, use manual search above.</b>
+                    <h3>No suggested sources found, use manual search above.</h3>
                 <% end %>
             </div>
         <% end %>
     </div>
+
 </div>
 
 <% if @target.present? %>
 <div class="row">
     <div class="col-sm-12">
         <div><b>Confirm</b></div>
-        <p>Are you sure you want to do this? <%= @model.public_id %> will be marked as deleted and its fields cleared out.</p>
+        <p>Are you sure you want to do this? <%= @source.public_id %> will be marked as deleted and its fields cleared out.</p>
     </div>
-</div>
-
 <%= form_tag(request.path, method: :post, class: "form-horizontal sdbmss-form") do %>
     <input type="hidden" name="confirm" value="yes"/>
     <input type="hidden" name="target_id" value="<%= @target.id %>"/>
     <div class="row">
         <div class="col-sm-3">
             <button class="btn btn-primary">Yes</button>
-            <a class="btn btn-warning" href="<%= names_path %>">Cancel</a>
+            <a class="btn btn-warning" href="<%= sources_path %>">Cancel</a>
         </div>
     </div>
 <% end %>
+</div>
+
 
 <% end %>

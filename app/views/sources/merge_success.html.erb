@@ -1,0 +1,5 @@
+<h3>Successfully merged.</h3>
+
+<p><%= @source.public_id %> has been merged into <a href="<%= url_for @target %>"><%= @target.public_id %></a>.</p>
+
+<%= render partial: "source_details", locals: { source: @source } %>
