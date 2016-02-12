@@ -5,13 +5,17 @@
 </div>
 
 <div class='row'>
-    <div class='col-sm-6'>
+    <div class='col-sm-5'>
         <div class='panel <%= @target.present? ? "panel-danger" : "panel-default" %>'>
             <div class='panel-heading'><b><%= @source.public_id %> <%= @target.present? ? " (Will be deleted)" : "" %></b></div>
             <%= render partial: "source_details", locals: {source: @source } %>
         </div>
     </div>
-
+    <div class='col-sm-1'>
+        <% if @target.present? %>
+            <span class="chevron">〉</span>
+        <% end %>
+    </div>
     <div class='col-sm-6'>
         
         <% if @target_id.present? && @target.present? %>

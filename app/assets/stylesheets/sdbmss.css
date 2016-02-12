@@ -68,6 +68,15 @@ h1 { font-size: 30px; margin-top: 0; }
   background-color: #efefef;
 }
 
+.chevron {
+  font-weight: 900;
+  font-size: 200px;
+  position: absolute;
+  display: block;
+  right: -35px;
+  color: lightgray;
+}
+
 .input-block .row {
     margin: 2px;
 }
