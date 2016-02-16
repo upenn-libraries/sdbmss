@@ -14,6 +14,7 @@ describe "Manage sources", :js => true do
       title: "my test source",
       created_by: @user,
     )
+    Source.index
   end
 
   before :each do

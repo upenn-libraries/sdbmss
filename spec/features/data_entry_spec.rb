@@ -95,6 +95,7 @@ describe "Data entry", :js => true do
       role: SourceAgent::ROLE_SELLING_AGENT,
       agent: Name.find_or_create_agent("Sotheby's")
     )
+    Source.index
   end
 
   context "when user is logged in" do

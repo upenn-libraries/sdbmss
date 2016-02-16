@@ -20,6 +20,7 @@ describe "Manage languages", :js => true do
       name: "Martian",
       created_by: @user,
     )
+    Language.index
   end
 
   context "when contributor is logged in" do

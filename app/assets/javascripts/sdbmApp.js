@@ -1463,7 +1463,6 @@ var sdbmapp;
             } else {
                 // check if similar sources exist before saving new one
                 $scope.getSimilarSources(sourceToSave, function (data) {
-                  console.log("mm", data);
                   if(data.similar && data.similar.length > 0) {
                       $scope.similarSources = data.similar;
                       $scope.showSimilarSources();
