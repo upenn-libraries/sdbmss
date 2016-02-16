@@ -14,8 +14,8 @@ class Language < ActiveRecord::Base
   validates_presence_of :name
 
   searchable do
-    string :name
     text :name, :more_like_this => true
+    string :name
     integer :id
     integer :entries_count
     integer :created_by_id

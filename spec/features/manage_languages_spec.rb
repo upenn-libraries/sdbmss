@@ -46,15 +46,15 @@ describe "Manage languages", :js => true do
       Language.create!(name: "Something else")
       Language.create!(name: "Something zzz")
 
-      Language.index
+      Language.reindex
 
       s = Language.search do
-        fulltext("*thing")
+        fulltext("something")
       end
 
       expect(s.total).to eq(4)
 
-      visit search_languages_path(term: "*thing", format: "json")
+      visit search_languages_path(term: "something", format: "json")
       response = JSON.parse(page.source)
       expect(response).to be_a(Hash)
       expect(response["total"]).to eq(4)
