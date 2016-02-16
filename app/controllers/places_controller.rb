@@ -1,4 +1,4 @@
-class PlacesController < ManageModelsController
+class PlacesController < SearchableAuthorityController
 
   include LanguagesAndPlaces
   include MarkAsReviewed
@@ -9,5 +9,4 @@ class PlacesController < ManageModelsController
   def model_class
     Place
   end
-
 end

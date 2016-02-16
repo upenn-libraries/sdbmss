@@ -1,5 +1,5 @@
 
-class SourcesController < ManageModelsController
+class SourcesController < SearchableAuthorityController
 
   include CalculateBounds
   include MarkAsReviewed
@@ -145,10 +145,9 @@ class SourcesController < ManageModelsController
     search_model_class.all.includes([:created_by])
   end
 
-  # FIX ME - add support for OR queries as well as AND
+  # FIX ME: this search system should use solr now, and possibly even blacklight
 
   def search_query
-
     query = super
 
     if params["from"] && params["to"]
@@ -310,9 +309,29 @@ class SourcesController < ManageModelsController
     end
   end
 
+  def conflict
+    get_conflicts
+
+    respond_to do |format|
+      format.json
+    end
+  end
+
   private
 
+# FIX ME: how to get similar before it exists?!
+
   def get_similar
+
+    s = Sunspot.more_like_this(@source) do
+      fields :title, :date
+      paginate page: 1, per_page: 10
+      order_by :score, :desc
+    end
+    @similar = s.results
+  end
+
+  def get_conflicts
     filtered = source_params_for_create_and_edit
     title = filtered['title']
     date = filtered['date']
@@ -358,6 +377,17 @@ class SourcesController < ManageModelsController
 
   def source_params
     params.require(:source)
+  end
+
+  def params_for_search
+    # agent_name can come from a number of sources
+    # FIX ME: maybe we want to only search for selling agents though?
+    params[:agent_name] = Array(params[:agent]) + Array(params[:selling_agent]) + Array(params[:institution])
+    params.permit(:title, {:title => []}, :author, {:author => []}, :agent_name, {:agent_name => [] }, :location_institution, :medium, :date, {:date => []})
+  end
+
+  def filters_for_search
+#    params.permit(:agent_name)
   end
 
   def source_params_for_create_and_edit

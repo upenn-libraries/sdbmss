@@ -1372,7 +1372,7 @@ var sdbmapp;
         $scope.sourceToSave = null;
 
         $scope.getSimilarSources = function (source, callback) {
-          $.ajax("/sources/similar.json", {
+          $.ajax("/sources/conflict.json", {
               data: {
                   date: source.date,
                   title: source.title
@@ -1463,6 +1463,7 @@ var sdbmapp;
             } else {
                 // check if similar sources exist before saving new one
                 $scope.getSimilarSources(sourceToSave, function (data) {
+                  console.log("mm", data);
                   if(data.similar && data.similar.length > 0) {
                       $scope.similarSources = data.similar;
                       $scope.showSimilarSources();

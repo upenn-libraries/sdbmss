@@ -131,6 +131,7 @@ Rails.application.routes.draw do
       post 'mark_as_reviewed'
       get 'search'
       get 'similar'
+      get 'conflict'
       get 'types'
     end
     member do

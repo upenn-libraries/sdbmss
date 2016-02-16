@@ -30,6 +30,8 @@ describe "Manage Names", :js => true do
     author.name = "Jane Doe"
     author.save!
 
+    Name.index
+
     visit names_path
     expect(page).to have_content("Manage all name records")
     expect(page).to have_content(author.name)

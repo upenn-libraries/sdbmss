@@ -13,6 +13,14 @@ class Language < ActiveRecord::Base
 
   validates_presence_of :name
 
+  searchable do
+    string :name
+    text :name, :more_like_this => true
+    integer :id
+    integer :entries_count
+    integer :created_by_id
+  end
+
   def entries_to_index_on_update
     Entry.with_associations.joins(:entry_languages).where({ entry_languages: { language_id: id} })
   end

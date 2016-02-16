@@ -65,6 +65,20 @@ class Name < ActiveRecord::Base
       end
     end
   end 
+
+  searchable do
+    integer :id
+    text :name, :more_like_this => true
+    string :name
+    string :viaf_id
+    integer :created_by_id
+    integer :artists_count
+    integer :authors_count
+    integer :scribes_count
+    integer :source_agents_count
+    integer :sale_agents_count
+    integer :provenance_count
+  end
   
   # constructor for a Provenance Agent. takes same args as #new
   def self.agent(*args)

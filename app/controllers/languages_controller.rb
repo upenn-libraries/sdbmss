@@ -1,4 +1,4 @@
-class LanguagesController < ManageModelsController
+class LanguagesController < SearchableAuthorityController
 
   include LanguagesAndPlaces
   include MarkAsReviewed

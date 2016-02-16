@@ -1,4 +1,4 @@
-class NamesController < ManageModelsController
+class NamesController < SearchableAuthorityController
 
   include ResourceSearch
   include MarkAsReviewed
@@ -72,7 +72,7 @@ class NamesController < ManageModelsController
 
   private
 
-  def get_similar
+  def get_similar_old
     filtered = params.permit(:name, :is_author, :is_scribe, :is_artist, :is_provenance_agent)
     name = filtered['name']
 

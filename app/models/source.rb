@@ -78,6 +78,25 @@ class Source < ActiveRecord::Base
     includes(:source_type, :source_agents => [:agent])
   }
 
+  searchable do
+    integer :id
+    string :title
+    text :title, :more_like_this => true
+    string :author
+    text :author
+    integer :created_by_id
+    string :location_institution
+    text :location_institution, :more_like_this => true
+    text :agent_name do
+      (source_agents.map do |sa| Name.find(sa.agent_id).name end).join(" ")
+    end
+    string :location
+    string :medium
+    string :date
+    text :date, :more_like_this => true
+    integer :entries_count
+  end
+
   def public_id
     SDBMSS::IDS.get_public_id_for_model(self.class, id)
   end

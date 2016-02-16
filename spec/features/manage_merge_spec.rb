@@ -35,6 +35,8 @@ describe "Manage Names", :js => true do
     author2.name = "Milton, John"
     author2.save!
 
+    Name.index
+
     visit names_path
     expect(page).to have_content("Merge")
 
@@ -45,7 +47,7 @@ describe "Manage Names", :js => true do
     expect(page).to have_content(author2.id)
 
     fill_in "target_id", :with => author.id
-    click_button "Show"
+    click_button "Select"
 
     #MERGE TO author (John Milton)
     expect(page).to have_content(author.name)

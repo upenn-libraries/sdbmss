@@ -243,8 +243,11 @@ $(document).ready(function() {
              search_field.children().each(function (idx, option) {
                  if(!populated && qs[option.value] && qs[option.value].length > 0) {
                      search_field.val(option.value);
-                     if (qs[option.value].length > 0) {
+                     if (qs[option.value].isArray && qs[option.value].length > 0) {
                          search_value.val(qs[option.value].pop());
+                     } else if ( qs[option.value] != undefined ) {
+                        search_value.val(qs[option.value]);
+                        qs[option.value] = undefined;
                      }
                      //delete qs[option.value];
                      populated = true;
@@ -291,6 +294,7 @@ $(document).ready(function() {
                  }
              });
          } else {
+            console.log('searching...');
              SDBM.ManageRecords.prototype.searchAjax.call(manageSources, params, dt_params, callback);
          }
      };

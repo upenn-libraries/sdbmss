@@ -17,6 +17,14 @@ class Place < ActiveRecord::Base
 
   validates_presence_of :name
 
+  searchable do
+    text :name, :more_like_this => true
+    string :name
+    integer :id
+    integer :created_by_id
+    integer :entries_count
+  end
+
   def entries_to_index_on_update
     Entry.with_associations.joins(:entry_places).where({ entry_places: { place_id: id} })
   end

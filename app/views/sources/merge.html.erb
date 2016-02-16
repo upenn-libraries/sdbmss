@@ -1,3 +1,4 @@
+<% puts "source! #{@source.as_json}" %>
 <div class='panel panel-primary'><!--<%= @target.present? ? "panel-warning" : "panel-primary" %>'>-->
     <div class='panel-heading'>
         <h3 class='h3'>Merge <%= @source.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h3>
