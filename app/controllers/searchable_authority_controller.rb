@@ -1,5 +1,7 @@
 class SearchableAuthorityController < ManageModelsController
 
+  SEARCH_FIELDS = ["name", "id"]
+
   def create
     super
     @model.delay.index
@@ -42,53 +44,64 @@ class SearchableAuthorityController < ManageModelsController
     end
   end
 
+  def index
+    @search_fields = SEARCH_FIELDS
+    @search_options = ["with", "without"]
+  end
+
   def search
 
     order = params[:order].present? ? {field: params[:order].split[0], direction: params[:order].split[1]} : {}
     limit = params[:limit].present? ? params[:limit].to_i : 50
     page = params[:limit] ? (params[:offset].to_i / params[:limit].to_i) + 1 : 1
     op = params[:op].present? ? params[:op] : 'and'
-    
+
+    options = options_for_search
+
+    puts "Options: #{options}"
+
     filters = filters_for_search
     params = params_for_search
 
-    # FIX ME: need to add some way of doing 'or' searches .. again
-
     s = Sunspot.search model_class do
       
+      fulltext_search = lambda { |p, o| 
+        if params.present?
+          p.each do |field, value|
+            value = Array(value)
+            if value.kind_of? Array
+              value.each do |v|
+                op = Array(options[field + "_option"]).shift
+                # if searching for this 'without' the term, right now just add a '-' to the beginning of query to negate it
+                if op && op == 'without'
+                  fulltext "-" + v, :fields => [field]
+                else
+                  fulltext v, :fields => [field]
+               end
+              end
+           end
+          end
+        end
+      }
+
       if filters.present?
         filters.each do |field, value|
-          width field, value
+          op = Array(options[field + "_option"]).shift
+            if op && op == 'without'
+              without field, value
+            else
+              with field, value
+            end
         end
       end
 
       if op == 'OR'
         any do
-          if params.present?
-            params.each do |field, value|
-              if value.kind_of? Array
-                value.each do |v|
-                 fulltext v, :fields => [field]
-                end
-              else
-               fulltext value, :fields => [field]
-             end
-            end
-          end
+          fulltext_search.call(params, options)
         end
       else
         all do
-          if params.present?
-            params.each do |field, value|
-              if value.kind_of? Array
-                value.each do |v|
-                 fulltext v, :fields => [field]
-                end
-              else
-               fulltext value, :fields => [field]
-             end
-            end
-          end
+          fulltext_search.call(params, options)
         end
       end
 
@@ -111,12 +124,15 @@ class SearchableAuthorityController < ManageModelsController
   private
 
   def params_for_search
-    params[:name] = params[:term]
-    params.permit(:name)
+    params.permit(:name, {:name => []})
   end
 
   def filters_for_search
-    {}
+    params.permit(:id, {:id => []})
   end
 
+  # permit as options fields with the format SEARCHFIELD_option
+  def options_for_search
+    params.permit(SEARCH_FIELDS.map do |s| {s + "_option" => []} end, SEARCH_FIELDS.map do |s| s + "_option" end)
+  end 
 end

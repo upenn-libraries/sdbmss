@@ -136,6 +136,7 @@ var SDBM = SDBM || {};
 
     SDBM.ManageRecords.prototype.searchAjax = function(params, dt_params, callback) {
         var manageRecords = this;
+        console.log(params);
         $.ajax({
             url: '/' + manageRecords.options.resourceName + '/search.json',
             data: params,
@@ -173,18 +174,42 @@ var SDBM = SDBM || {};
             orderStr += columns[item.column].dbSortField + " " + item.dir;
         });
 
-        return {
-            term: this.getSearchValue(),
+// FIX ME: ability to have multiple 'rows' of search;
+
+        var search = {
             unreviewed_only: this.getUnreviewedOnly(),
             created_by_user: this.options.showOnlyRecordsCreatedByUser,
             offset: dt_params.start,
             limit: dt_params.length,
             order: orderStr
         };
+
+        for (var i = 0; i < $(".search-fieldset").length; i++) { 
+            var search_row = $(".search-fieldset").eq(i);
+            var term = search_row.find("input[name=search_value]").val();
+            var field = search_row.find("select[name=search_field]").val();
+            var option = search_row.find("select[name=search_option]").val();
+
+            if ( search[field] ) {
+                search[field].append(term);
+            } else {
+                search[field] = [term];
+            }
+
+            var option_string = field + "_option";
+            if (search[option_string]) {
+                search[option_string].append(option);
+            } else {
+                search[option_string] = [option];
+            }
+        }
+        return search;
     };
 
     // returns a bookmarkable URL that contains current state of page
     // and search form
+
+    // FIX ME : Add all search options here: page, limit, option, field, etc.
     SDBM.ManageRecords.prototype.persistFormStateToURL = function () {
         var manageRecords = this;
         return URI(manageRecords.getResourceIndexURL()).search({
@@ -242,6 +267,14 @@ var SDBM = SDBM || {};
 
     SDBM.ManageRecords.prototype.getSearchValue = function() {
         return $("input[name='search_value']").val();
+    };
+
+    SDBM.ManageRecords.prototype.getSearchField = function() {
+        return $("select[name='search_field']").val();
+    };
+
+    SDBM.ManageRecords.prototype.getSearchOption = function() {
+        return $("select[name='search_option']").val();
     };
     
     SDBM.ManageRecords.prototype.getUnreviewedOnly = function() {

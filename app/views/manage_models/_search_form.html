@@ -3,8 +3,22 @@
         <div class="col-sm-1">
             <label class="control-label">Search</label>
         </div>
-        <div class="col-sm-4">
-            <%= text_field_tag :search_value, params[:search_value], sizze: 70, class: "form-control" %>
+        <div class="col-sm-3">
+            <%= text_field_tag :search_value, params[:search_value], size: 70, class: "form-control" %>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="search_field">
+            <%- @search_fields.each do |field| -%>
+                <option value="<%= field %>"><%= field.capitalize %></option>
+            <%- end -%>
+            </select>
+        </div>
+        <div class="col-sm-2">
+            <select class="form-control" name="search_option">
+             <%- @search_options.each do |option| -%>
+                <option value="<%= option %>"><%= option.capitalize %></option>
+            <%- end -%>
+            </select>
         </div>
         <div class="col-sm-1">
             <button id="search_submit" type="submit" class="btn btn-primary">Search</button>
@@ -12,7 +26,7 @@
         <div class="col-sm-1">
             <img id="spinner" alt="working..." style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
         </div>
-        <div class="col-sm-offset-3 col-sm-2 text-right">
+        <div class="col-sm-2 text-right">
             <a class="btn btn-primary add-new-record" href="<%= new_model_path %>">Add New Record</a>
         </div>
     </div>
