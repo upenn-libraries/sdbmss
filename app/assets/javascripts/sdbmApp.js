@@ -1359,6 +1359,10 @@ var sdbmapp;
             $scope.createSource($scope.sourceToSave);
         };
 
+        $scope.cancelCreate = function () {
+            $scope.similarSourcesModal.close();
+        }
+
         /* source argument should be an Angular resource object */
         $scope.createSource = function(source) {
             source.$save(

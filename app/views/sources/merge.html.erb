@@ -26,7 +26,13 @@
             </div>
         <% else %>
             <% if @target_id.present? %>
-                <p style="color: red;">Could not find record #<%= @target_id %></p>
+                <div class='panel panel-danger'>
+                <% if @warning.present? %>
+                    <div class="panel-heading"><%= @warning %></div>
+                <% else %>
+                    <div class="panel-heading">Could not find record #<%= @target_id %></div>
+                <% end %>
+                </div>
             <% end %>
             <%= form_tag(request.path, method: :get, class: "form-horizontal sdbmss-form") do %>
                 <div class="row">

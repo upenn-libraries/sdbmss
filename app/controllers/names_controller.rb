@@ -62,7 +62,11 @@ class NamesController < SearchableAuthorityController
     params[:name] = @model.name
     get_similar
     if @target_id.present?
-      @target = Name.find_by(id: @target_id)
+      if @target_id.to_i == @model.id
+        @warning = "You can't merge a record into itself"
+      else
+        @target = Name.find_by(id: @target_id)
+      end
     end
     if params[:confirm] == "yes"
       @model.merge_into(@target)

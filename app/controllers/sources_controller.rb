@@ -273,7 +273,11 @@ class SourcesController < SearchableAuthorityController
     params[:date] = @source.date
     get_similar 
     if @target_id.present?
-      @target = Source.find_by(id: @target_id)
+      if @target_id.to_i == @source.id
+        @warning = "You can't merge a record into itself"
+      else
+        @target = Source.find_by(id: @target_id)
+      end
     end
     if params[:confirm] == "yes"
       @source.merge_into(@target)

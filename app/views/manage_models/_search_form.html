@@ -8,14 +8,14 @@
         </div>
         <div class="col-sm-2">
             <select class="form-control" name="search_field">
-            <%- @search_fields.each do |field| -%>
+            <%- Array(@search_fields).each do |field| -%>
                 <option value="<%= field %>"><%= field.capitalize %></option>
             <%- end -%>
             </select>
         </div>
         <div class="col-sm-2">
             <select class="form-control" name="search_option">
-             <%- @search_options.each do |option| -%>
+             <%- Array(@search_options).each do |option| -%>
                 <option value="<%= option %>"><%= option.capitalize %></option>
             <%- end -%>
             </select>

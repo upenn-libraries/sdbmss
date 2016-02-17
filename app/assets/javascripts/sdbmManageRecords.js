@@ -136,7 +136,7 @@ var SDBM = SDBM || {};
 
     SDBM.ManageRecords.prototype.searchAjax = function(params, dt_params, callback) {
         var manageRecords = this;
-        console.log(params);
+        //console.log(params);
         $.ajax({
             url: '/' + manageRecords.options.resourceName + '/search.json',
             data: params,
@@ -176,7 +176,7 @@ var SDBM = SDBM || {};
 
 // FIX ME: ability to have multiple 'rows' of search;
 
-        var search = {
+        var search_query = {
             unreviewed_only: this.getUnreviewedOnly(),
             created_by_user: this.options.showOnlyRecordsCreatedByUser,
             offset: dt_params.start,
@@ -190,20 +190,20 @@ var SDBM = SDBM || {};
             var field = search_row.find("select[name=search_field]").val();
             var option = search_row.find("select[name=search_option]").val();
 
-            if ( search[field] ) {
-                search[field].append(term);
+            if ( search_query[field] ) {
+                search_query[field].push(term);
             } else {
-                search[field] = [term];
+                search_query[field] = [term];
             }
 
             var option_string = field + "_option";
-            if (search[option_string]) {
-                search[option_string].append(option);
+            if (search_query[option_string]) {
+                search_query[option_string].push(option);
             } else {
-                search[option_string] = [option];
+                search_query[option_string] = [option];
             }
         }
-        return search;
+        return search_query;
     };
 
     // returns a bookmarkable URL that contains current state of page

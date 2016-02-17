@@ -20,7 +20,6 @@ describe "Manage languages", :js => true do
       name: "Martian",
       created_by: @user,
     )
-    Language.index
   end
 
   context "when contributor is logged in" do
@@ -49,17 +48,17 @@ describe "Manage languages", :js => true do
       Language.reindex
 
       s = Language.search do
-        fulltext("something")
+        fulltext "something", :fields => [:name]
       end
 
       expect(s.total).to eq(4)
 
-      visit search_languages_path(term: "something", format: "json")
+      visit search_languages_path(name: "something", format: "json")
       response = JSON.parse(page.source)
       expect(response).to be_a(Hash)
       expect(response["total"]).to eq(4)
 
-      visit search_languages_path(term: "Something old", format: "json")
+      visit search_languages_path(name: "Something old", format: "json")
       response = JSON.parse(page.source)
       expect(response).to be_a(Hash)
       expect(response["total"]).to eq(1)

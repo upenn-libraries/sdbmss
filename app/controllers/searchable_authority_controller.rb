@@ -58,8 +58,6 @@ class SearchableAuthorityController < ManageModelsController
 
     options = options_for_search
 
-    puts "Options: #{options}"
-
     filters = filters_for_search
     params = params_for_search
 
