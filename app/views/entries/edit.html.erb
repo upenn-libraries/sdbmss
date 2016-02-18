@@ -275,9 +275,10 @@ label.col-sm-2-and-half {
       </div>
     </div>
 
-    <div class="source-info" ng-if="entry.source_bk" data-ng-controller="SelectSourceCtrl">
-      <h4>Source is gone!</h4>
-      <%= render partial: "source_selection_form", :locals => {utility: "edit"} %>
+    <div class="source-info" ng-if="selecting_source" data-ng-controller="SelectSourceCtrl">
+      <div class="well">
+        <%= render partial: "source_selection_form", :locals => {utility: "edit"} %>
+      </div>
     </div>
 
     <div class="row">

@@ -336,6 +336,7 @@ class EntriesController < ManageModelsController
     # Rails convention, because Rails' wrapped parameters feature
     # doesn't pick up the *_attributes fields that way.
     params.permit(
+      :source_id,
       :catalog_or_lot_number,
       :institution_id,
       :transaction_type,

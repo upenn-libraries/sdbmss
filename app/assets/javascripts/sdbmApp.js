@@ -319,6 +319,10 @@ var EntryScope;
           $scope.$emit('changeSource', source)
         }
 
+        $scope.cancelSelectSource = function () {
+          $scope.$emit('cancelSource');
+        }
+
         $scope.createSourceURL = function () {
             var path = "/sources/new?create_entry=1";
             var manuscript_id = sdbmutil.getManuscriptId();
@@ -456,14 +460,21 @@ var EntryScope;
 
         $scope.$on('changeSource', function (e, src) {
           $scope.setSource(src);
-        })
+        });
+
+        $scope.$on('cancelSource', function (e) {
+          $scope.entry.source = $scope.entry.source_bk;
+          $scope.selecting_source = false;
+        });
 
         $scope.setSource = function (src) {
-//          $scope.entry.transaction_type = "choose";
+          $scope.entry.transaction_type = src.source_type == "Auction/Sale Catalog" ? "sale" : "no_transaction";
           $scope.entry.source = src;
+          $scope.selecting_source = false;
         };
 
         $scope.editSource = function () {
+          $scope.selecting_source = true;
           $scope.entry.source_bk = $scope.entry.source;
           $scope.entry.source = undefined
         };
@@ -967,7 +978,7 @@ var EntryScope;
                     var url  = sourceStr;
                     var searchTerm = request.term;
                     $http.get(url, {
-                        params: $.extend({ autocomplete: 1, term: searchTerm, limit: 25 }, params)
+                        params: $.extend({ autocomplete: 1, name: searchTerm, limit: 25 }, params)
                     }).then(function (response) {
                         // transform data from API call into format expected by autocomplete
                         var exactMatch = false;
@@ -1266,8 +1277,6 @@ var EntryScope;
     });
 
     sdbmApp.controller('SourceCtrl', function ($scope, $http, $modal, sdbmutil, Source) {
-
-        sdbmapp = $scope;
 
         // store in scope, otherwise angular template code can't
         // get a reference to this
