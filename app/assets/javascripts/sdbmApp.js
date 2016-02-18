@@ -9,7 +9,7 @@
 /* Hints for eslint: */
 /* eslint camelcase:0, no-underscore-dangle:0 */
 /* global alert, angular, console, window, setTimeout, $, SDBM, URI */
-var sdbmapp;
+var EntryScope;
 
 (function () {
 
@@ -315,6 +315,10 @@ var sdbmapp;
         $scope.agent = "";
         $scope.sources = [];
 
+        $scope.setSource = function (source) {
+          $scope.$emit('changeSource', source)
+        }
+
         $scope.createSourceURL = function () {
             var path = "/sources/new?create_entry=1";
             var manuscript_id = sdbmutil.getManuscriptId();
@@ -351,6 +355,8 @@ var sdbmapp;
 
     /* Entry screen controller */
     sdbmApp.controller("EntryCtrl", function ($scope, $http, Entry, Source, sdbmutil, $modal) {
+
+        EntryScope = $scope;
 
         $scope.sortableOptions = {
           //stop: function () {}
@@ -448,12 +454,19 @@ var sdbmapp;
 
         $scope.currentlySaving = false;
 
-/*
-        $(document).bind('DOMNodeInserted',function(e){
-          var target = $(e.target);
-          target.hide();
-          target.slideDown();
-        });*/
+        $scope.$on('changeSource', function (e, src) {
+          $scope.setSource(src);
+        })
+
+        $scope.setSource = function (src) {
+//          $scope.entry.transaction_type = "choose";
+          $scope.entry.source = src;
+        };
+
+        $scope.editSource = function () {
+          $scope.entry.source_bk = $scope.entry.source;
+          $scope.entry.source = undefined
+        };
 
         $scope.addRecord = function (anArray) {
           anArray.push({});

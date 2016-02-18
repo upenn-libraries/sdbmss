@@ -1,0 +1,61 @@
+<div class="find-source-container">
+    <div class="form-group row">
+        <label class="col-sm-2 control-label"><span sdbm-tooltip="identify_source_source_date">Source Date</span></label>
+        <div class="col-sm-2">
+            <input class="form-control" name="date" ng-model="date"/>
+        </div>
+        <div class="col-sm-4 col-sm-offset-3 label-alignment">
+            <span style="color: PaleVioletRed;">Enter a date in YYYY-MM-DD, YYYY-MM or YYYY</span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 control-label"><span sdbm-tooltip="identify_source_selling_agent">Selling Agent<br/>or Institution/Collection</span></label>
+        <div class="col-sm-5">
+            <input class="form-control" name="agent" ng-model="agent"/>
+        </div>
+        <div class="col-sm-5 label-alignment">
+            <span style="color: PaleVioletRed;">ex: Sotheby's, University of Pennsylvania</span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 control-label"><span sdbm-tooltip="identify_source_source_title">Source Title</span></label>
+        <div class="col-sm-5">
+            <input class="form-control" name="title" ng-model="title"/>
+        </div>
+        <div class="col-sm-5 label-alignment">
+            <span style="color: PaleVioletRed;">ex: Rare books and manuscripts</span>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-10">
+        <p><a class="btn btn-primary" href="{{ createSourceURL() }}">Click here to CREATE A NEW SOURCE</a></p>
+    </div>
+</div>
+
+<div ng-show="sources.length > 0">
+    <div ng-repeat="source in sources">
+        <div class="row">
+            <label class="col-sm-2 control-label" ng-show="$first">Select a search result:</label>
+            <div class="col-sm-2" ng-show="!$first"></div>
+            <div class="col-sm-8 label-alignment">
+                <% if utility == "new" %>
+                    <a id="create-entry-link-{{ source.id }}" href="{{ sdbmutil.getEntryCreateURL(source.id) }}">{{ source.display_value }}</a> ({{ source.entries_count }} entries)
+                <% else %>
+                    <a id="modify-entry-source-link" ng-click="setSource(source)">{{ source.display_value }}</a> ({{ source.entries_count }} entries)
+                <% end %>
+            </div>
+        </div>
+    </div>
+</div>
+<div ng-show="searchAttempted && sources.length == 0">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10"><b>No source found matching your criteria.</b></div>
+    </div>
+</div>
