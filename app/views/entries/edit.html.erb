@@ -296,29 +296,31 @@ label.col-sm-2-and-half {
         </a>
       </div>
     </label>
-    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_title in entry.entry_titles | filter: activeRecords">
+    <div ui-sortable="sortableOptions" ng-model="entry.entry_titles" class='pull-right col-sm-9'>
+      <div class="form-group input-block" data-ng-repeat="entry_title in entry.entry_titles | filter: activeRecords | orderBy: 'order'">
         <div class="remove-link-container">
           <a id="delete_title_{{ $index }}" class="clickable" data-ng-click="removeRecord(entry.entry_titles, entry_title)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>
           </a>
         </div>
-      <div class='row'>
-        <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_title_as_recorded">As Recorded</span>
-        </label>
-        <div class="col-sm-9">
-            <div class="input-group">
-                <input id="title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.title">
-                <div id="title_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
-            </div>
+        <div class='row'>
+          <label class="col-sm-3 control-label">
+              <span sdbm-tooltip="entry_title_as_recorded">As Recorded</span>
+          </label>
+          <div class="col-sm-9">
+              <div class="input-group">
+                  <input id="title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.title">
+                  <div id="title_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
+              </div>
+          </div>
         </div>
-      </div>
-      <div class='row'>
-        <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_common_title">Common</span>
-        </label>
-        <div class="col-sm-9">
-          <input id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
+        <div class='row'>
+          <label class="col-sm-3 control-label">
+              <span sdbm-tooltip="entry_common_title">Common</span>
+          </label>
+          <div class="col-sm-9">
+            <input id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
+          </div>
         </div>
       </div>
     </div>
@@ -335,39 +337,41 @@ label.col-sm-2-and-half {
         </a>
       </div>
     </label>
-    <div class='form-group col-sm-9 input-block pull-right' data-ng-repeat="entry_author in entry.entry_authors | filter: activeRecords">
-      <div class="remove-link-container">
-        <a class="clickable" data-ng-click="removeRecord(entry.entry_authors, entry_author)" title="Remove">
-          <span class="glyphicon glyphicon-remove"></span>
-        </a>
-      </div>
-      <div class='row'>
-        <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_author_as_recorded">As Recorded</span>
-        </label>
-        <div class="col-sm-9">
-            <input id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
+    <div ui-sortable="sortableOptions" ng-model="entry.entry_authors" class='pull-right col-sm-9'>
+      <div class='form-group input-block' data-ng-repeat="entry_author in entry.entry_authors | filter: activeRecords">
+        <div class="remove-link-container">
+          <a class="clickable" data-ng-click="removeRecord(entry.entry_authors, entry_author)" title="Remove">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
         </div>
-      </div>
-      <div class='row'>
-        <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_author">Find in Name Authority</span>
-        </label>
-        <div class="col-sm-9">
-           <div class="input-group">
-              <input id="author_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_author" }' sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-              <div id="author_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_author"><span class="glyphicon"></span></div>
-            </div>
+        <div class='row'>
+          <label class="col-sm-3 control-label">
+              <span sdbm-tooltip="entry_author_as_recorded">As Recorded</span>
+          </label>
+          <div class="col-sm-9">
+              <input id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
+          </div>
         </div>
-      </div>
-      <div class='row'>
-        <label class="col-sm-3 control-label">
-          <span sdbm-tooltip="entry_author_role">Role</span>
-        </label>
-        <div class="col-sm-9">
-          <select id="author_role_{{ $index }}" name="author_role" class="form-control" ng-model="entry_author.role" ng-options="option[0] as option[1] for option in optionsAuthorRole">
-            <option value=""></option>
-          </select>
+        <div class='row'>
+          <label class="col-sm-3 control-label">
+              <span sdbm-tooltip="entry_author">Find in Name Authority</span>
+          </label>
+          <div class="col-sm-9">
+             <div class="input-group">
+                <input id="author_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_author" }' sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                <div id="author_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_author"><span class="glyphicon"></span></div>
+              </div>
+          </div>
+        </div>
+        <div class='row'>
+          <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_author_role">Role</span>
+          </label>
+          <div class="col-sm-9">
+            <select id="author_role_{{ $index }}" name="author_role" class="form-control" ng-model="entry_author.role" ng-options="option[0] as option[1] for option in optionsAuthorRole">
+              <option value=""></option>
+            </select>
+          </div>
         </div>
       </div>
     </div>
@@ -385,34 +389,36 @@ label.col-sm-2-and-half {
       </div>
     </label>
 
-    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_date in entry.entry_dates | filter: activeRecords">
-      <div class="remove-link-container">
-        <a class="clickable" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove">
-          <span class="glyphicon glyphicon-remove"></span>
-        </a>
-      </div>
-      <div class="row">
-        <label class="col-sm-3 control-label">
-          <span sdbm-tooltip="entry_date_as_recorded">As Recorded</span>
-        </label>
-        <div class="col-sm-9">
-          <div class="input-group">
-              <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/entry_dates/parse_observed_date.json">
-              <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
+    <div ui-sortable="sortableOptions" ng-model="entry.entry_dates" class='pull-right col-sm-9'>
+      <div class="form-group input-block" data-ng-repeat="entry_date in entry.entry_dates | filter: activeRecords">
+        <div class="remove-link-container">
+          <a class="clickable" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
+        </div>
+        <div class="row">
+          <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_date_as_recorded">As Recorded</span>
+          </label>
+          <div class="col-sm-9">
+            <div class="input-group">
+                <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/entry_dates/parse_observed_date.json">
+                <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="row">
-        <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_date_for_search">Range for Search</span>
-        </label>
-        <div class="col-sm-4" ng-class="{ 'has-error': !entryForm['date_normalized_start_' + $index].$valid }">
-            <input id="date_normalized_start_{{ $index }}" name="date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_start">
-        </div>
-        <div class="col-sm-1"></div>
-        <div class="col-sm-4" ng-class="{ 'has-error': !entryForm['date_normalized_end_' + $index].$valid }">
-            <input id="date_normalized_end_{{ $index }}" name="date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_end">
+        <div class="row">
+          <label class="col-sm-3 control-label">
+              <span sdbm-tooltip="entry_date_for_search">Range for Search</span>
+          </label>
+          <div class="col-sm-4" ng-class="{ 'has-error': !entryForm['date_normalized_start_' + $index].$valid }">
+              <input id="date_normalized_start_{{ $index }}" name="date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_start">
+          </div>
+          <div class="col-sm-1"></div>
+          <div class="col-sm-4" ng-class="{ 'has-error': !entryForm['date_normalized_end_' + $index].$valid }">
+              <input id="date_normalized_end_{{ $index }}" name="date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_end">
+          </div>
         </div>
       </div>
     </div>
@@ -429,30 +435,32 @@ label.col-sm-2-and-half {
           </a>
         </div>
     </label>
-    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_artist in entry.entry_artists | filter: activeRecords">
-      <div class="remove-link-container">
-        <a class="clickable" data-ng-click="removeRecord(entry.entry_artists, entry_artist)" title="Remove">
-          <span class="glyphicon glyphicon-remove"></span>
-        </a>
-      </div>
-      <div class="row">
-        <label class="col-sm-3 control-label">
-              <span sdbm-tooltip="entry_artist">As Recorded</span>
-        </label>
-        <div class="col-sm-9">
-            <input id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
+    <div ui-sortable="sortableOptions" ng-model="entry.entry_artists" class='pull-right col-sm-9'>
+      <div class="form-group input-block" data-ng-repeat="entry_artist in entry.entry_artists | filter: activeRecords">
+        <div class="remove-link-container">
+          <a class="clickable" data-ng-click="removeRecord(entry.entry_artists, entry_artist)" title="Remove">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
         </div>
-      </div>
-      <div class="row">
-        <label class="col-sm-3 control-label">
-          <span sdbm-tooltip="entry_artist_as_recorded">Find in Name Authority</span>
-        </label>
-        <div class="col-sm-9">
-          <div class="input-group">
-              <input id="artist_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_artist" }' sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-              <div id="artist_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></div>
+        <div class="row">
+          <label class="col-sm-3 control-label">
+                <span sdbm-tooltip="entry_artist">As Recorded</span>
+          </label>
+          <div class="col-sm-9">
+              <input id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
           </div>
-        </div>          
+        </div>
+        <div class="row">
+          <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_artist_as_recorded">Find in Name Authority</span>
+          </label>
+          <div class="col-sm-9">
+            <div class="input-group">
+                <input id="artist_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_artist" }' sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                <div id="artist_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></div>
+            </div>
+          </div>          
+        </div>
       </div>
     </div>
   </div>
@@ -468,29 +476,31 @@ label.col-sm-2-and-half {
         </a>
       </div>
     </label>
-    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_scribe in entry.entry_scribes | filter: activeRecords">
-      <div class="remove-link-container">
-        <a class="clickable" data-ng-click="removeRecord(entry.entry_scribes, entry_scribe)" title="Remove">
-          <span class="glyphicon glyphicon-remove"></span>
-        </a>
-      </div>
-      <div class="row">
-        <label class="col-sm-3 control-label">
-          <span sdbm-tooltip="entry_scribe_as_recorded">As Recorded</span>
-        </label>
-        <div class="col-sm-9">
-            <input id="scribe_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_scribe.observed_name">
+    <div ui-sortable="sortableOptions" ng-model="entry.entry_scribes" class='pull-right col-sm-9'>
+      <div class="form-group input-block" data-ng-repeat="entry_scribe in entry.entry_scribes | filter: activeRecords">
+        <div class="remove-link-container">
+          <a class="clickable" data-ng-click="removeRecord(entry.entry_scribes, entry_scribe)" title="Remove">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
         </div>
-      </div>
-      <div class="row">
-        <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_scribe">Find in Name Authority</span>
-        </label>
-        <div class="col-sm-9">
-            <div class="input-group">
-                <input id="scribe_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_scribe" }' sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-                <div id="scribe_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
-            </div>
+        <div class="row">
+          <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_scribe_as_recorded">As Recorded</span>
+          </label>
+          <div class="col-sm-9">
+              <input id="scribe_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_scribe.observed_name">
+          </div>
+        </div>
+        <div class="row">
+          <label class="col-sm-3 control-label">
+              <span sdbm-tooltip="entry_scribe">Find in Name Authority</span>
+          </label>
+          <div class="col-sm-9">
+              <div class="input-group">
+                  <input id="scribe_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_scribe" }' sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                  <div id="scribe_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
+              </div>
+          </div>
         </div>
       </div>
     </div>
@@ -507,20 +517,22 @@ label.col-sm-2-and-half {
         </a>
       </div>
     </label>
-    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_language in entry.entry_languages | filter: activeRecords">
-      <div class="remove-link-container">
-        <a class="clickable" data-ng-click="removeRecord(entry.entry_languages, entry_language)" title="Remove">
-          <span class="glyphicon glyphicon-remove"></span>
-        </a>
-      </div>
-      <div class="row">
-        <label class="col-sm-3 control-label">
-          <span sdbm-tooltip="entry_language">Language</span>
-        </label>
-        <div class="col-sm-9">
-          <div class="input-group">
-              <input id="language_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
-              <div id="language_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_language"><span class="glyphicon"></span></div>
+    <div ui-sortable="sortableOptions" ng-model="entry.entry_languages" class='pull-right col-sm-9'>
+      <div class="form-group input-block" data-ng-repeat="entry_language in entry.entry_languages | filter: activeRecords">
+        <div class="remove-link-container">
+          <a class="clickable" data-ng-click="removeRecord(entry.entry_languages, entry_language)" title="Remove">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
+        </div>
+        <div class="row">
+          <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_language">Language</span>
+          </label>
+          <div class="col-sm-9">
+            <div class="input-group">
+                <input id="language_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
+                <div id="language_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_language"><span class="glyphicon"></span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -538,20 +550,22 @@ label.col-sm-2-and-half {
         </a>
       </div>
     </label>
-    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_material in entry.entry_materials | filter: activeRecords">
-      <div class="remove-link-container">
-        <a class="clickable" data-ng-click="removeRecord(entry.entry_materials, entry_material)" title="Remove">
-          <span class="glyphicon glyphicon-remove"></span>
-        </a>
-      </div>
-      <div class="row">
-        <label class="col-sm-3 control-label">
-          <span sdbm-tooltip="entry_material">Material</span>
-        </label>
-        <div class="col-sm-9">
-          <div class="input-group">
-              <input id="material_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="optionsMaterial" sdbm-autocomplete-model="entry_material.material" sdbm-autocomplete-assign-value-attr="true" sdbm-autocomplete-min-length="0" />
-              <div id="material_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
+    <div ui-sortable="sortableOptions" ng-model="entry.entry_materials" class='pull-right col-sm-9'>
+      <div class="form-group input-block" data-ng-repeat="entry_material in entry.entry_materials | filter: activeRecords">
+        <div class="remove-link-container">
+          <a class="clickable" data-ng-click="removeRecord(entry.entry_materials, entry_material)" title="Remove">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
+        </div>
+        <div class="row">
+          <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_material">Material</span>
+          </label>
+          <div class="col-sm-9">
+            <div class="input-group">
+                <input id="material_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="optionsMaterial" sdbm-autocomplete-model="entry_material.material" sdbm-autocomplete-assign-value-attr="true" sdbm-autocomplete-min-length="0" />
+                <div id="material_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -569,28 +583,30 @@ label.col-sm-2-and-half {
         </a>
       </div>
     </label>
-    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_place in entry.entry_places | filter: activeRecords">
-      <div class="remove-link-container">
-        <a class="clickable" data-ng-click="removeRecord(entry.entry_places, entry_place)" title="Remove">
-          <span class="glyphicon glyphicon-remove"></span>
-        </a>
-      </div>
-      <div class="row">
-        <label class="col-sm-3 control-label">
-          <span sdbm-tooltip="entry_place">As Recorded</span>
-        </label>
-        <div class="col-sm-9">
-          <input id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name">
+    <div ui-sortable="sortableOptions" ng-model="entry.entry_places" class='pull-right col-sm-9'>
+      <div class="form-group input-block" data-ng-repeat="entry_place in entry.entry_places | filter: activeRecords">
+        <div class="remove-link-container">
+          <a class="clickable" data-ng-click="removeRecord(entry.entry_places, entry_place)" title="Remove">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
         </div>
-      </div>
-      <div class="row">
-        <label class="col-sm-3 control-label">
-          <span sdbm-tooltip="entry_place">Find in Name Authority</span>
-        </label>
-        <div class="col-sm-9">
-          <div class="input-group">
-              <input id="place_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
-              <div id="place_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_place"><span class="glyphicon"></span></div>
+        <div class="row">
+          <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_place">As Recorded</span>
+          </label>
+          <div class="col-sm-9">
+            <input id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name">
+          </div>
+        </div>
+        <div class="row">
+          <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_place">Find in Name Authority</span>
+          </label>
+          <div class="col-sm-9">
+            <div class="input-group">
+                <input id="place_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
+                <div id="place_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_place"><span class="glyphicon"></span></div>
+            </div>
           </div>
         </div>
       </div>
@@ -606,141 +622,143 @@ label.col-sm-2-and-half {
         </a>
       </div>
     </label>
-    <div class="form-group col-sm-9 input-block pull-right" data-ng-repeat="entry_use in entry.entry_uses | filter: activeRecords">
-      <div class="remove-link-container">
-        <a class="clickable" data-ng-click="removeRecord(entry.entry_uses, entry_use)" title="Remove">
-          <span class="glyphicon glyphicon-remove"></span>
-        </a>
-      </div>
-      <div class="row">
-        <label class="col-sm-3 control-label">
-          <span sdbm-tooltip="entry_use">Use</span>
-        </label>
-        <div class="col-sm-9">
-          <input id="use_{{ $index }}" type="text" class="form-control" data-ng-model="entry_use.use">
+    <div ui-sortable="sortableOptions" ng-model="entry.entry_uses" class='pull-right col-sm-9'>
+      <div class="form-group input-block" data-ng-repeat="entry_use in entry.entry_uses | filter: activeRecords">
+        <div class="remove-link-container">
+          <a class="clickable" data-ng-click="removeRecord(entry.entry_uses, entry_use)" title="Remove">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
+        </div>
+        <div class="row">
+          <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_use">Use</span>
+          </label>
+          <div class="col-sm-9">
+            <input id="use_{{ $index }}" type="text" class="form-control" data-ng-model="entry_use.use">
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-    <div class="form-group row">
-        <label for="folios" class="col-sm-2 control-label">
-            <span sdbm-tooltip="entry_folios">Folios</span>
-        </label>
-        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['folios'].$valid }">
-            <input type="text" class="form-control" id="folios" name="folios" ng-pattern="/^[0-9]*$/" data-ng-model="entry.folios">
-        </div>
-        <label for="lines" class="col-sm-1 control-label">
-            <span sdbm-tooltip="entry_lines">Lines</span>
-        </label>
-        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['num_lines'].$valid }">
-            <input type="text" class="form-control" id="num_lines" name="num_lines" ng-pattern="/^[0-9]*$/" data-ng-model="entry.num_lines">
-        </div>
-        <label for="columns" class="col-sm-1 control-label">
-            <span sdbm-tooltip="entry_columns">Columns</span>
-        </label>
-        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['num_columns'].$valid }">
-            <input type="text" class="form-control" id="num_columns" name="num_columns" ng-pattern="/^[0-9]*$/" data-ng-model="entry.num_columns">
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label for="height" class="col-sm-2 control-label">
-            <span sdbm-tooltip="entry_height">Height (mm)</span>
-        </label>
-        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['height'].$valid }">
-            <input type="text" class="form-control" id="height" name="height" ng-pattern="/^[0-9]*$/" data-ng-model="entry.height">
-        </div>
-        <label for="width" class="col-sm-1 control-label">
-            <span sdbm-tooltip="entry_width">Width (mm)</span>
-        </label>
-        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['width'].$valid }">
-            <input type="text" class="form-control" id="width" name="width" ng-pattern="/^[0-9]*$/" data-ng-model="entry.width">
-        </div>
-        <label for="alt_size" class="col-sm-1 control-label">
-            <span sdbm-tooltip="entry_alt_size">Alt Size</span>
-        </label>
-        <div class="col-sm-3">
-            <select name="alt_size" id="alt_size" class="form-control" data-ng-model="entry.alt_size" ng-options="option[0] as option[1] for option in optionsAltSize">
-                <option value=""></option>                
-            </select>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label for="min_fl" class="col-sm-2 control-label">
-            <span sdbm-tooltip="entry_min_fl">Miniatures Full-Page</span>
-        </label>
-        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['miniatures_fullpage'].$valid }">
-            <input type="text" class="form-control" id="miniatures_fullpage" name="miniatures_fullpage" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_fullpage">
-        </div>
-        <label for="min_lg" class="col-sm-1 control-label">
-            <span sdbm-tooltip="entry_min_lg">Large</span>
-        </label>
-        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['miniatures_large'].$valid }">
-            <input type="text" class="form-control" id="miniatures_large" name="miniatures_large" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_large">
-        </div>
-        <label for="min_sm" class="col-sm-1 control-label">
-            <span sdbm-tooltip="entry_min_sm">Small</span>
-        </label>
-        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['miniatures_small'].$valid }">
-            <input type="text" class="form-control" id="miniatures_small" name="miniatures_small" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_small">
-        </div>
-        <label for="min_un" class="col-sm-1 control-label">
-            <span sdbm-tooltip="entry_min_un">Unspecified</span>
-        </label>
-        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['miniatures_unspec_size'].$valid }">
-            <input type="text" class="form-control" id="miniatures_unspec_size" name="miniatures_unspec_size" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_unspec_size">
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label for="initials_historiated" class="col-sm-2 control-label">
-            <span sdbm-tooltip="entry_initials_historiated">Initials Historiated</span>
-        </label>
-        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['initials_historiated'].$valid }">
-            <input type="text" class="form-control" id="initials_historiated" name="initials_historiated" ng-pattern="/^[0-9]*$/" data-ng-model="entry.initials_historiated">
-        </div>
-        <label for="initials_decorated" class="col-sm-1 control-label">
-            <span sdbm-tooltip="entry_initials_decorated">Decorated</span>
-        </label>
-        <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['initials_decorated'].$valid }">
-            <input type="text" class="form-control" id="initials_decorated" name="initials_decorated" ng-pattern="/^[0-9]*$/" data-ng-model="entry.initials_decorated">
-        </div>
-    </div>
-
-    <div class="form-group row">
-      <label for="binding" class="col-sm-2 control-label">
-          <span sdbm-tooltip="entry_binding">Binding</span>
+  <div class="form-group row">
+      <label for="folios" class="col-sm-2 control-label">
+          <span sdbm-tooltip="entry_folios">Folios</span>
       </label>
-      <div class="col-sm-9">
-        <textarea class="form-control" id="manuscript_binding" rows="2" data-ng-model="entry.manuscript_binding"/></textarea>
+      <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['folios'].$valid }">
+          <input type="text" class="form-control" id="folios" name="folios" ng-pattern="/^[0-9]*$/" data-ng-model="entry.folios">
       </div>
-    </div>
-
-    <div class="form-group row">
-      <label for="link" class="col-sm-2 control-label">
-          <span sdbm-tooltip="entry_link">URL Link</span>
+      <label for="lines" class="col-sm-1 control-label">
+          <span sdbm-tooltip="entry_lines">Lines</span>
       </label>
-      <div class="col-sm-9">
-        <input type="text" class="form-control" id="manuscript_link" data-ng-model="entry.manuscript_link">
+      <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['num_lines'].$valid }">
+          <input type="text" class="form-control" id="num_lines" name="num_lines" ng-pattern="/^[0-9]*$/" data-ng-model="entry.num_lines">
       </div>
-    </div>
-
-    <div class="form-group row">
-      <label for="other_info" class="col-sm-2 control-label">
-          <span sdbm-tooltip="entry_other_info">Other information</span>
+      <label for="columns" class="col-sm-1 control-label">
+          <span sdbm-tooltip="entry_columns">Columns</span>
       </label>
-      <div class="col-sm-9">
-        <textarea class="form-control" id="other_info" rows="3" data-ng-model="entry.other_info"></textarea>
+      <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['num_columns'].$valid }">
+          <input type="text" class="form-control" id="num_columns" name="num_columns" ng-pattern="/^[0-9]*$/" data-ng-model="entry.num_columns">
       </div>
-    </div>
+  </div>
 
-    <div class="row">
-      <div class="col-sm-12">
-        <legend>Provenance Information</legend>
+  <div class="form-group row">
+      <label for="height" class="col-sm-2 control-label">
+          <span sdbm-tooltip="entry_height">Height (mm)</span>
+      </label>
+      <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['height'].$valid }">
+          <input type="text" class="form-control" id="height" name="height" ng-pattern="/^[0-9]*$/" data-ng-model="entry.height">
       </div>
+      <label for="width" class="col-sm-1 control-label">
+          <span sdbm-tooltip="entry_width">Width (mm)</span>
+      </label>
+      <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['width'].$valid }">
+          <input type="text" class="form-control" id="width" name="width" ng-pattern="/^[0-9]*$/" data-ng-model="entry.width">
+      </div>
+      <label for="alt_size" class="col-sm-1 control-label">
+          <span sdbm-tooltip="entry_alt_size">Alt Size</span>
+      </label>
+      <div class="col-sm-3">
+          <select name="alt_size" id="alt_size" class="form-control" data-ng-model="entry.alt_size" ng-options="option[0] as option[1] for option in optionsAltSize">
+              <option value=""></option>                
+          </select>
+      </div>
+  </div>
+
+  <div class="form-group row">
+      <label for="min_fl" class="col-sm-2 control-label">
+          <span sdbm-tooltip="entry_min_fl">Miniatures Full-Page</span>
+      </label>
+      <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['miniatures_fullpage'].$valid }">
+          <input type="text" class="form-control" id="miniatures_fullpage" name="miniatures_fullpage" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_fullpage">
+      </div>
+      <label for="min_lg" class="col-sm-1 control-label">
+          <span sdbm-tooltip="entry_min_lg">Large</span>
+      </label>
+      <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['miniatures_large'].$valid }">
+          <input type="text" class="form-control" id="miniatures_large" name="miniatures_large" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_large">
+      </div>
+      <label for="min_sm" class="col-sm-1 control-label">
+          <span sdbm-tooltip="entry_min_sm">Small</span>
+      </label>
+      <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['miniatures_small'].$valid }">
+          <input type="text" class="form-control" id="miniatures_small" name="miniatures_small" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_small">
+      </div>
+      <label for="min_un" class="col-sm-1 control-label">
+          <span sdbm-tooltip="entry_min_un">Unspecified</span>
+      </label>
+      <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['miniatures_unspec_size'].$valid }">
+          <input type="text" class="form-control" id="miniatures_unspec_size" name="miniatures_unspec_size" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_unspec_size">
+      </div>
+  </div>
+
+  <div class="form-group row">
+      <label for="initials_historiated" class="col-sm-2 control-label">
+          <span sdbm-tooltip="entry_initials_historiated">Initials Historiated</span>
+      </label>
+      <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['initials_historiated'].$valid }">
+          <input type="text" class="form-control" id="initials_historiated" name="initials_historiated" ng-pattern="/^[0-9]*$/" data-ng-model="entry.initials_historiated">
+      </div>
+      <label for="initials_decorated" class="col-sm-1 control-label">
+          <span sdbm-tooltip="entry_initials_decorated">Decorated</span>
+      </label>
+      <div class="col-sm-1" ng-class="{ 'has-error': !entryForm['initials_decorated'].$valid }">
+          <input type="text" class="form-control" id="initials_decorated" name="initials_decorated" ng-pattern="/^[0-9]*$/" data-ng-model="entry.initials_decorated">
+      </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="binding" class="col-sm-2 control-label">
+        <span sdbm-tooltip="entry_binding">Binding</span>
+    </label>
+    <div class="col-sm-9">
+      <textarea class="form-control" id="manuscript_binding" rows="2" data-ng-model="entry.manuscript_binding"/></textarea>
     </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="link" class="col-sm-2 control-label">
+        <span sdbm-tooltip="entry_link">URL Link</span>
+    </label>
+    <div class="col-sm-9">
+      <input type="text" class="form-control" id="manuscript_link" data-ng-model="entry.manuscript_link">
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="other_info" class="col-sm-2 control-label">
+        <span sdbm-tooltip="entry_other_info">Other information</span>
+    </label>
+    <div class="col-sm-9">
+      <textarea class="form-control" id="other_info" rows="3" data-ng-model="entry.other_info"></textarea>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12">
+      <legend>Provenance Information</legend>
+    </div>
+  </div>
 
     <!-- beginning of providence section -->
 
@@ -753,111 +771,113 @@ label.col-sm-2-and-half {
         </a>
       </div>
     </label>
-    <div class="pull-right form-group input-block col-sm-9" data-ng-repeat="prov in entry.provenance | filter: activeRecords">
-      <div class="remove-link-container">
-        <a class="clickable" data-ng-click="removeRecord(entry.provenance, prov)" title="Remove">
-          <span class="glyphicon glyphicon-remove"></span>
-        </a>
-      </div>
+    <div ui-sortable="sortableOptions" ng-model="entry.provenance" class='pull-right col-sm-9'>
+      <div class="form-group input-block" data-ng-repeat="prov in entry.provenance | filter: activeRecords">
+        <div class="remove-link-container">
+          <a class="clickable" data-ng-click="removeRecord(entry.provenance, prov)" title="Remove">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
+        </div>
 
-      <div class="form-group row">
-          <label class="col-sm-2-and-half control-label">
-              <span sdbm-tooltip="entry_provenance_agent_as_recorded">As Recorded</span>
-          </label>
+        <div class="form-group row">
+            <label class="col-sm-2-and-half control-label">
+                <span sdbm-tooltip="entry_provenance_agent_as_recorded">As Recorded</span>
+            </label>
+            <div class="col-sm-3-and-half">
+              <input id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name">
+          </div>
+
+          <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_provenance_agent">Find in Name Authority</span></label>
+          <div class="col-sm-4">
+              <div class="input-group">
+                  <input id="provenance_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.provenance_agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                  <div id="provenance_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov"><span class="glyphicon"></span></div>
+              </div>
+          </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2-and-half control-label">
+                <span sdbm-tooltip="entry_provenance_start_date_as_recorded">Start Date As Recorded</span>
+            </label>
           <div class="col-sm-3-and-half">
-            <input id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name">
+            <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date" sdbm-approximate-date-string="start_date_normalized_start_{{ $index }}, start_date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/provenance/parse_observed_date.json">
+          </div>
+          <label class="col-sm-2 control-label">
+              <span sdbm-tooltip="entry_provenance_start_date_for_search">Start Date for Search</span>
+          </label>
+          <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['start_date_normalized_start_' + $index].$valid }">
+            <input id="start_date_normalized_start_{{ $index }}" name="start_date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-required="!!prov.start_date_normalized_end" ng-model="prov.start_date_normalized_start">
+          </div>
+          <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['start_date_normalized_end_' + $index].$valid }">
+            <input id="start_date_normalized_end_{{ $index }}" name="start_date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-required="!!prov.start_date_normalized_start" ng-model="prov.start_date_normalized_end">
+          </div>
         </div>
-
-        <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_provenance_agent">Find in Name Authority</span></label>
-        <div class="col-sm-4">
-            <div class="input-group">
-                <input id="provenance_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.provenance_agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-                <div id="provenance_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov"><span class="glyphicon"></span></div>
-            </div>
-        </div>
-      </div>
 
       <div class="form-group row">
           <label class="col-sm-2-and-half control-label">
-              <span sdbm-tooltip="entry_provenance_start_date_as_recorded">Start Date As Recorded</span>
+              <span sdbm-tooltip="entry_provenance_associated_date_as_recorded">Associated Date As Recorded</span>
           </label>
         <div class="col-sm-3-and-half">
-          <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date" sdbm-approximate-date-string="start_date_normalized_start_{{ $index }}, start_date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/provenance/parse_observed_date.json">
+          <input id="provenance_associated_date_{{ $index }}" type="text" class="form-control" ng-model="prov.associated_date" sdbm-approximate-date-string="associated_date_normalized_start_{{ $index }}, associated_date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/provenance/parse_observed_date.json">
         </div>
         <label class="col-sm-2 control-label">
-            <span sdbm-tooltip="entry_provenance_start_date_for_search">Start Date for Search</span>
+            <span sdbm-tooltip="entry_provenance_associated_date_for_search">Associated Date for Search</span>
         </label>
         <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['start_date_normalized_start_' + $index].$valid }">
-          <input id="start_date_normalized_start_{{ $index }}" name="start_date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-required="!!prov.start_date_normalized_end" ng-model="prov.start_date_normalized_start">
+          <input id="associated_date_normalized_start_{{ $index }}" name="start_date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-required="!!prov.associated_date_normalized_end" ng-model="prov.associated_date_normalized_start">
         </div>
         <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['start_date_normalized_end_' + $index].$valid }">
-          <input id="start_date_normalized_end_{{ $index }}" name="start_date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-required="!!prov.start_date_normalized_start" ng-model="prov.start_date_normalized_end">
+          <input id="associated_date_normalized_end_{{ $index }}" name="associated_date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-required="!!prov.associated_date_normalized_start" ng-model="prov.associated_date_normalized_end">
         </div>
       </div>
-
-    <div class="form-group row">
-        <label class="col-sm-2-and-half control-label">
-            <span sdbm-tooltip="entry_provenance_associated_date_as_recorded">Associated Date As Recorded</span>
-        </label>
-      <div class="col-sm-3-and-half">
-        <input id="provenance_associated_date_{{ $index }}" type="text" class="form-control" ng-model="prov.associated_date" sdbm-approximate-date-string="associated_date_normalized_start_{{ $index }}, associated_date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/provenance/parse_observed_date.json">
-      </div>
-      <label class="col-sm-2 control-label">
-          <span sdbm-tooltip="entry_provenance_associated_date_for_search">Associated Date for Search</span>
-      </label>
-      <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['start_date_normalized_start_' + $index].$valid }">
-        <input id="associated_date_normalized_start_{{ $index }}" name="start_date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-required="!!prov.associated_date_normalized_end" ng-model="prov.associated_date_normalized_start">
-      </div>
-      <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['start_date_normalized_end_' + $index].$valid }">
-        <input id="associated_date_normalized_end_{{ $index }}" name="associated_date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-required="!!prov.associated_date_normalized_start" ng-model="prov.associated_date_normalized_end">
-      </div>
-    </div>
-    
-      <div class="form-group row">
-          <label class="col-sm-2-and-half control-label">
-              <span sdbm-tooltip="entry_provenance_end_date_as_recorded">End Date As Recorded</span>
+      
+        <div class="form-group row">
+            <label class="col-sm-2-and-half control-label">
+                <span sdbm-tooltip="entry_provenance_end_date_as_recorded">End Date As Recorded</span>
+            </label>
+          <div class="col-sm-3-and-half">
+            <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date" sdbm-approximate-date-string="end_date_normalized_start_{{ $index }}, end_date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/provenance/parse_observed_date.json">
+          </div>
+          <label class="col-sm-2 control-label">
+              <span sdbm-tooltip="entry_provenance_end_date_for_search">End Date for Search</span>
           </label>
-        <div class="col-sm-3-and-half">
-          <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date" sdbm-approximate-date-string="end_date_normalized_start_{{ $index }}, end_date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/provenance/parse_observed_date.json">
+          <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['end_date_normalized_start_' + $index].$valid }">
+            <input id="end_date_normalized_start_{{ $index }}" name="end_date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-required="!!prov.end_date_normalized_end" ng-model="prov.end_date_normalized_start">
+          </div>
+          <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['end_date_normalized_end_' + $index].$valid }">
+            <input id="end_date_normalized_end_{{ $index }}" name="end_date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-required="!!prov.end_date_normalized_start" ng-model="prov.end_date_normalized_end">
+          </div>
         </div>
-        <label class="col-sm-2 control-label">
-            <span sdbm-tooltip="entry_provenance_end_date_for_search">End Date for Search</span>
-        </label>
-        <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['end_date_normalized_start_' + $index].$valid }">
-          <input id="end_date_normalized_start_{{ $index }}" name="end_date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-required="!!prov.end_date_normalized_end" ng-model="prov.end_date_normalized_start">
+
+        <div class="form-group row">
+          <label class="col-sm-2-and-half control-label">
+              <span sdbm-tooltip="entry_provenance_acquisition_method">Acquisition Method</span>
+          </label>
+          <div class="col-sm-3-and-half">
+              <select class="form-control" id="provenance_acquisition_method_{{ $index }}" ng-model="prov.acquisition_method" ng-options="option[0] as option[1] for option in optionsAcquisitionMethod">
+                  <option value=""></option>
+              </select>
+          </div>
+          <label class="col-sm-3 control-label">
+              <span sdbm-tooltip="entry_provenance_direct_transfer">Directly Transfered to Next?</span>
+          </label>
+          <div class="col-sm-2 label-alignment">
+              <input id="provenance_direct_transfer_{{ $index }}" type="checkbox" ng-model="prov.direct_transfer"/>
+          </div>
         </div>
-        <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['end_date_normalized_end_' + $index].$valid }">
-          <input id="end_date_normalized_end_{{ $index }}" name="end_date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-required="!!prov.end_date_normalized_start" ng-model="prov.end_date_normalized_end">
+
+        <div class="form-group row">
+
+          <label class="col-sm-2-and-half control-label">
+              <span sdbm-tooltip="entry_provenance_evidence">Evidence</span>
+          </label>
+          <div class="col-sm-9-and-half">
+            <textarea id="provenance_comment_{{ $index }}" class="form-control" rows="2" id="comment" ng-model="prov.comment"></textarea>
+          </div>
         </div>
+
       </div>
-
-      <div class="form-group row">
-        <label class="col-sm-2-and-half control-label">
-            <span sdbm-tooltip="entry_provenance_acquisition_method">Acquisition Method</span>
-        </label>
-        <div class="col-sm-3-and-half">
-            <select class="form-control" id="provenance_acquisition_method_{{ $index }}" ng-model="prov.acquisition_method" ng-options="option[0] as option[1] for option in optionsAcquisitionMethod">
-                <option value=""></option>
-            </select>
-        </div>
-        <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_provenance_direct_transfer">Directly Transfered to Next?</span>
-        </label>
-        <div class="col-sm-2 label-alignment">
-            <input id="provenance_direct_transfer_{{ $index }}" type="checkbox" ng-model="prov.direct_transfer"/>
-        </div>
-      </div>
-
-      <div class="form-group row">
-
-        <label class="col-sm-2-and-half control-label">
-            <span sdbm-tooltip="entry_provenance_evidence">Evidence</span>
-        </label>
-        <div class="col-sm-9-and-half">
-          <textarea id="provenance_comment_{{ $index }}" class="form-control" rows="2" id="comment" ng-model="prov.comment"></textarea>
-        </div>
-      </div>
-
     </div>
   </div>
 

@@ -345,15 +345,15 @@ class EntriesController < ManageModelsController
       :miniatures_fullpage, :miniatures_large, :miniatures_small, :miniatures_unspec_size,
       :initials_historiated, :initials_decorated,
       :manuscript_binding, :manuscript_link, :other_info, :superceded_by_id,
-      :entry_titles_attributes => [ :id, :title, :common_title, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_authors_attributes => [ :id, :observed_name, :author_id, :role, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_dates_attributes => [ :id, :observed_date, :date_normalized_start, :date_normalized_end, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_artists_attributes => [ :id, :observed_name, :artist_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_scribes_attributes => [ :id, :observed_name, :scribe_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_languages_attributes => [ :id, :language_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_materials_attributes => [ :id, :material, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_places_attributes => [ :id, :observed_name, :place_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_uses_attributes => [ :id, :use, :_destroy ],
+      :entry_titles_attributes => [ :id, :order, :title, :common_title, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_authors_attributes => [ :id, :order, :observed_name, :author_id, :role, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_dates_attributes => [ :id, :order, :observed_date, :date_normalized_start, :date_normalized_end, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_artists_attributes => [ :id, :order, :observed_name, :artist_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_scribes_attributes => [ :id, :order, :observed_name, :scribe_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_languages_attributes => [ :id, :order, :language_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_materials_attributes => [ :id, :order, :material, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_places_attributes => [ :id, :order, :observed_name, :place_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_uses_attributes => [ :id, :order, :use, :_destroy ],
       :sales_attributes  => [
         :id, :date, :sold, :price, :currency, :other_currency, :_destroy,
         {
@@ -361,7 +361,7 @@ class EntriesController < ManageModelsController
         }
       ],
       :provenance_attributes => [
-        :id, :observed_name, :provenance_agent_id, :start_date, :start_date_normalized_start, :start_date_normalized_end, :end_date, :end_date_normalized_start, :end_date_normalized_end, :associated_date, :associated_date_normalized_start, :associated_date_normalized_end, :acquisition_method, :direct_transfer, :comment, :uncertain_in_source, :supplied_by_data_entry, :_destroy
+        :id, :order, :observed_name, :provenance_agent_id, :start_date, :start_date_normalized_start, :start_date_normalized_end, :end_date, :end_date_normalized_start, :end_date_normalized_end, :associated_date, :associated_date_normalized_start, :associated_date_normalized_end, :acquisition_method, :direct_transfer, :comment, :uncertain_in_source, :supplied_by_data_entry, :_destroy
       ],
     )
   end

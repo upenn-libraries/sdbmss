@@ -218,7 +218,7 @@ class Entry < ActiveRecord::Base
   # has :name key and optionally an :agent key.
   def unique_provenance_agents
     unique_agents = {}
-    provenance.each do |p|
+    provenance.order(:order).each do |p|
       agent = p.provenance_agent
       if agent.present?
         unique_agents[agent.id] = {
@@ -251,7 +251,7 @@ class Entry < ActiveRecord::Base
   end
 
   def display_value
-    entry_titles.map(&:title).join("; ") || "(No title)"
+    entry_titles.order(:order).map(&:title).join("; ") || "(No title)"
   end
 
   # returns the most recent updated_at timestamp, as an integer, of
@@ -290,15 +290,15 @@ class Entry < ActiveRecord::Base
       sale_buyer: sale_buyer,
       sale_sold: (sale.sold if sale),
       sale_price: (sale.get_complete_price_for_display if sale),
-      titles: entry_titles.map(&:title).join("; "),
-      authors: entry_authors.map(&:display_value).join("; "),
-      dates: entry_dates.map(&:display_value).join("; "),
-      artists: entry_artists.map(&:display_value).join("; "),
-      scribes: entry_scribes.map(&:display_value).join("; "),
-      languages: entry_languages.map(&:language).map(&:name).join("; "),
-      materials: entry_materials.map(&:material).join("; "),
-      places: entry_places.map(&:display_value).join("; "),
-      uses: entry_uses.map(&:use).join("; "),
+      titles: entry_titles.order(:order).map(&:title).join("; "),
+      authors: entry_authors.order(:order).map(&:display_value).join("; "),
+      dates: entry_dates.order(:order).map(&:display_value).join("; "),
+      artists: entry_artists.order(:order).map(&:display_value).join("; "),
+      scribes: entry_scribes.order(:order).map(&:display_value).join("; "),
+      languages: entry_languages.order(:order).map(&:language).map(&:name).join("; "),
+      materials: entry_materials.order(:order).map(&:material).join("; "),
+      places: entry_places.order(:order).map(&:display_value).join("; "),
+      uses: entry_uses.order(:order).map(&:use).join("; "),
       folios: folios,
       num_columns: num_columns,
       num_lines: num_lines,

@@ -1,4 +1,3 @@
-<% puts "source! #{@source.as_json}" %>
 <div class='panel panel-primary'><!--<%= @target.present? ? "panel-warning" : "panel-primary" %>'>-->
     <div class='panel-heading'>
         <h3 class='h3'>Merge <%= @source.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h3>
@@ -12,12 +11,10 @@
             <%= render partial: "source_details", locals: {source: @source } %>
         </div>
     </div>
-    <div class='col-sm-1'>
-        <% if @target.present? %>
-            <span class="chevron">〉</span>
-        <% end %>
+    <div class='col-sm-2'>
+        <span class="chevron">➔</span>
     </div>
-    <div class='col-sm-6'>
+    <div class='col-sm-5'>
         
         <% if @target_id.present? && @target.present? %>
             <div class='panel <%= @target.present? ? "panel-success" : "panel-default" %>'>

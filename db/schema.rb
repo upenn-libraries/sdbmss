@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160203193857) do
+ActiveRecord::Schema.define(version: 20160219162610) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",  limit: 255, null: false
@@ -117,6 +117,7 @@ ActiveRecord::Schema.define(version: 20160203193857) do
     t.boolean  "uncertain_in_source",                default: false
     t.boolean  "supplied_by_data_entry",             default: false
     t.string   "observed_name",          limit: 255
+    t.integer  "order",                  limit: 4
   end
 
   add_index "entry_artists", ["artist_id"], name: "index_entry_artists_on_artist_id", using: :btree
@@ -131,6 +132,7 @@ ActiveRecord::Schema.define(version: 20160203193857) do
     t.string   "role",                   limit: 255
     t.boolean  "uncertain_in_source",                default: false
     t.boolean  "supplied_by_data_entry",             default: false
+    t.integer  "order",                  limit: 4
   end
 
   add_index "entry_authors", ["author_id"], name: "index_entry_authors_on_author_id", using: :btree
@@ -168,6 +170,7 @@ ActiveRecord::Schema.define(version: 20160203193857) do
     t.string   "date_normalized_end",    limit: 255
     t.boolean  "uncertain_in_source",                default: false
     t.boolean  "supplied_by_data_entry",             default: false
+    t.integer  "order",                  limit: 4
   end
 
   add_index "entry_dates", ["entry_id"], name: "index_entry_dates_on_entry_id", using: :btree
@@ -179,6 +182,7 @@ ActiveRecord::Schema.define(version: 20160203193857) do
     t.datetime "updated_at"
     t.boolean  "uncertain_in_source",              default: false
     t.boolean  "supplied_by_data_entry",           default: false
+    t.integer  "order",                  limit: 4
   end
 
   add_index "entry_languages", ["entry_id"], name: "index_entry_languages_on_entry_id", using: :btree
@@ -218,6 +222,7 @@ ActiveRecord::Schema.define(version: 20160203193857) do
     t.datetime "updated_at"
     t.boolean  "uncertain_in_source",                default: false
     t.boolean  "supplied_by_data_entry",             default: false
+    t.integer  "order",                  limit: 4
   end
 
   add_index "entry_materials", ["entry_id"], name: "index_entry_materials_on_entry_id", using: :btree
@@ -230,6 +235,7 @@ ActiveRecord::Schema.define(version: 20160203193857) do
     t.boolean  "uncertain_in_source",                default: false
     t.boolean  "supplied_by_data_entry",             default: false
     t.string   "observed_name",          limit: 255
+    t.integer  "order",                  limit: 4
   end
 
   add_index "entry_places", ["entry_id"], name: "index_entry_places_on_entry_id", using: :btree
@@ -243,6 +249,7 @@ ActiveRecord::Schema.define(version: 20160203193857) do
     t.boolean  "uncertain_in_source",                default: false
     t.boolean  "supplied_by_data_entry",             default: false
     t.string   "observed_name",          limit: 255
+    t.integer  "order",                  limit: 4
   end
 
   add_index "entry_scribes", ["entry_id"], name: "index_entry_scribes_on_entry_id", using: :btree
@@ -256,6 +263,7 @@ ActiveRecord::Schema.define(version: 20160203193857) do
     t.datetime "updated_at"
     t.boolean  "uncertain_in_source",                 default: false
     t.boolean  "supplied_by_data_entry",              default: false
+    t.integer  "order",                  limit: 4
   end
 
   add_index "entry_titles", ["entry_id"], name: "index_entry_titles_on_entry_id", using: :btree
@@ -265,6 +273,7 @@ ActiveRecord::Schema.define(version: 20160203193857) do
     t.string   "use",        limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "order",      limit: 4
   end
 
   add_index "entry_uses", ["entry_id"], name: "index_entry_uses_on_entry_id", using: :btree

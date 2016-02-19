@@ -113,7 +113,6 @@ describe "Manage languages", :js => true do
       end
       expect(found).to eq(true)
     end
-
   end
 
   context "when admin is logged in" do

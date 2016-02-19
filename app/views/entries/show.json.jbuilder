@@ -28,14 +28,14 @@ json.source do
 end
 
 if @entry.entry_titles.present?
-  json.entry_titles @entry.entry_titles do |entry_title|
-    json.(entry_title, :id, :title, :common_title, :uncertain_in_source, :supplied_by_data_entry)
+  json.entry_titles @entry.entry_titles.order(:order) do |entry_title|
+    json.(entry_title, :id, :order, :title, :common_title, :uncertain_in_source, :supplied_by_data_entry)
   end
 end
 
 if @entry.entry_authors.present?
-  json.entry_authors @entry.entry_authors do |entry_author|
-    json.(entry_author, :id, :observed_name, :role, :uncertain_in_source, :supplied_by_data_entry)
+  json.entry_authors @entry.entry_authors.order(:order) do |entry_author|
+    json.(entry_author, :id, :order, :observed_name, :role, :uncertain_in_source, :supplied_by_data_entry)
     if entry_author.author
       json.author do
         json.(entry_author.author, :id, :name)
@@ -45,14 +45,14 @@ if @entry.entry_authors.present?
 end
 
 if @entry.entry_dates.present?
-  json.entry_dates @entry.entry_dates do |entry_date|
-    json.(entry_date, :id, :observed_date, :date_normalized_start, :date_normalized_end, :uncertain_in_source, :supplied_by_data_entry)
+  json.entry_dates @entry.entry_dates.order(:order) do |entry_date|
+    json.(entry_date, :id, :order, :observed_date, :date_normalized_start, :date_normalized_end, :uncertain_in_source, :supplied_by_data_entry)
   end
 end
 
 if @entry.entry_artists.present?
-  json.entry_artists @entry.entry_artists do |entry_artist|
-    json.(entry_artist, :id, :observed_name, :uncertain_in_source, :supplied_by_data_entry)
+  json.entry_artists @entry.entry_artists.order(:order) do |entry_artist|
+    json.(entry_artist, :id, :order, :observed_name, :uncertain_in_source, :supplied_by_data_entry)
     if entry_artist.artist
       json.artist do
         json.(entry_artist.artist, :id, :name)
@@ -62,8 +62,8 @@ if @entry.entry_artists.present?
 end
 
 if @entry.entry_scribes.present?
-  json.entry_scribes @entry.entry_scribes do |entry_scribe|
-    json.(entry_scribe, :id, :observed_name, :uncertain_in_source, :supplied_by_data_entry)
+  json.entry_scribes @entry.entry_scribes.order(:order) do |entry_scribe|
+    json.(entry_scribe, :id, :order, :observed_name, :uncertain_in_source, :supplied_by_data_entry)
     if entry_scribe.scribe
       json.scribe do
         json.(entry_scribe.scribe, :id, :name)
@@ -73,8 +73,8 @@ if @entry.entry_scribes.present?
 end
 
 if @entry.entry_languages.present?
-  json.entry_languages @entry.entry_languages do |entry_language|
-    json.(entry_language, :id, :uncertain_in_source, :supplied_by_data_entry)
+  json.entry_languages @entry.entry_languages.order(:order) do |entry_language|
+    json.(entry_language, :id, :order, :uncertain_in_source, :supplied_by_data_entry)
     if entry_language.language
       json.language do
         json.(entry_language.language, :id, :name)
@@ -84,14 +84,14 @@ if @entry.entry_languages.present?
 end
 
 if @entry.entry_materials.present?
-  json.entry_materials @entry.entry_materials do |entry_material|
-    json.(entry_material, :id, :material, :uncertain_in_source, :supplied_by_data_entry)
+  json.entry_materials @entry.entry_materials.order(:order) do |entry_material|
+    json.(entry_material, :id, :order, :material, :uncertain_in_source, :supplied_by_data_entry)
   end
 end
 
 if @entry.entry_places.present?
-  json.entry_places @entry.entry_places do |entry_place|
-    json.(entry_place, :id, :observed_name, :uncertain_in_source, :supplied_by_data_entry)
+  json.entry_places @entry.entry_places.order(:order) do |entry_place|
+    json.(entry_place, :id, :order, :observed_name, :uncertain_in_source, :supplied_by_data_entry)
     if entry_place.place
       json.place do
         json.(entry_place.place, :id, :name)
@@ -101,8 +101,8 @@ if @entry.entry_places.present?
 end
 
 if @entry.entry_uses.present?
-  json.entry_uses @entry.entry_uses do |entry_use|
-    json.(entry_use, :id, :use)
+  json.entry_uses @entry.entry_uses.order(:order) do |entry_use|
+    json.(entry_use, :id, :order, :use)
   end
 end
 
@@ -126,8 +126,8 @@ if @entry.get_sale.present?
 end
 
 if @entry.provenance.present?
-  json.provenance @entry.provenance do |provenance_item|
-    json.(provenance_item, :id, :observed_name, :acquisition_method, :direct_transfer, :comment, :start_date, :end_date, :associated_date, :uncertain_in_source, :supplied_by_data_entry)
+  json.provenance @entry.provenance.order(:order) do |provenance_item|
+    json.(provenance_item, :id, :order, :observed_name, :acquisition_method, :direct_transfer, :comment, :start_date, :end_date, :associated_date, :uncertain_in_source, :supplied_by_data_entry)
     json.start_date_normalized_start SDBMSS::Util.format_fuzzy_date(provenance_item.start_date_normalized_start)
     json.start_date_normalized_end SDBMSS::Util.format_fuzzy_date(provenance_item.start_date_normalized_end)
     json.associated_date_normalized_start SDBMSS::Util.format_fuzzy_date(provenance_item.associated_date_normalized_start)

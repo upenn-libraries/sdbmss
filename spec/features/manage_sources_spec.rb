@@ -91,4 +91,5 @@ describe "Manage sources", :js => true do
 
     expect(Source.count).to eq(count-1)
   end
+
 end

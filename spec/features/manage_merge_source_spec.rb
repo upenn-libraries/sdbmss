@@ -70,8 +70,6 @@ describe "Manage Merging Sources", :js => true do
     expect(Entry.count).to eq(ct + 2)
   end
 
-# for some reason the indexes are not updating fast enough, or at all?
-
   it "should successfully merge two sources together, combining all their entries" do
     create_sources
     source = Source.last
@@ -87,4 +85,30 @@ describe "Manage Merging Sources", :js => true do
     expect(source2.entries_count).to eq(Entry.where(source_id: source2.id).count)
   end
 
+  it "should show suggestions for a source" do
+    visit merge_source_path(Source.last.id)
+
+    expect(page).to have_content(Source.last.title)
+
+    expect(page).to have_content(Source.last(2)[0].title)
+  end
+
+  it "should display the MERGE confimation page with appropriate information" do
+    visit merge_source_path(Source.last.id, target_id: Source.last(2)[0].id)
+
+    s1 = Source.last
+    s2 = Source.last(2)[0]
+
+    expect(page).to have_content("#{s1.public_id} ➔ #{s2.public_id}")
+
+    click_button("Yes")
+
+    expect(page).to have_content("Successfully merged.")
+    expect(page).to have_content("#{s1.public_id} has been merged into #{s2.public_id}")
+
+    visit sources_path
+
+    expect(page).to have_content("#{s2.public_id}")
+    expect(page).not_to have_content("#{s1.public_id}")
+  end
 end

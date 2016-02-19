@@ -363,10 +363,14 @@ var EntryScope;
         EntryScope = $scope;
 
         $scope.sortableOptions = {
-          //stop: function () {}
           axis: 'y',
-          stop: function () {
-            console.log($scope.entry.entry_titles);
+          stop: function (e, ui) {
+            // this is an ugly way to just get a reference to the array (i.e. entry_titles, provenance) that we are sorting
+            var field = ui.item.parent().attr('ng-model').split('.')[1];
+            for (var i = 0; i < $scope.entry[field].length; i++) {
+              $scope.entry[field][i].order = i;
+            }
+            console.log($scope.entry[field]);
           }
         }
 
@@ -380,43 +384,43 @@ var EntryScope;
         $scope.associations = [
             {
                 field: 'entry_titles',
-                properties: ['title', 'common_title']
+                properties: ['title', 'common_title', 'order']
             },
             {
                 field: 'entry_authors',
-                properties: ['observed_name'],
+                properties: ['observed_name', 'order'],
                 foreignKeyObjects: ['author']
             },
             {
                 field: 'entry_dates',
-                properties: ['observed_date', 'date_normalized_start', 'date_normalized_end']
+                properties: ['observed_date', 'date_normalized_start', 'date_normalized_end', 'order']
             },
             {
                 field: 'entry_artists',
-                properties: ['observed_name'],
+                properties: ['observed_name', 'order'],
                 foreignKeyObjects: ['artist']
             },
             {
                 field: 'entry_scribes',
-                properties: ['observed_name'],
+                properties: ['observed_name', 'order'],
                 foreignKeyObjects: ['scribe']
             },
             {
                 field: 'entry_languages',
-                foreignKeyObjects: ['language']
+                foreignKeyObjects: ['language', 'order']
             },
             {
                 field: 'entry_materials',
-                properties: ['material']
+                properties: ['material', 'order']
             },
             {
                 field: 'entry_places',
                 properties: ['observed_name'],
-                foreignKeyObjects: ['place']
+                foreignKeyObjects: ['place', 'order']
             },
             {
                 field: 'entry_uses',
-                properties: ['use']
+                properties: ['use', 'order']
             },
             {
                 field: 'sales',
@@ -432,7 +436,7 @@ var EntryScope;
             },
             {
                 field: 'provenance',
-                properties: ['start_date', 'end_date', 'associated_date', 'comment', 'observed_name'],
+                properties: ['start_date', 'end_date', 'associated_date', 'comment', 'observed_name', 'order'],
                 foreignKeyObjects: ['provenance_agent']
             }
         ];
@@ -998,6 +1002,13 @@ var EntryScope;
                                 id: 'CREATE'
                             });
                         }
+                        // sort options, prioritizing ones that match the type
+                        options.sort( function (a, b) {
+                          if (!a[params.type] && b[params.type] || a.id == 'CREATE')
+                            return 1;
+                          else
+                            return -1;
+                        });
                         response_callback(options);
                     });
                 };

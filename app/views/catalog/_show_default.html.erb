@@ -176,7 +176,7 @@
 
     <tbody>
 
-        <% if (entry_titles = entry.entry_titles).present? %>
+        <% if (entry_titles = entry.entry_titles.order(:order)).present? %>
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Titles</td>
             <td class="col-sm-10" colspan="10">
@@ -187,7 +187,7 @@
         </tr>
         <% end %>
 
-        <% if (entry_authors = entry.entry_authors).present? %>
+        <% if (entry_authors = entry.entry_authors.order(:order)).present? %>
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Authors</td>
             <td class="col-sm-10" colspan="10">
@@ -199,7 +199,7 @@
         </tr>
         <% end %>
 
-        <% if (entry_dates = entry.entry_dates).present? %>
+        <% if (entry_dates = entry.entry_dates.order(:order)).present? %>
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Manuscript Dates</td>
             <td class="col-sm-10" colspan="10">
@@ -210,7 +210,7 @@
         </tr>
         <% end %>
 
-        <% if (entry_artists = entry.entry_artists).present? %>
+        <% if (entry_artists = entry.entry_artists.order(:order)).present? %>
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Artists</td>
             <td class="col-sm-10" colspan="10">
@@ -222,7 +222,7 @@
         </tr>
         <% end %>
 
-        <% if (entry_scribes = entry.entry_scribes).present? %>
+        <% if (entry_scribes = entry.entry_scribes.order(:order)).present? %>
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Scribes</td>
             <td class="col-sm-10" colspan="10">
@@ -234,7 +234,7 @@
         </tr>
         <% end %>
 
-        <% if (entry_languages = entry.entry_languages).present? %>
+        <% if (entry_languages = entry.entry_languages.order(:order)).present? %>
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Languages</td>
             <td class="col-sm-10" colspan="10">
@@ -243,7 +243,7 @@
         </tr>
         <% end %>
 
-        <% if (entry_materials = entry.entry_materials).present? %>
+        <% if (entry_materials = entry.entry_materials.order(:order)).present? %>
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Materials</td>
             <td class="col-sm-10" colspan="10">
@@ -252,7 +252,7 @@
         </tr>
         <% end %>
 
-        <% if (entry_places = entry.entry_places).present? %>
+        <% if (entry_places = entry.entry_places.order(:order)).present? %>
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Places</td>
             <td class="col-sm-10" colspan="10">
@@ -263,7 +263,7 @@
         </tr>
         <% end %>
 
-        <% if (entry_uses = entry.entry_uses).present? %>
+        <% if (entry_uses = entry.entry_uses.order(:order)).present? %>
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Manuscript Uses</td>
             <td class="col-sm-10" colspan="10">
@@ -388,7 +388,7 @@
     </thead>
 
     <tbody>
-        <% if (provenance_all = entry.provenance).present? %>
+        <% if (provenance_all = entry.provenance.order(:order)).present? %>
         <% provenance_all.each do |provenance| %>
         <tr>
             <td class="col-sm-2 text-right record-label">

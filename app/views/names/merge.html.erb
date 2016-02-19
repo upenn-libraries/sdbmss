@@ -12,10 +12,10 @@
             <%= render partial: "shared/name_main", locals: { name: @model } %>
         </div>
     </div>
-    <div class='col-sm-1'>
-        <span class="chevron">〉</span>
+    <div class='col-sm-2'>
+        <span class="chevron">➔</span>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-5">
         <% if @target_id.present? && @target.present? %>
             <div class='panel <%= @target.present? ? "panel-success" : "panel-default" %>'>
                 <div class='panel-heading'><b><%= @target.public_id %></b></div>
@@ -51,11 +51,11 @@
                                 <th>Merge</th>
                                 <th>ID</th>
                                 <th>Name</th>
-                                <th>Author</th>
-                                <th>Artist</th>
-                                <th>Scribe</th>
+                                <th>Aut.</th>
+                                <th>Art.</th>
+                                <th>Scr.</th>
                                 <th>Sale</th>
-                                <th>Provenance</th>
+                                <th>Pr.</th>
                             </tr>
                         </thead>
                         <tbody>
