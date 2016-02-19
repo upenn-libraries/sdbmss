@@ -386,7 +386,8 @@ module CatalogControllerConfiguration
 
     self.search_params_logic << :handle_facet_prefix
 
-    self.search_params_logic << :show_approved
+# => JIRA(sdbm-176) - always show un-approved records
+#    self.search_params_logic << :show_approved
     self.search_params_logic << :show_created_by_user
     self.search_params_logic << :show_deprecated
 

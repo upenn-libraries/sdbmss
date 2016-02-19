@@ -82,9 +82,13 @@
                     <% entries.each do |entry| %>
                     <tr class="row">
                         <td class="col-sm-11">
+                            <!--
                             <% if entry.approved %><a href="<%= entry_path(entry) %>"><%= entry.public_id %></a><% else %><%= entry.public_id %><% end %>:
                             <%= entry.display_value %>
+                            JIRA(sdbm-176) -->
+                            <a href="<%= entry_path(entry) %>"><%= entry.public_id %></a>:
                             <% if !entry.approved %><em>(pending approval)</em><% end %>
+                            <%= entry.display_value %>
                         </td>
                         <td class="col-sm-1"><a href="<%= edit_entry_path(entry) %>">edit</a></td>
                     </tr>

@@ -66,6 +66,12 @@
     </p>
 <% end %>
 
+<% if !entry.approved %>
+    <div class="panel panel-danger">
+        <div class="panel-heading">Warning: This entry had not been approved yet.  The data may be incorrect or unreliable, or may not conform to the general data standards.</div>
+    </div>
+<% end %>
+
 <%= render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
 
 <!-- TODO: use a DL element here instead of a table? or use bootstrap rows and cols? layout will be tricky -->

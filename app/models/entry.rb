@@ -110,7 +110,9 @@ class Entry < ActiveRecord::Base
   # an agent is a Name object; role is a string
   scope :with_sale_agent_and_role, ->(agent, role) { joins(:sales => :sale_agents).where("sale_agents.agent_id = ? and role = ?", agent.id, role) }
 
-  scope :approved_only, -> { where(approved: true) }
+#  scope :approved_only, -> { where(approved: true) }
+# => show all entries, even if unapproved - JIRA(sdbm-176)
+  scope :approved_only, -> { where(true) }
 
   # Note that there is separate front-end Javascript/AngularJS code
   # that does validation, which should be kept in sync with the

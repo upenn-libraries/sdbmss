@@ -5,6 +5,11 @@
     <% if entry.nil? %>
     <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
     <% else %>
+        <% if !entry.approved %>
+            <div class="panel panel-danger">
+                <div class="panel-heading">Warning: This record is not yet approved and may not conform to standards for data structure or accuracy.</div>
+            </div>
+        <% end %>
     <dl class="document-metadata dl-horizontal dl-invert">
 	    <dt>ID</dt>
         <%# data-context-href triggers an HTTP callback before loading the entry page; this makes prev/next links on individual Entry page work %>
@@ -59,7 +64,7 @@
         <% if entry.entry_titles.length > 0 %>
 	    <dt>Titles</dt>
         <dd>
-        <% entry.entry_titles.order(:order).each do |entry_title| %>
+        <% entry.entry_titles.each do |entry_title| %>
           <%= entry_title.title %> <% if entry_title.common_title.present? %>[<%= entry_title.common_title %>]<% end %><br/>
         <% end %>
         </dd>
@@ -68,7 +73,7 @@
         <% if entry.entry_authors.length > 0 %>
         <dt>Authors</dt>
         <dd>
-        <% entry.entry_authors.order(:order).each do |entry_author| %>
+        <% entry.entry_authors.each do |entry_author| %>
           <% if entry_author.observed_name.present? %>
             <%= entry_author.observed_name %>
             <% if entry_author.role %>(<%= entry_author.role %>)<% end %>
@@ -87,7 +92,7 @@
         <% if entry.entry_dates.length > 0 %>
         <dt>Dates</dt>
         <dd>
-        <% entry.entry_dates.order(:order).each do |entry_date| %>
+        <% entry.entry_dates.each do |entry_date| %>
           <%= entry_date.display_value %><br/>
         <% end %>
         </dd>
@@ -96,7 +101,7 @@
         <% if entry.entry_places.length > 0 %>
         <dt>Places</dt>
         <dd>
-        <% entry.entry_places.order(:order).each do |entry_place| %>
+        <% entry.entry_places.each do |entry_place| %>
           <%= entry_place.display_value %><br/>
         <% end %>
         </dd>
@@ -113,7 +118,7 @@
         <dt>Provenance Info</dt>
         <dd>
             This entry has <%= provenance_count %> provenance records involving:<br/>
-            <% entry.unique_provenance_agents.order(:order).each do |unique_provenance_agent| %>
+            <% entry.unique_provenance_agents.each do |unique_provenance_agent| %>
                 <% if unique_provenance_agent[:agent].present? %>
                 <a href="<%= url_for unique_provenance_agent[:agent] %>"><%= unique_provenance_agent[:agent] %></a>
                 <% else %>

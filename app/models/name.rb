@@ -52,7 +52,7 @@ class Name < ActiveRecord::Base
     if name_obj.name.present? && (!name_obj.persisted? || name_obj.name_changed?)
       if self.class.unscoped.exists?(name: name_obj.name, deleted: true)
         errors[:name] << "is already used by a record that has been deleted"
-      elsif (existing_name = self.class.find_by(name: name_obj.name)).present?
+      elsif (existing_name = self.class.find_by(name: name_obj.name)).present? && name_obj.id != existing_name.id
         errors[:name] << "is already used by record ##{existing_name.id} for '#{existing_name.name}'"
       end
     end
@@ -60,7 +60,7 @@ class Name < ActiveRecord::Base
     if name_obj.viaf_id.present? && (!name_obj.persisted? || name_obj.viaf_id_changed?)
       if self.class.unscoped.exists?(viaf_id: name_obj.viaf_id, deleted: true)
         errors[:viaf_id] << "is already used by a record that has been deleted"
-      elsif (existing_name = self.class.find_by(viaf_id: name_obj.viaf_id)).present?
+      elsif (existing_name = self.class.find_by(viaf_id: name_obj.viaf_id)).present? && name_obj.id != existing_name.id
         errors[:viaf_id] << "is already used by record ##{existing_name.id} for '#{existing_name.name}'"
       end
     end

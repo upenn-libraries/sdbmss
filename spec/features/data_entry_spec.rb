@@ -21,6 +21,7 @@ describe "Data entry", :js => true do
     # listens for; use send_keys instead
     find_by_id(field).native.send_keys(options[:with])
 
+    sleep 1.1
     # wait for an autocomplete UL element to appear
     find('ul.ui-autocomplete', visible: true)
 

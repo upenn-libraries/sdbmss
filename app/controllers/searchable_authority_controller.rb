@@ -4,7 +4,9 @@ class SearchableAuthorityController < ManageModelsController
 
   def create
     super
-    @model.delay.index
+    if @model.id
+      @model.delay.index
+    end
   end
 
   def update

@@ -13,7 +13,9 @@ class CatalogController < ApplicationController
   # Overrides Blacklight::Catalog#show to check for existence and send
   # 404 if necessary
   def show
-    entry = Entry.find_by(id: params[:id], approved: true)
+    entry = Entry.find_by(id: params[:id])
+    # JIRA(sdbm-176)
+#    entry = Entry.find_by(id: params[:id], approved: true)
     if entry.present?
       @entry_comment = EntryComment.new(entry: entry)
       @entry_comment.build_comment

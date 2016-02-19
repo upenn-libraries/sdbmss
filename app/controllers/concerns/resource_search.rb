@@ -73,6 +73,7 @@ module ResourceSearch
 
   # Main callpoint: this should be exposed in routes
   def search
+
     # in autocomplete mode, look for exact match so we can prepend it
     # if we need to
     exact = params[:autocomplete].present? ? search_exact : []

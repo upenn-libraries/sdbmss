@@ -256,7 +256,8 @@ var SDBM = SDBM || {};
                             if(full[sdbmTable.getColumnIndex("Is Approved")]) {
                                 return '<a href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
                             } else {
-                                return 'SDBM_' + data;
+                            //  JIRA(sdbm-176)  return 'SDBM_' + data;
+                                return '<a class="text-muted" href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
                             }
                         }
                         return '';
