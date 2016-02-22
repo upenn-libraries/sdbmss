@@ -177,6 +177,16 @@ This is a 3 step process.
   # index the data in Solr
   bundle exec rake sunspot:reindex
   ```
+* STEP 4: Run script to generate custom MYSQL functions
+  
+  Run the rails console:
+
+  ```
+  cd ~/sdbmss
+  bundle exec rails c
+  # Run mysql function generator
+  SDBMSS::Mysql.create_functions
+  ```
 
 Running the Development Server
 ------------------------------
@@ -237,6 +247,14 @@ Running the Test Suite
   ```
   ./run_tests.sh
   ```
+
+Performing migrations on Staging/Production
+----------------------------------------
+DB Migrations must be performed manually (cap deploy:migrate does not work)
+
+* ssh to the appropriate server
+* go to the 'current' folder (sdbmss/current on staging, /var/www/sdbmss/current on production)
+* run the migrations (bundle exec rake db:migrate)
 
 Deploying to the Staging (Dev VM) Server
 ----------------------------------------
