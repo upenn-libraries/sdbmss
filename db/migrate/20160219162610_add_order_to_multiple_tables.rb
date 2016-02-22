@@ -8,6 +8,5 @@ class AddOrderToMultipleTables < ActiveRecord::Migration
     add_column :entry_materials, :order, :integer
     add_column :entry_places, :order, :integer
     add_column :entry_uses, :order, :integer
-    add_column :provenance, :order, :integer
   end
 end
