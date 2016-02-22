@@ -93,7 +93,7 @@ class Entry < ActiveRecord::Base
     ]
   ]
 
-  default_scope { where(deleted: false) }
+  default_scope { where("id <> ''") }
 
   # aggressively load all associations; useful for cases where you
   # want to display the complete info for Entries
@@ -112,7 +112,7 @@ class Entry < ActiveRecord::Base
 
 #  scope :approved_only, -> { where(approved: true) }
 # => show all entries, even if unapproved - JIRA(sdbm-176)
-  scope :approved_only, -> { where(true) }
+#  scope :approved_only, -> { where(true) }
 
   # Note that there is separate front-end Javascript/AngularJS code
   # that does validation, which should be kept in sync with the

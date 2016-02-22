@@ -573,7 +573,7 @@ var SDBM = SDBM || {};
                     $(".dataTables_scrollBody").scrollTop(0);
                     // when paging, we probably don't want to reset horiz scroll
                     // $(".dataTables_scrollBody").scrollLeft(0);
-
+                    console.log('ya', data);
                     data.data = data.data.map(function (result) {
                         return [
                             result.id,
@@ -631,6 +631,7 @@ var SDBM = SDBM || {};
                             item.unshift.apply(item, columnsToPrepend);
                         });
                     }
+        console.log(7, data);
 
                     dtCallback(data);
                 } else {

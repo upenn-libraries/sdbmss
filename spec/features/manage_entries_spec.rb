@@ -58,7 +58,7 @@ describe "Manage entries", :js => true do
     click_button "Go"
     expect(page).not_to have_selector("#spinner", visible: true)
 
-    expect(all("#search_results tbody tr").count).to eq(13)
+    expect(all("#search_results tbody tr").count).to eq(Entry.all.count)
   end
 
   it "should delete an entry" do
