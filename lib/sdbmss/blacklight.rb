@@ -71,7 +71,7 @@ module SDBMSS::Blacklight
       # only show approved records.
       if blacklight_params['approved'].blank?
 # JIRA(sdbm-176) -> show all records, even unapproved ones
-#        solr_parameters['fq'] << 'approved:true'
+        solr_parameters['fq'] << 'approved:*'
       end
     end
 
