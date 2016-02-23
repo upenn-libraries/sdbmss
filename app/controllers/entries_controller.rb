@@ -83,6 +83,17 @@ class EntriesController < ManageModelsController
     # saved, because that's confusing to end users.
   end
 
+  def revert
+    @entry = Entry.find(params[:id])
+    @version = PaperTrail::Version.find(params[:version_id])
+    if (params[:confirmed])
+      @current = @version.reify
+      @result = @current.save!
+    else
+      @current = @version.item_type.singularize.classify.constantize.find(@version.item_id)
+    end
+  end
+
   def new
     @entry = Entry.new
     @source_id = params[:source_id]

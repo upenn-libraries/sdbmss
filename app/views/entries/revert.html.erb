@@ -1,0 +1,26 @@
+<h1>Revert to Old Version</h1>
+<div class="row well"><%= @entry.public_id %></div>
+<div class="panel panel-success">
+  <div class="panel-heading"><%= @result || "" %></div>
+</div>
+<div class="row">
+  <div class="col-sm-6">
+    <div class="panel panel-warning">
+      <div class="panel-heading">Current Version</div>
+      <div class="panel-body">
+        <%= @current.as_json %>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="panel panel-info">
+      <div class="panel-heading">Version #<%= @version.id %></div>
+      <div class="panel-body">
+        <%= @version.reify(dup: true).as_json %>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <%= link_to 'Confirm', revert_entry_path(@entry, version_id: @version.id, confirmed: true), class: 'btn btn-warning' %>
+</div>

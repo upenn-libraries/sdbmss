@@ -41,6 +41,8 @@ Rails.application.routes.draw do
       get 'types'
     }
     member {
+      post 'revert'
+      get 'revert'
       post 'deprecate'
       get 'history'
       get 'similar'
