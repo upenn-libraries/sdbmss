@@ -78,7 +78,6 @@ class Provenance < ActiveRecord::Base
     end
   end
 
-  #FIX ME: can throw same error (on 'Tenth', say) as util method (parse_approximate_date_str_into_year_range)
   def self.parse_observed_date(date_str)
     date_str = date_str.strip
 

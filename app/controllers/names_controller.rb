@@ -44,7 +44,6 @@ class NamesController < SearchableAuthorityController
   def search_query
     query = super
     if params[:type].present?
-      # FIX ME: change this to alter sorting/display autocomplete by 'flag', or 'type' (as it's listed here)
       query = query.where(params[:type].to_sym => true)
     end
     query

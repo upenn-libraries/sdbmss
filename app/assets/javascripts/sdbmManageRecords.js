@@ -174,7 +174,7 @@ var SDBM = SDBM || {};
             orderStr += columns[item.column].dbSortField + " " + item.dir;
         });
 
-// FIX ME: ability to have multiple 'rows' of search;
+// FIX ME: add ability to have multiple 'rows' of search;
 
         var search_query = {
             unreviewed_only: this.getUnreviewedOnly(),

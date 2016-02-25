@@ -183,12 +183,9 @@ class EntriesController < ManageModelsController
     success = false
     errors = nil
 
-    puts "Params: #{params}"
-
     if params[:cumulative_updated_at].to_s == @entry.cumulative_updated_at.to_s
       ActiveRecord::Base.transaction do
         filtered = entry_params_for_create_and_edit
-        puts "Filtered, #{filtered}"
         success = @entry.update_by(current_user, filtered)
         if success
           if params[:new_comment].present?

@@ -145,8 +145,6 @@ class SourcesController < SearchableAuthorityController
     search_model_class.all.includes([:created_by])
   end
 
-  # FIX ME: this search system should use solr now, and possibly even blacklight
-
   def search_query
     query = super
 
@@ -323,7 +321,7 @@ class SourcesController < SearchableAuthorityController
 
   private
 
-# FIX ME: how to get similar before it exists?!
+# FIX ME: how to get similar before it exists?!  right now uses levenshtein for that, solr for everything else
 
   def get_similar
 

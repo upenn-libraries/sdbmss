@@ -586,7 +586,6 @@ var EntryScope;
                 var fieldname = assoc.field;
                 var objArray = entry[fieldname];
                 if(!objArray || objArray.length === 0) {
-                    // FIX ME: load one blank form field, or none
                     //entry[fieldname] = [ {} ];
                     if (fieldname == 'provenance')
                       entry[fieldname] = [ {} ]
