@@ -86,11 +86,34 @@ class EntriesController < ManageModelsController
   def revert
     @entry = Entry.find(params[:id])
     @version = PaperTrail::Version.find(params[:version_id])
-    if (params[:confirmed])
-      @current = @version.reify
-      @result = @current.save!
-    else
+    if @version.event == 'destroy'
+      version_changeset = {}
+      version_attributes = @version.reify(dup: true).attributes
+      version_attributes.each do |f, v|
+        if version_attributes[f] && !version_attributes.blank?
+          version_changeset[f] = [v, nil]
+        end
+      end
+    end
+    @changes = @version.event == 'create' ? {_destroy: 1} : @version.reify(dup: true).attributes
+    @changeset = @version.changeset.blank? ? version_changeset : @version.changeset
+    begin
       @current = @version.item_type.singularize.classify.constantize.find(@version.item_id)
+    rescue ActiveRecord::RecordNotFound
+      @current = {}
+      @changes[:id] = nil
+      if @version.event == 'update'
+        @msg = "Warning: That field no longer exists - would you like to recreate it?"
+      elsif @version.event == 'create'
+        @msg = "Warning: That field has already been destroyed.  No change is possible."
+      end
+    else
+      if @version.event == 'destroy'
+        @changes[:id] = nil
+      elsif @version.event == 'create'
+        @changes = @current.attributes
+        @changes[:_destroy] = 1
+      end
     end
   end
 
@@ -160,9 +183,12 @@ class EntriesController < ManageModelsController
     success = false
     errors = nil
 
+    puts "Params: #{params}"
+
     if params[:cumulative_updated_at].to_s == @entry.cumulative_updated_at.to_s
       ActiveRecord::Base.transaction do
         filtered = entry_params_for_create_and_edit
+        puts "Filtered, #{filtered}"
         success = @entry.update_by(current_user, filtered)
         if success
           if params[:new_comment].present?
@@ -191,6 +217,9 @@ class EntriesController < ManageModelsController
           json_response = { errors: errors_data }
           render json: json_response, status: :unprocessable_entity
         end
+      }
+      format.html {
+        redirect_to entry_path(@entry)
       }
     end
   end

@@ -31,18 +31,13 @@
                         <td></td>
                         <td></td>
                         <td><%= formatter.action %></td>
-                            <td colspan="2">
-                                <% formatter.details.each do |detail| %>
-                                    <%= detail %></br>
-                                <% end %>
-                            </td>
-                        <td>
-                            <!-- FIX ME: only allows revert for 'change' (at the moment) -->
-                            <% if version.event == 'update' %>
-                                <%= link_to "Revert", revert_entry_path(@entry, version_id: version.id), data: {confirm: "Are you sure?"} %>
-                            <% else %>
-                                <%= version.event %>
+                        <td colspan="2">
+                            <% formatter.details.each do |detail| %>
+                                <%= detail %></br>
                             <% end %>
+                        </td>
+                        <td>
+                            <%= link_to "Undo", revert_entry_path(@entry, version_id: version.id), class: 'btn btn-default btn-block' %>
                         </td>
                     </tr>
             <% end %>

@@ -78,7 +78,7 @@ class EntryVersionFormatter
       if version.event == 'update'
         version.changeset.each do |field, values|
           if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}")
-            details << "#{field.titlecase}: from #{values[0] || "(blank)"} to #{values[1]}"
+            details << "#{field.titlecase}: from #{values[0].present? ? values[0] : "(blank)"} to #{values[1]}"
           end
         end
       elsif version.event == 'create'

@@ -102,6 +102,7 @@ Rails.application.routes.draw do
       get 'suggest'
     end
     member do
+      get 'history'
       get 'merge'
       post 'merge'
     end

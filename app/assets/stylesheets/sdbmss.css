@@ -122,6 +122,12 @@ h1 { font-size: 30px; margin-top: 0; }
 .form-group.row {
   border-bottom: 1px #eee dashed;
 }
+.unapproved > td {
+  color: #999;
+}
+.unapproved > td > a {
+  color: #999;
+}
 
 .sdbmss-form .provenance-group-container { border-width: 0 0 1px; border-style: none none solid; border-color: #e5e5e5; margin-bottom: 6px; }
 
