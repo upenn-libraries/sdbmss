@@ -275,6 +275,8 @@ class SourcesController < SearchableAuthorityController
     if @target_id.present?
       if @target_id.to_i == @source.id
         @warning = "You can't merge a record into itself"
+      elsif Source.find_by(id: @target_id).source_type != @source.source_type
+        @warning = "You can only merge sources that are the same type, to avoid data loss"
       else
         @target = Source.find_by(id: @target_id)
       end
@@ -326,9 +328,10 @@ class SourcesController < SearchableAuthorityController
 # FIX ME: how to get similar before it exists?!
 
   def get_similar
-
+    type = @source.source_type_id || 99
     s = Sunspot.more_like_this(@source) do
       fields :title, :date
+      with :source_type_id, type
       paginate page: 1, per_page: 10
       order_by :score, :desc
     end

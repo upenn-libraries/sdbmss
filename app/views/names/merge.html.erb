@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class='col-sm-2'>
-        <span class="chevron">➔</span>
+        <%= image_tag 'right-arrow.png', class: 'img img-responsive' %>
     </div>
     <div class="col-sm-5">
         <% if @target_id.present? && @target.present? %>
@@ -98,6 +98,7 @@
         <div class="col-sm-3">
             <button class="btn btn-primary">Yes</button>
             <a class="btn btn-warning" href="<%= names_path %>">Cancel</a>
+            <%= link_to "Swap", merge_name_path(@target, :target_id => @model.id), class: 'btn btn-info' %>
         </div>
     </div>
 <% end %>

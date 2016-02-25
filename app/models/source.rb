@@ -95,6 +95,7 @@ class Source < ActiveRecord::Base
     string :date
     text :date, :more_like_this => true
     integer :entries_count
+    integer :source_type_id
   end
 
   def public_id
