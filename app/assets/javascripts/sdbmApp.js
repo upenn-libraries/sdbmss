@@ -1202,7 +1202,7 @@ var EntryScope;
                         data: {
                             search_field: "advanced",
                             op: "AND",
-                            approved: "*",
+                            //approved: "*",
                             source: "SDBM_SOURCE_" + scope.entry.source.id,
                             catalog_or_lot_number: cat_lot_no
                         },

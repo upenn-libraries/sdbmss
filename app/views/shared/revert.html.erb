@@ -1,6 +1,6 @@
 <div class="page-header">
   <h1>Revert to Old Version</h1>
-  <%= link_to @entry.public_id, entry_path(@entry)   %>
+  <%= link_to @model.public_id, polymorphic_path(@model)   %>
 </div>
 <% if @msg.present? %>
   <div class="panel panel-warning">
@@ -18,7 +18,6 @@
         <% else %>
           <% @changeset.each do |field, value| %>
             <% if field.present? and @current[field].present? %>
-                          <% puts "CHANGESET #{value.as_json}" %>
             <li class="list-group-item">
               <strong><%= field %>:</strong> <%= @current[field].present? ? @current[field] : '(blank)' %>
             </li>
@@ -51,13 +50,15 @@
   </div>
 </div>
 <div class="row">
-  <%= form_for @entry do |f| %>
-    <%= hidden_field_tag :cumulative_updated_at, @entry.cumulative_updated_at %>
+  <%= form_for @model do |f| %>
+    <% if @model.respond_to? :cumulative_updated_at %>
+    <%= hidden_field_tag :cumulative_updated_at, @model.cumulative_updated_at || 0 %>
+    <% end %>
     <%= hidden_field_tag :format, 'html' %>
     <% @changes.each do |field, value| %>
       <!-- value must not be blank, otherwise update is not processed -->
       <% if value.present? %>
-        <% if @version.item_type != "Entry" %>
+        <% if @version.item_type != @model.model_name.name %>
           <%= hidden_field_tag (@version.item_type.underscore.pluralize + "_attributes[#{field}]"), value %>
         <% else %>
           <%= hidden_field_tag field, value %>
@@ -68,6 +69,6 @@
       <%= hidden_field_tag (@version.item_type.underscore.pluralize + "_attributes[id]"), @current.id %>
     <% end %>
     <%= f.submit 'Restore', class: 'btn btn-warning' %>
-    <%= link_to 'Cancel', history_entry_path(@entry.id), class: 'btn btn-default' %>
+    <%= link_to 'Cancel', polymorphic_path([:history, @model]), class: 'btn btn-default' %>
   <% end %>
 </div>

@@ -5,6 +5,8 @@ class NamesController < SearchableAuthorityController
   include ResetReviewedAfterUpdate
   include LogActivity
 
+  include Revert
+
   load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_reviewed, :merge]
 
   before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy, :merge]

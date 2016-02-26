@@ -41,7 +41,6 @@ Rails.application.routes.draw do
       get 'types'
     }
     member {
-      post 'revert'
       get 'revert'
       post 'deprecate'
       get 'history'
@@ -102,6 +101,7 @@ Rails.application.routes.draw do
       get 'suggest'
     end
     member do
+      get 'revert'
       get 'history'
       get 'merge'
       post 'merge'

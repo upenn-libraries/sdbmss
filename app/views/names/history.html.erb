@@ -1,5 +1,6 @@
 <h1>History of changes to <%= @name.public_id %></h1>
 
+<% changesets = ModelHistory.new(@name).changesets %>
 <% versions = @name.versions %>
 <% if versions.count > 0 || legacy.count > 0 %>
 <table class="table">
@@ -14,21 +15,28 @@
         </tr>
     </thead>
     <tbody>
-        <% versions.each do |version| %>
+        <% changesets.each do |changeset| %>
         <tr>
-            <td><%= version.created_at.to_formatted_s(:date_and_time) %></td>
-            <td><%= version.event.capitalize %></td>
+            <td><%= changeset.date.to_formatted_s(:date_and_time) %></td>
+            <td><%= changeset.user %></td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
         </tr>
-            <% version.changeset.each do |field, value| %>
+            <% changeset.versions.each do |version| %>
             <tr>
                 <td></td>
-                <td><%= field %></td>
                 <td></td>
-                <td><%= value[0] %></td>
-                <td><%= value[1] %></td>
+                <td><%= version.event.capitalize %></td>
+                <td colspan="2">
+                    <% version.changeset.each do |field, value| %>
+                        <strong><%= field.capitalize %>:</strong> <%= "#{value[0].present? ? value[0] : '(blank)' } to #{value[1].present? ? value[1] : '(blank)'}" %><br>
+                    <% end %>
+                </td>
+                <td>
+                    <%= link_to "Undo", revert_name_path(@name, version_id: version.id), class: 'btn btn-default btn-block' %>
+                </td>
             </tr>
             <% end %>
         <% end %>
