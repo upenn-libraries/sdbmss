@@ -29,4 +29,8 @@ class Language < ActiveRecord::Base
     name
   end
 
+  def to_fields
+    {language: name}
+  end
+
 end

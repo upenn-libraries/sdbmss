@@ -1,0 +1,74 @@
+<div class="page-header">
+  <h1>Revert to Old Version</h1>
+  <%= link_to @model.public_id, polymorphic_path(@model)   %>
+</div>
+<% if @msg.present? %>
+  <div class="panel panel-warning">
+    <div class="panel-heading"><%= @msg %></div>
+  </div>
+<% end %>
+<div class="row">
+  <div class="col-sm-6">
+    <div class="panel panel-warning">
+      <div class="panel-heading">Current Version</div>
+      <div class="panel-body">
+        <ul class='list-group'>
+        <% if @current.blank? %>
+          <li class='list-group-item list-group-item-danger'>(Deleted)</li>
+        <% else %>
+          <% @changeset.each do |field, value| %>
+            <% if field.present? and @current[field].present? %>
+            <li class="list-group-item">
+              <strong><%= field %>:</strong> <%= @current[field].present? ? @current[field] : '(blank)' %>
+            </li>
+            <% end %>
+          <% end %>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="panel panel-info">
+      <div class="panel-heading">Version #<%= @version.id %> - Will Be Restored</div>
+      <div class="panel-body">
+        <ul class="list-group">
+        <% if @version.event == 'create' %>
+          <li class='list-group-item list-group-item-danger'>Will be deleted</li>
+        <% else %>
+          <% @changeset.each do |field, value| %>
+            <% if field && value %>
+            <li class="list-group-item">
+              <strong><%= field %>:</strong> <%= value[0].present? ? value[0] : '(blank)' %>
+            </li>
+            <% end %>
+          <% end %>
+        <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <%= form_for @model do |f| %>
+    <% if @model.respond_to? :cumulative_updated_at %>
+    <%= hidden_field_tag :cumulative_updated_at, @model.cumulative_updated_at || 0 %>
+    <% end %>
+    <%= hidden_field_tag :format, 'html' %>
+    <% @changes.each do |field, value| %>
+      <!-- value must not be blank, otherwise update is not processed -->
+      <% if value.present? %>
+        <% if @version.item_type != @model.model_name.name %>
+          <%= hidden_field_tag (@version.item_type.underscore.pluralize + "_attributes[#{field}]"), value %>
+        <% else %>
+          <%= hidden_field_tag field, value %>
+        <% end %>
+      <% end %>
+    <% end %>
+    <% if !@current.blank? %>
+      <%= hidden_field_tag (@version.item_type.underscore.pluralize + "_attributes[id]"), @current.id %>
+    <% end %>
+    <%= f.submit 'Restore', class: 'btn btn-warning' %>
+    <%= link_to 'Cancel', polymorphic_path([:history, @model]), class: 'btn btn-default' %>
+  <% end %>
+</div>

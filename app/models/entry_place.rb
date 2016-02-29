@@ -17,4 +17,8 @@ class EntryPlace < ActiveRecord::Base
     (place.name || "") + certainty_flags
   end
 
+  def to_fields
+    {observed_name: observed_name, name: place ? place.name : nil}
+  end
+
 end

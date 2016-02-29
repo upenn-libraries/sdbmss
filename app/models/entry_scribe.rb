@@ -31,4 +31,8 @@ class EntryScribe < ActiveRecord::Base
     (scribe ? scribe.name : "") + certainty_flags
   end
 
+  def to_fields
+    {name: scribe ? scribe.name : nil, observed_name: observed_name}
+  end
+
 end

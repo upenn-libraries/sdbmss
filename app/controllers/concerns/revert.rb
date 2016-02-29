@@ -3,6 +3,29 @@ module Revert
   def revert
     @model = self.model_class.find(params[:id])
     @version = PaperTrail::Version.find(params[:version_id])
+    item_type = @version.item_type
+    if item_type == @model.model_name.name
+    # if the change is NOT to an association
+      @changeset = @version.changeset
+    else
+    # for changes to associations
+      @current = @model.send(item_type.underscore.pluralize)
+      @changed = @version.reify(dup: true)
+      @overwrite = false
+      @current.each do |c|
+        if c.id == @changed.id
+          @overwrite = false
+          break
+        end
+      end
+      @overwrite = params[:overwrite].present? ? params[:overwrite] == 'true' : @overwrite
+    end
+    render :template => 'shared/revert'
+  end
+
+  def revert_old
+    @model = self.model_class.find(params[:id])
+    @version = PaperTrail::Version.find(params[:version_id])
     if @version.event == 'destroy'
       version_changeset = {}
       version_attributes = @version.reify(dup: true).attributes

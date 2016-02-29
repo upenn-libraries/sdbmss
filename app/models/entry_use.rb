@@ -6,4 +6,8 @@ class EntryUse < ActiveRecord::Base
 
   include HasPaperTrail
 
+  def to_fields
+    {use: use}
+  end
+
 end
