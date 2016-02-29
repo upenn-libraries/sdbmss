@@ -89,3 +89,26 @@
     </div>
   </div>
 </div>
+<div class="row">
+  <%= form_for @model do |f| %>
+    <% if @model.respond_to? :cumulative_updated_at %>
+      <%= hidden_field_tag :cumulative_updated_at, @model.cumulative_updated_at || 0 %>
+    <% end %>
+    <%= hidden_field_tag :format, 'html' %>
+    <% if @changeset.present? %>
+      <% @changeset.each do |field, value| %>
+        <%= hidden_field_tag field, value[0] %>
+      <% end %>
+    <% end %>
+    <% if @changed.present? %>
+      <% @changed.to_fields.each do |field, value| %>
+        <%= hidden_field_tag (@version.item_type.underscore.pluralize + "_attributes[#{field}]"), value %>       
+      <% end %>
+      <% if @overwrite %>
+        <%= hidden_field_tag (@version.item_type.underscore.pluralize + "_attributes[id]"), @changed.id %>
+      <% end %>
+    <% end %>
+   <%= f.submit 'Restore', class: 'btn btn-warning' %>
+    <%= link_to 'Cancel', polymorphic_path([:history, @model]), class: 'btn btn-default' %>
+  <% end %>
+</div>
