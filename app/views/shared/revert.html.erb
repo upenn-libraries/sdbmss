@@ -101,11 +101,8 @@
       <% end %>
     <% end %>
     <% if @changed.present? %>
-      <% @changed.to_fields.each do |field, value| %>
-        <%= hidden_field_tag (@version.item_type.underscore.pluralize + "_attributes[#{field}]"), value %>       
-      <% end %>
-      <% if @overwrite %>
-        <%= hidden_field_tag (@version.item_type.underscore.pluralize + "_attributes[id]"), @changed.id %>
+      <% @changed.attributes.each do |field, value| %>
+        <%= hidden_field_tag (@version.item_type.underscore.pluralize + "_attributes[#{field}]"), value %>        
       <% end %>
     <% end %>
    <%= f.submit 'Restore', class: 'btn btn-warning' %>

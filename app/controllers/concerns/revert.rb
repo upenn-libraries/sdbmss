@@ -20,6 +20,9 @@ module Revert
       end
       @overwrite = params[:overwrite].present? ? params[:overwrite] == 'true' : @overwrite
     end
+    if !@overwrite
+      @changed[:id] = nil
+    end
     render :template => 'shared/revert'
   end
 

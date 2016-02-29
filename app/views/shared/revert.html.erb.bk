@@ -59,7 +59,7 @@
       <!-- value must not be blank, otherwise update is not processed -->
       <% if value.present? %>
         <% if @version.item_type != @model.model_name.name %>
-          <%= hidden_field_tag (@version.item_type.underscore.pluralize + "_attributes[#{field}]"), value %>
+          <%= hidden_field_tag (@version.item_type.underscore.pluralize + "_attributes[#{field}][]"), value %>
         <% else %>
           <%= hidden_field_tag field, value %>
         <% end %>
