@@ -5,7 +5,7 @@
       <%= link_to @model.public_id, polymorphic_path(@model)   %>
     </div>
     <div class="col-sm-1">
-      <% if @changed.present? %>
+      <% if @changed_attr.present? %>
         <%= link_to (@overwrite ? 'Duplicate?' : 'Overwrite?'), params.merge(:overwrite => !@overwrite), class: 'btn btn-info' %>
       <% end %>
     </div>
@@ -16,21 +16,23 @@
     <div class="panel panel-warning">
       <div class="panel-heading">Current Version</div>
       <div class="panel-body">
+        <!-- Simple Changes - show single field -->
         <% if @changeset.present? %>
           <ul class="list-group">
           <% @changeset.each do |field, value| %>
             <% if @model.send(field) %>
               <li class="list-group-item">
-                <strong><%= field %>:</strong> <%= @model.send(field) %><br>
+                <strong><%= field.capitalize %>:</strong> <%= @model.send(field) %><br>
               </li>
             <% end %>
           <% end %>
           </ul>
-        <% elsif @current.present? %>
+        <!-- Association Field Changes - show list of fields -->
+        <% elsif !@current.nil? %>
           <h3 class="h3"><%= @version.item_type.pluralize.gsub(@model.model_name.name, '') %></h3>
           <ul class="list-group">
             <% @current.each do |c| %>
-              <li class="list-group-item <%= @overwrite && c.id == @changed.id ? 'list-group-item-warning' : '' %>">
+              <li class="list-group-item <%= @overwrite && c.id == @changed_attr['id'] ? 'list-group-item-danger' : '' %>">
                 <% c.to_fields.each do |field, value| %>
                   <strong><%= field.to_s.gsub(/_/, ' ').capitalize %>: </strong><%= value %><br>
                 <% end %>
@@ -47,23 +49,26 @@
 
   <div class="col-sm-6">
     <div class="panel panel-success">
-      <div class="panel-heading">Version #<%= @version.id %></div>
+      <div class="panel-heading">Version AT: <strong><%= @version.created_at.to_formatted_s(:short) %></strong></div>
       <div class="panel-body">
+        <!-- Simple Change - show replacement value -->
         <% if @changeset.present? %>
           <ul class="list-group">
           <% @changeset.each do |field, value| %>
             <li class="list-group-item">
-                <strong><%= field %>:</strong> <%= value[0] %><br>
+                <strong><%= field.capitalize %>:</strong> <%= value[0] %><br>
             </li>
           <% end %>
           </ul>
+        <!-- Association Field Change - show list of current fields with the change merged/added in -->
         <% elsif @current.present? %>
           <h3 class="h3"><%= @version.item_type.pluralize.gsub(@model.model_name.name, '') %></h3>
           <ul class="list-group">
             <% @current.each do |c| %>
-              <li class="list-group-item <%= @overwrite && c.id == @changed.id ? 'list-group-item-success' : '' %>">
-                <% if c.id == @changed.id && @overwrite %>
-                  <% @changed.to_fields.each do |field, value| %>
+              <% if @version.event != 'create' || c.id != @changed_attr['id'] %>
+              <li class="list-group-item <%= @overwrite && c.id == @changed_attr['id'] ? 'list-group-item-success' : '' %>">
+                <% if @changed_attr['id'] && c.id ==  @changed_attr['id'] && @overwrite %>
+                  <% @changed_fields.each do |field, value| %>
                     <strong><%= field.to_s.gsub(/_/, ' ').capitalize %>: </strong><%= value %><br>
                   <% end %>
                 <% else %>
@@ -72,14 +77,35 @@
                   <% end %>
                 <% end %>
               </li>
+              <% end %>
             <% end %>
             <% if !@overwrite %>
               <li class="list-group-item list-group-item-success">
-                <% @changed.to_fields.each do |field, value| %>
-                    <strong><%= field.to_s.gsub(/_/, ' ').capitalize %>: </strong><%= value %><br>
+                <% if  @changed_attr %>
+                  <% @changed_fields.each do |field, value| %>
+                      <strong><%= field.to_s.gsub(/_/, ' ').capitalize %>: </strong><%= value %><br>
+                  <% end %>
                 <% end %>
               </li>
             <% end %>
+          </ul>
+        <% elsif @version.event == 'destroy' %>
+          <h3 class="h3"><%= @version.item_type.pluralize.gsub(@model.model_name.name, '') %></h3>
+          <ul class="list-group">
+            <% @current.each do |c| %>
+              <li class="list-group-item <%= @overwrite && c.id == @changed_attr['id'] ? 'list-group-item-success' : '' %>">
+                <% c.to_fields.each do |field, value| %>
+                  <strong><%= field.to_s.gsub(/_/, ' ').capitalize %>: </strong><%= value %><br>
+                <% end %>
+              </li>
+            <% end %>
+              <li class="list-group-item list-group-item-success">
+                <% if  @changed_attr %>
+                  <% @changed_fields.each do |field, value| %>
+                      <strong><%= field.to_s.gsub(/_/, ' ').capitalize %>: </strong><%= value %><br>
+                  <% end %>
+                <% end %>
+              </li>
           </ul>
         <% else %>
           <span class="label label-warning">No change detected.</span>
@@ -89,7 +115,15 @@
     </div>
   </div>
 </div>
+<% if @msg.present?  %>
+  <div class="panel panel-danger">
+    <div class="panel-heading">
+      <h3 class="h3"><%= @msg %></h3>
+    </div>
+  </div>
+<% end %>
 <div class="row">
+  <div class="col-sm-12">
   <%= form_for @model do |f| %>
     <% if @model.respond_to? :cumulative_updated_at %>
       <%= hidden_field_tag :cumulative_updated_at, @model.cumulative_updated_at || 0 %>
@@ -100,12 +134,13 @@
         <%= hidden_field_tag field, value[0] %>
       <% end %>
     <% end %>
-    <% if @changed.present? %>
-      <% @changed.attributes.each do |field, value| %>
+    <% if  @changed_attr.present? %>
+      <%  @changed_attr.each do |field, value| %>
         <%= hidden_field_tag (@version.item_type.underscore.pluralize + "_attributes[#{field}]"), value %>        
       <% end %>
     <% end %>
    <%= f.submit 'Restore', class: 'btn btn-warning' %>
     <%= link_to 'Cancel', polymorphic_path([:history, @model]), class: 'btn btn-default' %>
   <% end %>
+  </div>
 </div>

@@ -4,62 +4,36 @@ module Revert
     @model = self.model_class.find(params[:id])
     @version = PaperTrail::Version.find(params[:version_id])
     item_type = @version.item_type
+
+    # SIMPLE FIELD CHANGE
     if item_type == @model.model_name.name
-    # if the change is NOT to an association
       @changeset = @version.changeset
+    
+    # ASSOCIATED FIELD CHANGE (e.g. entry_title)
     else
-    # for changes to associations
-      @current = @model.send(item_type.underscore.pluralize)
-      @changed = @version.reify(dup: true)
-      @overwrite = false
-      @current.each do |c|
-        if c.id == @changed.id
-          @overwrite = false
-          break
-        end
+      @overwrite = params[:overwrite].present? ? params[:overwrite] == 'true' : false   # option to overwrite field if they share an ID
+      @current = @model.send(item_type.underscore.pluralize)  # current list of associations
+      
+      changed = @version.reify(dup: true)                    # the associated record as it WAS (for all but undo-create)
+      if @version.event == 'create'
+        changed = @current.find(@version.item_id)
       end
-      @overwrite = params[:overwrite].present? ? params[:overwrite] == 'true' : @overwrite
-    end
-    if !@overwrite
-      @changed[:id] = nil
-    end
-    render :template => 'shared/revert'
-  end
 
-  def revert_old
-    @model = self.model_class.find(params[:id])
-    @version = PaperTrail::Version.find(params[:version_id])
-    if @version.event == 'destroy'
-      version_changeset = {}
-      version_attributes = @version.reify(dup: true).attributes
-      version_attributes.each do |f, v|
-        if version_attributes[f] && !version_attributes.blank?
-          version_changeset[f] = [v, nil]
-        end
+      @changed_fields = changed.to_fields
+      @changed_attr = changed.attributes
+
+      if @version.event == 'create'
+        @changed_attr[:_destroy] = 1
+        @overwrite = true
       end
-    end
-    @changes = @version.event == 'create' ? {_destroy: 1} : @version.reify(dup: true).attributes
-    @changeset = @version.changeset.blank? ? version_changeset : @version.changeset
-    begin
-      @current = @version.item_type.singularize.classify.constantize.find(@version.item_id)
-    rescue ActiveRecord::RecordNotFound
-      @current = {}
-      @changes[:id] = nil
-      if @version.event == 'update'
-        @msg = "Warning: That field no longer exists - would you like to recreate it?"
-      elsif @version.event == 'create'
-        @msg = "Warning: That field has already been destroyed.  No change is possible."
-      end
-    else
-      if @version.event == 'destroy'
-        @changes[:id] = nil
-      elsif @version.event == 'create'
-        @changes = @current.attributes
-        @changes[:_destroy] = 1
+
+      # to force creating a new associated record, we remove the 'id' field
+      if !@overwrite || !item_type.singularize.classify.constantize.find(@version.item_id).present?
+        @changed_attr.present? ? @changed_attr[:id] = nil : ''
+        @msg = 'The corresponding field has been deleted, would you like to recreate it?' unless @version.event == 'create'
       end
     end
     render :template => 'shared/revert'
   end
-
 
 end
