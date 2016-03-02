@@ -58,6 +58,28 @@ h1 { font-size: 30px; margin-top: 0; }
     border-width: 2px;
 }
 
+/* Entry history page */
+.history-heading {
+  font-size: 24px;
+  font-weight: 900;
+}
+.carousel-control {
+  color: black;
+  background: none;
+  background-image: none;
+  width: 4%;
+  text-shadow: none;
+  color: black;
+  opacity: 0.2;
+}
+.carousel-control:active, .carousel-control:visited, .carousel-control:hover {
+  color: lightblue;
+}
+.carousel-control.right, .carousel-control.left {
+  background: none;
+  background-image: none; 
+}
+
 /**** Style for various data entry forms */
 
 .suggestions {

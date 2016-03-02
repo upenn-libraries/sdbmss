@@ -17,6 +17,7 @@
 //= require jquery_ujs
 //= require jquery-ui
 //= require URI.min
+//= require bootstrap.min
 //
 // Required by Blacklight
 //= require blacklight/blacklight

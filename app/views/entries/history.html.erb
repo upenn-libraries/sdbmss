@@ -1,60 +1,87 @@
 <h1>History of changes to <%= @entry.public_id %></h1>
 
-<% changesets = ModelHistory.new(@entry).changesets %>
-<% legacy = EntryChange.where(entry_id: @entry.id).order(change_date: :desc) %>
-<% if changesets.count > 0 || legacy.count > 0 %>
-<table class="table">
-    <thead>
-        <tr>
-            <th width="15%">Date</th>
-            <th width="15%">User</th>
-            <th width="20%">Action</th>
-            <th width="25%">Details</th>
-            <th width="15%"></th>
-            <th width="10%"></th>
-        </tr>
-    </thead>
-    <tbody>
-        <% changesets.each do |changeset| %>
-        <tr>
-            <td><%= changeset.date.to_formatted_s(:date_and_time) %></td>
-            <td><%= changeset.user %></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <% changeset.versions.each do |version| %>
-            <% formatter = EntryVersionFormatter.new(version) %>
-                <% if formatter.details.count > 0 %>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td><%= formatter.action %></td>
-                        <td colspan="2">
-                            <% formatter.details.each do |detail| %>
-                                <%= detail %></br>
-                            <% end %>
-                        </td>
-                        <td>
-                            <%= link_to "Undo", revert_entry_path(@entry, version_id: version.id), class: 'btn btn-default btn-block' %>
-                        </td>
-                    </tr>
-            <% end %>
-            <% end %>
-        <% end %>
+<ul class="list-group">
+            <li class="list-group-item">
+                <div class="row history-heading">
+                    <div class="col-sm-2 text-right">Date</div>
+                    <div class="col-sm-1">User</div>
+                    <div class="col-sm-1">Action</div>
+                    <div class="col-sm-4">Changes</div>
+                    <div class="col-sm-2">Current</div>
+                    <div class="col-sm-2">
+                        <a href="" class="btn btn-warning btn">Undo</a>
+                    </div>
+                </div>
+            </li>
+    <% @unique_list.each_with_index do |ul, index| %>
+            <% if ul.count > 0 %>
+            <li id="myCarousel<%= index %>" class="list-group-item carousel slide" data-interval='false' data-wrap='false'>
 
-        <% legacy.each do |entry_change| %>
-        <tr>
-            <td><%= entry_change.change_date.to_formatted_s(:date_and_time) %></td>
-            <td><%= entry_change.changed_by.username %></td>
-            <td><%= entry_change.change_type %> <%= entry_change.column %></td>
-            <td><%= entry_change.changed_from %></td>
-            <td><%= entry_change.changed_to %></td>
-        </tr>
-        <% end %>
-    </tbody>
-</table>
-<% else %>
-<p>There is no history to display for this entry.</p>
-<% end %>
+                  <!-- Wrapper for slides -->
+                  <div class="carousel-inner" role="listbox">
+                    <% ul.reverse.each do |version| %>
+                        <% formatter = EntryVersionFormatter.new(version) %>
+                        <% if formatter.details.count > 0 %>
+                            <div class="item <%= version == ul.first ? 'active' : '' %>">
+                                <div class='row'>
+                                    <div class="col-sm-2 text-right"><%= version.created_at.to_formatted_s(:short) %></div>
+                                    <div class="col-sm-1"><%= User.find(version.whodunnit) %></div>
+                                    <div class='col-sm-1'><%= formatter.action %></div>
+                                    <div class='col-sm-4'>
+                                        <% formatter.details.each do |detail| %>
+                                            <%= detail %></br>
+                                        <% end %>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        Current
+                                    </div>
+                                    <div class='col-sm-2'>
+                                        <%= link_to "Undo", revert_entry_path(@entry, version_id: version.id), class: 'btn btn-default' %>
+                                    </div>
+                                </div>
+                            </div>
+                        <% end %>
+                    <% end %>
+                  </div>
+
+                  <!-- Left and right controls -->
+                  <a class="left carousel-control" href="#myCarousel<%= index %>" role="button" data-slide="prev">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">Previous</span>
+                  </a>
+                  <a class="right carousel-control" href="#myCarousel<%= index %>" role="button" data-slide="next">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">Next</span>
+                  </a>
+            </li>
+            <% end %>
+    <% end %>
+</ul>
+<script type='text/javascript'>
+
+$(document).ready( function () {
+    $('.carousel').each( function () {
+        var $this = $(this);
+
+      $this.children('.carousel-control').show();
+
+      if($this.find('.carousel-inner .item:first').hasClass('active')) {
+        $this.children('.left.carousel-control').hide();
+      } if($this.find('.carousel-inner .item:last').hasClass('active')) {
+        $this.children('.right.carousel-control').hide();
+      }
+    });
+    $('.carousel').on('slid.bs.carousel', function() {
+      var $this = $(this);
+
+      $this.children('.carousel-control').show();
+
+      if($this.find('.carousel-inner .item:first').hasClass('active')) {
+        $this.children('.left.carousel-control').hide();
+      } if($this.find('.carousel-inner .item:last').hasClass('active')) {
+        $this.children('.right.carousel-control').hide();
+      }
+    });
+});
+
+</script>

@@ -264,6 +264,28 @@ class EntriesController < ManageModelsController
     end
   end
 
+  def history
+    changesets = ModelHistory.new(@entry).changesets
+    unique_hash = {}
+    @unique_list = []
+    changesets.each do |change|
+      change.versions.each do |version|
+        f = EntryVersionFormatter.new(version)
+        if f.details.count <= 0
+        elsif !unique_hash[version.item_id].present?
+          unique_hash[version.item_id] = [version]
+        else
+          unique_hash[version.item_id].append(version)
+        end
+      end
+    end
+    unique_hash.each do |id, versions|
+      versions.sort! { |a, b| b.created_at <=> a.created_at }
+      @unique_list.append(versions)
+    end
+    @unique_list.sort! { |a, b| b.first.created_at <=> a.first.created_at }
+  end
+
   def deprecate
     success = false
     errors = []
