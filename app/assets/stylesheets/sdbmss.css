@@ -63,6 +63,10 @@ h1 { font-size: 30px; margin-top: 0; }
   font-size: 24px;
   font-weight: 900;
 }
+.history-label {
+  padding: 6px;
+  font-size: 12px;
+}
 .carousel-control {
   color: black;
   background: none;
@@ -72,12 +76,13 @@ h1 { font-size: 30px; margin-top: 0; }
   color: black;
   opacity: 0.2;
 }
-.carousel-control:active, .carousel-control:visited, .carousel-control:hover {
+.carousel-control:active, .carousel-control:focus, .carousel-control:hover {
   color: lightblue;
 }
 .carousel-control.right, .carousel-control.left {
   background: none;
   background-image: none; 
+  filter: progid:none !important; 
 }
 
 /**** Style for various data entry forms */

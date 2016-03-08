@@ -267,7 +267,7 @@ class EntriesController < ManageModelsController
   def history
     changesets = ModelHistory.new(@entry).changesets
     unique_hash = {}
-    @unique_list = []
+    @unique_list = {}
     changesets.each do |change|
       change.versions.each do |version|
         f = EntryVersionFormatter.new(version)
@@ -280,10 +280,14 @@ class EntriesController < ManageModelsController
       end
     end
     unique_hash.each do |id, versions|
+      type = versions[0].item_type
       versions.sort! { |a, b| b.created_at <=> a.created_at }
-      @unique_list.append(versions)
+      if not @unique_list.has_key? type
+        @unique_list[type] = []
+      end
+      @unique_list[type].append(versions)
     end
-    @unique_list.sort! { |a, b| b.first.created_at <=> a.first.created_at }
+#    @unique_list.sort! { |a, b| b.first.created_at <=> a.first.created_at }
   end
 
   def deprecate

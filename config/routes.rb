@@ -41,7 +41,8 @@ Rails.application.routes.draw do
       get 'types'
     }
     member {
-      get 'revert'
+      patch '/revert_confirm/', to: 'entries#revert_confirm'
+      patch '/revert/', to: 'entries#revert'
       post 'deprecate'
       get 'history'
       get 'similar'

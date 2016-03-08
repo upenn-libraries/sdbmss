@@ -1,0 +1,46 @@
+<% if sublist %>
+<% sublist.each_with_index do |ul, index| %>
+    <% if ul.count > 0 %>
+    <div id="myCarousel<%= ul[0].item_type %><%= index %>" class="list-group-item carousel slide input-block" data-interval='false' data-wrap='false'>
+        <div class="row">
+          <!-- Wrapper for slides -->
+            <div class="col-sm-12">
+              <div class="carousel-inner" role="listbox">
+                <% ul.reverse.each do |version| %>
+                    <% formatter = EntryVersionFormatter.new(version) %>
+                    <% if formatter.details.count > 0 %>
+                        <div class="item <%= version == ul.first ? 'active' : '' %>">
+                            <% muted = (version.event == 'create' && !version.item) || (version.event == 'destroy' && version.item) %> 
+                            <div class='row <%= muted ? "text-muted" : "" %>'>
+                                <div class="col-sm-2 text-right"><%= version.created_at.to_formatted_s(:short) %></div>
+                                <div class="col-sm-1"><%= User.find(version.whodunnit) %></div>
+                                <div class='col-sm-2'><span class="label history-label <%= version.event == 'destroy' ? 'label-danger' : ( version.event == 'create' ? 'label-success' : 'label-info') %>"><%= formatter.action %></span></div>
+                                <div class='col-sm-6'>
+                                    <% formatter.details.each do |detail| %>
+                                        <%= detail %></br>
+                                    <% end %>
+                                </div>
+                                <div class='col-sm-1 text-center'>
+                                    <%= check_box_tag "version_id[]", version.id, false, disabled: muted %><!-- set disabled here, if need be --><!-- also needs JS for 'radio button' functionality -->
+                                </div>
+                            </div>
+                        </div>
+                    <% end %>
+                <% end %>
+              </div>                  
+            </div>
+        </div>
+
+          <!-- Left and right controls -->
+          <a class="left carousel-control" href="#myCarousel<%= ul[0].item_type %><%= index %>" role="button" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#myCarousel<%= ul[0].item_type %><%= index %>" role="button" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+    </div>
+    <% end %>
+<% end %>
+<% end %>

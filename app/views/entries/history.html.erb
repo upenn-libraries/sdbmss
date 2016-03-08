@@ -1,62 +1,78 @@
 <h1>History of changes to <%= @entry.public_id %></h1>
 
+<%= form_for @entry, url: {action: "revert_confirm"} do |f| %>
 <ul class="list-group">
-            <li class="list-group-item">
-                <div class="row history-heading">
-                    <div class="col-sm-2 text-right">Date</div>
-                    <div class="col-sm-1">User</div>
-                    <div class="col-sm-1">Action</div>
-                    <div class="col-sm-4">Changes</div>
-                    <div class="col-sm-2">Current</div>
-                    <div class="col-sm-2">
-                        <a href="" class="btn btn-warning btn">Undo</a>
-                    </div>
+    <li class="list-group-item">
+        <div class="row history-heading">
+            <div class="col-sm-10">
+                <div class="row">
+                <div class="col-sm-2 text-right">Date</div>
+                <div class="col-sm-1">User</div>
+                <div class="col-sm-2">Action</div>
+                <div class="col-sm-6">Changes</div>
+                <div class="col-sm-1 text-center">
+                    <%= f.submit 'Undo', class: 'btn btn-warning' %>   
+        <!--                        <a href="" class="btn btn-warning btn">Undo</a> -->
                 </div>
-            </li>
-    <% @unique_list.each_with_index do |ul, index| %>
-            <% if ul.count > 0 %>
-            <li id="myCarousel<%= index %>" class="list-group-item carousel slide" data-interval='false' data-wrap='false'>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </li>
+    <div class="row"><label class="col-sm-12"><h3><span>Entry Field(s)</span></h3></label></div>
+    <div class="row">
+        <div class="col-sm-10"><%= render partial: "sub_history", locals: {sublist: @unique_list['Entry']} %></div>
+        <div class="col-sm-2">Current</div>
+    </div>
 
-                  <!-- Wrapper for slides -->
-                  <div class="carousel-inner" role="listbox">
-                    <% ul.reverse.each do |version| %>
-                        <% formatter = EntryVersionFormatter.new(version) %>
-                        <% if formatter.details.count > 0 %>
-                            <div class="item <%= version == ul.first ? 'active' : '' %>">
-                                <div class='row'>
-                                    <div class="col-sm-2 text-right"><%= version.created_at.to_formatted_s(:short) %></div>
-                                    <div class="col-sm-1"><%= User.find(version.whodunnit) %></div>
-                                    <div class='col-sm-1'><%= formatter.action %></div>
-                                    <div class='col-sm-4'>
-                                        <% formatter.details.each do |detail| %>
-                                            <%= detail %></br>
-                                        <% end %>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        Current
-                                    </div>
-                                    <div class='col-sm-2'>
-                                        <%= link_to "Undo", revert_entry_path(@entry, version_id: version.id), class: 'btn btn-default' %>
-                                    </div>
-                                </div>
-                            </div>
-                        <% end %>
-                    <% end %>
-                  </div>
+    <div class="row"><label class="col-sm-12"><h3><span>Title(s)</span></h3></label></div>
+    <div class="row">
+        <div class="col-sm-10"><%= render partial: "sub_history", locals: {sublist: @unique_list['EntryTitle']} %></div>
+        <div class="col-sm-2">Current</div>
+    </div>
 
-                  <!-- Left and right controls -->
-                  <a class="left carousel-control" href="#myCarousel<%= index %>" role="button" data-slide="prev">
-                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
-                  </a>
-                  <a class="right carousel-control" href="#myCarousel<%= index %>" role="button" data-slide="next">
-                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
-                  </a>
-            </li>
-            <% end %>
-    <% end %>
+
+    <div class="row"><label class="col-sm-12"><h3><span>Author(s)</span></h3></label></div>
+    <div class="row">
+        <div class="col-sm-10"><%= render partial: "sub_history", locals: {sublist: @unique_list['EntryAuthor']} %></div>
+        <div class="col-sm-2">Current</div>
+    </div>
+
+    <li class="list-group-item">
+        <h3 class="h3">Date(s)</h3>
+    </li>
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryDate']} %>
+    <li class="list-group-item">
+        <h3 class="h3">Artist(s)</h3>
+    </li>
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryArtist']} %>
+    <li class="list-group-item">
+        <h3 class="h3">Scribe(s)</h3>
+    </li>
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryScribe']} %>
+    <li class="list-group-item">
+        <h3 class="h3">Language(s)</h3>
+    </li>   
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryLanguage']} %>
+    <li class="list-group-item">
+        <h3 class="h3">Material(s)</h3>
+    </li>   
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryMaterial']} %>
+    <li class="list-group-item">
+        <h3 class="h3">Place(s)</h3>
+    </li>   
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryPlace']} %>
+    <li class="list-group-item">
+        <h3 class="h3">Use(s)</h3>
+    </li>   
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryUse']} %>
+    <li class="list-group-item">
+        <h3 class="h3">Provenance Agent(s)</h3>
+    </li>   
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['Provenance']} %>
+
 </ul>
+<% end %>
 <script type='text/javascript'>
 
 $(document).ready( function () {
@@ -81,6 +97,13 @@ $(document).ready( function () {
       } if($this.find('.carousel-inner .item:last').hasClass('active')) {
         $this.children('.right.carousel-control').hide();
       }
+    });
+    // clear all checkboxes on load
+    $("input[type='checkbox']").attr("checked", false);
+    // only allow a single checkbox to be selected at a time!
+    $("input[type='checkbox']").on("click" , function(){
+        console.log($(this).parent('.carousel-inner'), $(this).parent('.carousel-inner').find("input[type='checkbox']"));
+        $(this).closest('.carousel-inner').find("input[type='checkbox']").not(this).attr("checked", false);
     });
 });
 
