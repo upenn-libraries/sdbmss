@@ -40,6 +40,7 @@ class EntryVersionFormatter
   ]
 
   def initialize(version)
+    @skip = EntryTitle.last.paper_trail_options[:ignore]
     @version = version
     @details = nil
   end
@@ -66,6 +67,10 @@ class EntryVersionFormatter
     change_type + ' ' + target
   end
 
+  def get_object_not_id(key)
+    return key.gsub("_id", "")
+  end
+
   # returns an array of strings
   def details
     # cache 'details' b/c this method gets called several times
@@ -76,29 +81,59 @@ class EntryVersionFormatter
 
       details = []
       if version.event == 'update'
-        version.changeset.each do |field, values|
+        puts "Ok, what: #{skip(version.changeset)}, #{version.changeset}"
+        skip(version.changeset).each do |field, values|
           if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}")
+            if field.include? '_id'
+              f = EntryVersionFormatter.toClass(field)
+              values[0] = f.find(values[0])
+              values[1] = f.find(values[1])
+            end
             details << "#{field.titlecase}: from #{values[0].present? ? values[0] : "(blank)"} to #{values[1]}"
           end
         end
       elsif version.event == 'create'
-        version.changeset.each do |field, values|
+        skip(version.changeset).each do |field, values|
           value = values[1]
           if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
+            if field.include?('_id')
+              f = EntryVersionFormatter.toClass(field)
+              value = f.find(value)
+            end
             details << "#{field.titlecase}: #{value}"
           end
         end
       elsif version.event == 'destroy'
         obj = version.reify
-        obj.attributes.each do |field, value|
+        skip(obj.attributes).each do |field, value|
           if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
+            if field.include? '_id'
+              f = EntryVersionFormatter.toClass(field)
+              value = f.find(value)
+            end
             details << "#{field.titlecase}: #{value}"
           end
         end
       end
       @details = details
     end
+    puts "DETAILS: #{@details}"
     @details
+  end
+
+  def skip (h)
+    h.select { |key, val| !@skip.include?(key) }
+  end
+
+  def self.toClass (field)
+    if ['author_id', 'artist_id', 'scribe_id', 'source_agent_id', 'sale_agent_id', 'provenance_agent_id'].include? field
+      return Name
+    elsif ['created_by_id', 'updated_by_id'].include? field
+      return User
+    else
+      puts "WHAT #{field}"
+      return field.gsub('_id', '').capitalize.classify.constantize
+    end
   end
 
 end

@@ -15,10 +15,6 @@ class NamesController < SearchableAuthorityController
     Name
   end
 
-  def history
-    @name = Name.find(params[:id])
-  end
-
   def search_result_format(obj)
     {
       id: obj.id,

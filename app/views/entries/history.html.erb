@@ -1,77 +1,58 @@
-<h1>History of changes to <%= @entry.public_id %></h1>
+<% if @error %>
+    <div class="panel panel-danger">
+        <div class="panel-heading"><%= @error %></div>
+    </div>
+<% end %>
 
 <%= form_for @entry, url: {action: "revert_confirm"} do |f| %>
-<ul class="list-group">
-    <li class="list-group-item">
-        <div class="row history-heading">
-            <div class="col-sm-10">
-                <div class="row">
-                <div class="col-sm-2 text-right">Date</div>
-                <div class="col-sm-1">User</div>
-                <div class="col-sm-2">Action</div>
-                <div class="col-sm-6">Changes</div>
-                <div class="col-sm-1 text-center">
-                    <%= f.submit 'Undo', class: 'btn btn-warning' %>   
+
+    <div class="row history-heading">
+        <div class="col-sm-12">
+            <div class="row item">
+                <div class="col-sm-11">
+                    <h1>History of changes to <%= @entry.public_id %></h1>
+                </div>
+                <div class="col-sm-1 text-left">
+                    <%= f.submit 'Undo', class: 'btn btn-warning btn-lg' %>   
         <!--                        <a href="" class="btn btn-warning btn">Undo</a> -->
                 </div>
-                </div>
             </div>
-            <div class="col-sm-2"></div>
         </div>
-    </li>
-    <div class="row"><label class="col-sm-12"><h3><span>Entry Field(s)</span></h3></label></div>
-    <div class="row">
-        <div class="col-sm-10"><%= render partial: "sub_history", locals: {sublist: @unique_list['Entry']} %></div>
-        <div class="col-sm-2">Current</div>
     </div>
+
+    <div class="row"><label class="col-sm-12"><h3><span>Entry Field(s)</span></h3></label></div>
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['Entry']} %>
 
     <div class="row"><label class="col-sm-12"><h3><span>Title(s)</span></h3></label></div>
-    <div class="row">
-        <div class="col-sm-10"><%= render partial: "sub_history", locals: {sublist: @unique_list['EntryTitle']} %></div>
-        <div class="col-sm-2">Current</div>
-    </div>
-
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryTitle']} %>
 
     <div class="row"><label class="col-sm-12"><h3><span>Author(s)</span></h3></label></div>
-    <div class="row">
-        <div class="col-sm-10"><%= render partial: "sub_history", locals: {sublist: @unique_list['EntryAuthor']} %></div>
-        <div class="col-sm-2">Current</div>
-    </div>
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryAuthor']} %>
 
-    <li class="list-group-item">
-        <h3 class="h3">Date(s)</h3>
-    </li>
+    <div class="row"><label class="col-sm-12"><h3><span>Date(s)</span></h3></label></div>
     <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryDate']} %>
-    <li class="list-group-item">
-        <h3 class="h3">Artist(s)</h3>
-    </li>
+
+    <div class="row"><label class="col-sm-12"><h3><span>Artist(s)</span></h3></label></div>
     <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryArtist']} %>
-    <li class="list-group-item">
-        <h3 class="h3">Scribe(s)</h3>
-    </li>
+
+    <div class="row"><label class="col-sm-12"><h3><span>Scribe(s)</span></h3></label></div>
     <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryScribe']} %>
-    <li class="list-group-item">
-        <h3 class="h3">Language(s)</h3>
-    </li>   
+
+    <div class="row"><label class="col-sm-12"><h3><span>Language(s)</span></h3></label></div>   
     <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryLanguage']} %>
-    <li class="list-group-item">
-        <h3 class="h3">Material(s)</h3>
-    </li>   
+    
+    <div class="row"><label class="col-sm-12"><h3><span>Material(s)</span></h3></label></div>   
     <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryMaterial']} %>
-    <li class="list-group-item">
-        <h3 class="h3">Place(s)</h3>
-    </li>   
+    
+    <div class="row"><label class="col-sm-12"><h3><span>Place(s)</span></h3></label></div>   
     <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryPlace']} %>
-    <li class="list-group-item">
-        <h3 class="h3">Use(s)</h3>
-    </li>   
+    
+    <div class="row"><label class="col-sm-12"><h3><span>Use(s)</span></h3></label></div>   
     <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryUse']} %>
-    <li class="list-group-item">
-        <h3 class="h3">Provenance Agent(s)</h3>
-    </li>   
+    
+    <div class="row"><label class="col-sm-12"><h3><span>Provenance(s)</span></h3></label></div>   
     <%= render partial: "sub_history", locals: {sublist: @unique_list['Provenance']} %>
 
-</ul>
 <% end %>
 <script type='text/javascript'>
 

@@ -1,7 +1,7 @@
 module Revert
 
   def revert
-    @model = self.model_class.find(params[:id])
+    @model = model_class.find(params[:id])
 
     if params[:version_id].kind_of? Array
       @versions = []
@@ -16,6 +16,7 @@ module Revert
       @versions.each do |version|
         if version.reify
           v = version.reify
+          puts "Version(reified): #{v.as_json}"
           v.save!
         else
           v = version.item
@@ -24,7 +25,7 @@ module Revert
         if v.model_name.name != @model.model_name.name
           e = v.send @model.model_name.name.underscore
           if not touched.include? e
-            e.touch
+            e.touch_with_version
             touched.append(e)
           end
         end
@@ -39,56 +40,85 @@ module Revert
   end
 
   def revert_confirm
-    @model = self.model_class.find(params[:id])
+    @model = model_class.find(params[:id])
 
     if params[:version_id].kind_of? Array
       @versions = []
       params[:version_id].each { |vid| @versions.append(PaperTrail::Version.find(vid)) }
+    elsif not params.include? :version_id
+      @versions = []
+      @error = "No changes selected."
     else
       @versions = [PaperTrail::Version.find(params[:version_id])]
     end
 
     @changes = []
-    @currents = []
 
     @versions.each do |version|
       version_class = version.item_type.singularize.classify.constantize
       if version.event == 'destroy'   #undelete
-        if version_class.exists? version.item_id
+        if version.item
           @error = "You cannot un-delete this field, it already exists!"
         else
-          current = "Deleted"
           v = version.reify(dup: true)
-          @currents.append({})
-          diff = {}
-          v.attributes.each { |f, val| diff[f] = ['(blank)', val ] if val }
-          @changes.append({diff: diff, attr: v.attributes, model_name: v.model_name.name})
-          # need to recreate a record with the same id... 
+          change = reversion_format({}, v.attributes)
+          change[:model_name] = v.model_name.name
         end
       elsif version.event == 'create' #uncreate
-        if !version_class.exists? version.item_id
+        if !version.item
           @error = "You cannot un-create this field, it does not exist!"
         else
-
+          current = version.item
+          change = reversion_format(current.attributes, {})
+          change[:model_name] = current.model_name.name
         end
       elsif version.event == 'update' #update
-        # whether it exists or doesn't exist, restore/overwrite it!
-        if !version_class.exists? version.item_id
-          # need to recreate w/ same id (again)
-        else
-          current = version_class.find(version.item_id)
+        if !version.item
           v = version.reify(dup: true)
-          diff = {}
-          a = current.attributes
-          b = v.attributes
-          a.each { |f, v| diff[f] = [v, b[f]] if b[f] && b[f] != v }
-
-          @currents.append(diff)
-          @changes.append({diff: diff, attr: b, model_name: v.model_name.name})
+          change = reversion_format({}, v.attributes )
+          change[:model_name] = v.model_name.name
+        else
+          current = version.item
+          v = version.reify(dup: true)
+          change = reversion_format(current.attributes, v.attributes)
+          change[:model_name] = v.model_name.name
         end
       end
+       @changes.append(change)
     end
     render :template => 'shared/revert'
+  end
+
+  def reversion_format (current, previous)
+    
+    # select only the fields that are changed between the two versions
+    current2 = current.select { |field, value| value != nil && previous[field] != value }
+    previous2 = previous.select { |field, value| value != nil && current[field] != value }
+    
+    # ignore fields that are skipped by paper-trail (or that shouldn't be shown)
+    fields = ((current2.keys | previous2.keys) - @model.paper_trail_options[:ignore]) - ['id', 'entry_id', 'created_at']
+    
+    #substitute the name for the id for associated fields    
+    current2.each do |k, v|
+      if k.include?("_id")
+        current2[k] = "#{EntryVersionFormatter.toClass(k).find(v)}"
+      end
+    end
+
+    previous2.each do |k, v|
+      if k.include?("_id")
+        previous2[k] = "#{EntryVersionFormatter.toClass(k).find(v)}"
+      end
+    end
+
+    change = {fields: fields, current: current2, previous: previous2}
+    return change
+  end
+
+  def history
+    @model = model_class.find(params[:id])
+    @versions = @model.versions
+    render :template => 'shared/history'
   end
 
 end
