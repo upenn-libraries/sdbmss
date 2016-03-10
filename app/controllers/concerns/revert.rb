@@ -14,10 +14,12 @@ module Revert
     ActiveRecord::Base.transaction do
 
       @versions.each do |version|
-        if version.reify
-          v = version.reify
-          puts "Version(reified): #{v.as_json}"
-          v.save!
+        v = version.reify
+        if v
+          if version.event == 'destroy'
+            v.created_at = Time.now
+          end
+          v.save
         else
           v = version.item
           v.destroy
@@ -56,6 +58,10 @@ module Revert
 
     @versions.each do |version|
       version_class = version.item_type.singularize.classify.constantize
+      if version_class == @model.class && version.event == 'create'
+        @error = "WARNING: If you undo creation of this record, it will be deleted and the change history will no longer be accessible."
+      end
+      
       if version.event == 'destroy'   #undelete
         if version.item
           @error = "You cannot un-delete this field, it already exists!"
@@ -85,6 +91,11 @@ module Revert
         end
       end
        @changes.append(change)
+    end
+    total_changes = []
+    @changes.each { |c| total_changes += c[:fields] }
+    if total_changes.count <= 0
+      @error = "This reversion will not result in any change in information."
     end
     render :template => 'shared/revert'
   end

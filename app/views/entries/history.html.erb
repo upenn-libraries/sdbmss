@@ -8,20 +8,32 @@
 
     <div class="row history-heading">
         <div class="col-sm-12">
-            <div class="row item">
-                <div class="col-sm-11">
-                    <h1>History of changes to <%= @entry.public_id %></h1>
+            <div class="row">
+                <div class="col-sm-10">
+                    <div class="well">
+                        <h1>History of changes to <%= @entry.public_id %></h1>
+                    </div>
                 </div>
-                <div class="col-sm-1 text-left">
-                    <%= f.submit 'Undo', class: 'btn btn-warning btn-lg' %>   
-        <!--                        <a href="" class="btn btn-warning btn">Undo</a> -->
+                <div class="col-sm-2 text-center">
+                    <div class="well"><%= f.submit 'Undo', class: 'btn btn-warning btn-lg' %></div>
                 </div>
+            
             </div>
         </div>
     </div>
 
     <div class="row"><label class="col-sm-12"><h3><span>Entry Field(s)</span></h3></label></div>
     <%= render partial: "sub_history", locals: {sublist: @unique_list['Entry']} %>
+
+    <% if @unique_list.include? 'Sale' %>
+        <div class="row"><label class="col-sm-12"><h3><span>Sale Field(s)</span></h3></label></div>
+        <%= render partial: "sub_history", locals: {sublist: @unique_list['Sale']} %>
+    <% end %>
+
+    <% if @unique_list.include? 'SaleAgent' %>
+        <div class="row"><label class="col-sm-12"><h3><span>Sale (Transaction) Agent(s)</span></h3></label></div>
+        <%= render partial: "sub_history", locals: {sublist: @unique_list['SaleAgent']} %>
+    <% end %>
 
     <div class="row"><label class="col-sm-12"><h3><span>Title(s)</span></h3></label></div>
     <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryTitle']} %>

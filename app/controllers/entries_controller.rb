@@ -271,6 +271,7 @@ class EntriesController < ManageModelsController
     end
     unique_hash = {}
     @unique_list = {}
+    # sort by item
     changesets.each do |change|
       change.versions.each do |version|
         f = EntryVersionFormatter.new(version)
@@ -282,6 +283,7 @@ class EntriesController < ManageModelsController
         end
       end
     end
+    # sort into 'types'
     unique_hash.each do |id, versions|
       type = versions[0].item_type
       versions.sort! { |a, b| b.created_at <=> a.created_at }

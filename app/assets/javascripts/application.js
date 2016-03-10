@@ -12,7 +12,6 @@
 //
 //= require poltergeist_fix
 //= require jquery
-//= require 'blacklight_advanced_search'
 
 //= require jquery_ujs
 //= require jquery-ui
@@ -20,7 +19,8 @@
 //= require bootstrap.min
 //
 // Required by Blacklight
-//= require blacklight/blacklight
+//= require blacklight
+//= require 'blacklight_advanced_search'
 
 //= require sdbm
 
