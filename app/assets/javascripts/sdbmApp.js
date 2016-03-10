@@ -465,9 +465,14 @@ var EntryScope;
         $scope.currentlySaving = false;
 
         $scope.$on('changeSource', function (e, src) {
-          $scope.setSource(src);
+          if (src.source_type != $scope.entry.source_bk.source_type.display_name) {
+            alert('The new source must be of the same type as the old source.');
+          }
+          else {
+            $scope.setSource(src);
+          }
         });
-
+        
         $scope.$on('cancelSource', function (e) {
           $scope.entry.source = $scope.entry.source_bk;
           $scope.selecting_source = false;
