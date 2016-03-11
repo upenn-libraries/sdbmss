@@ -763,7 +763,7 @@ label.col-sm-2-and-half {
     <!-- beginning of providence section -->
 
   <div class='form-group row'>
-    <label class='col-sm-3'>
+    <label class='col-sm-2'>
       <h3>Agent(s)</h3>
       <div class="add-link-container">
         <a id="add_provenance" class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add">
@@ -772,7 +772,7 @@ label.col-sm-2-and-half {
       </div>
     </label>
     
-    <div ui-sortable="sortableOptions" ng-model="entry.provenance" class='pull-right col-sm-9'>
+    <div ui-sortable="sortableOptions" ng-model="entry.provenance" class='pull-right col-sm-10'>
       <div class="form-group input-block" data-ng-repeat="prov in entry.provenance | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.provenance, prov)" title="Remove">
@@ -780,79 +780,86 @@ label.col-sm-2-and-half {
           </a>
         </div>
         <div class="col-sm-6">
-          <div class="row">
-            <label class="col-sm-5 control-label">
-              <span sdbm-tooltip="entry_provenance_agent_as_recorded">As Recorded</span>
-            </label>
-            <div class="col-sm-7">
-              <input id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name">
-            </div>
-          </div>
-          <div class="row">
-            <label class="col-sm-5 control-label"><span sdbm-tooltip="entry_provenance_agent">Find in Name Authority</span></label>
-            <div class="col-sm-7">
-              <div class="input-group">
-                  <input id="provenance_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.provenance_agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-                  <div id="provenance_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov"><span class="glyphicon"></span></div>
+          <div class="panel panel-info panel-provenance">
+            <div class="panel-heading"><label for="" class="control-label">Provenance Agent Information</label></div>
+            <div class="panel-body">
+              <div class="row">
+                <label class="col-sm-5 control-label">
+                  <span sdbm-tooltip="entry_provenance_agent_as_recorded">As Recorded</span>
+                </label>
+                <div class="col-sm-7">
+                  <input id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name">
+                </div>
               </div>
-            </div>
-          </div>
-           <div class="row">
-            <label class="col-sm-5 control-label">
-                <span sdbm-tooltip="entry_provenance_acquisition_method">Acquisition Method</span>
-            </label>
-            <div class="col-sm-7">
-                <select class="form-control" id="provenance_acquisition_method_{{ $index }}" ng-model="prov.acquisition_method" ng-options="option[0] as option[1] for option in optionsAcquisitionMethod">
-                    <option value=""></option>
-                </select>
-            </div>
-          </div>
-          <div class="row">
-            <label class="col-sm-9 control-label">
-                <span sdbm-tooltip="entry_provenance_direct_transfer">Directly Transfered to Next?</span>
-            </label>
-            <div class="col-sm-3 label-alignment">
-                <input id="provenance_direct_transfer_{{ $index }}" type="checkbox" ng-model="prov.direct_transfer"/>
+              <div class="row">
+                <label class="col-sm-5 control-label"><span sdbm-tooltip="entry_provenance_agent">Find in Name Authority</span></label>
+                <div class="col-sm-7">
+                  <div class="input-group">
+                      <input id="provenance_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.provenance_agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                      <div id="provenance_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov"><span class="glyphicon"></span></div>
+                  </div>
+                </div>
+              </div>
+               <div class="row">
+                <label class="col-sm-5 control-label">
+                    <span sdbm-tooltip="entry_provenance_acquisition_method">Acquisition Method</span>
+                </label>
+                <div class="col-sm-7">
+                    <select class="form-control" id="provenance_acquisition_method_{{ $index }}" ng-model="prov.acquisition_method" ng-options="option[0] as option[1] for option in optionsAcquisitionMethod">
+                        <option value=""></option>
+                    </select>
+                </div>
+              </div>
+              <div class="row">
+                <label class="col-sm-9 control-label">
+                    <span sdbm-tooltip="entry_provenance_direct_transfer">Directly Transfered to Next?</span>
+                </label>
+                <div class="col-sm-3 label-alignment">
+                    <input id="provenance_direct_transfer_{{ $index }}" type="checkbox" ng-model="prov.direct_transfer"/>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         <div class="col-sm-6">
-          <div class="row">
-            <div class="col-sm-5">
-              <span class="h3">Date(s)</span>
-  <!-- FIX ME: continue migrating Provenance input info to new place -->
+          <div class="panel panel-info panel-provenance">
+            <div class="panel-heading">
+              <label for="" class="control-label">Date(s)</label>
+              <a href="" class="btn btn-xs btn-info pull-right" ng-click="addProvenanceDate(prov);"><span class="glyphicon glyphicon-plus"></span> Add date... </a>
             </div>
-            <div class="col-sm-7 text-right">
-              <a href="" class="btn btn-xs btn-info" ng-click="addProvenanceDate(prov);"><span class="glyphicon glyphicon-plus"></span> Add date... </a>
+            <div class="panel-body">
+              <div class="row" ng-repeat="dt in prov.dates">
+                <div class="col-sm-1 control-label">
+                  <a href="" class="btn btn-warning btn-xs glyphicon glyphicon-remove" ng-click="removeProvenanceDate(prov, dt);"></a>
+                </div>
+                <label for="" class="col-sm-3 control-label">
+                  <span>Observed As</span>
+                </label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" ng-model="dt.date" ng-change="updateProvenanceDateRange(prov, dt)">
+                </div>
+                <div class="col-sm-4">
+                  <select name="" id="" class="form-control" ng-model="dt.type" ng-change="updateProvenanceDateRange(prov, dt)" ng-options="opt for opt in getProvenanceDateOptions(prov, dt)" ng-init="dt.type = getProvenanceDateOptions(prov, dt)[0]">
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="panel-footer">
+              <div class="form-group row">
+                <label class="col-xs-3 control-label">
+                    <span sdbm-tooltip="entry_provenance_start_date_as_recorded">Date Range</span>
+                </label>
+                <div class="col-xs-4">
+                  <input id="provenance_start_date{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start">
+                </div>
+                <div class="col-xs-1 text-center"><strong class="h1">⇢</strong></div>
+                <div class="col-xs-4">
+                  <input id="provenance_end_date{{ $index }}" type="text" class="form-control" ng-model="prov.end_date_normalized_end">
+                </div>
+              </div>
             </div>
           </div>
-          <div class="row" ng-repeat="dt in prov.dates">
-            <div class="col-sm-4">
-              <label for="" class="control-label">
-                <a href="" class="btn btn-warning btn-xs glyphicon glyphicon-remove" ng-click="removeProvenanceDate(prov, dt);"></a>   Observed
-              </label>
-            </div>
-            <div class="col-sm-4">
-              <input type="text" class="form-control" ng-model="dt.date" ng-change="updateProvenanceDateRange(prov, dt)">
-            </div>
-            <div class="col-sm-4">
-              <select name="" id="" class="form-control" ng-model="dt.type" ng-change="updateProvenanceDateRange(prov, dt)">
-                <option value="{{ opt }}" ng-repeat="opt in getProvenanceDateOptions(prov, dt)">{{ opt }}</option>
-              </select>
-            </div>
-          </div>
-           <div class="form-group row">
-            <label class="col-xs-3 control-label">
-                <span sdbm-tooltip="entry_provenance_start_date_as_recorded">Date Range</span>
-            </label>
-            <div class="col-xs-4">
-              <input id="provenance_start_date{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start">
-            </div>
-            <div class="col-xs-1 text-center"><strong class="h1">⇢</strong></div>
-            <div class="col-xs-4">
-              <input id="provenance_end_date{{ $index }}" type="text" class="form-control" ng-model="prov.end_date_normalized_end">
-            </div>
-          </div>
+          
         </div>
         <div class="col-sm-12">
           <div class="row">
@@ -865,91 +872,6 @@ label.col-sm-2-and-half {
           </div>
         </div>
       </div>
-<!--
-        <div class="row">
-          <label class="col-sm-2 control-label">
-              <span sdbm-tooltip="entry_provenance_evidence">Evidence:</span>
-          </label>
-          <div class="col-sm-10">
-            <textarea id="provenance_comment_{{ $index }}" class="form-control" rows="2" id="comment" ng-model="prov.comment"></textarea>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-2-and-half control-label">
-              <span sdbm-tooltip="entry_provenance_agent_as_recorded">As Recorded</span>
-          </label>
-          <div class="col-sm-3-and-half">
-            <input id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name">
-          </div>
-
-          <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_provenance_agent">Find in Name Authority</span></label>
-          <div class="col-sm-4">
-              <div class="input-group">
-                  <input id="provenance_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.provenance_agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-                  <div id="provenance_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov"><span class="glyphicon"></span></div>
-              </div>
-          </div>
-        </div>
-
-        <div class="form-group row">
-          <div class="col-sm-2">
-            <h2 class="h2">Date(s)</h2>
-            <a href="" class="btn btn-xs btn-info" ng-click="addProvenanceDate(prov);"><span class="glyphicon glyphicon-plus"></span> Add date...</a>
-          </div>
-          <label class="col-sm-2 control-label">
-              <span sdbm-tooltip="entry_provenance_start_date_as_recorded">Date Range</span>
-          </label>
-          <div class="col-sm-3">
-            <input id="provenance_start_date{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start">
-          </div>
-          <div class="col-sm-1"><strong class="h4">⇢</strong></div>
-          <div class="col-sm-3">
-            <input id="provenance_end_date{{ $index }}" type="text" class="form-control" ng-model="prov.end_date_normalized_end">
-          </div>
-        </div>
-
-        <div class="form-group row" ng-repeat="dt in prov.dates">
-          <div class="col-sm-3"><a href="" class="btn btn-warning btn-xs glyphicon glyphicon-remove" ng-click="removeProvenanceDate(prov, dt);"></a></div>
-          <div class="col-sm-3">
-            <label for="" class="control-label">Observed Date:</label>
-          </div>
-          <div class="col-sm-3">
-            <input type="text" class="form-control" ng-model="dt.date" ng-change="updateProvenanceDateRange(prov, dt)">
-          </div>
-          <div class="col-sm-3">
-            <select name="" id="" class="form-control" ng-model="dt.type" ng-change="updateProvenanceDateRange(prov, dt)">
-              <option value="{{ opt }}" ng-repeat="opt in getProvenanceDateOptions(prov, dt)">{{ opt }}</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group row">
-          <label class="col-sm-2-and-half control-label">
-              <span sdbm-tooltip="entry_provenance_acquisition_method">Acquisition Method</span>
-          </label>
-          <div class="col-sm-3-and-half">
-              <select class="form-control" id="provenance_acquisition_method_{{ $index }}" ng-model="prov.acquisition_method" ng-options="option[0] as option[1] for option in optionsAcquisitionMethod">
-                  <option value=""></option>
-              </select>
-          </div>
-          <label class="col-sm-3 control-label">
-              <span sdbm-tooltip="entry_provenance_direct_transfer">Directly Transfered to Next?</span>
-          </label>
-          <div class="col-sm-2 label-alignment">
-              <input id="provenance_direct_transfer_{{ $index }}" type="checkbox" ng-model="prov.direct_transfer"/>
-          </div>
-        </div>
-
-        <div class="form-group row">
-
-          <label class="col-sm-2-and-half control-label">
-              <span sdbm-tooltip="entry_provenance_evidence">Evidence</span>
-          </label>
-          <div class="col-sm-9-and-half">
-            <textarea id="provenance_comment_{{ $index }}" class="form-control" rows="2" id="comment" ng-model="prov.comment"></textarea>
-          </div>
-        </div>
--->
     </div>
   </div>
 

@@ -486,11 +486,24 @@ var EntryScope;
         };
 
         $scope.updateProvenanceDateRange = function (prov, date) {
-          // add date parsing here, of course...
-          if (date.type == "Start") {
-            prov.start_date_normalized_start = date.date;
-          } else if (date.type == "End") {
-            prov.end_date_normalized_end = date.date;
+          console.log('here', date);
+          var observedDate = date.date;
+          if(observedDate && (date.type == "Start" || date.type == "End")) {
+              $http.get("/entry_dates/parse_observed_date.json" , {
+                  params: {
+                      date: observedDate
+                  }
+              }).then(function (response) {
+                  if (response.data.date) {
+                      if (date.type == "Start") {
+                        prov.start_date_normalized_start = response.data.date.date_start;
+                      } else if (date.type == "End") {
+                        prov.end_date_normalized_end = response.data.date.date_end;
+                      }
+                  }
+              }, function(response) {
+                  alert("An error occurred trying to normalize date");
+              });
           }
         }
 
@@ -1200,6 +1213,7 @@ var EntryScope;
 
     // attribute value should be the two IDs, comma-separated, of the
     // elements to populate with normalized dates.
+
     sdbmApp.directive("sdbmApproximateDateString", function ($http) {
         return function (scope, element, attrs) {
             var targets = attrs.sdbmApproximateDateString;
