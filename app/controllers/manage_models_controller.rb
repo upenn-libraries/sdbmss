@@ -102,6 +102,9 @@ class ManageModelsController < ApplicationController
           format.json {
             render status: :ok, json: {}
           }
+          format.html {
+            redirect_to names_path
+          }
         end
       else
         respond_to do |format|

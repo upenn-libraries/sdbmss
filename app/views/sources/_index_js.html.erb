@@ -147,7 +147,28 @@ $(document).ready(function() {
                  sdbmssMaxWidth: "100px",            
                  title: 'Created By',
                  dbSortField: 'created_by_id'
-             }
+             },
+            {
+                sdbmssMinWidth: "90px",
+                sdbmssMaxWidth: "90px",
+                title: 'Created At',
+                dbSortField: 'created_at',
+                orderable: false
+            },
+            {
+                sdbmssMinWidth: "90px",
+                sdbmssMaxWidth: "90px",
+                title: 'Updated By',
+                dbSortField: 'updated_by_id',
+                orderable: false
+            },
+            {
+                sdbmssMinWidth: "90px",
+                sdbmssMaxWidth: "90px",
+                title: 'Updated At',
+                dbSortField: 'updated_at',
+                orderable: false
+            }
          ];
      };
 
@@ -170,7 +191,10 @@ $(document).ready(function() {
              result.location,
              result.link,
              result.comments,
-             result.created_by
+             result.created_by || "",
+             result.created_at || "",
+             result.updated_by || "",
+             result.updated_at || ""
          ];
      };
 

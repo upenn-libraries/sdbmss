@@ -48,6 +48,11 @@
   <div class="actions row">
       <div class="col-sm-4 col-sm-offset-2">
           <%= f.submit :class => 'btn btn-primary' %>
+          <% if !@model.new_record? %>
+            <%= link_to 'Destroy',  @model,  method: :delete, class: "btn btn-danger", data: { confirm: 'Are you sure?' } %>
+          <% else %>
+            <%= link_to 'Cancel', names_path, class: "btn btn-default" %>
+          <% end %>
       </div>
   </div>
 <% end %>
