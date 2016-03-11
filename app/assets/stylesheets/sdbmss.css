@@ -80,7 +80,6 @@ h1 { font-size: 30px; margin-top: 0; }
 }
 .carousel-control.right, .carousel-control.left {
   background-image: none;
-  filter: progid:none !important; 
 }
 
 /**** Style for various data entry forms */
