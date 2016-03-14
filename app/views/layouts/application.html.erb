@@ -25,6 +25,30 @@
     <% if Rails.env.development? || Rails.env.staging? %>
       <%= javascript_include_tag "development" %>
     <% end %>
+    <!-- disable animations when running tests -->
+    <% if Rails.env.test? %>
+      <style type="text/css">
+        div, a, span, footer, header, ul, .modal, .modal-title {
+            -webkit-transition: none !important;
+            -moz-transition: none !important;
+            -ms-transition: none !important;
+            -o-transition: none !important;
+            transition: none !important;
+        }
+
+        .modal.in {
+          display: block !important;
+        }
+
+        .modal-backdrop {
+          display: none !important;
+        }
+      </style>
+      <script type='text/javascript'>
+        $(".fade").removeClass("fade");
+      </script>
+    <%end%>
+
     <%= csrf_meta_tags %>
     <%= content_for(:head) %>
 
