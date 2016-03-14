@@ -130,7 +130,6 @@ if @entry.provenance.present?
     json.(provenance_item, :id, :order, :observed_name, :acquisition_method, :direct_transfer, :comment, :start_date, :end_date, :uncertain_in_source, :supplied_by_data_entry)
 
     associated_dates = provenance_item.associated_date.to_s.split("\t").map { |dt| {date: dt, type: "Associated"} }
-    puts "Start: #{provenance_item.start_date}"
     end_date = provenance_item.end_date.present? ? [{ date: provenance_item.end_date, type: "End"}] : []
     start_date = provenance_item.start_date.present? ? [{date: provenance_item.start_date, type: "Start"} ] : []
     json.dates start_date + end_date + associated_dates

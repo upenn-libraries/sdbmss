@@ -511,15 +511,11 @@ describe "Data entry", :js => true do
       expect(provenance.observed_name).to eq('Somebody, Joe')
       expect(provenance.provenance_agent.name).to eq('Somebody, Joseph')
       expect(provenance.uncertain_in_source).to be_truthy
-      expect(provenance.start_date).to eq('1945-06-15')
-      expect(provenance.end_date).to eq('1965-11-23')
       expect(provenance.start_date_normalized_start).to eq('1945-06-15')
-      expect(provenance.start_date_normalized_end).to eq('1945-06-16')
       expect(provenance.direct_transfer).to eq(true)
 
       provenance = entry.provenance[1]
       expect(provenance.provenance_agent.name).to eq("Sotheby's")
-      expect(provenance.start_date).to eq('1965-11-23')
       expect(provenance.comment).to eq('An historic sale')
       expect(provenance.acquisition_method).to eq(Provenance::TYPE_ACQUISITION_METHOD_FOR_SALE)
       expect(provenance.direct_transfer).to eq(true)
