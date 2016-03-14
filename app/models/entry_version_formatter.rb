@@ -83,7 +83,7 @@ class EntryVersionFormatter
       if version.event == 'update'
         skip(version.changeset).each do |field, values|
           if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}")
-            if field.include? '_id'
+            if isClass(field)
               f = EntryVersionFormatter.toClass(field)
               if f.exists?(values[0])
                 values[0] = f.find(values[0])
@@ -99,7 +99,7 @@ class EntryVersionFormatter
         skip(version.changeset).each do |field, values|
           value = values[1]
           if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
-            if field.include?('_id')
+            if isClass(field)
               f = EntryVersionFormatter.toClass(field)
               if f.exists?(value)
                 value = f.find(value)
@@ -112,7 +112,7 @@ class EntryVersionFormatter
         obj = version.reify
         skip(obj.attributes).each do |field, value|
           if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
-            if field.include? '_id'
+            if isClass(field)
               f = EntryVersionFormatter.toClass(field)
               if f.exists?(value)
                 value = f.find(value)
@@ -139,6 +139,10 @@ class EntryVersionFormatter
     else
       return field.gsub('_id', '').capitalize.classify.constantize
     end
+  end
+
+  def isClass (field)
+    return field.include?('_id') && field != "viaf_id"
   end
 
 end

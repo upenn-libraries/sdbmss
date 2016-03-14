@@ -30,7 +30,7 @@
                     <div class="item <%= version == @versions.last ? 'active' : '' %>">
                         <div class='row'>
                             <div class="col-sm-2 text-right"><%= version.created_at.to_formatted_s(:short) %></div>
-                            <div class="col-sm-1"><%= User.find(version.whodunnit) %></div>
+                            <div class="col-sm-1"><%= version.whodunnit ? User.find(version.whodunnit) : "" %></div>
                             <div class='col-sm-2'><span class="label history-label <%= version.event == 'destroy' ? 'label-danger' : ( version.event == 'create' ? 'label-success' : 'label-info') %>"><%= formatter.action %></span></div>
                             <div class='col-sm-6'>
                                 <% formatter.details.each do |detail| %>

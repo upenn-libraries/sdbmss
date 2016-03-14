@@ -127,6 +127,8 @@ describe "Paper trail", :js => true do
       fill_in 'sale_price', with: '130000'
       select 'USD', from: 'sale_currency'
 
+      sleep(1.1)
+
       find_by_id('add_title').click
       fill_in 'title_0', with: 'Book of Hours'
       #find_by_id("add_title_0").click
@@ -271,15 +273,11 @@ describe "Paper trail", :js => true do
       expect(provenance.observed_name).to eq('Somebody, Joe')
       expect(provenance.provenance_agent.name).to eq('Somebody, Joseph')
       expect(provenance.uncertain_in_source).to be_truthy
-      expect(provenance.start_date).to eq('1945-06-15')
-      expect(provenance.end_date).to eq('1965-11-23')
       expect(provenance.start_date_normalized_start).to eq('1945-06-15')
-      expect(provenance.start_date_normalized_end).to eq('1945-06-16')
       expect(provenance.direct_transfer).to eq(true)
 
       provenance = entry.provenance[1]
       expect(provenance.provenance_agent.name).to eq("Sotheby's")
-      expect(provenance.start_date).to eq('1965-11-23')
       expect(provenance.comment).to eq('An historic sale')
       expect(provenance.acquisition_method).to eq(Provenance::TYPE_ACQUISITION_METHOD_FOR_SALE)
       expect(provenance.direct_transfer).to eq(true)
@@ -326,17 +324,13 @@ describe "Paper trail", :js => true do
 
         visit history_entry_path (e)
 
-        f = first('tr', text: 'Folios')
-        f = f.all('td').last
-        f = f.find('a', text: 'Undo')
-
-        expect(f).to have_content('Undo')
-
-        f.click
+        f = first('.active', text: 'Folios')
+        f = f.find('input[type=checkbox]').set(true)
+        click_button('Undo')
 
         expect(page).to have_content('Revert to Old Version')
-        expect(page).to have_content('Folios: 10000')
-        expect(page).to have_content('Folios: 123')
+        expect(page).to have_content('10000')
+        expect(page).to have_content('123')
         expect(page).to have_content(e.public_id)
       end
 
@@ -345,11 +339,13 @@ describe "Paper trail", :js => true do
 
         visit history_entry_path (e)
 
-        f = first('tr', text: 'Folios')
-        f = f.all('td').last
-        f = f.find('a', text: 'Undo')
-        f.click
-        find('input[name=commit]').click
+        f = first('.active', text: 'Folios')
+        f = f.find('input[type=checkbox]').set(true)
+        click_button('Undo')
+
+        click_button('Restore')
+
+        sleep(1.1)
 
         expect(page).to have_content(e.public_id)
         expect(page).to have_content(123)
@@ -383,37 +379,13 @@ describe "Paper trail", :js => true do
 
         visit history_entry_path (e)
 
-        f = first('tr', text: 'Hiiipower')
-        f = f.all('td').last
-        f = f.find('a', text: 'Undo')
-        f.click
+        f = first('.active', text: 'Hiiipower')
+        f = f.find('input[type=checkbox]').set(true)
+        click_button('Undo')
 
         expect(page).to have_content(e.public_id)
         expect(page).to have_content('Hiiipower')
         expect(page).to have_content('Book of Hours')
-      end
-
-      it "should give the option to combine association fields" do
-        e = Entry.last
-
-        visit history_entry_path (e)
-
-        f = first('tr', text: 'Hiiipower')
-        f = f.all('td').last
-        f = f.find('a', text: 'Undo')
-        f.click
-        
-        p = find(:css, 'div.panel.panel-success')
-
-        expect(p).to have_content('Hiiipower')
-        expect(p).to have_content('Book of Hours')
-        expect(page).to have_content('Overwrite?')
-
-        click_link('Overwrite?')
-
-        expect(p).to have_content('Book of Hours')
-        expect(p).not_to have_content('Hiiipower')
-        expect(page).to have_content('Duplicate?')
       end
 
       it "should successfully restore the previous association by overwriting the new field" do
@@ -423,15 +395,11 @@ describe "Paper trail", :js => true do
 
         visit history_entry_path (e)
 
-        f = first('tr', text: 'Hiiipower')
-        f = f.all('td').last
-        f = f.find('a', text: 'Undo')
-        f.click
-        
-        click_link('Overwrite?')
+        f = first('.active', text: 'Hiiipower')
+        f = f.find('input[type=checkbox]').set(true)
+        click_button('Undo')
 
-        find('input[name=commit]').click
-
+        click_button('Restore')
         sleep(1.1)
 
         expect(page).to have_content('Book of Hours')
@@ -444,31 +412,10 @@ describe "Paper trail", :js => true do
 
         visit history_entry_path (e)
 
-        f = first('tr', text: 'Hiiipower')
-        expect(f).to have_content('changed Title')
+        f = first('.active', text: 'Hiiipower')
+        l = f.first('.history-label')
+        expect(l).to have_content('changed Title')
         expect(f).to have_content('Book of Hours')
-      end
-
-      it "should successfully restore the previous association by duplicating the old field" do
-        e = Entry.last
-
-        old_count = e.entry_titles.count
-
-        visit history_entry_path (e)
-
-        # this refers to the reversion we made two tests ago
-        f = first('tr', text: 'Hiiipower')
-        f = f.all('td').last
-        f = f.find('a', text: 'Undo')
-        f.click
-        
-        find('input[name=commit]').click
-
-        sleep(1.1)
-
-        expect(page).to have_content('Hiiipower')
-        expect(page).to have_content('Book of Hours')
-        expect(old_count).to eq(e.entry_titles.count - 1)
       end
 
       it "should recreate an associated field that was deleted" do
@@ -488,15 +435,15 @@ describe "Paper trail", :js => true do
         expect(old_count).to eq(new_count + 1)
 
         visit history_entry_path (e)
-        expect(page).to have_content('deleted Title')
-        f = first('tr', text: 'deleted Title')
-        f = f.all('td').last
-        f = f.find('a', text: 'Undo')
-        f.click
-        
+        f = first('.active', text: 'Title')
+        l = f.first('.history-label')
+        expect(l).to have_content('deleted Title')
+        f = f.find('input[type=checkbox]').set(true)
+        click_button('Undo')
+
         expect(page).to have_content(t)
 
-        find('input[name=commit]').click
+        click_button('Restore')
 
         sleep(1.1)
 
@@ -510,61 +457,21 @@ describe "Paper trail", :js => true do
         old_count = e.entry_titles.count
 
         visit history_entry_path e
-
-        expect(page).to have_content('added Title')
-        f = first('tr', text: 'added Title')
-        f = f.all('td').last
-        f = f.find('a', text: 'Undo')
-        f.click
+        
+        f = first('.active', text: 'Title')
+        l = f.first('.history-label')
+        expect(l).to have_content('added Title')
+        f = f.find('input[type=checkbox]').set(true)
+        click_button('Undo')
 
         expect(page).to have_content('Book of Hours')
-        find('input[name=commit]').click
+        click_button('Restore')
 
         sleep(1.1)
 
         expect(page).not_to have_content('Book of Hours')
         expect(e.entry_titles.count).to eq(old_count - 1)
       end
-
-      it "should restore an associated field when an 'update' is reverted but the field is deleted" do
-        e = Entry.last
-        old_count = e.entry_titles.count
-
-        # modify the title
-        visit edit_entry_path e
-        t = find('#title_0').value
-        fill_in 'title_0', with: "Overly Dedicated"
-        first('.save-button').click
-
-        sleep(1.1)
-
-        # delete the title
-        visit edit_entry_path e
-        find('#delete_title_0').click
-        first('.save-button').click
-
-        sleep(1.1)
-
-        # revert the modification
-        visit history_entry_path e
-        f = find('tr', text: "Title: from #{t} to Overly Dedicated")
-        f = f.all('td').last
-        f = f.find('a', text: 'Undo')
-        f.click
-
-        expect(page).to have_content(t)
-        expect(page).not_to have_content('Overly Dedicated')
-        expect(e.entry_titles.count).to eq(old_count - 1)
-
-        find('input[name=commit]').click
-
-        sleep(1.1)
-
-        expect(page).to have_content(t)
-        expect(page).not_to have_content('Overly Dedicated')
-        expect(e.entry_titles.count).to eq(old_count)
-      end
-
       # revert successfully, add, and combine
     end
 
