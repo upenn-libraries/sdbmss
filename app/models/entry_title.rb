@@ -15,4 +15,8 @@ class EntryTitle < ActiveRecord::Base
     display_value
   end
 
+  def to_fields
+    {title: title, common_title: common_title}
+  end
+
 end

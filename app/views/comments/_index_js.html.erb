@@ -105,6 +105,20 @@
                 sdbmssMaxWidth: "130px",
                 title: 'Created At',
                 dbSortField: 'created_at'
+            },
+            {
+                sdbmssMinWidth: "90px",
+                sdbmssMaxWidth: "90px",
+                title: 'Updated By',
+                dbSortField: 'updated_by_id',
+                orderable: false
+            },
+            {
+                sdbmssMinWidth: "90px",
+                sdbmssMaxWidth: "90px",
+                title: 'Updated At',
+                dbSortField: 'updated_at',
+                orderable: false
             }
         ];
      };
@@ -121,7 +135,9 @@
              result.is_accepted,
              result.reviewed.toString(),
              result.created_by || "",
-             result.created_at || ""
+             result.created_at || "",
+             result.updated_by || "",
+             result.updated_at || ""
          ];
      };
 

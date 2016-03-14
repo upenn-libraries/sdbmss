@@ -29,7 +29,9 @@ class CommentsController < ManageModelsController
       is_accepted: obj.is_accepted,
       reviewed: obj.reviewed,
       created_by: obj.created_by.username,
-      created_at: obj.created_at.to_formatted_s(:date_and_time)
+      created_at: obj.created_at.to_formatted_s(:date_and_time),
+      updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
+      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:short) : ""
     }
   end
 

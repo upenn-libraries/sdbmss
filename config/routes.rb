@@ -41,6 +41,8 @@ Rails.application.routes.draw do
       get 'types'
     }
     member {
+      patch '/revert_confirm/', to: 'entries#revert_confirm'
+      patch '/revert/', to: 'entries#revert'
       post 'deprecate'
       get 'history'
       get 'similar'
@@ -73,6 +75,11 @@ Rails.application.routes.draw do
       post 'mark_as_reviewed'
       get 'search'
     }
+    member do
+      get 'history'
+      patch '/revert_confirm/', to: 'languages#revert_confirm'
+      patch '/revert/', to: 'languages#revert'
+    end
   end
 
   get '/linkingtool/entry/:id', to: 'linking_tool#by_entry', as: 'linking_tool_by_entry'
@@ -100,6 +107,9 @@ Rails.application.routes.draw do
       get 'suggest'
     end
     member do
+      patch '/revert_confirm/', to: 'names#revert_confirm'
+      patch '/revert/', to: 'names#revert'
+      get 'history'
       get 'merge'
       post 'merge'
     end
@@ -110,6 +120,11 @@ Rails.application.routes.draw do
       post 'mark_as_reviewed'
       get 'search'
     }
+    member do
+      get 'history'
+      patch '/revert_confirm/', to: 'places#revert_confirm'
+      patch '/revert/', to: 'places#revert'
+    end
   end
 
   # use 'username' as identifier here for nicer URLs

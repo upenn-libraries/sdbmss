@@ -16,6 +16,8 @@ class EntriesController < ManageModelsController
 
   include CatalogControllerConfiguration
 
+  include Revert
+
   # the blacklight_advanced_search gem includes this automatically in
   # CatalogController but not here, so we include it explicitly
   include BlacklightAdvancedSearch::Controller
@@ -181,6 +183,9 @@ class EntriesController < ManageModelsController
           render json: json_response, status: :unprocessable_entity
         end
       }
+      format.html {
+        redirect_to entry_path(@entry)
+      }
     end
   end
 
@@ -257,6 +262,37 @@ class EntriesController < ManageModelsController
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }
     end
+  end
+
+  def history
+    changesets = ModelHistory.new(@entry).changesets
+    if changesets.count <= 0
+      @error = "This record was added before version history was implemented - there is no saved changed history to display."
+    end
+    unique_hash = {}
+    @unique_list = {}
+    # sort by item
+    changesets.each do |change|
+      change.versions.each do |version|
+        f = EntryVersionFormatter.new(version)
+        if f.details.count <= 0
+        elsif !unique_hash[version.item_id].present?
+          unique_hash[version.item_id] = [version]
+        else
+          unique_hash[version.item_id].append(version)
+        end
+      end
+    end
+    # sort into 'types'
+    unique_hash.each do |id, versions|
+      type = versions[0].item_type
+      versions.sort! { |a, b| b.created_at <=> a.created_at }
+      if not @unique_list.has_key? type
+        @unique_list[type] = []
+      end
+      @unique_list[type].append(versions)
+    end
+#    @unique_list.sort! { |a, b| b.first.created_at <=> a.first.created_at }
   end
 
   def deprecate

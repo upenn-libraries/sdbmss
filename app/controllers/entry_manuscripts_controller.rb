@@ -62,6 +62,9 @@ class EntryManuscriptsController < ManageModelsController
       relation_type: obj.relation_type,
       reviewed: obj.reviewed,
       created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
+      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:short) : "",
+      updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
+      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:short) : ""
     }
   end
 

@@ -90,6 +90,10 @@ class EntryDate < ActiveRecord::Base
     val + certainty_flags
   end
 
+  def to_fields
+    {observed_date: observed_date, start_date: date_normalized_start, end_date: date_normalized_end}
+  end
+
   # returns a str of the normalized date range
   def normalized_date_range_str
     if date_normalized_start.to_i + 1 == date_normalized_end.to_i

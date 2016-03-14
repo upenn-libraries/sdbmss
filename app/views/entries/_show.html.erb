@@ -1,0 +1,490 @@
+
+<% if entry.nil? %>
+<p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
+<% else %>
+
+<p>
+    Note: This entry records a mention or observation of a manuscript
+    in a source. Do not assume that the manuscript is held by the
+    University of Pennsylvania Libraries.</p>
+
+<% if entry.deprecated %>
+    <p style="color: red;">
+        This entry has been deprecated. The data on this page considered incorrect or unreliable and should NOT be cited or used.
+        <% if (superceded_by = entry.superceded_by).present? %>
+            <br/>The following entry supercedes it: <a href="<%= entry_path superceded_by %>"><%= superceded_by.public_id %></a>
+        <% end %>
+    </p>
+<% end %>
+
+<% if !entry.approved %>
+    <div class="panel panel-danger">
+        <div class="panel-heading">Warning: This entry had not been approved yet.  The data may be incorrect or unreliable, or may not conform to the general data standards.</div>
+    </div>
+<% end %>
+
+<%= render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
+
+<!-- TODO: use a DL element here instead of a table? or use bootstrap rows and cols? layout will be tricky -->
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th class="col-sm-12" colspan="2"><b>Source</b></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if (source = entry.source).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Source</td>
+            <td class="col-sm-10">
+                <%= link_to source.display_value, source_path(source) %> (<%= source.source_type.display_name %>)
+            </td>
+        </tr>
+        <% end %>
+
+        <% if entry.catalog_or_lot_number.present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Cat./Lot #</td>
+            <td class="col-sm-10">
+                <%= entry.catalog_or_lot_number %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if entry.institution.present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Institution/Collection</td>
+            <td class="col-sm-10">
+                <%= entry.institution %>
+            </td>
+        </tr>
+        <% end %>
+
+    </tbody>
+</table>
+
+<% if (sale = entry.get_sale).present? %>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th class="col-sm-12" colspan="2"><b>Transaction Information</b></th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <% if (selling_agent = sale.get_selling_agent).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Selling Agent</td>
+            <td class="col-sm-10">
+                <a href="<%= agent_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if (seller_or_holder = sale.get_seller_or_holder).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Seller</td>
+            <td class="col-sm-10">
+                <a href="<%= agent_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if (buyer = sale.get_buyer).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Buyer</td>
+            <td class="col-sm-10">
+                <a href="<%= agent_path(buyer.agent) %>"><%= buyer.agent.name %></a>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if sale.sold.present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Sold</td>
+            <td class="col-sm-10">
+                <%= sale.sold %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if sale.get_complete_price_for_display.present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Price</td>
+            <td class="col-sm-10">
+                <%= sale.get_complete_price_for_display %>
+            </td>
+        </tr>
+        <% end %>
+
+    </tbody>
+</table>
+
+<% end %>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th class="col-sm-12" colspan="12"><b>Manuscript Details</b></th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <% if (entry_titles = entry.entry_titles.order(:order)).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Titles</td>
+            <td class="col-sm-10" colspan="10">
+                <% entry_titles.each do |entry_title| %>
+                <%= entry_title %><br/>
+                <% end %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if (entry_authors = entry.entry_authors.order(:order)).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Authors</td>
+            <td class="col-sm-10" colspan="10">
+                <% entry_authors.each do |entry_author| %>
+                    <%= render partial: "shared/entry_author", object: entry_author %>
+                    <br/>
+                <% end %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if (entry_dates = entry.entry_dates.order(:order)).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Manuscript Dates</td>
+            <td class="col-sm-10" colspan="10">
+                <% entry_dates.each do |entry_date| %>
+                    <%= entry_date.display_value %><br/>
+                <% end %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if (entry_artists = entry.entry_artists.order(:order)).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Artists</td>
+            <td class="col-sm-10" colspan="10">
+                <% entry_artists.each do |entry_artist| %>
+                    <%= render partial: "shared/entry_artist", object: entry_artist %>
+                    <br/>
+                <% end %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if (entry_scribes = entry.entry_scribes.order(:order)).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Scribes</td>
+            <td class="col-sm-10" colspan="10">
+                <% entry_scribes.each do |entry_scribe| %>
+                    <%= render partial: "shared/entry_scribe", object: entry_scribe %>
+                    <br/>
+                <% end %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if (entry_languages = entry.entry_languages.order(:order)).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Languages</td>
+            <td class="col-sm-10" colspan="10">
+                <%= entry_languages.map { |entry_language| entry_language }.join(", ") %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if (entry_materials = entry.entry_materials.order(:order)).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Materials</td>
+            <td class="col-sm-10" colspan="10">
+                <%= entry_materials.map { |entry_material| entry_material }.join(", ") %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if (entry_places = entry.entry_places.order(:order)).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Places</td>
+            <td class="col-sm-10" colspan="10">
+                <% entry_places.each do |entry_place| %>
+                <%= entry_place.display_value %><br/>
+                <% end %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if (entry_uses = entry.entry_uses.order(:order)).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Manuscript Uses</td>
+            <td class="col-sm-10" colspan="10">
+                <% entry_uses.each do |entry_use| %>
+                <%= entry_use.use %><br/>
+                <% end %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if entry.folios || entry.num_lines || entry.num_columns %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Folios</td>
+            <td class="col-sm-2" colspan="2">
+                <%= entry.folios||'' %>
+            </td>
+            <td class="col-sm-2 text-right record-label" colspan="2">Lines</td>
+            <td class="col-sm-2" colspan="2">
+                <%= entry.num_lines||'' %>
+            </td>
+            <td class="col-sm-2 text-right record-label" colspan="2">Columns</td>
+            <td class="col-sm-2" colspan="2">
+                <%= entry.num_columns||'' %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if entry.height || entry.width || entry.alt_size %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Height</td>
+            <td class="col-sm-2" colspan="2">
+                <%= entry.height||'' %>
+            </td>
+            <td class="col-sm-2 text-right record-label" colspan="2">Width</td>
+            <td class="col-sm-2" colspan="2">
+                <%= entry.width||'' %>
+            </td>
+            <td class="col-sm-2 text-right record-label" colspan="2">Alt Size</td>
+            <td class="col-sm-2" colspan="2">
+                <%= entry.alt_size||'' %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if entry.miniatures_fullpage || entry.miniatures_large || entry.miniatures_small %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Full-Page Miniatures</td>
+            <td class="col-sm-2" colspan="2">
+                <%= entry.miniatures_fullpage||'' %>
+            </td>
+            <td class="col-sm-2 text-right record-label" colspan="2">Large Miniatures</td>
+            <td class="col-sm-2" colspan="2">
+                <%= entry.miniatures_large||'' %>
+            </td>
+            <td class="col-sm-2 text-right record-label" colspan="2">Small Miniatures</td>
+            <td class="col-sm-2" colspan="2">
+                <%= entry.miniatures_small||'' %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if entry.miniatures_unspec_size %>
+        <tr>
+            <td class="col-sm-8" colspan="8"></td>
+            <td class="col-sm-2 text-right record-label" colspan="2">Unspec. Size Miniatures</td>
+            <td class="col-sm-2" colspan="2">
+                <%= entry.miniatures_unspec_size %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if entry.initials_historiated || entry.initials_decorated %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Hist. Initials</td>
+            <td class="col-sm-2" colspan="2">
+                <%= entry.initials_historiated %>
+            </td>
+            <td class="col-sm-2 text-right record-label" colspan="2">Decor. Initials</td>
+            <td class="col-sm-2" colspan="2">
+                <%= entry.initials_decorated %>
+            </td>
+            <td class="col-sm-4" colspan="4"></td>
+        </tr>
+        <% end %>
+
+        <% if entry.manuscript_binding %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Binding</td>
+            <td class="col-sm-10" colspan="10">
+                <%= entry.manuscript_binding %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if entry.manuscript_link %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">URL</td>
+            <td class="col-sm-10" colspan="10">
+                <%= link_to(entry.manuscript_link, entry.manuscript_link) %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if entry.other_info %>
+        <tr>
+            <td class="col-sm-2 text-right record-label" colspan="2">Other Info</td>
+            <td class="col-sm-10" colspan="10">
+                <%= simple_format(entry.other_info) %>
+            </td>
+        </tr>
+        <% end %>
+
+    </tbody>
+
+</table>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th class="col-sm-12" colspan="2"><b>Provenance Information</b></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <% if (provenance_all = entry.provenance.order(:order)).present? %>
+        <% provenance_all.each do |provenance| %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">
+                <% if provenance.start_date.present? || provenance.end_date.present? %>
+                    <%= format_fuzzy_date(provenance.start_date) %>
+                    <% if provenance.start_date.present? && provenance.end_date.present? %><br/>to<br/><% end %>
+                    <%= format_fuzzy_date(provenance.end_date) %>
+                <% else %>
+                    (No date)
+                <% end %>
+            </td>
+            <td class="col-sm-10">
+                <%= render partial: "shared/provenance_name", locals: { provenance: provenance } %>
+            </td>
+        </tr>
+
+        <% end %>
+
+        <% else %>
+        <tr>
+            <td class="col-sm-2"></td>
+            <td class="col-sm-10">There is no provenance information in this entry.</td>
+        </tr>
+        <% end %>
+    </tbody>
+</table>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th class="col-sm-12" colspan="2"><b>About This Entry Record</b></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Created</td>
+            <td class="col-sm-10">
+                by <%= render partial: "shared/username_with_profile_link", locals: { user: entry.created_by } %>
+                on <%= entry.created_at.to_formatted_s(:date_and_time) %>
+            </td>
+        </tr>
+        <% if entry.updated_at.present? && entry.updated_at != entry.created_at %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Last Updated</td>
+            <td class="col-sm-10">
+                by <%= render partial: "shared/username_with_profile_link", locals: { user: entry.updated_by } %>
+                on <%= entry.updated_at %>
+            </td>
+        </tr>
+        <% end %>
+        <% editors = ModelHistory.new(entry).editors %>
+        <% if editors.length > 0 %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Editors</td>
+            <td class="col-sm-10">
+                <% editors.each_with_index do |editor, index| %>
+                    <%= render partial: "shared/username_with_profile_link", locals: { user: editor } %><% if index != editors.size - 1 %>, <% end %>
+                <% end %>
+            </td>
+        </tr>
+        <% end %>
+    </tbody>
+
+</table>
+
+<div id="loading-message" style="display: none">
+    <img id="spinner" alt="working..." src="<%= asset_path "spinner.gif" %>"/> Loading, please wait...
+</div>
+
+<table id="similar-entries-table" class="table table-striped" style="display: none">
+    <thead>
+        <tr>
+            <th class="col-sm-12" colspan="2"><b>There are <span id="total-similar-entries"></span> other entries that might describe the same manuscript as this entry. Here are the top candidates:</b></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td class="col-sm-12">
+                <div id="similar-entries">
+
+                </div>
+                <br/>
+                To link these entries, use the <a href="<%= linking_tool_by_entry_path(entry.id) %>">Linking tool</a>.
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<% if (comments = entry.comments.where(public: true)).present? %>
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th class="col-sm-12" colspan="2"><b>Comments</b></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% comments.each do |comment| %>
+      <tr>
+        <td class="col-sm-2 text-right record-label">
+            By <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
+            At <%= comment.created_at.to_formatted_s(:date_and_time) %>
+        </td>
+        <td class="col-sm-10">
+          <%= comment.comment||"(none)" %>
+        </td>
+      </tr>
+      <% end %>
+    </tbody>
+</table>
+<% end %>
+
+<% if user_signed_in? %>
+<% comment = Comment.new %>
+<% entry_comment = comment.entry_comments.build %>
+<% entry_comment.entry_id = entry.id %>
+<%= form_for(comment, format: :json) do |f| %>
+    <input type="hidden" name="return_url" value="<%= entry_path entry %>"/>
+    <%= f.fields_for :entry_comments do |entry_comment| %>
+        <%= entry_comment.hidden_field :entry_id %>
+    <% end %>
+    <div class="row">
+        <div class="col-sm-12 form-group">
+            <h4>Leave a comment</h4>
+            <%= f.text_area :comment, class: "form-control", rows: 5 %>
+        </div>
+        <div class="col-sm-12 checkbox">
+            <label>
+                <%= f.check_box :is_correction %> I am leaving a comment that notes a correction to this record
+            </label>
+        </div>
+        <div class="col-sm-12 text-right">
+            <button class="btn btn-primary">Submit</button>
+        </div>
+    </div>
+<% end %>
+<% end %>
+
+<div class="spacer-40px"></div>
+
+<% end %>

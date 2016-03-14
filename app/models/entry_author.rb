@@ -39,4 +39,8 @@ class EntryAuthor < ActiveRecord::Base
     val += role ? " (" + role + ")": ""
   end
 
+  def to_fields
+    {name: author ? author.name : nil, observed_name: observed_name}
+  end
+
 end

@@ -1,0 +1,77 @@
+<div class="page-header">
+  <div class="row">
+    <div class="col-sm-12">
+      <h1>Revert to Old Version</h1>
+      <%= link_to @model.public_id, polymorphic_path(@model)   %>
+    </div>
+  </div>
+</div>
+<% if @error %>
+<div class="row">
+  <div class="panel panel-danger">
+    <div class="panel-heading"><%= @error %></div>
+  </div>
+</div>
+<% end %>
+<% @changes.each do |change| %>
+<div class="row">
+    <div class="col-sm-6">
+      <div class="panel panel-info">
+        <div class="panel-heading"><span class="h3">Current - <%= change[:model_name] %></span></div>
+        <div class="panel-body">
+          <ul class="list-group">
+            <% if !change.include?(:current) || change[:current].count <= 0 %>
+              <li class="list-group-item bg-danger">(Deleted)</li>
+            <% else %>
+              <% change[:fields].each do |field| %>
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-xs-4"><strong><%= field.gsub("_id", "").gsub("_", " ").capitalize %>:</strong></div>
+                  <div class="col-xs-8"><%= change[:current].include?(field) && !change[:current][field].nil? ? change[:current][field] : "(blank)" %></div>
+                </div>
+              </li>
+              <% end %>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- form with invisible field for each change -->
+    <div class="col-sm-6">
+      <div class="panel panel-danger">
+        <div class="panel-heading"><span class="h3">Reversion - <%= change[:model_name] %></span></div>
+        <div class="panel-body">
+          <ul class="list-group">
+           <% if !change.include?(:previous) || change[:previous].count <= 0 %>
+              <li class="list-group-item bg-danger">(Deleted)</li>
+            <% else %>
+              <% change[:fields].each do |field| %>
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-xs-4"><strong><%= field.gsub("_id", "").gsub("_", " ").capitalize %>:</strong></div>
+                  <div class="col-xs-8"><%= change[:previous].include?(field) && !change[:previous][field].nil? ? change[:previous][field] : "(blank)" %></div>
+                </div>
+              </li>
+              <% end %>
+            <% end %>
+           </ul>
+        </div>
+      </div>
+  </div>
+</div>
+<% end %>
+<div class="row">
+  <div class="col-sm-9"></div>
+  <div class="col-sm-3 text-right">
+    <div class="well">
+      <%= form_for @model, url: {action: "revert"} do |f| %>
+        
+        <% @versions.each do |v| %>
+          <%= hidden_field_tag "version_id[]", v.id %>
+        <% end %>
+        <%= f.submit 'Restore', class: 'btn btn-warning btn-lg' %>
+        <%= link_to 'Cancel', polymorphic_url([:history, @model]), class: 'btn btn-default btn-lg' %>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -102,6 +102,9 @@ class ManageModelsController < ApplicationController
           format.json {
             render status: :ok, json: {}
           }
+          format.html {
+            redirect_to names_path
+          }
         end
       else
         respond_to do |format|
@@ -134,7 +137,7 @@ class ManageModelsController < ApplicationController
     if params[:created_by_user].to_s == '1'
       query = query.where(created_by_id: current_user.id)
     end
-    #FIX ME: comment this out to show all (including unreviewed?)
+
     if params[:unreviewed_only].to_s == '1'
       query = query.where(reviewed: false)
     end

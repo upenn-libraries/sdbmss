@@ -30,4 +30,8 @@ class EntryMaterial < ActiveRecord::Base
     (material || "") + certainty_flags
   end
 
+  def to_fields
+    {material: material}
+  end
+
 end

@@ -58,6 +58,30 @@ h1 { font-size: 30px; margin-top: 0; }
     border-width: 2px;
 }
 
+/* Entry history page */
+.history-heading {
+  font-size: 24px;
+  font-weight: 900;
+}
+.history-label {
+  padding: 6px;
+  font-size: 16px;
+}
+.carousel-control, .carousel-control:focus {
+  color: #666;
+  background-image: none;
+  background-color: rgba(200,207,200,0.5);
+  width: 4%;
+  text-shadow: none;
+}
+.carousel-control:active, .carousel-control:hover {
+  color: lightblue;
+  background-color: rgba(225,225,230,0.6);
+}
+.carousel-control.right, .carousel-control.left {
+  background-image: none;
+}
+
 /**** Style for various data entry forms */
 
 .suggestions {
@@ -80,12 +104,76 @@ h1 { font-size: 30px; margin-top: 0; }
 .input-block .row {
     margin: 2px;
 }
+.input-block textarea {
+  max-height: 100%;
+  max-width: 100%;
+}
 .input-block {
   padding: 4px;
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #F8F8F8;
   transition: all linear 0.5s;
+}
+.input-block.carousel {
+  margin-bottom: 10px;
+  padding: 6px;
+}
+.input-block.carousel .item {
+  font-size: 18px;
+}
+
+.checkbox-hidden:not(old){
+  width     : 2em;
+  margin    : 0;
+  padding   : 0;
+  font-size : 1em;
+  opacity   : 0;
+}
+.checkbox-hidden:not(old) + label{
+  display      : inline-block;
+  margin-left  : -2em;
+  line-height  : 1.5em;
+  font-size: 32px;
+}
+.checkbox-hidden:not(old) + label > span{
+  display          : inline-block;
+  width            : 0.875em;
+  height           : 0.875em;
+  margin           : 0.25em 0.5em 0.25em 0.25em;
+  border           : 0.0625em solid rgb(192,192,192);
+  border-radius    : 0.25em;
+  background       : rgb(224,224,224);
+  background-image :    -moz-linear-gradient(rgb(240,240,240),rgb(224,224,224));
+  background-image :     -ms-linear-gradient(rgb(240,240,240),rgb(224,224,224));
+  background-image :      -o-linear-gradient(rgb(240,240,240),rgb(224,224,224));
+  background-image : -webkit-linear-gradient(rgb(240,240,240),rgb(224,224,224));
+  background-image :         linear-gradient(rgb(240,240,240),rgb(224,224,224));
+  vertical-align   : bottom;
+}
+.checkbox-hidden:not(old):checked + label > span{
+  background-image :    -moz-linear-gradient(rgb(224,224,224),rgb(240,240,240));
+  background-image :     -ms-linear-gradient(rgb(224,224,224),rgb(240,240,240));
+  background-image :      -o-linear-gradient(rgb(224,224,224),rgb(240,240,240));
+  background-image : -webkit-linear-gradient(rgb(224,224,224),rgb(240,240,240));
+  background-image :         linear-gradient(rgb(224,224,224),rgb(240,240,240));
+}
+.checkbox-hidden:not(old):disabled + label > span {
+  opacity: 0.4;
+}
+.checkbox-hidden:not(old):checked + label > span > span{
+  display          : block;
+  width            : 0.5em;
+  height           : 0.5em;
+  margin           : 0.125em;
+  border           : 0.0625em solid rgb(115,153,77);
+  border-radius    : 0.125em;
+  background       : rgb(153,204,102);
+  background-image :    -moz-linear-gradient(rgb(179,217,140),rgb(153,204,102));
+  background-image :     -ms-linear-gradient(rgb(179,217,140),rgb(153,204,102));
+  background-image :      -o-linear-gradient(rgb(179,217,140),rgb(153,204,102));
+  background-image : -webkit-linear-gradient(rgb(179,217,140),rgb(153,204,102));
+  background-image :         linear-gradient(rgb(179,217,140),rgb(153,204,102));
 }
 /*
 .form-group:nth-child(even) > .input-block {
@@ -121,6 +209,12 @@ h1 { font-size: 30px; margin-top: 0; }
 }
 .form-group.row {
   border-bottom: 1px #eee dashed;
+}
+.unapproved > td {
+  color: #999;
+}
+.unapproved > td > a {
+  color: #999;
 }
 
 .sdbmss-form .provenance-group-container { border-width: 0 0 1px; border-style: none none solid; border-color: #e5e5e5; margin-bottom: 6px; }

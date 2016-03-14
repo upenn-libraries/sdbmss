@@ -5,6 +5,8 @@ class NamesController < SearchableAuthorityController
   include ResetReviewedAfterUpdate
   include LogActivity
 
+  include Revert
+
   load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_reviewed, :merge]
 
   before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy, :merge]
@@ -30,6 +32,9 @@ class NamesController < SearchableAuthorityController
       is_scribe: obj.is_scribe,
       reviewed: obj.reviewed,
       created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
+      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:short) : "",
+      updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
+      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:short) : ""
     }
   end
 
@@ -40,7 +45,6 @@ class NamesController < SearchableAuthorityController
   def search_query
     query = super
     if params[:type].present?
-      # FIX ME: change this to alter sorting/display autocomplete by 'flag', or 'type' (as it's listed here)
       query = query.where(params[:type].to_sym => true)
     end
     query

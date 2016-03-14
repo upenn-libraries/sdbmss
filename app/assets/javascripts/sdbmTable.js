@@ -528,6 +528,10 @@ var SDBM = SDBM || {};
         $(selector).on('draw.dt', function () {
             sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
                 var data = sdbmTable.dataTable.row(row).data();
+                if(!data[sdbmTable.getColumnIndex("Is Approved")]) {
+                    $(row).addClass('warning unapproved')
+                }
+
                 $(row).children().each(function (idx, td) {
                     var titleValue = "SDBM_" + data[sdbmTable.getColumnIndex("ID")];
                     if(data[idx]) {

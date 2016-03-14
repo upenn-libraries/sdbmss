@@ -127,7 +127,13 @@ end
 
 if @entry.provenance.present?
   json.provenance @entry.provenance.order(:order) do |provenance_item|
-    json.(provenance_item, :id, :order, :observed_name, :acquisition_method, :direct_transfer, :comment, :start_date, :end_date, :associated_date, :uncertain_in_source, :supplied_by_data_entry)
+    json.(provenance_item, :id, :order, :observed_name, :acquisition_method, :direct_transfer, :comment, :start_date, :end_date, :uncertain_in_source, :supplied_by_data_entry)
+
+    associated_dates = provenance_item.associated_date.to_s.split("\t").map { |dt| {date: dt, type: "Associated"} }
+    end_date = provenance_item.end_date.present? ? [{ date: provenance_item.end_date, type: "End"}] : []
+    start_date = provenance_item.start_date.present? ? [{date: provenance_item.start_date, type: "Start"} ] : []
+    json.dates start_date + end_date + associated_dates
+    
     json.start_date_normalized_start SDBMSS::Util.format_fuzzy_date(provenance_item.start_date_normalized_start)
     json.start_date_normalized_end SDBMSS::Util.format_fuzzy_date(provenance_item.start_date_normalized_end)
     json.associated_date_normalized_start SDBMSS::Util.format_fuzzy_date(provenance_item.associated_date_normalized_start)

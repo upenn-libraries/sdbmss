@@ -1,6 +1,8 @@
+# paper trail spec
+
 require "rails_helper"
 
-describe "Data entry", :js => true do
+describe "Paper trail", :js => true do
 
   # Fill an autocomplete field using value in :with option. If a
   # block is given, yields to it to allow for selection.
@@ -76,6 +78,7 @@ describe "Data entry", :js => true do
     sleep(2)
   end
 
+
   before :all do
     User.where(username: 'testuser').delete_all
     @user = User.create!(
@@ -123,6 +126,8 @@ describe "Data entry", :js => true do
       fill_in 'sale_date', with: '2014-03-03'
       fill_in 'sale_price', with: '130000'
       select 'USD', from: 'sale_currency'
+
+      sleep(1.1)
 
       find_by_id('add_title').click
       fill_in 'title_0', with: 'Book of Hours'
@@ -285,326 +290,190 @@ describe "Data entry", :js => true do
       expect(comment.comment).to eq('This info is correct')
     end
 
-    it "should edit an existing Source" do
-      source = Source.create!(
-        date: "20141215",
-        title: "my existing source",
-        source_type: SourceType.auction_catalog,
-        created_by: @user,
-      )
+    describe '(for simple changes)' do
 
-      visit edit_source_path :id => source.id
+      it 'should load the history page successfully' do
+        create_entry
 
-      expect(page).to have_content("Edit " + source.public_id)
+        e = Entry.last
 
-      expect(page).to have_select('source_type', disabled: true, selected: 'Auction/Sale Catalog')
-      expect(page).to have_field('source_date', with: '2014-12-15')
-      expect(page).to have_field('title', with: 'my existing source')
+        visit history_entry_path (e)
 
-      click_button('Save')
-
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      source = Source.last
-      expect(source.source_type).to eq(SourceType.auction_catalog)
-      expect(source.date).to eq('20141215')
-      expect(source.title).to eq('my existing source')
-    end
-
-
-    it "should show creator on Edit page" do
-      create_entry
-
-      entry = Entry.last
-
-      visit edit_entry_path :id => entry.id
-
-      expect(page).to have_content "About This Entry Record"
-      expect(page).to have_content "by #{entry.created_by.username}"
-    end
-
-    it "should preserve entry on Edit page when saving without making any changes" do
-      count = Entry.count
-
-      create_entry
-
-      expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
-
-      visit edit_entry_path :id => entry.id
-
-      first(".save-button").click
-
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      verify_entry(entry)
-    end
-
-    it "should create history when updating an Entry" do
-      skip "(Test is out of date with new change history implementation" do
+        expect(page).to have_content("History of changes to #{e.public_id}")
       end
-      count = Entry.count
 
-      create_entry
+      it "should register changes in the entry basic fields" do
+        e = Entry.last
 
-      expect(Entry.count).to eq(count + 1)
+        visit edit_entry_path (e)
 
-      entry = Entry.last
+        fill_in 'folios', with: 10000
+        first(".save-button").click
+        sleep(1.5)
+        expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
 
-      old_title = entry.entry_titles.first.title
+        visit history_entry_path (e)
 
-      visit edit_entry_path :id => entry.id
+        expect(page).to have_content('Folios')
+        expect(page).to have_content('10000')
+        expect(page).to have_content('123')
+      end
 
-      fill_in 'title_0', with: 'Changed Book'
+      it "should present the option to revert simple changes" do
+        e = Entry.last
 
-      first(".save-button").click
+        visit history_entry_path (e)
 
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+        f = first('.active', text: 'Folios')
+        f = f.find('input[type=checkbox]').set(true)
+        click_button('Undo')
 
-      entry.reload
+        expect(page).to have_content('Revert to Old Version')
+        expect(page).to have_content('10000')
+        expect(page).to have_content('123')
+        expect(page).to have_content(e.public_id)
+      end
 
-      visit history_entry_path :id => entry.id
+      it "should successfully restore the previous version" do
+        e = Entry.last
 
-      # should display in 3rd row
-      expect(all(:xpath, "//tr")[2].all(:xpath, ".//td")[2].text).to eq("changed Title")
-      expect(all(:xpath, "//tr")[2].all(:xpath, ".//td")[3].text).to eq("Title: from #{old_title} to Changed Book")
+        visit history_entry_path (e)
+
+        f = first('.active', text: 'Folios')
+        f = f.find('input[type=checkbox]').set(true)
+        click_button('Undo')
+
+        click_button('Restore')
+
+        sleep(1.1)
+
+        expect(page).to have_content(e.public_id)
+        expect(page).to have_content(123)
+        expect(page).not_to have_content(10000)
+      end
     end
 
-    it "should pre-populate transaction_type on Edit page" do
-      count = Entry.count
+    describe '(for changes to associations)' do
+      
+      it "should show a change to an association in change history" do
+        e = Entry.last
 
-      # create an Unpublished source, which allows selection of
-      # transaction_type
-      source = Source.create!(
-        title: "test unpublished source",
-        source_type: SourceType.unpublished,
-      )
-      entry = Entry.create!(
-        transaction_type: Entry::TYPE_TRANSACTION_GIFT,
-        source: source,
-        created_by_id: @user.id,
-      )
+        visit edit_entry_path (e)
+        fill_in 'title_0', with: 'Hiiipower'
 
-      visit edit_entry_path :id => entry.id
+        first('.save-button').click
+        sleep(1.5)
 
-      expect(page).to have_select('transaction_type', selected: 'A Gift')
-    end
+        visit entry_path (e)
 
-    it "should remove a title on Edit page" do
-      count = Entry.count
+        expect(page).to have_content('Hiiipower')
 
-      create_entry
+        visit history_entry_path (e)
+        expect(page).to have_content('Book of Hours')
+        expect(page).to have_content('Hiiipower')
 
-      expect(Entry.count).to eq(count + 1)
+      end
 
-      entry = Entry.last
+      it "should show options to revert an 'association' change" do
+        e = Entry.last
 
-      visit edit_entry_path :id => entry.id
+        visit history_entry_path (e)
 
-      # mock out the confirm dialogue
-      page.evaluate_script('window.confirm = function() { return true; }')
+        f = first('.active', text: 'Hiiipower')
+        f = f.find('input[type=checkbox]').set(true)
+        click_button('Undo')
 
-      find_by_id("delete_title_0").click
+        expect(page).to have_content(e.public_id)
+        expect(page).to have_content('Hiiipower')
+        expect(page).to have_content('Book of Hours')
+      end
 
-      first(".save-button").click
+      it "should successfully restore the previous association by overwriting the new field" do
+        e = Entry.last
 
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+        old_count = e.entry_titles.count
 
-      entry.reload
+        visit history_entry_path (e)
 
-      expect(entry.entry_titles.count).to eq(1)
-      expect(entry.entry_titles.first.title).to eq("Bible")
-    end
+        f = first('.active', text: 'Hiiipower')
+        f = f.find('input[type=checkbox]').set(true)
+        click_button('Undo')
 
-    it "should clear out a title on Edit Page" do
-      count = Entry.count
+        click_button('Restore')
+        sleep(1.1)
 
-      create_entry
+        expect(page).to have_content('Book of Hours')
+        expect(page).not_to have_content('Hiiipower')
+        expect(old_count).to eq(e.entry_titles.count)      
+      end
 
-      expect(Entry.count).to eq(count + 1)
+      it "should save a 'revert' change in the record history" do
+        e = Entry.last
 
-      entry = Entry.last
+        visit history_entry_path (e)
 
-      visit edit_entry_path :id => entry.id
+        f = first('.active', text: 'Hiiipower')
+        l = f.first('.history-label')
+        expect(l).to have_content('changed Title')
+        expect(f).to have_content('Book of Hours')
+      end
 
-      # clear out the title field; this should result in deletion of
-      # underlying entry_title record
-      fill_in 'title_0', with: ''
+      it "should recreate an associated field that was deleted" do
+        e = Entry.last
+        old_count = e.entry_titles.count
 
-      first(".save-button").click
+        visit edit_entry_path (e)
 
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+        t = find('#title_0').value
 
-      entry.reload
+        find('#delete_title_0').click
+        first(".save-button").click
+        
+        sleep(1.1)
 
-      expect(entry.entry_titles.count).to eq(1)
-      expect(entry.entry_titles.first.title).to eq("Bible")
-    end
+        new_count = e.entry_titles.count
+        expect(old_count).to eq(new_count + 1)
 
-    it "should clear out a title on Edit Page" do
-      count = Entry.count
+        visit history_entry_path (e)
+        f = first('.active', text: 'Title')
+        l = f.first('.history-label')
+        expect(l).to have_content('deleted Title')
+        f = f.find('input[type=checkbox]').set(true)
+        click_button('Undo')
 
-      create_entry
+        expect(page).to have_content(t)
 
-      expect(Entry.count).to eq(count + 1)
+        click_button('Restore')
 
-      entry = Entry.last
+        sleep(1.1)
 
-      visit edit_entry_path :id => entry.id
+        expect(page).to have_content(t)
+        expect(e.entry_titles.count).to eq(old_count)
+        expect(e.entry_titles.count).not_to eq(new_count)
+      end
 
-      # clear out the title field; this should result in deletion of
-      # underlying entry_title record
-      fill_in 'title_0', with: ''
-
-      first(".save-button").click
-
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      entry.reload
-
-      expect(entry.entry_titles.count).to eq(1)
-      expect(entry.entry_titles.first.title).to eq("Bible")
-    end
-
-    it "should clear out a Name Authority (autocomplete) field" do
-      count = Entry.count
-
-      create_entry
-
-      expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
-
-      visit edit_entry_path :id => entry.id
-
-      fill_in 'author_observed_name_0', with: "Joe"
-      fill_in 'author_0', with: '     '
-      fill_autocomplete('author_0', with: '     ')
-
-      expect(find_field('author_0').value).to eq('     ')
-
-      first(".save-button").click
-
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      entry.reload
-
-      entry = Entry.last
-
-      expect(entry.entry_authors.count).to eq(1)
-      expect(entry.entry_authors.first.author_id).to eq(nil)
-    end
-
-    it "should warn when editing Entry to have same catalog number as existing Entry" do
-      create_entry
-
-      visit new_entry_path :source_id => @source.id
-
-      # make a new entry w/ same Source but diff catalog number
-      fill_in 'cat_lot_no', with: "124"
-      first(".save-button").click
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
-
-      visit edit_entry_path :id => Entry.last.id
-      fill_in 'cat_lot_no', with: "123"
-      find_by_id('add_title').click
-      find_by_id('title_0').trigger('focus')
-
-      expect(page).to have_content "Warning! Another entry with that catalog number already exists."
-
-      # change it back to a new number so msg goes away
-      fill_in 'cat_lot_no', with: "124"
-      find_by_id('add_title').click
-      find_by_id('title_0').trigger('focus')
-
-      expect(page).not_to have_content "Warning! Another entry with that catalog number already exists."
-    end
-
-    it "should disallow saving on Edit Page when another change was made" do
-      create_entry
-
-      entry = Entry.last
-
-      visit edit_entry_path :id => entry.id
-
-      # wait for AJAX to finish
-      expect(find(".source-name").text.length).to be > 0
-
-      # change folios and try to modify folios
-
-      entry.folios = 6666
-      entry.save!
-
-      sleep 1.1
-
-      fill_in 'folios', with: '7777'
-      first(".save-button").click
-
-      expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
-    end
-
-    it "should disallow saving on Edit Page when another change was made (variation 1)" do
-      create_entry
-
-      entry = Entry.last
-
-      visit edit_entry_path :id => entry.id
-
-      # wait for AJAX to finish
-      expect(find(".source-name").text.length).to be > 0
-
-      # change folios and try to modify title association record
-
-      entry.folios = 6666
-      entry.save!
-
-      sleep 1.1
-
-      fill_in 'title_0', with: 'changed title'
-      first(".save-button").click
-
-      expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
-    end
-
-    it "should disallow saving on Edit Page when another change was made (variation 2)" do
-      create_entry
-
-      entry = Entry.last
-
-      visit edit_entry_path :id => entry.id
-
-      # wait for AJAX to finish
-      expect(find(".source-name").text.length).to be > 0
-
-      # change title association record and try to modify folios
-
-      entry_title = entry.entry_titles.last
-      entry_title.title = "changed title"
-      entry_title.save!
-
-      sleep 1.1
-
-      fill_in 'folios', with: '11111'
-      first(".save-button").click
-
-      expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
+      it "should remove an associated field that was created" do
+        e = Entry.last
+        old_count = e.entry_titles.count
+
+        visit history_entry_path e
+        
+        f = first('.active', text: 'Title')
+        l = f.first('.history-label')
+        expect(l).to have_content('added Title')
+        f = f.find('input[type=checkbox]').set(true)
+        click_button('Undo')
+
+        expect(page).to have_content('Book of Hours')
+        click_button('Restore')
+
+        sleep(1.1)
+
+        expect(page).not_to have_content('Book of Hours')
+        expect(e.entry_titles.count).to eq(old_count - 1)
+      end
+      # revert successfully, add, and combine
     end
 
   end
-
-  context "when user is not logged in" do
-
-    it "should disallow creating Sources if not logged in" do
-      visit new_source_path
-      expect(page).to have_content("You need to sign in")
-    end
-
-    it "should disallow creating Entries if not logged in" do
-      visit new_entry_path :source_id => @source.id
-      expect(page).to have_content("You need to sign in")
-    end
-
-  end
-
 end

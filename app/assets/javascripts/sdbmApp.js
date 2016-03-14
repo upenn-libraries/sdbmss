@@ -490,6 +490,54 @@ var EntryScope;
           $scope.entry.source = undefined
         };
 
+        $scope.updateProvenanceDateRange = function (prov, date) {
+          console.log('here', date);
+          var observedDate = date.date;
+          if(observedDate && (date.type == "Start" || date.type == "End")) {
+              $http.get("/entry_dates/parse_observed_date.json" , {
+                  params: {
+                      date: observedDate
+                  }
+              }).then(function (response) {
+                  if (response.data.date) {
+                      if (date.type == "Start") {
+                        prov.start_date_normalized_start = response.data.date.date_start;
+                      } else if (date.type == "End") {
+                        prov.end_date_normalized_end = response.data.date.date_end;
+                      }
+                  }
+              }, function(response) {
+                  alert("An error occurred trying to normalize date");
+              });
+          }
+        }
+
+        $scope.addProvenanceDate = function (prov) {
+          if (!prov.dates) prov.dates = [];
+          prov.dates.push({});
+        }
+        $scope.removeProvenanceDate = function (prov, date) {
+          var index = prov.dates.indexOf(date);
+          if (index != -1) {
+            prov.dates.splice(index, 1);
+          }
+        }
+        $scope.getProvenanceDateOptions = function (prov, date) {
+          var d_options = ["Start", "End", "Associated"];
+          for (var i = 0; i < prov.dates.length; i++) {
+            if (prov.dates[i] == date) {}
+            else if (prov.dates[i].type == "Start") {
+              var j = d_options.indexOf("Start");
+              if (j != -1) d_options.splice(j, 1);
+            }
+            else if (prov.dates[i].type == "End") {
+              var j = d_options.indexOf("End");
+              if (j != -1) d_options.splice(j, 1);
+            }
+          }
+          return d_options;
+        }
+
         $scope.addRecord = function (anArray) {
           anArray.push({});
         };
@@ -591,7 +639,6 @@ var EntryScope;
                 var fieldname = assoc.field;
                 var objArray = entry[fieldname];
                 if(!objArray || objArray.length === 0) {
-                    // FIX ME: load one blank form field, or none
                     //entry[fieldname] = [ {} ];
                     if (fieldname == 'provenance')
                       entry[fieldname] = [ {} ]
@@ -710,6 +757,21 @@ var EntryScope;
                 delete entryToSave.sale;
             } else {
                 entryToSave.sales = [];
+            }
+
+            if (entryToSave.provenance) {
+              for (var i = 0; i < entryToSave.provenance.length; i++) {
+                var prov = entryToSave.provenance[i];
+                prov.start_date = "", prov.end_date = "", prov.associated_date = "";
+                if (prov.dates) {
+                  for (var j = 0; j < prov.dates.length; j++) {
+                    var date = prov.dates[j];
+                    if (date.type == "Start") prov.start_date = date.date;
+                    else if (date.type == "End") prov.end_date = date.date;
+                    else if (date.type == "Associated") prov.associated_date += date.date + "\t";
+                  }
+                }
+              }
             }
 
             // strip out blank objects
@@ -1156,6 +1218,7 @@ var EntryScope;
 
     // attribute value should be the two IDs, comma-separated, of the
     // elements to populate with normalized dates.
+
     sdbmApp.directive("sdbmApproximateDateString", function ($http) {
         return function (scope, element, attrs) {
             var targets = attrs.sdbmApproximateDateString;
@@ -1208,7 +1271,7 @@ var EntryScope;
                         data: {
                             search_field: "advanced",
                             op: "AND",
-                            approved: "*",
+                            //approved: "*",
                             source: "SDBM_SOURCE_" + scope.entry.source.id,
                             catalog_or_lot_number: cat_lot_no
                         },

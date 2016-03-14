@@ -29,4 +29,12 @@ class Language < ActiveRecord::Base
     name
   end
 
+  def to_fields
+    {language: name}
+  end
+
+  def public_id
+    SDBMSS::IDS.get_public_id_for_model(self.class, id)
+  end
+
 end

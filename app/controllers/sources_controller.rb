@@ -145,8 +145,6 @@ class SourcesController < SearchableAuthorityController
     search_model_class.all.includes([:created_by])
   end
 
-  # FIX ME: this search system should use solr now, and possibly even blacklight
-
   def search_query
     query = super
 
@@ -214,6 +212,9 @@ class SourcesController < SearchableAuthorityController
       link: obj.link,
       comments: obj.comments,
       created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
+      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:short) : "",
+      updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
+      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:short) : ""
     }
   end
 
@@ -325,7 +326,7 @@ class SourcesController < SearchableAuthorityController
 
   private
 
-# FIX ME: how to get similar before it exists?!
+# FIX ME: how to get similar before it exists?!  right now uses levenshtein for that, solr for everything else
 
   def get_similar
     type = @source.source_type_id || 99

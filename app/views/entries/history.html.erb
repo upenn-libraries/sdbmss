@@ -1,54 +1,103 @@
-<h1>History of changes to <%= @entry.public_id %></h1>
-
-<% changesets = ModelHistory.new(@entry).changesets %>
-<% legacy = EntryChange.where(entry_id: @entry.id).order(change_date: :desc) %>
-<% if changesets.count > 0 || legacy.count > 0 %>
-<table class="table">
-    <thead>
-        <tr>
-            <th width="15%">Date</th>
-            <th width="15%">User</th>
-            <th width="20%">Action</th>
-            <th width="25%">Details</th>
-            <th width="25%"></th>
-        </tr>
-    </thead>
-    <tbody>
-        <% changesets.each do |changeset| %>
-        <tr>
-            <td><%= changeset.date.to_formatted_s(:date_and_time) %></td>
-            <td><%= changeset.user %></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <% changeset.versions.each do |version| %>
-            <% formatter = EntryVersionFormatter.new(version) %>
-                <% if formatter.details.count > 0 %>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td><%= formatter.action %></td>
-                            <td colspan="2">
-                                <% formatter.details.each do |detail| %>
-                                    <%= detail %></br>
-                                <% end %>
-                            </td>
-                    </tr>
-            <% end %>
-            <% end %>
-        <% end %>
-
-        <% legacy.each do |entry_change| %>
-        <tr>
-            <td><%= entry_change.change_date.to_formatted_s(:date_and_time) %></td>
-            <td><%= entry_change.changed_by.username %></td>
-            <td><%= entry_change.change_type %> <%= entry_change.column %></td>
-            <td><%= entry_change.changed_from %></td>
-            <td><%= entry_change.changed_to %></td>
-        </tr>
-        <% end %>
-    </tbody>
-</table>
-<% else %>
-<p>There is no history to display for this entry.</p>
+<% if @error %>
+    <div class="panel panel-danger">
+        <div class="panel-heading"><%= @error %></div>
+    </div>
 <% end %>
+
+<%= form_for @entry, url: {action: "revert_confirm"} do |f| %>
+
+    <div class="row history-heading">
+        <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-10">
+                    <div class="well">
+                        <h1>History of changes to <%= @entry.public_id %></h1>
+                    </div>
+                </div>
+                <div class="col-sm-2 text-center">
+                    <div class="well"><%= f.submit 'Undo', class: 'btn btn-warning btn-lg' %></div>
+                </div>
+            
+            </div>
+        </div>
+    </div>
+
+    <div class="row"><label class="col-sm-12"><h3><span>Entry Field(s)</span></h3></label></div>
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['Entry']} %>
+
+    <% if @unique_list.include? 'Sale' %>
+        <div class="row"><label class="col-sm-12"><h3><span>Sale Field(s)</span></h3></label></div>
+        <%= render partial: "sub_history", locals: {sublist: @unique_list['Sale']} %>
+    <% end %>
+
+    <% if @unique_list.include? 'SaleAgent' %>
+        <div class="row"><label class="col-sm-12"><h3><span>Sale (Transaction) Agent(s)</span></h3></label></div>
+        <%= render partial: "sub_history", locals: {sublist: @unique_list['SaleAgent']} %>
+    <% end %>
+
+    <div class="row"><label class="col-sm-12"><h3><span>Title(s)</span></h3></label></div>
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryTitle']} %>
+
+    <div class="row"><label class="col-sm-12"><h3><span>Author(s)</span></h3></label></div>
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryAuthor']} %>
+
+    <div class="row"><label class="col-sm-12"><h3><span>Date(s)</span></h3></label></div>
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryDate']} %>
+
+    <div class="row"><label class="col-sm-12"><h3><span>Artist(s)</span></h3></label></div>
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryArtist']} %>
+
+    <div class="row"><label class="col-sm-12"><h3><span>Scribe(s)</span></h3></label></div>
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryScribe']} %>
+
+    <div class="row"><label class="col-sm-12"><h3><span>Language(s)</span></h3></label></div>   
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryLanguage']} %>
+    
+    <div class="row"><label class="col-sm-12"><h3><span>Material(s)</span></h3></label></div>   
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryMaterial']} %>
+    
+    <div class="row"><label class="col-sm-12"><h3><span>Place(s)</span></h3></label></div>   
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryPlace']} %>
+    
+    <div class="row"><label class="col-sm-12"><h3><span>Use(s)</span></h3></label></div>   
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['EntryUse']} %>
+    
+    <div class="row"><label class="col-sm-12"><h3><span>Provenance(s)</span></h3></label></div>   
+    <%= render partial: "sub_history", locals: {sublist: @unique_list['Provenance']} %>
+
+<% end %>
+<script type='text/javascript'>
+
+$(document).ready( function () {
+    $('.carousel').each( function () {
+        var $this = $(this);
+
+      $this.children('.carousel-control').show();
+
+      if($this.find('.carousel-inner .item:first').hasClass('active')) {
+        $this.children('.left.carousel-control').hide();
+      } if($this.find('.carousel-inner .item:last').hasClass('active')) {
+        $this.children('.right.carousel-control').hide();
+      }
+    });
+    $('.carousel').on('slid.bs.carousel', function() {
+      var $this = $(this);
+
+      $this.children('.carousel-control').show();
+
+      if($this.find('.carousel-inner .item:first').hasClass('active')) {
+        $this.children('.left.carousel-control').hide();
+      } if($this.find('.carousel-inner .item:last').hasClass('active')) {
+        $this.children('.right.carousel-control').hide();
+      }
+    });
+    // clear all checkboxes on load
+    $("input[type='checkbox']").attr("checked", false);
+    // only allow a single checkbox to be selected at a time!
+    $("input[type='checkbox']").on("click" , function(){
+        console.log($(this).parent('.carousel-inner'), $(this).parent('.carousel-inner').find("input[type='checkbox']"));
+        $(this).closest('.carousel-inner').find("input[type='checkbox']").not(this).attr("checked", false);
+    });
+});
+
+</script>

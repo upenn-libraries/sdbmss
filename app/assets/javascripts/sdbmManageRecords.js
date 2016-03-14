@@ -174,7 +174,7 @@ var SDBM = SDBM || {};
             orderStr += columns[item.column].dbSortField + " " + item.dir;
         });
 
-// FIX ME: ability to have multiple 'rows' of search;
+// FIX ME: add ability to have multiple 'rows' of search;
 
         var search_query = {
             unreviewed_only: this.getUnreviewedOnly(),
@@ -330,13 +330,31 @@ var SDBM = SDBM || {};
                 title: 'Created By',
                 width: "10%",
                 dbSortField: 'created_by_id'
+            },
+            {
+                title: 'Created At',
+                width: "10%",
+                dbSortField: 'created_at',
+                orderable: false
+            },
+            {
+                title: 'Updated By',
+                width: "10%",
+                dbSortField: 'update_by_id',
+                orderable: false
+            },
+            {
+                title: 'Updated At',
+                width: "10%",
+                dbSortField: 'updated_at',
+                orderable: false
             }
         ];
     };
 
     // translates a search result object into an Array used to populate datatable
     SDBM.ManageRecords.prototype.searchResultToTableRow = function (result) {
-        return [ null, result.id, result.id, result[this.options.searchNameField], result.entries_count || 0, result.reviewed, result.created_by || "" ];
+        return [ null, result.id, result.id, result[this.options.searchNameField], result.entries_count || 0, result.reviewed, result.created_by || "", result.created_at || "", result.updated_by || "", result.updated_at || "" ];
     };
 
     SDBM.ManageRecords.prototype.showOrHideMarkCheckedRecordsButton = function() {
