@@ -1,17 +1,34 @@
 <h3>Recent Activity</h3>
-<table class="table table-striped">
-<% @activities.each do |activity| %>
-    <tr>
-        <td>
-            <div><%= activity.created_at.to_formatted_s(:date_and_time) %></div>
-            <div style="margin-left: 20px;">
-                <%= render_partial_if_exists "activities/#{activity.item_type.underscore.singularize}", "default", locals: { activity: activity }  %>
-            </div>
-        </td>
-    </tr>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="well">
+            <!-- FIX ME: figure out some way to search by username! -->
+            <%= form_tag({:controller => "activities", :action => "index"}, :method => "get", :class => "form-inline") do %>
+                Search: 
+                <%= text_field 'users[username]', "", class: 'form-control', placeholder: 'Username', value: (params[:users][:username] if params[:users] ) %>
+                <%= select_tag :event, options_for_select(['', 'update', 'create', 'destroy'], params[:event]), class: 'form-control', placeholder: 'Event' %>
+                <%= select_tag :item_type, options_for_select(['', 'Entry', 'Name', 'Source', 'Language', 'Place', 'Manuscript'], params[:item_type]), class: 'form-control', placeholder: 'Record Type'%>
+                <%= submit_tag "Filter", class: 'form-control' %>
+            <% end %>
+        </div>
+    </div>
+</div>
+<div class='panel-group'>
+<% @activities.each_with_index do |activity_list, index| %>
+    <%= render partial: "activities/show", locals: {activity_list: activity_list, index: index} %>
 <% end %>
-</table>
-
+</div>
+<div class="label label-primary"><%= @total %></div>
+<a id="loadMore" class='btn btn-default'>Load More</a>
+<script>
+    $('#loadMore').click(function (e) {
+        $.get('/activities?format=json&page=2', function (result) {
+            $('.panel-group').append(result);
+            // FIX ME: load as json, then fill with new list elements (panels?) in a subtle, quick animation
+        })
+    });
+</script>
+<!--
 <nav>
   <ul class="pagination">
     <li class="<% if @page == 1 %>disabled<% end %>">
@@ -29,3 +46,4 @@
     </li>
   </ul>
 </nav>
+-->
