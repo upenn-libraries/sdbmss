@@ -1,3 +1,12 @@
-<% @activities.each_with_index do |activity_list, index| %>
-    <%= render partial: "activities/show", locals: {activity_list: activity_list, index: index} %>
-<% end %>
+<div class="panel panel-default">
+  <div class="panel-heading" data-toggle="collapse" href="#collapse_<%= index %>">
+    <%= activity_list.first.user.username %> <%= activity_list.first.event + (activity_list.first.event.end_with?("e") ? "" : "e") + "d" %> <%= activity_list.count %> <%= activity_list.first.event %><%= activity_list.count > 1 ? "s" : "" %>
+  </div>
+  <div class="panel-collapse collapse" id="collapse_<%= index %>">
+    <ul class="list-group">
+      <% activity_list.each do |activity| %>
+        <li class="list-group-item"><%= render partial: 'activities/default', locals: {activity: activity} %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
