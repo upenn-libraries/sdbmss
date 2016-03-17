@@ -1,11 +1,27 @@
 <div class="panel panel-default">
-  <div class="panel-heading" data-toggle="collapse" href="#collapse_<%= index %>">
-    <%= activity_list.first.user.username %> <%= activity_list.first.event + (activity_list.first.event.end_with?("e") ? "" : "e") + "d" %> <%= activity_list.count %> <%= activity_list.first.event %><%= activity_list.count > 1 ? "s" : "" %>
+  <div class="panel-heading" data-toggle="collapse" href="#collapse_<%= index + @page_size * @page %>">
+    <div class="row">
+      <div class="col-sm-9">
+        <%= activity_list.first.user.username %> <%= activity_list.first.event + (activity_list.first.event.end_with?("e") ? "" : "e") + "d" %> <%= activity_list.count %> <%= activity_list.count > 1 ? activity_list.first.item_type.pluralize : activity_list.first.item_type %>
+      </div>
+      <div class="col-sm-3 text-right">
+        last updated <%= get_date_display(activity_list.first.created_at, activity_list.last.created_at) %>
+      </div>
+    </div>
   </div>
-  <div class="panel-collapse collapse" id="collapse_<%= index %>">
+  <div class="panel-collapse collapse" id="collapse_<%= index + @page_size * @page %>">
     <ul class="list-group">
       <% activity_list.each do |activity| %>
-        <li class="list-group-item"><%= render partial: 'activities/default', locals: {activity: activity} %></li>
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col-sm-9">
+              <%= render partial: 'activities/default', locals: {activity: activity} %>
+            </div>
+            <div class="col-sm-3 text-right">
+              <%= activity.created_at.to_formatted_s(:short) %>              
+            </div>
+          </div>
+        </li>
       <% end %>
     </ul>
   </div>

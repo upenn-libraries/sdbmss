@@ -4,15 +4,15 @@ class ActivitiesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    page_size = 25
+    @page_size = 25
     @page = (params["page"] || 1).to_i
     @activities = []
     last = 0
-    activity_list = Activity.joins(:user).where(params_for_index).order(id: :desc).limit(page_size).offset((@page - 1) * page_size)
+    activity_list = Activity.joins(:user).where(params_for_index).order(id: :desc).limit(@page_size).offset((@page - 1) * @page_size)
     @total = Activity.joins(:user).where(params_for_index).count
 
-    @num_pages = @total / page_size
-    @num_pages += 1 if @total % page_size > 0
+    @num_pages = @total / @page_size
+    @num_pages += 1 if @total % @page_size > 0
     activity_list.each do |activity|
       if !@activities[last]
         @activities[last] = [activity]
@@ -23,12 +23,9 @@ class ActivitiesController < ApplicationController
         @activities.append([activity])
       end
     end
-    respond_to do |format|
-      format.html {
-      }
-      format.json {
-        render json: @activities
-      }
+
+    if params[:more]
+      render partial: "activities/more"
     end
   end
 

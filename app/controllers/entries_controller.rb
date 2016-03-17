@@ -267,7 +267,7 @@ class EntriesController < ManageModelsController
   def history
     changesets = ModelHistory.new(@entry).changesets
     if changesets.count <= 0
-      @error = "This record was added before version history was implemented - there is no saved changed history to display."
+      @error = "This record was added before version history was implemented - there is no saved change history to display."
     end
     unique_hash = {}
     @unique_list = {}

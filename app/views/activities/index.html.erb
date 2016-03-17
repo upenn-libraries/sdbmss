@@ -2,48 +2,40 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="well">
-            <!-- FIX ME: figure out some way to search by username! -->
             <%= form_tag({:controller => "activities", :action => "index"}, :method => "get", :class => "form-inline") do %>
-                Search: 
+                <%= label_tag 'Search:' %>  
                 <%= text_field 'users[username]', "", class: 'form-control', placeholder: 'Username', value: (params[:users][:username] if params[:users] ) %>
                 <%= select_tag :event, options_for_select(['', 'update', 'create', 'destroy'], params[:event]), class: 'form-control', placeholder: 'Event' %>
                 <%= select_tag :item_type, options_for_select(['', 'Entry', 'Name', 'Source', 'Language', 'Place', 'Manuscript'], params[:item_type]), class: 'form-control', placeholder: 'Record Type'%>
-                <%= submit_tag "Filter", class: 'form-control' %>
+                <%= submit_tag "Filter", class: 'form-control btn-info' %>
+                <%= link_to "Clear", activities_path, class: "btn btn-warning" %>
+                <div class="label label-primary pull-right"><%= @total %></div>
             <% end %>
         </div>
     </div>
 </div>
 <div class='panel-group'>
-<% @activities.each_with_index do |activity_list, index| %>
-    <%= render partial: "activities/show", locals: {activity_list: activity_list, index: index} %>
-<% end %>
+    <%= render partial: "activities/more" %>
 </div>
-<div class="label label-primary"><%= @total %></div>
-<a id="loadMore" class='btn btn-default'>Load More</a>
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <a id="loadMore" class='btn btn-default'>Load More...</a>
+    </div>
+</div>
 <script>
+    var page = 1;
+    var total_pages = <%= @num_pages %>;
     $('#loadMore').click(function (e) {
-        $.get('/activities?format=json&page=2', function (result) {
-            $('.panel-group').append(result);
-            // FIX ME: load as json, then fill with new list elements (panels?) in a subtle, quick animation
+        page += 1;
+        query = window.location.href.split("?")[1]
+        $.get("?" + query + '&more=true&page=' + page, function (result) {
+            var more = $(result);
+            more.hide();
+            $('.panel-group').append(more);
+            more.slideDown();
+            $('html, body').animate({
+                scrollTop: $("#loadMore").offset().top
+            }, 500);
         })
     });
 </script>
-<!--
-<nav>
-  <ul class="pagination">
-    <li class="<% if @page == 1 %>disabled<% end %>">
-        <% if @page > 1 %><a href="<%= activities_path page: @page - 1 %>" aria-label="Previous"><% end %>
-            <span aria-hidden="true">&laquo;</span>
-        <% if @page > 1 %></a><% end %>
-    </li>
-    <% @num_pages.times do |page| %>
-    <li><a href="<%= activities_path page: page + 1 %>"><%= page + 1 %></a></li>
-    <% end %>
-    <li class="<% if @page == @num_pages %>disabled<% end %>">
-        <% if @page < @num_pages %><a href="<%= activities_path page: @page + 1 %>" aria-label="Next"><% end %>
-            <span aria-hidden="true">&raquo;</span>
-        <% if @page < @num_pages %></a><% end %>
-    </li>
-  </ul>
-</nav>
--->

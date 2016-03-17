@@ -1,0 +1,3 @@
+<% @activities.each_with_index do |activity_list, index| %>
+    <%= render partial: "activities/show", locals: {activity_list: activity_list, index: index } %>
+<% end %>
