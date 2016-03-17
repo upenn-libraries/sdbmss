@@ -309,7 +309,13 @@ var SDBM = SDBM || {};
             {
                 title: 'ID',
                 width: "8%",
-                dbSortField: 'id'
+                dbSortField: 'id',
+                render: function (data, type, full, meta) {
+                    // /console.log("here", data, type, full, meta);
+                    var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '">' + data + '</a>';
+                    console.log(str);
+                    return str;
+                }
             },
             {
                 title: 'Name',
