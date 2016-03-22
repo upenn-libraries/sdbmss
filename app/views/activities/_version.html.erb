@@ -1,0 +1,14 @@
+<div class="no-overflow">
+  <% if version.details.count == 0 %>
+    No changes to display...
+  <% else %>
+    <% version.details.each_with_index do |d, index| %>
+      <% d = d.split(":") %>
+      <% if index < version.details.count - 1 %>
+        <strong><%= d[0] %>:</strong> <%= d[1] %>, 
+      <% else %>
+        <strong><%= d[0] %>:</strong> <%= d[1] %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

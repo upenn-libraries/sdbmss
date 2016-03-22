@@ -1,22 +1,62 @@
 <h3>Recent Activity</h3>
-<div class="row">
-    <div class="col-sm-12">
-        <div class="well">
-            <%= form_tag({:controller => "activities", :action => "index"}, :method => "get", :class => "form-inline") do %>
-                <%= label_tag 'Search:' %>  
-                <%= text_field 'users[username]', "", class: 'form-control', placeholder: 'Username', value: (params[:users][:username] if params[:users] ) %>
-                <%= select_tag :event, options_for_select(['', 'update', 'create', 'destroy'], params[:event]), class: 'form-control', placeholder: 'Event' %>
-                <%= select_tag :item_type, options_for_select(['', 'Entry', 'Name', 'Source', 'Language', 'Place', 'Manuscript'], params[:item_type]), class: 'form-control', placeholder: 'Record Type'%>
-                <%= submit_tag "Filter", class: 'form-control btn-info' %>
-                <%= link_to "Clear", activities_path, class: "btn btn-warning" %>
-                <div class="label label-primary pull-right"><%= @total %></div>
-            <% end %>
+<%= form_tag({:controller => "activities", :action => "index"}, :method => "get", :class => "form-inline") do %>
+<div class="well">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <%= label_tag 'User:' %>
+                        </div>
+                        <div class="col-sm-3">
+                            <%= label_tag "Action:" %>
+                        </div>
+                        <div class="col-sm-3">
+                            <%= label_tag "Record:" %>
+                        </div>  
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-5">
+                    <%= label_tag 'Date Range:' %>
+                </div>
+            </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <%= text_field 'users[username]', "", class: 'form-control', value: (params[:users][:username] if params[:users] ) %>            
+                        </div>
+                        <div class="col-sm-3">
+                            <%= select_tag :event, options_for_select(['', 'update', 'create', 'destroy'], params[:event]), class: 'form-control', placeholder: 'Event' %>
+                        </div>
+                        <div class="col-sm-3">
+                            <%= select_tag :item_type, options_for_select(['', 'Entry', 'Name', 'Source', 'Language', 'Place', 'Manuscript'], params[:item_type]), class: 'form-control', placeholder: 'Record Type'%>
+                        </div>  
+                    </div>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <%= date_field :start_date, "", class: 'form-control', value: params[:start_date] || (Date.today - 100.years).to_s %> to 
+                    <%= date_field :end_date, "", class: 'form-control', value: params[:end_date] || (Date.today + 1.day).to_s %>            
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <%= submit_tag "Filter", class: 'form-control btn-info' %>
+            <%= link_to "Clear", activities_path, class: "btn btn-warning" %>
+        </div>
+    </div>
+    <% end %>
 </div>
-<div class='panel-group'>
+<%= render partial: "activities/summary", locals: {summary: @summary} %>
+<ul id='activity' class='list-group'>
     <%= render partial: "activities/more" %>
-</div>
+</ul>
 <div class="row">
     <div class="col-sm-12 text-center">
         <a id="loadMore" class='btn btn-default'>Load More...</a>
@@ -25,13 +65,16 @@
 <script>
     var page = 1;
     var total_pages = <%= @num_pages %>;
+    if (page >= total_pages) $('#loadMore').addClass('disabled');
+
     $('#loadMore').click(function (e) {
         page += 1;
+        if (page >= total_pages) $('#loadMore').addClass('disabled');
         query = window.location.href.split("?")[1]
         $.get("?" + query + '&more=true&page=' + page, function (result) {
             var more = $(result);
             more.hide();
-            $('.panel-group').append(more);
+            $('#activity').append(more);
             more.slideDown();
             $('html, body').animate({
                 scrollTop: $("#loadMore").offset().top

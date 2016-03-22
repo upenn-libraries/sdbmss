@@ -155,21 +155,16 @@
         </div>
         <% end %>
         <!-- recent activity -->
-        <% activities = Activity.where(user_id: current_user.id).last(10).reverse %>
-        <% if activities && activities.count > 0 %>
+        <% @activities = Activity.where(user_id: current_user.id).last(10).reverse %>
+        <% if @activities && @activities.count > 0 %>
             <div class="panel panel-default">
                 <div class="panel-heading">Your Recent Activity</div>
                 <div class="panel-body">
                     <ul class="list-group">
-                        <% activities.each do |activity| %>
-                            <li class="list-group-item">
-                                <%= render_partial_if_exists "activities/default", "default", locals: { activity: activity }  %>
-                                <span class="label label-default label-lg pull-right"><%= activity.created_at.to_formatted_s(:short) %></span>
-                            </li>
-                        <% end %>                        
+                        <%= render partial: "activities/more" %>                       
                     </ul>
+                    <div class="text-center"><%= link_to "See More...", activities_path('users[username][]' => current_user.username) %></div>
                 </div>
-                <div class="panel-footer"><%= link_to "See More...", activities_path %></div>
             </div>
         <% end %>
     </div>

@@ -55,7 +55,10 @@
                 sdbmssMinWidth: "150px",
                 sdbmssMaxWidth: "150px",
                 title: 'Username',
-                dbSortField: manageRecords.options.searchNameField
+                dbSortField: manageRecords.options.searchNameField,
+                render: function (data, type, full, meta) {
+                    return '<a href="/profiles/' + data + '/">' + data + '</a>';
+                }
             },
             {
                 sdbmssMinWidth: "150px",

@@ -1,44 +1,86 @@
-<% @page_title = "User profile: #{@user.username} - " + application_name %>
+<%# Partial used to display name details for both Names generically and Agents (which are Names) %>
+<div class="row">
+    <div class="col-sm-3">
+        <div class="panel panel-default show-tools">
+            <div class="panel-heading">
+                Tools
+            </div>
+            <div class="panel-body">
+                <ul class="nav">
+                    <% if user_signed_in? %>
+                        <% if can?(:edit, @user) %>
+                            <li class="edit_name">
+                                <a href="<%= edit_account_path(@user) %>">Edit this account</a>
+                            </li>
+                        <% end %>
+                        <li><%= link_to 'Return to Listing', accounts_path %></li>
+                    <% end %>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-9">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class='h1'><%= @user.username %> <span class='glyphicon glyphicon-user pull-right <%= "text-success" if @online %>' title='User is <%= @online ? "online" : "offline" %>'></span></span><br>
+            </div>
+            <div class="panel-body">
+                <span class="label label-success"><%= @user.role.humanize %></span> 
+                <span class="pull-right">Last Active: <strong><%= @display[:last_seen] %></strong></span>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-5">
+                <div class="well"><span class="h4"><strong>Full Name:</strong></span> <%= @display[:fullname] %></div>
+            </div>
+            <div class="col-sm-7">
+                <div class="well"><span class="h4"><strong>Email:</strong></span> <%= @display[:email] %></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="well">
+                    <h4 class="h4"><strong>Biography:</strong></h4>
+                    <p><%= @display[:biography] %></p>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-7">
+                <div class="well"><span class="h4"><strong>Affiliated Institution:</strong></span> <%= @display[:institution] %></div>
+            </div>
+            <div class="col-sm-5">
+                <div class="well">
+                    <span class="h4"><strong>Contributions:</strong> 
+                        <span class="label label-source"><%= @display[:sources_created] %> entries</span>
+                        <span class="label label-entry"><%= @display[:entries_created] %> sources</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <span class="h3"><strong>Recent Activity:</strong></span>
+                </div>
+                <div class="panel-body">
+                    <ul id='activity' class='list-group'>
+                        <%= render partial: "activities/more" %>
+                    </ul>
+                    <div class="row">
+                        <div class="col-sm-12 text-center">
+                            <a href="<%= activities_path('users[username][]' => @display[:username]) %>" >See More...</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <ul class="list-group">
+            
+          </ul>
+        </div>
 
-<h1>User Profile</h1>
+    </div>
 
-<dl class="dl-horizontal dl-invert">
-    <dt>Username</dt>
-    <dd>
-        <%= @user.username %>
-    </dd>
-    <dt>Name</dt>
-    <dd>
-        <%= @user.fullname || "(None)" %>
-    </dd>
-    <dt>Institutional Affiliation</dt>
-    <dd>
-        <%= @user.institutional_affiliation || "(None/Unknown)" %>
-    </dd>
-    <dt>Role</dt>
-    <dd>
-        <%= @user.role.capitalize %>
-    </dd>
-    <dt>Email</dt>
-    <dd>
-        <% if @user.email_is_public %><%= mail_to @user.email %><% else %>(Private)<% end %>
-    </dd>
-    <dt>Bio</dt>
-    <dd>
-        <%= @user.bio || "N/A" %>
-    </dd>
-    <dt>Contributions</dt>
-    <dd>
-        <%= Source.where(created_by: @user).count %> sources<br/>
-        <% num_approved = Entry.where(created_by: @user, approved: true).count %>
-	<% num_unapproved = Entry.where(created_by: @user, approved: false).count %>
-        <a href="<%= search_advanced_path(created_by: @user.to_s) %>"><%= num_approved %> entries</a>
-	<% if num_unapproved > 0 %>(<%= num_unapproved %> not yet approved)<% end %>
-	<br/>
-        <%= Comment.where(created_by: @user).count %> comments
-        <% if (num_corrections = Comment.where(created_by: @user, is_correction: true)).count > 0 %>
-            (<%= num_corrections %> of which are corrections to entries)
-        <% end %><br/>
-        </ul>
-    </dd>
-</dl>
+</div>

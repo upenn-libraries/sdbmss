@@ -153,6 +153,7 @@ class EntriesController < ManageModelsController
 
     if params[:cumulative_updated_at].to_s == @entry.cumulative_updated_at.to_s
       ActiveRecord::Base.transaction do
+
         filtered = entry_params_for_create_and_edit
         success = @entry.update_by(current_user, filtered)
         if success
@@ -168,6 +169,8 @@ class EntriesController < ManageModelsController
             c.save!
           end
         end
+        puts "Bah #{PaperTrail.transaction_id}"
+        @transaction_id = PaperTrail.transaction_id
       end
     else
       errors = { base: "Another change was made to the record while you were working. Re-load the page and start over." }

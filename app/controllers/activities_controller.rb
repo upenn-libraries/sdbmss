@@ -8,21 +8,21 @@ class ActivitiesController < ApplicationController
     @page = (params["page"] || 1).to_i
     @activities = []
     last = 0
-    activity_list = Activity.joins(:user).where(params_for_index).order(id: :desc).limit(@page_size).offset((@page - 1) * @page_size)
+    @activities = Activity.joins(:user).where(params_for_index).order(id: :desc).limit(@page_size).offset((@page - 1) * @page_size)
     @total = Activity.joins(:user).where(params_for_index).count
 
     @num_pages = @total / @page_size
     @num_pages += 1 if @total % @page_size > 0
-    activity_list.each do |activity|
-      if !@activities[last]
-        @activities[last] = [activity]
-      elsif @activities[last].first.user_id == activity.user_id && @activities[last].first.item_type == activity.item_type && @activities[last].first.event == activity.event
-        @activities[last].append(activity)
-      else
-        last += 1
-        @activities.append([activity])
-      end
-    end
+
+    @summary = {
+      actions_performed: Hash[Activity.joins(:user).where(params_for_index).group(:event).count.sort_by { |_, v| -v }],
+      records_affected: Hash[Activity.joins(:user).where(params_for_index).group(:item_type).select(:item_id).distinct.count.sort_by { |_, v| -v }],
+      active_users: Hash[Activity.joins(:user).where(params_for_index).group(:username).count.sort_by { |_, v| -v }]
+    }
+
+    @summary[:actions_performed][:total] = @total
+    @summary[:records_affected][:total] = Activity.joins(:user).where(params_for_index).select(:item_id).distinct.count
+    @summary[:active_users][:total] = @summary[:active_users].count
 
     if params[:more]
       render partial: "activities/more"
@@ -34,9 +34,10 @@ class ActivitiesController < ApplicationController
     hash[:users] = params[:users] if (!params[:users].blank? && !params[:users][:username][0].blank?)
     hash[:event] = params[:event] if !params[:event].blank?
     hash[:item_type] = params[:item_type] if !params[:item_type].blank?
+    start_date = params[:start_date] && params[:start_date][0].present? ? Date.parse(params[:start_date][0]) : Date.new(1900)
+    end_date = params[:end_date] && params[:end_date][0].present? ? Date.parse(params[:end_date][0]) : Date.today + 1.day
+    hash[:created_at] = start_date..end_date
     hash
-    # the (below) does not work, for some reason, so I did it manually (above)... thanks rails!
-    #params.permit(:event, :item_type, :users => [:username]).reject{|_, v| v.blank?}
   end
 
 end
