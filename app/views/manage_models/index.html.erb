@@ -7,17 +7,24 @@
 </style>
 <% end %>
 
-<% if @page_title %>
-    <h1><%= @page_title %></h1>
-<% else %>
-<% if !can? :manage, model_class %>
-    <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
-    <h1>Manage Your <%= resource_name.pluralize.capitalize %></h1>
-<% else %>
-    <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
-    <h1>Manage all <%= resource_name.singularize %> records</h1>
-<% end %>
-<% end %>
+<div class="row">
+    <div class="col-sm-10">
+        <% if @page_title %>
+            <h1><%= @page_title %></h1>
+        <% else %>
+        <% if !can? :manage, model_class %>
+            <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
+            <h1>Manage Your <%= resource_name.pluralize.capitalize %></h1>
+        <% else %>
+            <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
+            <h1>Manage all <%= resource_name.singularize %> records</h1>
+        <% end %>
+        <% end %>
+    </div>
+    <div class="col-sm-2 text-right">
+        <a class="btn btn-primary add-new-record" href="<%= new_model_path %>"><span class="glyphicon glyphicon-plus"></span> <span class="name">Add New Record</span></a>
+    </div>
+</div>
 
 <%= render partial: "instructions" %>
 
@@ -35,3 +42,18 @@
 </div>
 
 <%= render partial: "index_extra" %>
+
+<script type="text/javascript">
+    $("#addSearch").click( function (e) {
+        var p = $('.search-fieldset').eq(0).clone();
+        p.find("input", "select").val("");
+        $(".search").append(p);
+        p.find(".search-remove").click( function (e) {
+            if ($('.search-fieldset').length > 1) {
+                var p = $(this).closest('.search-fieldset');
+                $(".search").find(p).remove();
+            }
+        });        
+    });
+
+</script>

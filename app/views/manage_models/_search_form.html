@@ -1,48 +1,64 @@
 <%= form_tag(request.path, method: :get, class: "form-horizontal search-form sdbmss-form") do %>
-    <div class="row form-group search-fieldset">
-        <div class="col-sm-1">
-            <label class="control-label">Search</label>
-        </div>
-        <div class="col-sm-3">
-            <%= text_field_tag :search_value, params[:search_value], size: 70, class: "form-control" %>
-        </div>
-        <div class="col-sm-2">
-            <select class="form-control" name="search_field">
-            <%- Array(@search_fields).each do |field| -%>
-                <option value="<%= field %>"><%= field.capitalize %></option>
-            <%- end -%>
-            </select>
-        </div>
-        <div class="col-sm-2">
-            <select class="form-control" name="search_option">
-             <%- Array(@search_options).each do |option| -%>
-                <option value="<%= option %>"><%= option.capitalize %></option>
-            <%- end -%>
-            </select>
-        </div>
-        <div class="col-sm-1">
-            <button id="search_submit" type="submit" class="btn btn-primary">Search</button>
-        </div>
-        <div class="col-sm-1">
-            <img id="spinner" alt="working..." style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
-        </div>
-        <div class="col-sm-2 text-right">
-            <a class="btn btn-primary add-new-record" href="<%= new_model_path %>">Add New Record</a>
-        </div>
-    </div>
-    <div class="row form-group">
-        <div class="col-sm-offset-1 col-sm-4">
-            <% if can? :manage, model_class %>
-            <label class="checkbox-inline">
-                <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
-            </label>
-            <% end %>
-        </div>
-        <div class="col-sm-2 label-alignment review-control" style="display: none;">
-            <a href="#" id="select-all">Select All</a> / <a href="#" id="deselect-all">Deselect All</a>
-        </div>
-        <div class="col-sm-2 review-control" style="display: none;">
-            <a class="btn btn-primary btn-xs" id="mark-as-reviewed" class="btn btn-primary">Mark checked records as reviewed</a>
+<div class="row">
+    <div class="col-sm-9">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="h3">Search
+                    <span class="pull-right btn btn-success btn-xs" id="addSearch">
+                        <span class="glyphicon glyphicon-plus"></span> add term
+                    </span>
+                </span>
+            </div>
+            <div class="panel-body search">
+                <div class="row form-group search-fieldset">
+                    <div class="col-sm-1">
+                        <span class="search-remove glyphicon glyphicon-remove btn btn-xs btn-warning"></span>
+                    </div>
+                    <div class="col-sm-3">
+                        <%= text_field_tag :search_value, params[:search_value], size: 70, class: "form-control" %>
+                    </div>
+                    <div class="col-sm-3">
+                        <select class="form-control" name="search_field">
+                        <%- Array(@search_fields).each do |field| -%>
+                            <option value="<%= field %>"><%= field.humanize %></option>
+                        <%- end -%>
+                        </select>
+                    </div>
+                    <div class="col-sm-4">
+                        <select class="form-control" name="search_option">
+                         <%- Array(@search_options).each do |option| -%>
+                            <option value="<%= option %>"><%= option.humanize %></option>
+                        <%- end -%>
+                        </select>
+                    </div>
+                    <div class="col-sm-1">
+                        <img id="spinner" alt="working..." style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <button id="search_submit" type="submit" class="btn btn-primary">Search</button>
+            </div>
         </div>
     </div>
+    <div class="col-sm-3">
+        <div class="well">
+            <div class="row form-group">
+                <div class="col-sm-12">
+                    <% if can? :manage, model_class %>
+                    <label class="checkbox-inline">
+                        <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
+                    </label>
+                    <% end %>
+                </div>
+                <div class="col-sm-12 label-alignment review-control">
+                    <a href="#" id="select-all">Select All</a> / <a href="#" id="deselect-all">Deselect All</a>
+                </div>
+                <div class="col-sm-12 review-control">
+                    <a class="btn btn-primary btn-sm" id="mark-as-reviewed" class="btn btn-primary">Mark checked records as reviewed</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <% end %>

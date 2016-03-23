@@ -66,7 +66,9 @@ class Name < ActiveRecord::Base
     end
   end 
 
+
   searchable do
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :username })
     integer :id
     text :name, :more_like_this => true
     string :name

@@ -36,11 +36,11 @@ var SDBM = SDBM || {};
 
         window.onpopstate = function(event) {
             // load the data from URL into page
-            manageRecords.setFormStateFromURL();
+            //manageRecords.setFormStateFromURL();
             manageRecords.dataTable.reload();
         };
 
-        manageRecords.setFormStateFromURL();
+//        manageRecords.setFormStateFromURL();
         
         this.dataTable = manageRecords.createTable(".sdbm-table");
 
@@ -106,7 +106,7 @@ var SDBM = SDBM || {};
         });
 
         if(this.getButtonTextForAddNewRecord()) {
-            $(".add-new-record").text(this.getButtonTextForAddNewRecord());
+            $(".add-new-record").find('.name').text(this.getButtonTextForAddNewRecord());
         } else {
             $(".add-new-record").hide();
         }
@@ -329,7 +329,7 @@ var SDBM = SDBM || {};
             {
                 title: 'Created By',
                 width: "10%",
-                dbSortField: 'created_by_id'
+                dbSortField: 'created_by'
             },
             {
                 title: 'Created At',
@@ -340,8 +340,7 @@ var SDBM = SDBM || {};
             {
                 title: 'Updated By',
                 width: "10%",
-                dbSortField: 'update_by_id',
-                orderable: false
+                dbSortField: 'update_by',
             },
             {
                 title: 'Updated At',

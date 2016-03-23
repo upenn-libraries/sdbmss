@@ -1,6 +1,6 @@
 class SearchableAuthorityController < ManageModelsController
 
-  SEARCH_FIELDS = ["name", "id"]
+  SEARCH_FIELDS = ["name", "id", "created_by", "updated_by"]
 
   def create
     super
@@ -63,6 +63,8 @@ class SearchableAuthorityController < ManageModelsController
     filters = filters_for_search
     params = params_for_search
 
+    puts "bah: #{filters}, #{params}"
+
     s = Sunspot.search model_class do
       
       fulltext_search = lambda { |p, o| 
@@ -87,7 +89,8 @@ class SearchableAuthorityController < ManageModelsController
       if filters.present?
         filters.each do |field, value|
           op = Array(options[field + "_option"]).shift
-            if op && op == 'without'
+            if value.kind_of?(Array) && value.all? { |v| v.blank? } # make sure it's not an array of blanks 
+            elsif op && op == 'without'
               without field, value
             else
               with field, value
@@ -128,7 +131,7 @@ class SearchableAuthorityController < ManageModelsController
   end
 
   def filters_for_search
-    params.permit(:id, {:id => []})
+    params.permit(:id, :created_by, :updated_by, {:id => []}, {:created_by => []}, {:updated_by => []})
   end
 
   # permit as options fields with the format SEARCHFIELD_option

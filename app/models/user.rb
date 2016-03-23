@@ -28,6 +28,12 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  # allow solr indexing/searching of usernames
+  searchable do
+    integer :id
+    string :username
+  end
+
   # Connects this user object to Blacklights Bookmarks. 
   include Blacklight::User
   include UserFields
