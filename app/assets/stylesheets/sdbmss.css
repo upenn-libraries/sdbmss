@@ -93,6 +93,15 @@ h1 { font-size: 30px; margin-top: 0; }
   overflow-x: hidden;
 }
 
+
+.provenance_remove {
+  display: none;
+}
+
+.label-tag {
+  font-size: 14px;
+  margin: 2px;
+}
 .label-source {
   background: #CC0000;
 }

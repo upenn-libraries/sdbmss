@@ -372,7 +372,7 @@ var EntryScope;
             for (var i = 0; i < $scope.entry[field].length; i++) {
               $scope.entry[field][i].order = i;
             }
-            console.log($scope.entry[field]);
+            //console.log($scope.entry[field]);
           }
         }
 
@@ -491,7 +491,7 @@ var EntryScope;
         };
 
         $scope.updateProvenanceDateRange = function (prov, date) {
-          console.log('here', date);
+          //console.log('here', date);
           var observedDate = date.date;
           if(observedDate && (date.type == "Start" || date.type == "End")) {
               $http.get("/entry_dates/parse_observed_date.json" , {
@@ -816,6 +816,7 @@ var EntryScope;
         //  console.log("about to save this Entry: ");
         //  console.log(JSON.stringify(entryToSave));
 
+            console.log('ok:', entryToSave);
             if(entryToSave.id) {
                 entryToSave.$update(
                     $scope.postEntrySave,

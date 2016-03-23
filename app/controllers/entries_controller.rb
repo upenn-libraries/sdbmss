@@ -140,6 +140,9 @@ class EntriesController < ManageModelsController
           render json: json_response, status: :unprocessable_entity
         end
       }
+      format.html {
+        redirect_to entry_path(@entry)
+      }
     end
   end
 
@@ -148,6 +151,7 @@ class EntriesController < ManageModelsController
   end
 
   def update
+    puts "hi #{request.url}"
     success = false
     errors = nil
 
