@@ -11,6 +11,12 @@ class NamesController < SearchableAuthorityController
 
   before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy, :merge]
 
+  def search_fields
+    @fields = ["name"]
+    @filters = ["id", "created_by", "updated_by", "viaf_id"]
+    @fields + @filters
+  end
+
   def model_class
     Name
   end
@@ -32,9 +38,9 @@ class NamesController < SearchableAuthorityController
       is_scribe: obj.is_scribe,
       reviewed: obj.reviewed,
       created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
-      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:short) : "",
+      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:long) : "",
       updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
-      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:short) : ""
+      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:long) : ""
     }
   end
 
@@ -133,6 +139,14 @@ class NamesController < SearchableAuthorityController
       deletable = false
     end
     deletable
+  end
+
+  def params_for_search
+    params.permit(:name, {:name => []})
+  end
+
+  def filters_for_search
+    params.permit(:id, :created_by, :updated_by, {:id => []}, {:created_by => []}, {:updated_by => []}, :viaf_id, {:viaf_id => []})
   end
 
 end

@@ -168,7 +168,7 @@
                             <span class="h4"><a href="<%= url_for entry %>"><%= entry.public_id %></a></span>
                         </div>
                         <div class="col-sm-10" data-toggle="collapse" href="#entry_provenance_<%= index %>">
-                            <span class="h4"><%= entry.source_id == 34611 ? "This provenance is based on a personal observation of the SDBM" : entry.display_value %><a class="glyphicon glyphicon-chevron-down pull-right"></a></span>
+                            <span class="h4"><%= entry.source_id == 34611 ? "This provenance is based on a personal observation of the SDBM" : entry.source.display_value %><a class="glyphicon glyphicon-chevron-down pull-right"></a></span>
                         </div>
                     </div>
                 </div>

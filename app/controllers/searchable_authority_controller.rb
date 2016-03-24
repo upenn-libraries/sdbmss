@@ -1,6 +1,11 @@
 class SearchableAuthorityController < ManageModelsController
 
-  SEARCH_FIELDS = ["name", "id", "created_by", "updated_by"]
+
+  def search_fields
+    @filters = ["id", "created_by", "updated_by"]
+    @fields = ["name"]
+    @fields + @filters
+  end
 
   def create
     super
@@ -47,8 +52,10 @@ class SearchableAuthorityController < ManageModelsController
   end
 
   def index
-    @search_fields = SEARCH_FIELDS
-    @search_options = ["with", "without"]
+    @search_fields = search_fields
+    @fields = @fields
+    @filter_options = ["with", "without", "blank", "present"]
+    @field_options = ["contains", "does not contain"]
   end
 
   def search
@@ -63,8 +70,6 @@ class SearchableAuthorityController < ManageModelsController
     filters = filters_for_search
     params = params_for_search
 
-    puts "bah: #{filters}, #{params}"
-
     s = Sunspot.search model_class do
       
       fulltext_search = lambda { |p, o| 
@@ -75,7 +80,7 @@ class SearchableAuthorityController < ManageModelsController
               value.each do |v|
                 op = Array(options[field + "_option"]).shift
                 # if searching for this 'without' the term, right now just add a '-' to the beginning of query to negate it
-                if op && op == 'without'
+                if op && op == 'does not contain'
                   fulltext "-" + v, :fields => [field]
                 else
                   fulltext v, :fields => [field]
@@ -89,9 +94,14 @@ class SearchableAuthorityController < ManageModelsController
       if filters.present?
         filters.each do |field, value|
           op = Array(options[field + "_option"]).shift
-            if value.kind_of?(Array) && value.all? { |v| v.blank? } # make sure it's not an array of blanks 
-            elsif op && op == 'without'
+            if op && op == 'without'
               without field, value
+            elsif op && op == 'blank'
+              puts "Hi"
+              with field, nil
+            elsif op && op == 'present'
+              without field, nil
+            elsif value.kind_of?(Array) && value.all? { |v| v.blank? } # make sure it's not an array of blanks 
             else
               with field, value
             end
@@ -136,6 +146,6 @@ class SearchableAuthorityController < ManageModelsController
 
   # permit as options fields with the format SEARCHFIELD_option
   def options_for_search
-    params.permit(SEARCH_FIELDS.map do |s| {s + "_option" => []} end, SEARCH_FIELDS.map do |s| s + "_option" end)
+    params.permit(search_fields.map do |s| {s + "_option" => []} end, search_fields.map do |s| s + "_option" end)
   end 
 end

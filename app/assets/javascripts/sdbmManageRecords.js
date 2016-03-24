@@ -69,7 +69,17 @@ var SDBM = SDBM || {};
         });
 
         $(document).on('click', "#select-all", function(event) {
-            $("input[name='review']").prop("checked", true);
+            if (!$("#select-all").attr("selected")) {
+                $("#select-all").attr("selected", true);
+                $("#select-all").removeClass("glyphicon-unchecked");
+                $("#select-all").addClass("glyphicon-check");
+                $("input[name='review']").prop("checked", true);
+            } else {
+                $("#select-all").attr("selected", false);
+                $("input[name='review']").prop("checked", false);
+                $("#select-all").removeClass("glyphicon-check");
+                $("#select-all").addClass("glyphicon-unchecked");
+            }
             return false;
         });
 
@@ -286,7 +296,7 @@ var SDBM = SDBM || {};
 
         return [
             {
-                title: '',
+                title: '<a href="#" id="select-all">Select All</a>',
                 orderable: false,
                 render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {

@@ -12,23 +12,26 @@
             <div class="panel-body search">
                 <div class="row form-group search-fieldset">
                     <div class="col-sm-1">
-                        <span class="search-remove glyphicon glyphicon-remove btn btn-xs btn-warning"></span>
+                        <a class="btn btn-xs btn-warning search-remove"><span class="glyphicon glyphicon-remove"></span> remove</a>
                     </div>
                     <div class="col-sm-3">
                         <%= text_field_tag :search_value, params[:search_value], size: 70, class: "form-control" %>
                     </div>
                     <div class="col-sm-3">
                         <select class="form-control" name="search_field">
-                        <%- Array(@search_fields).each do |field| -%>
-                            <option value="<%= field %>"><%= field.humanize %></option>
-                        <%- end -%>
+                        <% Array(@search_fields).each do |field| %>
+                            <option value="<%= field %>" type="<%= @fields.include?(field) ? 'field' : 'filter' %>"><%= field.humanize %></option>
+                        <% end -%>
                         </select>
                     </div>
                     <div class="col-sm-4">
                         <select class="form-control" name="search_option">
-                         <%- Array(@search_options).each do |option| -%>
-                            <option value="<%= option %>"><%= option.humanize %></option>
-                        <%- end -%>
+                        <% Array(@filter_options).each do |option| %>
+                            <option value="<%= option %>" class="option filter_option"><%= option.humanize %></option>
+                        <% end %>
+                        <% Array(@field_options).each do |option| %>
+                            <option value="<%= option %>" class="option field_option"><%= option.humanize %></option>
+                        <% end %>
                         </select>
                     </div>
                     <div class="col-sm-1">
@@ -51,9 +54,9 @@
                     </label>
                     <% end %>
                 </div>
-                <div class="col-sm-12 label-alignment review-control">
+                <!--<div class="col-sm-12 label-alignment review-control">
                     <a href="#" id="select-all">Select All</a> / <a href="#" id="deselect-all">Deselect All</a>
-                </div>
+                </div>-->
                 <div class="col-sm-12 review-control">
                     <a class="btn btn-primary btn-sm" id="mark-as-reviewed" class="btn btn-primary">Mark checked records as reviewed</a>
                 </div>

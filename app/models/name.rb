@@ -67,8 +67,11 @@ class Name < ActiveRecord::Base
   end 
 
 
-  searchable do
-    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :username })
+  searchable :unless => :deleted do
+    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
+    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
+    string :created_by
+    string :updated_by
     integer :id
     text :name, :more_like_this => true
     string :name
