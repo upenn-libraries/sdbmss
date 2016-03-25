@@ -93,6 +93,18 @@ h1 { font-size: 30px; margin-top: 0; }
   overflow-x: hidden;
 }
 
+/*
+ checkboxes!
+ */
+.checked, .table-checkbox {
+  display: none;
+}
+.table-checkbox:checked + label > .checked {
+  display: block;
+}
+.table-checkbox:checked + label > .unchecked {
+  display: none;
+}
 
 .provenance_remove {
   display: none;
@@ -100,7 +112,13 @@ h1 { font-size: 30px; margin-top: 0; }
 
 .label-tag {
   font-size: 14px;
-  margin: 2px;
+  max-width: 140px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.label-tag:nth-child(even) {
+  max-width: 164px;
 }
 .label-source {
   background: #CC0000;

@@ -83,6 +83,8 @@ class Name < ActiveRecord::Base
     integer :source_agents_count
     integer :sale_agents_count
     integer :provenance_count
+    date :created_at
+    date :updated_at
   end
   
   # constructor for a Provenance Agent. takes same args as #new

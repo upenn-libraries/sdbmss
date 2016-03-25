@@ -32,7 +32,7 @@ var SDBM = SDBM || {};
 
         var manageRecords = this;
         
-        SDBM.hideNavBar();
+//        SDBM.hideNavBar();
 
         window.onpopstate = function(event) {
             // load the data from URL into page
@@ -244,8 +244,8 @@ var SDBM = SDBM || {};
         var manageRecords = this;
 
         return function() {
-            var url = manageRecords.persistFormStateToURL();
-            history.pushState({ url: url }, '', url);
+//          var url = manageRecords.persistFormStateToURL();
+//          history.pushState({ url: url }, '', url);
             manageRecords.reloadTable();
             
             manageRecords.showOrHideMarkCheckedRecordsButton();
@@ -296,11 +296,18 @@ var SDBM = SDBM || {};
 
         return [
             {
-                title: '<a href="#" id="select-all">Select All</a>',
+                title: '<a href="#" class="btn btn-primary btn-xs glyphicon glyphicon-unchecked" id="select-all"></a>',
                 orderable: false,
+                className: "text-center",
                 render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {
-                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                        return  '' + 
+                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
+                                '<label for="checkbox_' + meta.row + '">' + 
+                                '<a class="btn btn-default btn-xs glyphicon glyphicon-unchecked unchecked"></a>' + 
+                                '<a class="btn btn-default btn-xs glyphicon glyphicon-check checked"></a>' + 
+                                '</label>' + '';
+//                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     }
                     return '';
                 },

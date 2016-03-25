@@ -55,7 +55,7 @@ var SDBM = SDBM || {};
             columns: null,
             fixedColumns: null,
             prependColumns: null,
-            height: 'full',
+//          height: 'full',   FIX ME: is this better, or worse?
             heightBuffer: 360,
             dom: 'C<"clear"><"H"lr>JRt<"F"ip>'
         };

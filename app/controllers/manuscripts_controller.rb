@@ -1,4 +1,4 @@
-class ManuscriptsController < ManageModelsController
+class ManuscriptsController < SearchableAuthorityController
 
   include MarkAsReviewed
   include LogActivity
@@ -11,6 +11,13 @@ class ManuscriptsController < ManageModelsController
 
   def model_class
     Manuscript
+  end
+
+  def search_fields
+    @fields = ["name", "location"]
+    @filters = ["id", "created_by", "updated_by"]
+    @dates = ["created_at", "updated_at"]
+    @fields + @filters + @dates
   end
 
   def show
@@ -72,6 +79,10 @@ class ManuscriptsController < ManageModelsController
       :name, :location,
       :entry_manuscripts_attributes => [ :id, :manuscript_id, :entry_id, :relation_type, :_destroy ]
     )
+  end
+
+  def params_for_search
+    params.permit(:name, {:name => []}, :location, {:location => []})
   end
 
 end

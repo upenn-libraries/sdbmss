@@ -23,6 +23,8 @@ class Language < ActiveRecord::Base
     integer :id
     integer :entries_count
     integer :created_by_id
+    date :created_at
+    date :updated_at
   end
 
   def entries_to_index_on_update

@@ -31,11 +31,18 @@
             {
                 sdbmssMinWidth: "20px",
                 sdbmssMaxWidth: "20px",
-                title: '',
+                title: '<a href="#" class="btn btn-primary btn-xs glyphicon glyphicon-unchecked" id="select-all"></a>',
                 orderable: false,
+                className: 'text-center',
                 render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {
-                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                        return  '' + 
+                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
+                                '<label for="checkbox_' + meta.row + '">' + 
+                                '<a class="btn btn-default btn-xs glyphicon glyphicon-unchecked unchecked"></a>' + 
+                                '<a class="btn btn-default btn-xs glyphicon glyphicon-check checked"></a>' + 
+                                '</label>' + '';
+                        //return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     }
                     return '';
                 }
@@ -85,44 +92,44 @@
                 orderable: false
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
+                sdbmssMinWidth: "75px",
+                sdbmssMaxWidth: "75px",
                 title: 'As Author',
                 dbSortField: 'authors_count'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
+                sdbmssMinWidth: "75px",
+                sdbmssMaxWidth: "75px",
                 title: 'As Artist',
                 dbSortField: 'artists_count'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
+                sdbmssMinWidth: "75px",
+                sdbmssMaxWidth: "75px",
                 title: 'As Scribe',
                 dbSortField: 'scribes_count'
             },
             {
-                sdbmssMinWidth: "100px",
-                sdbmssMaxWidth: "100px",
+                sdbmssMinWidth: "85px",
+                sdbmssMaxWidth: "85px",
                 title: 'As Source Agent',
                 dbSortField: 'source_agents_count'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
+                sdbmssMinWidth: "75px",
+                sdbmssMaxWidth: "75px",
                 title: 'As Sale Agent',
                 dbSortField: 'sale_agents_count'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
+                sdbmssMinWidth: "75px",
+                sdbmssMaxWidth: "75px",
                 title: 'As Prov Agent',
                 dbSortField: 'provenance_count'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
+                sdbmssMinWidth: "75px",
+                sdbmssMaxWidth: "75px",
                 title: 'Reviewed',
                 dbSortField: 'reviewed'
             },

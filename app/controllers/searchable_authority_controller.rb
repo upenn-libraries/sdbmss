@@ -4,7 +4,8 @@ class SearchableAuthorityController < ManageModelsController
   def search_fields
     @filters = ["id", "created_by", "updated_by"]
     @fields = ["name"]
-    @fields + @filters
+    @dates = ["created_at", "updated_at"]
+    @fields + @filters + @dates
   end
 
   def create
@@ -53,9 +54,12 @@ class SearchableAuthorityController < ManageModelsController
 
   def index
     @search_fields = search_fields
-    @fields = @fields
     @filter_options = ["with", "without", "blank", "present"]
-    @field_options = ["contains", "does not contain"]
+    @field_options = ["contains", "does not contain", "blank", "present"]
+    @date_options = ["before", "after", "near", "exact"]
+    if params[:widescreen] == 'true'
+      render :layout => 'widescreen'
+    end
   end
 
   def search
@@ -69,6 +73,7 @@ class SearchableAuthorityController < ManageModelsController
 
     filters = filters_for_search
     params = params_for_search
+    dates = dates_for_search
 
     s = Sunspot.search model_class do
       
@@ -82,6 +87,10 @@ class SearchableAuthorityController < ManageModelsController
                 # if searching for this 'without' the term, right now just add a '-' to the beginning of query to negate it
                 if op && op == 'does not contain'
                   fulltext "-" + v, :fields => [field]
+                elsif op && op == 'blank'
+                  with field, nil
+                elsif op && op == 'present'
+                  without field, nil
                 else
                   fulltext v, :fields => [field]
                end
@@ -93,18 +102,45 @@ class SearchableAuthorityController < ManageModelsController
 
       if filters.present?
         filters.each do |field, value|
-          op = Array(options[field + "_option"]).shift
+          value = Array(value)
+          value.each do |v|
+            op = Array(options[field + "_option"]).shift
             if op && op == 'without'
-              without field, value
+              without field, v
             elsif op && op == 'blank'
-              puts "Hi"
               with field, nil
             elsif op && op == 'present'
               without field, nil
-            elsif value.kind_of?(Array) && value.all? { |v| v.blank? } # make sure it's not an array of blanks 
+            elsif v.kind_of?(Array) && v.all? { |v2| v2.blank? } # make sure it's not an array of blanks 
             else
-              with field, value
+              with field, v
             end
+          end
+        end
+      end
+
+      if dates.present?
+        dates.each do |field, value|
+          value = Array(value)
+          value.each do |v|
+            v = v.split(/[-\/]/).join("").ljust(8, '01')
+            op = Array(options[field + "_option"]).shift
+            # FIX ME: I used exception handling here because Date parsing for such varied input is awful - probably a better way
+            begin
+              if op && op == 'before'
+                with(field).between(Date.new(0,1,1)..Date.parse(v))
+              elsif op && op == 'after'
+                with(field).between(Date.parse(v)..Date.today)
+              elsif op && op == 'near'
+                d = Date.parse(v)
+                with(field).between((d - 1.month)..(d + 1.month))
+              elsif op && op == 'exact'
+                with(field, v)
+              end
+            rescue ArgumentError
+              @error = "Error in Date Search - please use format YYYY/MM/DD or similar"
+            end
+          end
         end
       end
 
@@ -142,6 +178,10 @@ class SearchableAuthorityController < ManageModelsController
 
   def filters_for_search
     params.permit(:id, :created_by, :updated_by, {:id => []}, {:created_by => []}, {:updated_by => []})
+  end
+
+  def dates_for_search
+    params.permit(:created_at, :updated_at, {:created_at => []}, {:updated_at => []})
   end
 
   # permit as options fields with the format SEARCHFIELD_option

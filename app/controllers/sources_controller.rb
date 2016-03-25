@@ -36,6 +36,13 @@ class SourcesController < SearchableAuthorityController
     ["author", "Author", DEFAULT_SEARCH_FIELD_HANDLER ],
   ]
 
+  def search_fields
+    @filters = ["id", "created_by", "updated_by", "location"]
+    @fields = ["title", "selling_agent", "institution", "author"]
+    @dates = ["created_at", "updated_at"]
+    @fields + @filters + @dates
+  end
+
   # return just the query strings which are combined in an array, then joined with either AND or OR to create one final query - but will it work with the unique cases above?
 
   A_DEFAULT_SEARCH_HANDLER = lambda { |fieldname, params, query| 
@@ -68,9 +75,9 @@ class SourcesController < SearchableAuthorityController
     end
   end
 
-  def index
-    @search_fields = SEARCH_FIELDS
-  end
+#  def index
+#    @search_fields = SEARCH_FIELDS
+#  end
 
   def create
     filtered = source_params_for_create_and_edit

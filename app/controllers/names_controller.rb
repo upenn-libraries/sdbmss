@@ -14,7 +14,8 @@ class NamesController < SearchableAuthorityController
   def search_fields
     @fields = ["name"]
     @filters = ["id", "created_by", "updated_by", "viaf_id"]
-    @fields + @filters
+    @dates = ["created_at", "updated_at"]
+    @fields + @filters + @dates
   end
 
   def model_class

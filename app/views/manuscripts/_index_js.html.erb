@@ -27,9 +27,16 @@
                 sdbmssMaxWidth: "20px",
                 title: '<a href="#" class="btn btn-primary btn-xs glyphicon glyphicon-unchecked" id="select-all"></a>',
                 orderable: false,
+                className: "text-center",
                 render: function (data, type, full, meta) {
+                    console.log(data, type, full, meta);
                     if(manageManuscripts.getUnreviewedOnly() === 1) {
-                        return '<input type="checkbox" name="review" value="' + full[manageManuscripts.dataTable.getColumnIndex("ID")] + '"/>';
+                        return  '' + 
+                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageManuscripts.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
+                                '<label for="checkbox_' + meta.row + '">' + 
+                                '<a class="btn btn-default btn-xs glyphicon glyphicon-unchecked unchecked"></a>' + 
+                                '<a class="btn btn-default btn-xs glyphicon glyphicon-check checked"></a>' + 
+                                '</label>' + '';
                     }
                     return '';
                 }
@@ -142,4 +149,3 @@
  });
 
 </script>
-
