@@ -90,6 +90,7 @@ class Source < ActiveRecord::Base
     text :agent_name do
       (source_agents.map do |sa| Name.find(sa.agent_id).name end).join(" ")
     end
+    #FIX ME: this won't actually work for sorting or anything like that...
     string :agent_name do
       (source_agents.map do |sa| Name.find(sa.agent_id).name end).join(" ")
     end

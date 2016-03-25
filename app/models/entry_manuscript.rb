@@ -32,4 +32,14 @@ class EntryManuscript < ActiveRecord::Base
     activity
   end
 
+  searchable do
+    integer :id
+    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
+    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
+    string :created_by
+    string :updated_by
+    date :created_at
+    date :updated_at
+  end
+
 end

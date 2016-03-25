@@ -288,7 +288,13 @@ var SDBM = SDBM || {};
     };
     
     SDBM.ManageRecords.prototype.getUnreviewedOnly = function() {
-        return $("input[name='unreviewed_only']").is(':checked') ? 1 : 0;
+        if ($("input[name='unreviewed_only']").is(':checked')) {
+            $('.hideIfReviewed').removeClass('disabled');
+            return 1;
+        } else {
+            $('.hideIfReviewed').addClass('disabled');
+            return 0;
+        }
     };
     
     SDBM.ManageRecords.prototype.getColumns = function () {
@@ -296,7 +302,7 @@ var SDBM = SDBM || {};
 
         return [
             {
-                title: '<a href="#" class="btn btn-primary btn-xs glyphicon glyphicon-unchecked" id="select-all"></a>',
+                title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
                 orderable: false,
                 className: "text-center",
                 render: function (data, type, full, meta) {
@@ -351,19 +357,17 @@ var SDBM = SDBM || {};
             {
                 title: 'Created At',
                 width: "10%",
-                dbSortField: 'created_at',
-                orderable: false
+                dbSortField: 'created_at'
             },
             {
                 title: 'Updated By',
                 width: "10%",
-                dbSortField: 'update_by',
+                dbSortField: 'updated_by'
             },
             {
                 title: 'Updated At',
                 width: "10%",
-                dbSortField: 'updated_at',
-                orderable: false
+                dbSortField: 'updated_at'
             }
         ];
     };

@@ -365,7 +365,11 @@ var EntryScope;
         $scope.sortableOptions = {
           axis: 'y',
           scrollSpeed: 40,
-          scrollSensitivity: 20,
+          placeholder: "ui-state-highlight",
+          scrollSensitivity: 100,
+          start: function(e, ui){
+              ui.placeholder.height(ui.item.height());
+          },
           stop: function (e, ui) {
             // this is an ugly way to just get a reference to the array (i.e. entry_titles, provenance) that we are sorting
             var field = ui.item.parent().attr('ng-model').split('.')[1];

@@ -1,5 +1,5 @@
 
-class EntryManuscriptsController < ManageModelsController
+class EntryManuscriptsController < SearchableAuthorityController
 
   before_action :authenticate_user!, only: [:update_multiple]
 
@@ -9,7 +9,15 @@ class EntryManuscriptsController < ManageModelsController
 
   #  respond_to :html, :json
 
+  def search_fields
+    @filters = ["id", "created_by", "updated_by"]
+    @fields = []
+    @dates = ["created_at", "updated_at"]
+    @fields + @filters + @dates
+  end
+
   def index
+    super
     @page_title = "Manage Links"
   end
 

@@ -54,7 +54,7 @@ class SearchableAuthorityController < ManageModelsController
 
   def index
     @search_fields = search_fields
-    @filter_options = ["with", "without", "blank", "present"]
+    @filter_options = ["present", "with", "without", "blank"]
     @field_options = ["contains", "does not contain", "blank", "present"]
     @date_options = ["before", "after", "near", "exact"]
     if params[:widescreen] == 'true'
@@ -105,12 +105,13 @@ class SearchableAuthorityController < ManageModelsController
           value = Array(value)
           value.each do |v|
             op = Array(options[field + "_option"]).shift
-            if op && op == 'without'
-              without field, v
-            elsif op && op == 'blank'
+            if op && op == 'blank'
               with field, nil
             elsif op && op == 'present'
               without field, nil
+            elsif v.blank? # ignore blank
+            elsif op && op == 'without'
+              without field, v
             elsif v.kind_of?(Array) && v.all? { |v2| v2.blank? } # make sure it's not an array of blanks 
             else
               with field, v

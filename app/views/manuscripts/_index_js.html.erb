@@ -25,11 +25,10 @@
             {
                 sdbmssMinWidth: "20px",
                 sdbmssMaxWidth: "20px",
-                title: '<a href="#" class="btn btn-primary btn-xs glyphicon glyphicon-unchecked" id="select-all"></a>',
+                title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
                 orderable: false,
                 className: "text-center",
                 render: function (data, type, full, meta) {
-                    console.log(data, type, full, meta);
                     if(manageManuscripts.getUnreviewedOnly() === 1) {
                         return  '' + 
                                 '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageManuscripts.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
@@ -78,7 +77,6 @@
             {
                 sdbmssMinWidth: "100px",
                 sdbmssMaxWidth: "100px",
-                orderable: true,
                 title: '# Entries',
                 dbSortField: 'entries_count'
             },
@@ -92,28 +90,25 @@
                 sdbmssMinWidth: "130px",
                 sdbmssMaxWidth: "130px",
                 title: 'Created By',
-                dbSortField: 'created_by_id'
+                dbSortField: 'created_by'
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Created At',
                 dbSortField: 'created_at',
-                orderable: false
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Updated By',
-                dbSortField: 'updated_by_id',
-                orderable: false
+                dbSortField: 'updated_by',
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Updated At',
                 dbSortField: 'updated_at',
-                orderable: false
             }
         ];
      };

@@ -55,11 +55,14 @@
                         <% end %>
                     </div>
                     <div class="col-sm-2 text-right">
-                        <%= link_to polymorphic_url(model_class, :widescreen => ((params[:widescreen] == 'true') ? false : true) ), class: "btn btn-info btn-sm" do %>
-                            <% if params[:widescreen] == 'true' %>
-                                <span class="glyphicon glyphicon-resize-small"></span>
-                            <% else  %>
-                                <span class="glyphicon glyphicon-resize-full"></span>
+                        <% if resource_name != "accounts" %>
+                        <!-- _FIX ME: for some reason (well, because they are actually 'users') accounts don't have the right path for this link... oh well -->
+                            <%= link_to polymorphic_url(model_class, :widescreen => ((params[:widescreen] == 'true') ? false : true) ), class: "btn btn-info btn-sm" do %>
+                                <% if params[:widescreen] == 'true' %>
+                                    <span class="glyphicon glyphicon-resize-small"></span>
+                                <% else  %>
+                                    <span class="glyphicon glyphicon-resize-full"></span>
+                                <% end %>
                             <% end %>
                         <% end %>
                     </div>

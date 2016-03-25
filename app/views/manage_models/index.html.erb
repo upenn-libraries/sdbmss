@@ -75,6 +75,12 @@
         setOptions(p);      
     });
     var p = $('.search-fieldset');
+    p.find(".search-remove").click( function (e) {
+        p.find("input").each(function (e) {
+            $(this).val("");
+        })
+        p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
+    });
     setOptions(p);
 </script>
 

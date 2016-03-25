@@ -31,7 +31,7 @@
             {
                 sdbmssMinWidth: "20px",
                 sdbmssMaxWidth: "20px",
-                title: '<a href="#" class="btn btn-primary btn-xs glyphicon glyphicon-unchecked" id="select-all"></a>',
+                title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
                 orderable: false,
                 className: 'text-center',
                 render: function (data, type, full, meta) {
@@ -88,8 +88,7 @@
                     }
                     return str;
                 },
-                dbSortField: 'viaf_id',
-                orderable: false
+                dbSortField: 'viaf_id'
             },
             {
                 sdbmssMinWidth: "75px",
@@ -137,28 +136,25 @@
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Created By',
-                dbSortField: 'created_by_id'
+                dbSortField: 'created_by'
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Created At',
-                dbSortField: 'created_at',
-                orderable: false
+                dbSortField: 'created_at'
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Updated By',
-                dbSortField: 'updated_by_id',
-                orderable: false
+                dbSortField: 'updated_by'
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Updated At',
-                dbSortField: 'updated_at',
-                orderable: false
+                dbSortField: 'updated_at'
             }
         ];
      };

@@ -105,6 +105,9 @@ h1 { font-size: 30px; margin-top: 0; }
 .table-checkbox:checked + label > .unchecked {
   display: none;
 }
+.hidden {
+  display: none;
+}
 
 .provenance_remove {
   display: none;
@@ -150,18 +153,22 @@ h1 { font-size: 30px; margin-top: 0; }
 }
 
 .input-block .row {
-    margin: 2px;
+  margin: 2px;
 }
 .input-block textarea {
   max-height: 100%;
   max-width: 100%;
 }
-.input-block {
+.input-block, .ui-state-highlight {
   padding: 4px;
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #F8F8F8;
   transition: all linear 0.5s;
+}
+.ui-state-highlight {
+  width: 100%;
+/*  height: min-100px;*/
 }
 .input-block.carousel {
   margin-bottom: 10px;

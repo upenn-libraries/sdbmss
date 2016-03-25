@@ -29,15 +29,28 @@ $(document).ready(function() {
 
          return [
              {
-                 title: '',
+                 title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
                  orderable: false,
-                 render: function (data, type, full, meta) {
+                 class: "text-center",
+                 /*render: function (data, type, full, meta) {
                      if(manageRecords.getUnreviewedOnly() === 1) {
                          return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                      }
                      return '';
-                 },
-                 sdbmssMinWidth: "30px",
+                 },*/
+                 render: function (data, type, full, meta) {
+                    if(manageRecords.getUnreviewedOnly() === 1) {
+                        return  '' + 
+                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
+                                '<label for="checkbox_' + meta.row + '">' + 
+                                '<a class="btn btn-default btn-xs glyphicon glyphicon-unchecked unchecked"></a>' + 
+                                '<a class="btn btn-default btn-xs glyphicon glyphicon-check checked"></a>' + 
+                                '</label>' + '';
+//                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                    }
+                    return '';
+                },
+                sdbmssMinWidth: "30px",
              },
              {
                  sdbmssMinWidth: "150px",
@@ -106,7 +119,8 @@ $(document).ready(function() {
              {
                  sdbmssMinWidth: "100px",
                  title: 'Has MSS',
-                 dbSortField: 'whether_mss'
+                 dbSortField: 'whether_mss', // FIX ME: add to index, or no?
+                 orderable: false
              },
              {
                  sdbmssMinWidth: "150px",
@@ -116,7 +130,8 @@ $(document).ready(function() {
              {
                  sdbmssMinWidth: "100px",
                  title: "Date Accessed",
-                 dbSortField: 'date_accessed'
+                 dbSortField: 'date_accessed',
+                 orderable: false // FIX ME: add indexing or no?
              },
              {
                  sdbmssMinWidth: "200px",
@@ -134,40 +149,39 @@ $(document).ready(function() {
                  sdbmssMinWidth: "200px",
                  sdbmssMaxWidth: "200px",            
                  title: "Link",
-                 dbSortField: 'link'
+                 dbSortField: 'link',
+                 orderable: false
              },
              {
                  sdbmssMinWidth: "300px",
                  sdbmssMaxWidth: "300px",            
                  title: "Comments",
-                 dbSortField: 'comments'
+                 dbSortField: 'comments',
+                 orderable: false
              },
              {
                  sdbmssMinWidth: "100px",
                  sdbmssMaxWidth: "100px",            
                  title: 'Created By',
-                 dbSortField: 'created_by_id'
+                 dbSortField: 'created_by'
              },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Created At',
-                dbSortField: 'created_at',
-                orderable: false
+                dbSortField: 'created_at'
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Updated By',
-                dbSortField: 'updated_by_id',
-                orderable: false
+                dbSortField: 'updated_by'
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Updated At',
-                dbSortField: 'updated_at',
-                orderable: false
+                dbSortField: 'updated_at'
             }
          ];
      };
