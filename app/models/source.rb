@@ -104,6 +104,10 @@ class Source < ActiveRecord::Base
     join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
     string :created_by
     string :updated_by
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :created_by })
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :updated_by })
+    text :created_by
+    text :updated_by
     date :created_at
     date :updated_at
   end

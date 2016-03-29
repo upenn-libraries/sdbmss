@@ -323,8 +323,8 @@ var SDBM = SDBM || {};
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a> '
-                            + '&middot; <a class="delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
+                    var str = '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a> '
+                            + ' <a class="delete-link btn btn-xs btn-danger" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
                     return str;
                 },
                 width: "10%"

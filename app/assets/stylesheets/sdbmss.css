@@ -120,7 +120,7 @@ h1 { font-size: 30px; margin-top: 0; }
   white-space: nowrap;
   overflow: hidden;
 }
-.label-tag:nth-child(even) {
+.label-tag:nth-child(2n) {
   max-width: 164px;
 }
 .label-source {

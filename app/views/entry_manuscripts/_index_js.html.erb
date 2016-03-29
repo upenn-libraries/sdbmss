@@ -52,7 +52,7 @@
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var str = '<a href="/linkingtool/manuscript/' + full[manageRecords.dataTable.getColumnIndex("Manuscript")] + '/">Edit</a>';
+                    var str = '<a class="btn btn-xs btn-success" href="/linkingtool/manuscript/' + full[manageRecords.dataTable.getColumnIndex("Manuscript")] + '/">Edit</a>';
                     return str;
                 },
             },

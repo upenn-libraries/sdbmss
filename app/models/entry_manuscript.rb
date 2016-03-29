@@ -18,12 +18,13 @@ class EntryManuscript < ActiveRecord::Base
   include HasPaperTrail
   include CreatesActivity
 
-  def create_activity(action_name, current_user)
+  def create_activity(action_name, current_user, transaction_id)
     activity = super
     em_activity = EntryManuscriptActivity.new(
       activity: activity,
       entry_id: entry_id,
       manuscript_id: manuscript_id,
+      transaction_id: transaction_id
     )
     success = em_activity.save
     if !success
@@ -38,6 +39,10 @@ class EntryManuscript < ActiveRecord::Base
     join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
     string :created_by
     string :updated_by
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :created_by })
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :updated_by })
+    text :created_by
+    text :updated_by
     date :created_at
     date :updated_at
   end

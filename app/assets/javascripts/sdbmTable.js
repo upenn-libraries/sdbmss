@@ -151,8 +151,9 @@ var SDBM = SDBM || {};
                 });
             },
             scrollX: true,
-            scrollY: scrollY,
+            scrollY: false, //scrollY,
             scrollCollapse: false,
+            colReorder: false,
             // extensions get activated via these codes in 'dom' option
             // J = colResize
             // R = colReorder

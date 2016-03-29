@@ -14,8 +14,8 @@ class ManuscriptsController < SearchableAuthorityController
   end
 
   def search_fields
-    @fields = ["name", "location"]
-    @filters = ["id", "created_by", "updated_by"]
+    @fields = ["name", "location", "created_by", "updated_by"]
+    @filters = ["id"]
     @dates = ["created_at", "updated_at"]
     @fields + @filters + @dates
   end
@@ -82,7 +82,7 @@ class ManuscriptsController < SearchableAuthorityController
   end
 
   def params_for_search
-    params.permit(:name, {:name => []}, :location, {:location => []})
+    params.permit(:name, {:name => []}, :location, {:location => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
   end
 
 end

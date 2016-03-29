@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160321151359) do
+ActiveRecord::Schema.define(version: 20160325205210) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -190,9 +190,10 @@ ActiveRecord::Schema.define(version: 20160321151359) do
   add_index "entry_languages", ["language_id"], name: "index_entry_languages_on_language_id", using: :btree
 
   create_table "entry_manuscript_activities", force: :cascade do |t|
-    t.integer "activity_id",   limit: 4
-    t.integer "entry_id",      limit: 4
-    t.integer "manuscript_id", limit: 4
+    t.integer "activity_id",    limit: 4
+    t.integer "entry_id",       limit: 4
+    t.integer "manuscript_id",  limit: 4
+    t.integer "transaction_id", limit: 4
   end
 
   add_index "entry_manuscript_activities", ["activity_id"], name: "index_entry_manuscript_activities_on_activity_id", using: :btree

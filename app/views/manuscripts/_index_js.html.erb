@@ -46,9 +46,9 @@
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var str = '<a href="/' + manageManuscripts.options.resourceName + '/' + data + '/edit/">Edit</a> '
-                            + '&middot; <a class="delete-link" href="/' + manageManuscripts.options.resourceName + '/' + data + '.json">Delete</a>'
-                            + '&middot; <a class="linking-tool-link" target="_blank" href="/linkingtool/manuscript/' + data + '">Linking Tool</a>';
+                    var str = '<a class="btn btn-xs btn-success" href="/' + manageManuscripts.options.resourceName + '/' + data + '/edit/">Edit</a> '
+                            + ' <a class="btn btn-xs btn-danger delete-link" href="/' + manageManuscripts.options.resourceName + '/' + data + '.json">Delete</a>'
+                            + ' <a class="btn btn-xs btn-info linking-tool-link" target="_blank" href="/linkingtool/manuscript/' + data + '">Linking Tool</a>';
                     return str;
                 }
             },

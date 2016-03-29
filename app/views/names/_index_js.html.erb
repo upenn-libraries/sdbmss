@@ -48,22 +48,22 @@
                 }
             },
             {
-                sdbmssMinWidth: "125px",
-                sdbmssMaxWidth: "125px",
+                sdbmssMinWidth: "145px",
+                sdbmssMaxWidth: "145px",
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var mergeLink = canMerge ? ' &middot; <a class="merge-link" href="/' + manageRecords.options.resourceName + '/' + data + '/merge">Merge</a>' : '';
+                    var mergeLink = canMerge ? ' <a class="btn btn-xs btn-info merge-link" href="/' + manageRecords.options.resourceName + '/' + data + '/merge">Merge</a>' : '';
 
-                    var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>'
-                            + ' &middot; <a class="delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>'
+                    var str = '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>'
+                            + ' <a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>'
                             + mergeLink;
                     return str;
                 },
             },
             {
-                sdbmssMinWidth: "150px",
-                sdbmssMaxWidth: "150px",
+                sdbmssMinWidth: "130px",
+                sdbmssMaxWidth: "130px",
                 title: 'ID',
                 render: function (data, type, full, meta) { 
                     var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/">SDBM_NAME_' + data + '</a>';

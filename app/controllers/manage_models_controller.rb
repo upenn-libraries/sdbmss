@@ -48,29 +48,32 @@ class ManageModelsController < ApplicationController
 
   def create
     @model = model_class.new(model_params)
-    if model_class.column_names.include?("created_by_id")
-      result = @model.save_by(current_user)
-    else
-      result = @model.save
-    end
-    if result
-      respond_to do |format|
-        format.html {
-          redirect_to model_path(@model.id)
-        }
-        format.json {
-          render json: @model
-        }
+    ActiveRecord::Base.transaction do
+      if model_class.column_names.include?("created_by_id")
+        result = @model.save_by(current_user)
+      else
+        result = @model.save
       end
-    else
-      # if creating new NAME, and NAME already exists, simply create ERROR (no merge)
-      respond_to do |format|
-        format.html {
-          render 'new'
-        }
-        format.json {
-          render status: :bad_request, json: { errors: @model.errors.messages }
-        }
+      @transaction_id = PaperTrail.transaction_id
+      if result
+        respond_to do |format|
+          format.html {
+            redirect_to model_path(@model.id)
+          }
+          format.json {
+            render json: @model
+          }
+        end
+      else
+        # if creating new NAME, and NAME already exists, simply create ERROR (no merge)
+        respond_to do |format|
+          format.html {
+            render 'new'
+          }
+          format.json {
+            render status: :bad_request, json: { errors: @model.errors.messages }
+          }
+        end
       end
     end
   end
@@ -93,7 +96,10 @@ class ManageModelsController < ApplicationController
   end
 
   def do_update
-    @model.update_by(current_user, model_params)
+    ActiveRecord::Base.transaction do
+      @model.update_by(current_user, model_params)
+      @transaction_id = PaperTrail.transaction_id
+    end
   end
 
   def destroy

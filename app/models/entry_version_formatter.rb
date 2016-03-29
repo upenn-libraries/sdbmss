@@ -40,7 +40,12 @@ class EntryVersionFormatter
   ]
 
   def initialize(version)
-    @skip = EntryTitle.last.paper_trail_options[:ignore]
+    if not EntryTitle.last
+      et = EntryTitle.new
+      @skip = et.paper_trail_options[:ignore]
+    else
+      @skip = EntryTitle.last.paper_trail_options[:ignore]
+    end
     @version = version
     @details = nil
   end

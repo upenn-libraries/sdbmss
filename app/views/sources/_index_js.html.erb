@@ -57,10 +57,10 @@ $(document).ready(function() {
                  title: 'Options',
                  orderable: false,
                  render: function (data, type, full, meta) { 
-                     var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>' +
-                               ' &middot; <a href="/entries/new/?source_id=' + data + '">Add an Entry</a>' +
-                               ' &middot; <a class="delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>' +
-                               ' &middot; <a href="/sources/' + data + '/merge">Merge</a>';
+                     var str = '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>' +
+                               ' <a class="btn btn-xs btn-primary" href="/entries/new/?source_id=' + data + '">Add an Entry</a>' +
+                               ' <a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>' +
+                               ' <a class="btn btn-xs btn-info" href="/sources/' + data + '/merge">Merge</a>';
                      // TODO: display delete link only if entries_count is 0
                      return str;
                  }

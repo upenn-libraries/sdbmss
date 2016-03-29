@@ -24,6 +24,8 @@ class EntryManuscriptsController < SearchableAuthorityController
   # updates multiple EntryManuscript records at once; this is used for
   # the Linking Tool
   def update_multiple
+    ActiveRecord::Base.transaction do
+      
     manuscript = Manuscript.find params[:manuscript_id]
 
     @entry_manuscripts = []
@@ -54,6 +56,9 @@ class EntryManuscriptsController < SearchableAuthorityController
           render :json => { :errors => { :base => "Another change was made to the record while you were working. Re-load the page and start over." } }, :status => :unprocessable_entity
         }
       end
+    end
+
+      @transaction_id = PaperTrail.transaction_id
     end
   end
 

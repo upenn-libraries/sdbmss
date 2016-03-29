@@ -2,21 +2,27 @@ class SearchableAuthorityController < ManageModelsController
 
 
   def search_fields
-    @filters = ["id", "created_by", "updated_by"]
-    @fields = ["name"]
+    @filters = ["id"]
+    @fields = ["name", "created_by", "updated_by"]
     @dates = ["created_at", "updated_at"]
     @fields + @filters + @dates
   end
 
   def create
-    super
+    ActiveRecord::Base.transaction do
+      super
+      @transaction_id = PaperTrail.transaction_id
+    end
     if @model.id
       @model.delay.index
     end
   end
 
   def update
-    super
+    ActiveRecord::Base.transaction do
+      super
+      @transaction_id = PaperTrail.transaction_id
+    end
     @model.delay.index
   end
 
@@ -174,11 +180,11 @@ class SearchableAuthorityController < ManageModelsController
   private
 
   def params_for_search
-    params.permit(:name, {:name => []})
+    params.permit(:name, {:name => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
   end
 
   def filters_for_search
-    params.permit(:id, :created_by, :updated_by, {:id => []}, {:created_by => []}, {:updated_by => []})
+    params.permit(:id, {:id => []})
   end
 
   def dates_for_search

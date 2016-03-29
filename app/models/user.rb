@@ -32,6 +32,7 @@ class User < ActiveRecord::Base
   searchable do
     integer :id
     string :username
+    text :username
   end
 
   # Connects this user object to Blacklights Bookmarks. 

@@ -12,8 +12,8 @@ class NamesController < SearchableAuthorityController
   before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy, :merge]
 
   def search_fields
-    @fields = ["name"]
-    @filters = ["id", "created_by", "updated_by", "viaf_id"]
+    @fields = ["name", "created_by", "updated_by"]
+    @filters = ["id", "viaf_id"]
     @dates = ["created_at", "updated_at"]
     @fields + @filters + @dates
   end
@@ -143,7 +143,7 @@ class NamesController < SearchableAuthorityController
   end
 
   def params_for_search
-    params.permit(:name, {:name => []})
+    params.permit(:name, {:name => []}, , :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
   end
 
   def filters_for_search

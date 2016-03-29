@@ -151,7 +151,6 @@ class EntriesController < ManageModelsController
   end
 
   def update
-    puts "hi #{request.url}"
     success = false
     errors = nil
 
@@ -173,7 +172,6 @@ class EntriesController < ManageModelsController
             c.save!
           end
         end
-        puts "Bah #{PaperTrail.transaction_id}"
         @transaction_id = PaperTrail.transaction_id
       end
     else

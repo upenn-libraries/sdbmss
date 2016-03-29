@@ -27,7 +27,15 @@
                     <div class="col-sm-3">
                         <select class="form-control" name="search_option">
                         <% Array(@filter_options).each do |option| %>
-                            <option value="<%= option %>" class="option filter_option"><%= option.humanize %></option>
+                            <option value="<%= option %>" class="option filter_option">
+                                <% if option == 'with' %>
+                                    <%= "Equals" %>
+                                <% elsif option == 'without' %>
+                                    <%= "Does Not Equal" %>
+                                <% else %>
+                                    <%= option.humanize %>
+                                <% end %>
+                            </option>
                         <% end %>
                         <% Array(@field_options).each do |option| %>
                             <option value="<%= option %>" class="option field_option"><%= option.humanize %></option>

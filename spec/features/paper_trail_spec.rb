@@ -325,7 +325,7 @@ describe "Paper trail", :js => true do
         visit history_entry_path (e)
 
         f = first('.active', text: 'Folios')
-        f = f.find('input[type=checkbox]').set(true)
+        f = f.find('.unchecked').click()
         click_button('Undo')
 
         expect(page).to have_content('Revert to Old Version')
@@ -340,7 +340,7 @@ describe "Paper trail", :js => true do
         visit history_entry_path (e)
 
         f = first('.active', text: 'Folios')
-        f = f.find('input[type=checkbox]').set(true)
+        f = f.find('.unchecked').click()
         click_button('Undo')
 
         click_button('Restore')
@@ -380,7 +380,7 @@ describe "Paper trail", :js => true do
         visit history_entry_path (e)
 
         f = first('.active', text: 'Hiiipower')
-        f = f.find('input[type=checkbox]').set(true)
+        f = f.find('.unchecked').click()
         click_button('Undo')
 
         expect(page).to have_content(e.public_id)
@@ -396,7 +396,7 @@ describe "Paper trail", :js => true do
         visit history_entry_path (e)
 
         f = first('.active', text: 'Hiiipower')
-        f = f.find('input[type=checkbox]').set(true)
+        f = f.find('.unchecked').click()
         click_button('Undo')
 
         click_button('Restore')
@@ -438,7 +438,7 @@ describe "Paper trail", :js => true do
         f = first('.active', text: 'Title')
         l = f.first('.history-label')
         expect(l).to have_content('deleted Title')
-        f = f.find('input[type=checkbox]').set(true)
+        f = f.find('.unchecked').click()
         click_button('Undo')
 
         expect(page).to have_content(t)
@@ -461,7 +461,7 @@ describe "Paper trail", :js => true do
         f = first('.active', text: 'Title')
         l = f.first('.history-label')
         expect(l).to have_content('added Title')
-        f = f.find('input[type=checkbox]').set(true)
+        f = f.find('.unchecked').click()
         click_button('Undo')
 
         expect(page).to have_content('Book of Hours')

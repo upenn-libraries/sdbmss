@@ -820,7 +820,6 @@ var EntryScope;
         //  console.log("about to save this Entry: ");
         //  console.log(JSON.stringify(entryToSave));
 
-            console.log('ok:', entryToSave);
             if(entryToSave.id) {
                 entryToSave.$update(
                     $scope.postEntrySave,
