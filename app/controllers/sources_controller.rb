@@ -103,6 +103,10 @@ class SourcesController < SearchableAuthorityController
     end
   end
 
+  def show
+    @details = search_result_format(@source)
+  end
+
   def edit
   end
 
@@ -258,7 +262,8 @@ class SourcesController < SearchableAuthorityController
   # FIX ME: better way of filtering out special 'provenance_observation' source type?
   def types
     data = {
-      'source_type' => SourceType.where.not(name: "provenance_observation").map { |source_type|
+#       'source_type' => SourceType.all.map { |source_type|
+       'source_type' => SourceType.where.not(name: "provenance_observation").map { |source_type|
         hash = source_type.attributes
         hash['invalid_source_fields'] = Source.invalid_source_fields_for_source_type(source_type.name)
         hash['valid_roles_for_source_agents'] = SourceAgent.valid_roles_for_source_type(source_type.name)
@@ -276,6 +281,7 @@ class SourcesController < SearchableAuthorityController
 
   def merge
     @source = Source.find(params[:id])
+    @s_details = search_result_format(@source)
     @target_id = params[:target_id]
     @target = nil
     params[:title] = @source.title
@@ -288,6 +294,7 @@ class SourcesController < SearchableAuthorityController
         @warning = "You can only merge sources that are the same type, to avoid data loss"
       else
         @target = Source.find_by(id: @target_id)
+        @t_details = search_result_format(@target)
       end
     end
     if params[:confirm] == "yes"

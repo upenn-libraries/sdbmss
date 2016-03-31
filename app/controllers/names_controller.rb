@@ -143,7 +143,7 @@ class NamesController < SearchableAuthorityController
   end
 
   def params_for_search
-    params.permit(:name, {:name => []}, , :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
+    params.permit(:name, {:name => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
   end
 
   def filters_for_search

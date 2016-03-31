@@ -1,0 +1,183 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th class="col-sm-12" colspan="2"><b>Source Details</b></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+            <td class="col-sm-2 text-right record-label">Type</td>
+            <td class="col-sm-10">
+                <% if source.source_type.present? %>
+                    <%= source.source_type.display_name %>
+                <% end %>
+            </td>
+        </tr>
+
+        <% if source.date.present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Date</td>
+            <td class="col-sm-10">
+                <%= format_fuzzy_date(source.date) %>
+            </td>
+        </tr>
+        <% end %>
+        
+        <tr>
+            <td class="col-sm-2 text-right record-label">Title</td>
+            <td class="col-sm-10">
+                <%= source.title %>
+            </td>
+        </tr>
+
+        <% if (author = source.author).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Author</td>
+            <td class="col-sm-10">
+                <%= source.author %>
+            </td>
+        </tr>
+        <% end %>
+        
+        <% if (institution = source.get_institution).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Institution</td>
+            <td class="col-sm-10">
+                <a class='badge' href="<%= url_for institution.agent %>"><%= institution.agent.name %></a>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if (selling_agent = source.get_selling_agent).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Selling Agent</td>
+            <td class="col-sm-10">
+                <a href="<%= url_for selling_agent.agent %>"><%= selling_agent.agent.name %></a>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if (seller_or_holder = source.get_seller_or_holder).present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Seller</td>
+            <td class="col-sm-10">
+                <a href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a>
+            </td>
+        </tr>
+        <% end %>
+
+        <tr>
+            <td class="col-sm-2 text-right record-label">Contains Manuscripts</td>
+            <td class="col-sm-10">
+                <%= source.whether_mss||"Unknown" %>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="col-sm-2 text-right record-label"># Entries</td>
+            <td class="col-sm-10">
+                This source has <a class='badge' href="<%= search_advanced_path(source: source.public_id) %>"><%= source.entries.approved_only.count %> entries</a> in the database.
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+
+<% if source.medium.present? || source.date_accessed.present? || source.location_institution.present? || source.location.present? || source.link.present? %>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th class="col-sm-12" colspan="2"><b>Location</b></th>
+        </tr>
+    </thead>
+    <tbody>
+        <% if source.medium.present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label"></td>
+            <td class="col-sm-10">
+                <%= source.medium_for_display %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if source.date_accessed.present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Date Accessed</td>
+            <td class="col-sm-10">
+                <%= source.date_accessed %>
+            </td>
+        </tr>
+        <% end %>
+        
+        <% if source.location_institution.present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Institution</td>
+            <td class="col-sm-10">
+                <%= source.location_institution %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if source.location.present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">City, Country</td>
+            <td class="col-sm-10">
+                <%= source.location %>
+            </td>
+        </tr>
+        <% end %>
+
+        <% if source.link.present? %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">Online Link/<br/>Call No.</td>
+            <td class="col-sm-10">
+                <a href="<%= source.link %>"><%= source.link %></a>
+            </td>
+        </tr>
+        <% end %>
+
+    </tbody>
+</table>
+<% end %>
+
+<table class="table table-striped">
+    <thead>
+        <tr> <th class="col-sm-12" colspan="2"><b>About This Source Record</b></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        <tr>
+            <td class="col-sm-2 text-right record-label">Created By</td>
+            <td class="col-sm-10">
+                <%= render partial: "shared/username_with_profile_link", locals: { user: source.created_by } %>
+            </td>
+        </tr>
+
+        <tr>
+            <td class="col-sm-2 text-right record-label">Status</td>
+            <td class="col-sm-10">
+                <%= source.status||"Unknown" %>
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+
+<% if (comments = source.comments).present? %>
+<table class="table table-striped">
+    <thead>
+      <tr>
+        <th class="col-sm-12" colspan="2"><b>Comments</b></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+            <%= comments %>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<% end %>

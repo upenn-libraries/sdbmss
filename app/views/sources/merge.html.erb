@@ -1,3 +1,19 @@
+<style>
+    .to, .from {
+        padding: 0px;
+        overflow: hidden;
+    }
+    .merge_to, .merge_from {
+        padding: 10px 15px;
+        width: calc(100% + 30px);
+    }
+    .merge_from {
+        background-color: #FFFEFA;
+    }
+    .merge_to {
+        background-color: aliceblue;
+    }
+</style>
 <div class='panel panel-primary'><!--<%= @target.present? ? "panel-warning" : "panel-primary" %>'>-->
     <div class='panel-heading'>
         <h3 class='h3'>Merge <%= @source.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h3>
@@ -6,9 +22,9 @@
 
 <div class='row'>
     <div class='col-sm-5'>
-        <div class='panel <%= @target.present? ? "panel-danger" : "panel-default" %>'>
+        <div class='panel <%= @target.present? ? "panel-warning" : "panel-default" %>'>
             <div class='panel-heading'><b><%= @source.public_id %> <%= @target.present? ? " (Will be deleted)" : "" %></b></div>
-            <%= render partial: "source_details", locals: {source: @source } %>
+            <%= render partial: "source_details", locals: {source: @source, details: @s_details, draggable: (@source.present? && @target.present?) ? "from" : nil } %>
         </div>
     </div>
     <div class='col-sm-2'>
@@ -17,9 +33,9 @@
     <div class='col-sm-5'>
         
         <% if @target_id.present? && @target.present? %>
-            <div class='panel <%= @target.present? ? "panel-success" : "panel-default" %>'>
+            <div class='panel <%= @target.present? ? "panel-info" : "panel-default" %>'>
                 <div class='panel-heading'><b><%= @target.public_id %></b></div>
-                <%= render partial: "source_details", locals: {source: @target} %>
+                <%= render partial: "source_details", locals: {source: @target, details: @t_details, draggable: "to" } %>
             </div>
         <% else %>
             <% if @target_id.present? %>
@@ -99,3 +115,28 @@
 
 
 <% end %>
+<script type='text/javascript'>
+    $(document).ready ( function () {
+        $('.to').sortable({
+            revert: true
+        });
+        $('.merge_from').each( function (i, from) {
+          $(from).draggable({
+            connectToSortable: ".to[type=" + $(from).attr("type") + "]",
+            helper: 'clone',
+            revert: 'invalid',
+            start : function(event, ui) {
+              ui.helper.width($(this).width());
+            },
+            stop: function (event, ui) {
+                console.log(ui, ui.helper.parent('.to').children('.row').length );
+              if (ui.helper.parent('.to').children('.row').length > 3) {
+                ui.helper.remove(); 
+              } else {
+                ui.helper.parent('.to').find('.merge_to').hide();
+              }
+            }
+          });
+        });
+    });
+</script>

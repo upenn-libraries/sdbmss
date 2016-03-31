@@ -26,7 +26,7 @@
             <div class="panel-heading">
                 <h1><%= @source.public_id %></h1>
             </div>
-            <%= render partial: "source_details", locals: { source: @source } %>
+            <%= render partial: "source_details", locals: { source: @source, details: @details } %>
         </div>
         
     </div>
