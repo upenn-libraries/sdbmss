@@ -1,15 +1,14 @@
 <ul class="list-group">
 <% details.each do |f, v| %>
   <% if not v.blank? %>
-    <li class='list-group-item <%= draggable if defined?(draggable) %>' type='<%= f if defined?(draggable) && draggable == "to" %>'>
-      <div class="row <%= 'merge_' + draggable if defined?(draggable) %>" type='<%= f if defined?(draggable) && draggable == "from" %>'>
+    <li class='list-group-item' type='<%= f %>'>
+      <div class="row" type='<%= f %>'>
         <div class="col-sm-2 record-label">
           <%= f.to_s.humanize %>    
         </div>
-        <div class="col-sm-9">
+        <div class="col-sm-10">
           <%= v %>
         </div>
-        <div class="col-sm-1"></div>
       </div>
     </li  >
   <% end %>

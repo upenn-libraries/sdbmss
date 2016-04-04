@@ -2,4 +2,4 @@
 
 <p><%= @source.public_id %> has been merged into <a href="<%= url_for @target %>"><%= @target.public_id %></a>.</p>
 
-<%= render partial: "source_details", locals: { source: @source } %>
+<%= render partial: "source_details", locals: { source: @target, details: @details } %>

@@ -204,6 +204,27 @@ class SourcesController < SearchableAuthorityController
     end
   end
 
+  def source_details(obj)
+    {
+      date: [SDBMSS::Util.format_fuzzy_date(obj.date), obj.date, true],
+      title: [obj.title, obj.title, true],
+      author: [obj.author, obj.author, true],
+      selling_agent: [(selling_agent = obj.get_selling_agent_as_name).present? ? selling_agent.name : "", selling_agent, true],
+      institution: [(institution_agent = obj.get_institution_as_name).present? ? institution_agent.name : "", institution_agent, true],
+      whether_mss: [obj.whether_mss, obj.whether_mss, true],
+      medium: [obj.medium_for_display, obj.medium, true],
+      date_accessed: [obj.date_accessed, obj.date_accessed, true],
+      location_institution: [obj.location_institution, obj.location_institution, true],
+      location: [obj.location, obj.location, true],
+      link: [obj.link, obj.link, true],
+      comments: [obj.comments, obj.comments, true],
+      created_by: [obj.created_by.present? ? obj.created_by.username : "(none)", obj.created_by, false],
+      created_at: [obj.created_at.present? ? obj.created_at.to_formatted_s(:long) : "", obj.created_at, false],
+      updated_by: [obj.updated_by.present? ? obj.updated_by.username : "(none)", obj.updated_by, false],
+      updated_at: [obj.updated_at.present? ? obj.updated_at.to_formatted_s(:long) : "", obj.updated_at, false]
+    }
+  end
+
   def search_result_format(obj)
     {
       id: obj.id,
@@ -281,12 +302,13 @@ class SourcesController < SearchableAuthorityController
 
   def merge
     @source = Source.find(params[:id])
-    @s_details = search_result_format(@source)
+    @s_details = source_details(@source)
     @target_id = params[:target_id]
     @target = nil
     params[:title] = @source.title
     params[:date] = @source.date
-    get_similar 
+    get_similar
+    @details = search_result_format(@source)
     if @target_id.present?
       if @target_id.to_i == @source.id
         @warning = "You can't merge a record into itself"
@@ -294,11 +316,23 @@ class SourcesController < SearchableAuthorityController
         @warning = "You can only merge sources that are the same type, to avoid data loss"
       else
         @target = Source.find_by(id: @target_id)
-        @t_details = search_result_format(@target)
+        @t_details = source_details(@target)
+       #@permitted = source_params_for_create_and_edit
+       
+        @details = []
+        @s_details.each do |f, v| 
+          @details.append(f) if (!@details.include?(f) && !v[0].blank?)
+          if v[0] == @t_details[f][0]
+            v[2] = false
+          end
+        end
+        @t_details.each { |f, v| @details.append(f) if (!@details.include?(f) && !v[0].blank?) }
       end
     end
     if params[:confirm] == "yes"
+      @target.update_attributes(source_params_for_create_and_edit)
       @source.merge_into(@target)
+      @details = search_result_format(@target)
       render "merge_success"
     end
   end
@@ -346,10 +380,11 @@ class SourcesController < SearchableAuthorityController
   def get_similar
     type = @source.source_type_id || 99
     s = Sunspot.more_like_this(@source) do
-      fields :title, :date
+      fields(:title, :date => 10, :agent_name => 6)
       with :source_type_id, type
       paginate page: 1, per_page: 10
       order_by :score, :desc
+      boost true
     end
     @similar = s.results
   end
