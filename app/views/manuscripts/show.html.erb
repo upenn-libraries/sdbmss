@@ -164,7 +164,7 @@
         </div>
         <% end %>
 
-        <% @manuscript.entries.sort { |a, b| a.source.date <=> b.source.date }.each_with_index do |entry, index| %>
+        <% @manuscript.entries.sort { |a, b| a.source.date.to_s <=> b.source.date.to_s }.each_with_index do |entry, index| %>
             <div class="panel panel-provenance <%= entry.source_id == 34611 ? 'panel-warning' : 'panel-default' %>">
                 <div class="panel-heading">
                     <div class="row">

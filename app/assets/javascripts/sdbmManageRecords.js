@@ -336,7 +336,7 @@ var SDBM = SDBM || {};
                 render: function (data, type, full, meta) {
                     // /console.log("here", data, type, full, meta);
                     var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '">' + data + '</a>';
-                    console.log(str);
+//                    console.log(str);
                     return str;
                 }
             },
