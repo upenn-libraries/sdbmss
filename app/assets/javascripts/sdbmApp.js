@@ -365,14 +365,18 @@ var EntryScope;
         $scope.sortableOptions = {
           axis: 'y',
           scrollSpeed: 40,
-          scrollSensitivity: 20,
+          placeholder: "ui-state-highlight",
+          scrollSensitivity: 100,
+          start: function(e, ui){
+              ui.placeholder.height(ui.item.height());
+          },
           stop: function (e, ui) {
             // this is an ugly way to just get a reference to the array (i.e. entry_titles, provenance) that we are sorting
             var field = ui.item.parent().attr('ng-model').split('.')[1];
             for (var i = 0; i < $scope.entry[field].length; i++) {
               $scope.entry[field][i].order = i;
             }
-            console.log($scope.entry[field]);
+            //console.log($scope.entry[field]);
           }
         }
 
@@ -491,7 +495,7 @@ var EntryScope;
         };
 
         $scope.updateProvenanceDateRange = function (prov, date) {
-          console.log('here', date);
+          //console.log('here', date);
           var observedDate = date.date;
           if(observedDate && (date.type == "Start" || date.type == "End")) {
               $http.get("/entry_dates/parse_observed_date.json" , {

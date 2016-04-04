@@ -25,11 +25,17 @@
             {
                 sdbmssMinWidth: "20px",
                 sdbmssMaxWidth: "20px",
-                title: '',
+                title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
                 orderable: false,
+                className: "text-center",
                 render: function (data, type, full, meta) {
                     if(manageManuscripts.getUnreviewedOnly() === 1) {
-                        return '<input type="checkbox" name="review" value="' + full[manageManuscripts.dataTable.getColumnIndex("ID")] + '"/>';
+                        return  '' + 
+                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageManuscripts.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
+                                '<label for="checkbox_' + meta.row + '">' + 
+                                '<a class="btn btn-default btn-xs glyphicon glyphicon-unchecked unchecked"></a>' + 
+                                '<a class="btn btn-default btn-xs glyphicon glyphicon-check checked"></a>' + 
+                                '</label>' + '';
                     }
                     return '';
                 }
@@ -40,9 +46,9 @@
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var str = '<a href="/' + manageManuscripts.options.resourceName + '/' + data + '/edit/">Edit</a> '
-                            + '&middot; <a class="delete-link" href="/' + manageManuscripts.options.resourceName + '/' + data + '.json">Delete</a>'
-                            + '&middot; <a class="linking-tool-link" target="_blank" href="/linkingtool/manuscript/' + data + '">Linking Tool</a>';
+                    var str = '<a class="btn btn-xs btn-success" href="/' + manageManuscripts.options.resourceName + '/' + data + '/edit/">Edit</a> '
+                            + ' <a class="btn btn-xs btn-danger delete-link" href="/' + manageManuscripts.options.resourceName + '/' + data + '.json">Delete</a>'
+                            + ' <a class="btn btn-xs btn-info linking-tool-link" target="_blank" href="/linkingtool/manuscript/' + data + '">Linking Tool</a>';
                     return str;
                 }
             },
@@ -71,7 +77,6 @@
             {
                 sdbmssMinWidth: "100px",
                 sdbmssMaxWidth: "100px",
-                orderable: true,
                 title: '# Entries',
                 dbSortField: 'entries_count'
             },
@@ -85,28 +90,25 @@
                 sdbmssMinWidth: "130px",
                 sdbmssMaxWidth: "130px",
                 title: 'Created By',
-                dbSortField: 'created_by_id'
+                dbSortField: 'created_by'
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Created At',
                 dbSortField: 'created_at',
-                orderable: false
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Updated By',
-                dbSortField: 'updated_by_id',
-                orderable: false
+                dbSortField: 'updated_by',
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Updated At',
                 dbSortField: 'updated_at',
-                orderable: false
             }
         ];
      };
@@ -142,4 +144,3 @@
  });
 
 </script>
-

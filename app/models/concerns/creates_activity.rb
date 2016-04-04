@@ -3,12 +3,13 @@
 # representing the creation/update/deletion that has occurred to it.
 module CreatesActivity
 
-  def create_activity(action_name, current_user)
+  def create_activity(action_name, current_user, transaction_id)
     activity = Activity.new(
       item_type: self.class.to_s,
       item_id: id,
       event: action_name,
-      user_id: current_user.id
+      user_id: current_user.id,
+      transaction_id: transaction_id
     )
     success = activity.save
     if !success

@@ -38,7 +38,7 @@ module LogActivity
             make_entry = false if model_object.previous_changes.count == 0
           end
           if make_entry
-            model_object.try(:create_activity, event, current_user)
+            model_object.try(:create_activity, event, current_user, @transaction_id)
           end
         end
       else
@@ -49,7 +49,7 @@ module LogActivity
         model_object = instance_variable_get("@#{model_name.downcase}") || instance_variable_get("@model")
 
         if model_object.present?
-          model_object.try(:create_activity, action_name, current_user)
+          model_object.try(:create_activity, action_name, current_user, @transaction_id)
         else
           Rails.logger.error "Couldn't save Activity object in after_action hook for #{self.class}##{action_name}), no model object found"
         end

@@ -1,5 +1,5 @@
 
-class EntryManuscriptsController < ManageModelsController
+class EntryManuscriptsController < SearchableAuthorityController
 
   before_action :authenticate_user!, only: [:update_multiple]
 
@@ -9,13 +9,23 @@ class EntryManuscriptsController < ManageModelsController
 
   #  respond_to :html, :json
 
+  def search_fields
+    @filters = ["id", "created_by", "updated_by"]
+    @fields = []
+    @dates = ["created_at", "updated_at"]
+    @fields + @filters + @dates
+  end
+
   def index
+    super
     @page_title = "Manage Links"
   end
 
   # updates multiple EntryManuscript records at once; this is used for
   # the Linking Tool
   def update_multiple
+    ActiveRecord::Base.transaction do
+      
     manuscript = Manuscript.find params[:manuscript_id]
 
     @entry_manuscripts = []
@@ -47,6 +57,9 @@ class EntryManuscriptsController < ManageModelsController
         }
       end
     end
+
+      @transaction_id = PaperTrail.transaction_id
+    end
   end
 
   def search_name_field
@@ -62,9 +75,9 @@ class EntryManuscriptsController < ManageModelsController
       relation_type: obj.relation_type,
       reviewed: obj.reviewed,
       created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
-      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:short) : "",
+      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:long) : "",
       updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
-      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:short) : ""
+      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:long) : ""
     }
   end
 

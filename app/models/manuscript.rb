@@ -15,6 +15,28 @@ class Manuscript < ActiveRecord::Base
   include HasPaperTrail
   include CreatesActivity
 
+  # searchable!
+  
+  searchable do
+    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
+    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
+    string :created_by
+    string :updated_by
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :created_by })
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :updated_by })
+    text :created_by
+    text :updated_by
+    text :name
+    string :name
+    text :location
+    string :location
+    integer :id
+    boolean :reviewed
+    integer :entries_count
+    date :created_at
+    date :updated_at
+  end
+
   # Fetches the Provenance records for ALL entries for this MS, and
   # returns an array of 2-item arrays of name string and array of
   # provenance records containing that name. ie:

@@ -32,10 +32,15 @@
             <%- end -%>
             </select>
         </div>
-        <div class="col-sm-3">
+        <div class="col-sm-2">
             <label class="checkbox-inline">
                 <input id="unapproved_only" name="unapproved_only" type="checkbox" value="1" />Limit to records needing approval
             </label>
+        </div>
+        <div class="col-sm-3">
+            <ul class="list-group">
+                <li class="list-group-item list-group-item-warning text-center"><span class="disabled">(unapproved records shown in yellow)</span></li>
+            </ul>
         </div>
     </div>
 

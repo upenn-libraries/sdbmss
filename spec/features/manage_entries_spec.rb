@@ -45,7 +45,7 @@ describe "Manage entries", :js => true do
     visit entries_path
 
     first("input[name='search_value']").native.send_keys "de ricci"
-    click_button "Search"
+    find('#search_submit').click()
     expect(page).not_to have_selector("#spinner", visible: true)
 
     expect(all("#search_results tbody tr").count).to eq(2)
@@ -78,7 +78,7 @@ describe "Manage entries", :js => true do
 
     visit entries_path
     first("#unapproved_only").click
-    click_button "Search"
+    find('#search_submit').click()
 
     expect(page).to have_selector("#select-all", visible: true)
     find("#select-all").click
@@ -125,7 +125,7 @@ describe "Manage entries", :js => true do
       page.first("input[name='search_value']").set "Test String"
       option = page.first("select[name='search_field']").all("option")[i]
       option.select_option
-      click_button("Search")
+      find('#search_submit').click()
       # puts "Option: #{option.value}, success"
     end
   end
@@ -142,7 +142,7 @@ describe "Manage entries", :js => true do
     textInputs[1].set "Hippo"
     searchOptions[1].set "Author"
 
-    click_button("Search")
+    find('#search_submit').click()
 
     sleep 2
 
@@ -156,7 +156,7 @@ describe "Manage entries", :js => true do
     textInputs[0].set "Augustine AND Hippo"
     searchOptions[0].set "Author"
 
-    click_button("Search")
+    find('#search_submit').click()
 
     sleep 2
 
@@ -179,7 +179,7 @@ describe "Manage entries", :js => true do
 
     select 'any', from: 'op'
 
-    click_button("Search")
+    find('#search_submit').click()
 
     sleep 2
 
@@ -193,7 +193,7 @@ describe "Manage entries", :js => true do
     textInputs[0].set "Augustine OR Cicero"
     searchOptions[0].set "Author"
 
-    click_button("Search")
+    find('#search_submit').click()
 
     sleep 2
 

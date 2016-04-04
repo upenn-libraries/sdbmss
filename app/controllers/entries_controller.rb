@@ -140,6 +140,9 @@ class EntriesController < ManageModelsController
           render json: json_response, status: :unprocessable_entity
         end
       }
+      format.html {
+        redirect_to entry_path(@entry)
+      }
     end
   end
 
@@ -153,6 +156,7 @@ class EntriesController < ManageModelsController
 
     if params[:cumulative_updated_at].to_s == @entry.cumulative_updated_at.to_s
       ActiveRecord::Base.transaction do
+
         filtered = entry_params_for_create_and_edit
         success = @entry.update_by(current_user, filtered)
         if success
@@ -168,6 +172,7 @@ class EntriesController < ManageModelsController
             c.save!
           end
         end
+        @transaction_id = PaperTrail.transaction_id
       end
     else
       errors = { base: "Another change was made to the record while you were working. Re-load the page and start over." }
@@ -267,7 +272,7 @@ class EntriesController < ManageModelsController
   def history
     changesets = ModelHistory.new(@entry).changesets
     if changesets.count <= 0
-      @error = "This record was added before version history was implemented - there is no saved changed history to display."
+      @error = "This record was added before version history was implemented - there is no saved change history to display."
     end
     unique_hash = {}
     @unique_list = {}

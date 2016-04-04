@@ -154,6 +154,19 @@
             </div>
         </div>
         <% end %>
+        <!-- recent activity -->
+        <% @activities = Activity.where(user_id: current_user.id).last(10).reverse %>
+        <% if @activities && @activities.count > 0 %>
+            <div class="panel panel-default">
+                <div class="panel-heading">Your Recent Activity</div>
+                <div class="panel-body">
+                    <ul class="list-group">
+                        <%= render partial: "activities/more" %>                       
+                    </ul>
+                    <div class="text-center"><%= link_to "See More...", activities_path('users[username][]' => current_user.username) %></div>
+                </div>
+            </div>
+        <% end %>
     </div>
 </div>
     

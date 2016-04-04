@@ -17,12 +17,23 @@ class Place < ActiveRecord::Base
 
   validates_presence_of :name
 
-  searchable do
+  searchable :unless => :deleted do
+    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
+    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
+    string :created_by
+    string :updated_by
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :created_by })
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :updated_by })
+    text :created_by
+    text :updated_by
     text :name, :more_like_this => true
     string :name
     integer :id
+    boolean :reviewed
     integer :created_by_id
     integer :entries_count
+    date :created_at
+    date :updated_at
   end
 
   def entries_to_index_on_update

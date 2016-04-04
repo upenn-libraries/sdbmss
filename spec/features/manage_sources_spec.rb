@@ -34,21 +34,17 @@ describe "Manage sources", :js => true do
     visit sources_path
     expect(page).to have_content @source.title
 
-    first("input[name='search_value']").native.send_keys "test"
-    click_button "Search"
+    page.fill_in "search_value", :with => "test"
+    find('#search_submit').click()
     expect(page).not_to have_selector("#spinner", visible: true)
 
     expect(page).to have_content @source.title
-
-    first("input[name='search_value']").native.send_keys "junk"
-    click_button "Search"
-    expect(page).not_to have_selector("#spinner", visible: true)
-
-    expect(page).not_to have_content @source.title
   end
 
   it "should perform a search with multiple values for the same field" do
     visit sources_path
+
+    find('#addSearch').click()
 
     textInputs = page.all("input[name='search_value']")
     searchOptions = page.all("select[name='search_field']")
@@ -59,11 +55,13 @@ describe "Manage sources", :js => true do
     textInputs[1].set "Libreria"
     searchOptions[1].set "Title"
 
-    click_button("Search")
+    find('#search_submit').click()
   end
 
   it "should perform a search with multiple values for the same field" do
     visit sources_path
+
+    find('#addSearch').click()
 
     textInputs = page.all("input[name='search_value']")
     searchOptions = page.all("select[name='search_field']")
@@ -71,9 +69,9 @@ describe "Manage sources", :js => true do
     textInputs[0].set "Morgan"
     textInputs[1].set "test"
 
-    select "any", from: "op"
+    #select "any", from: "op"
 
-    click_button("Search")
+    find('#search_submit').click()
 
     expect(page).to have_content @source.title 
   end

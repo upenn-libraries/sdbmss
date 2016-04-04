@@ -66,7 +66,16 @@ class Name < ActiveRecord::Base
     end
   end 
 
-  searchable do
+
+  searchable :unless => :deleted do
+    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
+    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
+    string :created_by
+    string :updated_by
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :created_by })
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :updated_by })
+    text :created_by
+    text :updated_by
     integer :id
     text :name, :more_like_this => true
     string :name
@@ -78,6 +87,8 @@ class Name < ActiveRecord::Base
     integer :source_agents_count
     integer :sale_agents_count
     integer :provenance_count
+    date :created_at
+    date :updated_at
   end
   
   # constructor for a Provenance Agent. takes same args as #new

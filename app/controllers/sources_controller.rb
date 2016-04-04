@@ -36,6 +36,13 @@ class SourcesController < SearchableAuthorityController
     ["author", "Author", DEFAULT_SEARCH_FIELD_HANDLER ],
   ]
 
+  def search_fields
+    @filters = ["id", "location"]
+    @fields = ["title", "selling_agent", "institution", "author", "created_by", "updated_by"]
+    @dates = ["created_at", "updated_at"]
+    @fields + @filters + @dates
+  end
+
   # return just the query strings which are combined in an array, then joined with either AND or OR to create one final query - but will it work with the unique cases above?
 
   A_DEFAULT_SEARCH_HANDLER = lambda { |fieldname, params, query| 
@@ -68,9 +75,9 @@ class SourcesController < SearchableAuthorityController
     end
   end
 
-  def index
-    @search_fields = SEARCH_FIELDS
-  end
+#  def index
+#    @search_fields = SEARCH_FIELDS
+#  end
 
   def create
     filtered = source_params_for_create_and_edit
@@ -212,9 +219,9 @@ class SourcesController < SearchableAuthorityController
       link: obj.link,
       comments: obj.comments,
       created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
-      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:short) : "",
+      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:long) : "",
       updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
-      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:short) : ""
+      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:long) : ""
     }
   end
 
@@ -248,9 +255,10 @@ class SourcesController < SearchableAuthorityController
   end
 
   # returns JSON containing type constants
+  # FIX ME: better way of filtering out special 'provenance_observation' source type?
   def types
     data = {
-      'source_type' => SourceType.all.map { |source_type|
+      'source_type' => SourceType.where.not(name: "provenance_observation").map { |source_type|
         hash = source_type.attributes
         hash['invalid_source_fields'] = Source.invalid_source_fields_for_source_type(source_type.name)
         hash['valid_roles_for_source_agents'] = SourceAgent.valid_roles_for_source_type(source_type.name)
@@ -391,7 +399,7 @@ class SourcesController < SearchableAuthorityController
     # agent_name can come from a number of sources
     # FIX ME: maybe we want to only search for selling agents though?
     params[:agent_name] = Array(params[:agent]) + Array(params[:selling_agent]) + Array(params[:institution])
-    params.permit(:title, {:title => []}, :author, {:author => []}, :agent_name, {:agent_name => [] }, :location_institution, :medium, :date, {:date => []})
+    params.permit(:title, {:title => []}, :author, {:author => []}, :agent_name, {:agent_name => [] }, :location_institution, :medium, :date, {:date => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
   end
 
   def filters_for_search

@@ -1,31 +1,84 @@
 <h3>Recent Activity</h3>
-<table class="table table-striped">
-<% @activities.each do |activity| %>
-    <tr>
-        <td>
-            <div><%= activity.created_at.to_formatted_s(:date_and_time) %></div>
-            <div style="margin-left: 20px;">
-                <%= render_partial_if_exists "activities/#{activity.item_type.underscore.singularize}", "default", locals: { activity: activity }  %>
+<%= form_tag({:controller => "activities", :action => "index"}, :method => "get", :class => "form-inline") do %>
+<div class="well">
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <%= label_tag 'User:' %>
+                        </div>
+                        <div class="col-sm-3">
+                            <%= label_tag "Action:" %>
+                        </div>
+                        <div class="col-sm-3">
+                            <%= label_tag "Record:" %>
+                        </div>  
+                    </div>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-5">
+                    <%= label_tag 'Date Range:' %>
+                </div>
             </div>
-        </td>
-    </tr>
-<% end %>
-</table>
-
-<nav>
-  <ul class="pagination">
-    <li class="<% if @page == 1 %>disabled<% end %>">
-        <% if @page > 1 %><a href="<%= activities_path page: @page - 1 %>" aria-label="Previous"><% end %>
-            <span aria-hidden="true">&laquo;</span>
-        <% if @page > 1 %></a><% end %>
-    </li>
-    <% @num_pages.times do |page| %>
-    <li><a href="<%= activities_path page: page + 1 %>"><%= page + 1 %></a></li>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-10">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <%= text_field 'users[username]', "", class: 'form-control', value: (params[:users][:username] if params[:users] ) %>            
+                        </div>
+                        <div class="col-sm-3">
+                            <%= select_tag :event, options_for_select(['', 'update', 'create', 'destroy'], params[:event]), class: 'form-control', placeholder: 'Event' %>
+                        </div>
+                        <div class="col-sm-3">
+                            <%= select_tag :item_type, options_for_select(['', 'Entry', 'Name', 'Source', 'Language', 'Place', 'Manuscript'], params[:item_type]), class: 'form-control', placeholder: 'Record Type'%>
+                        </div>  
+                    </div>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <%= date_field :start_date, "", class: 'form-control', value: params[:start_date] || (Date.today - 100.years).to_s %> to 
+                    <%= date_field :end_date, "", class: 'form-control', value: params[:end_date] || (Date.today + 1.day).to_s %>            
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <%= submit_tag "Filter", class: 'form-control btn-info' %>
+            <%= link_to "Clear", activities_path, class: "btn btn-warning" %>
+        </div>
+    </div>
     <% end %>
-    <li class="<% if @page == @num_pages %>disabled<% end %>">
-        <% if @page < @num_pages %><a href="<%= activities_path page: @page + 1 %>" aria-label="Next"><% end %>
-            <span aria-hidden="true">&raquo;</span>
-        <% if @page < @num_pages %></a><% end %>
-    </li>
-  </ul>
-</nav>
+</div>
+<%= render partial: "activities/summary", locals: {summary: @summary} %>
+<ul id='activity' class='list-group'>
+    <%= render partial: "activities/more" %>
+</ul>
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <a id="loadMore" class='btn btn-default'>Load More...</a>
+    </div>
+</div>
+<script>
+    var page = 1;
+    var total_pages = <%= @num_pages %>;
+    if (page >= total_pages) $('#loadMore').addClass('disabled');
+
+    $('#loadMore').click(function (e) {
+        page += 1;
+        if (page >= total_pages) $('#loadMore').addClass('disabled');
+        query = window.location.href.split("?")[1]
+        $.get("?" + query + '&more=true&page=' + page, function (result) {
+            var more = $(result);
+            more.hide();
+            $('#activity').append(more);
+            more.slideDown();
+            $('html, body').animate({
+                scrollTop: $("#loadMore").offset().top
+            }, 500);
+        })
+    });
+</script>

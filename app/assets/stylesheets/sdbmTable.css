@@ -26,11 +26,11 @@ table.dataTable.compact tbody td {
 
 /*
  * put left and right borders on this container, otherwise a tall table
- *  without enough rows to fill it completely looks weird.
+ *  without enough rows to fill it completely looks weird. FIX ME: does it?
  */
 .dataTables_scroll {
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
+    /* border-left: 1px solid #ddd; */
+    /* border-right: 1px solid #ddd; */
 }
 
 /*

@@ -11,7 +11,7 @@
 //= require jquery.dataTables.min
 //= require dataTables.bootstrap
 //= require dataTables.colVis
-//= require dataTables.colReorder
+//  require dataTables.colReorder
 //= require dataTables.colResize
 //= require dataTables.fixedColumns
 //= require sdbmTable

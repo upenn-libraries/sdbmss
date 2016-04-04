@@ -182,4 +182,22 @@ module ApplicationHelper
     render(*args)
   end
 
+  def get_date_display (first, last)
+    today = Time.now.to_date
+    difference = (today - first.to_date).round
+    if difference <= 1
+      "today"
+    elsif difference <= 2
+      "yesterday"
+    elsif difference <= 7
+      "less than one week ago"
+    elsif difference <= 62
+      "#{difference / 7} week(s) ago"
+    elsif difference <= 365
+      "#{difference / 31} month(s) ago"
+    else
+      "#{difference / 365} year(s) ago"
+    end
+  end
+
 end

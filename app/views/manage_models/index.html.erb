@@ -7,21 +7,30 @@
 </style>
 <% end %>
 
-<% if @page_title %>
-    <h1><%= @page_title %></h1>
-<% else %>
-<% if !can? :manage, model_class %>
-    <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
-    <h1>Manage Your <%= resource_name.pluralize.capitalize %></h1>
-<% else %>
-    <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
-    <h1>Manage all <%= resource_name.singularize %> records</h1>
-<% end %>
-<% end %>
+<div class="container">
+<div class="row">
+    <div class="col-sm-10">
+        <% if @page_title %>
+            <h1><%= @page_title %></h1>
+        <% else %>
+        <% if !can? :manage, model_class %>
+            <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
+            <h1>Manage Your <%= resource_name.pluralize.capitalize %></h1>
+        <% else %>
+            <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
+            <h1>Manage all <%= resource_name.singularize %> records</h1>
+        <% end %>
+        <% end %>
+    </div>
+    <div class="col-sm-2 text-right">
+        <a class="btn btn-primary add-new-record" href="<%= new_model_path %>"><span class="glyphicon glyphicon-plus"></span> <span class="name">Add New Record</span></a>
+    </div>
+</div>
 
 <%= render partial: "instructions" %>
 
 <%= render partial: "search_form" %>
+</div>
 
 <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
     <thead>
@@ -30,8 +39,49 @@
     </thead>
 </table>
 
+<div class="container">
+
 <div style="text-align: right">
     <a id="export-csv" href="#">Export search results as csv</a>
 </div>
 
 <%= render partial: "index_extra" %>
+
+<script type="text/javascript">
+// FIX ME: better place for this?
+// this sets the options for our manage table search bars (i.e. if searching on ID, have different options than a fulltext name search)
+    function setOptions (p) {
+        var t = p.find("select[name=search_field]");
+        updateOptions = function (e) {
+            var type = t.find("option:selected").attr("type");
+            p.find(".option").hide();
+            p.find(".option").attr("selected", false);
+            p.find("." + type + "_option").show();
+            p.find("." + type + "_option").first().attr("selected", true);
+        };
+        t.change(updateOptions);
+        updateOptions();
+    }
+    $("#addSearch").click( function (e) {
+        var p = $('.search-fieldset').eq(0).clone();
+        p.find("input", "select").val("");
+        $(".search").append(p);
+        p.find(".search-remove").click( function (e) {
+            if ($('.search-fieldset').length > 1) {
+                var p = $(this).closest('.search-fieldset');
+                $(".search").find(p).remove();
+            }
+        });
+        setOptions(p);      
+    });
+    var p = $('.search-fieldset');
+    p.find(".search-remove").click( function (e) {
+        p.find("input").each(function (e) {
+            $(this).val("");
+        })
+        p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
+    });
+    setOptions(p);
+</script>
+
+</div>

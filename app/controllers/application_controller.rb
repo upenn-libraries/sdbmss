@@ -18,6 +18,9 @@ class ApplicationController < ActionController::Base
 
   helper_method :sdbmss_search_action_path
 
+  # register user activity
+  after_filter :user_activity
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :password, :password_confirmation, :remember_me) }
     devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :username, :email, :password, :remember_me) }
@@ -69,6 +72,12 @@ class ApplicationController < ActionController::Base
       end
     end
     root_path({ "utf8" => SDBMSS::Util::CHECKMARK, "search_field" => "all_fields" }.merge(opts))
+  end
+
+  private
+
+  def user_activity
+    current_user.try :touch
   end
 
 end

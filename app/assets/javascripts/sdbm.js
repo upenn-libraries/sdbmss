@@ -87,7 +87,7 @@ var SDBM = SDBM || {};
     };
 
     SDBM.setPageFullWidth = function() {
-        SDBM.hideNavBar();
+        //SDBM.hideNavBar();
         // make this page take up full width of browser window
         $("#main-container").removeClass("container").addClass("container-fluid");
     };

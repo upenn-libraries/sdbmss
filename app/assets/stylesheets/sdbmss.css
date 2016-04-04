@@ -1,3 +1,6 @@
+body {
+  font-family: Ubuntu, sans-serif;
+}
 
 #header-navbar { background-color: #dddddd; border-color: #d0d0d0; }
 .navbar-inverse .navbar-nav > li > a { color: black }
@@ -84,6 +87,49 @@ h1 { font-size: 30px; margin-top: 0; }
 
 /**** Style for various data entry forms */
 
+.no-overflow {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow-x: hidden;
+}
+
+/*
+ checkboxes!
+ */
+.checked, .table-checkbox {
+  display: none;
+}
+.table-checkbox:checked + label > .checked {
+  display: block;
+}
+.table-checkbox:checked + label > .unchecked {
+  display: none;
+}
+.hidden {
+  display: none;
+}
+
+.provenance_remove {
+  display: none;
+}
+
+.label-tag {
+  font-size: 14px;
+  max-width: 140px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.label-tag:nth-child(2n) {
+  max-width: 164px;
+}
+.label-source {
+  background: #CC0000;
+}
+.label-entry {
+  background: #009900;
+}
+
 .suggestions {
   margin: 10px;
   padding: 10px;
@@ -101,19 +147,28 @@ h1 { font-size: 30px; margin-top: 0; }
   color: #eee;
 }
 
+.fade-in {
+  opacity: 0;
+  transition: opacity linear 0.5s;
+}
+
 .input-block .row {
-    margin: 2px;
+  margin: 2px;
 }
 .input-block textarea {
   max-height: 100%;
   max-width: 100%;
 }
-.input-block {
+.input-block, .ui-state-highlight {
   padding: 4px;
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: #F8F8F8;
   transition: all linear 0.5s;
+}
+.ui-state-highlight {
+  width: 100%;
+/*  height: min-100px;*/
 }
 .input-block.carousel {
   margin-bottom: 10px;

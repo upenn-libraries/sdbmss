@@ -31,7 +31,7 @@ class CommentsController < ManageModelsController
       created_by: obj.created_by.username,
       created_at: obj.created_at.to_formatted_s(:date_and_time),
       updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
-      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:short) : ""
+      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:long) : ""
     }
   end
 

@@ -90,12 +90,26 @@ class Source < ActiveRecord::Base
     text :agent_name do
       (source_agents.map do |sa| Name.find(sa.agent_id).name end).join(" ")
     end
+    #FIX ME: this won't actually work for sorting or anything like that...
+    string :agent_name do
+      (source_agents.map do |sa| Name.find(sa.agent_id).name end).join(" ")
+    end
     string :location
     string :medium
     string :date
     text :date, :more_like_this => true
     integer :entries_count
     integer :source_type_id
+    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
+    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
+    string :created_by
+    string :updated_by
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :created_by })
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :updated_by })
+    text :created_by
+    text :updated_by
+    date :created_at
+    date :updated_at
   end
 
   def public_id

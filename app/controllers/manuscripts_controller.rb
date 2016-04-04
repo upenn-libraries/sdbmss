@@ -1,4 +1,4 @@
-class ManuscriptsController < ManageModelsController
+class ManuscriptsController < SearchableAuthorityController
 
   include MarkAsReviewed
   include LogActivity
@@ -13,9 +13,32 @@ class ManuscriptsController < ManageModelsController
     Manuscript
   end
 
+  def search_fields
+    @fields = ["name", "location", "created_by", "updated_by"]
+    @filters = ["id"]
+    @dates = ["created_at", "updated_at"]
+    @fields + @filters + @dates
+  end
+
   def show
     @manuscript_comment = ManuscriptComment.new(manuscript: @manuscript)
     @manuscript_comment.build_comment
+
+    @manuscript_titles = Set.new
+
+    if @manuscript.name
+      @manuscript_titles.add(@manuscript.name)
+    elsif @manuscript.entries.count > 0
+      @manuscript.entries.each do |entry|
+        if entry.entry_titles.count > 0
+          entry.entry_titles.each do |title|
+            @manuscript_titles.add(title.common_title)
+            @manuscript_titles.add(title.title)
+          end
+        end
+      end
+    end
+       
   end
 
   def entry_candidates
@@ -33,9 +56,9 @@ class ManuscriptsController < ManageModelsController
       entries_count: obj.entries_count,
       reviewed: obj.reviewed,
       created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
-      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:short) : "",
+      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:long) : "",
       updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
-      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:short) : ""
+      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:long) : ""
     }
   end
 
@@ -56,6 +79,10 @@ class ManuscriptsController < ManageModelsController
       :name, :location,
       :entry_manuscripts_attributes => [ :id, :manuscript_id, :entry_id, :relation_type, :_destroy ]
     )
+  end
+
+  def params_for_search
+    params.permit(:name, {:name => []}, :location, {:location => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
   end
 
 end

@@ -31,32 +31,39 @@
             {
                 sdbmssMinWidth: "20px",
                 sdbmssMaxWidth: "20px",
-                title: '',
+                title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
                 orderable: false,
+                className: 'text-center',
                 render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {
-                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                        return  '' + 
+                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
+                                '<label for="checkbox_' + meta.row + '">' + 
+                                '<a class="btn btn-default btn-xs glyphicon glyphicon-unchecked unchecked"></a>' + 
+                                '<a class="btn btn-default btn-xs glyphicon glyphicon-check checked"></a>' + 
+                                '</label>' + '';
+                        //return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     }
                     return '';
                 }
             },
             {
-                sdbmssMinWidth: "125px",
-                sdbmssMaxWidth: "125px",
+                sdbmssMinWidth: "145px",
+                sdbmssMaxWidth: "145px",
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var mergeLink = canMerge ? ' &middot; <a class="merge-link" href="/' + manageRecords.options.resourceName + '/' + data + '/merge">Merge</a>' : '';
+                    var mergeLink = canMerge ? ' <a class="btn btn-xs btn-info merge-link" href="/' + manageRecords.options.resourceName + '/' + data + '/merge">Merge</a>' : '';
 
-                    var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>'
-                            + ' &middot; <a class="delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>'
+                    var str = '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>'
+                            + ' <a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>'
                             + mergeLink;
                     return str;
                 },
             },
             {
-                sdbmssMinWidth: "150px",
-                sdbmssMaxWidth: "150px",
+                sdbmssMinWidth: "130px",
+                sdbmssMaxWidth: "130px",
                 title: 'ID',
                 render: function (data, type, full, meta) { 
                     var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/">SDBM_NAME_' + data + '</a>';
@@ -81,48 +88,47 @@
                     }
                     return str;
                 },
-                dbSortField: 'viaf_id',
-                orderable: false
+                dbSortField: 'viaf_id'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
+                sdbmssMinWidth: "75px",
+                sdbmssMaxWidth: "75px",
                 title: 'As Author',
                 dbSortField: 'authors_count'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
+                sdbmssMinWidth: "75px",
+                sdbmssMaxWidth: "75px",
                 title: 'As Artist',
                 dbSortField: 'artists_count'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
+                sdbmssMinWidth: "75px",
+                sdbmssMaxWidth: "75px",
                 title: 'As Scribe',
                 dbSortField: 'scribes_count'
             },
             {
-                sdbmssMinWidth: "100px",
-                sdbmssMaxWidth: "100px",
+                sdbmssMinWidth: "85px",
+                sdbmssMaxWidth: "85px",
                 title: 'As Source Agent',
                 dbSortField: 'source_agents_count'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
+                sdbmssMinWidth: "75px",
+                sdbmssMaxWidth: "75px",
                 title: 'As Sale Agent',
                 dbSortField: 'sale_agents_count'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
+                sdbmssMinWidth: "75px",
+                sdbmssMaxWidth: "75px",
                 title: 'As Prov Agent',
                 dbSortField: 'provenance_count'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
+                sdbmssMinWidth: "75px",
+                sdbmssMaxWidth: "75px",
                 title: 'Reviewed',
                 dbSortField: 'reviewed'
             },
@@ -130,28 +136,25 @@
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Created By',
-                dbSortField: 'created_by_id'
+                dbSortField: 'created_by'
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Created At',
-                dbSortField: 'created_at',
-                orderable: false
+                dbSortField: 'created_at'
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Updated By',
-                dbSortField: 'updated_by_id',
-                orderable: false
+                dbSortField: 'updated_by'
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Updated At',
-                dbSortField: 'updated_at',
-                orderable: false
+                dbSortField: 'updated_at'
             }
         ];
      };

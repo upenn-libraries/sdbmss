@@ -32,15 +32,15 @@ var SDBM = SDBM || {};
 
         var manageRecords = this;
         
-        SDBM.hideNavBar();
+//        SDBM.hideNavBar();
 
         window.onpopstate = function(event) {
             // load the data from URL into page
-            manageRecords.setFormStateFromURL();
+            //manageRecords.setFormStateFromURL();
             manageRecords.dataTable.reload();
         };
 
-        manageRecords.setFormStateFromURL();
+//        manageRecords.setFormStateFromURL();
         
         this.dataTable = manageRecords.createTable(".sdbm-table");
 
@@ -69,7 +69,17 @@ var SDBM = SDBM || {};
         });
 
         $(document).on('click', "#select-all", function(event) {
-            $("input[name='review']").prop("checked", true);
+            if (!$("#select-all").attr("selected")) {
+                $("#select-all").attr("selected", true);
+                $("#select-all").removeClass("glyphicon-unchecked");
+                $("#select-all").addClass("glyphicon-check");
+                $("input[name='review']").prop("checked", true);
+            } else {
+                $("#select-all").attr("selected", false);
+                $("input[name='review']").prop("checked", false);
+                $("#select-all").removeClass("glyphicon-check");
+                $("#select-all").addClass("glyphicon-unchecked");
+            }
             return false;
         });
 
@@ -106,7 +116,7 @@ var SDBM = SDBM || {};
         });
 
         if(this.getButtonTextForAddNewRecord()) {
-            $(".add-new-record").text(this.getButtonTextForAddNewRecord());
+            $(".add-new-record").find('.name').text(this.getButtonTextForAddNewRecord());
         } else {
             $(".add-new-record").hide();
         }
@@ -234,8 +244,8 @@ var SDBM = SDBM || {};
         var manageRecords = this;
 
         return function() {
-            var url = manageRecords.persistFormStateToURL();
-            history.pushState({ url: url }, '', url);
+//          var url = manageRecords.persistFormStateToURL();
+//          history.pushState({ url: url }, '', url);
             manageRecords.reloadTable();
             
             manageRecords.showOrHideMarkCheckedRecordsButton();
@@ -278,7 +288,13 @@ var SDBM = SDBM || {};
     };
     
     SDBM.ManageRecords.prototype.getUnreviewedOnly = function() {
-        return $("input[name='unreviewed_only']").is(':checked') ? 1 : 0;
+        if ($("input[name='unreviewed_only']").is(':checked')) {
+            $('.hideIfReviewed').removeClass('disabled');
+            return 1;
+        } else {
+            $('.hideIfReviewed').addClass('disabled');
+            return 0;
+        }
     };
     
     SDBM.ManageRecords.prototype.getColumns = function () {
@@ -286,11 +302,18 @@ var SDBM = SDBM || {};
 
         return [
             {
-                title: '',
+                title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
                 orderable: false,
+                className: "text-center",
                 render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {
-                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                        return  '' + 
+                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
+                                '<label for="checkbox_' + meta.row + '">' + 
+                                '<a class="btn btn-default btn-xs glyphicon glyphicon-unchecked unchecked"></a>' + 
+                                '<a class="btn btn-default btn-xs glyphicon glyphicon-check checked"></a>' + 
+                                '</label>' + '';
+//                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     }
                     return '';
                 },
@@ -300,8 +323,8 @@ var SDBM = SDBM || {};
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a> '
-                            + '&middot; <a class="delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
+                    var str = '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a> '
+                            + ' <a class="delete-link btn btn-xs btn-danger" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
                     return str;
                 },
                 width: "10%"
@@ -335,25 +358,22 @@ var SDBM = SDBM || {};
             {
                 title: 'Created By',
                 width: "10%",
-                dbSortField: 'created_by_id'
+                dbSortField: 'created_by'
             },
             {
                 title: 'Created At',
                 width: "10%",
-                dbSortField: 'created_at',
-                orderable: false
+                dbSortField: 'created_at'
             },
             {
                 title: 'Updated By',
                 width: "10%",
-                dbSortField: 'update_by_id',
-                orderable: false
+                dbSortField: 'updated_by'
             },
             {
                 title: 'Updated At',
                 width: "10%",
-                dbSortField: 'updated_at',
-                orderable: false
+                dbSortField: 'updated_at'
             }
         ];
     };

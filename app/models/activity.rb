@@ -16,4 +16,6 @@ class Activity < ActiveRecord::Base
   validates_presence_of :item_id
   validates_presence_of :event
 
+  scope :created_between, lambda {|start_date, end_date| where("created_at >= ? AND created_at <= ?", start_date, end_date )}
+
 end

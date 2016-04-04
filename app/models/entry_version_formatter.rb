@@ -40,7 +40,12 @@ class EntryVersionFormatter
   ]
 
   def initialize(version)
-    @skip = EntryTitle.last.paper_trail_options[:ignore]
+    if not EntryTitle.last
+      et = EntryTitle.new
+      @skip = et.paper_trail_options[:ignore]
+    else
+      @skip = EntryTitle.last.paper_trail_options[:ignore]
+    end
     @version = version
     @details = nil
   end
@@ -79,52 +84,64 @@ class EntryVersionFormatter
       # TODO: for FK fields to things like names, we should display
       # something more meaningful than just numeric ID
 
-      details = []
-      if version.event == 'update'
-        skip(version.changeset).each do |field, values|
-          if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}")
-            if isClass(field)
-              f = EntryVersionFormatter.toClass(field)
-              if f.exists?(values[0])
-                values[0] = f.find(values[0])
-              end
-              if f.exists?(values[1])
-                values[1] = f.find(values[1])
-              end
-            end
-            details << "#{field.titlecase}: from #{values[0].present? ? values[0] : "(blank)"} to #{values[1]}"
-          end
+      if version.respond_to? :count
+        details = []
+        version.each do |v|
+          details += detail (v)
         end
-      elsif version.event == 'create'
-        skip(version.changeset).each do |field, values|
-          value = values[1]
-          if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
-            if isClass(field)
-              f = EntryVersionFormatter.toClass(field)
-              if f.exists?(value)
-                value = f.find(value)
-              end
-            end
-            details << "#{field.titlecase}: #{value}"
-          end
-        end
-      elsif version.event == 'destroy'
-        obj = version.reify
-        skip(obj.attributes).each do |field, value|
-          if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
-            if isClass(field)
-              f = EntryVersionFormatter.toClass(field)
-              if f.exists?(value)
-                value = f.find(value)
-              end
-            end
-            details << "#{field.titlecase}: #{value}"
-          end
-        end
+        @details = details
+      else
+        @details = detail (version)
       end
-      @details = details
     end
     @details
+  end
+
+  def detail (version)
+    details = []
+    if version.event == 'update'
+      skip(version.changeset).each do |field, values|
+        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}")
+          if isClass(field)
+            f = EntryVersionFormatter.toClass(field)
+            if f.exists?(values[0])
+              values[0] = f.find(values[0])
+            end
+            if f.exists?(values[1])
+              values[1] = f.find(values[1])
+            end
+          end
+          details << "#{field.titlecase}: from #{values[0].present? ? values[0] : "(blank)"} to #{values[1]}"
+        end
+      end
+    elsif version.event == 'create'
+      skip(version.changeset).each do |field, values|
+        value = values[1]
+        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
+          if isClass(field)
+            f = EntryVersionFormatter.toClass(field)
+            if f.exists?(value)
+              value = f.find(value)
+            end
+          end
+          details << "#{field.titlecase}: #{value}"
+        end
+      end
+    elsif version.event == 'destroy'
+      obj = version.reify
+      skip(obj.attributes).each do |field, value|
+        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
+          if isClass(field)
+            f = EntryVersionFormatter.toClass(field)
+            if f.exists?(value)
+              value = f.find(value)
+            end
+          end
+          details << "#{field.titlecase}: #{value}"
+        end
+      end
+    end
+    return details
   end
 
   def skip (h)
