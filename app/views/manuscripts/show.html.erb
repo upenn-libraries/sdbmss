@@ -76,7 +76,9 @@
                     <span class='h2'><%= @manuscript.public_id %><br>
                         <span class='small'><%= @manuscript.location || "No Last Known Location on Record" %></span>
                     </span>
-                    <%= hidden_field_tag "username", current_user.username, id: "username" %> 
+                    <% if current_user %>
+                        <%= hidden_field_tag "username", current_user.username, id: "username" %> 
+                    <% end %>
                 </div>
                 <div class="col-sm-6 text-right">
                     <span class="h3">Associated Titles</span>

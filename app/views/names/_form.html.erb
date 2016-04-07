@@ -1,33 +1,42 @@
+<% content_for :head do %>
+<%= stylesheet_link_tag "extras", media: "all" %>
+<%= javascript_include_tag "extras" %>
+<% end %>
+
+<div class="wrapper" ng-controller="CreateNameCtrl">
 <%= form_for(@model, html: { class: "form-horizontal" }) do |f| %>
   <%= render partial: "errors" %>
     
   <div class="field form-group row">
       <%= f.label :name, class: "col-sm-2 control-label" %>
       <div class="col-sm-5">
-          <%= f.text_field :name, :class => 'form-control' %>
+          <%= f.text_field :name, :class => 'form-control', :data => { 'ng-model' => 'entity.name', 'ng-init' => "entity.name='#{@model.name}'" } %>
       </div>
   </div>
   <div class="field form-group row">
       <%= f.label :viaf_id, 'VIAF ID', class: "col-sm-2 control-label" %>
       <div class="col-sm-2">
-          <%= f.text_field :viaf_id, :class => 'form-control' %>
+          <%= f.text_field :viaf_id, :class => 'form-control', :data => {'ng-model' => 'entity.viaf_id','ng-init' => "entity.viaf_id='#{@model.viaf_id}'"} %>
       </div>
       <% if @model.viaf_id.present? %>
       <div class="col-sm-4 label-alignment">
           <a target="_blank" href="http://viaf.org/viaf/<%= @model.viaf_id %>/">View VIAF record</a>
       </div>
       <% end %>
+      <div class="col-sm-3">
+        <button ng-click="findSuggestions(entity.name)" ng-disabled="loading" class="btn btn-primary">Find suggestions</button>
+      </div>
   </div>
   <div class="field form-group row">
       <%= f.label :comment, class: "col-sm-2 control-label" %>
       <div class="col-sm-8">
-          <%= f.text_field :comment, :class => 'form-control' %>
+          <%= f.text_field :comment, :class => 'form-control', :data => { 'ng-model' => 'entity.comment', 'ng-init' => "entity.comment='#{@model.comment}'" } %>
       </div>
   </div>
   <div class="field form-group row">
       <%= f.label :flags, class: "col-sm-2 control-label" %>
-      <div class="col-sm-8 checkbox">
-          Allow this name to be used as:<br/>
+      <div class="col-sm-4 checkbox">
+          Specify this name to be used as:<br/>
           <label>
               <%= f.check_box :is_artist %> Artist
           </label>
@@ -44,6 +53,27 @@
               <%= f.check_box :is_provenance_agent %> Provenance Agent
           </label>
       </div>
+      <div class="col-sm-6">
+        <div ng-show="showSuggestions">
+          <table ng-show="suggestions.length > 0" class="table table-striped table-compressed">
+              <thead>
+                  <tr>
+                      <th class="col-sm-6"><b>Name</b></th>
+                      <th class="col-sm-2"><b>VIAF ID</b></th>
+                      <th class="col-sm-2"></th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr data-ng-repeat="suggestion in suggestions">
+                      <td class="col-sm-6">{{ suggestion.name }}</td>
+                      <td class="col-sm-2"><a target="_blank" href="http://viaf.org/viaf/{{ suggestion.viaf_id }}/">{{ suggestion.viaf_id }}</a></td>
+                      <td class="col-sm-2"><a ng-click="useSuggestion(suggestion)" href="#">Use this info</a></td>
+                  </tr>
+              </tbody>
+          </table>
+        </div>
+        <div ng-show="!loading && suggestions.length == 0">No suggestions found.</div>
+      </div>
   </div>
   <div class="actions row">
       <div class="col-sm-4 col-sm-offset-2">
@@ -56,3 +86,4 @@
       </div>
   </div>
 <% end %>
+</div>
