@@ -9,6 +9,8 @@ role :web, %w{sdbm@sdbmdev}
 
 set :branch, 'development'
 
+#set :ssh_options, {:forward_agent => true}
+
 # Extended Server Syntax
 # ======================
 # This can be used to drop a more detailed server definition into the
