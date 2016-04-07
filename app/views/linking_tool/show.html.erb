@@ -124,6 +124,12 @@ $(document).ready(function() {
         return '<input type="radio" class="toggle-entry-link" data-entry-id="' + entryId + '" name="entry_id_' + entryId + '" value="' + value + '" ' + checked + '/>';
     };
 
+    var getButtonHTML = function(sdbmTable, data, value) {
+        var entryId = data[sdbmTable.getColumnIndex("ID")];
+        //var checked = isInWorkspace(entryId, value) ? "checked='checked'" : "";
+        return '<a class="btn btn-danger btn-xs toggle-entry-link" data-entry-id="' + entryId + '" name="entry_id_' + entryId + '" value="' + value + '" >Unlink</a>';
+    };
+
     // Fielded search specific params
     var translateSearchParams = function (sdbmTable, data) {
         params = sdbmTable.translateParamsToBlacklight(data);
@@ -187,7 +193,8 @@ $(document).ready(function() {
                 "orderable": false,
                 "className": 'text-center',
                 "render": function (data, type, full, meta) {
-                    return getRadioButtonHTML(workspaceTable, data, "unlink");
+                    return getButtonHTML(workspaceTable, data, "unlink");
+//                    return getRadioButtonHTML(workspaceTable, data, "unlink");
                 }
             }
         ],
@@ -260,6 +267,9 @@ $(document).ready(function() {
             });
         }
     });
+
+//    $("#search_results").wrap("<div id='scrollTop'></div>");
+//    $('#scrollTop').doubleScroll();
 
     var doSearch = function() {
         potentialMatches = null;
@@ -486,45 +496,54 @@ $(document).ready(function() {
     <span style="font-size: 14px; font-weight: bold;"><% if @mode == 'by_entry' %>Search for possible links<% else %>Search for other links<% end %></span> (click here for <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#">instructions</a> and <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_search_tips" href="#">search tips</a>)
 </div>
 
-<form class="form-horizontal search-form" style="margin-top: 10px;">
-        <div style="height: 28px">
-            <label style="width: 60px">Search</label>
-            <input name="search_value" value="" size="30" type="text">
-            <select name="search_field">
-            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
-            <option value="<%= key %>"><%= field_def.label %></option>
-            <%- end -%>
-            </select>
-            <button id="search_submit" class="btn btn-primary btn-xs">Search</button>
-            <img id="spinner" alt="working..." style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
-            <button id="show-matches" class="btn btn-primary btn-xs" style="margin-left: 40px">Show potential links</button>
-        </div>
-        <div style="display: none; height: 28px" class="more-search-fields">
-            <span style="width: 60px; display: inline-block;">&nbsp;</span>
-            <input name="search_value" value="" size="30" type="text">
-            <select name="search_field">
-            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
-            <option value="<%= key %>"><%= field_def.label %></option>
-            <%- end -%>
-            </select>
-        </div>
-        <div style="display: none; height: 28px" class="more-search-fields">
-            <span style="width: 60px; display: inline-block;">&nbsp;</span>
-            <input name="search_value" value="" size="30" type="text">
-            <select name="search_field">
-            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
-            <option value="<%= key %>"><%= field_def.label %></option>
-            <%- end -%>
-            </select>
-            <div style="display: inline-block">
-                Match <select style="width: 100px; display: inline" name="op"><option value="AND">all</option><option value="OR">any</option></select>
-                of these fields
-            </div>
-        </div>
-        <div>
-            <a href="#" id="show-more-search-fields-link">Show more search fields</a>
-        </div>
-</form>
+<div class="row">
+    <div class="col-sm-8">
+        <form class="form-horizontal search-form" style="margin-top: 10px;">
+                <div style="height: 28px">
+                    <label style="width: 60px">Search</label>
+                    <input name="search_value" value="" size="30" type="text">
+                    <select name="search_field">
+                    <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
+                    <option value="<%= key %>"><%= field_def.label %></option>
+                    <%- end -%>
+                    </select>
+                    <button id="search_submit" class="btn btn-primary btn-xs">Search</button>
+                    <button id="show-matches" class="btn btn-primary btn-xs" style="margin-left: 40px">Show potential links</button>
+                    <img id="spinner" alt="working..." style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
+                </div>
+                <div style="display: none; height: 28px" class="more-search-fields">
+                    <span style="width: 60px; display: inline-block;">&nbsp;</span>
+                    <input name="search_value" value="" size="30" type="text">
+                    <select name="search_field">
+                    <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
+                    <option value="<%= key %>"><%= field_def.label %></option>
+                    <%- end -%>
+                    </select>
+                </div>
+                <div style="display: none; height: 28px" class="more-search-fields">
+                    <span style="width: 60px; display: inline-block;">&nbsp;</span>
+                    <input name="search_value" value="" size="30" type="text">
+                    <select name="search_field">
+                    <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
+                    <option value="<%= key %>"><%= field_def.label %></option>
+                    <%- end -%>
+                    </select>
+                    <div style="display: inline-block">
+                        Match <select style="width: 100px; display: inline" name="op"><option value="AND">all</option><option value="OR">any</option></select>
+                        of these fields
+                    </div>
+                </div>
+                <div>
+                    <a href="#" id="show-more-search-fields-link">Show more search fields</a>
+                </div>
+        </form>        
+    </div>
+    <div class="col-sm-4">
+        <ul class="list-group">
+            <li class="list-group-item list-group-item-warning text-center"><span class="disabled">(unapproved records shown in yellow)</span></li>
+        </ul>
+    </div>
+</div>
 
 <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
     <thead>

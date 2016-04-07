@@ -14,6 +14,7 @@
 //  require dataTables.colReorder
 //= require dataTables.colResize
 //= require dataTables.fixedColumns
+//= require doubleScroll
 //= require sdbmTable
 //= require sdbmManageRecords
 //= require sdbmApp
