@@ -1722,7 +1722,7 @@ var EntryScope;
           entity.name = modalParams.name;
           entity[modalParams.type] = true;
       };
-              
+
       $scope.findSuggestions = function(name) {
         console.log(1, name, $scope.entity);
         $scope.message = "";
