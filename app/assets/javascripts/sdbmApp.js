@@ -1715,4 +1715,39 @@ var EntryScope;
         $scope.entityName = "place";
     });
 
+    sdbmApp.controller('CreateNameCtrl', function ($scope, $http) {
+      $scope.entityFactory = function() { return new Name(); };
+
+      $scope.entity_attributes = function(entity) {
+          entity.name = modalParams.name;
+          entity[modalParams.type] = true;
+      };
+
+      $scope.findSuggestions = function(name) {
+        console.log(1, name, $scope.entity);
+        $scope.message = "";
+        $scope.showSuggestions = true;
+        $scope.loading = true;
+        $http.get("/names/suggest.json", {
+            params: {
+                name: name
+            }
+        }).then(function (response) {
+            if(response.data.already_exists) {
+                $scope.showSuggestions = false;
+                $scope.message = "The name \"" + $scope.entity.name + "\" already exists in this database, you can't create it here.";
+            }
+            $scope.suggestions = response.data.results;
+        }, function() {
+            $scope.message = "Error loading suggestions.";
+        }).finally(function () {
+            $scope.loading = false;
+        });
+    };
+
+    $scope.useSuggestion = function(suggestion) {
+        $scope.entity.name = suggestion.name;
+        $scope.entity.viaf_id = suggestion.viaf_id;
+    };
+  });
 }());

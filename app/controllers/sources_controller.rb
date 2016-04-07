@@ -103,6 +103,10 @@ class SourcesController < SearchableAuthorityController
     end
   end
 
+  def show
+    @details = search_result_format(@source)
+  end
+
   def edit
   end
 
@@ -212,7 +216,7 @@ class SourcesController < SearchableAuthorityController
       selling_agent: (selling_agent = obj.get_selling_agent_as_name).present? ? selling_agent.name : "",
       institution: (institution_agent = obj.get_institution_as_name).present? ? institution_agent.name : "",
       whether_mss: obj.whether_mss,
-      medium: obj.medium_for_display,
+      medium: obj.medium,
       date_accessed: obj.date_accessed,
       location_institution: obj.location_institution,
       location: obj.location,
@@ -258,7 +262,8 @@ class SourcesController < SearchableAuthorityController
   # FIX ME: better way of filtering out special 'provenance_observation' source type?
   def types
     data = {
-      'source_type' => SourceType.where.not(name: "provenance_observation").map { |source_type|
+#       'source_type' => SourceType.all.map { |source_type|
+       'source_type' => SourceType.where.not(name: "provenance_observation").map { |source_type|
         hash = source_type.attributes
         hash['invalid_source_fields'] = Source.invalid_source_fields_for_source_type(source_type.name)
         hash['valid_roles_for_source_agents'] = SourceAgent.valid_roles_for_source_type(source_type.name)
@@ -274,13 +279,25 @@ class SourcesController < SearchableAuthorityController
     end
   end
 
+  #def show_for_merge(attributes)
+  #  attributes.except('id', 'in_manuscript_table', 'deleted', 'hidden', 'created_at', 'created_by', 'updated_at', 'updated_by', 'entries_count', 'reviewed', 'reviewed_by', 'reviewed_at', 'source_type')
+  #end
+
+  def show_for_merge(attributes)
+    attributes.except(:id, :in_manuscript_table, :selling_agent, :display_value, :location, :institution, :deleted, :hidden, :created_at, :created_by, :whether_mss, :updated_at, :updated_by, :entries_count, :reviewed, :reviewed_by, :reviewed_at, :source_type)
+  end
+
   def merge
     @source = Source.find(params[:id])
     @target_id = params[:target_id]
     @target = nil
-    params[:title] = @source.title
-    params[:date] = @source.date
-    get_similar 
+    
+    @differences = {}
+    show_for_merge(search_result_format(@source)).each { |f, v| @differences[f] = [v] }
+        
+    #params[:title] = @source.title
+    #params[:date] = @source.date
+    get_similar
     if @target_id.present?
       if @target_id.to_i == @source.id
         @warning = "You can't merge a record into itself"
@@ -288,11 +305,31 @@ class SourcesController < SearchableAuthorityController
         @warning = "You can only merge sources that are the same type, to avoid data loss"
       else
         @target = Source.find_by(id: @target_id)
+        show_for_merge(search_result_format(@target)).each do |f, v|
+          if @differences[f].present?
+            @differences[f][1] = v; 
+          else 
+            @differences[f] = [nil, v] 
+          end
+        end
       end
     end
     if params[:confirm] == "yes"
-      @source.merge_into(@target)
+      ActiveRecord::Base.transaction do
+        @target.update_attributes(source_params_for_create_and_edit)
+        @source.merge_into(@target)
+        if params[:source_agent_id]
+          # remove old source agents
+          @target.source_agents.each { |sa| sa.update({:source_id => nil})}
+          agent = SourceAgent.find(params[:source_agent_id])
+          agent.update({:source_id => @target.id})
+        end
+      end
+      # FIX ME: handle errors here, if the merge is not succesful?
+      @details = search_result_format(@target)
       render "merge_success"
+    else
+      render :layout => 'widescreen'
     end
   end
 
@@ -339,10 +376,11 @@ class SourcesController < SearchableAuthorityController
   def get_similar
     type = @source.source_type_id || 99
     s = Sunspot.more_like_this(@source) do
-      fields :title, :date
+      fields(:title, :date => 10, :agent_name => 6)
       with :source_type_id, type
       paginate page: 1, per_page: 10
       order_by :score, :desc
+      boost true
     end
     @similar = s.results
   end

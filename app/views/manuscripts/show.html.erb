@@ -57,6 +57,11 @@
     $('.panel-collapse').on('shown.bs.collapse', function () { $('#collapse-all').removeClass('glyphicon-collapse-down').addClass('glyphicon-collapse-up') });
     $('.panel-collapse').on('hidden.bs.collapse', function () { $('#collapse-all').removeClass('glyphicon-collapse-up').addClass('glyphicon-collapse-down') });
 
+    $("#createSource").on("ajax:success", function (e, data, status, xhr) {
+        var source_id = data.id;
+        $("#source_id").val(source_id);
+        $('#proposed-history').collapse('show');
+    }).on("ajax:error", function (e, xhr, status, error) { console.log("ERROR!", error); });
  });
 
 </script>
@@ -71,6 +76,9 @@
                     <span class='h2'><%= @manuscript.public_id %><br>
                         <span class='small'><%= @manuscript.location || "No Last Known Location on Record" %></span>
                     </span>
+                    <% if current_user %>
+                        <%= hidden_field_tag "username", current_user.username, id: "username" %> 
+                    <% end %>
                 </div>
                 <div class="col-sm-6 text-right">
                     <span class="h3">Associated Titles</span>
@@ -140,16 +148,13 @@
                     </span>
                 </div>
                 <div class="col-sm-4 text-right">
-                    <!-- FIX ME: right now we just link to the source I created for the Schoenberg Database - would it be better to have a new record type entirely?
-                    <%= link_to "Propose History", new_entry_path(source_id: 34611), class: 'btn btn-warning', data: { :toggle => 'tooltip' }, :title => 'Select provenance to include (below)' %>-->
                     <a id="collapse-all" data-toggle="collapse" data-target=".panel-collapse" class="btn btn-info glyphicon glyphicon-collapse-up"></a>
-                    <a href="#proposed-history" data-toggle="collapse" class="btn btn-warning">Propose History</a>
+                    <a href="#proposed-history" id="propose-history" data-toggle="collapse" class="btn btn-warning">Propose History</a>
                 </div>
             </div>
         </div>
 
-        <%= form_tag({:controller => "entries", :format => "html", :action => "create"}, :method => "post", :class => "form-inline") do %>
-            <%= hidden_field_tag "source_id", 34611 %>
+        <%= form_tag({:controller => "entries", :format => "html", :action => "compose"}, :method => "post", :class => "form-inline") do %>
             <%= hidden_field_tag "transaction_type", "no_transaction" %>
             <%= hidden_field_tag "manuscript_id", @manuscript.id %>
         <div class="collapse panel panel-default panel-provenance" id="proposed-history">
@@ -165,7 +170,7 @@
         <% end %>
 
         <% @manuscript.entries.sort { |a, b| a.source.date.to_s <=> b.source.date.to_s }.each_with_index do |entry, index| %>
-            <div class="panel panel-provenance <%= entry.source_id == 34611 ? 'panel-warning' : 'panel-default' %>">
+            <div class="panel panel-provenance <%= entry.source.source_type_id == 8 ? 'panel-warning' : 'panel-default' %>">
                 <div class="panel-heading">
                     <div class="row">
                         <div class="col-sm-2">

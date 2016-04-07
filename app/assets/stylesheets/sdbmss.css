@@ -95,8 +95,8 @@ h1 { font-size: 30px; margin-top: 0; }
 
 /*
  checkboxes!
- */
-.checked, .table-checkbox {
+*/
+.btn.checked, .table-checkbox {
   display: none;
 }
 .table-checkbox:checked + label > .checked {

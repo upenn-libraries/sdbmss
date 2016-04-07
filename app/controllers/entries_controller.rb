@@ -99,6 +99,14 @@ class EntriesController < ManageModelsController
     end
   end
 
+  # creating composite provenance
+  def compose
+    s = Source.new({date: Date.today.strftime("%Y-%m-%d"), title: "Manuscript Record: SDBM_MS_#{params[:manuscript_id]}", author: current_user.username, source_type: SourceType.find(8)})
+    s.save!
+    params[:source_id] = s.id
+    create
+  end
+
   def create
     success = false
     ActiveRecord::Base.transaction do

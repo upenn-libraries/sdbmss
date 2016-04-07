@@ -86,6 +86,7 @@ describe "Manage Merging Sources", :js => true do
   end
 
   it "should display the MERGE confimation page with appropriate information" do
+    skip "(new merge method)"
     s1 = Source.last
 
     compatable = Source.where(source_type: s1.source_type)

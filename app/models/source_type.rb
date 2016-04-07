@@ -22,6 +22,7 @@ class SourceType < ActiveRecord::Base
   OBSERVATION = 'observation'
   OTHER_PUBLISHED = 'other_published'
   UNPUBLISHED = 'unpublished'
+  PROVENANCE_OBSERVATION = 'provenance_observation'
 
   def self.auction_catalog
     find_by(name: AUCTION_CATALOG)
