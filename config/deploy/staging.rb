@@ -9,7 +9,7 @@ role :web, %w{sdbm@sdbmdev}
 
 set :branch, 'development'
 
-#set :ssh_options, {:forward_agent => true}
+set :ssh_options, {:forward_agent => true}
 
 # Extended Server Syntax
 # ======================
