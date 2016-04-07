@@ -4,8 +4,8 @@
 # is considered to be the first unless any hosts have the primary
 # property set.  Don't declare `role :all`, it's a meta role.
 
-role :app, %w{jeffchiu@sdbmdev}
-role :web, %w{jeffchiu@sdbmdev}
+role :app, %w{sdbm@sdbmdev}
+role :web, %w{sdbm@sdbmdev}
 
 set :branch, 'development'
 
