@@ -146,26 +146,13 @@
                     </span>
                 </div>
                 <div class="col-sm-4 text-right">
-                    <!-- FIX ME: right now we just link to the source I created for the Schoenberg Database - would it be better to have a new record type entirely?
-                    <%= link_to "Propose History", new_entry_path(source_id: 34611), class: 'btn btn-warning', data: { :toggle => 'tooltip' }, :title => 'Select provenance to include (below)' %>-->
                     <a id="collapse-all" data-toggle="collapse" data-target=".panel-collapse" class="btn btn-info glyphicon glyphicon-collapse-up"></a>
-                    <%= form_tag({:controller => "sources", :action => "create"}, :remote => true, :class => "form-inline", :id => "createSource") do %>
-                        <%= hidden_field_tag :date, Date.today.strftime("%Y-%m-%d") %>
-                        <%= hidden_field_tag :title, "Schoenberg Database of Manuscripts" %>
-                        <%= hidden_field_tag :author, current_user.username %>
-                        <%= hidden_field_tag :whether_mss, "No" %>
-                        <%= hidden_field_tag :source_type_id, 8 %>
-                        <%= hidden_field_tag :location_institution, "University of Pennsylvania" %>
-                        <%= hidden_field_tag :medium, "internet" %>
-                        <%= submit_tag "Test", class: 'form-control btn-info', data: {confirm: "Are you sure you would like to create a new Observation Source?"} %>
-                    <% end %>
-                    <!--<a href="" id="propose-history" data-toggle="collapse" class="btn btn-warning">Propose History</a>-->
+                    <a href="#proposed-history" id="propose-history" data-toggle="collapse" class="btn btn-warning">Propose History</a>
                 </div>
             </div>
         </div>
 
-        <%= form_tag({:controller => "entries", :format => "html", :action => "create"}, :method => "post", :class => "form-inline") do %>
-            <%= hidden_field_tag "source_id", nil, :id => "source_id" %>
+        <%= form_tag({:controller => "entries", :format => "html", :action => "compose"}, :method => "post", :class => "form-inline") do %>
             <%= hidden_field_tag "transaction_type", "no_transaction" %>
             <%= hidden_field_tag "manuscript_id", @manuscript.id %>
         <div class="collapse panel panel-default panel-provenance" id="proposed-history">

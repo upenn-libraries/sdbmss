@@ -204,27 +204,6 @@ class SourcesController < SearchableAuthorityController
     end
   end
 
-  def source_details(obj)
-    {
-      date: [SDBMSS::Util.format_fuzzy_date(obj.date), obj.date, true],
-      title: [obj.title, obj.title, true],
-      author: [obj.author, obj.author, true],
-      selling_agent: [(selling_agent = obj.get_selling_agent_as_name).present? ? selling_agent.name : "", selling_agent, true],
-      institution: [(institution_agent = obj.get_institution_as_name).present? ? institution_agent.name : "", institution_agent, true],
-      whether_mss: [obj.whether_mss, obj.whether_mss, true],
-      medium: [obj.medium_for_display, obj.medium, true],
-      date_accessed: [obj.date_accessed, obj.date_accessed, true],
-      location_institution: [obj.location_institution, obj.location_institution, true],
-      location: [obj.location, obj.location, true],
-      link: [obj.link, obj.link, true],
-      comments: [obj.comments, obj.comments, true],
-      created_by: [obj.created_by.present? ? obj.created_by.username : "(none)", obj.created_by, false],
-      created_at: [obj.created_at.present? ? obj.created_at.to_formatted_s(:long) : "", obj.created_at, false],
-      updated_by: [obj.updated_by.present? ? obj.updated_by.username : "(none)", obj.updated_by, false],
-      updated_at: [obj.updated_at.present? ? obj.updated_at.to_formatted_s(:long) : "", obj.updated_at, false]
-    }
-  end
-
   def search_result_format(obj)
     {
       id: obj.id,
@@ -237,7 +216,7 @@ class SourcesController < SearchableAuthorityController
       selling_agent: (selling_agent = obj.get_selling_agent_as_name).present? ? selling_agent.name : "",
       institution: (institution_agent = obj.get_institution_as_name).present? ? institution_agent.name : "",
       whether_mss: obj.whether_mss,
-      medium: obj.medium_for_display,
+      medium: obj.medium,
       date_accessed: obj.date_accessed,
       location_institution: obj.location_institution,
       location: obj.location,
@@ -300,15 +279,25 @@ class SourcesController < SearchableAuthorityController
     end
   end
 
+  #def show_for_merge(attributes)
+  #  attributes.except('id', 'in_manuscript_table', 'deleted', 'hidden', 'created_at', 'created_by', 'updated_at', 'updated_by', 'entries_count', 'reviewed', 'reviewed_by', 'reviewed_at', 'source_type')
+  #end
+
+  def show_for_merge(attributes)
+    attributes.except(:id, :in_manuscript_table, :selling_agent, :display_value, :location, :institution, :deleted, :hidden, :created_at, :created_by, :whether_mss, :updated_at, :updated_by, :entries_count, :reviewed, :reviewed_by, :reviewed_at, :source_type)
+  end
+
   def merge
     @source = Source.find(params[:id])
-    @s_details = source_details(@source)
     @target_id = params[:target_id]
     @target = nil
-    params[:title] = @source.title
-    params[:date] = @source.date
+    
+    @differences = {}
+    show_for_merge(search_result_format(@source)).each { |f, v| @differences[f] = [v] }
+        
+    #params[:title] = @source.title
+    #params[:date] = @source.date
     get_similar
-    @details = search_result_format(@source)
     if @target_id.present?
       if @target_id.to_i == @source.id
         @warning = "You can't merge a record into itself"
@@ -316,24 +305,31 @@ class SourcesController < SearchableAuthorityController
         @warning = "You can only merge sources that are the same type, to avoid data loss"
       else
         @target = Source.find_by(id: @target_id)
-        @t_details = source_details(@target)
-       #@permitted = source_params_for_create_and_edit
-       
-        @details = []
-        @s_details.each do |f, v| 
-          @details.append(f) if (!@details.include?(f) && !v[0].blank?)
-          if v[0] == @t_details[f][0]
-            v[2] = false
+        show_for_merge(search_result_format(@target)).each do |f, v|
+          if @differences[f].present?
+            @differences[f][1] = v; 
+          else 
+            @differences[f] = [nil, v] 
           end
         end
-        @t_details.each { |f, v| @details.append(f) if (!@details.include?(f) && !v[0].blank?) }
       end
     end
     if params[:confirm] == "yes"
-      @target.update_attributes(source_params_for_create_and_edit)
-      @source.merge_into(@target)
+      ActiveRecord::Base.transaction do
+        @target.update_attributes(source_params_for_create_and_edit)
+        @source.merge_into(@target)
+        if params[:source_agent_id]
+          # remove old source agents
+          @target.source_agents.each { |sa| sa.update({:source_id => nil})}
+          agent = SourceAgent.find(params[:source_agent_id])
+          agent.update({:source_id => @target.id})
+        end
+      end
+      # FIX ME: handle errors here, if the merge is not succesful?
       @details = search_result_format(@target)
       render "merge_success"
+    else
+      render :layout => 'widescreen'
     end
   end
 
