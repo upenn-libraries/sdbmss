@@ -59,8 +59,9 @@ class NamesController < SearchableAuthorityController
 
   def suggest
     name = params[:name]
+    check_exists = params[:check_exists].present? ? params[:check_exists] == 'true' : true
 
-    suggestions = Name.suggestions(name)
+    suggestions = Name.suggestions(name, check_if_name_already_exists: check_exists)
 
     respond_to do |format|
       format.json { render :json => suggestions, :status => :ok }

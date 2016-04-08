@@ -815,7 +815,7 @@ label.col-sm-2-and-half {
                     <span sdbm-tooltip="entry_provenance_direct_transfer">Directly Transfered to Next?</span>
                 </label>
                 <div class="col-sm-3 label-alignment">
-                    <input class='directly_transfered' id="provenance_direct_transfer_{{ $index }}" type="checkbox" ng-model="prov.direct_transfer"/>
+                    <input class='directly_transfered' id="provenance_direct_transfer_{{ $index }}" type="checkbox" ng-model="prov.direct_transfer" ng-click="lockProvenance($event)"/>
                 </div>
               </div>
             </div>
