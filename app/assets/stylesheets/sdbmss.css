@@ -166,6 +166,12 @@ h1 { font-size: 30px; margin-top: 0; }
   background-color: #F8F8F8;
   transition: all linear 0.5s;
 }
+.ui-sortable-helper {
+  transition: none;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+}
 .ui-state-highlight {
   width: 100%;
 /*  height: min-100px;*/

@@ -362,11 +362,13 @@ var EntryScope;
 
         EntryScope = $scope;
 
+
         $scope.sortableOptions = {
           axis: 'y',
           scrollSpeed: 40,
           placeholder: "ui-state-highlight",
           scrollSensitivity: 100,
+          cancel: ".ui-state-linked",
           start: function(e, ui){
               ui.placeholder.height(ui.item.height());
           },
@@ -379,6 +381,27 @@ var EntryScope;
             //console.log($scope.entry[field]);
           }
         }
+
+        $scope.lockProvenance = function ($event) {
+          var t = $($event.currentTarget);
+          if (t.prop('checked')) {
+            t.closest('.input-block').addClass('ui-state-linked')
+            t.closest('.input-block').next('.input-block').addClass('ui-state-linked')
+          } else {
+            t.closest('.input-block').removeClass('ui-state-linked')
+            t.closest('.input-block').next('.input-block').removeClass('ui-state-linked')
+          }
+
+          
+          //console.log("LOCKED.", $event.currentTarget, $(this), $(this).closest('input-block'));
+          //$(this).closest('.input-block').toggleClass('ui-state-disabled');
+          //$(this).closest('.input-block').next('.input-block').toggleClass('ui-state-disabled');
+        }
+
+        $('.directly_transfered').click( function (e) {
+          console.log("hi", $(this));
+          $(this).closest('.input-block').toggleClass('ui-state-disabled')
+        });
 
         $scope.sdbmutil = sdbmutil;
 
@@ -1724,19 +1747,15 @@ var EntryScope;
       };
 
       $scope.findSuggestions = function(name) {
-        console.log(1, name, $scope.entity);
         $scope.message = "";
         $scope.showSuggestions = true;
         $scope.loading = true;
         $http.get("/names/suggest.json", {
             params: {
-                name: name
+                name: name,
+                check_exists: false
             }
         }).then(function (response) {
-            if(response.data.already_exists) {
-                $scope.showSuggestions = false;
-                $scope.message = "The name \"" + $scope.entity.name + "\" already exists in this database, you can't create it here.";
-            }
             $scope.suggestions = response.data.results;
         }, function() {
             $scope.message = "Error loading suggestions.";

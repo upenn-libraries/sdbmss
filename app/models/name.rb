@@ -161,6 +161,7 @@ class Name < ActiveRecord::Base
     # check that name doesn't already exist
     name_exists = false
     if check_if_name_already_exists
+      puts "CHECKING THE CELL STRUCTURE", check_if_name_already_exists
       name_exists = exists?(name: name)
     end
 
