@@ -28,8 +28,8 @@ describe "Blacklight Advanced Search", :js => true do
     visit advanced_search_path
 
     search_fields = page.all(".advanced-search-field input[type=text]")
-	search_fields[0].set "Augustine"
-	search_fields[1].set "Hippo"
+    search_fields[0].set "Augustine"
+    search_fields[1].set "Hippo"
 
     select 'Author', from: "text_field_0"
     select 'Author', from: "text_field_1"
@@ -81,7 +81,7 @@ describe "Blacklight Advanced Search", :js => true do
    	expect(count).to eq(count2)
   end
 
-  it "should do an advanced search using ANY" do
+  it "should do an advanced search using Title + Author (ANY)" do
   	visit advanced_search_path
 
   	search_fields = page.all(".advanced-search-field input[type=text]")
@@ -215,70 +215,70 @@ describe "Blacklight Advanced Search", :js => true do
   end
 
   it "should search over ANY numerical constraints" do
-  	visit advanced_search_path
+    visit advanced_search_path
 
-  	fill_in "numeric_start_0", with: 0
-  	fill_in "numeric_end_0", with: 1
-  	select "Folios", from: "numeric_field_0"
-  	fill_in "numeric_start_1", with: 2
-  	fill_in "numeric_end_1", with: 3
-  	select "Folios", from: "numeric_field_1"
-  	select 'any', from: 'op'
+    fill_in "numeric_start_0", with: 0
+    fill_in "numeric_end_0", with: 1
+    select "Folios", from: "numeric_field_0"
+    fill_in "numeric_start_1", with: 2
+    fill_in "numeric_end_1", with: 3
+    select "Folios", from: "numeric_field_1"
+    select 'any', from: 'op'
 
-   	find_by_id('advanced-search-submit').click()
+    find_by_id('advanced-search-submit').click()
 
-  	filters = page.all('.appliedFilter')
+    filters = page.all('.appliedFilter')
 
-  	expect(filters[0]).to have_content("Any")
-  	
-  	count = countEntries
+    expect(filters[0]).to have_content("Any")
 
-  	visit advanced_search_path
+    count = countEntries
 
-  	fill_in "numeric_start_0", with: 0
-  	fill_in "numeric_end_0", with: 3
-  	select "Folios", from: "numeric_field_0"
-	find_by_id('advanced-search-submit').click()
+    visit advanced_search_path
 
-	count2 = countEntries
+    fill_in "numeric_start_0", with: 0
+    fill_in "numeric_end_0", with: 3
+    select "Folios", from: "numeric_field_0"
+    find_by_id('advanced-search-submit').click()
 
-	expect(count).to eq(count2)
+    count2 = countEntries
+
+    expect(count).to eq(count2)
   end
 
   it "should find source date by complete Date string (YYYY-MM-DD)" do
-  	visit advanced_search_path
+    visit advanced_search_path
 
-  	search_fields = page.all(".advanced-search-field input[type=text]")
-	search_fields[0].set "2015-01-01"
-    select 'Source Date', from: "text_field_0"
-   	find_by_id('advanced-search-submit').click()
-
-   	count = countEntries
-
-   	expect(count).not_to eq(0)
-  end
-
-  it "should find source date by incomplete Date strings (YYYY-MM), (YYYY)" do
-   	visit advanced_search_path
-
-  	search_fields = page.all(".advanced-search-field input[type=text]")
-	search_fields[0].set "2015-01"
-    select 'Source Date', from: "text_field_0"
-   	find_by_id('advanced-search-submit').click()
-
-   	count = countEntries
-   	expect(count).not_to eq(0)
-
-	visit advanced_search_path
-
-  	search_fields = page.all(".advanced-search-field input[type=text]")
-	search_fields[0].set "2015"
+    search_fields = page.all(".advanced-search-field input[type=text]")
+    search_fields[0].set "2015-01-01"
     select 'Source Date', from: "text_field_0"
     find_by_id('advanced-search-submit').click()
 
-   	count2 = countEntries
+    count = countEntries
 
-   	expect(count).to be <= count2
+    expect(count).not_to eq(0)
+  end
+
+  it "should find source date by incomplete Date strings (YYYY-MM), (YYYY)" do
+    visit advanced_search_path
+
+    search_fields = page.all(".advanced-search-field input[type=text]")
+    search_fields[0].set "2015-01"
+    select 'Source Date', from: "text_field_0"
+    find_by_id('advanced-search-submit').click()
+
+    count = countEntries
+    expect(count).not_to eq(0)
+
+    visit advanced_search_path
+
+    search_fields = page.all(".advanced-search-field input[type=text]")
+    search_fields[0].set "2015"
+    select 'Source Date', from: "text_field_0"
+    find_by_id('advanced-search-submit').click()
+
+    count2 = countEntries
+
+    expect(count).to be <= count2
   end
 
 end

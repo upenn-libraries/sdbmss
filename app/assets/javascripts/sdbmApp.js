@@ -368,7 +368,6 @@ var EntryScope;
           scrollSpeed: 40,
           placeholder: "ui-state-highlight",
           scrollSensitivity: 100,
-          cancel: ".ui-state-linked",
           start: function(e, ui){
               ui.placeholder.height(ui.item.height());
           },
