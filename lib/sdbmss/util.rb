@@ -208,6 +208,45 @@ module SDBMSS
       # understood as being written before 1501.
       #
       # TODO: handle negative dates
+
+      def to_bc(date_range)
+        if date_range.present?
+          return [-date_range[1], -date_range[0]]
+        else
+          return [nil, nil]
+        end
+      end
+
+      def format_bc(date_str)
+        date_str = date_str.gsub(/ bc/, "").gsub("1st", "first").gsub("2nd", "second").gsub("3rd", "third").gsub("4th", "fourth")
+        if /before/.match(date_str)
+          date_str.gsub!('before', 'after')
+        elsif /after/.match(date_str)
+          date_str.gsub!('after', 'before')
+        elsif /early/.match(date_str)
+          date_str.gsub!('early', 'late')
+        elsif /late/.match(date_str)
+          date_str.gsub!('late', 'early')
+        elsif /first half/.match(date_str)
+          date_str.gsub!('first half', 'second half')
+        elsif /second half/.match(date_str)
+          date_str.gsub!('second half', 'first half')
+        elsif /first third/.match(date_str)
+          date_str.gsub!('first third', 'last third')
+        elsif /last third/.match(date_str)
+          date_str.gsub!('last third', 'first third')
+        elsif /first quarter/.match(date_str)
+          date_str.gsub!('first quarter', 'fourth quarter')
+        elsif /fourth quarter/.match(date_str)
+          date_str.gsub!('fourth quarter', 'first quarter')
+        elsif /second quarter/.match(date_str)
+          date_str.gsub!('second quarter', 'third quarter')
+        elsif /third quarter/.match(date_str)
+          date_str.gsub!('third quarter', 'second quarter')
+        end
+        return date_str
+      end
+
       def parse_approximate_date_str_into_year_range(date_str)
 
         date_str = date_str.strip.downcase
@@ -222,14 +261,21 @@ module SDBMSS
           end
         end
 
+        # handle 'bc'
+        if / bc/.match(date_str)
+          return to_bc(parse_approximate_date_str_into_year_range(format_bc(date_str)))
+        end
+
         # handle case of something like 1860s.
         # this always assumes decade granularity: ie. 900s means the 1st decade of 10th century
+
         if /^\d+s$/.match(date_str)
-          start_date = date_str.sub('s', '')
+          start_date = date_str.sub('s', '').to_i
           end_date = nil
-          if start_date[-1] == '0'
-            end_date = (((start_date.to_i / 10) + 1) * 10).to_s
+          if start_date % 10 == 0
+            end_date = (((start_date / 10) + 1) * 10)
           end
+          puts "start, end: [#{start_date}, #{end_date}]"
           return [start_date, end_date]
         end
 
@@ -237,13 +283,16 @@ module SDBMSS
         # running through this fn again. we bound start and end dates
         # with +/- 100 years to prevent odd search results
         # (ie. searching for 1500-1600 probably shouldn't pick up "after 1000")
+        # 
+        # different for BC ***************************** -> hmm, should be ok as long as range[1] is negative for BC date
+        # 
         if /before/.match(date_str)
           range = parse_approximate_date_str_into_year_range(date_str.sub('before', '').strip)
-          return [(range[1].to_i - 100).to_s, range[1]]
+          return [(range[1].to_i - 100), range[1]]
         end
         if /after/.match(date_str)
           range = parse_approximate_date_str_into_year_range(date_str.sub('after', '').strip)
-          return [range[0], (range[0].to_i + 100).to_s]
+          return [range[0], (range[0].to_i + 100)]
         end
 
         # handle circa and exact years
@@ -256,7 +305,7 @@ module SDBMSS
             date_str_without_circa = date_str.gsub(match[0], "").strip
             result = parse_approximate_date_str_into_year_range(date_str_without_circa)
             if result
-              result = [(result[0].to_i - 10).to_s, (result[1].to_i + 10).to_s]
+              result = [(result[0].to_i - 10), (result[1].to_i + 10)]
               return result
             else
               return [nil, nil]
@@ -270,13 +319,13 @@ module SDBMSS
            (exact_date_match = /^(\d{2})$/.match(date_str)).present?
           year = exact_date_match[1]
           buffer = circa ? 10 : 0;
-          return [(year.to_i - buffer).to_s, (year.to_i + 1 + buffer).to_s]
+          return [(year.to_i - buffer), (year.to_i + 1 + buffer)]
         end
 
         # match a roman numeral string that represents an exact year
         if (match = /^([mdclxvi]+)(?!.)/i.match(date_str)).present?
           year = roman_to_arabic(date_str)
-          return [year.to_s, (year + 1).to_s]
+          return [year, (year + 1)]
         end
         #convert roman numerals to arabic numerals
 
@@ -286,27 +335,27 @@ module SDBMSS
 
         start_date, end_date = nil, nil
 
-
+        # different for BC *****************************
         # match strs like "3rd century"
         century = nil
         if (match = /(\d{1,2})(st|nd|rd|th|) c/.match(date_str)).present?
-          century = (match[1].to_i - 1).to_s
+          century = (match[1].to_i - 1)
         end
 
         # roman numeral century like "XVth century"
         if (match = /\b([mdclxvi]+)(st|nd|rd|th|) c/i.match(date_str)).present?
-          century = (roman_to_arabic(match[1]) - 1).to_s
+          century = (roman_to_arabic(match[1]) - 1)
         end
 
         #roman numeral century like "S. XIV"
         if (match = /(s\.\s([mdclxvi]+)(?!.))/i.match(date_str)).present?
-          century = (roman_to_arabic(match[2]) - 1).to_s
+          century = (roman_to_arabic(match[2]) - 1)
         end
 
         # # match strs like "third century"
         (1..20).each do |n|
           if (match = /#{NumberTo.to_word_ordinal(n)} c/.match(date_str)).present?
-            century = (n - 1).to_s
+            century = (n - 1)
           end
         end
 
@@ -314,45 +363,45 @@ module SDBMSS
           # match qualifiers
           case
           when /early/.match(date_str)
-            start_date = century + "00"
-            end_date = century + "26"
+            start_date = century_to_year(century, 0)
+            end_date = century_to_year(century, 26)
           when /mid/.match(date_str)
-            start_date = century + "26"
-            end_date = century + "76"
+            start_date = century_to_year(century, 26)
+            end_date = century_to_year(century, 76)
           when /late/.match(date_str)
-            start_date = century + "76"
-            end_date = (century.to_i + 1).to_s + "01"
+            start_date = century_to_year(century, 76)
+            end_date = century_to_year(century + 1, 1)
           when /(first|1st) quarter/.match(date_str)
-            start_date = century + "00"
-            end_date = century + "26"
+            start_date = century_to_year(century, 0)
+            end_date = century_to_year(century, 26)
           when /(second|2nd) quarter/.match(date_str)
-            start_date = century + "26"
-            end_date = century + "51"
+            start_date = century_to_year(century, 26)
+            end_date = century_to_year(century, 51)
           when /(third|3rd) quarter/.match(date_str)
-            start_date = century + "51"
-            end_date = century + "76"
+            start_date = century_to_year(century, 51)
+            end_date = century_to_year(century, 76)
           when /(fourth|4th) quarter/.match(date_str)
-            start_date = century + "76"
-            end_date = (century.to_i + 1).to_s + "01"
+            start_date = century_to_year(century, 76)
+            end_date = century_to_year(century + 1, 1)
           when /(first|1st) third/.match(date_str)
-            start_date = century + "00"
-            end_date = century + "34"
+            start_date = century_to_year(century, 0)
+            end_date = century_to_year(century, 34)
           when /(second|2nd) third/.match(date_str)
-            start_date = century + "34"
-            end_date = century + "67"
+            start_date = century_to_year(century, 34)
+            end_date = century_to_year(century, 67)
           when /last third/.match(date_str)
-            start_date = century + "67"
-            end_date = (century.to_i + 1).to_s + "01"
+            start_date = century_to_year(century, 67)
+            end_date = century_to_year(century + 1, 1)
           when /(first|1st) half/.match(date_str)
-            start_date = century + "00"
-            end_date = century + "51"
+            start_date = century_to_year(century, 0)
+            end_date = century_to_year(century, 51)
           when /(second|2nd) half/.match(date_str)
-            start_date = century + "51"
-            end_date = (century.to_i + 1).to_s + "01"
+            start_date = century_to_year(century, 51)
+            end_date = century_to_year(century + 1, 1)
           else
             if century.present?
-              start_date = century + "00"
-              end_date = (century.to_i + 1).to_s + "01"
+              start_date = century_to_year(century, 0)
+              end_date = century_to_year(century + 1, 1)
             end
           end
         end
@@ -364,6 +413,10 @@ module SDBMSS
       # Array of start and end dates in the form YYYY-MM-DD (i.e
       # ["1830-06-01", "1830-06-31"]). If date string isn't parseable,
       # returns nil.
+      def century_to_year(century, offset)
+        return century * 100 + offset
+      end
+
       def parse_month_and_year_into_date_range(date_str)
         month, year = nil, nil
         (1..12).each do |i|

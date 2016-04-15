@@ -99,6 +99,9 @@ h1 { font-size: 30px; margin-top: 0; }
 .btn.checked, .table-checkbox {
   display: none;
 }
+.table-checkbox + label > .checked {
+  display: none;
+}
 .table-checkbox:checked + label > .checked {
   display: block;
 }
@@ -172,8 +175,12 @@ h1 { font-size: 30px; margin-top: 0; }
   -moz-transition: none;
   -ms-transition: none;
 }
+.ui-sortable-locked, .ui-sortable-locked + .input-block {
+  background-color: #e3e3e3;
+}
 .ui-state-highlight {
   width: 100%;
+  margin-bottom: 10px;
 /*  height: min-100px;*/
 }
 .input-block.carousel {

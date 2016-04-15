@@ -367,6 +367,8 @@ var EntryScope;
           axis: 'y',
           scrollSpeed: 40,
           placeholder: "ui-state-highlight",
+          cancel: ".ui-sortable-locked, .ui-sortable-locked + .input-block",
+          handle: "label, .panel-heading",
           scrollSensitivity: 100,
           start: function(e, ui){
               ui.placeholder.height(ui.item.height());
@@ -377,30 +379,12 @@ var EntryScope;
             for (var i = 0; i < $scope.entry[field].length; i++) {
               $scope.entry[field][i].order = i;
             }
-            //console.log($scope.entry[field]);
           }
         }
 
         $scope.lockProvenance = function ($event) {
-          var t = $($event.currentTarget);
-          if (t.prop('checked')) {
-            t.closest('.input-block').addClass('ui-state-linked')
-            t.closest('.input-block').next('.input-block').addClass('ui-state-linked')
-          } else {
-            t.closest('.input-block').removeClass('ui-state-linked')
-            t.closest('.input-block').next('.input-block').removeClass('ui-state-linked')
-          }
-
-          
-          //console.log("LOCKED.", $event.currentTarget, $(this), $(this).closest('input-block'));
-          //$(this).closest('.input-block').toggleClass('ui-state-disabled');
-          //$(this).closest('.input-block').next('.input-block').toggleClass('ui-state-disabled');
+          $($event.currentTarget).closest('.input-block').toggleClass('ui-sortable-locked')
         }
-
-        $('.directly_transfered').click( function (e) {
-          console.log("hi", $(this));
-          $(this).closest('.input-block').toggleClass('ui-state-disabled')
-        });
 
         $scope.sdbmutil = sdbmutil;
 
@@ -475,6 +459,7 @@ var EntryScope;
 
         $scope.optionsTransactionType = undefined;
         $scope.optionsAuthorRole = undefined;
+        $scope.optionsArtistRole = undefined;
         $scope.optionsSold = undefined;
         $scope.optionsCurrency = undefined;
         $scope.optionsMaterial = undefined;
@@ -625,6 +610,14 @@ var EntryScope;
                     }
                 }
             });
+            entry.entry_artists.forEach(function (entry_artist) {
+                if(entry_artist.role) {
+                    if(! sdbmutil.inOptionsArray(entry_artist.role, $scope.optionsArtistRole)) {
+                        $scope.badData.push("Bad author role value: '" + entry_artist.role + "'");
+                    }
+                }
+            });
+
 
             if(entry.sale) {
                 if(entry.sale.sold) {
@@ -898,6 +891,7 @@ var EntryScope;
 
                 $scope.optionsTransactionType = result.data.transaction_type;
                 $scope.optionsAuthorRole = result.data.author_role;
+                $scope.optionsArtistRole = result.data.artist_role;
                 $scope.optionsSold = result.data.sold;
                 $scope.optionsCurrency = result.data.currency;
                 $scope.optionsAltSize = result.data.alt_size;

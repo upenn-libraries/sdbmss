@@ -4,6 +4,32 @@ class EntryArtist < ActiveRecord::Base
   include DisplayableName
   include HasPaperTrail
 
+  TYPES_ROLES = [
+    ["Work", "Workshop"], 
+    ["Styl", "Style"], 
+    ["Circ", "Circle"], 
+    ["Scho", "School"], 
+    ["Asso", "Associate"], 
+    ["Assos", "Associates"], 
+    ["Atel", "Atelier"], 
+    ["Arti", "Artist"], 
+    ["Grou", "Group"], 
+    ["Styl", "Styles"], 
+    ["Foll", "Follower"], 
+    ["Desc", "Descendant"], 
+    ["Foll", "Followers"], 
+    ["Cont", "Contemporary"], 
+    ["Son", "Son"], 
+    ["Mann", "Manner"], 
+    ["Mini", "Miniatures"], 
+    ["Prov", "Provincial"], 
+    ["Pupi", "Pupil"], 
+    ["Coll", "Collaborators"],
+    ["Mast", "Master"],
+    ["Assi", "Assistant"],
+    ["Rela", "Related"]
+  ]
+
   belongs_to :entry
   belongs_to :artist, class_name: 'Name', counter_cache: :artists_count
 
@@ -23,7 +49,8 @@ class EntryArtist < ActiveRecord::Base
   end
 
   def display_value
-    super artist
+    val = super(artist)
+    val += role ? " (" + role + ")": ""
   end
 
   def to_s

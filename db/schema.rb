@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160325205210) do
+ActiveRecord::Schema.define(version: 20160413135440) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -119,6 +119,7 @@ ActiveRecord::Schema.define(version: 20160325205210) do
     t.boolean  "supplied_by_data_entry",             default: false
     t.string   "observed_name",          limit: 255
     t.integer  "order",                  limit: 4
+    t.string   "role",                   limit: 255
   end
 
   add_index "entry_artists", ["artist_id"], name: "index_entry_artists_on_artist_id", using: :btree

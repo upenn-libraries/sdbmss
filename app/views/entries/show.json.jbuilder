@@ -52,7 +52,7 @@ end
 
 if @entry.entry_artists.present?
   json.entry_artists @entry.entry_artists.order(:order) do |entry_artist|
-    json.(entry_artist, :id, :order, :observed_name, :uncertain_in_source, :supplied_by_data_entry)
+    json.(entry_artist, :id, :order, :observed_name, :role, :uncertain_in_source, :supplied_by_data_entry)
     if entry_artist.artist
       json.artist do
         json.(entry_artist.artist, :id, :name)

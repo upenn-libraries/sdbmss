@@ -207,6 +207,7 @@ class EntriesController < ManageModelsController
     data = {
       'transaction_type' => Entry::TYPES_TRANSACTION,
       'author_role' => EntryAuthor::TYPES_ROLES,
+      'artist_role' => EntryArtist::TYPES_ROLES,
       'currency' => Sale::CURRENCY_TYPES,
       'sold' => Sale::SOLD_TYPES,
       'material' => EntryMaterial::MATERIAL_TYPES,
@@ -397,7 +398,7 @@ class EntriesController < ManageModelsController
       :entry_titles_attributes => [ :id, :order, :title, :common_title, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_authors_attributes => [ :id, :order, :observed_name, :author_id, :role, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_dates_attributes => [ :id, :order, :observed_date, :date_normalized_start, :date_normalized_end, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_artists_attributes => [ :id, :order, :observed_name, :artist_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_artists_attributes => [ :id, :order, :observed_name, :artist_id, :role, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_scribes_attributes => [ :id, :order, :observed_name, :scribe_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_languages_attributes => [ :id, :order, :language_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_materials_attributes => [ :id, :order, :material, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],

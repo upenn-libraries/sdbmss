@@ -26,16 +26,19 @@ describe "User Activity", :js => true do
     expect(page).to have_content 'Signed in successfully'
   end
 
-  def doActivity()
-    visit edit_entry_path(10)
+  def doActivity(id)
+    visit edit_entry_path(id)
     find_by_id('add_title').click
     old = find_field('title_0').value
+#    puts old
     fill_in 'title_0', with: 'Book of Ours'
-    first(".save-button").click
 
-    visit activities_path
-    expect(page).not_to have_content('updated SDBM_10')
-    expect(page).not_to have_content("Title: from #{value} to Book of Ours")
+    nw = find_field('title_0').value
+#    puts nw
+    first(".save-button").click
+    sleep 1.1
+#    puts Entry.find(10).entry_titles
+    return old
   end
 
   it "should show empty user activity" do
@@ -47,8 +50,45 @@ describe "User Activity", :js => true do
   end
 
   it "should show appropriate recent activity" do
-    doActivity()
-    skip
+    v = doActivity(10)
+    visit activities_path
+    expect(page).to have_content('updated SDBM_10')
+    expect(page).to have_content("Title: from #{v} to Book of Ours")
+  end
+
+  it "should correctly display deleting a record associaton" do
+    visit edit_entry_path(10)
+    sleep(1)
+    first("#delete_title_0").click
+    first(".save-button").click
+    sleep 1.1
+    visit activities_path
+    expect(page).to have_content('updated SDBM_10')
+    expect(page).to have_content("Title: Book of Ours")
+  end
+
+  it "should create a new name and show it in the activity" do
+    visit new_name_path
+    fill_in 'name_name', with: 'Stacker Pentecost'
+    find_by_id('name_is_artist').click
+    click_button 'Create Name'
+    expect(page).to have_content('Stacker Pentecost')
+    visit activities_path
+    expect(page).to have_content('created SDBM_NAME_')
+    expect(page).to have_content('Name: Stacker Pentecost')
+  end
+
+  it "should destroy a name record and show it in the activity" do
+    # to handle the confirm alert
+    page.evaluate_script('window.confirm = function() { return true; }')
+
+    visit names_path
+    first(".delete-link").click
+    sleep 1.1
+    expect(page).not_to have_content('Stacker Pentecost')
+
+    visit activities_path
+    expect(page).to have_content('destroyed SDBM_NAME')
   end
 
 end

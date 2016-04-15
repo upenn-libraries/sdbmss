@@ -179,7 +179,7 @@ label.col-sm-2-and-half {
             <span id="cat_lot_no_warning" style="color: red;"></span>
         </div>
         <div class="col-sm-3">
-          <a href="" class="btn btn-success" ng-click="editSource();">Edit</a>
+          <a href="" class="btn btn-danger" ng-click="editSource();">Change Source</a>
         </div>
       </div>
 
@@ -276,8 +276,13 @@ label.col-sm-2-and-half {
     </div>
 
     <div class="source-info" ng-if="selecting_source" data-ng-controller="SelectSourceCtrl">
-      <div class="well">
-        <%= render partial: "source_selection_form", :locals => {utility: "edit"} %>
+      <div class="panel panel-danger">
+        <div class="panel-heading">
+          <span class="h4">Search for new Source:</span>
+        </div>
+        <div class="panel-body">
+          <%= render partial: "source_selection_form", :locals => {utility: "edit"} %>
+        </div>
       </div>
     </div>
 
@@ -459,8 +464,18 @@ label.col-sm-2-and-half {
                 <input id="artist_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_artist" }' sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
                 <div id="artist_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></div>
             </div>
-          </div>          
+          </div>
         </div>
+        <div class='row'>
+          <label class="col-sm-3 control-label">
+            <span sdbm-tooltip="entry_artist_role">Role</span>
+          </label>
+          <div class="col-sm-9">
+            <select id="artist_role_{{ $index }}" name="artist_role" class="form-control" ng-model="entry_artist.role" ng-options="option[0] as option[1] for option in optionsArtistRole">
+              <option value=""></option>
+            </select>
+          </div>
+        </div>         
       </div>
     </div>
   </div>
