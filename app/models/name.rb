@@ -216,7 +216,7 @@ class Name < ActiveRecord::Base
           Rails.logger.warn "numberOfRecords element not found in VIAF XML"
         end
       else
-        error = "HTTP response error code: #{r.code}"
+        error = "HTTP response error code: #{response.code}"
       end
     end
 

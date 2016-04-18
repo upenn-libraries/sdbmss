@@ -497,6 +497,7 @@ var EntryScope;
 
         $scope.editSource = function () {
           $scope.selecting_source = true;
+          console.log($scope.entry.source);
           $scope.entry.source_bk = $scope.entry.source;
           $scope.entry.source = undefined
         };

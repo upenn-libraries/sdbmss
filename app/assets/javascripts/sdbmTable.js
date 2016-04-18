@@ -55,7 +55,7 @@ var SDBM = SDBM || {};
             columns: null,
             fixedColumns: null,
             prependColumns: null,
-//          height: 'full',   FIX ME: is this better, or worse?
+            height: 'full',  // FIX ME: is this better, or worse?
             heightBuffer: 360,
             dom: 'C<"clear"><"H"lr>JRt<"F"ip>'
         };
@@ -151,7 +151,7 @@ var SDBM = SDBM || {};
                 });
             },
             scrollX: true,
-            scrollY: false, //scrollY,
+            scrollY: scrollY, //false,
             scrollCollapse: false,
             colReorder: false,
             // extensions get activated via these codes in 'dom' option

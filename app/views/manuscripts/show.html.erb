@@ -1,4 +1,18 @@
 <% content_for :head do %>
+<style>
+    .side {
+      width: 0%;
+    }
+    .entries, .proposed {
+      transition: width 0.7s;
+    }
+    .proposal {
+      overflow: hidden;
+    }
+    #proposed-history {
+      position: fixed;
+    }
+</style>
 <% if user_signed_in? %>
 <script type="text/javascript">
     var thing;
@@ -24,7 +38,7 @@
     $(function() {
         $( "#sortable-history" ).sortable({
           revert: true,
-          axis: 'y',
+          //axis: 'y',
           stop: function(event, ui) {
             $('.placeholder').hide();
             $('#sortable-history > .provenance').each( function (p) {
@@ -44,18 +58,29 @@
         $( ".provenance" ).draggable({
           connectToSortable: "#sortable-history",
           helper: "clone",
-          axis: 'y',
+          //axis: 'y',
           revert: "invalid",
           start : function(event, ui) {
             ui.helper.width($(this).width());
           },
-          containment: "#provenanceContainer"
+          zIndex: 1000
+          //containment: "#provenanceContainer"
         });
         $( "ul, li" ).disableSelection();
     });
 
+    $("#collapse-all").click( function () {
+        $(this).toggleClass("glyphicon-chevron-down");
+        $(this).toggleClass("glyphicon-chevron-left");
+    });
+
+    $(".toggle-propose-history").click( function () {
+        $('.entries').toggleClass('col-sm-12').toggleClass('col-sm-6');
+      $('.proposed').toggleClass('side');
+    });
+/*
     $('.panel-collapse').on('shown.bs.collapse', function () { $('#collapse-all').removeClass('glyphicon-collapse-down').addClass('glyphicon-collapse-up') });
-    $('.panel-collapse').on('hidden.bs.collapse', function () { $('#collapse-all').removeClass('glyphicon-collapse-up').addClass('glyphicon-collapse-down') });
+    $('.panel-collapse').on('hidden.bs.collapse', function () { $('#collapse-all').removeClass('glyphicon-collapse-up').addClass('glyphicon-collapse-down') });*/
 
     $("#createSource").on("ajax:success", function (e, data, status, xhr) {
         var source_id = data.id;
@@ -70,25 +95,53 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <div class="well" style="background-color: transparent; border: none; margin-bottom: 0px; box-shadow: none;">
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class='h1'><%= @manuscript.public_id %><br>
-                        <span class='small'><%= @manuscript.location || "No Last Known Location on Record" %></span>
-                    </div>
-                    <% if current_user %>
-                        <%= hidden_field_tag "username", current_user.username, id: "username" %> 
-                    <% end %>
-                    <ul class="list-inline">
-                        <% @manuscript_titles.each do |title| %>
-                            <li class='label label-info label-tag'><%= title %></li>
-                        <% end %>
-                    </ul>
+        <div class="row">
+            <div class="col-sm-7">
+                <div class='h1'><%= @manuscript.public_id %><br>
+                    <span class='small'><strong>Last Known Location - </strong> <%= @manuscript.location || "Unknown" %></span>
                 </div>
-                <div class="col-sm-6">
-                    <div class="panel panel-default">
-                        <div class="panel-heading"><span class="h3">Tools</span></div>
-                        <div class="panel-body"></div>
+                <% if current_user %>
+                    <%= hidden_field_tag "username", current_user.username, id: "username" %> 
+                <% end %>
+                <ul class="list-inline">
+                    <% @manuscript_titles.each do |title| %>
+                        <li class='label label-info label-tag'><%= title %></li>
+                    <% end %>
+                </ul>
+            </div>
+            <div class="col-sm-5">
+                <div class="panel panel-default text-right">
+                    <div class="panel-heading"><span class="h3">Tools</span></div>
+                    <div class="panel-body">
+                        <ul class="list-inline">
+                            <li>
+                                <a class='btn btn-sm btn-info' data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
+                            </li>
+                            <% if can? :edit, @manuscript %>
+                            <li class="edit_entry">
+                                <a class='btn btn-sm btn-success' href="<%= edit_manuscript_path(@manuscript.id) %>">Edit</a>
+                            </li>
+                            <% end %>
+                            <% if can? :link, @manuscript %>
+                            <li class="manage_entry">
+                                <a class='btn btn-sm btn-primary' href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Link <%= @manuscript.public_id %></a>
+                            </li>
+                            <li>
+                                <a href="#proposed-history" data-toggle="collapse" class="toggle-propose-history btn btn-sm btn-warning">Propose History</a>
+
+                                <!--<a href="<%= new_entry_path(manuscript_id: @manuscript.id) %>">New Observation</a>-->
+
+                            </li>
+                            <% end %>
+                        </ul>
+                        <p class='text-muted'><!--This manuscript record aggregates entries
+                        citing a manuscript that has been mentioned in sources
+                        or observations. -->Do not assume that the manuscript is
+                        held by the University of Pennsylvania Libraries.</p>
+                        <!--
+                        <% if user_signed_in? %>
+                        <p class='text-muted'>Do you know more about this manuscript? </p>-->
+                        <% end %>
                     </div>
                 </div>
             </div>
@@ -97,71 +150,96 @@
 </div>
 
 <div class="row">
-    <div class="col-sm-3">
-        <div class="panel panel-default show-tools">
-            <div class="panel-heading">
-                Tools
-            </div>
-            <div class="panel-body">
-                <ul class="nav">
-                    <li>
-                        <a data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
-                    </li>
-
-                    <% if can? :edit, @manuscript %>
-                    <li class="edit_entry">
-                        <a href="<%= edit_manuscript_path(@manuscript.id) %>">Edit this Manuscript Record</a>
-                    </li>
-                    <% end %>
-                    <% if can? :link, @manuscript %>
-                    <li class="manage_entry">
-                        <a href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Linking tool for <%= @manuscript.public_id %></a>
-                    </li>
-                    <% end %>
-                </ul>
-            </div>
+    <div class="col-sm-12 entries" id="provenanceContainer">
+        <div class="well">
+            <span class="h3">
+                <div class="row">
+                    <div class="col-sm-8">
+                            Entry Provenance<br>
+                            <small>this Manuscript has <%= @manuscript.entries.count %> entries</small>
+                    </div>
+                    <div class="col-sm-4 text-right">
+                        <span id="collapse-all" data-toggle="collapse" data-target=".panel-collapse" class="glyphicon glyphicon-chevron-down"></span>
+                    </div>
+                </div>
+            </span>
         </div>
 
-        <div class="panel panel-default">
-            <div class="panel-body">
+        <% @manuscript.entries.sort { |a, b| a.source.date.to_s <=> b.source.date.to_s }.each_with_index do |entry, index| %>
+        <div class="panel panel-provenance <%= entry.source.source_type_id == 8 ? 'panel-warning' : 'panel-default' %>">
+            <div class="panel-heading">
                 <div class="row">
-                    <div class="col-sm-12">
-                        <p>Note: This manuscript record aggregates entries
-                        citing a manuscript that has been mentioned in sources
-                        or observations. Do not assume that the manuscript is
-                        held by the University of Pennsylvania Libraries.</p>
-
-                        <% if user_signed_in? %>
-                        <p>Do you know more about this manuscript? <a href="<%= new_entry_path(manuscript_id: @manuscript.id) %>">Create your own personal observation</a></p>
-                        <% end %>
+                    <div class="col-sm-3">
+                        <span class="h4"><a href="<%= url_for entry %>"><%= entry.public_id %></a></span>
+                    </div>
+                    <div class="col-sm-8" data-toggle="collapse" href="#entry_provenance_<%= index %>">
+                        <span class="h4"><%= entry.source_id == 34611 ? "This provenance is based on a personal observation of the SDBM" : entry.source.display_value %></span>
+                    </div>
+                    <div class="col-sm-1">
+                        <a class="glyphicon glyphicon-chevron-down pull-right"></a>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <div class="col-sm-9" id="provenanceContainer">
-
-        <div class="well">
-            <div class="row">
-                <div class="col-sm-8">
-                    <span class="h3">
-                        Entry Provenance<br>
-                        <small>this Manuscript has <%= @manuscript.entries.count %> entries</small>
-                    </span>
-                </div>
-                <div class="col-sm-4 text-right">
-                    <a id="collapse-all" data-toggle="collapse" data-target=".panel-collapse" class="btn btn-info glyphicon glyphicon-collapse-up"></a>
-                    <a href="#proposed-history" id="propose-history" data-toggle="collapse" class="btn btn-warning">Propose History</a>
-                </div>
+            <div class="collapse in panel-collapse list-group" id="entry_provenance_<%= index %>">
+                    <% entry.provenance.each do |provenance| %>
+                        <li class="list-group-item provenance">
+                            <div class="row">
+                                <% if provenance.observed_name %>
+                                    <%= hidden_field_tag "provenance_attributes[][observed_name]", provenance.observed_name %>
+                                <% end %>
+                                <%= hidden_field_tag "provenance_attributes[][acquisition_method]", provenance.acquisition_method %>
+                                <%= hidden_field_tag "provenance_attributes[][start_date_normalized_start]", provenance.start_date_normalized_start %>
+                                <%= hidden_field_tag "provenance_attributes[][end_date_normalized_end]", provenance.end_date_normalized_end %>
+                                <%= hidden_field_tag "provenance_attributes[][provenance_agent_id]", provenance.provenance_agent_id %>
+                                <%= hidden_field_tag "provenance_attributes[][associated_date]", provenance.associated_date %>
+                                <%= hidden_field_tag "provenance_attributes[][start_date]", provenance.start_date %>
+                                <%= hidden_field_tag "provenance_attributes[][end_date]", provenance.end_date %>
+                                <%= hidden_field_tag "provenance_attributes[][direct_transfer]", provenance.direct_transfer %>
+                                <%= hidden_field_tag "provenance_attributes[][comment]", provenance.comment %>
+                                <%= hidden_field_tag "provenance_attributes[][order]", 0, class: "order_field" %>
+                                <div class="col-sm-1">
+                                    <span class="glyphicon glyphicon-remove provenance_remove"></span>
+                                    <!--<span class="glyphicon glyphicon-move"></span>--></div>
+                                <div class="col-sm-8">
+                                    <%= provenance.provenance_agent ? provenance.provenance_agent.name : "No Name Agent" %>
+                                    <% if provenance.observed_name && (!provenance.provenance_agent || provenance.provenance_agent.name != provenance.observed_name) %>
+                                       <br><span class="small">(as <%= provenance.observed_name %>)</span>
+                                    <% end %>
+                                </div>
+                                <div class="col-sm-3">
+                                    <% if provenance.start_date.present? || provenance.end_date.present? %>
+                                        <%= format_fuzzy_date(provenance.start_date) %>
+                                        <% if provenance.start_date.present? && provenance.end_date.present? %><br/>to<br/><% end %>
+                                        <%= format_fuzzy_date(provenance.end_date) %>
+                                    <% else %>
+                                        (No date)
+                                    <% end %>
+                                </div>
+                            </div>
+                        </li>
+                    <% end %>
             </div>
         </div>
+        <% end %>
+    </div>
 
+    <!-- Provenance history 'worksheet' -->
+
+    <!-- FIX ME: fixed scrolling disables correct width, can scroll 'under' comments section, transition a little weird -->
+
+    <div class="col-sm-6 proposed side">
         <%= form_tag({:controller => "entries", :format => "html", :action => "compose"}, :method => "post", :class => "form-inline") do %>
-            <%= hidden_field_tag "transaction_type", "no_transaction" %>
-            <%= hidden_field_tag "manuscript_id", @manuscript.id %>
+        <%= hidden_field_tag "transaction_type", "no_transaction" %>
+        <%= hidden_field_tag "manuscript_id", @manuscript.id %>
         <div class="collapse panel panel-default panel-provenance" id="proposed-history">
-            <div class="panel-heading"><span class="h4">Proposed History</span></div>
+            <div class="panel-heading">
+                <div class="h4">
+                    Proposed History
+                    <span class="pull-right toggle-propose-history" href="#proposed-history" data-toggle="collapse">
+                        <span class="glyphicon glyphicon-remove"></span>
+                    </span>
+                </div>
+            </div>
             <div class="list-group" id="sortable-history">
                 <span class="list-group-item placeholder">Drag provenance here to begin creating provenance list</span>
             </div>
@@ -171,63 +249,9 @@
             </div>
         </div>
         <% end %>
+    </div>
 
-        <% @manuscript.entries.sort { |a, b| a.source.date.to_s <=> b.source.date.to_s }.each_with_index do |entry, index| %>
-            <div class="panel panel-provenance <%= entry.source.source_type_id == 8 ? 'panel-warning' : 'panel-default' %>">
-                <div class="panel-heading">
-                    <div class="row">
-                        <div class="col-sm-2">
-                            <span class="h4"><a href="<%= url_for entry %>"><%= entry.public_id %></a></span>
-                        </div>
-                        <div class="col-sm-9" data-toggle="collapse" href="#entry_provenance_<%= index %>">
-                            <span class="h4"><%= entry.source_id == 34611 ? "This provenance is based on a personal observation of the SDBM" : entry.source.display_value %></span>
-                        </div>
-                        <div class="col-sm-1">
-                            <a class="glyphicon glyphicon-chevron-down pull-right"></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="collapse in panel-collapse list-group" id="entry_provenance_<%= index %>">
-                        <% entry.provenance.each do |provenance| %>
-                            <li class="list-group-item provenance">
-                                <div class="row">
-                                    <% if provenance.observed_name %>
-                                        <%= hidden_field_tag "provenance_attributes[][observed_name]", provenance.observed_name %>
-                                    <% end %>
-                                    <%= hidden_field_tag "provenance_attributes[][acquisition_method]", provenance.acquisition_method %>
-                                    <%= hidden_field_tag "provenance_attributes[][start_date_normalized_start]", provenance.start_date_normalized_start %>
-                                    <%= hidden_field_tag "provenance_attributes[][end_date_normalized_end]", provenance.end_date_normalized_end %>
-                                    <%= hidden_field_tag "provenance_attributes[][provenance_agent_id]", provenance.provenance_agent_id %>
-                                    <%= hidden_field_tag "provenance_attributes[][associated_date]", provenance.associated_date %>
-                                    <%= hidden_field_tag "provenance_attributes[][start_date]", provenance.start_date %>
-                                    <%= hidden_field_tag "provenance_attributes[][end_date]", provenance.end_date %>
-                                    <%= hidden_field_tag "provenance_attributes[][direct_transfer]", provenance.direct_transfer %>
-                                    <%= hidden_field_tag "provenance_attributes[][comment]", provenance.comment %>
-                                    <%= hidden_field_tag "provenance_attributes[][order]", 0, class: "order_field" %>
-                                    <div class="col-sm-1">
-                                        <span class="glyphicon glyphicon-remove provenance_remove"></span>
-                                        <!--<span class="glyphicon glyphicon-move"></span>--></div>
-                                    <div class="col-sm-8">
-                                        <%= provenance.provenance_agent ? provenance.provenance_agent.name : "No Name Agent" %>
-                                        <% if provenance.observed_name && (!provenance.provenance_agent || provenance.provenance_agent.name != provenance.observed_name) %>
-                                           <br><span class="small">(as <%= provenance.observed_name %>)</span>
-                                        <% end %>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <% if provenance.start_date.present? || provenance.end_date.present? %>
-                                            <%= format_fuzzy_date(provenance.start_date) %>
-                                            <% if provenance.start_date.present? && provenance.end_date.present? %><br/>to<br/><% end %>
-                                            <%= format_fuzzy_date(provenance.end_date) %>
-                                        <% else %>
-                                            (No date)
-                                        <% end %>
-                                    </div>
-                                </div>
-                            </li>
-                        <% end %>
-                </div>
-            </div>
-        <% end %>
+    <div class="col-sm-12">
 
         <% if (comments = @manuscript.comments.where(public: true)).present? %>
         <table class="table table-striped">
@@ -281,5 +305,4 @@
         <div class="spacer-40px"></div>
 
     </div>
-
 </div>

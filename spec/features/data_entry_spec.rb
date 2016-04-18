@@ -627,6 +627,7 @@ describe "Data entry", :js => true do
     it "should validate when saving Entry"
 
     it "should let user create an Entry for an existing Manuscript" do
+      skip
       entry1 = Entry.create!(
         source: Source.first,
         created_by_id: @user.id,

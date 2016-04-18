@@ -38,7 +38,7 @@ class SourcesController < SearchableAuthorityController
 
   def search_fields
     @filters = ["id", "location"]
-    @fields = ["title", "selling_agent", "institution", "author", "created_by", "updated_by"]
+    @fields = ["title", "selling_agent", "date", "institution", "author", "created_by", "updated_by"]
     @dates = ["created_at", "updated_at"]
     @fields + @filters + @dates
   end
@@ -437,7 +437,7 @@ class SourcesController < SearchableAuthorityController
     # agent_name can come from a number of sources
     # FIX ME: maybe we want to only search for selling agents though?
     params[:agent_name] = Array(params[:agent]) + Array(params[:selling_agent]) + Array(params[:institution])
-    params.permit(:title, {:title => []}, :author, {:author => []}, :agent_name, {:agent_name => [] }, :location_institution, :medium, :date, {:date => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
+    params.permit(:date, {:date => []}, :title, {:title => []}, :author, {:author => []}, :agent_name, {:agent_name => [] }, :location_institution, :medium, :date, {:date => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
   end
 
   def filters_for_search

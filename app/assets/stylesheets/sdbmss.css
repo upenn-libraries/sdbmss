@@ -290,7 +290,22 @@ h1 { font-size: 30px; margin-top: 0; }
 /* put on A elements without hrefs */
 .sdbmss-form .clickable { cursor: pointer; }
 
-.sdbmss-form .add-link-container { min-width: 15px; min-height: 1px; float: left; }
+.sdbmss-form .add-link-container { 
+  min-width: 15px; 
+  min-height: 1px;  
+}
+.edit-label .affix-top {
+  position: relative;
+}
+.edit-label .affix-top {
+  position: relative;
+  top: 0px;
+}
+.edit-label .affix-bottom {
+  position: relative;
+  bottom: 0px;
+  top: 0px;
+}
 
 .sdbmss-form .form-group { margin-bottom: 10px; }
 
