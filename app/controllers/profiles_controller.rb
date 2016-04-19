@@ -15,7 +15,7 @@ class ProfilesController < ApplicationController
       sources_created: @user.sources.count,
       entries_created: @user.entries.count
     }
-    @online = @user.updated_at > 10.minutes.ago
+    @online = @user.updated_at && @user.updated_at > 10.minutes.ago
     @activities = Activity.where(user_id: @user.id).limit(10).order(id: :desc)
   end
 
