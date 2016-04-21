@@ -187,7 +187,8 @@ var SDBM = SDBM || {};
 // FIX ME: add ability to have multiple 'rows' of search;
 
         var search_query = {
-            unreviewed_only: this.getUnreviewedOnly(),
+            //unreviewed_only: this.getUnreviewedOnly(),
+            reviewed: this.getUnreviewedOnly(),
             created_by_user: this.options.showOnlyRecordsCreatedByUser,
             offset: dt_params.start,
             limit: dt_params.length,

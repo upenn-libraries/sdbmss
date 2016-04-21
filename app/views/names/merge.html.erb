@@ -97,7 +97,7 @@
     <div class="row">
         <div class="col-sm-3">
             <button class="btn btn-primary">Yes</button>
-            <a class="btn btn-warning" href="<%= names_path %>">Cancel</a>
+            <a class="btn btn-warning" href="<%= merge_name_path(@model) %>">Cancel</a>
             <%= link_to "Swap", merge_name_path(@target, :target_id => @model.id), class: 'btn btn-info' %>
         </div>
     </div>

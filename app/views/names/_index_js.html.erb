@@ -91,6 +91,12 @@
                 dbSortField: 'viaf_id'
             },
             {
+                sdbmssMinWidth: "120px",
+                sdbmssMaxWidth: "120px",
+                title: 'Comment',
+                dbSortField: 'comment'
+            },
+            {
                 sdbmssMinWidth: "75px",
                 sdbmssMaxWidth: "75px",
                 title: 'As Author',
@@ -166,6 +172,7 @@
              result.id,
              result[this.options.searchNameField],
              result.viaf_id,
+             result.comment,
              result.authors_count,
              result.artists_count,
              result.scribes_count,

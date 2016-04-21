@@ -34,6 +34,7 @@ class Place < ActiveRecord::Base
     integer :entries_count
     date :created_at
     date :updated_at
+    boolean :reviewed
   end
 
   def entries_to_index_on_update

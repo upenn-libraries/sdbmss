@@ -144,6 +144,10 @@ module SDBMSS
         return false
       end
 
+      def to_many(number, noun)
+        noun = number == 1 ? noun : noun.pluralize
+        "#{number} #{noun}"
+      end
       # returns a reasonably formatted date string based on a YYYYMMDD
       # str value, which may have 0's in it. Resulting string is in one of these formats: YYYY, YYYY-MM, YYYY-MM-DD
       def format_fuzzy_date(d)

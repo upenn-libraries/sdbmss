@@ -62,6 +62,8 @@ class Name < ActiveRecord::Base
         errors[:viaf_id] << "is already used by a record that has been deleted"
       elsif (existing_name = self.class.find_by(viaf_id: name_obj.viaf_id)).present? && name_obj.id != existing_name.id
         errors[:viaf_id] << "is already used by record ##{existing_name.id} for '#{existing_name.name}'"
+      else
+        name_obj.viaf_id = name_obj.viaf_id.strip unless name_obj.viaf_id.nil?
       end
     end
   end 
@@ -76,6 +78,8 @@ class Name < ActiveRecord::Base
     join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :updated_by })
     text :created_by
     text :updated_by
+    text :comment
+    string :comment
     integer :id
     text :name, :more_like_this => true
     string :name
@@ -89,6 +93,7 @@ class Name < ActiveRecord::Base
     integer :provenance_count
     date :created_at
     date :updated_at
+    boolean :reviewed
   end
   
   # constructor for a Provenance Agent. takes same args as #new

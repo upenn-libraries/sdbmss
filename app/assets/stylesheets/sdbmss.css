@@ -154,6 +154,9 @@ h1 { font-size: 30px; margin-top: 0; }
   opacity: 0;
   transition: opacity linear 0.5s;
 }
+#proposed-history {
+  z-index: 100;
+}
 
 .input-block .row {
   margin: 2px;

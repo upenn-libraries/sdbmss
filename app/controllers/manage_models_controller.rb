@@ -120,12 +120,20 @@ class ManageModelsController < ApplicationController
           format.json {
             render status: :unprocessable_entity, json: { "error" => @model.errors.join("; ") }
           }
+          format.html {
+            flash[:error] = @model.errors.join("; ")
+            redirect_to :action => "edit", :id => @model.id
+          }
         end
       end
     else
       respond_to do |format|
         format.json {
           render status: :unprocessable_entity, json: { "error" => "Record is not deletable, probably because other records are associated with it" }
+        }
+        format.html {
+          flash[:error] = "Record is not deletable, probably because other records are associated with it."
+          redirect_to :action => "edit", :id => @model.id
         }
       end
     end

@@ -42,15 +42,15 @@
                     <td class="col-sm-2 text-right record-label"># Entries</td>
                     <td class="col-sm-10">
                         <% if count_authors > 0 %>
-                        This name is listed as the author of <a class='badge' href="<%= search_by_facet_value('author', name.name) %>"><%= count_authors %> entries</a><br/>
+                        This name is listed as the author of <a class='badge' href="<%= search_by_facet_value('author', name.name) %>"><%= SDBMSS::Util.to_many(count_authors, "entry") %></a><br/>
                         <% end %>
 
                         <% if count_artists > 0 %>
-                        This name is listed as the artist of <a class='badge' href="<%= search_by_facet_value('artist', name.name) %>"><%= count_artists %> entries</a><br/>
+                        This name is listed as the artist of <a class='badge' href="<%= search_by_facet_value('artist', name.name) %>"><%= SDBMSS::Util.to_many(count_artists, "entry") %></a><br/>
                         <% end %>
 
                         <% if count_scribes > 0 %>
-                        This name is listed as the scribe of <a class='badge' href="<%= search_by_facet_value('scribe', name.name) %>"><%= count_scribes %> entries</a><br/>
+                        This name is listed as the scribe of <a class='badge' href="<%= search_by_facet_value('scribe', name.name) %>"><%= SDBMSS::Util.to_many(count_scribes, "entry") %></a><br/>
                         <% end %>
 
                         <% if !has_entries %>
@@ -71,15 +71,15 @@
                     <td class="col-sm-10">
 
                         <% if count_selling_agent > 0 %>
-                        This agent is the selling agent in <a class='badge' href="<%= search_by_facet_value('sale_selling_agent', name.name) %>"><%= count_selling_agent %> entries</a><br/>
+                        This agent is the selling agent in <a class='badge' href="<%= search_by_facet_value('sale_selling_agent', name.name) %>"><%= SDBMSS::Util.to_many(count_selling_agent, "entry") %></a><br/>
                         <% end %>
 
                         <% if count_seller_or_holder > 0 %>
-                        This agent is the seller in <a class='badge' href="<%= search_by_facet_value('sale_seller', name.name) %>"><%= count_seller_or_holder %> entries</a><br/>
+                        This agent is the seller in <a class='badge' href="<%= search_by_facet_value('sale_seller', name.name) %>"><%= SDBMSS::Util.to_many(count_seller_or_holder, "entry") %></a><br/>
                         <% end %>
                         
                         <% if count_buyer > 0 %>
-                        This agent is the buyer in <a class='badge' href="<%= search_by_facet_value('sale_buyer', name.name) %>"><%= count_buyer %> entries</a>
+                        This agent is the buyer in <a class='badge' href="<%= search_by_facet_value('sale_buyer', name.name) %>"><%= SDBMSS::Util.to_many(count_buyer, "entry") %></a>
                         <% end %>
                     </td>
                 </tr>
@@ -90,7 +90,7 @@
                 <tr>
                     <td class="col-sm-2 text-right record-label"># Provenance</td>
                     <td class="col-sm-10">
-                        This agent is found in the provenance of <a class='badge' href="<%= search_by_facet_value('provenance', name.name) %>"><%= count_provenance %> entries</a>.
+                        This agent is found in the provenance of <a class='badge' href="<%= search_by_facet_value('provenance', name.name) %>"><%= SDBMSS::Util.to_many(count_provenance, "entry") %></a>
                     </td>
                 </tr>
                 <% end %>

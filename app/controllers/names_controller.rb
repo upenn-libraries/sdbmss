@@ -12,10 +12,14 @@ class NamesController < SearchableAuthorityController
   before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy, :merge]
 
   def search_fields
-    @fields = ["name", "created_by", "updated_by"]
-    @filters = ["id", "viaf_id"]
-    @dates = ["created_at", "updated_at"]
+    super
+    @fields += ["comment"]
+    @filters += ["viaf_id"]
     @fields + @filters + @dates
+#    @fields = ["name", "created_by", "updated_by"]
+#    @filters = ["id", "viaf_id"]
+#    @dates = ["created_at", "updated_at"]
+#    @fields + @filters + @dates
   end
 
   def model_class
@@ -27,6 +31,7 @@ class NamesController < SearchableAuthorityController
       id: obj.id,
       name: obj.name,
       viaf_id: obj.viaf_id,
+      comment: obj.comment,
       authors_count: obj.authors_count || 0,
       artists_count: obj.artists_count || 0,
       scribes_count: obj.scribes_count || 0,
@@ -143,12 +148,13 @@ class NamesController < SearchableAuthorityController
     deletable
   end
 
-  def params_for_search
-    params.permit(:name, {:name => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
-  end
+#  def params_for_search
 
-  def filters_for_search
-    params.permit(:id, :created_by, :updated_by, {:id => []}, {:created_by => []}, {:updated_by => []}, :viaf_id, {:viaf_id => []})
-  end
+#    params.permit(:name, {:name => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
+#  end
+
+#  def filters_for_search
+#    params.permit(:id, :created_by, :updated_by, {:id => []}, {:created_by => []}, {:updated_by => []}, :viaf_id, {:viaf_id => []})
+#  end
 
 end

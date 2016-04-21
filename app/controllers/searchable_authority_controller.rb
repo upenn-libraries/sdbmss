@@ -77,6 +77,8 @@ class SearchableAuthorityController < ManageModelsController
 
     options = options_for_search
 
+    reviewed = params[:reviewed] && params[:reviewed] == "1" ? false : nil
+
     filters = filters_for_search
     params = params_for_search
     dates = dates_for_search
@@ -105,6 +107,10 @@ class SearchableAuthorityController < ManageModelsController
           end
         end
       }
+
+      if not reviewed.nil?
+        with :reviewed, false
+      end
 
       if filters.present?
         filters.each do |field, value|
@@ -180,15 +186,33 @@ class SearchableAuthorityController < ManageModelsController
   private
 
   def params_for_search
-    params.permit(:name, {:name => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
+    permitted = []
+    @fields.each do |field|
+      permitted.push(field.to_sym)
+      permitted.push({field.to_sym => []})
+    end
+    params.permit(permitted)
+#    params.permit(:name, {:name => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
   end
 
   def filters_for_search
-    params.permit(:id, {:id => []})
+    permitted = []
+    @filters.each do |filter|
+      permitted.push(filter.to_sym)
+      permitted.push({filter.to_sym => []})
+    end
+    params.permit(permitted)
+#    params.permit(:id, {:id => []})
   end
 
   def dates_for_search
-    params.permit(:created_at, :updated_at, {:created_at => []}, {:updated_at => []})
+    permitted = []
+    @dates.each do |date|
+      permitted.push(date.to_sym)
+      permitted.push({date.to_sym => []})
+    end
+    params.permit(permitted)
+    #params.permit(:created_at, :updated_at, {:created_at => []}, {:updated_at => []})
   end
 
   # permit as options fields with the format SEARCHFIELD_option
