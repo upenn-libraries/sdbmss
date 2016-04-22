@@ -60,8 +60,8 @@ class SearchableAuthorityController < ManageModelsController
 
   def index
     @search_fields = search_fields
-    @filter_options = ["present", "with", "without", "blank"]
-    @field_options = ["contains", "does not contain", "blank", "present"]
+    @filter_options = ["not blank", "with", "without", "blank"]
+    @field_options = ["contains", "does not contain", "blank", "not blank"]
     @date_options = ["before", "after", "near", "exact"]
     if params[:widescreen] == 'true'
       render :layout => 'widescreen'
@@ -97,7 +97,7 @@ class SearchableAuthorityController < ManageModelsController
                   fulltext "-" + v, :fields => [field]
                 elsif op && op == 'blank'
                   with field, nil
-                elsif op && op == 'present'
+                elsif op && op == 'not blank'
                   without field, nil
                 else
                   fulltext v, :fields => [field]
@@ -119,7 +119,7 @@ class SearchableAuthorityController < ManageModelsController
             op = Array(options[field + "_option"]).shift
             if op && op == 'blank'
               with field, nil
-            elsif op && op == 'present'
+            elsif op && op == 'not blank'
               without field, nil
             elsif v.blank? # ignore blank
             elsif op && op == 'without'

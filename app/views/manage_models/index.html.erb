@@ -31,7 +31,19 @@
 
 <%= render partial: "search_form" %>
 </div>
-
+<!--
+<div class="widescreen">
+    <% if resource_name != "accounts" %>
+        <%= link_to polymorphic_url(model_class, :widescreen => ((params[:widescreen] == 'true') ? false : true) ), class: "btn btn-info btn-sm" do %>
+            <% if params[:widescreen] == 'true' %>
+                <span class="glyphicon glyphicon-resize-small"></span>
+            <% else  %>
+                <span class="glyphicon glyphicon-resize-full"></span>
+            <% end %>
+        <% end %>
+    <% end %>
+</div>
+-->
 <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
     <thead>
         <tr>
@@ -40,10 +52,10 @@
 </table>
 
 <div class="container">
-
+<!--
 <div style="text-align: right">
     <a id="export-csv" href="#">Export search results as csv</a>
-</div>
+</div>-->
 
 <%= render partial: "index_extra" %>
 
@@ -67,19 +79,29 @@
         p.find("input", "select").val("");
         $(".search").append(p);
         p.find(".search-remove").click( function (e) {
+            var p = $(this).closest('.search-fieldset');
             if ($('.search-fieldset').length > 1) {
-                var p = $(this).closest('.search-fieldset');
                 $(".search").find(p).remove();
+            } else {                                    // otherwise, clear all the fields
+                p.find("input").each(function (e) {
+                    $(this).val("");
+                })
+                p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
             }
         });
         setOptions(p);      
     });
     var p = $('.search-fieldset');
     p.find(".search-remove").click( function (e) {
-        p.find("input").each(function (e) {
-            $(this).val("");
-        })
-        p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
+        if ($('.search-fieldset').length > 1) {     // if there are others, remove it
+            p = $(this).closest('.search-fieldset');
+            $(".search").find(p).remove();
+        } else {                                    // otherwise, clear all the fields
+            p.find("input").each(function (e) {
+                $(this).val("");
+            })
+            p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
+        }
     });
     setOptions(p);
 </script>

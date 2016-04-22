@@ -45,4 +45,4 @@ table.sdbm-table { margin-top: 0px !important; }
 
 /* show info and pagination at same horizontal level */
 .dataTables_info { float: left; }
-.dataTables_paginate { padding-top: 8px; } 
+/*.dataTables_paginate { padding-top: 8px; } */

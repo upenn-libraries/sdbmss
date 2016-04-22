@@ -141,6 +141,15 @@ var SDBM = SDBM || {};
             order: manageRecords.getDefaultSort()
         });
 
+        $("#search_results").on('draw.dt', function () {
+            sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
+                var data = sdbmTable.dataTable.row(row).data();
+                if(!data[sdbmTable.getColumnIndex("Reviewed")]) {
+                    $(row).addClass('warning unapproved')
+                }
+            });
+        });
+
         return sdbmTable;
     };
 
@@ -303,7 +312,7 @@ var SDBM = SDBM || {};
 
         return [
             {
-                title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
+                title: '<a href="#" class="btn btn-default btn-blank btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
                 orderable: false,
                 className: "text-center",
                 render: function (data, type, full, meta) {
@@ -311,8 +320,8 @@ var SDBM = SDBM || {};
                         return  '' + 
                                 '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
                                 '<label for="checkbox_' + meta.row + '">' + 
-                                '<a class="btn btn-default btn-xs glyphicon glyphicon-unchecked unchecked"></a>' + 
-                                '<a class="btn btn-default btn-xs glyphicon glyphicon-check checked"></a>' + 
+                                '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-unchecked unchecked"></a>' + 
+                                '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-check checked"></a>' + 
                                 '</label>' + '';
 //                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     }

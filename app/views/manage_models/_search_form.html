@@ -55,25 +55,6 @@
                     <div class="col-sm-2">
                         <button id="search_submit" type="submit" class="btn btn-primary">Search</button>
                     </div>
-                    <div class="col-sm-8">
-                        <% if can? :manage, model_class %>
-                            <label class="checkbox-inline">
-                                <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
-                            </label>
-                        <% end %>
-                    </div>
-                    <div class="col-sm-2 text-right">
-                        <% if resource_name != "accounts" %>
-                        <!-- _FIX ME: for some reason (well, because they are actually 'users') accounts don't have the right path for this link... oh well -->
-                            <%= link_to polymorphic_url(model_class, :widescreen => ((params[:widescreen] == 'true') ? false : true) ), class: "btn btn-info btn-sm" do %>
-                                <% if params[:widescreen] == 'true' %>
-                                    <span class="glyphicon glyphicon-resize-small"></span>
-                                <% else  %>
-                                    <span class="glyphicon glyphicon-resize-full"></span>
-                                <% end %>
-                            <% end %>
-                        <% end %>
-                    </div>
                 </div>
             </div>
         </div>
@@ -87,6 +68,13 @@
                 <!--<div class="col-sm-12 label-alignment review-control">
                     <a href="#" id="select-all">Select All</a> / <a href="#" id="deselect-all">Deselect All</a>
                 </div>-->
+                <div class="col-sm-8">
+                    <% if can? :manage, model_class %>
+                        <label class="checkbox-inline">
+                            <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
+                        </label>
+                    <% end %>
+                </div>
                 <div class="col-sm-12 review-control">
                     <a class="btn btn-primary btn-sm" id="mark-as-reviewed" class="btn btn-primary">Mark checked records as reviewed</a>
                 </div>

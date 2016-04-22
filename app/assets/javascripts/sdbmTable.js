@@ -57,7 +57,7 @@ var SDBM = SDBM || {};
             prependColumns: null,
             height: 'full',  // FIX ME: is this better, or worse?
             heightBuffer: 360,
-            dom: 'C<"clear"><"H"lr>JRt<"F"ip>'
+            dom: '<"row"<"col-sm-2"l><"col-sm-2 text-center"i><"col-sm-6 text-right"p><"col-sm-2 text-right"<"wide"><"csv">C>>t'
         };
 
         this.options = $.extend({}, defaults, options);
@@ -108,9 +108,13 @@ var SDBM = SDBM || {};
             // state in the 1st row, really) in the table from rendering
             // properly.
             // https://datatables.net/forums/discussion/24675/radio-button-checked-problem
-            autoWidth: false,
+            // 
+            autoWidth: true,
             ajax: function (dt_params, callback, settings) {
                 options.ajax(sdbmTable, dt_params, callback, settings);
+            },
+            colVis: {
+                "buttonText": "<span class='glyphicon glyphicon-option-horizontal'></span>"
             },
             columns: this.columns,
             language: {
@@ -166,7 +170,18 @@ var SDBM = SDBM || {};
             dom: this.options.dom,
             serverSide: true
         });
+    
+        var the_table = this.dataTable;
+        $('.wide').replaceWith('<a id="widescreen" class="btn btn-default btn-table-tool" title="Widescreen View"><span class="glyphicon glyphicon-resize-full"></span></a>')
+        $('#widescreen').click( function () {
+            $("#main-container").toggleClass('container-fluid').toggleClass('container');
+            $("#widescreen > span").toggleClass('glyphicon-resize-small').toggleClass('glyphicon-resize-full');
+        });
+        $('.csv').replaceWith('<a id="export-csv" class="btn btn-default btn-table-tool" title="Export to CSV"><span class="glyphicon glyphicon-floppy-save"></span></a>');
+        //$('.star').replaceWith('<a class="btn btn-default btn-table-tool" title="Bookmarks"><span class="glyphicon glyphicon-star"></span></a>');
 
+        // FIX ME: there MUST be a better way of doing this...
+        $('button.ColVis_Button.ColVis_MasterButton').removeClass('ColVis_Button').removeClass("ColVis_MasterButton").addClass('btn').addClass('btn-default').addClass('btn-table-tool').prop('title', 'Hide/Show Columns');
         /*
          * WARNING: Alignment of rows with fixed columns is tweaky
          * sometimes.

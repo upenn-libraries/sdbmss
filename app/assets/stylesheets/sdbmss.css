@@ -96,6 +96,17 @@ h1 { font-size: 30px; margin-top: 0; }
 /*
  checkboxes!
 */
+.btn-blank, .btn-blank:hover, .btn-blank:active {
+    border: none;
+    background: transparent;
+}
+.btn-table-tool {
+  margin: 0px 4px;
+}
+div.dataTables_paginate ul.pagination {
+  margin: 0px 0;
+}
+
 .btn.checked, .table-checkbox {
   display: none;
 }
@@ -281,11 +292,11 @@ h1 { font-size: 30px; margin-top: 0; }
 .form-group.row {
   border-bottom: 1px #eee dashed;
 }
-.unapproved > td {
+.unapproved > td, .unapproved > td > a {
   color: #999;
 }
-.unapproved > td > a {
-  color: #999;
+.unapproved > td > a.btn {
+  color: #ddd;
 }
 
 .sdbmss-form .provenance-group-container { border-width: 0 0 1px; border-style: none none solid; border-color: #e5e5e5; margin-bottom: 6px; }
