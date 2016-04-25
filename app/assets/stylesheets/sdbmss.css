@@ -106,6 +106,9 @@ h1 { font-size: 30px; margin-top: 0; }
 div.dataTables_paginate ul.pagination {
   margin: 0px 0;
 }
+.full-width {
+  width: 100% !important;
+}
 
 .btn.checked, .table-checkbox {
   display: none;

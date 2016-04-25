@@ -124,7 +124,6 @@ var SDBM = SDBM || {};
 
     /** Creates the table object instance */
     SDBM.ManageRecords.prototype.createTable = function(selector) {
-
         var manageRecords = this;
 
         var sdbmTable = new SDBM.Table(selector, {

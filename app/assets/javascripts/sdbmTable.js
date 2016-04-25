@@ -57,7 +57,7 @@ var SDBM = SDBM || {};
             prependColumns: null,
             height: 'full',  // FIX ME: is this better, or worse?
             heightBuffer: 360,
-            dom: '<"row"<"col-sm-2"l><"col-sm-2 text-center"i><"col-sm-6 text-right"p><"col-sm-2 text-right"<"wide"><"csv">C>>t'
+            dom: '<"row"<"col-sm-2"l><"col-sm-2 text-center"i><"col-sm-6 text-right"p><"col-sm-2 text-right"<"wide"><"csv"><"columns">>t'
         };
 
         this.options = $.extend({}, defaults, options);
@@ -109,13 +109,13 @@ var SDBM = SDBM || {};
             // properly.
             // https://datatables.net/forums/discussion/24675/radio-button-checked-problem
             // 
-            autoWidth: true,
+            autoWidth: false,
             ajax: function (dt_params, callback, settings) {
                 options.ajax(sdbmTable, dt_params, callback, settings);
             },
-            colVis: {
+            /*colVis: {
                 "buttonText": "<span class='glyphicon glyphicon-option-horizontal'></span>"
-            },
+            },*/
             columns: this.columns,
             language: {
                 "emptyTable": "No records found for search query."
@@ -172,20 +172,37 @@ var SDBM = SDBM || {};
         });
     
         var the_table = this.dataTable;
-        $('.wide').replaceWith('<a id="widescreen" class="btn btn-default btn-table-tool" title="Widescreen View"><span class="glyphicon glyphicon-resize-full"></span></a>')
+        $('.wide').replaceWith('<a id="widescreen" class="btn btn-default btn-table-tool disabled" title="Widescreen View"><span class="glyphicon glyphicon-resize-full"></span></a>')
         $('#widescreen').click( function () {
+            // fix me: when we start wide, header columns break (in a big way), otherwise they just break in a SMALL way
             $("#main-container").toggleClass('container-fluid').toggleClass('container');
             $("#widescreen > span").toggleClass('glyphicon-resize-small').toggleClass('glyphicon-resize-full');
+            $('.dataTables_scrollHeadInner').toggleClass('full-width');
+            $('.sdbm-table').toggleClass('full-width');
+            $('.search_results').toggleClass('full-width');
         });
         $('.csv').replaceWith('<a id="export-csv" class="btn btn-default btn-table-tool" title="Export to CSV"><span class="glyphicon glyphicon-floppy-save"></span></a>');
-        //$('.star').replaceWith('<a class="btn btn-default btn-table-tool" title="Bookmarks"><span class="glyphicon glyphicon-star"></span></a>');
+        $('.columns').replaceWith('<div class="btn-group">' + 
+            '<a class="btn btn-default btn-table-tool dropdown-toggle" title="Show/Hide Columns" data-toggle="dropdown"><span class="glyphicon glyphicon-option-horizontal"></span></a>' +
+            '<div id="column-control" class="dropdown-menu list-group">' +
+            '</div>' +
+            '</div>'
+        );
 
-        // FIX ME: there MUST be a better way of doing this...
-        $('button.ColVis_Button.ColVis_MasterButton').removeClass('ColVis_Button').removeClass("ColVis_MasterButton").addClass('btn').addClass('btn-default').addClass('btn-table-tool').prop('title', 'Hide/Show Columns');
-        /*
-         * WARNING: Alignment of rows with fixed columns is tweaky
-         * sometimes.
-         */
+        // new column hide/show function
+
+        var dropdown = $('#column-control');
+        var num_columns = the_table.columns()[0].length;
+        for (var i = 0; i < num_columns; i++) {
+            var option = $('<a class="dropdown-item list-group-item" index=' + i + '></a>');
+            option.html($('th').eq(i).html());
+            option.click( function (e) {
+                var n = Number($(this).attr('index'));
+                the_table.columns([n]).visible(!the_table.columns( [n]).visible()[0]);
+            });
+            dropdown.append(option);
+        }
+
         if(this.options.fixedColumns) {
             new $.fn.dataTable.FixedColumns(this.dataTable, {
                 leftColumns: this.options.fixedColumns
