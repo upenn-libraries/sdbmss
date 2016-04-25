@@ -143,7 +143,8 @@ var SDBM = SDBM || {};
         $("#search_results").on('draw.dt', function () {
             sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
                 var data = sdbmTable.dataTable.row(row).data();
-                if(!data[sdbmTable.getColumnIndex("Reviewed")]) {
+                // because sometimes it's a string, and sometimes its a boolean.  it just is.
+                if(!data[sdbmTable.getColumnIndex("Reviewed")] || data[sdbmTable.getColumnIndex("Reviewed")] == 'false') {
                     $(row).addClass('warning unapproved')
                 }
             });

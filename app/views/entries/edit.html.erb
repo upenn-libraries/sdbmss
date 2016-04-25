@@ -179,7 +179,8 @@ label.col-sm-2-and-half {
             <span id="cat_lot_no_warning" style="color: red;"></span>
         </div>
         <div class="col-sm-3">
-          <a href="" class="btn btn-danger" ng-if="entry.source_type_id != 8" ng-click="editSource();">Change Source</a>
+          <a href="" class="btn btn-danger" ng-if="entry.source.source_type_id != 8" ng-click="editSource();">Change Source</a>
+          <span class="list-group-item list-group-item-warning" ng-if="entry.source.source_type_id == 8">You can't change the source of a Provenance Observation</span>
         </div>
       </div>
 
@@ -293,7 +294,7 @@ label.col-sm-2-and-half {
     </div>
 
   <div class='form-group row'>
-    <label class="col-sm-3">
+    <label class="col-sm-3 side-title">
       <h3>Title(s)</h3>
       <div class="add-link-container">
         <a id="add_title" class="clickable" data-ng-click="addRecord(entry.entry_titles); addRecord(entry.entry_authors)" title="Add">
@@ -332,7 +333,7 @@ label.col-sm-2-and-half {
   </div>
 
   <div class="form-group row entry-author-group">
-    <label class="col-sm-3">
+    <label class="col-sm-3 side-title">
       <h3>
         <span>Author(s)</span>
       </h3>
@@ -383,7 +384,7 @@ label.col-sm-2-and-half {
   </div>
 
   <div class='form-group row'>
-    <label class="col-sm-3">
+    <label class="col-sm-3 side-title">
       <h3>
         <span>Date(s)</span>
       </h3>
@@ -430,7 +431,7 @@ label.col-sm-2-and-half {
   </div>
 
   <div class="form-group row">
-    <label class="col-sm-3">
+    <label class="col-sm-3 side-title">
         <h3>
           <span>Artist(s)</span>
         </h3>
@@ -481,7 +482,7 @@ label.col-sm-2-and-half {
   </div>
 
   <div class="form-group row">
-    <label class="col-sm-3">
+    <label class="col-sm-3 side-title">
       <h3>
         <span>Scribe(s)</span>
       </h3>
@@ -522,7 +523,7 @@ label.col-sm-2-and-half {
   </div>
 
   <div class="form-group row">
-    <label class="col-sm-3">
+    <label class="col-sm-3 side-title">
       <h3>
         <span>Language(s)</span>
       </h3>
@@ -555,7 +556,7 @@ label.col-sm-2-and-half {
   </div>
 
   <div class="form-group row">
-    <label class="col-sm-3">
+    <label class="col-sm-3 side-title">
       <h3>
         <span>Material(s)</span>
       </h3>
@@ -588,7 +589,7 @@ label.col-sm-2-and-half {
   </div>
 
   <div class="form-group row">
-    <label class="col-sm-3">
+    <label class="col-sm-3 side-title">
       <h3>
         <span>Place(s)</span>
       </h3>
@@ -629,7 +630,7 @@ label.col-sm-2-and-half {
   </div>
 
   <div class="form-group row">
-    <label class="col-sm-3">
+    <label class="col-sm-3 side-title">
       <h3>Use(s)</h3>
       <div class="add-link-container">
         <a a id="add_use" class="clickable" data-ng-click="addRecord(entry.entry_uses)" title="Add">
@@ -656,7 +657,7 @@ label.col-sm-2-and-half {
     </div>
   </div>
 
-  <div class="form-group row">
+  <div class="form-group row input-block">
       <label for="folios" class="col-sm-2 control-label">
           <span sdbm-tooltip="entry_folios">Folios</span>
       </label>
@@ -677,7 +678,7 @@ label.col-sm-2-and-half {
       </div>
   </div>
 
-  <div class="form-group row">
+  <div class="form-group row input-block">
       <label for="height" class="col-sm-2 control-label">
           <span sdbm-tooltip="entry_height">Height (mm)</span>
       </label>
@@ -700,7 +701,7 @@ label.col-sm-2-and-half {
       </div>
   </div>
 
-  <div class="form-group row">
+  <div class="form-group row input-block">
       <label for="min_fl" class="col-sm-2 control-label">
           <span sdbm-tooltip="entry_min_fl">Miniatures Full-Page</span>
       </label>
@@ -727,7 +728,7 @@ label.col-sm-2-and-half {
       </div>
   </div>
 
-  <div class="form-group row">
+  <div class="form-group row input-block">
       <label for="initials_historiated" class="col-sm-2 control-label">
           <span sdbm-tooltip="entry_initials_historiated">Initials Historiated</span>
       </label>
@@ -742,7 +743,7 @@ label.col-sm-2-and-half {
       </div>
   </div>
 
-  <div class="form-group row">
+  <div class="form-group row input-block">
     <label for="binding" class="col-sm-2 control-label">
         <span sdbm-tooltip="entry_binding">Binding</span>
     </label>
@@ -751,7 +752,7 @@ label.col-sm-2-and-half {
     </div>
   </div>
 
-  <div class="form-group row">
+  <div class="form-group row input-block">
     <label for="link" class="col-sm-2 control-label">
         <span sdbm-tooltip="entry_link">URL Link</span>
     </label>
@@ -760,7 +761,7 @@ label.col-sm-2-and-half {
     </div>
   </div>
 
-  <div class="form-group row">
+  <div class="form-group row input-block">
     <label for="other_info" class="col-sm-2 control-label">
         <span sdbm-tooltip="entry_other_info">Other information</span>
     </label>
@@ -778,7 +779,7 @@ label.col-sm-2-and-half {
     <!-- beginning of providence section -->
 
   <div class='form-group row'>
-    <label class='col-sm-2'>
+    <label class='col-sm-2 side-title'>
       <h3>Agent(s)</h3>
       <div class="add-link-container">
         <a id="add_provenance" class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add">

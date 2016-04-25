@@ -109,6 +109,12 @@ div.dataTables_paginate ul.pagination {
 .full-width {
   width: 100% !important;
 }
+#column-control {
+  right: 0;
+  left: inherit;
+  max-height: 400px;
+  overflow-y: scroll;
+}
 
 .btn.checked, .table-checkbox {
   display: none;
@@ -171,7 +177,13 @@ div.dataTables_paginate ul.pagination {
 #proposed-history {
   z-index: 100;
 }
-
+.side-title.affix {
+    position: fixed;
+    top: 0;
+}
+.side-title.affix-top, .side-title.affix-bottom {
+  position: absolute;
+}
 .input-block .row {
   margin: 2px;
 }
@@ -185,6 +197,7 @@ div.dataTables_paginate ul.pagination {
   border-radius: 5px;
   background-color: #F8F8F8;
   transition: all linear 0.5s;
+  box-shadow: 0px 4px 1px 0px rgba(0,0,0,0.1);
 }
 .ui-sortable-helper {
   transition: none;
@@ -196,7 +209,7 @@ div.dataTables_paginate ul.pagination {
   background-color: #e3e3e3;
 }
 .ui-state-highlight {
-  width: 100%;
+  width: calc(100% + 20px);
   margin-bottom: 10px;
 /*  height: min-100px;*/
 }

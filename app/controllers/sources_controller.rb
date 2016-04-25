@@ -79,6 +79,18 @@ class SourcesController < SearchableAuthorityController
 #    @search_fields = SEARCH_FIELDS
 #  end
 
+  # various date separators (hyphenated!)
+  def search
+    if params[:date]
+      params[:date] = Array(params[:date])
+      params[:date].map! do | date |
+        date.gsub('-', '').gsub('/', '')
+      end
+    end
+    puts "Date: #{params[:date]}"
+    super
+  end
+
   def create
     filtered = source_params_for_create_and_edit
     @source = Source.new(filtered)

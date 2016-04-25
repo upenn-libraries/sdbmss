@@ -362,6 +362,20 @@ var EntryScope;
 
         EntryScope = $scope;
 
+        // affixes the association name and 'add' button to side, so that it is in view when list is long
+        // FIX ME: glitchy, jumps
+        // FIX ME: delay in loading causes the height calculations to malfunction
+        $scope.affixer = function () {
+          $('.side-title').each( function () {
+            // ignore this if the list is short
+            if ( $(this).closest('.row').height() < $(window).height() - 500) return;
+            
+            var top = $(this).closest('.row').offset().top;
+            var bottom = $(document).height() - (top + $(this).closest('.row').height());
+            $(this).affix({offset: {top: top, bottom: bottom} }); //Try it
+            $(this).data('bs.affix').options.offset = {top: top, bottom: bottom};
+          });
+        };
 
         $scope.sortableOptions = {
           axis: 'y',
@@ -552,6 +566,9 @@ var EntryScope;
 
         $scope.addRecord = function (anArray) {
           anArray.push({});
+          setTimeout( function () {            
+            $scope.affixer();
+          }, 2000);
         };
 
         // filter used by ng-repeat to hide records marked for deletion
@@ -576,7 +593,11 @@ var EntryScope;
                 if($.grep(anArray, $scope.activeRecords).length === 0) {
                     //anArray.push({});
                 }
-            }
+
+                setTimeout( function () {            
+                  $scope.affixer();
+                }, 2000);
+          }
         };
 
         /* Returns true if record is the first one */
@@ -707,6 +728,14 @@ var EntryScope;
             // save copy at this point, so we have something to
             // compare to, when navigating away from page
             $scope.originalEntryViewModel = angular.copy(entry);
+            //$scope.affixer();
+            //
+            //
+            //
+            // FIX ME! you need to find a better solution than a 2-second timeout!
+            setTimeout( function () {
+              $scope.affixer();
+            }, 2000);
         };
 
         $scope.postEntrySave = function(entry) {
