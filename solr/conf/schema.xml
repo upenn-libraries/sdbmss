@@ -57,11 +57,13 @@
       <analyzer type="index">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.ASCIIFoldingFilterFactory" /> 
         <filter class="solr.EdgeNGramFilterFactory" minGramSize="2" maxGramSize="10"/>
       </analyzer>
       <analyzer type="query">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.ASCIIFoldingFilterFactory" /> 
       </analyzer>
     </fieldType>
     <!-- *** This fieldType is used by Sunspot! *** -->
@@ -78,11 +80,13 @@
         <filter class="solr.LowerCaseFilterFactory"/>
         <filter class="solr.EdgeNGramFilterFactory" minGramSize="2" maxGramSize="15" side="front"/>
         <filter class="solr.SnowballPorterFilterFactory" language="English" />
+        <filter class="solr.ASCIIFoldingFilterFactory" /> 
       </analyzer>
       <analyzer type="query">
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.StandardFilterFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.ASCIIFoldingFilterFactory" /> 
         <filter class="solr.SnowballPorterFilterFactory" language="English" />
       </analyzer>
     </fieldType>

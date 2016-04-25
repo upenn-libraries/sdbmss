@@ -201,7 +201,8 @@ var SDBM = SDBM || {};
             created_by_user: this.options.showOnlyRecordsCreatedByUser,
             offset: dt_params.start,
             limit: dt_params.length,
-            order: orderStr
+            order: orderStr,
+            op: this.getOp()
         };
 
         for (var i = 0; i < $(".search-fieldset").length; i++) { 
@@ -306,6 +307,14 @@ var SDBM = SDBM || {};
             return 0;
         }
     };
+
+    SDBM.ManageRecords.prototype.getOp = function () {
+        if ($('#search_op')) {
+            return $('#search_op').val();
+        } else {
+            return 'all';
+        }
+    }
     
     SDBM.ManageRecords.prototype.getColumns = function () {
         var manageRecords = this;

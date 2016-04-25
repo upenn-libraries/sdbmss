@@ -60,7 +60,7 @@ class SearchableAuthorityController < ManageModelsController
 
   def index
     @search_fields = search_fields
-    @filter_options = ["not blank", "with", "without", "blank"]
+    @filter_options = ["with", "without", "blank", "not blank"]
     @field_options = ["contains", "does not contain", "blank", "not blank"]
     @date_options = ["before", "after", "near", "exact"]
     if params[:widescreen] == 'true'
@@ -73,7 +73,9 @@ class SearchableAuthorityController < ManageModelsController
     order = params[:order].present? ? {field: params[:order].split[0], direction: params[:order].split[1]} : {}
     limit = params[:limit].present? ? params[:limit].to_i : 50
     page = params[:limit] ? (params[:offset].to_i / params[:limit].to_i) + 1 : 1
-    op = params[:op].present? ? params[:op] : 'and'
+    s_op = params[:op].present? ? params[:op] : 'and'
+
+    # FIX ME: need some way of having mixed and/any searches over with, fulltext, date, number
 
     options = options_for_search
 
@@ -157,7 +159,7 @@ class SearchableAuthorityController < ManageModelsController
         end
       end
 
-      if op == 'OR'
+      if s_op == 'any'
         any do
           fulltext_search.call(params, options)
         end

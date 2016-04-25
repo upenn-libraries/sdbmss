@@ -71,6 +71,13 @@
             p.find("." + type + "_option").show();
             p.find("." + type + "_option").first().attr("selected", true);
         };
+        p.find("select[name=search_option]").click( function () {
+            if ($(this).val() == "blank" || $(this).val() == "not blank") {
+                $(this).closest('.search-fieldset').find('input[name=search_value]').val("").attr('disabled', true);
+            } else {
+                $(this).closest('.search-fieldset').find('input[name=search_value]').attr('disabled', false);
+            }
+        });
         t.change(updateOptions);
         updateOptions();
     }
