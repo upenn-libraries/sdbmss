@@ -87,7 +87,6 @@ class SourcesController < SearchableAuthorityController
         date.gsub('-', '').gsub('/', '')
       end
     end
-    puts "Date: #{params[:date]}"
     super
   end
 
