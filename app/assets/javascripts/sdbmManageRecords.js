@@ -380,7 +380,7 @@ var SDBM = SDBM || {};
                 dbSortField: 'created_by'
             },
             {
-                title: 'Created At',
+                title: 'Created On',
                 width: "10%",
                 dbSortField: 'created_at'
             },
@@ -390,7 +390,7 @@ var SDBM = SDBM || {};
                 dbSortField: 'updated_by'
             },
             {
-                title: 'Updated At',
+                title: 'Updated On',
                 width: "10%",
                 dbSortField: 'updated_at'
             }

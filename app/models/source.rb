@@ -93,6 +93,8 @@ class Source < ActiveRecord::Base
     #join(:name,  :target => Name, :type => :text, :join => { :from => :name, :to => :agent_name })
     #text :agent_name
     #text :agent_name, :more_like_this => true
+
+
     text :agent_name, :more_like_this => true do
       (source_agents.map do |sa| Name.find(sa.agent_id).name end).join(" ")
     end

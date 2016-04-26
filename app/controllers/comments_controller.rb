@@ -1,5 +1,5 @@
 
-class CommentsController < ManageModelsController
+class CommentsController < SearchableAuthorityController
 
   include MarkAsReviewed
   include LogActivity
@@ -8,6 +8,14 @@ class CommentsController < ManageModelsController
 
   def model_class
     Comment
+  end
+
+  def search_fields
+    super
+    @fields.unshift("comment")
+    @fields.delete("name")
+    @filters += ["entry", "manuscript"]
+    @fields + @filters + @dates
   end
 
   def search_query_base

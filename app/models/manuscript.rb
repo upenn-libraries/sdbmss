@@ -96,4 +96,8 @@ class Manuscript < ActiveRecord::Base
     "Schoenberg Database of Manuscripts. The Schoenberg Institute for Manuscript Studies, University of Pennsylvania Libraries. Web. #{now}: #{public_id}."
   end
 
+  def to_i
+    id
+  end
+
 end

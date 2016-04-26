@@ -704,6 +704,10 @@ class Entry < ActiveRecord::Base
 
   end
 
+  def to_i
+    id
+  end
+
   private
 
   def update_source_status

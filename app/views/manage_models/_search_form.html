@@ -20,7 +20,8 @@
                     <div class="col-sm-3">
                         <select class="form-control" name="search_field">
                         <% Array(@search_fields).each do |field| %>
-                            <option value="<%= field %>" type="<%= @fields.include?(field) ? 'field' : (@filters.include?(field) ? 'filter' : 'date') %>"><%= field.humanize %></option>
+                            <!-- replace 'at' in 'created at' with 'on' -->
+                            <option value="<%= field %>" type="<%= @fields.include?(field) ? 'field' : (@filters.include?(field) ? 'filter' : 'date') %>"><%= field.humanize.gsub(/\sat/, ' on') %></option>
                         <% end -%>
                         </select>
                     </div>

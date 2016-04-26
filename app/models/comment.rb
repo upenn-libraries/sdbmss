@@ -36,6 +36,28 @@ class Comment < ActiveRecord::Base
   include HasPaperTrail
   include CreatesActivity
 
+  searchable do
+    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
+    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
+    string :created_by
+    string :updated_by
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :created_by })
+    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :updated_by })
+    text :created_by
+    text :updated_by
+    text :comment
+    string :comment
+    integer :id
+    boolean :reviewed
+    boolean :is_accepted
+    date :created_at
+    date :updated_at
+    join(:id, :target => Entry, :type => :integer, :join => { :from => :id, :to => :entry})
+    integer :entry
+    join(:id, :target => Manuscript, :type => :integer, :join => { :from => :id, :to => :manuscript})
+    integer :manuscript
+  end
+
   def entry
     entries.first
   end
