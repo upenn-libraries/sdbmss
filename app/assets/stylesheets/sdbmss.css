@@ -25,6 +25,11 @@ body {
 
 .search-form .search-fieldset { margin-bottom: 8px; }
 
+.search-remove {
+    font-size: 22px !important;
+    font-weight: normal;
+}
+
 /* on Entry view page, move the content block to the right of the sidebar */
 .blacklight-catalog-show #content { float: right; }
 
@@ -106,6 +111,10 @@ h1 { font-size: 30px; margin-top: 0; }
 div.dataTables_paginate ul.pagination {
   margin: 0px 0;
 }
+.dataTables_scrollHeadInner, table#search_results {
+    margin: auto;
+}
+
 .full-width {
   width: 100% !important;
 }
@@ -114,6 +123,25 @@ div.dataTables_paginate ul.pagination {
   left: inherit;
   max-height: 400px;
   overflow-y: scroll;
+}
+
+.inline-right {
+  border-left: none;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+.inline-middle {
+  border-radius: 0px;
+  border-left: none;
+  border-right: none;
+}
+.inline-left {
+  border-right: none;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+.inline-select {
+  border-left: 1px dashed #ccc;
 }
 
 .btn.checked, .table-checkbox {
@@ -184,6 +212,7 @@ div.dataTables_paginate ul.pagination {
 .side-title.affix-top, .side-title.affix-bottom {
   position: absolute;
 }
+
 .input-block .row {
   margin: 2px;
 }

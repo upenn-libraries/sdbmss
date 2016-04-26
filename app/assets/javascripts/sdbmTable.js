@@ -57,7 +57,7 @@ var SDBM = SDBM || {};
             prependColumns: null,
             height: 'full',  // FIX ME: is this better, or worse?
             heightBuffer: 360,
-            dom: '<"row"<"col-sm-2"l><"col-sm-2 text-center"i><"col-sm-6 text-right"p><"col-sm-2 text-right"<"wide"><"csv"><"columns">>t'
+            dom: '<"container"<"col-sm-2"l><"col-sm-2 text-center"i><"col-sm-6 text-right"p><"col-sm-2 text-right"<"wide"><"csv"><"columns">>>t'
         };
 
         this.options = $.extend({}, defaults, options);
