@@ -144,13 +144,14 @@ var SDBM = SDBM || {};
                  * which has the effect of constraining TH widths as
                  * calculated by dataTables.
                  */
+                // FIX ME: should there ever be a 'max' width for a column, for instance if there is a really long table entry and many blanks in the same column...?
                 $('td', row).each(function (idx, e) {
                     var opts = sdbmTable.columns[idx];
                     if(opts.sdbmssMinWidth) {
-                        $(e).css("min-width", opts.sdbmssMinWidth);
+                        //$(e).css("min-width", opts.sdbmssMinWidth);  DISABLED sdbmssMinWidth
                     }
                     if(opts.sdbmssMaxWidth) {
-                        $(e).css("max-width", opts.sdbmssMaxWidth);
+                        //$(e).css("max-width", opts.sdbmssMaxWidth);  DISABLED sdbmssMaxWidth
                     }
                 });
             },
@@ -172,14 +173,14 @@ var SDBM = SDBM || {};
         });
     
         var the_table = this.dataTable;
-        $('.wide').replaceWith('<a id="widescreen" class="btn btn-default btn-table-tool disabled" title="Widescreen View"><span class="glyphicon glyphicon-resize-full"></span></a>');
+        $('.wide').replaceWith('<a id="widescreen" class="btn btn-default btn-table-tool" title="Widescreen View"><span class="glyphicon glyphicon-resize-full"></span></a>');
         $('#widescreen').click( function () {
             // fix me: when we start wide, header columns break (in a big way), otherwise they just break in a SMALL way
             $("#main-container").toggleClass('container-fluid').toggleClass('container');
             $("#widescreen > span").toggleClass('glyphicon-resize-small').toggleClass('glyphicon-resize-full');
-            $('.dataTables_scrollHeadInner').toggleClass('full-width');
-            $('.sdbm-table').toggleClass('full-width');
-            $('.search_results').toggleClass('full-width');
+            //$('.dataTables_scrollHeadInner').toggleClass('full-width');
+            //$('.sdbm-table').toggleClass('full-width');
+            //$('.search_results').toggleClass('full-width');
         });
         $('.csv').replaceWith('<a id="export-csv" class="btn btn-default btn-table-tool" title="Export to CSV"><span class="glyphicon glyphicon-floppy-save"></span></a>');
         $('.columns').replaceWith('<div class="btn-group">' + 

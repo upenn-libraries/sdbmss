@@ -50,38 +50,41 @@
             },
             {
                 sdbmssMinWidth: "100px",
-                orderable: false,
+                //orderable: false,
                 title: 'Entry ID',
                 render: function (data, type, full, meta) { 
                     if (data) {
                         return "<a target='_blank' href='/entries/" + data + "'>SDBM_" + data + "</a>";
                     }
                     return "";
-                }
+                },
+                dbSortField: 'entry'
             },
             {
                 sdbmssMinWidth: "100px",
-                orderable: false,
+                //orderable: false,
                 title: 'Manuscript ID',
                 render: function (data, type, full, meta) { 
                     if(data) {
                         return "<a target='_blank' href='/manuscripts/" + data + "'>SDBM_MS_" + data + "</a>";
                     }
                     return "";
-                }
+                },
+                dbSortField: 'manuscript'
             },
             {
                 sdbmssMinWidth: "400px",
                 sdbmssMaxWidth: "400px",
-                orderable: false,
-                title: 'Comment'
-            },
+                //orderable: false,
+                title: 'Comment',
+                dbSortField: 'comment'
+            },/*
             {
                 sdbmssMinWidth: "100px",
                 sdbmssMaxWidth: "100px",
                 title: 'Is Correction',
                 dbSortField: 'is_correction'
-            },
+            },*/
             {
                 sdbmssMinWidth: "100px",
                 sdbmssMaxWidth: "100px",
