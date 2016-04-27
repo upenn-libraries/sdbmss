@@ -45,6 +45,7 @@ class EntryManuscript < ActiveRecord::Base
     text :updated_by
     date :created_at
     date :updated_at
+    boolean :reviewed
   end
 
 end
