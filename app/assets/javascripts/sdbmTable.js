@@ -57,7 +57,7 @@ var SDBM = SDBM || {};
             prependColumns: null,
             height: 'full',  // FIX ME: is this better, or worse?
             heightBuffer: 360,
-            dom: '<"container"<"col-sm-2"l><"col-sm-2 text-center"i><"col-sm-6 text-right"p><"col-sm-2 text-right"<"wide"><"csv"><"columns">>>t'
+            dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"wide"><"csv"><"columns">>>t'
         };
 
         this.options = $.extend({}, defaults, options);
@@ -183,8 +183,8 @@ var SDBM = SDBM || {};
             //$('.search_results').toggleClass('full-width');
         });
         $('.csv').replaceWith('<a id="export-csv" class="btn btn-default btn-table-tool" title="Export to CSV"><span class="glyphicon glyphicon-floppy-save"></span></a>');
-        $('.columns').replaceWith('<div class="btn-group">' + 
-            '<a class="btn btn-default btn-table-tool dropdown-toggle" title="Show/Hide Columns" data-toggle="dropdown"><span class="glyphicon glyphicon-edit"></span></a>' +
+        $('.columns').replaceWith('<div class="btn-group btn-table-tool">' + 
+            '<a class="btn btn-default dropdown-toggle" title="Show/Hide Columns" data-toggle="dropdown"><span class="glyphicon glyphicon-edit"></span></a>' +
             '<div id="column-control" class="dropdown-menu list-group">' +
             '</div>' +
             '</div>'

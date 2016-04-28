@@ -106,13 +106,30 @@ h1 { font-size: 30px; margin-top: 0; }
     background: transparent;
 }
 .btn-table-tool {
-  margin: 0px 4px;
+  margin: 2px 4px;
+  vertical-align: top;
 }
 div.dataTables_paginate ul.pagination {
   margin: 0px 0;
 }
 .dataTables_scrollHeadInner, table#search_results {
     margin: auto;
+}
+div.dataTables_paginate {
+  display: inline-block;
+}
+div.dataTables_info {
+    padding-top: 8px;
+    white-space: nowrap;
+    display: inline-block;
+    padding: 10px;
+    background: #DFF0FF;
+    border-radius: 4px;
+    margin-left: 10px;
+    float: none;
+}
+div#search_results_length {
+    display: inline-block;
 }
 
 .full-width {

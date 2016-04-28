@@ -60,8 +60,8 @@ class SearchableAuthorityController < ManageModelsController
 
   def index
     @search_fields = search_fields
-    @filter_options = ["with", "without", "blank", "not blank"]
-    @field_options = ["contains", "does not contain", "blank", "not blank"]
+    @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
+    @field_options = ["contains", "does not contain", "blank", "not blank", "before", "after"]
     @date_options = ["before", "after", "near", "exact"]
     if params[:widescreen] == 'true'
       render :layout => 'widescreen'
@@ -73,9 +73,7 @@ class SearchableAuthorityController < ManageModelsController
     order = params[:order].present? ? {field: params[:order].split[0], direction: params[:order].split[1]} : {}
     limit = params[:limit].present? ? params[:limit].to_i : 50
     page = params[:limit] ? (params[:offset].to_i / params[:limit].to_i) + 1 : 1
-    s_op = params[:op].present? ? params[:op] : 'and'
-
-    # FIX ME: need some way of having mixed and/any searches over with, fulltext, date, number
+    s_op = params[:op].present? ? params[:op] : 'AND'
 
     options = options_for_search
 
@@ -86,7 +84,7 @@ class SearchableAuthorityController < ManageModelsController
     dates = dates_for_search
 
     s = Sunspot.search model_class do
-      
+
       fulltext_search = lambda { |p, o| 
         if params.present?
           p.each do |field, value|
@@ -101,6 +99,10 @@ class SearchableAuthorityController < ManageModelsController
                   with field, nil
                 elsif op && op == 'not blank'
                   without field, nil
+                elsif op && op == 'before'
+                  with(field).less_than v
+                elsif op && op == 'after'
+                  with(field).greater_than v
                 else
                   fulltext v, :fields => [field]
                end
@@ -124,6 +126,10 @@ class SearchableAuthorityController < ManageModelsController
             elsif op && op == 'not blank'
               without field, nil
             elsif v.blank? # ignore blank
+            elsif op && op == 'less than'
+              with(field).less_than v
+            elsif op && op == 'greater than'
+              with(field).greater_than v
             elsif op && op == 'without'
               without field, v
             elsif v.kind_of?(Array) && v.all? { |v2| v2.blank? } # make sure it's not an array of blanks 
@@ -159,7 +165,7 @@ class SearchableAuthorityController < ManageModelsController
         end
       end
 
-      if s_op == 'any'
+      if s_op == 'OR'
         any do
           fulltext_search.call(params, options)
         end
@@ -169,10 +175,37 @@ class SearchableAuthorityController < ManageModelsController
         end
       end
 
-      paginate :per_page => limit, :page => page
+      adjust_solr_params do |params|
+        new_q = []
+        p_fq = []
+        params[:fq].each do |fq|
+          if not fq.include? "type"
+            new_q.push('_query_:"{!edismax} ' + fq + '"')
+          else
+            p_fq.push(fq)
+          end
+        end
+        params[:fq] = p_fq
+        if params[:q].blank?
+          # nothing here...
+        elsif not params[:q].include? s_op
+          params[:q] = '(_query_:"{!edismax qf=\'' + params[:qf] + '\'}' + params[:q] + '")'
+          params.delete(:qf)
+        end
+        if params[:q].blank?
+          if new_q.length > 0
+            params[:q] = new_q.join(" #{s_op} ")
+          else
+            params[:q] = "*"
+          end
+        else
+          params[:q] = ([params[:q]] + new_q).join(" #{s_op} ")
+        end
+      end
+
       order.present? ? order_by(order[:field], order[:direction]) : order_by(:score, :desc)
     end
-    #s.results
+
     format_search s
   end
 
@@ -187,6 +220,7 @@ class SearchableAuthorityController < ManageModelsController
 
   private
 
+# fulltext filters
   def params_for_search
     permitted = []
     @fields.each do |field|
@@ -197,6 +231,7 @@ class SearchableAuthorityController < ManageModelsController
 #    params.permit(:name, {:name => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
   end
 
+# numerical filters
   def filters_for_search
     permitted = []
     @filters.each do |filter|
@@ -207,6 +242,7 @@ class SearchableAuthorityController < ManageModelsController
 #    params.permit(:id, {:id => []})
   end
 
+# date filters
   def dates_for_search
     permitted = []
     @dates.each do |date|
@@ -216,6 +252,8 @@ class SearchableAuthorityController < ManageModelsController
     params.permit(permitted)
     #params.permit(:created_at, :updated_at, {:created_at => []}, {:updated_at => []})
   end
+
+#boolean/exact string filters
 
   # permit as options fields with the format SEARCHFIELD_option
   def options_for_search

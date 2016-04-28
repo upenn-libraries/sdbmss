@@ -24,7 +24,7 @@
     <div class="field form-group row">
         <%= f.label :name, class: "col-sm-2 control-label" %>
         <div class="col-sm-5">
-            <%= f.text_field :name, :class => 'form-control', :data => { 'ng-model' => 'entity.name', 'ng-init' => "entity.name='#{@model.name}'" } %>
+            <%= f.text_field :name, :class => 'form-control', :data => { 'ng-model' => 'entity.name', 'ng-init' => "entity.name='#{SDBMSS::Util.escape(@model.name)}'" } %>
         </div>
     </div>
     <div class="field form-group row">

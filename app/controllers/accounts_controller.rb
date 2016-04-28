@@ -2,11 +2,21 @@
 # We have an 'Accounts' resource b/c devise uses 'Users' by default
 # and combining all the stuff we want to be able to do with User
 # models into a single controller makes things hairy.
-class AccountsController < ManageModelsController
+class AccountsController < SearchableAuthorityController
 
   include MarkAsReviewed
 
   before_action :require_admin
+
+  def search_fields
+    super
+    @fields.delete('name')
+    @fields = ['username'] + @fields + ['fullname', 'email', 'role']
+    @filters += ['active']
+    @filters.delete('created_by')
+    @filters.delete('updated_by')
+    @fields + @filters + @dates
+  end
 
   def model_class
     User

@@ -31,8 +31,18 @@ class User < ActiveRecord::Base
   # allow solr indexing/searching of usernames
   searchable do
     integer :id
-    string :username
     text :username
+    string :username
+    text :fullname
+    string :fullname
+    text :email
+    string :email
+    text :role
+    string :role
+    boolean :reviewed
+    boolean :active
+    date :created_at
+    date :updated_at
   end
 
   # Connects this user object to Blacklights Bookmarks. 

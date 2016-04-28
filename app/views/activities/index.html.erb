@@ -65,11 +65,11 @@
 <script>
     var page = 1;
     var total_pages = <%= @num_pages %>;
-    if (page >= total_pages) $('#loadMore').addClass('disabled');
+    if (page >= total_pages) $('#loadMore').addClass('disabled').text('All Activity Loaded...');
 
     $('#loadMore').click(function (e) {
         page += 1;
-        if (page >= total_pages) $('#loadMore').addClass('disabled');
+        if (page >= total_pages) $('#loadMore').addClass('disabled').text('All Activity Loaded...');
         query = window.location.href.split("?")[1]
         $.get("?" + query + '&more=true&page=' + page, function (result) {
             var more = $(result);

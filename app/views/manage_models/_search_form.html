@@ -9,7 +9,7 @@
             <div class="panel-body search">
                 <div class="row search-fieldset">
                     <div class="col-sm-12">
-                        <button type='button' class="btn btn-xs btn-warning search-remove form-control inline-left"> <span class="glyphicon glyphicon-remove"></span> </button><%= text_field_tag :search_value, params[:search_value], size: 30, placeholder: "Enter your search term...", class: "form-control inline-middle" %><select class="form-control inline-middle inline-select" name="search_field">
+                        <button type='button' class="btn btn-xs btn-warning search-remove form-control inline-left"> <span class="glyphicon glyphicon-remove"></span> </button><%= text_field_tag :search_value, params[:search_value], size: 26, placeholder: "Enter your search term...", class: "form-control inline-middle" %><select class="form-control inline-middle inline-select" name="search_field">
                         <% Array(@search_fields).each do |field| %>
                             <!-- replace 'at' in 'created at' with 'on' -->
                             <option value="<%= field %>" type="<%= @fields.include?(field) ? 'field' : (@filters.include?(field) ? 'filter' : 'date') %>"><%= field.humanize.gsub(/\sat/, ' on') %></option>
@@ -49,8 +49,8 @@
                     <div class="col-sm-5 text-right">
                         <label for="" class="control-label">Match</label>
                         <select name="op" id="search_op" class="form-control" style="width: 77px; display: inline-block;">
-                            <option value="any">Any</option>
-                            <option value="all">All</option>
+                            <option value="AND">All</option>
+                            <option value="OR">Any</option>
                         </select>
                         <button id="search_submit" type="submit" class="btn btn-primary">Search</button>
                     </div>

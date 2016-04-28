@@ -14,7 +14,7 @@ class NamesController < SearchableAuthorityController
   def search_fields
     super
     @fields += ["comment"]
-    @filters += ["viaf_id"]
+    @filters += ["viaf_id", "authors_count", "artists_count", "scribes_count", "provenance_count", "source_agents_count"]
     @fields + @filters + @dates
 #    @fields = ["name", "created_by", "updated_by"]
 #    @filters = ["id", "viaf_id"]

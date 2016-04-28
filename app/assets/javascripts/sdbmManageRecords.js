@@ -193,10 +193,7 @@ var SDBM = SDBM || {};
             orderStr += columns[item.column].dbSortField + " " + item.dir;
         });
 
-// FIX ME: add ability to have multiple 'rows' of search;
-
         var search_query = {
-            //unreviewed_only: this.getUnreviewedOnly(),
             reviewed: this.getUnreviewedOnly(),
             created_by_user: this.options.showOnlyRecordsCreatedByUser,
             offset: dt_params.start,
@@ -224,6 +221,7 @@ var SDBM = SDBM || {};
                 search_query[option_string] = [option];
             }
         }
+        this.search_query = search_query;
         return search_query;
     };
 
@@ -420,14 +418,32 @@ var SDBM = SDBM || {};
     // controller
     SDBM.ManageRecords.prototype.exportCSV = function() {
         var manageRecords = this;
-        var qs = new URI().query(true);
+        //var qs = new URI().query(true);
+        var qs = manageRecords.search_query;
 
+        // since this data is sent via URI, I have to reformat when there is a list so {name: ["x", "y"]} becomes {name[]: ["x", "y"]} 
+        for (var field in qs) {
+            if (Array.isArray(qs[field])) {
+                qs[field + "[]"] = qs[field]
+                delete qs[field]
+            }
+        }
+        /*$.ajax({
+            url: manageRecords.getSearchURL('csv'),
+            data: qs
+        }).done( function (result) {
+            console.log('done', result);
+            window.location = 'data:text/plain;charset=utf-8,' + encodeURIComponent(result);
+        })*/
+        var url = URI(manageRecords.getSearchURL('csv')).search(qs);
+        window.location = url;
+/*
         var url = URI(manageRecords.getSearchURL('csv')).search({
             term: manageRecords.getSearchValue(),
             unreviewed_only: manageRecords.getUnreviewedOnly()
         });
 
-        window.location = url;
+        window.location = url;*/
     };
     
 }());

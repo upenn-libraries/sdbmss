@@ -84,6 +84,7 @@
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.StandardFilterFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.EdgeNGramFilterFactory" minGramSize="2" maxGramSize="15" side="front"/>
         <filter class="solr.ASCIIFoldingFilterFactory" /> 
         <filter class="solr.SnowballPorterFilterFactory" language="English" />
       </analyzer>

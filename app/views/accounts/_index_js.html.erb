@@ -40,8 +40,8 @@
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a> '
-                            + '&middot; <a class="delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
+                    var str = '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a> '
+                            + '<span class="btn btn-xs btn-danger disable-link" href="/' + manageRecords.options.resourceName + '/' + data + '">Disable</span>';
                     return str;
                 }
             },
@@ -49,7 +49,11 @@
                 sdbmssMinWidth: "50px",
                 sdbmssMaxWidth: "50px",
                 title: 'ID',
-                dbSortField: 'id'
+                dbSortField: 'id',
+                render: function (data) {
+                    // fix me: should this just go to the user profile?
+                    return '<a href="/accounts/' + data + '/edit">' + data + '</a>';    
+                } 
             },
             {
                 sdbmssMinWidth: "150px",
@@ -83,13 +87,13 @@
                 sdbmssMaxWidth: "100px",
                 title: 'Reviewed',
                 dbSortField: 'reviewed'
-            },
+            }/*,
             {
                 sdbmssMinWidth: "100px",
                 sdbmssMaxWidth: "100px",
                 title: 'Created By',
                 dbSortField: 'created_by_id'
-            }
+            }*/
         ];
      };
 

@@ -171,6 +171,15 @@ module SDBMSS
         d
       end
 
+      #escapes single and double quotes from string (mostly for angular)
+      def escape(string)
+        if string.present?
+          string.gsub(/\"/, "\\\"").gsub(/\'/, '\\\\\'')
+        else
+          nil
+        end
+      end
+
       # takes a date string as YYYY, YYYY-MM or YYYY-MM-DD and returns
       # it as YYYYMMDD, using 0s for MM and DD if appropriate.
       def normalize_fuzzy_date(date_str)
