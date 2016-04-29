@@ -209,7 +209,7 @@ class Source < ActiveRecord::Base
 
     title_str = title || "(No title)"
 
-    [title_str, agent_str, date_str].select { |x| x.to_s.length > 0 }.join(" - ")
+    [date_str, agent_str, title_str].select { |x| x.to_s.length > 0 }.join(" - ")
   end
 
   def entries_to_index_on_update

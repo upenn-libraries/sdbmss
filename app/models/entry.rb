@@ -442,6 +442,12 @@ class Entry < ActiveRecord::Base
     define_field(:string, :source_display, :stored => true) do
       source.display_value
     end
+    define_field(:text, :source_agent, :stored => true) do
+      (source.source_agents.map { |s| s.agent.name }).join("; ")
+    end
+    define_field(:string, :source_agent_sort, :stored => true) do
+      (source.source_agents.map { |s| s.agent.name }).join("; ")
+    end
     define_field(:string, :source_type, :stored => true) do
       source.source_type.display_name
     end

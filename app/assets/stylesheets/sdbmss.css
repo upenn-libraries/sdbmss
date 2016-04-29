@@ -106,7 +106,7 @@ h1 { font-size: 30px; margin-top: 0; }
     background: transparent;
 }
 .btn-table-tool {
-  margin: 2px 4px;
+  margin: 2px 0px 0px 8px;
   vertical-align: top;
 }
 div.dataTables_paginate ul.pagination {

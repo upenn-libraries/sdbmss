@@ -3,6 +3,7 @@
 # Blacklight
 
 module SDBMSS::Blacklight
+  #mixin for 'bookmark all' widget
 
   # These hardcoded bounds MUST correspond to Solr field definition or
   # things might break or behave weirdly.

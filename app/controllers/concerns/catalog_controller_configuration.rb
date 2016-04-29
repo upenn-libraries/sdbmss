@@ -155,6 +155,16 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'source' }
       end
 
+      config.add_search_field('source_agent', label: "Source Agent") do |field|
+        field.include_in_simple_select = false
+        field.solr_local_parameters = { :qf => 'source_agent' }
+      end
+
+      config.add_search_field('source_agent_sort', label: "Source Agent") do |field|
+        field.include_in_simple_select = false
+        field.solr_local_parameters = { :qf => 'source_agent_sort' }
+      end
+
       config.add_search_field('institution', label: "Institution") do |field|
         field.include_in_simple_select = false
         field.solr_local_parameters = { :qf => 'institution_search' }
@@ -352,10 +362,14 @@ module CatalogControllerConfiguration
 
       config.add_sort_field 'entry_id asc', :label => 'ID'
       config.add_sort_field 'entry_id desc', :label => 'ID (desc)', default: true
-      config.add_sort_field 'title_flat asc', :label => 'Title'
-      config.add_sort_field 'title_flat desc', :label => 'Title (desc)'
-      config.add_sort_field 'manuscript_date_flat asc', :label => 'Manuscript Date'
-      config.add_sort_field 'manuscript_date_flat desc', :label => 'Manuscript Date (desc)'
+      config.add_sort_field 'source_date asc', :label => 'Source Date'
+      config.add_sort_field 'source_date desc', :label => 'Source Date (desc)'
+      config.add_sort_field 'source_agent_sort asc', :label => 'Source Agent'
+      config.add_sort_field 'source_agent_sort desc', :label => 'Source Agent (desc)'
+#      config.add_sort_field 'title_flat asc', :label => 'Title'
+#      config.add_sort_field 'title_flat desc', :label => 'Title (desc)'
+#      config.add_sort_field 'manuscript_date_flat asc', :label => 'Manuscript Date'
+#      config.add_sort_field 'manuscript_date_flat desc', :label => 'Manuscript Date (desc)'
 
       # config.add_sort_field 'score desc, pub_date_sort desc, title_sort asc', :label => 'relevance'
       # config.add_sort_field 'pub_date_sort desc, title_sort asc', :label => 'year'
@@ -369,6 +383,8 @@ module CatalogControllerConfiguration
       # this re-adds the search history, already included by the
       # default config, so we can specify the 'if' part
       config.add_nav_action(:search_history, partial: 'blacklight/nav/search_history', if: :render_search_history_control?)
+
+      config.add_results_collection_tool(:bookmark_all)
 
       config.add_show_tools_partial(:edit_entry, partial: 'nav/edit_entry', if: :show_edit_entry_link?)
       config.add_show_tools_partial(:linking_tool_by_entry, partial: 'nav/linking_tool_by_entry', if: :show_linking_tool_by_entry?)

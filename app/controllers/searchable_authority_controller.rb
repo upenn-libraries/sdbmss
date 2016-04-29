@@ -70,6 +70,7 @@ class SearchableAuthorityController < ManageModelsController
 
   def search
 
+    format = params[:format].present? ? params[:format] : 'none'
     order = params[:order].present? ? {field: params[:order].split[0], direction: params[:order].split[1]} : {}
     limit = params[:limit].present? ? params[:limit].to_i : 50
     page = params[:limit] ? (params[:offset].to_i / params[:limit].to_i) + 1 : 1
@@ -203,6 +204,11 @@ class SearchableAuthorityController < ManageModelsController
         end
       end
 
+      if format != 'csv'
+        paginate :per_page => limit, :page => page
+      else
+        paginate :page => 1, :per_page => model_class.all.count
+      end
       order.present? ? order_by(order[:field], order[:direction]) : order_by(:score, :desc)
     end
 

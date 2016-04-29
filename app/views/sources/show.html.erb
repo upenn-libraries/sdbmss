@@ -15,6 +15,11 @@
                     <li class="edit_source">
                         <a href="<%= new_entry_path(source_id: @source) %>">Add entry for this Source</a>
                     </li>
+                        <% if can?(:edit, @source) %> 
+                            <li>
+                                <a href="<%= merge_source_path(source_id: @source) %>">Merge this source</a>
+                            </li>
+                        <% end %>
                     <% end %>
                 </ul>
             </div>

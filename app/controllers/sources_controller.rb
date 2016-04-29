@@ -119,6 +119,10 @@ class SourcesController < SearchableAuthorityController
   end
 
   def edit
+    if @source.source_type_id == 8
+      flash[:error] = "This source is a personal 'Provenance Observation' and cannot be edited."
+      render "show"
+    end
   end
 
   def update
