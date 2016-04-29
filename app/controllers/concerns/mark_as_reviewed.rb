@@ -16,8 +16,10 @@ module MarkAsReviewed
     if ids.present?
       ids = ids.map(&:to_i)
       model_class.where('id IN (?)', ids).each do |model|
-        model.update(reviewed: true, reviewed_by_id: current_user.id, reviewed_at: DateTime.now)
-        model.delay.index
+        ActiveRecord::Base.transaction do
+          model.update(reviewed: true, reviewed_by_id: current_user.id, reviewed_at: DateTime.now)
+          model.delay.index
+        end
       end
     end
     respond_to do |format|
