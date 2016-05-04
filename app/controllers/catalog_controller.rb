@@ -25,6 +25,12 @@ class CatalogController < ApplicationController
     end
   end
 
+  def index
+    super
+    @my_search = current_search_session
+#    puts "********* #{current_search_session.inspect} *************"
+  end
+
   # This override sets username field when devise creates the guest
   # user account. This gets called by BookmarksController (which
   # inherits from CatalogController) and possibly other code.

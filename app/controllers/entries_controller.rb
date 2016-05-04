@@ -21,7 +21,6 @@ class EntriesController < ManageModelsController
   # the blacklight_advanced_search gem includes this automatically in
   # CatalogController but not here, so we include it explicitly
   include BlacklightAdvancedSearch::Controller
-
   
   include CalculateBounds
 
@@ -38,6 +37,11 @@ class EntriesController < ManageModelsController
   def model_class
     Entry
   end
+
+#  def index
+#    @bookmarks = current_user.bookmarks
+#    super
+#  end
 
   # JSON data structure optimized for editing page. This weird action
   # exists because we want CatalogController to handle #show, but we

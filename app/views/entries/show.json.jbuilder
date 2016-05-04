@@ -158,3 +158,7 @@ if @entry.entry_comments.present?
     end
   end
 end
+
+if @bookmarks
+  json.bookmarks = @bookmarks
+end

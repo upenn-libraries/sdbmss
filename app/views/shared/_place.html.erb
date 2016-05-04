@@ -1,0 +1,5 @@
+<% if entry_place.place %>
+<%= link_to entry_place.place.name, place_path(entry_place.place) -%>
+<% else %>
+<%= entry_place %>
+<% end %>

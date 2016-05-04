@@ -30,6 +30,10 @@ body {
     font-weight: normal;
 }
 
+.filterName {
+  font-weight: bold;
+}
+
 /* on Entry view page, move the content block to the right of the sidebar */
 .blacklight-catalog-show #content { float: right; }
 
