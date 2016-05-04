@@ -33,7 +33,7 @@
                             <%= text_field 'users[username]', "", class: 'form-control', value: (params[:users][:username] if params[:users] ) %>            
                         </div>
                         <div class="col-sm-3">
-                            <%= select_tag :event, options_for_select(['', 'update', 'create', 'destroy'], params[:event]), class: 'form-control', placeholder: 'Event' %>
+                            <%= select_tag :event, options_for_select([['', ''], ['edit', 'update'], ['add', 'create'], ['delete', 'destroy']], params[:event]), class: 'form-control', placeholder: 'Event' %>
                         </div>
                         <div class="col-sm-3">
                             <%= select_tag :item_type, options_for_select(['', 'Entry', 'Name', 'Source', 'Language', 'Place', 'Manuscript'], params[:item_type]), class: 'form-control', placeholder: 'Record Type'%>

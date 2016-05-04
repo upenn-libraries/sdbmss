@@ -94,9 +94,7 @@
                              jumpToEntry.entry_id = entry_id;
                              jumpToEntry.query = '[' + data.lower_bound + ' TO ' + data.upper_bound + ']';
 
-                             //var params = manageEntries.translateJumpToParams(sdbmTable, dt_params);
-                             
-                            var params = manageEntries.createSearchParams(dt_params);
+                             var params = manageEntries.translateJumpToParams(sdbmTable, dt_params);
                              sdbmTable.searchAndUpdateTable(params, callback, {
                                  'complete': function () {
                                      $("#spinner").hide();
@@ -108,8 +106,7 @@
                          }
                      });
                  } else {
-                    var params = manageEntries.createSearchParams(dt_params);
-                     //var params = manageEntries.translateSearchParams(sdbmTable, dt_params);
+                     var params = manageEntries.translateSearchParams(sdbmTable, dt_params);
                      sdbmTable.searchAndUpdateTable(params, callback, {
                          complete: function () {
                              $("#spinner").hide();
@@ -161,7 +158,6 @@
                 }
              }
          });
-
         // prevent 'approved = *' from returning ALL entries for an 'OR' search
         // params["approved"] = showUnapprovedOnly() ? "false" : "*";
          if (showUnapprovedOnly()) {
@@ -216,45 +212,6 @@
          return url;
      };
 
-    ManageEntries.prototype.createSearchParams = function (dt_params) {
-        var columns = this.getColumns();
-        var orderStr = "";
-        dt_params.order.forEach(function(item) {
-            orderStr += columns[item.column].dbSortField + " " + item.dir;
-        });
-
-        var search_query = {
-            reviewed: this.getUnreviewedOnly(),
-            created_by_user: this.options.showOnlyRecordsCreatedByUser,
-            offset: dt_params.start,
-            limit: dt_params.length,
-            order: orderStr,
-            op: this.getOp()
-        };
-
-        for (var i = 0; i < $(".search-fieldset").length; i++) { 
-            var search_row = $(".search-fieldset").eq(i);
-            var term = search_row.find("input[name=search_value]").val();
-            var field = search_row.find("select[name=search_field]").val();
-            var option = search_row.find("select[name=search_option]").val();
-
-            if ( search_query[field] ) {
-                search_query[field].push(term);
-            } else {
-                search_query[field] = [term];
-            }
-
-            var option_string = field + "_option";
-            if (search_query[option_string]) {
-                search_query[option_string].push(option);
-            } else {
-                search_query[option_string] = [option];
-            }
-        }
-        this.search_query = search_query;
-        return search_query;
-    };
-
      ManageEntries.prototype.exportCSV = function () {
          var params = manageEntries.getSearchFields();
          params["search_field"] = "advanced";
@@ -305,6 +262,11 @@
          manageEntries.doSearch(true);
          // prevent form submit handler from firing
          return false;
+     });
+
+     $(".search-form").submit(function (e) {
+        e.preventDefault();
+        manageEntries.doSearch(false);
      });
 
      $(document).on("click", ".entry-delete-link", function (event) {

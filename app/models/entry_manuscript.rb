@@ -35,6 +35,8 @@ class EntryManuscript < ActiveRecord::Base
 
   searchable do
     integer :id
+    integer :manuscript_id
+    integer :entry_id
     join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
     join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
     string :created_by

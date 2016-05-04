@@ -9,12 +9,13 @@
             <div class="panel-body search">
                 <div class="row search-fieldset">
                     <div class="col-sm-12">
-                        <button type='button' class="btn btn-xs btn-warning search-remove form-control inline-left"> <span class="glyphicon glyphicon-remove"></span> </button><%= text_field_tag :search_value, params[:search_value], size: 26, placeholder: "Enter your search term...", class: "form-control inline-middle" %><select class="form-control inline-middle inline-select" name="search_field">
-                        <% Array(@search_fields).each do |field| %>
-                            <!-- replace 'at' in 'created at' with 'on' -->
-                            <option value="<%= field %>" type="<%= @fields.include?(field) ? 'field' : (@filters.include?(field) ? 'filter' : 'date') %>"><%= field.humanize.gsub(/\sat/, ' on') %></option>
-                        <% end -%>
-                        </select><select class="form-control inline-right inline-select" name="search_option">
+                        <button type='button' class="btn btn-xs btn-warning search-remove form-control inline-left"> <span class="glyphicon glyphicon-remove"></span> </button><%= text_field_tag :search_value, params[:search_value], size: 26, placeholder: "Enter your search term...", class: "form-control inline-middle" %><select class="form-control inline-right inline-select" name="search_field">
+                        <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
+                            <option value="<%= key %>"><%= field_def.label %></option>
+                        <%- end -%>
+                        </select>
+                        <!--
+                        <select class="form-control inline-right inline-select" name="search_option">
                         <% Array(@filter_options).each do |option| %>
                             <option value="<%= option %>" class="option filter_option">
                                 <% if option == 'with' %>
@@ -32,7 +33,8 @@
                         <% Array(@date_options).each do |option| %>
                             <option value="<%= option %>" class="option date_option"><%= option.humanize %></option>
                         <% end %>
-                        </select>
+                        </select>-->
+                        <!-- FIX ME: add 'options' to the search as well? -->
                     </div>
                 </div>
             </div>
@@ -59,19 +61,18 @@
         </div>
     </div>
     <div class="col-sm-3">
+        <% if can? :manage, model_class %>
         <div class="well">
                 <div class="row form-group">
                     <div class="col-sm-12">
-                        <% if can? :manage, model_class %>
                             <label class="checkbox-inline">
-                                <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
+                                <%= check_box_tag :unapproved_only, 1, params[:unapproved_only] %> Limit to records needing review
                             </label>
-                        <% end %>
                     </div>
                 </div>
                 <div class="row form-group">
                     <div class="col-sm-12 review-control">
-                        <a class="btn btn-primary btn-sm" id="mark-as-reviewed" class="btn btn-primary">Mark checked records as reviewed</a>
+                        <a class="btn btn-primary btn-sm" id="mark-as-approved" class="btn btn-primary">Mark checked records as approved</a>
                     </div>
                 </div>
                 <div class="row form-group">
@@ -81,6 +82,7 @@
                 </div>
             </div>
         </div>
+        <% end %>
     </div>
 </div>
 <% end %>

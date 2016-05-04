@@ -1,10 +1,12 @@
 <% @page_title = "Dashboard - " + application_name %>
 
-<h1>Welcome, <%= current_user.username %>!</h1>
-
 <% is_contributor = current_user.role == 'contributor' %>
-
 <% possessive = is_contributor ? "Your" : "" %>
+
+<h1>
+    Welcome, <%= link_to current_user.username, profile_path(current_user.username) %>!
+    <small class='text-info'>(<%= current_user.role %>)</small>
+</h1>
 
 <div class="row">
     <div class="col-sm-3">
@@ -63,7 +65,7 @@
                 <p><a href="/static/docs/sdbm_data_definitions.pdf">Data Definitions (PDF)</a></p>
                 <p><a href="/static/docs/sdbm_user_manual.pdf">User Manual (PDF)</a></p>
                 <p><a href="https://www.youtube.com/channel/UCsVZp-1724xPIW8MwIdKoyg">Video Tutorials</a></p>
-                <p>Questions or comments, email us at <a href="mailto:sdbm@upenn.edu">sdbm@upenn.edu</a></p>
+                <p>Questions or comments, email us at <a href="mailto:sdbm@pobox.upenn.edu">sdbm@upenn.edu</a></p>
             </div>
         </div>
     </div>
@@ -96,7 +98,7 @@
                     <% if num_entries > 5 %>
                     <tr class="row">
                         <td class="col-sm-11">
-                            <a href="<%= entries_path %>">View all...</a>
+                            <a href="<%= entries_path %>">View more...</a>
                         </td>
                         <td class="col-sm-1"></td>
                     </tr>
@@ -135,7 +137,7 @@
         <% comments = Comment.with_entries_belonging_to(current_user).limit(5) %>
         <% if comments.count > 0 %>
         <div class="panel panel-default">
-            <div class="panel-heading">Recent Comments on Entries You've Contributed</div>
+            <div class="panel-heading">Comments on Your Activity</div><!-- fix me: rename... maybe? -->
             <div class="panel-body">
                   <table class="table">
                       <% comments.each do |comment| %>
