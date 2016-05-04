@@ -6,7 +6,7 @@
 # Note: CSV Export from Manage Entries page makes use of Blacklight
 # search; see CatalogControllerConfiguration to see how search results
 # are rendered in CSV format.
-class EntriesController < ManageModelsController
+class EntriesController < SearchableAuthorityController
 
   # include Blacklight modules so that we get the same search
   # functionality as in CatalogController, except that in this
@@ -37,6 +37,18 @@ class EntriesController < ManageModelsController
   def model_class
     Entry
   end
+
+  def index
+    @search_fields = search_fields
+    @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
+    @field_options = ["contains", "does not contain", "blank", "not blank", "before", "after"]
+    @date_options = ["before", "after", "near", "exact"]
+    if params[:widescreen] == 'true'
+      render :layout => 'widescreen'
+    end
+    super
+  end
+
 
 #  def index
 #    @bookmarks = current_user.bookmarks

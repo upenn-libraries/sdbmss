@@ -22,4 +22,8 @@ class BookmarksController < CatalogController
     end
   end
 
+  def reload
+    render partial: 'shared/my_bookmarks'
+  end
+
 end

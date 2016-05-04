@@ -21,6 +21,13 @@
               t.find('.submit').val('Remove Bookmark').addClass('bookmark_remove').removeClass('bookmark_add');
               t.find('input[name=_method]').val('delete');
             }
+            $.get('/bookmarks/reload', function () { console.log('hi'); }).done(
+              function (results) {
+                var results = $(results).find('#my_bookmarks').addClass('in');
+                $('#my_bookmarks').replaceWith(results);
+              }).error( function (results) {
+                console.log('error reloading bookmarks', results);
+              });
           });
           submit.fail( function (results) {
             console.log("bookmark_toggle (error)", results);

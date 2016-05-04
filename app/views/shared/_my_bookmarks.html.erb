@@ -10,7 +10,7 @@
   <div class="panel-collapse collapse" id="my_bookmarks">
     <ul class="list-group">
       <% if @bookmarks.count <= 0 %>
-        <li class="list-group-item">You have nothing bookmarked yet!</li>
+        <li class="list-group-item">You have nothing bookmarked.</li>
       <% end %>
       <% @bookmarks.each do |b| %>
         <% e = Entry.find(b.document_id) %>

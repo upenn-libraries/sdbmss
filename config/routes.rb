@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   resources :agents, only: [:show]
 
   get '/bookmarks/export', to: 'bookmarks#export', as: 'export_bookmarks'
+  get '/bookmarks/reload', to: 'bookmarks#reload', as: 'reload_bookmarks'
 
   # it would be cleaner to have :entries here and merge
   # CatalogController into EntriesController, but that doesn't work,

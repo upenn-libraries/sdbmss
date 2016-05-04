@@ -1,86 +1,86 @@
-<form class="form-horizontal search-form">
-    <div class="row form-group search-fieldset original">
-        <div class="col-sm-1">
-            <label class="control-label">Search</label>
-        </div>
-        <div class="col-sm-4">
-            <input class="form-control" name="search_value" value="" size="70" type="text">
-        </div>
-        <div class="col-sm-2">
-            <select class="form-control" name="search_field">
-            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
-            <option value="<%= key %>"><%= field_def.label %></option>
-            <%- end -%>
-            </select>
-        </div>
-        <div class="col-sm-4">
-            <div>
-                Match <select class="form-control" style="width: 100px; display: inline" name="op"><option value="AND">all</option><option value="OR">any</option></select>
-                of these fields
+<%= form_tag(request.path, method: :get, class: "form-inline form-horizontal search-form sdbmss-form") do %>
+<div class="row">
+    <div class="col-sm-7">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="h4">Search
+                </span>
+            </div>
+            <div class="panel-body search">
+                <div class="row search-fieldset">
+                    <div class="col-sm-12">
+                        <button type='button' class="btn btn-xs btn-warning search-remove form-control inline-left"> <span class="glyphicon glyphicon-remove"></span> </button><%= text_field_tag :search_value, params[:search_value], size: 26, placeholder: "Enter your search term...", class: "form-control inline-middle" %><select class="form-control inline-middle inline-select" name="search_field">
+                        <% Array(@search_fields).each do |field| %>
+                            <!-- replace 'at' in 'created at' with 'on' -->
+                            <option value="<%= field %>" type="<%= @fields.include?(field) ? 'field' : (@filters.include?(field) ? 'filter' : 'date') %>"><%= field.humanize.gsub(/\sat/, ' on') %></option>
+                        <% end -%>
+                        </select><select class="form-control inline-right inline-select" name="search_option">
+                        <% Array(@filter_options).each do |option| %>
+                            <option value="<%= option %>" class="option filter_option">
+                                <% if option == 'with' %>
+                                    <%= "Equals" %>
+                                <% elsif option == 'without' %>
+                                    <%= "Does Not Equal" %>
+                                <% else %>
+                                    <%= option.humanize %>
+                                <% end %>
+                            </option>
+                        <% end %>
+                        <% Array(@field_options).each do |option| %>
+                            <option value="<%= option %>" class="option field_option"><%= option.humanize %></option>
+                        <% end %>
+                        <% Array(@date_options).each do |option| %>
+                            <option value="<%= option %>" class="option date_option"><%= option.humanize %></option>
+                        <% end %>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <button type='button' class="btn btn-success" id="addSearch">
+                            <span class="glyphicon glyphicon-plus"></span> add term
+                        </button>
+                    </div>
+                    <div class="col-sm-4">
+                        <span id="spinner" style='display: none;'><img alt="working..." src="<%= asset_path "spinner.gif" %>"/> loading search results...</span>
+                    </div>
+                    <div class="col-sm-5 text-right">
+                        <label for="" class="control-label">Match</label>
+                        <select name="op" id="search_op" class="form-control" style="width: 77px; display: inline-block;">
+                            <option value="AND">All</option>
+                            <option value="OR">Any</option>
+                        </select>
+                        <button id="search_submit" type="submit" class="btn btn-primary">Search</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="row form-group search-fieldset">
-        <div class="col-sm-4 col-sm-offset-1">
-            <input class="form-control" name="search_value" value="" size="70" type="text">
-        </div>
-        <div class="col-sm-2">
-            <select class="form-control" name="search_field">
-            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
-            <option value="<%= key %>"><%= field_def.label %></option>
-            <%- end -%>
-            </select>
-        </div>
-        <div class="col-sm-2">
-            <label class="checkbox-inline">
-                <input id="unapproved_only" name="unapproved_only" type="checkbox" value="1" />Limit to records needing approval
-            </label>
-        </div>
-        <div class="col-sm-3">
-            <ul class="list-group">
-                <li class="list-group-item list-group-item-warning text-center"><span class="disabled">(unapproved records shown in yellow)</span></li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="row form-group search-fieldset">
-        <div class="col-sm-4 col-sm-offset-1">
-            <input class="form-control" name="search_value" value="" size="70" type="text">
-        </div>
-        <div class="col-sm-2">
-            <select class="form-control" name="search_field">
-            <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
-            <option value="<%= key %>"><%= field_def.label %></option>
-            <%- end -%>
-            </select>
-        </div>
-        <div class="col-sm-1">
-            <button id="search_submit" class="btn btn-primary">Search</button>
-        </div>
-        <div class="col-sm-1">
-            <div>
-                <img id="spinner" alt="working..." style="display: none;" src="<%= asset_path "spinner.gif" %>"/>
+    <div class="col-sm-3">
+        <div class="well">
+                <div class="row form-group">
+                    <div class="col-sm-12">
+                        <% if can? :manage, model_class %>
+                            <label class="checkbox-inline">
+                                <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
+                            </label>
+                        <% end %>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-12 review-control">
+                        <a class="btn btn-primary btn-sm" id="mark-as-reviewed" class="btn btn-primary">Mark checked records as reviewed</a>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-12">
+                      <li class="list-group-item list-group-item-warning text-center"><span class="disabled">(unapproved records shown in yellow)</span></li>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-sm-1 text-right">
-            <label class="control-label">Jump to ID</label>
-        </div>
-        <div class="col-sm-1">
-            <input class="form-control" type="text" id="jump_to"/>
-        </div>
-        <div class="col-sm-1">
-            <button id="jump_submit" class="btn btn-primary">Go</button>
-        </div>
     </div>
-
-    <div class="row form-group search-fieldset approve-control" style="display: none;">
-        <div class="col-sm-2 col-sm-offset-1">
-            <a href="#" id="select-all">Select All</a> / <a href="#" id="deselect-all">Deselect All</a>
-        </div>
-        <div class="col-sm-2 col-sm-offset-1">
-            <a class="btn btn-primary btn-xs" id="mark-as-approved" class="btn btn-primary">Mark checked records as approved</a>
-        </div>
-    </div>
-
-</form>
+</div>
+<% end %>
