@@ -12,6 +12,7 @@ module LanguagesAndPlaces
   def search_result_format(obj)
     {
       id: obj.id,
+      public_id: obj.public_id,
       name: obj.name,
       entries_count: obj.entries_count,
       reviewed: obj.reviewed,

@@ -213,6 +213,9 @@ label.col-sm-2-and-half {
                   <div class="col-sm-5">
                       <div class="input-group">
                           <input id="sale_selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                          <div class="input-group-addon clickable">
+                            <a class="more-info glyphicon" href="/names/{{ entry.sale.selling_agent.agent.id }}" target="_blank" ng-class="entry.sale.selling_agent.agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                          </div>
                           <div id="sale_selling_agent_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.selling_agent"><span class="glyphicon"></span></div>
                       </div>
                   </div>
@@ -220,6 +223,9 @@ label.col-sm-2-and-half {
                   <div class="col-sm-4">
                       <div class="input-group">
                           <input id="sale_seller" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                          <div class="input-group-addon clickable">
+                            <a class="more-info glyphicon" href="/names/{{ entry.sale.seller_or_holder.agent.id }}" target="_blank" ng-class="entry.sale.seller_or_holder.agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                          </div>
                           <div id="sale_seller_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.seller_or_holder"><span class="glyphicon"></span></div>
                       </div>
                   </div>
@@ -230,6 +236,9 @@ label.col-sm-2-and-half {
                   <div class="col-sm-5">
                       <div class="input-group">
                           <input id="sale_buyer" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                          <div class="input-group-addon clickable">
+                            <a class="more-info glyphicon" href="/names/{{ entry.sale.buyer.agent.id }}" target="_blank" ng-class="entry.sale.buyer.agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                          </div>                          
                           <div id="sale_buyer_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.buyer"><span class="glyphicon"></span></div>
                       </div>
                   </div>
@@ -365,6 +374,9 @@ label.col-sm-2-and-half {
           <div class="col-sm-9">
              <div class="input-group">
                 <input id="author_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_author" }' sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                <div class="input-group-addon clickable">
+                  <a class="more-info glyphicon" href="/names/{{ entry_author.author.id }}" target="_blank" ng-class="entry_author.author && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                </div>
                 <div id="author_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_author"><span class="glyphicon"></span></div>
               </div>
           </div>
@@ -463,6 +475,9 @@ label.col-sm-2-and-half {
           <div class="col-sm-9">
             <div class="input-group">
                 <input id="artist_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_artist" }' sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                <div class="input-group-addon clickable">
+                  <a class="more-info glyphicon" href="/names/{{ entry_artist.artist.id }}" target="_blank" ng-class="entry_artist.artist && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                </div>
                 <div id="artist_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></div>
             </div>
           </div>
@@ -514,6 +529,9 @@ label.col-sm-2-and-half {
           <div class="col-sm-9">
               <div class="input-group">
                   <input id="scribe_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_scribe" }' sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                  <div class="input-group-addon clickable">
+                  <a class="more-info glyphicon" href="/names/{{ entry_scribe.scribe.id }}" target="_blank" ng-class="entry_scribe.scribe && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                  </div>
                   <div id="scribe_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
               </div>
           </div>
@@ -547,6 +565,9 @@ label.col-sm-2-and-half {
           <div class="col-sm-9">
             <div class="input-group">
                 <input id="language_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
+                <div class="input-group-addon clickable">
+                  <a class="more-info glyphicon" href="/languages/{{ entry_language.language.id }}" target="_blank" ng-class="entry_language.language && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                </div>
                 <div id="language_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_language"><span class="glyphicon"></span></div>
             </div>
           </div>
@@ -621,6 +642,9 @@ label.col-sm-2-and-half {
           <div class="col-sm-9">
             <div class="input-group">
                 <input id="place_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
+                <div class="input-group-addon clickable">
+                  <a class="more-info glyphicon" href="/places/{{ entry_place.place.id }}" target="_blank" ng-class="entry_place.place && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                </div>
                 <div id="place_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_place"><span class="glyphicon"></span></div>
             </div>
           </div>
@@ -812,6 +836,9 @@ label.col-sm-2-and-half {
                 <div class="col-sm-7">
                   <div class="input-group">
                       <input id="provenance_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.provenance_agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                      <div class="input-group-addon clickable">
+                        <a class="more-info glyphicon" href="/names/{{ prov.provenance_agent.id }}" target="_blank" ng-class="prov.provenance_agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                      </div>
                       <div id="provenance_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov"><span class="glyphicon"></span></div>
                   </div>
                 </div>

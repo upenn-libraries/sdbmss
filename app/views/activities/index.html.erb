@@ -79,6 +79,13 @@
             $('html, body').animate({
                 scrollTop: $("#loadMore").offset().top
             }, 500);
-        })
+        });
+        $('.activity-list').click(expandActivity);
     });
+
+    $('.activity-list').click(expandActivity);
+
+    function expandActivity (e) {
+        $(this).toggleClass('list-inline').toggleClass('no-overflow');
+    }
 </script>

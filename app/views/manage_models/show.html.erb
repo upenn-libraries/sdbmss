@@ -1,10 +1,58 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+  <div class="col-sm-3">
+      <div class="panel panel-default show-tools">
+          <div class="panel-heading">
+              Tools
+          </div>
+          <div class="panel-body">
+              <ul class="nav">
+                  <% if user_signed_in? %>
+                      <% if can?(:edit, @model) %>
+                        <li class="link"><%= link_to 'Edit', edit_model_path(@model) %></li>
+                      <% end %>
+                      <li class="link"><%= link_to 'Change History', polymorphic_path([:history, @model]) %></li>
+                      <li class="link"><%= link_to 'Return to Listing', models_path %></li>
+                  <% end %>
+              </ul>
+          </div>
+      </div>
+  </div>
+  <div class="col-sm-9">
+    <p id="notice"><%= notice %></p>
+      <div class="row">
+        <div class="col-sm-12">
+            <h1><%= @model.public_id || @model.id %></h1>
+        </div>
+      </div>
 
-<p>
-  <strong>Name:</strong>
-  <%= @model.name %>
-</p>
+      <% if !@model.reviewed %>
+      <div class="row">
+          <div class="col-sm-12">
+              NOTE: This name record was recently created and has not yet been reviewed.
+          </div>
+      </div>
+      <% end %>
 
-<%= link_to 'Edit', edit_model_path(@model) %> | 
-<%= link_to 'Change History', polymorphic_path([:history, @model]) %> | 
-<%= link_to 'Return to Listing', models_path %>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+              <th class="col-sm-12" colspan="2"><b>Details</b></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+              <td class="col-sm-2 text-right record-label">Name</td>
+              <td class="col-sm-10">
+                  <%= @model.name %>
+              </td>
+          </tr>
+          <tr>
+              <td class="col-sm-2 text-right record-label"># Entries</td>
+              <td class="col-sm-10">
+                  This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
+              </td>
+          </tr>
+        </tbody>
+      </table>
+  </div>
+</div>

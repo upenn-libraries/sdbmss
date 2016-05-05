@@ -52,8 +52,11 @@
                 sdbmssMinWidth: "100px",
                 //orderable: false,
                 title: 'Entry ID',
-                render: function (data, type, full, meta) { 
-                    if (data) {
+                render: function (data, type, full, meta) {
+                    if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")]) {
+                        return "<span class='text-danger'>(record deleted)</span>"
+                    }
+                    else if (data) {
                         return "<a target='_blank' href='/entries/" + data + "'>SDBM_" + data + "</a>";
                     }
                     return "";
@@ -65,7 +68,10 @@
                 //orderable: false,
                 title: 'Manuscript ID',
                 render: function (data, type, full, meta) { 
-                    if(data) {
+                    if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")]) {
+                        return "<span class='text-danger'>(record deleted)</span>"
+                    }
+                    else if(data) {
                         return "<a target='_blank' href='/manuscripts/" + data + "'>SDBM_MS_" + data + "</a>";
                     }
                     return "";

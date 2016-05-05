@@ -81,8 +81,8 @@ class ManuscriptsController < SearchableAuthorityController
     )
   end
 
-  def params_for_search
-    params.permit(:name, {:name => []}, :location, {:location => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
-  end
+  #def params_for_search
+  #  params.permit(:name, {:name => []}, :location, {:location => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
+  #end
 
 end

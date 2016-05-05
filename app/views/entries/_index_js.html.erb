@@ -61,16 +61,19 @@
                          // this will change, so leaving this code
                          // here for now.
                          // var showLinkingTool = full[sdbmTable.getColumnIndex("Is Approved")] === true;
-                         var showLinkingTool = full[sdbmTable.getColumnIndex("Deprecated")] === false;
+                         var isNotDeprecated = full[sdbmTable.getColumnIndex("Deprecated")] === false;
                          var linkingToolHTMLLink = ' <a class="btn btn-xs btn-info find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
 
                          var showDeprecateLink = canDeprecate;
                          var deprecateHTMLLink = ' <a href="#" class="btn btn-xs btn-warning entry-deprecate-link">Deprecate</a>';
-
-                         return '<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +
-                                ' <a class="btn btn-xs btn-danger entry-delete-link" href="#" target="_blank">Delete</a>' +
-                                 (showLinkingTool ? linkingToolHTMLLink : '') +
-                                 (showDeprecateLink ? deprecateHTMLLink : '');
+                         console.log(manuscriptId);
+                         //////////////////////////////////////////////////////////////////////////////////////////////////////////
+                         // FIX ME: right now I am disabling the 'delete' link if the entry has a manuscript - should maybe change? //
+                         //////////////////////////////////////////////////////////////////////////////////////////////////////////
+                         return isNotDeprecated ? ('<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +
+                                ' <a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#" target="_blank">Delete</a>' +
+                                 (isNotDeprecated ? linkingToolHTMLLink : '') +
+                                 (showDeprecateLink ? deprecateHTMLLink : '')) : '<span class="text-danger bg-danger">This Record is DEPRECATED</span>';
                      }
                  }
              ],

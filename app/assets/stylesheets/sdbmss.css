@@ -9,9 +9,28 @@ body {
 
 /* There's some tweaky stuff in "#header-navbar .navbar-brand" rule that we're overriding here, probably fragile */
 #header-navbar .navbar-brand { background: none; overflow: visible; text-indent: 0; color: black; width: auto; }
+/*#header-navbar .navbar-brand {
+    background: none;
+    overflow: visible;
+    text-indent: 0;
+    color: black;
+    width: auto;
+    font-weight: bold;
+    font-size: 37px;
+    line-height: 44px;
+    border-bottom: 1px solid black;
+    text-shadow: 4px 0px #eee;
+}*/
 
 /* Development link */
-#header-navbar .development { display: inline-block; padding-top: 15px; color: red; float: left; }
+#header-navbar .development { 
+  display: inline-block;
+  padding-top: 15px;
+  color: red;
+  float: left;
+  /*position: absolute;
+  right: 40px;*/
+}
 
 #search-navbar { margin-bottom: 10px; }
 
@@ -270,6 +289,9 @@ div#search_results_length {
 .input-block.carousel .item {
   font-size: 18px;
 }
+.more-info {
+  color: #333;
+}
 
 .checkbox-hidden:not(old){
   width     : 2em;
@@ -362,7 +384,7 @@ div#search_results_length {
   color: #999;
 }
 .unapproved > td > a.btn {
-  color: #ddd;
+  color: #fff;
 }
 
 .sdbmss-form .provenance-group-container { border-width: 0 0 1px; border-style: none none solid; border-color: #e5e5e5; margin-bottom: 6px; }
@@ -464,6 +486,7 @@ div#search_results_length {
     font-size: inherit;
     line-height: 1.5em;
     max-width: inherit;
+    box-shadow: 0px 0px 0px 200vw rgba(0,0,0,0.2);
 }
 
 .sdbmss-tooltip .qtip-content h1 {
@@ -478,9 +501,17 @@ div#search_results_length {
 
 .sdbmss-tooltip-label {
     cursor: help;
-    border-bottom-width: 2px; // double;
+/*    border-bottom-width: 2px; // double;
     border-bottom-style: dotted;
-    border-bottom-color: red;
+    border-bottom-color: red;*/
+}
+.sdbmss-tooltip-label:after {
+    content: '?';
+    margin: 0px 5px;
+    padding: 4px;
+    background-color: #7C7C7C;
+    color: #f8f8f8;
+    border-radius: 4px;
 }
 
 /* tweak .modal-backdrop rule on pages that use UI Bootstrap's modal,

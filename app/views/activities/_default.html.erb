@@ -1,4 +1,10 @@
-<%= activity.user_id.present? ? User.find(activity.user_id).username : "Unknown user" %> <%= activity.format_event + (activity.format_event.end_with?("e") ? "" : "e") + "d" %>
+<% if activity.user_id.present? %>
+  <% username = User.find(activity.user_id).username %>
+  <%= link_to username, profile_path(username), :title => "Go to #{username}'s profile" %>
+<% else %>
+  <%= "Unknown User" %>
+<% end %>
+<%= activity.format_event + (activity.format_event.end_with?("e") ? "" : "e") + "d" %>
 <% link_text = SDBMSS::IDS.get_public_id_for_model(activity.item_type, activity.item_id) %>
 <% if !link_text %><% link_text = "#{activity.item_type} ##{activity.item_id}" %><% end %>
 <% if activity.event != 'destroy' %>
