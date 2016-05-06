@@ -1,25 +1,34 @@
 <% if current_user %>
-<% @bookmarks = current_user.bookmarks %>
-<div class="panel panel-default bookmark-tab text-right" style="position: fixed; right: 0px; z-index: 1000; max-width: 320px;">
-  <div class="panel-heading" data-toggle="collapse" href="#my_bookmarks">
-    <span class='h3 <%= @bookmarks.count <= 0 ? "text-muted" : ""%>'>
-      My Bookmarks
-      <!--<span class="glyphicon glyphicon-bookmark"></span>-->
-    </span>
+<div class="panel-group collapse" id="my_bookmarks">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="h3">Bookmarks</h3>
+    </div>
   </div>
-  <div class="panel-collapse collapse" id="my_bookmarks">
-    <ul class="list-group">
-      <% if @bookmarks.count <= 0 %>
-        <li class="list-group-item">You have nothing bookmarked.</li>
-      <% end %>
-      <% @bookmarks.each do |b| %>
-        <% e = Entry.find(b.document_id) %>
+  <% bookmarks.each do |name, bookmark_group| %>  
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <a data-toggle="collapse" data-parent="#my_bookmarks" href="#collapse<%= name %>">
+        <h4 class="panel-title">
+          <%= name %>
+        </h4>
+      </a>
+    </div>
+    <div id="collapse<%= name %>" class="panel-collapse collapse">
+      <ul class='list-group'>
+      <% bookmark_group.each do |b| %>
+        <% @model = b.document_type.find(b.document_id) %>
         <li class="list-group-item">
-          <h4 class="list-group-item-heading"><%= link_to e.public_id, entry_path(e), :target => "_blank" %></h4>
-          <p class="list-group-item-text"><%= e.display_value %></p>
+          <h4 class="list-group-item-heading"><%= link_to @model.public_id, polymorphic_path(@model), :target => "_blank" %></h4>
+          <p class="list-group-item-text"><%= @model.to_s %></p>
+          <%= link_to bookmark_path(b), method: :delete, class: "remove-bookmark control-bookmark" do %>
+            <span class="glyphicon glyphicon-remove"></span>
+          <% end %>
         </li>
-      <% end %>
-    </ul>
+      <% end %>  
+      </ul>
+    </div>
   </div>
+  <% end %>
 </div>
 <% end %>

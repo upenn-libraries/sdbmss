@@ -66,7 +66,8 @@
   <%= render partial: 'shared/ajax_modal' %>
 
   <!-- for omnipresent bookmarks tab -->
-  <%= render partial: 'shared/my_bookmarks' %>
+  <a href="#my_bookmarks" data-toggle="collapse" class='btn btn-default' id="all_bookmarks"><span class="glyphicon glyphicon-bookmark"></span></a>
+  <div id="my_bookmarks" class="collapse"></div>
 
   <div id="main-container" class="container">
     <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>

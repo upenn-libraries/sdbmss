@@ -250,6 +250,10 @@ class Entry < ActiveRecord::Base
     names
   end
 
+  def to_s
+    display_value
+  end
+
   def display_value
     entry_titles.order(:order).map(&:title).join("; ") || "(No title)"
   end

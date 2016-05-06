@@ -239,6 +239,10 @@ class Name < ActiveRecord::Base
     name
   end
 
+  def as_flat_hash
+    {id: id, name: name, viaf_id: viaf_id, created_at: created_at, created_by: created_by }
+  end
+
   def entry_ids_to_index_on_update
     ids = Set.new
     ids.merge(Entry.joins(:artists).where({ names: { id: id }}).select(:id).map(&:id))

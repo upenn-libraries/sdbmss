@@ -22,6 +22,36 @@ body {
     text-shadow: 4px 0px #eee;
 }*/
 
+/* BOOKMARKS */
+#all_bookmarks {
+  position: fixed;
+  right: 0px;
+  z-index: 1001;
+}
+#my_bookmarks {
+  width: 320px;
+  position: fixed;
+  right: 0px;
+  z-index: 1000;
+}
+.remove-bookmark {
+    position: absolute;
+    right: 4px;
+    top: 5px;
+    /* background: black; */
+    height: 24px;
+    width: 24px;
+    text-align: center;
+    /* padding: 3px; */
+    border-radius: 50%;
+    border: 3px solid #FB9E9C;
+    color: #FB9E9C;
+}
+.remove-bookmark:hover, .remove-bookmark:active, .remove-bookmark:focus {
+  border-color: #a94442;
+  color: #a94442;
+}
+
 /* Development link */
 #header-navbar .development { 
   display: inline-block;
@@ -124,6 +154,9 @@ h1 { font-size: 30px; margin-top: 0; }
 /*
  checkboxes!
 */
+.options-btn-group .btn {
+  float: none;
+}
 .btn-blank, .btn-blank:hover, .btn-blank:active {
     border: none;
     background: transparent;
