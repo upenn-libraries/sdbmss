@@ -98,7 +98,7 @@ describe "Blacklight Search", :js => true do
     visit advanced_search_path
 
     # all text search fields should show up in dropdown
-    expect(find_by_id('text_field_0').all("option").length).to eq(24)
+    expect(find_by_id('text_field_0').all("option").length).to eq(27)
     # all numeric search fields should show up in dropdown
     expect(find_by_id('numeric_field_0').all("option").length).to eq(14)
   end
@@ -199,17 +199,17 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_selector("#documents")
 
     entry_one = get_hill_entry_by_cat_num 1
-    find_by_id("toggle_bookmark_" + entry_one.id.to_s).click
+    find_by_id("bookmark_toggle_" + entry_one.id.to_s).click
 
     # page does ajax call; wait for toggle to be checked
-    expect(page).to have_selector("#toggle_bookmark_" + entry_one.id.to_s + ":checked")
+    expect(page).to have_selector("#bookmark_toggle_" + entry_one.id.to_s + "[value='Remove Bookmark']")
 
     visit bookmarks_path
     expect(page).to have_link(entry_one.public_id)
-    find_by_id("toggle_bookmark_" + entry_one.id.to_s).click
+    find_by_id("bookmark_toggle_" + entry_one.id.to_s).click
 
     # page does ajax call; wait for toggle to be checked
-    expect(page).not_to have_selector("#toggle_bookmark_" + entry_one.id.to_s + ":checked")
+    expect(page).not_to have_selector("#bookmark_toggle_" + entry_one.id.to_s + "[value='Remove Bookmark']")
 
     visit bookmarks_path
     expect(page).not_to have_link(entry_one.public_id)

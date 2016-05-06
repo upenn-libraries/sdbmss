@@ -44,15 +44,15 @@ describe "User Activity", :js => true do
   it "should show empty user activity" do
     visit activities_path
 
-    expect(page).not_to have_content('updated')
-    expect(page).not_to have_content('created')
-    expect(page).not_to have_content('destroyed')
+    expect(page).not_to have_content('edited')
+    expect(page).not_to have_content('added')
+    expect(page).not_to have_content('deleted')
   end
 
   it "should show appropriate recent activity" do
     v = doActivity(10)
     visit activities_path
-    expect(page).to have_content('updated SDBM_10')
+    expect(page).to have_content('edited SDBM_10')
     expect(page).to have_content("Title: from #{v} to Book of Ours")
   end
 
@@ -63,7 +63,7 @@ describe "User Activity", :js => true do
     first(".save-button").click
     sleep 1.1
     visit activities_path
-    expect(page).to have_content('updated SDBM_10')
+    expect(page).to have_content('edited SDBM_10')
     expect(page).to have_content("Title: Book of Ours")
   end
 
@@ -74,7 +74,7 @@ describe "User Activity", :js => true do
     click_button 'Create Name'
     expect(page).to have_content('Stacker Pentecost')
     visit activities_path
-    expect(page).to have_content('created SDBM_NAME_')
+    expect(page).to have_content('added SDBM_NAME_')
     expect(page).to have_content('Name: Stacker Pentecost')
   end
 
@@ -88,7 +88,7 @@ describe "User Activity", :js => true do
     expect(page).not_to have_content('Stacker Pentecost')
 
     visit activities_path
-    expect(page).to have_content('destroyed SDBM_NAME')
+    expect(page).to have_content('deleted SDBM_NAME')
   end
 
 end

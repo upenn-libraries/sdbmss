@@ -569,7 +569,7 @@ describe "Data entry", :js => true do
 
       visit activities_path
 
-      expect(page).to have_content "#{entry.created_by.username} created SDBM_#{entry.id}"
+      expect(page).to have_content "#{entry.created_by.username} added SDBM_#{entry.id}"
     end
 
     it "should update status field on Source when adding an Entry" do
@@ -613,7 +613,7 @@ describe "Data entry", :js => true do
       visit manuscript_path(manuscript)
 
       fill_in 'comment_comment', with: "this entry is nuts"
-      check 'comment_is_correction'
+      #check 'comment_is_correction'
       click_button('Submit')
 
       expect(page).to have_content "this entry is nuts"
@@ -621,7 +621,7 @@ describe "Data entry", :js => true do
       comment = Comment.last
       expect(comment.manuscripts.first.id).to eq(manuscript_id)
       expect(comment.comment).to eq("this entry is nuts")
-      expect(comment.is_correction).to eq(true)
+      #expect(comment.is_correction).to eq(true)
     end
 
     it "should validate when saving Entry"

@@ -46,12 +46,15 @@ describe "Manage entries", :js => true do
 
     first("input[name='search_value']").native.send_keys "de ricci"
     find('#search_submit').click()
+    sleep 1.1
     expect(page).not_to have_selector("#spinner", visible: true)
 
     expect(all("#search_results tbody tr").count).to eq(2)
   end
 
   it "should jump to ID" do
+    skip
+    # jump to removed for being irrelevant...
     visit entries_path
 
     fill_in 'jump_to', :with => "10"
@@ -80,8 +83,10 @@ describe "Manage entries", :js => true do
     first("#unapproved_only").click
     find('#search_submit').click()
 
+    sleep 1.1
+
     expect(page).to have_selector("#select-all", visible: true)
-    find("#select-all").click
+    first("#select-all").click
 
     expect(page).to have_selector("#mark-as-approved")
     find("#mark-as-approved").click
@@ -119,9 +124,9 @@ describe "Manage entries", :js => true do
   it "should perform a search on any field without error" do
     visit entries_path
 
-    expect(page.first("select[name='search_field']").all("option").length).to eq(38)
+    expect(page.first("select[name='search_field']").all("option").length).to eq(41)
 
-    38.times do |i|
+    41.times do |i|
       page.first("input[name='search_value']").set "Test String"
       option = page.first("select[name='search_field']").all("option")[i]
       option.select_option
@@ -132,6 +137,8 @@ describe "Manage entries", :js => true do
 
   it "should perform a search with multiple values for the same field (AND)" do
     visit entries_path
+
+    find('#addSearch').click()
 
     textInputs = page.all("input[name='search_value']")
     searchOptions = page.all("select[name='search_field']")
@@ -168,6 +175,8 @@ describe "Manage entries", :js => true do
   it "should perform a search with multiple values for the same field (ANY)" do
     visit entries_path
 
+    find('#addSearch').click()
+
     textInputs = page.all("input[name='search_value']")
     searchOptions = page.all("select[name='search_field']")
 
@@ -177,7 +186,7 @@ describe "Manage entries", :js => true do
     textInputs[1].set "Cicero"
     searchOptions[1].set "Author"
 
-    select 'any', from: 'op'
+    select 'Any', from: 'op'
 
     find('#search_submit').click()
 

@@ -38,11 +38,16 @@
                  {
                      sdbmssMinWidth: "25px",
                      sdbmssMaxWidth: "25px",
-                     title: '',
+                     title: '<a href="#" class="btn btn-default btn-blank btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
                      orderable: false,
                      render: function (data, type, full, meta) {
                          if(showApprovalControls()) {
-                             return '<input type="checkbox" name="approve" value="' + full[sdbmTable.getColumnIndex("ID")] + '"/>';
+                                return  '' + 
+                                '<input class="table-checkbox" type="checkbox" name="approve" value="' + full[sdbmTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
+                                '<label for="checkbox_' + meta.row + '">' + 
+                                '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-unchecked unchecked"></a>' + 
+                                '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-check checked"></a>' + 
+                                '</label>' + '';
                          }
                          return '';
                      }
@@ -66,7 +71,7 @@
 
                          var showDeprecateLink = canDeprecate;
                          var deprecateHTMLLink = ' <a href="#" class="btn btn-xs btn-warning entry-deprecate-link">Deprecate</a>';
-                         console.log(manuscriptId);
+                         //console.log(manuscriptId);
                          //////////////////////////////////////////////////////////////////////////////////////////////////////////
                          // FIX ME: right now I am disabling the 'delete' link if the entry has a manuscript - should maybe change? //
                          //////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -308,6 +313,27 @@
          return false;
      });
 
+    $(document).on('click', "#select-all", function(event) {
+        if (!$("#select-all").prop("selected")) {
+            $("#select-all").prop("selected", true);
+            $("#select-all").removeClass("glyphicon-unchecked");
+            $("#select-all").addClass("glyphicon-check");
+            $("input[name='approve']").prop("checked", true);
+        } else {
+            $("#select-all").prop("selected", false);
+            $("input[name='approve']").prop("checked", false);
+            $("#select-all").removeClass("glyphicon-check");
+            $("#select-all").addClass("glyphicon-unchecked");
+        }
+        return false;
+    });
+
+    $(document).on('click', "#deselect-all", function(event) {
+        $("input[name='review']").prop("checked", false);
+        return false;
+    });
+
+/*
      $(document).on('click', "#select-all", function(event) {
          $("input[name='approve']").prop("checked", true);
          return false;
@@ -317,7 +343,7 @@
          $("input[name='approve']").prop("checked", false);
          return false;
      });
-
+*/
      $(document).on('click', "#mark-as-approved", function(event) {
          var sdbmTable = manageEntries.dataTable;
          var ids = [];
