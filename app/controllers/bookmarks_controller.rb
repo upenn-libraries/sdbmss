@@ -25,6 +25,8 @@ class BookmarksController < CatalogController
   end
 
   def reload
+    can_merge = params[:can_merge] || false
+    can_link = params[:can_link] == "true"
     @bookmarks = current_user.bookmarks
     @bookmarks_sorted = {}
     @bookmarks.each do |bookmark|
@@ -34,7 +36,7 @@ class BookmarksController < CatalogController
         @bookmarks_sorted[bookmark.document_type] = [bookmark]
       end
     end
-    render partial: 'shared/my_bookmarks', locals: {bookmarks: @bookmarks_sorted}
+    render partial: 'shared/my_bookmarks', locals: {bookmarks: @bookmarks_sorted, can_merge: can_merge, can_link: can_link}
   end
 
   def new

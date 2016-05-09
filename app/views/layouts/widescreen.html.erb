@@ -65,6 +65,10 @@
   <%# this is from blacklight %>
   <%= render partial: 'shared/ajax_modal' %>
 
+  <!-- for omnipresent bookmarks tab -->
+  <a href="#my_bookmarks" data-toggle="collapse" class='btn btn-default' id="all_bookmarks"><span class="glyphicon glyphicon-bookmark"></span></a>
+  <div id="my_bookmarks" class="collapse"></div>
+
   <div id="main-container" class="container-fluid">
     <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
 

@@ -27,12 +27,18 @@ body {
   position: fixed;
   right: 0px;
   z-index: 1001;
+  background-color: whitesmoke;
+  border: none;
+  box-shadow: none;
+  margin: 2px 3px 1px 0px;
 }
 #my_bookmarks {
   width: 320px;
   position: fixed;
   right: 0px;
   z-index: 1000;
+  background-color: white;
+  box-shadow: 0px 0px 40px 40px white;
 }
 .remove-bookmark {
     position: absolute;

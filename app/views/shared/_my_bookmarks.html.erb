@@ -20,7 +20,16 @@
         <% @model = b.document_type.find(b.document_id) %>
         <li class="list-group-item">
           <h4 class="list-group-item-heading"><%= link_to @model.public_id, polymorphic_path(@model), :target => "_blank" %></h4>
-          <p class="list-group-item-text"><%= @model.to_s %></p>
+          <p class="list-group-item-text">
+            <%= @model.to_s %>
+          </p>
+          <% if can_merge == b.document_type.to_s.underscore.pluralize %>
+            <p><a class="btn btn-warning btn-xs new-merge" target="<%= @model.id %>" >Merge</a></p>
+          <% elsif can_link && b.document_type.to_s == "Entry" # or ms? %>
+            <p>
+              <a data-entry-id="<%= @model.id %>" class="add-entry-link btn btn-info btn-xs">Add to queue</a>
+            </p>
+          <% end %>
           <%= link_to bookmark_path(b), method: :delete, class: "remove-bookmark control-bookmark" do %>
             <span class="glyphicon glyphicon-remove"></span>
           <% end %>
