@@ -67,18 +67,20 @@
                          // here for now.
                          // var showLinkingTool = full[sdbmTable.getColumnIndex("Is Approved")] === true;
                          var isNotDeprecated = full[sdbmTable.getColumnIndex("Deprecated")] === false;
-                         var linkingToolHTMLLink = ' <a class="btn btn-xs btn-info find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
+                         var linkingToolHTMLLink = '<a class="btn btn-xs btn-info find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
 
                          var showDeprecateLink = canDeprecate;
-                         var deprecateHTMLLink = ' <a href="#" class="btn btn-xs btn-warning entry-deprecate-link">Deprecate</a>';
+                         var deprecateHTMLLink = '<a href="#" class="btn btn-xs btn-warning entry-deprecate-link">Deprecate</a>';
                          //console.log(manuscriptId);
                          //////////////////////////////////////////////////////////////////////////////////////////////////////////
                          // FIX ME: right now I am disabling the 'delete' link if the entry has a manuscript - should maybe change? //
                          //////////////////////////////////////////////////////////////////////////////////////////////////////////
-                         return isNotDeprecated ? ('<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +
-                                ' <a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#" target="_blank">Delete</a>' +
+                         return isNotDeprecated ? (
+                            '<span class="btn-group options-btn-group"><a class="btn btn-xs btn-default control-bookmark bookmark-link" href="/bookmarks/new?document_id=' + entryId + '&document_type=Entry" in_bookmarks="/entries/' + entryId + '"><span class="glyphicon glyphicon-star"></span></a>' + 
+                            '<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +
+                                '<a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#" target="_blank">Delete</a>' +
                                  (isNotDeprecated ? linkingToolHTMLLink : '') +
-                                 (showDeprecateLink ? deprecateHTMLLink : '')) : '<span class="text-danger bg-danger">This Record is DEPRECATED</span>';
+                                 (showDeprecateLink ? deprecateHTMLLink : '') + "</span>") : '<span class="text-danger bg-danger">This Record is DEPRECATED</span>';
                      }
                  }
              ],

@@ -24,20 +24,7 @@ class ManuscriptsController < SearchableAuthorityController
     @manuscript_comment = ManuscriptComment.new(manuscript: @manuscript)
     @manuscript_comment.build_comment
 
-    @manuscript_titles = Set.new
-
-    if @manuscript.name
-      @manuscript_titles.add(@manuscript.name)
-    elsif @manuscript.entries.count > 0
-      @manuscript.entries.each do |entry|
-        if entry.entry_titles.count > 0
-          entry.entry_titles.each do |title|
-            @manuscript_titles.add(title.common_title)
-            @manuscript_titles.add(title.title)
-          end
-        end
-      end
-    end
+    @manuscript_titles = @manuscript.all_titles
        
   end
 

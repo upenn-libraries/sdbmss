@@ -1,43 +1,68 @@
 <% if current_user %>
-<div class="panel-group collapse" id="my_bookmarks">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="h3">Bookmarks</h3>
-    </div>
+<div class="panel-group collapse in" id="my_bookmarks">
+  <div class="form-inline clearfix navbar-form">
+    <label for="" class="control-label">Tag: 
+      <input type="text" class="form-control" name="tag-search">
+    </label>
   </div>
-  <% bookmarks.each do |name, bookmark_group| %>  
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <a data-toggle="collapse" data-parent="#my_bookmarks" href="#collapse<%= name %>">
-        <h4 class="panel-title">
-          <%= name %>
-        </h4>
-      </a>
-    </div>
-    <div id="collapse<%= name %>" class="panel-collapse collapse">
-      <ul class='list-group'>
-      <% bookmark_group.each do |b| %>
-        <% @model = b.document_type.find(b.document_id) %>
-        <li class="list-group-item">
-          <h4 class="list-group-item-heading"><%= link_to @model.public_id, polymorphic_path(@model), :target => "_blank" %></h4>
-          <p class="list-group-item-text">
-            <%= @model.to_s %>
-          </p>
-          <% if can_merge == b.document_type.to_s.underscore.pluralize %>
-            <p><a class="btn btn-warning btn-xs new-merge" target="<%= @model.id %>" >Merge</a></p>
-          <% elsif can_link && b.document_type.to_s == "Entry" # or ms? %>
-            <p>
-              <a data-entry-id="<%= @model.id %>" class="add-entry-link btn btn-info btn-xs">Add to queue</a>
-            </p>
+  <ul class="nav nav-tabs">
+    <% bookmarks.each do |name, bookmark_group| %>
+      <li><a data-toggle='tab' href='#bookmark-tab-<%= name %>'><%= name %></a></li>
+    <% end %>
+  </ul>
+  <div class="tab-content bookmark-panes">
+    <% bookmarks.each do |name, bookmark_group| %>
+      <div class="tab-pane fade" id="bookmark-tab-<%= name %>">
+        <ul class="list-group bookmarks">
+        <% if bookmark_group.count > 0 %>
+          <% bookmark_group.each do |b| %>
+            <% @model = b.document_type.find(b.document_id) %>
+            <li class="list-group-item">
+              <div class="row">
+                <div class="col-xs-5">
+                  <h4 class="list-group-item-heading">
+                    <%= link_to @model.public_id, polymorphic_path(@model), :target => "_blank", class: 'check_bookmarks' %>
+                  </h4>
+                </div>
+                <div class="col-xs-7 text-right">
+                  <% if can_merge == b.document_type.to_s.underscore.pluralize %>
+                    <a class="btn btn-warning btn-xs new-merge" target="<%= @model.id %>" >Merge</a>
+                  <% elsif can_link # or ms? %>
+                      <% if b.document_type.to_s == "Entry" %>
+                        <a data-entry-id="<%= @model.id %>" class="add-entry-link btn btn-info btn-xs">Add to queue</a>
+                      <% elsif b.document_type.to_s == "Manuscript" %>
+                        <a href="/linkingtool/manuscript/<%= @model.id %>" class="btn btn-info btn-xs">Use this MS</a>
+                      <% end %>
+                  <% end %>
+                  <a class="tag-bookmark"><span class="glyphicon glyphicon-tag"></span></a>
+                  <%= link_to bookmark_path(b), method: :delete, class: "remove-bookmark control-bookmark" do %>
+                    <span class="glyphicon glyphicon-remove"></span>
+                  <% end %>  
+                </div>
+              </div>
+              <div class="input-group add-bookmark-tag" style='display: none;'>
+                <input type='text' class='form-control' placeholder="add tag...">
+                <a href='/bookmarks/<%= b.id %>/addtag' class="input-group-addon add-bookmark-tag-confirm"><span class="glyphicon glyphicon-plus"></span></a>
+              </div>
+              <p class="list-group-item-text">
+                <%= @model.to_s %>
+              </p>
+              <ul class="list-inline" style="margin-left: 0px;">
+                <% b.tags.to_s.split(',').each do |tag| %>
+                  <li class="label label-bookmark-tag">
+                    <%= tag %>
+                    <a href='/bookmarks/<%= b.id %>/removetag?tag=<%= tag %>' class='remove-bookmark-tag-confirm'><span class="glyphicon glyphicon-remove"></span></a>
+                  </li>
+                <% end %>
+              </ul>
+            </li>
           <% end %>
-          <%= link_to bookmark_path(b), method: :delete, class: "remove-bookmark control-bookmark" do %>
-            <span class="glyphicon glyphicon-remove"></span>
-          <% end %>
-        </li>
-      <% end %>  
-      </ul>
-    </div>
+        <% else %>
+          <li class="list-group-item">You do not have any bookmarks here.</li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
   </div>
-  <% end %>
 </div>
 <% end %>

@@ -15,6 +15,12 @@ Rails.application.routes.draw do
 
   get '/bookmarks/export', to: 'bookmarks#export', as: 'export_bookmarks'
   get '/bookmarks/reload', to: 'bookmarks#reload', as: 'reload_bookmarks'
+  resources :bookmarks do
+    member {
+      get 'addtag'
+      get 'removetag'
+    }
+  end
 
   # it would be cleaner to have :entries here and merge
   # CatalogController into EntriesController, but that doesn't work,

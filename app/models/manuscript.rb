@@ -96,8 +96,30 @@ class Manuscript < ActiveRecord::Base
     "Schoenberg Database of Manuscripts. The Schoenberg Institute for Manuscript Studies, University of Pennsylvania Libraries. Web. #{now}: #{public_id}."
   end
 
+  def all_titles
+    @manuscript_titles = Set.new
+
+    if name
+      @manuscript_titles.add(name)
+    elsif entries.count > 0
+      entries.each do |entry|
+        if entry.entry_titles.count > 0
+          entry.entry_titles.each do |title|
+            @manuscript_titles.add(title.common_title)
+            @manuscript_titles.add(title.title)
+          end
+        end
+      end
+    end
+    @manuscript_titles
+  end
+
   def to_i
     id
+  end
+
+  def to_s
+    all_titles.to_a.join(",")[0..50]
   end
 
 end

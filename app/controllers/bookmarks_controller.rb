@@ -28,12 +28,12 @@ class BookmarksController < CatalogController
     can_merge = params[:can_merge] || false
     can_link = params[:can_link] == "true"
     @bookmarks = current_user.bookmarks
-    @bookmarks_sorted = {}
+    @bookmarks_sorted = {'Entry' => [], 'Source' => [], 'Manuscript' => [], 'Name' => []}
     @bookmarks.each do |bookmark|
-      if @bookmarks_sorted[bookmark.document_type]
-        @bookmarks_sorted[bookmark.document_type].push(bookmark)
+      if @bookmarks_sorted[bookmark.document_type.to_s]
+        @bookmarks_sorted[bookmark.document_type.to_s].push(bookmark)
       else
-        @bookmarks_sorted[bookmark.document_type] = [bookmark]
+        @bookmarks_sorted[bookmark.document_type.to_s] = [bookmark]
       end
     end
     render partial: 'shared/my_bookmarks', locals: {bookmarks: @bookmarks_sorted, can_merge: can_merge, can_link: can_link}
@@ -56,6 +56,35 @@ class BookmarksController < CatalogController
     flash[:message] = "Bookmark removed."
     render text: 'destroyed'
     #redirect_to :back
+  end
+
+  def addtag
+    newtag = params[:tag]
+    if newtag
+      @bookmark = Bookmark.find(params[:id])
+      tags = @bookmark.tags.to_s.split(',')
+      if tags.include?(newtag)
+        render text: 'already in tags'
+      else
+        render text: 'added'
+        @bookmark.update({tags: (tags + [newtag]).join(',')})
+      end
+    end
+  end
+
+  def removetag
+    tag = params[:tag]
+    if tag
+      @bookmark = Bookmark.find(params[:id])
+      tags = @bookmark.tags.to_s.split(',')
+      if tags.include?(tag)
+        tags.delete(tag)
+        @bookmark.update({tags: tags.join(',')})
+        render text: 'removed'
+      else
+        render text: 'not in tags'
+      end
+    end
   end
 
 end
