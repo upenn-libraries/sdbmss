@@ -172,6 +172,7 @@ var SDBM = SDBM || {};
                         recordsTotal: data.total,
                         recordsFiltered: data.total
                     });
+                    renewBookmarks();
                 } else {
                     alert("An error occurred fetching search results: " + data.error);
                 }

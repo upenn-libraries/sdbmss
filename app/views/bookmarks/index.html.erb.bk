@@ -1,0 +1,32 @@
+<%# copied from blacklight gem so that instructional text can be inserted %>
+<% @page_title = "Bookmarks - " + application_name %>
+<div id="content" class="col-md-12">
+<h1 class='page-heading'><%= t('blacklight.bookmarks.title') %></h1>
+
+<p>This page shows the entries and manuscript records you have bookmarked.</p>
+
+<p>How to create a Bookmark:</p>
+
+<ol>
+    <li>Click the <b>Bookmark checkbox</b> at the top-right of an entry’s description.</li>
+    <li>To view your bookmarks, click the <b>Bookmark</b> link in the top-horizontal navigation bar. You must be logged in to view your bookmarks.</li>
+    <li>You can export your bookmarks by clicking <b>Email</b> at the top of the page to email your bookmarks.</li>
+    <li>To view the SDBM ID numbers for your bookmarked entries, click <b>Cite</b>.</li>
+</ol>
+
+<%- if current_or_guest_user.blank? -%>
+
+  <h2 class='section-heading'><%= t('blacklight.bookmarks.need_login') %></h2>
+
+<%- elsif @document_list.blank? -%>
+
+  <h3 class='section-heading'><%= t('blacklight.bookmarks.no_bookmarks') %></h3>
+<% else %>
+  <!-- fix me: manage bookmarks (later) -->
+  <%= render 'sort_and_per_page' %>
+  <%= render partial: 'tools', locals: { document_list: @document_list } %>
+
+  <%= render_document_index %>
+  <%= render 'results_pagination' %>
+<% end %>
+</div>

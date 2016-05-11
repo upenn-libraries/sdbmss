@@ -1,68 +1,54 @@
 <% if current_user %>
-<div class="panel-group collapse in" id="my_bookmarks">
-  <div class="form-inline clearfix navbar-form">
-    <label for="" class="control-label">Tag: 
-      <input type="text" class="form-control" name="tag-search">
-    </label>
-  </div>
-  <ul class="nav nav-tabs">
-    <% bookmarks.each do |name, bookmark_group| %>
-      <li><a data-toggle='tab' href='#bookmark-tab-<%= name %>'><%= name %></a></li>
-    <% end %>
-  </ul>
-  <div class="tab-content bookmark-panes">
-    <% bookmarks.each do |name, bookmark_group| %>
-      <div class="tab-pane fade" id="bookmark-tab-<%= name %>">
+  <div class="panel-group collapse" id="my_bookmarks" ng-controller='ManageBookmarks'>
+    <div class="form-inline clearfix navbar-form">
+      <label for="" class="control-label">Tag:  
+        <input type="text" class="form-control" name="tag-search" ng-model="tagSearch" ng-keyup="$event.keyCode == 13 && searchTag(tagSearch)">
+      </label>
+    </div>
+    <ul class="nav nav-tabs">
+      <li ng-repeat="(name, bookmarks) in all_bookmarks">
+        <a data-toggle='tab' href='#bookmark-tab-{{ name }}'>{{ name }}
+        <span class="badge">{{ bookmarks.length }}</span></a>
+      </li>
+    </ul>
+    <div class="tab-content bookmark-panes">
+      <div ng-repeat="(name, bookmarks) in all_bookmarks" class="tab-pane fade" id="bookmark-tab-{{ name }}">
         <ul class="list-group bookmarks">
-        <% if bookmark_group.count > 0 %>
-          <% bookmark_group.each do |b| %>
-            <% @model = b.document_type.find(b.document_id) %>
-            <li class="list-group-item">
-              <div class="row">
-                <div class="col-xs-5">
-                  <h4 class="list-group-item-heading">
-                    <%= link_to @model.public_id, polymorphic_path(@model), :target => "_blank", class: 'check_bookmarks' %>
-                  </h4>
-                </div>
-                <div class="col-xs-7 text-right">
-                  <% if can_merge == b.document_type.to_s.underscore.pluralize %>
-                    <a class="btn btn-warning btn-xs new-merge" target="<%= @model.id %>" >Merge</a>
-                  <% elsif can_link # or ms? %>
-                      <% if b.document_type.to_s == "Entry" %>
-                        <a data-entry-id="<%= @model.id %>" class="add-entry-link btn btn-info btn-xs">Add to queue</a>
-                      <% elsif b.document_type.to_s == "Manuscript" %>
-                        <a href="/linkingtool/manuscript/<%= @model.id %>" class="btn btn-info btn-xs">Use this MS</a>
-                      <% end %>
-                  <% end %>
-                  <a class="tag-bookmark"><span class="glyphicon glyphicon-tag"></span></a>
-                  <%= link_to bookmark_path(b), method: :delete, class: "remove-bookmark control-bookmark" do %>
-                    <span class="glyphicon glyphicon-remove"></span>
-                  <% end %>  
-                </div>
+          <li class="list-group-item" ng-if="bookmarks.length <= 0">
+            No records of this type have been bookmarked yet.
+          </li>
+          <li class="list-group-item" ng-repeat="bookmark in bookmarks">
+            <div class="row">
+              <div class="col-xs-5">
+                <h4 class="list-group-item-heading">
+                  <a href="{{ bookmark.link }}" target="_blank" class='check_bookmarks'>{{ bookmark.public_id }}</a>
+                </h4>
               </div>
-              <div class="input-group add-bookmark-tag" style='display: none;'>
-                <input type='text' class='form-control' placeholder="add tag...">
-                <a href='/bookmarks/<%= b.id %>/addtag' class="input-group-addon add-bookmark-tag-confirm"><span class="glyphicon glyphicon-plus"></span></a>
+              <div class="col-xs-7 text-right">
+                <span ng-bind-html="actionButton(bookmark)"></span>
+                <a class="tag-bookmark" ng-click="bookmark.showAddTag = !bookmark.showAddTag"><span class="glyphicon glyphicon-tag"></span></a>
+                <a class='remove-bookmark control-bookmark' ng-click="removeBookmark(name, bookmark)">
+                  <span class="glyphicon glyphicon-remove"></span>
+                </a>
               </div>
-              <p class="list-group-item-text">
-                <%= @model.to_s %>
-              </p>
-              <ul class="list-inline" style="margin-left: 0px;">
-                <% b.tags.to_s.split(',').each do |tag| %>
-                  <li class="label label-bookmark-tag">
-                    <%= tag %>
-                    <a href='/bookmarks/<%= b.id %>/removetag?tag=<%= tag %>' class='remove-bookmark-tag-confirm'><span class="glyphicon glyphicon-remove"></span></a>
-                  </li>
-                <% end %>
-              </ul>
-            </li>
-          <% end %>
-        <% else %>
-          <li class="list-group-item">You do not have any bookmarks here.</li>
-        <% end %>
+            </div>
+            <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
+              <input type='text' class='form-control' placeholder="add tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
+              <a class="input-group-addon add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="glyphicon glyphicon-plus"></span></a>
+            </div>
+            <p class="list-group-item-text">
+              {{ bookmark.show }}
+            </p>
+            <ul class="list-inline" style="margin-left: 0px;">
+              <li class="label label-bookmark-tag" ng-repeat="tag in bookmark.tags">
+                {{ tag }}
+                <a class='remove-bookmark-tag-confirm' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></a>
+              </li>
+            </ul>
+
+          </li>
         </ul>
       </div>
-    <% end %>
+    </div>
   </div>
-</div>
 <% end %>

@@ -1,6 +1,6 @@
 //= require blacklight/core
 //= require blacklight/checkbox_submit
-window.addEventListener("DOMContentLoaded", function (e) {
+/*window.addEventListener("DOMContentLoaded", function (e) {
 
 function setupBookmarks (results) {
   if (results) {
@@ -56,4 +56,4 @@ function reloadBookmarks () {
 
 reloadBookmarks();
 
-});
+});*/

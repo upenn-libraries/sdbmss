@@ -7,6 +7,7 @@ function saveCurrentSearch () {
     t.removeClass("disabled");
   }).error( function (result) {
     // trigger response on failure
+    // FIX ME: blank search doesn't save properly!
     alert("There was an error saving your search");
     console.log("ERROR: ", result);
     t.removeClass("disabled");

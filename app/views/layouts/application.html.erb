@@ -23,6 +23,7 @@
     <%= favicon_link_tag 'favicon.ico' %>
     <%= stylesheet_link_tag "application", media: "all" %>
     <%= javascript_include_tag "application" %>
+    <%= javascript_include_tag "extras" %>
     <% if Rails.env.development? || Rails.env.staging? %>
       <%= javascript_include_tag "development" %>
     <% end %>
@@ -67,9 +68,8 @@
 
   <!-- for omnipresent bookmarks tab -->
   <div class="bookmarks_container">
-    <a href="#my_bookmarks" data-toggle="collapse" class='btn btn-default' id="all_bookmarks"><span class="glyphicon glyphicon-bookmark"></span>
-    </a>
-    <div id="my_bookmarks" class="collapse"></div>
+    <a href="#my_bookmarks" data-toggle="collapse" class='btn btn-default' id="all_bookmarks"><span class="glyphicon glyphicon-bookmark"></span></a>
+    <%= render partial: "/shared/my_bookmarks" %>
   </div>
 
   <div id="main-container" class="container">

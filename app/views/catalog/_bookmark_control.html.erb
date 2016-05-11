@@ -1,8 +1,6 @@
 <% if current_or_guest_user %>
-  <% if (b = Bookmark.where({user_id: current_user.id, document_id: document.model_object.id, document_type: document.model_object.class.to_s})).count > 0 %>
-    <%= link_to "Remove Bookmark", bookmark_path(b.first), :method => :delete %>
-  <% else %>
-    <%= link_to "Bookmark", new_bookmark_path({document_id: document.model_object.id, document_type: document.model_object.class.to_s}) %> 
-  <% end %>
+  <a onclick="addBookmark(<%= document.model_object.id %>, 'Entry');" class="btn btn-sm btn-default bookmark-link" in_bookmarks="/entries/<%= document.model_object.id %>">
+      <span class="glyphicon glyphicon-star"></span>
+    </a>
 <% else %>
 <% end %>

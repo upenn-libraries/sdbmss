@@ -49,7 +49,6 @@ class EntriesController < SearchableAuthorityController
     super
   end
 
-
 #  def index
 #    @bookmarks = current_user.bookmarks
 #    super

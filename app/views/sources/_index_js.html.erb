@@ -57,11 +57,13 @@ $(document).ready(function() {
                  title: 'Options',
                  orderable: false,
                  render: function (data, type, full, meta) {
-                     var str = '<span class="btn-group options-btn-group"><a class="btn btn-xs btn-default control-bookmark bookmark-link" href="/bookmarks/new?document_id=' + data + '&document_type=Source" in_bookmarks="/sources/' + data + '"><span class="glyphicon glyphicon-star"></span></a>' + 
-                                '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>' +
-                               '<a class="btn btn-xs btn-primary" href="/entries/new/?source_id=' + data + '">Add an Entry</a>' +
-                               '<a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>' +
-                               '<a class="btn btn-xs btn-info" href="/sources/' + data + '/merge">Merge</a></span>';
+                     var str = '<span class="btn-group options-btn-group">' 
+                             + '<a onclick="addBookmark(' + data + ', \'Source\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/sources/' + data + '">' 
+                                + '<span class="glyphicon glyphicon-star"></span></a>'
+                           + '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>' +
+                           '<a class="btn btn-xs btn-primary" href="/entries/new/?source_id=' + data + '">Add an Entry</a>' +
+                           '<a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>' +
+                           '<a class="btn btn-xs btn-info" href="/sources/' + data + '/merge">Merge</a></span>';
                      // TODO: display delete link only if entries_count is 0
                      return str;
                  }

@@ -10,12 +10,13 @@
 /* eslint camelcase:0, no-underscore-dangle:0 */
 /* global alert, angular, console, window, setTimeout, $, SDBM, URI */
 var EntryScope;
+var BOOKMARK_SCOPE;
 
 (function () {
 
     "use strict";
 
-    var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap", "ngAnimate", "ui.sortable"]);
+    var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap", "ngAnimate", "ui.sortable", "ngSanitize"]);
     
     sdbmApp.run(function ($http) {
         // For Rails CSRF
@@ -1792,4 +1793,96 @@ var EntryScope;
         $scope.entity.viaf_id = suggestion.viaf_id;
     };
   });
+
+  sdbmApp.controller('ManageBookmarks', function ($scope, $sce) {
+    $scope.removetag = function (bookmark, tag) {
+      $.get('/bookmarks/' + bookmark.id + '/removetag', {tag: tag}).done( function (e) {
+        bookmark.tags = e.tags;
+          $scope.renew();
+      });
+    }
+    $scope.addtag = function (bookmark, tag) {
+      $.get('/bookmarks/' + bookmark.id + '/addtag', {tag: tag}).done( function (e) {
+        bookmark.tags = e.tags;
+        bookmark.newtag = "";
+        $scope.renew();
+      });
+    }
+    $scope.removeBookmark = function (name, bookmark) {
+      var i = $scope.all_bookmarks[name].indexOf(bookmark);
+      if (i >= 0) {
+        $.ajax({url: '/bookmarks/' + bookmark.id, method: 'delete'}).done( function (e) {
+          console.log('done', e);
+          $scope.all_bookmarks[name].splice(i, 1);
+          $scope.renew();
+        }).error( function (e) {
+          console.log('error', e);
+        });
+      }
+    }
+    $scope.searchTag = function (tag) {
+      $.get('/bookmarks/reload.json', {tag: tag}).done( function (e) {
+        $scope.all_bookmarks = e;
+        $scope.renew();
+      }).error( function (e) {
+        console.log('error.', e);
+      });
+    }
+    $scope.addBookmark = function (id, type) {
+      console.log('add?', id, type);
+      $.ajax({url: '/bookmarks/new', data: {document_id: id, document_type: type}}).done( function (e) {
+        if (!e.error) {
+          $scope.all_bookmarks[type].push(e);
+          $scope.renew();
+        } else {
+          console.log(e.error);
+        }
+      }).error( function (e) {
+        console.log("error: ", e);
+      });
+      return false;
+    }
+    $scope.renew = function () {
+      $scope.$digest();
+      for (var i = 0; i < $scope.tabs.length; i++) {
+        var type = $scope.tabs[i];
+        for (var j = 0; j < $scope.all_bookmarks[type].length; j++) {
+          var link = $scope.all_bookmarks[type][j].link;
+          $('.bookmark-link[in_bookmarks="' + link + '"]').css({color: "gold"});
+        }
+      }
+    }
+    // this is one ugly function
+    $scope.actionButton = function (bookmark) {
+      var page_info = window.location.pathname.split('/').splice(1,10);
+      var bookmark_info = bookmark.link.split('/').splice(1,10);
+      if (page_info[0] == 'linkingtool') {
+        if (bookmark.document_type == "Entry") {
+          return $sce.trustAsHtml('<a data-entry-id="' + bookmark.document_id + '" class="add-entry-link btn btn-info btn-xs">Add to queue</a>');
+        } else if (bookmark.document_type == "Manuscript") {
+          return '<a href="/linkingtool/manuscript/' + bookmark.document_id + '" class="btn btn-info btn-xs">Use this MS</a>';
+        }
+      } else if (page_info[0] != bookmark_info[0]) { // different record type
+        return "";
+      } else if (page_info[1] == bookmark_info[1]) { // same record already
+        return "";
+      } else if (page_info[2] == "merge" && (bookmark.document_type == "Name" || bookmark.document_type == "Source")) {
+        return '<a href="' + window.location.pathname + '?target_id=' + bookmark.document_id + '" class="btn btn-xs btn-info">Merge</a>'
+      }
+    }
+    $scope.tabs = ["Entry", "Manuscript", "Name", "Source"];
+    $scope.searchTag("");
+
+    BOOKMARK_SCOPE = $scope;
+  });
+
 }());
+
+// this works!  maybe not a good idea?
+function addBookmark(id, type) {
+  BOOKMARK_SCOPE.addBookmark(id, type);
+}
+
+function renewBookmarks() {
+  BOOKMARK_SCOPE.renew();
+}

@@ -71,16 +71,17 @@
 
                          var showDeprecateLink = canDeprecate;
                          var deprecateHTMLLink = '<a href="#" class="btn btn-xs btn-warning entry-deprecate-link">Deprecate</a>';
-                         //console.log(manuscriptId);
-                         //////////////////////////////////////////////////////////////////////////////////////////////////////////
+
                          // FIX ME: right now I am disabling the 'delete' link if the entry has a manuscript - should maybe change? //
-                         //////////////////////////////////////////////////////////////////////////////////////////////////////////
                          return isNotDeprecated ? (
-                            '<span class="btn-group options-btn-group"><a class="btn btn-xs btn-default control-bookmark bookmark-link" href="/bookmarks/new?document_id=' + entryId + '&document_type=Entry" in_bookmarks="/entries/' + entryId + '"><span class="glyphicon glyphicon-star"></span></a>' + 
+                            '<span class="btn-group options-btn-group">' + 
+                            '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '">' + 
+                                '<span class="glyphicon glyphicon-star"></span>' + 
+                            '</a>' + 
                             '<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +
-                                '<a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#" target="_blank">Delete</a>' +
-                                 (isNotDeprecated ? linkingToolHTMLLink : '') +
-                                 (showDeprecateLink ? deprecateHTMLLink : '') + "</span>") : '<span class="text-danger bg-danger">This Record is DEPRECATED</span>';
+                            '<a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#" target="_blank">Delete</a>' +
+                            (isNotDeprecated ? linkingToolHTMLLink : '') +
+                            (showDeprecateLink ? deprecateHTMLLink : '') + "</span>") : '<span class="text-danger bg-danger">This Record is DEPRECATED</span>';
                      }
                  }
              ],
@@ -120,6 +121,7 @@
                      sdbmTable.searchAndUpdateTable(params, callback, {
                          complete: function () {
                              $("#spinner").hide();
+                              renewBookmarks();
 
                              if(showApprovalControls()) {
                                  $(".approve-control").show();

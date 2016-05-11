@@ -46,8 +46,10 @@
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                     var str = '<span class="btn-group options-btn-group"><a class="btn btn-xs btn-default control-bookmark bookmark-link" href="/bookmarks/new?document_id=' + data + '&document_type=Manuscript" in_bookmarks="/manuscripts/' + data + '"><span class="glyphicon glyphicon-star"></span></a>'
-                           + '<a class="btn btn-xs btn-success" href="/' + manageManuscripts.options.resourceName + '/' + data + '/edit/">Edit</a>'
+                     var str = '<span class="btn-group options-btn-group">'
+                     + '<a onclick="addBookmark(' + data + ', \'Manuscript\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/manuscripts/' + data + '">' 
+                                + '<span class="glyphicon glyphicon-star"></span></a>'
+                                  + '<a class="btn btn-xs btn-success" href="/' + manageManuscripts.options.resourceName + '/' + data + '/edit/">Edit</a>'
                             + '<a class="btn btn-xs btn-danger delete-link" href="/' + manageManuscripts.options.resourceName + '/' + data + '.json">Delete</a>'
                             + '<a class="btn btn-xs btn-info linking-tool-link" target="_blank" href="/linkingtool/manuscript/' + data + '">Linking Tool</a></span>';
                     return str;

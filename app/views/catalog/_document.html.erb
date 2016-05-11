@@ -1,6 +1,5 @@
 <% # container for a single doc -%>
 <div class="document <%= render_document_class document %>" itemscope itemtype="<%= document.itemtype %>">
-
     <% entry = document.model_object %>
     <% if entry.nil? %>
     <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>

@@ -1,4 +1,3 @@
-<%= javascript_include_tag "extras" %>
 <%= stylesheet_link_tag "extras", media: "all" %>
 
 <% model_id = @model.respond_to?(:public_id) ? @model.send(:public_id) : model_class.to_s + " record #" + @model.id.to_s %>

@@ -26,7 +26,6 @@ body {
 .bookmarks_container {
   position: fixed;
   right: 0px;
-  z-index: 1001;
 }
 #all_bookmarks {
   position: absolute;
@@ -38,10 +37,17 @@ body {
 #my_bookmarks {
   position: absolute;
   right: 0px;
-  width: 324px;
-  background: #f8f8f8;
+  padding: 4px;
+  width: 340px;
+  background: #eee;
   border-radius: 5px;
-  box-shadow: 2px 2px 0px 10px rgba(0,0,60,0.2);
+}
+#my_bookmarks .nav a {
+  padding: 10px 8px;
+}
+#my_bookmarks .badge {
+  padding: 2px;
+  border-radius: 3px;
 }
 .bookmark-panes {
   border: 1px solid #DDDDDD;
@@ -61,6 +67,8 @@ body {
 }
 .bookmarks {
   margin-bottom: 0px;
+  max-height: calc(100vh - 250px);
+  overflow-y: scroll;
 }
 .tag-bookmark {
   right: 32px;
@@ -85,6 +93,7 @@ body {
 .label-bookmark-tag {
   background-color: maroon;
   color: white;
+  margin: 1px;
 }
 .label-bookmark-tag a {
   color: white;

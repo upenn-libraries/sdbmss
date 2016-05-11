@@ -23,4 +23,3 @@
 //= require 'blacklight_advanced_search'
 
 //= require sdbm
-
