@@ -7,6 +7,12 @@ body {
 
 .container-fluid .row { padding-left: 15px; padding-right: 15px; }
 
+.list-group-no-border-side li {
+  border-radius: 0px !important;
+  border-right: none;
+  border-left: none;
+}
+
 /* There's some tweaky stuff in "#header-navbar .navbar-brand" rule that we're overriding here, probably fragile */
 #header-navbar .navbar-brand { background: none; overflow: visible; text-indent: 0; color: black; width: auto; }
 /*#header-navbar .navbar-brand {
@@ -26,12 +32,12 @@ body {
 .bookmarks_container {
   position: fixed;
   right: 0px;
+  z-index: 2000;
 }
 #all_bookmarks {
   position: absolute;
   right: 0px;
-  top: 6px;
-  z-index: 2000;
+  top: 6px;;
   margin: 2px 3px 1px 0px;
 }
 #my_bookmarks {
@@ -44,6 +50,7 @@ body {
 }
 #my_bookmarks .nav a {
   padding: 10px 8px;
+  margin: 0px;
 }
 #my_bookmarks .badge {
   padding: 2px;
@@ -284,12 +291,32 @@ div#search_results_length {
   display: none;
 }
 
+.manuscript-edit-input:not(:focus) {
+  background: none;
+  border: none;
+  box-shadow: none;
+  font-size: inherit;
+  color: inherit;
+  padding: 0px;
+  line-height: 26px;
+  height: 26px;
+  vertical-align: bottom;
+  border-radius: 0px;
+}
+input.manuscript-edit-input:not(:focus) {
+  border-bottom: 1px solid #CC0000 !important;
+}
+.manuscript-titles {
+  padding: 0px;
+}
 .label-tag {
   font-size: 14px;
   max-width: 140px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+  display: inline-block;
+  margin: 6px 0px 0px 0px;
 }
 .label-tag:nth-child(2n) {
   max-width: 164px;
@@ -487,6 +514,18 @@ div#search_results_length {
   position: relative;
   bottom: 0px;
   top: 0px;
+}
+
+.document-show-heading {
+  margin: 0px;
+  padding: 4px 0px;
+  border-radius: 4px;
+  color: #33332C;
+  background-color: #eeeeee;
+  margin-bottom: 8px;
+}
+.document-show-heading .h2, .document-show-heading .h4 {
+  margin-top: 5px;
 }
 
 .sdbmss-form .form-group { margin-bottom: 10px; }

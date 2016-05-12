@@ -343,8 +343,6 @@ class SourcesController < SearchableAuthorityController
       # FIX ME: handle errors here, if the merge is not succesful?
       @details = search_result_format(@target)
       render "merge_success"
-    else
-      render :layout => 'widescreen'
     end
   end
 

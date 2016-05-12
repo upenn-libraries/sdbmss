@@ -6,10 +6,10 @@ class BookmarksController < CatalogController
   include Blacklight::Bookmarks
 
   def index
-    tag = params[:tag].blank? ? nil : params[:tag]
+    @tag = params[:tag].blank? ? nil : params[:tag]
     # something bogus here with this... when there is no tag (i.e. else)
-    if tag
-      @bookmarks = current_user.bookmarks.where("tags like ?", "%#{tag}%")
+    if @tag
+      @bookmarks = current_user.bookmarks.where("tags like ?", "%#{@tag}%")
     else
       @bookmarks = current_user.bookmarks.all
     end
@@ -88,6 +88,19 @@ class BookmarksController < CatalogController
     flash[:message] = "Bookmark removed."
     render text: 'destroyed'
     #redirect_to :back
+  end
+
+  def delete_all
+    ids = params[:id]
+    if !ids
+    elsif ids.kind_of? Array
+      ids.each do |id|
+        Bookmark.find(id).destroy
+      end
+    else
+      Bookmark.find(ids).destroy
+    end
+    redirect_to bookmarks_path
   end
 
   def addtag

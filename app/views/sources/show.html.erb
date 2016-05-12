@@ -27,12 +27,11 @@
     </div>
     <div class="col-sm-9">
         
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h1><%= @source.public_id %></h1>
-            </div>
+            <dl class="document-show-heading dl-horizontal dl-invert">
+                <dt></dt>
+                <dd class='h2'><%= @source.public_id %></dd>
+            </dl>
             <%= render partial: "source_details", locals: { source: @source, details: @details } %>
-        </div>
         
     </div>
 

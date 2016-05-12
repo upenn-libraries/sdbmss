@@ -3,10 +3,12 @@
 <% is_contributor = current_user.role == 'contributor' %>
 <% possessive = is_contributor ? "Your" : "" %>
 
-<h1>
-    Welcome, <%= link_to current_user.username, profile_path(current_user.username) %>!
-    <small class='text-info'>(<%= current_user.role %>)</small>
-</h1>
+<div class="jumbotron">
+    <h1>
+        Welcome, <%= link_to (current_user.fullname.present? ? current_user.fullname : current_user.username), profile_path(current_user.username) %>!
+        <small class='text-info'>(<%= current_user.role %>)</small>
+    </h1>
+</div>
 
 <div class="row">
     <div class="col-sm-3">
@@ -71,39 +73,42 @@
     </div>
     <div class="col-sm-9">
         <div class="panel panel-default">
-            <div class="panel-heading">Entries You've Contributed</div>
-            <div class="panel-body">
-                <% num_entries = current_user.entries.count %>
-                <% num_entries_needing_approval = current_user.entries.where(approved: false).count %>
-                <% if num_entries > 0 %>
-                <% num_entries_to_show = 5 %>
-                <% entries = current_user.entries.most_recent(num_entries_to_show) %>
-                <p>You've contributed <a href="<%= entries_path %>"><%= num_entries %> entries</a> to date<% if num_entries_needing_approval > 0 %> (<%= num_entries_needing_approval %> of them <%= num_entries_needing_approval > 1 ? "are" : "is" %> not yet approved)<% end %>. The last <%= entries.count %> entries you created:</p>
+            <% num_entries = current_user.entries.count %>
+            <% num_entries_needing_approval = current_user.entries.where(approved: false).count %>
+            <% num_entries_deprecated = current_user.entries.where(deprecated: true).count %>
+            <% num_entries_to_show = (params[:num_entries] || 5).to_i %>
+            <% entries = current_user.entries.most_recent(num_entries_to_show) %>
+            <div class="panel-heading">
+                <h4 data-toggle="collapse" href="#myEntries">Entries You've Contributed
+                <small class='pull-right'>You've contributed <a href="<%= search_by_facet_value("created_by", current_user.username) %>"><%= num_entries %> entries</a> to date.</small>
+                </h4>
+            </div>
+            <div class="panel-body panel-collapse collapse in" id="myEntries">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div>The last <strong><%= entries.count %> entries</strong> you created</div>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <% if num_entries > 0 %>
+                            <% if num_entries_needing_approval > 0 %>
+                                <div class='text-warning'><%= num_entries_needing_approval %> of them <%= num_entries_needing_approval > 1 ? "are" : "is" %> not yet approved.</div>
+                            <% end %>
+                            <% if num_entries_deprecated > 0 %>
+                                <div class='text-danger'><%= num_entries_deprecated %> of them <%= num_entries_deprecated > 1 ? "are" : "is" %> have been deprecated.</div>
+                        <% end %>                        
+                    </div>
+                </div>
 
-                <table class="table">
+                <ul class="list-group list-group-no-border-side">
                     <% entries.each do |entry| %>
-                    <tr class="row">
-                        <td class="col-sm-11">
-                            <!--
-                            <% if entry.approved %><a href="<%= entry_path(entry) %>"><%= entry.public_id %></a><% else %><%= entry.public_id %><% end %>:
-                            <%= entry.display_value %>
-                            JIRA(sdbm-176) -->
-                            <a href="<%= entry_path(entry) %>"><%= entry.public_id %></a>:
-                            <% if !entry.approved %><em>(pending approval)</em><% end %>
-                            <%= entry.display_value %>
-                        </td>
-                        <td class="col-sm-1"><a href="<%= edit_entry_path(entry) %>">edit</a></td>
-                    </tr>
+                        <li class="list-group-item"><%= render partial: "bookmarks/show_entry", locals: {entry: entry} %></li>
                     <% end %>
                     <% if num_entries > 5 %>
-                    <tr class="row">
-                        <td class="col-sm-11">
-                            <a href="<%= entries_path %>">View more...</a>
-                        </td>
-                        <td class="col-sm-1"></td>
-                    </tr>
+                        <div class="text-center">
+                            <a class='btn btn-default' href='/dashboard?num_entries=<%= num_entries_to_show.to_i + 5 %>'>View more...</a>
+                        </div>
                     <% end %>
-                </table>
+                </ul>
 
                 <% else %>
 
@@ -114,24 +119,54 @@
 
         <% num_sources = current_user.sources.count %>
         <% if num_sources > 0 %>
-        <% num_sources_to_show = 5 %>
-        <% sources = current_user.sources.most_recent(num_sources_to_show) %>
-        <div class="panel panel-default">
-            <div class="panel-heading">Sources You've Contributed</div>
-            <div class="panel-body">
-                  <p>You've contributed <%= num_sources %> sources to date. The last <%= sources.count %> sources you created:</p>
-
-                  <table class="table">
-                      <% sources.each do |source| %>
-                      <tr class="row">
-                          <td class="col-sm-9"><a href="<%= source_path(source) %>"><%= source.public_id %></a>: <%= source.display_value %></td>
-                          <td class="col-sm-1"><a href="<%= edit_source_path(source) %>">edit</a></td>
-                          <td class="col-sm-2"><a href="<%= new_entry_path(source_id: source) %>">add an entry</a></td>
-                      </tr>
-                      <% end %>
-                  </table>
+            <% num_sources_to_show = 5 %>
+            <% sources = current_user.sources.most_recent(num_sources_to_show) %>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 data-toggle="collapse" href="#mySources">
+                        Sources You've Contributed
+                        <small class='pull-right'>You've contributed <%= num_sources %> source(s) to date.</small>
+                    </h4>
+                </div>
+                <div class="panel-body panel-collapse collapse in" id="mySources">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p>The last <strong><%= sources.count %> source(s)</strong> you created</p>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-no-border-side">
+                       <% sources.each do |source| %>
+                           <li class="list-group-item"><%= render partial: "sources/source_details", locals: {source: source, abbreviate: true} %></li>
+                       <% end %> 
+                    </ul>
+                </div>
             </div>
-        </div>
+        <% end %>
+
+        <% num_manuscripts = Manuscript.where(created_by: current_user).count %>
+        <% if num_manuscripts > 0 %>
+            <% num_manuscripts_to_show = 5 %>
+            <% manuscripts =  Manuscript.where(created_by: current_user).last(num_manuscripts_to_show) %>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 data-toggle="collapse" href="#myManuscripts">
+                        Manuscripts You've Contributes
+                        <small class="pull-right">You've contributed <%= num_manuscripts %> manuscript(s) to date.</small>
+                    </h4>
+                </div>
+                <div class="panel-body panel-collapse collapse in" id="myManuscripts">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <p>The last <%= manuscripts.count %> manuscript(s) you created</p>
+                        </div>
+                    </div>
+                    <ul class="list-group list-group-no-border-side">
+                        <% manuscripts.each do |manuscript| %>
+                            <li class="list-group-item"><%= render partial: "bookmarks/show_manuscript", locals: {manuscript: manuscript} %></li>
+                        <% end %>
+                    </ul>
+                </div>
+            </div>
         <% end %>
 
         <% comments = Comment.with_entries_belonging_to(current_user).limit(5) %>
@@ -160,7 +195,7 @@
         <% @activities = Activity.where(user_id: current_user.id).last(10).reverse %>
         <% if @activities && @activities.count > 0 %>
             <div class="panel panel-default">
-                <div class="panel-heading">Your Recent Activity</div>
+                <div class="panel-heading"><h4>Your Recent Activity</h4></div>
                 <div class="panel-body">
                     <ul class="list-group">
                         <%= render partial: "activities/more" %>                       

@@ -1,0 +1,10 @@
+<dl class="document-metadata dl-horizontal dl-invert">
+  <dt>Last Known Location</dt>
+  <dd><%= manuscript.location || "Unknown" %></dd>
+  <dt>Title(s)</dt>
+  <dd>
+    <%= manuscript.all_titles.to_a.join(", ") %>
+  </dd>
+  <dt># Entries</dt>
+  <dd>This Manuscript is linked to <%= manuscript.entries.count %> entries.</dd>
+</dl>

@@ -1,8 +1,7 @@
 <% # container for a single doc -%>
-<div class="document <%= render_document_class document %>" itemscope itemtype="<%= document.itemtype %>">
-    <% entry = document.model_object %>
+<div class="document">
     <% if entry.nil? %>
-    <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
+    <p>Error: couldn't retrieve model object from database.</p>
     <% else %>
         <% if !entry.approved %>
             <div class="panel panel-warning">
@@ -10,13 +9,7 @@
             </div>
         <% end %>
     <dl class="document-metadata dl-horizontal dl-invert">
-	    <dt>ID</dt>
-        <%# data-context-href triggers an HTTP callback before loading the entry page; this makes prev/next links on individual Entry page work %>
-        <dd><b><a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a></b>
-            <div style="float: right">
-            <%= render_index_doc_actions document, :wrapping_class => "index-document-functions col-sm-3 col-lg-2" %>
-            </div>
-        </dd>
+        <dt>ID</dt><dd><%= link_to entry.public_id, entry_path(entry) %></dd>
 
         <% manuscripts_str = render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
         <% if manuscripts_str.present? %>
@@ -26,42 +19,42 @@
         </dd>
         <% end %>
 
-	    <dt>Source</dt>
-	    <dd>
+      <dt>Source</dt>
+      <dd>
             <%= link_to entry.source.display_value, source_path(entry.source) %> (<%= entry.source.source_type.display_name %>)
         </dd>
 
         <% if entry.catalog_or_lot_number.present? %>
-	    <dt>Cat./Lot #</dt>
-	    <dd><%= entry.catalog_or_lot_number %></dd>
+      <dt>Cat./Lot #</dt>
+      <dd><%= entry.catalog_or_lot_number %></dd>
         <% end %>
 
         <% if entry.institution.present? %>
-	    <dt>Institution/Collection</dt>
-	    <dd><%= entry.institution %></dd>
+      <dt>Institution/Collection</dt>
+      <dd><%= entry.institution %></dd>
         <% end %>
         
         <% if (sale = entry.get_sale).present? %>
 
           <% if (selling_agent = sale.get_selling_agent).present? %>
-	        <dt>Selling Agent</dt>
-    	    <dd><a href="<%= agent_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a></dd>
+          <dt>Selling Agent</dt>
+          <dd><a href="<%= agent_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a></dd>
           <% end %>
 
           <% if (seller_or_holder = sale.get_seller_or_holder).present? %>
-	        <dt>Seller</dt>
-    	    <dd><a href="<%= agent_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a></dd>
+          <dt>Seller</dt>
+          <dd><a href="<%= agent_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a></dd>
           <% end %>
 
           <% if (buyer = sale.get_buyer).present? %>
-	        <dt>Buyer</dt>
-    	    <dd><a href="<%= agent_path(buyer.agent) %>"><%= buyer.agent.name %></a></dd>
+          <dt>Buyer</dt>
+          <dd><a href="<%= agent_path(buyer.agent) %>"><%= buyer.agent.name %></a></dd>
           <% end %>
 
         <% end %>
 
         <% if entry.entry_titles.length > 0 %>
-	    <dt>Titles</dt>
+      <dt>Titles</dt>
         <dd>
         <% entry.entry_titles.each do |entry_title| %>
           <%= entry_title.title %> <% if entry_title.common_title.present? %>[<%= entry_title.common_title %>]<% end %><br/>

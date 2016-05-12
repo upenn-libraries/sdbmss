@@ -97,17 +97,38 @@
     <div class="col-sm-12">
         <div class="row">
             <div class="col-sm-7">
-                <div class='h1'><%= @manuscript.public_id %><br>
-                    <span class='small'><strong>Last Known Location - </strong> <%= @manuscript.location || "Unknown" %></span>
-                </div>
+                <%= form_for (@manuscript), html: {class: "form-inline"} do |f| %>
+                    <% if can? :edit, @manuscript %>
+                        <%= f.submit "Update", class: "form-control pull-right" %>
+                    <% end %>
+                    <div class='h1'>
+                        <%= @manuscript.public_id %>
+                        <br>
+                        <span class='small'><strong>Last Known Location - </strong> 
+                            <% if can? :edit, @manuscript %>
+                                <%= f.text_field :location, class: "form-control manuscript-edit-input" %>
+                            <% else %>
+                                <span class="manuscript-edit-input"><%= @manuscript.location || "Unknown" %></span>
+                            <% end %>
+                        </span><br>
+                        <ul class="small manuscript-titles"><strong>Title(s) - </strong>
+                            <% if can? :edit, @manuscript %>
+                                <%= f.text_field :name, class: "form-control manuscript-edit-input" %>
+                            <% else %>
+                                <% if @manuscript.name %>
+                                    <span class="manuscript-edit-input"><%= @manuscript.name %></span>
+                                <% end %>
+                            <% end %>
+                            <br>
+                            <% @manuscript_titles.each do |title| %>
+                                <span class='label label-info label-tag'><%= title %></span>
+                            <% end %>
+                        </ul>
+                    </div>
+                    <% end %>
                 <% if current_user %>
                     <%= hidden_field_tag "username", current_user.username, id: "username" %> 
                 <% end %>
-                <ul class="list-inline">
-                    <% @manuscript_titles.each do |title| %>
-                        <li class='label label-info label-tag'><%= title %></li>
-                    <% end %>
-                </ul>
             </div>
             <div class="col-sm-5">
                 <div class="panel panel-default text-right">
@@ -117,20 +138,12 @@
                             <li>
                                 <a class='btn btn-sm btn-info' data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
                             </li>
-                            <% if can? :edit, @manuscript %>
-                            <li class="edit_entry">
-                                <a class='btn btn-sm btn-success' href="<%= edit_manuscript_path(@manuscript.id) %>">Edit</a>
-                            </li>
-                            <% end %>
                             <% if can? :link, @manuscript %>
                             <li class="manage_entry">
                                 <a class='btn btn-sm btn-primary' href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Link <%= @manuscript.public_id %></a>
                             </li>
                             <li>
                                 <a href="#proposed-history" data-toggle="collapse" class="toggle-propose-history btn btn-sm btn-warning">Propose History</a>
-
-                                <!--<a href="<%= new_entry_path(manuscript_id: @manuscript.id) %>">New Observation</a>-->
-
                             </li>
                             <% end %>
                         </ul>
@@ -138,10 +151,6 @@
                         citing a manuscript that has been mentioned in sources
                         or observations. -->Do not assume that the manuscript is
                         held by the University of Pennsylvania Libraries.</p>
-                        <!--
-                        <% if user_signed_in? %>
-                        <p class='text-muted'>Do you know more about this manuscript? </p>-->
-                        <% end %>
                     </div>
                 </div>
             </div>
@@ -181,6 +190,9 @@
                 </div>
             </div>
             <div class="collapse in panel-collapse list-group" id="entry_provenance_<%= index %>">
+                    <% if entry.provenance.count <= 0 %>
+                        <li class="list-group-item">This entry does not have any recorded provenance</li>
+                    <% end %>
                     <% entry.provenance.each do |provenance| %>
                         <li class="list-group-item provenance">
                             <div class="row">
@@ -240,9 +252,9 @@
                     </span>
                 </div>
             </div>
-            <div class="list-group" id="sortable-history">
-                <span class="list-group-item placeholder">Drag provenance here to begin creating provenance list</span>
-            </div>
+            <ul class="list-group" id="sortable-history">
+                <li class="list-group-item placeholder">Drag provenance here to begin creating provenance list</li>
+            </ul>
             <div class="panel-footer">
                 <%= submit_tag "Create", class: 'form-control btn-info', data: {confirm: "Are you sure you would like to create a new Observation?"} %>
                 <a id="clearProvenance" class="btn btn-default">Clear</a>

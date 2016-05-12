@@ -99,14 +99,16 @@ class Manuscript < ActiveRecord::Base
   def all_titles
     @manuscript_titles = Set.new
 
-    if name
-      @manuscript_titles.add(name)
-    elsif entries.count > 0
+    #if name
+    #  @manuscript_titles.add(name)
+    if entries.count > 0
       entries.each do |entry|
         if entry.entry_titles.count > 0
           entry.entry_titles.each do |title|
-            @manuscript_titles.add(title.common_title)
-            @manuscript_titles.add(title.title)
+            if title.present?
+              @manuscript_titles.add(title.common_title)
+              @manuscript_titles.add(title.title)
+            end
           end
         end
       end

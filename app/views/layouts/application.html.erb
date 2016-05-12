@@ -68,7 +68,12 @@
 
   <!-- for omnipresent bookmarks tab -->
   <div class="bookmarks_container">
-    <a href="#my_bookmarks" data-toggle="collapse" class='btn btn-default' id="all_bookmarks"><span class="glyphicon glyphicon-bookmark"></span></a>
+    <div class="form-inline clearfix navbar-form hide-bookmarks collapse">
+      <label for="" class="control-label">Tag:  
+        <input type="text" class="form-control" name="tag-search" ng-model="tagSearch" ng-keyup="$event.keyCode == 13 && searchTag(tagSearch)">
+      </label>
+    </div>
+    <a href=".hide-bookmarks" data-toggle="collapse" class='btn btn-default' id="all_bookmarks"><span class="glyphicon glyphicon-bookmark"></span></a>
     <%= render partial: "/shared/my_bookmarks" %>
   </div>
 

@@ -16,6 +16,9 @@ Rails.application.routes.draw do
   get '/bookmarks/export', to: 'bookmarks#export', as: 'export_bookmarks'
   get '/bookmarks/reload', to: 'bookmarks#reload', as: 'reload_bookmarks'
   resources :bookmarks do
+    collection {
+      delete 'delete_all'
+    }
     member {
       get 'addtag'
       get 'removetag'
@@ -105,6 +108,7 @@ Rails.application.routes.draw do
       get 'citation'
       get 'entry_candidates'
       get 'manage_entries'
+      get 'edit', to: :show
     end
   end
 
