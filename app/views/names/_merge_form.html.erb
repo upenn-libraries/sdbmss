@@ -1,0 +1,54 @@
+    <div class="field form-group row">
+        <%= f.label :name, class: "col-sm-4 control-label" %>
+        <div class="col-sm-8">
+            <%= f.text_field :name, :class => 'form-control', :data => { 'ng-model' => 'entity.name', 'ng-init' => "entity.name='#{SDBMSS::Util.escape(@model.name)}'" } %>
+        </div>
+    </div>
+    <div class="field form-group row">
+        <%= f.label :viaf_id, 'VIAF ID', class: "col-sm-4 control-label" %>
+        <div class="col-sm-8">
+            <%= f.text_field :viaf_id, :class => 'form-control', :data => {'ng-model' => 'entity.viaf_id','ng-init' => "entity.viaf_id='#{@model.viaf_id}'"} %>
+        </div>
+        <% if @model.viaf_id.present? %>
+        <div class="col-sm-12 label-alignment">
+            <a target="_blank" href="http://viaf.org/viaf/<%= @model.viaf_id %>/">View VIAF record</a>
+        </div>
+        <% end %>
+    </div>
+    <div class="field form-group row">
+        <%= f.label :flags, class: "col-sm-4 control-label" %>
+        <div class="col-sm-8 checkbox">
+            Specify this name to be used as:<br/>
+            <label>
+                <%= f.check_box :is_artist %> Artist
+            </label>
+            <br/>
+            <label>
+                <%= f.check_box :is_author %> Author
+            </label>
+            <br/>
+            <label>
+                <%= f.check_box :is_scribe %> Scribe
+            </label>
+            <br/>
+            <label>
+                <%= f.check_box :is_provenance_agent %> Provenance Agent
+            </label>
+        </div>
+    </div>
+    <div class="field form-group row">
+        <%= f.label :comment, class: "col-sm-2 control-label" %>
+        <div class="col-sm-8">
+            <%= f.text_field :comment, :class => 'form-control', :data => { 'ng-model' => 'entity.comment', 'ng-init' => "entity.comment='#{@model.comment}'" } %>
+        </div>
+    </div>
+    <div class="actions row">
+        <div class="col-sm-4 col-sm-offset-2">
+            <%= f.submit :class => 'btn btn-primary' %>
+            <% if !@model.new_record? %>
+              <!-- FIX ME: ajax? -->
+              <%= link_to 'Delete',  name_path(@model, format: 'html'),  method: :delete, class: "btn btn-danger", format: 'json', data: { confirm: 'Are you sure?' } %>
+            <% end %>
+            <%= link_to 'Cancel', names_path, class: "btn btn-default" %>
+        </div>
+    </div>

@@ -128,8 +128,14 @@ module Revert
 
   def history
     @model = model_class.find(params[:id])
-    @versions = @model.versions
-    render :template => 'shared/history'
+    if can?(:edit, @model)
+      puts "yeah that's totally fine"
+      @versions = @model.versions
+      render :template => 'shared/history'
+    else
+      flash[:error] = "You do not have permission to view the history for this record."
+      redirect_to polymorphic_path(@model)
+    end
   end
 
 end

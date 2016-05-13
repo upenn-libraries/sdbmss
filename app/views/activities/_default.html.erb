@@ -4,7 +4,7 @@
 <% else %>
   <%= "Unknown User" %>
 <% end %>
-<%= activity.format_event + (activity.format_event.end_with?("e") ? "" : "e") + "d" %>
+<%= activity.format_event %>
 <% link_text = SDBMSS::IDS.get_public_id_for_model(activity.item_type, activity.item_id) %>
 <% if !link_text %><% link_text = "#{activity.item_type} ##{activity.item_id}" %><% end %>
 <% if activity.event != 'destroy' %>

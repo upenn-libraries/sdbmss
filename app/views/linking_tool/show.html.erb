@@ -11,6 +11,8 @@ $(document).ready(function() {
     var manuscriptId;    
     var entryManuscripts;
     var headingId = '<%= @mode == 'by_entry' ? @entry.public_id : @manuscript.public_id %>';
+
+    var unsavedChanges = false;
     
     <% if @mode == 'by_entry' %>
     entryId = <%= @entry.id %>;
@@ -55,6 +57,7 @@ $(document).ready(function() {
                 entry_id: entryId,
                 relation_type: relation
             });
+            unsavedChanges = true;
         }
     };
 
@@ -75,6 +78,7 @@ $(document).ready(function() {
         } else {
             deleteWorkspaceEntry(entryId);            
         }
+        unsavedChanges = true;
     };
 
     var deleteWorkspaceEntry = function(entryIdToDelete) {
@@ -103,6 +107,7 @@ $(document).ready(function() {
                 entryManuscripts.splice(idxToDelete, 1);
             }
         }
+        unsavedChanges = true;
     };
 
     var isInWorkspace = function(entryId, relationType) {
@@ -297,6 +302,15 @@ $(document).ready(function() {
     });
 
     $(document).on("click", ".link-to-manuscript-link", function (event) {
+        
+        // warn user that they will lose unsaved changes
+        var really = true;
+        if (unsavedChanges) {
+            really = confirm("You have unsaved changes that will be lost - continue?");
+            console.log(really);
+        }
+        if (!really) return false;
+
         var manuscriptId = $(event.target).data("manuscriptId");
 
         // create a single EntryManuscript record
@@ -323,6 +337,7 @@ $(document).ready(function() {
                     title: title,
                     body: body
                 });
+                unsavedChanges = false;
             },
             error: function(xhr) {
                 var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
@@ -376,6 +391,7 @@ $(document).ready(function() {
                     entry_manuscripts: entryManuscripts
                 }),
                 success: function(data, textStatus, jqXHR) {
+                    unsavedChanges = false;
                     var body = '<p>Your changes have been saved.<p><a href="/linkingtool/manuscript/' + manuscriptId + '">Click here</a> to reload this page</p>';
                     SDBM.showModal("#modal", {
                         allowDismiss: false,
@@ -460,21 +476,48 @@ $(document).ready(function() {
             return false;
         });
     });
+
+    $(window).bind('beforeunload', function() {
+        if (unsavedChanges)
+            return "You have unsaved changes";
+    });
     
 });
 
 </script>
 <% end %>
 
-<div style="width: 100%;">
-    <span style="font-size: 18px; font-weight: bold;">Linking Tool: <span id="linking-tool-heading-id"></span></span> (<a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#">click here for instructions</a> on how to link entries to manuscript records)
+<div class="row">
+    <div class="col-sm-7">
+        <div class="panel panel-default">
+        <dl class="document-show-heading dl-horizontal dl-invert">
+          <dt></dt>
+          <dd class="h4"><strong>Linking Tool: 
+            <% if @manuscript %>
+                <%= @manuscript.public_id %>
+            <% elsif @entry %>
+                <%= @entry.public_id %>
+            <% end %>
+            </strong></dd>
+        </dl>
+        <% if @manuscript %>
+            <%= render partial: "bookmarks/show_manuscript", locals: {manuscript: @manuscript} %>
+        <% elsif @entry %>
+            <%= render partial: "bookmarks/show_entry", locals: {entry: @entry} %>
+        <% end %>
+        </div>
+    </div>
+    <div class="col-sm-5">
+        <h4><a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#">click here for instructions</a> on how to link entries to manuscript records</h4>
+        <% if @mode == 'by_entry' %>
+            <p>This page allows you to create a <b>manuscript record</b> from this entry by linking it to one or more existing entries. You can <strong class="text-primary">link entries</strong> citing the same manuscript to track its transmission and location across time.</p>
+            <p>If a <b>manuscript record</b> already exists, you can simply link this entry to it. Use the search window below to find other possible links and enter them in the entry queue to help determine whether a link really exists.</p>
+        <% else %>
+            <p>This page allows you to link <strong>entries</strong> to an <strong class="text-primary">existing manuscript record</strong>. You can link entries citing the same manuscript to track its transmission and location across time. Use the search window below to find possible links and enter them in the Entry Queue to help determine whether a link really exists.</p>
+        <% end %>
+    </div>
+    <div class="col-sm-1"></div>
 </div>
-
-<% if @mode == 'by_entry' %>
-    <p>This page allows you to create a <b>manuscript record</b> from this entry by linking it to one or more existing entries. You can link entries citing the same manuscript to track its transmission and location across time. If a <b>manuscript record</b> already exists, you can simply link this entry to it. Use the search window below to find other possible links and enter them in the entry queue to help determine whether a link really exists.</p>
-<% else %>
-    <p>This page allows you to link entries to an existing manuscript record. You can link entries citing the same manuscript to track its transmission and location across time. Use the search window below to find possible links and enter them in the Entry Queue to help determine whether a link really exists.</p>
-<% end %>
 
 <div style="margin-bottom: 6px">
     <span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>

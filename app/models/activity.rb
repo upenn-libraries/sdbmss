@@ -20,11 +20,15 @@ class Activity < ActiveRecord::Base
 
   def format_event
     if event == 'destroy'
-      'delete'
+      'deleted'
     elsif event == 'update'
-      'edit'
+      'edited'
     elsif event == 'create'
-      'add'
+      'added'
+    elsif event == 'mark_as_reviewed'
+      'marked as reviewed'
+    elsif event == 'merge'
+      'merged'
     else
       event
     end

@@ -294,6 +294,11 @@ class EntriesController < SearchableAuthorityController
   end
 
   def history
+    if not can?(:edit, @entry)
+      flash[:error] = "You do not have permission to view the history for this entry."
+      redirect_to entry_path(@entry)
+      return
+    end
     changesets = ModelHistory.new(@entry).changesets
     if changesets.count <= 0
       @error = "This record was added before version history was implemented - there is no saved change history to display."

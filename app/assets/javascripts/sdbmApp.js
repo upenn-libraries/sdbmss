@@ -904,7 +904,6 @@ var BOOKMARK_SCOPE;
         $(window).bind('beforeunload', function() {
             if ($scope.warnWhenLeavingPage && angular.toJson($scope.originalEntryViewModel) !== angular.toJson($scope.entry)) {
                 /*
-                alert("NOT THE SAME!");
                 console.log("originalEntryViewModel=");
                 console.log(angular.toJson($scope.originalEntryViewModel));
                 console.log("current entry=");
@@ -1412,6 +1411,7 @@ var BOOKMARK_SCOPE;
 
         // store in scope, otherwise angular template code can't
         // get a reference to this
+        // 
         $scope.sdbmutil = sdbmutil;
 
         $scope.currentlySaving = false;
@@ -1641,8 +1641,8 @@ var BOOKMARK_SCOPE;
                 $scope.optionsSourceType = result.data.source_type;
                 $scope.optionsMedium = result.data.medium;
 
-                if($("#source_id").val()) {
-                    var sourceId = $("#source_id").val();
+                if($("#source_id").val() || $scope.sourceId) {
+                    var sourceId = $("#source_id").val() || $scope.sourceId;
                     $scope.edit = true;
                     $scope.source = Source.get(
                         {id: sourceId},

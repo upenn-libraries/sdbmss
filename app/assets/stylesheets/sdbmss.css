@@ -457,6 +457,13 @@ input.manuscript-edit-input:not(:focus) {
   background-color: #FDFDEE;
 }
 */
+
+/* MERGING */
+.input-warning input, .input-warning select, .input-warning textarea {
+    background: #fcf8e3;
+    color: gray;
+}
+
 .input-block.ng-enter {
   opacity: 0;
 }

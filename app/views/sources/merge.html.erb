@@ -7,19 +7,32 @@
 <div class="row">
     <div class="col-sm-5">
         <div class='panel <%= @target.present? ? "panel-danger" : "panel-default" %>'>
-            <div class='panel-heading'><b><%= @source.public_id %> <%= @target.present? ? "(Will be deleted)" : "" %></b></div>
-            <%= %>
-            <div class="panel-body"><%= render partial: "sources/source_details", locals: { source: @source } %></div>
+            <div class='panel-heading'>
+                <div class='h4'><%= link_to @source.public_id, source_path(@source) %> <%= @target.present? ? "(Will be deleted)" : "" %>
+                    <small class="pull-right badge"><%= @source.entries_count %> entries</small>
+                </div>
+            </div>
+            <% if @target.present? %>
+                <div class="panel-body"><%= render partial: "sources/edit", locals: { source: @source, index: 0 } %></div>
+            <% else %>
+                <div class="panel-body"><%= render partial: "sources/source_details", locals: {source: @source} %></div>
+            <% end %>
         </div>
     </div>
     <div class='col-sm-2'>
         <%= image_tag 'right-arrow.png', class: 'img img-responsive' %>
     </div>
+    <!-- form tag for collecting the results of the merge request -->
+    <%= form_tag(request.path, method: :post, class: "form-horizontal sdbmss-form") do %>
     <div class="col-sm-5">
         <% if @target_id.present? && @target.present? %>
             <div class='panel <%= @target.present? ? "panel-success" : "panel-default" %>'>
-                <div class='panel-heading'><b><%= @target.public_id %></b></div>
-                <div class="panel-body"><%= render partial: "sources/source_details", locals: { source: @target } %></div>
+                <div class='panel-heading'>
+                    <div class='h4'><%= link_to @target.public_id, source_path(@target) %>
+                        <small class="pull-right badge"><%= @target.entries_count %> entries</small>
+                    </div>
+                </div>
+                <div class="panel-body"><%= render partial: "sources/edit", locals: { source: @target, index: 1 } %></div>
             </div>
         <% else %>
             <% if @target_id.present? %>
@@ -61,7 +74,7 @@
                             <tr>
                                 <td><a class='btn btn-primary' href="<%= source_path(id: @source.id)%>/merge?target_id=<%= src.id %>">Select</a></td>
                                 <td><%= link_to src.id, source_path(src.id) %></td>
-                                <td><%= src.source_agents[0].agent.name %></td>
+                                <td><%= src.source_agents[0].agent.name if src.source_agents.count > 0 %></td>
                                 <td><%= format_fuzzy_date(src.date) %></td>
                                 <td><a href="<%= search_advanced_path(source: src.public_id) %>"><%= src.entries.approved_only.count %> entries</a></td>
                             </tr>
@@ -75,26 +88,19 @@
             </div>
         <% end %>
     </div>
-</div>
 
-<% if @target.present? %>
-<div class="row">
-    <div class="col-sm-12">
+    <% if @target.present? %>
+    <div class="col-sm-6"></div>
+    <div class="col-sm-6">
+        <input type="hidden" name="confirm" value="yes"/>
+        <input type="hidden" name="target_id" value="<%= @target.id %>"/>
         <div><b>Confirm</b></div>
         <p>Are you sure you want to do this? <%= @source.public_id %> will be marked as deleted and its fields cleared out.</p>
+        <button class="btn btn-primary">Yes</button>
+        <a class="btn btn-warning" href="<%= merge_source_path(@source) %>">Cancel</a>
+        <%= link_to "Swap", merge_source_path(@target, :target_id => @source.id), class: 'btn btn-info' %>
     </div>
-</div>
 
-<%= form_tag(request.path, method: :post, class: "form-horizontal sdbmss-form") do %>
-    <input type="hidden" name="confirm" value="yes"/>
-    <input type="hidden" name="target_id" value="<%= @target.id %>"/>
-    <div class="row">
-        <div class="col-sm-3">
-            <button class="btn btn-primary">Yes</button>
-            <a class="btn btn-warning" href="<%= merge_source_path(@source) %>">Cancel</a>
-            <%= link_to "Swap", merge_source_path(@target, :target_id => @source.id), class: 'btn btn-info' %>
-        </div>
-    </div>
 <% end %>
 
 <% end %>

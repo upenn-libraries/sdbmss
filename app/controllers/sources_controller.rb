@@ -319,6 +319,7 @@ class SourcesController < SearchableAuthorityController
       elsif Source.find_by(id: @target_id).source_type != @source.source_type
         @warning = "You can only merge sources that are the same type, to avoid data loss"
       else
+        flash[:notice] = "Copy over any fields you wish to have in the updated record.  This will be your last chance before the old record is deleted."
         @target = Source.find_by(id: @target_id)
         show_for_merge(search_result_format(@target)).each do |f, v|
           if @differences[f].present?
@@ -339,6 +340,9 @@ class SourcesController < SearchableAuthorityController
           agent = SourceAgent.find(params[:source_agent_id])
           agent.update({:source_id => @target.id})
         end
+        @transaction_id = PaperTrail.transaction_id
+        @model = @target
+        log_activity
       end
       # FIX ME: handle errors here, if the merge is not succesful?
       @details = search_result_format(@target)

@@ -32,6 +32,7 @@
                 <p><a href="<%= comments_path %>">Manage <%= possessive %> Comments</a>
                     <%= render partial: "unreviewed_count", locals: { model_class: Comment } %>
                 </p>
+                <p><a href="<%= bookmarks_path %>">Manage My Bookmarks</a></p>
             </div>
         </div>
         <% if can?(:manage, EntryManuscript) || can?(:manage, Name) || can?(:manage, Language) || can?(:manage, Place) || can?(:manage, User) %>
@@ -55,7 +56,6 @@
                     <%= render partial: "unreviewed_count", locals: { model_class: User } %>
                 </p>
                 <% end %>
-
                 <p><a href="<%= activities_path %>">Recent Activity</a></p>
             </div>
         </div>
@@ -79,11 +79,11 @@
             <% num_entries_to_show = (params[:num_entries] || 5).to_i %>
             <% entries = current_user.entries.most_recent(num_entries_to_show) %>
             <div class="panel-heading">
-                <h4 data-toggle="collapse" href="#myEntries">Entries You've Contributed
+                <h4 data-toggle="collapse" href="#myEntries">Entries You've Contributed ...
                 <small class='pull-right'>You've contributed <a href="<%= search_by_facet_value("created_by", current_user.username) %>"><%= num_entries %> entries</a> to date.</small>
                 </h4>
             </div>
-            <div class="panel-body panel-collapse collapse in" id="myEntries">
+            <div class="panel-body panel-collapse collapse" id="myEntries">
                 <div class="row">
                     <div class="col-sm-6">
                         <div>The last <strong><%= entries.count %> entries</strong> you created</div>
@@ -124,11 +124,11 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 data-toggle="collapse" href="#mySources">
-                        Sources You've Contributed
+                        Sources You've Contributed ...
                         <small class='pull-right'>You've contributed <%= num_sources %> source(s) to date.</small>
                     </h4>
                 </div>
-                <div class="panel-body panel-collapse collapse in" id="mySources">
+                <div class="panel-body panel-collapse collapse" id="mySources">
                     <div class="row">
                         <div class="col-sm-12">
                             <p>The last <strong><%= sources.count %> source(s)</strong> you created</p>
@@ -150,11 +150,11 @@
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 data-toggle="collapse" href="#myManuscripts">
-                        Manuscripts You've Contributes
+                        Manuscripts You've Contributes ...
                         <small class="pull-right">You've contributed <%= num_manuscripts %> manuscript(s) to date.</small>
                     </h4>
                 </div>
-                <div class="panel-body panel-collapse collapse in" id="myManuscripts">
+                <div class="panel-body panel-collapse collapse" id="myManuscripts">
                     <div class="row">
                         <div class="col-sm-12">
                             <p>The last <%= manuscripts.count %> manuscript(s) you created</p>

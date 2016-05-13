@@ -43,7 +43,7 @@
 <% if !defined?(abbreviate) || !abbreviate %>
 <% if source.medium.present? || source.date_accessed.present? || source.location_institution.present? || source.location.present? || source.link.present? %>
         <% if source.medium.present? %>
-        <dt>Method of Access</dt>
+        <dt></dt>
             <dd><%= source.medium_for_display %></dd>
         <% end %>
 
