@@ -76,7 +76,7 @@ class NamesController < SearchableAuthorityController
   def merge
     @target_id = params[:target_id]
     @target = nil
-    params[:name] = @model.name
+#    params[:name] = @model.name
     get_similar
     if @target_id.present?
       if @target_id.to_i == @model.id
@@ -86,7 +86,14 @@ class NamesController < SearchableAuthorityController
       end
     end
     if params[:confirm] == "yes"
-      @model.merge_into(@target)
+      ActiveRecord::Base.transaction do
+        @target.update_attributes(merge_params)
+        @target.save!
+        @model.merge_into(@target)
+        @transaction_id = PaperTrail.transaction_id
+        @model = @target
+        log_activity
+      end
       render "merge_success"
     end
   end
@@ -133,6 +140,10 @@ class NamesController < SearchableAuthorityController
       p = params
     end
     p.permit(:name, :comment, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe)
+  end
+
+  def merge_params
+    params.permit(:name, :comment, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe)
   end
 
   def deletable?(object)

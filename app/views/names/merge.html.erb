@@ -1,15 +1,21 @@
-<div class='panel panel-primary'>
-    <div class='panel-heading'>
-        <h3 class='h3'>Merge <%= @model.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h3>
+<div class="col-sm-12">
+    <div class='panel panel-primary'>
+        <div class='panel-heading'>
+            <h3 class='h3'>Merge <%= @model.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h3>
+        </div>
     </div>
 </div>
 
 <div class="row">
     <div class="col-sm-5">
-        <div class='panel <%= @target.present? ? "panel-danger" : "panel-default" %>'>
-            <div class='panel-heading'><b><%= @model.public_id %> <%= @target.present? ? "(Will be deleted)" : "" %></b></div>
-            <%= %>
-            <%= render partial: "shared/name_main", locals: { name: @model } %>
+        <div class='panel <%= @target.present? ? "panel-danger input-warning" : "panel-default" %>'>
+            <div class='panel-heading'>
+                <div class='h4'><%= link_to @model.public_id, name_path(@model) %>
+                </div>
+            </div>
+            <div class="panel-body">
+                <%= render partial: "names/merge_form", locals: { name: @model } %>
+            </div>
         </div>
     </div>
     <div class='col-sm-2'>
@@ -17,10 +23,28 @@
     </div>
     <div class="col-sm-5">
         <% if @target_id.present? && @target.present? %>
-            <div class='panel <%= @target.present? ? "panel-success" : "panel-default" %>'>
-                <div class='panel-heading'><b><%= @target.public_id %></b></div>
-                <%= render partial: "shared/name_main", locals: { name: @target } %>
-            </div>
+            <%= form_tag merge_name_path(@model) do %>
+                <div class='panel <%= @target.present? ? "panel-success" : "panel-default" %>'>
+                    <div class='panel-heading'>
+                        <div class='h4'><%= link_to @target.public_id, name_path(@target) %>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <%= render partial: "names/merge_form", locals: { name: @target } %>
+                    </div>
+                </div>
+                <div class="panel panel-success">
+                    <div class="panel-body">
+                        <div><b>Confirm</b></div>
+                        <p>Are you sure you want to do this? <%= @model.public_id %> will be marked as deleted and its fields cleared out.</p>
+                            <input type="hidden" name="confirm" value="yes"/>
+                            <input type="hidden" name="target_id" value="<%= @target.id %>"/>
+                        <button class="btn btn-primary">Yes</button>
+                        <a class="btn btn-warning" href="<%= merge_name_path(@model) %>">Cancel</a>
+                        <%= link_to "Swap", merge_name_path(@target, :target_id => @model.id), class: 'btn btn-info' %>
+                    </div>
+                </div>
+            <% end %>
         <% else %>
             <% if @target_id.present? %>
                 <div class='panel panel-danger'>
@@ -82,25 +106,3 @@
         <% end %>
     </div>
 </div>
-
-<% if @target.present? %>
-<div class="row">
-    <div class="col-sm-12">
-        <div><b>Confirm</b></div>
-        <p>Are you sure you want to do this? <%= @model.public_id %> will be marked as deleted and its fields cleared out.</p>
-    </div>
-</div>
-
-<%= form_tag(request.path, method: :post, class: "form-horizontal sdbmss-form") do %>
-    <input type="hidden" name="confirm" value="yes"/>
-    <input type="hidden" name="target_id" value="<%= @target.id %>"/>
-    <div class="row">
-        <div class="col-sm-3">
-            <button class="btn btn-primary">Yes</button>
-            <a class="btn btn-warning" href="<%= merge_name_path(@model) %>">Cancel</a>
-            <%= link_to "Swap", merge_name_path(@target, :target_id => @model.id), class: 'btn btn-info' %>
-        </div>
-    </div>
-<% end %>
-
-<% end %>

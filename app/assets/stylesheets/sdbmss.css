@@ -34,23 +34,14 @@ body {
   right: 0px;
   z-index: 2000;
 }
-#all_bookmarks {
-  position: absolute;
-  right: 0px;
-  top: 6px;;
-  margin: 2px 3px 1px 0px;
+#show_all_bookmarks {
+  float: right;
+  margin: 10px;
 }
 #my_bookmarks {
-  position: absolute;
-  right: 0px;
-  padding: 4px;
-  width: 340px;
-  background: #eee;
+  float: right;
+  max-width: 400px;
   border-radius: 5px;
-}
-#my_bookmarks .nav a {
-  padding: 10px 8px;
-  margin: 0px;
 }
 #my_bookmarks .badge {
   padding: 2px;

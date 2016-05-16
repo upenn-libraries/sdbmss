@@ -1,12 +1,14 @@
+<a href="#my_bookmarks" id="show_all_bookmarks" data-toggle="collapse" class="btn btn-default"><span class="glyphicon glyphicon-bookmark"></span></a>
 <% if current_user %>
-  <div class="panel-group collapse hide-bookmarks" id="my_bookmarks" ng-controller='ManageBookmarks'>
-    <ul class="nav nav-tabs">
-      <li ng-repeat="(name, bookmarks) in all_bookmarks">
-        <a data-toggle='tab' href='#bookmark-tab-{{ name }}'>{{ name }}
-        <span class="badge">{{ bookmarks.length }}</span></a>
-      </li>
-    </ul>
+  <div class="panel panel-default collapse" id="my_bookmarks" ng-controller="ManageBookmarks">
+      <ul class="nav nav-pills">
+        <li ng-repeat="(name, bookmarks) in all_bookmarks" class="bookmark-nav-button">
+          <a data-toggle='tab' href='#bookmark-tab-{{ name }}'>{{ name }}
+          <span class="badge">{{ bookmarks.length }}</span></a>
+        </li>
+      </ul>
     <div class="tab-content bookmark-panes">
+
       <div ng-repeat="(name, bookmarks) in all_bookmarks" class="tab-pane fade" id="bookmark-tab-{{ name }}">
         <ul class="list-group bookmarks">
           <li class="list-group-item" ng-if="bookmarks.length <= 0">
@@ -44,6 +46,12 @@
           </li>
         </ul>
       </div>
+  
+    </div>
+    <div class="form-inline clearfix navbar-form">
+      <label for="" class="control-label">Filter By Tag:  
+        <input type="text" class="form-control" name="tag-search" ng-model="tagSearch" ng-keyup="$event.keyCode == 13 && searchTag(tagSearch)">
+      </label>
     </div>
   </div>
 <% end %>

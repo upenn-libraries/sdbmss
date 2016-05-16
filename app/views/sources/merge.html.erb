@@ -1,6 +1,8 @@
-<div class='panel panel-primary'>
-    <div class='panel-heading'>
-        <h3 class='h3'>Merge <%= @source.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h3>
+<div class="col-sm-12">
+    <div class='panel panel-primary'>
+        <div class='panel-heading'>
+            <h3 class='h3'>Merge <%= @source.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h3>
+        </div>
     </div>
 </div>
 
@@ -90,15 +92,19 @@
     </div>
 
     <% if @target.present? %>
-    <div class="col-sm-6"></div>
-    <div class="col-sm-6">
-        <input type="hidden" name="confirm" value="yes"/>
-        <input type="hidden" name="target_id" value="<%= @target.id %>"/>
-        <div><b>Confirm</b></div>
-        <p>Are you sure you want to do this? <%= @source.public_id %> will be marked as deleted and its fields cleared out.</p>
-        <button class="btn btn-primary">Yes</button>
-        <a class="btn btn-warning" href="<%= merge_source_path(@source) %>">Cancel</a>
-        <%= link_to "Swap", merge_source_path(@target, :target_id => @source.id), class: 'btn btn-info' %>
+    <div class="col-sm-7"></div>
+    <div class="col-sm-5">
+        <div class="panel panel-success">
+            <div class="panel-body">
+                <input type="hidden" name="confirm" value="yes"/>
+                <input type="hidden" name="target_id" value="<%= @target.id %>"/>
+                <div><b>Confirm</b></div>
+                <p>Are you sure you want to do this? <%= @source.public_id %> will be marked as deleted and its fields cleared out.</p>
+                <button class="btn btn-primary">Yes</button>
+                <a class="btn btn-warning" href="<%= merge_source_path(@source) %>">Cancel</a>
+                <%= link_to "Swap", merge_source_path(@target, :target_id => @source.id), class: 'btn btn-info' %>
+            </div>
+        </div>
     </div>
 
 <% end %>

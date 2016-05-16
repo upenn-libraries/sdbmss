@@ -1,54 +1,45 @@
     <div class="field form-group row">
-        <%= f.label :name, class: "col-sm-4 control-label" %>
-        <div class="col-sm-8">
-            <%= f.text_field :name, :class => 'form-control', :data => { 'ng-model' => 'entity.name', 'ng-init' => "entity.name='#{SDBMSS::Util.escape(@model.name)}'" } %>
+        <%= label :name, "Name", class: "col-sm-3 control-label" %>
+        <div class="col-sm-9">
+            <%= text_field_tag :name, name.name, :class => 'form-control'  %>
         </div>
     </div>
     <div class="field form-group row">
-        <%= f.label :viaf_id, 'VIAF ID', class: "col-sm-4 control-label" %>
-        <div class="col-sm-8">
-            <%= f.text_field :viaf_id, :class => 'form-control', :data => {'ng-model' => 'entity.viaf_id','ng-init' => "entity.viaf_id='#{@model.viaf_id}'"} %>
+        <%= label_tag :viaf_id, 'VIAF ID', class: "col-sm-3 control-label" %>
+        <div class="col-sm-9">
+            <%= text_field_tag :viaf_id, name.viaf_id, :class => 'form-control' %>
         </div>
-        <% if @model.viaf_id.present? %>
-        <div class="col-sm-12 label-alignment">
-            <a target="_blank" href="http://viaf.org/viaf/<%= @model.viaf_id %>/">View VIAF record</a>
+        <% if name.viaf_id.present? %>
+        <div class="col-sm-3"></div>
+        <div class="col-sm-9 label-alignment pull-right">
+            <a target="_blank" href="http://viaf.org/viaf/<%= name.viaf_id %>/">View VIAF record</a>
         </div>
         <% end %>
     </div>
     <div class="field form-group row">
-        <%= f.label :flags, class: "col-sm-4 control-label" %>
-        <div class="col-sm-8 checkbox">
+        <%= label_tag :flags, "Flags", class: "col-sm-3 control-label" %>
+        <div class="col-sm-9 checkbox">
             Specify this name to be used as:<br/>
             <label>
-                <%= f.check_box :is_artist %> Artist
+                <%= check_box_tag :is_artist, 1, name.is_artist %> Artist
             </label>
             <br/>
             <label>
-                <%= f.check_box :is_author %> Author
+                <%= check_box_tag :is_author, 1, name.is_author %> Author
             </label>
             <br/>
             <label>
-                <%= f.check_box :is_scribe %> Scribe
+                <%= check_box_tag :is_scribe, 1, name.is_scribe %> Scribe
             </label>
             <br/>
             <label>
-                <%= f.check_box :is_provenance_agent %> Provenance Agent
+                <%= check_box_tag :is_provenance_agent, 1, name.is_provenance_agent %> Provenance Agent
             </label>
         </div>
     </div>
     <div class="field form-group row">
-        <%= f.label :comment, class: "col-sm-2 control-label" %>
-        <div class="col-sm-8">
-            <%= f.text_field :comment, :class => 'form-control', :data => { 'ng-model' => 'entity.comment', 'ng-init' => "entity.comment='#{@model.comment}'" } %>
-        </div>
-    </div>
-    <div class="actions row">
-        <div class="col-sm-4 col-sm-offset-2">
-            <%= f.submit :class => 'btn btn-primary' %>
-            <% if !@model.new_record? %>
-              <!-- FIX ME: ajax? -->
-              <%= link_to 'Delete',  name_path(@model, format: 'html'),  method: :delete, class: "btn btn-danger", format: 'json', data: { confirm: 'Are you sure?' } %>
-            <% end %>
-            <%= link_to 'Cancel', names_path, class: "btn btn-default" %>
+        <%= label_tag :comment, "Comment", class: "col-sm-3 control-label" %>
+        <div class="col-sm-9">
+            <%= text_field_tag :comment, name.comment, :class => 'form-control' %>
         </div>
     </div>
