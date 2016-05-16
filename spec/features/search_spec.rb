@@ -150,19 +150,19 @@ describe "Blacklight Search", :js => true do
   it "should load show Source page" do
     source = Source.last
     visit source_path(source)
-    expect(page).to have_xpath("//h1[contains(.,'#{source.public_id}')]")
+    expect(page).to have_xpath("//dd[contains(.,'#{source.public_id}')]")
   end
 
   it "should load show Agent page" do
     agent = Name.where(is_provenance_agent: true).last
     visit agent_path(agent)
-    expect(page).to have_xpath("//h1[contains(.,'#{agent.public_id}')]")
+    expect(page).to have_xpath("//dd[contains(.,'#{agent.public_id}')]")
   end
 
   it "should load show Name page" do
     name = Name.last
     visit name_path(name)
-    expect(page).to have_xpath("//h1[contains(.,'#{name.public_id}')]")
+    expect(page).to have_xpath("//dd[contains(.,'#{name.public_id}')]")
   end
 
   it "should load show Profile page" do
@@ -187,6 +187,7 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should bookmark an Entry and remove it" do
+    skip "New bookmark method implemented"
     visit new_user_session_path
     fill_in 'user_login', :with => @user.username
     fill_in 'user_password', :with => 'somethingunguessable'
@@ -217,6 +218,7 @@ describe "Blacklight Search", :js => true do
 
   # poltergeist has trouble loading the csv, so we don't use it
   it "should export bookmarks as CSV", :js => false do
+    skip "New bookmark method implemented"
     entry = Entry.first
 
     Bookmark.create!(

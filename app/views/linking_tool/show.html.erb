@@ -222,11 +222,13 @@ $(document).ready(function() {
 
     var resultsTable = new SDBM.EntryTable("#search_results", {
         dom: '<"clear"><"H"r>JRt<"F"ip>',
+        //dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t',
         height: function() {
             // height gets passed into dataTables constructor before
             // it's had a chance to construct all its crazy DOM bits,
             // so it's hard to calculate height dynamically to fit the
             // viewport. This seems pretty decent.
+            // FIX ME: doesn't work, though -> when the window is too small, the right part (search results) just don't appear
             var footer_size = 100;
             return $(window).height() - $("#search_results").offset().top - footer_size;
         },

@@ -57,7 +57,7 @@ var SDBM = SDBM || {};
             prependColumns: null,
             height: 'full',  // FIX ME: is this better, or worse?
             heightBuffer: 360,
-            dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">>>>t'
+            dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t'
         };
 
         this.options = $.extend({}, defaults, options);
@@ -159,6 +159,7 @@ var SDBM = SDBM || {};
             scrollY: scrollY, //false,
             scrollCollapse: false,
             colReorder: false,
+            colResize: true,
             // extensions get activated via these codes in 'dom' option
             // J = colResize
             // R = colReorder
