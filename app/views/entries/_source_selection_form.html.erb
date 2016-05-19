@@ -51,7 +51,7 @@
                 <% if utility == "new" %>
                     <a id="create-entry-link-{{ source.id }}" href="{{ sdbmutil.getEntryCreateURL(source.id) }}">{{ source.display_value }}</a> ({{ source.entries_count }} entries)
                 <% else %>
-                    <a id="modify-entry-source-link" ng-click="setSource(source)">{{ source.display_value }}</a> ({{ source.entries_count }} entries)
+                    <a id="modify-entry-source-link" ng-click="setSource(source)">{{ source.display_value }}</a> ({{ source.entries_count }} entries) {{ source.source_type }}
                 <% end %>
             </div>
         </div>

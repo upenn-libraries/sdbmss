@@ -5,6 +5,7 @@
 class AccountsController < SearchableAuthorityController
 
   include MarkAsReviewed
+  include LogActivity
 
   before_action :require_admin
 

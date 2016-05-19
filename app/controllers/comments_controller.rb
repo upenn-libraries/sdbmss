@@ -33,7 +33,7 @@ class CommentsController < SearchableAuthorityController
       entry_id: obj.entry.try(:id),
       manuscript_id: obj.manuscript.try(:id),
       comment: obj.comment,
-      is_correction: obj.is_correction,
+      #is_correction: obj.is_correction,
       is_accepted: obj.is_accepted,
       reviewed: obj.reviewed,
       created_by: obj.created_by.username,

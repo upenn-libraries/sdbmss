@@ -27,7 +27,6 @@
       <% if @tag %>
         <small>(<%= @tag %>)</small>
       <% end %>
-      <a href="<%= name.underscore.pluralize %>/search.csv?op=AND" class="glyphicon glyphicon-floppy-save pull-right"></a>
     </h2>
     <ul class="list-group collapse in manage_bookmarks list-group-no-border-side" id="bookmarks_<%= name %>">
       <% if bookmarks.count <= 0 %>
@@ -60,16 +59,16 @@
                   <%= bookmark[:show] %></p>
                 <% end %>
               <p class='list-group-item-text'>
-                <dl class="document-metadata dl-horizontal dl-invert">
-                  <dt>Tags</dt>
-                  <dd>
-                    <ul class="list-inline form-inline">
-                      <% bookmark[:tags].each do |tag| %>
-                        <li><span class="label label-bookmark-tag"><%= tag %></span></li>
-                      <% end %>
-                    </ul>
-                  </dd>
-                </dl>
+
+                <ul class="list-inline form-inline">
+                  <!--<li class="input-group">
+                    <input type='text' class='form-control manage-bookmarks-addtag' placeholder="add tag...">
+                    <a class="input-group-addon manage-bookmarks-addtag-confirm"><span class="glyphicon glyphicon-plus"></span></a>
+                  </li>-->
+                  <% bookmark[:tags].each do |tag| %>
+                    <li><span class="label label-bookmark-tag"><%= tag %></span></li>
+                  <% end %>
+                </ul>
               </p>
             </div>
             

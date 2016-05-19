@@ -5,8 +5,8 @@
      var resourceName = "<%= resource_name %>";
 
      // flag = show all records, or only those that the user created
-     <% if can? :manage, model_class  %>
-     var showOnlyRecordsCreatedByUser = 0;
+     <% if can? :manage, model_class %>
+     var showOnlyRecordsCreatedByUser = <%= params[:created_by_user] || 0 %>;
      <% else %>
      var showOnlyRecordsCreatedByUser = 1;
      <% end %>
@@ -48,7 +48,7 @@
                 render: function (data, type, full, meta) {
                      var str = '<span class="btn-group options-btn-group">'
                      + '<a onclick="addBookmark(' + data + ', \'Manuscript\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/manuscripts/' + data + '">' 
-                                + '<span class="glyphicon glyphicon-star"></span></a>'
+                                + '<span class="glyphicon glyphicon-bookmark"></span></a>'
                                   + '<a class="btn btn-xs btn-success" href="/' + manageManuscripts.options.resourceName + '/' + data + '/edit/">Edit</a>'
                             + '<a class="btn btn-xs btn-danger delete-link" href="/' + manageManuscripts.options.resourceName + '/' + data + '.json">Delete</a>'
                             + '<a class="btn btn-xs btn-info linking-tool-link" target="_blank" href="/linkingtool/manuscript/' + data + '">Linking Tool</a></span>';

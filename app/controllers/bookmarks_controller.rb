@@ -15,7 +15,9 @@ class BookmarksController < CatalogController
     end
     @bookmarks_sorted = {'Entry' => [], 'Source' => [], 'Manuscript' => [], 'Name' => []}
     @bookmarks.each do |bookmark|
-      if @bookmarks_sorted[bookmark.document_type.to_s]
+      if bookmark.document.nil?
+      elsif bookmark.document_type == nil
+      elsif @bookmarks_sorted[bookmark.document_type.to_s]
         @bookmarks_sorted[bookmark.document_type.to_s].push(bookmark.for_show)
       else
         @bookmarks_sorted[bookmark.document_type.to_s] = [bookmark.for_show]
@@ -54,7 +56,9 @@ class BookmarksController < CatalogController
     end
     @bookmarks_sorted = {'Entry' => [], 'Source' => [], 'Manuscript' => [], 'Name' => []}
     @bookmarks.each do |bookmark|
-      if @bookmarks_sorted[bookmark.document_type.to_s]
+      if bookmark.document_type == nil
+      elsif !bookmark.document
+      elsif @bookmarks_sorted[bookmark.document_type.to_s]
         @bookmarks_sorted[bookmark.document_type.to_s].push(bookmark.for_show)
       else
         @bookmarks_sorted[bookmark.document_type.to_s] = [bookmark.for_show]

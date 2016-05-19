@@ -1,0 +1,34 @@
+<%= form_tag(request.path, method: :get, class: "form-inline form-horizontal search-form sdbmss-form", id: "link-search") do %>
+<div class="panel panel-default">
+    <div class="panel-body search">
+        <div class="row search-fieldset">
+            <div class="col-sm-12">
+                <button type='button' class="btn btn-xs btn-warning search-remove form-control inline-left"> <span class="glyphicon glyphicon-remove"></span> </button><%= text_field_tag :search_value, params[:search_value], placeholder: "Enter your search term...", class: "form-control inline-middle" %><select class="form-control inline-right inline-select" name="search_field">
+                <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
+                    <option value="<%= key %>"><%= field_def.label %></option>
+                <%- end -%>
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-2">
+                <button type='button' class="btn btn-success" id="addSearch">
+                    <span class="glyphicon glyphicon-plus"></span> add term
+                </button>
+            </div>
+            <div class="col-xs-4">
+                <span id="spinner" style='display: none;'><img alt="working..." src="<%= asset_path "spinner.gif" %>"/> loading search results...</span>
+            </div>
+            <div class="col-sxs-6 text-right">
+                <label for="" class="control-label">Match</label>
+                <select name="op" id="search_op" class="form-control" style="width: 77px; display: inline-block;">
+                    <option value="AND">All</option>
+                    <option value="OR">Any</option>
+                </select>
+                <button id="search_submit" type="submit" class="btn btn-primary">Search</button>
+                <button id="show-matches" class="btn btn-info">Suggest links</button>
+            </div>
+        </div>
+    </div>
+</div>
+<% end %>

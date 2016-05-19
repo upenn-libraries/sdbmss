@@ -4,7 +4,7 @@
         <% if ul.count > 0 %>
         <div class="row">
             <div class="col-sm-12">
-                <div id="myCarousel<%= ul[0].item_type %><%= index %>" class="carousel slide input-block" data-interval='false' data-wrap='false'>
+                <div id="myCarousel<%= ul[0].item_type %><%= index %>" class="carousel slide input-block"><!-- data-interval='false' data-wrap='false'>-->
                           <div class="carousel-inner" role="listbox">
                             <% ul.reverse.each do |version| %>
                                 <% formatter = EntryVersionFormatter.new(version) %>
@@ -38,11 +38,11 @@
                           </div>                  
 
                       <!-- Left and right controls -->
-                      <a class="left carousel-control" href="#myCarousel<%= ul[0].item_type %><%= index %>" role="button" data-slide="prev">
+                      <a class="left carousel-control" href="#myCarousel<%= ul[0].item_type %><%= index %>" role="button"><!-- data-slide="prev">-->
                         <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
                         <span class="sr-only">Previous</span>
                       </a>
-                      <a class="right carousel-control" href="#myCarousel<%= ul[0].item_type %><%= index %>" role="button" data-slide="next">
+                      <a class="right carousel-control" href="#myCarousel<%= ul[0].item_type %><%= index %>" role="button"><!-- data-slide="next">-->
                         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                         <span class="sr-only">Next</span>
                       </a>

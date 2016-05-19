@@ -6,7 +6,7 @@
 
      // flag = show all records, or only those that the user created
      <% if can? :manage, model_class  %>
-     var showOnlyRecordsCreatedByUser = 0;
+     var showOnlyRecordsCreatedByUser = <%= params[:created_by_user] || 0 %>;
      <% else %>
      var showOnlyRecordsCreatedByUser = 1;
      <% end %>
@@ -76,7 +76,7 @@
                          return isNotDeprecated ? (
                             '<span class="btn-group options-btn-group">' + 
                             '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '">' + 
-                                '<span class="glyphicon glyphicon-star"></span>' + 
+                                '<span class="glyphicon glyphicon-bookmark"></span>' + 
                             '</a>' + 
                             '<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +
                             '<a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#" target="_blank">Delete</a>' +

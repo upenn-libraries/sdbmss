@@ -107,7 +107,7 @@
                 sdbmssMinWidth: "130px",
                 sdbmssMaxWidth: "130px",
                 title: 'Created By',
-                dbSortField: 'created_by_id'
+                dbSortField: 'created_by'
             },
             {
                 sdbmssMinWidth: "130px",
@@ -119,15 +119,15 @@
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Updated By',
-                dbSortField: 'updated_by_id',
-                orderable: false
+                dbSortField: 'updated_by',
+                //orderable: false
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Updated On',
                 dbSortField: 'updated_at',
-                orderable: false
+                //orderable: false
             }
         ];
      };
@@ -140,7 +140,7 @@
              result.entry_id,
              result.manuscript_id,
              result.comment,
-             result.is_correction,
+             //result.is_correction,
              result.is_accepted,
              result.reviewed.toString(),
              result.created_by || "",

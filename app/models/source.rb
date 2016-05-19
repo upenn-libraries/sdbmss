@@ -78,7 +78,7 @@ class Source < ActiveRecord::Base
     includes(:source_type, :source_agents => [:agent])
   }
 
-  searchable do
+  searchable :unless => :deleted do
     integer :id
     string :title
     text :title, :more_like_this => true

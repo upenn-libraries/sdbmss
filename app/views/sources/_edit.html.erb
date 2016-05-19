@@ -1,4 +1,4 @@
-<div id="source-form-<%= index %>" class="form-horizontal sdbmss-form <%= index == 0 ? 'input-warning' : '' %>" autocomplete="off" ng-controller="SourceCtrl" novalidate ng-init="sourceId=<%= source.id %>">
+<div id="source-form-<%= index %>" class="form-horizontal sdbmss-form <%= index == 0 ? 'input-warning text-danger' : '' %>" autocomplete="off" ng-controller="SourceCtrl" novalidate ng-init="sourceId=<%= source.id %>">
 
     <div class="form-group row">
         <label for="source_type" class="col-sm-4 control-label"><span>Source Type</span></label>
@@ -181,7 +181,7 @@
         </div>
 
         <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-12 text-center">
                 <legend>Where did you see this source?</legend>
             </div>
         </div>
@@ -231,7 +231,7 @@
         </div>
         
          <div class="row">
-            <div class="col-sm-12">
+            <div class="col-sm-12 text-center">
                 <legend>Comments</legend>
             </div>
         </div>

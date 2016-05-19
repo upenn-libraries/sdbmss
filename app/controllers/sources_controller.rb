@@ -37,7 +37,7 @@ class SourcesController < SearchableAuthorityController
   ]
 
   def search_fields
-    @filters = ["id", "location"]
+    @filters = ["id", "location", "source_type_id"]
     @fields = ["title", "selling_agent", "date", "institution", "author", "created_by", "updated_by"]
     @dates = ["created_at", "updated_at"]
     @fields + @filters + @dates
@@ -450,16 +450,16 @@ class SourcesController < SearchableAuthorityController
     params.require(:source)
   end
 
-  def params_for_search
+  #def params_for_search
     # agent_name can come from a number of sources
     # FIX ME: maybe we want to only search for selling agents though?
-    params[:agent_name] = Array(params[:agent]) + Array(params[:selling_agent]) + Array(params[:institution])
-    params.permit(:date, {:date => []}, :title, {:title => []}, :author, {:author => []}, :agent_name, {:agent_name => [] }, :location_institution, :medium, :date, {:date => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
-  end
+  #  params[:agent_name] = Array(params[:agent]) + Array(params[:selling_agent]) + Array(params[:institution])
+  #  params.permit(:date, {:date => []}, :title, {:title => []}, :author, {:author => []}, :agent_name, {:agent_name => [] }, :location_institution, :medium, :date, {:date => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
+  #end
 
-  def filters_for_search
+  #def filters_for_search
 #    params.permit(:agent_name)
-  end
+  #end
 
   def source_params_for_create_and_edit
     # Note that we don't call require(:source), which is the typical

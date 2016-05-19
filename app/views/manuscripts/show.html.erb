@@ -87,6 +87,23 @@
         $("#source_id").val(source_id);
         $('#proposed-history').collapse('show');
     }).on("ajax:error", function (e, xhr, status, error) { console.log("ERROR!", error); });
+
+    var manuscriptTitle, manuscriptLocation;
+    $("#toggle-manuscript-edit").click( function () {
+        $('.manuscript-info').removeClass('manuscript-info-show');
+        $(this).hide();
+        $('.manuscript-info-buttons').show();
+        manuscriptTitle = $('input[name="manuscript[title]"]').val();
+        manuscriptLocation = $('input[name="manuscript[location]"]').val();
+    });
+
+    $('.cancel-manuscript-edit').click( function () {
+        $('.manuscript-info-buttons').hide();
+        $('.manuscript-info').addClass('manuscript-info-show');
+        $("#toggle-manuscript-edit").show();
+        $('input[name="manuscript[title]"]').val(manuscriptTitle);
+        $('input[name="manuscript[location]"]').val(manuscriptLocation);
+    });
  });
 
 </script>
@@ -99,21 +116,25 @@
             <div class="col-sm-7">
                 <%= form_for (@manuscript), html: {class: "form-inline"} do |f| %>
                     <% if can? :edit, @manuscript %>
-                        <%= f.submit "Update", class: "form-control pull-right" %>
+                        <span class="btn btn-success pull-right" id="toggle-manuscript-edit">Edit</span>
+                        <span class="manuscript-info-buttons pull-right input-group" style="display: none;">
+                            <%= f.submit "Update", class: "form-control" %>
+                            <a href="" class="input-group-addon cancel-manuscript-edit">Cancel</a>
+                        </span>
                     <% end %>
                     <div class='h1'>
                         <%= @manuscript.public_id %>
                         <br>
                         <span class='small'><strong>Last Known Location - </strong> 
                             <% if can? :edit, @manuscript %>
-                                <%= f.text_field :location, class: "form-control manuscript-edit-input" %>
+                                <%= f.text_field :location, class: "form-control manuscript-info manuscript-info-show" %>
                             <% else %>
                                 <span class="manuscript-edit-input"><%= @manuscript.location || "Unknown" %></span>
                             <% end %>
                         </span><br>
                         <ul class="small manuscript-titles"><strong>Title(s) - </strong>
                             <% if can? :edit, @manuscript %>
-                                <%= f.text_field :name, class: "form-control manuscript-edit-input" %>
+                                <%= f.text_field :name, class: "form-control manuscript-info manuscript-info-show" %>
                             <% else %>
                                 <% if @manuscript.name %>
                                     <span class="manuscript-edit-input"><%= @manuscript.name %></span>

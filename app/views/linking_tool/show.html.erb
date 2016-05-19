@@ -161,7 +161,7 @@ $(document).ready(function() {
         fixedColumns: 5,
         prependColumns: [
             {
-                sdbmssMinWidth: "50px",
+                sdbmssMinWidthImportant: "50px",
                 title: 'Link',
                 "data": null,
                 "orderable": false,
@@ -171,7 +171,7 @@ $(document).ready(function() {
                 }
             },
             {
-                sdbmssMinWidth: "60px",
+                sdbmssMinWidthImportant: "60px",
                 title: 'Fragment',
                 "data": null,
                 "orderable": false,
@@ -181,7 +181,7 @@ $(document).ready(function() {
                 }
             },
             {
-                sdbmssMinWidth: "60px",
+                sdbmssMinWidthImportant: "60px",
                 title: 'Possible',
                 "data": null,
                 "orderable": false,
@@ -191,7 +191,7 @@ $(document).ready(function() {
                 }
             },
             {
-                sdbmssMinWidth: "50px",
+                sdbmssMinWidthImportant: "50px",
                 title: 'Unlink',
                 "data": null,
                 "orderable": false,
@@ -221,7 +221,7 @@ $(document).ready(function() {
     });
 
     var resultsTable = new SDBM.EntryTable("#search_results", {
-        dom: '<"clear"><"H"r>JRt<"F"ip>',
+        dom: '<"clear"><"H linking_table_header"<"row"<"col-sm-7 text-right"rip>>>JRt<"F">',
         //dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t',
         height: function() {
             // height gets passed into dataTables constructor before
@@ -230,12 +230,13 @@ $(document).ready(function() {
             // viewport. This seems pretty decent.
             // FIX ME: doesn't work, though -> when the window is too small, the right part (search results) just don't appear
             var footer_size = 100;
-            return $(window).height() - $("#search_results").offset().top - footer_size;
+            var minimum_height = 300;
+            return Math.max(minimum_height, $(window).height() - $("#search_results").offset().top - footer_size);
         },
         fixedColumns: 2,
         prependColumns: [
             {
-                sdbmssMinWidth: "255px",
+                sdbmssMinWidthImportant: "255px",
                 title: 'Options',
                 "data": null,
                 "orderable": false,
@@ -284,8 +285,32 @@ $(document).ready(function() {
 
     // TODO: fix row highlighting broken by fixed column datatable plugin
 
+    $("#link-search").submit(function (e) {
+        e.preventDefault();
+        doSearch();
+        return false;
+    });
+
     $('#search_submit').click(function() {
         doSearch();
+    });
+
+    $("#addSearch").click( function (e) {
+        var p = $('.search-fieldset').eq(0).clone();
+        p.find("input", "select").val("");
+        $(".search").append(p);
+        p.find(".search-remove").click( function (e) {
+            var p = $(this).closest('.search-fieldset');
+            if ($('.search-fieldset').length > 1) {
+                $(".search").find(p).remove();
+            } else {                                    // otherwise, clear all the fields
+                p.find("input").each(function (e) {
+                    $(this).val("");
+                })
+                p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
+            }
+        });
+        setOptions(p);      
     });
 
     $(document).on("click", ".add-entry-link", function (event) {
@@ -309,7 +334,6 @@ $(document).ready(function() {
         var really = true;
         if (unsavedChanges) {
             really = confirm("You have unsaved changes that will be lost - continue?");
-            console.log(really);
         }
         if (!really) return false;
 
@@ -492,21 +516,26 @@ $(document).ready(function() {
 <div class="row">
     <div class="col-sm-7">
         <div class="panel panel-default">
-        <dl class="document-show-heading dl-horizontal dl-invert">
-          <dt></dt>
-          <dd class="h4"><strong>Linking Tool: 
-            <% if @manuscript %>
-                <%= @manuscript.public_id %>
-            <% elsif @entry %>
-                <%= @entry.public_id %>
-            <% end %>
-            </strong></dd>
-        </dl>
-        <% if @manuscript %>
-            <%= render partial: "bookmarks/show_manuscript", locals: {manuscript: @manuscript} %>
-        <% elsif @entry %>
-            <%= render partial: "bookmarks/show_entry", locals: {entry: @entry} %>
-        <% end %>
+            <div class="panel-heading-noformat" data-toggle="collapse" href="#show_linking_record">
+                <dl class="document-show-heading dl-horizontal dl-invert">
+                  <dt></dt>
+                  <dd class="h4"><strong>Linking Tool for 
+                    <% if @manuscript %>
+                        Manuscript <%= @manuscript.public_id %>
+                    <% elsif @entry %>
+                        Entry <%= @entry.public_id %>
+                    <% end %>
+                    ...
+                    </strong></dd>
+                </dl>
+            </div>
+            <div class="panel-body-noformat collapse in" id="show_linking_record">
+                <% if @manuscript %>
+                    <%= render partial: "bookmarks/show_manuscript", locals: {manuscript: @manuscript} %>
+                <% elsif @entry %>
+                    <%= render partial: "bookmarks/show_entry", locals: {entry: @entry} %>
+                <% end %>
+            </div>
         </div>
     </div>
     <div class="col-sm-5">
@@ -536,10 +565,27 @@ $(document).ready(function() {
     </tbody>
 </table>
 
-<div style="margin-bottom: 6px; margin-top: 15px;">
-    <span style="font-size: 14px; font-weight: bold;"><% if @mode == 'by_entry' %>Search for possible links<% else %>Search for other links<% end %></span> (click here for <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#">instructions</a> and <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_search_tips" href="#">search tips</a>)
+<div class="row" style="margin-top: 20px;">
+    <div class="col-sm-5">
+        <%= render partial: "linking_tool/show_form" %>
+    </div>
+    <div class="col-sm-2 text-center">
+        <div style="margin-bottom: 6px; margin-top: 15px;">
+            <span class="h4">
+                <strong>
+                <% if @mode == 'by_entry' %>
+                    Search for possible links
+                <% else %>
+                    Search for other links
+                <% end %>
+                </strong>
+            </span><br>
+            (click here for <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#">instructions</a> and <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_search_tips" href="#">search tips</a>)
+        </div>
+    </div>
+    <div class="col-sm-5"></div>
 </div>
-
+<!--
 <div class="row">
     <div class="col-sm-8">
         <form class="form-horizontal search-form" style="margin-top: 10px;">
@@ -587,8 +633,7 @@ $(document).ready(function() {
             <li class="list-group-item list-group-item-warning text-center"><span class="disabled">(unapproved records shown in yellow)</span></li>
         </ul>
     </div>
-</div>
-
+</div>-->
 <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
     <thead>
         <tr>

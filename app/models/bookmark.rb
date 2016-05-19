@@ -12,7 +12,9 @@ class Bookmark < ActiveRecord::Base
   end
 
   def document
-    document_type.find(document_id)
+    if document_type.exists?(document_id)
+      document_type.find(document_id)
+    end
   end
 
   def to_s

@@ -80,33 +80,31 @@
             <% entries = current_user.entries.most_recent(num_entries_to_show) %>
             <div class="panel-heading">
                 <h4 data-toggle="collapse" href="#myEntries">Entries You've Contributed ...
-                <small class='pull-right'>You've contributed <a href="<%= search_by_facet_value("created_by", current_user.username) %>"><%= num_entries %> entries</a> to date.</small>
+                <small class='pull-right'>Show the last <strong><%= entries.count %> entries</strong> you created</small>
                 </h4>
             </div>
             <div class="panel-body panel-collapse collapse" id="myEntries">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div>The last <strong><%= entries.count %> entries</strong> you created</div>
-                    </div>
-                    <div class="col-sm-6 text-right">
-                        <% if num_entries > 0 %>
-                            <% if num_entries_needing_approval > 0 %>
-                                <div class='text-warning'><%= num_entries_needing_approval %> of them <%= num_entries_needing_approval > 1 ? "are" : "is" %> not yet approved.</div>
-                            <% end %>
-                            <% if num_entries_deprecated > 0 %>
-                                <div class='text-danger'><%= num_entries_deprecated %> of them <%= num_entries_deprecated > 1 ? "are" : "is" %> have been deprecated.</div>
-                        <% end %>                        
-                    </div>
-                </div>
-
                 <ul class="list-group list-group-no-border-side">
+                    <li class="list-group-item">
+                         <div class="row">
+                            <div class="col-sm-6">
+                                <div>You've contributed <%= num_entries %> entries to date.</div>
+                                <% if num_entries > 0 %>
+                                    <% if num_entries_needing_approval > 0 %>
+                                        <div class='text-warning'><%= num_entries_needing_approval %> of them <%= num_entries_needing_approval > 1 ? "are" : "is" %> not yet approved.</div>
+                                    <% end %>
+                                    <% if num_entries_deprecated > 0 %>
+                                        <div class='text-danger'><%= num_entries_deprecated %> of them <%= num_entries_deprecated > 1 ? "are" : "is" %> deprecated.</div>
+                                <% end %>                        
+                            </div>
+                            <div class="col-sm-6 text-right">
+                                <a href="<%= search_by_facet_value("created_by", current_user.username) %>" class='btn btn-default'>See My Public Entries</a>
+                                <a href="/entries?created_by_user=1" class="btn btn-default">Manage My Entries</a>
+                            </div>
+                        </div>
+                    </li>
                     <% entries.each do |entry| %>
                         <li class="list-group-item"><%= render partial: "bookmarks/show_entry", locals: {entry: entry} %></li>
-                    <% end %>
-                    <% if num_entries > 5 %>
-                        <div class="text-center">
-                            <a class='btn btn-default' href='/dashboard?num_entries=<%= num_entries_to_show.to_i + 5 %>'>View more...</a>
-                        </div>
                     <% end %>
                 </ul>
 
@@ -118,6 +116,7 @@
         </div>
 
         <% num_sources = current_user.sources.count %>
+        <% num_sources_unreviewed = current_user.sources.where({reviewed: false}).count %>        
         <% if num_sources > 0 %>
             <% num_sources_to_show = 5 %>
             <% sources = current_user.sources.most_recent(num_sources_to_show) %>
@@ -125,18 +124,32 @@
                 <div class="panel-heading">
                     <h4 data-toggle="collapse" href="#mySources">
                         Sources You've Contributed ...
-                        <small class='pull-right'>You've contributed <%= num_sources %> source(s) to date.</small>
+                        <small class='pull-right'>Show the last <strong><%= sources.count %> source(s)</strong> you created</small>
                     </h4>
                 </div>
                 <div class="panel-body panel-collapse collapse" id="mySources">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <p>The last <strong><%= sources.count %> source(s)</strong> you created</p>
-                        </div>
-                    </div>
                     <ul class="list-group list-group-no-border-side">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div>You've contributed <%= num_sources %> source(s) to date.</div>
+                                    <% if num_sources_unreviewed > 0 %>
+                                        <div class='text-warning'><%= num_sources_unreviewed %> of them <%= num_sources_unreviewed > 1 ? "are" : "is" %> not yet reviewed.</div>
+                                    <% end %>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    <a class="btn btn-default" href="/sources?created_by_user=1">Manage My Sources</a>
+                                </div>
+                            </div>
+                        </li>
                        <% sources.each do |source| %>
-                           <li class="list-group-item"><%= render partial: "sources/source_details", locals: {source: source, abbreviate: true} %></li>
+                            <li class="list-group-item">
+                                <dl class="document-show-heading dl-horizontal dl-invert">
+                                    <dt></dt>
+                                    <dd class='h4'><a href="/sources/<%= source.id %>"><%= source.public_id %></a></dd>
+                                </dl>
+                                <%= render partial: "sources/source_details", locals: {source: source, abbreviate: true} %>
+                            </li>
                        <% end %> 
                     </ul>
                 </div>
@@ -144,25 +157,44 @@
         <% end %>
 
         <% num_manuscripts = Manuscript.where(created_by: current_user).count %>
+        <% num_manuscripts_unreviewed = Manuscript.where({created_by: current_user, reviewed: false}).count %>
         <% if num_manuscripts > 0 %>
             <% num_manuscripts_to_show = 5 %>
             <% manuscripts =  Manuscript.where(created_by: current_user).last(num_manuscripts_to_show) %>
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4 data-toggle="collapse" href="#myManuscripts">
-                        Manuscripts You've Contributes ...
-                        <small class="pull-right">You've contributed <%= num_manuscripts %> manuscript(s) to date.</small>
+                        Manuscripts You've Contributed ...
+                        <small class="pull-right">Show the last <strong><%= manuscripts.count %> manuscript(s)</strong> you created</small>
                     </h4>
                 </div>
                 <div class="panel-body panel-collapse collapse" id="myManuscripts">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <p>The last <%= manuscripts.count %> manuscript(s) you created</p>
-                        </div>
-                    </div>
                     <ul class="list-group list-group-no-border-side">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <% if num_manuscripts > 0 %>
+                                        <div>You've contributed <%= num_manuscripts %> manuscript(s) to date.</div>
+                                        <% if num_manuscripts_unreviewed > 0 %>
+                                            <div class='text-warning'><%= num_manuscripts_unreviewed %> of them <%= num_manuscripts_unreviewed > 1 ? "are" : "is" %> not yet reviewed.</div>
+                                        <% end %>
+                                    <% else %>
+                                        <div class="text-muted">You have not contributed any manuscripts yet.</div>
+                                    <% end %>
+                                </div>
+                                <div class="col-sm-6 text-right">
+                                    <a class="btn btn-default" href="/manuscripts?created_by_user=1">Manage My Manuscripts</a>
+                                </div>
+                            </div>
+                        </li>
                         <% manuscripts.each do |manuscript| %>
-                            <li class="list-group-item"><%= render partial: "bookmarks/show_manuscript", locals: {manuscript: manuscript} %></li>
+                            <li class="list-group-item">
+                                <dl class="document-show-heading dl-horizontal dl-invert">
+                                    <dt></dt>
+                                    <dd class='h4'><a href="/manuscripts/<%= manuscript.id %>"><%= manuscript.public_id %></a></dd>
+                                </dl>
+                                <%= render partial: "bookmarks/show_manuscript", locals: {manuscript: manuscript} %>
+                            </li>
                         <% end %>
                     </ul>
                 </div>

@@ -69,17 +69,6 @@
 <script type='text/javascript'>
 
 $(document).ready( function () {
-    $('.carousel').each( function () {
-        var $this = $(this);
-
-      $this.children('.carousel-control').show();
-
-      if($this.find('.carousel-inner .item:first').hasClass('active')) {
-        $this.children('.left.carousel-control').hide();
-      } if($this.find('.carousel-inner .item:last').hasClass('active')) {
-        $this.children('.right.carousel-control').hide();
-      }
-    });
     $('.carousel').on('slid.bs.carousel', function() {
       var $this = $(this);
 
@@ -98,6 +87,31 @@ $(document).ready( function () {
         console.log($(this).parent('.carousel-inner'), $(this).parent('.carousel-inner').find("input[type='checkbox']"));
         $(this).closest('.carousel-inner').find("input[type='checkbox']").not(this).attr("checked", false);
     });
+
+    $(".carousel").carousel({interval: false, wrap: false});
+    $(".carousel-control.left").click( function (e) {
+        e.preventDefault();
+        $($(this).attr("href")).carousel('prev');
+        return false;
+    });
+    $(".carousel-control.right").click( function (e) {
+        e.preventDefault();        
+        $($(this).attr("href")).carousel('next');
+        return false;
+    });
+
+    $('.carousel').each( function () {
+      var $this = $(this);
+      
+      $this.children('.carousel-control').show();
+
+      if($this.find('.carousel-inner .item:first').hasClass('active')) {
+        $this.children('.left.carousel-control').hide();
+      } if($this.find('.carousel-inner .item:last').hasClass('active')) {
+        $this.children('.right.carousel-control').hide();
+      }
+    });
+    
 });
 
 </script>

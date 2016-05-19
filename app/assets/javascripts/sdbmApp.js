@@ -341,7 +341,10 @@ var BOOKMARK_SCOPE;
                         date: $scope.date,
                         title: $scope.title,
                         agent: $scope.agent,
-                        limit: 20
+                        limit: 20,
+                        source_type_id: $scope.source_type,
+                        id: $scope.source_id,
+                        id_option: "without"
                     }
                 }).then(function (response) {
                     $scope.sources = response.data.results;
@@ -512,7 +515,9 @@ var BOOKMARK_SCOPE;
 
         $scope.editSource = function () {
           $scope.selecting_source = true;
-          console.log($scope.entry.source);
+          $scope.selecting_source_type = $scope.entry.source.source_type.id;
+          $scope.old_source_id = $scope.entry.source.id;
+          //console.log($scope.entry.source);
           $scope.entry.source_bk = $scope.entry.source;
           $scope.entry.source = undefined
         };
@@ -1078,6 +1083,7 @@ var BOOKMARK_SCOPE;
                     $(element).focus();
                 }, 100);
 
+                console.log(element, badValue, $(element), $(element).tooltip);
                 $(element)
                     .tooltip("option", "content", badValue + " isn't valid input, please change it or select a value from the suggestion box")
                     .tooltip("option", "disabled", false)
@@ -1795,6 +1801,12 @@ var BOOKMARK_SCOPE;
   });
 
   sdbmApp.controller('ManageBookmarks', function ($scope, $sce) {
+
+    if (!BOOKMARK_SCOPE)
+      BOOKMARK_SCOPE = $scope;
+    else
+      $scope = BOOKMARK_SCOPE;
+
     $scope.removetag = function (bookmark, tag) {
       $.get('/bookmarks/' + bookmark.id + '/removetag', {tag: tag}).done( function (e) {
         bookmark.tags = e.tags;
@@ -1829,7 +1841,12 @@ var BOOKMARK_SCOPE;
       });
     }
     $scope.addBookmark = function (id, type) {
-      console.log('add?', id, type);
+      // check if already in bookmarks
+      var b = $scope.findBookmark(type, id);
+      if (b) {
+        $scope.removeBookmark(type, b);
+        return;
+      }
       $.ajax({url: '/bookmarks/new', data: {document_id: id, document_type: type}}).done( function (e) {
         if (!e.error) {
           $scope.all_bookmarks[type].push(e);
@@ -1844,6 +1861,7 @@ var BOOKMARK_SCOPE;
     }
     $scope.renew = function () {
       $scope.$digest();
+      $('.bookmark-link').css({color: "inherit"});
       for (var i = 0; i < $scope.tabs.length; i++) {
         var type = $scope.tabs[i];
         for (var j = 0; j < $scope.all_bookmarks[type].length; j++) {
@@ -1873,7 +1891,16 @@ var BOOKMARK_SCOPE;
     $scope.tabs = ["Entry", "Manuscript", "Name", "Source"];
     $scope.searchTag("");
 
-    BOOKMARK_SCOPE = $scope;
+    $scope.findBookmark = function(type, id) {
+      if (!$scope.all_bookmarks[type]) return false;
+      for (var i = 0; i < $scope.all_bookmarks[type].length; i++) {
+        if ($scope.all_bookmarks[type][i].document_id == id) {
+          return $scope.all_bookmarks[type][i];
+        }
+      }
+      return false;
+    }
+
   });
 
 }());
@@ -1885,4 +1912,11 @@ function addBookmark(id, type) {
 
 function renewBookmarks() {
   BOOKMARK_SCOPE.renew();
+}
+
+function addTagToBookmark(id, type, tag) {
+  var b = BOOKMARK_SCOPE.findBookmark(type, id);
+  if (b) {
+    BOOKMARK_SCOPE.addTag(b, tag);
+  }
 }

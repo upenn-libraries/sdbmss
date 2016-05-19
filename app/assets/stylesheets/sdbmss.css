@@ -42,6 +42,7 @@ body {
   float: right;
   max-width: 400px;
   border-radius: 5px;
+  margin: 0px;
 }
 #my_bookmarks .badge {
   padding: 2px;
@@ -210,6 +211,15 @@ h1 { font-size: 30px; margin-top: 0; }
   margin: 2px 0px 0px 8px;
   vertical-align: top;
 }
+.linking_table_header .dataTables_paginate, .linking_table_header .dataTables_info {
+  float: right;
+  margin-left: 10px;
+}
+/* ill-advised hack-y margin top adjustment to align things better*/
+.linking_table_header {
+  margin-top: -60px;
+}
+
 div.dataTables_paginate ul.pagination {
   margin: 0px 0;
 }
@@ -282,7 +292,7 @@ div#search_results_length {
   display: none;
 }
 
-.manuscript-edit-input:not(:focus) {
+.manuscript-info-show {
   background: none;
   border: none;
   box-shadow: none;
@@ -293,9 +303,6 @@ div#search_results_length {
   height: 26px;
   vertical-align: bottom;
   border-radius: 0px;
-}
-input.manuscript-edit-input:not(:focus) {
-  border-bottom: 1px solid #CC0000 !important;
 }
 .manuscript-titles {
   padding: 0px;
@@ -328,12 +335,9 @@ input.manuscript-edit-input:not(:focus) {
 }
 
 .chevron {
-  font-size: 300px;
-  position: absolute;
-  display: block;
-  right: -27px;
-  line-height: 200px;
-  color: #eee;
+  font-size: 170px;
+  margin: -20px 0px 15px 0px;
+  color: #31708f;
 }
 
 .fade-in {
@@ -450,6 +454,26 @@ input.manuscript-edit-input:not(:focus) {
 */
 
 /* MERGING */
+
+.to-delete:after {
+  content: "X";
+  position: absolute;
+  top: 0px;
+  font-size: 754px;
+  color: #A94442;
+  opacity: 0.1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  left: 0px;
+  text-align: center;
+  line-height: 100%;
+}
+.to-delete.to-delete-small:after {
+  font-size: 442px;
+  top: -25px;
+}
+
 .input-warning input, .input-warning select, .input-warning textarea {
     background: #fcf8e3;
     color: gray;

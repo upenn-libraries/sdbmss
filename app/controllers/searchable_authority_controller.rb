@@ -69,7 +69,6 @@ class SearchableAuthorityController < ManageModelsController
   end
 
   def search
-
     format = params[:format].present? ? params[:format] : 'none'
     order = params[:order].present? ? {field: params[:order].split[0], direction: params[:order].split[1]} : {}
     limit = params[:limit].present? ? params[:limit].to_i : 50
@@ -81,6 +80,10 @@ class SearchableAuthorityController < ManageModelsController
     reviewed = params[:reviewed] && params[:reviewed] == "1" ? false : nil
 
     filters = filters_for_search
+    if params[:created_by_user].to_i == 1
+      filters = filters ? filters : {}
+      filters["created_by"] = current_user.username
+    end
     params = params_for_search
     dates = dates_for_search
 

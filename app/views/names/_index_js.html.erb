@@ -5,7 +5,7 @@
      var resourceName = "<%= resource_name %>";
 
      // flag = show all records, or only those that the user created
-     <% if can? :manage, model_class  %>
+     <% if can? :manage, model_class %>
      var showOnlyRecordsCreatedByUser = 0;
      <% else %>
      var showOnlyRecordsCreatedByUser = 1;
@@ -57,7 +57,7 @@
 
                     var str = '<span class="btn-group options-btn-group">'
                             + '<a onclick="addBookmark(' + data + ', \'Name\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/names/' + data + '">' 
-                                + '<span class="glyphicon glyphicon-star"></span></a>'
+                                + '<span class="glyphicon glyphicon-bookmark"></span></a>'
                             + '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>'
                             + '<a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>'
                             + mergeLink + "</span>";

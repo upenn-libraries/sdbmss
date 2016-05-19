@@ -113,7 +113,7 @@ class Manuscript < ActiveRecord::Base
         end
       end
     end
-    @manuscript_titles
+    @manuscript_titles.delete(nil)
   end
 
   def to_i
