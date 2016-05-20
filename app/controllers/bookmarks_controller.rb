@@ -48,6 +48,7 @@ class BookmarksController < CatalogController
     can_merge = params[:can_merge] || false
     can_link = params[:can_link] == "true"
     tag = params[:tag].blank? ? nil : params[:tag]
+    details = params[:details] || false
     # something bogus here with this... when there is no tag (i.e. else)
     if tag
       @bookmarks = current_user.bookmarks.where("tags like ?", "%#{tag}%")
@@ -58,10 +59,28 @@ class BookmarksController < CatalogController
     @bookmarks.each do |bookmark|
       if bookmark.document_type == nil
       elsif !bookmark.document
-      elsif @bookmarks_sorted[bookmark.document_type.to_s]
-        @bookmarks_sorted[bookmark.document_type.to_s].push(bookmark.for_show)
       else
-        @bookmarks_sorted[bookmark.document_type.to_s] = [bookmark.for_show]
+        b = bookmark.for_show
+
+        if details
+          details_to_render = nil
+          if bookmark.document_type.to_s == 'Source'
+            details_to_render = render_to_string('sources/_source_details.html', :layout => false, :locals => { :source => bookmark.document, :abbreviate => true})
+          elsif bookmark.document_type.to_s == 'Entry'
+            details_to_render = render_to_string('bookmarks/_show_entry.html', :layout => false, :locals => { :entry => bookmark.document})            
+          elsif bookmark.document_type.to_s == 'Name'
+            details_to_render = render_to_string('shared/_name_main.html', :layout => false, :locals => { :name => bookmark.document})            
+          elsif bookmark.document_type.to_s == 'Manuscript'
+            details_to_render = render_to_string('bookmarks/_show_manuscript.html', :layout => false, :locals => { :manuscript => bookmark.document})            
+          end
+          b[:details] = details_to_render
+        end
+
+        if @bookmarks_sorted[bookmark.document_type.to_s]
+          @bookmarks_sorted[bookmark.document_type.to_s].push(b)
+        else
+          @bookmarks_sorted[bookmark.document_type.to_s] = [b]
+        end
       end
     end
     respond_to do |format|
@@ -71,6 +90,14 @@ class BookmarksController < CatalogController
     end
     return
     #render partial: 'shared/my_bookmarks', locals: {bookmarks: @bookmarks_sorted, can_merge: can_merge, can_link: can_link}
+  end
+
+  def show
+    if params[:id] && Bookmark.exists?(params[:id])
+      @bookmark = Bookmark.find(params[:id])
+      @name = @bookmark.document_type.to_s
+      render layout: false
+    end
   end
 
   def new

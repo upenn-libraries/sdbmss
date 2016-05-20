@@ -1,96 +1,76 @@
+<div ng-controller="ManageBookmarks">
 <div class="row">
   <div class="col-sm-12">
-    <h2 class="h2">My Bookmarks</h2>
+    <h2 class="h2">My Bookmarks
+      <small class="pull-right">
+        <div class="form-inline clearfix navbar-form">
+          <label for="" class="control-label">Filter By Tag:  
+            <input type="text" class="form-control" name="tag-search" ng-model="tagSearch" ng-keyup="$event.keyCode == 13 && searchTag(tagSearch)">
+          </label>
+        </div>
+      </small>
+    </h2>
   </div>
 </div>
-<div class="row">
-  <div class="col-sm-6">
-    <form class="input-group" action="/bookmarks" method="get">
-        <%= text_field_tag :tag, params[:tag], class: "form-control", placeholder: "Filter by tag..." %>
-      <div class="input-group-btn">
-        <input type='submit' class="form-control btn btn-default">Filter</input>
-        <%= link_to "Clear Search", bookmarks_path, class: "btn btn-default" %>
-      </div>
-    </form>
-  </div>
-  <%= form_tag('bookmarks/delete_all', method: 'delete') do %>
-  <div class="col-sm-6 text-right">
-    <a title="Export to CSV" class="btn btn-default disabled"><span class='glyphicon glyphicon-floppy-save'></span></a>
-    <div class="btn-group">
-      <a id="selectAllBookmarks" class="btn btn-default">Select All</a>
-      <%= submit_tag "Delete Selected", class:"btn btn-danger" %>
+<div class="row" ng-repeat="(name, bookmarks) in all_bookmarks" style="border-bottom: 1px dotted #eee; padding: 10px 0px;">
+  <div class="col-sm-3">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <span class="h3">
+          <span data-toggle="collapse" href="#bookmarks_{{name}}">{{ name }}(s)</span>
+          <a class="pull-right"><span class="glyphicon glyphicon-floppy-save" title="Export to CSV" ng-click="exportBookmarks(name, bookmarks[0].link)"></span></a>
+        </span><br>
+        <span class="text-muted">{{ bookmarks.length }} bookmarked</span>
+      </div>  
     </div>
   </div>
-  <div class="col-sm-12">
-    <% @bookmarks_sorted.each do |name, bookmarks| %>
-    <h2 data-toggle="collapse" href="#bookmarks_<%= name %>"><%= name.pluralize %>
-      <% if @tag %>
-        <small>(<%= @tag %>)</small>
-      <% end %>
-      <a href="<%= name.underscore.pluralize %>/search.csv?op=AND" class="glyphicon glyphicon-floppy-save pull-right"></a>
-    </h2>
-    <ul class="list-group collapse in manage_bookmarks list-group-no-border-side" id="bookmarks_<%= name %>">
-      <% if bookmarks.count <= 0 %>
-        <li class="list-group-item">No bookmarks to display.</li>
-      <% end %>
-      <% bookmarks.each do |bookmark| %>
-        <li class="list-group-item">
-          <div class="row">
-            <div class="col-sm-11">
-              <% if name != "Entry" %>
+  <div class="col-sm-9">
+    <div>
+      <ul class="list-group collapse in manage_bookmarks list-group-no-border list-group-no-padding" id="bookmarks_{{ name }}">
+        <li class="list-group-item text-muted" ng-if="bookmarks.length <= 0">
+          <dl class="document-metadata dl-horizontal dl-invert">
+              <dt></dt>
+              <dd>
+                No <strong>{{ name }} Records</strong> are saved in your bookmarks.
+              </dd>
+          </dl>
+        </li>
+        <li class="list-group-item" ng-repeat="bookmark in bookmarks">
               <dl class="document-show-heading dl-horizontal dl-invert">
                   <dt></dt>
-                  <dd class="h4"><%= bookmark[:public_id] %></dd>
-              </dl>
-              <% end %>
-              <p class="list-group-item-text">
-                <% if name == "Entry" %>
-                  <% entry = Entry.find(bookmark[:document_id]) %>
-                  <%= render partial: "bookmarks/show_entry", locals: {entry: entry} %>
-                <% elsif name == "Name" %>
-                  <% nm = Name.find(bookmark[:document_id]) %>
-                  <%= render partial: "shared/name_main", locals: {name: nm} %>
-                <% elsif name == "Source" %>
-                  <% src = Source.find(bookmark[:document_id]) %>
-                  <%= render partial: "sources/source_details", locals: {source: src, abbreviate: true} %>
-                <% elsif name == "Manuscript" %>
-                  <% manuscript = Manuscript.find(bookmark[:document_id]) %>
-                  <%= render partial: "bookmarks/show_manuscript", locals: {manuscript: manuscript} %>
-                <% else %>
-                  <%= bookmark[:show] %></p>
-                <% end %>
-              <p class='list-group-item-text'>
-                <dl class="document-metadata dl-horizontal dl-invert">
-                  <dt>Tags</dt>
-                  <dd>
-                    <ul class="list-inline form-inline">
-                      <% bookmark[:tags].each do |tag| %>
-                        <li><span class="label label-bookmark-tag"><%= tag %></span></li>
-                      <% end %>
-                    </ul>
+                  <dd class="h4">
+                    <div class="row">
+                      <strong class="col-sm-4"><a href="{{ bookmark.link }}">{{ bookmark.public_id }}</a></strong>
+                      <div class="col-sm-8 text-right">
+                        <div class="form-inline">
+                          <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
+                            <input type='text' class='form-control' placeholder="add tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
+                            <a class="input-group-addon add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="glyphicon glyphicon-plus"></span></a>
+                          </div>
+                          <a class="tag-bookmark" ng-click="bookmark.showAddTag = !bookmark.showAddTag"><span class="glyphicon glyphicon-tag"></span></a>
+                          <a class='remove-bookmark control-bookmark' ng-click="removeBookmark(name, bookmark)">
+                            <span class="glyphicon glyphicon-trash"></span>
+                          </a>
+                        </div> 
+                      </div>
+                    </div>
                   </dd>
-                </dl>
-              </p>
-            </div>
-            
-            <div class="col-sm-1 text-right">
-<!--              <a href="<%= bookmark[:link] %>" class="btn btn-default" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a>
-              <a class="btn btn-info"><span class="glyphicon glyphicon-tag"></span></a>
-              <a class="btn btn-default disabled">Select</a>-->
-              <%= check_box_tag 'id[]', bookmark[:id], false, class: 'bookmark-checkbox' %>
-            </div>
-          </div>
+              </dl>
+              <div ng-bind-html="bookmark.details"></div>
+              <dl class="document-metadata dl-horizontal dl-invert">
+                <dt>Tags</dt>
+                <dd class="h4">
+                  <ul class="list-inline">
+                    <li>
+                      <span class="bookmark-tag text-primary" ng-repeat="tag in bookmark.tags">{{ tag }}<span class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></span>
+                      </span>
+                    </li>
+                  </ul>
+                </dd>
+              </dl>
         </li>
-      <% end %>
-    </ul>
-    <% end %>
+      </ul>
+    </div>
   </div>
-  <% end %> <!-- end form -->
 </div>
-<script type='text/javascript'>
-var checked = false;
-$('#selectAllBookmarks').click( function () {
-  checked = !checked;
-  $('.bookmark-checkbox').prop('checked', checked);
-});
-</script>
+</div>

@@ -67,9 +67,11 @@
   <%= render partial: 'shared/ajax_modal' %>
 
   <!-- for omnipresent bookmarks tab -->
+  <% if request.original_fullpath != "/bookmarks" %>
   <div class="bookmarks_container">
     <%= render partial: "/shared/my_bookmarks" %>
   </div>
+  <% end %>
 
   <div id="main-container" class="container">
     <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>

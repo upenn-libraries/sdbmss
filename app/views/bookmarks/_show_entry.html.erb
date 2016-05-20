@@ -3,9 +3,6 @@
     <% if entry.nil? %>
     <p>Error: couldn't retrieve model object from database.</p>
     <% else %>
-    <dl class="document-metadata document-show-heading dl-horizontal dl-invert">
-        <dt></dt><dd class="h4"><%= link_to entry.public_id, entry_path(entry) %></dd>
-    </dl>
     <% if !entry.approved %>
         <div class="panel panel-warning">
             <div class="panel-heading">Warning: This record is not yet approved and may not conform to standards for data structure or accuracy.</div>

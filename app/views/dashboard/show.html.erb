@@ -3,11 +3,27 @@
 <% is_contributor = current_user.role == 'contributor' %>
 <% possessive = is_contributor ? "Your" : "" %>
 
-<div class="jumbotron">
-    <h1>
-        Welcome, <%= link_to (current_user.fullname.present? ? current_user.fullname : current_user.username), profile_path(current_user.username) %>!
-        <small class='text-info'>(<%= current_user.role %>)</small>
-    </h1>
+<div class="panel panel-default">
+    <div class="panel-heading text-center">
+        <h1>
+            Welcome, <%= link_to (current_user.fullname.present? ? current_user.fullname : current_user.username), profile_path(current_user.username) %>!
+            <br><small class='text-info'>(Permission: <%= current_user.role %>)</small>
+        </h1>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-3 text-right">
+                <span class="h3">Your Tags
+                    <br><small class="text-info"><a href="/bookmarks">[# of Bookmarks]</a></small>
+                </span>
+            </div>
+            <div class="col-sm-9">
+                <% current_user.tags.each do |tag, count| %>
+                    <span class="bookmark-tag text-primary"><span class="h4"><strong><%= tag %></strong><span class="bookmark-count text-muted">[<%= count %>]</span></span></span>
+                <% end %>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="row">

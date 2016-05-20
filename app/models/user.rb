@@ -104,6 +104,21 @@ class User < ActiveRecord::Base
     role == role_to_check
   end
 
+  def tags
+    s = {}
+    bookmarks.each do |bookmark|
+      tags = bookmark.tags.split(',') unless bookmark.tags.nil?
+      tags.to_a.each do |tag|
+        if s.include?(tag)
+          s[tag] += 1
+        else
+          s[tag] = 1
+        end
+      end
+    end
+    s
+  end
+
   private
 
   def assign_default_role

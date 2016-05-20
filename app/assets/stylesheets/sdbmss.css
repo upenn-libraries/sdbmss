@@ -12,6 +12,13 @@ body {
   border-right: none;
   border-left: none;
 }
+.list-group-no-border li {
+  border-radius: opx !important;
+  border: none;
+}
+.list-group-no-padding li {
+  padding: 0px;
+}
 
 /* There's some tweaky stuff in "#header-navbar .navbar-brand" rule that we're overriding here, probably fragile */
 #header-navbar .navbar-brand { background: none; overflow: visible; text-indent: 0; color: black; width: auto; }
@@ -43,6 +50,7 @@ body {
   max-width: 400px;
   border-radius: 5px;
   margin: 0px;
+  box-shadow: 0px 0px 0px 5px rgba(200,200,255,0.3);
 }
 #my_bookmarks .badge {
   padding: 2px;
@@ -60,6 +68,13 @@ body {
     padding: 1px;
     border-radius: 50%;
 }
+.nav .bookmark-link {
+  display: inline-block !important;
+}
+.nav .bookmark-link:after {
+  content: " Bookmark";
+  font-weight: bold;
+}
 .bookmark-link {
   height: inherit;
   border-radius: inherit;
@@ -71,16 +86,21 @@ body {
 }
 .tag-bookmark {
   right: 32px;
-  border: 3px solid #34ba45;
+  *border: 3px solid #34ba45;
   color: #34ba45;
 }
 .tag-bookmark:hover, .tag-bookmark:active, .tag-bookmark:focus {
   border-color: #198919;
   color: #198919;
 }
+.bookmark-tag:before {
+    content: "#";
+    margin: 0px 0px 0px 10px;
+}
 .remove-bookmark {
-    border: 3px solid #FB9E9C;
+    *border: 3px solid #FB9E9C;
     color: #FB9E9C;
+    margin-right: 10px;
 }
 .remove-bookmark:hover, .remove-bookmark:active, .remove-bookmark:focus {
   border-color: #a94442;

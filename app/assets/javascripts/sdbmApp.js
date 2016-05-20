@@ -1802,10 +1802,7 @@ var BOOKMARK_SCOPE;
 
   sdbmApp.controller('ManageBookmarks', function ($scope, $sce) {
 
-    if (!BOOKMARK_SCOPE)
-      BOOKMARK_SCOPE = $scope;
-    else
-      $scope = BOOKMARK_SCOPE;
+    BOOKMARK_SCOPE = $scope;
 
     $scope.removetag = function (bookmark, tag) {
       $.get('/bookmarks/' + bookmark.id + '/removetag', {tag: tag}).done( function (e) {
@@ -1833,7 +1830,8 @@ var BOOKMARK_SCOPE;
       }
     }
     $scope.searchTag = function (tag) {
-      $.get('/bookmarks/reload.json', {tag: tag}).done( function (e) {
+      // fix me: this should check the url, but also where the controller is (load details in main page, but not toolbar)
+      $.get('/bookmarks/reload.json', {tag: tag, details: (window.location.pathname == "/bookmarks")}).done( function (e) {
         $scope.all_bookmarks = e;
         $scope.renew();
       }).error( function (e) {
@@ -1901,6 +1899,19 @@ var BOOKMARK_SCOPE;
       return false;
     }
 
+    $scope.exportBookmarks = function (type, link) {
+      var plural = link.split('/')[1];
+      if (type != "Entry") plural += "/search";
+      var url = "/" + plural + ".csv?op=OR&search_field=advanced&per_page=5000";
+      for (var i = 0; i < $scope.all_bookmarks[type].length; i++) {
+        if (type == "Entry")
+          url += "&entry_id[]=" + $scope.all_bookmarks[type][i].document_id;
+        else
+          url += "&id[]=" + $scope.all_bookmarks[type][i].document_id;  
+      }
+      window.location = url;
+    }
+
   });
 
 }());
@@ -1912,11 +1923,4 @@ function addBookmark(id, type) {
 
 function renewBookmarks() {
   BOOKMARK_SCOPE.renew();
-}
-
-function addTagToBookmark(id, type, tag) {
-  var b = BOOKMARK_SCOPE.findBookmark(type, id);
-  if (b) {
-    BOOKMARK_SCOPE.addTag(b, tag);
-  }
 }
