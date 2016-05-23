@@ -1,15 +1,14 @@
-<a href="#my_bookmarks" id="show_all_bookmarks" data-toggle="collapse" class="btn btn-default"><span class="glyphicon glyphicon-bookmark"></span></a>
 <% if current_user %>
   <div class="panel panel-default collapse" id="my_bookmarks" ng-controller="ManageBookmarks">
-      <ul class="nav nav-pills">
-        <li ng-repeat="(name, bookmarks) in all_bookmarks" class="bookmark-nav-button">
+      <ul class="nav nav-tabs">
+        <li ng-repeat="(name, bookmarks) in all_bookmarks" class="bookmark-nav-button" ng-class="{active: $index == 0}">
           <a data-toggle='tab' href='#bookmark-tab-{{ name }}'>{{ name }}
           <span class="badge">{{ bookmarks.length }}</span></a>
         </li>
       </ul>
     <div class="tab-content bookmark-panes">
 
-      <div ng-repeat="(name, bookmarks) in all_bookmarks" class="tab-pane fade" id="bookmark-tab-{{ name }}">
+      <div ng-repeat="(name, bookmarks) in all_bookmarks" class="tab-pane fade" id="bookmark-tab-{{ name }}" ng-class="{active: $index == 0, in: $index == 0}">
         <ul class="list-group bookmarks">
           <li class="list-group-item" ng-if="bookmarks.length <= 0">
             No records of this type have been bookmarked yet.

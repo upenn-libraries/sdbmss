@@ -390,12 +390,13 @@ module CatalogControllerConfiguration
       # this re-adds the search history, already included by the
       # default config, so we can specify the 'if' part
 
-      config.navbar.delete(:bookmark)
-      config.navbar.delete(:saved_searches)
+      config.navbar.partials.delete(:bookmark)
+      config.navbar.partials.delete(:saved_searches)
 
       #config.add_nav_action(:bookmark, partial: 'blacklight/nav/bookmark', if: true)
       config.add_nav_action(:saved_searches, partial: 'blacklight/nav/saved_searches', if: true)
       config.add_nav_action(:search_history, partial: 'blacklight/nav/search_history', if: :render_search_history_control?)
+
       # fix me: despite needing an enourmous amount of configuration, blacklight doesn't let you easily customize something as simple as a dropdown menu
 
 #      config.add_results_collection_tool(:bookmark_all)

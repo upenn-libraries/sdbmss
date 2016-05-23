@@ -160,6 +160,9 @@
                                 <a class='btn btn-sm btn-info' data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
                             </li>
                             <% if can? :link, @manuscript %>
+                            <li>
+                              <a onclick="addBookmark(<%= @manuscript.id %>, 'Manuscript');" class="btn btn-sm btn-default bookmark-link" in_bookmarks="/manuscripts/<%= @manuscript.id %>"><span class="glyphicon glyphicon-bookmark"></span></a>
+                            </li>
                             <li class="manage_entry">
                                 <a class='btn btn-sm btn-primary' href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Link <%= @manuscript.public_id %></a>
                             </li>

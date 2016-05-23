@@ -35,8 +35,8 @@
             <dd><a href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a></dd>
         <% end %>
 
-        <dt>Contains Manuscripts</dt>
-            <dd><%= source.whether_mss||"Unknown" %></dd>
+<!--        <dt>Contains Manuscripts</dt>
+            <dd><%= source.whether_mss||"Unknown" %></dd>-->
 
         <dt># Entries</dt>
             <dd>This source has <a class='badge' href="<%= search_advanced_path(source: source.public_id) %>"><%= source.entries.approved_only.count %> entries</a> in the database.</dd>

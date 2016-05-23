@@ -8,6 +8,9 @@
             <div class="panel-body">
                 <ul class="nav">
                     <% if user_signed_in? %>
+                        <li>
+                            <a onclick="addBookmark(<%= @model.id %>, 'Name');" class="bookmark-link" in_bookmarks="/names/<%= @model.id %>"><span class="glyphicon glyphicon-bookmark"></span></a>
+                        </li>
                         <% if can?(:edit, name) %>
                             <li class="edit_name">
                                 <a href="<%= edit_name_path(name.id) %>">Edit this name agent</a>

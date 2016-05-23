@@ -39,6 +39,11 @@
         <%= link_to current_user, edit_user_registration_path %>
       </li>
       <% end %>
+      <% if request.path != "/bookmarks" %>
+        <li>
+          <%= render partial: "bookmarks/navbar" %>
+        </li>
+      <% end %>
       <% else %>
       <li>
         <%= link_to t('blacklight.header_links.login'), new_user_session_path %>

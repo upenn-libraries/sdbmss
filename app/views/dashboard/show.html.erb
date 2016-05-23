@@ -18,8 +18,11 @@
                 </span>
             </div>
             <div class="col-sm-9">
+                <% if current_user.tags.count <= 0 %>
+                    <span class="text-primary">You do not have any tags yet.</span>
+                <% end %>
                 <% current_user.tags.each do |tag, count| %>
-                    <span class="bookmark-tag text-primary"><span class="h4"><strong><%= tag %></strong><span class="bookmark-count text-muted">[<%= count %>]</span></span></span>
+                    <a href="/bookmarks?tag=<%= tag %>" class="bookmark-tag text-primary"><span class="h4"><strong><%= tag %></strong><span class="bookmark-count text-muted">[<%= count %>]</span></span></a>
                 <% end %>
             </div>
         </div>
@@ -120,7 +123,17 @@
                         </div>
                     </li>
                     <% entries.each do |entry| %>
-                        <li class="list-group-item"><%= render partial: "bookmarks/show_entry", locals: {entry: entry} %></li>
+                        <li class="list-group-item">
+                            <dl class="document-show-heading dl-horizontal dl-invert">
+                              <dt></dt>
+                              <dd class="h4">
+                                <div class="row">
+                                  <div class="col-sm-12"><%= link_to entry.public_id, entry_path(entry) %></div>
+                                </div>
+                              </dd>
+                          </dl>
+                            <%= render partial: "bookmarks/show_entry", locals: {entry: entry} %>
+                        </li>
                     <% end %>
                 </ul>
 

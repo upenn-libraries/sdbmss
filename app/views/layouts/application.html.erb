@@ -66,13 +66,6 @@
   <%# this is from blacklight %>
   <%= render partial: 'shared/ajax_modal' %>
 
-  <!-- for omnipresent bookmarks tab -->
-  <% if request.original_fullpath != "/bookmarks" %>
-  <div class="bookmarks_container">
-    <%= render partial: "/shared/my_bookmarks" %>
-  </div>
-  <% end %>
-
   <div id="main-container" class="container">
     <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
 
@@ -80,6 +73,9 @@
       <%= yield %>
     </div>
   </div>
+  <% if request.original_fullpath != "/bookmarks" %>
+    <%= render partial: "/shared/my_bookmarks" %>
+  <% end %>
 
   <%# this is SDBM-specific modal code %>
   <%= render :partial => 'shared/modal' %>

@@ -218,7 +218,7 @@ describe "Data entry", :js => true do
       fill_in 'source_date', with: '2014-02-34'
       fill_in 'title', with: 'Very Rare Books'
       fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
-      select "Yes", from: 'whether_mss'
+      #select "Yes", from: 'whether_mss'
       select "Library", from: 'medium'
       fill_in 'date_accessed', with: "1990-05-01"
       fill_in 'location_institution', with: "University of Pennsylvania"
@@ -237,7 +237,7 @@ describe "Data entry", :js => true do
       expect(source.date).to eq('20140234')
       expect(source.title).to eq('Very Rare Books')
       expect(source.get_selling_agent.agent.name).to eq("Sotheby's")
-      expect(source.whether_mss).to eq("Yes")
+      #expect(source.whether_mss).to eq("Yes")
       expect(source.status).to eq(Source::TYPE_STATUS_TO_BE_ENTERED)
       expect(source.medium).to eq(Source::TYPE_MEDIUM_LIBRARY)
       expect(source.date_accessed).to eq("19900501")
@@ -256,7 +256,7 @@ describe "Data entry", :js => true do
       fill_in 'source_date', with: '2014-02-34'
       fill_in 'title', with: 'DeRicci Census'
       fill_in 'author', with: 'Seymour DeRicci'
-      select "Yes", from: 'whether_mss'
+      #select "Yes", from: 'whether_mss'
       select "Library", from: 'medium'
       fill_in 'date_accessed', with: "2011-10-09"
       fill_in 'location_institution', with: "University of Pennsylvania"
@@ -275,7 +275,7 @@ describe "Data entry", :js => true do
       expect(source.date).to eq('20140234')
       expect(source.title).to eq('DeRicci Census')
       expect(source.author).to eq('Seymour DeRicci')
-      expect(source.whether_mss).to eq("Yes")
+      #expect(source.whether_mss).to eq("Yes")
       expect(source.medium).to eq(Source::TYPE_MEDIUM_LIBRARY)
       expect(source.date_accessed).to eq("20111009")
       expect(source.location_institution).to eq("University of Pennsylvania")
@@ -417,12 +417,18 @@ describe "Data entry", :js => true do
       fill_in 'provenance_observed_name_0', with: 'Somebody, Joe'
       fill_autocomplete_select_or_create_entity 'provenance_agent_0', with: 'Somebody, Joseph'
       click_certainty_flag('provenance_certainty_flags_0')
+
+      find_by_id('add_provenance_date_0').click
+      fill_in 'provenance_0_recorded_date_0', with: '1945-06-15'
       fill_in 'provenance_start_date_0', with: '1945-06-15'
       fill_in 'provenance_end_date_0', with: '1965-11-23'
       check 'provenance_direct_transfer_0'
 
       find_by_id('add_provenance').click
       fill_autocomplete_select_or_create_entity 'provenance_agent_1', with: "Sotheby's"
+
+      find_by_id('add_provenance_date_1').click
+      fill_in 'provenance_1_recorded_date_0', with: '1965'
       fill_in 'provenance_start_date_1', with: '1965-11-23'
       fill_in 'provenance_comment_1', with: 'An historic sale'
       select 'For Sale', from: 'provenance_acquisition_method_1'

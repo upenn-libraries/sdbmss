@@ -312,6 +312,12 @@ class SourcesController < SearchableAuthorityController
         
     #params[:title] = @source.title
     #params[:date] = @source.date
+
+    if @source.source_type.name == "personal_observation" || @source.source_type.name == "provenance_observation"
+      flash[:error] = "You can't merge a Source of this type (Provenance or Personal Observation)."
+      redirect_to source_path(@source)
+    end
+
     get_similar
     if @target_id.present?
       if @target_id.to_i == @source.id

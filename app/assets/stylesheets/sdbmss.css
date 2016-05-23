@@ -46,11 +46,19 @@ body {
   margin: 10px;
 }
 #my_bookmarks {
-  float: right;
+  /* float: right; */
+  position: absolute;
   max-width: 400px;
-  border-radius: 5px;
+  border-radius: 0px;
   margin: 0px;
-  box-shadow: 0px 0px 0px 5px rgba(200,200,255,0.3);
+  /* box-shadow: 0px 0px 0px 5px rgba(200,200,255,0.3); */
+  top: 50px;
+  z-index: 1000;
+  right: 0px;
+  border: none;
+  border-left: 1px solid #D0D0D0;
+  border-bottom: 1px solid #D0D0D0;
+  background-color: #DDDDDD;
 }
 #my_bookmarks .badge {
   padding: 2px;
@@ -73,7 +81,6 @@ body {
 }
 .nav .bookmark-link:after {
   content: " Bookmark";
-  font-weight: bold;
 }
 .bookmark-link {
   height: inherit;
@@ -479,6 +486,7 @@ div#search_results_length {
   content: "X";
   position: absolute;
   top: 0px;
+  pointer-events: none;
   font-size: 754px;
   color: #A94442;
   opacity: 0.1;
@@ -563,7 +571,8 @@ div#search_results_length {
   padding: 4px 0px;
   border-radius: 4px;
   color: #33332C;
-  background-color: #eeeeee;
+  border: 1px solid #dddddd;
+  background-color: #F5F5F5;
   margin-bottom: 8px;
 }
 .document-show-heading .h2, .document-show-heading .h4 {

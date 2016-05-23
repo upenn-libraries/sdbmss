@@ -6,6 +6,9 @@
             </div>
             <div class="panel-body">
                 <ul class="nav">
+                    <li>
+                        <a onclick="addBookmark(<%= @source.id %>, 'Source');" class="bookmark-link" in_bookmarks="/sources/<%= @source.id %>"><span class="glyphicon glyphicon-bookmark"></span></a>
+                    </li>
                     <% if user_signed_in? %>
                         <% if can?(:edit, @source) %>
                             <li class="edit_source">

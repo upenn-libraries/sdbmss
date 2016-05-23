@@ -174,12 +174,18 @@ describe "Data entry", :js => true do
       fill_in 'provenance_observed_name_0', with: 'Somebody, Joe'
       fill_autocomplete_select_or_create_entity 'provenance_agent_0', with: 'Somebody, Joseph'
       click_certainty_flag('provenance_certainty_flags_0')
+
+      find_by_id('add_provenance_date_0').click
+      fill_in 'provenance_0_recorded_date_0', with: '1945-06-15'
       fill_in 'provenance_start_date_0', with: '1945-06-15'
       fill_in 'provenance_end_date_0', with: '1965-11-23'
       check 'provenance_direct_transfer_0'
 
       find_by_id('add_provenance').click
       fill_autocomplete_select_or_create_entity 'provenance_agent_1', with: "Sotheby's"
+
+      find_by_id('add_provenance_date_1').click
+      fill_in 'provenance_1_recorded_date_0', with: '1965'
       fill_in 'provenance_start_date_1', with: '1965-11-23'
       fill_in 'provenance_comment_1', with: 'An historic sale'
       select 'For Sale', from: 'provenance_acquisition_method_1'

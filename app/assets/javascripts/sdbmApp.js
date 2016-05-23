@@ -553,6 +553,10 @@ var BOOKMARK_SCOPE;
           if (index != -1) {
             prov.dates.splice(index, 1);
           }
+          if (prov.dates.length <= 0) {
+            prov.start_date_normalized_start = "";
+            prov.end_date_normalized_end = "";
+          }
         }
         $scope.getProvenanceDateOptions = function (prov, date) {
           var d_options = ["Start", "End", "Associated"];
@@ -1800,7 +1804,7 @@ var BOOKMARK_SCOPE;
     };
   });
 
-  sdbmApp.controller('ManageBookmarks', function ($scope, $sce) {
+  sdbmApp.controller('ManageBookmarks', function ($scope, $sce, $location) {
 
     BOOKMARK_SCOPE = $scope;
 
@@ -1859,7 +1863,7 @@ var BOOKMARK_SCOPE;
     }
     $scope.renew = function () {
       $scope.$digest();
-      $('.bookmark-link').css({color: "inherit"});
+      $('.bookmark-link').css({color: ""});
       for (var i = 0; i < $scope.tabs.length; i++) {
         var type = $scope.tabs[i];
         for (var j = 0; j < $scope.all_bookmarks[type].length; j++) {
@@ -1912,6 +1916,12 @@ var BOOKMARK_SCOPE;
       window.location = url;
     }
 
+    // load tag from url
+    if (window.location.search && window.location.search.indexOf('tag=') != -1) {
+      $scope.searchTag(window.location.search.split('tag=')[1]);
+      $scope.tagSearch = window.location.search.split('tag=')[1];
+    }
+    
   });
 
 }());

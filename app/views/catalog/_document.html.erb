@@ -7,11 +7,14 @@
     <dl class="document-metadata document-show-heading dl-horizontal dl-invert">
         <dt></dt>
         <%# data-context-href triggers an HTTP callback before loading the entry page; this makes prev/next links on individual Entry page work %>
-        <dd class='h2'><a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a></b>
-            <div style="float: right">
-            <%= render_index_doc_actions document, :wrapping_class => "index-document-functions col-sm-3 col-lg-2" %>
-            </div>
-        </dd>
+      <dd class="h4">
+        <div class="row">
+          <strong class="col-sm-4"><a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a></strong>
+          <div class="col-sm-8 text-right">
+            <%= render partial: 'catalog/bookmark_control', locals: {document: document} %>
+          </div>
+        </div>
+      </dd>
     </dl>
     <% if !entry.approved %>
         <div class="panel panel-warning">
