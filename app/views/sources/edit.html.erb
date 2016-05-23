@@ -43,7 +43,7 @@
     <div class="form-group row">
         <label for="source_type" class="col-sm-2 control-label"><span sdbm-tooltip="source_type">Source Type</span></label>
         <div class="col-sm-4">
-            <select class="form-control" id="source_type" ng-model="source.source_type" ng-options="option as option.display_name for option in optionsSourceType" ng-disabled="source.id">
+            <select class="form-control" id="source_type" ng-model="source.source_type" ng-change="sourceTypeChange()" ng-options="option as option.display_name for option in optionsSourceType" ng-disabled="source.id">
                 <option value="">Select One</option>
             </select>
         </div>
@@ -259,7 +259,7 @@
         <div class="form-group row">
             <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_location_type">Location Type</span></label>
             <div class="col-sm-3">
-                <select class="form-control" id="medium" ng-model="source.medium" ng-options="option[0] as option[1] for option in optionsMedium">
+                <select class="form-control" id="medium" ng-model="source.medium" ng-options="option[0] as option[1] for option in optionsMedium" ng-disabled="source.source_type.name == 'online'">
                     <option value="">Select One</option>
                 </select>
             </div>

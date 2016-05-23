@@ -374,6 +374,7 @@ $(document).ready(function() {
         return false;
     });
 
+
     $("#persist-entries-manuscript-link").click(function (event) {
         if(mode == 'by_entry') {
             if(entryManuscripts.length > 0) {
@@ -418,7 +419,8 @@ $(document).ready(function() {
                 }),
                 success: function(data, textStatus, jqXHR) {
                     unsavedChanges = false;
-                    var body = '<p>Your changes have been saved.<p><a href="/linkingtool/manuscript/' + manuscriptId + '">Click here</a> to reload this page</p>';
+                    // unknown error caused ONLY this link to just not work -> so I just added a manual "onclick -> reload" event handler
+                    var body = '<p>Your changes have been saved.<p><a onclick="window.location.reload();" href="/linkingtool/manuscript/' + manuscriptId + '">Click here</a> to reload this page</p>';
                     SDBM.showModal("#modal", {
                         allowDismiss: false,
                         showFooter: false,
@@ -504,8 +506,9 @@ $(document).ready(function() {
     });
 
     $(window).bind('beforeunload', function() {
-        if (unsavedChanges)
+        if (unsavedChanges) {
             return "You have unsaved changes";
+        }
     });
     
 });

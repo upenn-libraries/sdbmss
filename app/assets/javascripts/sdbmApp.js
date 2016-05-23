@@ -211,6 +211,7 @@ var BOOKMARK_SCOPE;
              * state instead of its state at the time of printing. So
              * do console.log(sdbmutil.objectSnapshot(obj)) instead.
              */
+            isBlankThing: isBlankThing,
             objectSnapshot: function (object) {
                 return JSON.parse(JSON.stringify(object));
             },
@@ -587,26 +588,26 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.removeRecord = function (anArray, record) {
-            if(window.confirm("Are you sure you want to remove this record?")) {
-                var i;
-                for (i = 0; i < anArray.length; i++) {
-                    if (anArray[i] === record) {
-                        if(record.id) {
-                            record._destroy = 1;
-                        } else {
-                            anArray.splice(i, 1);
-                        }
-                        break;
+          if (Object.getOwnPropertyNames(record).length <= 1 || window.confirm("Are you sure you want to remove this record?")) {
+            var i;
+            for (i = 0; i < anArray.length; i++) {
+                if (anArray[i] === record) {
+                    if(record.id) {
+                        record._destroy = 1;
+                    } else {
+                        anArray.splice(i, 1);
                     }
+                    break;
                 }
-                // ensure that there's always one empty record
-                if($.grep(anArray, $scope.activeRecords).length === 0) {
-                    //anArray.push({});
-                }
+            }
+            // ensure that there's always one empty record
+            if($.grep(anArray, $scope.activeRecords).length === 0) {
+                //anArray.push({});
+            }
 
-                setTimeout( function () {            
-                  $scope.affixer();
-                }, 2000);
+            setTimeout( function () {            
+              $scope.affixer();
+            }, 2000);
           }
         };
 
@@ -1458,7 +1459,7 @@ var BOOKMARK_SCOPE;
                     }
                 });
             }
-            return "Create a New " + sourceTypeForTitle;
+            return 'Create a New ' + sourceTypeForTitle;
         };
 
         $scope.showFields = function() {
@@ -1644,6 +1645,15 @@ var BOOKMARK_SCOPE;
         // "constructor" for controller goes here
 
         SDBM.disableFormSubmissionOnEnter('#source-form');
+
+        $scope.sourceTypeChange = function () {
+          if ($scope.source && $scope.source.source_type) {
+            if ($scope.source.source_type.name == 'online')
+              $scope.source.medium = 'internet';
+            else
+              $scope.source.medium = '';
+          }
+        };
 
         $http.get("/sources/types.json").then(
             function(result) {
@@ -1862,7 +1872,7 @@ var BOOKMARK_SCOPE;
       return false;
     }
     $scope.renew = function () {
-      $scope.$digest();
+      $scope.$apply();
       $('.bookmark-link').css({color: ""});
       for (var i = 0; i < $scope.tabs.length; i++) {
         var type = $scope.tabs[i];
@@ -1913,13 +1923,14 @@ var BOOKMARK_SCOPE;
         else
           url += "&id[]=" + $scope.all_bookmarks[type][i].document_id;  
       }
-      window.location = url;
+    
     }
 
     // load tag from url
     if (window.location.search && window.location.search.indexOf('tag=') != -1) {
-      $scope.searchTag(window.location.search.split('tag=')[1]);
-      $scope.tagSearch = window.location.search.split('tag=')[1];
+      var search  = decodeURIComponent(window.location.search.split('tag=')[1]);
+      $scope.tagSearch = search;
+      $scope.searchTag(search);
     }
     
   });

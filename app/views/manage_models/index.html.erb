@@ -17,7 +17,7 @@
             <h1>Manage Your <%= resource_name.pluralize.capitalize %></h1>
         <% else %>
             <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
-            <h1>Manage all <%= resource_name.singularize %> records</h1>
+            <h1>Manage <%= resource_name.capitalize %></h1>
         <% end %>
         <% end %>
     </div>
@@ -27,8 +27,8 @@
 </div>
 
 <%= render partial: "instructions" %>
-
 <%= render partial: "search_form" %>
+
 </div>
 <!--
 <div class="widescreen">

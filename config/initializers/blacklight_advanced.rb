@@ -83,7 +83,7 @@ module BlacklightAdvancedSearch
         advanced_query.keyword_queries.each_pair do |field, query|
           label = search_field_def_for_key(field)[:label]
 
-          content << render_search_to_s_element(label, " #{query.join(', ')}  ")
+          content << render_search_to_s_element(label, " #{Array(query).join(', ')}  ")
         end
       end
       return content + " (#{advanced_query.keyword_op})"

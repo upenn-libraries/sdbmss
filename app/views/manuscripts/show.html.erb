@@ -1,4 +1,5 @@
 <% content_for :head do %>
+<%= stylesheet_link_tag "extras", media: "all" %>
 <style>
     .side {
       width: 0%;
@@ -104,6 +105,7 @@
         $('input[name="manuscript[title]"]').val(manuscriptTitle);
         $('input[name="manuscript[location]"]').val(manuscriptLocation);
     });
+
  });
 
 </script>
@@ -125,14 +127,14 @@
                     <div class='h1'>
                         <%= @manuscript.public_id %>
                         <br>
-                        <span class='small'><strong>Last Known Location - </strong> 
+                        <span class='small'><strong sdbm-tooltip="manuscript_location">Last Known Location </strong> 
                             <% if can? :edit, @manuscript %>
                                 <%= f.text_field :location, class: "form-control manuscript-info manuscript-info-show" %>
                             <% else %>
                                 <span class="manuscript-edit-input"><%= @manuscript.location || "Unknown" %></span>
                             <% end %>
                         </span><br>
-                        <ul class="small manuscript-titles"><strong>Title(s) - </strong>
+                        <ul class="small manuscript-titles"><strong sdbm-tooltip='manuscript_title'>Title(s) </strong>
                             <% if can? :edit, @manuscript %>
                                 <%= f.text_field :name, class: "form-control manuscript-info manuscript-info-show" %>
                             <% else %>
@@ -167,7 +169,7 @@
                                 <a class='btn btn-sm btn-primary' href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Link <%= @manuscript.public_id %></a>
                             </li>
                             <li>
-                                <a href="#proposed-history" data-toggle="collapse" class="toggle-propose-history btn btn-sm btn-warning">Propose History</a>
+                                <a sdbm-tooltip="manuscript_propose_history" href="#proposed-history" data-toggle="collapse" class="toggle-propose-history btn btn-sm btn-warning">Propose History</a>
                             </li>
                             <% end %>
                         </ul>
@@ -288,6 +290,10 @@
     </div>
 
     <div class="col-sm-12">
+
+        <h4>Share additional information about this manuscript in the box below. Your comments will be displayed publicly.</h4>
+
+        <p>If you have significant knowledge of this manuscript, please create a Personal Observation entry (link to create new source page?) instead of leaving a comment. Use this option when you wish to contribute data on multiple aspects of this manuscript. Once you create your Personal Observation, you can link it to this Manuscript Record, where your data will be included in the composite information displayed on this page. This option is especially useful if you have information regarding provenance agents. Once you link your Personal Observation to the Manuscript Record, you can add the provenance agents from your entry into the Proposed History.</p>
 
         <% if (comments = @manuscript.comments.where(public: true)).present? %>
         <table class="table table-striped">

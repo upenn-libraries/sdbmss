@@ -90,21 +90,16 @@ label.col-sm-2-and-half {
     <div class="row">
       <div class="col-sm-offset-2 col-sm-8">
 
-          <p ng-show="!edit">Please fill in as much information as
+          <p>
+              <span ng-show="edit">You can make edits to your entries in the
+              data fields below.</span><span ng-show="!edit">Please fill in as much information as
               possible from the record you are documenting. No fields
-              are mandatory. Click on a <b>data field label</b>
-              to open a pop-up window containing definitions and data
-              standards for that field. Click on the "+ x" to the left
-              of a data field to add or remove multiple values.
-              Depending on the type of <b>transaction</b>
-              you select, the available data fields will change.
-          </p>
-
-          <p ng-show="edit">You can make edits to your entries in the
-              data fields below. Click on a <b>data field</b>
+              are mandatory.</span></p><p> Click on a <b>data field</b>
               label to open a pop-up window containing definitions and
-              data standards for that field. Depending on the type of
-              <b>transaction</b> you select, the available data fields will
+              data standards for that field.</p><p> Click on the <strong class="text-primary">Add new +</strong> under each data
+              field label to add multiple values. Delete values by clicking on the
+              “X” in the upper right corner.  Depending on the type of
+              <b>transaction</b> you select, the available data fields may
               change.
           </p>
 
@@ -141,8 +136,9 @@ label.col-sm-2-and-half {
                   <li role="presentation" ng-show="entry.id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToEntryViewPage(entry.id)">Go to public page for SDBM_{{ entry.id }}</a></li>
                   <li role="presentation" ng-show="entry.id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToEntryHistoryPage(entry.id)">View history for SDBM_{{ entry.id }}</a></li>
                   <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToSourceEditPage(entry.source.id)">Edit source SDBM_SOURCE_{{ entry.source.id }}</a></li>
-                  <li role="presentation" ng-show="entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToManuscriptEditPage(entry.manuscript_id)">Manage entries for SDBM_MS_{{ entry.manuscript_id }}</a></li>
-                  <li role="presentation" ng-show="entry.id && !entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToFindOrCreateManuscriptForEntryPage(entry.id)">Create a manuscript record or link for this entry</a></li>
+                  <li role="presentation"><a href="/linkingtool/entry/{{ entry.id }}" role="menuItem" tabindex="-1">Linking Tool for SDBM_{{ entry.id }}</a></li>
+                  <!--<li role="presentation" ng-show="entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToManuscriptEditPage(entry.manuscript_id)">Manage entries for SDBM_MS_{{ entry.manuscript_id }}</a></li>
+                  <li role="presentation" ng-show="entry.id && !entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToFindOrCreateManuscriptForEntryPage(entry.id)">Create a manuscript record or link for this entry</a></li>-->
               </ul>
           </div>
       </div>
@@ -461,7 +457,7 @@ label.col-sm-2-and-half {
         </div>
         <div class="row">
           <label class="col-sm-3 control-label">
-                <span sdbm-tooltip="entry_artist">As Recorded</span>
+                <span sdbm-tooltip="entry_artist_as_recorded">As Recorded</span>
           </label>
           <div class="col-sm-9">
               <input id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
@@ -469,7 +465,7 @@ label.col-sm-2-and-half {
         </div>
         <div class="row">
           <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_artist_as_recorded">Find in Name Authority</span>
+            <span sdbm-tooltip="entry_artist">Find in Name Authority</span>
           </label>
           <div class="col-sm-9">
             <div class="input-group">
@@ -996,19 +992,21 @@ label.col-sm-2-and-half {
             </p>
         <% end %>
 
-        <p>Would you like to add another Entry for this Source?</p>
+        <p>What <strong class='text-success'>action</strong> would you like to take?</p>
 
         <p style="margin-left: 2em;">
 
-            <a ng-click="sdbmutil.redirectToEntryCreatePage(entry.source.id)" href="#">Yes</a><br/><br/>
+            <a ng-click="sdbmutil.redirectToEntryCreatePage(entry.source.id)" href="#">Add another entry from this source.</a><br/><br/>
 
-            <a href="/dashboard">Not right now. I will enter the rest later</a><br/><br/>
+            <a href="/dashboard">Take a break from entering this source; return to my <strong class='text-info'>dashboard</strong></a><br/><br/>
 
-            <a ng-click="markSourceAsEntered()" href="#">No, there are no more entries to enter from this source</a><br/><br/>
+            <a ng-click="markSourceAsEntered()" href="#">The source is <strong>completely entered</strong>; return to my <strong class='text-info'>dashboard</strong></a><br/><br/>
 
-            <span ng-show="!entry.manuscript_id"><a ng-click="sdbmutil.redirectToFindOrCreateManuscriptForEntryPage(entry.id)" href="#">No, but let me link to another entry</a><br/><br/></span>
+            <a href="/?commit=Search&op=AND&search_field=advanced&source=SDBM_SOURCE_{{ entry.source.id }}&utf8=%E2%9C%93">Go to other entries for this Source</a><br><br>
 
-            <span ng-show="entry.manuscript_id"><a ng-click="sdbmutil.redirectToManuscriptEditPage(entry.manuscript_id)" href="#">No, but let me manage the entries for SDBM_MS_{{ entry.manuscript_id }}</a><br/><br/></span>
+            <span ng-show="!entry.manuscript_id"><a ng-click="sdbmutil.redirectToFindOrCreateManuscriptForEntryPage(entry.id)" href="#">Go to the <strong class='text-primary'>Linking Tool</strong> for this entry.</a><br/><br/></span>
+
+<!--            <span ng-show="entry.manuscript_id"><a ng-click="sdbmutil.redirectToManuscriptEditPage(entry.manuscript_id)" href="#">No, but let me manage the entries for SDBM_MS_{{ entry.manuscript_id }}</a><br/><br/></span>-->
 
             <a ng-click="sdbmutil.redirectToEntryEditPage(entry.id)" href="#">Return to editing this entry</a><br/><br/>
 
