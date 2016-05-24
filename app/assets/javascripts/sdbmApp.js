@@ -1848,6 +1848,9 @@ var BOOKMARK_SCOPE;
       $.get('/bookmarks/reload.json', {tag: tag, details: (window.location.pathname == "/bookmarks")}).done( function (e) {
         $scope.all_bookmarks = e;
         $scope.renew();
+        if (window.location.pathname != "/bookmarks") {
+          $('#my_bookmarks').find('.dl-horizontal').removeClass('dl-horizontal');
+        }
       }).error( function (e) {
         console.log('error.', e);
       });

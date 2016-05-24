@@ -61,7 +61,10 @@
 
   </head>
   <body class="<%= render_body_class %>">
-  <div class="main-content">
+  <div class="main-content bookmarks-collapse collapse in">
+    <% if request.path != "/bookmarks" %>
+      <%= render partial: "bookmarks/navbar" %>
+    <% end %>
     <%= render :partial => 'shared/header_navbar' %>
 
     <%# this is from blacklight %>
@@ -79,7 +82,7 @@
     
     <%= render :partial => 'shared/footer' %>
   </div>
-  <div class="sidebar">
+  <div class="sidebar bookmarks-collapse collapse">
     <% if request.original_fullpath != "/bookmarks" %>
       <%= render partial: "/shared/my_bookmarks" %>
     <% end %>

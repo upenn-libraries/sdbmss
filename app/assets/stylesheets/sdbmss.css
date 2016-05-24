@@ -1,17 +1,47 @@
+html {
+  height: 100%;
+}
 body {
   height: 100%;
+  overflow-x: hidden;
   font-family: Ubuntu, sans-serif;
 }
 
 .main-content {
-  height: 100%;
-  width: calc(100% - 380px);
+  width: 100%;
+  height: 100% !important;
   float: left;
+  position: relative;
+}
+.main-content.collapse {
+  display: block;
+  width: calc(100% - 380px);
+}
+.main-content.collapse.in {
+  width: 100%;
 }
 .sidebar {
-  height: 100%;
+  height: 100% !important;
   width: 380px;
-  float: right;
+  margin-right: 0px;
+  position: absolute;
+  right: 0px;
+  padding: 6px;
+  padding-right: 0px;
+  background-color: maroon;
+}
+.sidebar.collapse {
+  height: 100% !important;
+  margin-right: -380px;
+  display: block;
+}
+.sidebar.collapse.in {
+  margin-right: 0px;
+}
+.main-content, .sidebar {
+  -webkit-transition: all .5s linear !important;
+  -o-transition: all .5s linear !important;
+  transition: all .5s linear !important;
 }
 
 #header-navbar { background-color: #dddddd; border-color: #d0d0d0; }
@@ -48,6 +78,17 @@ body {
 }*/
 
 /* BOOKMARKS */
+.toggle-sidebar {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  z-index: 9000;
+  padding: 15px;
+  color: white;
+  background-color: maroon;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
 .bookmarks_container {
   position: fixed;
   right: 0px;
@@ -63,15 +104,19 @@ body {
   height: 100%;
   width: 100%;
   border-radius: 0px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
   margin: 0px;
   /* box-shadow: 0px 0px 0px 5px rgba(200,200,255,0.3); */
-  top: 50px;
   z-index: 1000;
   right: 0px;
   border: none;
   border-left: 1px solid #D0D0D0;
   border-bottom: 1px solid #D0D0D0;
   background-color: #DDDDDD;
+}
+#my_bookmarks .nav-tabs > li {
+  margin: -1px;
 }
 #my_bookmarks .badge {
   padding: 2px;
@@ -80,6 +125,10 @@ body {
 .bookmark-panes {
   border: 1px solid #DDDDDD;
   border-top: 0px;
+  height: calc(100% - 100px);
+}
+#my_bookmarks .tab-pane {
+  height: 100%;
 }
 .control-bookmark, .tag-bookmark {
     /* background: black; */
@@ -101,8 +150,11 @@ body {
 }
 .bookmarks {
   margin-bottom: 0px;
-  max-height: calc(100vh - 250px);
+  height: 100%;
   overflow-y: scroll;
+}
+.bookmarks .list-group-item:nth-child(1) {
+  border-radius: 0px;
 }
 .tag-bookmark {
   right: 32px;

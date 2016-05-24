@@ -13,6 +13,7 @@
           <li class="list-group-item" ng-if="bookmarks.length <= 0">
             No records of this type have been bookmarked yet.
           </li>
+          <!--
           <li class="list-group-item" ng-repeat="bookmark in bookmarks">
             <div class="row">
               <div class="col-xs-5">
@@ -42,6 +43,41 @@
               </li>
             </ul>
 
+          </li>-->
+          <li class="list-group-item" ng-repeat="bookmark in bookmarks">
+              <dl class="document-show-heading dl-invert">
+                  <dt>
+                    <a class="tag-bookmark pull-left" ng-click="bookmark.showAddTag = !bookmark.showAddTag"><span class="glyphicon glyphicon-tag"></span></a>
+                    <a class='remove-bookmark control-bookmark pull-left' ng-click="removeBookmark(name, bookmark)">
+                      <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                  </dt>
+                  <dd class="h4">
+                    <div class="row">
+                      <strong class="col-sm-4"><a href="{{ bookmark.link }}">{{ bookmark.public_id }}</a></strong>
+                      <div class="col-sm-8 text-right">
+                        <div class="form-inline">
+                          <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
+                            <input type='text' class='form-control' placeholder="add tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
+                            <a class="input-group-addon add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="glyphicon glyphicon-plus"></span></a>
+                          </div>
+                        </div> 
+                      </div>
+                    </div>
+                  </dd>
+              </dl>
+              <div ng-bind-html="bookmark.details"></div>
+              <dl class="document-metadata dl-invert">
+                <dt>Tags</dt>
+                <dd class="h4">
+                  <ul class="list-inline">
+                    <li>
+                      <span class="bookmark-tag text-primary" ng-repeat="tag in bookmark.tags">{{ tag }}<span class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></span>
+                      </span>
+                    </li>
+                  </ul>
+                </dd>
+              </dl>
           </li>
         </ul>
       </div>

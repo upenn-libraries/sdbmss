@@ -48,7 +48,9 @@ class BookmarksController < CatalogController
     can_merge = params[:can_merge] || false
     can_link = params[:can_link] == "true"
     tag = params[:tag].blank? ? nil : params[:tag]
-    details = params[:details] || false
+    #details = params[:details] || false
+    details = true
+    
     # something bogus here with this... when there is no tag (i.e. else)
     if tag
       @bookmarks = current_user.bookmarks.where("tags like ?", "%#{tag}%")
