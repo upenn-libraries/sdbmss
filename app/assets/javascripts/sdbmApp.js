@@ -1940,6 +1940,12 @@ var BOOKMARK_SCOPE;
 
 }());
 
+function toggleSidebar() {
+  console.log('hey');
+  $('.sidebar').toggleClass('in');
+  $('.main-content').toggleClass('in');
+}
+
 // this works!  maybe not a good idea?
 function addBookmark(id, type) {
   BOOKMARK_SCOPE.addBookmark(id, type);
