@@ -862,7 +862,7 @@ label.col-sm-2-and-half {
         <div class="col-sm-6">
           <div class="panel panel-info panel-provenance">
             <div class="panel-heading">
-              <label for="" class="control-label">Date(s)</label>
+              <label for="" class="control-label" sdbm-tooltip="entry_provenance_dates">Date(s)</label>
             </div>
             <div class="panel-body">
               <div class="row" ng-repeat="dt in prov.dates">
@@ -900,7 +900,7 @@ label.col-sm-2-and-half {
             <div class="panel-footer">
               <div class="form-group row" ng-class="{disabled: prov.dates[0].date == undefined}">
                 <label class="col-xs-3 control-label" style="text-align: left; padding-top: 0px;">
-                    <span sdbm-tooltip="entry_provenance_start_date_as_recorded">Date Range for Search</span>
+                    <span >Date Range for Search</span>
                 </label>
                 <div class="col-xs-4">
                   <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-disabled="prov.dates[0].date == undefined">
