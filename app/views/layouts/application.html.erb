@@ -61,25 +61,28 @@
 
   </head>
   <body class="<%= render_body_class %>">
-  <%= render :partial => 'shared/header_navbar' %>
+  <div class="main-content">
+    <%= render :partial => 'shared/header_navbar' %>
 
-  <%# this is from blacklight %>
-  <%= render partial: 'shared/ajax_modal' %>
+    <%# this is from blacklight %>
+    <%= render partial: 'shared/ajax_modal' %>
 
-  <div id="main-container" class="container">
-    <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
+    <div id="main-container" class="container">
+      <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
 
-    <div class="row">
-      <%= yield %>
+      <div class="row">
+        <%= yield %>
+      </div>
     </div>
+    <%# this is SDBM-specific modal code %>
+    <%= render :partial => 'shared/modal' %>
+    
+    <%= render :partial => 'shared/footer' %>
   </div>
-  <% if request.original_fullpath != "/bookmarks" %>
-    <%= render partial: "/shared/my_bookmarks" %>
-  <% end %>
-
-  <%# this is SDBM-specific modal code %>
-  <%= render :partial => 'shared/modal' %>
-  
-  <%= render :partial => 'shared/footer' %>
+  <div class="sidebar">
+    <% if request.original_fullpath != "/bookmarks" %>
+      <%= render partial: "/shared/my_bookmarks" %>
+    <% end %>
+  </div>
   </body>
 </html>

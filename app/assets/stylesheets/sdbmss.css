@@ -1,5 +1,17 @@
 body {
+  height: 100%;
   font-family: Ubuntu, sans-serif;
+}
+
+.main-content {
+  height: 100%;
+  width: calc(100% - 380px);
+  float: left;
+}
+.sidebar {
+  height: 100%;
+  width: 380px;
+  float: right;
 }
 
 #header-navbar { background-color: #dddddd; border-color: #d0d0d0; }
@@ -47,8 +59,9 @@ body {
 }
 #my_bookmarks {
   /* float: right; */
-  position: absolute;
-  max-width: 400px;
+  position: relative;
+  height: 100%;
+  width: 100%;
   border-radius: 0px;
   margin: 0px;
   /* box-shadow: 0px 0px 0px 5px rgba(200,200,255,0.3); */
