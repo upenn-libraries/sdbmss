@@ -16,7 +16,7 @@ var BOOKMARK_SCOPE;
 
     "use strict";
 
-    var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap", "ngAnimate", "ui.sortable", "ngSanitize"]);
+    var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap", "ngAnimate", "ui.sortable", "ngSanitize", "ngCookies"]);
     
     sdbmApp.run(function ($http) {
         // For Rails CSRF
@@ -1848,9 +1848,11 @@ var BOOKMARK_SCOPE;
       $.get('/bookmarks/reload.json', {tag: tag, details: (window.location.pathname == "/bookmarks")}).done( function (e) {
         $scope.all_bookmarks = e;
         $scope.renew();
-        if (window.location.pathname != "/bookmarks") {
-          $('#my_bookmarks').find('.dl-horizontal').removeClass('dl-horizontal');
-        }
+        $('.bookmarks').scroll( function (e) {
+          if (localStorage) localStorage.sidebar_scroll = $(this).scrollTop();
+        });
+        var scroll = localStorage ? localStorage.sidebar_scroll : 0;
+        if (!tag) $('.tab-pane.active.in .bookmarks').scrollTop(scroll);
       }).error( function (e) {
         console.log('error.', e);
       });
@@ -1929,22 +1931,48 @@ var BOOKMARK_SCOPE;
     
     }
 
+    $scope.toggleSidebar = function (skip) {
+      if (!skip) $('.sidebar, .main-content').addClass('transition');
+      $('.sidebar').toggleClass('in');
+      $('.main-content').toggleClass('in');
+      setTimeout(function () {
+        if ($('.sidebar').hasClass('in')) {
+          $('.toggle-sidebar').html('<span class="glyphicon glyphicon-remove"></span>');
+          localStorage.sidebar_open = "true";
+        } else {
+          $('.toggle-sidebar').html('<span class="glyphicon glyphicon-bookmark"></span>');
+          localStorage.sidebar_open = "false";
+        }
+        $('.sidebar, .main-content').removeClass('transition');
+      }, 500);
+    }
+
     // load tag from url
     if (window.location.search && window.location.search.indexOf('tag=') != -1) {
       var search  = decodeURIComponent(window.location.search.split('tag=')[1]);
       $scope.tagSearch = search;
       $scope.searchTag(search);
     }
+
+    $scope.addTabToStorage = function (name) {
+      if (localStorage) localStorage.sidebar_tab = name;
+    }
+
+    if (localStorage && localStorage.sidebar_open == "true" && $('.sidebar').length > 0) {
+      $scope.toggleSidebar(true);
+    }
+
+    if (localStorage && localStorage.sidebar_tab) {
+      $scope.active = localStorage.sidebar_tab;
+    } else {
+      $scope.active == "Entry";
+    }
     
   });
 
 }());
 
-function toggleSidebar() {
-  console.log('hey');
-  $('.sidebar').toggleClass('in');
-  $('.main-content').toggleClass('in');
-}
+//function toggleSidebar() 
 
 // this works!  maybe not a good idea?
 function addBookmark(id, type) {

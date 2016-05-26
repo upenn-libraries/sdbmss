@@ -718,6 +718,17 @@ class Entry < ActiveRecord::Base
     id
   end
 
+  # fix me: eventually, want to switch bookmark details to send as json
+  def to_bookmark
+    {
+      id: id,
+      public_id: public_id,
+      manuscript_id: (manuscript ? manuscript.id : nil),
+      source_id: source.id,
+      source: source.display_value     
+    }
+  end
+
   private
 
   def update_source_status

@@ -5,7 +5,7 @@
     <% else %>
     <% if !entry.approved %>
         <div class="panel panel-warning">
-            <div class="panel-heading">Warning: This record is not yet approved and may not conform to standards for data structure or accuracy.</div>
+            <div class="panel-heading">Warning: This record is not yet approved.</div>
         </div>
     <% end %>
     <dl class="document-metadata dl-horizontal dl-invert">
@@ -107,20 +107,16 @@
         <% if (provenance_count = entry.provenance.length) > 0 %>
         <dt>Provenance Info</dt>
         <dd>
-            This entry has <%= provenance_count %> provenance records involving:<br/>
+            This entry has <%= provenance_count %> provenance records involving: 
             <% entry.unique_provenance_agents.each do |unique_provenance_agent| %>
                 <% if unique_provenance_agent[:agent].present? %>
                 <a href="<%= url_for unique_provenance_agent[:agent] %>"><%= unique_provenance_agent[:agent] %></a>
                 <% else %>
                   <%= unique_provenance_agent[:name] %>
                 <% end %>
-                <br/>
             <% end %>
         </dd>
         <% end %>
-
-        <dt></dt>
-        <dd><%= link_to "View complete record...", entry_path(entry) %></dd>
     </dl>
     <% end %>
 

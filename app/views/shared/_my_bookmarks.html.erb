@@ -1,48 +1,45 @@
 <% if current_user %>
-  <div class="panel panel-default" id="my_bookmarks" ng-controller="ManageBookmarks">
+  <div class="panel panel-default" id="my_bookmarks">
       <ul class="nav nav-tabs">
-        <li ng-repeat="(name, bookmarks) in all_bookmarks" class="bookmark-nav-button" ng-class="{active: $index == 0}">
-          <a data-toggle='tab' href='#bookmark-tab-{{ name }}'>{{ name }}
+        <li ng-repeat="(name, bookmarks) in all_bookmarks" class="bookmark-nav-button" ng-class="{active: (name == active) }">
+          <a data-toggle='tab' href='#bookmark-tab-{{ name }}' ng-click="addTabToStorage(name);">{{ name }}
           <span class="badge">{{ bookmarks.length }}</span></a>
         </li>
       </ul>
     <div class="tab-content bookmark-panes">
 
-      <div ng-repeat="(name, bookmarks) in all_bookmarks" class="tab-pane fade" id="bookmark-tab-{{ name }}" ng-class="{active: $index == 0, in: $index == 0}">
+      <div ng-repeat="(name, bookmarks) in all_bookmarks" class="tab-pane fade" id="bookmark-tab-{{ name }}" ng-class="{active: (name == active), in: (name == active)}">
         <ul class="list-group bookmarks">
           <li class="list-group-item" ng-if="bookmarks.length <= 0">
             No records of this type have been bookmarked yet.
           </li>
           <li class="list-group-item" ng-repeat="bookmark in bookmarks">
-              <dl class="document-show-heading dl-invert">
-                  <dt>
-                    <a class="tag-bookmark pull-left" ng-click="bookmark.showAddTag = !bookmark.showAddTag"><span class="glyphicon glyphicon-tag"></span></a>
-                    <a class='remove-bookmark control-bookmark pull-left' ng-click="removeBookmark(name, bookmark)">
+              <dl class="document-show-heading dl-invert" style="padding-left: 10px;">
+                  <dt class='h4'>
+                    <strong><a href="{{ bookmark.link }}"> {{ bookmark.public_id }}</a></strong>
+                    <span ng-bind-html="actionButton(bookmark)"></span> 
+                    <a class='remove-bookmark control-bookmark pull-right' ng-click="removeBookmark(name, bookmark)">
                       <span class="glyphicon glyphicon-trash"></span>
                     </a>
+                    <a class="tag-bookmark pull-right" ng-click="bookmark.showAddTag = !bookmark.showAddTag"><span class="glyphicon glyphicon-tag"></span></a>
                   </dt>
-                  <dd class="h4">
-                    <div class="row">
-                      <strong class="col-sm-4"><a href="{{ bookmark.link }}">{{ bookmark.public_id }}</a></strong>
-                      <div class="col-sm-8 text-right">
-                        <div class="form-inline">
-                          <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
-                            <input type='text' class='form-control' placeholder="add tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
-                            <a class="input-group-addon add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="glyphicon glyphicon-plus"></span></a>
-                          </div>
-                        </div> 
+                  <dd>
+                    <div class="form-inline">
+                      <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
+                        <input type='text' class='form-control' placeholder="add tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
+                        <a class="input-group-addon add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="glyphicon glyphicon-plus"></span></a>
                       </div>
-                    </div>
+                    </div> 
                   </dd>
               </dl>
               <div ng-bind-html="bookmark.details"></div>
-              <dl class="document-metadata dl-invert">
+              <dl class="document-metadata dl-invert dl-horizontal">
                 <dt>Tags</dt>
-                <dd class="h4" ng-if="bookmark.tags.length > 0">
+                <dd ng-if="bookmark.tags.length > 0">
                   <ul class="list-inline">
-                    <li>
-                      <span class="bookmark-tag text-primary" ng-repeat="tag in bookmark.tags">{{ tag }}<span class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></span>
-                      </span>
+                    <li ng-repeat="tag in bookmark.tags" class="bookmark-tag bg-primary">
+                        <a href="/bookmarks?tag={{ tag }}">{{ tag }}</a> <!-- fix me: should this filter in bookmark panel, or go to manage bookmarks search? -->
+                        <a class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></a>
                     </li>
                   </ul>
                 </dd>

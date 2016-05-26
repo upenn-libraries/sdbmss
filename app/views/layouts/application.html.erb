@@ -62,9 +62,6 @@
   </head>
   <body class="<%= render_body_class %>">
   <div class="main-content bookmarks-collapse collapse in">
-    <% if request.path != "/bookmarks" %>
-      <%= render partial: "bookmarks/navbar" %>
-    <% end %>
     <%= render :partial => 'shared/header_navbar' %>
 
     <%# this is from blacklight %>
@@ -82,10 +79,11 @@
     
     <%= render :partial => 'shared/footer' %>
   </div>
-  <div class="sidebar bookmarks-collapse collapse">
-    <% if request.original_fullpath != "/bookmarks" %>
-      <%= render partial: "/shared/my_bookmarks" %>
-    <% end %>
-  </div>
+  <% if request.path != "/bookmarks" && current_user %>
+    <div class="sidebar bg-primary bookmarks-collapse collapse"  ng-controller="ManageBookmarks">
+      <%= render partial: "bookmarks/navbar" %>
+        <%= render partial: "/shared/my_bookmarks" %>
+    </div>
+  <% end %>
   </body>
 </html>

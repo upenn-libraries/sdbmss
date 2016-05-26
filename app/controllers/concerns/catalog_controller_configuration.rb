@@ -160,11 +160,6 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'source_agent' }
       end
 
-      config.add_search_field('source_agent_sort', label: "Source Agent") do |field|
-        field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'source_agent_sort' }
-      end
-
       config.add_search_field('institution', label: "Institution") do |field|
         field.include_in_simple_select = false
         field.solr_local_parameters = { :qf => 'institution_search' }

@@ -45,6 +45,11 @@ class BookmarksController < CatalogController
   end
 
   def reload
+    if !current_user
+      render json: {error: "No current user logged in."}
+      return false
+    end
+
     can_merge = params[:can_merge] || false
     can_link = params[:can_link] == "true"
     tag = params[:tag].blank? ? nil : params[:tag]
@@ -64,19 +69,7 @@ class BookmarksController < CatalogController
       else
         b = bookmark.for_show
 
-        if details
-          details_to_render = nil
-          if bookmark.document_type.to_s == 'Source'
-            details_to_render = render_to_string('sources/_source_details.html', :layout => false, :locals => { :source => bookmark.document, :abbreviate => true})
-          elsif bookmark.document_type.to_s == 'Entry'
-            details_to_render = render_to_string('bookmarks/_show_entry.html', :layout => false, :locals => { :entry => bookmark.document})            
-          elsif bookmark.document_type.to_s == 'Name'
-            details_to_render = render_to_string('shared/_name_main.html', :layout => false, :locals => { :name => bookmark.document})            
-          elsif bookmark.document_type.to_s == 'Manuscript'
-            details_to_render = render_to_string('bookmarks/_show_manuscript.html', :layout => false, :locals => { :manuscript => bookmark.document})            
-          end
-          b[:details] = details_to_render
-        end
+        b[:details] = details_for_render(bookmark)
 
         if @bookmarks_sorted[bookmark.document_type.to_s]
           @bookmarks_sorted[bookmark.document_type.to_s].push(b)
@@ -110,7 +103,9 @@ class BookmarksController < CatalogController
       @bookmark = Bookmark.create({user: current_user, document_id: params[:document_id], document_type: params[:document_type]})
       @bookmark.save!
       flash[:message] = "Bookmark created."
-      render json: @bookmark.for_show
+      b = @bookmark.for_show
+      b[:details] = details_for_render(@bookmark)
+      render json: b
     end
     #redirect_to :back
   end
@@ -166,6 +161,18 @@ class BookmarksController < CatalogController
         render json: @bookmark.for_show
         #render text: 'not in tags'
       end
+    end
+  end
+
+  def details_for_render(bookmark)
+    if bookmark.document_type.to_s == 'Source'
+      return render_to_string('sources/_source_details.html', :layout => false, :locals => { :source => bookmark.document, :abbreviate => true})
+    elsif bookmark.document_type.to_s == 'Entry'
+      return render_to_string('bookmarks/_show_entry.html', :layout => false, :locals => { :entry => bookmark.document})            
+    elsif bookmark.document_type.to_s == 'Name'
+      return render_to_string('shared/_name_main.html', :layout => false, :locals => { :name => bookmark.document})            
+    elsif bookmark.document_type.to_s == 'Manuscript'
+      return render_to_string('bookmarks/_show_manuscript.html', :layout => false, :locals => { :manuscript => bookmark.document})            
     end
   end
 

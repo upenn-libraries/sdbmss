@@ -21,27 +21,26 @@ body {
   width: 100%;
 }
 .sidebar {
-  height: 100% !important;
   width: 388px;
   margin-right: 0px;
-  position: absolute;
+  position: fixed;
+  height: 100%;
   right: 0px;
   padding: 6px;
   padding-right: 0px;
-  background-color: maroon;
+  z-index: 9000;
 }
 .sidebar.collapse {
-  height: 100% !important;
   margin-right: -388px;
   display: block;
 }
 .sidebar.collapse.in {
   margin-right: 0px;
 }
-.main-content, .sidebar {
-  -webkit-transition: all .5s linear !important;
-  -o-transition: all .5s linear !important;
-  transition: all .5s linear !important;
+.transition {
+  -webkit-transition: all .5s !important;
+  -o-transition: all .5s !important;
+  transition: all .5s !important;
 }
 
 #header-navbar { background-color: #dddddd; border-color: #d0d0d0; }
@@ -79,13 +78,13 @@ body {
 
 /* BOOKMARKS */
 .toggle-sidebar {
-  position: absolute;
-  top: 0px;
-  right: 0px;
+  position: relative;
+  top: 9px;
+  left: -50px;
   z-index: 9000;
-  padding: 15px;
+  padding: 17px;
   color: white;
-  background-color: maroon;
+  /*background-color: #31708f;*/
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
   text-decoration: none;
@@ -109,6 +108,7 @@ body {
   border-bottom-left-radius: 4px;
   margin: 0px;
   right: 0px;
+  top: -20px;
   border: none;
   background-color: transparent;
   color: #f8f8f8;
@@ -123,18 +123,29 @@ body {
   padding: 2px;
   border-radius: 3px;
 }
-#my_bookmarks a {
+#my_bookmarks .nav a {
   color: #f8f8f8;
   border: none;
 }
-#my_bookmarks .active > a, #my_bookmarks a:hover {
+#my_bookmarks .active > a, #my_bookmarks .nav a:hover {
   background-color: white;
   color: #333;
   border-bottom: 4px solid #fff;
 }
+#my_bookmarks .dl-horizontal > dd {
+    margin-left: 0px;
+}
+#my_bookmarks .dl-horizontal > dt {
+    width: auto;
+    font-weight: bold;
+    text-align: left;
+    color: #337AB7;
+    padding-right: 10px;
+}
 .bookmark-panes {
   height: calc(100% - 100px);
   color: #333;
+  background: white;
 }
 .bookmark-panes a {
   color: #333 !important;
@@ -168,6 +179,11 @@ body {
 .bookmarks .list-group-item:nth-child(1) {
   border-radius: 0px;
 }
+.bookmarks .list-group-item:nth-child(even) {
+  background-color: #eeeeee;
+  padding-bottom: 5px;
+  box-shadow: 1px 0px 3px 3px rgba(0,0,0,0.1) inset;
+}
 .tag-bookmark {
   right: 32px;
   *border: 3px solid #34ba45;
@@ -177,9 +193,23 @@ body {
   border-color: #198919;
   color: #198919;
 }
+.bookmark-tag {
+  padding: 4px;
+  border-radius: 4px;
+  margin: 1px;
+}
+.bookmark-tag a {
+  color: #f8f8f8 !important;
+}
+.bookmark-tag a:hover, .bookmark-tag a:active, .bookmark-tag a:focus {
+  background: none;
+  color: #eeeeee;
+}
 .bookmark-tag:before {
     content: "#";
-    margin: 0px 0px 0px 10px;
+}
+.remove-bookmark-tag-confirm {
+  color: inherit;
 }
 .remove-bookmark {
     *border: 3px solid #FB9E9C;
@@ -192,9 +222,10 @@ body {
 }
 .bookmarks > .list-group-item {
   border: none;
+  padding-bottom: 0px;
 }
 .label-bookmark-tag {
-  background-color: maroon;
+  /*background-color: #31708f;*/
   color: white;
   margin: 1px;
 }
@@ -562,7 +593,7 @@ div#search_results_length {
 .to-delete:after {
   content: "X";
   position: absolute;
-  top: 0px;
+  top: -60px;
   pointer-events: none;
   font-size: 754px;
   color: #A94442;
@@ -648,8 +679,8 @@ div#search_results_length {
   padding: 4px 0px;
   border-radius: 4px;
   color: #33332C;
-  border: 1px solid #dddddd;
-  background-color: #F5F5F5;
+  /*border: 1px solid #dddddd;
+  background-color: #F5F5F5;*/
   margin-bottom: 8px;
 }
 .document-show-heading .h2, .document-show-heading .h4 {
