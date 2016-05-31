@@ -46,16 +46,28 @@ class SearchableAuthorityController < ManageModelsController
                }
       }
       format.csv {
-        headers = results.first.keys
-        formatter = Proc.new do |object|
-          headers.map { |key| object[key] }
+        d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv", user_id: current_user.id})
+        Thread.new do
+          a = make_csv(results)
+          d.filename = a
         end
-        render csv: results,
-               filename: "#{search_model_class.to_s.downcase.pluralize}.csv",
-               headers: headers,
-               format: formatter
+        render json: {error: 'disabled'}      
       }
     end
+  end
+
+  def make_csv(results)
+    headers = results.first.keys
+    formatter = Proc.new do |object|
+      headers.map { |key| object[key] }
+    end
+    f = render csv: results,
+     filename: filename,
+     headers: headers,
+     format: formatter
+    path = "/downloads/#{d.user}_#{filename}"
+    File.open(path) { |fp| fp.write(f) }
+    puts path
   end
 
   def index
@@ -70,6 +82,7 @@ class SearchableAuthorityController < ManageModelsController
 
   def search
     format = params[:format].present? ? params[:format] : 'none'
+
     order = params[:order].present? ? {field: params[:order].split[0], direction: params[:order].split[1]} : {}
     limit = params[:limit].present? ? params[:limit].to_i : 50
     page = params[:limit] ? (params[:offset].to_i / params[:limit].to_i) + 1 : 1
