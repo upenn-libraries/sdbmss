@@ -288,7 +288,6 @@ module SDBMSS
           if start_date % 10 == 0
             end_date = (((start_date / 10) + 1) * 10)
           end
-          puts "start, end: [#{start_date}, #{end_date}]"
           return [start_date, end_date]
         end
 

@@ -22,7 +22,15 @@ class Bookmark < ActiveRecord::Base
   end
 
   def for_show
-    {id: id, document_id: document_id, document_type: document_type.to_s, tags: tags.to_s.split(','), link: "/#{document_type.to_s.underscore.pluralize}/#{document_id}", public_id: document.public_id, show: document.to_s }
+    {
+      id: id, 
+      document_id: document_id, 
+      document_type: document_type.to_s, 
+      tags: tags.to_s.split(','), 
+      link: "/#{document_type.to_s.underscore.pluralize}/#{document_id}", 
+      public_id: document.public_id, 
+      show: document.to_s
+    }
   end
   
   def document_type

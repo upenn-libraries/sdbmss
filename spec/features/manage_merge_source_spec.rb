@@ -85,26 +85,4 @@ describe "Manage Merging Sources", :js => true do
     expect(source2.entries_count).to eq(Entry.where(source_id: source2.id).count)
   end
 
-  it "should display the MERGE confimation page with appropriate information" do
-    skip "(new merge method)"
-    s1 = Source.last
-
-    compatable = Source.where(source_type: s1.source_type)
-
-    s2 = compatable.last(2)[0]
-
-    visit merge_source_path(s1.id, target_id: s2.id)
-
-    expect(page).to have_content("#{s1.public_id} ➔ #{s2.public_id}")
-
-    click_button("Yes")
-
-    expect(page).to have_content("Successfully merged.")
-    expect(page).to have_content("#{s1.public_id} has been merged into #{s2.public_id}")
-
-    visit sources_path
-
-    expect(page).to have_content("#{s2.public_id}")
-    expect(page).not_to have_content("#{s1.public_id}")
-  end
 end

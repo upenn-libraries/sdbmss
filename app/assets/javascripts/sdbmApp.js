@@ -16,7 +16,7 @@ var BOOKMARK_SCOPE;
 
     "use strict";
 
-    var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap", "ngAnimate", "ui.sortable", "ngSanitize"]);
+    var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap", "ngAnimate", "ui.sortable", "ngSanitize", "ngCookies"]);
     
     sdbmApp.run(function ($http) {
         // For Rails CSRF
@@ -1844,10 +1844,17 @@ var BOOKMARK_SCOPE;
       }
     }
     $scope.searchTag = function (tag) {
+      $('input[name=tag-search]').val(tag);
+      if (localStorage) localStorage.sidebar_searchTag = tag;
       // fix me: this should check the url, but also where the controller is (load details in main page, but not toolbar)
       $.get('/bookmarks/reload.json', {tag: tag, details: (window.location.pathname == "/bookmarks")}).done( function (e) {
         $scope.all_bookmarks = e;
         $scope.renew();
+        $('.bookmarks').scroll( function (e) {
+          if (localStorage) localStorage.sidebar_scroll = $(this).scrollTop();
+        });
+        var scroll = localStorage ? localStorage.sidebar_scroll : 0;
+        if (!tag) $('.tab-pane.active.in .bookmarks').scrollTop(scroll);
       }).error( function (e) {
         console.log('error.', e);
       });
@@ -1860,7 +1867,7 @@ var BOOKMARK_SCOPE;
         return;
       }
       $.ajax({url: '/bookmarks/new', data: {document_id: id, document_type: type}}).done( function (e) {
-        if (!e.error) {
+        if (!e.error && $scope.all_bookmarks[type]) {
           $scope.all_bookmarks[type].push(e);
           $scope.renew();
         } else {
@@ -1900,9 +1907,7 @@ var BOOKMARK_SCOPE;
         return '<a href="' + window.location.pathname + '?target_id=' + bookmark.document_id + '" class="btn btn-xs btn-info">Merge</a>'
       }
     }
-    $scope.tabs = ["Entry", "Manuscript", "Name", "Source"];
-    $scope.searchTag("");
-
+    
     $scope.findBookmark = function(type, id) {
       if (!$scope.all_bookmarks[type]) return false;
       for (var i = 0; i < $scope.all_bookmarks[type].length; i++) {
@@ -1914,6 +1919,10 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.exportBookmarks = function (type, link) {
+      if (!link) {
+        alert('There is nothing to export.');
+        return false;
+      }
       var plural = link.split('/')[1];
       if (type != "Entry") plural += "/search";
       var url = "/" + plural + ".csv?op=OR&search_field=advanced&per_page=5000";
@@ -1923,8 +1932,29 @@ var BOOKMARK_SCOPE;
         else
           url += "&id[]=" + $scope.all_bookmarks[type][i].document_id;  
       }
+      window.location = url;
     
     }
+
+    $scope.toggleSidebar = function (skip) {
+      if (!skip) $('.sidebar, .main-content').addClass('transition');
+      $('.sidebar').toggleClass('in');
+      $('.main-content').toggleClass('in');
+      setTimeout(function () {
+        if ($('.sidebar').hasClass('in')) {
+          $('.toggle-sidebar').html('<span class="glyphicon glyphicon-remove"></span>');
+          localStorage.sidebar_open = "true";
+        } else {
+          $('.toggle-sidebar').html('<span class="glyphicon glyphicon-bookmark"></span>');
+          localStorage.sidebar_open = "false";
+        }
+        $('.sidebar, .main-content').removeClass('transition');
+      }, 500);
+    }
+
+    // should this be fixed, eventually?  is there any reason for this to be here, instead of hard-coded?
+    $scope.tabs = ["Entry", "Manuscript", "Name", "Source"];
+    $scope.all_bookmarks = {Entry: [], Manuscript: [], Name: [], Source: []};
 
     // load tag from url
     if (window.location.search && window.location.search.indexOf('tag=') != -1) {
@@ -1932,10 +1962,32 @@ var BOOKMARK_SCOPE;
       $scope.tagSearch = search;
       $scope.searchTag(search);
     }
+
+    $scope.addTabToStorage = function (name) {
+      if (localStorage) localStorage.sidebar_tab = name;
+    }
+
+    if (localStorage && localStorage.sidebar_open == "true" && $('.sidebar').length > 0) {
+      $scope.toggleSidebar(true);
+    }
+
+    if (localStorage && localStorage.sidebar_tab) {
+      $scope.active = localStorage.sidebar_tab;
+    } else {
+      $scope.active == "Entry";
+    }
+
+    setTimeout(function () {
+      // perform first search on starting
+      $scope.searchTag(localStorage.sidebar_searchTag || "");
+    }, 500);
+
     
   });
 
 }());
+
+//function toggleSidebar() 
 
 // this works!  maybe not a good idea?
 function addBookmark(id, type) {

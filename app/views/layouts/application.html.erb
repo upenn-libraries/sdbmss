@@ -30,7 +30,7 @@
     <!-- disable animations when running tests -->
     <% if Rails.env.test? %>
       <style type="text/css">
-        div, a, span, footer, header, ul, .modal, .modal-title {
+        div, a, span, footer, header, ul, .modal, .modal-title, .fade, .collapse, .modal-open {
             -webkit-transition: none !important;
             -moz-transition: none !important;
             -ms-transition: none !important;
@@ -61,25 +61,29 @@
 
   </head>
   <body class="<%= render_body_class %>">
-  <%= render :partial => 'shared/header_navbar' %>
+  <div class="main-content bookmarks-collapse collapse in">
+    <%= render :partial => 'shared/header_navbar' %>
 
-  <%# this is from blacklight %>
-  <%= render partial: 'shared/ajax_modal' %>
+    <%# this is from blacklight %>
+    <%= render partial: 'shared/ajax_modal' %>
 
-  <div id="main-container" class="container">
-    <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
+    <div id="main-container" class="container">
+      <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
 
-    <div class="row">
-      <%= yield %>
+      <div class="row">
+        <%= yield %>
+      </div>
     </div>
+    <%# this is SDBM-specific modal code %>
+    <%= render :partial => 'shared/modal' %>
+    
+    <%= render :partial => 'shared/footer' %>
   </div>
-  <% if request.original_fullpath != "/bookmarks" %>
-    <%= render partial: "/shared/my_bookmarks" %>
+  <% if request.path != "/bookmarks" && current_user %>
+    <div class="sidebar bg-primary bookmarks-collapse collapse"  ng-controller="ManageBookmarks">
+      <%= render partial: "bookmarks/navbar" %>
+        <%= render partial: "/shared/my_bookmarks" %>
+    </div>
   <% end %>
-
-  <%# this is SDBM-specific modal code %>
-  <%= render :partial => 'shared/modal' %>
-  
-  <%= render :partial => 'shared/footer' %>
   </body>
 </html>

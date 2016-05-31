@@ -221,7 +221,7 @@ $(document).ready(function() {
     });
 
     var resultsTable = new SDBM.EntryTable("#search_results", {
-        dom: '<"clear"><"H linking_table_header"<"row"<"col-sm-7 text-right"rip>>>JRt<"F">',
+        dom: '<"clear"><"H linking_table_header"<"row"<"col-sm-6 text-right"rip>>>JRt<"F">',
         //dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t',
         height: function() {
             // height gets passed into dataTables constructor before
@@ -357,13 +357,13 @@ $(document).ready(function() {
                 var body = '<p>Link between SDBM_' + entryId + ' and SDBM_MS_' + manuscriptId + ' successfully created.</p>' +
                            '<p><a class="manuscript-link" href="/linkingtool/manuscript/' + manuscriptId + '">Go to page for SDBM_MS_' + manuscriptId + ' now</a></p>';
 
+                unsavedChanges = false;
                 SDBM.showModal("#modal", {
                     allowDismiss: false,
                     showFooter: false,
                     title: title,
                     body: body
                 });
-                unsavedChanges = false;
             },
             error: function(xhr) {
                 var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
@@ -569,10 +569,10 @@ $(document).ready(function() {
 </table>
 
 <div class="row" style="margin-top: 20px;">
-    <div class="col-sm-5">
+    <div class="col-xs-6">
         <%= render partial: "linking_tool/show_form" %>
     </div>
-    <div class="col-sm-2 text-center">
+    <div class="col-xs-6">
         <div style="margin-bottom: 6px; margin-top: 15px;">
             <span class="h4">
                 <strong>
@@ -586,7 +586,6 @@ $(document).ready(function() {
             (click here for <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#">instructions</a> and <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_search_tips" href="#">search tips</a>)
         </div>
     </div>
-    <div class="col-sm-5"></div>
 </div>
 <!--
 <div class="row">

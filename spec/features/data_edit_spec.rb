@@ -130,7 +130,7 @@ describe "Data entry", :js => true do
       find_by_id('add_title').click
       fill_in 'title_1', with: 'Bible'
       fill_autocomplete_select_or_create_entity 'author_0', with: 'Schmoe, Joe'
-      find_by_id('add_author').click
+      find_by_id('add_author').trigger('click')
       fill_in 'author_observed_name_0', with: 'Joe Schmoe'
       click_certainty_flag('author_certainty_flags_0')
       select 'Translator', from: 'author_role_0'

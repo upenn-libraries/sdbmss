@@ -52,7 +52,8 @@ describe "Linking Tool", :js => true do
   it "should show potential matches" do
     entry = Entry.last
     visit linking_tool_by_entry_path id: entry.id
-    click_button('Show potential links')
+    find_by_id("show-matches").trigger('click');
+    #click_button('Suggest links')
     sleep 2
 
     expect(find(".modal-title", visible: true).text.include?("No matches found")).to be_truthy
@@ -178,13 +179,17 @@ describe "Linking Tool", :js => true do
     # remove all except the last entry
 
     entryCount = manuscript.entries.length
-    (entryCount - 1).times do |i|
+    (entryCount - 2).times do |i|
       entry_id = manuscript.entries[i].id
       first("input[name='entry_id_#{entry_id}'][value='unlink']").trigger('click')
     end
-
-    click_button "Save changes"
-    expect(find(".modal-title", visible: true).text.include?("Success")).to fail
+    sleep 1
+    
+    find_by_id("persist-entries-manuscript-link").trigger("click")
+    #expect(find("div#modal.modal.fade.in")).to have_content("hasdfa")
+    #click_button "Save changes"
+    expect(page).to have_content("Success")
+    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
     manuscript.reload
 
     # remove the last entry
@@ -193,8 +198,9 @@ describe "Linking Tool", :js => true do
     entry_id = entry.id
 
     first("input[name='entry_id_#{entry_id}'][value='unlink']").trigger('click')
-    click_button "Save changes"
-    expect(find(".modal-title", visible: true).text.include?("Success")).to fail
+    find_by_id("persist-entries-manuscript-link").trigger("click")
+    #click_button "Save changes"
+    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     manuscript.reload
 
