@@ -77,6 +77,9 @@ body {
 }*/
 
 /* BOOKMARKS */
+.text-invert {
+  color: white;
+}
 .toggle-sidebar {
   position: relative;
   top: 9px;
@@ -473,6 +476,7 @@ div#search_results_length {
   font-size: 170px;
   margin: -20px 0px 15px 0px;
   color: #31708f;
+  pointer-events: none;
 }
 
 .fade-in {

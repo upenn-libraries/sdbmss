@@ -4,8 +4,11 @@
 class BookmarksController < CatalogController
 
   include Blacklight::Bookmarks
+  
+  # FIX ME::: verify user permissions before all actions!
 
   def index
+    # fix me: not logged in
     @tag = params[:tag].blank? ? nil : params[:tag]
     # something bogus here with this... when there is no tag (i.e. else)
     if @tag
@@ -88,6 +91,7 @@ class BookmarksController < CatalogController
   end
 
   def show
+    # fix me: make sure bookmark belongs to current_user
     if params[:id] && Bookmark.exists?(params[:id])
       @bookmark = Bookmark.find(params[:id])
       @name = @bookmark.document_type.to_s

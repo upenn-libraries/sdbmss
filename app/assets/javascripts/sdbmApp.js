@@ -1844,6 +1844,8 @@ var BOOKMARK_SCOPE;
       }
     }
     $scope.searchTag = function (tag) {
+      $('input[name=tag-search]').val(tag);
+      if (localStorage) localStorage.sidebar_searchTag = tag;
       // fix me: this should check the url, but also where the controller is (load details in main page, but not toolbar)
       $.get('/bookmarks/reload.json', {tag: tag, details: (window.location.pathname == "/bookmarks")}).done( function (e) {
         $scope.all_bookmarks = e;
@@ -1865,7 +1867,7 @@ var BOOKMARK_SCOPE;
         return;
       }
       $.ajax({url: '/bookmarks/new', data: {document_id: id, document_type: type}}).done( function (e) {
-        if (!e.error) {
+        if (!e.error && $scope.all_bookmarks[type]) {
           $scope.all_bookmarks[type].push(e);
           $scope.renew();
         } else {
@@ -1905,9 +1907,7 @@ var BOOKMARK_SCOPE;
         return '<a href="' + window.location.pathname + '?target_id=' + bookmark.document_id + '" class="btn btn-xs btn-info">Merge</a>'
       }
     }
-    $scope.tabs = ["Entry", "Manuscript", "Name", "Source"];
-    $scope.searchTag("");
-
+    
     $scope.findBookmark = function(type, id) {
       if (!$scope.all_bookmarks[type]) return false;
       for (var i = 0; i < $scope.all_bookmarks[type].length; i++) {
@@ -1919,6 +1919,10 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.exportBookmarks = function (type, link) {
+      if (!link) {
+        alert('There is nothing to export.');
+        return false;
+      }
       var plural = link.split('/')[1];
       if (type != "Entry") plural += "/search";
       var url = "/" + plural + ".csv?op=OR&search_field=advanced&per_page=5000";
@@ -1928,6 +1932,7 @@ var BOOKMARK_SCOPE;
         else
           url += "&id[]=" + $scope.all_bookmarks[type][i].document_id;  
       }
+      window.location = url;
     
     }
 
@@ -1946,6 +1951,10 @@ var BOOKMARK_SCOPE;
         $('.sidebar, .main-content').removeClass('transition');
       }, 500);
     }
+
+    // should this be fixed, eventually?  is there any reason for this to be here, instead of hard-coded?
+    $scope.tabs = ["Entry", "Manuscript", "Name", "Source"];
+    $scope.all_bookmarks = {Entry: [], Manuscript: [], Name: [], Source: []};
 
     // load tag from url
     if (window.location.search && window.location.search.indexOf('tag=') != -1) {
@@ -1967,6 +1976,12 @@ var BOOKMARK_SCOPE;
     } else {
       $scope.active == "Entry";
     }
+
+    setTimeout(function () {
+      // perform first search on starting
+      $scope.searchTag(localStorage.sidebar_searchTag || "");
+    }, 500);
+
     
   });
 

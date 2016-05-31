@@ -38,7 +38,7 @@ class SourcesController < SearchableAuthorityController
 
   def search_fields
     @filters = ["id", "location", "source_type_id"]
-    @fields = ["title", "selling_agent", "date", "institution", "author", "created_by", "updated_by"]
+    @fields = ["title", "selling_agent", "date", "institution", "author", "created_by", "updated_by", "agent_name"]
     @dates = ["created_at", "updated_at"]
     @fields + @filters + @dates
   end
@@ -157,6 +157,13 @@ class SourcesController < SearchableAuthorityController
 
   def model_class
     Source
+  end
+
+  def search
+    if params[:agent]
+      params[:agent_name] = params[:agent]
+    end
+    super
   end
 
   def search_name_field

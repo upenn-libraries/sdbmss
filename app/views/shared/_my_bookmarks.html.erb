@@ -38,7 +38,7 @@
                 <dd ng-if="bookmark.tags.length > 0">
                   <ul class="list-inline">
                     <li ng-repeat="tag in bookmark.tags" class="bookmark-tag bg-primary">
-                        <a href="/bookmarks?tag={{ tag }}">{{ tag }}</a> <!-- fix me: should this filter in bookmark panel, or go to manage bookmarks search? -->
+                        <a ng-click="searchTag(tag);">{{ tag }}</a> <!-- fix me: should this filter in bookmark panel, or go to manage bookmarks search? -->
                         <a class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></a>
                     </li>
                   </ul>
@@ -51,10 +51,11 @@
   
     </div>
     <div class="form-inline clearfix navbar-form">
-      <label for="" class="control-label">Filter By Tag:  
-        <input type="text" class="form-control" name="tag-search" size=12 ng-model="tagSearch" ng-keyup="$event.keyCode == 13 && searchTag(tagSearch)">
-      </label>
-      <a href='/bookmarks' class="pull-right text-right">Manage<br>Bookmarks</a>
+      <div class="input-group">
+        <input type="text" class="form-control" name="tag-search" placeholder="Filter By Tag..." size=12 ng-model="tagSearch" ng-keyup="$event.keyCode == 13 && searchTag(tagSearch)">
+        <span class="input-group-addon" ng-click="searchTag('')"><span>Clear</span></span>
+      </div>
+      <a href='/bookmarks' class="pull-right text-right text-invert">Manage<br>Bookmarks</a>
     </div>
   </div>
 <% end %>

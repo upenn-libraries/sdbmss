@@ -357,13 +357,13 @@ $(document).ready(function() {
                 var body = '<p>Link between SDBM_' + entryId + ' and SDBM_MS_' + manuscriptId + ' successfully created.</p>' +
                            '<p><a class="manuscript-link" href="/linkingtool/manuscript/' + manuscriptId + '">Go to page for SDBM_MS_' + manuscriptId + ' now</a></p>';
 
+                unsavedChanges = false;
                 SDBM.showModal("#modal", {
                     allowDismiss: false,
                     showFooter: false,
                     title: title,
                     body: body
                 });
-                unsavedChanges = false;
             },
             error: function(xhr) {
                 var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
