@@ -119,7 +119,7 @@ class Source < ActiveRecord::Base
   end
 
   def agent_id
-    source_agents.count > 0 ? source_agents.first.agent_id : nil
+    source_agents.first ? source_agents.first.agent_id : nil
   end
 
   def has_agent
