@@ -88,20 +88,14 @@ class Source < ActiveRecord::Base
     string :location_institution
     text :location_institution, :more_like_this => true
 
-#    join(:name,  :target => Name, :type => :string, :join => { :from => :name, :to => :agent_name })
-#    string :agent_name
-    #join(:name,  :target => Name, :type => :text, :join => { :from => :name, :to => :agent_name })
-    #text :agent_name
-    #text :agent_name, :more_like_this => true
+    string :agent_name
+    text :agent_name
+    integer :agent_id
 
+    join(:id, :target => Name, :type => :integer, :join => { :from => :id, :to => :agent_id})
+    join(:name, :target => Name, :type => :string, :join => { :from => :name, :to => :agent_name})
+    join(:name, :target => Name, :type => :text, :join => { :from => :name, :to => :agent_name})
 
-    text :agent_name, :more_like_this => true do
-      (source_agents.map do |sa| Name.find(sa.agent_id).name end).join(" ")
-    end
-    #FIX ME: this won't actually work for sorting or anything like that...
-    string :agent_name do
-      (source_agents.map do |sa| Name.find(sa.agent_id).name end).join(" ")
-    end
     string :location
     string :medium
     string :date
@@ -118,6 +112,14 @@ class Source < ActiveRecord::Base
     text :updated_by
     date :created_at
     date :updated_at
+  end
+
+  def agent_name
+    (source_agents.map { |sa| sa.agent.name }).join("")
+  end
+
+  def agent_id
+    source_agents.count > 0 ? source_agents.first.agent_id : nil
   end
 
   def has_agent
