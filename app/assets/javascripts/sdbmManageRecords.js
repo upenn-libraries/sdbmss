@@ -36,11 +36,11 @@ var SDBM = SDBM || {};
 
         window.onpopstate = function(event) {
             // load the data from URL into page
-            //manageRecords.setFormStateFromURL();
+            manageRecords.setFormStateFromURL();
             manageRecords.dataTable.reload();
         };
 
-//        manageRecords.setFormStateFromURL();
+        manageRecords.setFormStateFromURL();
         
         this.dataTable = manageRecords.createTable(".sdbm-table");
 

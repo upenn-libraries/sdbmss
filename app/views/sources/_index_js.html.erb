@@ -267,8 +267,8 @@ $(document).ready(function() {
                 }
              }
          });
-//         console.log(params);
-//         console.log(URI(manageSources.getResourceIndexURL()).search(params));
+         //console.log(params);
+         //console.log(URI(manageSources.getResourceIndexURL()).search(params));
 
          return URI(manageSources.getResourceIndexURL()).search(params);
      };
@@ -276,6 +276,8 @@ $(document).ready(function() {
     SDBM.ManageRecords.prototype.setFormStateFromURL = function() {
         var manageRecords = this;
         var qs = new URI().query(true);
+
+        console.log('here', qs);
 
          $(".search-fieldset").each(function(idx, element) {
              var search_field = $(element).find("select[name='search_field']").first();
