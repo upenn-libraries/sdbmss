@@ -1,5 +1,6 @@
 class SearchableAuthorityController < ManageModelsController
 
+  require 'csv'
 
   def search_fields
     @filters = ["id"]
@@ -35,7 +36,6 @@ class SearchableAuthorityController < ManageModelsController
     results = s.results.map do |obj|
       search_result_format(obj)
     end
-
     respond_to do |format|
       format.json {
         render json: {
@@ -46,28 +46,27 @@ class SearchableAuthorityController < ManageModelsController
                }
       }
       format.csv {
-        d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv", user_id: current_user.id})
-        Thread.new do
-          a = make_csv(results)
-          d.filename = a
-        end
-        render json: {error: 'disabled'}      
+        make_csv(results, @d)
       }
     end
   end
 
-  def make_csv(results)
+  def make_csv(results, d)
     headers = results.first.keys
     formatter = Proc.new do |object|
       headers.map { |key| object[key] }
     end
-    f = render csv: results,
-     filename: filename,
-     headers: headers,
-     format: formatter
-    path = "/downloads/#{d.user}_#{filename}"
-    File.open(path) { |fp| fp.write(f) }
-    puts path
+    filename = @d.filename
+    user = @d.user
+    id = @d.id
+    path = "downloads/#{id}_#{user}_#{filename}"
+    CSV.open(path, "wb") do |csv|
+      csv << headers
+      results.each do |r|
+        csv << r.values 
+      end
+    end
+    @d.update({status: 1})
   end
 
   def index
@@ -81,6 +80,22 @@ class SearchableAuthorityController < ManageModelsController
   end
 
   def search
+    if params[:format] == 'csv'
+      @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv", user_id: current_user.id})
+      Thread.new do
+        do_search(params)
+      end
+      respond_to do |format|
+        format.csv {
+          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count}
+        }
+      end
+    else
+      do_search(params)
+    end
+  end
+
+  def do_search(params)
     format = params[:format].present? ? params[:format] : 'none'
 
     order = params[:order].present? ? {field: params[:order].split[0], direction: params[:order].split[1]} : {}

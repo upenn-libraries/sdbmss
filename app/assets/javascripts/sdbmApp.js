@@ -1831,22 +1831,10 @@ var BOOKMARK_SCOPE;
         $scope.renew();
       });
     }
-    $scope.removeBookmark = function (name, bookmark) {
-      var i = $scope.all_bookmarks[name].indexOf(bookmark);
-      if (i >= 0) {
-        $.ajax({url: '/bookmarks/' + bookmark.id, method: 'delete'}).done( function (e) {
-          console.log('done', e);
-          $scope.all_bookmarks[name].splice(i, 1);
-          $scope.renew();
-        }).error( function (e) {
-          console.log('error', e);
-        });
-      }
-    }
     $scope.searchTag = function (tag) {
       $('input[name=tag-search]').val(tag);
       if (localStorage) localStorage.sidebar_searchTag = tag;
-      // fix me: this should check the url, but also where the controller is (load details in main page, but not toolbar)
+      
       $.get('/bookmarks/reload.json', {tag: tag, details: (window.location.pathname == "/bookmarks")}).done( function (e) {
         $scope.all_bookmarks = e;
         $scope.renew();
@@ -1859,6 +1847,21 @@ var BOOKMARK_SCOPE;
         console.log('error.', e);
       });
     }
+    $scope.removeBookmark = function (name, bookmark) {
+      var i = $scope.all_bookmarks[name].indexOf(bookmark);
+      if (i >= 0) {
+        $.ajax({url: '/bookmarks/' + bookmark.id, method: 'delete'}).done( function (e) {
+          //console.log('done', e);
+          $scope.all_bookmarks[name].splice(i, 1);
+          $scope.renew();
+          var id = bookmark.document_id, type = bookmark.document_type;
+          console.log(bookmark, type);
+          addNotification(type + ' ' + id + ' un-bookmarked! <a onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
+        }).error( function (e) {
+          console.log('error', e);
+        });
+      }
+    }
     $scope.addBookmark = function (id, type) {
       // check if already in bookmarks
       var b = $scope.findBookmark(type, id);
@@ -1870,6 +1873,7 @@ var BOOKMARK_SCOPE;
         if (!e.error && $scope.all_bookmarks[type]) {
           $scope.all_bookmarks[type].push(e);
           $scope.renew();
+          addNotification(type + ' ' + id + ' bookmarked! <a onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'success');
         } else {
           console.log(e.error);
         }
@@ -1989,9 +1993,26 @@ var BOOKMARK_SCOPE;
 
 //function toggleSidebar() 
 
+function addNotification (message, type) {
+  var notification = $('<div><a class="close" data-dismiss="alert" aria-label="close">&times;</a>' + message + "</div>");
+  notification.addClass('alert').addClass('alert-' + type).addClass('alert-absolute');
+  
+  notification.hide();
+  $('.alerts-absolute').append(notification);
+  notification.fadeIn();
+  
+  setTimeout(function () {
+    notification.fadeOut('slow', function () {
+      notification.remove();
+    });
+  }, 10000) // fade out after ten seconds;
+}
+
 // this works!  maybe not a good idea?
 function addBookmark(id, type) {
   BOOKMARK_SCOPE.addBookmark(id, type);
+  // if removed, have one 
+  //addNotification(type + " " + id + " bookmarked! <span onclick='addBookmark(" + id + ',"' + type + "\")'>Undo<span>", 'info' );
 }
 
 function renewBookmarks() {

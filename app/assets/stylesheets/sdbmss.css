@@ -7,6 +7,18 @@ body {
   font-family: Ubuntu, sans-serif;
 }
 
+.alert-absolute {
+  margin-bottom: 10px;
+}
+.alerts-absolute {
+  position: fixed;
+  bottom: 0px;
+  left: 10px;
+  opacity: 0.95;
+  width: 300px;
+  z-index: 3;
+}
+
 .main-content {
   width: 100%;
   height: 100% !important;

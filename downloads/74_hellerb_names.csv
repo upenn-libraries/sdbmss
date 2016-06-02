@@ -1,0 +1,4 @@
+id,name,viaf_id,comment,authors_count,artists_count,scribes_count,source_agents_count,sale_agents_count,provenance_count,is_artist,is_author,is_provenance_agent,is_scribe,reviewed,created_by,created_at,updated_by,updated_at
+3688,Pseido-Cicero,,,2,0,0,1,0,1,true,true,true,false,true,(none),"",(none),"May 02, 2016 15:02"
+431,"Cicero, Marcus Tullius",,,3311,1,0,0,1,0,true,true,false,false,false,(none),"",(none),"March 10, 2016 09:37"
+234,"Pseudo-Cicero, Marcus Tullius",99852973,,149,0,0,0,0,0,false,true,false,false,false,(none),"",(none),"March 14, 2016 10:39"

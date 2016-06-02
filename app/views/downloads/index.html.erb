@@ -3,7 +3,10 @@
     <h2 class='text-center'>Downloads</h2>
     <ul class="list-group">
       <% @downloads.each do |d| %>
-        <li class="list-group-item"><%= d %></li>
+        <li class="list-group-item <%= d.status.to_i <= 0 ? 'list-group-item-warning' : ''%>">
+          <%= link_to d.filename, download_path(d) %>
+          <%= d.created_at.to_formatted_s(:long) %>
+        </li>
       <% end %>
     </ul>
   </div>

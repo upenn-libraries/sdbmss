@@ -425,26 +425,41 @@ var SDBM = SDBM || {};
         // since this data is sent via URI, I have to reformat when there is a list so {name: ["x", "y"]} becomes {name[]: ["x", "y"]} 
         for (var field in qs) {
             if (Array.isArray(qs[field])) {
-                qs[field + "[]"] = qs[field]
-                delete qs[field]
+                if (field.indexOf('[]') != -1) {
+                    qs[field + "[]"] = qs[field]
+                    delete qs[field]
+                }
             }
         }
-        /*$.ajax({
-            url: manageRecords.getSearchURL('csv'),
-            data: qs
-        }).done( function (result) {
-            console.log('done', result);
-            window.location = 'data:text/plain;charset=utf-8,' + encodeURIComponent(result);
-        })*/
-        var url = URI(manageRecords.getSearchURL('csv')).search(qs);
-        window.location = url;
-/*
-        var url = URI(manageRecords.getSearchURL('csv')).search({
-            term: manageRecords.getSearchValue(),
-            unreviewed_only: manageRecords.getUnreviewedOnly()
-        });
 
-        window.location = url;*/
+        var url = URI(manageRecords.getSearchURL('csv')).search(qs);
+        
+        /* do search, then poll to see if download is completed */
+
+        addNotification("CSV Download starting", "warning");
+        $('#user-nav').css({color: 'green'});
+
+        $.get(url).done(function (e) {
+            var download = JSON.parse(e);
+            var url = "/downloads/" + download.id;
+            var count = 0;
+            var interval = setInterval( function () {
+                $.ajax({url: url}).done( function (r) {
+                    //window.location = url;
+                    addNotification(download.filename + " is ready: <a class='btn btn-default btn-xs' href='" + url + "'>download</a>", "success");
+                    $('#user-nav').css({color: ''});
+                    $('#downloads-count').text(download.count);
+                    window.clearInterval(interval);
+                }).error( function (r) {
+                    console.log('error', r);
+                    count += 1;
+                    if (count > 100) window.clearInterval(interval);
+                });
+            }, 1000);
+        }).error( function (e) {
+            console.log('error', e);
+        })
+
     };
     
 }());

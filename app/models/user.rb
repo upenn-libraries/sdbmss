@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
 
   has_many :sources, foreign_key: "created_by_id"
 
+  has_many :downloads
+
   before_validation :assign_default_role
 
   # one of the devise class methods above seems to give us

@@ -76,7 +76,7 @@ module SDBMSS::Blacklight
     end
 
     def show_created_by_user(solr_parameters)
-      if blacklight_params['created_by_user'].to_s == '1'
+      if blacklight_params['created_by_user'].to_s == '1' && scope.current_user
         # scope is the Blacklight-configured rails controller
         solr_parameters['fq'] << 'created_by:' + scope.current_user.username.to_s
       end

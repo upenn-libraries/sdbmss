@@ -1,0 +1,4 @@
+id,public_id,name,entries_count,reviewed,created_by,created_at,updated_by,updated_at
+164,SDBM_LNG_164,"Dutch, Old",2,false,(none),"",(none),""
+158,SDBM_LNG_158,"Dutch, Middle",31,false,(none),"",(none),""
+7,SDBM_LNG_7,Dutch,2687,true,(none),"",(none),""
