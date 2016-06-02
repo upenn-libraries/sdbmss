@@ -117,7 +117,7 @@ Rails.application.routes.draw do
       get 'citation'
       get 'entry_candidates'
       get 'manage_entries'
-      get 'edit', to: :show
+      get 'edit', action: :show
     end
   end
 

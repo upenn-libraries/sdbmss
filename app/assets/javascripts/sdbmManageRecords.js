@@ -437,7 +437,7 @@ var SDBM = SDBM || {};
         /* do search, then poll to see if download is completed */
 
         addNotification("CSV Download starting", "warning");
-        $('#user-nav').css({color: 'green'});
+        $('#user-nav a').css({color: 'green'});
 
         $.get(url).done(function (e) {
             var download = JSON.parse(e);
@@ -447,7 +447,7 @@ var SDBM = SDBM || {};
                 $.ajax({url: url}).done( function (r) {
                     //window.location = url;
                     addNotification(download.filename + " is ready: <a class='btn btn-default btn-xs' href='" + url + "'>download</a>", "success");
-                    $('#user-nav').css({color: ''});
+                    $('#user-nav a').css({color: ''});
                     $('#downloads-count').text(download.count);
                     window.clearInterval(interval);
                 }).error( function (r) {
