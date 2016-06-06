@@ -27,10 +27,11 @@ Rails.application.routes.draw do
 
   resources :downloads do
     collection {
-      get 'index'
+      get 'index', as: "downloads"
     }
     member {
-      get 'show'
+      get 'show' 
+      get 'delete', action: :destroy
     }
   end
 
@@ -58,6 +59,7 @@ Rails.application.routes.draw do
       post 'calculate_bounds'
       post 'mark_as_approved'
       get 'types'
+      get 'index', action: "do_index"
     }
     member {
       patch '/revert_confirm/', to: 'entries#revert_confirm'

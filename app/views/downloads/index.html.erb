@@ -3,9 +3,32 @@
     <h2 class='text-center'>Downloads</h2>
     <ul class="list-group">
       <% @downloads.each do |d| %>
-        <li class="list-group-item <%= d.status.to_i <= 0 ? 'list-group-item-warning' : ''%>">
-          <%= link_to d.filename, download_path(d) %>
-          <%= d.created_at.to_formatted_s(:long) %>
+        <li class="list-group-item <%= d.status.to_i <= 0 ? 'list-group-item-warning' : ''%><%= d.status.to_i == 2 ? 'disabled' : '' %>">
+          <div class="row">
+            <div class="col-sm-3">
+              <span class="h4">
+                <%= link_to(download_path(d)) do %>
+                  <%= d.filename %>
+                <% end %>
+              </span>
+            </div>
+            <div class="col-sm-3">
+              <span class="h4">
+                <%= link_to(download_path(d)) do %>
+                  <span class="glyphicon glyphicon-floppy-save"></span>
+                <% end %>
+                <%= link_to(delete_download_path(d), data: {:confirm => 'Are you sure?'}) do %>
+                  <span class="glyphicon glyphicon-trash"></span>
+                <% end %>
+              </span>
+            </div>
+            <div class="col-sm-3 text-center">
+              <%= d.created_at.to_formatted_s(:long) %>
+            </div>
+            <div class="col-sm-3 text-center">
+              <span class="text-danger">Expires: <%= (d.created_at + 1.hours).to_formatted_s(:long) %></span>
+            </div>
+          </div>
         </li>
       <% end %>
     </ul>

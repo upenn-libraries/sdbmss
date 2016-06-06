@@ -33,6 +33,7 @@ class SearchableAuthorityController < ManageModelsController
   end
 
   def format_search(s)
+    puts s.results
     results = s.results.map do |obj|
       search_result_format(obj)
     end
@@ -53,9 +54,6 @@ class SearchableAuthorityController < ManageModelsController
 
   def make_csv(results, d)
     headers = results.first.keys
-    formatter = Proc.new do |object|
-      headers.map { |key| object[key] }
-    end
     filename = @d.filename
     user = @d.user
     id = @d.id
@@ -66,6 +64,7 @@ class SearchableAuthorityController < ManageModelsController
         csv << r.values 
       end
     end
+    # update download that it is now ready
     @d.update({status: 1})
   end
 

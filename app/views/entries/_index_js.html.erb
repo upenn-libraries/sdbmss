@@ -91,7 +91,6 @@
                  // seems like there should be a way to do this conditional
                  // ajax and subsequent searchAndUpdateTable using
                  // promises, but I can't figure that out right now
-
                  if(jumpToEntry.search) {
                      var entry_id = $("#jump_to").val();
                      $.ajax({
@@ -118,6 +117,7 @@
                      });
                  } else {
                      var params = manageEntries.translateSearchParams(sdbmTable, dt_params);
+                     console.log('hey', 'yeah', sdbmTable);
                      sdbmTable.searchAndUpdateTable(params, callback, {
                          complete: function () {
                              $("#spinner").hide();
@@ -217,13 +217,23 @@
      };
 
      ManageEntries.prototype.getSearchURL = function (format) {
-         var url =  '/' + this.options.resourceName;
+         var url =  '/' + this.options.resourceName + '/search';
          if(format) {
              url += "." + format;
          }
          return url;
      };
 
+    ManageEntries.prototype.getCSVSearchUrl = function () {
+        console.log('whahey');
+        var params = manageEntries.getSearchFields();
+        params["search_field"] = "advanced";
+        params["per_page"] = <%= Rails.configuration.sdbmss_max_search_results %>;
+
+        return URI("/entries.csv").search(params);
+    };
+
+/*
      ManageEntries.prototype.exportCSV = function () {
          var params = manageEntries.getSearchFields();
          params["search_field"] = "advanced";
@@ -232,7 +242,7 @@
          var url = URI("/entries.csv").search(params);
 
          window.location = url;
-     };
+     };*/
 
      var manageEntries = new ManageEntries({
          resourceName: "<%= resource_name %>",

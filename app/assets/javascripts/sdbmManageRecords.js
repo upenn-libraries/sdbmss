@@ -417,7 +417,8 @@ var SDBM = SDBM || {};
     // handler called when "export csv" link is clicked; this
     // implementation uses #search action on the Rails resource
     // controller
-    SDBM.ManageRecords.prototype.exportCSV = function() {
+    
+    SDBM.ManageRecords.prototype.getCSVSearchUrl = function () {
         var manageRecords = this;
         //var qs = new URI().query(true);
         var qs = manageRecords.search_query;
@@ -432,27 +433,40 @@ var SDBM = SDBM || {};
             }
         }
 
-        var url = URI(manageRecords.getSearchURL('csv')).search(qs);
+        return URI(manageRecords.getSearchURL('csv')).search(qs);
+    }
+
+    SDBM.ManageRecords.prototype.exportCSV = function() {
         
         /* do search, then poll to see if download is completed */
+
+        var url = this.getCSVSearchUrl();
 
         addNotification("CSV Download starting", "warning");
         $('#user-nav a').css({color: 'green'});
 
+        var myDownloadComplete = false;
+
         $.get(url).done(function (e) {
+            console.log(e);
             var download = JSON.parse(e);
             var url = "/downloads/" + download.id;
             var count = 0;
             var interval = setInterval( function () {
-                $.ajax({url: url}).done( function (r) {
+                $.ajax({url: url, data: {ping: true}}).done( function (r) {
                     //window.location = url;
-                    addNotification(download.filename + " is ready: <a class='btn btn-default btn-xs' href='" + url + "'>download</a>", "success");
-                    $('#user-nav a').css({color: ''});
-                    $('#downloads-count').text(download.count);
-                    window.clearInterval(interval);
+                    if (r != "in progress" && !myDownloadComplete) {
+                        addNotification(download.filename + " is ready: <a href='" + url + "'>download</a>", "success");
+                        $('#user-nav a').css({color: ''});
+                        $('#downloads-count').text(download.count);
+                        window.clearInterval(interval);
+                        myDownloadComplete = true;
+                    } else {
+                        count += 1;
+                    }
                 }).error( function (r) {
-                    console.log('error', r);
                     count += 1;
+                    console.log('error', r);
                     if (count > 100) window.clearInterval(interval);
                 });
             }, 1000);

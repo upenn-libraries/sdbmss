@@ -12,6 +12,8 @@ class EntriesController < SearchableAuthorityController
   # functionality as in CatalogController, except that in this
   # controller, we customize a few things about how search works.
 
+  require 'csv'
+
   include Blacklight::Catalog
 
   include CatalogControllerConfiguration
@@ -38,6 +40,8 @@ class EntriesController < SearchableAuthorityController
     Entry
   end
 
+  # good god this is an ugly function - but it works!  csv exports are backgrounded in another thread
+
   def index
     @search_fields = search_fields
     @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
@@ -46,7 +50,34 @@ class EntriesController < SearchableAuthorityController
     if params[:widescreen] == 'true'
       render :layout => 'widescreen'
     end
-    super
+    if params[:format] == 'csv'
+      @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv", user_id: current_user.id})
+      Thread.new do 
+        (@response, @document_list) = search_results(params, search_params_logic)
+        objects = @document_list.map { |document| document.model_object.as_flat_hash }
+        header = objects.first.keys
+
+        filename = @d.filename
+        user = @d.user
+        id = @d.id
+        path = "downloads/#{id}_#{user}_#{filename}"
+        CSV.open(path, "wb") do |csv|
+          csv << header
+          objects.each do |obj|
+            csv << obj.values
+          end
+        end
+        @d.update({status: 1})
+      end
+      respond_to do |format|
+        format.csv {
+          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count} 
+        }
+      end
+    else
+      super
+    end
+    # respond to csv..., etc.
   end
 
 #  def index
@@ -68,6 +99,7 @@ class EntriesController < SearchableAuthorityController
   # widget, which is the only thing that uses (or should use) this,
   # since we return arrays instead of objects with more meaningful
   # keys.
+
   def render_search_results_as_json
     retval = {
       draw: params[:draw],

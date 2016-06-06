@@ -2016,5 +2016,5 @@ function addBookmark(id, type) {
 }
 
 function renewBookmarks() {
-  BOOKMARK_SCOPE.renew();
+  //BOOKMARK_SCOPE.renew();
 }
