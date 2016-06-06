@@ -103,18 +103,18 @@
                 </h4>
             </div>
             <div class="panel-body panel-collapse collapse" id="myEntries">
+                <% if num_entries > 0 %>
                 <ul class="list-group list-group-no-border-side">
                     <li class="list-group-item">
                          <div class="row">
                             <div class="col-sm-6">
                                 <div>You've contributed <%= num_entries %> entries to date.</div>
-                                <% if num_entries > 0 %>
                                     <% if num_entries_needing_approval > 0 %>
                                         <div class='text-warning'><%= num_entries_needing_approval %> of them <%= num_entries_needing_approval > 1 ? "are" : "is" %> not yet approved.</div>
                                     <% end %>
                                     <% if num_entries_deprecated > 0 %>
                                         <div class='text-danger'><%= num_entries_deprecated %> of them <%= num_entries_deprecated > 1 ? "are" : "is" %> deprecated.</div>
-                                <% end %>                        
+                                    <% end %>                        
                             </div>
                             <div class="col-sm-6 text-right">
                                 <a href="<%= search_by_facet_value("created_by", current_user.username) %>" class='btn btn-default'>See My Public Entries</a>
