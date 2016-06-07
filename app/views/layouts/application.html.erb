@@ -79,7 +79,7 @@
     
     <%= render :partial => 'shared/footer' %>
   </div>
-  <% if request.path != "/bookmarks" && current_user && false %>
+  <% if request.path != "/bookmarks" && current_user %>
     <div class="sidebar bg-primary bookmarks-collapse collapse"  ng-controller="ManageBookmarks">
       <%= render partial: "bookmarks/navbar" %>
         <%= render partial: "/shared/my_bookmarks" %>

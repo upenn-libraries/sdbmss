@@ -2,6 +2,9 @@
   <div class="col-sm-12">
     <h2 class='text-center'>Downloads</h2>
     <ul class="list-group">
+      <% if @downloads.count <= 0 %>
+        <li class='list-group-item'>You have no downloads available.</li>
+      <% end %>
       <% @downloads.each do |d| %>
         <li class="list-group-item <%= d.status.to_i <= 0 ? 'list-group-item-warning' : ''%><%= d.status.to_i == 2 ? 'disabled' : '' %>">
           <div class="row">

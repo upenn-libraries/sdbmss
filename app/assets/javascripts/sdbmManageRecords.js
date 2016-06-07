@@ -426,7 +426,7 @@ var SDBM = SDBM || {};
         // since this data is sent via URI, I have to reformat when there is a list so {name: ["x", "y"]} becomes {name[]: ["x", "y"]} 
         for (var field in qs) {
             if (Array.isArray(qs[field])) {
-                if (field.indexOf('[]') != -1) {
+                if (field.indexOf('[]') == -1) {
                     qs[field + "[]"] = qs[field]
                     delete qs[field]
                 }
@@ -448,7 +448,6 @@ var SDBM = SDBM || {};
         var myDownloadComplete = false;
 
         $.get(url).done(function (e) {
-            console.log(e);
             var download = JSON.parse(e);
             var url = "/downloads/" + download.id;
             var count = 0;

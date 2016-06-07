@@ -20,7 +20,10 @@ class DownloadsController < ApplicationController
 
   def show
     @download = Download.find(params[:id])
-    if @download.status == 0
+    if @download.user  != current_user
+      flash[:error] = "You cannot access another user's downloads."
+      redirect_to root_path
+    elsif @download.status == 0
       render text: "in progress"
     elsif @download.status >= 1 && !params[:ping]
       send_file "downloads/" + @download.id.to_s + "_" + @download.user.username + "_" + @download.filename, :filename => @download.filename, :type=>"csv", :x_sendfile=>true

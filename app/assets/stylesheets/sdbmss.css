@@ -3,7 +3,6 @@ html {
 }
 body {
   height: 100%;
-  overflow-x: hidden;
   font-family: Ubuntu, sans-serif;
 }
 
@@ -350,6 +349,33 @@ h1 { font-size: 30px; margin-top: 0; }
 /*
  checkboxes!
 */
+.checkbox {
+  display: none;
+}
+.checkbox + label {
+  background: #eee;
+  line-height: normal;
+  margin: 0px; 
+  color: white;
+  border-radius: 4px;
+  padding: 2px;
+  text-align: center;
+  font-weight: bold;
+  display: inline-block;
+  font-size: 38px;
+  height: 50px;
+  width: 50px;
+}
+.checkbox:checked + label {
+  background: #337ab7;
+}
+.checkbox + label:after {
+  content: '\2713';
+}
+.checkbox:checked + label:after {
+  background-color: inherit;
+}
+
 .options-btn-group .btn {
   float: none;
 }

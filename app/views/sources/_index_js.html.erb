@@ -277,8 +277,6 @@ $(document).ready(function() {
         var manageRecords = this;
         var qs = new URI().query(true);
 
-        console.log('here', qs);
-
          $(".search-fieldset").each(function(idx, element) {
              var search_field = $(element).find("select[name='search_field']").first();
              var search_value = $(element).find("input[name='search_value']").first();

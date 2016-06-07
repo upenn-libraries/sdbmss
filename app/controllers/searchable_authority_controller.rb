@@ -33,7 +33,6 @@ class SearchableAuthorityController < ManageModelsController
   end
 
   def format_search(s)
-    puts s.results
     results = s.results.map do |obj|
       search_result_format(obj)
     end
