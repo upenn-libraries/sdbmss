@@ -14,7 +14,7 @@ class EntryPlace < ActiveRecord::Base
   end
 
   def to_s
-    (place.name || "") + certainty_flags
+    (place && place.name ? place.name : "") + certainty_flags
   end
 
   def to_fields

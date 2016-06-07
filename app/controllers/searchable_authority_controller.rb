@@ -57,12 +57,20 @@ class SearchableAuthorityController < ManageModelsController
     user = @d.user
     id = @d.id
     path = "downloads/#{id}_#{user}_#{filename}"
-    CSV.open(path, "wb") do |csv|
+
+    csv_string = CSV.generate do |csv|
       csv << headers
       results.each do |r|
         csv << r.values 
       end
     end
+
+    compressed_csv_string = ActiveSupport::Gzip.compress(csv_string)
+
+    File.open(path, "wb") do |fp|
+      fp.write compressed_csv_string
+    end
+
     # update download that it is now ready
     @d.update({status: 1})
   end
@@ -79,7 +87,11 @@ class SearchableAuthorityController < ManageModelsController
 
   def search
     if params[:format] == 'csv'
-      @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv", user_id: current_user.id})
+      if current_user.downloads.count >= 5
+        render json: {error: 'at limit'}
+        return
+      end
+      @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv.gz", user_id: current_user.id})
       Thread.new do
         do_search(params)
       end

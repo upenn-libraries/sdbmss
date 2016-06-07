@@ -442,37 +442,7 @@ var SDBM = SDBM || {};
 
         var url = this.getCSVSearchUrl();
 
-        addNotification("CSV Download starting", "warning");
-        $('#user-nav a').css({color: 'green'});
-
-        var myDownloadComplete = false;
-
-        $.get(url).done(function (e) {
-            var download = JSON.parse(e);
-            var url = "/downloads/" + download.id;
-            var count = 0;
-            var interval = setInterval( function () {
-                $.ajax({url: url, data: {ping: true}}).done( function (r) {
-                    //window.location = url;
-                    if (r != "in progress" && !myDownloadComplete) {
-                        addNotification(download.filename + " is ready: <a href='" + url + "'>download</a>", "success");
-                        $('#user-nav a').css({color: ''});
-                        $('#downloads-count').text(download.count);
-                        window.clearInterval(interval);
-                        myDownloadComplete = true;
-                    } else {
-                        count += 1;
-                    }
-                }).error( function (r) {
-                    count += 1;
-                    console.log('error', r);
-                    if (count > 100) window.clearInterval(interval);
-                });
-            }, 1000);
-        }).error( function (e) {
-            console.log('error', e);
-        })
-
+        exportCSV(url);
     };
     
 }());

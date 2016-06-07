@@ -51,6 +51,10 @@ class EntriesController < SearchableAuthorityController
       render :layout => 'widescreen'
     end
     if params[:format] == 'csv'
+      if current_user.downloads.count >= 5
+        render json: {error: 'at limit'}
+        return
+      end      
       @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv", user_id: current_user.id})
       Thread.new do 
         (@response, @document_list) = search_results(params, search_params_logic)

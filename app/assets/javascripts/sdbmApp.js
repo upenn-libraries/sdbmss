@@ -1856,7 +1856,7 @@ var BOOKMARK_SCOPE;
           $scope.renew();
           var id = bookmark.document_id, type = bookmark.document_type;
           console.log(bookmark, type);
-          addNotification(type + ' ' + id + ' un-bookmarked! <a onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
+          addNotification(type + ' ' + id + ' un-bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
         }).error( function (e) {
           console.log('error', e);
         });
@@ -1873,7 +1873,7 @@ var BOOKMARK_SCOPE;
         if (!e.error && $scope.all_bookmarks[type]) {
           $scope.all_bookmarks[type].push(e);
           $scope.renew();
-          addNotification(type + ' ' + id + ' bookmarked! <a onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'success');
+          addNotification(type + ' ' + id + ' bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'success');
         } else {
           console.log(e.error);
         }
@@ -1936,38 +1936,8 @@ var BOOKMARK_SCOPE;
         else
           url += "&id[]=" + $scope.all_bookmarks[type][i].document_id;  
       }
-//      window.location = url;
-        addNotification("CSV Download starting", "warning");
-        $('#user-nav a').css({color: 'green'});
 
-        var myDownloadComplete = false;
-
-        $.get(url).done(function (e) {
-            //console.log(e);
-            var download = JSON.parse(e);
-            var url = "/downloads/" + download.id;
-            var count = 0;
-            var interval = setInterval( function () {
-                $.ajax({url: url, data: {ping: true}}).done( function (r) {
-                    //window.location = url;
-                    if (r != "in progress" && !myDownloadComplete) {
-                        addNotification(download.filename + " is ready: <a href='" + url + "'>download</a>", "success");
-                        $('#user-nav a').css({color: ''});
-                        $('#downloads-count').text(download.count);
-                        window.clearInterval(interval);
-                        myDownloadComplete = true;
-                    } else {
-                        count += 1;
-                    }
-                }).error( function (r) {
-                    count += 1;
-                    console.log('error', r);
-                    if (count > 100) window.clearInterval(interval);
-                });
-            }, 1000);
-        }).error( function (e) {
-            console.log('error', e);
-        });
+      exportCSV(url);
     }
 
     $scope.toggleSidebar = function (skip) {
@@ -2023,7 +1993,46 @@ var BOOKMARK_SCOPE;
 
 //function toggleSidebar() 
 
-function addNotification (message, type) {
+function exportCSV(url) {
+  $.get(url).done(function (e) {
+      if (e.error) {
+          if (e.error == "at limit") {
+              addNotification("You have reached your export limit.  Download or delete some of your exports <a href='/downloads/'>here</a>.", "danger");
+          }
+          return;
+      }
+
+      var myDownloadComplete = false;
+      $('#user-nav a').css({color: 'green'});
+      addNotification("CSV Export is being prepared...", "info");
+      var download = JSON.parse(e);
+      var url = "/downloads/" + download.id;
+      var count = 0;
+      var interval = setInterval( function () {
+          $.ajax({url: url, data: {ping: true}}).done( function (r) {
+              //window.location = url;
+              if (r != "in progress" && !myDownloadComplete) {
+                  addNotification(download.filename + " is ready - <a href='" + url + "'>download file</a>", "success", true);
+                  $('#user-nav a').css({color: ''});
+                  $('#downloads-count').text(download.count);
+                  window.clearInterval(interval);
+                  myDownloadComplete = true;
+              } else {
+                  count += 1;
+              }
+
+              if (count > 1000) window.clearInterval(interval);                    
+          }).error( function (r) {
+              console.log('error', r);
+              window.clearInterval(interval);
+          });
+      }, 1000);
+  }).error( function (e) {
+      console.log('error', e);
+  })
+}
+
+function addNotification (message, type, permanent) {
   var notification = $('<div><a class="close" data-dismiss="alert" aria-label="close">&times;</a>' + message + "</div>");
   notification.addClass('alert').addClass('alert-' + type).addClass('alert-absolute');
   
@@ -2031,11 +2040,13 @@ function addNotification (message, type) {
   $('.alerts-absolute').append(notification);
   notification.fadeIn();
   
-  setTimeout(function () {
-    notification.fadeOut('slow', function () {
-      notification.remove();
-    });
-  }, 10000) // fade out after ten seconds;
+  if (!permanent) {
+    setTimeout(function () {
+      notification.fadeOut('slow', function () {
+        notification.remove();
+      });
+    }, 10000)
+  } // fade out after ten seconds;
 }
 
 // this works!  maybe not a good idea?
