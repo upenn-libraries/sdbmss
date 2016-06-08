@@ -204,7 +204,10 @@
         <div class="form-group">
             <h2>Sign up</h2>
         </div>
-        <p class="text-warning" id="faq-warning">You must confirm that you have read the FAQ before you can sign up for a new account.</p>
+        <div class="text-warning" id="faq-warning">
+            <p>You must confirm that you have read the FAQ before you can sign up for a new account.</p>
+            <p id="count"></p>
+        </div>
         <p class="text-success" id="faq-success" style='display: none;'>Thank you! You may now register a new account.</p>
         <% if Rails.configuration.sdbmss_allow_user_signup %>
         <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
@@ -251,16 +254,23 @@
 </div>
 <script type="text/javascript">
     $('.checkbox').change( function (e) {
-       //var t = $(this).closest('.panel-default').next('.panel-default').offset().top - $('.scroll-container').offset().top; 
-       //$('.scroll-container').animate({ scrollTop: t }, 500);
+        var total = 0;
+        var t = $(this).closest('.panel-default');//.next('.panel-default').offset().top - $('.scroll-container').offset().top; 
+        var list = t.prevAll().andSelf();
+        list.each( function (i, e) {
+            total += $(e).outerHeight(true);
+        });     
+        $('.scroll-container').animate({ scrollTop: total }, 500);
 
-        if( $('.checkbox').length - $('.checkbox:checked').length == 0) {
+        var remaining = $('.checkbox').length - $('.checkbox:checked').length;
+        if( remaining == 0) {
             $('#faq-required').prop('disabled', false);
             $('#faq-warning').hide();
             $('#faq-success').show();
         } else {
             $('#faq-required').prop('disabled', true);
             $('#faq-warning').show();
+            $('#faq-warning #count').text(remaining + " remaining.");
             $('#faq-success').hide();
         }
     });
