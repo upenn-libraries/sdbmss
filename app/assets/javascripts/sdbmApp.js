@@ -1270,8 +1270,9 @@ var BOOKMARK_SCOPE;
                     } else {
                         $(element).val(ui.item.label);
                         assignToModel(ui.item);
-                        scope.$apply();
                     }
+                    invalidInput = false;
+                    scope.$apply();
                 }
             }).data("ui-autocomplete")._renderItem = function( ul, item ) {
                 // if there's an 'unreviewed' attribute set to false,
@@ -1440,13 +1441,14 @@ var BOOKMARK_SCOPE;
         };
         $scope.cancelMergeEdit = function () {
           $scope.source = $scope.backupSource;
-          console.log($scope.backupSource.source_type);
+          $scope.form.source_agent.$setValidity('text', true);
           $scope.mergeEdit = false;
         }
         $scope.confirmMergeEdit = function () {
           if ($scope.form.$valid) {
             $scope.backupSource = undefined;
             $scope.mergeEdit = false;
+            $scope.save();
           } else {
             alert('Error: invalid input detected.');
           }
@@ -1521,7 +1523,7 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.postSourceSave = function(source) {
-            $scope.source = source;
+            //$scope.source = source;
             var modalInstance = $modal.open({
                 templateUrl: 'postSourceSave.html',
                 backdrop: 'static',
@@ -1531,8 +1533,12 @@ var BOOKMARK_SCOPE;
             modalInstance.result.then(function () {
                 // noop
             }, function() {
+              if (true) {
+                
+              } else {
                 // runs when promise is rejected (modal is dismissed)
                 sdbmutil.redirectToSourceEditPage(source.id);
+              }
             });
         };
 
@@ -1591,7 +1597,7 @@ var BOOKMARK_SCOPE;
           $scope.similarSources = data.similar;
         }
 
-        $scope.save = function () {
+        $scope.save = function (merging) {
             $scope.currentlySaving = true;
 
             $scope.sourceToSave = new Source(angular.copy($scope.source));
