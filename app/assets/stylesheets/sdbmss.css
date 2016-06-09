@@ -156,6 +156,10 @@ body {
     color: #337AB7;
     padding-right: 10px;
 }
+#my_bookmarks .document-show-heading {
+  padding: 0px !important;
+  margin-bottom: 8px;
+}
 .bookmark-panes {
   height: calc(100% - 100px);
   color: #333;
@@ -266,6 +270,12 @@ body {
 .search-form { font-size: 12px; }
 
 .search-form .form-control { font-size: 12px; }
+
+/* invalid input */
+.form-control.ng-invalid { 
+  background-color: #f2dede !important;
+  border: 1px red solid !important;
+}
 
 .search-form .search-fieldset { margin-bottom: 8px; }
 
@@ -501,6 +511,31 @@ div#search_results_length {
 .label-entry {
   background: #009900;
 }
+/*
+.source-form input[disabled], .source-form select[disabled] {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  color: default;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: no
+}*/
+.merge-details {
+  display: block;
+  width: 100%;
+  height: 34px;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  color: #555555;
+}
+.source-form input, .source-form select {
+  transition: all 0s;
+  -webkit-transition: all 0s;
+  -moz-transition: all 0s;
+  -ms-transition: all 0s;
+}
 
 .suggestions {
   margin: 10px;
@@ -685,7 +720,7 @@ div#search_results_length {
   font-size: 20px;
 }
 .form-group.row {
-  border-bottom: 1px #eee dashed;
+  *border-bottom: 1px #eee dashed;
 }
 .unapproved > td, .unapproved > td > a {
   color: #999;

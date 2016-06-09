@@ -232,8 +232,7 @@
                 <select class="form-control" name="whether_mss" id="whether_mss" ng-model="source.whether_mss">
                     <%= options_for_select(Source::HAS_MANUSCRIPT_TYPES) %>
                 </select>
-            </div>
-        </div>-->
+            </div>-->
 
         <div class="form-group row" ng-show="source.id">
             <label for="status" class="col-sm-2 control-label"><span sdbm-tooltip="source_status">Status</span></label>
@@ -325,10 +324,8 @@
             </div>
           </div>
         </div>
-
     </div>
 
-    <div class="spacer-40px"/>
 
     <% if Rails.env.development? %>
         <br/><br/>

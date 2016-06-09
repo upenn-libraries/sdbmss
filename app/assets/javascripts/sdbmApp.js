@@ -1071,6 +1071,7 @@ var BOOKMARK_SCOPE;
                     valueToAssign = value.value;
                 }
                 model.assign(scope, valueToAssign);
+                console.log(valueToAssign);
             };
 
             var eraseModel = function() {
@@ -1079,16 +1080,18 @@ var BOOKMARK_SCOPE;
             }
 
             var refocus = function(badValue) {
+
                 // TODO: calling focus() directly here doesn't work in
                 // Firefox (but works in Chrome). Using setTimeout()
                 // is susceptible to race conditions with the
                 // browser's default handling of tab key, but in
                 // practice, it works.  Need to find a better way.
-                setTimeout(function() {
+                
+                /*setTimeout(function() {
                     $(element).focus();
-                }, 100);
+                }, 100);*/
 
-                console.log(element, badValue, $(element), $(element).tooltip);
+                //console.log(element, badValue, $(element), $(element).tooltip);
                 $(element)
                     .tooltip("option", "content", badValue + " isn't valid input, please change it or select a value from the suggestion box")
                     .tooltip("option", "disabled", false)
@@ -1127,7 +1130,7 @@ var BOOKMARK_SCOPE;
                         });
                         if (!exactMatch && controller) {
                             options.unshift({
-                                label: "\u00BB Create '" + searchTerm + "'",
+                                label: "\u00BB Propose '" + searchTerm + "'",
                                 value: 'CREATE',
                                 id: 'CREATE'
                             });
@@ -1177,7 +1180,8 @@ var BOOKMARK_SCOPE;
 
             // if user tries to leave input, make sure value is valid
             $(element).focusout(function(event) {
-                if(invalidInput) {
+                if ($(element).val() == "") {}
+                else if(invalidInput) {
                     refocus($(element).val());
                 }
             });
@@ -1202,7 +1206,7 @@ var BOOKMARK_SCOPE;
                                 options.forEach(function (option) {
                                     if(inputValue.toLowerCase() === option.label.toLowerCase()) {
                                         assignToModel(option);
-                                        scope.$apply();
+                                        //scope.$apply();
                                         match = true;
                                     }
                                 });
@@ -1214,18 +1218,22 @@ var BOOKMARK_SCOPE;
                                     invalidInput = true;
                                 }
                                 assignToModel(null);
-                                scope.$apply();
+                                //scope.$apply();
                             }
                         } else {
                             // whitespace or empty field - the user tried to erase the name entered, so let them
                             $(element).val("");
                             eraseModel();
+                            invalidInput = false;
 //                            assignToModel(null);
-                            scope.$apply();
+                           // scope.$apply();
                         }
                     } else {
                         invalidInput = false;
                     }
+                    console.log(scope.form);
+                    scope.form.source_agent.$setValidity('text', !invalidInput);
+                    scope.$apply();
                 },
                 select: function(event, ui) {
                     // prevent autocomplete's default behavior of using value instead of label
@@ -1422,7 +1430,28 @@ var BOOKMARK_SCOPE;
 
         // store in scope, otherwise angular template code can't
         // get a reference to this
-        // 
+
+        $scope.mergeEdit = false;
+
+        $scope.beginMergeEdit = function () { 
+          $scope.backupSource = angular.copy($scope.source);
+          $scope.mergeEdit = true;
+          console.log(1, $scope.source_agent); 
+        };
+        $scope.cancelMergeEdit = function () {
+          $scope.source = $scope.backupSource;
+          console.log($scope.backupSource.source_type);
+          $scope.mergeEdit = false;
+        }
+        $scope.confirmMergeEdit = function () {
+          if ($scope.form.$valid) {
+            $scope.backupSource = undefined;
+            $scope.mergeEdit = false;
+          } else {
+            alert('Error: invalid input detected.');
+          }
+        }
+
         $scope.sdbmutil = sdbmutil;
 
         $scope.currentlySaving = false;

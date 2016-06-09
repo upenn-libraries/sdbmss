@@ -1,5 +1,5 @@
 <div class="col-sm-12">
-    <div class='panel panel-primary'>
+    <div class='panel panel-info'>
         <div class='panel-heading'>
             <h3 class='h3'>Merge <%= @source.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h3>
         </div>
@@ -10,7 +10,6 @@
     <div class='panel <%= @target.present? ? "panel-danger" : "panel-default" %>'>
         <div class='panel-heading'>
             <div class='h4'><%= link_to @source.public_id, source_path(@source) %> <%= @target.present? ? "(Will be deleted)" : "" %>
-                <small class="pull-right badge"><%= @source.entries_count %> entries</small>
             </div>
         </div>
         <% if @target.present? %>
@@ -48,7 +47,6 @@
         <div class='panel <%= @target.present? ? "panel-success" : "panel-default" %>'>
             <div class='panel-heading'>
                 <div class='h4'><%= link_to @target.public_id, source_path(@target) %>
-                    <small class="pull-right badge"><%= @target.entries_count %> entries</small>
                 </div>
             </div>
             <div class="panel-body"><%= render partial: "sources/edit", locals: { source: @target, index: 1 } %></div>

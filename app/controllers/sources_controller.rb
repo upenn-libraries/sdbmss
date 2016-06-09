@@ -332,7 +332,6 @@ class SourcesController < SearchableAuthorityController
       elsif Source.find_by(id: @target_id).source_type != @source.source_type
         @warning = "You can only merge sources that are the same type, to avoid data loss"
       else
-        flash[:notice] = "Copy over any fields you wish to have in the updated record.  This will be your last chance before the old record is deleted."
         @target = Source.find_by(id: @target_id)
         show_for_merge(search_result_format(@target)).each do |f, v|
           if @differences[f].present?
@@ -345,7 +344,7 @@ class SourcesController < SearchableAuthorityController
     end
     if params[:confirm] == "yes"
       ActiveRecord::Base.transaction do
-        @target.update_attributes(source_params_for_create_and_edit)
+        @target.update_attributes(source_params_for_create_and_edit_from_merge)
         @source.merge_into(@target)
         if params[:source_agent_id]
           # remove old source agents
@@ -467,6 +466,24 @@ class SourcesController < SearchableAuthorityController
     # Note that we don't call require(:source), which is the typical
     # Rails convention, because Rails' wrapped parameters feature
     # doesn't pick up the *_attributes fields that way.
+    params.permit(
+      :source_type_id,
+      :date,
+      :title,
+      :author,
+      :whether_mss,
+      :medium,
+      :date_accessed,
+      :location,
+      :location_institution,
+      :link,
+      :comments,
+      :status,
+      :source_agents_attributes => [ :id, :agent_id, :role, :_destroy ],
+    )
+  end
+
+  def source_params_for_create_and_edit_from_merge
     params.permit(
       :source_type_id,
       :date,
