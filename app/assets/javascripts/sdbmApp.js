@@ -1071,6 +1071,7 @@ var BOOKMARK_SCOPE;
                     valueToAssign = value.value;
                 }
                 model.assign(scope, valueToAssign);
+                //console.log(valueToAssign);
             };
 
             var eraseModel = function() {
@@ -1079,16 +1080,18 @@ var BOOKMARK_SCOPE;
             }
 
             var refocus = function(badValue) {
+
                 // TODO: calling focus() directly here doesn't work in
                 // Firefox (but works in Chrome). Using setTimeout()
                 // is susceptible to race conditions with the
                 // browser's default handling of tab key, but in
                 // practice, it works.  Need to find a better way.
-                setTimeout(function() {
+                
+                /*setTimeout(function() {
                     $(element).focus();
-                }, 100);
+                }, 100);*/
 
-                console.log(element, badValue, $(element), $(element).tooltip);
+                //console.log(element, badValue, $(element), $(element).tooltip);
                 $(element)
                     .tooltip("option", "content", badValue + " isn't valid input, please change it or select a value from the suggestion box")
                     .tooltip("option", "disabled", false)
@@ -1127,7 +1130,7 @@ var BOOKMARK_SCOPE;
                         });
                         if (!exactMatch && controller) {
                             options.unshift({
-                                label: "\u00BB Create '" + searchTerm + "'",
+                                label: "\u00BB Propose '" + searchTerm + "'",
                                 value: 'CREATE',
                                 id: 'CREATE'
                             });
@@ -1177,7 +1180,8 @@ var BOOKMARK_SCOPE;
 
             // if user tries to leave input, make sure value is valid
             $(element).focusout(function(event) {
-                if(invalidInput) {
+                if ($(element).val() == "") {}
+                else if(invalidInput) {
                     refocus($(element).val());
                 }
             });
@@ -1202,7 +1206,7 @@ var BOOKMARK_SCOPE;
                                 options.forEach(function (option) {
                                     if(inputValue.toLowerCase() === option.label.toLowerCase()) {
                                         assignToModel(option);
-                                        scope.$apply();
+                                        //scope.$apply();
                                         match = true;
                                     }
                                 });
@@ -1214,18 +1218,25 @@ var BOOKMARK_SCOPE;
                                     invalidInput = true;
                                 }
                                 assignToModel(null);
-                                scope.$apply();
+                                //scope.$apply();
                             }
                         } else {
                             // whitespace or empty field - the user tried to erase the name entered, so let them
                             $(element).val("");
                             eraseModel();
+                            invalidInput = false;
 //                            assignToModel(null);
-                            scope.$apply();
+                           // scope.$apply();
                         }
                     } else {
                         invalidInput = false;
                     }
+                    //console.log(scope.form);
+                    if (scope.form && scope.form.source_agent)
+                    {
+                      scope.form.source_agent.$setValidity('text', !invalidInput);
+                    }
+                    scope.$apply();
                 },
                 select: function(event, ui) {
                     // prevent autocomplete's default behavior of using value instead of label
@@ -1262,8 +1273,9 @@ var BOOKMARK_SCOPE;
                     } else {
                         $(element).val(ui.item.label);
                         assignToModel(ui.item);
-                        scope.$apply();
                     }
+                    invalidInput = false;
+                    scope.$apply();
                 }
             }).data("ui-autocomplete")._renderItem = function( ul, item ) {
                 // if there's an 'unreviewed' attribute set to false,
@@ -1422,7 +1434,29 @@ var BOOKMARK_SCOPE;
 
         // store in scope, otherwise angular template code can't
         // get a reference to this
-        // 
+
+        $scope.mergeEdit = false;
+
+        $scope.beginMergeEdit = function () { 
+          $scope.backupSource = angular.copy($scope.source);
+          $scope.mergeEdit = true;
+          //console.log(1, $scope.source_agent); 
+        };
+        $scope.cancelMergeEdit = function () {
+          $scope.source = $scope.backupSource;
+          $scope.form.source_agent.$setValidity('text', true);
+          $scope.mergeEdit = false;
+        }
+        $scope.confirmMergeEdit = function () {
+          if ($scope.form.$valid) {
+            $scope.backupSource = undefined;
+            $scope.mergeEdit = false;
+            $scope.save();
+          } else {
+            alert('Error: invalid input detected.');
+          }
+        }
+
         $scope.sdbmutil = sdbmutil;
 
         $scope.currentlySaving = false;
@@ -1492,6 +1526,9 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.postSourceSave = function(source) {
+            if (window.location.pathname.indexOf('merge') != -1) {
+              return;    
+            } 
             $scope.source = source;
             var modalInstance = $modal.open({
                 templateUrl: 'postSourceSave.html',
@@ -1562,7 +1599,7 @@ var BOOKMARK_SCOPE;
           $scope.similarSources = data.similar;
         }
 
-        $scope.save = function () {
+        $scope.save = function (merging) {
             $scope.currentlySaving = true;
 
             $scope.sourceToSave = new Source(angular.copy($scope.source));
@@ -1831,22 +1868,10 @@ var BOOKMARK_SCOPE;
         $scope.renew();
       });
     }
-    $scope.removeBookmark = function (name, bookmark) {
-      var i = $scope.all_bookmarks[name].indexOf(bookmark);
-      if (i >= 0) {
-        $.ajax({url: '/bookmarks/' + bookmark.id, method: 'delete'}).done( function (e) {
-          console.log('done', e);
-          $scope.all_bookmarks[name].splice(i, 1);
-          $scope.renew();
-        }).error( function (e) {
-          console.log('error', e);
-        });
-      }
-    }
     $scope.searchTag = function (tag) {
       $('input[name=tag-search]').val(tag);
       if (localStorage) localStorage.sidebar_searchTag = tag;
-      // fix me: this should check the url, but also where the controller is (load details in main page, but not toolbar)
+      
       $.get('/bookmarks/reload.json', {tag: tag, details: (window.location.pathname == "/bookmarks")}).done( function (e) {
         $scope.all_bookmarks = e;
         $scope.renew();
@@ -1859,6 +1884,21 @@ var BOOKMARK_SCOPE;
         console.log('error.', e);
       });
     }
+    $scope.removeBookmark = function (name, bookmark) {
+      var i = $scope.all_bookmarks[name].indexOf(bookmark);
+      if (i >= 0) {
+        $.ajax({url: '/bookmarks/' + bookmark.id, method: 'delete'}).done( function (e) {
+          //console.log('done', e);
+          $scope.all_bookmarks[name].splice(i, 1);
+          $scope.renew();
+          var id = bookmark.document_id, type = bookmark.document_type;
+          //console.log(bookmark, type);
+          addNotification(type + ' ' + id + ' un-bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
+        }).error( function (e) {
+          console.log('error', e);
+        });
+      }
+    }
     $scope.addBookmark = function (id, type) {
       // check if already in bookmarks
       var b = $scope.findBookmark(type, id);
@@ -1870,6 +1910,7 @@ var BOOKMARK_SCOPE;
         if (!e.error && $scope.all_bookmarks[type]) {
           $scope.all_bookmarks[type].push(e);
           $scope.renew();
+          addNotification(type + ' ' + id + ' bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'success');
         } else {
           console.log(e.error);
         }
@@ -1932,8 +1973,8 @@ var BOOKMARK_SCOPE;
         else
           url += "&id[]=" + $scope.all_bookmarks[type][i].document_id;  
       }
-      window.location = url;
-    
+
+      exportCSV(url);
     }
 
     $scope.toggleSidebar = function (skip) {
@@ -1979,7 +2020,7 @@ var BOOKMARK_SCOPE;
 
     setTimeout(function () {
       // perform first search on starting
-      $scope.searchTag(localStorage.sidebar_searchTag || "");
+      $scope.searchTag("");//localStorage.sidebar_searchTag || "");
     }, 500);
 
     
@@ -1989,11 +2030,69 @@ var BOOKMARK_SCOPE;
 
 //function toggleSidebar() 
 
+function exportCSV(url) {
+  $.get(url).done(function (e) {
+      if (e.error) {
+          if (e.error == "at limit") {
+              addNotification("You have reached your export limit.  Download or delete some of your exports <a href='/downloads/'>here</a>.", "danger");
+          }
+          return;
+      }
+
+      var myDownloadComplete = false;
+      $('#user-nav a').css({color: 'green'});
+      addNotification("CSV Export is being prepared...", "info");
+      var download = JSON.parse(e);
+      var url = "/downloads/" + download.id;
+      var count = 0;
+      var interval = setInterval( function () {
+          $.ajax({url: url, data: {ping: true}}).done( function (r) {
+              //window.location = url;
+              if (r != "in progress" && !myDownloadComplete) {
+                  addNotification(download.filename + " is ready - <a href='" + url + "'>download file</a>", "success", true);
+                  $('#user-nav a').css({color: ''});
+                  $('#downloads-count').text(download.count);
+                  window.clearInterval(interval);
+                  myDownloadComplete = true;
+              } else {
+                  count += 1;
+              }
+
+              if (count > 1000) window.clearInterval(interval);                    
+          }).error( function (r) {
+              console.log('error', r);
+              window.clearInterval(interval);
+          });
+      }, 1000);
+  }).error( function (e) {
+      console.log('error', e);
+  })
+}
+
+function addNotification (message, type, permanent) {
+  var notification = $('<div><a class="close" data-dismiss="alert" aria-label="close">&times;</a>' + message + "</div>");
+  notification.addClass('alert').addClass('alert-' + type).addClass('alert-absolute');
+  
+  notification.hide();
+  $('.alerts-absolute').append(notification);
+  notification.fadeIn();
+  
+  if (!permanent) {
+    setTimeout(function () {
+      notification.fadeOut('slow', function () {
+        notification.remove();
+      });
+    }, 10000)
+  } // fade out after ten seconds;
+}
+
 // this works!  maybe not a good idea?
 function addBookmark(id, type) {
   BOOKMARK_SCOPE.addBookmark(id, type);
+  // if removed, have one 
+  //addNotification(type + " " + id + " bookmarked! <span onclick='addBookmark(" + id + ',"' + type + "\")'>Undo<span>", 'info' );
 }
 
 function renewBookmarks() {
-  BOOKMARK_SCOPE.renew();
+  //BOOKMARK_SCOPE.renew();
 }

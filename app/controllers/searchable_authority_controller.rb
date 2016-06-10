@@ -1,5 +1,6 @@
 class SearchableAuthorityController < ManageModelsController
 
+  require 'csv'
 
   def search_fields
     @filters = ["id"]
@@ -35,7 +36,6 @@ class SearchableAuthorityController < ManageModelsController
     results = s.results.map do |obj|
       search_result_format(obj)
     end
-
     respond_to do |format|
       format.json {
         render json: {
@@ -46,16 +46,33 @@ class SearchableAuthorityController < ManageModelsController
                }
       }
       format.csv {
-        headers = results.first.keys
-        formatter = Proc.new do |object|
-          headers.map { |key| object[key] }
-        end
-        render csv: results,
-               filename: "#{search_model_class.to_s.downcase.pluralize}.csv",
-               headers: headers,
-               format: formatter
+        make_csv(results, @d)
       }
     end
+  end
+
+  def make_csv(results, d)
+    headers = results.first.keys
+    filename = @d.filename
+    user = @d.user
+    id = @d.id
+    path = "downloads/#{id}_#{user}_#{filename}"
+
+    csv_string = CSV.generate do |csv|
+      csv << headers
+      results.each do |r|
+        csv << r.values 
+      end
+    end
+
+    compressed_csv_string = ActiveSupport::Gzip.compress(csv_string)
+
+    File.open(path, "wb") do |fp|
+      fp.write compressed_csv_string
+    end
+
+    # update download that it is now ready
+    @d.update({status: 1})
   end
 
   def index
@@ -69,7 +86,28 @@ class SearchableAuthorityController < ManageModelsController
   end
 
   def search
+    if params[:format] == 'csv'
+      if current_user.downloads.count >= 5
+        render json: {error: 'at limit'}
+        return
+      end
+      @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv.gz", user_id: current_user.id})
+      Thread.new do
+        do_search(params)
+      end
+      respond_to do |format|
+        format.csv {
+          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count}
+        }
+      end
+    else
+      do_search(params)
+    end
+  end
+
+  def do_search(params)
     format = params[:format].present? ? params[:format] : 'none'
+
     order = params[:order].present? ? {field: params[:order].split[0], direction: params[:order].split[1]} : {}
     limit = params[:limit].present? ? params[:limit].to_i : 50
     page = params[:limit] ? (params[:offset].to_i / params[:limit].to_i) + 1 : 1

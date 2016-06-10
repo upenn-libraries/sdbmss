@@ -1,5 +1,5 @@
 <div class="col-sm-12">
-    <div class='panel panel-primary'>
+    <div class='panel panel-info'>
         <div class='panel-heading'>
             <h3 class='h3'>Merge <%= @source.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h3>
         </div>
@@ -7,18 +7,11 @@
 </div>
 
 <div class="col-sm-5">
-    <div class='panel <%= @target.present? ? "panel-danger" : "panel-default" %>'>
-        <div class='panel-heading'>
-            <div class='h4'><%= link_to @source.public_id, source_path(@source) %> <%= @target.present? ? "(Will be deleted)" : "" %>
-                <small class="pull-right badge"><%= @source.entries_count %> entries</small>
-            </div>
-        </div>
         <% if @target.present? %>
-            <div class="panel-body to-delete"><%= render partial: "sources/edit", locals: { source: @source, index: 0 } %></div>
+            <%= render partial: "sources/edit", locals: { source: @source, index: 0 } %>
         <% else %>
             <div class="panel-body"><%= render partial: "sources/source_details", locals: {source: @source} %></div>
         <% end %>
-    </div>
 </div>
 <%= form_tag(request.path, method: :post, class: "form-horizontal sdbmss-form") do %>
 <div class='col-sm-2 text-center'>
@@ -45,14 +38,7 @@
 <!-- form tag for collecting the results of the merge request -->
 <div class="col-sm-5">
     <% if @target_id.present? && @target.present? %>
-        <div class='panel <%= @target.present? ? "panel-success" : "panel-default" %>'>
-            <div class='panel-heading'>
-                <div class='h4'><%= link_to @target.public_id, source_path(@target) %>
-                    <small class="pull-right badge"><%= @target.entries_count %> entries</small>
-                </div>
-            </div>
-            <div class="panel-body"><%= render partial: "sources/edit", locals: { source: @target, index: 1 } %></div>
-        </div>
+        <%= render partial: "sources/edit", locals: { source: @target, index: 1 } %>
     <% else %>
         <% if @target_id.present? %>
             <div class='panel panel-danger'>

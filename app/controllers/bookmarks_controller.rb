@@ -1,9 +1,9 @@
 
 # Define our own BookmarksController instead of using the one from
 # Blacklight.
-class BookmarksController < CatalogController
+class BookmarksController < ApplicationController
 
-  include Blacklight::Bookmarks
+#  include Blacklight::Bookmarks
   
   # FIX ME::: verify user permissions before all actions!
 

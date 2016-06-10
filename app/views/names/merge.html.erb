@@ -11,6 +11,9 @@
         <div class='panel-heading'>
             <span class='h3'>
                 <%= link_to @model.public_id, name_path(@model) %>
+                <% if @target.present? %>
+                    <small>(Will be deleted)</small>
+                <% end %>
             </span>
         </div>
         <% if @target.present? %>
@@ -52,9 +55,16 @@
                 <div class='panel-heading'>
                     <span class='h3'>
                         <%= link_to @target.public_id, name_path(@target) %>
+                        <small class="pull-right" style="margin-top: -5px;">
+                            <span id="editNameMerge" class="btn btn-success">Edit</span>
+                            <span id="controlEditNameMerge" style="display: none;">
+                                <span id="confirmEditNameMerge" class="btn btn-default">Save</span>
+                                <span id="cancelEditNameMerge" class="btn btn-warning">Cancel</span>
+                            </span>
+                        </small>
                     </span>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body" id="mergeNameInto">
                     <%= render partial: "names/merge_form", locals: { name: @target } %>
                 </div>
             </div>
@@ -119,3 +129,28 @@
         <% end %>
 </div>
 <% end %>
+<script type='text/javascript'>
+    $('input').prop('disabled', true);
+
+    $('#editNameMerge').click( function () {
+        $('#controlEditNameMerge').show();
+        $(this).hide();
+        $('#mergeNameInto input').prop('disabled', false);
+    });
+
+    $('#cancelEditNameMerge').click( function () {
+        $('#controlEditNameMerge').hide();
+        $('#editNameMerge').show();
+        $('#mergeNameInto input').each(function (e) {
+            $(this).val($(this).prop('defaultValue'));
+        });
+        $('#mergeNameInto input').prop('disabled', true);
+    });
+
+    $('#confirmEditNameMerge').click( function () {
+        $('#controlEditNameMerge').hide();
+        $('#editNameMerge').show();
+        $('#mergeNameInto input').prop('disabled', true);
+    });
+
+</script>

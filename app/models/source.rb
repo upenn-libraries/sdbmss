@@ -60,7 +60,7 @@ class Source < ActiveRecord::Base
   has_many :entries
   has_many :source_agents, inverse_of: :source
 
-  validates_inclusion_of :whether_mss, in: HAS_MANUSCRIPT_TYPES.map(&:first), message: 'whether_mss is invalid', allow_blank: true
+ # validates_inclusion_of :whether_mss, in: HAS_MANUSCRIPT_TYPES.map(&:first), message: 'whether_mss is invalid', allow_blank: true
   validates_inclusion_of :medium, in: MEDIUM_TYPES.map(&:first), message: 'medium is invalid', allow_blank: true
   #validates_presence_of :date, if: :date_required
   validates_presence_of :source_type
@@ -88,20 +88,14 @@ class Source < ActiveRecord::Base
     string :location_institution
     text :location_institution, :more_like_this => true
 
-#    join(:name,  :target => Name, :type => :string, :join => { :from => :name, :to => :agent_name })
-#    string :agent_name
-    #join(:name,  :target => Name, :type => :text, :join => { :from => :name, :to => :agent_name })
-    #text :agent_name
-    #text :agent_name, :more_like_this => true
+    string :agent_name
+    text :agent_name
+    integer :agent_id
 
+    join(:id, :target => Name, :type => :integer, :join => { :from => :id, :to => :agent_id})
+    join(:name, :target => Name, :type => :string, :join => { :from => :name, :to => :agent_name})
+    join(:name, :target => Name, :type => :text, :join => { :from => :name, :to => :agent_name})
 
-    text :agent_name, :more_like_this => true do
-      (source_agents.map do |sa| Name.find(sa.agent_id).name end).join(" ")
-    end
-    #FIX ME: this won't actually work for sorting or anything like that...
-    string :agent_name do
-      (source_agents.map do |sa| Name.find(sa.agent_id).name end).join(" ")
-    end
     string :location
     string :medium
     string :date
@@ -119,6 +113,14 @@ class Source < ActiveRecord::Base
     date :created_at
     date :updated_at
     boolean :reviewed
+  end
+
+  def agent_name
+    (source_agents.map { |sa| sa.agent.name }).join("")
+  end
+
+  def agent_id
+    source_agents.first ? source_agents.first.agent_id : nil
   end
 
   def has_agent

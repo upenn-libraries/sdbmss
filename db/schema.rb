@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160510134551) do
+ActiveRecord::Schema.define(version: 20160601194026) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -69,6 +69,17 @@ ActiveRecord::Schema.define(version: 20160510134551) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+
+  create_table "downloads", force: :cascade do |t|
+    t.string   "filename",      limit: 255
+    t.integer  "status",        limit: 4,   default: 0
+    t.integer  "user_id",       limit: 4
+    t.integer  "created_by_id", limit: 4
+    t.datetime "created_at"
+  end
+
+  add_index "downloads", ["created_by_id"], name: "index_downloads_on_created_by_id", using: :btree
+  add_index "downloads", ["user_id"], name: "index_downloads_on_user_id", using: :btree
 
   create_table "entries", force: :cascade do |t|
     t.integer  "source_id",                limit: 4

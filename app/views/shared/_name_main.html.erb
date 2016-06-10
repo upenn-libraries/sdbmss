@@ -14,8 +14,7 @@
 <% if name.source_agents_count || 0 > 0 %>
 <dt># Sources</dt>
 <dd>
-    <!-- there's no view of sources, so no link here. -->
-    This agent is found in <%= name.source_agents_count %> sources.
+    This agent is found in <%= link_to "#{name.source_agents_count} sources", sources_path({agent_id: name.id}), class: "badge" %>
 </dd>
 <% end %>
 

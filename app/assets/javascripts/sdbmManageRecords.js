@@ -36,11 +36,11 @@ var SDBM = SDBM || {};
 
         window.onpopstate = function(event) {
             // load the data from URL into page
-            //manageRecords.setFormStateFromURL();
+            manageRecords.setFormStateFromURL();
             manageRecords.dataTable.reload();
         };
 
-//        manageRecords.setFormStateFromURL();
+        manageRecords.setFormStateFromURL();
         
         this.dataTable = manageRecords.createTable(".sdbm-table");
 
@@ -417,7 +417,8 @@ var SDBM = SDBM || {};
     // handler called when "export csv" link is clicked; this
     // implementation uses #search action on the Rails resource
     // controller
-    SDBM.ManageRecords.prototype.exportCSV = function() {
+    
+    SDBM.ManageRecords.prototype.getCSVSearchUrl = function () {
         var manageRecords = this;
         //var qs = new URI().query(true);
         var qs = manageRecords.search_query;
@@ -425,26 +426,23 @@ var SDBM = SDBM || {};
         // since this data is sent via URI, I have to reformat when there is a list so {name: ["x", "y"]} becomes {name[]: ["x", "y"]} 
         for (var field in qs) {
             if (Array.isArray(qs[field])) {
-                qs[field + "[]"] = qs[field]
-                delete qs[field]
+                if (field.indexOf('[]') == -1) {
+                    qs[field + "[]"] = qs[field]
+                    delete qs[field]
+                }
             }
         }
-        /*$.ajax({
-            url: manageRecords.getSearchURL('csv'),
-            data: qs
-        }).done( function (result) {
-            console.log('done', result);
-            window.location = 'data:text/plain;charset=utf-8,' + encodeURIComponent(result);
-        })*/
-        var url = URI(manageRecords.getSearchURL('csv')).search(qs);
-        window.location = url;
-/*
-        var url = URI(manageRecords.getSearchURL('csv')).search({
-            term: manageRecords.getSearchValue(),
-            unreviewed_only: manageRecords.getUnreviewedOnly()
-        });
 
-        window.location = url;*/
+        return URI(manageRecords.getSearchURL('csv')).search(qs);
+    }
+
+    SDBM.ManageRecords.prototype.exportCSV = function() {
+        
+        /* do search, then poll to see if download is completed */
+
+        var url = this.getCSVSearchUrl();
+
+        exportCSV(url);
     };
     
 }());
