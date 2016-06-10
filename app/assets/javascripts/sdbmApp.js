@@ -1071,7 +1071,7 @@ var BOOKMARK_SCOPE;
                     valueToAssign = value.value;
                 }
                 model.assign(scope, valueToAssign);
-                console.log(valueToAssign);
+                //console.log(valueToAssign);
             };
 
             var eraseModel = function() {
@@ -1231,8 +1231,11 @@ var BOOKMARK_SCOPE;
                     } else {
                         invalidInput = false;
                     }
-                    console.log(scope.form);
-                    scope.form.source_agent.$setValidity('text', !invalidInput);
+                    //console.log(scope.form);
+                    if (scope.form && scope.form.source_agent)
+                    {
+                      scope.form.source_agent.$setValidity('text', !invalidInput);
+                    }
                     scope.$apply();
                 },
                 select: function(event, ui) {
@@ -1437,7 +1440,7 @@ var BOOKMARK_SCOPE;
         $scope.beginMergeEdit = function () { 
           $scope.backupSource = angular.copy($scope.source);
           $scope.mergeEdit = true;
-          console.log(1, $scope.source_agent); 
+          //console.log(1, $scope.source_agent); 
         };
         $scope.cancelMergeEdit = function () {
           $scope.source = $scope.backupSource;
@@ -1523,7 +1526,10 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.postSourceSave = function(source) {
-            //$scope.source = source;
+            if (window.location.pathname.indexOf('merge') != -1) {
+              return;    
+            } 
+            $scope.source = source;
             var modalInstance = $modal.open({
                 templateUrl: 'postSourceSave.html',
                 backdrop: 'static',
@@ -1533,12 +1539,8 @@ var BOOKMARK_SCOPE;
             modalInstance.result.then(function () {
                 // noop
             }, function() {
-              if (true) {
-                
-              } else {
                 // runs when promise is rejected (modal is dismissed)
                 sdbmutil.redirectToSourceEditPage(source.id);
-              }
             });
         };
 
@@ -1890,7 +1892,7 @@ var BOOKMARK_SCOPE;
           $scope.all_bookmarks[name].splice(i, 1);
           $scope.renew();
           var id = bookmark.document_id, type = bookmark.document_type;
-          console.log(bookmark, type);
+          //console.log(bookmark, type);
           addNotification(type + ' ' + id + ' un-bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
         }).error( function (e) {
           console.log('error', e);
@@ -2018,7 +2020,7 @@ var BOOKMARK_SCOPE;
 
     setTimeout(function () {
       // perform first search on starting
-      $scope.searchTag(localStorage.sidebar_searchTag || "");
+      $scope.searchTag("");//localStorage.sidebar_searchTag || "");
     }, 500);
 
     

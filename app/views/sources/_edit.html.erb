@@ -5,7 +5,7 @@
             <% if index == 1 %>
                     <span ng-hide="mergeEdit" class="btn btn-success" ng-click="beginMergeEdit()">Edit</span>
                     <span ng-show="mergeEdit">
-                        <span class="btn btn-default" ng-click="confirmMergeEdit()" ng-disabled="form.$invalid || currentlySaving">Confirm</span>
+                        <span class="btn btn-default" ng-click="confirmMergeEdit()" ng-disabled="form.$invalid || currentlySaving">Save</span>
                         <span class="btn btn-warning" ng-click="cancelMergeEdit()">Cancel</span>
                     </span>
             <% end %>
@@ -44,7 +44,7 @@
                 <div class="form-group row">
                     <label for="cat_title" class="col-sm-4 control-label"><span>Publication Title</span></label>
                     <div class="col-sm-8">
-                        <input type="text" ng-readonly="!mergeEdit" class="form-control" id="title" ng-model="source.title" name="title" required />
+                        <input type="text" ng-readonly="!mergeEdit" class="form-control" id="title" ng-model="source.title" name="title" />
                     </div>
                 </div>
 
@@ -73,7 +73,7 @@
                 <div class="form-group row">
                     <label for="cat_title" class="col-sm-4 control-label"><span>Website Name</span></label>
                     <div class="col-sm-8">
-                        <input type="text" ng-readonly="!mergeEdit" class="form-control" id="title" ng-model="source.title" name="title" required />
+                        <input type="text" ng-readonly="!mergeEdit" class="form-control" id="title" ng-model="source.title" name="title" />
                     </div>
                 </div>
 
@@ -192,7 +192,7 @@
             <div class="form-group row" ng-show="source.id">
                 <label for="status" class="col-sm-4 control-label"><span>Status</span></label>
                 <div class="col-sm-8">
-                    <select ng-readonly="!mergeEdit" class="form-control" name="status" id="status" ng-model="source.status" >
+                    <select ng-disabled="!mergeEdit" class="form-control" name="status" id="status" ng-model="source.status" >
                         <%= options_for_select(Source::STATUS_TYPES) %>
               </select>
                 </div>
@@ -207,7 +207,7 @@
             <div class="form-group row">
                 <label for="location" class="col-sm-4 control-label"><span>Location Type</span></label>
                 <div class="col-sm-8">
-                    <select ng-readonly="!mergeEdit" class="form-control" id="medium" name="medium" ng-model="source.medium">
+                    <select ng-disabled="!mergeEdit" class="form-control" id="medium" name="medium" ng-model="source.medium">
                         <option value>Select One</option>
                         <option value="{{ option[0] }}" ng-repeat="option in optionsMedium">{{ option[1] }}</option>
                     </select>
