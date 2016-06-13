@@ -244,7 +244,17 @@ class Name < ActiveRecord::Base
   end
 
   def bookmark_details
-    { error: "not implemented yet" }
+    results = {
+      name: name,
+      viaf_id: viaf_id,
+      used_as_author: authors_count > 0 ? "#{authors_count} entries" : nil,
+      used_as_scribe: scribes_count > 0 ? "#{scribes_count} entries" : nil,
+      used_as_artist: artists_count > 0 ? "#{artists_count} entries" : nil,
+      used_as_source_agent: source_agents_count > 0 ? "#{source_agents_count} sources" : nil,
+      used_as_sale_agent: sale_agents_count > 0 ? "#{sale_agents_count} sources" : nil,
+      used_as_provenance: provenance_count > 0 ? "#{provenance_count} entries" : nil
+    }
+    (results.select { |k, v| !v.blank? }).transform_keys{ |key| key.to_s.humanize }
   end
 
   def entry_ids_to_index_on_update

@@ -275,7 +275,24 @@ class Entry < ActiveRecord::Base
   # represent the nested associations for display and there has to be
   # some information tweaking/loss.
   def bookmark_details
-    { error: "not implemented yet" }
+    results = { 
+      manuscript: manuscript ? manuscript.id : nil,
+      source_date: SDBMSS::Util.format_fuzzy_date(source.date),
+      source_title: source.title,
+      source_agent: source.source_agents.map(&:agent).join("; "),
+      titles: entry_titles.order(:order).map(&:title).join("; "),
+      authors: entry_authors.order(:order).map(&:display_value).join("; "),
+      dates: entry_dates.order(:order).map(&:display_value).join("; "),
+      artists: entry_artists.order(:order).map(&:display_value).join("; "),
+      scribes: entry_scribes.order(:order).map(&:display_value).join("; "),
+      languages: entry_languages.order(:order).map(&:language).map(&:name).join("; "),
+      materials: entry_materials.order(:order).map(&:material).join("; "),
+      places: entry_places.order(:order).map(&:display_value).join("; "),
+      uses: entry_uses.order(:order).map(&:use).join("; "),
+      other_info: other_info,
+      provenance: unique_provenance_agents.map { |unique_agent| unique_agent[:name] }.join("; "),
+    }
+    (results.select { |k, v| !v.blank? }).transform_keys{ |key| key.to_s.humanize }
   end
 
   def as_flat_hash

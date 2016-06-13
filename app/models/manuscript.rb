@@ -125,7 +125,12 @@ class Manuscript < ActiveRecord::Base
   end
 
   def bookmark_details
-    { error: "not implemented yet" }
+    results = { 
+      titles: all_titles.to_a.join(", "),
+      location: location,
+      entries_count: entries_count
+    }
+    (results.select { |k, v| !v.blank? }).transform_keys{ |key| key.to_s.humanize }
   end
 
 end

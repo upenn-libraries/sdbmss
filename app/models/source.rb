@@ -187,7 +187,21 @@ class Source < ActiveRecord::Base
   end
 
   def bookmark_details
-    { error: "not implemented yet" }
+    results = { 
+      type: source_type.display_name,
+      date: SDBMSS::Util.format_fuzzy_date(date),
+      author: author,
+      institution: get_institution_as_name.to_s,
+      selling_agent: get_selling_agent_as_name.to_s,
+      seller: get_seller_or_holder_as_name.to_s,
+      used_in: entries_count,
+      method_of_access: medium,
+      date_accessed: date_accessed,
+      location_institution: location_institution,
+      location: location,
+      link: link
+    }
+    (results.select { |k, v| !v.blank? }).transform_keys{ |key| key.to_s.humanize }
   end
 
   # Returns 3-part display string for Source
