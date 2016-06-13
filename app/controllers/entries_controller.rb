@@ -55,7 +55,7 @@ class EntriesController < SearchableAuthorityController
         render json: {error: 'at limit'}
         return
       end      
-      @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv", user_id: current_user.id})
+      @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv.gz", user_id: current_user.id})
       Thread.new do 
         (@response, @document_list) = search_results(params, search_params_logic)
         objects = @document_list.map { |document| document.model_object.as_flat_hash }
@@ -65,12 +65,20 @@ class EntriesController < SearchableAuthorityController
         user = @d.user
         id = @d.id
         path = "downloads/#{id}_#{user}_#{filename}"
-        CSV.open(path, "wb") do |csv|
+        
+        csv_string = CSV.generate do |csv|
           csv << header
           objects.each do |obj|
-            csv << obj.values
+            csv << obj.values 
           end
         end
+
+        compressed_csv_string = ActiveSupport::Gzip.compress(csv_string)
+
+        File.open(path, "wb") do |fp|
+          fp.write compressed_csv_string
+        end
+        
         @d.update({status: 1})
       end
       respond_to do |format|
