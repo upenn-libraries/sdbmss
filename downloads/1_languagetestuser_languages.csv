@@ -1,0 +1,8 @@
+id,public_id,name,entries_count,reviewed,created_by,created_at,updated_by,updated_at
+1,SDBM_LNG_1,Martian,0,false,languagetestuser,"June 06, 2016 10:58",(none),"June 06, 2016 10:58"
+2,SDBM_LNG_2,Something new,0,false,(none),"June 06, 2016 10:58",(none),"June 06, 2016 10:58"
+3,SDBM_LNG_3,Something old,0,false,(none),"June 06, 2016 10:58",(none),"June 06, 2016 10:58"
+4,SDBM_LNG_4,Something else,0,false,(none),"June 06, 2016 10:58",(none),"June 06, 2016 10:58"
+5,SDBM_LNG_5,Something zzz,0,false,(none),"June 06, 2016 10:58",(none),"June 06, 2016 10:58"
+6,SDBM_LNG_6,Klingon,0,false,languagetestuser,"June 06, 2016 10:58",languagetestuser,"June 06, 2016 10:58"
+8,SDBM_LNG_8,Should appear in export,0,false,(none),"June 06, 2016 10:58",(none),"June 06, 2016 10:58"
