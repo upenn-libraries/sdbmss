@@ -32,7 +32,10 @@
                     </div> 
                   </dd>
               </dl>
-              <div ng-bind-html="bookmark.details"></div>
+              <dl class="document-metadata dl-invert dl-horizontal">
+                <dt ng-repeat-start="(key, value) in bookmark.details track by $index">{{ key }}</dt>
+                <dd ng-repeat-end>{{ value }}</dd>
+              </dl>
               <dl class="document-metadata dl-invert dl-horizontal">
                 <dt>Tags</dt>
                 <dd ng-if="bookmark.tags.length > 0">

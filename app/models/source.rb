@@ -186,6 +186,10 @@ class Source < ActiveRecord::Base
     display_value
   end
 
+  def bookmark_details
+    { error: "not implemented yet" }
+  end
+
   # Returns 3-part display string for Source
   def display_value
     date_str = ""

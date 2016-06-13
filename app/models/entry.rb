@@ -274,6 +274,10 @@ class Entry < ActiveRecord::Base
   # export. Obviously, decisions have to be made here about how to
   # represent the nested associations for display and there has to be
   # some information tweaking/loss.
+  def bookmark_details
+    { error: "not implemented yet" }
+  end
+
   def as_flat_hash
     # for performance, we avoid using has_many->through associations
     # because they always hit the db and circumvent the preloading

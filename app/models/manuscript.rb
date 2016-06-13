@@ -124,4 +124,8 @@ class Manuscript < ActiveRecord::Base
     all_titles.to_a.join(",")[0..50]
   end
 
+  def bookmark_details
+    { error: "not implemented yet" }
+  end
+
 end
