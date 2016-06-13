@@ -8,7 +8,7 @@ class Download < ActiveRecord::Base
   end
 
   def destroy
-    path = "downloads/" + id.to_s + "_" + user.username + "_" + filename
+    path = "/tmp/" + id.to_s + "_" + user.username + "_" + filename
     File.delete(path) if File.exist?(path)
     super
   end

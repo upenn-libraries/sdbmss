@@ -64,7 +64,7 @@ class EntriesController < SearchableAuthorityController
         filename = @d.filename
         user = @d.user
         id = @d.id
-        path = "downloads/#{id}_#{user}_#{filename}"
+        path = "/tmp/#{id}_#{user}_#{filename}"
         
         csv_file = CSV.open(path, "wb") do |csv|
           csv << header
