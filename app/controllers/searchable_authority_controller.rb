@@ -67,17 +67,13 @@ class SearchableAuthorityController < ManageModelsController
         csv << r.values 
       end
     end
-    @d.update({status: 10})
 
     Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
       zipfile.add(filename, path)
     end
-    @d.update({status: 20})
 
     File.delete(path) if File.exist?(path)
 
-    @d.update({status: 30})
-    # update download that it is now ready
     @d.update({status: 1, filename: "#{filename}.zip"})
   end
 
