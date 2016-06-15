@@ -505,11 +505,15 @@ div#search_results_length {
 .label-tag:nth-child(2n) {
   max-width: 164px;
 }
+.label-source a, .label-entry a {
+    color: #f8f8f8;
+}
 .label-source {
-  background: #CC0000;
+  background: #a94442;
 }
 .label-entry {
-  background: #009900;
+  margin-left: 10px;
+  background: #3c763d;
 }
 /*
 .source-form input[disabled], .source-form select[disabled] {

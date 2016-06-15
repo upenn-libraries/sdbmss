@@ -1908,7 +1908,10 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.saveLocalStorage = function () {
-      if (localStorage) localStorage.all_bookmarks = angular.toJson($scope.all_bookmarks);
+      if (localStorage) {
+        localStorage.all_bookmarks = angular.toJson($scope.all_bookmarks);
+        localStorage.sidebar_tab = $scope.active;
+      }
     }
 
     $scope.removeBookmark = function (name, bookmark) {
@@ -1936,6 +1939,7 @@ var BOOKMARK_SCOPE;
       }
       $.ajax({url: '/bookmarks/new', data: {document_id: id, document_type: type}}).done( function (e) {
         if (!e.error && $scope.all_bookmarks[type]) {
+          $scope.active = type;
           $scope.all_bookmarks[type].unshift(e);
           $scope.renew();
           addNotification(type + ' ' + id + ' bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'success');
@@ -1949,7 +1953,7 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.renew = function () {
-      $scope.$apply();
+      $scope.$apply(); // why is this here?
       $('.bookmark-link').css({color: ""});
       for (var i = 0; i < $scope.tabs.length; i++) {
         var type = $scope.tabs[i];
@@ -2035,6 +2039,7 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.addTabToStorage = function (name) {
+      $scope.active = name;
       if (localStorage) localStorage.sidebar_tab = name;
     }
 
@@ -2047,17 +2052,16 @@ var BOOKMARK_SCOPE;
         else {
           var b = $scope.findBookmark(e.type, e.document_id);
           if (b) {
-//            console.log(b.updated_at, e.updated_at, b.updated_at == e.updated_at);
             if (b.updated_at == e.updated_at) {
               //  no update required;
-              $scope.renew();
             } else {
               $scope.loadBookmarks();
             }
           } else {
             $scope.loadBookmarks();
           }
-//          console.log(e.last);
+          // this needs a timeout for some reason? FIX ME
+          setTimeout($scope.renew, 500);
         }
       });
     }

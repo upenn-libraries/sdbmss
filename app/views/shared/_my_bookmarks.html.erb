@@ -2,14 +2,18 @@
   <div class="panel panel-default" id="my_bookmarks">
       <ul class="nav nav-tabs">
         <li ng-repeat="(name, bookmarks) in all_bookmarks" class="bookmark-nav-button" ng-class="{active: (name == active) }">
-          <a data-toggle='tab' href='#bookmark-tab-{{ name }}' ng-click="addTabToStorage(name);">{{ name }}
-          <span class="badge">{{ bookmarks.length }}</span></a>
+          <a ng-click="addTabToStorage(name);">{{ name }}
+          <span class="badge">{{ (bookmarks | filter:hasTag).length }}</span></a>
         </li>
       </ul>
     <div class="tab-content bookmark-panes">
 
       <div ng-repeat="(name, bookmarks) in all_bookmarks" class="tab-pane fade" id="bookmark-tab-{{ name }}" ng-class="{active: (name == active), in: (name == active)}">
         <ul class="list-group bookmarks">
+          <li class="list-group-item text-center" ng-if="(bookmarks | filter:hasTag).length <= 0">
+            <b class="text-primary">SEARCH: {{ search_tag }}</b> ... no results ...<br>
+            <a class='' ng-click="searchTag('')">Clear Search <span class="glyphicon glyphicon-remove"></span></a>
+          </li>
           <li class="list-group-item" ng-if="bookmarks.length <= 0">
             No records of this type have been bookmarked yet.
           </li>

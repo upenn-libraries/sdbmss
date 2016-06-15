@@ -52,8 +52,16 @@
             <div class="col-sm-5">
                 <div class="well">
                     <span class="h4"><strong>Contributions:</strong> 
-                        <span class="label label-source"><%= @display[:sources_created] %> entries</span>
-                        <span class="label label-entry"><%= @display[:entries_created] %> sources</span>
+                        <span class="label label-source">
+                            <a href="<%= sources_path({created_by: @display[:username]}) %>">
+                                <%= SDBMSS::Util.to_many(@display[:sources_created], "source") %>
+                            </a>
+                        </span>
+                        <span class="label label-entry">
+                            <a href="<%= search_advanced_path(created_by: @display[:username]) %>">
+                                <%= SDBMSS::Util.to_many(@display[:entries_created], "entry") %>
+                            </a>
+                        </span>
                     </span>
                 </div>
             </div>

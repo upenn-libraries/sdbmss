@@ -66,10 +66,13 @@
                     </div>
                   </dd>
               </dl>
-              <div ng-bind-html="bookmark.details"></div>
+              <dl class="document-metadata dl-invert dl-horizontal">
+                <dt ng-repeat-start="(key, value) in bookmark.details track by $index">{{ key }}</dt>
+                <dd ng-repeat-end>{{ value }}</dd>
+              </dl>
               <dl class="document-metadata dl-horizontal dl-invert">
                 <dt>Tags</dt>
-                <dd class="h4">
+                <dd ng-if="bookmark.tags.length > 0" class="h4">
                   <ul class="list-inline">
                     <li>
                       <span class="bookmark-tag text-primary" ng-repeat="tag in bookmark.tags">{{ tag }}<span class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></span>
@@ -77,6 +80,7 @@
                     </li>
                   </ul>
                 </dd>
+                <dd ng-if="bookmark.tags.length <= 0" class='text-warning'>This bookmark has no tags - add some!</dd>
               </dl>
         </li>
       </ul>

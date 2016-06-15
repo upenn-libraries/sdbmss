@@ -40,7 +40,7 @@
       </dd>
       <dt># Entries</dt>
       <dd>
-          This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
+          This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries.count, "entry") %></a>
       </dd>
     </dl>
 

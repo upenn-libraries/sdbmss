@@ -99,7 +99,7 @@
             <% entries = current_user.entries.most_recent(num_entries_to_show) %>
             <div class="panel-heading">
                 <h4 data-toggle="collapse" href="#myEntries">Entries You've Contributed ...
-                <small class='pull-right'>Show the last <strong><%= entries.count %> entries</strong> you created</small>
+                <small class='pull-right'>Show the last <strong><%= SDBMSS::Util.to_many(entries.count, "entry") %></strong> you created</small>
                 </h4>
             </div>
             <div class="panel-body panel-collapse collapse" id="myEntries">
@@ -108,7 +108,7 @@
                     <li class="list-group-item">
                          <div class="row">
                             <div class="col-sm-6">
-                                <div>You've contributed <%= num_entries %> entries to date.</div>
+                                <div>You've contributed <%= SDBMSS::Util.to_many(num_entries, "entry") %> to date.</div>
                                     <% if num_entries_needing_approval > 0 %>
                                         <div class='text-warning'><%= num_entries_needing_approval %> of them <%= num_entries_needing_approval > 1 ? "are" : "is" %> not yet approved.</div>
                                     <% end %>
@@ -153,7 +153,7 @@
                 <div class="panel-heading">
                     <h4 data-toggle="collapse" href="#mySources">
                         Sources You've Contributed ...
-                        <small class='pull-right'>Show the last <strong><%= sources.count %> source(s)</strong> you created</small>
+                        <small class='pull-right'>Show the last <strong><%= SDBMSS::Util.to_many(sources.count, "source") %></strong> you created</small>
                     </h4>
                 </div>
                 <div class="panel-body panel-collapse collapse" id="mySources">
@@ -161,7 +161,7 @@
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <div>You've contributed <%= num_sources %> source(s) to date.</div>
+                                    <div>You've contributed <%= SDBMSS::Util.to_many(num_sources, "source") %> to date.</div>
                                     <% if num_sources_unreviewed > 0 %>
                                         <div class='text-warning'><%= num_sources_unreviewed %> of them <%= num_sources_unreviewed > 1 ? "are" : "is" %> not yet reviewed.</div>
                                     <% end %>
@@ -194,7 +194,7 @@
                 <div class="panel-heading">
                     <h4 data-toggle="collapse" href="#myManuscripts">
                         Manuscripts You've Contributed ...
-                        <small class="pull-right">Show the last <strong><%= manuscripts.count %> manuscript(s)</strong> you created</small>
+                        <small class="pull-right">Show the last <strong><%= SDBMSS::Util.to_many(manuscripts.count, "manuscript") %></strong> you created</small>
                     </h4>
                 </div>
                 <div class="panel-body panel-collapse collapse" id="myManuscripts">
@@ -267,5 +267,3 @@
         <% end %>
     </div>
 </div>
-    
-
