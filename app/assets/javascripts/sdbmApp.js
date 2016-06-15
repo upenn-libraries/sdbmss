@@ -1856,34 +1856,61 @@ var BOOKMARK_SCOPE;
     BOOKMARK_SCOPE = $scope;
 
     $scope.removetag = function (bookmark, tag) {
-      $.get('/bookmarks/' + bookmark.id + '/removetag', {tag: tag}).done( function (e) {
-        bookmark.tags = e.tags;
-          $scope.renew();
-      });
+      var index = bookmark.tags.indexOf(tag);
+      if (index != -1) {
+        bookmark.tags.splice(index, 1);
+        $.get('/bookmarks/' + bookmark.id + '/removetag', {tag: tag}).done( function (e) {
+//          bookmark.tags = e.tags;
+//            $scope.renew();
+          bookmark.updated_at = e.updated_at;
+          $scope.saveLocalStorage();
+        });
+      }
     }
     $scope.addtag = function (bookmark, tag) {
-      $.get('/bookmarks/' + bookmark.id + '/addtag', {tag: tag}).done( function (e) {
-        bookmark.tags = e.tags;
+      if (bookmark.tags.indexOf(tag) == -1) {
+        bookmark.tags.push(tag);
         bookmark.newtag = "";
-        $scope.renew();
-      });
+        $.get('/bookmarks/' + bookmark.id + '/addtag', {tag: tag}).done( function (e) {
+          //bookmark.tags = e.tags;
+          //$scope.renew();
+          bookmark.updated_at = e.updated_at;
+          $scope.saveLocalStorage();
+        });
+      }
     }
+
     $scope.searchTag = function (tag) {
       $('input[name=tag-search]').val(tag);
       if (localStorage) localStorage.sidebar_searchTag = tag;
-      
-      $.get('/bookmarks/reload.json', {tag: tag, details: (window.location.pathname == "/bookmarks")}).done( function (e) {
+      $scope.search_tag = tag;
+    }
+
+    $scope.hasTag = function (bookmark) {
+      if (!$scope.search_tag) return true;
+      else return bookmark.tags.indexOf($scope.search_tag) != -1;
+    } 
+
+    $scope.loadBookmarks = function () {
+      $.get('/bookmarks/reload.json', {details: (window.location.pathname == "/bookmarks")}).done( function (e) {
         $scope.all_bookmarks = e;
         $scope.renew();
         $('.bookmarks').scroll( function (e) {
           if (localStorage) localStorage.sidebar_scroll = $(this).scrollTop();
         });
         var scroll = localStorage ? localStorage.sidebar_scroll : 0;
-        if (!tag) $('.tab-pane.active.in .bookmarks').scrollTop(scroll);
+
+        $scope.saveLocalStorage();
+        //if (!tag) $('.tab-pane.active.in .bookmarks').scrollTop(scroll);
       }).error( function (e) {
         console.log('error.', e);
       });
     }
+
+    $scope.saveLocalStorage = function () {
+      if (localStorage) localStorage.all_bookmarks = angular.toJson($scope.all_bookmarks);
+    }
+
     $scope.removeBookmark = function (name, bookmark) {
       var i = $scope.all_bookmarks[name].indexOf(bookmark);
       if (i >= 0) {
@@ -1899,6 +1926,7 @@ var BOOKMARK_SCOPE;
         });
       }
     }
+
     $scope.addBookmark = function (id, type) {
       // check if already in bookmarks
       var b = $scope.findBookmark(type, id);
@@ -1908,7 +1936,7 @@ var BOOKMARK_SCOPE;
       }
       $.ajax({url: '/bookmarks/new', data: {document_id: id, document_type: type}}).done( function (e) {
         if (!e.error && $scope.all_bookmarks[type]) {
-          $scope.all_bookmarks[type].push(e);
+          $scope.all_bookmarks[type].unshift(e);
           $scope.renew();
           addNotification(type + ' ' + id + ' bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'success');
         } else {
@@ -1919,6 +1947,7 @@ var BOOKMARK_SCOPE;
       });
       return false;
     }
+
     $scope.renew = function () {
       $scope.$apply();
       $('.bookmark-link').css({color: ""});
@@ -1929,6 +1958,7 @@ var BOOKMARK_SCOPE;
           $('.bookmark-link[in_bookmarks="' + link + '"]').css({color: "gold"});
         }
       }
+      $scope.saveLocalStorage();
     }
     // this is one ugly function
     $scope.actionButton = function (bookmark) {
@@ -2008,20 +2038,64 @@ var BOOKMARK_SCOPE;
       if (localStorage) localStorage.sidebar_tab = name;
     }
 
+    $scope.checkForUpdates = function () {
+      // 1. call controller method 'check'
+      // 2. if true, call loadBookmarks
+      // 3. else, load from localstorage
+      $.get("/bookmarks/check").done(function (e) {
+        if (e.error) console.log(e.error);
+        else {
+          var b = $scope.findBookmark(e.type, e.document_id);
+          if (b) {
+//            console.log(b.updated_at, e.updated_at, b.updated_at == e.updated_at);
+            if (b.updated_at == e.updated_at) {
+              //  no update required;
+              $scope.renew();
+            } else {
+              $scope.loadBookmarks();
+            }
+          } else {
+            $scope.loadBookmarks();
+          }
+//          console.log(e.last);
+        }
+      });
+    }
+
     if (localStorage && localStorage.sidebar_open == "true" && $('.sidebar').length > 0) {
       $scope.toggleSidebar(true);
     }
 
-    if (localStorage && localStorage.sidebar_tab) {
-      $scope.active = localStorage.sidebar_tab;
-    } else {
-      $scope.active == "Entry";
+    $scope.init = function () {
+      if (localStorage) {
+
+        if (localStorage.all_bookmarks) {
+          $scope.all_bookmarks = angular.fromJson(localStorage.all_bookmarks);
+          $scope.checkForUpdates();
+        }
+
+        if (localStorage.sidebar_tab) {
+          $scope.active = localStorage.sidebar_tab;
+        } else {
+          $scope.active == "Entry";
+        }
+      } else {
+        $scope.loadBookmarks();
+      }
     }
 
-    setTimeout(function () {
+    $scope.init();
+
+    $(window).focus( $scope.init );
+//    setTimeout(function () {
       // perform first search on starting
-      $scope.searchTag("");//localStorage.sidebar_searchTag || "");
-    }, 500);
+      //if (localStorage && localStorage.)
+      // check for updates -->
+      
+
+
+ //     $scope.loadBookmarks();//localStorage.sidebar_searchTag || "");
+ //   }, 10);
 
     
   });

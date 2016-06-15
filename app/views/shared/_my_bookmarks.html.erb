@@ -13,7 +13,7 @@
           <li class="list-group-item" ng-if="bookmarks.length <= 0">
             No records of this type have been bookmarked yet.
           </li>
-          <li class="list-group-item" ng-repeat="bookmark in bookmarks">
+          <li class="list-group-item" ng-repeat="bookmark in bookmarks | filter:hasTag">
               <dl class="document-show-heading dl-invert" style="padding-left: 10px;">
                   <dt class='h4'>
                     <strong><a href="{{ bookmark.link }}"> {{ bookmark.public_id }}</a></strong>

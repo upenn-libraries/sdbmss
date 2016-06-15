@@ -122,6 +122,15 @@ class BookmarksController < ApplicationController
     #redirect_to :back
   end
 
+  def check
+    if current_user.bookmarks.count > 0
+      lt = current_user.bookmarks.order('updated_at').last
+      render json: { document_id: lt.document_id, type: lt.document_type.to_s, updated_at: lt.updated_at.to_s }
+    else
+      render json: { error: "No bookmarks" }
+    end
+  end
+
   def delete_all
     ids = params[:id]
     if !ids

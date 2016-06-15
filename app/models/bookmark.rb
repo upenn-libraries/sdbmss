@@ -29,7 +29,8 @@ class Bookmark < ActiveRecord::Base
       tags: tags.to_s.split(','), 
       link: "/#{document_type.to_s.underscore.pluralize}/#{document_id}", 
       public_id: document.public_id, 
-      show: document.to_s
+      show: document.to_s,
+      updated_at: updated_at.to_s
     }
   end
   

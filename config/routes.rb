@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   resources :bookmarks do
     collection {
       delete 'delete_all'
+      get 'check'
     }
     member {
       get 'addtag'
