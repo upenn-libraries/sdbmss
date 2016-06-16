@@ -226,31 +226,6 @@ class SourcesController < SearchableAuthorityController
     end
   end
 
-  def search_result_format(obj)
-    {
-      id: obj.id,
-      date: SDBMSS::Util.format_fuzzy_date(obj.date),
-      source_type: obj.source_type.display_name,
-      entries_count: obj.entries_count || 0,
-      title: obj.title,
-      display_value: obj.display_value,
-      author: obj.author,
-      selling_agent: (selling_agent = obj.get_selling_agent_as_name).present? ? selling_agent.name : "",
-      institution: (institution_agent = obj.get_institution_as_name).present? ? institution_agent.name : "",
-      whether_mss: obj.whether_mss,
-      medium: obj.medium,
-      date_accessed: obj.date_accessed,
-      location_institution: obj.location_institution,
-      location: obj.location,
-      link: obj.link,
-      comments: obj.comments,
-      created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
-      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:long) : "",
-      updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
-      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:long) : ""
-    }
-  end
-
   # change the status of a Source
   def update_status
     new_status = params[:status]

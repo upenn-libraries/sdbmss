@@ -49,6 +49,7 @@ class Source < ActiveRecord::Base
   include IndexAfterUpdate
   include HasPaperTrail
   include CreatesActivity
+  extend CSVExportable
 
   default_scope { where(deleted: false) }
 
@@ -285,6 +286,40 @@ class Source < ActiveRecord::Base
 
     SDBMSS::IndexJob.perform_later(Entry.to_s, entry_ids)
   end
+
+  def self.fields
+    ["title", "date", "agent_name", "author", "created_by", "updated_by"]
+  end
+
+  def self.filters
+    ["id", "location", "agent_id", "source_type_id"]
+  end
+
+  def search_result_format
+    {
+      id: id,
+      date: SDBMSS::Util.format_fuzzy_date(date),
+      source_type: source_type.display_name,
+      entries_count: entries_count || 0,
+      title: title,
+      display_value: display_value,
+      author: author,
+      selling_agent: (selling_agent = get_selling_agent_as_name).present? ? selling_agent.name : "",
+      institution: (institution_agent = get_institution_as_name).present? ? institution_agent.name : "",
+      whether_mss: whether_mss,
+      medium: medium,
+      date_accessed: date_accessed,
+      location_institution: location_institution,
+      location: location,
+      link: link,
+      comments: comments,
+      created_by: created_by.present? ? created_by.username : "(none)",
+      created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
+      updated_by: updated_by.present? ? updated_by.username : "(none)",
+      updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
+    }
+  end
+
 
   private
 

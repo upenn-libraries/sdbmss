@@ -1,7 +1,19 @@
 module CSVExportable
 
+  def filters
+    ["id"]
+  end
+
+  def fields
+    ["name", "created_by", "updated_by"]
+  end
+
+  def dates
+    ["created_at", "updated_at"]
+  end
+
   def search_fields
-    self.filters + self.fields + self.dates
+    self.fields + self.filters + self.dates
   end
 
   def params_for_search(params)
@@ -11,10 +23,7 @@ module CSVExportable
       permitted.push({field.to_sym => []})
     end
     params.permit(permitted)
-#    params.permit(:name, {:name => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
   end
-
-# numerical filters
 
   def filters_for_search(params)
     permitted = []
@@ -23,10 +32,8 @@ module CSVExportable
       permitted.push({filter.to_sym => []})
     end
     params.permit(permitted)
-#    params.permit(:id, {:id => []})
   end
 
-# date filters
   def dates_for_search(params)
     permitted = []
     self.dates.each do |date|
@@ -34,12 +41,8 @@ module CSVExportable
       permitted.push({date.to_sym => []})
     end
     params.permit(permitted)
-    #params.permit(:created_at, :updated_at, {:created_at => []}, {:updated_at => []})
   end
 
-#boolean/exact string filters
-
-  # permit as options fields with the format SEARCHFIELD_option
   def options_for_search(params)
     params.permit(self.search_fields.map do |s| {s + "_option" => []} end, self.search_fields.map do |s| s + "_option" end)
   end
@@ -55,8 +58,8 @@ module CSVExportable
     filename = download.filename
     user = download.user
     id = download.id
-    path = "downloads/#{id}_#{user}_#{filename}"
-
+    path = "/tmp/#{id}_#{user}_#{filename}"
+    
     csv_file = CSV.open(path, "wb") do |csv|
       csv << headers
       results.each do |r|
@@ -70,7 +73,7 @@ module CSVExportable
 
     File.delete(path) if File.exist?(path)
 
-    download.update({status: 1})
+    download.update({status: 1, filename: "#{filename}.zip"})
   end
 
   def do_search(params)

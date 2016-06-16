@@ -14,6 +14,7 @@ class Manuscript < ActiveRecord::Base
   include IndexAfterUpdate
   include HasPaperTrail
   include CreatesActivity
+  extend CSVExportable
 
   # searchable!
   
@@ -131,6 +132,24 @@ class Manuscript < ActiveRecord::Base
       entries_count: entries_count
     }
     (results.select { |k, v| !v.blank? }).transform_keys{ |key| key.to_s.humanize }
+  end
+
+  def search_result_format
+    {
+      id: id,
+      name: name,
+      location: location,
+      entries_count: entries_count,
+      reviewed: reviewed,
+      created_by: created_by.present? ? created_by.username : "(none)",
+      created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
+      updated_by: updated_by.present? ? updated_by.username : "(none)",
+      updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
+    }
+  end
+
+  def self.fields
+    super + ["location"]
   end
 
 end

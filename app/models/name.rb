@@ -97,17 +97,16 @@ class Name < ActiveRecord::Base
     boolean :reviewed
   end
 
-  ### OK< maybe this?
   def self.filters
-    ["viaf_id", "authors_count", "artists_count", "scribes_count", "provenance_count", "source_agents_count"]
+    super + ["viaf_id", "authors_count", "artists_count", "scribes_count", "provenance_count", "source_agents_count"]
   end
 
   def self.fields
-    ["name", "created_by", "updated_by"]
+    super + ["comment"]
   end
 
   def self.dates
-    []
+    super + []
   end
 
   def search_result_format

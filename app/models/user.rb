@@ -52,6 +52,7 @@ class User < ActiveRecord::Base
   include UserFields
   include HasPaperTrail
   include CreatesActivity
+  extend CSVExportable
 
   def self.statistics
     results = ActiveRecord::Base.connection.execute("select username, count(*) from users inner join entries on entries.created_by_id = users.id where entries.deleted = 0 group by username")
@@ -119,6 +120,31 @@ class User < ActiveRecord::Base
       end
     end
     s
+  end
+
+  def self.fields
+    fields = super
+    fields.delete('name')
+    ['username'] + fields + ['fullname', 'email', 'role']
+  end
+
+  def self.filters  
+    filters = super
+    filters.delete('created_by')
+    filters.delete('updated_by')
+    filters + ['active']
+  end
+
+  def search_result_format
+    {
+      id: id,
+      username: username,
+      fullname: fullname,
+      role: role,
+      active: active,
+      reviewed: reviewed,
+      created_by: created_by.present? ? created_by.username : "(none)",
+    }
   end
 
   private

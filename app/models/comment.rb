@@ -35,6 +35,7 @@ class Comment < ActiveRecord::Base
   include UserFields
   include HasPaperTrail
   include CreatesActivity
+  extend CSVExportable
 
   searchable :unless => :deleted do
     join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
@@ -71,4 +72,29 @@ class Comment < ActiveRecord::Base
     entry || manuscript
   end
 
+  def self.fields
+    fields = super.unshift("comment")
+    fields.delete("name")
+    fields
+  end
+
+  def self.filters
+    super + ["entry", "manuscript"]
+  end
+
+  def search_result_format
+    {
+      id: id,
+      entry_id: entry.try(:id),
+      manuscript_id: manuscript.try(:id),
+      comment: comment,
+      #is_correction: is_correction,
+      is_accepted: is_accepted,
+      reviewed: reviewed,
+      created_by: created_by.username,
+      created_at: created_at.to_formatted_s(:date_and_time),
+      updated_by: updated_by.present? ? updated_by.username : "(none)",
+      updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
+    }
+  end
 end
