@@ -1,6 +1,8 @@
 class SearchableAuthorityController < ManageModelsController
 
   require 'csv'
+  require 'rubygems'
+  require 'zip'
 
   def search_fields
     @filters = ["id"]
@@ -56,23 +58,23 @@ class SearchableAuthorityController < ManageModelsController
     filename = @d.filename
     user = @d.user
     id = @d.id
-    path = "downloads/#{id}_#{user}_#{filename}"
+    path = "/tmp/#{id}_#{user}_#{filename}"
+    @d.update({status: 5})
 
-    csv_string = CSV.generate do |csv|
+    csv_file = CSV.open(path, "wb") do |csv|
       csv << headers
       results.each do |r|
         csv << r.values 
       end
     end
 
-    compressed_csv_string = ActiveSupport::Gzip.compress(csv_string)
-
-    File.open(path, "wb") do |fp|
-      fp.write compressed_csv_string
+    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+      zipfile.add(filename, path)
     end
 
-    # update download that it is now ready
-    @d.update({status: 1})
+    File.delete(path) if File.exist?(path)
+
+    @d.update({status: 1, filename: "#{filename}.zip"})
   end
 
   def index

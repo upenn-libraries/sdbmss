@@ -64,14 +64,24 @@ class EntriesController < SearchableAuthorityController
         filename = @d.filename
         user = @d.user
         id = @d.id
-        path = "downloads/#{id}_#{user}_#{filename}"
-        CSV.open(path, "wb") do |csv|
+        path = "/tmp/#{id}_#{user}_#{filename}"
+        
+        csv_file = CSV.open(path, "wb") do |csv|
           csv << header
-          objects.each do |obj|
-            csv << obj.values
+          objects.each do |r|
+            csv << r.values 
           end
         end
-        @d.update({status: 1})
+
+        Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+          zipfile.add(filename, path)
+        end
+
+        File.delete(path) if File.exist?(path)
+
+        # update download that it is now ready
+        @d.update({status: 1, filename: "#{filename}.zip"})
+
       end
       respond_to do |format|
         format.csv {

@@ -93,6 +93,9 @@ gem "number_to", "~> 0.7.1"
 # empties db after each group of tests
 gem "database_cleaner", "~> 1.4.1"
 
+# for compressing csv exports to .zip
+gem "rubyzip"
+
 # bundle exec rake doc:rails generates the Rails API under doc/api.
 group :doc do
   gem 'sdoc', '~> 0.4.0'

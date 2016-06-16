@@ -57,18 +57,18 @@ module CSVExportable
     id = download.id
     path = "downloads/#{id}_#{user}_#{filename}"
 
-    csv_string = CSV.generate do |csv|
+    csv_file = CSV.open(path, "wb") do |csv|
       csv << headers
       results.each do |r|
         csv << r.values 
       end
     end
 
-    compressed_csv_string = ActiveSupport::Gzip.compress(csv_string)
-
-    File.open(path, "wb") do |fp|
-      fp.write compressed_csv_string
+    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+      zipfile.add(filename, path)
     end
+
+    File.delete(path) if File.exist?(path)
 
     download.update({status: 1})
   end

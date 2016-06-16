@@ -330,6 +330,7 @@ DEPENDENCIES
   poltergeist (~> 1.6.0)
   rails (~> 4.2.5.1)
   rspec-rails (~> 3.1.0)
+  rubyzip
   sass-rails (~> 5.0.3)
   sdoc (~> 0.4.0)
   simplecov
