@@ -26,30 +26,6 @@ class NamesController < SearchableAuthorityController
     Name
   end
 
-  def search_result_format(obj)
-    {
-      id: obj.id,
-      name: obj.name,
-      viaf_id: obj.viaf_id,
-      comment: obj.comment,
-      authors_count: obj.authors_count || 0,
-      artists_count: obj.artists_count || 0,
-      scribes_count: obj.scribes_count || 0,
-      source_agents_count: obj.source_agents_count || 0,
-      sale_agents_count: obj.sale_agents_count || 0,
-      provenance_count: obj.provenance_count || 0,
-      is_artist: obj.is_artist,
-      is_author: obj.is_author,
-      is_provenance_agent: obj.is_provenance_agent,
-      is_scribe: obj.is_scribe,
-      reviewed: obj.reviewed,
-      created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
-      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:long) : "",
-      updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
-      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:long) : ""
-    }
-  end
-
   def search_query_base
     search_model_class.all.includes([:created_by])
   end

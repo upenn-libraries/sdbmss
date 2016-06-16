@@ -1,61 +1,60 @@
-class SearchableAuthorityController < ManageModelsController
-
-  require 'csv'
+module CSVExportable
 
   def search_fields
-    @filters = ["id"]
-    @fields = ["name", "created_by", "updated_by"]
-    @dates = ["created_at", "updated_at"]
-    @fields + @filters + @dates
+    self.filters + self.fields + self.dates
   end
 
-  def create
-    ActiveRecord::Base.transaction do
-      super
-      @transaction_id = PaperTrail.transaction_id
+  def params_for_search(params)
+    permitted = []
+    self.fields.each do |field|
+      permitted.push(field.to_sym)
+      permitted.push({field.to_sym => []})
     end
-    if @model.id
-      @model.delay.index
+    params.permit(permitted)
+#    params.permit(:name, {:name => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
+  end
+
+# numerical filters
+
+  def filters_for_search(params)
+    permitted = []
+    self.filters.each do |filter|
+      permitted.push(filter.to_sym)
+      permitted.push({filter.to_sym => []})
     end
+    params.permit(permitted)
+#    params.permit(:id, {:id => []})
   end
 
-  def update
-    ActiveRecord::Base.transaction do
-      super
-      @transaction_id = PaperTrail.transaction_id
+# date filters
+  def dates_for_search(params)
+    permitted = []
+    self.dates.each do |date|
+      permitted.push(date.to_sym)
+      permitted.push({date.to_sym => []})
     end
-    @model.delay.index
+    params.permit(permitted)
+    #params.permit(:created_at, :updated_at, {:created_at => []}, {:updated_at => []})
   end
 
-  def destroy
-    super
-    @model.delay.index
+#boolean/exact string filters
+
+  # permit as options fields with the format SEARCHFIELD_option
+  def options_for_search(params)
+    params.permit(self.search_fields.map do |s| {s + "_option" => []} end, self.search_fields.map do |s| s + "_option" end)
   end
 
-  def format_search(s)
+  def do_csv_search(params, download)
+    s = do_search(params)
+
     results = s.results.map do |obj|
       obj.search_result_format
     end
-    respond_to do |format|
-      format.json {
-        render json: {
-                 limit: s.results.count,
-                 offset: s.results.offset,
-                 total: s.total,
-                 results: results,
-               }
-      }
-      format.csv {
-        make_csv(results, @d)
-      }
-    end
-  end
 
-  def make_csv(results, d)
     headers = results.first.keys
-    filename = @d.filename
-    user = @d.user
-    id = @d.id
+    filename = download.filename
+    user = download.user
+    id = download.id
     path = "downloads/#{id}_#{user}_#{filename}"
 
     csv_string = CSV.generate do |csv|
@@ -71,38 +70,7 @@ class SearchableAuthorityController < ManageModelsController
       fp.write compressed_csv_string
     end
 
-    # update download that it is now ready
-    @d.update({status: 1})
-  end
-
-  def index
-    @search_fields = search_fields
-    @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
-    @field_options = ["contains", "does not contain", "blank", "not blank", "before", "after"]
-    @date_options = ["before", "after", "near", "exact"]
-    if params[:widescreen] == 'true'
-      render :layout => 'widescreen'
-    end
-  end
-
-  def search
-    if params[:format] == 'csv'
-      if current_user.downloads.count >= 5
-        render json: {error: 'at limit'}
-        return
-      end
-      @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv.gz", user_id: current_user.id})
-      respond_to do |format|
-        format.csv {
-          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count}
-        }
-      end
-      model_class.delay.do_csv_search(params, @d) 
-    else
-      s = model_class.do_search(params)
-      format_search s
-    #do_search(params)
-    end
+    download.update({status: 1})
   end
 
   def do_search(params)
@@ -113,19 +81,19 @@ class SearchableAuthorityController < ManageModelsController
     page = params[:limit] ? (params[:offset].to_i / params[:limit].to_i) + 1 : 1
     s_op = params[:op].present? ? params[:op] : 'AND'
 
-    options = options_for_search
+    options = options_for_search(params)
 
     reviewed = params[:reviewed] && params[:reviewed] == "1" ? false : nil
 
-    filters = filters_for_search
+    filters = filters_for_search(params)
     if params[:created_by_user].to_i == 1
       filters = filters ? filters : {}
       filters["created_by"] = current_user.username
     end
-    params = params_for_search
-    dates = dates_for_search
+    params = params_for_search(params)
+    dates = dates_for_search(params)
 
-    s = Sunspot.search model_class do
+    s = self.search do
 
       fulltext_search = lambda { |p, o| 
         if params.present?
@@ -248,62 +216,12 @@ class SearchableAuthorityController < ManageModelsController
       if format != 'csv'
         paginate :per_page => limit, :page => page
       else
-        paginate :page => 1, :per_page => model_class.all.count
+        paginate :page => 1, :per_page => self.all.count
       end
       order.present? ? order_by(order[:field], order[:direction]) : order_by(:score, :desc)
     end
 
-    format_search s
+    return s
   end
 
-  def get_similar
-    s = Sunspot.more_like_this(@model) do
-      fields :name
-      paginate page: 1, per_page: 10
-      order_by :score, :desc
-    end
-    @similar = s.results
-  end
-
-  private
-
-# fulltext filters
-  def params_for_search
-    permitted = []
-    @fields.each do |field|
-      permitted.push(field.to_sym)
-      permitted.push({field.to_sym => []})
-    end
-    params.permit(permitted)
-#    params.permit(:name, {:name => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
-  end
-
-# numerical filters
-  def filters_for_search
-    permitted = []
-    @filters.each do |filter|
-      permitted.push(filter.to_sym)
-      permitted.push({filter.to_sym => []})
-    end
-    params.permit(permitted)
-#    params.permit(:id, {:id => []})
-  end
-
-# date filters
-  def dates_for_search
-    permitted = []
-    @dates.each do |date|
-      permitted.push(date.to_sym)
-      permitted.push({date.to_sym => []})
-    end
-    params.permit(permitted)
-    #params.permit(:created_at, :updated_at, {:created_at => []}, {:updated_at => []})
-  end
-
-#boolean/exact string filters
-
-  # permit as options fields with the format SEARCHFIELD_option
-  def options_for_search
-    params.permit(search_fields.map do |s| {s + "_option" => []} end, search_fields.map do |s| s + "_option" end)
-  end 
 end

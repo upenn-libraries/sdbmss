@@ -21,6 +21,8 @@ class Name < ActiveRecord::Base
   include IndexAfterUpdate
   include HasPaperTrail
   include CreatesActivity
+  
+  extend CSVExportable
 
   default_scope { where(deleted: false) }
 
@@ -68,7 +70,6 @@ class Name < ActiveRecord::Base
     end
   end 
 
-
   searchable :unless => :deleted do
     join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
     join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
@@ -94,6 +95,43 @@ class Name < ActiveRecord::Base
     date :created_at
     date :updated_at
     boolean :reviewed
+  end
+
+  ### OK< maybe this?
+  def self.filters
+    ["viaf_id", "authors_count", "artists_count", "scribes_count", "provenance_count", "source_agents_count"]
+  end
+
+  def self.fields
+    ["name", "created_by", "updated_by"]
+  end
+
+  def self.dates
+    []
+  end
+
+  def search_result_format
+    {
+      id: id,
+      name: name,
+      viaf_id: viaf_id,
+      comment: comment,
+      authors_count: authors_count || 0,
+      artists_count: artists_count || 0,
+      scribes_count: scribes_count || 0,
+      source_agents_count: source_agents_count || 0,
+      sale_agents_count: sale_agents_count || 0,
+      provenance_count: provenance_count || 0,
+      is_artist: is_artist,
+      is_author: is_author,
+      is_provenance_agent: is_provenance_agent,
+      is_scribe: is_scribe,
+      reviewed: reviewed,
+      created_by: created_by.present? ? created_by.username : "(none)",
+      created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
+      updated_by: updated_by.present? ? updated_by.username : "(none)",
+      updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
+    }
   end
   
   # constructor for a Provenance Agent. takes same args as #new
