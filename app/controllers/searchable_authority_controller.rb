@@ -60,6 +60,9 @@ class SearchableAuthorityController < ManageModelsController
   end
 
   def search
+    if params[:created_by_user].to_i == 1
+      params.merge!({created_by: current_user.username})
+    end
     if params[:format] == 'csv'
       if current_user.downloads.count >= 5
         render json: {error: 'at limit'}

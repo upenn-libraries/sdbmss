@@ -89,10 +89,6 @@ module CSVExportable
     reviewed = params[:reviewed] && params[:reviewed] == "1" ? false : nil
 
     filters = filters_for_search(params)
-    if params[:created_by_user].to_i == 1
-      filters = filters ? filters : {}
-      filters["created_by"] = current_user.username
-    end
     params = params_for_search(params)
     dates = dates_for_search(params)
 

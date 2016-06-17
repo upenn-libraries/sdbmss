@@ -370,7 +370,7 @@ class Entry < ActiveRecord::Base
   # auto_index should be set to false (via ENV) to prevent migration
   # script from indexing, but we want it to be ON for normal
   # operation.
-  searchable :auto_index => (ENV.fetch('SDBMSS_SUNSPOT_AUTOINDEX', 'true') == 'true'),
+  searchable  :unless => :deleted, :auto_index => (ENV.fetch('SDBMSS_SUNSPOT_AUTOINDEX', 'true') == 'true'),
              :include => @@includes do
 
     # Simple wrapper around DSL field definition methods like #text,
