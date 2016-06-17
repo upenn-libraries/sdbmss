@@ -80,7 +80,7 @@ class CatalogController < ApplicationController
     return params[:limit] || 100
   end
 
-  # required by CatalogControllerConfiguration
+  # required by CatalogControllerConfiguration  --> change to allow unlimited size searches
   def search_results_max
     Rails.configuration.sdbmss_max_search_results
   end
