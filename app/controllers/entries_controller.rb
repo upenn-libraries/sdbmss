@@ -28,7 +28,7 @@ class EntriesController < SearchableAuthorityController
 
   before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate]
 
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :similar, :mark_as_approved, :deprecate]
+  before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy, :similar, :mark_as_approved, :deprecate]
 
   respond_to :html, :json
 
@@ -38,17 +38,62 @@ class EntriesController < SearchableAuthorityController
     Entry
   end
 
-  # good god this is an ugly function - but it works!  csv exports are backgrounded in another thread
-  # FIX ME - this is a ... unique situation here
+  def self.do_csv_search(params, search_params_logic, download)
+    (response, document_list) = EntriesController.new.search_results(params, search_params_logic)
+    objects = document_list.map { |document| document.model_object.as_flat_hash }
+    header = objects.first.keys
 
-#  def index
-#    @bookmarks = current_user.bookmarks
-#    super
-#  end
+    filename = download.filename
+    user = download.user
+    id = download.id
+    path = "/tmp/#{id}_#{user}_#{filename}"
+    
+    csv_file = CSV.open(path, "wb") do |csv|
+      csv << header
+      objects.each do |r|
+        csv << r.values 
+      end
+    end
+
+    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+      zipfile.add(filename, path)
+    end
+
+    File.delete(path) if File.exist?(path)
+
+    download.update({status: 1, filename: "#{filename}.zip"})
+  end
 
   def index
-    super
+    @bookmarks = current_user.bookmarks
+    # need to... get the fields configured for blacklight, 
+
+    @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
+    @field_options = ["contains", "does not contain", "blank", "not blank", "before", "after"]
+    @date_options = ["before", "after", "near", "exact"]
+    if params[:widescreen] == 'true'
+      render :layout => 'widescreen'
+    end
+    if params[:format] == 'csv'
+      if current_user.downloads.count >= 5
+        render json: {error: 'at limit'}
+        return
+      end      
+      @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv", user_id: current_user.id})
+
+      EntriesController.delay.do_csv_search(params, search_params_logic, @d)
+
+      respond_to do |format|
+        format.csv {
+          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count} 
+        }
+      end
+    else
+      super
+    end
+    # respond to csv..., etc.
   end
+
 
   # JSON data structure optimized for editing page. This weird action
   # exists because we want CatalogController to handle #show, but we

@@ -29,7 +29,7 @@
               <%= d.created_at.to_formatted_s(:long) %>
             </div>
             <div class="col-sm-3 text-center">
-              <span class="text-danger">Expires: <%= (d.created_at + 1.hours).to_formatted_s(:long) %></span>
+              <span class="text-danger">Expires: <%= (d.created_at + 1.days).to_formatted_s(:long) %></span>
             </div>
           </div>
         </li>
