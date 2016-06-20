@@ -92,6 +92,7 @@
     var manuscriptTitle, manuscriptLocation;
     $("#toggle-manuscript-edit").click( function () {
         $('.manuscript-info').removeClass('manuscript-info-show');
+        $('.manuscript-info').prop('readonly', false);
         $(this).hide();
         $('.manuscript-info-buttons').show();
         manuscriptTitle = $('input[name="manuscript[title]"]').val();
@@ -100,6 +101,7 @@
 
     $('.cancel-manuscript-edit').click( function () {
         $('.manuscript-info-buttons').hide();
+        $('.manuscript-info').prop('readonly', true);
         $('.manuscript-info').addClass('manuscript-info-show');
         $("#toggle-manuscript-edit").show();
         $('input[name="manuscript[title]"]').val(manuscriptTitle);
@@ -129,14 +131,14 @@
                         <br>
                         <span class='small'><strong sdbm-tooltip="manuscript_location">Last Known Location </strong> 
                             <% if can? :edit, @manuscript %>
-                                <%= f.text_field :location, class: "form-control manuscript-info manuscript-info-show" %>
+                                <%= f.text_field :location, class: "form-control manuscript-info manuscript-info-show", readonly: true %>
                             <% else %>
                                 <span class="manuscript-edit-input"><%= @manuscript.location || "Unknown" %></span>
                             <% end %>
                         </span><br>
                         <ul class="small manuscript-titles"><strong sdbm-tooltip='manuscript_title'>Title(s) </strong>
                             <% if can? :edit, @manuscript %>
-                                <%= f.text_field :name, class: "form-control manuscript-info manuscript-info-show" %>
+                                <%= f.text_field :name, class: "form-control manuscript-info manuscript-info-show", readonly: true %>
                             <% else %>
                                 <% if @manuscript.name %>
                                     <span class="manuscript-edit-input"><%= @manuscript.name %></span>
