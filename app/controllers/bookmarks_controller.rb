@@ -5,7 +5,7 @@ class BookmarksController < ApplicationController
 
 #  include Blacklight::Bookmarks
   
-  # FIX ME::: verify user permissions before all actions!
+  before_action :authenticate_user!, only: [:index, :new, :create, :edit, :show, :update, :destroy]
 
   def index
     # fix me: not logged in
