@@ -2048,7 +2048,10 @@ var BOOKMARK_SCOPE;
       // 2. if true, call loadBookmarks
       // 3. else, load from localstorage
       $.get("/bookmarks/check").done(function (e) {
-        if (e.error) console.log(e.error);
+        if (e.error) {
+          console.log(e.error);
+          $scope.loadBookmarks();
+        }
         else {
           var b = $scope.findBookmark(e.type, e.document_id);
           if (b) {
