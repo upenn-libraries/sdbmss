@@ -58,6 +58,9 @@ class Source < ActiveRecord::Base
 
   belongs_to :source_type
 
+  has_many :source_comments, dependent: :destroy
+  has_many :comments, through: :source_comments
+
   has_many :entries
   has_many :source_agents, inverse_of: :source
 
@@ -187,6 +190,10 @@ class Source < ActiveRecord::Base
     display_value
   end
 
+  def to_i
+    id
+  end
+
   def bookmark_details
     results = { 
       type: source_type.display_name,
@@ -312,7 +319,7 @@ class Source < ActiveRecord::Base
       location_institution: location_institution,
       location: location,
       link: link,
-      comments: comments,
+      #comments: comments,
       created_by: created_by.present? ? created_by.username : "(none)",
       created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
       updated_by: updated_by.present? ? updated_by.username : "(none)",

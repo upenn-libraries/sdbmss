@@ -8,7 +8,7 @@
 
 <div class="container">
 <div class="row">
-    <div class="col-sm-10">
+    <div class="col-sm-6">
         <% if @page_title %>
             <h1><%= @page_title %></h1>
         <% else %>
@@ -20,6 +20,11 @@
             <h1>Manage <%= resource_name.capitalize %></h1>
         <% end %>
         <% end %>
+    </div>
+    <div class="col-sm-4">
+        <div class="panel panel-warning">
+            <div class="panel-heading">Warning: Counters may include deleted records.</div>
+        </div>
     </div>
     <div class="col-sm-2 text-right">
         <a class="btn btn-primary add-new-record" href="<%= new_model_path %>"><span class="glyphicon glyphicon-plus"></span> <span class="name">Add New Record</span></a>

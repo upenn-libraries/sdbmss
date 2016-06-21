@@ -44,6 +44,9 @@ class Name < ActiveRecord::Base
   has_many :source_agents, foreign_key: "agent_id"
   has_many :sources, through: :source_agents
 
+  has_many :name_comments, dependent: :destroy
+  has_many :comments, through: :name_comments
+
   validates_presence_of :name
 
   validate do |name_obj|
@@ -274,6 +277,10 @@ class Name < ActiveRecord::Base
 
   def to_s
     name
+  end
+
+  def to_i
+    id
   end
 
   def as_flat_hash

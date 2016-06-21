@@ -8,6 +8,8 @@ class Comment < ActiveRecord::Base
       [
         :entries,
         :manuscripts,
+        :sources,
+        :names,
         :created_by
       ]
     )
@@ -27,10 +29,18 @@ class Comment < ActiveRecord::Base
   has_many :manuscript_comments, inverse_of: :comment
   has_many :manuscripts, through: :manuscript_comments
 
+  has_many :source_comments, inverse_of: :comment
+  has_many :sources, through: :source_comments
+
+  has_many :name_comments, inverse_of: :comment
+  has_many :names, through: :name_comments
+
   validates_presence_of :comment
 
   accepts_nested_attributes_for :entry_comments, allow_destroy: true
   accepts_nested_attributes_for :manuscript_comments, allow_destroy: true
+  accepts_nested_attributes_for :source_comments, allow_destroy: true
+  accepts_nested_attributes_for :name_comments, allow_destroy: true
 
   include UserFields
   include HasPaperTrail
@@ -53,6 +63,10 @@ class Comment < ActiveRecord::Base
     boolean :is_accepted
     date :created_at
     date :updated_at
+    join(:id, :target => Source, :type => :integer, :join => { :from => :id, :to => :source})
+    integer :source
+    join(:id, :target => Name, :type => :integer, :join => { :from => :id, :to => :name})
+    integer :name
     join(:id, :target => Entry, :type => :integer, :join => { :from => :id, :to => :entry})
     integer :entry
     join(:id, :target => Manuscript, :type => :integer, :join => { :from => :id, :to => :manuscript})
@@ -67,9 +81,25 @@ class Comment < ActiveRecord::Base
     manuscripts.first
   end
 
+  def source
+    sources.first
+  end
+
+  def name
+    names.first
+  end
+
   # returns the model object to which this comment pertains
   def subject
-    entry || manuscript
+    if entry
+      entry
+    elsif manuscript
+      manuscript
+    elsif source
+      source
+    elsif name
+      name
+    end
   end
 
   def self.fields
@@ -79,7 +109,7 @@ class Comment < ActiveRecord::Base
   end
 
   def self.filters
-    super + ["entry", "manuscript"]
+    super + ["entry", "manuscript", "source", "name"]
   end
 
   def search_result_format
@@ -87,6 +117,8 @@ class Comment < ActiveRecord::Base
       id: id,
       entry_id: entry.try(:id),
       manuscript_id: manuscript.try(:id),
+      source_id: source.try(:id),      
+      name_id: name.try(:id),      
       comment: comment,
       #is_correction: is_correction,
       is_accepted: is_accepted,
