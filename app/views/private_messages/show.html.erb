@@ -1,5 +1,34 @@
-<div class="row">
-  <div class="col-sm-12">
-    <%= render partial: "message_list" %>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <div class="row">
+      <div class="col-sm-12">
+        <%= link_to "< Return to INBOX", private_messages_path, class: "h3" %>
+      </div>
+    </div>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-6">
+        <%= render partial: "message_list" %>
+      </div>
+      <div class="col-sm-6">
+        <span class="text-info">Previous Messages</span>
+      </div>
+      <div class="col-sm-12">
+        <ul class="list-group">
+          <%= render partial: "message", locals: {message: @message} %>
+        </ul>
+      </div>
+      <div class="col-sm-6 text-right">
+        <span class="text-warning">Replies</span>
+      </div>
+      <div class="col-sm-6">
+        <% @children.each do |c| %>
+          <ul class="list-group">
+            <%= render partial: "message", locals: {message: c} %>
+          </ul>
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>

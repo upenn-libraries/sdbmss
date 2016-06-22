@@ -3,17 +3,6 @@
     <li class="list-group-item">You do not have any messages.</li>
   <% end %>
   <% @messages.each do |m| %>
-    <li class="list-group-item">
-      <h4 class="list-group-item-heading">
-        <%= link_to m.created_by, private_message_path(m.id) %>
-        <small><%= m.created_at.to_formatted_s(:long) %></small>
-        <%= link_to new_private_message_path({private_message_id: m.id, user_id: m.created_by_id}), class: 'pull-right' do %>
-          <span class="glyphicon glyphicon-send"></span>
-        <% end %>
-      </h4>
-      <p class="list-group-item-body">
-        <%= m.message %>
-      </p>
-    </li>
+    <%= render partial: 'message', locals: {message: m} %>
   <% end %>
 </ul>

@@ -6,7 +6,12 @@ class PrivateMessagesController < ApplicationController
       flash[:warning] = "You must be logged in to view your private messages."
       redirect_to dashboard_path
     else
-      @messages = current_user.private_messages
+      if params[:sent_by]
+        @sent_by = true
+        @messages = PrivateMessage.where({created_by: current_user})
+      else
+        @messages = current_user.private_messages
+      end
     end
   end
 
@@ -29,14 +34,19 @@ class PrivateMessagesController < ApplicationController
     @message = PrivateMessage.new(params_for_create_message)
     @message.save_by(current_user)
     flash[:notice] = "Message created!"
-    redirect_to dashboard_path
+    redirect_to private_message_path(@message)
   end
 
   def show
     if params[:id] && PrivateMessage.exists?(params[:id])
       @message = PrivateMessage.find(params[:id])
       @messages = reply_chain(@message)
+      @children = @message.children
     end
+  end
+
+  def destroy
+    # how should this be handled?!
   end
 
   private
@@ -46,10 +56,10 @@ class PrivateMessagesController < ApplicationController
     m_id = message.private_message_id
     while !m_id.nil? do
       m = PrivateMessage.find(m_id)
-      messages.push(m)
+      messages.unshift(m)
       m_id = m.private_message_id
     end
-    messages.push(message)
+    #messages.push(message)
     messages
   end
 

@@ -1,7 +1,33 @@
-<div class="row">
-  <div class="col-sm-12">
-    <h3>Messages
-    </h3>
-    <%= render partial: "message_list" %>
+<div class="panel panel-default">
+  <div class="panel-heading" style="padding: 0px 15px; border: none;">
+    <div class="row">
+      <div class="col-sm-4 text-right inbox-column <%= @sent_by ? 'text-primary': 'bg-primary' %>">
+        <%= link_to "INBOX", private_messages_path, class: 'h3' %>
+      </div>
+      <div class="col-sm-4 inbox-column <%= @sent_by ? 'bg-primary': 'text-primary' %>">
+        <%= link_to "SENT", private_messages_path(sent_by: true), class: 'h3' %>
+      </div>
+      <div class="col-sm-4 text-right inbox-column <%= @sent_by ? 'bg-primary': 'text-primary' %>">
+        <%= link_to new_private_message_path, class: 'h3' do %>
+          New Message 
+        <% end %>
+      </div>
+      <div class="col-sm-12">
+      </div>
+    </div>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-12">
+        <ul class="list-group">
+          <% if @messages.count <= 0 %>
+            <li class="list-group-item">You do not have any messages.</li>
+          <% end %>
+          <% @messages.each do |m| %>
+            <%= render partial: 'message', locals: {message: m} %>
+          <% end %>
+        </ul>
+      </div>
+    </div>
   </div>
 </div>

@@ -909,3 +909,7 @@ so that gray backdrop shvows up correctly */
     }
 
 }
+
+.inbox-column {
+  padding: 10px 15px;
+}
