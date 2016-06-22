@@ -22,7 +22,11 @@
     <div class="col-sm-9">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class='h1'><%= @user.username %> <span class='glyphicon glyphicon-user pull-right <%= "text-success" if @online %>' title='User is <%= @online ? "online" : "offline" %>'></span></span><br>
+                <span class='h1'><%= @user.username %> 
+                    <span class='glyphicon glyphicon-user pull-right <%= "text-success" if @online %>' title='User is <%= @online ? "online" : "offline" %>'></span>
+                    <a href="/private_messages/new?user_id=<%= @user.id %>" class="glyphicon glyphicon-envelope pull-right" title="Send Message"></a>
+                </span>
+                <br>
             </div>
             <div class="panel-body">
                 <span class="label label-success"><%= @user.role.humanize %></span> 

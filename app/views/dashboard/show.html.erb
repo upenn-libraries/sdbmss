@@ -52,6 +52,7 @@
                     <%= render partial: "unreviewed_count", locals: { model_class: Comment } %>
                 </p>
                 <p><a href="<%= bookmarks_path %>">Manage My Bookmarks</a></p>
+                <p><a href="<%= private_messages_path %>">Messages</a></p>
             </div>
         </div>
         <% if can?(:manage, EntryManuscript) || can?(:manage, Name) || can?(:manage, Language) || can?(:manage, Place) || can?(:manage, User) %>

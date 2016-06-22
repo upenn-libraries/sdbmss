@@ -54,6 +54,11 @@ Rails.application.routes.draw do
 
   resources :delayed_jobs, only: [:index]
 
+#  resources '/messages/', to: 'private_messages#index', as: 'private_messages'
+
+  resources :private_messages do
+  end
+
   # Note here that we point #show to BL's CatalogController
   resources :entries, except: [:show] do
     collection {

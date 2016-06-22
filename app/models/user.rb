@@ -12,6 +12,8 @@ class User < ActiveRecord::Base
 
   has_many :downloads
 
+  has_many :private_messages
+
   before_validation :assign_default_role
 
   # one of the devise class methods above seems to give us

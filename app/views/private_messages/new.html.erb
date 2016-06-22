@@ -1,0 +1,19 @@
+<% if @message %>
+  <h3>Write New Message To <%= @user.username %></h3>
+  <%= form_tag(action: 'create', method: 'get') do |f| %>
+    <%= hidden_field_tag :user_id, @user.id %>
+    <% if @reply %>
+      <%= render partial: 'message_list' %>
+      <%= hidden_field_tag :private_message_id, @reply.id %>
+    <% end %>
+    <%= text_area_tag :message, "", class: "form-control", rows: 5 %>
+    <div class="col-sm-12 text-right">
+        <button class="btn btn-primary">Submit</button>
+    </div>
+  <% end %>
+<% else %>
+  <%= form_tag({:controller => "private_messages", :action => "new"}, :method => "get") do %>
+    <%= select_tag(:user_id, options_for_select(User.all.collect { |u| [u.username, u.id] }), {prompt: 'Select User'}) %>
+    <%= submit_tag('Select') %>
+  <% end %>
+<% end %>

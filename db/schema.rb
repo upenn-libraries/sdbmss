@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160621141449) do
+ActiveRecord::Schema.define(version: 20160621162302) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -406,6 +406,22 @@ ActiveRecord::Schema.define(version: 20160621141449) do
   add_index "places", ["reviewed_by_id"], name: "index_places_on_reviewed_by_id", using: :btree
   add_index "places", ["updated_by_id"], name: "index_places_on_updated_by_id", using: :btree
 
+  create_table "private_messages", force: :cascade do |t|
+    t.text     "message",            limit: 65535
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "deleted",                          default: false
+    t.integer  "created_by_id",      limit: 4
+    t.integer  "updated_by_id",      limit: 4
+    t.integer  "user_id",            limit: 4
+    t.integer  "private_message_id", limit: 4
+  end
+
+  add_index "private_messages", ["created_by_id"], name: "index_private_messages_on_created_by_id", using: :btree
+  add_index "private_messages", ["private_message_id"], name: "index_private_messages_on_private_message_id", using: :btree
+  add_index "private_messages", ["updated_by_id"], name: "index_private_messages_on_updated_by_id", using: :btree
+  add_index "private_messages", ["user_id"], name: "index_private_messages_on_user_id", using: :btree
+
   create_table "provenance", force: :cascade do |t|
     t.integer  "entry_id",                         limit: 4
     t.integer  "order",                            limit: 4
@@ -652,6 +668,10 @@ ActiveRecord::Schema.define(version: 20160621141449) do
   add_foreign_key "places", "users", column: "created_by_id"
   add_foreign_key "places", "users", column: "reviewed_by_id"
   add_foreign_key "places", "users", column: "updated_by_id"
+  add_foreign_key "private_messages", "entries", column: "user_id"
+  add_foreign_key "private_messages", "private_messages"
+  add_foreign_key "private_messages", "users", column: "created_by_id"
+  add_foreign_key "private_messages", "users", column: "updated_by_id"
   add_foreign_key "provenance", "names", column: "provenance_agent_id"
   add_foreign_key "sale_agents", "names", column: "agent_id"
   add_foreign_key "sale_agents", "sales", on_delete: :cascade
