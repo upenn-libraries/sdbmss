@@ -53,7 +53,7 @@
                 //orderable: false,
                 title: 'Entry ID',
                 render: function (data, type, full, meta) {
-                    if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")]) {
+                    if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")] && !full[manageRecords.dataTable.getColumnIndex("Source ID")]  && !full[manageRecords.dataTable.getColumnIndex("Name ID")] ) {
                         return "<span class='text-danger'>(record deleted)</span>"
                     }
                     else if (data) {
@@ -68,11 +68,41 @@
                 //orderable: false,
                 title: 'Manuscript ID',
                 render: function (data, type, full, meta) { 
-                    if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")]) {
+                    if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")] && !full[manageRecords.dataTable.getColumnIndex("Source ID")]  && !full[manageRecords.dataTable.getColumnIndex("Name ID")] ) {
                         return "<span class='text-danger'>(record deleted)</span>"
                     }
                     else if(data) {
                         return "<a target='_blank' href='/manuscripts/" + data + "'>SDBM_MS_" + data + "</a>";
+                    }
+                    return "";
+                },
+                dbSortField: 'manuscript'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                //orderable: false,
+                title: 'Source ID',
+                render: function (data, type, full, meta) { 
+                    if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")] && !full[manageRecords.dataTable.getColumnIndex("Source ID")]  && !full[manageRecords.dataTable.getColumnIndex("Name ID")] ) {
+                        return "<span class='text-danger'>(record deleted)</span>"
+                    }
+                    else if(data) {
+                        return "<a target='_blank' href='/sources/" + data + "'>SDBM_SOURCE_" + data + "</a>";
+                    }
+                    return "";
+                },
+                dbSortField: 'manuscript'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                //orderable: false,
+                title: 'Name ID',
+                render: function (data, type, full, meta) { 
+                    if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")] && !full[manageRecords.dataTable.getColumnIndex("Source ID")]  && !full[manageRecords.dataTable.getColumnIndex("Name ID")] ) {
+                        return "<span class='text-danger'>(record deleted)</span>"
+                    }
+                    else if(data) {
+                        return "<a target='_blank' href='/names/" + data + "'>SDBM_NAME_" + data + "</a>";
                     }
                     return "";
                 },
@@ -139,6 +169,8 @@
              result.id,
              result.entry_id,
              result.manuscript_id,
+             result.source_id,
+             result.name_id,
              result.comment,
              //result.is_correction,
              result.is_accepted,

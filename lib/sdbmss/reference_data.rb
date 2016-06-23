@@ -1273,8 +1273,8 @@ module SDBMSS::ReferenceData
         medium: Source::TYPE_MEDIUM_PERSONAL_COMMUNICATION,
         date_accessed: "20150317",
         location: "Philadelphia, PA",
-        created_by: lransom,
-        comments: "Spreadsheet created and shared by curators at David Rubenstein Library, Duke University.",
+        created_by: lransom
+        #comments: "Spreadsheet created and shared by curators at David Rubenstein Library, Duke University.",
       )
 
       source_agent = SourceAgent.create!(

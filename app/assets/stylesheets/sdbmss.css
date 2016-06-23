@@ -909,3 +909,11 @@ so that gray backdrop shvows up correctly */
     }
 
 }
+
+.inbox-column {
+  padding: 10px 15px;
+}
+.inbox-heading {
+  padding: 0px 15px;
+  border: none;
+}

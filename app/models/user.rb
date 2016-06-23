@@ -12,6 +12,9 @@ class User < ActiveRecord::Base
 
   has_many :downloads
 
+  has_many :user_messages, foreign_key: "user_id"
+  has_many :private_messages, through: :user_messages
+
   before_validation :assign_default_role
 
   # one of the devise class methods above seems to give us
@@ -46,6 +49,9 @@ class User < ActiveRecord::Base
     date :created_at
     date :updated_at
   end
+
+  scope :sent_by, -> () { joins(:user_messages).where("user_messages.method = 'From'").distinct }
+  scope :sent_to, -> () { joins(:user_messages).where("user_messages.method = 'To'").distinct }
 
   # Connects this user object to Blacklights Bookmarks. 
   include Blacklight::User

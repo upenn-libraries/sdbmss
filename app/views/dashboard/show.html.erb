@@ -4,11 +4,21 @@
 <% possessive = is_contributor ? "Your" : "" %>
 
 <div class="panel panel-default">
-    <div class="panel-heading text-center">
-        <h1>
-            Welcome, <%= link_to (current_user.fullname.present? ? current_user.fullname : current_user.username), profile_path(current_user.username) %>!
-            <br><small class='text-info'>(Permission: <%= current_user.role %>)</small>
-        </h1>
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-sm-2"></div>
+            <div class="col-sm-8">
+                <h1 class="text-center">
+                    Welcome, <%= link_to (current_user.fullname.present? ? current_user.fullname : current_user.username), profile_path(current_user.username) %>!
+                    <br><small class='text-info'>(Permission: <%= current_user.role %>)</small>
+                </h1>
+            </div>
+            <div class="col-sm-2 text-right">
+                <p><a href="<%= bookmarks_path %>">Bookmarks</a></p>
+                <p><a href="<%= private_messages_path %>">Messages</a></p>
+                <p><%= link_to "Profile", profile_path(current_user.username) %></p>
+            </div>
+        </div>
     </div>
     <div class="panel-body">
         <div class="row">
@@ -51,7 +61,6 @@
                 <p><a href="<%= comments_path %>">Manage <%= possessive %> Comments</a>
                     <%= render partial: "unreviewed_count", locals: { model_class: Comment } %>
                 </p>
-                <p><a href="<%= bookmarks_path %>">Manage My Bookmarks</a></p>
             </div>
         </div>
         <% if can?(:manage, EntryManuscript) || can?(:manage, Name) || can?(:manage, Language) || can?(:manage, Place) || can?(:manage, User) %>

@@ -1,0 +1,24 @@
+<div class="panel panel-default">
+  <div class="panel-heading inbox-heading">
+    <div class="row">
+      <div class="col-sm-4 text-right bg-primary inbox-column">
+        <%= link_to "< Return to INBOX", private_messages_path, class: "h3" %>
+      </div>
+      <div class="col-sm-4 text-primary inbox-column"><span class="h3"><%= @message.title %></span></div>
+    </div>
+  </div>
+  <div class="panel-body">
+    <div class="row">
+      <div class="col-sm-6">
+        <span class="h4"><%= @message.created_at.to_formatted_s(:long) %></span>
+      </div>
+      <div class="col-sm-6 text-right">
+        <span class="h4"><small>From: <%= @message.sent_by.username %></small></span>
+        <span class="h4"><small>To: <%= @message.sent_to.username %></small></span>
+      </div>
+      <div class="col-sm-12">
+        <p><%= @message.message %></p>
+      </div>
+    </div>
+  </div>
+</div>

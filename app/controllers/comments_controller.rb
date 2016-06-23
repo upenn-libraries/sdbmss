@@ -14,7 +14,7 @@ class CommentsController < SearchableAuthorityController
     super
     @fields.unshift("comment")
     @fields.delete("name")
-    @filters += ["entry", "manuscript"]
+    @filters += ["entry", "manuscript", "source", "name"]
     @fields + @filters + @dates
   end
 
@@ -27,11 +27,13 @@ class CommentsController < SearchableAuthorityController
     "comment"
   end
 
+  # delete this?
   def search_result_format(obj)
     {
       id: obj.id,
       entry_id: obj.entry.try(:id),
       manuscript_id: obj.manuscript.try(:id),
+      source_id: obj.source.try(:id),
       comment: obj.comment,
       #is_correction: obj.is_correction,
       is_accepted: obj.is_accepted,
@@ -50,6 +52,8 @@ class CommentsController < SearchableAuthorityController
       :comment, :is_correction, :is_accepted,
       :entry_comments_attributes => [ :id, :entry_id ],
       :manuscript_comments_attributes => [ :manuscript_id ],
+      :source_comments_attributes => [ :source_id ],
+      :name_comments_attributes => [ :name_id ]
     )
   end
 

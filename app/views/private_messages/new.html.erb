@@ -1,0 +1,51 @@
+<div class="panel panel-default">
+  <div class="panel-heading inbox-heading">
+    <div class="row">
+      <div class="col-sm-4 text-right bg-primary inbox-column">
+        <%= link_to "< Return to INBOX", private_messages_path, class: "h3" %>
+      </div>
+      <div class="col-sm-8 text-primary inbox-column">
+        <span class='h3'>
+          <% if @user %>
+            Write New Message To <strong><%= @user.username %></strong>
+          <% else %>
+            Please select a user to send a message to.
+          <% end %>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="panel-body">
+        <% if @message %>
+          <%= form_for(@message, html: {class: ''}) do |f| %>
+            <%= hidden_field_tag :to_user, @user.id %>
+            <div class="form-group row">
+              <div class="col-sm-2 text-right">
+                <%= f.label :title, class: "form-control-label" %>
+              </div>
+              <div class="col-sm-8">
+                <%= f.text_field :title, class: "form-control", required: true %>
+              </div>
+              <div class="col-sm-2">
+                <%= f.submit 'Send', class: 'form-control' %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-2 text-right">
+                <%= f.label :message, class: "form-control-label" %>
+              </div>
+              <div class="col-sm-10">
+                <%= f.text_area :message, class: "form-control", rows: 5, required: true %>
+              </div>
+            </div>
+          <% end %>
+        <% else %>
+          <div class="col-sm-12">
+          <%= form_tag({:controller => "private_messages", :action => "new"}, :method => "get", class: 'form-inline') do %>
+            <%= select_tag(:user_id, options_for_select(User.all.collect { |u| [u.username, u.id] }), {prompt: 'Select User', class: 'form-control'}) %>
+            <%= submit_tag('Select', class: 'form-control') %>
+          <% end %>
+          </div>
+        <% end %>
+  </div>
+</div>
