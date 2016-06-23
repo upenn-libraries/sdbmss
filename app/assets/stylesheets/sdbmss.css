@@ -289,7 +289,7 @@ body {
 }
 
 /* on Entry view page, move the content block to the right of the sidebar */
-.blacklight-catalog-show #content { float: right; }
+/* .blacklight-catalog-show #content { float: right; } */
 
 /* overrides blacklight css */
 .page-header { margin: 0 0 10px; }
