@@ -10,8 +10,12 @@
     <div class="col-sm-3 text-right">
       <span class="h4">
         <%= message.created_at.to_formatted_s(:long) %>
-        <br><small>From: <%= link_to message.sent_by.to_s, profile_path(message.sent_by.to_s) %></small>
-        <br><small>To: <%= link_to message.sent_to.to_s, profile_path(message.sent_to.to_s) %></small>
+        <% if message.sent_by %>
+          <br><small>From: <%= link_to message.sent_by.to_s, profile_path(message.sent_by.to_s) %></small>
+        <% end %>
+        <% if message.sent_to %>
+          <br><small>To: <%= link_to message.sent_to.to_s, profile_path(message.sent_to.to_s) %></small>
+        <% end %>
       </span>
     </div>
   </div>
