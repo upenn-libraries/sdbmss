@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160623143656) do
+ActiveRecord::Schema.define(version: 20160623161013) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -560,7 +560,7 @@ ActiveRecord::Schema.define(version: 20160623143656) do
   add_index "sources", ["source_type_id"], name: "index_sources_on_source_type_id", using: :btree
   add_index "sources", ["updated_by_id"], name: "index_sources_on_updated_by_id", using: :btree
 
-  create_table "user_messages", id: false, force: :cascade do |t|
+  create_table "user_messages", force: :cascade do |t|
     t.integer "user_id",            limit: 4,   null: false
     t.integer "private_message_id", limit: 4,   null: false
     t.string  "method",             limit: 255

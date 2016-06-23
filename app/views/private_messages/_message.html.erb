@@ -5,6 +5,7 @@
       <p class="list-group-item-body">
         <%= message.message %>
       </p>
+      <div><%= link_to 'Delete Message',  private_message_path(message, format: 'html'),  method: :delete, class: "btn btn-xs btn-danger", format: 'json', data: { confirm: 'Are you sure?' } %></div>
     </div>
     <div class="col-sm-3 text-right">
       <span class="h4">

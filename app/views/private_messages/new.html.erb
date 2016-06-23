@@ -16,21 +16,27 @@
     </div>
   </div>
   <div class="panel-body">
-    <div class="row">
         <% if @message %>
-          <%= form_for(@message) do |f| %>
+          <%= form_for(@message, html: {class: ''}) do |f| %>
             <%= hidden_field_tag :to_user, @user.id %>
-            <div class="col-sm-9">
-              <%= f.label :title %>
-              <%= f.text_field :title, class: "form-control" %>
+            <div class="form-group row">
+              <div class="col-sm-2 text-right">
+                <%= f.label :title, class: "form-control-label" %>
+              </div>
+              <div class="col-sm-8">
+                <%= f.text_field :title, class: "form-control", required: true %>
+              </div>
+              <div class="col-sm-2">
+                <%= f.submit 'Send', class: 'form-control' %>
+              </div>
             </div>
-            <div class="col-sm-3">
-              <%= f.label :submit, style: 'opacity: 0;' %>
-              <%= f.submit 'Send', class: 'form-control' %>
-            </div>
-            <div class="col-sm-12">
-              <%= f.label :message %>
-              <%= f.text_area :message, class: "form-control", rows: 5 %>
+            <div class="form-group row">
+              <div class="col-sm-2 text-right">
+                <%= f.label :message, class: "form-control-label" %>
+              </div>
+              <div class="col-sm-10">
+                <%= f.text_area :message, class: "form-control", rows: 5, required: true %>
+              </div>
             </div>
           <% end %>
         <% else %>
@@ -41,6 +47,5 @@
           <% end %>
           </div>
         <% end %>
-    </div>
   </div>
 </div>

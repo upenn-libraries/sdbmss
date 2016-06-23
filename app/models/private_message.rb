@@ -12,6 +12,9 @@ class PrivateMessage < ActiveRecord::Base
   scope :sent, -> () { joins(:user_messages).where("user_messages.method = 'From'").distinct }
   scope :received, -> () { joins(:user_messages).where("user_messages.method = 'To'").distinct }
 
+  validates_presence_of :message
+  validates_presence_of :title
+
   def sent_by
     users.sent_by[0]
   end

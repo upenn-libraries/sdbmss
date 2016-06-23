@@ -1,5 +1,7 @@
 class PrivateMessagesController < ApplicationController
-  before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy, :search]
+  before_action :authenticate_user!, only: [:index, :show, :new, :create, :edit, :update, :destroy, :search]
+
+  before_action :set_model, only: [:show, :destroy]
 
   def index
     if !current_user
@@ -8,9 +10,9 @@ class PrivateMessagesController < ApplicationController
     else
       if params[:sent_by]
         @sent_by = true
-        @messages = current_user.private_messages.sent
+        @messages = current_user.private_messages.sent.reverse_order
       else
-        @messages = current_user.private_messages.received
+        @messages = current_user.private_messages.received.reverse_order
       end
     end
   end
@@ -31,19 +33,28 @@ class PrivateMessagesController < ApplicationController
   def create
     to_user = params[:to_user]
     @message = PrivateMessage.create(params_for_create_message)
-    @message.user_messages.create({user_id: current_user.id, method: "From"})
-    @message.user_messages.create!({user_id: to_user.to_i, method: "To"})
-
-    redirect_to @message
-  end
-
-  def show
-    if params[:id] && PrivateMessage.exists?(params[:id])
-      @message = PrivateMessage.find(params[:id])
+    if @message.valid?
+      @message.user_messages.create({user_id: current_user.id, method: "From"})
+      @message.user_messages.create!({user_id: to_user.to_i, method: "To"})
+      redirect_to @message
+    else
+      flash[:error] = "Invalid message.  Both a message and a title are required."
+      redirect_to new_message_path
     end
   end
 
+  def show
+  end
+
   def destroy
+    @message.user_messages.where(user_id: current_user.id).each do |um|
+      um.destroy
+    end
+    if @message.user_messages.count <= 0
+      @message.destroy
+    end
+    flash[:error] = "Message deleted."
+    redirect_to private_messages_path
     # how should this be handled?!
   end
 
@@ -51,6 +62,15 @@ class PrivateMessagesController < ApplicationController
 
   def params_for_create_message
     params.require(:private_message).permit(:message, :title)
+  end
+
+  def set_model
+    @message = PrivateMessage.find(params[:id])
+    if not @message.users.include?(current_user)
+      @message = nil
+      flash[:error] = "You are not authorized to access this page."
+      redirect_to dashboard_path
+    end
   end
 
 end
