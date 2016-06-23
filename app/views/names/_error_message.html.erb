@@ -1,6 +1,7 @@
 <%= message %>
-<% if message.include?("Name is already used") && !message.include?("deleted") %>
+<% if (message.include?("Name is already used") || message.include?("Viaf is already used")) && !message.include?("deleted") %>
     <% if @model.id %>
+      <br>
 	    <a href="<%= merge_name_path(@model, target_id: message.match(/\#(\d+)/)[1]) %>">
 	    	Click here to merge <%= @model.public_id %> into SDBM_NAME_<%= message.match(/\#(\d+)/)[1] %> instead.
 	    </a>

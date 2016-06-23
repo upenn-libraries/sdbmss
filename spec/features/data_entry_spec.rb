@@ -224,7 +224,7 @@ describe "Data entry", :js => true do
       fill_in 'location_institution', with: "University of Pennsylvania"
       fill_in 'location', with: "Philadelphia, USA"
       fill_in 'link', with: "HM851 .L358 2010"
-      fill_in 'comments', with: 'This info is correct'
+      #fill_in 'comments', with: 'This info is correct'
 
       click_button('Save')
 
@@ -244,7 +244,7 @@ describe "Data entry", :js => true do
       expect(source.location_institution).to eq("University of Pennsylvania")
       expect(source.location).to eq("Philadelphia, USA")
       expect(source.link).to eq("HM851 .L358 2010")
-      expect(source.comments).to eq('This info is correct')
+      #expect(source.comments).to eq('This info is correct')
     end
 
     it "should save a new Source (other published source)" do
@@ -281,7 +281,7 @@ describe "Data entry", :js => true do
       expect(source.location_institution).to eq("University of Pennsylvania")
       expect(source.location).to eq("Philadelphia, USA")
       expect(source.link).to eq("HM851 .L358 2010")
-      expect(source.comments).to eq('This info is correct')
+#      expect(source.comments).to eq('This info is correct')
     end
 
     it "should save a new Source with no date" do

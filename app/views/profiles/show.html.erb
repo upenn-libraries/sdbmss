@@ -22,15 +22,25 @@
     <div class="col-sm-9">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class='h1'><%= @user.username %> 
+                <span class='h1'><%= @user.username %>
+                    <small>(<%= @user.role.humanize %>)</small>
                     <span class='glyphicon glyphicon-user pull-right <%= "text-success" if @online %>' title='User is <%= @online ? "online" : "offline" %>'></span>
-                    <a href="/private_messages/new?user_id=<%= @user.id %>" class="glyphicon glyphicon-envelope pull-right" title="Send Message"></a>
                 </span>
                 <br>
             </div>
             <div class="panel-body">
-                <span class="label label-success"><%= @user.role.humanize %></span> 
-                <span class="pull-right">Last Active: <strong><%= @display[:last_seen] %></strong></span>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a href="/private_messages/new?user_id=<%= @user.id %>" title="Send Message">
+                            Send Private Message
+                            <span class="glyphicon glyphicon-envelope"></span>
+                        </a>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <span class="pull-right">Last Active: <strong><%= @display[:last_seen] %></strong></span>
+                    </div>
+                </div>
+                </span> 
             </div>
         </div>
         <div class="row">
