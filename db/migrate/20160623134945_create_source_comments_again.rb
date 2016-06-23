@@ -1,4 +1,4 @@
-class CreateSourceComments < ActiveRecord::Migration
+class CreateSourceCommentsAgain < ActiveRecord::Migration
   def change
     create_table :source_comments do |t|
     end
@@ -8,6 +8,5 @@ class CreateSourceComments < ActiveRecord::Migration
 
     add_foreign_key :source_comments, :names, column: :name_id
     add_foreign_key :source_comments, :comments, column: :comment_id
-
   end
 end
