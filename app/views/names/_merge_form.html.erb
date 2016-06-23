@@ -43,3 +43,8 @@
             <%= text_field_tag :comment, name.comment, :class => 'form-control' %>
         </div>
     </div>
+    <div class="field form-group row">
+        <div class="col-sm-12">
+            <%= render partial: "name_count", locals: {name: name} %>
+        </div>
+    </div>

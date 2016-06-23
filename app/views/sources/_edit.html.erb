@@ -20,7 +20,9 @@
         <div class="form-group row">
             <label for="" class="col-sm-4 control-label"># Entries</label>
             <div class="col-sm-8">
-                <div class="merge-details"><%= source.entries_count %> entries</div>
+                <div class="merge-details">
+                    <a class='badge' href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries_count, "entry") %></a>
+                </div>
             </div>
         
             <label for="source_type" class="col-sm-4 control-label"><span>Source Type</span></label>
