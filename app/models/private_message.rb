@@ -4,20 +4,20 @@ class PrivateMessage < ActiveRecord::Base
 
   include UserFields
 
-  belongs_to :user
-  belongs_to :private_message
+  has_many :user_messages, foreign_key: "private_message_id"
+  has_many :users, through: :user_messages
 
-  has_many :private_messages
+  accepts_nested_attributes_for :user_messages
 
-  validates_presence_of :message
-  validates_presence_of :user_id
+  scope :sent, -> () { joins(:user_messages).where("user_messages.method = 'From'").distinct }
+  scope :received, -> () { joins(:user_messages).where("user_messages.method = 'To'").distinct }
 
-  def children
-    private_messages
+  def sent_by
+    users.sent_by[0]
   end
 
-  def parent
-    private_message
+  def sent_to
+    users.sent_to[0]
   end
 
 end

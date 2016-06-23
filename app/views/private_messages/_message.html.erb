@@ -1,18 +1,17 @@
 <li class="list-group-item">
-  <h4 class="list-group-item-heading h4">
-    <div class="row">
-      <div class="col-sm-6">
-        <%= link_to message.created_at.to_formatted_s(:long), private_message_path(message.id) %>
-      </div>
-      <div class="col-sm-6">
-        <small>From: <%= link_to message.created_by, profile_path(message.created_by.username), class: 'h4' %></small>
-        <%= link_to new_private_message_path({private_message_id: message.id, user_id: message.created_by_id}), class: 'pull-right' do %>
-          <small>reply...</small>
-        <% end %>
-      </div>
+  <div class="row">
+    <div class="col-sm-9">
+      <h4 class="list-group-item-heading"><%= message.title %></h4>
+      <p class="list-group-item-body">
+        <%= message.message %>
+      </p>
     </div>
-  </h4>
-  <p class="list-group-item-body">
-    <%= message.message %>
-  </p>
+    <div class="col-sm-3 text-right">
+      <span class="h4">
+        <%= message.created_at.to_formatted_s(:long) %>
+        <br><small>From: <%= message.sent_by.to_s %></small>
+        <br><small>To: <%= message.sent_to.to_s %></small>
+      </span>
+    </div>
+  </div>
 </li>

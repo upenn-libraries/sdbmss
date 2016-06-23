@@ -1,35 +1,46 @@
 <div class="panel panel-default">
-  <div class="panel-heading">
+  <div class="panel-heading inbox-heading">
     <div class="row">
-      <div class="col-sm-12">
+      <div class="col-sm-4 text-right bg-primary inbox-column">
         <%= link_to "< Return to INBOX", private_messages_path, class: "h3" %>
+      </div>
+      <div class="col-sm-8 text-primary inbox-column">
+        <span class='h3'>
+          <% if @user %>
+            Write New Message To <strong><%= @user.username %></strong>
+          <% else %>
+            Please select a user to send a message to.
+          <% end %>
+        </span>
       </div>
     </div>
   </div>
   <div class="panel-body">
     <div class="row">
-      <div class="col-sm-12">
         <% if @message %>
-          <%= form_tag(action: 'create', method: 'get') do |f| %>
-          <span class='h3'>Write New Message To <%= @user.username %></span>
-            <%= hidden_field_tag :user_id, @user.id %>
-            <% if @reply %>
-              <%= render partial: 'message_list' %>
-              <ul class="list-group">
-                <%= render partial: 'message', locals: {message: @reply} %>
-              </ul>
-              <%= hidden_field_tag :private_message_id, @reply.id %>
-            <% end %>
-            <%= text_area_tag :message, "", class: "form-control", rows: 5 %>
-            <%= submit_tag('Send', class: 'form-control') %>
+          <%= form_for(@message) do |f| %>
+            <%= hidden_field_tag :to_user, @user.id %>
+            <div class="col-sm-9">
+              <%= f.label :title %>
+              <%= f.text_field :title, class: "form-control" %>
+            </div>
+            <div class="col-sm-3">
+              <%= f.label :submit, style: 'opacity: 0;' %>
+              <%= f.submit 'Send', class: 'form-control' %>
+            </div>
+            <div class="col-sm-12">
+              <%= f.label :message %>
+              <%= f.text_area :message, class: "form-control", rows: 5 %>
+            </div>
           <% end %>
         <% else %>
+          <div class="col-sm-12">
           <%= form_tag({:controller => "private_messages", :action => "new"}, :method => "get", class: 'form-inline') do %>
             <%= select_tag(:user_id, options_for_select(User.all.collect { |u| [u.username, u.id] }), {prompt: 'Select User', class: 'form-control'}) %>
             <%= submit_tag('Select', class: 'form-control') %>
           <% end %>
+          </div>
         <% end %>
-      </div>
     </div>
   </div>
 </div>

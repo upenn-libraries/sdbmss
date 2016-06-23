@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160621162302) do
+ActiveRecord::Schema.define(version: 20160623143656) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -415,6 +415,7 @@ ActiveRecord::Schema.define(version: 20160621162302) do
     t.integer  "updated_by_id",      limit: 4
     t.integer  "user_id",            limit: 4
     t.integer  "private_message_id", limit: 4
+    t.text     "title",              limit: 65535
   end
 
   add_index "private_messages", ["created_by_id"], name: "index_private_messages_on_created_by_id", using: :btree
@@ -558,6 +559,12 @@ ActiveRecord::Schema.define(version: 20160621162302) do
   add_index "sources", ["reviewed_by_id"], name: "index_sources_on_reviewed_by_id", using: :btree
   add_index "sources", ["source_type_id"], name: "index_sources_on_source_type_id", using: :btree
   add_index "sources", ["updated_by_id"], name: "index_sources_on_updated_by_id", using: :btree
+
+  create_table "user_messages", id: false, force: :cascade do |t|
+    t.integer "user_id",            limit: 4,   null: false
+    t.integer "private_message_id", limit: 4,   null: false
+    t.string  "method",             limit: 255
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                     limit: 255,   default: "",    null: false
