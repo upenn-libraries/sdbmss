@@ -54,7 +54,6 @@
                 orderable: false,
                 render: function (data, type, full, meta) {
                     var mergeLink = canMerge ? '<a class="btn btn-xs btn-info merge-link" href="/' + manageRecords.options.resourceName + '/' + data + '/merge">Merge</a>' : '';
-
                     var str = '<span class="btn-group options-btn-group">'
                             + '<a onclick="addBookmark(' + data + ', \'Name\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/names/' + data + '">' 
                                 + '<span class="glyphicon glyphicon-bookmark"></span></a>'

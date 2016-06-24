@@ -72,6 +72,7 @@ module VIAF
 
   def self.sru_search(query, maximumRecords: 10, startRecord: 1, sortKeys: "holdingscount", httpAccept: "text/xml")
     path = "/viaf/search?query=#{CGI::escape(query)}&maximumRecords=#{CGI::escape(maximumRecords.to_s)}&startRecord=#{CGI::escape(startRecord.to_s)}&sortKeys=#{CGI::escape(sortKeys.to_s)}&httpAccept=#{CGI::escape(httpAccept.to_s)}"
+    puts "path: #{path}"
     Net::HTTP.get_response(VIAF::Constants::HOST, path)
   end
 

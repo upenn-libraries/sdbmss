@@ -822,7 +822,10 @@ div#search_results_length {
     padding-right: 10px;
 }
 
-.sdbmss-form legend { margin-bottom: 10px; }
+.sdbmss-form legend { 
+  font-size: 40px;
+  margin-bottom: 10px;
+}
 
 .sdbmss-form label.col-sm-2, .sdbmss-form label.col-sm-1 { padding-right: 0px; }
 
