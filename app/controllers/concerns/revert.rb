@@ -11,6 +11,8 @@ module Revert
     end
 
     touched = []
+    destroyed = false
+
     ActiveRecord::Base.transaction do
 
       @versions.each do |version|
@@ -23,6 +25,7 @@ module Revert
         else
           v = version.item
           v.destroy
+          destroyed = true
         end
         if v.model_name.name != @model.model_name.name
           e = v.send @model.model_name.name.underscore
@@ -38,7 +41,11 @@ module Revert
       end
     end
     
-    redirect_to polymorphic_path(@model)
+    if destroyed
+      redirect_to dashboard_path
+    else
+      redirect_to polymorphic_path(@model)
+    end
   end
 
   def revert_confirm
@@ -111,13 +118,13 @@ module Revert
     
     #substitute the name for the id for associated fields    
     current2.each do |k, v|
-      if k.include?("_id")
+      if EntryVersionFormatter.isClass(k)
         current2[k] = "#{EntryVersionFormatter.toClass(k).find(v)}"
       end
     end
 
     previous2.each do |k, v|
-      if k.include?("_id")
+      if EntryVersionFormatter.isClass(k)
         previous2[k] = "#{EntryVersionFormatter.toClass(k).find(v)}"
       end
     end

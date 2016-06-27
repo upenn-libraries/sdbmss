@@ -11,6 +11,7 @@
 
     <!-- Internet Explorer use the highest version available -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <%= csrf_meta_tags %>
 
     <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
     <!--[if IEMobile]>
@@ -51,7 +52,6 @@
       </script>
     <%end%>
 
-    <%= csrf_meta_tags %>
     <%= content_for(:head) %>
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
