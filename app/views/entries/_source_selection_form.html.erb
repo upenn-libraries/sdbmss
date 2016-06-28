@@ -63,3 +63,9 @@
         <div class="col-sm-10"><b>No source found matching your criteria.</b></div>
     </div>
 </div>
+<div ng-show="!searchAttempted && sources.length == 0">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-10 text-info"><i>Fill in any of the fields above to begin Search (at least 2 characters)</i></div>
+    </div>
+</div>

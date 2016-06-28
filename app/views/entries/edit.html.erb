@@ -319,7 +319,7 @@ label.col-sm-2-and-half {
           </label>
           <div class="col-sm-9">
               <div class="input-group">
-                  <input id="title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.title">
+                  <input maxlength="255" id="title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.title">
                   <div id="title_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
               </div>
           </div>
@@ -329,7 +329,7 @@ label.col-sm-2-and-half {
               <span sdbm-tooltip="entry_common_title">Common</span>
           </label>
           <div class="col-sm-9">
-            <input id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
+            <input input maxlength="255" id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
           </div>
         </div>
       </div>
@@ -359,7 +359,7 @@ label.col-sm-2-and-half {
               <span sdbm-tooltip="entry_author_as_recorded">As Recorded</span>
           </label>
           <div class="col-sm-9">
-              <input id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
+              <input input maxlength="255" id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
           </div>
         </div>
         <div class='row'>
@@ -460,7 +460,7 @@ label.col-sm-2-and-half {
                 <span sdbm-tooltip="entry_artist_as_recorded">As Recorded</span>
           </label>
           <div class="col-sm-9">
-              <input id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
+              <input input maxlength="255" id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
           </div>
         </div>
         <div class="row">
@@ -514,7 +514,7 @@ label.col-sm-2-and-half {
             <span sdbm-tooltip="entry_scribe_as_recorded">As Recorded</span>
           </label>
           <div class="col-sm-9">
-              <input id="scribe_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_scribe.observed_name">
+              <input input maxlength="255" id="scribe_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_scribe.observed_name">
           </div>
         </div>
         <div class="row">
@@ -627,7 +627,7 @@ label.col-sm-2-and-half {
             <span sdbm-tooltip="entry_place">As Recorded</span>
           </label>
           <div class="col-sm-9">
-            <input id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name">
+            <input input maxlength="255" id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name">
           </div>
         </div>
         <div class="row">
@@ -669,7 +669,7 @@ label.col-sm-2-and-half {
             <span sdbm-tooltip="entry_use">Use</span>
           </label>
           <div class="col-sm-9">
-            <input id="use_{{ $index }}" type="text" class="form-control" data-ng-model="entry_use.use">
+            <input maxlength="255" id="use_{{ $index }}" type="text" class="form-control" data-ng-model="entry_use.use">
           </div>
         </div>
       </div>
@@ -823,7 +823,7 @@ label.col-sm-2-and-half {
                   <span sdbm-tooltip="entry_provenance_agent_as_recorded">As Recorded</span>
                 </label>
                 <div class="col-sm-7">
-                  <input id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name">
+                  <input input maxlength="255" id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name">
                 </div>
               </div>
               <div class="row">

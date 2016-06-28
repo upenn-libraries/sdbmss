@@ -8,7 +8,8 @@ $(document).ready(function() {
 
     var mode = '<%= @mode %>';
     var entryId;
-    var manuscriptId;    
+    var manuscriptId;
+    var manuscriptCreatedBy;
     var entryManuscripts;
     var headingId = '<%= @mode == 'by_entry' ? @entry.public_id : @manuscript.public_id %>';
 
@@ -31,7 +32,7 @@ $(document).ready(function() {
     ];
     <% else %>
     manuscriptId = <%= @manuscript.id %>;
-    var manuscriptCreatedBy = '<%= @manuscript.created_by %>';
+    manuscriptCreatedBy = '<%= @manuscript.created_by %>';
     cumulativeUpdatedAt = <%= @manuscript.cumulative_updated_at %>;
     entryManuscripts = <%= JSON.generate(@manuscript.entry_manuscripts.map { |entry_manuscript|
                                                                             {

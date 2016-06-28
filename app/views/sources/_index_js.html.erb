@@ -14,10 +14,8 @@ $(document).ready(function() {
      <% end %>
 
      <% if can? :destroy, model_class %>
-     console.log('hey!');
      var canDestroy = true;
      <% else %>
-     console.log('ho.');
      var canDestroy = false;
      <% end %>
 

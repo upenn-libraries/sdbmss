@@ -129,6 +129,7 @@ body {
 }
 #my_bookmarks .nav-tabs {
   border: none;
+  cursor: pointer;
 }
 #my_bookmarks .nav-tabs > li {
   margin: 0px;
@@ -140,6 +141,7 @@ body {
 #my_bookmarks .nav a {
   color: #f8f8f8;
   border: none;
+  padding: 10px;
 }
 #my_bookmarks .active > a, #my_bookmarks .nav a:hover {
   background-color: white;

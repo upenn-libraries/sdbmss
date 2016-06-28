@@ -335,13 +335,16 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.findSourceCandidates = function () {
-            if($scope.title.length > 2 || $scope.date.length > 2 || $scope.agent.length > 2) {
+            if($scope.title.length > 1 || $scope.date.length > 1 || $scope.agent.length > 1) {
                 $scope.searchAttempted = true;
+                var title = $scope.title.length > 1 ? $scope.title : '';
+                var date = $scope.date.length > 1 ? $scope.date : '';
+                var agent = $scope.agent.length > 1 ? $scope.agent : '';
                 $http.get("/sources/search.json", {
                     params: {
-                        date: $scope.date,
-                        title: $scope.title,
-                        agent: $scope.agent,
+                        date: date,
+                        title: title,
+                        agent: agent,
                         limit: 20,
                         source_type_id: $scope.source_type,
                         id: $scope.source_id,
@@ -353,7 +356,8 @@ var BOOKMARK_SCOPE;
                     alert("An error occurred searching for sources");
                 });
             } else {
-                $scope.sources = [];
+              $scope.searchAttempted = false;
+              $scope.sources = [];
             }
         };
 
@@ -2175,5 +2179,5 @@ function addBookmark(id, type) {
 }
 
 function renewBookmarks() {
-  //BOOKMARK_SCOPE.renew();
+  BOOKMARK_SCOPE.renew();
 }

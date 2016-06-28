@@ -63,19 +63,19 @@
     <div class="col-sm-3">
         <% if can? :manage, model_class %>
         <div class="well">
-                <div class="row form-group">
+                <div class="row">
                     <div class="col-sm-12">
                             <label class="checkbox-inline">
                                 <%= check_box_tag :unapproved_only, 1, params[:unapproved_only] %> Limit to records needing review
                             </label>
                     </div>
                 </div>
-                <div class="row form-group">
+                <div class="row">
                     <div class="col-sm-12 review-control">
                         <a class="btn btn-primary btn-sm" id="mark-as-approved" class="btn btn-primary">Mark checked records as approved</a>
                     </div>
                 </div>
-                <div class="row form-group">
+                <div class="row">
                     <div class="col-sm-12">
                       <li class="list-group-item list-group-item-warning text-center"><span class="disabled">(unapproved records shown in yellow)</span></li>
                     </div>

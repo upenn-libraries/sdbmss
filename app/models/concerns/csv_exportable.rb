@@ -143,6 +143,9 @@ module CSVExportable
               without field, v
             elsif v.kind_of?(Array) && v.all? { |v2| v2.blank? } # make sure it's not an array of blanks 
             else
+              if ['true', 'false'].include? v
+                v = (v == 'true')
+              end
               with field, v
             end
           end
