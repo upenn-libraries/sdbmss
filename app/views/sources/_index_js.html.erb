@@ -13,6 +13,15 @@ $(document).ready(function() {
      var showOnlyRecordsCreatedByUser = 1;
      <% end %>
 
+     <% if can? :destroy, model_class %>
+     console.log('hey!');
+     var canDestroy = true;
+     <% else %>
+     console.log('ho.');
+     var canDestroy = false;
+     <% end %>
+
+
      var jumpToSource = {
          search: false
      };
@@ -62,7 +71,7 @@ $(document).ready(function() {
                                 + '<span class="glyphicon glyphicon-bookmark"></span></a>'
                            + '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>' +
                            '<a class="btn btn-xs btn-primary" href="/entries/new/?source_id=' + data + '">Add an Entry</a>' +
-                           '<a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>' +
+                           (canDestroy ? '<a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>' : '') +
                            '<a class="btn btn-xs btn-info" href="/sources/' + data + '/merge">Merge</a></span>';
                      // TODO: display delete link only if entries_count is 0
                      return str;

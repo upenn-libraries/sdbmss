@@ -13,6 +13,13 @@ $(document).ready(function() {
     var headingId = '<%= @mode == 'by_entry' ? @entry.public_id : @manuscript.public_id %>';
 
     var unsavedChanges = false;
+
+    <% if can? :unlink, Manuscript.first%>
+        var canUnlink = true
+    <% else %>
+        var canUnlink = false;
+        var username = '<%= current_user.username %>';
+    <% end %>
     
     <% if @mode == 'by_entry' %>
     entryId = <%= @entry.id %>;
@@ -24,6 +31,7 @@ $(document).ready(function() {
     ];
     <% else %>
     manuscriptId = <%= @manuscript.id %>;
+    var manuscriptCreatedBy = '<%= @manuscript.created_by %>';
     cumulativeUpdatedAt = <%= @manuscript.cumulative_updated_at %>;
     entryManuscripts = <%= JSON.generate(@manuscript.entry_manuscripts.map { |entry_manuscript|
                                                                             {
@@ -197,8 +205,13 @@ $(document).ready(function() {
                 "orderable": false,
                 "className": 'text-center',
                 "render": function (data, type, full, meta) {
-//                    return getButtonHTML(workspaceTable, data, "unlink");
-                    return getRadioButtonHTML(workspaceTable, data, "unlink");
+                    if (canUnlink)
+                        return getRadioButtonHTML(workspaceTable, data, "unlink");
+                    else if (username == data[workspaceTable.getColumnIndex("Added By")] || username == manuscriptCreatedBy) {
+                        return getRadioButtonHTML(workspaceTable, data, "unlink");
+                    }               
+                    else
+                        return '<span class="text-danger">n/a</span>';
                 }
             }
         ],

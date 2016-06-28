@@ -11,10 +11,16 @@
      var showOnlyRecordsCreatedByUser = 1;
      <% end %>
 
-     <% if can? :deprecate, model_class  %>
+     <% if can? :deprecate, model_class %>
      var canDeprecate = 1;
      <% else %>
      var canDeprecate = 0;
+     <% end %>
+
+     <% if can? :destroy, model_class %>
+     var canDestroy = true;
+     <% else %>
+     var canDestroy = false;
      <% end %>
 
      var jumpToEntry = {
@@ -79,7 +85,7 @@
                                 '<span class="glyphicon glyphicon-bookmark"></span>' + 
                             '</a>' + 
                             '<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +
-                            '<a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#" target="_blank">Delete</a>' +
+                            (canDestroy ? '<a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#" target="_blank">Delete</a>' : '') +
                             (isNotDeprecated ? linkingToolHTMLLink : '') +
                             (showDeprecateLink ? deprecateHTMLLink : '') + "</span>") : '<span class="text-danger bg-danger">This Record is DEPRECATED</span>';
                      }

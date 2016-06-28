@@ -27,7 +27,7 @@
         <% end %>
     </div>
 </div>
-<%= form_tag(request.path, method: :post, class: "form-horizontal sdbmss-form") do %>
+<%= form_tag merge_name_path(@model) do %>
 <div class='col-sm-2 text-center'>
     <% if @target %>
     <div class="">
@@ -36,7 +36,6 @@
             <p>Are you sure? <strong><%= @model.public_id %></strong> will be <strong class="text-danger">deleted.</strong></p>
                 <input type="hidden" name="confirm" value="yes"/>
                 <input type="hidden" name="target_id" value="<%= @target.id %>"/>
-                
             <button class="btn btn-primary">Yes</button>
             <a class="btn btn-warning" href="<%= merge_name_path(@model) %>">Cancel</a>
         </div>
@@ -132,13 +131,12 @@
 <% end %>
 <script type='text/javascript'>
     $(document).ready( function (e) {
-
-        $('input').prop('disabled', true);
-
+        $('#main-container input[type!=hidden]').prop('disabled', true);
+    
         $('#editNameMerge').click( function () {
             $('#controlEditNameMerge').show();
             $(this).hide();
-            $('#mergeNameInto input').prop('disabled', false);
+            $('#mergeNameInto input[type!=hidden]').prop('disabled', false);
         });
 
         $('#cancelEditNameMerge').click( function () {
@@ -147,13 +145,13 @@
             $('#mergeNameInto input').each(function (e) {
                 $(this).val($(this).prop('defaultValue'));
             });
-            $('#mergeNameInto input').prop('disabled', true);
+            $('#mergeNameInto input[type!=hidden]').prop('disabled', true);
         });
 
         $('#confirmEditNameMerge').click( function () {
             $('#controlEditNameMerge').hide();
             $('#editNameMerge').show();
-            $('#mergeNameInto input').prop('disabled', true);
+            $('#mergeNameInto input[type!=hidden]').prop('disabled', true);
         });
 
     });
