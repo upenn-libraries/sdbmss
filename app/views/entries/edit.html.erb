@@ -368,7 +368,9 @@ label.col-sm-2-and-half {
           </label>
           <div class="col-sm-9">
              <div class="input-group">
-                <input id="author_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_author" }' sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                <!--
+                <input id="author_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_author" }' sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
+                <span class="btn btn-primary" ng-click="selectNameAuthorityModal()">Find in Name Authority</span>
                 <div class="input-group-addon clickable">
                   <a class="more-info glyphicon" href="/names/{{ entry_author.author.id }}" target="_blank" ng-class="entry_author.author && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
                 </div>
@@ -1017,3 +1019,4 @@ label.col-sm-2-and-half {
 
 <%= render "shared/create_entity_with_name" %>
 <%= render "shared/create_name" %>
+<%= render "shared/select_name_authority" %>

@@ -366,10 +366,32 @@ var BOOKMARK_SCOPE;
         $scope.$watch('agent', $scope.findSourceCandidates);
     });
 
+    sdbmApp.controller("TestCtrl", function ($scope, $http, sdbmutil, $modal) {
+      console.log('test ctrl');
+      
+    });
+
     /* Entry screen controller */
     sdbmApp.controller("EntryCtrl", function ($scope, $http, Entry, Source, sdbmutil, $modal) {
 
         EntryScope = $scope;
+
+        // here        
+        $scope.selectNameAuthorityModal = function () {
+           var modal = $modal.open({
+                templateUrl: "selectNameAuthority.html",
+                controller: "TestCtrl",
+                resolve: {
+                    modalParams: function() {
+                        return {
+                            "name": "asfkjasldfjal",
+                            "type": "is_author"
+                        };
+                    }
+                },
+                size: 'lg'
+            });
+        }
 
         // affixes the association name and 'add' button to side, so that it is in view when list is long
         // FIX ME: glitchy, jumps
@@ -1044,6 +1066,7 @@ var BOOKMARK_SCOPE;
      * sdbm-autocomplete-modal-template = (optional) template use for
      * displaying modal for entity creation.
      */
+
     sdbmApp.directive("sdbmAutocomplete", function ($http, $parse, $timeout, $modal) {
         return function (scope, element, attrs) {
             var modelName = attrs.sdbmAutocompleteModel;
@@ -1724,6 +1747,11 @@ var BOOKMARK_SCOPE;
     // you to search for a database object and create one. Specialized
     // controllers should call this fn and modify/supply anything in
     // $scope it needs to.
+    
+    var baseSelectNameAuthorityModalCtrl = function ($scope, $http, $modalInstance, sdbmutil) {
+
+    }
+
     var baseCreateEntityModalCtrl = function ($scope, $http, $modalInstance, sdbmutil) {
 
         $scope.readyToCreate = true;

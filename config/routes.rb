@@ -49,6 +49,7 @@ Rails.application.routes.draw do
     }
   end
 
+  get "/faq/", to: 'community#faq', as: 'faq'
   get '/community/', to: 'community#show', as: 'community'
   get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
 
