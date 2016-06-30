@@ -182,7 +182,14 @@ label.col-sm-2-and-half {
       <div class="row form-group" ng-show="entry.source.source_type.entries_have_institution_field">
         <label for="cat_lot_no" class="col-sm-2 control-label"><span sdbm-tooltip="entry_institution">Institution/Collection</span></label>
         <div class="col-sm-5">
-            <input id="institution" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.institution" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+
+            <a ng-if='entry.institution.id == undefined' ng-init="entry.institution = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.institution, 'is_provenance_agent')">Find in Name Authority</a>
+            <div ng-if='entry.institution != undefined && entry.institution.id != undefined' class="well well-sm well-name-authority">
+              <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry, 'institution')"></a>
+              {{ entry.institution.name }}
+            </div>
+
+            <!--<input id="institution" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.institution" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
         </div>
       </div>
 
@@ -207,7 +214,15 @@ label.col-sm-2-and-half {
                   <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_selling_agent">Selling Agent</span></label>
                   <div class="col-sm-5">
                       <div class="input-group">
-                          <input id="sale_selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+
+                          <!--<input id="sale_selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
+                          
+                          <a ng-if='entry.sale.selling_agent.agent.id == undefined' ng-init="entry.sale.selling_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.sale.selling_agent.agent, 'is_provenance_agent')">Find in Name Authority</a>
+                          <div ng-if='entry.sale.selling_agent.agent != undefined && entry.sale.selling_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry.sale.selling_agent, 'agent')"></a>
+                            {{ entry.sale.selling_agent.agent.name }}
+                          </div>
+
                           <div class="input-group-addon clickable">
                             <a class="more-info glyphicon" href="/names/{{ entry.sale.selling_agent.agent.id }}" target="_blank" ng-class="entry.sale.selling_agent.agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
                           </div>
@@ -217,7 +232,14 @@ label.col-sm-2-and-half {
                   <label class="col-sm-1 control-label"><span sdbm-tooltip="entry_seller">Seller</span></label>
                   <div class="col-sm-4">
                       <div class="input-group">
-                          <input id="sale_seller" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                          <!--<input id="sale_seller" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
+
+                          <a ng-if='entry.sale.seller_or_holder.agent.id == undefined' ng-init="entry.sale.seller_or_holder.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.sale.seller_or_holder.agent, 'is_provenance_agent')">Find in Name Authority</a>
+                          <div ng-if='entry.sale.seller_or_holder.agent != undefined && entry.sale.seller_or_holder.agent.id != undefined' class="well well-sm well-name-authority">
+                            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry.sale.seller_or_holder, 'agent')"></a>
+                            {{ entry.sale.seller_or_holder.agent.name }}
+                          </div>
+
                           <div class="input-group-addon clickable">
                             <a class="more-info glyphicon" href="/names/{{ entry.sale.seller_or_holder.agent.id }}" target="_blank" ng-class="entry.sale.seller_or_holder.agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
                           </div>
@@ -230,7 +252,14 @@ label.col-sm-2-and-half {
                   <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_buyer">Buyer</span></label>
                   <div class="col-sm-5">
                       <div class="input-group">
-                          <input id="sale_buyer" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                          <!--<input id="sale_buyer" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
+
+                          <a ng-if='entry.sale.buyer.agent.id == undefined' ng-init="entry.sale.buyer.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.sale.buyer.agent, 'is_provenance_agent')">Find in Name Authority</a>
+                          <div ng-if='entry.sale.buyer.agent != undefined && entry.sale.buyer.agent.id != undefined' class="well well-sm well-name-authority">
+                            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry.sale.buyer, 'agent')"></a>
+                            {{ entry.sale.buyer.agent.name }}
+                          </div>
+
                           <div class="input-group-addon clickable">
                             <a class="more-info glyphicon" href="/names/{{ entry.sale.buyer.agent.id }}" target="_blank" ng-class="entry.sale.buyer.agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
                           </div>                          
@@ -370,7 +399,11 @@ label.col-sm-2-and-half {
              <div class="input-group">
                 <!--
                 <input id="author_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_author" }' sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
-                <span class="btn btn-primary" ng-click="selectNameAuthorityModal()">Find in Name Authority</span>
+                <a ng-if='entry_author.author.id == undefined' ng-init="entry_author.author = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_author.author, 'is_author')">Find in Name Authority</a>
+                <div ng-if='entry_author.author != undefined && entry_author.author.id != undefined' class="well well-sm well-name-authority">
+                  <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_author, 'author')"></a>
+                  {{ entry_author.author.name }}
+                </div>
                 <div class="input-group-addon clickable">
                   <a class="more-info glyphicon" href="/names/{{ entry_author.author.id }}" target="_blank" ng-class="entry_author.author && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
                 </div>
@@ -471,7 +504,13 @@ label.col-sm-2-and-half {
           </label>
           <div class="col-sm-9">
             <div class="input-group">
-                <input id="artist_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_artist" }' sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                <!--<input id="artist_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_artist" }' sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
+                <a ng-if='entry_artist.artist.id == undefined' ng-init="entry_artist.artist = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_artist.artist, 'is_artist')">Find in Name Authority</a>
+                <div ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' class="well well-sm well-name-authority">
+                  <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_artist, 'artist')"></a>
+                  {{ entry_artist.artist.name }}
+                </div>
+
                 <div class="input-group-addon clickable">
                   <a class="more-info glyphicon" href="/names/{{ entry_artist.artist.id }}" target="_blank" ng-class="entry_artist.artist && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
                 </div>
@@ -525,7 +564,13 @@ label.col-sm-2-and-half {
           </label>
           <div class="col-sm-9">
               <div class="input-group">
-                  <input id="scribe_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_scribe" }' sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                  <!--<input id="scribe_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_scribe" }' sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
+                  <a ng-if='entry_scribe.scribe.id == undefined' ng-init="entry_scribe.scribe = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_scribe.scribe, 'is_scribe')">Find in Name Authority</a>
+                  <div ng-if='entry_scribe.scribe != undefined && entry_scribe.scribe.id != undefined' class="well well-sm well-name-authority">
+                    <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_scribe, 'scribe')"></a>
+                    {{ entry_scribe.scribe.name }}
+                  </div>
+
                   <div class="input-group-addon clickable">
                   <a class="more-info glyphicon" href="/names/{{ entry_scribe.scribe.id }}" target="_blank" ng-class="entry_scribe.scribe && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
                   </div>
@@ -561,7 +606,13 @@ label.col-sm-2-and-half {
           </label>
           <div class="col-sm-9">
             <div class="input-group">
-                <input id="language_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
+                <!--<input id="language_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>-->
+                <a ng-if='entry_language.language.id == undefined' ng-init="entry_language.language = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('languages', entry_language.language, '')">Find in Name Authority</a>
+                <div ng-if='entry_language.language != undefined && entry_language.language.id != undefined' class="well well-sm well-name-authority">
+                  <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_language, 'language')"></a>
+                  {{ entry_language.language.name }}
+                </div>
+
                 <div class="input-group-addon clickable">
                   <a class="more-info glyphicon" href="/languages/{{ entry_language.language.id }}" target="_blank" ng-class="entry_language.language && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
                 </div>
@@ -597,7 +648,11 @@ label.col-sm-2-and-half {
           </label>
           <div class="col-sm-9">
             <div class="input-group">
-                <input id="material_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="optionsMaterial" sdbm-autocomplete-model="entry_material.material" sdbm-autocomplete-assign-value-attr="true" sdbm-autocomplete-min-length="0" />
+                <!--<input id="material_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="optionsMaterial" sdbm-autocomplete-model="entry_material.material" sdbm-autocomplete-assign-value-attr="true" sdbm-autocomplete-min-length="0" />-->
+                <select ng-model="entry_material.material" id="material_{{ $index }}" class="form-control">
+                  <option value="{{material.value}}" ng-repeat="material in optionsMaterial" ng-selected="entry_material.material == material.value">{{ material.label }}</option>
+                </select>
+                
                 <div id="material_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
             </div>
           </div>
@@ -638,7 +693,13 @@ label.col-sm-2-and-half {
           </label>
           <div class="col-sm-9">
             <div class="input-group">
-                <input id="place_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
+                <!--<input id="place_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>-->
+                <a ng-if='entry_place.place.id == undefined' ng-init="entry_place.place = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('places', entry_place.place, '')">Find in Name Authority</a>
+                <div ng-if='entry_place.place != undefined && entry_place.place.id != undefined' class="well well-sm well-name-authority">
+                  <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_place, 'place')"></a>
+                  {{ entry_place.place.name }}
+                </div>
+
                 <div class="input-group-addon clickable">
                   <a class="more-info glyphicon" href="/places/{{ entry_place.place.id }}" target="_blank" ng-class="entry_place.place && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
                 </div>
@@ -832,7 +893,13 @@ label.col-sm-2-and-half {
                 <label class="col-sm-5 control-label"><span sdbm-tooltip="entry_provenance_agent">Find in Name Authority</span></label>
                 <div class="col-sm-7">
                   <div class="input-group">
-                      <input id="provenance_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.provenance_agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                      <!--<input id="provenance_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.provenance_agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>--> 
+                      <a ng-if='prov.provenance_agent.id == undefined' ng-init="prov.provenance_agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', prov.provenance_agent, 'is_provenance_agent')">Find in Name Authority</a>
+                      <div ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' class="well well-sm well-name-authority">
+                        <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(prov, 'provenance_agent')"></a>
+                        {{ prov.provenance_agent.name }}
+                      </div>
+
                       <div class="input-group-addon clickable">
                         <a class="more-info glyphicon" href="/names/{{ prov.provenance_agent.id }}" target="_blank" ng-class="prov.provenance_agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
                       </div>
@@ -1020,3 +1087,4 @@ label.col-sm-2-and-half {
 <%= render "shared/create_entity_with_name" %>
 <%= render "shared/create_name" %>
 <%= render "shared/select_name_authority" %>
+<%= render "shared/select_model_authority" %>

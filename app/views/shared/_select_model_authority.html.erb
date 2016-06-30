@@ -1,4 +1,4 @@
-<script type="text/ng-template" id="selectNameAuthority.html">
+<script type="text/ng-template" id="selectModelAuthority.html">
     <div class="modal-header">
         <h3 class="modal-title">Find Name
             <small class='pull-right form-inline'>
@@ -13,13 +13,9 @@
                 <thead>
                     <tr>
                         <th></th>
+                        <th>ID</th>
                         <th>Name</th>
-                        <th>VIAF ID</th>
-                        <th>As Author</th>
-                        <th>As Artist</th>
-                        <th>As Scribe</th>
-                        <th>As Proven.</th>
-                        <th>As Src. Ag.</th>
+                        <th># Entries</th>
                         <th>Reviewed</th>
                     </tr>
                 </thead>
@@ -29,13 +25,9 @@
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index" ng-click="selectSuggestion(s)" ng-class="{success: s == suggestion}">
                         <td><input type='radio' ng-click='selectSuggestion(s)' style="opacity: 0;"></input></td>
+                        <td>{{ s.id }}</td>
                         <td>{{ s.name }}</td>
-                        <td>{{ s.viaf_id }}</td>
-                        <td>{{ s.authors_count }}</td>
-                        <td>{{ s.artists_count }}</td>
-                        <td>{{ s.scribes_count }}</td>
-                        <td>{{ s.provenance_agent_count }}</td>
-                        <td>{{ s.source_agent_count }}</td>
+                        <td>{{ s.entries_count }}</td>
                         <td>{{ s.reviewed }}</td>
                     </tr>
                 </tbody>

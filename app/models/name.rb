@@ -135,7 +135,7 @@ class Name < ActiveRecord::Base
       updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
     }
   end
-  
+
   # constructor for a Provenance Agent. takes same args as #new
   def self.agent(*args)
     hash = args.last.is_a?(Hash) ? args.pop : {}

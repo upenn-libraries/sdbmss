@@ -573,6 +573,34 @@ div#search_results_length {
   position: absolute;
 }
 
+.btn-add-name {
+  color: #215fa5;
+  background-color: #fff;
+  border-color: #ccdff5;
+}
+
+.btn-add-name:hover, .btn-add-name:active, .btn-add-name:visited, .btn-add-name:focus {
+  background-color: #ccdff5;
+  color: #333;
+  border-color: #ddedff;
+}
+
+.well-name-authority {
+  margin-bottom: 0px;
+  background-color: #ddedff;
+  border: 1px solid #ccdff5;
+  color: inherit;
+  padding: 6px 12px;
+  display: inline-block;
+}
+
+.well-name-authority a {
+  color: #333;
+}
+.well-name-authority a:hover, .well-name-authority a:active, .well-name-authority a:visited, .well-name-authority a:focus {
+  color: #bbb;
+}
+
 .input-block .row {
   margin: 2px;
 }
