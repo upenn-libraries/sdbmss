@@ -585,6 +585,13 @@ div#search_results_length {
   border-color: #ddedff;
 }
 
+.disabled .btn-add-name, 
+.disabled .btn-add-name:hover {
+  border-color: #ddd;
+  color: #ddd;
+  background-color: #eee;
+}
+
 .well-name-authority {
   margin-bottom: 0px;
   background-color: #ddedff;
@@ -597,8 +604,13 @@ div#search_results_length {
 .well-name-authority a {
   color: #333;
 }
-.well-name-authority a:hover, .well-name-authority a:active, .well-name-authority a:visited, .well-name-authority a:focus {
+.well-name-authority a:hover {
   color: #bbb;
+}
+
+.disabled .well-name-authority, .disabled .well-name-authority a, .disabled .well-name-authority a:hover {
+  background-color: #ddd;
+  color: #555;
 }
 
 .input-block .row {

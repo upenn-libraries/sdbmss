@@ -370,6 +370,8 @@ var BOOKMARK_SCOPE;
       $scope.suggestions = [];
       $scope.suggestion = undefined;
 
+      $('#searchNameAuthority').focus();
+
       $scope.selectSuggestion = function (s) {
         $scope.suggestion = s;
       }
@@ -401,6 +403,8 @@ var BOOKMARK_SCOPE;
 
               if (!exactMatch) {
                 $scope.proposeNew = true;
+              } else {
+                $scope.proposeNew = false;
               }
               // sort options, prioritizing ones that match the type
               options.sort( function (a, b) {
@@ -500,9 +504,10 @@ var BOOKMARK_SCOPE;
         // FIX ME: delay in loading causes the height calculations to malfunction
         $scope.affixer = function () {
           $('.side-title').each( function () {
-            // ignore this if the list is short
+            // ignore this if the list is short: temp fix?
             if ( $(this).closest('.row').height() < $(window).height() - 500) return;
-            
+            else if ( $(window).height() < 600) return;
+
             var top = $(this).closest('.row').offset().top;
             var bottom = $(document).height() - (top + $(this).closest('.row').height());
             $(this).affix({offset: {top: top, bottom: bottom} }); //Try it
@@ -880,7 +885,12 @@ var BOOKMARK_SCOPE;
         $scope.postEntrySave = function(entry) {
             $scope.warnWhenLeavingPage = false;
 
+            // fix me: is it neccessary to re-load the entry once the save is complete?  I have commented it out unless it proves important
+            
+            //console.log(entry);
             $scope.entry = entry;
+            $scope.populateEntryViewModel($scope.entry);
+
             var modalInstance = $modal.open({
                 templateUrl: 'postEntrySave.html',
                 backdrop: 'static',
@@ -1042,8 +1052,31 @@ var BOOKMARK_SCOPE;
 
         // "constructor" for controller goes here
 
+        $scope.checkForChanges = function (entry1, entry2) {
+          // manually remove the blank selling agent and institution, if they exist
+          var entry2 = angular.copy(entry2);
+          if (entry2.institution.id == null) {
+            delete entry2.institution;
+          }
+          if (entry2.sale.selling_agent.agent.id == null) {
+            delete entry2.sale.selling_agent;
+          }
+          if (entry2.sale.seller_or_holder.agent.id == null) {
+            delete entry2.sale.seller_or_holder;
+          }
+          if (entry2.sale.buyer.agent.id == null) {
+            delete entry2.sale.buyer;
+          }
+          entry2.provenance.forEach( function (prov) {
+            if (prov.provenance_agent.id == null) {
+              delete prov.provenance_agent;
+            }
+          });
+          return angular.toJson(entry1) !== angular.toJson(entry2);
+        }
+
         $(window).bind('beforeunload', function() {
-            if ($scope.warnWhenLeavingPage && angular.toJson($scope.originalEntryViewModel) !== angular.toJson($scope.entry)) {
+            if ($scope.warnWhenLeavingPage && $scope.checkForChanges($scope.originalEntryViewModel, $scope.entry)) {
                 /*
                 console.log("originalEntryViewModel=");
                 console.log(angular.toJson($scope.originalEntryViewModel));
@@ -1684,7 +1717,10 @@ var BOOKMARK_SCOPE;
             if (window.location.pathname.indexOf('merge') != -1) {
               return;    
             } 
+
             $scope.source = source;
+            $scope.populateSourceViewModel($scope.source);
+
             var modalInstance = $modal.open({
                 templateUrl: 'postSourceSave.html',
                 backdrop: 'static',
