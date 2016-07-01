@@ -25,7 +25,7 @@
                 </thead>
                 <tbody>
                     <tr ng-show="suggestions.length <= 0">
-                        <td>No results found.</td>
+                        <td id="no_results">No results found.</td>
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index" ng-click="selectSuggestion(s)" ng-class="{success: s == suggestion}">
                         <td><input type='radio' ng-click='selectSuggestion(s)' style="opacity: 0;"></input></td>
@@ -50,7 +50,7 @@
                         <td></td>
                         <td></td>
                         <td>                        
-                            <a href="" class="btn btn-default" ng-click="createName()">Propose '{{ nameSearchString }}'</a>
+                            <a href="" class="btn btn-default" id='propose-name' ng-click="createName()">Propose '{{ nameSearchString }}'</a>
                         </td>
                     </tr>
                 </tfoot>
@@ -60,7 +60,7 @@
         
     </div>
     <div class="modal-footer">
-        <button class="btn btn-success" ng-click="selectName()" id="selectNameButton">Select {{ suggestion.name }}</button>
+        <button class="btn btn-success" ng-disabled="!suggestion" ng-click="selectName()" id="selectNameButton">Select {{ suggestion.name }}</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>

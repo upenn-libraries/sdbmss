@@ -370,7 +370,7 @@ var BOOKMARK_SCOPE;
       $scope.suggestions = [];
       $scope.suggestion = undefined;
 
-      $('#searchNameAuthority').focus();
+      $('.search-form').focus();
 
       $scope.selectSuggestion = function (s) {
         $scope.suggestion = s;
@@ -2097,7 +2097,7 @@ var BOOKMARK_SCOPE;
         $scope.all_bookmarks = e.bookmarks;
         $scope.bookmark_tracker = e.bookmark_tracker;
         //console.log(e);
-        console.log('bookmarks loaded', $scope.all_bookmarks);
+        //console.log('bookmarks loaded', $scope.all_bookmarks);
         $('.bookmarks').scroll( function (e) {
           if (localStorage) localStorage.sidebar_scroll = $(this).scrollTop();
         });

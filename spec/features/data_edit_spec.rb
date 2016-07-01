@@ -112,45 +112,95 @@ describe "Data entry", :js => true do
 
     # create an entry, filling out all fields
 
+    def add_name_authority(id, value)
+      find_by_id(id).click
+      fill_in 'searchNameAuthority', with: value
+      if page.has_content?("No results found.")
+        find_by_id('propose-name').click
+        #sleep 0.5
+        click_button('Create')
+      else
+        find_by_id('selectNameButton').click
+      end
+    end
+
+    def add_model_authority(id, value)
+      find_by_id(id).click
+      fill_in 'searchModelAuthority', with: value
+      if page.has_content?("No results found.")
+        find_by_id('propose-model').click
+        #sleep 0.5
+        click_button('Create')
+      else
+        find_by_id('selectModelButton').click
+      end
+    end
+
+
     # create an entry, filling out all fields
     def create_entry
       visit new_entry_path :source_id => @source.id
       fill_in 'cat_lot_no', with: '123'
       # sale_selling_agent should be auto-populated from source, so we skip it
-      fill_autocomplete_select_or_create_entity 'sale_seller', with: 'Joe2'
-      fill_autocomplete_select_or_create_entity 'sale_buyer', with: 'Joe3'
+      #fill_autocomplete_select_or_create_entity 'sale_seller', with: 'Joe2'
+      #fill_autocomplete_select_or_create_entity 'sale_buyer', with: 'Joe3'
+      add_name_authority('find_seller_name_authority_0', 'Joe2')
+      add_name_authority('find_buyer_name_authority_0', 'Joe3')
+      expect(find('#buyer_0')).to have_content('Joe3')
+
+#      find_by_id('find_seller_name_authority_0').click
+#      fill_in 'searchNameAuthority', with: 'Joe2'
+#      find_by_id('selectNameButton').click
+
+#     find_by_id('find_buyer_name_authority_0').click
+#     fill_in 'searchNameAuthority', with: 'Joe2'
+#     find_by_id('selectNameButton').click
+
       select 'Yes', from: 'sale_sold'
       fill_in 'sale_date', with: '2014-03-03'
       fill_in 'sale_price', with: '130000'
       select 'USD', from: 'sale_currency'
 
-      find_by_id('add_title').click
+      find_by_id('add_title').trigger('click')
       fill_in 'title_0', with: 'Book of Hours'
       #find_by_id("add_title_0").click
-      find_by_id('add_title').click
+      find_by_id('add_title').trigger('click')
       fill_in 'title_1', with: 'Bible'
-      fill_autocomplete_select_or_create_entity 'author_0', with: 'Schmoe, Joe'
+
+#      fill_autocomplete_select_or_create_entity 'author_0', with: 'Schmoe, Joe'
       find_by_id('add_author').trigger('click')
+      add_name_authority('find_author_name_authority_0', 'Schmoe, Joe')
       fill_in 'author_observed_name_0', with: 'Joe Schmoe'
       click_certainty_flag('author_certainty_flags_0')
       select 'Translator', from: 'author_role_0'
+      
       find_by_id('add_date').click
       fill_in 'date_observed_date_0', with: 'early 15th century'
       # move focus out of observed_date in order to trigger auto-populate of normalized dates
       page.execute_script %Q{ $('#date_normalized_start_0').trigger('focus') }
       find_by_id('add_artist').click
       fill_in 'artist_observed_name_0', with: 'Chuck'
-      fill_autocomplete_select_or_create_entity 'artist_0', with: 'Schultz, Charles'
+      #fill_autocomplete_select_or_create_entity 'artist_0', with: 'Schultz, Charles'
+      add_name_authority('find_artist_name_authority_0', 'Schultz, Charles')
+
       find_by_id('add_scribe').click
       fill_in 'scribe_observed_name_0', with: 'Brother Francisco'
-      fill_autocomplete_select_or_create_entity 'scribe_0', with: 'Brother Francis'
+      #fill_autocomplete_select_or_create_entity 'scribe_0', with: 'Brother Francis'
+      add_name_authority('find_scribe_name_authority_0', 'Brother Francis')
+
       find_by_id('add_language').click
-      fill_autocomplete_select_or_create_entity 'language_0', with: 'Latin'
+      #fill_autocomplete_select_or_create_entity 'language_0', with: 'Latin'
+      add_model_authority('find_language_name_authority_0', 'Latin')
+
       find_by_id('add_material').click
-      fill_autocomplete_select_or_create_entity 'material_0', with: 'Parchment'
+      #fill_autocomplete_select_or_create_entity 'material_0', with: 'Parchment'
+      select('Parchment', :from => 'material_0')
+
       find_by_id('add_place').click
       fill_in 'place_observed_name_0', with: 'Somewhere in Italy'
-      fill_autocomplete_select_or_create_entity 'place_0', with: 'Italy'
+      #fill_autocomplete_select_or_create_entity 'place_0', with: 'Italy'
+      add_model_authority('find_place_name_authority_0', 'Latin')
+      
       find_by_id('add_use').click
       fill_in 'use_0', with: 'Some mysterious office or other'
 
@@ -172,7 +222,10 @@ describe "Data entry", :js => true do
 
       find_by_id('add_provenance').click
       fill_in 'provenance_observed_name_0', with: 'Somebody, Joe'
-      fill_autocomplete_select_or_create_entity 'provenance_agent_0', with: 'Somebody, Joseph'
+      
+      #fill_autocomplete_select_or_create_entity 'provenance_agent_0', with: 'Somebody, Joseph'
+      add_name_authority('find_provenance_name_authority_0', 'Somebody, Joseph')
+
       click_certainty_flag('provenance_certainty_flags_0')
 
       find_by_id('add_provenance_date_0').click
@@ -182,7 +235,8 @@ describe "Data entry", :js => true do
       check 'provenance_direct_transfer_0'
 
       find_by_id('add_provenance').click
-      fill_autocomplete_select_or_create_entity 'provenance_agent_1', with: "Sotheby's"
+#      fill_autocomplete_select_or_create_entity 'provenance_agent_1', with: "Sotheby's"
+      add_name_authority('find_provenance_name_authority_1', "Sotheby's")
 
       find_by_id('add_provenance_date_1').click
       fill_in 'provenance_1_recorded_date_0', with: '1965'

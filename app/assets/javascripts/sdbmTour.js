@@ -215,7 +215,7 @@ $(document).ready( function (e) {
       placement: 'bottom'
     },
     {
-      element: "#searchNameAuthority",
+      element: "#searchModelAuthority",
       title: "Search for the Language",
       content: "Do a search for the language described in the Source.  Enter <b>Latin</b> in the search field.",
       value: "Latin",
@@ -268,7 +268,7 @@ $(document).ready( function (e) {
       placement: 'bottom'
     },
     {
-      element: "#find_place_in_name_authority_0",
+      element: "#find_place_name_authority_0",
       title: "Find Place in Name Authority",
       content: "Click on this button to search for the Place in the SDBM Name Authority.",
       backdrop: true,
@@ -277,7 +277,7 @@ $(document).ready( function (e) {
       placement: 'bottom'
     },
     {
-      element: "#searchNameAuthority",
+      element: "#searchModelAuthority",
       title: "Search for the Place",
       content: "Do a search for the Place described in the Source.  Enter <b>Southern Europe</b> in the search field.",
       value: "Southern Europe",

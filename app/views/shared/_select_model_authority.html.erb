@@ -2,7 +2,7 @@
     <div class="modal-header">
         <h3 class="modal-title">Find Name
             <small class='pull-right form-inline'>
-            <label for="searchNameAuthority">Search: </label><input autofocus type="text" id="searchNameAuthority" class="form-control" ng-change="autocomplete()" ng-model="nameSearchString"></small>
+            <label for="searchNameAuthority">Search: </label><input autofocus type="text" id="searchModelAuthority" class="search-form form-control" ng-change="autocomplete()" ng-model="nameSearchString"></small>
         </h3>
     </div>
     <div class="modal-body form-horizontal compress-whitespace">
@@ -42,7 +42,7 @@
                         <td></td>
                         <td></td>
                         <td>                        
-                            <a href="" class="btn btn-default" ng-click="createName()">Propose '{{ nameSearchString }}'</a>
+                            <a href="" class="btn btn-default" ng-click="createName()" id='propose-model'>Propose '{{ nameSearchString }}'</a>
                         </td>
                     </tr>
                 </tfoot>
@@ -52,7 +52,7 @@
         
     </div>
     <div class="modal-footer">
-        <button class="btn btn-success" ng-click="selectName()" id="selectModelButton">Select {{ suggestion.name }}</button>
+        <button class="btn btn-success" ng-disabled="!suggestion" ng-click="selectName()" id="selectModelButton">Select {{ suggestion.name }}</button>
         <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
     </div>
 </script>
