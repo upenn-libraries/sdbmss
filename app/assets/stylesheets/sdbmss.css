@@ -640,6 +640,9 @@ li.provenance:hover, li.provenance:focus {
   transition: all linear 0.5s;
   box-shadow: 0px 4px 1px 0px rgba(0,0,0,0.1);
 }
+.input-block .input-group .form-control {
+  z-index: initial;
+}
 .ui-sortable-helper {
   transition: none;
   -webkit-transition: none;
@@ -970,4 +973,11 @@ so that gray backdrop shvows up correctly */
 .inbox-heading {
   padding: 0px 15px;
   border: none;
+}
+
+.popover {
+
+}
+.popover.right {
+  margin-left: 30px;
 }

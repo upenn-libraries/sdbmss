@@ -43,13 +43,13 @@
 </div>
 
 <div ng-show="sources.length > 0">
-    <div ng-repeat="source in sources">
+    <div ng-repeat="source in sources track by $index">
         <div class="row">
             <label class="col-sm-2 control-label" ng-show="$first">Select a search result:</label>
             <div class="col-sm-2" ng-show="!$first"></div>
             <div class="col-sm-8 label-alignment">
                 <% if utility == "new" %>
-                    <a id="create-entry-link-{{ source.id }}" href="{{ sdbmutil.getEntryCreateURL(source.id) }}">{{ source.display_value }}</a> ({{ source.entries_count }} entries)
+                    <a ng-class="{'first-source' : $index == 0}" id="create-entry-link-{{ source.id }}" href="{{ sdbmutil.getEntryCreateURL(source.id) }}">{{ source.display_value }}</a> ({{ source.entries_count }} entries)
                 <% else %>
                     <a id="modify-entry-source-link" ng-click="setSource(source)">{{ source.display_value }}</a> ({{ source.entries_count }} entries) {{ source.source_type }}
                 <% end %>
