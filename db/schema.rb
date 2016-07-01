@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160701142223) do
+ActiveRecord::Schema.define(version: 20160701191846) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -592,6 +592,7 @@ ActiveRecord::Schema.define(version: 20160701142223) do
     t.string   "fullname",                  limit: 255
     t.boolean  "active",                                  default: true
     t.string   "institutional_affiliation", limit: 255
+    t.integer  "bookmark_tracker",          limit: 4,     default: 0
   end
 
   add_index "users", ["created_by_id"], name: "index_users_on_created_by_id", using: :btree

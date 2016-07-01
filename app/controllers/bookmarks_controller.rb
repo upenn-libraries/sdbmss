@@ -83,7 +83,7 @@ class BookmarksController < ApplicationController
     end
     respond_to do |format|
       format.json {
-        render json: @bookmarks_sorted
+        render json: {bookmarks: @bookmarks_sorted, bookmark_tracker: current_user.bookmark_tracker }
       }
     end
     return
@@ -109,6 +109,7 @@ class BookmarksController < ApplicationController
       flash[:message] = "Bookmark created."
       b = @bookmark.for_show
       b[:details] = details_for_render(@bookmark)
+      current_user.increment!(:bookmark_tracker)
       render json: b
     end
     #redirect_to :back
@@ -118,17 +119,13 @@ class BookmarksController < ApplicationController
     @bookmark = Bookmark.find(params[:id])
     @bookmark.destroy!
     flash[:message] = "Bookmark removed."
+    current_user.increment!(:bookmark_tracker)
     render text: 'destroyed'
     #redirect_to :back
   end
 
   def check
-    if current_user.bookmarks.count > 0
-      lt = current_user.bookmarks.order('updated_at').last
-      render json: { document_id: lt.document_id, type: lt.document_type.to_s, updated_at: lt.updated_at.to_s }
-    else
-      render json: { error: "No bookmarks" }
-    end
+    render json: {bookmark_tracker: current_user.bookmark_tracker}
   end
 
   def delete_all
@@ -141,6 +138,7 @@ class BookmarksController < ApplicationController
     else
       Bookmark.find(ids).destroy
     end
+    current_user.increment!(:bookmark_tracker)
     redirect_to bookmarks_path
   end
 
@@ -155,6 +153,7 @@ class BookmarksController < ApplicationController
       else
         #render text: 'added'
         @bookmark.update({tags: (tags + [newtag]).join(',')})
+        current_user.increment!(:bookmark_tracker)
         render json: @bookmark.for_show
       end
     end
@@ -167,6 +166,7 @@ class BookmarksController < ApplicationController
       tags = @bookmark.tags.to_s.split(',')
       if tags.include?(tag)
         tags.delete(tag)
+        current_user.increment!(:bookmark_tracker)
         @bookmark.update({tags: tags.join(',')})
         #render text: 'removed'
         render json: @bookmark.for_show

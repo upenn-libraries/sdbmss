@@ -2094,13 +2094,27 @@ var BOOKMARK_SCOPE;
 
     $scope.loadBookmarks = function () {
       $.get('/bookmarks/reload.json', {details: (window.location.pathname == "/bookmarks")}).done( function (e) {
-        $scope.all_bookmarks = e;
-        $scope.renew();
+        $scope.all_bookmarks = e.bookmarks;
+        $scope.bookmark_tracker = e.bookmark_tracker;
+        //console.log(e);
+        console.log('bookmarks loaded', $scope.all_bookmarks);
         $('.bookmarks').scroll( function (e) {
           if (localStorage) localStorage.sidebar_scroll = $(this).scrollTop();
         });
         var scroll = localStorage ? localStorage.sidebar_scroll : 0;
 
+        if (localStorage.sidebar_tab && localStorage.sidebar_tab != "undefined") {
+          $scope.active = localStorage.sidebar_tab;
+        } else {
+          for (var key in $scope.all_bookmarks) {
+            if ($scope.all_bookmarks[key].length > 0) {
+              $scope.active = key;
+              localStorage.sidebar_tab = $scope.active;
+              break;
+            }
+          }
+        }
+        $scope.renew();
         $scope.saveLocalStorage();
         //if (!tag) $('.tab-pane.active.in .bookmarks').scrollTop(scroll);
       }).error( function (e) {
@@ -2111,7 +2125,10 @@ var BOOKMARK_SCOPE;
     $scope.saveLocalStorage = function () {
       if (localStorage) {
         localStorage.all_bookmarks = angular.toJson($scope.all_bookmarks);
-        localStorage.sidebar_tab = $scope.active;
+        localStorage.bookmark_tracker = $scope.bookmark_tracker || 0;
+        if ($scope.active) {
+          localStorage.sidebar_tab = $scope.active;
+        }
       }
     }
 
@@ -2250,22 +2267,14 @@ var BOOKMARK_SCOPE;
       // 3. else, load from localstorage
       $.get("/bookmarks/check").done(function (e) {
         if (e.error) {
-          console.log(e.error);
+          //console.log(e.error);
           $scope.loadBookmarks();
         }
         else {
-          var b = $scope.findBookmark(e.type, e.document_id);
-          if (b) {
-            if (b.updated_at == e.updated_at) {
-              //  no update required;
-            } else {
-              $scope.loadBookmarks();
-            }
-          } else {
+          //console.log(e.bookmark_tracker, $scope.bookmark_tracker);
+          if (e.bookmark_tracker > $scope.bookmark_tracker) {
             $scope.loadBookmarks();
           }
-          // this needs a timeout for some reason? FIX ME
-          setTimeout($scope.renew, 500);
         }
       });
     }
@@ -2279,14 +2288,24 @@ var BOOKMARK_SCOPE;
 
         if (localStorage.all_bookmarks) {
           $scope.all_bookmarks = angular.fromJson(localStorage.all_bookmarks);
+          $scope.bookmark_tracker = Number(localStorage.bookmark_tracker) || 0;
           $scope.checkForUpdates();
+        } else {
+          $scope.loadBookmarks();
         }
-
-        if (localStorage.sidebar_tab) {
+        
+        if (localStorage.sidebar_tab && localStorage.sidebar_tab != "undefined") {
           $scope.active = localStorage.sidebar_tab;
         } else {
-          $scope.active == "Entry";
+          for (var key in $scope.all_bookmarks) {
+            if ($scope.all_bookmarks[key].length > 0) {
+              $scope.active = key;
+              localStorage.sidebar_tab = $scope.active;
+              break;
+            }
+          }
         }
+
       } else {
         $scope.loadBookmarks();
       }

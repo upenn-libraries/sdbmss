@@ -40,7 +40,7 @@
           <li><%= link_to "Edit Account", edit_user_registration_path %></li>
           <li><%= link_to(downloads_path) do %>Exports <span id="downloads-count" class="badge"><%= current_user.downloads.count %></span><% end %></li>
           <li><%= link_to "Messages", private_messages_path %></li>
-          <li><%= link_to t('blacklight.header_links.logout'), destroy_user_session_path %></li>
+          <li><%= link_to t('blacklight.header_links.logout'), destroy_user_session_path, :onclick => "localStorage.clear();" %></li>
         </ul>
       </li>
       <% else %>
