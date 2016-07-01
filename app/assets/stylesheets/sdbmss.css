@@ -476,8 +476,20 @@ div#search_results_length {
   display: none;
 }
 
+li.provenance {
+  border: 1px solid #ddd;
+}
+li.provenance:hover, li.provenance:focus {
+  background-color: aliceblue;
+  cursor: move;
+}
 .provenance_remove {
   display: none;
+}
+
+#sortable-history .placeholder:hover {
+  cursor: crosshair;
+  color: #f0ad4e;
 }
 
 .manuscript-info-show {

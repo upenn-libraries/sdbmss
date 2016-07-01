@@ -171,7 +171,7 @@
                                 <a class='btn btn-sm btn-primary' href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Link <%= @manuscript.public_id %></a>
                             </li>
                             <li>
-                                <a href="#proposed-history" data-toggle="collapse" class="toggle-propose-history btn btn-sm btn-warning">Propose History</a><span sdbm-tooltip="manuscript_propose_history"></span>
+                                <a href="#proposed-history" data-toggle="collapse" class="toggle-propose-history btn btn-sm btn-warning">Construct History</a><span sdbm-tooltip="manuscript_propose_history"></span>
                             </li>
                             <% end %>
                         </ul>
@@ -237,9 +237,6 @@
                                 <%= hidden_field_tag "provenance_attributes[][direct_transfer]", provenance.direct_transfer %>
                                 <%= hidden_field_tag "provenance_attributes[][comment]", provenance.comment %>
                                 <%= hidden_field_tag "provenance_attributes[][order]", 0, class: "order_field" %>
-                                <div class="col-sm-1">
-                                    <span class="glyphicon glyphicon-remove provenance_remove"></span>
-                                    <!--<span class="glyphicon glyphicon-move"></span>--></div>
                                 <div class="col-sm-8">
                                     <%= provenance.provenance_agent ? provenance.provenance_agent.name : "No Name Agent" %>
                                     <% if provenance.observed_name && (!provenance.provenance_agent || provenance.provenance_agent.name != provenance.observed_name) %>
@@ -254,6 +251,9 @@
                                     <% else %>
                                         (No date)
                                     <% end %>
+                                </div>
+                                <div class="col-sm-1 text-right">
+                                    <span class="glyphicon glyphicon-remove provenance_remove"></span>
                                 </div>
                             </div>
                         </li>
@@ -271,12 +271,12 @@
         <%= form_tag({:controller => "entries", :format => "html", :action => "compose"}, :method => "post", :class => "form-inline") do %>
         <%= hidden_field_tag "transaction_type", "no_transaction" %>
         <%= hidden_field_tag "manuscript_id", @manuscript.id %>
-        <div class="collapse panel panel-default panel-provenance" id="proposed-history">
+        <div class="collapse panel panel-warning panel-provenance" id="proposed-history">
             <div class="panel-heading">
                 <div class="h4">
-                    Proposed History
+                    Construct History Workspace
                     <span class="pull-right toggle-propose-history" href="#proposed-history" data-toggle="collapse">
-                        <span class="glyphicon glyphicon-remove"></span>
+                        <span class="glyphicon glyphicon-minus"></span>
                     </span>
                 </div>
             </div>

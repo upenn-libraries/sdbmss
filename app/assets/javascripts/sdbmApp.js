@@ -1898,7 +1898,12 @@ var BOOKMARK_SCOPE;
                         sdbmutil.promiseErrorHandlerFactory("Error loading entry data for this page")
                     );
                 } else {
-                    $scope.source = new Source({ source_type: "" });
+                    var today = new Date();
+                    var month = today.getMonth() + 1;
+                    month = month < 10 ? "0" + month : month;
+                    var date = today.getDate() < 10 ? "0" + today.getDate() : today.getDate();
+                    var todayString = today.getFullYear() + "-" + month + "-" + date;
+                    $scope.source = new Source({ source_type: "", date_accessed: todayString });
                 }
             },
             // error callback
