@@ -5,6 +5,12 @@ describe "Sign up / Edit Profile", :js => true do
 
   it "should allow sign up" do
     visit new_user_registration_path
+    
+    # show that you've read the FAQ!
+    10.times do |i|
+        find("label[for=faq#{i+1}]").click
+    end
+
     fill_in 'user_username', :with => "newuser"
     fill_in 'user_email', :with => "testy@mctest.com"
     fill_in 'user_password', :with => 'somethingunguessable'
