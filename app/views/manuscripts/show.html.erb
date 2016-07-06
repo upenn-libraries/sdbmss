@@ -10,8 +10,14 @@
     .proposal {
       overflow: hidden;
     }
-    #proposed-history {
-      position: fixed;
+    
+    #proposed-history.affix {
+      position: fixed !important;
+      top: 10px;
+    }
+
+    #proposed-history.affix-bottom, #proposed-history.affix-top {
+        position: absolute;
     }
 </style>
 <% if user_signed_in? %>
@@ -118,55 +124,37 @@
     <div class="col-sm-12">
         <div class="row">
             <div class="col-sm-7">
-                <%= form_for (@manuscript), html: {class: "form-inline"} do |f| %>
-                    <% if can? :edit, @manuscript %>
-                        <span class="btn btn-success pull-right" id="toggle-manuscript-edit">Edit</span>
-                        <span class="manuscript-info-buttons pull-right input-group" style="display: none;">
-                            <%= f.submit "Update", class: "form-control" %>
-                            <a href="" class="input-group-addon cancel-manuscript-edit">Cancel</a>
-                        </span>
-                    <% end %>
-                    <div class='h1'>
-                        <%= @manuscript.public_id %>
-                        <br>
-                        <span class='small'><strong sdbm-tooltip="manuscript_location">Last Known Location </strong> 
-                            <% if can? :edit, @manuscript %>
-                                <%= f.text_field :location, class: "form-control manuscript-info manuscript-info-show", readonly: true %>
-                            <% else %>
-                                <span class="manuscript-edit-input"><%= @manuscript.location || "Unknown" %></span>
-                            <% end %>
-                        </span><br>
-                        <ul class="small manuscript-titles"><strong sdbm-tooltip='manuscript_title'>Title(s) </strong>
-                            <% if can? :edit, @manuscript %>
-                                <%= f.text_field :name, class: "form-control manuscript-info manuscript-info-show", readonly: true %>
-                            <% else %>
-                                <% if @manuscript.name %>
-                                    <span class="manuscript-edit-input"><%= @manuscript.name %></span>
-                                <% end %>
-                            <% end %>
-                            <br>
-                            <% @manuscript_titles.each do |title| %>
-                                <span class='label label-info label-tag'><%= title %></span>
-                            <% end %>
-                        </ul>
-                    </div>
-                    <% end %>
-                <% if current_user %>
-                    <%= hidden_field_tag "username", current_user.username, id: "username" %> 
-                <% end %>
+                <div class='h1'>
+                    <ul class="small manuscript-titles">
+                        <strong sdbm-tooltip='manuscript_title'>Associated Title(s) </strong>
+                        <% @manuscript_titles.each do |title| %>
+                            <span class='label label-info label-tag' title="<%= title %>"><%= title %></span>
+                        <% end %>
+                    </ul>
+                    <ul class="small manuscript-titles">
+                        <strong sdbm-tooltip="manuscript_location">Last Known Location</strong>
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <%= @entries.first.source %>
+                            </div>
+                        </div>
+                    </ul>
+                </div>
             </div>
             <div class="col-sm-5">
                 <div class="panel panel-default text-right">
-                    <div class="panel-heading"><span class="h3">Tools</span></div>
+                    <div class="panel-heading">
+                        <h2 class="h2">
+                            <a onclick="addBookmark(<%= @manuscript.id %>, 'Manuscript');" class="btn btn-sm btn-default bookmark-link pull-left" in_bookmarks="/manuscripts/<%= @manuscript.id %>"><span class="glyphicon glyphicon-bookmark"></span></a>
+                            <%= @manuscript.public_id %>
+                        </h2>
+                    </div>
                     <div class="panel-body">
                         <ul class="list-inline">
                             <li>
                                 <a class='btn btn-sm btn-info' data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
                             </li>
                             <% if can? :link, @manuscript %>
-                            <li>
-                              <a onclick="addBookmark(<%= @manuscript.id %>, 'Manuscript');" class="btn btn-sm btn-default bookmark-link" in_bookmarks="/manuscripts/<%= @manuscript.id %>"><span class="glyphicon glyphicon-bookmark"></span></a>
-                            </li>
                             <li class="manage_entry">
                                 <a class='btn btn-sm btn-primary' href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Link <%= @manuscript.public_id %></a>
                             </li>
@@ -202,7 +190,7 @@
             </span>
         </div>
 
-        <% @manuscript.entries.sort { |a, b| a.source.date.to_s <=> b.source.date.to_s }.each_with_index do |entry, index| %>
+        <% @entries.each_with_index do |entry, index| %>
         <div class="panel panel-provenance <%= entry.source.source_type_id == 8 ? 'panel-warning' : 'panel-default' %>">
             <div class="panel-heading">
                 <div class="row">
@@ -271,7 +259,7 @@
         <%= form_tag({:controller => "entries", :format => "html", :action => "compose"}, :method => "post", :class => "form-inline") do %>
         <%= hidden_field_tag "transaction_type", "no_transaction" %>
         <%= hidden_field_tag "manuscript_id", @manuscript.id %>
-        <div class="collapse panel panel-warning panel-provenance" id="proposed-history">
+        <div class="collapse panel panel-warning panel-provenance" id="proposed-history" data-spy="affix" data-offset-top="340" data-offset-bottom="400">
             <div class="panel-heading">
                 <div class="h4">
                     Construct History Workspace

@@ -25,7 +25,7 @@ class ManuscriptsController < SearchableAuthorityController
     @manuscript_comment.build_comment
 
     @manuscript_titles = @manuscript.all_titles
-       
+    @entries = @manuscript.entries.joins(:source).order("date desc")  
   end
 
   def entry_candidates
