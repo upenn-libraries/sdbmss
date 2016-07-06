@@ -366,9 +366,21 @@ var BOOKMARK_SCOPE;
         $scope.$watch('agent', $scope.findSourceCandidates);
     });
 
+    sdbmApp.filter('humanize', function () {
+      return function (input) {
+        input = input || '';
+        var capitalize = function(match, p1) {
+         return p1.toUpperCase();
+        }
+        var output = input.replace(/_/g, ' ').replace(/\b(\w)/g, capitalize);
+        return output;
+      }
+    });
+
     sdbmApp.controller("TestCtrl", function ($scope, $http, $modalInstance, $modal, recordType, model, type) {
       $scope.suggestions = [];
       $scope.suggestion = undefined;
+      $scope.type = type.replace('is_', '');
 
       $('.search-form').focus();
 
@@ -953,7 +965,7 @@ var BOOKMARK_SCOPE;
                         delete entryToSave.sale[role];
                     }
                 });
-                console.log(entryToSave.sale);
+                //console.log(entryToSave.sale);
                 entryToSave.sales = [ entryToSave.sale ];
                 delete entryToSave.sale;
             } else {

@@ -1,6 +1,6 @@
 <script type="text/ng-template" id="selectNameAuthority.html">
     <div class="modal-header">
-        <h3 class="modal-title">Find Name
+        <h3 class="modal-title">Find {{ type | humanize }} in Name Authority
             <small class='pull-right form-inline'>
             <label for="searchNameAuthority">Search: </label><input autofocus type="text" id="searchNameAuthority" class="form-control" ng-change="autocomplete()" ng-model="nameSearchString"></small>
         </h3>
@@ -34,8 +34,8 @@
                         <td>{{ s.authors_count }}</td>
                         <td>{{ s.artists_count }}</td>
                         <td>{{ s.scribes_count }}</td>
-                        <td>{{ s.provenance_agent_count }}</td>
-                        <td>{{ s.source_agent_count }}</td>
+                        <td>{{ s.provenance_count }}</td>
+                        <td>{{ s.source_agents_count }}</td>
                         <td>{{ s.reviewed }}</td>
                     </tr>
                 </tbody>

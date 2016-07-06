@@ -1,6 +1,6 @@
 <script type="text/ng-template" id="selectModelAuthority.html">
     <div class="modal-header">
-        <h3 class="modal-title">Find Name
+        <h3 class="modal-title">Find {{ type | humanize }} in Name Authority
             <small class='pull-right form-inline'>
             <label for="searchNameAuthority">Search: </label><input autofocus type="text" id="searchModelAuthority" class="search-form form-control" ng-change="autocomplete()" ng-model="nameSearchString"></small>
         </h3>

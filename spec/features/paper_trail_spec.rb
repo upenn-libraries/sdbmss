@@ -113,6 +113,10 @@ describe "Paper trail", :js => true do
       page.reset!
     end
 
+    require "lib/data_entry_helpers"
+    include DataEntryHelpers    
+
+=begin
     # create an entry, filling out all fields
 
     # create an entry, filling out all fields
@@ -295,7 +299,7 @@ describe "Paper trail", :js => true do
       comment = entry.comments.first
       expect(comment.comment).to eq('This info is correct')
     end
-
+=end
     describe '(for simple changes)' do
 
       it 'should load the history page successfully' do

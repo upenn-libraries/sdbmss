@@ -18,9 +18,9 @@ class Entry < ActiveRecord::Base
   TYPE_TRANSACTION_NONE = 'no_transaction'
 
   TYPES_TRANSACTION = [
+    [TYPE_TRANSACTION_NONE, 'Not a transaction'],
     [TYPE_TRANSACTION_SALE, 'A Sale'],
     [TYPE_TRANSACTION_GIFT, 'A Gift'],
-    [TYPE_TRANSACTION_NONE, 'Not a transaction'],
   ]
 
   include UserFields
