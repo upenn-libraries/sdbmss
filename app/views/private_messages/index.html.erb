@@ -1,13 +1,13 @@
 <div class="panel panel-default">
-  <div class="panel-heading inbox-heading">
+  <div class="panel-heading split-heading">
     <div class="row">
-      <div class="col-sm-4 text-right inbox-column <%= @sent_by ? 'text-primary': 'bg-primary' %>">
+      <div class="col-sm-4 text-right full-column <%= @sent_by ? 'text-primary': 'bg-primary' %>">
         <%= link_to "INBOX", private_messages_path, class: 'h3' %>
       </div>
-      <div class="col-sm-4 inbox-column <%= @sent_by ? 'bg-primary': 'text-primary' %>">
+      <div class="col-sm-4 full-column <%= @sent_by ? 'bg-primary': 'text-primary' %>">
         <%= link_to "SENT", private_messages_path(sent_by: true), class: 'h3' %>
       </div>
-      <div class="col-sm-4 text-right inbox-column <%= @sent_by ? 'bg-primary': 'text-primary' %>">
+      <div class="col-sm-4 text-right full-column <%= @sent_by ? 'bg-primary': 'text-primary' %>">
         <%= link_to new_private_message_path, class: 'h3' do %>
           New Message 
         <% end %>

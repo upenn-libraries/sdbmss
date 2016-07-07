@@ -203,6 +203,20 @@ class Entry < ActiveRecord::Base
     get_sale_agent_name(SaleAgent::ROLE_BUYER)
   end
 
+  def sale
+    sales.first
+  end
+
+  def sale_agent(role)
+    t = sale
+    if t
+      sa = t.get_sale_agent_with_role(role)
+      if sa
+        sa.agent
+      end
+    end
+  end
+
   def get_sale_sold
     t = get_sale
     t.sold if t

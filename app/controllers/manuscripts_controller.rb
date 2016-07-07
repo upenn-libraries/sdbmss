@@ -26,9 +26,30 @@ class ManuscriptsController < SearchableAuthorityController
 
     @manuscript_titles = @manuscript.all_titles
     @entries = @manuscript.entries.joins(:source).order("date desc")
-    location_entries = @entries.reject { |e| e.source.date.blank? || e.institution.blank? }
-    if location_entries.count >= 1
-      @location = location_entries.first
+    @entries.reject { |e| e.source.date.blank? }.each do |e|
+      if e.institution
+        @location_source = e.source
+        @location_name = e.institution
+        @location = e
+        return
+      elsif e.sale && e.sale.sale_agents.count > 0
+        puts 'right!'
+        @location_source = e.source
+        @location = e
+        if e.sale_agent('buyer')
+          @location_name = e.sale_agent('buyer')
+        elsif e.sale_agent('seller_or_holder')
+          @location_name = e.sale_agent('seller_or_holder')
+        else 
+          @location_name = e.sale_agent('selling_agent')
+        end
+        return
+      elsif e.source.source_agents.count > 0
+        @location_source = e.source
+        @location = e
+        @location_name = e.source.source_agents.first.agent
+        return
+      end
     end
   end
 

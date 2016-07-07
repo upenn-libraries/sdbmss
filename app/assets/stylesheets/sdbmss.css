@@ -148,17 +148,16 @@ body {
   color: #333;
   border-bottom: 4px solid #fff;
 }
-#my_bookmarks .dl-horizontal > dd {
+.dl-inline .dl-horizontal > dd {
     margin-left: 0px;
 }
-#my_bookmarks .dl-horizontal > dt {
+.dl-inline .dl-horizontal > dt {
     width: auto;
     font-weight: bold;
     text-align: left;
-    color: #337AB7;
     padding-right: 10px;
 }
-#my_bookmarks .document-show-heading {
+.dl-inline .document-show-heading {
   padding: 0px !important;
   margin-bottom: 8px;
 }
@@ -967,12 +966,15 @@ so that gray backdrop shvows up correctly */
 
 }
 
-.inbox-column {
+.full-column {
   padding: 10px 15px;
 }
-.inbox-heading {
+.split-heading {
   padding: 0px 15px;
   border: none;
+}
+.manuscript-tools li {
+  margin: 5px 0px;
 }
 
 .popover {

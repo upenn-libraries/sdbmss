@@ -123,50 +123,50 @@
 <div class="row">
     
     <div class="col-sm-12">
-        <div class="row">
-            <div class="col-sm-7">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <span class='h1'>
-                            <strong class='small'>Associated Title(s) </strong>
-                        </span>
-                    </div>
-                    <div class="panel-body">
-                        <% @manuscript_titles.each do |title| %>
-                            <div class='associated_title' title="<%= title %>"><%= title %></div>
-                        <% end %>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <span class='h1'>
-                            <strong class='small'>Last Known Location</strong>
-                        </span>
-                    </div>
-                    <div class="panel-body">
-                    <% if @location %>
-                        <%= @location.source.display_value %><br>
-                        <%= @location.institution %>
-                    <% else %>
-                        No entry containing verifiable location information exists.
-                    <% end %>
-                    </div>
-                    <div class="panel-footer text-right">
-                        Know something about the wherabouts of this proposed manuscripts? 
-                        <%= link_to "Add A New Observation", new_source_path({create_entry: 1, source_type: 4, manuscript_id: @manuscript.id}) %>
-                    </div>
+
+        <h1>
+            <%= @manuscript.public_id %>
+            <small class="pull-right"><a onclick="addBookmark(<%= @manuscript.id %>, 'Manuscript');" class="btn btn-sm btn-default bookmark-link pull-left" in_bookmarks="/manuscripts/<%= @manuscript.id %>"><span class="glyphicon glyphicon-bookmark"></span></a></small>
+        </h1>
+        <p>This <strong class='text-primary'>Manuscript Record</strong> shows linked entries <strong>believed</strong> to refer to the same physical manuscript.  You can use this space to determine <span class='text-info'>Current Location</span> and <span class="text-info">Provenance</span>, to create your own <span class="text-success">Personal Observation</span> about this manuscript, or to make a <span class="text-warning">Comment</span>.</p>
+
+        <div class="panel panel-default">
+            <div class="panel-heading split-heading">
+                <div class="row">
+                    <div class="col-sm-5 full-column"><span class="h4">Associated Title(s)</span></div>
+                    <div class="col-sm-4 full-column bg-success text-success"><span class="h4">Most Recently Observed Location</span></div>
+                    <div class="col-sm-3 full-column text-right bg-primary text-primary"><span class="h4">Tools</span></div>
                 </div>
             </div>
-            <div class="col-sm-5">
-                <div class="panel panel-default text-right">
-                    <div class="panel-heading">
-                        <span class="h2">
-                            <%= @manuscript.public_id %>
-                        </span>
-                        <a onclick="addBookmark(<%= @manuscript.id %>, 'Manuscript');" class="btn btn-sm btn-default bookmark-link pull-left" in_bookmarks="/manuscripts/<%= @manuscript.id %>"><span class="glyphicon glyphicon-bookmark"></span></a>
+            <div class="panel-body" style="height: 190px;">
+                <div class="row" style="height: 100%">
+                    <div class="col-sm-5" style="height: 100%; overflow-y: scroll;">
+                        <ul class="list-unstyled">
+                        <% @manuscript_titles.each do |title| %>
+                            <li class='associated_title' title="<%= title %>"><%= title %></li>
+                        <% end %>
+                        </ul>
                     </div>
-                    <div class="panel-body">
-                        <ul class="list-inline">
+                    <div class="col-sm-4 dl-inline">
+                        <dl class="document-metadata dl-horizontal">
+                            <% if @location %>
+                                <dt class='text-success'>Entry</dt>
+                                <dd>
+                                    <%= link_to @location.public_id, entry_path(@location) %><br>
+                                </dd>
+                                <dt class='text-success'>Source</dt>
+                                <dd>
+                                    <%= link_to @location_source, source_path(@location_source) %><br>
+                                </dd>
+                                <dt class='text-success'>Location</dt>
+                                <dd><%= link_to @location_name, name_path(@location_name) %></dd>
+                            <% else %>
+                                No entry containing verifiable location information exists.
+                            <% end %>
+                        </dl>
+                    </div>
+                    <div class="col-sm-3 text-right">
+                        <ul class='list-unstyled manuscript-tools'>
                             <li>
                                 <a class='btn btn-info' data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
                             </li>
@@ -179,12 +179,11 @@
                             </li>
                             <% end %>
                         </ul>
-                        <p class='text-muted'><!--This manuscript record aggregates entries
-                        citing a manuscript that has been mentioned in sources
-                        or observations. -->Do not assume that the manuscript is
-                        held by the University of Pennsylvania Libraries.</p>
                     </div>
                 </div>
+            </div>
+            <div class="panel-footer">
+                <p class="text-muted text-right">Do not assume this manuscript is held by the University of Pennsylvania Libraries</p>
             </div>
         </div>
     </div>
@@ -192,20 +191,19 @@
 
 <div class="row">
     <div class="col-sm-12 entries" id="provenanceContainer">
-        <div class="well">
-            <span class="h3">
-                <div class="row">
-                    <div class="col-sm-8">
-                            Entry Provenance<br>
-                            <small>this Manuscript has <%= @manuscript.entries.count %> entries</small>
-                    </div>
-                    <div class="col-sm-4 text-right">
-                        <span id="collapse-all" data-toggle="collapse" data-target=".panel-collapse" class="glyphicon glyphicon-chevron-down"></span>
-                    </div>
+        <div class="h3">
+            <div class="row" data-toggle="collapse" data-target=".panel-collapse">
+                <div class="col-sm-8">
+                    Associated Entries With Provenance Data    
+                    <small>(this Manuscript has <%= @manuscript.entries.count %> entries)</small>
                 </div>
-            </span>
+                <div class="col-sm-4 text-right">
+                    <span id="collapse-all" class="glyphicon glyphicon-chevron-down"></span>
+                </div>
+            </div>
         </div>
-
+        <br>
+    
         <% @entries.each_with_index do |entry, index| %>
         <div class="panel panel-provenance <%= entry.source.source_type_id == 8 ? 'panel-warning' : 'panel-default' %>">
             <div class="panel-heading">
@@ -213,10 +211,8 @@
                     <div class="col-sm-3">
                         <span class="h4"><a href="<%= url_for entry %>"><%= entry.public_id %></a></span>
                     </div>
-                    <div class="col-sm-8" data-toggle="collapse" href="#entry_provenance_<%= index %>">
+                    <div class="col-sm-9" data-toggle="collapse" href="#entry_provenance_<%= index %>">
                         <span class="h4"><%= entry.source_id == 34611 ? "This provenance is based on a personal observation of the SDBM" : entry.source.display_value %></span>
-                    </div>
-                    <div class="col-sm-1">
                         <a class="glyphicon glyphicon-chevron-down pull-right" data-toggle="collapse" href="#entry_provenance_<%= index %>"></a>
                     </div>
                 </div>
@@ -297,9 +293,10 @@
 
     <div class="col-sm-12">
 
-        <h4>Share additional information about this manuscript in the box below. Your comments will be displayed publicly.</h4>
+        <h4>Do you have more data on the Manuscript?  <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %> to record your information.
+            <br><small>Use this option when you wish to contribute data on <strong>multiple aspects</strong> of this maniscript.  Once you create your <span class="text-success">Personal Observation</span>, your data will included in the links displayed above.</small>
+        </h4>
 
-        <p>If you have significant knowledge of this manuscript, please create a Personal Observation entry (link to create new source page?) instead of leaving a comment. Use this option when you wish to contribute data on multiple aspects of this manuscript. Once you create your Personal Observation, you can link it to this Manuscript Record, where your data will be included in the composite information displayed on this page. This option is especially useful if you have information regarding provenance agents. Once you link your Personal Observation to the Manuscript Record, you can add the provenance agents from your entry into the Proposed History.</p>
 
         <% if (comments = @manuscript.comments.where(public: true)).present? %>
         <table class="table table-striped">
@@ -335,7 +332,7 @@
                     <% end %>
                 <div class="row">
                     <div class="col-sm-12 form-group">
-                        <h4>Leave a comment</h4>
+                        <p><lead>Or leave a comment</lead> to add general information or commentary about this Manuscript Record</p>
                         <%= f.text_area :comment, class: "form-control", rows: 5 %>
                     </div>
         <!--            <div class="col-sm-12 checkbox">

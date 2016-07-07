@@ -33,6 +33,7 @@ $(document).ready( function (e) {
       title: "Click 'Add New Entry'",
       content: "To add a new entry, click this link on the Dashboard page",
       path: "/dashboard",
+      template: noButtons,      
       reflex: true,
       backdrop: true
     },
@@ -47,17 +48,17 @@ $(document).ready( function (e) {
     {
       element: ".find-source-container input[name=date]",
       title: "Enter the date",
-      content: "Fill in the year 2012",
+      content: "Fill in the year 2016",
       template: noButtons,
-      value: "2012",
+      value: "2016",
       onShown: matchValue
     },
     {
       element: ".find-source-container input[name=agent]",
       title: "Enter the name of the source agent",
-      content: "Fill in the name 'Sotheby'",
+      content: "Fill in the name 'Les Enluminures'",
       template: noButtons,
-      value: "Sotheby",
+      value: "Les Enluminures",
       onShown: matchValue
     },
     {
@@ -78,7 +79,7 @@ $(document).ready( function (e) {
     {
       element: "",
       title: "Adding an Entry",
-      content: "An Entry contains a snapshot of information about a Manuscript.  Follow along as we enter data from our <a target='_blank' href='http://www.textmanuscripts.com/medieval/paschasius-radbertus-medieval-manuscript-87606?inventorySearch=1&p=1'>Sample Source</a>.",
+      content: "An entry is a observation about a single manuscript as described in a Source.  Follow along as we enter data from our <a target='_blank' href='http://www.textmanuscripts.com/medieval/paschasius-radbertus-medieval-manuscript-87606?inventorySearch=1&p=1'>Sample Source</a>.",
       backdrop: true,
       orphan: true
     },
@@ -195,7 +196,7 @@ $(document).ready( function (e) {
       template: noButtons,
       onShown: matchValue,
       placement: 'bottom'
-    },
+    },/*
     {
       element: "#add_language",
       title: "Add Language",
@@ -292,7 +293,7 @@ $(document).ready( function (e) {
       reflex: true,
       template: noButtons,
       placement: 'bottom'
-    },
+    },*/
     {
       element: "#folios",
       title: "Enter the number of Folios",
@@ -301,6 +302,13 @@ $(document).ready( function (e) {
       template: noButtons,
       onShown: matchValue,
       placement: 'bottom'
+    },
+    {
+      element: "#cancelEdit",
+      title: "Cancel creating this Entry",
+      content: "You can either save your work or discard it.  Since this is a sample entry, click 'cancel'.",
+      template: noButtons,
+      backdrop: true
     },
     {
       element: "",
