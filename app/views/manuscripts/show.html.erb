@@ -126,28 +126,27 @@
 
         <h1>
             <%= @manuscript.public_id %>
-            <small class="pull-right"><a onclick="addBookmark(<%= @manuscript.id %>, 'Manuscript');" class="btn btn-sm btn-default bookmark-link pull-left" in_bookmarks="/manuscripts/<%= @manuscript.id %>"><span class="glyphicon glyphicon-bookmark"></span></a></small>
         </h1>
         <p>This <strong class='text-primary'>Manuscript Record</strong> shows linked entries <strong>believed</strong> to refer to the same physical manuscript.  You can use this space to determine <span class='text-info'>Current Location</span> and <span class="text-info">Provenance</span>, to create your own <span class="text-success">Personal Observation</span> about this manuscript, or to make a <span class="text-warning">Comment</span>.</p>
-
+    </div>
+    <div class="col-sm-9">
         <div class="panel panel-default">
             <div class="panel-heading split-heading">
                 <div class="row">
-                    <div class="col-sm-5 full-column"><span class="h4">Associated Title(s)</span></div>
-                    <div class="col-sm-4 full-column bg-success text-success"><span class="h4">Most Recently Observed Location</span></div>
-                    <div class="col-sm-3 full-column text-right bg-primary text-primary"><span class="h4">Tools</span></div>
+                    <div class="col-sm-7 full-column"><span class="h4">Associated Title(s)</span></div>
+                    <div class="col-sm-5 full-column bg-success text-success"><span class="h4">Most Recently Observed Location</span></div>
                 </div>
             </div>
             <div class="panel-body" style="height: 190px;">
                 <div class="row" style="height: 100%">
-                    <div class="col-sm-5" style="height: 100%; overflow-y: scroll;">
+                    <div class="col-sm-7" style="height: 100%; overflow-y: scroll;">
                         <ul class="list-unstyled">
                         <% @manuscript_titles.each do |title| %>
                             <li class='associated_title' title="<%= title %>"><%= title %></li>
                         <% end %>
                         </ul>
                     </div>
-                    <div class="col-sm-4 dl-inline">
+                    <div class="col-sm-5 dl-inline">
                         <dl class="document-metadata dl-horizontal">
                             <% if @location %>
                                 <dt class='text-success'>Entry</dt>
@@ -165,26 +164,42 @@
                             <% end %>
                         </dl>
                     </div>
-                    <div class="col-sm-3 text-right">
-                        <ul class='list-unstyled manuscript-tools'>
-                            <li>
-                                <a class='btn btn-info' data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
-                            </li>
-                            <% if can? :link, @manuscript %>
-                            <li class="manage_entry">
-                                <a class='btn btn-primary' href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Link <%= @manuscript.public_id %></a>
-                            </li>
-                            <li>
-                                <a href="#proposed-history" data-toggle="collapse" class="toggle-propose-history btn btn-warning">Construct History</a><span sdbm-tooltip="manuscript_propose_history"></span>
-                            </li>
-                            <% end %>
-                        </ul>
-                    </div>
                 </div>
             </div>
             <div class="panel-footer">
-                <p class="text-muted text-right">Do not assume this manuscript is held by the University of Pennsylvania Libraries</p>
+                <div class="row">
+                    <div class="col-sm-12 text-right">
+                        Do you have more recent information?
+                         <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading text-right"><span class="h4">Tools</span></div>
+            <div class="panel-body text-right" style="height: 190px;">
+                <ul class='list-unstyled manuscript-tools'>
+                    <li>
+                        <a class='btn btn-info' data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
+                    </li>
+                    <% if can? :link, @manuscript %>
+                    <li class="manage_entry">
+                        <a class='btn btn-primary' href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Link <%= @manuscript.public_id %></a>
+                    </li>
+                    <li>
+                        <a href="#proposed-history" data-toggle="collapse" class="toggle-propose-history btn btn-warning">Construct History</a><span sdbm-tooltip="manuscript_propose_history"></span>
+                    </li>
+                    <li>
+                        <a onclick="addBookmark(<%= @manuscript.id %>, 'Manuscript');" class="btn btn-default bookmark-link" in_bookmarks="/manuscripts/<%= @manuscript.id %>"><span class="glyphicon glyphicon-bookmark"></span> Bookmark</a>
+                      </li>  
+                    <% end %>
+                </ul>
+            </div>
+            <!--<div class="panel-footer text-right">
+                <p class="text-muted">Do not assume this manuscript is held by the University of Pennsylvania Libraries</p>            
+            </div>-->
         </div>
     </div>
 </div>
