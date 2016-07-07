@@ -15,7 +15,11 @@
 <input type="hidden" id="create_entry" value="1" />
 <% end %>
 
-<form id="source-form" name="form" class="form-horizontal sdbmss-form" autocomplete="off" ng-controller="SourceCtrl" novalidate >
+<% if params[:source_type] %>
+    <span ng-init="source.source_type=<%= params[:source_type] %>"></span>
+<% end %>
+
+<form id="source-form" name="form" class="form-horizontal sdbmss-form" autocomplete="off" ng-controller="SourceCtrl" novalidate data-ng-cloak>
 
     <div class="row">
         <div class="col-sm-12 text-center">
@@ -109,7 +113,14 @@
             <div class="form-group row">
                 <label for="institution" class="col-sm-2 control-label"><span sdbm-tooltip="source_selling_agent">Selling Agent</span></label>
                 <div class="col-sm-6">
-                    <input id="selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                    <!--<input id="selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
+
+                    <a id="find_selling_agent_name_authority_0" ng-show='source.selling_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source, 'selling_agent', 'is_provenance_agent')">Find in Name Authority</a>
+                    <div id="show_selling_agent_name_authority_0" ng-if='source.selling_agent.agent != undefined && source.selling_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                        <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source.selling_agent, 'agent')"></a>
+                        {{ source.selling_agent.agent.name }}
+                    </div>
+
                 </div>
             </div>
 
@@ -135,7 +146,14 @@
             <div class="form-group row">
                 <label for="institution" class="col-sm-2 control-label"><span sdbm-tooltip="source_selling_agent">Selling Agent</span></label>
                 <div class="col-sm-6">
-                    <input id="selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                    <!--<input id="selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
+
+                    <a id="find_selling_agent_name_authority_0" ng-show='source.selling_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source, 'selling_agent', 'is_provenance_agent')">Find in Name Authority</a>
+                    <div id="show_selling_agent_name_authority_0" ng-if='source.selling_agent.agent != undefined && source.selling_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                        <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source.selling_agent, 'agent')"></a>
+                        {{ source.selling_agent.agent.name }}
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -145,7 +163,14 @@
             <div class="form-group row">
                 <label for="institution" class="col-sm-2 control-label"><span sdbm-tooltip="source_institution">Institution/Collection</span></label>
                 <div class="col-sm-6">
-                    <input id="institution" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.institution.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                    <!--<input id="institution" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.institution.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
+
+                    <a id="find_institution_name_authority_0" ng-show='source.institution.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source, 'institution', 'is_provenance_agent')">Find in Name Authority</a>
+                    <div id="show_institution_name_authority_0" ng-if='source.institution.agent != undefined && source.institution.agent.id != undefined' class="well well-sm well-name-authority">
+                        <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source.institution, 'agent')"></a>
+                        {{ source.institution.agent.name }}
+                    </div>
+
                 </div>
             </div>
 
@@ -206,7 +231,13 @@
             <div class="form-group row">
                 <label for="institution" class="col-sm-2 control-label"><span sdbm-tooltip="source_institution">Institution/Collection</label>
                 <div class="col-sm-6">
-                    <input class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.institution.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                    <!--<input class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.institution.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
+
+                    <a id="find_institution_name_authority_0" ng-show='source.institution.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source, 'institution', 'is_provenance_agent')">Find in Name Authority</a>
+                    <div id="show_institution_name_authority_0" ng-if='source.institution.agent != undefined && source.institution.agent.id != undefined' class="well well-sm well-name-authority">
+                        <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source.institution, 'agent')"></a>
+                        {{ source.institution.agent.name }}
+                    </div>
                 </div>
             </div>
 
@@ -300,16 +331,16 @@
         
          <div class="row">
             <div class="col-sm-12 text-center">
-                <legend>Comments</legend>
+                <legend>Other Info</legend>
             </div>
         </div>
 
         <div class="form-group row">
             <label for="editorial_comments" class="col-sm-2 control-label">
-                <span sdbm-tooltip="source_comments">Comments</span>
+                <span sdbm-tooltip="source_comments">Other Info</span>
             </label>
             <div class="col-sm-9">
-                <textarea class="form-control" id="comments" data-ng-model="source.comments"></textarea>
+                <textarea class="form-control" id="comments" data-ng-model="source.other_info"></textarea>
             </div>
         </div>
 
@@ -386,3 +417,4 @@
 
 <%= render "shared/create_entity_with_name" %>
 <%= render "shared/create_name" %>
+<%= render "shared/select_name_authority" %>

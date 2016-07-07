@@ -1,0 +1,58 @@
+<script type="text/ng-template" id="selectModelAuthority.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Find {{ type | humanize }} in Name Authority
+            <small class='pull-right form-inline'>
+            <label for="searchNameAuthority">Search: </label><input autofocus type="text" id="searchModelAuthority" class="search-form form-control" ng-change="autocomplete()" ng-model="nameSearchString"></small>
+        </h3>
+    </div>
+    <div class="modal-body form-horizontal compress-whitespace">
+
+    <div class="row">
+        <div class='col-sm-12'>
+            <table class='table table-condensed' style="margin-bottom: 0px;">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th># Entries</th>
+                        <th>Reviewed</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-show="suggestions.length <= 0">
+                        <td>No results found.</td>
+                    </tr>
+                    <tr ng-repeat="s in suggestions track by $index" ng-click="selectSuggestion(s)" ng-class="{success: s == suggestion}">
+                        <td><input type='radio' ng-click='selectSuggestion(s)' style="opacity: 0;"></input></td>
+                        <td>{{ s.id }}</td>
+                        <td>{{ s.name }}</td>
+                        <td>{{ s.entries_count }}</td>
+                        <td>{{ s.reviewed }}</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr ng-show="proposeNew && nameSearchString.length > 0">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>                        
+                            <a href="" class="btn btn-default" ng-click="createName()" id='propose-model'>Propose '{{ nameSearchString }}'</a>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+        
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-success" ng-disabled="!suggestion" ng-click="selectName()" id="selectModelButton">Select {{ suggestion.name }}</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</script>

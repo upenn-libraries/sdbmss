@@ -158,7 +158,7 @@ class EntriesController < SearchableAuthorityController
 
   # creating composite provenance
   def compose
-    s = Source.new({date: Date.today.strftime("%Y-%m-%d"), title: "Manuscript Record: SDBM_MS_#{params[:manuscript_id]}", author: current_user.username, source_type: SourceType.find(8)})
+    s = Source.new({date: Date.today.strftime("%Y-%m-%d"), title: "Provenance Observation (#{current_user.username}): SDBM_MS_#{params[:manuscript_id]}", author: current_user.username, source_type: SourceType.find(8), created_by: current_user, status: Source::TYPE_STATUS_ENTERED})
     s.save!
     params[:source_id] = s.id
     create

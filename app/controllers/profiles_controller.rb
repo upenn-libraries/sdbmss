@@ -2,6 +2,12 @@
 class ProfilesController < ApplicationController
 
   def show
+    if !current_user
+      flash[:error] = "You must be logged in to view someone's profile page."
+      redirect_to root_path
+      return
+    end
+
     @user = User.find_by(username: params[:username])
     @display = {
       id: @user.id,

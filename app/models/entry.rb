@@ -18,9 +18,9 @@ class Entry < ActiveRecord::Base
   TYPE_TRANSACTION_NONE = 'no_transaction'
 
   TYPES_TRANSACTION = [
+    [TYPE_TRANSACTION_NONE, 'Not a transaction'],
     [TYPE_TRANSACTION_SALE, 'A Sale'],
     [TYPE_TRANSACTION_GIFT, 'A Gift'],
-    [TYPE_TRANSACTION_NONE, 'Not a transaction'],
   ]
 
   include UserFields
@@ -201,6 +201,20 @@ class Entry < ActiveRecord::Base
 
   def get_sale_buyer_name
     get_sale_agent_name(SaleAgent::ROLE_BUYER)
+  end
+
+  def sale
+    sales.first
+  end
+
+  def sale_agent(role)
+    t = sale
+    if t
+      sa = t.get_sale_agent_with_role(role)
+      if sa
+        sa.agent
+      end
+    end
   end
 
   def get_sale_sold

@@ -47,7 +47,8 @@ describe "Blacklight Search", :js => true do
       expect(page).to have_link(entry.public_id)
     end
 
-    expect(page).to have_selector(".export-csv")
+    # now need to be logged in to export to csv!
+    #expect(page).to have_selector(".export-csv")
   end
 
   it "should display results for an Author facet" do

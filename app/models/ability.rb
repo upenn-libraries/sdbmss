@@ -46,6 +46,9 @@ class Ability
       # "owned" by the user in the same way as an Entry.
       can :edit, Manuscript
       can :update, Manuscript
+
+      can :unlink, Manuscript, :created_by_id => user.id
+      can :unlink, Entry, :created_by_id => user.id
     end
 
     if ['editor', 'admin'].member? user.role
@@ -54,10 +57,26 @@ class Ability
       [Entry, Sale, Language, Manuscript, Name, Place, Source].each do |clazz|
         can :merge, clazz
       end
+      [Entry, Source, Manuscript, Name].each do |clazz|
+        can :manage, clazz
+      end
+      [Manuscript, Name].each do |clazz|
+        can :destroy, clazz
+      end
+
+      can :unlink, Manuscript
+      can :unlink, Entry
+    end
+
+    if ['editor'].member? user.role
+      [Entry, Source].each do |clazz|
+        cannot :destroy, clazz
+      end
     end
 
     if ['admin'].member? user.role
       can :manage, :all
+      can :destroy, :all
     end
 
   end

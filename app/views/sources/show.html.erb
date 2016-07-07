@@ -27,7 +27,7 @@ $("#new_comment").submit(function(event) {
                     <% if user_signed_in? %>
                         <% if can?(:edit, @source) %>
                             <li class="edit_source">
-                                <a href="<%= edit_source_path(@source.id) %>">Edit this source</a>
+                                <a href="<%= edit_source_path(@source.id) %>" class="<%= @source.source_type.id == 8 ? 'disabled text-muted' : '' %>">Edit this source</a>
                             </li>
                         <% end %>
                     <li class="edit_source">
@@ -35,7 +35,7 @@ $("#new_comment").submit(function(event) {
                     </li>
                         <% if can?(:edit, @source) %> 
                             <li>
-                                <a href="<%= merge_source_path(source_id: @source) %>">Merge this source</a>
+                                <a href="<%= merge_source_path(source_id: @source) %>" class="<%= @source.source_type.id == 8 ? 'disabled text-muted' : '' %>">Merge this source</a>
                             </li>
                         <% end %>
                     <% end %>

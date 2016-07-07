@@ -2,7 +2,7 @@
         <div class="col-sm-2"></div>
         <div class="col-sm-2">
             <button class="btn btn-primary save-button" ng-click="save()" ng-disabled="entryForm.$invalid || currentlySaving">Save</button>
-            <a class="btn btn-warning" href="/dashboard">Cancel</a>
+            <a class="btn btn-warning" id='cancelEdit' href="/dashboard">Cancel</a>
         </div>
         <div class="col-sm-8 label-alignment">
             <div ng-show="entryForm.$invalid" style="color: red;">

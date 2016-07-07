@@ -110,7 +110,7 @@
                             <% if nm.id != @model.id %>
                             <tr>
                                 <td><a class='btn btn-primary' href="<%= name_path(id: @model.id)%>/merge?target_id=<%= nm.id %>">Select</a></td>
-                                <td><%= nm.id %></td>
+                                <td><%= link_to nm.id, name_path(nm), target: "_blank" %></td>
                                 <td><%= nm.name %></td>
                                 <td><%= nm.authors_count %></td>
                                 <td><%= nm.artists_count %></td>
@@ -130,27 +130,29 @@
 </div>
 <% end %>
 <script type='text/javascript'>
-    $('.panel input').prop('disabled', true);
-
-    $('#editNameMerge').click( function () {
-        $('#controlEditNameMerge').show();
-        $(this).hide();
-        $('#mergeNameInto input').prop('disabled', false);
-    });
-
-    $('#cancelEditNameMerge').click( function () {
-        $('#controlEditNameMerge').hide();
-        $('#editNameMerge').show();
-        $('#mergeNameInto input').each(function (e) {
-            $(this).val($(this).prop('defaultValue'));
+    $(document).ready( function (e) {
+        $('#main-container .panel input[type!=hidden]').prop('disabled', true);
+    
+        $('#editNameMerge').click( function () {
+            $('#controlEditNameMerge').show();
+            $(this).hide();
+            $('#mergeNameInto input[type!=hidden]').prop('disabled', false);
         });
-        $('#mergeNameInto input').prop('disabled', true);
-    });
 
-    $('#confirmEditNameMerge').click( function () {
-        $('#controlEditNameMerge').hide();
-        $('#editNameMerge').show();
-        $('#mergeNameInto input').prop('disabled', true);
-    });
+        $('#cancelEditNameMerge').click( function () {
+            $('#controlEditNameMerge').hide();
+            $('#editNameMerge').show();
+            $('#mergeNameInto input').each(function (e) {
+                $(this).val($(this).prop('defaultValue'));
+            });
+            $('#mergeNameInto input[type!=hidden]').prop('disabled', true);
+        });
 
+        $('#confirmEditNameMerge').click( function () {
+            $('#controlEditNameMerge').hide();
+            $('#editNameMerge').show();
+            $('#mergeNameInto input[type!=hidden]').prop('disabled', true);
+        });
+
+    });
 </script>

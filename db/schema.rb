@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160623210202) do
+ActiveRecord::Schema.define(version: 20160701191846) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -537,7 +537,7 @@ ActiveRecord::Schema.define(version: 20160623210202) do
     t.string   "link",                 limit: 512
     t.boolean  "in_manuscript_table"
     t.boolean  "deleted"
-    t.text     "comments",             limit: 65535
+    t.text     "other_info",           limit: 65535
     t.string   "status",               limit: 255
     t.string   "hidden",               limit: 255
     t.datetime "created_at"
@@ -592,6 +592,7 @@ ActiveRecord::Schema.define(version: 20160623210202) do
     t.string   "fullname",                  limit: 255
     t.boolean  "active",                                  default: true
     t.string   "institutional_affiliation", limit: 255
+    t.integer  "bookmark_tracker",          limit: 4,     default: 0
   end
 
   add_index "users", ["created_by_id"], name: "index_users_on_created_by_id", using: :btree
