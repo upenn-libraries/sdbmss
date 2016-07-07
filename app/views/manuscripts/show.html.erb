@@ -121,24 +121,40 @@
 <% end %>
 
 <div class="row">
+    
     <div class="col-sm-12">
         <div class="row">
             <div class="col-sm-7">
-                <div class='h1'>
-                    <ul class="small manuscript-titles">
-                        <strong>Associated Title(s) </strong>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span class='h1'>
+                            <strong class='small'>Associated Title(s) </strong>
+                        </span>
+                    </div>
+                    <div class="panel-body">
                         <% @manuscript_titles.each do |title| %>
-                            <span class='label label-info label-tag' title="<%= title %>"><%= title %></span>
+                            <div class='associated_title' title="<%= title %>"><%= title %></div>
                         <% end %>
-                    </ul>
-                    <ul class="small manuscript-titles">
-                        <strong>Last Known Location</strong>
-                        <div class="panel panel-default">
-                            <div class="panel-body">
-                                <%= @entries.first.source %>
-                            </div>
-                        </div>
-                    </ul>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span class='h1'>
+                            <strong class='small'>Last Known Location</strong>
+                        </span>
+                    </div>
+                    <div class="panel-body">
+                    <% if @location %>
+                        <%= @location.source.display_value %><br>
+                        <%= @location.institution %>
+                    <% else %>
+                        No entry containing verifiable location information exists.
+                    <% end %>
+                    </div>
+                    <div class="panel-footer text-right">
+                        Know something about the wherabouts of this proposed manuscripts? 
+                        <%= link_to "Add A New Observation", new_source_path({create_entry: 1, source_type: 4, manuscript_id: @manuscript.id}) %>
+                    </div>
                 </div>
             </div>
             <div class="col-sm-5">
@@ -158,7 +174,6 @@
                             <li class="manage_entry">
                                 <a class='btn btn-primary' href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Link <%= @manuscript.public_id %></a>
                             </li>
-                            <li><%= link_to "Add New Observation", observe_entries_path %></li>
                             <li>
                                 <a href="#proposed-history" data-toggle="collapse" class="toggle-propose-history btn btn-warning">Construct History</a><span sdbm-tooltip="manuscript_propose_history"></span>
                             </li>
@@ -202,7 +217,7 @@
                         <span class="h4"><%= entry.source_id == 34611 ? "This provenance is based on a personal observation of the SDBM" : entry.source.display_value %></span>
                     </div>
                     <div class="col-sm-1">
-                        <a class="glyphicon glyphicon-chevron-down pull-right"></a>
+                        <a class="glyphicon glyphicon-chevron-down pull-right" data-toggle="collapse" href="#entry_provenance_<%= index %>"></a>
                     </div>
                 </div>
             </div>

@@ -1918,7 +1918,7 @@ var BOOKMARK_SCOPE;
                     var todayString = today.getFullYear() + "-" + month + "-" + date;
                     var source_type = $scope.optionsSourceType.filter(function (e) { return e.id == $scope.source_type });
                     source_type = source_type.length == 1 ? source_type[0] : "";
-                    $scope.source = new Source({ source_type: source_type || "", date_accessed: todayString });
+                    $scope.source = new Source({ source_type: source_type || "", date_accessed: todayString, date: source_type.id == 4 ? todayString : "" });
                 }
             },
             // error callback

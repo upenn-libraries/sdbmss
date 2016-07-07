@@ -25,7 +25,11 @@ class ManuscriptsController < SearchableAuthorityController
     @manuscript_comment.build_comment
 
     @manuscript_titles = @manuscript.all_titles
-    @entries = @manuscript.entries.joins(:source).order("date desc")  
+    @entries = @manuscript.entries.joins(:source).order("date desc")
+    location_entries = @entries.reject { |e| e.source.date.blank? || e.institution.blank? }
+    if location_entries.count >= 1
+      @location = location_entries.first
+    end
   end
 
   def entry_candidates
