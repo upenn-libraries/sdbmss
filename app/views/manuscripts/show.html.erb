@@ -126,13 +126,13 @@
             <div class="col-sm-7">
                 <div class='h1'>
                     <ul class="small manuscript-titles">
-                        <strong sdbm-tooltip='manuscript_title'>Associated Title(s) </strong>
+                        <strong>Associated Title(s) </strong>
                         <% @manuscript_titles.each do |title| %>
                             <span class='label label-info label-tag' title="<%= title %>"><%= title %></span>
                         <% end %>
                     </ul>
                     <ul class="small manuscript-titles">
-                        <strong sdbm-tooltip="manuscript_location">Last Known Location</strong>
+                        <strong>Last Known Location</strong>
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <%= @entries.first.source %>
@@ -144,22 +144,23 @@
             <div class="col-sm-5">
                 <div class="panel panel-default text-right">
                     <div class="panel-heading">
-                        <h2 class="h2">
-                            <a onclick="addBookmark(<%= @manuscript.id %>, 'Manuscript');" class="btn btn-sm btn-default bookmark-link pull-left" in_bookmarks="/manuscripts/<%= @manuscript.id %>"><span class="glyphicon glyphicon-bookmark"></span></a>
+                        <span class="h2">
                             <%= @manuscript.public_id %>
-                        </h2>
+                        </span>
+                        <a onclick="addBookmark(<%= @manuscript.id %>, 'Manuscript');" class="btn btn-sm btn-default bookmark-link pull-left" in_bookmarks="/manuscripts/<%= @manuscript.id %>"><span class="glyphicon glyphicon-bookmark"></span></a>
                     </div>
                     <div class="panel-body">
                         <ul class="list-inline">
                             <li>
-                                <a class='btn btn-sm btn-info' data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
+                                <a class='btn btn-info' data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
                             </li>
                             <% if can? :link, @manuscript %>
                             <li class="manage_entry">
-                                <a class='btn btn-sm btn-primary' href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Link <%= @manuscript.public_id %></a>
+                                <a class='btn btn-primary' href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Link <%= @manuscript.public_id %></a>
                             </li>
+                            <li><%= link_to "Add New Observation", observe_entries_path %></li>
                             <li>
-                                <a href="#proposed-history" data-toggle="collapse" class="toggle-propose-history btn btn-sm btn-warning">Construct History</a><span sdbm-tooltip="manuscript_propose_history"></span>
+                                <a href="#proposed-history" data-toggle="collapse" class="toggle-propose-history btn btn-warning">Construct History</a><span sdbm-tooltip="manuscript_propose_history"></span>
                             </li>
                             <% end %>
                         </ul>

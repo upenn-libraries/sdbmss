@@ -164,6 +164,14 @@ class EntriesController < SearchableAuthorityController
     create
   end
 
+  def observe
+    @source = Source.new({date: Date.today.strftime("%Y-%m-%d"), author: current_user.username })
+    @entry = Entry.new    
+    respond_to do |format|
+      format.html { render "select_source" }
+    end
+  end
+
   def create
     success = false
     ActiveRecord::Base.transaction do

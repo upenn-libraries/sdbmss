@@ -15,6 +15,10 @@
 <input type="hidden" id="create_entry" value="1" />
 <% end %>
 
+<% if params[:source_type] %>
+    <span ng-init="source.source_type=<%= params[:source_type] %>"></span>
+<% end %>
+
 <form id="source-form" name="form" class="form-horizontal sdbmss-form" autocomplete="off" ng-controller="SourceCtrl" novalidate data-ng-cloak>
 
     <div class="row">

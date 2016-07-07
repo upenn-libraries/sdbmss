@@ -1673,6 +1673,7 @@ var BOOKMARK_SCOPE;
 
         $scope.pageTitle = "";
 
+        $scope.source_type = $scope.source ? $scope.source.source_type : "";
         $scope.source = undefined;
 
         $scope.source_agents = [];
@@ -1915,7 +1916,9 @@ var BOOKMARK_SCOPE;
                     month = month < 10 ? "0" + month : month;
                     var date = today.getDate() < 10 ? "0" + today.getDate() : today.getDate();
                     var todayString = today.getFullYear() + "-" + month + "-" + date;
-                    $scope.source = new Source({ source_type: "", date_accessed: todayString });
+                    var source_type = $scope.optionsSourceType.filter(function (e) { return e.id == $scope.source_type });
+                    source_type = source_type.length == 1 ? source_type[0] : "";
+                    $scope.source = new Source({ source_type: source_type || "", date_accessed: todayString });
                 }
             },
             // error callback
