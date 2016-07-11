@@ -88,7 +88,7 @@ label.col-sm-2-and-half {
     </div>
 
     <div class="row">
-      <div class="col-sm-offset-2 col-sm-8">
+      <div class="col-sm-9">
 
           <p>
               <span ng-show="edit">You can make edits to your entries in the
@@ -126,7 +126,8 @@ label.col-sm-2-and-half {
               <span ng-repeat="badDataItem in badData">{{ badDataItem }}</span>. Saving the record on this page may cause data loss.
           </div>
       </div>
-      <div class="col-sm-2 text-right">
+      <div class="col-sm-3">
+        <!--
           <div class="dropdown">
               <button class="btn btn-default" type="button" id="actionsMenu" data-toggle="dropdown" aria-expanded="true">
                   Actions
@@ -137,10 +138,24 @@ label.col-sm-2-and-half {
                   <li role="presentation" ng-show="entry.id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToEntryHistoryPage(entry.id)">View history for SDBM_{{ entry.id }}</a></li>
                   <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToSourceEditPage(entry.source.id)">Edit source SDBM_SOURCE_{{ entry.source.id }}</a></li>
                   <li role="presentation"><a href="/linkingtool/entry/{{ entry.id }}" role="menuItem" tabindex="-1">Linking Tool for SDBM_{{ entry.id }}</a></li>
-                  <!--<li role="presentation" ng-show="entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToManuscriptEditPage(entry.manuscript_id)">Manage entries for SDBM_MS_{{ entry.manuscript_id }}</a></li>
-                  <li role="presentation" ng-show="entry.id && !entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToFindOrCreateManuscriptForEntryPage(entry.id)">Create a manuscript record or link for this entry</a></li>-->
+                  <li role="presentation" ng-show="entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToManuscriptEditPage(entry.manuscript_id)">Manage entries for SDBM_MS_{{ entry.manuscript_id }}</a></li>
+                  <li role="presentation" ng-show="entry.id && !entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToFindOrCreateManuscriptForEntryPage(entry.id)">Create a manuscript record or link for this entry</a></li>
+              </ul>
+          </div>-->
+        <div class="panel panel-default show-tools">
+          <div class="panel-heading">
+              Tools
+          </div>
+          <div class="panel-body">
+              <ul class="nav">
+                  <li role="presentation" ng-show="entry.id"><a role="menuitem" tabindex="-1" href="/entries/{{ entry.id }}" target="_blank">Show this entry</a></li>
+                  <li role="presentation" ng-show="entry.id"><a role="menuitem" tabindex="-1" href="/entries/{{ entry.id }}/history" target="_blank">View history</a></li>
+                  <li role="presentation"><a role="menuitem" tabindex="-1" href="/sources/{{entry.source.id}}/edit" target="_blank">Edit source SDBM_SOURCE_{{ entry.source.id }}</a></li>
+                  <li role="presentation"><a href="/linkingtool/entry/{{ entry.id }}" target="_blank">Linking Tool for SDBM_{{ entry.id }}</a></li>
               </ul>
           </div>
+        </div>
+
       </div>
     </div>
 
@@ -607,7 +622,7 @@ label.col-sm-2-and-half {
           <div class="col-sm-9">
             <div class="input-group">
                 <!--<input id="language_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>-->
-                <a id="find_language_name_authority_{{ $index }}" ng-if='entry_language.language.id == undefined' ng-init="entry_language.language = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('languages', entry_language.language, '')">Find in Name Authority</a>
+                <a id="find_language_name_authority_{{ $index }}" ng-if='entry_language.language.id == undefined' ng-init="entry_language.language = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('languages', entry_language.language, 'language')">Find in Name Authority</a>
                 <div ng-if='entry_language.language != undefined && entry_language.language.id != undefined' class="well well-sm well-name-authority">
                   <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_language, 'language')"></a>
                   {{ entry_language.language.name }}
@@ -694,7 +709,7 @@ label.col-sm-2-and-half {
           <div class="col-sm-9">
             <div class="input-group">
                 <!--<input id="place_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>-->
-                <a id="find_place_name_authority_{{ $index }}" ng-if='entry_place.place.id == undefined' ng-init="entry_place.place = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('places', entry_place.place, '')">Find in Name Authority</a>
+                <a id="find_place_name_authority_{{ $index }}" ng-if='entry_place.place.id == undefined' ng-init="entry_place.place = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('places', entry_place.place, 'place')">Find in Name Authority</a>
                 <div ng-if='entry_place.place != undefined && entry_place.place.id != undefined' class="well well-sm well-name-authority">
                   <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_place, 'place')"></a>
                   {{ entry_place.place.name }}

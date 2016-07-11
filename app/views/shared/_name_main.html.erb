@@ -76,3 +76,7 @@
         This agent is found in the provenance of <a class='badge' href="<%= search_by_facet_value('provenance', name.name) %>"><%= SDBMSS::Util.to_many(count_provenance, "entry") %></a>
     </dd>
 <% end %>
+<% if name.other_info.present? %>
+    <dt>Other Info</dt>
+    <dd><%= name.other_info %></dd>
+<% end %>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160701191846) do
+ActiveRecord::Schema.define(version: 20160711194653) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -369,7 +369,7 @@ ActiveRecord::Schema.define(version: 20160701191846) do
     t.integer  "source_agents_count", limit: 4,     default: 0,     null: false
     t.integer  "sale_agents_count",   limit: 4,     default: 0,     null: false
     t.boolean  "deleted",                           default: false
-    t.text     "comment",             limit: 65535
+    t.text     "other_info",          limit: 65535
     t.boolean  "reviewed",                          default: false
     t.integer  "reviewed_by_id",      limit: 4
     t.datetime "reviewed_at"

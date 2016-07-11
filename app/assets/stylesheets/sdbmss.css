@@ -986,3 +986,7 @@ so that gray backdrop shvows up correctly */
 .popover.right {
   margin-left: 30px;
 }
+
+[data-toggle=collapse] {
+  cursor: pointer;
+}

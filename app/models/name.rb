@@ -82,8 +82,8 @@ class Name < ActiveRecord::Base
     join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :updated_by })
     text :created_by
     text :updated_by
-    text :comment
-    string :comment
+    text :other_info
+    string :other_info
     integer :id
     text :name, :more_like_this => true
     string :name
@@ -117,7 +117,7 @@ class Name < ActiveRecord::Base
       id: id,
       name: name,
       viaf_id: viaf_id,
-      comment: comment,
+      other_info: other_info,
       authors_count: authors_count || 0,
       artists_count: artists_count || 0,
       scribes_count: scribes_count || 0,

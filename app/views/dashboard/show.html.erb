@@ -62,6 +62,16 @@
                 </p>
             </div>
         </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">Help</div>
+            <div class="panel-body">
+                <p><a href="/static/docs/sdbm_data_model_explanation.pdf">New Data Model Explanations (PDF)</a></p>
+                <p><a href="/static/docs/sdbm_data_definitions.pdf">Data Definitions (PDF)</a></p>
+                <p><a href="/static/docs/sdbm_user_manual.pdf" target="_blank">User Manual (PDF)</a></p>
+                <p><a href="https://www.youtube.com/channel/UCsVZp-1724xPIW8MwIdKoyg">Video Tutorials</a></p>
+                <p>Questions or comments, email us at <a href="mailto:sdbm@pobox.upenn.edu">sdbm@upenn.edu</a></p>
+            </div>
+        </div>
         <% if can?(:manage, EntryManuscript) || can?(:manage, Name) || can?(:manage, Language) || can?(:manage, Place) || can?(:manage, User) %>
         <div class="panel panel-default">
             <div class="panel-heading">Admin</div>
@@ -87,16 +97,6 @@
             </div>
         </div>
         <% end %>
-        <div class="panel panel-default">
-            <div class="panel-heading">Help</div>
-            <div class="panel-body">
-                <p><a href="/static/docs/sdbm_data_model_explanation.pdf">New Data Model Explanations (PDF)</a></p>
-                <p><a href="/static/docs/sdbm_data_definitions.pdf">Data Definitions (PDF)</a></p>
-                <p><a href="/static/docs/sdbm_user_manual.pdf" target="_blank">User Manual (PDF)</a></p>
-                <p><a href="https://www.youtube.com/channel/UCsVZp-1724xPIW8MwIdKoyg">Video Tutorials</a></p>
-                <p>Questions or comments, email us at <a href="mailto:sdbm@pobox.upenn.edu">sdbm@upenn.edu</a></p>
-            </div>
-        </div>
     </div>
     <div class="col-sm-9">
         <div class="panel panel-default">
@@ -105,10 +105,23 @@
             <% num_entries_deprecated = current_user.entries.where(deprecated: true).count %>
             <% num_entries_to_show = (params[:num_entries] || 5).to_i %>
             <% entries = current_user.entries.most_recent(num_entries_to_show) %>
-            <div class="panel-heading">
-                <h4 data-toggle="collapse" href="#myEntries">Entries You've Contributed ...
-                <small class='pull-right'>Show the last <strong><%= SDBMSS::Util.to_many(entries.count, "entry") %></strong> you created</small>
-                </h4>
+            <div class="panel-heading" data-toggle="collapse" href="#myEntries">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <h4 class='h4'>Entries You've Contributed
+                            <br><small>Click to expand...</small>
+                        </h4>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <div>You've contributed <%= SDBMSS::Util.to_many(num_entries, "entry") %> to date.</div>
+                        <% if num_entries_needing_approval > 0 %>
+                            <div class='text-warning'><%= num_entries_needing_approval %> of them <%= num_entries_needing_approval > 1 ? "are" : "is" %> not yet approved.</div>
+                        <% end %>
+                        <% if num_entries_deprecated > 0 %>
+                            <div class='text-danger'><%= num_entries_deprecated %> of them <%= num_entries_deprecated > 1 ? "are" : "is" %> deprecated.</div>
+                        <% end %>                        
+                    </div>
+                </div>
             </div>
             <div class="panel-body panel-collapse collapse" id="myEntries">
                 <% if num_entries > 0 %>
@@ -116,13 +129,7 @@
                     <li class="list-group-item">
                          <div class="row">
                             <div class="col-sm-6">
-                                <div>You've contributed <%= SDBMSS::Util.to_many(num_entries, "entry") %> to date.</div>
-                                    <% if num_entries_needing_approval > 0 %>
-                                        <div class='text-warning'><%= num_entries_needing_approval %> of them <%= num_entries_needing_approval > 1 ? "are" : "is" %> not yet approved.</div>
-                                    <% end %>
-                                    <% if num_entries_deprecated > 0 %>
-                                        <div class='text-danger'><%= num_entries_deprecated %> of them <%= num_entries_deprecated > 1 ? "are" : "is" %> deprecated.</div>
-                                    <% end %>                        
+                                <span>Showing the last <strong><%= SDBMSS::Util.to_many(entries.count, "entry") %></strong> you created</span>
                             </div>
                             <div class="col-sm-6 text-right">
                                 <a href="<%= search_by_facet_value("created_by", current_user.username) %>" class='btn btn-default'>See My Public Entries</a>
@@ -158,21 +165,28 @@
             <% num_sources_to_show = 5 %>
             <% sources = current_user.sources.most_recent(num_sources_to_show) %>
             <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 data-toggle="collapse" href="#mySources">
-                        Sources You've Contributed ...
-                        <small class='pull-right'>Show the last <strong><%= SDBMSS::Util.to_many(sources.count, "source") %></strong> you created</small>
-                    </h4>
+                <div class="panel-heading" data-toggle="collapse" href="#mySources">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <h4>
+                                Sources You've Contributed<br>
+                                <small>Click to expand...</small>
+                            </h4>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <div>You've contributed <%= SDBMSS::Util.to_many(num_sources, "source") %> to date.</div>
+                            <% if num_sources_unreviewed > 0 %>
+                                <div class='text-warning'><%= num_sources_unreviewed %> of them <%= num_sources_unreviewed > 1 ? "are" : "is" %> not yet reviewed.</div>
+                            <% end %>
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-body panel-collapse collapse" id="mySources">
                     <ul class="list-group list-group-no-border-side">
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <div>You've contributed <%= SDBMSS::Util.to_many(num_sources, "source") %> to date.</div>
-                                    <% if num_sources_unreviewed > 0 %>
-                                        <div class='text-warning'><%= num_sources_unreviewed %> of them <%= num_sources_unreviewed > 1 ? "are" : "is" %> not yet reviewed.</div>
-                                    <% end %>
+                                    <span>Showing the last <strong><%= SDBMSS::Util.to_many(sources.count, "source") %></strong> you created</span>
                                 </div>
                                 <div class="col-sm-6 text-right">
                                     <a class="btn btn-default" href="/sources?created_by_user=1">Manage My Sources</a>
@@ -199,25 +213,32 @@
             <% num_manuscripts_to_show = 5 %>
             <% manuscripts =  Manuscript.where(created_by: current_user).last(num_manuscripts_to_show) %>
             <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h4 data-toggle="collapse" href="#myManuscripts">
-                        Manuscripts You've Contributed ...
-                        <small class="pull-right">Show the last <strong><%= SDBMSS::Util.to_many(manuscripts.count, "manuscript") %></strong> you created</small>
-                    </h4>
+                <div class="panel-heading" data-toggle="collapse" href="#myManuscripts">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <h4>
+                                Manuscripts You've Contributed<br>
+                                <small>Click to expand...</small>
+                            </h4>
+                        </div>
+                        <div class="col-xs-6 text-right">
+                            <% if num_manuscripts > 0 %>
+                                <div>You've contributed <%= num_manuscripts %> manuscript(s) to date.</div>
+                                <% if num_manuscripts_unreviewed > 0 %>
+                                    <div class='text-warning'><%= num_manuscripts_unreviewed %> of them <%= num_manuscripts_unreviewed > 1 ? "are" : "is" %> not yet reviewed.</div>
+                                <% end %>
+                            <% else %>
+                                <div class="text-muted">You have not contributed any manuscripts yet.</div>
+                            <% end %>
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-body panel-collapse collapse" id="myManuscripts">
                     <ul class="list-group list-group-no-border-side">
                         <li class="list-group-item">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <% if num_manuscripts > 0 %>
-                                        <div>You've contributed <%= num_manuscripts %> manuscript(s) to date.</div>
-                                        <% if num_manuscripts_unreviewed > 0 %>
-                                            <div class='text-warning'><%= num_manuscripts_unreviewed %> of them <%= num_manuscripts_unreviewed > 1 ? "are" : "is" %> not yet reviewed.</div>
-                                        <% end %>
-                                    <% else %>
-                                        <div class="text-muted">You have not contributed any manuscripts yet.</div>
-                                    <% end %>
+                                    <span>Showing the last <strong><%= SDBMSS::Util.to_many(manuscripts.count, "manuscript") %></strong> you created</span>
                                 </div>
                                 <div class="col-sm-6 text-right">
                                     <a class="btn btn-default" href="/manuscripts?created_by_user=1">Manage My Manuscripts</a>
