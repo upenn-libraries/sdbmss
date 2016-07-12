@@ -36,24 +36,12 @@ $(document).ready(function() {
 
          return [
              {
-                 title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
-                 orderable: false,
-                 class: "text-center",
-                 /*render: function (data, type, full, meta) {
-                     if(manageRecords.getUnreviewedOnly() === 1) {
-                         return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
-                     }
-                     return '';
-                 },*/
-                 render: function (data, type, full, meta) {
+                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
+                orderable: false,
+                className: 'text-center unreviewed_only',
+                render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {
-                        return  '' + 
-                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
-                                '<label for="checkbox_' + meta.row + '">' + 
-                                '<a class="btn btn-default btn-xs glyphicon glyphicon-unchecked unchecked"></a>' + 
-                                '<a class="btn btn-default btn-xs glyphicon glyphicon-check checked"></a>' + 
-                                '</label>' + '';
-//                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                          return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     }
                     return '';
                 },
@@ -185,6 +173,10 @@ $(document).ready(function() {
                 sdbmssMaxWidth: "90px",
                 title: 'Updated On',
                 dbSortField: 'updated_at'
+            },
+            {
+                title: "Reviewed",
+                dbSortField: 'reviewed'
             }
          ];
      };
@@ -210,7 +202,8 @@ $(document).ready(function() {
              result.created_by || "",
              result.created_at || "",
              result.updated_by || "",
-             result.updated_at || ""
+             result.updated_at || "",
+             result.reviewed
          ];
      };
 

@@ -23,8 +23,9 @@
 
         return [
             {
-                title: '',
+                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
                 orderable: false,
+                className: 'text-center unreviewed_only',
                 render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {
                         return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';

@@ -173,6 +173,11 @@ var SDBM = SDBM || {};
                         recordsFiltered: data.total
                     });
                     renewBookmarks();
+
+                    if (manageRecords.getUnreviewedOnly() === 1)
+                        $('.unreviewed_only').show();//.css({"display": "table-cell"});
+                    else
+                        $('.unreviewed_only').hide();//.css({"display": "none"});
                 } else {
                     alert("An error occurred fetching search results: " + data.error);
                 }

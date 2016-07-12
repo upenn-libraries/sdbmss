@@ -25,7 +25,8 @@
             {
                 sdbmssMinWidth: "20px",
                 sdbmssMaxWidth: "20px",
-                title: '',
+                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
+                className: 'text-center unreviewed_only',
                 orderable: false,
                 render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {

@@ -25,17 +25,12 @@
             {
                 sdbmssMinWidth: "20px",
                 sdbmssMaxWidth: "20px",
-                title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
+                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
                 orderable: false,
-                className: "text-center",
+                className: 'text-center unreviewed_only',
                 render: function (data, type, full, meta) {
                     if(manageManuscripts.getUnreviewedOnly() === 1) {
-                        return  '' + 
-                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageManuscripts.dataTable.getColumnIndex("Manuscript ID")] + '" id="checkbox_' + meta.row + '"/>' + 
-                                '<label for="checkbox_' + meta.row + '">' + 
-                                '<a class="btn btn-default btn-xs glyphicon glyphicon-unchecked unchecked"></a>' + 
-                                '<a class="btn btn-default btn-xs glyphicon glyphicon-check checked"></a>' + 
-                                '</label>' + '';
+                        return '<input type="checkbox" name="review" value="' + full[manageManuscripts.dataTable.getColumnIndex("Manuscript ID")] + '"/>';
                     }
                     return '';
                 }

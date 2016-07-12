@@ -44,16 +44,12 @@
                  {
                      sdbmssMinWidth: "25px",
                      sdbmssMaxWidth: "25px",
-                     title: '<a href="#" class="btn btn-default btn-blank btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
+                     title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
                      orderable: false,
+                     className: 'text-center unreviewed_only',
                      render: function (data, type, full, meta) {
                          if(showApprovalControls()) {
-                                return  '' + 
-                                '<input class="table-checkbox" type="checkbox" name="approve" value="' + full[sdbmTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
-                                '<label for="checkbox_' + meta.row + '">' + 
-                                '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-unchecked unchecked"></a>' + 
-                                '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-check checked"></a>' + 
-                                '</label>' + '';
+                            return '<input type="checkbox" name="review" value="' + full[manageEntries.dataTable.getColumnIndex("ID")] + '"/>';
                          }
                          return '';
                      }
@@ -116,6 +112,7 @@
                                      $("#spinner").hide();
                                  }
                              });
+
                          },
                          error: function() {
                              SDBM.showErrorModal("#modal", "An error occurred jumping to this record.");
@@ -129,9 +126,11 @@
                               renewBookmarks();
 
                              if(showApprovalControls()) {
-                                 $(".approve-control").show();
+                                $(".approve-control").show();
+                                $('.unreviewed_only').show();//.css({"display": "table-cell"});
                              } else {
-                                 $(".approve-control").hide();
+                                $(".approve-control").hide();
+                                $('.unreviewed_only').hide();
                              }
                          }
                      });
