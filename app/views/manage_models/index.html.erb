@@ -83,12 +83,15 @@
 // this sets the options for our manage table search bars (i.e. if searching on ID, have different options than a fulltext name search)
     function setOptions (p) {
         var t = p.find("select[name=search_field]");
-        updateOptions = function (e) {
+        var updateOptions = function (e) {
             var type = t.find("option:selected").attr("type");
             p.find(".option").hide();
             p.find(".option").attr("selected", false);
             p.find("." + type + "_option").show();
             p.find("." + type + "_option").first().attr("selected", true);
+            // redundancy for FIREFOX, set value as well as 'selected'
+            var val = p.find("." + type + "_option").first().val();
+            p.find("select[name=search_option]").val(val);
         };
         p.find("select[name=search_option]").change( function () {
             if ($(this).val() == "blank" || $(this).val() == "not blank") {
