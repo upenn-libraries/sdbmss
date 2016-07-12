@@ -128,6 +128,12 @@ class User < ActiveRecord::Base
     s
   end
 
+  def notifications
+    messages = private_messages.received.select{ |e| e.unread }.count
+    exports = downloads.select{ |e| e.status == 1}.count
+    {total: messages + exports, messages: messages, exports: exports}
+  end
+
   def self.fields
     fields = super
     fields.delete('name')

@@ -124,8 +124,13 @@ class BookmarksController < ApplicationController
     #redirect_to :back
   end
 
+  # fix me: why are we checking for bookmarks when not logged in?
   def check
-    render json: {bookmark_tracker: current_user.bookmark_tracker}
+    if current_user
+      render json: {bookmark_tracker: current_user.bookmark_tracker}
+    else
+      render json: {bookmark_tracker: false}
+    end
   end
 
   def delete_all

@@ -44,6 +44,9 @@ class PrivateMessagesController < ApplicationController
   end
 
   def show
+    if current_user.private_messages.received.include? @message
+      @message.update!(unread: false)
+    end
   end
 
   def destroy

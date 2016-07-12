@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160711194653) do
+ActiveRecord::Schema.define(version: 20160712183809) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -416,6 +416,7 @@ ActiveRecord::Schema.define(version: 20160711194653) do
     t.integer  "user_id",            limit: 4
     t.integer  "private_message_id", limit: 4
     t.text     "title",              limit: 65535
+    t.boolean  "unread",                           default: true
   end
 
   add_index "private_messages", ["created_by_id"], name: "index_private_messages_on_created_by_id", using: :btree

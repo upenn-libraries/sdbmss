@@ -127,7 +127,7 @@
         <h1>
             <%= @manuscript.public_id %>
         </h1>
-        <p>This <strong class='text-primary'>Manuscript Record</strong> shows linked entries <strong>believed</strong> to refer to the same physical manuscript.  You can use this space to determine <span class='text-info'>Current Location</span> and <span class="text-info">Provenance</span>, to create your own <span class="text-success">Personal Observation</span> about this manuscript, or to make a <span class="text-warning">Comment</span>.</p>
+        <p>This <strong>Manuscript Record</strong> shows linked entries to refer to the same physical manuscript.  You can use this space to determine <strong>Current Location</strong> and <strong>Provenance</strong>, to create your own <strong>Personal Observation</strong> about this manuscript, or to contribute a <strong>Comment</strong>.</p>
     </div>
     <div class="col-sm-9">
         <div class="panel panel-default">
@@ -177,22 +177,22 @@
         </div>
     </div>
     <div class="col-sm-3">
-        <div class="panel panel-primary">
-            <div class="panel-heading text-right"><span class="h4">Tools</span></div>
-            <div class="panel-body text-right" style="height: 190px;">
-                <ul class='list-unstyled manuscript-tools'>
+        <div class="panel panel-default show-tools">
+            <div class="panel-heading"><span class="h4">Tools</span></div>
+            <div class="panel-body" style="height: 210px;">
+                <ul class='nav'>
                     <li>
-                        <a class='btn btn-info' data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
+                        <a data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
                     </li>
                     <% if can? :link, @manuscript %>
                     <li class="manage_entry">
-                        <a class='btn btn-primary' href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Link <%= @manuscript.public_id %></a>
+                        <a href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Linking Tool for <%= @manuscript.public_id %></a>
                     </li>
                     <li>
-                        <a href="#proposed-history" data-toggle="collapse" class="toggle-propose-history btn btn-warning">Construct History</a><span sdbm-tooltip="manuscript_propose_history"></span>
+                        <a href="#proposed-history" class='toggle-propose-history' data-toggle="collapse">Construct History<span sdbm-tooltip="manuscript_propose_history"></span></a>
                     </li>
                     <li>
-                        <a onclick="addBookmark(<%= @manuscript.id %>, 'Manuscript');" class="btn btn-default bookmark-link" in_bookmarks="/manuscripts/<%= @manuscript.id %>"><span class="glyphicon glyphicon-bookmark"></span> Bookmark</a>
+                        <a href="" onclick="addBookmark(<%= @manuscript.id %>, 'Manuscript');" in_bookmarks="/manuscripts/<%= @manuscript.id %>"><span class="glyphicon glyphicon-bookmark"></span> Bookmark</a>
                       </li>  
                     <% end %>
                 </ul>
@@ -210,7 +210,7 @@
             <div class="row" data-toggle="collapse" data-target=".panel-collapse">
                 <div class="col-sm-8">
                     Associated Entries With Provenance Data    
-                    <small>(this Manuscript has <%= @manuscript.entries.count %> entries)</small>
+                    <small>(this Manuscript Record has <%= @manuscript.entries.count %> entries)</small>
                 </div>
                 <div class="col-sm-4 text-right">
                     <span id="collapse-all" class="glyphicon glyphicon-chevron-down"></span>
@@ -286,7 +286,7 @@
         <%= form_tag({:controller => "entries", :format => "html", :action => "compose"}, :method => "post", :class => "form-inline") do %>
         <%= hidden_field_tag "transaction_type", "no_transaction" %>
         <%= hidden_field_tag "manuscript_id", @manuscript.id %>
-        <div class="collapse panel panel-warning panel-provenance" id="proposed-history" data-spy="affix" data-offset-top="340" data-offset-bottom="400">
+        <div class="collapse panel panel-warning panel-provenance" id="proposed-history" data-spy="affix" data-offset-top="490" data-offset-bottom="400">
             <div class="panel-heading">
                 <div class="h4">
                     Construct History Workspace
@@ -308,8 +308,8 @@
 
     <div class="col-sm-12">
 
-        <h4>Do you have more data on the Manuscript?  <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %> to record your information.
-            <br><small>Use this option when you wish to contribute data on <strong>multiple aspects</strong> of this maniscript.  Once you create your <span class="text-success">Personal Observation</span>, your data will included in the links displayed above.</small>
+        <h4>Do you have more data about this Manuscript Record?  <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %> to record your information.
+            <br><small>Use this option when you wish to contribute data on <strong>multiple aspects</strong> of this manuscript.  Once you create your <strong>Personal Observation</strong>, your data will be included in the links displayed above.</small>
         </h4>
 
 
@@ -347,7 +347,7 @@
                     <% end %>
                 <div class="row">
                     <div class="col-sm-12 form-group">
-                        <p><lead>Or leave a comment</lead> to add general information or commentary about this Manuscript Record</p>
+                        <p><lead>Or leave a comment</lead> to add general information or commentary about this Manuscript Record:</p>
                         <%= f.text_area :comment, class: "form-control", rows: 5 %>
                     </div>
         <!--            <div class="col-sm-12 checkbox">

@@ -259,7 +259,6 @@ var SDBM = SDBM || {};
             manageRecords.reloadTable();
             
             manageRecords.showOrHideMarkCheckedRecordsButton();
-
             return false;
         };
     };
@@ -320,18 +319,18 @@ var SDBM = SDBM || {};
 
         return [
             {
-                title: '<a href="#" class="btn btn-default btn-blank btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
+                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',//'<a href="#" class="btn btn-default btn-blank btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
                 orderable: false,
-                className: "text-center",
+                className: "text-center unreviewed_only",
                 render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {
-                        return  '' + 
+                        /*return  '' + 
                                 '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
                                 '<label for="checkbox_' + meta.row + '">' + 
                                 '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-unchecked unchecked"></a>' + 
                                 '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-check checked"></a>' + 
-                                '</label>' + '';
-//                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                                '</label>' + '';*/
+                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     }
                     return '';
                 },

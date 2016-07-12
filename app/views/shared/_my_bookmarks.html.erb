@@ -22,35 +22,34 @@
                   <dt class='h4'>
                     <strong><a href="{{ bookmark.link }}"> {{ bookmark.public_id }}</a></strong>
                     <span ng-bind-html="actionButton(bookmark)"></span> 
-                    <a class='remove-bookmark control-bookmark pull-right' ng-click="removeBookmark(name, bookmark)">
-                      <span class="glyphicon glyphicon-trash"></span>
+                    <a href="" class='remove-bookmark control-bookmark pull-right' ng-click="removeBookmark(name, bookmark)">
+                      <span class="glyphicon glyphicon-remove"></span>
                     </a>
-                    <a class="tag-bookmark pull-right" ng-click="bookmark.showAddTag = !bookmark.showAddTag"><span class="glyphicon glyphicon-tag"></span></a>
                   </dt>
-                  <dd>
-                    <div class="form-inline">
-                      <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
-                        <input type='text' class='form-control' placeholder="add tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
-                        <a class="input-group-addon add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="glyphicon glyphicon-plus"></span></a>
-                      </div>
-                    </div> 
-                  </dd>
               </dl>
               <dl class="document-metadata dl-invert dl-horizontal">
                 <dt ng-repeat-start="(key, value) in bookmark.details track by $index">{{ key }}</dt>
                 <dd ng-repeat-end>{{ value }}</dd>
-              </dl>
-              <dl class="document-metadata dl-invert dl-horizontal">
-                <dt>Tags</dt>
-                <dd ng-if="bookmark.tags.length > 0">
+                <dt>
+                  Tags
+                </dt>
+                <dd>
                   <ul class="list-inline">
-                    <li ng-repeat="tag in bookmark.tags" class="bookmark-tag bg-primary">
-                        <a ng-click="searchTag(tag);">{{ tag }}</a> <!-- fix me: should this filter in bookmark panel, or go to manage bookmarks search? -->
-                        <a class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></a>
+                    <li ng-if="bookmark.tags.length <= 0" class='text-warning'>This bookmark has no tags.</li>
+                    <li ng-repeat="tag in bookmark.tags" class="bookmark-tag" ng-class="{'btn-info btn-lg' : tag == search_tag, 'bg-primary' : tag != search_tag}">
+                        <a href="" ng-click="searchTag(tag);">{{ tag }}</a> <!-- fix me: should this filter in bookmark panel, or go to manage bookmarks search? -->
+                        <a href="" class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></a>
                     </li>
                   </ul>
                 </dd>
-                <dd ng-if="bookmark.tags.length <= 0" class='text-warning'>This bookmark has no tags - add some!</dd>
+                <a ng-show="!bookmark.showAddTag" href="" class="btn btn-sm btn-success" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Add Tag <span class="glyphicon glyphicon-tag"></span></a>
+                <div class="form-inline">
+                  <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
+                    <input type='text' class='form-control' placeholder="add tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
+                    <a href="" class="input-group-addon add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="glyphicon glyphicon-plus"></span></a>
+                    <a href="" class="input-group-addon add-bookmark-tag-confirm" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Cancel</a>
+                  </div>
+                </div> 
               </dl>
           </li>
         </ul>
@@ -60,7 +59,7 @@
     <div class="form-inline clearfix navbar-form">
       <div class="input-group">
         <input type="text" class="form-control" name="tag-search" placeholder="Filter By Tag..." size=12 ng-model="tagSearch" ng-keyup="$event.keyCode == 13 && searchTag(tagSearch)">
-        <span class="input-group-addon" ng-click="searchTag('')"><span>Clear</span></span>
+        <a href="" class="input-group-addon" ng-click="searchTag('')"><span>Clear</span></a>
       </div>
       <a href='/bookmarks' class="pull-right text-right text-invert">Manage<br>Bookmarks</a>
     </div>

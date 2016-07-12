@@ -654,7 +654,7 @@ var BOOKMARK_SCOPE;
         });
 
         $scope.setSource = function (src) {
-          $scope.entry.transaction_type = src.source_type == "Auction/Sale Catalog" ? "sale" : "no_transaction";
+          $scope.entry.transaction_type = src.source_type == "Auction/Dealer Catalog" ? "sale" : "no_transaction";
           $scope.entry.source = src;
           $scope.selecting_source = false;
         };

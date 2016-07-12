@@ -9,7 +9,7 @@ module SDBMSS::SeedData
     if SourceType.count == 0
       SourceType.create(
         name: 'auction_catalog',
-        display_name: 'Auction/Sale Catalog',
+        display_name: 'Auction/Dealer Catalog',
         entries_have_institution_field: false,
         entries_transaction_field: "sale",
       )

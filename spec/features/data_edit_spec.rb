@@ -364,7 +364,7 @@ describe "Data entry", :js => true do
 
       expect(page).to have_content("Edit " + source.public_id)
 
-      expect(page).to have_select('source_type', disabled: true, selected: 'Auction/Sale Catalog')
+      expect(page).to have_select('source_type', disabled: true, selected: 'Auction/Dealer Catalog')
       expect(page).to have_field('source_date', with: '2014-12-15')
       expect(page).to have_field('title', with: 'my existing source')
 

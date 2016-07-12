@@ -215,7 +215,7 @@ describe "Data entry", :js => true do
 
       visit new_source_path
 
-      select 'Auction/Sale Catalog', from: 'source_type'
+      select 'Auction/Dealer Catalog', from: 'source_type'
       fill_in 'source_date', with: '2014-02-34'
       fill_in 'title', with: 'Very Rare Books'
 
@@ -320,7 +320,7 @@ describe "Data entry", :js => true do
       #find_by_id('remove_institution_name_authority_0').click
       add_name_authority('find_institution_name_authority_0', 'Harvard')
       # now change source type to Auction Catalog
-      select 'Auction/Sale Catalog', from: 'source_type'
+      select 'Auction/Dealer Catalog', from: 'source_type'
       fill_in 'title', with: 'my catalog'
       #fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
       
@@ -353,7 +353,7 @@ describe "Data entry", :js => true do
 
       visit new_source_path
 
-      select 'Auction/Sale Catalog', from: 'source_type'
+      select 'Auction/Dealer Catalog', from: 'source_type'
       # similar but not exactly the same title
       fill_in 'title', with: 'A very Long Title for an Existing Source'
       #fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
@@ -666,7 +666,7 @@ describe "Data entry", :js => true do
 
       click_link "Click here to CREATE A NEW SOURCE"
 
-      select 'Auction/Sale Catalog', from: 'source_type'
+      select 'Auction/Dealer Catalog', from: 'source_type'
       fill_in 'source_date', with: '2015-02-28'
       fill_in 'title', with: 'Sample Catalog'
       click_button 'Save'

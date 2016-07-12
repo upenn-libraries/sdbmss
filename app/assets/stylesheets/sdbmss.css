@@ -64,11 +64,11 @@ body {
   border-right: none;
   border-left: none;
 }
-.list-group-no-border li {
-  border-radius: opx !important;
+.list-group-no-border > li {
+  border-radius: 0px !important;
   border: none;
 }
-.list-group-no-padding li {
+.list-group-no-padding > li {
   padding: 0px;
 }
 
@@ -126,6 +126,9 @@ body {
   border: none;
   background-color: transparent;
   color: #f8f8f8;
+}
+#my_bookmarks dt {
+  color: #333;
 }
 #my_bookmarks .nav-tabs {
   border: none;
@@ -201,7 +204,7 @@ body {
 .bookmarks .list-group-item:nth-child(even) {
   background-color: #eeeeee;
   padding-bottom: 5px;
-  box-shadow: 1px 0px 3px 3px rgba(0,0,0,0.1) inset;
+  /*box-shadow: 1px 0px 3px 3px rgba(0,0,0,0.1) inset;*/
 }
 .tag-bookmark {
   right: 32px;
@@ -989,4 +992,12 @@ so that gray backdrop shvows up correctly */
 
 [data-toggle=collapse] {
   cursor: pointer;
+}
+.notify:after {
+  content: attr(notifications);
+  padding: 4px;
+  background-color: #337ab7;
+  border-radius: 4px;
+  color: white;
+  margin-left: 4px;
 }

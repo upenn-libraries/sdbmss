@@ -24,7 +24,7 @@
             <li class="list-group-item">You do not have any messages.</li>
           <% end %>
           <% @messages.each do |m| %>
-            <%= render partial: 'message', locals: {message: m} %>
+            <%= render partial: 'message', locals: {message: m, truncate: true} %>
           <% end %>
         </ul>
       </div>

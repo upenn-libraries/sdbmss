@@ -1,11 +1,25 @@
 <li class="list-group-item">
   <div class="row">
-    <div class="col-sm-9">
-      <h4 class="list-group-item-heading"><%= message.title %></h4>
+    <div class="col-sm-1 text-right">
+      <h4 class="list-group-item-heading"><strong>Title</strong></h4>
       <p class="list-group-item-body">
-        <%= message.message %>
+        <strong>Message</strong>
       </p>
-      <div><%= link_to 'Delete Message',  private_message_path(message, format: 'html'),  method: :delete, class: "btn btn-xs btn-danger", format: 'json', data: { confirm: 'Are you sure?' } %></div>
+    </div>
+    <div class="col-sm-8">
+      <h4 class="list-group-item-heading"> <%= message.title %></h4>
+      <p class="list-group-item-body">
+        <% if truncate && message.message.length > 100 %>
+          <%= message.message.at(0..100) + "..." %>
+        <% else %>
+          <%= message.message %>
+        <% end %>
+      </p>
+      
+      <% if truncate %>
+        <a class='btn btn-xs btn-info' href="/private_messages/<%= message.id %>">Read Message</a>
+      <% end %>
+      <%= link_to 'Delete Message',  private_message_path(message, format: 'html'),  method: :delete, class: "btn btn-xs btn-danger", format: 'json', data: { confirm: 'Are you sure?' } %>
     </div>
     <div class="col-sm-3 text-right">
       <span class="h4">
