@@ -377,12 +377,16 @@ var BOOKMARK_SCOPE;
       }
     });
 
-    sdbmApp.controller("TestCtrl", function ($scope, $http, $modalInstance, $modal, recordType, model, type) {
+    sdbmApp.controller("SelectNameAuthorityCtrl", function ($scope, $http, $modalInstance, $modal, recordType, model, type, base) {
       $scope.suggestions = [];
       $scope.suggestion = undefined;
       $scope.type = type.replace('is_', '');
 
-      $('.search-form').focus();
+      $scope.nameSearchString = base || "";
+
+      setTimeout( function () {
+        $('.search-form').focus();
+      }, 10);
 
       $scope.selectSuggestion = function (s) {
         $scope.suggestion = s;
@@ -438,7 +442,6 @@ var BOOKMARK_SCOPE;
       $scope.createName = function () {
         var newNameValue = $scope.nameSearchString;//ui.item.label.substring(ui.item.label.indexOf("'") + 1, ui.item.label.lastIndexOf("'"));
 
-        $modalInstance.close();
 
         var template = "";
         if (recordType == 'languages' || recordType == 'places') {
@@ -462,22 +465,39 @@ var BOOKMARK_SCOPE;
                     return {
                         "name": newNameValue,
                         "type": type,
-                        "entityName": entityName
+                        "entityName": entityName,
+                        "back": {
+                          "recordType": recordType,
+                          "model": model,
+                          "type": type //113
+                        }
                     };
                 }
             },
             size: 'lg'
         });
 
+        $modalInstance.close();
+
         /* callback for handling result */
         modalInstance.result.then(function (agent) {
+          if (agent) {
             model.id = agent.id;
             model.name = agent.name;
+          } else {
+            model.id = null;
+          }
         }, function () {
             model.id = null;
 //            assignToModel(null);
         });
+      };
+
+      // do initial search if auto-populated
+      if ($scope.nameSearchString.length > 0) {
+        $scope.autocomplete();
       }
+
     });
 
     /* Entry screen controller */
@@ -485,8 +505,9 @@ var BOOKMARK_SCOPE;
 
         EntryScope = $scope;
         
-        $scope.selectNameAuthorityModal = function (recordType, model, type) {
+        $scope.selectNameAuthorityModal = function (recordType, model, type, base) {
           // FIX ME: create name object if none exists
+          base = base || ""
 
           if (recordType == 'languages' || recordType == 'places') {
             var templateUrl = "selectModelAuthority.html";
@@ -496,11 +517,12 @@ var BOOKMARK_SCOPE;
 
           var modal = $modal.open({
               templateUrl: templateUrl,
-              controller: "TestCtrl",
+              controller: "SelectNameAuthorityCtrl",
               resolve: {
                 recordType: function () { return recordType },
                 model: function () { return model },
-                type: function () { return type }
+                type: function () { return type },
+                base: function () { return base }
               },
               size: 'lg'
           });
@@ -1614,7 +1636,7 @@ var BOOKMARK_SCOPE;
             var m = model[submodel].agent;
             var modal = $modal.open({
                 templateUrl: "selectNameAuthority.html",
-                controller: "TestCtrl",
+                controller: "SelectNameAuthorityCtrl",
                 resolve: {
                   recordType: function () { return recordType },
                   model: function () { return m },
@@ -1954,18 +1976,24 @@ var BOOKMARK_SCOPE;
                 function (entity) {
                     $modalInstance.close(entity);
                 },
-                function(response) {
-                    $scope.saveError = sdbmutil.parseRailsErrors(response.data.errors).join("; ") || "Unknown Error";
-                }
+                $scope.saveResponse
             );
         };
+
+        $scope.saveResponse = function(response) {
+          $scope.saveError = sdbmutil.parseRailsErrors(response.data.errors).join("; ") || "Unknown Error";
+        }
+
+        $scope.useExisting = function (entity) {
+          $modalInstance.close(entity);
+        }
 
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
     };
 
-    sdbmApp.controller('CreateNameModalCtrl', function ($scope, $http, $modalInstance, sdbmutil, modalParams, Name) {
+    sdbmApp.controller('CreateNameModalCtrl', function ($scope, $http, $modalInstance, $modal, sdbmutil, modalParams, Name) {
         $scope.entityFactory = function() { return new Name(); };
 
         $scope.entity_attributes = function(entity) {
@@ -1983,6 +2011,22 @@ var BOOKMARK_SCOPE;
         $scope.loading = false;
         $scope.message = "";
         $scope.showSuggestions = false;
+
+        $scope.goBack = function () {
+          $modalInstance.close();
+          if (modalParams.back) {
+            var modal = $modal.open({
+                templateUrl: "selectNameAuthority.html",
+                controller: "SelectNameAuthorityCtrl", //112
+                resolve: {
+                  recordType: function () { return modalParams.back.recordType },
+                  model: function () { return modalParams.back.model },
+                  type: function () { return modalParams.back.type }
+                },
+                size: 'lg'
+            });
+          }
+        }
 
         $scope.findSuggestions = function(name) {
             $scope.message = "";
@@ -2009,26 +2053,79 @@ var BOOKMARK_SCOPE;
             $scope.entity.name = suggestion.name;
             $scope.entity.viaf_id = suggestion.viaf_id;
         };
+
+
+        $scope.saveResponse = function(response) {
+          //console.log(response);
+          $scope.errors = [];
+          $scope.saveError = [];
+          if (response.data.errors.name) {
+            for (var i = 0; i < response.data.errors.name.length; i++) {
+              $scope.saveError += response.data.errors.name[i].message + "\n";
+              if (!response.data.errors.name[i].message) response.data.errors.name[i] = { message: response.data.errors.name[i]};
+              $scope.errors.push(response.data.errors.name[i]);
+            }
+          }
+          if (response.data.errors.viaf_id) {
+            for (var i = 0; i <  response.data.errors.viaf_id.length; i++) {
+              $scope.saveError +=  response.data.errors.viaf_id[i].message + "\n";
+              $scope.errors.push(response.data.errors.viaf_id[i]);
+            }
+          }
+          //$scope.saveError = sdbmutil.parseRailsErrors(response.data.errors).join("; ") || "Unknown Error";
+        }
     });
 
-    sdbmApp.controller('CreateLanguageModalCtrl', function ($scope, $http, $modalInstance, sdbmutil, modalParams, Language) {
+    sdbmApp.controller('CreateLanguageModalCtrl', function ($scope, $http, $modalInstance, $modal, sdbmutil, modalParams, Language) {
         $scope.entityFactory = function() { return new Language(); };
 
         $scope.entity_attributes = function(entity) {
             entity.name = modalParams.name;
         };
 
+        $scope.goBack = function () {
+          $modalInstance.close();
+          if (modalParams.back) {
+            var modal = $modal.open({
+                templateUrl: "selectModelAuthority.html",
+                controller: "SelectNameAuthorityCtrl", //112
+                resolve: {
+                  recordType: function () { return modalParams.back.recordType },
+                  model: function () { return modalParams.back.model },
+                  type: function () { return modalParams.back.type }
+                },
+                size: 'lg'
+            });
+          }
+        }
+
         baseCreateEntityModalCtrl($scope, $http, $modalInstance, sdbmutil);
 
         $scope.entityName = "language";
     });
 
-    sdbmApp.controller('CreatePlaceModalCtrl', function ($scope, $http, $modalInstance, sdbmutil, modalParams, Place) {
+    sdbmApp.controller('CreatePlaceModalCtrl', function ($scope, $http, $modalInstance, $modal, sdbmutil, modalParams, Place) {
         $scope.entityFactory = function() { return new Place(); };
 
         $scope.entity_attributes = function(entity) {
             entity.name = modalParams.name;
         };
+
+        $scope.goBack = function () {
+          $modalInstance.close();
+          if (modalParams.back) {
+            var modal = $modal.open({
+                templateUrl: "selectModelAuthority.html",
+                controller: "SelectNameAuthorityCtrl", //112
+                resolve: {
+                  recordType: function () { return modalParams.back.recordType },
+                  model: function () { return modalParams.back.model },
+                  type: function () { return modalParams.back.type }
+                },
+                size: 'lg'
+            });
+          }
+        }
 
         baseCreateEntityModalCtrl($scope, $http, $modalInstance, sdbmutil);
 

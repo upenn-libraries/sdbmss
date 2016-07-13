@@ -1,6 +1,8 @@
 <script type="text/ng-template" id="createName.html">
     <div class="modal-header">
-        <h3 class="modal-title">Create {{ entityName }}</h3>
+        <h3 class="modal-title">Create {{ entityName }}
+            <a href="" class="btn btn-default pull-right" ng-click="goBack()"><span class="glyphicon glyphicon-circle-arrow-left"></span> Go Back</a>
+        </h3>
     </div>
     <div class="modal-body form-horizontal compress-whitespace">
 
@@ -71,7 +73,9 @@
 
         <p ng-show="message">{{ message }}</p>
 
-        <p ng-show="saveError">Error saving this name: {{ saveError }}</p>
+        <p ng-repeat="e in errors track by $index" ng-if="errors.length > 0">
+            Error: {{ e.message }} <a class='btn btn-success' ng-if="e.name && e.name.name" ng-click="useExisting(e.name)">Use {{ e.name.name }}</a>
+        </p>
         
     </div>
     <div class="modal-footer">

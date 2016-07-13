@@ -1,3 +1,4 @@
+<!-- FIX ME: there's got to be a better way of using the ID number than pattern matching it here? -->
 <%= message %>
 <% if (message.include?("Name is already used") || message.include?("Viaf is already used")) && !message.include?("deleted") %>
     <% if @model.id %>

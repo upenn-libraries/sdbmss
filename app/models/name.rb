@@ -51,22 +51,22 @@ class Name < ActiveRecord::Base
 
   validate do |name_obj|
     if !(name_obj.is_artist || name_obj.is_author || name_obj.is_scribe || name_obj.is_provenance_agent)
-      errors[:base] << "Name objects must have at least one flag set"
+      errors[:base] << {message: "Name objects must have at least one flag set" }
     end
 
     if name_obj.name.present? && (!name_obj.persisted? || name_obj.name_changed?)
       if self.class.unscoped.exists?(name: name_obj.name, deleted: true)
-        errors[:name] << "is already used by a record that has been deleted"
+        errors[:name] << { message: "Name is already used by a record that has been deleted" }
       elsif (existing_name = self.class.find_by(name: name_obj.name)).present? && name_obj.id != existing_name.id
-        errors[:name] << "is already used by record ##{existing_name.id} for '#{existing_name.name}'"
+        errors[:name] << { message: "Name is already used by record ##{existing_name.id} for '#{existing_name.name}'", name: { id: existing_name.id, name: existing_name.name } }
       end
     end
 
     if name_obj.viaf_id.present? && (!name_obj.persisted? || name_obj.viaf_id_changed?)
       if self.class.unscoped.exists?(viaf_id: name_obj.viaf_id, deleted: true)
-        errors[:viaf_id] << "is already used by a record that has been deleted"
+        errors[:viaf_id] << { message: "Viaf ID is already used by a record that has been deleted" }
       elsif (existing_name = self.class.find_by(viaf_id: name_obj.viaf_id)).present? && name_obj.id != existing_name.id
-        errors[:viaf_id] << "is already used by record ##{existing_name.id} for '#{existing_name.name}'"
+        errors[:viaf_id] << { message: "Viaf ID is already used by record ##{existing_name.id} for '#{existing_name.name}'", name: {id: existing_name.id, name: existing_name.name } }
       else
         name_obj.viaf_id = name_obj.viaf_id.strip unless name_obj.viaf_id.nil?
       end
