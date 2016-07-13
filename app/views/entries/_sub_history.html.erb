@@ -27,7 +27,7 @@
                                             <div class='col-sm-2 text-center'>
                                                 <!--<%= check_box_tag "version_id[]", version.id, false, disabled: muted, class: 'table-checkbox', id: "checkbox_#{version.id}" %>-->
                                                 <!-- set disabled here, if need be --><!-- also needs JS for 'radio button' functionality -->
-                                                <%= link_to "Undo", revert_confirm_entry_path(@entry, :version_id => [version.id]), :method => 'patch', class: 'btn btn-default' %>
+                                                <%= link_to "Undo", revert_confirm_entry_path(@entry, :version_id => [version.id]), :method => 'patch', class: 'btn-undo btn btn-default' %>
                                             </div>
                                         </div>
                                     </div>

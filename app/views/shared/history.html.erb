@@ -35,7 +35,7 @@
                             </div>
                             <div class='col-sm-1 text-left'>
                                 <!--<%= check_box_tag "version_id[]", version.id, false, class: 'checkbox-hidden', id: "checkbox#{version.id}" %> -->
-                                <%= link_to "Undo", polymorphic_url(@model, :version_id => [version.id], :action => "revert_confirm"), :method => 'patch', class: 'btn btn-default' %>
+                                <%= link_to "Undo", polymorphic_url(@model, :version_id => [version.id], :action => "revert_confirm"), :method => 'patch', class: 'btn-undo btn btn-default' %>
                             </div>
                         </div>                    
                     </div>

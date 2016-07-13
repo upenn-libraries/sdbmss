@@ -124,7 +124,6 @@ module Revert
     end
 
     previous2.each do |k, v|
-      puts "hmm #{k}, #{v}"
       if EntryVersionFormatter.isClass(k)
         previous2[k] = "#{EntryVersionFormatter.toClass(k).find(v)}"
       end
@@ -137,7 +136,6 @@ module Revert
   def history
     @model = model_class.find(params[:id])
     if can?(:edit, @model)
-      puts "yeah that's totally fine"
       @versions = @model.versions
       render :template => 'shared/history'
     else

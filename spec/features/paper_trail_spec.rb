@@ -335,9 +335,8 @@ describe "Paper trail", :js => true do
         visit history_entry_path (e)
 
         f = first('.active', text: 'Folios')
-        f = f.find('.unchecked').click()
-        click_button('Undo')
-
+        f = f.find('.btn-undo').click()
+        
         expect(page).to have_content('Revert to Old Version')
         expect(page).to have_content('10000')
         expect(page).to have_content('123')
@@ -350,9 +349,8 @@ describe "Paper trail", :js => true do
         visit history_entry_path (e)
 
         f = first('.active', text: 'Folios')
-        f = f.find('.unchecked').click()
-        click_button('Undo')
-
+        f = f.find('.btn-undo').click()
+        
         click_button('Restore')
 
         sleep(1.1)
@@ -390,8 +388,7 @@ describe "Paper trail", :js => true do
         visit history_entry_path (e)
 
         f = first('.active', text: 'Hiiipower')
-        f = f.find('.unchecked').click()
-        click_button('Undo')
+        f = f.find('.btn-undo').click()
 
         expect(page).to have_content(e.public_id)
         expect(page).to have_content('Hiiipower')
@@ -406,8 +403,7 @@ describe "Paper trail", :js => true do
         visit history_entry_path (e)
 
         f = first('.active', text: 'Hiiipower')
-        f = f.find('.unchecked').click()
-        click_button('Undo')
+        f = f.find('.btn-undo').click()
 
         click_button('Restore')
         sleep(1.1)
@@ -423,8 +419,7 @@ describe "Paper trail", :js => true do
         visit history_entry_path (e)
 
         f = first('.active', text: 'Hiiipower')
-        l = f.first('.history-label')
-        expect(l).to have_content('changed Title')
+        expect(f).to have_content('changed Title')
         expect(f).to have_content('Book of Hours')
       end
 
@@ -446,10 +441,8 @@ describe "Paper trail", :js => true do
 
         visit history_entry_path (e)
         f = first('.active', text: 'Title')
-        l = f.first('.history-label')
-        expect(l).to have_content('deleted Title')
-        f = f.find('.unchecked').click()
-        click_button('Undo')
+        expect(f).to have_content('deleted Title')
+        f = f.find('.btn-undo').click()
 
         expect(page).to have_content(t)
 
@@ -469,10 +462,8 @@ describe "Paper trail", :js => true do
         visit history_entry_path e
         
         f = first('.active', text: 'Title')
-        l = f.first('.history-label')
-        expect(l).to have_content('added Title')
-        f = f.find('.unchecked').click()
-        click_button('Undo')
+        expect(f).to have_content('added Title')
+        f = f.find('.btn-undo').click()
 
         expect(page).to have_content('Book of Hours')
         click_button('Restore')
