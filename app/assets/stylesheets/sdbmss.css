@@ -338,15 +338,17 @@ h1 { font-size: 30px; margin-top: 0; }
   font-size: 16px;
 }
 .carousel-control, .carousel-control:focus {
-  color: #666;
+  color: lightblue;
   background-image: none;
-  background-color: rgba(200,207,200,0.5);
+  background-color: rgba(255,255,255,0.3);
   width: 4%;
+  opacity: 1;
+  border-radius: 6px;
   text-shadow: none;
 }
 .carousel-control:active, .carousel-control:hover {
-  color: lightblue;
-  background-color: rgba(225,225,230,0.6);
+  color: white;
+  background-color: lightblue;
 }
 .carousel-control.right, .carousel-control.left {
   background-image: none;
@@ -665,6 +667,11 @@ li.provenance:hover, li.provenance:focus {
 }
 .input-block.carousel .item {
   font-size: 18px;
+}
+.carousel .item {
+  padding: 6px;
+  border-radius: 6px;
+  margin: 6px 0px;
 }
 .more-info {
   color: #333;

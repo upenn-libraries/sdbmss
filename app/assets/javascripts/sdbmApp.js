@@ -469,7 +469,7 @@ var BOOKMARK_SCOPE;
                         "back": {
                           "recordType": recordType,
                           "model": model,
-                          "type": type //113
+                          "type": type
                         }
                     };
                 }
@@ -1640,7 +1640,8 @@ var BOOKMARK_SCOPE;
                 resolve: {
                   recordType: function () { return recordType },
                   model: function () { return m },
-                  type: function () { return type }
+                  type: function () { return type },
+                  base: ""
                 },
                 size: 'lg'
             });
@@ -2021,7 +2022,8 @@ var BOOKMARK_SCOPE;
                 resolve: {
                   recordType: function () { return modalParams.back.recordType },
                   model: function () { return modalParams.back.model },
-                  type: function () { return modalParams.back.type }
+                  type: function () { return modalParams.back.type },
+                  base: function () { return modalParams.name }
                 },
                 size: 'lg'
             });

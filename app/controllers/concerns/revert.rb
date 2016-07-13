@@ -108,7 +108,7 @@ module Revert
   end
 
   def reversion_format (current, previous)
-    
+
     # select only the fields that are changed between the two versions
     current2 = current.select { |field, value| value != nil && previous[field] != value }
     previous2 = previous.select { |field, value| value != nil && current[field] != value }
@@ -124,6 +124,7 @@ module Revert
     end
 
     previous2.each do |k, v|
+      puts "hmm #{k}, #{v}"
       if EntryVersionFormatter.isClass(k)
         previous2[k] = "#{EntryVersionFormatter.toClass(k).find(v)}"
       end

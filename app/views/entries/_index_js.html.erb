@@ -49,7 +49,7 @@
                      className: 'text-center unreviewed_only',
                      render: function (data, type, full, meta) {
                          if(showApprovalControls()) {
-                            return '<input type="checkbox" name="review" value="' + full[manageEntries.dataTable.getColumnIndex("ID")] + '"/>';
+                            return '<input type="checkbox" name="approve" value="' + full[manageEntries.dataTable.getColumnIndex("ID")] + '"/>';
                          }
                          return '';
                      }
