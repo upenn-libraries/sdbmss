@@ -7,7 +7,6 @@
         </li>
       </ul>
     <div class="tab-content bookmark-panes">
-
       <div ng-repeat="(name, bookmarks) in all_bookmarks" class="tab-pane fade" id="bookmark-tab-{{ name }}" ng-class="{active: (name == active), in: (name == active)}">
         <ul class="list-group bookmarks">
           <li class="list-group-item text-center" ng-if="search_tag.length > 0 && (bookmarks | filter:hasTag).length <= 0">
