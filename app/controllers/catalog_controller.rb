@@ -13,7 +13,8 @@ class CatalogController < ApplicationController
   # Overrides Blacklight::Catalog#show to check for existence and send
   # 404 if necessary
   def show
-    entry = Entry.find_by(id: params[:id])
+    @entry = Entry.find_by(id: params[:id])
+    entry = @entry
     # JIRA(sdbm-176)
 #    entry = Entry.find_by(id: params[:id], approved: true)
     if entry.present?

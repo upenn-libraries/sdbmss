@@ -34,6 +34,7 @@ class Entry < ActiveRecord::Base
   belongs_to :institution, class_name: "Name"
 
   belongs_to :superceded_by, class_name: "Entry"
+  has_many :supercedes, class_name: "Entry", :foreign_key => :superceded_by_id
 
   has_many :entry_manuscripts, inverse_of: :entry, dependent: :destroy
   has_many :manuscripts, through: :entry_manuscripts
@@ -448,6 +449,7 @@ class Entry < ActiveRecord::Base
       ] +
       # provenance
       provenance_names +
+      supercedes.map(&:id) +
       # comments
       comments.select(&:public).map(&:comment)
 
@@ -550,9 +552,9 @@ class Entry < ActiveRecord::Base
       entry_titles.map(&:title).join("; ")
     end
 
-    define_field(:text, :title_search, :stored => true) do
-      entry_titles.map(&:display_value)
-    end
+#    define_field(:text, :title_search, :stored => true) do
+#      entry_titles.map(&:display_value)
+#    end
 
     define_field(:string, :author, :stored => true, :multiple => true) do
       authors.map(&:name)
@@ -653,6 +655,10 @@ class Entry < ActiveRecord::Base
     end
     define_field(:text, :use_search, :stored => true) do
       entry_uses.map(&:use)
+    end
+
+    define_field(:integer, :supercede, :stored => true, :multiple => true) do
+      supercedes.map(&:id)
     end
 
     define_field(:integer, :folios, :stored => true) { folios }
