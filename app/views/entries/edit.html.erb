@@ -226,29 +226,59 @@ label.col-sm-2-and-half {
           <div ng-show="entry.transaction_type == 'sale' || entry.transaction_type == 'gift'">
           
               <div class="form-group row">
-                  <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_selling_agent">Selling Agent</span></label>
-                  <div class="col-sm-5">
-                      <div class="input-group">
-
-                          <!--<input id="sale_selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
-                          
-                          <a id='find_selling_agent_name_authority_0' ng-if='entry.sale.selling_agent.agent.id == undefined' ng-init="entry.sale.selling_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.sale.selling_agent.agent, 'is_provenance_agent')">Find in Name Authority</a>
-                          <div id='show_selling_agent_name_authority_0' ng-if='entry.sale.selling_agent.agent != undefined && entry.sale.selling_agent.agent.id != undefined' class="well well-sm well-name-authority">
-                            <a id='remove_selling_agent_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry.sale.selling_agent, 'agent')"></a>
-                            {{ entry.sale.selling_agent.agent.name }}
+                  <label class="col-sm-3 side-title">
+                    <h3>Sale Agent</h3>
+                    
+                    <!--<span sdbm-tooltip="entry_selling_agent">Selling Agent</span>-->
+                    <div class="add-link-container">
+                      <a a id="add_author" class="clickable" data-ng-click="addRecord(entry.sale.sale_agents)" title="Add">
+                        Add new <span class="glyphicon glyphicon-plus"></span>
+                      </a>
+                    </div>                  
+                  </label>
+                  <div ui-sortable="sortableOptions" ng-model="entry.sale.sale_agents" class='pull-right col-sm-9'>
+                    <div class="form-group input-block" data-ng-repeat="sale_agent in entry.sale.sale_agents | filter: activeRecords">
+                      <div class="remove-link-container">
+                        <a class="clickable" data-ng-click="removeRecord(entry.sale.sale_agents, sale_agent)" title="Remove">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                      </div>
+                      <div class='row'>
+                        <label class="col-sm-3 control-label">
+                            <span>Find in Name Authority</span>
+                        </label>
+                        <div class="col-sm-9">
+                           <div class="input-group">
+                              <a id='find_sale_agent_name_authority_0' ng-if='sale_agent.agent.id == undefined' ng-init="sale_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', sale_agent.agent, 'is_provenance_agent')">Find in Name Authority</a>
+                              <div id='show_selling_agent_name_authority_0' ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                <a id='remove_selling_agent_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(sale_agent, 'agent')"></a>
+                                {{ sale_agent.agent.name }}
+                              </div>
+                              <div class="input-group-addon clickable">
+                                <a class="more-info glyphicon" href="/names/{{ sale_agent.agent.id }}" target="_blank" ng-class="sale_agent.agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                              </div>
+                              <div id="sale_selling_agent_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="sale_agent"><span class="glyphicon"></span></div>
+                            </div>
                           </div>
-
-                          <div class="input-group-addon clickable">
-                            <a class="more-info glyphicon" href="/names/{{ entry.sale.selling_agent.agent.id }}" target="_blank" ng-class="entry.sale.selling_agent.agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                        </div>
+                        <div class='row'>
+                          <label class="col-sm-3 control-label">
+                            <span sdbm-tooltip="entry_author_role">Role</span>
+                          </label>
+                          <div class="col-sm-9">
+                            <select id="sale_agent_role_{{ $index }}" name="sale_agent_role" class="form-control" ng-model="sale_agent.role" ng-options="option[0] as option[1] for option in optionsSaleAgentRole">
+                              <option value=""></option>
+                            </select>
                           </div>
-                          <div id="sale_selling_agent_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.selling_agent"><span class="glyphicon"></span></div>
+                        </div>
                       </div>
                   </div>
+                </div>
+                <!--
                   <label class="col-sm-1 control-label"><span sdbm-tooltip="entry_seller">Seller</span></label>
                   <div class="col-sm-4">
                       <div class="input-group">
-                          <!--<input id="sale_seller" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
-
+                    
                           <a id='find_seller_name_authority_0' ng-if='entry.sale.seller_or_holder.agent.id == undefined' ng-init="entry.sale.seller_or_holder.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.sale.seller_or_holder.agent, 'is_provenance_agent')">Find in Name Authority</a>
                           <div ng-if='entry.sale.seller_or_holder.agent != undefined && entry.sale.seller_or_holder.agent.id != undefined' class="well well-sm well-name-authority">
                             <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry.sale.seller_or_holder, 'agent')"></a>
@@ -267,8 +297,7 @@ label.col-sm-2-and-half {
                   <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_buyer">Buyer</span></label>
                   <div class="col-sm-5">
                       <div class="input-group">
-                          <!--<input id="sale_buyer" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
-
+                    
                           <a id='find_buyer_name_authority_0' ng-if='entry.sale.buyer.agent.id == undefined' ng-init="entry.sale.buyer.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.sale.buyer.agent, 'is_provenance_agent')">Find in Name Authority</a>
                           <div ng-if='entry.sale.buyer.agent != undefined && entry.sale.buyer.agent.id != undefined' class="well well-sm well-name-authority">
                             <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry.sale.buyer, 'agent')"></a>
@@ -281,7 +310,7 @@ label.col-sm-2-and-half {
                           <div id="sale_buyer_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.buyer"><span class="glyphicon"></span></div>
                       </div>
                   </div>
-              </div>
+              </div>-->
 
               <div ng-show="entry.transaction_type == 'sale'">
 
