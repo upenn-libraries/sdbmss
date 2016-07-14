@@ -41,11 +41,11 @@ module DataEntryHelpers
 
     find_by_id('add_sale_agent').click
     add_name_authority("find_sale_agent_name_authority_#{offset}", 'Joe2')
-    select 'Seller', from: 'sale_agent_role_0'
+    select 'Seller', from: "sale_agent_role_#{offset}"
 
     find_by_id('add_sale_agent').click
     add_name_authority("find_sale_agent_name_authority_#{offset + 1}", 'Joe3')
-    select 'Buyer', from: 'sale_agent_role_0'
+    select 'Buyer', from: "sale_agent_role_#{offset + 1}"
 
     expect(find("#sale_agent_#{offset}")).to have_content('Joe2')
     expect(find("#sale_agent_#{offset + 1}")).to have_content('Joe3')
@@ -164,7 +164,7 @@ module DataEntryHelpers
     sale = entry.get_sale
 
     expect(entry.catalog_or_lot_number).to eq('123')
-    expect(sale.get_selling_agents_as_names).to have_content("Sotheby's")
+    expect(sale.get_selling_agents_names).to have_content("Sotheby's")
     expect(sale.get_sellers_or_holders.first.agent.name).to eq('Joe2')
     expect(sale.get_buyers.first.agent.name).to eq('Joe3')
     expect(sale.sold).to eq('Yes')
