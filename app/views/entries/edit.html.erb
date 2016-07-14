@@ -171,8 +171,12 @@ label.col-sm-2-and-half {
       <div class="source-container">
           <div class="form-group row">
               <label class="col-sm-2 control-label">Source</label>
-              <div class="col-sm-8 label-alignment source-name">
+              <div class="col-sm-7 label-alignment source-name">
                   <a href="/sources/{{ entry.source.id }}">SDBM_SOURCE_{{ entry.source.id }}</a> - {{ entry.source.display_value }} ({{ entry.source.source_type.display_name }})
+              </div>
+              <div class="col-sm-3">
+                <a href="" class="btn btn-danger" ng-click="editSource();">Change Source</a>
+                <span class="list-group-item list-group-item-warning" ng-if="entry.source.source_type_id == 8">You can't change the source of a Provenance Observation</span>
               </div>
           </div>
       </div>
@@ -187,10 +191,6 @@ label.col-sm-2-and-half {
         </div>
         <div class="col-sm-5 label-alignment">
             <span id="cat_lot_no_warning" style="color: red;"></span>
-        </div>
-        <div class="col-sm-3">
-          <a href="" class="btn btn-danger" ng-click="editSource();">Change Source</a>
-          <span class="list-group-item list-group-item-warning" ng-if="entry.source.source_type_id == 8">You can't change the source of a Provenance Observation</span>
         </div>
       </div>
 
@@ -231,7 +231,7 @@ label.col-sm-2-and-half {
                     
                     <!--<span sdbm-tooltip="entry_selling_agent">Selling Agent</span>-->
                     <div class="add-link-container">
-                      <a a id="add_author" class="clickable" data-ng-click="addRecord(entry.sale.sale_agents)" title="Add">
+                      <a a id="add_sale_agent" class="clickable" data-ng-click="addRecord(entry.sale.sale_agents)" title="Add">
                         Add new <span class="glyphicon glyphicon-plus"></span>
                       </a>
                     </div>                  
@@ -249,10 +249,10 @@ label.col-sm-2-and-half {
                         </label>
                         <div class="col-sm-9">
                            <div class="input-group">
-                              <a id='find_sale_agent_name_authority_0' ng-if='sale_agent.agent.id == undefined' ng-init="sale_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', sale_agent.agent, 'is_provenance_agent')">Find in Name Authority</a>
+                              <a id='find_sale_agent_name_authority_{{ $index }}' ng-if='sale_agent.agent.id == undefined' ng-init="sale_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', sale_agent.agent, 'is_provenance_agent')">Find in Name Authority</a>
                               <div id='show_selling_agent_name_authority_0' ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                 <a id='remove_selling_agent_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(sale_agent, 'agent')"></a>
-                                {{ sale_agent.agent.name }}
+                                <span id="sale_agent_{{ $index}}">{{ sale_agent.agent.name }}</span>
                               </div>
                               <div class="input-group-addon clickable">
                                 <a class="more-info glyphicon" href="/names/{{ sale_agent.agent.id }}" target="_blank" ng-class="sale_agent.agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
@@ -329,7 +329,7 @@ label.col-sm-2-and-half {
                       </div>
                   </div>
                   
-                  <div class="form-group row">
+                  <div class="form-group row input-block">
                       <label for="price" class="col-sm-2 control-label"><span sdbm-tooltip="entry_price">Price</span></label>
                       <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['sale_price'].$valid }">
                           <input type="text" class="form-control" id="sale_price" name="sale_price" ng-pattern="/^[0-9,\.]*$/" ng-model="entry.sale.price">

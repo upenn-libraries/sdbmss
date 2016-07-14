@@ -219,7 +219,8 @@ describe "Data entry", :js => true do
       fill_in 'source_date', with: '2014-02-34'
       fill_in 'title', with: 'Very Rare Books'
 
-      add_name_authority('find_selling_agent_name_authority_0', "Sotheby's")
+      find_by_id('add_source_agent').click
+      add_name_authority('find_source_agent_name_authority_0', "Sotheby's")
       #fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
       #select "Yes", from: 'whether_mss'
       select "Library", from: 'medium'
@@ -239,7 +240,7 @@ describe "Data entry", :js => true do
       expect(source.source_type).to eq(SourceType.auction_catalog)
       expect(source.date).to eq('20140234')
       expect(source.title).to eq('Very Rare Books')
-      expect(source.get_selling_agent.agent.name).to eq("Sotheby's")
+      expect(source.get_selling_agents.first.agent.name).to eq("Sotheby's")
       #expect(source.whether_mss).to eq("Yes")
       expect(source.status).to eq(Source::TYPE_STATUS_TO_BE_ENTERED)
       expect(source.medium).to eq(Source::TYPE_MEDIUM_LIBRARY)
@@ -318,14 +319,16 @@ describe "Data entry", :js => true do
       #fill_autocomplete_select_or_create_entity 'institution', with: "Harvard"
       
       #find_by_id('remove_institution_name_authority_0').click
-      add_name_authority('find_institution_name_authority_0', 'Harvard')
+      find_by_id('add_source_agent').click
+      add_name_authority('find_source_agent_name_authority_0', 'Harvard')
       # now change source type to Auction Catalog
       select 'Auction/Dealer Catalog', from: 'source_type'
       fill_in 'title', with: 'my catalog'
       #fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
       
 #      find_by_id('remove_selling_agent_name_authority_0').click
-      add_name_authority('find_selling_agent_name_authority_0', "Sotheby's")
+      find_by_id('add_source_agent').click
+      add_name_authority('find_source_agent_name_authority_0', "Sotheby's")
       click_button('Save')
 
       # expect that page has filtered out the field values that are
@@ -358,7 +361,8 @@ describe "Data entry", :js => true do
       fill_in 'title', with: 'A very Long Title for an Existing Source'
       #fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
       #find_by_id('remove_selling_agent_name_authority_0').click
-      add_name_authority('find_selling_agent_name_authority_0', "Sotheby's")
+      find_by_id('add_source_agent').click
+      add_name_authority('find_source_agent_name_authority_0', "Sotheby's")
       click_button('Save')
 
       expect(find(".modal-title", visible: true).text.include?("Warning: similar sources found!")).to be_truthy

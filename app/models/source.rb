@@ -144,39 +144,84 @@ class Source < ActiveRecord::Base
   #   [TYPE_UNPUBLISHED].member? source_type
   # end
 
+
+  def get_source_agents_with_role(role)
+    source_agents.select { |sa| sa.role == role }
+  end
+
+  # returns a SourceAgent object
+  def get_sellers_or_holders
+    get_source_agents_with_role(SourceAgent::ROLE_SELLER_OR_HOLDER)
+  end
+
+  # returns an Name object
+  def get_sellers_or_holders_as_names
+    source_agents = get_sellers_or_holders
+    source_agents.map{ |a| a.agent ? a.agent.name : "" }.join(" | ")
+  end
+
+  # returns a SourceAgent object
+  def get_selling_agents
+    get_source_agents_with_role(SourceAgent::ROLE_SELLING_AGENT)
+  end
+
+  # returns an Name object
+  def get_selling_agents_as_names
+    source_agents = get_selling_agents
+    source_agents.map{ |a| a.agent ? a.agent.name : "" }.join(" | ")
+  end
+
+  # returns a SourceAgent object
+  def get_institutions
+    get_source_agents_with_role(SourceAgent::ROLE_INSTITUTION)
+  end
+
+  # returns an Name object
+  def get_institutions_as_names
+    source_agents = get_institutions
+    source_agents.map{ |a| a.agent ? a.agent.name : "" }.join(" | ")
+  end
+
   def get_source_agent_with_role(role)
+    puts "deprecated #{__method__}"
     source_agents.select { |sa| sa.role == role }.first
   end
 
   # returns a SourceAgent object
   def get_seller_or_holder
+    puts "deprecated #{__method__}"
     get_source_agent_with_role(SourceAgent::ROLE_SELLER_OR_HOLDER)
   end
 
   # returns an Name object
   def get_seller_or_holder_as_name
+    puts "deprecated #{__method__}"
     sa = get_seller_or_holder
     sa.agent if sa
   end
 
   # returns a SourceAgent object
   def get_selling_agent
+    puts "deprecated #{__method__}"
     get_source_agent_with_role(SourceAgent::ROLE_SELLING_AGENT)
   end
 
   # returns an Name object
   def get_selling_agent_as_name
+    puts "deprecated #{__method__}"
     sa = get_selling_agent
     sa.agent if sa
   end
 
   # returns a SourceAgent object
   def get_institution
+    puts "deprecated #{__method__}"
     get_source_agent_with_role(SourceAgent::ROLE_INSTITUTION)
   end
 
   # returns an Name object
   def get_institution_as_name
+    puts "deprecated #{__method__}"
     sa = get_institution
     sa.agent if sa
   end
@@ -199,9 +244,9 @@ class Source < ActiveRecord::Base
       type: source_type.display_name,
       date: SDBMSS::Util.format_fuzzy_date(date),
       author: author,
-      institution: get_institution_as_name.to_s,
-      selling_agent: get_selling_agent_as_name.to_s,
-      seller: get_seller_or_holder_as_name.to_s,
+      institution: get_institutions_as_names,
+      selling_agent: get_selling_agents_as_names,
+      seller: get_sellers_or_holders_as_names,
       used_in: entries_count,
       method_of_access: medium,
       date_accessed: date_accessed,
@@ -220,6 +265,14 @@ class Source < ActiveRecord::Base
     end
 
     agent_str = ""
+
+    source_agents.each do |source_agent|
+      if agent_str.length > 0
+        agent_str += " | "
+      end
+      agent_str += source_agent.agent.name if source_agent.agent && source_agent.agent.name
+    end
+=begin
     if source_type.name == SourceType::AUCTION_CATALOG
       selling_agent = get_selling_agent
       agent_str = selling_agent.agent.name if selling_agent && selling_agent.agent
@@ -235,7 +288,7 @@ class Source < ActiveRecord::Base
         agent_str = author if author
       end
     end
-
+=end
     title_str = title || "(No title)"
 
     [date_str, agent_str, title_str].select { |x| x.to_s.length > 0 }.join(" - ")
@@ -311,8 +364,8 @@ class Source < ActiveRecord::Base
       title: title,
       display_value: display_value,
       author: author,
-      selling_agent: (selling_agent = get_selling_agent_as_name).present? ? selling_agent.name : "",
-      institution: (institution_agent = get_institution_as_name).present? ? institution_agent.name : "",
+      selling_agent: get_selling_agents_as_names,#(selling_agent = get_selling_agent_as_name).present? ? selling_agent.name : "",
+      institution: get_institutions_as_names, #(institution_agent = get_institution_as_name).present? ? institution_agent.name : "",
       whether_mss: whether_mss,
       medium: medium,
       date_accessed: date_accessed,

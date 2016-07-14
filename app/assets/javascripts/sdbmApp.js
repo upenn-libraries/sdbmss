@@ -889,15 +889,14 @@ var BOOKMARK_SCOPE;
 
             if(!entry.sale) {
                 entry.sale = {
-                    sold: null
+                    sold: null,
+                    sale_agents: []
                 };
                 // prepopulate sale agent fields with data from source_agents
                 var sourceAgents = entry.source.source_agents || [];
                 sourceAgents.forEach(function (sourceAgent) {
-                    var role = sourceAgent.role;
-                    entry.sale[role] = {
-                        agent: sourceAgent.agent
-                    };
+                    var sa = {agent: sourceAgent.agent, role: "selling_agent"};
+                    entry.sale.sale_agents.push(sa);
                 });
             }
 
@@ -1100,7 +1099,7 @@ var BOOKMARK_SCOPE;
           if (entry2.institution.id == null) {
             delete entry2.institution;
           }
-          if (entry2.sale.selling_agent.agent.id == null) {
+/*          if (entry2.sale.selling_agent.agent.id == null) {
             delete entry2.sale.selling_agent;
           }
           if (entry2.sale.seller_or_holder.agent.id == null) {
@@ -1113,7 +1112,7 @@ var BOOKMARK_SCOPE;
             if (prov.provenance_agent.id == null) {
               delete prov.provenance_agent;
             }
-          });
+          });*/
           return angular.toJson(entry1) !== angular.toJson(entry2);
         }
 
@@ -1639,10 +1638,11 @@ var BOOKMARK_SCOPE;
 
     sdbmApp.controller('SourceCtrl', function ($scope, $http, $modal, sdbmutil, Source) {
 
-        $scope.selectNameAuthorityModal = function (recordType, model, submodel, type) {
+        $scope.selectNameAuthorityModal = function (recordType, model, role, type) {
           if ($scope.mergeEdit !== false) {
-            model[submodel] = {agent: {id: null}};
-            var m = model[submodel].agent;
+            model.agent = {id: null};
+            model.role = role;
+            var m = model.agent;
             var modal = $modal.open({
                 templateUrl: "selectNameAuthority.html",
                 controller: "SelectNameAuthorityCtrl",
@@ -1669,14 +1669,16 @@ var BOOKMARK_SCOPE;
         // get a reference to this
 
 
-        $scope.beginMergeEdit = function () { 
+        $scope.beginMergeEdit = function () {
+          $('.merge-into').removeClass('no-edit'); 
           $scope.backupSource = angular.copy($scope.source);
           $scope.mergeEdit = true;
           //console.log(1, $scope.source_agent); 
         };
         $scope.cancelMergeEdit = function () {
+          $('.merge-into').addClass('no-edit');
           $scope.source = $scope.backupSource;
-          $scope.form.source_agent.$setValidity('text', true);
+          //$scope.form.source_agent.$setValidity('text', true);
           $scope.mergeEdit = false;
         }
         $scope.confirmMergeEdit = function () {
@@ -1684,6 +1686,7 @@ var BOOKMARK_SCOPE;
             $scope.backupSource = undefined;
             $scope.mergeEdit = false;
             $scope.save();
+            $('.merge-into').addClass('no-edit');
           } else {
             alert('Error: invalid input detected.');
           }
@@ -1709,6 +1712,30 @@ var BOOKMARK_SCOPE;
         $scope.source = undefined;
 
         $scope.source_agents = [];
+
+        $scope.addRecord = function (anArray) {
+          anArray.push({});
+        };
+
+        $scope.removeRecord = function (anArray, record) {
+          if (Object.getOwnPropertyNames(record).length <= 1 || window.confirm("Are you sure you want to remove this record?")) {
+            var i;
+            for (i = 0; i < anArray.length; i++) {
+                if (anArray[i] === record) {
+                    if(record.id) {
+                        record._destroy = 1;
+                    } else {
+                        anArray.splice(i, 1);
+                    }
+                    break;
+                }
+            }
+          }
+        };
+
+        $scope.activeRecords = function(element) {
+            return !element._destroy;
+        };
 
         $scope.debug = function () {
             console.log($scope.source);
@@ -1854,14 +1881,14 @@ var BOOKMARK_SCOPE;
                 sourceToSave.date_accessed = sourceToSave.date_accessed.replace(/-/g, "");
             }
 
-            sourceToSave.source_agents = [];
+            /*sourceToSave.source_agents = [];
             $scope.agent_role_types.forEach(function (role) {
                 if (sourceToSave[role]) {
                     sourceToSave[role].role = role;
                     sourceToSave.source_agents.push(sourceToSave[role]);
                     delete sourceToSave[role];
                 }
-            });
+            });*/
 
             // filter out irrelevant fields and source_agent records
             // with invalid roles; these can be populated because user
@@ -1925,6 +1952,7 @@ var BOOKMARK_SCOPE;
               $scope.source.medium = 'internet';
             else
               $scope.source.medium = '';
+            $scope.source.source_agents = [];
           }
         };
 
@@ -1952,6 +1980,7 @@ var BOOKMARK_SCOPE;
                     source_type = source_type.length == 1 ? source_type[0] : "";
                     $scope.source = new Source({ source_type: source_type || "", date_accessed: todayString, date: source_type.id == 4 ? todayString : "" });
                 }
+                $scope.source.source_agents = [];
             },
             // error callback
             sdbmutil.promiseErrorHandlerFactory("Error initializing dropdown options on this page, can't proceed.")

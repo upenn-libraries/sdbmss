@@ -36,9 +36,19 @@ module DataEntryHelpers
     # sale_selling_agent should be auto-populated from source, so we skip it
     #fill_autocomplete_select_or_create_entity 'sale_seller', with: 'Joe2'
     #fill_autocomplete_select_or_create_entity 'sale_buyer', with: 'Joe3'
-    add_name_authority('find_seller_name_authority_0', 'Joe2')
-    add_name_authority('find_buyer_name_authority_0', 'Joe3')
-    expect(find('#buyer_0')).to have_content('Joe3')
+    
+    offset = @source.source_agents.count
+
+    find_by_id('add_sale_agent').click
+    add_name_authority("find_sale_agent_name_authority_#{offset}", 'Joe2')
+    select 'Seller', from: 'sale_agent_role_0'
+
+    find_by_id('add_sale_agent').click
+    add_name_authority("find_sale_agent_name_authority_#{offset + 1}", 'Joe3')
+    select 'Buyer', from: 'sale_agent_role_0'
+
+    expect(find("#sale_agent_#{offset}")).to have_content('Joe2')
+    expect(find("#sale_agent_#{offset + 1}")).to have_content('Joe3')
 
 #      find_by_id('find_seller_name_authority_0').click
 #      fill_in 'searchNameAuthority', with: 'Joe2'
@@ -154,9 +164,9 @@ module DataEntryHelpers
     sale = entry.get_sale
 
     expect(entry.catalog_or_lot_number).to eq('123')
-    expect(sale.get_selling_agent.agent.name).to eq("Sotheby's")
-    expect(sale.get_seller_or_holder.agent.name).to eq('Joe2')
-    expect(sale.get_buyer.agent.name).to eq('Joe3')
+    expect(sale.get_selling_agents_as_names).to have_content("Sotheby's")
+    expect(sale.get_sellers_or_holders.first.agent.name).to eq('Joe2')
+    expect(sale.get_buyers.first.agent.name).to eq('Joe3')
     expect(sale.sold).to eq('Yes')
     expect(sale.date).to eq('20140303')
     expect(sale.price).to eq(130000)

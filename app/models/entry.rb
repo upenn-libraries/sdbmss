@@ -183,6 +183,7 @@ class Entry < ActiveRecord::Base
   end
 
   def get_sale_agent_name(role)
+    puts "deprecated #{__method__}"    
     t = get_sale
     if t
       sa = t.get_sale_agent_with_role(role)
@@ -192,15 +193,46 @@ class Entry < ActiveRecord::Base
     end
   end
 
+  def get_sale_agents_names(role)
+    t = get_sale
+    
+    if !t
+      return ""
+    end
+
+    if role == SaleAgent::ROLE_SELLING_AGENT
+      t.get_selling_agents_names
+    elsif role == SaleAgent::ROLE_SELLER_OR_HOLDER
+      t.get_sellers_or_holders_names
+    elsif role == SaleAgent::ROLE_BUYER
+      t.get_buyers_names
+    end
+  end
+
+  def get_sale_selling_agents_names
+    get_sale_agents_names(SaleAgent::ROLE_SELLING_AGENT)
+  end
+
+  def get_sale_sellers_or_holders_names
+    get_sale_agents_names(SaleAgent::ROLE_SELLER_OR_HOLDER)
+  end
+
+  def get_sale_buyers_names
+    get_sale_agents_names(SaleAgent::ROLE_BUYER)
+  end
+
   def get_sale_selling_agent_name
+    puts "deprecated #{__method__}"
     get_sale_agent_name(SaleAgent::ROLE_SELLING_AGENT)
   end
 
   def get_sale_seller_or_holder_name
+    puts "deprecated #{__method__}"
     get_sale_agent_name(SaleAgent::ROLE_SELLER_OR_HOLDER)
   end
 
   def get_sale_buyer_name
+    puts "deprecated #{__method__}"
     get_sale_agent_name(SaleAgent::ROLE_BUYER)
   end
 
@@ -211,7 +243,7 @@ class Entry < ActiveRecord::Base
   def sale_agent(role)
     t = sale
     if t
-      sa = t.get_sale_agent_with_role(role)
+      sa = t.get_sale_agents_with_role(role)
       if sa
         sa.agent
       end
@@ -316,9 +348,9 @@ class Entry < ActiveRecord::Base
     # done in with_associations scope.
 
     sale = get_sale
-    sale_selling_agent = (sale.get_selling_agent_as_name.name if sale && sale.get_selling_agent_as_name)
-    sale_seller_or_holder = (sale.get_seller_or_holder_as_name.name if sale && sale.get_seller_or_holder_as_name)
-    sale_buyer = (sale.get_buyer_as_name.name if sale && sale.get_buyer_as_name)
+    sale_selling_agent = (sale.get_selling_agents_names if sale && sale.get_selling_agents.count > 0)
+    sale_seller_or_holder = (sale.get_sellers_or_holders_names if sale && sale.get_sellers_or_holders.count > 0)
+    sale_buyer = (sale.get_buyers_names if sale && sale.get_buyers.count > 0)
     {
       id: id,
       manuscript: manuscript ? manuscript.id : nil,
@@ -415,9 +447,9 @@ class Entry < ActiveRecord::Base
         source.display_value,
         catalog_or_lot_number,
         # sale
-        get_sale_selling_agent_name,
-        get_sale_seller_or_holder_name,
-        get_sale_buyer_name,
+        get_sale_selling_agents_names,
+        get_sale_sellers_or_holders_names,
+        get_sale_buyers_names,
         get_sale_price
       ] +
       # details
@@ -498,11 +530,13 @@ class Entry < ActiveRecord::Base
     define_field(:string, :source_title, :stored => true) do
       source.title
     end
-    define_field(:string, :institution, :stored => true) do
-      source.get_institution_as_name.try(:name) || institution.try(:name)
+    define_field(:string, :institution, :stored => true, :multiple => true) do
+      source.get_institutions.map { |i| i.agent ? i.agent.name : "" }
+      #source.get_institution_as_name.try(:name) || institution.try(:name)
     end
     define_field(:string, :institution_search, :stored => true) do
-      source.get_institution_as_name.try(:name) || institution.try(:name)
+      source.get_institutions_as_names
+      #source.get_institution_as_name.try(:name) || institution.try(:name)
     end
 
     define_field(:string, :catalog_or_lot_number, :stored => true) do
@@ -514,25 +548,25 @@ class Entry < ActiveRecord::Base
 
     #### Sale info
 
-    define_field(:string, :sale_selling_agent, :stored => true) do
-      get_sale_selling_agent_name
+    define_field(:string, :sale_selling_agent, :stored => true, :multiple => true) do
+      get_sale ? get_sale.get_selling_agents.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
     end
     define_field(:text, :sale_selling_agent_search, :stored => true) do
-      get_sale_selling_agent_name
+      get_sale_selling_agents_names
     end
 
-    define_field(:string, :sale_seller, :stored => true) do
-      get_sale_seller_or_holder_name
+    define_field(:string, :sale_seller, :stored => true, :multiple => true) do
+      get_sale ? get_sale.get_sellers_or_holders.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
     end
     define_field(:text, :sale_seller_search, :stored => true) do
-      get_sale_seller_or_holder_name
+      get_sale_sellers_or_holders_names
     end
 
-    define_field(:string, :sale_buyer, :stored => true) do
-      get_sale_buyer_name
+    define_field(:string, :sale_buyer, :stored => true, :multiple => true) do
+      get_sale ? get_sale.get_buyers.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
     end
     define_field(:text, :sale_buyer_search, :stored => true) do
-      get_sale_buyer_name
+      get_sale_buyers_names
     end
 
     define_field(:string, :sale_sold, :stored => true) do

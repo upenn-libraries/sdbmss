@@ -20,19 +20,25 @@
             <dd><%= source.author %></dd>
         <% end %>
         
-        <% if (institution = source.get_institution).present? %>
+        <% if (institutions = source.get_institutions).present? %>
         <dt>Institution</dt>
-            <dd><a class='badge' href="<%= url_for institution.agent %>"><%= institution.agent.name %></a></dd>
+            <% institutions.each do |institution| %>
+                <dd><a class='badge' href="<%= url_for institution.agent %>"><%= institution.agent.name %></a></dd>
+            <% end %>
         <% end %>
 
-        <% if (selling_agent = source.get_selling_agent).present? %>
+        <% if (selling_agents = source.get_selling_agents).present? %>
         <dt>Selling Agent</dt>
-            <dd><a href="<%= url_for selling_agent.agent %>"><%= selling_agent.agent.name %></a></dd>
+            <% selling_agents.each do |selling_agent| %>
+                <dd><a class='badge' href="<%= url_for selling_agent.agent %>"><%= selling_agent.agent.name %></a></dd>
+            <% end %>
         <% end %>
 
-        <% if (seller_or_holder = source.get_seller_or_holder).present? %>
+        <% if (sellers_or_holders = source.get_sellers_or_holders).present? %>
         <dt>Seller</dt>
-            <dd><a href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a></dd>
+            <% sellers_or_holders.each do |seller_or_holder| %>
+                <dd><a class='badge' href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a></dd>
+            <% end %>
         <% end %>
 
 <!--        <dt>Contains Manuscripts</dt>

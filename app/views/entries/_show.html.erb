@@ -78,29 +78,35 @@
 
     <tbody>
 
-        <% if (selling_agent = sale.get_selling_agent).present? %>
+        <% if (selling_agents = sale.get_selling_agents).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label">Selling Agent</td>
+            <td class="col-sm-2 text-right record-label">Selling Agent(s)</td>
             <td class="col-sm-10">
-                <a href="<%= agent_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a>
+                <% selling_agents.each do |selling_agent| %>
+                    <a href="<%= agent_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a><br>
+                <% end %>
             </td>
         </tr>
         <% end %>
 
-        <% if (seller_or_holder = sale.get_seller_or_holder).present? %>
+        <% if (sellers_or_holders = sale.get_sellers_or_holders).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label">Seller</td>
+            <td class="col-sm-2 text-right record-label">Seller(s)</td>
             <td class="col-sm-10">
-                <a href="<%= agent_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a>
+                <% sellers_or_holders.each do |seller_or_holder| %>
+                    <a href="<%= agent_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a><br>
+                <% end %>
             </td>
         </tr>
         <% end %>
 
-        <% if (buyer = sale.get_buyer).present? %>
+        <% if (buyers = sale.get_buyers).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label">Buyer</td>
+            <td class="col-sm-2 text-right record-label">Buyer(s)</td>
             <td class="col-sm-10">
-                <a href="<%= agent_path(buyer.agent) %>"><%= buyer.agent.name %></a>
+                <% buyers.each do |buyer| %>
+                    <a href="<%= agent_path(buyer.agent) %>"><%= buyer.agent.name %></a><br>
+                <% end %>
             </td>
         </tr>
         <% end %>
