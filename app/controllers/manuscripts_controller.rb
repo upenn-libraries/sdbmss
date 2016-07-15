@@ -33,12 +33,12 @@ class ManuscriptsController < SearchableAuthorityController
       elsif e.sale && e.sale.sale_agents.count > 0
         @location_source = e.source
         @location = e
-        if e.sale_agent('buyer')
-          @location_name = e.sale_agent('buyer')
-        elsif e.sale_agent('seller_or_holder')
-          @location_name = e.sale_agent('seller_or_holder')
+        if e.sale_agent('buyer').count > 0
+          @location_name = e.sale_agent('buyer').first
+        elsif e.sale_agent('seller_or_holder').count > 0
+          @location_name = e.sale_agent('seller_or_holder').first
         else 
-          @location_name = e.sale_agent('selling_agent')
+          @location_name = e.sale_agent('selling_agent').first
         end
         return
       elsif e.source.source_agents.count > 0

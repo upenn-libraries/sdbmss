@@ -245,7 +245,7 @@ class Entry < ActiveRecord::Base
     if t
       sa = t.get_sale_agents_with_role(role)
       if sa
-        sa.agent
+        sa.map(&:agent)
       end
     end
   end

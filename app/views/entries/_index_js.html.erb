@@ -71,7 +71,7 @@
                          var manuscriptId = full[sdbmTable.getColumnIndex("Manuscript")];
                          var linkingToolURL = manuscriptId ? '/linkingtool/manuscript/' + manuscriptId : '/linkingtool/entry/' + entryId;
 
-                         var created_by = full[sdbmTable.getColumnIndex("Created By")];
+                         var created_by = full[sdbmTable.getColumnIndex("Added By")];
 
                          // always show Linking Tool. I have a feeling
                          // this will change, so leaving this code

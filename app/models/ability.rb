@@ -30,6 +30,32 @@ class Ability
     # grows.
 
     if ['contributor', 'editor', 'admin'].member? user.role
+      can :edit, :all, :created_by_id => user.id
+      can :link, Entry
+      can :link, Manuscript
+      can :index, Entry
+
+      can :history, :all
+
+      can :unlink, :all, :created_by_id => user.id
+    end
+
+    if ['editor', 'admin'].member? user.role
+      can :manage, [Name, Entry, Manuscript, Source]
+      can :unlink, :all
+      can :edit, Manuscript
+
+      cannot :deprecate, :all
+      cannot [:edit, :destroy, :merge], [Source, Entry]
+    end
+
+    if ['admin'].member? user.role
+      can :manage, :all
+      #can :destroy, :all
+    end
+
+=begin
+    if ['contributor', 'editor', 'admin'].member? user.role
       can :show, :all
       [Entry, Sale, Language, Manuscript, Name, Place, Source, Comment].each do |clazz|
         can :create, clazz
@@ -83,6 +109,7 @@ class Ability
       can :manage, :all
       can :destroy, :all
     end
+=end
 
   end
 end
