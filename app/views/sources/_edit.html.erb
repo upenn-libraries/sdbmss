@@ -12,7 +12,7 @@
             </small>
         </h4>
     </div>
-    <div class="panel-body <%= index == 0 ? 'to-delete' : '' %>">
+    <div class="panel-body <%= index == 0 ? 'to-delete' : 'merge-into' %> no-edit">
 
     <div id="source-form-<%= index %>" class="form-horizontal sdbmss-form <%= index == 0 ? 'input-warning text-danger' : '' %>">
 
@@ -51,22 +51,37 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="institution" class="col-sm-4 control-label"><span>Selling Agent</span></label>
-                    <div class="col-sm-8">
-                        <!--
-                        <input  ng-readonly="!mergeEdit" id="selling_agent" class="form-control" type="text" name="source_agent" ng-model="source_agent" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
-
-                        <a ng-show='source.selling_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source, 'selling_agent', 'is_provenance_agent')">Find in Name Authority</a>
-                        <div ng-if='source.selling_agent.agent != undefined && source.selling_agent.agent.id != undefined' class="well well-sm well-name-authority">
-                            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source.selling_agent, 'agent')"></a>
-                            {{ source.selling_agent.agent.name }}
+                    <label class="col-sm-4 control-label">
+                      <span><span sdbm-tooltip="source_selling_agent">Selling Agent(s)</span></span>  
+                      <div class="add-link-container">
+                        <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
+                          Add new <span class="glyphicon glyphicon-plus"></span>
+                        </a>
+                      </div>
+                    </label>
+                    <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-6'>
+                        <div class="input-block form-group" style="margin-left: 0px;" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
+                            <div class="remove-link-container">
+                              <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
+                                <span class="glyphicon glyphicon-remove"></span>
+                              </a>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">                            
+                                    <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find in Name Authority</a>
+                                    <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                        <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                        {{ source_agent.agent.name }}
+                                    </div>
+                                    <input type="hidden" name="source_agents_attributes[][agent_id]" value="{{source_agent.agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][id]" value="{{source_agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][role]" value="{{source_agent.role}}">
+                                </div>
+                            </div>
                         </div>
-
-                        <input type="hidden" name="source_agents_attributes[][agent_id]" value="{{source.selling_agent.agent.id}}">
-                        <input type="hidden" name="source_agents_attributes[][id]" value="{{source.selling_agent.id}}">
-                        <input type="hidden" name="source_agents_attributes[][role]" value="{{source.selling_agent.role}}">
                     </div>
                 </div>
+
 
                 <!-- I added this to support catalogs whose entire contents are the sale of a single person; but per 10/30 meeting, Lynn says we don't need this -->
                 <!--
@@ -87,40 +102,73 @@
                     </div>
                 </div>
 
+
                 <div class="form-group row">
-                    <label for="institution" class="col-sm-4 control-label"><span>Selling Agent</span></label>
-                    <div class="col-sm-8">
-                        <!--<input ng-readonly="!mergeEdit" id="selling_agent" class="form-control" type="text" name="source_agent" ng-model="source_agent" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
-
-                        <a ng-show='source.selling_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source, 'selling_agent', 'is_provenance_agent')">Find in Name Authority</a>
-                        <div ng-if='source.selling_agent.agent != undefined && source.selling_agent.agent.id != undefined' class="well well-sm well-name-authority">
-                            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source.selling_agent, 'agent')"></a>
-                            {{ source.selling_agent.agent.name }}
+                    <label class="col-sm-4 control-label">
+                      <span><span sdbm-tooltip="source_selling_agent">Selling Agent(s)</span></span>  
+                      <div class="add-link-container">
+                        <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
+                          Add new <span class="glyphicon glyphicon-plus"></span>
+                        </a>
+                      </div>
+                    </label>
+                    <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-6'>
+                        <div class="input-block form-group" style="margin-left: 0px;" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
+                            <div class="remove-link-container">
+                              <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
+                                <span class="glyphicon glyphicon-remove"></span>
+                              </a>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">                            
+                                    <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find in Name Authority</a>
+                                    <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                        <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                        {{ source_agent.agent.name }}
+                                    </div>
+                                    <input type="hidden" name="source_agents_attributes[][agent_id]" value="{{source_agent.agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][id]" value="{{source_agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][role]" value="{{source_agent.role}}">
+                                </div>
+                            </div>
                         </div>
-
-                        <input type="hidden" name="source_agents_attributes[][agent_id]" value="{{source.selling_agent.agent.id}}">
-                        <input type="hidden" name="source_agents_attributes[][id]" value="{{source.selling_agent.id}}">
-                        <input type="hidden" name="source_agents_attributes[][role]" value="{{source.selling_agent.role}}">
                     </div>
                 </div>
+
             </div>
             
             <div class="auction-source-container" ng-if="source.source_type.name == 'collection_catalog'">
 
+
                 <div class="form-group row">
-                    <label for="institution" class="col-sm-4 control-label"><span>Institution/Collection</span></label>
-                    <div class="col-sm-8">
-                        <!-- <input ng-readonly="!mergeEdit" id="institution" class="form-control" type="text" name="source_agent" ng-model="source_agent" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.institution.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
-
-                        <a ng-show='source.institution.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source, 'institution', 'is_provenance_agent')">Find in Name Authority</a>
-                        <div ng-if='source.institution.agent != undefined && source.institution.agent.id != undefined' class="well well-sm well-name-authority">
-                            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source.institution, 'agent')"></a>
-                            {{ source.institution.agent.name }}
+                    <label class="col-sm-4 control-label">
+                      <span><span sdbm-tooltip="source_selling_agent">Institution(s)</span></span>  
+                      <div class="add-link-container">
+                        <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
+                          Add new <span class="glyphicon glyphicon-plus"></span>
+                        </a>
+                      </div>
+                    </label>
+                    <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-6'>
+                        <div class="input-block form-group" style="margin-left: 0px;" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
+                            <div class="remove-link-container">
+                              <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
+                                <span class="glyphicon glyphicon-remove"></span>
+                              </a>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">                            
+                                    <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find in Name Authority</a>
+                                    <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                        <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                        {{ source_agent.agent.name }}
+                                    </div>
+                                    <input type="hidden" name="source_agents_attributes[][agent_id]" value="{{source_agent.agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][id]" value="{{source_agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][role]" value="{{source_agent.role}}">
+                                </div>
+                            </div>
                         </div>
-
-                        <input type="hidden" name="source_agents_attributes[][agent_id]" value="{{source.institution.agent.id}}">
-                        <input type="hidden" name="source_agents_attributes[][id]" value="{{source.institution.id}}">
-                        <input type="hidden" name="source_agents_attributes[][role]" value="{{source.institution.role}}">
                     </div>
                 </div>
 
@@ -178,21 +226,36 @@
 
             <div class="auction-source-container" ng-if="source.source_type.name == 'unpublished'">
 
-                <div class="form-group row">
-                    <label for="institution" class="col-sm-4 control-label"><span>Institution/Collection</label>
-                    <div class="col-sm-8">
-                        <!--
-                        <input ng-readonly="!mergeEdit" class="form-control" type="text" name="source_agent" ng-model="source_agent" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_provenance_agent" }' sdbm-autocomplete-model="source.institution.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
 
-                        <a ng-show='source.institution.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source, 'institution', 'is_provenance_agent')">Find in Name Authority</a>
-                        <div ng-if='source.institution.agent != undefined && source.institution.agent.id != undefined' class="well well-sm well-name-authority">
-                            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source.institution, 'agent')"></a>
-                            {{ source.institution.agent.name }}
+                <div class="form-group row">
+                    <label class="col-sm-4 control-label">
+                      <span><span sdbm-tooltip="source_selling_agent">Institution(s)</span></span>  
+                      <div class="add-link-container">
+                        <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
+                          Add new <span class="glyphicon glyphicon-plus"></span>
+                        </a>
+                      </div>
+                    </label>
+                    <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-6'>
+                        <div class="input-block form-group" style="margin-left: 0px;" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
+                            <div class="remove-link-container">
+                              <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
+                                <span class="glyphicon glyphicon-remove"></span>
+                              </a>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">                            
+                                    <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find in Name Authority</a>
+                                    <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                        <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                        {{ source_agent.agent.name }}
+                                    </div>
+                                    <input type="hidden" name="source_agents_attributes[][agent_id]" value="{{source_agent.agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][id]" value="{{source_agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][role]" value="{{source_agent.role}}">
+                                </div>
+                            </div>
                         </div>
-                        
-                        <input type="hidden" name="source_agents_attributes[][agent_id]" value="{{source.institution.agent.id}}">
-                        <input type="hidden" name="source_agents_attributes[][id]" value="{{source.institution.id}}">
-                        <input type="hidden" name="source_agents_attributes[][role]" value="{{source.institution.role}}">
                     </div>
                 </div>
 
@@ -232,7 +295,7 @@
 
             <div class="row">
                 <div class="col-sm-12 text-center">
-                    <legend>Where did you see this source?</legend>
+                    <legend class='small-legend'>Where did you see this source?</legend>
                 </div>
             </div>
 
@@ -282,7 +345,7 @@
             
              <div class="row">
                 <div class="col-sm-12 text-center">
-                    <legend>Other Info</legend>
+                    <legend class='small-legend'>Other Info</legend>
                 </div>
             </div>
 

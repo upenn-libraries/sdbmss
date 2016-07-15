@@ -262,6 +262,7 @@ class EntriesController < SearchableAuthorityController
   # returns JSON containing type constants
   def types
     data = {
+      'sale_agent_role' => SaleAgent::ROLE_TYPES,
       'transaction_type' => Entry::TYPES_TRANSACTION,
       'author_role' => EntryAuthor::TYPES_ROLES,
       'artist_role' => EntryArtist::TYPES_ROLES,

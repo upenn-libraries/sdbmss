@@ -578,6 +578,11 @@ li.provenance:hover, li.provenance:focus {
   pointer-events: none;
 }
 
+.no-edit {
+  pointer-events: none;
+  opacity: 0.9;
+}
+
 .fade-in {
   opacity: 0;
   transition: opacity linear 0.5s;
@@ -895,6 +900,9 @@ li.provenance:hover, li.provenance:focus {
 .sdbmss-form legend { 
   font-size: 40px;
   margin-bottom: 10px;
+}
+.sdbmss-form legend .small-legend {
+  font-size: 20px;
 }
 
 .sdbmss-form label.col-sm-2, .sdbmss-form label.col-sm-1 { padding-right: 0px; }
