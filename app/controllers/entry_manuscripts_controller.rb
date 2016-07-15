@@ -1,8 +1,6 @@
 
 class EntryManuscriptsController < SearchableAuthorityController
 
-  before_action :authenticate_user!, only: [:update_multiple]
-
   include ResourceSearch
   include MarkAsReviewed
   include LogActivity

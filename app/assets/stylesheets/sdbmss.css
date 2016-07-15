@@ -365,6 +365,10 @@ h1 { font-size: 30px; margin-top: 0; }
 /*
  checkboxes!
 */
+.hide {
+  display: none;
+}
+
 .checkbox {
   display: none;
 }

@@ -54,6 +54,7 @@ class ApplicationController < ActionController::Base
   def render_access_denied
     respond_to do |format|
       format.html { render :template => "errors/access_denied", :status => 403 }
+      format.json { render json: {error: 'access denied'}}
     end
     true
   end

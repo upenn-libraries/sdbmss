@@ -1,6 +1,12 @@
 module Revert
 
   def revert
+    if !can? :edit, model_class
+      flash[:error] = "You do not have permission to revert any changes for this record."
+      redirect_to polymorphic_path(@model)
+      return
+    end
+
     @model = model_class.find(params[:id])
 
     if params[:version_id].kind_of? Array
@@ -135,7 +141,7 @@ module Revert
 
   def history
     @model = model_class.find(params[:id])
-    if can?(:edit, @model)
+    if can?(:history, @model)
       @versions = @model.versions
       render :template => 'shared/history'
     else

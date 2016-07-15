@@ -23,6 +23,13 @@
      var canDestroy = false;
      <% end %>
 
+     <% if can? :edit, model_class %>
+     var canEdit = true;
+     <% else %>
+     var canEdit = false;
+     var username = '<%= current_user.username %>';
+     <% end %>
+
      var jumpToEntry = {
          search: false
      };
@@ -64,6 +71,8 @@
                          var manuscriptId = full[sdbmTable.getColumnIndex("Manuscript")];
                          var linkingToolURL = manuscriptId ? '/linkingtool/manuscript/' + manuscriptId : '/linkingtool/entry/' + entryId;
 
+                         var created_by = full[sdbmTable.getColumnIndex("Created By")];
+
                          // always show Linking Tool. I have a feeling
                          // this will change, so leaving this code
                          // here for now.
@@ -80,7 +89,7 @@
                             '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '">' + 
                                 '<span class="glyphicon glyphicon-bookmark"></span>' + 
                             '</a>' + 
-                            '<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +
+                            (canEdit || created_by == username ? '<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' : '') +
                             (canDestroy ? '<a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#" target="_blank">Delete</a>' : '') +
                             (isNotDeprecated ? linkingToolHTMLLink : '') +
                             (showDeprecateLink ? deprecateHTMLLink : '') + "</span>") : '<span class="text-danger bg-danger">This Record is DEPRECATED</span>';
@@ -203,9 +212,9 @@
          return params;
      };
 
-     ManageEntries.prototype.getButtonTextForAddNewRecord = function () {
+/*     ManageEntries.prototype.getButtonTextForAddNewRecord = function () {
          return null;
-     };
+     };*/
 
      ManageEntries.prototype.createFormSubmitHandler = function () {
          var manageEntries = this;

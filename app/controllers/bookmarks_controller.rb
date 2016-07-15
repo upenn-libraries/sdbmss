@@ -49,7 +49,7 @@ class BookmarksController < ApplicationController
 
   def reload
     if !current_user
-      render json: {error: "No current user logged in."}
+      render json: {error: "no_user."}
       return false
     end
 
@@ -129,7 +129,7 @@ class BookmarksController < ApplicationController
     if current_user
       render json: {bookmark_tracker: current_user.bookmark_tracker}
     else
-      render json: {bookmark_tracker: false}
+      render json: {error: "no_user"}
     end
   end
 

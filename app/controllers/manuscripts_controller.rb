@@ -5,8 +5,6 @@ class ManuscriptsController < SearchableAuthorityController
 
   before_action :set_manuscript, only: [:show, :edit, :entry_candidates, :citation]
 
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
-
   load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_reviewed]
 
   def model_class
@@ -33,7 +31,6 @@ class ManuscriptsController < SearchableAuthorityController
         @location = e
         return
       elsif e.sale && e.sale.sale_agents.count > 0
-        puts 'right!'
         @location_source = e.source
         @location = e
         if e.sale_agent('buyer')
@@ -51,6 +48,10 @@ class ManuscriptsController < SearchableAuthorityController
         return
       end
     end
+  end
+
+  def update
+    super
   end
 
   def entry_candidates
@@ -123,7 +124,7 @@ class ManuscriptsController < SearchableAuthorityController
 
   def model_params
     params.require(model_class_lstr.to_sym).permit(
-      :name, :location,
+      :name, :location, :url,
       :entry_manuscripts_attributes => [ :id, :manuscript_id, :entry_id, :relation_type, :_destroy ]
     )
   end

@@ -32,7 +32,7 @@ class EntriesController < SearchableAuthorityController
 
   respond_to :html, :json
 
-  load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_approved, :deprecate]
+  load_and_authorize_resource :only => [:index, :edit, :update, :destroy, :mark_as_approved, :deprecate]
 
   def model_class
     Entry
@@ -336,7 +336,7 @@ class EntriesController < SearchableAuthorityController
   end
 
   def history
-    if not can?(:edit, @entry)
+    if not can? :history, @entry
       flash[:error] = "You do not have permission to view the history for this entry."
       redirect_to entry_path(@entry)
       return

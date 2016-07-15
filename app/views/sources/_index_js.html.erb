@@ -19,6 +19,18 @@ $(document).ready(function() {
      var canDestroy = false;
      <% end %>
 
+     <% if can? :edit, model_class %>
+     var canEdit = true;
+     <% else %>
+     var canEdit = false;
+     var username = "<%= current_user.username %>"
+     <% end %>
+
+     <% if can? :merge, model_class %>
+     var canMerge = true;
+     <% else %>
+     var canMerge = false;
+     <% end %>
 
      var jumpToSource = {
          search: false
@@ -52,13 +64,15 @@ $(document).ready(function() {
                  title: 'Options',
                  orderable: false,
                  render: function (data, type, full, meta) {
+                     var created_by = full[manageRecords.dataTable.getColumnIndex("Created By")];
+
                      var str = '<span class="btn-group options-btn-group">' 
                              + '<a onclick="addBookmark(' + data + ', \'Source\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/sources/' + data + '">' 
                                 + '<span class="glyphicon glyphicon-bookmark"></span></a>'
-                           + '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>' +
+                           + (canEdit || username == created_by ? '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>' : '') +
                            '<a class="btn btn-xs btn-primary" href="/entries/new/?source_id=' + data + '">Add an Entry</a>' +
                            (canDestroy ? '<a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>' : '') +
-                           '<a class="btn btn-xs btn-info" href="/sources/' + data + '/merge">Merge</a></span>';
+                           (canMerge ? '<a class="btn btn-xs btn-info" href="/sources/' + data + '/merge">Merge</a></span>' : '' );
                      // TODO: display delete link only if entries_count is 0
                      return str;
                  }

@@ -76,18 +76,26 @@
         <div class="panel panel-default">
             <div class="panel-heading">Admin</div>
             <div class="panel-body">
+                <% if can?(:manage, EntryManuscript) %>
                 <p><a href="<%= entry_manuscripts_path %>">Manage Links</a>
                     <%= render partial: "unreviewed_count", locals: { model_class: EntryManuscript } %>
                 </p>
+                <% end %>
+                <% if can?(:manage, Name) %>
                 <p><a href="<%= names_path %>">Manage Names</a>
                     <%= render partial: "unreviewed_count", locals: { model_class: Name } %>
                 </p>
+                <% end %>
+                <% if can?(:manage, Language) %>
                 <p><a href="<%= languages_path %>">Manage Languages</a>
                     <%= render partial: "unreviewed_count", locals: { model_class: Language } %>
                 </p>
+                <% end %>
+                <% if can?(:manage, Place) %>
                 <p><a href="<%= places_path %>">Manage Places</a>
                     <%= render partial: "unreviewed_count", locals: { model_class: Place } %>
                 </p>
+                <% end %>
                 <% if can? :manage, User %>
                 <p><a href="<%= accounts_path(active: true) %>">Manage Users</a>
                     <%= render partial: "unreviewed_count", locals: { model_class: User } %>

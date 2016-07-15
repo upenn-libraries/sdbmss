@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160712183809) do
+ActiveRecord::Schema.define(version: 20160714201809) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -337,6 +337,7 @@ ActiveRecord::Schema.define(version: 20160712183809) do
     t.boolean  "reviewed",                   default: false
     t.integer  "reviewed_by_id", limit: 4
     t.datetime "reviewed_at"
+    t.string   "url",            limit: 255
   end
 
   add_index "manuscripts", ["created_by_id"], name: "index_manuscripts_on_created_by_id", using: :btree

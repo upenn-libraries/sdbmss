@@ -29,6 +29,8 @@ class Manuscript < ActiveRecord::Base
     text :updated_by
     text :name
     string :name
+    text :url
+    string :url
     text :location
     string :location
     integer :id
@@ -129,6 +131,7 @@ class Manuscript < ActiveRecord::Base
     results = { 
       titles: all_titles.to_a.join(", "),
       location: location,
+      url: url,
       entries_count: entries_count
     }
     (results.select { |k, v| !v.blank? }).transform_keys{ |key| key.to_s.humanize }
@@ -139,6 +142,7 @@ class Manuscript < ActiveRecord::Base
       id: id,
       name: name,
       location: location,
+      url: url,
       entries_count: entries_count,
       reviewed: reviewed,
       created_by: created_by.present? ? created_by.username : "(none)",

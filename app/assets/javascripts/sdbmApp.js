@@ -2208,6 +2208,8 @@ var BOOKMARK_SCOPE;
 
     $scope.loadBookmarks = function () {
       $.get('/bookmarks/reload.json', {details: (window.location.pathname == "/bookmarks")}).done( function (e) {
+        if (e.error) return;
+        
         $scope.all_bookmarks = e.bookmarks;
         $scope.bookmark_tracker = e.bookmark_tracker;
         //console.log(e);
@@ -2381,8 +2383,10 @@ var BOOKMARK_SCOPE;
       // 3. else, load from localstorage
       $.get("/bookmarks/check").done(function (e) {
         if (e.error) {
+          if (e.error == "no_user"); // nothing, just don't update
+          else
+            $scope.loadBookmarks();
           //console.log(e.error);
-          $scope.loadBookmarks();
         }
         else {
           //console.log(e.bookmark_tracker, $scope.bookmark_tracker);

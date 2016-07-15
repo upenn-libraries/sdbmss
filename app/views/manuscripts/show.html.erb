@@ -96,22 +96,14 @@
     }).on("ajax:error", function (e, xhr, status, error) { console.log("ERROR!", error); });
 
     var manuscriptTitle, manuscriptLocation;
-    $("#toggle-manuscript-edit").click( function () {
-        $('.manuscript-info').removeClass('manuscript-info-show');
-        $('.manuscript-info').prop('readonly', false);
-        $(this).hide();
-        $('.manuscript-info-buttons').show();
-        manuscriptTitle = $('input[name="manuscript[title]"]').val();
-        manuscriptLocation = $('input[name="manuscript[location]"]').val();
+    $("#begin-manuscript-edit").click( function () {
+        $('#edit-manuscript').show();//removeClass('hide');
+        $('.manuscript-url').hide();//addClass('hide');
     });
 
-    $('.cancel-manuscript-edit').click( function () {
-        $('.manuscript-info-buttons').hide();
-        $('.manuscript-info').prop('readonly', true);
-        $('.manuscript-info').addClass('manuscript-info-show');
-        $("#toggle-manuscript-edit").show();
-        $('input[name="manuscript[title]"]').val(manuscriptTitle);
-        $('input[name="manuscript[location]"]').val(manuscriptLocation);
+    $('#cancel-manuscript-edit').click( function () {
+        $('#edit-manuscript').hide();//addClass('hide');
+        $('.manuscript-url').show();//removeClass('hide');
     });
 
  });
@@ -122,12 +114,48 @@
 
 <div class="row">
     
-    <div class="col-sm-12">
+    <div class="col-sm-7 sdbmss-form">
 
-        <h1>
-            <%= @manuscript.public_id %>
-        </h1>
+        <legend>
+            <span><%= @manuscript.public_id %></span>
+        </legend>
         <p>This <strong>Manuscript Record</strong> shows linked entries to refer to the same physical manuscript.  You can use this space to determine <strong>Current Location</strong> and <strong>Provenance</strong>, to create your own <strong>Personal Observation</strong> about this manuscript, or to contribute a <strong>Comment</strong>.</p>
+    </div>
+    <div class='col-sm-5'> 
+        <div class="panel panel-default">
+            <div class="panel-heading"><span class="h3">Link to External URL</span></div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-9" style='overflow: hidden; text-overflow: ellipsis'>
+                        <% if @manuscript.url %>
+                            <a class='manuscript-url' id="confirmed-manuscript-url" href="<%= @manuscript.url %>" target="_blank"><%= @manuscript.url %></a>
+                        <% else %>
+                            <span class='manuscript-url' id="confirmed-manuscript-url">No link saved.</span>
+                        <% end %>
+                    </div>
+                    <div class="col-xs-3 text-right">
+                        <% if can? :manage, @manuscript %>
+                            <a href="" id="begin-manuscript-edit" class='manuscript-url btn btn-default'>Edit</a>
+                        <% end %>
+                    </div>
+                    <div class="col-sm-12 text-right">
+                        <% if can? :manage, @manuscript %>
+                            <%= form_for @manuscript do |f| %>
+                                <div id="edit-manuscript" style="display: none;">
+                                    <div style="margin-bottom: 5px;">
+                                        <%= f.text_field :url, class: "form-control" %>
+                                    </div>
+                                    <div class="form-inline">
+                                        <%= f.submit "OK", class: "form-control btn btn-success" %>
+                                        <button type="button" id="cancel-manuscript-edit" class="form-control">Cancel</button>
+                                    </div>
+                                </div>
+                            <% end %>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="col-sm-9">
         <div class="panel panel-default">

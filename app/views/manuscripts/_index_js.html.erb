@@ -73,6 +73,12 @@
                 dbSortField: 'location'
             },
             {
+                sdbmssMinWidth: "200px",
+                sdbmssMaxWidth: "200px",
+                title: 'URL',
+                dbSortField: 'url'
+            },
+            {
                 sdbmssMinWidth: "100px",
                 sdbmssMaxWidth: "100px",
                 title: '# Entries',
@@ -118,6 +124,7 @@
              result.id,
              result.name,
              result.location,
+             result.url,
              result.entries_count,
              result.reviewed.toString(),
              result.created_by || "",
