@@ -49,7 +49,7 @@ describe "Manage entries", :js => true do
     sleep 1.1
     expect(page).not_to have_selector("#spinner", visible: true)
 
-    expect(all("#search_results tbody tr").count).to eq(2)
+    expect(all("#search_results tbody tr").count).to eq(1)
   end
 
   it "should jump to ID" do

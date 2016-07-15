@@ -90,6 +90,7 @@ describe "Manage languages", :js => true do
 
     it "should delete a Language" do
       # this is a very rough test!
+      skip "contributors can't delete languages."
       count = Language.count
 
       # mock out the confirm dialogue

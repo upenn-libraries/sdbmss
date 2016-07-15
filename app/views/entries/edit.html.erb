@@ -303,7 +303,7 @@ label.col-sm-2-and-half {
                             <span>Role</span>
                           </label>
                           <div class="col-sm-9">
-                            <select id="sale_agent_role_{{ $index }}" name="sale_agent_role" class="form-control" ng-init="sale_agent.role = sale_agent.role || 'selling_agent'" ng-model="sale_agent.role" ng-options="option[0] as option[1] for option in optionsSaleAgentRole" required='required'>
+                            <select id="sale_agent_role_{{ $index }}" name="sale_agent_role" class="form-control" ng-model="sale_agent.role" ng-options="option[0] as option[1] for option in optionsSaleAgentRole" required='required'>
                               <option value=""></option>
                             </select>
                           </div>

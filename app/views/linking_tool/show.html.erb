@@ -15,7 +15,7 @@ $(document).ready(function() {
 
     var unsavedChanges = false;
 
-    <% if can? :unlink, Manuscript.first%>
+    <% if (@manuscript && can?(:unlink, @manuscript)) || (@entry && can?(:unlink, @entry)) %>
         var canUnlink = true
     <% else %>
         var canUnlink = false;

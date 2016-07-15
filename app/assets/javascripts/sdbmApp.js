@@ -1775,6 +1775,7 @@ var BOOKMARK_SCOPE;
             source.date_accessed = SDBM.dateDashes(source.date_accessed);
 
             $scope.agent_role_types.forEach(function (role) {
+                if (!source.source_agents) return;
                 source.source_agents.forEach(function (source_agent) {
                     if (source_agent.role === role) {
                         source[role] = source_agent;

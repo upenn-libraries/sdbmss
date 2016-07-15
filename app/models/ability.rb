@@ -30,9 +30,8 @@ class Ability
     # grows.
 
     if ['contributor', 'editor', 'admin'].member? user.role
-      can :edit, :all, :created_by_id => user.id
-      can :link, Entry
-      can :link, Manuscript
+      can [:edit, :update], :all, :created_by_id => user.id
+      can :link, :all
       can :index, Entry
 
       can :history, :all
@@ -47,6 +46,7 @@ class Ability
 
       cannot :deprecate, :all
       cannot [:edit, :destroy, :merge], [Source, Entry]
+      can :edit, :all, :created_by_id => user.id      
     end
 
     if ['admin'].member? user.role
