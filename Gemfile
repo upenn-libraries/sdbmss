@@ -16,7 +16,7 @@ gem 'nokogiri', '~> 1.6'
 gem 'sass-rails', '~> 5.0.3'
 
 # Use Uglifier as compressor for JavaScript assets
-gem 'uglifier', '~> 2.5.0'
+gem 'uglifier', '~> 2.7.2'
 
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.0.0'
@@ -49,7 +49,7 @@ gem "jettywrapper", "~> 2.0.3"
 gem "blacklight_advanced_search", "~> 5.1.3"
 
 # For authentication; used by Blacklight and by SDBMSS
-gem "devise", "~> 3.4.0"
+gem "devise", "~> 3.5.4"
 gem "devise-guests", "~> 0.3.0"
 
 # For roles and permissions checking
