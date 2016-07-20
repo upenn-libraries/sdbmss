@@ -402,8 +402,8 @@ class SourcesController < SearchableAuthorityController
       if date.present?
         # use only the year so we get broadest possible matches
         broad_date = date.dup
-        broad_date = broad_date[0..3] if broad_date.length > 4
-        query = query.where("date LIKE '#{broad_date}%'")
+        broad_date = broad_date[0..3] if broad_date.length > 3
+        query = query.where("date LIKE ?", "#{broad_date}%")
       end
 
       if title.present?
@@ -420,7 +420,7 @@ class SourcesController < SearchableAuthorityController
 
         # whittle them down by string similarity
         len = title.length
-        query = query.where("length(title) <= #{len+8} AND length(title) >= #{len-8} AND levenshtein_ratio(title, ?) <= 40", title)
+        query = query.where("length(title) <= ? AND length(title) >= ? AND levenshtein_ratio(title, ?) <= 40", len + 8, len - 8, title)
       end
 
       query = query.limit(5)

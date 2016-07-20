@@ -7,14 +7,10 @@ class Bookmark < ActiveRecord::Base
   validates :document_type, presence: true
   validates :document_id, presence: true
 
+  delegate :public_id, to: :document, prefix: true, allow_nil: true
+
   if Blacklight::Utils.needs_attr_accessible?
     attr_accessible :id, :document_id, :document_type, :title
-  end
-
-  def document
-    if document_type.exists?(document_id)
-      document_type.find(document_id)
-    end
   end
 
   def to_s

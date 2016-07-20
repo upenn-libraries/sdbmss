@@ -900,6 +900,8 @@ var BOOKMARK_SCOPE;
                 });
             }
 
+            if (!entry.sale.sale_agents) entry.sale.sale_agents = [];
+
             $scope.sanityCheckFields(entry);
 
             // save copy at this point, so we have something to
@@ -970,6 +972,8 @@ var BOOKMARK_SCOPE;
                 if(entryToSave.sale.price) {
                     entryToSave.sale.price = entryToSave.sale.price.replace(/[$,]/, '');
                 }
+
+                entryToSave.sale.sale_agents = entryToSave.sale.sale_agents || [];
 
                 for (var i = 0; i < entryToSave.sale.sale_agents.length; i++) {
                   if (entryToSave.sale.sale_agents[i].agent) {

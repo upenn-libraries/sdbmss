@@ -296,6 +296,7 @@ class EntriesController < SearchableAuthorityController
   # this action returns differently formatted JSON results depending
   # on param 'full'
   def similar
+    return
     similar = SDBMSS::SimilarEntries.new(@entry)
     if params[:full].present?
       total = similar.count

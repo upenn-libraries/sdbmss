@@ -3,22 +3,19 @@ class PrivateMessagesController < ApplicationController
 
   before_action :set_model, only: [:show, :destroy]
 
+  load_and_authorize_resource :only => [:index, :edit, :update, :destroy, :mark_as_approved, :deprecate]
+
   def index
-    if !current_user
-      flash[:warning] = "You must be logged in to view your private messages."
-      redirect_to dashboard_path
+    if params[:sent_by]
+      @sent_by = true
+      @messages = current_user.private_messages.sent.reverse_order
     else
-      if params[:sent_by]
-        @sent_by = true
-        @messages = current_user.private_messages.sent.reverse_order
-      else
-        @messages = current_user.private_messages.received.reverse_order
-      end
+      @messages = current_user.private_messages.received.reverse_order
     end
   end
 
   def new
-    if params[:user_id] && User.exists?(params[:user_id])
+    if params[:user_id] && User.exists?(params[:user_id].to_i)
       @message = PrivateMessage.new
 
       @user = User.find(params[:user_id])

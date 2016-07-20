@@ -92,7 +92,7 @@ class BookmarksController < ApplicationController
 
   def show
     # fix me: make sure bookmark belongs to current_user
-    if params[:id] && Bookmark.exists?(params[:id])
+    if params[:id] && Bookmark.exists?(params[:id].to_i)
       @bookmark = Bookmark.find(params[:id])
       @name = @bookmark.document_type.to_s
       render layout: false

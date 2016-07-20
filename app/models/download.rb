@@ -13,4 +13,8 @@ class Download < ActiveRecord::Base
     super
   end
 
+  def get_path
+    id.to_s + "_" + user.username + "_" + filename
+  end
+
 end

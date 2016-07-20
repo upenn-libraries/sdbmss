@@ -37,6 +37,8 @@ class Ability
       can :history, :all
 
       can :unlink, :all, :created_by_id => user.id
+      can :manage, PrivateMessage, :created_by_id => user.id
+      can :manage, PrivateMessage, :user_id => user.id
     end
 
     if ['editor', 'admin'].member? user.role

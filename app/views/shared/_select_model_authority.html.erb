@@ -20,7 +20,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-show="suggestions.length <= 0">
+                    <tr ng-show="nameSearchString.length <= 0">
+                        <td>To begin searching, enter something in the search bar.</td>
+                    </tr>
+                    <tr ng-show="nameSearchString.length > 0 && suggestions.length <= 0">
                         <td>No results found.</td>
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index" ng-click="selectSuggestion(s)" ng-class="{success: s == suggestion}">

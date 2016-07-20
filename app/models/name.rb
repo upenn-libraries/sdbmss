@@ -31,18 +31,24 @@ class Name < ActiveRecord::Base
   belongs_to :reviewed_by, :class_name => 'User'
 
   has_many :entry_artists, foreign_key: "artist_id"
+  has_many :artist_entries, -> {distinct},  through: :entry_artists, source: :entry
 
   has_many :entry_authors, foreign_key: "author_id"
+  has_many :author_entries, -> {distinct},  through: :entry_authors, source: :entry
 
   has_many :entry_scribes, foreign_key: "scribe_id"
+  has_many :scribe_entries, -> {distinct},  through: :entry_scribes, source: :entry
 
   has_many :sale_agents, foreign_key: "agent_id"
   has_many :sales, through: :sale_agents
+  has_many :sale_entries, -> {distinct}, through: :sales, source: :entry
 
   has_many :provenance, foreign_key: "provenance_agent_id"
+  has_many :provenance_entries, -> {distinct},  through: :provenance, source: :entry
 
   has_many :source_agents, foreign_key: "agent_id"
   has_many :sources, through: :source_agents
+  has_many :agent_sources, -> {distinct},  through: :source_agents, source: :source
 
   has_many :name_comments, dependent: :destroy
   has_many :comments, through: :name_comments

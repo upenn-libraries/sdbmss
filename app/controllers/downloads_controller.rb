@@ -24,7 +24,7 @@ class DownloadsController < ApplicationController
     elsif @download.status == 0
       render text: "in progress"
     elsif @download.status >= 1 && !params[:ping]
-      send_file "/tmp/" + @download.id.to_s + "_" + @download.user.username + "_" + @download.filename, :filename => @download.filename, :type=>"csv", :x_sendfile=>true
+      send_file "/tmp/" + @download.get_path, :filename => @download.filename, :type=>"csv", :x_sendfile=>true
       # download is 'deleting'
       @download.update({status: 2})
       # adjust timing of this as appropriate
