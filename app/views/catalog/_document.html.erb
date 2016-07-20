@@ -30,6 +30,11 @@
         </dd>
         <% end %>
 
+      <% entry.supercedes.each do |superceded| %>
+        <dt></dt>
+        <dd class='text-warning'>This entry supercedes the deprecated entry <a href="/entries/<%= superceded.id %>" class="bg-warning text-warning"><%= superceded.public_id %></a>.</dd>
+      <% end %>
+
 	    <dt>Source</dt>
 	    <dd>
             <%= link_to entry.source.display_value, source_path(entry.source) %> (<%= entry.source.source_type.display_name %>)

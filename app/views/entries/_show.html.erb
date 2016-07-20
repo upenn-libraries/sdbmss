@@ -26,7 +26,7 @@
 <%= render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
 
 <% entry.supercedes.each do |e| %>
-    <p class="text-warning">This entry supercedes the following deprecated Entry: <%= link_to e.public_id, entry_path(e) %>.  Any further collaboration, citation or use should happen in this entry.</p>
+    <p class="text-warning">This entry supercedes the following deprecated Entry: <%= link_to e.public_id, entry_path(e), class: "text-warning bg-warning" %>.</p>
 <% end %>
 
 <!-- TODO: use a DL element here instead of a table? or use bootstrap rows and cols? layout will be tricky -->
