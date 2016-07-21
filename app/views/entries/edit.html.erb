@@ -198,7 +198,7 @@ label.col-sm-2-and-half {
         <label for="cat_lot_no" class="col-sm-2 control-label"><span sdbm-tooltip="entry_institution">Institution/Collection</span></label>
         <div class="col-sm-5">
 
-            <a id="find_institution_name_authority_0" ng-if='entry.institution.id == undefined' ng-init="entry.institution = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.institution, 'is_provenance_agent')">Find or Create in Name Authority</a>
+            <a id="find_institution_name_authority_0" ng-if='entry.institution.id == undefined' ng-init="entry.institution = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.institution, 'is_provenance_agent')">Find or Create Authority Name</a>
             <div id='show_institution_name_authority_0' ng-if='entry.institution != undefined && entry.institution.id != undefined' class="well well-sm well-name-authority">
               <a id='remove_institution_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry, 'institution')"></a>
               {{ entry.institution.name }}
@@ -286,7 +286,7 @@ label.col-sm-2-and-half {
                         </label>
                         <div class="col-sm-9">
                            <div class="input-group">
-                              <a id='find_sale_agent_name_authority_{{ $index }}' ng-if='sale_agent.agent.id == undefined' ng-init="sale_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', sale_agent.agent, 'is_provenance_agent')">Find or Create in Name Authority</a>
+                              <a id='find_sale_agent_name_authority_{{ $index }}' ng-if='sale_agent.agent.id == undefined' ng-init="sale_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', sale_agent.agent, 'is_provenance_agent')">Find or Create Authority Name</a>
                               <div id='show_selling_agent_name_authority_0' ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                 <a id='remove_selling_agent_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(sale_agent, 'agent')"></a>
                                 <span id="sale_agent_{{ $index}}">{{ sale_agent.agent.name }}</span>
@@ -316,7 +316,7 @@ label.col-sm-2-and-half {
                   <div class="col-sm-4">
                       <div class="input-group">
                     
-                          <a id='find_seller_name_authority_0' ng-if='entry.sale.seller_or_holder.agent.id == undefined' ng-init="entry.sale.seller_or_holder.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.sale.seller_or_holder.agent, 'is_provenance_agent')">Find or Create in Name Authority</a>
+                          <a id='find_seller_name_authority_0' ng-if='entry.sale.seller_or_holder.agent.id == undefined' ng-init="entry.sale.seller_or_holder.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.sale.seller_or_holder.agent, 'is_provenance_agent')">Find or Create Authority Name</a>
                           <div ng-if='entry.sale.seller_or_holder.agent != undefined && entry.sale.seller_or_holder.agent.id != undefined' class="well well-sm well-name-authority">
                             <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry.sale.seller_or_holder, 'agent')"></a>
                             {{ entry.sale.seller_or_holder.agent.name }}
@@ -335,7 +335,7 @@ label.col-sm-2-and-half {
                   <div class="col-sm-5">
                       <div class="input-group">
                     
-                          <a id='find_buyer_name_authority_0' ng-if='entry.sale.buyer.agent.id == undefined' ng-init="entry.sale.buyer.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.sale.buyer.agent, 'is_provenance_agent')">Find or Create in Name Authority</a>
+                          <a id='find_buyer_name_authority_0' ng-if='entry.sale.buyer.agent.id == undefined' ng-init="entry.sale.buyer.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.sale.buyer.agent, 'is_provenance_agent')">Find or Create Authority Name</a>
                           <div ng-if='entry.sale.buyer.agent != undefined && entry.sale.buyer.agent.id != undefined' class="well well-sm well-name-authority">
                             <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry.sale.buyer, 'agent')"></a>
                             <span id="buyer_0">{{ entry.sale.buyer.agent.name }}</span>
@@ -444,7 +444,7 @@ label.col-sm-2-and-half {
              <div class="input-group">
                 <!--
                 <input id="author_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_author" }' sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
-                <a id="find_author_name_authority_{{ $index }}" ng-if='entry_author.author.id == undefined' ng-init="entry_author.author = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_author.author, 'is_author', entry_author.observed_name)">Find or Create in Name Authority</a>
+                <a id="find_author_name_authority_{{ $index }}" ng-if='entry_author.author.id == undefined' ng-init="entry_author.author = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_author.author, 'is_author', entry_author.observed_name)">Find or Create Authority Name</a>
                 <div ng-if='entry_author.author != undefined && entry_author.author.id != undefined' class="well well-sm well-name-authority">
                   <a id="remove_author_name_authority_{{ $index }}" class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_author, 'author')"></a>
                   {{ entry_author.author.name }}
@@ -550,7 +550,7 @@ label.col-sm-2-and-half {
           <div class="col-sm-9">
             <div class="input-group">
                 <!--<input id="artist_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_artist" }' sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
-                <a id='find_artist_name_authority_{{ $index }}' ng-if='entry_artist.artist.id == undefined' ng-init="entry_artist.artist = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_artist.artist, 'is_artist', entry_artist.observed_name)">Find or Create in Name Authority</a>
+                <a id='find_artist_name_authority_{{ $index }}' ng-if='entry_artist.artist.id == undefined' ng-init="entry_artist.artist = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_artist.artist, 'is_artist', entry_artist.observed_name)">Find or Create Authority Name</a>
                 <div ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' class="well well-sm well-name-authority">
                   <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_artist, 'artist')"></a>
                   {{ entry_artist.artist.name }}
@@ -610,7 +610,7 @@ label.col-sm-2-and-half {
           <div class="col-sm-9">
               <div class="input-group">
                   <!--<input id="scribe_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_scribe" }' sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
-                  <a id='find_scribe_name_authority_{{ $index }}' ng-if='entry_scribe.scribe.id == undefined' ng-init="entry_scribe.scribe = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_scribe.scribe, 'is_scribe', entry_scribe.observed_name)">Find or Create in Name Authority</a>
+                  <a id='find_scribe_name_authority_{{ $index }}' ng-if='entry_scribe.scribe.id == undefined' ng-init="entry_scribe.scribe = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_scribe.scribe, 'is_scribe', entry_scribe.observed_name)">Find or Create Authority Name</a>
                   <div ng-if='entry_scribe.scribe != undefined && entry_scribe.scribe.id != undefined' class="well well-sm well-name-authority">
                     <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_scribe, 'scribe')"></a>
                     {{ entry_scribe.scribe.name }}
@@ -652,7 +652,7 @@ label.col-sm-2-and-half {
           <div class="col-sm-9">
             <div class="input-group">
                 <!--<input id="language_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>-->
-                <a id="find_language_name_authority_{{ $index }}" ng-if='entry_language.language.id == undefined' ng-init="entry_language.language = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('languages', entry_language.language, 'language')">Find or Create in Name Authority</a>
+                <a id="find_language_name_authority_{{ $index }}" ng-if='entry_language.language.id == undefined' ng-init="entry_language.language = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('languages', entry_language.language, 'language')">Find or Create Authority Name</a>
                 <div ng-if='entry_language.language != undefined && entry_language.language.id != undefined' class="well well-sm well-name-authority">
                   <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_language, 'language')"></a>
                   {{ entry_language.language.name }}
@@ -739,7 +739,7 @@ label.col-sm-2-and-half {
           <div class="col-sm-9">
             <div class="input-group">
                 <!--<input id="place_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>-->
-                <a id="find_place_name_authority_{{ $index }}" ng-if='entry_place.place.id == undefined' ng-init="entry_place.place = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('places', entry_place.place, 'place', entry_place.observed_name)">Find or Create in Name Authority</a>
+                <a id="find_place_name_authority_{{ $index }}" ng-if='entry_place.place.id == undefined' ng-init="entry_place.place = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('places', entry_place.place, 'place', entry_place.observed_name)">Find or Create Authority Name</a>
                 <div ng-if='entry_place.place != undefined && entry_place.place.id != undefined' class="well well-sm well-name-authority">
                   <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_place, 'place')"></a>
                   {{ entry_place.place.name }}
@@ -939,7 +939,7 @@ label.col-sm-2-and-half {
                 <div class="col-sm-7">
                   <div class="input-group">
                       <!--<input id="provenance_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.provenance_agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>--> 
-                      <a id='find_provenance_name_authority_{{ $index }}' ng-if='prov.provenance_agent.id == undefined' ng-init="prov.provenance_agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', prov.provenance_agent, 'is_provenance_agent', prov.observed_name)">Find or Create in Name Authority</a>
+                      <a id='find_provenance_name_authority_{{ $index }}' ng-if='prov.provenance_agent.id == undefined' ng-init="prov.provenance_agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', prov.provenance_agent, 'is_provenance_agent', prov.observed_name)">Find or Create Authority Name</a>
                       <div ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' class="well well-sm well-name-authority">
                         <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(prov, 'provenance_agent')"></a>
                         {{ prov.provenance_agent.name }}

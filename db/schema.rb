@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160714201809) do
+ActiveRecord::Schema.define(version: 20160721132547) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -113,6 +113,7 @@ ActiveRecord::Schema.define(version: 20160714201809) do
     t.boolean  "deprecated",                             default: false
     t.integer  "superceded_by_id",         limit: 4
     t.boolean  "unverified_legacy_record",               default: false
+    t.boolean  "confirmed",                              default: false
   end
 
   add_index "entries", ["approved_by_id"], name: "index_entries_on_approved_by_id", using: :btree
@@ -375,6 +376,7 @@ ActiveRecord::Schema.define(version: 20160714201809) do
     t.integer  "reviewed_by_id",      limit: 4
     t.datetime "reviewed_at"
     t.integer  "provenance_count",    limit: 4,     default: 0,     null: false
+    t.boolean  "confirmed",                         default: false
   end
 
   add_index "names", ["created_by_id"], name: "index_names_on_created_by_id", using: :btree

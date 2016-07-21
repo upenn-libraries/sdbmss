@@ -302,6 +302,11 @@ h1 { font-size: 30px; margin-top: 0; }
 
 .facet_extended_list .facet-values li:nth-child(odd) { background: #f9f9f9 }
 
+/* customizing actual blacklight form (rather than content) is frustrating, sO I just hide it here... */
+#facets .top-panel-heading {
+  display: none;
+}
+
 /* tighten up whitespace */
 .blacklight-catalog-show table { margin-bottom: 5px; }
 
