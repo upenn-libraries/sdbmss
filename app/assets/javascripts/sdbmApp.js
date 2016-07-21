@@ -963,6 +963,8 @@ var BOOKMARK_SCOPE;
 
             var entryToSave = new Entry(angular.copy($scope.entry));
 
+            console.log('mm', entryToSave);
+
             // don't store a sale if it's not applicable
             if(entryToSave.transaction_type === 'no_transaction') {
                 entryToSave.sale = null;

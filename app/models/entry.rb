@@ -614,8 +614,8 @@ class Entry < ActiveRecord::Base
         retval
       }.map {
         |entry_date|
-        (entry_date.date_normalized_start || SDBMSS::Blacklight::DATE_RANGE_YEAR_MIN.to_s) + " " +
-          (entry_date.date_normalized_end || SDBMSS::Blacklight::DATE_RANGE_YEAR_MAX.to_s)
+        (entry_date.date_normalized_start.present? ? entry_date.date_normalized_start : SDBMSS::Blacklight::DATE_RANGE_YEAR_MIN.to_s) + " " +
+          (entry_date.date_normalized_end.present? ? entry_date.date_normalized_end : SDBMSS::Blacklight::DATE_RANGE_YEAR_MAX.to_s)
       }
     end
     define_field(:string, :manuscript_date_range, :stored => true, :multiple => true) do
