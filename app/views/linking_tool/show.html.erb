@@ -556,12 +556,12 @@ $(document).ready(function() {
         </div>
     </div>
     <div class="col-sm-5">
-        <h4><a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#">click here for instructions</a> on how to link entries to manuscript records</h4>
+        <h4><a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#">Click here for instructions</a> on how to link entries to manuscript records</h4>
         <% if @mode == 'by_entry' %>
-            <p>This page allows you to create a <b>manuscript record</b> from this entry by linking it to one or more existing entries. You can <strong class="text-primary">link entries</strong> citing the same manuscript to track its transmission and location across time.</p>
+            <p>This page allows you to create a <b>manuscript record</b> from this entry by linking it to one or more existing entries citing the same manuscript, in order to track its transmission and location across time.  You may create a manuscript record with one entry if you cannot find other entries to link to a single entry.</p>
             <p>If a <b>manuscript record</b> already exists, you can simply link this entry to it. Use the search window below to find other possible links and enter them in the entry queue to help determine whether a link really exists.</p>
         <% else %>
-            <p>This page allows you to link <strong>entries</strong> to an <strong class="text-primary">existing manuscript record</strong>. You can link entries citing the same manuscript to track its transmission and location across time. Use the search window below to find possible links and enter them in the Entry Queue to help determine whether a link really exists.</p>
+            <p>This page allows you to link <strong>entries</strong> to an <strong>existing manuscript record</strong>. You can link entries citing the same manuscript to track its transmission and location across time. Use the search window below to find possible links and enter them in the Entry Queue to help determine whether a link really exists.</p>
         <% end %>
     </div>
     <div class="col-sm-1"></div>

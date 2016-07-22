@@ -73,7 +73,7 @@ body {
 }
 
 /* There's some tweaky stuff in "#header-navbar .navbar-brand" rule that we're overriding here, probably fragile */
-#header-navbar .navbar-brand { background: none; overflow: visible; text-indent: 0; color: black; width: auto; }
+#header-navbar .navbar-brand { background: none; overflow: visible; text-indent: 0; color: black; width: auto;}
 /*#header-navbar .navbar-brand {
     background: none;
     overflow: visible;
@@ -86,6 +86,25 @@ body {
     border-bottom: 1px solid black;
     text-shadow: 4px 0px #eee;
 }*/
+#header-navbar .brand {
+  color: black;
+  display: inline-block;
+  vertical-align: top;
+}
+#header-navbar .brand:focus, #header-navbar .brand:hover {
+  text-decoration: none;
+}
+#header-navbar .brand-left {
+  font-size: 50px;
+  border-right: 2px dashed black;
+  line-height: calc(100% - 8px);
+  padding-right: 5px;
+}
+#header-navbar .brand-right {
+  width: 188px;
+  white-space: normal;
+  line-height: calc(140% - 4px);
+}
 
 /* BOOKMARKS */
 .text-invert {

@@ -119,7 +119,8 @@
         <legend>
             <span><%= @manuscript.public_id %></span>
         </legend>
-        <p>This <strong>Manuscript Record</strong> shows linked entries to refer to the same physical manuscript.  You can use this space to determine <strong>Current Location</strong> and <strong>Provenance</strong>, to create your own <strong>Personal Observation</strong> about this manuscript, or to contribute a <strong>Comment</strong>.</p>
+        <p>This <b>Manuscript Record</b> is a linking node that collects entries referring to the same physical manuscript for easy access and study.  You can use this space to determine current location and provenance, to create your own <b>Personal Observation</b> about this manuscript, or to leave a comment about this manuscript.  You can also construct your own provenance history based on prior entries by clicking the <b>Construct History</b> button in the <b>Tools</b> menu.</p>
+        <p>If you believe links have been made in error, contact us or simply leave a comment below.</p>
     </div>
     <div class='col-sm-5'> 
         <div class="panel panel-default">
@@ -375,7 +376,7 @@
                     <% end %>
                 <div class="row">
                     <div class="col-sm-12 form-group">
-                        <p><lead>Or leave a comment</lead> to add general information or commentary about this Manuscript Record:</p>
+                        <p><lead>Or leave a comment</lead> to add general information or commentary about this <b>Manuscript Record</b>:</p>
                         <%= f.text_area :comment, class: "form-control", rows: 5 %>
                     </div>
         <!--            <div class="col-sm-12 checkbox">

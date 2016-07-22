@@ -1,3 +1,4 @@
+<%= stylesheet_link_tag "extras", media: "all" %>
 <% @page_title = "Dashboard - " + application_name %>
 
 <% is_contributor = current_user.role == 'contributor' %>
@@ -10,7 +11,7 @@
             <div class="col-sm-8">
                 <h1 class="text-center">
                     Welcome, <%= link_to (current_user.fullname.present? ? current_user.fullname : current_user.username), profile_path(current_user.username) %>!
-                    <br><small class='text-info'>(Permission: <%= current_user.role %>)</small>
+                    <br><small class='text-info' sdbm-tooltip="user_levels">User Level: <%= current_user.role %></small>
                 </h1>
             </div>
             <div class="col-sm-2 text-right">
@@ -63,8 +64,11 @@
             </div>
         </div>
         <div class="panel panel-default">
-            <div class="panel-heading">Help</div>
-            <div class="panel-body">
+            <div class="panel-heading" data-toggle="collapse" data-target="#help">
+                Help
+                <span class="glyphicon glyphicon-chevron-down pull-right"></span>
+            </div>
+            <div class="panel-body collapse" id="help">
                 <p><a href="/static/docs/sdbm_data_model_explanation.pdf">New Data Model Explanations (PDF)</a></p>
                 <p><a href="/static/docs/sdbm_data_definitions.pdf">Data Definitions (PDF)</a></p>
                 <p><a href="/static/docs/sdbm_user_manual.pdf" target="_blank">User Manual (PDF)</a></p>

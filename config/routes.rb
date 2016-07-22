@@ -50,6 +50,10 @@ Rails.application.routes.draw do
   end
 
   get "/faq/", to: 'community#faq', as: 'faq'
+  get "/about/", to: 'community#about', as: 'about'
+  get "/technical_overview/", to: 'community#technical_overview', as: 'technical_overview'
+  get "/project_history/", to: 'community#project_history', as: 'project_history'
+  get "/user_agreement/", to: 'community#user_agreement', as: 'user_agreement'
   get '/community/', to: 'community#show', as: 'community'
   get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
 

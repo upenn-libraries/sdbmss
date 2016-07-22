@@ -264,7 +264,7 @@ label.col-sm-2-and-half {
           
               <div class="form-group row">
                   <label class="col-sm-3 side-title">
-                    <h3>Sale Agent</h3>
+                    <h3>Sale Agent(s)</h3>
                     
                     <!--<span sdbm-tooltip="entry_selling_agent">Selling Agent</span>-->
                     <div class="add-link-container">
@@ -282,7 +282,7 @@ label.col-sm-2-and-half {
                       </div>
                       <div class='row'>
                         <label class="col-sm-3 control-label">
-                            <span>Authority Name</span>
+                            <span sdbm-tooltip="entry_sale_agent">Authority Name</span>
                         </label>
                         <div class="col-sm-9">
                            <div class="input-group">
@@ -300,7 +300,7 @@ label.col-sm-2-and-half {
                         </div>
                         <div class='row'>
                           <label class="col-sm-3 control-label">
-                            <span>Role</span>
+                            <span sdbm-tooltip="entry_sale_agent_role">Role</span>
                           </label>
                           <div class="col-sm-9">
                             <select id="sale_agent_role_{{ $index }}" name="sale_agent_role" class="form-control" ng-model="sale_agent.role" ng-options="option[0] as option[1] for option in optionsSaleAgentRole" required='required'>
@@ -373,7 +373,7 @@ label.col-sm-2-and-half {
 
   <div class='form-group row'>
     <label class="col-sm-3 side-title">
-      <h3>Title(s)</h3>
+      <h3>Text Title(s)</h3>
       <div class="add-link-container">
         <a id="add_title" class="clickable" data-ng-click="addRecord(entry.entry_titles); addRecord(entry.entry_authors)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
@@ -400,7 +400,7 @@ label.col-sm-2-and-half {
         </div>
         <div class='row'>
           <label class="col-sm-3 control-label">
-              <span sdbm-tooltip="entry_common_title">Common</span>
+              <span sdbm-tooltip="entry_common_title">Standard Title</span>
           </label>
           <div class="col-sm-9">
             <input input maxlength="255" id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
@@ -907,7 +907,7 @@ label.col-sm-2-and-half {
 
   <div class='form-group row'>
     <label class='col-sm-2 side-title'>
-      <h3>Agent(s)</h3>
+      <h3 sdbm-tooltip="entry_provenance">Agent(s)</h3>
       <div class="add-link-container">
         <a id="add_provenance" class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
@@ -927,16 +927,16 @@ label.col-sm-2-and-half {
             <div class="panel-heading"><label for="" sdbm-tooltip="provenance" class="control-label">Provenance Agent Information</label></div>
             <div class="panel-body">
               <div class="row">
-                <label class="col-sm-5 control-label">
+                <label class="col-sm-4 control-label">
                   <span sdbm-tooltip="entry_provenance_agent_as_recorded">As Recorded</span>
                 </label>
-                <div class="col-sm-7">
+                <div class="col-sm-8">
                   <input input maxlength="255" id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name">
                 </div>
               </div>
               <div class="row">
-                <label class="col-sm-5 control-label"><span sdbm-tooltip="entry_provenance_agent">Authority Name</span></label>
-                <div class="col-sm-7">
+                <label class="col-sm-4 control-label"><span sdbm-tooltip="entry_provenance_agent">Authority Name</span></label>
+                <div class="col-sm-8">
                   <div class="input-group">
                       <!--<input id="provenance_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.provenance_agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>--> 
                       <a id='find_provenance_name_authority_{{ $index }}' ng-if='prov.provenance_agent.id == undefined' ng-init="prov.provenance_agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', prov.provenance_agent, 'is_provenance_agent', prov.observed_name)">Find or Create Authority Name</a>
@@ -953,10 +953,10 @@ label.col-sm-2-and-half {
                 </div>
               </div>
                <div class="row">
-                <label class="col-sm-5 control-label">
-                    <span sdbm-tooltip="entry_provenance_acquisition_method">Acquisition Method</span>
+                <label class="col-sm-4 control-label">
+                    <span sdbm-tooltip="entry_provenance_acquisition_method">Acquis. Method</span>
                 </label>
-                <div class="col-sm-7">
+                <div class="col-sm-8">
                     <select class="form-control" id="provenance_acquisition_method_{{ $index }}" ng-model="prov.acquisition_method" ng-options="option[0] as option[1] for option in optionsAcquisitionMethod">
                         <option value=""></option>
                     </select>

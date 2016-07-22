@@ -1,42 +1,3 @@
-<!--
-<div class="row">
-    <div class="col-sm-8">
-
-        <p>Welcome to the New SDBM! By signing up, you are becoming a
-        member of an engaged user-community devoted to the study and
-        research of manuscripts produced before the age of
-        print. Whether a professional or citizen scholar, you, as a
-        member of this community, can</p>
-
-        <ul>
-            <li>contribute data from the sources the SDBM has traditionally relied upon (e.g. auction and sale catalogs, institutional catalogues, published inventories, etc)</li>
-            <li>create your own personal observations of a manuscript and where it may have been or is now</li>
-            <li>link entries to show the transmission of a manuscript from one location to the next</li>
-        </ul>
-        
-        <p>We also hope you will take the opportunity to engage in
-        virtual conversations with other users and give us feedback to
-        help us build and shape this open-access resource.</p>
-
-        <p>To start contributing data, simply fill out the
-        information below. Instructions on each page and pop-up
-        tooltips will guide you in adding and editing your data. For
-        more detailed instructions, consult our user-manual. For
-        definitions of our data fields, mouse over the field labels to
-        see tooltips or consult the data dictionary here.</p>
-
-        <p>
-        <a href="/static/docs/sdbm_user_manual.pdf" target="_blank">User Manual</a><br/>
-        <a href="/static/docs/sdbm_data_definitions.pdf">Data Definitions (PDF)</a><br/>
-        </p>
-        
-        <p>Note: We will never sell or distribute your personal
-        information. You will have the option to make your email
-        address publicly available or not.</p>
-
-    </div>
-</div>
--->
 <div class="row">
     <div class="col-sm-3">
         <h1 style="font-size: 50px;">Sign-Up</h1>
@@ -52,7 +13,7 @@
             <!-- FAQ -->
             <div class="faq tab-pane fade in active" id="faq">
                 <h3 class='text-info text-center'>
-                    Read through each question and <input type="checkbox" class="checkbox" checked disabled id="democheckbox"><label for="democheckbox"></label> to confirm that you read it.
+                    read through each question and <input type="checkbox" class="checkbox" checked disabled id="democheckbox"><label for="democheckbox"></label> to confirm that you have read it.
                 </h3>
                 
                 <div class="scroll-container-hide-scrollbars" style="height: calc(100vh - 190px); overflow: hidden;">
@@ -211,49 +172,91 @@
             </div>
             <!-- Sign-up form -->
             <div id="signup" class="tab-pane fade">
-                <div class="form-group text-center">
-                    <h3>Create New Account:</h3>
-                </div>
-                <p class="text-success text-center" id="faq-success" style='display: none;'>Thank you! You may now register a new account.</p>
-                <% if Rails.configuration.sdbmss_allow_user_signup %>
-                <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-                <fieldset id="faq-required" disabled>
-                    <div class="form-group">
-                        <%= devise_error_messages! %>
-                    </div>
-                    <div class="form-group">
-                        <%= f.label :username, class: "control-label" %><br />
-                        <%= f.text_field :username, class: "form-control", autofocus: true %>
-                    </div>
-                    <div class="form-group">
-                        <%= f.label :email, class: "control-label" %><br />
-                        <%= f.email_field :email, class: "form-control" %>
-                    </div>
-                    <div class="form-group">
-                        <%= f.label :password, class: "control-label" %>
-                        <% if @validatable %>
-                        <em>(<%= @minimum_password_length %> characters minimum)</em>
-                        <% end %><br />
-                        <%= f.password_field :password, class: "form-control", autocomplete: "off" %>
-                    </div>
-                    <div class="form-group">
-                        <%= f.label :password_confirmation, class: "control-label" %><br />
-                        <%= f.password_field :password_confirmation, class: "form-control", autocomplete: "off" %>
-                    </div>
-                    <div class="form-group">
-                        <div class="actions">
-                            <%= f.submit "Sign up", class: "btn btn-default" %>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group text-center">
+                            <h3>Create New Account:</h3>
+                            <p class="text-success text-center" id="faq-success" style='display: none;'>Thank you! You may now register a new account.</p>
                         </div>
                     </div>
-                </fieldset>
-                <% end %>
-                <% else %>
-                <div class="form-group">
-                    <span style="color: red;">Sorry, new user signup is disabled at this time.</span>
-                </div>
-                <% end %>
-                <div class="form-group">
-                    <%= render "devise/shared/links" %>
+                    <div class="col-sm-6">
+                        <% if Rails.configuration.sdbmss_allow_user_signup %>
+                        <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+                        <fieldset id="faq-required" disabled>
+                            <div class="form-group">
+                                <%= devise_error_messages! %>
+                            </div>
+                            <div class="form-group">
+                                <%= f.label :username, class: "control-label" %><br />
+                                <%= f.text_field :username, class: "form-control", autofocus: true %>
+                            </div>
+                            <div class="form-group">
+                                <%= f.label :email, class: "control-label" %><br />
+                                <%= f.email_field :email, class: "form-control" %>
+                            </div>
+                            <div class="form-group">
+                                <%= f.label :password, class: "control-label" %>
+                                <% if @validatable %>
+                                <em>(<%= @minimum_password_length %> characters minimum)</em>
+                                <% end %><br />
+                                <%= f.password_field :password, class: "form-control", autocomplete: "off" %>
+                            </div>
+                            <div class="form-group">
+                                <%= f.label :password_confirmation, class: "control-label" %><br />
+                                <%= f.password_field :password_confirmation, class: "form-control", autocomplete: "off" %>
+                            </div>
+                            <div class="form-group">
+                                <p>
+                                    <%= check_box_tag "Agreement", nil, false, class: "", required: true, disabled: true, id: "check_agreement" %>
+                                    I have read and agree to the <a href="/user_agreement" id="agreement">User Agreement</a>
+                                </p>
+                            </div>
+                            <div class="form-group">
+                                <div class="actions">
+                                    <%= f.submit "Sign up", class: "btn btn-default", disabled: true, id: "submit_signup" %>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <% end %>
+                        <% else %>
+                        <div class="form-group">
+                            <span style="color: red;">Sorry, new user signup is disabled at this time.</span>
+                        </div>
+                        <% end %>
+                        <div class="form-group">
+                            <%= render "devise/shared/links" %>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <p>Welcome to the New SDBM! By signing up, you are becoming a
+                        member of an engaged user-community devoted to the study and
+                        research of manuscripts produced before the age of
+                        print. Whether a professional or citizen scholar, you, as a
+                        member of this community, can</p>
+
+                        <ul>
+                            <li>contribute data from the sources the SDBM has traditionally relied upon (e.g. auction and sale catalogs, institutional catalogues, published inventories, etc)</li>
+                            <li>create your own personal observations of a manuscript and where it may have been or is now</li>
+                            <li>link entries to show the transmission of a manuscript from one location to the next</li>
+                        </ul>
+                        
+                        <p>We also hope you will take the opportunity to engage in
+                        virtual conversations with other users and give us feedback to
+                        help us build and shape this open-access resource.</p>
+
+                        <p>To start contributing data, simply fill out the
+                        information below after you have reviewed our FAQs and watched a series of videos to help you get started. Instructions on each page and pop-up
+                        tooltips will guide you in adding and editing your data. For more detailed instructions, consult our user-manual. For definitions of our data fields, mouse over the field labels to see tooltips or consult the data dictionary here.</p>
+
+                        <p>
+                        <a href="/static/docs/sdbm_user_manual.pdf" target="_blank">User Manual</a><br/>
+                        <a href="/static/docs/sdbm_data_definitions.pdf">Data Definitions (PDF)</a><br/>
+                        </p>
+                        
+                        <p>Note: We will never sell or distribute your personal
+                        information. You will have the option to make your email
+                        address publicly available or not.</p>
+                    </div>
                 </div>
             </div>
             
@@ -261,13 +264,30 @@
     </div>
 
 </div>
+<div id="user_agreement" style="display: none;">
+    <%= render partial: "shared/user_agreement" %>
+</div>
 <script type="text/javascript">
     if (localStorage && localStorage.checkedData) {
         var checkedData = localStorage.checkedData.split(',');
         checkedData.forEach( function (e) {
             $('#' + e).prop('checked', true);
         });
+        completeFAQ();
     }
+
+    $("#agreement").click( function (e) {
+        e.preventDefault();
+        SDBM.showModal("#modal", {title: "User Agreement", body: $('#user_agreement').html() });
+        $("button[data-dismiss]").click(function (e) {
+            $("#check_agreement").prop('disabled', false);
+        });
+        return false;
+    });
+
+    $("#check_agreement").change( function (e) {
+        $("#submit_signup").prop('disabled', !this.checked);
+    })
 
     $('.checkbox').change( function (e) {
         var total = 0;
@@ -285,6 +305,10 @@
         }
         if (localStorage) localStorage.checkedData = checkedData;
 
+        completeFAQ();
+    });
+
+    function completeFAQ() {
         var remaining = $('.checkbox').length - $('.checkbox:checked').length;
         if( remaining == 0) {
 
@@ -307,5 +331,5 @@
             $('#signup').removeClass('in active');
             $('#faq').addClass('in active');
         }
-    });
+    }
 </script>
