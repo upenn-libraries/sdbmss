@@ -98,12 +98,12 @@
     var manuscriptTitle, manuscriptLocation;
     $("#begin-manuscript-edit").click( function () {
         $('#edit-manuscript').show();//removeClass('hide');
-        $('.manuscript-url').hide();//addClass('hide');
+        $('.manuscript-details').hide();//addClass('hide');
     });
 
     $('#cancel-manuscript-edit').click( function () {
         $('#edit-manuscript').hide();//addClass('hide');
-        $('.manuscript-url').show();//removeClass('hide');
+        $('.manuscript-details').show();//removeClass('hide');
     });
 
  });
@@ -124,35 +124,60 @@
     </div>
     <div class='col-sm-5'> 
         <div class="panel panel-default">
-            <div class="panel-heading"><span class="h3">Link to External URL</span></div>
+            <div class="panel-heading"><span class="h3">Suggested Manuscript Details</span></div>
             <div class="panel-body">
-                <div class="row">
-                    <div class="col-xs-9" style='overflow: hidden; text-overflow: ellipsis'>
-                        <% if @manuscript.url %>
-                            <a class='manuscript-url' id="confirmed-manuscript-url" href="<%= @manuscript.url %>" target="_blank"><%= @manuscript.url %></a>
+                <div class="row manuscript-details" id="confirmed-manuscript" >
+                    <div class="col-xs-4 text-right">
+                        <strong>Common Title</strong><br>
+                        <strong>URL</strong>
+                    </div>
+                     <div class="col-xs-6" style='overflow: hidden; text-overflow: ellipsis'>
+                        <% if @manuscript.name %>
+                            <a class='manuscript-url' href="<%= @manuscript.url %>" target="_blank"><%= @manuscript.name %></a>
                         <% else %>
-                            <span class='manuscript-url' id="confirmed-manuscript-url">No link saved.</span>
+                            <span class='manuscript-url' >No common title saved.</span>
+                        <% end %>
+                        <br>
+                        <% if @manuscript.url %>
+                            <a class='manuscript-url' href="<%= @manuscript.url %>" target="_blank"><%= @manuscript.url %></a>
+                        <% else %>
+                            <span class='manuscript-url'>No link saved.</span>
                         <% end %>
                     </div>
-                    <div class="col-xs-3 text-right">
+                    <div class="col-xs-2 text-right">
                         <% if can? :manage, @manuscript %>
                             <a href="" id="begin-manuscript-edit" class='manuscript-url btn btn-default'>Edit</a>
                         <% end %>
                     </div>
-                    <div class="col-sm-12 text-right">
-                        <% if can? :manage, @manuscript %>
-                            <%= form_for @manuscript do |f| %>
-                                <div id="edit-manuscript" style="display: none;">
-                                    <div style="margin-bottom: 5px;">
-                                        <%= f.text_field :url, class: "form-control" %>
-                                    </div>
-                                    <div class="form-inline">
-                                        <%= f.submit "OK", class: "form-control btn btn-success" %>
-                                        <button type="button" id="cancel-manuscript-edit" class="form-control">Cancel</button>
-                                    </div>
-                                </div>
-                            <% end %>
+                </div>
+                <div class="row form-inline" id="edit-manuscript" style="display: none;">
+                    <div class="col-sm-12">
+                    <% if can? :manage, @manuscript %>
+                        <%= form_for @manuscript do |f| %>
+                        <div class="row" style="margin-bottom: 5px;">
+                            <div class="col-sm-4 text-right">
+                                <%= f.label :common_title, class: "control-label" %>
+                            </div>
+                            <div class="col-sm-8">
+                                <%= f.text_field :name, class: "form-control", placeholder: "Common title..." %>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom: 5px;">
+                            <div class="col-sm-4 text-right">
+                                <%= f.label :url, class: "control-label" %>
+                            </div>
+                            <div class="col-sm-8">
+                                <%= f.text_field :url, class: "form-control", placeholder: "Enter url..." %>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 text-right">
+                                <%= f.submit "OK", class: "form-control btn btn-success" %>
+                                <button type="button" id="cancel-manuscript-edit" class="form-control">Cancel</button>
+                            </div>
+                        </div>
                         <% end %>
+                    <% end %>
                     </div>
                 </div>
             </div>

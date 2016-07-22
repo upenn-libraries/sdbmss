@@ -5,9 +5,7 @@
     <p>Error: couldn't retrieve model object from database.</p>
     <% else %>
     <% if !entry.approved %>
-        <div class="panel panel-warning">
-            <div class="panel-heading">Warning: This record is not yet approved.</div>
-        </div>
+          <div class="alert alert-warning">Warning: This record is not yet approved.</div>
     <% end %>
     <dl class="document-metadata dl-horizontal dl-invert">
         <% manuscripts_str = render partial: "shared/entry_manuscripts", locals: { entry: entry } %>

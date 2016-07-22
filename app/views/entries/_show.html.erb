@@ -18,9 +18,7 @@
 <% end %>
 
 <% if !entry.approved %>
-    <div class="panel panel-danger">
-        <div class="panel-heading">Warning: This entry has not been approved yet.  The data may be incorrect or unreliable, or may not conform to the general data standards.</div>
-    </div>
+    <div class="alert alert-warning">Warning: This entry has not been approved yet.  The data may be incorrect or unreliable, or may not conform to the general data standards.</div>
 <% end %>
 
 <%= render partial: "shared/entry_manuscripts", locals: { entry: entry } %>

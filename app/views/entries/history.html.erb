@@ -1,7 +1,5 @@
 <% if @error %>
-    <div class="panel panel-danger">
-        <div class="panel-heading"><%= @error %></div>
-    </div>
+    <div class="alert alert-danger"><%= @error %></div>
 <% end %>
 
 <%= form_for @entry, url: {action: "revert_confirm"} do |f| %>
