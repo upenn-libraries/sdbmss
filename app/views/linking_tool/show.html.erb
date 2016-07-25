@@ -1,6 +1,5 @@
 <% content_for :head do %>
 <%= stylesheet_link_tag "extras", media: "all" %>
-<%= javascript_include_tag "extras" %>
 <script type="text/javascript">
 
 $(document).ready(function() {
@@ -9,9 +8,19 @@ $(document).ready(function() {
 
     var mode = '<%= @mode %>';
     var entryId;
-    var manuscriptId;    
+    var manuscriptId;
+    var manuscriptCreatedBy;
     var entryManuscripts;
     var headingId = '<%= @mode == 'by_entry' ? @entry.public_id : @manuscript.public_id %>';
+
+    var unsavedChanges = false;
+
+    <% if (@manuscript && can?(:unlink, @manuscript)) || (@entry && can?(:unlink, @entry)) %>
+        var canUnlink = true
+    <% else %>
+        var canUnlink = false;
+        var username = '<%= current_user.username %>';
+    <% end %>
     
     <% if @mode == 'by_entry' %>
     entryId = <%= @entry.id %>;
@@ -23,6 +32,7 @@ $(document).ready(function() {
     ];
     <% else %>
     manuscriptId = <%= @manuscript.id %>;
+    manuscriptCreatedBy = '<%= @manuscript.created_by %>';
     cumulativeUpdatedAt = <%= @manuscript.cumulative_updated_at %>;
     entryManuscripts = <%= JSON.generate(@manuscript.entry_manuscripts.map { |entry_manuscript|
                                                                             {
@@ -56,6 +66,7 @@ $(document).ready(function() {
                 entry_id: entryId,
                 relation_type: relation
             });
+            unsavedChanges = true;
         }
     };
 
@@ -76,6 +87,7 @@ $(document).ready(function() {
         } else {
             deleteWorkspaceEntry(entryId);            
         }
+        unsavedChanges = true;
     };
 
     var deleteWorkspaceEntry = function(entryIdToDelete) {
@@ -104,6 +116,7 @@ $(document).ready(function() {
                 entryManuscripts.splice(idxToDelete, 1);
             }
         }
+        unsavedChanges = true;
     };
 
     var isInWorkspace = function(entryId, relationType) {
@@ -157,7 +170,7 @@ $(document).ready(function() {
         fixedColumns: 5,
         prependColumns: [
             {
-                sdbmssMinWidth: "50px",
+                sdbmssMinWidthImportant: "50px",
                 title: 'Link',
                 "data": null,
                 "orderable": false,
@@ -167,7 +180,7 @@ $(document).ready(function() {
                 }
             },
             {
-                sdbmssMinWidth: "60px",
+                sdbmssMinWidthImportant: "60px",
                 title: 'Fragment',
                 "data": null,
                 "orderable": false,
@@ -177,7 +190,7 @@ $(document).ready(function() {
                 }
             },
             {
-                sdbmssMinWidth: "60px",
+                sdbmssMinWidthImportant: "60px",
                 title: 'Possible',
                 "data": null,
                 "orderable": false,
@@ -187,14 +200,19 @@ $(document).ready(function() {
                 }
             },
             {
-                sdbmssMinWidth: "50px",
+                sdbmssMinWidthImportant: "50px",
                 title: 'Unlink',
                 "data": null,
                 "orderable": false,
                 "className": 'text-center',
                 "render": function (data, type, full, meta) {
-//                    return getButtonHTML(workspaceTable, data, "unlink");
-                    return getRadioButtonHTML(workspaceTable, data, "unlink");
+                    if (canUnlink)
+                        return getRadioButtonHTML(workspaceTable, data, "unlink");
+                    else if (username == data[workspaceTable.getColumnIndex("Added By")] || username == manuscriptCreatedBy) {
+                        return getRadioButtonHTML(workspaceTable, data, "unlink");
+                    }               
+                    else
+                        return '<span class="text-danger">n/a</span>';
                 }
             }
         ],
@@ -217,19 +235,22 @@ $(document).ready(function() {
     });
 
     var resultsTable = new SDBM.EntryTable("#search_results", {
-        dom: '<"clear"><"H"r>JRt<"F"ip>',
+        dom: '<"clear"><"H linking_table_header"<"row"<"col-sm-6 text-right"rip>>>JRt<"F">',
+        //dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t',
         height: function() {
             // height gets passed into dataTables constructor before
             // it's had a chance to construct all its crazy DOM bits,
             // so it's hard to calculate height dynamically to fit the
             // viewport. This seems pretty decent.
+            // FIX ME: doesn't work, though -> when the window is too small, the right part (search results) just don't appear
             var footer_size = 100;
-            return $(window).height() - $("#search_results").offset().top - footer_size;
+            var minimum_height = 300;
+            return Math.max(minimum_height, $(window).height() - $("#search_results").offset().top - footer_size);
         },
         fixedColumns: 2,
         prependColumns: [
             {
-                sdbmssMinWidth: "255px",
+                sdbmssMinWidthImportant: "255px",
                 title: 'Options',
                 "data": null,
                 "orderable": false,
@@ -278,8 +299,32 @@ $(document).ready(function() {
 
     // TODO: fix row highlighting broken by fixed column datatable plugin
 
+    $("#link-search").submit(function (e) {
+        e.preventDefault();
+        doSearch();
+        return false;
+    });
+
     $('#search_submit').click(function() {
         doSearch();
+    });
+
+    $("#addSearch").click( function (e) {
+        var p = $('.search-fieldset').eq(0).clone();
+        p.find("input", "select").val("");
+        $(".search").append(p);
+        p.find(".search-remove").click( function (e) {
+            var p = $(this).closest('.search-fieldset');
+            if ($('.search-fieldset').length > 1) {
+                $(".search").find(p).remove();
+            } else {                                    // otherwise, clear all the fields
+                p.find("input").each(function (e) {
+                    $(this).val("");
+                })
+                p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
+            }
+        });
+        setOptions(p);      
     });
 
     $(document).on("click", ".add-entry-link", function (event) {
@@ -298,6 +343,14 @@ $(document).ready(function() {
     });
 
     $(document).on("click", ".link-to-manuscript-link", function (event) {
+        
+        // warn user that they will lose unsaved changes
+        var really = true;
+        if (unsavedChanges) {
+            really = confirm("You have unsaved changes that will be lost - continue?");
+        }
+        if (!really) return false;
+
         var manuscriptId = $(event.target).data("manuscriptId");
 
         // create a single EntryManuscript record
@@ -318,6 +371,7 @@ $(document).ready(function() {
                 var body = '<p>Link between SDBM_' + entryId + ' and SDBM_MS_' + manuscriptId + ' successfully created.</p>' +
                            '<p><a class="manuscript-link" href="/linkingtool/manuscript/' + manuscriptId + '">Go to page for SDBM_MS_' + manuscriptId + ' now</a></p>';
 
+                unsavedChanges = false;
                 SDBM.showModal("#modal", {
                     allowDismiss: false,
                     showFooter: false,
@@ -333,6 +387,7 @@ $(document).ready(function() {
 
         return false;
     });
+
 
     $("#persist-entries-manuscript-link").click(function (event) {
         if(mode == 'by_entry') {
@@ -377,7 +432,9 @@ $(document).ready(function() {
                     entry_manuscripts: entryManuscripts
                 }),
                 success: function(data, textStatus, jqXHR) {
-                    var body = '<p>Your changes have been saved.<p><a href="/linkingtool/manuscript/' + manuscriptId + '">Click here</a> to reload this page</p>';
+                    unsavedChanges = false;
+                    // unknown error caused ONLY this link to just not work -> so I just added a manual "onclick -> reload" event handler
+                    var body = '<p>Your changes have been saved.<p><a onclick="window.location.reload();" href="/linkingtool/manuscript/' + manuscriptId + '">Click here</a> to reload this page</p>';
                     SDBM.showModal("#modal", {
                         allowDismiss: false,
                         showFooter: false,
@@ -461,21 +518,54 @@ $(document).ready(function() {
             return false;
         });
     });
+
+    $(window).bind('beforeunload', function() {
+        if (unsavedChanges) {
+            return "You have unsaved changes";
+        }
+    });
     
 });
 
 </script>
 <% end %>
 
-<div style="width: 100%;">
-    <span style="font-size: 18px; font-weight: bold;">Linking Tool: <span id="linking-tool-heading-id"></span></span> (<a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#">click here for instructions</a> on how to link entries to manuscript records)
+<div class="row">
+    <div class="col-sm-7">
+        <div class="panel panel-default">
+            <div class="panel-heading-noformat" data-toggle="collapse" href="#show_linking_record">
+                <dl class="document-show-heading dl-horizontal dl-invert">
+                  <dt></dt>
+                  <dd class="h4"><strong>Linking Tool for 
+                    <% if @manuscript %>
+                        Manuscript <%= @manuscript.public_id %>
+                    <% elsif @entry %>
+                        Entry <%= @entry.public_id %>
+                    <% end %>
+                    ...
+                    </strong></dd>
+                </dl>
+            </div>
+            <div class="panel-body-noformat collapse in" id="show_linking_record">
+                <% if @manuscript %>
+                    <%= render partial: "bookmarks/show_manuscript", locals: {manuscript: @manuscript} %>
+                <% elsif @entry %>
+                    <%= render partial: "bookmarks/show_entry", locals: {entry: @entry} %>
+                <% end %>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-5">
+        <h4><a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#">Click here for instructions</a> on how to link entries to manuscript records</h4>
+        <% if @mode == 'by_entry' %>
+            <p>This page allows you to create a <b>manuscript record</b> from this entry by linking it to one or more existing entries citing the same manuscript, in order to track its transmission and location across time.  You may create a manuscript record with one entry if you cannot find other entries to link to a single entry.</p>
+            <p>If a <b>manuscript record</b> already exists, you can simply link this entry to it. Use the search window below to find other possible links and enter them in the entry queue to help determine whether a link really exists.</p>
+        <% else %>
+            <p>This page allows you to link <strong>entries</strong> to an <strong>existing manuscript record</strong>. You can link entries citing the same manuscript to track its transmission and location across time. Use the search window below to find possible links and enter them in the Entry Queue to help determine whether a link really exists.</p>
+        <% end %>
+    </div>
+    <div class="col-sm-1"></div>
 </div>
-
-<% if @mode == 'by_entry' %>
-    <p>This page allows you to create a <b>manuscript record</b> from this entry by linking it to one or more existing entries. You can link entries citing the same manuscript to track its transmission and location across time. If a <b>manuscript record</b> already exists, you can simply link this entry to it. Use the search window below to find other possible links and enter them in the entry queue to help determine whether a link really exists.</p>
-<% else %>
-    <p>This page allows you to link entries to an existing manuscript record. You can link entries citing the same manuscript to track its transmission and location across time. Use the search window below to find possible links and enter them in the Entry Queue to help determine whether a link really exists.</p>
-<% end %>
 
 <div style="margin-bottom: 6px">
     <span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>
@@ -492,10 +582,26 @@ $(document).ready(function() {
     </tbody>
 </table>
 
-<div style="margin-bottom: 6px; margin-top: 15px;">
-    <span style="font-size: 14px; font-weight: bold;"><% if @mode == 'by_entry' %>Search for possible links<% else %>Search for other links<% end %></span> (click here for <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#">instructions</a> and <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_search_tips" href="#">search tips</a>)
+<div class="row" style="margin-top: 20px;">
+    <div class="col-xs-6">
+        <%= render partial: "linking_tool/show_form" %>
+    </div>
+    <div class="col-xs-6">
+        <div style="margin-bottom: 6px; margin-top: 15px;">
+            <span class="h4">
+                <strong>
+                <% if @mode == 'by_entry' %>
+                    Search for possible links
+                <% else %>
+                    Search for other links
+                <% end %>
+                </strong>
+            </span><br>
+            (click here for <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#">instructions</a> and <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_search_tips" href="#">search tips</a>)
+        </div>
+    </div>
 </div>
-
+<!--
 <div class="row">
     <div class="col-sm-8">
         <form class="form-horizontal search-form" style="margin-top: 10px;">
@@ -543,8 +649,7 @@ $(document).ready(function() {
             <li class="list-group-item list-group-item-warning text-center"><span class="disabled">(unapproved records shown in yellow)</span></li>
         </ul>
     </div>
-</div>
-
+</div>-->
 <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
     <thead>
         <tr>

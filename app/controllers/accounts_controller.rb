@@ -5,18 +5,9 @@
 class AccountsController < SearchableAuthorityController
 
   include MarkAsReviewed
+  include LogActivity
 
   before_action :require_admin
-
-  def search_fields
-    super
-    @fields.delete('name')
-    @fields = ['username'] + @fields + ['fullname', 'email', 'role']
-    @filters += ['active']
-    @filters.delete('created_by')
-    @filters.delete('updated_by')
-    @fields + @filters + @dates
-  end
 
   def model_class
     User
@@ -24,18 +15,6 @@ class AccountsController < SearchableAuthorityController
 
   def search_model_class
     User
-  end
-
-  def search_result_format(obj)
-    {
-      id: obj.id,
-      username: obj.username,
-      fullname: obj.fullname,
-      role: obj.role,
-      active: obj.active,
-      reviewed: obj.reviewed,
-      created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
-    }
   end
 
   def resource_name

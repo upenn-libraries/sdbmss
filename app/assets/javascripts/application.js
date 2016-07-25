@@ -13,14 +13,15 @@
 //= require poltergeist_fix
 //= require jquery
 
+//= require bootstrap.min
 //= require jquery_ujs
 //= require jquery-ui
 //= require URI.min
-//= require bootstrap.min
 //
 // Required by Blacklight
 //= require blacklight
 //= require 'blacklight_advanced_search'
 
+//= require bootstrap-tour.min
 //= require sdbm
-
+//= require sdbmTour

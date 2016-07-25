@@ -1,0 +1,215 @@
+<style>
+.affix-top {
+  position: absolute;
+}
+.affix {
+  position: fixed;
+  top: 15px;
+}
+.well.from, .well.to {
+  background: rgba(50,160,50,0.8);
+  color: white;
+  font-weight: bold;
+  transition: background 1s;
+  margin-bottom: 0px;
+}
+.field {
+  padding: 0px;
+}
+.well.unselected {
+  text-decoration: line-through;
+  background: none;
+  border: none;
+  box-shadow: none;
+  color: #333;
+  font-weight: normal;
+}
+</style>
+
+<div class="row">
+  <div class="col-sm-1"></div>
+  <div class="col-sm-7">
+    <%= form_tag(request.path, method: :post, class: "form-horizontal sdbmss-form") do %>
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="h3 text-warning">
+                  <%= @source.public_id %>
+                  <small>(from)</small>
+                  <br>
+                  <small class="badge"><%= @source.entries_count %> entries</small>
+                </div>                
+              </div>
+              <div class="col-sm-6 text-right">
+                <div class="h3">
+                  <% if @target %>
+                    <small>(into)</small>
+                    <%= @target.public_id %>
+                    <br>
+                    <small class="badge"><%= @target.entries_count %> entries</small>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="list-group">
+            <% if @target %>
+              <li class="list-group-item">
+                <div class="row">
+                  <div class="col-xs-8">
+                    Are you sure you want to merge these two sources?
+                  </div>
+                  <div class="col-xs-4 text-right">
+                    <% if @target %>
+                      <input type="hidden" name="target_id" value="<%= @target.id %>"/>
+                      <input type="hidden" name="confirm" value="yes"/>
+                      <button id="submit" class="btn btn-primary">Merge</button>
+                      <%= link_to "Swap", merge_source_path(@target, :target_id => @source.id), class: 'btn btn-info' %>
+                    <% end %>
+                  </div>
+                </div>
+              </li>
+            <% end %>
+            <li class="list-group-item field">
+              <div class="row">
+                <!--
+                <div class="col-sm-12 text-center">
+                  <div class="h3">Source Agent(s)</div>
+                </div>-->
+                <div class="col-xs-3"><h3>Source Agent</h3></div>
+                <div class="col-xs-4 text-warning">
+                  <div class="from well unselected">
+                    <% if @source.source_agents.present? %>
+                      <%= (@source.source_agents.map { |sa| sa.agent.name }).join(", ") %>
+                      <%= hidden_field_tag :source_agent_id, @source.source_agents[0].id, :disabled => true %>
+                    <% end %>
+                  </div>
+                </div>
+                <div class="col-xs-1 text-center">
+                  <% if @target %>
+                    <span class="overwrite btn btn-sm btn-default glyphicon glyphicon-hand-right"></span>
+                  <% end %>  
+                </div>
+                <div class="col-xs-4 text-right">
+                  <% if @target && @target.source_agents.present?%>
+                  <div class="to well">
+                      <%= (@target.source_agents.map { |sa| sa.agent.name }).join(", ") %>
+                      <%= hidden_field_tag :source_agent_id, @target.source_agents[0].id, :disabled => false %>
+                  </div>
+                  <% end %>
+                </div>
+              </div>
+            </li>
+            <% @differences.each do |f, v| %>
+                <li class="list-group-item field">
+                  <div class="row">
+                    <!--<div class="col-sm-12 text-center">
+                      <div class="h3">
+                        <%= f.to_s.humanize %>
+                      </div>
+                    </div>-->
+                    <div class="col-xs-3"><h3><%= f.to_s.humanize %></h3></div>
+                    <div class="col-xs-4">
+                      <div class="text-warning from well unselected">
+                          <%= v[0] || "(blank)" %>
+                          <% if v[0] %>
+                            <%= hidden_field_tag f, v[0], 'disabled' => true %>
+                          <% end %>
+                      </div>
+                    </div>
+                    <div class="col-xs-1 text-center">
+                      <% if v[0] != v[1] && @target %>
+                        <span class="overwrite btn btn-sm btn-default glyphicon glyphicon-hand-right"></span>
+                      <% end %>                            
+                    </div>
+                    <div class="col-xs-4 text-right">
+                      <% if @target %>
+                        <div class="to well">
+                          <%= v[1] || "(blank)" %>
+                          <% if v[0] %>                              
+                            <%= hidden_field_tag f, v[1], 'disabled' => false %>                            
+                          <% end %>
+                        </div>
+                      <% end %>
+                    </div>
+                  </div>
+                </li>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12"></div>
+    </div>
+    <% end %>
+  </div>
+  <!-- Merge Suggestions-->
+    <!--<div class="panel panel-primary" data-spy="affix" data-offset-top="100" style="right: 25px; width:560px;">-->
+  <div class="col-sm-4">
+    <div class="panel panel-primary">
+      <div class='panel-heading' data-toggle='collapse' href='#suggestions'><b>Suggestions</b></div>
+      <div id='suggestions' class="list-group collapse in">
+        <% if @similar.present? %>
+            <% @similar.each do |src| %>
+              <li class="list-group-item <%= 'list-group-item-info' if @target && @target.id == src.id %>">
+                <% if src.id != @source.id  %>
+                  <div class="row">
+                    <div class="col-xs-3">
+                      <h5 class="h5">ID: <%= src.id %></h5>
+                      <a class='btn btn-primary' href="<%= source_path(id: @source.id)%>/merge?target_id=<%= src.id %>">Select</a><br>
+                    </div>
+                    <div class="col-xs-9">
+                      <div class="row">
+                        <div class="col-sm-12"><strong>Title:</strong> <%= src.title || "(blank)" %></div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-12"><strong>Date:</strong> <%= src.date || "(blank)" %></div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-12">
+                          <strong>Agent(s):</strong> <%= (src.source_agents.map { |a| a.agent.name }).join(", ") || "(blank)" %>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-12"><a class='badge' href="<%= search_advanced_path(source: src.public_id) %>"><%= src.entries.approved_only.count %> entries</a></div>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </li>
+            <% end %>
+        <% else %>
+          <div class="panel-body">
+            <p>No suggested sources found, use manual search.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+    </div>
+</div>
+<script>
+  $('.overwrite').click( function (e) {
+    var t = $(this);
+    var from = t.closest('.field').find('.from');
+    var to = t.closest('.field').find('.to');
+    if (t.hasClass('glyphicon-hand-right')) {
+      from.find('input').attr('disabled', false);
+      to.find('input').attr('disabled', true);
+      t.removeClass('glyphicon-hand-right');
+      t.addClass('glyphicon-hand-left');
+      from.removeClass('unselected');
+      to.addClass('unselected');
+    } else if (t.hasClass('glyphicon-hand-left')) {
+      to.find('input').attr('disabled', false);
+      from.find('input').attr('disabled', true);
+      t.removeClass('glyphicon-hand-left');
+      t.addClass('glyphicon-hand-right');
+      to.removeClass('unselected');
+      from.addClass('unselected');
+    }
+  });
+</script>

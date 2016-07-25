@@ -42,7 +42,7 @@ class EntryDate < ActiveRecord::Base
       year = exact_date_match[1].to_i
       return [year, (year + 1)]
     # otherwise attempt to parse it based on certain conventions (circa, century, etc.)
-    elsif (dates = SDBMSS::Util.parse_approximate_date_str_into_year_range(date_str)).present?
+    elsif (dates = SDBMSS::Util.parse_approximate_date_str_into_year_range(date_str)).present? && (dates[0].present? && dates[1].present?)
       return [dates[0], dates[1]]
     else
       begin

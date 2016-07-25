@@ -6,15 +6,28 @@
 
      // flag = show all records, or only those that the user created
      <% if can? :manage, model_class  %>
-     var showOnlyRecordsCreatedByUser = 0;
+     var showOnlyRecordsCreatedByUser = <%= params[:created_by_user] || 0 %>;
      <% else %>
      var showOnlyRecordsCreatedByUser = 1;
      <% end %>
 
-     <% if can? :deprecate, model_class  %>
+     <% if can? :deprecate, model_class %>
      var canDeprecate = 1;
      <% else %>
      var canDeprecate = 0;
+     <% end %>
+
+     <% if can? :destroy, model_class %>
+     var canDestroy = true;
+     <% else %>
+     var canDestroy = false;
+     <% end %>
+
+     <% if can? :edit, model_class %>
+     var canEdit = true;
+     <% else %>
+     var canEdit = false;
+     var username = '<%= current_user.username %>';
      <% end %>
 
      var jumpToEntry = {
@@ -38,11 +51,12 @@
                  {
                      sdbmssMinWidth: "25px",
                      sdbmssMaxWidth: "25px",
-                     title: '',
+                     title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
                      orderable: false,
+                     className: 'text-center unreviewed_only',
                      render: function (data, type, full, meta) {
                          if(showApprovalControls()) {
-                             return '<input type="checkbox" name="approve" value="' + full[sdbmTable.getColumnIndex("ID")] + '"/>';
+                            return '<input type="checkbox" name="approve" value="' + full[manageEntries.dataTable.getColumnIndex("ID")] + '"/>';
                          }
                          return '';
                      }
@@ -57,20 +71,28 @@
                          var manuscriptId = full[sdbmTable.getColumnIndex("Manuscript")];
                          var linkingToolURL = manuscriptId ? '/linkingtool/manuscript/' + manuscriptId : '/linkingtool/entry/' + entryId;
 
+                         var created_by = full[sdbmTable.getColumnIndex("Added By")];
+
                          // always show Linking Tool. I have a feeling
                          // this will change, so leaving this code
                          // here for now.
                          // var showLinkingTool = full[sdbmTable.getColumnIndex("Is Approved")] === true;
-                         var showLinkingTool = full[sdbmTable.getColumnIndex("Deprecated")] === false;
-                         var linkingToolHTMLLink = ' <a class="btn btn-xs btn-info find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
+                         var isNotDeprecated = full[sdbmTable.getColumnIndex("Deprecated")] === false;
+                         var linkingToolHTMLLink = '<a class="btn btn-xs btn-info find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
 
                          var showDeprecateLink = canDeprecate;
-                         var deprecateHTMLLink = ' <a href="#" class="btn btn-xs btn-warning entry-deprecate-link">Deprecate</a>';
+                         var deprecateHTMLLink = '<a href="#" class="btn btn-xs btn-warning entry-deprecate-link">Deprecate</a>';
 
-                         return '<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' +
-                                ' <a class="btn btn-xs btn-danger entry-delete-link" href="#" target="_blank">Delete</a>' +
-                                 (showLinkingTool ? linkingToolHTMLLink : '') +
-                                 (showDeprecateLink ? deprecateHTMLLink : '');
+                         // FIX ME: right now I am disabling the 'delete' link if the entry has a manuscript - should maybe change? //
+                         return isNotDeprecated ? (
+                            '<span class="btn-group options-btn-group">' + 
+                            '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '">' + 
+                                '<span class="glyphicon glyphicon-bookmark"></span>' + 
+                            '</a>' + 
+                            (canEdit || created_by == username ? '<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' : '') +
+                            (canDestroy ? '<a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#" target="_blank">Delete</a>' : '') +
+                            (isNotDeprecated ? linkingToolHTMLLink : '') +
+                            (showDeprecateLink ? deprecateHTMLLink : '') + "</span>") : '<span class="text-danger bg-danger">This Record is DEPRECATED</span>';
                      }
                  }
              ],
@@ -80,7 +102,6 @@
                  // seems like there should be a way to do this conditional
                  // ajax and subsequent searchAndUpdateTable using
                  // promises, but I can't figure that out right now
-
                  if(jumpToEntry.search) {
                      var entry_id = $("#jump_to").val();
                      $.ajax({
@@ -100,6 +121,7 @@
                                      $("#spinner").hide();
                                  }
                              });
+
                          },
                          error: function() {
                              SDBM.showErrorModal("#modal", "An error occurred jumping to this record.");
@@ -110,11 +132,14 @@
                      sdbmTable.searchAndUpdateTable(params, callback, {
                          complete: function () {
                              $("#spinner").hide();
+                              renewBookmarks();
 
                              if(showApprovalControls()) {
-                                 $(".approve-control").show();
+                                $(".approve-control").show();
+                                $('.unreviewed_only').show();//.css({"display": "table-cell"});
                              } else {
-                                 $(".approve-control").hide();
+                                $(".approve-control").hide();
+                                $('.unreviewed_only').hide();
                              }
                          }
                      });
@@ -147,7 +172,7 @@
          params["op"] = $("select[name='op']").val();
 
          $(".search-fieldset").each(function(idx, element) {
-             var search_field = $(element).find("select[name='search_field']").first().val();
+             var search_field = $(element).find("select[name='search_field']").first().val() + "[]";
              var search_value = $(element).find("input[name='search_value']").first().val();
              if(search_value) {
                 if (!params[search_field]) {
@@ -158,7 +183,6 @@
                 }
              }
          });
-
         // prevent 'approved = *' from returning ALL entries for an 'OR' search
         // params["approved"] = showUnapprovedOnly() ? "false" : "*";
          if (showUnapprovedOnly()) {
@@ -188,9 +212,9 @@
          return params;
      };
 
-     ManageEntries.prototype.getButtonTextForAddNewRecord = function () {
+/*     ManageEntries.prototype.getButtonTextForAddNewRecord = function () {
          return null;
-     };
+     };*/
 
      ManageEntries.prototype.createFormSubmitHandler = function () {
          var manageEntries = this;
@@ -206,13 +230,22 @@
      };
 
      ManageEntries.prototype.getSearchURL = function (format) {
-         var url =  '/' + this.options.resourceName;
+         var url =  '/' + this.options.resourceName + '/search';
          if(format) {
              url += "." + format;
          }
          return url;
      };
 
+    ManageEntries.prototype.getCSVSearchUrl = function () {
+        var params = manageEntries.getSearchFields();
+        params["search_field"] = "advanced";
+        params["per_page"] = <%= Rails.configuration.sdbmss_max_search_results %>;
+
+        return URI("/entries.csv").search(params);
+    };
+
+/*
      ManageEntries.prototype.exportCSV = function () {
          var params = manageEntries.getSearchFields();
          params["search_field"] = "advanced";
@@ -221,7 +254,7 @@
          var url = URI("/entries.csv").search(params);
 
          window.location = url;
-     };
+     };*/
 
      var manageEntries = new ManageEntries({
          resourceName: "<%= resource_name %>",
@@ -265,6 +298,11 @@
          return false;
      });
 
+     $(".search-form").submit(function (e) {
+        e.preventDefault();
+        manageEntries.doSearch(false);
+     });
+
      $(document).on("click", ".entry-delete-link", function (event) {
          var sdbmTable = manageEntries.dataTable;
          var row_data = sdbmTable.dataTable.row($(event.target).closest("tr")).data();
@@ -301,6 +339,27 @@
          return false;
      });
 
+    $(document).on('click', "#select-all", function(event) {
+        if (!$("#select-all").prop("selected")) {
+            $("#select-all").prop("selected", true);
+            $("#select-all").removeClass("glyphicon-unchecked");
+            $("#select-all").addClass("glyphicon-check");
+            $("input[name='approve']").prop("checked", true);
+        } else {
+            $("#select-all").prop("selected", false);
+            $("input[name='approve']").prop("checked", false);
+            $("#select-all").removeClass("glyphicon-check");
+            $("#select-all").addClass("glyphicon-unchecked");
+        }
+        return false;
+    });
+
+    $(document).on('click', "#deselect-all", function(event) {
+        $("input[name='review']").prop("checked", false);
+        return false;
+    });
+
+/*
      $(document).on('click', "#select-all", function(event) {
          $("input[name='approve']").prop("checked", true);
          return false;
@@ -310,7 +369,7 @@
          $("input[name='approve']").prop("checked", false);
          return false;
      });
-
+*/
      $(document).on('click', "#mark-as-approved", function(event) {
          var sdbmTable = manageEntries.dataTable;
          var ids = [];

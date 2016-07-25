@@ -17,6 +17,7 @@ class EntryManuscript < ActiveRecord::Base
   include UserFields
   include HasPaperTrail
   include CreatesActivity
+  extend CSVExportable
 
   def create_activity(action_name, current_user, transaction_id)
     activity = super
@@ -35,6 +36,8 @@ class EntryManuscript < ActiveRecord::Base
 
   searchable do
     integer :id
+    integer :manuscript_id
+    integer :entry_id
     join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
     join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
     string :created_by
@@ -45,7 +48,30 @@ class EntryManuscript < ActiveRecord::Base
     text :updated_by
     date :created_at
     date :updated_at
+    string :relation_type
     boolean :reviewed
+  end
+
+  def self.filters
+    ["id", "created_by", "updated_by"]
+  end
+
+  def self.fields
+    []
+  end
+
+  def search_result_format
+    {
+      id: id,
+      entry_id: entry_id,
+      manuscript_id: manuscript_id,
+      relation_type: relation_type,
+      reviewed: reviewed,
+      created_by: created_by.present? ? created_by.username : "(none)",
+      created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
+      updated_by: updated_by.present? ? updated_by.username : "(none)",
+      updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
+    }
   end
 
 end

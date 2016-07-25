@@ -49,6 +49,7 @@ class Source < ActiveRecord::Base
   include IndexAfterUpdate
   include HasPaperTrail
   include CreatesActivity
+  extend CSVExportable
 
   default_scope { where(deleted: false) }
 
@@ -57,11 +58,14 @@ class Source < ActiveRecord::Base
 
   belongs_to :source_type
 
+  has_many :source_comments, dependent: :destroy
+  has_many :comments, through: :source_comments
+
   has_many :entries
   has_many :source_agents, inverse_of: :source
 
-  validates_inclusion_of :whether_mss, in: HAS_MANUSCRIPT_TYPES.map(&:first), message: 'whether_mss is invalid'
-  validates_inclusion_of :medium, in: MEDIUM_TYPES.map(&:first), message: 'medium is invalid', allow_nil: true
+ # validates_inclusion_of :whether_mss, in: HAS_MANUSCRIPT_TYPES.map(&:first), message: 'whether_mss is invalid', allow_blank: true
+  validates_inclusion_of :medium, in: MEDIUM_TYPES.map(&:first), message: 'medium is invalid', allow_blank: true
   #validates_presence_of :date, if: :date_required
   validates_presence_of :source_type
   validate :source_type_not_changed
@@ -78,7 +82,7 @@ class Source < ActiveRecord::Base
     includes(:source_type, :source_agents => [:agent])
   }
 
-  searchable do
+  searchable :unless => :deleted do
     integer :id
     string :title
     text :title, :more_like_this => true
@@ -112,6 +116,7 @@ class Source < ActiveRecord::Base
     text :updated_by
     date :created_at
     date :updated_at
+    boolean :reviewed
   end
 
   def agent_name
@@ -139,39 +144,84 @@ class Source < ActiveRecord::Base
   #   [TYPE_UNPUBLISHED].member? source_type
   # end
 
+
+  def get_source_agents_with_role(role)
+    source_agents.select { |sa| sa.role == role }
+  end
+
+  # returns a SourceAgent object
+  def get_sellers_or_holders
+    get_source_agents_with_role(SourceAgent::ROLE_SELLER_OR_HOLDER)
+  end
+
+  # returns an Name object
+  def get_sellers_or_holders_as_names
+    source_agents = get_sellers_or_holders
+    source_agents.map{ |a| a.agent ? a.agent.name : "" }.join(" | ")
+  end
+
+  # returns a SourceAgent object
+  def get_selling_agents
+    get_source_agents_with_role(SourceAgent::ROLE_SELLING_AGENT)
+  end
+
+  # returns an Name object
+  def get_selling_agents_as_names
+    source_agents = get_selling_agents
+    source_agents.map{ |a| a.agent ? a.agent.name : "" }.join(" | ")
+  end
+
+  # returns a SourceAgent object
+  def get_institutions
+    get_source_agents_with_role(SourceAgent::ROLE_INSTITUTION)
+  end
+
+  # returns an Name object
+  def get_institutions_as_names
+    source_agents = get_institutions
+    source_agents.map{ |a| a.agent ? a.agent.name : "" }.join(" | ")
+  end
+
   def get_source_agent_with_role(role)
+    puts "deprecated #{__method__}"
     source_agents.select { |sa| sa.role == role }.first
   end
 
   # returns a SourceAgent object
   def get_seller_or_holder
+    puts "deprecated #{__method__}"
     get_source_agent_with_role(SourceAgent::ROLE_SELLER_OR_HOLDER)
   end
 
   # returns an Name object
   def get_seller_or_holder_as_name
+    puts "deprecated #{__method__}"
     sa = get_seller_or_holder
     sa.agent if sa
   end
 
   # returns a SourceAgent object
   def get_selling_agent
+    puts "deprecated #{__method__}"
     get_source_agent_with_role(SourceAgent::ROLE_SELLING_AGENT)
   end
 
   # returns an Name object
   def get_selling_agent_as_name
+    puts "deprecated #{__method__}"
     sa = get_selling_agent
     sa.agent if sa
   end
 
   # returns a SourceAgent object
   def get_institution
+    puts "deprecated #{__method__}"
     get_source_agent_with_role(SourceAgent::ROLE_INSTITUTION)
   end
 
   # returns an Name object
   def get_institution_as_name
+    puts "deprecated #{__method__}"
     sa = get_institution
     sa.agent if sa
   end
@@ -185,6 +235,28 @@ class Source < ActiveRecord::Base
     display_value
   end
 
+  def to_i
+    id
+  end
+
+  def bookmark_details
+    results = { 
+      type: source_type.display_name,
+      date: SDBMSS::Util.format_fuzzy_date(date),
+      author: author,
+      institution: get_institutions_as_names,
+      selling_agent: get_selling_agents_as_names,
+      seller: get_sellers_or_holders_as_names,
+      used_in: entries_count,
+      method_of_access: medium,
+      date_accessed: date_accessed,
+      location_institution: location_institution,
+      location: location,
+      link: link
+    }
+    (results.select { |k, v| !v.blank? }).transform_keys{ |key| key.to_s.humanize }
+  end
+
   # Returns 3-part display string for Source
   def display_value
     date_str = ""
@@ -193,6 +265,14 @@ class Source < ActiveRecord::Base
     end
 
     agent_str = ""
+
+    source_agents.each do |source_agent|
+      if agent_str.length > 0
+        agent_str += " | "
+      end
+      agent_str += source_agent.agent.name if source_agent.agent && source_agent.agent.name
+    end
+=begin
     if source_type.name == SourceType::AUCTION_CATALOG
       selling_agent = get_selling_agent
       agent_str = selling_agent.agent.name if selling_agent && selling_agent.agent
@@ -208,7 +288,7 @@ class Source < ActiveRecord::Base
         agent_str = author if author
       end
     end
-
+=end
     title_str = title || "(No title)"
 
     [date_str, agent_str, title_str].select { |x| x.to_s.length > 0 }.join(" - ")
@@ -266,6 +346,41 @@ class Source < ActiveRecord::Base
 
     SDBMSS::IndexJob.perform_later(Entry.to_s, entry_ids)
   end
+
+  def self.fields
+    ["title", "date", "agent_name", "author", "created_by", "updated_by"]
+  end
+
+  def self.filters
+    ["id", "location", "agent_id", "source_type_id"]
+  end
+
+  def search_result_format
+    {
+      id: id,
+      date: SDBMSS::Util.format_fuzzy_date(date),
+      source_type: source_type.display_name,
+      entries_count: entries_count || 0,
+      title: title,
+      display_value: display_value,
+      author: author,
+      selling_agent: get_selling_agents_as_names,#(selling_agent = get_selling_agent_as_name).present? ? selling_agent.name : "",
+      institution: get_institutions_as_names, #(institution_agent = get_institution_as_name).present? ? institution_agent.name : "",
+      whether_mss: whether_mss,
+      medium: medium,
+      date_accessed: date_accessed,
+      location_institution: location_institution,
+      location: location,
+      link: link,
+      #comments: comments,
+      created_by: created_by.present? ? created_by.username : "(none)",
+      created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
+      updated_by: updated_by.present? ? updated_by.username : "(none)",
+      updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : "",
+      reviewed: reviewed
+    }
+  end
+
 
   private
 

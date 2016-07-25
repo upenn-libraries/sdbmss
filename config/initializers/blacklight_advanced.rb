@@ -1,4 +1,4 @@
-# Customize the Blacklight Advanced Search parser to handle multiple inputs for the same field (i.e. author[]="Cicero"&author[]="Sallust" )
+# Customize Blacklight and Blacklight Advanced Search parser to handle multiple inputs for the same field (i.e. author[]="Cicero"&author[]="Sallust" )
 
 module BlacklightAdvancedSearch
   module ParsingNestingParser
@@ -70,7 +70,7 @@ module BlacklightAdvancedSearch
           display_as = advanced_query.keyword_queries.collect do |field, query|
             field = search_field_def_for_key(field)[:label]
             if query.kind_of? Array
-              query = '[' + query.join(', ') + ']'
+              query = query.join(', ')
             end
             h( field + ": " + query )
           end.join(" ; ")
@@ -83,11 +83,10 @@ module BlacklightAdvancedSearch
         advanced_query.keyword_queries.each_pair do |field, query|
           label = search_field_def_for_key(field)[:label]
 
-          content << render_search_to_s_element(label, query)
+          content << render_search_to_s_element(label, " #{Array(query).join(', ')}  ")
         end
       end
-
-      return content
+      return content + " (#{advanced_query.keyword_op})"
     end
 
   end

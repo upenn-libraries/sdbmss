@@ -23,23 +23,23 @@
     <%= favicon_link_tag 'favicon.ico' %>
     <%= stylesheet_link_tag "application", media: "all" %>
     <%= javascript_include_tag "application" %>
+    <%= javascript_include_tag "extras" %>
     <% if Rails.env.development? || Rails.env.staging? %>
       <%= javascript_include_tag "development" %>
     <% end %>
     <!-- disable animations when running tests -->
     <% if Rails.env.test? %>
       <style type="text/css">
-        div, a, span, footer, header, ul, .modal, .modal-title {
+        div, a, span, footer, header, ul, .modal, .modal-title, .fade, .collapse, .modal-open {
             -webkit-transition: none !important;
             -moz-transition: none !important;
             -ms-transition: none !important;
             -o-transition: none !important;
             transition: none !important;
         }
-
-        .modal.in {
-          display: block !important;
-        }
+/*        div.modal.fade.ng-isolate-scope.in {
+          display: none !important;
+        }*/
 
         .modal-backdrop {
           display: none !important;
@@ -60,22 +60,30 @@
 
   </head>
   <body class="<%= render_body_class %>">
-  <%= render :partial => 'shared/header_navbar' %>
+  <div class="main-content bookmarks-collapse collapse in">
+    <%= render :partial => 'shared/header_navbar' %>
 
-  <%# this is from blacklight %>
-  <%= render partial: 'shared/ajax_modal' %>
+    <%# this is from blacklight %>
+    <%= render partial: 'shared/ajax_modal' %>
 
-  <div id="main-container" class="container">
-    <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
+    <div id="main-container" class="container">
+      <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
 
-    <div class="row">
-      <%= yield %>
+      <div class="row">
+        <%= yield %>
+      </div>
     </div>
+    <%# this is SDBM-specific modal code %>
+    <%= render :partial => 'shared/modal' %>
+    
+    <%= render :partial => 'shared/footer' %>
   </div>
-
-  <%# this is SDBM-specific modal code %>
-  <%= render :partial => 'shared/modal' %>
-  
-  <%= render :partial => 'shared/footer' %>
+  <% if request.path != "/bookmarks" && current_user %>
+    <div class="sidebar bg-primary bookmarks-collapse collapse"  ng-controller="ManageBookmarks">
+      <%= render partial: "bookmarks/navbar" %>
+        <%= render partial: "/shared/my_bookmarks" %>
+    </div>
+  <% end %>
+  <div class="alerts-absolute"></div>
   </body>
 </html>

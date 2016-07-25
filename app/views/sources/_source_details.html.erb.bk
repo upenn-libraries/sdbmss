@@ -1,0 +1,92 @@
+<dl class="document-metadata dl-horizontal dl-invert">
+
+        <dt>Type</dt>
+        <dd>
+            <% if source.source_type.present? %>
+                <%= source.source_type.display_name %>
+          <% end %>
+        </dd>
+
+        <% if source.date.present? %>
+            <dt>Date</dt>
+            <dd><%= format_fuzzy_date(source.date) %></dd>
+        <% end %>
+        
+            <dt>Title</dt>
+            <dd><%= source.title %></dd>
+
+        <% if (author = source.author).present? %>
+            <dt>Author</dt>
+            <dd><%= source.author %></dd>
+        <% end %>
+        
+        <% if (institution = source.get_institution).present? %>
+        <dt>Institution</dt>
+            <dd><a class='badge' href="<%= url_for institution.agent %>"><%= institution.agent.name %></a></dd>
+        <% end %>
+
+        <% if (selling_agent = source.get_selling_agent).present? %>
+        <dt>Selling Agent</dt>
+            <dd><a href="<%= url_for selling_agent.agent %>"><%= selling_agent.agent.name %></a></dd>
+        <% end %>
+
+        <% if (seller_or_holder = source.get_seller_or_holder).present? %>
+        <dt>Seller</dt>
+            <dd><a href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a></dd>
+        <% end %>
+
+        <dt>Contains Manuscripts</dt>
+            <dd><%= source.whether_mss||"Unknown" %></dd>
+
+        <dt># Entries</dt>
+            <dd>This source has <a class='badge' href="<%= search_advanced_path(source: source.public_id) %>"><%= source.entries.approved_only.count %> entries</a> in the database.</dd>
+<% if !defined?(abbreviate) || !abbreviate %>
+<% if source.medium.present? || source.date_accessed.present? || source.location_institution.present? || source.location.present? || source.link.present? %>
+        <% if source.medium.present? %>
+        <dt></dt>
+            <dd><%= source.medium_for_display %></dd>
+        <% end %>
+
+        <% if source.date_accessed.present? %>
+        <dt>Date Accessed</dt>
+            <dd><%= source.date_accessed %></dd>
+        <% end %>
+        
+        <% if source.location_institution.present? %>
+        <dt>Institution</dt>
+            <dd><%= source.location_institution %></dd>
+        <% end %>
+
+        <% if source.location.present? %>
+        <dt>City, Country</dt>
+            <dd><%= source.location %></dd>
+        <% end %>
+
+        <% if source.link.present? %>
+        <dt>Online Link/<br/>Call No.</dt>
+            <dd><a href="<%= source.link %>"><%= source.link %></a></dd>
+        <% end %>
+
+<% end %>
+
+        <dt>Created By</dt>
+            <dd><%= render partial: "shared/username_with_profile_link", locals: { user: source.created_by } %></dd>
+
+        <dt>Status</dt>
+            <dd><%= source.status||"Unknown" %></dd>
+
+</dl>
+
+<% if (comments = source.comments).present? %>
+<table class="table table-striped">
+    <thead>
+      <th class="col-sm-12" colspan="2"><b>Comments</b></th>
+    </thead>
+    <tbody>
+      <td>
+            <%= comments %>
+        </td>
+    </tbody>
+</table>
+<% end %>
+<% end %>

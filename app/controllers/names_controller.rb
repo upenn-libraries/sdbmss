@@ -11,43 +11,8 @@ class NamesController < SearchableAuthorityController
 
   before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy, :merge]
 
-  def search_fields
-    super
-    @fields += ["comment"]
-    @filters += ["viaf_id", "authors_count", "artists_count", "scribes_count", "provenance_count", "source_agents_count"]
-    @fields + @filters + @dates
-#    @fields = ["name", "created_by", "updated_by"]
-#    @filters = ["id", "viaf_id"]
-#    @dates = ["created_at", "updated_at"]
-#    @fields + @filters + @dates
-  end
-
   def model_class
     Name
-  end
-
-  def search_result_format(obj)
-    {
-      id: obj.id,
-      name: obj.name,
-      viaf_id: obj.viaf_id,
-      comment: obj.comment,
-      authors_count: obj.authors_count || 0,
-      artists_count: obj.artists_count || 0,
-      scribes_count: obj.scribes_count || 0,
-      source_agents_count: obj.source_agents_count || 0,
-      sale_agents_count: obj.sale_agents_count || 0,
-      provenance_count: obj.provenance_count || 0,
-      is_artist: obj.is_artist,
-      is_author: obj.is_author,
-      is_provenance_agent: obj.is_provenance_agent,
-      is_scribe: obj.is_scribe,
-      reviewed: obj.reviewed,
-      created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
-      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:long) : "",
-      updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
-      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:long) : ""
-    }
   end
 
   def search_query_base
@@ -76,7 +41,7 @@ class NamesController < SearchableAuthorityController
   def merge
     @target_id = params[:target_id]
     @target = nil
-    params[:name] = @model.name
+#    params[:name] = @model.name
     get_similar
     if @target_id.present?
       if @target_id.to_i == @model.id
@@ -86,7 +51,14 @@ class NamesController < SearchableAuthorityController
       end
     end
     if params[:confirm] == "yes"
-      @model.merge_into(@target)
+      ActiveRecord::Base.transaction do
+        @target.update_attributes(merge_params)
+        @target.save!
+        @model.merge_into(@target)
+        @transaction_id = PaperTrail.transaction_id
+        @model = @target
+        log_activity
+      end
       render "merge_success"
     end
   end
@@ -132,7 +104,11 @@ class NamesController < SearchableAuthorityController
     else
       p = params
     end
-    p.permit(:name, :comment, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe)
+    p.permit(:name, :other_info, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe)
+  end
+
+  def merge_params
+    params.permit(:name, :other_info, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe)
   end
 
   def deletable?(object)

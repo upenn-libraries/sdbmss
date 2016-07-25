@@ -24,6 +24,10 @@ module SDBMSS
           public_id = "SDBM_NAME_#{id}"
         when "Source"
           public_id = "SDBM_SOURCE_#{id}"
+        when "Place"
+          public_id = "SDBM_PLACE_#{id}"
+        when "Language"
+          public_id = "SDBM_LNG_#{id}"
         end
         public_id
       end

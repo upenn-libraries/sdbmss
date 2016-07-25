@@ -1,0 +1,95 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h2 class="h2">My Bookmarks</h2>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-6">
+    <form class="input-group" action="/bookmarks" method="get">
+        <%= text_field_tag :tag, params[:tag], class: "form-control", placeholder: "Filter by tag..." %>
+      <div class="input-group-btn">
+        <input type='submit' class="form-control btn btn-default">Filter</input>
+        <%= link_to "Clear Search", bookmarks_path, class: "btn btn-default" %>
+      </div>
+    </form>
+  </div>
+  <%= form_tag('bookmarks/delete_all', method: 'delete') do %>
+  <div class="col-sm-6 text-right">
+    <a title="Export to CSV" class="btn btn-default disabled"><span class='glyphicon glyphicon-floppy-save'></span></a>
+    <div class="btn-group">
+      <a id="selectAllBookmarks" class="btn btn-default">Select All</a>
+      <%= submit_tag "Delete Selected", class:"btn btn-danger" %>
+    </div>
+  </div>
+  <div class="col-sm-12">
+    <% @bookmarks_sorted.each do |name, bookmarks| %>
+    <h2 data-toggle="collapse" href="#bookmarks_<%= name %>"><%= name.pluralize %>
+      <% if @tag %>
+        <small>(<%= @tag %>)</small>
+      <% end %>
+    </h2>
+    <ul class="list-group collapse in manage_bookmarks list-group-no-border-side" id="bookmarks_<%= name %>">
+      <% if bookmarks.count <= 0 %>
+        <li class="list-group-item">No bookmarks to display.</li>
+      <% end %>
+      <% bookmarks.each do |bookmark| %>
+        <li class="list-group-item">
+          <div class="row">
+            <div class="col-sm-11">
+              <% if name != "Entry" %>
+              <dl class="document-show-heading dl-horizontal dl-invert">
+                  <dt></dt>
+                  <dd class="h4"><%= bookmark[:public_id] %></dd>
+              </dl>
+              <% end %>
+              <p class="list-group-item-text">
+                <% if name == "Entry" %>
+                  <% entry = Entry.find(bookmark[:document_id]) %>
+                  <%= render partial: "bookmarks/show_entry", locals: {entry: entry} %>
+                <% elsif name == "Name" %>
+                  <% nm = Name.find(bookmark[:document_id]) %>
+                  <%= render partial: "shared/name_main", locals: {name: nm} %>
+                <% elsif name == "Source" %>
+                  <% src = Source.find(bookmark[:document_id]) %>
+                  <%= render partial: "sources/source_details", locals: {source: src, abbreviate: true} %>
+                <% elsif name == "Manuscript" %>
+                  <% manuscript = Manuscript.find(bookmark[:document_id]) %>
+                  <%= render partial: "bookmarks/show_manuscript", locals: {manuscript: manuscript} %>
+                <% else %>
+                  <%= bookmark[:show] %></p>
+                <% end %>
+              <p class='list-group-item-text'>
+
+                <ul class="list-inline form-inline">
+                  <!--<li class="input-group">
+                    <input type='text' class='form-control manage-bookmarks-addtag' placeholder="add tag...">
+                    <a class="input-group-addon manage-bookmarks-addtag-confirm"><span class="glyphicon glyphicon-plus"></span></a>
+                  </li>-->
+                  <% bookmark[:tags].each do |tag| %>
+                    <li><span class="label label-bookmark-tag"><%= tag %></span></li>
+                  <% end %>
+                </ul>
+              </p>
+            </div>
+            
+            <div class="col-sm-1 text-right">
+<!--              <a href="<%= bookmark[:link] %>" class="btn btn-default" target="_blank"><span class="glyphicon glyphicon-new-window"></span></a>
+              <a class="btn btn-info"><span class="glyphicon glyphicon-tag"></span></a>
+              <a class="btn btn-default disabled">Select</a>-->
+              <%= check_box_tag 'id[]', bookmark[:id], false, class: 'bookmark-checkbox' %>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+    <% end %>
+  </div>
+  <% end %> <!-- end form -->
+</div>
+<script type='text/javascript'>
+var checked = false;
+$('#selectAllBookmarks').click( function () {
+  checked = !checked;
+  $('.bookmark-checkbox').prop('checked', checked);
+});
+</script>

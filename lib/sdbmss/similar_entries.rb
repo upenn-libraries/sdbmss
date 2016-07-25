@@ -5,6 +5,8 @@ require 'set'
 
 module SDBMSS
 
+  puts "SDBMSS_SIMILAR_ENTRIES -> Deprecated, in part due to mysql injection vunlerabilities"
+
   class StringSet
 
     attr_accessor :strings

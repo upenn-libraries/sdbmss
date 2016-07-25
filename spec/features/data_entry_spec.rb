@@ -113,6 +113,9 @@ describe "Data entry", :js => true do
       page.reset!
     end
 
+    require "lib/data_entry_helpers"
+    include DataEntryHelpers    
+
     it "should find source by date on Select Source page" do
       visit new_entry_path
       fill_in 'date', :with => '2013'
@@ -132,7 +135,7 @@ describe "Data entry", :js => true do
     it "should NOT find source by agent on Select Source page" do
       visit new_entry_path
       fill_in 'agent', :with => 'Nonexistent'
-      sleep 0.5
+      sleep 1.5
       expect(page).to have_content "No source found matching your criteria."
     end
 
@@ -173,7 +176,7 @@ describe "Data entry", :js => true do
       expect(page).to have_select('transaction_type', selected: 'A Sale', disabled: true)
 
       # should prepopulate Transaction fields
-      expect(find_by_id("sale_selling_agent").value).to eq("aaa")
+      expect(find_by_id("show_selling_agent_name_authority_0")).to have_content("aaa")
     end
 
     it "should load New Entry page with a collection catalog Source" do
@@ -204,8 +207,6 @@ describe "Data entry", :js => true do
 
       expect(page).to have_content 'Add an Entry'
 
-      expect(page).to have_field("institution")
-
       expect(page).to have_select('transaction_type', disabled: false)
     end
 
@@ -214,17 +215,20 @@ describe "Data entry", :js => true do
 
       visit new_source_path
 
-      select 'Auction/Sale Catalog', from: 'source_type'
+      select 'Auction/Dealer Catalog', from: 'source_type'
       fill_in 'source_date', with: '2014-02-34'
       fill_in 'title', with: 'Very Rare Books'
-      fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
-      select "Yes", from: 'whether_mss'
+
+      find_by_id('add_source_agent').click
+      add_name_authority('find_source_agent_name_authority_0', "Sotheby's")
+      #fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
+      #select "Yes", from: 'whether_mss'
       select "Library", from: 'medium'
       fill_in 'date_accessed', with: "1990-05-01"
       fill_in 'location_institution', with: "University of Pennsylvania"
       fill_in 'location', with: "Philadelphia, USA"
       fill_in 'link', with: "HM851 .L358 2010"
-      fill_in 'comments', with: 'This info is correct'
+      #fill_in 'comments', with: 'This info is correct'
 
       click_button('Save')
 
@@ -236,15 +240,15 @@ describe "Data entry", :js => true do
       expect(source.source_type).to eq(SourceType.auction_catalog)
       expect(source.date).to eq('20140234')
       expect(source.title).to eq('Very Rare Books')
-      expect(source.get_selling_agent.agent.name).to eq("Sotheby's")
-      expect(source.whether_mss).to eq("Yes")
+      expect(source.get_selling_agents.first.agent.name).to eq("Sotheby's")
+      #expect(source.whether_mss).to eq("Yes")
       expect(source.status).to eq(Source::TYPE_STATUS_TO_BE_ENTERED)
       expect(source.medium).to eq(Source::TYPE_MEDIUM_LIBRARY)
       expect(source.date_accessed).to eq("19900501")
       expect(source.location_institution).to eq("University of Pennsylvania")
       expect(source.location).to eq("Philadelphia, USA")
       expect(source.link).to eq("HM851 .L358 2010")
-      expect(source.comments).to eq('This info is correct')
+      #expect(source.comments).to eq('This info is correct')
     end
 
     it "should save a new Source (other published source)" do
@@ -256,7 +260,7 @@ describe "Data entry", :js => true do
       fill_in 'source_date', with: '2014-02-34'
       fill_in 'title', with: 'DeRicci Census'
       fill_in 'author', with: 'Seymour DeRicci'
-      select "Yes", from: 'whether_mss'
+      #select "Yes", from: 'whether_mss'
       select "Library", from: 'medium'
       fill_in 'date_accessed', with: "2011-10-09"
       fill_in 'location_institution', with: "University of Pennsylvania"
@@ -275,13 +279,13 @@ describe "Data entry", :js => true do
       expect(source.date).to eq('20140234')
       expect(source.title).to eq('DeRicci Census')
       expect(source.author).to eq('Seymour DeRicci')
-      expect(source.whether_mss).to eq("Yes")
+      #expect(source.whether_mss).to eq("Yes")
       expect(source.medium).to eq(Source::TYPE_MEDIUM_LIBRARY)
       expect(source.date_accessed).to eq("20111009")
       expect(source.location_institution).to eq("University of Pennsylvania")
       expect(source.location).to eq("Philadelphia, USA")
       expect(source.link).to eq("HM851 .L358 2010")
-      expect(source.comments).to eq('This info is correct')
+#      expect(source.comments).to eq('This info is correct')
     end
 
     it "should save a new Source with no date" do
@@ -311,12 +315,20 @@ describe "Data entry", :js => true do
       # first, fill out author and institution...
       select 'Collection Catalog', from: 'source_type'
       fill_in 'author', with: 'Jeff'
-      fill_autocomplete_select_or_create_entity 'institution', with: "Harvard"
 
+      #fill_autocomplete_select_or_create_entity 'institution', with: "Harvard"
+      
+      #find_by_id('remove_institution_name_authority_0').click
+      find_by_id('add_source_agent').click
+      add_name_authority('find_source_agent_name_authority_0', 'Harvard')
       # now change source type to Auction Catalog
-      select 'Auction/Sale Catalog', from: 'source_type'
+      select 'Auction/Dealer Catalog', from: 'source_type'
       fill_in 'title', with: 'my catalog'
-      fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
+      #fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
+      
+#      find_by_id('remove_selling_agent_name_authority_0').click
+      find_by_id('add_source_agent').click
+      add_name_authority('find_source_agent_name_authority_0', "Sotheby's")
       click_button('Save')
 
       # expect that page has filtered out the field values that are
@@ -344,17 +356,20 @@ describe "Data entry", :js => true do
 
       visit new_source_path
 
-      select 'Auction/Sale Catalog', from: 'source_type'
+      select 'Auction/Dealer Catalog', from: 'source_type'
       # similar but not exactly the same title
       fill_in 'title', with: 'A very Long Title for an Existing Source'
-      fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
+      #fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
+      #find_by_id('remove_selling_agent_name_authority_0').click
+      find_by_id('add_source_agent').click
+      add_name_authority('find_source_agent_name_authority_0', "Sotheby's")
       click_button('Save')
 
       expect(find(".modal-title", visible: true).text.include?("Warning: similar sources found!")).to be_truthy
 
       expect(find(".modal-body", visible: true).text.include?(source.public_id)).to be_truthy
     end
-
+=begin
     # create an entry, filling out all fields
     def create_entry
       visit new_entry_path :source_id => @source.id
@@ -417,12 +432,18 @@ describe "Data entry", :js => true do
       fill_in 'provenance_observed_name_0', with: 'Somebody, Joe'
       fill_autocomplete_select_or_create_entity 'provenance_agent_0', with: 'Somebody, Joseph'
       click_certainty_flag('provenance_certainty_flags_0')
+
+      find_by_id('add_provenance_date_0').click
+      fill_in 'provenance_0_recorded_date_0', with: '1945-06-15'
       fill_in 'provenance_start_date_0', with: '1945-06-15'
       fill_in 'provenance_end_date_0', with: '1965-11-23'
       check 'provenance_direct_transfer_0'
 
       find_by_id('add_provenance').click
       fill_autocomplete_select_or_create_entity 'provenance_agent_1', with: "Sotheby's"
+
+      find_by_id('add_provenance_date_1').click
+      fill_in 'provenance_1_recorded_date_0', with: '1965'
       fill_in 'provenance_start_date_1', with: '1965-11-23'
       fill_in 'provenance_comment_1', with: 'An historic sale'
       select 'For Sale', from: 'provenance_acquisition_method_1'
@@ -527,7 +548,7 @@ describe "Data entry", :js => true do
       comment = entry.comments.first
       expect(comment.comment).to eq('This info is correct')
     end
-
+=end
     it "should save an auction catalog Entry" do
       # fill out all the fields and make sure they save to the database
 
@@ -569,7 +590,7 @@ describe "Data entry", :js => true do
 
       visit activities_path
 
-      expect(page).to have_content "#{entry.created_by.username} created SDBM_#{entry.id}"
+      expect(page).to have_content "#{entry.created_by.username} added SDBM_#{entry.id}"
     end
 
     it "should update status field on Source when adding an Entry" do
@@ -613,7 +634,7 @@ describe "Data entry", :js => true do
       visit manuscript_path(manuscript)
 
       fill_in 'comment_comment', with: "this entry is nuts"
-      check 'comment_is_correction'
+      #check 'comment_is_correction'
       click_button('Submit')
 
       expect(page).to have_content "this entry is nuts"
@@ -621,7 +642,7 @@ describe "Data entry", :js => true do
       comment = Comment.last
       expect(comment.manuscripts.first.id).to eq(manuscript_id)
       expect(comment.comment).to eq("this entry is nuts")
-      expect(comment.is_correction).to eq(true)
+      #expect(comment.is_correction).to eq(true)
     end
 
     it "should validate when saving Entry"
@@ -649,7 +670,7 @@ describe "Data entry", :js => true do
 
       click_link "Click here to CREATE A NEW SOURCE"
 
-      select 'Auction/Sale Catalog', from: 'source_type'
+      select 'Auction/Dealer Catalog', from: 'source_type'
       fill_in 'source_date', with: '2015-02-28'
       fill_in 'title', with: 'Sample Catalog'
       click_button 'Save'
@@ -668,6 +689,27 @@ describe "Data entry", :js => true do
       manuscript = Manuscript.find(manuscript_id)
       expect(manuscript.entries.order(id: :desc).first.catalog_or_lot_number).to eq("9090")
     end
+
+    it "should pre-populate transaction_type on Entry page" do
+      count = Entry.count
+
+      # create an Unpublished source, which allows selection of
+      # transaction_type
+      source = Source.create!(
+        title: "test unpublished source",
+        source_type: SourceType.unpublished,
+      )
+      entry = Entry.create!(
+        transaction_type: Entry::TYPE_TRANSACTION_GIFT,
+        source: source,
+        created_by_id: @user.id,
+      )
+
+      visit edit_entry_path :id => entry.id
+
+      expect(page).to have_select('transaction_type', selected: 'A Gift')
+    end
+
 end
 
   context "when user is not logged in" do

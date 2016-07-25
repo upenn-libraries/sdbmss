@@ -3,6 +3,7 @@
 
 //= require jquery.qtip.min
 //= require angular.1.3.16
+//= require angular-sanitize.min
 //= require angular-cookies.1.3.16.min
 //= require angular-resource.1.3.16.min
 //= require angular-animate.min

@@ -18,4 +18,20 @@ class Activity < ActiveRecord::Base
 
   scope :created_between, lambda {|start_date, end_date| where("created_at >= ? AND created_at <= ?", start_date, end_date )}
 
+  def format_event
+    if event == 'destroy'
+      'deleted'
+    elsif event == 'update'
+      'edited'
+    elsif event == 'create'
+      'added'
+    elsif event == 'mark_as_reviewed'
+      'marked as reviewed'
+    elsif event == 'merge'
+      'merged'
+    else
+      event
+    end
+  end
+
 end

@@ -1,10 +1,40 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+  <div class="col-sm-3">
+      <div class="panel panel-default show-tools">
+          <div class="panel-heading">
+              Tools
+          </div>
+          <div class="panel-body">
+              <ul class="nav">
+                  <% if user_signed_in? %>
+                      <% if can?(:edit, @model) %>
+                        <li class="link"><%= link_to 'Edit', edit_model_path(@model) %></li>
+                      <% end %>
+                      <li class="link"><%= link_to 'Change History', polymorphic_path([:history, @model]) %></li>
+                      <li class="link"><%= link_to 'Go to Listing', models_path %></li>
+                  <% end %>
+              </ul>
+          </div>
+      </div>
+  </div>
+  <div class="col-sm-9">
+    <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Name:</strong>
-  <%= @model.name %>
-</p>
+    <dl class="document-show-heading dl-horizontal dl-invert">
+        <dt></dt>
+        <dd class='h2'><%= @model.public_id %></dd>
+    </dl>
 
-<%= link_to 'Edit', edit_model_path(@model) %> | 
-<%= link_to 'Change History', polymorphic_path([:history, @model]) %> | 
-<%= link_to 'Return to Listing', models_path %>
+    <dl class="document-metadata dl-horizontal dl-invert">
+      <dt>Name</dt>
+      <dd>
+          <%= @model.name %>
+      </dd>
+      <dt># Entries</dt>
+      <dd>
+          This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries.count, "entry") %></a>
+      </dd>
+    </dl>
+
+  </div>
+</div>

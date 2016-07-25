@@ -85,9 +85,9 @@ class Provenance < ActiveRecord::Base
     if (exact_date_match = /^(\d{1,4})$/.match(date_str)).present?
       year = exact_date_match[1]
       return [year.to_i, (year.to_i + 1)]
-    elsif (dates = SDBMSS::Util.parse_month_and_year_into_date_range(date_str)).present?
+    elsif (dates = SDBMSS::Util.parse_month_and_year_into_date_range(date_str)).present? && (dates[0].present? && dates[1].present?)
       return [dates[0], dates[1]]
-    elsif (dates = SDBMSS::Util.parse_approximate_date_str_into_year_range(date_str)).present?
+    elsif (dates = SDBMSS::Util.parse_approximate_date_str_into_year_range(date_str)).present? && (dates[0].present? && dates[1].present?)
       return [dates[0], dates[1]]
     else
       begin

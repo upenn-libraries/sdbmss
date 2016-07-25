@@ -21,6 +21,8 @@ class Name < ActiveRecord::Base
   include IndexAfterUpdate
   include HasPaperTrail
   include CreatesActivity
+  
+  extend CSVExportable
 
   default_scope { where(deleted: false) }
 
@@ -29,45 +31,53 @@ class Name < ActiveRecord::Base
   belongs_to :reviewed_by, :class_name => 'User'
 
   has_many :entry_artists, foreign_key: "artist_id"
+  has_many :artist_entries, -> {distinct},  through: :entry_artists, source: :entry
 
   has_many :entry_authors, foreign_key: "author_id"
+  has_many :author_entries, -> {distinct},  through: :entry_authors, source: :entry
 
   has_many :entry_scribes, foreign_key: "scribe_id"
+  has_many :scribe_entries, -> {distinct},  through: :entry_scribes, source: :entry
 
   has_many :sale_agents, foreign_key: "agent_id"
   has_many :sales, through: :sale_agents
+  has_many :sale_entries, -> {distinct}, through: :sales, source: :entry
 
   has_many :provenance, foreign_key: "provenance_agent_id"
+  has_many :provenance_entries, -> {distinct},  through: :provenance, source: :entry
 
   has_many :source_agents, foreign_key: "agent_id"
   has_many :sources, through: :source_agents
+  has_many :agent_sources, -> {distinct},  through: :source_agents, source: :source
+
+  has_many :name_comments, dependent: :destroy
+  has_many :comments, through: :name_comments
 
   validates_presence_of :name
 
   validate do |name_obj|
     if !(name_obj.is_artist || name_obj.is_author || name_obj.is_scribe || name_obj.is_provenance_agent)
-      errors[:base] << "Name objects must have at least one flag set"
+      errors[:base] << {message: "Name objects must have at least one flag set" }
     end
 
     if name_obj.name.present? && (!name_obj.persisted? || name_obj.name_changed?)
       if self.class.unscoped.exists?(name: name_obj.name, deleted: true)
-        errors[:name] << "is already used by a record that has been deleted"
+        errors[:name] << { message: "Name is already used by a record that has been deleted" }
       elsif (existing_name = self.class.find_by(name: name_obj.name)).present? && name_obj.id != existing_name.id
-        errors[:name] << "is already used by record ##{existing_name.id} for '#{existing_name.name}'"
+        errors[:name] << { message: "Name is already used by record ##{existing_name.id} for '#{existing_name.name}'", name: { id: existing_name.id, name: existing_name.name } }
       end
     end
 
     if name_obj.viaf_id.present? && (!name_obj.persisted? || name_obj.viaf_id_changed?)
       if self.class.unscoped.exists?(viaf_id: name_obj.viaf_id, deleted: true)
-        errors[:viaf_id] << "is already used by a record that has been deleted"
+        errors[:viaf_id] << { message: "Viaf ID is already used by a record that has been deleted" }
       elsif (existing_name = self.class.find_by(viaf_id: name_obj.viaf_id)).present? && name_obj.id != existing_name.id
-        errors[:viaf_id] << "is already used by record ##{existing_name.id} for '#{existing_name.name}'"
+        errors[:viaf_id] << { message: "Viaf ID is already used by record ##{existing_name.id} for '#{existing_name.name}'", name: {id: existing_name.id, name: existing_name.name } }
       else
         name_obj.viaf_id = name_obj.viaf_id.strip unless name_obj.viaf_id.nil?
       end
     end
   end 
-
 
   searchable :unless => :deleted do
     join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
@@ -78,8 +88,8 @@ class Name < ActiveRecord::Base
     join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :updated_by })
     text :created_by
     text :updated_by
-    text :comment
-    string :comment
+    text :other_info
+    string :other_info
     integer :id
     text :name, :more_like_this => true
     string :name
@@ -95,7 +105,43 @@ class Name < ActiveRecord::Base
     date :updated_at
     boolean :reviewed
   end
-  
+
+  def self.filters
+    super + ["viaf_id", "authors_count", "artists_count", "scribes_count", "provenance_count", "source_agents_count"]
+  end
+
+  def self.fields
+    super + ["comment"]
+  end
+
+  def self.dates
+    super + []
+  end
+
+  def search_result_format
+    {
+      id: id,
+      name: name,
+      viaf_id: viaf_id,
+      other_info: other_info,
+      authors_count: authors_count || 0,
+      artists_count: artists_count || 0,
+      scribes_count: scribes_count || 0,
+      source_agents_count: source_agents_count || 0,
+      sale_agents_count: sale_agents_count || 0,
+      provenance_count: provenance_count || 0,
+      is_artist: is_artist,
+      is_author: is_author,
+      is_provenance_agent: is_provenance_agent,
+      is_scribe: is_scribe,
+      reviewed: reviewed,
+      created_by: created_by.present? ? created_by.username : "(none)",
+      created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
+      updated_by: updated_by.present? ? updated_by.username : "(none)",
+      updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
+    }
+  end
+
   # constructor for a Provenance Agent. takes same args as #new
   def self.agent(*args)
     hash = args.last.is_a?(Hash) ? args.pop : {}
@@ -237,6 +283,28 @@ class Name < ActiveRecord::Base
 
   def to_s
     name
+  end
+
+  def to_i
+    id
+  end
+
+  def as_flat_hash
+    {id: id, name: name, viaf_id: viaf_id, created_at: created_at, created_by: created_by }
+  end
+
+  def bookmark_details
+    results = {
+      name: name,
+      viaf_id: viaf_id,
+      used_as_author: authors_count > 0 ? "#{authors_count} entries" : nil,
+      used_as_scribe: scribes_count > 0 ? "#{scribes_count} entries" : nil,
+      used_as_artist: artists_count > 0 ? "#{artists_count} entries" : nil,
+      used_as_source_agent: source_agents_count > 0 ? "#{source_agents_count} sources" : nil,
+      used_as_sale_agent: sale_agents_count > 0 ? "#{sale_agents_count} sources" : nil,
+      used_as_provenance: provenance_count > 0 ? "#{provenance_count} entries" : nil
+    }
+    (results.select { |k, v| !v.blank? }).transform_keys{ |key| key.to_s.humanize }
   end
 
   def entry_ids_to_index_on_update

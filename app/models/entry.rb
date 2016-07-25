@@ -18,9 +18,9 @@ class Entry < ActiveRecord::Base
   TYPE_TRANSACTION_NONE = 'no_transaction'
 
   TYPES_TRANSACTION = [
+    [TYPE_TRANSACTION_NONE, 'Not a transaction'],
     [TYPE_TRANSACTION_SALE, 'A Sale'],
     [TYPE_TRANSACTION_GIFT, 'A Gift'],
-    [TYPE_TRANSACTION_NONE, 'Not a transaction'],
   ]
 
   include UserFields
@@ -34,6 +34,7 @@ class Entry < ActiveRecord::Base
   belongs_to :institution, class_name: "Name"
 
   belongs_to :superceded_by, class_name: "Entry"
+  has_many :supercedes, class_name: "Entry", :foreign_key => :superceded_by_id
 
   has_many :entry_manuscripts, inverse_of: :entry, dependent: :destroy
   has_many :manuscripts, through: :entry_manuscripts
@@ -182,6 +183,7 @@ class Entry < ActiveRecord::Base
   end
 
   def get_sale_agent_name(role)
+    puts "deprecated #{__method__}"    
     t = get_sale
     if t
       sa = t.get_sale_agent_with_role(role)
@@ -191,16 +193,61 @@ class Entry < ActiveRecord::Base
     end
   end
 
+  def get_sale_agents_names(role)
+    t = get_sale
+    
+    if !t
+      return ""
+    end
+
+    if role == SaleAgent::ROLE_SELLING_AGENT
+      t.get_selling_agents_names
+    elsif role == SaleAgent::ROLE_SELLER_OR_HOLDER
+      t.get_sellers_or_holders_names
+    elsif role == SaleAgent::ROLE_BUYER
+      t.get_buyers_names
+    end
+  end
+
+  def get_sale_selling_agents_names
+    get_sale_agents_names(SaleAgent::ROLE_SELLING_AGENT)
+  end
+
+  def get_sale_sellers_or_holders_names
+    get_sale_agents_names(SaleAgent::ROLE_SELLER_OR_HOLDER)
+  end
+
+  def get_sale_buyers_names
+    get_sale_agents_names(SaleAgent::ROLE_BUYER)
+  end
+
   def get_sale_selling_agent_name
+    puts "deprecated #{__method__}"
     get_sale_agent_name(SaleAgent::ROLE_SELLING_AGENT)
   end
 
   def get_sale_seller_or_holder_name
+    puts "deprecated #{__method__}"
     get_sale_agent_name(SaleAgent::ROLE_SELLER_OR_HOLDER)
   end
 
   def get_sale_buyer_name
+    puts "deprecated #{__method__}"
     get_sale_agent_name(SaleAgent::ROLE_BUYER)
+  end
+
+  def sale
+    sales.first
+  end
+
+  def sale_agent(role)
+    t = sale
+    if t
+      sa = t.get_sale_agents_with_role(role)
+      if sa
+        sa.map(&:agent)
+      end
+    end
   end
 
   def get_sale_sold
@@ -250,6 +297,10 @@ class Entry < ActiveRecord::Base
     names
   end
 
+  def to_s
+    display_value
+  end
+
   def display_value
     entry_titles.order(:order).map(&:title).join("; ") || "(No title)"
   end
@@ -270,15 +321,36 @@ class Entry < ActiveRecord::Base
   # export. Obviously, decisions have to be made here about how to
   # represent the nested associations for display and there has to be
   # some information tweaking/loss.
+  def bookmark_details
+    results = { 
+      manuscript: manuscript ? manuscript.id : nil,
+      source_date: SDBMSS::Util.format_fuzzy_date(source.date),
+      source_title: source.title,
+      source_agent: source.source_agents.map(&:agent).join("; "),
+      titles: entry_titles.order(:order).map(&:title).join("; "),
+      authors: entry_authors.order(:order).map(&:display_value).join("; "),
+      dates: entry_dates.order(:order).map(&:display_value).join("; "),
+      artists: entry_artists.order(:order).map(&:display_value).join("; "),
+      scribes: entry_scribes.order(:order).map(&:display_value).join("; "),
+      languages: entry_languages.order(:order).map(&:language).map(&:name).join("; "),
+      materials: entry_materials.order(:order).map(&:material).join("; "),
+      places: entry_places.order(:order).map(&:display_value).join("; "),
+      uses: entry_uses.order(:order).map(&:use).join("; "),
+      other_info: other_info,
+      provenance: unique_provenance_agents.map { |unique_agent| unique_agent[:name] }.join("; "),
+    }
+    (results.select { |k, v| !v.blank? }).transform_keys{ |key| key.to_s.humanize }
+  end
+
   def as_flat_hash
     # for performance, we avoid using has_many->through associations
     # because they always hit the db and circumvent the preloading
     # done in with_associations scope.
 
     sale = get_sale
-    sale_selling_agent = (sale.get_selling_agent_as_name.name if sale && sale.get_selling_agent_as_name)
-    sale_seller_or_holder = (sale.get_seller_or_holder_as_name.name if sale && sale.get_seller_or_holder_as_name)
-    sale_buyer = (sale.get_buyer_as_name.name if sale && sale.get_buyer_as_name)
+    sale_selling_agent = (sale.get_selling_agents_names if sale && sale.get_selling_agents.count > 0)
+    sale_seller_or_holder = (sale.get_sellers_or_holders_names if sale && sale.get_sellers_or_holders.count > 0)
+    sale_buyer = (sale.get_buyers_names if sale && sale.get_buyers.count > 0)
     {
       id: id,
       manuscript: manuscript ? manuscript.id : nil,
@@ -345,7 +417,7 @@ class Entry < ActiveRecord::Base
   # auto_index should be set to false (via ENV) to prevent migration
   # script from indexing, but we want it to be ON for normal
   # operation.
-  searchable :auto_index => (ENV.fetch('SDBMSS_SUNSPOT_AUTOINDEX', 'true') == 'true'),
+  searchable  :unless => :deleted, :auto_index => (ENV.fetch('SDBMSS_SUNSPOT_AUTOINDEX', 'true') == 'true'),
              :include => @@includes do
 
     # Simple wrapper around DSL field definition methods like #text,
@@ -375,9 +447,9 @@ class Entry < ActiveRecord::Base
         source.display_value,
         catalog_or_lot_number,
         # sale
-        get_sale_selling_agent_name,
-        get_sale_seller_or_holder_name,
-        get_sale_buyer_name,
+        get_sale_selling_agents_names,
+        get_sale_sellers_or_holders_names,
+        get_sale_buyers_names,
         get_sale_price
       ] +
       # details
@@ -409,6 +481,7 @@ class Entry < ActiveRecord::Base
       ] +
       # provenance
       provenance_names +
+      supercedes.map(&:id) +
       # comments
       comments.select(&:public).map(&:comment)
 
@@ -457,11 +530,13 @@ class Entry < ActiveRecord::Base
     define_field(:string, :source_title, :stored => true) do
       source.title
     end
-    define_field(:string, :institution, :stored => true) do
-      source.get_institution_as_name.try(:name) || institution.try(:name)
+    define_field(:string, :institution, :stored => true, :multiple => true) do
+      source.get_institutions.map { |i| i.agent ? i.agent.name : "" }
+      #source.get_institution_as_name.try(:name) || institution.try(:name)
     end
     define_field(:string, :institution_search, :stored => true) do
-      source.get_institution_as_name.try(:name) || institution.try(:name)
+      source.get_institutions_as_names
+      #source.get_institution_as_name.try(:name) || institution.try(:name)
     end
 
     define_field(:string, :catalog_or_lot_number, :stored => true) do
@@ -473,25 +548,25 @@ class Entry < ActiveRecord::Base
 
     #### Sale info
 
-    define_field(:string, :sale_selling_agent, :stored => true) do
-      get_sale_selling_agent_name
+    define_field(:string, :sale_selling_agent, :stored => true, :multiple => true) do
+      get_sale ? get_sale.get_selling_agents.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
     end
     define_field(:text, :sale_selling_agent_search, :stored => true) do
-      get_sale_selling_agent_name
+      get_sale_selling_agents_names
     end
 
-    define_field(:string, :sale_seller, :stored => true) do
-      get_sale_seller_or_holder_name
+    define_field(:string, :sale_seller, :stored => true, :multiple => true) do
+      get_sale ? get_sale.get_sellers_or_holders.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
     end
     define_field(:text, :sale_seller_search, :stored => true) do
-      get_sale_seller_or_holder_name
+      get_sale_sellers_or_holders_names
     end
 
-    define_field(:string, :sale_buyer, :stored => true) do
-      get_sale_buyer_name
+    define_field(:string, :sale_buyer, :stored => true, :multiple => true) do
+      get_sale ? get_sale.get_buyers.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
     end
     define_field(:text, :sale_buyer_search, :stored => true) do
-      get_sale_buyer_name
+      get_sale_buyers_names
     end
 
     define_field(:string, :sale_sold, :stored => true) do
@@ -511,9 +586,9 @@ class Entry < ActiveRecord::Base
       entry_titles.map(&:title).join("; ")
     end
 
-    define_field(:text, :title_search, :stored => true) do
-      entry_titles.map(&:display_value)
-    end
+#    define_field(:text, :title_search, :stored => true) do
+#      entry_titles.map(&:display_value)
+#    end
 
     define_field(:string, :author, :stored => true, :multiple => true) do
       authors.map(&:name)
@@ -539,8 +614,8 @@ class Entry < ActiveRecord::Base
         retval
       }.map {
         |entry_date|
-        (entry_date.date_normalized_start || SDBMSS::Blacklight::DATE_RANGE_YEAR_MIN.to_s) + " " +
-          (entry_date.date_normalized_end || SDBMSS::Blacklight::DATE_RANGE_YEAR_MAX.to_s)
+        (entry_date.date_normalized_start.present? ? entry_date.date_normalized_start : SDBMSS::Blacklight::DATE_RANGE_YEAR_MIN.to_s) + " " +
+          (entry_date.date_normalized_end.present? ? entry_date.date_normalized_end : SDBMSS::Blacklight::DATE_RANGE_YEAR_MAX.to_s)
       }
     end
     define_field(:string, :manuscript_date_range, :stored => true, :multiple => true) do
@@ -614,6 +689,10 @@ class Entry < ActiveRecord::Base
     end
     define_field(:text, :use_search, :stored => true) do
       entry_uses.map(&:use)
+    end
+
+    define_field(:integer, :supercede, :stored => true, :multiple => true) do
+      supercedes.map(&:id)
     end
 
     define_field(:integer, :folios, :stored => true) { folios }
@@ -712,6 +791,17 @@ class Entry < ActiveRecord::Base
 
   def to_i
     id
+  end
+
+  # fix me: eventually, want to switch bookmark details to send as json
+  def to_bookmark
+    {
+      id: id,
+      public_id: public_id,
+      manuscript_id: (manuscript ? manuscript.id : nil),
+      source_id: source.id,
+      source: source.display_value     
+    }
   end
 
   private

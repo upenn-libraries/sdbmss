@@ -7,12 +7,14 @@
       <% version = PaperTrail::Version.where(transaction_id: activity.transaction_id) %>
       <% if version.count > 0 %>
         <%= render partial: 'activities/version', locals: {version: EntryVersionFormatter.new(version)} %>
+      <% elsif activity.event == 'destroy' %>
+        (Record was deleted)
       <% else %>
          No changes to display...
      <% end %>
     </div>
     <div class="col-sm-2 text-right">
-      <%= activity.created_at.to_formatted_s(:short) %>              
+      <%= activity.created_at.to_formatted_s(:long) %>              
     </div>
   </div>
 </li>

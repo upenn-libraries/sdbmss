@@ -1,0 +1,6 @@
+<% if current_user %>
+  <a onclick="addBookmark(<%= document.model_object.id %>, 'Entry');" class="bookmark-link" in_bookmarks="/entries/<%= document.model_object.id %>" style="margin-right: 12px;">
+      <span class="glyphicon glyphicon-bookmark"></span>
+    </a>
+<% else %>
+<% end %>

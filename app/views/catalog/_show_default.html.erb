@@ -5,8 +5,10 @@
 <script type="text/javascript">
 
  $(document).ready(function() {
-     $("#loading-message").show();
+     /* FIX ME: entry link suggestions no longer shown until the search algorithm actually is useful/works
 
+     $("#loading-message").show();
+     
      $.ajax({
          url: '/entries/' + <%= entry.id %> + '/similar.json?full=1',
          type: 'GET',
@@ -22,7 +24,7 @@
          complete: function() {
              $("#loading-message").hide();
          }
-     });
+     });*/
 
      $("#new_comment").submit(function(event) {
          event.preventDefault();

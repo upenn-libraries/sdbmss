@@ -23,8 +23,9 @@
 
         return [
             {
-                title: '',
+                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
                 orderable: false,
+                className: 'text-center unreviewed_only',
                 render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {
                         return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
@@ -52,8 +53,11 @@
                 sdbmssMinWidth: "100px",
                 //orderable: false,
                 title: 'Entry ID',
-                render: function (data, type, full, meta) { 
-                    if (data) {
+                render: function (data, type, full, meta) {
+                    if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")] && !full[manageRecords.dataTable.getColumnIndex("Source ID")]  && !full[manageRecords.dataTable.getColumnIndex("Name ID")] ) {
+                        return "<span class='text-danger'>(record deleted)</span>"
+                    }
+                    else if (data) {
                         return "<a target='_blank' href='/entries/" + data + "'>SDBM_" + data + "</a>";
                     }
                     return "";
@@ -65,8 +69,41 @@
                 //orderable: false,
                 title: 'Manuscript ID',
                 render: function (data, type, full, meta) { 
-                    if(data) {
+                    if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")] && !full[manageRecords.dataTable.getColumnIndex("Source ID")]  && !full[manageRecords.dataTable.getColumnIndex("Name ID")] ) {
+                        return "<span class='text-danger'>(record deleted)</span>"
+                    }
+                    else if(data) {
                         return "<a target='_blank' href='/manuscripts/" + data + "'>SDBM_MS_" + data + "</a>";
+                    }
+                    return "";
+                },
+                dbSortField: 'manuscript'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                //orderable: false,
+                title: 'Source ID',
+                render: function (data, type, full, meta) { 
+                    if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")] && !full[manageRecords.dataTable.getColumnIndex("Source ID")]  && !full[manageRecords.dataTable.getColumnIndex("Name ID")] ) {
+                        return "<span class='text-danger'>(record deleted)</span>"
+                    }
+                    else if(data) {
+                        return "<a target='_blank' href='/sources/" + data + "'>SDBM_SOURCE_" + data + "</a>";
+                    }
+                    return "";
+                },
+                dbSortField: 'manuscript'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                //orderable: false,
+                title: 'Name ID',
+                render: function (data, type, full, meta) { 
+                    if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")] && !full[manageRecords.dataTable.getColumnIndex("Source ID")]  && !full[manageRecords.dataTable.getColumnIndex("Name ID")] ) {
+                        return "<span class='text-danger'>(record deleted)</span>"
+                    }
+                    else if(data) {
+                        return "<a target='_blank' href='/names/" + data + "'>SDBM_NAME_" + data + "</a>";
                     }
                     return "";
                 },
@@ -101,7 +138,7 @@
                 sdbmssMinWidth: "130px",
                 sdbmssMaxWidth: "130px",
                 title: 'Created By',
-                dbSortField: 'created_by_id'
+                dbSortField: 'created_by'
             },
             {
                 sdbmssMinWidth: "130px",
@@ -113,15 +150,15 @@
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Updated By',
-                dbSortField: 'updated_by_id',
-                orderable: false
+                dbSortField: 'updated_by',
+                //orderable: false
             },
             {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Updated On',
                 dbSortField: 'updated_at',
-                orderable: false
+                //orderable: false
             }
         ];
      };
@@ -133,8 +170,10 @@
              result.id,
              result.entry_id,
              result.manuscript_id,
+             result.source_id,
+             result.name_id,
              result.comment,
-             result.is_correction,
+             //result.is_correction,
              result.is_accepted,
              result.reviewed.toString(),
              result.created_by || "",

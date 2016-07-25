@@ -1,0 +1,50 @@
+    <div class="field form-group row">
+        <%= label :name, "Name", class: "col-sm-3 control-label" %>
+        <div class="col-sm-9">
+            <%= text_field_tag :name, name.name, :class => 'form-control'  %>
+        </div>
+    </div>
+    <div class="field form-group row">
+        <%= label_tag :viaf_id, 'VIAF ID', class: "col-sm-3 control-label" %>
+        <div class="col-sm-9">
+            <%= text_field_tag :viaf_id, name.viaf_id, :class => 'form-control' %>
+        </div>
+        <% if name.viaf_id.present? %>
+        <div class="col-sm-3"></div>
+        <div class="col-sm-9 label-alignment pull-right">
+            <a target="_blank" href="http://viaf.org/viaf/<%= name.viaf_id %>/">View VIAF record</a>
+        </div>
+        <% end %>
+    </div>
+    <div class="field form-group row">
+        <%= label_tag :flags, "Flags", class: "col-sm-3 control-label" %>
+        <div class="col-sm-9">
+            Specify this name to be used as:<br/>
+            <label>
+                <%= check_box_tag :is_artist, 1, name.is_artist %> Artist
+            </label>
+            <br/>
+            <label>
+                <%= check_box_tag :is_author, 1, name.is_author %> Author
+            </label>
+            <br/>
+            <label>
+                <%= check_box_tag :is_scribe, 1, name.is_scribe %> Scribe
+            </label>
+            <br/>
+            <label>
+                <%= check_box_tag :is_provenance_agent, 1, name.is_provenance_agent %> Provenance Agent
+            </label>
+        </div>
+    </div>
+    <div class="field form-group row">
+        <%= label_tag :other_info, "Comment", class: "col-sm-3 control-label" %>
+        <div class="col-sm-9">
+            <%= text_field_tag :other_info, name.other_info, :class => 'form-control' %>
+        </div>
+    </div>
+    <div class="field form-group row">
+        <div class="col-sm-12">
+            <%= render partial: "name_count", locals: {name: name} %>
+        </div>
+    </div>

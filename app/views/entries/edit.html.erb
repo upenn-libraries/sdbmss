@@ -1,6 +1,5 @@
 <% content_for :head do %>
 <%= stylesheet_link_tag "extras", media: "all" %>
-<%= javascript_include_tag "extras" %>
 
 <style type="text/css">
 
@@ -74,7 +73,7 @@ label.col-sm-2-and-half {
 <input type="hidden" id="source_id" value="<%= @source_id %>" />
 <% end %>
 
-<form id="entry-form" name="entryForm" class="form-horizontal sdbmss-form" autocomplete="off" data-ng-controller="EntryCtrl">
+<form id="entry-form" name="entryForm" class="form-horizontal sdbmss-form" autocomplete="off" data-ng-controller="EntryCtrl" data-ng-cloak>
     <fieldset>
 
     <div class="row">
@@ -89,23 +88,18 @@ label.col-sm-2-and-half {
     </div>
 
     <div class="row">
-      <div class="col-sm-offset-2 col-sm-8">
+      <div class="col-sm-9">
 
-          <p ng-show="!edit">Please fill in as much information as
+          <p>
+              <span ng-show="edit">You can make edits to your entries in the
+              data fields below.</span><span ng-show="!edit">Please fill in as much information as
               possible from the record you are documenting. No fields
-              are mandatory. Click on a <b>data field label</b>
-              to open a pop-up window containing definitions and data
-              standards for that field. Click on the "+ x" to the left
-              of a data field to add or remove multiple values.
-              Depending on the type of <b>transaction</b>
-              you select, the available data fields will change.
-          </p>
-
-          <p ng-show="edit">You can make edits to your entries in the
-              data fields below. Click on a <b>data field</b>
+              are mandatory.</span></p><p> Click on a <b>data field</b>
               label to open a pop-up window containing definitions and
-              data standards for that field. Depending on the type of
-              <b>transaction</b> you select, the available data fields will
+              data standards for that field.</p><p> Click on the <strong class="text-primary">Add new +</strong> under each data
+              field label to add multiple values. Delete values by clicking on the
+              “X” in the upper right corner.  Depending on the type of
+              <b>transaction</b> you select, the available data fields may
               change.
           </p>
 
@@ -132,7 +126,8 @@ label.col-sm-2-and-half {
               <span ng-repeat="badDataItem in badData">{{ badDataItem }}</span>. Saving the record on this page may cause data loss.
           </div>
       </div>
-      <div class="col-sm-2 text-right">
+      <div class="col-sm-3">
+        <!--
           <div class="dropdown">
               <button class="btn btn-default" type="button" id="actionsMenu" data-toggle="dropdown" aria-expanded="true">
                   Actions
@@ -142,10 +137,25 @@ label.col-sm-2-and-half {
                   <li role="presentation" ng-show="entry.id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToEntryViewPage(entry.id)">Go to public page for SDBM_{{ entry.id }}</a></li>
                   <li role="presentation" ng-show="entry.id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToEntryHistoryPage(entry.id)">View history for SDBM_{{ entry.id }}</a></li>
                   <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToSourceEditPage(entry.source.id)">Edit source SDBM_SOURCE_{{ entry.source.id }}</a></li>
+                  <li role="presentation"><a href="/linkingtool/entry/{{ entry.id }}" role="menuItem" tabindex="-1">Linking Tool for SDBM_{{ entry.id }}</a></li>
                   <li role="presentation" ng-show="entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToManuscriptEditPage(entry.manuscript_id)">Manage entries for SDBM_MS_{{ entry.manuscript_id }}</a></li>
                   <li role="presentation" ng-show="entry.id && !entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToFindOrCreateManuscriptForEntryPage(entry.id)">Create a manuscript record or link for this entry</a></li>
               </ul>
+          </div>-->
+        <div class="panel panel-default show-tools">
+          <div class="panel-heading">
+              Tools
           </div>
+          <div class="panel-body">
+              <ul class="nav">
+                  <li role="presentation" ng-show="entry.id"><a role="menuitem" tabindex="-1" href="/entries/{{ entry.id }}" target="_blank">Show this entry</a></li>
+                  <li role="presentation" ng-show="entry.id"><a role="menuitem" tabindex="-1" href="/entries/{{ entry.id }}/history" target="_blank">View history</a></li>
+                  <li role="presentation"><a role="menuitem" tabindex="-1" href="/sources/{{entry.source.id}}/edit" target="_blank">Edit source SDBM_SOURCE_{{ entry.source.id }}</a></li>
+                  <li role="presentation" ng-show="entry.id"><a href="/linkingtool/entry/{{ entry.id }}" target="_blank">Linking Tool for SDBM_{{ entry.id }}</a></li>
+              </ul>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -161,13 +171,17 @@ label.col-sm-2-and-half {
       <div class="source-container">
           <div class="form-group row">
               <label class="col-sm-2 control-label">Source</label>
-              <div class="col-sm-8 label-alignment source-name">
+              <div class="col-sm-7 label-alignment source-name">
                   <a href="/sources/{{ entry.source.id }}">SDBM_SOURCE_{{ entry.source.id }}</a> - {{ entry.source.display_value }} ({{ entry.source.source_type.display_name }})
+              </div>
+              <div class="col-sm-3">
+                <a href="" class="btn btn-danger" ng-click="editSource();">Change Source</a>
+                <span class="list-group-item list-group-item-warning" ng-if="entry.source.source_type_id == 8">You can't change the source of a Provenance Observation</span>
               </div>
           </div>
       </div>
 
-      <div class="row form-group">
+      <div class="row form-group" ng-if="entry.source.source_type_id != 8">
         <label for="cat_lot_no" class="col-sm-2 control-label">
             <span ng-show="entry.source.source_type.name != 'online'" sdbm-tooltip="entry_cat_lot_no">Cat. or Lot #</span>
             <span ng-show="entry.source.source_type.name == 'online'" sdbm-tooltip="entry_listing_id">Listing ID</span>
@@ -178,16 +192,19 @@ label.col-sm-2-and-half {
         <div class="col-sm-5 label-alignment">
             <span id="cat_lot_no_warning" style="color: red;"></span>
         </div>
-        <div class="col-sm-3">
-          <a href="" class="btn btn-danger" ng-if="entry.source.source_type_id != 8" ng-click="editSource();">Change Source</a>
-          <span class="list-group-item list-group-item-warning" ng-if="entry.source.source_type_id == 8">You can't change the source of a Provenance Observation</span>
-        </div>
       </div>
 
       <div class="row form-group" ng-show="entry.source.source_type.entries_have_institution_field">
         <label for="cat_lot_no" class="col-sm-2 control-label"><span sdbm-tooltip="entry_institution">Institution/Collection</span></label>
         <div class="col-sm-5">
-            <input id="institution" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.institution" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+
+            <a id="find_institution_name_authority_0" ng-if='entry.institution.id == undefined' ng-init="entry.institution = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.institution, 'is_provenance_agent')">Find or Create Authority Name</a>
+            <div id='show_institution_name_authority_0' ng-if='entry.institution != undefined && entry.institution.id != undefined' class="well well-sm well-name-authority">
+              <a id='remove_institution_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry, 'institution')"></a>
+              {{ entry.institution.name }}
+            </div>
+
+            <!--<input id="institution" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.institution" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
         </div>
       </div>
 
@@ -206,20 +223,108 @@ label.col-sm-2-and-half {
               </div>
           </div>
 
+          <div ng-show="entry.transaction_type == 'sale'">
+
+              <div class="form-group row">
+                  <label for="sold" class="col-sm-2 control-label"><span sdbm-tooltip="entry_sold">Sold</span></label>
+                  <div class="col-sm-2">
+                      <select class="form-control" id="sale_sold" ng-model="entry.sale.sold" ng-options="option[0] as option[1] for option in optionsSold">
+                          <option value=""></option>
+                      </select>
+                  </div>
+                  <div ng-show="entry.sale.sold == 'Yes'">
+                      <label for="sold" class="col-sm-4 control-label">Date Sold</span></label>
+                      <div class="col-sm-3">
+                          <input type="text" class="form-control" id="sale_date" ng-model="entry.sale.date">
+                      </div>
+                  </div>
+              </div>
+              
+              <div class="form-group row">
+                  <label for="price" class="col-sm-2 control-label"><span sdbm-tooltip="entry_price">Price</span></label>
+                  <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['sale_price'].$valid }">
+                      <input type="text" class="form-control" id="sale_price" name="sale_price" ng-pattern="/^[0-9,\.]*$/" ng-model="entry.sale.price">
+                  </div>
+                  <label for="currency" class="col-sm-1 control-label"><span sdbm-tooltip="entry_currency">Currency</span></label>
+                  <div class="col-sm-1">
+                      <select name="currency" id="sale_currency" class="form-control" ng-model="entry.sale.currency" ng-options="option[0] as option[1] for option in optionsCurrency">
+                          <option value=""></option>
+                      </select>
+                  </div>
+                  <label for="other-currency" class="col-sm-2 control-label"><span sdbm-tooltip="entry_other_currency">Other Currency</span></label>
+                  <div class="col-sm-3">
+                      <input type="text" class="form-control" id="other-currency" ng-model="entry.sale.other_currency">
+                  </div>
+              </div>
+
+          </div>
+
+
           <div ng-show="entry.transaction_type == 'sale' || entry.transaction_type == 'gift'">
           
               <div class="form-group row">
-                  <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_selling_agent">Selling Agent</span></label>
-                  <div class="col-sm-5">
-                      <div class="input-group">
-                          <input id="sale_selling_agent" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.selling_agent.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
-                          <div id="sale_selling_agent_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.selling_agent"><span class="glyphicon"></span></div>
+                  <label class="col-sm-3 side-title">
+                    <h3>Sale Agent(s)</h3>
+                    
+                    <!--<span sdbm-tooltip="entry_selling_agent">Selling Agent</span>-->
+                    <div class="add-link-container">
+                      <a a id="add_sale_agent" class="clickable" data-ng-click="addRecord(entry.sale.sale_agents)" title="Add">
+                        Add new <span class="glyphicon glyphicon-plus"></span>
+                      </a>
+                    </div>                  
+                  </label>
+                  <div ui-sortable="sortableOptions" ng-model="entry.sale.sale_agents" class='pull-right col-sm-9'>
+                    <div class="form-group input-block" data-ng-repeat="sale_agent in entry.sale.sale_agents | filter: activeRecords">
+                      <div class="remove-link-container">
+                        <a class="clickable" data-ng-click="removeRecord(entry.sale.sale_agents, sale_agent)" title="Remove">
+                          <span class="glyphicon glyphicon-remove"></span>
+                        </a>
+                      </div>
+                      <div class='row'>
+                        <label class="col-sm-3 control-label">
+                            <span sdbm-tooltip="entry_sale_agent">Authority Name</span>
+                        </label>
+                        <div class="col-sm-9">
+                           <div class="input-group">
+                              <a id='find_sale_agent_name_authority_{{ $index }}' ng-if='sale_agent.agent.id == undefined' ng-init="sale_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', sale_agent.agent, 'is_provenance_agent')">Find or Create Authority Name</a>
+                              <div id='show_selling_agent_name_authority_0' ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                <a id='remove_selling_agent_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(sale_agent, 'agent')"></a>
+                                <span id="sale_agent_{{ $index}}">{{ sale_agent.agent.name }}</span>
+                              </div>
+                              <div class="input-group-addon clickable">
+                                <a class="more-info glyphicon" href="/names/{{ sale_agent.agent.id }}" target="_blank" ng-class="sale_agent.agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                              </div>
+                              <div id="sale_selling_agent_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="sale_agent"><span class="glyphicon"></span></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class='row'>
+                          <label class="col-sm-3 control-label">
+                            <span sdbm-tooltip="entry_sale_agent_role">Role</span>
+                          </label>
+                          <div class="col-sm-9">
+                            <select id="sale_agent_role_{{ $index }}" name="sale_agent_role" class="form-control" ng-model="sale_agent.role" ng-options="option[0] as option[1] for option in optionsSaleAgentRole" required='required'>
+                              <option value=""></option>
+                            </select>
+                          </div>
+                        </div>
                       </div>
                   </div>
+                </div>
+                <!--
                   <label class="col-sm-1 control-label"><span sdbm-tooltip="entry_seller">Seller</span></label>
                   <div class="col-sm-4">
                       <div class="input-group">
-                          <input id="sale_seller" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.seller_or_holder.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                    
+                          <a id='find_seller_name_authority_0' ng-if='entry.sale.seller_or_holder.agent.id == undefined' ng-init="entry.sale.seller_or_holder.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.sale.seller_or_holder.agent, 'is_provenance_agent')">Find or Create Authority Name</a>
+                          <div ng-if='entry.sale.seller_or_holder.agent != undefined && entry.sale.seller_or_holder.agent.id != undefined' class="well well-sm well-name-authority">
+                            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry.sale.seller_or_holder, 'agent')"></a>
+                            {{ entry.sale.seller_or_holder.agent.name }}
+                          </div>
+
+                          <div class="input-group-addon clickable">
+                            <a class="more-info glyphicon" href="/names/{{ entry.sale.seller_or_holder.agent.id }}" target="_blank" ng-class="entry.sale.seller_or_holder.agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                          </div>
                           <div id="sale_seller_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.seller_or_holder"><span class="glyphicon"></span></div>
                       </div>
                   </div>
@@ -229,57 +334,30 @@ label.col-sm-2-and-half {
                   <label class="col-sm-2 control-label"><span sdbm-tooltip="entry_buyer">Buyer</span></label>
                   <div class="col-sm-5">
                       <div class="input-group">
-                          <input id="sale_buyer" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.sale.buyer.agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                    
+                          <a id='find_buyer_name_authority_0' ng-if='entry.sale.buyer.agent.id == undefined' ng-init="entry.sale.buyer.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.sale.buyer.agent, 'is_provenance_agent')">Find or Create Authority Name</a>
+                          <div ng-if='entry.sale.buyer.agent != undefined && entry.sale.buyer.agent.id != undefined' class="well well-sm well-name-authority">
+                            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry.sale.buyer, 'agent')"></a>
+                            <span id="buyer_0">{{ entry.sale.buyer.agent.name }}</span>
+                          </div>
+
+                          <div class="input-group-addon clickable">
+                            <a class="more-info glyphicon" href="/names/{{ entry.sale.buyer.agent.id }}" target="_blank" ng-class="entry.sale.buyer.agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                          </div>                          
                           <div id="sale_buyer_certainty_flags" class="input-group-addon clickable" sdbm-certainty-flags="entry.sale.buyer"><span class="glyphicon"></span></div>
                       </div>
                   </div>
-              </div>
-
-              <div ng-show="entry.transaction_type == 'sale'">
-
-                  <div class="form-group row">
-                      <label for="sold" class="col-sm-2 control-label"><span sdbm-tooltip="entry_sold">Sold</span></label>
-                      <div class="col-sm-2">
-                          <select class="form-control" id="sale_sold" ng-model="entry.sale.sold" ng-options="option[0] as option[1] for option in optionsSold">
-                              <option value=""></option>
-                          </select>
-                      </div>
-                      <div ng-show="entry.sale.sold == 'Yes'">
-                          <label for="sold" class="col-sm-4 control-label">Date Sold</span></label>
-                          <div class="col-sm-3">
-                              <input type="text" class="form-control" id="sale_date" ng-model="entry.sale.date">
-                          </div>
-                      </div>
-                  </div>
-                  
-                  <div class="form-group row">
-                      <label for="price" class="col-sm-2 control-label"><span sdbm-tooltip="entry_price">Price</span></label>
-                      <div class="col-sm-2" ng-class="{ 'has-error': !entryForm['sale_price'].$valid }">
-                          <input type="text" class="form-control" id="sale_price" name="sale_price" ng-pattern="/^[0-9,\.]*$/" ng-model="entry.sale.price">
-                      </div>
-                      <label for="currency" class="col-sm-1 control-label"><span sdbm-tooltip="entry_currency">Currency</span></label>
-                      <div class="col-sm-1">
-                          <select name="currency" id="sale_currency" class="form-control" ng-model="entry.sale.currency" ng-options="option[0] as option[1] for option in optionsCurrency">
-                              <option value=""></option>
-                          </select>
-                      </div>
-                      <label for="other-currency" class="col-sm-2 control-label"><span sdbm-tooltip="entry_other_currency">Other Currency</span></label>
-                      <div class="col-sm-3">
-                          <input type="text" class="form-control" id="other-currency" ng-model="entry.sale.other_currency">
-                      </div>
-                  </div>
-
-              </div>
+              </div>-->
 
           </div>
           
       </div>
     </div>
 
-    <div class="source-info" ng-if="selecting_source" data-ng-controller="SelectSourceCtrl">
+    <div class="source-info" id="selectSource" ng-if="selecting_source" data-ng-controller="SelectSourceCtrl" ng-init="source_type = selecting_source_type; source_id = old_source_id">
       <div class="panel panel-danger">
         <div class="panel-heading">
-          <span class="h4">Search for new Source:</span>
+          <span class="h4">Search for new Source: </span>
         </div>
         <div class="panel-body">
           <%= render partial: "source_selection_form", :locals => {utility: "edit"} %>
@@ -295,7 +373,7 @@ label.col-sm-2-and-half {
 
   <div class='form-group row'>
     <label class="col-sm-3 side-title">
-      <h3>Title(s)</h3>
+      <h3>Text Title(s)</h3>
       <div class="add-link-container">
         <a id="add_title" class="clickable" data-ng-click="addRecord(entry.entry_titles); addRecord(entry.entry_authors)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
@@ -315,17 +393,17 @@ label.col-sm-2-and-half {
           </label>
           <div class="col-sm-9">
               <div class="input-group">
-                  <input id="title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.title">
+                  <input maxlength="255" id="title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.title">
                   <div id="title_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
               </div>
           </div>
         </div>
         <div class='row'>
           <label class="col-sm-3 control-label">
-              <span sdbm-tooltip="entry_common_title">Common</span>
+              <span sdbm-tooltip="entry_common_title">Standard Title</span>
           </label>
           <div class="col-sm-9">
-            <input id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
+            <input input maxlength="255" id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
           </div>
         </div>
       </div>
@@ -355,16 +433,26 @@ label.col-sm-2-and-half {
               <span sdbm-tooltip="entry_author_as_recorded">As Recorded</span>
           </label>
           <div class="col-sm-9">
-              <input id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
+              <input input maxlength="255" id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
           </div>
         </div>
         <div class='row'>
           <label class="col-sm-3 control-label">
-              <span sdbm-tooltip="entry_author">Find in Name Authority</span>
+              <span sdbm-tooltip="entry_author">Authority Name</span>
           </label>
           <div class="col-sm-9">
              <div class="input-group">
-                <input id="author_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_author" }' sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                <!--
+                <input id="author_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_author" }' sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
+                <a id="find_author_name_authority_{{ $index }}" ng-if='entry_author.author.id == undefined' ng-init="entry_author.author = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_author.author, 'is_author', entry_author.observed_name)">Find or Create Authority Name</a>
+                <div ng-if='entry_author.author != undefined && entry_author.author.id != undefined' class="well well-sm well-name-authority">
+                  <a id="remove_author_name_authority_{{ $index }}" class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_author, 'author')"></a>
+                  {{ entry_author.author.name }}
+                </div>
+                <span class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_author" encourage-name-authority-name="author"></span>
+                <div class="input-group-addon clickable">
+                  <a class="more-info glyphicon" href="/names/{{ entry_author.author.id }}" target="_blank" ng-class="entry_author.author && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                </div>
                 <div id="author_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_author"><span class="glyphicon"></span></div>
               </div>
           </div>
@@ -450,19 +538,28 @@ label.col-sm-2-and-half {
         </div>
         <div class="row">
           <label class="col-sm-3 control-label">
-                <span sdbm-tooltip="entry_artist">As Recorded</span>
+                <span sdbm-tooltip="entry_artist_as_recorded">As Recorded</span>
           </label>
           <div class="col-sm-9">
-              <input id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
+              <input input maxlength="255" id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
           </div>
         </div>
         <div class="row">
           <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_artist_as_recorded">Find in Name Authority</span>
+            <span sdbm-tooltip="entry_artist">Authority Name</span>
           </label>
           <div class="col-sm-9">
             <div class="input-group">
-                <input id="artist_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_artist" }' sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                <!--<input id="artist_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_artist" }' sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
+                <a id='find_artist_name_authority_{{ $index }}' ng-if='entry_artist.artist.id == undefined' ng-init="entry_artist.artist = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_artist.artist, 'is_artist', entry_artist.observed_name)">Find or Create Authority Name</a>
+                <div ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' class="well well-sm well-name-authority">
+                  <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_artist, 'artist')"></a>
+                  {{ entry_artist.artist.name }}
+                </div>
+                <span class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_artist" encourage-name-authority-name="artist"></span>
+                <div class="input-group-addon clickable">
+                  <a class="more-info glyphicon" href="/names/{{ entry_artist.artist.id }}" target="_blank" ng-class="entry_artist.artist && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                </div>
                 <div id="artist_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></div>
             </div>
           </div>
@@ -504,16 +601,26 @@ label.col-sm-2-and-half {
             <span sdbm-tooltip="entry_scribe_as_recorded">As Recorded</span>
           </label>
           <div class="col-sm-9">
-              <input id="scribe_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_scribe.observed_name">
+              <input input maxlength="255" id="scribe_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_scribe.observed_name">
           </div>
         </div>
         <div class="row">
           <label class="col-sm-3 control-label">
-              <span sdbm-tooltip="entry_scribe">Find in Name Authority</span>
+              <span sdbm-tooltip="entry_scribe">Authority Name</span>
           </label>
           <div class="col-sm-9">
               <div class="input-group">
-                  <input id="scribe_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_scribe" }' sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                  <!--<input id="scribe_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_scribe" }' sdbm-autocomplete-model="entry_scribe.scribe" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
+                  <a id='find_scribe_name_authority_{{ $index }}' ng-if='entry_scribe.scribe.id == undefined' ng-init="entry_scribe.scribe = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_scribe.scribe, 'is_scribe', entry_scribe.observed_name)">Find or Create Authority Name</a>
+                  <div ng-if='entry_scribe.scribe != undefined && entry_scribe.scribe.id != undefined' class="well well-sm well-name-authority">
+                    <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_scribe, 'scribe')"></a>
+                    {{ entry_scribe.scribe.name }}
+                  </div>
+                  <span class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_scribe" encourage-name-authority-name="scribe"></span>
+
+                  <div class="input-group-addon clickable">
+                  <a class="more-info glyphicon" href="/names/{{ entry_scribe.scribe.id }}" target="_blank" ng-class="entry_scribe.scribe && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                  </div>
                   <div id="scribe_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
               </div>
           </div>
@@ -546,7 +653,16 @@ label.col-sm-2-and-half {
           </label>
           <div class="col-sm-9">
             <div class="input-group">
-                <input id="language_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
+                <!--<input id="language_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/languages/search.json" sdbm-autocomplete-model="entry_language.language" sdbm-autocomplete-modal-controller="CreateLanguageModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>-->
+                <a id="find_language_name_authority_{{ $index }}" ng-if='entry_language.language.id == undefined' ng-init="entry_language.language = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('languages', entry_language.language, 'language')">Find or Create Authority Name</a>
+                <div ng-if='entry_language.language != undefined && entry_language.language.id != undefined' class="well well-sm well-name-authority">
+                  <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_language, 'language')"></a>
+                  {{ entry_language.language.name }}
+                </div>
+
+                <div class="input-group-addon clickable">
+                  <a class="more-info glyphicon" href="/languages/{{ entry_language.language.id }}" target="_blank" ng-class="entry_language.language && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                </div>
                 <div id="language_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_language"><span class="glyphicon"></span></div>
             </div>
           </div>
@@ -579,7 +695,11 @@ label.col-sm-2-and-half {
           </label>
           <div class="col-sm-9">
             <div class="input-group">
-                <input id="material_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="optionsMaterial" sdbm-autocomplete-model="entry_material.material" sdbm-autocomplete-assign-value-attr="true" sdbm-autocomplete-min-length="0" />
+                <!--<input id="material_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="optionsMaterial" sdbm-autocomplete-model="entry_material.material" sdbm-autocomplete-assign-value-attr="true" sdbm-autocomplete-min-length="0" />-->
+                <select ng-model="entry_material.material" id="material_{{ $index }}" class="form-control">
+                  <option value="{{material.value}}" ng-repeat="material in optionsMaterial" ng-selected="entry_material.material == material.value">{{ material.label }}</option>
+                </select>
+                
                 <div id="material_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
             </div>
           </div>
@@ -611,16 +731,26 @@ label.col-sm-2-and-half {
             <span sdbm-tooltip="entry_place">As Recorded</span>
           </label>
           <div class="col-sm-9">
-            <input id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name">
+            <input input maxlength="255" id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name">
           </div>
         </div>
         <div class="row">
           <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_place">Find in Name Authority</span>
+            <span sdbm-tooltip="entry_place">Authority Name</span>
           </label>
           <div class="col-sm-9">
             <div class="input-group">
-                <input id="place_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>
+                <!--<input id="place_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/places/search.json" sdbm-autocomplete-model="entry_place.place" sdbm-autocomplete-modal-controller="CreatePlaceModalCtrl" sdbm-autocomplete-modal-template="createEntityWithName.html"/>-->
+                <a id="find_place_name_authority_{{ $index }}" ng-if='entry_place.place.id == undefined' ng-init="entry_place.place = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('places', entry_place.place, 'place', entry_place.observed_name)">Find or Create Authority Name</a>
+                <div ng-if='entry_place.place != undefined && entry_place.place.id != undefined' class="well well-sm well-name-authority">
+                  <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_place, 'place')"></a>
+                  {{ entry_place.place.name }}
+                </div>
+                <span class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_place" encourage-name-authority-name="place"></span>
+
+                <div class="input-group-addon clickable">
+                  <a class="more-info glyphicon" href="/places/{{ entry_place.place.id }}" target="_blank" ng-class="entry_place.place && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                </div>
                 <div id="place_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_place"><span class="glyphicon"></span></div>
             </div>
           </div>
@@ -650,7 +780,7 @@ label.col-sm-2-and-half {
             <span sdbm-tooltip="entry_use">Use</span>
           </label>
           <div class="col-sm-9">
-            <input id="use_{{ $index }}" type="text" class="form-control" data-ng-model="entry_use.use">
+            <input maxlength="255" id="use_{{ $index }}" type="text" class="form-control" data-ng-model="entry_use.use">
           </div>
         </div>
       </div>
@@ -780,7 +910,7 @@ label.col-sm-2-and-half {
 
   <div class='form-group row'>
     <label class='col-sm-2 side-title'>
-      <h3>Agent(s)</h3>
+      <h3 sdbm-tooltip="entry_provenance">Agent(s)</h3>
       <div class="add-link-container">
         <a id="add_provenance" class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
@@ -797,30 +927,44 @@ label.col-sm-2-and-half {
         </div>
         <div class="col-sm-6">
           <div class="panel panel-info panel-provenance">
-            <div class="panel-heading"><label for="" class="control-label">Provenance Agent Information</label></div>
+            <div class="panel-heading"><label for="" sdbm-tooltip="provenance" class="control-label">Provenance Agent Information</label></div>
             <div class="panel-body">
               <div class="row">
-                <label class="col-sm-5 control-label">
+                <label class="col-sm-4 control-label">
                   <span sdbm-tooltip="entry_provenance_agent_as_recorded">As Recorded</span>
                 </label>
-                <div class="col-sm-7">
-                  <input id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name">
+                <div class="col-sm-8">
+                  <input input maxlength="255" id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name">
                 </div>
               </div>
               <div class="row">
-                <label class="col-sm-5 control-label"><span sdbm-tooltip="entry_provenance_agent">Find in Name Authority</span></label>
-                <div class="col-sm-7">
+                <label class="col-sm-4 control-label"><span sdbm-tooltip="entry_provenance_agent">Authority Name</span></label>
+                <div class="col-sm-8">
                   <div class="input-group">
-                      <input id="provenance_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.provenance_agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>
+                      <!--<input id="provenance_agent_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="prov.provenance_agent" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>--> 
+                      <a id='find_provenance_name_authority_{{ $index }}' ng-if='prov.provenance_agent.id == undefined' ng-init="prov.provenance_agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', prov.provenance_agent, 'is_provenance_agent', prov.observed_name)">Find or Create Authority Name</a>
+                      <div ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' class="well well-sm well-name-authority">
+                        <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(prov, 'provenance_agent')"></a>
+                        {{ prov.provenance_agent.name }}
+                      </div>
+
+                      <div class="input-group-addon clickable">
+                        <a class="more-info glyphicon" href="/names/{{ prov.provenance_agent.id }}" target="_blank" ng-class="prov.provenance_agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
+                      </div>
                       <div id="provenance_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov"><span class="glyphicon"></span></div>
                   </div>
                 </div>
               </div>
+              <div class="row">
+                <div class="col-xs-12 text-center">
+                  <div class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="prov" encourage-name-authority-name="provenance_agent"></div>
+                </div>
+              </div>
                <div class="row">
-                <label class="col-sm-5 control-label">
-                    <span sdbm-tooltip="entry_provenance_acquisition_method">Acquisition Method</span>
+                <label class="col-sm-4 control-label">
+                    <span sdbm-tooltip="entry_provenance_acquisition_method">Acquis. Method</span>
                 </label>
-                <div class="col-sm-7">
+                <div class="col-sm-8">
                     <select class="form-control" id="provenance_acquisition_method_{{ $index }}" ng-model="prov.acquisition_method" ng-options="option[0] as option[1] for option in optionsAcquisitionMethod">
                         <option value=""></option>
                     </select>
@@ -840,37 +984,52 @@ label.col-sm-2-and-half {
         <div class="col-sm-6">
           <div class="panel panel-info panel-provenance">
             <div class="panel-heading">
-              <label for="" class="control-label">Date(s)</label>
-              <a href="" class="btn btn-xs btn-info pull-right" ng-click="addProvenanceDate(prov);"><span class="glyphicon glyphicon-plus"></span> Add date... </a>
+              <label for="" class="control-label" sdbm-tooltip="entry_provenance_dates">Date(s)</label>
             </div>
             <div class="panel-body">
               <div class="row" ng-repeat="dt in prov.dates">
-                <div class="col-sm-1 control-label">
-                  <a href="" class="btn btn-warning btn-xs glyphicon glyphicon-remove" ng-click="removeProvenanceDate(prov, dt);"></a>
-                </div>
                 <label for="" class="col-sm-3 control-label">
-                  <span>Observed As</span>
+                  <span>As Recorded</span>
                 </label>
-                <div class="col-sm-4">
-                  <input type="text" class="form-control" ng-model="dt.date" ng-change="updateProvenanceDateRange(prov, dt)">
+                <div class="col-sm-9 text-right">
+                  <div class="form-inline">
+                    <div class="form-group">
+                      <div class="input-group">
+                        <span class="input-group-btn">
+                          <span class="btn btn-warning" ng-click="removeProvenanceDate(prov, dt);">
+                            <span class="glyphicon glyphicon-remove"></span>
+                          </span>
+                        </span>
+                        <input type="text" class="form-control" ng-model="dt.date" ng-change="updateProvenanceDateRange(prov, dt)" size=10 id="provenance_{{ $parent.$index }}_recorded_date_{{ $index }}">
+                      </div>
+                        <select name="" id="" class="form-control" ng-model="dt.type" ng-change="updateProvenanceDateRange(prov, dt)" ng-options="opt for opt in getProvenanceDateOptions(prov, dt)" ng-init="dt.type = getProvenanceDateOptions(prov, dt)[0]">
+                        </select>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-sm-4">
-                  <select name="" id="" class="form-control" ng-model="dt.type" ng-change="updateProvenanceDateRange(prov, dt)" ng-options="opt for opt in getProvenanceDateOptions(prov, dt)" ng-init="dt.type = getProvenanceDateOptions(prov, dt)[0]">
-                  </select>
+              </div>
+              <div class="row">
+                <div class="col-sm-7">
+                  <span class="text-warning bg-warning">Click to add Provenance dates</span>
+                </div>
+                <div class="col-sm-5 text-right">
+                  <a href="" class="btn btn-xs btn-info" ng-click="addProvenanceDate(prov);" id="add_provenance_date_{{ $index }}">
+                    <span class="glyphicon glyphicon-plus"></span> Add date... 
+                  </a>
                 </div>
               </div>
             </div>
             <div class="panel-footer">
-              <div class="form-group row">
-                <label class="col-xs-3 control-label">
-                    <span sdbm-tooltip="entry_provenance_start_date_as_recorded">Date Range</span>
+              <div class="form-group row" ng-class="{disabled: prov.dates[0].date == undefined}">
+                <label class="col-xs-3 control-label" style="text-align: left; padding-top: 0px;">
+                    <span >Date Range for Search</span>
                 </label>
                 <div class="col-xs-4">
-                  <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/">
+                  <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-disabled="prov.dates[0].date == undefined">
                 </div>
                 <div class="col-xs-1 text-center"><strong class="h1">⇢</strong></div>
                 <div class="col-xs-4">
-                  <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date_normalized_end" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/">
+                  <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date_normalized_end" placeholder="YYYY-MM-DD" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-disabled="prov.dates[0].date == undefined">
                 </div>
               </div>
             </div>
@@ -955,19 +1114,21 @@ label.col-sm-2-and-half {
             </p>
         <% end %>
 
-        <p>Would you like to add another Entry for this Source?</p>
+        <p>What <strong class='text-success'>action</strong> would you like to take?</p>
 
         <p style="margin-left: 2em;">
 
-            <a ng-click="sdbmutil.redirectToEntryCreatePage(entry.source.id)" href="#">Yes</a><br/><br/>
+            <a ng-click="sdbmutil.redirectToEntryCreatePage(entry.source.id)" href="#">Add another entry from this source.</a><br/><br/>
 
-            <a href="/dashboard">Not right now. I will enter the rest later</a><br/><br/>
+            <a href="/dashboard">Take a break from entering this source; return to my <strong class='text-info'>dashboard</strong></a><br/><br/>
 
-            <a ng-click="markSourceAsEntered()" href="#">No, there are no more entries to enter from this source</a><br/><br/>
+            <a ng-click="markSourceAsEntered()" href="#">The source is <strong>completely entered</strong>; return to my <strong class='text-info'>dashboard</strong></a><br/><br/>
 
-            <span ng-show="!entry.manuscript_id"><a ng-click="sdbmutil.redirectToFindOrCreateManuscriptForEntryPage(entry.id)" href="#">No, but let me link to another entry</a><br/><br/></span>
+            <a href="/?commit=Search&op=AND&search_field=advanced&source=SDBM_SOURCE_{{ entry.source.id }}&utf8=%E2%9C%93">Go to other entries for this Source</a><br><br>
 
-            <span ng-show="entry.manuscript_id"><a ng-click="sdbmutil.redirectToManuscriptEditPage(entry.manuscript_id)" href="#">No, but let me manage the entries for SDBM_MS_{{ entry.manuscript_id }}</a><br/><br/></span>
+            <span ng-show="!entry.manuscript_id"><a ng-click="sdbmutil.redirectToFindOrCreateManuscriptForEntryPage(entry.id)" href="#">Go to the <strong class='text-primary'>Linking Tool</strong> for this entry.</a><br/><br/></span>
+
+<!--            <span ng-show="entry.manuscript_id"><a ng-click="sdbmutil.redirectToManuscriptEditPage(entry.manuscript_id)" href="#">No, but let me manage the entries for SDBM_MS_{{ entry.manuscript_id }}</a><br/><br/></span>-->
 
             <a ng-click="sdbmutil.redirectToEntryEditPage(entry.id)" href="#">Return to editing this entry</a><br/><br/>
 
@@ -978,3 +1139,5 @@ label.col-sm-2-and-half {
 
 <%= render "shared/create_entity_with_name" %>
 <%= render "shared/create_name" %>
+<%= render "shared/select_name_authority" %>
+<%= render "shared/select_model_authority" %>

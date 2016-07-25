@@ -1,6 +1,5 @@
 <% content_for :head do %>
 <%= stylesheet_link_tag "extras", media: "all" %>
-<%= javascript_include_tag "extras" %>
 <%= render partial: "index_js" %>
 <style type="text/css">
  input[type="checkbox"] { margin: 0; }
@@ -8,28 +7,48 @@
 <% end %>
 
 <div class="container">
-<div class="row">
-    <div class="col-sm-10">
-        <% if @page_title %>
-            <h1><%= @page_title %></h1>
-        <% else %>
-        <% if !can? :manage, model_class %>
-            <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
-            <h1>Manage Your <%= resource_name.pluralize.capitalize %></h1>
-        <% else %>
-            <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
-            <h1>Manage all <%= resource_name.singularize %> records</h1>
-        <% end %>
-        <% end %>
-    </div>
-    <div class="col-sm-2 text-right">
-        <a class="btn btn-primary add-new-record" href="<%= new_model_path %>"><span class="glyphicon glyphicon-plus"></span> <span class="name">Add New Record</span></a>
-    </div>
-</div>
+    <div class="row">
+        <div class="col-sm-5">
+            <% if @page_title %>
+                <h1>
+                    <%= @page_title %>
+                    <small class='pull-right'>
+                        <a class="btn btn-primary add-new-record" href="<%= new_model_path %>"><span class="glyphicon glyphicon-plus"></span> <span class="name">Add New Record</span></a>
+                    </small>
+                </h1>
+            <% else %>
+            <% if !can? :manage, model_class %>
+                <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
+                <h1>
+                    Manage Your <%= resource_name.pluralize.capitalize %>
+                    <small class='pull-right'>
+                        <a class="btn btn-primary add-new-record" href="<%= new_model_path %>"><span class="glyphicon glyphicon-plus"></span> <span class="name">Add New Record</span></a>
+                    </small>
+                </h1>
+            <% else %>
+                <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
+                <h1>
+                    Manage <%= resource_name.capitalize %>
+                    <small class='pull-right'>
+                        <a class="btn btn-primary add-new-record" href="<%= new_model_path %>"><span class="glyphicon glyphicon-plus"></span> <span class="name">Add New Record</span></a>
+                    </small>
+                </h1>
+            <% end %>
+            <% end %>
+            <a href="#manage_records_info" data-toggle='collapse' ><span class="glyphicon glyphicon-info-sign"></span> Click Here For More Info</a>
 
-<%= render partial: "instructions" %>
-
-<%= render partial: "search_form" %>
+            <div id="manage_records_info" class="collapse panel-collapse panel-body" style="padding: 15px 0px 15px 0px;">
+                <%= render partial: "instructions" %>
+                <li class="list-group-item list-group-item-warning">Unapproved records shown in yellow.</li>
+                <% if model_class.column_names.include?('entries_count') || model_class.column_names.include?('authors_count') %>
+                    <li class="list-group-item list-group-item-danger">Counters may include deleted records.</li>
+                <% end %>
+            </div>
+        </div>
+        <div class="col-sm-7">
+            <%= render partial: "search_form" %>
+        </div>
+    </div>
 </div>
 <!--
 <div class="widescreen">
@@ -64,12 +83,15 @@
 // this sets the options for our manage table search bars (i.e. if searching on ID, have different options than a fulltext name search)
     function setOptions (p) {
         var t = p.find("select[name=search_field]");
-        updateOptions = function (e) {
+        var updateOptions = function (e) {
             var type = t.find("option:selected").attr("type");
             p.find(".option").hide();
             p.find(".option").attr("selected", false);
             p.find("." + type + "_option").show();
             p.find("." + type + "_option").first().attr("selected", true);
+            // redundancy for FIREFOX, set value as well as 'selected'
+            var val = p.find("." + type + "_option").first().val();
+            p.find("select[name=search_option]").val(val);
         };
         p.find("select[name=search_option]").change( function () {
             if ($(this).val() == "blank" || $(this).val() == "not blank") {

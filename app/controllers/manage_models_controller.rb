@@ -46,6 +46,12 @@ class ManageModelsController < ApplicationController
     @model = model_class.new
   end
 
+  def show
+    if !@model.reviewed?
+      flash[:alert] = "This #{@model.model_name.to_s} has not yet been reviewed and may not conform to our data standards."
+    end
+  end
+
   def create
     @model = model_class.new(model_params)
     ActiveRecord::Base.transaction do

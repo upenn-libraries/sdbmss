@@ -8,9 +8,28 @@ $(document).ready(function() {
 
      // flag = show all records, or only those that the user created
      <% if can? :manage, model_class  %>
-     var showOnlyRecordsCreatedByUser = 0;
+     var showOnlyRecordsCreatedByUser = <%= params[:created_by_user] || 0 %>;
      <% else %>
      var showOnlyRecordsCreatedByUser = 1;
+     <% end %>
+
+     <% if can? :destroy, model_class %>
+     var canDestroy = true;
+     <% else %>
+     var canDestroy = false;
+     <% end %>
+
+     <% if can? :edit, model_class %>
+     var canEdit = true;
+     <% else %>
+     var canEdit = false;
+     var username = "<%= current_user.username %>"
+     <% end %>
+
+     <% if can? :merge, model_class %>
+     var canMerge = true;
+     <% else %>
+     var canMerge = false;
      <% end %>
 
      var jumpToSource = {
@@ -29,24 +48,12 @@ $(document).ready(function() {
 
          return [
              {
-                 title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
-                 orderable: false,
-                 class: "text-center",
-                 /*render: function (data, type, full, meta) {
-                     if(manageRecords.getUnreviewedOnly() === 1) {
-                         return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
-                     }
-                     return '';
-                 },*/
-                 render: function (data, type, full, meta) {
+                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
+                orderable: false,
+                className: 'text-center unreviewed_only',
+                render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {
-                        return  '' + 
-                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
-                                '<label for="checkbox_' + meta.row + '">' + 
-                                '<a class="btn btn-default btn-xs glyphicon glyphicon-unchecked unchecked"></a>' + 
-                                '<a class="btn btn-default btn-xs glyphicon glyphicon-check checked"></a>' + 
-                                '</label>' + '';
-//                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                          return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     }
                     return '';
                 },
@@ -56,11 +63,16 @@ $(document).ready(function() {
                  sdbmssMinWidth: "150px",
                  title: 'Options',
                  orderable: false,
-                 render: function (data, type, full, meta) { 
-                     var str = '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>' +
-                               ' <a class="btn btn-xs btn-primary" href="/entries/new/?source_id=' + data + '">Add an Entry</a>' +
-                               ' <a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>' +
-                               ' <a class="btn btn-xs btn-info" href="/sources/' + data + '/merge">Merge</a>';
+                 render: function (data, type, full, meta) {
+                     var created_by = full[manageRecords.dataTable.getColumnIndex("Created By")];
+
+                     var str = '<span class="btn-group options-btn-group">' 
+                             + '<a onclick="addBookmark(' + data + ', \'Source\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/sources/' + data + '">' 
+                                + '<span class="glyphicon glyphicon-bookmark"></span></a>'
+                           + (canEdit || username == created_by ? '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>' : '') +
+                           '<a class="btn btn-xs btn-primary" href="/entries/new/?source_id=' + data + '">Add an Entry</a>' +
+                           (canDestroy ? '<a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>' : '') +
+                           (canMerge ? '<a class="btn btn-xs btn-info" href="/sources/' + data + '/merge">Merge</a></span>' : '' );
                      // TODO: display delete link only if entries_count is 0
                      return str;
                  }
@@ -116,12 +128,12 @@ $(document).ready(function() {
                  orderable: false, // too difficult to sort by this
                  title: 'Institution'
              },
-             {
+/*             {
                  sdbmssMinWidth: "100px",
                  title: 'Has MSS',
                  dbSortField: 'whether_mss', // FIX ME: add to index, or no?
                  orderable: false
-             },
+             },*/
              {
                  sdbmssMinWidth: "150px",
                  title: 'Medium',
@@ -153,13 +165,6 @@ $(document).ready(function() {
                  orderable: false
              },
              {
-                 sdbmssMinWidth: "300px",
-                 sdbmssMaxWidth: "300px",            
-                 title: "Comments",
-                 dbSortField: 'comments',
-                 orderable: false
-             },
-             {
                  sdbmssMinWidth: "100px",
                  sdbmssMaxWidth: "100px",            
                  title: 'Created By',
@@ -182,6 +187,10 @@ $(document).ready(function() {
                 sdbmssMaxWidth: "90px",
                 title: 'Updated On',
                 dbSortField: 'updated_at'
+            },
+            {
+                title: "Reviewed",
+                dbSortField: 'reviewed'
             }
          ];
      };
@@ -198,17 +207,17 @@ $(document).ready(function() {
              result.author,
              result.selling_agent,
              result.institution,
-             result.whether_mss,
+             //result.whether_mss,
              result.medium,
              result.date_accessed,
              result.location_institution,
              result.location,
              result.link,
-             result.comments,
              result.created_by || "",
              result.created_at || "",
              result.updated_by || "",
-             result.updated_at || ""
+             result.updated_at || "",
+             result.reviewed
          ];
      };
 
@@ -273,8 +282,6 @@ $(document).ready(function() {
     SDBM.ManageRecords.prototype.setFormStateFromURL = function() {
         var manageRecords = this;
         var qs = new URI().query(true);
-
-        console.log('here', qs);
 
          $(".search-fieldset").each(function(idx, element) {
              var search_field = $(element).find("select[name='search_field']").first();

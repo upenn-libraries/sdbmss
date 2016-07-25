@@ -1,0 +1,367 @@
+<div class='panel <%= index == 0 ? "panel-danger" : "panel-success" %>' ng-controller="SourceCtrl" ng-init="sourceId=<%= source.id %>; mergeEdit = false;" ng-form name="form" data-ng-cloak>
+    <div class='panel-heading'>
+        <h4 class='h4'><%= link_to source.public_id, source_path(source) %> <%= index == 0 ? "(Will be deleted)" : "" %>
+            <small class="pull-right" style="margin-top: -10px;">
+            <% if index == 1 %>
+                    <span ng-hide="mergeEdit" class="btn btn-success" ng-click="beginMergeEdit()">Edit</span>
+                    <span ng-show="mergeEdit">
+                        <span class="btn btn-default" ng-click="confirmMergeEdit()" ng-disabled="form.$invalid || currentlySaving">Save</span>
+                        <span class="btn btn-warning" ng-click="cancelMergeEdit()">Cancel</span>
+                    </span>
+            <% end %>
+            </small>
+        </h4>
+    </div>
+    <div class="panel-body <%= index == 0 ? 'to-delete' : 'merge-into' %> no-edit">
+
+    <div id="source-form-<%= index %>" class="form-horizontal sdbmss-form <%= index == 0 ? 'input-warning text-danger' : '' %>">
+
+
+        <div class="form-group row">
+            <label for="" class="col-sm-4 control-label"># Entries</label>
+            <div class="col-sm-8">
+                <div class="merge-details">
+                    <a class='badge' href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries_count, "entry") %></a>
+                </div>
+            </div>
+        
+            <label for="source_type" class="col-sm-4 control-label"><span>Source Type</span></label>
+            <div class="col-sm-8">
+                <span class="merge-details">{{ source.source_type.display_name }}</span>
+            </div>
+        </div>
+        
+        <div class="source-fields-container" ng-show="showFields()">
+
+            <div class="form-group row" ng-show="source.source_type.name != 'online' && source.source_type.name != 'unpublished'">
+                <label for="source_date" class="col-sm-4 control-label"><span>Source Date</span></label>
+                <div class="col-sm-8">
+                    <input ng-readonly="!mergeEdit" type="text" class="form-control" placeholder="YYYY-MM-DD" name="source_date" id="source_date" ng-model="source.date" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" />
+                    <div ng-show="form.source_date.$invalid" style="color: PaleVioletRed;">Date must be YYYY-MM-DD, YYYY-MM or YYYY</div>
+                </div>
+            </div>
+
+            <div class="auction-source-container" ng-if="source.source_type.name == 'auction_catalog'">
+
+                <div class="form-group row">
+                    <label for="cat_title" class="col-sm-4 control-label"><span>Publication Title</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" ng-readonly="!mergeEdit" class="form-control" id="title" ng-model="source.title" name="title" />
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-4 control-label">
+                      <span><span sdbm-tooltip="source_selling_agent">Selling Agent(s)</span></span>  
+                      <div class="add-link-container">
+                        <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
+                          Add new <span class="glyphicon glyphicon-plus"></span>
+                        </a>
+                      </div>
+                    </label>
+                    <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-6'>
+                        <div class="input-block form-group" style="margin-left: 0px;" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
+                            <div class="remove-link-container">
+                              <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
+                                <span class="glyphicon glyphicon-remove"></span>
+                              </a>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">                            
+                                    <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find in Name Authority</a>
+                                    <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                        <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                        {{ source_agent.agent.name }}
+                                    </div>
+                                    <input type="hidden" name="source_agents_attributes[][agent_id]" value="{{source_agent.agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][id]" value="{{source_agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][role]" value="{{source_agent.role}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- I added this to support catalogs whose entire contents are the sale of a single person; but per 10/30 meeting, Lynn says we don't need this -->
+                <!--
+                <div class="form-group row">
+                    <label for="institution" class="col-sm-2 control-label">Seller</label>
+                    <div class="col-sm-6">
+                    </div>
+                </div>
+                -->
+
+            </div>
+
+            <div class="auction-source-container" ng-if="source.source_type.name == 'online'">
+                <div class="form-group row">
+                    <label for="cat_title" class="col-sm-4 control-label"><span>Website Name</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" ng-readonly="!mergeEdit" class="form-control" id="title" ng-model="source.title" name="title" />
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <label class="col-sm-4 control-label">
+                      <span><span sdbm-tooltip="source_selling_agent">Selling Agent(s)</span></span>  
+                      <div class="add-link-container">
+                        <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
+                          Add new <span class="glyphicon glyphicon-plus"></span>
+                        </a>
+                      </div>
+                    </label>
+                    <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-6'>
+                        <div class="input-block form-group" style="margin-left: 0px;" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
+                            <div class="remove-link-container">
+                              <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
+                                <span class="glyphicon glyphicon-remove"></span>
+                              </a>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">                            
+                                    <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find in Name Authority</a>
+                                    <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                        <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                        {{ source_agent.agent.name }}
+                                    </div>
+                                    <input type="hidden" name="source_agents_attributes[][agent_id]" value="{{source_agent.agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][id]" value="{{source_agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][role]" value="{{source_agent.role}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="auction-source-container" ng-if="source.source_type.name == 'collection_catalog'">
+
+
+                <div class="form-group row">
+                    <label class="col-sm-4 control-label">
+                      <span><span sdbm-tooltip="source_selling_agent">Institution(s)</span></span>  
+                      <div class="add-link-container">
+                        <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
+                          Add new <span class="glyphicon glyphicon-plus"></span>
+                        </a>
+                      </div>
+                    </label>
+                    <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-6'>
+                        <div class="input-block form-group" style="margin-left: 0px;" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
+                            <div class="remove-link-container">
+                              <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
+                                <span class="glyphicon glyphicon-remove"></span>
+                              </a>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">                            
+                                    <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find in Name Authority</a>
+                                    <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                        <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                        {{ source_agent.agent.name }}
+                                    </div>
+                                    <input type="hidden" name="source_agents_attributes[][agent_id]" value="{{source_agent.agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][id]" value="{{source_agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][role]" value="{{source_agent.role}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="cat_title" class="col-sm-4 control-label"><span>Publication Title</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" ng-readonly="!mergeEdit" class="form-control" id="title" ng-model="source.title" name="title">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="cat_author" class="col-sm-4 control-label"><span>Publication Author</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" ng-readonly="!mergeEdit" class="form-control" id="author" ng-model="source.author" name="author">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="auction-source-container" ng-if="source.source_type.name == 'observation'">
+
+                <div class="form-group row">
+                    <label for="cat_title" class="col-sm-4 control-label"><span>Source Name</label>
+                    <div class="col-sm-8">
+                        <input type="text" ng-readonly="!mergeEdit" class="form-control" id="title" ng-model="source.title" name="title">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="cat_author" class="col-sm-4 control-label"><span>Observer</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" ng-readonly="!mergeEdit" class="form-control" id="author" ng-model="source.author" name="author">
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="other-published-container" ng-if="source.source_type.name == 'other_published'">
+
+                <div class="form-group row">
+                    <label for="cat_title" class="col-sm-4 control-label"><span>Publication Title</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" ng-readonly="!mergeEdit" class="form-control" id="title" ng-model="source.title" name="title">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="cat_author" class="col-sm-4 control-label"><span>Publication Author</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" ng-readonly="!mergeEdit" class="form-control" id="author" ng-model="source.author" name="author">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="auction-source-container" ng-if="source.source_type.name == 'unpublished'">
+
+
+                <div class="form-group row">
+                    <label class="col-sm-4 control-label">
+                      <span><span sdbm-tooltip="source_selling_agent">Institution(s)</span></span>  
+                      <div class="add-link-container">
+                        <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
+                          Add new <span class="glyphicon glyphicon-plus"></span>
+                        </a>
+                      </div>
+                    </label>
+                    <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-6'>
+                        <div class="input-block form-group" style="margin-left: 0px;" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
+                            <div class="remove-link-container">
+                              <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
+                                <span class="glyphicon glyphicon-remove"></span>
+                              </a>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">                            
+                                    <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find in Name Authority</a>
+                                    <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                        <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                        {{ source_agent.agent.name }}
+                                    </div>
+                                    <input type="hidden" name="source_agents_attributes[][agent_id]" value="{{source_agent.agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][id]" value="{{source_agent.id}}">
+                                    <input type="hidden" name="source_agents_attributes[][role]" value="{{source_agent.role}}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="cat_title" class="col-sm-4 control-label"><span>Source Name</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" ng-readonly="!mergeEdit" class="form-control" id="title" ng-model="source.title" name="title">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="cat_author" class="col-sm-4 control-label"><span>Author/Creator</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" ng-readonly="!mergeEdit" class="form-control" id="author" ng-model="source.author" name="author">
+                    </div>
+                </div>
+
+            </div>
+
+    <!--        <div class="form-group row">
+                <label for="whether_mss" class="col-sm-4 control-label"><span>Has Manuscripts</span></label>
+                <div class="col-sm-8">
+                    <select class="form-control" name="whether_mss" id="whether_mss" ng-model="source.whether_mss">
+                        <%= options_for_select(Source::HAS_MANUSCRIPT_TYPES) %>
+                    </select>
+                </div>
+            </div>-->
+
+            <div class="form-group row" ng-show="source.id">
+                <label for="status" class="col-sm-4 control-label"><span>Status</span></label>
+                <div class="col-sm-8">
+                    <select ng-disabled="!mergeEdit" class="form-control" name="status" id="status" ng-model="source.status" >
+                        <%= options_for_select(Source::STATUS_TYPES) %>
+              </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <legend class='small-legend'>Where did you see this source?</legend>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="location" class="col-sm-4 control-label"><span>Location Type</span></label>
+                <div class="col-sm-8">
+                    <select ng-disabled="!mergeEdit" class="form-control" id="medium" name="medium" ng-model="source.medium">
+                        <option value>Select One</option>
+                        <option value="{{ option[0] }}" ng-repeat="option in optionsMedium">{{ option[1] }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="city" class="col-sm-4 control-label"><span>Date Accessed</span></label>
+                <div class="col-sm-8">
+                    <input type="text" ng-readonly="!mergeEdit" class="form-control" name="date_accessed" id="date_accessed" ng-model="source.date_accessed" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/"/>
+                </div>
+                <div class="col-sm-12" ng-show="form.date_accessed.$error.pattern">
+                    <span style="color: PaleVioletRed;">Date must be YYYY-MM-DD, YYYY-MM or YYYY</span>
+                </div>
+            </div>
+
+            <div class="form-group row" ng-show="source.medium != 'internet' && source.medium != 'personal_communication'">
+                <label for="city" class="col-sm-4 control-label">
+                    <span ng-show="source.medium != 'private_collection'">Institution</span>
+                    <span ng-show="source.medium == 'private_collection'">Collection</span>
+                </label>
+                <div class="col-sm-8">
+                    <input type="text" ng-readonly="!mergeEdit" class="form-control" name="location_institution" id="location_institution" ng-model="source.location_institution" />
+                </div>
+            </div>
+
+            <div class="form-group row" ng-show="source.medium != 'internet'">
+                <label for="city" class="col-sm-4 control-label"><span>Location (City, Country)</span></label>
+                <div class="col-sm-8">
+                    <input type="text" ng-readonly="!mergeEdit" class="form-control" name="location" id="location" ng-model="source.location" />
+                </div>
+            </div>
+                    
+            <div class="form-group row" ng-show="source.source_type.name != 'observation'">
+                <label for="location" class="col-sm-4 control-label"><span>Online Link / Call Num.</span></label>
+                <div class="col-sm-8">
+                    <input type="text" ng-readonly="!mergeEdit" class="form-control" name="link" id="link" ng-model="source.link" />
+                </div>
+            </div>
+            
+             <div class="row">
+                <div class="col-sm-12 text-center">
+                    <legend class='small-legend'>Other Info</legend>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label for="editorial_comments" class="col-sm-4 control-label">
+                    <span>Other Info</span>
+                </label>
+                <div class="col-sm-8">
+                    <textarea class="form-control" id="comments" name="comments" data-ng-model="source.other_info"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+</div>
+
+<%= render "shared/create_name" %>
+<%= render "shared/select_name_authority" %>

@@ -13,7 +13,7 @@
                                 <a href="<%= edit_account_path(@user) %>">Edit this account</a>
                             </li>
                         <% end %>
-                        <li><%= link_to 'Return to Listing', accounts_path %></li>
+                        <li><%= link_to 'Go to Listing', accounts_path %></li>
                     <% end %>
                 </ul>
             </div>
@@ -22,11 +22,25 @@
     <div class="col-sm-9">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class='h1'><%= @user.username %> <span class='glyphicon glyphicon-user pull-right <%= "text-success" if @online %>' title='User is <%= @online ? "online" : "offline" %>'></span></span><br>
+                <span class='h1'><%= @user.username %>
+                    <small>(<%= @user.role.humanize %>)</small>
+                    <span class='glyphicon glyphicon-user pull-right <%= "text-success" if @online %>' title='User is <%= @online ? "online" : "offline" %>'></span>
+                </span>
+                <br>
             </div>
             <div class="panel-body">
-                <span class="label label-success"><%= @user.role.humanize %></span> 
-                <span class="pull-right">Last Active: <strong><%= @display[:last_seen] %></strong></span>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a href="/private_messages/new?user_id=<%= @user.id %>" title="Send Message">
+                            Send Private Message
+                            <span class="glyphicon glyphicon-envelope"></span>
+                        </a>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <span class="pull-right">Last Active: <strong><%= @display[:last_seen] %></strong></span>
+                    </div>
+                </div>
+                </span> 
             </div>
         </div>
         <div class="row">
@@ -52,8 +66,16 @@
             <div class="col-sm-5">
                 <div class="well">
                     <span class="h4"><strong>Contributions:</strong> 
-                        <span class="label label-source"><%= @display[:sources_created] %> entries</span>
-                        <span class="label label-entry"><%= @display[:entries_created] %> sources</span>
+                        <span class="label label-source">
+                            <a href="<%= sources_path({created_by: @display[:username]}) %>">
+                                <%= SDBMSS::Util.to_many(@display[:sources_created], "source") %>
+                            </a>
+                        </span>
+                        <span class="label label-entry">
+                            <a href="<%= search_advanced_path(created_by: @display[:username]) %>">
+                                <%= SDBMSS::Util.to_many(@display[:entries_created], "entry") %>
+                            </a>
+                        </span>
                     </span>
                 </div>
             </div>

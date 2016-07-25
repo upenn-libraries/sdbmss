@@ -15,7 +15,9 @@ class SourceType < ActiveRecord::Base
   #   ex: DeRicci, censuses, journal articles
   # Unpublished
   #   ex: spreadsheet of Duke Univ. collection, Benjy's spreadsheet, and pretty much everything else.
-  #
+  
+  default_scope { order("id = 4 desc") }
+
   AUCTION_CATALOG = 'auction_catalog'
   COLLECTION_CATALOG = 'collection_catalog'
   ONLINE = 'online'

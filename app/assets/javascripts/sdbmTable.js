@@ -57,7 +57,7 @@ var SDBM = SDBM || {};
             prependColumns: null,
             height: 'full',  // FIX ME: is this better, or worse?
             heightBuffer: 360,
-            dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"wide"><"csv"><"columns">>>t'
+            dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t'
         };
 
         this.options = $.extend({}, defaults, options);
@@ -147,11 +147,11 @@ var SDBM = SDBM || {};
                 // FIX ME: should there ever be a 'max' width for a column, for instance if there is a really long table entry and many blanks in the same column...?
                 $('td', row).each(function (idx, e) {
                     var opts = sdbmTable.columns[idx];
-                    if(opts.sdbmssMinWidth) {
-                        //$(e).css("min-width", opts.sdbmssMinWidth);  DISABLED sdbmssMinWidth
+                    if(opts.sdbmssMinWidthImportant) {
+                        $(e).css("min-width", opts.sdbmssMinWidthImportant);  //DISABLED sdbmssMinWidth
                     }
-                    if(opts.sdbmssMaxWidth) {
-                        //$(e).css("max-width", opts.sdbmssMaxWidth);  DISABLED sdbmssMaxWidth
+                    if(opts.sdbmssMaxWidthImportant) {
+                        $(e).css("max-width", opts.sdbmssMaxWidthImportant);  //DISABLED sdbmssMaxWidth
                     }
                 });
             },
@@ -159,6 +159,7 @@ var SDBM = SDBM || {};
             scrollY: scrollY, //false,
             scrollCollapse: false,
             colReorder: false,
+            colResize: true,
             // extensions get activated via these codes in 'dom' option
             // J = colResize
             // R = colReorder
@@ -173,7 +174,7 @@ var SDBM = SDBM || {};
         });
     
         var the_table = this.dataTable;
-        $('.wide').replaceWith('<a id="widescreen" class="btn btn-default btn-table-tool" title="Widescreen View"><span class="glyphicon glyphicon-resize-full"></span></a>');
+        $('.wide').replaceWith('<a id="widescreen" class="btn btn-default" title="Widescreen View"><span class="glyphicon glyphicon-resize-full"></span></a>');
         $('#widescreen').click( function () {
             // fix me: when we start wide, header columns break (in a big way), otherwise they just break in a SMALL way
             $("#main-container").toggleClass('container-fluid').toggleClass('container');
@@ -182,8 +183,8 @@ var SDBM = SDBM || {};
             //$('.sdbm-table').toggleClass('full-width');
             //$('.search_results').toggleClass('full-width');
         });
-        $('.csv').replaceWith('<a id="export-csv" class="btn btn-default btn-table-tool" title="Export to CSV"><span class="glyphicon glyphicon-floppy-save"></span></a>');
-        $('.columns').replaceWith('<div class="btn-group btn-table-tool">' + 
+        $('.csv').replaceWith('<a id="export-csv" class="btn btn-default" title="Export to CSV"><span class="glyphicon glyphicon-floppy-save"></span></a>');
+        $('.columns').replaceWith('<div class="btn-group">' + 
             '<a class="btn btn-default dropdown-toggle" title="Show/Hide Columns" data-toggle="dropdown"><span class="glyphicon glyphicon-edit"></span></a>' +
             '<div id="column-control" class="dropdown-menu list-group">' +
             '</div>' +
@@ -316,8 +317,8 @@ var SDBM = SDBM || {};
                     title: 'Source Date'
                 },
                 {
-                    sdbmssMinWidth: "350px",
-                    sdbmssMaxWidth: "350px",
+                    sdbmssMinWidthImportant: "350px",
+                    sdbmssMaxWidthImportant: "350px",
                     sdbmssSortField: 'source_title',
                     title: 'Source Title'
                 },
@@ -358,14 +359,14 @@ var SDBM = SDBM || {};
                     title: 'Price'
                 },
                 {
-                    sdbmssMinWidth: "400px",
-                    sdbmssMaxWidth: "400px",
+                    sdbmssMinWidthImportant: "400px",
+                    sdbmssMaxWidthImportant: "400px",
                     sdbmssSortField: 'title_flat',
                     title: 'Title'
                 },
                 {
-                    sdbmssMinWidth: "400px",
-                    sdbmssMaxWidth: "400px",
+                    sdbmssMinWidthImportant: "400px",
+                    sdbmssMaxWidthImportant: "400px",
                     sdbmssSortField: 'author_flat',
                     title: 'Author'
                 },
@@ -502,8 +503,8 @@ var SDBM = SDBM || {};
                     }
                 },
                 {
-                    sdbmssMinWidth: "400px",
-                    sdbmssMaxWidth: "400px",
+                    sdbmssMinWidthImportant: "400px",
+                    sdbmssMaxWidthImportant: "400px",
                     title: 'Other Info',
                     orderable: false
                 },

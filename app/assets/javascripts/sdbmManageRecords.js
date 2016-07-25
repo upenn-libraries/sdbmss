@@ -172,6 +172,12 @@ var SDBM = SDBM || {};
                         recordsTotal: data.total,
                         recordsFiltered: data.total
                     });
+                    renewBookmarks();
+
+                    if (manageRecords.getUnreviewedOnly() === 1)
+                        $('.unreviewed_only').show();//.css({"display": "table-cell"});
+                    else
+                        $('.unreviewed_only').hide();//.css({"display": "none"});
                 } else {
                     alert("An error occurred fetching search results: " + data.error);
                 }
@@ -258,7 +264,6 @@ var SDBM = SDBM || {};
             manageRecords.reloadTable();
             
             manageRecords.showOrHideMarkCheckedRecordsButton();
-
             return false;
         };
     };
@@ -319,18 +324,18 @@ var SDBM = SDBM || {};
 
         return [
             {
-                title: '<a href="#" class="btn btn-default btn-blank btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
+                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',//'<a href="#" class="btn btn-default btn-blank btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
                 orderable: false,
-                className: "text-center",
+                className: "text-center unreviewed_only",
                 render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {
-                        return  '' + 
+                        /*return  '' + 
                                 '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
                                 '<label for="checkbox_' + meta.row + '">' + 
                                 '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-unchecked unchecked"></a>' + 
                                 '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-check checked"></a>' + 
-                                '</label>' + '';
-//                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                                '</label>' + '';*/
+                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     }
                     return '';
                 },
@@ -416,7 +421,8 @@ var SDBM = SDBM || {};
     // handler called when "export csv" link is clicked; this
     // implementation uses #search action on the Rails resource
     // controller
-    SDBM.ManageRecords.prototype.exportCSV = function() {
+    
+    SDBM.ManageRecords.prototype.getCSVSearchUrl = function () {
         var manageRecords = this;
         //var qs = new URI().query(true);
         var qs = manageRecords.search_query;
@@ -424,26 +430,23 @@ var SDBM = SDBM || {};
         // since this data is sent via URI, I have to reformat when there is a list so {name: ["x", "y"]} becomes {name[]: ["x", "y"]} 
         for (var field in qs) {
             if (Array.isArray(qs[field])) {
-                qs[field + "[]"] = qs[field]
-                delete qs[field]
+                if (field.indexOf('[]') == -1) {
+                    qs[field + "[]"] = qs[field]
+                    delete qs[field]
+                }
             }
         }
-        /*$.ajax({
-            url: manageRecords.getSearchURL('csv'),
-            data: qs
-        }).done( function (result) {
-            console.log('done', result);
-            window.location = 'data:text/plain;charset=utf-8,' + encodeURIComponent(result);
-        })*/
-        var url = URI(manageRecords.getSearchURL('csv')).search(qs);
-        window.location = url;
-/*
-        var url = URI(manageRecords.getSearchURL('csv')).search({
-            term: manageRecords.getSearchValue(),
-            unreviewed_only: manageRecords.getUnreviewedOnly()
-        });
 
-        window.location = url;*/
+        return URI(manageRecords.getSearchURL('csv')).search(qs);
+    }
+
+    SDBM.ManageRecords.prototype.exportCSV = function() {
+        
+        /* do search, then poll to see if download is completed */
+
+        var url = this.getCSVSearchUrl();
+
+        exportCSV(url);
     };
     
 }());

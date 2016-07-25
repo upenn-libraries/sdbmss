@@ -1,0 +1,5 @@
+<% if entry_language.language %>
+<%= link_to entry_language.language.name, language_path(entry_language.language) -%>
+<% else %>
+<%= entry_language %>
+<% end %>

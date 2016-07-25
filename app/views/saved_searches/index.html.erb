@@ -4,15 +4,21 @@
 
 <h1 class='page-heading'><%= t('blacklight.saved_searches.title') %></h1>
 
-<p>This page lists all search facets you have saved in current and past sessions. You can delete saved searches by clicking <b>delete (forget)</b>.</p>
+<p>This page lists all search facets you have saved in current and past sessions. You can delete saved searches by clicking <b>delete</b>. To delete every saved search, click the <b>Clear Saved Searches</b> button.</p>
 
-<p>How to save your searches:</p>
+<p>There are two ways to save your searches:</p>
+
+<ol>
+  <li><strong>Search</strong> for entries.</li>
+  <li>Click the <strong>Save Search</strong> button located in the top right corner of the search results.</li>
+</ol>
+
+<div class=>- or -</div>
 
 <ol>
     <li><b>Search</b> for entries.</li>
     <li>Click the <b>History</b> link, located in the top horizontal navigation.</li>
     <li>Click the <b>save</b> button next to each search you wish to save.</li>
-    <li>To view your saved searches, click the <b>Saved Searches</b> link located in the top horizontal navigation.</li>
 </ol>
 
 <%- if current_or_guest_user.blank? -%>
@@ -24,21 +30,24 @@
   <h2 class='section-heading'><%= t('blacklight.saved_searches.no_searches') %></h2>
   
 <%- else -%>
-  <p>
-  <%= link_to t('blacklight.saved_searches.clear.action_title'), clear_saved_searches_path, :method => :delete, :data => { :confirm => t('blacklight.saved_searches.clear.action_confirm') } %>
-  </p>
+  
+  <ul class="list-group">
+    <li class="list-group-item row">
+      <div class="col-sm-8">
+        <span class='h2 section-heading'><%= t('blacklight.saved_searches.list_title') %></span>
+      </div>
+      <div class="col-sm-4 text-right">
+        <%= link_to t('blacklight.saved_searches.clear.action_title'), clear_saved_searches_path, :class => "btn btn-warning", :method => :delete, :data => { :confirm => t('blacklight.saved_searches.clear.action_confirm') } %>
+      </div>
+    </li>
 
-  <h2 class='section-heading'><%= t('blacklight.saved_searches.list_title') %></h2>
-
-  <table class="table table-striped">
-  <%- @searches.each do |search| -%>
-    <tr>
-      <td><%= link_to_previous_search(search.query_params) %></td>
-      <td><%= button_to t('blacklight.saved_searches.delete'), forget_search_path(search.id) %></td>
-    </tr>
-  <%- end -%>
-  </table>
+    <%- @searches.each do |search| -%>
+      <li class='list-group-item row'>
+        <div class='col-sm-8'><%= link_to_previous_search(search.query_params) %></div>
+        <div class='col-sm-4 text-right'><%= button_to t('blacklight.saved_searches.delete'), forget_search_path(search.id), :class => 'btn btn-warning btn-sm' %></div>
+      </li>
+    <%- end -%>
+  </ul>
 
 <%- end -%>
-
 </div>

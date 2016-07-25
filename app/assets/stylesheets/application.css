@@ -15,7 +15,8 @@
  *= require sdbmss
  *= require_self
  *= require dynamic_css
- 
+
+ *= require bootstrap-tour.min 
  *= require 'blacklight_advanced_search'
 
 

@@ -10,6 +10,11 @@ class User < ActiveRecord::Base
 
   has_many :sources, foreign_key: "created_by_id"
 
+  has_many :downloads
+
+  has_many :user_messages, foreign_key: "user_id"
+  has_many :private_messages, through: :user_messages
+
   before_validation :assign_default_role
 
   # one of the devise class methods above seems to give us
@@ -45,11 +50,15 @@ class User < ActiveRecord::Base
     date :updated_at
   end
 
+  scope :sent_by, -> () { joins(:user_messages).where("user_messages.method = 'From'").distinct }
+  scope :sent_to, -> () { joins(:user_messages).where("user_messages.method = 'To'").distinct }
+
   # Connects this user object to Blacklights Bookmarks. 
   include Blacklight::User
   include UserFields
   include HasPaperTrail
   include CreatesActivity
+  extend CSVExportable
 
   def self.statistics
     results = ActiveRecord::Base.connection.execute("select username, count(*) from users inner join entries on entries.created_by_id = users.id where entries.deleted = 0 group by username")
@@ -102,6 +111,52 @@ class User < ActiveRecord::Base
 
   def role?(role_to_check)
     role == role_to_check
+  end
+
+  def tags
+    s = {}
+    bookmarks.each do |bookmark|
+      tags = bookmark.tags.split(',') unless bookmark.tags.nil?
+      tags.to_a.each do |tag|
+        if s.include?(tag)
+          s[tag] += 1
+        else
+          s[tag] = 1
+        end
+      end
+    end
+    s
+  end
+
+  def notifications
+    messages = private_messages.received.select{ |e| e.unread }.count
+    exports = downloads.select{ |e| e.status == 1}.count
+    {total: messages + exports, messages: messages, exports: exports}
+  end
+
+  def self.fields
+    fields = super
+    fields.delete('name')
+    ['username'] + fields + ['fullname', 'email', 'role']
+  end
+
+  def self.filters  
+    filters = super
+    filters.delete('created_by')
+    filters.delete('updated_by')
+    filters + ['active']
+  end
+
+  def search_result_format
+    {
+      id: id,
+      username: username,
+      fullname: fullname,
+      role: role,
+      active: active,
+      reviewed: reviewed,
+      created_by: created_by.present? ? created_by.username : "(none)",
+    }
   end
 
   private

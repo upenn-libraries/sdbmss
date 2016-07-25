@@ -1,3 +1,5 @@
+<!-- we used a shared history page, now -->
+
 <% if @error %>
     <div class="panel panel-danger">
         <div class="panel-heading"><%= @error %></div>
@@ -42,7 +44,7 @@
                                 <% end %>
                             </div>
                             <div class='col-sm-1 text-left'>
-                                <%= check_box_tag "version_id[]", version.id, false, class: 'checkbox-hidden', id: "checkbox#{version.id}" %><!-- set disabled here, if need be --><!-- also needs JS for 'radio button' functionality -->
+                                <%= check_box_tag "version_id[]", version.id, false, class: 'checkbox-hidden', id: "checkbox#{version.id}" %>
                                 <label for="<%= "checkbox#{version.id}" %>"><span><span></span></span></label>
                             </div>
                         </div>                    

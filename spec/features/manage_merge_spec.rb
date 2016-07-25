@@ -50,7 +50,8 @@ describe "Manage Names", :js => true do
     click_button "Select"
 
     #MERGE TO author (John Milton)
-    expect(page).to have_content(author.name)
+    expect(page).to have_selector("input[value='#{author.name}']")
+    #expect(page).to have_content(author.name)
     click_button "Yes"
 
     #Success message
@@ -58,7 +59,7 @@ describe "Manage Names", :js => true do
 
     #author2 should no longer appear in NAME LIST
     visit names_path
-    expect(page).to have_no_content(author2.name)
+    expect(page).not_to have_content("#{author2.name}")
   end
 
   it "should update counters correctly on merge" do

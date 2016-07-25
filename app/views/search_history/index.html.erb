@@ -1,6 +1,6 @@
 <%# copied from blacklight gem so that instructional text can be inserted %>
 <% @page_title = "Search History - " + application_name %>
-<div id="content" class="col-md-12">
+<div id="content" class="col-sm-9">
 <h1 class='page-heading'><%=t('blacklight.search_history.title')%></h1>
 
 <p>This page lists all search facets you have used in your current
@@ -8,27 +8,31 @@
     to save that search. You can delete saved searches by clicking
     <b>forget</b>.
 </p>
+<p>To view your saved searches, click the <b>Saved Searches</b> option under the My Searches dropdown in the top horizontal navigation.</p>
 
 <%- if @searches.blank? -%>
   <h2 class='section-heading'><%=t('blacklight.search_history.no_history')%></h2>
 <%- else -%>
     <%= link_to t('blacklight.search_history.clear.action_title'), clear_search_history_path, :method => :delete, :data => { :confirm => t('blacklight.search_history.clear.action_confirm') }, :class => 'btn btn-danger pull-right' %>
   <h3 class='section-heading'><%=t('blacklight.search_history.recent')%></h3>
-  <table class="table table-striped search_history">
+  <ul class="list-group">
     <%-  @searches.each_with_index do |search,index| -%>
-    <%= content_tag :tr, :id => "document_#{index + 1}" do %>
-      <td class="query"><%= link_to_previous_search(search.query_params) %></td>
-      <%- if has_user_authentication_provider? -%>
-        <td class="actions">
-          <%- if current_or_guest_user && search.saved? -%>
-            <%= button_to t('blacklight.search_history.forget'), forget_search_path(search.id), :class => 'btn btn-default' %>
-          <%- else -%>
-            <%= button_to t('blacklight.search_history.save'), save_search_path(search.id), :method => :put, :class => 'btn btn-default' %>
-          <%- end -%>
-        </td>
-      <%- end -%>
-    <% end #content_tag %>
+    <li class="list-group-item">
+      <div class="row">
+        <span class="col-xs-6"><%= link_to_previous_search(search.query_params) %></span>
+        <%- if has_user_authentication_provider? -%>
+          <span class="actions col-sm-6 text-right">
+            <%- if current_or_guest_user && search.saved? -%>
+              <!--<%= button_to t('blacklight.search_history.forget'), forget_search_path(search.id), :class => 'btn btn-default' %>-->
+              <%= button_to 'Delete', forget_search_path(search.id), :class => 'btn btn-default' %>
+            <%- else -%>
+              <%= button_to t('blacklight.search_history.save'), save_search_path(search.id), :method => :put, :class => 'btn btn-default' %>
+            <%- end -%>
+          </span>
+        <%- end -%>
+      </div>
+    </li>
   <%- end -%>
-  </table>
+  </ul>
 <%- end -%>
 </div>

@@ -2,8 +2,21 @@
 # This module contains customized subclasses of things used by
 # Blacklight
 
+module Blacklight
+  module FacetsHelperBehavior
+
+    def render_facet_partials_home fields = facet_field_names, options = {}
+      facets = facets_from_request(fields).first(4)
+      safe_join(facets.map do |display_facet|
+        render_facet_limit(display_facet, options)
+      end.compact, "\n")
+    end
+
+  end
+end
+
 module SDBMSS::Blacklight
-  #mixin for 'bookmark all' widget
+
 
   # These hardcoded bounds MUST correspond to Solr field definition or
   # things might break or behave weirdly.
@@ -77,7 +90,7 @@ module SDBMSS::Blacklight
     end
 
     def show_created_by_user(solr_parameters)
-      if blacklight_params['created_by_user'].to_s == '1'
+      if blacklight_params['created_by_user'].to_s == '1' && scope.current_user
         # scope is the Blacklight-configured rails controller
         solr_parameters['fq'] << 'created_by:' + scope.current_user.username.to_s
       end

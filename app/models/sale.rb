@@ -57,39 +57,74 @@ class Sale < ActiveRecord::Base
     end
   end
 
+  def get_sale_agents_with_role(role)
+    sale_agents.select { |ea| ea.role == role }
+  end
+
+  def get_selling_agents
+    get_sale_agents_with_role(SaleAgent::ROLE_SELLING_AGENT)
+  end
+
+  def get_buyers
+    get_sale_agents_with_role(SaleAgent::ROLE_BUYER)
+  end
+
+  def get_sellers_or_holders
+    get_sale_agents_with_role(SaleAgent::ROLE_SELLER_OR_HOLDER)
+  end
+
+  def get_selling_agents_names
+    get_selling_agents.map{ |sa| sa.agent ? sa.agent.name : "" }.join(" | ")
+  end
+
+  def get_sellers_or_holders_names
+    get_sellers_or_holders.map{ |sa| sa.agent ? sa.agent.name : "" }.join(" | ")
+  end
+
+  def get_buyers_names
+    get_buyers.map{ |sa| sa.agent ? sa.agent.name : "" }.join(" | ")
+  end
+
   def get_sale_agent_with_role(role)
+    puts "deprecated #{__method__}"
     sale_agents.select { |ea| ea.role == role }.first
   end
 
   # returns an SaleAgent object
   def get_selling_agent
+    puts "deprecated #{__method__}"
     get_sale_agent_with_role(SaleAgent::ROLE_SELLING_AGENT)
   end
 
   # returns an Name object
   def get_selling_agent_as_name
+    puts "deprecated #{__method__}"
     ea = get_selling_agent
     ea.agent if ea
   end
 
   # returns an SaleAgent object
   def get_seller_or_holder
+    puts "deprecated #{__method__}"
     get_sale_agent_with_role(SaleAgent::ROLE_SELLER_OR_HOLDER)
   end
 
   # returns an Name object
   def get_seller_or_holder_as_name
+    puts "deprecated #{__method__}"
     ea = get_seller_or_holder
     ea.agent if ea
   end
 
   # returns an SaleAgent object
   def get_buyer
+    puts "deprecated #{__method__}"
     get_sale_agent_with_role(SaleAgent::ROLE_BUYER)
   end
 
   # returns an Name object
   def get_buyer_as_name
+    puts "deprecated #{__method__}"
     ea = get_buyer
     ea.agent if ea
   end

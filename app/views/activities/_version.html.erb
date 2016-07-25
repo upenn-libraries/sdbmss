@@ -1,14 +1,14 @@
-<div class="no-overflow">
+<div class="">
   <% if version.details.count == 0 %>
     No changes to display...
   <% else %>
+    <ul class='activity-list list-inline no-overflow'>
     <% version.details.each_with_index do |d, index| %>
+      <li>
       <% d = d.split(":") %>
-      <% if index < version.details.count - 1 %>
-        <strong><%= d[0] %>:</strong> <%= d[1] %>, 
-      <% else %>
-        <strong><%= d[0] %>:</strong> <%= d[1] %>
-      <% end %>
+      <strong><%= d[0] %>:</strong> <%= d[1] %></span>
     <% end %>
+    </li>
+    </ul>
   <% end %>
 </div>
