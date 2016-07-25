@@ -692,6 +692,8 @@ ActiveRecord::Schema.define(version: 20160721132547) do
   add_foreign_key "sales", "users", column: "updated_by_id"
   add_foreign_key "source_agents", "names", column: "agent_id"
   add_foreign_key "source_agents", "sources", on_delete: :cascade
+  add_foreign_key "source_comments", "comments"
+  add_foreign_key "source_comments", "sources"
   add_foreign_key "sources", "source_types"
   add_foreign_key "sources", "users", column: "created_by_id"
   add_foreign_key "sources", "users", column: "reviewed_by_id"
