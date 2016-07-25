@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160510134551) do
+ActiveRecord::Schema.define(version: 20160623133719) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -69,6 +69,17 @@ ActiveRecord::Schema.define(version: 20160510134551) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+
+  create_table "downloads", force: :cascade do |t|
+    t.string   "filename",      limit: 255
+    t.integer  "status",        limit: 4,   default: 0
+    t.integer  "user_id",       limit: 4
+    t.integer  "created_by_id", limit: 4
+    t.datetime "created_at"
+  end
+
+  add_index "downloads", ["created_by_id"], name: "index_downloads_on_created_by_id", using: :btree
+  add_index "downloads", ["user_id"], name: "index_downloads_on_user_id", using: :btree
 
   create_table "entries", force: :cascade do |t|
     t.integer  "source_id",                limit: 4
@@ -332,6 +343,14 @@ ActiveRecord::Schema.define(version: 20160510134551) do
   add_index "manuscripts", ["reviewed_by_id"], name: "index_manuscripts_on_reviewed_by_id", using: :btree
   add_index "manuscripts", ["updated_by_id"], name: "index_manuscripts_on_updated_by_id", using: :btree
 
+  create_table "name_comments", force: :cascade do |t|
+    t.integer "name_id",    limit: 4
+    t.integer "comment_id", limit: 4
+  end
+
+  add_index "name_comments", ["comment_id"], name: "index_name_comments_on_comment_id", using: :btree
+  add_index "name_comments", ["name_id"], name: "index_name_comments_on_name_id", using: :btree
+
   create_table "names", force: :cascade do |t|
     t.string   "name",                limit: 255
     t.integer  "entry_id",            limit: 4
@@ -386,6 +405,23 @@ ActiveRecord::Schema.define(version: 20160510134551) do
   add_index "places", ["name"], name: "index_places_on_name", unique: true, using: :btree
   add_index "places", ["reviewed_by_id"], name: "index_places_on_reviewed_by_id", using: :btree
   add_index "places", ["updated_by_id"], name: "index_places_on_updated_by_id", using: :btree
+
+  create_table "private_messages", force: :cascade do |t|
+    t.text     "message",            limit: 65535
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "deleted",                          default: false
+    t.integer  "created_by_id",      limit: 4
+    t.integer  "updated_by_id",      limit: 4
+    t.integer  "user_id",            limit: 4
+    t.integer  "private_message_id", limit: 4
+    t.text     "title",              limit: 65535
+  end
+
+  add_index "private_messages", ["created_by_id"], name: "index_private_messages_on_created_by_id", using: :btree
+  add_index "private_messages", ["private_message_id"], name: "index_private_messages_on_private_message_id", using: :btree
+  add_index "private_messages", ["updated_by_id"], name: "index_private_messages_on_updated_by_id", using: :btree
+  add_index "private_messages", ["user_id"], name: "index_private_messages_on_user_id", using: :btree
 
   create_table "provenance", force: :cascade do |t|
     t.integer  "entry_id",                         limit: 4
@@ -478,6 +514,14 @@ ActiveRecord::Schema.define(version: 20160510134551) do
   add_index "source_agents", ["agent_id"], name: "index_source_agents_on_agent_id", using: :btree
   add_index "source_agents", ["source_id"], name: "index_source_agents_on_source_id", using: :btree
 
+  create_table "source_comments", force: :cascade do |t|
+    t.integer "name_id",    limit: 4
+    t.integer "comment_id", limit: 4
+  end
+
+  add_index "source_comments", ["comment_id"], name: "index_source_comments_on_comment_id", using: :btree
+  add_index "source_comments", ["name_id"], name: "index_source_comments_on_name_id", using: :btree
+
   create_table "source_types", force: :cascade do |t|
     t.string  "name",                           limit: 255
     t.string  "display_name",                   limit: 255
@@ -515,6 +559,12 @@ ActiveRecord::Schema.define(version: 20160510134551) do
   add_index "sources", ["reviewed_by_id"], name: "index_sources_on_reviewed_by_id", using: :btree
   add_index "sources", ["source_type_id"], name: "index_sources_on_source_type_id", using: :btree
   add_index "sources", ["updated_by_id"], name: "index_sources_on_updated_by_id", using: :btree
+
+  create_table "user_messages", id: false, force: :cascade do |t|
+    t.integer "user_id",            limit: 4,   null: false
+    t.integer "private_message_id", limit: 4,   null: false
+    t.string  "type",               limit: 255
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                     limit: 255,   default: "",    null: false
@@ -615,6 +665,8 @@ ActiveRecord::Schema.define(version: 20160510134551) do
   add_foreign_key "manuscripts", "users", column: "created_by_id"
   add_foreign_key "manuscripts", "users", column: "reviewed_by_id"
   add_foreign_key "manuscripts", "users", column: "updated_by_id"
+  add_foreign_key "name_comments", "comments"
+  add_foreign_key "name_comments", "names"
   add_foreign_key "names", "entries", on_delete: :cascade
   add_foreign_key "names", "users", column: "created_by_id"
   add_foreign_key "names", "users", column: "reviewed_by_id"
@@ -623,6 +675,10 @@ ActiveRecord::Schema.define(version: 20160510134551) do
   add_foreign_key "places", "users", column: "created_by_id"
   add_foreign_key "places", "users", column: "reviewed_by_id"
   add_foreign_key "places", "users", column: "updated_by_id"
+  add_foreign_key "private_messages", "entries", column: "user_id"
+  add_foreign_key "private_messages", "private_messages"
+  add_foreign_key "private_messages", "users", column: "created_by_id"
+  add_foreign_key "private_messages", "users", column: "updated_by_id"
   add_foreign_key "provenance", "names", column: "provenance_agent_id"
   add_foreign_key "sale_agents", "names", column: "agent_id"
   add_foreign_key "sale_agents", "sales", on_delete: :cascade
@@ -631,6 +687,8 @@ ActiveRecord::Schema.define(version: 20160510134551) do
   add_foreign_key "sales", "users", column: "updated_by_id"
   add_foreign_key "source_agents", "names", column: "agent_id"
   add_foreign_key "source_agents", "sources", on_delete: :cascade
+  add_foreign_key "source_comments", "comments"
+  add_foreign_key "source_comments", "names"
   add_foreign_key "sources", "source_types"
   add_foreign_key "sources", "users", column: "created_by_id"
   add_foreign_key "sources", "users", column: "reviewed_by_id"
