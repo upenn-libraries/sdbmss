@@ -311,6 +311,10 @@ body {
   font-weight: bold;
 }
 
+.name-authority-warning {
+  padding: 0px 20px;
+}
+
 /* on Entry view page, move the content block to the right of the sidebar */
 /* .blacklight-catalog-show #content { float: right; } */
 
@@ -991,6 +995,11 @@ so that gray backdrop shvows up correctly */
     left: 0px;
     z-index: 1040;
     background-color: #000;
+}
+
+.fit-screen {
+    max-height: calc(100vh - 200px);
+    overflow-y: scroll;
 }
 
 .table-compressed > tbody > tr > td,

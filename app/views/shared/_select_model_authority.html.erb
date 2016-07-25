@@ -5,7 +5,7 @@
             <label for="searchNameAuthority">Search: </label><input autofocus type="text" id="searchModelAuthority" class="search-form form-control" ng-change="autocomplete()" ng-model="nameSearchString"></small>
         </h3>
     </div>
-    <div class="modal-body form-horizontal compress-whitespace">
+    <div class="modal-body form-horizontal compress-whitespace fit-screen">
 
     <div class="row">
         <div class='col-sm-12'>
@@ -21,10 +21,10 @@
                 </thead>
                 <tbody>
                     <tr ng-show="nameSearchString.length <= 0">
-                        <td>To begin searching, enter something in the search bar.</td>
+                        <td colspan="5">To begin searching, enter something in the search bar.</td>
                     </tr>
                     <tr ng-show="nameSearchString.length > 0 && suggestions.length <= 0">
-                        <td>No results found.</td>
+                        <td colspan="5">No results found.</td>
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index" ng-click="selectSuggestion(s)" ng-class="{success: s == suggestion}">
                         <td><input type='radio' ng-click='selectSuggestion(s)' style="opacity: 0;"></input></td>
@@ -34,20 +34,7 @@
                         <td>{{ s.reviewed }}</td>
                     </tr>
                 </tbody>
-                <tfoot>
-                    <tr ng-show="proposeNew && nameSearchString.length > 0">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>                        
-                            <a href="" class="btn btn-default" ng-click="createName()" id='propose-model'>Propose '{{ nameSearchString }}'</a>
-                        </td>
-                    </tr>
+                <tfoot>                    
                 </tfoot>
             </table>
         </div>
@@ -55,7 +42,14 @@
         
     </div>
     <div class="modal-footer">
-        <button class="btn btn-success" ng-disabled="!suggestion" ng-click="selectName()" id="selectModelButton">Select {{ suggestion.name }}</button>
-        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        <div class='row'>
+            <div class="col-sm-6 text-left">
+                <a href="" class="btn btn-default" ng-click="createName()" id='propose-model'>Propose {{ nameSearchString || "New " + (type | humanize) }}</a>
+            </div>
+            <div class="col-sm-6 text-right">
+                <button class="btn btn-success" ng-disabled="!suggestion" ng-click="selectName()" id="selectModelButton">Select {{ suggestion.name }}</button>
+                <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+            </div>
+        </div>
     </div>
 </script>

@@ -449,6 +449,7 @@ label.col-sm-2-and-half {
                   <a id="remove_author_name_authority_{{ $index }}" class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_author, 'author')"></a>
                   {{ entry_author.author.name }}
                 </div>
+                <span class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_author" encourage-name-authority-name="author"></span>
                 <div class="input-group-addon clickable">
                   <a class="more-info glyphicon" href="/names/{{ entry_author.author.id }}" target="_blank" ng-class="entry_author.author && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
                 </div>
@@ -555,7 +556,7 @@ label.col-sm-2-and-half {
                   <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_artist, 'artist')"></a>
                   {{ entry_artist.artist.name }}
                 </div>
-
+                <span class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_artist" encourage-name-authority-name="artist"></span>
                 <div class="input-group-addon clickable">
                   <a class="more-info glyphicon" href="/names/{{ entry_artist.artist.id }}" target="_blank" ng-class="entry_artist.artist && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
                 </div>
@@ -615,6 +616,7 @@ label.col-sm-2-and-half {
                     <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_scribe, 'scribe')"></a>
                     {{ entry_scribe.scribe.name }}
                   </div>
+                  <span class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_scribe" encourage-name-authority-name="scribe"></span>
 
                   <div class="input-group-addon clickable">
                   <a class="more-info glyphicon" href="/names/{{ entry_scribe.scribe.id }}" target="_blank" ng-class="entry_scribe.scribe && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
@@ -744,6 +746,7 @@ label.col-sm-2-and-half {
                   <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_place, 'place')"></a>
                   {{ entry_place.place.name }}
                 </div>
+                <span class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_place" encourage-name-authority-name="place"></span>
 
                 <div class="input-group-addon clickable">
                   <a class="more-info glyphicon" href="/places/{{ entry_place.place.id }}" target="_blank" ng-class="entry_place.place && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>
@@ -950,6 +953,11 @@ label.col-sm-2-and-half {
                       </div>
                       <div id="provenance_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="prov"><span class="glyphicon"></span></div>
                   </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-12 text-center">
+                  <div class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="prov" encourage-name-authority-name="provenance_agent"></div>
                 </div>
               </div>
                <div class="row">

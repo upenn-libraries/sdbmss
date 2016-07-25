@@ -1251,6 +1251,25 @@ var BOOKMARK_SCOPE;
      * displaying modal for entity creation.
      */
 
+    sdbmApp.directive("encourageNameAuthority", function ($http, $parse, $timeout, $modal) {
+      return function (scope, element, attrs) {
+        var modelName = attrs.encourageNameAuthorityModel;
+        var nameType = attrs.encourageNameAuthorityName;
+        
+        $(element).text("You have not selected an authority name.");
+
+        scope.$watch(modelName, function(newValue, oldValue) {
+          $(element).hide();
+          if (newValue.observed_name && newValue.observed_name.length > 0) {
+            if (!newValue[nameType] || !newValue[nameType].id) {
+              $(element).show();
+            }
+          }
+        }, true);
+
+      }
+    });
+
     sdbmApp.directive("sdbmAutocomplete", function ($http, $parse, $timeout, $modal) {
         return function (scope, element, attrs) {
             var modelName = attrs.sdbmAutocompleteModel;
@@ -1288,7 +1307,7 @@ var BOOKMARK_SCOPE;
             var eraseModel = function() {
               var model = $parse(modelName);
               model.assign(scope, null);
-            }
+            };
 
             var refocus = function(badValue) {
 
