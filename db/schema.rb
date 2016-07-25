@@ -419,10 +419,7 @@ ActiveRecord::Schema.define(version: 20160721132547) do
     t.integer  "user_id",            limit: 4
     t.integer  "private_message_id", limit: 4
     t.text     "title",              limit: 65535
-<<<<<<< HEAD
-=======
     t.boolean  "unread",                           default: true
->>>>>>> 9cb1cad6033484b85d37da04919f6b594c84bb71
   end
 
   add_index "private_messages", ["created_by_id"], name: "index_private_messages_on_created_by_id", using: :btree
@@ -522,20 +519,12 @@ ActiveRecord::Schema.define(version: 20160721132547) do
   add_index "source_agents", ["source_id"], name: "index_source_agents_on_source_id", using: :btree
 
   create_table "source_comments", force: :cascade do |t|
-<<<<<<< HEAD
-    t.integer "name_id",    limit: 4
-=======
     t.integer "source_id",  limit: 4
->>>>>>> 9cb1cad6033484b85d37da04919f6b594c84bb71
     t.integer "comment_id", limit: 4
   end
 
   add_index "source_comments", ["comment_id"], name: "index_source_comments_on_comment_id", using: :btree
-<<<<<<< HEAD
-  add_index "source_comments", ["name_id"], name: "index_source_comments_on_name_id", using: :btree
-=======
   add_index "source_comments", ["source_id"], name: "index_source_comments_on_source_id", using: :btree
->>>>>>> 9cb1cad6033484b85d37da04919f6b594c84bb71
 
   create_table "source_types", force: :cascade do |t|
     t.string  "name",                           limit: 255
@@ -575,17 +564,10 @@ ActiveRecord::Schema.define(version: 20160721132547) do
   add_index "sources", ["source_type_id"], name: "index_sources_on_source_type_id", using: :btree
   add_index "sources", ["updated_by_id"], name: "index_sources_on_updated_by_id", using: :btree
 
-<<<<<<< HEAD
-  create_table "user_messages", id: false, force: :cascade do |t|
-    t.integer "user_id",            limit: 4,   null: false
-    t.integer "private_message_id", limit: 4,   null: false
-    t.string  "type",               limit: 255
-=======
   create_table "user_messages", force: :cascade do |t|
     t.integer "user_id",            limit: 4,   null: false
     t.integer "private_message_id", limit: 4,   null: false
     t.string  "method",             limit: 255
->>>>>>> 9cb1cad6033484b85d37da04919f6b594c84bb71
   end
 
   create_table "users", force: :cascade do |t|
@@ -711,7 +693,7 @@ ActiveRecord::Schema.define(version: 20160721132547) do
   add_foreign_key "source_agents", "names", column: "agent_id"
   add_foreign_key "source_agents", "sources", on_delete: :cascade
   add_foreign_key "source_comments", "comments"
-  add_foreign_key "source_comments", "names"
+  add_foreign_key "source_comments", "sources"
   add_foreign_key "sources", "source_types"
   add_foreign_key "sources", "users", column: "created_by_id"
   add_foreign_key "sources", "users", column: "reviewed_by_id"
