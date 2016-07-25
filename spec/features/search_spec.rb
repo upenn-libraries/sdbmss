@@ -47,7 +47,8 @@ describe "Blacklight Search", :js => true do
       expect(page).to have_link(entry.public_id)
     end
 
-    expect(page).to have_selector(".export-csv")
+    # now need to be logged in to export to csv!
+    #expect(page).to have_selector(".export-csv")
   end
 
   it "should display results for an Author facet" do
@@ -98,7 +99,7 @@ describe "Blacklight Search", :js => true do
     visit advanced_search_path
 
     # all text search fields should show up in dropdown
-    expect(find_by_id('text_field_0').all("option").length).to eq(27)
+    expect(find_by_id('text_field_0').all("option").length).to eq(26)
     # all numeric search fields should show up in dropdown
     expect(find_by_id('numeric_field_0').all("option").length).to eq(14)
   end

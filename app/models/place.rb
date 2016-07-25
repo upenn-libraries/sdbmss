@@ -5,6 +5,7 @@ class Place < ActiveRecord::Base
   include IndexAfterUpdate
   include HasPaperTrail
   include CreatesActivity
+  extend CSVExportable
 
   default_scope { where(deleted: false) }
 
@@ -47,6 +48,32 @@ class Place < ActiveRecord::Base
 
   def public_id
     SDBMSS::IDS.get_public_id_for_model(self.class, id)
+  end
+
+  def self.filters
+    super + ["viaf_id", "authors_count", "artists_count", "scribes_count", "provenance_count", "source_agents_count"]
+  end
+
+  def self.fields
+    super + ["comment"]
+  end
+
+  def self.dates
+    super + []
+  end
+
+  def search_result_format
+    {
+      id: id,
+      public_id: public_id,
+      name: name,
+      entries_count: entries_count,
+      reviewed: reviewed,
+      created_by: created_by.present? ? created_by.username : "(none)",
+      created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
+      updated_by: updated_by.present? ? updated_by.username : "(none)",
+      updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
+    }
   end
 
 end

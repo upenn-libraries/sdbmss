@@ -8,7 +8,7 @@
 <% link_text = SDBMSS::IDS.get_public_id_for_model(activity.item_type, activity.item_id) %>
 <% if !link_text %><% link_text = "#{activity.item_type} ##{activity.item_id}" %><% end %>
 <% if activity.event != 'destroy' %>
-  <a href="<%= send ("edit_" + activity.item_type.underscore + "_path").to_s, activity.item_id %>"><%= link_text %></a>
+  <a href="<%= send ("edit_" + (activity.item_type == 'User' ? 'account' : activity.item_type.underscore) + "_path").to_s, activity.item_id %>"><%= link_text %></a>
 <% else %>
   <span class="text-danger"><%= link_text %></span>
 <% end %>

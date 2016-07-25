@@ -1,10 +1,19 @@
 <%= form_tag(request.path, method: :get, class: "form-inline form-horizontal search-form sdbmss-form") do %>
-<div class="row">
-    <div class="col-sm-7">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class="h4">Search
-                </span>
+                <div class="row">
+                    <div class="col-xs-4">
+                        <span class="h3">Search
+                        </span>
+                    </div>
+                    <div class="col-xs-8 text-right">
+                        <% if can? :manage, model_class %>
+                            <label class="checkbox-inline">
+                                <%= check_box_tag :unapproved_only, 1, params[:unapproved_only] %> Limit to records needing approval
+                            </label>
+                        <% end %>
+                    </div>
+                </div>
             </div>
             <div class="panel-body search">
                 <div class="row search-fieldset">
@@ -59,23 +68,30 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-sm-3">
+        <% if can? :manage, model_class %>
+            <div class="panel approve-control">
+                <div class="panel-body text-right" style="padding: 0px 15px;">
+                    <a id="mark-as-approved" class="btn btn-info">Mark checked records as approved</a>
+                </div>
+            </div>
+        <% end %>
+
+    <!--<div class="col-sm-3">
         <% if can? :manage, model_class %>
         <div class="well">
-                <div class="row form-group">
+                <div class="row">
                     <div class="col-sm-12">
                             <label class="checkbox-inline">
                                 <%= check_box_tag :unapproved_only, 1, params[:unapproved_only] %> Limit to records needing review
                             </label>
                     </div>
                 </div>
-                <div class="row form-group">
+                <div class="row">
                     <div class="col-sm-12 review-control">
                         <a class="btn btn-primary btn-sm" id="mark-as-approved" class="btn btn-primary">Mark checked records as approved</a>
                     </div>
                 </div>
-                <div class="row form-group">
+                <div class="row">
                     <div class="col-sm-12">
                       <li class="list-group-item list-group-item-warning text-center"><span class="disabled">(unapproved records shown in yellow)</span></li>
                     </div>
@@ -84,5 +100,5 @@
         </div>
         <% end %>
     </div>
-</div>
+</div>-->
 <% end %>

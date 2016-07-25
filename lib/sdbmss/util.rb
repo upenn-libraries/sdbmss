@@ -288,7 +288,6 @@ module SDBMSS
           if start_date % 10 == 0
             end_date = (((start_date / 10) + 1) * 10)
           end
-          puts "start, end: [#{start_date}, #{end_date}]"
           return [start_date, end_date]
         end
 
@@ -301,11 +300,11 @@ module SDBMSS
         # 
         if /before/.match(date_str)
           range = parse_approximate_date_str_into_year_range(date_str.sub('before', '').strip)
-          return [(range[1].to_i - 100), range[1]]
+          return [(range[1].to_i - 100), range[1].to_i]
         end
         if /after/.match(date_str)
           range = parse_approximate_date_str_into_year_range(date_str.sub('after', '').strip)
-          return [range[0], (range[0].to_i + 100)]
+          return [range[0].to_i, (range[0].to_i + 100)]
         end
 
         # handle circa and exact years
@@ -419,7 +418,7 @@ module SDBMSS
           end
         end
 
-        start_date.present? ? [ start_date, end_date ] : nil
+        start_date.present? ? [ start_date, end_date ] : [nil, nil]
       end
 
       # parse a month and year string (ie. "June 1830") into 2-item

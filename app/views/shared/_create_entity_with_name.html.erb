@@ -1,6 +1,8 @@
 <script type="text/ng-template" id="createEntityWithName.html">
     <div class="modal-header">
-        <h3 class="modal-title">Create {{ entityName }}</h3>
+        <h3 class="modal-title">Create {{ entityName }}
+            <a href="" class="btn btn-default pull-right" ng-click="goBack()"><span class="glyphicon glyphicon-circle-arrow-left"></span> Go Back</a>
+        </h3>
     </div>
     <div class="modal-body form-horizontal">
 
@@ -11,11 +13,11 @@
             following the SDBM standards for place names.</p>
 
             <p>Enter country of origin first, using modern political
-            boundaries.  Exceptions might include regions, such as
+            boundaries where possible.  Exceptions might include regions, such as
             Persia, Flanders, Rhaetia. If a location is identified
             with an empire or dynasty, give the name of the empire or
             dynasty first, e.g. Ottoman Turkey or Safavid
-            Persia. After country, enter all locations as given in the
+            Persia. After country or region, enter all locations as given in the
             catalogue from the largest geographical unit to the
             smallest.</p>
 

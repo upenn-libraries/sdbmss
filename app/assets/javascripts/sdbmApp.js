@@ -16,7 +16,7 @@ var BOOKMARK_SCOPE;
 
     "use strict";
 
-    var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap", "ngAnimate", "ui.sortable", "ngSanitize"]);
+    var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap", "ngAnimate", "ui.sortable", "ngSanitize", "ngCookies"]);
     
     sdbmApp.run(function ($http) {
         // For Rails CSRF
@@ -211,6 +211,7 @@ var BOOKMARK_SCOPE;
              * state instead of its state at the time of printing. So
              * do console.log(sdbmutil.objectSnapshot(obj)) instead.
              */
+            isBlankThing: isBlankThing,
             objectSnapshot: function (object) {
                 return JSON.parse(JSON.stringify(object));
             },
@@ -334,14 +335,20 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.findSourceCandidates = function () {
-            if($scope.title.length > 2 || $scope.date.length > 2 || $scope.agent.length > 2) {
+            if($scope.title.length > 1 || $scope.date.length > 1 || $scope.agent.length > 1) {
                 $scope.searchAttempted = true;
+                var title = $scope.title.length > 1 ? $scope.title : '';
+                var date = $scope.date.length > 1 ? $scope.date : '';
+                var agent = $scope.agent.length > 1 ? $scope.agent : '';
                 $http.get("/sources/search.json", {
                     params: {
-                        date: $scope.date,
-                        title: $scope.title,
-                        agent: $scope.agent,
-                        limit: 20
+                        date: date,
+                        title: title,
+                        agent: agent,
+                        limit: 20,
+                        source_type_id: $scope.source_type,
+                        id: $scope.source_id,
+                        id_option: "without"
                     }
                 }).then(function (response) {
                     $scope.sources = response.data.results;
@@ -349,7 +356,8 @@ var BOOKMARK_SCOPE;
                     alert("An error occurred searching for sources");
                 });
             } else {
-                $scope.sources = [];
+              $scope.searchAttempted = false;
+              $scope.sources = [];
             }
         };
 
@@ -358,19 +366,182 @@ var BOOKMARK_SCOPE;
         $scope.$watch('agent', $scope.findSourceCandidates);
     });
 
+    sdbmApp.filter('humanize', function () {
+      return function (input) {
+        input = input || '';
+        var capitalize = function(match, p1) {
+         return p1.toUpperCase();
+        }
+        var output = input.replace(/_/g, ' ').replace(/\b(\w)/g, capitalize);
+        return output;
+      }
+    });
+
+    sdbmApp.controller("SelectNameAuthorityCtrl", function ($scope, $http, $modalInstance, $modal, recordType, model, type, base) {
+      $scope.suggestions = [];
+      $scope.suggestion = undefined;
+      $scope.type = type.replace('is_', '');
+
+      $scope.nameSearchString = base || "";
+
+      setTimeout( function () {
+        $('.search-form').focus();
+      }, 10);
+
+      $scope.selectSuggestion = function (s) {
+        $scope.suggestion = s;
+      }
+
+      $scope.selectName = function () {
+        model.id = $scope.suggestion.id; 
+        model.name = $scope.suggestion.name;
+        $modalInstance.close();
+      }
+
+      $scope.autocomplete = function () {
+          var url  = "/" + recordType + "/search.json";
+          var searchTerm = $scope.nameSearchString; // redundant?
+          $http.get(url, {
+              params: $.extend({ autocomplete: 1, name: searchTerm, limit: 15 }, {})
+          }).then(function (response) {
+              // transform data from API call into format expected by autocomplete
+              var exactMatch = false;
+              var options = response.data.results;
+
+              options.forEach(function(option) {
+                  option.label = option.name;
+                  option.value = option.id;
+
+                  if(!exactMatch) {
+                      exactMatch = searchTerm === option.label;
+                  }
+              });
+
+              if (!exactMatch) {
+                $scope.proposeNew = true;
+              } else {
+                $scope.proposeNew = false;
+              }
+              // sort options, prioritizing ones that match the type
+              options.sort( function (a, b) {
+                if (!a[type] && b[type])
+                  return 1;
+                else
+                  return -1;
+              });
+
+              $scope.suggestions = options;
+              $scope.suggestion = $scope.suggestions[0];
+              
+          });
+      };
+      $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+      }
+
+      $scope.createName = function () {
+        var newNameValue = $scope.nameSearchString;//ui.item.label.substring(ui.item.label.indexOf("'") + 1, ui.item.label.lastIndexOf("'"));
+
+
+        var template = "";
+        if (recordType == 'languages' || recordType == 'places') {
+          template = 'createEntityWithName.html';
+        } else {
+          template = 'createName.html';
+        }
+
+        var entityName = recordType.replace('s', '');
+
+        var controller = "";
+        if (recordType == 'languages') controller = "CreateLanguageModalCtrl";
+        else if (recordType == 'places') controller = "CreatePlaceModalCtrl";
+        else controller = "CreateNameModalCtrl";
+
+        var modalInstance = $modal.open({
+            templateUrl: template,
+            controller: controller,
+            resolve: {
+                modalParams: function() {
+                    return {
+                        "name": newNameValue,
+                        "type": type,
+                        "entityName": entityName,
+                        "back": {
+                          "recordType": recordType,
+                          "model": model,
+                          "type": type
+                        }
+                    };
+                }
+            },
+            size: 'lg'
+        });
+
+        $modalInstance.close();
+
+        /* callback for handling result */
+        modalInstance.result.then(function (agent) {
+          if (agent) {
+            model.id = agent.id;
+            model.name = agent.name;
+          } else {
+            model.id = null;
+          }
+        }, function () {
+            model.id = null;
+//            assignToModel(null);
+        });
+      };
+
+      // do initial search if auto-populated
+      if ($scope.nameSearchString.length > 0) {
+        $scope.autocomplete();
+      }
+
+    });
+
     /* Entry screen controller */
     sdbmApp.controller("EntryCtrl", function ($scope, $http, Entry, Source, sdbmutil, $modal) {
 
         EntryScope = $scope;
+        
+        $scope.selectNameAuthorityModal = function (recordType, model, type, base) {
+          // FIX ME: create name object if none exists
+          base = base || ""
+
+          if (recordType == 'languages' || recordType == 'places') {
+            var templateUrl = "selectModelAuthority.html";
+          } else {
+            var templateUrl = "selectNameAuthority.html";
+          }
+
+          var modal = $modal.open({
+              templateUrl: templateUrl,
+              controller: "SelectNameAuthorityCtrl",
+              resolve: {
+                recordType: function () { return recordType },
+                model: function () { return model },
+                type: function () { return type },
+                base: function () { return base }
+              },
+              size: 'lg'
+          });
+        }
+
+        $scope.removeNameAuthority = function (model, submodel) {
+          model[submodel] = null;
+          //model['observed_name'] = null;
+        }
 
         // affixes the association name and 'add' button to side, so that it is in view when list is long
         // FIX ME: glitchy, jumps
         // FIX ME: delay in loading causes the height calculations to malfunction
         $scope.affixer = function () {
           $('.side-title').each( function () {
-            // ignore this if the list is short
+            // ignore this if the list is short: temp fix?
             if ( $(this).closest('.row').height() < $(window).height() - 500) return;
-            
+            else if ( $(window).height() < 600) return;
+
             var top = $(this).closest('.row').offset().top;
             var bottom = $(document).height() - (top + $(this).closest('.row').height());
             $(this).affix({offset: {top: top, bottom: bottom} }); //Try it
@@ -505,14 +676,16 @@ var BOOKMARK_SCOPE;
         });
 
         $scope.setSource = function (src) {
-          $scope.entry.transaction_type = src.source_type == "Auction/Sale Catalog" ? "sale" : "no_transaction";
+          $scope.entry.transaction_type = src.source_type == "Auction/Dealer Catalog" ? "sale" : "no_transaction";
           $scope.entry.source = src;
           $scope.selecting_source = false;
         };
 
         $scope.editSource = function () {
           $scope.selecting_source = true;
-          console.log($scope.entry.source);
+          $scope.selecting_source_type = $scope.entry.source.source_type.id;
+          $scope.old_source_id = $scope.entry.source.id;
+          //console.log($scope.entry.source);
           $scope.entry.source_bk = $scope.entry.source;
           $scope.entry.source = undefined
         };
@@ -548,6 +721,10 @@ var BOOKMARK_SCOPE;
           if (index != -1) {
             prov.dates.splice(index, 1);
           }
+          if (prov.dates.length <= 0) {
+            prov.start_date_normalized_start = "";
+            prov.end_date_normalized_end = "";
+          }
         }
         $scope.getProvenanceDateOptions = function (prov, date) {
           var d_options = ["Start", "End", "Associated"];
@@ -578,26 +755,26 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.removeRecord = function (anArray, record) {
-            if(window.confirm("Are you sure you want to remove this record?")) {
-                var i;
-                for (i = 0; i < anArray.length; i++) {
-                    if (anArray[i] === record) {
-                        if(record.id) {
-                            record._destroy = 1;
-                        } else {
-                            anArray.splice(i, 1);
-                        }
-                        break;
+          if (Object.getOwnPropertyNames(record).length <= 1 || window.confirm("Are you sure you want to remove this record?")) {
+            var i;
+            for (i = 0; i < anArray.length; i++) {
+                if (anArray[i] === record) {
+                    if(record.id) {
+                        record._destroy = 1;
+                    } else {
+                        anArray.splice(i, 1);
                     }
+                    break;
                 }
-                // ensure that there's always one empty record
-                if($.grep(anArray, $scope.activeRecords).length === 0) {
-                    //anArray.push({});
-                }
+            }
+            // ensure that there's always one empty record
+            if($.grep(anArray, $scope.activeRecords).length === 0) {
+                //anArray.push({});
+            }
 
-                setTimeout( function () {            
-                  $scope.affixer();
-                }, 2000);
+            setTimeout( function () {            
+              $scope.affixer();
+            }, 2000);
           }
         };
 
@@ -692,14 +869,14 @@ var BOOKMARK_SCOPE;
             // Transform EventAgent records into buyer, seller,
             // selling_agent fields on the Event, so that UI can bind
             // to that data easily
-            if(entry.sale && entry.sale.sale_agents) {
+            /*if(entry.sale && entry.sale.sale_agents) {
                 var sale_agents = entry.sale.sale_agents;
                 for(var idx in sale_agents) {
                     var sale_agent = sale_agents[idx];
                     entry.sale[sale_agent.role] = sale_agent;
                 }
                 delete entry.sale.sale_agents;
-            }
+            }*/
             
             if(!entry.transaction_type) {
                 if(entry.source.source_type.entries_transaction_field !== 'choose') {
@@ -712,17 +889,18 @@ var BOOKMARK_SCOPE;
 
             if(!entry.sale) {
                 entry.sale = {
-                    sold: null
+                    sold: null,
+                    sale_agents: []
                 };
                 // prepopulate sale agent fields with data from source_agents
                 var sourceAgents = entry.source.source_agents || [];
                 sourceAgents.forEach(function (sourceAgent) {
-                    var role = sourceAgent.role;
-                    entry.sale[role] = {
-                        agent: sourceAgent.agent
-                    };
+                    var sa = {agent: sourceAgent.agent, role: "selling_agent"};
+                    entry.sale.sale_agents.push(sa);
                 });
             }
+
+            if (!entry.sale.sale_agents) entry.sale.sale_agents = [];
 
             $scope.sanityCheckFields(entry);
 
@@ -742,7 +920,12 @@ var BOOKMARK_SCOPE;
         $scope.postEntrySave = function(entry) {
             $scope.warnWhenLeavingPage = false;
 
+            // fix me: is it neccessary to re-load the entry once the save is complete?  I have commented it out unless it proves important
+            
+            //console.log(entry);
             $scope.entry = entry;
+            $scope.populateEntryViewModel($scope.entry);
+
             var modalInstance = $modal.open({
                 templateUrl: 'postEntrySave.html',
                 backdrop: 'static',
@@ -789,20 +972,33 @@ var BOOKMARK_SCOPE;
                 if(entryToSave.sale.price) {
                     entryToSave.sale.price = entryToSave.sale.price.replace(/[$,]/, '');
                 }
+
+                entryToSave.sale.sale_agents = entryToSave.sale.sale_agents || [];
+
+                for (var i = 0; i < entryToSave.sale.sale_agents.length; i++) {
+                  if (entryToSave.sale.sale_agents[i].agent) {
+                    entryToSave.sale.sale_agents[i].agent_id = entryToSave.sale.sale_agents[i].agent.id;
+                  } else {
+                    entryToSave.sale.sale_agents[i]._destroy = 1;
+                  }
+                }
                 // Transform fields back into SaleAgent records
-                entryToSave.sale.sale_agents = [];
+                /*entryToSave.sale.sale_agents = [];
                 ["buyer", "selling_agent", "seller_or_holder"].forEach(function (role) {
                     if(entryToSave.sale[role]) {
                         var sale_agent = entryToSave.sale[role];
                         sale_agent.role = role;
-                        if(sale_agent.agent) {
-                            sale_agent.agent_id = sale_agent.agent.id;
-                            delete sale_agent.agent;
+                        if(sale_agent.agent && sale_agent.agent.id) {
+                          sale_agent.agent_id = sale_agent.agent.id;
+                          delete sale_agent.agent;
+                        } else {
+                          sale_agent._destroy = 1;
                         }
                         entryToSave.sale.sale_agents.push(sale_agent);
                         delete entryToSave.sale[role];
                     }
                 });
+                //console.log(entryToSave.sale);*/
                 entryToSave.sales = [ entryToSave.sale ];
                 delete entryToSave.sale;
             } else {
@@ -901,8 +1097,31 @@ var BOOKMARK_SCOPE;
 
         // "constructor" for controller goes here
 
+        $scope.checkForChanges = function (entry1, entry2) {
+          // manually remove the blank selling agent and institution, if they exist
+          var entry2 = angular.copy(entry2);
+          if (entry2.institution.id == null) {
+            delete entry2.institution;
+          }
+/*          if (entry2.sale.selling_agent.agent.id == null) {
+            delete entry2.sale.selling_agent;
+          }
+          if (entry2.sale.seller_or_holder.agent.id == null) {
+            delete entry2.sale.seller_or_holder;
+          }
+          if (entry2.sale.buyer.agent.id == null) {
+            delete entry2.sale.buyer;
+          }
+          entry2.provenance.forEach( function (prov) {
+            if (prov.provenance_agent.id == null) {
+              delete prov.provenance_agent;
+            }
+          });*/
+          return angular.toJson(entry1) !== angular.toJson(entry2);
+        }
+
         $(window).bind('beforeunload', function() {
-            if ($scope.warnWhenLeavingPage && angular.toJson($scope.originalEntryViewModel) !== angular.toJson($scope.entry)) {
+            if ($scope.warnWhenLeavingPage && $scope.checkForChanges($scope.originalEntryViewModel, $scope.entry)) {
                 /*
                 console.log("originalEntryViewModel=");
                 console.log(angular.toJson($scope.originalEntryViewModel));
@@ -919,6 +1138,7 @@ var BOOKMARK_SCOPE;
         $http.get("/entries/types/").then(
             function(result) {
 
+                $scope.optionsSaleAgentRole = result.data.sale_agent_role;
                 $scope.optionsTransactionType = result.data.transaction_type;
                 $scope.optionsAuthorRole = result.data.author_role;
                 $scope.optionsArtistRole = result.data.artist_role;
@@ -1030,6 +1250,26 @@ var BOOKMARK_SCOPE;
      * sdbm-autocomplete-modal-template = (optional) template use for
      * displaying modal for entity creation.
      */
+
+    sdbmApp.directive("encourageNameAuthority", function ($http, $parse, $timeout, $modal) {
+      return function (scope, element, attrs) {
+        var modelName = attrs.encourageNameAuthorityModel;
+        var nameType = attrs.encourageNameAuthorityName;
+        
+        $(element).text("You have not selected an authority name.");
+
+        scope.$watch(modelName, function(newValue, oldValue) {
+          $(element).hide();
+          if (newValue.observed_name && newValue.observed_name.length > 0) {
+            if (!newValue[nameType] || !newValue[nameType].id) {
+              $(element).show();
+            }
+          }
+        }, true);
+
+      }
+    });
+
     sdbmApp.directive("sdbmAutocomplete", function ($http, $parse, $timeout, $modal) {
         return function (scope, element, attrs) {
             var modelName = attrs.sdbmAutocompleteModel;
@@ -1061,23 +1301,27 @@ var BOOKMARK_SCOPE;
                     valueToAssign = value.value;
                 }
                 model.assign(scope, valueToAssign);
+                //console.log(valueToAssign);
             };
 
             var eraseModel = function() {
               var model = $parse(modelName);
               model.assign(scope, null);
-            }
+            };
 
             var refocus = function(badValue) {
+
                 // TODO: calling focus() directly here doesn't work in
                 // Firefox (but works in Chrome). Using setTimeout()
                 // is susceptible to race conditions with the
                 // browser's default handling of tab key, but in
                 // practice, it works.  Need to find a better way.
-                setTimeout(function() {
+                
+                /*setTimeout(function() {
                     $(element).focus();
-                }, 100);
+                }, 100);*/
 
+                //console.log(element, badValue, $(element), $(element).tooltip);
                 $(element)
                     .tooltip("option", "content", badValue + " isn't valid input, please change it or select a value from the suggestion box")
                     .tooltip("option", "disabled", false)
@@ -1116,7 +1360,7 @@ var BOOKMARK_SCOPE;
                         });
                         if (!exactMatch && controller) {
                             options.unshift({
-                                label: "\u00BB Create '" + searchTerm + "'",
+                                label: "\u00BB Propose '" + searchTerm + "'",
                                 value: 'CREATE',
                                 id: 'CREATE'
                             });
@@ -1166,7 +1410,8 @@ var BOOKMARK_SCOPE;
 
             // if user tries to leave input, make sure value is valid
             $(element).focusout(function(event) {
-                if(invalidInput) {
+                if ($(element).val() == "") {}
+                else if(invalidInput) {
                     refocus($(element).val());
                 }
             });
@@ -1191,7 +1436,7 @@ var BOOKMARK_SCOPE;
                                 options.forEach(function (option) {
                                     if(inputValue.toLowerCase() === option.label.toLowerCase()) {
                                         assignToModel(option);
-                                        scope.$apply();
+                                        //scope.$apply();
                                         match = true;
                                     }
                                 });
@@ -1203,23 +1448,29 @@ var BOOKMARK_SCOPE;
                                     invalidInput = true;
                                 }
                                 assignToModel(null);
-                                scope.$apply();
+                                //scope.$apply();
                             }
                         } else {
                             // whitespace or empty field - the user tried to erase the name entered, so let them
                             $(element).val("");
                             eraseModel();
+                            invalidInput = false;
 //                            assignToModel(null);
-                            scope.$apply();
+                           // scope.$apply();
                         }
                     } else {
                         invalidInput = false;
                     }
+                    //console.log(scope.form);
+                    if (scope.form && scope.form.source_agent)
+                    {
+                      scope.form.source_agent.$setValidity('text', !invalidInput);
+                    }
+                    scope.$apply();
                 },
                 select: function(event, ui) {
                     // prevent autocomplete's default behavior of using value instead of label
                     event.preventDefault();
-
                     if(ui.item.value === 'CREATE') {
                         $timeout(function() {
 
@@ -1251,8 +1502,9 @@ var BOOKMARK_SCOPE;
                     } else {
                         $(element).val(ui.item.label);
                         assignToModel(ui.item);
-                        scope.$apply();
                     }
+                    invalidInput = false;
+                    scope.$apply();
                 }
             }).data("ui-autocomplete")._renderItem = function( ul, item ) {
                 // if there's an 'unreviewed' attribute set to false,
@@ -1409,9 +1661,60 @@ var BOOKMARK_SCOPE;
 
     sdbmApp.controller('SourceCtrl', function ($scope, $http, $modal, sdbmutil, Source) {
 
+        $scope.selectNameAuthorityModal = function (recordType, model, role, type) {
+          if ($scope.mergeEdit !== false) {
+            model.agent = {id: null};
+            model.role = role;
+            var m = model.agent;
+            var modal = $modal.open({
+                templateUrl: "selectNameAuthority.html",
+                controller: "SelectNameAuthorityCtrl",
+                resolve: {
+                  recordType: function () { return recordType },
+                  model: function () { return m },
+                  type: function () { return type },
+                  base: ""
+                },
+                size: 'lg'
+            });
+          }
+        }
+
+
+        $scope.removeNameAuthority = function (model, submodel) {
+          if ($scope.mergeEdit !== false) {
+            model[submodel] = null;
+            model['observed_name'] = null;
+          }
+        }
+
         // store in scope, otherwise angular template code can't
         // get a reference to this
-        // 
+
+
+        $scope.beginMergeEdit = function () {
+          $('.merge-into').removeClass('no-edit'); 
+          $scope.backupSource = angular.copy($scope.source);
+          $scope.mergeEdit = true;
+          //console.log(1, $scope.source_agent); 
+        };
+        $scope.cancelMergeEdit = function () {
+          $('.merge-into').addClass('no-edit');
+          $scope.source = $scope.backupSource;
+          //$scope.form.source_agent.$setValidity('text', true);
+          $scope.mergeEdit = false;
+        }
+        $scope.confirmMergeEdit = function () {
+          if ($scope.form.$valid) {
+            $scope.backupSource = undefined;
+            $scope.mergeEdit = false;
+            $scope.save();
+            $('.merge-into').addClass('no-edit');
+          } else {
+            alert('Error: invalid input detected.');
+          }
+        }
+
         $scope.sdbmutil = sdbmutil;
 
         $scope.currentlySaving = false;
@@ -1428,9 +1731,34 @@ var BOOKMARK_SCOPE;
 
         $scope.pageTitle = "";
 
+        $scope.source_type = $scope.source ? $scope.source.source_type : "";
         $scope.source = undefined;
 
         $scope.source_agents = [];
+
+        $scope.addRecord = function (anArray) {
+          anArray.push({});
+        };
+
+        $scope.removeRecord = function (anArray, record) {
+          if (Object.getOwnPropertyNames(record).length <= 1 || window.confirm("Are you sure you want to remove this record?")) {
+            var i;
+            for (i = 0; i < anArray.length; i++) {
+                if (anArray[i] === record) {
+                    if(record.id) {
+                        record._destroy = 1;
+                    } else {
+                        anArray.splice(i, 1);
+                    }
+                    break;
+                }
+            }
+          }
+        };
+
+        $scope.activeRecords = function(element) {
+            return !element._destroy;
+        };
 
         $scope.debug = function () {
             console.log($scope.source);
@@ -1448,7 +1776,7 @@ var BOOKMARK_SCOPE;
                     }
                 });
             }
-            return "Create a New " + sourceTypeForTitle;
+            return 'Create a New ' + sourceTypeForTitle;
         };
 
         $scope.showFields = function() {
@@ -1470,6 +1798,7 @@ var BOOKMARK_SCOPE;
             source.date_accessed = SDBM.dateDashes(source.date_accessed);
 
             $scope.agent_role_types.forEach(function (role) {
+                if (!source.source_agents) return;
                 source.source_agents.forEach(function (source_agent) {
                     if (source_agent.role === role) {
                         source[role] = source_agent;
@@ -1481,7 +1810,13 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.postSourceSave = function(source) {
+            if (window.location.pathname.indexOf('merge') != -1) {
+              return;    
+            } 
+
             $scope.source = source;
+            $scope.populateSourceViewModel($scope.source);
+
             var modalInstance = $modal.open({
                 templateUrl: 'postSourceSave.html',
                 backdrop: 'static',
@@ -1551,7 +1886,7 @@ var BOOKMARK_SCOPE;
           $scope.similarSources = data.similar;
         }
 
-        $scope.save = function () {
+        $scope.save = function (merging) {
             $scope.currentlySaving = true;
 
             $scope.sourceToSave = new Source(angular.copy($scope.source));
@@ -1570,14 +1905,14 @@ var BOOKMARK_SCOPE;
                 sourceToSave.date_accessed = sourceToSave.date_accessed.replace(/-/g, "");
             }
 
-            sourceToSave.source_agents = [];
+            /*sourceToSave.source_agents = [];
             $scope.agent_role_types.forEach(function (role) {
                 if (sourceToSave[role]) {
                     sourceToSave[role].role = role;
                     sourceToSave.source_agents.push(sourceToSave[role]);
                     delete sourceToSave[role];
                 }
-            });
+            });*/
 
             // filter out irrelevant fields and source_agent records
             // with invalid roles; these can be populated because user
@@ -1635,6 +1970,16 @@ var BOOKMARK_SCOPE;
 
         SDBM.disableFormSubmissionOnEnter('#source-form');
 
+        $scope.sourceTypeChange = function () {
+          if ($scope.source && $scope.source.source_type) {
+            if ($scope.source.source_type.name == 'online')
+              $scope.source.medium = 'internet';
+            else
+              $scope.source.medium = '';
+            $scope.source.source_agents = [];
+          }
+        };
+
         $http.get("/sources/types.json").then(
             function(result) {
 
@@ -1650,8 +1995,16 @@ var BOOKMARK_SCOPE;
                         sdbmutil.promiseErrorHandlerFactory("Error loading entry data for this page")
                     );
                 } else {
-                    $scope.source = new Source({ source_type: "" });
+                    var today = new Date();
+                    var month = today.getMonth() + 1;
+                    month = month < 10 ? "0" + month : month;
+                    var date = today.getDate() < 10 ? "0" + today.getDate() : today.getDate();
+                    var todayString = today.getFullYear() + "-" + month + "-" + date;
+                    var source_type = $scope.optionsSourceType.filter(function (e) { return e.id == $scope.source_type });
+                    source_type = source_type.length == 1 ? source_type[0] : "";
+                    $scope.source = new Source({ source_type: source_type || "", date_accessed: todayString, date: source_type.id == 4 ? todayString : "" });
                 }
+                $scope.source.source_agents = [];
             },
             // error callback
             sdbmutil.promiseErrorHandlerFactory("Error initializing dropdown options on this page, can't proceed.")
@@ -1663,6 +2016,11 @@ var BOOKMARK_SCOPE;
     // you to search for a database object and create one. Specialized
     // controllers should call this fn and modify/supply anything in
     // $scope it needs to.
+    
+    var baseSelectNameAuthorityModalCtrl = function ($scope, $http, $modalInstance, sdbmutil) {
+
+    }
+
     var baseCreateEntityModalCtrl = function ($scope, $http, $modalInstance, sdbmutil) {
 
         $scope.readyToCreate = true;
@@ -1681,18 +2039,24 @@ var BOOKMARK_SCOPE;
                 function (entity) {
                     $modalInstance.close(entity);
                 },
-                function(response) {
-                    $scope.saveError = sdbmutil.parseRailsErrors(response.data.errors).join("; ") || "Unknown Error";
-                }
+                $scope.saveResponse
             );
         };
+
+        $scope.saveResponse = function(response) {
+          $scope.saveError = sdbmutil.parseRailsErrors(response.data.errors).join("; ") || "Unknown Error";
+        }
+
+        $scope.useExisting = function (entity) {
+          $modalInstance.close(entity);
+        }
 
         $scope.cancel = function () {
             $modalInstance.dismiss('cancel');
         };
     };
 
-    sdbmApp.controller('CreateNameModalCtrl', function ($scope, $http, $modalInstance, sdbmutil, modalParams, Name) {
+    sdbmApp.controller('CreateNameModalCtrl', function ($scope, $http, $modalInstance, $modal, sdbmutil, modalParams, Name) {
         $scope.entityFactory = function() { return new Name(); };
 
         $scope.entity_attributes = function(entity) {
@@ -1710,6 +2074,23 @@ var BOOKMARK_SCOPE;
         $scope.loading = false;
         $scope.message = "";
         $scope.showSuggestions = false;
+
+        $scope.goBack = function () {
+          $modalInstance.close();
+          if (modalParams.back) {
+            var modal = $modal.open({
+                templateUrl: "selectNameAuthority.html",
+                controller: "SelectNameAuthorityCtrl", //112
+                resolve: {
+                  recordType: function () { return modalParams.back.recordType },
+                  model: function () { return modalParams.back.model },
+                  type: function () { return modalParams.back.type },
+                  base: function () { return modalParams.name }
+                },
+                size: 'lg'
+            });
+          }
+        }
 
         $scope.findSuggestions = function(name) {
             $scope.message = "";
@@ -1736,26 +2117,79 @@ var BOOKMARK_SCOPE;
             $scope.entity.name = suggestion.name;
             $scope.entity.viaf_id = suggestion.viaf_id;
         };
+
+
+        $scope.saveResponse = function(response) {
+          //console.log(response);
+          $scope.errors = [];
+          $scope.saveError = [];
+          if (response.data.errors.name) {
+            for (var i = 0; i < response.data.errors.name.length; i++) {
+              $scope.saveError += response.data.errors.name[i].message + "\n";
+              if (!response.data.errors.name[i].message) response.data.errors.name[i] = { message: response.data.errors.name[i]};
+              $scope.errors.push(response.data.errors.name[i]);
+            }
+          }
+          if (response.data.errors.viaf_id) {
+            for (var i = 0; i <  response.data.errors.viaf_id.length; i++) {
+              $scope.saveError +=  response.data.errors.viaf_id[i].message + "\n";
+              $scope.errors.push(response.data.errors.viaf_id[i]);
+            }
+          }
+          //$scope.saveError = sdbmutil.parseRailsErrors(response.data.errors).join("; ") || "Unknown Error";
+        }
     });
 
-    sdbmApp.controller('CreateLanguageModalCtrl', function ($scope, $http, $modalInstance, sdbmutil, modalParams, Language) {
+    sdbmApp.controller('CreateLanguageModalCtrl', function ($scope, $http, $modalInstance, $modal, sdbmutil, modalParams, Language) {
         $scope.entityFactory = function() { return new Language(); };
 
         $scope.entity_attributes = function(entity) {
             entity.name = modalParams.name;
         };
 
+        $scope.goBack = function () {
+          $modalInstance.close();
+          if (modalParams.back) {
+            var modal = $modal.open({
+                templateUrl: "selectModelAuthority.html",
+                controller: "SelectNameAuthorityCtrl", //112
+                resolve: {
+                  recordType: function () { return modalParams.back.recordType },
+                  model: function () { return modalParams.back.model },
+                  type: function () { return modalParams.back.type }
+                },
+                size: 'lg'
+            });
+          }
+        }
+
         baseCreateEntityModalCtrl($scope, $http, $modalInstance, sdbmutil);
 
         $scope.entityName = "language";
     });
 
-    sdbmApp.controller('CreatePlaceModalCtrl', function ($scope, $http, $modalInstance, sdbmutil, modalParams, Place) {
+    sdbmApp.controller('CreatePlaceModalCtrl', function ($scope, $http, $modalInstance, $modal, sdbmutil, modalParams, Place) {
         $scope.entityFactory = function() { return new Place(); };
 
         $scope.entity_attributes = function(entity) {
             entity.name = modalParams.name;
         };
+
+        $scope.goBack = function () {
+          $modalInstance.close();
+          if (modalParams.back) {
+            var modal = $modal.open({
+                templateUrl: "selectModelAuthority.html",
+                controller: "SelectNameAuthorityCtrl", //112
+                resolve: {
+                  recordType: function () { return modalParams.back.recordType },
+                  model: function () { return modalParams.back.model },
+                  type: function () { return modalParams.back.type }
+                },
+                size: 'lg'
+            });
+          }
+        }
 
         baseCreateEntityModalCtrl($scope, $http, $modalInstance, sdbmutil);
 
@@ -1794,46 +2228,117 @@ var BOOKMARK_SCOPE;
     };
   });
 
-  sdbmApp.controller('ManageBookmarks', function ($scope, $sce) {
+  sdbmApp.controller('ManageBookmarks', function ($scope, $sce, $location) {
+
+    BOOKMARK_SCOPE = $scope;
+
     $scope.removetag = function (bookmark, tag) {
-      $.get('/bookmarks/' + bookmark.id + '/removetag', {tag: tag}).done( function (e) {
-        bookmark.tags = e.tags;
-          $scope.renew();
-      });
+      var index = bookmark.tags.indexOf(tag);
+      if (index != -1) {
+        bookmark.tags.splice(index, 1);
+        $.get('/bookmarks/' + bookmark.id + '/removetag', {tag: tag}).done( function (e) {
+//          bookmark.tags = e.tags;
+//            $scope.renew();
+          bookmark.updated_at = e.updated_at;
+          $scope.saveLocalStorage();
+        });
+      }
     }
     $scope.addtag = function (bookmark, tag) {
-      $.get('/bookmarks/' + bookmark.id + '/addtag', {tag: tag}).done( function (e) {
-        bookmark.tags = e.tags;
+      if (bookmark.tags.indexOf(tag) == -1) {
+        bookmark.tags.push(tag);
         bookmark.newtag = "";
+        $.get('/bookmarks/' + bookmark.id + '/addtag', {tag: tag}).done( function (e) {
+          //bookmark.tags = e.tags;
+          //$scope.renew();
+          bookmark.updated_at = e.updated_at;
+          $scope.saveLocalStorage();
+        });
+      }
+    }
+
+    $scope.searchTag = function (tag) {
+      $('input[name=tag-search]').val(tag);
+      if (localStorage) localStorage.sidebar_searchTag = tag;
+      $scope.search_tag = tag;
+    }
+
+    $scope.hasTag = function (bookmark) {
+      if (!$scope.search_tag) return true;
+      else return bookmark.tags.indexOf($scope.search_tag) != -1;
+    } 
+
+    $scope.loadBookmarks = function () {
+      $.get('/bookmarks/reload.json', {details: (window.location.pathname == "/bookmarks")}).done( function (e) {
+        if (e.error) return;
+        
+        $scope.all_bookmarks = e.bookmarks;
+        $scope.bookmark_tracker = e.bookmark_tracker;
+        //console.log(e);
+        //console.log('bookmarks loaded', $scope.all_bookmarks);
+        $('.bookmarks').scroll( function (e) {
+          if (localStorage) localStorage.sidebar_scroll = $(this).scrollTop();
+        });
+        var scroll = localStorage ? localStorage.sidebar_scroll : 0;
+
+        if (localStorage.sidebar_tab && localStorage.sidebar_tab != "undefined") {
+          $scope.active = localStorage.sidebar_tab;
+        } else {
+          for (var key in $scope.all_bookmarks) {
+            if ($scope.all_bookmarks[key].length > 0) {
+              $scope.active = key;
+              localStorage.sidebar_tab = $scope.active;
+              break;
+            }
+          }
+        }
         $scope.renew();
+        $scope.saveLocalStorage();
+        //if (!tag) $('.tab-pane.active.in .bookmarks').scrollTop(scroll);
+      }).error( function (e) {
+        console.log('error.', e);
       });
     }
+
+    $scope.saveLocalStorage = function () {
+      if (localStorage) {
+        localStorage.all_bookmarks = angular.toJson($scope.all_bookmarks);
+        localStorage.bookmark_tracker = $scope.bookmark_tracker || 0;
+        if ($scope.active) {
+          localStorage.sidebar_tab = $scope.active;
+        }
+      }
+    }
+
     $scope.removeBookmark = function (name, bookmark) {
       var i = $scope.all_bookmarks[name].indexOf(bookmark);
       if (i >= 0) {
         $.ajax({url: '/bookmarks/' + bookmark.id, method: 'delete'}).done( function (e) {
-          console.log('done', e);
+          //console.log('done', e);
           $scope.all_bookmarks[name].splice(i, 1);
           $scope.renew();
+          var id = bookmark.document_id, type = bookmark.document_type;
+          //console.log(bookmark, type);
+          addNotification(type + ' ' + id + ' un-bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
         }).error( function (e) {
           console.log('error', e);
         });
       }
     }
-    $scope.searchTag = function (tag) {
-      $.get('/bookmarks/reload.json', {tag: tag}).done( function (e) {
-        $scope.all_bookmarks = e;
-        $scope.renew();
-      }).error( function (e) {
-        console.log('error.', e);
-      });
-    }
+
     $scope.addBookmark = function (id, type) {
-      console.log('add?', id, type);
+      // check if already in bookmarks
+      var b = $scope.findBookmark(type, id);
+      if (b) {
+        $scope.removeBookmark(type, b);
+        return;
+      }
       $.ajax({url: '/bookmarks/new', data: {document_id: id, document_type: type}}).done( function (e) {
-        if (!e.error) {
-          $scope.all_bookmarks[type].push(e);
+        if (!e.error && $scope.all_bookmarks[type]) {
+          $scope.active = type;
+          $scope.all_bookmarks[type].unshift(e);
           $scope.renew();
+          addNotification(type + ' ' + id + ' bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'success');
         } else {
           console.log(e.error);
         }
@@ -1842,8 +2347,10 @@ var BOOKMARK_SCOPE;
       });
       return false;
     }
+
     $scope.renew = function () {
-      $scope.$digest();
+      $scope.$apply(); // why is this here?
+      $('.bookmark-link').css({color: ""});
       for (var i = 0; i < $scope.tabs.length; i++) {
         var type = $scope.tabs[i];
         for (var j = 0; j < $scope.all_bookmarks[type].length; j++) {
@@ -1851,6 +2358,7 @@ var BOOKMARK_SCOPE;
           $('.bookmark-link[in_bookmarks="' + link + '"]').css({color: "gold"});
         }
       }
+      $scope.saveLocalStorage();
     }
     // this is one ugly function
     $scope.actionButton = function (bookmark) {
@@ -1870,17 +2378,200 @@ var BOOKMARK_SCOPE;
         return '<a href="' + window.location.pathname + '?target_id=' + bookmark.document_id + '" class="btn btn-xs btn-info">Merge</a>'
       }
     }
-    $scope.tabs = ["Entry", "Manuscript", "Name", "Source"];
-    $scope.searchTag("");
+    
+    $scope.findBookmark = function(type, id) {
+      if (!$scope.all_bookmarks[type]) return false;
+      for (var i = 0; i < $scope.all_bookmarks[type].length; i++) {
+        if ($scope.all_bookmarks[type][i].document_id == id) {
+          return $scope.all_bookmarks[type][i];
+        }
+      }
+      return false;
+    }
 
-    BOOKMARK_SCOPE = $scope;
+    $scope.exportBookmarks = function (type, link) {
+      if (!link) {
+        alert('There is nothing to export.');
+        return false;
+      }
+      var plural = link.split('/')[1];
+      if (type != "Entry") plural += "/search";
+      var url = "/" + plural + ".csv?op=OR&search_field=advanced&per_page=5000";
+      for (var i = 0; i < $scope.all_bookmarks[type].length; i++) {
+        if (type == "Entry")
+          url += "&entry_id[]=" + $scope.all_bookmarks[type][i].document_id;
+        else
+          url += "&id[]=" + $scope.all_bookmarks[type][i].document_id;  
+      }
+
+      exportCSV(url);
+    }
+
+    $scope.toggleSidebar = function (skip) {
+      if (!skip) $('.sidebar, .main-content').addClass('transition');
+      $('.sidebar').toggleClass('in');
+      $('.main-content').toggleClass('in');
+      setTimeout(function () {
+        if ($('.sidebar').hasClass('in')) {
+          $('.toggle-sidebar').html('<span class="glyphicon glyphicon-remove"></span>');
+          localStorage.sidebar_open = "true";
+        } else {
+          $('.toggle-sidebar').html('<span class="glyphicon glyphicon-bookmark"></span>');
+          localStorage.sidebar_open = "false";
+        }
+        $('.sidebar, .main-content').removeClass('transition');
+      }, 500);
+    }
+
+    // should this be fixed, eventually?  is there any reason for this to be here, instead of hard-coded?
+    $scope.tabs = ["Entry", "Manuscript", "Name", "Source"];
+    $scope.all_bookmarks = {Entry: [], Manuscript: [], Name: [], Source: []};
+
+    // load tag from url
+    if (window.location.search && window.location.search.indexOf('tag=') != -1) {
+      var search  = decodeURIComponent(window.location.search.split('tag=')[1]);
+      $scope.tagSearch = search;
+      $scope.searchTag(search);
+    }
+
+    $scope.addTabToStorage = function (name) {
+      $scope.active = name;
+      if (localStorage) localStorage.sidebar_tab = name;
+    }
+
+    $scope.checkForUpdates = function () {
+      // 1. call controller method 'check'
+      // 2. if true, call loadBookmarks
+      // 3. else, load from localstorage
+      $.get("/bookmarks/check").done(function (e) {
+        if (e.error) {
+          if (e.error == "no_user"); // nothing, just don't update
+          else
+            $scope.loadBookmarks();
+          //console.log(e.error);
+        }
+        else {
+          //console.log(e.bookmark_tracker, $scope.bookmark_tracker);
+          if (e.bookmark_tracker > $scope.bookmark_tracker) {
+            $scope.loadBookmarks();
+          }
+        }
+      });
+    }
+
+    if (localStorage && localStorage.sidebar_open == "true" && $('.sidebar').length > 0) {
+      $scope.toggleSidebar(true);
+    }
+
+    $scope.init = function () {
+      if (localStorage) {
+
+        if (localStorage.all_bookmarks) {
+          $scope.all_bookmarks = angular.fromJson(localStorage.all_bookmarks);
+          $scope.bookmark_tracker = Number(localStorage.bookmark_tracker) || 0;
+          $scope.checkForUpdates();
+        } else {
+          $scope.loadBookmarks();
+        }
+        
+        if (localStorage.sidebar_tab && localStorage.sidebar_tab != "undefined") {
+          $scope.active = localStorage.sidebar_tab;
+        } else {
+          for (var key in $scope.all_bookmarks) {
+            if ($scope.all_bookmarks[key].length > 0) {
+              $scope.active = key;
+              localStorage.sidebar_tab = $scope.active;
+              break;
+            }
+          }
+        }
+
+      } else {
+        $scope.loadBookmarks();
+      }
+    }
+
+    $scope.init();
+
+    $(window).focus( $scope.init );
+//    setTimeout(function () {
+      // perform first search on starting
+      //if (localStorage && localStorage.)
+      // check for updates -->
+      
+
+
+ //     $scope.loadBookmarks();//localStorage.sidebar_searchTag || "");
+ //   }, 10);
+
+    
   });
 
 }());
 
+//function toggleSidebar() 
+
+function exportCSV(url) {
+  $.get(url).done(function (e) {
+      if (e.error) {
+          if (e.error == "at limit") {
+              addNotification("You have reached your export limit.  Download or delete some of your exports <a href='/downloads/'>here</a>.", "danger");
+          }
+          return;
+      }
+
+      var myDownloadComplete = false;
+      $('#user-nav a').css({color: 'green'});
+      addNotification("CSV Export is being prepared...", "info");
+      var download = JSON.parse(e);
+      var url = "/downloads/" + download.id;
+      var count = 0;
+      var interval = setInterval( function () {
+          $.ajax({url: url, data: {ping: true}}).done( function (r) {
+              //window.location = url;
+              if (r != "in progress" && !myDownloadComplete) {
+                  addNotification(download.filename + " is ready - <a href='" + url + "'>download file</a>", "success", true);
+                  $('#user-nav a').css({color: ''});
+                  $('#downloads-count').text(download.count);
+                  window.clearInterval(interval);
+                  myDownloadComplete = true;
+              } else {
+                  count += 1;
+              }
+
+              if (count > 1000) window.clearInterval(interval);                    
+          }).error( function (r) {
+              console.log('error', r);
+              window.clearInterval(interval);
+          });
+      }, 1000);
+  }).error( function (e) {
+      console.log('error', e);
+  })
+}
+
+function addNotification (message, type, permanent) {
+  var notification = $('<div><a class="close" data-dismiss="alert" aria-label="close">&times;</a>' + message + "</div>");
+  notification.addClass('alert').addClass('alert-' + type).addClass('alert-absolute');
+  
+  notification.hide();
+  $('.alerts-absolute').append(notification);
+  notification.fadeIn();
+  
+  if (!permanent) {
+    setTimeout(function () {
+      notification.fadeOut('slow', function () {
+        notification.remove();
+      });
+    }, 10000)
+  } // fade out after ten seconds;
+}
+
 // this works!  maybe not a good idea?
 function addBookmark(id, type) {
   BOOKMARK_SCOPE.addBookmark(id, type);
+  // if removed, have one 
+  //addNotification(type + " " + id + " bookmarked! <span onclick='addBookmark(" + id + ',"' + type + "\")'>Undo<span>", 'info' );
 }
 
 function renewBookmarks() {

@@ -5,8 +5,8 @@
      var resourceName = "<%= resource_name %>";
 
      // flag = show all records, or only those that the user created
-     <% if can? :manage, model_class  %>
-     var showOnlyRecordsCreatedByUser = 0;
+     <% if can? :manage, model_class %>
+     var showOnlyRecordsCreatedByUser = <%= params[:created_by_user] || 0 %>;
      <% else %>
      var showOnlyRecordsCreatedByUser = 1;
      <% end %>
@@ -25,17 +25,12 @@
             {
                 sdbmssMinWidth: "20px",
                 sdbmssMaxWidth: "20px",
-                title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
+                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
                 orderable: false,
-                className: "text-center",
+                className: 'text-center unreviewed_only',
                 render: function (data, type, full, meta) {
                     if(manageManuscripts.getUnreviewedOnly() === 1) {
-                        return  '' + 
-                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageManuscripts.dataTable.getColumnIndex("Manuscript ID")] + '" id="checkbox_' + meta.row + '"/>' + 
-                                '<label for="checkbox_' + meta.row + '">' + 
-                                '<a class="btn btn-default btn-xs glyphicon glyphicon-unchecked unchecked"></a>' + 
-                                '<a class="btn btn-default btn-xs glyphicon glyphicon-check checked"></a>' + 
-                                '</label>' + '';
+                        return '<input type="checkbox" name="review" value="' + full[manageManuscripts.dataTable.getColumnIndex("Manuscript ID")] + '"/>';
                     }
                     return '';
                 }
@@ -48,7 +43,7 @@
                 render: function (data, type, full, meta) {
                      var str = '<span class="btn-group options-btn-group">'
                      + '<a onclick="addBookmark(' + data + ', \'Manuscript\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/manuscripts/' + data + '">' 
-                                + '<span class="glyphicon glyphicon-star"></span></a>'
+                                + '<span class="glyphicon glyphicon-bookmark"></span></a>'
                                   + '<a class="btn btn-xs btn-success" href="/' + manageManuscripts.options.resourceName + '/' + data + '/edit/">Edit</a>'
                             + '<a class="btn btn-xs btn-danger delete-link" href="/' + manageManuscripts.options.resourceName + '/' + data + '.json">Delete</a>'
                             + '<a class="btn btn-xs btn-info linking-tool-link" target="_blank" href="/linkingtool/manuscript/' + data + '">Linking Tool</a></span>';
@@ -76,6 +71,12 @@
                 sdbmssMaxWidth: "200px",
                 title: 'Last Known Location',
                 dbSortField: 'location'
+            },
+            {
+                sdbmssMinWidth: "200px",
+                sdbmssMaxWidth: "200px",
+                title: 'URL',
+                dbSortField: 'url'
             },
             {
                 sdbmssMinWidth: "100px",
@@ -123,6 +124,7 @@
              result.id,
              result.name,
              result.location,
+             result.url,
              result.entries_count,
              result.reviewed.toString(),
              result.created_by || "",

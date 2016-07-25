@@ -6,103 +6,153 @@
     </div>
 </div>
 
-<div class="row">
-    <div class="col-sm-5">
-        <div class='panel <%= @target.present? ? "panel-danger input-warning" : "panel-default" %>'>
-            <div class='panel-heading'>
-                <div class='h4'><%= link_to @model.public_id, name_path(@model) %>
-                </div>
-            </div>
-            <div class="panel-body">
+<div class="col-sm-5">
+    <div class='panel <%= @target.present? ? "panel-danger input-warning" : "panel-default" %>'>
+        <div class='panel-heading'>
+            <span class='h3'>
+                <%= link_to @model.public_id, name_path(@model) %>
+                <% if @target.present? %>
+                    <small>(Will be deleted)</small>
+                <% end %>
+            </span>
+        </div>
+        <% if @target.present? %>
+            <div class="panel-body to-delete to-delete-small">
                 <%= render partial: "names/merge_form", locals: { name: @model } %>
             </div>
-        </div>
-    </div>
-    <div class='col-sm-2'>
-        <%= image_tag 'right-arrow.png', class: 'img img-responsive' %>
-    </div>
-    <div class="col-sm-5">
-        <% if @target_id.present? && @target.present? %>
-            <%= form_tag merge_name_path(@model) do %>
-                <div class='panel <%= @target.present? ? "panel-success" : "panel-default" %>'>
-                    <div class='panel-heading'>
-                        <div class='h4'><%= link_to @target.public_id, name_path(@target) %>
-                        </div>
-                    </div>
-                    <div class="panel-body">
-                        <%= render partial: "names/merge_form", locals: { name: @target } %>
-                    </div>
-                </div>
-                <div class="panel panel-success">
-                    <div class="panel-body">
-                        <div><b>Confirm</b></div>
-                        <p>Are you sure you want to do this? <%= @model.public_id %> will be marked as deleted and its fields cleared out.</p>
-                            <input type="hidden" name="confirm" value="yes"/>
-                            <input type="hidden" name="target_id" value="<%= @target.id %>"/>
-                        <button class="btn btn-primary">Yes</button>
-                        <a class="btn btn-warning" href="<%= merge_name_path(@model) %>">Cancel</a>
-                        <%= link_to "Swap", merge_name_path(@target, :target_id => @model.id), class: 'btn btn-info' %>
-                    </div>
-                </div>
-            <% end %>
         <% else %>
-            <% if @target_id.present? %>
-                <div class='panel panel-danger'>
-                <% if @warning.present? %>
-                    <div class="panel-heading"><%= @warning %></div>
-                <% else %>
-                    <div class="panel-heading">Could not find record #<%= @target_id %></div>
-                <% end %>
-                </div>
-            <% end %>
-            <%= form_tag(request.path, method: :get, class: "form-horizontal sdbmss-form") do %>
-                <div class="row">
-                    <label class="col-sm-3 control-label">Find by unique ID</label>
-                    <div class="col-sm-6">
-                        <input type="text" name="target_id" class="form-control"></p>
-                    </div>
-                    <div class="col-sm-3">
-                        <button class="btn btn-primary">Select</button>
-                    </div>
-                </div>
-            <% end %>
-            <div class='panel panel-default'>
-                <% if @similar.present? %>
-                    <div class='panel-heading'><b>Suggestions</b></div>
-                    <table class='table table-striped'>
-                        <thead>
-                            <tr>
-                                <th>Merge</th>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Aut.</th>
-                                <th>Art.</th>
-                                <th>Scr.</th>
-                                <th>Sale</th>
-                                <th>Pr.</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% @similar.each do |nm| %>
-                                <% if nm.id != @model.id %>
-                                <tr>
-                                    <td><a class='btn btn-primary' href="<%= name_path(id: @model.id)%>/merge?target_id=<%= nm.id %>">Select</a></td>
-                                    <td><%= nm.id %></td>
-                                    <td><%= nm.name %></td>
-                                    <td><%= nm.authors_count %></td>
-                                    <td><%= nm.artists_count %></td>
-                                    <td><%= nm.scribes_count %></td>
-                                    <td><%= nm.sale_agents_count %></td>
-                                    <td><%= nm.provenance_count %></td>
-                                </tr>
-                                <% end %>
-                            <% end %>
-                        </tbody>
-                    </table>
-                <% else %>
-                    <b>No suggested names found, use manual search above.</b>
-                <% end %>
+            <div class="panel-body">
+                <%= render partial: "shared/name_main", locals: {name: @model} %>
             </div>
         <% end %>
     </div>
 </div>
+<%= form_tag merge_name_path(@model) do %>
+<div class='col-sm-2 text-center'>
+    <% if @target %>
+    <div class="">
+        <div class="panel-body text-center">
+            <div><span class='h3'>Confirm</span></div>
+            <p>Are you sure? <strong><%= @model.public_id %></strong> will be <strong class="text-danger">deleted.</strong></p>
+                <input type="hidden" name="confirm" value="yes"/>
+                <input type="hidden" name="target_id" value="<%= @target.id %>"/>
+            <button class="btn btn-primary">Yes</button>
+            <a class="btn btn-warning" href="<%= merge_name_path(@model) %>">Cancel</a>
+        </div>
+    </div>
+    <span class="glyphicon glyphicon-arrow-right chevron"></span>
+    <!--<%= image_tag 'right-arrow.png', class: 'img img-responsive chevron' %>-->
+    <div class="">
+        <div class="panel-body text-center">
+            <%= link_to "Swap Names", merge_name_path(@target, :target_id => @model.id), class: 'btn btn-info' %>
+        </div>
+    </div>
+    <% end %>
+</div>
+<div class="col-sm-5">
+    <% if @target_id.present? && @target.present? %>
+            <div class='panel <%= @target.present? ? "panel-success" : "panel-default" %>'>
+                <div class='panel-heading'>
+                    <span class='h3'>
+                        <%= link_to @target.public_id, name_path(@target) %>
+                        <small class="pull-right" style="margin-top: -5px;">
+                            <span id="editNameMerge" class="btn btn-success">Edit</span>
+                            <span id="controlEditNameMerge" style="display: none;">
+                                <span id="confirmEditNameMerge" class="btn btn-default">Save</span>
+                                <span id="cancelEditNameMerge" class="btn btn-warning">Cancel</span>
+                            </span>
+                        </small>
+                    </span>
+                </div>
+                <div class="panel-body" id="mergeNameInto">
+                    <%= render partial: "names/merge_form", locals: { name: @target } %>
+                </div>
+            </div>
+    <% else %>
+        <% if @target_id.present? %>
+            <div class='panel panel-danger'>
+            <% if @warning.present? %>
+                <div class="panel-heading"><%= @warning %></div>
+            <% else %>
+                <div class="panel-heading">Could not find record #<%= @target_id %></div>
+            <% end %>
+            </div>
+        <% end %>
+        <%= form_tag(request.path, method: :get, class: "form-horizontal sdbmss-form") do %>
+            <div class="row">
+                <label class="col-sm-3 control-label">Find by unique ID</label>
+                <div class="col-sm-6">
+                    <input type="text" name="target_id" class="form-control"></p>
+                </div>
+                <div class="col-sm-3">
+                    <button class="btn btn-primary">Select</button>
+                </div>
+            </div>
+        <% end %>
+        <div class='panel panel-default'>
+            <% if @similar.present? %>
+                <div class='panel-heading'><b>Suggestions</b></div>
+                <table class='table table-striped'>
+                    <thead>
+                        <tr>
+                            <th>Merge</th>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Aut.</th>
+                            <th>Art.</th>
+                            <th>Scr.</th>
+                            <th>Sale</th>
+                            <th>Pr.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% @similar.each do |nm| %>
+                            <% if nm.id != @model.id %>
+                            <tr>
+                                <td><a class='btn btn-primary' href="<%= name_path(id: @model.id)%>/merge?target_id=<%= nm.id %>">Select</a></td>
+                                <td><%= link_to nm.id, name_path(nm), target: "_blank" %></td>
+                                <td><%= nm.name %></td>
+                                <td><%= nm.authors_count %></td>
+                                <td><%= nm.artists_count %></td>
+                                <td><%= nm.scribes_count %></td>
+                                <td><%= nm.sale_agents_count %></td>
+                                <td><%= nm.provenance_count %></td>
+                            </tr>
+                            <% end %>
+                        <% end %>
+                    </tbody>
+                </table>
+            <% else %>
+                <b>No suggested names found, use manual search above.</b>
+            <% end %>
+        </div>
+        <% end %>
+</div>
+<% end %>
+<script type='text/javascript'>
+    $(document).ready( function (e) {
+        $('#main-container .panel input[type!=hidden]').prop('disabled', true);
+    
+        $('#editNameMerge').click( function () {
+            $('#controlEditNameMerge').show();
+            $(this).hide();
+            $('#mergeNameInto input[type!=hidden]').prop('disabled', false);
+        });
+
+        $('#cancelEditNameMerge').click( function () {
+            $('#controlEditNameMerge').hide();
+            $('#editNameMerge').show();
+            $('#mergeNameInto input').each(function (e) {
+                $(this).val($(this).prop('defaultValue'));
+            });
+            $('#mergeNameInto input[type!=hidden]').prop('disabled', true);
+        });
+
+        $('#confirmEditNameMerge').click( function () {
+            $('#controlEditNameMerge').hide();
+            $('#editNameMerge').show();
+            $('#mergeNameInto input[type!=hidden]').prop('disabled', true);
+        });
+
+    });
+</script>

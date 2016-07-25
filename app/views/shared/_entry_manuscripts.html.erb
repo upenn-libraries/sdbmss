@@ -1,5 +1,5 @@
 <% if (manuscript = entry.manuscript).present? %>
-<p>This <b>entry</b> has been identified as belonging to <b>manuscript record</b> <a href="<%= url_for manuscript %>"><%= manuscript.display_value %></a>, which has <%= manuscript.entries.count %> total entries in the SDBM.</p>
+<p>This <b>entry</b> has been identified as belonging to <b>manuscript record</b> <a href="<%= url_for manuscript %>"><%= manuscript.display_value %></a>, which has <%= SDBMSS::Util.to_many(manuscript.entries.count, "entry") %> in the SDBM.</p>
 <% end %>
 
 <% fragments = entry.entry_manuscripts.select { |em| em.relation_type == EntryManuscript::TYPE_RELATION_PARTIAL } %>

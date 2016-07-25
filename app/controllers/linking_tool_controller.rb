@@ -6,7 +6,7 @@ class LinkingToolController < ApplicationController
   def by_entry
     authorize! :link, Entry
     @mode = "by_entry"
-    @entry = Entry.find(params[:id])
+    @entry = Entry.find(params[:id].to_i)
     if @entry.manuscript.blank?
       render "show"
     else
@@ -17,7 +17,7 @@ class LinkingToolController < ApplicationController
   def by_manuscript
     authorize! :link, Manuscript
     @mode = "by_manuscript"
-    @manuscript = Manuscript.find(params[:id])
+    @manuscript = Manuscript.find(params[:id].to_i)
     render "show"
   end
 

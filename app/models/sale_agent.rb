@@ -25,4 +25,8 @@ class SaleAgent < ActiveRecord::Base
     [ROLE_BUYER, "Buyer"],
   ]
 
+  def entry
+    sale.entry
+  end
+
 end

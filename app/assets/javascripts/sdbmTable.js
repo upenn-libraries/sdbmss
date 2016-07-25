@@ -147,11 +147,11 @@ var SDBM = SDBM || {};
                 // FIX ME: should there ever be a 'max' width for a column, for instance if there is a really long table entry and many blanks in the same column...?
                 $('td', row).each(function (idx, e) {
                     var opts = sdbmTable.columns[idx];
-                    if(opts.sdbmssMinWidth) {
-                        //$(e).css("min-width", opts.sdbmssMinWidth);  DISABLED sdbmssMinWidth
+                    if(opts.sdbmssMinWidthImportant) {
+                        $(e).css("min-width", opts.sdbmssMinWidthImportant);  //DISABLED sdbmssMinWidth
                     }
-                    if(opts.sdbmssMaxWidth) {
-                        //$(e).css("max-width", opts.sdbmssMaxWidth);  DISABLED sdbmssMaxWidth
+                    if(opts.sdbmssMaxWidthImportant) {
+                        $(e).css("max-width", opts.sdbmssMaxWidthImportant);  //DISABLED sdbmssMaxWidth
                     }
                 });
             },
@@ -317,8 +317,8 @@ var SDBM = SDBM || {};
                     title: 'Source Date'
                 },
                 {
-                    sdbmssMinWidth: "350px",
-                    sdbmssMaxWidth: "350px",
+                    sdbmssMinWidthImportant: "350px",
+                    sdbmssMaxWidthImportant: "350px",
                     sdbmssSortField: 'source_title',
                     title: 'Source Title'
                 },
@@ -359,14 +359,14 @@ var SDBM = SDBM || {};
                     title: 'Price'
                 },
                 {
-                    sdbmssMinWidth: "400px",
-                    sdbmssMaxWidth: "400px",
+                    sdbmssMinWidthImportant: "400px",
+                    sdbmssMaxWidthImportant: "400px",
                     sdbmssSortField: 'title_flat',
                     title: 'Title'
                 },
                 {
-                    sdbmssMinWidth: "400px",
-                    sdbmssMaxWidth: "400px",
+                    sdbmssMinWidthImportant: "400px",
+                    sdbmssMaxWidthImportant: "400px",
                     sdbmssSortField: 'author_flat',
                     title: 'Author'
                 },
@@ -503,8 +503,8 @@ var SDBM = SDBM || {};
                     }
                 },
                 {
-                    sdbmssMinWidth: "400px",
-                    sdbmssMaxWidth: "400px",
+                    sdbmssMinWidthImportant: "400px",
+                    sdbmssMaxWidthImportant: "400px",
                     title: 'Other Info',
                     orderable: false
                 },

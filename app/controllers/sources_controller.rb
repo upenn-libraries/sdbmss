@@ -13,7 +13,7 @@ class SourcesController < SearchableAuthorityController
 
   respond_to :html, :json
 
-  load_and_authorize_resource :only => [:edit, :update, :destroy]
+  load_and_authorize_resource :only => [:edit, :update, :destroy, :merge]
 
   DEFAULT_SEARCH_FIELD_HANDLER = Proc.new { |fieldname, params, query|
     query.where("#{fieldname} like ?", "%#{params[fieldname]}%")
@@ -37,8 +37,8 @@ class SourcesController < SearchableAuthorityController
   ]
 
   def search_fields
-    @filters = ["id", "location"]
-    @fields = ["title", "selling_agent", "date", "institution", "author", "created_by", "updated_by"]
+    @filters = ["id", "location", "agent_id", "source_type_id"]
+    @fields = ["title", "date", "agent_name", "author", "created_by", "updated_by"]
     @dates = ["created_at", "updated_at"]
     @fields + @filters + @dates
   end
@@ -159,6 +159,13 @@ class SourcesController < SearchableAuthorityController
     Source
   end
 
+  def search
+    if params[:agent]
+      params[:agent_name] = params[:agent]
+    end
+    super
+  end
+
   def search_name_field
     "title"
   end
@@ -217,31 +224,6 @@ class SourcesController < SearchableAuthorityController
     else
       return ["date desc", "title"]
     end
-  end
-
-  def search_result_format(obj)
-    {
-      id: obj.id,
-      date: SDBMSS::Util.format_fuzzy_date(obj.date),
-      source_type: obj.source_type.display_name,
-      entries_count: obj.entries_count || 0,
-      title: obj.title,
-      display_value: obj.display_value,
-      author: obj.author,
-      selling_agent: (selling_agent = obj.get_selling_agent_as_name).present? ? selling_agent.name : "",
-      institution: (institution_agent = obj.get_institution_as_name).present? ? institution_agent.name : "",
-      whether_mss: obj.whether_mss,
-      medium: obj.medium,
-      date_accessed: obj.date_accessed,
-      location_institution: obj.location_institution,
-      location: obj.location,
-      link: obj.link,
-      comments: obj.comments,
-      created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
-      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:long) : "",
-      updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
-      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:long) : ""
-    }
   end
 
   # change the status of a Source
@@ -312,6 +294,12 @@ class SourcesController < SearchableAuthorityController
         
     #params[:title] = @source.title
     #params[:date] = @source.date
+
+    if @source.source_type.name == "personal_observation" || @source.source_type.name == "provenance_observation"
+      flash[:error] = "You can't merge a Source of this type (Provenance or Personal Observation)."
+      redirect_to source_path(@source)
+    end
+
     get_similar
     if @target_id.present?
       if @target_id.to_i == @source.id
@@ -319,7 +307,6 @@ class SourcesController < SearchableAuthorityController
       elsif Source.find_by(id: @target_id).source_type != @source.source_type
         @warning = "You can only merge sources that are the same type, to avoid data loss"
       else
-        flash[:notice] = "Copy over any fields you wish to have in the updated record.  This will be your last chance before the old record is deleted."
         @target = Source.find_by(id: @target_id)
         show_for_merge(search_result_format(@target)).each do |f, v|
           if @differences[f].present?
@@ -415,8 +402,8 @@ class SourcesController < SearchableAuthorityController
       if date.present?
         # use only the year so we get broadest possible matches
         broad_date = date.dup
-        broad_date = broad_date[0..3] if broad_date.length > 4
-        query = query.where("date LIKE '#{broad_date}%'")
+        broad_date = broad_date[0..3] if broad_date.length > 3
+        query = query.where("date LIKE ?", "#{broad_date}%")
       end
 
       if title.present?
@@ -433,7 +420,7 @@ class SourcesController < SearchableAuthorityController
 
         # whittle them down by string similarity
         len = title.length
-        query = query.where("length(title) <= #{len+8} AND length(title) >= #{len-8} AND levenshtein_ratio(title, ?) <= 40", title)
+        query = query.where("length(title) <= ? AND length(title) >= ? AND levenshtein_ratio(title, ?) <= 40", len + 8, len - 8, title)
       end
 
       query = query.limit(5)
@@ -448,17 +435,6 @@ class SourcesController < SearchableAuthorityController
 
   def source_params
     params.require(:source)
-  end
-
-  def params_for_search
-    # agent_name can come from a number of sources
-    # FIX ME: maybe we want to only search for selling agents though?
-    params[:agent_name] = Array(params[:agent]) + Array(params[:selling_agent]) + Array(params[:institution])
-    params.permit(:date, {:date => []}, :title, {:title => []}, :author, {:author => []}, :agent_name, {:agent_name => [] }, :location_institution, :medium, :date, {:date => []}, :created_by, :updated_by, {:created_by => []}, {:updated_by => []})
-  end
-
-  def filters_for_search
-#    params.permit(:agent_name)
   end
 
   def source_params_for_create_and_edit
@@ -476,8 +452,8 @@ class SourcesController < SearchableAuthorityController
       :location,
       :location_institution,
       :link,
-      :comments,
       :status,
+      :other_info,
       :source_agents_attributes => [ :id, :agent_id, :role, :_destroy ],
     )
   end

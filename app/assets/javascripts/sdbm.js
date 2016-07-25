@@ -55,7 +55,7 @@ var SDBM = SDBM || {};
      * the given template filename
      */
     SDBM.registerTooltip = function(selector, template) {
-        $(selector).qtip({
+        var s = $(selector).qtip({
             style: {
                 classes: 'sdbmss-tooltip'
             },

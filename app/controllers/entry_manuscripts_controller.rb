@@ -1,20 +1,11 @@
 
 class EntryManuscriptsController < SearchableAuthorityController
 
-  before_action :authenticate_user!, only: [:update_multiple]
-
   include ResourceSearch
   include MarkAsReviewed
   include LogActivity
 
   #  respond_to :html, :json
-
-  def search_fields
-    @filters = ["id", "created_by", "updated_by"]
-    @fields = []
-    @dates = ["created_at", "updated_at"]
-    @fields + @filters + @dates
-  end
 
   def index
     super
@@ -65,20 +56,6 @@ class EntryManuscriptsController < SearchableAuthorityController
   def search_name_field
     # This is weird, but we don't have a name field in this model
     "id"
-  end
-
-  def search_result_format(obj)
-    {
-      id: obj.id,
-      entry_id: obj.entry_id,
-      manuscript_id: obj.manuscript_id,
-      relation_type: obj.relation_type,
-      reviewed: obj.reviewed,
-      created_by: obj.created_by.present? ? obj.created_by.username : "(none)",
-      created_at: obj.created_at.present? ? obj.created_at.to_formatted_s(:long) : "",
-      updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
-      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:long) : ""
-    }
   end
 
   private

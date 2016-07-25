@@ -24,6 +24,8 @@ module ApplicationHelper
     # don't use search_action_path here; it gets redefined by advanced
     # search controller, breaking the link on that page
     # recent additions: right now shows additions in LAST month only
+    # SHOW FIXED NUMBER: but people can already do that, when they do an empty search?  since it's paginated? (FIX ME)
+    #sdbmss_search_action_path({ "utf8" => SDBMSS::Util::CHECKMARK, "commit" => "Search", "op" => "OR"})
     sdbmss_search_action_path({ "utf8" => SDBMSS::Util::CHECKMARK, "commit" => "Search", "op" => "OR", "created_at" => [Date.today.prev_month.strftime("%Y-%m*"), Date.today.strftime("%Y-%m*")], "search_field" => "advanced"})
 #    root_path({ "utf8" => SDBMSS::Util::CHECKMARK, "q" => Date.today.prev_month.strftime("%Y-%m*"), "search_field" => "created_at" })
 #    root_path({ "utf8" => SDBMSS::Util::CHECKMARK, "search_field" => "all_fields", "q" => "" })

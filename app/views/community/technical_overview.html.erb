@@ -1,0 +1,51 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h1>Technical Overview</h1>
+
+    <p>The repository is publicly available on <strong>github</strong>, and can be found <a href="https://github.com/upenn-libraries/sdbmss">here</a>.</p>
+
+    <h3>Technology Stack</h4>
+
+    <ul>
+      <li><strong>Ruby on Rails</strong> - overall web framework for the new SDBM, using Rails version 4.
+        <h5>Gems:</h5>
+        <ul>
+          <li>Paper Trail - Used for storing change history for certain record types, allowing for change reversions as well.</li>
+          <li>Delayed Job - Handles background indexing of record updates, as well as background jobs such as CSV search compilation.</li>
+          <li>Capistrano - The current deployment method.</li>
+          <li>RSpec/Capybara/Poltergeist - Used for testing converage of the app, including front-end headless browser testing via Poltergeist.</li>
+        </ul>
+      </li>
+      <li><strong>Apache Solr</strong> - used through the Rails Sunspot gem and Blacklight to provide indexing, searching and faceting on the database.</li>
+      <li><strong>Blacklight</strong> - Rails plugin providing front end display support for catalog-like public searches functionality including:
+        <ul>
+          <li>the display of search results</li>
+          <li>the display and browsing of facets</li>
+          <li>the advanced search page</li>
+          <li>saving searches</li>
+        </ul>
+      </li>
+      <li><strong>MySQL</strong> - the data is stored in a MYSQL relational database, accessed through the Rails API.</li>
+      <li><strong>Unicorn</strong> - the SDBM is run on a CentOS based Unicorn web server.</li>
+    </ul>
+
+    <h3>Client Side Javascript</h4>
+
+    <p>We use the following libraries, some of which are stored in the /vendor/assets/ directory:</p>
+
+    <ul>
+      <li><strong>jQuery</strong> - utlitarian JS library used almost everywhere for basic ease of use and readibility.</li>
+      <li><strong>AngularJS 1.3</strong> - used to interface with Rails for dynamic content across multiple pages, including data entry and bookmarks.</li>
+      <li><strong>Bootstrap UI</strong> - an AngularJS extension for Bootstrap widgets, allowing interactive popups, modals and other useful behavior.</li>
+      <li><strong>datatables.net</strong> - used on the various 'Manage Records' pages, allows for clean rendering of complex data tables.</li>
+      <li><strong>URI.js</strong> - library used for manipulating URIs when neccessary.</li>
+      <li><strong>jQuery.qtip</strong> - library used for tooltip popups across the entire site.</li>
+    </ul>
+
+    <p>
+      The data model for the application has been updated to address issues and limitations of old database.  An in depth explantion can be found <a href="/static/docs/sdbm_data_model_explanation.pdf">here</a>
+    </p>
+    
+
+  </div>
+</div>

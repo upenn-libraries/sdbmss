@@ -1,24 +1,12 @@
 <% if @error %>
-    <div class="panel panel-danger">
-        <div class="panel-heading"><%= @error %></div>
-    </div>
+    <div class="alert alert-danger"><%= @error %></div>
 <% end %>
 
 <%= form_for @entry, url: {action: "revert_confirm"} do |f| %>
 
     <div class="row history-heading">
         <div class="col-sm-12">
-            <div class="row">
-                <div class="col-sm-10">
-                    <div class="well">
-                        <h1>History of changes to <%= @entry.public_id %></h1>
-                    </div>
-                </div>
-                <div class="col-sm-2 text-center">
-                    <div class="well"><%= f.submit 'Undo', class: 'btn btn-warning btn-lg' %></div>
-                </div>
-            
-            </div>
+            <h1>History of changes to <%= @entry.public_id %></h1>
         </div>
     </div>
 
@@ -69,17 +57,6 @@
 <script type='text/javascript'>
 
 $(document).ready( function () {
-    $('.carousel').each( function () {
-        var $this = $(this);
-
-      $this.children('.carousel-control').show();
-
-      if($this.find('.carousel-inner .item:first').hasClass('active')) {
-        $this.children('.left.carousel-control').hide();
-      } if($this.find('.carousel-inner .item:last').hasClass('active')) {
-        $this.children('.right.carousel-control').hide();
-      }
-    });
     $('.carousel').on('slid.bs.carousel', function() {
       var $this = $(this);
 
@@ -98,6 +75,31 @@ $(document).ready( function () {
         console.log($(this).parent('.carousel-inner'), $(this).parent('.carousel-inner').find("input[type='checkbox']"));
         $(this).closest('.carousel-inner').find("input[type='checkbox']").not(this).attr("checked", false);
     });
+
+    $(".carousel").carousel({interval: false, wrap: false});
+    $(".carousel-control.left").click( function (e) {
+        e.preventDefault();
+        $($(this).attr("href")).carousel('prev');
+        return false;
+    });
+    $(".carousel-control.right").click( function (e) {
+        e.preventDefault();        
+        $($(this).attr("href")).carousel('next');
+        return false;
+    });
+
+    $('.carousel').each( function () {
+      var $this = $(this);
+      
+      $this.children('.carousel-control').show();
+
+      if($this.find('.carousel-inner .item:first').hasClass('active')) {
+        $this.children('.left.carousel-control').hide();
+      } if($this.find('.carousel-inner .item:last').hasClass('active')) {
+        $this.children('.right.carousel-control').hide();
+      }
+    });
+    
 });
 
 </script>

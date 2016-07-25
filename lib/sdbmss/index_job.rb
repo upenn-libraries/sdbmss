@@ -6,6 +6,7 @@ module SDBMSS
   # 'Entry', we index entries with the specified ids. If
   # model_class_str is an associated model (like 'Name', for example),
   # we find the relevant Entries and index those.
+
   class IndexJob < ActiveJob::Base
 
     queue_as :reindex

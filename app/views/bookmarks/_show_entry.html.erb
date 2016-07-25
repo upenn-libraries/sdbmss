@@ -1,16 +1,13 @@
+<!-- deprecated - bookmarks now load via JSON -->
 <% # container for a single doc -%>
 <div class="document">
     <% if entry.nil? %>
     <p>Error: couldn't retrieve model object from database.</p>
     <% else %>
-        <% if !entry.approved %>
-            <div class="panel panel-warning">
-                <div class="panel-heading">Warning: This record is not yet approved and may not conform to standards for data structure or accuracy.</div>
-            </div>
-        <% end %>
+    <% if !entry.approved %>
+          <div class="alert alert-warning">Warning: This record is not yet approved.</div>
+    <% end %>
     <dl class="document-metadata dl-horizontal dl-invert">
-        <dt>ID</dt><dd><%= link_to entry.public_id, entry_path(entry) %></dd>
-
         <% manuscripts_str = render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
         <% if manuscripts_str.present? %>
         <dt></dt>
@@ -36,19 +33,31 @@
         
         <% if (sale = entry.get_sale).present? %>
 
-          <% if (selling_agent = sale.get_selling_agent).present? %>
-          <dt>Selling Agent</dt>
-          <dd><a href="<%= agent_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a></dd>
+          <% if (selling_agents = sale.get_selling_agents).present? %>
+              <dt>Selling Agent(s)</dt>
+              <dd>
+                  <% selling_agents.each do |selling_agent| %>
+                      <a href="<%= agent_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a><br>
+                  <% end %>
+              </dd>
           <% end %>
 
-          <% if (seller_or_holder = sale.get_seller_or_holder).present? %>
-          <dt>Seller</dt>
-          <dd><a href="<%= agent_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a></dd>
+          <% if (sellers_or_holders = sale.get_sellers_or_holders).present? %>
+              <dt>Seller(s)</dt>
+              <dd>
+                  <% sellers_or_holders.each do |seller_or_holder| %>
+                      <a href="<%= agent_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a><br>
+                  <% end %>
+              </dd>
           <% end %>
 
-          <% if (buyer = sale.get_buyer).present? %>
-          <dt>Buyer</dt>
-          <dd><a href="<%= agent_path(buyer.agent) %>"><%= buyer.agent.name %></a></dd>
+          <% if (buyers = sale.get_buyers).present? %>
+              <dt>Buyer(s)</dt>
+              <dd class="col-sm-10">
+                  <% buyers.each do |buyer| %>
+                      <a href="<%= agent_path(buyer.agent) %>"><%= buyer.agent.name %></a><br>
+                  <% end %>
+              </dd>
           <% end %>
 
         <% end %>
@@ -109,20 +118,16 @@
         <% if (provenance_count = entry.provenance.length) > 0 %>
         <dt>Provenance Info</dt>
         <dd>
-            This entry has <%= provenance_count %> provenance records involving:<br/>
+            This entry has <%= provenance_count %> provenance records involving: 
             <% entry.unique_provenance_agents.each do |unique_provenance_agent| %>
                 <% if unique_provenance_agent[:agent].present? %>
                 <a href="<%= url_for unique_provenance_agent[:agent] %>"><%= unique_provenance_agent[:agent] %></a>
                 <% else %>
                   <%= unique_provenance_agent[:name] %>
                 <% end %>
-                <br/>
             <% end %>
         </dd>
         <% end %>
-
-        <dt></dt>
-        <dd><%= link_to "View complete record...", entry_path(entry) %></dd>
     </dl>
     <% end %>
 

@@ -5,7 +5,7 @@
      var resourceName = "<%= resource_name %>";
 
      // flag = show all records, or only those that the user created
-     <% if can? :manage, model_class  %>
+     <% if can? :manage, model_class %>
      var showOnlyRecordsCreatedByUser = 0;
      <% else %>
      var showOnlyRecordsCreatedByUser = 1;
@@ -31,18 +31,13 @@
             {
                 sdbmssMinWidth: "20px",
                 sdbmssMaxWidth: "20px",
-                title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
+                //title: '<a href="#" class="btn btn-default btn-xs glyphicon glyphicon-unchecked hideIfReviewed" id="select-all"></a>',
+                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
                 orderable: false,
-                className: 'text-center',
+                className: 'text-center unreviewed_only',
                 render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {
-                        return  '' + 
-                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
-                                '<label for="checkbox_' + meta.row + '">' + 
-                                '<a class="btn btn-default btn-xs glyphicon glyphicon-unchecked unchecked"></a>' + 
-                                '<a class="btn btn-default btn-xs glyphicon glyphicon-check checked"></a>' + 
-                                '</label>' + '';
-                        //return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     }
                     return '';
                 }
@@ -54,10 +49,9 @@
                 orderable: false,
                 render: function (data, type, full, meta) {
                     var mergeLink = canMerge ? '<a class="btn btn-xs btn-info merge-link" href="/' + manageRecords.options.resourceName + '/' + data + '/merge">Merge</a>' : '';
-
                     var str = '<span class="btn-group options-btn-group">'
                             + '<a onclick="addBookmark(' + data + ', \'Name\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/names/' + data + '">' 
-                                + '<span class="glyphicon glyphicon-star"></span></a>'
+                                + '<span class="glyphicon glyphicon-bookmark"></span></a>'
                             + '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>'
                             + '<a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>'
                             + mergeLink + "</span>";
@@ -94,10 +88,10 @@
                 dbSortField: 'viaf_id'
             },
             {
-                sdbmssMinWidth: "120px",
-                sdbmssMaxWidth: "120px",
-                title: 'Comment',
-                dbSortField: 'comment'
+                sdbmssMinWidth: "250px",
+                sdbmssMaxWidth: "250px",
+                title: 'Other Info',
+                dbSortField: 'other_info'
             },
             {
                 sdbmssMinWidth: "75px",
@@ -175,7 +169,7 @@
              result.id,
              result[this.options.searchNameField],
              result.viaf_id,
-             result.comment,
+             result.other_info,
              result.authors_count,
              result.artists_count,
              result.scribes_count,

@@ -30,6 +30,35 @@ class Ability
     # grows.
 
     if ['contributor', 'editor', 'admin'].member? user.role
+      can [:edit, :update], :all, :created_by_id => user.id
+      can :link, :all
+      can :index, Entry
+
+      can :history, :all
+
+      can :unlink, :all, :created_by_id => user.id
+      can :manage, PrivateMessage, :created_by_id => user.id
+      can :manage, PrivateMessage, :user_id => user.id
+    end
+
+    if ['editor', 'admin'].member? user.role
+      can :manage, [Name, Entry, Manuscript, Source]
+      can :unlink, :all
+      can :edit, Manuscript
+
+      cannot :deprecate, :all
+      cannot [:edit, :destroy, :merge], [Source, Entry]
+      can :edit, :all, :created_by_id => user.id      
+    end
+
+    if ['admin'].member? user.role
+      can :manage, :all
+      #can :destroy, :all
+    end
+
+=begin
+    if ['contributor', 'editor', 'admin'].member? user.role
+      can :show, :all
       [Entry, Sale, Language, Manuscript, Name, Place, Source, Comment].each do |clazz|
         can :create, clazz
         can :new, clazz
@@ -37,28 +66,52 @@ class Ability
         can :update, clazz, :created_by_id => user.id
         # TODO: should users be able to delete their own records?
         can :destroy, clazz, :created_by_id => user.id
+        cannot :merge, clazz
       end
       can :link, Entry
       can :link, Manuscript
+      can :index, Entry
 
+      can :history, :all
       # Decided by Lynn on 6/9/2015: A contributor can edit ANY
       # manuscript. The thinking here is that a Manuscript isn't
       # "owned" by the user in the same way as an Entry.
-      can :edit, Manuscript
-      can :update, Manuscript
+      
+      can :unlink, Manuscript, :created_by_id => user.id
+      can :unlink, Entry, :created_by_id => user.id
     end
 
     if ['editor', 'admin'].member? user.role
-      can :edit, Entry
-      can :deprecate, Entry
-      [Entry, Sale, Language, Manuscript, Name, Place, Source].each do |clazz|
+      [Entry, Sale, Language, Manuscript, Name, Place].each do |clazz|
         can :merge, clazz
+      end
+      [Entry, Source, Manuscript, Name].each do |clazz|
+        can :manage, clazz
+      end
+      [Manuscript, Name].each do |clazz|
+        can :destroy, clazz
+      end
+
+      can :edit, Manuscript
+      can :unlink, Manuscript
+      can :unlink, Entry
+    end
+
+    if ['editor'].member? user.role
+      can :manage, EntryManuscript
+      [Entry, Source].each do |clazz|
+        cannot :destroy, clazz
+        cannot :deprecate, clazz
+        cannot :edit, clazz
+        cannot :merge, clazz
       end
     end
 
     if ['admin'].member? user.role
       can :manage, :all
+      can :destroy, :all
     end
+=end
 
   end
 end

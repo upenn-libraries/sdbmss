@@ -33,7 +33,7 @@ describe "Manage Names", :js => true do
     Name.index
 
     visit names_path
-    expect(page).to have_content("Manage all name records")
+    expect(page).to have_content("Manage Names")
     expect(page).to have_content(author.name)
   end
 

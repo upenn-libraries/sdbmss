@@ -160,11 +160,6 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'source_agent' }
       end
 
-      config.add_search_field('source_agent_sort', label: "Source Agent") do |field|
-        field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'source_agent_sort' }
-      end
-
       config.add_search_field('institution', label: "Institution") do |field|
         field.include_in_simple_select = false
         field.solr_local_parameters = { :qf => 'institution_search' }
@@ -390,17 +385,22 @@ module CatalogControllerConfiguration
       # this re-adds the search history, already included by the
       # default config, so we can specify the 'if' part
 
-      config.navbar.delete(:bookmark)
-      config.navbar.delete(:saved_searches)
+      config.navbar.partials.delete(:bookmark)
+      config.navbar.partials.delete(:saved_searches)
 
-      config.add_nav_action(:bookmark, partial: 'blacklight/nav/bookmark', if: true)
+      #config.add_nav_action(:bookmark, partial: 'blacklight/nav/bookmark', if: true)
       config.add_nav_action(:saved_searches, partial: 'blacklight/nav/saved_searches', if: true)
       config.add_nav_action(:search_history, partial: 'blacklight/nav/search_history', if: :render_search_history_control?)
+
       # fix me: despite needing an enourmous amount of configuration, blacklight doesn't let you easily customize something as simple as a dropdown menu
 
 #      config.add_results_collection_tool(:bookmark_all)
       config.add_results_collection_tool(:save_current_search)
 #      config.add_results_collection_tool(:save_search)
+
+      config.show.document_actions.delete(:email)
+      config.show.document_actions.delete(:sms)
+      config.show.document_actions.delete(:citation)
 
       config.add_show_tools_partial(:edit_entry, partial: 'nav/edit_entry', if: :show_edit_entry_link?)
       config.add_show_tools_partial(:linking_tool_by_entry, partial: 'nav/linking_tool_by_entry', if: :show_linking_tool_by_entry?)
@@ -408,6 +408,9 @@ module CatalogControllerConfiguration
       config.add_show_tools_partial(:deprecate_entry, partial: 'nav/deprecate_entry', if: :show_deprecate_entry?)
       config.add_show_tools_partial(:entry_history, partial: 'nav/entry_history', if: :show_entry_history_link?)
       config.add_show_tools_partial(:export_csv, partial: 'nav/export_csv', if: :show_export_csv_link?)
+      config.add_show_tools_partial(:email)
+      config.add_show_tools_partial(:sms)
+      config.add_show_tools_partial(:citation)
 
     end
 

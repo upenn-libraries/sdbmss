@@ -13,7 +13,10 @@ class CatalogController < ApplicationController
   # Overrides Blacklight::Catalog#show to check for existence and send
   # 404 if necessary
   def show
-    entry = Entry.find_by(id: params[:id])
+    flash[:notice] = "Note: This entry records a mention or observation of a manuscript in a source.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
+
+    @entry = Entry.find_by(id: params[:id])
+    entry = @entry
     # JIRA(sdbm-176)
 #    entry = Entry.find_by(id: params[:id], approved: true)
     if entry.present?
@@ -80,7 +83,7 @@ class CatalogController < ApplicationController
     return params[:limit] || 100
   end
 
-  # required by CatalogControllerConfiguration
+  # required by CatalogControllerConfiguration  --> change to allow unlimited size searches
   def search_results_max
     Rails.configuration.sdbmss_max_search_results
   end

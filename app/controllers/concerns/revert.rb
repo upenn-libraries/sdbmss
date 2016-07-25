@@ -1,6 +1,12 @@
 module Revert
 
   def revert
+    if !can? :edit, model_class
+      flash[:error] = "You do not have permission to revert any changes for this record."
+      redirect_to polymorphic_path(@model)
+      return
+    end
+
     @model = model_class.find(params[:id])
 
     if params[:version_id].kind_of? Array
@@ -11,6 +17,8 @@ module Revert
     end
 
     touched = []
+    destroyed = false
+
     ActiveRecord::Base.transaction do
 
       @versions.each do |version|
@@ -23,6 +31,7 @@ module Revert
         else
           v = version.item
           v.destroy
+          destroyed = true
         end
         if v.model_name.name != @model.model_name.name
           e = v.send @model.model_name.name.underscore
@@ -38,7 +47,11 @@ module Revert
       end
     end
     
-    redirect_to polymorphic_path(@model)
+    if destroyed
+      redirect_to dashboard_path
+    else
+      redirect_to polymorphic_path(@model)
+    end
   end
 
   def revert_confirm
@@ -101,7 +114,7 @@ module Revert
   end
 
   def reversion_format (current, previous)
-    
+
     # select only the fields that are changed between the two versions
     current2 = current.select { |field, value| value != nil && previous[field] != value }
     previous2 = previous.select { |field, value| value != nil && current[field] != value }
@@ -111,13 +124,13 @@ module Revert
     
     #substitute the name for the id for associated fields    
     current2.each do |k, v|
-      if k.include?("_id")
+      if EntryVersionFormatter.isClass(k)
         current2[k] = "#{EntryVersionFormatter.toClass(k).find(v)}"
       end
     end
 
     previous2.each do |k, v|
-      if k.include?("_id")
+      if EntryVersionFormatter.isClass(k)
         previous2[k] = "#{EntryVersionFormatter.toClass(k).find(v)}"
       end
     end
@@ -128,8 +141,7 @@ module Revert
 
   def history
     @model = model_class.find(params[:id])
-    if can?(:edit, @model)
-      puts "yeah that's totally fine"
+    if can?(:history, @model)
       @versions = @model.versions
       render :template => 'shared/history'
     else

@@ -20,26 +20,32 @@
             <dd><%= source.author %></dd>
         <% end %>
         
-        <% if (institution = source.get_institution).present? %>
+        <% if (institutions = source.get_institutions).present? %>
         <dt>Institution</dt>
-            <dd><a class='badge' href="<%= url_for institution.agent %>"><%= institution.agent.name %></a></dd>
+            <% institutions.each do |institution| %>
+                <dd><a class='badge' href="<%= url_for institution.agent %>"><%= institution.agent.name %></a></dd>
+            <% end %>
         <% end %>
 
-        <% if (selling_agent = source.get_selling_agent).present? %>
+        <% if (selling_agents = source.get_selling_agents).present? %>
         <dt>Selling Agent</dt>
-            <dd><a href="<%= url_for selling_agent.agent %>"><%= selling_agent.agent.name %></a></dd>
+            <% selling_agents.each do |selling_agent| %>
+                <dd><a class='badge' href="<%= url_for selling_agent.agent %>"><%= selling_agent.agent.name %></a></dd>
+            <% end %>
         <% end %>
 
-        <% if (seller_or_holder = source.get_seller_or_holder).present? %>
+        <% if (sellers_or_holders = source.get_sellers_or_holders).present? %>
         <dt>Seller</dt>
-            <dd><a href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a></dd>
+            <% sellers_or_holders.each do |seller_or_holder| %>
+                <dd><a class='badge' href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a></dd>
+            <% end %>
         <% end %>
 
-        <dt>Contains Manuscripts</dt>
-            <dd><%= source.whether_mss||"Unknown" %></dd>
+<!--        <dt>Contains Manuscripts</dt>
+            <dd><%= source.whether_mss||"Unknown" %></dd>-->
 
         <dt># Entries</dt>
-            <dd>This source has <a class='badge' href="<%= search_advanced_path(source: source.public_id) %>"><%= source.entries.approved_only.count %> entries</a> in the database.</dd>
+            <dd>This source has <a class='badge' href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries.count, "entry") %></a> in the database.</dd>
 <% if !defined?(abbreviate) || !abbreviate %>
 <% if source.medium.present? || source.date_accessed.present? || source.location_institution.present? || source.location.present? || source.link.present? %>
         <% if source.medium.present? %>
@@ -75,18 +81,9 @@
         <dt>Status</dt>
             <dd><%= source.status||"Unknown" %></dd>
 
+        <dt>Other Info</dt>
+            <dd><%= source.other_info %></dd>
+
 </dl>
 
-<% if (comments = source.comments).present? %>
-<table class="table table-striped">
-    <thead>
-      <th class="col-sm-12" colspan="2"><b>Comments</b></th>
-    </thead>
-    <tbody>
-      <td>
-            <%= comments %>
-        </td>
-    </tbody>
-</table>
-<% end %>
 <% end %>

@@ -28,31 +28,72 @@ class EntriesController < SearchableAuthorityController
 
   before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate]
 
-  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy, :similar, :mark_as_approved, :deprecate]
+  before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy, :similar, :mark_as_approved, :deprecate]
 
   respond_to :html, :json
 
-  load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_approved, :deprecate]
+  load_and_authorize_resource :only => [:index, :edit, :update, :destroy, :mark_as_approved, :deprecate]
 
   def model_class
     Entry
   end
 
+  def self.do_csv_search(params, search_params_logic, download)
+    (response, document_list) = EntriesController.new.search_results(params, search_params_logic)
+    objects = document_list.map { |document| document.model_object.as_flat_hash }
+    header = objects.first.keys
+
+    filename = download.filename
+    user = download.user
+    id = download.id
+    path = "/tmp/#{id}_#{user}_#{filename}"
+    
+    csv_file = CSV.open(path, "wb") do |csv|
+      csv << header
+      objects.each do |r|
+        csv << r.values 
+      end
+    end
+
+    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+      zipfile.add(filename, path)
+    end
+
+    File.delete(path) if File.exist?(path)
+
+    download.update({status: 1, filename: "#{filename}.zip"})
+  end
+
   def index
-    @search_fields = search_fields
+    @bookmarks = current_user.bookmarks
+    # need to... get the fields configured for blacklight, 
+
     @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
     @field_options = ["contains", "does not contain", "blank", "not blank", "before", "after"]
     @date_options = ["before", "after", "near", "exact"]
     if params[:widescreen] == 'true'
       render :layout => 'widescreen'
     end
-    super
+    if params[:format] == 'csv'
+      if current_user.downloads.count >= 5
+        render json: {error: 'at limit'}
+        return
+      end      
+      @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv", user_id: current_user.id})
+
+      EntriesController.delay.do_csv_search(params, search_params_logic, @d)
+
+      respond_to do |format|
+        format.csv {
+          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count} 
+        }
+      end
+    else
+      super
+    end
+    # respond to csv..., etc.
   end
 
-#  def index
-#    @bookmarks = current_user.bookmarks
-#    super
-#  end
 
   # JSON data structure optimized for editing page. This weird action
   # exists because we want CatalogController to handle #show, but we
@@ -68,6 +109,7 @@ class EntriesController < SearchableAuthorityController
   # widget, which is the only thing that uses (or should use) this,
   # since we return arrays instead of objects with more meaningful
   # keys.
+
   def render_search_results_as_json
     retval = {
       draw: params[:draw],
@@ -116,7 +158,7 @@ class EntriesController < SearchableAuthorityController
 
   # creating composite provenance
   def compose
-    s = Source.new({date: Date.today.strftime("%Y-%m-%d"), title: "Manuscript Record: SDBM_MS_#{params[:manuscript_id]}", author: current_user.username, source_type: SourceType.find(8)})
+    s = Source.new({date: Date.today.strftime("%Y-%m-%d"), title: "Provenance Observation (#{current_user.username}): SDBM_MS_#{params[:manuscript_id]}", author: current_user.username, source_type: SourceType.find(8), created_by: current_user, status: Source::TYPE_STATUS_ENTERED})
     s.save!
     params[:source_id] = s.id
     create
@@ -220,6 +262,7 @@ class EntriesController < SearchableAuthorityController
   # returns JSON containing type constants
   def types
     data = {
+      'sale_agent_role' => SaleAgent::ROLE_TYPES,
       'transaction_type' => Entry::TYPES_TRANSACTION,
       'author_role' => EntryAuthor::TYPES_ROLES,
       'artist_role' => EntryArtist::TYPES_ROLES,
@@ -253,6 +296,7 @@ class EntriesController < SearchableAuthorityController
   # this action returns differently formatted JSON results depending
   # on param 'full'
   def similar
+    return
     similar = SDBMSS::SimilarEntries.new(@entry)
     if params[:full].present?
       total = similar.count
@@ -294,7 +338,7 @@ class EntriesController < SearchableAuthorityController
   end
 
   def history
-    if not can?(:edit, @entry)
+    if not can? :history, @entry
       flash[:error] = "You do not have permission to view the history for this entry."
       redirect_to entry_path(@entry)
       return

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160623133719) do
+ActiveRecord::Schema.define(version: 20160721132547) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -113,6 +113,7 @@ ActiveRecord::Schema.define(version: 20160623133719) do
     t.boolean  "deprecated",                             default: false
     t.integer  "superceded_by_id",         limit: 4
     t.boolean  "unverified_legacy_record",               default: false
+    t.boolean  "confirmed",                              default: false
   end
 
   add_index "entries", ["approved_by_id"], name: "index_entries_on_approved_by_id", using: :btree
@@ -337,6 +338,7 @@ ActiveRecord::Schema.define(version: 20160623133719) do
     t.boolean  "reviewed",                   default: false
     t.integer  "reviewed_by_id", limit: 4
     t.datetime "reviewed_at"
+    t.string   "url",            limit: 255
   end
 
   add_index "manuscripts", ["created_by_id"], name: "index_manuscripts_on_created_by_id", using: :btree
@@ -369,11 +371,12 @@ ActiveRecord::Schema.define(version: 20160623133719) do
     t.integer  "source_agents_count", limit: 4,     default: 0,     null: false
     t.integer  "sale_agents_count",   limit: 4,     default: 0,     null: false
     t.boolean  "deleted",                           default: false
-    t.text     "comment",             limit: 65535
+    t.text     "other_info",          limit: 65535
     t.boolean  "reviewed",                          default: false
     t.integer  "reviewed_by_id",      limit: 4
     t.datetime "reviewed_at"
     t.integer  "provenance_count",    limit: 4,     default: 0,     null: false
+    t.boolean  "confirmed",                         default: false
   end
 
   add_index "names", ["created_by_id"], name: "index_names_on_created_by_id", using: :btree
@@ -416,6 +419,10 @@ ActiveRecord::Schema.define(version: 20160623133719) do
     t.integer  "user_id",            limit: 4
     t.integer  "private_message_id", limit: 4
     t.text     "title",              limit: 65535
+<<<<<<< HEAD
+=======
+    t.boolean  "unread",                           default: true
+>>>>>>> 9cb1cad6033484b85d37da04919f6b594c84bb71
   end
 
   add_index "private_messages", ["created_by_id"], name: "index_private_messages_on_created_by_id", using: :btree
@@ -515,12 +522,20 @@ ActiveRecord::Schema.define(version: 20160623133719) do
   add_index "source_agents", ["source_id"], name: "index_source_agents_on_source_id", using: :btree
 
   create_table "source_comments", force: :cascade do |t|
+<<<<<<< HEAD
     t.integer "name_id",    limit: 4
+=======
+    t.integer "source_id",  limit: 4
+>>>>>>> 9cb1cad6033484b85d37da04919f6b594c84bb71
     t.integer "comment_id", limit: 4
   end
 
   add_index "source_comments", ["comment_id"], name: "index_source_comments_on_comment_id", using: :btree
+<<<<<<< HEAD
   add_index "source_comments", ["name_id"], name: "index_source_comments_on_name_id", using: :btree
+=======
+  add_index "source_comments", ["source_id"], name: "index_source_comments_on_source_id", using: :btree
+>>>>>>> 9cb1cad6033484b85d37da04919f6b594c84bb71
 
   create_table "source_types", force: :cascade do |t|
     t.string  "name",                           limit: 255
@@ -537,7 +552,7 @@ ActiveRecord::Schema.define(version: 20160623133719) do
     t.string   "link",                 limit: 512
     t.boolean  "in_manuscript_table"
     t.boolean  "deleted"
-    t.text     "comments",             limit: 65535
+    t.text     "other_info",           limit: 65535
     t.string   "status",               limit: 255
     t.string   "hidden",               limit: 255
     t.datetime "created_at"
@@ -560,10 +575,17 @@ ActiveRecord::Schema.define(version: 20160623133719) do
   add_index "sources", ["source_type_id"], name: "index_sources_on_source_type_id", using: :btree
   add_index "sources", ["updated_by_id"], name: "index_sources_on_updated_by_id", using: :btree
 
+<<<<<<< HEAD
   create_table "user_messages", id: false, force: :cascade do |t|
     t.integer "user_id",            limit: 4,   null: false
     t.integer "private_message_id", limit: 4,   null: false
     t.string  "type",               limit: 255
+=======
+  create_table "user_messages", force: :cascade do |t|
+    t.integer "user_id",            limit: 4,   null: false
+    t.integer "private_message_id", limit: 4,   null: false
+    t.string  "method",             limit: 255
+>>>>>>> 9cb1cad6033484b85d37da04919f6b594c84bb71
   end
 
   create_table "users", force: :cascade do |t|
@@ -592,6 +614,7 @@ ActiveRecord::Schema.define(version: 20160623133719) do
     t.string   "fullname",                  limit: 255
     t.boolean  "active",                                  default: true
     t.string   "institutional_affiliation", limit: 255
+    t.integer  "bookmark_tracker",          limit: 4,     default: 0
   end
 
   add_index "users", ["created_by_id"], name: "index_users_on_created_by_id", using: :btree

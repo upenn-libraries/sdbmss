@@ -25,7 +25,8 @@
             {
                 sdbmssMinWidth: "20px",
                 sdbmssMaxWidth: "20px",
-                title: '',
+                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
+                className: 'text-center unreviewed_only',
                 orderable: false,
                 render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {
@@ -101,6 +102,36 @@
          return [ null, result.id, result.id, result[this.options.searchNameField], result.fullname, result.role, result.active.toString(), result.reviewed.toString(), result.created_by || "" ];
      };
 
+    SDBM.ManageRecords.prototype.setFormStateFromURL = function() {
+        var manageRecords = this;
+        var qs = new URI().query(true);
+
+         $(".search-fieldset").each(function(idx, element) {
+             var search_field = $(element).find("select[name='search_field']").first();
+             var search_value = $(element).find("input[name='search_value']").first();
+             var populated = false;
+             search_field.children().each(function (idx, option) {
+                 if(!populated && qs[option.value] && qs[option.value].length > 0) {
+                     search_field.val(option.value);
+                     if (Array.isArray(qs[option.value]) && qs[option.value].length > 0) {
+                         search_value.val(qs[option.value].pop());
+                         if (qs[option.value].length == 0) qs[option.value] = undefined;
+                     } else if ( qs[option.value] != undefined ) {
+                        search_value.val(qs[option.value]);
+                        qs[option.value] = undefined;
+                     }
+
+                     //delete qs[option.value];
+                     populated = true;
+                 }
+             });
+         });
+        if(qs.unreviewed_only === '1') {
+            $("input[name='unreviewed_only']").prop('checked', true);
+        }
+        manageRecords.showOrHideMarkCheckedRecordsButton();
+    };
+
      new ManageAccounts({
          resourceName: "<%= resource_name %>",
          resourceNameSingular: "<%= resource_name.singularize %>",
@@ -108,6 +139,8 @@
          showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
          searchNameField: "username"
      });
+
+
 
  });
 

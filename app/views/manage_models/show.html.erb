@@ -11,7 +11,7 @@
                         <li class="link"><%= link_to 'Edit', edit_model_path(@model) %></li>
                       <% end %>
                       <li class="link"><%= link_to 'Change History', polymorphic_path([:history, @model]) %></li>
-                      <li class="link"><%= link_to 'Return to Listing', models_path %></li>
+                      <li class="link"><%= link_to 'Go to Listing', models_path %></li>
                   <% end %>
               </ul>
           </div>
@@ -19,14 +19,6 @@
   </div>
   <div class="col-sm-9">
     <p id="notice"><%= notice %></p>
-
-    <% if !@model.reviewed %>
-    <div class="panel panel-warning">
-        <div class="panel-heading">
-            NOTE: This name record was recently created and has not yet been reviewed.
-        </div>
-    </div>
-    <% end %>
 
     <dl class="document-show-heading dl-horizontal dl-invert">
         <dt></dt>
@@ -40,7 +32,7 @@
       </dd>
       <dt># Entries</dt>
       <dd>
-          This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
+          This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries.count, "entry") %></a>
       </dd>
     </dl>
 

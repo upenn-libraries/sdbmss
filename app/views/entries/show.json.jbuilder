@@ -132,7 +132,8 @@ if @entry.provenance.present?
     associated_dates = provenance_item.associated_date.to_s.split("\t").map { |dt| {date: dt, type: "Associated"} }
     end_date = provenance_item.end_date.present? ? [{ date: provenance_item.end_date, type: "End"}] : []
     start_date = provenance_item.start_date.present? ? [{date: provenance_item.start_date, type: "Start"} ] : []
-    json.dates start_date + end_date + associated_dates
+    dates = start_date + end_date + associated_dates
+    json.dates dates
     
     json.start_date_normalized_start SDBMSS::Util.format_fuzzy_date(provenance_item.start_date_normalized_start)
     json.start_date_normalized_end SDBMSS::Util.format_fuzzy_date(provenance_item.start_date_normalized_end)

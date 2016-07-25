@@ -2,6 +2,12 @@
 class ProfilesController < ApplicationController
 
   def show
+    if !current_user
+      flash[:error] = "You must be logged in to view someone's profile page."
+      redirect_to root_path
+      return
+    end
+
     @user = User.find_by(username: params[:username])
     @display = {
       id: @user.id,
@@ -13,7 +19,7 @@ class ProfilesController < ApplicationController
       biography: @user.bio || "This user has chosen not to share any biographical details.",
       institution: @user.institutional_affiliation  || "Unaffiliated",
       sources_created: @user.sources.count,
-      entries_created: @user.entries.count
+      entries_created: @user.entries.where(deprecated: false).count
     }
     @online = @user.updated_at && @user.updated_at > 10.minutes.ago
     @activities = Activity.where(user_id: @user.id).limit(10).order(id: :desc)

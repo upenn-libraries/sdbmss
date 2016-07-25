@@ -37,12 +37,12 @@
         </div>
         <% end %>
         <div class="col-sm-3">
-          <button type="button" ng-click="findSuggestions(entity.name, true)" ng-disabled="loading" class="btn btn-primary">Find suggestions</button>
+          <button type="button" ng-click="findSuggestions(entity.name, true)" ng-disabled="loading" class="btn btn-primary">Find Suggestions in VIAF</button>
         </div>
     </div>
     <div class="field form-group row">
         <%= f.label :flags, class: "col-sm-2 control-label" %>
-        <div class="col-sm-4 checkbox">
+        <div class="col-sm-4">
             Specify this name to be used as:<br/>
             <label>
                 <%= f.check_box :is_artist %> Artist
@@ -83,9 +83,9 @@
         </div>
     </div>
     <div class="field form-group row">
-        <%= f.label :comment, class: "col-sm-2 control-label" %>
+        <%= f.label :other_info, class: "col-sm-2 control-label" %>
         <div class="col-sm-8">
-            <%= f.text_field :comment, :class => 'form-control', :data => { 'ng-model' => 'entity.comment', 'ng-init' => "entity.comment='#{@model.comment}'" } %>
+            <%= f.text_field :other_info, :class => 'form-control', :data => { 'ng-model' => 'entity.other_info', 'ng-init' => "entity.other_info='#{@model.other_info}'" } %>
         </div>
     </div>
     <div class="actions row">

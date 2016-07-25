@@ -1,0 +1,65 @@
+<% count_sources = Source.joins(:source_agents).where(source_agents: {agent_id: name.id}).distinct.count %>
+<% if count_sources || 0 > 0 %>
+<dt># Sources</dt>
+<dd>
+    This agent is found in <%= link_to "#{SDBMSS::Util.to_many(count_sources, 'source')}", sources_path({agent_id: name.id}), class: "badge" %>
+</dd>
+<% end %>
+
+<!-- FIX ME: public-facing COUNT will only show number of non-deleted entries : BUT includes deprecated records -->
+<% count_authors = Entry.joins(:entry_authors).where(entry_authors: {author_id: name.id}).distinct.count || 0 %>
+<% count_artists = Entry.joins(:entry_artists).where(entry_artists: {artist_id: name.id}).distinct.count || 0 %>
+<% count_scribes = Entry.joins(:entry_scribes).where(entry_scribes: {scribe_id: name.id}).distinct.count || 0 %>
+<% has_entries = (count_authors + count_artists + count_scribes) > 0 %>
+
+<% if (!name.is_provenance_agent) || has_entries %>                
+<dt># Entries</dt>
+<dd>
+    <% if count_authors > 0 %>
+    This name is listed as the author of <a class='badge' href="<%= search_by_facet_value('author', name.name) %>"><%= SDBMSS::Util.to_many(count_authors, "entry") %></a><br/>
+    <% end %>
+
+    <% if count_artists > 0 %>
+    This name is listed as the artist of <a class='badge' href="<%= search_by_facet_value('artist', name.name) %>"><%= SDBMSS::Util.to_many(count_artists, "entry") %></a><br/>
+    <% end %>
+
+    <% if count_scribes > 0 %>
+    This name is listed as the scribe of <a class='badge' href="<%= search_by_facet_value('scribe', name.name) %>"><%= SDBMSS::Util.to_many(count_scribes, "entry") %></a><br/>
+    <% end %>
+
+    <% if !has_entries %>
+    No entries found containing this name as an author, artist, or scribe.
+    <% end %>
+</dd>
+<% end %>
+
+<% count_selling_agent = Entry.with_sale_agent_and_role(name, 'selling_agent').count || 0 %>
+<% count_seller_or_holder = Entry.with_sale_agent_and_role(name, 'seller_or_holder').count || 0 %>
+<% count_buyer = Entry.with_sale_agent_and_role(name, 'buyer').count || 0 %>
+<% has_transactions = (count_selling_agent + count_seller_or_holder + count_buyer) > 0 %>
+
+<% if has_transactions %>
+    <dt># Transactions</dt>
+    <dd>
+
+        <% if count_selling_agent > 0 %>
+        This agent is the selling agent in <a class='badge' href="<%= search_by_facet_value('sale_selling_agent', name.name) %>"><%= SDBMSS::Util.to_many(count_selling_agent, "entry") %></a><br/>
+        <% end %>
+
+        <% if count_seller_or_holder > 0 %>
+        This agent is the seller in <a class='badge' href="<%= search_by_facet_value('sale_seller', name.name) %>"><%= SDBMSS::Util.to_many(count_seller_or_holder, "entry") %></a><br/>
+        <% end %>
+        
+        <% if count_buyer > 0 %>
+        This agent is the buyer in <a class='badge' href="<%= search_by_facet_value('sale_buyer', name.name) %>"><%= SDBMSS::Util.to_many(count_buyer, "entry") %></a>
+        <% end %>
+    </dd>
+<% end %>
+
+<% count_provenance = Entry.joins(:provenance).where(provenance: {provenance_agent_id: name.id}).distinct.count %>
+<% if count_provenance > 0 %>
+    <dt># Provenance</dt>
+    <dd>
+        This agent is found in the provenance of <a class='badge' href="<%= search_by_facet_value('provenance', name.name) %>"><%= SDBMSS::Util.to_many(count_provenance, "entry") %></a>
+    </dd>
+<% end %>

@@ -18,10 +18,21 @@ Rails.application.routes.draw do
   resources :bookmarks do
     collection {
       delete 'delete_all'
+      get 'check'
     }
     member {
       get 'addtag'
       get 'removetag'
+    }
+  end
+
+  resources :downloads do
+    collection {
+      get 'index', as: "downloads"
+    }
+    member {
+      get 'show' 
+      get 'delete', action: :destroy
     }
   end
 
@@ -38,10 +49,20 @@ Rails.application.routes.draw do
     }
   end
 
+  get "/faq/", to: 'community#faq', as: 'faq'
+  get "/about/", to: 'community#about', as: 'about'
+  get "/technical_overview/", to: 'community#technical_overview', as: 'technical_overview'
+  get "/project_history/", to: 'community#project_history', as: 'project_history'
+  get "/user_agreement/", to: 'community#user_agreement', as: 'user_agreement'
   get '/community/', to: 'community#show', as: 'community'
   get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
 
   resources :delayed_jobs, only: [:index]
+
+#  resources '/messages/', to: 'private_messages#index', as: 'private_messages'
+
+  resources :private_messages do
+  end
 
   # Note here that we point #show to BL's CatalogController
   resources :entries, except: [:show] do
@@ -108,7 +129,7 @@ Rails.application.routes.draw do
       get 'citation'
       get 'entry_candidates'
       get 'manage_entries'
-      get 'edit', to: :show
+      get 'edit', action: :show
     end
   end
 

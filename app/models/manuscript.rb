@@ -14,6 +14,7 @@ class Manuscript < ActiveRecord::Base
   include IndexAfterUpdate
   include HasPaperTrail
   include CreatesActivity
+  extend CSVExportable
 
   # searchable!
   
@@ -28,6 +29,8 @@ class Manuscript < ActiveRecord::Base
     text :updated_by
     text :name
     string :name
+    text :url
+    string :url
     text :location
     string :location
     integer :id
@@ -113,7 +116,7 @@ class Manuscript < ActiveRecord::Base
         end
       end
     end
-    @manuscript_titles
+    @manuscript_titles.delete(nil)
   end
 
   def to_i
@@ -122,6 +125,35 @@ class Manuscript < ActiveRecord::Base
 
   def to_s
     all_titles.to_a.join(",")[0..50]
+  end
+
+  def bookmark_details
+    results = { 
+      titles: all_titles.to_a.join(", "),
+      location: location,
+      url: url,
+      entries_count: entries_count
+    }
+    (results.select { |k, v| !v.blank? }).transform_keys{ |key| key.to_s.humanize }
+  end
+
+  def search_result_format
+    {
+      id: id,
+      name: name,
+      location: location,
+      url: url,
+      entries_count: entries_count,
+      reviewed: reviewed,
+      created_by: created_by.present? ? created_by.username : "(none)",
+      created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
+      updated_by: updated_by.present? ? updated_by.username : "(none)",
+      updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
+    }
+  end
+
+  def self.fields
+    super + ["location"]
   end
 
 end

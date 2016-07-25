@@ -3,10 +3,10 @@
 <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
 <% else %>
 
-<p>
+<!--<p>
     Note: This entry records a mention or observation of a manuscript
-    in a source. Do not assume that the manuscript is held by the
-    University of Pennsylvania Libraries.</p>
+    in or by a source. Do not assume that the manuscript is held by the
+    University of Pennsylvania Libraries.</p>-->
 
 <% if entry.deprecated %>
     <p style="color: red;">
@@ -18,12 +18,14 @@
 <% end %>
 
 <% if !entry.approved %>
-    <div class="panel panel-danger">
-        <div class="panel-heading">Warning: This entry had not been approved yet.  The data may be incorrect or unreliable, or may not conform to the general data standards.</div>
-    </div>
+    <div class="alert alert-warning">Warning: This entry has not been approved yet.  The data may be incorrect or unreliable, or may not conform to the general data standards.</div>
 <% end %>
 
 <%= render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
+
+<% entry.supercedes.each do |e| %>
+    <p class="text-warning">This entry supercedes the following deprecated Entry: <%= link_to e.public_id, entry_path(e), class: "text-warning bg-warning" %>.</p>
+<% end %>
 
 <!-- TODO: use a DL element here instead of a table? or use bootstrap rows and cols? layout will be tricky -->
 <table class="table table-striped">
@@ -74,29 +76,35 @@
 
     <tbody>
 
-        <% if (selling_agent = sale.get_selling_agent).present? %>
+        <% if (selling_agents = sale.get_selling_agents).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label">Selling Agent</td>
+            <td class="col-sm-2 text-right record-label">Selling Agent(s)</td>
             <td class="col-sm-10">
-                <a href="<%= agent_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a>
+                <% selling_agents.each do |selling_agent| %>
+                    <a href="<%= agent_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a><br>
+                <% end %>
             </td>
         </tr>
         <% end %>
 
-        <% if (seller_or_holder = sale.get_seller_or_holder).present? %>
+        <% if (sellers_or_holders = sale.get_sellers_or_holders).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label">Seller</td>
+            <td class="col-sm-2 text-right record-label">Seller(s)</td>
             <td class="col-sm-10">
-                <a href="<%= agent_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a>
+                <% sellers_or_holders.each do |seller_or_holder| %>
+                    <a href="<%= agent_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a><br>
+                <% end %>
             </td>
         </tr>
         <% end %>
 
-        <% if (buyer = sale.get_buyer).present? %>
+        <% if (buyers = sale.get_buyers).present? %>
         <tr>
-            <td class="col-sm-2 text-right record-label">Buyer</td>
+            <td class="col-sm-2 text-right record-label">Buyer(s)</td>
             <td class="col-sm-10">
-                <a href="<%= agent_path(buyer.agent) %>"><%= buyer.agent.name %></a>
+                <% buyers.each do |buyer| %>
+                    <a href="<%= agent_path(buyer.agent) %>"><%= buyer.agent.name %></a><br>
+                <% end %>
             </td>
         </tr>
         <% end %>

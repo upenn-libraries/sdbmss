@@ -1,3 +1,18 @@
+<script type="text/javascript">
+$(document).ready(function() {
+
+$("#new_comment").submit(function(event) {
+     event.preventDefault();
+     $.post($("#new_comment").attr("action"), $("#new_comment").serialize(), function() {
+         window.location = "/sources/" + <%= @source.id %>;
+     })
+      .fail(function (jqXHR, textStatus, errorThrown) {
+          var errorString = SDBM.parseRailsErrors($.parseJSON(jqXHR.responseText).errors).join("; ");
+          alert(errorString);
+      });
+    });
+});
+</script>
 <div class="row">
     <div class="col-sm-3">
         <div class="panel panel-default show-tools">
@@ -6,10 +21,13 @@
             </div>
             <div class="panel-body">
                 <ul class="nav">
+                    <li>
+                        <a onclick="addBookmark(<%= @source.id %>, 'Source');" class="bookmark-link" in_bookmarks="/sources/<%= @source.id %>"><span class="glyphicon glyphicon-bookmark"></span></a>
+                    </li>
                     <% if user_signed_in? %>
                         <% if can?(:edit, @source) %>
                             <li class="edit_source">
-                                <a href="<%= edit_source_path(@source.id) %>">Edit this source</a>
+                                <a href="<%= edit_source_path(@source.id) %>" class="<%= @source.source_type.id == 8 ? 'disabled text-muted' : '' %>">Edit this source</a>
                             </li>
                         <% end %>
                     <li class="edit_source">
@@ -17,7 +35,7 @@
                     </li>
                         <% if can?(:edit, @source) %> 
                             <li>
-                                <a href="<%= merge_source_path(source_id: @source) %>">Merge this source</a>
+                                <a href="<%= merge_source_path(source_id: @source) %>" class="<%= @source.source_type.id == 8 ? 'disabled text-muted' : '' %>">Merge this source</a>
                             </li>
                         <% end %>
                     <% end %>
@@ -34,5 +52,61 @@
             <%= render partial: "source_details", locals: { source: @source, details: @details } %>
         
     </div>
+    <div class="col-sm-3"></div>
+    <div class="col-sm-9">
 
+        <h4>Share additional information about this source in the box below. Your comments will be displayed publicly.</h4>
+
+        <% if (comments = @source.comments.where(public: true)).present? %>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-12" colspan="2"><b>Comments</b></th>
+                </tr>
+            </thead>
+            <tbody>
+                <% comments.each do |comment| %>
+                <tr>
+                    <td class="col-sm-2 text-right record-label">
+                        By <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
+                        At <%= comment.created_at.to_formatted_s(:date_and_time) %>
+                    </td>
+                    <td class="col-sm-10">
+                        <%= comment.comment||"(none)" %>
+                    </td>
+                </tr>
+                <% end %>
+            </tbody>
+        </table>
+        <% end %>
+
+        <% if user_signed_in? %>
+            <% comment = Comment.new %>
+            <% source_comment = comment.source_comments.build %>
+            <% source_comment.source_id = @source.id %>
+            <%= form_for(comment, format: :json) do |f| %>
+                <input type="hidden" name="return_url" value="<%= source_path @source %>"/>
+                <%= f.fields_for :source_comments do |source_comment| %>
+                    <%= source_comment.hidden_field :source_id %>
+                    <% end %>
+                <div class="row">
+                    <div class="col-sm-12 form-group">
+                        <h4>Leave a comment</h4>
+                        <%= f.text_area :comment, class: "form-control", rows: 5 %>
+                    </div>
+        <!--            <div class="col-sm-12 checkbox">
+                        <label>
+                            <%= f.check_box :is_correction %> I am leaving a comment that notes a correction to this record
+                        </label>
+                    </div>-->
+                    <div class="col-sm-12 text-right">
+                        <button class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            <% end %>
+        <% end %>
+
+        <div class="spacer-40px"></div>
+
+    </div>
 </div>
