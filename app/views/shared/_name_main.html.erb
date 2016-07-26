@@ -64,7 +64,7 @@
         <% end %>
         
         <% if count_buyer > 0 %>
-        This agent is the buyer in <a class='badge' href="<%= search_by_facet_value('sale_buyer', name.name) %>"<%= "#{count_buyer} entry".pluralize(count_buyer) %></a>
+        This agent is the buyer in <a class='badge' href="<%= search_by_facet_value('sale_buyer', name.name) %>"><%= "#{count_buyer} entry".pluralize(count_buyer) %></a>
         <% end %>
     </dd>
 <% end %>

@@ -88,6 +88,16 @@
             <%= f.text_field :other_info, :class => 'form-control', :data => { 'ng-model' => 'entity.other_info', 'ng-init' => "entity.other_info='#{@model.other_info}'" } %>
         </div>
     </div>
+    <% if can? :manage, Name %>
+    <div class="field form-group row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-5">
+            <label>
+                <%= f.check_box :confirmed %> Confirmed
+            </label>
+        </div>
+    </div>
+    <% end %>
     <div class="actions row">
         <div class="col-sm-4 col-sm-offset-2">
             <%= f.submit :class => 'btn btn-primary' %>

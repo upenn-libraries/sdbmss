@@ -136,6 +136,12 @@
                 dbSortField: 'reviewed'
             },
             {
+                sdbmssMinWidth: "75px",
+                sdbmssMaxWidth: "75px",
+                title: 'Confirmed',
+                dbSortField: 'confirmed'
+            },
+            {
                 sdbmssMinWidth: "90px",
                 sdbmssMaxWidth: "90px",
                 title: 'Created By',
@@ -177,6 +183,7 @@
              result.sale_agents_count,
              result.provenance_count,
              result.reviewed.toString(),
+             result.confirmed.toString(),
              result.created_by || "",
              result.created_at || "",
              result.updated_by || "",
