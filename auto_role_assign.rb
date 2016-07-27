@@ -51,12 +51,12 @@ roles = [
 
 roles.each do |role|
   puts "role: #{role}"
-  Name.where("name like '%, #{role}'").each do |name|
+  Name.where("name like ?", "%, #{role}%").each do |name|
     new_name = name.name.gsub(", #{role}", "")
-    if roles.any? { |role| new_name.include? role } || new_name == name.name
-      #go around for another go
+    if new_name == name.name
+      #edge case where a name is something like X, MASTER
     else
-      matching_names = Name.where("name like ?", new_name)
+      matching_names = Name.where("name = ?", new_name)
       # if name already exists!
       name.entry_artists.each do |entry_artist|
         entry_artist.update_column(:role, role.to_sym)
