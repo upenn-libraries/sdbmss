@@ -1,3 +1,5 @@
+
+
 require 'csv'
 
 #confirmed
@@ -9,6 +11,7 @@ end
 
 ids = ids.map { |id| id.to_i }
 
+puts "To confirm: #{Name.where(id: ids).count}"
 Name.where(id: ids).update_all(confirmed: true)
 
 #reviewed
@@ -20,33 +23,30 @@ end
 
 ids = ids.map { |id| id.to_i }
 
+puts "To review: #{Name.where(id: ids).count}"
 Name.where(id: ids).update_all(reviewed: true)
 
 #as recorded
 
 ids = []
-CSV.foreach('as_recorded.csv') do |row|
+CSV.foreach('as_recorded_ids.csv') do |row|
   ids = row
 end
 
 ids = ids.map { |id| id.to_i }
 
 Name.where(id: ids).each do |name|
-  name.entry_authors.each do |e|
-    e.update(as_recorded: name.name)
-  end
+  EntryAuthor.where(author_id: name.id).update_all({observed_name: name.name, author_id: nil})
+  EntryArtist.where(artist_id: name.id).update_all({observed_name: name.name, artist_id: nil})
+  EntryScribe.where(scribe_id: name.id).update_all({observed_name: name.name, scribe_id: nil})
+  Provenance.where(provenance_agent_id: name.id).update_all({observed_name: name.name, provenance_agent_id: nil})
 
-  name.entry_artists.each do |e|
-    e.update(as_recorded: name.name)
+  if name.source_agents.count + name.sale_agents.count <= 0
+    name.delete
+    puts "#{name.name}, #{name.id} deleted"
+  else
+    puts "#{name.name}, #{name.id} used as source/sale agents"
   end
-
-  name.entry_scribes.each do |e|
-    e.update(as_recorded: name.name)
-  end
-
-  name.provenance.each do |e|
-    e.update(as_recorded: name.name)
-  end
-
-  name.delete
 end
+
+Name.delay.index

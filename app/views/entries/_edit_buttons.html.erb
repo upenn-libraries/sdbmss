@@ -3,7 +3,13 @@
             <button class="btn btn-primary save-button" ng-click="save()" ng-disabled="entryForm.$invalid || currentlySaving">Save</button>
             <a class="btn btn-warning" id='cancelEdit' href="/dashboard">Cancel</a>
         </div>
-        <div class="col-sm-8 label-alignment">
+        <% if can? :manage, Entry  %>
+            <div class="col-sm-4">
+                <label for="" class="control-label">Check if the information is unverified legacy information.</label>
+                <input type="checkbox" ng-model="entry.unverified_legacy_record">
+            </div>
+        <% end %>
+        <div class="col-sm-4 label-alignment">
             <div ng-show="entryForm.$invalid" style="color: red;">
                 You must correct the form inputs highlighted in red before you can save this form.
             </div>

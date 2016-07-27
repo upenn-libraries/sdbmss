@@ -53,19 +53,24 @@ roles.each do |role|
   puts "role: #{role}"
   Name.where("name like '%, #{role}'").each do |name|
     new_name = name.name.gsub(", #{role}", "")
-    matching_names = Name.where("name like ?", new_name)
-    # if name already exists!
-    name.entry_artists.each do |entry_artist|
-      entry_artist.update_column(:role, role.to_sym)
-    end
-
-    if matching_names.count == 1
-      name.merge_into(matching_names.last)
-      matching_names.last.update(is_artist: true)
-    elsif matching_names.count > 1
-      puts "Error: more than one name matches '#{new_name}'"
+    if roles.any? { |role| new_name.include? role } || new_name = name.name
+      #go around for another go
     else
-      name.update_column(:name, new_name)
+      matching_names = Name.where("name like ?", new_name)
+      # if name already exists!
+      name.entry_artists.each do |entry_artist|
+        entry_artist.update_column(:role, role.to_sym)
+      end
+
+      if matching_names.count == 1
+        puts "Merging #{name} into #{matching_names.last}"
+        name.merge_into(matching_names.last)
+        matching_names.last.update(is_artist: true)
+      elsif matching_names.count > 1
+        puts "Error: more than one name matches '#{new_name}'"
+      else
+        name.update_column(:name, new_name)
+      end
     end
   end
 end
