@@ -59,7 +59,7 @@ roles.each do |role|
       matching_names = Name.where("name = ?", new_name)
       # if name already exists!
       name.entry_artists.each do |entry_artist|
-        entry_artist.update_column(:role, role.to_sym)
+        entry_artist.update_column(:role, TYPES_ROLES[role.to_sym])
       end
 
       if matching_names.count == 1
