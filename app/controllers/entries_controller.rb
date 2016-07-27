@@ -458,7 +458,7 @@ class EntriesController < SearchableAuthorityController
       :height, :width, :alt_size,
       :miniatures_fullpage, :miniatures_large, :miniatures_small, :miniatures_unspec_size,
       :initials_historiated, :initials_decorated,
-      :manuscript_binding, :manuscript_link, :other_info, :superceded_by_id,
+      :manuscript_binding, :manuscript_link, :other_info, :superceded_by_id, :unverified_legacy_record,
       :entry_titles_attributes => [ :id, :order, :title, :common_title, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_authors_attributes => [ :id, :order, :observed_name, :author_id, :role, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_dates_attributes => [ :id, :order, :observed_date, :date_normalized_start, :date_normalized_end, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],

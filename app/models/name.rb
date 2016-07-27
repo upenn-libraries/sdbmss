@@ -135,6 +135,7 @@ class Name < ActiveRecord::Base
       is_provenance_agent: is_provenance_agent,
       is_scribe: is_scribe,
       reviewed: reviewed,
+      confirmed: confirmed,
       created_by: created_by.present? ? created_by.username : "(none)",
       created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
       updated_by: updated_by.present? ? updated_by.username : "(none)",

@@ -34,12 +34,11 @@
             </div>
             <div ng-show="source.source_type.name">
                 <p ng-show="source.source_type.name == 'auction_catalog'">Use this type for auction or sale catalogs for a specific sale event. For online-only auctions (such as eBay) or sale events, use the SOURCE TYPE: Online-only Auction or Bookseller Website.</p>
-                <p ng-show="source.source_type.name == 'collection_catalog'">Use this type for published catalogs of institutional or private individual collections. For individuals, use SDBM PERSONAL NAME STANDARDS.</p>
+                <p ng-show="source.source_type.name == 'collection_catalog'">Use for published catalogs of institutional or private individual collections.</p>
                 <p ng-show="source.source_type.name == 'online'">Use this type for online-only auctions, such as eBay, or for bookseller websites providing non-dated sale lists. This field is intended for information found only online and not referring to a specific, dated sale.</p>
                 <p ng-show="source.source_type.name == 'observation'">Use this type when recording data acquired via direct personal observation of a manuscript.</p>
                 <p ng-show="source.source_type.name == 'other_published'">Use this type for any other published source not applicable to the previous SOURCE TYPES (e.g., an inventory published in a journal article).</p>
-                <p ng-show="source.source_type.name == 'unpublished'">Use for any unpublished data sources (e.g. in-house finding aid or inventory). When recording names of individuals, use SDBM PERSONAL NAME STANDARDS.</p>
-                <p>Complete as many fields as possible to create the source. No fields are mandatory.</p>
+                <p ng-show="source.source_type.name == 'unpublished'">Use for any unpublished data sources (e.g. in-house finding aids or inventories, personal communications via email, etc).</p>
             </div>
         </div>
     </div>
@@ -57,15 +56,11 @@
         <div class="col-sm-12">
             <div ng-show="!showFields()">
                 
-                <p><b>Personal Observation</b>: Use when recording data
-                    acquired via direct personal observation of a
-                    manuscript, either by yourself or someone else.</p>
+                <p><b>Personal Observation</b>:  Use when recording data acquired via direct personal observation of a manuscript.</p>
 
                 <p><b>Auction/Dealer Catalog</b>: Use for auction or sale catalogs for a specific sale event. For online-only auctions (such as eBay) or sale events, use the SOURCE TYPE: Online-only Auction or Bookseller Website.</p>
 
-                <p><b>Collection Catalog</b>: Use for published catalogs
-                    of institutional or private individual collections. For individuals,
-                    use SDBM PERSONAL NAME STANDARDS.</p>
+                <p><b>Collection Catalog</b>: Use for published catalogs of institutional or private individual collections.</p>
 
                 <p><b>Online-only Auction or Bookseller Website</b>: Use
                     for online-only auctions, such as eBay, or for
@@ -81,10 +76,7 @@
                     published source not applicable to the previous SOURCE TYPES (e.g., an
                     inventory published in a journal article).</p>
 
-                <p><b>Unpublished Source</b>: Use for any unpublished data
-                    sources (e.g. in-house finding aids or inventories,
-                    personal communications via email, etc). For
-                    individuals, use SDBM PERSONAL NAME STANDARDS.</p>
+                <p><b>Unpublished Source</b>: Use for any unpublished data sources (e.g. in-house finding aids or inventories, personal communications via email, etc).</p>
                 
                 <p>Not sure what your source type is? Email us at <a href="mailto:sdbm@pobox.upenn.edu">sdbm@upenn.edu</a>.</p>
             </div>

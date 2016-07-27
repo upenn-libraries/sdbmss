@@ -21,6 +21,10 @@
     <div class="alert alert-warning">Warning: This entry has not been approved yet.  The data may be incorrect or unreliable, or may not conform to the general data standards.</div>
 <% end %>
 
+<% if entry.unverified_legacy_record %>
+    <div class="alert alert-danger">This record was created before the new SDBM.  Edits should only be made if Source data can be verified.</div>
+<% end %>
+
 <%= render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
 
 <% entry.supercedes.each do |e| %>

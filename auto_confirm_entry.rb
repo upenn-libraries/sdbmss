@@ -1,5 +1,5 @@
-Entry.joins(:comments).where("comments.comment" => "ABOVE RED LINE").each do |entry|
-  entry.update_column(:confirmed, true)
-end
+d = Date.new(2015, 10, 19)
 
-# question -> what is the cut-off date for auto-redlining records
+Entry.where("created_at > ?", d).update_all(unverified_legacy_record: false)
+
+Entry.joins(:comments).where("comments.comment" => "ABOVE RED LINE").update_all(unverified_legacy_record: false)
