@@ -1,17 +1,19 @@
 <% @page_title = "Edit My Profile - " + application_name %>
 
-<h1>Edit My Profile Information</h1>
 
 <div class="row">
-    <div class="col-sm-8">
-        <p>Please provide some information about yourself to help us and other
+    <div class="col-sm-1"></div>
+    <div class="col-sm-4 text-center">
+      <h1>Edit My Profile Information</h1>
+        <p class='text-left'>Please provide some information about yourself to help us and other
             users get to know you. Your profile information will be accessible to
             other users from your user name as it appears in entries, manuscript
             records, or comments that you have created or responded to.</p>
+        <div class="btn-group" role="group">
+          <%= link_to "My Profile", profile_path(username: resource.username), class: 'btn btn-default' %>
+          <%= link_to "Go to Dashboard", dashboard_path, class: 'btn btn-info' %>
+        </div>
     </div>
-</div>
-
-<div class="row">
     <div class="col-sm-6">
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
   <%= devise_error_messages! %>
@@ -76,4 +78,3 @@
 <p>Unhappy? <%= button_to "Cancel my account", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete, class: "btn btn-cancel" %></p>
 <% end %>
 
-<p style="margin-top: 10px"><%= link_to "View my public profile", profile_path(username: resource.username) %> | <%= link_to "Back", :back %></p>
