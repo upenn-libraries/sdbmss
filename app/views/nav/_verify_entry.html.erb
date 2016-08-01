@@ -1,0 +1,8 @@
+<% if document.present? %>
+<% entry = document.model_object %>
+<% if entry.created_at <= Date.parse('2015-10-19') %>
+  <% if entry.unverified_legacy_record %>
+    <a class="entry-verify-link" href="<%= verify_entry_path(entry) %>" >Verify this entry</a>
+  <% end %>
+<% end %>
+<% end %>

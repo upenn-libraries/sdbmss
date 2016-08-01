@@ -86,6 +86,10 @@ module ApplicationHelper
     user_signed_in? && @document.present? && (entry = @document.model_object).present? && entry.manuscript.present? && can?(:link, entry.manuscript)
   end
 
+  def show_verify_entry?
+    user_signed_in? && @document.present? && (entry = @document.model_object).present? && can?(:manage, entry)
+  end
+
   def show_deprecate_entry?
     user_signed_in? && @document.present? && (entry = @document.model_object).present? && can?(:deprecate, entry)
   end

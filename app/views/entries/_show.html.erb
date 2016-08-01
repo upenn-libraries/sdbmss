@@ -22,7 +22,9 @@
 <% end %>
 
 <% if entry.unverified_legacy_record %>
-    <div class="alert alert-danger">This record was created before the new SDBM.  Edits should only be made if Source data can be verified.</div>
+    <div class="alert alert-danger">
+        This Entry was imported from the previous SDBM into the New SDBM on October 15, 2015. Its data may contain flaws due to incompatibility with the new data model or because data entry did not conform to current data entry standards that require that data submitted to the New SDBM reflect data provided by a Source <a href="https://sdbm.library.upenn.edu/static/docs/sdbm_data_model_explanation.pdf">(read more)</a>. We advise users to confirm data with the identified source when possible.
+    </div>
 <% end %>
 
 <%= render partial: "shared/entry_manuscripts", locals: { entry: entry } %>

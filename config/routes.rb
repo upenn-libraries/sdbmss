@@ -76,6 +76,7 @@ Rails.application.routes.draw do
       patch '/revert/', to: 'entries#revert'
       post 'deprecate'
       post 'compose'
+      get 'verify'
       get 'history'
       get 'similar'
       get 'manuscript_candidates'
