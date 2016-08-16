@@ -26,7 +26,7 @@ class EntriesController < SearchableAuthorityController
 
   include LogActivity
 
-  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate]
+  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate, :verify]
 
   before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy, :similar, :mark_as_approved, :deprecate]
 
@@ -371,6 +371,11 @@ class EntriesController < SearchableAuthorityController
       @unique_list[type].append(versions)
     end
 #    @unique_list.sort! { |a, b| b.first.created_at <=> a.first.created_at }
+  end
+
+  def verify
+    @entry.update(unverified_legacy_record: false)
+    redirect_to entry_path(@entry)
   end
 
   def deprecate

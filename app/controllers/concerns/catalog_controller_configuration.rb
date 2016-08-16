@@ -411,6 +411,7 @@ module CatalogControllerConfiguration
       config.add_show_tools_partial(:email)
       config.add_show_tools_partial(:sms)
       config.add_show_tools_partial(:citation)
+      config.add_show_tools_partial(:verify_entry, partial: 'nav/verify_entry', if: :show_verify_entry?)
 
     end
 

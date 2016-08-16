@@ -73,7 +73,11 @@ body {
 }
 
 /* There's some tweaky stuff in "#header-navbar .navbar-brand" rule that we're overriding here, probably fragile */
-#header-navbar .navbar-brand { background: none; overflow: visible; text-indent: 0; color: black; width: auto;}
+#header-navbar .navbar-brand { 
+  background: none; overflow: visible; text-indent: 0; color: black; width: auto;
+  float: right;
+  margin-left: 20px;
+}
 /*#header-navbar .navbar-brand {
     background: none;
     overflow: visible;
