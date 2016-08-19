@@ -149,7 +149,7 @@ class EntryVersionFormatter
   end
 
   def self.toClass (field)
-    if ['author_id', 'artist_id', 'scribe_id', 'source_agent_id', 'sale_agent_id', 'provenance_agent_id', 'agent_id'].include? field
+    if ['author_id', 'artist_id', 'scribe_id', 'source_agent_id', 'sale_agent_id', 'provenance_agent_id', 'agent_id', 'institution_id'].include? field
       return Name
     elsif ['created_by_id', 'updated_by_id', 'approved_by_id', 'reviewed_by_id'].include? field
       return User
