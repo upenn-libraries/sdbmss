@@ -36,7 +36,6 @@ angular.module('ui.sortable', [])
             }
             return null;
           }
-          console.log(ngModel);
           function hasSortingHelper (element, ui) {
             var helperOption = element.sortable('option','helper');
             return helperOption === 'clone' || (typeof helperOption === 'function' && ui.item.sortable.isCustomHelperUsed());
