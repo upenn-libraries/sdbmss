@@ -1,0 +1,30 @@
+<% comments.each do |comment| %>
+  <div class="panel-default panel" id="comment_<%= comment.id %>" name="comment_<%= comment.id %>">
+    <div class="panel-body comment">
+      <div class="row">
+        <div class="col-sm-12 comment-toggle" style='border-bottom: 1px solid #eee; margin-bottom: 10px; padding-bottom: 10px;'>
+          <%= sanitize comment.comment, tags: %w(code b i br strong em a), attributes: %w(href) %>
+        </div>
+        <% if can? :edit, comment %>
+          <div class="col-sm-12">
+            <%= render partial: "comments/edit_form", locals: {comment: comment} %>
+          </div>
+          <div class="col-sm-6">
+            <a onclick="$('#comment_<%= comment.id %> .comment-toggle').toggleClass('hide');" class='comment-toggle'>Edit</a>
+          </div>
+        <% end %>
+        <div class="col-sm-6 pull-right text-right">
+          By <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
+          At <%= comment.created_at.to_formatted_s(:date_and_time) %>
+        </div>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <%= form_tag('/reply') do %>
+        <%= hidden_field_tag :comment_id, comment.id %>
+        <%= text_area_tag :reply, '', class: 'form-control', rows: 1 %>
+        <%= submit_tag 'Reply', class: 'form-control' %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

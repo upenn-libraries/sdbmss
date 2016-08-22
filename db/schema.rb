@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160721132547) do
+ActiveRecord::Schema.define(version: 20160822152215) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -36,18 +36,20 @@ ActiveRecord::Schema.define(version: 20160721132547) do
   add_index "bookmarks", ["user_id"], name: "index_bookmarks_on_user_id", using: :btree
 
   create_table "comments", force: :cascade do |t|
-    t.text     "comment",        limit: 65535
-    t.boolean  "public",                       default: true
-    t.boolean  "is_correction",                default: false
+    t.text     "comment",          limit: 65535
+    t.boolean  "public",                         default: true
+    t.boolean  "is_correction",                  default: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "reviewed",                     default: false
+    t.boolean  "reviewed",                       default: false
     t.datetime "reviewed_at"
-    t.boolean  "deleted",                      default: false
-    t.integer  "created_by_id",  limit: 4
-    t.integer  "updated_by_id",  limit: 4
-    t.integer  "reviewed_by_id", limit: 4
-    t.boolean  "is_accepted",                  default: false
+    t.boolean  "deleted",                        default: false
+    t.integer  "created_by_id",    limit: 4
+    t.integer  "updated_by_id",    limit: 4
+    t.integer  "reviewed_by_id",   limit: 4
+    t.boolean  "is_accepted",                    default: false
+    t.integer  "commentable_id",   limit: 4
+    t.string   "commentable_type", limit: 255
   end
 
   add_index "comments", ["created_by_id"], name: "index_comments_on_created_by_id", using: :btree

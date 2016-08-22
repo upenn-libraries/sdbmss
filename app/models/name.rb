@@ -50,8 +50,7 @@ class Name < ActiveRecord::Base
   has_many :sources, through: :source_agents
   has_many :agent_sources, -> {distinct},  through: :source_agents, source: :source
 
-  has_many :name_comments, dependent: :destroy
-  has_many :comments, through: :name_comments
+  has_many :comments, as: :commentable
 
   validates_presence_of :name
 

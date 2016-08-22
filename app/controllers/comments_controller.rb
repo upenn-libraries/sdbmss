@@ -27,27 +27,36 @@ class CommentsController < SearchableAuthorityController
     "comment"
   end
 
-  # delete this?
-  def search_result_format(obj)
-    {
-      id: obj.id,
-      entry_id: obj.entry.try(:id),
-      manuscript_id: obj.manuscript.try(:id),
-      source_id: obj.source.try(:id),
-      comment: obj.comment,
-      #is_correction: obj.is_correction,
-      is_accepted: obj.is_accepted,
-      reviewed: obj.reviewed,
-      created_by: obj.created_by.username,
-      created_at: obj.created_at.to_formatted_s(:date_and_time),
-      updated_by: obj.updated_by.present? ? obj.updated_by.username : "(none)",
-      updated_at: obj.updated_at.present? ? obj.updated_at.to_formatted_s(:long) : ""
-    }
+  def create
+    @comment = Comment.new(comment_params)
+    @comment.save_by(current_user)
+    redirect_to polymorphic_path(@comment.commentable) + "#comment_#{@comment.id}"
+  end
+
+  def update
+    @comment = Comment.find(params[:id])
+    @comment.update_by(current_user, comment_params)
+    redirect_to polymorphic_path(@comment.commentable) + "#comment_#{@comment.id}"
+  end
+
+  def show
+    @comment = Comment.find(params[:id])
+    redirect_to polymorphic_path(@comment.commentable, anchor: "comment_#{@comment.id}")
+  end
+
+  def edit
+    @comment = Comment.find(params[:id])
+    redirect_to polymorphic_path(@comment.commentable) + "#comment_#{@comment.id}"
   end
 
   private
 
+  def comment_params
+    params.permit(:commentable_id, :commentable_type, :comment)
+  end
+
   def model_params
+    puts 'comment.rb: deprecated'
     params.require(model_class_lstr.to_sym).permit(
       :comment, :is_correction, :is_accepted,
       :entry_comments_attributes => [ :id, :entry_id ],

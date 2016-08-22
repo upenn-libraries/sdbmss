@@ -39,7 +39,8 @@
         <h4>Share additional information about this name in the box below. Your comments will be displayed publicly.</h4>
 
         <% if (comments = name.comments.where(public: true)).present? %>
-        <table class="table table-striped">
+            <%= render partial: "comments/show_all", locals: {comments: comments} %>
+        <!--<table class="table table-striped">
             <thead>
                 <tr>
                     <th class="col-sm-12" colspan="2"><b>Comments</b></th>
@@ -58,33 +59,11 @@
                 </tr>
                 <% end %>
             </tbody>
-        </table>
+        </table>-->
         <% end %>
 
         <% if user_signed_in? %>
-            <% comment = Comment.new %>
-            <% name_comment = comment.name_comments.build %>
-            <% name_comment.name_id = name.id %>
-            <%= form_for(comment, format: :json) do |f| %>
-                <input type="hidden" name="return_url" value="<%= name_path name %>"/>
-                <%= f.fields_for :name_comments do |name_comment| %>
-                    <%= name_comment.hidden_field :name_id %>
-                    <% end %>
-                <div class="row">
-                    <div class="col-sm-12 form-group">
-                        <h4>Leave a comment</h4>
-                        <%= f.text_area :comment, class: "form-control", rows: 5 %>
-                    </div>
-        <!--            <div class="col-sm-12 checkbox">
-                        <label>
-                            <%= f.check_box :is_correction %> I am leaving a comment that notes a correction to this record
-                        </label>
-                    </div>-->
-                    <div class="col-sm-12 text-right">
-                        <button class="btn btn-primary">Submit</button>
-                    </div>
-                </div>
-            <% end %>
+            <%= render partial: "comments/form", locals: { record: name } %>
         <% end %>
 
         <div class="spacer-40px"></div>
@@ -92,18 +71,3 @@
     </div>
 
 </div>
-<script type="text/javascript">
-$(document).ready(function() {
-
-$("#new_comment").submit(function(event) {
-     event.preventDefault();
-     $.post($("#new_comment").attr("action"), $("#new_comment").serialize(), function() {
-         window.location = "/names/" + <%= name.id %>;
-     })
-      .fail(function (jqXHR, textStatus, errorThrown) {
-          var errorString = SDBM.parseRailsErrors($.parseJSON(jqXHR.responseText).errors).join("; ");
-          alert(errorString);
-      });
-    });
-});
-</script>

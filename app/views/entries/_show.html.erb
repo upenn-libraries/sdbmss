@@ -457,7 +457,8 @@
 </table>
 
 <% if (comments = entry.comments.where(public: true)).present? %>
-<table class="table table-striped">
+<%= render partial: "comments/show_all", locals: {comments: comments} %>
+<!--<table class="table table-striped">
     <thead>
       <tr>
         <th class="col-sm-12" colspan="2"><b>Comments</b></th>
@@ -476,33 +477,11 @@
       </tr>
       <% end %>
     </tbody>
-</table>
+</table>-->
 <% end %>
 
-<% if user_signed_in? %>
-<% comment = Comment.new %>
-<% entry_comment = comment.entry_comments.build %>
-<% entry_comment.entry_id = entry.id %>
-<%= form_for(comment, format: :json) do |f| %>
-    <input type="hidden" name="return_url" value="<%= entry_path entry %>"/>
-    <%= f.fields_for :entry_comments do |entry_comment| %>
-        <%= entry_comment.hidden_field :entry_id %>
-    <% end %>
-    <div class="row">
-        <div class="col-sm-12 form-group">
-            <h4>Leave a comment</h4>
-            <%= f.text_area :comment, class: "form-control", rows: 5 %>
-        </div>
-<!--        <div class="col-sm-12 checkbox">
-            <label>
-                <%= f.check_box :is_correction %> I am leaving a comment that notes a correction to this record
-            </label>
-        </div>-->
-        <div class="col-sm-12 text-right">
-            <button class="btn btn-primary">Submit</button>
-        </div>
-    </div>
-<% end %>
+ <% if user_signed_in? %>
+    <%= render partial: "comments/form", locals: { record: entry } %>
 <% end %>
 
 <div class="spacer-40px"></div>

@@ -1,0 +1,7 @@
+<%= form_tag("/comments/#{comment.id}", method: :patch, class: 'hide comment-toggle' ) do %>
+    <%= hidden_field_tag 'id', comment.id %>
+    <%= hidden_field_tag 'commentable_id', comment.commentable_id %>
+    <%= hidden_field_tag 'commentable_type', comment.commentable_type %>
+    <%= text_area_tag 'comment', comment.comment, class: "form-control", rows: 5 %>
+    <%= submit_tag 'Confirm', class: 'form-control' %>
+<% end %>

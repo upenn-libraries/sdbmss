@@ -23,6 +23,9 @@ class Comment < ActiveRecord::Base
   #
   # https://github.com/rails/rails/issues/20451
   # http://viget.com/extend/exploring-the-inverse-of-option-on-rails-model-associations
+
+  belongs_to :commentable, polymorphic: true
+
   has_many :entry_comments, inverse_of: :comment
   has_many :entries, through: :entry_comments
 
@@ -56,6 +59,8 @@ class Comment < ActiveRecord::Base
     text :updated_by
     string :created_by
     string :updated_by
+    string :commentable_type
+    integer :commentable_id
     text :comment
     string :comment
     integer :id
@@ -109,16 +114,18 @@ class Comment < ActiveRecord::Base
   end
 
   def self.filters
-    super + ["entry", "manuscript", "source", "name"]
+    super + ["commentable_id", "commentable_type"]
   end
 
   def search_result_format
     {
       id: id,
-      entry_id: entry.try(:id),
-      manuscript_id: manuscript.try(:id),
-      source_id: source.try(:id),      
-      name_id: name.try(:id),      
+      commentable_url: "/#{commentable_type.to_s.pluralize.underscore}/#{commentable_id}", 
+      commentable_id: commentable ? commentable.public_id : nil,
+      #entry_id: entry.try(:id),
+      #manuscript_id: manuscript.try(:id),
+      #source_id: source.try(:id),      
+      #name_id: name.try(:id),      
       comment: comment,
       #is_correction: is_correction,
       is_accepted: is_accepted,

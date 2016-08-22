@@ -52,8 +52,8 @@ class Entry < ActiveRecord::Base
   has_many :entry_places, inverse_of: :entry, dependent: :destroy
   has_many :places, through: :entry_places
   has_many :entry_uses, inverse_of: :entry, dependent: :destroy
-  has_many :entry_comments, dependent: :destroy
-  has_many :comments, through: :entry_comments
+  #has_many :entry_comments, dependent: :destroy
+  has_many :comments, as: :commentable
   has_many :sales, inverse_of: :entry, dependent: :destroy
   has_many :provenance, inverse_of: :entry, dependent: :destroy
 
