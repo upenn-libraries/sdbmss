@@ -11,6 +11,10 @@ Rails.application.routes.draw do
 
   resources :activities, only: [:index]
 
+  resources :replies
+  resources :notifications, only: [:index]
+  #resources :notifications_settings, only: [:edit]
+
   resources :agents, only: [:show]
 
   get '/bookmarks/export', to: 'bookmarks#export', as: 'export_bookmarks'

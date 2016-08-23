@@ -15,6 +15,11 @@ class User < ActiveRecord::Base
   has_many :user_messages, foreign_key: "user_id"
   has_many :private_messages, through: :user_messages
 
+  has_many :notifications
+  has_one :notification_setting
+
+  accepts_nested_attributes_for :notification_setting, allow_destroy: false
+
   before_validation :assign_default_role
 
   # one of the devise class methods above seems to give us
@@ -128,11 +133,24 @@ class User < ActiveRecord::Base
     s
   end
 
-  def notifications
-    messages = private_messages.received.select{ |e| e.unread }.count
-    exports = downloads.select{ |e| e.status == 1}.count
-    {total: messages + exports, messages: messages, exports: exports}
+  def can_notify(category)
+    if !self.notification_setting
+      self.notification_setting = NotificationSetting.create!(user_id: id, on_update: true, on_comment: true, on_reply: false)
+    end
+    self.notification_setting["on_#{category}".to_sym]
   end
+
+  def notify(message, category)
+    if can_notify(category)
+      notifications.create(message: message, category: category)
+    end
+  end
+
+  #def notifications
+  #  messages = private_messages.received.select{ |e| e.unread }.count
+  #  exports = downloads.select{ |e| e.status == 1}.count
+  #  {total: messages + exports, messages: messages, exports: exports}
+  #end
 
   def self.fields
     fields = super

@@ -22,6 +22,9 @@ module UserFields
 
   def update_by(user, *args, &block)
     self.updated_by = user
+    if self.created_by != user
+      self.created_by.notify "#{user.username} has updated #{self.public_id}", "update"
+    end
     update(*args, &block)
   end
 

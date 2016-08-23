@@ -1070,24 +1070,6 @@ label.col-sm-2-and-half {
 
     </div>
 
-    <div class="row" ng-repeat="entry_comment in entry.entry_comments" style="margin-bottom: 10px;">
-        <label class="col-sm-2 control-label">
-            by {{ entry_comment.comment.created_by }}<br/>at {{ entry_comment.comment.created_at }}
-        </label>
-        <div class="col-sm-9 label-alignment">
-            {{ entry_comment.comment.comment||"(none)" }}
-        </div>
-    </div>
-
-    <div class="form-group row">
-      <label for="editorial_comments" class="col-sm-2 control-label">
-          <span sdbm-tooltip="entry_editorial_notes">Add Comment</span>
-      </label>
-      <div class="col-sm-9">
-        <textarea class="form-control" rows="4" id="comment" data-ng-model="entry.new_comment"></textarea>
-      </div>
-    </div>
-
     <%= render partial: "edit_buttons" %>
 
     <div class="spacer-40px"/>

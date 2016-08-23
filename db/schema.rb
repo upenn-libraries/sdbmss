@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160822152215) do
+ActiveRecord::Schema.define(version: 20160823181027) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -391,6 +391,24 @@ ActiveRecord::Schema.define(version: 20160822152215) do
   add_index "names", ["reviewed_by_id"], name: "index_names_on_reviewed_by_id", using: :btree
   add_index "names", ["updated_by_id"], name: "index_names_on_updated_by_id", using: :btree
 
+  create_table "notification_settings", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.boolean  "on_update"
+    t.boolean  "on_comment"
+    t.boolean  "on_reply"
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.string   "message",    limit: 255
+    t.string   "category",   limit: 255
+    t.boolean  "active"
+    t.integer  "user_id",    limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
   create_table "places", force: :cascade do |t|
     t.string   "name",           limit: 255
     t.integer  "entry_id",       limit: 4
@@ -456,6 +474,19 @@ ActiveRecord::Schema.define(version: 20160822152215) do
 
   add_index "provenance", ["entry_id"], name: "index_provenance_on_entry_id", using: :btree
   add_index "provenance", ["provenance_agent_id"], name: "index_provenance_on_provenance_agent_id", using: :btree
+
+  create_table "replies", force: :cascade do |t|
+    t.text     "reply",         limit: 65535
+    t.integer  "comment_id",    limit: 4
+    t.integer  "created_by_id", limit: 4
+    t.integer  "updated_by_id", limit: 4
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  add_index "replies", ["comment_id"], name: "index_replies_on_comment_id", using: :btree
+  add_index "replies", ["created_by_id"], name: "index_replies_on_created_by_id", using: :btree
+  add_index "replies", ["updated_by_id"], name: "index_replies_on_updated_by_id", using: :btree
 
   create_table "sale_agents", force: :cascade do |t|
     t.integer  "sale_id",                limit: 4
@@ -687,6 +718,7 @@ ActiveRecord::Schema.define(version: 20160822152215) do
   add_foreign_key "private_messages", "users", column: "created_by_id"
   add_foreign_key "private_messages", "users", column: "updated_by_id"
   add_foreign_key "provenance", "names", column: "provenance_agent_id"
+  add_foreign_key "replies", "comments"
   add_foreign_key "sale_agents", "names", column: "agent_id"
   add_foreign_key "sale_agents", "sales", on_delete: :cascade
   add_foreign_key "sales", "entries", on_delete: :cascade

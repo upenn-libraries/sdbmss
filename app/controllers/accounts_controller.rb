@@ -61,7 +61,7 @@ class AccountsController < SearchableAuthorityController
   end
 
   def model_params
-    params.require(model_class_lstr.to_sym).permit(:username, :fullname, :institutional_affiliation, :email, :email_is_public, :password, :password_confirmation, :role, :bio, :active)
+    params.require(model_class_lstr.to_sym).permit(:username, :fullname, :institutional_affiliation, :email, :email_is_public, :password, :password_confirmation, :role, :bio, :active, :notification_setting_attributes => [:on_update, :on_comment, :on_reply])
   end
 
 end

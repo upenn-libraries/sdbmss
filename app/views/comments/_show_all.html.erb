@@ -3,7 +3,7 @@
     <div class="panel-body comment">
       <div class="row">
         <div class="col-sm-12 comment-toggle" style='border-bottom: 1px solid #eee; margin-bottom: 10px; padding-bottom: 10px;'>
-          <%= sanitize comment.comment, tags: %w(code b i br strong em a), attributes: %w(href) %>
+          <%= sanitize simple_format(comment.comment), tags: %w(code b i br strong em a), attributes: %w(href) %>
         </div>
         <% if can? :edit, comment %>
           <div class="col-sm-12">
@@ -20,10 +20,27 @@
       </div>
     </div>
     <div class="panel-footer">
-      <%= form_tag('/reply') do %>
-        <%= hidden_field_tag :comment_id, comment.id %>
-        <%= text_area_tag :reply, '', class: 'form-control', rows: 1 %>
-        <%= submit_tag 'Reply', class: 'form-control' %>
+      <div class="row">
+        <%= form_tag('/replies') do %>
+          <div class="col-sm-9">
+            <%= hidden_field_tag :comment_id, comment.id %>
+            <%= text_area_tag :reply, '', class: 'form-control', rows: 1 %>
+          </div>
+          <div class="col-sm-3">
+            <%= submit_tag 'Add Reply', class: 'form-control' %>
+          </div>
+        <% end %>
+      </div>
+      <% comment.replies.each do |reply| %>
+        <div class="row" style="border-top: 1px solid #ddd; margin-top: 5px; padding-top: 5px;">
+          <div class="col-sm-9">
+            <p><%= sanitize simple_format(reply.reply), tags: %w(code b i br strong em a), attributes: %w(href) %></p>
+          </div>
+          <div class="col-sm-3 text-right">
+            By <%= render partial: "shared/username_with_profile_link", locals: { user: reply.created_by } %><br/>
+            At <%= reply.created_at.to_formatted_s(:date_and_time) %>
+          </div>
+        </div>
       <% end %>
     </div>
   </div>

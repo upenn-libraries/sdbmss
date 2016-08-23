@@ -152,7 +152,7 @@ module DataEntryHelpers
     fill_in 'provenance_observed_name_2', with: 'Wild Bill Collector'
     fill_in 'provenance_comment_2', with: 'This is some unknown dude'
 
-    fill_in 'comment', with: 'This info is correct'
+    #fill_in 'comment', with: 'This info is correct'
 
     first(".save-button").click
 
@@ -243,8 +243,9 @@ module DataEntryHelpers
     expect(provenance.observed_name).to eq('Wild Bill Collector')
     expect(provenance.comment).to eq('This is some unknown dude')
 
-    comment = entry.comments.first
-    expect(comment.comment).to eq('This info is correct')
+    #comment = entry.comments.first
+    #expect(comment.comment).to eq('This info is correct')
+
   end
 
 end

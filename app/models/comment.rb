@@ -1,4 +1,3 @@
-
 class Comment < ActiveRecord::Base
 
   default_scope { where(deleted: false) }
@@ -25,6 +24,7 @@ class Comment < ActiveRecord::Base
   # http://viget.com/extend/exploring-the-inverse-of-option-on-rails-model-associations
 
   belongs_to :commentable, polymorphic: true
+  has_many :replies
 
   has_many :entry_comments, inverse_of: :comment
   has_many :entries, through: :entry_comments

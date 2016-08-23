@@ -1,4 +1,3 @@
-
 class CommentsController < SearchableAuthorityController
 
   include MarkAsReviewed
@@ -30,6 +29,9 @@ class CommentsController < SearchableAuthorityController
   def create
     @comment = Comment.new(comment_params)
     @comment.save_by(current_user)
+    if @comment.commentable.created_by != current_user
+      @comment.commentable.created_by.notify("#{current_user.username} has commented on #{@comment.commentable.public_id}", "comment")
+    end
     redirect_to polymorphic_path(@comment.commentable) + "#comment_#{@comment.id}"
   end
 
