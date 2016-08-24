@@ -15,10 +15,8 @@ describe "User Notifications", :js => true do
       username: 'other',
       password: 'totallysecure'
     )
-    @user.can_notify("update")
-    @user.notification_setting.update(on_reply: true)
-    @user2.can_notify("update")
-    @user2.notification_setting.update(on_reply: true)
+    @user.notification_setting.update!(on_update: true, on_comment: true, on_reply: true)
+    @user2.notification_setting.update!(on_update: true, on_comment: true, on_reply: true)
 
     source = Source.create!(
       title: "a new source",
@@ -58,11 +56,6 @@ describe "User Notifications", :js => true do
       expect(@user.notification_setting.on_update).to be_truthy
       expect(@user.notification_setting.on_comment).to be_truthy
       expect(@user.notification_setting.on_reply).to be_truthy
-    end
-
-    it "should allow users to modify their notification setting" do
-      visit edit_notification_setting_path
-      expect(page).to have_content("Notification setting")
     end
 
     it "should notify user when one of their records is updated" do

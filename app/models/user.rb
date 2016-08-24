@@ -21,6 +21,7 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :notification_setting, allow_destroy: false
 
   before_validation :assign_default_role
+  before_create :create_notification_setting
 
   # one of the devise class methods above seems to give us
   # "validates_confirmation_of :password" so we don't need it
@@ -183,6 +184,11 @@ class User < ActiveRecord::Base
     if !persisted? && role.blank?
       self.role = 'contributor'
     end
+  end
+
+  def create_notification_settings
+    self.notification_setting = NotificationSetting.create!
+    true
   end
 
 end
