@@ -290,7 +290,7 @@
                     <% if entry.provenance.count <= 0 %>
                         <li class="list-group-item">This entry does not have any recorded provenance</li>
                     <% end %>
-                    <% entry.provenance.each do |provenance| %>
+                    <% entry.provenance.order(:order).each do |provenance| %>
                         <li class="list-group-item provenance">
                             <div class="row">
                                 <% if provenance.observed_name %>
@@ -366,8 +366,9 @@
             <br><small>Use this option when you wish to contribute data on <strong>multiple aspects</strong> of this manuscript.  Once you create your <strong>Personal Observation</strong>, your data will be included in the links displayed above.</small>
         </h4>
 
-
         <% if (comments = @manuscript.comments.where(public: true)).present? %>
+            <%= render partial: "comments/show_all", locals: {comments: comments} %>
+        <!--
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -387,33 +388,11 @@
                 </tr>
                 <% end %>
             </tbody>
-        </table>
+        </table>-->
         <% end %>
 
-        <% if user_signed_in? %>
-            <% comment = Comment.new %>
-            <% manuscript_comment = comment.manuscript_comments.build %>
-            <% manuscript_comment.manuscript_id = @manuscript.id %>
-            <%= form_for(comment, format: :json) do |f| %>
-                <input type="hidden" name="return_url" value="<%= manuscript_path @manuscript %>"/>
-                <%= f.fields_for :manuscript_comments do |manuscript_comment| %>
-                    <%= manuscript_comment.hidden_field :manuscript_id %>
-                    <% end %>
-                <div class="row">
-                    <div class="col-sm-12 form-group">
-                        <p><lead>Or leave a comment</lead> to add general information or commentary about this <b>Manuscript Record</b>:</p>
-                        <%= f.text_area :comment, class: "form-control", rows: 5 %>
-                    </div>
-        <!--            <div class="col-sm-12 checkbox">
-                        <label>
-                            <%= f.check_box :is_correction %> I am leaving a comment that notes a correction to this record
-                        </label>
-                    </div>-->
-                    <div class="col-sm-12 text-right">
-                        <button class="btn btn-primary">Submit</button>
-                    </div>
-                </div>
-            <% end %>
+         <% if user_signed_in? %>
+            <%= render partial: "comments/form", locals: { record: @manuscript } %>
         <% end %>
 
         <div class="spacer-40px"></div>
