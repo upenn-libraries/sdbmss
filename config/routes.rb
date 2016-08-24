@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   resources :activities, only: [:index]
 
   resources :replies
-  resources :notifications, only: [:index]
+  resources :notifications, only: [:index, :show, :destroy]
   #resources :notifications_settings, only: [:edit]
 
   resources :agents, only: [:show]

@@ -94,6 +94,10 @@ class User < ActiveRecord::Base
     super && active
   end
 
+  def new_notifications
+    notifications.where(active: true)
+  end
+
   # override devise's msg to display if user is prevented from logging in
   def inactive_message
     active ? super : "Your account has been de-activated."

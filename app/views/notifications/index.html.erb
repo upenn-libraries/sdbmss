@@ -1,15 +1,45 @@
 <div class="row">
   <div class="col-sm-12">
-    <legend class="h1">Notifications</legend>
+    <legend class="h1 text-center">Notifications</legend>
     <ul class="list-group">
-      <li class="list-group-item">Unread</li>
+      <li class="list-group-item">
+        <span class="h3 text-success">Unread</span>
+      </li>
       <% @unread.each do |notification| %>
-        <li class="list-group-item list-group-item-success"><%= notification.message %></li>
+        <li class="list-group-item list-group-item-success">
+          <div class="row">
+            <div class="col-sm-10">
+              <%= notification.message %>
+            </div>
+            <div class="col-sm-2 text-right">
+              <%= button_to "delete", notification, :method => :delete, class: 'btn btn-danger btn-xs' %>  
+            </div>
+          </div>
+        </li>
       <% end %>
-      <li class="list-group-item">Read</li>
+      <% if @unread.count <= 0 %>
+        <li class="list-group-item text-muted">No unread notifications.</li>
+      <% end %>
+    </ul>
+    <ul class="list-group">
+      <li class="list-group-item">
+        <span class="h3 text-muted">Read</span>
+      </li>
       <% @read.each do |notification| %>
-        <li class="list-group-item text-muted"><%= notification.message %></li>
+        <li class="list-group-item text-muted">
+          <div class="row">
+            <div class="col-sm-10">
+              <%= notification.message %>
+            </div>
+            <div class="col-sm-2 text-right">
+              <%= button_to "delete", notification, :method => :delete, class: 'btn btn-danger btn-xs' %>
+            </div>
+          </div>
+        </li>
       <% end %>
+      <% if @read.count <= 0 %>
+        <li class="list-group-item text-muted">No read notifications.</li>
+      <% end %>      
     </ul>
   </div>
 </div>
