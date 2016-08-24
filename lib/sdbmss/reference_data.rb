@@ -532,7 +532,7 @@ module SDBMSS::ReferenceData
         observed_name: 'Guarino da Verona',
       )
 
-      ed = EntryDate.create!(entry: entry, observed_date: "ca. 1450-70")
+      ed = EntryDate.create!(entry: entry, observed_date: "ca. 1450-1470")
       ed.normalize_observed_date
       ed.save!
 

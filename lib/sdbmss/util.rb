@@ -265,8 +265,8 @@ module SDBMSS
         date_str = date_str.strip.downcase
 
         # handle case of 'to'
-        if / to /.match(date_str)
-          pieces = date_str.split(/\s+to\s+/)
+        if (m = /(to|-)/.match(date_str))
+          pieces = date_str.split(/\s*#{m}\s*/)
           if pieces.length == 2
             start_date_range = parse_approximate_date_str_into_year_range(pieces[0])
             end_date_range = parse_approximate_date_str_into_year_range(pieces[1])

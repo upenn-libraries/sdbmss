@@ -8,7 +8,7 @@ TYPES_ROLES = {
   atelier: "Atel", 
   artist: "Arti", 
   group: "Grou", 
-  styles: "Styl", 
+  styles: "Styls", 
   follower: "Foll", 
   descendant: "Desc", 
   followers: "Foll", 

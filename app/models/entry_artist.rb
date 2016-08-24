@@ -14,7 +14,7 @@ class EntryArtist < ActiveRecord::Base
     ["Atel", "Atelier"], 
     ["Arti", "Artist"], 
     ["Grou", "Group"], 
-    ["Styl", "Styles"], 
+    ["Styls", "Styles"], 
     ["Foll", "Follower"], 
     ["Desc", "Descendant"], 
     ["Foll", "Followers"], 
