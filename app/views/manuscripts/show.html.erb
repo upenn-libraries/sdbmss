@@ -290,7 +290,7 @@
                     <% if entry.provenance.count <= 0 %>
                         <li class="list-group-item">This entry does not have any recorded provenance</li>
                     <% end %>
-                    <% entry.provenance.each do |provenance| %>
+                    <% entry.provenance.order(:order).each do |provenance| %>
                         <li class="list-group-item provenance">
                             <div class="row">
                                 <% if provenance.observed_name %>
