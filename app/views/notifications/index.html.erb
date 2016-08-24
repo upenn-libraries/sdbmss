@@ -1,0 +1,15 @@
+<div class="row">
+  <div class="col-sm-12">
+    <legend class="h1">Notifications</legend>
+    <ul class="list-group">
+      <li class="list-group-item">Unread</li>
+      <% @unread.each do |notification| %>
+        <li class="list-group-item list-group-item-success"><%= notification.message %></li>
+      <% end %>
+      <li class="list-group-item">Read</li>
+      <% @read.each do |notification| %>
+        <li class="list-group-item text-muted"><%= notification.message %></li>
+      <% end %>
+    </ul>
+  </div>
+</div>
