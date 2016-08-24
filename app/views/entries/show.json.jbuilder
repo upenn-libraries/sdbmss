@@ -111,7 +111,8 @@ end
 # here, instead of an array with one item.
 if @entry.get_sale.present?
   json.sale do
-    json.(@entry.get_sale, :id, :date, :price, :currency, :other_currency, :sold)
+    json.(@entry.get_sale, :id, :price, :currency, :other_currency, :sold)
+    json.date SDBMSS::Util.format_fuzzy_date(@entry.get_sale.date)
     if @entry.get_sale.sale_agents.present?
       json.sale_agents @entry.get_sale.sale_agents do |sale_agent|
         json.(sale_agent, :id, :observed_name, :role, :uncertain_in_source, :supplied_by_data_entry)

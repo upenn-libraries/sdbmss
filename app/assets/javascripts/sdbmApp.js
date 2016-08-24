@@ -744,6 +744,9 @@ var BOOKMARK_SCOPE;
 
         $scope.addRecord = function (anArray) {
           anArray.push({});
+          for (var i = 0; i < anArray.length; i++) {
+            anArray[i].order = i;
+          }
           setTimeout( function () {            
             $scope.affixer();
           }, 2000);
