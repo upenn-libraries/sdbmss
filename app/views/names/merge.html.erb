@@ -27,6 +27,7 @@
         <% end %>
     </div>
 </div>
+<!-- form begin -->
 <%= form_tag merge_name_path(@model) do %>
 <div class='col-sm-2 text-center'>
     <% if @target %>
@@ -37,8 +38,9 @@
                 <input type="hidden" name="confirm" value="yes"/>
                 <input type="hidden" name="target_id" value="<%= @target.id %>"/>
             <button class="btn btn-primary">Yes</button>
+
             <a class="btn btn-warning" href="<%= merge_name_path(@model) %>">Cancel</a>
-        </div>
+        </div>`
     </div>
     <span class="glyphicon glyphicon-arrow-right chevron"></span>
     <!--<%= image_tag 'right-arrow.png', class: 'img img-responsive chevron' %>-->
@@ -126,17 +128,17 @@
                 <b>No suggested names found, use manual search above.</b>
             <% end %>
         </div>
-        <% end %>
+    <% end %>
 </div>
 <% end %>
 <script type='text/javascript'>
     $(document).ready( function (e) {
-        $('#main-container .panel input[type!=hidden]').prop('disabled', true);
+        $('#main-container .panel input[type!=hidden]').prop('readonly', true);
     
         $('#editNameMerge').click( function () {
             $('#controlEditNameMerge').show();
             $(this).hide();
-            $('#mergeNameInto input[type!=hidden]').prop('disabled', false);
+            $('#mergeNameInto input[type!=hidden]').prop('readonly', false);
         });
 
         $('#cancelEditNameMerge').click( function () {
@@ -145,13 +147,13 @@
             $('#mergeNameInto input').each(function (e) {
                 $(this).val($(this).prop('defaultValue'));
             });
-            $('#mergeNameInto input[type!=hidden]').prop('disabled', true);
+            $('#mergeNameInto input[type!=hidden]').prop('readonly', true);
         });
 
         $('#confirmEditNameMerge').click( function () {
             $('#controlEditNameMerge').hide();
             $('#editNameMerge').show();
-            $('#mergeNameInto input[type!=hidden]').prop('disabled', true);
+            $('#mergeNameInto input[type!=hidden]').prop('readonly', true);
         });
 
     });

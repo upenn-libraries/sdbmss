@@ -48,7 +48,10 @@ class Ability
 
       cannot :deprecate, :all
       cannot [:edit, :destroy, :merge], [Source, Entry]
-      can :edit, :all, :created_by_id => user.id      
+      can :edit, :all, :created_by_id => user.id
+
+      # allow editors to edit legacy records
+      can :edit, Entry, :unverified_legacy_record => true   
     end
 
     if ['admin'].member? user.role

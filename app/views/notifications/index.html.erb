@@ -1,9 +1,9 @@
 <div class="row">
   <div class="col-sm-12">
     <legend class="h1 text-center">Notifications</legend>
-    <ul class="list-group">
+    <ul class="list-group list-group-no-border">
       <li class="list-group-item">
-        <span class="h3 text-success">Unread</span>
+        <span class="h3 text-success text-center">Unread</span>
       </li>
       <% @unread.each do |notification| %>
         <li class="list-group-item list-group-item-success">
@@ -21,9 +21,9 @@
         <li class="list-group-item text-muted">No unread notifications.</li>
       <% end %>
     </ul>
-    <ul class="list-group">
+    <ul class="list-group list-group-no-border">
       <li class="list-group-item">
-        <span class="h3 text-muted">Read</span>
+        <span class="h3 text-muted text-center">Read</span>
       </li>
       <% @read.each do |notification| %>
         <li class="list-group-item text-muted">

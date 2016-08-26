@@ -1098,25 +1098,28 @@ var BOOKMARK_SCOPE;
         // "constructor" for controller goes here
 
         $scope.checkForChanges = function (entry1, entry2) {
+
           // manually remove the blank selling agent and institution, if they exist
           var entry2 = angular.copy(entry2);
           if (entry2.institution.id == null) {
             delete entry2.institution;
           }
-/*          if (entry2.sale.selling_agent.agent.id == null) {
-            delete entry2.sale.selling_agent;
-          }
-          if (entry2.sale.seller_or_holder.agent.id == null) {
-            delete entry2.sale.seller_or_holder;
-          }
-          if (entry2.sale.buyer.agent.id == null) {
-            delete entry2.sale.buyer;
-          }
-          entry2.provenance.forEach( function (prov) {
-            if (prov.provenance_agent.id == null) {
-              delete prov.provenance_agent;
+
+          // strip out blank objects
+          $scope.associations.forEach( function (assoc) {
+            if (assoc.foreignKeyObjects && assoc.foreignKeyObjects.length > 0) {
+              var field = assoc.field;
+              var key = assoc.foreignKeyObjects[0];
+              
+              entry2[field].forEach( function (f) {
+                if (f[key] && !f[key]['id']) {
+                  delete f[key];
+                }
+              });
             }
-          });*/
+
+          });
+          // note: changing a numerical field, then restoring the original and saving will still trigger 'unsaved' because one is a string and the other is a number (in the JSON)
           return angular.toJson(entry1) !== angular.toJson(entry2);
         }
 
