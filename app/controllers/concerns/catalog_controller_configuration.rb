@@ -85,6 +85,7 @@ module CatalogControllerConfiguration
       config.add_facet_field 'source_type', :label => 'Source Type', :collapse => false, :limit => 3
       config.add_facet_field 'provenance', :label => 'Provenance', :limit => 3
       config.add_facet_field 'manuscript_date_range', :label => 'Manuscript Date', :limit => 3
+      config.add_facet_field 'manuscript_public_id', :label => 'Manuscript', :limit => 3
       config.add_facet_field 'place', :label => 'Place', :limit => 3
       config.add_facet_field 'language', :label => 'Language', :limit => 3
       config.add_facet_field 'use', :label => 'Liturgical Use', :limit => 3

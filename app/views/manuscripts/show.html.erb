@@ -83,7 +83,8 @@
 
     $(".toggle-propose-history").click( function () {
         $('.entries').toggleClass('col-sm-12').toggleClass('col-sm-6');
-      $('.proposed').toggleClass('side');
+        $('.proposed').toggleClass('side');
+        $('#proposed-history').affix({offset: {top: $('#provenance_list').offset().top, bottom: 400}});
     });
 /*
     $('.panel-collapse').on('shown.bs.collapse', function () { $('#collapse-all').removeClass('glyphicon-collapse-down').addClass('glyphicon-collapse-up') });
@@ -258,7 +259,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row" id="provenance_list">
     <div class="col-sm-12 entries" id="provenanceContainer">
         <div class="h3">
             <div class="row" data-toggle="collapse" data-target=".panel-collapse">
@@ -278,7 +279,12 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-3">
-                        <span class="h4"><a href="<%= url_for entry %>"><%= entry.public_id %></a></span>
+                        <span class="h4">
+                            <a href="<%= url_for entry %>"><%= entry.public_id %></a>
+                            <% if (type = entry.entry_manuscripts.where(manuscript_id: @manuscript.id).last.relation_type) != "is" %>
+                                <br><small>(<%= type %>)</small>
+                            <% end %>
+                        </span>
                     </div>
                     <div class="col-sm-9" data-toggle="collapse" href="#entry_provenance_<%= index %>">
                         <span class="h4"><%= entry.source_id == 34611 ? "This provenance is based on a personal observation of the SDBM" : entry.source.display_value %></span>
@@ -317,6 +323,9 @@
                                         <%= format_fuzzy_date(provenance.start_date) %>
                                         <% if provenance.start_date.present? && provenance.end_date.present? %><br/>to<br/><% end %>
                                         <%= format_fuzzy_date(provenance.end_date) %>
+                                    <%# FIX ME: redundant code from entries/_show.html.erb %>
+                                    <% elsif provenance.associated_date.present? %>
+                                        <%= provenance.associated_date.split("\t").join(", ") %>
                                     <% else %>
                                         (No date)
                                     <% end %>
@@ -340,7 +349,7 @@
         <%= form_tag({:controller => "entries", :format => "html", :action => "compose"}, :method => "post", :class => "form-inline") do %>
         <%= hidden_field_tag "transaction_type", "no_transaction" %>
         <%= hidden_field_tag "manuscript_id", @manuscript.id %>
-        <div class="collapse panel panel-warning panel-provenance" id="proposed-history" data-spy="affix" data-offset-top="490" data-offset-bottom="400">
+        <div class="collapse panel panel-warning panel-provenance" id="proposed-history">
             <div class="panel-heading">
                 <div class="h4">
                     Construct History Workspace

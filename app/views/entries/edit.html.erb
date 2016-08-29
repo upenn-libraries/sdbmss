@@ -1000,9 +1000,9 @@ label.col-sm-2-and-half {
                             <span class="glyphicon glyphicon-remove"></span>
                           </span>
                         </span>
-                        <input type="text" class="form-control" ng-model="dt.date" ng-change="updateProvenanceDateRange(prov, dt)" size=10 id="provenance_{{ $parent.$index }}_recorded_date_{{ $index }}">
+                        <input type="text" class="form-control" ng-model="dt.date" ng-blur="updateProvenanceDateRange(prov, dt)" size=10 id="provenance_{{ $parent.$index }}_recorded_date_{{ $index }}">
                       </div>
-                        <select name="" id="" class="form-control" ng-model="dt.type" ng-change="updateProvenanceDateRange(prov, dt)" ng-options="opt for opt in getProvenanceDateOptions(prov, dt)" ng-init="dt.type = getProvenanceDateOptions(prov, dt)[0]">
+                        <select name="" id="" class="form-control" ng-model="dt.type" ng-blur="updateProvenanceDateRange(prov, dt)" ng-options="opt for opt in getProvenanceDateOptions(prov, dt)" ng-init="dt.type = getProvenanceDateOptions(prov, dt)[0]">
                         </select>
                     </div>
                   </div>

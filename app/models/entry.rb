@@ -632,6 +632,10 @@ class Entry < ActiveRecord::Base
       entry_dates.map(&:normalized_date_range_str).join("; ")
     end
 
+    define_field(:string, :manuscript_public_id, :stored => true, :multiple => true) do
+      manuscripts.map(&:public_id)
+    end
+
     define_field(:string, :artist, :stored => true, :multiple => true) do
       artists.map(&:name)
     end

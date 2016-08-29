@@ -1815,10 +1815,17 @@ var BOOKMARK_SCOPE;
         $scope.postSourceSave = function(source) {
             if (window.location.pathname.indexOf('merge') != -1) {
               return;    
-            } 
+            }
+
 
             $scope.source = source;
             $scope.populateSourceViewModel($scope.source);
+            
+            // if this source has been created to add an entry to a Manuscript record
+            if (sdbmutil.getManuscriptId()) {
+              sdbmutil.redirectToEntryCreatePage(source.id);
+              return;
+            }
 
             var modalInstance = $modal.open({
                 templateUrl: 'postSourceSave.html',
@@ -1827,10 +1834,10 @@ var BOOKMARK_SCOPE;
                 scope: $scope
             });
             modalInstance.result.then(function () {
-                // noop
-            }, function() {
-                // runs when promise is rejected (modal is dismissed)
-                sdbmutil.redirectToSourceEditPage(source.id);
+                  // noop
+              }, function() {
+                  // runs when promise is rejected (modal is dismissed)
+                  sdbmutil.redirectToSourceEditPage(source.id);
             });
         };
 
