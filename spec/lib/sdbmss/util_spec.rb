@@ -33,6 +33,10 @@ describe "SDBMSS::Util" do
        expect(SDBMSS::Util.split_and_strip("One String|Another String")).to eq(["One String", "Another String"])
      end
 
+      it "splits a blank string" do
+       expect(SDBMSS::Util.split_and_strip("")).to eq([""])
+     end
+
      it "splits a string with different delimiter" do
        expect(SDBMSS::Util.split_and_strip("One String, Another String", delimiter: ",")).to eq(["One String", "Another String"])
        expect(SDBMSS::Util.split_and_strip("One String, Another String|Third String", delimiter: /[\,\|]/)).to eq(["One String", "Another String", "Third String"])
