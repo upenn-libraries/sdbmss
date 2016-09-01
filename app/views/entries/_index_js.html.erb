@@ -4,35 +4,34 @@
 
      var resourceName = "<%= resource_name %>";
 
-     // flag = show all records, or only those that the user created
+     /*
+        Identify user permissions for the various actions available on the "Manage" page
+      */
+
      <% if can? :manage, model_class  %>
-     var showOnlyRecordsCreatedByUser = <%= params[:created_by_user] || 0 %>;
+         var onlyMine = <%= params[:created_by_user] || 0 %>;
      <% else %>
-     var showOnlyRecordsCreatedByUser = 1;
+         var onlyMine = 1;
      <% end %>
 
      <% if can? :deprecate, model_class %>
-     var canDeprecate = 1;
+         var canDeprecate = 1;
      <% else %>
-     var canDeprecate = 0;
+         var canDeprecate = 0;
      <% end %>
 
      <% if can? :destroy, model_class %>
-     var canDestroy = true;
+         var canDestroy = 1;
      <% else %>
-     var canDestroy = false;
+         var canDestroy = 0;
      <% end %>
 
      <% if can? :edit, model_class %>
-     var canEdit = true;
+         var canEdit = 1;
      <% else %>
-     var canEdit = false;
-     var username = '<%= current_user.username %>';
+         var canEdit = 0;
+         var username = '<%= current_user.username %>';
      <% end %>
-
-     var jumpToEntry = {
-         search: false
-     };
 
      // Subclass of SDBM.ManageRecords tailored for display of entries
      var ManageEntries = function(options) {
@@ -61,89 +60,71 @@
                          return '';
                      }
                  },
+                 /*
+                    Generate the buttons for User actions
+                  */
                  {
                      sdbmssMinWidth: "240px",
                      sdbmssMaxWidth: "240px",
                      title: 'Actions',
                      orderable: false,
                      render: function (data, type, full, meta) {
-                         var entryId = full[sdbmTable.getColumnIndex("ID")];
-                         var manuscriptId = full[sdbmTable.getColumnIndex("Manuscript")];
-                         var linkingToolURL = manuscriptId ? '/linkingtool/manuscript/' + manuscriptId : '/linkingtool/entry/' + entryId;
 
-                         var created_by = full[sdbmTable.getColumnIndex("Added By")];
+                         if (full[sdbmTable.getColumnIndex("Deprecated")] === true) {
+                            return '<span class="text-danger bg-danger">This Record is DEPRECATED</span>';
+                         } else {
+                            var entryId = full[sdbmTable.getColumnIndex("ID")];
+                            var manuscriptId = full[sdbmTable.getColumnIndex("Manuscript")];
+                            var linkingToolURL = manuscriptId ? '/linkingtool/manuscript/' + manuscriptId : '/linkingtool/entry/' + entryId;
 
-                         // always show Linking Tool. I have a feeling
-                         // this will change, so leaving this code
-                         // here for now.
-                         // var showLinkingTool = full[sdbmTable.getColumnIndex("Is Approved")] === true;
-                         var isNotDeprecated = full[sdbmTable.getColumnIndex("Deprecated")] === false;
-                         var linkingToolHTMLLink = '<a class="btn btn-xs btn-info find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
+                            var created_by = full[sdbmTable.getColumnIndex("Added By")];
 
-                         var showDeprecateLink = canDeprecate;
-                         var deprecateHTMLLink = '<a href="#" class="btn btn-xs btn-warning entry-deprecate-link">Deprecate</a>';
+                            var result = '<span class="btn-group options-btn-group">';
+                            // bookmark button
+                            result += '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
 
-                         // FIX ME: right now I am disabling the 'delete' link if the entry has a manuscript - should maybe change? //
-                         return isNotDeprecated ? (
-                            '<span class="btn-group options-btn-group">' + 
-                            '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '">' + 
-                                '<span class="glyphicon glyphicon-bookmark"></span>' + 
-                            '</a>' + 
-                            (canEdit || created_by == username ? '<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>' : '') +
-                            (canDestroy ? '<a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#" target="_blank">Delete</a>' : '') +
-                            (isNotDeprecated ? linkingToolHTMLLink : '') +
-                            (showDeprecateLink ? deprecateHTMLLink : '') + "</span>") : '<span class="text-danger bg-danger">This Record is DEPRECATED</span>';
+                            // edit
+                            if (canEdit || created_by == username) {
+                                result += '<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>';
+                            }
+
+                            // destroy
+                            if (canDestroy) {
+                                result += '<a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#" target="_blank">Delete</a>'
+                            }
+
+                            // linking tool
+                            result += '<a class="btn btn-xs btn-info find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
+
+                            // deprecate
+                            if (canDeprecate) {
+                                result += '<a href="#" class="btn btn-xs btn-warning entry-deprecate-link">Deprecate</a>';
+                            }
+
+                            result += "</span>";
+                            return result;
+                         }
                      }
                  }
              ],
              ajax: function (sdbmTable, dt_params, callback, settings) {
                  $("#spinner").show();
 
-                 // seems like there should be a way to do this conditional
-                 // ajax and subsequent searchAndUpdateTable using
-                 // promises, but I can't figure that out right now
-                 if(jumpToEntry.search) {
-                     var entry_id = $("#jump_to").val();
-                     $.ajax({
-                         url: '/entries/calculate_bounds',
-                         type: 'POST',
-                         data: {
-                             id: entry_id,
-                             per_page: $("select[name='search_results_length']").val(),
-                         },
-                         success: function(data, textStatus, jqXHR) {
-                             jumpToEntry.entry_id = entry_id;
-                             jumpToEntry.query = '[' + data.lower_bound + ' TO ' + data.upper_bound + ']';
+                 var params = manageEntries.translateSearchParams(sdbmTable, dt_params);
+                 sdbmTable.searchAndUpdateTable(params, callback, {
+                     complete: function () {
+                         $("#spinner").hide();
+                          renewBookmarks();
 
-                             var params = manageEntries.translateJumpToParams(sdbmTable, dt_params);
-                             sdbmTable.searchAndUpdateTable(params, callback, {
-                                 'complete': function () {
-                                     $("#spinner").hide();
-                                 }
-                             });
-
-                         },
-                         error: function() {
-                             SDBM.showErrorModal("#modal", "An error occurred jumping to this record.");
+                         if(showApprovalControls()) {
+                            $(".approve-control").show();
+                            $('.unreviewed_only').show();//.css({"display": "table-cell"});
+                         } else {
+                            $(".approve-control").hide();
+                            $('.unreviewed_only').hide();
                          }
-                     });
-                 } else {
-                     var params = manageEntries.translateSearchParams(sdbmTable, dt_params);
-                     sdbmTable.searchAndUpdateTable(params, callback, {
-                         complete: function () {
-                             $("#spinner").hide();
-                              renewBookmarks();
-
-                             if(showApprovalControls()) {
-                                $(".approve-control").show();
-                                $('.unreviewed_only').show();//.css({"display": "table-cell"});
-                             } else {
-                                $(".approve-control").hide();
-                                $('.unreviewed_only').hide();
-                             }
-                         }
-                     });
-                 }
+                     }
+                 });
              }
          });
 
@@ -155,7 +136,7 @@
      };
 
      var showApprovalControls = function() {
-         return showUnapprovedOnly() && !showOnlyRecordsCreatedByUser;
+         return showUnapprovedOnly() && !onlyMine;
      };
 
      // Fielded search specific params
@@ -193,7 +174,7 @@
 
          params["deprecated"] = "*";
 
-         if(showOnlyRecordsCreatedByUser) {
+         if(onlyMine) {
              params["created_by_user"] = 1;
          }
 
@@ -203,19 +184,6 @@
      ManageEntries.prototype.setFormStateFromURL = function () {
      }
 
-     // 'Jump to' specific params
-     ManageEntries.prototype.translateJumpToParams = function (sdbmTable, data) {
-         params = sdbmTable.translateParamsToBlacklight(data);
-
-         params['entry_id'] = jumpToEntry.query;
-
-         return params;
-     };
-
-/*     ManageEntries.prototype.getButtonTextForAddNewRecord = function () {
-         return null;
-     };*/
-
      ManageEntries.prototype.createFormSubmitHandler = function () {
          var manageEntries = this;
          return function(event) {
@@ -223,9 +191,8 @@
          };
      };
 
-     ManageEntries.prototype.doSearch = function (isJumpSearch) {
+     ManageEntries.prototype.doSearch = function () {
          var manageEntries = this;
-         jumpToEntry.search = isJumpSearch;
          manageEntries.dataTable.reload();
      };
 
@@ -245,57 +212,17 @@
         return URI("/entries.csv").search(params);
     };
 
-/*
-     ManageEntries.prototype.exportCSV = function () {
-         var params = manageEntries.getSearchFields();
-         params["search_field"] = "advanced";
-         params["per_page"] = <%= Rails.configuration.sdbmss_max_search_results %>;
-
-         var url = URI("/entries.csv").search(params);
-
-         window.location = url;
-     };*/
-
      var manageEntries = new ManageEntries({
          resourceName: "<%= resource_name %>",
          resourceNameSingular: "<%= resource_name.singularize %>",
          resourceNamePlural: "<%= resource_name.pluralize %>",
-         showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
+         showOnlyRecordsCreatedByUser: onlyMine,
          searchNameField: "name"
      });
 
      SDBM.setPageFullWidth();
 
-     // FIX ME: either clear search on page refresh, or reload search values intact
-     //$("input[name='search_value']").val("");
-
      $('#search_results').on('draw.dt', function () {
-         if(jumpToEntry.search) {
-             var sdbmTable = manageEntries.dataTable;
-             var entry_id = String(jumpToEntry.entry_id);
-             // highlight the row
-             sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
-                 var data = sdbmTable.dataTable.row(row).data();
-                 if(String(data[sdbmTable.getColumnIndex("ID")]) === entry_id) {
-                     $(row).addClass("selected");
-                     $(".dataTables_scrollBody").scrollTop(idx * sdbmTable.getRowHeight());
-                 }
-             });
-         }
-     });
-
-     $("#jump_to").keydown(function(e) {
-         if(e.keyCode == 13) {
-             manageEntries.doSearch(true);
-             e.preventDefault();
-             return false;
-         }
-     });
-
-     $("#jump_submit").click(function () {
-         manageEntries.doSearch(true);
-         // prevent form submit handler from firing
-         return false;
      });
 
      $(".search-form").submit(function (e) {
@@ -359,17 +286,6 @@
         return false;
     });
 
-/*
-     $(document).on('click', "#select-all", function(event) {
-         $("input[name='approve']").prop("checked", true);
-         return false;
-     });
-
-     $(document).on('click', "#deselect-all", function(event) {
-         $("input[name='approve']").prop("checked", false);
-         return false;
-     });
-*/
      $(document).on('click', "#mark-as-approved", function(event) {
          var sdbmTable = manageEntries.dataTable;
          var ids = [];

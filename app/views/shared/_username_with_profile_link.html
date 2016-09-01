@@ -1,3 +1,4 @@
+<%# Used for wherever a username is shown publicly (i.e. created by, commented by) %>
 <% if user.present? %>
 <a href="<%= profile_path(username: user.username) %>"><%= user.username %></a>
 <% else %>

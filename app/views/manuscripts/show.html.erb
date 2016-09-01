@@ -26,17 +26,6 @@
 
  $(document).ready(function() {
 
-     $("#new_comment").submit(function(event) {
-         event.preventDefault();
-         $.post($("#new_comment").attr("action"), $("#new_comment").serialize(), function() {
-             window.location = "/manuscripts/" + <%= @manuscript.id %>;
-         })
-          .fail(function (jqXHR, textStatus, errorThrown) {
-              var errorString = SDBM.parseRailsErrors($.parseJSON(jqXHR.responseText).errors).join("; ");
-              alert(errorString);
-          });
-     });
-
     $('#clearProvenance').click( function (e) {
         $('#sortable-history').find('.provenance').remove();
         $('.placeholder').show();
@@ -86,9 +75,6 @@
         $('.proposed').toggleClass('side');
         $('#proposed-history').affix({offset: {top: $('#provenance_list').offset().top, bottom: 400}});
     });
-/*
-    $('.panel-collapse').on('shown.bs.collapse', function () { $('#collapse-all').removeClass('glyphicon-collapse-down').addClass('glyphicon-collapse-up') });
-    $('.panel-collapse').on('hidden.bs.collapse', function () { $('#collapse-all').removeClass('glyphicon-collapse-up').addClass('glyphicon-collapse-down') });*/
 
     $("#createSource").on("ajax:success", function (e, data, status, xhr) {
         var source_id = data.id;
@@ -370,41 +356,14 @@
     </div>
 
     <div class="col-sm-12">
-
         <h4>Do you have more data about this Manuscript Record?  <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %> to record your information.
             <br><small>Use this option when you wish to contribute data on <strong>multiple aspects</strong> of this manuscript.  Once you create your <strong>Personal Observation</strong>, your data will be included in the links displayed above.</small>
         </h4>
-
-        <% if (comments = @manuscript.comments.where(public: true)).present? %>
-            <%= render partial: "comments/show_all", locals: {comments: comments} %>
-        <!--
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th class="col-sm-12" colspan="2"><b>Comments</b></th>
-                </tr>
-            </thead>
-            <tbody>
-                <% comments.each do |comment| %>
-                <tr>
-                    <td class="col-sm-2 text-right record-label">
-                        By <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
-                        At <%= comment.created_at.to_formatted_s(:date_and_time) %>
-                    </td>
-                    <td class="col-sm-10">
-                        <%= comment.comment||"(none)" %>
-                    </td>
-                </tr>
-                <% end %>
-            </tbody>
-        </table>-->
-        <% end %>
-
-         <% if user_signed_in? %>
-            <%= render partial: "comments/form", locals: { record: @manuscript } %>
-        <% end %>
-
         <div class="spacer-40px"></div>
-
     </div>
+
+    <div class="col-sm-12">
+        <%= render partial: "comments/show_all", locals: {comments: @manuscript.comments.where(public: true), record: @manuscript} %>
+    </div>
+
 </div>

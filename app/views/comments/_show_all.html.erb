@@ -1,4 +1,8 @@
-<% comments.each do |comment| %>
+<% if user_signed_in? %>
+  <%= render partial: "comments/form", locals: { record: record } %>
+<% end %>
+<div class="spacer-40px"></div>
+<% comments.reverse.each do |comment| %>
   <div class="panel-default panel" id="comment_<%= comment.id %>" name="comment_<%= comment.id %>">
     <div class="panel-body comment">
       <div class="row">

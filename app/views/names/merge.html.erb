@@ -18,11 +18,11 @@
         </div>
         <% if @target.present? %>
             <div class="panel-body to-delete to-delete-small">
-                <%= render partial: "names/merge_form", locals: { name: @model } %>
+                <%= render partial: "merge_form", locals: { name: @model } %>
             </div>
         <% else %>
             <div class="panel-body">
-                <%= render partial: "shared/name_main", locals: {name: @model} %>
+                <%= render partial: "main", locals: {name: @model} %>
             </div>
         <% end %>
     </div>
@@ -67,7 +67,7 @@
                     </span>
                 </div>
                 <div class="panel-body" id="mergeNameInto">
-                    <%= render partial: "names/merge_form", locals: { name: @target } %>
+                    <%= render partial: "merge_form", locals: { name: @target } %>
                 </div>
             </div>
     <% else %>

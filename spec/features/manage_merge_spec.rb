@@ -55,7 +55,7 @@ describe "Manage Names", :js => true do
     click_button "Yes"
 
     #Success message
-    expect(page).to have_content("Successfully merged")
+    expect(page).to have_content("successfully merged")
 
     #author2 should no longer appear in NAME LIST
     visit names_path

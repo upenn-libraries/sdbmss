@@ -1,3 +1,5 @@
+<!-- these edit forms are used for inline editing during MERGE only -->
+
 <div class='panel <%= index == 0 ? "panel-danger" : "panel-success" %>' ng-controller="SourceCtrl" ng-init="sourceId=<%= source.id %>; mergeEdit = false;" ng-form name="form" data-ng-cloak>
     <div class='panel-heading'>
         <h4 class='h4'><%= link_to source.public_id, source_path(source) %> <%= index == 0 ? "(Will be deleted)" : "" %>

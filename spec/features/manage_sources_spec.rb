@@ -91,4 +91,30 @@ describe "Manage sources", :js => true do
     expect(Source.count).to eq(count-1)
   end
 
+  it "should create a new Source" do
+    visit sources_path
+
+    find(".add-new-record").click
+
+    select "Auction/Dealer Catalog", from: 'source_type'
+    #find("#source_type").set("Auction/Dealer Catalog")
+    sleep 1
+    fill_in "title", with: "Completely unique source"
+    click_button "Save"
+
+    sleep 1
+    expect(Source.last.title).to eq("Completely unique source")
+  end
+
+  it "should edit an existing Source" do
+    s = Source.last
+    visit edit_source_path(s)
+
+    fill_in "title", with: "Utterly specific title"
+    click_button "Save"
+
+    sleep 1
+    expect(Source.last.title).to eq("Utterly specific title")
+  end
+
 end

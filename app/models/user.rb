@@ -7,7 +7,6 @@ class User < ActiveRecord::Base
   attr_accessor :login
 
   has_many :entries, foreign_key: "created_by_id"
-
   has_many :sources, foreign_key: "created_by_id"
 
   has_many :downloads
@@ -151,11 +150,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  #def notifications
-  #  messages = private_messages.received.select{ |e| e.unread }.count
-  #  exports = downloads.select{ |e| e.status == 1}.count
-  #  {total: messages + exports, messages: messages, exports: exports}
-  #end
+  # override default searchable fields and results
 
   def self.fields
     fields = super

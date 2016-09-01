@@ -8,33 +8,29 @@ $(document).ready(function() {
 
      // flag = show all records, or only those that the user created
      <% if can? :manage, model_class  %>
-     var showOnlyRecordsCreatedByUser = <%= params[:created_by_user] || 0 %>;
+         var onlyMine = <%= params[:created_by_user] || 0 %>;
      <% else %>
-     var showOnlyRecordsCreatedByUser = 1;
+         var onlyMine = 1;
      <% end %>
 
      <% if can? :destroy, model_class %>
-     var canDestroy = true;
+         var canDestroy = 1;
      <% else %>
-     var canDestroy = false;
+         var canDestroy = 0;
      <% end %>
 
      <% if can? :edit, model_class %>
-     var canEdit = true;
+         var canEdit = 1;
      <% else %>
-     var canEdit = false;
-     var username = "<%= current_user.username %>"
+         var canEdit = 0;
+         var username = "<%= current_user.username %>"
      <% end %>
 
      <% if can? :merge, model_class %>
-     var canMerge = true;
+         var canMerge = 1;
      <% else %>
-     var canMerge = false;
+         var canMerge = 0;
      <% end %>
-
-     var jumpToSource = {
-         search: false
-     };
 
      // Subclass of SDBM.ManageRecords tailored for display of names (ie users)
      var ManageSources = function(options) {
@@ -57,28 +53,29 @@ $(document).ready(function() {
                     }
                     return '';
                 },
-                sdbmssMinWidth: "30px",
              },
              {
-                 sdbmssMinWidth: "150px",
                  title: 'Options',
                  orderable: false,
                  render: function (data, type, full, meta) {
-                     var created_by = full[manageRecords.dataTable.getColumnIndex("Created By")];
-
-                     var str = '<span class="btn-group options-btn-group">' 
-                             + '<a onclick="addBookmark(' + data + ', \'Source\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/sources/' + data + '">' 
-                                + '<span class="glyphicon glyphicon-bookmark"></span></a>'
-                           + (canEdit || username == created_by ? '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>' : '') +
-                           '<a class="btn btn-xs btn-primary" href="/entries/new/?source_id=' + data + '">Add an Entry</a>' +
-                           (canDestroy ? '<a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>' : '') +
-                           (canMerge ? '<a class="btn btn-xs btn-info" href="/sources/' + data + '/merge">Merge</a></span>' : '' );
-                     // TODO: display delete link only if entries_count is 0
-                     return str;
-                 }
+                    var created_by = full[manageRecords.dataTable.getColumnIndex("Created By")];
+                    var result = '<span class="btn-group options-btn-group">';
+                    result += '<a onclick="addBookmark(' + data + ', \'Source\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/sources/' + data + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
+                    if (canEdit || username == created_by) {
+                        result += '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>';
+                    }
+                    result += '<a class="btn btn-xs btn-primary" href="/entries/new/?source_id=' + data + '">Add an Entry</a>';
+                    if (canDestroy) {
+                        result += '<a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
+                    }
+                    if (canMerge) {
+                        result += '<a class="btn btn-xs btn-info" href="/sources/' + data + '/merge">Merge</a></span>';
+                    }
+                    result += '</span>';
+                    return result;
+                }
              },
              {
-                 sdbmssMinWidth: "150px",
                  title: 'ID',
                  width: "10%",
                  render: function (data, type, full, meta) { 
@@ -88,103 +85,70 @@ $(document).ready(function() {
                  dbSortField: 'id'
              },
              {
-                 sdbmssMinWidth: "120px",
                  title: 'Source Type',
                  dbSortField: 'source_type_id'
              },
              {
-                 sdbmssMinWidth: "80px",
                  title: '# Entries',
                  dbSortField: 'entries_count'
              },
              {
-                 sdbmssMinWidth: "100px",
                  title: 'Date',
                  width: "10%",
                  dbSortField: 'date'
              },
              {
-                 sdbmssMinWidth: "400px",
-                 sdbmssMaxWidth: "400px",            
                  title: 'Title',
                  width: "70%",
                  dbSortField: 'title'
              },
              {
-                 sdbmssMinWidth: "200px",
-                 sdbmssMaxWidth: "200px",            
                  title: 'Author',
                  dbSortField: 'author'
              },
              {
-                 sdbmssMinWidth: "200px",
-                 sdbmssMaxWidth: "200px",            
                  orderable: false, // too difficult to sort by this
                  title: 'Selling Agent'
              },
              {
-                 sdbmssMinWidth: "200px",
-                 sdbmssMaxWidth: "200px",            
                  orderable: false, // too difficult to sort by this
                  title: 'Institution'
              },
-/*             {
-                 sdbmssMinWidth: "100px",
-                 title: 'Has MSS',
-                 dbSortField: 'whether_mss', // FIX ME: add to index, or no?
-                 orderable: false
-             },*/
              {
-                 sdbmssMinWidth: "150px",
                  title: 'Medium',
                  dbSortField: 'medium'
              },
              {
-                 sdbmssMinWidth: "100px",
                  title: "Date Accessed",
                  dbSortField: 'date_accessed',
                  orderable: false // FIX ME: add indexing or no?
              },
              {
-                 sdbmssMinWidth: "200px",
-                 sdbmssMaxWidth: "200px",            
                  title: "Institution",
                  dbSortField: 'location_institution'
              },
              {
-                 sdbmssMinWidth: "200px",
-                 sdbmssMaxWidth: "200px",            
                  title: "Location",
                  dbSortField: 'location'
              },
              {
-                 sdbmssMinWidth: "200px",
-                 sdbmssMaxWidth: "200px",            
                  title: "Link",
                  dbSortField: 'link',
                  orderable: false
              },
              {
-                 sdbmssMinWidth: "100px",
-                 sdbmssMaxWidth: "100px",            
                  title: 'Created By',
                  dbSortField: 'created_by'
              },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
                 title: 'Created On',
                 dbSortField: 'created_at'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
                 title: 'Updated By',
                 dbSortField: 'updated_by'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
                 title: 'Updated On',
                 dbSortField: 'updated_at'
             },
@@ -238,7 +202,7 @@ $(document).ready(function() {
              }
          });
 
-         if(showOnlyRecordsCreatedByUser) {
+         if(onlyMine) {
              params["created_by_user"] = 1;
          }
 
@@ -315,73 +279,23 @@ $(document).ready(function() {
 
      ManageSources.prototype.doSearch = function (isJumpSearch) {
          var manageSources = this;
-         jumpToSource.search = isJumpSearch;
          manageSources.dataTable.reload();
      };
 
      ManageSources.prototype.searchAjax = function(params, dt_params, callback) {
-         var manageSources = this;
-         if(jumpToSource.search) {
-             var source_id = $("#jump_to").val();
-             $.ajax({
-                 url: '/sources/calculate_bounds',
-                 type: 'POST',
-                 data: {
-                     id: source_id,
-                     per_page: $("select[name='search_results_length']").val(),
-                 },
-                 success: function(data, textStatus, jqXHR) {
-                     jumpToSource.source_id = source_id;
-
-                     params['from'] = data.lower_bound;
-                     params['to'] = data.upper_bound;
-
-                     SDBM.ManageRecords.prototype.searchAjax.call(manageSources, params, dt_params, callback);
-                 },
-                 error: function() {
-                     SDBM.showErrorModal("#modal", "An error occurred jumping to this record.");
-                 }
-             });
-         } else {
-             SDBM.ManageRecords.prototype.searchAjax.call(manageSources, params, dt_params, callback);
-         }
+        var manageSources = this;
+        SDBM.ManageRecords.prototype.searchAjax.call(manageSources, params, dt_params, callback);
      };
 
      var manageSources = new ManageSources({
          resourceName: "<%= resource_name %>",
          resourceNameSingular: "<%= resource_name.singularize %>",
          resourceNamePlural: "<%= resource_name.pluralize %>",
-         showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
+         showOnlyRecordsCreatedByUser: onlyMine,
          searchNameField: "name"
      });
 
      $('#search_results').on('draw.dt', function () {
-         if(jumpToSource.search) {
-             var sdbmTable = manageSources.dataTable;
-             var entry_id = String(jumpToSource.source_id);
-             // highlight the row
-             sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
-                 var data = sdbmTable.dataTable.row(row).data();
-                 if(String(data[sdbmTable.getColumnIndex("ID")]) === entry_id) {
-                     $(row).addClass("selected");
-                     $(".dataTables_scrollBody").scrollTop(idx * sdbmTable.getRowHeight());
-                 }
-             });
-         }
-     });
-
-     $("#jump_to").keydown(function(e) {
-         if(e.keyCode == 13) {
-             manageSources.doSearch(true);
-             e.preventDefault();
-             return false;
-         }
-     });
-
-     $("#jump_submit").click(function () {
-         manageSources.doSearch(true);
-         // prevent form submit handler from firing
-         return false;
      });
 
  });

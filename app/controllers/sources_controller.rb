@@ -320,6 +320,7 @@ class SourcesController < SearchableAuthorityController
     if params[:confirm] == "yes"
       ActiveRecord::Base.transaction do
         @target.update_attributes(source_params_for_create_and_edit)
+        id = @source.public_id
         @source.merge_into(@target)
         if params[:source_agent_id]
           # remove old source agents
@@ -330,10 +331,11 @@ class SourcesController < SearchableAuthorityController
         @transaction_id = PaperTrail.transaction_id
         @model = @target
         log_activity
+        flash[:success] = "#{id} has been successfully merged into #{@target.public_id}"
       end
       # FIX ME: handle errors here, if the merge is not succesful?
-      @details = search_result_format(@target)
-      render "merge_success"
+      #render "merge_success"
+      redirect_to source_path(@target)
     end
   end
 

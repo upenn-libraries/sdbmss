@@ -1,4 +1,6 @@
 <%# Partial used to display name details for both Names generically and Agents (which are Names) %>
+
+<%# Why is this in SHARED instead of in NAME?? %>
 <div class="row">
     <div class="col-sm-3">
         <div class="panel panel-default show-tools">
@@ -30,7 +32,7 @@
             <dt></dt>
             <dd class='h2'><%= name.public_id %></dd>
         </dl>
-        <%= render partial: "shared/name_main", locals: { name: name } %>
+        <%= render partial: "main", locals: { name: name } %>
 
     </div>
     <div class="col-sm-3"></div>
@@ -38,33 +40,7 @@
         
         <h4>Share additional information about this name in the box below. Your comments will be displayed publicly.</h4>
 
-        <% if (comments = name.comments.where(public: true)).present? %>
-            <%= render partial: "comments/show_all", locals: {comments: comments} %>
-        <!--<table class="table table-striped">
-            <thead>
-                <tr>
-                    <th class="col-sm-12" colspan="2"><b>Comments</b></th>
-                </tr>
-            </thead>
-            <tbody>
-                <% comments.each do |comment| %>
-                <tr>
-                    <td class="col-sm-2 text-right record-label">
-                        By <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
-                        At <%= comment.created_at.to_formatted_s(:date_and_time) %>
-                    </td>
-                    <td class="col-sm-10">
-                        <%= comment.comment||"(none)" %>
-                    </td>
-                </tr>
-                <% end %>
-            </tbody>
-        </table>-->
-        <% end %>
-
-        <% if user_signed_in? %>
-            <%= render partial: "comments/form", locals: { record: name } %>
-        <% end %>
+        <%= render partial: "comments/show_all", locals: {comments: name.comments.where(public: true), record: name} %>
 
         <div class="spacer-40px"></div>
 

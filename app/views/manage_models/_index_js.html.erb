@@ -6,16 +6,16 @@
 
      // flag = show all records, or only those that the user created
      <% if can? :manage, model_class  %>
-     var showOnlyRecordsCreatedByUser = 0;
+         var onlyMine = 0;
      <% else %>
-     var showOnlyRecordsCreatedByUser = 1;
+         var onlyMine = 1;
      <% end %>
 
      new SDBM.ManageRecords({
          resourceName: "<%= resource_name %>",
          resourceNameSingular: "<%= resource_name.singularize %>",
          resourceNamePlural: "<%= resource_name.pluralize %>",
-         showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
+         showOnlyRecordsCreatedByUser: onlyMine,
          searchNameField: "name"
      });
 

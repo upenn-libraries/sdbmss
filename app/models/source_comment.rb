@@ -1,3 +1,4 @@
+# FIX ME: should be removed once all comments are converted to new system
 
 class SourceComment < ActiveRecord::Base
   belongs_to :source
