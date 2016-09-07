@@ -14,7 +14,8 @@ describe "Manage languages", :js => true do
     @user = User.create!(
       email: 'testuser@testlanguage.com',
       username: 'languagetestuser',
-      password: 'somethingunguessable'
+      password: 'somethingunguessable',
+      role: 'admin'
     )
     @language = Language.create!(
       name: "Martian",

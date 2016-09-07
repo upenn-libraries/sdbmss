@@ -60,6 +60,8 @@ class Ability
     end
 
 =begin
+    the old definitions - I am keeping them here now just for reference...
+
     if ['contributor', 'editor', 'admin'].member? user.role
       can :show, :all
       [Entry, Sale, Language, Manuscript, Name, Place, Source, Comment].each do |clazz|

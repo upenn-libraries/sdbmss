@@ -14,7 +14,7 @@ class Manuscript < ActiveRecord::Base
   include IndexAfterUpdate
   include HasPaperTrail
   include CreatesActivity
-  extend CSVExportable
+  extend SolrSearchable
 
   # searchable!
   
@@ -77,7 +77,10 @@ class Manuscript < ActiveRecord::Base
   end
 
   # returns an array of entry IDs
+  # 
+  # deprecated: similar entry suggestions not currently enabled
   def entry_candidates
+    puts "deprecated"
     candidate_ids = Set.new
     linked_entries.each do |entry|
       SDBMSS::SimilarEntries.new(entry).each do |similar_entry|

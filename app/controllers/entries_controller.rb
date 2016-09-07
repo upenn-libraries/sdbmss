@@ -22,8 +22,6 @@ class EntriesController < SearchableAuthorityController
   # CatalogController but not here, so we include it explicitly
   include BlacklightAdvancedSearch::Controller
   
-  include CalculateBounds
-
   include LogActivity
 
   before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate, :verify]

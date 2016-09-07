@@ -22,7 +22,7 @@ class Name < ActiveRecord::Base
   include HasPaperTrail
   include CreatesActivity
   
-  extend CSVExportable
+  extend SolrSearchable
 
   default_scope { where(deleted: false) }
 

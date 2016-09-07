@@ -1,3 +1,4 @@
+# deprecated
 
 class ManuscriptComment < ActiveRecord::Base
   belongs_to :manuscript

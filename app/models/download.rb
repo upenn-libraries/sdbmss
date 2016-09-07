@@ -7,6 +7,7 @@ class Download < ActiveRecord::Base
     filename
   end
 
+  # when the model is deleted, remove the associated file as well
   def destroy
     path = "/tmp/" + id.to_s + "_" + user.username + "_" + filename
     File.delete(path) if File.exist?(path)

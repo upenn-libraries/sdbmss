@@ -183,16 +183,8 @@ class Entry < ActiveRecord::Base
     sales.first
   end
 
-  def get_sale_agent_name(role)
-    puts "deprecated #{__method__}"    
-    t = get_sale
-    if t
-      sa = t.get_sale_agent_with_role(role)
-      if sa && sa.agent
-        return sa.agent.name
-      end
-    end
-  end
+
+  # new 'get_sale_agent' methods now that an entry can have multiple of each
 
   def get_sale_agents_names(role)
     t = get_sale
@@ -222,6 +214,7 @@ class Entry < ActiveRecord::Base
     get_sale_agents_names(SaleAgent::ROLE_BUYER)
   end
 
+  # FIX ME: old methods, to be removed
   def get_sale_selling_agent_name
     puts "deprecated #{__method__}"
     get_sale_agent_name(SaleAgent::ROLE_SELLING_AGENT)
@@ -235,6 +228,17 @@ class Entry < ActiveRecord::Base
   def get_sale_buyer_name
     puts "deprecated #{__method__}"
     get_sale_agent_name(SaleAgent::ROLE_BUYER)
+  end
+
+  def get_sale_agent_name(role)
+    puts "deprecated #{__method__}"    
+    t = get_sale
+    if t
+      sa = t.get_sale_agent_with_role(role)
+      if sa && sa.agent
+        return sa.agent.name
+      end
+    end
   end
 
   def sale
@@ -316,12 +320,7 @@ class Entry < ActiveRecord::Base
     )
   end
 
-  # returns a "complete" representation of this entry, including
-  # associated data, as a flat (ie non-nested) Hash. This is used to
-  # return rows for the table view, and also used for CSV
-  # export. Obviously, decisions have to be made here about how to
-  # represent the nested associations for display and there has to be
-  # some information tweaking/loss.
+  # every bookmarkable record has a 'bookmark_details' method to return whatever information should be displayed for the bookmark
   def bookmark_details
     results = { 
       manuscript: manuscript ? manuscript.id : nil,
@@ -343,6 +342,12 @@ class Entry < ActiveRecord::Base
     (results.select { |k, v| !v.blank? }).transform_keys{ |key| key.to_s.humanize }
   end
 
+  # returns a "complete" representation of this entry, including
+  # associated data, as a flat (ie non-nested) Hash. This is used to
+  # return rows for the table view, and also used for CSV
+  # export. Obviously, decisions have to be made here about how to
+  # represent the nested associations for display and there has to be
+  # some information tweaking/loss.
   def as_flat_hash
     # for performance, we avoid using has_many->through associations
     # because they always hit the db and circumvent the preloading
@@ -796,17 +801,6 @@ class Entry < ActiveRecord::Base
 
   def to_i
     id
-  end
-
-  # fix me: eventually, want to switch bookmark details to send as json
-  def to_bookmark
-    {
-      id: id,
-      public_id: public_id,
-      manuscript_id: (manuscript ? manuscript.id : nil),
-      source_id: source.id,
-      source: source.display_value     
-    }
   end
 
   private

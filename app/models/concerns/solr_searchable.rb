@@ -1,4 +1,10 @@
-module CSVExportable
+module SolrSearchable
+
+  # each model that depends on SolrSearchable can add to the searchable fields using these methods
+  # 
+  # FILTERS: check for exact equality
+  # FIELDS: search based on full-text tokenizing
+  # DATES: allow for searching based on a date range (i.e. before/after)
 
   def filters
     ["id"]
@@ -177,6 +183,8 @@ module CSVExportable
         end
       end
 
+      # in order to use SUNSPOTS 'and'/'or' options, we create a lambda function for fulltext searching (above)
+
       if s_op == 'OR'
         any do
           fulltext_search.call(params, options)
@@ -186,6 +194,11 @@ module CSVExportable
           fulltext_search.call(params, options)
         end
       end
+
+      # unfortunately, sunspot does not natively support MIXING fulltext and exact searches using the "OR" operator - so we do that manually
+      # 
+      # params[:fq] refer to 'filter queries', or queries that refer to a fixed set of objects (exact strings, numbers, etc.)
+      # params[:q] refers to fulltext queries
 
       adjust_solr_params do |params|
         new_q = []
@@ -215,11 +228,14 @@ module CSVExportable
         end
       end
 
+      # a CSV search is unpaginated, so the entire search results are returned
+
       if format != 'csv'
         paginate :per_page => limit, :page => page
       else
         paginate :page => 1, :per_page => self.all.count
       end
+
       order.present? ? order_by(order[:field], order[:direction]) : order_by(:score, :desc)
     end
 

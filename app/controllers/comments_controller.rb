@@ -17,15 +17,6 @@ class CommentsController < SearchableAuthorityController
     @fields + @filters + @dates
   end
 
-  def search_query_base
-    query = super
-    query.with_associations
-  end
-
-  def search_name_field
-    "comment"
-  end
-
   def create
     @comment = Comment.new(comment_params)
     @comment.save_by(current_user)

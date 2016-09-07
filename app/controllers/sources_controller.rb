@@ -1,7 +1,7 @@
 
 class SourcesController < SearchableAuthorityController
 
-  include CalculateBounds
+  #include CalculateBounds
   include MarkAsReviewed
   include LogActivity
 

@@ -1,6 +1,5 @@
 class NamesController < SearchableAuthorityController
 
-  include ResourceSearch
   include LogActivity
   include MarkAsReviewed
   include ResetReviewedAfterUpdate

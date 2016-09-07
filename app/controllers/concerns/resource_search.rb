@@ -16,16 +16,8 @@ module ResourceSearch
 
   extend ActiveSupport::Concern
 
-  def self.included(base)
-    base.helper_method :search_name_field
-  end
-
   def search_results_max
     Rails.configuration.sdbmss_max_search_results
-  end
-
-  def search_name_field
-    "name"
   end
 
   def search_results_limit
@@ -36,33 +28,24 @@ module ResourceSearch
     params["offset"]
   end
 
-  def search_results_order
-    [params["order"] || "#{search_name_field} asc"]
-  end
-
-  # Returns the constant of the Model handled by this controller.
-  # Classes should override this if the name of the controller doesn't
-  # conform to the Rails convention of 'ModelController'.
   def search_model_class
     self.class.to_s.sub('Controller', '').singularize.constantize
   end
 
-  # Classes should override this is they want to return a different
-  # set of keys for each result object. Used by the default
-  # implementation of #search_results_format.
   def search_results_keys
     [:id, search_name_field.to_s]
   end
 
   # Formats the passed-in search result object, returning it as a hash.
   # This default implementation uses #search_results_keys.
+
   def search_result_format(obj)
     search_results_keys.reduce({ }) do |result, key|
       result[key] = obj.send key
       result
     end
   end
-
+=begin
   # Classes can override this to modify the results with additional
   # attributes. 'results' is an Array of Hashes of results that have
   # already been offset/limited/ordered.
@@ -190,5 +173,5 @@ module ResourceSearch
     end
     query
   end
-
+=end
 end

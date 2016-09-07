@@ -34,6 +34,7 @@ class EntryAuthor < ActiveRecord::Base
     end
   end
 
+  # used for indexing entry_artist with entry
   def display_value
     val = super(author)
     val += role ? " (" + role + ")": ""

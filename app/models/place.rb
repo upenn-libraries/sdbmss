@@ -5,7 +5,7 @@ class Place < ActiveRecord::Base
   include IndexAfterUpdate
   include HasPaperTrail
   include CreatesActivity
-  extend CSVExportable
+  extend SolrSearchable
 
   default_scope { where(deleted: false) }
 

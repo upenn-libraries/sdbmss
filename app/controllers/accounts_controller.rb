@@ -13,16 +13,8 @@ class AccountsController < SearchableAuthorityController
     User
   end
 
-  def search_model_class
-    User
-  end
-
   def resource_name
     "accounts"
-  end
-
-  def search_name_field
-    return "username"
   end
 
   def login_as

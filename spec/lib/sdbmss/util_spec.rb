@@ -34,7 +34,7 @@ describe "SDBMSS::Util" do
      end
 
       it "splits a blank string" do
-       expect(SDBMSS::Util.split_and_strip("")).to eq([""])
+       expect(SDBMSS::Util.split_and_strip("")).to eq([])
      end
 
      it "splits a string with different delimiter" do

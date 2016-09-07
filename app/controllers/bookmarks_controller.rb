@@ -181,5 +181,8 @@ class BookmarksController < ApplicationController
       end
     end
   end
-  
+ 
+  def details_for_render(bookmark)
+    return bookmark.document.bookmark_details
+  end
 end

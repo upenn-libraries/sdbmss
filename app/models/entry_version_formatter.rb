@@ -97,6 +97,8 @@ class EntryVersionFormatter
     @details
   end
 
+  # FIX ME: this needs work, to be both more descriptive and more robust
+
   def detail (version)
     details = []
     if version.event == 'update'

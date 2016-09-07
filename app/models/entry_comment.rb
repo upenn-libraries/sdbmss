@@ -1,3 +1,5 @@
+# deprecated
+
 class EntryComment < ActiveRecord::Base
   belongs_to :entry
   belongs_to :comment

@@ -48,9 +48,18 @@ class EntryArtist < ActiveRecord::Base
     end
   end
 
+  # used for indexing entry_artist with entry
   def display_value
     val = super(artist)
-    val += role ? " (" + role + ")": ""
+    val += " (#{role})" if role
+  end
+
+  def format_role
+    if (found = TYPES_ROLES.select{ |r| r[0] == role })
+      found.first[1]
+    else
+      role
+    end
   end
 
   def to_s

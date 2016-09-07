@@ -1,3 +1,6 @@
+# FIX ME: this class is in an intermediate state; until it is pushed to production and comments 
+# moved over to new polymorphic method, have to keep old structure as well!
+
 class Comment < ActiveRecord::Base
 
   default_scope { where(deleted: false) }
@@ -48,7 +51,7 @@ class Comment < ActiveRecord::Base
   include UserFields
   include HasPaperTrail
   include CreatesActivity
-  extend CSVExportable
+  extend SolrSearchable
 
   searchable :unless => :deleted do
     join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })

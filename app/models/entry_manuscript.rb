@@ -17,7 +17,7 @@ class EntryManuscript < ActiveRecord::Base
   include UserFields
   include HasPaperTrail
   include CreatesActivity
-  extend CSVExportable
+  extend SolrSearchable
 
   def create_activity(action_name, current_user, transaction_id)
     activity = super
