@@ -18,6 +18,7 @@ class CommentsController < SearchableAuthorityController
   end
 
   def create
+#    NotificationMailer.welcome_email(current_user).deliver_now
     @comment = Comment.new(comment_params)
     @comment.save_by(current_user)
     if @comment.commentable.created_by && @comment.commentable.created_by != current_user

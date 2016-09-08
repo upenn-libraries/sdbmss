@@ -14,11 +14,17 @@
     <div class="col-sm-3"></div>
     <div class="col-sm-9">
 
-        <h4>Share additional information about this source in the box below. Your comments will be displayed publicly.</h4>
+<dl class="document-metadata dl-horizontal dl-invert">
 
-        <div class="spacer-40px"></div>
+        <dt style="white-space: normal;">
+            <h3>Comments</h3>
+            <p>Share additional information about this source - your comments will be displayed publicly.</p>
+        </dt>
+        <dd>
+            <div class="spacer-40px"></div>
+            <%= render partial: "comments/show_all", locals: {comments: @source.comments.where(public: true), record: @source} %>
+        </dd>
 
-        <%= render partial: "comments/show_all", locals: {comments: @source.comments.where(public: true), record: @source} %>
 
     </div>
 </div>
