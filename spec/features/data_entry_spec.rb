@@ -109,10 +109,6 @@ describe "Data entry", :js => true do
       expect(page).to have_content 'Signed in successfully'
     end
 
-    after :each do
-      page.reset!
-    end
-
     require "lib/data_entry_helpers"
     include DataEntryHelpers    
 

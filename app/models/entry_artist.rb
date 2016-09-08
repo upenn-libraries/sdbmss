@@ -17,7 +17,7 @@ class EntryArtist < ActiveRecord::Base
     ["Styls", "Styles"], 
     ["Foll", "Follower"], 
     ["Desc", "Descendant"], 
-    ["Foll", "Followers"], 
+    ["Folls", "Followers"], 
     ["Cont", "Contemporary"], 
     ["Son", "Son"], 
     ["Mann", "Manner"], 

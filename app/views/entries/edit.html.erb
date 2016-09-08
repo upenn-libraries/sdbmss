@@ -289,7 +289,7 @@ label.col-sm-2-and-half {
                               <a id='find_sale_agent_name_authority_{{ $index }}' ng-if='sale_agent.agent.id == undefined' ng-init="sale_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', sale_agent.agent, 'is_provenance_agent')">Find or Create Authority Name</a>
                               <div id='show_selling_agent_name_authority_0' ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                 <a id='remove_selling_agent_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(sale_agent, 'agent')"></a>
-                                <span id="sale_agent_{{ $index}}">{{ sale_agent.agent.name }}</span>
+                                <span id="sale_agent_{{ $index }}">{{ sale_agent.agent.name }}</span>
                               </div>
                               <div class="input-group-addon clickable">
                                 <a class="more-info glyphicon" href="/names/{{ sale_agent.agent.id }}" target="_blank" ng-class="sale_agent.agent && 'glyphicon-eye-open' || 'glyphicon-eye-close disabled'" title="See more info on this name..." data-toggle="tooltip"></a>

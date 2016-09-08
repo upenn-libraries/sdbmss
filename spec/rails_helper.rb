@@ -2,6 +2,7 @@
 ENV["RAILS_ENV"] ||= 'test'
 
 require 'simplecov'
+
 SimpleCov.start 'rails'
 puts "SimpleCov started"
 
@@ -12,6 +13,8 @@ require 'rspec/rails'
 
 require 'capybara/rails'
 require 'factory_girl_rails'
+
+require 'capybara-screenshot/rspec'
 
 require_relative './helpers'
 

@@ -1,31 +1,37 @@
 module DataEntryHelpers
   def add_name_authority(id, value)
     find_by_id(id).click
-    sleep 1
+    expect(page).to have_content('in Name Authority')
     expect(page).to have_selector('#searchNameAuthority');
     find_by_id('searchNameAuthority').set value
-    sleep 1
-    if page.has_content?("No results found.")
+    expect(page).not_to have_content('To begin searching')
+    if !page.has_content?("Select #{value}")
+      expect(page).to have_content("Propose #{value}")
       find_by_id('propose-name').click
-      sleep 1
+      expect(page).to have_content("This window asks you to create an authorized name")
       click_button('Create')
     else
       find_by_id('selectNameButton').click
     end
+    expect(page).not_to have_content("Select #{value}")
+    expect(page).to have_css(".well-name-authority", :text => value)
   end
 
   def add_model_authority(id, value)
     find_by_id(id).click
-    sleep 1
+    expect(page).to have_content('in Name Authority')
     fill_in 'searchModelAuthority', with: value
-    sleep 1
-    if page.has_content?("No results found.")
+    expect(page).not_to have_content('To begin searching')
+    if !page.has_content?("Select #{value}")
+      expect(page).to have_content("Propose #{value}")
       find_by_id('propose-model').click
-      sleep 1
+      expect(page).to have_content("This window asks you to create an authorized name")
       click_button('Create')
     else
       find_by_id('selectModelButton').click
     end
+    expect(page).not_to have_content("Select #{value}")
+    expect(page).to have_css(".well-name-authority", :text => value)
   end
 
 
