@@ -111,8 +111,8 @@ class ManageModelsController < ApplicationController
   def destroy
     # mark as deleted, don't actually destroy the record
     if deletable?(@model)
-      @model.deleted = true
-      if @model.save
+      #@model.deleted = true
+      if @model.destroy
         respond_to do |format|
           format.json {
             render status: :ok, json: {}

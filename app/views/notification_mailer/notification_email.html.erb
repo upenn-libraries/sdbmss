@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1><%= @title %></h1>
+    <p>
+    <%= sanitize simple_format(@message) %>
+    </p>
+    <p>
+      To login to the site, just follow this <%= link_to "link", @url %>.
+    </p>
+    <p>Thank you very much and have a great day!</p>
+  </body>
+</html>

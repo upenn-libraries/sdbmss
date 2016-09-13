@@ -115,7 +115,7 @@ class User < ActiveRecord::Base
   # user class to get a user-displayable login/identifier for
   # the account.
   def to_s
-    username
+    fullname || username
   end
 
   def role?(role_to_check)
@@ -139,14 +139,24 @@ class User < ActiveRecord::Base
 
   def can_notify(category)
     if !self.notification_setting
-      self.notification_setting = NotificationSetting.create!(user_id: id, on_update: true, on_comment: true, on_reply: false)
+      self.notification_setting = NotificationSetting.create!(user_id: id)
     end
     self.notification_setting["on_#{category}".to_sym]
   end
 
-  def notify(message, category)
+  def can_email(category)
+    if !self.notification_setting
+      self.notification_setting = NotificationSetting.create!(user_id: id)
+    end
+    self.notification_setting["email_on_#{category}".to_sym]
+  end
+
+  def notify(title, url, message, category)
     if can_notify(category)
-      notifications.create(message: message, category: category)
+      n = notifications.create(title: title, url: url, message: message, category: category)
+    end
+    if can_email(category)
+      NotificationMailer.notification_email(n).deliver_now
     end
   end
 

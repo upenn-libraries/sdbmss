@@ -103,6 +103,7 @@ class Name < ActiveRecord::Base
     date :created_at
     date :updated_at
     boolean :reviewed
+    boolean :confirmed
   end
 
   def self.filters

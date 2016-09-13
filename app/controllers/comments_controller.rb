@@ -18,11 +18,15 @@ class CommentsController < SearchableAuthorityController
   end
 
   def create
-#    NotificationMailer.welcome_email(current_user).deliver_now
     @comment = Comment.new(comment_params)
     @comment.save_by(current_user)
     if @comment.commentable.created_by && @comment.commentable.created_by != current_user
-      @comment.commentable.created_by.notify("#{current_user.username} has commented on #{@comment.commentable.public_id}", "comment")
+      @comment.commentable.created_by.notify(
+        "#{current_user.to_s} has commented on one of your records.",
+        polymorphic_url(@comment.commentable),
+        "#{current_user.to_s} has left a commented on #{@comment.commentable.public_id}. <blockquote>#{@comment.comment[0..100]}...</blockquote>", 
+        "comment"
+      )
     end
     redirect_to polymorphic_path(@comment.commentable) + "#comment_#{@comment.id}"
   end

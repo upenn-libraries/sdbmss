@@ -64,14 +64,63 @@
   </div>
 
   <div class="form-inline">
-    <legend class='h4'>Notification Settings</legend>
+    <legend class='h4 text-center'>Notification Settings</legend>
     <%= f.fields_for :notification_setting do |notification_f| %>
-      <%= notification_f.check_box :on_update, class: 'form-control' %>
-      <label class='control-label'>On Update?</label><br>
-      <%= notification_f.check_box :on_comment, class: 'form-control'  %>
-      <label class='control-label'>On Comment?</label><br>
-      <%= notification_f.check_box :on_reply, class: 'form-control'  %>
-      <label class='control-label'>On Reply?</label><br>
+        <table class="table table-hover text-center">
+          <thead>
+            <tr>
+              <th></th>
+              <th class='text-center text-info'>Notify Me</th>
+              <th class='text-center text-success'>Email Me</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <label class='control-label'>On Update</label><br>
+              </td>
+              <td>
+                <%= notification_f.check_box :on_update, class: 'form-control' %>
+              </td>
+              <td>
+                <%= notification_f.check_box :email_on_update, class: 'form-control' %>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label class='control-label'>On Comment</label><br>
+              </td>
+              <td>
+                <%= notification_f.check_box :on_comment, class: 'form-control'  %>
+              </td>
+              <td>
+                <%= notification_f.check_box :email_on_comment, class: 'form-control'  %>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label class='control-label'>On Reply</label><br>
+              </td>
+              <td>
+                <%= notification_f.check_box :on_reply, class: 'form-control'  %>
+              </td>
+              <td>
+                <%= notification_f.check_box :email_on_reply, class: 'form-control'  %>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <label class='control-label'>On Message</label><br>
+              </td>
+              <td>
+                <%= notification_f.check_box :on_message, class: 'form-control'  %>
+              </td>
+              <td>
+                <%= notification_f.check_box :email_on_message, class: 'form-control'  %>
+              </td>
+            </tr>
+          </tbody>
+        </table>
     <% end %>
   </div>
   

@@ -106,7 +106,9 @@ var BOOKMARK_SCOPE;
             if(obj !== undefined) {
                 // TODO: deal with nesting?
                 for(var key in obj) {
-                    if(obj[key]) { blank = false; }
+                    if(obj[key]) {
+                      blank = isBlankThing(obj[key]); 
+                    }
                 }
             }
             return blank;
@@ -122,6 +124,8 @@ var BOOKMARK_SCOPE;
                (typeof(obj) === 'string' && obj.length === 0) ||
                (Array.isArray(obj) && obj.length === 0)) {
                 blank = true;
+            } else if (typeof(obj) == 'string' || Array.isArray(obj)) {
+                // strings and arrays (non-empty) are non-blank
             } else if (typeof(obj) === 'number') {
                 // noop: treat all numbers as non-blank
             } else {
@@ -755,7 +759,7 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.removeRecord = function (anArray, record) {
-          if (Object.getOwnPropertyNames(record).length <= 1 || window.confirm("Are you sure you want to remove this record?")) {
+          if (sdbmutil.isBlankThing(record) || window.confirm("Are you sure you want to remove this record?")) {
             var i;
             for (i = 0; i < anArray.length; i++) {
                 if (anArray[i] === record) {
@@ -1744,7 +1748,7 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.removeRecord = function (anArray, record) {
-          if (Object.getOwnPropertyNames(record).length <= 1 || window.confirm("Are you sure you want to remove this record?")) {
+          if (sdbmutil.isBlankThing(record) || window.confirm("Are you sure you want to remove this record?")) {
             var i;
             for (i = 0; i < anArray.length; i++) {
                 if (anArray[i] === record) {

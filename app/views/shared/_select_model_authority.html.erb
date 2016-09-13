@@ -31,7 +31,7 @@
                         <td>{{ s.id }}</td>
                         <td>{{ s.name }}</td>
                         <td>{{ s.entries_count }}</td>
-                        <td>{{ s.reviewed }}</td>
+                        <td> <span class='glyphicon' ng-class="s.reviewed ? 'glyphicon-ok' : 'glyphicon-remove'"></span> </td>
                     </tr>
                 </tbody>
                 <tfoot>                    

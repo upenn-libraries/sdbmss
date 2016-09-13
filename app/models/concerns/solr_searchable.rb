@@ -80,6 +80,7 @@ module SolrSearchable
     File.delete(path) if File.exist?(path)
 
     download.update({status: 1, filename: "#{filename}.zip"})
+    #download.created_by.notify("Your download '#{download.filename}' is ready.")
   end
 
   def do_search(params)
