@@ -87,6 +87,7 @@ describe "User Notifications", :js => true do
       initial = @user2.notifications.count
 
       visit entry_path(@entry1)
+      click_link "Add a reply..."
       fill_in "reply", with: "Yes."
       click_button "Add Reply"
 
@@ -126,6 +127,7 @@ describe "User Notifications", :js => true do
 
       visit entry_path(@entry2)
 
+      click_link "Add a reply..."
       fill_in "reply", with: "I wasn't."
       click_button "Add Reply"
 
