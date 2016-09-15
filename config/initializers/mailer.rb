@@ -8,8 +8,8 @@ if Rails.env.development?
     :port => 587,
     :authentication => :plain,
     :domain => 'localhost',
-    :user_name => 'sdbmssdev@gmail.com',
-    :password => 'xsw23edC',
+    :user_name => ENV.fetch('SDBMSS_NOTIFY_EMAIL'),
+    :password => ENV.fetch('SDBMSS_NOTIFY_EMAIL_PASSWORD'),
     :enable_starttls_auto => true
   }
 
