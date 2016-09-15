@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  ROLES = %w[contributor editor admin]
+  ROLES = %w[contributor editor super_editor admin]
 
   attr_accessible :username, :email, :password, :password_confirmation if Rails::VERSION::MAJOR < 4
 
@@ -115,7 +115,7 @@ class User < ActiveRecord::Base
   # user class to get a user-displayable login/identifier for
   # the account.
   def to_s
-    fullname || username
+    fullname.present? ? fullname : username
   end
 
   def role?(role_to_check)

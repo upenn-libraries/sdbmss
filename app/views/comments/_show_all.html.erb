@@ -1,7 +1,6 @@
 <% if user_signed_in? %>
   <%= render partial: "comments/form", locals: { record: record } %>
 <% end %>
-<div class="spacer-40px"></div>
 <% comments.reverse.each do |comment| %>
   <div class="panel-default panel" id="comment_<%= comment.id %>" name="comment_<%= comment.id %>">
     <div class="panel-body comment">
@@ -14,7 +13,7 @@
             <%= render partial: "comments/edit_form", locals: {comment: comment} %>
           </div>
           <div class="col-sm-6">
-            <a onclick="$('#comment_<%= comment.id %> .comment-toggle').toggleClass('hide');" class='comment-toggle'>Edit</a>
+            <a onclick="$('#comment_<%= comment.id %> .comment-toggle').toggleClass('hide');" href="" class='comment-toggle'>Edit</a>
           </div>
         <% end %>
         <div class="col-sm-6 pull-right text-right">
@@ -24,18 +23,22 @@
       </div>
     </div>
     <div class="panel-footer">
-      <div class="row">
+      <div class="row collapse reply-toggle in text-center">
+         <div class="col-sm-12"><a href="#comment_<%= comment.id %> .reply-toggle" data-toggle="collapse">Add a reply...</a></div>
+       </div> 
+      <div class="reply-toggle row collapse">
         <%= form_tag('/replies') do %>
           <div class="col-sm-9">
             <%= hidden_field_tag :comment_id, comment.id %>
-            <%= text_area_tag :reply, '', class: 'form-control', rows: 1 %>
+            <%= text_area_tag :reply, '', class: 'form-control', rows: 1, placeholder: "Begin your reply here..." %>
           </div>
-          <div class="col-sm-3">
-            <%= submit_tag 'Add Reply', class: 'form-control' %>
+          <div class="col-sm-3 text-right">
+            <%= submit_tag 'Add Reply', class: 'btn btn-default' %>
+            <a href="#comment_<%= comment.id %> .reply-toggle" data-toggle="collapse" class='btn btn-default'>Cancel</a>
           </div>
         <% end %>
       </div>
-      <% comment.replies.each do |reply| %>
+      <% comment.replies.reverse.each do |reply| %>
         <div class="row" style="border-top: 1px solid #ddd; margin-top: 5px; padding-top: 5px;">
           <div class="col-sm-9">
             <p><%= sanitize simple_format(reply.reply), tags: %w(code b i br strong em a), attributes: %w(href) %></p>

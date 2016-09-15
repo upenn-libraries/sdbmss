@@ -1,4 +1,12 @@
 <dl class="document-metadata dl-horizontal dl-invert">
+
+<% if name.confirmed %>
+<dt></dt>
+<dd>
+    <strong class="text-success">Confirmed <span class="glyphicon glyphicon-ok"></span></strong>
+</dd>
+<% end %>
+
 <dt>Name</dt>
 <dd>
     <%= name.name %>

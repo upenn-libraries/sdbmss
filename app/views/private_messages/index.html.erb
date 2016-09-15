@@ -1,33 +1,13 @@
-<div class="panel panel-default">
-  <div class="panel-heading split-heading">
-    <div class="row">
-      <div class="col-sm-4 text-right full-column <%= @sent_by ? 'text-primary': 'bg-primary' %>">
-        <%= link_to "INBOX", private_messages_path, class: 'h3' %>
+<%= render partial: "header", locals: {title: (@sent_by ? "SENT MAIL" : "INBOX")} %>
+
+<div class="row">
+  <div class="col-sm-12">
+    <% @messages.each do |m| %>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <%= render partial: 'message', locals: {message: m, truncate: true} %>
+        </div>
       </div>
-      <div class="col-sm-4 full-column <%= @sent_by ? 'bg-primary': 'text-primary' %>">
-        <%= link_to "SENT", private_messages_path(sent_by: true), class: 'h3' %>
-      </div>
-      <div class="col-sm-4 text-right full-column <%= @sent_by ? 'bg-primary': 'text-primary' %>">
-        <%= link_to new_private_message_path, class: 'h3' do %>
-          New Message 
-        <% end %>
-      </div>
-      <div class="col-sm-12">
-      </div>
-    </div>
-  </div>
-  <div class="panel-body">
-    <div class="row">
-      <div class="col-sm-12">
-        <ul class="list-group">
-          <% if @messages.count <= 0 %>
-            <li class="list-group-item">You do not have any messages.</li>
-          <% end %>
-          <% @messages.each do |m| %>
-            <%= render partial: 'message', locals: {message: m, truncate: true} %>
-          <% end %>
-        </ul>
-      </div>
-    </div>
+    <% end %>
   </div>
 </div>

@@ -29,7 +29,7 @@ class Ability
     # will want more fine-grained control for our roles as the system
     # grows.
 
-    if ['contributor', 'editor', 'admin'].member? user.role
+    if ['contributor', 'editor', 'super_editor', 'admin'].member? user.role
       can [:edit, :update], :all, :created_by_id => user.id
       can :link, :all
       can :index, Entry
@@ -41,16 +41,20 @@ class Ability
       can :manage, PrivateMessage, :user_id => user.id
     end
 
-    if ['editor', 'admin'].member? user.role
+    if ['editor', 'super_editor', 'admin'].member? user.role
       can :manage, [Name, Entry, Manuscript, Source]
       can :unlink, :all
       can :edit, Manuscript
 
       cannot :deprecate, :all
       cannot [:edit, :destroy, :merge], [Source, Entry]
+      cannot :review, Name
       can :edit, :all, :created_by_id => user.id
 
-      # allow editors to edit legacy records
+    end
+
+    if ['super_editor'].member? user.role
+      # allow super-editors to edit legacy records
       can :edit, Entry, :unverified_legacy_record => true   
     end
 
