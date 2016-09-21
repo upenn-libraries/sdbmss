@@ -53,6 +53,7 @@ class User < ActiveRecord::Base
     boolean :active
     date :created_at
     date :updated_at
+    date :last_sign_in_at
   end
 
   scope :sent_by, -> () { joins(:user_messages).where("user_messages.method = 'From'").distinct }
@@ -151,9 +152,9 @@ class User < ActiveRecord::Base
     self.notification_setting["email_on_#{category}".to_sym]
   end
 
-  def notify(title, url, message, category)
+  def notify(title, record, category)
     if can_notify(category)
-      n = notifications.create(title: title, url: url, message: message, category: category)
+      n = notifications.create(title: title, notified: record, category: category)
     end
     if can_email(category)
       NotificationMailer.notification_email(n).deliver_now
@@ -175,6 +176,11 @@ class User < ActiveRecord::Base
     filters + ['active']
   end
 
+  def self.dates
+    dates = super
+    dates + ['last_sign_in_at']
+  end
+
   def search_result_format
     {
       id: id,
@@ -184,6 +190,8 @@ class User < ActiveRecord::Base
       active: active,
       reviewed: reviewed,
       created_by: created_by.present? ? created_by.username : "(none)",
+      created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
+      last_sign_in_at: last_sign_in_at.present? ? last_sign_in_at.to_formatted_s(:long) : ""
     }
   end
 

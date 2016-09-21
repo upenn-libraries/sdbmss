@@ -19,10 +19,10 @@
     <span class="h4">
       <%= message.created_at.to_formatted_s(:long) %>
       <% if message.sent_by %>
-        <br><small>From: <%= link_to message.sent_by.to_s, profile_path(message.sent_by.to_s) %></small>
+        <br><small>From <%= render partial: "shared/username_with_profile_link", locals: { user: message.sent_by } %></small>
       <% end %>
       <% if message.sent_to %>
-        <br><small>To: <%= link_to message.sent_to.to_s, profile_path(message.sent_to.to_s) %></small>
+        <br><small>To <%= render partial: "shared/username_with_profile_link", locals: { user: message.sent_to } %></small>
       <% end %>
     </span>
   </div>

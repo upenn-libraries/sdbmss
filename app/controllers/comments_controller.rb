@@ -22,9 +22,8 @@ class CommentsController < SearchableAuthorityController
     @comment.save_by(current_user)
     if @comment.commentable.created_by && @comment.commentable.created_by != current_user
       @comment.commentable.created_by.notify(
-        "#{current_user.to_s} has commented on one of your records.",
-        polymorphic_url(@comment.commentable),
-        "#{current_user.to_s} has left a commented on #{@comment.commentable.public_id}. <blockquote>#{@comment.comment[0..100]}...</blockquote>", 
+        "#{current_user.to_s} has commented on #{@comment.commentable.public_id}",
+        @comment, 
         "comment"
       )
     end
@@ -45,6 +44,44 @@ class CommentsController < SearchableAuthorityController
   def edit
     @comment = Comment.find(params[:id])
     redirect_to polymorphic_path(@comment.commentable) + "#comment_#{@comment.id}"
+  end
+
+  def destroy
+    @comment = Comment.find(params[:id])
+    # mark as deleted, don't actually destroy the record
+    if deletable?(@comment)
+      @comment.deleted = true
+      if @comment.save
+        respond_to do |format|
+          format.json {
+            render status: :ok, json: {}
+          }
+          format.html {
+            redirect_to polymorphic_path(@comment.commentable)
+          }
+        end
+      else
+        respond_to do |format|
+          format.json {
+            render status: :unprocessable_entity, json: { "error" => @comment.errors.join("; ") }
+          }
+          format.html {
+            flash[:error] = @comment.errors.join("; ")
+            redirect_to polymorphic_path(@comment.commentable)
+          }
+        end
+      end
+    else
+      respond_to do |format|
+        format.json {
+          render status: :unprocessable_entity, json: { "error" => "Record is not deletable, probably because other records are associated with it" }
+        }
+        format.html {
+          flash[:error] = "Record is not deletable, probably because other records are associated with it."
+          redirect_to polymorphic_path(@comment.commentable)
+        }
+      end
+    end
   end
 
   private

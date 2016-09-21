@@ -3,7 +3,9 @@
 
 class Comment < ActiveRecord::Base
 
-  default_scope { where(deleted: false) }
+  include Notified
+
+  #default_scope { where(deleted: false) }
 
   scope :with_associations, -> {
     includes(
@@ -139,4 +141,11 @@ class Comment < ActiveRecord::Base
       updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
     }
   end
+
+  def preview
+    %(
+      <blockquote>#{comment.at(0..100)}#{comment.length > 100 ? '...' : ''}</blockquote>
+    )
+  end
+
 end

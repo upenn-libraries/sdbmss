@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160909183129) do
+ActiveRecord::Schema.define(version: 20160919175924) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -406,14 +406,16 @@ ActiveRecord::Schema.define(version: 20160909183129) do
   end
 
   create_table "notifications", force: :cascade do |t|
-    t.string   "message",    limit: 255
-    t.string   "category",   limit: 255
-    t.boolean  "active",                 default: true
-    t.integer  "user_id",    limit: 4
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-    t.string   "url",        limit: 255
-    t.string   "title",      limit: 255
+    t.string   "message",       limit: 255
+    t.string   "category",      limit: 255
+    t.boolean  "active",                    default: true
+    t.integer  "user_id",       limit: 4
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.string   "url",           limit: 255
+    t.string   "title",         limit: 255
+    t.integer  "notified_id",   limit: 4
+    t.string   "notified_type", limit: 255
   end
 
   create_table "places", force: :cascade do |t|
@@ -487,8 +489,9 @@ ActiveRecord::Schema.define(version: 20160909183129) do
     t.integer  "comment_id",    limit: 4
     t.integer  "created_by_id", limit: 4
     t.integer  "updated_by_id", limit: 4
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.boolean  "deleted",                     default: false
   end
 
   add_index "replies", ["comment_id"], name: "index_replies_on_comment_id", using: :btree

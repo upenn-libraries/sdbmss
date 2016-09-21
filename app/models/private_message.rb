@@ -3,7 +3,8 @@ class PrivateMessage < ActiveRecord::Base
   default_scope { where(deleted: false) }
 
   include UserFields
-
+  include Notified
+  
   has_many :user_messages, foreign_key: "private_message_id"
   has_many :users, through: :user_messages
 
@@ -21,6 +22,12 @@ class PrivateMessage < ActiveRecord::Base
 
   def sent_to
     users.sent_to[0]
+  end
+
+  # used, at the moment, for notifications only
+  def preview
+    %(<blockquote><b>#{title}</b>
+      #{message.at(0..100)}#{message.length > 100 ? '...' : ''}</blockquote> )
   end
 
 end

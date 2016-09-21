@@ -33,7 +33,8 @@ class PrivateMessagesController < ApplicationController
     if @message.valid?
       @message.user_messages.create({user_id: current_user.id, method: "From"})
       @message.user_messages.create!({user_id: to_user.to_i, method: "To"})
-      @message.sent_to.notify("#{@message.sent_by.to_s} sent you a message.", private_message_path(@message), "#{@message.sent_by} sent you a message at #{@message.created_at.to_formatted_s(:long)}.", "message")
+      @message.sent_to.notify("#{@message.sent_by.to_s} sent you a message.", @message, "message")
+      #"#{@message.sent_by} sent you a message at #{@message.created_at.to_formatted_s(:long)}.<blockquote>#{@message.message.at(0..100)}</blockquote>"
       redirect_to @message
     else
       flash[:error] = "Invalid message.  Both a message and a title are required."

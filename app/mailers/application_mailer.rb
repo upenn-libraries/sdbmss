@@ -1,4 +1,8 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "sdbmssdev@gmail.com" #fix me: use ENV for email-from
+  if Rails.env.development?
+    default from: "sdbmssdev@gmail.com"
+  else
+    default from: ENV.fetch('SDBMSS_EMAIL_FROM')
+  end
   layout 'mailer'
 end

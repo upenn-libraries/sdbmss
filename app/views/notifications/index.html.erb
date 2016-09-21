@@ -5,16 +5,9 @@
       <li class="list-group-item">
         <span class="h3 text-success text-center">Unread</span>
       </li>
-      <% @unread.each do |notification| %>
+      <% @unread.reverse.each do |notification| %>
         <li class="list-group-item list-group-item-success">
-          <div class="row">
-            <div class="col-sm-10">
-              <%= notification.message %>
-            </div>
-            <div class="col-sm-2 text-right">
-              <%= button_to "delete", notification, :method => :delete, class: 'btn btn-danger btn-xs' %>  
-            </div>
-          </div>
+          <%= render partial: "show", locals: {notification: notification} %>
         </li>
       <% end %>
       <% if @unread.count <= 0 %>
@@ -25,16 +18,9 @@
       <li class="list-group-item">
         <span class="h3 text-muted text-center">Read</span>
       </li>
-      <% @read.each do |notification| %>
+      <% @read.reverse.each do |notification| %>
         <li class="list-group-item text-muted">
-          <div class="row">
-            <div class="col-sm-10">
-              <%= notification.message %>
-            </div>
-            <div class="col-sm-2 text-right">
-              <%= button_to "delete", notification, :method => :delete, class: 'btn btn-danger btn-xs' %>
-            </div>
-          </div>
+          <%= render partial: "show", locals: {notification: notification} %>
         </li>
       <% end %>
       <% if @read.count <= 0 %>

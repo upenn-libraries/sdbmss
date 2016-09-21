@@ -86,7 +86,6 @@ describe "Manage languages", :js => true do
       expect(page).to have_content 'Your changes have been saved'
 
       language = Language.find(language.id)
-      expect(language.reviewed).to be(false)
     end
 
     it "should delete a Language" do

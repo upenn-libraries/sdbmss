@@ -170,14 +170,16 @@
             </div>
         </div>-->
 
-        <div class="panel panel-default">
-            <div class="panel-body text-muted">
-                <span class='h3'>Last Known Location <small>(Deprecated Field)</small>
-                </span><br>
-                <p><%= @manuscript.location %></p>
-                <p>Can you verify this information? <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %></p>
+        <% if @manuscript.location %>
+            <div class="panel panel-default">
+                <div class="panel-body text-muted">
+                    <span class='h3'>Last Known Location <small>(Deprecated Field)</small>
+                    </span><br>
+                    <p><%= @manuscript.location %></p>
+                    <p>Can you verify this information? <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %></p>
+                </div>
             </div>
-        </div>
+        <% end %>
     </div>
     <div class="col-sm-9">
         <div class="panel panel-default">

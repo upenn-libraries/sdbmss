@@ -7,9 +7,8 @@ class NotificationMailer < ApplicationMailer
   end
 
   def notification_email(notification)
+    @notification = notification
     @title = notification.title
-    @url = notification.url
-    @message = notification.message
     @user = notification.user
     mail(to: @user.email, subject: @title)
   end

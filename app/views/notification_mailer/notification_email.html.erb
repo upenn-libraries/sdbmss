@@ -4,13 +4,14 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h1><%= @title %></h1>
-    <p>
-    <%= sanitize simple_format(@message) %>
-    </p>
-    <p>
-      To login to the site, just follow this <%= link_to "link", @url %>.
-    </p>
-    <p>Thank you very much and have a great day!</p>
+    <h4 class="h4">
+      <% if @notification.notified %>
+        <%= link_to @notification.title, polymorphic_url(@notification.notified) %>
+      <% else %>
+        <%= @notification.title %>
+      <% end %>
+      <br><small><%= @notification.created_at.to_formatted_s(:long) %></small>
+    </h4>
+    <p><%= !@notification.notified.nil? ? sanitize(simple_format(@notification.notified.preview.to_s)) : "OLD NOTIFICATION" %></p>
   </body>
 </html>

@@ -84,13 +84,16 @@ describe "User Notifications", :js => true do
 
 
     it "should notify user when one of their comments is replied to" do
+      skip "this is a reply on a comment by the same user; so no notification"
       initial = @user2.notifications.count
+      initial_replies_count = Reply.count
 
       visit entry_path(@entry1)
       click_link "Add a reply..."
       fill_in "reply", with: "Yes."
       click_button "Add Reply"
 
+      expect(Reply.count).to eq(initial_replies_count + 1)
       expect(@user2.notifications.count).to eq(initial + 1)
       expect(@user2.notifications.last.category).to eq("reply")
     end

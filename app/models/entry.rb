@@ -27,6 +27,7 @@ class Entry < ActiveRecord::Base
   include HasPaperTrail
   include HasTouchCount
   include CreatesActivity
+  include Notified
 
   belongs_to :source, counter_cache: :entries_count
 
