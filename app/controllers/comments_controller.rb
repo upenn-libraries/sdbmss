@@ -27,7 +27,7 @@ class CommentsController < SearchableAuthorityController
         "comment"
       )
     end
-    redirect_to polymorphic_path(@comment.commentable) + "#comment_#{@comment.id}"
+    redirect_to polymorphic_path(@comment.commentable, anchor: "comment_#{@comment.id}")
   end
 
   def update

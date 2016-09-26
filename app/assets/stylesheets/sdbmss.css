@@ -6,6 +6,8 @@ body {
   font-family: Ubuntu, sans-serif;
 }
 
+textarea { resize:vertical ; }
+
 .alert-absolute {
   margin-bottom: 10px;
 }
@@ -517,7 +519,11 @@ div#search_results_length {
 }
 
 li.provenance {
-  border: 1px solid #ddd;
+  border: 1px solid #f8f8f8 !important;
+  border-radius: 5px !important;
+  background: aliceblue;
+  margin: 5px 2px;
+  box-shadow: 0px 0px 4px 0px #d6e1ea inset;
 }
 li.provenance:hover, li.provenance:focus {
   background-color: aliceblue;
