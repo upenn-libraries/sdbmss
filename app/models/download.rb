@@ -15,7 +15,7 @@ class Download < ActiveRecord::Base
   end
 
   def get_path
-    id.to_s + "_" + user.username + "_" + filename
+    id.to_s + "_" + user.to_s + "_" + filename
   end
 
 end
