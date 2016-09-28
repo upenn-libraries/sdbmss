@@ -80,6 +80,12 @@ textarea { resize:vertical ; }
   float: right;
   margin-left: 20px;
 }
+#header-navbar .navbar-brand:after {
+  content: ' [Beta]';
+  font-size: 0.8em;
+  font-variant: small-caps;
+  color: #666;
+}
 /*#header-navbar .navbar-brand {
     background: none;
     overflow: visible;
