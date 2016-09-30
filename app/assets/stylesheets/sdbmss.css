@@ -626,6 +626,9 @@ li.provenance:hover, li.provenance:focus {
   pointer-events: none;
   opacity: 0.9;
 }
+.no-edit a {
+  pointer-events: all;
+}
 
 .fade-in {
   opacity: 0;
@@ -1068,4 +1071,15 @@ so that gray backdrop shvows up correctly */
   border-radius: 4px;
   color: white;
   margin-left: 4px;
+}
+
+.breadcrumb {
+  background: none;
+}
+.breadcrumb-item.active a {
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 9px;
+  background: #f8f8f8;
+  color: #666;
 }

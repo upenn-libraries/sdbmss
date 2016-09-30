@@ -162,3 +162,10 @@ var SDBM = SDBM || {};
     };
 
 }());
+
+$(document).ready( function (e) {
+
+    // disable site-wide autocomplete
+    $('input').attr('autocomplete','off');
+
+});

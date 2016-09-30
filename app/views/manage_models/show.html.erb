@@ -1,3 +1,4 @@
+<%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
 <div class="row">
   <div class="col-sm-3">
       <div class="panel panel-default show-tools">
@@ -35,6 +36,8 @@
           This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries.count, "entry") %></a>
       </dd>
     </dl>
+
+    <%= render partial: "shared/user_info", locals: {model: @model} %>
 
   </div>
 </div>

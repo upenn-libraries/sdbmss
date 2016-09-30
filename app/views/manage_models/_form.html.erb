@@ -2,7 +2,7 @@
   <%= render partial: "errors" %>
 
   <div class="field form-group row">
-      <%= f.label :name, class: "col-sm-2 control-label", 'sdbm-tooltip' => 'entry_language' %>
+      <%= f.label :name, class: "col-sm-2 control-label", 'sdbm-tooltip' => "entry_#{@model.class.name.underscore}" %>
       <div class="col-sm-5 input-group">
         <div class="input-group">
           <%= f.text_field :name, :class => 'form-control' %>

@@ -195,6 +195,12 @@ class User < ActiveRecord::Base
     }
   end
 
+  def preview
+    %(
+      You have a new user!  Please welcome: #{username}.
+    )
+  end
+
   private
 
   def assign_default_role
@@ -204,7 +210,7 @@ class User < ActiveRecord::Base
   end
 
   def create_notification_settings
-    self.notification_setting = NotificationSetting.create!
+    self.notification_setting = NotificationSetting.create!(user_id: self.id)
     true
   end
 

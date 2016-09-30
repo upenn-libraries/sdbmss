@@ -1,2 +1,3 @@
 <% @page_title = "#{@model.public_id}: #{@model.name} - " + application_name %>
+<%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
 <%= render partial: "name", object: @model %>

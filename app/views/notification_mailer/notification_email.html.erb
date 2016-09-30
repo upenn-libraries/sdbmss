@@ -6,7 +6,11 @@
   <body>
     <h4 class="h4">
       <% if @notification.notified %>
-        <%= link_to @notification.title, polymorphic_url(@notification.notified) %>
+        <% if @notification.notified.class.name == "User" %>
+          <%= link_to @notification.title, profile_url(@notification.notified.username) %>
+        <% else %>
+          <%= link_to @notification.title, polymorphic_url(@notification.notified) %>
+        <% end %>
       <% else %>
         <%= @notification.title %>
       <% end %>

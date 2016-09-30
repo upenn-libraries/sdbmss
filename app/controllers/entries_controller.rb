@@ -204,7 +204,7 @@ class EntriesController < SearchableAuthorityController
         end
       }
       format.html {
-        redirect_to entry_path(@entry)
+        redirect_to edit_entry_path(@entry)
       }
     end
   end

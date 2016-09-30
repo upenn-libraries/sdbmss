@@ -88,3 +88,6 @@
     <dt>Other Info</dt>
     <dd><%= name.other_info %></dd>
 <% end %>
+
+
+<%= render partial: "shared/user_info", locals: {model: name} %>

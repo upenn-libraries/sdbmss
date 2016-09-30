@@ -119,6 +119,19 @@
                 <%= notification_f.check_box :email_on_message, class: 'form-control'  %>
               </td>
             </tr>
+            <% if resource.role == 'admin' %>
+            <tr>
+              <td>
+                <label class='control-label'>On New User Registration</label><br>
+              </td>
+              <td>
+                <%= notification_f.check_box :on_new_user, class: 'form-control'  %>
+              </td>
+              <td>
+                <%= notification_f.check_box :email_on_new_user, class: 'form-control'  %>
+              </td>
+            </tr>
+            <% end %>
           </tbody>
         </table>
     <% end %>

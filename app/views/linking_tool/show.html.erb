@@ -536,13 +536,12 @@ $(document).ready(function() {
             <div class="panel-heading-noformat" data-toggle="collapse" href="#show_linking_record">
                 <dl class="document-show-heading dl-horizontal dl-invert">
                   <dt></dt>
-                  <dd class="h4"><strong>Linking Tool for 
+                  <dd class="h4"><strong> 
                     <% if @manuscript %>
-                        Manuscript <%= @manuscript.public_id %>
+                        <%= link_to "Manuscript #{@manuscript.public_id}", manuscript_path(@manuscript) %>
                     <% elsif @entry %>
-                        Entry <%= @entry.public_id %>
+                        <%= link_to "Entry #{@entry.public_id}", entry_path(@entry) %>
                     <% end %>
-                    ...
                     </strong></dd>
                 </dl>
             </div>
