@@ -589,43 +589,43 @@ var BOOKMARK_SCOPE;
         $scope.associations = [
             {
                 field: 'entry_titles',
-                properties: ['title', 'common_title', 'order']
+                properties: ['title', 'common_title']
             },
             {
                 field: 'entry_authors',
-                properties: ['observed_name', 'order'],
+                properties: ['observed_name'],
                 foreignKeyObjects: ['author']
             },
             {
                 field: 'entry_dates',
-                properties: ['observed_date', 'date_normalized_start', 'date_normalized_end', 'order']
+                properties: ['observed_date', 'date_normalized_start', 'date_normalized_end']
             },
             {
                 field: 'entry_artists',
-                properties: ['observed_name', 'order'],
+                properties: ['observed_name'],
                 foreignKeyObjects: ['artist']
             },
             {
                 field: 'entry_scribes',
-                properties: ['observed_name', 'order'],
+                properties: ['observed_name'],
                 foreignKeyObjects: ['scribe']
             },
             {
                 field: 'entry_languages',
-                foreignKeyObjects: ['language', 'order']
+                foreignKeyObjects: ['language']
             },
             {
                 field: 'entry_materials',
-                properties: ['material', 'order']
+                properties: ['material']
             },
             {
                 field: 'entry_places',
                 properties: ['observed_name'],
-                foreignKeyObjects: ['place', 'order']
+                foreignKeyObjects: ['place']
             },
             {
                 field: 'entry_uses',
-                properties: ['use', 'order']
+                properties: ['use']
             },
             {
                 field: 'sales',
@@ -641,7 +641,7 @@ var BOOKMARK_SCOPE;
             },
             {
                 field: 'provenance',
-                properties: ['start_date', 'end_date', 'associated_date', 'comment', 'observed_name', 'order'],
+                properties: ['start_date', 'end_date', 'associated_date', 'comment', 'observed_name'],
                 foreignKeyObjects: ['provenance_agent']
             }
         ];
@@ -751,9 +751,9 @@ var BOOKMARK_SCOPE;
 
         $scope.addRecord = function (anArray) {
           anArray.push({});
-/*          for (var i = 0; i < anArray.length; i++) {
+          for (var i = 0; i < anArray.length; i++) {
             anArray[i].order = i;
-          }*/
+          }
           setTimeout( function () {            
             $scope.affixer();
           }, 2000);

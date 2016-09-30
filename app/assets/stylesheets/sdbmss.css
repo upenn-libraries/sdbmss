@@ -1071,6 +1071,9 @@ so that gray backdrop shvows up correctly */
   border-radius: 4px;
   color: white;
   margin-left: 4px;
+  position: absolute;
+  right: -36px;
+  top: 10px;
 }
 
 .breadcrumb {
