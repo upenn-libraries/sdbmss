@@ -1,5 +1,4 @@
-# FIX ME: this class is in an intermediate state; until it is pushed to production and comments 
-# moved over to new polymorphic method, have to keep old structure as well!
+# I dropped the old comment join tables manually, so if there's ever a problem with migrations and these new tables springing up, that would be why
 
 class Comment < ActiveRecord::Base
 
@@ -16,8 +15,7 @@ class Comment < ActiveRecord::Base
   }
 
   # returns the comments on all Entries created by passed-in User
-  #scope :with_entries_belonging_to, ->(user) { joins(:entries).where(entries: { created_by: user }).order(created_at: :desc) }
-
+  
   # inverse_of is required for accepts_nested_attributes_for to
   # populate the FK to the Comment object. See these pages:
   #

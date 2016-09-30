@@ -272,28 +272,6 @@
             </div>
         <% end %>
 
-        <% comments = Comment.with_entries_belonging_to(current_user).limit(5) %>
-        <% if comments.count > 0 %>
-        <div class="panel panel-default">
-            <div class="panel-heading">Comments on Your Activity</div><!-- fix me: rename... maybe? -->
-            <div class="panel-body">
-                  <table class="table">
-                      <% comments.each do |comment| %>
-                      <% entry = comment.entry %>
-                      <tr class="row">
-                          <td class="col-sm-12">
-                              <a href="<%= url_for entry %>"><%= entry.public_id %></a>: <%= entry.display_value %><br/>
-                              <div style="margin-left: 3em;">
-                                  <a href="<%= profile_path comment.created_by.username %>"><%= comment.created_by %></a> posted a comment on <%= comment.created_at.to_formatted_s(:date_and_time) %>:<br/>
-                                  <%= comment.comment.truncate(80) %>
-                              </div>
-                          </td>
-                      </tr>
-                      <% end %>
-                  </table>
-            </div>
-        </div>
-        <% end %>
         <!-- recent activity -->
         <% @activities = Activity.where(user_id: current_user.id).last(10).reverse %>
         <% if @activities && @activities.count > 0 %>
