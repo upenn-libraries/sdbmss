@@ -21,8 +21,8 @@ class ManuscriptsController < SearchableAuthorityController
   def show
     flash[:notice] = "Note: This manuscript record aggregates entries citing a manuscript that is mentioned in sources or observations.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
 
-    @manuscript_comment = ManuscriptComment.new(manuscript: @manuscript)
-    @manuscript_comment.build_comment
+    #@manuscript_comment = ManuscriptComment.new(manuscript: @manuscript)
+    #manuscript_comment.build_comment
 
     @manuscript_titles = @manuscript.all_titles
     @entries = @manuscript.entries.joins(:source).order("date desc")

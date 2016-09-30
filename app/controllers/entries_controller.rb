@@ -176,11 +176,14 @@ class EntriesController < SearchableAuthorityController
           c = Comment.new(
             comment: params[:new_comment],
             created_by_id: current_user.id,
-            entry_comments_attributes: [
-              {
-                entry_id: @entry.id,
-              }
-            ])
+            #commentable_id: @entry.id,
+            #commentable_type: "Entry"
+            #entry_comments_attributes: [
+            #  {
+            #    entry_id: @entry.id,
+            #  }
+            #]
+            )
           c.save!
         end
         # link to manuscript
@@ -227,11 +230,12 @@ class EntriesController < SearchableAuthorityController
             c = Comment.new(
               comment: params[:new_comment],
               created_by_id: current_user.id,
-              entry_comments_attributes: [
-                {
-                  entry_id: @entry.id,
-                }
-              ])
+              #entry_comments_attributes: [
+              #  {
+              #    entry_id: @entry.id,
+              #  }
+              #]
+            )
             c.save!
           end
         end
