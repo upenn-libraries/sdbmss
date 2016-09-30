@@ -1,11 +1,8 @@
 
 class EntryManuscriptsController < SearchableAuthorityController
 
-  include ResourceSearch
   include MarkAsReviewed
   include LogActivity
-
-  #  respond_to :html, :json
 
   def index
     super
@@ -51,11 +48,6 @@ class EntryManuscriptsController < SearchableAuthorityController
 
       @transaction_id = PaperTrail.transaction_id
     end
-  end
-
-  def search_name_field
-    # This is weird, but we don't have a name field in this model
-    "id"
   end
 
   private

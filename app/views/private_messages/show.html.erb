@@ -1,12 +1,10 @@
-<div class="panel panel-default">
-  <div class="panel-heading split-heading">
-    <div class="row">
-      <div class="col-sm-4 text-right bg-primary full-column">
-        <%= link_to "< Return to INBOX", private_messages_path, class: "h3" %>
+<%= render partial: "header", locals: {title: @message.title} %>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <%= render partial: 'message', locals: {message: @message, truncate: false} %>
       </div>
     </div>
-  </div>
-  <div class="panel-body">
-    <%= render partial: 'message', locals: {message: @message, truncate: false} %>
   </div>
 </div>

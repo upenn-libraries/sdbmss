@@ -13,7 +13,7 @@
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Name</th>
+                        <th class='text-left'>Name</th>
                         <th>VIAF ID</th>
                         <th>As Author</th>
                         <th>As Artist</th>
@@ -21,9 +21,10 @@
                         <th>As Proven.</th>
                         <th>As Src. Ag.</th>
                         <th>Reviewed</th>
+                        <th>Confirmed</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class='text-center'>
                     <tr ng-show="nameSearchString.length <= 0">
                         <td colspan="9">To begin searching, enter something in the search bar.</td>
                     </tr>
@@ -32,14 +33,15 @@
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index" ng-click="selectSuggestion(s)" ng-class="{success: s == suggestion}">
                         <td><input type='radio' ng-click='selectSuggestion(s)' style="opacity: 0;"></input></td>
-                        <td>{{ s.name }}</td>
+                        <td class='text-left'>{{ s.name }}</td>
                         <td>{{ s.viaf_id }}</td>
                         <td>{{ s.authors_count }}</td>
                         <td>{{ s.artists_count }}</td>
                         <td>{{ s.scribes_count }}</td>
                         <td>{{ s.provenance_count }}</td>
                         <td>{{ s.source_agents_count }}</td>
-                        <td>{{ s.reviewed }}</td>
+                        <td> <span class='glyphicon' ng-class="s.reviewed ? 'glyphicon-ok' : 'glyphicon-remove'"></span> </td>
+                        <td> <span class='glyphicon' ng-class="s.confirmed ? 'glyphicon-ok text-success' : 'glyphicon-remove'"></span> </td>
                     </tr>
                 </tbody>
                 <tfoot>

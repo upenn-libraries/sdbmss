@@ -4,8 +4,8 @@
 
 <% @page_title = "Edit #{model_id} - " + application_name %>
 
+<%= render partial: "manage_models/breadcrumbs", locals: {edit: true} %>
+
 <h1>Editing <%= model_id %></h1>
 
 <%= render 'form' %>
-
-<%= render 'links' %>

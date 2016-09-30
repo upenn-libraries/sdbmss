@@ -269,6 +269,11 @@
     <%= render partial: "shared/user_agreement" %>
 </div>
 <script type="text/javascript">
+
+    /**
+     * This code handles the forced-checkbox feature of the FAQ on initial login, including using localStorage to remember user progress *
+     */
+
     if (localStorage && localStorage.checkedData) {
         var checkedData = localStorage.checkedData.split(',');
         checkedData.forEach( function (e) {

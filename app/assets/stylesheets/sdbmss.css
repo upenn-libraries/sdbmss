@@ -6,6 +6,8 @@ body {
   font-family: Ubuntu, sans-serif;
 }
 
+textarea { resize:vertical ; }
+
 .alert-absolute {
   margin-bottom: 10px;
 }
@@ -77,6 +79,12 @@ body {
   background: none; overflow: visible; text-indent: 0; color: black; width: auto;
   float: right;
   margin-left: 20px;
+}
+#header-navbar .navbar-brand:after {
+  content: ' [Beta]';
+  font-size: 0.8em;
+  font-variant: small-caps;
+  color: #666;
 }
 /*#header-navbar .navbar-brand {
     background: none;
@@ -517,7 +525,11 @@ div#search_results_length {
 }
 
 li.provenance {
-  border: 1px solid #ddd;
+  border: 1px solid #f8f8f8 !important;
+  border-radius: 5px !important;
+  background: aliceblue;
+  margin: 5px 2px;
+  box-shadow: 0px 0px 4px 0px #d6e1ea inset;
 }
 li.provenance:hover, li.provenance:focus {
   background-color: aliceblue;
@@ -613,6 +625,9 @@ li.provenance:hover, li.provenance:focus {
 .no-edit {
   pointer-events: none;
   opacity: 0.9;
+}
+.no-edit a {
+  pointer-events: all;
 }
 
 .fade-in {
@@ -1056,4 +1071,15 @@ so that gray backdrop shvows up correctly */
   border-radius: 4px;
   color: white;
   margin-left: 4px;
+}
+
+.breadcrumb {
+  background: none;
+}
+.breadcrumb-item.active a {
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 9px;
+  background: #f8f8f8;
+  color: #666;
 }

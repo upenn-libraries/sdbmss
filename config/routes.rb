@@ -11,7 +11,11 @@ Rails.application.routes.draw do
 
   resources :activities, only: [:index]
 
-  resources :agents, only: [:show]
+  resources :replies
+  resources :notifications, only: [:index, :show, :destroy]
+  #resources :notifications_settings, only: [:edit]
+
+  #resources :agents, only: [:show]
 
   get '/bookmarks/export', to: 'bookmarks#export', as: 'export_bookmarks'
   get '/bookmarks/reload', to: 'bookmarks#reload', as: 'reload_bookmarks'
@@ -57,7 +61,7 @@ Rails.application.routes.draw do
   get '/community/', to: 'community#show', as: 'community'
   get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
 
-  resources :delayed_jobs, only: [:index]
+#  resources :delayed_jobs, only: [:index]
 
 #  resources '/messages/', to: 'private_messages#index', as: 'private_messages'
 

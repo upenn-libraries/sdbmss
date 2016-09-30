@@ -155,8 +155,9 @@ describe "Blacklight Search", :js => true do
   end
 
   it "should load show Agent page" do
+    skip "separate Agent page and display is deprecated"
     agent = Name.where(is_provenance_agent: true).last
-    visit agent_path(agent)
+    visit name_path(agent)
     expect(page).to have_xpath("//dd[contains(.,'#{agent.public_id}')]")
   end
 

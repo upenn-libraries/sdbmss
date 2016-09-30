@@ -1,7 +1,11 @@
+# FIX ME: this class is in an intermediate state; until it is pushed to production and comments 
+# moved over to new polymorphic method, have to keep old structure as well!
 
 class Comment < ActiveRecord::Base
 
-  default_scope { where(deleted: false) }
+  include Notified
+
+  #default_scope { where(deleted: false) }
 
   scope :with_associations, -> {
     includes(
@@ -23,6 +27,10 @@ class Comment < ActiveRecord::Base
   #
   # https://github.com/rails/rails/issues/20451
   # http://viget.com/extend/exploring-the-inverse-of-option-on-rails-model-associations
+
+  belongs_to :commentable, polymorphic: true
+  has_many :replies
+
   has_many :entry_comments, inverse_of: :comment
   has_many :entries, through: :entry_comments
 
@@ -45,7 +53,7 @@ class Comment < ActiveRecord::Base
   include UserFields
   include HasPaperTrail
   include CreatesActivity
-  extend CSVExportable
+  extend SolrSearchable
 
   searchable :unless => :deleted do
     join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
@@ -56,6 +64,8 @@ class Comment < ActiveRecord::Base
     text :updated_by
     string :created_by
     string :updated_by
+    string :commentable_type
+    integer :commentable_id
     text :comment
     string :comment
     integer :id
@@ -109,16 +119,18 @@ class Comment < ActiveRecord::Base
   end
 
   def self.filters
-    super + ["entry", "manuscript", "source", "name"]
+    super + ["commentable_id", "commentable_type"]
   end
 
   def search_result_format
     {
       id: id,
-      entry_id: entry.try(:id),
-      manuscript_id: manuscript.try(:id),
-      source_id: source.try(:id),      
-      name_id: name.try(:id),      
+      commentable_url: "/#{commentable_type.to_s.pluralize.underscore}/#{commentable_id}", 
+      commentable_id: commentable ? commentable.public_id : nil,
+      #entry_id: entry.try(:id),
+      #manuscript_id: manuscript.try(:id),
+      #source_id: source.try(:id),      
+      #name_id: name.try(:id),      
       comment: comment,
       #is_correction: is_correction,
       is_accepted: is_accepted,
@@ -129,4 +141,11 @@ class Comment < ActiveRecord::Base
       updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
     }
   end
+
+  def preview
+    %(
+      <blockquote>#{comment.at(0..100)}#{comment.length > 100 ? '...' : ''}</blockquote>
+    )
+  end
+
 end

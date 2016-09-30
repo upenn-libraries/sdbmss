@@ -6,9 +6,9 @@
 
      // flag = show all records, or only those that the user created
      <% if can? :manage, model_class %>
-     var showOnlyRecordsCreatedByUser = <%= params[:created_by_user] || 0 %>;
+         var onlyMine = <%= params[:created_by_user] || 0 %>;
      <% else %>
-     var showOnlyRecordsCreatedByUser = 1;
+         var onlyMine = 1;
      <% end %>
 
      // Subclass of SDBM.ManageRecords tailored for display of mss
@@ -23,8 +23,6 @@
 
         return [
             {
-                sdbmssMinWidth: "20px",
-                sdbmssMaxWidth: "20px",
                 title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
                 orderable: false,
                 className: 'text-center unreviewed_only',
@@ -36,24 +34,20 @@
                 }
             },
             {
-                sdbmssMinWidth: "170px",
-                sdbmssMaxWidth: "170px",
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                     var str = '<span class="btn-group options-btn-group">'
-                     + '<a onclick="addBookmark(' + data + ', \'Manuscript\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/manuscripts/' + data + '">' 
-                                + '<span class="glyphicon glyphicon-bookmark"></span></a>'
-                                  + '<a class="btn btn-xs btn-success" href="/' + manageManuscripts.options.resourceName + '/' + data + '/edit/">Edit</a>'
-                            + '<a class="btn btn-xs btn-danger delete-link" href="/' + manageManuscripts.options.resourceName + '/' + data + '.json">Delete</a>'
-                            + '<a class="btn btn-xs btn-info linking-tool-link" target="_blank" href="/linkingtool/manuscript/' + data + '">Linking Tool</a></span>';
-                    return str;
+                    var result = '<span class="btn-group options-btn-group">';
+                    result += '<a onclick="addBookmark(' + data + ', \'Manuscript\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/manuscripts/' + data + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
+                    //result += '<a class="btn btn-xs btn-success" href="/' + manageManuscripts.options.resourceName + '/' + data + '/edit/">Edit</a>';
+                    //result += '<a class="btn btn-xs btn-danger delete-link" href="/' + manageManuscripts.options.resourceName + '/' + data + '.json">Delete</a>';
+                    result += '<a class="btn btn-xs btn-info linking-tool-link" target="_blank" href="/linkingtool/manuscript/' + data + '">Linking Tool</a></span>';
+                    result += "</span>"
+                    return result;
                 }
             },
             {
-                sdbmssMinWidth: "130px",
-                sdbmssMaxWidth: "130px",
-                title: 'Manuscript ID',
+                title: 'View Manuscript',
                 dbSortField: 'id',
                 render: function (data, type, full, meta) {
                     var str = '<a target="_blank" href="/manuscripts/' + data + '/">SDBM_MS_' + data + '</a>';
@@ -61,56 +55,38 @@
                 }
             },
             {
-                sdbmssMinWidth: "400px",
-                sdbmssMaxWidth: "400px",
                 title: 'Common Name',
                 dbSortField: 'name'
             },
             {
-                sdbmssMinWidth: "200px",
-                sdbmssMaxWidth: "200px",
                 title: 'Last Known Location',
                 dbSortField: 'location'
             },
             {
-                sdbmssMinWidth: "200px",
-                sdbmssMaxWidth: "200px",
                 title: 'URL',
                 dbSortField: 'url'
             },
             {
-                sdbmssMinWidth: "100px",
-                sdbmssMaxWidth: "100px",
                 title: '# Entries',
                 dbSortField: 'entries_count'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
                 title: 'Reviewed',
                 dbSortField: 'reviewed'
             },
             {
-                sdbmssMinWidth: "130px",
-                sdbmssMaxWidth: "130px",
                 title: 'Created By',
                 dbSortField: 'created_by'
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
                 title: 'Created On',
                 dbSortField: 'created_at',
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
                 title: 'Updated By',
                 dbSortField: 'updated_by',
             },
             {
-                sdbmssMinWidth: "90px",
-                sdbmssMaxWidth: "90px",
                 title: 'Updated On',
                 dbSortField: 'updated_at',
             }
@@ -142,7 +118,7 @@
          resourceName: "<%= resource_name %>",
          resourceNameSingular: "<%= resource_name.singularize %>",
          resourceNamePlural: "<%= resource_name.pluralize %>",
-         showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
+         showOnlyRecordsCreatedByUser: onlyMine,
          searchNameField: "name"
      });
 

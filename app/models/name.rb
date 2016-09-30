@@ -21,8 +21,9 @@ class Name < ActiveRecord::Base
   include IndexAfterUpdate
   include HasPaperTrail
   include CreatesActivity
+  include Notified
   
-  extend CSVExportable
+  extend SolrSearchable
 
   default_scope { where(deleted: false) }
 
@@ -50,8 +51,7 @@ class Name < ActiveRecord::Base
   has_many :sources, through: :source_agents
   has_many :agent_sources, -> {distinct},  through: :source_agents, source: :source
 
-  has_many :name_comments, dependent: :destroy
-  has_many :comments, through: :name_comments
+  has_many :comments, as: :commentable
 
   validates_presence_of :name
 
@@ -104,6 +104,7 @@ class Name < ActiveRecord::Base
     date :created_at
     date :updated_at
     boolean :reviewed
+    boolean :confirmed
   end
 
   def self.filters
@@ -291,7 +292,7 @@ class Name < ActiveRecord::Base
   end
 
   def as_flat_hash
-    {id: id, name: name, viaf_id: viaf_id, created_at: created_at, created_by: created_by }
+    {id: id, name: name, viaf_id: viaf_id, created_at: created_at, created_by: created_by, other_info: other_info }
   end
 
   def bookmark_details

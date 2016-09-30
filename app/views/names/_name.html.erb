@@ -1,0 +1,49 @@
+<%# Partial used to display name details for both Names generically and Agents (which are Names) %>
+
+<%# Why is this in SHARED instead of in NAME?? %>
+<div class="row">
+    <div class="col-sm-3">
+        <div class="panel panel-default show-tools">
+            <div class="panel-heading">
+                Tools
+            </div>
+            <div class="panel-body">
+                <ul class="nav">
+                    <% if user_signed_in? %>
+                        <li>
+                            <a onclick="addBookmark(<%= name.id %>, 'Name');" class="bookmark-link" in_bookmarks="/names/<%= name.id %>"><span class="glyphicon glyphicon-bookmark"></span></a>
+                        </li>
+                        <% if can?(:edit, name) %>
+                            <li class="edit_name">
+                                <a href="<%= edit_name_path(name.id) %>">Edit this name agent</a>
+                            </li>
+                        <% end %>
+                        <li class="history"><a href="<%= history_name_path(name.id) %>">View change history</a></li>
+                        <li class="link"><a href="<%= names_path %>">Return to list</a></li>
+                        <li class="link"><a href="<%= merge_name_path(name.id) %>">Merge</a></li>
+                    <% end %>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-9">
+
+        <dl class="document-show-heading dl-horizontal dl-invert">
+            <dt></dt>
+            <dd class='h2'><%= name.public_id %></dd>
+        </dl>
+        <%= render partial: "main", locals: { name: name } %>
+
+    </div>
+    <div class="col-sm-3"></div>
+    <div class="col-sm-9">
+        
+        <h4>Share additional information about this name in the box below. Your comments will be displayed publicly.</h4>
+
+        <%= render partial: "comments/show_all", locals: {comments: name.comments.where(public: true), record: name} %>
+
+        <div class="spacer-40px"></div>
+
+    </div>
+
+</div>

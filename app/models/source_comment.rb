@@ -1,3 +1,4 @@
+# deprecated
 
 class SourceComment < ActiveRecord::Base
   belongs_to :source

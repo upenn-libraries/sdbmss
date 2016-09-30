@@ -1,3 +1,4 @@
+# deprecated
 
 class NameComment < ActiveRecord::Base
   belongs_to :name

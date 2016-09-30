@@ -10,7 +10,7 @@
 
 <% if entry.deprecated %>
     <p style="color: red;">
-        This entry has been deprecated. The data on this page considered incorrect or unreliable and should NOT be cited or used.
+        This entry has been deprecated. The data on this page is considered incorrect or unreliable and should NOT be cited or used.
         <% if (superceded_by = entry.superceded_by).present? %>
             <br/>The following entry supercedes it: <a href="<%= entry_path superceded_by %>"><%= superceded_by.public_id %></a>
         <% end %>
@@ -87,7 +87,7 @@
             <td class="col-sm-2 text-right record-label">Selling Agent(s)</td>
             <td class="col-sm-10">
                 <% selling_agents.each do |selling_agent| %>
-                    <a href="<%= agent_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a><br>
+                    <a href="<%= name_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a><br>
                 <% end %>
             </td>
         </tr>
@@ -98,7 +98,7 @@
             <td class="col-sm-2 text-right record-label">Seller(s)</td>
             <td class="col-sm-10">
                 <% sellers_or_holders.each do |seller_or_holder| %>
-                    <a href="<%= agent_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a><br>
+                    <a href="<%= name_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a><br>
                 <% end %>
             </td>
         </tr>
@@ -109,7 +109,7 @@
             <td class="col-sm-2 text-right record-label">Buyer(s)</td>
             <td class="col-sm-10">
                 <% buyers.each do |buyer| %>
-                    <a href="<%= agent_path(buyer.agent) %>"><%= buyer.agent.name %></a><br>
+                    <a href="<%= name_path(buyer.agent) %>"><%= buyer.agent.name %></a><br>
                 <% end %>
             </td>
         </tr>
@@ -382,6 +382,8 @@
                     <%= format_fuzzy_date(provenance.start_date) %>
                     <% if provenance.start_date.present? && provenance.end_date.present? %><br/>to<br/><% end %>
                     <%= format_fuzzy_date(provenance.end_date) %>
+                <% elsif provenance.associated_date.present? %>
+                    <%= provenance.associated_date.split("\t").join(", ") %>
                 <% else %>
                     (No date)
                 <% end %>
@@ -465,54 +467,7 @@
     </tbody>
 </table>
 
-<% if (comments = entry.comments.where(public: true)).present? %>
-<table class="table table-striped">
-    <thead>
-      <tr>
-        <th class="col-sm-12" colspan="2"><b>Comments</b></th>
-      </tr>
-    </thead>
-    <tbody>
-      <% comments.each do |comment| %>
-      <tr>
-        <td class="col-sm-2 text-right record-label">
-            By <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
-            At <%= comment.created_at.to_formatted_s(:date_and_time) %>
-        </td>
-        <td class="col-sm-10">
-          <%= comment.comment||"(none)" %>
-        </td>
-      </tr>
-      <% end %>
-    </tbody>
-</table>
-<% end %>
-
-<% if user_signed_in? %>
-<% comment = Comment.new %>
-<% entry_comment = comment.entry_comments.build %>
-<% entry_comment.entry_id = entry.id %>
-<%= form_for(comment, format: :json) do |f| %>
-    <input type="hidden" name="return_url" value="<%= entry_path entry %>"/>
-    <%= f.fields_for :entry_comments do |entry_comment| %>
-        <%= entry_comment.hidden_field :entry_id %>
-    <% end %>
-    <div class="row">
-        <div class="col-sm-12 form-group">
-            <h4>Leave a comment</h4>
-            <%= f.text_area :comment, class: "form-control", rows: 5 %>
-        </div>
-<!--        <div class="col-sm-12 checkbox">
-            <label>
-                <%= f.check_box :is_correction %> I am leaving a comment that notes a correction to this record
-            </label>
-        </div>-->
-        <div class="col-sm-12 text-right">
-            <button class="btn btn-primary">Submit</button>
-        </div>
-    </div>
-<% end %>
-<% end %>
+<%= render partial: "comments/show_all", locals: {comments: entry.comments.where(public: true), record: entry} %>
 
 <div class="spacer-40px"></div>
 

@@ -18,15 +18,16 @@
         </div>
         <% if @target.present? %>
             <div class="panel-body to-delete to-delete-small">
-                <%= render partial: "names/merge_form", locals: { name: @model } %>
+                <%= render partial: "merge_form", locals: { name: @model } %>
             </div>
         <% else %>
             <div class="panel-body">
-                <%= render partial: "shared/name_main", locals: {name: @model} %>
+                <%= render partial: "main", locals: {name: @model} %>
             </div>
         <% end %>
     </div>
 </div>
+<!-- form begin -->
 <%= form_tag merge_name_path(@model) do %>
 <div class='col-sm-2 text-center'>
     <% if @target %>
@@ -37,8 +38,9 @@
                 <input type="hidden" name="confirm" value="yes"/>
                 <input type="hidden" name="target_id" value="<%= @target.id %>"/>
             <button class="btn btn-primary">Yes</button>
+
             <a class="btn btn-warning" href="<%= merge_name_path(@model) %>">Cancel</a>
-        </div>
+        </div>`
     </div>
     <span class="glyphicon glyphicon-arrow-right chevron"></span>
     <!--<%= image_tag 'right-arrow.png', class: 'img img-responsive chevron' %>-->
@@ -65,7 +67,7 @@
                     </span>
                 </div>
                 <div class="panel-body" id="mergeNameInto">
-                    <%= render partial: "names/merge_form", locals: { name: @target } %>
+                    <%= render partial: "merge_form", locals: { name: @target } %>
                 </div>
             </div>
     <% else %>
@@ -126,7 +128,7 @@
                 <b>No suggested names found, use manual search above.</b>
             <% end %>
         </div>
-        <% end %>
+    <% end %>
 </div>
 <% end %>
 <script type='text/javascript'>

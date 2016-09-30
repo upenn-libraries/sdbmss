@@ -24,7 +24,7 @@ class SearchableAuthorityController < ManageModelsController
 
   def destroy
     super
-    @model.delay.index
+#    @model.delay.index
   end
 
   def format_search(s)

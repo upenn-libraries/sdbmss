@@ -1,13 +1,12 @@
 class NamesController < SearchableAuthorityController
 
-  include ResourceSearch
   include LogActivity
   include MarkAsReviewed
   include ResetReviewedAfterUpdate
 
   include Revert
 
-  load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_reviewed, :merge]
+  load_and_authorize_resource :only => [:index, :edit, :update, :destroy, :mark_as_reviewed, :merge]
 
   before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy, :merge]
 
@@ -54,12 +53,14 @@ class NamesController < SearchableAuthorityController
       ActiveRecord::Base.transaction do
         @target.update_attributes(merge_params)
         @target.save!
+        id = @model.public_id
         @model.merge_into(@target)
         @transaction_id = PaperTrail.transaction_id
         @model = @target
         log_activity
+        flash[:success] = "#{id} has been successfully merged into #{@target.public_id}"
       end
-      render "merge_success"
+      redirect_to name_path(@target)
     end
   end
 

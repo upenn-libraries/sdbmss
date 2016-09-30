@@ -74,7 +74,7 @@
             {
                 sdbmssMinWidth: "150px",
                 sdbmssMaxWidth: "150px",
-                title: 'Role',
+                title: 'User Level',
                 dbSortField: 'role'
             },
             {
@@ -88,6 +88,18 @@
                 sdbmssMaxWidth: "100px",
                 title: 'Reviewed',
                 dbSortField: 'reviewed'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "100px",
+                title: 'Created At',
+                dbSortField: 'created_at'
+            },
+            {
+                sdbmssMinWidth: "100px",
+                sdbmssMaxWidth: "100px",
+                title: 'Last Active',
+                dbSortField: 'last_sign_in_at'
             }/*,
             {
                 sdbmssMinWidth: "100px",
@@ -99,7 +111,7 @@
      };
 
      ManageAccounts.prototype.searchResultToTableRow = function (result) {
-         return [ null, result.id, result.id, result[this.options.searchNameField], result.fullname, result.role, result.active.toString(), result.reviewed.toString(), result.created_by || "" ];
+         return [ null, result.id, result.id, result[this.options.searchNameField], result.fullname, result.role, result.active.toString(), result.reviewed.toString(), result.created_at, result.last_sign_in_at ];
      };
 
     SDBM.ManageRecords.prototype.setFormStateFromURL = function() {

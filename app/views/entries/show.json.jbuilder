@@ -150,16 +150,11 @@ if @entry.provenance.present?
   end
 end
 
-if @entry.entry_comments.present?
-  json.entry_comments @entry.entry_comments do |entry_comment|
-    if entry_comment.comment
-      json.(entry_comment, :id)
-      json.comment do
-        json.(entry_comment.comment, :id, :comment)
-        json.created_at entry_comment.comment.created_at.to_formatted_s(:date_and_time)
-        json.created_by entry_comment.comment.created_by.username
-      end
-    end
+if @entry.comments.present?
+  json.comments @entry.comments do |comment|
+    json.(comment, :id, :comment)
+    json.created_at comment.created_at.to_formatted_s(:date_and_time)
+    json.created_by comment.created_by.username
   end
 end
 

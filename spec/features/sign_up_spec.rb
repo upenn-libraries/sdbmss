@@ -15,10 +15,13 @@ describe "Sign up / Edit Profile", :js => true do
     fill_in 'user_email', :with => "testy@mctest.com"
     fill_in 'user_password', :with => 'somethingunguessable'
     fill_in 'user_password_confirmation', :with => 'somethingunguessable'
+    click_link 'User Agreement'
+    click_button 'OK'
+    find("input[name=Agreement]").set true
     click_button 'Sign up'
     expect(page).to have_content 'You have signed up successfully.'
 
-    expect(current_path).to eq("/dashboard")
+    expect(current_path).to eq("/users/edit")
   end
 
   it "should allow changing user profile" do

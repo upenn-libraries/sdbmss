@@ -6,7 +6,7 @@
 # and views.
 class ManageModelsController < ApplicationController
   include ResourceSearch
-  include ResetReviewedAfterUpdate
+  #include ResetReviewedAfterUpdate
 
   before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy]
 
@@ -47,6 +47,12 @@ class ManageModelsController < ApplicationController
   end
 
   def show
+    if !@model.reviewed?
+      flash[:alert] = "This #{@model.model_name.to_s} has not yet been reviewed and may not conform to our data standards."
+    end
+  end
+
+  def edit
     if !@model.reviewed?
       flash[:alert] = "This #{@model.model_name.to_s} has not yet been reviewed and may not conform to our data standards."
     end
@@ -111,8 +117,8 @@ class ManageModelsController < ApplicationController
   def destroy
     # mark as deleted, don't actually destroy the record
     if deletable?(@model)
-      @model.deleted = true
-      if @model.save
+      #@model.deleted = true
+      if @model.destroy
         respond_to do |format|
           format.json {
             render status: :ok, json: {}
@@ -143,32 +149,6 @@ class ManageModelsController < ApplicationController
         }
       end
     end
-  end
-
-  # extend from superclass to modify query based on these URL params
-  # (which are set from JS in views for this controller and its
-  # subclasses):
-  #
-  # 'unreviewed_only' = if set to 1, only returns unreviewed records
-  # 'created_by_user' = if set to 1, only returns records created by current user
-  def search_query
-    query = super
-    #if query.respond_to? :search
-    #  return search_solr
-    #end
-
-    if params[:created_by_user].to_s == '1'
-      query = query.where(created_by_id: current_user.id)
-    end
-
-    if params[:unreviewed_only].to_s == '1'
-      query = query.where(reviewed: false)
-    end
-    #autocomplete - improved sorting, important for names, places, languages, etc.
-    if params[:autocomplete].present? && params[:term].present?
-      query = query.order("CASE WHEN name LIKE '" + params[:term].gsub("'", "''") + "%' THEN 1 ELSE 0 END DESC");
-    end
-    query
   end
 
   private

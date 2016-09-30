@@ -10,7 +10,7 @@ class Language < ActiveRecord::Base
   include IndexAfterUpdate
   include HasPaperTrail
   include CreatesActivity
-  extend CSVExportable
+  extend SolrSearchable
 
   validates_presence_of :name
 

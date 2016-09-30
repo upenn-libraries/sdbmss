@@ -5,37 +5,6 @@
 <script type="text/javascript">
 
  $(document).ready(function() {
-     /* FIX ME: entry link suggestions no longer shown until the search algorithm actually is useful/works
-
-     $("#loading-message").show();
-     
-     $.ajax({
-         url: '/entries/' + <%= entry.id %> + '/similar.json?full=1',
-         type: 'GET',
-         success: function(data, textStatus, jqXHR) {
-             if(data.total && data.total > 0) {
-                 $("#total-similar-entries").html(data.total);
-                 data.similar.forEach(function(record) {
-                     $("#similar-entries").append("<a href='/entries/" + record.id + "'>SDBM_" + record.id + "</a> - " + record.titles + "<br/>");
-                 });
-                 $("#similar-entries-table").show();
-             }
-         },
-         complete: function() {
-             $("#loading-message").hide();
-         }
-     });*/
-
-     $("#new_comment").submit(function(event) {
-         event.preventDefault();
-         $.post($("#new_comment").attr("action"), $("#new_comment").serialize(), function() {
-             window.location = "/entries/" + <%= entry.id %>;
-         })
-          .fail(function (jqXHR, textStatus, errorThrown) {
-              var errorString = SDBM.parseRailsErrors($.parseJSON(jqXHR.responseText).errors).join("; ");
-              alert(errorString);
-          });
-     });
 
      $(document).on("click", ".entry-deprecate-link", function (event) {
          SDBM.openDeprecateModal(<%= entry.id %>, <%= entry.superceded_by_id || 'null' %>, function() {

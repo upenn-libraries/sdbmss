@@ -26,17 +26,6 @@
 
  $(document).ready(function() {
 
-     $("#new_comment").submit(function(event) {
-         event.preventDefault();
-         $.post($("#new_comment").attr("action"), $("#new_comment").serialize(), function() {
-             window.location = "/manuscripts/" + <%= @manuscript.id %>;
-         })
-          .fail(function (jqXHR, textStatus, errorThrown) {
-              var errorString = SDBM.parseRailsErrors($.parseJSON(jqXHR.responseText).errors).join("; ");
-              alert(errorString);
-          });
-     });
-
     $('#clearProvenance').click( function (e) {
         $('#sortable-history').find('.provenance').remove();
         $('.placeholder').show();
@@ -83,11 +72,9 @@
 
     $(".toggle-propose-history").click( function () {
         $('.entries').toggleClass('col-sm-12').toggleClass('col-sm-6');
-      $('.proposed').toggleClass('side');
+        $('.proposed').toggleClass('side');
+        $('#proposed-history').affix({offset: {top: $('#provenance_list').offset().top, bottom: 400}});
     });
-/*
-    $('.panel-collapse').on('shown.bs.collapse', function () { $('#collapse-all').removeClass('glyphicon-collapse-down').addClass('glyphicon-collapse-up') });
-    $('.panel-collapse').on('hidden.bs.collapse', function () { $('#collapse-all').removeClass('glyphicon-collapse-up').addClass('glyphicon-collapse-down') });*/
 
     $("#createSource").on("ajax:success", function (e, data, status, xhr) {
         var source_id = data.id;
@@ -123,7 +110,7 @@
         <p>If you believe links have been made in error, contact us or simply leave a comment below.</p>
     </div>
     <div class='col-sm-5'> 
-        <div class="panel panel-default">
+        <!--<div class="panel panel-default">
             <div class="panel-heading"><span class="h3">Suggested Manuscript Details</span></div>
             <div class="panel-body">
                 <div class="row manuscript-details" id="confirmed-manuscript" >
@@ -181,7 +168,18 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>-->
+
+        <% if @manuscript.location %>
+            <div class="panel panel-default">
+                <div class="panel-body text-muted">
+                    <span class='h3'>Last Known Location <small>(Deprecated Field)</small>
+                    </span><br>
+                    <p><%= @manuscript.location %></p>
+                    <p>Can you verify this information? <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %></p>
+                </div>
+            </div>
+        <% end %>
     </div>
     <div class="col-sm-9">
         <div class="panel panel-default">
@@ -258,7 +256,7 @@
     </div>
 </div>
 
-<div class="row">
+<div class="row" id="provenance_list">
     <div class="col-sm-12 entries" id="provenanceContainer">
         <div class="h3">
             <div class="row" data-toggle="collapse" data-target=".panel-collapse">
@@ -278,7 +276,12 @@
             <div class="panel-heading">
                 <div class="row">
                     <div class="col-sm-3">
-                        <span class="h4"><a href="<%= url_for entry %>"><%= entry.public_id %></a></span>
+                        <span class="h4">
+                            <a href="<%= url_for entry %>"><%= entry.public_id %></a>
+                            <% if (type = entry.entry_manuscripts.where(manuscript_id: @manuscript.id).last.relation_type) != "is" %>
+                                <br><small>(<%= type %>)</small>
+                            <% end %>
+                        </span>
                     </div>
                     <div class="col-sm-9" data-toggle="collapse" href="#entry_provenance_<%= index %>">
                         <span class="h4"><%= entry.source_id == 34611 ? "This provenance is based on a personal observation of the SDBM" : entry.source.display_value %></span>
@@ -317,8 +320,11 @@
                                         <%= format_fuzzy_date(provenance.start_date) %>
                                         <% if provenance.start_date.present? && provenance.end_date.present? %><br/>to<br/><% end %>
                                         <%= format_fuzzy_date(provenance.end_date) %>
+                                    <%# FIX ME: redundant code from entries/_show.html.erb %>
+                                    <% elsif provenance.associated_date.present? %>
+                                        <%= provenance.associated_date.split("\t").join(", ") %>
                                     <% else %>
-                                        (No date)
+                                        (No date entered)
                                     <% end %>
                                 </div>
                                 <div class="col-sm-1 text-right">
@@ -340,7 +346,7 @@
         <%= form_tag({:controller => "entries", :format => "html", :action => "compose"}, :method => "post", :class => "form-inline") do %>
         <%= hidden_field_tag "transaction_type", "no_transaction" %>
         <%= hidden_field_tag "manuscript_id", @manuscript.id %>
-        <div class="collapse panel panel-warning panel-provenance" id="proposed-history" data-spy="affix" data-offset-top="490" data-offset-bottom="400">
+        <div class="collapse panel panel-warning panel-provenance" id="proposed-history">
             <div class="panel-heading">
                 <div class="h4">
                     Construct History Workspace
@@ -361,62 +367,14 @@
     </div>
 
     <div class="col-sm-12">
-
         <h4>Do you have more data about this Manuscript Record?  <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %> to record your information.
             <br><small>Use this option when you wish to contribute data on <strong>multiple aspects</strong> of this manuscript.  Once you create your <strong>Personal Observation</strong>, your data will be included in the links displayed above.</small>
         </h4>
-
-
-        <% if (comments = @manuscript.comments.where(public: true)).present? %>
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th class="col-sm-12" colspan="2"><b>Comments</b></th>
-                </tr>
-            </thead>
-            <tbody>
-                <% comments.each do |comment| %>
-                <tr>
-                    <td class="col-sm-2 text-right record-label">
-                        By <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
-                        At <%= comment.created_at.to_formatted_s(:date_and_time) %>
-                    </td>
-                    <td class="col-sm-10">
-                        <%= comment.comment||"(none)" %>
-                    </td>
-                </tr>
-                <% end %>
-            </tbody>
-        </table>
-        <% end %>
-
-        <% if user_signed_in? %>
-            <% comment = Comment.new %>
-            <% manuscript_comment = comment.manuscript_comments.build %>
-            <% manuscript_comment.manuscript_id = @manuscript.id %>
-            <%= form_for(comment, format: :json) do |f| %>
-                <input type="hidden" name="return_url" value="<%= manuscript_path @manuscript %>"/>
-                <%= f.fields_for :manuscript_comments do |manuscript_comment| %>
-                    <%= manuscript_comment.hidden_field :manuscript_id %>
-                    <% end %>
-                <div class="row">
-                    <div class="col-sm-12 form-group">
-                        <p><lead>Or leave a comment</lead> to add general information or commentary about this <b>Manuscript Record</b>:</p>
-                        <%= f.text_area :comment, class: "form-control", rows: 5 %>
-                    </div>
-        <!--            <div class="col-sm-12 checkbox">
-                        <label>
-                            <%= f.check_box :is_correction %> I am leaving a comment that notes a correction to this record
-                        </label>
-                    </div>-->
-                    <div class="col-sm-12 text-right">
-                        <button class="btn btn-primary">Submit</button>
-                    </div>
-                </div>
-            <% end %>
-        <% end %>
-
         <div class="spacer-40px"></div>
-
     </div>
+
+    <div class="col-sm-12">
+        <%= render partial: "comments/show_all", locals: {comments: @manuscript.comments.where(public: true), record: @manuscript} %>
+    </div>
+
 </div>

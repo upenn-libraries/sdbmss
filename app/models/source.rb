@@ -49,7 +49,7 @@ class Source < ActiveRecord::Base
   include IndexAfterUpdate
   include HasPaperTrail
   include CreatesActivity
-  extend CSVExportable
+  extend SolrSearchable
 
   default_scope { where(deleted: false) }
 
@@ -58,8 +58,8 @@ class Source < ActiveRecord::Base
 
   belongs_to :source_type
 
-  has_many :source_comments, dependent: :destroy
-  has_many :comments, through: :source_comments
+  #has_many :source_comments, dependent: :destroy
+  has_many :comments, as: :commentable
 
   has_many :entries
   has_many :source_agents, inverse_of: :source

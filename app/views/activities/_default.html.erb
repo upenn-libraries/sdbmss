@@ -1,6 +1,5 @@
 <% if activity.user_id.present? %>
-  <% username = User.find(activity.user_id).username %>
-  <%= link_to username, profile_path(username), :title => "Go to #{username}'s profile" %>
+  <%= render partial: "shared/username_with_profile_link", locals: { user: activity.user } %><br/>
 <% else %>
   <%= "Unknown User" %>
 <% end %>

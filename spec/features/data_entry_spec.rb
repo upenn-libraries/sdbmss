@@ -109,10 +109,6 @@ describe "Data entry", :js => true do
       expect(page).to have_content 'Signed in successfully'
     end
 
-    after :each do
-      page.reset!
-    end
-
     require "lib/data_entry_helpers"
     include DataEntryHelpers    
 
@@ -633,14 +629,14 @@ describe "Data entry", :js => true do
 
       visit manuscript_path(manuscript)
 
-      fill_in 'comment_comment', with: "this entry is nuts"
+      fill_in 'comment', with: "this entry is nuts"
       #check 'comment_is_correction'
-      click_button('Submit')
+      click_button('Add Comment')
 
       expect(page).to have_content "this entry is nuts"
 
       comment = Comment.last
-      expect(comment.manuscripts.first.id).to eq(manuscript_id)
+      expect(comment.commentable.id).to eq(manuscript_id)
       expect(comment.comment).to eq("this entry is nuts")
       #expect(comment.is_correction).to eq(true)
     end

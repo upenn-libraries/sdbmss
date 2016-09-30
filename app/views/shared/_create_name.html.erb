@@ -1,3 +1,5 @@
+<!-- MODAL for creating a new (Person) Name Authority record from within create/edit source or entry -->
+
 <script type="text/ng-template" id="createName.html">
     <div class="modal-header">
         <h3 class="modal-title">Create {{ entityName }}
@@ -44,9 +46,9 @@
         </div>
 
         <div class="form-group row" ng-show="hasViafId">
-            <label class="col-sm-2 control-label">Comment</label>
+            <label class="col-sm-2 control-label">Other Info</label>
             <div class="col-sm-7">
-                <input type="text" class="form-control" ng-model="entity.comment">
+                <input type="text" class="form-control" ng-model="entity.other_info">
             </div>
         </div>
 

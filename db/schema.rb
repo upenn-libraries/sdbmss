@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160721132547) do
+ActiveRecord::Schema.define(version: 20160929195850) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -36,18 +36,20 @@ ActiveRecord::Schema.define(version: 20160721132547) do
   add_index "bookmarks", ["user_id"], name: "index_bookmarks_on_user_id", using: :btree
 
   create_table "comments", force: :cascade do |t|
-    t.text     "comment",        limit: 65535
-    t.boolean  "public",                       default: true
-    t.boolean  "is_correction",                default: false
+    t.text     "comment",          limit: 65535
+    t.boolean  "public",                         default: true
+    t.boolean  "is_correction",                  default: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "reviewed",                     default: false
+    t.boolean  "reviewed",                       default: false
     t.datetime "reviewed_at"
-    t.boolean  "deleted",                      default: false
-    t.integer  "created_by_id",  limit: 4
-    t.integer  "updated_by_id",  limit: 4
-    t.integer  "reviewed_by_id", limit: 4
-    t.boolean  "is_accepted",                  default: false
+    t.boolean  "deleted",                        default: false
+    t.integer  "created_by_id",    limit: 4
+    t.integer  "updated_by_id",    limit: 4
+    t.integer  "reviewed_by_id",   limit: 4
+    t.boolean  "is_accepted",                    default: false
+    t.integer  "commentable_id",   limit: 4
+    t.string   "commentable_type", limit: 255
   end
 
   add_index "comments", ["created_by_id"], name: "index_comments_on_created_by_id", using: :btree
@@ -389,6 +391,35 @@ ActiveRecord::Schema.define(version: 20160721132547) do
   add_index "names", ["reviewed_by_id"], name: "index_names_on_reviewed_by_id", using: :btree
   add_index "names", ["updated_by_id"], name: "index_names_on_updated_by_id", using: :btree
 
+  create_table "notification_settings", force: :cascade do |t|
+    t.integer  "user_id",           limit: 4
+    t.boolean  "on_update"
+    t.boolean  "on_comment"
+    t.boolean  "on_reply"
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.boolean  "on_message",                  default: true
+    t.boolean  "email_on_message",            default: true
+    t.boolean  "email_on_comment",            default: false
+    t.boolean  "email_on_reply",              default: false
+    t.boolean  "email_on_update",             default: false
+    t.boolean  "on_new_user",                 default: false
+    t.boolean  "email_on_new_user",           default: false
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.string   "message",       limit: 255
+    t.string   "category",      limit: 255
+    t.boolean  "active",                    default: true
+    t.integer  "user_id",       limit: 4
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.string   "url",           limit: 255
+    t.string   "title",         limit: 255
+    t.integer  "notified_id",   limit: 4
+    t.string   "notified_type", limit: 255
+  end
+
   create_table "places", force: :cascade do |t|
     t.string   "name",           limit: 255
     t.integer  "entry_id",       limit: 4
@@ -454,6 +485,20 @@ ActiveRecord::Schema.define(version: 20160721132547) do
 
   add_index "provenance", ["entry_id"], name: "index_provenance_on_entry_id", using: :btree
   add_index "provenance", ["provenance_agent_id"], name: "index_provenance_on_provenance_agent_id", using: :btree
+
+  create_table "replies", force: :cascade do |t|
+    t.text     "reply",         limit: 65535
+    t.integer  "comment_id",    limit: 4
+    t.integer  "created_by_id", limit: 4
+    t.integer  "updated_by_id", limit: 4
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.boolean  "deleted",                     default: false
+  end
+
+  add_index "replies", ["comment_id"], name: "index_replies_on_comment_id", using: :btree
+  add_index "replies", ["created_by_id"], name: "index_replies_on_created_by_id", using: :btree
+  add_index "replies", ["updated_by_id"], name: "index_replies_on_updated_by_id", using: :btree
 
   create_table "sale_agents", force: :cascade do |t|
     t.integer  "sale_id",                limit: 4
@@ -685,6 +730,7 @@ ActiveRecord::Schema.define(version: 20160721132547) do
   add_foreign_key "private_messages", "users", column: "created_by_id"
   add_foreign_key "private_messages", "users", column: "updated_by_id"
   add_foreign_key "provenance", "names", column: "provenance_agent_id"
+  add_foreign_key "replies", "comments"
   add_foreign_key "sale_agents", "names", column: "agent_id"
   add_foreign_key "sale_agents", "sales", on_delete: :cascade
   add_foreign_key "sales", "entries", on_delete: :cascade

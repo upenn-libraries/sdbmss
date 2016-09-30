@@ -1,0 +1,28 @@
+<div class="row">
+  <div class="col-sm-10">
+    <h4 class="h4">
+      <% if notification.notified %>
+        <% if notification.notified.class.name == "User" %>
+          <%= link_to notification.title, profile_url(notification.notified.username) %>
+        <% else %>
+          <%= link_to notification.title, polymorphic_url(notification.notified) %>
+        <% end %>
+      <% else %>
+        <%= notification.title %>
+      <% end %>
+      <br><small><%= notification.created_at.to_formatted_s(:long) %></small>
+    </h4>
+  </div>
+  <div class="col-sm-2 text-right">
+    <%= link_to(notification, :method => :delete) do %>
+      delete <span class="glyphicon glyphicon-remove"></span>
+    <% end %>
+    <br>
+    <%= link_to(notification.url) do %>
+      show <span class="glyphicon glyphicon-eye-open"></span>
+    <% end %>
+  </div>
+  <div class="col-sm-12">
+    <%= !notification.notified.nil? ? sanitize(simple_format(notification.notified.preview.to_s)) : "OLD NOTIFICATION" %>
+  </div>
+</div>

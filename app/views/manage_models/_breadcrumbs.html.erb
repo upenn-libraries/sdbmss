@@ -1,0 +1,14 @@
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">
+    <a href="<%= polymorphic_path(@model.class) %>">Manage <%= @model.class.name.pluralize %>
+    </a>
+  </li>
+  <li class="breadcrumb-item <%= edit ? '' : 'active' %>">
+    <a href="<%= polymorphic_path(@model) %>"><%= @model.public_id %>
+    </a>
+  </li>
+  <li class="breadcrumb-item <%= edit ? 'active' : '' %>">
+    <a href="<%= edit_polymorphic_path(@model) %>">Edit <%= @model.public_id %>
+    </a>
+  </li>
+</ol>

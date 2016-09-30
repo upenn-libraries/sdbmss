@@ -1,4 +1,4 @@
-
+# what is this used for?
 require 'yaml'
 
 class DelayedJobsController < ApplicationController

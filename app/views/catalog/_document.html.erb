@@ -54,7 +54,7 @@
               <dt>Selling Agent(s)</dt>
               <dd>
                   <% selling_agents.each do |selling_agent| %>
-                      <a href="<%= agent_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a><br>
+                      <a href="<%= name_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a><br>
                   <% end %>
               </dd>
           <% end %>
@@ -63,7 +63,7 @@
               <dt>Seller(s)</dt>
               <dd>
                   <% sellers_or_holders.each do |seller_or_holder| %>
-                      <a href="<%= agent_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a><br>
+                      <a href="<%= name_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a><br>
                   <% end %>
               </dd>
           <% end %>
@@ -72,7 +72,7 @@
               <dt>Buyer(s)</dt>
               <dd>
                   <% buyers.each do |buyer| %>
-                      <a href="<%= agent_path(buyer.agent) %>"><%= buyer.agent.name %></a><br>
+                      <a href="<%= name_path(buyer.agent) %>"><%= buyer.agent.name %></a><br>
                   <% end %>
               </dd>
           <% end %>

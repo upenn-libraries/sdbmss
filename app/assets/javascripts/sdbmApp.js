@@ -106,7 +106,9 @@ var BOOKMARK_SCOPE;
             if(obj !== undefined) {
                 // TODO: deal with nesting?
                 for(var key in obj) {
-                    if(obj[key]) { blank = false; }
+                    if(obj[key]) {
+                      blank = isBlankThing(obj[key]); 
+                    }
                 }
             }
             return blank;
@@ -122,6 +124,8 @@ var BOOKMARK_SCOPE;
                (typeof(obj) === 'string' && obj.length === 0) ||
                (Array.isArray(obj) && obj.length === 0)) {
                 blank = true;
+            } else if (typeof(obj) == 'string' || Array.isArray(obj)) {
+                // strings and arrays (non-empty) are non-blank
             } else if (typeof(obj) === 'number') {
                 // noop: treat all numbers as non-blank
             } else {
@@ -758,7 +762,7 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.removeRecord = function (anArray, record) {
-          if (Object.getOwnPropertyNames(record).length <= 1 || window.confirm("Are you sure you want to remove this record?")) {
+          if (sdbmutil.isBlankThing(record) || window.confirm("Are you sure you want to remove this record?")) {
             var i;
             for (i = 0; i < anArray.length; i++) {
                 if (anArray[i] === record) {
@@ -1101,25 +1105,28 @@ var BOOKMARK_SCOPE;
         // "constructor" for controller goes here
 
         $scope.checkForChanges = function (entry1, entry2) {
+
           // manually remove the blank selling agent and institution, if they exist
           var entry2 = angular.copy(entry2);
           if (entry2.institution.id == null) {
             delete entry2.institution;
           }
-/*          if (entry2.sale.selling_agent.agent.id == null) {
-            delete entry2.sale.selling_agent;
-          }
-          if (entry2.sale.seller_or_holder.agent.id == null) {
-            delete entry2.sale.seller_or_holder;
-          }
-          if (entry2.sale.buyer.agent.id == null) {
-            delete entry2.sale.buyer;
-          }
-          entry2.provenance.forEach( function (prov) {
-            if (prov.provenance_agent.id == null) {
-              delete prov.provenance_agent;
+
+          // strip out blank objects
+          $scope.associations.forEach( function (assoc) {
+            if (assoc.foreignKeyObjects && assoc.foreignKeyObjects.length > 0) {
+              var field = assoc.field;
+              var key = assoc.foreignKeyObjects[0];
+              
+              entry2[field].forEach( function (f) {
+                if (f[key] && !f[key]['id']) {
+                  delete f[key];
+                }
+              });
             }
-          });*/
+
+          });
+          // note: changing a numerical field, then restoring the original and saving will still trigger 'unsaved' because one is a string and the other is a number (in the JSON)
           return angular.toJson(entry1) !== angular.toJson(entry2);
         }
 
@@ -1744,7 +1751,7 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.removeRecord = function (anArray, record) {
-          if (Object.getOwnPropertyNames(record).length <= 1 || window.confirm("Are you sure you want to remove this record?")) {
+          if (sdbmutil.isBlankThing(record) || window.confirm("Are you sure you want to remove this record?")) {
             var i;
             for (i = 0; i < anArray.length; i++) {
                 if (anArray[i] === record) {
@@ -1815,10 +1822,17 @@ var BOOKMARK_SCOPE;
         $scope.postSourceSave = function(source) {
             if (window.location.pathname.indexOf('merge') != -1) {
               return;    
-            } 
+            }
+
 
             $scope.source = source;
             $scope.populateSourceViewModel($scope.source);
+            
+            // if this source has been created to add an entry to a Manuscript record
+            if (sdbmutil.getManuscriptId()) {
+              sdbmutil.redirectToEntryCreatePage(source.id);
+              return;
+            }
 
             var modalInstance = $modal.open({
                 templateUrl: 'postSourceSave.html',
@@ -1827,10 +1841,10 @@ var BOOKMARK_SCOPE;
                 scope: $scope
             });
             modalInstance.result.then(function () {
-                // noop
-            }, function() {
-                // runs when promise is rejected (modal is dismissed)
-                sdbmutil.redirectToSourceEditPage(source.id);
+                  // noop
+              }, function() {
+                  // runs when promise is rejected (modal is dismissed)
+                  sdbmutil.redirectToSourceEditPage(source.id);
             });
         };
 

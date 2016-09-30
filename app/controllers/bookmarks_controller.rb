@@ -181,18 +181,8 @@ class BookmarksController < ApplicationController
       end
     end
   end
-
+ 
   def details_for_render(bookmark)
     return bookmark.document.bookmark_details
-    if bookmark.document_type.to_s == 'Source'
-      return render_to_string('sources/_source_details.html', :layout => false, :locals => { :source => bookmark.document, :abbreviate => true})
-    elsif bookmark.document_type.to_s == 'Entry'
-      return render_to_string('bookmarks/_show_entry.html', :layout => false, :locals => { :entry => bookmark.document})            
-    elsif bookmark.document_type.to_s == 'Name'
-      return render_to_string('shared/_name_main.html', :layout => false, :locals => { :name => bookmark.document})            
-    elsif bookmark.document_type.to_s == 'Manuscript'
-      return render_to_string('bookmarks/_show_manuscript.html', :layout => false, :locals => { :manuscript => bookmark.document})            
-    end
   end
-
 end

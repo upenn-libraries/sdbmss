@@ -4,8 +4,8 @@ class Manuscript < ActiveRecord::Base
 
   has_many :entry_manuscripts, inverse_of: :manuscript
   has_many :entries, through: :entry_manuscripts
-  has_many :manuscript_comments
-  has_many :comments, through: :manuscript_comments
+  #has_many :manuscript_comments
+  has_many :comments, as: :commentable
   has_many :linked_entries, -> { where entry_manuscripts: { relation_type: EntryManuscript::TYPE_RELATION_IS } }, source: :entry, through: :entry_manuscripts
 
   accepts_nested_attributes_for :entry_manuscripts, allow_destroy: true
@@ -14,7 +14,7 @@ class Manuscript < ActiveRecord::Base
   include IndexAfterUpdate
   include HasPaperTrail
   include CreatesActivity
-  extend CSVExportable
+  extend SolrSearchable
 
   # searchable!
   
@@ -77,7 +77,10 @@ class Manuscript < ActiveRecord::Base
   end
 
   # returns an array of entry IDs
+  # 
+  # deprecated: similar entry suggestions not currently enabled
   def entry_candidates
+    puts "deprecated"
     candidate_ids = Set.new
     linked_entries.each do |entry|
       SDBMSS::SimilarEntries.new(entry).each do |similar_entry|

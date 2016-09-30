@@ -18,6 +18,7 @@
                 <p><a href="<%= bookmarks_path %>">Bookmarks</a></p>
                 <p><a href="<%= private_messages_path %>">Messages</a></p>
                 <p><%= link_to "Profile", profile_path(current_user.username) %></p>
+                <p><%= link_to "Notifications", notifications_path, class: current_user.new_notifications.count > 0 ? 'notify' : '', notifications: "#{current_user.new_notifications.count} new" %></p>
             </div>
         </div>
     </div>

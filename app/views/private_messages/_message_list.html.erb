@@ -1,8 +1,0 @@
-<ul class="list-group">
-  <% if @messages.count <= 0 %>
-    <li class="list-group-item">You do not have any messages.</li>
-  <% end %>
-  <% @messages.each do |m| %>
-    <%= render partial: 'message', locals: {message: m} %>
-  <% end %>
-</ul>

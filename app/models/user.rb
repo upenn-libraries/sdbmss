@@ -1,13 +1,12 @@
 class User < ActiveRecord::Base
 
-  ROLES = %w[contributor editor admin]
+  ROLES = %w[contributor editor super_editor admin]
 
   attr_accessible :username, :email, :password, :password_confirmation if Rails::VERSION::MAJOR < 4
 
   attr_accessor :login
 
   has_many :entries, foreign_key: "created_by_id"
-
   has_many :sources, foreign_key: "created_by_id"
 
   has_many :downloads
@@ -15,7 +14,13 @@ class User < ActiveRecord::Base
   has_many :user_messages, foreign_key: "user_id"
   has_many :private_messages, through: :user_messages
 
+  has_many :notifications
+  has_one :notification_setting
+
+  accepts_nested_attributes_for :notification_setting, allow_destroy: false
+
   before_validation :assign_default_role
+  before_create :create_notification_setting
 
   # one of the devise class methods above seems to give us
   # "validates_confirmation_of :password" so we don't need it
@@ -48,6 +53,7 @@ class User < ActiveRecord::Base
     boolean :active
     date :created_at
     date :updated_at
+    date :last_sign_in_at
   end
 
   scope :sent_by, -> () { joins(:user_messages).where("user_messages.method = 'From'").distinct }
@@ -58,7 +64,7 @@ class User < ActiveRecord::Base
   include UserFields
   include HasPaperTrail
   include CreatesActivity
-  extend CSVExportable
+  extend SolrSearchable
 
   def self.statistics
     results = ActiveRecord::Base.connection.execute("select username, count(*) from users inner join entries on entries.created_by_id = users.id where entries.deleted = 0 group by username")
@@ -88,6 +94,10 @@ class User < ActiveRecord::Base
     super && active
   end
 
+  def new_notifications
+    notifications.where(active: true)
+  end
+
   # override devise's msg to display if user is prevented from logging in
   def inactive_message
     active ? super : "Your account has been de-activated."
@@ -106,7 +116,7 @@ class User < ActiveRecord::Base
   # user class to get a user-displayable login/identifier for
   # the account.
   def to_s
-    username
+    fullname.present? ? fullname : username
   end
 
   def role?(role_to_check)
@@ -128,11 +138,30 @@ class User < ActiveRecord::Base
     s
   end
 
-  def notifications
-    messages = private_messages.received.select{ |e| e.unread }.count
-    exports = downloads.select{ |e| e.status == 1}.count
-    {total: messages + exports, messages: messages, exports: exports}
+  def can_notify(category)
+    if !self.notification_setting
+      self.notification_setting = NotificationSetting.create!(user_id: id)
+    end
+    self.notification_setting["on_#{category}".to_sym]
   end
+
+  def can_email(category)
+    if !self.notification_setting
+      self.notification_setting = NotificationSetting.create!(user_id: id)
+    end
+    self.notification_setting["email_on_#{category}".to_sym]
+  end
+
+  def notify(title, record, category)
+    if can_notify(category)
+      n = notifications.create(title: title, notified: record, category: category)
+    end
+    if can_email(category)
+      NotificationMailer.notification_email(n).deliver_now
+    end
+  end
+
+  # override default searchable fields and results
 
   def self.fields
     fields = super
@@ -147,6 +176,11 @@ class User < ActiveRecord::Base
     filters + ['active']
   end
 
+  def self.dates
+    dates = super
+    dates + ['last_sign_in_at']
+  end
+
   def search_result_format
     {
       id: id,
@@ -156,7 +190,15 @@ class User < ActiveRecord::Base
       active: active,
       reviewed: reviewed,
       created_by: created_by.present? ? created_by.username : "(none)",
+      created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
+      last_sign_in_at: last_sign_in_at.present? ? last_sign_in_at.to_formatted_s(:long) : ""
     }
+  end
+
+  def preview
+    %(
+      You have a new user!  Please welcome: #{username}.
+    )
   end
 
   private
@@ -165,6 +207,11 @@ class User < ActiveRecord::Base
     if !persisted? && role.blank?
       self.role = 'contributor'
     end
+  end
+
+  def create_notification_settings
+    self.notification_setting = NotificationSetting.create!(user_id: self.id)
+    true
   end
 
 end

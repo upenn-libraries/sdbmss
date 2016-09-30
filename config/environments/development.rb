@@ -41,3 +41,7 @@ Rails.application.configure do
 
   config.serve_static_files = true
 end
+
+# allows for mailer to send correct URLS on development
+
+Rails.application.routes.default_url_options[:host] = 'localhost:3000'

@@ -38,8 +38,8 @@
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var str = '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a> '
-                            + ' <a class="delete-link btn btn-xs btn-danger" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
+                    var str = '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + full[manageRecords.dataTable.getColumnIndex("ID")] + '/edit/">Edit</a> '
+                            + ' <a class="delete-link btn btn-xs btn-danger" href="/' + manageRecords.options.resourceName + '/' + full[manageRecords.dataTable.getColumnIndex("ID")] + '.json">Delete</a>';
                     return str;
                 },
                 width: "10%"
@@ -50,6 +50,16 @@
                 dbSortField: 'id'
             },
             {
+                sdbmssMinWidth: "100px",
+                //orderable: false,
+                title: 'Record',
+                render: function (data, type, full, meta) {
+                    var url = full[manageRecords.dataTable.getColumnIndex("Options")]
+                    return "<a target='_blank' href='" + url + "'>" + data + "</a>";
+                },
+                dbSortField: 'commentable_id'
+            },
+/*            {
                 sdbmssMinWidth: "100px",
                 //orderable: false,
                 title: 'Entry ID',
@@ -108,7 +118,7 @@
                     return "";
                 },
                 dbSortField: 'manuscript'
-            },
+            },*/
             {
                 sdbmssMinWidth: "400px",
                 sdbmssMaxWidth: "400px",
@@ -166,12 +176,13 @@
      ManageComments.prototype.searchResultToTableRow = function (result) {
          return [
              null,
+             result.commentable_url,
              result.id,
-             result.id,
-             result.entry_id,
-             result.manuscript_id,
-             result.source_id,
-             result.name_id,
+             result.commentable_id,
+             //result.entry_id,
+             //result.manuscript_id,
+             //result.source_id,
+             //result.name_id,
              result.comment,
              //result.is_correction,
              result.is_accepted,

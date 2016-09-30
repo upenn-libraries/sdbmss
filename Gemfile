@@ -120,6 +120,7 @@ end
 group :test, :development do
   gem 'rspec-rails', '~> 3.1.0'
   gem 'capybara', '~> 2.4.4'
+  gem 'capybara-screenshot', '~> 1.0.3'
   gem "factory_girl_rails", "~> 4.0"
   gem 'poltergeist', '~> 1.6.0'
   gem 'simplecov', :require => false

@@ -29,7 +29,7 @@ class Ability
     # will want more fine-grained control for our roles as the system
     # grows.
 
-    if ['contributor', 'editor', 'admin'].member? user.role
+    if ['contributor', 'editor', 'super_editor', 'admin'].member? user.role
       can [:edit, :update], :all, :created_by_id => user.id
       can :link, :all
       can :index, Entry
@@ -41,14 +41,21 @@ class Ability
       can :manage, PrivateMessage, :user_id => user.id
     end
 
-    if ['editor', 'admin'].member? user.role
+    if ['editor', 'super_editor', 'admin'].member? user.role
       can :manage, [Name, Entry, Manuscript, Source]
       can :unlink, :all
       can :edit, Manuscript
 
       cannot :deprecate, :all
       cannot [:edit, :destroy, :merge], [Source, Entry]
-      can :edit, :all, :created_by_id => user.id      
+      cannot :review, Name
+      can :edit, :all, :created_by_id => user.id
+
+    end
+
+    if ['super_editor'].member? user.role
+      # allow super-editors to edit legacy records
+      can :edit, Entry, :unverified_legacy_record => true   
     end
 
     if ['admin'].member? user.role
@@ -57,6 +64,8 @@ class Ability
     end
 
 =begin
+    the old definitions - I am keeping them here now just for reference...
+
     if ['contributor', 'editor', 'admin'].member? user.role
       can :show, :all
       [Entry, Sale, Language, Manuscript, Name, Place, Source, Comment].each do |clazz|

@@ -13,16 +13,8 @@ class AccountsController < SearchableAuthorityController
     User
   end
 
-  def search_model_class
-    User
-  end
-
   def resource_name
     "accounts"
-  end
-
-  def search_name_field
-    return "username"
   end
 
   def login_as
@@ -61,7 +53,7 @@ class AccountsController < SearchableAuthorityController
   end
 
   def model_params
-    params.require(model_class_lstr.to_sym).permit(:username, :fullname, :institutional_affiliation, :email, :email_is_public, :password, :password_confirmation, :role, :bio, :active)
+    params.require(model_class_lstr.to_sym).permit(:username, :fullname, :institutional_affiliation, :email, :email_is_public, :password, :password_confirmation, :role, :bio, :active, :notification_setting_attributes => [:on_update, :on_comment, :on_reply, :on_message, :on_new_user, :email_on_new_user, :email_on_update, :email_on_comment, :email_on_reply, :email_on_message])
   end
 
 end

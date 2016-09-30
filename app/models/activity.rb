@@ -18,6 +18,7 @@ class Activity < ActiveRecord::Base
 
   scope :created_between, lambda {|start_date, end_date| where("created_at >= ? AND created_at <= ?", start_date, end_date )}
 
+  # hide the 'rails-y' terminology
   def format_event
     if event == 'destroy'
       'deleted'
