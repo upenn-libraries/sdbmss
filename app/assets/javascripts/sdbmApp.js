@@ -106,7 +106,10 @@ var BOOKMARK_SCOPE;
             if(obj !== undefined) {
                 // TODO: deal with nesting?
                 for(var key in obj) {
-                    if(obj[key]) {
+                    if(key == "order") {
+                      // order should not be considered 'non-blank'
+                    }
+                    else if(obj[key]) {
                       blank = isBlankThing(obj[key]); 
                     }
                 }
@@ -748,9 +751,9 @@ var BOOKMARK_SCOPE;
 
         $scope.addRecord = function (anArray) {
           anArray.push({});
-          for (var i = 0; i < anArray.length; i++) {
+/*          for (var i = 0; i < anArray.length; i++) {
             anArray[i].order = i;
-          }
+          }*/
           setTimeout( function () {            
             $scope.affixer();
           }, 2000);

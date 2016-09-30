@@ -162,8 +162,7 @@ module DataEntryHelpers
 
     first(".save-button").click
 
-    sleep(1.5)
-    expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+    expect(find(".modal-title", visible: true)).to have_content("Successfully saved")
   end
 
   def verify_entry(entry)
