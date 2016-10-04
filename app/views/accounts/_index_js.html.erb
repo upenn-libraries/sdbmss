@@ -14,7 +14,10 @@
      // Subclass of SDBM.ManageRecords tailored for display of accounts (ie users)
      var ManageAccounts = function(options) {
          SDBM.ManageRecords.call(this, options);
+         var manageRecords = this;
      };
+
+
      
      ManageAccounts.prototype = Object.create(SDBM.ManageRecords.prototype);
 
@@ -29,10 +32,10 @@
                 className: 'text-center unreviewed_only',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    if(manageRecords.getUnreviewedOnly() === 1) {
+                    //if(manageRecords.getUnreviewedOnly() === 1) {
                         return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
-                    }
-                    return '';
+                    //}
+                    //return '';
                 }
             },
             {
@@ -78,6 +81,10 @@
                 dbSortField: 'role'
             },
             {
+                title: 'User Groups',
+                dbSortField: 'groups'
+            },
+            {
                 sdbmssMinWidth: "100px",
                 sdbmssMaxWidth: "100px",
                 title: 'Active',
@@ -111,7 +118,7 @@
      };
 
      ManageAccounts.prototype.searchResultToTableRow = function (result) {
-         return [ null, result.id, result.id, result[this.options.searchNameField], result.fullname, result.role, result.active.toString(), result.reviewed.toString(), result.created_at, result.last_sign_in_at ];
+         return [ null, result.id, result.id, result[this.options.searchNameField], result.fullname, result.role, result.groups, result.active.toString(), result.reviewed.toString(), result.created_at, result.last_sign_in_at ];
      };
 
     SDBM.ManageRecords.prototype.setFormStateFromURL = function() {
@@ -151,8 +158,6 @@
          showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
          searchNameField: "username"
      });
-
-
 
  });
 

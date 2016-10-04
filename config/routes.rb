@@ -4,6 +4,8 @@ Rails.application.routes.draw do
 
   resources :accounts, except: [:show] do
     collection do
+      post 'add_to_group'
+      post 'remove_from_group'
       post 'mark_as_reviewed'
       get 'search'
     end
@@ -11,6 +13,8 @@ Rails.application.routes.draw do
 
   resources :activities, only: [:index]
 
+  resources :groups
+  
   resources :replies
   resources :notifications, only: [:index, :show, :destroy]
   #resources :notifications_settings, only: [:edit]
@@ -73,6 +77,8 @@ Rails.application.routes.draw do
     collection {
       post 'calculate_bounds'
       post 'mark_as_approved'
+      post 'add_to_group'
+      post 'remove_from_group'
       get 'types'
     }
     member {

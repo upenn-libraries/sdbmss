@@ -6,6 +6,7 @@ class AccountsController < SearchableAuthorityController
 
   include MarkAsReviewed
   include LogActivity
+  include AddToGroup
 
   before_action :require_admin
 
@@ -28,6 +29,30 @@ class AccountsController < SearchableAuthorityController
       end
     else
       render :status => :forbidden
+    end
+  end
+
+  # overrides the default 'add_to_group' (and remove) since this is the USER half of things; but otherwise it's the same
+  def add_to_group
+    ids = params[:ids]
+    group = Group.find(params[:group_id])
+    if ids.present?
+      ids = ids.map(&:to_i)
+      ids.each do |id|
+        GroupUser.create(user_id: id, group: group)
+      end
+    end
+    respond_to do |format|
+      format.json { render :json => {}, :status => :ok }
+    end
+  end
+
+  def remove_from_group
+    ids = params[:ids]
+    group = Group.find(params[:group_id])
+    group.group_users.where(:user_id => ids).destroy_all
+    respond_to do |format|
+      format.json { render :json => {}, :status => :ok }
     end
   end
 

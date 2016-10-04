@@ -24,6 +24,8 @@ class EntriesController < SearchableAuthorityController
   
   include LogActivity
 
+  include AddToGroup
+
   before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate, :verify]
 
   before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy, :similar, :mark_as_approved, :deprecate]

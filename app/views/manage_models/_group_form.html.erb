@@ -1,0 +1,9 @@
+<div class="form-inline">
+  <select class='form-control' id="group-select">
+    <% Group.where(created_by: current_user).each do |group| %>
+      <option value="<%= group.id %>"><%= group.name %></option>
+    <% end %>
+  </select>
+  <input type="submit" value="Add Group" class='form-control' id="add-to-group"/>
+  <input type="submit" value="Remove  Group" class='form-control' id="remove-from-group"/>
+</div>

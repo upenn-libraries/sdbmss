@@ -6,6 +6,9 @@ class User < ActiveRecord::Base
 
   attr_accessor :login
 
+  has_many :group_users
+  has_many :groups, through: :group_users
+
   has_many :entries, foreign_key: "created_by_id"
   has_many :sources, foreign_key: "created_by_id"
 
@@ -187,6 +190,7 @@ class User < ActiveRecord::Base
       username: username,
       fullname: fullname,
       role: role,
+      groups: groups.map(&:name).join(", "),
       active: active,
       reviewed: reviewed,
       created_by: created_by.present? ? created_by.username : "(none)",

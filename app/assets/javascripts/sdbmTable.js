@@ -311,6 +311,10 @@ var SDBM = SDBM || {};
                     }
                 },
                 {
+                    sdbmssSortField: 'groups',
+                    title: 'User Groups'
+                },
+                {
                     sdbmssMinWidth: "100px",
                     sdbmssMaxWidth: "100px",
                     sdbmssSortField: 'source_date',
@@ -616,6 +620,7 @@ var SDBM = SDBM || {};
                         return [
                             result.id,
                             result.manuscript,
+                            result.groups,
                             result.source_date,
                             result.source_title,
                             result.source_catalog_or_lot_number,

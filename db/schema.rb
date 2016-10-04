@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160929195850) do
+ActiveRecord::Schema.define(version: 20161004140435) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -296,6 +296,26 @@ ActiveRecord::Schema.define(version: 20160929195850) do
 
   add_index "entry_uses", ["entry_id"], name: "index_entry_uses_on_entry_id", using: :btree
 
+  create_table "group_records", force: :cascade do |t|
+    t.integer "record_id",   limit: 4
+    t.string  "record_type", limit: 255
+    t.integer "group_id",    limit: 4
+  end
+
+  create_table "group_users", force: :cascade do |t|
+    t.integer "group_id", limit: 4
+    t.integer "user_id",  limit: 4
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.text     "name",          limit: 65535
+    t.boolean  "public",                      default: false
+    t.integer  "created_by_id", limit: 4
+    t.integer  "updated_by_id", limit: 4
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+  end
+
   create_table "languages", force: :cascade do |t|
     t.string   "name",           limit: 255
     t.datetime "created_at"
@@ -346,14 +366,6 @@ ActiveRecord::Schema.define(version: 20160929195850) do
   add_index "manuscripts", ["created_by_id"], name: "index_manuscripts_on_created_by_id", using: :btree
   add_index "manuscripts", ["reviewed_by_id"], name: "index_manuscripts_on_reviewed_by_id", using: :btree
   add_index "manuscripts", ["updated_by_id"], name: "index_manuscripts_on_updated_by_id", using: :btree
-
-  create_table "name_comments", force: :cascade do |t|
-    t.integer "name_id",    limit: 4
-    t.integer "comment_id", limit: 4
-  end
-
-  add_index "name_comments", ["comment_id"], name: "index_name_comments_on_comment_id", using: :btree
-  add_index "name_comments", ["name_id"], name: "index_name_comments_on_name_id", using: :btree
 
   create_table "names", force: :cascade do |t|
     t.string   "name",                limit: 255
@@ -715,8 +727,6 @@ ActiveRecord::Schema.define(version: 20160929195850) do
   add_foreign_key "manuscripts", "users", column: "created_by_id"
   add_foreign_key "manuscripts", "users", column: "reviewed_by_id"
   add_foreign_key "manuscripts", "users", column: "updated_by_id"
-  add_foreign_key "name_comments", "comments"
-  add_foreign_key "name_comments", "names"
   add_foreign_key "names", "entries", on_delete: :cascade
   add_foreign_key "names", "users", column: "created_by_id"
   add_foreign_key "names", "users", column: "reviewed_by_id"
