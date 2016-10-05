@@ -85,7 +85,7 @@
     <div class="field form-group row">
         <%= f.label :other_info, class: "col-sm-2 control-label" %>
         <div class="col-sm-8">
-            <%= f.text_field :other_info, :class => 'form-control', :data => { 'ng-model' => 'entity.other_info', 'ng-init' => "entity.other_info=\"#{@model.other_info}\"" } %>
+            <%= f.text_field :other_info, :class => 'form-control', :data => { 'ng-model' => 'entity.other_info', 'ng-init' => "entity.other_info=\"#{j(@model.other_info)}\"" } %>
         </div>
     </div>
     <% if can?(:manage, Name) %>
