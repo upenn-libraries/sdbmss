@@ -2,6 +2,10 @@ class GroupsController < ApplicationController
 
   before_action :authenticate_user!
 
+  def show
+    @group = Group.find(params[:id])
+  end
+
   def index
     @groups = Group.where(created_by: current_user)
   end
