@@ -20,6 +20,7 @@ module AddToGroup
         GroupRecord.create(record_type: model_class, record_id: id, group: group)
       end
     end
+    model_class.where(:id => ids).index
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }
     end
@@ -29,6 +30,7 @@ module AddToGroup
     ids = params[:ids]
     group = Group.find(params[:group_id])
     group.group_records.where(:record_type => model_class, :record_id => ids).destroy_all
+    model_class.where(:id => ids).index
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }
     end

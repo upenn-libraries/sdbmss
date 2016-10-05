@@ -31,6 +31,7 @@ class Ability
 
     if ['contributor', 'editor', 'super_editor', 'admin'].member? user.role
       can [:edit, :update], :all, :created_by_id => user.id
+
       can :link, :all
       can :index, Entry
 
@@ -62,6 +63,8 @@ class Ability
       can :manage, :all
       #can :destroy, :all
     end
+
+    can :edit, Entry, contributors: { :id => user.id }
 
 =begin
     the old definitions - I am keeping them here now just for reference...

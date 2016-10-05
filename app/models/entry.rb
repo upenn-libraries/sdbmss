@@ -36,6 +36,8 @@ class Entry < ActiveRecord::Base
 
   has_many :group_records, as: :record
   has_many :groups, through: :group_records
+  has_many :group_users, through: :groups
+  has_many :contributors, source: :user, through: :group_users
 
   belongs_to :superceded_by, class_name: "Entry"
   has_many :supercedes, class_name: "Entry", :foreign_key => :superceded_by_id
@@ -513,6 +515,10 @@ class Entry < ActiveRecord::Base
     end
     define_field(:integer, :manuscript_id, :stored => true) do
       (ms = manuscript) && ms.id
+    end
+
+    define_field(:text, :groups, :stored => true) do
+      groups.map(&:name).join("; ")
     end
 
     #### Source info

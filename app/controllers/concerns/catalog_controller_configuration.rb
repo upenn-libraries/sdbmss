@@ -147,6 +147,10 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'source_search' }
       end
 
+      config.add_search_field('groups', label: "User Groups") do |field|
+        field.solr_local_parameters = { :qf => 'groups' }
+      end
+
       config.add_search_field('source_date', label: "Source Date") do |field|
         field.solr_local_parameters = { :qf => 'source_date' }
       end
