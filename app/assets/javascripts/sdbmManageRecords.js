@@ -461,9 +461,9 @@ var SDBM = SDBM || {};
 
     SDBM.ManageRecords.prototype.showOrHideMarkCheckedRecordsButton = function() {
         if(this.getUnreviewedOnly() === 1) {
-            $(".review-control").show();
+            //$(".review-control").show();
         } else {
-            $(".review-control").hide();
+            //$(".review-control").hide();
         }
     };
 

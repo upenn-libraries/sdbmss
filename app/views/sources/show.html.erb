@@ -14,7 +14,7 @@
     <div class="col-sm-3"></div>
     <div class="col-sm-9">
 
-<dl class="document-metadata dl-horizontal dl-invert">
+    <dl class="document-metadata dl-horizontal dl-invert">
 
         <dt style="white-space: normal;">
             <h3>Comments</h3>
@@ -24,6 +24,7 @@
             <div class="spacer-40px"></div>
             <%= render partial: "comments/show_all", locals: {comments: @source.comments.where(public: true), record: @source} %>
         </dd>
+    </dl>
 
 
     </div>

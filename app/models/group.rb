@@ -10,4 +10,8 @@ class Group < ActiveRecord::Base
 
   include UserFields
 
+  def public_id
+    "SDBM_GROUP_#{id}"
+  end
+
 end

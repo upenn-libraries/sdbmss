@@ -1,9 +1,21 @@
 class GroupsController < ApplicationController
 
   before_action :authenticate_user!
+  load_and_authorize_resource :only => [:edit, :update, :destroy]
 
   def show
-    @group = Group.find(params[:id])
+    @model = Group.find(params[:id])
+  end
+
+  def edit
+    @model = Group.find(params[:id])
+  end
+
+  def update
+    @model = Group.find(params[:id])
+    @model.update(group_params)
+    @model.entries.index
+    redirect_to edit_group_path(@model)
   end
 
   def index
@@ -20,7 +32,7 @@ class GroupsController < ApplicationController
   private
 
   def group_params
-    params.require(:group).permit(:name, :public)
+    params.require(:group).permit(:name, :public, :description)
   end
 
 end

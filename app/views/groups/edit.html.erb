@@ -1,7 +1,8 @@
+<%= render partial: "manage_models/breadcrumbs", locals: {edit: true} %>
 <div class="row">
   <div class="col-sm-4 form-inline">
     <h3>New Group</h3>
-    <%= form_for :group, url: {action: "create"} do |f| %>
+    <%= form_for @model, url: {action: "update"} do |f| %>
       <%= f.label :name, {class: "control-label"} %>
       <%= f.text_field :name, {class: "form-control"} %><br>
       

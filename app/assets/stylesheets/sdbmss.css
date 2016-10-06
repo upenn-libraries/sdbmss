@@ -2,6 +2,7 @@ html {
   height: 100%;
 }
 body {
+  background: #f8f8f8;
   height: 100%;
   font-family: Ubuntu, sans-serif;
 }
@@ -56,7 +57,14 @@ textarea { resize:vertical ; }
   transition: all .5s !important;
 }
 
-#header-navbar { background-color: #dddddd; border-color: #d0d0d0; }
+#header-navbar { 
+  /*background-color: #dddddd; border-color: #d0d0d0; */
+  /*background-color: #a8c7cb;*/
+  background-color: #b8d993;
+  border: none;
+  box-shadow: 0px 2px 4px lightgray;
+  padding: 10px 0px;
+}
 .navbar-inverse .navbar-nav > li > a { color: black }
 
 .container-fluid .row { padding-left: 15px; padding-right: 15px; }
@@ -296,7 +304,11 @@ textarea { resize:vertical ; }
   right: 40px;*/
 }
 
-#search-navbar { margin-bottom: 10px; }
+#search-navbar { 
+  background-color: white;
+  box-shadow: 0px 0px 5px lightgray;
+  margin-bottom: 10px;
+}
 
 #search-navbar .search-query-form { width: 100%; }
 
@@ -1073,7 +1085,7 @@ so that gray backdrop shvows up correctly */
   margin-left: 4px;
   position: absolute;
   right: -36px;
-  top: 10px;
+  margin-top: -5  px;
 }
 
 .breadcrumb {

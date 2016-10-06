@@ -124,7 +124,7 @@ describe "Manage entries", :js => true do
   it "should perform a search on any field without error" do
     visit entries_path
 
-    expect(page.first("select[name='search_field']").all("option").length).to eq(40)
+    expect(page.first("select[name='search_field']").all("option").length).to eq(41)
 
     40.times do |i|
       page.first("input[name='search_value']").set "Test String"

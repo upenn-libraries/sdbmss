@@ -12,10 +12,10 @@
         </div>
       <% else %>
         <div class="row">
-          <div class="col-sm-10 comment-toggle" style='border-bottom: 1px solid #eee; margin-bottom: 10px; padding-bottom: 10px;'>
+          <div class="col-sm-9 comment-toggle" style='border-bottom: 1px solid #eee; margin-bottom: 10px; padding-bottom: 10px;'>
             <%= sanitize simple_format(comment.comment), tags: %w(code b i br strong em a), attributes: %w(href) %>
           </div>
-          <div class="col-sm-2 comment-toggle text-right">
+          <div class="col-sm-3 comment-toggle text-right">
             <% if can? :edit, comment %>
               <%= link_to(comment_path(comment, format: 'html'),  method: :delete, format: 'json', data: { confirm: 'Are you sure?' }) do %>
                 <span class="glyphicon glyphicon-remove"></span> Delete

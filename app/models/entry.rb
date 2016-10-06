@@ -366,7 +366,7 @@ class Entry < ActiveRecord::Base
     {
       id: id,
       manuscript: manuscript ? manuscript.id : nil,
-      groups: groups.map(&:name).join(", "),
+      groups: groups.map{ |group| [group.id, group.name] }.to_s,
       source_date: SDBMSS::Util.format_fuzzy_date(source.date),
       source_title: source.title,
       source_catalog_or_lot_number: catalog_or_lot_number,

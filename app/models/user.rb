@@ -190,7 +190,7 @@ class User < ActiveRecord::Base
       username: username,
       fullname: fullname,
       role: role,
-      groups: groups.map(&:name).join(", "),
+      groups: groups.map{ |group| [group.id, group.name] }.to_s,
       active: active,
       reviewed: reviewed,
       created_by: created_by.present? ? created_by.username : "(none)",
