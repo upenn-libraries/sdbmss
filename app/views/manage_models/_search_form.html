@@ -65,20 +65,4 @@
                 </div>
             </div>
         </div>
-        <% if can? :manage, model_class %>
-        <div class="panel review-control">
-            <div class="panel-body" style="padding: 0px 15px;">
-                <div class="row">
-                    <div class="col-sm-8">
-                        <h5>User Group Control</h5>
-                        <%= render partial: "manage_models/group_form" %>
-                    </div>
-                    <div class="col-sm-4 text-right">
-                        <h5>Review Control</h5>
-                        <a class="btn btn-info" id="mark-as-reviewed" >Mark as reviewed</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <% end %>
 <% end %>

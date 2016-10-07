@@ -35,15 +35,44 @@
                 </h1>
             <% end %>
             <% end %>
-            <a href="#manage_records_info" data-toggle='collapse' ><span class="glyphicon glyphicon-info-sign"></span> Click Here For More Info</a>
+            <a href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info"><span class="glyphicon glyphicon-info-sign"></span> Click Here For More Info</a>
 
-            <div id="manage_records_info" class="collapse panel-collapse panel-body" style="padding: 15px 0px 15px 0px;">
-                <%= render partial: "instructions" %>
-                <li class="list-group-item list-group-item-warning">Unapproved records shown in yellow.</li>
-                <% if model_class.column_names.include?('entries_count') || model_class.column_names.include?('authors_count') %>
-                    <li class="list-group-item list-group-item-danger">Counters may include deleted records.</li>
-                <% end %>
+            <div id="manage_records_info" class="modal fade panel-body" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Manage Your <%= resource_name.pluralize.capitalize %></h4>
+                        </div>
+                        <div class="modal-body">
+                            <%= render partial: "instructions" %>
+                            <li class="list-group-item list-group-item-warning">Unapproved records shown in yellow.</li>
+                            <% if model_class.column_names.include?('entries_count') || model_class.column_names.include?('authors_count') %>
+                                <li class="list-group-item list-group-item-danger">Counters may include deleted records.</li>
+                            <% end %>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <% if can? :manage, model_class %>
+                <div class="row" style="padding-left: 0px; padding-right: 0px;">
+                    <div class="col-sm-8">
+                        <h5>User Group Control</h5>
+                        <%= render partial: "manage_models/group_form" %>
+                    </div>
+                    <% if resource_name == "entries" %>
+                        <div class="col-sm-4 text-right">
+                            <h5>Approval Control</h5>
+                            <a id="mark-as-approved" class="btn btn-info">Mark as approved</a>                            
+                        </div>
+                    <% else %>
+                        <div class="col-sm-4 text-right">
+                            <h5>Review Control</h5>
+                            <a class="btn btn-info" id="mark-as-reviewed" >Mark as reviewed</a>
+                        </div>
+                    <% end %>
+                </div>
+            <% end %>
         </div>
         <div class="col-sm-7">
             <%= render partial: "search_form" %>
