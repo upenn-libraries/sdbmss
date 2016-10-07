@@ -2,7 +2,7 @@ class NamesController < SearchableAuthorityController
 
   include LogActivity
   include MarkAsReviewed
-  include ResetReviewedAfterUpdate
+  #include ResetReviewedAfterUpdate
 
   include Revert
 
@@ -105,7 +105,7 @@ class NamesController < SearchableAuthorityController
     else
       p = params
     end
-    p.permit(:name, :other_info, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe, :confirmed)
+    p.permit(:name, :other_info, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe, :confirmed, :reviewed)
   end
 
   def merge_params
