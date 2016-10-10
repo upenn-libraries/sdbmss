@@ -731,7 +731,7 @@ label.col-sm-2-and-half {
                 <a id="find_place_name_authority_{{ $index }}" ng-if='entry_place.place.id == undefined' ng-init="entry_place.place = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('places', entry_place.place, 'place', entry_place.observed_name)">Find or Create Authority Name</a>
                 <div ng-if='entry_place.place != undefined && entry_place.place.id != undefined' class="well well-sm well-name-authority">
                   <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_place, 'place')"></a>
-                  <a href="/places/entry_place.place.id" target="_blank">{{ entry_place.place.name }}</a>
+                  <a href="/places/{{ entry_place.place.id }}" target="_blank">{{ entry_place.place.name }}</a>
                 </div>
                 <span class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_place" encourage-name-authority-name="place"></span>
 
