@@ -1,37 +1,17 @@
 <div class="row">
   <div class="col-sm-12">
     <h1 class="h1 text-center">
-      My Groups
+      Admin Of
     </h1>
     <div class='text-center'>
       <%= link_to(new_group_path) do %>
         <span class="glyphicon glyphicon-plus"></span> Add New
       <% end %>
     </div>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Users</th>
-          <th>Records</th>
-          <th>Public</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% if @groups.count <= 0 %>
-        <tr>
-          <td class="text-center" colspan="4">  You do not have any user groups.</td>
-        </tr>
-        <% end %>
-        <% @groups.each do |group| %>
-        <tr>
-          <td><%= link_to group.name, group_path(group) %></td>
-          <td><%= group.users.count %></td>
-          <td><%= group.entries.count %></td>
-          <td><%= group.public %></td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
+    <%= render partial: "table", locals: {groups: @groups_created_by_me } %>
+    <h1 class="h1 text-center">
+      Member Of
+    </h1>
+    <%= render partial: "table", locals: {groups: @groups_including_me } %>
   </div>
 </div>

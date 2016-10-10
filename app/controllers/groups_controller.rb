@@ -19,13 +19,29 @@ class GroupsController < ApplicationController
   end
 
   def index
-    @groups = Group.where(created_by: current_user)
+    @groups_created_by_me = Group.where(created_by: current_user)
+    @groups_including_me = current_user.groups
+  end
+
+  def new
+    @model = Group.new
   end
 
   def create
     @group = Group.new(group_params)
     @group.save_by(current_user)
     GroupUser.create!({group: @group, user: current_user})
+    redirect_to groups_path
+  end
+
+  def destroy
+    @model = Group.find(params[:id])
+    name = @model.name
+    if @model.destroy!
+      flash[:success] = "#{name} was deleted successfully."
+    else
+      flash[:error] = "There was an unknown error deleting this group."
+    end
     redirect_to groups_path
   end
 

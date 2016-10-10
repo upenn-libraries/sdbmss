@@ -1,18 +1,8 @@
 <%= render partial: "manage_models/breadcrumbs", locals: {edit: true} %>
 <div class="row">
-  <div class="col-sm-4 form-inline">
+  <div class="col-sm-4"></div>
+  <div class="col-sm-4">
     <h3>New Group</h3>
-    <%= form_for @model, url: {action: "update"} do |f| %>
-      <%= f.label :name, {class: "control-label"} %>
-      <%= f.text_field :name, {class: "form-control"} %><br>
-      
-      <%= f.label :description, {class: "control-label"} %>
-      <%= f.text_area :description, {class: "form-control"} %><br>
-
-      <%= f.label :public, {class: "control-label"} %>
-      <%= f.check_box :public, {class: "form-control"} %><br>
-      
-      <%= f.submit "Save Group", {class: "form-control"} %>
-    <% end %>
+    <%= render partial: "form" %>
   </div>
 </div>

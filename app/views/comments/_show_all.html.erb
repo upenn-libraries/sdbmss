@@ -17,17 +17,19 @@
           </div>
           <div class="col-sm-3 comment-toggle text-right">
             <% if can? :edit, comment %>
-              <%= link_to(comment_path(comment, format: 'html'),  method: :delete, format: 'json', data: { confirm: 'Are you sure?' }) do %>
+              <%= link_to(comment_path(comment, format: 'html'),  method: :delete, data: { confirm: 'Are you sure?' }) do %>
                 <span class="glyphicon glyphicon-remove"></span> Delete
               <% end %>
+              <br>
+              <a onclick="$('#comment_<%= comment.id %> .comment-toggle').toggleClass('hide');" href="" class='comment-toggle'>
+                <span class="glyphicon glyphicon-edit"></span>
+                Edit
+              </a>              
             <% end %>
           </div>
           <% if can? :edit, comment %>
             <div class="col-sm-12">
               <%= render partial: "comments/edit_form", locals: {comment: comment} %>
-            </div>
-            <div class="col-sm-6">
-              <a onclick="$('#comment_<%= comment.id %> .comment-toggle').toggleClass('hide');" href="" class='comment-toggle'>Edit</a>
             </div>
           <% end %>
           <div class="col-sm-6 pull-right text-right">
