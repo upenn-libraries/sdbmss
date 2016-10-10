@@ -92,13 +92,25 @@ class Source < ActiveRecord::Base
     string :location_institution
     text :location_institution, :more_like_this => true
 
-    string :agent_name
-    text :agent_name
-    integer :agent_id
+    #string :agent_name
+    #text :agent_name
+    #integer :agent_id
 
-    join(:id, :target => Name, :type => :integer, :join => { :from => :id, :to => :agent_id})
-    join(:name, :target => Name, :type => :string, :join => { :from => :name, :to => :agent_name})
-    join(:name, :target => Name, :type => :text, :join => { :from => :name, :to => :agent_name})
+    #join(:id, :target => Name, :type => :integer, :join => { :from => :id, :to => :agent_id})
+    #join(:name, :target => Name, :type => :string, :join => { :from => :name, :to => :agent_name})
+    #join(:name, :target => Name, :type => :text, :join => { :from => :name, :to => :agent_name})
+
+    integer :agent_id, :multiple => true do
+      source_agents.map(&:agent_id)
+    end
+
+    string :agent_name, :multiple => true do
+      source_agents.map(&:agent).map(&:name)
+    end
+
+    text :agent_name do
+      source_agents.map(&:agent).map(&:name)
+    end
 
     string :location
     string :medium

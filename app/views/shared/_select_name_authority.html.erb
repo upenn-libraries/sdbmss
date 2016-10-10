@@ -33,15 +33,19 @@
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index" ng-click="selectSuggestion(s)" ng-class="{success: s == suggestion}">
                         <td><input type='radio' ng-click='selectSuggestion(s)' style="opacity: 0;"></input></td>
-                        <td class='text-left'>{{ s.name }}</td>
+                        <td class='text-left'><a href="/names/{{ s.id }}" target="_blank">{{ s.name }}</a></td>
                         <td>{{ s.viaf_id }}</td>
                         <td>{{ s.authors_count }}</td>
                         <td>{{ s.artists_count }}</td>
                         <td>{{ s.scribes_count }}</td>
                         <td>{{ s.provenance_count }}</td>
                         <td>{{ s.source_agents_count }}</td>
-                        <td> <span class='glyphicon' ng-class="s.reviewed ? 'glyphicon-ok' : 'glyphicon-remove'"></span> </td>
-                        <td> <span class='glyphicon' ng-class="s.confirmed ? 'glyphicon-ok text-success' : 'glyphicon-remove'"></span> </td>
+                        <td>{{ s.reviewed ? "Yes" : "No" }} 
+                            <!--<span class='glyphicon' ng-class="s.reviewed ? 'glyphicon-ok' : 'glyphicon-remove'"></span>-->
+                        </td>
+                        <td>{{ s.confirmed ? "Yes" : "No" }}
+                            <!--<span class='glyphicon' ng-class="s.confirmed ? 'glyphicon-ok text-success' : 'glyphicon-remove'"></span>-->
+                        </td>
                     </tr>
                 </tbody>
                 <tfoot>

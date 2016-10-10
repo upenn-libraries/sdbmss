@@ -55,7 +55,7 @@
 
         <% if source.date_accessed.present? %>
         <dt>Date Accessed</dt>
-            <dd><%= source.date_accessed %></dd>
+            <dd><%= format_fuzzy_date(source.date_accessed) %></dd>
         <% end %>
         
         <% if source.location_institution.present? %>
