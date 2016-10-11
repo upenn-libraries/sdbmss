@@ -60,6 +60,10 @@ class EntryManuscript < ActiveRecord::Base
     []
   end
 
+  def public_id
+    id.to_s
+  end
+
   def search_result_format
     {
       id: id,
