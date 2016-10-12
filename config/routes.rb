@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   resources :activities, only: [:index]
 
   resources :groups
+  resources :group_users
   
   resources :replies
   resources :notifications, only: [:index, :show, :destroy]

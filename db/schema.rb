@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161006165010) do
+ActiveRecord::Schema.define(version: 20161012141718) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -303,8 +303,10 @@ ActiveRecord::Schema.define(version: 20161006165010) do
   end
 
   create_table "group_users", force: :cascade do |t|
-    t.integer "group_id", limit: 4
-    t.integer "user_id",  limit: 4
+    t.integer "group_id",  limit: 4
+    t.integer "user_id",   limit: 4
+    t.string  "role",      limit: 255, default: "Member"
+    t.boolean "confirmed",             default: false
   end
 
   create_table "groups", force: :cascade do |t|

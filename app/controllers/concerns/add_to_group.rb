@@ -16,8 +16,9 @@ module AddToGroup
     group = Group.find(params[:group_id])
     if ids.present?
       ids = ids.map(&:to_i)
-      ids.each do |id|
-        GroupRecord.create(record_type: model_class, record_id: id, group: group)
+      records = model_class.where(id: ids).select { |record| can? :edit, record }
+      records.each do |record|
+        GroupRecord.create(record: record, group: group)
       end
     end
     model_class.where(:id => ids).index

@@ -19,8 +19,9 @@ class GroupsController < ApplicationController
   end
 
   def index
-    @groups_created_by_me = Group.where(created_by: current_user)
-    @groups_including_me = current_user.groups
+    @groups_admin = Group.joins(:group_users).where(:group_users => {:role => "Admin", :user_id => current_user.id, :confirmed => true}).distinct
+    @groups_member = Group.joins(:group_users).where(:group_users => {:role => "Member", :user_id => current_user.id, :confirmed => true}).distinct
+    @groups_invites = Group.joins(:group_users).where(:group_users => {:role => "Member", :user_id => current_user.id, :confirmed => false}).distinct
   end
 
   def new
@@ -30,7 +31,7 @@ class GroupsController < ApplicationController
   def create
     @group = Group.new(group_params)
     @group.save_by(current_user)
-    GroupUser.create!({group: @group, user: current_user})
+    GroupUser.create!({group: @group, user: current_user, role: "Admin", confirmed: true})
     redirect_to groups_path
   end
 
