@@ -36,7 +36,7 @@ class Entry < ActiveRecord::Base
 
   has_many :group_records, as: :record
   has_many :groups, through: :group_records
-  has_many :group_users, through: :groups
+  has_many :group_users,  -> { where confirmed: true }, through: :groups
   has_many :contributors, source: :user, through: :group_users
 
   belongs_to :superceded_by, class_name: "Entry"

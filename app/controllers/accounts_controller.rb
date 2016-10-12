@@ -39,11 +39,18 @@ class AccountsController < SearchableAuthorityController
     if ids.present?
       ids = ids.map(&:to_i)
       ids.each do |id|
-        GroupUser.create(user_id: id, group: group)
+        u = User.find(id)
+        GroupUser.create(user: u, group: group)
+        u.notify(
+          "#{current_user.to_s} has added you to user group: #{group.name}",
+          group, 
+          "group"
+        )
       end
     end
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }
+      format.html { redirect_to group_path(group) }
     end
   end
 
@@ -78,7 +85,12 @@ class AccountsController < SearchableAuthorityController
   end
 
   def model_params
-    params.require(model_class_lstr.to_sym).permit(:username, :fullname, :institutional_affiliation, :email, :email_is_public, :password, :password_confirmation, :role, :bio, :active, :notification_setting_attributes => [:on_update, :on_comment, :on_reply, :on_message, :on_new_user, :email_on_new_user, :email_on_update, :email_on_comment, :email_on_reply, :email_on_message])
+    params.require(model_class_lstr.to_sym).permit(:username, :fullname, :institutional_affiliation, :email, :email_is_public, :password, :password_confirmation, :role, :bio, :active, 
+      :notification_setting_attributes => [
+        :on_update, :on_comment, :on_reply, :on_message, :on_new_user, :on_group,
+        :email_on_new_user, :email_on_update, :email_on_comment, :email_on_reply, :email_on_message, :email_on_group
+        ]
+      )
   end
 
 end

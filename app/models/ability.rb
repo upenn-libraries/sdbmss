@@ -65,6 +65,7 @@ class Ability
     end
 
     can :edit, Entry, contributors: { :id => user.id }
+    can :edit, Group, admin: { :id => user.id }
 
 =begin
     the old definitions - I am keeping them here now just for reference...

@@ -1,23 +1,35 @@
 <%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
 <div class="row">
     <div class="col-sm-1"></div>
-    <div class="col-sm-5" style="padding: 0px 15px; background: white; box-shadow: 2px 3px 7px #eee;">
+    <div class="col-sm-4" style="padding: 0px 15px; background: white; box-shadow: -3px 3px 7px #eee;">
         <h2>
             <span class="glyphicon glyphicon-education"></span>
             <%= @model.name %>
         </h2>
-        <span class="text-muted">Created By: <%= render partial: "shared/username_with_profile_link", locals: { user: @model.created_by } %></span>
-        
+        <!--
+        <span class="text-muted">Created By: <%# render partial: "shared/username_with_profile_link", locals: { user: @model.created_by } %></span>
+        -->
         <p><%= @model.description %></p>
-        <h4>Members</h4>
-        <ul class="list-inline">
-        <% @model.users.each do |user| %>
+
+        <div class="list-inline">
+            <li class='h4'>Admin</li>
+        <% @model.admin.each do |user| %>
             <li><%= render partial: "shared/username_with_profile_link", locals: { user: user } %>   </li>
         <% end %>
         <% if @model.users.count <= 0 %>
             <li class='text-muted'>There are no users in this group at the moment.</li>
         <% end %>
-        </ul>
+        </div>
+
+        <div class="list-inline">
+            <li class='h4'>Members</li>
+        <% @model.members.each do |user| %>
+            <li><%= render partial: "shared/username_with_profile_link", locals: { user: user } %>   </li>
+        <% end %>
+        <% if @model.users.count <= 0 %>
+            <li class='text-muted'>There are no users in this group at the moment.</li>
+        <% end %>
+        </div>
 
         <h4>Entries</h4>
         <% @model.entries.each do |entry| %>
@@ -30,7 +42,7 @@
         <% end %>
 
     </div>
-    <div class="col-sm-5">        
+    <div class="col-sm-6">        
         <h2 class='text-center'><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
         <p class='text-muted text-center'>Leave a comment to contribute to the ongoing discussion.</p>
         <%= render partial: "comments/show_all", locals: {comments: @model.comments.where(public: true), record: @model} %>

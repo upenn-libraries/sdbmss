@@ -3,16 +3,13 @@ class GroupsController < ApplicationController
   before_action :authenticate_user!
   load_and_authorize_resource :only => [:edit, :update, :destroy]
 
-  def show
-    @model = Group.find(params[:id])
-  end
+  before_action :set_model, only: [:show, :edit, :update, :destroy]
 
-  def edit
+  def set_model
     @model = Group.find(params[:id])
   end
 
   def update
-    @model = Group.find(params[:id])
     @model.update(group_params)
     @model.entries.index
     redirect_to edit_group_path(@model)
@@ -36,7 +33,6 @@ class GroupsController < ApplicationController
   end
 
   def destroy
-    @model = Group.find(params[:id])
     name = @model.name
     if @model.destroy!
       flash[:success] = "#{name} was deleted successfully."
@@ -49,7 +45,7 @@ class GroupsController < ApplicationController
   private
 
   def group_params
-    params.require(:group).permit(:name, :public, :description)
+    params.require(:group).permit(:name, :public, :description, :group_users_attributes => [:id, :confirmed, :role])
   end
 
 end
