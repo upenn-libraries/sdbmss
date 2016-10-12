@@ -11,7 +11,6 @@ class AccountsController < SearchableAuthorityController
   before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy]
   load_and_authorize_resource :only => [:index, :edit, :update, :destroy]
 
-
   def model_class
     User
   end

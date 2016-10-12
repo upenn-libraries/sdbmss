@@ -64,7 +64,7 @@ class Ability
       #can :destroy, :all
     end
 
-    can :edit, Entry, contributors: { :id => user.id }
+    can [:edit, :update], Entry, contributors: { :id => user.id }
     can :edit, Group, admin: { :id => user.id }
 
 =begin
