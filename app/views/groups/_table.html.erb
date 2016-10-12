@@ -1,4 +1,5 @@
-<table class="table">
+<table class="table">  
+  <% if groups.count > 0 %>
   <thead>
     <tr>
       <th>Name</th>
@@ -8,6 +9,7 @@
       <th></th>
     </tr>
   </thead>
+  <% end %>
   <tbody>
     <% if groups.count <= 0 %>
     <tr>
@@ -26,13 +28,17 @@
             <span class="glyphicon glyphicon-remove"></span> Delete
           <% end %>
           <br>
+          <%= link_to(edit_group_path(group)) do %>
+            <span class="glyphicon glyphicon-edit"></span> Edit
+          <% end %>
+          <br>
         <% end %>
         <% group_user = group.group_users.where(user_id: current_user)[0] %>
         <% if group_user.confirmed %>
           <% destroy_group_word = "Leave Group" %>
         <% else %>
           <% destroy_group_word = "Reject Invitation" %>
-          <br><%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put %>
+          <%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put %><br>
         <% end %>
         <%= link_to destroy_group_word, group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to leave this group?" } %>
       </td>

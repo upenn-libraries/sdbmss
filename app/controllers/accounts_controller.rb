@@ -8,7 +8,9 @@ class AccountsController < SearchableAuthorityController
   include LogActivity
   include AddToGroup
 
-  before_action :require_admin
+  before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy]
+  load_and_authorize_resource :only => [:index, :edit, :update, :destroy]
+
 
   def model_class
     User
@@ -37,9 +39,8 @@ class AccountsController < SearchableAuthorityController
     ids = params[:ids]
     group = Group.find(params[:group_id])
     if ids.present?
-      ids = ids.map(&:to_i)
-      ids.each do |id|
-        u = User.find(id)
+      users = User.where(id: ids)
+      users.each do |u|
         GroupUser.create(user: u, group: group)
         u.notify(
           "#{current_user.to_s} has added you to user group: #{group.name}",
@@ -50,7 +51,12 @@ class AccountsController < SearchableAuthorityController
     end
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }
-      format.html { redirect_to group_path(group) }
+      format.html { 
+        if users
+          flash[:success] = "Group invite sent to #{users.map(&:username).join(', ')}."
+        end        
+        redirect_to group_path(group) 
+      }
     end
   end
 

@@ -1,0 +1,11 @@
+<!--<input class="form-control" list="users" name="users" id="users-select">
+<datalist id="users">
+  <%# users.each do |user| %>
+    <option value="<%# user.username %>" realvalue="<%# user.id %>"><%# user.to_s %></option>
+  <%# end %>
+</datalist>-->
+<select name="ids[]" id="" class="form-control">
+  <% users.each do |user| %>
+    <option value="<%= user.id %>"><%= user.to_s %></option>
+  <% end %>
+</select>
