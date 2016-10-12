@@ -57,17 +57,14 @@
             <% if can? :manage, model_class %>
                 <div class="row" style="padding-left: 0px; padding-right: 0px;">
                     <div class="col-sm-8">
-                        <h5>User Group Control</h5>
                         <%= render partial: "manage_models/group_form" %>
                     </div>
                     <% if resource_name == "entries" %>
                         <div class="col-sm-4 text-right">
-                            <h5>Approval Control</h5>
                             <a id="mark-as-approved" class="btn btn-info">Mark as approved</a>                            
                         </div>
                     <% else %>
                         <div class="col-sm-4 text-right">
-                            <h5>Review Control</h5>
                             <a class="btn btn-info" id="mark-as-reviewed" >Mark as reviewed</a>
                         </div>
                     <% end %>
