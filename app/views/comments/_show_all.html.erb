@@ -12,7 +12,7 @@
         </div>
       <% else %>
         <div class="row">
-          <div class="col-sm-9 comment-toggle" style='border-bottom: 1px solid #eee; margin-bottom: 10px; padding-bottom: 10px;'>
+        <div class="col-sm-9 comment-toggle" style='border-bottom: 1px solid #eee; margin-bottom: 10px; padding-bottom: 10px;'>
             <%= sanitize simple_format(comment.comment), tags: %w(code b i br strong em a), attributes: %w(href) %>
           </div>
           <div class="col-sm-3 comment-toggle text-right">
@@ -24,7 +24,9 @@
               <a onclick="$('#comment_<%= comment.id %> .comment-toggle').toggleClass('hide');" href="" class='comment-toggle'>
                 <span class="glyphicon glyphicon-edit"></span>
                 Edit
-              </a>              
+              </a><br>  
+              By <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
+              At <%= comment.created_at.to_formatted_s(:date_and_time) %>
             <% end %>
           </div>
           <% if can? :edit, comment %>
@@ -32,10 +34,6 @@
               <%= render partial: "comments/edit_form", locals: {comment: comment} %>
             </div>
           <% end %>
-          <div class="col-sm-6 pull-right text-right">
-            By <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
-            At <%= comment.created_at.to_formatted_s(:date_and_time) %>
-          </div>
         </div>
       <% end %>
     </div>

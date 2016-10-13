@@ -78,6 +78,8 @@ describe "User Notifications", :js => true do
       fill_in "comment", with: "Are you getting this?"
       click_button "Post"
 
+      expect(page).to have_content('Are you getting this?')
+
       expect(@user2.notifications.count).to eq(initial + 1)
       expect(@user2.notifications.last.category).to eq("comment")
     end
