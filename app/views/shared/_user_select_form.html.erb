@@ -6,6 +6,6 @@
 </datalist>-->
 <select name="ids[]" id="" class="form-control">
   <% users.each do |user| %>
-    <option value="<%= user.id %>"><%= user.to_s %></option>
+    <option value="<%= user.id %>"><%= user.username %></option>
   <% end %>
 </select>

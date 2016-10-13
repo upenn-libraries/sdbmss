@@ -155,9 +155,11 @@ class User < ActiveRecord::Base
     self.notification_setting["email_on_#{category}".to_sym]
   end
 
+  # fix me: if emails are set, but not notifications, 'n' will be undefined
   def notify(title, record, category)
+    n = notifications.new(title: title, notified: record, category: category)
     if can_notify(category)
-      n = notifications.create(title: title, notified: record, category: category)
+      n = notifications.save!
     end
     if can_email(category)
       NotificationMailer.notification_email(n).deliver_now

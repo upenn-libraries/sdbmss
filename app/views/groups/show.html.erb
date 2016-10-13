@@ -1,7 +1,25 @@
 <%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
+<% group_user = @model.group_users.where(user: current_user).last %>
 <div class="row">
     <div class="col-sm-1"></div>
     <div class="col-sm-4" style="padding: 0px 15px;">
+        <% if group_user and not group_user.confirmed %>
+            <div class="alert alert-warning">
+                <div class="row">
+                    <div class="col-xs-12 text-center">
+                        <span class='h4'>You have been invited to this group</span><br><br>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6 text-left">
+                        <%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put %><br>
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <%= link_to "Reject Invitation", group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to reject this invitation?" } %>
+                    </div>
+                </div>
+            </div>
+        <% end %>
         <h2>
             <span class="glyphicon glyphicon-education"></span>
             <%= @model.name %>
@@ -31,17 +49,18 @@
         <% end %>
         </div>
 
+        <% if group_user and group_user.role == 'Admin' %>
         <h4>Invite Users</h4>
         <%= form_tag('/accounts/add_to_group.html', method: :post) do %>
           <div class="input-group">
             <%= hidden_field_tag :group_id, @model.id %>
-            <%= render partial: "shared/user_select_form", locals: {users: User.all} %>
+            <%= render partial: "shared/user_select_form", locals: {users: User.where.not(id: @model.users.map(&:id))} %>
             <div class="input-group-btn">
               <input type='submit' class="btn btn-default" value="Invite" />
             </div>
           </div>
         <% end %>
-    
+        <% end %>
 
         <h4>Entries</h4>
         <% @model.entries.each do |entry| %>
