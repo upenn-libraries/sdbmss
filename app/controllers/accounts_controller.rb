@@ -8,7 +8,7 @@ class AccountsController < SearchableAuthorityController
   include LogActivity
   include AddToGroup
 
-  before_action :require_admin, only: [:index, :new, :create, :edit, :update, :destroy]
+  before_action :require_admin, only: [:index, :new, :create, :edit, :update, :destroy, :login_as]
 
   def model_class
     User
