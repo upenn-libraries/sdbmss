@@ -303,7 +303,15 @@ class Source < ActiveRecord::Base
 =end
     title_str = title || "(No title)"
 
-    [date_str, agent_str, title_str].select { |x| x.to_s.length > 0 }.join(" - ")
+    if source_type.name == "online"
+      date_accessed_str = ""
+      if date_accessed
+        date_accessed_str = "(Accessed: #{SDBMSS::Util.format_fuzzy_date(date_accessed)})"
+      end
+      [agent_str, title_str, date_accessed_str].select { |x| x.to_s.length > 0 }.join(" - ")
+    else
+      [date_str, agent_str, title_str].select { |x| x.to_s.length > 0 }.join(" - ")
+    end
   end
 
   def entries_to_index_on_update

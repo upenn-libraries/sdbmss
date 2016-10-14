@@ -40,27 +40,47 @@
     <div class="panel-footer">
       <!-- can only reply to a non-deleted comment -->
       <% comment.replies.each do |reply| %>
-        <div class="row" style="border-bottom: 1px solid #ddd; margin-bottom: 5px; padding-bottom: 5px;">
+        <div class="row" id="reply_<%= reply.id %>" style="border-bottom: 1px solid #ddd; margin-bottom: 5px; padding-bottom: 5px;">
           <% if reply.deleted %>
             <div class="col-sm-12">
               <p class="text-muted">This reply has been deleted.</p>
             </div>
           <% else %>
-            <div class="col-sm-9">
+            <div class="col-sm-9 reply-toggle">
               <p><%= sanitize simple_format(reply.reply), tags: %w(code b i br strong em a), attributes: %w(href) %></p>
             </div>
-            <div class="col-sm-3 text-right">
+            <div class="col-sm-3 text-right reply-toggle">
+              <% if can? :edit, reply %>
+              <%= link_to(reply_path(reply, format: 'html'),  method: :delete, format: 'json', data: { confirm: 'Are you sure?' }) do %>
+                <span class="glyphicon glyphicon-remove"></span> Delete
+              <% end %>
+              <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');" href="">
+                <span class="glyphicon glyphicon-edit"></span>
+                Edit
+              </a>
+                <br>
+              <% end %>
               By <%= render partial: "shared/username_with_profile_link", locals: { user: reply.created_by } %><br/>
               At <%= reply.created_at.to_formatted_s(:date_and_time) %>
             </div>
+
+            <%= form_tag reply_path(reply), :method => 'put', :class => 'reply-toggle hide' do %>
+              <div class="col-sm-9">
+                <%= text_area_tag :reply, reply.reply, class: 'form-control', rows: 1, placeholder: "Begin your reply here..." %>            
+              </div>
+              <div class="col-sm-3 text-right">
+                <%= submit_tag 'Confirm', class: 'btn btn-default' %>
+                <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');" href="" class='btn btn-default'>Cancel</a>
+              </div>
+            <% end %>
           <% end %>
         </div>
       <% end %>
       <% if !comment.deleted %>
-        <div class="row collapse reply-toggle in text-center">
-           <div class="col-sm-12"><a href="#comment_<%= comment.id %> .reply-toggle" data-toggle="collapse">Add a reply...</a></div>
+        <div class="row collapse add-reply-toggle in text-center">
+           <div class="col-sm-12"><a href="#comment_<%= comment.id %> .add-reply-toggle" data-toggle="collapse">Add a reply...</a></div>
          </div> 
-        <div class="reply-toggle row collapse">
+        <div class="add-reply-toggle row collapse">
           <%= form_tag('/replies') do %>
             <div class="col-sm-9">
               <%= hidden_field_tag :comment_id, comment.id %>
@@ -68,7 +88,7 @@
             </div>
             <div class="col-sm-3 text-right">
               <%= submit_tag 'Add Reply', class: 'btn btn-default' %>
-              <a href="#comment_<%= comment.id %> .reply-toggle" data-toggle="collapse" class='btn btn-default'>Cancel</a>
+              <a href="#comment_<%= comment.id %> .add-reply-toggle" data-toggle="collapse" class='btn btn-default'>Cancel</a>
             </div>
           <% end %>
         </div>

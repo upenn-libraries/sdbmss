@@ -17,6 +17,18 @@ class RepliesController < ApplicationController
     redirect_to polymorphic_path(@reply.comment.commentable)
   end
 
+  def destroy
+    @reply = Reply.find(params[:id])
+    @reply.update(deleted: true)
+    redirect_to polymorphic_path(@reply.comment.commentable)
+  end
+
+  def update
+    @reply = Reply.find(params[:id])
+    @reply.update(replies_params)
+    redirect_to polymorphic_path(@reply.comment.commentable)
+  end
+
   private
 
   def replies_params
