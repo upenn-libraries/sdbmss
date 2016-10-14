@@ -79,6 +79,13 @@ class Name < ActiveRecord::Base
     end
   end 
 
+  before_validation :normalize
+
+  def normalize
+    self.name = self.name.mb_chars.normalize    
+  end
+
+
   searchable :unless => :deleted do
     join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
     join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
