@@ -1,0 +1,52 @@
+<table class="table">  
+  <% if groups.count > 0 %>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Users</th>
+      <th>Records</th>
+      <th>Public</th>
+      <th></th>
+    </tr>
+  </thead>
+  <% end %>
+  <tbody>
+    <% if groups.count <= 0 %>
+    <tr>
+      <td class="text-center" colspan="4">  You do not have any user groups.</td>
+    </tr>
+    <% end %>
+    <% groups.each do |group| %>
+    <tr>
+      <td><%= link_to group.name, group_path(group) %></td>
+      <td><%= group.users.count %></td>
+      <td><%= group.entries.count %></td>
+      <td><%= group.public %></td>
+      <td class='text-right'>
+        <% if can?(:edit, group) %>
+          <%= link_to(group_path(group, format: 'html'),  method: :delete, data: { confirm: 'Are you sure?' }) do %>
+            <span class="glyphicon glyphicon-remove"></span> Delete
+          <% end %>
+          <br>
+          <%= link_to(edit_group_path(group)) do %>
+            <span class="glyphicon glyphicon-edit"></span> Edit
+          <% end %>
+          <br>
+        <% end %>
+        <% group_user = group.group_users.where(user_id: current_user)[0] %>
+        <% if group_user.confirmed %>
+          <% destroy_group_word = "Leave Group" %>
+        <% else %>
+          <% if group_user.created_by == current_user %>
+            <% destroy_group_word = "Cancel Request" %>
+          <% else %>
+            <% destroy_group_word = "Reject Invitation" %>
+            <%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put %><br>
+          <% end %>
+        <% end %>
+        <%= link_to destroy_group_word, group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to leave this group?" } %>
+      </td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

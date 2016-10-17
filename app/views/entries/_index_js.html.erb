@@ -54,10 +54,10 @@
                      orderable: false,
                      className: 'text-center unreviewed_only',
                      render: function (data, type, full, meta) {
-                         if(showApprovalControls()) {
+                         //if(showApprovalControls()) {
                             return '<input type="checkbox" name="approve" value="' + full[manageEntries.dataTable.getColumnIndex("ID")] + '"/>';
-                         }
-                         return '';
+                         //}
+                         //return '';
                      }
                  },
                  /*
@@ -117,11 +117,11 @@
                           renewBookmarks();
 
                          if(showApprovalControls()) {
-                            $(".approve-control").show();
-                            $('.unreviewed_only').show();//.css({"display": "table-cell"});
+                            //$(".approve-control").show();
+                            //$('.unreviewed_only').show();//.css({"display": "table-cell"});
                          } else {
-                            $(".approve-control").hide();
-                            $('.unreviewed_only').hide();
+                            //$(".approve-control").hide();
+                            //$('.unreviewed_only').hide();
                          }
                      }
                  });

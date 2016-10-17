@@ -1364,7 +1364,7 @@ var BOOKMARK_SCOPE;
                         var exactMatch = false;
                         options = response.data.results;
                         options.forEach(function(option) {
-                            option.label = option.name;
+                            option.label = option.username;
                             option.value = option.id;
 
                             if(!exactMatch) {

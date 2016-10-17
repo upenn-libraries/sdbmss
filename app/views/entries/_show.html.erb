@@ -439,6 +439,19 @@
             </td>
         </tr>
         <% end %>
+        <% if entry.groups.count > 0 %>
+        <tr>
+            <td class="col-sm-2 text-right record-label">User Groups</td>
+            <td class="col-sm-10">This entry is being edited by 
+                <span class="list-inline">
+                <% entry.groups.each do |group| %>
+                    <li><%= link_to group.name, group_path(group) %></li>
+                <% end %>
+                </span>
+            </td>
+        </tr>
+        <% end %>
+
     </tbody>
 
 </table>

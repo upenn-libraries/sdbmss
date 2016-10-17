@@ -311,6 +311,18 @@ var SDBM = SDBM || {};
                     }
                 },
                 {
+                    sdbmssSortField: 'groups',
+                    title: 'User Groups',
+                    render: function (data, type, full, meta) {
+                        data = JSON.parse(data);
+                        var result = "";
+                        for (var i = 0; i < data.length; i++) {
+                            result += '<a target="_blank" href="/groups/' + data[i][0] + '">' + data[i][1] + '</a> ';
+                        }
+                        return result;
+                    }
+                },
+                {
                     sdbmssMinWidth: "100px",
                     sdbmssMaxWidth: "100px",
                     sdbmssSortField: 'source_date',
@@ -616,6 +628,7 @@ var SDBM = SDBM || {};
                         return [
                             result.id,
                             result.manuscript,
+                            result.groups,
                             result.source_date,
                             result.source_title,
                             result.source_catalog_or_lot_number,

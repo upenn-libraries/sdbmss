@@ -631,7 +631,7 @@ describe "Data entry", :js => true do
 
       fill_in 'comment', with: "this entry is nuts"
       #check 'comment_is_correction'
-      click_button('Add Comment')
+      click_button('Post')
 
       expect(page).to have_content "this entry is nuts"
 

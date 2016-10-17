@@ -6,6 +6,9 @@ class User < ActiveRecord::Base
 
   attr_accessor :login
 
+  has_many :group_users
+  has_many :groups, through: :group_users
+
   has_many :entries, foreign_key: "created_by_id"
   has_many :sources, foreign_key: "created_by_id"
 
@@ -152,6 +155,7 @@ class User < ActiveRecord::Base
     self.notification_setting["email_on_#{category}".to_sym]
   end
 
+  # fix me: if emails are set, but not notifications, 'n' will be undefined
   def notify(title, record, category)
     n = notifications.new(title: title, notified: record, category: category)
     if can_notify(category)
@@ -188,6 +192,7 @@ class User < ActiveRecord::Base
       username: username,
       fullname: fullname,
       role: role,
+      groups: groups.map{ |group| [group.id, group.name] }.to_s,
       active: active,
       reviewed: reviewed,
       created_by: created_by.present? ? created_by.username : "(none)",

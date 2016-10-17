@@ -1,0 +1,12 @@
+<div class="form-inline">
+  <% groups = Group.joins(:group_users).where(:group_users => {user: current_user, role: "Manager"}) %>
+  <% if groups.count > 0 %>  
+  <select style="width: 130px" class='form-control' id="group-select">
+    <% groups.each do |group| %>
+      <option value="<%= group.id %>"><%= group.name %></option>
+    <% end %>
+  </select>
+  <input type="submit" value="Add" class='form-control' id="add-to-group"/>
+  <input type="submit" value="Remove" class='form-control' id="remove-from-group"/>
+  <% end %>
+</div>

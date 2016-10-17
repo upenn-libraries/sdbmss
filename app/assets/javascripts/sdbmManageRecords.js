@@ -88,6 +88,60 @@ var SDBM = SDBM || {};
             return false;
         });
 
+        $(document).on('click', '#add-to-group', function (event) {
+            var ids = [];
+            var checkbox_name = manageRecords.options.resourceName == "entries" ? "approve" : "review";
+            $("input[name='" + checkbox_name + "']:checked").each(function (idx, element) {
+                ids.push($(element).val());
+            });
+            var group_id = $('#group-select').val();
+            
+            if (ids.length > 0) {
+                $("#spinner").show();
+                $.ajax({
+                    url: '/' + manageRecords.options.resourceName + '/add_to_group.json',
+                    type: 'POST',
+                    data: { ids: ids, group_id: group_id },
+                    success: function(data, textStatus, jqXHR) {
+                        manageRecords.dataTable.reload();
+                    },
+                    error: function() {
+                        SDBM.showErrorModal("#modal", "An error occurred adding record(s) to a user group");
+                    },
+                    complete: function() {
+                        $("#spinner").hide();
+                    }
+                });
+            }
+        });
+
+        $(document).on('click', '#remove-from-group', function (event) {
+            var ids = [];
+            var checkbox_name = manageRecords.options.resourceName == "entries" ? "approve" : "review";
+            $("input[name='" + checkbox_name + "']:checked").each(function (idx, element) {
+                ids.push($(element).val());
+            });
+            var group_id = $('#group-select').val();
+
+            if (ids.length > 0) {
+                $("#spinner").show();
+                $.ajax({
+                    url: '/' + manageRecords.options.resourceName + '/remove_from_group.json',
+                    type: 'POST',
+                    data: { ids: ids, group_id: group_id },
+                    success: function(data, textStatus, jqXHR) {
+                        manageRecords.dataTable.reload();
+                    },
+                    error: function() {
+                        SDBM.showErrorModal("#modal", "An error occurred removing record(s) from a user group");
+                    },
+                    complete: function() {
+                        $("#spinner").hide();
+                    }
+                });
+            }
+        });
+
         $(document).on('click', "#mark-as-reviewed", function(event) {
             var ids = [];
             $("input[name='review']:checked").each(function (idx, element) {
@@ -174,10 +228,10 @@ var SDBM = SDBM || {};
                     });
                     renewBookmarks();
 
-                    if (manageRecords.getUnreviewedOnly() === 1)
+/*                    if (manageRecords.getUnreviewedOnly() === 1)
                         $('.unreviewed_only').show();//.css({"display": "table-cell"});
                     else
-                        $('.unreviewed_only').hide();//.css({"display": "none"});
+                        $('.unreviewed_only').hide();//.css({"display": "none"});*/
                 } else {
                     alert("An error occurred fetching search results: " + data.error);
                 }
@@ -328,7 +382,7 @@ var SDBM = SDBM || {};
                 orderable: false,
                 className: "text-center unreviewed_only",
                 render: function (data, type, full, meta) {
-                    if(manageRecords.getUnreviewedOnly() === 1) {
+                    //if(manageRecords.getUnreviewedOnly() === 1) {
                         /*return  '' + 
                                 '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
                                 '<label for="checkbox_' + meta.row + '">' + 
@@ -336,8 +390,8 @@ var SDBM = SDBM || {};
                                 '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-check checked"></a>' + 
                                 '</label>' + '';*/
                         return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
-                    }
-                    return '';
+                    //}
+                    //return '';
                 },
                 width: "5%"
             },
@@ -407,9 +461,9 @@ var SDBM = SDBM || {};
 
     SDBM.ManageRecords.prototype.showOrHideMarkCheckedRecordsButton = function() {
         if(this.getUnreviewedOnly() === 1) {
-            $(".review-control").show();
+            //$(".review-control").show();
         } else {
-            $(".review-control").hide();
+            //$(".review-control").hide();
         }
     };
 
