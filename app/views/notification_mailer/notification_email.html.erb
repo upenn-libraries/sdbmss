@@ -14,7 +14,9 @@
       <% else %>
         <%= @notification.title %>
       <% end %>
-      <br><small><%= @notification.created_at.to_formatted_s(:long) %></small>
+      <% if @notification.created_at %>
+        <br><small><%= @notification.created_at.to_formatted_s(:long) %></small>
+      <% end %>
     </h4>
     <p><%= !@notification.notified.nil? ? sanitize(simple_format(@notification.notified.preview.to_s)) : "OLD NOTIFICATION" %></p>
   </body>

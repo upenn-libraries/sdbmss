@@ -92,13 +92,25 @@ class Source < ActiveRecord::Base
     string :location_institution
     text :location_institution, :more_like_this => true
 
-    string :agent_name
-    text :agent_name
-    integer :agent_id
+    #string :agent_name
+    #text :agent_name
+    #integer :agent_id
 
-    join(:id, :target => Name, :type => :integer, :join => { :from => :id, :to => :agent_id})
-    join(:name, :target => Name, :type => :string, :join => { :from => :name, :to => :agent_name})
-    join(:name, :target => Name, :type => :text, :join => { :from => :name, :to => :agent_name})
+    #join(:id, :target => Name, :type => :integer, :join => { :from => :id, :to => :agent_id})
+    #join(:name, :target => Name, :type => :string, :join => { :from => :name, :to => :agent_name})
+    #join(:name, :target => Name, :type => :text, :join => { :from => :name, :to => :agent_name})
+
+    integer :agent_id, :multiple => true do
+      source_agents.map(&:agent_id)
+    end
+
+    string :agent_name, :multiple => true do
+      source_agents.map(&:agent).map(&:name)
+    end
+
+    text :agent_name do
+      source_agents.map(&:agent).map(&:name)
+    end
 
     string :location
     string :medium
@@ -291,7 +303,15 @@ class Source < ActiveRecord::Base
 =end
     title_str = title || "(No title)"
 
-    [date_str, agent_str, title_str].select { |x| x.to_s.length > 0 }.join(" - ")
+    if source_type.name == "online"
+      date_accessed_str = ""
+      if date_accessed
+        date_accessed_str = "(Accessed: #{SDBMSS::Util.format_fuzzy_date(date_accessed)})"
+      end
+      [agent_str, title_str, date_accessed_str].select { |x| x.to_s.length > 0 }.join(" - ")
+    else
+      [date_str, agent_str, title_str].select { |x| x.to_s.length > 0 }.join(" - ")
+    end
   end
 
   def entries_to_index_on_update

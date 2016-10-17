@@ -153,8 +153,9 @@ class User < ActiveRecord::Base
   end
 
   def notify(title, record, category)
+    n = notifications.new(title: title, notified: record, category: category)
     if can_notify(category)
-      n = notifications.create(title: title, notified: record, category: category)
+      n.save!
     end
     if can_email(category)
       NotificationMailer.notification_email(n).deliver_now
