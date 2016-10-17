@@ -39,19 +39,29 @@ class AccountsController < SearchableAuthorityController
     if ids.present?
       users = User.where(id: ids)
       users.each do |u|
-        GroupUser.create(user: u, group: group)
-        u.notify(
-          "#{current_user.to_s} has added you to user group: #{group.name}",
-          group, 
-          "group"
-        )
+        GroupUser.create(user: u, group: group, created_by: current_user)
+        if current_user != u
+          u.notify(
+            "#{current_user.to_s} has added you to user group: #{group.name}",
+            group, 
+            "group"
+          )
+        else
+          group.admin.each do |admin|
+            admin.notify(
+              "#{current_user.to_s} has requested to be added to the user group: #{group.name}",
+              group,
+              "group"
+            )
+          end
+        end
       end
     end
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }
-      format.html { 
+      format.html {
         if users
-          flash[:success] = "Group invite sent to #{users.map(&:username).join(', ')}."
+          flash[:success] = "Group membership pending for #{users.map(&:username).join(', ')}."
         end        
         redirect_to group_path(group) 
       }

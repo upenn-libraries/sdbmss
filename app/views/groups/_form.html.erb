@@ -15,10 +15,18 @@
     <%= f.fields_for :group_users do |g| %>
     <div class="col-xs-5">
       <%= g.object.user.to_s %>
+      <!-- A user request -->
+      <% if not g.object.confirmed and g.object.created_by == g.object.user %>
+        <br><span class="text-success">(Request Pending)</span>
+      <% end %>
     </div>
     <div class="col-xs-7 text-right form-inline">
       <% if g.object.confirmed %>
-        <%= g.select :role, [["Admin", "Admin"], ["Member", "Member"]], {}, {class: "form-control"} %>
+        <%= g.select :role, [["Manager", "Manager"], ["Member", "Member"]], {}, {class: "form-control"} %>
+      <% elsif g.object.created_by == g.object.user %>
+        <%= link_to(group_user_path(g.object, group_user: {confirmed: true, admin: true}), method: :put, class: "btn btn-default") do %>
+          <span class="text-success">Confirm</span>
+        <% end %>
       <% else %>
         <span class="form-control" style='border: none; box-shadow: none;'>Invited</span>
       <% end %>

@@ -7,16 +7,26 @@
             <div class="alert alert-warning">
                 <div class="row">
                     <div class="col-xs-12 text-center">
-                        <span class='h4'>You have been invited to this group</span><br><br>
+                        <span class='h4'>
+                            <% if group_user.created_by != current_user %>
+                                You have been invited to this group
+                            <% else %>
+                                You have requested membership in this group
+                            <% end %>
+                        </span><br><br>
                     </div>
                 </div>
                 <div class="row">
+                    <% if group_user.created_by != current_user %>
                     <div class="col-xs-6 text-left">
                         <%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put %><br>
                     </div>
                     <div class="col-xs-6 text-right">
                         <%= link_to "Reject Invitation", group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to reject this invitation?" } %>
                     </div>
+                    <% else %>
+                        <p class="text-center text-muted">Your request for membership is pending.</p>
+                    <% end %>
                 </div>
             </div>
         <% end %>
@@ -24,13 +34,18 @@
             <span class="glyphicon glyphicon-education"></span>
             <%= @model.name %>
         </h2>
+        <% if not @model.users.include? current_user %>
+            <p>
+                <%= link_to "Request Membership", add_to_group_accounts_path(ids: [current_user.id], group_id: @model.id), :method => :post %>
+            </p>
+        <% end %>
         <!--
         <span class="text-muted">Created By: <%# render partial: "shared/username_with_profile_link", locals: { user: @model.created_by } %></span>
         -->
         <p><%= @model.description %></p>
 
         <div class="list-inline">
-            <li class='h4'>Admin</li>
+            <li class='h4'>Managers</li>
         <% @model.admin.each do |user| %>
             <li><%= render partial: "shared/username_with_profile_link", locals: { user: user } %>   </li>
         <% end %>
@@ -49,7 +64,7 @@
         <% end %>
         </div>
 
-        <% if group_user and group_user.role == 'Admin' %>
+        <% if group_user and group_user.role == 'Manager' %>
         <h4>Invite Users</h4>
         <%= form_tag('/accounts/add_to_group.html', method: :post) do %>
           <div class="input-group">
@@ -73,10 +88,14 @@
         <% end %>
 
     </div>
-    <div class="col-sm-6">        
+    <div class="col-sm-6">
         <h2 class='text-center'><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
-        <p class='text-muted text-center'>Leave a comment to contribute to the ongoing discussion.</p>
-        <%= render partial: "comments/show_all", locals: {comments: @model.comments.where(public: true), record: @model} %>
+        <% if @model.public or @model.members.include? current_user %>
+            <p class='text-muted text-center'>Leave a comment to contribute to the ongoing discussion.</p>
+            <%= render partial: "comments/show_all", locals: {comments: @model.comments.where(public: true), record: @model} %>
+        <% else %>
+            <p class="text-muted text-center">This group is not open to the public.  If you would like to contribute, request membership from a group manager.</p>
+        <% end %>
     </div>
     <div class="col-sm-1"></div>    
 </div>

@@ -1,5 +1,12 @@
 <div class="row">
   <div class="col-sm-12">
+
+    <% if @groups_requests.count > 0 %>
+      <h1 class="h1 text-center">
+        Group Requests
+      </h1>
+      <%= render partial: "table", locals: {groups: @groups_requests } %>
+    <% end %>
     
     <% if @groups_invites.count > 0 %>
       <h1 class="h1 text-center">
@@ -9,7 +16,7 @@
     <% end %>
 
     <h1 class="h1 text-center">
-      Admin Of
+      Manager Of
     </h1>
     <div class='text-center'>
       <%= link_to(new_group_path) do %>

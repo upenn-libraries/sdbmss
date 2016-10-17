@@ -13,7 +13,7 @@ class Group < ActiveRecord::Base
   include UserFields
 
   def admin
-    users.joins(:group_users).where(:group_users => {:role => "Admin", :confirmed => true}).distinct
+    users.joins(:group_users).where(:group_users => {:role => "Manager", :confirmed => true}).distinct
   end
 
   def members

@@ -9,7 +9,11 @@ class GroupUsersController < ApplicationController
   def destroy
     admin = params[:admin] || false
     group_user = GroupUser.find(params[:id])
-    group_user.destroy
+    if group_user.role == "Manager" && group_user.group.admin.count <= 1
+      flash[:error] = "You are trying to delete the last manager of the group - all groups must have at least one manager."
+    else
+      group_user.destroy
+    end
     if admin
       redirect_to edit_group_path(group_user.group)
     else

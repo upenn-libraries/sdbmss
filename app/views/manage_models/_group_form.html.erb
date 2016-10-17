@@ -1,5 +1,5 @@
 <div class="form-inline">
-  <% groups = Group.joins(:group_users).where(:group_users => {user: current_user, role: "Admin"}) %>
+  <% groups = Group.joins(:group_users).where(:group_users => {user: current_user, role: "Manager"}) %>
   <% if groups.count > 0 %>  
   <select style="width: 130px" class='form-control' id="group-select">
     <% groups.each do |group| %>
