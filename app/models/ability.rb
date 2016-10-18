@@ -66,7 +66,7 @@ class Ability
 
     can [:edit, :update], Entry, contributors: { :id => user.id }
     cannot :manage, [Group]
-    can :edit, Group, admin: { :id => user.id }
+    can [:edit, :update], Group, admin: { :id => user.id }
 =begin
     the old definitions - I am keeping them here now just for reference...
 
