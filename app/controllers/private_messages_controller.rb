@@ -14,26 +14,32 @@ class PrivateMessagesController < ApplicationController
     end
   end
 
-  def new
-    if params[:user_id] && User.exists?(params[:user_id].to_i)
-      @message = PrivateMessage.new
+#  def new
+#    if params[:user_id] && User.exists?(params[:user_id].to_i)
+#      @message = PrivateMessage.new
 
-      @user = User.find(params[:user_id])
-        if params[:private_message_id]
-        @reply = PrivateMessage.find(params[:private_message_id])
-        @messages = reply_chain(@reply)
-      end
-    else
-    end
-  end
+#      @user = User.find(params[:user_id])
+      #if params[:private_message_id]
+      #  @reply = PrivateMessage.find(params[:private_message_id])
+      #  @messages = reply_chain(@reply)
+      #end
+#    else
+#    end
+#  end
   
+  def new
+    @message = PrivateMessage.new
+  end
+
   def create
-    to_user = params[:to_user]
+    users = User.where(id: params[:to_user])
     @message = PrivateMessage.create(params_for_create_message)
     if @message.valid?
       @message.user_messages.create({user_id: current_user.id, method: "From"})
-      @message.user_messages.create!({user_id: to_user.to_i, method: "To"})
-      @message.sent_to.notify("#{@message.sent_by.to_s} sent you a message.", @message, "message")
+      users.each do |user|
+        @message.user_messages.create!({user_id: user.id, method: "To"})
+        user.notify("#{current_user.to_s} sent you a message.", @message, "message")
+      end
       #"#{@message.sent_by} sent you a message at #{@message.created_at.to_formatted_s(:long)}.<blockquote>#{@message.message.at(0..100)}</blockquote>"
       redirect_to @message
     else
@@ -43,6 +49,12 @@ class PrivateMessagesController < ApplicationController
   end
 
   def show
+    @previous = []
+    p = @message.private_message
+    while p do
+      @previous.unshift(p)
+      p = p.private_message
+    end
     if current_user.private_messages.received.include? @message
       @message.update!(unread: false)
     end
@@ -63,7 +75,7 @@ class PrivateMessagesController < ApplicationController
   private
 
   def params_for_create_message
-    params.require(:private_message).permit(:message, :title)
+    params.permit(:message, :title, :private_message_id)
   end
 
   def set_model

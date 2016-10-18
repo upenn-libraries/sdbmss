@@ -1,0 +1,31 @@
+<%= form_tag({:controller => "private_messages", :action => "create"}, :method => "post") do %>
+  <div class="form-group row">
+    <div class="col-sm-12">
+      <% if message %>
+        <%= hidden_field_tag :private_message_id, message.id %>
+      <% end %>
+      <label for="" class="control-label">To: </label>
+      <%= select_tag("to_user[]", options_for_select(User.all.collect { |u| [u.username, u.id] }, :selected => from), {prompt: 'Select User', class: 'select_users', multiple: 'multiple'}) %>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('.select_users').multiselect({
+                  enableFiltering: true,
+                  includeSelectAllOption: true,
+                  enableCaseInsensitiveFiltering: true          
+                });
+            });
+        </script>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-12">
+      <%= text_field_tag :title, title, class: "form-control", required: true, placeholder: "Title..." %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-12">
+      <%= text_area_tag :message, '', class: "form-control", rows: 5, required: true, placeholder: "Message..." %>
+    </div>
+  </div>
+  <%= submit_tag('Send', class: 'form-control') %>
+<% end %>

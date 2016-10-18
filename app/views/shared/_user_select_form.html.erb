@@ -4,8 +4,19 @@
     <option value="<%# user.username %>" realvalue="<%# user.id %>"><%# user.to_s %></option>
   <%# end %>
 </datalist>-->
-<select name="ids[]" id="" class="form-control">
+
+<select id="select_users" name="ids[]" id="" multiple="multiple">
   <% users.each do |user| %>
     <option value="<%= user.id %>"><%= user.username %></option>
   <% end %>
 </select>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#select_users').multiselect({
+          enableFiltering: true,
+          includeSelectAllOption: true,
+          enableCaseInsensitiveFiltering: true          
+        });
+    });
+</script>

@@ -421,10 +421,10 @@ h1 { font-size: 30px; margin-top: 0; }
   display: none;
 }
 
-.checkbox {
+.faq .checkbox {
   display: none;
 }
-.checkbox + label {
+.faq .checkbox + label {
   background: #eee;
   line-height: normal;
   margin: 0px; 

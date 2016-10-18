@@ -1,9 +1,32 @@
 <%= render partial: "header", locals: {title: @message.title} %>
 <div class="row">
   <div class="col-sm-12">
+    <% @previous.each do |previous| %>
+      <div class="panel panel-default">
+        <div class="panel-body text-muted">
+          <%= render partial: 'message', locals: {message: previous, truncate: false} %>  
+        </div>
+      </div>
+    <% end %>
     <div class="panel panel-default">
       <div class="panel-body">
         <%= render partial: 'message', locals: {message: @message, truncate: false} %>
+      </div>
+    </div>
+    <div class="panel-group" id="reply_options">
+      <div class="row">
+        <div class="col-sm-12">
+          <a href="#reply" class="btn btn-lg btn-default" data-toggle="collapse" data-parent='#reply_options'>Reply</a>
+          <a href="#reply_all" class="btn btn-lg btn-default" data-toggle="collapse" data-parent='#reply_options'>Reply All</a>
+        </div>
+      </div>
+      <div class="panel" style="padding-top: 10px;">
+        <div class="panel-collapse collapse" id="reply">
+          <%= render partial: 'form', locals: {message: @message, from: @message.sent_by.map(&:id), title: "Re: #{@message.title}"} %>
+        </div>
+        <div class="panel-collapse collapse" id="reply_all">
+          <%= render partial: 'form', locals: {message: @message, from: @message.sent_by.map(&:id) | @message.sent_to.map(&:id), title: "Re: #{@message.title}" } %>
+        </div>
       </div>
     </div>
   </div>
