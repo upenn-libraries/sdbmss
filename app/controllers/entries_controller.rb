@@ -193,7 +193,7 @@ class EntriesController < SearchableAuthorityController
             relation_type: EntryManuscript::TYPE_RELATION_IS
           )
           em.save
-        elsif params[:new_manuscript].present?
+        elsif params[:new_manuscript].present? && params[:original_entry]
           m = Manuscript.create!
           em = EntryManuscript.new(
             entry_id: @entry.id,
@@ -201,6 +201,12 @@ class EntriesController < SearchableAuthorityController
             relation_type: EntryManuscript::TYPE_RELATION_IS
           )
           em.save
+          em2 = EntryManuscript.new(
+            entry_id: params[:original_entry],
+            manuscript_id: m.id,
+            relation_type: EntryManuscript::TYPE_RELATION_IS
+          )
+          em2.save
         end
       end
     end

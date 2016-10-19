@@ -199,6 +199,9 @@ var BOOKMARK_SCOPE;
             return URI().search(true).new_manuscript;
         };
 
+        var getOriginalEntry = function () {
+            return URI().search(true).original_entry;
+        };
         /* returns the path to the Create Entry page for a source,
            optionally passing along the 'manuscript_id' parameter if
            there is one.
@@ -212,6 +215,10 @@ var BOOKMARK_SCOPE;
             var new_manuscript = getNewManuscript();
             if(new_manuscript) {
                 path += "&new_manuscript=" + new_manuscript;
+            }            
+            var original_entry = getOriginalEntry();
+            if(original_entry) {
+                path += "&original_entry=" + original_entry;
             }
             return path;
         };
@@ -276,6 +283,7 @@ var BOOKMARK_SCOPE;
             },
             getManuscriptId: getManuscriptId,
             getNewManuscript: getNewManuscript,
+            getOriginalEntry: getOriginalEntry,
             /* Returns a fn that can be used as error callback on angular promises */
             promiseErrorHandlerFactory: function(msg) {
                 return function(response) {
@@ -350,6 +358,10 @@ var BOOKMARK_SCOPE;
             var new_manuscript = sdbmutil.getNewManuscript();
             if(new_manuscript) {
                 path += "&manuscript_id=" + new_manuscript;
+            }
+            var original_entry = sdbmutil.getOriginalEntry();
+            if(original_entry) {
+                path += "&original_entry=" + original_entry;
             }
             return path;
         };
@@ -1101,6 +1113,11 @@ var BOOKMARK_SCOPE;
                 var new_manuscript = sdbmutil.getNewManuscript();
                 if (new_manuscript) {
                   entryToSave.new_manuscript = new_manuscript;
+                }
+
+                var original_entry = sdbmutil.getOriginalEntry();
+                if (original_entry) {
+                  entryToSave.original_entry = original_entry;
                 }
 
                 entryToSave.$save(
