@@ -195,6 +195,10 @@ var BOOKMARK_SCOPE;
             return URI().search(true).manuscript_id;
         };
 
+        var getNewManuscript = function () {
+            return URI().search(true).new_manuscript;
+        };
+
         /* returns the path to the Create Entry page for a source,
            optionally passing along the 'manuscript_id' parameter if
            there is one.
@@ -204,6 +208,10 @@ var BOOKMARK_SCOPE;
             var manuscript_id = getManuscriptId();
             if(manuscript_id) {
                 path += "&manuscript_id=" + manuscript_id;
+            }
+            var new_manuscript = getNewManuscript();
+            if(new_manuscript) {
+                path += "&new_manuscript=" + new_manuscript;
             }
             return path;
         };
@@ -267,6 +275,7 @@ var BOOKMARK_SCOPE;
                 return false;
             },
             getManuscriptId: getManuscriptId,
+            getNewManuscript: getNewManuscript,
             /* Returns a fn that can be used as error callback on angular promises */
             promiseErrorHandlerFactory: function(msg) {
                 return function(response) {
@@ -337,6 +346,10 @@ var BOOKMARK_SCOPE;
             var manuscript_id = sdbmutil.getManuscriptId();
             if(manuscript_id) {
                 path += "&manuscript_id=" + manuscript_id;
+            }
+            var new_manuscript = sdbmutil.getNewManuscript();
+            if(new_manuscript) {
+                path += "&manuscript_id=" + new_manuscript;
             }
             return path;
         };
@@ -1087,6 +1100,11 @@ var BOOKMARK_SCOPE;
                     entryToSave.manuscript_id = manuscript_id;
                 }
 
+                var new_manuscript = sdbmutil.getNewManuscript();
+                if (new_manuscript) {
+                  entryToSave.new_manuscript = new_manuscript;
+                }
+
                 entryToSave.$save(
                     $scope.postEntrySave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
@@ -1832,7 +1850,8 @@ var BOOKMARK_SCOPE;
             $scope.populateSourceViewModel($scope.source);
             
             // if this source has been created to add an entry to a Manuscript record
-            if (sdbmutil.getManuscriptId()) {
+            if (sdbmutil.getManuscriptId() || sdbmutil.getNewManuscript()) {
+              console.log('should redirect without modal here.');
               sdbmutil.redirectToEntryCreatePage(source.id);
               return;
             }

@@ -467,9 +467,14 @@
     </tbody>
 </table>
 
+    <p>Do you have additional information about the manuscript described here? 
 <% if entry.manuscript %>
-    <p>Do you have additional information about the manuscript described here? <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: entry.manuscript.id, source_type: 4}) %></p>
+        <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: entry.manuscript.id, source_type: 4}) %>
+<% else %>
+        <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, new_manuscript: true, source_type: 4}) %>
 <% end %>
+    </p>
+    
 
 
 <%= render partial: "comments/show_all", locals: {comments: entry.comments.where(public: true), record: entry} %>

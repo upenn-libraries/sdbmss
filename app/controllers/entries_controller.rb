@@ -24,7 +24,7 @@ class EntriesController < SearchableAuthorityController
   
   include LogActivity
 
-  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate, :verify]
+  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate, :verify, :personal_observation]
 
   before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy, :similar, :mark_as_approved, :deprecate]
 
@@ -91,7 +91,6 @@ class EntriesController < SearchableAuthorityController
     end
     # respond to csv..., etc.
   end
-
 
   # JSON data structure optimized for editing page. This weird action
   # exists because we want CatalogController to handle #show, but we
@@ -191,6 +190,14 @@ class EntriesController < SearchableAuthorityController
           em = EntryManuscript.new(
             entry_id: @entry.id,
             manuscript_id: params[:manuscript_id],
+            relation_type: EntryManuscript::TYPE_RELATION_IS
+          )
+          em.save
+        elsif params[:new_manuscript].present?
+          m = Manuscript.create!
+          em = EntryManuscript.new(
+            entry_id: @entry.id,
+            manuscript_id: m.id,
             relation_type: EntryManuscript::TYPE_RELATION_IS
           )
           em.save
