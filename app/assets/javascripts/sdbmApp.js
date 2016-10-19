@@ -705,13 +705,11 @@ var BOOKMARK_SCOPE;
           $scope.selecting_source = true;
           $scope.selecting_source_type = $scope.entry.source.source_type.id;
           $scope.old_source_id = $scope.entry.source.id;
-          //console.log($scope.entry.source);
           $scope.entry.source_bk = $scope.entry.source;
           $scope.entry.source = undefined
         };
 
         $scope.updateProvenanceDateRange = function (prov, date) {
-          //console.log('here', date);
           var observedDate = date.date;
           if(observedDate && (date.type == "Start" || date.type == "End")) {
               $http.get("/entry_dates/parse_observed_date.json" , {
@@ -1851,7 +1849,6 @@ var BOOKMARK_SCOPE;
             
             // if this source has been created to add an entry to a Manuscript record
             if (sdbmutil.getManuscriptId() || sdbmutil.getNewManuscript()) {
-              console.log('should redirect without modal here.');
               sdbmutil.redirectToEntryCreatePage(source.id);
               return;
             }
