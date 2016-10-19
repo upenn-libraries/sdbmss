@@ -1106,12 +1106,23 @@ Private Message Styling
  */
 
 .private_message {
-  padding: 10px 0px;
+  padding: 5px;
   border-bottom: 1px solid #ddd;
+  /* box-shadow: 2px 2px 3px lightgray;*/
+  margin: 10px 0px;
 }
 
 .private_message_preview {
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+}
+
+.multiselect-container {
+  max-height: 50vh;
+  overflow-y: scroll;
+}
+
+.text-default {
+  color: #222;
 }

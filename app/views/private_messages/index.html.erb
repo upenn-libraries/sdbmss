@@ -1,25 +1,34 @@
 <%= render partial: "header", locals: {title: (@sent_by ? "SENT MAIL" : "INBOX")} %>
 
-<% @messages.each do |m| %>
+<% @messages.reverse.each do |m| %>
+  <% um = m.user_messages.where(user: current_user).first %>
   <div class="row private_message">
     <div class="col-sm-1">
       <%= link_to(private_message_path(m, format: 'html'),  method: :delete, format: 'json', data: { confirm: 'Are you sure?' }) do %>
         <span class="glyphicon glyphicon-remove"></span> Delete
       <% end %>
     </div>
-    <div class="col-sm-2">
-      <% (m.sent_by | m.sent_to - [current_user]).each do |from| %>
-        <%= from.to_s %>
-      <% end %>
-    </div>
-    <div class="col-sm-7 private_message_preview">
-      <strong>
-        <%= link_to m.title, private_message_path(m) %>
-      </strong>
-      <%= sanitize simple_format(m.message), tags: %w(code b i br strong em a), attributes: %w(href) %>
-    </div>
-    <div class="col-sm-2 text-right">
-      <%= m.created_at.to_formatted_s(:long) %>
-    </div>
+    <%= link_to(private_message_path(m), :class => (um && um.unread ? "text-default" : "text-muted")) do %>
+      <div class="col-sm-2">
+        <% users = m.users %>
+        <% if users.count > 2 %>
+          <%= users.first.username %>...<%= users.last.username %>
+        <% else %>
+          <%= users.map(&:username).join(", ") %>
+        <% end %>
+      </div>
+      <div class="col-sm-7 private_message_preview">
+        <% if um && um.unread %>
+          <strong class="glyphicon glyphicon-exclamation-sign text-success"></strong>
+        <% end %>
+        <strong>
+          <%= m.title %>
+        </strong>
+        <%= sanitize simple_format(m.message), tags: %w(code b i br strong em a), attributes: %w(href) %>
+      </div>
+      <div class="col-sm-2 text-right">
+        <%= m.created_at.to_formatted_s(:long) %>
+      </div>
+    <% end %>
   </div>
 <% end %>

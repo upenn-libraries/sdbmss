@@ -16,6 +16,9 @@ class User < ActiveRecord::Base
 
   has_many :user_messages, foreign_key: "user_id"
   has_many :private_messages, through: :user_messages
+  has_many :sent_messages, foreign_key: "created_by_id", class_name: "PrivateMessage"
+
+  #has_many :sent_messages, foreign_key: "created_by_id", class_name: "PrivateMessage"
 
   has_many :notifications
   has_one :notification_setting
@@ -59,15 +62,16 @@ class User < ActiveRecord::Base
     date :last_sign_in_at
   end
 
-  scope :sent_by, -> () { joins(:user_messages).where("user_messages.method = 'From'").distinct }
-  scope :sent_to, -> () { joins(:user_messages).where("user_messages.method = 'To'").distinct }
-
   # Connects this user object to Blacklights Bookmarks. 
   include Blacklight::User
   include UserFields
   include HasPaperTrail
   include CreatesActivity
   extend SolrSearchable
+
+  def all_messages
+    (private_messages | sent_messages)
+  end
 
   def self.statistics
     results = ActiveRecord::Base.connection.execute("select username, count(*) from users inner join entries on entries.created_by_id = users.id where entries.deleted = 0 group by username")

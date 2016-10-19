@@ -8,24 +8,12 @@ class PrivateMessagesController < ApplicationController
   def index
     if params[:sent_by]
       @sent_by = true
-      @messages = current_user.private_messages.sent.reverse_order
+      @messages = current_user.sent_messages
     else
-      @messages = current_user.private_messages.received.reverse_order
+      #ids = (current_user.private_messages.pluck(:private_message_id) | current_user.sent_messages.pluck(:private_message_id)).compact
+      @messages = current_user.private_messages
     end
   end
-
-#  def new
-#    if params[:user_id] && User.exists?(params[:user_id].to_i)
-#      @message = PrivateMessage.new
-
-#      @user = User.find(params[:user_id])
-      #if params[:private_message_id]
-      #  @reply = PrivateMessage.find(params[:private_message_id])
-      #  @messages = reply_chain(@reply)
-      #end
-#    else
-#    end
-#  end
   
   def new
     @message = PrivateMessage.new
@@ -33,14 +21,14 @@ class PrivateMessagesController < ApplicationController
 
   def create
     users = User.where(id: params[:to_user])
-    @message = PrivateMessage.create(params_for_create_message)
+    @message = PrivateMessage.new(params_for_create_message)
+    @message.save_by(current_user)
     if @message.valid?
-      @message.user_messages.create({user_id: current_user.id, method: "From"})
       users.each do |user|
         @message.user_messages.create!({user_id: user.id, method: "To"})
-        user.notify("#{current_user.to_s} sent you a message.", @message, "message")
+      #  user.notify("#{current_user.to_s} sent you a message.", @message, "message")
       end
-      #"#{@message.sent_by} sent you a message at #{@message.created_at.to_formatted_s(:long)}.<blockquote>#{@message.message.at(0..100)}</blockquote>"
+      flash[:success] = "Message sent to #{users.map(&:username).join(', ')}."
       redirect_to @message
     else
       flash[:error] = "Invalid message.  Both a message and a title are required."
@@ -51,12 +39,12 @@ class PrivateMessagesController < ApplicationController
   def show
     @previous = []
     p = @message.private_message
+    if (um = @message.user_messages.where(user: current_user).first)
+      um.update(unread: false)
+    end
     while p do
       @previous.unshift(p)
       p = p.private_message
-    end
-    if current_user.private_messages.received.include? @message
-      @message.user_messages.where(user: current_user)[0].update!(unread: false)
     end
   end
 
@@ -80,11 +68,6 @@ class PrivateMessagesController < ApplicationController
 
   def set_model
     @message = PrivateMessage.find(params[:id])
-    if not @message.users.include?(current_user)
-      @message = nil
-      flash[:error] = "You are not authorized to access this page."
-      redirect_to dashboard_path
-    end
   end
 
 end
