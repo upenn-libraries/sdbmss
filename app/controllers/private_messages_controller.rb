@@ -56,7 +56,7 @@ class PrivateMessagesController < ApplicationController
       p = p.private_message
     end
     if current_user.private_messages.received.include? @message
-      @message.update!(unread: false)
+      @message.user_messages.where(user: current_user)[0].update!(unread: false)
     end
   end
 

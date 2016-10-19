@@ -1098,3 +1098,20 @@ so that gray backdrop shvows up correctly */
   background: #f8f8f8;
   color: #666;
 }
+
+/*
+
+Private Message Styling
+
+ */
+
+.private_message {
+  padding: 10px 0px;
+  border-bottom: 1px solid #ddd;
+}
+
+.private_message_preview {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
