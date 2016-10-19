@@ -706,6 +706,35 @@ describe "Data entry", :js => true do
       expect(page).to have_select('transaction_type', selected: 'A Gift')
     end
 
+    it "should present the option to create a personal observation from the entry public view" do
+      visit entry_path(Entry.last)
+
+      expect(page).to have_content("Create A Personal Observation")
+    end
+
+    it "should successfully create a manuscript record for an unlinked entry when creating a new personal observation" do
+      visit entry_path(Entry.last)
+
+      expect(page).to have_content("Create A Personal Observation")
+
+      click_link "Create A Personal Observation"
+
+      expect(page).to have_content("Create a New Personal Observation")
+
+      fill_in "title", with: "Totally Unique Personal Observation Source" 
+      click_button "Save"
+
+      expect(page).to have_content("Add an Entry")
+
+      first(".save-button").click
+
+      expect(page).to have_content("Successfully saved Entry record")
+
+      click_link "View this entry"
+
+      expect(page).to have_content("This entry has been identified as belonging to manuscript record #{Manuscript.last.public_id}, which has 2 entries in the SDBM.")
+    end
+
 end
 
   context "when user is not logged in" do
