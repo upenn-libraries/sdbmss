@@ -59,6 +59,8 @@ class User < ActiveRecord::Base
   scope :sent_by, -> () { joins(:user_messages).where("user_messages.method = 'From'").distinct }
   scope :sent_to, -> () { joins(:user_messages).where("user_messages.method = 'To'").distinct }
 
+  scope :active_only, -> { where(active: true) }
+
   # Connects this user object to Blacklights Bookmarks. 
   include Blacklight::User
   include UserFields
@@ -158,7 +160,7 @@ class User < ActiveRecord::Base
       n.save!
     end
     if can_email(category)
-      NotificationMailer.notification_email(n).deliver_now
+      NotificationMailer.delay.notification_email(n)
     end
   end
 

@@ -24,13 +24,13 @@
                         <% if can? :review, name %>
                             <% if !name.reviewed %>
                                 <li class="link">
-                                    <%= link_to "Approve", name_path(name, reviewed: true), :method => :put %>
+                                    <%= link_to "Approve", name_path(name, reviewed: true), :method => :put, :data => {:confirm => "Does this name conform to the SDBM formatting standards? (e.g. Last name, First Name, Title, Life Dates)"} %>
                                 </li>
                             <% end %>
                         <% end %>
                         <% if !name.confirmed and can? :edit, name %>
                             <li class="link">
-                                <%= link_to "Confirm", name_path(name, confirmed: true), :method => :put %>
+                                <%= link_to "Confirm", name_path(name, confirmed: true), :method => :put, :data => {:confirm => "Do you have adequate information to assert that this name refers to a real individual?"} %>
                             </li>
                         <% end %>
                     <% end %>

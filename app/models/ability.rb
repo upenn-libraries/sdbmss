@@ -31,6 +31,7 @@ class Ability
 
     if ['contributor', 'editor', 'super_editor', 'admin'].member? user.role
       can [:edit, :update], :all, :created_by_id => user.id
+      can :destroy, [Comment, Reply], :created_by_id => user.id
       can :link, :all
       can :index, Entry
 

@@ -26,6 +26,13 @@ class CommentsController < SearchableAuthorityController
         @comment, 
         "comment"
       )
+      User.where(role: "admin").each do |user|
+        user.notify(
+          "#{current_user.to_s} has commented on #{@comment.commentable.public_id}",
+          @comment, 
+          "all_comment"
+        )
+      end
     end
     redirect_to polymorphic_path(@comment.commentable, anchor: "comment_#{@comment.id}")
   end

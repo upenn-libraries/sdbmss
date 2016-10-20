@@ -99,10 +99,14 @@ class Name < ActiveRecord::Base
     string :other_info
     integer :id
     text :name, :more_like_this => true do
-      [name.mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/n,'').downcase.to_s, name]
+      silence_warnings {
+        [name.mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/n,'').downcase.to_s, name]
+      }
     end
     string :name, :multiple => true do
-      [name.mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/n,'').downcase.to_s, name]
+      silence_warnings {
+        [name.mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/n,'').downcase.to_s, name]
+      }
     end
     string :viaf_id
     integer :created_by_id
