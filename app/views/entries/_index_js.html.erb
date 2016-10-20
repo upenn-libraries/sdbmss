@@ -46,6 +46,7 @@
 
          var sdbmTable = new SDBM.EntryTable("#search_results", {
              heightBuffer: 420,
+            fixedColumns: 3,
              prependColumns: [
                  {
                      sdbmssMinWidth: "25px",
@@ -217,7 +218,7 @@
          resourceNameSingular: "<%= resource_name.singularize %>",
          resourceNamePlural: "<%= resource_name.pluralize %>",
          showOnlyRecordsCreatedByUser: onlyMine,
-         searchNameField: "name"
+         searchNameField: "name",
      });
 
      SDBM.setPageFullWidth();

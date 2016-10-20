@@ -191,7 +191,8 @@ var SDBM = SDBM || {};
             },
             heightBuffer: 400,
             columns: manageRecords.getColumns(),
-            order: manageRecords.getDefaultSort()
+            order: manageRecords.getDefaultSort(),
+            fixedColumns: manageRecords.options.fixedColumns
         });
 
         $("#search_results").on('draw.dt', function () {
