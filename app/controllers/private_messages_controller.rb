@@ -1,3 +1,48 @@
+class Chain
+  attr_accessor :messages
+
+  def initialize(message, user)
+    @messages = []
+    # climb up to the beginning of the chain
+    while message.private_message do
+      message = message.private_message
+    end
+    compile_messages(message, user)
+    @messages = @messages.sort { |a, b| a.created_at <=> b.created_at }
+  end
+
+  def compile_messages(message, user)
+    # add all the messages in the 'tree' to the message list
+    rp = message.replies
+    if rp.count > 0
+      rp.each { |reply| compile_messages(reply, user) }
+    end
+    if message.users.include?(user) or message.created_by == user
+      @messages.push(message)
+    end
+  end
+
+  def include?(message)
+    @messages.include? message
+  end
+
+  def latest(user=nil)
+    if not user
+      @messages.last
+    else
+      @messages.select { |msg| msg.created_by == user }.last
+    end
+  end
+
+  def unread(user)
+    @messages.select { |m| m.unread(user) }.count
+  end
+
+  def users(user)
+    @messages.reverse.map { |m| m.users + [m.created_by] }.flatten.uniq
+  end
+end
+
 class PrivateMessagesController < ApplicationController
   before_action :authenticate_user!, only: [:index, :show, :new, :create, :edit, :update, :destroy, :search]
 
@@ -8,11 +53,20 @@ class PrivateMessagesController < ApplicationController
   def index
     if params[:sent_by]
       @sent_by = true
-      @messages = current_user.sent_messages
+      messages = current_user.sent_messages
     else
-      #ids = (current_user.private_messages.pluck(:private_message_id) | current_user.sent_messages.pluck(:private_message_id)).compact
-      @messages = current_user.private_messages
+      messages = current_user.private_messages
     end
+    @chains = []
+    current_user.sent_messages.each do |pm|
+      if @chains.select { |ch| ch.include? pm }.count > 0
+        # already in a chain, so pass
+      else
+        chain = Chain.new(pm, current_user)
+        @chains.push(chain)
+      end
+    end
+    @chains = @chains.sort { |a, b| b.latest.created_at <=> a.latest.created_at }
   end
   
   def new
@@ -37,15 +91,9 @@ class PrivateMessagesController < ApplicationController
   end
 
   def show
-    @previous = []
-    p = @message.private_message
-    if (um = @message.user_messages.where(user: current_user).first)
-      um.update(unread: false)
-    end
-    while p do
-      @previous.unshift(p)
-      p = p.private_message
-    end
+    @chain = Chain.new(@message, current_user)
+    # FIX ME: how to mark messages as READ, but only after the page loads
+    @chain.messages.each { |message| message.delay.read(current_user) }
   end
 
   def destroy

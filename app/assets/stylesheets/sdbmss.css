@@ -1118,6 +1118,10 @@ Private Message Styling
   white-space: nowrap;
 }
 
+.multiselect {
+  text-align: left;
+}
+
 .multiselect-container {
   max-height: 50vh;
   overflow-y: scroll;
@@ -1125,4 +1129,15 @@ Private Message Styling
 
 .text-default {
   color: #222;
+}
+
+.btn-no-border {
+  color: #222;
+}
+.btn-no-border:hover {
+  color: #888;
+}
+.btn-no-border.active, .btn-no-border:active, .btn-no-border:focus {
+  box-shadow: none;
+  color: #03A9F4;
 }

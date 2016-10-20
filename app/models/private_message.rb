@@ -24,6 +24,24 @@ class PrivateMessage < ActiveRecord::Base
     users
   end
 
+  def unread(user)
+    um = user_messages.where(user_id: user.id).first
+    if um
+      um.unread
+    else
+      false
+    end
+  end
+
+  def read(user)
+    um = user_messages.where(user_id: user.id).first
+    if um
+      um.update(unread: false)
+    else
+      false
+    end
+  end
+
   # used, at the moment, for notifications only
   def preview
     %(<blockquote><b>#{title}</b>
