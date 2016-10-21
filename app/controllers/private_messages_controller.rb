@@ -58,7 +58,7 @@ class PrivateMessagesController < ApplicationController
       messages = current_user.private_messages
     end
     @chains = []
-    current_user.sent_messages.each do |pm|
+    messages.each do |pm|
       if @chains.select { |ch| ch.include? pm }.count > 0
         # already in a chain, so pass
       else
