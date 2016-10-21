@@ -1,8 +1,7 @@
 <%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
 <% group_user = @model.group_users.where(user: current_user).last %>
 <div class="row">
-    <div class="col-sm-1"></div>
-    <div class="col-sm-4" style="padding: 0px 15px;">
+    <div class="col-sm-6" style="padding: 0px 15px;">
         <% if group_user and not group_user.confirmed %>
             <div class="alert alert-warning">
                 <div class="row">
@@ -30,13 +29,15 @@
                 </div>
             </div>
         <% end %>
-        <h2>
+        <h2 class='text-center'>
             <span class="glyphicon glyphicon-education"></span>
             <%= @model.name %>
         </h2>
         <% if not @model.users.include? current_user %>
-            <p>
-                <%= link_to "Request Membership", add_to_group_accounts_path(ids: [current_user.id], group_id: @model.id), :method => :post %>
+            <p class='text-center'>
+                <%= link_to(add_to_group_accounts_path(ids: [current_user.id], group_id: @model.id), :method => :post) do %>
+                    <span class="glyphicon glyphicon-pencil"></span> Request Membership
+                <% end %>
             </p>
         <% end %>
         <!--
@@ -77,12 +78,16 @@
         <% end %>
         <% end %>
 
-        <h4>Entries</h4>
-        <% @model.entries.each do |entry| %>
-            <p>
-                <%= link_to "#{entry.public_id} - #{entry}", entry_path(entry) %>
-            </p>
-        <% end %>
+        <h4>
+            Entries
+            <small class="pull-right"><%= link_to(entries_path) do %> <span class="glyphicon glyphicon-plus"></span> Add Entries <% end %></small> 
+        </h4>
+        <%= render partial: "entries", locals: {entries: @model.entries} %>
+        <%# @model.entries.each do |entry| %>
+            <!--<p>
+                <%#= link_to "#{entry.public_id} - #{entry}", entry_path(entry) %>
+            </p>-->
+        <%# end %>
         <% if @model.entries.count <= 0 %>
             <p class='text-muted'>This group does not have permission to edit any entries at the moment.</p>
         <% end %>
@@ -97,5 +102,4 @@
             <p class="text-muted text-center">This group is not open to the public.  If you would like to contribute, request membership from a group manager.</p>
         <% end %>
     </div>
-    <div class="col-sm-1"></div>    
 </div>

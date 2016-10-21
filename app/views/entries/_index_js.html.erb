@@ -11,7 +11,7 @@
      <% if can? :manage, model_class  %>
          var onlyMine = <%= params[:created_by_user] || 0 %>;
      <% else %>
-         var onlyMine = 1;
+         var onlyMine = 0;
      <% end %>
 
      <% if can? :deprecate, model_class %>
@@ -46,7 +46,6 @@
 
          var sdbmTable = new SDBM.EntryTable("#search_results", {
              heightBuffer: 420,
-            fixedColumns: 3,
              prependColumns: [
                  {
                      sdbmssMinWidth: "25px",
@@ -78,15 +77,17 @@
                             var manuscriptId = full[sdbmTable.getColumnIndex("Manuscript")];
                             var linkingToolURL = manuscriptId ? '/linkingtool/manuscript/' + manuscriptId : '/linkingtool/entry/' + entryId;
 
-                            var created_by = full[sdbmTable.getColumnIndex("Added By")];
+                            var editable = full[sdbmTable.getColumnIndex("Can Edit")];
 
                             var result = '<span class="btn-group options-btn-group">';
                             // bookmark button
                             result += '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
 
                             // edit
-                            if (canEdit || created_by == username) {
+                            if (editable) {
                                 result += '<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>';
+                            } else {
+                                result += '<a class="btn btn-xs btn-default disabled">Edit</a>';
                             }
 
                             // destroy
@@ -218,7 +219,7 @@
          resourceNameSingular: "<%= resource_name.singularize %>",
          resourceNamePlural: "<%= resource_name.pluralize %>",
          showOnlyRecordsCreatedByUser: onlyMine,
-         searchNameField: "name",
+         searchNameField: "name"
      });
 
      SDBM.setPageFullWidth();

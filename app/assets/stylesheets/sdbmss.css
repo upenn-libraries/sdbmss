@@ -1098,3 +1098,8 @@ so that gray backdrop shvows up correctly */
   background: #f8f8f8;
   color: #666;
 }
+.one-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

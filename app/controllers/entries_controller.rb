@@ -119,7 +119,8 @@ class EntriesController < SearchableAuthorityController
 
       data = @document_list.map do |doc|
         entry = doc.model_object
-        !entry.nil? ? entry.as_flat_hash : {}
+        # have to add can_edit here, since this is where current_user is accessible
+        !entry.nil? ? entry.as_flat_hash.merge({can_edit: can?(:edit, entry)}) : {}
       end
 
       retval.merge!({

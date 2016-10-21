@@ -1,0 +1,46 @@
+<% sources = entries.map(&:source).uniq %>
+<% manuscripts = entries.map(&:manuscript).uniq %>
+
+<ul class="nav nav-tabs nav-justified">
+  <li class="active"><a data-toggle='tab' href="#all_entries">All</a></li>
+  <li><a data-toggle='tab' href="#by_sources">By Sources</a></li>
+  <li><a data-toggle='tab' href="#by_manuscripts">By Manuscripts</a></li>
+</ul>
+<br>
+<div class="tab-content">
+  <div id="all_entries" class="tab-pane fade in active">
+    <% entries.each do |entry| %>
+      <p class='one-line'>
+        <strong><%= link_to "#{entry.public_id}", entry_path(entry) %></strong> <%= entry.to_s %>
+      </p>
+    <% end %>
+  </div>
+  <div id="by_sources" class="tab-pane fade">
+    <% sources.each do |source| %>
+      <p>
+        <strong><%= link_to "#{source.public_id}", source_path(source) %></strong> <%= source.to_s %>
+        <div style="padding-left: 20px">
+          <% entries.select { |e| e.source_id == source.id }.each do |entry| %>
+            <p class='one-line'><strong><%= link_to "#{entry.public_id}", entry_path(entry) %></strong> <%= entry.to_s %></p>
+          <% end %>
+        </div>
+      </p>
+    <% end %>
+  </div>
+  <div id="by_manuscripts" class="tab-pane fade">
+    <% manuscripts.each do |mss| %>
+      <p>
+        <% if mss.nil? %>
+          <p><strong>Unlinked</strong></p>
+        <% else %>
+          <strong><%= link_to "#{mss.public_id}", manuscript_path(mss) %></strong> <%= mss.to_s %>
+        <% end %>
+        <div style="padding-left: 20px">
+          <% entries.select { |e| e.manuscript == mss }.each do |entry| %>
+            <p class='one-line'><strong><%= link_to "#{entry.public_id}", entry_path(entry) %></strong> <%= entry.to_s %></p>
+          <% end %>
+        </div>
+      </p>
+    <% end %>
+  </div>
+</div>

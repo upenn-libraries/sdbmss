@@ -567,6 +567,11 @@ var SDBM = SDBM || {};
                     sdbmssMaxWidth: "130px",
                     title: 'Superceded By',
                     sdbmssSortField: 'superceded_by_id'
+                },
+                {
+                    title: "Can Edit",
+                    visible: false,
+                    searchable: false
                 }
             ]
         };
@@ -668,7 +673,8 @@ var SDBM = SDBM || {};
                             result.updated_by,
                             result.approved,
                             result.deprecated,
-                            result.superceded_by_id
+                            result.superceded_by_id,
+                            result.can_edit
                         ];
                     });
                     
