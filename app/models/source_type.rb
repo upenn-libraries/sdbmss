@@ -50,4 +50,8 @@ class SourceType < ActiveRecord::Base
     find_by(name: UNPUBLISHED)
   end
 
+  def to_s
+    display_name
+  end
+
 end

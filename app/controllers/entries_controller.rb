@@ -198,6 +198,7 @@ class EntriesController < SearchableAuthorityController
           )
           em.save
         end
+        @transaction_id = PaperTrail.transaction_id
       end
     end
     respond_to do |format|

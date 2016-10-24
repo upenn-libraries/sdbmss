@@ -1,17 +1,12 @@
-<div class="panel panel-default">
-  <div class="panel-body">
-    <div class="col-sm-6">
-    <% summary.each_with_index do | (field, value), index| %>
-  <% if index == (summary.count / 2.0).ceil %>
-    </div>
-    <div class="col-sm-6">
-  <% end %>
-      <div class="panel panel-default" id="blah_<%= index %>">
+<div class="row">
+  <% summary.each_with_index do | (field, value), index| %>
+    <div class="col-sm-4">
+      <div class="panel">
         <div class="panel-heading" data-toggle='collapse' href="#id_<%= field %>">
           <div class="panel-title"><span class="h4"><%= field.to_s.humanize %>: <%= value[:total] %><span class="pull-right glyphicon glyphicon-chevron-down"></span></span></div>
         </div>
         <div class="panel-collapse collapse" id="id_<%= field %>">
-          <ul class="list-group">
+          <ul class="list-group list-group-no-border">
             <% value.each do |f, v| %>
               <% if f != :total %>
                 <li class="list-group-item"><strong><%= field != :active_users ? f.to_s.humanize.pluralize : f.to_s %>:</strong> <%= v %></li>
@@ -20,7 +15,6 @@
           </ul>
         </div>
       </div>
-    <% end %>
     </div>
-  </div>
-</div> 
+  <% end %>
+</div>

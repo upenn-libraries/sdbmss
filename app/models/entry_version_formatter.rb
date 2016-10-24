@@ -5,6 +5,15 @@ class EntryVersionFormatter
 
   attr_reader :version
 
+  # ignore these fields for ALL record types
+  GENERIC_IGNORE_FIELDS = [
+    'created_by_id',   # redundant, since it is stored with version information anyway
+    'created_at',   # likewise
+    'updated_by_id',
+    'updated_at',
+    'id'
+  ]
+
   IGNORE_FIELDS = [
     'Sale.id',
     'Sale.entry_id',
@@ -24,7 +33,6 @@ class EntryVersionFormatter
     'EntryLanguage.id',
     'EntryLanguage.entry_id',
     'EntryManuscript.id',
-    'EntryManuscript.entry_id',
     'EntryMaterial.id',
     'EntryMaterial.entry_id',
     'EntryPlace.id',
@@ -37,6 +45,8 @@ class EntryVersionFormatter
     'EntryUse.entry_id',
     'Provenance.id',
     'Provenance.entry_id',
+    'Comment.commentable_id',
+    'Comment.commentable_type'
   ]
 
   def initialize(version)
@@ -103,7 +113,7 @@ class EntryVersionFormatter
     details = []
     if version.event == 'update'
       skip(version.changeset).each do |field, values|
-        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}")
+        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}")
           if EntryVersionFormatter.isClass(field)
             f = EntryVersionFormatter.toClass(field)
             if f.exists?(values[0])
@@ -119,7 +129,7 @@ class EntryVersionFormatter
     elsif version.event == 'create'
       skip(version.changeset).each do |field, values|
         value = values[1]
-        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
+        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}") && value.present?
           if EntryVersionFormatter.isClass(field)
             f = EntryVersionFormatter.toClass(field)
             if f.exists?(value)
@@ -132,7 +142,7 @@ class EntryVersionFormatter
     elsif version.event == 'destroy'
       obj = version.reify
       skip(obj.attributes).each do |field, value|
-        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
+        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}") && value.present?
           if EntryVersionFormatter.isClass(field)
             f = EntryVersionFormatter.toClass(field)
             if f.exists?(value)
@@ -155,6 +165,8 @@ class EntryVersionFormatter
       return Name
     elsif ['created_by_id', 'updated_by_id', 'approved_by_id', 'reviewed_by_id'].include? field
       return User
+    elsif ['entry_id']
+      return Entry
     else
       return field.gsub('_id', '').capitalize.classify.constantize
     end

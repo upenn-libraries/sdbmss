@@ -1,60 +1,24 @@
-<h3>Recent Activity</h3>
-<%= form_tag({:controller => "activities", :action => "index"}, :method => "get", :class => "form-inline") do %>
-<div class="well">
-    <div class="row">
-        <div class="col-sm-10">
-            <div class="form-inline">
-                <div class="form-group">
-                    <%= text_field 'users[username]', "", class: 'form-control', placeholder: 'Username...',value: (params[:users][:username] if params[:users] ) %>            
-                    <%= select_tag :event, options_for_select([['Action', ''], ['Edit', 'update'], ['Add', 'create'], ['Delete', 'destroy']], params[:event]), class: 'form-control', placeholder: 'Event' %>
-                    <%= select_tag :item_type, options_for_select([['Type', ''], 'Entry', 'Name', 'Source', 'Language', 'Place', 'Manuscript'], params[:item_type]), class: 'form-control', placeholder: 'Record Type'%>
-                    <%= date_field :start_date, "", class: 'form-control', value: params[:start_date] || (Date.today - 100.years).to_s %> to 
-                    <%= date_field :end_date, "", class: 'form-control', value: params[:end_date] || (Date.today + 1.day).to_s %>            
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-2 text-right">
-            <%= submit_tag "Filter", class: 'form-control btn-info' %>
-            <%= link_to "Clear", activities_path, class: "btn btn-warning" %>
-        </div>
-        <div class="col-sm-10">
-        </div>
-    </div>
-    <% end %>
-</div>
-<%= render partial: "activities/summary", locals: {summary: @summary} %>
-<ul id='activity' class='list-group'>
-    <%= render partial: "activities/more" %>
-</ul>
 <div class="row">
-    <div class="col-sm-12 text-center">
-        <a id="loadMore" class='btn btn-default'>Load More...</a>
+    <div class="col-sm-12">
+        
+    <ul class="nav nav-tabs">
+      <% if current_user.role == "admin" %>
+          <li><a data-toggle="tab" href="#admin">Admin</a></li>
+      <% end %>
+      <li class="active"><a data-toggle="tab" href="#activity">Recent Activity</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <div id="activity" class="tab-pane fade in active">
+        <h3>HOME</h3>
+        <p>Some content.</p>
+      </div>
+      <% if current_user.role == "admin" %>
+          <div id="admin" class="tab-pane fade">
+            <%= render partial: "admin" %>
+          </div>
+      <% end %>
+    </div>
+    
     </div>
 </div>
-<script>
-    var page = 1;
-    var total_pages = <%= @num_pages %>;
-    if (page >= total_pages) $('#loadMore').addClass('disabled').text('All Activity Loaded...');
-
-    $('#loadMore').click(function (e) {
-        page += 1;
-        if (page >= total_pages) $('#loadMore').addClass('disabled').text('All Activity Loaded...');
-        query = window.location.href.split("?")[1]
-        $.get("?" + query + '&more=true&page=' + page, function (result) {
-            var more = $(result);
-            more.hide();
-            $('#activity').append(more);
-            more.slideDown();
-            $('html, body').animate({
-                scrollTop: $("#loadMore").offset().top
-            }, 500);
-        });
-        $('.activity-list').click(expandActivity);
-    });
-
-    $('.activity-list').click(expandActivity);
-
-    function expandActivity (e) {
-        $(this).toggleClass('list-inline').toggleClass('no-overflow');
-    }
-</script>

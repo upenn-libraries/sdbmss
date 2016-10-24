@@ -2,13 +2,11 @@
   <% if version.details.count == 0 %>
     No changes to display...
   <% else %>
-    <ul class='activity-list list-inline no-overflow'>
     <% version.details.each_with_index do |d, index| %>
-      <li>
+      <p>
       <% d = d.split(":") %>
       <strong><%= d[0] %>:</strong> <%= d[1] %></span>
     <% end %>
-    </li>
-    </ul>
+    </p>
   <% end %>
 </div>
