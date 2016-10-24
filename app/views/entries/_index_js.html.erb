@@ -269,18 +269,13 @@
      });
 
     $(document).on('click', "#select-all", function(event) {
-        if (!$("#select-all").prop("selected")) {
-            $("#select-all").prop("selected", true);
-            $("#select-all").removeClass("glyphicon-unchecked");
-            $("#select-all").addClass("glyphicon-check");
+        if (!$("#select-all").prop("all-entries-selected2")) {
+            $("#select-all").prop("all-entries-selected2", true);
             $("input[name='approve']").prop("checked", true);
         } else {
-            $("#select-all").prop("selected", false);
+            $("#select-all").prop("all-entries-selected2", false);
             $("input[name='approve']").prop("checked", false);
-            $("#select-all").removeClass("glyphicon-check");
-            $("#select-all").addClass("glyphicon-unchecked");
         }
-        return false;
     });
 
     $(document).on('click', "#deselect-all", function(event) {

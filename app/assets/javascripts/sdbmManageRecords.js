@@ -69,18 +69,13 @@ var SDBM = SDBM || {};
         });
 
         $(document).on('click', "#select-all", function(event) {
-            if (!$("#select-all").attr("selected")) {
-                $("#select-all").attr("selected", true);
-                $("#select-all").removeClass("glyphicon-unchecked");
-                $("#select-all").addClass("glyphicon-check");
+            if (!$("#select-all").prop("all-selected")) {
+                $("#select-all").prop("all-selected", true);
                 $("input[name='review']").prop("checked", true);
             } else {
-                $("#select-all").attr("selected", false);
+                $("#select-all").prop("all-selected", false);
                 $("input[name='review']").prop("checked", false);
-                $("#select-all").removeClass("glyphicon-check");
-                $("#select-all").addClass("glyphicon-unchecked");
             }
-            return false;
         });
 
         $(document).on('click', "#deselect-all", function(event) {
