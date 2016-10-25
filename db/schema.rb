@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161018181746) do
+ActiveRecord::Schema.define(version: 20161025161800) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -408,21 +408,23 @@ ActiveRecord::Schema.define(version: 20161018181746) do
   add_index "names", ["updated_by_id"], name: "index_names_on_updated_by_id", using: :btree
 
   create_table "notification_settings", force: :cascade do |t|
-    t.integer  "user_id",           limit: 4
+    t.integer  "user_id",              limit: 4
     t.boolean  "on_update"
     t.boolean  "on_comment"
     t.boolean  "on_reply"
-    t.datetime "created_at",                                  null: false
-    t.datetime "updated_at",                                  null: false
-    t.boolean  "on_message",                  default: true
-    t.boolean  "email_on_message",            default: true
-    t.boolean  "email_on_comment",            default: false
-    t.boolean  "email_on_reply",              default: false
-    t.boolean  "email_on_update",             default: false
-    t.boolean  "on_new_user",                 default: false
-    t.boolean  "email_on_new_user",           default: false
-    t.boolean  "on_group",                    default: true
-    t.boolean  "email_on_group",              default: false
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
+    t.boolean  "on_message",                     default: true
+    t.boolean  "email_on_message",               default: true
+    t.boolean  "email_on_comment",               default: false
+    t.boolean  "email_on_reply",                 default: false
+    t.boolean  "email_on_update",                default: false
+    t.boolean  "on_new_user",                    default: false
+    t.boolean  "email_on_new_user",              default: false
+    t.boolean  "on_group",                       default: true
+    t.boolean  "email_on_group",                 default: false
+    t.boolean  "on_all_comment",                 default: true
+    t.boolean  "email_on_all_comment",           default: false
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -627,10 +629,11 @@ ActiveRecord::Schema.define(version: 20161018181746) do
   add_index "sources", ["updated_by_id"], name: "index_sources_on_updated_by_id", using: :btree
 
   create_table "user_messages", force: :cascade do |t|
-    t.integer "user_id",            limit: 4,                  null: false
-    t.integer "private_message_id", limit: 4,                  null: false
+    t.integer "user_id",            limit: 4,                   null: false
+    t.integer "private_message_id", limit: 4,                   null: false
     t.string  "method",             limit: 255
     t.boolean "unread",                         default: true
+    t.boolean "deleted",                        default: false
   end
 
   create_table "users", force: :cascade do |t|

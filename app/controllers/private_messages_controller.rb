@@ -3,11 +3,15 @@ class Chain
 
   def initialize(message, user)
     @messages = []
-    # climb up to the beginning of the chain
+    # climb up to the beginning of the chain, adding each 'previous'
     while message.private_message do
       message = message.private_message
+      @messages |= [message]
     end
+    # traverse the 'tree' from the root, adding all replies directed to that user
     compile_messages(message, user)
+
+    # message 'tree' is flattened and sorted by date
     @messages = @messages.sort { |a, b| a.created_at <=> b.created_at }
   end
 
@@ -18,7 +22,7 @@ class Chain
       rp.each { |reply| compile_messages(reply, user) }
     end
     if message.users.include?(user) or message.created_by == user
-      @messages.push(message)
+      @messages |= [message]
     end
   end
 
@@ -98,10 +102,7 @@ class PrivateMessagesController < ApplicationController
 
   def destroy
     @message.user_messages.where(user_id: current_user.id).each do |um|
-      um.destroy
-    end
-    if @message.user_messages.count <= 0
-      @message.destroy
+      um.destroy!
     end
     flash[:error] = "Message deleted."
     redirect_to private_messages_path

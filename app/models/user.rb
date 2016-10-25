@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
 
   has_many :downloads
 
-  has_many :user_messages, foreign_key: "user_id"
+  has_many :user_messages, -> { where(:deleted => false) }, foreign_key: "user_id"
   has_many :private_messages, through: :user_messages
   has_many :sent_messages, foreign_key: "created_by_id", class_name: "PrivateMessage"
 

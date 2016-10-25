@@ -5,7 +5,7 @@ class PrivateMessage < ActiveRecord::Base
   include UserFields
   include Notified
   
-  has_many :user_messages, foreign_key: "private_message_id", dependent: :destroy
+  has_many :user_messages, -> { where(:deleted => false) }, foreign_key: "private_message_id", dependent: :destroy
   has_many :users, through: :user_messages
 
   belongs_to :private_message

@@ -25,8 +25,8 @@ class ManuscriptsController < SearchableAuthorityController
     #manuscript_comment.build_comment
 
     @manuscript_titles = @manuscript.all_titles
-    @entries = @manuscript.entries.joins(:source).order("date desc")
-    @entries.reject { |e| e.source.date.blank? }.each do |e|
+    @entries = @manuscript.entries.joins(:source).order("date desc, date_accessed desc")
+    @entries.reject { |e| e.source.date.blank? && e.source.date_accessed.blank? }.each do |e|
       if e.institution
         @location_source = e.source
         @location_name = e.institution
