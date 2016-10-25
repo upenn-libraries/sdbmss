@@ -43,6 +43,28 @@
 </div>
 
 <div ng-show="sources.length > 0">
+    <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-5 form-inline">
+            Showing 
+            <select class="form-control" name="find_limit" id="" ng-model="limit" ng-change="findSourceCandidates()">
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+            </select>
+            of {{ total }} results.
+        </div>
+        <div class="col-sm-5 form-inline">
+            Sort by
+            <select name="" id="find_order" class="form-control" ng-model="order" ng-change="findSourceCandidates()">
+                <option value="id asc">Id (asc)</option>
+                <option value="id desc">Id (desc)</option>
+                <option value="date asc">Date (asc)</option>
+                <option value="date desc">Date (desc)</option>
+            </select>
+        </div>
+    </div>
     <div ng-repeat="source in sources track by $index">
         <div class="row">
             <label class="col-sm-2 control-label" ng-show="$first">Select a search result:</label>

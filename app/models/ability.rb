@@ -39,7 +39,9 @@ class Ability
       can :index, Entry
 
       can :manage, PrivateMessage, :created_by_id => user.id
-      can :manage, PrivateMessage, :user_id => user.id
+      can :manage, PrivateMessage do |pm|
+        pm.users.include? user
+      end
     end
 
     if ['editor', 'super_editor', 'admin'].member? user.role

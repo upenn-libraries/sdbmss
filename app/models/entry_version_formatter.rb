@@ -37,6 +37,8 @@ class EntryVersionFormatter
     'EntryUse.entry_id',
     'Provenance.id',
     'Provenance.entry_id',
+    'Comment.commentable_id',
+    'Comment.commentable_type'    
   ]
 
   def initialize(version)
