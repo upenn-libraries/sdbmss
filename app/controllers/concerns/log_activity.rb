@@ -24,9 +24,7 @@ module LogActivity
 
       if action_name == 'update_multiple'
         model_objects = instance_variable_get("@#{controller_name}") || []
-        puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         puts model_objects
-        puts "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
         model_objects.each do |model_object|
           make_entry = true
           if model_object.destroyed?

@@ -111,7 +111,14 @@ class EntryVersionFormatter
 
   def detail (version)
     details = []
-    if version.event == 'update'
+    if version.item_type == "EntryManuscript"
+      item = EntryManuscript.where(id: version.item_id).first
+      if item
+        details << "<b>#{item.entry.public_id}</b> has been linked to <b>#{item.manuscript.public_id}</b>"
+      else
+        details << "<b>EntryManuscript #{version.item_id}</b> was deleted."  
+      end
+    elsif version.event == 'update'
       skip(version.changeset).each do |field, values|
         if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}")
           if EntryVersionFormatter.isClass(field)
@@ -123,7 +130,7 @@ class EntryVersionFormatter
               values[1] = f.find(values[1])
             end
           end
-          details << "#{field.titlecase}: from #{values[0].present? ? values[0] : "(blank)"} to #{values[1]}"
+          details << "<b>#{field.titlecase}</b> from #{values[0].present? ? values[0] : "(blank)"} to #{values[1]}"
         end
       end
     elsif version.event == 'create'
@@ -136,7 +143,7 @@ class EntryVersionFormatter
               value = f.find(value)
             end
           end
-          details << "#{field.titlecase}: #{value}"
+          details << "<b>#{field.titlecase}</b> #{value}"
         end
       end
     elsif version.event == 'destroy'
@@ -149,7 +156,7 @@ class EntryVersionFormatter
               value = f.find(value)
             end
           end
-          details << "#{field.titlecase}: #{value}"
+          details << "<b>#{field.titlecase}</b> #{value}"
         end
       end
     end

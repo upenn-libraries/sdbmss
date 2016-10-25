@@ -4,8 +4,7 @@
   <% else %>
     <% version.details.each_with_index do |d, index| %>
       <p>
-      <% d = d.split(":") %>
-      <strong><%= d[0] %>:</strong> <%= d[1] %></span>
+      <%= sanitize simple_format d %>
     <% end %>
     </p>
   <% end %>

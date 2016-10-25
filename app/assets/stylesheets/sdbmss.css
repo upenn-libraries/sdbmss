@@ -682,7 +682,17 @@ li.provenance:hover, li.provenance:focus {
   border: 1px solid #ccdff5;
   color: inherit;
   padding: 6px 12px;
+  overflow: hidden;
+  max-width: calc(100% - 100px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
   display: inline-block;
+}
+.btn-name-authority {
+  overflow: hidden;
+  max-width: calc(100% - 100px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .well-name-authority a {

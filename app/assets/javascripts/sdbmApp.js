@@ -2489,7 +2489,7 @@ var BOOKMARK_SCOPE;
         if (localStorage.all_bookmarks) {
           $scope.all_bookmarks = angular.fromJson(localStorage.all_bookmarks);
           $scope.bookmark_tracker = Number(localStorage.bookmark_tracker) || 0;
-          $scope.checkForUpdates();
+          //$scope.checkForUpdates();
         } else {
           $scope.loadBookmarks();
         }
