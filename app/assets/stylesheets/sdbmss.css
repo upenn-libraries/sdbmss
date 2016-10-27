@@ -1113,3 +1113,59 @@ so that gray backdrop shvows up correctly */
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.notifications {
+  margin-top: 15px !important;
+  box-shadow: 0px -4px 19px 0px #ccc !important;
+  right: -225px !important;
+  padding: 10px;
+  border: 0px;
+  width: 500px;
+}
+.notifications:before {
+  content: '';
+  width: 0px;
+  height: 0px;
+  border-bottom: 15px solid white;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  position: absolute;
+  top: -15px;
+  right: calc(50% - 16px);
+}
+
+.notifications a {
+  padding: 4px !important;
+}
+
+.notifications-count:before {
+    content: attr(new-notifications);
+    position: absolute;
+    color: white;
+    background: #3c763d;
+    z-index: 10;
+    top: 0px;
+    right: 41px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.alert-sm {
+  padding: 8px;
+}
+
+.dashboard-tabs {
+  margin: 22px 0px 0px -30px;
+  padding-left: 30px;
+}
+
+.activity {
+    border: 1px solid #f8f8f8;
+    box-shadow: 4px 4px 10px #eee;
+    padding: 4px 6px 4px 10px;
+}
+
+.activity p {
+  margin-bottom: 4px;
+}

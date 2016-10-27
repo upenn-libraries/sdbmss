@@ -10,6 +10,7 @@ class Manuscript < ActiveRecord::Base
 
   accepts_nested_attributes_for :entry_manuscripts, allow_destroy: true
 
+  include Watchable
   include UserFields
   include IndexAfterUpdate
   include HasPaperTrail

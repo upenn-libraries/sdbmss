@@ -1,0 +1,27 @@
+<% new_count = current_user.new_notifications.count %>
+<a id='notifications-dropdown-control' href="#notifications-dropdown" data-toggle="dropdown" class='dropdown-toggle <%= new_count > 0 ? 'notifications-count' : ''%>' new-notifications="<%= current_user.new_notifications.count %>">
+  <span class="glyphicon glyphicon-bell"></span>
+  <span class="caret"></span>
+</a>
+<ul class="dropdown-menu notifications">
+  <% current_user.notifications.last(10).reverse.each do |notification| %>
+      <li class='row'>
+      <% if notification.notified && notification.title %>
+        <div class="col-xs-6 one-line">
+          <%= link_to polymorphic_url(notification.notified), :title => notification.title do %>
+            <% if notification.active %>
+              <span class="glyphicon glyphicon-exclamation-sign text-success"></span>
+              <%= notification.title %>
+            <% else %>
+              <span class="text-muted"><%= notification.title %></span>
+            <% end %>
+          <% end %>
+        </div>
+        <div class="col-xs-6 text-right">
+          <%= notification.created_at.to_formatted_s(:long) %>
+        </div>
+      <% end %>
+    </li>
+  <% end %>
+  <li class='text-center' style='border-top: 1px solid #eee;'><%= link_to "Manage Notifications", notifications_path %></li>
+</ul>

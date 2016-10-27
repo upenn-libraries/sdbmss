@@ -1,0 +1,42 @@
+<% num_manuscripts = Manuscript.where(created_by: current_user).count %>
+<% num_manuscripts_unreviewed = Manuscript.where({created_by: current_user, reviewed: false}).count %>
+<% if num_manuscripts > 0 %>
+    <% num_manuscripts_to_show = 5 %>
+    <% manuscripts =  Manuscript.where(created_by: current_user).last(num_manuscripts_to_show) %>
+    <div class="panel panel-default">
+        <div class="panel-body" data-toggle="collapse" href="#myManuscripts">
+            <div class="row">
+                <div class="col-xs-12">
+                    <span class='h4'>
+                        Manuscripts You've Contributed
+                        <span class="caret"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body panel-collapse collapse" id="myManuscripts">
+            <div class="row">
+                <div class="col-sm-6">
+                    <span>Showing the last <%= manuscripts.count %> of the <%= "#{num_manuscripts} manuscript record".pluralize(num_manuscripts) %> you have created</span>
+                    <% if num_manuscripts_unreviewed > 0 %>
+                        <br><span class='text-warning'><%= num_manuscripts_unreviewed %> unapproved</span>
+                    <% end %>
+                </div>
+                <div class="col-sm-6 text-right">
+                    <a class="btn btn-default" href="/manuscripts?created_by_user=1">Manage My Manuscripts</a>
+                </div>
+            </div>
+            <ul class="list-group list-group-no-border-side">
+                <% manuscripts.each do |manuscript| %>
+                    <li class="list-group-item">
+                        <dl class="document-show-heading dl-horizontal dl-invert">
+                            <dt></dt>
+                            <dd class='h4'><a href="/manuscripts/<%= manuscript.id %>"><%= manuscript.public_id %></a></dd>
+                        </dl>
+                        <%= render partial: "bookmarks/show_manuscript", locals: {manuscript: manuscript} %>
+                    </li>
+                <% end %>
+            </ul>
+        </div>
+    </div>
+<% end %>

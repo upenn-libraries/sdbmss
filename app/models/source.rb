@@ -45,6 +45,7 @@ class Source < ActiveRecord::Base
     [TYPE_MEDIUM_OTHER, "Other"],
   ]
 
+  include Watchable
   include UserFields
   include IndexAfterUpdate
   include HasPaperTrail

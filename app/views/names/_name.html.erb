@@ -31,6 +31,9 @@
                                 <%= link_to "Confirm", name_path(name, confirmed: true), :method => :put %>
                             </li>
                         <% end %>
+                        <li>
+                            <%= render partial: "nav/watch", locals: {watchable: name} %>
+                        </li>
                     <% end %>
                 </ul>
             </div>

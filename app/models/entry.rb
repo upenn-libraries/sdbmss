@@ -24,6 +24,7 @@ class Entry < ActiveRecord::Base
   ]
 
   include UserFields
+  include Watchable
   include HasPaperTrail
   include HasTouchCount
   include CreatesActivity

@@ -21,6 +21,20 @@
         <a type="button" href="<%= advanced_search_path(params_for_search) %>" class="btn btn-default advanced_search">Advanced</a>
       </span>
     </div>
+    <div class="" style="display: inline-block; vertical-align: middle; margin: -10px;">
+      <ul class="nav navbar-nav">
+        <% if user_signed_in? %>
+          <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Searches <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                  <%= render_nav_actions do |config, action| %>
+                  <li><%= action %></li>
+                  <% end %>
+              </ul>
+          </li>
+        <% end %>
+      </ul>
+    </div>
 
     <!--
     <div class="input-group search-input-group" style="width: 200px;">

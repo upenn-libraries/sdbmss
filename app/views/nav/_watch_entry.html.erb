@@ -1,0 +1,4 @@
+<% if document.present? %>
+<% entry = document.model_object %>
+  <%= render partial: 'nav/watch', locals: {watchable: entry} %>
+<% end %>

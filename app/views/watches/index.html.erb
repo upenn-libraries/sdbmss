@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-sm-12 text-center">
+    <h3>Watched Records</h3>
+  </div>
+</div>
+<% @watches.each do |watch| %>
+  <div class="row" style='border-bottom: 1px solid #eee; margin-bottom: 7px;'>
+    <div class="col-sm-2"></div>
+    <div class="col-sm-4">
+      <%= link_to watch.watched.public_id, polymorphic_url(watch.watched) %>
+      <%= watch.watched.to_s %>
+    </div>
+    <div class="col-sm-4 text-right">
+      <%= link_to watch_path(watch), :method => :delete do %>
+        <span class="glyphicon glyphicon-eye-close"></span> Unwatch
+      <% end %>
+    </div>
+    <div class="col-sm-2"></div>
+  </div>
+<% end %>

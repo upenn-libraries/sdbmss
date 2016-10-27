@@ -7,18 +7,25 @@
     <dl class="document-metadata document-show-heading dl-horizontal dl-invert">
         <dt></dt>
         <%# data-context-href triggers an HTTP callback before loading the entry page; this makes prev/next links on individual Entry page work %>
-      <dd class="h4">
+      <dd class="">
         <div class="row">
-          <strong class="col-sm-4"><a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a></strong>
-          <div class="col-sm-8 text-right">
+          <div class="col-sm-6">
+            <span class='h4'>
+              <a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a>
+            </span>
+            <% if !entry.approved %>
+              <span class="alert alert-warning alert-sm"><span class="glyphicon glyphicon-alert"></span> Unapproved</span>
+            <% end %>
+          </div>
+          <div class="col-sm-6 text-right h4">
             <%= render partial: 'catalog/bookmark_control', locals: {document: document} %>
           </div>
         </div>
       </dd>
     </dl>
-    <% if !entry.approved %>
-        <div class="alert alert-warning">Warning: This record is not yet approved and may not conform to standards for data structure or accuracy.</div>
-    <% end %>
+    <%# if !entry.approved %>
+        <!--<div class="alert alert-warning">Warning: This record is not yet approved and may not conform to standards for data structure or accuracy.</div>-->
+    <%# end %>
     <dl class="document-metadata dl-horizontal dl-invert">
         <% manuscripts_str = render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
         <% if manuscripts_str.present? %>

@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   end
 
   resources :activities, only: [:index]
+  resources :watches, only: [:index, :create, :destroy]
 
   resources :groups
   resources :group_users

@@ -8,6 +8,7 @@
                 <a onclick="addBookmark(<%= source.id %>, 'Source');" class="bookmark-link" in_bookmarks="/sources/<%= source.id %>"><span class="glyphicon glyphicon-bookmark"></span></a>
             </li>
             <% if user_signed_in? %>
+                <li><%= render partial: "nav/watch", locals: {watchable: source } %></li>
                 <% if can?(:edit, source) %>
                     <li class="edit_source">
                         <a href="<%= edit_source_path(source.id) %>" class="<%= source.source_type.id == 8 ? 'disabled text-muted' : '' %>">Edit this source</a>

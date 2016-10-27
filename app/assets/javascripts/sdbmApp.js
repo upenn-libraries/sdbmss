@@ -2460,6 +2460,7 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.checkForUpdates = function () {
+      return;
       // 1. call controller method 'check'
       // 2. if true, call loadBookmarks
       // 3. else, load from localstorage

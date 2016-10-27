@@ -25,12 +25,14 @@ class CommentsController < SearchableAuthorityController
         @transaction_id = PaperTrail.transaction_id
       end
     end
-    if @comment.commentable.created_by && @comment.commentable.created_by != current_user
-      @comment.commentable.created_by.notify(
-        "#{current_user.to_s} has commented on #{@comment.commentable.public_id}",
-        @comment, 
-        "comment"
-      )
+    @comment.commentable.watchers.each do |watcher|
+      if watcher != current_user
+        watcher.notify(
+          "#{current_user.to_s} has commented on #{@comment.commentable.public_id}",
+          @comment, 
+          "comment"
+        )
+      end
     end
     redirect_to polymorphic_path(@comment.commentable, anchor: "comment_#{@comment.id}")
   end
