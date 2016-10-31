@@ -24,10 +24,12 @@ module UserFields
     self.updated_by = user
 
     # notify all users watching the record:
-    self.watchers.each do |watcher|
-      if user != watcher
-        watcher.notify("#{self.public_id} has been updated by #{user.to_s}.", 
-            self, "update")
+    if respond_to? :watchers
+      self.watchers.each do |watcher|
+        if user != watcher
+          watcher.notify("#{self.public_id} has been updated by #{user.to_s}.", 
+              self, "update")
+        end
       end
     end
 

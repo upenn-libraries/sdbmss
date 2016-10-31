@@ -1,6 +1,6 @@
-<table class="table">  
+<table class="table table-bordered table-hover">  
   <% if groups.count > 0 %>
-  <thead>
+  <thead style="background: #eee">
     <tr>
       <th>Name</th>
       <th>Users</th>
@@ -13,7 +13,7 @@
   <tbody>
     <% if groups.count <= 0 %>
     <tr>
-      <td class="text-center" colspan="4">  You do not have any user groups.</td>
+      <td class="text-center" colspan="4">  No groups to display.</td>
     </tr>
     <% end %>
     <% groups.each do |group| %>
@@ -22,16 +22,19 @@
       <td><%= group.users.count %></td>
       <td><%= group.entries.count %></td>
       <td><%= group.public %></td>
-      <td class='text-right'>
+      <td class='text-right col-sm-4'>
+        <ul class="list-inline">
         <% if can?(:edit, group) %>
-          <%= link_to(group_path(group, format: 'html'),  method: :delete, data: { confirm: 'Are you sure?' }) do %>
-            <span class="glyphicon glyphicon-remove"></span> Delete
-          <% end %>
-          <br>
-          <%= link_to(edit_group_path(group)) do %>
-            <span class="glyphicon glyphicon-edit"></span> Edit
-          <% end %>
-          <br>
+          <li>
+            <%= link_to(group_path(group, format: 'html'),  method: :delete, data: { confirm: 'Are you sure?' }) do %>
+              <span class="glyphicon glyphicon-remove"></span> Delete
+            <% end %>
+          </li>
+          <li>
+            <%= link_to(edit_group_path(group)) do %>
+              <span class="glyphicon glyphicon-edit"></span> Edit
+            <% end %>
+          </li>          
         <% end %>
         <% group_user = group.group_users.where(user_id: current_user)[0] %>
         <% if group_user.confirmed %>
@@ -41,10 +44,11 @@
             <% destroy_group_word = "Cancel Request" %>
           <% else %>
             <% destroy_group_word = "Reject Invitation" %>
-            <%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put %><br>
+            <li><%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put %></li>
           <% end %>
         <% end %>
-        <%= link_to destroy_group_word, group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to leave this group?" } %>
+        <li><%= link_to destroy_group_word, group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to leave this group?" } %></li>
+        </ul>
       </td>
     </tr>
     <% end %>

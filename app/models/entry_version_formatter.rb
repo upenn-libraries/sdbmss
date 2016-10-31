@@ -130,7 +130,11 @@ class EntryVersionFormatter
               values[1] = f.find(values[1])
             end
           end
-          details << "<b>#{field.titlecase}</b> from #{values[0].present? ? values[0] : "(blank)"} to #{values[1]}"
+          if values[0].present?
+            details << "<b>#{field.titlecase}</b> changed from #{values[0]} to #{values[1]}"
+          else
+            details << "<b>#{field.titlecase}</b> set to #{values[1]}"
+          end
         end
       end
     elsif version.event == 'create'
@@ -143,7 +147,7 @@ class EntryVersionFormatter
               value = f.find(value)
             end
           end
-          details << "<b>#{field.titlecase}</b> #{value}"
+          details << "<b>#{field.titlecase}</b> set to #{value}"
         end
       end
     elsif version.event == 'destroy'

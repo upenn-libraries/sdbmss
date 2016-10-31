@@ -1,0 +1,63 @@
+<% @activities.each do |date, activities| %>
+  <div class="row" style="border-bottom: 1px solid #eee; padding-bottom: 10px;">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-2">
+      <div class='h4' data-toggle='collapse' href='#activity_date_<%= date %>'>
+        <% days = (Date.today - date).to_i %>
+        <% if days == 0 %>
+          Today
+        <% elsif days == 1 %>
+          Yesterday
+        <% elsif days % 7 == 0 %>
+          <% weeks = (days / 7).to_i %>
+          <%= "#{weeks} week".pluralize(weeks) %> ago
+        <% else %>
+          <%= "#{days} day".pluralize(days) %> ago
+        <% end %>
+        <span class="caret"></span>
+      </div>
+    </div>
+    <div class="col-sm-9">
+      <div class="collapse in" id="activity_date_<%= date %>">
+      <% activities.group_by { |a| a.user }.each do |user, user_activities| %>
+        <h5 class='text-center' data-toggle='collapse' href='#activity_<%= date %>_<%= user.id %>'>
+            <%= render partial: "shared/username_with_profile_link", locals: { user: user } %>  modified <%= "#{user_activities.count} record".pluralize(user_activities.count) %> <span class="caret"></span>
+        </h5>
+        <div class="collapse in" id="activity_<%= date %>_<%= user.id %>">
+        <% user_activities.each do |activity| %>
+          <div class="panel panel-default activity">
+            <div class="panel-heading">
+              <div class="row">
+                <div class="col-xs-6">
+                  <%= activity.format_event %>
+                  <% link_text = SDBMSS::IDS.get_public_id_for_model(activity.item_type, activity.item_id) %>
+                  <% if !link_text %><% link_text = "#{activity.item_type} ##{activity.item_id}" %><% end %>
+                  <% if activity.event != 'destroy' %>
+                    <a href="<%= activity.link %>" target="_blank"><%= link_text %></a>
+                  <% else %>
+                    <span class="text-danger"><%= link_text %></span>
+                  <% end %>
+                </div>
+                <div class="col-xs-6 text-right">
+                  <%= activity.created_at.strftime("%l:%M %P") %>
+                </div>
+              </div>
+            </div>
+            <div class="panel-body text-muted">
+              <% version = PaperTrail::Version.where(transaction_id: activity.transaction_id) %>
+              <% if version.count > 0 %>
+                <%= render partial: 'activities/version', locals: {version: EntryVersionFormatter.new(version)} %>
+              <% elsif activity.event == 'destroy' %>
+                (Record was deleted)
+              <% else %>
+                 No changes to display
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+        </div>
+      <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

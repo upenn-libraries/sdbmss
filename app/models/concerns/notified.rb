@@ -11,7 +11,7 @@ module Notified
   end
 
   def preview
-    to_s
+    "<blockquote>#{public_id}</blockquote>"
   end
 
 end

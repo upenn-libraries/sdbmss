@@ -26,7 +26,7 @@ class PrivateMessage < ActiveRecord::Base
 
   # used, at the moment, for notifications only
   def preview
-    %(<blockquote><b>#{title}</b>
+    %(<blockquote>#{title}
       #{message.at(0..100)}#{message.length > 100 ? '...' : ''}</blockquote> )
   end
 

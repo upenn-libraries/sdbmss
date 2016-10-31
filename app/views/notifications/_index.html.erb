@@ -1,30 +1,26 @@
+<% @notifications.each do |notification| %>
+<div class="row">
+  <% if notification.notified && notification.title %>
+    <div class="col-xs-6 one-line">
+      <%= link_to polymorphic_url(notification.notified), :title => notification.title do %>
+        <% if notification.active %>
+          <span class="glyphicon glyphicon-exclamation-sign text-success"></span>
+          <%= notification.title %>
+        <% else %>
+          <span class="text-muted"><%= notification.title %></span>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="col-xs-6 text-right">
+      <%= notification.created_at.to_formatted_s(:long) %>
+    </div>
+  <% end %>
+</div>
 <div class="row">
   <div class="col-sm-12">
-    <ul class="list-group list-group-no-border">
-      <li class="list-group-item">
-        <span class="h3 text-success text-center">Unread</span>
-      </li>
-      <% @unread.reverse.each do |notification| %>
-        <li class="list-group-item list-group-item-success">
-          <%= render partial: "notifications/show", locals: {notification: notification} %>
-        </li>
-      <% end %>
-      <% if @unread.count <= 0 %>
-        <li class="list-group-item text-muted">No unread notifications.</li>
-      <% end %>
-    </ul>
-    <ul class="list-group list-group-no-border">
-      <li class="list-group-item">
-        <span class="h3 text-muted text-center">Read</span>
-      </li>
-      <% @read.reverse.each do |notification| %>
-        <li class="list-group-item text-muted">
-          <%= render partial: "notifications/show", locals: {notification: notification} %>
-        </li>
-      <% end %>
-      <% if @read.count <= 0 %>
-        <li class="list-group-item text-muted">No read notifications.</li>
-      <% end %>      
-    </ul>
+    <% if notification.notified %>
+      <%= sanitize simple_format(notification.notified.preview) %>
+    <% end %>
   </div>
 </div>
+<% end %>

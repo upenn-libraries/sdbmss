@@ -5,23 +5,36 @@
 </a>
 <ul class="dropdown-menu notifications">
   <% current_user.notifications.last(10).reverse.each do |notification| %>
-      <li class='row'>
-      <% if notification.notified && notification.title %>
-        <div class="col-xs-6 one-line">
-          <%= link_to polymorphic_url(notification.notified), :title => notification.title do %>
-            <% if notification.active %>
-              <span class="glyphicon glyphicon-exclamation-sign text-success"></span>
-              <%= notification.title %>
-            <% else %>
-              <span class="text-muted"><%= notification.title %></span>
+      <li class="row <%= !notification.active ? 'text-muted' : 'active' %>" id="notification_<%= notification.id %>">
+        <% if notification.notified && notification.title %>
+          <div class="col-xs-6 one-line">
+            <%= link_to polymorphic_url(notification.notified), :title => notification.title do %>
+              <% if notification.active %>
+                <span class="glyphicon glyphicon-exclamation-sign text-success"></span>
+                <span class="title"><%= notification.title %></span>
+              <% else %>
+                <span class="title"><%= notification.title %></span>
+              <% end %>
             <% end %>
-          <% end %>
-        </div>
-        <div class="col-xs-6 text-right">
-          <%= notification.created_at.to_formatted_s(:long) %>
-        </div>
-      <% end %>
-    </li>
+          </div>
+          <div class="col-xs-6 text-right">
+            <%= notification.created_at.to_formatted_s(:long) %>
+            <span class="read glyphicon glyphicon-ok-circle" data-id="<%= notification.id %>"></span>
+          </div>
+        <% end %>
+      </li>
   <% end %>
   <li class='text-center' style='border-top: 1px solid #eee;'><%= link_to "Manage Notifications", notifications_path %></li>
 </ul>
+<script>
+  $('.active .read').click(function (e) {
+    e.preventDefault();
+    var id = $(this).data("id");
+    $.ajax({url: "/notifications/" + id + ".json", type: "PUT", data: {active: false}}).done(function (result) {
+      $('#notification_' + id + ' .glyphicon-exclamation-sign').remove();
+      $('#notification_' + id).addClass('text-muted');
+      $('#notifications-dropdown-control').attr('new-notifications') -= 1;
+    });
+    return false;
+  });
+</script>

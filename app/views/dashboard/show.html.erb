@@ -1,3 +1,7 @@
+<% content_for :control_panel do %>
+    <%= render partial: 'sidebar' %>
+<% end %>
+
 <%= stylesheet_link_tag "extras", media: "all" %>
 <% @page_title = "Dashboard - " + application_name %>
 
@@ -7,7 +11,7 @@
 <div class="row">
     <div class="col-sm-3">
         <div class="panel panel-default">
-            <div class="panel-body">
+            <div class="panel-heading">
                 <div class="row">
                     <div class="col-xs-4">
                         <div class="panel panel-default text-center" style="margin: 0px;">
@@ -23,10 +27,10 @@
         </div>
     </div>
     <div class="col-sm-9">
-        <ul class="nav nav-tabs dashboard-tabs">
-            <li><a data-toggle='tab' href="#my_activity">My Activity</a></li>
-            <li class='active'><a data-toggle='tab' href="#community" href="">Community</a></li>
-            <li><a data-toggle='tab' href="#groups">Groups</a></li>
+        <ul id='dashboard-tabs' class="ajax-tabs nav nav-tabs dashboard-tabs">
+            <li><a data-toggle='tab' href="#my_activity">My Contributions</a></li>
+            <li class='active'><a data-toggle='tab' href="#community" href="">Activity</a></li>
+            <li><a data-toggle='tab' href="#groups" data-url="/groups/show_all">Groups</a></li>
             <li><a data-toggle='tab' href="#notifications">Notifications</a></li>
             <li><a data-toggle='tab' href="#bookmarks">Bookmarks</a></li>
         </ul>
@@ -38,29 +42,51 @@
         <div class="tab-content">
             <div id="my_activity" class="tab-pane fade">
                 <div class="row">
-                    <div class="col-sm-12">
-                        <%= render partial: "my_entries" %>
-                    </div>
-                    <div class="col-sm-12">
-                        <%= render partial: "my_sources" %>                        
-                    </div>
-                    <div class="col-sm-12">
-                        <%= render partial: "my_manuscripts" %>
-                    </div>
+                    <%= render partial: "my_entries" %>
+                </div>
+                <div class="row">
+                    <%= render partial: "my_sources" %>                        
+                </div>
+                <div class="row">
+                    <%= render partial: "my_manuscripts" %>
                 </div>
             </div>
             <div id="community" class="tab-pane fade in active">
-                <ul class="list-group list-group-no-border">
-                    <%= render partial: "activities/more" %>                       
-                </ul>
+                <div class="row">
+                    <div class="col-sm-9" id="activity-pane">
+                        <%= render partial: "activities/show_all" %>                       
+                    </div>
+                    <div class="col-sm-2">
+                        <%= render partial: "activities/nav" %>
+                    </div>
+                </div>
             </div>
             <div id="groups" class="tab-pane fade">
+                <!-- ajax load? is this neccessary? -->
             </div>
             <div id="notifications" class="tab-pane fade">
                 <%= render partial: "notifications/index" %>
             </div>
             <div id="bookmarks" class="tab-pane fade">
+                <!-- nothing yet! -->
             </div>
         </div>
     </div>
 </div>
+
+<script>
+$('.ajax-tabs').on('click','a',function (e) {
+    e.preventDefault();
+    var url = $(this).attr("data-url");
+
+    if (typeof url !== "undefined") {
+        var tab = $(this), href = this.hash;
+        // ajax load from data-url
+        $(href).load(url,function(result){      
+            tab.tab('show')
+        });
+    } else {
+        $(this).tab('show');
+    }
+});
+</script>
