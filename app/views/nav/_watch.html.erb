@@ -1,9 +1,11 @@
-<% if (w = current_user.watches.where(watched: watchable).first) %>
-  <%= link_to watch_path(w), :method => :delete do %>
-    <span style="color: gold;"><span class="glyphicon glyphicon-eye-open"></span> Watch</span>
+<% if current_user %>
+  <% if (w = current_user.watches.where(watched: watchable).first) %>
+    <%= link_to watch_path(w), :method => :delete do %>
+      <span style="color: gold;"><span class="glyphicon glyphicon-eye-open"></span> Watch</span>
+    <% end %>
+  <% else %>
+  <%= link_to(watches_path(watched_id: watchable.id, watched_type: watchable.class.to_s, user_id: current_user.id), :method => :post) do %>
+      <span class="glyphicon glyphicon-eye-open"></span> Watch
   <% end %>
-<% else %>
-<%= link_to(watches_path(watched_id: watchable.id, watched_type: watchable.class.to_s, user_id: current_user.id), :method => :post) do %>
-    <span class="glyphicon glyphicon-eye-open"></span> Watch
-<% end %>
+  <% end %>
 <% end %>

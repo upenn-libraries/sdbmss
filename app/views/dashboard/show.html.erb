@@ -1,5 +1,9 @@
-<% content_for :control_panel do %>
-    <%= render partial: 'sidebar' %>
+<% content_for :control_tools do %>
+    <%= render partial: 'control_tools' %>
+<% end %>
+
+<% content_for :breadcrumbs do %>
+    <%= render partial: 'breadcrumbs' %>
 <% end %>
 
 <%= stylesheet_link_tag "extras", media: "all" %>

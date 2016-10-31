@@ -63,21 +63,11 @@
 
   </head>
   <body class="<%= render_body_class %>">
-  <div id="control-panel">
-    <div class="bookmarks-collapse collapse in">
-      <div style="padding: 10px;">
-      <%= yield :control_panel %>
-      </div>
-    </div>
-    <div id="control-panel-button">
-      <a href="" onclick="$('.bookmarks-collapse').toggleClass('in')">
-        <span class="glyphicon glyphicon-chevron-left"></span>
-        <span class="glyphicon glyphicon-chevron-right"></span>
-      </a>
-    </div>
-  </div>
+  <% if current_user %>
+    <%= render partial: 'shared/control_panel' %>
+  <% end %>
 
-  <div class="main-content bookmarks-collapse collapse">
+  <div class="main-content bookmarks-collapse collapse <%= current_user ? '' : 'in' %>">
     <%= render :partial => 'shared/header_navbar' %>
 
     <%# this is from blacklight %>

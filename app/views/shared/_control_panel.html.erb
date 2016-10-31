@@ -1,0 +1,23 @@
+<div id="control-panel">
+    <div class="bookmarks-collapse collapse in">
+      <div style="padding: 10px;">
+        <div class="text-center">
+          <strong class="h3" style="font-variant: small-caps;">Control Panel <span class="glyphicon glyphicon-wrench"></span> </strong>
+          <br><br>
+        </div>
+      </div>
+      <div class="control-panel-top">
+        <%= yield :control_tools %>
+      </div>
+      <div class="vertical-breadcrumbs">
+        <%= yield :breadcrumbs %>
+      </div>
+    </div>
+
+    <!--<div id="control-panel-button">
+      <a href="" onclick="$('.bookmarks-collapse').toggleClass('in')">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+        <span class="glyphicon glyphicon-chevron-right"></span>
+      </a>
+    </div>-->
+  </div>
