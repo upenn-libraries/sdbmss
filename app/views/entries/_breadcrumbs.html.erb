@@ -1,4 +1,4 @@
-<nav data-spy="affix" data-offset-top="102" id="breadcrumbs">
+<!--<nav data-spy="affix" data-offset-top="102" id="breadcrumbs">
   <div class="panel panel-default">
     <div class="panel-body">
       <h1>Add a new Entry</h1>
@@ -28,4 +28,24 @@
       <a class="btn btn-warning" id='cancelEdit' href="/dashboard">Cancel</a>
     </div>
   </div>
+</nav>-->
+<nav id="entry_breadcrumbs">
+<ul class="nav list-group breadcrumbs">
+  <li class="list-group-item breadcrumb <%= source ? 'active' : 'disabled'%>">
+    <a href="#identify_source">Identify Source
+    </a>
+  </li>
+  <li class="list-group-item breadcrumb <%= !source ? 'active' : 'disabled'%>">
+    <a href="#transaction_information">Transaction Information
+    </a>
+  </li>
+  <li class="list-group-item breadcrumb <%= !source ? '' : 'disabled'%>">
+    <a href="#manuscript_details">Manuscript Details
+    </a>
+  </li>
+  <li class="list-group-item breadcrumb <%= !source ? '' : 'disabled'%>">
+    <a href="#provenance_information">Provenance Information
+    </a>
+  </li>
+</ul>
 </nav>

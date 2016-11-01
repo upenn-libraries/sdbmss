@@ -62,7 +62,7 @@
     <![endif]-->
 
   </head>
-  <body class="<%= render_body_class %>">
+  <body data-spy="scroll" data-target="#entry_breadcrumbs" data-offset="50" class="<%= render_body_class %>">
   <% if current_user %>
     <%= render partial: 'shared/control_panel' %>
   <% end %>

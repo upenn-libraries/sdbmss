@@ -1,10 +1,16 @@
 <!-- I had to override the blacklight class anyway, just to make the "tools" not appear for deprecated records... -->
-<div id="content" class="<%= show_content_classes %>">
   <%= render_document_main_content_partial %>
-</div>
+<!--<div id="content" class="<%= show_content_classes %>">
+</div>-->
 
 <% if !@entry.deprecated %>
-<div id="sidebar" class="<%= show_sidebar_classes %>">
-   <%= render_document_sidebar_partial %>
-</div>
+<!--<div id="sidebar" class="<%= show_sidebar_classes %>">
+</div>-->
+   <% content_for :control_tools do %>
+     <%= render_document_sidebar_partial %>
+    <% end %>
+
+    <% content_for :breadcrumbs do %>
+      <%= render partial: "breadcrumbs", locals: {edit: false} %>
+    <% end %>
 <% end %>

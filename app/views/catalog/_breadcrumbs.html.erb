@@ -1,0 +1,15 @@
+<ul class="list-group breadcrumbs">
+  <li class="list-group-item breadcrumb">
+    <a href="/entries">Manage Entries</a>
+  </li>
+  <% if !@entry.id %>
+  <li class="list-group-item breadcrumb active"><a href="">New Entry</a></li>
+  <% else %>
+  <li class="list-group-item breadcrumb <%= edit ? '' : 'active' %>">
+    <a href="/entries/<%= @entry.id %>"><%= @entry.public_id %></a>
+  </li>
+  <li class="list-group-item breadcrumb <%= edit ? 'active' : '' %>">
+    <a href="/entries/<%= @entry.id %>/edit">Edit <%= @entry.public_id %></a>
+  </li>
+  <% end %>
+</ul>

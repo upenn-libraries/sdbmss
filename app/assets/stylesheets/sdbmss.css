@@ -1172,9 +1172,9 @@ so that gray backdrop shvows up correctly */
   position: fixed;
   float: left;
   height: 100%;
-  box-shadow: -2px 0px 10px -3px #ddd inset;
   background: #f8f8f8;
-  padding: 10px;
+  padding: 10px 9px 10px 10px;
+  border-right: 1px solid #ddd;
 }
 #control-panel .collapse {
   width: 0px;
@@ -1251,4 +1251,37 @@ so that gray backdrop shvows up correctly */
   left: calc(50% - 20px);
   top: calc(100% - 1px);
   z-index: 10;
+}
+
+.control-panel-bottom {
+  position: absolute;
+  width: calc(100% - 20px);
+  bottom: 0px;
+}
+
+#entry_breadcrumbs {
+  padding-left: 15px;
+}
+#entry_breadcrumbs .nav > li > a {
+  padding: 0px;
+}
+#entry_breadcrumbs .nav > li > a:hover, #entry_breadcrumbs .nav > li > a:focus {
+  background: none;
+}
+#entry_breadcrumbs .breadcrumb.active {
+  background-color: transparent;
+  border: none;
+  border-color: red;
+}
+#entry_breadcrumbs .breadcrumb.active a {
+  color: #333;
+}
+#entry_breadcrumbs .breadcrumb:after {
+  display: none;
+}
+#entry_breadcrumbs li {
+    display: list-item;
+    list-style: initial;
+    padding-left: 0px;
+    margin-left: 25px;
 }

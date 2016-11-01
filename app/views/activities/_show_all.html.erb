@@ -2,7 +2,7 @@
   <div class="row" style="border-bottom: 1px solid #eee; padding-bottom: 10px;">
     <div class="col-sm-1"></div>
     <div class="col-sm-2">
-      <div class='h4' data-toggle='collapse' href='#activity_date_<%= date %>'>
+      <div class='h4' data-toggle='collapse' href='.activity_date_<%= date %>'>
         <% days = (Date.today - date).to_i %>
         <% if days == 0 %>
           Today
@@ -18,12 +18,12 @@
       </div>
     </div>
     <div class="col-sm-9">
-      <div class="collapse in" id="activity_date_<%= date %>">
+      <div class="collapse in">
       <% activities.group_by { |a| a.user }.each do |user, user_activities| %>
         <h5 class='text-center' data-toggle='collapse' href='#activity_<%= date %>_<%= user.id %>'>
             <%= render partial: "shared/username_with_profile_link", locals: { user: user } %>  modified <%= "#{user_activities.count} record".pluralize(user_activities.count) %> <span class="caret"></span>
         </h5>
-        <div class="collapse in" id="activity_<%= date %>_<%= user.id %>">
+        <div class="collapse in activity_date_<%= date %>" id="activity_<%= date %>_<%= user.id %>">
         <% user_activities.each do |activity| %>
           <div class="panel panel-default activity">
             <div class="panel-heading">

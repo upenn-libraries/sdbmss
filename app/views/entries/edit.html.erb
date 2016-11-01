@@ -60,6 +60,30 @@ label.col-sm-2-and-half {
 
 <% end %>
 
+<% content_for :breadcrumbs do %>
+  <%= render partial: "catalog/breadcrumbs", locals: {edit: true} %>
+  <%= render partial: "breadcrumbs", locals: {source: @entry.source } %> 
+<% end %>
+
+<% content_for :control_tools do %>
+  <div class="panel panel-default show-tools">
+    <div class="panel-heading">
+        Tools
+    </div>
+    <div class="panel-body">
+        <ul class="nav">
+            <% if @entry.source && can?(:edit, @entry.source) %>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="/sources/<%= @entry.source.id %>/edit" target="_blank">Edit source <%= @entry.source.public_id %></a></li>
+            <% end %>
+            <% if @entry.id %>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="/entries/<%= @entry.id %>/history" target="_blank">View history</a></li>
+              <li role="presentation"><a href="/linkingtool/entry/<%= @entry.id %>" target="_blank">Linking Tool for <%= @entry.public_id %></a></li>
+            <% end %>
+        </ul>
+    </div>
+  </div>
+<% end %>
+
 <% if @entry.persisted? %>
     <% @page_title = "Edit #{@entry.public_id} - " + application_name %>
 <% else %>
@@ -88,7 +112,7 @@ label.col-sm-2-and-half {
     </div>
 
     <div class="row">
-      <div class="col-sm-9">
+      <div class="col-sm-12">
 
           <p>
               <span ng-show="edit">You can make edits to your entries in the
@@ -126,43 +150,11 @@ label.col-sm-2-and-half {
               <span ng-repeat="badDataItem in badData">{{ badDataItem }}</span>. Saving the record on this page may cause data loss.
           </div>
       </div>
-      <div class="col-sm-3">
-        <!--
-          <div class="dropdown">
-              <button class="btn btn-default" type="button" id="actionsMenu" data-toggle="dropdown" aria-expanded="true">
-                  Actions
-                  <span class="caret"></span>
-              </button>
-              <ul class="dropdown-menu" role="menu" aria-labelledby="actionsMenu">
-                  <li role="presentation" ng-show="entry.id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToEntryViewPage(entry.id)">Go to public page for SDBM_{{ entry.id }}</a></li>
-                  <li role="presentation" ng-show="entry.id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToEntryHistoryPage(entry.id)">View history for SDBM_{{ entry.id }}</a></li>
-                  <li role="presentation"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToSourceEditPage(entry.source.id)">Edit source SDBM_SOURCE_{{ entry.source.id }}</a></li>
-                  <li role="presentation"><a href="/linkingtool/entry/{{ entry.id }}" role="menuItem" tabindex="-1">Linking Tool for SDBM_{{ entry.id }}</a></li>
-                  <li role="presentation" ng-show="entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToManuscriptEditPage(entry.manuscript_id)">Manage entries for SDBM_MS_{{ entry.manuscript_id }}</a></li>
-                  <li role="presentation" ng-show="entry.id && !entry.manuscript_id"><a role="menuitem" tabindex="-1" href="#" ng-click="sdbmutil.redirectToFindOrCreateManuscriptForEntryPage(entry.id)">Create a manuscript record or link for this entry</a></li>
-              </ul>
-          </div>-->
-        <div class="panel panel-default show-tools">
-          <div class="panel-heading">
-              Tools
-          </div>
-          <div class="panel-body">
-              <ul class="nav">
-                  <li role="presentation" ng-show="entry.id"><a role="menuitem" tabindex="-1" href="/entries/{{ entry.id }}" target="_blank">Show this entry</a></li>
-                  <li role="presentation" ng-show="entry.id"><a role="menuitem" tabindex="-1" href="/entries/{{ entry.id }}/history" target="_blank">View history</a></li>
-                  <% if @entry.source && can?(:edit, @entry.source) %>
-                    <li role="presentation"><a role="menuitem" tabindex="-1" href="/sources/{{entry.source.id}}/edit" target="_blank">Edit source SDBM_SOURCE_{{ entry.source.id }}</a></li>
-                  <% end %>
-                  <li role="presentation" ng-show="entry.id"><a href="/linkingtool/entry/{{ entry.id }}" target="_blank">Linking Tool for SDBM_{{ entry.id }}</a></li>
-              </ul>
-          </div>
-        </div>
-
-      </div>
     </div>
 
     <%= render partial: "edit_buttons" %>
 
+  <div id="identify_source">
     <div class="row">
       <div class="col-sm-12">
         <legend>Source</legend>
@@ -209,8 +201,9 @@ label.col-sm-2-and-half {
             <!--<input id="institution" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.institution" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
         </div>
       </div>
+  </div>
 
-      <div class="transaction-information-container">
+      <div class="transaction-information-container" id="transaction_information">
 
           <div class="row">
               <div class="col-sm-12">
@@ -364,6 +357,7 @@ label.col-sm-2-and-half {
       </div>
     </div>
 
+<div id="manuscript_details">
     <div class="row">
       <div class="col-sm-12">
         <legend>Manuscript Details</legend>
@@ -883,7 +877,8 @@ label.col-sm-2-and-half {
       <textarea class="form-control" id="other_info" rows="3" data-ng-model="entry.other_info"></textarea>
     </div>
   </div>
-
+</div>
+<div id="provenance_information">
   <div class="row">
     <div class="col-sm-12">
       <legend>Provenance Information</legend>
@@ -982,7 +977,7 @@ label.col-sm-2-and-half {
                         </span>
                         <input type="text" class="form-control" ng-model="dt.date" ng-blur="updateProvenanceDateRange(prov, dt)" size=10 id="provenance_{{ $parent.$index }}_recorded_date_{{ $index }}">
                       </div>
-                        <select name="" id="" class="form-control" ng-model="dt.type" ng-blur="updateProvenanceDateRange(prov, dt)" ng-options="opt for opt in getProvenanceDateOptions(prov, dt)" ng-init="dt.type = getProvenanceDateOptions(prov, dt)[0]">
+                        <select name="" id="" class="form-control" ng-model="dt.type" ng-blur="updateProvenanceDateRange(prov, dt)" ng-options="opt for opt in getProvenanceDateOptions(prov, dt)" ng-init="dt.type = dt.type || getProvenanceDateOptions(prov, dt)[0]">
                         </select>
                     </div>
                   </div>
@@ -1029,6 +1024,7 @@ label.col-sm-2-and-half {
       </div>
     </div>
   </div>
+</div>
 
     <!-- end of provenance section -->
 

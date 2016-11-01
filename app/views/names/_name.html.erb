@@ -2,7 +2,7 @@
 
 <%# Why is this in SHARED instead of in NAME?? %>
 <div class="row">
-    <div class="col-sm-3">
+    <% content_for :control_tools do %>        
         <div class="panel panel-default show-tools">
             <div class="panel-heading">
                 Tools
@@ -13,14 +13,10 @@
                         <li>
                             <a onclick="addBookmark(<%= name.id %>, 'Name');" class="bookmark-link" in_bookmarks="/names/<%= name.id %>"><span class="glyphicon glyphicon-bookmark"></span></a>
                         </li>
-                        <% if can?(:edit, name) %>
-                            <li class="edit_name">
-                                <a href="<%= edit_name_path(name.id) %>">Edit this name agent</a>
-                            </li>
-                        <% end %>
                         <li class="history"><a href="<%= history_name_path(name.id) %>">View change history</a></li>
-                        <li class="link"><a href="<%= names_path %>">Return to list</a></li>
-                        <li class="link"><a href="<%= merge_name_path(name.id) %>">Merge</a></li>
+                        <% if can? :edit, @model %>
+                            <li class="link"><a href="<%= merge_name_path(name.id) %>">Merge</a></li>
+                        <% end %>
                         <% if !name.reviewed %>
                             <li class="link">
                                 <%= link_to "Review", name_path(name, reviewed: true), :method => :put %>
@@ -38,8 +34,8 @@
                 </ul>
             </div>
         </div>
-    </div>
-    <div class="col-sm-9">
+    <% end %>
+    <div class="col-sm-12">
 
         <dl class="document-show-heading dl-horizontal dl-invert">
             <dt></dt>

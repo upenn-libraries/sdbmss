@@ -1,23 +1,37 @@
 <div id="control-panel">
-    <div class="bookmarks-collapse collapse in">
-      <div style="padding: 10px;">
-        <div class="text-center">
-          <strong class="h3" style="font-variant: small-caps;">Control Panel <span class="glyphicon glyphicon-wrench"></span> </strong>
-          <br><br>
-        </div>
-      </div>
-      <div class="control-panel-top">
-        <%= yield :control_tools %>
-      </div>
-      <div class="vertical-breadcrumbs">
-        <%= yield :breadcrumbs %>
+  <div class="bookmarks-collapse collapse in">
+    <div style="padding: 10px;">
+      <div class="text-center">
+        <strong class="h3" style="font-variant: small-caps;">Control Panel <span class="glyphicon glyphicon-wrench"></span> </strong>
+        <br><br>
       </div>
     </div>
+    <div class="vertical-breadcrumbs">
+      <%= yield :breadcrumbs %>
+    </div>
 
-    <!--<div id="control-panel-button">
-      <a href="" onclick="$('.bookmarks-collapse').toggleClass('in')">
-        <span class="glyphicon glyphicon-chevron-left"></span>
-        <span class="glyphicon glyphicon-chevron-right"></span>
-      </a>
-    </div>-->
+    <div class="control-panel-top">
+      <%= yield :control_tools %>
+    </div>
+
+    <div class="panel panel-default control-panel-bottom">
+      <div class="panel-heading">Controls</div>
+      <div class="panel-body">
+        <ul class="nav">
+          <li>
+              <a href="/entries/new"><span class="glyphicon glyphicon-plus"></span> Add New Entry</a>
+          </li>
+          <li>
+              <a href="/bookmarks"><span class="glyphicon glyphicon-bookmark"></span> Bookmarks</a>
+          </li>
+          <li>
+              <a href="/bookmarks"><span class="glyphicon glyphicon-export"></span> Exports</a>
+          </li>
+          <li>
+              <a href="/dashboard"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
+</div>
