@@ -982,7 +982,7 @@ label.col-sm-2-and-half {
                         </span>
                         <input type="text" class="form-control" ng-model="dt.date" ng-blur="updateProvenanceDateRange(prov, dt)" size=10 id="provenance_{{ $parent.$index }}_recorded_date_{{ $index }}">
                       </div>
-                        <select name="" id="" class="form-control" ng-model="dt.type" ng-blur="updateProvenanceDateRange(prov, dt)" ng-options="opt for opt in getProvenanceDateOptions(prov, dt)" ng-init="dt.type = getProvenanceDateOptions(prov, dt)[0]">
+                        <select name="" id="" class="form-control" ng-model="dt.type" ng-blur="updateProvenanceDateRange(prov, dt)" ng-options="opt for opt in getProvenanceDateOptions(prov, dt)" ng-init="dt.type = dt.type || getProvenanceDateOptions(prov, dt)[0]">
                         </select>
                     </div>
                   </div>
