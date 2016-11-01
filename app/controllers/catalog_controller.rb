@@ -58,6 +58,9 @@ class CatalogController < ApplicationController
   raise "#add_to_search_history not defined in superclass" if !method_defined?(:add_to_search_history)
   # Overrides Blacklight::Catalog::SearchContext#add_to_search_history
   def add_to_search_history search
+    if !current_user
+      return
+    end
     # only add to search history (ie. call this method in the
     # superclass) if the user provided some search parameters
     if search.query_params["search_field"] != "advanced"
