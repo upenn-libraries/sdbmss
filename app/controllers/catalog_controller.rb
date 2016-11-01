@@ -55,6 +55,17 @@ class CatalogController < ApplicationController
     u
   end
 
+  # override blacklight method to require that user is logged in
+  # 
+  # this is a workaround to prevent bots from exploding the database with too many (saved) searches
+  def find_or_initialize_search_session_from_params params
+    if !current_user
+      return
+    else
+      super params
+    end
+  end
+
   raise "#add_to_search_history not defined in superclass" if !method_defined?(:add_to_search_history)
   # Overrides Blacklight::Catalog::SearchContext#add_to_search_history
   def add_to_search_history search
