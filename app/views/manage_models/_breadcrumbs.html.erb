@@ -1,4 +1,4 @@
-<ol class="breadcrumbs list-group">
+<ul class="breadcrumbs list-group">
   <li class="breadcrumb list-group-item">
     <a href="<%= polymorphic_path(@model.class) %>">Manage <%= @model.class.name.pluralize %>
     </a>
@@ -12,19 +12,4 @@
     <a href="<%= edit_polymorphic_path(@model) %>">Edit <%= @model.public_id %></a>
   </li>
   <% end %>
-</ol>
-<!--<ol class="breadcrumb text-center">
-  <li class="breadcrumb-item">
-    <a href="<%= polymorphic_path(@model.class) %>">Manage <%= @model.class.name.pluralize %>
-    </a>
-  </li>
-  <li class="breadcrumb-item <%= edit ? '' : 'active' %>">
-    <a href="<%= polymorphic_path(@model) %>"><%= @model.public_id %>
-    </a>
-  </li>
-  <% if can? :edit, @model %>
-  <li class="breadcrumb-item <%= edit ? 'active' : '' %>">
-    <a href="<%= edit_polymorphic_path(@model) %>">Edit <%= @model.public_id %></a>
-  </li>
-  <% end %>
-</ol>-->
+</ul>

@@ -1169,18 +1169,19 @@ so that gray backdrop shvows up correctly */
 }
 
 #control-panel {
-  position: relative;
+  position: fixed;
   float: left;
   height: 100%;
   box-shadow: -2px 0px 10px -3px #ddd inset;
   background: #f8f8f8;
+  padding: 10px;
 }
 #control-panel .collapse {
   width: 0px;
   overflow: hidden;
 }
 #control-panel .collapse.in {
-  width:288px;
+  width:268px;
 }
 #control-panel-button {
   position: absolute;
@@ -1209,4 +1210,45 @@ so that gray backdrop shvows up correctly */
   border-left: 4px dashed;
   border-top: 4px solid transparent;
   border-bottom: 4px solid transparent;
+}
+
+.vertical-breadcrumbs .breadcrumb {
+  background: none;
+  border: none;
+  border-color: #f8f8f8;
+}
+
+.vertical-breadcrumbs .breadcrumb.active {
+  z-index: 2;
+  color: #fff;
+  background-color: #8BC34A;
+  border-color: #8BC34A;
+}
+
+.vertical-breadcrumbs .breadcrumb:last-child {
+  border-color: transparent;
+}
+
+.vertical-breadcrumbs .breadcrumb a {
+  color: #aaa;
+}
+
+.vertical-breadcrumbs .breadcrumb.active a {
+  color: white;
+  font-weight: bold;
+}
+
+.vertical-breadcrumbs .breadcrumb:after {
+  content: '';
+  width: 0;
+  height: 0;
+  position: absolute;
+  display: block;
+  border-top: 10px solid #337ab7;
+  border-top-color: inherit;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  left: calc(50% - 20px);
+  top: calc(100% - 1px);
+  z-index: 10;
 }
