@@ -5,6 +5,13 @@
     <% @model = @source %>
     <%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
 <% end %>
+<% content_for :add_entry do %>
+    <li>
+        <%= link_to "Add a New Entry", new_entry_path %>
+        <%= link_to "Add A New Entry for this Source", new_entry_path(source_id: @source.id) %>
+    </li>
+<% end %>
+
 <div class="row">
     <div class="col-sm-6">
         

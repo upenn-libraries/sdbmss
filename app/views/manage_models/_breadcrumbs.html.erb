@@ -2,12 +2,18 @@
   <a href="<%= polymorphic_path(@model.class) %>">Manage <%= @model.class.name.pluralize %>
   </a>
 </li>
-<li class="breadcrumb list-group-item <%= edit ? '' : 'active' %>">
-  <a href="<%= polymorphic_path(@model) %>"><%= @model.public_id %>
-  </a>
-</li>
-<% if can? :edit, @model %>
-<li class="breadcrumb list-group-item <%= edit ? 'active' : '' %>">
-  <a href="<%= edit_polymorphic_path(@model) %>">Edit <%= @model.public_id %></a>
-</li>
+<% if @model.id %>
+  <li class="breadcrumb list-group-item <%= edit ? '' : 'active' %>">
+    <a href="<%= polymorphic_path(@model) %>"><%= @model.public_id %>
+    </a>
+  </li>
+  <% if can? :edit, @model %>
+  <li class="breadcrumb list-group-item <%= edit ? 'active' : '' %>">
+    <a href="<%= edit_polymorphic_path(@model) %>">Edit <%= @model.public_id %></a>
+  </li>
+  <% end %>
+<% else %>
+  <li class="breadcrumb list-group-item active">
+    <a href="new_polymorphic_path(@model.class)">New <%= @model.class %></a>
+  </li>
 <% end %>

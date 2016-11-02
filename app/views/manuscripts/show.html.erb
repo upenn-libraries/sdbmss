@@ -107,6 +107,13 @@
     <%= render partial: "tools" %>
 <% end %>
 
+<% content_for :add_entry do %>
+    <li>
+        <%= link_to "Add A New Entry", new_entry_path %>
+        <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %>
+    </li>
+<% end %>
+
 <div class="row">
     
     <div class="sdbmss-form <%= @manuscript.location ? 'col-sm-7' : 'col-sm-12' %>">

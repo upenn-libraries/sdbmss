@@ -1172,6 +1172,7 @@ so that gray backdrop shvows up correctly */
 #control-panel {
   position: fixed;
   float: left;
+  z-index: 100;
   height: 100%;
   background: #f8f8f8;
   padding: 10px 9px 10px 10px;
@@ -1285,7 +1286,7 @@ so that gray backdrop shvows up correctly */
   list-style: initial;
   padding: 8px 0px;
   margin-left: 25px;
-
+}
 /*
 
 Private Message Styling

@@ -24,8 +24,16 @@
       <div class="panel-heading">Controls</div>
       <div class="panel-body">
         <ul class="nav">
-          <li>
-              <a href="/entries/new"><span class="glyphicon glyphicon-plus"></span> Add New Entry</a>
+            <% if content_for? :add_entry %>
+              <li class="dropdown">
+                <a href="" data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> Add New Entry <span class="caret"></span></a>
+            <% else %>
+              <li>
+                  <a href="/entries/new"><span class="glyphicon glyphicon-plus"></span> Add New Entry</a>
+            <% end %>
+            <ul class="dropdown-menu" role="menu">
+              <%= yield :add_entry %>
+            </ul>
           </li>
           <li>
               <a href="/bookmarks"><span class="glyphicon glyphicon-bookmark"></span> Bookmarks</a>

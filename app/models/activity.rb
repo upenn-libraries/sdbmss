@@ -40,7 +40,7 @@ class Activity < ActiveRecord::Base
     if item_type == 'User'
       "/accounts/#{item.id}"
     elsif item_type == 'EntryManuscript'
-      if item
+      if item && item.manuscript
         "/manuscripts/#{item.manuscript.id}"
       else
         "/dashboard"

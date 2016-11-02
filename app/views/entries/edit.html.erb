@@ -85,6 +85,16 @@ label.col-sm-2-and-half {
   </div>
 <% end %>
 
+<% content_for :add_entry do %>
+    <li>
+        <%= link_to "Add a New Entry", new_entry_path %>
+        <%= link_to "Add A New Entry for this Source", new_entry_path(source_id: @entry.source) %>
+        <% if @entry.manuscript %>
+        <%= link_to "Create A Personal Observation for this Manuscript", new_source_path({create_entry: 1, manuscript_id: @entry.manuscript.id, source_type: 4}) %>
+        <% end %>
+    </li>
+<% end %>
+
 <% if @entry.persisted? %>
     <% @page_title = "Edit #{@entry.public_id} - " + application_name %>
 <% else %>
