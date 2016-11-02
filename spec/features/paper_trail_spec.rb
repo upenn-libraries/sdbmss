@@ -74,7 +74,7 @@ describe "Paper trail", :js => true do
     find_by_id(field).click
     # hover over something else--the navbar element here is just
     # arbitrary
-    first(".navbar-brand").hover
+    first('#header-navbar').hover
     sleep(2)
   end
 

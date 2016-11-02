@@ -53,7 +53,7 @@ describe "User Activity", :js => true do
     v = doActivity(10)
     visit activities_path
     expect(page).to have_content('edited SDBM_10')
-    expect(page).to have_content("Title: from #{v} to Book of Ours")
+    expect(page).to have_content("Title changed from #{v} to Book of Ours")
   end
 
   it "should correctly display deleting a record associaton" do
@@ -64,7 +64,7 @@ describe "User Activity", :js => true do
     sleep 1.1
     visit activities_path
     expect(page).to have_content('edited SDBM_10')
-    expect(page).to have_content("Title: Book of Ours")
+    expect(page).to have_content("Title Book of Ours")
   end
 
   it "should create a new name and show it in the activity" do
@@ -75,7 +75,7 @@ describe "User Activity", :js => true do
     expect(page).to have_content('Stacker Pentecost')
     visit activities_path
     expect(page).to have_content('added SDBM_NAME_')
-    expect(page).to have_content('Name: Stacker Pentecost')
+    expect(page).to have_content('Name set to Stacker Pentecost')
   end
 
   it "should destroy a name record and show it in the activity" do

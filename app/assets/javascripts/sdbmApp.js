@@ -2590,11 +2590,11 @@ function addNotification (message, type, permanent) {
 
 // this works!  maybe not a good idea?
 function addBookmark(id, type) {
-  BOOKMARK_SCOPE.addBookmark(id, type);
+  //BOOKMARK_SCOPE.addBookmark(id, type);
   // if removed, have one 
   //addNotification(type + " " + id + " bookmarked! <span onclick='addBookmark(" + id + ',"' + type + "\")'>Undo<span>", 'info' );
 }
 
 function renewBookmarks() {
-  BOOKMARK_SCOPE.renew();
+  //BOOKMARK_SCOPE.renew();
 }
