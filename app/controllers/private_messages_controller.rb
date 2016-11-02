@@ -84,7 +84,7 @@ class PrivateMessagesController < ApplicationController
     if @message.valid?
       users.each do |user|
         @message.user_messages.create!({user_id: user.id, method: "To"})
-      #  user.notify("#{current_user.to_s} sent you a message.", @message, "message")
+        user.notify("#{current_user.to_s} sent you a message.", @message, "message")
       end
       flash[:success] = "Message sent to #{users.map(&:username).join(', ')}."
       redirect_to @message

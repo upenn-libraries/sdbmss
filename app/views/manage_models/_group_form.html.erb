@@ -1,3 +1,4 @@
+<% if Rails.env.development? || Rails.env.staging? %>
 <div class="form-inline">
   <% groups = Group.joins(:group_users).where(:group_users => {user: current_user, role: "Manager"}) %>
   <% if groups.count > 0 %>  
@@ -10,3 +11,4 @@
   <input type="submit" value="Remove" class='form-control' id="remove-from-group"/>
   <% end %>
 </div>
+<% end %>

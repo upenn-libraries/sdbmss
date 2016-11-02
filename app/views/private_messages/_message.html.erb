@@ -37,6 +37,6 @@
 </div>
 <div class="row collapse" id="reply_<%= message.id %>">
   <div class="col-sm-12">
-    <%= render partial: 'form', locals: {message: @message, from: ([message.sent_by.id] | message.sent_to.map(&:id)) - [current_user.id], title: "Re: #{message.title}" } %>
+    <%= render partial: 'form', locals: {message: @message, from: ([message.sent_by.id] | message.sent_to.map(&:id)) - [current_user.id], title: "#{message.title}" } %>
   </div>
 </div>
