@@ -10,7 +10,7 @@ class NotificationMailer < ApplicationMailer
     @notification = notification
     @title = notification.title
     @user = notification.user
-    mail(to: @user.email, subject: @title)
+    mail(to: @user.email, subject: "SDBM: #{@title}")
   end
 
 end
