@@ -1,3 +1,52 @@
+class Chain
+  attr_accessor :messages
+
+  def initialize(message, user)
+    @messages = []
+    # climb up to the beginning of the chain, adding each 'previous'
+    while message.private_message do
+      message = message.private_message
+      @messages |= [message]
+    end
+    # traverse the 'tree' from the root, adding all replies directed to that user
+    compile_messages(message, user)
+
+    # message 'tree' is flattened and sorted by date
+    @messages = @messages.sort { |a, b| a.created_at <=> b.created_at }
+  end
+
+  def compile_messages(message, user)
+    # add all the messages in the 'tree' to the message list
+    rp = message.replies
+    if rp.count > 0
+      rp.each { |reply| compile_messages(reply, user) }
+    end
+    if message.users.include?(user) or message.created_by == user
+      @messages |= [message]
+    end
+  end
+
+  def include?(message)
+    @messages.include? message
+  end
+
+  def latest(user=nil)
+    if not user
+      @messages.last
+    else
+      @messages.select { |msg| msg.created_by == user }.last
+    end
+  end
+
+  def unread(user)
+    @messages.select { |m| m.unread(user) }.count
+  end
+
+  def users(user)
+    @messages.reverse.map { |m| m.users + [m.created_by] }.flatten.uniq
+  end
+end
+
 class PrivateMessagesController < ApplicationController
   before_action :authenticate_user!, only: [:index, :show, :new, :create, :edit, :update, :destroy, :search]
 
@@ -8,33 +57,36 @@ class PrivateMessagesController < ApplicationController
   def index
     if params[:sent_by]
       @sent_by = true
-      @messages = current_user.private_messages.sent.reverse_order
+      messages = current_user.sent_messages
     else
-      @messages = current_user.private_messages.received.reverse_order
+      messages = current_user.private_messages
     end
-  end
-
-  def new
-    if params[:user_id] && User.exists?(params[:user_id].to_i)
-      @message = PrivateMessage.new
-
-      @user = User.find(params[:user_id])
-        if params[:private_message_id]
-        @reply = PrivateMessage.find(params[:private_message_id])
-        @messages = reply_chain(@reply)
+    @chains = []
+    messages.each do |pm|
+      if @chains.select { |ch| ch.include? pm }.count > 0
+        # already in a chain, so pass
+      else
+        chain = Chain.new(pm, current_user)
+        @chains.push(chain)
       end
-    else
     end
+    @chains = @chains.sort { |a, b| b.latest.created_at <=> a.latest.created_at }
   end
   
+  def new
+    @message = PrivateMessage.new
+  end
+
   def create
-    to_user = params[:to_user]
-    @message = PrivateMessage.create(params_for_create_message)
+    users = User.where(id: params[:to_user])
+    @message = PrivateMessage.new(params_for_create_message)
+    @message.save_by(current_user)
     if @message.valid?
-      @message.user_messages.create({user_id: current_user.id, method: "From"})
-      @message.user_messages.create!({user_id: to_user.to_i, method: "To"})
-      @message.sent_to.notify("#{@message.sent_by.to_s} sent you a message.", @message, "message")
-      #"#{@message.sent_by} sent you a message at #{@message.created_at.to_formatted_s(:long)}.<blockquote>#{@message.message.at(0..100)}</blockquote>"
+      users.each do |user|
+        @message.user_messages.create!({user_id: user.id, method: "To"})
+      #  user.notify("#{current_user.to_s} sent you a message.", @message, "message")
+      end
+      flash[:success] = "Message sent to #{users.map(&:username).join(', ')}."
       redirect_to @message
     else
       flash[:error] = "Invalid message.  Both a message and a title are required."
@@ -43,17 +95,14 @@ class PrivateMessagesController < ApplicationController
   end
 
   def show
-    if current_user.private_messages.received.include? @message
-      @message.update!(unread: false)
-    end
+    @chain = Chain.new(@message, current_user)
+    # FIX ME: how to mark messages as READ, but only after the page loads
+    @chain.messages.each { |message| message.delay.read(current_user) }
   end
 
   def destroy
     @message.user_messages.where(user_id: current_user.id).each do |um|
-      um.destroy
-    end
-    if @message.user_messages.count <= 0
-      @message.destroy
+      um.destroy!
     end
     flash[:error] = "Message deleted."
     redirect_to private_messages_path
@@ -63,16 +112,11 @@ class PrivateMessagesController < ApplicationController
   private
 
   def params_for_create_message
-    params.require(:private_message).permit(:message, :title)
+    params.permit(:message, :title, :private_message_id)
   end
 
   def set_model
     @message = PrivateMessage.find(params[:id])
-    if not @message.users.include?(current_user)
-      @message = nil
-      flash[:error] = "You are not authorized to access this page."
-      redirect_to dashboard_path
-    end
   end
 
 end

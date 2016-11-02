@@ -1,29 +1,42 @@
-<div class="row">
-  <div class="col-sm-1 text-right">
-    <% if truncate %>
-      <a href="/private_messages/<%= message.id %>">Read</a><br>
-    <% end %>
-    <%= link_to 'Delete',  private_message_path(message, format: 'html'),  method: :delete, format: 'json', data: { confirm: 'Are you sure?' } %>
-  </div>
-  <div class="col-sm-8">
-    <h4 class="list-group-item-heading"> <%= message.title %></h4>
-    <p class="list-group-item-body">
-      <% if truncate && message.message.length > 100 %>
-        <%= sanitize simple_format(message.message).at(0..100) + "...", tags: %w(code b i br strong em a), attributes: %w(href) %>
-      <% else %>
-        <%= sanitize simple_format(message.message), tags: %w(code b i br strong em a), attributes: %w(href) %>
+<% unread = message.unread(current_user) %>
+<div class="row <%= unread ? '' : 'text-muted' %>" data-toggle="collapse" href="#message_<%= message.id %>">
+  <div class="col-sm-9">
+    <h4 class="list-group-item-heading">
+      <% if unread %>
+          <strong class="glyphicon glyphicon-exclamation-sign text-success"></strong>
       <% end %>
+      <%= message.title %>
+    </h4>
+  </div>
+  <div class="col-sm-3 text-right">
+    <%= message.created_at.to_formatted_s(:long) %>
+  </div>
+</div>
+<div class="row collapse <%= (unread or last) ? 'in' : 'text-muted' %>" id="message_<%= message.id %>">
+  <div class="col-sm-9">
+      <% if message.sent_to %>
+          To: <% message.sent_to.each do |sent_to| %>
+              <%= render partial: "shared/username_with_profile_link", locals: { user: sent_to } %>
+            <% end %>    
+      <% end %>
+      <% if message.sent_by %>
+        <br><small>From 
+          <%= render partial: "shared/username_with_profile_link", locals: { user: message.sent_by } %>
+        </small>
+      <% end %>
+    <p class="list-group-item-body">
+        <br>
+        <%= sanitize simple_format(message.message), tags: %w(code b i br strong em a), attributes: %w(href) %>
     </p>
   </div>
   <div class="col-sm-3 text-right">
-    <span class="h4">
-      <%= message.created_at.to_formatted_s(:long) %>
-      <% if message.sent_by %>
-        <br><small>From <%= render partial: "shared/username_with_profile_link", locals: { user: message.sent_by } %></small>
-      <% end %>
-      <% if message.sent_to %>
-        <br><small>To <%= render partial: "shared/username_with_profile_link", locals: { user: message.sent_to } %></small>
-      <% end %>
-    </span>
+    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="collapse" href="#reply_<%= message.id %>">
+      <span class="glyphicon glyphicon-share-alt"></span> Reply
+    </button>     
+  </div>
+</div>
+<div class="row collapse" id="reply_<%= message.id %>">
+  <div class="col-sm-12">
+    <%= render partial: 'form', locals: {message: @message, from: ([message.sent_by.id] | message.sent_to.map(&:id)) - [current_user.id], title: "Re: #{message.title}" } %>
   </div>
 </div>

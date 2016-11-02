@@ -5,23 +5,41 @@ class PrivateMessage < ActiveRecord::Base
   include UserFields
   include Notified
   
-  has_many :user_messages, foreign_key: "private_message_id"
+  has_many :user_messages, -> { where(:deleted => false) }, foreign_key: "private_message_id", dependent: :destroy
   has_many :users, through: :user_messages
 
-  accepts_nested_attributes_for :user_messages
+  belongs_to :private_message
+  has_many :replies, foreign_key: "private_message_id", class_name: "PrivateMessage"
 
-  scope :sent, -> () { joins(:user_messages).where("user_messages.method = 'From'").distinct }
-  scope :received, -> () { joins(:user_messages).where("user_messages.method = 'To'").distinct }
+  accepts_nested_attributes_for :user_messages
 
   validates_presence_of :message
   validates_presence_of :title
 
   def sent_by
-    users.sent_by[0]
+    created_by
   end
 
   def sent_to
-    users.sent_to[0]
+    users
+  end
+
+  def unread(user)
+    um = user_messages.where(user_id: user.id).first
+    if um
+      um.unread
+    else
+      false
+    end
+  end
+
+  def read(user)
+    um = user_messages.where(user_id: user.id).first
+    if um
+      um.update(unread: false)
+    else
+      false
+    end
   end
 
   # used, at the moment, for notifications only

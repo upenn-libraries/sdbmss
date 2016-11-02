@@ -4,14 +4,38 @@
 
 <%= render partial: "header", locals: {title: (@sent_by ? "SENT MAIL" : "INBOX")} %>
 
-<div class="row">
-  <div class="col-sm-12">
-    <% @messages.each do |m| %>
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <%= render partial: 'message', locals: {message: m, truncate: true} %>
-        </div>
+<% @chains.each do |chain| %>
+  <% if @sent_by %>
+    <% m = chain.latest(current_user) %>
+    <% um = 0 %>
+  <% else %>
+    <% m = chain.latest %>
+    <% um = chain.unread(current_user) %>
+  <% end %>
+  <div class="row private_message">
+    <!--
+    <div class="col-sm-1">
+      <%#= link_to(private_message_path(m, format: 'html'),  method: :delete, format: 'json', data: { confirm: 'Are you sure?' }) do %>
+        <span class="glyphicon glyphicon-remove"></span> Delete
+      <%# end %>
+    </div-->
+    <%= link_to(private_message_path(m), :class => (um > 0 ? "text-default" : "text-muted")) do %>
+      <div class="col-sm-2 private_message_preview">
+        <%= chain.users(current_user).map{ |user| user == current_user ? "Me" : user.username }.join(", ") %>
+      </div>
+      <div class="col-sm-8 private_message_preview">
+        <% if um > 0 %>
+          <strong class="glyphicon glyphicon-exclamation-sign text-success"></strong>
+        <% end %>
+        (<%= chain.messages.count %>)
+        <strong>
+          <%= m.title %>
+        </strong>
+        <%= sanitize simple_format(m.message), tags: %w(code b i br strong em a), attributes: %w(href) %>
+      </div>
+      <div class="col-sm-2 text-right">
+        <%= m.created_at.to_formatted_s(:long) %>
       </div>
     <% end %>
   </div>
-</div>
+<% end %>

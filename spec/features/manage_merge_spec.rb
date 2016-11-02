@@ -41,7 +41,7 @@ describe "Manage Names", :js => true do
     expect(page).to have_content("Merge")
 
     #select most recently created author (author2) to MERGE
-    first('.merge-link').click
+    first('.merge-link').trigger('click')
 
     expect(page).to have_content("Merge")
     expect(page).to have_content(author2.id)

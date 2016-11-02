@@ -421,10 +421,10 @@ h1 { font-size: 30px; margin-top: 0; }
   display: none;
 }
 
-.checkbox {
+.faq .checkbox {
   display: none;
 }
-.checkbox + label {
+.faq .checkbox + label {
   background: #eee;
   line-height: normal;
   margin: 0px; 
@@ -1108,6 +1108,7 @@ so that gray backdrop shvows up correctly */
   background: #f8f8f8;
   color: #666;
 }
+
 .one-line {
   white-space: nowrap;
   overflow: hidden;
@@ -1284,4 +1285,46 @@ so that gray backdrop shvows up correctly */
   list-style: initial;
   padding: 8px 0px;
   margin-left: 25px;
+
+/*
+
+Private Message Styling
+
+ */
+
+.private_message {
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+  /* box-shadow: 2px 2px 3px lightgray;*/
+  margin: 10px 0px;
+}
+
+.private_message_preview {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.multiselect {
+  text-align: left;
+}
+
+.multiselect-container {
+  max-height: 50vh;
+  overflow-y: scroll;
+}
+
+.text-default {
+  color: #222;
+}
+
+.btn-no-border {
+  color: #222;
+}
+.btn-no-border:hover {
+  color: #888;
+}
+.btn-no-border.active, .btn-no-border:active, .btn-no-border:focus {
+  box-shadow: none;
+  color: #03A9F4;
 }

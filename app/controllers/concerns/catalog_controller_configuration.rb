@@ -367,11 +367,11 @@ module CatalogControllerConfiguration
       # whether the sort is ascending or descending (it must be asc or desc
       # except in the relevancy case).
 
-      config.add_sort_field 'entry_id asc', :label => 'ID'
+      config.add_sort_field 'entry_id asc', :label => 'ID (asc)'
       config.add_sort_field 'entry_id desc', :label => 'ID (desc)', default: true
-      config.add_sort_field 'source_date asc', :label => 'Source Date'
+      config.add_sort_field 'source_date asc', :label => 'Source Date (asc)'
       config.add_sort_field 'source_date desc', :label => 'Source Date (desc)'
-      config.add_sort_field 'source_agent_sort asc', :label => 'Source Agent'
+      config.add_sort_field 'source_agent_sort asc', :label => 'Source Agent (asc)'
       config.add_sort_field 'source_agent_sort desc', :label => 'Source Agent (desc)'
 #      config.add_sort_field 'title_flat asc', :label => 'Title'
 #      config.add_sort_field 'title_flat desc', :label => 'Title (desc)'

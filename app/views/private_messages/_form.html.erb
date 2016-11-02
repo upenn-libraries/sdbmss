@@ -1,0 +1,56 @@
+<%= form_tag({:controller => "private_messages", :action => "create"}, :method => "post") do %>
+  <div class="form-group row">
+    <div class="col-sm-12">
+      <% if message %>
+        <%= hidden_field_tag :private_message_id, message.id %>
+      <% end %>
+      <%= select_tag("to_user[]", options_for_select(User.all.collect { |u| [u.username, u.id] }, :selected => from), {prompt: 'Select User', class: 'select_users', multiple: 'multiple'}) %>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('.select_users').multiselect({
+                  enableFiltering: true,
+                  includeSelectAllOption: true,
+                  enableCaseInsensitiveFiltering: true,
+                  buttonWidth: '100%',
+                  onDropdownShown : function(event) {
+                    $("input[type='text'].multiselect-search").focus();
+                  },
+                  buttonText: function(options, select) {
+                    if (options.length === 0) {
+                      return 'Recipients';
+                    }
+                    else {
+                      var labels = [];
+                      options.each(function() {
+                        if ($(this).attr('label') !== undefined) {
+                            labels.push($(this).attr('label'));
+                        }
+                        else {
+                            labels.push($(this).html());
+                        }
+                      });
+                      return 'To: ' + labels.join(', ') + '';
+                    } 
+                  }       
+                });
+            });
+        </script>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-12">
+      <%= text_field_tag :title, title, class: "form-control", required: true, placeholder: "Subject" %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-12">
+      <%= text_area_tag :message, '', class: "form-control", rows: 5, required: true, placeholder: "Message" %>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-8"></div>
+    <div class="col-sm-4 text-right">
+      <%= submit_tag('Send Message', class: 'btn btn-primary') %>
+    </div>
+  </div>
+<% end %>
