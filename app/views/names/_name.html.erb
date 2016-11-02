@@ -35,7 +35,7 @@
             </div>
         </div>
     <% end %>
-    <div class="col-sm-12">
+    <div class="col-sm-6">
 
         <dl class="document-show-heading dl-horizontal dl-invert">
             <dt></dt>
@@ -44,14 +44,12 @@
         <%= render partial: "main", locals: { name: name } %>
 
     </div>
-    <div class="col-sm-3"></div>
-    <div class="col-sm-9">
+    <div class="col-sm-5">
         
-        <h4>Share additional information about this name in the box below. Your comments will be displayed publicly.</h4>
+        <h2 class="text-center"><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
+        <p class='text-center text-muted'>Share additional information about this name in the box below. Your comments will be displayed publicly.</[>
 
         <%= render partial: "comments/show_all", locals: {comments: name.comments.where(public: true), record: name} %>
-
-        <div class="spacer-40px"></div>
 
     </div>
 

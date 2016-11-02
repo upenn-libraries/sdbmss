@@ -1,24 +1,13 @@
-<%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
+<% content_for :breadcrumbs do %>
+  <%= render partial: "breadcrumbs", locals: {edit: false} %>
+<% end %>
+
+<% content_for :control_tools do %>
+  <%= render partial: "tools" %>
+<% end %>
+
 <div class="row">
-  <div class="col-sm-3">
-      <div class="panel panel-default show-tools">
-          <div class="panel-heading">
-              Tools
-          </div>
-          <div class="panel-body">
-              <ul class="nav">
-                  <% if user_signed_in? %>
-                      <% if can?(:edit, @model) %>
-                        <li class="link"><%= link_to 'Edit', edit_model_path(@model) %></li>
-                      <% end %>
-                      <li class="link"><%= link_to 'Change History', polymorphic_path([:history, @model]) %></li>
-                      <li class="link"><%= link_to 'Go to Listing', models_path %></li>
-                  <% end %>
-              </ul>
-          </div>
-      </div>
-  </div>
-  <div class="col-sm-9">
+  <div class="col-sm-6">
     <p id="notice"><%= notice %></p>
 
     <dl class="document-show-heading dl-horizontal dl-invert">

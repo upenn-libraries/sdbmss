@@ -1,13 +1,13 @@
 <li class="breadcrumb list-group-item">
-  <a href="<%= polymorphic_path(@model.class) %>">Manage <%= @model.class.name.pluralize %>
+  <a href="<%= accounts_path %>">Manage <%= @model.class.name.pluralize %>
   </a>
 </li>
 <li class="breadcrumb list-group-item <%= edit ? '' : 'active' %>">
-  <a href="<%= polymorphic_path(@model) %>"><%= @model.public_id %>
+  <a href="<%= profile_path(@model.username) %>"><%= @model %>
   </a>
 </li>
 <% if can? :edit, @model %>
 <li class="breadcrumb list-group-item <%= edit ? 'active' : '' %>">
-  <a href="<%= edit_polymorphic_path(@model) %>">Edit <%= @model.public_id %></a>
+  <a href="<%= edit_account_path(@model) %>">Edit <%= @model %></a>
 </li>
 <% end %>

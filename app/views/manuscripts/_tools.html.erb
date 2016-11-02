@@ -1,0 +1,25 @@
+<div class="panel panel-default show-tools">
+    <div class="panel-heading"><span class="h4">Tools</span></div>
+    <div class="panel-body" style="height: 240px;">
+        <ul class='nav'>
+            <li>
+                <a data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
+            </li>
+            <% if can? :link, @manuscript %>
+            <li class="manage_entry">
+                <a href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Linking Tool for <%= @manuscript.public_id %></a>
+            </li>
+            <li>
+                <a href="#proposed-history" class='toggle-propose-history' data-toggle="collapse">Construct History<span sdbm-tooltip="manuscript_propose_history"></span></a>
+            </li>
+            <li>
+                <a href="" onclick="addBookmark(<%= @manuscript.id %>, 'Manuscript');" in_bookmarks="/manuscripts/<%= @manuscript.id %>"><span class="glyphicon glyphicon-bookmark"></span> Bookmark</a>
+              </li>  
+            <li><%= render partial: "nav/watch", locals: {watchable: @manuscript} %></li>
+            <% end %>
+        </ul>
+    </div>
+    <!--<div class="panel-footer text-right">
+        <p class="text-muted">Do not assume this manuscript is held by the University of Pennsylvania Libraries</p>            
+    </div>-->
+</div>

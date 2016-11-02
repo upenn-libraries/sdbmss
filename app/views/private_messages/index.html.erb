@@ -1,3 +1,7 @@
+<% content_for :breadcrumbs do %>
+  <li class="breadcrumb list-group-item active"><a href="/private_messages">Messages</a></li>
+<% end %>
+
 <%= render partial: "header", locals: {title: (@sent_by ? "SENT MAIL" : "INBOX")} %>
 
 <div class="row">

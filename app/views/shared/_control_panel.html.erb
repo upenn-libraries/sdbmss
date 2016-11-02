@@ -7,7 +7,13 @@
       </div>
     </div>
     <div class="vertical-breadcrumbs">
-      <%= yield :breadcrumbs %>
+      <ul class="breadcrumbs list-group">
+        <li class="breadcrumb list-group-item <%= current_page?('/dashboard') ? 'active' : '' %>">
+          <a href="<%= dashboard_path %>"><span class="glyphicon glyphicon-dashboard"></span> Dashboard
+          </a>
+        </li>
+        <%= yield :breadcrumbs %>
+      </ul>
     </div>
 
     <div class="control-panel-top">
@@ -25,10 +31,13 @@
               <a href="/bookmarks"><span class="glyphicon glyphicon-bookmark"></span> Bookmarks</a>
           </li>
           <li>
-              <a href="/bookmarks"><span class="glyphicon glyphicon-export"></span> Exports</a>
+              <a href="/downloads"><span class="glyphicon glyphicon-export"></span> Exports</a>
           </li>
           <li>
-              <a href="/dashboard"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a>
+              <a href="/groups"><span class="glyphicon glyphicon-globe"></span> Groups</a>
+          </li>          
+          <li>
+              <a href="/watches"><span class="glyphicon glyphicon-eye-open"></span> Watched Records</a>
           </li>
         </ul>
       </div>

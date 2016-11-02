@@ -1274,14 +1274,14 @@ so that gray backdrop shvows up correctly */
   border-color: red;
 }
 #entry_breadcrumbs .breadcrumb.active a {
-  color: #333;
+  color: #8BC34A;
 }
 #entry_breadcrumbs .breadcrumb:after {
   display: none;
 }
 #entry_breadcrumbs li {
-    display: list-item;
-    list-style: initial;
-    padding-left: 0px;
-    margin-left: 25px;
+  display: list-item;
+  list-style: initial;
+  padding: 8px 0px;
+  margin-left: 25px;
 }

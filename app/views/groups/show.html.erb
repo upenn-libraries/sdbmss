@@ -1,4 +1,7 @@
-<%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
+<% content_for :breadcrumbs do %>
+    <%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
+<% end %>
+
 <% group_user = @model.group_users.where(user: current_user).last %>
 <div class="row">
     <div class="col-sm-6" style="padding: 0px 15px;">
