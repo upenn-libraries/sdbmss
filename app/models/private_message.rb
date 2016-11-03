@@ -17,7 +17,7 @@ class PrivateMessage < ActiveRecord::Base
   validates_presence_of :title
 
   def sent_by
-    created_by || users_messages.where(method: "From").first
+    created_by || user_messages.where(method: "From").first.user
   end
 
   def sent_to
