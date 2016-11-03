@@ -278,7 +278,7 @@ describe "Paper trail", :js => true do
         visit history_entry_path e
         
         f = first('.active', text: 'Title')
-        expect(f).to have_content('added Title')
+        expect(f).to have_content('changed Title')
         f = f.find('.btn-undo').click()
 
         expect(page).to have_content('Book of Hours')
