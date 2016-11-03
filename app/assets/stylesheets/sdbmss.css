@@ -2,6 +2,7 @@ html {
   height: 100%;
 }
 body {
+  background: white;
   height: 100%;
   font-family: Ubuntu, sans-serif;
 }
@@ -56,7 +57,14 @@ textarea { resize:vertical ; }
   transition: all .5s !important;
 }
 
-#header-navbar { background-color: #dddddd; border-color: #d0d0d0; }
+#header-navbar { 
+  /*background-color: #dddddd; border-color: #d0d0d0; */
+  /*background-color: #a8c7cb;
+  background-color: #b8d993;*/
+  background-color: #d5d5d5;
+  border: none;
+  box-shadow: 0px 2px 4px lightgray;
+}
 .navbar-inverse .navbar-nav > li > a { color: black }
 
 .container-fluid .row { padding-left: 15px; padding-right: 15px; }
@@ -296,7 +304,11 @@ textarea { resize:vertical ; }
   right: 40px;*/
 }
 
-#search-navbar { margin-bottom: 10px; }
+#search-navbar { 
+  background-color: #f8f8f8;
+  box-shadow: 0px 0px 5px lightgray;
+  margin-bottom: 10px;
+}
 
 #search-navbar .search-query-form { width: 100%; }
 
@@ -409,10 +421,10 @@ h1 { font-size: 30px; margin-top: 0; }
   display: none;
 }
 
-.checkbox {
+.faq .checkbox {
   display: none;
 }
-.checkbox + label {
+.faq .checkbox + label {
   background: #eee;
   line-height: normal;
   margin: 0px; 
@@ -696,7 +708,7 @@ li.provenance:hover, li.provenance:focus {
   padding: 4px;
   border: 1px solid #ddd;
   border-radius: 5px;
-  background-color: #F8F8F8;
+  background-color: #fff;
   transition: all linear 0.5s;
   box-shadow: 0px 4px 1px 0px rgba(0,0,0,0.1);
 }
@@ -1073,7 +1085,7 @@ so that gray backdrop shvows up correctly */
   margin-left: 4px;
   position: absolute;
   right: -36px;
-  top: 10px;
+  margin-top: -5  px;
 }
 
 .breadcrumb {
@@ -1085,4 +1097,52 @@ so that gray backdrop shvows up correctly */
   padding: 9px;
   background: #f8f8f8;
   color: #666;
+}
+
+.one-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/*
+
+Private Message Styling
+
+ */
+
+.private_message {
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+  /* box-shadow: 2px 2px 3px lightgray;*/
+  margin: 10px 0px;
+}
+
+.private_message_preview {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.multiselect {
+  text-align: left;
+}
+
+.multiselect-container {
+  max-height: 50vh;
+  overflow-y: scroll;
+}
+
+.text-default {
+  color: #222;
+}
+
+.btn-no-border {
+  color: #222;
+}
+.btn-no-border:hover {
+  color: #888;
+}
+.btn-no-border.active, .btn-no-border:active, .btn-no-border:focus {
+  box-shadow: none;
+  color: #03A9F4;
 }

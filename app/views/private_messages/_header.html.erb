@@ -1,17 +1,17 @@
 <div class="row" style="margin-bottom: 15px;">
   <div class="col-sm-4">
-    <%= link_to(private_messages_path, class: 'btn btn-lg btn-default') do |l| %>
+    <%= link_to(private_messages_path, class: "btn btn-lg btn-no-border #{ title == 'INBOX' ? 'active' : ''}") do |l| %>
       INBOX <span class="glyphicon glyphicon-inbox"></span>
     <% end %>
-    <%= link_to(private_messages_path(sent_by: true), class: 'btn btn-lg btn-default') do |l| %>
+    <%= link_to(private_messages_path(sent_by: true), class: "btn btn-lg btn-no-border #{ title == 'SENT' ? 'active' : ''}") do |l| %>
       SENT <span class="glyphicon glyphicon-send"></span>
     <% end %>
   </div>
   <div class="col-sm-4 text-center">
-    <span class='h2'><%= title %></span>
+    <span class='h2'><%# title %></span>
   </div>
   <div class="col-sm-4 text-right">
-    <%= link_to(new_private_message_path, class: 'btn btn-lg btn-default') do |l| %>
+    <%= link_to(new_private_message_path, class: "btn btn-lg btn-no-border #{ title == 'NEW' ? 'active' : ''}") do |l| %>
       <span class="glyphicon glyphicon-envelope"></span> NEW
     <% end %>
   </div>

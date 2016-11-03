@@ -13,7 +13,9 @@
 </dd>
 
 <% if name.viaf_id.present? %>
-<dt>VIAF ID</dt>
+<dt>
+    <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="glyphicon glyphicon-globe"></span> VIAF ID</a>
+</dt>
 <dd>
     <a href="http://viaf.org/viaf/<%= name.viaf_id %>/"><%= name.viaf_id %></a>
 </dd>

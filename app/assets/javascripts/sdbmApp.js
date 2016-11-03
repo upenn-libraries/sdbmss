@@ -340,6 +340,8 @@ var BOOKMARK_SCOPE;
         $scope.date = "";
         $scope.agent = "";
         $scope.sources = [];
+        $scope.limit = 20;
+        $scope.order = "id asc";
 
         $scope.setSource = function (source) {
           $scope.$emit('changeSource', source)
@@ -374,15 +376,17 @@ var BOOKMARK_SCOPE;
                 var agent = $scope.agent.length > 1 ? $scope.agent : '';
                 $http.get("/sources/search.json", {
                     params: {
+                        order: $scope.order,
                         date: date,
                         title: title,
                         agent: agent,
-                        limit: 20,
+                        limit: $scope.limit,
                         source_type_id: $scope.source_type,
                         id: $scope.source_id,
                         id_option: "without"
                     }
                 }).then(function (response) {
+                    $scope.total = response.data.total;
                     $scope.sources = response.data.results;
                 }, function(response) {
                     alert("An error occurred searching for sources");
@@ -1397,7 +1401,7 @@ var BOOKMARK_SCOPE;
                         var exactMatch = false;
                         options = response.data.results;
                         options.forEach(function(option) {
-                            option.label = option.name;
+                            option.label = option.username;
                             option.value = option.id;
 
                             if(!exactMatch) {

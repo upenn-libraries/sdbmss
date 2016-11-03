@@ -6,8 +6,9 @@ class AccountsController < SearchableAuthorityController
 
   include MarkAsReviewed
   include LogActivity
+  include AddToGroup
 
-  before_action :require_admin
+  before_action :require_admin, only: [:index, :new, :create, :edit, :update, :destroy, :login_as]
 
   def model_class
     User
@@ -28,6 +29,51 @@ class AccountsController < SearchableAuthorityController
       end
     else
       render :status => :forbidden
+    end
+  end
+
+  # overrides the default 'add_to_group' (and remove) since this is the USER half of things; but otherwise it's the same
+  def add_to_group
+    ids = params[:ids]
+    group = Group.find(params[:group_id])
+    if ids.present?
+      users = User.where(id: ids)
+      users.each do |u|
+        GroupUser.create(user: u, group: group, created_by: current_user)
+        if current_user != u
+          u.notify(
+            "#{current_user.to_s} has added you to user group: #{group.name}",
+            group, 
+            "group"
+          )
+        else
+          group.admin.each do |admin|
+            admin.notify(
+              "#{current_user.to_s} has requested to be added to the user group: #{group.name}",
+              group,
+              "group"
+            )
+          end
+        end
+      end
+    end
+    respond_to do |format|
+      format.json { render :json => {}, :status => :ok }
+      format.html {
+        if users
+          flash[:success] = "Group membership pending for #{users.map(&:username).join(', ')}."
+        end        
+        redirect_to group_path(group) 
+      }
+    end
+  end
+
+  def remove_from_group
+    ids = params[:ids]
+    group = Group.find(params[:group_id])
+    group.group_users.where(:user_id => ids).destroy_all
+    respond_to do |format|
+      format.json { render :json => {}, :status => :ok }
     end
   end
 
@@ -53,7 +99,12 @@ class AccountsController < SearchableAuthorityController
   end
 
   def model_params
-    params.require(model_class_lstr.to_sym).permit(:username, :fullname, :institutional_affiliation, :email, :email_is_public, :password, :password_confirmation, :role, :bio, :active, :notification_setting_attributes => [:on_update, :on_comment, :on_reply, :on_message, :on_new_user, :on_comment, :email_on_new_user, :email_on_update, :email_on_comment, :email_on_reply, :email_on_message, :email_on_all_comment])
+    params.require(model_class_lstr.to_sym).permit(:username, :fullname, :institutional_affiliation, :email, :email_is_public, :password, :password_confirmation, :role, :bio, :active, 
+      :notification_setting_attributes => [
+        :on_update, :on_comment, :on_reply, :on_message, :on_new_user, :on_group,
+        :email_on_new_user, :email_on_update, :email_on_comment, :email_on_reply, :email_on_message, :email_on_group
+        ]
+      )
   end
 
 end

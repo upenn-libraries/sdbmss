@@ -47,6 +47,9 @@
           <li><%= link_to "My Profile", profile_path(current_user.username) %></li>
           <li><%= link_to "Edit My Profile", edit_user_registration_path %></li>
           <li><%= link_to "Exports", downloads_path %></li>
+          <% if Rails.env.development? || Rails.env.staging? %>          
+            <li><%= link_to "Groups", groups_path %></li>
+          <% end %>
           <li><%= link_to "Messages", private_messages_path %></li>
           <li><%= link_to t('blacklight.header_links.logout'), destroy_user_session_path, :onclick => "localStorage.clear();" %></li>
           <li><%= link_to "Notifications", notifications_path, class: current_user.new_notifications.count > 0 ? 'notify' : '', notifications: "#{current_user.new_notifications.count} new" %></li>

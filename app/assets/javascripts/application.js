@@ -25,3 +25,4 @@
 //= require bootstrap-tour.min
 //= require sdbm
 //= require sdbmTour
+//= require bootstrap-multiselect

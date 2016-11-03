@@ -151,7 +151,7 @@ module DataEntryHelpers
     fill_in 'provenance_1_recorded_date_0', with: '1965'
     fill_in 'provenance_start_date_1', with: '1965-11-23'
     fill_in 'provenance_comment_1', with: 'An historic sale'
-    select 'For Sale', from: 'provenance_acquisition_method_1'
+    #select 'For Sale', from: 'provenance_acquisition_method_1'
     check 'provenance_direct_transfer_1'
 
     find_by_id('add_provenance').click
@@ -241,7 +241,7 @@ module DataEntryHelpers
     provenance = entry.provenance[1]
     expect(provenance.provenance_agent.name).to eq("Sotheby's")
     expect(provenance.comment).to eq('An historic sale')
-    expect(provenance.acquisition_method).to eq(Provenance::TYPE_ACQUISITION_METHOD_FOR_SALE)
+    #expect(provenance.acquisition_method).to eq(Provenance::TYPE_ACQUISITION_METHOD_FOR_SALE)
     expect(provenance.direct_transfer).to eq(true)
 
     provenance = entry.provenance[2]

@@ -4,20 +4,24 @@
     <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
   </head>
   <body>
-    <h4 class="h4">
+    <h2>
+      <%= @notification.title %>
+    </h2>
+    <p>
       <% if @notification.notified %>
         <% if @notification.notified.class.name == "User" %>
-          <%= link_to @notification.title, profile_url(@notification.notified.username) %>
+          <%= link_to "View Here", profile_url(@notification.notified.username) %>
         <% else %>
-          <%= link_to @notification.title, polymorphic_url(@notification.notified) %>
+          <%= link_to "View Here", polymorphic_url(@notification.notified) %>
         <% end %>
-      <% else %>
-        <%= @notification.title %>
       <% end %>
-      <% if @notification.created_at %>
-        <br><small><%= @notification.created_at.to_formatted_s(:long) %></small>
-      <% end %>
-    </h4>
-    <p><%= !@notification.notified.nil? ? sanitize(simple_format(@notification.notified.preview.to_s)) : "OLD NOTIFICATION" %></p>
+    </p>
+    <div style='padding: 0px 0px 10px; background: #f8f8f8; color: #444;'>
+      <p><%= !@notification.notified.nil? ? sanitize(simple_format(@notification.notified.preview.to_s)) : "OLD NOTIFICATION" %></p>
+    </div>
+    <p style='color: #999;'>
+      The <b style="color: black;">Schoenberg Database of Manuscripts</b>, a project of the Schoenberg Institute for Manuscript Studies at the University of Pennsylvania Libraries, aggregates observations of premodern manuscripts drawn from over 12,000 auction and sales catalogues, inventories, catalogues from institutional and private collections, and other sources that document sales and locations of these books from around the world.
+    </p>
+    <p><%= link_to "Edit notification and email settings", edit_user_registration_url %></p>
   </body>
 </html>

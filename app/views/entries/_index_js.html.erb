@@ -11,7 +11,7 @@
      <% if can? :manage, model_class  %>
          var onlyMine = <%= params[:created_by_user] || 0 %>;
      <% else %>
-         var onlyMine = 1;
+         var onlyMine = 0;
      <% end %>
 
      <% if can? :deprecate, model_class %>
@@ -54,10 +54,10 @@
                      orderable: false,
                      className: 'text-center unreviewed_only',
                      render: function (data, type, full, meta) {
-                         if(showApprovalControls()) {
+                         //if(showApprovalControls()) {
                             return '<input type="checkbox" name="approve" value="' + full[manageEntries.dataTable.getColumnIndex("ID")] + '"/>';
-                         }
-                         return '';
+                         //}
+                         //return '';
                      }
                  },
                  /*
@@ -77,15 +77,17 @@
                             var manuscriptId = full[sdbmTable.getColumnIndex("Manuscript")];
                             var linkingToolURL = manuscriptId ? '/linkingtool/manuscript/' + manuscriptId : '/linkingtool/entry/' + entryId;
 
-                            var created_by = full[sdbmTable.getColumnIndex("Added By")];
+                            var editable = full[sdbmTable.getColumnIndex("Can Edit")];
 
                             var result = '<span class="btn-group options-btn-group">';
                             // bookmark button
                             result += '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
 
                             // edit
-                            if (canEdit || created_by == username) {
+                            if (editable) {
                                 result += '<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>';
+                            } else {
+                                result += '<a class="btn btn-xs btn-default disabled">Edit</a>';
                             }
 
                             // destroy
@@ -117,11 +119,11 @@
                           renewBookmarks();
 
                          if(showApprovalControls()) {
-                            $(".approve-control").show();
-                            $('.unreviewed_only').show();//.css({"display": "table-cell"});
+                            //$(".approve-control").show();
+                            //$('.unreviewed_only').show();//.css({"display": "table-cell"});
                          } else {
-                            $(".approve-control").hide();
-                            $('.unreviewed_only').hide();
+                            //$(".approve-control").hide();
+                            //$('.unreviewed_only').hide();
                          }
                      }
                  });
@@ -267,18 +269,13 @@
      });
 
     $(document).on('click', "#select-all", function(event) {
-        if (!$("#select-all").prop("selected")) {
-            $("#select-all").prop("selected", true);
-            $("#select-all").removeClass("glyphicon-unchecked");
-            $("#select-all").addClass("glyphicon-check");
+        if (!$("#select-all").prop("all-entries-selected2")) {
+            $("#select-all").prop("all-entries-selected2", true);
             $("input[name='approve']").prop("checked", true);
         } else {
-            $("#select-all").prop("selected", false);
+            $("#select-all").prop("all-entries-selected2", false);
             $("input[name='approve']").prop("checked", false);
-            $("#select-all").removeClass("glyphicon-check");
-            $("#select-all").addClass("glyphicon-unchecked");
         }
-        return false;
     });
 
     $(document).on('click', "#deselect-all", function(event) {

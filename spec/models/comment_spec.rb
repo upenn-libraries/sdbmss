@@ -13,7 +13,7 @@ describe Comment do
         password: 'somethingunguessable',
         role: 'admin'
       )
-      Comment.with_entries_belonging_to(user)
+#      Comment.with_entries_belonging_to(user)
     end
 
   end

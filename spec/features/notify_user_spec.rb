@@ -76,7 +76,9 @@ describe "User Notifications", :js => true do
       
       visit entry_path(@entry1)
       fill_in "comment", with: "Are you getting this?"
-      click_button "Add Comment"
+      click_button "Post"
+
+      expect(page).to have_content('Are you getting this?')
 
       expect(@user2.notifications.count).to eq(initial + 1)
       expect(@user2.notifications.last.category).to eq("comment")
@@ -118,7 +120,7 @@ describe "User Notifications", :js => true do
       visit entry_path(@entry2)
 
       fill_in "comment", with: "You shouldn't be notified here."
-      click_button "Add Comment"
+      click_button "Post"
 
       expect(@user2.notifications.count).to eq(initial)
     end

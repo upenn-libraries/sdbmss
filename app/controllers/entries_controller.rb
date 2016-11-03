@@ -25,6 +25,7 @@ class EntriesController < SearchableAuthorityController
   include LogActivity
 
   before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate, :verify, :personal_observation]
+  include AddToGroup
 
   before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy, :similar, :mark_as_approved, :deprecate]
 
@@ -116,7 +117,8 @@ class EntriesController < SearchableAuthorityController
 
       data = @document_list.map do |doc|
         entry = doc.model_object
-        !entry.nil? ? entry.as_flat_hash : {}
+        # have to add can_edit here, since this is where current_user is accessible
+        !entry.nil? ? entry.as_flat_hash.merge({can_edit: can?(:edit, entry)}) : {}
       end
 
       retval.merge!({

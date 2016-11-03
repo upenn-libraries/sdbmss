@@ -316,6 +316,9 @@
     <field name="manuscript_id" stored="true" type="sint" multiValued="false" indexed="true"/>
     <field name="source_date" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="supercede" stored="true" type="sint" multiValued="true" indexed="true" />
+
+    <field name="groups" stored="true" type="text" multiValued="false" indexed="true"/>
+
     <!-- 'source' is full source ID (SDBM_SOURCE_xxx) for search -->
     <field name="source" stored="true" type="string" multiValued="false" indexed="true"/>
     <!-- 'source_display' is a composite -->

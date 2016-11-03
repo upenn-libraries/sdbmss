@@ -83,7 +83,9 @@ describe "User Activity", :js => true do
     page.evaluate_script('window.confirm = function() { return true; }')
 
     visit names_path
-    first(".delete-link").click
+    
+    expect(page).to have_content("Delete")
+    first(".delete-link").trigger('click')
     sleep 1.1
     expect(page).not_to have_content('Stacker Pentecost')
 

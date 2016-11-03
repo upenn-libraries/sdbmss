@@ -31,15 +31,19 @@ class Ability
 
     if ['contributor', 'editor', 'super_editor', 'admin'].member? user.role
       can [:edit, :update], :all, :created_by_id => user.id
-      can :destroy, [Comment, Reply], :created_by_id => user.id
-      can :link, :all
-      can :index, Entry
 
+      can :destroy, [Comment, Reply], :created_by_id => user.id
+
+      can :link, :all
+      can :unlink, :all, :created_by_id => user.id
       can :history, :all
 
-      can :unlink, :all, :created_by_id => user.id
+      can :index, Entry
+
       can :manage, PrivateMessage, :created_by_id => user.id
-      can :manage, PrivateMessage, :user_id => user.id
+      can :manage, PrivateMessage do |pm|
+        pm.users.include? user
+      end
     end
 
     if ['editor', 'super_editor', 'admin'].member? user.role
@@ -50,8 +54,8 @@ class Ability
       cannot :deprecate, :all
       cannot [:edit, :destroy, :merge], [Source, Entry]
       cannot :review, Name
+      # this needs to be RE-Established, since it has been overriden by line 51
       can :edit, :all, :created_by_id => user.id
-
     end
 
     if ['super_editor'].member? user.role
@@ -64,6 +68,9 @@ class Ability
       #can :destroy, :all
     end
 
+    can [:edit, :update], Entry, contributors: { :id => user.id }
+    cannot :manage, [Group]
+    #can [:edit, :update], Group, admin: { :id => user.id }
 =begin
     the old definitions - I am keeping them here now just for reference...
 

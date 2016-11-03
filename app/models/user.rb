@@ -6,13 +6,19 @@ class User < ActiveRecord::Base
 
   attr_accessor :login
 
+  has_many :group_users
+  has_many :groups, through: :group_users
+
   has_many :entries, foreign_key: "created_by_id"
   has_many :sources, foreign_key: "created_by_id"
 
   has_many :downloads
 
-  has_many :user_messages, foreign_key: "user_id"
+  has_many :user_messages, -> { where(:deleted => false) }, foreign_key: "user_id"
   has_many :private_messages, through: :user_messages
+  has_many :sent_messages, foreign_key: "created_by_id", class_name: "PrivateMessage"
+
+  #has_many :sent_messages, foreign_key: "created_by_id", class_name: "PrivateMessage"
 
   has_many :notifications
   has_one :notification_setting
@@ -56,17 +62,16 @@ class User < ActiveRecord::Base
     date :last_sign_in_at
   end
 
-  scope :sent_by, -> () { joins(:user_messages).where("user_messages.method = 'From'").distinct }
-  scope :sent_to, -> () { joins(:user_messages).where("user_messages.method = 'To'").distinct }
-
-  scope :active_only, -> { where(active: true) }
-
   # Connects this user object to Blacklights Bookmarks. 
   include Blacklight::User
   include UserFields
   include HasPaperTrail
   include CreatesActivity
   extend SolrSearchable
+
+  def all_messages
+    (private_messages | sent_messages)
+  end
 
   def self.statistics
     results = ActiveRecord::Base.connection.execute("select username, count(*) from users inner join entries on entries.created_by_id = users.id where entries.deleted = 0 group by username")
@@ -154,6 +159,7 @@ class User < ActiveRecord::Base
     self.notification_setting["email_on_#{category}".to_sym]
   end
 
+  # fix me: if emails are set, but not notifications, 'n' will be undefined
   def notify(title, record, category)
     n = notifications.new(title: title, notified: record, category: category)
     if can_notify(category)
@@ -190,6 +196,7 @@ class User < ActiveRecord::Base
       username: username,
       fullname: fullname,
       role: role,
+      groups: groups.map{ |group| [group.id, group.name] }.to_s,
       active: active,
       reviewed: reviewed,
       created_by: created_by.present? ? created_by.username : "(none)",
