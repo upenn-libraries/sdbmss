@@ -1,0 +1,8 @@
+<li>
+  <% if (w = current_user.bookmarks.where(document: model).first) %>
+    <%= render partial: "bookmarks/delete", locals: {bookmark: w} %>
+  <% else %>
+    <%= render partial: "bookmarks/add", locals: {document: model}  %>
+  <% end %>
+</li>
+<li><%= render partial: "nav/watch", locals: {watchable: model } %></li>

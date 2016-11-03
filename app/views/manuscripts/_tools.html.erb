@@ -12,10 +12,7 @@
             <li>
                 <a href="#proposed-history" class='toggle-propose-history' data-toggle="collapse">Construct History<span sdbm-tooltip="manuscript_propose_history"></span></a>
             </li>
-            <li>
-                <a href="" onclick="addBookmark(<%= @manuscript.id %>, 'Manuscript');" in_bookmarks="/manuscripts/<%= @manuscript.id %>"><span class="glyphicon glyphicon-bookmark"></span> Bookmark</a>
-              </li>  
-            <li><%= render partial: "nav/watch", locals: {watchable: @manuscript} %></li>
+            <%= render partial: "nav/bookmark_watch", locals: {model: @manuscript } %>
             <% end %>
         </ul>
     </div>

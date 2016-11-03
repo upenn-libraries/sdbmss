@@ -1,0 +1,105 @@
+<% content_for :breadcrumbs do %>
+    <li class="breadcrumb list-group-item active">
+      <a href="/bookmarks">Bookmarks</a>
+    </li>
+<% end %>
+
+<div ng-controller="ManageBookmarks">
+<div class="row">
+  <div class="col-sm-8">
+    <h2 class="h2">My Bookmarks
+    </h2>
+    <p>This page shows the <b>Entries</b>, <b>Sources</b>, <b>Manuscript Records</b>, and <b>Name Authority Records</b> you have bookmarked. You can tag records with keywords by clicking on the "Add Tag" button at the bottom of each Bookmark display. Your tags will also appear in your dashboard for easy retrieval of tagged records.</p>
+    <h5>How to create a Bookmark:</h5>
+    <ol>
+      <li>
+        Click the Bookmark icon where it appears in an <b>Entry</b>, <b>Source</b>, <b>Manuscript Record</b>, or <b>Name Authority Record</b>.
+      </li>
+      <li>
+        To view your bookmarks, click the <b>Bookmarks</b> icon in the top-horizontal navigation bar. You must be logged in to view your bookmarks.
+      </li>
+    </ol>
+  </div>
+  <div class="col-sm-4 text-right">
+    <div class="form-inline clearfix navbar-form">
+      <h3>Filter By Tag</h3>
+      <span class="input-group">
+        <input type="text" class="form-control" name="tag-search" placeholder="Filter By Tag..." size=12 ng-model="tagSearch" ng-keyup="$event.keyCode == 13 && searchTag(tagSearch)">
+        <a href="" class="input-group-addon" ng-click="searchTag('')"><span>Clear</span></a>
+      </span>
+    </div>
+  </div>
+</div>
+<div class="row" ng-repeat="(name, bookmarks) in all_bookmarks" style="border-bottom: 1px dotted #eee; padding: 10px 0px;">
+  <div class="col-sm-3">
+    <div class="h3">
+      <span data-toggle="collapse" href="#bookmarks_{{name}}">{{ name }}(s)</span><br>
+      <small class="text-muted">{{ bookmarks.length }} bookmarked</small>
+    </div>
+    <a href="" ng-click="exportBookmarks(name, bookmarks[0].link)"><span class="glyphicon glyphicon-floppy-save" title="Export to CSV" ></span> Export to CSV</a>
+  </div>
+  <div class="col-sm-9">
+    <div>
+      <ul class="list-group collapse in manage_bookmarks list-group-no-border list-group-no-padding" id="bookmarks_{{ name }}">
+        <li class="list-group-item text-muted" ng-if="bookmarks.length <= 0">
+          <dl class="document-metadata dl-horizontal dl-invert">
+              <dt></dt>
+              <dd>
+                No <strong>{{ name }} Records</strong> to display.
+              </dd>
+          </dl>
+        </li>
+        <li class="list-group-item" ng-repeat="bookmark in bookmarks_with_tag = (bookmarks | filter:hasTag)">
+              <dl class="document-show-heading dl-horizontal dl-invert">
+                  <dt></dt>
+                  <dd class="h4">
+                    <div class="row">
+                      <strong class="col-sm-4"><a href="{{ bookmark.link }}">{{ bookmark.public_id }}</a></strong>
+                      <div class="col-sm-8 text-right">
+                          <a class='remove-bookmark control-bookmark' ng-click="removeBookmark(name, bookmark)">
+                            <span class="glyphicon glyphicon-remove"></span>
+                          </a>
+                      </div>
+                    </div>
+                  </dd>
+              </dl>
+              <dl class="document-metadata dl-invert dl-horizontal">
+                <dt ng-repeat-start="(key, value) in bookmark.details track by $index">{{ key }}</dt>
+                <dd ng-repeat-end>{{ value }}</dd>
+                <dt>
+                  Tags
+                </dt>
+                <dd>
+                  <ul class="list-inline">
+                    <li ng-if="bookmark.tags.length <= 0" class='text-warning'>This bookmark has no tags.</li>
+                    <li ng-repeat="tag in bookmark.tags" class="bookmark-tag" ng-class="{'btn-info btn-lg' : tag == search_tag, 'bg-primary' : tag != search_tag}">
+                        <a href="" ng-click="searchTag(tag);">{{ tag }}</a> <!-- fix me: should this filter in bookmark panel, or go to manage bookmarks search? -->
+                        <a href="" class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></a>
+                    </li>
+                    <li>
+                      <a ng-show="!bookmark.showAddTag" href="" class="btn btn-sm btn-success" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Add Tag <span class="glyphicon glyphicon-tag"></span></a>
+                      <div class="form-inline">
+                        <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
+                          <input type='text' class='form-control' placeholder="add tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
+                          <a href="" class="input-group-addon add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="glyphicon glyphicon-plus"></span></a>
+                          <a href="" class="input-group-addon add-bookmark-tag-confirm" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Cancel</a>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </dd>
+              </dl>
+        </li>
+        <li class="list-group-item" ng-if="bookmarks_with_tag.length <= 0">
+          <dl class="document-metadata dl-invert dl-horizontal">
+            <dt></dt>
+            <dd>
+              No results found.
+            </dd>
+          </dl>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>

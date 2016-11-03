@@ -1330,6 +1330,6 @@ Private Message Styling
   color: #03A9F4;
 }
 
-.bookmark.active, .watch.active {
+.bookmark[data-method="delete"], .watch[data-method="delete"] {
   color: gold;
 }

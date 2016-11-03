@@ -66,6 +66,7 @@ label.col-sm-2-and-half {
   <%= render partial: "breadcrumbs", locals: {source: @entry.source } %> 
 <% end %>
 
+<% if (@entry.source && can?(:edit, @entry.source)) || @entry.id %>
 <% content_for :control_tools do %>
   <div class="panel panel-default show-tools">
     <div class="panel-heading">
@@ -83,6 +84,7 @@ label.col-sm-2-and-half {
         </ul>
     </div>
   </div>
+<% end %>
 <% end %>
 
 <% content_for :add_entry do %>

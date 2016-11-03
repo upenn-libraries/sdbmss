@@ -11,6 +11,19 @@
 
 var SDBM = SDBM || {};
 
+$(document).ready(bindRemoteAjaxCallback);
+
+function bindRemoteAjaxCallback (){
+  $('a[data-remote]').on('ajax:success', function (event, xhr, status, result) {
+    $(this).replaceWith($(result.responseJSON.button));
+    bindRemoteAjaxCallback();
+  });
+
+  $('a[data-remote]').on('ajax:error', function (event, xhr, status, error) {
+    console.log("remote link (bookmark) error", event, xhr, status, error, xhr.responseText);
+  });
+}
+
 (function () {
 
     "use strict";
