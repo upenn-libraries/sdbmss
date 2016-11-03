@@ -1,6 +1,20 @@
 <% if current_user %>
-  <a onclick="addBookmark(<%= document.model_object.id %>, 'Entry');" class="bookmark-link" in_bookmarks="/entries/<%= document.model_object.id %>" style="margin-right: 12px;">
-      <span class="glyphicon glyphicon-bookmark"></span>
-    </a>
-<% else %>
+  <% if (w = current_user.bookmarks.where(document: document.model_object).first) %>
+    <%= render partial: "bookmarks/delete", locals: {bookmark: w} %>
+  <% else %>
+    <%= render partial: "bookmarks/add", locals: {document: document.model_object}  %>
+  <% end %>
+  <script type='text/javascript'>
+    $(document).ready(bindRemoteAjaxCallback);
+    function bindRemoteAjaxCallback (){
+      $('a[data-remote]').on('ajax:success', function (event, xhr, status, result) {
+        $(this).replaceWith($(result.responseJSON.button));
+        bindRemoteAjaxCallback();
+      });
+
+      $('a[data-remote]').on('ajax:error', function (event, xhr, status, error) {
+        console.log("remote link (bookmark) error", event, xhr, status, error, xhr.responseText);
+      });
+    }
+  </script>
 <% end %>

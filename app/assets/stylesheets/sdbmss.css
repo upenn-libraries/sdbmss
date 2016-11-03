@@ -1329,3 +1329,7 @@ Private Message Styling
   box-shadow: none;
   color: #03A9F4;
 }
+
+.bookmark.active, .watch.active {
+  color: gold;
+}

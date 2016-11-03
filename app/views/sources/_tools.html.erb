@@ -10,14 +10,6 @@
             </li>
             <% if user_signed_in? %>
                 <li><%= render partial: "nav/watch", locals: {watchable: source } %></li>
-                <% if can?(:edit, source) %>
-                    <li class="edit_source">
-                        <a href="<%= edit_source_path(source.id) %>" class="<%= source.source_type.id == 8 ? 'disabled text-muted' : '' %>">Edit this source</a>
-                    </li>
-                <% end %>
-            <li class="edit_source">
-                <a href="<%= new_entry_path(source_id: source) %>">Add entry for this Source</a>
-            </li>
                 <% if can?(:edit, source) %> 
                     <li>
                         <a href="<%= merge_source_path(source_id: source) %>" class="<%= source.source_type.id == 8 ? 'disabled text-muted' : '' %>">Merge this source</a>

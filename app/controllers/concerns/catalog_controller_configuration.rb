@@ -413,9 +413,9 @@ module CatalogControllerConfiguration
       config.add_show_tools_partial(:deprecate_entry, partial: 'nav/deprecate_entry', if: :show_deprecate_entry?)
       config.add_show_tools_partial(:entry_history, partial: 'nav/entry_history', if: :show_entry_history_link?)
       config.add_show_tools_partial(:export_csv, partial: 'nav/export_csv', if: :show_export_csv_link?)
-      config.add_show_tools_partial(:email)
-      config.add_show_tools_partial(:sms)
-      config.add_show_tools_partial(:citation)
+      #config.add_show_tools_partial(:email)
+      #config.add_show_tools_partial(:sms)
+      #config.add_show_tools_partial(:citation)
       config.add_show_tools_partial(:verify_entry, partial: 'nav/verify_entry', if: :show_verify_entry?)
       config.add_show_tools_partial(:watch_entry, partial: 'nav/watch_entry')
 

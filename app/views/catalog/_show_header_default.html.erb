@@ -1,2 +1,13 @@
 <% entry = document.model_object %>
-<h1 itemprop="name"><%= entry.public_id %></h1>
+<div class="row">
+  <div class="col-sm-6">
+    <h1 itemprop="name">
+      <%= entry.public_id %>
+    </h1>
+  </div>
+  <div class="col-sm-6 text-right">
+    <a class='btn btn-default' id="emailLink" data-ajax-modal="trigger" href="/catalog/email?id=<%= entry.id %>"%>Email</a>
+    <a class='btn btn-default' id="smsLink" data-ajax-modal="trigger" href="/catalog/sms?id=<%= entry.id %>"%>SMS</a>
+    <a class='btn btn-default' id="citationLink" data-ajax-modal="trigger" href="/catalog/citation?id=<%= entry.id %>"%>Cite</a>    
+  </div>
+</div>

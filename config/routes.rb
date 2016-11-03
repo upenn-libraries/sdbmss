@@ -152,6 +152,7 @@ Rails.application.routes.draw do
       get 'citation'
       get 'entry_candidates'
       get 'manage_entries'
+      get 'history'
       get 'edit', action: :show
     end
   end
@@ -208,6 +209,7 @@ Rails.application.routes.draw do
     member do
       get 'merge'
       post 'merge'
+      get 'history'
       post 'update_status'
     end
   end

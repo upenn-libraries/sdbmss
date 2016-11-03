@@ -5,11 +5,8 @@
     <div class="panel-body">
         <ul class="nav">
             <% if user_signed_in? %>
-                <% if can?(:edit, @model) %>
-                  <li class="link"><%= link_to 'Edit', edit_model_path(@model) %></li>
-                <% end %>
                 <li class="link"><%= link_to 'Change History', polymorphic_path([:history, @model]) %></li>
-                <li class="link"><%= link_to 'Go to Listing', models_path %></li>
+                <!-- eventually, merge will be here? -->
             <% end %>
         </ul>
     </div>

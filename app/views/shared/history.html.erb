@@ -2,6 +2,10 @@
     <div class="alert alert-danger"><%= @error %></div>
 <% end %>
 
+<% content_for :breadcrumbs do %>
+    <%= render partial: "manage_models/breadcrumbs" %>
+<% end %>
+
 <%= form_for @model, url: {action: "revert_confirm"} do |f| %>
 
 <div class="row history-heading">
