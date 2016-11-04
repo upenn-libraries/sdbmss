@@ -19,6 +19,10 @@ class WatchesController < ApplicationController
       format.json {
         render json: { success: 'success', status_code: '200', button: button_html }
       }
+      format.html {
+        flash[:success] = "You are no longer watching #{w.watched.public_id}"
+        redirect_to watches_path
+      }
     end
   end
 

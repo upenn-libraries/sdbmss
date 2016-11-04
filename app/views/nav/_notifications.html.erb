@@ -8,7 +8,8 @@
       <li class="row <%= !notification.active ? 'text-muted' : 'active' %>" id="notification_<%= notification.id %>">
         <% if notification.notified && notification.title %>
           <div class="col-xs-6 one-line">
-            <%= link_to polymorphic_url(notification.notified), :title => notification.title do %>
+            <% url = notification.notified.class == User ? profile_path(notification.notified.username) : polymorphic_url(notification.notified) %>
+            <%= link_to url, :title => notification.title do %>
               <% if notification.active %>
                 <span class="glyphicon glyphicon-exclamation-sign text-success"></span>
                 <span class="title"><%= notification.title %></span>

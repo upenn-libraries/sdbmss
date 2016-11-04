@@ -4,7 +4,8 @@
       <% if message %>
         <%= hidden_field_tag :private_message_id, message.id %>
       <% end %>
-      <%= select_tag("to_user[]", options_for_select(User.all.collect { |u| [u.username, u.id] }, :selected => from), {prompt: 'Select User', class: 'select_users', multiple: 'multiple'}) %>
+
+      <%= select_tag("to_user[]", options_for_select(User.all.collect { |u| [u.username, u.id] }, :selected => from + params[:user_id]), {prompt: 'Select User', class: 'select_users', multiple: 'multiple'}) %>
         <script type="text/javascript">
             $(document).ready(function() {
                 $('.select_users').multiselect({
