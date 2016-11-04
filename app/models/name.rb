@@ -103,11 +103,7 @@ class Name < ActiveRecord::Base
         [name.mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/n,'').downcase.to_s, name]
       }
     end
-    string :name, :multiple => true do
-      silence_warnings {
-        [name.mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/n,'').downcase.to_s, name]
-      }
-    end
+    string :name
     string :viaf_id
     integer :created_by_id
     integer :artists_count
