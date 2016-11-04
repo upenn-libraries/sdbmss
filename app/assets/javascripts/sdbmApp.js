@@ -2252,7 +2252,7 @@ var BOOKMARK_SCOPE;
     };
   });
 
-  sdbmApp.controller('ManageBookmarks', function ($scope, $sce, $location) {
+ sdbmApp.controller('ManageBookmarks', function ($scope, $sce, $location) {
 
     BOOKMARK_SCOPE = $scope;
 
@@ -2464,7 +2464,6 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.checkForUpdates = function () {
-      return;
       // 1. call controller method 'check'
       // 2. if true, call loadBookmarks
       // 3. else, load from localstorage
@@ -2489,12 +2488,12 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.init = function () {
-      if (localStorage) {
+      /*if (localStorage) {
 
         if (localStorage.all_bookmarks) {
           $scope.all_bookmarks = angular.fromJson(localStorage.all_bookmarks);
           $scope.bookmark_tracker = Number(localStorage.bookmark_tracker) || 0;
-          //$scope.checkForUpdates();
+          $scope.checkForUpdates();
         } else {
           $scope.loadBookmarks();
         }
@@ -2512,8 +2511,8 @@ var BOOKMARK_SCOPE;
         }
 
       } else {
-        $scope.loadBookmarks();
-      }
+      }*/
+      $scope.loadBookmarks();
     }
 
     $scope.init();
@@ -2533,7 +2532,6 @@ var BOOKMARK_SCOPE;
   });
 
 }());
-
 //function toggleSidebar() 
 
 function exportCSV(url) {
