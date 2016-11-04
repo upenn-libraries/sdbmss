@@ -565,7 +565,7 @@ var BOOKMARK_SCOPE;
           scrollSpeed: 40,
           placeholder: "ui-state-highlight",
           cancel: ".ui-sortable-locked, .ui-sortable-locked + .input-block",
-          handle: "label, .panel-heading",
+          handle: ".control-label, .panel-heading",
           scrollSensitivity: 100,
           start: function(e, ui){
               ui.placeholder.height(ui.item.height());

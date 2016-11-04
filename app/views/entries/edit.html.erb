@@ -377,203 +377,160 @@ label.col-sm-2-and-half {
       </div>
     </div>
 
-  <div class='form-group row'>
-    <label class="col-sm-3 side-title">
-      <h3>Text Title(s)</h3>
+  <div class='form-inline row'>
+    <div class="col-sm-2">
+      <span class='h4'>Text Title(s)</span>
+    </div>
+    <div class="col-sm-10">
       <div class="add-link-container">
         <a id="add_title" class="clickable" data-ng-click="addRecord(entry.entry_titles);" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
         </a>
       </div>
-    </label>
-    <div ui-sortable="sortableOptions" ng-model="entry.entry_titles" class='pull-right col-sm-9'>
-      <div class="form-group input-block" data-ng-repeat="entry_title in entry.entry_titles | filter: activeRecords | orderBy: 'order'">
+    </div>
+    <div ui-sortable="sortableOptions" ng-model="entry.entry_titles" class='col-sm-12'>
+      <div class="row input-block" data-ng-repeat="entry_title in entry.entry_titles | filter: activeRecords | orderBy: 'order'">
         <div class="remove-link-container">
           <a id="delete_title_{{ $index }}" class="clickable" data-ng-click="removeRecord(entry.entry_titles, entry_title)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>
           </a>
         </div>
-        <div class='row'>
-          <label class="col-sm-3 control-label">
-              <span sdbm-tooltip="entry_title_as_recorded">As Recorded</span>
-          </label>
-          <div class="col-sm-9">
-              <div class="input-group">
+          <div class="col-sm-6">
+              <span class='control-label' sdbm-tooltip="entry_title_as_recorded">As Recorded</span>
+              <span class="input-group">
                   <input maxlength="255" id="title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.title">
                   <div id="title_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
-              </div>
+              </span>
           </div>
-        </div>
-        <div class='row'>
-          <label class="col-sm-3 control-label">
-              <span sdbm-tooltip="entry_common_title">Standard Title</span>
-          </label>
-          <div class="col-sm-9">
+          <div class="col-sm-6 text-right">
+            <span class="control-label" sdbm-tooltip="entry_common_title">Standard Title</span>
             <input input maxlength="255" id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
           </div>
-        </div>
       </div>
     </div>
   </div>
 
-  <div class="form-group row entry-author-group">
-    <label class="col-sm-3 side-title">
-      <h3>
-        <span>Author(s)</span>
-      </h3>
+  <div class="form-inline row entry-author-group">
+    <div class="col-sm-2">
+      <span class='h4'>Author(s)</span>
+    </div>
+    <div class="col-sm-10">
       <div class="add-link-container">
         <a a id="add_author" class="clickable" data-ng-click="addRecord(entry.entry_authors)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
         </a>
       </div>
-    </label>
-    <div ui-sortable="sortableOptions" ng-model="entry.entry_authors" class='pull-right col-sm-9'>
-      <div class='form-group input-block' data-ng-repeat="entry_author in entry.entry_authors | filter: activeRecords">
+    </div>
+    <div ui-sortable="sortableOptions" ng-model="entry.entry_authors" class='col-sm-12'>
+      <div class='row input-block' data-ng-repeat="entry_author in entry.entry_authors | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_authors, entry_author)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>
           </a>
         </div>
-        <div class='row'>
-          <label class="col-sm-3 control-label">
-              <span sdbm-tooltip="entry_author_as_recorded">As Recorded</span>
-          </label>
-          <div class="col-sm-9">
-              <input input maxlength="255" id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
-          </div>
+        <div class="col-sm-4">
+            <span class='control-label' sdbm-tooltip="entry_author_as_recorded">As Recorded</span>
+            <input input maxlength="255" id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
         </div>
-        <div class='row'>
-          <label class="col-sm-3 control-label">
-              <span sdbm-tooltip="entry_author">Authority Name</span>
-          </label>
-          <div class="col-sm-9">
-             <span>
-                <!--
-                <input id="author_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_author" }' sdbm-autocomplete-model="entry_author.author" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
-                <a id="find_author_name_authority_{{ $index }}" ng-if='entry_author.author.id == undefined' ng-init="entry_author.author = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_author.author, 'is_author', entry_author.observed_name)">Find or Create Authority Name</a>
-                <div ng-if='entry_author.author != undefined && entry_author.author.id != undefined' class="well well-sm well-name-authority">
-                  <a id="remove_author_name_authority_{{ $index }}" class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_author, 'author')"></a>
-                  <a href="/names/{{ entry_author.author.id }}" target="_blank">{{ entry_author.author.name }}</a>
-                </div>
-                <span class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_author" encourage-name-authority-name="author"></span>
-              </span>
-              <span id="author_certainty_flags_{{ $index }}" class="btn btn-default pull-right clickable" sdbm-certainty-flags="entry_author"><span class="glyphicon"></span></span>
+        <div class="col-sm-5">
+          <span class='control-label' style="display: block; float: left;" sdbm-tooltip="entry_author">Authority Name</span>
+            <a id="find_author_name_authority_{{ $index }}" ng-if='entry_author.author.id == undefined' ng-init="entry_author.author = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_author.author, 'is_author', entry_author.observed_name)">Find or Create Authority Name</a>
+            <div ng-if='entry_author.author != undefined && entry_author.author.id != undefined' class="well well-sm well-name-authority">
+              <a id="remove_author_name_authority_{{ $index }}" class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_author, 'author')"></a>
+              <a href="/names/{{ entry_author.author.id }}" target="_blank">{{ entry_author.author.name }}</a>
+            </div>
+            <span class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_author" encourage-name-authority-name="author"></span>
+            <span id="author_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="entry_author"><span class="glyphicon"></span></span>
           </div>
-        </div>
-        <div class='row'>
-          <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_author_role">Role</span>
-          </label>
-          <div class="col-sm-9">
-            <select id="author_role_{{ $index }}" name="author_role" class="form-control" ng-model="entry_author.role" ng-options="option[0] as option[1] for option in optionsAuthorRole">
-              <option value=""></option>
-            </select>
-          </div>
+        <div class="col-sm-3 text-right">
+          <span class='control-label' sdbm-tooltip="entry_author_role">Role</span>
+          <select id="author_role_{{ $index }}" name="author_role" class="form-control" ng-model="entry_author.role" ng-options="option[0] as option[1] for option in optionsAuthorRole">
+            <option value=""></option>
+          </select>
         </div>
       </div>
     </div>
   </div>
 
-  <div class='form-group row'>
-    <label class="col-sm-3 side-title">
-      <h3>
-        <span>Date(s)</span>
-      </h3>
+  <div class='form-inline row'>
+    <div class="col-sm-2">
+      <span class="h4">
+        Date(s)
+      </span>
+    </div>
+    <div class="col-sm-10">
       <div class="add-link-container">
         <a a id="add_date" class="clickable" data-ng-click="addRecord(entry.entry_dates)" title="Add">
           Add new <span class="glyphicon glyphicon-plus"></span>
         </a>
       </div>
-    </label>
-
-    <div ui-sortable="sortableOptions" ng-model="entry.entry_dates" class='pull-right col-sm-9'>
-      <div class="form-group input-block" data-ng-repeat="entry_date in entry.entry_dates | filter: activeRecords">
+    </div>
+    <div ui-sortable="sortableOptions" ng-model="entry.entry_dates" class='pull-right col-sm-12'>
+      <div class="row input-block" data-ng-repeat="entry_date in entry.entry_dates | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>
           </a>
         </div>
-        <div class="row">
-          <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_date_as_recorded">As Recorded</span>
-          </label>
-          <div class="col-sm-9">
-            <div class="input-group">
-                <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/entry_dates/parse_observed_date.json">
-                <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
-            </div>
+        <div class="col-sm-5">
+          <span class='control-label' sdbm-tooltip="entry_date_as_recorded">As Recorded</span>
+          <div class="input-group">
+              <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/entry_dates/parse_observed_date.json">
+              <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
           </div>
         </div>
-
-        <div class="row">
-          <label class="col-sm-3 control-label">
-              <span sdbm-tooltip="entry_date_for_search">Range for Search</span>
-          </label>
-          <div class="col-sm-4" ng-class="{ 'has-error': !entryForm['date_normalized_start_' + $index].$valid }">
+        <div class="col-sm-7 text-right">
+          <span class='control-label' sdbm-tooltip="entry_date_for_search">Range for Search</span>
+          <span ng-class="{ 'has-error': !entryForm['date_normalized_start_' + $index].$valid }">
               <input id="date_normalized_start_{{ $index }}" name="date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_start">
-          </div>
-          <div class="col-sm-1"></div>
-          <div class="col-sm-4" ng-class="{ 'has-error': !entryForm['date_normalized_end_' + $index].$valid }">
+          </span>
+          to
+          <span ng-class="{ 'has-error': !entryForm['date_normalized_end_' + $index].$valid }">
               <input id="date_normalized_end_{{ $index }}" name="date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_end">
-          </div>
+          </span>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="form-group row">
-    <label class="col-sm-3 side-title">
-        <h3>
-          <span>Artist(s)</span>
-        </h3>
-        <div class="add-link-container">
-          <a a id="add_artist" class="clickable" data-ng-click="addRecord(entry.entry_artists)" title="Add">
-            Add new <span class="glyphicon glyphicon-plus"></span>
-          </a>
-        </div>
-    </label>
-    <div ui-sortable="sortableOptions" ng-model="entry.entry_artists" class='pull-right col-sm-9'>
-      <div class="form-group input-block" data-ng-repeat="entry_artist in entry.entry_artists | filter: activeRecords">
+  <div class="form-inline row entry-artist-group">
+    <div class="col-sm-2">
+      <span class='h4'>Artist(s)</span>
+    </div>
+    <div class="col-sm-10">
+      <div class="add-link-container">
+        <a a id="add_artist" class="clickable" data-ng-click="addRecord(entry.entry_artists)" title="Add">
+          Add new <span class="glyphicon glyphicon-plus"></span>
+        </a>
+      </div>
+    </div>
+    <div ui-sortable="sortableOptions" ng-model="entry.entry_artists" class='col-sm-12'>
+      <div class='row input-block' data-ng-repeat="entry_artist in entry.entry_artists | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_artists, entry_artist)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>
           </a>
         </div>
-        <div class="row">
-          <label class="col-sm-3 control-label">
-                <span sdbm-tooltip="entry_artist_as_recorded">As Recorded</span>
-          </label>
-          <div class="col-sm-9">
-              <input input maxlength="255" id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
-          </div>
+        <div class="col-sm-4">
+            <span class='control-label' sdbm-tooltip="entry_artist_as_recorded">As Recorded</span>
+            <input input maxlength="255" id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
         </div>
-        <div class="row">
-          <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_artist">Authority Name</span>
-          </label>
-          <div class="col-sm-9">
-            <span>
-                <!--<input id="artist_{{ $index }}" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{ "type": "is_artist" }' sdbm-autocomplete-model="entry_artist.artist" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
-                <a id='find_artist_name_authority_{{ $index }}' ng-if='entry_artist.artist.id == undefined' ng-init="entry_artist.artist = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_artist.artist, 'is_artist', entry_artist.observed_name)">Find or Create Authority Name</a>
-                <div ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' class="well well-sm well-name-authority">
-                  <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_artist, 'artist')"></a>
-                  <a href="/names/{{ entry_artist.artist.id }}" target="_blank">{{ entry_artist.artist.name }}</a>
-                </div>
-                <span class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_artist" encourage-name-authority-name="artist"></span>
-            </span>
-            <span id="artist_certainty_flags_{{ $index }}" class="btn btn-default pull-right clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></span>
+        <div class="col-sm-5">
+          <span class='control-label' style="display: block; float: left;" sdbm-tooltip="entry_artist">Authority Name</span>
+            <a id="find_artist_name_authority_{{ $index }}" ng-if='entry_artist.artist.id == undefined' ng-init="entry_artist.artist = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_artist.artist, 'is_artist', entry_artist.observed_name)">Find or Create Authority Name</a>
+            <div ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' class="well well-sm well-name-authority">
+              <a id="remove_artist_name_authority_{{ $index }}" class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_artist, 'artist')"></a>
+              <a href="/names/{{ entry_artist.artist.id }}" target="_blank">{{ entry_artist.artist.name }}</a>
+            </div>
+            <span class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_artist" encourage-name-authority-name="artist"></span>
+            <span id="artist_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></span>
           </div>
+        <div class="col-sm-3 text-right">
+          <span class='control-label' sdbm-tooltip="entry_artist_role">Role</span>
+          <select id="artist_role_{{ $index }}" name="artist_role" class="form-control" ng-model="entry_artist.role" ng-options="option[0] as option[1] for option in optionsArtistRole">
+            <option value=""></option>
+          </select>
         </div>
-        <div class='row'>
-          <label class="col-sm-3 control-label">
-            <span sdbm-tooltip="entry_artist_role">Role</span>
-          </label>
-          <div class="col-sm-9">
-            <select id="artist_role_{{ $index }}" name="artist_role" class="form-control" ng-model="entry_artist.role" ng-options="option[0] as option[1] for option in optionsArtistRole">
-              <option value=""></option>
-            </select>
-          </div>
-        </div>         
       </div>
     </div>
   </div>
