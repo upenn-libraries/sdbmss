@@ -707,9 +707,6 @@ li.provenance:hover, li.provenance:focus {
   color: #555;
 }
 
-.input-block .row {
-  margin: 2px;
-}
 .input-block .control-label {
   font-weight: bold;
   color: #444;
@@ -889,14 +886,26 @@ li.provenance:hover, li.provenance:focus {
   right: -24px;
   top: -1px;
   box-shadow: 0px 4px 1px 0px rgb(230, 230, 230);
-  padding: 4px;
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
   line-height: 36px;
 }
 .remove-link-container a {
   color: #888;
+  display: table;
+  padding: 4px;
+  height: 100%;
 }
+.remove-link-container a:hover {
+  background: pink;
+  color: #333;
+  text-decoration: none;
+}
+.remove-link-container > a > span.glyphicon {
+  display: table-cell;
+  vertical-align: middle;
+}
+
 .form-group.row {
   *border-bottom: 1px #eee dashed;
 }
