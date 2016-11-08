@@ -1,4 +1,8 @@
 
+<% content_for :breadcrumbs do %>
+    <li class="active list-group-item breadcrumb"><a href="">Community</a></li>
+<% end %>
+
 <h1>Database Statistics</h1>
 
 <p><%= number_with_delimiter(Entry.count) %> entries</p>
