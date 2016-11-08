@@ -336,7 +336,24 @@ textarea { resize:vertical ; }
 }
 
 .name-authority-warning {
-  padding: 0px 20px;
+  display: block;
+  position: absolute;
+  background: pink;
+  padding: 3px 10px;
+  border-radius: 5px;
+  opacity: 0.9;
+  z-index: 20;
+}
+.name-authority-warning:before {
+  width: 0;
+  height: 0;
+  display: block;
+  content: '';
+  border-bottom: 10px solid pink;
+  border-right: 10px solid transparent;
+  border-left: 10px solid transparent;
+  position: absolute;
+  top: -9px;
 }
 
 /* on Entry view page, move the content block to the right of the sidebar */
@@ -914,6 +931,12 @@ li.provenance:hover, li.provenance:focus {
 }
 .unapproved > td > a.btn {
   color: #fff;
+}
+
+.sdbmss-form .h4 {
+  font-variant: small-caps;
+  font-weight: bold;
+  color: #009688;
 }
 
 .sdbmss-form .provenance-group-container { border-width: 0 0 1px; border-style: none none solid; border-color: #e5e5e5; margin-bottom: 6px; }
