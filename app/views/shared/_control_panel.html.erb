@@ -1,10 +1,19 @@
 <div id="control-panel">
   <div class="bookmarks-collapse collapse in">
-    <div style="padding: 10px;">
-      <div class="text-center">
-        <strong class="h3" style="font-variant: small-caps;">Control Panel <span class="glyphicon glyphicon-wrench"></span> </strong>
-        <br><br>
-      </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="panel panel-default text-center" style="margin: 0px;">
+                        <div class="panel-body"><span class="glyphicon glyphicon-user"></span></div>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <%= render partial: "shared/username_with_profile_link", locals: {user: current_user} %><br>
+                    <span class="text-muted">User Level: <em><%= current_user.role %></em></span>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="vertical-breadcrumbs">
       <ul class="breadcrumbs list-group">

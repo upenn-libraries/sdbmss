@@ -727,6 +727,10 @@ li.provenance:hover, li.provenance:focus {
 .input-block .control-label {
   font-weight: bold;
   color: #444;
+  margin-left: 15px;
+}
+.input-block .control-label:first-child {
+  margin-left: 0px;
 }
 .input-block .certainty-flag {
   vertical-align: top;
@@ -735,16 +739,40 @@ li.provenance:hover, li.provenance:focus {
   max-height: 100%;
   max-width: 100%;
 }
-.input-block, .ui-state-highlight {
-  padding: 4px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #fff7de;
+.input-block {
+  /*border: 1px solid #ddd;
+  border-radius: 5px;*/
+  background-color: #fff;
   transition: all linear 0.5s;
-  box-shadow: 0px 4px 1px 0px rgba(0,0,0,0.1);
-  margin: 10px -15px;
+  /*box-shadow: 0px 4px 1px 0px rgba(0,0,0,0.1);*/
+  /*border-bottom: 1px solid #ddd;*/
+  margin: 3px -15px;
   position: relative;
+  background: #f8f8f8;
+  padding: 1px;
+  padding-left: 15px;
 }
+.input-block-placeholder {
+  background-color: rgba(255, 234, 171, 0.5);
+}
+.input-block:before {
+  content: '☷';
+  position: absolute;
+  display: block;
+  line-height: 34px;
+  left: 5px;
+}
+.input-block.input-block-no-sort:before {
+  color: #ccc;
+}
+.input-block.provenance-block {
+  /*background: #eee;*/
+  margin-bottom: 10px;
+}
+.input-block.provenance-block:before {
+  line-height: 42px;
+}
+
 .input-block .input-group .form-control {
   z-index: initial;
 }
@@ -893,29 +921,29 @@ li.provenance:hover, li.provenance:focus {
 .remove-link-container {
   position: absolute;
   width: 30px;
-  border: 1px solid #dddddd;
+  background: #eee;
   text-align: center;
   /* border-radius: 16px; */
   line-height: 30px;
-  background: white;
   font-size: 20px;
-  height: calc(100% + 2px);
+  height: 100%;
   right: -24px;
-  top: -1px;
-  box-shadow: 0px 4px 1px 0px rgb(230, 230, 230);
+  top: 0px;
+  /*box-shadow: 0px 4px 1px 0px rgb(230, 230, 230);*/
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
   line-height: 36px;
 }
 .remove-link-container a {
-  color: #888;
+  color: #555;
   display: table;
   padding: 4px;
   height: 100%;
 }
-.remove-link-container a:hover {
+.remove-link-container:hover {
   background: pink;
-  color: #333;
+}
+.remove-link-container a:hover {
   text-decoration: none;
 }
 .remove-link-container > a > span.glyphicon {
@@ -931,6 +959,11 @@ li.provenance:hover, li.provenance:focus {
 }
 .unapproved > td > a.btn {
   color: #fff;
+}
+
+.sdbmss-form legend {
+  font-variant: small-caps;
+  text-align: center;
 }
 
 .sdbmss-form .h4 {
@@ -1242,7 +1275,7 @@ so that gray backdrop shvows up correctly */
 }
 #control-panel .collapse {
   width: 0px;
-  overflow: hidden;
+  /*overflow: hidden;*/
 }
 #control-panel .collapse.in {
   width:268px;
@@ -1287,21 +1320,28 @@ so that gray backdrop shvows up correctly */
   color: #fff;
   background-color: #8BC34A;
   border-color: #8BC34A;
+  margin-right: -10px;
+  background: white;
+  color: #333;
+  border: 1px solid #ddd;
+  border-right: none;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
-
+/*
 .vertical-breadcrumbs .breadcrumb:last-child {
   border-color: transparent;
 }
-
+*/
 .vertical-breadcrumbs .breadcrumb a {
   color: #aaa;
 }
-
 .vertical-breadcrumbs .breadcrumb.active a {
-  color: white;
-  font-weight: bold;
+  color: #333;
+  *font-weight: bold;
 }
 
+/*
 .vertical-breadcrumbs .breadcrumb:after {
   content: '';
   width: 0;
@@ -1315,14 +1355,16 @@ so that gray backdrop shvows up correctly */
   left: calc(50% - 20px);
   top: calc(100% - 1px);
   z-index: 10;
-}
+}*/
 
 .control-panel-bottom {
   position: absolute;
   width: calc(100% - 20px);
   bottom: 0px;
 }
-
+#entry_breadcrumbs li, #entry_breadcrumbs a {
+  cursor: pointer;
+}
 #entry_breadcrumbs {
   padding-left: 15px;
 }
@@ -1333,9 +1375,6 @@ so that gray backdrop shvows up correctly */
   background: none;
 }
 #entry_breadcrumbs .breadcrumb.active {
-  background-color: transparent;
-  border: none;
-  border-color: red;
 }
 #entry_breadcrumbs .breadcrumb.active a {
   color: #8BC34A;
@@ -1343,12 +1382,13 @@ so that gray backdrop shvows up correctly */
 #entry_breadcrumbs .breadcrumb:after {
   display: none;
 }
+/*
 #entry_breadcrumbs li {
   display: list-item;
   list-style: initial;
   padding: 8px 0px;
   margin-left: 25px;
-}
+}*/
 /*
 
 Private Message Styling
