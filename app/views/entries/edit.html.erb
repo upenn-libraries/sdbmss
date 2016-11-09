@@ -306,15 +306,13 @@ label.col-sm-2-and-half {
           <div ng-show="entry.transaction_type == 'sale' || entry.transaction_type == 'gift'">
           
               <div class="form-inline row section">
-                  <div class="col-sm-2">
+                  <div class="col-sm-12">
                     <span class='h4'>Sale Agent(s)</span>
-                  </div>
-                  <div class="col-sm-10">
-                    <div class="add-link-container">
+                    <span class="add-link-container">
                       <a a id="add_sale_agent" class="clickable" data-ng-click="addRecord(entry.sale.sale_agents)" title="Add">
                         Add new <span class="glyphicon glyphicon-plus"></span>
                       </a>
-                    </div>                  
+                    </span>                  
                   </div>
                   <div ui-sortable="sortableOptions" ng-model="entry.sale.sale_agents" class='col-sm-12'>
                     <div class="row input-block" data-ng-repeat="sale_agent in entry.sale.sale_agents | filter: activeRecords">
@@ -323,16 +321,15 @@ label.col-sm-2-and-half {
                           <span class="glyphicon glyphicon-remove"></span>
                         </a>
                       </div>
-                      <div class="col-sm-5">
-                        <span class='control-label' style="display: block; float: left;" sdbm-tooltip="entry_sale_agent">Authority Name</span>
+                      <div class="col-sm-12">
+                        <span class='control-label' sdbm-tooltip="entry_sale_agent">Authority Name</span>
                         <a id='find_sale_agent_name_authority_{{ $index }}' ng-if='sale_agent.agent.id == undefined' ng-init="sale_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', sale_agent.agent, 'is_provenance_agent')">Find or Create Authority Name</a>
-                        <div id='show_selling_agent_name_authority_0' ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                        <div id='show_selling_agent_name_authority_0' ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="form-control well well-sm well-name-authority">
                           <a id='remove_selling_agent_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(sale_agent, 'agent')"></a>
                           <a href="/names/{{ sale_agent.agent.id }}" target="_blank"><span id="sale_agent_{{ $index }}">{{ sale_agent.agent.name }}</span></a>
                         </div>
                         <span id="sale_selling_agent_certainty_flags" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="sale_agent"><span class="glyphicon"></span></span>
-                      </div>
-                      <div class="col-sm-4">
+                        
                         <span class='control-label' sdbm-tooltip="entry_sale_agent_role">Role</span>
                         <select id="sale_agent_role_{{ $index }}" name="sale_agent_role" class="form-control" ng-model="sale_agent.role" ng-options="option[0] as option[1] for option in optionsSaleAgentRole" required='required'>
                           <option value=""></option>

@@ -343,6 +343,7 @@ textarea { resize:vertical ; }
   border-radius: 5px;
   opacity: 0.9;
   z-index: 20;
+  left: 38%;
 }
 .name-authority-warning:before {
   width: 0;
@@ -700,7 +701,7 @@ li.provenance:hover, li.provenance:focus {
   color: inherit;
   padding: 6px 12px;
   overflow: hidden;
-  max-width: 50%;
+  max-width: 33%;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: inline-block;
@@ -1252,8 +1253,7 @@ so that gray backdrop shvows up correctly */
 }
 
 .dashboard-tabs {
-  margin: 22px 0px 0px -30px;
-  padding-left: 30px;
+  margin: 18px 0px;
 }
 
 .activity p {
@@ -1359,7 +1359,7 @@ so that gray backdrop shvows up correctly */
 
 .control-panel-bottom {
   position: absolute;
-  width: calc(100% - 20px);
+  width: calc(100% - 19px);
   bottom: 0px;
 }
 #entry_breadcrumbs li, #entry_breadcrumbs a {

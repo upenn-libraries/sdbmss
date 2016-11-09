@@ -162,7 +162,9 @@ module DataEntryHelpers
 
     first(".save-button").click
 
-    expect(find(".modal-title", visible: true)).to have_content("Successfully saved")
+    expect(page).to have_content("Warning: This entry has not been approved yet.")
+    expect(page).to have_content(Entry.last.public_id)
+    #expect(find(".modal-title", visible: true)).to have_content("Successfully saved")
   end
 
   def verify_entry(entry)

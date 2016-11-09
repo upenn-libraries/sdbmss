@@ -9,24 +9,7 @@
 <% possessive = is_contributor ? "Your" : "" %>
 
 <div class="row">
-    <div class="col-sm-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="panel panel-default text-center" style="margin: 0px;">
-                            <div class="panel-body"><span class="glyphicon glyphicon-user"></span></div>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <%= render partial: "shared/username_with_profile_link", locals: {user: current_user} %><br>
-                        <span class="text-muted">User Level: <em><%= current_user.role %></em></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-9">
+    <div class="col-sm-12">
         <ul id='dashboard-tabs' class="ajax-tabs nav nav-tabs dashboard-tabs">
             <li class='active'><a data-toggle='tab' href="#my_activity">My Contributions</a></li>
             <li><a data-toggle='tab' href="#community" href="">Activity</a></li>
@@ -41,13 +24,19 @@
         <div class="tab-content">
             <div id="my_activity" class="tab-pane fade in active">
                 <div class="row">
-                    <%= render partial: "my_entries" %>
+                    <div class="col-sm-12">
+                        <%= render partial: "my_entries" %>
+                    </div>
                 </div>
                 <div class="row">
-                    <%= render partial: "my_sources" %>                        
+                    <div class="col-sm-12">
+                        <%= render partial: "my_sources" %>                        
+                    </div>
                 </div>
                 <div class="row">
-                    <%= render partial: "my_manuscripts" %>
+                    <div class="col-sm-12">
+                        <%= render partial: "my_manuscripts" %>
+                    </div>
                 </div>
             </div>
             <div id="community" class="tab-pane fade">
