@@ -18,6 +18,8 @@
 /doc
 /downloads
 
+/public/uploads
+
 .capistrano
 
 .yardoc
