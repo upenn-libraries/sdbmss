@@ -7,7 +7,7 @@
 role :app, %w{sdbm@sdbmdev}
 role :web, %w{sdbm@sdbmdev}
 
-set :branch, 'development'
+set :branch, 'compressEntryEdit'
 
 set :ssh_options, {:forward_agent => true}
 
