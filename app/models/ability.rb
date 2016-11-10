@@ -29,10 +29,12 @@ class Ability
     # will want more fine-grained control for our roles as the system
     # grows.
 
+
     if ['contributor', 'editor', 'super_editor', 'admin'].member? user.role
       can [:edit, :update], :all, :created_by_id => user.id
 
       can :destroy, [Comment, Reply], :created_by_id => user.id
+      cannot :manage, Page
 
       can :link, :all
       can :unlink, :all, :created_by_id => user.id

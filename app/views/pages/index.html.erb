@@ -1,0 +1,42 @@
+<div class="row">
+  <div class="col-sm-12">
+    <legend class='h1 text-center'>Pages</legend>
+  </div>
+    <div class="col-sm-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Add new page
+        </div>
+        <div class="panel-body">
+          <%= render partial: 'form' %>
+        </div>
+      </div>
+    </div>
+    <% @pages.each do |page| %>
+      <div class="col-sm-2">
+        <strong><%= link_to page.name, page_path(page.name) %></strong>
+      </div>
+      <div class="col-sm-3">
+        <span class="text-muted"><%= page.filename %></span>
+      </div>
+      <div class="col-sm-3 text-right">
+        <ul class="list-inline">
+          <li>
+            <%= link_to(edit_page_path(page.name)) do %>
+              <span class="glyphicon glyphicon-edit"></span> Edit
+            <% end %>
+          </li>
+          <li>
+            <%= link_to("/uploads/#{page.filename}") do %>
+              <span class="glyphicon glyphicon-download"></span> Download
+            <% end %>
+          </li>
+          <li>
+            <%= link_to(page_path(page.name), :method => :delete, data: { confirm: "Are you sure you would like to permanently remove this file?" }) do %>
+              <span class="glyphicon glyphicon-remove"></span> Delete
+            <% end %>
+          </li>
+        </ul>
+      </div>
+    <% end %>
+</div>

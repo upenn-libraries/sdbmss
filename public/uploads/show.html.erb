@@ -1,0 +1,26 @@
+
+<h1>Database Statistics</h1>
+
+<p><%= number_with_delimiter(Entry.count) %> entries</p>
+<p><%= number_with_delimiter(Provenance.count) %> records of provenance information</p>
+<p><%= number_with_delimiter(Source.count) %> sources</p>
+<p><%= number_with_delimiter(User.count) %> users</p>
+    
+<h1>User Community</h1>
+
+<table class="table table-compressed">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th># Entries Contributed</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% User.statistics.sort { |a,b| a[:num_entries] <=> b[:num_entries] }.reverse.each do |record| %>
+            <tr>
+                <td><a href="<%= profile_path(record[:username]) %>"><%= record[:username] %></a></td>
+                <td><%= record[:num_entries] %></td>
+            </tr>
+        <% end %>
+    </tbody>
+</table>
