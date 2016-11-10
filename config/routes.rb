@@ -11,13 +11,24 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :activities, only: [:index]
+  resources :activities do
+    collection {
+      get 'index'
+      get 'show_all'
+    }
+  end
 
-  resources :groups
+  resources :watches, only: [:index, :create, :destroy]
+
+  resources :groups do
+    collection {
+      get 'show_all'
+    }
+  end
   resources :group_users
   
   resources :replies
-  resources :notifications, only: [:index, :show, :destroy]
+  resources :notifications, only: [:index, :show, :update, :destroy]
   #resources :notifications_settings, only: [:edit]
 
   #resources :agents, only: [:show]
@@ -141,6 +152,7 @@ Rails.application.routes.draw do
       get 'citation'
       get 'entry_candidates'
       get 'manage_entries'
+      get 'history'
       get 'edit', action: :show
     end
   end
@@ -197,6 +209,7 @@ Rails.application.routes.draw do
     member do
       get 'merge'
       post 'merge'
+      get 'history'
       post 'update_status'
     end
   end

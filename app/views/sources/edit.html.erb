@@ -2,6 +2,15 @@
 <%= stylesheet_link_tag "extras", media: "all" %>
 <% end %>
 
+<% content_for :breadcrumbs do %>
+<% @model = @source %>
+  <%= render partial: "manage_models/breadcrumbs", locals: {edit: true} %>
+<% end %>
+
+<% content_for :control_tools do %>
+    <%= render partial: "tools", locals: {source: @source} %>
+<% end %>
+
 <% if @source.persisted? %>
     <% @page_title = "Edit #{@source.public_id} - " + application_name %>
 <% else %>

@@ -18,14 +18,21 @@ class CommentsController < SearchableAuthorityController
   end
 
   def create
-    @comment = Comment.new(comment_params)
-    @comment.save_by(current_user)
-    if @comment.commentable.created_by && @comment.commentable.created_by != current_user
-      @comment.commentable.created_by.notify(
-        "#{current_user.to_s} has commented on #{@comment.commentable.public_id}",
-        @comment, 
-        "comment"
-      )
+    ActiveRecord::Base.transaction do    
+      @comment = Comment.new(comment_params)
+      success = @comment.save_by(current_user)
+      if success
+        @transaction_id = PaperTrail.transaction_id
+      end
+    end
+    @comment.commentable.watchers.each do |watcher|
+      if watcher != current_user
+        watcher.notify(
+          "#{current_user.to_s} has commented on #{@comment.commentable.public_id}",
+          @comment, 
+          "comment"
+        )
+      end
     end
     redirect_to polymorphic_path(@comment.commentable, anchor: "comment_#{@comment.id}")
   end

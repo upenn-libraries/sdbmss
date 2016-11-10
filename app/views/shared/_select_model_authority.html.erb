@@ -49,7 +49,7 @@
                 <a href="" class="btn btn-default" ng-click="createName()" id='propose-model'>Propose {{ nameSearchString || "New " + (type | humanize) }}</a>
             </div>
             <div class="col-sm-6 text-right">
-                <button class="btn btn-success" ng-disabled="!suggestion" ng-click="selectName()" id="selectModelButton">Select {{ suggestion.name }}</button>
+                <button class="btn btn-success btn-name-authority" ng-disabled="!suggestion" ng-click="selectName()" id="selectModelButton">Select {{ suggestion.name }}</button>
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
             </div>
         </div>

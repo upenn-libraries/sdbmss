@@ -99,9 +99,24 @@
 <% end %>
 <% end %>
 
+<% content_for :breadcrumbs do %>
+    <%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
+<% end %>
+
+<% content_for :control_tools do %>
+    <%= render partial: "tools" %>
+<% end %>
+
+<% content_for :add_entry do %>
+    <li>
+        <%= link_to "Add A New Entry", new_entry_path %>
+        <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %>
+    </li>
+<% end %>
+
 <div class="row">
     
-    <div class="col-sm-7 sdbmss-form">
+    <div class="sdbmss-form <%= @manuscript.location ? 'col-sm-7' : 'col-sm-12' %>">
 
         <legend>
             <span><%= @manuscript.public_id %></span>
@@ -109,68 +124,8 @@
         <p>This <b>Manuscript Record</b> is a linking node that collects entries referring to the same physical manuscript for easy access and study.  You can use this space to determine current location and provenance, to create your own <b>Personal Observation</b> about this manuscript, or to leave a comment about this manuscript.  You can also construct your own provenance history based on prior entries by clicking the <b>Construct History</b> button in the <b>Tools</b> menu.</p>
         <p>If you believe links have been made in error, contact us or simply leave a comment below.</p>
     </div>
+    <% if @manuscript.location %>
     <div class='col-sm-5'> 
-        <!--<div class="panel panel-default">
-            <div class="panel-heading"><span class="h3">Suggested Manuscript Details</span></div>
-            <div class="panel-body">
-                <div class="row manuscript-details" id="confirmed-manuscript" >
-                    <div class="col-xs-4 text-right">
-                        <strong>Common Name</strong><br>
-                        <strong>URL</strong>
-                    </div>
-                     <div class="col-xs-6" style='overflow: hidden; text-overflow: ellipsis'>
-                        <% if @manuscript.name %>
-                            <a class='manuscript-url' href="<%= @manuscript.url %>" target="_blank"><%= @manuscript.name %></a>
-                        <% else %>
-                            <span class='manuscript-url' >No common title saved.</span>
-                        <% end %>
-                        <br>
-                        <% if @manuscript.url %>
-                            <a class='manuscript-url' href="<%= @manuscript.url %>" target="_blank"><%= @manuscript.url %></a>
-                        <% else %>
-                            <span class='manuscript-url'>No link saved.</span>
-                        <% end %>
-                    </div>
-                    <div class="col-xs-2 text-right">
-                        <% if can? :manage, @manuscript %>
-                            <a href="" id="begin-manuscript-edit" class='manuscript-url btn btn-default'>Edit</a>
-                        <% end %>
-                    </div>
-                </div>
-                <div class="row form-inline" id="edit-manuscript" style="display: none;">
-                    <div class="col-sm-12">
-                    <% if can? :manage, @manuscript %>
-                        <%= form_for @manuscript do |f| %>
-                        <div class="row" style="margin-bottom: 5px;">
-                            <div class="col-sm-4 text-right">
-                                <%= f.label :common_title, class: "control-label" %>
-                            </div>
-                            <div class="col-sm-8">
-                                <%= f.text_field :name, class: "form-control", placeholder: "Common title..." %>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-bottom: 5px;">
-                            <div class="col-sm-4 text-right">
-                                <%= f.label :url, class: "control-label" %>
-                            </div>
-                            <div class="col-sm-8">
-                                <%= f.text_field :url, class: "form-control", placeholder: "Enter url..." %>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-12 text-right">
-                                <%= f.submit "OK", class: "form-control btn btn-success" %>
-                                <button type="button" id="cancel-manuscript-edit" class="form-control">Cancel</button>
-                            </div>
-                        </div>
-                        <% end %>
-                    <% end %>
-                    </div>
-                </div>
-            </div>
-        </div>-->
-
-        <% if @manuscript.location %>
             <div class="panel panel-default">
                 <div class="panel-body text-muted">
                     <span class='h3'>Last Known Location <small>(Deprecated Field)</small>
@@ -179,9 +134,9 @@
                     <p>Can you verify this information? <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %></p>
                 </div>
             </div>
-        <% end %>
     </div>
-    <div class="col-sm-9">
+    <% end %>
+    <div class="col-sm-12">
         <div class="panel panel-default">
             <div class="panel-heading split-heading">
                 <div class="row">
@@ -226,32 +181,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-sm-3">
-        <div class="panel panel-default show-tools">
-            <div class="panel-heading"><span class="h4">Tools</span></div>
-            <div class="panel-body" style="height: 210px;">
-                <ul class='nav'>
-                    <li>
-                        <a data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
-                    </li>
-                    <% if can? :link, @manuscript %>
-                    <li class="manage_entry">
-                        <a href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Linking Tool for <%= @manuscript.public_id %></a>
-                    </li>
-                    <li>
-                        <a href="#proposed-history" class='toggle-propose-history' data-toggle="collapse">Construct History<span sdbm-tooltip="manuscript_propose_history"></span></a>
-                    </li>
-                    <li>
-                        <a href="" onclick="addBookmark(<%= @manuscript.id %>, 'Manuscript');" in_bookmarks="/manuscripts/<%= @manuscript.id %>"><span class="glyphicon glyphicon-bookmark"></span> Bookmark</a>
-                      </li>  
-                    <% end %>
-                </ul>
-            </div>
-            <!--<div class="panel-footer text-right">
-                <p class="text-muted">Do not assume this manuscript is held by the University of Pennsylvania Libraries</p>            
-            </div>-->
         </div>
     </div>
 </div>

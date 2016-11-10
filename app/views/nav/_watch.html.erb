@@ -1,0 +1,7 @@
+<% if current_user %>
+  <% if (w = current_user.watches.where(watched: watchable).first) %>
+    <%= render partial: 'watches/delete', locals: {watch: w} %>
+  <% else %>
+    <%= render partial: 'watches/add', locals: {watchable: watchable} %>
+  <% end %>
+<% end %>

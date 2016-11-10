@@ -198,6 +198,13 @@ class EntriesController < SearchableAuthorityController
           )
           em.save
         end
+
+        # auto-watch record, if appropriate setting is set
+        if current_user.notification_setting.auto_watch
+          Watch.create(watched: @entry, user: current_user)
+        end
+
+        @transaction_id = PaperTrail.transaction_id
       end
     end
     respond_to do |format|

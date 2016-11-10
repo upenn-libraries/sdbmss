@@ -1,0 +1,13 @@
+<div class="panel panel-default show-tools">
+    <div class="panel-heading">
+        Tools
+    </div>
+    <div class="panel-body">
+        <ul class="nav">
+            <% if user_signed_in? %>
+                <li class="link"><%= link_to 'Change History', polymorphic_path([:history, @model]) %></li>
+                <!-- eventually, merge will be here? -->
+            <% end %>
+        </ul>
+    </div>
+</div>

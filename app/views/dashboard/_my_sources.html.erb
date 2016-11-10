@@ -1,0 +1,38 @@
+<% num_sources = current_user.sources.count %>
+<% num_sources_unreviewed = current_user.sources.where({reviewed: false}).count %>        
+<% if num_sources > 0 %>
+    <% num_sources_to_show = 5 %>
+    <% sources = current_user.sources.most_recent(num_sources_to_show) %>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="row">
+            <div class="col-sm-6">
+                <span class='h4' data-toggle="collapse" href="#mySources">
+                    Sources You've Contributed
+                    <span class="caret"></span>
+                </span>
+                <br><a href="/sources?created_by_user=1">Manage My Sources</a>
+            </div>
+            <div class="col-sm-6 text-right">
+                <span>Showing the last <%= sources.count %> of the <%= "source".pluralize(num_sources) %> you have created</span>
+                <% if num_sources_unreviewed > 0 %>
+                    <br><span class='text-warning'><%= num_sources_unreviewed %> unapproved</span>
+                <% end %>                    
+            </div>
+        </div>
+    </div>
+    <div class="panel-body collapse in" id="mySources">
+        <ul class="list-group list-group-no-border-side">
+            <% sources.each do |source| %>
+                <li class="list-group-item">
+                    <dl class="document-show-heading dl-horizontal dl-invert">
+                        <dt></dt>
+                        <dd class='h4'><a href="/sources/<%= source.id %>"><%= source.public_id %></a></dd>
+                    </dl>
+                    <%= render partial: "sources/source_details", locals: {source: source, abbreviate: true} %>
+                </li>
+           <% end %> 
+        </ul>
+    </div>
+</div>
+<% end %>

@@ -17,6 +17,7 @@ require 'set'
 class Name < ActiveRecord::Base
 
   include UserFields
+  include Watchable
   include ReviewedByField
   include IndexAfterUpdate
   include HasPaperTrail

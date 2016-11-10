@@ -150,3 +150,8 @@
 </script>
 
 </div>
+
+
+<% content_for :breadcrumbs do %>
+    <li class="list-group-item breadcrumb active"><a href="">Manage <%= resource_name.pluralize %></a></li>
+<% end %>

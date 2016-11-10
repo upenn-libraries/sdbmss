@@ -81,7 +81,7 @@
 
                             var result = '<span class="btn-group options-btn-group">';
                             // bookmark button
-                            result += '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
+                            //result += '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
 
                             // edit
                             if (editable) {
@@ -225,6 +225,7 @@
      SDBM.setPageFullWidth();
 
      $('#search_results').on('draw.dt', function () {
+        bindRemoteAjaxCallback();
      });
 
      $(".search-form").submit(function (e) {

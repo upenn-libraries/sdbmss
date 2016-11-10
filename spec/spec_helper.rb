@@ -50,7 +50,7 @@ RSpec.configure do |config|
 
   config.before(:each, js: true) do
     if page.driver.respond_to? :resize
-      page.driver.resize(1280, 800)
+      page.driver.resize(1920, 1080)
     end
   end
 

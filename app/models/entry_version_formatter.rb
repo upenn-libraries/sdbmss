@@ -5,6 +5,15 @@ class EntryVersionFormatter
 
   attr_reader :version
 
+  # ignore these fields for ALL record types
+  GENERIC_IGNORE_FIELDS = [
+    'created_by_id',   # redundant, since it is stored with version information anyway
+    'created_at',   # likewise
+    'updated_by_id',
+    'updated_at',
+    'id'
+  ]
+
   IGNORE_FIELDS = [
     'Sale.id',
     'Sale.entry_id',
@@ -24,7 +33,6 @@ class EntryVersionFormatter
     'EntryLanguage.id',
     'EntryLanguage.entry_id',
     'EntryManuscript.id',
-    'EntryManuscript.entry_id',
     'EntryMaterial.id',
     'EntryMaterial.entry_id',
     'EntryPlace.id',
@@ -103,9 +111,16 @@ class EntryVersionFormatter
 
   def detail (version)
     details = []
-    if version.event == 'update'
+    if version.item_type == "EntryManuscript"
+      item = EntryManuscript.where(id: version.item_id).first
+      if item
+        details << "<b>#{item.entry.public_id}</b> has been linked to <b>#{item.manuscript.public_id}</b>"
+      else
+        details << "<b>EntryManuscript #{version.item_id}</b> was deleted."  
+      end
+    elsif version.event == 'update'
       skip(version.changeset).each do |field, values|
-        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}")
+        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}")
           if EntryVersionFormatter.isClass(field)
             f = EntryVersionFormatter.toClass(field)
             if f.exists?(values[0])
@@ -115,33 +130,37 @@ class EntryVersionFormatter
               values[1] = f.find(values[1])
             end
           end
-          details << "#{field.titlecase}: from #{values[0].present? ? values[0] : "(blank)"} to #{values[1]}"
+          if values[0].present?
+            details << "<b>#{field.titlecase}</b> changed from #{values[0]} to #{values[1]}"
+          else
+            details << "<b>#{field.titlecase}</b> set to #{values[1]}"
+          end
         end
       end
     elsif version.event == 'create'
       skip(version.changeset).each do |field, values|
         value = values[1]
-        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
+        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}") && value.present?
           if EntryVersionFormatter.isClass(field)
             f = EntryVersionFormatter.toClass(field)
             if f.exists?(value)
               value = f.find(value)
             end
           end
-          details << "#{field.titlecase}: #{value}"
+          details << "<b>#{field.titlecase}</b> set to #{value}"
         end
       end
     elsif version.event == 'destroy'
       obj = version.reify
       skip(obj.attributes).each do |field, value|
-        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && value.present?
+        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}") && value.present?
           if EntryVersionFormatter.isClass(field)
             f = EntryVersionFormatter.toClass(field)
             if f.exists?(value)
               value = f.find(value)
             end
           end
-          details << "#{field.titlecase}: #{value}"
+          details << "<b>#{field.titlecase}</b> #{value}"
         end
       end
     end
@@ -157,6 +176,8 @@ class EntryVersionFormatter
       return Name
     elsif ['created_by_id', 'updated_by_id', 'approved_by_id', 'reviewed_by_id'].include? field
       return User
+    elsif ['entry_id']
+      return Entry
     else
       return field.gsub('_id', '').capitalize.classify.constantize
     end

@@ -1,27 +1,42 @@
 <%# Partial used to display name details for both Names generically and Agents (which are Names) %>
-<div class="row">
+
+<% content_for :breadcrumbs do %>
     <% if current_user.role == 'admin' %>
-    <div class="col-sm-3">
-        <div class="panel panel-default show-tools">
-            <div class="panel-heading">
-                Tools
-            </div>
-            <div class="panel-body">
-                <ul class="nav">
-                    <% if user_signed_in? %>
-                        <% if can?(:edit, @user) %>
-                            <li class="edit_name">
-                                <a href="<%= edit_account_path(@user) %>">Edit User Account</a>
-                            </li>
-                        <% end %>
-                        <li><%= link_to 'Go to Listing', accounts_path %></li>
+        <li class="list-group-item breadcrumb">
+            <a href="/accounts">Manage Accounts</a>
+        </li>
+    <% else %>
+        <li class="breadcrumb list-group-item">
+            <a href="/community">Community</a>
+        </li>
+    <% end %>
+        <li class="list-group-item breadcrumb active"><a href=""><%= @user %></a></li>
+<% end %>
+
+<% if current_user.role == 'admin' %>
+<% content_for :control_tools do %>
+    <div class="panel panel-default show-tools">
+        <div class="panel-heading">
+            Tools
+        </div>
+        <div class="panel-body">
+            <ul class="nav">
+                <% if user_signed_in? %>
+                    <% if can?(:edit, @user) %>
+                        <li class="edit_name">
+                            <a href="<%= edit_account_path(@user) %>">Edit User Account</a>
+                        </li>
                     <% end %>
-                </ul>
-            </div>
+                <% end %>
+            </ul>
         </div>
     </div>
-    <% end %>
-    <div class="col-sm-<%= current_user.role == 'admin' ? 9 : 12 %>">
+<% end %>
+<% end %>
+
+
+<div class="row">
+    <div class="col-sm-12">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <span class='h1'><%= @user.username %>

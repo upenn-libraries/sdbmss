@@ -1,0 +1,64 @@
+<div id="control-panel">
+  <div class="bookmarks-collapse collapse in">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="panel panel-default text-center" style="margin: 0px;">
+                        <div class="panel-body"><span class="glyphicon glyphicon-user"></span></div>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                    <%= render partial: "shared/username_with_profile_link", locals: {user: current_user} %><br>
+                    <span class="text-muted">User Level: <em><%= current_user.role %></em></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <ul class="nav">
+            <% if content_for? :add_entry %>
+              <li class="dropdown">
+                <a href="" data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> Add New Entry <span class="caret"></span></a>
+            <% else %>
+              <li>
+                  <a href="/entries/new"><span class="glyphicon glyphicon-plus"></span> Add New Entry</a>
+            <% end %>
+            <ul class="dropdown-menu" role="menu">
+              <%= yield :add_entry %>
+            </ul>
+          </li>
+          <li>
+              <a href="/bookmarks"><span class="glyphicon glyphicon-bookmark"></span> Bookmarks</a>
+          </li>
+          <li>
+              <a href="/downloads"><span class="glyphicon glyphicon-export"></span> Exports</a>
+          </li>
+          <li>
+              <a href="/groups"><span class="glyphicon glyphicon-globe"></span> Groups</a>
+          </li>          
+          <li>
+              <a href="/watches"><span class="glyphicon glyphicon-eye-open"></span> Watched Records</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="control-panel-top">
+      <%= yield :control_tools %>
+    </div>
+
+    <div class="vertical-breadcrumbs control-panel-bottom">
+      <ul class="breadcrumbs list-group">
+        <li class="breadcrumb list-group-item <%= current_page?('/dashboard') ? 'active' : '' %>">
+          <a href="<%= dashboard_path %>"><span class="glyphicon glyphicon-dashboard"></span> Dashboard
+          </a>
+        </li>
+        <%= yield :breadcrumbs %>
+      </ul>
+    </div>
+
+  </div>
+</div>

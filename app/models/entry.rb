@@ -24,6 +24,7 @@ class Entry < ActiveRecord::Base
   ]
 
   include UserFields
+  include Watchable
   include HasPaperTrail
   include HasTouchCount
   include CreatesActivity
@@ -501,8 +502,8 @@ class Entry < ActiveRecord::Base
       fields.map(&:to_s).select(&:present?).join "\n"
     end
 
-    define_field(:string, :entry, :stored => true) do
-      public_id
+    define_field(:string, :entry, :stored => true, multiple: true) do
+      [public_id, @__receiver__.id.to_s]
     end
     # for sorting
     define_field(:integer, :entry_id, :stored => true) do

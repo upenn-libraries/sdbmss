@@ -74,7 +74,7 @@ describe "Data entry", :js => true do
     find_by_id(field).click
     # hover over something else--the navbar element here is just
     # arbitrary
-    first(".navbar-brand").hover
+    first('#header-navbar').hover
     sleep(2)
   end
 
@@ -572,7 +572,8 @@ describe "Data entry", :js => true do
 
       first(".save-button").click
 
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+      expect(page).to have_content("Warning: This entry has not been approved yet.")
+      expect(page).to have_content(Entry.last.public_id)
 
       entry = Entry.last
       expect(entry.folios).to eq(666)
@@ -603,7 +604,8 @@ describe "Data entry", :js => true do
 
       first(".save-button").click
 
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+      expect(page).to have_content("Warning: This entry has not been approved yet.")
+      expect(page).to have_content(Entry.last.public_id)
 
       source.reload
 
@@ -679,8 +681,8 @@ describe "Data entry", :js => true do
 
       first(".save-button").click
 
-      sleep(1)
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+      expect(page).to have_content("Warning: This entry has not been approved yet.")
+      expect(page).to have_content(Entry.last.public_id)
 
       manuscript = Manuscript.find(manuscript_id)
       expect(manuscript.entries.order(id: :desc).first.catalog_or_lot_number).to eq("9090")

@@ -1,0 +1,31 @@
+<% content_for :breadcrumbs do %>
+  <li class="list-group-item breadcrumb active"><a href="/watches">Watched Records</a></li>
+<% end %>
+
+<div class="row">
+  <div class="col-sm-2"></div>
+  <div class="col-sm-8">
+    <table class="table table-bordered table-hover">
+      <thead style='background: #eee;'>
+        <tr>
+          <th class='text-center' colspan="2">
+            <span class='h3'>Watched Records</span>
+          </th>
+        </tr>
+      </thead>
+    <% @watches.sort { |w1, w2| w1.watched_type <=> w2.watched_type }.each do |watch| %>
+      <tr>
+        <td>
+          <%= link_to watch.watched.public_id, polymorphic_url(watch.watched) %>
+          <%= watch.watched.to_s %>
+        </td>
+        <td class='text-center col-sm-2'>
+          <%= link_to watch_path(watch), :method => :delete do %>
+            <span class="glyphicon glyphicon-eye-close"></span> Unwatch
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+    </table>
+  </div>
+</div>

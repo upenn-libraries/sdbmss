@@ -11,6 +11,7 @@
 class Activity < ActiveRecord::Base
 
   belongs_to :user
+  belongs_to :item, polymorphic: true
 
   validates_presence_of :item_type
   validates_presence_of :item_id
@@ -32,6 +33,20 @@ class Activity < ActiveRecord::Base
       'merged'
     else
       event
+    end
+  end
+
+  def link
+    if item_type == 'User'
+      "/accounts/#{item.id}"
+    elsif item_type == 'EntryManuscript'
+      if item && item.manuscript
+        "/manuscripts/#{item.manuscript.id}"
+      else
+        "/dashboard"
+      end
+    else
+      "/#{item.class.to_s.underscore.pluralize}/#{item.id}"
     end
   end
 

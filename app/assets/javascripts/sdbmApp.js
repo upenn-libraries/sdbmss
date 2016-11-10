@@ -563,9 +563,9 @@ var BOOKMARK_SCOPE;
         $scope.sortableOptions = {
           axis: 'y',
           scrollSpeed: 40,
-          placeholder: "ui-state-highlight",
-          cancel: ".ui-sortable-locked, .ui-sortable-locked + .input-block",
-          handle: "label, .panel-heading",
+          placeholder: "input-block-placeholder",
+          cancel: ".ui-sortable-locked, .ui-sortable-locked + .input-block, input, select",
+          //handle: ".control-label, .panel-heading",
           scrollSensitivity: 100,
           start: function(e, ui){
               ui.placeholder.height(ui.item.height());
@@ -754,7 +754,11 @@ var BOOKMARK_SCOPE;
         }
 
         $scope.addRecord = function (anArray) {
-          anArray.push({});
+          if (anArray == $scope.entry.provenance) {
+            anArray.push({dates: [{type: "Start"}]});
+          } else {            
+            anArray.push({});
+          }
           for (var i = 0; i < anArray.length; i++) {
             anArray[i].order = i;
           }
@@ -934,8 +938,9 @@ var BOOKMARK_SCOPE;
         $scope.postEntrySave = function(entry) {
             $scope.warnWhenLeavingPage = false;
 
+            window.location = "/entries/" + entry.id;
             // fix me: is it neccessary to re-load the entry once the save is complete?  I have commented it out unless it proves important
-            
+            /*
             //console.log(entry);
             $scope.entry = entry;
             $scope.populateEntryViewModel($scope.entry);
@@ -951,7 +956,7 @@ var BOOKMARK_SCOPE;
             }, function() {
                 // runs when promise is rejected (modal is dismissed)
                 sdbmutil.redirectToEntryEditPage(entry.id);
-            });
+            });*/
         };
 
         // append '_attributes' for Rails' accept_nested_attributes
@@ -2252,7 +2257,7 @@ var BOOKMARK_SCOPE;
     };
   });
 
-  sdbmApp.controller('ManageBookmarks', function ($scope, $sce, $location) {
+ sdbmApp.controller('ManageBookmarks', function ($scope, $sce, $location) {
 
     BOOKMARK_SCOPE = $scope;
 
@@ -2488,7 +2493,7 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.init = function () {
-      if (localStorage) {
+      /*if (localStorage) {
 
         if (localStorage.all_bookmarks) {
           $scope.all_bookmarks = angular.fromJson(localStorage.all_bookmarks);
@@ -2511,8 +2516,8 @@ var BOOKMARK_SCOPE;
         }
 
       } else {
-        $scope.loadBookmarks();
-      }
+      }*/
+      $scope.loadBookmarks();
     }
 
     $scope.init();
@@ -2532,7 +2537,6 @@ var BOOKMARK_SCOPE;
   });
 
 }());
-
 //function toggleSidebar() 
 
 function exportCSV(url) {
@@ -2593,11 +2597,11 @@ function addNotification (message, type, permanent) {
 
 // this works!  maybe not a good idea?
 function addBookmark(id, type) {
-  BOOKMARK_SCOPE.addBookmark(id, type);
+  //BOOKMARK_SCOPE.addBookmark(id, type);
   // if removed, have one 
   //addNotification(type + " " + id + " bookmarked! <span onclick='addBookmark(" + id + ',"' + type + "\")'>Undo<span>", 'info' );
 }
 
 function renewBookmarks() {
-  BOOKMARK_SCOPE.renew();
+  //BOOKMARK_SCOPE.renew();
 }

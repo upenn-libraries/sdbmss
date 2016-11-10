@@ -8,7 +8,10 @@
     <ul class="dropdown-menu">
       <li><a><span class="glyphicon glyphicon-briefcase"></span> <%= user.role %></a></li>
       <li><a href="<%= profile_path(username: user.username) %>"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
-      <li><a href="<%= new_private_message_path(user_id: user.id) %>"><span class="glyphicon glyphicon-envelope"></span> Send Message</a></li>
+      <li><a href="<%= new_private_message_path(user_id: [user.id]) %>"><span class="glyphicon glyphicon-envelope"></span> Send Message</a></li>
+      <% if current_user == user %>
+      <li><%= link_to edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> Edit Account <% end %></li>
+      <% end %>
     </ul>
   </span>
 <% else %>

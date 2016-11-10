@@ -91,14 +91,20 @@ class SourcesController < SearchableAuthorityController
   end
 
   def create
-    filtered = source_params_for_create_and_edit
-    @source = Source.new(filtered)
-    if @source.whether_mss == Source::TYPE_HAS_MANUSCRIPT_NO
-      @source.status = Source::TYPE_STATUS_NO_MSS
-    else
-      @source.status = Source::TYPE_STATUS_TO_BE_ENTERED
+    success = false
+    ActiveRecord::Base.transaction do
+      filtered = source_params_for_create_and_edit
+      @source = Source.new(filtered)
+      if @source.whether_mss == Source::TYPE_HAS_MANUSCRIPT_NO
+        @source.status = Source::TYPE_STATUS_NO_MSS
+      else
+        @source.status = Source::TYPE_STATUS_TO_BE_ENTERED
+      end
+      success = @source.save_by(current_user)
+      if success
+        @transaction_id = PaperTrail.transaction_id
+      end
     end
-    success = @source.save_by(current_user)
     respond_to do |format|
       format.json {
         if !success
@@ -130,6 +136,9 @@ class SourcesController < SearchableAuthorityController
     ActiveRecord::Base.transaction do
       filtered = source_params_for_create_and_edit
       success = @source.update_by(current_user, filtered)
+      if success
+        @transaction_id = PaperTrail.transaction_id
+      end
     end
     respond_to do |format|
       format.json {

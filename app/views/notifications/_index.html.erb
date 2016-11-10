@@ -1,0 +1,27 @@
+<% @notifications.reverse.each do |notification| %>
+<div class="row">
+  <% if notification.notified && notification.title %>
+    <div class="col-xs-6 one-line">
+      <% url = notification.notified.class == User ? profile_path(notification.notified.username) : polymorphic_url(notification.notified) %>
+      <%= link_to url, :title => notification.title do %>
+        <% if notification.active %>
+          <span class="glyphicon glyphicon-exclamation-sign text-success"></span>
+          <%= notification.title %>
+        <% else %>
+          <span class="text-muted"><%= notification.title %></span>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="col-xs-6 text-right">
+      <%= notification.created_at.to_formatted_s(:long) %>
+    </div>
+  <% end %>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <% if notification.notified %>
+      <%= sanitize simple_format(notification.notified.preview) %>
+    <% end %>
+  </div>
+</div>
+<% end %>

@@ -3,6 +3,29 @@ class ActivitiesController < ApplicationController
 
   before_action :authenticate_user!
 
+  def show_all
+    if params[:mine]
+      start_date = Activity.where(user: current_user).order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
+      @activities = Activity.where(user: current_user).where("created_at > ?", start_date).order("created_at desc").group_by { |a| a.created_at.to_date }      
+    elsif params[:watched]
+      #creates a long custom SQL query to collect the activity for all the records you are watching...
+      queries = [
+        "item_type = 'Manuscript' and item_id in (#{current_user.watched_manuscripts.pluck(:id).join(',')})",
+        "item_type = 'Entry' and item_id in (#{current_user.watched_entries.pluck(:id).join(',')})",
+        "item_type = 'Name' and item_id in (#{current_user.watched_names.pluck(:id).join(',')})",
+        "item_type = 'Source' and item_id in (#{current_user.watched_sources.pluck(:id).join(',')})"
+      ]
+      query_string = queries.join(" or ")
+
+      start_date = Activity.where(query_string).order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
+      @activities = Activity.where(query_string).where("created_at > ?", start_date).order("created_at desc").group_by { |a| a.created_at.to_date }
+    else
+      start_date = Activity.order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
+      @activities = Activity.where("created_at > ?", start_date).order("created_at desc").group_by { |a| a.created_at.to_date }
+    end
+    render partial: "activities/show_all"
+  end
+
   def index
     @page_size = 25
     @page = (params["page"] || 1).to_i
