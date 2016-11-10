@@ -18,7 +18,7 @@
 /doc
 /downloads
 
-/public/uploads
+/public/uploads/*
 
 .capistrano
 

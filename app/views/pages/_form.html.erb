@@ -1,6 +1,6 @@
 <%= form_for @page do |f| %>
   <%= f.label 'file', class: "control-label" %>
-  <%= f.file_field 'filename', class: "form-control", required: true, placeholder: "File" %>
+  <%= f.file_field 'filename', class: "form-control", required: true, placeholder: "File", accept: '.html,.pdf' %>
   <br>
   <%= f.label 'name', class: "control-label" %>
   <%= f.text_field 'name', class: "form-control", required: true, placeholder: "Public Name" %>
