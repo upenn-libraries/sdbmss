@@ -45,8 +45,10 @@ class Activity < ActiveRecord::Base
       else
         "/dashboard"
       end
-    else
+    elsif item
       "/#{item.class.to_s.underscore.pluralize}/#{item.id}"
+    else
+      ""
     end
   end
 
