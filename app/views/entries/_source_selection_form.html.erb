@@ -46,13 +46,7 @@
     <div class="row">
         <div class="col-sm-2"></div>
         <div class="col-sm-5 form-inline">
-            Showing 
-            <select class="form-control" name="find_limit" id="" ng-model="limit" ng-change="findSourceCandidates()">
-                <option value="20">20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-                <option value="200">200</option>
-            </select>
+            Showing {{ sources.length }}
             of {{ total }} results.
         </div>
         <div class="col-sm-5 form-inline">
@@ -63,6 +57,14 @@
                 <option value="date asc">Date (asc)</option>
                 <option value="date desc">Date (desc)</option>
             </select>
+            Show
+            <select class="form-control" name="find_limit" id="" ng-model="limit" ng-change="findSourceCandidates()">
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="200">200</option>
+            </select>
+            results
         </div>
     </div>
     <div ng-repeat="source in sources track by $index">
