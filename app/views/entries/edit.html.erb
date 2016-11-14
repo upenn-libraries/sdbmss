@@ -92,30 +92,19 @@ label.col-sm-2-and-half {
 
           <p>
               <span ng-show="edit">You can make edits to your entries in the
-              data fields below.</span><span ng-show="!edit">Please fill in as much information as
+              data fields below.</span>
+              <span ng-show="!edit">Please fill in as much information as
               possible from the record you are documenting. No fields
-              are mandatory.</span></p><p> Click on a <b>data field</b>
-              label to open a pop-up window containing definitions and
-              data standards for that field.</p><p> Click on the <strong class="text-primary">Add new +</strong> under each data
-              field label to add multiple values. Delete values by clicking on the
-              “X” in the upper right corner.  Depending on the type of
-              <b>transaction</b> you select, the available data fields may
-              change.
+              are mandatory.</span>
           </p>
 
-          <p>Remember that entries reflect what the <b>source</b>
-              provides, not necessarily the reality of what the <b>manuscript</b>
-              is. You should not try to correct a source. Known errors in
-              the data should be preserved but can be noted in the
+          <p>Remember that entries reflect data given in the <b>Source</b>, not necessarily the reality of what the manuscript is.
+              <b>DO NOT CORRECT THE SOURCE'S INFORMATION, EVEN IF YOU THINK IT'S WRONG.</b> Known errors in
+              the Source should be preserved but can be noted in the
               <b>Comments</b> at the bottom of the page. If you believe the
-              source description is in error, create a new <b>Personal
-                  Observation</b> entry. If there is not already a <b>Manuscript
-                  Record</b> created, you will be asked to create this record.
+              Source description is in error, create a new <b>Personal
+                  Observation</b> entry to record the information you believe to be correct.
           </p>
-
-          <div ng-show="edit">
-              <p>Use the Action dropdown menu to navigate to related pages.</p>
-          </div>
           
           <div ng-show="entry.deprecated" style="color:red; font-weight: bold;">
               This entry has been deprecated; you cannot make changes to it. <span ng-show="entry.superceded_by_id">SDBM_{{ entry.superceded_by_id }} supercedes this entry.</span>
@@ -288,7 +277,7 @@ label.col-sm-2-and-half {
                         </label>
                         <div class="col-sm-9">
                            <span>
-                              <a id='find_sale_agent_name_authority_{{ $index }}' ng-if='sale_agent.agent.id == undefined' ng-init="sale_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', sale_agent.agent, 'is_provenance_agent')">Find or Create Authority Name</a>
+                              <a id='find_sale_agent_name_authority_{{ $index }}' ng-if='sale_agent.agent.id == undefined' ng-init="sale_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', sale_agent.agent, 'is_sale_agent')">Find or Create Authority Name</a>
                               <div id='show_selling_agent_name_authority_0' ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                 <a id='remove_selling_agent_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(sale_agent, 'agent')"></a>
                                 <a href="/names/{{ sale_agent.agent.id }}" target="_blank"><span id="sale_agent_{{ $index }}">{{ sale_agent.agent.name }}</span></a>

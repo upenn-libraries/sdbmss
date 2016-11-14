@@ -1,35 +1,33 @@
-<div class="find-source-container">
-    <div class="form-group row">
-        <label class="col-sm-2 control-label"><span>Source Date</span></label>
-        <div class="col-sm-2">
-            <input class="form-control" name="date" ng-model="date"/>
-        </div>
-        <div class="col-sm-4 col-sm-offset-3 label-alignment">
+<div class="find-source-container text-center">
+    <div class="row">
+        <label class="col-sm-4"><span>Source Date</span></label>
+        <label class="col-sm-4"><span>Selling Agent or Institution/Collection</span></label>
+        <label class="col-sm-4"><span>Source Title</span></label>
+    </div>
+    <div class="row">
+        <div class="col-sm-4 label-alignment">
             <span style="color: PaleVioletRed;">Enter a date in YYYY-MM-DD, YYYY-MM or YYYY</span>
         </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-sm-2 control-label"><span>Selling Agent<br/>or Institution/Collection</span></label>
-        <div class="col-sm-5">
-            <input class="form-control" name="agent" ng-model="agent" data-toggle='tooltip' title='You must type at least 2 characters to begin searching.'/>
-        </div>
-        <div class="col-sm-5 label-alignment">
+        <div class="col-sm-4 label-alignment">
             <span style="color: PaleVioletRed;">e.g. Sotheby's, University of Pennsylvania</span>
         </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-sm-2 control-label"><span>Source Title</span></label>
-        <div class="col-sm-5">
-            <input class="form-control" name="title" ng-model="title"/>
-        </div>
-        <div class="col-sm-5 label-alignment">
+        <div class="col-sm-4 label-alignment">
             <span style="color: PaleVioletRed;">e.g. Rare books and manuscripts</span>
         </div>
     </div>
-
+    <div class="form-group row">
+        <div class="col-sm-4">
+            <input class="form-control" name="date" ng-model="date"/>
+        </div>
+        <div class="col-sm-4">
+            <input class="form-control" name="agent" ng-model="agent" data-toggle='tooltip' title='You must type at least 2 characters to begin searching.'/>
+        </div>
+        <div class="col-sm-4">
+            <input class="form-control" name="title" ng-model="title"/>
+        </div>
+    </div>
 </div>
+
 <div class="row">
     <div class="col-sm-2">
     </div>
@@ -42,31 +40,32 @@
     </div>
 </div>
 
-<div ng-show="sources.length > 0">
-    <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-5 form-inline">
-            Showing {{ sources.length }}
-            of {{ total }} results.
-        </div>
-        <div class="col-sm-5 form-inline">
-            Sort by
-            <select name="" id="find_order" class="form-control" ng-model="order" ng-change="findSourceCandidates()">
-                <option value="id asc">Id (asc)</option>
-                <option value="id desc">Id (desc)</option>
-                <option value="date asc">Date (asc)</option>
-                <option value="date desc">Date (desc)</option>
-            </select>
-            Show
-            <select class="form-control" name="find_limit" id="" ng-model="limit" ng-change="findSourceCandidates()">
-                <option value="20">20</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
-                <option value="200">200</option>
-            </select>
-            results
-        </div>
+<div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-5 form-inline">
+        Showing {{ sources.length }}
+        of {{ total || 0 }} results.
     </div>
+    <div class="col-sm-5 form-inline">
+        Sort by
+        <select name="" id="find_order" class="form-control" ng-model="order" ng-change="findSourceCandidates()">
+            <option value="id asc">Id (asc)</option>
+            <option value="id desc">Id (desc)</option>
+            <option value="date asc">Date (asc)</option>
+            <option value="date desc">Date (desc)</option>
+        </select>
+        Show
+        <select class="form-control" name="find_limit" id="" ng-model="limit" ng-change="findSourceCandidates()">
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="200">200</option>
+        </select>
+        results
+    </div>
+</div>
+
+<div ng-show="sources.length > 0">
     <div ng-repeat="source in sources track by $index">
         <div class="row">
             <label class="col-sm-2 control-label" ng-show="$first">Select a search result:</label>
@@ -85,11 +84,5 @@
     <div class="row">
         <div class="col-sm-2"></div>
         <div class="col-sm-10"><b>No source found matching your criteria.</b></div>
-    </div>
-</div>
-<div ng-show="!searchAttempted && sources.length == 0">
-    <div class="row">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-10 text-info"><i>Fill in any of the fields above to begin Search (at least 2 characters)</i></div>
     </div>
 </div>
