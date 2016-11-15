@@ -13,19 +13,20 @@ class PagesController < ApplicationController
       if uploaded_io.content_type == "text/html" && p.ext == "html"
         File.open(Rails.root.join('public', "#{p.location}", uploaded_io.original_filename), 'wb') do |file|
           file.write(sanitize uploaded_io.read)
-          if p.errors.count > 0
-            flash[:error] = p.errors.full_messages.join(", ")
-          end
         end
-        p.save!
+        p.save
+        if p.errors.count > 0
+          flash[:error] = p.errors.full_messages.join(", ")
+        end
+
       elsif uploaded_io.content_type == "application/pdf" && p.ext == "pdf"
         File.open(Rails.root.join('public', "#{p.location}", uploaded_io.original_filename), 'wb') do |file|
           file.write(uploaded_io.read)
-          if p.errors.count > 0
-            flash[:error] = p.errors.full_messages.join(", ")
-          end        
         end          
-        p.save!      
+        p.save      
+        if p.errors.count > 0
+          flash[:error] = p.errors.full_messages.join(", ")
+        end        
       else
         flash[:error] = "Warning: Unpermitted file type."
       end
