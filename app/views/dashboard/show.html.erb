@@ -22,6 +22,9 @@
                 <% if Rails.env.development? || Rails.env.staging? %>
                     <p><%= link_to "Groups", groups_path %></p>
                 <% end %>
+                <% if can? :manage, Page %>
+                    <p><%= link_to "Pages", pages_path %></p>
+                <% end %>
             </div>
         </div>
     </div>

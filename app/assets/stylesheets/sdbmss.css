@@ -1146,3 +1146,7 @@ Private Message Styling
   box-shadow: none;
   color: #03A9F4;
 }
+
+.page-row:hover {
+  background-color: #f8f8f8;
+}
