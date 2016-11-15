@@ -19,7 +19,7 @@
 /downloads
 
 /public/uploads/*
-/public/uploads/static/tooltips/*
+/public/static/tooltips/*
 
 .capistrano
 
