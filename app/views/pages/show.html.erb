@@ -1,4 +1,4 @@
-<% if current_user && current_user.role == 'admin' %>
+<% if can? :edit, @page %>
   <%= link_to(edit_page_path(@page.name)) do %>
     <span class="glyphicon glyphicon-edit"></span> Edit Page
   <% end %>
