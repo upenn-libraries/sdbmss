@@ -1,11 +1,45 @@
+<%= link_to "All Pages", pages_path %>
 <div class="row">
-  <div class="col-sm-4"></div>
-  <div class="col-sm-4">
-    <h3 class="text-center">
+  <div class="col-sm-12">
+    <h3 class='text-center'>
       Edit <%= @page.name %>
-      <br><small><%= @page.filename %></small>
+      <br>
+      <small>
+        <%= @page.filename %>
+        <% if @filecontents %>
+          <br>
+          <a href="<%= preview_page_path(@page.name) %>" id="preview_page"><span class="glyphicon glyphicon-eye-open"></span> Preview</a>
+        <% end %>
+      </small>
     </h3>
-    <%= render partial: "form" %>
+    <%= render partial: "form", locals: {edit: true} %>
   </div>
-  <div class="col-sm-4"></div>
 </div>
+
+<div id="page_preview" class="modal fade panel-body" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+              <span class="h3">
+                Preview
+              </span>
+            </div>
+            <div class="modal-body">
+              
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+  $(document).ready( function (e) {
+    $('#preview_page').on('click', function (e) {
+      e.preventDefault();
+      var url = $(this).attr('href');
+      $.ajax({method: 'post', url: url, data: {content: $('#page_edit').val()}}).done( function (r) {
+        $('#page_preview .modal-body').html(r.result);
+        $('#page_preview').modal('show');
+      });
+      return false;
+    });
+  });
+</script>

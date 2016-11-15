@@ -53,6 +53,18 @@
       </script>
     <%end%>
 
+    <style type="text/css">
+      <% if current_user && current_user.role == "admin" %>
+        .qtip-titlebar {
+          display: block;
+        }
+      <% else %>
+        .qtip-titlebar {
+          display: none;
+        }
+      <% end %>
+    </style>
+
     <%= csrf_meta_tags %>
     <%= content_for(:head) %>
 

@@ -11,7 +11,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :pages, param: :name
+  resources :pages, param: :name do
+    member {
+      post 'preview'
+    }
+  end
 
   resources :activities, only: [:index]
 

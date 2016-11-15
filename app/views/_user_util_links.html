@@ -4,11 +4,14 @@
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">The New SDBM <span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">
-            <li><a href="/about/">About</a></li>
+          <% Page.where(category: 'about').each do |page| %>
+            <li><%= link_to page.name, page_path(page.name) %></li>
+            <!--<li><a href="/about/">About</a></li>
             <li><a href="/project_history">Project History</a></li>
             <li><a href="/user_agreement">User Agreement</a></li>
             <li><a href="/technical_overview">Technical Overview</a></li>
-            <li><a href="/community">Community Statistics</a></li>
+            <li><a href="/community">Community Statistics</a></li>-->
+          <% end %>
         </ul>
     </li>
 
@@ -27,12 +30,16 @@
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Help <span class="caret"></span></a>
         <ul class="dropdown-menu" role="menu">
+          <!--
           <li><a href="/static/docs/sdbm_data_model_explanation.pdf">New Data Model</a></li>
           <li><a href="/static/docs/sdbm_data_definitions.pdf">Data Definitions</a></li>
           <li><a href="/static/docs/sdbm_user_manual.pdf" target="_blank">User Manual</a></li>
           <li><a href="https://www.youtube.com/channel/UCsVZp-1724xPIW8MwIdKoyg/videos">Video Tutorials</a></li>
           <li><a href="mailto:sdbm@pobox.upenn.edu">Email Us</a></li>
-          <li><%= link_to "F.A.Q.", faq_path %></li>
+          <li><%= link_to "F.A.Q.", faq_path %></li>-->
+          <% Page.where(category: 'help').each do |page| %>
+            <li><%= link_to page.name, page_path(page.name) %></li>
+          <% end %>
         </ul>
     </li>
 

@@ -6,4 +6,12 @@ class Page < ActiveRecord::Base
     filename.split('.').last
   end
 
+  def location
+    if category == 'tooltip'
+      'static/tooltips'
+    else
+      'uploads'
+    end
+  end
+
 end

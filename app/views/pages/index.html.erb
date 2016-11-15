@@ -1,42 +1,34 @@
 <div class="row">
-  <div class="col-sm-12">
-    <legend class='h1 text-center'>Pages</legend>
-  </div>
-    <div class="col-sm-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          Add new page
+  <div class="col-sm-12 text-center">
+    <legend class='h1'>Static Pages & Uploads</legend>
+    <a href="#add_page" data-toggle="modal" data-target="#add_page"><span class="glyphicon glyphicon-plus"></span> Click Here To Add New Page</a>
+
+    <div id="add_page" class="modal fade panel-body" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add new page</h4>
+                </div>
+                <div class="modal-body text-left">
+                  <%= render partial: 'form', locals: {edit: false} %>
+                </div>
+            </div>
         </div>
-        <div class="panel-body">
-          <%= render partial: 'form' %>
-        </div>
-      </div>
     </div>
-    <% @pages.each do |page| %>
-      <div class="col-sm-2">
-        <strong><%= link_to page.name, page_path(page.name) %></strong>
-      </div>
-      <div class="col-sm-3">
-        <span class="text-muted"><%= page.filename %></span>
-      </div>
-      <div class="col-sm-3 text-right">
-        <ul class="list-inline">
-          <li>
-            <%= link_to(edit_page_path(page.name)) do %>
-              <span class="glyphicon glyphicon-edit"></span> Edit
-            <% end %>
-          </li>
-          <li>
-            <%= link_to("/uploads/#{page.filename}") do %>
-              <span class="glyphicon glyphicon-download"></span> Download
-            <% end %>
-          </li>
-          <li>
-            <%= link_to(page_path(page.name), :method => :delete, data: { confirm: "Are you sure you would like to permanently remove this file?" }) do %>
-              <span class="glyphicon glyphicon-remove"></span> Delete
-            <% end %>
-          </li>
-        </ul>
-      </div>
+  </div>
+    
+  <div class="col-sm-12">
+    <h3>'About' Pages</h3>
+    <% @pages.where(category: 'about').order('name asc').each do |page| %>
+      <%= render partial: 'page', locals: {page: page} %>
     <% end %>
+    <h3>'Help' Pages</h3>
+    <% @pages.where(category: 'help').order('name asc').each do |page| %>
+      <%= render partial: 'page', locals: {page: page} %>
+    <% end %>  
+    <h3>Tooltips</h3>
+    <% @pages.where(category: 'tooltip').order('name asc').each do |page| %>
+      <%= render partial: 'page', locals: {page: page} %>
+    <% end %>
+  </div>
 </div>

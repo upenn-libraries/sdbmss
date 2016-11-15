@@ -58,11 +58,12 @@ class Ability
       cannot :review, Name
       # this needs to be RE-Established, since it has been overriden by line 51
       can :edit, :all, :created_by_id => user.id
+      cannot :manage, Page
     end
 
     if ['super_editor'].member? user.role
       # allow super-editors to edit legacy records
-      can :edit, Entry, :unverified_legacy_record => true   
+      can :edit, Entry, :unverified_legacy_record => true
     end
 
     if ['admin'].member? user.role
