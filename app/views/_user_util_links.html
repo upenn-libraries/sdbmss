@@ -35,13 +35,13 @@
           <!--
           <li><a href="/static/docs/sdbm_data_model_explanation.pdf">New Data Model</a></li>
           <li><a href="/static/docs/sdbm_data_definitions.pdf">Data Definitions</a></li>
-          <li><a href="/static/docs/sdbm_user_manual.pdf" target="_blank">User Manual</a></li>
-          <li><a href="https://www.youtube.com/channel/UCsVZp-1724xPIW8MwIdKoyg/videos">Video Tutorials</a></li>
-          <li><a href="mailto:sdbm@pobox.upenn.edu">Email Us</a></li>
-          <li><%= link_to "F.A.Q.", faq_path %></li>-->
+          <li><%= link_to "F.A.Q.", faq_path %></li>
+          <li><a href="/static/docs/sdbm_user_manual.pdf" target="_blank">User Manual</a></li>-->
           <% Page.where(category: 'help').each do |page| %>
             <li><%= link_to page.name, page_path(page.name) %></li>
           <% end %>
+          <li><a href="https://www.youtube.com/channel/UCsVZp-1724xPIW8MwIdKoyg/videos">Video Tutorials</a></li>
+          <li><a href="mailto:sdbm@pobox.upenn.edu">Email Us</a></li>
         </ul>
     </li>
 

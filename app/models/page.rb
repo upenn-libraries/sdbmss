@@ -7,7 +7,9 @@ class Page < ActiveRecord::Base
   end
 
   def location
-    if category == 'tooltip'
+    if ext == "pdf"
+      'static/docs'
+    elsif category == 'tooltip'
       'static/tooltips'
     else
       'uploads'
