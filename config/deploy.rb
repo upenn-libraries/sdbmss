@@ -6,10 +6,6 @@ set :branch, 'master'
 # Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, '/var/www/sdbmss/'
 
-set :shared_children, fetch(:shared_children) + %w{public/static/tooltips}
-set :shared_children, fetch(:shared_children) + %w{public/static/docs}
-set :shared_children, fetch(:shared_children) + %w{public/uploads}
-
 # Default value for :scm is :git
 # set :scm, :git
 
@@ -28,6 +24,9 @@ set :shared_children, fetch(:shared_children) + %w{public/uploads}
 # Default value for linked_dirs is []
 # set :linked_dirs, fetch(:linked_dirs, []).push('bin', 'log', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
 set :linked_dirs, fetch(:linked_dirs, []).push('tmp/pids', 'log')
+set :linked_dirs, fetch(:linked_dirs, []).push('public/static/tooltips')
+set :linked_dirs, fetch(:linked_dirs, []).push('public/static/docs')
+set :linked_dirs, fetch(:linked_dirs, []).push('public/uploads')
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
