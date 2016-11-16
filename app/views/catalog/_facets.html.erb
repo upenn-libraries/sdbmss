@@ -26,6 +26,7 @@
       <a style="margin-top: 5px;" data-toggle='collapse' data-target='.more-facets' class='btn btn-default collapse more-facets'>Hide...</a>
     <% else %>
       <!-- New Facet Display (above/in sidebar) -->
+      <% if params[:f] and params[:f].count > 0 %>
       <div class="panel panel-default facet_limit facet_limit-active">
         <div class="collapse-toggle panel-heading" data-toggle="collapse" data-target="#selected-facets">
           <h5 class="panel-title facet-field-heading">
@@ -40,6 +41,7 @@
           </div>
         </div>
       </div>
+      <% end %>
 
       <%= render_facet_partials %>
     <% end %>

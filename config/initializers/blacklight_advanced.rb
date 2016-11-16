@@ -123,7 +123,8 @@ module BlacklightAdvancedSearch
           content << render_search_to_s_element(label, " #{Array(query).join(', ')}  ")
         end
       end
-      return content + " (#{advanced_query.keyword_op})"
+      content.prepend "#{advanced_query.keyword_op == 'OR' ? 'Any of: ' : 'All of: '}"
+      return content
     end
 
   end

@@ -374,6 +374,8 @@
     <field name="folios" stored="true" type="sint" multiValued="false" indexed="true"/>
     <field name="num_columns" stored="true" type="sint" multiValued="false" indexed="true"/>
 
+    <field name="missing_authority_names" stored="true" type="sint" multiValued="false" indexed="true"/>
+
     <field name="num_lines" stored="true" type="sint" multiValued="false" indexed="true"/>
     <field name="height" stored="true" type="sint" multiValued="false" indexed="true"/>
     <field name="width" stored="true" type="sint" multiValued="false" indexed="true"/>

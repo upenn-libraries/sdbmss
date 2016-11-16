@@ -716,6 +716,13 @@ class Entry < ActiveRecord::Base
       supercedes.map(&:id)
     end
 
+    define_field(:integer, :missing_authority_names, :stored => true) do
+      entry_authors.where(author_id: nil).where.not(observed_name: nil).count + 
+      entry_artists.where(artist_id: nil).where.not(observed_name: nil).count + 
+      entry_scribes.where(scribe_id: nil).where.not(observed_name: nil).count + 
+      provenance.where(provenance_agent_id: nil).where.not(observed_name: nil).count
+    end
+
     define_field(:integer, :folios, :stored => true) { folios }
     define_field(:integer, :num_columns, :stored => true) { num_columns }
 
