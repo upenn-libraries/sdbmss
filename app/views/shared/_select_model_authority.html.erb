@@ -19,12 +19,12 @@
                         <th>Reviewed</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class='text-center'>
                     <tr ng-show="nameSearchString.length <= 0">
-                        <td colspan="5">To begin searching, enter something in the search bar.</td>
+                        <td colspan="5">To begin searching, enter search term in the search bar.</td>
                     </tr>
-                    <tr ng-show="nameSearchString.length > 0 && suggestions.length <= 0">
-                        <td colspan="5">No results found.</td>
+                    <tr ng-show="nameSearchString.length > 1 && suggestions.length <= 0">
+                        <td colspan="5">No results found.  Consider searching for other possible spelling variations.</td>
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index">
                         <td><a class='btn btn-default btn-small' ng-click='selectSuggestion(s)'>Select</a></td>
@@ -45,10 +45,10 @@
     </div>
     <div class="modal-footer">
         <div class='row'>
-            <div class="col-sm-6 text-left">
-                <a href="" class="btn btn-default" ng-click="createName()" id='propose-model'>Propose {{ nameSearchString || "New " + (type | humanize) }}</a>
+            <div class="col-sm-8 text-left">
+                Can't find the {{ type | humanize }} you are looking for? <a href="" class="btn btn-default" ng-click="createName()" id='propose-model'>Propose {{ nameSearchString || "New " + (type | humanize) }}</a>
             </div>
-            <div class="col-sm-6 text-right">
+            <div class="col-sm-4 text-right">
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
             </div>
         </div>
