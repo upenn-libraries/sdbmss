@@ -118,6 +118,7 @@ Rails.application.routes.draw do
     collection {
       post 'mark_as_reviewed'
       get 'search'
+      get 'more_like_this'
     }
     member do
       get 'history'
@@ -150,6 +151,7 @@ Rails.application.routes.draw do
       post 'mark_as_reviewed'
       get 'search'
       get 'suggest'
+      get 'more_like_this'
     end
     member do
       patch '/revert_confirm/', to: 'names#revert_confirm'
@@ -164,6 +166,7 @@ Rails.application.routes.draw do
     collection {
       post 'mark_as_reviewed'
       get 'search'
+      get 'more_like_this'
     }
     member do
       get 'history'

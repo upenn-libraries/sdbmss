@@ -426,6 +426,7 @@ var BOOKMARK_SCOPE;
 
       $scope.selectSuggestion = function (s) {
         $scope.suggestion = s;
+        $scope.selectName();
       }
 
       $scope.selectName = function () {
@@ -435,7 +436,7 @@ var BOOKMARK_SCOPE;
       }
 
       $scope.autocomplete = function () {
-          var url  = "/" + recordType + "/suggest.json";
+          var url  = "/" + recordType + "/more_like_this.json";
           var searchTerm = $scope.nameSearchString; // redundant?
           $http.get(url, {
               params: $.extend({ autocomplete: 1, name: searchTerm, limit: 15 }, {})

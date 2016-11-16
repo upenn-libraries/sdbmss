@@ -31,8 +31,8 @@
                     <tr ng-show="nameSearchString.length > 0 && suggestions.length <= 0">
                         <td colspan="9">No results found.</td>
                     </tr>
-                    <tr ng-repeat="s in suggestions track by $index" ng-click="selectSuggestion(s)" ng-class="{success: s == suggestion}">
-                        <td><input type='radio' ng-click='selectSuggestion(s)' style="opacity: 0;"></input></td>
+                    <tr ng-repeat="s in suggestions track by $index" >
+                        <td><a class='btn btn-default btn-sm' ng-click='selectSuggestion(s)'>Select</a></td>
                         <td class='text-left'><a href="/names/{{ s.id }}" target="_blank">{{ s.name }}</a></td>
                         <td>{{ s.viaf_id }}</td>
                         <td>{{ s.authors_count }}</td>
@@ -61,7 +61,6 @@
                 <a href="" class="btn btn-default" id='propose-name' ng-click="createName()">Propose {{ nameSearchString || ("New " + type | humanize ) }}</a>
             </div>
             <div class='col-sm-6'>
-                <button class="btn btn-success" ng-disabled="!suggestion" ng-click="selectName()" id="selectNameButton">Select {{ suggestion.name }}</button>
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
             </div>
         </div>

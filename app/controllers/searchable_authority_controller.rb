@@ -77,7 +77,6 @@ class SearchableAuthorityController < ManageModelsController
       model_class.delay.do_csv_search(params, @d) 
     else
       s = model_class.do_search(params)
-      puts "Results: #{s.results}"
       format_search s
     #do_search(params)
     end
@@ -90,6 +89,21 @@ class SearchableAuthorityController < ManageModelsController
       order_by :score, :desc
     end
     @similar = s.results
+  end
+
+  def more_like_this
+    n = model_class.new(name: params[:name])
+    n.index!
+    s = n.more_like_this do
+      fields :name
+      paginate page: 1, per_page: 10
+      order_by :score, :desc
+    end
+    results = s.results
+    respond_to do |format|
+      format.json { render :json => {results: results, status: :ok}}
+    end
+    n.remove_from_index
   end
 
 end
