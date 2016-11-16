@@ -77,6 +77,7 @@ class SearchableAuthorityController < ManageModelsController
       model_class.delay.do_csv_search(params, @d) 
     else
       s = model_class.do_search(params)
+      puts "Results: #{s.results}"
       format_search s
     #do_search(params)
     end

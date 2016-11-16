@@ -100,7 +100,7 @@ class Name < ActiveRecord::Base
     integer :id
     text :name, :more_like_this => true do
       silence_warnings {
-        [name.mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/n,'').downcase.to_s, name]
+        [name.mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/n,'').downcase.to_s, name].join(" ")
       }
     end
     string :name
