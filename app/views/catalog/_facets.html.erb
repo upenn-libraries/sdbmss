@@ -17,11 +17,16 @@
     </div>
 
   <div id="facet-panel-collapse" class="collapse panel-group">
-  <% if request.fullpath == "/" %>
-    <%= render_facet_partials_home %>
-  <% else %>
-    <%= render_facet_partials %>
-  <% end %>
-</div>
+    <% if request.fullpath == "/" %>
+        <%= render_facet_partials_home(4, :before) %>
+      <div style="margin-top: 5px;" class="more-facets collapse">
+        <%= render_facet_partials_home(4, :after) %>    
+      </div>
+      <a style="margin-top: 5px;" data-toggle='collapse' data-target='.more-facets' class='btn btn-default collapse in more-facets'>Show More...</a>
+      <a style="margin-top: 5px;" data-toggle='collapse' data-target='.more-facets' class='btn btn-default collapse more-facets'>Hide...</a>
+    <% else %>
+      <%= render_facet_partials %>
+    <% end %>
+  </div>
 </div>
 <% end %>
