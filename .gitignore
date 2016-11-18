@@ -18,7 +18,7 @@
 /doc
 /downloads
 
-/public/static/tooltips
+/public/static/tooltips/*
 
 .capistrano
 
