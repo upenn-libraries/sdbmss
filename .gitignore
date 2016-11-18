@@ -18,6 +18,8 @@
 /doc
 /downloads
 
+/public/static/tooltips
+
 .capistrano
 
 .yardoc
