@@ -381,7 +381,7 @@ var BOOKMARK_SCOPE;
                         title: title,
                         agent: agent,
                         limit: $scope.limit,
-                        source_type_id: $scope.source_type,
+                        source_type: $scope.source_type,
                         id: $scope.source_id,
                         id_option: "without"
                     }

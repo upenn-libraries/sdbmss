@@ -27,7 +27,7 @@
                         <td colspan="5">No results found.  Consider searching for other possible spelling variations.</td>
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index">
-                        <td><a class='btn btn-default btn-small' ng-click='selectSuggestion(s)'>Select</a></td>
+                        <td><a class='selectModel btn btn-default btn-small' ng-click='selectSuggestion(s)'>Select</a></td>
                         <td>{{ s.id }}</td>
                         <td><a href="/{{ type }}s/{{ s.id }}" target="_blank">{{ s.name }}</a></td>
                         <td>{{ s.entries_count }}</td>
