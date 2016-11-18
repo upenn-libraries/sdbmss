@@ -314,7 +314,7 @@ var BOOKMARK_SCOPE;
     });
 
     /* Controller for selecting a source*/
-    sdbmApp.controller("SelectSourceCtrl", function ($scope, $http, sdbmutil) {
+    sdbmApp.controller("SelectSourceCtrl", function ($scope, $http, $modalInstance, Source, sdbmutil, model) {
 
         $scope.sdbmutil = sdbmutil;
 
@@ -327,7 +327,17 @@ var BOOKMARK_SCOPE;
         $scope.order = "id asc";
 
         $scope.setSource = function (source) {
-          $scope.$emit('changeSource', source)
+          //model.source = source;
+          Source.get(
+            {id: source.id},
+            function(source) {
+                model.source = source;
+                $modalInstance.close();
+                //$scope.populateEntryViewModel(model);
+            },
+            sdbmutil.promiseErrorHandlerFactory("Error loading Source data for this page")
+          );
+          //$scope.$emit('changeSource', source)
         }
 
         $scope.cancelSelectSource = function () {
@@ -515,6 +525,26 @@ var BOOKMARK_SCOPE;
     sdbmApp.controller("EntryCtrl", function ($scope, $http, Entry, Source, sdbmutil, $modal) {
 
         EntryScope = $scope;
+
+        $scope.selectSourceModal = function (model) {
+          if ($scope.mergeEdit !== false) {
+            var modal = $modal.open({
+                templateUrl: "selectSource.html",
+                controller: "SelectSourceCtrl",
+                resolve: {
+                  //recordType: function () { return recordType },
+                  model: function () { return model },
+                  //type: function () { return type },
+                  base: ""
+                },
+                size: 'lg'
+            }).result.then(function () {
+              $scope.populateEntryViewModel($scope.entry);
+            }, function () {
+              console.log('dismissed');
+            });
+          }
+        }
         
         $scope.selectNameAuthorityModal = function (recordType, model, type, base) {
           // FIX ME: create name object if none exists
@@ -1192,14 +1222,16 @@ var BOOKMARK_SCOPE;
                     $scope.entry = new Entry();
 
                     var sourceId = $("#source_id").val();
-                    Source.get(
-                        {id: sourceId},
-                        function(source) {
-                            $scope.entry.source = source;
-                            $scope.populateEntryViewModel($scope.entry);
-                        },
-                        sdbmutil.promiseErrorHandlerFactory("Error loading Source data for this page")
-                    );
+                    if (sourceId) {
+                      Source.get(
+                          {id: sourceId},
+                          function(source) {
+                              $scope.entry.source = source;
+                              $scope.populateEntryViewModel($scope.entry);
+                          },
+                          sdbmutil.promiseErrorHandlerFactory("Error loading Source data for this page")
+                      );
+                    }
                 }
             },
             // error callback

@@ -767,11 +767,22 @@ li.provenance:hover, li.provenance:focus {
   color: #ccc;
 }
 .input-block.provenance-block {
-  /*background: #eee;*/
+  background: #eee;
   margin-bottom: 10px;
 }
 .input-block.provenance-block:before {
   line-height: 42px;
+}
+fieldset[disabled=disabled] a, 
+fieldset[disabled=disabled] .form-control, 
+fieldset[disabled=disabled] .h4, 
+fieldset[disabled=disabled] .control-label,
+fieldset[disabled=disabled] legend {
+  color: #999 !important;
+  cursor:not-allowed;
+}
+fieldset[disabled=disabled] a {
+  pointer-events: none;
 }
 
 .input-block .input-group .form-control {

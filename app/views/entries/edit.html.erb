@@ -197,6 +197,10 @@ label.col-sm-2-and-half {
       </div>
     </div>
     
+    <div class="row" ng-if="!entry.source">
+      <div class="col-sm-12 text-center"><a ng-click="selectSourceModal(entry)" class="btn btn-default">Select/Create a Source</a></div>
+    </div>
+
     <div class="source-info" id="selectSource" ng-if="selecting_source" data-ng-controller="SelectSourceCtrl" ng-init="source_type = selecting_source_type; source_id = old_source_id">
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -251,7 +255,7 @@ label.col-sm-2-and-half {
       </div>
   </div>
 
-      <div class="transaction-information-container" id="transaction_information">
+      <fieldset class="transaction-information-container" ng-disabled="!entry.source" id="transaction_information">
 
           <div class="row">
               <div class="col-sm-12">
@@ -342,9 +346,9 @@ label.col-sm-2-and-half {
           </div>
           
       </div>
-    </div>
+    </fieldset>
 
-<div id="manuscript_details">
+<fieldset id="manuscript_details" ng-disabled="!entry.source">
     <div class="row">
       <div class="col-sm-12">
         <legend>Manuscript Details</legend>
@@ -757,9 +761,9 @@ label.col-sm-2-and-half {
     </div>
   </div>
 
-</div>
+</fieldset>
 
-<div id="provenance_information">
+<fieldset id="provenance_information" ng-disabled="!entry.source">
   <div class="row">
     <div class="col-sm-12">
       <legend>Provenance Information</legend>
@@ -849,7 +853,7 @@ label.col-sm-2-and-half {
       </div>
     </div>
   </div>
-</div>
+</fieldset>
 
     <!-- end of provenance section -->
 
@@ -923,4 +927,5 @@ label.col-sm-2-and-half {
 <%= render "shared/create_entity_with_name" %>
 <%= render "shared/create_name" %>
 <%= render "shared/select_name_authority" %>
-<%= render "shared/select_model_authority" %>
+<%= render "shared/select_name_authority" %>
+<%= render "shared/select_source" %>

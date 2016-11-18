@@ -146,6 +146,7 @@ class EntriesController < SearchableAuthorityController
   def new
     @entry = Entry.new
     @source_id = params[:source_id]
+=begin    
     if @source_id.present?
       respond_to do |format|
         format.html { render "edit" }
@@ -154,6 +155,10 @@ class EntriesController < SearchableAuthorityController
       respond_to do |format|
         format.html { render "select_source" }
       end
+    end
+=end
+    respond_to do |format|
+      format.html { render "edit" }
     end
   end
 
