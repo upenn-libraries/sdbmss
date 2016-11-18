@@ -104,7 +104,9 @@ class Name < ActiveRecord::Base
       }
     end
     string :name do
-      name.mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/n,'').downcase.to_s
+      silence_warnings {
+        name.mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/n,'').downcase.to_s
+      }
     end
     string :viaf_id
     integer :created_by_id
