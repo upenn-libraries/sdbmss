@@ -5,13 +5,14 @@ module DataEntryHelpers
     expect(page).to have_selector('#searchNameAuthority');
     find_by_id('searchNameAuthority').set value
     expect(page).not_to have_content('To begin searching')
-    if !page.has_content?("Select")
+    if page.all('tr', :text => value).count <= 0
       expect(page).to have_content("Propose #{value}")
       find_by_id('propose-name').click
       expect(page).to have_content("This window asks you to create an authorized name")
       click_button('Create')
+      expect(page).not_to have_content("Error")
     else
-      first(".selectName").click
+      first('tr', :text => value).first('td').first('a.btn').click
     end
     expect(page).not_to have_content("Select")
     # New "More Like This" results method means it is harder to automate this
@@ -23,13 +24,14 @@ module DataEntryHelpers
     expect(page).to have_content('in Name Authority')
     fill_in 'searchModelAuthority', with: value
     expect(page).not_to have_content('To begin searching')
-    if !page.has_content?("Select")
+    if page.all('tr', :text => value).count <= 0
       expect(page).to have_content("Propose #{value}")
       find_by_id('propose-model').click
       expect(page).to have_content("This window asks you to create an authorized name")
       click_button('Create')
+      expect(page).not_to have_content("Error")
     else
-      first('.selectModel').click
+      first('tr', :text => value).first('td').first('a.btn').click
     end
     expect(page).not_to have_content("Select #{value}")
     # New "More Like This" results method means it is harder to automate this

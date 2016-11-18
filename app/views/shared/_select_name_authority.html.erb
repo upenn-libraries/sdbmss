@@ -25,11 +25,8 @@
                     </tr>
                 </thead>
                 <tbody class='text-center'>
-                    <tr ng-show="nameSearchString.length <= 0">
-                        <td colspan="9">To begin searching, enter search term in the search bar.</td>
-                    </tr>
-                    <tr ng-show="nameSearchString.length > 1 && suggestions.length <= 0">
-                        <td colspan="9">No results found.  Consider searching for other possible spelling variations.</td>
+                    <tr ng-show="warning.length > 0">
+                        <td colspan="9">{{ warning }}</td>
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index" >
                         <td><a class='selectName btn btn-default btn-sm' ng-click='selectSuggestion(s)'>Select</a></td>
@@ -58,7 +55,7 @@
     <div class="modal-footer">
         <div class='row'>
             <div class='col-sm-8 text-left'>
-                Can't find the {{ type | humanize }} you are looking for? <a href="" class="btn btn-default" id='propose-name' ng-click="createName()">Propose {{ nameSearchString || ("New " + type | humanize ) }}</a>
+                Can't find the {{ type | humanize }} you are looking for? <button href="" class="btn btn-default" id='propose-name' ng-click="createName()">Propose {{ nameSearchString || ("New " + type | humanize ) }}</button>
             </div>
             <div class='col-sm-4'>
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
