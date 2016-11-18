@@ -110,7 +110,7 @@ module SolrSearchable
                 op = Array(options[field + "_option"]).shift
                 # if searching for this 'without' the term, right now just add a '-' to the beginning of query to negate it
                 if op && op == 'does not contain'
-                  fulltext "-" + v, :fields => [field]
+                  fulltext "-" + v.gsub(' ', '+'), :fields => [field]
                 elsif op && op == 'blank'
                   with field, nil
                 elsif op && op == 'not blank'
