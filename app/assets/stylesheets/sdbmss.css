@@ -1446,3 +1446,7 @@ Private Message Styling
 .bookmark[data-method="delete"], .watch[data-method="delete"] {
   color: gold;
 }
+
+.select-source-container {
+  padding: 10px;
+}

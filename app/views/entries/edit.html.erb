@@ -198,7 +198,7 @@ label.col-sm-2-and-half {
     </div>
     
     <div class="row" ng-if="!entry.source">
-      <div class="col-sm-12 text-center"><a ng-click="selectSourceModal(entry)" class="btn btn-default">Select/Create a Source</a></div>
+      <div class="col-sm-12 text-center"><a ng-click="selectSourceModal(entry, null)" class="btn btn-default">Select/Create a Source</a></div>
     </div>
 
     <div class="source-info" id="selectSource" ng-if="selecting_source" data-ng-controller="SelectSourceCtrl" ng-init="source_type = selecting_source_type; source_id = old_source_id">
@@ -221,7 +221,7 @@ label.col-sm-2-and-half {
                   <a href="/sources/{{ entry.source.id }}">SDBM_SOURCE_{{ entry.source.id }}</a> - {{ entry.source.display_value }} ({{ entry.source.source_type.display_name }})
               </div>
               <div class="col-sm-3">
-                <a href="" class="btn btn-danger" ng-click="editSource();">Change Source</a>
+                <a href="" class="btn btn-danger" ng-click="selectSourceModal(entry, entry.source.source_type_id);">Change Source</a>
                 <span class="list-group-item list-group-item-warning" ng-if="entry.source.source_type_id == 8">You can't change the source of a Provenance Observation</span>
               </div>
           </div>

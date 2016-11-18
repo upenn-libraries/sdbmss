@@ -314,7 +314,7 @@ var BOOKMARK_SCOPE;
     });
 
     /* Controller for selecting a source*/
-    sdbmApp.controller("SelectSourceCtrl", function ($scope, $http, $modalInstance, Source, sdbmutil, model) {
+    sdbmApp.controller("SelectSourceCtrl", function ($scope, $http, $modalInstance, Source, sdbmutil, model, type) {
 
         $scope.sdbmutil = sdbmutil;
 
@@ -325,6 +325,8 @@ var BOOKMARK_SCOPE;
         $scope.sources = [];
         $scope.limit = 20;
         $scope.order = "id asc";
+
+        $scope.source_type = type;
 
         $scope.setSource = function (source) {
           //model.source = source;
@@ -526,7 +528,7 @@ var BOOKMARK_SCOPE;
 
         EntryScope = $scope;
 
-        $scope.selectSourceModal = function (model) {
+        $scope.selectSourceModal = function (model, type) {
           if ($scope.mergeEdit !== false) {
             var modal = $modal.open({
                 templateUrl: "selectSource.html",
@@ -534,7 +536,7 @@ var BOOKMARK_SCOPE;
                 resolve: {
                   //recordType: function () { return recordType },
                   model: function () { return model },
-                  //type: function () { return type },
+                  type: function () { return type },
                   base: ""
                 },
                 size: 'lg'
