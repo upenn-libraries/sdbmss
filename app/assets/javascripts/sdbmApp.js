@@ -369,6 +369,14 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.findSourceCandidates = function () {
+            var source_type, source_type_options;
+            if ($scope.source_type) {
+              source_type = [$scope.source_type];
+              source_type_options = ["contains"];
+            } else {
+              source_type = ["Personal Observation", "Provenance Observation"];
+              source_type_options = ["does not contain", "does not contain"];
+            }
             if($scope.title.length > 1 || $scope.date.length > 1 || $scope.agent.length > 1) {
                 $scope.searchAttempted = true;
                 var title = $scope.title.length > 1 ? $scope.title : '';
@@ -381,7 +389,8 @@ var BOOKMARK_SCOPE;
                         title: title,
                         agent: agent,
                         limit: $scope.limit,
-                        source_type: $scope.source_type,
+                        "source_type[]": source_type,
+                        "source_type_option[]": source_type_options,
                         id: $scope.source_id,
                         id_option: "without"
                     }
