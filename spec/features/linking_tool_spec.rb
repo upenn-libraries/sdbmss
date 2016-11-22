@@ -125,7 +125,7 @@ describe "Linking Tool", :js => true do
     entry_id = first(".add-entry-link", visible: true)["data-entry-id".to_sym].to_i
     first(".add-entry-link", visible: true).trigger('click')
 
-    click_button "Save changes"
+    find("#persist-entries-manuscript-link").trigger('click')
 
     expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
@@ -144,7 +144,7 @@ describe "Linking Tool", :js => true do
 
     first("input[name='entry_id_#{entry.id}'][value='possible']").trigger('click')
 
-    click_button "Save changes"
+    find("#persist-entries-manuscript-link").trigger('click')
 
     expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
@@ -163,7 +163,7 @@ describe "Linking Tool", :js => true do
 
     first("input[name='entry_id_#{entry.id}'][value='unlink']").trigger('click')
 
-    click_button "Save changes"
+    find("#persist-entries-manuscript-link").trigger('click')
 
     expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
@@ -247,9 +247,9 @@ describe "Linking Tool", :js => true do
     # there are actually TWO inputs that match here, because of some
     # HTML craziness that happens with th datatable's fixed
     # columns. whatever. just click one.
-    all("input[name='entry_id_#{last_two_entries[0].id}'][value='possible']")[1].click
+    all("input[name='entry_id_#{last_two_entries[0].id}'][value='possible']")[1].trigger('click')
 
-    click_button "Save changes"
+    find("#persist-entries-manuscript-link").trigger('click')
 
     expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
   end

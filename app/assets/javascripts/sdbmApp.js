@@ -195,6 +195,13 @@ var BOOKMARK_SCOPE;
             return URI().search(true).manuscript_id;
         };
 
+        var getNewManuscript = function () {
+            return URI().search(true).new_manuscript;
+        };
+
+        var getOriginalEntry = function () {
+            return URI().search(true).original_entry;
+        };
         /* returns the path to the Create Entry page for a source,
            optionally passing along the 'manuscript_id' parameter if
            there is one.
@@ -204,6 +211,14 @@ var BOOKMARK_SCOPE;
             var manuscript_id = getManuscriptId();
             if(manuscript_id) {
                 path += "&manuscript_id=" + manuscript_id;
+            }
+            var new_manuscript = getNewManuscript();
+            if(new_manuscript) {
+                path += "&new_manuscript=" + new_manuscript;
+            }            
+            var original_entry = getOriginalEntry();
+            if(original_entry) {
+                path += "&original_entry=" + original_entry;
             }
             return path;
         };
@@ -267,6 +282,8 @@ var BOOKMARK_SCOPE;
                 return false;
             },
             getManuscriptId: getManuscriptId,
+            getNewManuscript: getNewManuscript,
+            getOriginalEntry: getOriginalEntry,
             /* Returns a fn that can be used as error callback on angular promises */
             promiseErrorHandlerFactory: function(msg) {
                 return function(response) {
@@ -352,10 +369,26 @@ var BOOKMARK_SCOPE;
             if(manuscript_id) {
                 path += "&manuscript_id=" + manuscript_id;
             }
+            var new_manuscript = sdbmutil.getNewManuscript();
+            if(new_manuscript) {
+                path += "&manuscript_id=" + new_manuscript;
+            }
+            var original_entry = sdbmutil.getOriginalEntry();
+            if(original_entry) {
+                path += "&original_entry=" + original_entry;
+            }
             return path;
         };
 
         $scope.findSourceCandidates = function () {
+            var source_type, source_type_options;
+            if ($scope.source_type) {
+              source_type = [$scope.source_type];
+              source_type_options = ["contains"];
+            } else {
+              source_type = ["Personal Observation", "Provenance Observation"];
+              source_type_options = ["does not contain", "does not contain"];
+            }
             if($scope.title.length > 1 || $scope.date.length > 1 || $scope.agent.length > 1) {
                 $scope.searchAttempted = true;
                 var title = $scope.title.length > 1 ? $scope.title : '';
@@ -368,7 +401,8 @@ var BOOKMARK_SCOPE;
                         title: title,
                         agent: agent,
                         limit: $scope.limit,
-                        source_type_id: $scope.source_type,
+                        "source_type[]": source_type,
+                        "source_type_option[]": source_type_options,
                         id: $scope.source_id,
                         id_option: "without"
                     }
@@ -402,8 +436,8 @@ var BOOKMARK_SCOPE;
 
     sdbmApp.controller("SelectNameAuthorityCtrl", function ($scope, $http, $modalInstance, $modal, recordType, model, type, base) {
       $scope.suggestions = [];
-      $scope.suggestion = undefined;
       $scope.type = type.replace('is_', '');
+      $scope.warning = "To begin searching, enter search term in the search bar.";
 
       $scope.nameSearchString = base || "";
 
@@ -413,6 +447,7 @@ var BOOKMARK_SCOPE;
 
       $scope.selectSuggestion = function (s) {
         $scope.suggestion = s;
+        $scope.selectName();
       }
 
       $scope.selectName = function () {
@@ -422,8 +457,15 @@ var BOOKMARK_SCOPE;
       }
 
       $scope.autocomplete = function () {
-          var url  = "/" + recordType + "/search.json";
+          var url  = "/" + recordType + "/more_like_this.json";
           var searchTerm = $scope.nameSearchString; // redundant?
+
+          if (searchTerm.length <= 1) {
+            $scope.suggestions = [];
+            $scope.suggestion =  undefined;
+            $scope.warning = "To begin searching, enter search term in the search bar."
+            return;
+          }
           $http.get(url, {
               params: $.extend({ autocomplete: 1, name: searchTerm, limit: 15 }, {})
           }).then(function (response) {
@@ -452,10 +494,10 @@ var BOOKMARK_SCOPE;
                 else
                   return -1;
               });
-
               $scope.suggestions = options;
-              $scope.suggestion = $scope.suggestions[0];
-              
+              $scope.suggestion = $scope.suggestions[0];              
+              if ($scope.suggestions.length <= 0) $scope.warning = "No results found.  Consider searching for other possible spelling variations.";
+              else $scope.warning = ""; 
           });
       };
       $scope.cancel = function () {
@@ -728,13 +770,11 @@ var BOOKMARK_SCOPE;
           $scope.selecting_source = true;
           $scope.selecting_source_type = $scope.entry.source.source_type.id;
           $scope.old_source_id = $scope.entry.source.id;
-          //console.log($scope.entry.source);
           $scope.entry.source_bk = $scope.entry.source;
           $scope.entry.source = undefined
         };
 
         $scope.updateProvenanceDateRange = function (prov, date) {
-          //console.log('here', date);
           var observedDate = date.date;
           if(observedDate && (date.type == "Start" || date.type == "End")) {
               $http.get("/entry_dates/parse_observed_date.json" , {
@@ -899,9 +939,6 @@ var BOOKMARK_SCOPE;
         // does some processing on Entry data structure retrieved via
         // API so that it can be used with the Angular form bindings
         $scope.populateEntryViewModel = function(entry) {
-
-            //console.log("entry from API retrieval");
-            //console.log(entry);
 
             // make blank initial rows, as needed, for user to fill out
             $scope.associations.forEach(function (assoc) {
@@ -1126,6 +1163,16 @@ var BOOKMARK_SCOPE;
                 var manuscript_id = sdbmutil.getManuscriptId();
                 if(manuscript_id) {
                     entryToSave.manuscript_id = manuscript_id;
+                }
+
+                var new_manuscript = sdbmutil.getNewManuscript();
+                if (new_manuscript) {
+                  entryToSave.new_manuscript = new_manuscript;
+                }
+
+                var original_entry = sdbmutil.getOriginalEntry();
+                if (original_entry) {
+                  entryToSave.original_entry = original_entry;
                 }
 
                 entryToSave.$save(
@@ -1870,12 +1917,11 @@ var BOOKMARK_SCOPE;
               return;    
             }
 
-
             $scope.source = source;
             $scope.populateSourceViewModel($scope.source);
             
             // if this source has been created to add an entry to a Manuscript record
-            if (sdbmutil.getManuscriptId()) {
+            if (sdbmutil.getManuscriptId() || sdbmutil.getNewManuscript()) {
               sdbmutil.redirectToEntryCreatePage(source.id);
               return;
             }
@@ -2337,8 +2383,6 @@ var BOOKMARK_SCOPE;
         
         $scope.all_bookmarks = e.bookmarks;
         $scope.bookmark_tracker = e.bookmark_tracker;
-        //console.log(e);
-        //console.log('bookmarks loaded', $scope.all_bookmarks);
         $('.bookmarks').scroll( function (e) {
           if (localStorage) localStorage.sidebar_scroll = $(this).scrollTop();
         });
@@ -2377,11 +2421,9 @@ var BOOKMARK_SCOPE;
       var i = $scope.all_bookmarks[name].indexOf(bookmark);
       if (i >= 0) {
         $.ajax({url: '/bookmarks/' + bookmark.id, method: 'delete'}).done( function (e) {
-          //console.log('done', e);
           $scope.all_bookmarks[name].splice(i, 1);
           $scope.renew();
           var id = bookmark.document_id, type = bookmark.document_type;
-          //console.log(bookmark, type);
           addNotification(type + ' ' + id + ' un-bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
         }).error( function (e) {
           console.log('error', e);
@@ -2514,7 +2556,6 @@ var BOOKMARK_SCOPE;
           //console.log(e.error);
         }
         else {
-          //console.log(e.bookmark_tracker, $scope.bookmark_tracker);
           if (e.bookmark_tracker > $scope.bookmark_tracker) {
             $scope.loadBookmarks();
           }

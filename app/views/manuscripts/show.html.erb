@@ -122,7 +122,7 @@
             <span><%= @manuscript.public_id %></span>
         </legend>
         <p>This <b>Manuscript Record</b> is a linking node that collects entries referring to the same physical manuscript for easy access and study.  You can use this space to determine current location and provenance, to create your own <b>Personal Observation</b> about this manuscript, or to leave a comment about this manuscript.  You can also construct your own provenance history based on prior entries by clicking the <b>Construct History</b> button in the <b>Tools</b> menu.</p>
-        <p>If you believe links have been made in error, contact us or simply leave a comment below.</p>
+        <p>If you believe links have been made in error, contact us or simply leave a comment below. Editors, Super-Editors and Admin can change links using the Linking Tool.</p>
     </div>
     <% if @manuscript.location %>
     <div class='col-sm-5'> 
@@ -191,7 +191,7 @@
             <div class="row" data-toggle="collapse" data-target=".panel-collapse">
                 <div class="col-sm-8">
                     Associated Entries With Provenance Data    
-                    <small>(this Manuscript Record has <%= @manuscript.entries.count %> entries)</small>
+                    <small>(this Manuscript Record has <%= @manuscript.entries.count %> <%= "entry".pluralize(@manuscript.entries.count) %>)</small>
                 </div>
                 <div class="col-sm-4 text-right">
                     <span id="collapse-all" class="glyphicon glyphicon-chevron-down"></span>
@@ -297,7 +297,7 @@
 
     <div class="col-sm-12">
         <h4>Do you have more data about this Manuscript Record?  <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %> to record your information.
-            <br><small>Use this option when you wish to contribute data on <strong>multiple aspects</strong> of this manuscript.  Once you create your <strong>Personal Observation</strong>, your data will be included in the links displayed above.</small>
+            <br><small>Once you create your <strong>Personal Observation</strong>, your data will be included in the links displayed above.</small>
         </h4>
         <div class="spacer-40px"></div>
     </div>

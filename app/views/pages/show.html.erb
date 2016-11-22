@@ -1,0 +1,6 @@
+<% if can? :edit, @page %>
+  <%= link_to(edit_page_path(@page.name)) do %>
+    <span class="glyphicon glyphicon-edit"></span> Edit Page
+  <% end %>
+<% end %>
+<%= @filecontents %>

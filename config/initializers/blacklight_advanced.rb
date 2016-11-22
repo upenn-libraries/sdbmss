@@ -18,6 +18,43 @@ module BlacklightAdvancedSearch
   end
 
   module RenderConstraintsOverride
+    
+    # override default search constraints display, since we're moving facets elsewhere
+    def render_constraints(localized_params = params)
+      render_constraints_query(localized_params)
+    end
+
+    # ... which is what we're doing here!
+    def render_constraints_filters_side(localized_params = params)
+      return "".html_safe unless localized_params[:f]
+      content = []
+      localized_params[:f].each_pair do |facet,values|
+        content << render_filter_element_side(facet, values, localized_params)
+      end
+
+      safe_join(content.flatten, "\n")    
+    end
+
+    def render_filter_element_side(facet, values, localized_params)
+      facet_config = facet_configuration_for_field(facet)
+
+      safe_join(values.map do |val|
+        next if val.blank? # skip empty string
+        #render_constraint_element( facet_field_label(facet_config.key), facet_display_value(facet, val),
+        #            :remove => search_action_path(remove_facet_params(facet, val, localized_params)),
+        #            :classes => ["filter", "filter-" + facet.parameterize]
+        #          )
+        content_tag(:li, :class => "constraint-value appliedFilter") do
+          content_tag(:span, facet_field_label(facet_config.key), :class => "filterName selected") +
+          content_tag(:span, facet_display_value(facet, val), :class => "selected") +
+          # remove link
+          link_to(content_tag(:span, '', :class => "glyphicon glyphicon-remove") + content_tag(:span, '[remove]', :class => 'sr-only'), search_action_path(remove_facet_params(facet, val, localized_params)), :class=>"remove")
+        end
+      
+      end, "\n")
+    end
+
+    # handles improved display of Advanced
     def render_constraints_query(my_params = params)
       if (advanced_query.nil? || advanced_query.keyword_queries.empty? )
         return super(my_params)
@@ -86,7 +123,8 @@ module BlacklightAdvancedSearch
           content << render_search_to_s_element(label, " #{Array(query).join(', ')}  ")
         end
       end
-      return content + " (#{advanced_query.keyword_op})"
+      content.prepend "#{advanced_query.keyword_op == 'OR' ? 'Any of: ' : 'All of: '}"
+      return content
     end
 
   end

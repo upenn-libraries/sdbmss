@@ -1,0 +1,49 @@
+<%= form_for @page do |f| %>
+  <div class="row">
+    <div class="col-sm-2">
+      <%= f.label 'file', class: "control-label" %>
+    </div>
+    <div class="col-sm-10">
+      <%= f.file_field 'filename', class: "form-control", placeholder: "File", accept: '.html,.pdf' %>
+    </div>
+  </div>
+  <% if @filecontents %>
+  <div class="row">
+    <div class="col-sm-2">
+      <%= f.label 'contents', class: "control-label" %>
+    </div>
+    <div class="col-sm-10">
+      <%= text_area_tag 'contents', @filecontents, class: 'form-control', id: 'page_edit', rows: 20 %>
+    </div>
+  </div>
+  <% end %>
+  <div class="row">
+    <div class="col-sm-2">
+      <%= f.label 'name', class: "control-label" %>
+    </div>
+    <div class="col-sm-10">
+      <%= f.text_field 'name', class: "form-control", required: true, placeholder: "Public Name" %>
+    </div>    
+  </div>
+  <div class="row">
+  <% if !edit %>
+    <div class="col-sm-2">
+      <%= f.label 'category', class: "control-label" %>
+    </div>
+    <div class="col-sm-10">
+      <%= f.select('category', ['help', 'about', 'tooltip'], {}, {class: 'form-control'}) %>
+    </div>    
+  <% else %>
+    <div class="col-sm-12">
+      <%= f.label "File Type: #{@page.category}" %>
+    </div>
+  <% end %>
+  </div>
+  <div class="row">
+    <div class="col-sm-8"></div>
+    <div class="col-sm-4 text-right">
+      <br>
+      <%= f.submit (edit ? 'Save Changes' : 'Upload File'), class: 'form-control' %>
+    </div>
+  </div>
+<% end %>

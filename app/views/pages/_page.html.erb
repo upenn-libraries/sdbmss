@@ -1,0 +1,27 @@
+<div class="row page-row">
+  <div class="col-sm-4 one-line">
+    <strong><%= link_to page.name, page_path(page.name) %></strong>
+  </div>
+  <div class="col-sm-4 one-line">
+    <span class="text-muted"><%= page.filename %></span>
+  </div>
+  <div class="col-sm-4 text-right">
+    <ul class="list-inline">
+      <li>
+        <%= link_to(edit_page_path(page.name)) do %>
+          <span class="glyphicon glyphicon-edit"></span> Edit
+        <% end %>
+      </li>
+      <li>
+        <%= link_to("/#{page.location}/#{page.filename}") do %>
+          <span class="glyphicon glyphicon-download"></span> Download
+        <% end %>
+      </li>
+      <li>
+        <%= link_to(page_path(page.name), :method => :delete, data: { confirm: "Are you sure you would like to permanently remove this file?" }) do %>
+          <span class="glyphicon glyphicon-remove"></span> Delete
+        <% end %>
+      </li>
+    </ul>
+  </div>
+</div>

@@ -2,6 +2,7 @@
 
  $(document).ready(function() {
 
+     var showInactive = "<%= params[:show_inactive] %>";
      var resourceName = "<%= resource_name %>";
 
      // flag = show all records, or only those that the user created
@@ -164,7 +165,8 @@
          resourceNameSingular: "<%= resource_name.singularize %>",
          resourceNamePlural: "<%= resource_name.pluralize %>",
          showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
-         searchNameField: "username"
+         searchNameField: "username",
+         showActiveOnly: showInactive ? false : true
      });
 
  });

@@ -1,5 +1,5 @@
 <% sources = entries.map(&:source).uniq %>
-<% manuscripts = entries.map(&:manuscript).uniq %>
+<% manuscripts = entries.map(&:manuscript).uniq.sort_by { |a| a.nil? ? 0 : 1 } %>
 
 <ul class="nav nav-tabs nav-justified">
   <li class="active"><a data-toggle='tab' href="#all_entries">All</a></li>

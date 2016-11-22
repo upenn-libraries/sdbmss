@@ -1450,3 +1450,21 @@ Private Message Styling
 .select-source-container {
   padding: 10px;
 }
+.page-row:hover {
+  background-color: #f8f8f8;
+}
+.facet-values .remove:hover {
+  background: none !important;
+}
+.constraints-container {
+    min-height: 20px;
+    padding: 0px;
+    margin-bottom: 10px;
+    background: none;
+    border: none;
+    box-shadow: none;
+}
+.searches span.constraint {
+  text-decoration: underline;
+  margin: 0px 3px;
+}

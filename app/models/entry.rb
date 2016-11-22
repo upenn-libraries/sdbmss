@@ -502,8 +502,8 @@ class Entry < ActiveRecord::Base
       fields.map(&:to_s).select(&:present?).join "\n"
     end
 
-    define_field(:string, :entry, :stored => true, multiple: true) do
-      [public_id, @__receiver__.id.to_s]
+    define_field(:string, :entry, :stored => true) do
+      public_id
     end
     # for sorting
     define_field(:integer, :entry_id, :stored => true) do
@@ -715,6 +715,13 @@ class Entry < ActiveRecord::Base
 
     define_field(:integer, :supercede, :stored => true, :multiple => true) do
       supercedes.map(&:id)
+    end
+
+    define_field(:integer, :missing_authority_names, :stored => true) do
+      entry_authors.where(author_id: nil).where.not(observed_name: nil).count + 
+      entry_artists.where(artist_id: nil).where.not(observed_name: nil).count + 
+      entry_scribes.where(scribe_id: nil).where.not(observed_name: nil).count + 
+      provenance.where(provenance_agent_id: nil).where.not(observed_name: nil).count
     end
 
     define_field(:integer, :folios, :stored => true) { folios }

@@ -1,36 +1,30 @@
 <script type="text/ng-template" id="selectSource.html">
 <div class="select-source-container">
 <div class="find-source-container">
-    <div class="form-group row">
-        <label class="col-sm-2 control-label"><span>Source Date</span></label>
-        <div class="col-sm-2">
+    <div class="form-group row text-center">
+        <div class="col-sm-3">
+            <label class="control-label"><span>Source Date</span></label>
             <input class="form-control" name="date" ng-model="date"/>
+            <div class="label-alignment">
+                <span style="color: PaleVioletRed;">Enter a date in YYYY-MM-DD, YYYY-MM or YYYY</span>
+            </div>
         </div>
-        <div class="col-sm-4 col-sm-offset-3 label-alignment">
-            <span style="color: PaleVioletRed;">Enter a date in YYYY-MM-DD, YYYY-MM or YYYY</span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-sm-2 control-label"><span>Selling Agent<br/>or Institution/Collection</span></label>
-        <div class="col-sm-5">
+        <div class="col-sm-6">
+            <label class="control-label"><span>Selling Agent or Institution/Collection</span></label>
             <input class="form-control" name="agent" ng-model="agent" data-toggle='tooltip' title='You must type at least 2 characters to begin searching.'/>
+            <div class="label-alignment">
+                <span style="color: PaleVioletRed;">e.g. Sotheby's, University of Pennsylvania</span>
+            </div>
+            
         </div>
-        <div class="col-sm-5 label-alignment">
-            <span style="color: PaleVioletRed;">e.g. Sotheby's, University of Pennsylvania</span>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-sm-2 control-label"><span>Source Title</span></label>
-        <div class="col-sm-5">
+        <div class="col-sm-3">
+            <label class="control-label"><span>Source Title</span></label>
             <input class="form-control" name="title" ng-model="title"/>
-        </div>
-        <div class="col-sm-5 label-alignment">
-            <span style="color: PaleVioletRed;">e.g. Rare books and manuscripts</span>
+            <div class="label-alignment">
+                <span style="color: PaleVioletRed;">e.g. Rare books and manuscripts</span>
+            </div>
         </div>
     </div>
-
 </div>
 
 <div class="row">
@@ -62,19 +56,14 @@
             </select>
         </div>
         <br><br>
-        <div class="col-sm-1"></div>
-        <div class="col-sm-10">
+        <div class="col-sm-12">
             <ul class="list-group">
                 <li class='list-group-item' ng-repeat="source in sources track by $index">
                     <div class="row">
                         <!--<label class="col-sm-2 control-label" ng-show="$first">Select a search result:</label>-->
                         <!--<div class="col-sm-2" ng-show="!$first"></div>-->
                         <div class="col-sm-2 label-alignment">
-                            <% if false %>
-                                <a ng-class="{'first-source' : $index == 0}" id="create-entry-link-{{ source.id }}" href="{{ sdbmutil.getEntryCreateURL(source.id) }}">Select</a>
-                            <% else %>
-                                <a id="modify-entry-source-link" ng-click="setSource(source)">Select</a>
-                            <% end %>
+                            <a id="create-entry-link-{{ source.id }}" ng-click="setSource(source)">Select</a>
                         </div>
                         <div class="col-sm-10 label-alignment">
 

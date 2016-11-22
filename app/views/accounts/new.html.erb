@@ -1,0 +1,13 @@
+<%= stylesheet_link_tag "extras", media: "all" %>
+
+<h1>New <%= resource_name.singularize.capitalize %></h1>
+
+<%= render 'form' %>
+
+<% content_for :breadcrumbs do %>
+  <li class="breadcrumb list-group-item">
+    <a href="/accounts">Manage <%= @model.class.name.pluralize %>
+    </a>
+  </li>
+  <li class="breadcrumb list-group-item active"><a href="">New Account</a></li>
+<% end %>

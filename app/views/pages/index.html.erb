@@ -1,0 +1,34 @@
+<div class="row">
+  <div class="col-sm-12 text-center">
+    <legend class='h1'>Static Pages & Uploads</legend>
+    <a href="#add_page" data-toggle="modal" data-target="#add_page"><span class="glyphicon glyphicon-plus"></span> Click Here To Add New Page</a>
+
+    <div id="add_page" class="modal fade panel-body" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add new page</h4>
+                </div>
+                <div class="modal-body text-left">
+                  <%= render partial: 'form', locals: {edit: false} %>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+    
+  <div class="col-sm-12">
+    <h3>'About' Pages</h3>
+    <% @pages.where(category: 'about').order('name asc').each do |page| %>
+      <%= render partial: 'page', locals: {page: page} %>
+    <% end %>
+    <h3>'Help' Pages</h3>
+    <% @pages.where(category: 'help').order('name asc').each do |page| %>
+      <%= render partial: 'page', locals: {page: page} %>
+    <% end %>  
+    <h3>Tooltips</h3>
+    <% @pages.where(category: 'tooltip').order('name asc').each do |page| %>
+      <%= render partial: 'page', locals: {page: page} %>
+    <% end %>
+  </div>
+</div>

@@ -250,6 +250,7 @@ var SDBM = SDBM || {};
         });
 
         var search_query = {
+            active: this.options.showActiveOnly ? true : "  ",
             reviewed: this.getUnreviewedOnly(),
             created_by_user: this.options.showOnlyRecordsCreatedByUser,
             offset: dt_params.start,

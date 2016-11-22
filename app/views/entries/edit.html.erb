@@ -157,24 +157,14 @@ label.col-sm-2-and-half {
               <span ng-show="!edit">Please fill in as much information as
               possible from the record you are documenting. No fields
               are mandatory.</span>
-            </p>
-            <p> Click on a <b>data field</b>
-              label to open a pop-up window containing definitions and
-              data standards for that field.</p><p> Click on the <strong class="text-primary">Add new +</strong> under each data
-              field label to add multiple values. Delete values by clicking on the
-              “X” in the upper right corner.  Depending on the type of
-              <b>transaction</b> you select, the available data fields may
-              change.
           </p>
 
-          <p>Remember that entries reflect what the <b>source</b>
-              provides, not necessarily the reality of what the <b>manuscript</b>
-              is. You should not try to correct a source. Known errors in
-              the data should be preserved but can be noted in the
+          <p>Remember that entries reflect data given in the <b>Source</b>, not necessarily the reality of what the manuscript is.
+              <b>DO NOT CORRECT THE SOURCE'S INFORMATION, EVEN IF YOU THINK IT'S WRONG.</b> Known errors in
+              the Source should be preserved but can be noted in the
               <b>Comments</b> at the bottom of the page. If you believe the
-              source description is in error, create a new <b>Personal
-                  Observation</b> entry. If there is not already a <b>Manuscript
-                  Record</b> created, you will be asked to create this record.
+              Source description is in error, create a new <b>Personal
+                  Observation</b> entry to record the information you believe to be correct.
           </p>
           
           <div ng-show="entry.deprecated" style="color:red; font-weight: bold;">
@@ -198,7 +188,7 @@ label.col-sm-2-and-half {
     </div>
     
     <div class="row" ng-if="!entry.source">
-      <div class="col-sm-12 text-center"><a ng-click="selectSourceModal(entry, null)" class="btn btn-default">Select/Create a Source</a></div>
+      <div class="col-sm-12 text-center"><a ng-click="selectSourceModal(entry, null)" class="btn btn-default" id="select_source">Select/Create a Source</a></div>
     </div>
 
     <div class="source-info" id="selectSource" ng-if="selecting_source" data-ng-controller="SelectSourceCtrl" ng-init="source_type = selecting_source_type; source_id = old_source_id">
@@ -221,7 +211,7 @@ label.col-sm-2-and-half {
                   <a href="/sources/{{ entry.source.id }}">SDBM_SOURCE_{{ entry.source.id }}</a> - {{ entry.source.display_value }} ({{ entry.source.source_type.display_name }})
               </div>
               <div class="col-sm-3">
-                <a href="" class="btn btn-danger" ng-click="selectSourceModal(entry, entry.source.source_type_id);">Change Source</a>
+                <a href="" class="btn btn-danger" ng-click="selectSourceModal(entry, entry.source.source_type.display_name );">Change Source</a>
                 <span class="list-group-item list-group-item-warning" ng-if="entry.source.source_type_id == 8">You can't change the source of a Provenance Observation</span>
               </div>
           </div>
@@ -790,6 +780,7 @@ label.col-sm-2-and-half {
             <span class="glyphicon glyphicon-remove"></span>
           </a>
         </div>
+
         <div class="col-sm-12 form-inline ">
           <label sdbm-tooltip="entry_provenance_agent_as_recorded" class='control-label'>Agent Name as Recorded</label>
           <input input maxlength="255" id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name">
@@ -799,6 +790,7 @@ label.col-sm-2-and-half {
           <div ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' class="form-control well well-sm well-name-authority">
             <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(prov, 'provenance_agent')"></a>
             <a href="/names/{{ prov.provenance_agent.id }}" target="_blank">{{ prov.provenance_agent.name }}</a>
+
           </div>
           <span id="provenance_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="prov"><span class="glyphicon"></span></span>
           <span class='text-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="prov" encourage-name-authority-name="provenance_agent"></span>
@@ -927,5 +919,5 @@ label.col-sm-2-and-half {
 <%= render "shared/create_entity_with_name" %>
 <%= render "shared/create_name" %>
 <%= render "shared/select_name_authority" %>
-<%= render "shared/select_name_authority" %>
+<%= render "shared/select_model_authority" %>
 <%= render "shared/select_source" %>

@@ -87,6 +87,9 @@ class SourcesController < SearchableAuthorityController
         date.gsub('-', '').gsub('/', '')
       end
     end
+    if params[:agent]
+      params[:agent_name] = params[:agent]
+    end
     super
   end
 
@@ -166,13 +169,6 @@ class SourcesController < SearchableAuthorityController
 
   def model_class
     Source
-  end
-
-  def search
-    if params[:agent]
-      params[:agent_name] = params[:agent]
-    end
-    super
   end
 
   def search_name_field

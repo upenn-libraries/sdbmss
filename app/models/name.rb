@@ -99,8 +99,16 @@ class Name < ActiveRecord::Base
     text :other_info
     string :other_info
     integer :id
-    text :name, :more_like_this => true
-    string :name
+    text :name, :more_like_this => true do
+      silence_warnings {
+        [name.mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/n,'').downcase.to_s, name]
+      }
+    end
+    string :name do
+      silence_warnings {
+        name.mb_chars.normalize(:kd).gsub(/[^\x00-\x7F]/n,'').downcase.to_s
+      }
+    end
     string :viaf_id
     integer :created_by_id
     integer :artists_count
