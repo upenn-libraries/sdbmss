@@ -1,11 +1,8 @@
-<%= form_tag(request.path, method: :get, class: "form-inline form-horizontal search-form sdbmss-form") do %>
+<%= form_tag(request.path, method: :get, class: "form-horizontal search-form sdbmss-form") do %>
         <div class="panel panel-default">
-            <div class="panel-heading">
+            <div class="panel-body search">
                 <div class="row">
-                    <div class="col-xs-4">
-                        <span class="h3">Search</span>
-                    </div>
-                    <div class="col-xs-8 text-right">
+                    <div class="col-sm-12 text-right">
                         <% if can? :review, model_class %>
                             <label class="checkbox-inline">
                                 <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
@@ -13,34 +10,39 @@
                         <% end %>
                     </div>
                 </div>
-            </div>
-            <div class="panel-body search">
                 <div class="row search-fieldset">
                     <div class="col-sm-12">
-                        <button type='button' class="btn btn-xs btn-warning search-remove form-control inline-left"> <span class="glyphicon glyphicon-remove"></span> </button><%= text_field_tag :search_value, params[:search_value], size: 26, placeholder: "Enter your search term...", class: "form-control inline-middle" %><select class="form-control inline-middle inline-select" name="search_field">
-                        <% Array(@search_fields).each do |field| %>
-                            <!-- replace 'at' in 'created at' with 'on' -->
-                            <option value="<%= field %>" type="<%= @fields.include?(field) ? 'field' : (@filters.include?(field) ? 'filter' : 'date') %>"><%= field.humanize.gsub(/\sat/, ' on') %></option>
-                        <% end -%>
-                        </select><select class="form-control inline-right inline-select" name="search_option">
-                        <% Array(@filter_options).each do |option| %>
-                            <option value="<%= option %>" class="option filter_option">
-                                <% if option == 'with' %>
-                                    <%= "Equals" %>
-                                <% elsif option == 'without' %>
-                                    <%= "Does Not Equal" %>
-                                <% else %>
-                                    <%= option.humanize %>
-                                <% end %>
-                            </option>
-                        <% end %>
-                        <% Array(@field_options).each do |option| %>
-                            <option value="<%= option %>" class="option field_option"><%= option.humanize %></option>
-                        <% end %>
-                        <% Array(@date_options).each do |option| %>
-                            <option value="<%= option %>" class="option date_option"><%= option.humanize %></option>
-                        <% end %>
-                        </select>
+                        <div class="input-group">
+                            <div class="input-group-btn">
+                                <button type='button' class="btn btn-xs btn-warning search-remove form-control"> <span class="glyphicon glyphicon-remove"></span> </button>
+                            </div>
+                            <%= text_field_tag :search_value, params[:search_value], size: 26, placeholder: "Enter your search term...", class: "form-control" %>
+                            <select class="form-control" name="search_field">
+                            <% Array(@search_fields).each do |field| %>
+                                <!-- replace 'at' in 'created at' with 'on' -->
+                                <option value="<%= field %>" type="<%= @fields.include?(field) ? 'field' : (@filters.include?(field) ? 'filter' : 'date') %>"><%= field.humanize.gsub(/\sat/, ' on') %></option>
+                            <% end -%>
+                            </select>
+                            <select class="form-control" name="search_option">
+                            <% Array(@filter_options).each do |option| %>
+                                <option value="<%= option %>" class="option filter_option">
+                                    <% if option == 'with' %>
+                                        <%= "Equals" %>
+                                    <% elsif option == 'without' %>
+                                        <%= "Does Not Equal" %>
+                                    <% else %>
+                                        <%= option.humanize %>
+                                    <% end %>
+                                </option>
+                            <% end %>
+                            <% Array(@field_options).each do |option| %>
+                                <option value="<%= option %>" class="option field_option"><%= option.humanize %></option>
+                            <% end %>
+                            <% Array(@date_options).each do |option| %>
+                                <option value="<%= option %>" class="option date_option"><%= option.humanize %></option>
+                            <% end %>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -60,7 +62,10 @@
                             <option value="AND">All</option>
                             <option value="OR">Any</option>
                         </select>
-                        <button id="search_submit" type="submit" class="btn btn-primary">Search</button>
+                        <button id="search_submit" type="submit" class="btn btn-primary">
+                            Search
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
                     </div>
                 </div>
             </div>

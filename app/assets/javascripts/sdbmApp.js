@@ -582,7 +582,8 @@ var BOOKMARK_SCOPE;
                   base: ""
                 },
                 size: 'lg'
-            }).result.then(function () {
+            });
+            modal.result.then(function () {
               $scope.populateEntryViewModel($scope.entry);
             }, function () {
               console.log('dismissed');
