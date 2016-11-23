@@ -205,7 +205,6 @@ var SDBM = SDBM || {};
 
     SDBM.ManageRecords.prototype.searchAjax = function(params, dt_params, callback) {
         var manageRecords = this;
-        //console.log(params);
         $.ajax({
             url: '/' + manageRecords.options.resourceName + '/search.json',
             data: params,

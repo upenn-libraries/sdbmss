@@ -113,6 +113,7 @@
                  $("#spinner").show();
 
                  var params = manageEntries.translateSearchParams(sdbmTable, dt_params);
+                 //console.log(params, "FIX ME: is this happening twice?");
                  sdbmTable.searchAndUpdateTable(params, callback, {
                      complete: function () {
                          $("#spinner").hide();
@@ -157,6 +158,8 @@
          $(".search-fieldset").each(function(idx, element) {
              var search_field = $(element).find("select[name='search_field']").first().val() + "[]";
              var search_value = $(element).find("input[name='search_value']").first().val();
+             var search_option = $(element).find("select[name='search_option']").first().val();
+             var search_option_field = $(element).find("select[name='search_field']").first().val() + "_option[]";
              if(search_value) {
                 if (!params[search_field]) {
                     params[search_field] = [search_value];
@@ -164,8 +167,15 @@
                 else {
                     params[search_field].push(search_value);
                 }
+
+                if (!params[search_option_field]) {
+                    params[search_option_field] = [search_option];
+                } else {
+                    params[search_option_field].push(search_option);
+                }
              }
          });
+
         // prevent 'approved = *' from returning ALL entries for an 'OR' search
         // params["approved"] = showUnapprovedOnly() ? "false" : "*";
          if (showUnapprovedOnly()) {

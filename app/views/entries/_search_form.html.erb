@@ -16,8 +16,17 @@
                 </div>
                 <%= text_field_tag :search_value, params[:search_value], size: 26, placeholder: "Enter your search term...", class: "form-control" %>
                 <select class="form-control" name="search_field">
-                <%- search_fields_for_advanced_search.sort.each do |key, field_def| -%>
-                    <option value="<%= key %>"><%= field_def.label %></option>
+                <%- prepopulated_search_fields_for_advanced_search(1, is_numeric: false).each do |fieldstruct| %>
+                    <% fieldstruct.fields.sort.each do |key, field_def| -%>
+                        <option type="field" value="<%= key %>"><%= field_def.label %></option>
+                    <% end %>
+                    <% break %>
+                <%- end -%>
+                <%- prepopulated_search_fields_for_advanced_search(1, is_numeric: true).each do |fieldstruct| -%>
+                    <% fieldstruct.fields.sort.each do |key, field_def| -%>
+                        <option type="filter" value="<%= key %>"><%= field_def.label %></option>
+                    <% end %>
+                    <% break %>
                 <%- end -%>
                 </select>
             
