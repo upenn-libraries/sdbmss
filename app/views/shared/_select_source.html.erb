@@ -68,9 +68,9 @@
                 </td>
                 <td>
                     <% if true %>
-                        <a href="/sources/{{ source.id }}" target="_blank">{{ source.display_value }}</a> ({{ source.entries_count }} entries)
+                        <a href="/sources/{{ source.id }}" target="_blank">{{ source.display_value }}</a> ({{ source.entries_count }} {{ source.entries_count == 1 ? 'entry' : 'entries' }})
                     <% else %>
-                        <a href="/sources/{{ source.id }}" target="_blank">{{ source.display_value }}</a> ({{ source.entries_count }} entries) {{ source.source_type }}
+                        <a href="/sources/{{ source.id }}" target="_blank">{{ source.display_value }}</a> ({{ source.entries_count }} {{ source.entries_count == 1 ? 'entry' : 'entries' }}) {{ source.source_type }}
                     <% end %>
                 </td>
         </tr>
