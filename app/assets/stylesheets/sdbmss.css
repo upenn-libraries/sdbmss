@@ -1521,3 +1521,38 @@ Private Message Styling
   color: PaleVioletRed;
   font-size: 11px;
 }
+
+.toggle-container input:checked:before {
+    background: #03A9F4;
+}
+.toggle-container input:checked:after {
+    left: 15px;
+}
+.toggle-container input:after {
+    position: relative;
+    content: '';
+    display: block !important;
+    height: 18px;
+    width: 18px;
+    background: white;
+    top: -17px;
+    border-radius: 50%;
+    transition: all 0.5s;
+    left: -9px;
+}
+.toggle-container input:before {
+    content: '';
+    display: block !important;
+    height: 24px;
+    width: 50px;
+    background: #d4d4d4;
+    border-radius: 12px;
+    top: 4px;
+    position: relative;
+    transition: all 0.5s;    
+    left: -13px;
+}
+.toggle-container input:focus, .toggle-container input:active {
+  outline: none;
+  box-shadow: none;
+}
