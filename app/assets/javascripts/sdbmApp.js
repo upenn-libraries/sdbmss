@@ -331,7 +331,7 @@ var BOOKMARK_SCOPE;
     });
 
     /* Controller for selecting a source*/
-    sdbmApp.controller("SelectSourceCtrl", function ($scope, $http, $modalInstance, Source, sdbmutil, model, type) {
+    sdbmApp.controller("SelectSourceCtrl", function ($scope, $http, $modalInstance, $modal, $rootScope, Source, sdbmutil, model, type) {
 
         $scope.sdbmutil = sdbmutil;
 
@@ -361,6 +361,22 @@ var BOOKMARK_SCOPE;
 
         $scope.cancelSelectSource = function () {
           $scope.$emit('cancelSource');
+        }
+
+        $scope.createSource = function () {
+          var modalScope = $rootScope.$new();
+          modalScope.model = model;
+          modalScope.modalInstance = $modal.open({
+            templateUrl: 'createSource.html',
+            controller: 'SourceCtrl',
+            scope: modalScope,
+            size:'lg'
+          });
+          modalScope.modalInstance.result.then(function (agent) {
+            if (model.source) {
+              $modalInstance.close();
+            }
+          });
         }
 
         $scope.createSourceURL = function () {
@@ -1200,7 +1216,7 @@ var BOOKMARK_SCOPE;
 
           // manually remove the blank selling agent and institution, if they exist
           var entry2 = angular.copy(entry2);
-          if (entry2.institution.id == null) {
+          if (entry2.institution == null || entry2.institution.id == null) {
             delete entry2.institution;
           }
 
@@ -1210,11 +1226,13 @@ var BOOKMARK_SCOPE;
               var field = assoc.field;
               var key = assoc.foreignKeyObjects[0];
               
-              entry2[field].forEach( function (f) {
-                if (f[key] && !f[key]['id']) {
-                  delete f[key];
-                }
-              });
+              if (entry2[field]) {                
+                entry2[field].forEach( function (f) {
+                  if (f[key] && !f[key]['id']) {
+                    delete f[key];
+                  }
+                });
+              }
             }
 
           });
@@ -1763,7 +1781,12 @@ var BOOKMARK_SCOPE;
         };
     });
 
-    sdbmApp.controller('SourceCtrl', function ($scope, $http, $modal, sdbmutil, Source) {
+//    sdbmApp.controller("SourceCtrl", function ($scope, $http, $modal, Source, sdbmutil) {
+    sdbmApp.controller('SourceCtrl', function ($scope, $http, $modal, Source, sdbmutil) {
+
+        $scope.cancel = function () {
+          $scope.modalInstance.close();
+        }
 
         $scope.selectNameAuthorityModal = function (recordType, model, role, type) {
           if ($scope.mergeEdit !== false) {
@@ -1916,6 +1939,20 @@ var BOOKMARK_SCOPE;
         $scope.postSourceSave = function(source) {
             if (window.location.pathname.indexOf('merge') != -1) {
               return;    
+            }
+
+            if ($scope.model) { 
+              Source.get(
+                {id: source.id},
+                function(source) {
+                    $scope.model.source = source;
+                    $scope.modalInstance.close();
+                    //$scope.populateEntryViewModel(model);
+                    return;
+                },
+                sdbmutil.promiseErrorHandlerFactory("Error loading Source data for this page")
+              );
+              return;
             }
 
             $scope.source = source;
@@ -2115,6 +2152,13 @@ var BOOKMARK_SCOPE;
                     $scope.source = new Source({ source_type: source_type || "", date_accessed: todayString, date: source_type.id == 4 ? todayString : "" });
                 }
                 $scope.source.source_agents = [];
+
+                if ($scope.model && $scope.model.source) {
+                  $scope.source_type = $scope.model.source.source_type;
+                  $scope.source = {source_type: $scope.model.source.source_type, source_type_id: $scope.model.source.source_type.id};
+                  $scope.sourceTypeChange();
+                }
+
             },
             // error callback
             sdbmutil.promiseErrorHandlerFactory("Error initializing dropdown options on this page, can't proceed.")

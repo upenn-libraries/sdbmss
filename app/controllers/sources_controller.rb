@@ -37,8 +37,8 @@ class SourcesController < SearchableAuthorityController
   ]
 
   def search_fields
-    @filters = ["id", "location", "agent_id", "source_type_id"]
-    @fields = ["title", "date", "agent_name", "author", "created_by", "updated_by"]
+    @filters = ["id", "location", "agent_id"]
+    @fields = ["title", "date", "agent_name", "author", "created_by", "updated_by", "source_type"]
     @dates = ["created_at", "updated_at"]
     @fields + @filters + @dates
   end
@@ -385,10 +385,10 @@ class SourcesController < SearchableAuthorityController
 # FIX ME: how to get similar before it exists?!  right now uses levenshtein for that, solr for everything else
 
   def get_similar
-    type = @source.source_type_id || 99
+    type = @source.source_type || 99
     s = Sunspot.more_like_this(@source) do
       fields(:title, :date => 10, :agent_name => 6)
-      with :source_type_id, type
+      with :source_type, type
       paginate page: 1, per_page: 10
       order_by :score, :desc
       boost true

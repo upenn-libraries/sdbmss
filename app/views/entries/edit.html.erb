@@ -794,7 +794,7 @@ label.col-sm-2-and-half {
               
               <label for="" class="control-label">
                 <input class='directly_transfered' id="provenance_direct_transfer_{{ $index }}" type="checkbox" ng-model="prov.direct_transfer" ng-click="lockProvenance($event)"/>
-              <span sdbm-tooltip="entry_provenance_direct_transfer">Directly Transfered to Next?</span></label>
+              <span sdbm-tooltip="entry_provenance_direct_transfer">Direct Transfer to Next</span></label>
             </div>
           </div>
 
@@ -910,8 +910,30 @@ label.col-sm-2-and-half {
     </div>
 </script>
 
+<script type="text/ng-template" id="similarSources.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Warning: similar sources found!</h3>
+    </div>
+    <div class="modal-body form-horizontal">
+
+        <p>There already exist sources in the database similar to the
+        one you are trying to create. Click an existing source below
+        to use it, or confirm that you really want to create your
+        source.</p>
+
+        <p style="margin-left: 2em;">
+            <div ng-repeat="source in similarSources"><a ng-click="sdbmutil.redirectToEntryCreatePage(source.id)" href="#">SDBM_SOURCE_{{ source.id }} - {{ source.display_value }}</a></div>
+        </p>
+
+        <button class="btn btn-primary" ng-click="confirmCreate()">Create my new source anyway</button>
+        <button class="btn btn-warning" ng-click="cancelCreate()">Cancel</button>
+
+    </div>
+</script>
+
 <%= render "shared/create_entity_with_name" %>
 <%= render "shared/create_name" %>
 <%= render "shared/select_name_authority" %>
 <%= render "shared/select_model_authority" %>
 <%= render "shared/select_source" %>
+<%= render "shared/create_source" %>
