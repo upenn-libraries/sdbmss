@@ -6,14 +6,14 @@ module BlacklightAdvancedSearch
     def process_query(params,config)
       queries = []
       keyword_queries.each do |field,query|
-        options = params["#{field}_option"].dup
-        values = params["#{field}"].dup
+        options = params.include?("#{field}_option") ? params["#{field}_option"].dup : []
+        values = params.include?("#{field}") ? params["#{field}"].dup : []
         if query.kind_of? Array
           query.each do |q|
             queries << process_query_option(field, values.shift, ParsingNesting::Tree.parse(q, config.advanced_search[:query_parser]).to_query( local_param_hash(field, config) ), options.shift)
           end
         else
-          queries << process_query_option(field, values.shift, ParsingNesting::Tree.parse(query, config.advanced_search[:query_parser]).to_query( local_param_hash(field, config) ), options.shift)
+          queries << process_query_option(field, values, ParsingNesting::Tree.parse(query, config.advanced_search[:query_parser]).to_query( local_param_hash(field, config) ), options.shift)
         end
       end
       queries.join( ' ' + keyword_op + ' ')
