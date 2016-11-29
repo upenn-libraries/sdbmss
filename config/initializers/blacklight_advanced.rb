@@ -1,19 +1,40 @@
 # Customize Blacklight and Blacklight Advanced Search parser to handle multiple inputs for the same field (i.e. author[]="Cicero"&author[]="Sallust" )
 
 module BlacklightAdvancedSearch
+
   module ParsingNestingParser
     def process_query(params,config)
       queries = []
       keyword_queries.each do |field,query|
+        options = params["#{field}_option"].dup
+        values = params["#{field}"].dup
         if query.kind_of? Array
           query.each do |q|
-            queries << ParsingNesting::Tree.parse(q, config.advanced_search[:query_parser]).to_query( local_param_hash(field, config) )
+            queries << process_query_option(field, values.shift, ParsingNesting::Tree.parse(q, config.advanced_search[:query_parser]).to_query( local_param_hash(field, config) ), options.shift)
           end
         else
-          queries << ParsingNesting::Tree.parse(query, config.advanced_search[:query_parser]).to_query( local_param_hash(field, config) )
+          queries << process_query_option(field, values.shift, ParsingNesting::Tree.parse(query, config.advanced_search[:query_parser]).to_query( local_param_hash(field, config) ), options.shift)
         end
       end
       queries.join( ' ' + keyword_op + ' ')
+    end
+
+    def process_query_option(field, value, query, option)
+      if option == "with" || option == "contains"
+        return query
+      elsif option == "without" || option == "does not contain"
+        return "!#{query}"
+      elsif option == "blank"
+        return "!_query_:\"{!edismax qf=#{field}}[* TO *]\""
+      elsif option == "not blank"
+        return "_query_:\"{!edismax qf=#{field}}[* TO *]\""
+      elsif option == "less than"
+        return "_query_:\"{!edismax qf=#{field}}[* TO #{value}]\""
+      elsif option == "greater than"
+        return "_query_:\"{!edismax qf=#{field}}[#{value} TO *]\""
+      else
+        return query
+      end
     end
   end
 

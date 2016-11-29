@@ -68,7 +68,7 @@ class EntriesController < SearchableAuthorityController
     # need to... get the fields configured for blacklight, 
 
     @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
-    @field_options = ["contains", "does not contain", "blank", "not blank", "before", "after"]
+    @field_options = ["contains", "does not contain", "blank", "not blank"]
     @date_options = ["before", "after", "near", "exact"]
     if params[:widescreen] == 'true'
       render :layout => 'widescreen'
