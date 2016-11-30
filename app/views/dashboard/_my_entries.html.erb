@@ -29,16 +29,14 @@
             </div>
         </div>
     </div>
-    <div class="panel-body collapse in" id="myEntries">
-        <ul class="list-group list-group-no-border-side">
-            <% entries.each do |entry| %>
-                <li class="list-group-item">                
-                    <%= render partial: "bookmarks/show_entry", locals: {entry: entry} %>
-                </li>
-            <% end %>
-            <li class="list-group-item text-center">
-                <a href="<%= search_by_facet_value("created_by", current_user.username) %>" class='btn btn-default'>See My Public Entries</a>
+    <div class="panel-body collapse in list-group list-group-no-border-side" id="myEntries">
+        <% entries.each do |entry| %>
+            <li class="list-group-item">                
+                <%= render partial: "bookmarks/show_entry", locals: {entry: entry} %>
             </li>
-        </ul>
+        <% end %>
+        <li class="list-group-item text-center">
+            <a href="<%= search_by_facet_value("created_by", current_user.username) %>" class='btn btn-default'>See My Public Entries</a>
+        </li>
     </div>
 </div>

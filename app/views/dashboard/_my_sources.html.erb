@@ -21,18 +21,16 @@
             </div>
         </div>
     </div>
-    <div class="panel-body collapse in" id="mySources">
-        <ul class="list-group list-group-no-border-side">
-            <% sources.each do |source| %>
-                <li class="list-group-item">
-                    <dl class="document-show-heading dl-horizontal dl-invert">
-                        <dt></dt>
-                        <dd class='h4'><a href="/sources/<%= source.id %>"><%= source.public_id %></a></dd>
-                    </dl>
-                    <%= render partial: "sources/source_details", locals: {source: source, abbreviate: true} %>
-                </li>
-           <% end %> 
-        </ul>
+    <div class="panel-body collapse in list-group list-group-no-border-side" id="mySources">
+        <% sources.each do |source| %>
+            <li class="list-group-item">
+                <dl class="document-show-heading dl-horizontal dl-invert">
+                    <dt></dt>
+                    <dd class='h4'><a href="/sources/<%= source.id %>"><%= source.public_id %></a></dd>
+                </dl>
+                <%= render partial: "sources/source_details", locals: {source: source, abbreviate: true} %>
+            </li>
+        <% end %> 
     </div>
 </div>
 <% end %>
