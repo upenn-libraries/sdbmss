@@ -9,7 +9,7 @@
       */
 
      <% if can? :manage, model_class  %>
-         var onlyMine = <%= params[:created_by_user] || 0 %>;
+         var onlyMine = "<%= params[:created_by] || "" %>";
      <% else %>
          var onlyMine = 0;
      <% end %>
@@ -185,8 +185,9 @@
 
          params["deprecated"] = "*";
 
-         if(onlyMine) {
-             params["created_by_user"] = 1;
+         if(onlyMine.length > 0) {
+             params["created_by"] = [onlyMine];
+             params["created_by_option"] = ["with"];
          }
 
          return params;

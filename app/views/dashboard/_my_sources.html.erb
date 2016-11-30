@@ -11,7 +11,7 @@
                     Sources You've Contributed
                     <span class="caret"></span>
                 </span>
-                <br><a href="/sources?created_by_user=1">Manage My Sources</a>
+                <br><a href="/sources?created_by=<%= current_user.username %>">Manage All My Sources</a>
             </div>
             <div class="col-sm-6 text-right">
                 <span>Showing the last <%= sources.count %> of the <%= "source".pluralize(num_sources) %> you have created</span>
