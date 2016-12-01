@@ -1,0 +1,33 @@
+<% content_for :head do %>
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+<script type="text/javascript">
+  $(document).ready( function () {
+
+    $('.grid').masonry({
+      // options
+      itemSelector: '.grid-item',
+      columnWidth: 350,
+      gutter: 10
+    });
+
+  });
+</script>
+<style>
+  .grid-item { 
+    width: 350px; 
+    margin-top: 10px;
+    margin-bottom: 0px;
+   }
+  .grid-item .document {
+    padding: 5px;
+  }
+</style>
+<% end %>
+
+<div class="grid">
+  <% entries.each do |entry| %>
+    <div class="grid-item panel panel-default">
+      <%= render partial: "entries/preview", locals: {entry: entry} %>
+    </div>
+  <% end %>
+</div>
