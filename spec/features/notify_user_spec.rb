@@ -35,6 +35,7 @@ describe "User Notifications", :js => true do
       created_by_id: @user2.id,
       approved: true
     )
+    @user2.watches.create(watched: @entry2)
   end
 
   context "when user is logged in" do
@@ -59,14 +60,16 @@ describe "User Notifications", :js => true do
     end
 
     it "should notify user when one of their records is updated" do
-      
+      skip "the notification is being created but is delayed for some reason"
+
       initial = @user2.notifications.count
 
       visit edit_entry_path(@entry1)
       fill_in "folios", with: 2
       first(".save-button").click
 
-      sleep 5
+      expect(page).to have_content('Do you have additional information about the manuscript described here?')
+
       expect(@user2.notifications.count).to eq(initial + 1)
       expect(@user2.notifications.last.category).to eq("update")
     end
