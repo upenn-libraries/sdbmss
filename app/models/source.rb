@@ -118,15 +118,24 @@ class Source < ActiveRecord::Base
     string :date
     text :date, :more_like_this => true
     integer :entries_count
-    integer :source_type_id
-    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
-    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
-    string :created_by
-    string :updated_by
-    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :created_by })
-    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :updated_by })
-    text :created_by
-    text :updated_by
+    string :source_type do
+      source_type.display_name
+    end
+    text :source_type do
+      source_type.display_name
+    end
+    string :created_by do
+      created_by ? created_by.username : ""
+    end
+    string :updated_by do
+      updated_by ? updated_by.username : ""
+    end
+    text :created_by do
+      created_by ? created_by.username : ""
+    end
+    text :updated_by do
+      updated_by ? updated_by.username: ""
+    end
     date :created_at
     date :updated_at
     boolean :reviewed
@@ -369,11 +378,11 @@ class Source < ActiveRecord::Base
   end
 
   def self.fields
-    ["title", "date", "agent_name", "author", "created_by", "updated_by"]
+    ["title", "date", "agent_name", "author", "created_by", "updated_by", "source_type"]
   end
 
   def self.filters
-    ["id", "location", "agent_id", "source_type_id"]
+    ["id", "location", "agent_id"]
   end
 
   def search_result_format

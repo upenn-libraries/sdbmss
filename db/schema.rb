@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161026145218) do
+ActiveRecord::Schema.define(version: 20161115154606) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -440,6 +440,15 @@ ActiveRecord::Schema.define(version: 20161026145218) do
     t.integer  "notified_id",   limit: 4
     t.string   "notified_type", limit: 255
   end
+
+  create_table "pages", force: :cascade do |t|
+    t.string "filename", limit: 255
+    t.string "name",     limit: 255
+    t.string "category", limit: 255, default: "upload"
+  end
+
+  add_index "pages", ["filename"], name: "index_pages_on_filename", unique: true, using: :btree
+  add_index "pages", ["name"], name: "index_pages_on_name", unique: true, using: :btree
 
   create_table "places", force: :cascade do |t|
     t.string   "name",           limit: 255

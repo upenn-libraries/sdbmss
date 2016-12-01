@@ -20,6 +20,9 @@
 /public/static/tooltips
 /public/uploads
 
+/public/uploads/*
+/public/static/tooltips/*
+
 .capistrano
 
 .yardoc

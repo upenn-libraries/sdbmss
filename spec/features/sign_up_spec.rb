@@ -42,6 +42,7 @@ describe "Sign up / Edit Profile", :js => true do
     check 'user_email_is_public'
     fill_in 'user_fullname', :with => "newfullname"
     fill_in 'user_institutional_affiliation', :with => "newaffiliation"
+    click_link "Account"
     fill_in 'user_password', :with => 'newpassword'
     fill_in 'user_password_confirmation', :with => 'newpassword'
     fill_in 'user_current_password', :with => 'somethingunguessable'

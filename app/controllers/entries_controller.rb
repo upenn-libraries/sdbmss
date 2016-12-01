@@ -24,9 +24,8 @@ class EntriesController < SearchableAuthorityController
   
   include LogActivity
 
+  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate, :verify, :personal_observation]
   include AddToGroup
-
-  before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate, :verify]
 
   before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy, :similar, :mark_as_approved, :deprecate]
 
@@ -69,7 +68,7 @@ class EntriesController < SearchableAuthorityController
     # need to... get the fields configured for blacklight, 
 
     @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
-    @field_options = ["contains", "does not contain", "blank", "not blank", "before", "after"]
+    @field_options = ["contains", "does not contain", "blank", "not blank"]
     @date_options = ["before", "after", "near", "exact"]
     if params[:widescreen] == 'true'
       render :layout => 'widescreen'
@@ -93,7 +92,6 @@ class EntriesController < SearchableAuthorityController
     end
     # respond to csv..., etc.
   end
-
 
   # JSON data structure optimized for editing page. This weird action
   # exists because we want CatalogController to handle #show, but we
@@ -146,6 +144,7 @@ class EntriesController < SearchableAuthorityController
   def new
     @entry = Entry.new
     @source_id = params[:source_id]
+=begin    
     if @source_id.present?
       respond_to do |format|
         format.html { render "edit" }
@@ -154,6 +153,10 @@ class EntriesController < SearchableAuthorityController
       respond_to do |format|
         format.html { render "select_source" }
       end
+    end
+=end
+    respond_to do |format|
+      format.html { render "edit" }
     end
   end
 
@@ -197,6 +200,20 @@ class EntriesController < SearchableAuthorityController
             relation_type: EntryManuscript::TYPE_RELATION_IS
           )
           em.save
+        elsif params[:new_manuscript].present? && params[:original_entry]
+          m = Manuscript.create!
+          em = EntryManuscript.new(
+            entry_id: @entry.id,
+            manuscript_id: m.id,
+            relation_type: EntryManuscript::TYPE_RELATION_IS
+          )
+          em.save
+          em2 = EntryManuscript.new(
+            entry_id: params[:original_entry],
+            manuscript_id: m.id,
+            relation_type: EntryManuscript::TYPE_RELATION_IS
+          )
+          em2.save
         end
 
         # auto-watch record, if appropriate setting is set

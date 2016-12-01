@@ -33,14 +33,18 @@ class Comment < ActiveRecord::Base
   extend SolrSearchable
 
   searchable :unless => :deleted do
-    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
-    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
-    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :created_by })
-    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :updated_by })
-    text :created_by
-    text :updated_by
-    string :created_by
-    string :updated_by
+    string :created_by do
+      created_by ? created_by.username : ""
+    end
+    string :updated_by do
+      updated_by ? updated_by.username : ""
+    end
+    text :created_by do
+      created_by ? created_by.username : ""
+    end
+    text :updated_by do
+      updated_by ? updated_by.username: ""
+    end
     string :commentable_type
     integer :commentable_id
     text :comment

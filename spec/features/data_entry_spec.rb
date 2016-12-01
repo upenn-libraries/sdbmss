@@ -114,22 +114,25 @@ describe "Data entry", :js => true do
 
     it "should find source by date on Select Source page" do
       visit new_entry_path
+      find('#select_source').click
       fill_in 'date', :with => '2013'
       expect(page).to have_content @source.title
-      click_link('create-entry-link-' + @source.id.to_s)
+      find("#create-entry-link-#{@source.id}").click
       expect(page).to have_content "Add an Entry"
     end
 
     it "should find source by agent on Select Source page" do
       visit new_entry_path
+      find('#select_source').click
       fill_in 'agent', :with => 'Soth'
       expect(page).to have_content @source.title
-      click_link('create-entry-link-' + @source.id.to_s)
+      find("#create-entry-link-#{@source.id}").click
       expect(page).to have_content "Add an Entry"
     end
 
     it "should NOT find source by agent on Select Source page" do
       visit new_entry_path
+      find('#select_source').click
       fill_in 'agent', :with => 'Nonexistent'
       sleep 1.5
       expect(page).to have_content "No source found matching your criteria."
@@ -137,14 +140,16 @@ describe "Data entry", :js => true do
 
     it "should find source by title on Select Source page" do
       visit new_entry_path
+      find('#select_source').click
       fill_in 'title', :with => 'uniq'
       expect(page).to have_content @source.title
-      click_link('create-entry-link-' + @source.id.to_s)
+      find("#create-entry-link-#{@source.id}").click
       expect(page).to have_content "Add an Entry"
     end
 
     it "should NOT find source by title on Select Source page" do
       visit new_entry_path
+      find('#select_source').click
       fill_in 'title', :with => 'nonexistentjunk'
       sleep 0.5
       expect(page).to have_content "No source found matching your criteria."
@@ -706,6 +711,32 @@ describe "Data entry", :js => true do
       visit edit_entry_path :id => entry.id
 
       expect(page).to have_select('transaction_type', selected: 'A Gift')
+    end
+
+    it "should present the option to create a personal observation from the entry public view" do
+      visit entry_path(Entry.last)
+
+      expect(page).to have_content("Create A Personal Observation")
+    end
+
+    it "should successfully create a manuscript record for an unlinked entry when creating a new personal observation" do
+      visit entry_path(Entry.last)
+
+      expect(page).to have_content("Create A Personal Observation")
+
+      click_link "Create A Personal Observation"
+
+      expect(page).to have_content("Create a New Personal Observation")
+
+      fill_in "title", with: "Totally Unique Personal Observation Source" 
+      click_button "Save"
+
+      expect(page).to have_content("Known errors in the Source should be preserved but can be noted")
+
+      first(".save-button").click
+      first(".save-button").click
+
+      expect(page).to have_content("This entry has been identified as belonging to manuscript record SDBM_MS_2, which has 2 entries in the SDBM.")
     end
 
 end

@@ -47,11 +47,31 @@
         .fade.in {
           display: block !important;
         }
+        .control-panel {
+          position: relative;
+        }
+        .main-content {
+          width: calc(100% - 288px);
+          position: relative;
+          float: right;
+        }
       </style>
       <script type='text/javascript'>
         $(".fade").removeClass("fade");
       </script>
     <%end%>
+
+    <style type="text/css">
+      <% if current_user && current_user.role == "admin" %>
+        .qtip-titlebar {
+          display: block;
+        }
+      <% else %>
+        .qtip-titlebar {
+          display: none;
+        }
+      <% end %>
+    </style>
 
     <%= csrf_meta_tags %>
     <%= content_for(:head) %>

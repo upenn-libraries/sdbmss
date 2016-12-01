@@ -12,7 +12,7 @@
                     <span class="caret"></span>
                 </span>
                 <br>
-                <a href="/entries?created_by_user=1">Manage My Entries</a>
+                <a href="/entries?created_by=<%= current_user.username %>">Manage All My Entries</a>
             </div>
             <div class="col-sm-6 text-right">
                 <% if num_entries > 0 %>
@@ -29,16 +29,14 @@
             </div>
         </div>
     </div>
-    <div class="panel-body collapse in" id="myEntries">
-        <ul class="list-group list-group-no-border-side">
-            <% entries.each do |entry| %>
-                <li class="list-group-item">                
-                    <%= render partial: "bookmarks/show_entry", locals: {entry: entry} %>
-                </li>
-            <% end %>
-            <li class="list-group-item text-center">
-                <a href="<%= search_by_facet_value("created_by", current_user.username) %>" class='btn btn-default'>See My Public Entries</a>
+    <div class="panel-body collapse in list-group list-group-no-border-side" id="myEntries">
+        <% entries.each do |entry| %>
+            <li class="list-group-item">                
+                <%= render partial: "bookmarks/show_entry", locals: {entry: entry} %>
             </li>
-        </ul>
+        <% end %>
+    </div>
+    <div class="panel-footer text-center">
+        <a href="<%= search_by_facet_value("created_by", current_user.username) %>" class='btn btn-default'>See All My Public Entries...</a>
     </div>
 </div>

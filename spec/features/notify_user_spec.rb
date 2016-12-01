@@ -66,7 +66,7 @@ describe "User Notifications", :js => true do
       fill_in "folios", with: 2
       first(".save-button").click
 
-      sleep 1
+      sleep 5
       expect(@user2.notifications.count).to eq(initial + 1)
       expect(@user2.notifications.last.category).to eq("update")
     end
