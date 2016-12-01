@@ -91,4 +91,19 @@ class SearchableAuthorityController < ManageModelsController
     @similar = s.results
   end
 
+  def more_like_this
+    n = model_class.new(name: params[:name])
+    n.index!
+    s = n.more_like_this do
+      fields :name
+      paginate page: 1, per_page: 10
+      order_by :score, :desc
+    end
+    results = s.results
+    respond_to do |format|
+      format.json { render :json => {results: results, status: :ok}}
+    end
+    n.remove_from_index
+  end
+
 end

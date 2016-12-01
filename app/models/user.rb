@@ -172,7 +172,7 @@ class User < ActiveRecord::Base
       n.save!
     end
     if can_email(category)
-      NotificationMailer.notification_email(n).deliver_now
+      NotificationMailer.delay.notification_email(n)
     end
   end
 

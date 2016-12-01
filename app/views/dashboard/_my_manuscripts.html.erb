@@ -21,18 +21,16 @@
                 </div>
             </div>
         </div>
-        <div class="panel-body collapse in" id="myManuscripts">
-            <ul class="list-group list-group-no-border-side">
-                <% manuscripts.each do |manuscript| %>
-                    <li class="list-group-item">
-                        <dl class="document-show-heading dl-horizontal dl-invert">
-                            <dt></dt>
-                            <dd class='h4'><a href="/manuscripts/<%= manuscript.id %>"><%= manuscript.public_id %></a></dd>
-                        </dl>
-                        <%= render partial: "bookmarks/show_manuscript", locals: {manuscript: manuscript} %>
-                    </li>
-                <% end %>
-            </ul>
+        <div class="panel-body collapse in list-group list-group-no-border-side" id="myManuscripts">
+            <% manuscripts.each do |manuscript| %>
+                <li class="list-group-item">
+                    <dl class="document-show-heading dl-horizontal dl-invert">
+                        <dt></dt>
+                        <dd class='h4'><a href="/manuscripts/<%= manuscript.id %>"><%= manuscript.public_id %></a></dd>
+                    </dl>
+                    <%= render partial: "bookmarks/show_manuscript", locals: {manuscript: manuscript} %>
+                </li>
+            <% end %>        
         </div>
     </div>
 <% end %>

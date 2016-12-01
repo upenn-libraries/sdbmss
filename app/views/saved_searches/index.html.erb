@@ -1,6 +1,7 @@
 <%# copied from blacklight gem so that instructional text can be inserted %>
 <% @page_title = "Saved Searches - " + application_name %>
-<div id="content" class="col-md-9">
+<div class="col-sm-1"></div>
+<div id="content" class="col-md-10">
 
 <h1 class='page-heading'><%= t('blacklight.saved_searches.title') %></h1>
 
@@ -23,28 +24,21 @@
 
 <%- if current_or_guest_user.blank? -%>
   
-  <h2 class='section-heading'><%= t('blacklight.saved_searches.need_login') %></h2>
+  <h3 class='section-heading'><%= t('blacklight.saved_searches.need_login') %></h3>
   
 <%- elsif @searches.blank? -%>
   
-  <h2 class='section-heading'><%= t('blacklight.saved_searches.no_searches') %></h2>
+  <h3 class='section-heading'><%= t('blacklight.saved_searches.no_searches') %></h3>
   
 <%- else -%>
+    <%= link_to t('blacklight.saved_searches.clear.action_title'), clear_saved_searches_path, :class => "btn btn-danger pull-right", :method => :delete, :data => { :confirm => t('blacklight.saved_searches.clear.action_confirm') } %>
+    <h3 class='h3 section-heading'><%= t('blacklight.saved_searches.list_title') %></h3>
   
   <ul class="list-group">
-    <li class="list-group-item row">
-      <div class="col-sm-8">
-        <span class='h2 section-heading'><%= t('blacklight.saved_searches.list_title') %></span>
-      </div>
-      <div class="col-sm-4 text-right">
-        <%= link_to t('blacklight.saved_searches.clear.action_title'), clear_saved_searches_path, :class => "btn btn-warning", :method => :delete, :data => { :confirm => t('blacklight.saved_searches.clear.action_confirm') } %>
-      </div>
-    </li>
-
     <%- @searches.each do |search| -%>
       <li class='list-group-item row'>
-        <div class='col-sm-8'><%= link_to_previous_search(search.query_params) %></div>
-        <div class='col-sm-4 text-right'><%= button_to t('blacklight.saved_searches.delete'), forget_search_path(search.id), :class => 'btn btn-warning btn-sm' %></div>
+        <div class='col-sm-10'><%= link_to_previous_search(search.query_params) %></div>
+        <div class='col-sm-2 text-right'><%= button_to 'Delete', forget_search_path(search.id), :class => 'btn btn-default' %></div>
       </li>
     <%- end -%>
   </ul>

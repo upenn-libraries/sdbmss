@@ -37,9 +37,9 @@ class ManageModelsController < ApplicationController
   end
 
   def index
-    if params[:widescreen] == 'true'
+    #if params[:widescreen] == 'true'
       render :layout => 'widescreen'
-    end
+    #end
   end
 
   def new

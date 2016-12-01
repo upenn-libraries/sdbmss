@@ -5,8 +5,12 @@
 module Blacklight
   module FacetsHelperBehavior
 
-    def render_facet_partials_home fields = facet_field_names, options = {}
-      facets = facets_from_request(fields).first(4)
+    def render_facet_partials_home(number, direction, fields = facet_field_names, options = {})
+      if direction == :before
+        facets = facets_from_request(fields).first(number)
+      else
+        facets = facets_from_request(fields).last(facets_from_request(fields).count - number)
+      end
       safe_join(facets.map do |display_facet|
         render_facet_limit(display_facet, options)
       end.compact, "\n")

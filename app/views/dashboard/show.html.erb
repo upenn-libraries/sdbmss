@@ -23,21 +23,9 @@
     <div class="col-sm-12">
         <div class="tab-content">
             <div id="my_activity" class="tab-pane fade in active">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <%= render partial: "my_entries" %>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <%= render partial: "my_sources" %>                        
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-sm-12">
-                        <%= render partial: "my_manuscripts" %>
-                    </div>
-                </div>
+                <%= render partial: "my_entries" %>
+                <%= render partial: "my_sources" %>                        
+                <%= render partial: "my_manuscripts" %>                
             </div>
             <div id="community" class="tab-pane fade">
                 <div class="row">

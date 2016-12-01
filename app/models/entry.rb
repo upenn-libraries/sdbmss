@@ -402,9 +402,9 @@ class Entry < ActiveRecord::Base
       other_info: other_info,
       provenance: unique_provenance_agents.map { |unique_agent| unique_agent[:name] }.join("; "),
       created_at: created_at ? created_at.to_formatted_s(:date_and_time) : nil,
-      created_by: (created_by.username if created_by),
+      created_by: created_by ? created_by.username : "",
       updated_at: updated_at ? updated_at.to_formatted_s(:date_and_time) : nil,
-      updated_by: (updated_by.username if updated_by),
+      updated_by: updated_by ? updated_by.username : "",
       approved: approved,
       deprecated: deprecated,
       superceded_by_id: superceded_by_id
@@ -502,8 +502,8 @@ class Entry < ActiveRecord::Base
       fields.map(&:to_s).select(&:present?).join "\n"
     end
 
-    define_field(:string, :entry, :stored => true, multiple: true) do
-      [public_id, @__receiver__.id.to_s]
+    define_field(:string, :entry, :stored => true) do
+      public_id
     end
     # for sorting
     define_field(:integer, :entry_id, :stored => true) do
@@ -717,6 +717,13 @@ class Entry < ActiveRecord::Base
       supercedes.map(&:id)
     end
 
+    define_field(:integer, :missing_authority_names, :stored => true) do
+      entry_authors.where(author_id: nil).where.not(observed_name: nil).count + 
+      entry_artists.where(artist_id: nil).where.not(observed_name: nil).count + 
+      entry_scribes.where(scribe_id: nil).where.not(observed_name: nil).count + 
+      provenance.where(provenance_agent_id: nil).where.not(observed_name: nil).count
+    end
+
     define_field(:integer, :folios, :stored => true) { folios }
     define_field(:integer, :num_columns, :stored => true) { num_columns }
 
@@ -754,9 +761,9 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:date, :created_at, :stored => true) { created_at }
-    define_field(:string, :created_by, :stored => true) { created_by }
+    define_field(:string, :created_by, :stored => true) { created_by ? created_by.username : "" }
     define_field(:date, :updated_at, :stored => true) { updated_at }
-    define_field(:string, :updated_by, :stored => true) { updated_by }
+    define_field(:string, :updated_by, :stored => true) { updated_by ? updated_by.username : "" }
     define_field(:boolean, :approved, :stored => true) { approved }
     define_field(:boolean, :deprecated, :stored => true) { deprecated }
 

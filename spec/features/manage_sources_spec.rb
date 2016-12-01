@@ -94,6 +94,8 @@ describe "Manage sources", :js => true do
   it "should create a new Source" do
     visit sources_path
 
+    expect(page).to have_content('Add New Source')
+
     find(".add-new-record").click
 
     select "Auction/Dealer Catalog", from: 'source_type'

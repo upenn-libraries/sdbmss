@@ -205,7 +205,6 @@ var SDBM = SDBM || {};
 
     SDBM.ManageRecords.prototype.searchAjax = function(params, dt_params, callback) {
         var manageRecords = this;
-        //console.log(params);
         $.ajax({
             url: '/' + manageRecords.options.resourceName + '/search.json',
             data: params,
@@ -250,6 +249,7 @@ var SDBM = SDBM || {};
         });
 
         var search_query = {
+            active: this.options.showActiveOnly ? true : "  ",
             reviewed: this.getUnreviewedOnly(),
             created_by_user: this.options.showOnlyRecordsCreatedByUser,
             offset: dt_params.start,

@@ -42,11 +42,12 @@ describe "Sign up / Edit Profile", :js => true do
     check 'user_email_is_public'
     fill_in 'user_fullname', :with => "newfullname"
     fill_in 'user_institutional_affiliation', :with => "newaffiliation"
+    fill_in 'user_bio', :with => 'newbio'
+    click_link "Account"
     fill_in 'user_password', :with => 'newpassword'
     fill_in 'user_password_confirmation', :with => 'newpassword'
     fill_in 'user_current_password', :with => 'somethingunguessable'
-    fill_in 'user_bio', :with => 'newbio'
-    click_button 'Update'
+    click_button 'Confirm Changes'
 
     expect(page).to have_content 'Your account has been updated successfully'
 

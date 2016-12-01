@@ -9,7 +9,7 @@
       */
 
      <% if can? :manage, model_class  %>
-         var onlyMine = <%= params[:created_by_user] || 0 %>;
+         var onlyMine = "<%= params[:created_by] || "" %>";
      <% else %>
          var onlyMine = 0;
      <% end %>
@@ -113,6 +113,7 @@
                  $("#spinner").show();
 
                  var params = manageEntries.translateSearchParams(sdbmTable, dt_params);
+                 //console.log(params, "FIX ME: is this happening twice?");
                  sdbmTable.searchAndUpdateTable(params, callback, {
                      complete: function () {
                          $("#spinner").hide();
@@ -154,18 +155,26 @@
          var params = {};
          params["op"] = $("select[name='op']").val();
 
-         $(".search-fieldset").each(function(idx, element) {
+         $(".search-block").each(function(idx, element) {
              var search_field = $(element).find("select[name='search_field']").first().val() + "[]";
              var search_value = $(element).find("input[name='search_value']").first().val();
-             if(search_value) {
-                if (!params[search_field]) {
-                    params[search_field] = [search_value];
-                }
-                else {
-                    params[search_field].push(search_value);
-                }
-             }
+             if (search_value == "" ) search_value = "*";
+             var search_option = $(element).find("select[name='search_option']").first().val();
+             var search_option_field = $(element).find("select[name='search_field']").first().val() + "_option[]";
+            if (!params[search_field]) {
+                params[search_field] = [search_value];
+            }
+            else {
+                params[search_field].push(search_value);
+            }
+
+            if (!params[search_option_field]) {
+                params[search_option_field] = [search_option];
+            } else {
+                params[search_option_field].push(search_option);
+            }            
          });
+
         // prevent 'approved = *' from returning ALL entries for an 'OR' search
         // params["approved"] = showUnapprovedOnly() ? "false" : "*";
          if (showUnapprovedOnly()) {
@@ -176,8 +185,9 @@
 
          params["deprecated"] = "*";
 
-         if(onlyMine) {
-             params["created_by_user"] = 1;
+         if(onlyMine.length > 0) {
+             params["created_by"] = [onlyMine];
+             params["created_by_option"] = ["with"];
          }
 
          return params;
