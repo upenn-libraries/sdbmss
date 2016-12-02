@@ -15,22 +15,13 @@
 
 <% if current_user.role == 'admin' %>
 <% content_for :control_tools do %>
-    <div class="panel panel-default show-tools">
-        <div class="panel-heading">
-            Tools
-        </div>
-        <div class="panel-body">
-            <ul class="nav">
-                <% if user_signed_in? %>
-                    <% if can?(:edit, @user) %>
-                        <li class="edit_name">
-                            <a href="<%= edit_account_path(@user) %>">Edit User Account</a>
-                        </li>
-                    <% end %>
-                <% end %>
-            </ul>
-        </div>
-    </div>
+    <% if user_signed_in? %>
+        <% if can?(:edit, @user) %>
+            <li class="edit_name">
+                <a href="<%= edit_account_path(@user) %>">Edit User Account</a>
+            </li>
+        <% end %>
+    <% end %>
 <% end %>
 <% end %>
 

@@ -7,27 +7,18 @@
 <% end %>
 
 <% content_for :control_tools do %>
-  <div class="panel panel-default show-tools">
-    <div class="panel-heading">
-        Tools
-    </div>
-    <div class="panel-body">
-        <ul class="nav">
-            <% if can? :manage, model_class %>
-            <li>
-                <a class="add-new-record" href="<%= new_model_path %>"><span class="glyphicon glyphicon-plus"></span> <span class="name">Add New Record</span></a>
-            </li>
-            <li>
-                <% if resource_name == "entries" %>
-                    <a href="" id="mark-as-approved"><span class="glyphicon glyphicon-ok"></span> Mark as approved</a>                            
-                <% else %>
-                    <a href="" id="mark-as-reviewed"><span class="glyphicon glyphicon-ok"></span> Mark as reviewed</a>
-                <% end %>
-            </li>
-            <% end %>
-        </ul>
-    </div>
-</div>
+    <% if can? :manage, model_class %>
+    <li>
+        <a class="add-new-record" href="<%= new_model_path %>"><span class="glyphicon glyphicon-plus"></span> <span class="name">Add New Record</span></a>
+    </li>
+    <li>
+        <% if resource_name == "entries" %>
+            <a href="" id="mark-as-approved"><span class="glyphicon glyphicon-ok"></span> Mark as approved</a>                            
+        <% else %>
+            <a href="" id="mark-as-reviewed"><span class="glyphicon glyphicon-ok"></span> Mark as reviewed</a>
+        <% end %>
+    </li>
+    <% end %>
 <% end %>
 
 <div class="redundant-container">

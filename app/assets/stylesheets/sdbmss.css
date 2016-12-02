@@ -33,7 +33,8 @@ textarea { resize:vertical ; }
 }
 .main-content.collapse {
   display: block;
-  width: calc(100% - 288px);
+  max-width: calc(100vw - 288px);
+  overflow-x: hidden;
 }
 .main-content.collapse.in {
   width: 100%;
@@ -1204,6 +1205,27 @@ so that gray backdrop shvows up correctly */
     padding: 4px;
 }
 
+@media (min-width: 1200px) {
+  .main-content .container {
+    max-width: 1170px !important;
+    width: auto;
+  }
+}
+
+@media (min-width: 992px) {
+  .main-content .container {
+    max-width: 970px;
+    width: auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .main-content .container {
+    max-width: 750px;
+    width: auto;
+  }
+}
+
 @media print {
     /* TODO: these 2 rules are a hack to hide the sidebar and stretch out #content to 100%. the result is better than nothing, but it does cut off the right side a bit, for reasons I don't yet know. it also looks very different on Chrome than Firefox. there must be a better way... */
     #sidebar {
@@ -1332,6 +1354,7 @@ so that gray backdrop shvows up correctly */
   background: #f8f8f8;
   padding: 10px 9px 10px 10px;
   border-right: 1px solid #ddd;
+  overflow-y: auto;
 }
 #control-panel .collapse {
   width: 0px;

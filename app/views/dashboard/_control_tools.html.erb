@@ -1,20 +1,13 @@
-<div class="panel panel-default">
-  <div class="panel-heading">Tools</div>
-  <div class="panel-body">
-    <ul class="nav">
-      <li><%= link_to "Manage Entries", entries_path %></li>
-      <li><%= link_to "Manage Sources", sources_path %></li>
-      <li><%= link_to "Manage Manuscripts", manuscripts_path %></li>
-      <li><%= link_to "Manage Comments", comments_path %></li>
-  <% if current_user.role != "contributor" %>
-      <li><%= link_to "Manage Names", names_path %></li>
-      <% if current_user.role == 'admin' %>
-        <li><%= link_to "Manage Places", places_path %></li>
-        <li><%= link_to "Manage Languages", languages_path %></li>
-        <li><%= link_to "Manage Users", accounts_path %></li>
-      <% end %>
-      <li><%= link_to "Recent Activity", activities_path %></li>
+  <li><%= link_to "Manage Entries", entries_path %></li>
+  <li><%= link_to "Manage Sources", sources_path %></li>
+  <li><%= link_to "Manage Manuscripts", manuscripts_path %></li>
+  <li><%= link_to "Manage Comments", comments_path %></li>
+<% if current_user.role != "contributor" %>
+  <li><%= link_to "Manage Names", names_path %></li>
+  <% if current_user.role == 'admin' %>
+    <li><%= link_to "Manage Places", places_path %></li>
+    <li><%= link_to "Manage Languages", languages_path %></li>
+    <li><%= link_to "Manage Users", accounts_path %></li>
   <% end %>
-    </ul>
-  </div>
-</div>
+  <li><%= link_to "Recent Activity", activities_path %></li>
+<% end %>

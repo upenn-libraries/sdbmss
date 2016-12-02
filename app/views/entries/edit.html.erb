@@ -90,11 +90,6 @@ label.col-sm-2-and-half {
 
 <% if (@entry.source && can?(:edit, @entry.source)) || @entry.id %>
 <% content_for :control_tools do %>
-  <div class="panel panel-default show-tools">
-    <div class="panel-heading">
-        Tools
-    </div>
-    <div class="panel-body">
         <ul class="nav">
             <% if @entry.source && can?(:edit, @entry.source) %>
               <li role="presentation"><a role="menuitem" tabindex="-1" href="/sources/<%= @entry.source.id %>/edit" target="_blank">Edit source <%= @entry.source.public_id %></a></li>
@@ -104,8 +99,6 @@ label.col-sm-2-and-half {
               <li role="presentation"><a href="/linkingtool/entry/<%= @entry.id %>" target="_blank">Linking Tool for <%= @entry.public_id %></a></li>
             <% end %>
         </ul>
-    </div>
-  </div>
 <% end %>
 <% end %>
 
