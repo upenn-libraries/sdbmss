@@ -554,10 +554,10 @@ var BOOKMARK_SCOPE;
     });
 
     /* Entry screen controller */
-    sdbmApp.controller("EntryCtrl", function ($scope, $http, Entry, Source, sdbmutil, $modal) {
+    sdbmApp.controller("EntryCtrl", function ($scope, $http, $filter, Entry, Source, sdbmutil, $modal) {
 
         EntryScope = $scope;
-        
+
         $scope.selectNameAuthorityModal = function (recordType, model, type, base) {
           // FIX ME: create name object if none exists
           base = base || ""
@@ -615,8 +615,9 @@ var BOOKMARK_SCOPE;
           stop: function (e, ui) {
             // this is an ugly way to just get a reference to the array (i.e. entry_titles, provenance) that we are sorting
             var field = ui.item.parent().attr('ng-model').split('.')[1];
-            for (var i = 0; i < $scope.entry[field].length; i++) {
-              $scope.entry[field][i].order = i;
+            var array = $scope.entry[field].filter( function (e) { return !e._destroy; });
+            for (var i = 0; i < array.length; i++) {
+              array[i].order = i;
             }
           }
         }
@@ -963,6 +964,12 @@ var BOOKMARK_SCOPE;
             //
             //
             // FIX ME! you need to find a better solution than a 2-second timeout!
+            // 
+            
+            console.log($scope.entry, $scope.entry.provenance);
+            // define filters
+            $scope.entry.provenance = $filter('filter')($scope.entry.provenance, {_destroy: undefined})
+
             setTimeout( function () {
               $scope.affixer();
             }, 2000);

@@ -108,7 +108,7 @@
                 </p>
                 <% end %>
                 <% if can? :manage, User %>
-                <p><a href="<%= accounts_path(active: true) %>">Manage Users</a>
+                <p><a href="<%= accounts_path %>">Manage Users</a>
                     <%= render partial: "unreviewed_count", locals: { model_class: User } %>
                 </p>
                 <% end %>

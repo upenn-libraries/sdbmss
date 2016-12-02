@@ -265,7 +265,7 @@ label.col-sm-2-and-half {
                     </div>                  
                   </label>
                   <div ui-sortable="sortableOptions" ng-model="entry.sale.sale_agents" class='pull-right col-sm-9'>
-                    <div class="form-group input-block" data-ng-repeat="sale_agent in entry.sale.sale_agents | filter: activeRecords">
+                    <div class="form-group input-block" data-ng-repeat="sale_agent in entry.sale.sale_agents"  ng-hide="sale_agent._destroy">
                       <div class="remove-link-container">
                         <a class="clickable" data-ng-click="removeRecord(entry.sale.sale_agents, sale_agent)" title="Remove">
                           <span class="glyphicon glyphicon-remove"></span>
@@ -369,7 +369,7 @@ label.col-sm-2-and-half {
       </div>
     </label>
     <div ui-sortable="sortableOptions" ng-model="entry.entry_titles" class='pull-right col-sm-9'>
-      <div class="form-group input-block" data-ng-repeat="entry_title in entry.entry_titles | filter: activeRecords | orderBy: 'order'">
+      <div class="form-group input-block" data-ng-repeat="entry_title in entry.entry_titles | orderBy: 'order'",  ng-hide="entry_title._destroy">
         <div class="remove-link-container">
           <a id="delete_title_{{ $index }}" class="clickable" data-ng-click="removeRecord(entry.entry_titles, entry_title)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>
@@ -410,7 +410,7 @@ label.col-sm-2-and-half {
       </div>
     </label>
     <div ui-sortable="sortableOptions" ng-model="entry.entry_authors" class='pull-right col-sm-9'>
-      <div class='form-group input-block' data-ng-repeat="entry_author in entry.entry_authors | filter: activeRecords">
+      <div class='form-group input-block' data-ng-repeat="entry_author in entry.entry_authors",  ng-hide="entry_author._destroy">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_authors, entry_author)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>
@@ -469,7 +469,7 @@ label.col-sm-2-and-half {
     </label>
 
     <div ui-sortable="sortableOptions" ng-model="entry.entry_dates" class='pull-right col-sm-9'>
-      <div class="form-group input-block" data-ng-repeat="entry_date in entry.entry_dates | filter: activeRecords">
+      <div class="form-group input-block" data-ng-repeat="entry_date in entry.entry_dates",  ng-hide="entry_date._destroy">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>
@@ -515,7 +515,7 @@ label.col-sm-2-and-half {
         </div>
     </label>
     <div ui-sortable="sortableOptions" ng-model="entry.entry_artists" class='pull-right col-sm-9'>
-      <div class="form-group input-block" data-ng-repeat="entry_artist in entry.entry_artists | filter: activeRecords">
+      <div class="form-group input-block" data-ng-repeat="entry_artist in entry.entry_artists", ng-hide="entry_artist._destroy">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_artists, entry_artist)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>
@@ -572,7 +572,7 @@ label.col-sm-2-and-half {
       </div>
     </label>
     <div ui-sortable="sortableOptions" ng-model="entry.entry_scribes" class='pull-right col-sm-9'>
-      <div class="form-group input-block" data-ng-repeat="entry_scribe in entry.entry_scribes | filter: activeRecords">
+      <div class="form-group input-block" data-ng-repeat="entry_scribe in entry.entry_scribes", ng-hide="entry_scribe._destroy">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_scribes, entry_scribe)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>
@@ -620,7 +620,7 @@ label.col-sm-2-and-half {
       </div>
     </label>
     <div ui-sortable="sortableOptions" ng-model="entry.entry_languages" class='pull-right col-sm-9'>
-      <div class="form-group input-block" data-ng-repeat="entry_language in entry.entry_languages | filter: activeRecords">
+      <div class="form-group input-block" data-ng-repeat="entry_language in entry.entry_languages", ng-hide="entry_language._destroy">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_languages, entry_language)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>
@@ -659,7 +659,7 @@ label.col-sm-2-and-half {
       </div>
     </label>
     <div ui-sortable="sortableOptions" ng-model="entry.entry_materials" class='pull-right col-sm-9'>
-      <div class="form-group input-block" data-ng-repeat="entry_material in entry.entry_materials | filter: activeRecords">
+      <div class="form-group input-block" data-ng-repeat="entry_material in entry.entry_materials", ng-hide="entry_material._destroy">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_materials, entry_material)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>
@@ -696,7 +696,7 @@ label.col-sm-2-and-half {
       </div>
     </label>
     <div ui-sortable="sortableOptions" ng-model="entry.entry_places" class='pull-right col-sm-9'>
-      <div class="form-group input-block" data-ng-repeat="entry_place in entry.entry_places | filter: activeRecords">
+      <div class="form-group input-block" data-ng-repeat="entry_place in entry.entry_places", ng-hide="entry_place._destroy">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_places, entry_place)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>
@@ -742,7 +742,7 @@ label.col-sm-2-and-half {
       </div>
     </label>
     <div ui-sortable="sortableOptions" ng-model="entry.entry_uses" class='pull-right col-sm-9'>
-      <div class="form-group input-block" data-ng-repeat="entry_use in entry.entry_uses | filter: activeRecords">
+      <div class="form-group input-block" data-ng-repeat="entry_use in entry.entry_uses", ng-hide="entry_use._destroy">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_uses, entry_use)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>
@@ -892,7 +892,7 @@ label.col-sm-2-and-half {
     </label>
     
     <div ui-sortable="sortableOptions" ng-model="entry.provenance" class='pull-right col-sm-10'>
-      <div class="form-group input-block" data-ng-repeat="prov in entry.provenance | filter: activeRecords">
+      <div class="form-group input-block" data-ng-repeat="prov in entry.provenance" ng-hide="prov._destroy">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.provenance, prov)" title="Remove">
             <span class="glyphicon glyphicon-remove"></span>

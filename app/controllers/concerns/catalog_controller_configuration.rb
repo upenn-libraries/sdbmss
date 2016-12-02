@@ -352,6 +352,12 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'created_by' }
       end
 
+      config.add_search_field 'updated_by' do |field|
+        field.include_in_simple_select = false
+        field.is_numeric_field = false
+        field.solr_local_parameters = { :qf => 'created_by' }
+      end
+
       # don't show this anywhere; this is defined only so that table
       # view of Entries can filter on approved flag
       config.add_search_field 'approved' do |field|
@@ -362,6 +368,13 @@ module CatalogControllerConfiguration
       end
 
       config.add_search_field 'created_at' do |field|
+        field.include_in_advanced_search = true
+        field.is_numeric_field = false
+        field.include_in_simple_select = false
+        field.solr_local_parameters = { :qf => 'created_at'}
+      end
+
+      config.add_search_field 'updated_at' do |field|
         field.include_in_advanced_search = true
         field.is_numeric_field = false
         field.include_in_simple_select = false

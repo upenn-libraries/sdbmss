@@ -781,8 +781,8 @@ class Entry < ActiveRecord::Base
       # date but no end date, or vice versa.
       provenance.map { | provenance_item|
         retval = nil
-        start_date = (provenance_item.start_date_normalized_start || provenance_item.end_date_normalized_start) || provenance_item.associated_date_normalized_start
-        end_date = (provenance_item.start_date_normalized_end || provenance_item.end_date_normalized_end) || provenance_item.associated_date_normalized_end
+        start_date = (provenance_item.start_date_normalized_start || provenance_item.end_date_normalized_start)
+        end_date = (provenance_item.start_date_normalized_end || provenance_item.end_date_normalized_end)
         # only take the provenance_items with either a start OR end date
         if start_date.present? || end_date.present?
           # make sure they both have values? TODO: this probably isn't
