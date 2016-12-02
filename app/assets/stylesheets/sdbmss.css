@@ -960,21 +960,6 @@ fieldset[disabled=disabled] a {
 .input-block.ng-leave-active {
   opacity: 0;
 }
-/*.remove-link-container {
-  float: right;
-  margin-left: 10px;
-  margin-top: -17px;
-  margin-left: -29px;
-  margin-right: -19px;
-  width: 30px;
-  height: 30px;
-  border: 2px solid #dddddd;
-  text-align: center;
-  border-radius: 16px;
-  line-height: 30px;
-  background: white;
-  font-size: 20px;
-}*/
 .remove-link-container {
   position: absolute;
   width: 30px;
@@ -988,6 +973,19 @@ fieldset[disabled=disabled] a {
   top: 0px;
   border-radius: 6px;
   line-height: 36px;
+}
+.remove-link-container:before {
+  width: 40vw;
+  content: '';
+  border-bottom: 1px dashed #ddd;
+  height: 10px;
+  display: block;
+  position: absolute;
+  left: -40vw;
+  top: calc(50% - 10px);
+}
+.provenance-block .remove-link-container:before {
+  display: none;
 }
 .remove-link-container a {
   color: #555;
@@ -1014,6 +1012,10 @@ fieldset[disabled=disabled] a {
 }
 .unapproved > td > a.btn {
   color: #fff;
+}
+
+.small-caps {
+  font-variant: small-caps;
 }
 
 .sdbmss-form legend {
@@ -1196,7 +1198,6 @@ so that gray backdrop shvows up correctly */
 .fit-screen-small {
     max-height: calc(100vh - 360px);
 }
-
 
 .table-compressed > tbody > tr > td,
 .table-compressed > thead > tr > th {
@@ -1555,4 +1556,10 @@ Private Message Styling
 .toggle-container input:focus, .toggle-container input:active {
   outline: none;
   box-shadow: none;
+}
+
+.panel-preview .panel-heading {
+  text-align: center;
+  text-transform: lowercase;
+  font-variant: small-caps;
 }

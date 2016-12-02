@@ -25,9 +25,9 @@
 <% end %>
 
 <div class="grid">
-  <% entries.each do |entry| %>
-    <div class="grid-item panel panel-default">
-      <%= render partial: "entries/preview", locals: {entry: entry} %>
+  <% records.each do |record| %>
+    <div class="grid-item panel panel-default panel-preview">
+      <%= render partial: "#{record.class.name.underscore.pluralize}/preview", locals: {record: record} %>
     </div>
   <% end %>
 </div>
