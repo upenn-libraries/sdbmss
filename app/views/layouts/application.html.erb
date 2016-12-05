@@ -89,6 +89,7 @@
 
   <div class="main-content bookmarks-collapse collapse <%= current_user ? '' : 'in' %>">
     <%= render :partial => 'shared/header_navbar' %>
+    <%= render :partial => 'shared/search_navbar' %>
 
     <%# this is from blacklight %>
     <%= render partial: 'shared/ajax_modal' %>

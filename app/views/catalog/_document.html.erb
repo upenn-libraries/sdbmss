@@ -1,4 +1,10 @@
 <% # container for a single doc -%>
+<%# entry = document.model_object %>
+<!--
+<div class="panel panel-default panel-preview grid-item">
+<%# render partial: "entries/preview", locals: {record: entry } %>
+</div>
+-->
 <div class="document <%= render_document_class document %>" itemscope itemtype="<%= document.itemtype %>">
     <% entry = document.model_object %>
     <% if entry.nil? %>
@@ -23,9 +29,6 @@
         </div>
       </dd>
     </dl>
-    <%# if !entry.approved %>
-        <!--<div class="alert alert-warning">Warning: This record is not yet approved and may not conform to standards for data structure or accuracy.</div>-->
-    <%# end %>
     <dl class="document-metadata dl-horizontal dl-invert">
         <% manuscripts_str = render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
         <% if manuscripts_str.present? %>
