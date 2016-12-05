@@ -1,0 +1,90 @@
+<% content_for :head do %>
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+<script type="text/javascript">
+  $(document).ready( function () {
+
+    function doMasonry() {      
+      $('.grid').masonry({
+        // options
+        itemSelector: '.grid-item',
+        columnWidth: 530,
+        gutter: 10
+      });
+    }
+
+    $('.destroy-bookmark').click(function (e) {
+      $(this).parent('.panel-preview').remove();
+      doMasonry();
+    });
+
+    doMasonry();
+
+  });
+</script>
+<style>
+  .grid-item { 
+    width: 530px; 
+    margin-top: 10px;
+    margin-bottom: 0px;
+   }
+  .grid-item .document {
+    padding: 5px;
+  }
+  .destroy-bookmark {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+</style>
+<% end %>
+
+<div class="row">
+  <div class="col-sm-8">
+    <h2 class="h2">My Bookmarks
+    </h2>
+    <p>This page shows the <b>Entries</b>, <b>Sources</b>, <b>Manuscript Records</b>, and <b>Name Authority Records</b> you have bookmarked. You can tag records with keywords by clicking on the "Add Tag" button at the bottom of each Bookmark display. Your tags will also appear in your dashboard for easy retrieval of tagged records.</p>
+    <h5>How to create a Bookmark:</h5>
+    <ol>
+      <li>
+        Click the Bookmark icon where it appears in an <b>Entry</b>, <b>Source</b>, <b>Manuscript Record</b>, or <b>Name Authority Record</b>.
+      </li>
+      <li>
+        To view your bookmarks, click the <b>Bookmarks</b> icon in the top-horizontal navigation bar. You must be logged in to view your bookmarks.
+      </li>
+    </ol>
+  </div>
+  <div class="col-sm-4 text-right">
+    <div class="form-inline clearfix navbar-form">
+      <h3>Filter By Tag</h3>
+      </div>
+  </div>
+</div>
+<% @bookmarks_sorted.each do |category, bookmarks| %>
+<div class="row" style="border-bottom: 1px dashed #eee; margin-bottom: 10px; padding-bottom: 10px;">
+  <div class="col-sm-12">
+    <div class="grid">
+      <div class="grid-item panel panel-preview" style="box-shadow: none;">
+        <div class="panel-body">
+          <span class='h3'><%= category %>(s)</span><br>
+          <% if category == 'Entry' %>
+            <% bookmarks_ids = bookmarks.map { |bookmark| "entry_id[]=#{bookmark.document_id.strip}"}.join("&") %>
+            <% bookmarks_url = "/entries.csv?op=OR&search_field=advanced&per_page=5000&#{bookmarks_ids}" %>
+          <% else %>
+            <% bookmarks_ids = bookmarks.map { |bookmark| "id[]=#{bookmark.document_id}"}.join("&") %>
+            <% bookmarks_url = "/#{category.underscore.pluralize}/search.csv?#{bookmarks_ids}" %>
+          <% end %>
+          <a href="" onclick='exportCSV("<%= bookmarks_url %>");'><span class="glyphicon glyphicon-export"></span> Export to CSV</a>      
+        </div>
+      </div>
+      <% bookmarks.each do |bookmark| %>
+        <div class="grid-item panel panel-default panel-preview">
+          <div class='destroy-bookmark'>
+            <%= render partial: "delete", locals: {bookmark: bookmark} %>
+          </div>
+          <%= render partial: "#{bookmark.document.class.name.underscore.pluralize}/preview", locals: {record: bookmark.document} %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<% end %>

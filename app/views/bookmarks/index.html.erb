@@ -1,3 +1,17 @@
+<% content_for :head do %>
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+<style>
+  .grid-item { 
+    width: 350px; 
+    margin-top: 10px;
+    margin-bottom: 0px;
+   }
+  .grid-item .document {
+    padding: 5px;
+  }
+</style>
+<% end %>
+
 <div ng-controller="ManageBookmarks">
 <div class="row">
   <div class="col-sm-8">
@@ -24,75 +38,64 @@
     </div>
   </div>
 </div>
-<div class="row" ng-repeat="(name, bookmarks) in all_bookmarks" style="border-bottom: 1px dotted #eee; padding: 10px 0px;">
-  <div class="col-sm-3">
-    <div class="h3">
-      <span data-toggle="collapse" href="#bookmarks_{{name}}">{{ name }}(s)</span><br>
-      <small class="text-muted">{{ bookmarks.length }} bookmarked</small>
+<div class="row" ng-repeat="(name, bookmarks) in all_bookmarks_display" style="border-bottom: 1px dotted #eee; padding: 10px 0px;">
+  <div class="col-sm-12">
+    <div class="grid">
+  <div class="grid-item panel panel-default panel-preview">
+    <div class="panel-body">
+      <span class='h3' data-toggle="collapse" href="#bookmarks_{{name}}">{{ name }}(s)</span><br>
+      <small class="text-muted">{{ bookmarks.length }} bookmarked</small><br>
+      <a href="" ng-click="exportBookmarks(name, bookmarks[0].link)"><span class="glyphicon glyphicon-floppy-save" title="Export to CSV" ></span> Export to CSV</a>
     </div>
-    <a href="" ng-click="exportBookmarks(name, bookmarks[0].link)"><span class="glyphicon glyphicon-floppy-save" title="Export to CSV" ></span> Export to CSV</a>
   </div>
-  <div class="col-sm-9">
-    <div>
-      <ul class="list-group collapse in manage_bookmarks list-group-no-border list-group-no-padding" id="bookmarks_{{ name }}">
-        <li class="list-group-item text-muted" ng-if="bookmarks.length <= 0">
-          <dl class="document-metadata dl-horizontal dl-invert">
-              <dt></dt>
-              <dd>
-                No <strong>{{ name }} Records</strong> to display.
-              </dd>
-          </dl>
-        </li>
-        <li class="list-group-item" ng-repeat="bookmark in bookmarks_with_tag = (bookmarks | filter:hasTag)">
-              <dl class="document-show-heading dl-horizontal dl-invert">
-                  <dt></dt>
-                  <dd class="h4">
-                    <div class="row">
-                      <strong class="col-sm-4"><a href="{{ bookmark.link }}">{{ bookmark.public_id }}</a></strong>
-                      <div class="col-sm-8 text-right">
-                          <a class='remove-bookmark control-bookmark' ng-click="removeBookmark(name, bookmark)">
-                            <span class="glyphicon glyphicon-remove"></span>
-                          </a>
-                      </div>
-                    </div>
-                  </dd>
-              </dl>
-              <dl class="document-metadata dl-invert dl-horizontal">
-                <dt ng-repeat-start="(key, value) in bookmark.details track by $index">{{ key }}</dt>
-                <dd ng-repeat-end>{{ value }}</dd>
-                <dt>
-                  Tags
-                </dt>
-                <dd>
-                  <ul class="list-inline">
-                    <li ng-if="bookmark.tags.length <= 0" class='text-warning'>This bookmark has no tags.</li>
-                    <li ng-repeat="tag in bookmark.tags" class="bookmark-tag" ng-class="{'btn-info btn-lg' : tag == search_tag, 'bg-primary' : tag != search_tag}">
-                        <a href="" ng-click="searchTag(tag);">{{ tag }}</a> <!-- fix me: should this filter in bookmark panel, or go to manage bookmarks search? -->
-                        <a href="" class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></a>
-                    </li>
-                    <li>
-                      <a ng-show="!bookmark.showAddTag" href="" class="btn btn-sm btn-success" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Add Tag <span class="glyphicon glyphicon-tag"></span></a>
-                      <div class="form-inline">
-                        <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
-                          <input type='text' class='form-control' placeholder="add tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
-                          <a href="" class="input-group-addon add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="glyphicon glyphicon-plus"></span></a>
-                          <a href="" class="input-group-addon add-bookmark-tag-confirm" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Cancel</a>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </dd>
-              </dl>
-        </li>
-        <li class="list-group-item" ng-if="bookmarks_with_tag.length <= 0">
-          <dl class="document-metadata dl-invert dl-horizontal">
+  <div class="grid-item panel panel-default panel-preview" ng-repeat="bookmark in bookmarks">
+    <div class="panel-heading">
+      <strong class="h3"><a href="{{ bookmark.link }}">{{ bookmark.public_id }}</a></strong>
+      <div class="pull-right">
+          <a class='remove-bookmark control-bookmark' ng-click="removeBookmark(name, bookmark)">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
+      </div>
+    </div>
+    <div class="panel-body">
+      <dl class="document-metadata">
+        <dt ng-repeat-start="(key, value) in bookmark.details track by $index">{{ key }}</dt>
+        <dd ng-repeat-end>{{ value }}</dd>
+        <dt>
+          Tags
+        </dt>
+        <dd>
+          <ul class="list-inline">
+            <li ng-if="bookmark.tags.length <= 0" class='text-warning'>This bookmark has no tags.</li>
+            <li ng-repeat="tag in bookmark.tags" class="bookmark-tag" ng-class="{'btn-info btn-lg' : tag == search_tag, 'bg-primary' : tag != search_tag}">
+                <a href="" ng-click="searchTag(tag);">{{ tag }}</a> <!-- fix me: should this filter in bookmark panel, or go to manage bookmarks search? -->
+                <a href="" class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></a>
+            </li>
+            <li>
+              <a ng-show="!bookmark.showAddTag" href="" class="btn btn-sm btn-success" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Add Tag <span class="glyphicon glyphicon-tag"></span></a>
+              <div class="form-inline">
+                <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
+                  <input type='text' class='form-control' placeholder="add tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
+                  <a href="" class="input-group-addon add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="glyphicon glyphicon-plus"></span></a>
+                  <a href="" class="input-group-addon add-bookmark-tag-confirm" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Cancel</a>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </dd>
+      </dl>
+    </div>
+  </div>
+  <div class="grid-item panel panel-default panel-preview text-muted" ng-show="bookmarks.length <= 0">
+      <div class="panel-body">
+        <dl class="document-metadata">
             <dt></dt>
             <dd>
-              No results found.
+              No <strong>{{ name }} Records</strong> to display.
             </dd>
-          </dl>
-        </li>
-      </ul>
+        </dl>
+      </div>
+  </div>
     </div>
   </div>
 </div>
