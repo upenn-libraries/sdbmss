@@ -93,6 +93,14 @@ class EntriesController < SearchableAuthorityController
     # respond to csv..., etc.
   end
 
+  def feed
+    @page_title = "RSS Feed"
+    @entries = Entry.last(100).reverse
+    respond_to do |format|
+      format.rss { render :layout => false }
+    end
+  end
+
   # JSON data structure optimized for editing page. This weird action
   # exists because we want CatalogController to handle #show, but we
   # want to format the JSON differently from how it does it.

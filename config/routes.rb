@@ -112,6 +112,7 @@ Rails.application.routes.draw do
   end
   get '/entries/:id.json', to: 'entries#show_json', defaults: { format: 'json' }
   get '/entries/:id', to: 'catalog#show'
+  get '/feed' => 'entries#feed'
 
   resources :entry_dates do
     collection {
