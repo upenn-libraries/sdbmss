@@ -9,9 +9,6 @@
 <% content_for :control_tools do %>
     <% if can? :manage, model_class %>
     <li>
-        <a class="add-new-record" href="<%= new_model_path %>"><span class="glyphicon glyphicon-plus"></span> <span class="name">Add New Record</span></a>
-    </li>
-    <li>
         <% if resource_name == "entries" %>
             <a href="" id="mark-as-approved"><span class="glyphicon glyphicon-ok"></span> Mark as approved</a>                            
         <% else %>

@@ -221,7 +221,7 @@ var SDBM = SDBM || {};
                         recordsTotal: data.total,
                         recordsFiltered: data.total
                     });
-                    renewBookmarks();
+//                    renewBookmarks();
 
 /*                    if (manageRecords.getUnreviewedOnly() === 1)
                         $('.unreviewed_only').show();//.css({"display": "table-cell"});

@@ -608,7 +608,6 @@ var BOOKMARK_SCOPE;
         }
         
         $scope.selectNameAuthorityModal = function (recordType, model, type, base) {
-          // FIX ME: create name object if none exists
           base = base || ""
 
           if (recordType == 'languages' || recordType == 'places') {
@@ -636,8 +635,7 @@ var BOOKMARK_SCOPE;
         }
 
         // affixes the association name and 'add' button to side, so that it is in view when list is long
-        // FIX ME: glitchy, jumps
-        // FIX ME: delay in loading causes the height calculations to malfunction
+        // fix me: no longer used
         $scope.affixer = function () {
           $('.side-title').each( function () {
             // ignore this if the list is short: temp fix?
@@ -1015,17 +1013,15 @@ var BOOKMARK_SCOPE;
             //
             //
             //
-            // FIX ME! you need to find a better solution than a 2-second timeout!
-            setTimeout( function () {
-              $scope.affixer();
-            }, 2000);
+            //setTimeout( function () {
+            //  $scope.affixer();
+            //}, 2000);
         };
 
         $scope.postEntrySave = function(entry) {
             $scope.warnWhenLeavingPage = false;
 
             window.location = "/entries/" + entry.id;
-            // fix me: is it neccessary to re-load the entry once the save is complete?  I have commented it out unless it proves important
             /*
             //console.log(entry);
             $scope.entry = entry;
