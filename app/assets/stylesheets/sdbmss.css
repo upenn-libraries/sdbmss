@@ -1586,3 +1586,7 @@ Private Message Styling
   text-transform: lowercase;
   font-variant: small-caps;
 }
+
+.label-lg {
+  font-size: 100%;
+}

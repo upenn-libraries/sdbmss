@@ -6,5 +6,8 @@
   </ul>
   <ul class="nav nav-stacked">
     <li><a href="/watches">Manage My Watched Records</a></li>
+    <% if current_user && current_user.role == 'admin' %>
+      <li><%= link_to "Manage Activity", activities_path %></li>
+    <% end %>
   </ul>
 </nav>

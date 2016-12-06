@@ -19,6 +19,9 @@
             <div class="col-sm-12">
               <ul class="nav">
                 <li>
+                  <a href="<%= dashboard_path %>"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a>
+                </li>
+                <li>
                     <a href="/bookmarks"><span class="glyphicon glyphicon-bookmark"></span> Bookmarks</a>
                 </li>
                 <li>
@@ -57,15 +60,16 @@
       </div>
     </div>
 
+    <!--
     <div class="vertical-breadcrumbs">
       <ul class="breadcrumbs list-group">
         <li class="breadcrumb list-group-item <%= current_page?('/dashboard') ? 'active' : '' %>">
           <a href="<%= dashboard_path %>"><span class="glyphicon glyphicon-dashboard"></span> Dashboard
           </a>
         </li>
-        <%= yield :breadcrumbs %>
+        <%# yield :breadcrumbs %>
       </ul>
-    </div>
+    </div>-->
 
   </div>
 </div>

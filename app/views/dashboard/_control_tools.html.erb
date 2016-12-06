@@ -1,13 +1,24 @@
-  <li><%= link_to "Manage Entries", entries_path %></li>
-  <li><%= link_to "Manage Sources", sources_path %></li>
-  <li><%= link_to "Manage Manuscripts", manuscripts_path %></li>
-  <li><%= link_to "Manage Comments", comments_path %></li>
-<% if current_user.role != "contributor" %>
-  <li><%= link_to "Manage Names", names_path %></li>
-  <% if current_user.role == 'admin' %>
-    <li><%= link_to "Manage Places", places_path %></li>
-    <li><%= link_to "Manage Languages", languages_path %></li>
-    <li><%= link_to "Manage Users", accounts_path %></li>
-  <% end %>
-  <li><%= link_to "Recent Activity", activities_path %></li>
-<% end %>
+    </ul>
+  </div>
+</div>
+<div class="panel panel-default show-tools">
+  <div class="panel-heading">
+    <span class='h4'>Manage</span>
+  </div>
+  <div class="panel-body">
+    <ul class="nav">
+      <li><%= link_to "Entries", entries_path %></li>
+      <li><%= link_to "Sources", sources_path %></li>
+      <li><%= link_to "Manuscripts", manuscripts_path %></li>
+      <li><%= link_to "Comments", comments_path %></li>
+    <% if current_user.role != "contributor" %>
+      <li><%= link_to "Names", names_path %></li>
+      <% if current_user.role == 'admin' %>
+        <li><%= link_to "Places", places_path %></li>
+        <li><%= link_to "Languages", languages_path %></li>
+        <li><%= link_to "Users", accounts_path %></li>
+      <% end %>
+      <!--<li><%# link_to "Recent Activity", activities_path %></li>-->
+    <% end %>
+  </ul>
+</div>
