@@ -1250,6 +1250,17 @@ so that gray backdrop shvows up correctly */
   }
 }
 
+@media (max-width: 768px) {
+  .main-content {
+    max-width: 100% !important;
+    width: 100%;
+  }
+  /* need way to collapse into accessible menu */
+  #control-panel {
+    display: none;
+  }
+}
+
 @media print {
     /* TODO: these 2 rules are a hack to hide the sidebar and stretch out #content to 100%. the result is better than nothing, but it does cut off the right side a bit, for reasons I don't yet know. it also looks very different on Chrome than Firefox. there must be a better way... */
     #sidebar {
@@ -1613,4 +1624,7 @@ Private Message Styling
 
 .label-lg {
   font-size: 100%;
+}
+.qtip-default .qtip-titlebar {
+    background-color: inherit !important;
 }

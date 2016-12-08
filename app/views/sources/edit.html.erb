@@ -95,7 +95,11 @@
     <div class="source-fields-container" ng-show="showFields()">
 
         <div class="form-group row" ng-show="source.source_type.name != 'online' && source.source_type.name != 'unpublished'">
-            <label for="source_date" class="col-sm-2 control-label"><span sdbm-tooltip="source_date">Source Date</span></label>
+            <label for="source_date" class="col-sm-2 control-label">
+                <span sdbm-tooltip="source_date">
+                    {{ source.source_type.name == 'observation' ? "Observation Date" : "Source Date" }} 
+                </span>
+            </label>
             <div class="col-sm-3">
                 <input type="text" class="form-control" placeholder="YYYY-MM-DD" name="source_date" id="source_date" ng-model="source.date" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" />
             </div>
@@ -104,7 +108,7 @@
             </div>
         </div>
 
-        <div class="auction-source-container" ng-show="source.source_type.name == 'auction_catalog'">
+        <div class="auction-source-container" ng-if="source.source_type.name == 'auction_catalog'">
 
             <div class="form-group row">
                 <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
@@ -156,7 +160,7 @@
 
         </div>
 
-        <div class="auction-source-container" ng-show="source.source_type.name == 'online'">
+        <div class="auction-source-container" ng-if="source.source_type.name == 'online'">
             <div class="form-group row">
                 <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_website_name">Website Name</span></label>
                 <div class="col-sm-6">
@@ -249,17 +253,37 @@
 
         <div class="auction-source-container" ng-show="source.source_type.name == 'observation'">
 
-            <div class="form-group row">
-                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_source_name">Source Name</label>
+            <div class="form-group row" ng-init="user = '<%= current_user.to_s %>'">
+                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_observer">Observer</span></label>
                 <div class="col-sm-6">
-                    <input type="text" class="form-control" id="title" ng-model="source.title">
+                    <input type="text" class="form-control" id="author" ng-model="source.author" value="<%= current_user.to_s %>">
                 </div>
             </div>
 
             <div class="form-group row">
-                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_observer">Observer</span></label>
-                <div class="col-sm-6">
-                    <input type="text" class="form-control" id="author" ng-model="source.author">
+                <label class="col-sm-2 control-label">
+                  <span><span sdbm-tooltip="source_institution">Institution(s)</span></span>  
+                  <div class="add-link-container">
+                    <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
+                      Add new <span class="glyphicon glyphicon-plus"></span>
+                    </a>
+                  </div>
+                </label>
+                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='pull-left col-sm-6' style="margin-left: 15px">
+                    <div class="input-block form-group row" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
+                        <div class="remove-link-container">
+                          <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
+                            <span class="glyphicon glyphicon-remove"></span>
+                          </a>
+                        </div>
+                            <div class="col-sm-12">                            
+                                <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find or Create Authority Name</a>
+                                <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                    <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                    {{ source_agent.agent.name }}
+                                </div>
+                            </div>
+                    </div>
                 </div>
             </div>
 
@@ -350,59 +374,63 @@
             </div>
         </div>
 
-        <div class="row">
-            <div class="col-sm-12 text-center">
-                <legend>Where did you see this source?</legend>
-            </div>
-        </div>
+        <div ng-show="source.source_type.name != 'observation'">
 
-        <div class="row">
-            <div class="col-sm-12">
-                <p>Complete as many fields as possible. This data gives other users the ability to consult your source and provides an audit trail to ensure quality of data entry.</p>
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <legend>Where did you see this source?</legend>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group row">
-            <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_location_type">Location Type</span></label>
-            <div class="col-sm-3">
-                <select class="form-control" id="medium" ng-model="source.medium" ng-options="option[0] as option[1] for option in optionsMedium" ng-disabled="source.source_type.name == 'online'">
-                    <option value="">Select One</option>
-                </select>
+            <div class="row">
+                <div class="col-sm-12">
+                    <p>Complete as many fields as possible. This data gives other users the ability to consult your source and provides an audit trail to ensure quality of data entry.</p>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group row">
-            <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_date_accessed">Date Accessed</span></label>
-            <div class="col-sm-3">
-                <input type="text" class="form-control" name="date_accessed" id="date_accessed" ng-model="source.date_accessed" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/"/>
+            <div class="form-group row">
+                <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_location_type">Location Type</span></label>
+                <div class="col-sm-3">
+                    <select class="form-control" id="medium" ng-model="source.medium" ng-options="option[0] as option[1] for option in optionsMedium" ng-disabled="source.source_type.name == 'online'">
+                        <option value="">Select One</option>
+                    </select>
+                </div>
             </div>
-            <div class="col-sm-7" ng-show="form.date_accessed.$error.pattern">
-                <span style="color: PaleVioletRed;">Date must be YYYY-MM-DD, YYYY-MM or YYYY</span>
-            </div>
-        </div>
 
-        <div class="form-group row" ng-show="source.medium != 'internet' && source.medium != 'personal_communication'">
-            <label for="city" class="col-sm-2 control-label">
-                <span sdbm-tooltip="source_institution_location_seen" ng-show="source.medium != 'private_collection'">Institution</span>
-                <span sdbm-tooltip="source_institution_location_seen" ng-show="source.medium == 'private_collection'">Collection</span>
-            </label>
-            <div class="col-sm-6">
-                <input type="text" class="form-control" name="location_institution" id="location_institution" ng-model="source.location_institution" />
+            <div class="form-group row">
+                <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_date_accessed">Date Accessed</span></label>
+                <div class="col-sm-3">
+                    <input type="text" class="form-control" name="date_accessed" id="date_accessed" ng-model="source.date_accessed" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/"/>
+                </div>
+                <div class="col-sm-7" ng-show="form.date_accessed.$error.pattern">
+                    <span style="color: PaleVioletRed;">Date must be YYYY-MM-DD, YYYY-MM or YYYY</span>
+                </div>
             </div>
-        </div>
 
-        <div class="form-group row" ng-show="source.medium != 'internet'">
-            <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_location_seen">Location (City, Country)</span></label>
-            <div class="col-sm-6">
-                <input type="text" class="form-control" name="location" id="location" ng-model="source.location" />
+            <div class="form-group row" ng-show="source.medium != 'internet' && source.medium != 'personal_communication'">
+                <label for="city" class="col-sm-2 control-label">
+                    <span sdbm-tooltip="source_institution_location_seen" ng-show="source.medium != 'private_collection'">Institution</span>
+                    <span sdbm-tooltip="source_institution_location_seen" ng-show="source.medium == 'private_collection'">Collection</span>
+                </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="location_institution" id="location_institution" ng-model="source.location_institution" />
+                </div>
             </div>
-        </div>
-                
-        <div class="form-group row" ng-show="source.source_type.name != 'observation'">
-            <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_link">Online Link / Call Num.</span></label>
-            <div class="col-sm-9">
-                <input type="text" class="form-control" name="link" id="link" ng-model="source.link" />
+
+            <div class="form-group row" ng-show="source.medium != 'internet'">
+                <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_location_seen">Location (City, Country)</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="location" id="location" ng-model="source.location" />
+                </div>
             </div>
+                    
+            <div class="form-group row" ng-show="source.source_type.name != 'observation'">
+                <label for="location" class="col-sm-2 control-label"><span sdbm-tooltip="source_link">Online Link / Call Num.</span></label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" name="link" id="link" ng-model="source.link" />
+                </div>
+            </div>
+
         </div>
         
          <div class="row">

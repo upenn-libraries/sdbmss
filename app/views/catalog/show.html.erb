@@ -13,13 +13,14 @@
     <% end %>
 
     <% content_for :add_entry do %>
-        <li>
-            <%= link_to "Add a New Entry", new_entry_path %>
-            <%= link_to "Add A New Entry for this Source", new_entry_path(source_id: @entry.source) %>
-            <% if @entry.manuscript %>
-            <%= link_to "Create A Personal Observation for this Manuscript", new_source_path({create_entry: 1, manuscript_id: @entry.manuscript.id, source_type: 4}) %>
-            <% end %>
-        </li>
+        <% if @entry.source %>
+          <li><%= link_to "From #{@entry.source.public_id}", new_entry_path(source_id: @entry.source) %></li>
+        <% end %>
+        <% if @entry.manuscript %>
+          <li><%= link_to "Link New Personal Observation", new_source_path({create_entry: 1, manuscript_id: @entry.manuscript.id, source_type: 4}) %></li>
+        <% else %>
+          <li><%= link_to "Link New Personal Observation", new_source_path({create_entry: 1, new_manuscript: true, original_entry: @entry.id, source_type: 4}) %></li>
+        <% end %>
     <% end %>
 
 <% end %>

@@ -1783,6 +1783,7 @@ var BOOKMARK_SCOPE;
         $scope.cancel = function () {
           $scope.modalInstance.close();
         }
+        EntryScope = $scope;
 
         $scope.selectNameAuthorityModal = function (recordType, model, role, type) {
           if ($scope.mergeEdit !== false) {
@@ -2148,6 +2149,9 @@ var BOOKMARK_SCOPE;
                     $scope.source = new Source({ source_type: source_type || "", date_accessed: todayString, date: source_type.id == 4 ? todayString : "" });
                 }
                 $scope.source.source_agents = [];
+                if ($scope.user) {
+                  $scope.source.author = $scope.user;
+                }
 
                 if ($scope.model && $scope.model.source) {
                   $scope.source_type = $scope.model.source.source_type;

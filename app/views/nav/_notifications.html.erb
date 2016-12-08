@@ -4,7 +4,7 @@
   <span class="glyphicon glyphicon-bell"></span>
   <span class="caret"></span>
 </a>
-<ul id="notifications-dropdown" class="dropdown-menu notifications">
+<ul class="dropdown-menu notifications">
   <% current_user.notifications.last(10).reverse.each do |notification| %>
       <li class="row <%= !notification.active ? 'text-muted' : 'active' %>" id="notification_<%= notification.id %>">
         <% if notification.notified && notification.title %>
