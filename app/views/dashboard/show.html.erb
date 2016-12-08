@@ -12,14 +12,8 @@
     <div class="col-sm-12">
         <div class="well">
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     <span class='h2'>Welcome, <%= current_user.to_s %>!</span>            
-                </div>
-                <div class="col-sm-6 text-right">
-                    <% new_count = current_user.new_notifications.count %>
-                    <% if new_count > 0 %>
-                        <span class="alert alert-info"><span class="glyphicon glyphicon-bell"></span> You have <%= new_count %> new notifications!</span>
-                    <% end %>
                 </div>
                 <div class="col-sm-12">
                     <ul class="list-inline">

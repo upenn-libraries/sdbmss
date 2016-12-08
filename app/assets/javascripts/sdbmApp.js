@@ -653,7 +653,7 @@ var BOOKMARK_SCOPE;
           axis: 'y',
           scrollSpeed: 40,
           placeholder: "input-block-placeholder",
-          cancel: ".ui-sortable-locked, .ui-sortable-locked + .input-block, input, select",
+          cancel: ".ui-sortable-locked, .ui-sortable-locked + .input-block, input, select, textarea",
           //handle: ".control-label, .panel-heading",
           scrollSensitivity: 100,
           start: function(e, ui){
@@ -1374,7 +1374,7 @@ var BOOKMARK_SCOPE;
         var modelName = attrs.encourageNameAuthorityModel;
         var nameType = attrs.encourageNameAuthorityName;
         
-        $(element).text("You have not selected an authority name.");
+        $(element).html('You have not selected an authority name.<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>');
 
         scope.$watch(modelName, function(newValue, oldValue) {
           $(element).hide();

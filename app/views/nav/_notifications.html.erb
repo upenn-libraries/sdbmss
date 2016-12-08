@@ -1,9 +1,10 @@
 <% new_count = current_user.new_notifications.count %>
+<li class="dropdown">
 <a id='notifications-dropdown-control' href="#notifications-dropdown" data-toggle="dropdown" class='dropdown-toggle <%= new_count > 0 ? 'notifications-count' : ''%>' new-notifications="<%= current_user.new_notifications.count %>">
   <span class="glyphicon glyphicon-bell"></span>
   <span class="caret"></span>
 </a>
-<ul class="dropdown-menu notifications">
+<ul id="notifications-dropdown" class="dropdown-menu notifications">
   <% current_user.notifications.last(10).reverse.each do |notification| %>
       <li class="row <%= !notification.active ? 'text-muted' : 'active' %>" id="notification_<%= notification.id %>">
         <% if notification.notified && notification.title %>
@@ -27,6 +28,7 @@
   <% end %>
   <li class='text-center' style='border-top: 1px solid #eee;'><%= link_to "Manage Notifications", notifications_path %></li>
 </ul>
+</li>
 <script>
   $('.active .read').click(function (e) {
     e.preventDefault();

@@ -280,11 +280,11 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'miniatures_fullpage' }
       end
 
-      config.add_search_field('missing_authority_names') do |field|
-        field.include_in_simple_select = false
-        field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'missing_authority_names' }
-      end
+#      config.add_search_field('missing_authority_names') do |field|
+#        field.include_in_simple_select = false
+#        field.is_numeric_field = true
+#        field.solr_local_parameters = { :qf => 'missing_authority_names' }
+#      end
 
       config.add_search_field('miniatures_large') do |field|
         field.include_in_simple_select = false
