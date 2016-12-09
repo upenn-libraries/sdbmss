@@ -475,6 +475,7 @@ var BOOKMARK_SCOPE;
       $scope.autocomplete = function () {
           var url  = "/" + recordType + "/more_like_this.json";
           var searchTerm = $scope.nameSearchString; // redundant?
+          $scope.searchTerm = searchTerm;
 
           if (searchTerm.length <= 1) {
             $scope.suggestions = [];

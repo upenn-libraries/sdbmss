@@ -812,7 +812,7 @@ li.provenance:hover, li.provenance:focus {
   margin-bottom: 15px;
   padding: 10px 0px;
   box-shadow: -2px 2px 4px #ccc;
-  border-top:-left-radius: 5px;
+  border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
 }
 .input-block.provenance-block .remove-link-container {

@@ -792,12 +792,12 @@ label.col-sm-2-and-half {
               <div class="prov-date">
                 <div class="input-group" ng-init="prov.dates[0] = prov.dates[0] || {date: ''}">
                   <select name="" id="" class="form-control" ng-model="prov.dates[0].type" ng-blur="updateProvenanceDateRange(prov, prov.dates[0])" ng-options="opt for opt in getProvenanceDateOptions(prov, prov.dates[0])" ng-init="prov.dates[0].type = prov.dates[0].type || getProvenanceDateOptions(prov, prov.dates[0])[0]"></select>
-                  <input type="text" class="form-control" ng-model="prov.dates[0].date" ng-blur="updateProvenanceDateRange(prov, prov.dates[0])" size=10 id="provenance_{{ $parent.$index }}_recorded_date_{{ $index }}"></input>
+                  <input type="text" class="form-control" ng-model="prov.dates[0].date" ng-blur="updateProvenanceDateRange(prov, prov.dates[0])" size=10 id="provenance_{{ $index }}_recorded_date_0"></input>
                 </div>
                 <div class="input-group" ng-init="prov.dates[1] = prov.dates[1] || {date: ''}">
                   <select name="" id="" class="form-control" ng-model="prov.dates[1].type" ng-blur="updateProvenanceDateRange(prov, prov.dates[1])" ng-options="opt for opt in getProvenanceDateOptions(prov, prov.dates[1])" ng-init="prov.dates[1].type = prov.dates[1].type || getProvenanceDateOptions(prov, prov.dates[1])[0]">
                   </select>
-                  <input type="text" class="form-control" ng-model="prov.dates[1].date" ng-blur="updateProvenanceDateRange(prov, prov.dates[1])" size=10 id="provenance_{{ $parent.$index }}_recorded_date_{{ $index }}"></input>
+                  <input type="text" class="form-control" ng-model="prov.dates[1].date" ng-blur="updateProvenanceDateRange(prov, prov.dates[1])" size=10 id="provenance_{{ $index }}_recorded_date_1"></input>
                 </div>
               </div>
             </div>

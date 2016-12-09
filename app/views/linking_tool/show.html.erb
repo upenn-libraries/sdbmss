@@ -565,7 +565,6 @@ $(document).ready(function() {
     </div>
     <div class="col-sm-1"></div>
 </div>
-
 <% content_for :add_entry do %>
     <% if @entry %>
         <li><%= link_to "Link New Personal Observation", new_source_path({create_entry: 1, new_manuscript: true, original_entry: @entry.id, source_type: 4}) %></li>
