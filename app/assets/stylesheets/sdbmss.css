@@ -38,7 +38,7 @@ textarea { resize:vertical ; }
 }
 .main-content.collapse {
   display: block;
-  max-width: calc(100vw - 288px);
+  max-width: calc(100vw - 268px);
   overflow-x: hidden;
 }
 .main-content.collapse.in {
@@ -74,6 +74,9 @@ textarea { resize:vertical ; }
   background-color: #d5d5d5;
   border: none;
   box-shadow: 0px 2px 4px lightgray;
+}
+#header-navbar a {
+  color: black;
 }
 .navbar-inverse .navbar-nav > li > a { color: black }
 
@@ -302,6 +305,73 @@ textarea { resize:vertical ; }
 }
 .label-bookmark-tag a {
   color: white;
+}
+
+
+.notify:after {
+  content: attr(notifications);
+  padding: 4px;
+  background-color: #337ab7;
+  border-radius: 4px;
+  color: white;
+  margin-left: 4px;
+  position: absolute;
+  right: -36px;
+  margin-top: -5  px;
+}
+
+.breadcrumb {
+  background: none;
+}
+.breadcrumb-item.active a {
+  border: 1px solid #eee;
+  border-radius: 4px;
+  padding: 9px;
+  background: #f8f8f8;
+  color: #666;
+}
+
+.one-line {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notifications {
+  margin-top: 15px !important;
+  box-shadow: 0px -4px 19px 0px #ccc !important;
+  right: -225px !important;
+  padding: 10px;
+  border: 0px;
+  width: 500px;
+}
+.notifications:before {
+  content: '';
+  width: 0px;
+  height: 0px;
+  border-bottom: 15px solid white;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  position: absolute;
+  top: -15px;
+  right: calc(50% - 16px);
+}
+
+.notifications a {
+  padding: 4px !important;
+}
+
+.notifications-count:before {
+    content: attr(new-notifications);
+    position: absolute;
+    color: white;
+    background: #3c763d;
+    z-index: 10;
+    top: 0px;
+    right: 41px;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-weight: bold;
 }
 
 /* Development link */
@@ -1260,15 +1330,30 @@ so that gray backdrop shvows up correctly */
     width: 100%;
   }
   /* need way to collapse into accessible menu */
-  #control-panel {
-    display: none;
-  }
   #search-navbar form {
     margin: 0px 5px;
     border: none;
   }
   .navbar-nav {
     margin: 0px;
+  }
+  .hide-mobile {
+    display: none !important;
+  }
+  span.show-mobile {
+    display: inline-block;
+  }
+  div.show-mobile {
+    display: block;
+  }
+  .notifications {
+    margin-top: 5px !important;
+    box-shadow: none !important;
+    right: 0px !important;
+    padding: inherit;
+  }
+  .notifications:before {
+    display: none !important;
   }
 }
 
@@ -1310,71 +1395,6 @@ so that gray backdrop shvows up correctly */
 [data-toggle=collapse] {
   cursor: pointer;
 }
-.notify:after {
-  content: attr(notifications);
-  padding: 4px;
-  background-color: #337ab7;
-  border-radius: 4px;
-  color: white;
-  margin-left: 4px;
-  position: absolute;
-  right: -36px;
-  margin-top: -5  px;
-}
-
-.breadcrumb {
-  background: none;
-}
-.breadcrumb-item.active a {
-  border: 1px solid #eee;
-  border-radius: 4px;
-  padding: 9px;
-  background: #f8f8f8;
-  color: #666;
-}
-
-.one-line {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.notifications {
-  margin-top: 15px !important;
-  box-shadow: 0px -4px 19px 0px #ccc !important;
-  right: -225px !important;
-  padding: 10px;
-  border: 0px;
-  width: 500px;
-}
-.notifications:before {
-  content: '';
-  width: 0px;
-  height: 0px;
-  border-bottom: 15px solid white;
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  position: absolute;
-  top: -15px;
-  right: calc(50% - 16px);
-}
-
-.notifications a {
-  padding: 4px !important;
-}
-
-.notifications-count:before {
-    content: attr(new-notifications);
-    position: absolute;
-    color: white;
-    background: #3c763d;
-    z-index: 10;
-    top: 0px;
-    right: 41px;
-    padding: 2px 7px;
-    border-radius: 10px;
-    font-weight: bold;
-}
 
 .alert-sm {
   padding: 8px;
@@ -1395,19 +1415,20 @@ so that gray backdrop shvows up correctly */
 #control-panel {
   position: fixed;
   float: left;
-  z-index: 100;
+  z-index: 1100;
   height: 100%;
   background: #f8f8f8;
-  padding: 10px 9px 10px 10px;
+  padding: 0px;
   border-right: 1px solid #ddd;
   overflow-y: auto;
+  max-width: 80%;
 }
 #control-panel .collapse {
-  width: 0px;
-  /*overflow: hidden;*/
+  display: none;
 }
 #control-panel .collapse.in {
-  width:268px;
+  display: block;
+  width: 268px !important;
 }
 #control-panel-button {
   position: absolute;
@@ -1421,6 +1442,26 @@ so that gray backdrop shvows up correctly */
   border-bottom-right-radius: 6px;
   box-shadow: -2px 0px 6px -2px #ddd inset;
 }
+#control-panel .collapsing {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  -webkit-transition-property: height, visibility;
+  transition-property: height, visibility;
+  -webkit-transition-duration: 0.35s;
+  transition-duration: 0.35s;
+  -webkit-transition-timing-function: linear;
+  transition-timing-function: linear;
+}
+#control-panel .collapsing.width {
+  -webkit-transition-property: width, visibility;
+  transition-property: width, visibility;
+  -webkit-transition-timing-function: linear;
+  transition-timing-function: linear;
+  width: 0;
+  height: auto;
+}
+
 /* changes the direction of the chevron depending on collapsed[in/out] */
 #control-panel > .collapse + #control-panel-button .glyphicon-chevron-left,
 #control-panel > .collapse.in + #control-panel-button .glyphicon-chevron-right {
@@ -1652,4 +1693,22 @@ Private Message Styling
   float: none;
   padding: 6px 12px;
   margin: 0px;
+}
+.show-mobile {
+  display: none;
+}
+.btn-header-hamburger {
+  height: 50px;
+  background: #f8f8f8;
+  border: none;
+  border-radius: 0px;
+  margin: 0px;
+  margin-left: -3px;
+}
+.btn-header-hamburger:hover, .btn-header-hamburger:active, .btn-header-hamburger:focus {
+  background: #f8f8f8 !important;;
+}
+
+.navbar-collapse {
+  padding: 0px;
 }

@@ -29,7 +29,6 @@ class NamesController < SearchableAuthorityController
   # 
   def search
     session[:last_name_search] = params
-    puts "LAST NAME SEARCH BLAH:::              ::::::::::::::::::::: #{params}"
     super
   end
 

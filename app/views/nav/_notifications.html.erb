@@ -2,6 +2,7 @@
 <li class="dropdown">
 <a id='notifications-dropdown-control' href="#notifications-dropdown" data-toggle="dropdown" class='dropdown-toggle <%= new_count > 0 ? 'notifications-count' : ''%>' new-notifications="<%= current_user.new_notifications.count %>">
   <span class="glyphicon glyphicon-bell"></span>
+  <span class="show-mobile">Notifications</span>
   <span class="caret"></span>
 </a>
 <ul class="dropdown-menu notifications">
