@@ -1712,3 +1712,11 @@ Private Message Styling
 .navbar-collapse {
   padding: 0px;
 }
+
+#proposed-history .provenance_remove {
+  display: block;
+  color: #555;
+  position: absolute;
+  top: calc(50% - 10px);
+  right: 0px;
+}
