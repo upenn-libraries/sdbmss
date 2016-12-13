@@ -2099,15 +2099,20 @@ var BOOKMARK_SCOPE;
                     $scope.currentlySaving = false;
                 });
             } else {
-                // check if similar sources exist before saving new one
-                $scope.getSimilarSources(sourceToSave, function (data) {
-                  if(data.similar && data.similar.length > 0) {
-                      $scope.similarSources = data.similar;
-                      $scope.showSimilarSources();
-                  } else {
-                      $scope.createSource($scope.sourceToSave);
-                  }
-                });
+                if (sourceToSave.source_type_id == 4) {
+                  $scope.createSource($scope.sourceToSave);
+                }
+                else {                  
+                  // check if similar sources exist before saving new one
+                  $scope.getSimilarSources(sourceToSave, function (data) {
+                    if(data.similar && data.similar.length > 0) {
+                        $scope.similarSources = data.similar;
+                        $scope.showSimilarSources();
+                    } else {
+                        $scope.createSource($scope.sourceToSave);
+                    }
+                  });
+                }
             }
         };
 

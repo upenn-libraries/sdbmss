@@ -1,5 +1,8 @@
+ <% if params[:last_search] %>
+    <span id="last_search" data="<%= session[:last_name_search].to_json %>"></span>
+<% end %>
 <script type="text/javascript">
-
+load_session = '<%= params[:last_search] %>' == 'true';
  $(document).ready(function() {
 
      var resourceName = "<%= resource_name %>";

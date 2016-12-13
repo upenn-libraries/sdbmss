@@ -199,7 +199,9 @@ class EntriesController < SearchableAuthorityController
             manuscript_id: params[:manuscript_id],
             relation_type: EntryManuscript::TYPE_RELATION_IS
           )
-          em.save
+          if em.save
+            flash[:success] = "Your observation has been automatically linked to SDBM_MS_#{params[:manuscript_id]}"
+          end
         elsif params[:new_manuscript].present? && params[:original_entry]
           m = Manuscript.create!
           em = EntryManuscript.new(
@@ -207,13 +209,14 @@ class EntriesController < SearchableAuthorityController
             manuscript_id: m.id,
             relation_type: EntryManuscript::TYPE_RELATION_IS
           )
-          em.save
           em2 = EntryManuscript.new(
             entry_id: params[:original_entry],
             manuscript_id: m.id,
             relation_type: EntryManuscript::TYPE_RELATION_IS
           )
-          em2.save
+          if em.save && em2.save
+            flash[:success] = "Your observation has been automatically linked to #{m.public_id}"
+          end
         end
 
         # auto-watch record, if appropriate setting is set

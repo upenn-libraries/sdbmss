@@ -2,15 +2,15 @@
 
 <% content_for :breadcrumbs do %>
     <% if current_user.role == 'admin' %>
-        <li class="list-group-item breadcrumb">
+        <li class=" ">
             <a href="/accounts">Manage Accounts</a>
         </li>
     <% else %>
-        <li class="breadcrumb list-group-item">
+        <li class="breadcrumb">
             <a href="/community">Community</a>
         </li>
     <% end %>
-        <li class="list-group-item breadcrumb active"><a href=""><%= @user %></a></li>
+        <li class="  active"><a href=""><%= @user %></a></li>
 <% end %>
 
 <% if current_user.role == 'admin' %>

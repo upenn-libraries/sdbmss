@@ -89,22 +89,47 @@ label.col-sm-2-and-half {
 <% content_for :control_tools do %>
         <ul class="nav">
             <% if @entry.source && can?(:edit, @entry.source) %>
-              <li role="presentation"><a role="menuitem" tabindex="-1" href="/sources/<%= @entry.source.id %>/edit" target="_blank">Edit source <%= @entry.source.public_id %></a></li>
+              <li role="presentation">
+                <a role="menuitem" tabindex="-1" href="/sources/<%= @entry.source.id %>/edit" target="_blank">
+                  <span class="glyphicon glyphicon-edit"></span>
+                  Edit source <%= @entry.source.public_id %>
+                </a>
+              </li>
             <% end %>
             <% if @entry.id %>
-              <li role="presentation"><a role="menuitem" tabindex="-1" href="/entries/<%= @entry.id %>/history" target="_blank">View history</a></li>
-              <li role="presentation"><a href="/linkingtool/entry/<%= @entry.id %>" target="_blank">Linking Tool for <%= @entry.public_id %></a></li>
+              <li role="presentation">
+                <a role="menuitem" tabindex="-1" href="/entries/<%= @entry.id %>/history" target="_blank">
+                  <span class="glyphicon glyphicon-list-alt"></span> 
+                  View history
+                </a>
+              </li>
+              <li role="presentation">
+                <a href="/linkingtool/entry/<%= @entry.id %>" target="_blank">
+                  <span class="glyphicon glyphicon-link"></span>
+                  Linking Tool for <%= @entry.public_id %>
+                </a>
+              </li>
+            <% end %>
+            <% if @entry.source %>
+              <li class="divider"></li>
+              <li>
+                <%= link_to(new_entry_path(source_id: @entry.source)) do %>
+                  <span class="glyphicon glyphicon-plus"></span> Add Entry From <%= @entry.source.public_id %>
+                <% end %>
+              </li>
             <% end %>
         </ul>
 <% end %>
 <% end %>
 
 <% content_for :add_entry do %>
-    <% if @entry.id %>
-      <li><%= link_to "From #{@entry.source.public_id}", new_entry_path(source_id: @entry.source) %></li>
-    <% end %>
     <% if @entry.manuscript %>
-      <li><%= link_to "Observation of Manuscript", new_source_path({create_entry: 1, manuscript_id: @entry.manuscript.id, source_type: 4}) %></li>
+      <li>
+        <%= link_to(new_source_path({create_entry: 1, manuscript_id: @entry.manuscript.id, source_type: 4})) do %>
+          <span class="glyphicon glyphicon-plus"></span> Create Linked Personal Observation
+        <% end %>
+      </li>
+      <li class="divider"></li>
     <% end %>
 <% end %>
 

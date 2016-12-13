@@ -9,6 +9,12 @@
 
 <% content_for :control_tools do %>
     <%= render partial: "tools", locals: {source: @source} %>
+    <li class="divider"></li>
+    <li>
+        <%= link_to(new_entry_path(source_id: @source)) do %>
+          <span class="glyphicon glyphicon-plus"></span> Add Entry From <%= @source.public_id %>
+        <% end %>
+    </li>
 <% end %>
 
 <% if @source.persisted? %>

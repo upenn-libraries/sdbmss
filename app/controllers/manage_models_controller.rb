@@ -96,14 +96,14 @@ class ManageModelsController < ApplicationController
       respond_to do |format|
         format.html {
           flash[:notice] = "Your changes have been saved. It may take a minute or two for your changes to show up in the public search results."
-          redirect_to :action => "edit", :id => @model.id
+          redirect_to :action => "show", :id => @model.id
         }
         format.json {
           render json: @model
         }
       end
     else
-      render 'edit'
+      render 'show'
     end
   end
 

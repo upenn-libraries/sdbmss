@@ -109,6 +109,7 @@ var SDBM = SDBM || {};
             // properly.
             // https://datatables.net/forums/discussion/24675/radio-button-checked-problem
             // 
+            stateSave: true,
             autoWidth: false,
             ajax: function (dt_params, callback, settings) {
                 options.ajax(sdbmTable, dt_params, callback, settings);

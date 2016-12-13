@@ -3,7 +3,10 @@
         <%= render partial: "nav/bookmark_watch", locals: {model: @source } %>
         <% if can?(:edit, source) %> 
             <li>
-                <a href="<%= merge_source_path(source_id: source) %>" class="<%= source.source_type.id == 8 ? 'disabled text-muted' : '' %>">Merge this source</a>
+                <a href="<%= merge_source_path(source_id: source) %>" class="<%= source.source_type.id == 8 ? 'disabled text-muted' : '' %>">
+                <span class="glyphicon glyphicon-transfer"></span> 
+                Merge this source
+              </a>
             </li>
         <% end %>
     <% end %>

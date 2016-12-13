@@ -9,6 +9,10 @@ body {
 
 textarea { resize:vertical ; }
 
+.divider {
+  border-bottom: 1px dashed #aaa;
+}
+
 .alert-absolute {
   margin-bottom: 10px;
 }
@@ -38,7 +42,7 @@ textarea { resize:vertical ; }
   overflow-x: hidden;
 }
 .main-content.collapse.in {
-  width: 100%;
+  max-width: 100%;
 }
 .sidebar {
   width: 388px;
@@ -1259,6 +1263,13 @@ so that gray backdrop shvows up correctly */
   #control-panel {
     display: none;
   }
+  #search-navbar form {
+    margin: 0px 5px;
+    border: none;
+  }
+  .navbar-nav {
+    margin: 0px;
+  }
 }
 
 @media print {
@@ -1526,6 +1537,10 @@ Private Message Styling
   white-space: nowrap;
 }
 
+.navbar-right {
+  margin-right: 0px;
+}
+
 .multiselect {
   text-align: left;
 }
@@ -1627,4 +1642,14 @@ Private Message Styling
 }
 .qtip-default .qtip-titlebar {
     background-color: inherit !important;
+}
+
+.breadcrumb li.active a {
+    font-weight: bold;
+} 
+
+.navbar-toggle {
+  float: none;
+  padding: 6px 12px;
+  margin: 0px;
 }

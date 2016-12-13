@@ -44,6 +44,10 @@
         <div class="panel-heading"><span class="h4">Tools</span></div>
         <div class="panel-body">
           <ul class="nav">
+            <% if content_for? :add_entry %>
+              <!--<li class="divider"></li>-->
+              <%= yield :add_entry %>
+            <% else %>
             <li class="dropdown">
               <a href="" data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> Add New Entry <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
@@ -53,12 +57,9 @@
                 <li>
                   <%= link_to "Based on Personal Observation", new_source_path({create_entry: 1, source_type: 4}) %>
                 </li>
-                <% if content_for? :add_entry %>
-                  <%= yield :add_entry %>
-                <% else %>
-                <% end %>
               </ul>
             </li>
+            <% end %>
             <%= yield :control_tools %>
           </ul>
         </div>

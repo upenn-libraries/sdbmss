@@ -8,19 +8,38 @@
 
 <% if !@entry.deprecated %>
 
-    <% content_for :control_tools do %>
-      <%= render_document_sidebar_partial %>
-    <% end %>
-
     <% content_for :add_entry do %>
-        <% if @entry.source %>
-          <li><%= link_to "From #{@entry.source.public_id}", new_entry_path(source_id: @entry.source) %></li>
-        <% end %>
+      <!-- add linked personal observation -->
         <% if @entry.manuscript %>
-          <li><%= link_to "Link New Personal Observation", new_source_path({create_entry: 1, manuscript_id: @entry.manuscript.id, source_type: 4}) %></li>
+          <li>
+            <%= link_to(new_source_path({create_entry: 1, manuscript_id: @entry.manuscript.id, source_type: 4})) do %>
+              <span class="glyphicon glyphicon-plus"></span> Create Linked Personal Observation
+            <% end %>
+          </li>
         <% else %>
-          <li><%= link_to "Link New Personal Observation", new_source_path({create_entry: 1, new_manuscript: true, original_entry: @entry.id, source_type: 4}) %></li>
+          <li>
+            <%= link_to(new_source_path({create_entry: 1, new_manuscript: true, original_entry: @entry.id, source_type: 4})) do %>
+              <span class="glyphicon glyphicon-plus"></span> Create Linked Personal Observation
+            <% end %>
+          </li>
+          <li class='divider'></li>
         <% end %>
+
+
+<% end %>
+
+<% content_for :control_tools do %>
+  <%= render_document_sidebar_partial %>
+  
+  <!-- Add another entry for this source -->
+    <% if @entry.source && (!["provenance_observation", "observation"].include?(@entry.source.source_type.name) || @entry.source.created_by == current_user) %>
+      <li class='divider'></li>
+      <li>
+        <%= link_to (new_entry_path(source_id: @entry.source)) do %>
+          <span class="glyphicon glyphicon-plus"></span> Add Entry From <%= @entry.source.public_id %>
+        <% end %>
+      </li>
     <% end %>
+  <% end %>
 
 <% end %>

@@ -3,10 +3,13 @@
 </li>
 <% if can? :link, @manuscript %>
 <li class="manage_entry">
-    <a href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>">Linking Tool for <%= @manuscript.public_id %></a>
+    <a href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>"><span class="glyphicon glyphicon-link"></span> Linking Tool for <%= @manuscript.public_id %></a>
 </li>
 <li>
-    <a href="#proposed-history" class='toggle-propose-history' data-toggle="collapse">Construct History<span sdbm-tooltip="manuscript_propose_history"></span></a>
+    <a href="#proposed-history" class='toggle-propose-history' data-toggle="collapse">
+      <span class="glyphicon glyphicon-header"></span>
+      Construct History<span sdbm-tooltip="manuscript_propose_history"></span>
+    </a>
 </li>
 <%= render partial: "nav/bookmark_watch", locals: {model: @manuscript } %>
 <% end %>

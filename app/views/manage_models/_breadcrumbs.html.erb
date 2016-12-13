@@ -1,22 +1,28 @@
-<li class="breadcrumb list-group-item">
-  <a href="<%= polymorphic_path(@model.class) %>">Manage <%= @model.class.name.pluralize %>
-  </a>
-</li>
 <% if @model.id %>
-    <li class="list-group-item breadcrumb <%= current_page?(polymorphic_path(@model)) ? 'active' : '' %>">
+  <li>
+    <a href="<%= polymorphic_path(@model.class) %>">Manage <%= @model.class.name.pluralize %>
+    </a>
+  </li>
+  <% if defined? last_search %>
+    <li>
+      <a href="<%= polymorphic_path(@model.class, last_search: true) %>">Return to Latest Search
+      </a>
+    </li>
+  <% end %>
+    <li class="  <%= current_page?(polymorphic_path(@model)) ? 'active' : '' %>">
       <a href="<%= polymorphic_path(@model) %>"><%= @model.public_id %></a>
     </li>
   <% if can? :edit, @model %>
-    <li class="list-group-item breadcrumb <%= current_page?(action: 'edit') ? 'active' : '' %>">
+    <li class="  <%= current_page?(action: 'edit') ? 'active' : '' %>">
       <a href="<%= polymorphic_path(@model) %>/edit">Edit <%= @model.public_id %></a>
     </li>
     <% if current_page?("#{polymorphic_path(@model)}/history") %>
-      <li class="list-group-item breadcrumb active">
+      <li class="  active">
         <a href="<%= polymorphic_path(@model) %>/history">Change History for <%= @model.public_id %></a>
       </li>
     <% end %>
     <% if current_page?("#{polymorphic_path(@model)}/merge") %>
-      <li class="list-group-item breadcrumb active">
+      <li class="  active">
         <a href="<%= polymorphic_path(@model) %>/merge">Merging <%= @model.public_id %></a>
       </li>
     <% end %>

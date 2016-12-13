@@ -567,21 +567,29 @@ $(document).ready(function() {
 </div>
 <% content_for :add_entry do %>
     <% if @entry %>
-        <li><%= link_to "Link New Personal Observation", new_source_path({create_entry: 1, new_manuscript: true, original_entry: @entry.id, source_type: 4}) %></li>
+        <li>
+            <%= link_to(new_source_path({create_entry: 1, new_manuscript: true, original_entry: @entry.id, source_type: 4})) do %>
+                <span class="glyphicon glyphicon-plus"></span> Create Linked Personal Observation
+            <% end %>
+        </li>
     <% elsif @manuscript %>
-        <li><%= link_to "Link New Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %></li>
+        <li>
+            <%= link_to(new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4})) do %>
+                <span class="glyphicon glyphicon-plus"></span> Create Linked Personal Observation
+            <% end %>
+        </li>
     <% end %>
 <% end %>
 
 <% content_for :breadcrumbs do %>
     <% if @entry %>
-        <li class="list-group-item breadcrumb"><%= link_to "Manage Entries", entries_path %></li>
-        <li class="list-group-item breadcrumb"><%= link_to @entry.public_id, entry_path(@entry) %></li>
-        <li class="list-group-item breadcrumb active"><a href="">Linking tool for <%= @entry.public_id %></a></li>
+        <li class=" "><%= link_to "Manage Entries", entries_path %></li>
+        <li class=" "><%= link_to @entry.public_id, entry_path(@entry) %></li>
+        <li class="  active"><a href="">Linking tool for <%= @entry.public_id %></a></li>
     <% elsif @manuscript %>
-        <li class="list-group-item breadcrumb"><%= link_to "Manage Manuscripts", manuscripts_path %></li>
-        <li class="list-group-item breadcrumb"><%= link_to @manuscript.public_id, manuscript_path(@manuscript) %></li>
-        <li class="list-group-item breadcrumb active"><a href="">Linking tool for <%= @manuscript.public_id %></a></li>
+        <li class=" "><%= link_to "Manage Manuscripts", manuscripts_path %></li>
+        <li class=" "><%= link_to @manuscript.public_id, manuscript_path(@manuscript) %></li>
+        <li class="  active"><a href="">Linking tool for <%= @manuscript.public_id %></a></li>
     <% end %>    
 <% end %>
 

@@ -1,16 +1,17 @@
 <% content_for :control_tools do %>
     <%= render partial: "tools", locals: {source: @source} %>
+    <li class="divider"></li>
+    <% if !["provenance_observation", "observation"].include?(@model.source_type.name) || @model.created_by == current_user %>
+    <li>
+        <%= link_to (new_entry_path(source_id: @source.id)) do %>
+            <span class="glyphicon glyphicon-plus"></span> Add Entry From <%= @source.public_id %>
+        <% end %>
+    </li>
+    <% end %>
 <% end %>
 <% content_for :breadcrumbs do %>
     <% @model = @source %>
     <%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
-<% end %>
-<% if !["provenance_observation", "observation"].include?(@model.source_type.name) || @model.created_by == current_user %>
-<% content_for :add_entry do %>
-    <li>
-        <%= link_to "From #{@source.public_id}", new_entry_path(source_id: @source.id) %>
-    </li>
-<% end %>
 <% end %>
 
 <div class="row">
