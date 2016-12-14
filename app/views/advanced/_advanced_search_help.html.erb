@@ -1,3 +1,19 @@
+<% if params[:f] and params[:f].count > 0 %>
+  <div class="panel panel-default facet_limit facet_limit-active">
+    <div class="collapse-toggle panel-heading" data-toggle="collapse" data-target="#selected-facets">
+      <h5 class="panel-title facet-field-heading">
+        Selected Filters
+      </h5>
+    </div>
+    <div id="selected-facets" class="panel-collapse facet-content collapse in">
+      <div class="panel-body">
+        <ul class="list-unstyled facet-values">
+          <%= render_constraints_filters_side(params) %>
+        </ul>
+      </div>
+    </div>
+  </div>
+<% end %>
 <div class='panel panel-default'>
   <div class="panel-heading">Search tips</div>
   <div class="panel-body">
