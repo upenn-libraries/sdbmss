@@ -140,19 +140,19 @@ $("#addSearch").click( function (e) {
     });
     setOptions(p);
 });
-var p = $('.search-block').eq(0);
-p.find(".search-remove").click( function (e) {
-    if ($('.search-block').length > 1) {     // if there are others, remove it
-        p = $(this).closest('.search-block');
-        $(".search").find(p).remove();
-    } else {                                    // otherwise, clear all the fields
-        p.find("input").each(function (e) {
-            $(this).val("");
-        })
-        p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
-    }
-});
 $(document).ready( function () {
+    var p = $('.search-block').eq(0);
+    p.find(".search-remove").click( function (e) {
+        if ($('.search-block').length > 1) {     // if there are others, remove it
+            p = $(this).closest('.search-block');
+            $(".search").find(p).remove();
+        } else {                                    // otherwise, clear all the fields
+            p.find("input").each(function (e) {
+                $(this).val("");
+            })
+            p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
+        }
+    });
     setOptions(p);
 });
 

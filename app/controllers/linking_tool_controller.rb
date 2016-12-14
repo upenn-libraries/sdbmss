@@ -3,10 +3,17 @@
 # through which Entries get associated Manuscripts.
 class LinkingToolController < ApplicationController
 
+  def options
+    @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
+    @field_options = ["contains", "does not contain", "blank", "not blank"]
+    @date_options = ["before", "after", "near", "exact"]
+  end
+
   def by_entry
     authorize! :link, Entry
     @mode = "by_entry"
     @entry = Entry.find(params[:id].to_i)
+    options
     if @entry.manuscript.blank?
       render "show"
     else
@@ -18,6 +25,7 @@ class LinkingToolController < ApplicationController
     authorize! :link, Manuscript
     @mode = "by_manuscript"
     @manuscript = Manuscript.find(params[:id].to_i)
+    options
     render "show"
   end
 

@@ -799,7 +799,7 @@ label.col-sm-2-and-half {
             <div class="col-sm-2">
               <span class='control-label' sdbm-tooltip="entry_provenance_agent">Authority Name</span>
             </div>
-            <div class="col-sm-4 text-right" style="height: 20px;">
+            <div class="col-sm-4 text-right">
               <a id='find_provenance_name_authority_{{ $index }}' ng-if='prov.provenance_agent.id == undefined' ng-init="prov.provenance_agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', prov.provenance_agent, 'is_provenance_agent', prov.observed_name)" style="width: 100%">Find or Create Authority Name</a>
               <div ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' class="form-control well well-sm well-name-authority text-left" style="max-width: 85%;">
                 <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(prov, 'provenance_agent')"></a>
@@ -826,7 +826,7 @@ label.col-sm-2-and-half {
                 </div>
               </div>
             </div>
-            <div class="col-sm-5 text-right form-inline">
+            <div class="col-sm-5 text-right form-inline prov-date-range">
               <label class='control-label' sdbm-tooptip="doesntexist">Suggested Date Range For Search:</label>
               <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start" placeholder="YYYY" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">
               to  

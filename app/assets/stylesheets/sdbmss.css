@@ -429,6 +429,11 @@ textarea { resize:vertical ; }
   margin-top: 15px;
   padding-top: 15px;
 }
+#linking-tool #search_results_wrapper {
+  margin-top: 0px;
+  padding-top: 0px;
+}
+#linking-tool 
 
 
 .filterName {
@@ -581,10 +586,6 @@ h1 { font-size: 30px; margin-top: 0; }
 .linking_table_header .dataTables_paginate, .linking_table_header .dataTables_info {
   float: right;
   margin-left: 10px;
-}
-/* ill-advised hack-y margin top adjustment to align things better*/
-.linking_table_header {
-  margin-top: -60px;
 }
 
 div.dataTables_paginate ul.pagination {
@@ -905,9 +906,6 @@ li.provenance:hover, li.provenance:focus {
 }
 .provenance-row:last-child {
   border-bottom: none;
-}
-.prov-date {
-  height: 20px;
 }
 .prov-date select {
   width: 85px !important;
@@ -1361,6 +1359,18 @@ so that gray backdrop shvows up correctly */
   }
   .notifications:before {
     display: none !important;
+  }
+  .well-name-authority {
+    max-width: calc(100% - 45px);
+  }
+  .prov-date-range {
+    text-align: center;
+  }
+  .prov-date-range input {
+    display: inline-block;
+  }
+  .prov-date-range label {
+    display: block;
   }
 }
 
