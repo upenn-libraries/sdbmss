@@ -176,7 +176,7 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-12 text-center">
+    <div class="col-sm-12 text-center" style="margin-bottom: 20px;">
         Do you have more recent information?
          <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %>
     </div>
@@ -202,9 +202,9 @@
         <div class="panel panel-provenance <%= entry.source.source_type_id == 8 ? 'panel-warning' : 'panel-default' %>">
             <div class="panel-heading">
                 <div class="row">
-                    <div class="col-sm-2">
+                    <div class="col-sm-2 one-line">
                         <span class="h4">
-                            <a href="<%= url_for entry %>"><%= entry.public_id %></a>
+                            <a href="<%= url_for entry %>" title="<%= entry.public_id %>"><%= entry.public_id %></a>
                             <% if (type = entry.entry_manuscripts.where(manuscript_id: @manuscript.id).last.relation_type) != "is" %>
                                 <br><small>(<%= type %>)</small>
                             <% end %>
