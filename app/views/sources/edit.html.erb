@@ -9,12 +9,14 @@
 
 <% content_for :control_tools do %>
     <%= render partial: "tools", locals: {source: @source} %>
+    <% if @source.id %>
     <li class="divider"></li>
     <li>
         <%= link_to(new_entry_path(source_id: @source)) do %>
           <span class="glyphicon glyphicon-plus"></span> Add Entry From <%= @source.public_id %>
         <% end %>
     </li>
+    <% end %>
 <% end %>
 
 <% if @source.persisted? %>
@@ -193,7 +195,7 @@
             </div>
         </div>
         
-        <div class="auction-source-container" ng-show="source.source_type.name == 'collection_catalog'">
+        <div class="auction-source-container" ng-if="source.source_type.name == 'collection_catalog'">
 
             <div class="form-group row">
                 <label class="col-sm-2 control-label">
@@ -236,7 +238,7 @@
 
         </div>
 
-        <div class="auction-source-container" ng-show="source.source_type.name == 'observation'">
+        <div class="auction-source-container" ng-if="source.source_type.name == 'observation'">
 
             <div class="form-group row" ng-init="user = '<%= current_user.to_s %>'">
                 <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_observer">Observer</span></label>
@@ -272,7 +274,7 @@
 
         </div>
         
-        <div class="other-published-container" ng-show="source.source_type.name == 'other_published'">
+        <div class="other-published-container" ng-if="source.source_type.name == 'other_published'">
 
             <div class="form-group row">
                 <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
@@ -290,7 +292,7 @@
 
         </div>
 
-        <div class="auction-source-container" ng-show="source.source_type.name == 'unpublished'">
+        <div class="auction-source-container" ng-if="source.source_type.name == 'unpublished'">
 
             <div class="form-group row">
                 <label class="col-sm-2 control-label">
@@ -341,7 +343,7 @@
                 </select>
             </div>-->
 
-        <div class="form-group row" ng-show="source.id">
+        <div class="form-group row" ng-if="source.id">
             <label for="status" class="col-sm-2 control-label"><span sdbm-tooltip="source_status">Status</span></label>
             <div class="col-sm-3">
                 <select class="form-control" name="status" id="status" ng-model="source.status" >
@@ -350,7 +352,7 @@
             </div>
         </div>
 
-        <div ng-show="source.source_type.name != 'observation'">
+        <div ng-if="source.source_type.name != 'observation'">
 
             <div class="row">
                 <div class="col-sm-12 text-center">

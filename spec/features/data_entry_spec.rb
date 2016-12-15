@@ -728,7 +728,7 @@ describe "Data entry", :js => true do
 
       expect(page).to have_content("Create a New Personal Observation")
 
-      fill_in "title", with: "Totally Unique Personal Observation Source" 
+      fill_in "author", with: "Totally Unique Personal Observation Source" 
       click_button "Save"
 
       expect(page).to have_content("Known errors in the Source should be preserved but can be noted")

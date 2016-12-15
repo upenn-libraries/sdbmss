@@ -10,7 +10,7 @@ class GroupUsersController < ApplicationController
     admin = params[:admin] || false
     group_user = GroupUser.find(params[:id])
     if group_user.role == "Manager" && group_user.group.admin.count <= 1
-      flash[:error] = "You are trying to delete the last manager of the group - all groups must have at least one manager."
+      flash.now[:error] = "You are trying to delete the last manager of the group - all groups must have at least one manager."
     else
       group_user.destroy
     end

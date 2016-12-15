@@ -92,11 +92,7 @@ describe "Manage sources", :js => true do
   end
 
   it "should create a new Source" do
-    visit sources_path
-
-    expect(page).to have_content('Add New Source')
-
-    find(".add-new-record").click
+    visit new_sources_path
 
     select "Auction/Dealer Catalog", from: 'source_type'
     #find("#source_type").set("Auction/Dealer Catalog")

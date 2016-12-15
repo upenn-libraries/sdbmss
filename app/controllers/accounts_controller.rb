@@ -61,7 +61,7 @@ class AccountsController < SearchableAuthorityController
       format.json { render :json => {}, :status => :ok }
       format.html {
         if users
-          flash[:success] = "Group membership pending for #{users.map(&:username).join(', ')}."
+          flash.now[:success] = "Group membership pending for #{users.map(&:username).join(', ')}."
         end        
         redirect_to group_path(group) 
       }

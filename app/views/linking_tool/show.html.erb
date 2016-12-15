@@ -235,9 +235,6 @@ $(document).ready(function() {
                 params[search_option_field].push(search_option);
             }            
          });
-
-         params["deprecated"] = "*";
-
          return params;
      };
 
@@ -355,8 +352,7 @@ $(document).ready(function() {
             // seems like there should be a way to do this conditional
             // ajax and subsequent searchAndUpdateTable using
             // promises, but I can't figure that out right now
-            
-            var params = translateSearchParams(sdbmTable, dt_params);                
+            var params = translateSearchParams(sdbmTable, dt_params); 
             params["approved"] = "*";
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {

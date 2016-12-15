@@ -103,7 +103,7 @@ class ManageModelsController < ApplicationController
         }
       end
     else
-      render 'show'
+      render 'edit'
     end
   end
 
