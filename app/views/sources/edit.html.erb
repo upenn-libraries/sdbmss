@@ -243,7 +243,7 @@
             <div class="form-group row" ng-init="user = '<%= current_user.to_s %>'">
                 <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_observer">Observer</span></label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="author" ng-model="source.author" value="<%= current_user.to_s %>">
+                    <input type="text" class="form-control" id="author" ng-model="source.author" ng-init="user && !source.author ? source.author = user : ''" value="<%= current_user.to_s %>">
                 </div>
             </div>
 

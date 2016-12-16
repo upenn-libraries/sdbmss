@@ -736,6 +736,8 @@ describe "Data entry", :js => true do
       first(".save-button").click
       first(".save-button").click
 
+      sleep 4
+
       expect(page).to have_content("This entry has been identified as belonging to manuscript record SDBM_MS_2, which has 2 entries in the SDBM.")
     end
 

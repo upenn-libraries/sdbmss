@@ -316,6 +316,8 @@ textarea { resize:vertical ; }
 
 .breadcrumb {
   background: none;
+  text-align: center;
+  margin: 0px;
 }
 .breadcrumb-item.active a {
   border: 1px solid #eee;

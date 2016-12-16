@@ -181,7 +181,6 @@ var load_session = false;
 
                 if (load_session) {
                     var params = JSON.parse($('#last_search').attr('data'));
-                    console.log(params);
                     manageRecords.setFormStateFromParams(params);
                     load_session = false;
                 } else {                    
@@ -336,7 +335,6 @@ var load_session = false;
                 for (var i = 0; i < qs[key].length; i++) {
                     var item = qs[key][i];
                     var option = qs[option_string][i];
-                    console.log(key_string, option_string, item, option);
                     $('select[name=search_field]').eq(j).val(key_string);
                     $('input[name=search_value]').eq(j).val(item);
                     $('select[name=search_option]').eq(j).val(option);
