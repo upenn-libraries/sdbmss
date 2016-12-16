@@ -85,14 +85,27 @@ label.col-sm-2-and-half {
   <%= render partial: "catalog/breadcrumbs", locals: {edit: true} %>
 <% end %>
 
-<% if (@entry.source && can?(:edit, @entry.source)) || @entry.id %>
 <% content_for :control_tools do %>
         <ul class="nav">
+            <% if @entry.id %>
+              <%= render partial: "nav/bookmark_watch", locals: {model: @entry } %>
+            <% else %>
+              <li class="disabled"><a href=""><span class="glyphicon glyphicon-bookmark"></span> Bookmark</a></li>
+              <li class="disabled"><a href=""><span class="glyphicon glyphicon-eye-open"></span> Watch</a></li>
+            <% end %>
             <% if @entry.source && can?(:edit, @entry.source) %>
               <li role="presentation">
                 <a role="menuitem" tabindex="-1" href="/sources/<%= @entry.source.id %>/edit" target="_blank">
                   <span class="glyphicon glyphicon-edit"></span>
                   Edit source <%= @entry.source.public_id %>
+                </a>
+              </li>
+            <% else %>
+              <!-- disabled -->
+              <li role="presentation" class='disabled'>
+                <a role="menuitem" tabindex="-1" href="" target="">
+                  <span class="glyphicon glyphicon-edit"></span>
+                  Edit Source
                 </a>
               </li>
             <% end %>
@@ -109,6 +122,20 @@ label.col-sm-2-and-half {
                   Linking Tool for <%= @entry.public_id %>
                 </a>
               </li>
+            <% else %>
+              <!-- disabled -->
+              <li role="presentation" class='disabled'>
+                <a role="menuitem" tabindex="-1" href="">
+                  <span class="glyphicon glyphicon-list-alt"></span> 
+                  View history
+                </a>
+              </li>
+              <li role="presentation" class='disabled'>
+                <a href="">
+                  <span class="glyphicon glyphicon-link"></span>
+                  Linking Tool
+                </a>
+              </li>
             <% end %>
             <% if @entry.source %>
               <li class="divider"></li>
@@ -119,7 +146,6 @@ label.col-sm-2-and-half {
               </li>
             <% end %>
         </ul>
-<% end %>
 <% end %>
 
 <% content_for :add_entry do %>
@@ -557,7 +583,7 @@ label.col-sm-2-and-half {
           </a>
         </div>
           <div class="col-sm-12">
-            <span class='control-label' sdbm-tooltip="entry_place">As Recorded</span>
+            <span class='control-label' sdbm-tooltip="entry_place_as_recorded">As Recorded</span>
             <input input maxlength="255" id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name">
             
             <span class='control-label' sdbm-tooltip="entry_place">Authority Name</span>
@@ -811,7 +837,7 @@ label.col-sm-2-and-half {
           </div>
           <div class="row provenance-row">
             <div class="col-sm-2">
-              <label for="" class="control-label">Date(s)</label>
+              <label for="" class="control-label" sdbm-tooltip="entry_provenance_dates">Date(s)</label>
             </div>
             <div class="col-sm-5">
               <div class="prov-date">
@@ -827,7 +853,7 @@ label.col-sm-2-and-half {
               </div>
             </div>
             <div class="col-sm-5 text-right form-inline prov-date-range">
-              <label class='control-label' sdbm-tooptip="doesntexist">Suggested Date Range For Search:</label>
+              <label class='control-label' sdbm-tooltip="entry_provenance_date_range_for_search">Suggested Date Range For Search:</label>
               <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start" placeholder="YYYY" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">
               to  
               <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date_normalized_end" placeholder="YYYY" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">              

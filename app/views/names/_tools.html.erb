@@ -1,0 +1,18 @@
+<% if user_signed_in? %>
+    <% disabled = edit ? 'disabled' : '' %>
+    <%= render partial: "nav/bookmark_watch", locals: {model: @model } %>
+    <li class="history <%= disabled %>"><a href="<%= history_name_path(@model.id) %>"><span class="glyphicon glyphicon-list-alt"></span> View change history</a></li>
+    <% if current_user.role == 'admin' %>
+        <li class="link <%= disabled %>"><a href="<%= merge_name_path(@model.id) %>"><span class="glyphicon glyphicon-transfer"></span> Merge</a></li>
+        <% if !@model.reviewed %>
+            <li class="link <%= disabled %>">
+                <%= link_to "Approve", name_path(@model, reviewed: true), :method => :put %>
+            </li>
+        <% end %>
+    <% end %>
+    <% if !@model.confirmed and can? :edit, Name %>
+        <li class="link <%= disabled %>">
+            <%= link_to "Confirm", name_path(@model, confirmed: true), :method => :put, :data => {:confirm => "Do you have adequate information to assert that this name refers to a real individual?"} %>
+        </li>
+    <% end %>
+<% end %>

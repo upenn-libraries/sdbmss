@@ -1,4 +1,8 @@
 <% if user_signed_in? %>
-    <li class="link"><%= link_to 'Change History', polymorphic_path([:history, @model]) %></li>
+    <li class="link">
+      <%= link_to(polymorphic_path([:history, @model])) do %>
+        <span class="glyphicon glyphicon-list-alt"></span> Change History
+      <% end %>
+    </li>
     <!-- eventually, merge will be here? -->
 <% end %>

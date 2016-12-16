@@ -5,7 +5,15 @@
 <% @page_title = "Edit #{model_id} - " + application_name %>
 
 <% content_for :breadcrumbs do %>
-  <%= render partial: "manage_models/breadcrumbs", locals: {edit: true} %>
+  <% if model_class == Name %>
+    <%= render partial: "manage_models/breadcrumbs", locals: {edit: true, last_search: session[:last_name_search]} %>
+  <% else %>
+    <%= render partial: "manage_models/breadcrumbs", locals: {edit: true} %>
+  <% end %>
+<% end %>
+
+<% content_for :control_tools do %>
+  <%= render partial: 'tools', locals: {edit: true} %>
 <% end %>
 
 <h1>Editing <%= model_id %></h1>

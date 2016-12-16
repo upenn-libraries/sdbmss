@@ -1,5 +1,5 @@
 <% content_for :control_tools do %>
-    <%= render partial: "tools", locals: {source: @source} %>
+    <%= render partial: "tools", locals: {source: @source, edit: false} %>
     <li class="divider"></li>
     <% if !["provenance_observation", "observation"].include?(@model.source_type.name) || @model.created_by == current_user %>
     <li>

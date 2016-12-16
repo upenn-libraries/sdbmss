@@ -13,7 +13,7 @@
       <a href="<%= polymorphic_path(@model) %>"><%= @model.public_id %></a>
     </li>
   <% if can? :edit, @model %>
-    <li class="  <%= current_page?(action: 'edit') ? 'active' : '' %>">
+    <li class="<%= current_page?(action: 'edit') ? 'active' : '' %>">
       <a href="<%= polymorphic_path(@model) %>/edit">Edit <%= @model.public_id %></a>
     </li>
     <% if current_page?("#{polymorphic_path(@model)}/history") %>

@@ -96,14 +96,13 @@
 
     <div id="main-container" class="container">
 
+      <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
       <!--  breadcrumbs -->
       <% if content_for :breadcrumbs %>
       <ol class="breadcrumb">
         <%= yield :breadcrumbs %>
       </ol>
       <% end %>
-
-      <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
 
       <div class="row">
         <div class="col-sm-12">

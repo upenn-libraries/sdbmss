@@ -13,7 +13,7 @@ class CatalogController < ApplicationController
   # Overrides Blacklight::Catalog#show to check for existence and send
   # 404 if necessary
   def show
-    @disclaimer = "Note: This entry records a mention or observation of a manuscript in a source.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
+    flash.now[:notice] = "Note: This entry records a mention or observation of a manuscript in a source.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
 
     @entry = Entry.find_by(id: params[:id])
     entry = @entry

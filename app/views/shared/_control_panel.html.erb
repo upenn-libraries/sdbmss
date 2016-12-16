@@ -9,8 +9,18 @@
                     </div>
                 </div>
                 <div class="col-xs-8">
-                    <%= render partial: "shared/username_with_profile_link", locals: {user: current_user} %><br>
-                    <span class="text-muted">User Level: <em><%= current_user.role %></em></span>
+                  <span class="dropdown">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                      <%= current_user.to_s %>
+                      <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a href="<%= profile_path(username: current_user.username) %>"><span class="glyphicon glyphicon-user"></span>My Profile</a></li>
+                      <li><a href="<%= private_messages_path %>"><span class="glyphicon glyphicon-envelope"></span> My Messages</a></li>
+                      <li><%= link_to edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
+                    </ul>
+                  </span><br>
+                  <span class="text-muted">User Level: <em><%= current_user.role %></em></span>
                 </div>
             </div>
         </div>

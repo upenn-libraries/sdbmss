@@ -12,14 +12,21 @@
         <span class="sr-only">Toggle navigation</span>
         <span class="glyphicon glyphicon-menu-hamburger"></span>
       </button>
-
-      <div class="collapse navbar-collapse user-util-collapse text-left">
-        <%= render partial: "shared/navbar_brand" %>
-      </div>
     </div>
-
-    <div class="collapse navbar-collapse user-util-collapse">
-      <%= render :partial=>'/user_util_links' %>
+    <div class="row">
+      <div class="col-sm-4 hide-mobile">
+        <%= image_tag 'neh_logo_horizlarge.png', class: "img img-responsive", style: "height: 44px; display: inline-block;" %>
+      </div>
+      <div class="col-sm-4 text-center">
+        <div class="collapse navbar-collapse user-util-collapse text-left">
+          <%= render partial: "shared/navbar_brand" %>
+        </div>
+      </div>
+      <div class="col-sm-4 text-right">
+        <div class="collapse navbar-collapse user-util-collapse">
+          <%= render :partial=>'/user_util_links' %>
+        </div>
+      </div>
     </div>
   </div>
 </div>

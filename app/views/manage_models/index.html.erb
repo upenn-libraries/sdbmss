@@ -7,7 +7,7 @@
 <% end %>
 
 <% content_for :control_tools do %>
-    <% if can? :manage, model_class %>
+    <% if current_user.role == 'admin' %>
     <li>
         <% if resource_name == "entries" %>
             <a href="" id="mark-as-approved"><span class="glyphicon glyphicon-ok"></span> Mark as approved</a>                            

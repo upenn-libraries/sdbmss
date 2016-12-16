@@ -920,7 +920,7 @@ li.provenance:hover, li.provenance:focus {
   width: calc(50% - 10px);
 }
 .input-block.provenance-block:before {
-  line-height: 155px;
+  line-height: 36px;
 }
 fieldset[disabled=disabled] a, 
 fieldset[disabled=disabled] .form-control, 
