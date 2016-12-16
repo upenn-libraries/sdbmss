@@ -1,0 +1,21 @@
+<!-- FIX ME: currently only used in dashboard view to show preview of manuscript record -->
+<% manuscript = record %>
+<div class="panel-heading">
+    <strong class="h4"><%= link_to manuscript.public_id, manuscript_path(manuscript) %></strong>
+    <% if !manuscript.reviewed %>
+          <span class="alert alert-warning alert-sm"><span class="glyphicon glyphicon-alert"></span> Unapproved</span>
+    <% end %>
+</div>
+<div class="panel-body">
+<dl class="document-metadata">
+  <dt>Title(s)</dt>
+  <dd>
+    <%= manuscript.all_titles.to_a.join(", ") %>
+  </dd>
+  <dt># Entries</dt>
+  <dd>This Manuscript is linked to <%= manuscript.entries.count %> entries.</dd>
+</dl>
+<div class="text-center text-muted">
+  <span class="glyphicon glyphicon-time"></span> Created At <%= manuscript.created_at.to_formatted_s(:long) %>
+</div>
+</div>

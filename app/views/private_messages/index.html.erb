@@ -1,8 +1,4 @@
-<% content_for :breadcrumbs do %>
-  <li class="breadcrumb list-group-item active"><a href="/private_messages">Messages</a></li>
-<% end %>
-
-<%= render partial: "header", locals: {title: (@sent_by ? "SENT MAIL" : "INBOX")} %>
+<%= render partial: "header", locals: {title: (@sent_by ? "SENT" : "INBOX")} %>
 
 <% @chains.each do |chain| %>
   <% if @sent_by %>
@@ -23,7 +19,7 @@
       <div class="col-sm-2 private_message_preview">
         <%= chain.users(current_user).map{ |user| user == current_user ? "Me" : (user ? user.username : 'DEPRECATED') }.join(", ") %>
       </div>
-      <div class="col-sm-8 private_message_preview">
+      <div class="col-sm-7 private_message_preview">
         <% if um > 0 %>
           <strong class="glyphicon glyphicon-exclamation-sign text-success"></strong>
         <% end %>
@@ -33,7 +29,7 @@
         </strong>
         <%= sanitize simple_format(m.message), tags: %w(code b i br strong em a), attributes: %w(href) %>
       </div>
-      <div class="col-sm-2 text-right">
+      <div class="col-sm-3 text-right">
         <%= m.created_at.to_formatted_s(:long) %>
       </div>
     <% end %>

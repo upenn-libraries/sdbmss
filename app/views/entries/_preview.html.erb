@@ -1,35 +1,16 @@
-<% # container for a single doc -%>
-<%# entry = document.model_object %>
-<!--
-<div class="panel panel-default panel-preview grid-item">
-<%# render partial: "entries/preview", locals: {record: entry } %>
-</div>
--->
-<div class="document <%= render_document_class document %>" itemscope itemtype="<%= document.itemtype %>">
-    <% entry = document.model_object %>
+<!-- FIX ME: currently only used in dashboard view to show preview of entry record -->
+<% entry = record %>
     <% if entry.nil? %>
-        <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
+    <p>Error: couldn't retrieve model object from database.</p>
     <% else %>
-    <dl class="document-metadata document-show-heading dl-horizontal dl-invert">
-        <dt></dt>
-        <%# data-context-href triggers an HTTP callback before loading the entry page; this makes prev/next links on individual Entry page work %>
-      <dd class="">
-        <div class="row">
-          <div class="col-sm-6">
-            <span class='h4'>
-              <a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a>
-            </span>
-            <% if !entry.approved %>
+    <div class="panel-heading">
+        <strong class="h4"><%= link_to entry.public_id, entry_path(entry) %></strong>
+        <% if !entry.approved %>
               <span class="alert alert-warning alert-sm"><span class="glyphicon glyphicon-alert"></span> Unapproved</span>
-            <% end %>
-          </div>
-          <div class="col-sm-6 text-right h4">
-            <%= render partial: 'catalog/bookmark_control', locals: {document: document} %>
-          </div>
-        </div>
-      </dd>
-    </dl>
-    <dl class="document-metadata dl-horizontal dl-invert">
+        <% end %>
+    </div>
+    <div class="panel-body">
+    <dl class="document-metadata">
         <% manuscripts_str = render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
         <% if manuscripts_str.present? %>
         <dt></dt>
@@ -38,24 +19,19 @@
         </dd>
         <% end %>
 
-      <% entry.supercedes.each do |superceded| %>
-        <dt></dt>
-        <dd class='text-warning'>This entry supercedes the deprecated entry <a href="/entries/<%= superceded.id %>" class="bg-warning text-warning"><%= superceded.public_id %></a>.</dd>
-      <% end %>
-
-	    <dt>Source</dt>
-	    <dd>
+      <dt>Source</dt>
+      <dd>
             <%= link_to entry.source.display_value, source_path(entry.source) %> (<%= entry.source.source_type.display_name %>)
         </dd>
 
         <% if entry.catalog_or_lot_number.present? %>
-	    <dt>Cat./Lot #</dt>
-	    <dd><%= entry.catalog_or_lot_number %></dd>
+      <dt>Cat./Lot #</dt>
+      <dd><%= entry.catalog_or_lot_number %></dd>
         <% end %>
 
         <% if entry.institution.present? %>
-	    <dt>Institution/Collection</dt>
-	    <dd><%= entry.institution %></dd>
+      <dt>Institution/Collection</dt>
+      <dd><%= entry.institution %></dd>
         <% end %>
         
         <% if (sale = entry.get_sale).present? %>
@@ -80,7 +56,7 @@
 
           <% if (buyers = sale.get_buyers).present? %>
               <dt>Buyer(s)</dt>
-              <dd>
+              <dd class="col-sm-10">
                   <% buyers.each do |buyer| %>
                       <a href="<%= name_path(buyer.agent) %>"><%= buyer.agent.name %></a><br>
                   <% end %>
@@ -89,9 +65,8 @@
 
         <% end %>
 
-
         <% if entry.entry_titles.length > 0 %>
-	    <dt>Titles</dt>
+      <dt>Titles</dt>
         <dd>
         <% entry.entry_titles.each do |entry_title| %>
           <%= entry_title.title %> <% if entry_title.common_title.present? %>[<%= entry_title.common_title %>]<% end %><br/>
@@ -146,21 +121,19 @@
         <% if (provenance_count = entry.provenance.length) > 0 %>
         <dt>Provenance Info</dt>
         <dd>
-            This entry has <%= provenance_count %> provenance records involving:<br/>
+            This entry has <%= provenance_count %> provenance records involving: 
             <% entry.unique_provenance_agents.each do |unique_provenance_agent| %>
                 <% if unique_provenance_agent[:agent].present? %>
                 <a href="<%= url_for unique_provenance_agent[:agent] %>"><%= unique_provenance_agent[:agent] %></a>
                 <% else %>
                   <%= unique_provenance_agent[:name] %>
                 <% end %>
-                <br/>
             <% end %>
         </dd>
         <% end %>
-
-        <dt></dt>
-        <dd><%= link_to "View complete record...", entry_path(entry) %></dd>
     </dl>
+    <div class="text-center text-muted">
+      <span class="glyphicon glyphicon-time"></span> Created At <%= entry.created_at.to_formatted_s(:long) %>
+    </div>
+    </div>
     <% end %>
-
-</div>

@@ -1,7 +1,4 @@
-<% content_for :breadcrumbs do %>
-  <li class="list-group-item breadcrumb"><a href="/private_messages">Messages</a></li>
-  <li class="list-group-item breadcrumb active"><a href="">MSG: <%= @chain.messages.first.title %></a></li>
-<% end %>
+<% @title = @chain.messages.first.title %>
 <%= render partial: "header", locals: {title: @message.title} %>
 <div class="row">
   <div class="col-sm-12">

@@ -2,7 +2,13 @@
     <div class="modal-header">
         <h3 class="modal-title">Find {{ type | humanize }} in Name Authority
             <small class='pull-right form-inline'>
-            <label for="searchNameAuthority">Search: </label><input autofocus type="text" id="searchModelAuthority" class="search-form form-control" ng-change="autocomplete()" ng-model="nameSearchString"></small>
+                <form class='input-group' ng-submit="autocomplete()">   
+                    <input autofocus type="text" id="searchModelAuthority" class="search-form form-control" ng-model="nameSearchString">
+                    <span class='input-group-btn'>
+                        <input type="submit" class="btn btn-default" value="Search" id='search-model'>Search</input>
+                    </span>
+                </form>
+            </small>
         </h3>
     </div>
     <div class="modal-body form-horizontal compress-whitespace fit-screen">
@@ -19,7 +25,7 @@
                         <th>Reviewed</th>
                     </tr>
                 </thead>
-                <tbody class='text-center'>
+                <tbody class=''>
                     <tr ng-show="nameSearchString.length <= 0">
                         <td colspan="5">To begin searching, enter search term in the search bar.</td>
                     </tr>
@@ -46,7 +52,7 @@
     <div class="modal-footer">
         <div class='row'>
             <div class="col-sm-8 text-left">
-                Can't find the {{ type | humanize }} you are looking for? <a href="" class="btn btn-default" ng-click="createName()" id='propose-model'>Propose {{ nameSearchString || "New " + (type | humanize) }}</a>
+                Can't find the {{ type | humanize }} you are looking for? <a href="" class="btn btn-default" ng-click="createName()" id='propose-model'>Propose {{ searchTerm || "New " + (type | humanize) }}</a>
             </div>
             <div class="col-sm-4 text-right">
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>

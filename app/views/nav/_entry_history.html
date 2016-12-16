@@ -4,5 +4,5 @@
     ignore case 2. -%>
 <% if document.present? %>
 <% entry = document.model_object %>
-<a href="<%= history_entry_path(entry) %>">View history</a>
+<a href="<%= history_entry_path(entry) %>"><span class="glyphicon glyphicon-list-alt"></span> View history</a>
 <% end %>

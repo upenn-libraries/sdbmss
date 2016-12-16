@@ -100,7 +100,7 @@ module SolrSearchable
     dates = dates_for_search(params)
 
     s = self.search do
-
+      
       fulltext_search = lambda { |p, o| 
         if params.present?
           p.each do |field, value|

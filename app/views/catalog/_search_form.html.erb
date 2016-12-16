@@ -1,4 +1,5 @@
-<%= form_tag sdbmss_search_action_path, :method => :get, :class => 'search-query-form form-inline clearfix navbar-form' do %>
+<div class="navbar-header">
+  <%= form_tag sdbmss_search_action_path, :method => :get, :class => 'form-inline clearfix navbar-form' do %>
     <%= render_hash_as_hidden_fields(params_for_search().except(:q, :search_field, :qt, :page, :utf8)) %>
 
     <% unless search_fields.empty? %>
@@ -9,7 +10,7 @@
       <% end %>
       <input type="hidden" name="search_field" value="all_fields"/>
     <% end %>
-    <div class="input-group search-input-group">
+    <div class="input-group">
         <!--<label for="q" class="sr-only"><%= t('blacklight.search.form.q') %></label>-->
          <%= text_field_tag :q, params[:q], :placeholder => 'Search database...', :class => "search_q q form-control", :id => "q", :autofocus => should_autofocus_on_search_box? %>
 
@@ -19,37 +20,33 @@
           <span class="glyphicon glyphicon-search"></span>
         </button>
         <a type="button" href="<%= advanced_search_path(params_for_search) %>" class="btn btn-default advanced_search">Advanced</a>
-      </span>
-    </div>
-    <div class="" style="display: inline-block; vertical-align: middle; margin: -10px;">
-      <ul class="nav navbar-nav">
-        <% if user_signed_in? %>
-          <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Searches <span class="caret"></span></a>
-              <ul class="dropdown-menu" role="menu">
-                  <%= render_nav_actions do |config, action| %>
-                  <li><%= action %></li>
-                  <% end %>
-              </ul>
-          </li>
-        <% end %>
-      </ul>
-    </div>
-
-    <!--
-    <div class="input-group search-input-group" style="width: 200px;">
-       <%#= text_field_tag "", "", :placeholder => 'Find Entry by ID...', :class => "search_q q form-control", :id => "goto_id", :onkeydown => "if (event.keyCode == 13) {window.location.href = '/entries/' + $('#goto_id').val(); return false;}" %>
-
-      <span class="input-group-btn">
-        <button type="button" class="btn btn-default search-btn" id="goto" onclick="window.location.href = '/entries/' + $('#goto_id').val()">
-          Go!
+        <button class='navbar-toggle btn btn-default' type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="glyphicon glyphicon-option-horizontal"></span>                       
         </button>
       </span>
-    </div>-->
-
-
-
-    <a style="float: right; margin-top: 8px; color: red;" href="<%= feedback_path %>" target='_blank'>Submit Feedback</a>
-    <a style="float: right; margin-top: 8px; margin-right: 20px;" href="<%= recent_additions_path %>" class="recent_additions">Recent Additions</a>
-
+  </div>
+  <% end %>
+</div>  
+<div class="collapse navbar-collapse" id="myNavbar">
+  <ul class="nav navbar-nav navbar-right">
+    <% if user_signed_in? %>
+      <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Searches <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+              <%= render_nav_actions do |config, action| %>
+              <li><%= action %></li>
+              <% end %>
+          </ul>
+      </li>
     <% end %>
+    <li>
+      <a style="color: red;" href="<%= feedback_path %>" target='_blank'>Submit Feedback</a>
+    </li>
+    <li>
+      <a style="" href="<%= recent_additions_path %>" class="recent_additions">Recent Additions</a>
+    </li>
+  </ul>
+</div>
+
+
+

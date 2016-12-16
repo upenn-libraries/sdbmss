@@ -55,7 +55,7 @@ var SDBM = SDBM || {};
             columns: null,
             fixedColumns: null,
             prependColumns: null,
-            height: 'full',  // FIX ME: is this better, or worse?
+            height: 'full',
             heightBuffer: 360,
             dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t'
         };
@@ -109,6 +109,7 @@ var SDBM = SDBM || {};
             // properly.
             // https://datatables.net/forums/discussion/24675/radio-button-checked-problem
             // 
+            stateSave: true,
             autoWidth: false,
             ajax: function (dt_params, callback, settings) {
                 options.ajax(sdbmTable, dt_params, callback, settings);

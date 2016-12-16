@@ -7,27 +7,15 @@
 <% end %>
 
 <% content_for :control_tools do %>
-  <div class="panel panel-default show-tools">
-    <div class="panel-heading">
-        Tools
-    </div>
-    <div class="panel-body">
-        <ul class="nav">
-            <% if can? :manage, model_class %>
-            <li>
-                <a class="add-new-record" href="<%= new_model_path %>"><span class="glyphicon glyphicon-plus"></span> <span class="name">Add New Record</span></a>
-            </li>
-            <li>
-                <% if resource_name == "entries" %>
-                    <a href="" id="mark-as-approved"><span class="glyphicon glyphicon-ok"></span> Mark as approved</a>                            
-                <% else %>
-                    <a href="" id="mark-as-reviewed"><span class="glyphicon glyphicon-ok"></span> Mark as reviewed</a>
-                <% end %>
-            </li>
-            <% end %>
-        </ul>
-    </div>
-</div>
+    <% if can? :manage, model_class %>
+    <li>
+        <% if resource_name == "entries" %>
+            <a href="" id="mark-as-approved"><span class="glyphicon glyphicon-ok"></span> Mark as approved</a>                            
+        <% else %>
+            <a href="" id="mark-as-reviewed"><span class="glyphicon glyphicon-ok"></span> Mark as reviewed</a>
+        <% end %>
+    </li>
+    <% end %>
 <% end %>
 
 <div class="redundant-container">
@@ -102,63 +90,47 @@
 <%= render partial: "index_extra" %>
 
 <script type="text/javascript">
-    function setSize() {
-        // use built-in datatables tools for this instead
-        //$('.DTFC_LeftBodyWrapper').height($(window).height() - ($('.search-form-wrapper').offset().top + $('.search-form-wrapper').height() + 150) );
-        //$('.dataTables_scrollBody').height($(window).height() - ($('.search-form-wrapper').offset().top + $('.search-form-wrapper').height() + 150) );
-    }
 
 // FIX ME: better place for this?
 // this sets the options for our manage table search bars (i.e. if searching on ID, have different options than a fulltext name search)
-    function setOptions (p) {
-        var t = p.find("select[name=search_field]");
-        var updateOptions = function (e) {
-            var type = t.find("option:selected").attr("type");
-            p.find(".option").hide();
-            p.find(".option").attr("selected", false);
-            p.find("." + type + "_option").show();
-            p.find("." + type + "_option").first().attr("selected", true);
+
+function setOptions (p) {
+    var t = p.find("select[name=search_field]");
+    var updateOptions = function (e) {
+        var type = t.find("option:selected").attr("type");
+        p.find(".option").hide();
+        //p.find(".option").attr("selected", false);
+        p.find("." + type + "_option").show();
+        var results = p.find('.' + type + '_option:selected');
+        if (results.length > 0) {
+            // nothing -> if there's already a 'valid' selected filter option
+        } else {
+            p.find("." + type + "_option").first().attr("selected", true);            
             // redundancy for FIREFOX, set value as well as 'selected'
             var val = p.find("." + type + "_option").first().val();
             p.find("select[name=search_option]").val(val);
-        };
-        p.find("select[name=search_option]").change( function () {
-            if ($(this).val() == "blank" || $(this).val() == "not blank") {
-                $(this).closest('.search-block').find('input[name=search_value]').val("").attr('disabled', true);
-            } else {
-                $(this).closest('.search-block').find('input[name=search_value]').attr('disabled', false);
-            }
-        });
-        t.change(updateOptions);
-        updateOptions();
-    }
-    $("#addSearch").click( function (e) {
-        // fix me: add something here to dynamically change table height -> 
-
-        var p = $('.search-block').eq(0).clone();
-        p.find("input", "select").val("");
-        $(".search-fieldset").append(p);
-        p.find(".search-remove").click( function (e) {
-            //var p = $(this).closest('.search-block');
-            if ($('.search-block').length > 1) {
-                $(".search").find(p).remove();
-                setSize();
-            } else {                                    // otherwise, clear all the fields
-                p.find("input").each(function (e) {
-                    $(this).val("");
-                })
-                p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
-            }
-        });
-        setOptions(p);
-        setSize();   
+        }
+    };
+    p.find("select[name=search_option]").change( function () {
+        if ($(this).val() == "blank" || $(this).val() == "not blank") {
+            $(this).closest('.search-block').find('input[name=search_value]').val("").attr('disabled', true);
+        } else {
+            $(this).closest('.search-block').find('input[name=search_value]').attr('disabled', false);
+        }
     });
-    var p = $('.search-block');
+    t.change(updateOptions);
+    updateOptions();
+}
+$("#addSearch").click( function (e) {
+    // fix me: add something here to dynamically change table height -> 
+
+    var p = $('.search-block').eq(0).clone();
+    p.find("input", "select").val("");
+    $(".search-fieldset").append(p);
     p.find(".search-remove").click( function (e) {
-        if ($('.search-block').length > 1) {     // if there are others, remove it
-            p = $(this).closest('.search-block');
-            $(".search").find(p).remove();
-            setSize();
+        //var p = $(this).closest('.search-block');
+        if ($('.search-block').length > 1) {
+            $(".search").find(p).remove();            
         } else {                                    // otherwise, clear all the fields
             p.find("input").each(function (e) {
                 $(this).val("");
@@ -166,15 +138,24 @@
             p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
         }
     });
-    $(document).ready( function () {
-        setOptions(p);
-        setSize();
+    setOptions(p);
+});
+$(document).ready( function () {
+    var p = $('.search-block').eq(0);
+    p.find(".search-remove").click( function (e) {
+        if ($('.search-block').length > 1) {     // if there are others, remove it
+            p = $(this).closest('.search-block');
+            $(".search").find(p).remove();
+        } else {                                    // otherwise, clear all the fields
+            p.find("input").each(function (e) {
+                $(this).val("");
+            })
+            p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
+        }
     });
+    setOptions(p);
+});
+
 </script>
 
 </div>
-
-
-<% content_for :breadcrumbs do %>
-    <li class="list-group-item breadcrumb active"><a href="">Manage <%= resource_name.pluralize %></a></li>
-<% end %>

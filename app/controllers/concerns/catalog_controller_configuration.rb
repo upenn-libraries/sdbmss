@@ -280,11 +280,11 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'miniatures_fullpage' }
       end
 
-      config.add_search_field('missing_authority_names') do |field|
-        field.include_in_simple_select = false
-        field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'missing_authority_names' }
-      end
+#      config.add_search_field('missing_authority_names') do |field|
+#        field.include_in_simple_select = false
+#        field.is_numeric_field = true
+#        field.solr_local_parameters = { :qf => 'missing_authority_names' }
+#      end
 
       config.add_search_field('miniatures_large') do |field|
         field.include_in_simple_select = false
@@ -414,6 +414,7 @@ module CatalogControllerConfiguration
       config.show.document_actions.delete(:citation)
 
       #config.add_show_tools_partial(:edit_entry, partial: 'nav/edit_entry', if: :show_edit_entry_link?)
+      config.add_show_tools_partial(:watch_entry, partial: 'nav/watch_entry')
       config.add_show_tools_partial(:linking_tool_by_entry, partial: 'nav/linking_tool_by_entry', if: :show_linking_tool_by_entry?)
       config.add_show_tools_partial(:linking_tool_by_manuscript, partial: 'nav/linking_tool_by_manuscript', if: :show_linking_tool_by_manuscript?)
       config.add_show_tools_partial(:deprecate_entry, partial: 'nav/deprecate_entry', if: :show_deprecate_entry?)
@@ -423,7 +424,6 @@ module CatalogControllerConfiguration
       #config.add_show_tools_partial(:sms)
       #config.add_show_tools_partial(:citation)
       config.add_show_tools_partial(:verify_entry, partial: 'nav/verify_entry', if: :show_verify_entry?)
-      config.add_show_tools_partial(:watch_entry, partial: 'nav/watch_entry')
 
     end
 

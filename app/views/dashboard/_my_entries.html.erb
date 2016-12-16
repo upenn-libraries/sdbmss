@@ -1,42 +1,33 @@
-    <% num_entries = current_user.entries.count %>
-    <% num_entries_needing_approval = current_user.entries.where(approved: false).count %>
-    <% num_entries_deprecated = current_user.entries.where(deprecated: true).count %>
-    <% num_entries_to_show = (params[:num_entries] || 5).to_i %>
-    <% entries = current_user.entries.most_recent(num_entries_to_show) %>
+<% num_entries = current_user.entries.count %>
+<% num_entries_needing_approval = current_user.entries.where(approved: false).count %>
+<% num_entries_deprecated = current_user.entries.where(deprecated: true).count %>
+<% num_entries_to_show = (params[:num_entries] || 5).to_i %>
+<% entries = current_user.entries.most_recent(num_entries_to_show) %>
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <div class="row">
-            <div class="col-sm-6">
-                <span data-toggle="collapse" href="#myEntries" class='h4'>Entries You've Contributed
-                    <span class="caret"></span>
-                </span>
-                <br>
-                <a href="/entries?created_by=<%= current_user.username %>">Manage All My Entries</a>
-            </div>
-            <div class="col-sm-6 text-right">
-                <% if num_entries > 0 %>
-                    <span>Showing the last <%= entries.count %> of the <%= "#{num_entries} entry".pluralize(num_entries) %> you have created</span><br>
-                    <% if num_entries_needing_approval > 0 %>
-                        <span class='text-warning'><%= num_entries_needing_approval %> unapproved</span>
-                    <% end %>
-                    <% if num_entries_deprecated > 0 %>
-                        <span class='text-danger'><%= num_entries_deprecated %> deprecated</span>
-                    <% end %>                        
-                <% else %>
-                    <p>You haven't contributed any entries yet.</p>
-                <% end %>                
-            </div>
-        </div>
+<div class="row">
+    <div class="col-sm-4">
+        <span data-toggle="collapse" href="#myEntries" class='h3 small-caps'>Entries You Contributed
+            <span class="caret"></span>
+        </span>
     </div>
-    <div class="panel-body collapse in list-group list-group-no-border-side" id="myEntries">
-        <% entries.each do |entry| %>
-            <li class="list-group-item">                
-                <%= render partial: "bookmarks/show_entry", locals: {entry: entry} %>
-            </li>
-        <% end %>
+    <div class="col-sm-4 text-center">
+        <a href="/entries?created_by=<%= current_user.username %>" class='btn btn-default'>Manage My Entries</a>
+        <a href="<%= search_by_facet_value("created_by", current_user.username) %>" class='btn btn-default'>See My Public Entries</a>
     </div>
-    <div class="panel-footer text-center">
-        <a href="<%= search_by_facet_value("created_by", current_user.username) %>" class='btn btn-default'>See All My Public Entries...</a>
+    <div class="col-sm-4 text-right">
+        <% if num_entries > 0 %>
+            <span>Showing your last <%= entries.count %> of <%= "#{num_entries} entry".pluralize(num_entries) %></span><br>
+            <% if num_entries_needing_approval > 0 %>
+                <span class='text-warning'><%= num_entries_needing_approval %> unapproved</span>
+            <% end %>
+            <% if num_entries_deprecated > 0 %>
+                <span class='text-danger'><%= num_entries_deprecated %> deprecated</span>
+            <% end %>                        
+        <% else %>
+            <p>You haven't contributed any entries yet.</p>
+        <% end %>                
     </div>
+</div>
+<div class="collapse in list-group list-group-no-border-side" id="myEntries" style="padding: 0px 5px;">
+    <%= render partial: "profiles/tiles", locals: {records: entries} %>
 </div>

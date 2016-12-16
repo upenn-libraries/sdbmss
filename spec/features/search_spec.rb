@@ -101,7 +101,7 @@ describe "Blacklight Search", :js => true do
     # all text search fields should show up in dropdown
     expect(find_by_id('text_field_0').all("option").length).to eq(27)
     # all numeric search fields should show up in dropdown
-    expect(find_by_id('numeric_field_0').all("option").length).to eq(15)
+    expect(find_by_id('numeric_field_0').all("option").length).to eq(14)
   end
 
   it "should do advanced search using numeric range on Height" do

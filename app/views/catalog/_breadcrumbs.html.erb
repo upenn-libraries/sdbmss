@@ -1,23 +1,23 @@
-<% if current_search_session %>
-  <li class="list-group-item breadcrumb">
+<% if current_search_session || !current_user %>
+  <li class=" ">
     <%= link_back_to_catalog %>
   </li>
 <% else %>
-  <li class="list-group-item breadcrumb">
+  <li class=" ">
     <a href="/entries">Manage Entries</a>
   </li>
 <% end %>
 <% if !@entry.id %>
-  <li class="list-group-item breadcrumb active"><a href="">New Entry</a></li>
+  <li class="  active"><a href="">New Entry</a></li>
 <% else %>
-  <li class="list-group-item breadcrumb <%= current_page?(entry_path(@entry)) ? 'active' : '' %>">
+  <li class="  <%= current_page?(entry_path(@entry)) ? 'active' : '' %>">
     <a href="/entries/<%= @entry.id %>"><%= @entry.public_id %></a>
   </li>
-  <li class="list-group-item breadcrumb <%= current_page?(controller: 'entries', action: 'edit') ? 'active' : '' %>">
+  <li class="  <%= current_page?(controller: 'entries', action: 'edit') ? 'active' : '' %>">
     <a href="/entries/<%= @entry.id %>/edit">Edit <%= @entry.public_id %></a>
   </li>
   <% if current_page?(controller: 'entries', action: 'history') %>
-  <li class="list-group-item breadcrumb active">
+  <li class="  active">
     <a href="/entries/<%= @entry.id %>/history">Change History for <%= @entry.public_id %></a>
   </li>
   <% end %>

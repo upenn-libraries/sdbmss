@@ -8,9 +8,7 @@ class BookmarksController < ApplicationController
   before_action :authenticate_user!, only: [:index, :new, :create, :edit, :show, :update, :destroy]
 
   def index
-    # fix me: not logged in
     @tag = params[:tag].blank? ? nil : params[:tag]
-    # something bogus here with this... when there is no tag (i.e. else)
     if @tag
       @bookmarks = current_user.bookmarks.where("tags like ?", "%#{@tag}%")
     else
@@ -30,8 +28,6 @@ class BookmarksController < ApplicationController
 
   def export
     @bookmarks = token_or_current_or_guest_user.bookmarks
-    # FIX ME: needs to be polymorphic
-#    objects = @bookmarks.map(&:document_id).map { |id| Entry.find(id).as_flat_hash }
     objects = @bookmarks.map { |bookmark| bookmark.document.as_flat_hash }
     respond_to do |format|
       format.csv {
@@ -91,7 +87,6 @@ class BookmarksController < ApplicationController
   end
 
   def show
-    # fix me: make sure bookmark belongs to current_user
     if params[:id] && Bookmark.exists?(params[:id].to_i)
       @bookmark = Bookmark.find(params[:id])
       @name = @bookmark.document_type.to_s

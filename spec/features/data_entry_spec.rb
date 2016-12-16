@@ -728,13 +728,15 @@ describe "Data entry", :js => true do
 
       expect(page).to have_content("Create a New Personal Observation")
 
-      fill_in "title", with: "Totally Unique Personal Observation Source" 
+      fill_in "author", with: "Totally Unique Personal Observation Source" 
       click_button "Save"
 
       expect(page).to have_content("Known errors in the Source should be preserved but can be noted")
 
       first(".save-button").click
       first(".save-button").click
+
+      sleep 4
 
       expect(page).to have_content("This entry has been identified as belonging to manuscript record SDBM_MS_2, which has 2 entries in the SDBM.")
     end

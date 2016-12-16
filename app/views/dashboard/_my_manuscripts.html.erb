@@ -3,34 +3,24 @@
 <% if num_manuscripts > 0 %>
     <% num_manuscripts_to_show = 5 %>
     <% manuscripts =  Manuscript.where(created_by: current_user).last(num_manuscripts_to_show) %>
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <div class="row">
-                <div class="col-sm-6">
-                    <span class='h4' data-toggle="collapse" href="#myManuscripts">
-                        Manuscripts You've Contributed
-                        <span class="caret"></span>
-                    </span>
-                    <br><a href="/manuscripts?created_by_user=1">Manage My Manuscripts</a>
-                </div>
-                <div class="col-sm-6 text-right">
-                    <span>Showing the last <%= manuscripts.count %> of the <%= "#{num_manuscripts} manuscript record".pluralize(num_manuscripts) %> you have created</span>
-                    <% if num_manuscripts_unreviewed > 0 %>
-                        <br><span class='text-warning'><%= num_manuscripts_unreviewed %> unapproved</span>
-                    <% end %>
-                </div>
-            </div>
-        </div>
-        <div class="panel-body collapse in list-group list-group-no-border-side" id="myManuscripts">
-            <% manuscripts.each do |manuscript| %>
-                <li class="list-group-item">
-                    <dl class="document-show-heading dl-horizontal dl-invert">
-                        <dt></dt>
-                        <dd class='h4'><a href="/manuscripts/<%= manuscript.id %>"><%= manuscript.public_id %></a></dd>
-                    </dl>
-                    <%= render partial: "bookmarks/show_manuscript", locals: {manuscript: manuscript} %>
-                </li>
-            <% end %>        
-        </div>
+<div class="row">
+    <div class="col-sm-4">
+        <span class='h3 small-caps' data-toggle="collapse" href="#myManuscripts">
+            Manuscripts You Contributed
+            <span class="caret"></span>
+        </span>
     </div>
+    <div class="col-sm-4 text-center">
+        <a class='btn btn-default' href="/manuscripts?created_by_user=1">Manage My Manuscripts</a>
+    </div>
+    <div class="col-sm-4 text-right">
+        <span>Showing your last <%= manuscripts.count %> of <%= "#{num_manuscripts} manuscript record".pluralize(num_manuscripts) %></span>
+        <% if num_manuscripts_unreviewed > 0 %>
+            <br><span class='text-warning'><%= num_manuscripts_unreviewed %> unapproved</span>
+        <% end %>
+    </div>
+</div>
+<div class="collapse in list-group list-group-no-border-side" id="myManuscripts" style="padding: 0px 5px;">
+    <%= render partial: "profiles/tiles", locals: {records: manuscripts} %>
+</div>
 <% end %>

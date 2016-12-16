@@ -26,6 +26,12 @@ class NamesController < SearchableAuthorityController
     query
   end
 
+  # 
+  def search
+    session[:last_name_search] = params
+    super
+  end
+
   def suggest
     name = params[:name]
     check_exists = params[:check_exists].present? ? params[:check_exists] == 'true' : true

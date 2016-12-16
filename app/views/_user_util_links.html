@@ -2,7 +2,7 @@
   <ul class="nav navbar-nav">
     <!--<li><a href="" class="glyphicon glyphicon-question-sign" onclick="t.restart();"></a></li>-->
     <!--<li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">The New SDBM <span class="caret"></span></a>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">The New SDBM <span class="caret"></span></a>-->
         <ul class="dropdown-menu" role="menu">
             <% Page.where(category: 'about').each do |page| %>
               <li><%= link_to page.name, page_path(page.name) %></li>
@@ -15,7 +15,7 @@
             <% end %>
             <li><a href="/community">Community Statistics</a></li>
         </ul>
-    </li>-->
+    <!--</li>-->
 
     <% if user_signed_in? %>
     <!--<li>
@@ -30,6 +30,7 @@
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
           <span class="glyphicon glyphicon-question-sign"></span>
+          <span class="show-mobile">Help</span>
           <span class="caret"></span>
         </a>
         <ul class="dropdown-menu" role="menu">

@@ -10,11 +10,40 @@
 
 <div class="row">
     <div class="col-sm-12">
+        <div class="well">
+            <div class="row">
+                <div class="col-sm-12">
+                    <span class='h2'>Welcome, <%= current_user.to_s %>!</span>            
+                </div>
+                <div class="col-sm-12">
+                    <ul class="list-inline">
+                        <li><strong class='label label-primary label-lg'><span class="glyphicon glyphicon-tag"></span> Tags:</strong></li>                        
+                        <% if current_user.tags.count <= 0 %>
+                            <li>
+                                <span class="text-muted">You do not have any tags yet.</span>
+                            </li>
+                        <% end %>
+                    <% current_user.tags.each do |tag| %>
+                        <li>
+                            <%= link_to(bookmarks_path(tag: tag)) do %>
+                                <%= "#{tag[0]} (#{tag[1]})" %>
+                            <% end %>
+                        </li>
+                    <% end %>
+                    </ul>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
         <ul id='dashboard-tabs' class="ajax-tabs nav nav-tabs dashboard-tabs">
             <li class='active'><a data-toggle='tab' href="#my_activity">My Contributions</a></li>
             <li><a data-toggle='tab' href="#community" href="">Activity</a></li>
-            <li><a data-toggle='tab' href="#groups" data-url="/groups/show_all">Groups</a></li>
-            <li><a data-toggle='tab' href="#notifications">Notifications</a></li>
+            <!--<li><a data-toggle='tab' href="#groups" data-url="/groups/show_all">Groups</a></li>
+            <li><a data-toggle='tab' href="#notifications">Notifications</a></li>-->
         </ul>
     </div>
 </div>
@@ -29,7 +58,7 @@
             </div>
             <div id="community" class="tab-pane fade">
                 <div class="row">
-                    <div class="col-sm-9" id="activity-pane">
+                    <div class="col-sm-10" id="activity-pane">
                         <%= render partial: "activities/show_all" %>                       
                     </div>
                     <div class="col-sm-2">
@@ -37,12 +66,12 @@
                     </div>
                 </div>
             </div>
+            <!--
             <div id="groups" class="tab-pane fade">
-                <!-- ajax load? is this neccessary? -->
             </div>
             <div id="notifications" class="tab-pane fade">
-                <%= render partial: "notifications/index" %>
-            </div>
+                <%# render partial: "notifications/index" %>
+            </div>-->
         </div>
     </div>
 </div>
