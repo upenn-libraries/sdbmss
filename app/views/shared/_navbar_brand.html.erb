@@ -6,10 +6,14 @@
         </a>
         <ul class="dropdown-menu" role="menu">
             <li><%= link_to "Home", root_path %></li>
-            <li><a href="/about/">About</a></li>
+            <!--<li><a href="/about/">About</a></li>
             <li><a href="/project_history">Project History</a></li>
             <li><a href="/user_agreement">User Agreement</a></li>
             <li><a href="/technical_overview">Technical Overview</a></li>
+            <li><a href="/community">Community Statistics</a></li>-->
+            <% Page.where(category: 'about').each do |page| %>
+              <li><%= link_to page.name, page_path(page.name) %></li>
+            <% end %>
             <li><a href="/community">Community Statistics</a></li>
         </ul>
     </li>
