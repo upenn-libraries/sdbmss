@@ -2,7 +2,67 @@
 <%= stylesheet_link_tag "extras", media: "all" %>
 <script type="text/javascript">
 
+function setOptions (p) {
+    var t = p.find("select[name=search_field]");
+    var updateOptions = function (e) {
+        var type = t.find("option:selected").attr("type");
+        p.find(".option").hide();
+        //p.find(".option").attr("selected", false);
+        p.find("." + type + "_option").show();
+        var results = p.find('.' + type + '_option:selected');
+        if (results.length > 0) {
+            // nothing -> if there's already a 'valid' selected filter option
+        } else {
+            p.find("." + type + "_option").first().attr("selected", true);            
+            // redundancy for FIREFOX, set value as well as 'selected'
+            var val = p.find("." + type + "_option").first().val();
+            p.find("select[name=search_option]").val(val);
+        }
+    };
+    p.find("select[name=search_option]").change( function () {
+        if ($(this).val() == "blank" || $(this).val() == "not blank") {
+            $(this).closest('.search-block').find('input[name=search_value]').val("").attr('disabled', true);
+        } else {
+            $(this).closest('.search-block').find('input[name=search_value]').attr('disabled', false);
+        }
+    });
+    t.change(updateOptions);
+    updateOptions();
+}
+$("#addSearch").click( function (e) {
+    // fix me: add something here to dynamically change table height -> 
+
+    var p = $('.search-block').eq(0).clone();
+    p.find("input", "select").val("");
+    $(".search-fieldset").append(p);
+    p.find(".search-remove").click( function (e) {
+        //var p = $(this).closest('.search-block');
+        if ($('.search-block').length > 1) {
+            $(".search").find(p).remove();            
+        } else {                                    // otherwise, clear all the fields
+            p.find("input").each(function (e) {
+                $(this).val("");
+            })
+            p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
+        }
+    });
+    setOptions(p);
+});
+
 $(document).ready(function() {
+    var p = $('.search-block').eq(0);
+    p.find(".search-remove").click( function (e) {
+        if ($('.search-block').length > 1) {     // if there are others, remove it
+            p = $(this).closest('.search-block');
+            $(".search").find(p).remove();
+        } else {                                    // otherwise, clear all the fields
+            p.find("input").each(function (e) {
+                $(this).val("");
+            })
+            p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
+        }
+    });
+    setOptions(p);
 
     SDBM.setPageFullWidth();
 
@@ -145,24 +205,38 @@ $(document).ready(function() {
 
     // Fielded search specific params
     var translateSearchParams = function (sdbmTable, data) {
-        params = sdbmTable.translateParamsToBlacklight(data);
+         return $.extend(
+             {},
+             sdbmTable.translateParamsToBlacklight(data),
+             getSearchFields()
+         );
+     };
 
-        if(potentialMatches == null) {
-            params["op"] = $("select[name='op']").val();
+    var getSearchFields = function () {
+         var params = {};
+         params["op"] = $("select[name='op']").val();
 
-            $("select[name='search_field']").each(function (idx, element) {
-                var search_field = $(element).val();
-                var search_value = $($("input[name='search_value']")[idx]).val();
-                if(search_value) {
-                    params[search_field] = search_value;
-                }
-            });
-        } else {
-            params["entry_id"] = potentialMatches.join(" OR ");
-        }
-        
-        return params;
-    };
+         $(".search-block").each(function(idx, element) {
+             var search_field = $(element).find("select[name='search_field']").first().val() + "[]";
+             var search_value = $(element).find("input[name='search_value']").first().val();
+             if (search_value == "" ) search_value = "*";
+             var search_option = $(element).find("select[name='search_option']").first().val();
+             var search_option_field = $(element).find("select[name='search_field']").first().val() + "_option[]";
+            if (!params[search_field]) {
+                params[search_field] = [search_value];
+            }
+            else {
+                params[search_field].push(search_value);
+            }
+
+            if (!params[search_option_field]) {
+                params[search_option_field] = [search_option];
+            } else {
+                params[search_option_field].push(search_option);
+            }            
+         });
+         return params;
+     };
 
     var workspaceTable = new SDBM.EntryTable("#workspace", {
         dom: '<"clear">JRt',
@@ -235,7 +309,7 @@ $(document).ready(function() {
     });
 
     var resultsTable = new SDBM.EntryTable("#search_results", {
-        dom: '<"clear"><"H linking_table_header"<"row"<"col-sm-6 text-right"rip>>>JRt<"F">',
+        dom: '<"clear"><"H linking_table_header"<"row"<"col-sm-12 text-right"rip>>>JRt<"F">',
         //dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t',
         height: function() {
             // height gets passed into dataTables constructor before
@@ -278,8 +352,7 @@ $(document).ready(function() {
             // seems like there should be a way to do this conditional
             // ajax and subsequent searchAndUpdateTable using
             // promises, but I can't figure that out right now
-            
-            var params = translateSearchParams(sdbmTable, dt_params);                
+            var params = translateSearchParams(sdbmTable, dt_params); 
             params["approved"] = "*";
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {
@@ -531,30 +604,7 @@ $(document).ready(function() {
 <% end %>
 
 <div class="row">
-    <div class="col-sm-7">
-        <div class="panel panel-default">
-            <div class="panel-heading-noformat" data-toggle="collapse" href="#show_linking_record">
-                <dl class="document-show-heading dl-horizontal dl-invert">
-                  <dt></dt>
-                  <dd class="h4"><strong> 
-                    <% if @manuscript %>
-                        <%= link_to "Manuscript #{@manuscript.public_id}", manuscript_path(@manuscript) %>
-                    <% elsif @entry %>
-                        <%= link_to "Entry #{@entry.public_id}", entry_path(@entry) %>
-                    <% end %>
-                    </strong></dd>
-                </dl>
-            </div>
-            <div class="panel-body-noformat collapse in" id="show_linking_record">
-                <% if @manuscript %>
-                    <%= render partial: "bookmarks/show_manuscript", locals: {manuscript: @manuscript} %>
-                <% elsif @entry %>
-                    <%= render partial: "bookmarks/show_entry", locals: {entry: @entry} %>
-                <% end %>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-5">
+    <div class="">
         <h4><a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#">Click here for instructions</a> on how to link entries to manuscript records</h4>
         <% if @mode == 'by_entry' %>
             <p>This page allows you to create a <b>manuscript record</b> from this entry by linking it to one or more existing entries citing the same manuscript, in order to track its transmission and location across time.  You may create a manuscript record with one entry if you cannot find other entries to link to a single entry.</p>
@@ -563,49 +613,67 @@ $(document).ready(function() {
             <p>This page allows you to link <strong>entries</strong> to an <strong>existing manuscript record</strong>. You can link entries citing the same manuscript to track its transmission and location across time. Use the search window below to find possible links and enter them in the Entry Queue to help determine whether a link really exists.</p>
         <% end %>
     </div>
-    <div class="col-sm-1"></div>
 </div>
+<% content_for :add_entry do %>
+    <% if @entry %>
+        <li>
+            <%= link_to(new_source_path({create_entry: 1, new_manuscript: true, original_entry: @entry.id, source_type: 4})) do %>
+                <span class="glyphicon glyphicon-plus"></span> Create Linked Personal Observation
+            <% end %>
+        </li>
+    <% elsif @manuscript %>
+        <li>
+            <%= link_to(new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4})) do %>
+                <span class="glyphicon glyphicon-plus"></span> Create Linked Personal Observation
+            <% end %>
+        </li>
+    <% end %>
+<% end %>
 
-<div style="margin-bottom: 6px">
-    <span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>
-    <button id="persist-entries-manuscript-link" class="btn btn-primary btn-xs" style="margin-left: 40px"></button>
-</div>
-
-<table id="workspace" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
-    <thead>
-        <tr>
-            <!-- we populate TH elements dynamically -->
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-
-<div class="row" style="margin-top: 20px;">
-    <div class="col-xs-6">
-        <%= render partial: "linking_tool/show_form" %>
+<% content_for :breadcrumbs do %>
+    <% if @entry %>
+        <li class=" "><%= link_to "Manage Entries", entries_path %></li>
+        <li class=" "><%= link_to @entry.public_id, entry_path(@entry) %></li>
+        <li class="  active"><a href="">Linking tool for <%= @entry.public_id %></a></li>
+    <% elsif @manuscript %>
+        <li class=" "><%= link_to "Manage Manuscripts", manuscripts_path %></li>
+        <li class=" "><%= link_to @manuscript.public_id, manuscript_path(@manuscript) %></li>
+        <li class="  active"><a href="">Linking tool for <%= @manuscript.public_id %></a></li>
+    <% end %>    
+<% end %>
+<div id="linking-tool">
+    <div style="margin-bottom: 6px">
+        <span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>
+        <button id="persist-entries-manuscript-link" class="btn btn-primary btn-xs" style="margin-left: 40px"></button>
     </div>
-    <div class="col-xs-6">
-        <div style="margin-bottom: 6px; margin-top: 15px;">
-            <span class="h4">
-                <strong>
-                <% if @mode == 'by_entry' %>
-                    Search for possible links
-                <% else %>
-                    Search for other links
-                <% end %>
-                </strong>
-            </span><br>
-            (click here for <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#">instructions</a> and <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_search_tips" href="#">search tips</a>)
+
+    <table id="workspace" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
+        <thead>
+            <tr>
+                <!-- we populate TH elements dynamically -->
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <div class="row" style="padding: 10px 0px; background: aliceblue;">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-6">
+            <%= render partial: "linking_tool/show_form" %>
+        </div>
+        <div class="col-sm-2">
+            <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#"><span class="glyphicon glyphicon-info-sign"></span> Instructions</a><br>
+            <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_search_tips" href="#"><span class="glyphicon glyphicon-search"></span> Search Tips</a>
         </div>
     </div>
+    <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
+        <thead>
+            <tr>
+                <!-- we populate TH elements dynamically -->
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 </div>
-<table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
-    <thead>
-        <tr>
-            <!-- we populate TH elements dynamically -->
-        </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>

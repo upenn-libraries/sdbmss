@@ -17,6 +17,8 @@
 /coverage
 /doc
 /downloads
+/public/static/tooltips
+/public/uploads
 
 /public/uploads/*
 /public/static/tooltips/*

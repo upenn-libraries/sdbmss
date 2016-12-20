@@ -1,0 +1,44 @@
+<% new_count = current_user.new_notifications.count %>
+<li class="dropdown">
+<a id='notifications-dropdown-control' href="#notifications-dropdown" data-toggle="dropdown" class='dropdown-toggle <%= new_count > 0 ? 'notifications-count' : ''%>' new-notifications="<%= current_user.new_notifications.count %>">
+  <span class="glyphicon glyphicon-bell"></span>
+  <span class="show-mobile">Notifications</span>
+  <span class="caret"></span>
+</a>
+<ul class="dropdown-menu notifications">
+  <% current_user.notifications.last(10).reverse.each do |notification| %>
+      <li class="row <%= !notification.active ? 'text-muted' : 'active' %>" id="notification_<%= notification.id %>">
+        <% if notification.notified && notification.title %>
+          <div class="col-xs-6 one-line">
+            <% url = notification.notified.class == User ? profile_path(notification.notified.username) : polymorphic_url(notification.notified) %>
+            <%= link_to url, :title => notification.title do %>
+              <% if notification.active %>
+                <span class="glyphicon glyphicon-exclamation-sign text-success"></span>
+                <span class="title"><%= notification.title %></span>
+              <% else %>
+                <span class="title"><%= notification.title %></span>
+              <% end %>
+            <% end %>
+          </div>
+          <div class="col-xs-6 text-right">
+            <%= notification.created_at.to_formatted_s(:long) %>
+            <span class="read glyphicon glyphicon-ok-circle" data-id="<%= notification.id %>"></span>
+          </div>
+        <% end %>
+      </li>
+  <% end %>
+  <li class='text-center' style='border-top: 1px solid #eee;'><%= link_to "Manage Notifications", notifications_path %></li>
+</ul>
+</li>
+<script>
+  $('.active .read').click(function (e) {
+    e.preventDefault();
+    var id = $(this).data("id");
+    $.ajax({url: "/notifications/" + id + ".json", type: "PUT", data: {active: false}}).done(function (result) {
+      $('#notification_' + id + ' .glyphicon-exclamation-sign').remove();
+      $('#notification_' + id).addClass('text-muted');
+      $('#notifications-dropdown-control').attr('new-notifications') -= 1;
+    });
+    return false;
+  });
+</script>

@@ -71,7 +71,7 @@ describe "Data entry", :js => true do
     find_by_id(field).click
     # hover over something else--the navbar element here is just
     # arbitrary
-    first(".navbar-brand").hover
+    first('#header-navbar').hover
     sleep(2)
   end
 
@@ -130,7 +130,7 @@ describe "Data entry", :js => true do
 
       click_button('Save')
 
-#      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+#      expect(page).to have_content(entry.public_id)
 
       source = Source.last
       expect(source.source_type).to eq(SourceType.auction_catalog)
@@ -163,7 +163,7 @@ describe "Data entry", :js => true do
 
       first(".save-button").click
 
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+      expect(page).to have_content(entry.public_id)
 
       verify_entry(entry)
     end
@@ -187,7 +187,7 @@ describe "Data entry", :js => true do
 
       first(".save-button").click
 
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+      expect(page).to have_content(entry.public_id)
 
       entry.reload
 
@@ -216,7 +216,8 @@ describe "Data entry", :js => true do
 
       first(".save-button").click
 
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+      expect(page).to have_content("Warning: This entry has not been approved yet.")
+      expect(page).to have_content(entry.public_id)
 
       entry.reload
 
@@ -242,7 +243,8 @@ describe "Data entry", :js => true do
 
       first(".save-button").click
 
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+      expect(page).to have_content("Warning: This entry has not been approved yet.")
+      expect(page).to have_content(entry.public_id)
 
       entry.reload
 
@@ -272,12 +274,13 @@ describe "Data entry", :js => true do
 
       first(".save-button").click
 
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+      expect(page).to have_content(entry.public_id)
 
       entry.reload
 
       entry = Entry.last
 
+      expect(page).to have_content("Warning: This entry has not been approved yet.")
       expect(entry.entry_authors.count).to eq(1)
       expect(entry.entry_authors.first.author_id).to eq(nil)
     end
@@ -290,7 +293,9 @@ describe "Data entry", :js => true do
       # make a new entry w/ same Source but diff catalog number
       fill_in 'cat_lot_no', with: "124"
       first(".save-button").click
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+
+      expect(page).to have_content("Warning: This entry has not been approved yet.")
+      expect(page).to have_content(Entry.last.public_id)
 
       visit edit_entry_path :id => Entry.last.id
       fill_in 'cat_lot_no', with: "123"

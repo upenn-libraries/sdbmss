@@ -1,8 +1,21 @@
+<% content_for :control_tools do %>
+    <%= render partial: "tools", locals: {source: @source, edit: false} %>
+    <li class="divider"></li>
+    <% if !["provenance_observation", "observation"].include?(@model.source_type.name) || @model.created_by == current_user %>
+    <li>
+        <%= link_to (new_entry_path(source_id: @source.id)) do %>
+            <span class="glyphicon glyphicon-plus"></span> Add Entry From <%= @source.public_id %>
+        <% end %>
+    </li>
+    <% end %>
+<% end %>
+<% content_for :breadcrumbs do %>
+    <% @model = @source %>
+    <%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
+<% end %>
+
 <div class="row">
-    <div class="col-sm-3">
-        <%= render partial: "tools", locals: {source: @source} %>
-    </div>
-    <div class="col-sm-9">
+    <div class="col-sm-6">
         
             <dl class="document-show-heading dl-horizontal dl-invert">
                 <dt></dt>
@@ -11,21 +24,9 @@
             <%= render partial: "source_details", locals: { source: @source, details: @details } %>
         
     </div>
-    <div class="col-sm-3"></div>
-    <div class="col-sm-9">
-
-    <dl class="document-metadata dl-horizontal dl-invert">
-
-        <dt style="white-space: normal;">
-            <h3>Comments</h3>
-            <p>Share additional information about this source - your comments will be displayed publicly.</p>
-        </dt>
-        <dd>
-            <div class="spacer-40px"></div>
-            <%= render partial: "comments/show_all", locals: {comments: @source.comments.where(public: true), record: @source} %>
-        </dd>
-    </dl>
-
-
+    <div class="col-sm-6">
+        <h2 class='text-center'><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
+        <p class='text-muted text-center'>Share additional information about this source - your comments will be displayed publicly.</p>
+        <%= render partial: "comments/show_all", locals: {comments: @source.comments.where(public: true), record: @source} %>
     </div>
 </div>

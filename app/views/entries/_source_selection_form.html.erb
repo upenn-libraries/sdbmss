@@ -29,14 +29,8 @@
 </div>
 
 <div class="row">
-    <div class="col-sm-2">
-    </div>
-    <div class="col-sm-10">
-        <% if utility == "new" %>
+    <div class="col-sm-12 text-center">
             <p><a class="btn btn-primary" href="{{ createSourceURL() }}">Click here to CREATE A NEW SOURCE</a></p>
-        <% else %>
-            <a href="" class="btn btn-warning" data-ng-click="cancelSelectSource()">Cancel</a>
-        <% end %>
     </div>
 </div>
 
@@ -78,6 +72,7 @@
                 <% end %>
             </div>
         </div>
+        <div class="col-sm-1"></div>
     </div>
 </div>
 <div ng-show="searchAttempted && sources.length == 0">

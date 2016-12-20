@@ -60,7 +60,7 @@ $(document).ready(function() {
                  render: function (data, type, full, meta) {
                     var created_by = full[manageRecords.dataTable.getColumnIndex("Created By")];
                     var result = '<span class="btn-group options-btn-group">';
-                    result += '<a onclick="addBookmark(' + data + ', \'Source\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/sources/' + data + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
+                    //result += '<a onclick="addBookmark(' + data + ', \'Source\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/sources/' + data + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
                     if (canEdit || username == created_by) {
                         result += '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>';
                     }

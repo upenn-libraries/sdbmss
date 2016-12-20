@@ -37,8 +37,8 @@ class SourcesController < SearchableAuthorityController
   ]
 
   def search_fields
-    @filters = ["id", "location", "agent_id", "source_type_id"]
-    @fields = ["title", "date", "agent_name", "author", "created_by", "updated_by"]
+    @filters = ["id", "location", "agent_id"]
+    @fields = ["title", "date", "agent_name", "author", "created_by", "updated_by", "source_type"]
     @dates = ["created_at", "updated_at"]
     @fields + @filters + @dates
   end
@@ -94,14 +94,20 @@ class SourcesController < SearchableAuthorityController
   end
 
   def create
-    filtered = source_params_for_create_and_edit
-    @source = Source.new(filtered)
-    if @source.whether_mss == Source::TYPE_HAS_MANUSCRIPT_NO
-      @source.status = Source::TYPE_STATUS_NO_MSS
-    else
-      @source.status = Source::TYPE_STATUS_TO_BE_ENTERED
+    success = false
+    ActiveRecord::Base.transaction do
+      filtered = source_params_for_create_and_edit
+      @source = Source.new(filtered)
+      if @source.whether_mss == Source::TYPE_HAS_MANUSCRIPT_NO
+        @source.status = Source::TYPE_STATUS_NO_MSS
+      else
+        @source.status = Source::TYPE_STATUS_TO_BE_ENTERED
+      end
+      success = @source.save_by(current_user)
+      if success
+        @transaction_id = PaperTrail.transaction_id
+      end
     end
-    success = @source.save_by(current_user)
     respond_to do |format|
       format.json {
         if !success
@@ -133,6 +139,9 @@ class SourcesController < SearchableAuthorityController
     ActiveRecord::Base.transaction do
       filtered = source_params_for_create_and_edit
       success = @source.update_by(current_user, filtered)
+      if success
+        @transaction_id = PaperTrail.transaction_id
+      end
     end
     respond_to do |format|
       format.json {
@@ -376,10 +385,10 @@ class SourcesController < SearchableAuthorityController
 # FIX ME: how to get similar before it exists?!  right now uses levenshtein for that, solr for everything else
 
   def get_similar
-    type = @source.source_type_id || 99
+    type = @source.source_type || 99
     s = Sunspot.more_like_this(@source) do
       fields(:title, :date => 10, :agent_name => 6)
-      with :source_type_id, type
+      with :source_type, type
       paginate page: 1, per_page: 10
       order_by :score, :desc
       boost true

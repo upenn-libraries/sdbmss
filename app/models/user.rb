@@ -23,6 +23,12 @@ class User < ActiveRecord::Base
   has_many :notifications
   has_one :notification_setting
 
+  has_many :watches
+  has_many :watched_entries, through: :watches, source: :watched, source_type: "Entry"
+  has_many :watched_sources, through: :watches, source: :watched, source_type: "Source"
+  has_many :watched_names, through: :watches, source: :watched, source_type: "Name"
+  has_many :watched_manuscripts, through: :watches, source: :watched, source_type: "Manuscript"
+
   accepts_nested_attributes_for :notification_setting, allow_destroy: false
 
   before_validation :assign_default_role

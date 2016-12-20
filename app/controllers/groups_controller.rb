@@ -16,10 +16,12 @@ class GroupsController < ApplicationController
   end
 
   def index
-    @groups_admin = Group.joins(:group_users).where(:group_users => {:role => "Manager", :user_id => current_user.id, :confirmed => true}).distinct
-    @groups_member = Group.joins(:group_users).where(:group_users => {:role => "Member", :user_id => current_user.id, :confirmed => true}).distinct
-    @groups_invites = Group.joins(:group_users).where(:group_users => {:role => "Member", :user_id => current_user.id, :confirmed => false}).where.not(:group_users => {created_by: current_user}).distinct
-    @groups_requests = Group.joins(:group_users).where(:group_users => {:role => "Member", :user_id => current_user.id, :confirmed => false, :created_by => current_user}).distinct
+    get_groups
+  end
+
+  def show_all
+    get_groups
+    render :index, :layout => false
   end
 
   def new
@@ -47,6 +49,14 @@ class GroupsController < ApplicationController
 
   def group_params
     params.require(:group).permit(:name, :public, :description, :group_users_attributes => [:id, :confirmed, :role])
+  end
+
+  # is there a better way of doing this?
+  def get_groups
+    @groups_admin = Group.joins(:group_users).where(:group_users => {:role => "Manager", :user_id => current_user.id, :confirmed => true}).distinct
+    @groups_member = Group.joins(:group_users).where(:group_users => {:role => "Member", :user_id => current_user.id, :confirmed => true}).distinct
+    @groups_invites = Group.joins(:group_users).where(:group_users => {:role => "Member", :user_id => current_user.id, :confirmed => false}).where.not(:group_users => {created_by: current_user}).distinct
+    @groups_requests = Group.joins(:group_users).where(:group_users => {:role => "Member", :user_id => current_user.id, :confirmed => false, :created_by => current_user}).distinct
   end
 
 end

@@ -6,72 +6,69 @@
 </style>
 <% end %>
 
-<div class="container">
+<% content_for :control_tools do %>
+    <% if current_user.role == 'admin' %>
+    <li>
+        <% if resource_name == "entries" %>
+            <a href="" id="mark-as-approved"><span class="glyphicon glyphicon-ok"></span> Mark as approved</a>                            
+        <% else %>
+            <a href="" id="mark-as-reviewed"><span class="glyphicon glyphicon-ok"></span> Mark as reviewed</a>
+        <% end %>
+    </li>
+    <% end %>
+<% end %>
+
+<div class="redundant-container">
     <div class="row">
-        <div class="col-sm-5">
+        <div class="col-sm-3">
             <% if @page_title %>
                 <h1>
                     <%= @page_title %>
-                    <small class='pull-right'>
-                        <a class="btn btn-primary add-new-record" href="<%= new_model_path %>"><span class="glyphicon glyphicon-plus"></span> <span class="name">Add New Record</span></a>
-                    </small>
                 </h1>
             <% else %>
-            <% if !can? :manage, model_class %>
-                <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
-                <h1>
-                    Manage Your <%= resource_name.pluralize.capitalize %>
-                    <small class='pull-right'>
-                        <a class="btn btn-primary add-new-record" href="<%= new_model_path %>"><span class="glyphicon glyphicon-plus"></span> <span class="name">Add New Record</span></a>
-                    </small>
-                </h1>
-            <% else %>
-                <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
-                <h1>
-                    Manage <%= resource_name.capitalize %>
-                    <small class='pull-right'>
-                        <a class="btn btn-primary add-new-record" href="<%= new_model_path %>"><span class="glyphicon glyphicon-plus"></span> <span class="name">Add New Record</span></a>
-                    </small>
-                </h1>
+                <% if !can? :manage, model_class %>
+                    <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
+                    <h1>
+                        Manage Your <%= resource_name.pluralize.capitalize %>
+                    </h1>
+                <% else %>
+                    <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
+                    <h1>
+                        Manage <%= resource_name.capitalize %>
+                    </h1>
+                <% end %>
             <% end %>
-            <% end %>
-            <a href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info"><span class="glyphicon glyphicon-info-sign"></span> Click Here For More Info</a>
 
-            <div id="manage_records_info" class="modal fade panel-body" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Manage Your <%= resource_name.pluralize.capitalize %></h4>
-                        </div>
-                        <div class="modal-body">
-                            <%= render partial: "instructions" %>
-                            <li class="list-group-item list-group-item-warning">Unapproved records shown in yellow.</li>
-                            <% if model_class.column_names.include?('entries_count') || model_class.column_names.include?('authors_count') %>
-                                <li class="list-group-item list-group-item-danger">Counters may include deleted records.</li>
-                            <% end %>
-                        </div>
+            <a href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info"><span class="glyphicon glyphicon-info-sign"></span> Click Here For More Info</a>
+        </div>
+        <div class="col-sm-3 text-right">
+            <% if can? :manage, model_class %>
+                <div class="row" style="padding-left: 0px; padding-right: 0px;">
+                    <div class="col-sm-12">
+                        <%= render partial: "manage_models/group_form" %>
+                    </div>
+                </div>
+            <% end %>
+
+
+        </div>
+        <div id="manage_records_info" class="modal fade panel-body" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Manage Your <%= resource_name.pluralize.capitalize %></h4>
+                    </div>
+                    <div class="modal-body">
+                        <%= render partial: "instructions" %>
+                        <li class="list-group-item list-group-item-warning">Unapproved records shown in yellow.</li>
+                        <% if model_class.column_names.include?('entries_count') || model_class.column_names.include?('authors_count') %>
+                            <li class="list-group-item list-group-item-danger">Counters may include deleted records.</li>
+                        <% end %>
                     </div>
                 </div>
             </div>
-
-            <% if can? :manage, model_class %>
-                <div class="row" style="padding-left: 0px; padding-right: 0px;">
-                    <div class="col-sm-8">
-                        <%= render partial: "manage_models/group_form" %>
-                    </div>
-                    <% if resource_name == "entries" %>
-                        <div class="col-sm-4 text-right">
-                            <a id="mark-as-approved" class="btn btn-info">Mark as approved</a>                            
-                        </div>
-                    <% else %>
-                        <div class="col-sm-4 text-right">
-                            <a class="btn btn-info" id="mark-as-reviewed" >Mark as reviewed</a>
-                        </div>
-                    <% end %>
-                </div>
-            <% end %>
         </div>
-        <div class="col-sm-7">
+        <div class="col-sm-6 search search-form-wrapper">
             <%= render partial: "search_form" %>
         </div>
     </div>
@@ -93,51 +90,61 @@
 <%= render partial: "index_extra" %>
 
 <script type="text/javascript">
+
 // FIX ME: better place for this?
 // this sets the options for our manage table search bars (i.e. if searching on ID, have different options than a fulltext name search)
-    function setOptions (p) {
-        var t = p.find("select[name=search_field]");
-        var updateOptions = function (e) {
-            var type = t.find("option:selected").attr("type");
-            p.find(".option").hide();
-            p.find(".option").attr("selected", false);
-            p.find("." + type + "_option").show();
-            p.find("." + type + "_option").first().attr("selected", true);
+
+function setOptions (p) {
+    var t = p.find("select[name=search_field]");
+    var updateOptions = function (e) {
+        var type = t.find("option:selected").attr("type");
+        p.find(".option").hide();
+        //p.find(".option").attr("selected", false);
+        p.find("." + type + "_option").show();
+        var results = p.find('.' + type + '_option:selected');
+        if (results.length > 0) {
+            // nothing -> if there's already a 'valid' selected filter option
+        } else {
+            p.find("." + type + "_option").first().attr("selected", true);            
             // redundancy for FIREFOX, set value as well as 'selected'
             var val = p.find("." + type + "_option").first().val();
             p.find("select[name=search_option]").val(val);
-        };
-        p.find("select[name=search_option]").change( function () {
-            if ($(this).val() == "blank" || $(this).val() == "not blank") {
-                $(this).closest('.search-fieldset').find('input[name=search_value]').val("").attr('disabled', true);
-            } else {
-                $(this).closest('.search-fieldset').find('input[name=search_value]').attr('disabled', false);
-            }
-        });
-        t.change(updateOptions);
-        updateOptions();
-    }
-    $("#addSearch").click( function (e) {
-        var p = $('.search-fieldset').eq(0).clone();
-        p.find("input", "select").val("");
-        $(".search").append(p);
-        p.find(".search-remove").click( function (e) {
-            var p = $(this).closest('.search-fieldset');
-            if ($('.search-fieldset').length > 1) {
-                $(".search").find(p).remove();
-            } else {                                    // otherwise, clear all the fields
-                p.find("input").each(function (e) {
-                    $(this).val("");
-                })
-                p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
-            }
-        });
-        setOptions(p);      
+        }
+    };
+    p.find("select[name=search_option]").change( function () {
+        if ($(this).val() == "blank" || $(this).val() == "not blank") {
+            $(this).closest('.search-block').find('input[name=search_value]').val("").attr('disabled', true);
+        } else {
+            $(this).closest('.search-block').find('input[name=search_value]').attr('disabled', false);
+        }
     });
-    var p = $('.search-fieldset');
+    t.change(updateOptions);
+    updateOptions();
+}
+$("#addSearch").click( function (e) {
+    // fix me: add something here to dynamically change table height -> 
+
+    var p = $('.search-block').eq(0).clone();
+    p.find("input", "select").val("");
+    $(".search-fieldset").append(p);
     p.find(".search-remove").click( function (e) {
-        if ($('.search-fieldset').length > 1) {     // if there are others, remove it
-            p = $(this).closest('.search-fieldset');
+        //var p = $(this).closest('.search-block');
+        if ($('.search-block').length > 1) {
+            $(".search").find(p).remove();            
+        } else {                                    // otherwise, clear all the fields
+            p.find("input").each(function (e) {
+                $(this).val("");
+            })
+            p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
+        }
+    });
+    setOptions(p);
+});
+$(document).ready( function () {
+    var p = $('.search-block').eq(0);
+    p.find(".search-remove").click( function (e) {
+        if ($('.search-block').length > 1) {     // if there are others, remove it
+            p = $(this).closest('.search-block');
             $(".search").find(p).remove();
         } else {                                    // otherwise, clear all the fields
             p.find("input").each(function (e) {
@@ -147,6 +154,8 @@
         }
     });
     setOptions(p);
+});
+
 </script>
 
 </div>

@@ -1,27 +1,13 @@
-<div class="panel panel-default show-tools">
-    <div class="panel-heading">
-        Tools
-    </div>
-    <div class="panel-body">
-        <ul class="nav">
-            <li>
-                <a onclick="addBookmark(<%= source.id %>, 'Source');" class="bookmark-link" in_bookmarks="/sources/<%= source.id %>"><span class="glyphicon glyphicon-bookmark"></span></a>
+<% if source.id %>
+    <% if user_signed_in? %>
+        <%= render partial: "nav/bookmark_watch", locals: {model: @source } %>
+        <% if can?(:edit, source) %> 
+            <li class="<%= edit ? 'disabled' : '' %>">
+                <a href="<%= merge_source_path(source_id: source) %>" class="<%= source.source_type.id == 8 ? 'disabled text-muted' : '' %>">
+                <span class="glyphicon glyphicon-transfer"></span> 
+                Merge this source
+              </a>
             </li>
-            <% if user_signed_in? %>
-                <% if can?(:edit, source) %>
-                    <li class="edit_source">
-                        <a href="<%= edit_source_path(source.id) %>" class="<%= source.source_type.id == 8 ? 'disabled text-muted' : '' %>">Edit this source</a>
-                    </li>
-                <% end %>
-            <li class="edit_source">
-                <a href="<%= new_entry_path(source_id: source) %>">Add entry for this Source</a>
-            </li>
-                <% if can?(:edit, source) %> 
-                    <li>
-                        <a href="<%= merge_source_path(source_id: source) %>" class="<%= source.source_type.id == 8 ? 'disabled text-muted' : '' %>">Merge this source</a>
-                    </li>
-                <% end %>
-            <% end %>
-        </ul>
-    </div>
-</div>
+        <% end %>
+    <% end %>
+<% end %>

@@ -17,10 +17,6 @@
     <%= link_to(notification, :method => :delete) do %>
       delete <span class="glyphicon glyphicon-remove"></span>
     <% end %>
-    <br>
-    <%= link_to(notification.url) do %>
-      show <span class="glyphicon glyphicon-eye-open"></span>
-    <% end %>
   </div>
   <div class="col-sm-12">
     <%= !notification.notified.nil? ? sanitize(simple_format(notification.notified.preview.to_s)) : "OLD NOTIFICATION" %>

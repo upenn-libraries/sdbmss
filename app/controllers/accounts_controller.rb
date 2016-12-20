@@ -61,7 +61,7 @@ class AccountsController < SearchableAuthorityController
       format.json { render :json => {}, :status => :ok }
       format.html {
         if users
-          flash[:success] = "Group membership pending for #{users.map(&:username).join(', ')}."
+          flash.now[:success] = "Group membership pending for #{users.map(&:username).join(', ')}."
         end        
         redirect_to group_path(group) 
       }
@@ -101,7 +101,7 @@ class AccountsController < SearchableAuthorityController
   def model_params
     params.require(model_class_lstr.to_sym).permit(:username, :fullname, :institutional_affiliation, :email, :email_is_public, :password, :password_confirmation, :role, :bio, :active, 
       :notification_setting_attributes => [
-        :on_update, :on_comment, :on_reply, :on_message, :on_new_user, :on_group,
+        :id, :user_id, :on_update, :on_comment, :on_reply, :on_message, :on_new_user, :on_group,
         :email_on_new_user, :email_on_update, :email_on_comment, :email_on_reply, :email_on_message, :email_on_group
         ]
       )

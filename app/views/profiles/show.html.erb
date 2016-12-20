@@ -1,110 +1,71 @@
 <%# Partial used to display name details for both Names generically and Agents (which are Names) %>
-<div class="row">
+
+<% content_for :breadcrumbs do %>
     <% if current_user.role == 'admin' %>
-    <div class="col-sm-3">
-        <div class="panel panel-default show-tools">
-            <div class="panel-heading">
-                Tools
-            </div>
-            <div class="panel-body">
-                <ul class="nav">
-                    <% if user_signed_in? %>
-                        <% if can?(:edit, @user) %>
-                            <li class="edit_name">
-                                <a href="<%= edit_account_path(@user) %>">Edit User Account</a>
-                            </li>
-                        <% end %>
-                        <li><%= link_to 'Go to Listing', accounts_path %></li>
-                    <% end %>
-                </ul>
-            </div>
-        </div>
-    </div>
+        <li class=" ">
+            <a href="/accounts">Manage Accounts</a>
+        </li>
+    <% else %>
+        <li class="breadcrumb">
+            <a href="/community">Community</a>
+        </li>
     <% end %>
-    <div class="col-sm-<%= current_user.role == 'admin' ? 9 : 12 %>">
+        <li class="  active"><a href=""><%= @user %></a></li>
+<% end %>
+
+<% if current_user.role == 'admin' %>
+<% content_for :control_tools do %>
+    <% if user_signed_in? %>
+        <% if can?(:edit, @user) %>
+            <li class="edit_name">
+                <a href="<%= edit_account_path(@user) %>">Edit User: <%= @user.username %></a>
+            </li>
+        <% end %>
+    <% end %>
+<% end %>
+<% end %>
+
+
+<div class="row">
+    <div class="col-sm-4">
+
         <div class="panel panel-default">
             <div class="panel-heading">
-                <span class='h1'><%= @user.username %>
-                    <small>(<%= @user.role.humanize %>)</small>
-                    <span class='glyphicon glyphicon-user pull-right <%= "text-success" if @online %>' title='User is <%= @online ? "online" : "offline" %>'></span>
-                </span>
-                <br>
-            </div>
-            <div class="panel-body">
                 <div class="row">
-                    <div class="col-sm-6">
-                        <a href="/private_messages/new?user_id=<%= @user.id %>" title="Send Message">
-                            Send Private Message
-                            <span class="glyphicon glyphicon-envelope"></span>
-                        </a>
-                    </div>
-                    <div class="col-sm-6 text-right">
-                        <span class="pull-right">Last Active: <strong><%= @display[:last_seen] %></strong></span>
-                    </div>
-                </div>
-                </span> 
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-5">
-                <div class="well"><span class="h4"><strong>Full Name:</strong></span> <%= @display[:fullname] %></div>
-            </div>
-            <div class="col-sm-7">
-                <div class="well"><span class="h4"><strong>Email:</strong></span> <%= @display[:email] %></div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-12">
-                <div class="well">
-                    <h4 class="h4"><strong>Biography:</strong></h4>
-                    <p><%= @display[:biography] %></p>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-7">
-                <div class="well"><span class="h4"><strong>Affiliated Institution:</strong></span> <%= @display[:institution] %></div>
-            </div>
-            <div class="col-sm-5">
-                <div class="well">
-                    <span class="h4"><strong>Contributions:</strong> 
-                        <span class="label label-source">
-                            <a href="<%= sources_path({created_by: @display[:username]}) %>">
-                                <%= SDBMSS::Util.to_many(@display[:sources_created], "source") %>
-                            </a>
-                        </span>
-                        <span class="label label-entry">
-                            <a href="<%= search_advanced_path(created_by: @display[:username]) %>">
-                                <%= SDBMSS::Util.to_many(@display[:entries_created], "entry") %>
-                            </a>
-                        </span>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <span class="h3"><strong>Recent Activity:</strong></span>
-                </div>
-                <div class="panel-body">
-                    <ul id='activity' class='list-group'>
-                        <%= render partial: "activities/more" %>
-                    </ul>
-                    <div class="row">
-                        <div class="col-sm-12 text-center">
-                            <a href="<%= activities_path('users[username][]' => @display[:username]) %>" >See More...</a>
+                    <div class="col-xs-4">
+                        <div class="panel panel-default text-center" style="margin: 0px;">
+                            <div class="panel-body"><span class="glyphicon glyphicon-user"></span></div>
                         </div>
                     </div>
+                    <div class="col-xs-8">
+                        <%= render partial: "shared/username_with_profile_link", locals: {user: @user} %><br>
+                        <span class="text-muted">User Level: <em><%= @user.role %></em></span>
+                    </div>
                 </div>
             </div>
-          </div>
-          <ul class="list-group">
-            
-          </ul>
+        </div>
+
+        <p class="text-info"><%= @display[:email] %></p>
+        <p class="text-muted"><%= @display[:biography] %></p>
+        <strong><%= @display[:institution] %></strong>
+        <div class='text-center text-muted' style="border-top: 1px solid #ddd; margin-top: 8px; padding-top: 8px;">
+            <span class="glyphicon glyphicon-time"></span> Last Active <%= @display[:last_seen] %>
         </div>
 
     </div>
+    <div class="col-sm-8">
+        <ul class="ajax-tabs nav nav-tabs custom-tabs">
+            <li class='active'><a data-toggle='tab' href="#contributions">Contributions</a></li>
+            <li><a data-toggle='tab' href="#activity" href="">Activity</a></li>
+        </ul>
 
+        <div class="tab-content">
+            <div id="activity" class="tab-pane fade">
+                <%= render partial: "activities/show_all", locals: {collapsed: true} %>
+            </div>
+            <div class="tab-pane fade in active" id="contributions">
+                <%= render partial: "tiles", locals: {records: @user.entries.last(10).reverse } %>
+            </div>
+        </div>
+    </div>
 </div>

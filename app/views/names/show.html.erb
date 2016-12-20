@@ -1,3 +1,5 @@
 <% @page_title = "#{@model.public_id}: #{@model.name} - " + application_name %>
-<%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
+<% content_for :breadcrumbs do %>
+  <%= render partial: "manage_models/breadcrumbs", locals: {edit: false, last_search: session[:last_name_search]} %>
+<% end %>
 <%= render partial: "name", object: @model %>

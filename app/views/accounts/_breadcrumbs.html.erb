@@ -1,0 +1,13 @@
+<li class="">
+  <a href="<%= accounts_path %>">Manage <%= @model.class.name.pluralize %>
+  </a>
+</li>
+<li class=" <%= edit ? '' : 'active' %>">
+  <a href="<%= profile_path(@model.username) %>"><%= @model %>
+  </a>
+</li>
+<% if can? :edit, @model %>
+<li class=" <%= edit ? 'active' : '' %>">
+  <a href="<%= edit_account_path(@model) %>">Edit <%= @model %></a>
+</li>
+<% end %>

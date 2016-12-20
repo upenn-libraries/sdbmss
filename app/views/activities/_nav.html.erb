@@ -1,0 +1,13 @@
+ <nav>
+  <ul class="nav nav-pills nav-stacked ajax-tabs" id="activity_tabs">
+    <li class='active'><a href="#activity-pane" data-url="/activities/show_all">All Activity</a></li>
+    <li><a href="#activity-pane" data-url="/activities/show_all?mine=true">My Activity</a></li>
+    <li><a href="#activity-pane" data-url="/activities/show_all?watched=true">My Watched Records</a></li>
+  </ul>
+  <ul class="nav nav-stacked">
+    <li><a href="/watches">Manage My Watched Records</a></li>
+    <% if current_user && current_user.role == 'admin' %>
+      <li><%= link_to "Manage Activity", activities_path %></li>
+    <% end %>
+  </ul>
+</nav>

@@ -2,6 +2,10 @@
     <div class="alert alert-danger"><%= @error %></div>
 <% end %>
 
+<% content_for :breadcrumbs do %>
+    <%= render partial: "manage_models/breadcrumbs" %>
+<% end %>
+
 <%= form_for @model, url: {action: "revert_confirm"} do |f| %>
 
 <div class="row history-heading">
@@ -22,19 +26,14 @@
                             <div class="col-sm-2 text-right"><%= version.created_at.to_formatted_s(:short) %></div>
                             <div class="col-sm-1"><%= version.whodunnit ? User.find(version.whodunnit) : "" %></div>
                             <div class='col-sm-2'><span><%= formatter.action %></span></div>
-                            <div class='col-sm-6'>
+                            <div class='col-sm-5'>
                                 <% formatter.details.each do |detail| %>
-                                    <% d = detail.split(": ") %>
-                                    <div class="row">
-                                        <div class="col-xs-4"><strong><%= d[0] %></strong></div>
-                                        <div class="col-xs-8"><%= d[1] %></div>
-                                    </div>
+                                    <%= sanitize simple_format(detail), tags: %w(b) %><br>
                                 <% end %>
                             </div>
-                            <div class='col-sm-1 text-left'>
+                            <div class='col-sm-2 text-left'>
                                 <% if can? :edit, @model %>
-                                <!--<%= check_box_tag "version_id[]", version.id, false, class: 'checkbox-hidden', id: "checkbox#{version.id}" %> -->
-                                    <%= link_to "Undo", polymorphic_url(@model, :version_id => [version.id], :action => "revert_confirm"), :method => 'patch', class: 'btn-undo btn btn-default' %>
+                                   <%= link_to "Undo", polymorphic_url(@model, :version_id => [version.id], :action => "revert_confirm"), :method => 'patch', class: 'btn-undo btn btn-default' %>
                                 <% end %>
                             </div>
                         </div>                    

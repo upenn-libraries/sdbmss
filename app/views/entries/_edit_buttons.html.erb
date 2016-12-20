@@ -1,9 +1,9 @@
-    <div class="row" style="padding-bottom: 20px;" ng-show="!entry.deprecated">
-        <div class="col-sm-2">
-            <button class="btn btn-primary save-button" ng-click="save()" ng-disabled="entryForm.$invalid || currentlySaving">Save</button>
+    <div class="row text-center" style="padding-bottom: 20px;" ng-show="!entry.deprecated">
+        <div class="col-sm-12">
+            <button class="btn btn-primary save-button" ng-click="save()" ng-disabled="entryForm.$invalid || currentlySaving || !entry.source">Save</button>
             <a class="btn btn-warning" id='cancelEdit' href="/dashboard">Cancel</a>
         </div>
-        <div class="col-sm-4 label-alignment">
+        <div class="col-sm-14 label-alignment">
             <div ng-show="entryForm.$invalid" style="color: red;">
                 You must correct the form inputs highlighted in red before you can save this form.
             </div>

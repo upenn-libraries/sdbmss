@@ -1,0 +1,60 @@
+<%= form_tag({:controller => "activities", :action => "index"}, :method => "get") do %>
+<br>
+<div class="row">
+    <div class="col-sm-10">
+        <div class="form-inline">
+            <div class="form-group">
+                <%= text_field 'users[username]', "", class: 'form-control', placeholder: 'Username...',value: (params[:users][:username] if params[:users] ) %>            
+                <%= select_tag :event, options_for_select([['Action', ''], ['Edit', 'update'], ['Add', 'create'], ['Delete', 'destroy']], params[:event]), class: 'form-control', placeholder: 'Event' %>
+                <%= select_tag :item_type, options_for_select([['Type', ''], 'Entry', 'Name', 'Source', 'Language', 'Place', 'Manuscript'], params[:item_type]), class: 'form-control', placeholder: 'Record Type'%>
+                <%= date_field :start_date, "", class: 'form-control', value: params[:start_date] || (Date.today - 100.years).to_s %> to 
+                <%= date_field :end_date, "", class: 'form-control', value: params[:end_date] || (Date.today + 1.day).to_s %>            
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-2 text-right">
+        <div class="input-group">
+            <span class="input-group-btn">
+                <%= submit_tag "Filter", class: 'btn-default btn' %>
+            </span>
+            <span class="input-group-btn">
+                <%= link_to "Clear", activities_path, class: "btn btn-warning" %>
+            </span>
+        </div>
+    </div>
+</div>
+<br>
+<% end %>
+
+<%= render partial: "activities/summary", locals: {summary: @summary} %>
+
+<ul id='activity' class='list-group list-group-no-border'>
+    <%= render partial: "activities/more" %>
+</ul>
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <a id="loadMore" class='btn btn-default'>Load More...</a>
+    </div>
+</div>
+<script>
+    var page = 1;
+    var total_pages = <%= @num_pages %>;
+    if (page >= total_pages) $('#loadMore').addClass('disabled').text('All Activity Loaded...');
+
+    $('#loadMore').click(function (e) {
+        page += 1;
+        if (page >= total_pages) $('#loadMore').addClass('disabled').text('All Activity Loaded...');
+        query = window.location.href.split("?")[1]
+        $.get("?" + query + '&more=true&page=' + page, function (result) {
+            var more = $(result);
+            more.hide();
+            $('#activity').append(more);
+            more.slideDown();
+            $('html, body').animate({
+                scrollTop: $("#loadMore").offset().top
+            }, 500);
+        });
+    });
+
+
+</script>

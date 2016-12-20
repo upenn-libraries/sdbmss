@@ -71,7 +71,7 @@ describe "Manage entries", :js => true do
     page.evaluate_script('window.confirm = function() { return true; }')
 
     visit entries_path
-    all(".entry-delete-link").last.click
+    all(".entry-delete-link").last.trigger('click')
     sleep(1)
 
     expect(Entry.all.count).to eq(count - 1)
@@ -86,7 +86,7 @@ describe "Manage entries", :js => true do
     sleep 1.1
 
     expect(page).to have_selector("#select-all", visible: true)
-    first("#select-all").click
+    first("#select-all").trigger('click')
 
     expect(page).to have_selector("#mark-as-approved")
     find("#mark-as-approved").click
@@ -103,7 +103,7 @@ describe "Manage entries", :js => true do
     expect(Entry.where(deprecated: true).count).to be(0)
 
     visit entries_path
-    first(".entry-deprecate-link").click
+    first(".entry-deprecate-link").trigger('click')
 
     superceded_by_id = Entry.first.id
     fill_in 'superceded_by_id', :with => superceded_by_id
@@ -124,7 +124,7 @@ describe "Manage entries", :js => true do
   it "should perform a search on any field without error" do
     visit entries_path
 
-    expect(page.first("select[name='search_field']").all("option").length).to eq(42)
+    expect(page.first("select[name='search_field']").all("option").length).to eq(41)
 
     40.times do |i|
       page.first("input[name='search_value']").set "Test String"

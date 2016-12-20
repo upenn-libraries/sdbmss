@@ -309,7 +309,7 @@
     <field name="complete_entry" stored="true" type="text" multiValued="false" indexed="true"/>
     
     <!-- 'entry' is full entry ID (SDBM_xxx) -->
-    <field name="entry" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="entry" stored="true" type="string" indexed="true"/>
     <field name="entry_id" stored="true" type="sint" multiValued="false" indexed="true"/>
     <!-- 'manuscript' is full manuscript ID (SDBM_MS_xxx), used for faceting; manuscript_id is for sorting  -->
     <field name="manuscript" stored="true" type="string" multiValued="false" indexed="true"/>

@@ -4,7 +4,13 @@
 
 <% @page_title = "Add an Entry - Identify the Source - " + application_name %>
 
-<div class="form-horizontal sdbmss-form" data-ng-controller="SelectSourceCtrl">
+<% content_for :breadcrumbs do %>
+  <%= render partial: "catalog/breadcrumbs", locals: {edit: true} %>
+    </ul>
+  <%= render partial: "breadcrumbs", locals: {source: nil } %> 
+<% end %>
+
+<div class="form-horizontal sdbmss-form" id="identify_source" data-ng-controller="SelectSourceCtrl">
 
     <div class="row">
         <div class="col-sm-12">

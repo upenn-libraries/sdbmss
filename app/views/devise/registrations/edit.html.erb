@@ -1,149 +1,197 @@
+<% content_for :breadcrumbs do %>
+    <li class=" "><a href="/profiles/<%= current_user.username %>">My Profile</a></li>
+    <li class="  active"><a href="">Edit My Account</a></li>
+<% end %>
+
 <% @page_title = "Edit My Profile - " + application_name %>
 
-
-<div class="row">
-    <div class="col-sm-1"></div>
-    <div class="col-sm-4 text-center">
-      <h1>Edit My Profile Information</h1>
-        <p class='text-left'>Please provide some information about yourself to help us and other
-            users get to know you. Your profile information will be accessible to
-            other users from your user name as it appears in entries, manuscript
-            records, or comments that you have created or responded to.</p>
-        <div class="btn-group" role="group">
-          <%= link_to "My Profile", profile_path(username: resource.username), class: 'btn btn-default' %>
-          <%= link_to "Go to Dashboard", dashboard_path, class: 'btn btn-info' %>
-        </div>
-    </div>
-    <div class="col-sm-6">
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+<div class="row">
+  <div class="col-sm-12">
+    <h1 class="text-center">
+      <span class="glyphicon glyphicon-cog"></span>
+      Account Settings
+    </h1>
+    <p class='text-left text-muted'>Please provide some information about yourself to help us and other
+        users get to know you. Your profile information will be accessible to
+        other users from your user name as it appears in entries, manuscript
+        records, or comments that you have created or responded to.</p>
+  </div>
+  <div class="col-sm-12 text-center">
+    <ul class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#profile-settings">Profile</a></li>
+      <li><a data-toggle="tab" href="#account-settings">Account</a></li>
+      <li><a data-toggle="tab" href="#notification-settings">Notifications</a></li>
+    </ul>
+  </div>
+  <div class="col-sm-12">
+    <div class="tab-content">
+      <div class="tab-pane fade active in" id='profile-settings'>              
+        <div class="field form-group">
+            <%= f.label :email %>
+            <%= f.email_field :email, autofocus: true, class: "form-control" %>
+        </div>
+
+        <div class="field form-group">
+            <label>
+                <%= f.check_box :email_is_public, autofocus: true %> My email address is publicly visible 
+            </label>
+        </div>
+
+        <div class="field form-group">
+            <%= f.label :fullname, "Full Name (as you want it to appear to other users)" %>
+            <%= f.text_field :fullname, autofocus: true, class: "form-control" %>
+        </div>
+
+        <div class="field form-group">
+            <%= f.label :institutional_affiliation, "Institutional affiliation (if any)" %>
+            <%= f.text_field :institutional_affiliation, class: "form-control" %>
+        </div>
+       <div class="field form-group">
+          <%= f.label :bio, "Tell us something about yourself and your interests in becoming a member of the New SDBM user-community (this info will be visible to other users):" %>
+          <%= f.text_area :bio, rows: 5, autocomplete: "off", class: "form-control" %>
+        </div>
+      </div>
+      <div class="tab-pane fade" id='account-settings'>
+        <div class="h3 text-center">Change Password</div>
+        <p>
+          <div class="field form-group">
+            <%= f.label :current_password %>
+            <%= f.password_field :current_password, autocomplete: "off", class: "form-control" %>
+          </div>
+          
+          <div class="field form-group">
+            <%= f.label :new_password %>
+            <%= f.password_field :password, autocomplete: "off", class: "form-control" %>
+          </div>
+
+          <div class="field form-group">
+            <%= f.label :confirm_new_password %>
+            <%= f.password_field :password_confirmation, autocomplete: "off", class: "form-control" %>
+          </div>
+        </p>      
+      </div>
+      <div class="tab-pane fade" id='notification-settings'>
+        <div class="form-inline">
+        <div class='h3 text-center'>Notification Settings</div>
+        <%= f.fields_for :notification_setting do |notification_f| %>
+            <%= notification_f.hidden_field :user_id %>
+            <table class="table table-hover text-center table-bordered">
+              <thead class="bg-info">
+                <tr>
+                  <th></th>
+                  <th class='text-center text-info'>Notify Me</th>
+                  <th class='text-center text-success'>Email Me</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <label class='control-label'>On Update To My Watched Records</label><br>
+                    <span class="text-muted">Note: Records you create are 'watched' by default</span>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :on_update, class: 'form-control' %>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :email_on_update, class: 'form-control' %>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class='control-label'>On Comment To My Watched Records</label><br>
+                    <span class="text-muted">Note: Records you create are 'watched' by default</span>                    
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :on_comment, class: 'form-control'  %>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :email_on_comment, class: 'form-control'  %>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class='control-label'>On Reply To My Comments</label><br>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :on_reply, class: 'form-control'  %>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :email_on_reply, class: 'form-control'  %>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class='control-label'>On Private Message</label><br>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :on_message, class: 'form-control'  %>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :email_on_message, class: 'form-control'  %>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class='control-label'>On Group Invite</label><br>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :on_group, class: 'form-control'  %>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :email_on_group, class: 'form-control'  %>
+                  </td>
+                </tr>
+                <% if resource.role == 'admin' %>
+                <tr>
+                  <td>
+                    <label class='control-label'>On New User Registration</label><br>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :on_new_user, class: 'form-control'  %>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :email_on_new_user, class: 'form-control'  %>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class='control-label'>On Any Comment</label><br>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :on_all_comment, class: 'form-control'  %>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :email_on_all_comment, class: 'form-control'  %>
+                  </td>
+                </tr>
+                <% end %>
+              </tbody>
+            </table>
+        <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
   <%= devise_error_messages! %>
 
-  <div class="field form-group">
-      <%= f.label :email %>
-      <%= f.email_field :email, autofocus: true, class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-      <label>
-          <%= f.check_box :email_is_public, autofocus: true %> My email address is publicly visible 
-      </label>
-  </div>
-
-  <div class="field form-group">
-      <%= f.label :fullname, "Full Name (as you want it to appear to other users)" %>
-      <%= f.text_field :fullname, autofocus: true, class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-      <%= f.label :institutional_affiliation, "Institutional affiliation (if any)" %>
-      <%= f.text_field :institutional_affiliation, class: "form-control" %>
-  </div>
 
   <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
     <div>Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
   <% end %>
 
-  <div class="field form-group">
-    <%= f.label :password %> <i>(leave blank if you don't want to change it)</i>
-    <%= f.password_field :password, autocomplete: "off", class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= f.label :password_confirmation %>
-    <%= f.password_field :password_confirmation, autocomplete: "off", class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= f.label :current_password %> <i>(we need your current password to confirm your changes)</i>
-    <%= f.password_field :current_password, autocomplete: "off", class: "form-control" %>
-  </div>
-
-  <div class="field form-group">
-    <%= f.label :bio, "Tell us something about yourself and your interests in becoming a member of the New SDBM user-community (this info will be visible to other users):" %>
-    <%= f.text_area :bio, rows: 5, autocomplete: "off", class: "form-control" %>
-  </div>
-
-  <div class="form-inline">
-    <legend class='h4 text-center'>Notification Settings</legend>
-    <%= f.fields_for :notification_setting do |notification_f| %>
-        <table class="table table-hover text-center">
-          <thead>
-            <tr>
-              <th></th>
-              <th class='text-center text-info'>Notify Me</th>
-              <th class='text-center text-success'>Email Me</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <label class='control-label'>On Update</label><br>
-              </td>
-              <td>
-                <%= notification_f.check_box :on_update, class: 'form-control' %>
-              </td>
-              <td>
-                <%= notification_f.check_box :email_on_update, class: 'form-control' %>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label class='control-label'>On Comment</label><br>
-              </td>
-              <td>
-                <%= notification_f.check_box :on_comment, class: 'form-control'  %>
-              </td>
-              <td>
-                <%= notification_f.check_box :email_on_comment, class: 'form-control'  %>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label class='control-label'>On Reply</label><br>
-              </td>
-              <td>
-                <%= notification_f.check_box :on_reply, class: 'form-control'  %>
-              </td>
-              <td>
-                <%= notification_f.check_box :email_on_reply, class: 'form-control'  %>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <label class='control-label'>On Message</label><br>
-              </td>
-              <td>
-                <%= notification_f.check_box :on_message, class: 'form-control'  %>
-              </td>
-              <td>
-                <%= notification_f.check_box :email_on_message, class: 'form-control'  %>
-              </td>
-            </tr>
-            <% if resource.role == 'admin' %>
-            <tr>
-              <td>
-                <label class='control-label'>On New User Registration</label><br>
-              </td>
-              <td>
-                <%= notification_f.check_box :on_new_user, class: 'form-control'  %>
-              </td>
-              <td>
-                <%= notification_f.check_box :email_on_new_user, class: 'form-control'  %>
-              </td>
-            </tr>
-            <% end %>
-          </tbody>
-        </table>
-    <% end %>
-  </div>
   
-  <div class="actions">
-    <%= f.submit "Update", class: "btn btn-primary" %>
+<div class="col-sm-12 text-center">
+  <div class="form-inline">
+  <div class="field form-group">
+    <%= f.submit "Confirm Changes", class: "btn btn-primary" %>
   </div>
-<% end %>
-
-    </div>
 </div>
+
+
+<% end %>
 
 <%# disable for now %>
 <% if false %>

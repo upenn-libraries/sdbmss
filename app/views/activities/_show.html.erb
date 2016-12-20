@@ -1,20 +1,24 @@
 <li class="list-group-item">
   <div class="row">
-    <div class="col-sm-3">
-      <%= render partial: 'activities/default', locals: {activity: activity} %>
+    <div class="col-sm-3"></div>
+    <div class="col-sm-6">
+      <div class="activity row">
+        <div class="col-xs-4">
+          <%= render partial: 'activities/default', locals: {activity: activity} %>
+          <%= activity.created_at.to_formatted_s(:long) %>              
+        </div>
+        <div class="col-xs-8">
+          <% version = PaperTrail::Version.where(transaction_id: activity.transaction_id) %>
+          <% if version.count > 0 %>
+            <%= render partial: 'activities/version', locals: {version: EntryVersionFormatter.new(version)} %>
+          <% elsif activity.event == 'destroy' %>
+            (Record was deleted)
+          <% else %>
+             No changes to display
+         <% end %>
+        </div>
+      </div>
     </div>
-    <div class="col-sm-7">
-      <% version = PaperTrail::Version.where(transaction_id: activity.transaction_id) %>
-      <% if version.count > 0 %>
-        <%= render partial: 'activities/version', locals: {version: EntryVersionFormatter.new(version)} %>
-      <% elsif activity.event == 'destroy' %>
-        (Record was deleted)
-      <% else %>
-         No changes to display...
-     <% end %>
-    </div>
-    <div class="col-sm-2 text-right">
-      <%= activity.created_at.to_formatted_s(:long) %>              
-    </div>
+    <div class="col-sm-3"></div>
   </div>
 </li>

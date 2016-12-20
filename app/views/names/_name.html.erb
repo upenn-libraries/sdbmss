@@ -2,43 +2,11 @@
 
 <%# Why is this in SHARED instead of in NAME?? %>
 <div class="row">
-    <div class="col-sm-3">
-        <div class="panel panel-default show-tools">
-            <div class="panel-heading">
-                Tools
-            </div>
-            <div class="panel-body">
-                <ul class="nav">
-                    <% if user_signed_in? %>
-                        <li>
-                            <a onclick="addBookmark(<%= name.id %>, 'Name');" class="bookmark-link" in_bookmarks="/names/<%= name.id %>"><span class="glyphicon glyphicon-bookmark"></span></a>
-                        </li>
-                        <% if can?(:edit, name) %>
-                            <li class="edit_name">
-                                <a href="<%= edit_name_path(name.id) %>">Edit this name agent</a>
-                            </li>
-                        <% end %>
-                        <li class="history"><a href="<%= history_name_path(name.id) %>">View change history</a></li>
-                        <li class="link"><a href="<%= names_path %>">Return to list</a></li>
-                        <li class="link"><a href="<%= merge_name_path(name.id) %>">Merge</a></li>
-                        <% if can? :review, name %>
-                            <% if !name.reviewed %>
-                                <li class="link">
-                                    <%= link_to "Approve", name_path(name, reviewed: true), :method => :put, :data => {:confirm => "Does this name conform to the SDBM formatting standards? (e.g. Last name, First Name, Title, Life Dates)"} %>
-                                </li>
-                            <% end %>
-                        <% end %>
-                        <% if !name.confirmed and can? :edit, name %>
-                            <li class="link">
-                                <%= link_to "Confirm", name_path(name, confirmed: true), :method => :put, :data => {:confirm => "Do you have adequate information to assert that this name refers to a real individual?"} %>
-                            </li>
-                        <% end %>
-                    <% end %>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-9">
+    <% content_for :control_tools do %>        
+        <%= render partial: 'tools', locals: {edit: false} %>
+    <% end %>
+
+    <div class="col-sm-6">
 
         <dl class="document-show-heading dl-horizontal dl-invert">
             <dt></dt>
@@ -47,14 +15,12 @@
         <%= render partial: "main", locals: { name: name } %>
 
     </div>
-    <div class="col-sm-3"></div>
-    <div class="col-sm-9">
+    <div class="col-sm-5">
         
-        <h4>Share additional information about this name in the box below. Your comments will be displayed publicly.</h4>
+        <h2 class="text-center"><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
+        <p class='text-center text-muted'>Share additional information about this name in the box below. Your comments will be displayed publicly.</[>
 
         <%= render partial: "comments/show_all", locals: {comments: name.comments.where(public: true), record: name} %>
-
-        <div class="spacer-40px"></div>
 
     </div>
 

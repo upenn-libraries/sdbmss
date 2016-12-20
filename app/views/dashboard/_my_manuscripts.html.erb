@@ -1,0 +1,27 @@
+<% num_manuscripts = Manuscript.where(created_by: current_user).count %>
+<% num_manuscripts_unreviewed = Manuscript.where({created_by: current_user, reviewed: false}).count %>
+<% if num_manuscripts > 0 %>
+    <% num_manuscripts_to_show = 5 %>
+    <% manuscripts =  Manuscript.where(created_by: current_user).last(num_manuscripts_to_show) %>
+<div class="row">
+    <div class="col-sm-4">
+        <span class='h3 small-caps' data-toggle="collapse" href="#myManuscripts">
+            Manuscripts You Contributed
+            <span class="caret"></span>
+        </span>
+    </div>
+    <div class="col-sm-4 text-center">
+        <a class='btn btn-default' href="/manuscripts?created_by_user=1">Manage My Manuscripts</a>
+    </div>
+    <div class="col-sm-4 text-right">
+        <span>You have contributed <%= "#{num_manuscripts} manuscript record".pluralize(num_manuscripts) %></span>
+        <% if num_manuscripts_unreviewed > 0 %>
+            <br><span class='text-warning'><%= num_manuscripts_unreviewed %> unapproved</span>
+        <% end %>
+    </div>
+</div>
+<div class="collapse in list-group list-group-no-border-side" id="myManuscripts" style="padding: 0px 5px;">
+    <div class="text-center text-muted">Showing your <%= num_manuscripts_to_show %> most recent manuscripts</div>
+    <%= render partial: "profiles/tiles", locals: {records: manuscripts} %>
+</div>
+<% end %>

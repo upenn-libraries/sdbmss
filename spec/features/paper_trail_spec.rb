@@ -74,7 +74,7 @@ describe "Paper trail", :js => true do
     find_by_id(field).click
     # hover over something else--the navbar element here is just
     # arbitrary
-    first(".navbar-brand").hover
+    first('#header-navbar').hover
     sleep(2)
   end
 
@@ -135,8 +135,9 @@ describe "Paper trail", :js => true do
 
         fill_in 'folios', with: 10000
         first(".save-button").click
-        sleep(1.5)
-        expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+
+        expect(page).to have_content("Warning: This entry has not been approved yet.")
+        expect(page).to have_content(e.public_id)
 
         visit history_entry_path (e)
 

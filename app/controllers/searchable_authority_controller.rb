@@ -5,20 +5,20 @@ class SearchableAuthorityController < ManageModelsController
   require 'zip'
 
   def create
-    ActiveRecord::Base.transaction do
+    #ActiveRecord::Base.transaction do
       super
-      @transaction_id = PaperTrail.transaction_id
-    end
+    #  @transaction_id = PaperTrail.transaction_id
+    #end
     if @model.id
       @model.delay.index
     end
   end
 
   def update
-    ActiveRecord::Base.transaction do
+    #ActiveRecord::Base.transaction do
       super
-      @transaction_id = PaperTrail.transaction_id
-    end
+    #  @transaction_id = PaperTrail.transaction_id
+    #end
     @model.delay.index
   end
 

@@ -1,295 +1,94 @@
+<% content_for :control_tools do %>
+    <%= render partial: 'control_tools' %>
+<% end %>
+
 <%= stylesheet_link_tag "extras", media: "all" %>
 <% @page_title = "Dashboard - " + application_name %>
 
 <% is_contributor = current_user.role == 'contributor' %>
 <% possessive = is_contributor ? "Your" : "" %>
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <div class="row">
-            <div class="col-sm-2"></div>
-            <div class="col-sm-8">
-                <h1 class="text-center">
-                    Welcome, <%= link_to (current_user.fullname.present? ? current_user.fullname : current_user.username), profile_path(current_user.username) %>!
-                    <br><small class='text-info' sdbm-tooltip="user_levels">User Level: <%= current_user.role %></small>
-                </h1>
-            </div>
-            <div class="col-sm-2 text-right">
-                <p><a href="<%= bookmarks_path %>">Bookmarks</a></p>
-                <p><a href="<%= private_messages_path %>">Messages</a></p>
-                <p><%= link_to "Profile", profile_path(current_user.username) %></p>
-                <p><%= link_to "Notifications", notifications_path, class: current_user.new_notifications.count > 0 ? 'notify' : '', notifications: "#{current_user.new_notifications.count} new" %></p>
-                <% if Rails.env.development? || Rails.env.staging? %>
-                    <p><%= link_to "Groups", groups_path %></p>
-                <% end %>
-                <% if can? :manage, Page %>
-                    <p><%= link_to "Pages", pages_path %></p>
-                <% end %>
-            </div>
-        </div>
-    </div>
-    <div class="panel-body">
-        <div class="row">
-            <div class="col-sm-3 text-right">
-                <span class="h3">Your Tags
-                </span>
-            </div>
-            <div class="col-sm-9">
-                <% if current_user.tags.count <= 0 %>
-                    <span class="text-primary">You do not have any tags yet.</span>
-                <% end %>
-                <% current_user.tags.each do |tag, count| %>
-                    <a href="/bookmarks?tag=<%= tag %>" class="bookmark-tag text-primary"><span class="h4"><strong><%= tag %></strong><span class="bookmark-count text-muted">[<%= count %>]</span></span></a>
-                <% end %>
-            </div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="well">
+            <div class="row">
+                <div class="col-sm-12">
+                    <span class='h2'>Welcome, <%= current_user.to_s %>!</span>            
+                </div>
+                <div class="col-sm-12">
+                    <ul class="list-inline">
+                        <li><strong class='label label-primary label-lg'><span class="glyphicon glyphicon-tag"></span> Tags:</strong></li>                        
+                        <% if current_user.tags.count <= 0 %>
+                            <li>
+                                <span class="text-muted">You do not have any tags yet.</span>
+                            </li>
+                        <% end %>
+                    <% current_user.tags.each do |tag| %>
+                        <li>
+                            <%= link_to(bookmarks_path(tag: tag[0])) do %>
+                                <%= "#{tag[0]} (#{tag[1]})" %>
+                            <% end %>
+                        </li>
+                    <% end %>
+                    </ul>
+                </div>
+            </div>            
         </div>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-sm-3">
-        <div class="panel panel-default">
-            <div class="panel-heading">Data Entry Tasks</div>
-            <div class="panel-body">
-                <p><a id="dashboard-add-new-entry" href="<%= new_entry_path %>">Add New Entry</a></p>
-                <p><a href="<%= entries_path %>">Manage <%= possessive %> Entries</a>
-                    <% if can? :manage, Entry %>
-                        <% if (unapproved_count = Entry.where(approved: false).count) > 0 %>
-                            <br/>(<span style="color: red;"><%= unapproved_count %> unapproved</span>)
-                        <% end %>
-                    <% end %>
-                </p>
-                <p><a href="<%= sources_path %>">Manage <%= possessive %> Sources</a>
-                    <%= render partial: "unreviewed_count", locals: { model_class: Source } %>
-                </p>
-                <p><a href="<%= manuscripts_path %>">Manage <%= possessive %> Manuscripts</a>
-                    <%= render partial: "unreviewed_count", locals: { model_class: Manuscript } %>
-                </p>
-                <p><a href="<%= comments_path %>">Manage <%= possessive %> Comments</a>
-                    <%= render partial: "unreviewed_count", locals: { model_class: Comment } %>
-                </p>
-            </div>
-        </div>
-        <div class="panel panel-default">
-            <div class="panel-heading" data-toggle="collapse" data-target="#help">
-                Help
-                <span class="glyphicon glyphicon-chevron-down pull-right"></span>
-            </div>
-            <div class="panel-body collapse" id="help">
-                <p><a href="/static/docs/sdbm_data_model_explanation.pdf">New Data Model Explanations (PDF)</a></p>
-                <p><a href="/static/docs/sdbm_data_definitions.pdf">Data Definitions (PDF)</a></p>
-                <p><a href="/static/docs/sdbm_user_manual.pdf" target="_blank">User Manual (PDF)</a></p>
-                <p><a href="https://www.youtube.com/channel/UCsVZp-1724xPIW8MwIdKoyg/videos">Video Tutorials</a></p>
-                <p>Questions or comments, email us at <a href="mailto:sdbm@pobox.upenn.edu">sdbm@upenn.edu</a></p>
-            </div>
-        </div>
-        <% if can?(:manage, EntryManuscript) || can?(:manage, Name) || can?(:manage, Language) || can?(:manage, Place) || can?(:manage, User) %>
-        <div class="panel panel-default">
-            <div class="panel-heading">Admin</div>
-            <div class="panel-body">
-                <% if can?(:manage, EntryManuscript) %>
-                <p><a href="<%= entry_manuscripts_path %>">Manage Links</a>
-                    <%= render partial: "unreviewed_count", locals: { model_class: EntryManuscript } %>
-                </p>
-                <% end %>
-                <% if can?(:manage, Name) %>
-                <p><a href="<%= names_path %>">Manage Names</a>
-                    <%= render partial: "unreviewed_count", locals: { model_class: Name } %>
-                </p>
-                <% end %>
-                <% if can?(:manage, Language) %>
-                <p><a href="<%= languages_path %>">Manage Languages</a>
-                    <%= render partial: "unreviewed_count", locals: { model_class: Language } %>
-                </p>
-                <% end %>
-                <% if can?(:manage, Place) %>
-                <p><a href="<%= places_path %>">Manage Places</a>
-                    <%= render partial: "unreviewed_count", locals: { model_class: Place } %>
-                </p>
-                <% end %>
-                <% if can? :manage, User %>
-                <p><a href="<%= accounts_path %>">Manage Users</a>
-                    <%= render partial: "unreviewed_count", locals: { model_class: User } %>
-                </p>
-                <% end %>
-                <p><a href="<%= activities_path %>">Recent Activity</a></p>
-            </div>
-        </div>
-        <% end %>
-    </div>
-    <div class="col-sm-9">
-        <div class="panel panel-default">
-            <% num_entries = current_user.entries.count %>
-            <% num_entries_needing_approval = current_user.entries.where(approved: false).count %>
-            <% num_entries_deprecated = current_user.entries.where(deprecated: true).count %>
-            <% num_entries_to_show = (params[:num_entries] || 5).to_i %>
-            <% entries = current_user.entries.most_recent(num_entries_to_show) %>
-            <div class="panel-heading" data-toggle="collapse" href="#myEntries">
-                <div class="row">
-                    <div class="col-xs-6">
-                        <h4 class='h4'>Entries You've Contributed
-                            <br><small>Click to expand...</small>
-                        </h4>
-                    </div>
-                    <div class="col-xs-6 text-right">
-                        <div>You've contributed <%= SDBMSS::Util.to_many(num_entries, "entry") %> to date.</div>
-                        <% if num_entries_needing_approval > 0 %>
-                            <div class='text-warning'><%= num_entries_needing_approval %> of them <%= num_entries_needing_approval > 1 ? "are" : "is" %> not yet approved.</div>
-                        <% end %>
-                        <% if num_entries_deprecated > 0 %>
-                            <div class='text-danger'><%= num_entries_deprecated %> of them <%= num_entries_deprecated > 1 ? "are" : "is" %> deprecated.</div>
-                        <% end %>                        
-                    </div>
-                </div>
-            </div>
-            <div class="panel-body panel-collapse collapse" id="myEntries">
-                <% if num_entries > 0 %>
-                <ul class="list-group list-group-no-border-side">
-                    <li class="list-group-item">
-                         <div class="row">
-                            <div class="col-sm-6">
-                                <span>Showing the last <strong><%= SDBMSS::Util.to_many(entries.count, "entry") %></strong> you created</span>
-                            </div>
-                            <div class="col-sm-6 text-right">
-                                <a href="<%= search_by_facet_value("created_by", current_user.username) %>" class='btn btn-default'>See My Public Entries</a>
-                                <a href="/entries?created_by_user=1" class="btn btn-default">Manage My Entries</a>
-                            </div>
-                        </div>
-                    </li>
-                    <% entries.each do |entry| %>
-                        <li class="list-group-item">
-                            <dl class="document-show-heading dl-horizontal dl-invert">
-                              <dt></dt>
-                              <dd class="h4">
-                                <div class="row">
-                                  <div class="col-sm-12"><%= link_to entry.public_id, entry_path(entry) %></div>
-                                </div>
-                              </dd>
-                          </dl>
-                            <%= render partial: "bookmarks/show_entry", locals: {entry: entry} %>
-                        </li>
-                    <% end %>
-                </ul>
-
-                <% else %>
-
-                <p>You haven't contributed any entries yet.</p>
-                <% end %>
-            </div>
-        </div>
-
-        <% num_sources = current_user.sources.count %>
-        <% num_sources_unreviewed = current_user.sources.where({reviewed: false}).count %>        
-        <% if num_sources > 0 %>
-            <% num_sources_to_show = 5 %>
-            <% sources = current_user.sources.most_recent(num_sources_to_show) %>
-            <div class="panel panel-default">
-                <div class="panel-heading" data-toggle="collapse" href="#mySources">
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <h4>
-                                Sources You've Contributed<br>
-                                <small>Click to expand...</small>
-                            </h4>
-                        </div>
-                        <div class="col-xs-6 text-right">
-                            <div>You've contributed <%= SDBMSS::Util.to_many(num_sources, "source") %> to date.</div>
-                            <% if num_sources_unreviewed > 0 %>
-                                <div class='text-warning'><%= num_sources_unreviewed %> of them <%= num_sources_unreviewed > 1 ? "are" : "is" %> not yet reviewed.</div>
-                            <% end %>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-body panel-collapse collapse" id="mySources">
-                    <ul class="list-group list-group-no-border-side">
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <span>Showing the last <strong><%= SDBMSS::Util.to_many(sources.count, "source") %></strong> you created</span>
-                                </div>
-                                <div class="col-sm-6 text-right">
-                                    <a class="btn btn-default" href="/sources?created_by_user=1">Manage My Sources</a>
-                                </div>
-                            </div>
-                        </li>
-                       <% sources.each do |source| %>
-                            <li class="list-group-item">
-                                <dl class="document-show-heading dl-horizontal dl-invert">
-                                    <dt></dt>
-                                    <dd class='h4'><a href="/sources/<%= source.id %>"><%= source.public_id %></a></dd>
-                                </dl>
-                                <%= render partial: "sources/source_details", locals: {source: source, abbreviate: true} %>
-                            </li>
-                       <% end %> 
-                    </ul>
-                </div>
-            </div>
-        <% end %>
-
-        <% num_manuscripts = Manuscript.where(created_by: current_user).count %>
-        <% num_manuscripts_unreviewed = Manuscript.where({created_by: current_user, reviewed: false}).count %>
-        <% if num_manuscripts > 0 %>
-            <% num_manuscripts_to_show = 5 %>
-            <% manuscripts =  Manuscript.where(created_by: current_user).last(num_manuscripts_to_show) %>
-            <div class="panel panel-default">
-                <div class="panel-heading" data-toggle="collapse" href="#myManuscripts">
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <h4>
-                                Manuscripts You've Contributed<br>
-                                <small>Click to expand...</small>
-                            </h4>
-                        </div>
-                        <div class="col-xs-6 text-right">
-                            <% if num_manuscripts > 0 %>
-                                <div>You've contributed <%= num_manuscripts %> manuscript(s) to date.</div>
-                                <% if num_manuscripts_unreviewed > 0 %>
-                                    <div class='text-warning'><%= num_manuscripts_unreviewed %> of them <%= num_manuscripts_unreviewed > 1 ? "are" : "is" %> not yet reviewed.</div>
-                                <% end %>
-                            <% else %>
-                                <div class="text-muted">You have not contributed any manuscripts yet.</div>
-                            <% end %>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel-body panel-collapse collapse" id="myManuscripts">
-                    <ul class="list-group list-group-no-border-side">
-                        <li class="list-group-item">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <span>Showing the last <strong><%= SDBMSS::Util.to_many(manuscripts.count, "manuscript") %></strong> you created</span>
-                                </div>
-                                <div class="col-sm-6 text-right">
-                                    <a class="btn btn-default" href="/manuscripts?created_by_user=1">Manage My Manuscripts</a>
-                                </div>
-                            </div>
-                        </li>
-                        <% manuscripts.each do |manuscript| %>
-                            <li class="list-group-item">
-                                <dl class="document-show-heading dl-horizontal dl-invert">
-                                    <dt></dt>
-                                    <dd class='h4'><a href="/manuscripts/<%= manuscript.id %>"><%= manuscript.public_id %></a></dd>
-                                </dl>
-                                <%= render partial: "bookmarks/show_manuscript", locals: {manuscript: manuscript} %>
-                            </li>
-                        <% end %>
-                    </ul>
-                </div>
-            </div>
-        <% end %>
-
-        <!-- recent activity -->
-        <% @activities = Activity.where(user_id: current_user.id).last(10).reverse %>
-        <% if @activities && @activities.count > 0 %>
-            <div class="panel panel-default">
-                <div class="panel-heading"><h4>Your Recent Activity</h4></div>
-                <div class="panel-body">
-                    <ul class="list-group">
-                        <%= render partial: "activities/more" %>                       
-                    </ul>
-                    <div class="text-center"><%= link_to "See More...", activities_path('users[username][]' => current_user.username) %></div>
-                </div>
-            </div>
-        <% end %>
+    <div class="col-sm-12">
+        <ul id='dashboard-tabs' class="ajax-tabs nav nav-tabs dashboard-tabs">
+            <li class='active'><a data-toggle='tab' href="#my_activity">My Contributions</a></li>
+            <li><a data-toggle='tab' href="#community" href="">Activity</a></li>
+            <!--<li><a data-toggle='tab' href="#groups" data-url="/groups/show_all">Groups</a></li>
+            <li><a data-toggle='tab' href="#notifications">Notifications</a></li>-->
+        </ul>
     </div>
 </div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="tab-content">
+            <div id="my_activity" class="tab-pane fade in active">
+                <%= render partial: "my_entries" %>
+                <%= render partial: "my_sources" %>                        
+                <%= render partial: "my_manuscripts" %>                
+            </div>
+            <div id="community" class="tab-pane fade">
+                <div class="row">
+                    <div class="col-sm-10" id="activity-pane">
+                        <%= render partial: "activities/show_all" %>                       
+                    </div>
+                    <div class="col-sm-2">
+                        <%= render partial: "activities/nav" %>
+                    </div>
+                </div>
+            </div>
+            <!--
+            <div id="groups" class="tab-pane fade">
+            </div>
+            <div id="notifications" class="tab-pane fade">
+                <%# render partial: "notifications/index" %>
+            </div>-->
+        </div>
+    </div>
+</div>
+
+<script>
+$('.ajax-tabs').on('click','a',function (e) {
+    e.preventDefault();
+    var url = $(this).attr("data-url");
+
+    if (typeof url !== "undefined") {
+        var tab = $(this), href = this.hash;
+        // ajax load from data-url
+        $(href).load(url,function(result){      
+            tab.tab('show')
+        });
+    } else {
+        $(this).tab('show');
+    }
+});
+</script>

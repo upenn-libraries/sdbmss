@@ -1,6 +1,11 @@
+<% content_for :breadcrumbs do %>
+    <%= render partial: "catalog/breadcrumbs" %>
+<% end %>
+
 <% if @error %>
     <div class="alert alert-danger"><%= @error %></div>
 <% end %>
+
 
 <%= form_for @entry, url: {action: "revert_confirm"} do |f| %>
 

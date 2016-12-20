@@ -11,6 +11,7 @@
  */
 
 var SDBM = SDBM || {};
+var load_session = false;
 
 (function () {
 
@@ -36,11 +37,11 @@ var SDBM = SDBM || {};
 
         window.onpopstate = function(event) {
             // load the data from URL into page
-            manageRecords.setFormStateFromURL();
+            //manageRecords.setFormStateFromURL();
             manageRecords.dataTable.reload();
         };
 
-        manageRecords.setFormStateFromURL();
+        //manageRecords.setFormStateFromURL();
         
         this.dataTable = manageRecords.createTable(".sdbm-table");
 
@@ -178,7 +179,13 @@ var SDBM = SDBM || {};
         var sdbmTable = new SDBM.Table(selector, {
             ajax: function (sdbmTable, dt_params, callback, settings) {
 
-                var params = manageRecords.createSearchParams(dt_params);
+                if (load_session) {
+                    var params = JSON.parse($('#last_search').attr('data'));
+                    manageRecords.setFormStateFromParams(params);
+                    load_session = false;
+                } else {                    
+                    var params = manageRecords.createSearchParams(dt_params);
+                }
 
                 $("#spinner").show();
 
@@ -205,7 +212,6 @@ var SDBM = SDBM || {};
 
     SDBM.ManageRecords.prototype.searchAjax = function(params, dt_params, callback) {
         var manageRecords = this;
-        //console.log(params);
         $.ajax({
             url: '/' + manageRecords.options.resourceName + '/search.json',
             data: params,
@@ -222,7 +228,7 @@ var SDBM = SDBM || {};
                         recordsTotal: data.total,
                         recordsFiltered: data.total
                     });
-                    renewBookmarks();
+//                    renewBookmarks();
 
 /*                    if (manageRecords.getUnreviewedOnly() === 1)
                         $('.unreviewed_only').show();//.css({"display": "table-cell"});
@@ -259,8 +265,8 @@ var SDBM = SDBM || {};
             op: this.getOp()
         };
 
-        for (var i = 0; i < $(".search-fieldset").length; i++) { 
-            var search_row = $(".search-fieldset").eq(i);
+        for (var i = 0; i < $(".search-block").length; i++) { 
+            var search_row = $(".search-block").eq(i);
             var term = search_row.find("input[name=search_value]").val();
             var field = search_row.find("select[name=search_field]").val();
             var option = search_row.find("select[name=search_option]").val();
@@ -297,12 +303,51 @@ var SDBM = SDBM || {};
     SDBM.ManageRecords.prototype.setFormStateFromURL = function() {
         var manageRecords = this;
         var qs = new URI().query(true);
-        $("input[name='search_value']").first().val(qs.term);
+        var j = 0;
+        for (var key in qs) {
+            var key_string = key.replace(/\[|\]/g, '');
+            qs[key] = Array.isArray(qs[key]) ? qs[key] : [qs[key]];
+            for (var i = 0; i < qs[key].length; i++) {
+                var item = qs[key][i];
+                $('select[name=search_field]').eq(j).val(key_string);
+                $('input[name=search_value]').eq(j).val(item);
+                $('#addSearch').click();
+                j += 1;
+            }
+        }
+//        $("input[name='search_value']").first().val(qs.term);
         if(qs.unreviewed_only === '1') {
             $("input[name='unreviewed_only']").prop('checked', true);
         }
         manageRecords.showOrHideMarkCheckedRecordsButton();
     };
+
+    SDBM.ManageRecords.prototype.setFormStateFromParams = function (params) {
+        var manageRecords = this;
+        var qs = params;
+        var j = 0;
+        for (var key in qs) {
+            if (Array.isArray(qs[key]) && key.indexOf('option') == -1) {                
+                
+                if (j != 0) $('#addSearch').click();
+                var key_string = key;
+                var option_string = key + "_option";
+                for (var i = 0; i < qs[key].length; i++) {
+                    var item = qs[key][i];
+                    var option = qs[option_string][i];
+                    $('select[name=search_field]').eq(j).val(key_string);
+                    $('input[name=search_value]').eq(j).val(item);
+                    $('select[name=search_option]').eq(j).val(option);
+                    j += 1;
+                }
+            }
+        }
+//        $("input[name='search_value']").first().val(qs.term);
+        if(qs.unreviewed_only === '1') {
+            $("input[name='unreviewed_only']").prop('checked', true);
+        }
+        manageRecords.showOrHideMarkCheckedRecordsButton();
+    }
     
     // factory method that returns a function used for search form
     // submit handler

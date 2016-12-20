@@ -1,0 +1,101 @@
+<% source = record %>
+<div class="panel-heading">
+    <strong class="h4"><%= link_to source.public_id, source_path(source) %></strong>
+    <% if !source.reviewed %>
+          <span class="alert alert-warning alert-sm"><span class="glyphicon glyphicon-alert"></span> Unapproved</span>
+    <% end %>
+</div>
+<div class="panel-body">
+<dl class="document-metadata">
+
+        <dt>Type</dt>
+        <dd>
+            <% if source.source_type.present? %>
+                <%= source.source_type.display_name %>
+          <% end %>
+        </dd>
+
+        <% if source.date.present? %>
+            <dt>Date</dt>
+            <dd><%= format_fuzzy_date(source.date) %></dd>
+        <% end %>
+        
+            <dt>Title</dt>
+            <dd><%= source.title %></dd>
+
+        <% if (author = source.author).present? %>
+            <dt>Author</dt>
+            <dd><%= source.author %></dd>
+        <% end %>
+        
+        <% if (institutions = source.get_institutions).present? %>
+        <dt>Institution</dt>
+            <% institutions.each do |institution| %>
+                <dd><a class='badge' href="<%= url_for institution.agent %>"><%= institution.agent.name %></a></dd>
+            <% end %>
+        <% end %>
+
+        <% if (selling_agents = source.get_selling_agents).present? %>
+        <dt>Selling Agent</dt>
+            <% selling_agents.each do |selling_agent| %>
+                <dd><a class='badge' href="<%= url_for selling_agent.agent %>"><%= selling_agent.agent.name %></a></dd>
+            <% end %>
+        <% end %>
+
+        <% if (sellers_or_holders = source.get_sellers_or_holders).present? %>
+        <dt>Seller</dt>
+            <% sellers_or_holders.each do |seller_or_holder| %>
+                <dd><a class='badge' href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a></dd>
+            <% end %>
+        <% end %>
+
+<!--        <dt>Contains Manuscripts</dt>
+            <dd><%= source.whether_mss||"Unknown" %></dd>-->
+
+        <dt># Entries</dt>
+            <dd>This source has <a target="_blank" class='badge' href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries.count, "entry") %></a> in the database.</dd>
+<% if !defined?(abbreviate) || !abbreviate %>
+<% if source.medium.present? || source.date_accessed.present? || source.location_institution.present? || source.location.present? || source.link.present? %>
+        <% if source.medium.present? %>
+        <dt>Method of Access</dt>
+            <dd><%= source.medium_for_display %></dd>
+        <% end %>
+
+        <% if source.date_accessed.present? %>
+        <dt>Date Accessed</dt>
+            <dd><%= format_fuzzy_date(source.date_accessed) %></dd>
+        <% end %>
+        
+        <% if source.location_institution.present? %>
+        <dt>Institution</dt>
+            <dd><%= source.location_institution %></dd>
+        <% end %>
+
+        <% if source.location.present? %>
+        <dt>City, Country</dt>
+            <dd><%= source.location %></dd>
+        <% end %>
+
+        <% if source.link.present? %>
+        <dt>Online Link/<br/>Call No.</dt>
+            <dd><a href="<%= source.link %>"><%= source.link %></a></dd>
+        <% end %>
+
+<% end %>
+
+        <dt>Created By</dt>
+            <dd><%= render partial: "shared/username_with_profile_link", locals: { user: source.created_by } %></dd>
+
+        <dt>Status</dt>
+            <dd><%= source.status||"Unknown" %></dd>
+
+        <dt>Other Info</dt>
+            <dd><%= source.other_info || "No other info recorded" %></dd>
+
+</dl>
+
+<% end %>
+<div class="text-center text-muted">
+  <span class="glyphicon glyphicon-time"></span> Created At <%= source.created_at.to_formatted_s(:long) %>
+</div>
+</div>

@@ -4,4 +4,6 @@
 
 <%= render 'form' %>
 
-<%= link_to 'Go to Listing', models_path %>
+<% content_for :breadcrumbs do %>
+  <%= render partial: "breadcrumbs" %>
+<% end %>

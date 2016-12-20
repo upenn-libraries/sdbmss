@@ -8,9 +8,7 @@ class BookmarksController < ApplicationController
   before_action :authenticate_user!, only: [:index, :new, :create, :edit, :show, :update, :destroy]
 
   def index
-    # fix me: not logged in
     @tag = params[:tag].blank? ? nil : params[:tag]
-    # something bogus here with this... when there is no tag (i.e. else)
     if @tag
       @bookmarks = current_user.bookmarks.where("tags like ?", "%#{@tag}%")
     else
@@ -21,17 +19,15 @@ class BookmarksController < ApplicationController
       if bookmark.document.nil?
       elsif bookmark.document_type == nil
       elsif @bookmarks_sorted[bookmark.document_type.to_s]
-        @bookmarks_sorted[bookmark.document_type.to_s].push(bookmark.for_show)
+        @bookmarks_sorted[bookmark.document_type.to_s].push(bookmark)
       else
-        @bookmarks_sorted[bookmark.document_type.to_s] = [bookmark.for_show]
+        @bookmarks_sorted[bookmark.document_type.to_s] = [bookmark]
       end
     end
   end
 
   def export
     @bookmarks = token_or_current_or_guest_user.bookmarks
-    # FIX ME: needs to be polymorphic
-#    objects = @bookmarks.map(&:document_id).map { |id| Entry.find(id).as_flat_hash }
     objects = @bookmarks.map { |bookmark| bookmark.document.as_flat_hash }
     respond_to do |format|
       format.csv {
@@ -91,7 +87,6 @@ class BookmarksController < ApplicationController
   end
 
   def show
-    # fix me: make sure bookmark belongs to current_user
     if params[:id] && Bookmark.exists?(params[:id].to_i)
       @bookmark = Bookmark.find(params[:id])
       @name = @bookmark.document_type.to_s
@@ -99,18 +94,26 @@ class BookmarksController < ApplicationController
     end
   end
 
-  def new
+  def create
     if Bookmark.where({user: current_user, document_id: params[:document_id], document_type: params[:document_type]}).count > 0
       flash[:error] = "That record is already bookmarked."
       render json: {error: "already bookmarked"}
     else
       @bookmark = Bookmark.create({user: current_user, document_id: params[:document_id], document_type: params[:document_type]})
       @bookmark.save!
-      flash[:message] = "Bookmark created."
-      b = @bookmark.for_show
-      b[:details] = details_for_render(@bookmark)
-      current_user.increment!(:bookmark_tracker)
-      render json: b
+
+      button_html = (render_to_string partial: "delete", locals: {bookmark: @bookmark }, layout: false)
+      #flash[:message] = "Bookmark created."
+      respond_to do |format|
+        format.json {
+          render json: { success: 'success', status_code: '200', button: button_html, href: bookmark_path(@bookmark), method: 'delete' }
+        }
+      end
+      
+      #b = @bookmark.for_show
+      #b[:details] = details_for_render(@bookmark)
+      #current_user.increment!(:bookmark_tracker)
+      #render json: b
     end
     #redirect_to :back
   end
@@ -118,9 +121,17 @@ class BookmarksController < ApplicationController
   def destroy
     @bookmark = Bookmark.find(params[:id])
     @bookmark.destroy!
-    flash[:message] = "Bookmark removed."
-    current_user.increment!(:bookmark_tracker)
-    render text: 'destroyed'
+
+    button_html = (render_to_string partial: "add", locals: {document: @bookmark.document }, layout: false)
+
+    respond_to do |format|
+      format.json {
+        render json: { success: 'success', status_code: '200', button: button_html, href: bookmarks_path(document_id: @bookmark.document_id, document_type: @bookmark.document_type), method: 'post' } 
+      }
+    end
+    #flash[:message] = "Bookmark removed."
+    #current_user.increment!(:bookmark_tracker)
+    #render text: 'destroyed'
     #redirect_to :back
   end
 

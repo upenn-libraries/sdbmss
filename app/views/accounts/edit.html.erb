@@ -4,6 +4,10 @@
 
 <% @page_title = "Edit #{model_id} - " + application_name %>
 
+<% content_for :breadcrumbs do %>
+  <%= render partial: "breadcrumbs", locals: {edit: true} %>
+<% end %>
+
 <h1>Editing <%= model_id %></h1>
 
 <%= render 'form' %>

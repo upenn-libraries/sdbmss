@@ -1,23 +1,32 @@
-<div id="header-navbar" class="navbar navbar-inverse navbar-static-top" role="navigation">
+<div id="header-navbar" class="navbar navbar-default navbar-static-top" role="navigation">
   <div class="container">
-    <div class="navbar-header">
-    <button type="button" class="navbar-toggle btn collapsed" data-toggle="collapse" data-target="#user-util-collapse">
-      <span class="sr-only">Toggle navigation</span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-    </button>
-    <%= render partial: "shared/navbar_brand" %>
+    <div class="navbar-header text-right">
+      <span class="show-mobile pull-left h3" style='margin: 0px 0px 0px 10px; line-height: 25px; width: 70%; text-align: left;'>Schoenberg Database of Manuscripts</span>
+      <% if current_user %>
+      <button type="button" class="navbar-toggle btn btn-default btn-header-hamburger" data-toggle="collapse" data-target=".bookmarks-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="glyphicon glyphicon-dashboard"></span>
+      </button>
+      <% end %>
+      <button type="button" class="navbar-toggle btn btn-default btn-header-hamburger" data-toggle="collapse" data-target=".user-util-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="glyphicon glyphicon-menu-hamburger"></span>
+      </button>
     </div>
-
-    <div class="collapse navbar-collapse" id="user-util-collapse">
-      <%= render :partial=>'/user_util_links' %>
+    <div class="row">
+      <div class="col-sm-4 hide-mobile">
+        <%= image_tag 'neh_logo_horizlarge.png', class: "img img-responsive", style: "height: 44px; display: inline-block;" %>
+      </div>
+      <div class="col-sm-4 text-center">
+        <div class="collapse navbar-collapse user-util-collapse text-left">
+          <%= render partial: "shared/navbar_brand" %>
+        </div>
+      </div>
+      <div class="col-sm-4 text-right">
+        <div class="collapse navbar-collapse user-util-collapse">
+          <%= render :partial=>'/user_util_links' %>
+        </div>
+      </div>
     </div>
-  </div>
-</div>
-
-<div id="search-navbar" class="navbar navbar-default navbar-static-top" role="navigation">
-  <div class="container">
-    <%= render_search_bar  %>
   </div>
 </div>

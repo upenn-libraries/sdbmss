@@ -68,7 +68,7 @@ class EntriesController < SearchableAuthorityController
     # need to... get the fields configured for blacklight, 
 
     @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
-    @field_options = ["contains", "does not contain", "blank", "not blank", "before", "after"]
+    @field_options = ["contains", "does not contain", "blank", "not blank"]
     @date_options = ["before", "after", "near", "exact"]
     if params[:widescreen] == 'true'
       render :layout => 'widescreen'
@@ -91,6 +91,14 @@ class EntriesController < SearchableAuthorityController
       super
     end
     # respond to csv..., etc.
+  end
+
+  def feed
+    @page_title = "RSS Feed"
+    @entries = Entry.last(100).reverse
+    respond_to do |format|
+      format.rss { render :layout => false }
+    end
   end
 
   # JSON data structure optimized for editing page. This weird action
@@ -144,6 +152,7 @@ class EntriesController < SearchableAuthorityController
   def new
     @entry = Entry.new
     @source_id = params[:source_id]
+=begin    
     if @source_id.present?
       respond_to do |format|
         format.html { render "edit" }
@@ -152,6 +161,10 @@ class EntriesController < SearchableAuthorityController
       respond_to do |format|
         format.html { render "select_source" }
       end
+    end
+=end
+    respond_to do |format|
+      format.html { render "edit" }
     end
   end
 
@@ -194,7 +207,9 @@ class EntriesController < SearchableAuthorityController
             manuscript_id: params[:manuscript_id],
             relation_type: EntryManuscript::TYPE_RELATION_IS
           )
-          em.save
+          if em.save
+            flash.now[:success] = "Your observation has been automatically linked to SDBM_MS_#{params[:manuscript_id]}"
+          end
         elsif params[:new_manuscript].present? && params[:original_entry]
           m = Manuscript.create!
           em = EntryManuscript.new(
@@ -202,14 +217,22 @@ class EntriesController < SearchableAuthorityController
             manuscript_id: m.id,
             relation_type: EntryManuscript::TYPE_RELATION_IS
           )
-          em.save
           em2 = EntryManuscript.new(
             entry_id: params[:original_entry],
             manuscript_id: m.id,
             relation_type: EntryManuscript::TYPE_RELATION_IS
           )
-          em2.save
+          if em.save && em2.save
+            flash.now[:success] = "Your observation has been automatically linked to #{m.public_id}"
+          end
         end
+
+        # auto-watch record, if appropriate setting is set
+        if current_user.notification_setting.auto_watch
+          Watch.create(watched: @entry, user: current_user)
+        end
+
+        @transaction_id = PaperTrail.transaction_id
       end
     end
     respond_to do |format|

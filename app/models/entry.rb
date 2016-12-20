@@ -24,6 +24,7 @@ class Entry < ActiveRecord::Base
   ]
 
   include UserFields
+  include Watchable
   include HasPaperTrail
   include HasTouchCount
   include CreatesActivity
@@ -401,9 +402,9 @@ class Entry < ActiveRecord::Base
       other_info: other_info,
       provenance: unique_provenance_agents.map { |unique_agent| unique_agent[:name] }.join("; "),
       created_at: created_at ? created_at.to_formatted_s(:date_and_time) : nil,
-      created_by: (created_by.username if created_by),
+      created_by: created_by ? created_by.username : "",
       updated_at: updated_at ? updated_at.to_formatted_s(:date_and_time) : nil,
-      updated_by: (updated_by.username if updated_by),
+      updated_by: updated_by ? updated_by.username : "",
       approved: approved,
       deprecated: deprecated,
       superceded_by_id: superceded_by_id
@@ -760,9 +761,9 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:date, :created_at, :stored => true) { created_at }
-    define_field(:string, :created_by, :stored => true) { created_by }
+    define_field(:string, :created_by, :stored => true) { created_by ? created_by.username : "" }
     define_field(:date, :updated_at, :stored => true) { updated_at }
-    define_field(:string, :updated_by, :stored => true) { updated_by }
+    define_field(:string, :updated_by, :stored => true) { updated_by ? updated_by.username : "" }
     define_field(:boolean, :approved, :stored => true) { approved }
     define_field(:boolean, :deprecated, :stored => true) { deprecated }
 

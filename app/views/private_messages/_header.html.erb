@@ -1,18 +1,30 @@
-<div class="row" style="margin-bottom: 15px;">
-  <div class="col-sm-4">
-    <%= link_to(private_messages_path, class: "btn btn-lg btn-no-border #{ title == 'INBOX' ? 'active' : ''}") do |l| %>
-      INBOX <span class="glyphicon glyphicon-inbox"></span>
-    <% end %>
-    <%= link_to(private_messages_path(sent_by: true), class: "btn btn-lg btn-no-border #{ title == 'SENT' ? 'active' : ''}") do |l| %>
-      SENT <span class="glyphicon glyphicon-send"></span>
-    <% end %>
-  </div>
-  <div class="col-sm-4 text-center">
-    <span class='h2'><%# title %></span>
-  </div>
-  <div class="col-sm-4 text-right">
-    <%= link_to(new_private_message_path, class: "btn btn-lg btn-no-border #{ title == 'NEW' ? 'active' : ''}") do |l| %>
-      <span class="glyphicon glyphicon-envelope"></span> NEW
-    <% end %>
+<div class="row">
+  <div class="col-sm-12">
+    <nav class="navbar navbar-default">
+    <ul class="nav navbar-nav">
+      <li class="<%= title == 'INBOX' ? 'active' : '' %>">
+        <%= link_to(private_messages_path, class: "") do |l| %>
+          INBOX <span class="glyphicon glyphicon-inbox"></span>
+        <% end %>
+      </li>
+      <li class="<%= title == 'SENT' ? 'active' : '' %>">
+        <%= link_to(private_messages_path(sent_by: true), class: "") do |l| %>
+          SENT <span class="glyphicon glyphicon-send"></span>
+        <% end %>
+      </li>
+      <% if @chain %>
+      <li class='active'>
+        <a href=""><%= @chain.messages.first.title %>(...)</a>
+      </li>
+      <% end %>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li class="<%= title == 'NEW' ? 'active' : '' %>">
+        <%= link_to(new_private_message_path, class: "") do |l| %>
+          <span class="glyphicon glyphicon-envelope"></span> NEW
+        <% end %>
+      </li>    
+    </ul>
+    </nav>
   </div>
 </div>

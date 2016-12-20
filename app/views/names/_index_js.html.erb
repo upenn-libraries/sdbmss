@@ -1,5 +1,8 @@
+ <% if params[:last_search] %>
+    <span id="last_search" data="<%= session[:last_name_search].to_json %>"></span>
+<% end %>
 <script type="text/javascript">
-
+load_session = '<%= params[:last_search] %>' == 'true';
  $(document).ready(function() {
 
      var resourceName = "<%= resource_name %>";
@@ -45,7 +48,7 @@
                 orderable: false,
                 render: function (data, type, full, meta) {
                     var result = '<span class="btn-group options-btn-group">';
-                    result += '<a onclick="addBookmark(' + data + ', \'Name\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/names/' + data + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
+                    //result += '<a onclick="addBookmark(' + data + ', \'Name\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/names/' + data + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
                     result += '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>';
                     result += '<a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
                     if (canMerge) {

@@ -63,6 +63,10 @@ module SDBMSS
         end
       end
 
+      def link_protocol(url)
+        /^http/i.match(url) ? url : "http://#{url}"
+      end
+
       # Split a string by delimiter, strip its pieces, and return a list
       # of those pieces
       def split_and_strip(s, delimiter: "|", filter_blanks: true)

@@ -1,0 +1,80 @@
+<div id="control-panel">
+  <div class="bookmarks-collapse collapse width in">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-xs-4">
+                    <div class="panel panel-default text-center" style="margin: 0px;">
+                        <div class="panel-body"><span class="glyphicon glyphicon-user"></span></div>
+                    </div>
+                </div>
+                <div class="col-xs-8">
+                  <span class="dropdown">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                      <%= current_user.to_s %>
+                      <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a href="<%= profile_path(username: current_user.username) %>"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
+                      <li><a href="<%= private_messages_path %>"><span class="glyphicon glyphicon-envelope"></span> My Messages</a></li>
+                      <li><%= link_to edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
+                    </ul>
+                  </span><br>
+                  <span class="text-muted">User Level: <em><%= current_user.role %></em></span>
+                </div>
+            </div>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="nav">
+                <li>
+                  <a href="<%= dashboard_path %>"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a>
+                </li>
+                <li>
+                    <a href="/bookmarks"><span class="glyphicon glyphicon-bookmark"></span> Bookmarks</a>
+                </li>
+                <li>
+                    <a href="/downloads"><span class="glyphicon glyphicon-export"></span> Exports</a>
+                </li>
+                <li>
+                    <a href="/groups"><span class="glyphicon glyphicon-globe"></span> Groups</a>
+                </li>          
+                <li>
+                    <a href="/watches"><span class="glyphicon glyphicon-eye-open"></span> Watched Records</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    <div class="control-panel-top">
+      <div class="panel panel-default show-tools">
+        <div class="panel-heading"><span class="h4">Tools</span></div>
+        <div class="panel-body">
+          <ul class="nav">
+            <% if content_for? :add_entry %>
+              <!--<li class="divider"></li>-->
+              <%= yield :add_entry %>
+            <% else %>
+            <li class="dropdown">
+              <a href="" data-toggle="dropdown"><span class="glyphicon glyphicon-plus"></span> Add New Entry <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li>
+                  <a href="/entries/new">From a Source</a>
+                </li>
+                <li>
+                  <%= link_to "Based on Personal Observation", new_source_path({create_entry: 1, source_type: 4}) %>
+                </li>
+              </ul>
+            </li>
+            <% end %>
+            <%= yield :control_tools %>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

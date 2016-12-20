@@ -4,6 +4,7 @@ module DataEntryHelpers
     expect(page).to have_content('in Name Authority')
     expect(page).to have_selector('#searchNameAuthority');
     find_by_id('searchNameAuthority').set value
+    find_by_id('search-name').click
     expect(page).not_to have_content('To begin searching')
     if page.all('tr', :text => value).count <= 0
       expect(page).to have_content("Propose #{value}")
@@ -23,6 +24,7 @@ module DataEntryHelpers
     find_by_id(id).click
     expect(page).to have_content('in Name Authority')
     fill_in 'searchModelAuthority', with: value
+    find_by_id('search-model').click
     expect(page).not_to have_content('To begin searching')
     if page.all('tr', :text => value).count <= 0
       expect(page).to have_content("Propose #{value}")
@@ -140,7 +142,7 @@ module DataEntryHelpers
 
     click_certainty_flag('provenance_certainty_flags_0')
 
-    find_by_id('add_provenance_date_0').click
+    #find_by_id('add_provenance_date_0').click
     fill_in 'provenance_0_recorded_date_0', with: '1945-06-15'
     sleep 0.4
     fill_in 'provenance_start_date_0', with: '1945-06-15'
@@ -151,7 +153,7 @@ module DataEntryHelpers
 #      fill_autocomplete_select_or_create_entity 'provenance_agent_1', with: "Sotheby's"
     add_name_authority('find_provenance_name_authority_1', "Sotheby's")
 
-    find_by_id('add_provenance_date_1').click
+    #find_by_id('add_provenance_date_1').click
     fill_in 'provenance_1_recorded_date_0', with: '1965'
     fill_in 'provenance_start_date_1', with: '1965-11-23'
     fill_in 'provenance_comment_1', with: 'An historic sale'
@@ -166,7 +168,9 @@ module DataEntryHelpers
 
     first(".save-button").click
 
-    expect(find(".modal-title", visible: true)).to have_content("Successfully saved")
+    expect(page).to have_content("Warning: This entry has not been approved yet.")
+    expect(page).to have_content(Entry.last.public_id)
+    #expect(find(".modal-title", visible: true)).to have_content("Successfully saved")
   end
 
   def verify_entry(entry)

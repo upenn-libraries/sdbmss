@@ -74,7 +74,7 @@ describe "Data entry", :js => true do
     find_by_id(field).click
     # hover over something else--the navbar element here is just
     # arbitrary
-    first(".navbar-brand").hover
+    first('#header-navbar').hover
     sleep(2)
   end
 
@@ -114,22 +114,25 @@ describe "Data entry", :js => true do
 
     it "should find source by date on Select Source page" do
       visit new_entry_path
+      find('#select_source').click
       fill_in 'date', :with => '2013'
       expect(page).to have_content @source.title
-      click_link('create-entry-link-' + @source.id.to_s)
+      find("#create-entry-link-#{@source.id}").click
       expect(page).to have_content "Add an Entry"
     end
 
     it "should find source by agent on Select Source page" do
       visit new_entry_path
+      find('#select_source').click
       fill_in 'agent', :with => 'Soth'
       expect(page).to have_content @source.title
-      click_link('create-entry-link-' + @source.id.to_s)
+      find("#create-entry-link-#{@source.id}").click
       expect(page).to have_content "Add an Entry"
     end
 
     it "should NOT find source by agent on Select Source page" do
       visit new_entry_path
+      find('#select_source').click
       fill_in 'agent', :with => 'Nonexistent'
       sleep 1.5
       expect(page).to have_content "No source found matching your criteria."
@@ -137,14 +140,16 @@ describe "Data entry", :js => true do
 
     it "should find source by title on Select Source page" do
       visit new_entry_path
+      find('#select_source').click
       fill_in 'title', :with => 'uniq'
       expect(page).to have_content @source.title
-      click_link('create-entry-link-' + @source.id.to_s)
+      find("#create-entry-link-#{@source.id}").click
       expect(page).to have_content "Add an Entry"
     end
 
     it "should NOT find source by title on Select Source page" do
       visit new_entry_path
+      find('#select_source').click
       fill_in 'title', :with => 'nonexistentjunk'
       sleep 0.5
       expect(page).to have_content "No source found matching your criteria."
@@ -572,7 +577,8 @@ describe "Data entry", :js => true do
 
       first(".save-button").click
 
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+      expect(page).to have_content("Warning: This entry has not been approved yet.")
+      expect(page).to have_content(Entry.last.public_id)
 
       entry = Entry.last
       expect(entry.folios).to eq(666)
@@ -603,7 +609,8 @@ describe "Data entry", :js => true do
 
       first(".save-button").click
 
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+      expect(page).to have_content("Warning: This entry has not been approved yet.")
+      expect(page).to have_content(Entry.last.public_id)
 
       source.reload
 
@@ -679,8 +686,8 @@ describe "Data entry", :js => true do
 
       first(".save-button").click
 
-      sleep(1)
-      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
+      expect(page).to have_content("Warning: This entry has not been approved yet.")
+      expect(page).to have_content(Entry.last.public_id)
 
       manuscript = Manuscript.find(manuscript_id)
       expect(manuscript.entries.order(id: :desc).first.catalog_or_lot_number).to eq("9090")
@@ -721,18 +728,17 @@ describe "Data entry", :js => true do
 
       expect(page).to have_content("Create a New Personal Observation")
 
-      fill_in "title", with: "Totally Unique Personal Observation Source" 
+      fill_in "author", with: "Totally Unique Personal Observation Source" 
       click_button "Save"
 
-      expect(page).to have_content("Add an Entry")
+      expect(page).to have_content("Known errors in the Source should be preserved but can be noted")
 
       first(".save-button").click
+      first(".save-button").click
 
-      expect(page).to have_content("Successfully saved Entry record")
+      sleep 4
 
-      click_link "View this entry"
-
-      expect(page).to have_content("This entry has been identified as belonging to manuscript record #{Manuscript.last.public_id}, which has 2 entries in the SDBM.")
+      expect(page).to have_content("This entry has been identified as belonging to manuscript record SDBM_MS_2, which has 2 entries in the SDBM.")
     end
 
 end

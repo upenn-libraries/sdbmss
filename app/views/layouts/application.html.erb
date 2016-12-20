@@ -47,6 +47,14 @@
         .fade.in {
           display: block !important;
         }
+        .control-panel {
+          position: relative;
+        }
+        .main-content {
+          width: calc(100% - 288px);
+          position: relative;
+          float: right;
+        }
       </style>
       <script type='text/javascript'>
         $(".fade").removeClass("fade");
@@ -74,15 +82,27 @@
     <![endif]-->
 
   </head>
-  <body class="<%= render_body_class %>">
-  <div class="main-content bookmarks-collapse collapse in">
+  <body data-spy="scroll" data-target="#entry_breadcrumbs" data-offset="50" class="<%= render_body_class %>">
+  <% if current_user %>
+    <%= render partial: 'shared/control_panel' %>
+  <% end %>
+
+  <div class="main-content bookmarks-collapse collapse <%= current_user ? '' : 'in' %>">
     <%= render :partial => 'shared/header_navbar' %>
+    <%= render :partial => 'shared/search_navbar' %>
 
     <%# this is from blacklight %>
     <%= render partial: 'shared/ajax_modal' %>
 
     <div id="main-container" class="container">
+
       <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
+      <!--  breadcrumbs -->
+      <% if content_for :breadcrumbs %>
+      <ol class="breadcrumb">
+        <%= yield :breadcrumbs %>
+      </ol>
+      <% end %>
 
       <div class="row">
         <div class="col-sm-12">
@@ -95,12 +115,12 @@
     
     <%= render :partial => 'shared/footer' %>
   </div>
-  <% if request.path != "/bookmarks" && current_user %>
-    <div class="sidebar bg-primary bookmarks-collapse collapse"  ng-controller="ManageBookmarks">
-      <%= render partial: "bookmarks/navbar" %>
-        <%= render partial: "/shared/my_bookmarks" %>
-    </div>
-  <% end %>
+  <%# if request.path != "/bookmarks" && current_user %>
+    <!--<div class="sidebar bg-primary bookmarks-collapse collapse"  ng-controller="ManageBookmarks">
+      <%#= render partial: "bookmarks/navbar" %>
+        <%#= render partial: "/shared/my_bookmarks" %>
+    </div>-->
+  <%# end %>
   <div class="alerts-absolute"></div>
   </body>
 </html>

@@ -38,14 +38,18 @@ class EntryManuscript < ActiveRecord::Base
     integer :id
     integer :manuscript_id
     integer :entry_id
-    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :created_by })
-    join(:username,  :target => User, :type => :string, :join => { :from => :username, :to => :updated_by })
-    string :created_by
-    string :updated_by
-    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :created_by })
-    join(:username,  :target => User, :type => :text, :join => { :from => :username, :to => :updated_by })
-    text :created_by
-    text :updated_by
+    string :created_by do
+      created_by ? created_by.username : ""
+    end
+    string :updated_by do
+      updated_by ? updated_by.username : ""
+    end
+    text :created_by do
+      created_by ? created_by.username : ""
+    end
+    text :updated_by do
+      updated_by ? updated_by.username: ""
+    end
     date :created_at
     date :updated_at
     string :relation_type

@@ -1,0 +1,28 @@
+<% num_sources = current_user.sources.count %>
+<% num_sources_unreviewed = current_user.sources.where({reviewed: false}).count %>        
+<% if num_sources > 0 %>
+    <% num_sources_to_show = 5 %>
+    <% sources = current_user.sources.most_recent(num_sources_to_show) %>
+
+<div class="row">
+    <div class="col-sm-4">
+        <span class='h3 small-caps' data-toggle="collapse" href="#mySources">
+            Sources You Contributed
+            <span class="caret"></span>
+        </span>
+    </div>
+    <div class="col-sm-4 text-center">
+        <a class='btn btn-default' href="/sources?created_by=<%= current_user.username %>">Manage All My Sources</a>
+    </div>
+    <div class="col-sm-4 text-right">
+        <span>You have contributed <%= num_sources %> <%= "source".pluralize(num_sources) %></span>
+        <% if num_sources_unreviewed > 0 %>
+            <br><span class='text-warning'><%= num_sources_unreviewed %> unapproved</span>
+        <% end %>                    
+    </div>
+</div>
+<div class="collapse in list-group list-group-no-border-side" id="mySources" style="padding: 0px 5px;">
+    <div class="text-center text-muted">Showing your <%= num_sources_to_show %> most recent sources</div>
+    <%= render partial: "profiles/tiles", locals: {records: sources} %>
+</div>
+<% end %>

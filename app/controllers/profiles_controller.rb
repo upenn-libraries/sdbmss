@@ -22,7 +22,8 @@ class ProfilesController < ApplicationController
       entries_created: @user.entries.where(deprecated: false).count
     }
     @online = @user.updated_at && @user.updated_at > 10.minutes.ago
-    @activities = Activity.where(user_id: @user.id).limit(10).order(id: :desc)
+    start_date = Activity.where(user: current_user).order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
+    @activities = Activity.where(user: @user).where("created_at > ?", start_date).order("created_at desc").group_by { |a| a.created_at.to_date }      
   end
 
 end
