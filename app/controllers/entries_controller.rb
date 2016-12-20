@@ -39,27 +39,34 @@ class EntriesController < SearchableAuthorityController
 
   def self.do_csv_search(params, search_params_logic, download)
     (response, document_list) = EntriesController.new.search_results(params, search_params_logic)
-    objects = document_list.map { |document| document.model_object.as_flat_hash }
-    header = objects.first.keys
+    #objects = document_list.map { |document| document.model_object.as_flat_hash }
+    
+    # eager loading done in 1000 group batches, this seems to have improved performance by about 25% - could be better!
+    objects = []
+    document_list.in_groups_of(1000, false) do |group|
+      ids = group.map(&:id)
+      objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
+    end
 
+    header = objects.first.keys
+    
     filename = download.filename
     user = download.user
     id = download.id
     path = "/tmp/#{id}_#{user}_#{filename}"
-    
+
     csv_file = CSV.open(path, "wb") do |csv|
       csv << header
       objects.each do |r|
         csv << r.values 
       end
     end
-
+    
     Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
       zipfile.add(filename, path)
     end
 
     File.delete(path) if File.exist?(path)
-
     download.update({status: 1, filename: "#{filename}.zip"})
   end
 

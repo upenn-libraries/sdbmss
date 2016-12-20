@@ -355,6 +355,12 @@ class Entry < ActiveRecord::Base
   # export. Obviously, decisions have to be made here about how to
   # represent the nested associations for display and there has to be
   # some information tweaking/loss.
+  def test_load
+    {
+      authors: entry_authors.map(&:display_value).join("; ")
+    }
+  end
+
   def as_flat_hash
     # for performance, we avoid using has_many->through associations
     # because they always hit the db and circumvent the preloading
@@ -376,15 +382,15 @@ class Entry < ActiveRecord::Base
       sale_buyer: sale_buyer,
       sale_sold: (sale.sold if sale),
       sale_price: (sale.get_complete_price_for_display if sale),
-      titles: entry_titles.order(:order).map(&:title).join("; "),
-      authors: entry_authors.order(:order).map(&:display_value).join("; "),
-      dates: entry_dates.order(:order).map(&:display_value).join("; "),
-      artists: entry_artists.order(:order).map(&:display_value).join("; "),
-      scribes: entry_scribes.order(:order).map(&:display_value).join("; "),
-      languages: entry_languages.order(:order).map(&:language).map(&:name).join("; "),
-      materials: entry_materials.order(:order).map(&:material).join("; "),
-      places: entry_places.order(:order).map(&:display_value).join("; "),
-      uses: entry_uses.order(:order).map(&:use).join("; "),
+      titles: entry_titles.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:title).join("; "),
+      authors: entry_authors.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
+      dates: entry_dates.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
+      artists: entry_artists.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
+      scribes: entry_scribes.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
+      languages: entry_languages.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:language).map(&:name).join("; "),
+      materials: entry_materials.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:material).join("; "),
+      places: entry_places.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
+      uses: entry_uses.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:use).join("; "),
       folios: folios,
       num_columns: num_columns,
       num_lines: num_lines,
