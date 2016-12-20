@@ -18,7 +18,7 @@
     <% if user_signed_in? %>
         <% if can?(:edit, @user) %>
             <li class="edit_name">
-                <a href="<%= edit_account_path(@user) %>">Edit User Account</a>
+                <a href="<%= edit_account_path(@user) %>">Edit User: <%= @user.username %></a>
             </li>
         <% end %>
     <% end %>

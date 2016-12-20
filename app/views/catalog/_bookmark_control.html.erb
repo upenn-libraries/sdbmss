@@ -1,7 +1,7 @@
 <% if current_user %>
   <% if (w = current_user.bookmarks.where(document: document.model_object).first) %>
-    <%= render partial: "bookmarks/delete", locals: {bookmark: w} %>
+    <%= render partial: "bookmarks/delete", locals: {bookmark: w, no_name: true} %>
   <% else %>
-    <%= render partial: "bookmarks/add", locals: {document: document.model_object}  %>
+    <%= render partial: "bookmarks/add", locals: {document: document.model_object, no_name: true}  %>
   <% end %>
 <% end %>

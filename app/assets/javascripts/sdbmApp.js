@@ -2405,7 +2405,7 @@ var BOOKMARK_SCOPE;
         bookmark.tags.push(tag);
         bookmark.newtag = "";
         $http.get('/bookmarks/' + bookmark.id + '/addtag?tag=' + tag).then( function (e) {
-          console.log(e);
+          //console.log(e);
         });
       }
     }
@@ -2426,24 +2426,6 @@ var BOOKMARK_SCOPE;
           }
         }
       }
-      $scope.$apply();
-      $scope.doMasonry();
-    }
-
-    $scope.doMasonry = function () {
-      //$scope.$apply(function () {
-      //  console.log('mm');
-      //}); // why is this here?
-      if ($('.grid').masonry()) {
-        $('.grid').masonry('destroy');
-      }      
-      $('.grid').masonry({
-        // options
-        itemSelector: '.grid-item',
-        columnWidth: 350,
-        gutter: 10,
-        resize: false
-      });
     }
 
     $scope.loadBookmarks = function () {
@@ -2453,8 +2435,9 @@ var BOOKMARK_SCOPE;
         $scope.all_bookmarks = e.data.bookmarks;
         $scope.all_bookmarks_display = $scope.all_bookmarks;
         $scope.bookmark_tracker = e.bookmark_tracker;
-        $scope.$apply();
-        $scope.doMasonry();      
+        if ($scope.search_tag && $scope.search_tag.length > 0) {
+          $scope.searchTag($scope.search_tag);
+        }
       });
     }
 
@@ -2464,8 +2447,9 @@ var BOOKMARK_SCOPE;
         $.ajax({url: '/bookmarks/' + bookmark.id, method: 'delete'}).done( function (e) {
           $scope.all_bookmarks[name].splice(i, 1);
           var id = bookmark.document_id, type = bookmark.document_type;
+          $scope.$apply();        
+          $scope.searchTag($scope.search_tag);
           addNotification(type + ' ' + id + ' un-bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
-          $scope.doMasonry();
         }).error( function (e) {
           console.log('error', e);
         });
@@ -2483,8 +2467,8 @@ var BOOKMARK_SCOPE;
         if (!e.error && $scope.all_bookmarks[type]) {
           $scope.active = type;
           $scope.all_bookmarks[type].unshift(e);
-          $scope.doMasonry();
-
+          $scope.$apply();
+          $scope.searchTag($scope.search_tag);
           addNotification(type + ' ' + id + ' bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'success');
         } else {
           console.log(e.error);

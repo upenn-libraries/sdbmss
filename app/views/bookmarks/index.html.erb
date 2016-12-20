@@ -1,4 +1,4 @@
-<div ng-controller="ManageBookmarks">
+<div ng-controller="ManageBookmarks" ng-init='search_tag = "<%= params[:tag] %>"'>
 <div class="row">
   <div class="col-sm-8">
     <h2 class="h2">My Bookmarks
@@ -24,7 +24,7 @@
     </div>
   </div>
 </div>
-<div class="row" ng-repeat="(name, bookmarks) in all_bookmarks" style="border-bottom: 1px dotted #eee; padding: 10px 0px;">
+<div class="row" ng-repeat="(name, bookmarks) in all_bookmarks_display" style="border-bottom: 1px dotted #eee; padding: 10px 0px;">
   <div class="col-sm-3">
     <div class="h3">
       <span data-toggle="collapse" href="#bookmarks_{{name}}">{{ name }}(s)</span><br>

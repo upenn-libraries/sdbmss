@@ -16,7 +16,7 @@
     </div>
     <div class="col-sm-4 text-right">
         <% if num_entries > 0 %>
-            <span>Showing your last <%= entries.count %> of <%= "#{num_entries} entry".pluralize(num_entries) %></span><br>
+            <span>You have contributed <%= "#{num_entries} entry".pluralize(num_entries) %></span><br>
             <% if num_entries_needing_approval > 0 %>
                 <span class='text-warning'><%= num_entries_needing_approval %> unapproved</span>
             <% end %>
@@ -29,5 +29,6 @@
     </div>
 </div>
 <div class="collapse in list-group list-group-no-border-side" id="myEntries" style="padding: 0px 5px;">
+    <div class="text-center text-muted">Showing your <%= entries.count %> most recent entries</div>
     <%= render partial: "profiles/tiles", locals: {records: entries} %>
 </div>

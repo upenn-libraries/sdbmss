@@ -19,7 +19,7 @@ textarea { resize:vertical ; }
 .alerts-absolute {
   position: fixed;
   bottom: 0px;
-  left: 10px;
+  right: 10px;
   opacity: 0.95;
   width: 300px;
   z-index: 3;
@@ -1738,4 +1738,8 @@ Private Message Styling
   position: absolute;
   top: calc(50% - 10px);
   right: 0px;
+}
+
+.document-preview .bookmark-text {
+  display: none;
 }

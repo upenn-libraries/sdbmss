@@ -15,7 +15,7 @@
                       <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                      <li><a href="<%= profile_path(username: current_user.username) %>"><span class="glyphicon glyphicon-user"></span>My Profile</a></li>
+                      <li><a href="<%= profile_path(username: current_user.username) %>"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
                       <li><a href="<%= private_messages_path %>"><span class="glyphicon glyphicon-envelope"></span> My Messages</a></li>
                       <li><%= link_to edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
                     </ul>

@@ -20,10 +20,12 @@
               <a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a>
             </span>
             <% if !entry.approved %>
-              <span class="alert alert-warning alert-sm"><span class="glyphicon glyphicon-alert"></span> Unapproved</span>
+              <br><span>
+                <small class="text-warning"><span class="glyphicon glyphicon-alert"></span> Unapproved</small>
+              </span>
             <% end %>
           </div>
-          <div class="col-sm-6 text-right h4">
+          <div class="col-sm-6 text-right h4 document-preview">
             <%= render partial: 'catalog/bookmark_control', locals: {document: document} %>
           </div>
         </div>

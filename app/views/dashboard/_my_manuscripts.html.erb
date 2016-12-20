@@ -14,13 +14,14 @@
         <a class='btn btn-default' href="/manuscripts?created_by_user=1">Manage My Manuscripts</a>
     </div>
     <div class="col-sm-4 text-right">
-        <span>Showing your last <%= manuscripts.count %> of <%= "#{num_manuscripts} manuscript record".pluralize(num_manuscripts) %></span>
+        <span>You have contributed <%= "#{num_manuscripts} manuscript record".pluralize(num_manuscripts) %></span>
         <% if num_manuscripts_unreviewed > 0 %>
             <br><span class='text-warning'><%= num_manuscripts_unreviewed %> unapproved</span>
         <% end %>
     </div>
 </div>
 <div class="collapse in list-group list-group-no-border-side" id="myManuscripts" style="padding: 0px 5px;">
+    <div class="text-center text-muted">Showing your <%= num_manuscripts_to_show %> most recent manuscripts</div>
     <%= render partial: "profiles/tiles", locals: {records: manuscripts} %>
 </div>
 <% end %>

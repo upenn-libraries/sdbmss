@@ -25,7 +25,7 @@
                         <% end %>
                     <% current_user.tags.each do |tag| %>
                         <li>
-                            <%= link_to(bookmarks_path(tag: tag)) do %>
+                            <%= link_to(bookmarks_path(tag: tag[0])) do %>
                                 <%= "#{tag[0]} (#{tag[1]})" %>
                             <% end %>
                         </li>

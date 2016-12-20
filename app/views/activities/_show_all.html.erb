@@ -8,11 +8,10 @@
           Today
         <% elsif days == 1 %>
           Yesterday
-        <% elsif days % 7 == 0 %>
-          <% weeks = (days / 7).to_i %>
-          <%= "#{weeks} week".pluralize(weeks) %> ago
+        <% elsif days < 7  %>
+          <%= date.strftime("%A") %>
         <% else %>
-          <%= "#{days} day".pluralize(days) %> ago
+          <%= date.to_formatted_s(:long) %>
         <% end %>
         <span class="caret"></span>
       </div>
