@@ -1651,15 +1651,6 @@ Private Message Styling
   margin: 0px 3px;
 }
 
-<<<<<<< HEAD
-.input-block.ng-hide-add, .input-block.ng-hide-remove {
-  transition: 0.5s linear all;
-}
-
-.input-block.ng-hide {
-  transition: 0.5s linear all;
-  opacity: 0;
-=======
 .source-explain {
   color: PaleVioletRed;
   font-size: 11px;
