@@ -406,7 +406,7 @@ class Entry < ActiveRecord::Base
       manuscript_binding: manuscript_binding,
       manuscript_link: manuscript_link,
       other_info: other_info,
-      provenance: unique_provenance_agents.map { |unique_agent| unique_agent[:name] }.join("; "),
+      provenance: provenance.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map { |prov| prov.provenance_agent ? prov.provenance_agent.name : prov.observed_name }.join("; "),
       created_at: created_at ? created_at.to_formatted_s(:date_and_time) : nil,
       created_by: created_by ? created_by.username : "",
       updated_at: updated_at ? updated_at.to_formatted_s(:date_and_time) : nil,
