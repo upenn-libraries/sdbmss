@@ -2583,7 +2583,6 @@ var BOOKMARK_SCOPE;
 //function toggleSidebar() 
 
 function exportCSV(url) {
-  console.log(url);
   $.get(url).done(function (e) {
       if (e.error) {
           if (e.error == "at limit") {

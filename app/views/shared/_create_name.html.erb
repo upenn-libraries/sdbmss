@@ -26,7 +26,7 @@
         possible spellings.</p>
 
         <div class="form-group row">
-            <label class="col-sm-2 control-label">Name</label>
+            <label class="col-sm-2 control-label" sdbm-tooltip="create_name_name">Name</label>
             <div class="col-sm-5">
                 <input type="text" name="name" class="form-control" ng-model="entity.name">
             </div>
@@ -39,14 +39,14 @@
         </div>
 
         <div class="form-group row" ng-show="hasViafId">
-            <label class="col-sm-2 control-label">VIAF ID</label>
+            <label class="col-sm-2 control-label" sdbm-tooltip="create_name_viaf">VIAF ID</label>
             <div class="col-sm-2">
                 <input type="text" class="form-control" ng-model="entity.viaf_id">
             </div>
         </div>
 
         <div class="form-group row" ng-show="hasViafId">
-            <label class="col-sm-2 control-label">Other Info</label>
+            <label class="col-sm-2 control-label" sdbm-tooltip="create_name_other">Other Info</label>
             <div class="col-sm-7">
                 <input type="text" class="form-control" ng-model="entity.other_info">
             </div>

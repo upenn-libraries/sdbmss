@@ -55,7 +55,8 @@ module SolrSearchable
 
   def do_csv_search(params, download)
     s = do_search(params)
-
+    
+    # any possible 'speed up' would need to be done here:
     results = s.results.map do |obj|
       obj.search_result_format
     end
