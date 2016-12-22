@@ -5,39 +5,34 @@
 <%# render partial: "entries/preview", locals: {record: entry } %>
 </div>
 -->
-<div class="document <%= render_document_class document %>" itemscope itemtype="<%= document.itemtype %>">
-    <% entry = document.model_object %>
-    <% if entry.nil? %>
-        <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
-    <% else %>
-    <dl class="document-metadata document-show-heading dl-horizontal dl-invert">
-        <dt></dt>
+<% entry = document.model_object %>
+<% if entry.nil? %>
+    <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
+<% else %>
+<div class='row document-heading'>
+  <div class="col-sm-6">
+      <span class='h4'>
         <%# data-context-href triggers an HTTP callback before loading the entry page; this makes prev/next links on individual Entry page work %>
-      <dd class="">
-        <div class="row">
-          <div class="col-sm-6">
-            <span class='h4'>
-              <a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a>
-            </span>
-            <% if !entry.approved %>
-              <br><span>
-                <small class="text-warning"><span class="glyphicon glyphicon-alert"></span> Unapproved</small>
-              </span>
-            <% end %>
-          </div>
-          <div class="col-sm-6 text-right h4 document-preview">
-            <%= render partial: 'catalog/bookmark_control', locals: {document: document} %>
-          </div>
-        </div>
-      </dd>
-    </dl>
+        <a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a>
+      </span>
+      <% if !entry.approved %>
+        <span>
+          <small class="text-danger"><span class="glyphicon glyphicon-alert"></span> Unapproved</small>
+        </span>
+      <% end %>
+  </div>
+  <div class="col-sm-6 text-right">
+      <span class="document-preview"><%= render partial: 'catalog/bookmark_control', locals: {document: document} %></span>        
+  </div>
+</div>
+
+<div class="document <%= render_document_class document %>" itemscope itemtype="<%= document.itemtype %>">
     <dl class="document-metadata dl-horizontal dl-invert">
         <% manuscripts_str = render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
         <% if manuscripts_str.present? %>
-        <dt></dt>
-        <dd>
+        <div class='text-center'>
             <%= manuscripts_str %>
-        </dd>
+        </div>
         <% end %>
 
       <% entry.supercedes.each do |superceded| %>
