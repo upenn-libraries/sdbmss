@@ -145,7 +145,6 @@ var SDBM = SDBM || {};
                  * which has the effect of constraining TH widths as
                  * calculated by dataTables.
                  */
-                // FIX ME: should there ever be a 'max' width for a column, for instance if there is a really long table entry and many blanks in the same column...?
                 $('td', row).each(function (idx, e) {
                     var opts = sdbmTable.columns[idx];
                     if(opts.sdbmssMinWidthImportant) {
@@ -323,6 +322,8 @@ var SDBM = SDBM || {};
                 {
                     sdbmssSortField: 'groups',
                     title: 'User Groups',
+                    sdbmssMinWidth: "100px",
+                    sdbmssMaxWidth: "100px",
                     render: function (data, type, full, meta) {
                         data = JSON.parse(data);
                         var result = "";
