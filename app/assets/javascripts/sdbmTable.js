@@ -150,9 +150,13 @@ var SDBM = SDBM || {};
                     var opts = sdbmTable.columns[idx];
                     if(opts.sdbmssMinWidthImportant) {
                         $(e).css("min-width", opts.sdbmssMinWidthImportant);  //DISABLED sdbmssMinWidth
+                    } else if (opts.sdbmssMinWidth) {
+                        $(e).css("min-width", opts.sdbmssMinWidth);  //DISABLED sdbmssMinWidth                        
                     }
                     if(opts.sdbmssMaxWidthImportant) {
                         $(e).css("max-width", opts.sdbmssMaxWidthImportant);  //DISABLED sdbmssMaxWidth
+                    } else if (opts.sdbmssMaxWidth) {
+                        $(e).css("max-width", opts.sdbmssMaxWidth);  //DISABLED sdbmssMinWidth                        
                     }
                 });
             },
