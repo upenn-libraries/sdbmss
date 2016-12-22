@@ -538,11 +538,14 @@ var load_session = false;
 
     SDBM.ManageRecords.prototype.exportCSV = function() {
         
-        /* do search, then poll to see if download is completed */
+        if (confirm('Would you like to download the current search results as a CSV file?')) {
+            
+            var url = this.getCSVSearchUrl();
 
-        var url = this.getCSVSearchUrl();
+            exportCSV(url);
+            /* do search, then poll to see if download is completed */
+        }
 
-        exportCSV(url);
     };
     
 }());

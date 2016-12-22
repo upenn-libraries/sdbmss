@@ -1,10 +1,13 @@
 html {
   height: 100%;
+  width: 100%;
 }
 body {
   background: white;
   height: 100%;
+  width: 100%;
   font-family: Ubuntu, sans-serif;
+  overflow-y: scroll;
 }
 
 textarea { resize:vertical ; }
@@ -33,7 +36,7 @@ textarea { resize:vertical ; }
 }
 .main-content.collapse {
   display: block;
-  max-width: calc(100vw - 268px);
+  max-width: calc(100vw - 284px);
 }
 .main-content.collapse.in {
   max-width: 100%;
@@ -878,6 +881,7 @@ li.provenance:hover, li.provenance:focus {
   border-radius: 5px;*/
   background-color: #fff;
   transition: all linear 0.5s;
+  width: 99%;
   /*box-shadow: 0px 4px 1px 0px rgba(0,0,0,0.1);*/
   /*border-bottom: 1px solid #ddd;*/
   margin: 3px -15px;
