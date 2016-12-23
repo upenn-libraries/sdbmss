@@ -28,9 +28,15 @@
       <%= javascript_include_tag "development" %>
     <% end %>
     <style>
-      @media (min-width: 768px) and (max-width: 769px) {
-        .navbar-collapse {
-          display: none !important;
+      @media (min-width: 768px) {
+        .navbar-toggle {
+          display: inline-block !important;
+        }
+      }
+
+      @media (min-width: 767px) {
+        .navbar-toggle {
+          display: none;
         }
       }
     </style>

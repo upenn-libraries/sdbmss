@@ -1401,6 +1401,11 @@ so that gray backdrop shvows up correctly */
     display: block;
   }
 }
+@media (max-width: 1024px) {
+  div.show-mobile-lg {
+    display: block;
+  } 
+}
 
 @media print {
     /* TODO: these 2 rules are a hack to hide the sidebar and stretch out #content to 100%. the result is better than nothing, but it does cut off the right side a bit, for reasons I don't yet know. it also looks very different on Chrome than Firefox. there must be a better way... */
