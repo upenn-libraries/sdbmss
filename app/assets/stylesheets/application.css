@@ -12,11 +12,11 @@
  *
  *= require jquery-ui
  *= require blacklight
- *= require sdbmss
  *= require_self
  *= require dynamic_css
 
  *= require bootstrap-tour.min 
  *= require bootstrap-multiselect
  *= require 'blacklight_advanced_search'
+ *= require sdbmss
 */

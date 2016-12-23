@@ -1371,12 +1371,6 @@ so that gray backdrop shvows up correctly */
   .hide-mobile {
     display: none !important;
   }
-  span.show-mobile {
-    display: inline-block;
-  }
-  div.show-mobile {
-    display: block;
-  }
   .notifications {
     margin-top: 5px !important;
     box-shadow: none !important;
@@ -1396,6 +1390,14 @@ so that gray backdrop shvows up correctly */
     display: inline-block;
   }
   .prov-date-range label {
+    display: block;
+  }
+}
+@media (max-width: 767px) {
+  span.show-mobile {
+    display: inline-block;
+  }
+  div.show-mobile {
     display: block;
   }
 }
@@ -1458,7 +1460,7 @@ so that gray backdrop shvows up correctly */
 #control-panel {
   position: fixed;
   float: left;
-  z-index: 1100;
+  z-index: 1049;
   height: 100%;
   background: #f8f8f8;
   padding: 0px;
