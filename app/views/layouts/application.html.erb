@@ -27,19 +27,6 @@
     <% if Rails.env.development? || Rails.env.staging? %>
       <%= javascript_include_tag "development" %>
     <% end %>
-    <style>
-      @media (min-width: 768px) {
-        .navbar-toggle {
-          display: inline-block !important;
-        }
-      }
-
-      @media (min-width: 767px) {
-        .navbar-toggle {
-          display: none;
-        }
-      }
-    </style>
     <!-- disable animations when running tests -->
     <% if Rails.env.test? %>
       <style type="text/css">
