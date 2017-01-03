@@ -70,7 +70,7 @@ textarea { resize:vertical ; }
   background-color: #b8d993;*/
   background-color: #d5d5d5;
   border: none;
-  box-shadow: 0px 2px 4px lightgray;
+  /*box-shadow: 0px 2px 4px lightgray;*/
 }
 #header-navbar a {
   color: black;
@@ -1472,15 +1472,16 @@ so that gray backdrop shvows up correctly */
   border-right: 1px solid #ddd;
   overflow-y: auto;
   max-width: 80%;
+  display: block;
 }
-#control-panel a {
+#control-panel .collapsing a {
   white-space: nowrap;
 }
 #control-panel .collapse {
-  display: none;
+  width: 0px;
+  display: block;
 }
 #control-panel .collapse.in {
-  display: block;
   width: 268px !important;
 }
 #control-panel-button {
@@ -1499,6 +1500,18 @@ so that gray backdrop shvows up correctly */
   -webkit-transition: none;
   transition: none;
 }*/
+.mobile-title {
+  margin: 0px 0px 0px 10px;
+  line-height: 25px;
+  position: absolute;
+  top: 0px;
+  text-align: center;
+  right: 0px;
+  width: 100%;
+  letter-spacing: -2px;
+  padding: 0px 80px;
+}
+
 .bookmarks-collapse.collapsing {
   -webkit-transition-property: width;
   transition-property: width;
@@ -1522,19 +1535,13 @@ so that gray backdrop shvows up correctly */
   display: block;
   position: fixed;
   left: 269px;
-  border-left: 0px;
+  border-left: none;
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
   background: #eee;
-  border-color: #ddd;
-  -webkit-transition-property: left;
-  transition-property: left;
-  -webkit-transition-duration: 0.35s;
-  transition-duration: 0.35s;
-  -webkit-transition-timing-function: linear;
-  transition-timing-function: linear;
-  -webkit-transition-delay: 0s;
-  transition-delay: 0s;
+  border-color: #aaa;
+  height: 50px;
+  line-height: 50px;
   padding: 15px 6px;
 }
 #collapse-control:focus, #collapse-control:active {
@@ -1545,8 +1552,24 @@ so that gray backdrop shvows up correctly */
   left: 0px;
 }
 #control-panel .collapse.in + #collapse-control {
-  left: 269px;
+  left: 242px;
+  border-color: transparent;
 }
+
+#control-panel .collapse + #collapse-control .show-collapsed, 
+#control-panel .collapse.in + #collapse-control .hide-collapsed {
+  display: none;
+}
+
+#control-panel .collapse.in + #collapse-control .show-collapsed, 
+#control-panel .collapse + #collapse-control .hide-collapsed {
+  display: block;
+}
+
+#control-panel .collapsing + #collapse-control {
+  display: none;
+} 
+
 #control-panel .collapse + #collapse-control {
   position: fixed;
   left: 0px;
