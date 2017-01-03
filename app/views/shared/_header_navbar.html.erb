@@ -1,7 +1,8 @@
 <div id="header-navbar" class="navbar navbar-default navbar-static-top" role="navigation">
   <div class="container">
     <div class="navbar-header text-right">
-      <span class="show-mobile h3 mobile-title">Schoenberg Database of Manuscripts</span>
+      <span class="show-mobile hide-mobile-sm h3 mobile-title">Schoenberg Database of Manuscripts</span>
+      <span class="show-mobile-sm h3 mobile-title mobile-acronym">SDBM</span>
       <% if current_user %>
       <% end %>
       <button type="button" class="navbar-toggle btn btn-default btn-header-hamburger" data-toggle="collapse" data-target=".user-util-collapse">
@@ -10,15 +11,15 @@
       </button>
     </div>
     <div class="row">
-      <div class="col-sm-4 hide-mobile">
+      <div class="col-sm-3 hide-mobile">
         <%= image_tag 'neh_logo_horizlarge.png', class: "img img-responsive", style: "height: 44px; display: inline-block;" %>
       </div>
-      <div class="col-sm-4 text-center">
-        <div class="collapse navbar-collapse user-util-collapse text-left">
+      <div class="col-sm-6 text-center">
+        <div class="collapse navbar-collapse user-util-collapse">
           <%= render partial: "shared/navbar_brand" %>
         </div>
       </div>
-      <div class="col-sm-4 text-right">
+      <div class="col-sm-3 text-right">
         <div class="collapse navbar-collapse user-util-collapse">
           <%= render :partial=>'/user_util_links' %>
         </div>

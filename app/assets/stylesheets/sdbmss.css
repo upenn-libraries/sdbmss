@@ -75,6 +75,10 @@ textarea { resize:vertical ; }
 #header-navbar a {
   color: black;
 }
+.navbar-title, .navbar-title li {
+  width: 100%;
+  text-align: center;
+}
 .navbar-inverse .navbar-nav > li > a { color: black }
 
 .container-fluid .row { padding-left: 15px; padding-right: 15px; }
@@ -1334,6 +1338,20 @@ so that gray backdrop shvows up correctly */
     padding: 4px;
 }
 
+@media (min-width: 768px) {
+  .main-content .container {
+    max-width: 100%;
+    width: auto;
+  }
+}
+
+@media (min-width: 992px) {
+  .main-content .container {
+    max-width: 100%;
+    width: auto;
+  }
+}
+
 @media (min-width: 1200px) {
   .main-content .container {
     max-width: 1170px !important;
@@ -1341,35 +1359,57 @@ so that gray backdrop shvows up correctly */
   }
 }
 
-@media (min-width: 992px) {
-  .main-content .container {
-    max-width: 970px;
-    width: auto;
+@media (max-width: 1255px) {
+  div.show-mobile-lg {
+    display: block;
+  }
+  .hide-mobile-lg {
+    display: none !important;
+  }
+  #search-navbar li > a {
+    padding: 15px 5px;
+  }
+  #header-navbar .navbar-nav > li > a {
+    padding: 15px 5px;
   }
 }
-
-@media (min-width: 768px) {
-  .main-content .container {
-    max-width: 750px;
-    width: auto;
+@media (max-width: 360px) {
+  body {
+    min-width: 360px;
+  }
+  .hide-mobile-sm {
+    display: none !important;
+  }
+  span.show-mobile-sm {
+    display: inline-block;
+  }
+  div.show-mobile-sm {
+    display: block;
   }
 }
-
-@media (max-width: 768px) {
+@media (max-width: 767px) {
+  #search-navbar form {
+    margin: 0px 5px;
+    border: none;
+  }
+  .hide-mobile {
+    display: none !important;
+  }
+  span.show-mobile {
+    display: inline-block;
+  }
+  div.show-mobile {
+    display: block;
+  }
+}
+@media (max-width: 1024px) {
   .main-content {
     max-width: 100% !important;
     width: 100% !important;
   }
   /* need way to collapse into accessible menu */
-  #search-navbar form {
-    margin: 0px 5px;
-    border: none;
-  }
   .navbar-nav {
     margin: 0px;
-  }
-  .hide-mobile {
-    display: none !important;
   }
   .notifications {
     margin-top: 5px !important;
@@ -1392,19 +1432,6 @@ so that gray backdrop shvows up correctly */
   .prov-date-range label {
     display: block;
   }
-}
-@media (max-width: 767px) {
-  span.show-mobile {
-    display: inline-block;
-  }
-  div.show-mobile {
-    display: block;
-  }
-}
-@media (max-width: 1024px) {
-  div.show-mobile-lg {
-    display: block;
-  } 
 }
 
 @media print {
@@ -1508,18 +1535,26 @@ so that gray backdrop shvows up correctly */
   text-align: center;
   right: 0px;
   width: 100%;
-  letter-spacing: -2px;
+  letter-spacing: -3px;
   padding: 0px 80px;
+}
+.mobile-acronym {
+  line-height: 50px;
+  font-size: 60px;
 }
 
 .bookmarks-collapse.collapsing {
   -webkit-transition-property: width;
+  -moz-transition-property: width;
   transition-property: width;
   -webkit-transition-duration: 0.35s;
+  -moz-transition-duration: 0.35s;
   transition-duration: 0.35s;
   -webkit-transition-timing-function: linear;
+  -moz-transition-timing-function: linear;
   transition-timing-function: linear;
   -webkit-transition-delay: 0s;
+  -moz-transition-delay: 0s;
   transition-delay: 0s;
 }
 #control-panel .collapsing {
@@ -1535,11 +1570,9 @@ so that gray backdrop shvows up correctly */
   display: block;
   position: fixed;
   left: 269px;
-  border-left: none;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
+  border-radius: 0px;
+  border: none;
   background: #eee;
-  border-color: #aaa;
   height: 50px;
   line-height: 50px;
   padding: 15px 6px;
@@ -1812,7 +1845,7 @@ Private Message Styling
   padding: 6px 12px;
   margin: 0px;
 }
-.show-mobile {
+.show-mobile, .show-mobile-sm {
   display: none;
 }
 .btn-header-hamburger {
