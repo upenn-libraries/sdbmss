@@ -29,17 +29,17 @@ textarea { resize:vertical ; }
 }
 
 .main-content {
-  width: 100%;
+  width: calc(100vw - 0px);
   height: 100% !important;
   float: right;
   position: relative;
 }
 .main-content.collapse {
   display: block;
-  max-width: calc(100vw - 284px);
+  width: calc(100vw - 284px);
 }
 .main-content.collapse.in {
-  max-width: 100%;
+  width: calc(100vw - 0px);
 }
 .sidebar {
   width: 388px;
@@ -1358,7 +1358,7 @@ so that gray backdrop shvows up correctly */
 @media (max-width: 768px) {
   .main-content {
     max-width: 100% !important;
-    width: 100%;
+    width: 100% !important;
   }
   /* need way to collapse into accessible menu */
   #search-navbar form {
@@ -1473,6 +1473,9 @@ so that gray backdrop shvows up correctly */
   overflow-y: auto;
   max-width: 80%;
 }
+#control-panel a {
+  white-space: nowrap;
+}
 #control-panel .collapse {
   display: none;
 }
@@ -1491,26 +1494,68 @@ so that gray backdrop shvows up correctly */
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
   box-shadow: -2px 0px 6px -2px #ddd inset;
-}
-#control-panel .collapsing {
-  position: relative;
-  height: 0;
-  overflow: hidden;
-  -webkit-transition-property: height, visibility;
-  transition-property: height, visibility;
+}/*
+.bookmarks-collapse.collapse, .bookmarks-collapse.collapsing {
+  -webkit-transition: none;
+  transition: none;
+}*/
+.bookmarks-collapse.collapsing {
+  -webkit-transition-property: width;
+  transition-property: width;
   -webkit-transition-duration: 0.35s;
   transition-duration: 0.35s;
   -webkit-transition-timing-function: linear;
   transition-timing-function: linear;
+  -webkit-transition-delay: 0s;
+  transition-delay: 0s;
 }
-#control-panel .collapsing.width {
-  -webkit-transition-property: width, visibility;
-  transition-property: width, visibility;
+#control-panel .collapsing {
+  overflow: visible;
+}
+.main-content.collapsing {
+  overflow: visible;
+}
+
+#collapse-control {
+  z-index: 2000;
+  top: 0px;
+  display: block;
+  position: fixed;
+  left: 269px;
+  border-left: 0px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  background: #eee;
+  border-color: #ddd;
+  -webkit-transition-property: left;
+  transition-property: left;
+  -webkit-transition-duration: 0.35s;
+  transition-duration: 0.35s;
   -webkit-transition-timing-function: linear;
   transition-timing-function: linear;
+  -webkit-transition-delay: 0s;
+  transition-delay: 0s;
+  padding: 15px 6px;
+}
+#collapse-control:focus, #collapse-control:active {
+  box-shadow: none;
+  outline: none;
+}
+#control-panel .collapsing + #collapse-control {
+  left: 0px;
+}
+#control-panel .collapse.in + #collapse-control {
+  left: 269px;
+}
+#control-panel .collapse + #collapse-control {
+  position: fixed;
+  left: 0px;
+}
+/*
+#control-panel .collapsing.width {
   width: 0;
   height: auto;
-}
+}*/
 
 /* changes the direction of the chevron depending on collapsed[in/out] */
 #control-panel > .collapse + #control-panel-button .glyphicon-chevron-left,
