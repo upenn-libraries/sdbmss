@@ -652,13 +652,15 @@ var BOOKMARK_SCOPE;
 
         $scope.sortableOptions = {
           axis: 'y',
-          scrollSpeed: 40,
           placeholder: "input-block-placeholder",
-          cancel: ".ui-sortable-locked, .ui-sortable-locked + .input-block, input, select, textarea",
+          cancel: ".ui-sortable-locked, .ui-sortable-locked + .input-block, input, select, textarea, a",
+          scroll: false,
+          containment: 'parent',
+          forcePlaceholderSize: true,
+          tolerance: 'pointer',
           //handle: ".control-label, .panel-heading",
-          scrollSensitivity: 100,
           start: function(e, ui){
-              ui.placeholder.height(ui.item.height());
+           // ui.placeholder.height(ui.item.height());
           },
           stop: function (e, ui) {
             // this is an ugly way to just get a reference to the array (i.e. entry_titles, provenance) that we are sorting
@@ -1376,7 +1378,7 @@ var BOOKMARK_SCOPE;
         var modelName = attrs.encourageNameAuthorityModel;
         var nameType = attrs.encourageNameAuthorityName;
         
-        $(element).html('You have not selected an authority name.<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>');
+        $(element).html('<span class="glyphicon glyphicon-warning-sign"></span> <span class="show-hover">You have not selected an authority name. <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a></span>');
 
         scope.$watch(modelName, function(newValue, oldValue) {
           $(element).hide();
