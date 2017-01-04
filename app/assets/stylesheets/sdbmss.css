@@ -815,6 +815,7 @@ li.provenance:hover, li.provenance:focus {
   color: #215fa5;
   background-color: #fff;
   border-color: #ccdff5;
+  width: 100%;
 }
 
 .btn-add-name:hover, .btn-add-name:active, .btn-add-name:visited, .btn-add-name:focus {
@@ -837,16 +838,22 @@ li.provenance:hover, li.provenance:focus {
   color: inherit;
   padding: 6px 12px;
   overflow: hidden;
-  max-width: 25%;
   text-overflow: ellipsis;
   white-space: nowrap;
   display: inline-block;
+  max-width: 85%;
 }
 .btn-name-authority {
   overflow: hidden;
   max-width: calc(100% - 100px);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.name-authority-group {
+  width: 25%;
+}
+.provenance-block .name-authority-group {
+  width: 100%;
 }
 
 .well-name-authority a {
@@ -1147,6 +1154,8 @@ fieldset[disabled=disabled] a {
 .sdbmss-form legend {
   font-variant: small-caps;
   text-align: left;
+  font-size: 40px;
+  margin-bottom: 10px;
 }
 
 .sdbmss-form .h4 {
@@ -1252,10 +1261,6 @@ fieldset[disabled=disabled] a {
     padding-right: 10px;
 }
 
-.sdbmss-form legend { 
-  font-size: 40px;
-  margin-bottom: 10px;
-}
 .sdbmss-form legend .small-legend {
   font-size: 20px;
 }
@@ -1375,7 +1380,7 @@ so that gray backdrop shvows up correctly */
 }
 @media (max-width: 360px) {
   body {
-    min-width: 360px;
+    min-width: 320px;
   }
   .hide-mobile-sm {
     display: none !important;
@@ -1388,6 +1393,28 @@ so that gray backdrop shvows up correctly */
   }
 }
 @media (max-width: 767px) {
+  .sdbmss-tooltip.qtip {
+    width: 100%;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    top: 20px !important;
+    left: 0px !important;
+    position: fixed;
+  }
+  .provenance-block .control-label {
+    margin: 0px;
+  }
+  .name-authority-group {
+    width: 100%;
+  }
+  .to-delete:after {
+    display: none;
+  }
+  legend, .sdbmss-form legend {
+    font-size: 22px;
+    overflow: hidden;
+    font-weight: bold;
+  }
   #search-navbar form {
     margin: 0px 5px;
     border: none;
@@ -1498,7 +1525,6 @@ so that gray backdrop shvows up correctly */
   padding: 0px;
   border-right: 1px solid #ddd;
   overflow-y: auto;
-  max-width: 80%;
   display: block;
 }
 #control-panel .collapsing a {

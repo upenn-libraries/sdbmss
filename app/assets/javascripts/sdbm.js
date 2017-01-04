@@ -183,17 +183,4 @@ $(document).ready( function (e) {
     // disable site-wide autocomplete
     $('input').attr('autocomplete','off');
 
-    var viewportWidth = $(window).width();
-    if (viewportWidth <= 768) {
-        $("#control-panel .collapse").removeClass("in");
-    }
-    
-    $(window).resize(function () {
-        viewportWidth = $(window).width();
-        if (viewportWidth <= 768) {
-            $("#control-panel .collapse").removeClass("in");
-        } else {
-            $("#control-panel .collapse").addClass("in")
-        }
-    });
 });

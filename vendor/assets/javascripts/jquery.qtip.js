@@ -838,7 +838,7 @@ PROTOTYPE.reposition = function(event, effect) {
 			(!BROWSER.iOS && type === 'fixed')
 		){
 			position.left -= win.scrollLeft();
-			position.top -= win.scrollTop();
+			position.top 	-= win.scrollTop();
 		}
 
 		// Adjust position relative to target

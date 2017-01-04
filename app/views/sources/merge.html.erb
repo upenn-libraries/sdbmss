@@ -54,48 +54,43 @@
             <% end %>
             </div>
         <% end %>
-        <%= form_tag(request.path, method: :get, class: "form-horizontal sdbmss-form") do %>
-            <div class="row">
-                <label class="col-sm-3 control-label">Find by unique ID</label>
-                <div class="col-sm-6">
-                    <input type="text" name="target_id" class="form-control"></p>
-                </div>
-                <div class="col-sm-3">
-                    <button class="btn btn-primary">Select</button>
-                </div>
-            </div>
+        <div class="text-center form-inline">
+        <%= form_tag(request.path, method: :get, class: "form-horizontal form-inline sdbmss-form text-center") do %>
+                <label class="control-label">Find by unique ID</label>
+                <button class="btn btn-primary">Select</button>
+                <input type="text" name="target_id" class="form-control" placeholder="Enter Source ID here..."></p>
         <% end %>
-        <div class='panel panel-default'>
-            <% if @similar.present? %>
-                <div class='panel-heading'><b>Suggestions</b></div>
-                <table class='table table-striped'>
-                  <thead>
-                    <tr>
-                        <th></th>
-                        <th>ID</th>
-                        <th>Source Agent</th>
-                        <th>Date</th>
-                        <th>Entries</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <% @similar.each do |src| %>
-                        <% if src.id != @source.id %>
-                        <tr>
-                            <td><a class='btn btn-primary' href="<%= source_path(id: @source.id)%>/merge?target_id=<%= src.id %>">Select</a></td>
-                            <td><%= link_to src.id, source_path(src.id) %></td>
-                            <td><%= src.source_agents[0].agent.name if src.source_agents.count > 0 %></td>
-                            <td><%= format_fuzzy_date(src.date) %></td>
-                            <td><a href="<%= search_advanced_path(source: src.public_id) %>"><%= src.entries.approved_only.count %> entries</a></td>
-                        </tr>
-                        <% end %>
-                    <% end %>
-                  </tbody>
-                </table>
-            <% else %>
-                <b>No suggested names found, use manual search above.</b>
-            <% end %>
         </div>
+        <% if @similar.present? %>
+        <div class="table-responsive">
+            <table class='table table-striped'>
+              <thead>
+                <tr>
+                    <th></th>
+                    <th>ID</th>
+                    <th>Source Agent</th>
+                    <th>Date</th>
+                    <th>Entries</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @similar.each do |src| %>
+                    <% if src.id != @source.id %>
+                    <tr>
+                        <td><a class='btn btn-primary' href="<%= source_path(id: @source.id)%>/merge?target_id=<%= src.id %>">Select</a></td>
+                        <td><%= link_to src.id, source_path(src.id) %></td>
+                        <td><%= src.source_agents[0].agent.name if src.source_agents.count > 0 %></td>
+                        <td><%= format_fuzzy_date(src.date) %></td>
+                        <td><a href="<%= search_advanced_path(source: src.public_id) %>"><%= src.entries.approved_only.count %> entries</a></td>
+                    </tr>
+                    <% end %>
+                <% end %>
+              </tbody>
+            </table>
+        </div>
+        <% else %>
+            <b>No suggested names found, use manual search above.</b>
+        <% end %>
     <% end %>
 </div>
 <% end %>

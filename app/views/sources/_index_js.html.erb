@@ -287,14 +287,19 @@ $(document).ready(function() {
         SDBM.ManageRecords.prototype.searchAjax.call(manageSources, params, dt_params, callback);
      };
 
-     var manageSources = new ManageSources({
-         resourceName: "<%= resource_name %>",
-         resourceNameSingular: "<%= resource_name.singularize %>",
-         resourceNamePlural: "<%= resource_name.pluralize %>",
-         showOnlyRecordsCreatedByUser: onlyMine,
-         searchNameField: "name",
-         fixedColumns: 3
-     });
+    var config = {
+        resourceName: "<%= resource_name %>",
+        resourceNameSingular: "<%= resource_name.singularize %>",
+        resourceNamePlural: "<%= resource_name.pluralize %>",
+        showOnlyRecordsCreatedByUser: onlyMine,
+        searchNameField: "name"
+    }
+
+     if (window.screen.width > 640) {
+        config.fixedColumns = 3
+     }
+
+     var manageSources = new ManageSources(config);
 
      $('#search_results').on('draw.dt', function () {
      });

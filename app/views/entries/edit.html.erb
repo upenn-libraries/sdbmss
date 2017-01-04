@@ -274,10 +274,12 @@ label.col-sm-2-and-half {
         <label for="cat_lot_no" class="col-sm-2 control-label"><span sdbm-tooltip="entry_institution">Institution/Collection</span></label>
         <div class="col-sm-5">
 
-            <a id="find_institution_name_authority_0" ng-if='entry.institution.id == undefined' ng-init="entry.institution = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.institution, 'is_provenance_agent')">Find or Create Authority Name</a>
-            <div id='show_institution_name_authority_0' ng-if='entry.institution != undefined && entry.institution.id != undefined' class="well well-sm well-name-authority">
-              <a id='remove_institution_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry, 'institution')"></a>
-              {{ entry.institution.name }}
+            <div class="btn-group name-authority-group" role="group">
+              <a id="find_institution_name_authority_0" ng-if='entry.institution.id == undefined' ng-init="entry.institution = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.institution, 'is_provenance_agent')">Find or Create Authority Name</a>
+              <div id='show_institution_name_authority_0' ng-if='entry.institution != undefined && entry.institution.id != undefined' class="well well-sm well-name-authority btn btn-info">
+                <a id='remove_institution_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry, 'institution')"></a>
+                {{ entry.institution.name }}
+              </div>
             </div>
 
             <!--<input id="institution" class="form-control" type="text" sdbm-autocomplete="/names/search.json" sdbm-autocomplete-params='{"type": "is_provenance_agent"}' sdbm-autocomplete-model="entry.institution" sdbm-autocomplete-modal-controller="CreateNameModalCtrl" sdbm-autocomplete-modal-template="createName.html"/>-->
@@ -357,12 +359,15 @@ label.col-sm-2-and-half {
                       </div>
                       <div class="col-sm-12">
                         <span class='control-label' sdbm-tooltip="entry_sale_agent">Authority Name</span>
-                        <a id='find_sale_agent_name_authority_{{ $index }}' ng-if='sale_agent.agent.id == undefined' ng-init="sale_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', sale_agent.agent, 'is_provenance_agent')">Find or Create Authority Name</a>
-                        <div id='show_selling_agent_name_authority_0' ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="form-control well well-sm well-name-authority">
-                          <a id='remove_selling_agent_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(sale_agent, 'agent')"></a>
-                          <a href="/names/{{ sale_agent.agent.id }}" target="_blank"><span id="sale_agent_{{ $index }}">{{ sale_agent.agent.name }}</span></a>
+                        
+                        <div class="btn-group name-authority-group" role="group">
+                          <a id='find_sale_agent_name_authority_{{ $index }}' ng-if='sale_agent.agent.id == undefined' ng-init="sale_agent.agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', sale_agent.agent, 'is_provenance_agent')">Find or Create Authority Name</a>
+                          <div id='show_selling_agent_name_authority_0' ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
+                            <a id='remove_selling_agent_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(sale_agent, 'agent')"></a>
+                            <a href="/names/{{ sale_agent.agent.id }}" target="_blank"><span id="sale_agent_{{ $index }}">{{ sale_agent.agent.name }}</span></a>
+                          </div>
+                          <span id="sale_selling_agent_certainty_flags" ng-if='sale_agent.agent != undefined && sale_agent.agent.id != undefined' class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="sale_agent"><span class="glyphicon"></span></span>
                         </div>
-                        <span id="sale_selling_agent_certainty_flags" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="sale_agent"><span class="glyphicon"></span></span>
                         
                         <span class='control-label' sdbm-tooltip="entry_sale_agent_role">Role</span>
                         <select id="sale_agent_role_{{ $index }}" name="sale_agent_role" class="form-control" ng-model="sale_agent.role" ng-options="option[0] as option[1] for option in optionsSaleAgentRole" required='required'>
@@ -437,13 +442,15 @@ label.col-sm-2-and-half {
             <input input maxlength="255" id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
             
             <span class='control-label' sdbm-tooltip="entry_author">Authority Name</span>
-            <a id="find_author_name_authority_{{ $index }}" ng-if='entry_author.author.id == undefined' ng-init="entry_author.author = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_author.author, 'is_author', entry_author.observed_name)">Find or Create Authority Name</a>
-            <span ng-if='entry_author.author != undefined && entry_author.author.id != undefined' class="well well-sm well-name-authority form-control">
-              <a id="remove_author_name_authority_{{ $index }}" class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_author, 'author')"></a>
-              <a href="/names/{{ entry_author.author.id }}" target="_blank">{{ entry_author.author.name }}</a>
-            </span>
-            <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_author" encourage-name-authority-name="author"></span>
-            <span id="author_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="entry_author"><span class="glyphicon"></span></span>
+            <div class="btn-group name-authority-group" role="group">
+              <a id="find_author_name_authority_{{ $index }}" ng-if='entry_author.author.id == undefined' ng-init="entry_author.author = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_author.author, 'is_author', entry_author.observed_name)">Find or Create Authority Name</a>
+              <span ng-if='entry_author.author != undefined && entry_author.author.id != undefined' class="btn btn-info well-name-authority form-control">
+                <a id="remove_author_name_authority_{{ $index }}" class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_author, 'author')"></a>
+                <a href="/names/{{ entry_author.author.id }}" target="_blank">{{ entry_author.author.name }}</a>
+              </span>
+              <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_author" encourage-name-authority-name="author"></span>
+              <span ng-if='entry_author.author != undefined && entry_author.author.id != undefined' id="author_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="entry_author"><span class="glyphicon"></span></span>
+            </div>
             
             <span class='control-label' sdbm-tooltip="entry_author_role">Role</span>
             <select id="author_role_{{ $index }}" name="author_role" class="form-control" ng-model="entry_author.role" ng-options="option[0] as option[1] for option in optionsAuthorRole">
@@ -514,13 +521,15 @@ label.col-sm-2-and-half {
           <input input maxlength="255" id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
           
           <span class='control-label' sdbm-tooltip="entry_artist">Authority Name</span>
-          <a id="find_artist_name_authority_{{ $index }}" ng-if='entry_artist.artist.id == undefined' ng-init="entry_artist.artist = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_artist.artist, 'is_artist', entry_artist.observed_name)">Find or Create Authority Name</a>
-          <div ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' class="form-control well well-sm well-name-authority">
-            <a id="remove_artist_name_authority_{{ $index }}" class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_artist, 'artist')"></a>
-            <a href="/names/{{ entry_artist.artist.id }}" target="_blank">{{ entry_artist.artist.name }}</a>
-          </div>
-          <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_artist" encourage-name-authority-name="artist"></span>
-          <span id="artist_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></span>
+          <div class="btn-group name-authority-group" role="group">
+            <a id="find_artist_name_authority_{{ $index }}" ng-if='entry_artist.artist.id == undefined' ng-init="entry_artist.artist = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_artist.artist, 'is_artist', entry_artist.observed_name)">Find or Create Authority Name</a>
+            <div ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
+              <a id="remove_artist_name_authority_{{ $index }}" class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_artist, 'artist')"></a>
+              <a href="/names/{{ entry_artist.artist.id }}" target="_blank">{{ entry_artist.artist.name }}</a>
+            </div>
+            <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_artist" encourage-name-authority-name="artist"></span>
+            <span ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' id="artist_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></span>
+          </div>   
           
           <span class='control-label' sdbm-tooltip="entry_artist_role">Role</span>
           <select id="artist_role_{{ $index }}" name="artist_role" class="form-control" ng-model="entry_artist.role" ng-options="option[0] as option[1] for option in optionsArtistRole">
@@ -553,13 +562,15 @@ label.col-sm-2-and-half {
           <input input maxlength="255" id="scribe_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_scribe.observed_name">
           
           <span class='control-label' sdbm-tooltip="entry_scribe">Authority Name</span>
-          <a id="find_scribe_name_authority_{{ $index }}" ng-if='entry_scribe.scribe.id == undefined' ng-init="entry_scribe.scribe = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_scribe.scribe, 'is_scribe', entry_scribe.observed_name)">Find or Create Authority Name</a>
-          <div ng-if='entry_scribe.scribe != undefined && entry_scribe.scribe.id != undefined' class="form-control well well-sm well-name-authority">
-            <a id="remove_scribe_name_authority_{{ $index }}" class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_scribe, 'scribe')"></a>
-            <a href="/names/{{ entry_scribe.scribe.id }}" target="_blank">{{ entry_scribe.scribe.name }}</a>
+          <div class="btn-group name-authority-group" role="group">
+            <a id="find_scribe_name_authority_{{ $index }}" ng-if='entry_scribe.scribe.id == undefined' ng-init="entry_scribe.scribe = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_scribe.scribe, 'is_scribe', entry_scribe.observed_name)">Find or Create Authority Name</a>
+            <div ng-if='entry_scribe.scribe != undefined && entry_scribe.scribe.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
+              <a id="remove_scribe_name_authority_{{ $index }}" class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_scribe, 'scribe')"></a>
+              <a href="/names/{{ entry_scribe.scribe.id }}" target="_blank">{{ entry_scribe.scribe.name }}</a>
+            </div>
+            <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_scribe" encourage-name-authority-name="scribe"></span>
+            <span ng-if='entry_scribe.scribe != undefined && entry_scribe.scribe.id != undefined'  id="scribe_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></span>
           </div>
-          <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_scribe" encourage-name-authority-name="scribe"></span>
-          <span id="scribe_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></span>
         </div>
       </div>
     </div>
@@ -587,13 +598,15 @@ label.col-sm-2-and-half {
             <input input maxlength="255" id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name">
             
             <span class='control-label' sdbm-tooltip="entry_place">Authority Name</span>
-            <a id="find_place_name_authority_{{ $index }}" ng-if='entry_place.place.id == undefined' ng-init="entry_place.place = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('places', entry_place.place, 'place', entry_place.observed_name)">Find or Create Authority Name</a>
-            <div ng-if='entry_place.place != undefined && entry_place.place.id != undefined' class="form-control well well-sm well-name-authority">
-              <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_place, 'place')"></a>
-              <a href="/places/{{ entry_place.place.id }}" target="_blank">{{ entry_place.place.name }}</a>
+            <div class="btn-group name-authority-group" role="group">          
+              <a id="find_place_name_authority_{{ $index }}" ng-if='entry_place.place.id == undefined' ng-init="entry_place.place = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('places', entry_place.place, 'place', entry_place.observed_name)">Find or Create Authority Name</a>
+              <div ng-if='entry_place.place != undefined && entry_place.place.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
+                <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_place, 'place')"></a>
+                <a href="/places/{{ entry_place.place.id }}" target="_blank">{{ entry_place.place.name }}</a>
+              </div>
+              <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_place" encourage-name-authority-name="place"></span>
+              <span ng-if='entry_place.place != undefined && entry_place.place.id != undefined' id="place_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="entry_place"><span class="glyphicon"></span></span>
             </div>
-            <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="entry_place" encourage-name-authority-name="place"></span>
-            <span id="place_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="entry_place"><span class="glyphicon"></span></span>
           </div>
       </div>
     </div>
@@ -618,12 +631,16 @@ label.col-sm-2-and-half {
         </div>
         <div class="col-sm-12">
           <span class='control-label' sdbm-tooltip="entry_language">Language</span>
-          <a id="find_language_name_authority_{{ $index }}" ng-if='entry_language.language.id == undefined' ng-init="entry_language.language = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('languages', entry_language.language, 'language')">Find or Create Authority Name</a>
-          <div ng-if='entry_language.language != undefined && entry_language.language.id != undefined' class="form-control well well-sm well-name-authority">
-            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_language, 'language')"></a>
-            <a href="/languages/{{ entry_language.language.id }}" target="_blank">{{ entry_language.language.name }}</a>
+
+          <div class="btn-group name-authority-group" role="group">                    
+            <a id="find_language_name_authority_{{ $index }}" ng-if='entry_language.language.id == undefined' ng-init="entry_language.language = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('languages', entry_language.language, 'language')">Find or Create Authority Name</a>
+            <div ng-if='entry_language.language != undefined && entry_language.language.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
+              <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry_language, 'language')"></a>
+              <a href="/languages/{{ entry_language.language.id }}" target="_blank">{{ entry_language.language.name }}</a>
+            </div>
+            <span ng-if='entry_language.language != undefined && entry_language.language.id != undefined' id="language_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="entry_language"><span class="glyphicon"></span></span>
           </div>
-          <span id="language_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="entry_language"><span class="glyphicon"></span></span>
+
         </div>
       </div>
     </div>
@@ -690,44 +707,44 @@ label.col-sm-2-and-half {
 
   <div class="row section">
     
-    <div class="col-sm-4">
+    <div class="col-md-4">
 
       <div class="row">
-        <label for="initials_historiated" class="control-label col-xs-6"><span sdbm-tooltip="entry_initials_historiated">Historiated Initials</span></label>
+        <label for="initials_historiated" class="control-label col-xs-6 one-line"><span sdbm-tooltip="entry_initials_historiated">Historiated Initials</span></label>
         <div class="col-xs-6">
           <input ng-class="{ 'has-error': !entryForm['initials_historiated'].$valid }" type="text" class="form-control" id="initials_historiated" name="initials_historiated" ng-pattern="/^[0-9]*$/" data-ng-model="entry.initials_historiated">
         </div>
 
-        <label for="initials_decorated" class="control-label col-xs-6"><span sdbm-tooltip="entry_initials_decorated">Decorated Initials</span></label>
+        <label for="initials_decorated" class="control-label col-xs-6 one-line"><span sdbm-tooltip="entry_initials_decorated">Decorated Initials</span></label>
         <div class="col-xs-6">
           <input ng-class="{ 'has-error': !entryForm['initials_decorated'].$valid }" type="text" class="form-control" id="initials_decorated" name="initials_decorated" ng-pattern="/^[0-9]*$/" data-ng-model="entry.initials_decorated">
         </div>
       </div>
         
       <div class="row">
-        <label for="min_fl" class="control-label col-xs-6"><span sdbm-tooltip="entry_min_fl">Full-Page Miniatures</span></label>
+        <label for="min_fl" class="control-label col-xs-6 one-line"><span sdbm-tooltip="entry_min_fl">Full-Page Miniatures</span></label>
         <div class="col-xs-6">
           <input ng-class="{ 'has-error': !entryForm['miniatures_fullpage'].$valid }" type="text" class="form-control" id="miniatures_fullpage" name="miniatures_fullpage" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_fullpage">
         </div>
 
-        <label for="min_lg" class="control-label col-xs-6"><span sdbm-tooltip="entry_min_lg">Large Min.</span></label>
+        <label for="min_lg" class="control-label col-xs-6 one-line"><span sdbm-tooltip="entry_min_lg">Large Miniatures</span></label>
         <div class="col-xs-6">
           <input ng-class="{ 'has-error': !entryForm['miniatures_large'].$valid }" type="text" class="form-control" id="miniatures_large" name="miniatures_large" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_large">
         </div>
 
-        <label for="min_sm" class="control-label col-xs-6"><span sdbm-tooltip="entry_min_sm">Small Min.</span></label>
+        <label for="min_sm" class="control-label col-xs-6 one-line"><span sdbm-tooltip="entry_min_sm">Small Miniatures</span></label>
         <div class="col-xs-6">
           <input type="text" ng-class="{ 'has-error': !entryForm['miniatures_small'].$valid }" class="form-control" id="miniatures_small" name="miniatures_small" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_small">
         </div>
 
-        <label for="min_un" class="control-label col-xs-6"><span sdbm-tooltip="entry_min_un">Unspecified Min.</span></label>
+        <label for="min_un" class="control-label col-xs-6 one-line"><span sdbm-tooltip="entry_min_un">Unspecified Miniatures</span></label>
         <div class="col-xs-6">
           <input type="text" ng-class="{ 'has-error': !entryForm['miniatures_unspec_size'].$valid }" class="form-control" id="miniatures_unspec_size" name="miniatures_unspec_size" ng-pattern="/^[0-9]*$/" data-ng-model="entry.miniatures_unspec_size">
         </div>
       </div>
     </div>
 
-    <div class="col-sm-3">
+    <div class="col-md-3">
       <div class="row">
         <label for="folios" class="control-label col-xs-6"><span sdbm-tooltip="entry_folios">Folios</span></label>
         <div class="col-xs-6">
@@ -763,26 +780,38 @@ label.col-sm-2-and-half {
       </div>
     </div>
 
-    <div class="col-sm-1">
-      <label for="binding" class="control-label" style="text-align: left;">
-          <span sdbm-tooltip="entry_binding">Binding</span>
-      </label>
-      <label for="link" class="control-label" style="text-align: left;">
-          <span sdbm-tooltip="entry_link">URL Link</span>
-      </label>
-      <label for="other_info" class="control-label" style="text-align: left;">
-          <span sdbm-tooltip="entry_other_info">Other Info</span>
-      </label>
+    <div class="col-md-5">
+      <div class="row">
+        <div class="col-xs-3">
+          <label for="binding" class="control-label" style="text-align: left;">
+              <span sdbm-tooltip="entry_binding">Binding</span>
+          </label>
+        </div>
+        <div class="col-xs-9">
+          <textarea class="form-control" id="manuscript_binding" rows="2" data-ng-model="entry.manuscript_binding"/></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-3">
+          <label for="link" class="control-label" style="text-align: left;">
+              <span sdbm-tooltip="entry_link">URL Link</span>
+          </label>
+        </div>
+        <div class="col-xs-9">
+          <input type="text" class="form-control" id="manuscript_link" data-ng-model="entry.manuscript_link">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-3">
+          <label for="other_info" class="control-label" style="text-align: left;">
+              <span sdbm-tooltip="entry_other_info">Other Info</span>
+          </label>          
+        </div>
+        <div class="col-xs-9">
+          <textarea class="form-control" id="other_info" rows="2" data-ng-model="entry.other_info"></textarea>
+        </div>        
+      </div>
     </div>
-    <div class="col-sm-4">
-      <textarea class="form-control" id="manuscript_binding" rows="2" data-ng-model="entry.manuscript_binding"/></textarea>
-    
-      <input type="text" class="form-control" id="manuscript_link" data-ng-model="entry.manuscript_link">
-    
-      <textarea class="form-control" id="other_info" rows="2" data-ng-model="entry.other_info"></textarea>
-    </div>
-
-
   </div>
 
 </fieldset>
@@ -826,13 +855,15 @@ label.col-sm-2-and-half {
               <span class='control-label' sdbm-tooltip="entry_provenance_agent">Authority Name</span>
             </div>
             <div class="col-sm-4 text-right">
-              <a id='find_provenance_name_authority_{{ $index }}' ng-if='prov.provenance_agent.id == undefined' ng-init="prov.provenance_agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', prov.provenance_agent, 'is_provenance_agent', prov.observed_name)" style="width: 100%">Find or Create Authority Name</a>
-              <div ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' class="form-control well well-sm well-name-authority text-left" style="max-width: 85%;">
-                <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(prov, 'provenance_agent')"></a>
-                <a href="/names/{{ prov.provenance_agent.id }}" target="_blank">{{ prov.provenance_agent.name }}</a>
+              <div class="btn-group name-authority-group">
+                <a id='find_provenance_name_authority_{{ $index }}' ng-if='prov.provenance_agent.id == undefined' ng-init="prov.provenance_agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', prov.provenance_agent, 'is_provenance_agent', prov.observed_name)" style="width: 100%">Find or Create Authority Name</a>
+                <div ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
+                  <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(prov, 'provenance_agent')"></a>
+                  <a href="/names/{{ prov.provenance_agent.id }}" target="_blank">{{ prov.provenance_agent.name }}</a>
+                </div>
+                <span ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' id="provenance_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="prov" ng-if="prov.provenance_agent != undefined && prov.provenance_agent.id != undefined"><span class="glyphicon"></span></span>
+                <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="prov" encourage-name-authority-name="provenance_agent"></span>
               </div>
-              <span id="provenance_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="prov" ng-if="prov.provenance_agent != undefined && prov.provenance_agent.id != undefined"><span class="glyphicon"></span></span>
-              <span class='alert alert-danger name-authority-warning' encourage-name-authority encourage-name-authority-model="prov" encourage-name-authority-name="provenance_agent"></span>       
             </div>
           </div>
           <div class="row provenance-row">
