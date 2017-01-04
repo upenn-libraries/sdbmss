@@ -65,12 +65,14 @@
             </div>
 
             <%= form_tag reply_path(reply), :method => 'put', :class => 'reply-toggle hide' do %>
-              <div class="col-sm-9">
-                <%= text_area_tag :reply, reply.reply, class: 'form-control', rows: 1, placeholder: "Begin your reply here..." %>            
-              </div>
-              <div class="col-sm-3 text-right">
-                <%= submit_tag 'Confirm', class: 'btn btn-default' %>
-                <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');" href="" class='btn btn-default'>Cancel</a>
+              <div class="col-sm-12 form form-inline">
+                <div class="input-group textarea-group">
+                  <%= text_area_tag :reply, reply.reply, class: 'form-control', rows: 1, placeholder: "Begin your reply here..." %>            
+                  <div class="input-group-btn textarea-group-btn">
+                    <%= submit_tag 'Confirm', class: 'btn btn-default' %>
+                    <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');" href="" class='btn btn-default'>Cancel</a>
+                  </div>
+                </div>
               </div>
             <% end %>
           <% end %>
@@ -80,17 +82,19 @@
         <div class="row collapse add-reply-toggle in text-center">
            <div class="col-sm-12"><a href="#comment_<%= comment.id %> .add-reply-toggle" data-toggle="collapse">Add a reply...</a></div>
          </div> 
-        <div class="add-reply-toggle row collapse">
+        <div class="add-reply-toggle row collapse form form-inline">
+          <div class="col-sm-12">
           <%= form_tag('/replies') do %>
-            <div class="col-sm-9">
+            <div class="input-group textarea-group">
               <%= hidden_field_tag :comment_id, comment.id %>
               <%= text_area_tag :reply, '', class: 'form-control', rows: 1, placeholder: "Begin your reply here..." %>
-            </div>
-            <div class="col-sm-3 text-right">
-              <%= submit_tag 'Add Reply', class: 'btn btn-default' %>
-              <a href="#comment_<%= comment.id %> .add-reply-toggle" data-toggle="collapse" class='btn btn-default'>Cancel</a>
+              <div class="input-group-btn textarea-group-btn">
+                <%= submit_tag 'Add Reply', class: 'btn btn-default textarea-btn' %>
+                <a href="#comment_<%= comment.id %> .add-reply-toggle" data-toggle="collapse" class='btn btn-default textarea-btn'>Cancel</a>            
+              </div>
             </div>
           <% end %>
+          </div>
         </div>
       <% else %>
         <div class="row">

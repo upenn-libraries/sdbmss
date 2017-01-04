@@ -10,7 +10,7 @@
     <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
 <% else %>
 <div class='row document-heading'>
-  <div class="col-sm-6">
+  <div class="col-xs-11">
       <span class='h4'>
         <%# data-context-href triggers an HTTP callback before loading the entry page; this makes prev/next links on individual Entry page work %>
         <a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a>
@@ -21,7 +21,7 @@
         </span>
       <% end %>
   </div>
-  <div class="col-sm-6 text-right">
+  <div class="col-xs-1 text-right">
       <span class="document-preview"><%= render partial: 'catalog/bookmark_control', locals: {document: document} %></span>        
   </div>
 </div>

@@ -183,4 +183,21 @@ $(document).ready( function (e) {
     // disable site-wide autocomplete
     $('input').attr('autocomplete','off');
 
+    // remember control panel display from last set (localstorage memory)
+    if (localStorage.sdbm_hide_panel == "true") {
+        $('#control-panel .bookmarks-collapse').removeClass('in');
+        $('.main-content').addClass('in');
+    } else {
+
+    }
+
+    // set control panel display (localstorage) memory
+    $('#collapse-control').click( function (e) {
+        if ($('#control-panel .bookmarks-collapse').hasClass('in')) {
+            localStorage.sdbm_hide_panel = true;
+        } else {
+            localStorage.sdbm_hide_panel = false;
+        }
+    });
+
 });

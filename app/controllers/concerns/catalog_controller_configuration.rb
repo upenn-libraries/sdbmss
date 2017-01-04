@@ -48,6 +48,7 @@ module CatalogControllerConfiguration
       config.index.title_field = ''
       config.index.display_type_field = 'format'
 
+      # FIX ME: replace with optimized CSV export from ENTRIESCONTROLLER
       config.index.respond_to.csv = Proc.new {
         # this gets executed within a format.csv { ... } scope
 

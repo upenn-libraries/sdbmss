@@ -30,7 +30,6 @@ class CatalogController < ApplicationController
 
   def index
     super
-    @my_search = current_search_session
     #puts "********* #{current_search_session.inspect} *************"
   end
 

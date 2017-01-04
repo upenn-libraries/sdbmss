@@ -619,7 +619,9 @@ h1 { font-size: 30px; margin-top: 0; }
   float: right;
   margin-left: 10px;
 }
-
+.pagination {
+  margin: 5px 0px;
+}
 div.dataTables_paginate ul.pagination {
   margin: 0px 0;
 }
@@ -1405,7 +1407,14 @@ so that gray backdrop shvows up correctly */
     display: block;
   }
 }
+/* RESPONSIVE */
 @media (max-width: 767px) {
+  .mobile-center {
+    text-align: center;
+  }
+  #facets .top-panel-heading {
+    display: block;
+  }
   .name-authority-warning {
     left: 166px;
     top: -24px;
@@ -1943,4 +1952,19 @@ Private Message Styling
 #control-panel li.disabled a {
   color: #999;
   pointer-events: none;
+}
+
+.textarea-group {
+  width: 100%;
+}
+.textarea-group textarea {
+  width: 100%;
+}
+.textarea-group-btn {
+  height: 100%;
+  width: 1% !important;
+  display: table-cell;
+}
+.textarea-btn {
+  height: calc(100% + 14px);
 }
