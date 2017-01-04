@@ -823,7 +823,7 @@ label.col-sm-2-and-half {
     </div>
   </div>
 
-    <!-- beginning of providence section -->
+    <!-- beginning of provenance section -->
 
   <div class='row section'>
     <div class='col-sm-12'>
@@ -846,13 +846,13 @@ label.col-sm-2-and-half {
         <div class="col-sm-12">
           <div class="row provenance-row">
             <div class="col-sm-2">
-              <label sdbm-tooltip="entry_provenance_agent_as_recorded" class='control-label'>Name as Recorded</label>       
+              <label sdbm-tooltip="entry_provenance_agent_as_recorded" class='control-label one-line'>Name as Recorded</label>       
             </div>
             <div class="col-sm-4">
               <input input maxlength="255" id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name" size="12">
             </div>
             <div class="col-sm-2">
-              <span class='control-label' sdbm-tooltip="entry_provenance_agent">Authority Name</span>
+              <span class='control-label one-line' sdbm-tooltip="entry_provenance_agent">Authority Name</span>
             </div>
             <div class="col-sm-4 text-right">
               <div class="btn-group name-authority-group">
@@ -884,7 +884,7 @@ label.col-sm-2-and-half {
               </div>
             </div>
             <div class="col-sm-5 text-right form-inline prov-date-range">
-              <label class='control-label' sdbm-tooltip="entry_provenance_date_range_for_search">Suggested Date Range For Search:</label>
+              <label class='control-label' sdbm-tooltip="entry_provenance_date_range_for_search">Suggested Range</label>
               <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start" placeholder="YYYY" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">
               to  
               <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date_normalized_end" placeholder="YYYY" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">              
