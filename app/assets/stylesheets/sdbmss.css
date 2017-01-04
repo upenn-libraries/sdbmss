@@ -472,17 +472,27 @@ textarea { resize:vertical ; }
   opacity: 0.9;
   z-index: 20;
   left: 38%;
+  top: 0px;
+  margin: 0px;
 }
+/*
+speech bubble 'arrow'
 .name-authority-warning:before {
   width: 0;
   height: 0;
-  display: block;
+  display: none;
   content: '';
   border-bottom: 10px solid pink;
   border-right: 10px solid transparent;
   border-left: 10px solid transparent;
   position: absolute;
   top: -9px;
+}*/
+.name-authority-warning .show-hover {
+  display: none;
+}
+.name-authority-warning:hover .show-hover {
+  display: inline-block;
 }
 
 /* on Entry view page, move the content block to the right of the sidebar */
@@ -868,6 +878,9 @@ li.provenance:hover, li.provenance:focus {
   color: #555;
 }
 
+div[ui-sortable] {
+  overflow: auto;
+}
 .input-block .control-label {
   font-weight: bold;
   color: #444;
