@@ -86,34 +86,35 @@
   <% if current_user %>
     <%= render partial: 'shared/control_panel' %>
   <% end %>
+  <div class="main-content-wrapper">
+    <div class="main-content">
+      <%= render :partial => 'shared/header_navbar' %>
+      <%= render :partial => 'shared/search_navbar' %>
 
-  <div class="main-content bookmarks-collapse collapse <%= current_user ? '' : 'in' %>">
-    <%= render :partial => 'shared/header_navbar' %>
-    <%= render :partial => 'shared/search_navbar' %>
+      <%# this is from blacklight %>
+      <%= render partial: 'shared/ajax_modal' %>
 
-    <%# this is from blacklight %>
-    <%= render partial: 'shared/ajax_modal' %>
+      <div id="main-container" class="container">
 
-    <div id="main-container" class="container">
+        <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
+        <!--  breadcrumbs -->
+        <% if content_for :breadcrumbs %>
+        <ol class="breadcrumb">
+          <%= yield :breadcrumbs %>
+        </ol>
+        <% end %>
 
-      <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
-      <!--  breadcrumbs -->
-      <% if content_for :breadcrumbs %>
-      <ol class="breadcrumb">
-        <%= yield :breadcrumbs %>
-      </ol>
-      <% end %>
-
-      <div class="row">
-        <div class="col-sm-12">
-          <%= yield %>
+        <div class="row">
+          <div class="col-sm-12">
+            <%= yield %>
+          </div>
         </div>
       </div>
+      <%# this is SDBM-specific modal code %>
+      <%= render :partial => 'shared/modal' %>
+      
+      <%= render :partial => 'shared/footer' %>
     </div>
-    <%# this is SDBM-specific modal code %>
-    <%= render :partial => 'shared/modal' %>
-    
-    <%= render :partial => 'shared/footer' %>
   </div>
   <%# if request.path != "/bookmarks" && current_user %>
     <!--<div class="sidebar bg-primary bookmarks-collapse collapse"  ng-controller="ManageBookmarks">
