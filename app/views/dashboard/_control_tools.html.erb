@@ -9,18 +9,50 @@
     <ul class="nav">
       <li>
         <%= link_to(entries_path) do %>
-         <span class="glyphicon glyphicon-th"></span> Entries
+        <span class="glyphicon glyphicon-th"></span> Entries
         <% end %>
-       </li>
-      <li><%= link_to "Sources", sources_path %></li>
-      <li><%= link_to "Manuscripts", manuscripts_path %></li>
-      <li><%= link_to "Comments", comments_path %></li>
-    <% if current_user.role != "contributor" %>
-      <li><%= link_to "Names", names_path %></li>
+      </li>
+      <li>
+        <%= link_to(sources_path) do %>
+        <span class="glyphicon glyphicon-th-large"></span> Sources
+        <% end %>
+      </li>
+      <li>
+        <%= link_to(manuscripts_path) do %>
+        <span class="glyphicon glyphicon-th"></span> Manuscripts
+        <% end %>
+      </li>
+      <li>
+        <%= link_to(comments_path) do %>
+        <span class="glyphicon glyphicon-th-large"></span> Comments
+        <% end %>
+      </li>
+      <% if current_user.role != "contributor" %>
+      <li>
+        <%= link_to(names_path) do %>
+        <span class="glyphicon glyphicon-th"></span> Names
+        <% end %>
+      </li>
       <% if current_user.role == 'admin' %>
-        <li><%= link_to "Places", places_path %></li>
-        <li><%= link_to "Languages", languages_path %></li>
-        <li><%= link_to "Users", accounts_path %></li>
-        <li><%= link_to "Pages & Tooltips", pages_path %></li>
+      <li>
+        <%= link_to(places_path) do %>
+        <span class="glyphicon glyphicon-th-large"></span> Places
+        <% end %>
+      </li>
+      <li>
+        <%= link_to(languages_path) do %>
+        <span class="glyphicon glyphicon-th"></span> Languages
+        <% end %>
+      </li>
+      <li>
+        <%= link_to(accounts_path) do %>
+        <span class="glyphicon glyphicon-th-large"></span> Users
+        <% end %>
+      </li>
+      <li>
+        <%= link_to(pages_path) do %>
+        <span class="glyphicon glyphicon-tasks"></span> Pages & Tooltips
+        <% end %>
+      </li>
       <% end %>
-    <% end %>
+      <% end %>
