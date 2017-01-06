@@ -473,7 +473,7 @@ label.col-sm-2-and-half {
         </a>
       </span>
     </div>
-    <div ui-sortable="sortableOptions" ng-model="entry.entry_dates" class='pull-right col-sm-12'>
+    <div ui-sortable="sortableOptions" ng-model="entry.entry_dates" class='col-sm-12'>
       <div class="row input-block" data-ng-repeat="entry_date in entry.entry_dates | filter: activeRecords">
         <div class="remove-link-container">
           <a class="clickable" data-ng-click="removeRecord(entry.entry_dates, entry_date)" title="Remove">

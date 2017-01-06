@@ -1631,7 +1631,6 @@ so that gray backdrop shvows up correctly */
 }
 .bookmarks-collapse {
   overflow-x: hidden;
-  white-space: nowrap;
   -webkit-transition-property: width;
   -moz-transition-property: width;
   transition-property: width;
@@ -1644,6 +1643,9 @@ so that gray backdrop shvows up correctly */
   -webkit-transition-delay: 0s;
   -moz-transition-delay: 0s;
   transition-delay: 0s;
+}
+.bookmarks-collapse a {
+  white-space: normal;
 }
 #collapse-control {
   z-index: 2000;
