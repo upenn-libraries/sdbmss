@@ -327,7 +327,9 @@ var SDBM = SDBM || {};
                             result += '<a target="_blank" href="/groups/' + data[i][0] + '">' + data[i][1] + '</a> ';
                         }
                         return result;
-                    }
+                    },
+                    sdbmssMinWidth: "100px",
+                    sdbmssMaxWidth: "100px"
                 },
                 {
                     sdbmssMinWidth: "100px",

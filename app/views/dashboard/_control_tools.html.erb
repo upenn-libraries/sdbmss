@@ -7,7 +7,11 @@
   </div>
   <div class="panel-body">
     <ul class="nav">
-      <li><%= link_to "Entries", entries_path %></li>
+      <li>
+        <%= link_to(entries_path) do %>
+         <span class="glyphicon glyphicon-th"></span> Entries
+        <% end %>
+       </li>
       <li><%= link_to "Sources", sources_path %></li>
       <li><%= link_to "Manuscripts", manuscripts_path %></li>
       <li><%= link_to "Comments", comments_path %></li>
