@@ -33,6 +33,9 @@ textarea { resize:vertical ; }
 
 .main-content {
   position: relative;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 #main-container.container-fluid {
   position: absolute;
@@ -41,11 +44,9 @@ textarea { resize:vertical ; }
 .main-content-wrapper {
   width: 100%;
   height: 100vh;
-  overflow-y: auto;
-  overflow-x: hidden;
+  vertical-align: top;
   display: table-cell;
 }
-
 .sidebar {
   width: 388px;
   margin-right: 0px;
