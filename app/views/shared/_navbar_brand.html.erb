@@ -1,1 +1,10 @@
-<%= link_to application_name, root_path, class: "navbar-brand" %>
+<%= link_to(root_path, class: "navbar-brand") do %>
+  <span class="word">
+    <span class="first-letter">S</span>choenberg
+  </span>
+  <span class="word">
+    <span class="first-letter">D</span>ata<span class="first-letter">b</span>ase
+  </span>
+  <span class="word">of</span>
+  <span class="word"><span class="first-letter">M</span>anuscripts</span>
+<% end %>
