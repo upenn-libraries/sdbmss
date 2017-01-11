@@ -1,3 +1,12 @@
+<%= content_for :head do %>
+<script>
+// this is to handle the confusion (for capybara ONLY) with having a login in the control panel, also
+// FIX ME: change tests to use control panel login, eventually
+    $(document).ready( function () {
+       $('#control-panel').remove(); 
+    });
+</script>
+<% end %>
 <div class="row">
     <div class="col-sm-3">
         <h1 style="font-size: 50px;">Sign-Up</h1>

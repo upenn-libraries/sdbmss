@@ -134,7 +134,7 @@ module DataEntryHelpers
     fill_in 'manuscript_link', with: 'http://something.com'
     fill_in 'other_info', with: 'Other stuff'
 
-    find_by_id('add_provenance').click
+    first('#add_provenance').click
     fill_in 'provenance_observed_name_0', with: 'Somebody, Joe'
     
     #fill_autocomplete_select_or_create_entity 'provenance_agent_0', with: 'Somebody, Joseph'
@@ -149,7 +149,7 @@ module DataEntryHelpers
     fill_in 'provenance_end_date_0', with: '1965-11-23'
     check 'provenance_direct_transfer_0'
 
-    find_by_id('add_provenance').click
+    first('#add_provenance').click
 #      fill_autocomplete_select_or_create_entity 'provenance_agent_1', with: "Sotheby's"
     add_name_authority('find_provenance_name_authority_1', "Sotheby's")
 
@@ -160,7 +160,7 @@ module DataEntryHelpers
     #select 'For Sale', from: 'provenance_acquisition_method_1'
     check 'provenance_direct_transfer_1'
 
-    find_by_id('add_provenance').click
+    first('#add_provenance').click
     fill_in 'provenance_observed_name_2', with: 'Wild Bill Collector'
     fill_in 'provenance_comment_2', with: 'This is some unknown dude'
 
