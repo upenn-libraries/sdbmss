@@ -52,7 +52,7 @@
     <div class="modal-footer">
         <div class='row'>
             <div class="col-sm-8 text-left">
-                Can't find the {{ type | humanize }} you are looking for? <a href="" class="btn btn-default" ng-click="createName()" id='propose-model'>Propose {{ searchTerm || "New " + (type | humanize) }}</a>
+                Can't find the {{ type | humanize }} you are looking for? <a href="" class="btn btn-default one-line" style="max-width: 100%"  ng-click="createName()" id='propose-model'>Propose {{ searchTerm || "New " + (type | humanize) }}</a>
             </div>
             <div class="col-sm-4 text-right">
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>

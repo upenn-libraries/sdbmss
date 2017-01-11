@@ -322,6 +322,9 @@
          return false;
      });
 
+     // since the entry-table default is 'wide', adjust the fullscreen icon
+     $("#widescreen > span").toggleClass('glyphicon-resize-small').toggleClass('glyphicon-resize-full');    
+
  });
 
 </script>

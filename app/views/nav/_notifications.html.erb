@@ -7,7 +7,7 @@
 </a>
 <ul class="dropdown-menu notifications">
   <% current_user.notifications.last(10).reverse.each do |notification| %>
-      <li class="row <%= !notification.active ? 'text-muted' : 'active' %>" id="notification_<%= notification.id %>">
+      <li class="read row <%= !notification.active ? 'text-muted' : 'active' %>" id="notification_<%= notification.id %>" data-id="<%= notification.id %>">
         <% if notification.notified && notification.title %>
           <div class="col-xs-6 one-line">
             <% url = notification.notified.class == User ? profile_path(notification.notified.username) : polymorphic_url(notification.notified) %>
@@ -22,7 +22,7 @@
           </div>
           <div class="col-xs-6 text-right">
             <%= notification.created_at.to_formatted_s(:long) %>
-            <span class="read glyphicon glyphicon-ok-circle" data-id="<%= notification.id %>"></span>
+            <span class="glyphicon glyphicon-ok-circle" data-id="<%= notification.id %>"></span>
           </div>
         <% end %>
       </li>
@@ -31,14 +31,15 @@
 </ul>
 </li>
 <script>
-  $('.active .read').click(function (e) {
-    e.preventDefault();
+  $('.active.read').click(function (e) {
     var id = $(this).data("id");
     $.ajax({url: "/notifications/" + id + ".json", type: "PUT", data: {active: false}}).done(function (result) {
       $('#notification_' + id + ' .glyphicon-exclamation-sign').remove();
       $('#notification_' + id).addClass('text-muted');
-      $('#notifications-dropdown-control').attr('new-notifications') -= 1;
+      $('#notifications-dropdown-control').attr('new-notifications', Number($('#notifications-dropdown-control').attr('new-notifications')) - 1);
+      if ($('#notifications-dropdown-control').attr('new-notifications') <= 0) {
+        $('#notifications-dropdown-control').removeClass('notifications-count');
+      }
     });
-    return false;
   });
 </script>

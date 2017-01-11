@@ -28,7 +28,7 @@
     </div>
     <div class="field form-group row">
         <label for="viaf_id" class="col-sm-2 control-label">
-            <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="glyphicon glyphicon-globe"></span> VIAF ID</a>
+            <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="glyphicon glyphicon-export"></span> VIAF ID</a>
         </label>
         <div class="col-sm-2">
             <%= f.text_field :viaf_id, :class => 'form-control', :data => {'ng-model' => 'entity.viaf_id','ng-init' => "entity.viaf_id='#{@model.viaf_id}'"} %>

@@ -256,7 +256,6 @@ var load_session = false;
         });
 
         var search_query = {
-            active: this.options.showActiveOnly ? true : "  ",
             reviewed: this.getUnreviewedOnly(),
             created_by_user: this.options.showOnlyRecordsCreatedByUser,
             offset: dt_params.start,

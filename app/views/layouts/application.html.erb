@@ -84,9 +84,10 @@
 
   </head>
   <body data-spy="scroll" data-target="#entry_breadcrumbs" data-offset="50" class="<%= render_body_class %>">
-  <% if current_user %>
-    <%= render partial: 'shared/control_panel' %>
-  <% end %>
+  <!-- control panel - or 'login' panel, when logged out -->  
+  <%= render partial: 'shared/control_panel' %>
+
+  <!-- -->
   <div class="main-content-wrapper">
     <div class="main-content">
       <%= render :partial => 'shared/header_navbar' %>

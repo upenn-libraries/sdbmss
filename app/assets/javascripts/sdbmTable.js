@@ -184,7 +184,7 @@ var SDBM = SDBM || {};
             // fix me: when we start wide, header columns break (in a big way), otherwise they just break in a SMALL way
             $("#main-container").toggleClass('container-fluid').toggleClass('container');
             $("#widescreen > span").toggleClass('glyphicon-resize-small').toggleClass('glyphicon-resize-full');
-            if ($('#main-container').hadClass('container-fluid')) {
+            if ($('#main-container').hasClass('container-fluid')) {
                 $('.redundant-container').addClass('container');
             } else {
                 $('.redundant-container').removeClass('container'); 

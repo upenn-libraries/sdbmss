@@ -76,6 +76,7 @@ class Entry < ActiveRecord::Base
   accepts_nested_attributes_for :entry_uses, allow_destroy: true
   accepts_nested_attributes_for :sales, allow_destroy: true
   accepts_nested_attributes_for :provenance, allow_destroy: true
+  accepts_nested_attributes_for :group_records, allow_destroy: true
 
   # list of args to pass to Entry.includes in various places, for fetching a 'complete' entry
   @@includes = [

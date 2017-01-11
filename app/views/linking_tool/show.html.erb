@@ -29,27 +29,26 @@ function setOptions (p) {
     t.change(updateOptions);
     updateOptions();
 }
-$("#addSearch").click( function (e) {
-    // fix me: add something here to dynamically change table height -> 
-
-    var p = $('.search-block').eq(0).clone();
-    p.find("input", "select").val("");
-    $(".search-fieldset").append(p);
-    p.find(".search-remove").click( function (e) {
-        //var p = $(this).closest('.search-block');
-        if ($('.search-block').length > 1) {
-            $(".search").find(p).remove();            
-        } else {                                    // otherwise, clear all the fields
-            p.find("input").each(function (e) {
-                $(this).val("");
-            })
-            p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
-        }
-    });
-    setOptions(p);
-});
 
 $(document).ready(function() {
+    $("#addSearch").click( function (e) {
+        // fix me: add something here to dynamically change table height -> 
+        var p = $('.search-block').eq(0).clone();
+        p.find("input", "select").val("");
+        $(".search-fieldset").append(p);
+        p.find(".search-remove").click( function (e) {
+            //var p = $(this).closest('.search-block');
+            if ($('.search-block').length > 1) {
+                $(".search").find(p).remove();            
+            } else {                                    // otherwise, clear all the fields
+                p.find("input").each(function (e) {
+                    $(this).val("");
+                })
+                p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
+            }
+        });
+        setOptions(p);
+    });
     var p = $('.search-block').eq(0);
     p.find(".search-remove").click( function (e) {
         if ($('.search-block').length > 1) {     // if there are others, remove it

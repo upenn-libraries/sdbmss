@@ -1,6 +1,6 @@
 class Group < ActiveRecord::Base
 
-  has_many :group_records, dependent: :destroy
+  has_many :group_records, dependent: :destroy, :foreign_key => :group_id
   has_many :entries, through: :group_records, source: :record, source_type: "Entry"
 
   has_many :group_users, dependent: :destroy

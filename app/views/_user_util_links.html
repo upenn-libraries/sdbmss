@@ -17,7 +17,7 @@
 
     <li class="dropdown">
         <a href="" class='dropdown-toggle' data-toggle="dropdown">
-          <span class="glyphicon glyphicon-info-sign"></span> <span class="show-mobile">About</span>
+          <span class="glyphicon glyphicon-info-sign"></span> <span class="">About</span>
           <span class="caret"></span>
         </a>
         <ul class="dropdown-menu" role="menu">
@@ -37,7 +37,7 @@
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
           <span class="glyphicon glyphicon-question-sign"></span>
-          <span class="show-mobile">Help</span>
+          <span class="">Help</span>
           <span class="caret"></span>
         </a>
         <ul class="dropdown-menu" role="menu">
@@ -53,10 +53,9 @@
           <li><a href="mailto:sdbm@pobox.upenn.edu">Email Us</a></li>
         </ul>
     </li>
-
   </ul>
 
-  <% if has_user_authentication_provider? %>
+  <% if false && has_user_authentication_provider? %>
     <ul class="nav navbar-nav" id="user-nav">
       <% if current_user && !current_user.to_s.blank? %>
       <li>

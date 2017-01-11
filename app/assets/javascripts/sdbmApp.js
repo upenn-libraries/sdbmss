@@ -740,6 +740,10 @@ var BOOKMARK_SCOPE;
                 field: 'provenance',
                 properties: ['start_date', 'end_date', 'associated_date', 'comment', 'observed_name'],
                 foreignKeyObjects: ['provenance_agent']
+            },
+            {
+              field: 'group_records',
+              foreignKeyObjects: ['group']
             }
         ];
 
@@ -847,6 +851,8 @@ var BOOKMARK_SCOPE;
         $scope.addRecord = function (anArray) {
           if (anArray == $scope.entry.provenance) {
             anArray.push({dates: [{type: "Start"}]});
+          } else if (anArray == $scope.entry.group_records) {
+            anArray.push({permission: true});
           } else {            
             anArray.push({});
           }
@@ -1024,7 +1030,6 @@ var BOOKMARK_SCOPE;
 
         $scope.postEntrySave = function(entry) {
             $scope.warnWhenLeavingPage = false;
-
             window.location = "/entries/" + entry.id;
             /*
             //console.log(entry);
@@ -1150,7 +1155,8 @@ var BOOKMARK_SCOPE;
                 [ entryToSave.entry_scribes, 'scribe' ],
                 [ entryToSave.entry_languages, 'language' ],
                 [ entryToSave.entry_places, 'place' ],
-                [ entryToSave.provenance, 'provenance_agent' ]                
+                [ entryToSave.provenance, 'provenance_agent' ],               
+                [ entryToSave.group_records, 'group' ]                
             ];
 
             for(var idx in objectArraysWithRelatedObjects) {
@@ -1254,6 +1260,11 @@ var BOOKMARK_SCOPE;
         });
 
         SDBM.disableFormSubmissionOnEnter('#entry-form');
+
+        $http.get("/groups.json").then( function (result) {          
+            $scope.groups = result.data;
+          }
+        );
 
         $http.get("/entries/types/").then(
             function(result) {

@@ -61,7 +61,7 @@
     <div class="modal-footer">
         <div class='row'>
             <div class='col-sm-8 text-left'>
-                Can't find the {{ type | humanize }} you are looking for? <button href="" class="btn btn-default" id='propose-name' ng-click="createName()">Propose {{ searchTerm || ("New " + type | humanize ) }}</button>
+                Can't find the {{ type | humanize }} you are looking for? <button href="" class="btn btn-default one-line" style="max-width: 100%" id='propose-name' ng-click="createName()">Propose {{ searchTerm || ("New " + type | humanize ) }}</button>
             </div>
             <div class='col-sm-4'>
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>

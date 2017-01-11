@@ -274,7 +274,7 @@ label.col-sm-2-and-half {
         <label for="cat_lot_no" class="col-sm-2 control-label"><span sdbm-tooltip="entry_institution">Institution/Collection</span></label>
         <div class="col-sm-5">
 
-            <div class="btn-group name-authority-group" role="group">
+            <div class="btn-group" role="group">
               <a id="find_institution_name_authority_0" ng-if='entry.institution.id == undefined' ng-init="entry.institution = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry.institution, 'is_provenance_agent')">Find or Create Authority Name</a>
               <div id='show_institution_name_authority_0' ng-if='entry.institution != undefined && entry.institution.id != undefined' class="well well-sm well-name-authority btn btn-info">
                 <a id='remove_institution_name_authority_0' class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(entry, 'institution')"></a>
@@ -910,28 +910,74 @@ label.col-sm-2-and-half {
         </div>
       </div>
     </div>
+    <div class="col-sm-12">
+      <span class="add-link-container">
+        <a id="add_provenance" class="clickable" data-ng-click="addRecord(entry.provenance)" title="Add">
+          <span class="glyphicon glyphicon-plus"></span>
+          add new
+        </a>
+      </span>
+    </div>
   </div>
 </fieldset>
 
-    <!-- end of provenance section -->
+<!-- end of provenance section -->
 
-    <div ng-show="entry.created_by">
-        <div class="row">
-            <div class="col-sm-12">
-                <legend>About This Entry Record</legend>
-            </div>
+<fieldset ng-disabled="!entry.source">
+
+    <div class="row">
+        <div class="col-sm-12">
+            <legend>About This Entry Record</legend>
         </div>
-
-        <div class="form-group row">
-            <label for="link" class="col-sm-2 control-label">
-                Created
-            </label>
-            <div class="col-sm-9 label-alignment">
-                by {{ entry.created_by }} on {{ entry.created_at }}
-            </div>
-        </div>
-
     </div>
+
+    <div class="row">
+      <div class="col-sm-12">
+        <span class="h4">User Groups</span>
+        <a a id="add_group_record" class="clickable" data-ng-click="addRecord(entry.group_records)" title="Add">
+          Add new <span class="glyphicon glyphicon-plus"></span>
+        </a>
+      </div>
+    </div>
+    <div class="row input-block" ng-repeat="group_record in entry.group_records | filter: {permission: true} | filter: activeRecords">
+      <div class="remove-link-container">
+        <a class="clickable" data-ng-click="removeRecord(entry.group_records, group_record)" title="Remove">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+      </div>          
+      <div class="col-sm-12">
+        <div class="input-group" style='width: 100%;'>
+          <p ng-if="groups.length <= 0">You have no user groups yet.</p>
+          <select style="width: 45%" class='form-control' id="group-select" ng-if="groups.length > 0" ng-model="group_record.group.id" ng-options="group.id as group.name for group in groups">            
+          </select>
+        </div>
+      </div>
+    </div>        
+
+    <div class="row input-block" ng-repeat="group_record in entry.group_records | filter: {permission: false}">
+      <div class="remove-link-container">
+        <a class="disabled" disabled="disabled">
+          <span class="glyphicon glyphicon-remove"></span>
+        </a>
+      </div>          
+      <div class="col-sm-12">
+        <div class="input-group" style='width: 100%;'>
+          <select style="width: 45%" class='form-control disabled' disabled="disabled" id="group-select" ng-model="group_record.group.id" ng-options="group.id as group.name for group in [group_record.group]">            
+          </select>
+        </div>
+      </div>
+    </div>        
+
+    <div class="form-group row" ng-show="entry.created_by">
+        <label for="link" class="col-sm-2 control-label">
+            Created
+        </label>
+        <div class="col-sm-9 label-alignment">
+            by {{ entry.created_by }} on {{ entry.created_at }}
+        </div>
+    </div>
+
+</fieldset>
 
     <%= render partial: "edit_buttons" %>
 

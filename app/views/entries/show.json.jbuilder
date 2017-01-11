@@ -150,6 +150,16 @@ if @entry.provenance.present?
   end
 end
 
+json.group_records @entry.group_records do |group_record|
+  json.(group_record, :id)
+  if group_record.group
+    json.group do
+      json.(group_record.group, :id, :name)
+    end
+    json.permission(group_record.group.admin.include? current_user)
+  end
+end
+
 if @entry.comments.present?
   json.comments @entry.comments do |comment|
     json.(comment, :id, :comment)

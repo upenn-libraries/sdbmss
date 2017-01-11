@@ -17,6 +17,10 @@ class GroupsController < ApplicationController
 
   def index
     get_groups
+    respond_to do |format|
+      format.html {}
+      format.json { render json: @groups_admin }
+    end
   end
 
   def show_all

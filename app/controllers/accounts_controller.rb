@@ -14,6 +14,10 @@ class AccountsController < SearchableAuthorityController
     User
   end
 
+  def search_model_class
+    User
+  end
+
   def resource_name
     "accounts"
   end

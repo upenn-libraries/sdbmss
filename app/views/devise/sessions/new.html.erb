@@ -1,52 +1,17 @@
-<% content_for :head do %>
-<script type="text/javascript">
-    $(document).ready(function() {
-    $("#user_login").focus();
-    });
-</script>
-<% end %>
-
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-
 <div class="row">
-    <div class="col-sm-offset-4 col-sm-4 form-group">
-        <%= f.label :login, class: "control-label" %>
-        <%= f.text_field :login, class: "form-control" %>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-sm-offset-4 col-sm-4 form-group">
-        <%= f.label :password, class: "control-label" %>
-        <%= f.password_field :password, autocomplete: "off", class: "form-control" %>
-    </div>
-</div>
-
-<% if devise_mapping.rememberable? -%>
-<div class="row">
-    <div class="col-sm-offset-4 col-sm-4 form-group">
-        <%= f.check_box :remember_me %>
-        <%= f.label :remember_me, class: "control-label" %>
-    </div>
-</div>
-<% end -%>
-
-<div class="row">
-    <div class="col-sm-offset-4 col-sm-4 form-group">
-        <%= f.submit "Log in", class: "btn btn-default" %>
-    </div>
-</div>
-<% end %>
-
-<div class="row">
-    <div class="col-sm-offset-4 col-sm-4 form-group">
-        <%= render "devise/shared/links" %>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-sm-offset-4 col-sm-4 form-group">
-        <a href="/static/docs/sdbm_user_manual.pdf">User Manual</a><br/>
-        <a href="/static/docs/sdbm_data_definitions.pdf">Data Definitions (PDF)</a><br/>
+    <div class="col-sm-4"></div>
+    <div class="col-sm-4">
+        <%= render partial: 'new' %>
+        <div class="row">
+            <div class="col-xs-12 form-group">
+                <a href="/static/docs/sdbm_user_manual.pdf">User Manual</a><br/>
+                <a href="/static/docs/sdbm_data_definitions.pdf">Data Definitions (PDF)</a><br/>
+            </div>
+        </div>        
+        <div class="row">
+            <div class="col-xs-12 form-group">
+                <%= render "devise/shared/links" %>
+            </div>
+        </div>
     </div>
 </div>

@@ -329,18 +329,6 @@ textarea { resize:vertical ; }
 }
 
 
-.notify:after {
-  content: attr(notifications);
-  padding: 4px;
-  background-color: #337ab7;
-  border-radius: 4px;
-  color: white;
-  margin-left: 4px;
-  position: absolute;
-  right: -36px;
-  margin-top: -5  px;
-}
-
 .breadcrumb {
   background: none;
   text-align: center;
@@ -1629,7 +1617,9 @@ so that gray backdrop shvows up correctly */
   line-height: 50px;
   font-size: 60px;
 }
+/* FIX ME: this should really be renamed */
 .bookmarks-collapse {
+  height: 100%;
   overflow-x: hidden;
   -webkit-transition-property: width;
   -moz-transition-property: width;
@@ -1969,6 +1959,7 @@ Private Message Styling
 }
 #control-panel .panel-body {
   background: white;
+  padding: 0px;
 }
 #control-panel a {
   color: #333;
@@ -1983,6 +1974,15 @@ Private Message Styling
 #control-panel li.disabled a {
   color: #999;
   pointer-events: none;
+}
+#control-panel .user-icon {
+  display: table-cell;
+  vertical-align: middle;
+  width: 50px;
+  font-size: 32px;
+}
+#control-panel .user-info {
+  display: table-cell;
 }
 
 .textarea-group {

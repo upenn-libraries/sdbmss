@@ -1,28 +1,32 @@
 <div id="control-panel">
   <div class="bookmarks-collapse collapse width in">
+    <% if current_user %>
     <div class="panel panel-default">
         <div class="panel-heading" style="white-space: nowrap">
-            <!--<div class="row">
-                <div class="col-xs-4">
-                    <div class="panel panel-default text-center" style="margin: 0px;">
-                        <div class="panel-body"><span class="glyphicon glyphicon-user"></span></div>
-                    </div>
-                </div>
-                <div class="col-xs-8">
-                </div>
-            </div>-->
-            <span class="dropdown">
-              <a href="" class="dropdown-toggle" data-toggle="dropdown">
-                <%= current_user.to_s %>
-                <span class="caret"></span>
-              </a>
-              <ul class="dropdown-menu">
-                <li><a href="<%= profile_path(username: current_user.username) %>"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
-                <li><a href="<%= private_messages_path %>"><span class="glyphicon glyphicon-envelope"></span> My Messages</a></li>
-                <li><%= link_to edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
-              </ul>
-            </span><br>
-            <span class="text-muted">User Level: <em><%= current_user.role %></em></span>
+            <div class="user-icon">
+              <span class="glyphicon glyphicon-user"></span>
+            </div>
+            <div class="user-info">
+              <span class="dropdown">
+                <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                  <%= current_user.to_s %>
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a href="<%= profile_path(username: current_user.username) %>"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
+                  <li><a href="<%= private_messages_path %>"><span class="glyphicon glyphicon-envelope"></span> My Messages</a></li>
+                  <li><%= link_to edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
+                  <% if current_user && !current_user.to_s.blank? %>
+                    <li>
+                      <%= link_to(destroy_user_session_path, :onclick => "localStorage.clear();") do %>
+                        <span class="glyphicon glyphicon-log-out"></span> <%= t('blacklight.header_links.logout') %>
+                      <% end %>
+                    </li>
+                  <% end %>
+                </ul>
+              </span><br>
+              <span class="text-muted">User Level: <em><%= current_user.role %></em></span>
+            </div>
         </div>
         <div class="panel-body">
           <div class="row">
@@ -75,7 +79,52 @@
         </div>
       </div>
     </div>
-
+  <% else %>
+    <div class="panel-default panel">
+      <div class="panel-heading">
+        <span class="h4">
+          <span class="glyphicon glyphicon-info-sign"></span>
+          About Us
+        </span>
+      </div>
+      <div class="panel-body">
+        <ul class="nav">
+          <% Page.where(category: 'about').each do |page| %>
+            <li><%= link_to page.name, page_path(page.name) %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+    <div class="panel-default panel">
+      <div class="panel-heading">
+        <span class="h4">
+          <span class="glyphicon glyphicon-question-sign"></span>
+          Help
+        </span>
+      </div>
+      <div class="panel-body">
+        <ul class="nav">
+          <% Page.where(category: 'help').each do |page| %>
+            <li><%= link_to page.name, page_path(page.name) %></li>
+          <% end %>
+          <li><a href="https://www.youtube.com/channel/UCsVZp-1724xPIW8MwIdKoyg/videos">Video Tutorials</a></li>
+          <li><a href="mailto:sdbm@pobox.upenn.edu">Email Us</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <span class="h4">
+          <span class="glyphicon glyphicon-log-in"></span> Login
+        </span>
+      </div>
+      <div class="panel-body" style="padding: 10px;">
+        <%= render partial: 'devise/sessions/new', locals: {resource: User.new, resource_name: 'user', devise_mapping: Devise.mappings[:user]} %>      
+        <%= link_to "Sign up", new_registration_path('user') %><br />
+        <%= link_to "Forgot your password?", new_password_path('user') %><br />
+      </div>
+    </div>
+  <% end %>
   </div>
   <a id='collapse-control' class="btn btn-default" data-toggle="collapse" data-target=".bookmarks-collapse">
     <span class="glyphicon glyphicon-chevron-right hide-collapsed"></span>
