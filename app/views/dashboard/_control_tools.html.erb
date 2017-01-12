@@ -27,32 +27,38 @@
         <span class="glyphicon glyphicon-th-large"></span> Comments
         <% end %>
       </li>
-      <% if current_user.role != "contributor" %>
+      <% if can? :manage, Name %>
       <li>
         <%= link_to(names_path) do %>
         <span class="glyphicon glyphicon-th"></span> Names
         <% end %>
       </li>
-      <% if current_user.role == 'admin' %>
+      <% end %>      
+      <% if can? :manage, Place %>
       <li>
         <%= link_to(places_path) do %>
         <span class="glyphicon glyphicon-th-large"></span> Places
         <% end %>
       </li>
+      <% end %>
+      <% if can? :manage, Language %>      
       <li>
         <%= link_to(languages_path) do %>
         <span class="glyphicon glyphicon-th"></span> Languages
         <% end %>
       </li>
+      <% end %>
+      <% if can? :manage, User %> 
       <li>
         <%= link_to(accounts_path) do %>
         <span class="glyphicon glyphicon-th-large"></span> Users
         <% end %>
       </li>
+      <% end %>
+      <% if can? :manage, Page %> 
       <li>
         <%= link_to(pages_path) do %>
         <span class="glyphicon glyphicon-tasks"></span> Pages & Tooltips
         <% end %>
       </li>
-      <% end %>
       <% end %>

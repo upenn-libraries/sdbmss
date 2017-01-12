@@ -99,9 +99,13 @@ var load_session = false;
                     type: 'POST',
                     data: { ids: ids, group_id: group_id },
                     success: function(data, textStatus, jqXHR) {
+                        if (data.error) {
+                            SDBM.showErrorModal("#modal", data.error);
+                        }
                         manageRecords.dataTable.reload();
                     },
                     error: function() {
+                        console.log('error!!');
                         SDBM.showErrorModal("#modal", "An error occurred adding record(s) to a user group");
                     },
                     complete: function() {
@@ -126,6 +130,9 @@ var load_session = false;
                     type: 'POST',
                     data: { ids: ids, group_id: group_id },
                     success: function(data, textStatus, jqXHR) {
+                        if (data.error) {
+                            SDBM.showErrorModal("#modal", data.error);
+                        }
                         manageRecords.dataTable.reload();
                     },
                     error: function() {

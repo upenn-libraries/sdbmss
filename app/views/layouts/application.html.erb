@@ -62,8 +62,9 @@
       </script>
     <%end%>
 
+    <!-- yeah, this is not a great way of doing this... -->
     <style type="text/css">
-      <% if current_user && current_user.role == "admin" %>
+      <% if can? :manage, Page %>
         .qtip-titlebar {
           display: block;
         }

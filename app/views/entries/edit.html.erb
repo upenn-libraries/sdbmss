@@ -249,7 +249,7 @@ label.col-sm-2-and-half {
                   <a href="/sources/{{ entry.source.id }}">SDBM_SOURCE_{{ entry.source.id }}</a> - {{ entry.source.display_value }} ({{ entry.source.source_type.display_name }})
               </div>
               <div class="col-sm-3">
-                <% if current_user.role == 'admin' %>
+                <% if can? :manage, Entry %>
                   <a href="" class="btn btn-danger" ng-if="entry.source.source_type_id != 8" ng-click="selectSourceModal(entry, entry.source.source_type.display_name );">Change Source</a>
                   <span class="list-group-item list-group-item-warning" ng-if="entry.source.source_type_id == 8">You can't change the source of a Provenance Observation</span>
                 <% end %>

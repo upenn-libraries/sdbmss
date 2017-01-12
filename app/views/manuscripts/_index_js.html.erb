@@ -5,7 +5,7 @@
      var resourceName = "<%= resource_name %>";
 
      // flag = show all records, or only those that the user created
-     <% if can? :manage, model_class %>
+     <% if can? :index, model_class %>
          var onlyMine = <%= params[:created_by_user] || 0 %>;
      <% else %>
          var onlyMine = 1;

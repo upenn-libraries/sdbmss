@@ -13,7 +13,7 @@ describe "Sign up / Edit Profile", :js => true do
 
     fill_in 'user_username', :with => "newuser"
     fill_in 'user_email', :with => "testy@mctest.com"
-    fill_in 'user_password', :with => 'somethingunguessable'
+    all('#user_password').last.set 'somethingunguessable'
     fill_in 'user_password_confirmation', :with => 'somethingunguessable'
     click_link 'User Agreement'
     click_button 'OK'

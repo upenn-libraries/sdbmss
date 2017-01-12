@@ -49,16 +49,16 @@ class Ability
     end
 
     if ['editor', 'super_editor', 'admin'].member? user.role
-      can :manage, [Name, Entry, Manuscript, Source]
+      can :index, [Entry, Manuscript, Source]
       can :unlink, :all
       can :edit, Manuscript
 
       cannot :deprecate, :all
-      cannot [:edit, :destroy, :merge], [Source, Entry]
+      #cannot [:edit, :destroy, :merge], [Source, Entry]
+      can :manage, Name
       cannot :review, Name
       # this needs to be RE-Established, since it has been overriden by line 51
       can :edit, :all, :created_by_id => user.id
-      cannot :manage, Page
     end
 
     if ['super_editor'].member? user.role

@@ -7,7 +7,7 @@
 <% end %>
 
 <% content_for :control_tools do %>
-    <% if current_user.role == 'admin' %>
+    <% if can? :manage, model_class %>
     <li>
         <% if resource_name == "entries" %>
             <a href="" id="mark-as-approved"><span class="glyphicon glyphicon-ok"></span> Mark as approved</a>                            
@@ -26,7 +26,7 @@
                     <%= @page_title %>
                 </h1>
             <% else %>
-                <% if !can? :manage, model_class %>
+                <% if !can? :index, model_class %>
                     <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
                     <h1>
                         Manage Your <%= resource_name.pluralize.capitalize %>
@@ -42,7 +42,7 @@
             <a href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info"><span class="glyphicon glyphicon-info-sign"></span> Click Here For More Info</a>
         </div>
         <div class="col-sm-3 text-right">
-            <% if can? :manage, model_class %>
+            <% if can? :index, model_class %>
                 <div class="row" style="padding-left: 0px; padding-right: 0px;">
                     <div class="col-sm-12">
                         <%= render partial: "manage_models/group_form" %>

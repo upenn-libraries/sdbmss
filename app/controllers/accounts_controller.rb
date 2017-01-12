@@ -23,7 +23,7 @@ class AccountsController < SearchableAuthorityController
   end
 
   def login_as
-    if current_user.role == 'admin'
+    if can? :manage, User
       user = User.find_by(username: params[:username])
       if user.present?
         sign_in(:user, user)

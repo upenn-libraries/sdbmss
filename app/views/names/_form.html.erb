@@ -22,7 +22,7 @@
       
     <div class="field form-group row">
         <%= f.label :name, class: "col-sm-2 control-label" %>
-        <div class="col-sm-5">
+        <div class="col-sm-4">
             <%= f.text_field :name, :class => 'form-control', :data => { 'ng-model' => 'entity.name', 'ng-init' => "entity.name='#{SDBMSS::Util.escape(@model.name)}'" } %>
         </div>
     </div>
@@ -30,17 +30,21 @@
         <label for="viaf_id" class="col-sm-2 control-label">
             <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="glyphicon glyphicon-export"></span> VIAF ID</a>
         </label>
-        <div class="col-sm-2">
+        <div class="col-sm-4">
             <%= f.text_field :viaf_id, :class => 'form-control', :data => {'ng-model' => 'entity.viaf_id','ng-init' => "entity.viaf_id='#{@model.viaf_id}'"} %>
         </div>
         <% if @model.viaf_id.present? %>
-        <div class="col-sm-4 label-alignment">
+        <div class="col-sm-3 label-alignment">
             <a target="_blank" href="http://viaf.org/viaf/<%= @model.viaf_id %>/">View VIAF record</a>
         </div>
-        <% end %>
-        <div class="col-sm-3">
-          <button type="button" ng-click="findSuggestions(entity.name, true)" ng-disabled="loading" class="btn btn-primary">Find Suggestions in VIAF</button>
+        <% else %>
+        <div class="col-sm-3 text-right">
+          <button type="button" ng-click="findSuggestions(entity.name, true)" ng-disabled="loading" class="btn btn-primary one-line" style="max-width: 100%;">Find Suggestions in VIAF</button>
         </div>
+        <div class="col-sm-3 text-info">
+            <p>Note: Viaf suggestions are not exhaustive; you may find better results by searching <a href="viaf.org">viaf.org</a> direction</p>
+        </div>
+        <% end %>
     </div>
     <div class="field form-group row">
         <%= f.label :flags, class: "col-sm-2 control-label" %>

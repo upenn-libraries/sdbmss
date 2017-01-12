@@ -1,7 +1,7 @@
 <%# Partial used to display name details for both Names generically and Agents (which are Names) %>
 
 <% content_for :breadcrumbs do %>
-    <% if current_user.role == 'admin' %>
+    <% if can? :manage, User %>
         <li class=" ">
             <a href="/accounts">Manage Accounts</a>
         </li>
@@ -13,7 +13,7 @@
         <li class="  active"><a href=""><%= @user %></a></li>
 <% end %>
 
-<% if current_user.role == 'admin' %>
+<% if can? :manage, User %>
 <% content_for :control_tools do %>
     <% if user_signed_in? %>
         <% if can?(:edit, @user) %>
