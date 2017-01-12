@@ -351,6 +351,8 @@ class SourcesController < SearchableAuthorityController
       @source.deleted = true
       if !@source.save_by(current_user)
         error = @source.errors.to_s
+      else
+        @source.watches.destroy_all
       end
     else
       error = "Can't mark a source as deleted if it has entries"

@@ -190,7 +190,7 @@ describe "Blacklight Search", :js => true do
 
   it "should bookmark an Entry and remove it" do
     skip "New bookmark method implemented"
-    visit new_user_session_path
+    visit root_path
     fill_in 'user_login', :with => @user.username
     fill_in 'user_password', :with => 'somethingunguessable'
     click_button 'Log in'
@@ -230,7 +230,7 @@ describe "Blacklight Search", :js => true do
       document_type: "SolrDocument"
     )
 
-    visit new_user_session_path
+    visit root_path
     fill_in 'user_login', :with => @user.username
     fill_in 'user_password', :with => 'somethingunguessable'
     click_button 'Log in'

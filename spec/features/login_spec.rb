@@ -26,7 +26,7 @@ describe "Login", :js => true do
   end
 
   it "should allow login" do
-    visit new_user_session_path
+    visit root_path
     fill_in 'user_login', :with => @user_active.username
     fill_in 'user_password', :with => 'somethingunguessable'
     click_button 'Log in'
@@ -34,7 +34,7 @@ describe "Login", :js => true do
   end
 
   it "should disallow login" do
-    visit new_user_session_path
+    visit root_path
     fill_in 'user_login', :with => @user_inactive.username
     fill_in 'user_password', :with => 'somethingunguessable'
     click_button 'Log in'
@@ -42,7 +42,7 @@ describe "Login", :js => true do
   end
 
   it "should allow login_as" do
-    visit new_user_session_path
+    visit root_path
     fill_in 'user_login', :with => @admin.username
     fill_in 'user_password', :with => 'somethingunguessable'
     click_button 'Log in'
@@ -53,7 +53,7 @@ describe "Login", :js => true do
   end
 
   it "should disallow login_as" do
-    visit new_user_session_path
+    visit root_path
     fill_in 'user_login', :with => @user_active.username
     fill_in 'user_password', :with => 'somethingunguessable'
     click_button 'Log in'

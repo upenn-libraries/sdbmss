@@ -1,11 +1,13 @@
 <%# renders verbose text string for the name portion of the Provenance record %>
 
 <% if provenance.provenance_agent.present? && provenance.observed_name %>
-<a href="<%= url_for provenance.provenance_agent %>"><%= provenance.provenance_agent.name %></a> (as <%= provenance.observed_name %>)
+  <a href="<%= url_for provenance.provenance_agent %>"><%= provenance.provenance_agent.name %></a> (as <%= provenance.observed_name %>)
 <% elsif provenance.provenance_agent.present? %>
-<a href="<%= url_for provenance.provenance_agent %>"><%= provenance.provenance_agent.name %></a>
+  <a href="<%= url_for provenance.provenance_agent %>"><%= provenance.provenance_agent.name %></a>
+<% elsif provenance.observed_name.present? %>
+  <%= provenance.observed_name %>
 <% else %>
-<%= provenance.observed_name %>
+  <span class="text-muted">No agent or name information recorded.</span>
 <% end %>
 <% if (acquisition_method = provenance.get_acquisition_method_for_display).present? %>
 - <%= acquisition_method %>

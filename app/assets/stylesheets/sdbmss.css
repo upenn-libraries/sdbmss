@@ -470,6 +470,9 @@ textarea { resize:vertical ; }
   top: 4px;
   margin: 0px;
 }
+.provenance-block .name-authority-warning {
+  left: -210px;
+}
 /*
 speech bubble 'arrow'
 .name-authority-warning:before {
@@ -1831,7 +1834,7 @@ Private Message Styling
 }
 
 .bookmark[data-method="delete"], .watch[data-method="delete"] {
-  color: gold;
+  color: gold !important;
 }
 .select-source-container .table td {
   border: none;

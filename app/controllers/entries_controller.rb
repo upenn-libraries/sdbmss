@@ -330,6 +330,8 @@ class EntriesController < SearchableAuthorityController
     @entry.updated_by_id = current_user.id
     @entry.save
 
+    @entry.watches.destroy_all
+
     Sunspot.remove(@entry)
 
     # if we call respond_with(@entry), which is more rails-ish, the

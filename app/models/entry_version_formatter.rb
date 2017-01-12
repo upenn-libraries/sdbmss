@@ -129,10 +129,13 @@ class EntryVersionFormatter
             if f.exists?(values[1])
               values[1] = f.find(values[1])
             end
+          elsif field == "date" && version.item_type == "Source"
+            values[0] = SDBMSS::Util.format_fuzzy_date(values[0])
+            values[1] = SDBMSS::Util.format_fuzzy_date(values[1])
           end
           if values[0].present?
             details << "<b>#{field.titlecase}</b> changed from #{values[0]} to #{values[1]}"
-          else
+          elsif values[1].present?
             details << "<b>#{field.titlecase}</b> set to #{values[1]}"
           end
         end
@@ -146,6 +149,8 @@ class EntryVersionFormatter
             if f.exists?(value)
               value = f.find(value)
             end
+          elsif field == "date" && version.item_type == "Source"
+            value = SDBMSS::Util.format_fuzzy_date(value)
           end
           details << "<b>#{field.titlecase}</b> set to #{value}"
         end
@@ -176,7 +181,7 @@ class EntryVersionFormatter
       return Name
     elsif ['created_by_id', 'updated_by_id', 'approved_by_id', 'reviewed_by_id'].include? field
       return User
-    elsif ['entry_id']
+    elsif ['entry_id'].include? field
       return Entry
     else
       return field.gsub('_id', '').capitalize.classify.constantize

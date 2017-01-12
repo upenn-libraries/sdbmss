@@ -24,7 +24,7 @@ describe "Manage entries", :js => true do
   end
 
   before :each do
-    visit new_user_session_path
+    visit root_path
     fill_in 'user_login', :with => @user.username
     fill_in 'user_password', :with => 'somethingunguessable'
     click_button 'Log in'

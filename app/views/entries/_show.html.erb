@@ -379,10 +379,10 @@
             <td class="col-sm-2 text-right record-label">
                 <% if provenance.start_date.present? || provenance.end_date.present? %>
                     <%= format_fuzzy_date(provenance.start_date) %>
-                    <% if provenance.start_date.present? && provenance.end_date.present? %><br/>to<br/><% end %>
+                    <% if provenance.start_date.present? && provenance.end_date.present? %> to <% end %>
                     <%= format_fuzzy_date(provenance.end_date) %>
                 <% elsif provenance.associated_date.present? %>
-                    <%= provenance.associated_date.split("\t").join(", ") %>
+                    <span class="text-muted"><%= provenance.associated_date.split("\t").join(", ") %> (Associated)</span>
                 <% else %>
                     (No date)
                 <% end %>
