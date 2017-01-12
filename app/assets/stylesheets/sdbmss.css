@@ -2,6 +2,7 @@ html {
   height: 100%;
   width: 100%;
   display: table;
+  min-width: 320px;
 }
 body {
   background: white;
@@ -414,7 +415,6 @@ textarea { resize:vertical ; }
 
 .search-form-wrapper {
   margin: 0px 0px -15px 0px;
-  border: 1px dashed #ccc;
 }
 
 .search-form { font-size: 12px; }
@@ -1400,6 +1400,9 @@ so that gray backdrop shvows up correctly */
   body {
     min-width: 320px;
   }
+  .col-xs-1 {
+    padding: 0px;
+  }
   .hide-mobile-sm {
     display: none !important;
   }
@@ -1428,6 +1431,17 @@ so that gray backdrop shvows up correctly */
   }
   .navbar-default .navbar-collapse {
     margin: 0px -15px;
+  }
+  #sortAndPerPage {
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+  }
+  .mobile-one-line {
+    white-space: nowrap;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
   }
   .mobile-center {
     text-align: center;
