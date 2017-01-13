@@ -2,7 +2,7 @@
 <div class="panel-heading">
     <strong class="h4"><%= link_to source.public_id, source_path(source) %></strong>
     <% if !source.reviewed %>
-          <span class="alert alert-warning alert-sm"><span class="glyphicon glyphicon-alert"></span> Unapproved</span>
+          <span class="text-warning"><span class="glyphicon glyphicon-alert"></span> Unapproved</span>
     <% end %>
 </div>
 <div class="panel-body">

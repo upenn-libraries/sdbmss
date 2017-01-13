@@ -9,7 +9,7 @@
 <% content_for :control_tools do %>
     <% if can? :manage, model_class %>
     <li>
-        <% if resource_name == "entries" %>
+        <% if resource_name == "entries" || resource_name == "names" %>
             <a href="" id="mark-as-approved"><span class="glyphicon glyphicon-ok"></span> Mark as approved</a>                            
         <% else %>
             <a href="" id="mark-as-reviewed"><span class="glyphicon glyphicon-ok"></span> Mark as reviewed</a>
@@ -20,7 +20,7 @@
 
 <div class="redundant-container">
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-sm-6 mobile-center">
             <% if @page_title %>
                 <h1>
                     <%= @page_title %>
@@ -40,8 +40,6 @@
             <% end %>
 
             <a href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info"><span class="glyphicon glyphicon-info-sign"></span> Click Here For More Info</a>
-        </div>
-        <div class="col-sm-3 text-right">
             <% if can? :index, model_class %>
                 <div class="row" style="padding-left: 0px; padding-right: 0px;">
                     <div class="col-sm-12">
@@ -49,8 +47,6 @@
                     </div>
                 </div>
             <% end %>
-
-
         </div>
         <div id="manage_records_info" class="modal fade panel-body" role="dialog">
             <div class="modal-dialog">

@@ -25,7 +25,7 @@
                   <% end %>
                 </ul>
               </span><br>
-              <span class="text-muted">User Level: <em><%= current_user.role %></em></span>
+              <span class="text-muted" sdbm-tooltip="user_levels">User Level: <em><%= current_user.role %></em></span>
             </div>
         </div>
         <div class="panel-body">
@@ -127,7 +127,8 @@
   <% end %>
   </div>
   <a id='collapse-control' class="btn btn-default" data-toggle="collapse" data-target=".bookmarks-collapse">
-    <span class="glyphicon glyphicon-chevron-right hide-collapsed"></span>
-    <span class="glyphicon glyphicon-chevron-left show-collapsed"></span>
+    <span class="glyphicon glyphicon-menu-hamburger hide-collapsed"></span>
+    <span class="glyphicon glyphicon-remove show-collapsed"></span>
+    <!--<span class="glyphicon glyphicon-chevron-left show-collapsed"></span>-->
   </a>
 </div>

@@ -1,6 +1,6 @@
 <%= form_tag(request.path, method: :get, class: "form-horizontal search-form sdbmss-form") do %>
     <div class="row">
-        <div class="col-sm-12 text-right">
+        <div class="col-sm-12 text-right mobile-center">
             <% if can? :review, model_class %>
                 <label class="checkbox-inline">
                     <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
@@ -44,15 +44,15 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-3">
+        <div class="col-xs-4">
             <a href="" class="" id="addSearch">
                 <span class="glyphicon glyphicon-plus"></span> add term
             </a>
         </div>
-        <div class="col-sm-4">
+        <div class="col-xs-3">
             <span id="spinner" style='display: none;'><img alt="working..." src="<%= asset_path "spinner.gif" %>"/> loading search results...</span>
         </div>
-        <div class="col-sm-5 text-right">
+        <div class="col-xs-5 text-right">
             <div class="input-group">
             <select name="op" id="search_op" class="form-control">
                 <option value="AND">All</option>
@@ -60,7 +60,7 @@
             </select>
             <div class="input-group-btn">
                 <button id="search_submit" type="submit" class="btn btn-primary">
-                    Search
+                    <span class="hide-mobile">Search</span>
                     <span class="glyphicon glyphicon-search"></span>
                 </button>
             </div>

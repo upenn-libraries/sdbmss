@@ -58,7 +58,7 @@ var SDBM = SDBM || {};
             height: 'full',
             heightBuffer: 360,
             responsive: true,
-            dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t'
+            dom: '<"row"<"col-sm-5 mobile-center"li><"col-sm-7 text-right mobile-center" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t'
         };
 
         this.options = $.extend({}, defaults, options);

@@ -1713,10 +1713,10 @@ var BOOKMARK_SCOPE;
                         success: function(data, textStatus, jqXHR) {
                             var results = data.data || [];
                             if(results.length > 0) {
-                                var msg = "Warning! An entry with that catalog number already exists.";
+                                var msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='http://localhost:3000/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
                                 var editMode = !!scope.entry.id;
                                 if (editMode) {
-                                    msg = "Warning! Another entry with that catalog number already exists.";
+                                    msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='http://localhost:3000/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
                                     results.forEach(function (result) {
                                         if(result.id == scope.entry.id) {
                                             // search returned the entry we're editing, so don't warn
@@ -1725,7 +1725,7 @@ var BOOKMARK_SCOPE;
                                     });
                                 }
                                 if(msg) {
-                                    $("#cat_lot_no_warning").text(msg);
+                                    $("#cat_lot_no_warning").html(msg);
                                 }
                             }
                         }

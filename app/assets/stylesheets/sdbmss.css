@@ -91,8 +91,6 @@ textarea { resize:vertical ; }
 }
 .navbar-inverse .navbar-nav > li > a { color: black }
 
-.container-fluid .row { padding-left: 15px; padding-right: 15px; }
-
 .list-group-no-border-side li {
   border-radius: 0px !important;
   border-right: none;
@@ -918,7 +916,7 @@ div[ui-sortable] {
   background-color: rgba(255, 234, 171, 0.5);
 }
 .input-block:before {
-  content: '⇕';
+  content: '';
   position: absolute;
   font-weight: bold;
   font-size: 22px;
@@ -926,6 +924,10 @@ div[ui-sortable] {
   line-height: 34px;
   left: 5px;
   color: #aaa;
+  height: 100%;
+  width: 15px;
+  background: #555;
+  top: 0px;
 }
 .input-block.input-block-no-sort:before {
   color: #ccc;
@@ -1355,17 +1357,17 @@ so that gray backdrop shvows up correctly */
 .table-compressed > thead > tr > th {
     padding: 4px;
 }
-
+/* FIX ME: use vw instead of % for this sort of thing?; */
 @media (min-width: 768px) {
   .main-content .container {
-    max-width: 100%;
+    max-width: 100vw;
     width: auto;
   }
 }
 
 @media (min-width: 992px) {
   .main-content .container {
-    max-width: 100%;
+    max-width: 100vw;
     width: auto;
   }
 }
@@ -1375,7 +1377,7 @@ so that gray backdrop shvows up correctly */
     max-width: 1170px !important;
     width: auto;
   }
-}
+}/**/
 
 @media (max-width: 1255px) {
   #control-panel {
@@ -1396,25 +1398,17 @@ so that gray backdrop shvows up correctly */
     padding: 15px 5px;
   }
 }
-@media (max-width: 360px) {
-  body {
-    min-width: 320px;
-  }
-  .col-xs-1 {
-    padding: 0px;
-  }
-  .hide-mobile-sm {
-    display: none !important;
-  }
-  span.show-mobile-sm {
-    display: inline-block;
-  }
-  div.show-mobile-sm {
-    display: block;
-  }
-}
 /* RESPONSIVE */
 @media (max-width: 767px) {
+  li.paginate_button.previous {
+      display: inline;
+  }
+  li.paginate_button.next {
+      display: inline;
+  }
+  li.paginate_button {
+      display: none;
+  }
   #search-navbar .navbar-nav {
     background: #f8f8f8;
   }
@@ -1497,7 +1491,7 @@ so that gray backdrop shvows up correctly */
 }
 @media (max-width: 1024px) {
   .main-content {
-    max-width: 100% !important;
+    max-width: 100vw;
     width: 100% !important;
   }
   /* need way to collapse into accessible menu */
@@ -1523,6 +1517,33 @@ so that gray backdrop shvows up correctly */
     display: inline-block;
   }
   .prov-date-range label {
+    display: block;
+  }
+  .search-form-wrapper {
+    background: #eee;
+    padding-bottom: 5px;
+    margin-top: 5px;
+  }
+}
+
+@media (max-width: 360px) {
+  body {
+    min-width: 320px;
+  }
+  .main-content {
+    max-width: 100vw;
+    min-width: 320px;
+  }
+  .col-xs-1 {
+    padding: 0px;
+  }
+  .hide-mobile-sm {
+    display: none !important;
+  }
+  span.show-mobile-sm {
+    display: inline-block;
+  }
+  div.show-mobile-sm {
     display: block;
   }
 }
@@ -1626,7 +1647,7 @@ so that gray backdrop shvows up correctly */
   text-align: center;
   right: 0px;
   width: 100%;
-  letter-spacing: -1px;
+letter-spacing: -2px;
   padding: 0px 38px;
   font-size: 21px;
 }
@@ -1664,8 +1685,9 @@ so that gray backdrop shvows up correctly */
   border: none;
   background: none;
   height: 50px;
+  font-size: 33px;
   line-height: 50px;
-  padding: 15px 6px;
+  padding: 7px;
 }
 #collapse-control:focus, #collapse-control:active {
   box-shadow: none;
@@ -1675,7 +1697,7 @@ so that gray backdrop shvows up correctly */
   left: 0px;
 }
 #control-panel .collapse.in + #collapse-control {
-  left: 242px;
+  left: 224px;
   border-color: transparent;
 }
 
@@ -1940,14 +1962,14 @@ Private Message Styling
 }
 .btn-header-hamburger {
   height: 50px;
-  background: #eeeeee;
+  background: transparent;
   border: none;
   border-radius: 0px;
   margin: 0px;
   margin-left: -3px;
 }
 .btn-header-hamburger:hover, .btn-header-hamburger:active, .btn-header-hamburger:focus {
-  background: #eee !important;;
+  background: transparent !important;;
 }
 
 .navbar-collapse {

@@ -26,11 +26,8 @@
                     </tr>
                 </thead>
                 <tbody class=''>
-                    <tr ng-show="nameSearchString.length <= 0">
-                        <td colspan="5">To begin searching, enter search term in the search bar.</td>
-                    </tr>
-                    <tr ng-show="nameSearchString.length > 1 && suggestions.length <= 0">
-                        <td colspan="5">No results found.  Consider searching for other possible spelling variations.</td>
+                    <tr ng-show="warning.length > 0">
+                        <td colspan="9">{{ warning }}</td>
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index">
                         <td><a class='selectModel btn btn-default btn-small' ng-click='selectSuggestion(s)'>Select</a></td>
