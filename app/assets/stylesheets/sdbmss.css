@@ -1659,6 +1659,8 @@ letter-spacing: -2px;
 .bookmarks-collapse {
   height: 100%;
   overflow-x: hidden;
+}
+.bookmarks-collapse.collapsing {
   -webkit-transition-property: width;
   -moz-transition-property: width;
   transition-property: width;
