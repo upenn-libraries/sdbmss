@@ -47,9 +47,17 @@
         }
         manageRecords.showOrHideMarkCheckedRecordsButton();
     };
-
      
      ManageAccounts.prototype = Object.create(SDBM.ManageRecords.prototype);
+
+     ManageAccounts.prototype.oldCreateSearchParams = ManageAccounts.prototype.createSearchParams;
+     ManageAccounts.prototype.createSearchParams = function (dt_params) {
+        var query = this.oldCreateSearchParams(dt_params);
+        if (!$("input[name='inactive_only']").prop('checked')) {
+            query.active = true;
+        }
+        return query;
+     }
 
      ManageAccounts.prototype.getColumns = function() {
         var manageRecords = this;

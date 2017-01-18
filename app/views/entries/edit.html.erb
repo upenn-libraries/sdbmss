@@ -65,7 +65,6 @@
 }
  
 legend {
-  text-align: center;
   font-variant: small-caps;
 }
 
@@ -408,13 +407,15 @@ label.col-sm-2-and-half {
           </a>
         </div>
           <div class="col-sm-12">
-            <span class='control-label' sdbm-tooltip="entry_title_as_recorded">As Recorded</span>
-            <span class="input-group">
-                <input maxlength="255" id="title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.title">
-                <div id="title_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
+            <span class='control-label' sdbm-tooltip="entry_title_as_recorded">As Recorded
+              <span class="input-group">
+                  <input maxlength="255" id="title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.title">
+                  <div id="title_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
+              </span>
             </span>
-            <span class="control-label" sdbm-tooltip="entry_common_title">Standard Title</span>
-            <input input maxlength="255" id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
+            <span class="control-label" sdbm-tooltip="entry_common_title">Standard Title
+              <input input maxlength="255" id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
+            </span>
           </div>
       </div>
     </div>
@@ -438,10 +439,12 @@ label.col-sm-2-and-half {
           </a>
         </div>
         <div class="col-sm-12">
-            <span class='control-label' sdbm-tooltip="entry_author_as_recorded">As Recorded</span>
-            <input input maxlength="255" id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
+            <span class='control-label' sdbm-tooltip="entry_author_as_recorded">As Recorded
+              <input input maxlength="255" id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
+            </span>
             
-            <span class='control-label' sdbm-tooltip="entry_author">Authority Name</span>
+            <span class='control-label' sdbm-tooltip="entry_author">Authority Name
+            </span>
             <div class="btn-group name-authority-group" role="group">
               <a id="find_author_name_authority_{{ $index }}" ng-if='entry_author.author.id == undefined' ng-init="entry_author.author = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_author.author, 'is_author', entry_author.observed_name)">Find or Create Authority Name</a>
               <span ng-if='entry_author.author != undefined && entry_author.author.id != undefined' class="btn btn-info well-name-authority form-control">
@@ -452,10 +455,11 @@ label.col-sm-2-and-half {
               <span ng-if='entry_author.author != undefined && entry_author.author.id != undefined' id="author_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="entry_author"><span class="glyphicon"></span></span>
             </div>
             
-            <span class='control-label' sdbm-tooltip="entry_author_role">Role</span>
-            <select id="author_role_{{ $index }}" name="author_role" class="form-control" ng-model="entry_author.role" ng-options="option[0] as option[1] for option in optionsAuthorRole">
-              <option value=""></option>
-            </select>
+            <span class='control-label' sdbm-tooltip="entry_author_role">Role
+              <select id="author_role_{{ $index }}" name="author_role" class="form-control" ng-model="entry_author.role" ng-options="option[0] as option[1] for option in optionsAuthorRole">
+                <option value=""></option>
+              </select>
+            </span>
         </div>
       </div>
     </div>
@@ -481,18 +485,20 @@ label.col-sm-2-and-half {
           </a>
         </div>
         <div class="col-sm-12">
-          <span class='control-label' sdbm-tooltip="entry_date_as_recorded">As Recorded</span>
+          <span class='control-label' sdbm-tooltip="entry_date_as_recorded">As Recorded
           <div class="input-group">
               <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/entry_dates/parse_observed_date.json">
               <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
           </div>
-          <span class='control-label' sdbm-tooltip="entry_date_for_search">Range for Search</span>
+          </span>
+          <span class='control-label' sdbm-tooltip="entry_date_for_search">Range for Search
           <span ng-class="{ 'has-error': !entryForm['date_normalized_start_' + $index].$valid }">
               <input id="date_normalized_start_{{ $index }}" name="date_normalized_start_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_start">
           </span>
           to
           <span ng-class="{ 'has-error': !entryForm['date_normalized_end_' + $index].$valid }">
               <input id="date_normalized_end_{{ $index }}" name="date_normalized_end_{{ $index }}" type="text" class="form-control" placeholder="YYYY" ng-pattern="/^[0-9\-]*$/" data-ng-model="entry_date.date_normalized_end">
+          </span>
           </span>
         </div>
       </div>
@@ -517,8 +523,9 @@ label.col-sm-2-and-half {
           </a>
         </div>
         <div class="col-sm-12">
-          <span class='control-label' sdbm-tooltip="entry_artist_as_recorded">As Recorded</span>
-          <input input maxlength="255" id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
+          <span class='control-label' sdbm-tooltip="entry_artist_as_recorded">As Recorded
+            <input input maxlength="255" id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
+          </span>
           
           <span class='control-label' sdbm-tooltip="entry_artist">Authority Name</span>
           <div class="btn-group name-authority-group" role="group">
@@ -531,10 +538,11 @@ label.col-sm-2-and-half {
             <span ng-if='entry_artist.artist != undefined && entry_artist.artist.id != undefined' id="artist_certainty_flags_{{ $index }}" class="btn btn-default certainty-flag clickable" sdbm-certainty-flags="entry_artist"><span class="glyphicon"></span></span>
           </div>   
           
-          <span class='control-label' sdbm-tooltip="entry_artist_role">Role</span>
-          <select id="artist_role_{{ $index }}" name="artist_role" class="form-control" ng-model="entry_artist.role" ng-options="option[0] as option[1] for option in optionsArtistRole">
-            <option value=""></option>
-          </select>
+          <span class='control-label' sdbm-tooltip="entry_artist_role">Role
+            <select id="artist_role_{{ $index }}" name="artist_role" class="form-control" ng-model="entry_artist.role" ng-options="option[0] as option[1] for option in optionsArtistRole">
+              <option value=""></option>
+            </select>
+          </span>
         </div>
       </div>
     </div>
@@ -558,8 +566,9 @@ label.col-sm-2-and-half {
           </a>
         </div>
         <div class="col-sm-12">
-          <span class='control-label' sdbm-tooltip="entry_scribe_as_recorded">As Recorded</span>
-          <input input maxlength="255" id="scribe_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_scribe.observed_name">
+          <span class='control-label' sdbm-tooltip="entry_scribe_as_recorded">As Recorded
+            <input input maxlength="255" id="scribe_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_scribe.observed_name">
+          </span>
           
           <span class='control-label' sdbm-tooltip="entry_scribe">Authority Name</span>
           <div class="btn-group name-authority-group" role="group">
@@ -594,8 +603,9 @@ label.col-sm-2-and-half {
           </a>
         </div>
           <div class="col-sm-12">
-            <span class='control-label' sdbm-tooltip="entry_place_as_recorded">As Recorded</span>
-            <input input maxlength="255" id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name">
+            <span class='control-label' sdbm-tooltip="entry_place_as_recorded">As Recorded
+              <input input maxlength="255" id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name">
+            </span>
             
             <span class='control-label' sdbm-tooltip="entry_place">Authority Name</span>
             <div class="btn-group name-authority-group" role="group">          
@@ -705,7 +715,7 @@ label.col-sm-2-and-half {
 
     <!-- numerical fields, in half-width column -->
 
-  <div class="row section">
+  <div class="row section numerical-fields">
     
     <div class="col-md-4">
 
@@ -884,10 +894,11 @@ label.col-sm-2-and-half {
               </div>
             </div>
             <div class="col-sm-5 text-right form-inline prov-date-range">
-              <label class='control-label' sdbm-tooltip="entry_provenance_date_range_for_search">Suggested Range</label>
-              <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start" placeholder="YYYY" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">
-              to  
-              <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date_normalized_end" placeholder="YYYY" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">              
+              <span class='control-label' sdbm-tooltip="entry_provenance_date_range_for_search">Suggested Range
+                <input id="provenance_start_date_{{ $index }}" type="text" class="form-control" ng-model="prov.start_date_normalized_start" placeholder="YYYY" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">
+                to  
+                <input id="provenance_end_date_{{ $index }}" type="text" class="form-control" ng-model="prov.end_date_normalized_end" placeholder="YYYY" ng-pattern="/(^[0-9]{4}$)|(^[0-9]{4}-[0-9]{2}$)|(^[0-9]{4}-[0-9]{2}-[0-9]{2}$)/" ng-disabled="prov.dates[0].date == undefined" size=3 style="max-width: 64px;">              
+              </span>
             </div>
           </div>
           <div class="row provenance-row">
@@ -930,12 +941,18 @@ label.col-sm-2-and-half {
             <legend>About This Entry Record</legend>
         </div>
     </div>
+    
+    <div class="form-group row" ng-show="entry.created_by">
+        <label for="link" class="col-sm-12 text-muted">
+            Created by {{ entry.created_by }} on {{ entry.created_at }}
+        </label>
+    </div>
 
     <div class="row">
       <div class="col-sm-12">
         <span class="h4">User Groups</span>
         <a a id="add_group_record" class="clickable" data-ng-click="addRecord(entry.group_records)" title="Add">
-          Add new <span class="glyphicon glyphicon-plus"></span>
+          Add <span class="glyphicon glyphicon-plus"></span>
         </a>
       </div>
     </div>
@@ -967,15 +984,6 @@ label.col-sm-2-and-half {
         </div>
       </div>
     </div>        
-
-    <div class="form-group row" ng-show="entry.created_by">
-        <label for="link" class="col-sm-2 control-label">
-            Created
-        </label>
-        <div class="col-sm-9 label-alignment">
-            by {{ entry.created_by }} on {{ entry.created_at }}
-        </div>
-    </div>
 
 </fieldset>
 

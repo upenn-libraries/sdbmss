@@ -10,7 +10,7 @@ body {
   width: 100%;
   display: table-row;
   *display: flex;
-  font-family: Ubuntu, sans-serif;
+  font-family: Sarala, Ubuntu, sans-serif;
   overflow: hidden;
 }
 
@@ -541,6 +541,11 @@ h1 { font-size: 30px; margin-top: 0; }
   padding: 6px;
   font-size: 16px;
 }
+/*
+
+  used for change history display
+
+ */
 .carousel-control, .carousel-control:focus {
   color: lightblue;
   background-image: none;
@@ -552,7 +557,6 @@ h1 { font-size: 30px; margin-top: 0; }
 }
 .carousel-control:active, .carousel-control:hover {
   color: white;
-  background-color: lightblue;
 }
 .carousel-control.right, .carousel-control.left {
   background-image: none;
@@ -603,9 +607,12 @@ h1 { font-size: 30px; margin-top: 0; }
 .options-btn-group .btn {
   float: none;
 }
-.btn-blank, .btn-blank:hover, .btn-blank:active {
+.btn-blank, .btn-blank:hover, .btn-blank:active, .btn-blank:focus {
     border: none;
-    background: transparent;
+    background: none !important;
+    box-shadow: none;
+    color: #333;
+    padding: 6px 3px !important;
 }
 .btn-table-tool {
   margin: 2px 0px 0px 8px;
@@ -824,6 +831,8 @@ li.provenance:hover, li.provenance:focus {
   background-color: #fff;
   border-color: #ccdff5;
   width: 100%;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 
 .btn-add-name:hover, .btn-add-name:active, .btn-add-name:visited, .btn-add-name:focus {
@@ -882,8 +891,8 @@ div[ui-sortable] {
 .input-block .control-label {
   font-weight: bold;
   color: #444;
-  margin-left: 15px;
-  padding-top: 0px;
+  padding-top: 4px;
+  display:inline-block;
 }
 .input-block .control-label:first-child {
   /*margin-left: 0px;*/
@@ -912,9 +921,6 @@ div[ui-sortable] {
   padding: 1px;
   padding-left: 15px;
 }
-.input-block-placeholder {
-  background-color: rgba(255, 234, 171, 0.5);
-}
 .input-block:before {
   content: '';
   position: absolute;
@@ -926,7 +932,10 @@ div[ui-sortable] {
   color: #aaa;
   height: 100%;
   width: 15px;
-  background: #555;
+  background: url(/assets/arrow_up.png), url(/assets/arrow_down.png), url(/assets/arrow_middle.png);
+  background-size: 100% auto;
+  background-repeat: no-repeat, no-repeat, repeat-y;
+  background-position: 0% 0%, 0% 100%, bottom;
   top: 0px;
 }
 .input-block.input-block-no-sort:before {
@@ -981,6 +990,7 @@ fieldset[disabled=disabled] a {
   z-index: initial;
 }
 .ui-sortable-helper {
+  margin-left: 10px;
   transition: none;
   -webkit-transition: none;
   -moz-transition: none;
@@ -1168,7 +1178,6 @@ fieldset[disabled=disabled] a {
 
 .sdbmss-form legend {
   font-variant: small-caps;
-  text-align: left;
   font-size: 40px;
   margin-bottom: 10px;
 }
@@ -1320,13 +1329,16 @@ fieldset[disabled=disabled] a {
     border-bottom-style: dotted;
     border-bottom-color: red;*/
 }
-.sdbmss-tooltip-label:after {
-    content: '?';
-    margin: 0px 5px;
-    padding: 2px 6px;
-    background-color: burlywood;
-    color: #f8f8f8;
-    border-radius: 50%;
+.sdbmss-tooltip-label:before {
+  content: '?';
+  margin: 0px 5px;
+  padding: 2px 6px;
+  background-color: burlywood;
+  color: #f8f8f8;
+  border-radius: 50%;
+  position: relative;
+  font-size: 9px;
+  top: -1px;
 }
 
 /* tweak .modal-backdrop rule on pages that use UI Bootstrap's modal,
@@ -1400,6 +1412,17 @@ so that gray backdrop shvows up correctly */
 }
 /* RESPONSIVE */
 @media (max-width: 767px) {
+  #proposed-history {
+    position: fixed !important;
+    width: 100vw;
+    top: 0px;
+    left: 0px;
+    max-height: 50vh;
+    overflow-y: auto;
+  }
+  .input-block .control-label {
+    display: initial;
+  }
   li.paginate_button.previous {
       display: inline;
   }
@@ -1647,13 +1670,15 @@ so that gray backdrop shvows up correctly */
   text-align: center;
   right: 0px;
   width: 100%;
-letter-spacing: -2px;
+  letter-spacing: -2px;
   padding: 0px 38px;
   font-size: 21px;
 }
 .mobile-acronym {
   line-height: 50px;
-  font-size: 60px;
+  font-size: 36px;
+  font-weight: bold;
+  color: #333;
 }
 /* FIX ME: this should really be renamed */
 .bookmarks-collapse {
@@ -1902,6 +1927,10 @@ Private Message Styling
   font-size: 11px;
 }
 
+.toggle-container input[type=checkbox] {
+  height: 0px;
+  width: 0px;
+}
 .toggle-container input:checked:before {
     background: #03A9F4;
 }

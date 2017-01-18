@@ -302,14 +302,14 @@ describe "Data entry", :js => true do
       find_by_id('add_title').click
       find_by_id('title_0').trigger('focus')
 
-      expect(page).to have_content "Warning! Another entry with that catalog number already exists."
+      expect(page).to have_content "Warning! An entry with that catalog number may already exist"
 
       # change it back to a new number so msg goes away
       fill_in 'cat_lot_no', with: "124"
       find_by_id('add_title').click
       find_by_id('title_0').trigger('focus')
 
-      expect(page).not_to have_content "Warning! Another entry with that catalog number already exists."
+      expect(page).not_to have_content "Warning! An entry with that catalog number may already exist"
     end
 
     it "should disallow saving on Edit Page when another change was made" do

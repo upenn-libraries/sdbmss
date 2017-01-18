@@ -10,21 +10,27 @@
       <% end %>
       <input type="hidden" name="search_field" value="all_fields"/>
     <% end %>
-    <div class="input-group">
-        <!--<label for="q" class="sr-only"><%= t('blacklight.search.form.q') %></label>-->
-         <%= text_field_tag :q, params[:q], :placeholder => 'Search database...', :class => "search_q q form-control", :id => "q", :autofocus => should_autofocus_on_search_box? %>
+    <div class="row">
+      <div class="col-xs-11">
+        <div class="input-group">
+            <!--<label for="q" class="sr-only"><%= t('blacklight.search.form.q') %></label>-->
+             <%= text_field_tag :q, params[:q], :placeholder => 'Search database...', :class => "search_q q form-control", :id => "q", :autofocus => should_autofocus_on_search_box? %>
 
-      <span class="input-group-btn">
-        <button type="submit" class="btn btn-primary search-btn" id="search">
-          <span class="submit-search-text"><%=t('blacklight.search.form.submit')%></span>
-          <span class="glyphicon glyphicon-search"></span>
-        </button>
-        <a type="button" href="<%= advanced_search_path(params_for_search) %>" class="btn btn-default advanced_search">Advanced</a>
-        <button class='navbar-toggle btn btn-default' type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="input-group-btn">
+            <button type="submit" class="btn btn-primary search-btn" id="search">
+              <span class="submit-search-text"><%=t('blacklight.search.form.submit')%></span>
+              <span class="glyphicon glyphicon-search"></span>
+            </button>
+            <a type="button navbar-toggle" href="<%= advanced_search_path(params_for_search) %>" class="btn btn-default advanced_search">Advanced</a>
+          </span>
+        </div>
+      </div>
+      <div class="col-xs-1 text-center" style="padding: 0px">
+        <a class='btn btn-blank navbar-toggle' data-toggle="collapse" data-target="#myNavbar">
           <span class="glyphicon glyphicon-option-horizontal"></span>                       
-        </button>
-      </span>
-  </div>
+        </a>
+      </div>
+    </div>
   <% end %>
 </div>  
 <div class="collapse navbar-collapse" id="myNavbar">

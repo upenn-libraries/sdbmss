@@ -17,7 +17,7 @@ module AddToGroup
     error = nil
     if ids.present?
       ids = ids.map(&:to_i)
-      records = model_class.where(id: ids).select { |record| can? :edit, record }
+      records = model_class.where(id: ids, created_by: current_user)
       records.each do |record|
         GroupRecord.create(record: record, group: group)
       end
