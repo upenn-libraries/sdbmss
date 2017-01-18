@@ -1,4 +1,9 @@
 <% collapsed ||= false %>
+<% if @activities.count <= 0 %>
+  <div class="row">
+    <div class="col-sm-12 text-muted text-center">There is no recent activity to display.</div>
+  </div>
+<% end %>
 <% @activities.each_with_index do |(date, activities), index| %>
   <div class="row" style="border-bottom: 1px solid #eee; padding-bottom: 10px;">
     <div class="col-sm-10">
