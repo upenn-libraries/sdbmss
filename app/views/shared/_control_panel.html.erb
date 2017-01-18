@@ -29,27 +29,24 @@
             </div>
         </div>
         <div class="panel-body">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="nav">
-                <li>
-                  <a href="<%= dashboard_path %>"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a>
-                </li>
-                <li>
-                    <a href="/bookmarks"><span class="glyphicon glyphicon-bookmark"></span> Bookmarks</a>
-                </li>
-                <li>
-                    <a href="/downloads"><span class="glyphicon glyphicon-export"></span> Exports</a>
-                </li>
-                <li>
-                    <a href="/groups"><span class="glyphicon glyphicon-globe"></span> Groups</a>
-                </li>          
-                <li>
-                    <a href="/watches"><span class="glyphicon glyphicon-eye-open"></span> Watched Records</a>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <ul class="nav">
+            <%= render partial: "nav/notifications" %>
+            <li>
+              <a href="<%= dashboard_path %>"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a>
+            </li>
+            <li>
+                <a href="/bookmarks"><span class="glyphicon glyphicon-bookmark"></span> Bookmarks</a>
+            </li>
+            <li>
+                <a href="/downloads"><span class="glyphicon glyphicon-export"></span> Exports</a>
+            </li>
+            <li>
+                <a href="/groups"><span class="glyphicon glyphicon-globe"></span> Groups</a>
+            </li>          
+            <li>
+                <a href="/watches"><span class="glyphicon glyphicon-eye-open"></span> Watched Records</a>
+            </li>
+          </ul>
         </div>
     </div>
 

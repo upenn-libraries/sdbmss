@@ -7,14 +7,14 @@
     <div class="find-source-container">
         <div class="form-group row text-center" style="margin: 10px -15px">
             <div class="col-sm-4">
-                <label class="control-label text-muted"><span>Source Date</span></label>
+                <label class="control-label text-muted" sdbm-tooltip="identify_source_source_date"><span>Source Date</span></label>
                 <input class="form-control" name="date" ng-model="date" id='source-date-search'/>
                 <div class="label-alignment">
                     <span class="source-explain">Enter a date in YYYY-MM-DD, YYYY-MM or YYYY</span>
                 </div>
             </div>
             <div class="col-sm-4">
-                <label class="control-label text-muted"><span>Selling Agent or Institution/Collection</span></label>
+                <label class="control-label text-muted" sdbm-tooltip="identify_source_selling_agent"><span>Selling Agent or Institution/Collection</span></label>
                 <input class="form-control" name="agent" ng-model="agent" data-toggle='tooltip' title='You must type at least 2 characters to begin searching.'/>
                 <div class="label-alignment">
                     <span class="source-explain">e.g. Sothebys, University of Pennsylvania</span>
@@ -22,7 +22,7 @@
                 
             </div>
             <div class="col-sm-4">
-                <label class="control-label text-muted"><span>Source Title</span></label>
+                <label class="control-label text-muted" sdbm-tooltip="identify_source_source_title"><span>Source Title</span></label>
                 <input class="form-control" name="title" ng-model="title"/>
                 <div class="label-alignment">
                     <span class="source-explain">e.g. Rare books and manuscripts</span>

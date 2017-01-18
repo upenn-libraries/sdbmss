@@ -1,27 +1,44 @@
-<% @notifications.reverse.each do |notification| %>
-<div class="row">
-  <% if notification.notified && notification.title %>
-    <div class="col-xs-6 one-line">
-      <% url = notification.notified.class == User ? profile_path(notification.notified.username) : polymorphic_url(notification.notified) %>
-      <%= link_to url, :title => notification.title do %>
-        <% if notification.active %>
-          <span class="glyphicon glyphicon-exclamation-sign text-success"></span>
-          <%= notification.title %>
-        <% else %>
-          <span class="text-muted"><%= notification.title %></span>
-        <% end %>
-      <% end %>
-    </div>
-    <div class="col-xs-6 text-right">
-      <%= notification.created_at.to_formatted_s(:long) %>
-    </div>
+<ul class="list-group">
+  <% if notifications.count <= 0 %>
+    <li class="list-group-item row text-muted text-center">No notifications to display.</li>
   <% end %>
-</div>
-<div class="row">
-  <div class="col-sm-12">
-    <% if notification.notified %>
-      <%= sanitize simple_format(notification.notified.preview) %>
-    <% end %>
-  </div>
-</div>
-<% end %>
+  <% notifications.each do |notification| %>
+      <li class="row list-group-item <%= !notification.active ? '' : 'read' %>" id="notification_<%= notification.id %>" data-id="<%= notification.id %>">
+        <% if notification.title %>
+          <div class="col-xs-12 one-line">
+            <% if notification.notified %>
+              <% url = notification.notified.class == User ? profile_path(notification.notified.username) : polymorphic_url(notification.notified) %>
+              <%= link_to url, :title => notification.title do %>
+                <% if notification.active %>
+                  <span class="glyphicon glyphicon-exclamation-sign" style="color: #2196F3"></span>
+                  <span class="title"><%= notification.title %></span>
+                <% else %>
+                  <span class="title"><%= notification.title %></span>
+                <% end %>
+              <% end %>
+            <% else %>
+              <span class="title text-muted"><span class="glyphicon glyphicon-warning-sign text-warning"></span> <%= notification.title %></span>
+            <% end %>
+          </div>
+          <div class="col-xs-12 text-right text-info one-line">
+            <%= notification.created_at.to_formatted_s(:long) %>
+            <span class="glyphicon glyphicon-ok-circle" data-id="<%= notification.id %>"></span>
+          </div>
+        <% end %>
+      </li>
+  <% end %>
+  <li class='list-group-item text-center' style='background: #eee;'><%= link_to "Manage Notifications", notifications_path %></li>
+</ul>
+<script>
+  $('.read').click(function (e) {
+    var id = $(this).data("id");
+    $.ajax({url: "/notifications/" + id + ".json", type: "PUT", data: {active: false}}).done(function (result) {
+      $('#notification_' + id + ' .glyphicon-exclamation-sign').remove();
+      $('#notification_' + id).addClass('text-muted');
+      $('#notifications-dropdown-control').attr('new-notifications', Number($('#notifications-dropdown-control').attr('new-notifications')) - 1);
+      if ($('#notifications-dropdown-control').attr('new-notifications') <= 0) {
+        $('#notifications-dropdown-control').removeClass('notifications-count');
+      }
+    });
+  });
+</script>

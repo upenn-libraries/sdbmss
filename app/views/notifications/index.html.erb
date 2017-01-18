@@ -1,2 +1,2 @@
 <legend class="h1 text-center">Notifications</legend>
-<%= render partial: "index" %>
+<%= render partial: "index", locals: {notifications: @notifications.reverse} %>

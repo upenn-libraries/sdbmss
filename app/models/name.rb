@@ -243,7 +243,7 @@ class Name < ActiveRecord::Base
 
       # include both People (personalNames) and Organizations (corporateNames)
       cql = "(local.personalNames all \"#{name}\" or local.corporateNames all \"#{name}\")"
-
+      
       response = VIAF.sru_search(cql)
 
       if debug
@@ -276,9 +276,18 @@ class Name < ActiveRecord::Base
                   found_lc_name = true
                   results << {
                     name: name,
-                    viaf_id: viaf_id.text,
+                    viaf_id: viaf_id.text
                   }
                 end
+              end
+              # if there is NO library of congress name, use the first available name
+              if not found_lc_name
+                data = cluster.xpath("ns:mainHeadings/ns:data", "ns" => VIAF::NS::VIAF).first
+                  name = data.xpath("ns:text", "ns" => VIAF::NS::VIAF).first.text
+                  results << {
+                    name: name,
+                    viaf_id: viaf_id.text
+                  }
               end
             else
               puts "Don't known how to deal with nameType=#{name_type.text}"

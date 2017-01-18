@@ -347,41 +347,32 @@ textarea { resize:vertical ; }
   text-overflow: ellipsis;
 }
 
-.notifications {
-  margin-top: 15px !important;
-  box-shadow: 0px -4px 19px 0px #ccc !important;
-  right: -225px !important;
-  padding: 10px;
-  border: 0px;
-  width: 500px;
-}
-.notifications:before {
-  content: '';
-  width: 0px;
-  height: 0px;
-  border-bottom: 15px solid white;
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  position: absolute;
-  top: -15px;
-  right: calc(50% - 16px);
+#notifications-dropdown {
+
 }
 
-.notifications a {
-  padding: 4px !important;
+#notifications-dropdown li.list-group-item {
+  padding: 5px 0px;
+  margin: 0px;
+  border: none;
+  background: none;
+  border-bottom: 1px solid #ddd;
 }
 
 .notifications-count:before {
-    content: attr(new-notifications);
-    position: absolute;
-    color: white;
-    background: #3c763d;
-    z-index: 10;
-    top: 0px;
-    right: 41px;
-    padding: 2px 7px;
-    border-radius: 10px;
-    font-weight: bold;
+  content: attr(new-notifications);
+  position: absolute;
+  color: white;
+  background: #2196F3;
+  z-index: 10;
+  top: 0px;
+  left: 0px;
+  border-radius: 50%;
+  font-weight: bold;
+  height: 20px;
+  width: 20px;
+  text-align: center;
+  line-height: 20px;
 }
 
 /* Development link */
@@ -1441,11 +1432,6 @@ so that gray backdrop shvows up correctly */
   #search-navbar .navbar-nav > li > a, #header-navbar .navbar-nav > li > a {
     padding: 10px;
   }
-  .notifications-count:before {
-    top: 12px;
-    left: 128px;
-    right: initial;
-  }
   .navbar-default .navbar-collapse {
     margin: 0px -15px;
   }
@@ -1633,17 +1619,17 @@ so that gray backdrop shvows up correctly */
   display: block;
   display: table-cell;
 }
-#control-panel .collapsing {
+#control-panel > .collapsing {
   height: auto;
 }
-#control-panel .collapsing a {
+#control-panel > .collapsing a {
   white-space: nowrap;
 }
-#control-panel .collapse {
+#control-panel > .collapse {
   width: 0px;
   display: block;
 }
-#control-panel .collapse.in {
+#control-panel > .collapse.in {
   width: 268px !important;
 }
 #control-panel-button {
@@ -1720,29 +1706,29 @@ so that gray backdrop shvows up correctly */
   box-shadow: none;
   outline: none;
 }
-#control-panel .collapsing + #collapse-control {
+#control-panel > .collapsing + #collapse-control {
   left: 0px;
 }
-#control-panel .collapse.in + #collapse-control {
+#control-panel > .collapse.in + #collapse-control {
   left: 224px;
   border-color: transparent;
 }
 
-#control-panel .collapse + #collapse-control .show-collapsed, 
-#control-panel .collapse.in + #collapse-control .hide-collapsed {
+#control-panel > .collapse + #collapse-control .show-collapsed, 
+#control-panel > .collapse.in + #collapse-control .hide-collapsed {
   display: none;
 }
 
-#control-panel .collapse.in + #collapse-control .show-collapsed, 
-#control-panel .collapse + #collapse-control .hide-collapsed {
+#control-panel > .collapse.in + #collapse-control .show-collapsed, 
+#control-panel > .collapse + #collapse-control .hide-collapsed {
   display: block;
 }
 
-#control-panel .collapsing + #collapse-control {
+#control-panel > .collapsing + #collapse-control {
   display: none;
 } 
 
-#control-panel .collapse + #collapse-control {
+#control-panel > .collapse + #collapse-control {
   position: fixed;
   left: 0px;
 }
