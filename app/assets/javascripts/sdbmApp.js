@@ -1880,7 +1880,7 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.removeRecord = function (anArray, record) {
-          if (sdbmutil.isBlankThing(record) || window.confirm("Are you sure you want to remove this record?")) {
+          if (sdbmutil.isBlankThing(record) || window.confirm("Are you sure you want to remove this field?")) {
             var i;
             for (i = 0; i < anArray.length; i++) {
                 if (anArray[i] === record) {

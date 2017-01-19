@@ -1,12 +1,23 @@
-<div class="input-group" style='width: 100%;'>
+<!-- label class="control-label">Add Entry(s) to User Group</label>-->
+<p>Group managers can add entries to their group(s) from this page.</p>
+<p>First, select from the dropdown menu which group to add entries to or remove entries from. Next, select entries by clicking on the box to the left of each entry. Then, click <b>Add Entry(s)</b> or <b>Remove Entry(s)</b>. The User Group name will appear in the corresponding column below.</p>
+
+<div class="form-inline">
+  <div class="input-group" style="width: 250px;">
+    <input type="submit" value="Add Entry(s)" class='form-control' id="add-to-group" style="max-width: 110px;"/>
+    <input type="submit" value="Remove Entry(s)" class='form-control' id="remove-from-group" style="max-width: 140px;"/>
+  </div>
+  <span>to/from</span>
   <% groups = Group.joins(:group_users).where(:group_users => {user: current_user, role: "Manager"}) %>
   <% if groups.count > 0 %>  
-  <select style="width: 45%" class='form-control' id="group-select">
+  <select class='form-control' id="group-select" style="max-width: 200px;">
     <% groups.each do |group| %>
       <option value="<%= group.id %>"><%= group.name %></option>
     <% end %>
   </select>
-  <input type="submit" value="Add" class='form-control' id="add-to-group" style='width: 21%'/>
-  <input type="submit" value="Remove" class='form-control' id="remove-from-group" style='width: 34%'/>
+  <% else %>
+  <select name="" id="" class="form-control disabled" style="max-width: 240px" disabled>
+    <option value="nil">You have no user groups.</option>
+  </select>
   <% end %>
 </div>

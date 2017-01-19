@@ -419,7 +419,7 @@ module CatalogControllerConfiguration
 
       # fix me: despite needing an enourmous amount of configuration, blacklight doesn't let you easily customize something as simple as a dropdown menu
 
-#      config.add_results_collection_tool(:bookmark_all)
+      config.add_results_collection_tool(:bookmark_all)
       config.add_results_collection_tool(:save_current_search)
 #      config.add_results_collection_tool(:save_search)
 

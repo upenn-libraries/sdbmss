@@ -31,7 +31,9 @@ textarea { resize:vertical ; }
   width: 300px;
   z-index: 3;
 }
-
+.search-widgets {
+  white-space: normal;
+}
 .main-content {
   position: relative;
   height: 100%;
@@ -1171,6 +1173,9 @@ fieldset[disabled=disabled] a {
   font-variant: small-caps;
   font-size: 40px;
   margin-bottom: 10px;
+}
+.sdbmss-form .form-control {
+  font-weight: normal;
 }
 
 .sdbmss-form .h4 {

@@ -74,7 +74,7 @@ class CatalogController < ApplicationController
     # only add to search history (ie. call this method in the
     # superclass) if the user provided some search parameters
     if search.query_params["search_field"] != "advanced"
-      if search.query_params["q"].present?
+      if search.query_params["q"].present? or search.query_params["f"].present?
         super search
       end
     else

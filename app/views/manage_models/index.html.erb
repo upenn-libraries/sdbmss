@@ -22,25 +22,25 @@
     <div class="row">
         <div class="col-sm-6 mobile-center">
             <% if @page_title %>
-                <h1>
+                <span class='h1'>
                     <%= @page_title %>
-                </h1>
+                </span>
             <% else %>
                 <% if !can? :index, model_class %>
                     <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
-                    <h1>
+                    <span class='h1'>
                         Manage Your <%= resource_name.pluralize.capitalize %>
-                    </h1>
+                    </span>
                 <% else %>
                     <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
-                    <h1>
+                    <span class='h1'>
                         Manage <%= resource_name.capitalize %>
-                    </h1>
+                    </span>
                 <% end %>
             <% end %>
 
             <a href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info"><span class="glyphicon glyphicon-info-sign"></span> Click Here For More Info</a>
-            <% if can? :index, model_class %>
+            <% if model_class == Entry and can? :index, model_class %>
                 <div class="row" style="padding-left: 0px; padding-right: 0px;">
                     <div class="col-sm-12">
                         <%= render partial: "manage_models/group_form" %>

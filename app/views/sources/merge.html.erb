@@ -4,11 +4,13 @@
 <% end %>
 
 <div class="col-sm-12">
-    <div class='panel panel-info'>
-        <div class='panel-heading'>
-            <h3 class='h3'>Merge <%= @source.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h3>
-        </div>
-    </div>
+    <h2 class='h2 text-center'>Merge <%= @source.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h2>
+</div>
+
+<div class="col-sm-12">
+    <p>It is possible that two separate <b>Source</b> records may be created that represent the exact same <b>Source</b>. When this occurs, it is necessary to merge the two <b>Source</b> records into a single record. This eliminates redundancy and facilitates findability within the database.</p>
+    <p>Merging <b>Sources</b> is an advanced function within the database. When you merge a <b>Source</b> into another one, Entries associated with the Source to be merged will be added to those associated with the remaining <b>Source</b>. The merged <b>Source</b> will be deleted forever and cannot be recovered. Exercise extreme caution when merging. Use this function only when you are completely certain that the two Source records represent the exact same <b>Source</b>.</p>
+    <p class="text-info">Note: you will not be able to merge two <b>Source</b> records that are identified as different source types. If a source type has been incorrectly identified, it will be necessary to manually re-enter the records from the incorrect Source to the correct <b>Source</b>. Contact an administrator in these instances at <a href="mailto:sdbm@upenn.edu">sdbm@upenn.edu</a>.</p>
 </div>
 
 <div class="col-sm-5">

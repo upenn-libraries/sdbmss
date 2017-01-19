@@ -3,11 +3,9 @@
 <% end %>
 
 <div class="col-sm-12">
-    <div class='panel panel-primary'>
-        <div class='panel-heading'>
-            <h3 class='h3'>Merge <%= @model.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h3>
-        </div>
-    </div>
+    <h2 class='h2 text-center'>Merge <%= @model.public_id %> &#10132; <%= @target.present? ? @target.public_id : "???" %></h2>
+    <P>It is possible that two separate <b>Name</b> records may be created that represent the exact same <b>Name</b>. When this occurs, it is necessary to merge the two <b>Name</b> records into a single record. This eliminates redundancy and facilitates findability within the database.</P>
+    <p>Merging <b>Names</b> is an advanced function within the database. When you merge a <b>Name</b> into another one, <b>Entries</b> associated with the <b>Name</b> to be merged will be added to those associated with the remaining <b>Name</b>. The merged <b>Name</b> will be deleted forever and cannot be recovered. Exercise extreme caution when merging. Use this function only when you are completely certain that the two <b>Name</b> records represent the exact same <b>Name</b>.</p>
 </div>
 
 <div class="col-sm-5">

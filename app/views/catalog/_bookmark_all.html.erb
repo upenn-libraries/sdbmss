@@ -1,4 +1,9 @@
 <div class="btn-group">
-  <button type='button' class="bookmark-all btn btn-default" onclick="Blacklight.do_bookmark_all()">Bookmark All</button>
-  <button type='button' class="bookmark-all btn btn-default" onclick="Blacklight.do_clear_bookmarks()">Clear Bookmarks</button>
+  <button type='button' class="bookmark-all btn btn-default" onclick="$('.bookmark[data-method=post]').click()">
+    <span class="glyphicon glyphicon-bookmark"></span>
+    Bookmark All
+  </button>
+  <button type='button' class="bookmark-all btn btn-default" onclick="$('.bookmark[data-method=delete]').click()">
+    Clear
+  </button>
 </div>
