@@ -68,12 +68,7 @@
                     </div>
                 </div>
             </div>
-            <!--
-            <div id="groups" class="tab-pane fade">
-            </div>
-            <div id="notifications" class="tab-pane fade">
-                <%# render partial: "notifications/index" %>
-            </div>-->
+
         </div>
     </div>
 </div>
@@ -96,6 +91,8 @@ $(document).ready( function () {
         }
     });
     // load activity using ajax to make dashboard load faster
-    $('#activity_tabs a')[0].click();
+    if ($('#activity_tabs a').length > 0 && $("#activity_tabs a")[0].click != undefined) {
+        $('#activity_tabs a')[0].click();        
+    }
 });
 </script>
