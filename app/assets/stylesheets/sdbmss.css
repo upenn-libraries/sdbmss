@@ -1715,7 +1715,7 @@ so that gray backdrop shvows up correctly */
   left: 0px;
 }
 #control-panel > .collapse.in + #collapse-control {
-  left: 224px;
+  left: 234px;
   border-color: transparent;
 }
 
