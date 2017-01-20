@@ -587,6 +587,14 @@ var BOOKMARK_SCOPE;
 
         EntryScope = $scope;
 
+        $scope.expand = function (e) {
+          $(e.currentTarget).parent().parent('.expandable').animate({width: "100%"}, "slow");
+        }
+
+        $scope.reduce = function (e) {
+          $(e.currentTarget).parent().parent('.expandable').css({width: "auto"});
+        }
+
         $scope.selectSourceModal = function (model, type) {
           if ($scope.mergeEdit !== false) {
             var modal = $modal.open({

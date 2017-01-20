@@ -863,7 +863,7 @@ li.provenance:hover, li.provenance:focus {
   width: 25%;
 }
 .provenance-block .name-authority-group {
-  width: 100%;
+  vertical-align: top;
 }
 
 .well-name-authority a {
@@ -886,6 +886,7 @@ div[ui-sortable] {
   color: #444;
   padding-top: 4px;
   display:inline-block;
+  text-align: left;
 }
 .input-block .control-label:first-child {
   /*margin-left: 0px;*/
@@ -2064,4 +2065,18 @@ Private Message Styling
 .navbar-default .navbar-collapse {
   border: none;
   box-shadow: none;
+}
+
+.expandable-table {
+  display: table !important;
+  width: 100%;
+}
+.expandable-table input, .expandable-table span {
+  display: table-cell;
+  white-space: nowrap;
+  width: 1px;
+  padding-right: 3px;
+}
+.expandable-table input {
+  width: 100% !important;
 }
