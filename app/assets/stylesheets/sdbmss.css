@@ -893,6 +893,14 @@ div[ui-sortable] {
   display:inline-block;
   text-align: left;
 }
+#source-form .input-block {
+  margin: 5px 10px;
+}
+#source-form .input-block:before {
+  left: -10px;
+  height: 30px;
+}
+
 .input-block .control-label:first-child {
   /*margin-left: 0px;*/
 }
