@@ -5,6 +5,7 @@ class ActivitiesController < ApplicationController
 
   def show_all
     if params[:mine]
+      # finds last 7 days of activity - maybe too much?
       start_date = Activity.where(user: current_user).order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
       @activities = Activity.where(user: current_user).where("created_at > ?", start_date).order("created_at desc").group_by { |a| a.created_at.to_date }      
     elsif params[:watched]
