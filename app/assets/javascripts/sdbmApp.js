@@ -588,11 +588,11 @@ var BOOKMARK_SCOPE;
         EntryScope = $scope;
 
         $scope.expand = function (e) {
-          $(e.currentTarget).parent().parent('.expandable').animate({width: "100%"}, "slow");
+          $(e.currentTarget).parent().parent('.expandable').addClass('expanded');
         }
 
         $scope.reduce = function (e) {
-          $(e.currentTarget).parent().parent('.expandable').css({width: "auto"});
+          $(e.currentTarget).parent().parent('.expandable').removeClass('expanded')
         }
 
         $scope.selectSourceModal = function (model, type) {

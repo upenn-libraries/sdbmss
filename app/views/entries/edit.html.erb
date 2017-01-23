@@ -874,14 +874,20 @@ label.col-sm-2-and-half {
         </div>
         <div class="col-sm-12">
           <div class="row provenance-row">
-            <div class="col-sm-12">
-              <span class='control-label expandable'>
+            <div class="col-sm-2">
+              <div class="control-label">
+                <span sdbm-tooltip="entry_provenance_agent_as_recorded">Name As Recorded</span>              
+              </div>
+            </div>
+            <div class="col-sm-4 expandable">
                 <span class="expandable-table">
-                  <span sdbm-tooltip="entry_provenance_agent_as_recorded">Name As Recorded</span>
                   <input input maxlength="255" id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name" size="12" ng-focus="expand($event)" ng-blur="reduce($event)">
                 </span>
-              </span>
+            </div>
+            <div class="col-sm-2">
               <span class='control-label one-line' sdbm-tooltip="entry_provenance_agent">Authority Name</span>
+            </div>
+            <div class="col-sm-4">
               <div class="btn-group name-authority-group">
                 <a id='find_provenance_name_authority_{{ $index }}' ng-if='prov.provenance_agent.id == undefined' ng-init="prov.provenance_agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', prov.provenance_agent, 'is_provenance_agent', prov.observed_name)" style="width: 100%">Find or Create Authority Name</a>
                 <div ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
