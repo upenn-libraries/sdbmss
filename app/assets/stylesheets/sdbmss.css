@@ -881,8 +881,10 @@ li.provenance:hover, li.provenance:focus {
   color: #555;
 }
 
+/* if set to overflow: visible, for some reason 'sortable' sets the inital top-offset to the page-offset (i.e. like 1500px) */
 div[ui-sortable] {
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .input-block .control-label {
   font-weight: bold;
@@ -990,7 +992,7 @@ fieldset[disabled=disabled] a {
   z-index: initial;
 }
 .ui-sortable-helper {
-  margin-left: 10px;
+  left: 10px !important;
   transition: none;
   -webkit-transition: none;
   -moz-transition: none;
