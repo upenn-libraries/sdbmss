@@ -1,0 +1,7 @@
+<li>
+  <a href="<%= polymorphic_path(@model.class) %>">Manage <%= @model.class.name.pluralize %>
+  </a>
+</li>
+<li class="  <%= current_page?(polymorphic_path(@model)) ? 'active' : '' %>">
+  <a href="<%= polymorphic_path(@model) %>"><%= @model.public_id %></a>
+</li>

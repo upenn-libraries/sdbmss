@@ -64,11 +64,13 @@
                         <%= render partial: "activities/nav" %>
                     </div>
                     <div class="col-sm-10" id="activity-pane">
-                        <%# render partial: "activities/show_all" %>                       
                     </div>
                 </div>
             </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> tablefixforMSS
         </div>
     </div>
 </div>
@@ -76,6 +78,9 @@
 <script>
 $(document).ready( function () {
 
+    $('#activity_tabs a').click( function (e) {
+        $('#activity-pane').html('<p class="text-muted text-center"><img src="/assets/spinner.gif"> loading...</img></p>');
+    });
     $('.ajax-tabs').on('click','a',function (e) {
         e.preventDefault();
         var url = $(this).attr("data-url");
@@ -90,9 +95,8 @@ $(document).ready( function () {
             $(this).tab('show');
         }
     });
-    // load activity using ajax to make dashboard load faster
-    if ($('#activity_tabs a').length > 0 && $("#activity_tabs a")[0].click != undefined) {
-        $('#activity_tabs a')[0].click();        
-    }
+    
+    $("#activity-pane").load("/activities/show_all?watched=true",function(result){      
+    });
 });
 </script>
