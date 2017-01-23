@@ -28,7 +28,6 @@ class ActivitiesController < ApplicationController
         "item_type = 'Source' and item_id in (#{source_ids})"
       ]
       query_string = queries.join(" or ")
-      puts "#{query_string}";
 
       start_date = Activity.where(query_string).order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
       @activities = Activity.where(query_string).where("created_at > ?", start_date).order("created_at desc").group_by { |a| a.created_at.to_date }
