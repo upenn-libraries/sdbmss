@@ -3,6 +3,7 @@ html {
   width: 100%;
   display: table;
   min-width: 320px;
+  padding-top: 50px;
 }
 body {
   background: white;
@@ -80,8 +81,13 @@ textarea { resize:vertical ; }
   /*
    bg-color:::: ? rgb(118, 148, 200) 
   */
-  background-color: #d5d5d5;
+  background-color: #fff;
   border: none;
+  box-shadow: 0px 1px 4px 0px #aaa;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
   /*box-shadow: 0px 2px 4px lightgray;*/
 }
 #header-navbar a {
@@ -109,6 +115,7 @@ textarea { resize:vertical ; }
 /* There's some tweaky stuff in "#header-navbar .navbar-brand" rule that we're overriding here, probably fragile */
 #header-navbar .navbar-brand { 
   background: none; overflow: visible; text-indent: 0; color: black; width: auto;
+  float: none;
 }
 #header-navbar .navbar-brand:after {
   content: ' [Beta]';
@@ -379,7 +386,7 @@ textarea { resize:vertical ; }
 
 /* Development link */
 #header-navbar .development { 
-  display: inline-block;
+  display: none;
   padding-top: 15px;
   color: red;
   float: left;
@@ -1652,9 +1659,9 @@ so that gray backdrop shvows up correctly */
 }
 
 #control-panel {
-  background: #f8f8f8;
+  background: #fff;
   padding: 0px;
-  border-right: 1px solid #ddd;
+  border: none;
   display: block;
   display: table-cell;
 }
@@ -1728,18 +1735,15 @@ so that gray backdrop shvows up correctly */
   white-space: normal;
 }
 #collapse-control {
-  z-index: 2000;
-  top: 0px;
-  display: block;
-  position: fixed;
-  left: 269px;
   border-radius: 0px;
   border: none;
   background: none;
   height: 50px;
-  font-size: 33px;
-  line-height: 50px;
-  padding: 7px;
+  font-size: 24px;
+  line-height: 40px;
+  margin: 0px 20px 0px -14px;
+  margin: 0px 20px 0px -10px;
+  color: #333 !important;
 }
 #collapse-control:focus, #collapse-control:active {
   box-shadow: none;
@@ -2061,10 +2065,6 @@ Private Message Styling
 }
 #control-panel .text-muted {
   color: #777;
-}
-#control-panel {
-  background: #eee;
-  border-right: 1px solid #eee;
 }
 #control-panel li.disabled a {
   color: #999;

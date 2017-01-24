@@ -1,5 +1,5 @@
 <div id="header-navbar" class="navbar navbar-default navbar-static-top" role="navigation">
-  <div class="container">
+  <div class="container-fluid">
     <div class="navbar-header text-right">
       <span class="show-mobile hide-mobile-sm h3 mobile-title">Schoenberg Database of Manuscripts</span>
       <span class="show-mobile-sm h3 mobile-title mobile-acronym">SDBM</span>
@@ -11,11 +11,14 @@
       </button>
     </div>
     <div class="row">
-      <div class="col-sm-4 hide-mobile">
-        <%= image_tag 'neh_logo_horizlarge.png', class: "img img-responsive", style: "height: 44px; display: inline-block;" %>
+      <div class="col-sm-4">
+        <a id='collapse-control' class="btn btn-default" data-toggle="collapse" data-target=".bookmarks-collapse">
+          <span class="glyphicon glyphicon-menu-hamburger hide-collapsed"></span>
+        </a>
+        <%= render partial: "shared/navbar_brand" %>
       </div>
       <div class="col-sm-4 text-center hide-mobile">
-        <%= render partial: "shared/navbar_brand" %>
+        <%= image_tag 'neh_logo_horizlarge.png', class: "img img-responsive hide-mobile", style: "height: 44px; display: inline-block;" %>
       </div>
       <div class="col-sm-4 text-right">
         <div class="collapse navbar-collapse user-util-collapse">
