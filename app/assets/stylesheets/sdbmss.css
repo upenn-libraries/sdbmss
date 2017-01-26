@@ -81,17 +81,23 @@ textarea { resize:vertical ; }
   /*
    bg-color:::: ? rgb(118, 148, 200) 
   */
-  background-color: #fff;
+  background-color: #374f73;
   border: none;
   box-shadow: 0px 1px 14px 0px #ddd;
   width: 100%;
   position: fixed;
   top: 0;
   left: 0;
+  min-width: 320px;
   /*box-shadow: 0px 2px 4px lightgray;*/
 }
+#header-navbar img {
+  max-height: 50px; 
+  display: inline-block;
+  max-width: calc(60% - 10px);
+}
 #header-navbar a {
-  color: black;
+  color: white;
 }
 .navbar-title, .navbar-title li {
   width: 100%;
@@ -114,15 +120,20 @@ textarea { resize:vertical ; }
 
 /* There's some tweaky stuff in "#header-navbar .navbar-brand" rule that we're overriding here, probably fragile */
 #header-navbar .navbar-brand { 
-  background: none; overflow: visible; text-indent: 0; color: black; width: auto;
+  background: none;
+  overflow: visible;
+  text-indent: 0;
+  color: white;
+  width: auto;
   float: none;
 }
+/*
 #header-navbar .navbar-brand:after {
   content: ' [Beta]';
   font-size: 0.8em;
   font-variant: small-caps;
   color: #666;
-}
+}*/
 /*#header-navbar .navbar-brand {
     background: none;
     overflow: visible;
@@ -136,7 +147,7 @@ textarea { resize:vertical ; }
     text-shadow: 4px 0px #eee;
 }*/
 #header-navbar .brand {
-  color: black;
+  color: white;
   display: inline-block;
   vertical-align: top;
 }
@@ -395,11 +406,13 @@ textarea { resize:vertical ; }
 }
 
 #search-navbar { 
-  background-color: #eee;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  background-color: #eee1be;
+  border: 1px solid #e0d1a8;
   box-shadow: none;
   margin-bottom: 10px;
+}
+.navbar .nav > li > a {
+  padding: 15px 10px;
 }
 
 .search-info {
@@ -407,6 +420,14 @@ textarea { resize:vertical ; }
   padding: 4px;
   background: darkcyan;
   color: white;
+}
+
+.catalog-search-form {
+  width: 60%;
+}
+.catalog-search-info {
+  max-width: 40%;
+  float: right;
 }
 
 #search-navbar .search-query-form { width: 100%; }
@@ -1434,6 +1455,30 @@ so that gray backdrop shvows up correctly */
 }
 /* RESPONSIVE */
 @media (max-width: 767px) {
+  .catalog-search-form {
+    width: 100%;
+  }
+  .catalog-search-info {
+    max-width: 100%;
+    float: none;
+    text-align: right;
+  }
+  .catalog-search-info ul {
+    text-align: right;
+    background: none !important;
+  }
+  .catalog-search-info .open a {
+    background: none !important;
+  }
+  .navbar-brand {
+    letter-spacing: -2px !important;
+    margin: 0px !important;
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+  #collapse-control {
+    margin-right: 0px !important;
+  }
   .expandable-table {
     display: inline-block !important;
     width: 100% !important;
@@ -1547,6 +1592,9 @@ so that gray backdrop shvows up correctly */
   }
 }
 @media (max-width: 1024px) {
+  .navbar-brand {
+    letter-spacing: -1px;
+  }
   .main-content {
     max-width: 100vw;
     width: 100% !important;
@@ -1666,6 +1714,8 @@ so that gray backdrop shvows up correctly */
   border: none;
   display: block;
   display: table-cell;
+  box-shadow: 0px 0px 14px #ccc;
+  z-index: 100;;
 }
 #control-panel > .collapsing {
   height: auto;
@@ -1711,8 +1761,7 @@ so that gray backdrop shvows up correctly */
 .mobile-acronym {
   line-height: 50px;
   font-size: 36px;
-  font-weight: bold;
-  color: #333;
+  color: white;
 }
 /* FIX ME: this should really be renamed */
 .bookmarks-collapse {
@@ -1745,7 +1794,7 @@ so that gray backdrop shvows up correctly */
   line-height: 40px;
   margin: 0px 20px 0px -14px;
   margin: 0px 20px 0px -10px;
-  color: #333 !important;
+  color: #fff !important;
 }
 #collapse-control:focus, #collapse-control:active {
   box-shadow: none;
@@ -2061,6 +2110,15 @@ Private Message Styling
 #control-panel .panel-body {
   background: white;
   padding: 0px;
+}
+#control-panel .panel-heading {
+  background: #f8f8f8;
+}
+#control-panel .panel-heading .h4 {
+  color: #555;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 18px;
 }
 #control-panel a {
   color: #333;

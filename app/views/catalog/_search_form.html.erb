@@ -1,5 +1,5 @@
-<div class="navbar-header">
-  <%= form_tag sdbmss_search_action_path, :method => :get, :class => 'form-inline clearfix navbar-form' do %>
+<div class="navbar-header catalog-search-form">
+  <%= form_tag sdbmss_search_action_path, :method => :get, :class => 'form-inline clearfix navbar-form', :style => 'width: 100%;' do %>
     <%= render_hash_as_hidden_fields(params_for_search().except(:q, :search_field, :qt, :page, :utf8)) %>
 
     <% unless search_fields.empty? %>
@@ -12,11 +12,11 @@
     <% end %>
     <div class="row">
       <div class="col-xs-11">
-        <div class="input-group">
+        <div class="input-group" style="width: 100%;">
             <!--<label for="q" class="sr-only"><%= t('blacklight.search.form.q') %></label>-->
-             <%= text_field_tag :q, params[:q], :placeholder => 'Search database...', :class => "search_q q form-control", :id => "q", :autofocus => should_autofocus_on_search_box? %>
+             <%= text_field_tag :q, params[:q], :placeholder => 'Search database...', :class => "search_q q form-control", :style => "width: 100%;", :id => "q", :autofocus => should_autofocus_on_search_box? %>
 
-          <span class="input-group-btn">
+          <span class="input-group-btn" style="width: 1px;">
             <button type="submit" class="btn btn-primary search-btn" id="search">
               <span class="submit-search-text"><%=t('blacklight.search.form.submit')%></span>
               <span class="glyphicon glyphicon-search"></span>
@@ -33,7 +33,7 @@
     </div>
   <% end %>
 </div>  
-<div class="collapse navbar-collapse" id="myNavbar">
+<div class="collapse navbar-collapse catalog-search-info" id="myNavbar">
   <ul class="nav navbar-nav navbar-right">
     <% if user_signed_in? %>
       <li class="dropdown">
