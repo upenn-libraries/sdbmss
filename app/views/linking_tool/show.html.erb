@@ -415,46 +415,56 @@ $(document).ready(function() {
     });
 
     $(document).on("click", ".link-to-manuscript-link", function (event) {
-        
-        // warn user that they will lose unsaved changes
-        var really = true;
-        if (unsavedChanges) {
-            really = confirm("You have unsaved changes that will be lost - continue?");
-        }
-        if (!really) return false;
 
-        var manuscriptId = $(event.target).data("manuscriptId");
+        var linktomss = function() {
+            var manuscriptId = $(event.target).data("manuscriptId");
+            // create a single EntryManuscript record
+            $.ajax({
+                url: "/entry_manuscripts.json",
+                type: 'POST',
+                contentType: "application/json",
+                dataType: "json",
+                data: JSON.stringify({
+                    entry_manuscript: {
+                        manuscript_id: manuscriptId,
+                        entry_id: entryId,
+                        relation_type: 'is',
+                    }
+                }),
+                success: function(data, textStatus, jqXHR) {
+                    var title = "Successfully Linked";
+                    var body = '<p>Link between SDBM_' + entryId + ' and SDBM_MS_' + manuscriptId + ' successfully created.</p>' +
+                               '<p><a class="manuscript-link" href="/linkingtool/manuscript/' + manuscriptId + '">Go to page for SDBM_MS_' + manuscriptId + ' now</a></p>';
 
-        // create a single EntryManuscript record
-        $.ajax({
-            url: "/entry_manuscripts.json",
-            type: 'POST',
-            contentType: "application/json",
-            dataType: "json",
-            data: JSON.stringify({
-                entry_manuscript: {
-                    manuscript_id: manuscriptId,
-                    entry_id: entryId,
-                    relation_type: 'is',
+                    unsavedChanges = false;
+                    SDBM.showModal("#modal", {
+                        allowDismiss: false,
+                        showFooter: false,
+                        title: title,
+                        body: body
+                    });
+                },
+                error: function(xhr) {
+                    var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
+                    SDBM.showErrorModal("#modal", error);
                 }
-            }),
-            success: function(data, textStatus, jqXHR) {
-                var title = "Successfully Linked";
-                var body = '<p>Link between SDBM_' + entryId + ' and SDBM_MS_' + manuscriptId + ' successfully created.</p>' +
-                           '<p><a class="manuscript-link" href="/linkingtool/manuscript/' + manuscriptId + '">Go to page for SDBM_MS_' + manuscriptId + ' now</a></p>';
+            });
+        }
+        
+        if (!unsavedChanges) {
+            linktomss();
+        }
 
-                unsavedChanges = false;
-                SDBM.showModal("#modal", {
-                    allowDismiss: false,
-                    showFooter: false,
-                    title: title,
-                    body: body
-                });
+        dataConfirmModal.confirm({
+            title: 'Confirm',
+            text: "You have unsaved changes that will be lost - continue?",
+            commit: 'Yes',
+            cancel: 'Cancel',
+            zIindex: 10099,
+            onConfirm: function() { 
+                linktomss();
             },
-            error: function(xhr) {
-                var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
-                SDBM.showErrorModal("#modal", error);
-            }
+            onCancel:  function() { }
         });
 
         return false;

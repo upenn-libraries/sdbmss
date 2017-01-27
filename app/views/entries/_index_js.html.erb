@@ -243,23 +243,31 @@
         manageEntries.doSearch(false);
      });
 
-     $(document).on("click", ".entry-delete-link", function (event) {
-         var sdbmTable = manageEntries.dataTable;
-         var row_data = sdbmTable.dataTable.row($(event.target).closest("tr")).data();
-         var entry_id = row_data[sdbmTable.getColumnIndex("ID")];
-         if(confirm("Are you sure you want to delete entry " + entry_id + "?")) {
-             $.ajax({
-                 url: '/entries/' + entry_id,
-                 type: 'DELETE',
-                 error: function() {
+    $(document).on("click", ".entry-delete-link", function (event) {
+        var sdbmTable = manageEntries.dataTable;
+        var row_data = sdbmTable.dataTable.row($(event.target).closest("tr")).data();
+        var entry_id = row_data[sdbmTable.getColumnIndex("ID")];
+        dataConfirmModal.confirm({
+            title: 'Confirm',
+            text: "Are you sure you want to delete entry " + entry_id + "?",
+            commit: 'Yes',
+            cancel: 'Cancel',
+            zIindex: 10099,
+            onConfirm: function() { 
+                $.ajax({
+                    url: '/entries/' + entry_id,
+                    type: 'DELETE',
+                    error: function() {
                      SDBM.showErrorModal("#modal", "An error occurred deleting this record.");
-                 },
-                 complete: function() {
+                    },
+                    complete: function() {
                      sdbmTable.reload();
-                 }
-             });
-         }
-         return false;
+                    }
+                });
+            },
+            onCancel:  function() { }
+        });
+        return false;
      });
 
      var entryIdToDeprecate;

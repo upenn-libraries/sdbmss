@@ -1282,6 +1282,7 @@ var BOOKMARK_SCOPE;
           return angular.toJson(entry1) !== angular.toJson(entry2);
         }
 
+        // unfortunately, this can't be reworked with a modal, because browser/javascript doesn't let you
         $(window).bind('beforeunload', function() {
             if ($scope.warnWhenLeavingPage && $scope.checkForChanges($scope.originalEntryViewModel, $scope.entry)) {
                 /*
@@ -1290,7 +1291,7 @@ var BOOKMARK_SCOPE;
                 console.log("current entry=");
                 console.log(angular.toJson($scope.entry));
                 */
-                return "You have unsaved changes";
+              return "You have unsaved changes";
             }
             return;
         });
@@ -1916,7 +1917,7 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.removeRecord = function (anArray, record) {
-          if (sdbmutil.isBlankThing(record) || window.confirm("Are you sure you want to remove this field?")) {
+          var doremove = function (anArray, record) {
             var i;
             for (i = 0; i < anArray.length; i++) {
                 if (anArray[i] === record) {
@@ -1928,6 +1929,18 @@ var BOOKMARK_SCOPE;
                     break;
                 }
             }
+          };
+          if (sdbmutil.isBlankThing(record)) doremove(anArray, record);
+          else {            
+            dataConfirmModal.confirm({
+              title: 'Confirm',
+              text: 'Are you sure you want to remove this field and its contents?',
+              commit: 'Yes',
+              cancel: 'Cancel',
+              zIindex: 10099,
+              onConfirm: function() { doremove(anArray, record); $scope.$apply(); },
+              onCancel:  function() { }
+            });
           }
         };
 

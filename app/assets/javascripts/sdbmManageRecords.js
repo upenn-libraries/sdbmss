@@ -46,19 +46,27 @@ var load_session = false;
         this.dataTable = manageRecords.createTable(".sdbm-table");
 
         $(".sdbm-table").on("click", ".delete-link", function(event) {
-            if(confirm("Are you sure you want to delete this record?")) {
-                $.ajax({
-                    url: $(event.target).attr("href"),
-                    method: 'DELETE',
-                    error: function(xhr) {
-                        var error = $.parseJSON(xhr.responseText).error;
-                        alert("An error occurred deleting this record: " + error);
-                    },
-                    success: function(data, textStatus, jqXHR) {
-                        manageRecords.dataTable.reload();                    
-                    }
-                });
-            }
+            dataConfirmModal.confirm({
+                title: 'Confirm',
+                text: 'Are you sure you want to delete this record?',
+                commit: 'Yes',
+                cancel: 'Cancel',
+                zIindex: 10099,
+                onConfirm: function() { 
+                    $.ajax({
+                        url: $(event.target).attr("href"),
+                        method: 'DELETE',
+                        error: function(xhr) {
+                            var error = $.parseJSON(xhr.responseText).error;
+                            alert("An error occurred deleting this record: " + error);
+                        },
+                        success: function(data, textStatus, jqXHR) {
+                            manageRecords.dataTable.reload();                    
+                        }
+                    });
+                },
+                onCancel:  function() { }
+            });
             return false;
         });
         
@@ -543,15 +551,19 @@ var load_session = false;
     }
 
     SDBM.ManageRecords.prototype.exportCSV = function() {
-        
-        if (confirm('Would you like to download the current search results as a CSV file?')) {
-            
-            var url = this.getCSVSearchUrl();
-
-            exportCSV(url);
-            /* do search, then poll to see if download is completed */
-        }
-
+        var t = this;
+        dataConfirmModal.confirm({
+            title: 'Confirm',
+            text: 'Would you like to download the current search results as a CSV file?',
+            commit: 'Yes',
+            cancel: 'Cancel',
+            zIindex: 10099,
+            onConfirm: function() { 
+                var url = t.getCSVSearchUrl();
+                exportCSV(url);
+            },
+            onCancel:  function() { }
+        });
     };
     
 }());
