@@ -128,6 +128,7 @@ var BOOKMARK_SCOPE;
                (Array.isArray(obj) && obj.length === 0)) {
                 blank = true;
             } else if (typeof(obj) == 'string' || Array.isArray(obj)) {
+                console.log('array or string', obj);
                 // strings and arrays (non-empty) are non-blank
             } else if (typeof(obj) === 'number') {
                 // noop: treat all numbers as non-blank
@@ -1027,13 +1028,6 @@ var BOOKMARK_SCOPE;
             // save copy at this point, so we have something to
             // compare to, when navigating away from page
             $scope.originalEntryViewModel = angular.copy(entry);
-            //$scope.affixer();
-            //
-            //
-            //
-            //setTimeout( function () {
-            //  $scope.affixer();
-            //}, 2000);
         };
 
         $scope.postEntrySave = function(entry) {
@@ -1135,6 +1129,7 @@ var BOOKMARK_SCOPE;
                     else if (date.type == "Associated") prov.associated_date += date.date + "\t";
                   }
                 }
+                entryToSave.provenance[i].dates = [];
               }
             }
 
@@ -1250,6 +1245,27 @@ var BOOKMARK_SCOPE;
             }
 
           });
+
+          if (entry2.provenance) {
+            for (var i = 0; i < entry2.provenance.length; i++) {
+              var prov = entry2.provenance[i];
+              prov.start_date = "", prov.end_date = "", prov.associated_date = "";
+              if (prov.dates) {
+                for (var j = 0; j < prov.dates.length; j++) {
+                  var date = prov.dates[j];
+                  if (date.type == "Start") prov.start_date = date.date;
+                  else if (date.type == "End") prov.end_date = date.date;
+                  else if (date.type == "Associated") prov.associated_date += date.date + "\t";
+                }
+              }
+              entry2.provenance[i].dates = [];
+              if (entry2.provenance[i].associated_date.length <= 0) {
+                delete entry2.provenance[i].associated_date;
+              }
+            }
+          }
+
+          console.log(angular.toJson(entry1), angular.toJson(entry2));
           // note: changing a numerical field, then restoring the original and saving will still trigger 'unsaved' because one is a string and the other is a number (in the JSON)
           return angular.toJson(entry1) !== angular.toJson(entry2);
         }
