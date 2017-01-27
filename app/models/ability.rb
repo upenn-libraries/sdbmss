@@ -63,7 +63,7 @@ class Ability
 
     if ['super_editor'].member? user.role
       # allow super-editors to edit legacy records
-      can :edit, Entry, :unverified_legacy_record => true
+      can [:edit, :update, :verify], Entry, :unverified_legacy_record => true
     end
 
     if ['admin'].member? user.role

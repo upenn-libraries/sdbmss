@@ -87,7 +87,7 @@ module ApplicationHelper
   end
 
   def show_verify_entry?
-    user_signed_in? && @document.present? && (entry = @document.model_object).present? && can?(:manage, entry)
+    user_signed_in? && @document.present? && (entry = @document.model_object).present? && can?(:verify, entry)
   end
 
   def show_deprecate_entry?
