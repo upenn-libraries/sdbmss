@@ -112,7 +112,9 @@ var BOOKMARK_SCOPE;
                       // and this
                     }
                     else if(obj[key]) {
-                      blank = isBlankThing(obj[key]); 
+                      blank = isBlankThing(obj[key]);
+                      // one blank field shouldn't override earlier non-blank fields...
+                      if (blank == false) return false;
                     }
                 }
             }
@@ -881,7 +883,7 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.removeRecord = function (anArray, record) {
-          if (sdbmutil.isBlankThing(record) || window.confirm("Are you sure you want to remove this field and its contents?")) {
+          var doremove = function (anArray, record) {
             var i;
             for (i = 0; i < anArray.length; i++) {
                 if (anArray[i] === record) {
@@ -897,10 +899,18 @@ var BOOKMARK_SCOPE;
             if($.grep(anArray, $scope.activeRecords).length === 0) {
                 //anArray.push({});
             }
-
-            setTimeout( function () {            
-              $scope.affixer();
-            }, 2000);
+          };
+          if (sdbmutil.isBlankThing(record)) doremove(anArray, record);
+          else {            
+            dataConfirmModal.confirm({
+              title: 'Confirm',
+              text: 'Are you sure you want to remove this field and its contents?',
+              commit: 'Yes',
+              cancel: 'Cancel',
+              zIindex: 10099,
+              onConfirm: function() { doremove(anArray, record); $scope.$apply(); },
+              onCancel:  function() { }
+            });
           }
         };
 
