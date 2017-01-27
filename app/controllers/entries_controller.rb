@@ -425,7 +425,7 @@ class EntriesController < SearchableAuthorityController
   end
 
   def verify
-    @entry.update(unverified_legacy_record: false)
+    @entry.update_by(current_user, {unverified_legacy_record: false})
     redirect_to entry_path(@entry)
   end
 
