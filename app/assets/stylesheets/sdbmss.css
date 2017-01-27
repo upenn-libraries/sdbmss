@@ -864,6 +864,7 @@ li.provenance:hover, li.provenance:focus {
 }
 .provenance-block .name-authority-group {
   vertical-align: top;
+  width: 100%;
 }
 .provenance-block .expanded {
   width: 82% !important;

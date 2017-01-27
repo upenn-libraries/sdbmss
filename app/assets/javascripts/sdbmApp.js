@@ -107,7 +107,9 @@ var BOOKMARK_SCOPE;
                 // TODO: deal with nesting?
                 for(var key in obj) {
                     if(key == "order") {
-                      // order should not be considered 'non-blank'
+                      // ignore order
+                    } else if (key == "$$hashKey") {
+                      // and this
                     }
                     else if(obj[key]) {
                       blank = isBlankThing(obj[key]); 
@@ -128,7 +130,7 @@ var BOOKMARK_SCOPE;
                (Array.isArray(obj) && obj.length === 0)) {
                 blank = true;
             } else if (typeof(obj) == 'string' || Array.isArray(obj)) {
-                console.log('array or string', obj);
+                //console.log('array or string', obj);
                 // strings and arrays (non-empty) are non-blank
             } else if (typeof(obj) === 'number') {
                 // noop: treat all numbers as non-blank
