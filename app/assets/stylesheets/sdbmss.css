@@ -438,7 +438,11 @@ textarea { resize:vertical ; }
   margin: 0px 0px -15px 0px;
 }
 
-.search-form { font-size: 12px; }
+.search-form { 
+  max-width: 480px;
+  float: right;
+  font-size: 12px;
+}
 
 .search-form .form-control { font-size: 12px; }
 
