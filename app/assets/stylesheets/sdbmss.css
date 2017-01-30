@@ -2121,3 +2121,10 @@ Private Message Styling
 .expandable.expanded {
   width: 100%;
 }
+
+a.ratings {
+  color: #333;
+}
+a.ratings.rated {
+  color: #FFC107;
+}

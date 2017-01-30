@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   end
 
   resources :watches, only: [:index, :create, :destroy]
+  resources :ratings, only: [:create, :destroy]
 
   resources :groups do
     collection {

@@ -34,14 +34,25 @@
               </div>
             </div>
             <div class="panel-body text-muted">
-              <% version = @versions.select{ |v| v.transaction_id == activity.transaction_id } %>
-              <% if version.count > 0 %>
-                <%= render partial: 'activities/version', locals: {version: EntryVersionFormatter.new(version)} %>
-              <% elsif activity.event == 'destroy' %>
-                (Record was deleted)
-              <% else %>
-                 No changes to display
-              <% end %>
+              <div class="row">
+                <div class="col-xs-10">
+                  <% version = PaperTrail::Version.where(transaction_id: activity.transaction_id) %>
+                  <% if version.count > 0 %>
+                    <%= render partial: 'activities/version', locals: {version: EntryVersionFormatter.new(version)} %>
+                  <% elsif activity.event == 'destroy' %>
+                    (Record was deleted)
+                  <% else %>
+                     No changes to display
+                  <% end %>
+                </div>
+                <div class="col-xs-2 text-right">
+                  <% if (r = current_user.ratings.where(ratable_type: "Activity", ratable_id: activity.id).first) %>
+                    <%= render partial: "ratings/delete", locals: {rating: r } %>
+                  <% else %>
+                    <%= render partial: "ratings/create", locals: {ratable: activity } %>
+                  <% end %>
+                </div>
+              </div>
             </div>
           </div>
         <% end %>

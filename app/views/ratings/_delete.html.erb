@@ -1,0 +1,3 @@
+<%= link_to rating_path(rating), :method => :delete, :remote => true, class: 'ratings rated' do %>
+  <span class="glyphicon glyphicon-thumbs-up"></span> <%= rating.ratable.ratings.count %>
+<% end %>

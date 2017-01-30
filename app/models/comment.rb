@@ -25,6 +25,8 @@ class Comment < ActiveRecord::Base
   belongs_to :commentable, polymorphic: true
   has_many :replies
 
+  has_many :ratings, as: :ratable
+
   validates_presence_of :comment
 
   include UserFields

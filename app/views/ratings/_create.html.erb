@@ -1,0 +1,3 @@
+<%= link_to(ratings_path(ratable_id: ratable.id, ratable_type: ratable.class.name, user_id: current_user.id), remote: true, method: :post, "data-type" => "json", class: "ratings") do %>
+  <span class="glyphicon glyphicon-thumbs-up"></span> <%= ratable.ratings.count %>
+<% end %>
