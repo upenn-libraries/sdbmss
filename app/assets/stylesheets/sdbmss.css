@@ -94,7 +94,6 @@ textarea { resize:vertical ; }
 #header-navbar img {
   max-height: 50px; 
   display: inline-block;
-  max-width: calc(60% - 10px);
 }
 #header-navbar a {
   color: white;
@@ -126,6 +125,7 @@ textarea { resize:vertical ; }
   color: white;
   width: auto;
   float: none;
+  margin: 0px;
 }
 /*
 #header-navbar .navbar-brand:after {
@@ -1433,7 +1433,7 @@ so that gray backdrop shvows up correctly */
 
 @media (min-width: 1200px) {
   .main-content .container {
-    max-width: 1170px !important;
+    max-width: 1170px !important;*/
     width: auto;
   }
 }/**/
@@ -1446,6 +1446,9 @@ so that gray backdrop shvows up correctly */
   }
   div.show-mobile-lg {
     display: block;
+  }
+  img.show-mobile-lg {
+    display: inline-block !important;
   }
   .hide-mobile-lg {
     display: none !important;
@@ -1797,8 +1800,7 @@ so that gray backdrop shvows up correctly */
   height: 50px;
   font-size: 24px;
   line-height: 40px;
-  margin: 0px 20px 0px -14px;
-  margin: 0px 20px 0px -10px;
+  margin: 0px 0px 0px -10px;
   color: #fff !important;
 }
 #collapse-control:focus, #collapse-control:active {
@@ -2073,7 +2075,7 @@ Private Message Styling
   padding: 6px 12px;
   margin: 0px;
 }
-.show-mobile, .show-mobile-sm {
+.show-mobile, .show-mobile-sm, .show-mobile-lg {
   display: none;
 }
 .btn-header-hamburger {

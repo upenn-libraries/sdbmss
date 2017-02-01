@@ -1,15 +1,18 @@
 <div id="header-navbar" class="navbar navbar-default navbar-static-top" role="navigation">
   <div class="container-fluid">
     <div class="row">
-      <div class="col-sm-6">
+      <div class="col-sm-12 text-center">
+        <span class="pull-left">
         <a id='collapse-control' class="btn btn-default" data-toggle="collapse" data-target=".bookmarks-collapse">
           <span class="glyphicon glyphicon-menu-hamburger hide-collapsed"></span>
         </a>
         <%= render partial: "shared/navbar_brand" %>
-      </div>
-      <div class="col-sm-6 text-right hide-mobile" style="line-height: 50px;">
-        <%= image_tag 'neh_logo_white.png', class: "img img-responsive hide-mobile", style: "max-height: 44px; max-width: 40%;" %>
-        <%= image_tag 'sims.png', class: "img img-responsive hide-mobile" %>
+        </span>
+        <%= image_tag 'sims.png', class: "img img-responsive hide-mobile-lg" %>
+        <span class="pull-right hide-mobile" style="line-height: 50px;">
+          <%= render partial: "/user_util_links" %>
+          <%# image_tag 'neh_logo_white.png', class: "img img-responsive hide-mobile", style: "max-height: 44px;" %>
+        </span>
       </div>
     </div>
   </div>
