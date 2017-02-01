@@ -1673,7 +1673,7 @@ so that gray backdrop shvows up correctly */
 }
 /* FIX ME: this should really be renamed */
 .bookmarks-collapse {
-  height: 100%;
+  height: 100vh;
   overflow-x: hidden;
 }
 .bookmarks-collapse.collapsing {
