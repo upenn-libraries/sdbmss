@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170201201612) do
+ActiveRecord::Schema.define(version: 20170202151735) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -72,6 +72,11 @@ ActiveRecord::Schema.define(version: 20170201201612) do
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
+  create_table "dericci_links", force: :cascade do |t|
+    t.integer "name_id",           limit: 4
+    t.integer "dericci_record_id", limit: 4
+  end
+
   create_table "dericci_records", force: :cascade do |t|
     t.string  "name",         limit: 255
     t.string  "dates",        limit: 255
@@ -79,7 +84,7 @@ ActiveRecord::Schema.define(version: 20170201201612) do
     t.string  "url",          limit: 255
     t.integer "cards",        limit: 4
     t.string  "size",         limit: 255
-    t.text    "other_info",   limit: 65535
+    t.text    "other_info",   limit: 16777215
     t.string  "senate_house", limit: 255
   end
 

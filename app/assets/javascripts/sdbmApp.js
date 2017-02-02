@@ -335,6 +335,57 @@ var BOOKMARK_SCOPE;
         };
     });
 
+    // anchor
+    sdbmApp.controller("DericciGameCtrl", function ($scope, $http, $modal, $sce) {
+      EntryScope = $scope;
+      $scope.records = [];
+      $scope.current_record = undefined;
+      $scope.current_url = "";
+      $scope.current_index = 0;
+      $scope.progress = 0;
+      $http.get("/dericci_records/game.json", {
+      }).then(function (response) {
+        $scope.records = response.data;
+        console.log($scope.records)
+      }, function(response) {
+          alert("An error occurred when initializing the game.");
+      });
+      $scope.selectRecord = function (record) {
+        $scope.current_record = record;
+        $scope.current_index = $scope.records.indexOf(record);
+        $scope.current_url = $sce.trustAsResourceUrl($scope.current_record.url);
+      };
+      $scope.findName = function (model) {
+        $scope.name = {};
+        var modal = $modal.open({
+          templateUrl: "selectNameAuthority.html",
+          controller: "SelectNameAuthorityCtrl",
+          resolve: {
+            recordType: function () { return "names"; },
+            model: function () { return $scope.name; },
+            type: function () { return ""; },
+            base: function () { return model.name; }
+          },
+          size: 'lg'
+        });
+        modal.result.then(
+          function (result) {
+            $http.get("/dericci_records/" + $scope.current_record.id + "/link", {params: {name_id: $scope.name.id}}).then( function (response) {
+              $scope.name = {};
+              $scope.current_record = response.data;
+              $scope.records[$scope.current_index] = $scope.current_record;
+              $scope.setProgress();
+            }, function (response) {
+              alert("An error occurred when updating this name.");
+            });
+          }
+        );
+      };
+      $scope.setProgress = function () {
+        $scope.progress = Math.floor(100 * ($scope.records.filter( function (r) { return r.dericci_links.length > 0; }).length / 20));
+      };
+    });
+
     /* Controller for selecting a source*/
     sdbmApp.controller("SelectSourceCtrl", function ($scope, $http, $modalInstance, $modal, $rootScope, Source, sdbmutil, model, type) {
 

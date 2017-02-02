@@ -1,0 +1,21 @@
+<h4 class="list-group-item-heading" data-toggle="collapse" data-target="#record_<%= record.id %>">
+  <%= link_to record.name, record.url, target: "_blank" %>
+  <%= "#{record.cards} #{'card'.pluralize(record.cards)}" %>
+  <%= record.size %>
+  <span class="caret"></span>
+  <span class="pull-right"><%= record.dates %></span>
+  <span class="text-muted"><%= record.place %></span>
+</h4>
+<div class="list-group-item-text collapse" id="record_<%= record.id %>">
+  <ul class="list-unstyled">
+    <li>
+      <%= record.other_info %>                
+    </li>
+    <li>
+      <%= record.senate_house %>                
+    </li>
+    <% record.names.each do |name| %>
+      <li><%= link_to name.public_id, name_path(name) %></li>
+    <% end %>
+  </ul>
+</div>

@@ -1,3 +1,7 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "extras", media: "all" %>
+  <%= javascript_include_tag "extras" %>
+<% end %>
 <div ng-controller="ManageBookmarks" ng-init='search_tag = "<%= params[:tag] %>"'>
 <div class="row">
   <div class="col-sm-8">

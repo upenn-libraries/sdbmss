@@ -1,0 +1,43 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "extras" %>
+  <%= javascript_include_tag "extras" %>
+<% end %>
+<div data-ng-controller="DericciGameCtrl">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" style="width: {{ progress || 3 }}%">
+          {{ progress }}% Complete
+        </div>
+        <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" style="width:10%">
+          Skipped
+        </div>
+        <!--<div class="progress-bar progress-bar-striped progress-bar-success active" id="game-progress" role="progressbar"
+        aria-valuenow=30" aria-valuemin="0" aria-valuemax="100" style="width:30%">
+          30% Complete!
+        </div>-->
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <ul class="nav nav-pills nav-stacked col-sm-4">
+      <li ng-repeat="record in records">
+        <a href="" ng-click="selectRecord(record)" ng-class="{ 'bg-success': record.dericci_links.length > 0 }">{{ record.name }}</a>
+      </li>
+    </ul>
+    <div class="col-sm-8 text-center">
+      <iframe id="current-card" src="{{ current_url }}" frameborder="0" style="height: 600px; width: 100%; background: #eee;"></iframe>
+      <h4 class="h4">{{ current_record.name }}</h4>
+      <p>{{ current_record.place }}</p>
+      <p>{{ current_record.dates }}</p>
+      <p>{{ current_record.other_info }}</p>
+      <p>{{ current_record.senate_house }}</p>
+      <ul class="list-unstyled">
+        <li ng-repeat="dericci_link in current_record.dericci_links"><a href="/names/{{ dericci_link.name_id }}">SDBM_NAME_{{ dericci_link.name_id }}</a></li>
+      </ul>
+      <div class="text-right"><a href="" class="btn btn-default" ng-click="findName(current_record);">Find Name</a></div>
+    </div>
+</div>
+</div>
+<%= render "shared/select_name_authority" %>
+<%= render "shared/create_name" %>

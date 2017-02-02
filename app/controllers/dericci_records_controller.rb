@@ -13,6 +13,28 @@ class DericciRecordsController < ApplicationController
     @records = DericciRecord.where("#{field} LIKE '%#{term}%'").limit(@count).offset(@offset)
   end
 
+  def game
+    @records =  DericciRecord.includes(:dericci_links).where(:dericci_links => {id: nil}).limit(20).order("RAND()")
+    respond_to do |format|
+      format.html {}
+      format.json { render json: @records, :include => { :dericci_links => { :only => :name_id }} }
+    end
+  end
+
+  def show
+    puts "should be deprecated"
+    @record = DericciRecord.find(params[:id]) 
+    render partial: "show", locals: {record: @record}
+  end
+
+  def link
+    # fix me: use params
+    record = DericciRecord.find(params[:id])
+    name = Name.find(params[:name_id])
+    DericciLink.create(dericci_record: record, name: name);
+    render json: record, :include => { :dericci_links => { :only => :name_id }}
+  end
+
   private
 
   def dericci_params

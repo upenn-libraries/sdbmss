@@ -33,7 +33,16 @@ Rails.application.routes.draw do
   end
   resources :group_users
   
-  resources :dericci_records
+  resources :dericci_records do
+    collection {
+      get 'index'
+      get 'game'
+    }
+    member {
+      get 'show'
+      get 'link'
+    }
+  end
 
   resources :replies
   resources :notifications, only: [:index, :show, :update, :destroy]

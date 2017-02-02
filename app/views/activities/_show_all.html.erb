@@ -34,7 +34,7 @@
               </div>
             </div>
             <div class="panel-body text-muted">
-              <% version = @versions.select{ |v| v.transaction_id == activity.transaction_id } %>
+              <% version = PaperTrail::Version.where(transaction_id: activity.transaction_id) %>
               <% if version.count > 0 %>
                 <%= render partial: 'activities/version', locals: {version: EntryVersionFormatter.new(version)} %>
               <% elsif activity.event == 'destroy' %>
