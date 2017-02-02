@@ -346,6 +346,8 @@ var BOOKMARK_SCOPE;
       $http.get("/dericci_records/game.json", {
       }).then(function (response) {
         $scope.records = response.data;
+        $scope.current_url = $sce.trustAsResourceUrl($scope.records[0].url);
+        $scope.current_record = $scope.records[0];
         console.log($scope.records)
       }, function(response) {
           alert("An error occurred when initializing the game.");
@@ -357,18 +359,23 @@ var BOOKMARK_SCOPE;
       };
       $scope.findName = function (model) {
         $scope.name = {};
+        //$scope.current_record.dericci_links.push($scope.name);
         var modal = $modal.open({
           templateUrl: "selectNameAuthority.html",
           controller: "SelectNameAuthorityCtrl",
           resolve: {
             recordType: function () { return "names"; },
             model: function () { return $scope.name; },
-            type: function () { return ""; },
+            type: function () { return "is_author"; },
             base: function () { return model.name; }
           },
           size: 'lg'
         });
+        $scope.$watch('name', function () {
+          console.log("hey, it's changed!", $scope.name);
+        });
         modal.result.then(
+          /*
           function (result) {
             $http.get("/dericci_records/" + $scope.current_record.id + "/link", {params: {name_id: $scope.name.id}}).then( function (response) {
               $scope.name = {};
@@ -378,12 +385,16 @@ var BOOKMARK_SCOPE;
             }, function (response) {
               alert("An error occurred when updating this name.");
             });
-          }
+          } */
+          // make it so you have to manually submit...
         );
       };
       $scope.setProgress = function () {
         $scope.progress = Math.floor(100 * ($scope.records.filter( function (r) { return r.dericci_links.length > 0; }).length / 20));
       };
+      $scope.save = function () {
+
+      }
     });
 
     /* Controller for selecting a source*/

@@ -1,6 +1,11 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "extras" %>
   <%= javascript_include_tag "extras" %>
+  <style>
+    .nav > li > a {
+      padding: 5px 15px;
+    }
+  </style>
 <% end %>
 <div data-ng-controller="DericciGameCtrl">
   <div class="row">
@@ -21,19 +26,19 @@
   </div>
   <div class="row">
     <ul class="nav nav-pills nav-stacked col-sm-4">
-      <li ng-repeat="record in records">
+      <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }">
         <a href="" ng-click="selectRecord(record)" ng-class="{ 'bg-success': record.dericci_links.length > 0 }">{{ record.name }}</a>
       </li>
     </ul>
     <div class="col-sm-8 text-center">
-      <iframe id="current-card" src="{{ current_url }}" frameborder="0" style="height: 600px; width: 100%; background: #eee;"></iframe>
+      <iframe id="current-card" src="{{ current_url }}" frameborder="0" style="height: 600px; width: 100%; background: #eee;">Hello!</iframe>
       <h4 class="h4">{{ current_record.name }}</h4>
       <p>{{ current_record.place }}</p>
       <p>{{ current_record.dates }}</p>
       <p>{{ current_record.other_info }}</p>
       <p>{{ current_record.senate_house }}</p>
       <ul class="list-unstyled">
-        <li ng-repeat="dericci_link in current_record.dericci_links"><a href="/names/{{ dericci_link.name_id }}">SDBM_NAME_{{ dericci_link.name_id }}</a></li>
+        <li ng-repeat="dericci_link in current_record.dericci_links"><a href="/names/{{ dericci_link.name_id }}">SDBM_NAME_{{ dericci_link.id }}</a></li>
       </ul>
       <div class="text-right"><a href="" class="btn btn-default" ng-click="findName(current_record);">Find Name</a></div>
     </div>
