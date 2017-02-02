@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170112152832) do
+ActiveRecord::Schema.define(version: 20170201201612) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -71,6 +71,17 @@ ActiveRecord::Schema.define(version: 20170112152832) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
+
+  create_table "dericci_records", force: :cascade do |t|
+    t.string  "name",         limit: 255
+    t.string  "dates",        limit: 255
+    t.string  "place",        limit: 255
+    t.string  "url",          limit: 255
+    t.integer "cards",        limit: 4
+    t.string  "size",         limit: 255
+    t.text    "other_info",   limit: 65535
+    t.string  "senate_house", limit: 255
+  end
 
   create_table "downloads", force: :cascade do |t|
     t.string   "filename",      limit: 255
@@ -516,6 +527,15 @@ ActiveRecord::Schema.define(version: 20170112152832) do
 
   add_index "provenance", ["entry_id"], name: "index_provenance_on_entry_id", using: :btree
   add_index "provenance", ["provenance_agent_id"], name: "index_provenance_on_provenance_agent_id", using: :btree
+
+  create_table "ratings", force: :cascade do |t|
+    t.integer  "user_id",      limit: 4
+    t.integer  "ratable_id",   limit: 4
+    t.string   "ratable_type", limit: 255
+    t.string   "user_level",   limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
 
   create_table "replies", force: :cascade do |t|
     t.text     "reply",         limit: 65535

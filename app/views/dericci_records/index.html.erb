@@ -1,0 +1,64 @@
+<%= form_tag dericci_records_path, :method => 'get', class: "form-inline" do %>
+<div class="row" style="margin-bottom: 10px;">
+  <div class="col-sm-3"></div>
+  <div class="col-sm-6 text-center">
+      <%= select_tag "field", options_for_select({"Name" => "name","Date" => "dates","Place" => "place"}, params[:field]), class: "form-control" %>
+      <%= text_field_tag :term, params[:term], class: "form-control" %>
+      <div class="input-group">
+        <%= submit_tag "Search", :name => nil, class: "form-control" %>
+        <div class="input-group-btn">
+          <%= link_to "Clear", dericci_records_path, class: "btn btn-warning" %>
+        </div>
+      </div>
+  </div>
+  <div class="col-sm-3 text-right">
+    Show <%= select_tag "limit", options_for_select([10, 20, 50, 100], params[:limit]), class: "form-control" %>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-6">
+    <ul class="pagination">
+    <% if @page > 2 %>
+      <li><%= link_to "First", params.merge(:page => 0) %></li>
+      <li class='disabled'><a href="" class="disabled">...</a></li>
+    <% end %>
+    <% @pages.each do |p| %>
+      <li class="<%= p == @page ? 'active' : '' %>"><%= link_to p + 1, params.merge(:page => p) %></li>
+    <% end %>
+    <% if @page < @num_pages - 2 %>
+      <li class='disabled'><a href="" class="disabled">...</a></li>
+      <li><%= link_to "Last", params.merge(:page => @num_pages) %></li>
+    <% end %>
+    </ul>
+  </div>
+  <div class="col-sm-6 text-right text-info" style="line-height: 49px;">
+    Showing <%= @offset %> to <%= @offset + @count %> of <%= @total %>
+  </div>
+</div>
+<% end %>
+<div class="row">
+  <div class="col-sm-12">
+    <ul class="list-group">
+      <% if @total <= 0 %>
+        <li class="list-group-item text-muted text-center">No matching records found.</li>
+      <% end %>
+      <% @records.each do |record| %>
+        <li class="list-group-item">          
+          <h4 class="list-group-item-heading" data-toggle="collapse" data-target="#record_<%= record.id %>">
+            <%= link_to record.name, record.url, target: "_blank" %>
+            <%= "#{record.cards} #{'card'.pluralize(record.cards)}" %>
+            <%= record.size %>
+            <span class="caret"></span>
+            <span class="pull-right"><%= record.dates %></span>
+            <span class="text-muted"><%= record.place %></span>
+          </h4>
+          <p class="list-group-item-text collapse" id="record_<%= record.id %>">
+            <%= record.other_info %>
+            <br>
+            <%= record.senate_house %>
+          </p>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>

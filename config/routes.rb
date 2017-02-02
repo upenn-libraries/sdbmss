@@ -33,6 +33,8 @@ Rails.application.routes.draw do
   end
   resources :group_users
   
+  resources :dericci_records
+
   resources :replies
   resources :notifications, only: [:index, :show, :update, :destroy]
   #resources :notifications_settings, only: [:edit]
