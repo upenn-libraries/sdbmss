@@ -2,17 +2,17 @@
   <%= stylesheet_link_tag "extras" %>
   <%= javascript_include_tag "extras" %>
   <style>
-    .nav > li > a {
+    .game-nav > li > a {
       padding: 5px 15px;
       color: #333;
     }
-    .nav > li.active > a, .nav > li.active > a:focus, .nav > li.active > a:active, .nav > li.active > a:hover {
+    .game-nav > li.active > a, .game-nav > li.active > a:focus, .game-nav > li.active > a:active, .game-nav > li.active > a:hover {
       border-top-right-radius: 0px;
       border-bottom-right-radius: 0px;
       box-shadow: 2px 1px 4px #393c3e inset;
       background: #525659;
     }
-    .nav {
+    .game-nav {
       padding-left: 15px;
     }
     .progress {
@@ -22,8 +22,23 @@
     .progress-bar {
       line-height: 34px;
     }
-    .transparent {
-      opacity: 0;
+    .glyphicon-blank {
+      width: 14px;
+    }
+    .game-linked {
+      color: #74c274 !important;
+    }
+    .game-skipped {
+      color: #f0ad4e !important;
+    }
+    .my-btn-group {
+      display: table;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .my-btn-group .btn {
+      float: none;
+      display: table-cell;
     }
   </style>
 <% end %>
@@ -31,36 +46,54 @@
   <div class="row" style="margin-bottom: 10px;">
     <div class="col-sm-11">
       <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" style="width: {{ progress || 3 }}%">
-          {{ progress }}% Complete
+        <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" style="width: {{ progress.complete == 100 ? 95 : progress.complete || 3 }}%">
+          {{ progress.complete }}% Complete
         </div>
-        <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" style="width:10%">
-          Skipped
+        <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" style="width: {{ progress.skipped == 100 ? 97 : progress.skipped || 3 }}%">
+          {{ progress.skipped }}% Skipped
         </div>
       </div>
     </div>
-    <div class="col-sm-1 text-right"><a href="" class="btn btn-primary" ng-click="save()">Submit</a></div>
+    <div class="col-sm-1 text-right"><a href="" class="btn btn-primary" ng-class="{ 'disabled': progress.complete + progress.skipped < 100 }" ng-click="save()">Submit</a></div>
   </div>
   <div class="row">
-    <ul class="nav nav-pills nav-stacked col-sm-4" style="padding-right: 0px;">
+    <ul class="game-nav nav nav-pills nav-stacked col-sm-4" style="padding-right: 0px;">
       <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }">
-        <a href="" class="one-line" ng-click="selectRecord(record)">
-          <span class="glyphicon glyphicon-check" ng-class="{ 'transparent': record.dericci_links.length <= 0 }"></span>
+        <a href="" class="one-line" ng-click="selectRecord(record)" ng-class="{ 'game-linked': record.dericci_links.length > 0, 'game-skipped': record.skipped }">
+          <span class="glyphicon glyphicon-blank" ng-class="{ 'glyphicon-check': record.dericci_links.length > 0, 'glyphicon-unchecked': record.skipped }"></span>
           {{ record.name }}
         </a>
       </li>
     </ul>
-    <div class="col-sm-8 text-center" style="padding-left: 0px;">
+    <div class="col-sm-8" style="padding-left: 0px;">
       <iframe id="current-card" src="{{ current_url }}" frameborder="0" style="height: 700px; width: 100%; background: #525659;">Hello!</iframe>
-      <h4 class="h4">{{ current_record.name }}</h4>
-      <p>{{ current_record.place }}</p>
-      <p>{{ current_record.dates }}</p>
-      <p>{{ current_record.other_info }}</p>
-      <p>{{ current_record.senate_house }}</p>
-      <ul class="list-unstyled">
-        <li ng-repeat="dericci_link in current_record.dericci_links"><a href="/names/{{ dericci_link.name_id }}">SDBM_NAME_{{ dericci_link.id }}</a></li>
-      </ul>
-      <div class="text-right"><a href="" class="btn btn-default" ng-click="findName(current_record);">Find Name</a></div>
+      <div class="row">
+        <div class="col-sm-7 text-left">          
+          <h4 class="h4">{{ current_record.name }}</h4>
+          <p>{{ current_record.place }}</p>
+          <p>{{ current_record.dates }}</p>
+          <p>{{ current_record.other_info }}</p>
+          <p>{{ current_record.senate_house }}</p>
+        </div>
+        <div class="col-sm-5 text-right">
+          <div class="my-btn-group btn-group">
+            <a href="" class="btn btn-default" ng-click="prev()"><span class="glyphicon glyphicon-chevron-left"></span></a>
+            <a href="" class="btn btn-default" ng-click="findName(current_record);">Find Name</a>
+            <a href="" class="btn btn-warning" ng-class="{'disabled' : current_record.dericci_links.length > 0 }" ng-click="skip(current_record)">Skip</a>
+            <a href="" class="btn btn-default" ng-click="next()"><span class="glyphicon glyphicon-chevron-right"></span></a>
+          </div>
+          <ul class="list-group text-left">
+            <li class='list-group-item' ng-repeat="dericci_link in current_record.dericci_links">
+              <a target="_blank" href="/names/{{ dericci_link.id }}">
+                SDBM_NAME_{{ dericci_link.id }}
+              </a>
+              <a href="" class="pull-right" ng-click="removeLink(current_record, dericci_link)">
+                <span class="glyphicon glyphicon-remove-circle"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
 </div>
 </div>

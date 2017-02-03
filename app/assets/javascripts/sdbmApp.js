@@ -342,7 +342,7 @@ var BOOKMARK_SCOPE;
       $scope.current_record = undefined;
       $scope.current_url = "";
       $scope.current_index = 0;
-      $scope.progress = 0;
+      $scope.progress = {complete: 0, skipped: 0};
       $http.get("/dericci_records/game.json", {
       }).then(function (response) {
         $scope.records = response.data;
@@ -372,14 +372,42 @@ var BOOKMARK_SCOPE;
           size: 'lg'
         });
         modal.result.then( function (results) {
-
+          model.skipped = false;
           $scope.current_record.dericci_links.push($scope.name);
           $scope.name = {};
-          
+          // don't automatically move to next when you find a name, only when skipping
+          //$scope.current_index = ($scope.current_index + 1) % $scope.records.length;
+          //$scope.current_record = $scope.records[$scope.current_index];
+          $scope.setProgress();
         });
       };
+      $scope.skip = function (model) {
+        if (model.dericci_links.length <= 0) {          
+          model.skipped = true;
+          $scope.next();
+          $scope.setProgress();
+        }
+      }
+      $scope.next = function () {
+        var i = ($scope.current_index + 1) % $scope.records.length;
+        $scope.selectRecord($scope.records[i]);        
+      }      
+      $scope.prev = function () {
+        var i = ($scope.records.length + $scope.current_index - 1) % $scope.records.length;
+        $scope.selectRecord($scope.records[i]); 
+      }
+      $scope.removeLink = function (record, link) {
+        var i = record.dericci_links.indexOf(link);
+        if (i != -1) {
+          record.dericci_links.splice(i, 1);
+          $scope.setProgress();
+        }
+      }
       $scope.setProgress = function () {
-        $scope.progress = Math.floor(100 * ($scope.records.filter( function (r) { return r.dericci_links.length > 0; }).length / 20));
+        $scope.progress = {
+          complete: Math.floor(100 * ($scope.records.filter( function (r) { return r.dericci_links.length > 0; }).length / 20)), 
+          skipped: Math.floor(100 * ($scope.records.filter( function (r) { return r.skipped; }).length / 20))
+        };
       };
       $scope.save = function () {
         var records = $scope.records.map(function (r) {
