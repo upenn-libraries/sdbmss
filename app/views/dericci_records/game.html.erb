@@ -4,12 +4,32 @@
   <style>
     .nav > li > a {
       padding: 5px 15px;
+      color: #333;
+    }
+    .nav > li.active > a, .nav > li.active > a:focus, .nav > li.active > a:active, .nav > li.active > a:hover {
+      border-top-right-radius: 0px;
+      border-bottom-right-radius: 0px;
+      box-shadow: 2px 1px 4px #393c3e inset;
+      background: #525659;
+    }
+    .nav {
+      padding-left: 15px;
+    }
+    .progress {
+      height: 34px;
+      margin-bottom: 0px;
+    }
+    .progress-bar {
+      line-height: 34px;
+    }
+    .transparent {
+      opacity: 0;
     }
   </style>
 <% end %>
 <div data-ng-controller="DericciGameCtrl">
-  <div class="row">
-    <div class="col-sm-12">
+  <div class="row" style="margin-bottom: 10px;">
+    <div class="col-sm-11">
       <div class="progress">
         <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" style="width: {{ progress || 3 }}%">
           {{ progress }}% Complete
@@ -17,21 +37,21 @@
         <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" style="width:10%">
           Skipped
         </div>
-        <!--<div class="progress-bar progress-bar-striped progress-bar-success active" id="game-progress" role="progressbar"
-        aria-valuenow=30" aria-valuemin="0" aria-valuemax="100" style="width:30%">
-          30% Complete!
-        </div>-->
       </div>
     </div>
+    <div class="col-sm-1 text-right"><a href="" class="btn btn-primary" ng-click="save()">Submit</a></div>
   </div>
   <div class="row">
-    <ul class="nav nav-pills nav-stacked col-sm-4">
+    <ul class="nav nav-pills nav-stacked col-sm-4" style="padding-right: 0px;">
       <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }">
-        <a href="" ng-click="selectRecord(record)" ng-class="{ 'bg-success': record.dericci_links.length > 0 }">{{ record.name }}</a>
+        <a href="" class="one-line" ng-click="selectRecord(record)">
+          <span class="glyphicon glyphicon-check" ng-class="{ 'transparent': record.dericci_links.length <= 0 }"></span>
+          {{ record.name }}
+        </a>
       </li>
     </ul>
-    <div class="col-sm-8 text-center">
-      <iframe id="current-card" src="{{ current_url }}" frameborder="0" style="height: 600px; width: 100%; background: #eee;">Hello!</iframe>
+    <div class="col-sm-8 text-center" style="padding-left: 0px;">
+      <iframe id="current-card" src="{{ current_url }}" frameborder="0" style="height: 700px; width: 100%; background: #525659;">Hello!</iframe>
       <h4 class="h4">{{ current_record.name }}</h4>
       <p>{{ current_record.place }}</p>
       <p>{{ current_record.dates }}</p>

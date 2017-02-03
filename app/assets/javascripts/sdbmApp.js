@@ -348,7 +348,7 @@ var BOOKMARK_SCOPE;
         $scope.records = response.data;
         $scope.current_url = $sce.trustAsResourceUrl($scope.records[0].url);
         $scope.current_record = $scope.records[0];
-        console.log($scope.records)
+        console.log($scope.records);
       }, function(response) {
           alert("An error occurred when initializing the game.");
       });
@@ -371,30 +371,28 @@ var BOOKMARK_SCOPE;
           },
           size: 'lg'
         });
-        $scope.$watch('name', function () {
-          console.log("hey, it's changed!", $scope.name);
+        modal.result.then( function (results) {
+
+          $scope.current_record.dericci_links.push($scope.name);
+          $scope.name = {};
+          
         });
-        modal.result.then(
-          /*
-          function (result) {
-            $http.get("/dericci_records/" + $scope.current_record.id + "/link", {params: {name_id: $scope.name.id}}).then( function (response) {
-              $scope.name = {};
-              $scope.current_record = response.data;
-              $scope.records[$scope.current_index] = $scope.current_record;
-              $scope.setProgress();
-            }, function (response) {
-              alert("An error occurred when updating this name.");
-            });
-          } */
-          // make it so you have to manually submit...
-        );
       };
       $scope.setProgress = function () {
         $scope.progress = Math.floor(100 * ($scope.records.filter( function (r) { return r.dericci_links.length > 0; }).length / 20));
       };
       $scope.save = function () {
-
-      }
+        var records = $scope.records.map(function (r) {
+          if (r.dericci_links.length > 0) {
+            return {id: r.id, dericci_links_attributes: r.dericci_links.map(function (l) { return {name_id: l.id }})};
+          } else {
+            return {id: r.id};
+          }
+        });
+        $http.post("/dericci_records/update.json", { records: records }).then(function (response) {
+          console.log(response);
+        })
+      };
     });
 
     /* Controller for selecting a source*/

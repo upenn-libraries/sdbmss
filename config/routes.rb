@@ -37,6 +37,7 @@ Rails.application.routes.draw do
     collection {
       get 'index'
       get 'game'
+      post 'update'
     }
     member {
       get 'show'

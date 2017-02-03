@@ -22,22 +22,25 @@ class DericciRecordsController < ApplicationController
   end
 
   def show
+    # once names are linked to these, we WILL need 
     puts "should be deprecated"
     @record = DericciRecord.find(params[:id]) 
     render partial: "show", locals: {record: @record}
   end
 
-  def link
-    # fix me: use params
-    record = DericciRecord.find(params[:id])
-    name = Name.find(params[:name_id])
-    DericciLink.create(dericci_record: record, name: name);
-    render json: record, :include => { :dericci_links => { :only => :name_id }}
-  end
-
-  private
-
-  def dericci_params
-    params.permit(:term, :field, :page, :limit)
+  def update
+  # fix me: does it even make sense to use nested attributes, etc. when I'm not even using them the right way
+    params[:records].each do |p|
+      d = DericciRecord.find(p[:id])
+      if p[:dericci_links_attributes]
+        p[:dericci_links_attributes].each do |l|
+          link = d.dericci_links.new(name_id: l[:name_id], dericci_record: d)
+          link.save_by(current_user)
+        end
+      end
+    end
+    respond_to do |format|
+      format.json { render json: {message: "Success!"} }
+    end
   end
 end
