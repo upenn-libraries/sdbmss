@@ -936,6 +936,9 @@ div[ui-sortable] {
   display:inline-block;
   text-align: left;
 }
+.numerical-fields .control-label {
+  text-align: left;
+}
 #source-form .input-block {
   margin: 5px 10px;
 }
@@ -1441,7 +1444,7 @@ so that gray backdrop shvows up correctly */
 
 @media (min-width: 1200px) {
   .main-content .container {
-    max-width: 1170px !important;*/
+    max-width: 1170px !important;
     width: auto;
   }
 }/**/
@@ -1731,6 +1734,7 @@ so that gray backdrop shvows up correctly */
   box-shadow: 0px 0px 14px #ccc;
   z-index: 100;
   height: calc(100vh - 50px);
+  white-space: nowrap;
 }
 .scroll-box {
   height: 100%;
@@ -1797,9 +1801,6 @@ so that gray backdrop shvows up correctly */
   -webkit-transition-delay: 0s;
   -moz-transition-delay: 0s;
   transition-delay: 0s;
-}
-#control-panel a {
-  white-space: normal;
 }
 #collapse-control {
   border-radius: 0px;
