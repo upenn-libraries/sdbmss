@@ -2,6 +2,7 @@ html {
   height: 100%;
   width: 100%;
   display: table;
+  table-layout: fixed;
   min-width: 320px;
   padding-top: 50px;
 }
@@ -40,6 +41,9 @@ textarea { resize:vertical ; }
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+}
+#main-container {
+  padding: 0px 20px;
 }
 #main-container.container-fluid {
   position: absolute;
@@ -97,6 +101,11 @@ textarea { resize:vertical ; }
 }
 #header-navbar a {
   color: white;
+  background: none;
+}
+#header-navbar .dropdown-menu {
+  background: #374f73;
+  border: none;
 }
 .navbar-title, .navbar-title li {
   width: 100%;
@@ -952,14 +961,13 @@ div[ui-sortable] {
 .input-block {
   /*border: 1px solid #ddd;
   border-radius: 5px;*/
-  background-color: #fff;
+  background-color: transparent;
   transition: all linear 0.5s;
   width: 99%;
   /*box-shadow: 0px 4px 1px 0px rgba(0,0,0,0.1);*/
   /*border-bottom: 1px solid #ddd;*/
   margin: 3px -15px;
   position: relative;
-  background: #fff;
   padding: 1px;
   padding-left: 15px;
 }
@@ -1719,24 +1727,28 @@ so that gray backdrop shvows up correctly */
   background: #fff;
   padding: 0px;
   border: none;
-  display: block;
   display: table-cell;
   box-shadow: 0px 0px 14px #ccc;
   z-index: 100;
   height: calc(100vh - 50px);
 }
-#control-panel > .collapsing {
-  height: auto;
+.scroll-box {
+  height: 100%;
+  overflow-y: auto;
 }
-#control-panel > .collapsing a {
+#control-panel.collapsing {
+  /*height: auto;*/
+}
+#control-panel.collapsing a {
   white-space: nowrap;
 }
-#control-panel > .collapse {
+#control-panel.collapse {
   width: 0px;
   display: block;
 }
-#control-panel > .collapse.in {
+#control-panel.collapse.in {
   width: 268px !important;
+  display: table-cell;
 }
 #control-panel-button {
   position: absolute;
@@ -1749,11 +1761,7 @@ so that gray backdrop shvows up correctly */
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
   box-shadow: -2px 0px 6px -2px #ddd inset;
-}/*
-.bookmarks-collapse.collapse, .bookmarks-collapse.collapsing {
-  -webkit-transition: none;
-  transition: none;
-}*/
+}
 .mobile-title {
   margin: 0px 0px 0px 10px;
   line-height: 50px;
@@ -1772,11 +1780,11 @@ so that gray backdrop shvows up correctly */
   color: white;
 }
 /* FIX ME: this should really be renamed */
-.bookmarks-collapse {
-  height: 100%;
+#control-panel {
+  height: calc(100vh - 50px);
   overflow-x: hidden;
 }
-.bookmarks-collapse.collapsing {
+#control-panel {
   -webkit-transition-property: width;
   -moz-transition-property: width;
   transition-property: width;
@@ -1790,7 +1798,7 @@ so that gray backdrop shvows up correctly */
   -moz-transition-delay: 0s;
   transition-delay: 0s;
 }
-.bookmarks-collapse a {
+#control-panel a {
   white-space: normal;
 }
 #collapse-control {
@@ -1807,32 +1815,7 @@ so that gray backdrop shvows up correctly */
   box-shadow: none;
   outline: none;
 }
-#control-panel > .collapsing + #collapse-control {
-  left: 0px;
-}
-#control-panel > .collapse.in + #collapse-control {
-  left: 234px;
-  border-color: transparent;
-}
 
-#control-panel > .collapse + #collapse-control .show-collapsed, 
-#control-panel > .collapse.in + #collapse-control .hide-collapsed {
-  display: none;
-}
-
-#control-panel > .collapse.in + #collapse-control .show-collapsed, 
-#control-panel > .collapse + #collapse-control .hide-collapsed {
-  display: block;
-}
-
-#control-panel > .collapsing + #collapse-control {
-  display: none;
-} 
-
-#control-panel > .collapse + #collapse-control {
-  position: fixed;
-  left: 0px;
-}
 /*
 #control-panel .collapsing.width {
   width: 0;
