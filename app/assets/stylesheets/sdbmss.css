@@ -1739,6 +1739,7 @@ so that gray backdrop shvows up correctly */
 .scroll-box {
   height: 100%;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 #control-panel.collapsing {
   /*height: auto;*/
