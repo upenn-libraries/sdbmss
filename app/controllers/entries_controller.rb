@@ -79,9 +79,6 @@ class EntriesController < SearchableAuthorityController
     @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
     @field_options = ["contains", "does not contain", "blank", "not blank"]
     @date_options = ["before", "after", "near", "exact"]
-    if params[:widescreen] == 'true'
-      render :layout => 'widescreen'
-    end
     if params[:format] == 'csv'
       if current_user.downloads.count >= 5
         render json: {error: 'at limit'}

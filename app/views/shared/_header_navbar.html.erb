@@ -1,26 +1,18 @@
 <div id="header-navbar" class="navbar navbar-default navbar-static-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header text-right">
-      <span class="show-mobile hide-mobile-sm h3 mobile-title">Schoenberg Database of Manuscripts</span>
-      <span class="show-mobile-sm h3 mobile-title mobile-acronym">SDBM</span>
-      <% if current_user %>
-      <% end %>
-      <button type="button" class="navbar-toggle btn btn-default btn-header-hamburger" data-toggle="collapse" data-target=".user-util-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="glyphicon glyphicon-menu-down"></span>
-      </button>
-    </div>
+  <div class="container-fluid">
     <div class="row">
-      <div class="col-sm-4 hide-mobile">
-        <%= image_tag 'neh_logo_horizlarge.png', class: "img img-responsive", style: "height: 44px; display: inline-block;" %>
-      </div>
-      <div class="col-sm-4 text-center hide-mobile">
+      <div class="col-sm-12 text-center">
+        <span class="pull-left">
+        <a id='collapse-control' class="btn btn-default" data-toggle="collapse" data-target="#control-panel">
+          <span class="glyphicon glyphicon-menu-hamburger hide-collapsed"></span>
+        </a>
         <%= render partial: "shared/navbar_brand" %>
-      </div>
-      <div class="col-sm-4 text-right">
-        <div class="collapse navbar-collapse user-util-collapse">
-          <%= render :partial=>'/user_util_links' %>
-        </div>
+        </span>
+        <%= image_tag 'sims.png', class: "img img-responsive hide-mobile-lg" %>
+        <span class="pull-right hide-mobile" style="line-height: 50px;">
+          <%= render partial: "/user_util_links" %>
+          <%# image_tag 'neh_logo_white.png', class: "img img-responsive hide-mobile", style: "max-height: 44px;" %>
+        </span>
       </div>
     </div>
   </div>

@@ -2,7 +2,9 @@ html {
   height: 100%;
   width: 100%;
   display: table;
+  table-layout: fixed;
   min-width: 320px;
+  padding-top: 50px;
 }
 body {
   background: white;
@@ -40,13 +42,16 @@ textarea { resize:vertical ; }
   overflow-y: auto;
   overflow-x: hidden;
 }
+#main-container {
+  padding: 0px 20px;
+}
 #main-container.container-fluid {
   position: absolute;
   width: 100%;
 }
 .main-content-wrapper {
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 50px);
   vertical-align: top;
   display: table-cell;
 }
@@ -80,12 +85,27 @@ textarea { resize:vertical ; }
   /*
    bg-color:::: ? rgb(118, 148, 200) 
   */
-  background-color: #d5d5d5;
+  background-color: #374f73;
   border: none;
+  box-shadow: 0px 1px 14px 0px #ddd;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  min-width: 320px;
   /*box-shadow: 0px 2px 4px lightgray;*/
 }
+#header-navbar img {
+  max-height: 50px; 
+  display: inline-block;
+}
 #header-navbar a {
-  color: black;
+  color: white;
+  background: none;
+}
+#header-navbar .dropdown-menu {
+  background: #374f73;
+  border: none;
 }
 .navbar-title, .navbar-title li {
   width: 100%;
@@ -108,14 +128,21 @@ textarea { resize:vertical ; }
 
 /* There's some tweaky stuff in "#header-navbar .navbar-brand" rule that we're overriding here, probably fragile */
 #header-navbar .navbar-brand { 
-  background: none; overflow: visible; text-indent: 0; color: black; width: auto;
+  background: none;
+  overflow: visible;
+  text-indent: 0;
+  color: white;
+  width: auto;
+  float: none;
+  margin: 0px;
 }
+/*
 #header-navbar .navbar-brand:after {
   content: ' [Beta]';
   font-size: 0.8em;
   font-variant: small-caps;
   color: #666;
-}
+}*/
 /*#header-navbar .navbar-brand {
     background: none;
     overflow: visible;
@@ -129,7 +156,7 @@ textarea { resize:vertical ; }
     text-shadow: 4px 0px #eee;
 }*/
 #header-navbar .brand {
-  color: black;
+  color: white;
   display: inline-block;
   vertical-align: top;
 }
@@ -379,7 +406,7 @@ textarea { resize:vertical ; }
 
 /* Development link */
 #header-navbar .development { 
-  display: inline-block;
+  display: none;
   padding-top: 15px;
   color: red;
   float: left;
@@ -388,9 +415,13 @@ textarea { resize:vertical ; }
 }
 
 #search-navbar { 
-  background-color: #f8f8f8;
-  box-shadow: 0px 0px 5px lightgray;
+  background-color: #eee1be;
+  border: 1px solid #e0d1a8;
+  box-shadow: none;
   margin-bottom: 10px;
+}
+.navbar .nav > li > a {
+  padding: 15px 10px;
 }
 
 .search-info {
@@ -398,6 +429,14 @@ textarea { resize:vertical ; }
   padding: 4px;
   background: darkcyan;
   color: white;
+}
+
+.catalog-search-form {
+  width: 60%;
+}
+.catalog-search-info {
+  max-width: 40%;
+  float: right;
 }
 
 #search-navbar .search-query-form { width: 100%; }
@@ -408,7 +447,11 @@ textarea { resize:vertical ; }
   margin: 0px 0px -15px 0px;
 }
 
-.search-form { font-size: 12px; }
+.search-form { 
+  max-width: 480px;
+  float: right;
+  font-size: 12px;
+}
 
 .search-form .form-control { font-size: 12px; }
 
@@ -894,6 +937,9 @@ div[ui-sortable] {
   display:inline-block;
   text-align: left;
 }
+.numerical-fields .control-label {
+  text-align: left;
+}
 #source-form .input-block {
   margin: 5px 10px;
 }
@@ -919,14 +965,13 @@ div[ui-sortable] {
 .input-block {
   /*border: 1px solid #ddd;
   border-radius: 5px;*/
-  background-color: #fff;
+  background-color: transparent;
   transition: all linear 0.5s;
   width: 99%;
   /*box-shadow: 0px 4px 1px 0px rgba(0,0,0,0.1);*/
   /*border-bottom: 1px solid #ddd;*/
   margin: 3px -15px;
   position: relative;
-  background: #fff;
   padding: 1px;
   padding-left: 15px;
 }
@@ -1414,6 +1459,9 @@ so that gray backdrop shvows up correctly */
   div.show-mobile-lg {
     display: block;
   }
+  img.show-mobile-lg {
+    display: inline-block !important;
+  }
   .hide-mobile-lg {
     display: none !important;
   }
@@ -1426,6 +1474,30 @@ so that gray backdrop shvows up correctly */
 }
 /* RESPONSIVE */
 @media (max-width: 767px) {
+  .catalog-search-form {
+    width: 100%;
+  }
+  .catalog-search-info {
+    max-width: 100%;
+    float: none;
+    text-align: right;
+  }
+  .catalog-search-info ul {
+    text-align: right;
+    background: none !important;
+  }
+  .catalog-search-info .open a {
+    background: none !important;
+  }
+  .navbar-brand {
+    letter-spacing: -2px !important;
+    margin: 0px !important;
+    padding-right: 0px;
+    padding-left: 0px;
+  }
+  #collapse-control {
+    margin-right: 0px !important;
+  }
   .expandable-table {
     display: inline-block !important;
     width: 100% !important;
@@ -1539,6 +1611,9 @@ so that gray backdrop shvows up correctly */
   }
 }
 @media (max-width: 1024px) {
+  .navbar-brand {
+    letter-spacing: -1px;
+  }
   .main-content {
     max-width: 100vw;
     width: 100% !important;
@@ -1653,24 +1728,33 @@ so that gray backdrop shvows up correctly */
 }
 
 #control-panel {
-  background: #f8f8f8;
+  background: #fff;
   padding: 0px;
-  border-right: 1px solid #ddd;
-  display: block;
+  border: none;
   display: table-cell;
-}
-#control-panel > .collapsing {
-  height: auto;
-}
-#control-panel > .collapsing a {
+  box-shadow: 0px 0px 14px #ccc;
+  z-index: 100;
+  height: calc(100vh - 50px);
   white-space: nowrap;
 }
-#control-panel > .collapse {
+.scroll-box {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+#control-panel.collapsing {
+  /*height: auto;*/
+}
+#control-panel.collapsing a {
+  white-space: nowrap;
+}
+#control-panel.collapse {
   width: 0px;
   display: block;
 }
-#control-panel > .collapse.in {
+#control-panel.collapse.in {
   width: 268px !important;
+  display: table-cell;
 }
 #control-panel-button {
   position: absolute;
@@ -1683,11 +1767,7 @@ so that gray backdrop shvows up correctly */
   border-top-right-radius: 6px;
   border-bottom-right-radius: 6px;
   box-shadow: -2px 0px 6px -2px #ddd inset;
-}/*
-.bookmarks-collapse.collapse, .bookmarks-collapse.collapsing {
-  -webkit-transition: none;
-  transition: none;
-}*/
+}
 .mobile-title {
   margin: 0px 0px 0px 10px;
   line-height: 50px;
@@ -1703,15 +1783,14 @@ so that gray backdrop shvows up correctly */
 .mobile-acronym {
   line-height: 50px;
   font-size: 36px;
-  font-weight: bold;
-  color: #333;
+  color: white;
 }
 /* FIX ME: this should really be renamed */
-.bookmarks-collapse {
-  height: 100%;
+#control-panel {
+  height: calc(100vh - 50px);
   overflow-x: hidden;
 }
-.bookmarks-collapse.collapsing {
+#control-panel {
   -webkit-transition-property: width;
   -moz-transition-property: width;
   transition-property: width;
@@ -1725,53 +1804,21 @@ so that gray backdrop shvows up correctly */
   -moz-transition-delay: 0s;
   transition-delay: 0s;
 }
-.bookmarks-collapse a {
-  white-space: normal;
-}
 #collapse-control {
-  z-index: 2000;
-  top: 0px;
-  display: block;
-  position: fixed;
-  left: 269px;
   border-radius: 0px;
   border: none;
   background: none;
   height: 50px;
-  font-size: 33px;
-  line-height: 50px;
-  padding: 7px;
+  font-size: 24px;
+  line-height: 40px;
+  margin: 0px 0px 0px -10px;
+  color: #fff !important;
 }
 #collapse-control:focus, #collapse-control:active {
   box-shadow: none;
   outline: none;
 }
-#control-panel > .collapsing + #collapse-control {
-  left: 0px;
-}
-#control-panel > .collapse.in + #collapse-control {
-  left: 234px;
-  border-color: transparent;
-}
 
-#control-panel > .collapse + #collapse-control .show-collapsed, 
-#control-panel > .collapse.in + #collapse-control .hide-collapsed {
-  display: none;
-}
-
-#control-panel > .collapse.in + #collapse-control .show-collapsed, 
-#control-panel > .collapse + #collapse-control .hide-collapsed {
-  display: block;
-}
-
-#control-panel > .collapsing + #collapse-control {
-  display: none;
-} 
-
-#control-panel > .collapse + #collapse-control {
-  position: fixed;
-  left: 0px;
-}
 /*
 #control-panel .collapsing.width {
   width: 0;
@@ -2014,7 +2061,7 @@ Private Message Styling
   padding: 6px 12px;
   margin: 0px;
 }
-.show-mobile, .show-mobile-sm {
+.show-mobile, .show-mobile-sm, .show-mobile-lg {
   display: none;
 }
 .btn-header-hamburger {
@@ -2057,15 +2104,20 @@ Private Message Styling
   background: white;
   padding: 0px;
 }
+#control-panel .panel-heading {
+  background: #f8f8f8;
+}
+#control-panel .panel-heading .h4 {
+  color: #555;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 18px;
+}
 #control-panel a {
   color: #333;
 }
 #control-panel .text-muted {
   color: #777;
-}
-#control-panel {
-  background: #eee;
-  border-right: 1px solid #eee;
 }
 #control-panel li.disabled a {
   color: #999;
