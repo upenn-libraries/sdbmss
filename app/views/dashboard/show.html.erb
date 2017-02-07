@@ -86,9 +86,11 @@ $(document).ready( function () {
             // ajax load from data-url
             $(href).load(url,function(result){      
                 tab.tab('show')
+                bindRemoteAjaxCallback();
             });
         } else {
             $(this).tab('show');
+            bindRemoteAjaxCallback();
         }
     });
     
