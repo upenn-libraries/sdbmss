@@ -1,7 +1,6 @@
 class DericciRecordsController < ApplicationController
 
   def index
-    params = dericci_params
     @count = params[:limit] ? params[:limit].to_i : 20
     @page = params[:page] ? params[:page].to_i : 0
     @offset = @page * @count
