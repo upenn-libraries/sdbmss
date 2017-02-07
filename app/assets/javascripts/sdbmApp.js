@@ -2552,6 +2552,7 @@ var BOOKMARK_SCOPE;
       }
     }
     $scope.addtag = function (bookmark, tag) {
+      if (tag.length <= 0) return;
       if (bookmark.tags.indexOf(tag) == -1) {
         bookmark.tags.push(tag);
         bookmark.newtag = "";

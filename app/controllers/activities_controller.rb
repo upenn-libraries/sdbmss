@@ -3,6 +3,8 @@ class ActivitiesController < ApplicationController
 
   before_action :authenticate_user!
 
+  load_and_authorize_resource :only => [:index]
+
   def show_all
     if params[:mine]
       # finds last 7 days of activity - maybe too much?

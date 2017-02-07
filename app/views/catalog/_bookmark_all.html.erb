@@ -1,3 +1,4 @@
+<% if current_user %>
 <div class="btn-group">
   <button type='button' class="bookmark-all btn btn-default" onclick="$('.bookmark[data-method=post]').click()">
     <span class="glyphicon glyphicon-bookmark"></span>
@@ -7,3 +8,4 @@
     Clear
   </button>
 </div>
+<% end %>
