@@ -14,17 +14,17 @@
       </li>
       <li>
         <%= link_to(sources_path) do %>
-        <span class="glyphicon glyphicon-th-large"></span> Sources
+        <span class="glyphicon glyphicon-th-large"></span> <%= can?(:manage, Source) ? '' : 'My ' %>Sources
         <% end %>
       </li>
       <li>
         <%= link_to(manuscripts_path) do %>
-        <span class="glyphicon glyphicon-th"></span> Manuscripts
+        <span class="glyphicon glyphicon-th"></span> <%= can?(:manage, Manuscript) ? '' : 'My ' %>Manuscripts
         <% end %>
       </li>
       <li>
         <%= link_to(comments_path) do %>
-        <span class="glyphicon glyphicon-th-large"></span> Comments
+        <span class="glyphicon glyphicon-th-large"></span> <%= can?(:manage, Comment) ? '' : 'My ' %>Comments
         <% end %>
       </li>
       <% if can? :manage, Name %>

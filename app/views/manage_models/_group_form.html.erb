@@ -3,11 +3,11 @@
 <p>First, select from the dropdown menu which group to add entries to or remove entries from. Next, select entries by clicking on the box to the left of each entry. Then, click <b>Add Entry(s)</b> or <b>Remove Entry(s)</b>. The User Group name will appear in the corresponding column below.</p>
 
 <div class="form-inline">
-  <div class="input-group" style="width: 250px;">
-    <input type="submit" value="Add Entry(s)" class='form-control' id="add-to-group" style="max-width: 110px;"/>
-    <input type="submit" value="Remove Entry(s)" class='form-control' id="remove-from-group" style="max-width: 140px;"/>
+  <div class="input-group" style="width: 135px;">
+    <input type="submit" value="Add" class='form-control' id="add-to-group" style="max-width: 50px;"/>
+    <input type="submit" value="Remove" class='form-control' id="remove-from-group" style="max-width: 80px;"/>
   </div>
-  <span>to/from</span>
+  <span>Entry(s) to/from</span>
   <% groups = Group.joins(:group_users).where(:group_users => {user: current_user, role: "Manager"}) %>
   <% if groups.count > 0 %>  
   <select class='form-control' id="group-select" style="max-width: 200px;">

@@ -32,6 +32,7 @@
          var canEdit = 0;
          var username = '<%= current_user.username %>';
      <% end %>
+    var user_id = '<%= current_user.id %>';
 
      // Subclass of SDBM.ManageRecords tailored for display of entries
      var ManageEntries = function(options) {
@@ -80,7 +81,16 @@
                             var editable = full[sdbmTable.getColumnIndex("Can Edit")];
 
                             var result = '<span class="btn-group options-btn-group">';
+/*
+                            if (!full[sdbmTable.getColumnIndex("Bookmarked")]) {                            
+                                result += '<a data-type="json" class="bookmark btn btn-xs btn-default" data-remote="true" rel="nofollow" data-method="post" href="/bookmarks?document_id=' + entryId + '&amp;document_type=Entry"><span class="glyphicon glyphicon-bookmark"></span></a>';
+                            }*/
+                            /*if (!full[sdbmTable.getColumnIndex("Watched")]) {
+                                result += '<a data-type="json" class="btn btn-xs btn-default" data-remote="true" rel="nofollow" data-method="post" href="/watches?watched_id=' + entryId + '&amp;watched_type=Entry&user_id=' + user_id + '&button=true"><span class="glyphicon glyphicon-eye-open"></span></a>';
+                            }*/
+                            result += full[sdbmTable.getColumnIndex("BookmarkWatch")];
                             // bookmark button
+
                             //result += '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
 
                             // edit

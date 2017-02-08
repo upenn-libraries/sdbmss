@@ -586,6 +586,7 @@ describe "Data entry", :js => true do
     end
 
     it "should save an Entry and log it in Recent Activity" do
+      skip 'changed user permissions'
       create_entry
 
       entry = Entry.last

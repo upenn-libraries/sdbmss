@@ -213,6 +213,8 @@ describe "Data entry", :js => true do
       page.evaluate_script('window.confirm = function() { return true; }')
 
       find_by_id("delete_title_0").click
+      expect(page).to have_content("Are you sure you want to remove this field and its contents?")
+      click_button "Yes"
 
       first(".save-button").click
 

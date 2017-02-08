@@ -584,6 +584,11 @@ var SDBM = SDBM || {};
                     title: "Can Edit",
                     visible: false,
                     searchable: false
+                },
+                {
+                    title: "BookmarkWatch",
+                    visible: false,
+                    searchable: false
                 }
             ]
         };
@@ -686,7 +691,8 @@ var SDBM = SDBM || {};
                             result.approved,
                             result.deprecated,
                             result.superceded_by_id,
-                            result.can_edit
+                            result.can_edit,
+                            result.bookmarkwatch
                         ];
                     });
                     

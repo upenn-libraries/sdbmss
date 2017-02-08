@@ -1450,12 +1450,7 @@ so that gray backdrop shvows up correctly */
   }
 }/**/
 
-@media (max-width: 1255px) {
-  #control-panel {
-    position: fixed;
-    height: 100%;
-    z-index: 2000;
-  }
+@media (max-width: 1255px) {  
   div.show-mobile-lg {
     display: block;
   }
@@ -1611,6 +1606,11 @@ so that gray backdrop shvows up correctly */
   }
 }
 @media (max-width: 1024px) {
+  #control-panel {
+    position: fixed;
+    height: 100%;
+    z-index: 2000;
+  }
   .navbar-brand {
     letter-spacing: -1px;
   }
@@ -1741,6 +1741,7 @@ so that gray backdrop shvows up correctly */
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 #control-panel.collapsing {
   /*height: auto;*/
@@ -1753,7 +1754,7 @@ so that gray backdrop shvows up correctly */
   display: block;
 }
 #control-panel.collapse.in {
-  width: 268px !important;
+  width: 240px !important;
   display: table-cell;
 }
 #control-panel-button {
@@ -1969,6 +1970,15 @@ Private Message Styling
   color: #03A9F4;
 }
 
+.sdbm-table .bookmark-text, .sdbm-table .watch-text {
+  display: none;
+}
+.sdbm-table .btn-group .btn-default:first-child {
+  margin-right: -3px;
+}
+.sdbm-table .btn-default a {
+  color: #333;
+}
 .bookmark[data-method="delete"], .watch[data-method="delete"] {
   color: gold !important;
 }
@@ -2115,6 +2125,8 @@ Private Message Styling
 }
 #control-panel a {
   color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #control-panel .text-muted {
   color: #777;

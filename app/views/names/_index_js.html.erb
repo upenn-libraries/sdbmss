@@ -48,6 +48,7 @@ load_session = '<%= params[:last_search] %>' == 'true';
                 orderable: false,
                 render: function (data, type, full, meta) {
                     var result = '<span class="btn-group options-btn-group">';
+                    result += full[manageRecords.dataTable.getColumnIndex("BookmarkWatch")];
                     //result += '<a onclick="addBookmark(' + data + ', \'Name\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/names/' + data + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
                     result += '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>';
                     result += '<a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
@@ -132,6 +133,11 @@ load_session = '<%= params[:last_search] %>' == 'true';
             {
                 title: 'Updated On',
                 dbSortField: 'updated_at'
+            },
+            {
+                title: 'BookmarkWatch',
+                visible: false,
+                searchable: false
             }
         ];
      };
@@ -155,9 +161,14 @@ load_session = '<%= params[:last_search] %>' == 'true';
              result.created_by || "",
              result.created_at || "",
              result.updated_by || "",
-             result.updated_at || ""
+             result.updated_at || "",
+             result.bookmarkwatch
          ];
      };
+
+     $('#search_results').on('draw.dt', function () {
+        bindRemoteAjaxCallback();
+     });
 
      var config = {
          resourceName: "<%= resource_name %>",

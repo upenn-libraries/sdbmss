@@ -60,7 +60,8 @@ $(document).ready(function() {
                  render: function (data, type, full, meta) {
                     var created_by = full[manageRecords.dataTable.getColumnIndex("Created By")];
                     var result = '<span class="btn-group options-btn-group">';
-                    //result += '<a onclick="addBookmark(' + data + ', \'Source\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/sources/' + data + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
+                    result += full[manageRecords.dataTable.getColumnIndex("BookmarkWatch")];
+
                     if (canEdit || username == created_by) {
                         result += '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>';
                     }
@@ -155,6 +156,11 @@ $(document).ready(function() {
             {
                 title: "Reviewed",
                 dbSortField: 'reviewed'
+            },
+            {
+                title: "BookmarkWatch",
+                visible: false,
+                searchable: false
             }
          ];
      };
@@ -181,7 +187,8 @@ $(document).ready(function() {
              result.created_at || "",
              result.updated_by || "",
              result.updated_at || "",
-             result.reviewed
+             result.reviewed,
+             result.bookmarkwatch
          ];
      };
 
@@ -302,6 +309,7 @@ $(document).ready(function() {
      var manageSources = new ManageSources(config);
 
      $('#search_results').on('draw.dt', function () {
+        bindRemoteAjaxCallback();
      });
 
      // since the source-table default is 'wide', adjust the fullscreen icon

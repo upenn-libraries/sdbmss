@@ -178,6 +178,9 @@ if @entry.comments.present?
   end
 end
 
+#json.bookmarked current_user.bookmarks.where(document: @entry).present?
+#json.watched current_user.watches.where(watched: @entry).present?
+
 if @bookmarks
   json.bookmarks = @bookmarks
 end

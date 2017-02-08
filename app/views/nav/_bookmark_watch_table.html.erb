@@ -1,8 +1,8 @@
-<li>
+<span class='btn btn-xs btn-default'>
   <% if (w = current_user.bookmarks.where(document: model).first) %>
     <%= render partial: "bookmarks/delete", locals: {bookmark: w} %>
   <% else %>
     <%= render partial: "bookmarks/add", locals: {document: model}  %>
   <% end %>
-</li>
-<li><%= render partial: "nav/watch", locals: {watchable: model} %></li>
+</span>
+<span class='btn btn-xs btn-default'><%= render partial: "nav/watch", locals: {watchable: model } %></span>
