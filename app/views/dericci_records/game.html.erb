@@ -69,7 +69,7 @@
       <iframe id="current-card" src="{{ current_url }}" frameborder="0" style="height: 700px; width: 100%; background: #525659;">Hello!</iframe>
       <div class="row">
         <div class="col-sm-7 text-left">          
-          <h4 class="h4">{{ current_record.name }}</h4>
+          <h4 class="h4"><a href="{{ current_url }}" target="_blank">{{ current_record.name }}</a></h4>
           <p>{{ current_record.place }}</p>
           <p>{{ current_record.dates }}</p>
           <p>{{ current_record.other_info }}</p>
