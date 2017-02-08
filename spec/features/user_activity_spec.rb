@@ -60,6 +60,8 @@ describe "User Activity", :js => true do
     visit edit_entry_path(10)
     sleep(1)
     first("#delete_title_0").click
+    expect(page).to have_content("Are you sure you want to remove this field and its contents?")
+    click_button "Yes"    
     first(".save-button").click
     sleep 1.1
     visit activities_path
@@ -86,7 +88,8 @@ describe "User Activity", :js => true do
     
     expect(page).to have_content("Delete")
     first(".delete-link").trigger('click')
-    sleep 1.1
+    expect(page).to have_content("Are you sure you want to delete this record?")
+    click_button "Yes"
     expect(page).not_to have_content('Stacker Pentecost')
 
     visit activities_path

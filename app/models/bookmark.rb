@@ -7,6 +7,11 @@ class Bookmark < ActiveRecord::Base
   validates :document_type, presence: true
   validates :document_id, presence: true
 
+  validates :user_id, uniqueness: { 
+    scope: [:document_id, :document_type],
+    message: "you can only bookmark a record once"
+  }
+
   delegate :public_id, to: :document, prefix: true, allow_nil: true
 
   if Blacklight::Utils.needs_attr_accessible?

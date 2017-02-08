@@ -454,19 +454,19 @@ $(document).ready(function() {
         
         if (!unsavedChanges) {
             linktomss();
+        } else {
+            dataConfirmModal.confirm({
+                title: 'Confirm',
+                text: "You have unsaved changes that will be lost - continue?",
+                commit: 'Yes',
+                cancel: 'Cancel',
+                zIindex: 10099,
+                onConfirm: function() { 
+                    linktomss();
+                },
+                onCancel:  function() { }
+            });
         }
-
-        dataConfirmModal.confirm({
-            title: 'Confirm',
-            text: "You have unsaved changes that will be lost - continue?",
-            commit: 'Yes',
-            cancel: 'Cancel',
-            zIindex: 10099,
-            onConfirm: function() { 
-                linktomss();
-            },
-            onCancel:  function() { }
-        });
 
         return false;
     });

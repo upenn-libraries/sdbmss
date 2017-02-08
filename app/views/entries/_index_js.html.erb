@@ -65,14 +65,14 @@
                     Generate the buttons for User actions
                   */
                  {
-                     sdbmssMinWidth: "240px",
-                     sdbmssMaxWidth: "240px",
+                     sdbmssMinWidth: "300px",
+                     sdbmssMaxWidth: "300px",
                      title: 'Actions',
                      orderable: false,
                      render: function (data, type, full, meta) {
 
                          if (full[sdbmTable.getColumnIndex("Deprecated")] === true) {
-                            return '<span class="text-danger bg-danger">This Record is DEPRECATED</span>';
+                            return '<div class="text-danger text-center bg-danger">This Record is DEPRECATED</div>';
                          } else {
                             var entryId = full[sdbmTable.getColumnIndex("ID")];
                             var manuscriptId = full[sdbmTable.getColumnIndex("Manuscript")];

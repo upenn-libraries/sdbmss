@@ -735,9 +735,10 @@ describe "Data entry", :js => true do
       expect(page).to have_content("Known errors in the Source should be preserved but can be noted")
 
       first(".save-button").click
-      first(".save-button").click
+      sleep 2
 
-      sleep 4
+      # note: this fails frequently, for some unknown reason -> no 'sleep duration' seems to affect this...
+      expect(page).not_to have_content("Known errors in the Source should be preserved but can be noted")
 
       expect(page).to have_content("This entry has been identified as belonging to manuscript record SDBM_MS_2, which has 2 entries in the SDBM.")
     end

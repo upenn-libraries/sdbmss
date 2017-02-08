@@ -248,7 +248,10 @@ describe "Paper trail", :js => true do
 
         t = find('#title_0').value
 
-        find('#delete_title_0').click
+        find_by_id("delete_title_0").click
+        expect(page).to have_content("Are you sure you want to remove this field and its contents?")
+        click_button "Yes"
+
         first(".save-button").click
         
         sleep(1.1)

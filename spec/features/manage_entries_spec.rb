@@ -72,7 +72,9 @@ describe "Manage entries", :js => true do
 
     visit entries_path
     all(".entry-delete-link").last.trigger('click')
-    sleep(1)
+    expect(page).to have_content("Are you sure you want to delete entry")
+    click_button "Yes"
+    sleep 1.1
 
     expect(Entry.all.count).to eq(count - 1)
   end
