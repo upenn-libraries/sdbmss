@@ -42,7 +42,7 @@
     }
   </style>
 <% end %>
-<div data-ng-controller="DericciGameCtrl">
+<div data-ng-controller="DericciGameCtrl" data-ng-cloak>
   <div class="row" style="margin-bottom: 10px;">
     <div class="col-sm-11">
       <div class="progress">
@@ -66,7 +66,7 @@
       </li>
     </ul>
     <div class="col-sm-8" style="padding-left: 0px;">
-      <iframe id="current-card" src="{{ current_url }}" frameborder="0" style="height: 700px; width: 100%; background: #525659;">Hello!</iframe>
+      <iframe id="current-card" ng-src="{{ current_url }}" frameborder="0" style="height: 700px; width: 100%; background: #525659;">Hello!</iframe>
       <div class="row">
         <div class="col-sm-7 text-left">          
           <h4 class="h4"><a href="{{ current_url }}" target="_blank">{{ current_record.name }}</a></h4>
