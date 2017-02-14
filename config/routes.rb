@@ -45,6 +45,8 @@ Rails.application.routes.draw do
       get 'link'
     }
   end
+  resources :dericci_games
+  resources :dericci_links
 
   resources :replies
   resources :notifications, only: [:index, :show, :update, :destroy]

@@ -54,6 +54,9 @@ class Name < ActiveRecord::Base
 
   has_many :comments, as: :commentable
 
+  has_many :dericci_links
+  has_many :dericci_records, through: :dericci_links
+
   validates_presence_of :name
 
   validate do |name_obj|

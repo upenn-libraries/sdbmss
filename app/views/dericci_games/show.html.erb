@@ -42,6 +42,7 @@
     }
   </style>
 <% end %>
+<input type="hidden" class="hidden" id="game_id" value="<%= @game.id %>">
 <div data-ng-controller="DericciGameCtrl" data-ng-cloak>
   <div class="row" style="margin-bottom: 10px;">
     <div class="col-sm-11">
@@ -79,13 +80,13 @@
           <div class="my-btn-group btn-group">
             <a href="" class="btn btn-default" ng-click="prev()"><span class="glyphicon glyphicon-chevron-left"></span></a>
             <a href="" class="btn btn-default" ng-click="findName(current_record);">Find Name</a>
-            <a href="" class="btn btn-warning" ng-class="{'disabled' : isLinked(current_record)" ng-click="skip(current_record)">Skip</a>
+            <a href="" class="btn btn-warning" ng-class="{'disabled' : current_record && isLinked(current_record) }" ng-click="skip(current_record)">Skip</a>
             <a href="" class="btn btn-default" ng-click="next()"><span class="glyphicon glyphicon-chevron-right"></span></a>
           </div>
           <ul class="list-group text-left">
-            <li class='list-group-item' ng-repeat="dericci_link in current_record.dericci_links">
-              <a target="_blank" href="/names/{{ dericci_link.id }}">
-                SDBM_NAME_{{ dericci_link.id }}
+            <li class='list-group-item' ng-if="current_record" ng-repeat="dericci_link in actualLinks(current_record)">
+              <a target="_blank" href="/names/{{ dericci_link.name_id }}">
+                SDBM_NAME_{{ dericci_link.name_id }}
               </a>
               <a href="" class="pull-right" ng-click="removeLink(current_record, dericci_link)">
                 <span class="glyphicon glyphicon-remove-circle"></span>

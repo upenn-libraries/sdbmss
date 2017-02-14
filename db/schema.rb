@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170203155534) do
+ActiveRecord::Schema.define(version: 20170214155228) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -72,6 +72,19 @@ ActiveRecord::Schema.define(version: 20170203155534) do
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
+  create_table "dericci_game_records", force: :cascade do |t|
+    t.integer "dericci_game_id",   limit: 4
+    t.integer "dericci_record_id", limit: 4
+  end
+
+  create_table "dericci_games", force: :cascade do |t|
+    t.integer  "created_by_id", limit: 4
+    t.datetime "created_at"
+    t.boolean  "reviewed"
+  end
+
+  add_index "dericci_games", ["created_by_id"], name: "index_dericci_games_on_created_by_id", using: :btree
+
   create_table "dericci_links", force: :cascade do |t|
     t.integer  "name_id",           limit: 4
     t.integer  "dericci_record_id", limit: 4
@@ -80,6 +93,9 @@ ActiveRecord::Schema.define(version: 20170203155534) do
     t.datetime "updated_at"
     t.integer  "updated_by_id",     limit: 4
     t.boolean  "approved"
+    t.integer  "dericci_game_id",   limit: 4
+    t.text     "other_info",        limit: 65535
+    t.integer  "reliability",       limit: 4,     default: 0
   end
 
   add_index "dericci_links", ["created_by_id"], name: "index_dericci_links_on_created_by_id", using: :btree

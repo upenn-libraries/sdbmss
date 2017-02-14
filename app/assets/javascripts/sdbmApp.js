@@ -342,13 +342,14 @@ var BOOKMARK_SCOPE;
       $scope.current_record = undefined;
       $scope.current_url = "";
       $scope.current_index = 0;
+      $scope.gameID = $("#game_id").val();
       $scope.progress = {complete: 0, skipped: 0};
-      $http.get("/dericci_records/game.json", {
+      $http.get("/dericci_games/" + $scope.gameID + ".json", {
       }).then(function (response) {
-        $scope.records = response.data;
+//        console.log(response);
+        $scope.records = response.data.dericci_records;
         $scope.current_url = $sce.trustAsResourceUrl($scope.records[0].url);
         $scope.current_record = $scope.records[0];
-        console.log($scope.records);
       }, function(response) {
           alert("An error occurred when initializing the game.");
       });
@@ -373,16 +374,21 @@ var BOOKMARK_SCOPE;
         });
         modal.result.then( function (results) {
           model.skipped = false;
-          $scope.current_record.dericci_links.push($scope.name);
-          $scope.name = {};
+          $scope.current_record.dericci_links.push({name_id: $scope.name.id});
           // don't automatically move to next when you find a name, only when skipping
           //$scope.current_index = ($scope.current_index + 1) % $scope.records.length;
           //$scope.current_record = $scope.records[$scope.current_index];
           $scope.setProgress();
         });
       };
+      $scope.isLinked = function (record) {
+        return record && $scope.actualLinks(record).length > 0;
+      }
+      $scope.actualLinks = function (record) {
+        return record && record.dericci_links.filter(function (l) { return l.name_id });
+      }
       $scope.skip = function (model) {
-        if (model.dericci_links.length <= 0) {          
+        if ($scope.actualLinks(model) <= 0) {          
           model.skipped = true;
           $scope.next();
           $scope.setProgress();
@@ -405,19 +411,13 @@ var BOOKMARK_SCOPE;
       }
       $scope.setProgress = function () {
         $scope.progress = {
-          complete: Math.floor(100 * ($scope.records.filter( function (r) { return r.dericci_links.length > 0; }).length / 20)), 
+          complete: Math.floor(100 * ($scope.records.filter( function (r) { return $scope.isLinked(r); }).length / 20)), 
           skipped: Math.floor(100 * ($scope.records.filter( function (r) { return r.skipped; }).length / 20))
         };
       };
       $scope.save = function () {
-        var records = $scope.records.map(function (r) {
-          if (r.dericci_links.length > 0) {
-            return {id: r.id, dericci_links_attributes: r.dericci_links.map(function (l) { return {name_id: l.id }})};
-          } else {
-            return {id: r.id};
-          }
-        });
-        $http.post("/dericci_records/update.json", { records: records }).then(function (response) {
+        var records = $scope.records;
+        $http.put("/dericci_games/" + $scope.gameID + ".json", { records: records }).then(function (response) {
           console.log(response);
         })
       };
