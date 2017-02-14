@@ -1178,7 +1178,7 @@ var BOOKMARK_SCOPE;
                     $scope.postEntrySave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
                 ).finally(function() {
-                    $scope.currentlySaving = false;
+                    // $scope.currentlySaving = false;
                 });
             } else {
 
@@ -1202,7 +1202,7 @@ var BOOKMARK_SCOPE;
                     $scope.postEntrySave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
                 ).finally(function() {
-                    $scope.currentlySaving = false;
+                    // $scope.currentlySaving = false;
                 });
             }
         };
@@ -2017,7 +2017,7 @@ var BOOKMARK_SCOPE;
                 $scope.postSourceSave,
                 sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
             ).finally(function() {
-                $scope.currentlySaving = false;
+                // $scope.currentlySaving = false;
             });
         };
         
@@ -2036,7 +2036,7 @@ var BOOKMARK_SCOPE;
                   alert("Error confirming that this new source doesn't already exist");
               },
               complete: function() {
-                  $scope.currentlySaving = false;
+                  // $scope.currentlySaving = false;
               }
           });
         }
@@ -2110,7 +2110,7 @@ var BOOKMARK_SCOPE;
                     $scope.postSourceSave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
                 ).finally(function() {
-                    $scope.currentlySaving = false;
+                    // $scope.currentlySaving = false;
                 });
             } else {
                 if (sourceToSave.source_type_id == 4) {
