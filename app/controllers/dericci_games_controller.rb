@@ -16,8 +16,9 @@ class  DericciGamesController < ApplicationController
 
   def new
     @game = DericciGame.create!(created_by: current_user)
-    #@records =  DericciRecord.includes(:dericci_links).where('dericci_links.id is NULL or dericci_links.reliability < 4').limit(20).order("RAND()").references(:dericci_links)
-    @records =  DericciRecord.includes(:dericci_links).where('dericci_links.id is NULL or dericci_links.reliability < 4').limit(20).references(:dericci_links)
+
+    # this is quite the query!
+    @records = DericciRecord.where("(id IN (SELECT dericci_record_id from (SELECT * FROM dericci_links GROUP BY dericci_record_id HAVING sum(reliability) < 4) A where A.created_by_id <> #{current_user.id})) OR ((id NOT IN (SELECT dericci_record_id FROM dericci_links WHERE true)))").limit(20).order("RAND()")
     puts @records.count
     @game.dericci_game_records.create!(@records.map{ |r| {dericci_record: r}})
     redirect_to dericci_game_path(@game)
@@ -26,6 +27,7 @@ class  DericciGamesController < ApplicationController
   def update
     game = DericciGame.find(params[:id])
     game.update!(game_params)
+    flash[:success] = "Thank you for playing the Dericci Archives Game!"
     respond_to do |format|
       format.json { render json: {message: "Success!"} }
     end
@@ -50,7 +52,7 @@ class  DericciGamesController < ApplicationController
 
   def game_params
     p = params.require(:dericci_game).permit(
-      :dericci_records_attributes => [:id, :dericci_links_attributes => [:id, :name_id, :other_info, :_destroy]])
+      :skipped, :completed, :dericci_records_attributes => [:id, :dericci_links_attributes => [:id, :name_id, :other_info, :_destroy]])
     # this incredibly inelegant solution is here because for some reason deep_merge would not do what it was supposed to...
     p[:dericci_records_attributes].each do |dra|
       dra[:dericci_links_attributes].each do |dla|

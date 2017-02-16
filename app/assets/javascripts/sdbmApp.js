@@ -430,9 +430,12 @@ var BOOKMARK_SCOPE;
           r.dericci_links_attributes = r.dericci_links;          
           return r;
         });
-        $http.put("/dericci_games/" + $scope.gameID + ".json", { dericci_game: {id: $scope.gameId, dericci_records_attributes: records} }).then(function (response) {
-          //console.log(response);
-          // fix me: once the game is submitted, what to do?
+        $http.put("/dericci_games/" + $scope.gameID + ".json", { dericci_game: {id: $scope.gameId, skipped: $scope.progress.skipped, completed: $scope.progress.complete, dericci_records_attributes: records} }).then(function (response) {
+          if (response.data.message == "Success!") {
+            window.location = "/dericci_games/";
+          } else {
+            console.log(response);            
+          }
         })
       };
     });

@@ -1,3 +1,6 @@
+<% content_for :breadcrumbs do %>
+  <%= render partial: "dericci_games/breadcrumbs" %>
+<% end %>
 <%= form_tag dericci_records_path, :method => 'get', class: "form-inline" do %>
 <div class="row" style="margin-bottom: 10px;">
   <div class="col-sm-3"></div>
@@ -38,15 +41,11 @@
 <% end %>
 <div class="row">
   <div class="col-sm-12">
-    <ul class="list-group">
       <% if @total <= 0 %>
-        <li class="list-group-item text-muted text-center">No matching records found.</li>
+        <p class="text-muted text-center">No matching records found.</p>
       <% end %>
       <% @records.each do |record| %>
-        <li class="list-group-item <%= record.dericci_links.count > 0 ? 'list-group-item-info' : '' %>">          
           <%= render partial: "show", locals: {record: record} %>
-        </li>
       <% end %>
-    </ul>
   </div>
 </div>

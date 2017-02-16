@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170215150009) do
+ActiveRecord::Schema.define(version: 20170216164131) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -79,8 +79,11 @@ ActiveRecord::Schema.define(version: 20170215150009) do
 
   create_table "dericci_games", force: :cascade do |t|
     t.integer  "created_by_id", limit: 4
-    t.datetime "created_at"
     t.boolean  "reviewed"
+    t.integer  "skipped",       limit: 4
+    t.integer  "completed",     limit: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "dericci_games", ["created_by_id"], name: "index_dericci_games_on_created_by_id", using: :btree

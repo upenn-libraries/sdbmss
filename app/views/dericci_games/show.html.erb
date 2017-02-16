@@ -42,6 +42,9 @@
     }
   </style>
 <% end %>
+<% content_for :breadcrumbs do %>
+  <%= render partial: "breadcrumbs" %>
+<% end %>
 <input type="hidden" class="hidden" id="game_id" value="<%= @game.id %>">
 <div data-ng-controller="DericciGameCtrl" data-ng-cloak>
   <div class="row" style="margin-bottom: 10px;">

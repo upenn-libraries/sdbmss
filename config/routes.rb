@@ -34,17 +34,7 @@ Rails.application.routes.draw do
   end
   resources :group_users
   
-  resources :dericci_records do
-    collection {
-      get 'index'
-      get 'game'
-      post 'update'
-    }
-    member {
-      get 'show'
-      get 'link'
-    }
-  end
+  resources :dericci_records
   resources :dericci_games
   resources :dericci_links
 
