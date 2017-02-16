@@ -2,9 +2,11 @@ class DericciLink < ActiveRecord::Base
   belongs_to :name
   belongs_to :dericci_record
 
+#  has_many :comments, as: :commentable
+
   include UserFields
 
-  validates_uniqueness_of :name_id, :scope => :dericci_record_id
+#  validates_uniqueness_of :name_id, :scope => :dericci_record_id
 
 =begin
   after_create :create_structured_comment

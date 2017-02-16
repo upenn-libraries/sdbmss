@@ -330,7 +330,7 @@ var load_session = false;
             }
         }
 //        $("input[name='search_value']").first().val(qs.term);
-        if(qs.unreviewed_only === '1') {
+        if(qs && qs.unreviewed_only === '1') {
             $("input[name='unreviewed_only']").prop('checked', true);
         }
         manageRecords.showOrHideMarkCheckedRecordsButton();
@@ -357,7 +357,7 @@ var load_session = false;
             }
         }
 //        $("input[name='search_value']").first().val(qs.term);
-        if(qs.unreviewed_only === '1') {
+        if(qs && qs.unreviewed_only === '1') {
             $("input[name='unreviewed_only']").prop('checked', true);
         }
         manageRecords.showOrHideMarkCheckedRecordsButton();

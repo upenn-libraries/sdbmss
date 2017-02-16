@@ -1,5 +1,7 @@
 class  DericciGamesController < ApplicationController
   
+  load_and_authorize_resource :only => [:index, :show, :new, :update]
+
   def index
     @games = DericciGame.where(created_by: current_user)
   end
@@ -22,23 +24,8 @@ class  DericciGamesController < ApplicationController
   end
 
   def update
-  # fix me: make this more rails-y
-    params[:records].each do |p|
-      d = DericciRecord.find(p[:id])
-      if p[:dericci_links]
-        p[:dericci_links].each do |l|
-          if l[:id]
-            link = d.dericci_links.find(l[:id])
-            link.update_by(current_user, name_id: l[:name_id])
-          elsif (link = d.dericci_links.find_by(name_id: l[:name_id]))
-            link.update_by(current_user, reliability: link.reliability + user_reliability(current_user))
-          else
-            link = d.dericci_links.new(name_id: l[:name_id], dericci_record: d)
-            link.save_by(current_user)
-          end
-        end
-      end
-    end
+    game = DericciGame.find(params[:id])
+    game.update!(game_params)
     respond_to do |format|
       format.json { render json: {message: "Success!"} }
     end
@@ -59,6 +46,19 @@ class  DericciGamesController < ApplicationController
       else
         0
     end
+  end
+
+  def game_params
+    p = params.require(:dericci_game).permit(
+      :dericci_records_attributes => [:id, :dericci_links_attributes => [:id, :name_id, :other_info, :_destroy]])
+    # this incredibly inelegant solution is here because for some reason deep_merge would not do what it was supposed to...
+    p[:dericci_records_attributes].each do |dra|
+      dra[:dericci_links_attributes].each do |dla|
+        dla[:created_by_id] = current_user.id
+        dla[:reliability] = user_reliability(current_user)
+      end
+    end
+    p
   end
 
 end

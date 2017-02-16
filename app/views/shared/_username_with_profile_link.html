@@ -1,6 +1,6 @@
 <%# Used for wherever a username is shown publicly (i.e. created by, commented by) %>
 <% if user.present? %>
-  <span class="dropdown">
+  <span class="<%= defined?(up) ? 'dropup' : 'dropdown' %>">
     <a href="" class="dropdown-toggle" data-toggle="dropdown">
       <%= user.to_s %>
       <span class="caret"></span>

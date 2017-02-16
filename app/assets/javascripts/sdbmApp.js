@@ -350,6 +350,7 @@ var BOOKMARK_SCOPE;
         $scope.records = response.data.dericci_records;
         $scope.current_url = $sce.trustAsResourceUrl($scope.records[0].url);
         $scope.current_record = $scope.records[0];
+        $scope.setProgress();
       }, function(response) {
           alert("An error occurred when initializing the game.");
       });
@@ -360,7 +361,6 @@ var BOOKMARK_SCOPE;
       };
       $scope.findName = function (model) {
         $scope.name = {};
-        //$scope.current_record.dericci_links.push($scope.name);
         var modal = $modal.open({
           templateUrl: "selectNameAuthority.html",
           controller: "SelectNameAuthorityCtrl",
@@ -374,11 +374,12 @@ var BOOKMARK_SCOPE;
         });
         modal.result.then( function (results) {
           model.skipped = false;
-          $scope.current_record.dericci_links.push({name_id: $scope.name.id});
-          // don't automatically move to next when you find a name, only when skipping
-          //$scope.current_index = ($scope.current_index + 1) % $scope.records.length;
-          //$scope.current_record = $scope.records[$scope.current_index];
-          $scope.setProgress();
+          if ($scope.current_record.dericci_links.filter(function (dl) { return dl.name_id == $scope.name.id }).length <= 0) {            
+            $scope.current_record.dericci_links.push({name_id: $scope.name.id, name: $scope.name.name});
+            $scope.setProgress();
+          } else {
+            alert("You have already selected that name!");
+          }
         });
       };
       $scope.isLinked = function (record) {
@@ -405,7 +406,12 @@ var BOOKMARK_SCOPE;
       $scope.removeLink = function (record, link) {
         var i = record.dericci_links.indexOf(link);
         if (i != -1) {
-          record.dericci_links.splice(i, 1);
+          // existing!
+          if (record.dericci_links[i].id) {
+            record.dericci_links[i]._destroy = true;
+          } else {            
+            record.dericci_links.splice(i, 1);
+          }
           $scope.setProgress();
         }
       }
@@ -415,10 +421,18 @@ var BOOKMARK_SCOPE;
           skipped: Math.floor(100 * ($scope.records.filter( function (r) { return r.skipped; }).length / 20))
         };
       };
+      $scope.activeRecords = function(element) {
+        return !element._destroy;
+      };
+
       $scope.save = function () {
-        var records = $scope.records;
-        $http.put("/dericci_games/" + $scope.gameID + ".json", { records: records }).then(function (response) {
-          console.log(response);
+        var records = angular.copy($scope.records).filter( function (r) { return r.dericci_links.length > 0 }).map( function (r) {
+          r.dericci_links_attributes = r.dericci_links;          
+          return r;
+        });
+        $http.put("/dericci_games/" + $scope.gameID + ".json", { dericci_game: {id: $scope.gameId, dericci_records_attributes: records} }).then(function (response) {
+          //console.log(response);
+          // fix me: once the game is submitted, what to do?
         })
       };
     });

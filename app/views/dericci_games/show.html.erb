@@ -67,36 +67,40 @@
       </li>
     </ul>
     <div class="col-sm-8" style="padding-left: 0px;">
-      <iframe id="current-card" ng-src="{{ current_url }}" frameborder="0" style="height: 700px; width: 100%; background: #525659;">Hello!</iframe>
+      <iframe id="current-card" ng-src="{{ current_url }}" frameborder="0" style="height: 500px; width: 100%; background: #525659;">Hello!</iframe>
       <div class="row">
-        <div class="col-sm-7 text-left">          
-          <h4 class="h4"><a href="{{ current_url }}" target="_blank">{{ current_record.name }}</a></h4>
-          <p>{{ current_record.place }}</p>
-          <p>{{ current_record.dates }}</p>
-          <p>{{ current_record.other_info }}</p>
-          <p>{{ current_record.senate_house }}</p>
-        </div>
-        <div class="col-sm-5 text-right">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6 text-center">          
           <div class="my-btn-group btn-group">
-            <a href="" class="btn btn-default" ng-click="prev()"><span class="glyphicon glyphicon-chevron-left"></span></a>
-            <a href="" class="btn btn-default" ng-click="findName(current_record);">Find Name</a>
+            <a href="" style="width: 1px;" class="btn btn-default" ng-click="prev()"><span class="glyphicon glyphicon-chevron-left"></span></a>
             <a href="" class="btn btn-warning" ng-class="{'disabled' : current_record && isLinked(current_record) }" ng-click="skip(current_record)">Skip</a>
-            <a href="" class="btn btn-default" ng-click="next()"><span class="glyphicon glyphicon-chevron-right"></span></a>
+            <a href="" class="btn btn-default" ng-click="findName(current_record);">Find Name</a>
+            <a href="" style="width: 1px;" class="btn btn-default" ng-click="next()"><span class="glyphicon glyphicon-chevron-right"></span></a>
           </div>
-          <ul class="list-group text-left">
-            <li class='list-group-item' ng-if="current_record" ng-repeat="dericci_link in actualLinks(current_record)">
-              <a target="_blank" href="/names/{{ dericci_link.name_id }}">
+        </div>
+        <div class="col-sm-3">
+        </div>
+        <div class="col-sm-12">
+          <h4 class="h4"><a href="{{ current_url }}" target="_blank">{{ current_record.name }}</a></h4>
+          <p>{{ current_record.place }}, {{ current_record.dates }}, {{ current_record.other_info }}, {{ current_record.senate_house }}</p>
+        </div>
+      </div>
+      <div class="row" ng-if="current_record" ng-repeat="dericci_link in actualLinks(current_record) | filter: activeRecords" >
+        <div class="col-sm-12">
+          <div class="input-group" style="margin-bottom: 5px;">
+            <textarea class="form-control" ng-model="dericci_link.other_info" placeholder="Add more information here, if needed..."></textarea>
+            <span class="input-group-addon">
+              <a target="_blank" href="/names/{{ dericci_link.name_id }}" class="">
                 SDBM_NAME_{{ dericci_link.name_id }}
               </a>
-              <a href="" class="pull-right" ng-click="removeLink(current_record, dericci_link)">
+              <a href="" class="" ng-click="removeLink(current_record, dericci_link)">
                 <span class="glyphicon glyphicon-remove-circle"></span>
               </a>
-            </li>
-          </ul>
+            </span>
+          </div>
         </div>
       </div>
     </div>
 </div>
 </div>
-<%= render "shared/select_name_authority" %>
-<%= render "shared/create_name" %>
+<%= render "select_name_authority" %>
