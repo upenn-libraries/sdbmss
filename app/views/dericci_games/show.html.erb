@@ -85,7 +85,31 @@
         </div>
         <div class="col-sm-12">
           <h4 class="h4"><a href="{{ current_url }}" target="_blank">{{ current_record.name }}</a></h4>
-          <p>{{ current_record.place }}, {{ current_record.dates }}, {{ current_record.other_info }}, {{ current_record.senate_house }}</p>
+          <dl class="document-metadata dl-horizontal dl-invert">
+            <dt>Name</dt>
+            <dd>{{ current_record.name }}</dd>
+          
+            <dt>Dates</dt>
+            <dd>{{ current_record.dates || "Unknown" }}</dd>
+
+            <dt>Place</dt>
+            <dd>{{ current_record.place || "Unknown" }}</dd>
+       
+            <dt>PDF</dt>
+            <dd><a href="{{ current_record.url }}" target="_blank">Hosted at the UK Senate House Archives</a></dd>
+
+            <dt>Number of Cards</dt>
+            <dd>{{ current_record.cards || "Unknown" }}</dd>
+            
+            <dt>File Size</dt>
+            <dd>{{ current_record.size || "Unknown" }}</dd>
+            
+            <dt>Other Info</dt>
+            <dd>{{ current_record.other_info || "None" }}</dd>
+
+            <dt>Senate House ID#</dt>
+            <dd>{{ current_record.senate_house || "Unknown" }}</dd>
+          </dl>
         </div>
       </div>
       <div class="row" ng-if="current_record" ng-repeat="dericci_link in actualLinks(current_record) | filter: activeRecords" >
