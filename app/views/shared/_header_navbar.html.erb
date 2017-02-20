@@ -8,7 +8,11 @@
         </a>
         <%= render partial: "shared/navbar_brand" %>
         </span>
-        <%= image_tag 'sims.png', class: "img img-responsive hide-mobile-lg" %>
+        <%= image_tag'sims.png', class: "img img-responsive hide-mobile-lg", usemap:"#Map" %>
+        <map name="Map" id="Map">
+          <area href="https://schoenberginstitute.org/" alt="Facebook" target="_blank" shape=poly coords="0,0, 400,0, 400,25, 0,25"> 
+          <area href="http://www.library.upenn.edu/" alt="Facebook" target="_blank" shape=poly coords="0,25, 400,25, 400,50, 0,50"> 
+        </map>
         <span class="pull-right hide-mobile" style="line-height: 50px;">
           <%= render partial: "/user_util_links" %>
           <%# image_tag 'neh_logo_white.png', class: "img img-responsive hide-mobile", style: "max-height: 44px;" %>

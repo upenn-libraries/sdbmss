@@ -47,7 +47,9 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <p class='text-center'>If you are confused or unsure of how to use a data field, check the <strong>Tooltip</strong> by clicking on the <span class="tooltip-icon">?</span>icon.</p>
+            <p><strong>Always</strong> check the tooltips to find out the correct type and format of the data to be entered in a field. Tooltips are accessed by clicking on the <span class="tooltip-icon">?</span> icon next to the field label.</p>
+
+            <p>Your data entry will be reviewed by SDBM staff for approval. If there are problems with your data entry, we will be in touch to discuss how to better enter your data to ensure greater accessibility and use by other users.</p>
 
             <div ng-show="!source.source_type.name">
                 <p>A source is the origin of information for an entry. Sources can include auction and sale catalogs, collection catalogues, published or unpublished inventories, censuses, an individual (you or someone else) who has made direct observations about a manuscript(s), etc. From the dropdown menu, select one of six Source Types (see definitions below) that best describes your source.</p>
@@ -230,7 +232,7 @@
             <div class="form-group row">
                 <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="title" ng-model="source.title">
+                    <input type="text" class="form-control" id="title" ng-model="source.title" required>
                 </div>
             </div>
 
@@ -284,7 +286,7 @@
             <div class="form-group row">
                 <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="title" ng-model="source.title">
+                    <input type="text" class="form-control" id="title" ng-model="source.title" required>
                 </div>
             </div>
 
@@ -327,7 +329,7 @@
             <div class="form-group row">
                 <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_source_name">Source Name</span></label>
                 <div class="col-sm-5">
-                    <input type="text" class="form-control" id="title" ng-model="source.title">
+                    <input type="text" class="form-control" id="title" ng-model="source.title" required>
                 </div>
             </div>
 
