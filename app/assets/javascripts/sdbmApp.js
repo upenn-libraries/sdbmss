@@ -342,6 +342,7 @@ var BOOKMARK_SCOPE;
       $scope.current_record = undefined;
       $scope.current_url = "";
       $scope.current_index = 0;
+      $scope.saving = false;
       $scope.gameID = $("#game_id").val();
       $scope.progress = {complete: 0, skipped: 0};
       $http.get("/dericci_games/" + $scope.gameID + ".json", {
@@ -351,6 +352,7 @@ var BOOKMARK_SCOPE;
         $scope.current_url = $sce.trustAsResourceUrl($scope.records[0].url);
         $scope.current_record = $scope.records[0];
         $scope.setProgress();
+        $scope.initial = $scope.progress.complete;
       }, function(response) {
           alert("An error occurred when initializing the game.");
       });
@@ -432,12 +434,26 @@ var BOOKMARK_SCOPE;
         });
         $http.put("/dericci_games/" + $scope.gameID + ".json", { dericci_game: {id: $scope.gameId, skipped: $scope.progress.skipped, completed: $scope.progress.complete, dericci_records_attributes: records} }).then(function (response) {
           if (response.data.message == "Success!") {
+            $scope.saving = true;
             window.location = "/dericci_games/";
           } else {
             console.log(response);
           }
         });
       };
+
+      $(window).bind('beforeunload', function() {
+          if (!$scope.saving && $scope.progress.complete != $scope.initial) {
+              /*
+              console.log("originalEntryViewModel=");
+              console.log(angular.toJson($scope.originalEntryViewModel));
+              console.log("current entry=");
+              console.log(angular.toJson($scope.entry));
+              */
+            return "You have unsubmitted changes";
+          }
+          return;
+      });
     });
 
     /* Controller for selecting a source*/

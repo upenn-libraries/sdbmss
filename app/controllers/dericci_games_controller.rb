@@ -1,5 +1,7 @@
 class  DericciGamesController < ApplicationController
   
+  include LogActivity
+
   load_and_authorize_resource :only => [:index, :show, :new, :update]
 
   def index
@@ -25,8 +27,11 @@ class  DericciGamesController < ApplicationController
   end
 
   def update
-    game = DericciGame.find(params[:id])
-    game.update!(game_params)
+    ActiveRecord::Base.transaction do    
+      game = DericciGame.find(params[:id])
+      game.update!(game_params)
+      @transaction_id = PaperTrail.transaction_id
+    end
     flash[:success] = "Thank you for playing the Dericci Archives Game!"
     respond_to do |format|
       format.json { render json: {message: "Success!"} }
