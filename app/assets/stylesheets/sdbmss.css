@@ -97,6 +97,7 @@ textarea { resize:vertical ; }
 }
 #header-navbar img {
   max-height: 50px; 
+  padding-top: 3px;
   display: inline-block;
 }
 #header-navbar a {
