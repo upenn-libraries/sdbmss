@@ -13,12 +13,12 @@
                   <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="<%= profile_path(username: current_user.username) %>"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
-                  <li><a href="<%= private_messages_path %>"><span class="glyphicon glyphicon-envelope"></span> My Messages</a></li>
-                  <li><%= link_to edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
+                  <li><a href="<%= main_app.profile_path(username: current_user.username) %>"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
+                  <li><a href="<%= main_app.private_messages_path %>"><span class="glyphicon glyphicon-envelope"></span> My Messages</a></li>
+                  <li><%= link_to main_app.edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
                   <% if current_user && !current_user.to_s.blank? %>
                     <li>
-                      <%= link_to(destroy_user_session_path, :onclick => "localStorage.clear();") do %>
+                      <%= link_to(main_app.destroy_user_session_path, :onclick => "localStorage.clear();") do %>
                         <span class="glyphicon glyphicon-log-out"></span> <%= t('blacklight.header_links.logout') %>
                       <% end %>
                     </li>
@@ -32,7 +32,7 @@
           <ul class="nav">
             <%= render partial: "nav/notifications" %>
             <li>
-              <a href="<%= dashboard_path %>"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a>
+              <a href="<%= main_app.dashboard_path %>"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a>
             </li>
             <li>
                 <a href="/bookmarks"><span class="glyphicon glyphicon-bookmark"></span> Bookmarks</a>
@@ -66,7 +66,7 @@
                   <a href="/entries/new">From a Source</a>
                 </li>
                 <li>
-                  <%= link_to "Based on Personal Observation", new_source_path({create_entry: 1, source_type: 4}) %>
+                  <%= link_to "Based on Personal Observation", main_app.new_source_path({create_entry: 1, source_type: 4}) %>
                 </li>
               </ul>
             </li>

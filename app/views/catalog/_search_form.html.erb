@@ -21,7 +21,7 @@
               <span class="submit-search-text"><%=t('blacklight.search.form.submit')%></span>
               <span class="glyphicon glyphicon-search"></span>
             </button>
-            <a type="button navbar-toggle" href="<%= advanced_search_path(params_for_search) %>" class="btn btn-default advanced_search">Advanced</a>
+            <a type="button navbar-toggle" href="<%= main_app.advanced_search_path(params_for_search) %>" class="btn btn-default advanced_search">Advanced</a>
           </span>
         </div>
       </div>
@@ -39,17 +39,16 @@
       <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">My Searches <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
-              <%= render_nav_actions do |config, action| %>
-              <li><%= action %></li>
-              <% end %>
-          </ul>
+            <li><%= link_to t('blacklight.header_links.search_history'), main_app.search_history_path %></li>
+            <li><%= link_to t('blacklight.header_links.saved_searches'), main_app.saved_searches_path %></li>
+        </ul>
       </li>
     <% end %>
     <li>
       <a style="" href="<%= recent_additions_path %>" class="recent_additions">Recent<span class="hide-mobile-lg"> Additions</span></a>
     </li>
     <li>
-      <a style="color: red;" href="<%= feedback_path %>" target='_blank'><span class="hide-mobile-lg">Submit</span>Feedback</a>
+      <a style="color: red;" href="<%= main_app.feedback_path %>" target='_blank'><span class="hide-mobile-lg">Submit</span>Feedback</a>
     </li>
   </ul>
 </div>

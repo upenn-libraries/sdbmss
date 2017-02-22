@@ -7,7 +7,15 @@
         <% if notification.title %>
           <div class="col-xs-12 one-line">
             <% if notification.notified %>
-              <% url = notification.notified.class == User ? profile_path(notification.notified.username) : polymorphic_url(notification.notified) %>
+              <% 
+                if notification.notified.class == User
+                  url = main_app.profile_path(notification.notified.username)
+                elsif notification.notified_type == "Thredded::Post"
+                  url = Thredded::UrlsHelper.post_permalink_path(notification.notified)
+                else      
+                  url = main_app.polymorphic_url(notification.notified)
+                end
+              %>
               <%= link_to url, :title => notification.title do %>
                 <% if notification.active %>
                   <span class="glyphicon glyphicon-exclamation-sign" style="color: #2196F3"></span>

@@ -114,6 +114,14 @@ class User < ActiveRecord::Base
     notifications.where(active: true)
   end
 
+  def name
+    username
+  end
+
+  def admin
+    role == "admin"
+  end
+
   # override devise's msg to display if user is prevented from logging in
   def inactive_message
     active ? super : "Your account has been de-activated."
@@ -170,6 +178,7 @@ class User < ActiveRecord::Base
 
   # fix me: if emails are set, but not notifications, 'n' will be undefined
   def notify(title, record, category)
+    puts "mhm!!!:"    
     n = notifications.new(title: title, notified: record, category: category)
     if can_notify(category)
       n.save!

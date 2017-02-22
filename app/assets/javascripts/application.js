@@ -27,3 +27,4 @@
 //= require sdbmTour
 //= require bootstrap-multiselect
 //= require data-confirm-modal
+//= require thredded

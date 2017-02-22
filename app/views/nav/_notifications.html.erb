@@ -6,6 +6,6 @@
 </a>
 <div class="collapse" id="notifications-dropdown" style="background: #f8f8f8">
   <%= render partial: "notifications/index", locals: {notifications: current_user.notifications.last(10).reverse } %>
-  <div class='text-center' style='background: #eee;'><%= link_to "Manage Notifications", notifications_path %></div>
+  <div class='text-center' style='background: #eee;'><%= link_to "Manage Notifications", main_app.notifications_path %></div>
 </div>
 </li>

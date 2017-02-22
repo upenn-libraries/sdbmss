@@ -1,0 +1,19 @@
+<% content_for :thredded_page_title, t('thredded.messageboard.index.page_title') %>
+<% content_for :thredded_page_id, 'thredded--messageboards-index' %>
+<% content_for :thredded_breadcrumbs, render('thredded/shared/breadcrumbs') %>
+<%= thredded_page do %>
+  <section class="thredded--main-section thredded--messageboards">
+    <% @groups.each do |group| %>
+      <% if group.name.present? %>
+        <h3><%= group.name %></h3>
+      <% end %>
+      <%= render group.messageboards %>
+    <% end %>
+
+    <div class="thredded--messageboards--actions">
+      <% if policy(Thredded::Messageboard.new).create? %>
+        <a class="thredded--button" href="<%= new_messageboard_path %>"><%= t('thredded.messageboard.create') %></a>
+      <% end %>
+    </div>
+  </section>
+<% end %>

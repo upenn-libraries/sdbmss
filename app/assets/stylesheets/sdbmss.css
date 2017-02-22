@@ -5,6 +5,7 @@ html {
   table-layout: fixed;
   min-width: 320px;
   padding-top: 50px;
+  font-size: 16px;
 }
 body {
   background: white;
@@ -17,6 +18,11 @@ body {
 }
 
 textarea { resize:vertical ; }
+
+.thredded--main-container {
+  max-width: none;
+  padding: 0;  
+}
 
 .divider {
   border-bottom: 1px dashed #aaa;

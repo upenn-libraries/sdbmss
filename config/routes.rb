@@ -2,6 +2,8 @@ Rails.application.routes.draw do
 
   root :to => "catalog#index"
 
+  mount Thredded::Engine => '/forum'
+
   resources :accounts, except: [:show] do
     collection do
       post 'add_to_group'
