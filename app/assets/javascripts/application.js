@@ -12,7 +12,8 @@
 //
 //= require poltergeist_fix
 //= require jquery
-
+//= require thredded
+//
 //= require bootstrap.min
 //= require jquery_ujs
 //= require jquery-ui
@@ -27,4 +28,3 @@
 //= require sdbmTour
 //= require bootstrap-multiselect
 //= require data-confirm-modal
-//= require thredded

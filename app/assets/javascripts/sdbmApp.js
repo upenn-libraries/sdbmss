@@ -1165,6 +1165,7 @@ var BOOKMARK_SCOPE;
 
         $scope.postEntrySave = function(entry) {
             $scope.warnWhenLeavingPage = false;
+            console.log(entry.id, window.location);
             window.location = "/entries/" + entry.id;
             /*
             //console.log(entry);
@@ -1398,7 +1399,7 @@ var BOOKMARK_SCOPE;
             }
           }
 
-          console.log(angular.toJson(entry1), angular.toJson(entry2));
+//          console.log(angular.toJson(entry1), angular.toJson(entry2));
           // note: changing a numerical field, then restoring the original and saving will still trigger 'unsaved' because one is a string and the other is a number (in the JSON)
           return angular.toJson(entry1) !== angular.toJson(entry2);
         }

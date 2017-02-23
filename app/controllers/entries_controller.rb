@@ -247,8 +247,10 @@ class EntriesController < SearchableAuthorityController
     respond_to do |format|
       format.json {
         if success
+          puts "what the hell is going on?"
           render "show"
         else
+          puts "failure???"
           json_response = { errors: @entry.errors.messages }
           render json: json_response, status: :unprocessable_entity
         end
