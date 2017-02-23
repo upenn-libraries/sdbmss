@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
 
-  root :to => "catalog#index"
-
   mount Thredded::Engine => '/forum'
+  
+  root :to => "catalog#index"
 
   resources :accounts, except: [:show] do
     collection do
