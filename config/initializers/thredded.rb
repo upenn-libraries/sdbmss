@@ -150,9 +150,11 @@ module Thredded
       AutofollowMentionedUsers.new(post).run
       post.postable.followers.each do |follower|
         if follower != post.user
-          follower.notify("#{post.user} has posted in #{post.postable}", post, "forum_post")
+          follower.notify("#{post.user} has posted in #{post.postable.title}", post, "forum_post")
         end
       end
     end
   end
 end
+
+Thredded::ApplicationController.send :include, ThreddedNullUserPermissions

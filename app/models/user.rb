@@ -178,7 +178,6 @@ class User < ActiveRecord::Base
 
   # fix me: if emails are set, but not notifications, 'n' will be undefined
   def notify(title, record, category)
-    puts "mhm!!!:"    
     n = notifications.new(title: title, notified: record, category: category)
     if can_notify(category)
       n.save!

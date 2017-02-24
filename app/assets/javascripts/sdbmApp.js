@@ -1165,7 +1165,6 @@ var BOOKMARK_SCOPE;
 
         $scope.postEntrySave = function(entry) {
             $scope.warnWhenLeavingPage = false;
-            console.log(entry.id, window.location);
             window.location = "/entries/" + entry.id;
             /*
             //console.log(entry);
