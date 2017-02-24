@@ -643,7 +643,7 @@ h1 { font-size: 30px; margin-top: 0; }
 }
 .faq .checkbox + label {
   background: #eee;
-  line-height: normal;
+  line-height: 50px;
   margin: 0px; 
   color: white;
   border-radius: 4px;
@@ -663,6 +663,9 @@ h1 { font-size: 30px; margin-top: 0; }
 }
 .checkbox:checked + label:after {
   background-color: inherit;
+}
+.faq .checkbox:checked + label:after {
+  background: none;
 }
 
 .options-btn-group .btn {
