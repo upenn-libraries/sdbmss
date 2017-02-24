@@ -89,6 +89,23 @@
         <%= render partial: 'devise/sessions/new', locals: {resource: User.new, resource_name: 'user', devise_mapping: Devise.mappings[:user]} %>      
         <%= link_to "Sign up", new_registration_path('user') %><br />
         <%= link_to "Forgot your password?", new_password_path('user') %><br />
+        <ul class="nav">
+          <li>
+            <a href="https://schoenberginstitute.org/">The Schoenberg Institute for Manuscript Studies</a>
+          </li>
+          <li>
+            <a href="http://dla.library.upenn.edu/dla/medren/search.html?fq=collection_facet%3A%22Lawrence%20J.%20Schoenberg%20Collection%22">Penn in Hand, online digital facsimiles</a>
+          </li>
+          <li>
+            <a href="http://openn.library.upenn.edu/html/0001.html">OPenn, downloadable digital images and metadata</a>
+          </li>
+          <li>
+            <a href="http://sceti.library.upenn.edu/ljscatalog/index.html">Transformation of Knowledge, a printed catalog of early manuscripts</a>
+          </li>
+          <li>
+            <a href="http://sceti.library.upenn.edu/legacy/">A Legacy Inscribed: online exhibit</a>
+          </li>
+        </ul>
       </div>
     </div>
     <% end %>

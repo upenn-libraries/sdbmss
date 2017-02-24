@@ -2129,6 +2129,10 @@ Private Message Styling
   overflow: hidden;
   text-overflow: ellipsis;
 }
+#control-panel .nav-links a {
+  white-space: normal;
+  color: initial;
+}
 #control-panel .text-muted {
   color: #777;
 }
