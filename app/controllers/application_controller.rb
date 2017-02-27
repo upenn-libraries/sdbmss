@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
         opts.delete key
       end
     end
-    root_path({ "utf8" => SDBMSS::Util::CHECKMARK, "search_field" => "all_fields" }.merge(opts))
+    main_app.root_path({ "utf8" => SDBMSS::Util::CHECKMARK, "search_field" => "all_fields" }.merge(opts))
   end
 
   private

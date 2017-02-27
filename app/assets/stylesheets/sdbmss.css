@@ -41,6 +41,9 @@ textarea { resize:vertical ; }
   border-radius: 50%;
   font-weight: bold;
 }
+.thredded--main-section {
+  padding: 0px 50px;
+}
 
 .divider {
   border-bottom: 1px dashed #aaa;
