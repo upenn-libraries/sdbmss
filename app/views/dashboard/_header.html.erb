@@ -40,9 +40,15 @@
 <div class="row">
     <div class="col-sm-12">
         <ul id='dashboard-tabs' class="nav nav-tabs dashboard-tabs">
-            <li class="<%= request.original_fullpath == main_app.dashboard_contributions_path ? 'active' : ''%>"><a href="<%= main_app.dashboard_contributions_path %>">My Contributions</a></li>
-            <li class="<%= request.original_fullpath == main_app.dashboard_activity_path ? 'active' : ''%>"><a href="<%= main_app.dashboard_activity_path %>">Activity</a></li>
-            <li class="<%= request.original_fullpath.include?(thredded.root_path) ? 'active' : ''%>"><a href="<%= thredded.root_path %>">Forum</a></li>
+            <li class="<%= request.original_fullpath == main_app.dashboard_contributions_path ? 'active' : ''%>">
+                <a href="<%= main_app.dashboard_contributions_path %>"><span class="glyphicon glyphicon-gift"></span> My Contributions</a>
+            </li>
+            <li class="<%= request.original_fullpath == main_app.dashboard_activity_path ? 'active' : ''%>">
+                <a href="<%= main_app.dashboard_activity_path %>"><span class="glyphicon glyphicon-sunglasses"></span> Activity</a>
+            </li>
+            <li class="<%= request.original_fullpath.include?(thredded.root_path) ? 'active' : ''%>">
+                <a href="<%= thredded.root_path %>"><span class="glyphicon glyphicon-comment"></span> Forum</a>
+            </li>
             <!--<li><a data-toggle='tab' href="#groups" data-url="/groups/show_all">Groups</a></li>
             <li><a data-toggle='tab' href="#notifications">Notifications</a></li>-->
         </ul>
