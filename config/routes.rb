@@ -88,7 +88,10 @@ Rails.application.routes.draw do
   get "/project_history/", to: 'community#project_history', as: 'project_history'
   get "/user_agreement/", to: 'community#user_agreement', as: 'user_agreement'
   get '/community/', to: 'community#show', as: 'community'
-  get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
+  get '/dashboard/', to: 'dashboard#contributions'
+  get '/dashboard/contributions'
+  get '/dashboard/activity'
+  get '/dashboard/forum'
 
 #  resources :delayed_jobs, only: [:index]
 

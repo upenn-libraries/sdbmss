@@ -1,0 +1,50 @@
+
+<% is_contributor = current_user.role == 'contributor' %>
+<% possessive = is_contributor ? "Your" : "" %>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="well" style="padding: 10px 20px 0px 20px;">
+            <div class="row">
+                <div class="col-sm-8">
+                    <div class='h2'>Welcome, <%= current_user.to_s %>!</div>                            
+                    <ul class="list-inline">
+                        <li><strong class='label label-primary label-lg'><span class="glyphicon glyphicon-tag"></span> Tags:</strong></li>                        
+                        <% if current_user.tags.count <= 0 %>
+                            <li>
+                                <span class="text-muted">You do not have any tags yet.</span>
+                            </li>
+                        <% end %>
+                    <% current_user.tags.each do |tag| %>
+                        <li>
+                            <%= link_to(bookmarks_path(tag: tag[0])) do %>
+                                <%= "#{tag[0]} (#{tag[1]})" %>
+                            <% end %>
+                        </li>
+                    <% end %>
+                    </ul>
+                </div>
+                <div class="col-sm-4 text-center">
+                    <div class="panel panel-defaul">
+                        <div class="panel-body">
+                            <h4 class="h4"><a href="/dericci_records">NEW: Browse the Dericci Archives</a></h4>
+                            <p><a href="/dericci_games" class="btn btn-primary"><span class="glyphicon glyphicon-tower"></span> Play the Dericci Archive Game!</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-sm-12">
+        <ul id='dashboard-tabs' class="nav nav-tabs dashboard-tabs">
+            <li class="<%= request.original_fullpath == main_app.dashboard_contributions_path ? 'active' : ''%>"><a href="<%= main_app.dashboard_contributions_path %>">My Contributions</a></li>
+            <li class="<%= request.original_fullpath == main_app.dashboard_activity_path ? 'active' : ''%>"><a href="<%= main_app.dashboard_activity_path %>">Activity</a></li>
+            <li class="<%= request.original_fullpath.include?(thredded.root_path) ? 'active' : ''%>"><a href="<%= thredded.root_path %>">Forum</a></li>
+            <!--<li><a data-toggle='tab' href="#groups" data-url="/groups/show_all">Groups</a></li>
+            <li><a data-toggle='tab' href="#notifications">Notifications</a></li>-->
+        </ul>
+    </div>
+</div>

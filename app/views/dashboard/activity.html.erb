@@ -5,20 +5,12 @@
 <%= stylesheet_link_tag "extras", media: "all" %>
 <% @page_title = "Dashboard - " + application_name %>
 
-<% is_contributor = current_user.role == 'contributor' %>
-<% possessive = is_contributor ? "Your" : "" %>
-
 <%= render partial: "header" %>
 
 <div class="row">
     <div class="col-sm-12">
         <div class="tab-content">
-            <div id="my_activity" class="tab-pane fade in active">
-                <%= render partial: "my_entries" %>
-                <%= render partial: "my_sources" %>                        
-                <%= render partial: "my_manuscripts" %>                
-            </div>
-            <div id="community" class="tab-pane fade">
+            <div id="community" class="tab-pane fade in active">
                 <div class="row">
                     <div class="col-sm-2">
                         <%= render partial: "activities/nav" %>

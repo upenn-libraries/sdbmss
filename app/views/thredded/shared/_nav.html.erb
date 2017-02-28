@@ -6,10 +6,7 @@
       </li>
     <% end %>
 
-    <!--<li class="thredded--user-navigation--item"><%= link_to "Root", root_path %></li>-->
     <%= render 'thredded/shared/nav/moderation' %>
-    <%# render 'thredded/shared/nav/notification_preferences', messageboard: messageboard_or_nil %>
-    <%# render 'thredded/shared/nav/private_topics' %>
 
     <% if Thredded.standalone_layout? %>
       <%= render 'thredded/shared/nav/standalone' %>
@@ -19,6 +16,9 @@
     <%= yield :thredded_main_navigation %>
   <% else %>
     <div class="thredded--main-navigation">
+      <% if current_user %>
+        <%= render partial: 'dashboard/header' %>
+      <% end %>
       <%= yield :thredded_breadcrumbs %>
       <%= render 'thredded/search/form', messageboard: messageboard_or_nil %>
     </div>

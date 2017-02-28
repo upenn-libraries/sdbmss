@@ -23,6 +23,8 @@ textarea { resize:vertical ; }
   max-width: none;
   padding: 0;  
   font-family: Sarala, Ubuntu, sans-serif;
+  font-size: inherit;
+  color: inherit;
 }
 .thredded--button, .thredded--form--submit {
   background: #337ab7;
@@ -43,6 +45,10 @@ textarea { resize:vertical ; }
 }
 .thredded--main-section {
   padding: 0px 50px;
+}
+.thredded--navigation--search {
+  top: initial;
+  bottom: 10px;
 }
 
 .divider {
