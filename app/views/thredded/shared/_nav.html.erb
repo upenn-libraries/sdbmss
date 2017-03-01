@@ -18,9 +18,17 @@
       <% if current_user %>
         <%= render partial: 'dashboard/header' %>
       <% end %>
-      <%= render 'thredded/shared/nav/moderation' %>
-      <%= yield :thredded_breadcrumbs %>
-      <%= render 'thredded/search/form', messageboard: messageboard_or_nil %>
+      <div class="row">
+        <div class="col-sm-4">
+          <%= yield :thredded_breadcrumbs %>
+        </div>
+        <div class="col-sm-4 text-center">
+          <%= render 'thredded/shared/nav/moderation' %>
+        </div>
+        <div class="col-sm-4 text-right">
+          <%= render 'thredded/search/form', messageboard: messageboard_or_nil %>
+        </div>
+      </div>
     </div>
   <% end %>
 </nav>

@@ -46,13 +46,8 @@ textarea { resize:vertical ; }
 .thredded--main-section {
   padding: 0px 50px;
 }
-.thredded--navigation-breadcrumbs {
-  margin-left: 50px;
-}
-.thredded--navigation--search {
-  top: initial;
-  bottom: 10px;
-  right: 50px;
+.thredded--navigation-breadcrumbs a, li.thredded--navigation-breadcrumbs--item-no-link {
+  padding: 0.75rem 0 !important;
 }
 
 .divider {
