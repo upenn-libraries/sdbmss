@@ -6,7 +6,6 @@
       </li>
     <% end %>
 
-    <%= render 'thredded/shared/nav/moderation' %>
 
     <% if Thredded.standalone_layout? %>
       <%= render 'thredded/shared/nav/standalone' %>
@@ -19,6 +18,7 @@
       <% if current_user %>
         <%= render partial: 'dashboard/header' %>
       <% end %>
+      <%= render 'thredded/shared/nav/moderation' %>
       <%= yield :thredded_breadcrumbs %>
       <%= render 'thredded/search/form', messageboard: messageboard_or_nil %>
     </div>

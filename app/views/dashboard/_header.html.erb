@@ -7,7 +7,7 @@
         <div class="well" style="padding: 10px 20px 0px 20px;">
             <div class="row">
                 <div class="col-sm-8">
-                    <div class='h2'>Welcome, <%= current_user.to_s %>!</div>                            
+                    <div class='h2'><%= current_user.to_s %>'s Dashboard</div>                            
                     <ul class="list-inline">
                         <li><strong class='label label-primary label-lg'><span class="glyphicon glyphicon-tag"></span> Tags:</strong></li>                        
                         <% if current_user.tags.count <= 0 %>
@@ -17,7 +17,7 @@
                         <% end %>
                     <% current_user.tags.each do |tag| %>
                         <li>
-                            <%= link_to(bookmarks_path(tag: tag[0])) do %>
+                            <%= link_to(main_app.bookmarks_path(tag: tag[0])) do %>
                                 <%= "#{tag[0]} (#{tag[1]})" %>
                             <% end %>
                         </li>
