@@ -242,12 +242,13 @@ $(document).ready(function() {
 
          return URI(manageSources.getResourceIndexURL()).search(params);
      };
-
+/*
     SDBM.ManageRecords.prototype.setFormStateFromURL = function() {
         var manageRecords = this;
         var qs = new URI().query(true);
 
          $(".search-fieldset").each(function(idx, element) {
+            console.log('mgmgm');
              var search_field = $(element).find("select[name='search_field']").first();
              var search_value = $(element).find("input[name='search_value']").first();
              var populated = false;
@@ -271,7 +272,7 @@ $(document).ready(function() {
             $("input[name='unreviewed_only']").prop('checked', true);
         }
         manageRecords.showOrHideMarkCheckedRecordsButton();
-    };
+    };*/
 
      ManageSources.prototype.reloadTable = function () {
          manageSources.doSearch(false);
@@ -300,6 +301,8 @@ $(document).ready(function() {
      }
 
      var manageSources = new ManageSources(config);
+     manageSources.setFormStateFromURL();
+     manageSources.doSearch(false);
 
      $('#search_results').on('draw.dt', function () {
      });
