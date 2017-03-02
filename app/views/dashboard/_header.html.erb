@@ -48,7 +48,7 @@
             </li>
             <% count = Thredded::Post.where("created_at > ?", current_user.thredded_user_detail.last_seen_at).count %>
             <li class="<%= request.original_fullpath.include?(thredded.root_path) ? 'active' : ''%>">
-                <a href="<%= thredded.root_path %>" class="<%= count > 0 ? 'thredded--topic-unread' : 'thredded--topic-read' %>"><span class="glyphicon glyphicon-comment"></span> Forum
+                <a href="<%= thredded.root_path %>" class="forum-nav <%= count > 0 ? 'thredded--topic-unread' : 'thredded--topic-read' %>"><span class="glyphicon glyphicon-comment"></span> Forum
                     <div class="thredded--topics--posts-count dashboard-forum-posts-count"><%= count %></div>
                 </a>
             </li>
