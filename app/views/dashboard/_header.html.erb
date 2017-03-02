@@ -46,8 +46,11 @@
             <li class="<%= request.original_fullpath == main_app.dashboard_activity_path ? 'active' : ''%>">
                 <a href="<%= main_app.dashboard_activity_path %>"><span class="glyphicon glyphicon-sunglasses"></span> Activity</a>
             </li>
+            <% count = Thredded::Post.where("created_at > ?", current_user.thredded_user_detail.last_seen_at).count %>
             <li class="<%= request.original_fullpath.include?(thredded.root_path) ? 'active' : ''%>">
-                <a href="<%= thredded.root_path %>"><span class="glyphicon glyphicon-comment"></span> Forum</a>
+                <a href="<%= thredded.root_path %>" class="<%= count > 0 ? 'thredded--topic-unread' : 'thredded--topic-read' %>"><span class="glyphicon glyphicon-comment"></span> Forum
+                    <div class="thredded--topics--posts-count dashboard-forum-posts-count"><%= count %></div>
+                </a>
             </li>
             <!--<li><a data-toggle='tab' href="#groups" data-url="/groups/show_all">Groups</a></li>
             <li><a data-toggle='tab' href="#notifications">Notifications</a></li>-->
