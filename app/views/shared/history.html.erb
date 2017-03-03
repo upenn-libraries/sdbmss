@@ -23,7 +23,7 @@
                     <% formatter = EntryVersionFormatter.new(version) %>
                     <% if formatter.details.count > 0 %>
                                     <div class="item <%= version == @versions.last ? 'active' : '' %> <%= version.event == 'destroy' ? 'bg-danger' : ( version.event == 'create' ? 'bg-success' : 'bg-info') %>">                        <div class='row'>
-                            <div class="col-sm-2 text-right"><%= version.created_at.to_formatted_s(:short) %></div>
+                            <div class="col-sm-2 text-right"><%= version.created_at.to_formatted_s(:long) %></div>
                             <div class="col-sm-1"><%= version.whodunnit ? User.find(version.whodunnit) : "" %></div>
                             <div class='col-sm-2'><span><%= formatter.action %></span></div>
                             <div class='col-sm-5'>

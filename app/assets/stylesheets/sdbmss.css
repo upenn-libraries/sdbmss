@@ -264,6 +264,8 @@ textarea { resize:vertical ; }
   background: #f8f8f8;
   border-radius: 6px;
   padding: 0px 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .bookmark-panes {

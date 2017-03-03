@@ -4,7 +4,7 @@
       <%= hidden_field_tag 'commentable_id', record.id %>
       <%= hidden_field_tag 'commentable_type', record.model_name %>
       <div class="input-group textarea-group">
-        <%= text_area_tag 'comment', '', class: "form-control", rows: 5, placeholder: "Begin your comment here..." %>
+        <%= text_area_tag 'comment', '', class: "form-control", rows: 5, placeholder: "Leave a comment here..." %>
         <div class="input-group-btn textarea-group-btn">
           <%= submit_tag 'Post', class: 'btn btn-primary text-center textarea-btn' %>
         </div>
