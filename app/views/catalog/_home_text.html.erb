@@ -8,11 +8,17 @@
 
 <!--<h3 class='text-center' style='border-bottom: 3px solid #333;'>The New Schoenberg Database of Manuscripts</h3>-->
 
-<h4 class="text-center">Community Discussion</h4>
+<h1 class="text-center">The New Schoenberg Database of Manuscripts</h1>
+<div class="alert alert-success">
+    Please be aware that we will be performing occasional updates to the New SDBM while it is in beta. You may notice minor changes between session as we refine instructional content and repair bugs. If you have questions or concerns, please use <a style="color: red;" href="<%= feedback_path %>" target='_blank'>Submit Feedback</a>.
+</div>
 
-<div class="row">
-    <div class="col-sm-1"></div>
-    <div class="col-sm-10">
+<div style="font-size: 16px">
+    <p>
+The Schoenberg Database of Manuscripts, a project of the <a target="_blank" href="https://schoenberginstitute.org/">Schoenberg Institute for Manuscript Studies</a> at the <a target="_blank" href="http://www.library.upenn.edu/">University of Pennsylvania Libraries</a>, aggregates observations of premodern manuscripts drawn from over 12,000 auction and sales catalogues, inventories, catalogues from institutional and private collections, and other sources that document sales and locations of these books from around the world. 
+    </p>
+
+    <div class="forum-feed">
         <% Thredded::Post.order('id DESC').last(10).each do |post| %>
             <% post_user_link = link_to(post.user.username, main_app.profile_path(post.user.username)) %>
             <% topic = post.to_model.postable %>
@@ -34,17 +40,6 @@
             <div class="text-muted"><%= render 'thredded/posts_common/content', post: post %></div>
         <% end %>
     </div>
-    <div class="col-sm-1"></div>
-</div>
-
-<div class="alert alert-success">
-    Please be aware that we will be performing occasional updates to the New SDBM while it is in beta. You may notice minor changes between session as we refine instructional content and repair bugs. If you have questions or concerns, please use <a style="color: red;" href="<%= feedback_path %>" target='_blank'>Submit Feedback</a>.
-</div>
-
-<div style="font-size: 16px">
-    <p>
-The Schoenberg Database of Manuscripts, a project of the <a target="_blank" href="https://schoenberginstitute.org/">Schoenberg Institute for Manuscript Studies</a> at the <a target="_blank" href="http://www.library.upenn.edu/">University of Pennsylvania Libraries</a>, aggregates observations of premodern manuscripts drawn from over 12,000 auction and sales catalogues, inventories, catalogues from institutional and private collections, and other sources that document sales and locations of these books from around the world. 
-    </p>
 
     <p>Thanks to support from the <a target="_blank" href="https://www.neh.gov/">National Endowment for the Humanities</a>, the New SDBM has been redeveloped to allow you--the members of our user community-- to contribute data, including your own personal observations of a manuscript or group of manuscripts, and to engage with other users to facilitate research and conversations about both the history of manuscript transmission and the data gathered in the process of recording this history.</p>
 

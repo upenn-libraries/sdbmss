@@ -24,6 +24,16 @@ h1, .h1, h2, .h2, h3, .h3, legend {
   font-weight: bold;
 }
 
+.forum-feed {
+  width: 520px;
+  display: inline-block;
+  float: left;
+  /* margin: 10px; */
+  margin: 8px 40px 8px 0px;
+  padding: 20px 20px 20px 70px;
+  box-shadow: 0px 0px 16px 0px #eee inset;
+  background: #f8f8f8;
+}
 .thredded--main-container {
   max-width: none;
   padding: 0;  
