@@ -19,6 +19,7 @@ The Schoenberg Database of Manuscripts, a project of the <a target="_blank" href
     </p>
 
     <div class="forum-feed">
+        <h3 class="text-center">Recent Discussion</h3>
         <% Thredded::Post.order('id DESC').last(10).each do |post| %>
             <% post_user_link = link_to(post.user.username, main_app.profile_path(post.user.username)) %>
             <% topic = post.to_model.postable %>
@@ -38,6 +39,9 @@ The Schoenberg Database of Manuscripts, a project of the <a target="_blank" href
             </header>
 
             <div class="text-muted"><%= render 'thredded/posts_common/content', post: post %></div>
+        <% end %>
+        <% if Thredded::Post.count <= 0 %>
+            <div class="text-center text-muted">There is no recent discussion to display.</div>
         <% end %>
     </div>
 

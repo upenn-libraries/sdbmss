@@ -31,8 +31,15 @@ h1, .h1, h2, .h2, h3, .h3, legend {
   /* margin: 10px; */
   margin: 8px 40px 8px 0px;
   padding: 20px 20px 20px 70px;
-  box-shadow: 0px 0px 16px 0px #eee inset;
-  background: #f8f8f8;
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 2px;
+}
+.forum-feed h3 {
+  margin-top: 0px;
+  border-bottom: 1px solid #eee;
+  margin: -5px -20px 15px -71px;
+  padding-bottom: 5px;
 }
 .thredded--main-container {
   max-width: none;
@@ -569,17 +576,6 @@ li.active > a.forum-nav {
 .search-remove {
     font-weight: normal;
 }
-#search_results_wrapper {
-  margin-top: 15px;
-  padding-top: 15px;
-}
-#linking-tool #search_results_wrapper {
-  margin-top: 0px;
-  padding-top: 0px;
-}
-#linking-tool 
-
-
 .filterName {
   font-weight: bold;
 }
@@ -823,6 +819,10 @@ div#search_results_length {
 }
 .hidden {
   display: none;
+}
+
+.form-inline .input-group > .form-control {
+    width: auto;
 }
 
 li.provenance {
@@ -1078,7 +1078,7 @@ div[ui-sortable] {
   left: 5px;
   height: 100%;
   width: 19px;
-  background: url(/assets/grip.png);
+  background: url(<%= asset_path 'grip.png' %>);
   background-repeat: no-repeat;
   background-size: 100% auto;
   background-position: 50% 50%;

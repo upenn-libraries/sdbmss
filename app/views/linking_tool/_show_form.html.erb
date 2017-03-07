@@ -1,6 +1,13 @@
-<%= form_tag(request.path, method: :get, class: "search-form sdbmss-form", id: "link-search") do %>
-    <div class="row search-fieldset">
-        <div class="col-sm-12 search-block">
+<ul class="nav navbar-nav navbar-left">
+    <li>
+        <a href="" class="" id="addSearch">
+            <span class="glyphicon glyphicon-plus"></span> add term
+        </a>
+    </li>
+</ul>
+<%= form_tag(request.path, method: :get, class: "navbar-form navbar-left form-inline", id: "link-search") do %>
+    <div class="search-fieldset">
+        <div class="search-block">
             <div class="input-group">
                 <div class="input-group-btn">
                     <button type='button' class="btn btn-warning search-remove"> <span class="glyphicon glyphicon-remove"></span> </button>
@@ -41,28 +48,24 @@
             <% end %>
             </select>
             </div>
-            <!-- FIX ME: add 'options' to the search as well? -->
+
+            <div class="input-group form-submission">
+                <select name="op" id="search_op" class="form-control">
+                    <option value="AND">All</option>
+                    <option value="OR">Any</option>
+                </select>
+                <div class="input-group-btn">
+                    <button id="search_submit" type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </div>            
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-3">
-            <a href="" class="" id="addSearch">
-                <span class="glyphicon glyphicon-plus"></span> add term
-            </a>
-        </div>
+<% end %>
+
+    <!--<div class="row">
         <div class="col-sm-4">
             <span id="spinner" style='display: none;'><img alt="working..." src="<%= asset_path "spinner.gif" %>"/> loading search results...</span>
         </div>
         <div class="col-sm-5 text-right">
-            <div class="input-group">
-            <select name="op" id="search_op" class="form-control">
-                <option value="AND">All</option>
-                <option value="OR">Any</option>
-            </select>
-            <div class="input-group-btn">
-                <button id="search_submit" type="submit" class="btn btn-primary">Search</button>
-            </div>
-            </div>
         </div>
-    </div>
-<% end %>
+    </div>-->

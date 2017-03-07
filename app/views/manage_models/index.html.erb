@@ -19,54 +19,64 @@
     <% end %>
 <% end %>
 
-<div class="redundant-container">
-    <div class="row">
-        <div class="col-sm-6 mobile-center">
-            <% if @page_title %>
-                <span class='h1'>
-                    <%= @page_title %>
-                </span>
-            <% else %>
-                <% if !can? :index, model_class %>
-                    <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
-                    <span class='h1'>
-                        Manage Your <%= resource_name.pluralize.capitalize %>
-                    </span>
-                <% else %>
-                    <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
-                    <span class='h1'>
-                        Manage <%= resource_name.capitalize %>
-                    </span>
+<div id="manage_records_info" class="modal fade panel-body" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Manage Your <%= resource_name.pluralize.capitalize %></h4>
+            </div>
+            <div class="modal-body">
+                <%= render partial: "instructions" %>
+                <li class="list-group-item list-group-item-warning">Unapproved records shown in yellow.</li>
+                <% if model_class.column_names.include?('entries_count') || model_class.column_names.include?('authors_count') %>
+                    <li class="list-group-item list-group-item-danger">Counters may include deleted records.</li>
                 <% end %>
-            <% end %>
-
-            <a href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info"><span class="glyphicon glyphicon-info-sign"></span> Click Here For More Info</a>
-            <% if model_class == Entry and can? :index, model_class %>
-                <div class="row" style="padding-left: 0px; padding-right: 0px;">
-                    <div class="col-sm-12">
-                        <%= render partial: "manage_models/group_form" %>
-                    </div>
-                </div>
-            <% end %>
-        </div>
-        <div id="manage_records_info" class="modal fade panel-body" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Manage Your <%= resource_name.pluralize.capitalize %></h4>
-                    </div>
-                    <div class="modal-body">
-                        <%= render partial: "instructions" %>
-                        <li class="list-group-item list-group-item-warning">Unapproved records shown in yellow.</li>
-                        <% if model_class.column_names.include?('entries_count') || model_class.column_names.include?('authors_count') %>
-                            <li class="list-group-item list-group-item-danger">Counters may include deleted records.</li>
-                        <% end %>
-                    </div>
-                </div>
             </div>
         </div>
-        <div class="col-sm-6 search search-form-wrapper">
-            <%= render partial: "search_form" %>
+    </div>
+</div>
+
+<div class="redundant-container">
+    <div class="row">
+        <div class="col-sm-12 mobile-center">
+            <nav class="navbar navbar-default" style="margin: 0px 0px 9px 0px;">
+                <div class="navbar-header">
+                    <% if @page_title %>
+                        <span class='navbar-brand'>
+                            <%= @page_title %>
+                        </span>
+                    <% else %>
+                        <% if !can? :index, model_class %>
+                            <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
+                            <span class='navbar-brand'>
+                                Manage Your <%= resource_name.pluralize.capitalize %>
+                            </span>
+                        <% else %>
+                            <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
+                            <span class='navbar-brand'>
+                                Manage <%= resource_name.capitalize %>
+                            </span>
+                        <% end %>
+                    <% end %>
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info">
+                                <span class="glyphicon glyphicon-info-sign"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <ul class="nav navbar-nav navbar-left">
+                    <li>
+                    </li>
+                    <li>
+                        <% if model_class == Entry and can? :index, model_class %>
+                            <%= render partial: "manage_models/group_form" %>                            
+                        <% end %>
+                    </li>
+                </ul>
+                <%= render partial: "search_form" %>
+            </nav>
         </div>
     </div>
 </div>
@@ -123,11 +133,12 @@ $("#addSearch").click( function (e) {
 
     var p = $('.search-block').eq(0).clone();
     p.find("input", "select").val("");
+    p.find('.form-submission').remove();
     $(".search-fieldset").append(p);
     p.find(".search-remove").click( function (e) {
         //var p = $(this).closest('.search-block');
         if ($('.search-block').length > 1) {
-            $(".search").find(p).remove();            
+            $(".search-fieldset").find(p).remove();            
         } else {                                    // otherwise, clear all the fields
             p.find("input").each(function (e) {
                 $(this).val("");
@@ -143,7 +154,7 @@ $(document).ready( function () {
     p.find(".search-remove").click( function (e) {
         if ($('.search-block').length > 1) {     // if there are others, remove it
             p = $(this).closest('.search-block');
-            $(".search").find(p).remove();
+            $(".search-fieldset").find(p).remove();
         } else {                                    // otherwise, clear all the fields
             p.find("input").each(function (e) {
                 $(this).val("");

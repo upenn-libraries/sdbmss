@@ -26,6 +26,7 @@
 <script>
 $(document).ready( function () {
 
+    var loading = false;
     $('#activity_tabs a').click( function (e) {
         $('#activity-pane').html('<p class="text-muted text-center"><img src="/assets/spinner.gif"> loading...</img></p>');
     });
@@ -33,12 +34,15 @@ $(document).ready( function () {
         e.preventDefault();
         var url = $(this).attr("data-url");
 
-        if (typeof url !== "undefined") {
+        if (loading) {}
+        else if (typeof url !== "undefined") {
             var tab = $(this), href = this.hash;
             // ajax load from data-url
+            loading = true;
             $(href).load(url,function(result){      
                 tab.tab('show')
                 bindRemoteAjaxCallback();
+                loading = false;
             });
         } else {
             $(this).tab('show');

@@ -1,6 +1,15 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "extras", media: "all" %>
   <%= javascript_include_tag "extras" %>
+  <style>
+    .form-inline .input-group > .form-control {
+        width: auto;
+    }
+    .linking-tool-link {
+        line-height: 36px;
+        margin: 0px 10px;
+    }
+  </style>
 <script type="text/javascript">
 
 function setOptions (p) {
@@ -35,12 +44,13 @@ $(document).ready(function() {
     $("#addSearch").click( function (e) {
         // fix me: add something here to dynamically change table height -> 
         var p = $('.search-block').eq(0).clone();
+        p.find('.form-submission').remove();
         p.find("input", "select").val("");
         $(".search-fieldset").append(p);
         p.find(".search-remove").click( function (e) {
             //var p = $(this).closest('.search-block');
             if ($('.search-block').length > 1) {
-                $(".search").find(p).remove();            
+                $(".search-fieldset").find(p).remove();            
             } else {                                    // otherwise, clear all the fields
                 p.find("input").each(function (e) {
                     $(this).val("");
@@ -54,7 +64,7 @@ $(document).ready(function() {
     p.find(".search-remove").click( function (e) {
         if ($('.search-block').length > 1) {     // if there are others, remove it
             p = $(this).closest('.search-block');
-            $(".search").find(p).remove();
+            $(".search-fieldset").find(p).remove();
         } else {                                    // otherwise, clear all the fields
             p.find("input").each(function (e) {
                 $(this).val("");
@@ -614,7 +624,7 @@ $(document).ready(function() {
 <% end %>
 
 <div class="row">
-    <div class="">
+    <div class="col-sm-12">
         <h4><a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#">Click here for instructions</a> on how to link entries to manuscript records</h4>
         <% if @mode == 'by_entry' %>
             <p>This page allows you to create a <b>manuscript record</b> from this entry by linking it to one or more existing entries citing the same manuscript, in order to track its transmission and location across time.  You may create a manuscript record with one entry if you cannot find other entries to link to a single entry.</p>
@@ -667,16 +677,23 @@ $(document).ready(function() {
         </tbody>
     </table>
 
-    <div class="row" style="padding: 10px 0px; background: aliceblue;">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-6">
-            <%= render partial: "linking_tool/show_form" %>
+    <nav class="navbar navbar-default" style="margin: 10px 0px 9px 0px;">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="collapse navbar-collapse">
+                    <%= render partial: "linking_tool/show_form" %>                    
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#"><span class="glyphicon glyphicon-info-sign"></span> Instructions</a>
+                        </li>
+                        <li>
+                            <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_search_tips" href="#"><span class="glyphicon glyphicon-search"></span> Search Tips</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="col-sm-2">
-            <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#"><span class="glyphicon glyphicon-info-sign"></span> Instructions</a><br>
-            <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_search_tips" href="#"><span class="glyphicon glyphicon-search"></span> Search Tips</a>
-        </div>
-    </div>
+    </nav>
     <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
         <thead>
             <tr>
