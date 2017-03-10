@@ -1,54 +1,61 @@
-<ul class="nav navbar-nav navbar-left">
+<%= form_tag(request.path, method: :get, class: "", id: "link-search") do %>
+<ul class="nav navbar-nav navbar-right navbar-nav-search">
     <li>
         <a href="" class="" id="addSearch">
             <span class="glyphicon glyphicon-plus"></span> add term
         </a>
     </li>
-</ul>
-<%= form_tag(request.path, method: :get, class: "navbar-form navbar-left form-inline", id: "link-search") do %>
-    <div class="search-fieldset">
-        <div class="search-block">
-            <div class="input-group">
-                <div class="input-group-btn">
-                    <button type='button' class="btn btn-warning search-remove"> <span class="glyphicon glyphicon-remove"></span> </button>
-                </div>
-                <%= text_field_tag :search_value, params[:search_value], size: 26, placeholder: "Enter your search term...", class: "form-control" %>
-                <select class="form-control" name="search_field">
-                <%- prepopulated_search_fields_for_advanced_search(1, is_numeric: false).each do |fieldstruct| %>
-                    <% fieldstruct.fields.sort.each do |key, field_def| -%>
-                        <option type="field" value="<%= key %>"><%= field_def.label %></option>
+    <li>
+        <div class="form-inline navbar-form">
+            <div class="search-fieldset">
+                <div class="search-block">
+                    <div class="input-group">
+                        <div class="input-group-btn">
+                            <button type='button' class="btn btn-warning search-remove"> <span class="glyphicon glyphicon-remove"></span> </button>
+                        </div>
+                        <%= text_field_tag :search_value, params[:search_value], size: 18, placeholder: "Enter your search term...", class: "form-control" %>
+                        <select class="form-control" name="search_field">
+                        <%- prepopulated_search_fields_for_advanced_search(1, is_numeric: false).each do |fieldstruct| %>
+                            <% fieldstruct.fields.sort.each do |key, field_def| -%>
+                                <option type="field" value="<%= key %>"><%= field_def.label %></option>
+                            <% end %>
+                            <% break %>
+                        <%- end -%>
+                        <%- prepopulated_search_fields_for_advanced_search(1, is_numeric: true).each do |fieldstruct| -%>
+                            <% fieldstruct.fields.sort.each do |key, field_def| -%>
+                                <option type="filter" value="<%= key %>"><%= field_def.label %></option>
+                            <% end %>
+                            <% break %>
+                        <%- end -%>
+                        </select>
+                    
+                    <select class="form-control" name="search_option">
+                    <% Array(@filter_options).each do |option| %>
+                        <option value="<%= option %>" class="option filter_option">
+                            <% if option == 'with' %>
+                                <%= "Equals" %>
+                            <% elsif option == 'without' %>
+                                <%= "Does Not Equal" %>
+                            <% else %>
+                                <%= option.humanize %>
+                            <% end %>
+                        </option>
                     <% end %>
-                    <% break %>
-                <%- end -%>
-                <%- prepopulated_search_fields_for_advanced_search(1, is_numeric: true).each do |fieldstruct| -%>
-                    <% fieldstruct.fields.sort.each do |key, field_def| -%>
-                        <option type="filter" value="<%= key %>"><%= field_def.label %></option>
+                    <% Array(@field_options).each do |option| %>
+                        <option value="<%= option %>" class="option field_option"><%= option.humanize %></option>
                     <% end %>
-                    <% break %>
-                <%- end -%>
-                </select>
-            
-            <select class="form-control" name="search_option">
-            <% Array(@filter_options).each do |option| %>
-                <option value="<%= option %>" class="option filter_option">
-                    <% if option == 'with' %>
-                        <%= "Equals" %>
-                    <% elsif option == 'without' %>
-                        <%= "Does Not Equal" %>
-                    <% else %>
-                        <%= option.humanize %>
+                    <% Array(@date_options).each do |option| %>
+                        <option value="<%= option %>" class="option date_option"><%= option.humanize %></option>
                     <% end %>
-                </option>
-            <% end %>
-            <% Array(@field_options).each do |option| %>
-                <option value="<%= option %>" class="option field_option"><%= option.humanize %></option>
-            <% end %>
-            <% Array(@date_options).each do |option| %>
-                <option value="<%= option %>" class="option date_option"><%= option.humanize %></option>
-            <% end %>
-            </select>
-            </div>
+                    </select>
+                    </div>
 
+                </div>
+            </div>
+        </div>
+    </li>
+    <li>
+        <div class="navbar-form form-inline">
             <div class="input-group form-submission">
                 <select name="op" id="search_op" class="form-control">
                     <option value="AND">All</option>
@@ -59,7 +66,8 @@
                 </div>
             </div>            
         </div>
-    </div>
+    </li>
+</ul>
 <% end %>
 
     <!--<div class="row">

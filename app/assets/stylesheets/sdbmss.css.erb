@@ -65,13 +65,7 @@ h1, .h1, h2, .h2, h3, .h3, legend {
   margin: 0px;
 }
 .thredded-nav .col-sm-4 {
-  margin-top: -18px;
-  height: 45px;
-  background: #f5f5f5;
   margin-bottom: 10px;
-}
-li.active > a.forum-nav {
-  background-color: #f5f5f5;
 }
 .thredded--topic-header {
   margin-bottom: 2rem;
@@ -354,15 +348,21 @@ li.active > a.forum-nav {
 }
 .document-metadata dt {
   text-align: left;
-  background: #f5f5f5;
+  background: none;
   color: #222;
+  font-weight: bold;
   border-radius: 6px;
   padding: 0px 6px;
 }
 .document-metadata dd {
-  background: #f8f8f8;
-  border-radius: 6px;
-  padding: 0px 6px;
+  background: none;
+  border-radius: 0px;
+  border-bottom: 1px solid #ddd;
+  margin: 0px 0px 6px 0px;
+}
+.dl-horizontal dd {
+  margin-left: 0px;
+  padding-left: 180px;
 }
 
 .bookmark-panes {
@@ -572,6 +572,23 @@ li.active > a.forum-nav {
 .search-block {
   margin-top: 2px;
 }
+.navbar-nav-search {
+  background: none;
+}
+.navbar-nav-search li, .navbar-nav-search .input-group, .navbar-nav-search .form-control {
+  float: left;
+  width: auto;
+}
+.navbar-nav-search .navbar-form {
+  padding: 0px 15px;
+  border: none;
+}
+.navbar-nav-search #search_op {
+  float: right;
+}
+ul.navbar-nav {
+  background: none !important;
+}
 
 .search-remove {
     font-weight: normal;
@@ -625,6 +642,18 @@ speech bubble 'arrow'
 h1 { font-size: 30px; margin-top: 0; }
 
 .facet_extended_list .facet-values li:nth-child(odd) { background: #f9f9f9 }
+
+.facet_limit {
+  color: #333333;
+}
+.facet_limit .panel-heading {
+  background-color: #eee1be;
+  border-color: #cab98e;
+}
+.facet_limit-active .panel-heading {
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+}
 
 /* customizing actual blacklight form (rather than content) is frustrating, sO I just hide it here... */
 #facets .top-panel-heading {
@@ -821,7 +850,7 @@ div#search_results_length {
   display: none;
 }
 
-.form-inline .input-group > .form-control {
+.search-fieldset .input-group > .form-control {
     width: auto;
 }
 
@@ -2290,4 +2319,8 @@ a.ratings {
 }
 a.ratings.rated {
   color: crimson;
+}
+.checkbox-inline {
+  padding: 15px 10px;
+  color: #777;
 }

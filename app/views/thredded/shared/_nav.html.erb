@@ -12,6 +12,7 @@
     <% end %>
   </ul>
   <% if content_for? :thredded_main_navigation %>
+    <%= render partial: 'dashboard/header' %>
     <%= yield :thredded_main_navigation %>
   <% else %>
     <div class="thredded--main-navigation">

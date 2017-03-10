@@ -83,7 +83,16 @@ $(document).ready(function() {
     var entryManuscripts;
     var headingId = '<%= @mode == 'by_entry' ? @entry.public_id : @manuscript.public_id %>';
 
-    var unsavedChanges = false;
+    var unsavedChanges;
+    function setUnsavedChanges(truth) {
+        unsavedChanges = truth;
+        if (unsavedChanges == false) {
+            $("#persist-entries-manuscript-link").addClass('disabled');
+        } else {
+            $("#persist-entries-manuscript-link").removeClass('disabled');
+        }
+    }
+    setUnsavedChanges(false);
 
     <% if (@manuscript && can?(:unlink, @manuscript)) || (@entry && can?(:unlink, @entry)) %>
         var canUnlink = true
@@ -136,7 +145,7 @@ $(document).ready(function() {
                 entry_id: entryId,
                 relation_type: relation
             });
-            unsavedChanges = true;
+            setUnsavedChanges(true);
         }
     };
 
@@ -157,7 +166,7 @@ $(document).ready(function() {
         } else {
             deleteWorkspaceEntry(entryId);            
         }
-        unsavedChanges = true;
+        setUnsavedChanges(true);
     };
 
     var deleteWorkspaceEntry = function(entryIdToDelete) {
@@ -186,7 +195,7 @@ $(document).ready(function() {
                 entryManuscripts.splice(idxToDelete, 1);
             }
         }
-        unsavedChanges = true;
+        setUnsavedChanges(true);
     };
 
     var isInWorkspace = function(entryId, relationType) {
@@ -447,7 +456,7 @@ $(document).ready(function() {
                     var body = '<p>Link between SDBM_' + entryId + ' and SDBM_MS_' + manuscriptId + ' successfully created.</p>' +
                                '<p><a class="manuscript-link" href="/linkingtool/manuscript/' + manuscriptId + '">Go to page for SDBM_MS_' + manuscriptId + ' now</a></p>';
 
-                    unsavedChanges = false;
+                    setUnsavedChanges(false);
                     SDBM.showModal("#modal", {
                         allowDismiss: false,
                         showFooter: false,
@@ -497,13 +506,8 @@ $(document).ready(function() {
                         }
                     }),
                     success: function(data, textStatus, jqXHR) {
-                        var body = "<p>Manuscript record SDBM_MS_" + data.id + " successfully created!</p><p><a href='/linkingtool/manuscript/" + data.id + "'>Click here</a> to add more or edit links to SDBM_MS_" + data.id + "</p><p>or</p><p><a href='/dashboard'>Return to your dashboard</a></p>";
-                        SDBM.showModal("#modal", {
-                            allowDismiss: false,
-                            showFooter: false,
-                            title: "Success",
-                            body: body
-                        });
+                        unsavedChanges = false;
+                        window.location = '/linkingtool/manuscript/' + data.id;
                     },
                     error: function(xhr) {
                         var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
@@ -526,14 +530,7 @@ $(document).ready(function() {
                 }),
                 success: function(data, textStatus, jqXHR) {
                     unsavedChanges = false;
-                    // unknown error caused ONLY this link to just not work -> so I just added a manual "onclick -> reload" event handler
-                    var body = '<p>Your changes have been saved.<p><a onclick="window.location.reload();" href="/linkingtool/manuscript/' + manuscriptId + '">Click here</a> to reload this page</p>';
-                    SDBM.showModal("#modal", {
-                        allowDismiss: false,
-                        showFooter: false,
-                        title: "Success",
-                        body: body
-                    });
+                    window.location = '/linkingtool/manuscript/' + manuscriptId
                 },
                 error: function(xhr) {
                     var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
@@ -680,17 +677,15 @@ $(document).ready(function() {
     <nav class="navbar navbar-default" style="margin: 10px 0px 9px 0px;">
         <div class="row">
             <div class="col-sm-12">
-                <div class="collapse navbar-collapse">
-                    <%= render partial: "linking_tool/show_form" %>                    
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#"><span class="glyphicon glyphicon-info-sign"></span> Instructions</a>
-                        </li>
-                        <li>
-                            <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_search_tips" href="#"><span class="glyphicon glyphicon-search"></span> Search Tips</a>
-                        </li>
-                    </ul>
-                </div>
+                <ul class="nav navbar-nav navbar-left navbar-nav-search">
+                    <li>
+                        <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#"><span class="glyphicon glyphicon-info-sign"></span> Instructions</a>
+                    </li>
+                    <li>
+                        <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_search_tips" href="#"><span class="glyphicon glyphicon-search"></span> Search Tips</a>
+                    </li>
+                </ul>
+                <%= render partial: "linking_tool/show_form" %>                    
             </div>
         </div>
     </nav>

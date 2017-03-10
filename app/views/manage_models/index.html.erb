@@ -37,48 +37,40 @@
 </div>
 
 <div class="redundant-container">
-    <div class="row">
-        <div class="col-sm-12 mobile-center">
-            <nav class="navbar navbar-default" style="margin: 0px 0px 9px 0px;">
-                <div class="navbar-header">
+    <nav class="navbar navbar-default" style="margin: 0px 0px 9px 0px;">
+        <div class="navbar-header">
+            <ul class="nav navbar-nav navbar-nav-search">
+                <li>
                     <% if @page_title %>
-                        <span class='navbar-brand'>
+                        <a class='navbar-brand'>
                             <%= @page_title %>
-                        </span>
+                        </a>
                     <% else %>
                         <% if !can? :index, model_class %>
                             <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
-                            <span class='navbar-brand'>
+                            <a class='navbar-brand'>
                                 Manage Your <%= resource_name.pluralize.capitalize %>
-                            </span>
+                            </a>
                         <% else %>
                             <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
-                            <span class='navbar-brand'>
+                            <a class='navbar-brand'>
                                 Manage <%= resource_name.capitalize %>
-                            </span>
-                        <% end %>
-                    <% end %>
-                    <ul class="nav navbar-nav">
-                        <li>
-                            <a href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info">
-                                <span class="glyphicon glyphicon-info-sign"></span>
                             </a>
-                        </li>
-                    </ul>
-                </div>
-                <ul class="nav navbar-nav navbar-left">
-                    <li>
-                    </li>
-                    <li>
-                        <% if model_class == Entry and can? :index, model_class %>
-                            <%= render partial: "manage_models/group_form" %>                            
                         <% end %>
-                    </li>
-                </ul>
-                <%= render partial: "search_form" %>
-            </nav>
+                    <% end %>                    
+                </li>
+                <li>
+                    <a href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info">
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                    </a>
+                </li>
+                <% if model_class == Entry and can? :index, model_class %>
+                    <%= render partial: "manage_models/group_form" %>                            
+                <% end %>
+            </ul>
         </div>
-    </div>
+        <%= render partial: "search_form" %>
+    </nav>      
 </div>
 
 <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">

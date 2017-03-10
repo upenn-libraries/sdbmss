@@ -1,13 +1,4 @@
-<%= form_tag(request.path, method: :get) do %>
-<!--    <div class="row">
-        <div class="col-sm-12 text-right mobile-center">
-            <% if can? :review, model_class %>
-                <label class="checkbox-inline">
-                    <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
-                </label>
-            <% end %>
-        </div>
-    </div>-->
+<%= form_tag(request.path, method: :get, class: 'navbar-nav-search') do %>
     <div class="navbar-form navbar-right form-inline">
         <div class="input-group form-submission">
             <select name="op" id="search_op" class="form-control">
@@ -22,6 +13,16 @@
             </div>
         </div>
     </div>
+
+    <ul class="navbar-right navbar-nav nav">
+        <li>
+            <% if can? :review, model_class %>
+                <label class="checkbox-inline">
+                    <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
+                </label>
+            <% end %>            
+        </li>
+    </ul>
     
     <div class="search-fieldset navbar-form navbar-right form-inline">
         <div class="search-block">
