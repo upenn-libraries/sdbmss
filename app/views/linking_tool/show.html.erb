@@ -321,7 +321,7 @@ $(document).ready(function() {
 
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {
-                    $("#spinner").hide();
+                    $("#spinner").hide();                                        
                 }
             });
         }
@@ -358,7 +358,7 @@ $(document).ready(function() {
                         }
                     } else {
                         if(!manuscriptId) {
-                            return '<a href="#" data-entry-id="' + entryId + '" class="add-entry-link">Add this entry to manuscript record</a>';
+                            return '<a href="#" data-entry-id="' + entryId + '" class="add-entry-link">Add SDBM_' + entryId + ' to manuscript record</a>';
                         }
                     }
                     return "";
@@ -452,7 +452,8 @@ $(document).ready(function() {
                     }
                 }),
                 success: function(data, textStatus, jqXHR) {
-                    var title = "Successfully Linked";
+                    window.location = "/linkingtool/manuscript/" + manuscriptId;
+                    /*var title = "Successfully Linked";
                     var body = '<p>Link between SDBM_' + entryId + ' and SDBM_MS_' + manuscriptId + ' successfully created.</p>' +
                                '<p><a class="manuscript-link" href="/linkingtool/manuscript/' + manuscriptId + '">Go to page for SDBM_MS_' + manuscriptId + ' now</a></p>';
 
@@ -462,7 +463,7 @@ $(document).ready(function() {
                         showFooter: false,
                         title: title,
                         body: body
-                    });
+                    });*/
                 },
                 error: function(xhr) {
                     var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
@@ -614,7 +615,8 @@ $(document).ready(function() {
             return "You have unsaved changes";
         }
     });
-    
+
+
 });
 
 </script>

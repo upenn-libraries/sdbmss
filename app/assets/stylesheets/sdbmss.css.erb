@@ -342,6 +342,11 @@ h1, .h1, h2, .h2, h3, .h3, legend {
     text-align: left;
     padding-right: 10px;
 }
+.panel.document {
+  margin-top: 0px !important;
+  padding-top: 0px !important;
+  border-bottom-style: solid !important;
+}
 .dl-inline .document-show-heading {
   padding: 0px !important;
   margin-bottom: 8px;
@@ -485,7 +490,7 @@ h1, .h1, h2, .h2, h3, .h3, legend {
   margin: 0px;
   border: none;
   background: none;
-  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #ddd;
 }
 
 .notifications-count:before {
@@ -547,12 +552,6 @@ h1, .h1, h2, .h2, h3, .h3, legend {
   margin: 0px 0px -15px 0px;
 }
 
-.search-form { 
-  max-width: 480px;
-  float: right;
-  font-size: 12px;
-}
-
 .search-form .form-control { font-size: 12px; }
 
 /* invalid input */
@@ -560,8 +559,6 @@ h1, .h1, h2, .h2, h3, .h3, legend {
   background-color: #f2dede !important;
   border: 1px red solid !important;
 }
-
-.search-form .search-fieldset { margin-bottom: 8px; }
 
 .search-fieldset input.form-control {
   width: 50%;
@@ -582,6 +579,7 @@ h1, .h1, h2, .h2, h3, .h3, legend {
 .navbar-nav-search .navbar-form {
   padding: 0px 15px;
   border: none;
+  overflow: hidden; 
 }
 .navbar-nav-search #search_op {
   float: right;
@@ -2106,6 +2104,9 @@ Private Message Styling
 }
 .sdbm-table .btn-default a {
   color: #333;
+}
+.bookmark, .watch {
+  color: black;
 }
 .bookmark[data-method="delete"], .watch[data-method="delete"] {
   color: gold !important;

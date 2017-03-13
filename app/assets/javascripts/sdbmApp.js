@@ -437,7 +437,7 @@ var BOOKMARK_SCOPE;
             $scope.saving = true;
             window.location = "/dericci_games/";
           } else {
-            console.log(response);
+            //console.log(response);
           }
         });
       };
@@ -1257,7 +1257,7 @@ var BOOKMARK_SCOPE;
                 if (prov.dates) {
                   for (var j = 0; j < prov.dates.length; j++) {
                     var date = prov.dates[j];
-                    console.log(date);
+                    //console.log(date);
                     if (date.type == "Start") prov.start_date = date.date;
                     else if (date.type == "End") prov.end_date = date.date;
                     else if (date.type == "Associated") prov.associated_date += date.date + "\t";
