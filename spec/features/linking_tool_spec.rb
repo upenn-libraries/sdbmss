@@ -151,9 +151,7 @@ describe "Linking Tool", :js => true do
 
     find("#persist-entries-manuscript-link").trigger('click')
 
-#    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
-
-    visit linking_tool_by_manuscript_path id: manuscript.id
+    sleep 2
     expect(page).to have_content("SDBM_MS")
 
     em = manuscript.entry_manuscripts.select { |em| em.entry_id == entry_id }.first
@@ -171,7 +169,7 @@ describe "Linking Tool", :js => true do
 
     find("#persist-entries-manuscript-link").trigger('click')
 
-    expect(page).to have_content("SDBM_MS")    
+    expect(page).to have_content("Add SDBM_#{entry_id}")    
 #    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     manuscript.reload
@@ -187,11 +185,10 @@ describe "Linking Tool", :js => true do
     # remove all except the last entry
 
     entryCount = manuscript.entries.length
-    (entryCount - 2).times do |i|
+    (entryCount - 1).times do |i|
       entry_id = manuscript.entries[i].id
       first("input[name='entry_id_#{entry_id}'][value='unlink']").trigger('click')
     end
-    sleep 1
     
     find_by_id("persist-entries-manuscript-link").trigger("click")
     #expect(find("div#modal.modal.fade.in")).to have_content("hasdfa")
@@ -203,6 +200,7 @@ describe "Linking Tool", :js => true do
 
     # remove the last entry
 
+    expect(manuscript.entries.count).to eq(1)
     entry = manuscript.entries.first
     entry_id = entry.id
 

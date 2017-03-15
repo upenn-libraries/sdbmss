@@ -1,3 +1,6 @@
+<% content_for :control_tools do %>
+  <%= render partial: 'dashboard/control_tools' %>
+<% end %>
 <% content_for :thredded_page_title, t('thredded.messageboard.index.page_title') %>
 <% content_for :thredded_page_id, 'thredded--messageboards-index' %>
 <% content_for :thredded_breadcrumbs, render('thredded/shared/breadcrumbs') %>
