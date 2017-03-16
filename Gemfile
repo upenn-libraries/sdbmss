@@ -25,7 +25,7 @@ gem 'coffee-rails', '~> 4.0.0'
 # gem 'therubyracer',  platforms: :ruby
 
 # Use jquery as the JavaScript library
-gem 'jquery-rails', '~> 3.1.0'
+gem 'jquery-rails', '~> 4.2.1'
 gem 'jquery-ui-rails', '~> 5.0.3'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
@@ -97,6 +97,8 @@ gem "database_cleaner", "~> 1.4.1"
 gem "rubyzip"
 
 gem 'data-confirm-modal'
+
+gem 'thredded', '~> 0.9.4'
 
 # bundle exec rake doc:rails generates the Rails API under doc/api.
 group :doc do

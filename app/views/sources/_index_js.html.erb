@@ -196,7 +196,7 @@ $(document).ready(function() {
          var params = {};
          params["op"] = $("select[name='op']").val() || "AND";
 
-         $(".search-fieldset").each(function(idx, element) {
+         $(".search-block").each(function(idx, element) {
              var search_field = $(element).find("select[name='search_field']").first().val();
              var search_value = $(element).find("input[name='search_value']").first().val();
              if(search_value) {
@@ -208,7 +208,7 @@ $(document).ready(function() {
                 }
              }
          });
-
+         
          if(onlyMine) {
              params["created_by_user"] = 1;
          }

@@ -1,4 +1,7 @@
-<% if current_user %>
+<!-- FIX ME: temporarily disabled due to memory issue when triggering bookmark for 50+ docs at once -->
+
+<!-- is 'bookmark all' ever an appropriate action, though? -->
+<% if false #current_user %>
 <div class="btn-group">
   <button type='button' class="bookmark-all btn btn-default" onclick="$('.bookmark[data-method=post]').click()">
     <span class="glyphicon glyphicon-bookmark"></span>

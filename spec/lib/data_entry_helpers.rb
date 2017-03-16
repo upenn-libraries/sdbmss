@@ -7,7 +7,7 @@ module DataEntryHelpers
     find_by_id('search-name').click
     expect(page).not_to have_content('To begin searching')
     if page.all('tr', :text => value).count <= 0
-      expect(page).to have_content("Propose #{value}")
+      expect(page).to have_content("Propose '#{value}")
       find_by_id('propose-name').click
       expect(page).to have_content("This window asks you to create an authorized name")
       click_button('Create')
@@ -27,7 +27,7 @@ module DataEntryHelpers
     find_by_id('search-model').click
     expect(page).not_to have_content('To begin searching')
     if page.all('tr', :text => value).count <= 0
-      expect(page).to have_content("Propose #{value}")
+      expect(page).to have_content("Propose '#{value}")
       find_by_id('propose-model').click
       expect(page).to have_content("This window asks you to create an authorized name")
       click_button('Create')

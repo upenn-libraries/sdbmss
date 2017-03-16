@@ -1,6 +1,15 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "extras", media: "all" %>
   <%= javascript_include_tag "extras" %>
+  <style>
+    .form-inline .input-group > .form-control {
+        width: auto;
+    }
+    .linking-tool-link {
+        line-height: 36px;
+        margin: 0px 10px;
+    }
+  </style>
 <script type="text/javascript">
 
 function setOptions (p) {
@@ -35,12 +44,13 @@ $(document).ready(function() {
     $("#addSearch").click( function (e) {
         // fix me: add something here to dynamically change table height -> 
         var p = $('.search-block').eq(0).clone();
+        p.find('.form-submission').remove();
         p.find("input", "select").val("");
         $(".search-fieldset").append(p);
         p.find(".search-remove").click( function (e) {
             //var p = $(this).closest('.search-block');
             if ($('.search-block').length > 1) {
-                $(".search").find(p).remove();            
+                $(".search-fieldset").find(p).remove();            
             } else {                                    // otherwise, clear all the fields
                 p.find("input").each(function (e) {
                     $(this).val("");
@@ -54,7 +64,7 @@ $(document).ready(function() {
     p.find(".search-remove").click( function (e) {
         if ($('.search-block').length > 1) {     // if there are others, remove it
             p = $(this).closest('.search-block');
-            $(".search").find(p).remove();
+            $(".search-fieldset").find(p).remove();
         } else {                                    // otherwise, clear all the fields
             p.find("input").each(function (e) {
                 $(this).val("");
@@ -73,7 +83,16 @@ $(document).ready(function() {
     var entryManuscripts;
     var headingId = '<%= @mode == 'by_entry' ? @entry.public_id : @manuscript.public_id %>';
 
-    var unsavedChanges = false;
+    var unsavedChanges;
+    function setUnsavedChanges(truth) {
+        unsavedChanges = truth;
+        if (unsavedChanges == false) {
+            $("#persist-entries-manuscript-link").addClass('disabled');
+        } else {
+            $("#persist-entries-manuscript-link").removeClass('disabled');
+        }
+    }
+    setUnsavedChanges(false);
 
     <% if (@manuscript && can?(:unlink, @manuscript)) || (@entry && can?(:unlink, @entry)) %>
         var canUnlink = true
@@ -126,7 +145,7 @@ $(document).ready(function() {
                 entry_id: entryId,
                 relation_type: relation
             });
-            unsavedChanges = true;
+            setUnsavedChanges(true);
         }
     };
 
@@ -147,7 +166,7 @@ $(document).ready(function() {
         } else {
             deleteWorkspaceEntry(entryId);            
         }
-        unsavedChanges = true;
+        setUnsavedChanges(true);
     };
 
     var deleteWorkspaceEntry = function(entryIdToDelete) {
@@ -176,7 +195,7 @@ $(document).ready(function() {
                 entryManuscripts.splice(idxToDelete, 1);
             }
         }
-        unsavedChanges = true;
+        setUnsavedChanges(true);
     };
 
     var isInWorkspace = function(entryId, relationType) {
@@ -302,7 +321,7 @@ $(document).ready(function() {
 
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {
-                    $("#spinner").hide();
+                    $("#spinner").hide();  
                 }
             });
         }
@@ -339,7 +358,7 @@ $(document).ready(function() {
                         }
                     } else {
                         if(!manuscriptId) {
-                            return '<a href="#" data-entry-id="' + entryId + '" class="add-entry-link">Add this entry to manuscript record</a>';
+                            return '<a href="#" data-entry-id="' + entryId + '" class="add-entry-link">Add SDBM_' + entryId + ' to manuscript record</a>';
                         }
                     }
                     return "";
@@ -357,6 +376,8 @@ $(document).ready(function() {
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {
                     $("#spinner").hide();
+                    // FIX ME: for some reason, radiobuttons do not appear on first load of workspacetable -> this is a hacky fix to make them do that :/
+                    workspaceTable.reload();
                 }
             });
         }
@@ -433,17 +454,18 @@ $(document).ready(function() {
                     }
                 }),
                 success: function(data, textStatus, jqXHR) {
-                    var title = "Successfully Linked";
+                    window.location = "/linkingtool/manuscript/" + manuscriptId;
+                    /*var title = "Successfully Linked";
                     var body = '<p>Link between SDBM_' + entryId + ' and SDBM_MS_' + manuscriptId + ' successfully created.</p>' +
                                '<p><a class="manuscript-link" href="/linkingtool/manuscript/' + manuscriptId + '">Go to page for SDBM_MS_' + manuscriptId + ' now</a></p>';
 
-                    unsavedChanges = false;
+                    setUnsavedChanges(false);
                     SDBM.showModal("#modal", {
                         allowDismiss: false,
                         showFooter: false,
                         title: title,
                         body: body
-                    });
+                    });*/
                 },
                 error: function(xhr) {
                     var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
@@ -487,13 +509,8 @@ $(document).ready(function() {
                         }
                     }),
                     success: function(data, textStatus, jqXHR) {
-                        var body = "<p>Manuscript record SDBM_MS_" + data.id + " successfully created!</p><p><a href='/linkingtool/manuscript/" + data.id + "'>Click here</a> to add more or edit links to SDBM_MS_" + data.id + "</p><p>or</p><p><a href='/dashboard'>Return to your dashboard</a></p>";
-                        SDBM.showModal("#modal", {
-                            allowDismiss: false,
-                            showFooter: false,
-                            title: "Success",
-                            body: body
-                        });
+                        unsavedChanges = false;
+                        window.location = '/linkingtool/manuscript/' + data.id;
                     },
                     error: function(xhr) {
                         var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
@@ -516,14 +533,7 @@ $(document).ready(function() {
                 }),
                 success: function(data, textStatus, jqXHR) {
                     unsavedChanges = false;
-                    // unknown error caused ONLY this link to just not work -> so I just added a manual "onclick -> reload" event handler
-                    var body = '<p>Your changes have been saved.<p><a onclick="window.location.reload();" href="/linkingtool/manuscript/' + manuscriptId + '">Click here</a> to reload this page</p>';
-                    SDBM.showModal("#modal", {
-                        allowDismiss: false,
-                        showFooter: false,
-                        title: "Success",
-                        body: body
-                    });
+                    window.location = '/linkingtool/manuscript/' + manuscriptId
                 },
                 error: function(xhr) {
                     var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
@@ -607,14 +617,14 @@ $(document).ready(function() {
             return "You have unsaved changes";
         }
     });
-    
+
 });
 
 </script>
 <% end %>
 
 <div class="row">
-    <div class="">
+    <div class="col-sm-12">
         <h4><a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#">Click here for instructions</a> on how to link entries to manuscript records</h4>
         <% if @mode == 'by_entry' %>
             <p>This page allows you to create a <b>manuscript record</b> from this entry by linking it to one or more existing entries citing the same manuscript, in order to track its transmission and location across time.  You may create a manuscript record with one entry if you cannot find other entries to link to a single entry.</p>
@@ -667,16 +677,21 @@ $(document).ready(function() {
         </tbody>
     </table>
 
-    <div class="row" style="padding: 10px 0px; background: aliceblue;">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-6">
-            <%= render partial: "linking_tool/show_form" %>
+    <nav class="navbar navbar-default" style="margin: 10px 0px 9px 0px;">
+        <div class="row">
+            <div class="col-sm-12">
+                <ul class="nav navbar-nav navbar-left navbar-nav-search">
+                    <li>
+                        <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#"><span class="glyphicon glyphicon-info-sign"></span> Instructions</a>
+                    </li>
+                    <li>
+                        <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_search_tips" href="#"><span class="glyphicon glyphicon-search"></span> Search Tips</a>
+                    </li>
+                </ul>
+                <%= render partial: "linking_tool/show_form" %>                    
+            </div>
         </div>
-        <div class="col-sm-2">
-            <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#"><span class="glyphicon glyphicon-info-sign"></span> Instructions</a><br>
-            <a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_search_tips" href="#"><span class="glyphicon glyphicon-search"></span> Search Tips</a>
-        </div>
-    </div>
+    </nav>
     <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
         <thead>
             <tr>

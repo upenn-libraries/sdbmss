@@ -1,0 +1,35 @@
+<nav class="thredded--navigation">
+  <ul class="thredded--user-navigation<%= ' thredded--user-navigation-standalone' if Thredded.standalone_layout? %>">
+    <% if signed_in? && Thredded.standalone_layout? %>
+      <li class="thredded--user-navigation--profile thredded--user-navigation--item">
+        <%= link_to thredded_current_user.thredded_display_name, user_path(thredded_current_user) %>
+      </li>
+    <% end %>
+
+
+    <% if Thredded.standalone_layout? %>
+      <%= render 'thredded/shared/nav/standalone' %>
+    <% end %>
+  </ul>
+  <% if content_for? :thredded_main_navigation %>
+    <%= render partial: 'dashboard/header' %>
+    <%= yield :thredded_main_navigation %>
+  <% else %>
+    <div class="thredded--main-navigation">
+      <% if current_user %>
+        <%= render partial: 'dashboard/header' %>
+      <% end %>
+      <div class="row thredded-nav">
+        <div class="col-sm-4">
+          <%= yield :thredded_breadcrumbs %>
+        </div>
+        <div class="col-sm-4 text-center">
+          <%= render 'thredded/shared/nav/moderation' %>
+        </div>
+        <div class="col-sm-4 text-right">
+          <%= render 'thredded/search/form', messageboard: messageboard_or_nil %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</nav>

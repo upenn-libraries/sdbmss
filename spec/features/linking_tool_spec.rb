@@ -70,7 +70,8 @@ describe "Linking Tool", :js => true do
 
     click_button "Create Manuscript Record"
 
-    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+    expect(page).to have_content("Manage Manuscripts")    
+    #expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     expect(Manuscript.count).to eq(count + 1)
 
@@ -91,7 +92,8 @@ describe "Linking Tool", :js => true do
 
     click_button "Create Manuscript Record"
 
-    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+    expect(page).to have_content("Manage Manuscripts")    
+    #expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     expect(Manuscript.count).to eq(count + 1)
 
@@ -109,7 +111,9 @@ describe "Linking Tool", :js => true do
     # use manuscript created in previous test
     first(".link-to-manuscript-link", visible: true).trigger('click')
 
-    expect(find(".modal-title", visible: true).text.include?("Successfully Linked")).to be_truthy
+    expect(page).not_to have_content("Manage Entries")
+    expect(page).to have_content("Manage Manuscripts")    
+#    expect(find(".modal-title", visible: true).text.include?("Successfully Linked")).to be_truthy
 
     entry.reload
 
@@ -127,7 +131,8 @@ describe "Linking Tool", :js => true do
 
     find("#persist-entries-manuscript-link").trigger('click')
 
-    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+    expect(page).not_to have_content("Add SDBM_#{entry_id}")    
+#    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     entries = Manuscript.last.entries
     entry_ids = entries.map(&:id)
@@ -146,9 +151,8 @@ describe "Linking Tool", :js => true do
 
     find("#persist-entries-manuscript-link").trigger('click')
 
-    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
-
-    manuscript.reload
+    sleep 2
+    expect(page).to have_content("SDBM_MS")
 
     em = manuscript.entry_manuscripts.select { |em| em.entry_id == entry_id }.first
     expect(em.relation_type).to eq('possible')
@@ -165,7 +169,8 @@ describe "Linking Tool", :js => true do
 
     find("#persist-entries-manuscript-link").trigger('click')
 
-    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+    expect(page).to have_content("Add SDBM_#{entry_id}")    
+#    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     manuscript.reload
 
@@ -180,28 +185,30 @@ describe "Linking Tool", :js => true do
     # remove all except the last entry
 
     entryCount = manuscript.entries.length
-    (entryCount - 2).times do |i|
+    (entryCount - 1).times do |i|
       entry_id = manuscript.entries[i].id
       first("input[name='entry_id_#{entry_id}'][value='unlink']").trigger('click')
     end
-    sleep 1
     
     find_by_id("persist-entries-manuscript-link").trigger("click")
     #expect(find("div#modal.modal.fade.in")).to have_content("hasdfa")
     #click_button "Save changes"
-    expect(page).to have_content("Success")
-    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+    #expect(page).to have_content("Success")
+    expect(page).to have_content("SDBM_MS")    
+#    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
     manuscript.reload
 
     # remove the last entry
 
+    expect(manuscript.entries.count).to eq(1)
     entry = manuscript.entries.first
     entry_id = entry.id
 
     first("input[name='entry_id_#{entry_id}'][value='unlink']").trigger('click')
     find_by_id("persist-entries-manuscript-link").trigger("click")
     #click_button "Save changes"
-    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+    expect(page).to have_content("SDBM_MS")    
+#    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     manuscript.reload
 

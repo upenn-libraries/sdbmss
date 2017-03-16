@@ -35,7 +35,7 @@ describe "User Activity", :js => true do
 
     nw = find_field('title_0').value
 #    puts nw
-    first(".save-button").click
+    first(".save-button").trigger('click')
     sleep 1.1
 #    puts Entry.find(10).entry_titles
     return old

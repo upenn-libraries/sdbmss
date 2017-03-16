@@ -119,7 +119,6 @@ class ManageModelsController < ApplicationController
   end
 
   def destroy
-    # mark as deleted, don't actually destroy the record
     if deletable?(@model)
       #@model.deleted = true
       if @model.destroy

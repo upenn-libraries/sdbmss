@@ -1,13 +1,24 @@
 <!-- label class="control-label">Add Entry(s) to User Group</label>-->
-<p>Group managers can add entries to their group(s) from this page.</p>
-<p>First, select from the dropdown menu which group to add entries to or remove entries from. Next, select entries by clicking on the box to the left of each entry. Then, click <b>Add Entry(s)</b> or <b>Remove Entry(s)</b>. The User Group name will appear in the corresponding column below.</p>
 
-<div class="form-inline">
+<div id="group_info" class="modal fade panel-body" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Understanding User Groups</h4>
+            </div>
+            <div class="modal-body">
+              <p>Group managers can add entries to their group(s) from this page.</p>
+              <p>First, select from the dropdown menu which group to add entries to or remove entries from. Next, select entries by clicking on the box to the left of each entry. Then, click <b>Add Entry(s)</b> or <b>Remove Entry(s)</b>. The User Group name will appear in the corresponding column below.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<li class="navbar-form navbar-left form-inline">
   <div class="input-group" style="width: 135px;">
     <input type="submit" value="Add" class='form-control' id="add-to-group" style="max-width: 50px;"/>
     <input type="submit" value="Remove" class='form-control' id="remove-from-group" style="max-width: 80px;"/>
   </div>
-  <span>Entry(s) to/from</span>
   <% groups = Group.joins(:group_users).where(:group_users => {user: current_user, role: "Manager"}) %>
   <% if groups.count > 0 %>  
   <select class='form-control' id="group-select" style="max-width: 200px;">
@@ -20,4 +31,5 @@
     <option value="nil">You have no user groups.</option>
   </select>
   <% end %>
-</div>
+</li>
+<li><a href="#group_info" data-toggle="modal" data-target="#group_info"><span class="glyphicon glyphicon-info-sign"></span> groups</a></li>

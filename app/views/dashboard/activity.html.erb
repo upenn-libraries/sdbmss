@@ -1,0 +1,59 @@
+<% content_for :control_tools do %>
+    <%= render partial: 'control_tools' %>
+<% end %>
+
+<%= stylesheet_link_tag "extras", media: "all" %>
+<% @page_title = "Dashboard - " + application_name %>
+
+<%= render partial: "header" %>
+
+<div class="row">
+    <div class="col-sm-12">
+        <div class="tab-content">
+            <div id="community" class="tab-pane fade in active">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <%= render partial: "activities/nav" %>
+                    </div>
+                    <div class="col-sm-10" id="activity-pane">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready( function () {
+
+    var loading = true;
+    $('#activity-pane').html('<p class="text-muted text-center"><img src="/assets/spinner.gif"> loading...</img></p>');
+
+    $('#activity_tabs a').click( function (e) {
+        $('#activity-pane').html('<p class="text-muted text-center"><img src="/assets/spinner.gif"> loading...</img></p>');
+    });
+    $('.ajax-tabs').on('click','a',function (e) {
+        e.preventDefault();
+        var url = $(this).attr("data-url");
+
+        if (loading) {}
+        else if (typeof url !== "undefined") {
+            var tab = $(this), href = this.hash;
+            // ajax load from data-url
+            loading = true;
+            $(href).load(url,function(result){      
+                tab.tab('show')
+                bindRemoteAjaxCallback();
+                loading = false;
+            });
+        } else {
+            $(this).tab('show');
+            bindRemoteAjaxCallback();
+        }
+    });
+    
+    $("#activity-pane").load("/activities/show_all?watched=true",function(result){
+        loading = false;    
+    });
+});
+</script>

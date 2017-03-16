@@ -1,2 +1,61 @@
-<legend class="h1 text-center">Notifications</legend>
-<%= render partial: "index", locals: {notifications: @notifications.reverse} %>
+  <nav class="navbar navbar-default">
+    <div class="navbar-header">
+      <div class="navbar-brand">
+        Notifications
+      </div>
+    </div>
+    <div class="nav navbar-nav navbar-right" style="margin-right: 15px;">
+      <ul class="pagination">
+        <% @pages.times do |p| %>
+          <% if @page == p %>
+            <li class="active"><a href=""><%= p + 1 %></a></li>
+          <% else %>
+            <li><%= link_to p + 1, notifications_path(page: p) %></li>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
+  </nav>
+  <ul class="list-group">
+  <% if @notifications.count <= 0 %>
+    <li class="text-muted list-group-item text-center">You have no notifications.</li>
+  <% end %>
+  <% @notifications.each do |notification| %>
+    <li class="list-group-item">
+      <% if notification.title %>
+      <div class="row">
+        <div class="col-xs-7 one-line">
+          <% if notification.notified %>
+            <% 
+              if notification.notified.class == User
+                url = main_app.profile_path(notification.notified.username)
+              elsif notification.notified_type == "Thredded::Post"
+                url = Thredded::UrlsHelper.post_permalink_path(notification.notified)
+              else      
+                url = main_app.polymorphic_url(notification.notified)
+              end
+            %>
+            <%= link_to url, :title => notification.title do %>
+              <% if notification.active %>
+                <span class="glyphicon glyphicon-exclamation-sign" style="color: #2196F3"></span>
+                <span class="title"><%= notification.title %></span>
+              <% else %>
+                <span class="title"><%= notification.title %></span>
+              <% end %>
+            <% end %>
+          <% else %>
+            <span class="title text-muted"><span class="glyphicon glyphicon-warning-sign text-warning"></span> <%= notification.title %></span>
+          <% end %>
+        </div>
+        <div class="col-xs-5 text-right text-info one-line">
+          <%= notification.created_at.to_formatted_s(:long) %>
+          <span class="glyphicon glyphicon-ok-circle" data-id="<%= notification.id %>"></span>
+          <%= link_to(notification_path(notification, format: 'html'),  method: :delete) do %>
+            <span class="glyphicon glyphicon-remove"></span> Delete
+          </div>
+        </div>
+      <% end %>
+      <% end %>
+    </li>
+  <% end %>
+  </ul>

@@ -165,6 +165,18 @@
                     <%= notification_f.check_box :email_on_all_comment, class: 'form-control'  %>
                   </td>
                 </tr>
+                <tr>
+                  <td>
+                    <label class='control-label'>On Forum Post</label><br>
+                    <span class="text-muted">When someone posts to a forum topic you are following.</span>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :on_forum_post, class: 'form-control'  %>
+                  </td>
+                  <td class='toggle-container'>
+                    <%= notification_f.check_box :email_on_forum_post, class: 'form-control'  %>
+                  </td>
+                </tr>
                 <% end %>
               </tbody>
             </table>

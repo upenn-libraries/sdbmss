@@ -56,7 +56,7 @@ var SDBM = SDBM || {};
             fixedColumns: null,
             prependColumns: null,
             height: 'full',
-            heightBuffer: 360,
+            heightBuffer: 280,
             responsive: true,
             dom: '<"row"<"col-sm-5 mobile-center"li><"col-sm-7 text-right mobile-center" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t'
         };

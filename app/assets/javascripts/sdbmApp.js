@@ -437,7 +437,7 @@ var BOOKMARK_SCOPE;
             $scope.saving = true;
             window.location = "/dericci_games/";
           } else {
-            console.log(response);
+            //console.log(response);
           }
         });
       };
@@ -1257,6 +1257,7 @@ var BOOKMARK_SCOPE;
                 if (prov.dates) {
                   for (var j = 0; j < prov.dates.length; j++) {
                     var date = prov.dates[j];
+                    //console.log(date);
                     if (date.type == "Start") prov.start_date = date.date;
                     else if (date.type == "End") prov.end_date = date.date;
                     else if (date.type == "Associated") prov.associated_date += date.date + "\t";
@@ -1398,7 +1399,7 @@ var BOOKMARK_SCOPE;
             }
           }
 
-          console.log(angular.toJson(entry1), angular.toJson(entry2));
+//          console.log(angular.toJson(entry1), angular.toJson(entry2));
           // note: changing a numerical field, then restoring the original and saving will still trigger 'unsaved' because one is a string and the other is a number (in the JSON)
           return angular.toJson(entry1) !== angular.toJson(entry2);
         }
@@ -1871,10 +1872,10 @@ var BOOKMARK_SCOPE;
                         success: function(data, textStatus, jqXHR) {
                             var results = data.data || [];
                             if(results.length > 0) {
-                                var msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='http://localhost:3000/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
+                                var msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
                                 var editMode = !!scope.entry.id;
                                 if (editMode) {
-                                    msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='http://localhost:3000/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
+                                    msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
                                     results.forEach(function (result) {
                                         if(result.id == scope.entry.id) {
                                             // search returned the entry we're editing, so don't warn
@@ -2145,7 +2146,8 @@ var BOOKMARK_SCOPE;
               sdbmutil.redirectToEntryCreatePage(source.id);
               return;
             }
-
+            window.location = "/sources/" + $scope.source.id;
+            /*
             var modalInstance = $modal.open({
                 templateUrl: 'postSourceSave.html',
                 backdrop: 'static',
@@ -2157,7 +2159,7 @@ var BOOKMARK_SCOPE;
               }, function() {
                   // runs when promise is rejected (modal is dismissed)
                   sdbmutil.redirectToSourceEditPage(source.id);
-            });
+            });*/
         };
 
         $scope.similarSourcesModal = null;

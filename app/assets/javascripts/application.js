@@ -12,7 +12,8 @@
 //
 //= require poltergeist_fix
 //= require jquery
-
+//= require thredded
+//
 //= require bootstrap.min
 //= require jquery_ujs
 //= require jquery-ui

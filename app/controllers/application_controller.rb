@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :password, :password_confirmation, :remember_me) }
     devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :username, :email, :password, :remember_me) }
-    devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:username, :email, :email_is_public, :fullname, :institutional_affiliation, :password, :password_confirmation, :current_password, :bio, :notification_setting_attributes => [:on_update, :on_comment, :on_reply, :on_message, :on_new_user, :on_all_comment, :on_group, :email_on_new_user, :email_on_update, :email_on_comment, :email_on_reply, :email_on_message, :email_on_all_comment, :email_on_group]) }
+    devise_parameter_sanitizer.for(:account_update) { |u| u.permit(:username, :email, :email_is_public, :fullname, :institutional_affiliation, :password, :password_confirmation, :current_password, :bio, :notification_setting_attributes => [:on_update, :on_comment, :on_reply, :on_message, :on_new_user, :on_all_comment, :on_group, :on_forum_post, :email_on_new_user, :email_on_update, :email_on_comment, :email_on_reply, :email_on_message, :email_on_all_comment, :email_on_group, :email_on_forum_post]) }
   end
 
   # used by devise
@@ -72,7 +72,7 @@ class ApplicationController < ActionController::Base
         opts.delete key
       end
     end
-    root_path({ "utf8" => SDBMSS::Util::CHECKMARK, "search_field" => "all_fields" }.merge(opts))
+    main_app.root_path({ "utf8" => SDBMSS::Util::CHECKMARK, "search_field" => "all_fields" }.merge(opts))
   end
 
   private

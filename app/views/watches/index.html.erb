@@ -26,7 +26,9 @@
     <% @watches.sort { |w1, w2| w1.watched_type <=> w2.watched_type }.each do |watch| %>
       <tr>
         <td>
-          <%= link_to watch.watched.public_id, polymorphic_url(watch.watched) %>
+          <% if defined? watch.watched.public_id %>
+            <%= link_to watch.watched.public_id, polymorphic_url(watch.watched) %>
+          <% end %>
           <%= watch.watched.to_s %>
         </td>
         <td class='text-center col-sm-2'>

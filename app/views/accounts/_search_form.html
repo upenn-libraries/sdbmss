@@ -1,6 +1,21 @@
-<%= form_tag(request.path, method: :get, class: "form-horizontal search-form sdbmss-form") do %>
-    <div class="row">
-        <div class="col-sm-12 text-right mobile-center">
+<%= form_tag(request.path, method: :get, class: "navbar-nav-search search-form") do %>
+    <div class="navbar-form navbar-right form-inline">
+        <div class="input-group form-submission">
+            <select name="op" id="search_op" class="form-control">
+                <option value="AND">All</option>
+                <option value="OR">Any</option>
+            </select>
+            <div class="input-group-btn">
+                <button id="search_submit" type="submit" class="btn btn-primary">
+                    <span class="hide-mobile">Search</span>
+                    <span class="glyphicon glyphicon-search"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <ul class="navbar-right navbar-nav nav">
+        <li>
             <% if can? :review, model_class %>
                 <label class="checkbox-inline">
                     <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
@@ -9,15 +24,16 @@
                     <%= check_box_tag :inactive_only, 1, params[:inactive_only] %> Include inactive accounts
                 </label>
             <% end %>
-        </div>
-    </div>
-    <div class="row search-fieldset">
-        <div class="col-sm-12 search-block">
+        </li>
+    </ul>
+
+    <div class="search-fieldset navbar-form navbar-right form-inline">
+        <div class="search-block">
             <div class="input-group">
                 <div class="input-group-btn">
                     <button type='button' class="btn btn-warning search-remove"> <span class="glyphicon glyphicon-remove"></span> </button>
                 </div>
-                <%= text_field_tag :search_value, params[:search_value], size: 26, placeholder: "Enter your search term...", class: "form-control" %>
+                <%= text_field_tag :search_value, params[:search_value], size: 18, placeholder: "Enter your search term...", class: "form-control" %>
                 <select class="form-control" name="search_field">
                 <% Array(@search_fields).each do |field| %>
                     <!-- replace 'at' in 'created at' with 'on' -->
@@ -45,29 +61,21 @@
                 </select>
             </div>
         </div>
-    </div>
+    </div><!--
     <div class="row">
         <div class="col-xs-4">
-            <a href="" class="" id="addSearch">
-                <span class="glyphicon glyphicon-plus"></span> add term
-            </a>
         </div>
         <div class="col-xs-3">
             <span id="spinner" style='display: none;'><img alt="working..." src="<%= asset_path "spinner.gif" %>"/> loading search results...</span>
         </div>
         <div class="col-xs-5 text-right">
-            <div class="input-group">
-            <select name="op" id="search_op" class="form-control">
-                <option value="AND">All</option>
-                <option value="OR">Any</option>
-            </select>
-            <div class="input-group-btn">
-                <button id="search_submit" type="submit" class="btn btn-primary">
-                    <span class="hide-mobile">Search</span>
-                    <span class="glyphicon glyphicon-search"></span>
-                </button>
-            </div>
-            </div>
         </div>
-    </div>
+    </div>-->
 <% end %>
+<ul class="nav navbar-right navbar-nav">
+    <li>
+        <a href="" class="" id="addSearch">
+            <span class="glyphicon glyphicon-plus"></span> add term
+        </a>
+    </li>
+</ul>

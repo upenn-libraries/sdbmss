@@ -1,3 +1,5 @@
+require 'uri'
+
 class PagesController < ApplicationController
 
   load_and_authorize_resource :only => [:index, :edit, :create, :update, :destroy]
@@ -37,7 +39,7 @@ class PagesController < ApplicationController
   def show
     @page = Page.find_by(name: params[:name])
     if @page.ext == "pdf"
-      redirect_to "/#{@page.location}/#{@page.filename}"
+      redirect_to "/#{@page.location}/#{URI.encode @page.filename}"
     else
       @filecontents = nil
       File.open(Rails.root.join('public', "#{@page.location}", @page.filename), 'r') do |file|

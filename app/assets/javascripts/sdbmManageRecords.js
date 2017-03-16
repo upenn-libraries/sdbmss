@@ -206,7 +206,7 @@ var load_session = false;
 
                 manageRecords.searchAjax(params, dt_params, callback);
             },
-            heightBuffer: 400,
+            heightBuffer: 280,
             columns: manageRecords.getColumns(),
             order: manageRecords.getDefaultSort(),
             fixedColumns: manageRecords.options.fixedColumns

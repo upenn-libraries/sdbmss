@@ -530,7 +530,6 @@ class Entry < ActiveRecord::Base
     end
 
     #### Source info
-
     define_field(:string, :source_date, :stored => true) do
       source.date
     end

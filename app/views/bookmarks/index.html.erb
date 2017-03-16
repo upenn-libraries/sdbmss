@@ -48,16 +48,26 @@
           </dl>
         </li>
         <li class="list-group-item" ng-repeat="bookmark in bookmarks_with_tag = (bookmarks | filter:hasTag)">
+        <div class="panel panel-default document">
+          <div class="panel-heading">
+            <div class='row'>
+              <div class="col-xs-10">
+                  <span class='h4'>
+                      <a href="{{ bookmark.link }}">{{ bookmark.public_id }}</a>
+                  </span>
+              </div>
+              <div class="col-xs-2 text-right">
+                  <a class='remove-bookmark control-bookmark' ng-click="removeBookmark(name, bookmark)">
+                    <span class="glyphicon glyphicon-remove"></span>
+                  </a>                  
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
               <dl class="document-show-heading dl-horizontal dl-invert">
                   <dt></dt>
                   <dd class="h4">
                     <div class="row">
-                      <strong class="col-xs-10"><a href="{{ bookmark.link }}">{{ bookmark.public_id }}</a></strong>
-                      <div class="col-xs-2 text-right">
-                          <a class='remove-bookmark control-bookmark' ng-click="removeBookmark(name, bookmark)">
-                            <span class="glyphicon glyphicon-remove"></span>
-                          </a>
-                      </div>
                     </div>
                   </dd>
               </dl>
@@ -87,6 +97,8 @@
                   </ul>
                 </dd>
               </dl>
+          </div>
+          </div>      
         </li>
         <li class="list-group-item" ng-if="search_tag.length > 0 && bookmarks_with_tag.length <= 0">
           <dl class="document-metadata dl-invert dl-horizontal">
