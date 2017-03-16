@@ -9,14 +9,6 @@ class CommentsController < SearchableAuthorityController
     Comment
   end
 
-  def search_fields
-    super
-    @fields.unshift("comment")
-    @fields.delete("name")
-    @filters += ["entry", "manuscript", "source", "name"]
-    @fields + @filters + @dates
-  end
-
   def create
     @comment = Comment.new(comment_params)
     @comment.save_by(current_user)

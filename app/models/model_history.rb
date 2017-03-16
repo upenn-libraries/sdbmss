@@ -20,10 +20,11 @@ class ModelHistory
       @user_id = user_id
       @versions = versions
     end
-
+=begin REMOVE
     def user
       user_id.present? ? User.find(user_id) : nil
     end
+=end
 
   end
 

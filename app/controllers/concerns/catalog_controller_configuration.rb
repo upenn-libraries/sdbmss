@@ -48,8 +48,10 @@ module CatalogControllerConfiguration
       config.index.title_field = ''
       config.index.display_type_field = 'format'
 
-      # FIX ME: replace with optimized CSV export from ENTRIESCONTROLLER
+      # REMOVE: replaced by new csv method
+=begin
       config.index.respond_to.csv = Proc.new {
+        puts "is this still being used????"
         # this gets executed within a format.csv { ... } scope
 
         count = @response["response"]["numFound"]
@@ -69,6 +71,7 @@ module CatalogControllerConfiguration
           render status: :request_entity_too_large, content_type: "text/html", body: error_msg
         end
       }
+=end
 
       # NOTE: the wiki docs say about the :single option that "Only one
       # value can be selected at a time. When the value is selected, the

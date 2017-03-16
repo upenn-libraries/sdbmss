@@ -38,6 +38,22 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_selector("input#q")
   end
 
+  it "should show my public entries" do
+    visit root_path
+    fill_in 'user_login', :with => @user.username
+    fill_in 'user_password', :with => 'somethingunguessable'
+    click_button 'Log in'
+    expect(page).to have_content 'Signed in successfully'
+
+    e = Entry.create!(source: Source.last, created_by: @user)
+    e.index!
+
+    visit dashboard_contributions_path
+    click_link "See My Public Entries"
+
+    expect(page).to have_content(e.public_id)
+  end
+
   it "should display all entries" do
     visit root_path
     click_button('search')

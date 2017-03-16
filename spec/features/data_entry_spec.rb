@@ -253,6 +253,16 @@ describe "Data entry", :js => true do
       #expect(source.comments).to eq('This info is correct')
     end
 
+    it "should restrict source agent roles as appropriate for a given source" do
+      s = Source.last
+      expect(s.source_type).to eq(SourceType.auction_catalog)
+
+      count = s.source_agents.count
+      s.source_agents.create(agent_id: Name.last.id, role: "institution")
+
+      expect(s.source_agents.count).to eq(count)
+    end
+
     it "should save a new Source (other published source)" do
       count = Source.count
 
@@ -655,7 +665,30 @@ describe "Data entry", :js => true do
       #expect(comment.is_correction).to eq(true)
     end
 
-    it "should validate when saving Entry"
+    it "should create an entry from a personal observation source" do
+      count = Entry.count
+      src = Source.find_or_create_by(
+        date: "2017-03-15",
+        source_type: SourceType.observation
+      )
+      expect(src.source_type.to_s).to eq('Personal Observation')
+      entry = Entry.create!(source: src, created_by_id: @user.id, approved: true)
+      expect(Entry.count).to eq(count + 1)
+      visit edit_entry_path(Entry.last)
+      expect(page).to have_content(src.source_type.to_s)
+    end
+
+    it "should create an entry from an online source" do
+      count = Entry.count
+      src = Source.find_or_create_by(
+        source_type: SourceType.online,
+        title: "Ebay.com"
+      )
+      entry = Entry.create!(source: src, created_by_id: @user.id, approved: true)
+      expect(Entry.count).to eq(count + 1)
+      visit edit_entry_path(Entry.last)
+      expect(page).to have_content(src.source_type.to_s)
+    end
 
     it "should let user create an Entry for an existing Manuscript" do
       skip
