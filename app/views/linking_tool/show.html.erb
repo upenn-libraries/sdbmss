@@ -321,7 +321,7 @@ $(document).ready(function() {
 
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {
-                    $("#spinner").hide();                                        
+                    $("#spinner").hide();  
                 }
             });
         }
@@ -376,6 +376,8 @@ $(document).ready(function() {
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {
                     $("#spinner").hide();
+                    // FIX ME: for some reason, radiobuttons do not appear on first load of workspacetable -> this is a hacky fix to make them do that :/
+                    workspaceTable.reload();
                 }
             });
         }
@@ -615,7 +617,6 @@ $(document).ready(function() {
             return "You have unsaved changes";
         }
     });
-
 
 });
 

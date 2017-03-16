@@ -26,7 +26,9 @@
 <script>
 $(document).ready( function () {
 
-    var loading = false;
+    var loading = true;
+    $('#activity-pane').html('<p class="text-muted text-center"><img src="/assets/spinner.gif"> loading...</img></p>');
+
     $('#activity_tabs a').click( function (e) {
         $('#activity-pane').html('<p class="text-muted text-center"><img src="/assets/spinner.gif"> loading...</img></p>');
     });
@@ -50,7 +52,8 @@ $(document).ready( function () {
         }
     });
     
-    $("#activity-pane").load("/activities/show_all?watched=true",function(result){      
+    $("#activity-pane").load("/activities/show_all?watched=true",function(result){
+        loading = false;    
     });
 });
 </script>

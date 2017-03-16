@@ -1,4 +1,4 @@
-  <nav class="navbar navbar-light bg-info text-info">
+  <nav class="navbar navbar-default">
     <div class="navbar-header">
       <div class="navbar-brand">
         Notifications
@@ -17,6 +17,9 @@
     </div>
   </nav>
   <ul class="list-group">
+  <% if @notifications.count <= 0 %>
+    <li class="text-muted list-group-item text-center">You have no notifications.</li>
+  <% end %>
   <% @notifications.each do |notification| %>
     <li class="list-group-item">
       <% if notification.title %>
