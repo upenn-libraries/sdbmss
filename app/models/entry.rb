@@ -165,10 +165,6 @@ class Entry < ActiveRecord::Base
 
   after_create :update_source_status
 
-  def self.where_provenance_includes(name)
-    joins(:provenance).where(provenance: { provenance_agent_id: name.id }).distinct
-  end
-
   def public_id
     SDBMSS::IDS.get_public_id_for_model(self.class, id)
   end
@@ -178,14 +174,6 @@ class Entry < ActiveRecord::Base
   end
 
   # returns all Entry objects for this entry's Manuscript
-  def get_entries_for_manuscript
-    ms = manuscript
-    ms ? ms.entries : []
-  end
-
-  def get_num_entries_for_manuscript
-    get_entries_for_manuscript.count
-  end
 
   def get_sale
     sales.first
@@ -220,33 +208,6 @@ class Entry < ActiveRecord::Base
 
   def get_sale_buyers_names
     get_sale_agents_names(SaleAgent::ROLE_BUYER)
-  end
-
-  # FIX ME: old methods, to be removed
-  def get_sale_selling_agent_name
-    puts "deprecated #{__method__}"
-    get_sale_agent_name(SaleAgent::ROLE_SELLING_AGENT)
-  end
-
-  def get_sale_seller_or_holder_name
-    puts "deprecated #{__method__}"
-    get_sale_agent_name(SaleAgent::ROLE_SELLER_OR_HOLDER)
-  end
-
-  def get_sale_buyer_name
-    puts "deprecated #{__method__}"
-    get_sale_agent_name(SaleAgent::ROLE_BUYER)
-  end
-
-  def get_sale_agent_name(role)
-    puts "deprecated #{__method__}"    
-    t = get_sale
-    if t
-      sa = t.get_sale_agent_with_role(role)
-      if sa && sa.agent
-        return sa.agent.name
-      end
-    end
   end
 
   def sale
@@ -328,8 +289,8 @@ class Entry < ActiveRecord::Base
     )
   end
 
-  # every bookmarkable record has a 'bookmark_details' method to return whatever information should be displayed for the bookmark
-  def bookmark_details
+  # right now this is used for RSS feed only; can probably switch to 'as-flat-has' or something similar?
+  def details
     results = { 
       manuscript: manuscript ? manuscript.id : nil,
       source_date: SDBMSS::Util.format_fuzzy_date(source.date),

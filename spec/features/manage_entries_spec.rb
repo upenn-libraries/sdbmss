@@ -213,4 +213,10 @@ describe "Manage entries", :js => true do
     expect(count).to eq(count2)
   end
 
+  #it "should correctly display the RSS feed" do
+  #  visit feed_path(format: :rss)
+
+  #  expect(page).to have_content(Entry.last.to_s)
+  #end
+
 end

@@ -115,7 +115,7 @@ module SDBMSS
     def initialize entry
       @entry = entry
       # list of IDs of already matched manuscripts
-      @already_matched = @entry.get_entries_for_manuscript.map(&:id)
+      @already_matched = @entry.manuscript.entries.map(&:id)
       @p1 = Point.new(@entry)
       @similar_entries = nil
     end
