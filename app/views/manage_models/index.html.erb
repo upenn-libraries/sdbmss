@@ -9,8 +9,10 @@
 <% content_for :control_tools do %>
     <% if can? :manage, model_class %>
     <li>
-        <% if resource_name == "entries" || resource_name == "names" %>
+        <% if resource_name == "entries" %>
             <a href="" id="mark-as-approved"><span class="glyphicon glyphicon-ok"></span> Mark as approved</a>                            
+        <% elsif resource_name == "names" %>
+            <a href="" id="mark-as-reviewed"><span class="glyphicon glyphicon-ok"></span> Mark as approved</a>                            
         <% else %>
             <a href="" id="mark-as-reviewed"><span class="glyphicon glyphicon-ok"></span> Mark as reviewed</a>
         <% end %>
