@@ -17,6 +17,13 @@
         <% end %>
     </li>
     <% end %>
+    <% if resource_name == "entries" %>
+    <li>
+        <a href="#group_modal" data-toggle="modal" data-target="#group_modal">
+            <span class="glyphicon glyphicon-globe"></span> Add/Remove Groups
+        </a>
+    </li>
+    <% end %>
 <% end %>
 
 <div id="manage_records_info" class="modal fade panel-body" role="dialog">
@@ -61,13 +68,11 @@
                 </li>
                 <li>
                     <a href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info">
-                        <span class="glyphicon glyphicon-info-sign"></span>
+                        Click here for more info <span class="glyphicon glyphicon-info-sign"></span>
                     </a>
                 </li>
-                <% if model_class == Entry and can? :index, model_class %>
-                    <%= render partial: "manage_models/group_form" %>                            
-                <% end %>
             </ul>
+            <span id="spinner" style='display: none;'><img alt="working..." src="<%= asset_path "spinner.gif" %>"/> loading search results...</span>
         </div>
         <%= render partial: "search_form" %>
     </nav>      

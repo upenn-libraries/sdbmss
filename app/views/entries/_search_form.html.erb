@@ -1,28 +1,6 @@
 <%= form_tag(request.path, method: :get, class: 'navbar-nav-search search-form') do %>
-    <div class="navbar-form navbar-right form-inline">
-        <div class="input-group form-submission">
-            <select name="op" id="search_op" class="form-control">
-                <option value="AND">All</option>
-                <option value="OR">Any</option>
-            </select>
-            <div class="input-group-btn">
-                <button id="search_submit" type="submit" class="btn btn-primary">Search</button>
-            </div>
-        </div>
-    </div>
 
-    <ul class="navbar-right navbar-nav nav">
-        <li>
-            <% if can? :manage, model_class %>
-                <label class="checkbox-inline">
-                    <%= check_box_tag :unapproved_only, 1, params[:unapproved_only] %> Limit to records needing approval
-                </label>
-            <% end %>
-        </li>
-    </ul>
-
-
-    <div class="search-fieldset navbar-form navbar-right form-inline">
+    <div class="search-fieldset navbar-form form-inline">        
         <div class="search-block">
             <div class="input-group">
                 <div class="input-group-btn">
@@ -65,21 +43,34 @@
                 </select>
             </div>
         </div>
+
     </div>
-<!--    <div class="row">
-        <div class="col-sm-3">
+
+
+    <div class="navbar-form navbar-right form-inline">
+        <div class="input-group form-submission">
+            <select name="op" id="search_op" class="form-control">
+                <option value="AND">All</option>
+                <option value="OR">Any</option>
+            </select>
+            <div class="input-group-btn">
+                <button id="search_submit" type="submit" class="btn btn-primary">Search</button>
+            </div>
         </div>
-        <div class="col-sm-4">
-            <span id="spinner" style='display: none;'><img alt="working..." src="<%= asset_path "spinner.gif" %>"/> loading search results...</span>
-        </div>
-        <div class="col-sm-5 text-right">
-        </div>
-    </div>-->
+    </div>
+
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a href="" class="" id="addSearch">
+                <span class="glyphicon glyphicon-plus"></span> add term
+            </a>
+        </li>
+        <li>
+            <% if can? :manage, model_class %>
+                <a>
+                    <%= check_box_tag :unapproved_only, 1, params[:unapproved_only] %> Limit to records needing approval
+                </a>
+            <% end %>
+        </li>
+    </ul>
 <% end %>
-<ul class="nav navbar-nav navbar-right">
-    <li>
-        <a href="" class="" id="addSearch">
-            <span class="glyphicon glyphicon-plus"></span> add term
-        </a>
-    </li>
-</ul>
