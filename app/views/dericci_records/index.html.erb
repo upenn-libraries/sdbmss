@@ -3,8 +3,7 @@
 <% end %>
 <%= form_tag dericci_records_path, :method => 'get', class: "form-inline" do %>
 <div class="row" style="margin-bottom: 10px;">
-  <div class="col-sm-3"></div>
-  <div class="col-sm-6 text-center">
+  <div class="col-sm-12 text-center">
       <%= select_tag "field", options_for_select({"Name" => "name","Date" => "dates","Place" => "place"}, params[:field]), class: "form-control" %>
       <%= text_field_tag :term, params[:term], class: "form-control" %>
       <div class="input-group">
@@ -14,12 +13,20 @@
         </div>
       </div>
   </div>
-  <div class="col-sm-3 text-right">
-    Show <%= select_tag "limit", options_for_select([10, 20, 50, 100], params[:limit]), class: "form-control" %>
-  </div>
 </div>
 <div class="row">
-  <div class="col-sm-6">
+  <div class="col-sm-12 text-center">
+    <ul class="pagination">
+      <% ('a'..'z').to_a.each do |letter| %>
+        <li class='<%= letter == params[:letter] ? "active" : "" %>'><%= link_to letter.capitalize, params.merge(:letter => letter).except(:page) %></li>
+      <% end %>
+      <li class='<%= !params[:letter] ? "active" : "" %>'><%= link_to "All", params.except(:letter).except(:page) %></li>
+    </ul>
+  </div>
+  <div class="col-sm-3">
+    Showing <%= @offset %> to <%= [@offset + @count, @total].min %> of <%= @total %>
+  </div>
+  <div class="col-sm-6 text-center">
     <ul class="pagination">
     <% if @page > 2 %>
       <li><%= link_to "First", params.merge(:page => 0) %></li>
@@ -34,8 +41,8 @@
     <% end %>
     </ul>
   </div>
-  <div class="col-sm-6 text-right text-info" style="line-height: 49px;">
-    Showing <%= @offset %> to <%= @offset + @count %> of <%= @total %>
+  <div class="col-sm-3 text-right">
+    Show <%= select_tag "limit", options_for_select([10, 20, 50, 100], params[:limit]), class: "form-control" %>
   </div>
 </div>
 <% end %>

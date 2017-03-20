@@ -525,8 +525,9 @@ h1, .h1, h2, .h2, h3, .h3, legend {
   box-shadow: none;
   margin-bottom: 10px;
 }
-.navbar .nav > li > a {
+.navbar .nav > li > a, .navbar li > label {
   padding: 15px 10px;
+  color: #777;
 }
 
 .search-info {
@@ -559,34 +560,23 @@ h1, .h1, h2, .h2, h3, .h3, legend {
   background-color: #f2dede !important;
   border: 1px red solid !important;
 }
+.search-fieldset {
+  float: left;
+}
 .search-fieldset input.form-control {
   width: 50%;
 }
 .search-fieldset select.form-control {
   width: 25%;
 }
-.search-block {
+.search-form .input-group {
   float: right;
+  clear: both;
   margin-top: 2px;
 }
 .add-search-term {
   padding: 0px 10px !important;
   line-height: 32px !important;
-}
-.navbar-nav-search {
-  background: none;
-}
-.navbar-nav-search li, .navbar-nav-search .input-group, .navbar-nav-search .form-control {
-  float: left;
-  width: auto;
-}
-.navbar-nav-search .navbar-form {
-  padding: 0px 15px;
-  border: none;
-  overflow: hidden; 
-}
-.navbar-nav-search #search_op {
-  float: right;
 }
 ul.navbar-nav {
   background: none !important;
@@ -1596,6 +1586,10 @@ so that gray backdrop shvows up correctly */
 }
 /* RESPONSIVE */
 @media (max-width: 767px) {
+  .navbar-form {
+    margin: 0px 8px;
+    border: none;
+  }
   .thredded--post {
     margin: 0px 0px 10px 0px;
   }
@@ -1614,7 +1608,7 @@ so that gray backdrop shvows up correctly */
   .catalog-search-info .open a {
     background: none !important;
   }
-  .navbar-brand {
+  #header-navbar .navbar-brand {
     letter-spacing: -2px !important;
     margin: 0px !important;
     padding-right: 0px;

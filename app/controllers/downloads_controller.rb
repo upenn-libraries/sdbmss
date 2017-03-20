@@ -22,8 +22,9 @@ class DownloadsController < ApplicationController
       flash[:error] = "You cannot access another user's downloads."
       redirect_to root_path
     elsif @download.status == 0
-      flash[:error] = "Download is still in progress."
-      redirect_to downloads_path
+      render text: "in progress"
+      #flash[:error] = "Download is still in progress."
+      #redirect_to downloads_path
     elsif @download.status >= 1 && !params[:ping]
       send_file "/tmp/" + @download.get_path, :filename => @download.filename, :type=>"csv", :x_sendfile=>true
       # download is 'deleting'

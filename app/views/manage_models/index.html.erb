@@ -43,40 +43,26 @@
     </div>
 </div>
 
-<div class="redundant-container">
-    <nav class="navbar navbar-default" style="margin: 0px 0px 9px 0px;">
-        <div class="navbar-header">
-            <ul class="nav navbar-nav navbar-nav-search">
-                <li>
-                    <% if @page_title %>
-                        <a class='navbar-brand'>
-                            <%= @page_title %>
-                        </a>
-                    <% else %>
-                        <% if !can? :index, model_class %>
-                            <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
-                            <a class='navbar-brand'>
-                                Manage Your <%= resource_name.pluralize.capitalize %>
-                            </a>
-                        <% else %>
-                            <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
-                            <a class='navbar-brand'>
-                                Manage <%= resource_name.capitalize %>
-                            </a>
-                        <% end %>
-                    <% end %>                    
-                </li>
-                <li>
-                    <a href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info">
-                        Click here for more info <span class="glyphicon glyphicon-info-sign"></span>
-                    </a>
-                </li>
-            </ul>
-            <span id="spinner" style='display: none;'><img alt="working..." src="<%= asset_path "spinner.gif" %>"/> loading search results...</span>
-        </div>
-        <%= render partial: "search_form" %>
-    </nav>      
-</div>
+<nav class="navbar navbar-default" style="margin: 0px 0px 9px 0px;">
+    <%= form_tag(request.path, method: :get, class: 'search-form') do %>
+    <a class='navbar-brand' href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info">
+    <% if @page_title %>
+            <%= @page_title %>
+    <% else %>
+        <% if !can? :index, model_class %>
+            <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
+            Manage Your <%= resource_name.pluralize.capitalize %>
+        <% else %>
+            <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
+            Manage <%= resource_name.capitalize %>
+        <% end %>
+    <% end %>                    
+        <span class="glyphicon glyphicon-info-sign"></span>
+    </a>
+    <!--<span id="spinner" style='display: none;'><img alt="working..." src="<%= asset_path "spinner.gif" %>"/> loading search results...</span>-->
+    <%= render partial: "search_form" %>
+    <% end %>
+</nav>      
 
 <table id="search_results" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" width="100%" cellspacing="0">
     <thead>
