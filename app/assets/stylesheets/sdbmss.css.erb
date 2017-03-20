@@ -1,8 +1,6 @@
 html {
   height: 100%;
   width: 100%;
-  display: table;
-  table-layout: fixed;
   min-width: 320px;
   padding-top: 50px;
   font-size: 16px;
@@ -11,8 +9,9 @@ body {
   background: white;
   min-height: 100vh;
   width: 100%;
-  display: table-row;
-  *display: flex;
+  display: table;
+  table-layout: fixed;
+  /*display: flex;*/
   font-family: Sarala, Ubuntu, sans-serif;
   overflow: hidden;
 }
@@ -180,7 +179,7 @@ h1, .h1, h2, .h2, h3, .h3, legend {
   */
   background-color: #374f73;
   border: none;
-  box-shadow: 0px 1px 14px 0px #ddd;
+  box-shadow: 0px 1px 14px -3px #39424e;
   width: 100%;
   position: fixed;
   top: 0;
@@ -536,9 +535,32 @@ h1, .h1, h2, .h2, h3, .h3, legend {
   background: darkcyan;
   color: white;
 }
+.home-emphasis {
+  color: #943f42;
+}
+.panel-home {
+  border-color: #943f42;
+}
+.panel-home .panel-heading {
+  background: #943f42;
+  color: white;
+}
+.thredded--post--avatar {
+  left: inherit;
+  top: inherit;
+  position: relative;
+  width: 1.5rem;
+  height: 1.5rem;
+}
 
 .catalog-search-form {
   width: 60%;
+}
+.panel-search .catalog-search-form {
+  width: 100%;
+}
+.panel-search {
+  background: #eee1be;
 }
 .catalog-search-info {
   max-width: 40%;
@@ -1859,10 +1881,12 @@ so that gray backdrop shvows up correctly */
   box-shadow: 0px 0px 14px #ccc;
   z-index: 100;
   height: calc(100vh - 50px);
-  white-space: nowrap;
+  white-space: normal;
 }
+
 .scroll-box {
   height: 100%;
+  width: 240px;
   overflow-y: auto;
   overflow-x: hidden;
   text-overflow: ellipsis;
@@ -1870,12 +1894,9 @@ so that gray backdrop shvows up correctly */
 #control-panel.collapsing {
   /*height: auto;*/
 }
-#control-panel.collapsing a {
-  white-space: nowrap;
-}
 #control-panel.collapse {
   width: 0px;
-  display: block;
+  display: none;
 }
 #control-panel.collapse.in {
   width: 240px !important;
@@ -2242,10 +2263,10 @@ Private Message Styling
   padding: 0px;
 }
 #control-panel .panel-heading {
-  background: #f8f8f8;
+  background: #7285a2;
 }
 #control-panel .panel-heading .h4 {
-  color: #555;
+  color: white;
   font-weight: bold;
   text-transform: uppercase;
   font-size: 18px;
@@ -2254,13 +2275,13 @@ Private Message Styling
   color: #333;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-#control-panel .nav-links a {
   white-space: normal;
-  color: initial;
 }
 #control-panel .text-muted {
-  color: #777;
+  color: #ddd;
+}
+#control-panel .panel {
+  width: 240px;
 }
 #control-panel li.disabled a {
   color: #999;
@@ -2271,6 +2292,7 @@ Private Message Styling
   vertical-align: middle;
   width: 50px;
   font-size: 32px;
+  color: white;
 }
 #control-panel .user-info {
   display: table-cell;

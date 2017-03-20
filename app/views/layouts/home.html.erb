@@ -93,13 +93,8 @@
   <%= render partial: 'shared/control_panel' %>
   <!-- -->
   <div class="main-content-wrapper">
-    <div class="main-content">
-
-      <% if request.url != root_url%>
-        <%= render :partial => 'shared/search_navbar' %>
-      <% else %>
-        <div style="padding-top: 20px;"></div>
-      <% end %>
+    <div class="main-content" style="padding-top: 20px;">
+      <%# render :partial => 'shared/search_navbar' %>
 
       <%# this is from blacklight %>
       <%= render partial: 'shared/ajax_modal' %>
