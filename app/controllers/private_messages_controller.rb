@@ -100,6 +100,7 @@ class PrivateMessagesController < ApplicationController
     @chain.messages.each { |message| message.delay.read(current_user) }
   end
 
+  # fix me: this is not accessible anyway, not really needed (at the moment) - no great way of handling it atm either
   def destroy
     @message.user_messages.where(user_id: current_user.id).each do |um|
       um.destroy!

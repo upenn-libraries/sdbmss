@@ -168,6 +168,12 @@ class Name < ActiveRecord::Base
     }
   end
 
+  ###
+  # 
+  # This is all used only for creating reference data
+  #
+  ###
+
   # constructor for a Provenance Agent. takes same args as #new
   def self.agent(*args)
     hash = args.last.is_a?(Hash) ? args.pop : {}

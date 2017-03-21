@@ -94,6 +94,7 @@ class PagesController < ApplicationController
     @page = Page.find_by(name: params[:name])
     if File.delete(Rails.root.join('public', "#{@page.location}", @page.filename))
       @page.destroy!
+      flash[:error] = "#{@page.name} successfully deleted."
     end
     redirect_to pages_path
   end

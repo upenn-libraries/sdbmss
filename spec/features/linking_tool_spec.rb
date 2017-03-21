@@ -104,6 +104,15 @@ describe "Linking Tool", :js => true do
     expect(entry_ids.include?(second_entry_id)).to be_truthy
   end
 
+  it "should show an EntryManuscript for the last created link" do
+    visit entry_manuscripts_path
+
+    expect(page).to have_content(Manuscript.last.public_id)
+    expect(page).to have_content(Entry.find(3).public_id)
+
+    expect(page).to have_content(EntryManuscript.last.id)
+  end
+
   it "should link an Entry to an existing Manuscript" do
     entry = Entry.find(2)
     visit linking_tool_by_entry_path id: entry.id

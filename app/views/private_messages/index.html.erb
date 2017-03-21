@@ -15,23 +15,32 @@
         <span class="glyphicon glyphicon-remove"></span> Delete
       <%# end %>
     </div-->
-    <%= link_to(private_message_path(m), :class => (um > 0 ? "text-default" : "text-muted")) do %>
-      <div class="col-sm-2 private_message_preview">
-        <%= chain.users(current_user).map{ |user| user == current_user ? "Me" : (user ? user.username : 'DEPRECATED') }.join(", ") %>
-      </div>
-      <div class="col-sm-7 private_message_preview">
-        <% if um > 0 %>
-          <strong class="glyphicon glyphicon-exclamation-sign text-success"></strong>
-        <% end %>
-        (<%= chain.messages.count %>)
-        <strong>
-          <%= m.title %>
-        </strong>
-        <%= sanitize simple_format(m.message), tags: %w(code b i br strong em a), attributes: %w(href) %>
-      </div>
-      <div class="col-sm-3 text-right">
-        <%= m.created_at.to_formatted_s(:long) %>
-      </div>
+    <% if chain.users(current_user).include? nil %>
+      <div class="col-sm-12 text-danger text-center">unavailable (user deleted)</div>
+    <% else %>
+      <%= link_to(private_message_path(m), :class => (um > 0 ? "text-default" : "text-muted")) do %>
+        <div class="col-sm-2 private_message_preview">
+          <%= chain.users(current_user).map{ |user| user == current_user ? "Me" : (user ? user.username : 'DEPRECATED') }.join(", ") %>
+        </div>
+        <div class="col-sm-7 private_message_preview">
+          <% if um > 0 %>
+            <strong class="glyphicon glyphicon-exclamation-sign text-success"></strong>
+          <% end %>
+          (<%= chain.messages.count %>)
+          <strong>
+            <%= m.title %>
+          </strong>
+          <%= sanitize simple_format(m.message), tags: %w(code b i br strong em a), attributes: %w(href) %>
+        </div>
+        <div class="col-sm-3 text-right">
+          <%= m.created_at.to_formatted_s(:long) %>
+        </div>
+      <% end %>
     <% end %>
+  </div>
+<% end %>
+<% if @chains.count <= 0 %>
+  <div class="row">
+    <div class="col-sm-12 text-muted text-center">You do not have any private messages.</div>
   </div>
 <% end %>

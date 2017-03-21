@@ -3,7 +3,13 @@ ENV["RAILS_ENV"] ||= 'test'
 
 require 'simplecov'
 
-SimpleCov.start 'rails'
+# filter out legacy code from coverage
+SimpleCov.start 'rails' do
+  add_filter 'lib/sdbmss/legacy.rb'
+  add_filter 'lib/sdbmss/csv.rb'
+  add_filter 'lib/sdbmss/viaf_reconcilliation.rb'
+end
+
 puts "SimpleCov started"
 
 require 'spec_helper'

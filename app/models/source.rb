@@ -141,18 +141,6 @@ class Source < ActiveRecord::Base
     boolean :reviewed
   end
 
-  def agent_name
-    (source_agents.map { |sa| sa.agent.name }).join("")
-  end
-
-  def agent_id
-    source_agents.first ? source_agents.first.agent_id : nil
-  end
-
-  def has_agent
-    return self.source_agents.count > 0
-  end
-
   def public_id
     SDBMSS::IDS.get_public_id_for_model(self.class, id)
   end
@@ -202,50 +190,6 @@ class Source < ActiveRecord::Base
   def get_institutions_as_names
     source_agents = get_institutions
     source_agents.map{ |a| a.agent ? a.agent.name : "" }.join(" | ")
-  end
-
-  def get_source_agent_with_role(role)
-    puts "deprecated #{__method__}"
-    source_agents.select { |sa| sa.role == role }.first
-  end
-
-  # returns a SourceAgent object
-  def get_seller_or_holder
-    puts "deprecated #{__method__}"
-    get_source_agent_with_role(SourceAgent::ROLE_SELLER_OR_HOLDER)
-  end
-
-  # returns an Name object
-  def get_seller_or_holder_as_name
-    puts "deprecated #{__method__}"
-    sa = get_seller_or_holder
-    sa.agent if sa
-  end
-
-  # returns a SourceAgent object
-  def get_selling_agent
-    puts "deprecated #{__method__}"
-    get_source_agent_with_role(SourceAgent::ROLE_SELLING_AGENT)
-  end
-
-  # returns an Name object
-  def get_selling_agent_as_name
-    puts "deprecated #{__method__}"
-    sa = get_selling_agent
-    sa.agent if sa
-  end
-
-  # returns a SourceAgent object
-  def get_institution
-    puts "deprecated #{__method__}"
-    get_source_agent_with_role(SourceAgent::ROLE_INSTITUTION)
-  end
-
-  # returns an Name object
-  def get_institution_as_name
-    puts "deprecated #{__method__}"
-    sa = get_institution
-    sa.agent if sa
   end
 
   def medium_for_display

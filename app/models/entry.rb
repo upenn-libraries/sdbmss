@@ -179,6 +179,11 @@ class Entry < ActiveRecord::Base
     sales.first
   end
 
+  # returns all Entry objects for this entry's Manuscript
+  def get_entries_for_manuscript
+    ms = manuscript
+    ms ? ms.entries : []
+  end
 
   # new 'get_sale_agent' methods now that an entry can have multiple of each
 
@@ -289,8 +294,8 @@ class Entry < ActiveRecord::Base
     )
   end
 
-  # right now this is used for RSS feed only; can probably switch to 'as-flat-has' or something similar?
-  def details
+  # details for public display, slimmer than 'as_flat_hash' and without things like user groups included
+  def bookmark_details
     results = { 
       manuscript: manuscript ? manuscript.id : nil,
       source_date: SDBMSS::Util.format_fuzzy_date(source.date),
@@ -317,12 +322,7 @@ class Entry < ActiveRecord::Base
   # export. Obviously, decisions have to be made here about how to
   # represent the nested associations for display and there has to be
   # some information tweaking/loss.
-  def test_load
-    {
-      authors: entry_authors.map(&:display_value).join("; ")
-    }
-  end
-
+  
   def as_flat_hash
     # for performance, we avoid using has_many->through associations
     # because they always hit the db and circumvent the preloading

@@ -16,7 +16,7 @@ xml.rss :version => "2.0" do
         xml.title entry.public_id
         xml.pubDate entry.created_at.to_s(:rfc822)
         text = ""
-        entry.details.each do |key, value|
+        entry.bookmark_details.each do |key, value|
           text += "<b>#{key}</b>: #{value}<br>"
         end
         xml.description "#{text}"

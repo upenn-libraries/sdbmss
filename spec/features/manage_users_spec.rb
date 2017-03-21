@@ -95,4 +95,30 @@ describe "Manage Users", :js => true do
     expect(user.valid_password?("somethingunguessable")).to eq(true)
   end
 
+  it "should allow a super-editor to do the appropriate things" do
+    user = User.create!(
+      email: 'mail@garbagemailaddress.org',
+      username: 'supereditor',
+      password: '12345678',
+      role: 'super_editor'
+    )
+
+    visit profile_path(user.username)
+    expect(page).to have_content('super_editor')
+
+    source = Source.create!(
+      source_type: SourceType.auction_catalog,
+      date: "20150101",
+      title: "Test catalog",
+      whether_mss: Source::TYPE_HAS_MANUSCRIPT_YES,
+      medium: Source::TYPE_MEDIUM_INTERNET,
+      created_by: user,
+    )
+    e = Entry.create!(source: source, unverified_legacy_record: true)
+    e.index!
+    visit entry_path(e)
+
+    expect(page).to have_content("Edit #{e.public_id}")
+  end
+
 end
