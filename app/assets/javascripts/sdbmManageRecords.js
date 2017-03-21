@@ -111,6 +111,7 @@ var load_session = false;
                             SDBM.showErrorModal("#modal", data.error);
                         }
                         manageRecords.dataTable.reload();
+                        $("#group_modal").modal("toggle");
                     },
                     error: function() {
                         console.log('error!!');
@@ -142,6 +143,7 @@ var load_session = false;
                             SDBM.showErrorModal("#modal", data.error);
                         }
                         manageRecords.dataTable.reload();
+                        $("#group_modal").modal("toggle");
                     },
                     error: function() {
                         SDBM.showErrorModal("#modal", "An error occurred removing record(s) from a user group");

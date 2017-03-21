@@ -8,7 +8,7 @@
             </div>
             <div class="user-info">
               <span class="dropdown">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                <a href="" class="dropdown-toggle" data-toggle="dropdown" style="color: white;">
                   <%= current_user.to_s %>
                   <span class="caret"></span>
                 </a>
@@ -80,30 +80,67 @@
 
     <% if !current_user %>
     <div class="panel panel-default">
-      <div class="panel-heading one-line">
+      <div class="panel-heading">
         <span class="h4">
           <span class="glyphicon glyphicon-log-in"></span> Login
         </span>
       </div>
-      <div class="panel-body" style="padding: 10px;">
-        <%= render partial: 'devise/sessions/new', locals: {resource: User.new, resource_name: 'user', devise_mapping: Devise.mappings[:user]} %>      
-        <%= link_to "Sign up", new_registration_path('user') %><br />
-        <%= link_to "Forgot your password?", new_password_path('user') %><br />
+      <div class="panel-body">
+        <div style="padding: 0px 10px;">
+          <%= render partial: 'devise/sessions/new', locals: {resource: User.new, resource_name: 'user', devise_mapping: Devise.mappings[:user]} %>      
+        </div>
         <ul class="nav">
           <li>
-            <a href="https://schoenberginstitute.org/">The Schoenberg Institute for Manuscript Studies</a>
+            <%= link_to(new_registration_path('user')) do %>
+              <span class="glyphicon glyphicon-log-in"></span> Sign up
+            <% end %>
           </li>
           <li>
-            <a href="http://dla.library.upenn.edu/dla/medren/search.html?fq=collection_facet%3A%22Lawrence%20J.%20Schoenberg%20Collection%22">Penn in Hand, online digital facsimiles</a>
+            <%= link_to(new_password_path('user')) do %>
+              <span class="glyphicon glyphicon-question-sign"></span> Forgot your password?
+            <% end %>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <span class="h4">
+          <span class="glyphicon glyphicon-link"></span>
+          Links
+        </span>
+      </div>
+      <div class="panel-body">
+        <ul class="nav">
+          <li>
+            <a href="https://schoenberginstitute.org/" title="The Schoenberg Institute for Manuscript Studies">
+              <span class="glyphicon glyphicon-book"></span>
+              The Schoenberg Institute for Manuscript Studies
+            </a>
           </li>
           <li>
-            <a href="http://openn.library.upenn.edu/html/0001.html">OPenn, downloadable digital images and metadata</a>
+            <a href="http://dla.library.upenn.edu/dla/medren/search.html?fq=collection_facet%3A%22Lawrence%20J.%20Schoenberg%20Collection%22" title="Online digital facsimiles">
+              <span class="glyphicon glyphicon-picture"></span>
+              Penn in Hand
+            </a>
           </li>
           <li>
-            <a href="http://sceti.library.upenn.edu/ljscatalog/index.html">Transformation of Knowledge, a printed catalog of early manuscripts</a>
+            <a href="http://openn.library.upenn.edu/html/0001.html" title="Downloadable digital images and metadata">
+              <span class="glyphicon glyphicon-picture"></span>
+              OPenn
+            </a>
           </li>
           <li>
-            <a href="http://sceti.library.upenn.edu/legacy/">A Legacy Inscribed: online exhibit</a>
+            <a href="http://sceti.library.upenn.edu/ljscatalog/index.html" title="A printed catalog of early manuscripts">
+              <span class="glyphicon glyphicon-folder-close"></span>
+              Transformation of Knowledge
+            </a>
+          </li>
+          <li>
+            <a href="http://sceti.library.upenn.edu/legacy/" title="Online Exhibit">
+              <span class="glyphicon glyphicon-education"></span>
+              A Legacy Inscribed
+            </a>
           </li>
         </ul>
       </div>

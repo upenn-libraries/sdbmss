@@ -6,80 +6,89 @@
 </style>
 <% end %>
 
-<!--<h3 class='text-center' style='border-bottom: 3px solid #333;'>The New Schoenberg Database of Manuscripts</h3>-->
-
-<h1 class="text-center">The New Schoenberg Database of Manuscripts</h1>
-<div class="alert alert-success">
-    Please be aware that we will be performing occasional updates to the New SDBM while it is in beta. You may notice minor changes between session as we refine instructional content and repair bugs. If you have questions or concerns, please use <a style="color: red;" href="<%= feedback_path %>" target='_blank'>Submit Feedback</a>.
-</div>
-
-<div style="font-size: 16px">
-    <p>
-The Schoenberg Database of Manuscripts, a project of the <a target="_blank" href="https://schoenberginstitute.org/">Schoenberg Institute for Manuscript Studies</a> at the <a target="_blank" href="http://www.library.upenn.edu/">University of Pennsylvania Libraries</a>, aggregates observations of premodern manuscripts drawn from over 12,000 auction and sales catalogues, inventories, catalogues from institutional and private collections, and other sources that document sales and locations of these books from around the world. 
-    </p>
-
-    <div class="forum-feed">
-        <h3 class="text-center">Recent Discussion</h3>
-        <% Thredded::Post.order('id DESC').last(10).each do |post| %>
-            <% post_user_link = link_to(post.user.username, main_app.profile_path(post.user.username)) %>
-            <% topic = post.to_model.postable %>
-            <header>
-              <%= image_tag post.avatar_url, class: 'thredded--post--avatar' if post.user %>
-              <h2 class="thredded--post--user-and-topic">
-                <%=
-                  topic_link = link_to(topic.title, thredded.post_permalink_path(post))
-                  if topic.first_post == post.to_model
-                    t 'thredded.users.user_started_topic_html', user_link: post_user_link, topic_link: topic_link
-                  else
-                    t 'thredded.users.user_posted_in_topic_html', user_link: post_user_link, topic_link: topic_link
-                  end
-                %>
-              </h2>
-              <p class="thredded--post--created-at"><%= time_ago_in_words post.created_at %></p>
-            </header>
-
-            <div class="text-muted"><%= render 'thredded/posts_common/content', post: post %></div>
-        <% end %>
-        <% if Thredded::Post.count <= 0 %>
-            <div class="text-center text-muted">There is no recent discussion to display.</div>
-        <% end %>
+<div class="row">
+    <div class="col-sm-12">
+        <p>
+            The Schoenberg Database of Manuscripts  aggregates observations of pre-modern manuscripts drawn from over 12,000 auction and sales catalogues, inventories, catalogues from institutional and private collections, and other sources that document sales and locations of these books from around the world.
+        </p>
     </div>
+    <div class="col-sm-12">
+        <h3 class="text-center home-emphasis">
+            Search the Database
+            <br><small>Everyone is invited to search the database.  Use the search bar below, or click the <b>facets</b> to the right.</small>
+        </h3>
+        <div class="panel panel-search">
+            <div class="panel-body">
+                <%= render partial: "search_form" %>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-12">
+        <h3 class="text-center">
+            <span class="home-emphasis">Join Our Community!</span>
+            <small> and gain access to all of the SDBM's 
+                <strong class="home-emphasis">NEW INTERACTIVE FEATURES</strong>
+            </small>
+        </h3>
+        <p>
+            <span class="glyphicon glyphicon-check"></span> <strong>Contribute Data</strong>, including your own personal observations of a manuscripts or group of manuscripts.
+        </p>
+        <p>
+            <span class="glyphicon glyphicon-check"></span> <strong>Engage With Other Users</strong> to facilitate research and conversations about both the history of manuscript transmission and the data gathered in the process of recording this history.
+        </p>
+        <p>
+            <span class="glyphicon glyphicon-check"></span> <strong>Manage Your Contributions</strong>, track your search history, bookmark, tag and download your results.
+        </p>
+        <p>
+            <span class="glyphicon glyphicon-check"></span> <strong>Email or Download Search Results</strong> or export the entire contents of the SDBM for your own use.
+        </p>
+    </div>
+    <div class="col-sm-6">
+        <div class="panel panel-home">
+            <div class="panel-heading">
+                <span class="h4">New Features</span>
+            </div>
+            <div class="panel-body">
+                <ul class="nav">
+                    <li><span class="glyphicon glyphicon-asterisk"></span> VIAF-based Name Authority</li>
+                    <li><span class="glyphicon glyphicon-asterisk"></span> Enhanced Provenance data</li>
+                    <li><span class="glyphicon glyphicon-asterisk"></span> Advance up user levels to unlock new functions</li>
+                    <li><span class="glyphicon glyphicon-asterisk"></span> Create Groups to collaborate with other users</li>
+                    <li><span class="glyphicon glyphicon-asterisk"></span> Communicate with other users via private messages or public forum</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="panel panel-home">
+            <div class="panel-heading">
+                <span class='h4'>Recent Discussion</span>
+            </div>
+            <div class="panel-body">
+                <% Thredded::Post.order('id DESC').last(10).each do |post| %>
+                    <% post_user_link = link_to(post.user.username, main_app.profile_path(post.user.username)) %>
+                    <% topic = post.to_model.postable %>
+                    <header>
+                      <%= image_tag post.avatar_url, class: 'thredded--post--avatar' if post.user %>
+                      <h3 class="thredded--post--user-and-topic">
+                        <%=
+                          topic_link = link_to(topic.title, thredded.post_permalink_path(post))
+                          if topic.first_post == post.to_model
+                            t 'thredded.users.user_started_topic_html', user_link: post_user_link, topic_link: topic_link
+                          else
+                            t 'thredded.users.user_posted_in_topic_html', user_link: post_user_link, topic_link: topic_link
+                          end
+                        %>
+                      </h3>
+                      <p class="thredded--post--created-at"><%= time_ago_in_words post.created_at %></p>
+                    </header>
 
-    <p>Thanks to support from the <a target="_blank" href="https://www.neh.gov/">National Endowment for the Humanities</a>, the New SDBM has been redeveloped to allow you--the members of our user community-- to contribute data, including your own personal observations of a manuscript or group of manuscripts, and to engage with other users to facilitate research and conversations about both the history of manuscript transmission and the data gathered in the process of recording this history.</p>
-
-    <p>Other new features:</p>
-    <ul>
-        <li>New Data Model (<a href="/static/docs/sdbm_data_model_explanation.pdf">read more</a>)</li>
-        <li>Enhanced provenance data</li>
-        <li>Ability to manage your contributions, track your search history, and bookmark, tag, and download search results</li>
-        <li>Email or download search results or export the entire contents of the SDBM for your own use under a <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 Unported License</a>.</li>
-        <li>A developing <a href="http://viaf.org">VIAF</a>-based Name Authority for persons associated with manuscript production and trade</li>
-    </ul>
-
-    <p>To contribute data or comment on existing data, log in <a href="<%= new_user_session_path %>">here</a>. New
-        to the SDBM? Sign up <a href="<%= new_user_registration_path %>">here</a> to get started.</p>
-
-    <p>Or simply start searching now. Here are the four ways to search:</p>
-
-    <ul>
-        <li>Quick keyword search: Enter term or terms in the Search Database box
-            above.</li>
-        <li>Category (facet) search: Start with the faceted Browse
-            lists to the right and narrow your search further with
-            facets.</li>
-        <li>Advanced search: Search multiple fields and
-            numeric ranges.</li>
-        <li>Use a combination of all three</li>
-    </ul>
-
-    <p>This beta version of the New SDBM was made publicly available on August 1, 2016. It allows you to use and test the new functionality in a live environment while we continue to work on new features and design that will enhance the user experience and community engagement. We anticipate a final launch in Spring 2017.</p> 
-
-    <p>Your feedback is important to us in this process! To contribute feedback and see what others have said, please join our Google Group: <a href="https://groups.google.com/forum/#!forum/new-sdbm-feedback_phase-2">new-sdbm-feedback-phase 2</a>.</p> 
-
-    <p><strong>The Seymour de Ricci Bibliotheca Britannica Manuscripta Digitized Archive</strong></p>
-
-    <p>We are pleased to host the Seymour de Ricci Bibliotheca Britannica Manuscripta Digitized Archive, a searchable database containing the digitized notes of the historian and bibliographer Seymour Montefiore Robert Rosso de Ricci (1881-1942) made for the compilation of his unfinished census of pre-1800 manuscripts in Great Britain and Northern Ireland. <a href="http://sceti.library.upenn.edu/dericci/index.html">To read more, click here.</a></p>
-
-    <p>The Seymour de Ricci Bibliotheca Britannica Manuscripta Digitized Archive is an ongoing joint project between the Schoenberg Institute for Manuscript Studies and the Senate House Library at the University of London, where the original archive is housed.</p>
-
+                    <div class="text-muted"><%= render 'thredded/posts_common/content', post: post %></div>
+                <% end %>
+                <% if Thredded::Post.count <= 0 %>
+                    <div class="text-center text-muted">There is no recent discussion to display.</div>
+                <% end %>                
+            </div>
+        </div>
+    </div>
 </div>

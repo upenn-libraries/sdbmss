@@ -10,6 +10,8 @@ class CatalogController < ApplicationController
 
   include CatalogControllerConfiguration
 
+  #layout "home", :only => [:index]
+
   # Overrides Blacklight::Catalog#show to check for existence and send
   # 404 if necessary
   def show

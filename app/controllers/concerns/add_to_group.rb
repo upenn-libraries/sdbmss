@@ -34,10 +34,11 @@ module AddToGroup
   def remove_from_group
     ids = params[:ids]
     group = Group.find(params[:group_id])
+    count = group.group_records.where(:record_type => model_class, :record_id => ids).count
     group.group_records.where(:record_type => model_class, :record_id => ids).destroy_all
     model_class.where(:id => ids).index
     error = nil 
-    if ids.count > records.count
+    if ids.count > count
       error = "You do not have permission to change group status for the following records: #{ids - records.map(&:id)}"
     end
     respond_to do |format|
