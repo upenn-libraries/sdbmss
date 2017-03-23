@@ -5,25 +5,16 @@ require "csv"
 describe "Manage languages", :js => true do
 
   before :all do
-    @admin = User.create!(
-      email: 'adminuser@testlanguage.com',
-      username: 'admin',
-      password: 'somethingunguessable',
-      role: 'admin',
-    )
-    @user = User.create!(
-      email: 'testuser@testlanguage.com',
-      username: 'languagetestuser',
-      password: 'somethingunguessable',
-      role: 'admin'
-    )
+    @admin = User.where(role: "admin").first
+    @user = User.where(role: "admin").first
+
     @language = Language.create!(
       name: "Martian",
       created_by: @user,
     )
   end
 
-  context "when contributor is logged in" do
+  context "when admin is logged in" do
 
     before :each do
       visit root_path

@@ -186,6 +186,14 @@ module BlacklightAdvancedSearch
       render_constraints_query(localized_params)
     end
 
+    def query_has_constraints?(localized_params = params)
+      if is_advanced_search? localized_params
+        true
+      else    
+        !(localized_params[:q].blank?)
+      end
+    end
+
     # ... which is what we're doing here!
     def render_constraints_filters_side(localized_params = params)
       return "".html_safe unless localized_params[:f]

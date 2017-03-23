@@ -62,7 +62,7 @@
               <%= link_to(reply_path(reply, format: 'html'),  method: :delete, format: 'json', data: { confirm: 'Are you sure?' }) do %>
                 <span class="glyphicon glyphicon-remove"></span> Delete
               <% end %>
-              <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');" href="">
+              <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');">
                 <span class="glyphicon glyphicon-edit"></span>
                 Edit
               </a>

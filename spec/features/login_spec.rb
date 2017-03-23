@@ -4,11 +4,7 @@ require "rails_helper"
 describe "Login", :js => true do
 
   before :all do
-    @user_active = User.create!(
-      email: 'user1@logintest.com',
-      username: 'user_active',
-      password: 'somethingunguessable'
-    )
+    @user_active = User.where(role: "contributor").first
 
     @user_inactive = User.create!(
       email: 'user2@logintest.com',
@@ -17,12 +13,7 @@ describe "Login", :js => true do
       active: false
     )
 
-    @admin = User.create!(
-      email: 'admin@logintest.com',
-      username: 'admin',
-      password: 'somethingunguessable',
-      role: 'admin'
-    )
+    @admin = User.where(role: "admin").first
   end
 
   it "should allow login" do

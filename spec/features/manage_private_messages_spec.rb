@@ -7,18 +7,8 @@ require "rails_helper"
 describe "Manage Private Messages", :js => true do
 
   before :all do
-    @user = User.create!(
-      email: 'testuser@test.com',
-      username: 'adminuser',
-      password: 'somethingunguessable',
-      role: 'admin'
-    )
-    @user2 = User.create!(
-      email: 'testuser2@test.com',
-      username: 'adminuser2',
-      password: 'somethingunguessable',
-      role: 'admin'
-    )
+    @user = User.where(role: "admin").first
+    @user2 = User.where(role: "contributor").first
   end
 
   before :each do

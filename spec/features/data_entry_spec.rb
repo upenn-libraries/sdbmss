@@ -79,12 +79,8 @@ describe "Data entry", :js => true do
   end
 
   before :all do
-    User.where(username: 'testuser').delete_all
-    @user = User.create!(
-      email: 'testuser@test.com',
-      username: 'testuser',
-      password: 'somethingunguessable'
-    )
+    #User.where(username: 'testuser').delete_all
+    @user = User.where(role: "admin").first
 
     @source = Source.find_or_create_by(
       title: "A Sample Test Source With a Highly Unique Name",

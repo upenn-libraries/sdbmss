@@ -7,14 +7,9 @@ require "rails_helper"
 describe "Manage Bookmarks", :js => true do
 
   before :all do
-    SDBMSS::ReferenceData.create_all
+#    SDBMSS::ReferenceData.create_all
 
-    @user = User.create!(
-      email: 'testuser@test.com',
-      username: 'adminuser',
-      password: 'somethingunguessable',
-      role: 'admin'
-    )
+    @user = User.where(role: "admin").first
   end
 
   before :each do

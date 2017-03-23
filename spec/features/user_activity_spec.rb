@@ -6,15 +6,8 @@ require 'net/http'
 describe "User Activity", :js => true do
 
   before :all do
-    SDBMSS::ReferenceData.create_all
-
-    User.where(username: 'testuser').delete_all
-    @user = User.create!(
-      email: 'testuser@test.com',
-      username: 'testuser',
-      password: 'somethingunguessable',
-      role: 'admin'
-    )
+#    SDBMSS::ReferenceData.create_all
+    @user = User.where(role: "admin").first
 
   end
 
@@ -42,6 +35,7 @@ describe "User Activity", :js => true do
   end
 
   it "should show empty user activity" do
+    skip "no such thing as empty user activity, since reference data persists for all tests"
     visit activities_path
 
     expect(page).not_to have_content('edited')

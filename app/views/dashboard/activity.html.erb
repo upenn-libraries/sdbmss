@@ -27,10 +27,10 @@
 $(document).ready( function () {
 
     var loading = true;
-    $('#activity-pane').html('<p class="text-muted text-center"><img src="/assets/spinner.gif"> loading...</img></p>');
+    $('#activity-pane').html('<p class="text-muted text-center"><img src="<%= asset_path "spinner.gif" %>"> loading...</img></p>');
 
     $('#activity_tabs a').click( function (e) {
-        $('#activity-pane').html('<p class="text-muted text-center"><img src="/assets/spinner.gif"> loading...</img></p>');
+        $('#activity-pane').html('<p class="text-muted text-center"><img src="<%= asset_path "spinner.gif" %>"> loading...</img></p>');
     });
     $('.ajax-tabs').on('click','a',function (e) {
         e.preventDefault();

@@ -5,18 +5,9 @@ require "csv"
 describe "Manage places", :js => true do
 
   before :all do
-    @admin = User.create!(
-      email: 'adminuser@testplace.com',
-      username: 'admin',
-      password: 'somethingunguessable',
-      role: 'admin',
-    )
-    @user = User.create!(
-      email: 'testuser@testplace.com',
-      username: 'placetestuser',
-      password: 'somethingunguessable',
-      role: 'admin'
-    )
+    @admin = User.where(role: "admin").first
+    @user = User.where(role: "admin").first
+
     @place = Place.create!(
       name: "Martian",
       created_by: @user,

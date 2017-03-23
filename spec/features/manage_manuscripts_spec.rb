@@ -4,12 +4,8 @@ require "rails_helper"
 describe "Manage manuscripts", :js => true do
 
   before :all do
-    @user = User.create!(
-      email: 'testuser@testmanuscript.com',
-      username: 'manuscripttestuser',
-      password: 'somethingunguessable',
-      role: 'admin'
-    )
+    @user = User.where(role: "admin").first
+
     @source = Source.create!(
       source_type: SourceType.auction_catalog,
       title: "my test source"

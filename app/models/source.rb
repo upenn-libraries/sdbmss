@@ -302,7 +302,7 @@ class Source < ActiveRecord::Base
   end
 
   def update_count
-    Source.reset_counters(self.id, :entries)
+    Source.reset_counters(id, :entries)
   end
 
   def merge_into (target)

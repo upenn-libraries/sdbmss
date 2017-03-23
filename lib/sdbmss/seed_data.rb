@@ -50,6 +50,20 @@ module SDBMSS::SeedData
       )
     end
 
+    User.create!(
+      username: 'admin',
+      password: 'somethingunguessable',
+      email: "admin@1.com",
+      role: 'admin'
+    )
+
+    User.create!(
+      username: 'contributor',
+      password: 'somethingunguessable',
+      email: "contributor@1.com",
+      role: 'contributor'
+    )
+
   end
 
 end

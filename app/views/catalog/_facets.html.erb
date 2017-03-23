@@ -1,6 +1,23 @@
 <% # main container for facets/limits menu -%>
-<% if has_facet_values?  %>
 <div id="facets" class="facets sidenav">
+    <!-- New Facet Display (above/in sidebar) -->
+  <% if params[:f] and params[:f].count > 0 %>
+  <div class="panel panel-default facet_limit facet_limit-active">
+    <div class="collapse-toggle panel-heading" data-toggle="collapse" data-target="#selected-facets">
+      <h5 class="panel-title facet-field-heading">
+        Selected Filters
+      </h5>
+    </div>
+    <div id="selected-facets" class="panel-collapse facet-content collapse in">
+      <div class="panel-body">
+        <ul class="list-unstyled facet-values">
+          <%= render_constraints_filters_side(params) %>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <% end %>
+<% if has_facet_values?  %>
 
   <div class="top-panel-heading panel-heading">
     <button type="button" class="facets-toggle" data-toggle="collapse" data-target="#facet-panel-collapse">
@@ -25,26 +42,9 @@
       <a style="margin-top: 5px;" data-toggle='collapse' data-target='.more-facets' class='btn btn-default collapse in more-facets'>Show More...</a>
       <a style="margin-top: 5px;" data-toggle='collapse' data-target='.more-facets' class='btn btn-default collapse more-facets'>Hide...</a>
     <% else %>
-      <!-- New Facet Display (above/in sidebar) -->
-      <% if params[:f] and params[:f].count > 0 %>
-      <div class="panel panel-default facet_limit facet_limit-active">
-        <div class="collapse-toggle panel-heading" data-toggle="collapse" data-target="#selected-facets">
-          <h5 class="panel-title facet-field-heading">
-            Selected Filters
-          </h5>
-        </div>
-        <div id="selected-facets" class="panel-collapse facet-content collapse in">
-          <div class="panel-body">
-            <ul class="list-unstyled facet-values">
-              <%= render_constraints_filters_side(params) %>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <% end %>
-
       <%= render_facet_partials %>
     <% end %>
   </div>
-</div>
+  
 <% end %>
+</div>

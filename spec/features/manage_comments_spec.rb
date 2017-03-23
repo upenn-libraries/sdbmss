@@ -3,15 +3,9 @@ require "rails_helper"
 describe "Manage Comments", :js => true do
 
   before :all do
-    SDBMSS::ReferenceData.create_all
+#    SDBMSS::ReferenceData.create_all
 
-    User.where(username: 'testuser').delete_all
-    @user = User.create!(
-      email: 'testuser@test.com',
-      username: 'testuser',
-      password: 'somethingunguessable',
-      role: 'admin'
-    )
+    @user = User.where(role: "admin").first
   end
 
   before :each do

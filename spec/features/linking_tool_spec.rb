@@ -11,18 +11,21 @@ describe "Linking Tool", :js => true do
     # instead of creating another set of test data. The consequence is
     # that these tests don't exercise everything as thoroughly as they
     # should, but they're probably good enough.
-    SDBMSS::ReferenceData.create_all
+#    SDBMSS::ReferenceData.create_all
 
     SDBMSS::Util.wait_for_solr_to_be_current
   end
 
   before :all do
+    @user = User.where(role: "admin").first
+=begin    
     User.where(username: 'testuser').delete_all
     @user = User.create!(
       email: 'testuser@test.com',
       username: 'testuser',
       password: 'somethingunguessable'
     )
+=end    
   end
 
   before :each do

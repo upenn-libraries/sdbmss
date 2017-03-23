@@ -13,19 +13,21 @@ describe "Blacklight Advanced Search", :js => true do
     # that these tests don't exercise everything as thoroughly as they
     # should, but they're probably good enough.
 
-    SDBMSS::ReferenceData.create_all
+#    SDBMSS::ReferenceData.create_all
 
     SDBMSS::Util.wait_for_solr_to_be_current
 
-    @user = User.create!(
+    @user = User.where(role: "admin").first
+=begin
+    User.create!(
       email: 'search@search.com',
       username: 'search',
       password: 'somethingunguessable',
     )
+=end
 
     e = Entry.create!({source: Source.last, created_by: @user})
     e.index!
-    sleep 1
   end
 
   def doSearch ()

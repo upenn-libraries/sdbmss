@@ -4,7 +4,7 @@ require "rails_helper"
 describe "Manage entries", :js => true do
 
   before :all do
-    SDBMSS::ReferenceData.create_all
+#    SDBMSS::ReferenceData.create_all
 
     @unapproved_entry = Entry.new(
       source: Source.last,
@@ -15,12 +15,7 @@ describe "Manage entries", :js => true do
 
     SDBMSS::Util.wait_for_solr_to_be_current
 
-    @user = User.create!(
-      email: 'testuser@testadminsearch.com',
-      username: 'testadminsearch',
-      password: 'somethingunguessable',
-      role: 'admin'
-    )
+    @user = User.where(role: "admin").first
   end
 
   before :each do
