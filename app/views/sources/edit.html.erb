@@ -70,7 +70,7 @@
     <div class="form-group row">
         <label for="source_type" class="col-sm-2 control-label"><span sdbm-tooltip="source_type">Source Type</span></label>
         <div class="col-sm-5">
-            <select class="form-control" id="source_type" ng-model="source.source_type" ng-change="sourceTypeChange()" ng-options="option as option.display_name for option in optionsSourceType" ng-disabled="source.id">
+            <select class="form-control" id="source_type" ng-model="source.source_type" ng-change="sourceTypeChange()" ng-options="option as option.display_name for option in optionsSourceType" ng-disabled="true">
                 <option value="">Select One</option>
             </select>
         </div>

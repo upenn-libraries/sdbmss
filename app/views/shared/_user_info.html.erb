@@ -1,6 +1,6 @@
 <dl class="document-metadata dl-horizontal dl-invert">
 <% if model.created_at.present? %>
-    <dt>Created</dt>
+    <dt>Added</dt>
     <dd>
         by <%= render partial: "shared/username_with_profile_link", locals: { user: model.created_by } %>
         on <%= model.created_at.to_formatted_s(:date_and_time) %>

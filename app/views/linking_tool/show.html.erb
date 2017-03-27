@@ -328,7 +328,7 @@ $(document).ready(function() {
     });
 
     var resultsTable = new SDBM.EntryTable("#search_results", {
-        dom: '<"clear"><"H linking_table_header"<"row"<"col-sm-12 text-right"rip>>>JRt<"F">',
+        dom: '<"clear"><"H linking_table_header"<"row"<"col-sm-3"l><"col-sm-9 text-right"<"spinner">rip>>>JRt<"F">',
         //dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t',
         height: function() {
             // height gets passed into dataTables constructor before
@@ -681,10 +681,7 @@ $(document).ready(function() {
         <div class="row">
             <div class="col-sm-12">
                 <ul class="nav navbar-nav navbar-left navbar-nav-search">
-                    <li>
-                        <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_<%= @mode %>_search_instructions" href="#"><span class="glyphicon glyphicon-info-sign"></span> Instructions</a>
-                    </li>
-                    <li>
+                     <li>
                         <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_search_tips" href="#"><span class="glyphicon glyphicon-search"></span> Search Tips</a>
                     </li>
                 </ul>

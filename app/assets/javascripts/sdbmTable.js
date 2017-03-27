@@ -58,7 +58,7 @@ var SDBM = SDBM || {};
             height: 'full',
             heightBuffer: 280,
             responsive: true,
-            dom: '<"row"<"col-sm-5 mobile-center"li><"col-sm-7 text-right mobile-center" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t'
+            dom: '<"row"<"col-sm-5 mobile-center"li><"col-sm-7 text-right mobile-center"<"spinner"> p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t'
         };
 
         this.options = $.extend({}, defaults, options);
@@ -120,7 +120,8 @@ var SDBM = SDBM || {};
             },*/
             columns: this.columns,
             language: {
-                "emptyTable": "No records found for search query."
+                "emptyTable": "There are no records to display.",
+                info:"Showing _START_ to _END_ of _TOTAL_ records",infoEmpty:"Showing 0 to 0 of 0 records",infoFiltered:"(filtered from _MAX_ total records)",
             },
             lengthMenu: [50, 100, 200, 500],
             order: order,
@@ -165,6 +166,7 @@ var SDBM = SDBM || {};
             scrollCollapse: false,
             colReorder: false,
             colResize: true,
+
             // extensions get activated via these codes in 'dom' option
             // J = colResize
             // R = colReorder
@@ -193,6 +195,7 @@ var SDBM = SDBM || {};
             //$('.sdbm-table').toggleClass('full-width');
             //$('.search_results').toggleClass('full-width');
         });
+        $('.spinner').replaceWith('<span id="spinner" style="display: none;"><img alt="working..." src="/assets/spinner.gif"> loading search results...</span>');
         $('.csv').replaceWith('<a id="export-csv" class="btn btn-default" title="Export to CSV"><span class="glyphicon glyphicon-floppy-save"></span></a>');
         $('.columns').replaceWith('<div class="btn-group">' + 
             '<a class="btn btn-default dropdown-toggle" title="Show/Hide Columns" data-toggle="dropdown"><span class="glyphicon glyphicon-edit"></span></a>' +
@@ -356,19 +359,22 @@ var SDBM = SDBM || {};
                     sdbmssMinWidth: "150px",
                     sdbmssMaxWidth: "150px",
                     sdbmssSortField: 'sale_selling_agent',
-                    title: 'Selling Agent'
+                    title: 'Selling Agent',
+                    orderable: false
                 },
                 {
                     sdbmssMinWidth: "150px",
                     sdbmssMaxWidth: "150px",
                     sdbmssSortField: 'sale_seller',
-                    title: 'Seller'
+                    title: 'Seller',
+                    orderable: false
                 },
                 {
                     sdbmssMinWidth: "150px",
                     sdbmssMaxWidth: "150px",
                     sdbmssSortField: 'sale_buyer',
-                    title: 'Buyer'
+                    title: 'Buyer',
+                    orderable: false
                 },
                 {
                     sdbmssMinWidth: "100px",
@@ -553,13 +559,13 @@ var SDBM = SDBM || {};
                 {
                     sdbmssMinWidth: "130px",
                     sdbmssMaxWidth: "130px",
-                    title: 'Last Modified',
+                    title: 'Last Updated',
                     sdbmssSortField: 'updated_at'
                 },
                 {
                     sdbmssMinWidth: "130px",
                     sdbmssMaxWidth: "130px",
-                    title: 'Last Modified By',
+                    title: 'Last Updated By',
                     sdbmssSortField: 'updated_at'
                 },
                 {
@@ -578,7 +584,8 @@ var SDBM = SDBM || {};
                     sdbmssMinWidth: "130px",
                     sdbmssMaxWidth: "130px",
                     title: 'Superceded By',
-                    sdbmssSortField: 'superceded_by_id'
+                    sdbmssSortField: 'superceded_by_id',
+                    orderable: false
                 },
                 {
                     title: "Can Edit",
@@ -599,7 +606,7 @@ var SDBM = SDBM || {};
             sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
                 var data = sdbmTable.dataTable.row(row).data();
                 if(!data[sdbmTable.getColumnIndex("Is Approved")]) {
-                    $(row).addClass('warning unapproved')
+                    $(row).addClass('warning unapproved');
                 }
 
                 $(row).children().each(function (idx, td) {

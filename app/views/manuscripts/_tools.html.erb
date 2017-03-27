@@ -1,6 +1,3 @@
-<li>
-    <a data-ajax-modal="trigger" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
-</li>
 <% if can? :link, @manuscript %>
 <li class="manage_entry">
     <a href="<%= linking_tool_by_manuscript_path(@manuscript.id) %>"><span class="glyphicon glyphicon-link"></span> Linking Tool for <%= @manuscript.public_id %></a>

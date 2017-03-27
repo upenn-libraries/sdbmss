@@ -36,7 +36,7 @@ class ManageModelsController < ApplicationController
     model_class_lstr.pluralize
   end
 
-  def index
+  def index    
     #if params[:widescreen] == 'true'
       render :layout => 'widescreen'
     #end

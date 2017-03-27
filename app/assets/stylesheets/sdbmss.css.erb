@@ -23,6 +23,13 @@ h1, .h1, h2, .h2, h3, .h3, legend {
   font-weight: bold;
 }
 
+#spinner {
+  line-height: 40px;
+  position: relative;
+  margin: 0px 10px;
+  float: left;
+}
+
 .forum-feed {
   width: 520px;
   display: inline-block;
@@ -179,7 +186,7 @@ h1, .h1, h2, .h2, h3, .h3, legend {
   */
   background-color: #374f73;
   border: none;
-  box-shadow: 0px 1px 14px -3px #39424e;
+  box-shadow: 0px 1px 14px -3px #374f73;
   width: 100%;
   position: fixed;
   top: 0;
@@ -523,6 +530,7 @@ h1, .h1, h2, .h2, h3, .h3, legend {
   border: 1px solid #e0d1a8;
   box-shadow: none;
   margin-bottom: 10px;
+  z-index: 10;
 }
 .navbar .nav > li > a, .navbar li > label {
   padding: 15px 10px;
@@ -795,6 +803,9 @@ h1 { font-size: 30px; margin-top: 0; }
 }
 .pagination {
   margin: 5px 0px;
+}
+td.dataTables_empty {
+  text-indent: 400px;
 }
 div.dataTables_paginate ul.pagination {
   margin: 0px 0;
@@ -1181,8 +1192,12 @@ fieldset[disabled=disabled] a {
   pointer-events: none;
 }
 
+.list-group-item.disabled, .list-group-item.disabled:hover, .list-group-item.disabled:focus {
+  cursor: pointer;
+}
+
 .input-block .input-group .form-control {
-  z-index: initial;
+  z-index: inherit;
 }
 .ui-sortable-helper {
   left: 10px !important;
@@ -1874,7 +1889,7 @@ so that gray backdrop shvows up correctly */
 }
 
 #control-panel {
-  background: #fff;
+  background-color: #374f73;
   padding: 0px;
   border: none;
   display: table-cell;
@@ -1935,8 +1950,6 @@ so that gray backdrop shvows up correctly */
 #control-panel {
   height: calc(100vh - 50px);
   overflow-x: hidden;
-}
-#control-panel {
   -webkit-transition-property: width;
   -moz-transition-property: width;
   transition-property: width;
@@ -2259,11 +2272,11 @@ Private Message Styling
   margin: 0px;
 }
 #control-panel .panel-body {
-  background: white;
+  background: none;
   padding: 0px;
 }
 #control-panel .panel-heading {
-  background: #7285a2;
+  background: none;
 }
 #control-panel .panel-heading .h4 {
   color: white;
@@ -2272,10 +2285,17 @@ Private Message Styling
   font-size: 18px;
 }
 #control-panel a {
-  color: #333;
+  color: white;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
+}
+#control-panel .dropdown-menu a {
+  color: #333;
+}
+#control-panel .nav > li > a:hover, #control-panel .nav > li > a:focus {
+    text-decoration: none;
+    background-color: #5879ab;
 }
 #control-panel .text-muted {
   color: #ddd;

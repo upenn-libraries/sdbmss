@@ -60,6 +60,7 @@ class AccountsController < SearchableAuthorityController
           end
         end
       end
+      flash[:notice] = "Invitations sent!"
     end
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }

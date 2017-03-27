@@ -8,3 +8,11 @@ en:
   blacklight_advanced_search:
     form:
       title: Advanced Search
+    saved_searches:
+      clear:
+        action_title: 'Clear Saved Searches'
+        action_confirm: 'Are you sure you want to clear your saved searches?'
+    search_history:
+      clear:
+        action_title: 'Clear Search History'
+        action_confirm: 'Are you sure you want to clear your search history?'

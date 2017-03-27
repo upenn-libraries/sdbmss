@@ -211,7 +211,7 @@ var load_session = false;
             heightBuffer: 280,
             columns: manageRecords.getColumns(),
             order: manageRecords.getDefaultSort(),
-            fixedColumns: manageRecords.options.fixedColumns
+            fixedColumns: manageRecords.options.fixedColumns, 
         });
 
         $("#search_results").on('draw.dt', function () {
@@ -370,7 +370,8 @@ var load_session = false;
     SDBM.ManageRecords.prototype.createFormSubmitHandler = function () {
         var manageRecords = this;
 
-        return function() {
+        return function(e) {
+            e.preventDefault();
 //          var url = manageRecords.persistFormStateToURL();
 //          history.pushState({ url: url }, '', url);
             manageRecords.reloadTable();
@@ -490,12 +491,12 @@ var load_session = false;
                 dbSortField: 'reviewed'
             },
             {
-                title: 'Created By',
+                title: 'Added By',
                 width: "10%",
                 dbSortField: 'created_by'
             },
             {
-                title: 'Created On',
+                title: 'Added On',
                 width: "10%",
                 dbSortField: 'created_at'
             },

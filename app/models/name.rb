@@ -140,7 +140,7 @@ class Name < ActiveRecord::Base
   end
 
   def self.dates
-    super + []
+    super + ["created_at", "updated_at"]
   end
 
   def search_result_format

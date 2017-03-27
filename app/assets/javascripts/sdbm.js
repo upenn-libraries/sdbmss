@@ -241,8 +241,8 @@ $(document).ready( function (e) {
     $('input').attr('autocomplete','off');
 
     // remember control panel display from last set (localstorage memory)
-    if (localStorage.sdbm_hide_panel == "true") {
-        $('#control-panel .bookmarks-collapse').removeClass('in');
+    if (localStorage.getItem('sdbm_hide_panel') == "true") {
+        $('#control-panel').removeClass('in');
         $('.main-content').addClass('in');
     } else {
 
@@ -250,10 +250,10 @@ $(document).ready( function (e) {
 
     // set control panel display (localstorage) memory
     $('#collapse-control').click( function (e) {
-        if ($('#control-panel .bookmarks-collapse').hasClass('in')) {
-            localStorage.sdbm_hide_panel = true;
+        if ($('#control-panel').hasClass('in')) {
+            localStorage.setItem('sdbm_hide_panel', true);
         } else {
-            localStorage.sdbm_hide_panel = false;
+            localStorage.setItem('sdbm_hide_panel', false);
         }
     });
 

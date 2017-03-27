@@ -1,4 +1,5 @@
 <script type="text/javascript">
+var data;
 
 $(document).ready(function() {
 
@@ -56,7 +57,9 @@ $(document).ready(function() {
              },
              {
                  title: 'Options',
-                 orderable: false,
+                 orderable: false,                 
+                 sdbmssMinWidth: "300px",
+                 sdbmssMaxWidth: "300px",
                  render: function (data, type, full, meta) {
                     var created_by = full[manageRecords.dataTable.getColumnIndex("Created By")];
                     var result = '<span class="btn-group options-btn-group">';
@@ -138,11 +141,11 @@ $(document).ready(function() {
                  orderable: false
              },
              {
-                 title: 'Created By',
+                 title: 'Added By',
                  dbSortField: 'created_by'
              },
             {
-                title: 'Created On',
+                title: 'Added On',
                 dbSortField: 'created_at'
             },
             {
@@ -286,7 +289,7 @@ $(document).ready(function() {
 
      ManageSources.prototype.doSearch = function (isJumpSearch) {
          var manageSources = this;
-         manageSources.dataTable.reload();
+         manageSources.dataTable.reload();         
      };
 
      ManageSources.prototype.searchAjax = function(params, dt_params, callback) {
@@ -307,6 +310,7 @@ $(document).ready(function() {
      }
 
      var manageSources = new ManageSources(config);
+     data = manageSources;
 
      $('#search_results').on('draw.dt', function () {
         bindRemoteAjaxCallback();

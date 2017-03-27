@@ -564,16 +564,16 @@ class Entry < ActiveRecord::Base
 
     #### Details
 
-    define_field(:string, :title,:stored => true, :multiple => true) do
+    define_field(:string, :title, :stored => true, :multiple => true) do
       entry_titles.map(&:title)
     end
     define_field(:string, :title_flat,:stored => true) do
       entry_titles.map(&:title).join("; ")
     end
 
-#    define_field(:text, :title_search, :stored => true) do
-#      entry_titles.map(&:display_value)
-#    end
+    define_field(:text, :title_search, :stored => true) do
+      entry_titles.map(&:display_value)
+    end
 
     define_field(:string, :author, :stored => true, :multiple => true) do
       authors.map(&:name)

@@ -52,14 +52,17 @@
         <% if !can? :index, model_class %>
             <% @page_title = "Manage your " + resource_name.pluralize + " - " + application_name %>
             Manage Your <%= resource_name.pluralize.capitalize %>
+        <% elsif resource_name == "manuscripts" %>
+            <% @page_title = "Manage " + resource_name.singularize + " records - " + application_name %>            
+            Manage <%= resource_name.singularize.capitalize %> Records
         <% else %>
-            <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>
+            <% @page_title = "Manage " + resource_name.pluralize + " - " + application_name %>            
             Manage <%= resource_name.capitalize %>
         <% end %>
     <% end %>                    
         <span class="glyphicon glyphicon-info-sign"></span>
     </a>
-    <!--<span id="spinner" style='display: none;'><img alt="working..." src="<%= asset_path "spinner.gif" %>"/> loading search results...</span>-->
+    <!---->
     <%= render partial: "search_form" %>
     <% end %>
 </nav>      

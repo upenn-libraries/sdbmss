@@ -97,8 +97,8 @@ module SolrSearchable
     reviewed = params[:reviewed] && params[:reviewed] == "1" ? false : nil
 
     filters = filters_for_search(params)
-    params = params_for_search(params)
     dates = dates_for_search(params)
+    params = params_for_search(params)
 
     s = self.search do
       

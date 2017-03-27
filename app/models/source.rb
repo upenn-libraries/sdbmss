@@ -114,6 +114,7 @@ class Source < ActiveRecord::Base
     end
 
     string :location
+    text :location
     string :medium
     string :date
     text :date, :more_like_this => true
