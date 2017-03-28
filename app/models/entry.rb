@@ -30,6 +30,8 @@ class Entry < ActiveRecord::Base
   include CreatesActivity
   include Notified
 
+  extend SolrSearchable
+
   belongs_to :source, counter_cache: :entries_count
 
   # entries have institution/collection for "Other published sources" only
@@ -377,6 +379,10 @@ class Entry < ActiveRecord::Base
       deprecated: deprecated,
       superceded_by_id: superceded_by_id
     }
+  end
+
+  def search_result_format
+    as_flat_hash
   end
 
   def to_citation
@@ -787,6 +793,19 @@ class Entry < ActiveRecord::Base
 
   def to_i
     id
+  end
+
+  # these need to be figured out
+  def self.filters
+    super + ["title", "author", "artist", "scribe", "date", "provenance"]
+  end
+
+  def self.fields
+    super + ["selling_agent"]
+  end
+
+  def self.dates
+    super + ["created_at", "updated_at"]
   end
 
   private

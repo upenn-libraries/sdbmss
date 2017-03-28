@@ -72,6 +72,27 @@ class EntriesController < SearchableAuthorityController
     download.update({status: 1, filename: "#{filename}.zip"})
   end
 
+  def format_search(s)
+    results = s.results.map do |entry|
+      if !entry.nil?
+        entry.as_flat_hash.merge({ can_edit: can?(:edit, entry), bookmarkwatch: (render_to_string partial: "nav/bookmark_watch_table", locals: {model: entry }, layout: false, formats: [:html]), })
+      end
+    end
+    respond_to do |format|
+      format.json {
+        render json: {
+                 limit: s.results.count,
+                 offset: s.results.offset,
+                 total: s.total,
+                 results: results,
+               }
+      }
+      format.csv {
+        make_csv(results, @d)
+      }
+    end
+  end
+
   def index
     @bookmarks = current_user.bookmarks
     # need to... get the fields configured for blacklight, 
@@ -93,8 +114,12 @@ class EntriesController < SearchableAuthorityController
           render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count} 
         }
       end
-    else
-      super
+    elsif params[:format] == 'json'
+      #puts "what"
+      s = Entry.do_search(params)
+      #puts "mm"
+      format_search s
+      #puts "garbage"
     end
     # respond to csv..., etc.
   end

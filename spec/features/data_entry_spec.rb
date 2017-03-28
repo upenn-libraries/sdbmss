@@ -210,11 +210,18 @@ describe "Data entry", :js => true do
     it "should save a new Source (auction catalog)" do
       count = Source.count
 
-      visit new_source_path
+      visit new_entry_path
 
+      find_by_id("select_source").click
+      expect(page).to have_content("Search for Existing Source")
+      fill_in "date", with: "2014"
+      expect(page).to have_content("Unable to find the Source you are looking for?")
+      find_by_id("create_source").click
+      expect(page).to have_content("Not sure what your source type is?")
       select 'Auction/Dealer Catalog', from: 'source_type'
+      expect(page).to have_content("Publication Title")
       fill_in 'source_date', with: '2014-02-34'
-      fill_in 'title', with: 'Very Rare Books'
+      find('#title').set 'Very Rare Books'
 
       find_by_id('add_source_agent').click
       add_name_authority('find_source_agent_name_authority_0', "Sotheby's")

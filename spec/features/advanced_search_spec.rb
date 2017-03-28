@@ -93,7 +93,7 @@ describe "Blacklight Advanced Search", :js => true do
 
     search_fields = page.all(".advanced-search-field input[type=text]")
     search_fields[0].set @user.username
-    select 'Added By', from: "text_field_0"
+    select 'Created By', from: "text_field_0"
 
     find_by_id('advanced-search-submit').click()
 

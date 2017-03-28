@@ -649,11 +649,12 @@ var SDBM = SDBM || {};
             url: '/entries.json',
             data: params,
             success: function(data, textStatus, jqXHR) {
+                console.log(data);
                 if(!data.error) {
                     $(".dataTables_scrollBody").scrollTop(0);
                     // when paging, we probably don't want to reset horiz scroll
                     // $(".dataTables_scrollBody").scrollLeft(0);
-                    data.data = data.data.map(function (result) {
+                    data.data = data.results.map(function (result) {
                         return [
                             result.id,
                             result.manuscript,
@@ -703,6 +704,9 @@ var SDBM = SDBM || {};
                         ];
                     });
                     
+                    data.recordsTotal = data.total;
+                    data.recordsFiltered = data.total;
+
                     // pad data with null entries so that columns are aligned
                     var columnsToPrepend = [];
                     if(sdbmTableInstance.options.prependColumns) {

@@ -9,6 +9,7 @@
 # - a possible solution would be to figure out a way of loading ALL facets, then select the last X and continue normally
 # - memory issues for large facet list (authors has like 5000, I think?)
 
+
 module Blacklight::Solr
   class FacetPaginator
     mattr_accessor :request_keys do
