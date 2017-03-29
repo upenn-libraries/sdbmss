@@ -45,6 +45,9 @@ class Entry < ActiveRecord::Base
   belongs_to :superceded_by, class_name: "Entry"
   has_many :supercedes, class_name: "Entry", :foreign_key => :superceded_by_id
 
+  has_many :bookmarks, as: :document, dependent: :destroy
+  has_many :bookmarkers, through: :bookmarks, source: :user
+
   has_many :entry_manuscripts, inverse_of: :entry, dependent: :destroy
   has_many :manuscripts, through: :entry_manuscripts
   has_many :entry_titles, inverse_of: :entry, dependent: :destroy
@@ -803,7 +806,43 @@ class Entry < ActiveRecord::Base
 
   # I don't love having to duplicate all the fields AGAIN here, but inheriting it all from blacklight doesn't seem to work
   # 
-  
+
+def do_csv_search(params, download)
+    s = do_search(params)
+    
+    objects = []
+    puts "Objects:: #{objects.count}"
+    s.results.in_groups_of(300, false) do |group|
+      ids = group.map(&:id)
+      #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
+      objects = objects + Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash }
+      puts "Objects:: #{objects.count}"
+    end
+    # any possible 'speed up' would need to be done here:
+
+    puts "Objects:: #{objects.count}"
+    headers = objects.first.keys
+    filename = download.filename
+    user = download.user
+    id = download.id
+    path = "/tmp/#{id}_#{user}_#{filename}"
+    
+    csv_file = CSV.open(path, "wb") do |csv|
+      csv << headers
+      objects.each do |r|
+        csv << r.values 
+      end
+    end
+
+    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+      zipfile.add(filename, path)
+    end
+
+    File.delete(path) if File.exist?(path)
+
+    download.update({status: 1, filename: "#{filename}.zip"})
+    #download.created_by.notify("Your download '#{download.filename}' is ready.")
+  end  
 
   def self.filters
     [

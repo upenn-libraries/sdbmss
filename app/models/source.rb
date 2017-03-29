@@ -65,6 +65,9 @@ class Source < ActiveRecord::Base
   has_many :entries
   has_many :source_agents, inverse_of: :source
 
+  has_many :bookmarks, as: :document, dependent: :destroy
+  
+
  # validates_inclusion_of :whether_mss, in: HAS_MANUSCRIPT_TYPES.map(&:first), message: 'whether_mss is invalid', allow_blank: true
   validates_inclusion_of :medium, in: MEDIUM_TYPES.map(&:first), message: 'medium is invalid', allow_blank: true
   #validates_presence_of :date, if: :date_required

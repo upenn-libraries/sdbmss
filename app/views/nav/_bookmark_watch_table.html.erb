@@ -1,5 +1,5 @@
 <span class='btn btn-xs btn-default'>
-  <% if (w = current_user.bookmarks.where(document: model).first) %>
+  <% if (w = model.bookmarks.select{ |b| b.user_id == current_user.id }.first) %>
     <%= render partial: "bookmarks/delete", locals: {bookmark: w} %>
   <% else %>
     <%= render partial: "bookmarks/add", locals: {document: model}  %>

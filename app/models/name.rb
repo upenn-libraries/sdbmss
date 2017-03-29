@@ -32,6 +32,8 @@ class Name < ActiveRecord::Base
 
   belongs_to :reviewed_by, :class_name => 'User'
 
+  has_many :bookmarks, as: :document, dependent: :destroy  
+
   has_many :entry_artists, foreign_key: "artist_id"
   has_many :artist_entries, -> {distinct},  through: :entry_artists, source: :entry
 

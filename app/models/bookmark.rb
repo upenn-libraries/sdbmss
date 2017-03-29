@@ -1,6 +1,6 @@
 class Bookmark < ActiveRecord::Base
 
-  belongs_to :user, polymorphic: true
+  belongs_to :user
   belongs_to :document, polymorphic: true
 
   validates :user_id, presence: true

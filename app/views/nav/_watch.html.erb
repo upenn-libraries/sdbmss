@@ -1,5 +1,5 @@
 <% if current_user %>
-  <% if (w = current_user.watches.where(watched: watchable).first) %>
+  <% if (w = watchable.watches.select{ |watch| watch.user_id == current_user.id }.first) %>
     <%= render partial: 'watches/delete', locals: {watch: w} %>
   <% else %>
     <%= render partial: 'watches/add', locals: {watchable: watchable} %>

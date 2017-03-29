@@ -37,47 +37,29 @@ class EntriesController < SearchableAuthorityController
     Entry
   end
 
-  def self.do_csv_search(params, search_params_logic, download)
-    (response, document_list) = EntriesController.new.search_results(params, search_params_logic)
-    #objects = document_list.map { |document| document.model_object.as_flat_hash }
-    
-    # this seems to have improved performance by about 75% - once all eager loading was set properly!
-    # batches of '300' seems to be the ideal size
-    objects = []
-    document_list.in_groups_of(300, false) do |group|
-      ids = group.map(&:id)
-      #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
-      objects = objects + Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash }
-    end
-
-    header = objects.first.keys
-    
-    filename = download.filename
-    user = download.user
-    id = download.id
-    path = "/tmp/#{id}_#{user}_#{filename}"
-
-    csv_file = CSV.open(path, "wb") do |csv|
-      csv << header
-      objects.each do |r|
-        csv << r.values 
-      end
-    end
-    
-    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
-      zipfile.add(filename, path)
-    end
-
-    File.delete(path) if File.exist?(path)
-    download.update({status: 1, filename: "#{filename}.zip"})
-  end
-
   def format_search(s)
-    results = s.results.map do |entry|
-      if !entry.nil?
-        entry.as_flat_hash.merge({ can_edit: can?(:edit, entry), bookmarkwatch: (render_to_string partial: "nav/bookmark_watch_table", locals: {model: entry }, layout: false, formats: [:html]), })
-      end
-    end
+    ids = s.results.map(&:id)
+    results = Entry.includes(
+      :created_by, :updated_by, :contributors, :groups, :institution, 
+      {:sales => [{:sale_agents => :agent}]}, 
+      {:entry_authors => [:author]}, 
+      :entry_titles, 
+      :entry_dates, 
+      {:entry_artists => [:artist]}, 
+      {:entry_scribes => [:scribe]}, 
+      {:entry_languages => [:language]}, 
+      {:entry_places => [:place]}, 
+      {:provenance => [:provenance_agent]}, 
+      :entry_uses, :entry_materials, 
+      {:entry_manuscripts => [:manuscript]}, 
+      :source, :bookmarks, :watches,
+    ).where(id: ids).map { |e| 
+      e.as_flat_hash.merge({ 
+        can_edit: can?(:edit, e), 
+        # FIX ME this can probably be further improved (sped up) by not rendering repeated html, even if it is a small amount (instead use template in JS)
+        bookmarkwatch: (render_to_string partial: "nav/bookmark_watch_table", locals: {model: e }, layout: false, formats: [:html]) 
+      }) 
+    }
     respond_to do |format|
       format.json {
         render json: {
@@ -98,6 +80,7 @@ class EntriesController < SearchableAuthorityController
     @fields = model_class.fields
     @filters = model_class.filters
     @dates = model_class.dates
+
     @bookmarks = current_user.bookmarks
     # need to... get the fields configured for blacklight, 
 
@@ -111,7 +94,8 @@ class EntriesController < SearchableAuthorityController
       end      
       @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv", user_id: current_user.id})
 
-      EntriesController.delay.do_csv_search(params, search_params_logic, @d)
+      Entry.delay.do_csv_search(params, @d)
+#      EntriesController.delay.do_csv_search(params, search_params_logic, @d)
 
       respond_to do |format|
         format.csv {

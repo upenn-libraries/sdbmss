@@ -8,6 +8,8 @@ class Manuscript < ActiveRecord::Base
   has_many :comments, as: :commentable
   has_many :linked_entries, -> { where entry_manuscripts: { relation_type: EntryManuscript::TYPE_RELATION_IS } }, source: :entry, through: :entry_manuscripts
 
+  has_many :bookmarks, as: :document, dependent: :destroy
+
   accepts_nested_attributes_for :entry_manuscripts, allow_destroy: true
 
   include Watchable
