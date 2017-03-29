@@ -28,6 +28,7 @@ module AddToGroup
     model_class.where(:id => ids).index
     respond_to do |format|
       format.json { render :json => {error: error}, :status => :ok }
+      format.html { redirect_to entry_path(ids.first) }
     end
   end
 
@@ -43,6 +44,7 @@ module AddToGroup
     end
     respond_to do |format|
       format.json { render :json => {error: error}, :status => :ok }
+      format.html { redirect_to entry_path(ids.first) }
     end
   end
 

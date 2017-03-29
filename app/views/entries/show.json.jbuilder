@@ -6,7 +6,7 @@ json.(@entry, :id, :folios, :catalog_or_lot_number, :transaction_type, :folios, 
 
 json.cumulative_updated_at @entry.cumulative_updated_at
 
-json.created_by @entry.created_by.username
+json.created_by @entry.created_by ? @entry.created_by.username : "User not found."
 json.created_at @entry.created_at.to_formatted_s(:date_and_time)
 
 if @entry.institution.present?

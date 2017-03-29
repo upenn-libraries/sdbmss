@@ -212,12 +212,7 @@ describe "Data entry", :js => true do
 
       visit new_entry_path
 
-      find_by_id("select_source").click
-      expect(page).to have_content("Search for Existing Source")
-      fill_in "date", with: "2014"
-      expect(page).to have_content("Unable to find the Source you are looking for?")
-      find_by_id("create_source").click
-      expect(page).to have_content("Not sure what your source type is?")
+      open_source_create_modal
       select 'Auction/Dealer Catalog', from: 'source_type'
       expect(page).to have_content("Publication Title")
       fill_in 'source_date', with: '2014-02-34'
@@ -269,11 +264,12 @@ describe "Data entry", :js => true do
     it "should save a new Source (other published source)" do
       count = Source.count
 
-      visit new_source_path
+      visit new_entry_path
+      open_source_create_modal
 
       select 'Other Published Source', from: 'source_type'
       fill_in 'source_date', with: '2014-02-34'
-      fill_in 'title', with: 'DeRicci Census'
+      find('#title').set 'DeRicci Census'
       fill_in 'author', with: 'Seymour DeRicci'
       #select "Yes", from: 'whether_mss'
       select "Library", from: 'medium'
@@ -308,10 +304,11 @@ describe "Data entry", :js => true do
     it "should save a new Source with no date" do
       count = Source.count
 
-      visit new_source_path
+      visit new_entry_path
+      open_source_create_modal
 
       select 'Other Published Source', from: 'source_type'
-      fill_in 'title', with: 'Test source wirh no date'
+      find('#title').set 'Test source wirh no date'
       fill_in 'author', with: 'Jeff'
 
       click_button('Save')
@@ -328,7 +325,9 @@ describe "Data entry", :js => true do
     end
 
     it "should save a new Source, filtering out invalid fields" do
-      visit new_source_path
+
+      visit new_entry_path
+      open_source_create_modal
 
       # first, fill out author and institution...
       select 'Collection Catalog', from: 'source_type'
@@ -341,7 +340,7 @@ describe "Data entry", :js => true do
       add_name_authority('find_source_agent_name_authority_0', 'Harvard')
       # now change source type to Auction Catalog
       select 'Auction/Dealer Catalog', from: 'source_type'
-      fill_in 'title', with: 'my catalog'
+      find('#title').set 'my catalog'
       #fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
       
 #      find_by_id('remove_selling_agent_name_authority_0').click
@@ -373,11 +372,12 @@ describe "Data entry", :js => true do
         created_by: @user,
       )
 
-      visit new_source_path
+      visit new_entry_path
+      open_source_create_modal
 
       select 'Auction/Dealer Catalog', from: 'source_type'
       # similar but not exactly the same title
-      fill_in 'title', with: 'A very Long Title for an Existing Source'
+      find('#title').set 'A very Long Title for an Existing Source'
       #fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
       #find_by_id('remove_selling_agent_name_authority_0').click
       find_by_id('add_source_agent').click
@@ -718,7 +718,7 @@ describe "Data entry", :js => true do
 
       select 'Auction/Dealer Catalog', from: 'source_type'
       fill_in 'source_date', with: '2015-02-28'
-      fill_in 'title', with: 'Sample Catalog'
+      find('#title').set 'Sample Catalog'
       click_button 'Save'
 
       expect(page).to have_content("SDBM_SOURCE")
@@ -778,7 +778,7 @@ describe "Data entry", :js => true do
 
       expect(page).to have_content("Known errors in the Source should be preserved but can be noted")
 
-      first(".save-button").click
+      first(".save-button").trigger('click')
       
       # note: this fails frequently, for some unknown reason -> no 'sleep duration' seems to affect this...
       expect(page).not_to have_content("Known errors in the Source should be preserved but can be noted")
@@ -791,7 +791,8 @@ end
   context "when user is not logged in" do
 
     it "should disallow creating Sources if not logged in" do
-      visit new_source_path
+      visit new_entry_path
+      expect(page).not_to have_css("#select_source")
       expect(page).to have_content("You need to sign in")
     end
 

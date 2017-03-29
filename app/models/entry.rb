@@ -846,7 +846,7 @@ def do_csv_search(params, download)
 
   def self.filters
     [
-      "approved", "width", "provenance_date", "price", "num_lines", "num_columns", "miniatures_unspec_size", "miniatures_small", "miniatures_large", "miniatures_fullpage", "manuscript_date",
+      "source", "approved", "width", "provenance_date", "price", "num_lines", "num_columns", "miniatures_unspec_size", "miniatures_small", "miniatures_large", "miniatures_fullpage", "manuscript_date",
       "initials_historiated", "initials_decorated", "height", "folios", "updated_by", "created_by", "entry_id", "manuscript_id"
     ]
   end

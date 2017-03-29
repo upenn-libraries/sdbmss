@@ -654,7 +654,6 @@ var SDBM = SDBM || {};
             data: params,
             success: function(data, textStatus, jqXHR) {
                 if(!data.error) {
-                    console.log(data);
                     $(".dataTables_scrollBody").scrollTop(0);
                     // when paging, we probably don't want to reset horiz scroll
                     // $(".dataTables_scrollBody").scrollLeft(0);

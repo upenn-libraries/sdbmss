@@ -48,7 +48,7 @@ module Revert
     end
     
     if destroyed
-      redirect_to dashboard_path
+      redirect_to dashboard_activity_path
     else
       redirect_to polymorphic_path(@model)
     end

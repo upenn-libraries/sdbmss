@@ -103,13 +103,9 @@ class EntriesController < SearchableAuthorityController
         }
       end
     elsif params[:format] == 'json'
-      #puts "what"
       s = Entry.do_search(params)
-      #puts "mm"
-      format_search s
-      #puts "garbage"
+      format_search s      
     end
-    # respond to csv..., etc.
   end
 
   def feed

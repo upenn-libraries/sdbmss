@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
 
   # used by devise
   def after_sign_in_path_for(resource)
-    return dashboard_path
+    return dashboard_contributions_path
   end
 
   def expire_login_page

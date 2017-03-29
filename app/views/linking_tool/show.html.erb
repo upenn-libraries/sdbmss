@@ -422,6 +422,7 @@ $(document).ready(function() {
     });
 
     $(document).on("click", ".add-entry-link", function (event) {
+        console.log('ok!');
         var entryId = $(event.target).data("entryId");
         addWorkspaceEntry(entryId, "is");
         workspaceTable.reload();

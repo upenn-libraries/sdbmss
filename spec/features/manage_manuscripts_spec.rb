@@ -22,7 +22,7 @@ describe "Manage manuscripts", :js => true do
 
   it "should load" do
     visit manuscripts_path
-    expect(page).to have_content("Manage Manuscripts")
+    expect(page).to have_content("Manage Manuscript Records")
   end
 
 end

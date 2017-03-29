@@ -737,7 +737,7 @@ var BOOKMARK_SCOPE;
             modal.result.then(function () {
               $scope.populateEntryViewModel($scope.entry);
             }, function () {
-              console.log('dismissed');
+              //console.log('dismissed');
             });
           }
         }
@@ -1867,15 +1867,16 @@ var BOOKMARK_SCOPE;
                             op: "AND",
                             //approved: "*",
                             source: "SDBM_SOURCE_" + scope.entry.source.id,
-                            catalog_or_lot_number: cat_lot_no
+                            catalog_or_lot_number_search: cat_lot_no
                         },
                         success: function(data, textStatus, jqXHR) {
-                            var results = data.data || [];
+                            var results = data.results || [];
+                            console.log(results);
                             if(results.length > 0) {
-                                var msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
+                                var msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number_search%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
                                 var editMode = !!scope.entry.id;
                                 if (editMode) {
-                                    msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
+                                    msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number_search%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
                                     results.forEach(function (result) {
                                         if(result.id == scope.entry.id) {
                                             // search returned the entry we're editing, so don't warn

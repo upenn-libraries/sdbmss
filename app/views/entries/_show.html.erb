@@ -447,18 +447,35 @@
             </td>
         </tr>
         <% end %>
-        <% if entry.groups.count > 0 %>
         <tr>
             <td class="col-sm-2 text-right record-label">User Groups</td>
-            <td class="col-sm-10">This entry is being edited by 
-                <span class="list-inline">
-                <% entry.groups.each do |group| %>
-                    <li><%= link_to group.name, group_path(group) %></li>
-                <% end %>
-                </span>
+            <td class="col-sm-10">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <% if entry.groups.count <= 0 %>
+                            <span class="text-muted">This entry is not being worked on by any user groups at the moment.</span>
+                        <% else %>
+                            <span>This entry is being edited by </span>
+                        <% end %>
+                        <span class="list-inline">
+                        <% entry.groups.each do |group| %>
+                            <li>
+                                <%= link_to group.name, group_path(group) %>
+                                <% if can? :edit, group %>
+                                    <%= link_to remove_from_group_entries_path(ids: [entry.id], group_id: group.id), :method => :post, :format => :html do %>
+                                      <span class="glyphicon glyphicon-remove"></span>
+                                    <% end %>
+                                <% end %>
+                            </li>
+                        <% end %>                
+                        </span>
+                    </div>
+                    <div class="col-sm-6 text-right">
+                        <%= render partial: "entries/group_form", locals: {entry: entry} %>
+                    </div>
+                </div>
             </td>
         </tr>
-        <% end %>
 
     </tbody>
 

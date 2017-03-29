@@ -1,0 +1,19 @@
+<%= form_tag('add_to_group', method: :post) do %>
+<div class="input-group" style="width: 100%;">
+  <%= hidden_field_tag 'ids[]', [entry.id] %>
+  <% groups = Group.joins(:group_users).where(:group_users => {user: current_user, role: "Manager"}) %>
+  <% if groups.count > 0 %>  
+  <input type="submit" value="Add" class='form-control' style="max-width: 50px;"/>
+  <select class='form-control' name="group_id" style="max-width: 200px;">
+    <% groups.each do |group| %>
+      <option value="<%= group.id %>"><%= group.name %></option>
+    <% end %>
+  </select>
+  <% else %>
+  <input type="submit" value="Add" class='form-control disabled' disabled style="max-width: 50px;"/>
+  <select name="" id="" class="form-control disabled" style="max-width: 240px" disabled>
+    <option value="nil">You have no user groups.</option>
+  </select>
+  <% end %>
+</div>
+<% end %>
