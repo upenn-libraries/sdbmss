@@ -1,4 +1,11 @@
+<!-- 
 
+    DEPRECATED:: using universal search form now? 
+
+-->
+
+
+<!-- need to move this over... -->
 <ul class="nav navbar-nav navbar-left">
     <li>
         <% if can? :manage, model_class %>
@@ -18,7 +25,20 @@
         </a>
     </li>
 </ul>
-
+<ul>
+<%- prepopulated_search_fields_for_advanced_search(1, is_numeric: false).each do |fieldstruct| %>
+    <% fieldstruct.fields.sort.each do |key, field_def| -%>
+        <li><%= key %>,<%= field_def.label %></li>
+    <% end %>
+    <% break %>
+<%- end -%>
+<%- prepopulated_search_fields_for_advanced_search(1, is_numeric: true).each do |fieldstruct| -%>
+    <% fieldstruct.fields.sort.each do |key, field_def| -%>
+        <li><%= key %>, <%= field_def.label %></li>
+    <% end %>
+    <% break %>
+<%- end -%>
+</ul>
 <div class='search-form form-inline search-fieldset pull-left navbar-form'>
     <div class="input-group search-block">
         <div class="input-group-btn">

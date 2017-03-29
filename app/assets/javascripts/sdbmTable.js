@@ -195,7 +195,7 @@ var SDBM = SDBM || {};
             //$('.sdbm-table').toggleClass('full-width');
             //$('.search_results').toggleClass('full-width');
         });
-        $('.spinner').replaceWith('<span id="spinner" style="display: none;"><img alt="working..." src="/assets/spinner.gif"> loading search results...</span>');
+        $('.spinner').replaceWith('<span id="spinner" style="display: none;"><img alt="working..." src="/assets/spinner.gif"> loading...</span>');
         $('.csv').replaceWith('<a id="export-csv" class="btn btn-default" title="Export to CSV"><span class="glyphicon glyphicon-floppy-save"></span></a>');
         $('.columns').replaceWith('<div class="btn-group">' + 
             '<a class="btn btn-default dropdown-toggle" title="Show/Hide Columns" data-toggle="dropdown"><span class="glyphicon glyphicon-edit"></span></a>' +
@@ -235,11 +235,15 @@ var SDBM = SDBM || {};
     SDBM.Table.prototype.translateParamsToBlacklight = function (dt_params) {
         return {
             draw: dt_params.draw,
-            page: (dt_params.start / dt_params.length) + 1,
-            per_page: dt_params.length,
+            //page: (dt_params.start / dt_params.length) + 1,
+            //per_page: dt_params.length,
             utf8: String.fromCharCode(0x2713),
-            search_field: "advanced",
-            sort: this.getSort(dt_params)
+            //search_field: "advanced",
+            //sort: this.getSort(dt_params),
+            offset: dt_params.start,
+            limit: dt_params.length,
+            order: this.getSort(dt_params),
+            op: $('#search_op') ? $('#search_op').val() : 'all'
         };
     };
 
@@ -324,7 +328,6 @@ var SDBM = SDBM || {};
                     }
                 },
                 {
-                    sdbmssSortField: 'groups',
                     title: 'User Groups',
                     sdbmssMinWidth: "100px",
                     sdbmssMaxWidth: "100px",
@@ -335,7 +338,8 @@ var SDBM = SDBM || {};
                             result += '<a target="_blank" href="/groups/' + data[i][0] + '">' + data[i][1] + '</a> ';
                         }
                         return result;
-                    }
+                    },
+                    orderable: false
                 },
                 {
                     sdbmssMinWidth: "100px",

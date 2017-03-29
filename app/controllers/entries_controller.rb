@@ -94,6 +94,10 @@ class EntriesController < SearchableAuthorityController
   end
 
   def index
+    @search_fields = model_class.search_fields
+    @fields = model_class.fields
+    @filters = model_class.filters
+    @dates = model_class.dates
     @bookmarks = current_user.bookmarks
     # need to... get the fields configured for blacklight, 
 
@@ -524,6 +528,7 @@ class EntriesController < SearchableAuthorityController
 
   def set_entry
     @entry = Entry.find(params[:id])
+    params[:id] = "Entry #{params[:id]}"
   end
 
   def entry_params_for_create_and_edit

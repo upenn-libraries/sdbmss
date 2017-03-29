@@ -587,6 +587,11 @@ class Entry < ActiveRecord::Base
     define_field(:text, :author_search, :stored => true) do
       entry_authors.map(&:display_value)
     end
+    define_field(:string, :author_flat, :stored => true) do
+      authors.map(&:name).join("; ")
+    end
+
+
 
     define_field(:string, :manuscript_date, :stored => true, :multiple => true) do
       entry_dates.select {
@@ -629,6 +634,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :artist, :stored => true, :multiple => true) do
       artists.map(&:name)
     end
+    
     define_field(:string, :artist_flat, :stored => true) do
       artists.map(&:name).join("; ")
     end
@@ -659,7 +665,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :material, :stored => true, :multiple => true) do
       entry_materials.map(&:material)
     end
-    define_field(:string, :material_flat, :stored => true, :multiple => true) do
+    define_field(:string, :material_flat, :stored => true) do
       entry_materials.map(&:material).join("; ")
     end
     define_field(:text, :material_search, :stored => true) do
@@ -795,17 +801,23 @@ class Entry < ActiveRecord::Base
     id
   end
 
-  # these need to be figured out
+  # I don't love having to duplicate all the fields AGAIN here, but inheriting it all from blacklight doesn't seem to work
+  # 
+  
+
   def self.filters
-    super + ["title", "author", "artist", "scribe", "date", "provenance"]
+    [
+      "approved", "width", "provenance_date", "price", "num_lines", "num_columns", "miniatures_unspec_size", "miniatures_small", "miniatures_large", "miniatures_fullpage", "manuscript_date",
+      "initials_historiated", "initials_decorated", "height", "folios", "updated_by", "created_by", "entry_id", "manuscript_id"
+    ]
   end
 
   def self.fields
-    super + ["selling_agent"]
+    ["binding_search", "catalog_or_lot_number_search", "sale_seller_search", "sale_buyer_search", "sale_selling_agent_search", "source_search", "institution_search", "title_search", "author_search", "artist_search", "scribe_search", "place_search", "language_search", "material_search", "language_search", "provenance_search", "complete_entry"]
   end
 
   def self.dates
-    super + ["created_at", "updated_at"]
+    ["created_at", "updated_at"]
   end
 
   private

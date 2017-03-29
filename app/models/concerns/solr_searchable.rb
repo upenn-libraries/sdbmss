@@ -108,8 +108,8 @@ module SolrSearchable
             value = Array(value)
             if value.kind_of? Array
               value.each do |v|
-                op = Array(options[field + "_option"]).shift black
-               # if searching for this 'without' the term, right now just add a '-' to the beginning of query to negate it
+                op = Array(options[field + "_option"]).shift
+                # if searching for this 'without' the term, right now just add a '-' to the beginning of query to negate it
                 if op && op == 'does not contain'
                   fulltext "-" + v.gsub(' ', '+'), :fields => [field]
                 elsif op && op == 'blank'
