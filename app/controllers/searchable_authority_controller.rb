@@ -32,7 +32,8 @@ class SearchableAuthorityController < ManageModelsController
     results = s.results.map do |obj|
       if bookmarkable
         obj.search_result_format.merge({
-          bookmarkwatch: (render_to_string partial: "nav/bookmark_watch_table", locals: {model: obj }, layout: false, formats: [:html])    
+          bookmarkwatch: (render_to_string partial: "nav/bookmark_watch_table", locals: {model: obj }, layout: false, formats: [:html]),  
+          can_edit: can?(:edit, obj)
         })
       else
         obj.search_result_format

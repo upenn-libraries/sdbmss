@@ -64,9 +64,11 @@ $(document).ready(function() {
                     var created_by = full[manageRecords.dataTable.getColumnIndex("Created By")];
                     var result = '<span class="btn-group options-btn-group">';
                     result += full[manageRecords.dataTable.getColumnIndex("BookmarkWatch")];
-
-                    if (canEdit || username == created_by) {
+                    editable = full[manageRecords.dataTable.getColumnIndex("CanEdit")];
+                    if (editable) {
                         result += '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>';
+                    } else {
+                        result += '<a class="btn btn-xs btn-default disabled">Edit</a>';
                     }
                     result += '<a class="btn btn-xs btn-primary" href="/entries/new/?source_id=' + data + '">Add an Entry</a>';
                     if (canDestroy) {
@@ -164,6 +166,12 @@ $(document).ready(function() {
                 title: "BookmarkWatch",
                 visible: false,
                 searchable: false
+            },
+            {
+                title: "CanEdit",
+                dbSortField: 'can_edit',
+                visible: false,
+                searchable: false
             }
          ];
      };
@@ -191,7 +199,8 @@ $(document).ready(function() {
              result.updated_by || "",
              result.updated_at || "",
              result.reviewed,
-             result.bookmarkwatch
+             result.bookmarkwatch,
+             result.can_edit
          ];
      };
 

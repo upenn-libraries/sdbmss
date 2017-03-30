@@ -59,6 +59,10 @@ class ApplicationController < ActionController::Base
     true
   end
 
+  def default_url
+    root_path
+  end
+
   # This generates a consistent path for the search URL and should be
   # used in place of Blacklight's #search_action_path which makes a
   # contextually determined path. The latter breaks the top nav search

@@ -19,14 +19,16 @@
       </li>
       <li>
         <%= link_to(main_app.manuscripts_path) do %>
-        <span class="glyphicon glyphicon-th"></span> <%= can?(:index, Manuscript) ? '' : 'My ' %>Manuscripts
+        <span class="glyphicon glyphicon-th"></span> <%= can?(:index, Manuscript) ? '' : 'My ' %>Manuscript Records
         <% end %>
       </li>
+      <% if can? :manage, Comment %>
       <li>
         <%= link_to(main_app.comments_path) do %>
         <span class="glyphicon glyphicon-th-large"></span> <%= can?(:index, Comment) ? '' : 'My ' %>Comments
         <% end %>
       </li>
+      <% end %>
       <% if can? :manage, Name %>
       <li>
         <%= link_to(main_app.names_path) do %>

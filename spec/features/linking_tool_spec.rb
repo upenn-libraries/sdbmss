@@ -120,6 +120,7 @@ describe "Linking Tool", :js => true do
     entry = Entry.find(2)
     visit linking_tool_by_entry_path id: entry.id
 
+    expect(page).to have_content("Add SDBM")
     # use manuscript created in previous test
     first(".link-to-manuscript-link", visible: true).trigger('click')
 

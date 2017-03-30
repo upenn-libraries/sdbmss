@@ -344,7 +344,7 @@ class Source < ActiveRecord::Base
       author: author,
       selling_agent: get_selling_agents_as_names,#(selling_agent = get_selling_agent_as_name).present? ? selling_agent.name : "",
       institution: get_institutions_as_names, #(institution_agent = get_institution_as_name).present? ? institution_agent.name : "",
-      whether_mss: whether_mss,
+      #whether_mss: whether_mss,
       medium: medium,
       date_accessed: date_accessed,
       location_institution: location_institution,

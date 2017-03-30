@@ -314,10 +314,15 @@ $(document).ready(function() {
 
             var params = sdbmTable.translateParamsToBlacklight(dt_params);
 
-            params["approved"] = "*";
+            //params["approved"] = "";
 
-            // prevent an empty search from returning ALL entries
-            params.entry_id = getActiveEntryManuscripts().length > 0 ? $.map(getActiveEntryManuscripts(), function(item) { return item.entry_id; }).join(" OR ") : "Nil";
+            params.entry_id = getActiveEntryManuscripts().length > 0 ? $.map(getActiveEntryManuscripts(), function(item) { return item.entry_id; }) : ['nil'];
+            
+            // prevent an empty workspace from returning ALL entries
+            if (getActiveEntryManuscripts().length > 0)
+                params.op = "OR";
+            else
+                params.op = "AND";
 
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {
@@ -422,7 +427,6 @@ $(document).ready(function() {
     });
 
     $(document).on("click", ".add-entry-link", function (event) {
-        console.log('ok!');
         var entryId = $(event.target).data("entryId");
         addWorkspaceEntry(entryId, "is");
         workspaceTable.reload();
