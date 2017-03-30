@@ -45,7 +45,7 @@ describe "Blacklight Search", :js => true do
     e.index!
 
     visit dashboard_contributions_path
-    click_link "See My Public Entries"
+    click_link "See Your Public Entries"
 
     expect(page).to have_content(e.public_id)
   end
