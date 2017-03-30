@@ -28,7 +28,7 @@
               <span class="title text-muted"><span class="glyphicon glyphicon-warning-sign text-warning"></span> <%= notification.title %></span>
             <% end %>
           </div>
-          <div class="col-xs-12 text-right text-info one-line">
+          <div class="col-xs-12 text-right text-invert one-line">
             <%= notification.created_at.to_formatted_s(:long) %>
             <span class="glyphicon glyphicon-ok-circle" data-id="<%= notification.id %>"></span>
           </div>

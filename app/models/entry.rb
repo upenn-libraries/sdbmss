@@ -742,6 +742,10 @@ class Entry < ActiveRecord::Base
       manuscript_binding
     end
 
+    define_field(:string, :binding, :stored => true) do
+      manuscript_binding
+    end
+
     define_field(:date, :created_at, :stored => true) { created_at }
     define_field(:string, :created_by, :stored => true) { created_by ? created_by.username : "" }
     define_field(:date, :updated_at, :stored => true) { updated_at }
@@ -852,7 +856,7 @@ def do_csv_search(params, download)
   end
 
   def self.fields
-    ["binding_search", "catalog_or_lot_number_search", "sale_seller_search", "sale_buyer_search", "sale_selling_agent_search", "source_search", "institution_search", "title_search", "author_search", "artist_search", "scribe_search", "place_search", "language_search", "material_search", "language_search", "provenance_search", "complete_entry"]
+    ["binding_search", "catalog_or_lot_number_search", "sale_seller_search", "sale_buyer_search", "sale_selling_agent_search", "source_search", "institution_search", "title_search", "author_search", "artist_search", "scribe_search", "place_search", "language_search", "material_search", "language_search", "provenance_search"]
   end
 
   def self.dates

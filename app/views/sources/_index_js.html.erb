@@ -65,12 +65,19 @@ $(document).ready(function() {
                     var result = '<span class="btn-group options-btn-group">';
                     result += full[manageRecords.dataTable.getColumnIndex("BookmarkWatch")];
                     editable = full[manageRecords.dataTable.getColumnIndex("CanEdit")];
+                    source_type  = full[manageRecords.dataTable.getColumnIndex("Source Type")];
                     if (editable) {
                         result += '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a>';
                     } else {
                         result += '<a class="btn btn-xs btn-default disabled">Edit</a>';
                     }
-                    result += '<a class="btn btn-xs btn-primary" href="/entries/new/?source_id=' + data + '">Add an Entry</a>';
+                    // if I can edit the source, or it is any source OTHER than a personal/provenance observation
+                    if (source_type.indexOf('Observation') == -1 || editable) {
+                        result += '<a class="btn btn-xs btn-primary" href="/entries/new/?source_id=' + data + '">Add an Entry</a>';                        
+                    } else {
+                        result += '<a class="btn btn-xs btn-default disabled">Add an Entry</a>';                        
+                    }
+
                     if (canDestroy) {
                         result += '<a class="btn btn-xs btn-danger delete-link" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
                     }
