@@ -13,9 +13,11 @@ module Blacklight::UrlHelperBehavior
       route = blacklight_config.show.route.merge(action: :show, id: doc).merge(options)
       route[:controller] = controller_name if route[:controller] == :current
       route
-    else   
+    elsif doc   
     #override here, since we are using sunspot, and blacklight expects a different ID format :/   
       entry_path(doc["entry_id"])
+    else
+      doc
     end
   end
 end
