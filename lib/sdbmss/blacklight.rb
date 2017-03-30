@@ -2,6 +2,25 @@
 # This module contains customized subclasses of things used by
 # Blacklight
 
+
+# override 'next/prev' urls
+
+module Blacklight::UrlHelperBehavior
+  def url_for_document doc, options = {}
+    if respond_to?(:blacklight_config) and
+        blacklight_config.show.route and
+        (!doc.respond_to?(:to_model) or doc.to_model.is_a? SolrDocument)
+      route = blacklight_config.show.route.merge(action: :show, id: doc).merge(options)
+      route[:controller] = controller_name if route[:controller] == :current
+      route
+    else   
+    #override here, since we are using sunspot, and blacklight expects a different ID format :/   
+      entry_path(doc["entry_id"])
+    end
+  end
+end
+
+
 module Blacklight
   module FacetsHelperBehavior
 
