@@ -14,9 +14,10 @@ module Blacklight::UrlHelperBehavior
       route[:controller] = controller_name if route[:controller] == :current
       route
     elsif doc   
-    #override here, since we are using sunspot, and blacklight expects a different ID format :/   
+    # override here, since we are using sunspot, and blacklight expects a different ID format :/   
       entry_path(doc["entry_id"])
     else
+    # sometimes 'doc' is nil, in which case it is an acceptable url?
       doc
     end
   end
