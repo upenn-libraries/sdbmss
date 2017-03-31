@@ -4,6 +4,11 @@
         position: relative;
     }
 </style>
+<script type="text/javascript">
+    $(window).load(function(){
+        $('#Welcome').modal('show');
+    });
+</script>
 <% end %>
 
 <div class="row">
@@ -34,7 +39,7 @@
             <li><strong>Contribute Data</strong>, including your own personal observations of a manuscripts or group of manuscripts.</li>
             <li><strong>Engage With Other Users</strong> to facilitate research and conversations about both the history of manuscript transmission and the data gathered in the process of recording this history.</li>
             <li><strong>Manage Your Contributions</strong>, track your search history, bookmark, tag and download your results.</li>
-            <li><strong>Email or Download Search Results</strong> or export the entire contents of the SDBM for your own use.</li>
+            <li><strong>Email or Download Search Results</strong> or export the entire contents of the SDBM for your own use under a <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 Unported License</a></li>
         </ul>
     </div>
     <div class="col-sm-6">
@@ -48,6 +53,7 @@
                     <li>Enhanced Provenance data</li>
                     <li>Create Groups to collaborate with other users</li>
                     <li>Communicate with other users via private messages or public forum</li>
+                    <li>Browse the<a href="/dericci_records"> Seymour de Ricci Bibliotheca Britannica Manuscripta Digitized Archive</a></li>
                 </ul>
             </div>
         </div>
@@ -84,4 +90,22 @@
             </div>
         </div>
     </div>
+</div>
+
+
+<div class="modal fade" id="Welcome">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header text-center">
+            <span class="h3">Recent Changes to the New SDBM</span>
+        </div>
+        <div class="modal-body">
+            <p>
+                As of April 1, 2017, thanks to input from the user community, we have made a number of changes to the design and functionality of the database.  We hope this improves your experience.  If you have questions or comments on the new changes, please post in the <a href="/forum" target="_blank">community forum</a>!  We appreciate your feedback and support!
+            </p>
+            <p>Thanks,</p>
+            <p class="text-muted"> - The SDBM Team</p>
+        </div>
+    </div>
+</div>
 </div>
