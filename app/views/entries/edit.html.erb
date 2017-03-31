@@ -422,8 +422,11 @@ label.col-sm-2-and-half {
               </span>
             </span>
 
-            <span class="control-label"><span sdbm-tooltip="entry_common_title">Standard Title</span>
-              <input input maxlength="255" id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
+            <span class="control-label expandable">
+              <span class="expandable-table">
+                <span sdbm-tooltip="entry_common_title">Standard Title</span>
+                <input input maxlength="255" id="common_title_{{ $index }}" type="text" ng-blur="reduce($event)" ng-focus="expand($event)" class="form-control" data-ng-model="entry_title.common_title">
+              </span>
             </span>
           </div>
       </div>
