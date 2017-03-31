@@ -1628,6 +1628,24 @@ so that gray backdrop shvows up correctly */
 }
 /* RESPONSIVE */
 @media (max-width: 767px) {
+  .search-block .form-control {
+    width: 100% !important;
+  }
+  .search-block .search-remove {
+    height: 100%;
+    padding: 0px 10px;
+  }
+  .panel-search {
+    width: calc(100% + 80px);
+    margin: 0px -40px;
+    padding: 5px 0px;
+  }
+  .panel-search .panel-body {
+    padding: 0px;
+  }
+  .panel-search .col-xs-1 {
+    margin-left: -17px;
+  }
   .navbar-form {
     margin: 0px 8px;
     border: none;
@@ -1902,6 +1920,7 @@ so that gray backdrop shvows up correctly */
   z-index: 100;
   height: calc(100vh - 50px);
   white-space: normal;
+  border-top: 2px solid white;
 }
 #control-panel .control-label {
   color: white;
