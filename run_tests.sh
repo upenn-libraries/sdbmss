@@ -9,7 +9,7 @@ export SOLR_URL="http://127.0.0.1:8982/solr/test"
 
 bundle exec god -c sdbmss_test.god -l log/god_test.log
 
-bundle exec rspec $@
+bundle exec rspec $@ --profile
 
 bundle exec god stop
 bundle exec god terminate

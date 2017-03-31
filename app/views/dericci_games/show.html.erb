@@ -1,0 +1,134 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "extras" %>
+  <%= javascript_include_tag "extras" %>
+  <style>
+    .game-nav > li > a {
+      padding: 5px 15px;
+      color: #333;
+    }
+    .game-nav > li.active > a, .game-nav > li.active > a:focus, .game-nav > li.active > a:active, .game-nav > li.active > a:hover {
+      border-top-right-radius: 0px;
+      border-bottom-right-radius: 0px;
+      box-shadow: 2px 1px 4px #393c3e inset;
+      background: #525659;
+    }
+    .game-nav {
+      padding-left: 15px;
+    }
+    .progress {
+      height: 34px;
+      margin-bottom: 0px;
+    }
+    .progress-bar {
+      line-height: 34px;
+    }
+    .glyphicon-blank {
+      width: 14px;
+    }
+    .game-linked {
+      color: #74c274 !important;
+    }
+    .game-skipped {
+      color: #f0ad4e !important;
+    }
+    .my-btn-group {
+      display: table;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .my-btn-group .btn {
+      float: none;
+      display: table-cell;
+    }
+  </style>
+<% end %>
+<% content_for :breadcrumbs do %>
+  <%= render partial: "breadcrumbs" %>
+<% end %>
+<input type="hidden" class="hidden" id="game_id" value="<%= @game.id %>">
+<div data-ng-controller="DericciGameCtrl" data-ng-cloak>
+  <div class="row" style="margin-bottom: 10px;">
+    <div class="col-sm-11">
+      <div class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" style="width: {{ progress.complete == 100 ? 95 : progress.complete || 3 }}%">
+          {{ progress.complete }}% Complete
+        </div>
+        <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" style="width: {{ progress.skipped == 100 ? 97 : progress.skipped || 3 }}%">
+          {{ progress.skipped }}% Skipped
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-1 text-right"><a href="" class="btn btn-primary" ng-class="{ 'disabled': progress.complete + progress.skipped < 100 }" ng-click="save()">Submit</a></div>
+  </div>
+  <div class="row">
+    <ul class="game-nav nav nav-pills nav-stacked col-sm-4" style="padding-right: 0px;">
+      <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }">
+        <a href="" class="one-line" ng-click="selectRecord(record)" ng-class="{ 'game-linked': isLinked(record), 'game-skipped': record.skipped }">
+          <span class="glyphicon glyphicon-blank" ng-class="{ 'glyphicon-check': isLinked(record), 'glyphicon-unchecked': record.skipped }"></span>
+          {{ record.name }}
+        </a>
+      </li>
+    </ul>
+    <div class="col-sm-8" style="padding-left: 0px;">
+      <iframe id="current-card" ng-src="{{ current_url }}" frameborder="0" style="height: 500px; width: 100%; background: #525659;">Hello!</iframe>
+      <div class="row">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6 text-center">          
+          <div class="my-btn-group btn-group">
+            <a href="" style="width: 1px;" class="btn btn-default" ng-click="prev()"><span class="glyphicon glyphicon-chevron-left"></span></a>
+            <a href="" class="btn btn-warning" ng-class="{'disabled' : current_record && isLinked(current_record) }" ng-click="skip(current_record)">Skip</a>
+            <a href="" class="btn btn-default" ng-click="findName(current_record);">Find Name</a>
+            <a href="" style="width: 1px;" class="btn btn-default" ng-click="next()"><span class="glyphicon glyphicon-chevron-right"></span></a>
+          </div>
+        </div>
+        <div class="col-sm-3">
+        </div>
+        <div class="col-sm-12">
+          <h4 class="h4"><a href="{{ current_url }}" target="_blank">{{ current_record.name }}</a></h4>
+          <dl class="document-metadata dl-horizontal dl-invert">
+            <dt>Name</dt>
+            <dd>{{ current_record.name }}</dd>
+          
+            <dt>Dates</dt>
+            <dd>{{ current_record.dates || "Unknown" }}</dd>
+
+            <dt>Place</dt>
+            <dd>{{ current_record.place || "Unknown" }}</dd>
+       
+            <dt>PDF</dt>
+            <dd><a href="{{ current_record.url }}" target="_blank">Hosted at the UK Senate House Archives</a></dd>
+
+            <dt>Number of Cards</dt>
+            <dd>{{ current_record.cards || "Unknown" }}</dd>
+            
+            <dt>File Size</dt>
+            <dd>{{ current_record.size || "Unknown" }}</dd>
+            
+            <dt>Other Info</dt>
+            <dd>{{ current_record.other_info || "None" }}</dd>
+
+            <dt>Senate House ID#</dt>
+            <dd>{{ current_record.senate_house || "Unknown" }}</dd>
+          </dl>
+        </div>
+      </div>
+      <div class="row" ng-if="current_record" ng-repeat="dericci_link in actualLinks(current_record) | filter: activeRecords" >
+        <div class="col-sm-12">
+          <div class="input-group" style="margin-bottom: 5px;">
+            <textarea class="form-control" ng-model="dericci_link.other_info" placeholder="Add more information here, if needed..."></textarea>
+            <span class="input-group-addon">
+              {{ dericci_link.name }} <br>
+              <a target="_blank" href="/names/{{ dericci_link.name_id }}" class="">
+                SDBM_NAME_{{ dericci_link.name_id }}
+              </a>
+              <a href="" class="" ng-click="removeLink(current_record, dericci_link)">
+                <span class="glyphicon glyphicon-remove-circle"></span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+</div>
+<%= render "select_name_authority" %>

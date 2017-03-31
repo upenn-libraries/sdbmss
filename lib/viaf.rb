@@ -75,6 +75,7 @@ module VIAF
     Net::HTTP.get_response(VIAF::Constants::HOST, path)
   end
 
+  # we use sru_search, not autosuggest
   def self.autosuggest(query, callback: nil)
     path = "/viaf/AutoSuggest?query=#{CGI::escape(query)}"
     if !callback.nil?

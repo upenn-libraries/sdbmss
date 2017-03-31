@@ -17,16 +17,16 @@
       <meta http-equiv="cleartype" content="on">
     <![endif]-->
     <link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
-<link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css?family=Sarala" rel="stylesheet">
-    
+    <link href='https://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Sarala" rel="stylesheet">
     <title><%= render_page_title %></title>
-    <%= opensearch_description_tag application_name, opensearch_catalog_url(:format => 'xml') %>
+    <%= opensearch_description_tag application_name, main_app.opensearch_catalog_url(:format => 'xml') %>
     <%= favicon_link_tag 'favicon.ico' %>
     <%= stylesheet_link_tag "application", media: "all" %>
-    <%= stylesheet_link_tag "extras" %>
+    <%# stylesheet_link_tag "extras" %>
     <%= javascript_include_tag "application" %>
-    <%= javascript_include_tag "extras" %>
+    <%# javascript_include_tag "extras" %>
     <% if Rails.env.development? || Rails.env.staging? %>
       <%= javascript_include_tag "development" %>
     <% end %>
@@ -86,15 +86,20 @@
     <![endif]-->
 
   </head>
-  <body data-spy="scroll" data-target="#entry_breadcrumbs" data-offset="50" class="<%= render_body_class %>">
+  <body data-offset="50" class="<%= render_body_class %>">
   <!-- control panel - or 'login' panel, when logged out -->  
-  <%= render partial: 'shared/control_panel' %>
+  <%= render :partial => 'shared/header_navbar' %>
 
+  <%= render partial: 'shared/control_panel' %>
   <!-- -->
   <div class="main-content-wrapper">
     <div class="main-content">
-      <%= render :partial => 'shared/header_navbar' %>
-      <%= render :partial => 'shared/search_navbar' %>
+
+      <% if request.url != main_app.root_url%>
+        <%= render :partial => 'shared/search_navbar' %>
+      <% else %>
+        <div style="padding-top: 20px;"></div>
+      <% end %>
 
       <%# this is from blacklight %>
       <%= render partial: 'shared/ajax_modal' %>
@@ -110,7 +115,7 @@
         <% end %>
         
         <!-- not sure why, but setting overflow: hidden seems to solve some of the scroll-bar issues I was having... -->
-        <div class="row" style="overflow: hidden;">
+        <div class="row">
           <div class="col-sm-12">
             <%= yield %>
           </div>
@@ -122,12 +127,6 @@
       <%= render :partial => 'shared/footer' %>
     </div>
   </div>
-  <%# if request.path != "/bookmarks" && current_user %>
-    <!--<div class="sidebar bg-primary bookmarks-collapse collapse"  ng-controller="ManageBookmarks">
-      <%#= render partial: "bookmarks/navbar" %>
-        <%#= render partial: "/shared/my_bookmarks" %>
-    </div>-->
-  <%# end %>
   <div class="alerts-absolute"></div>
   </body>
 </html>

@@ -11,18 +11,21 @@ describe "Linking Tool", :js => true do
     # instead of creating another set of test data. The consequence is
     # that these tests don't exercise everything as thoroughly as they
     # should, but they're probably good enough.
-    SDBMSS::ReferenceData.create_all
+#    SDBMSS::ReferenceData.create_all
 
     SDBMSS::Util.wait_for_solr_to_be_current
   end
 
   before :all do
+    @user = User.where(role: "admin").first
+=begin    
     User.where(username: 'testuser').delete_all
     @user = User.create!(
       email: 'testuser@test.com',
       username: 'testuser',
       password: 'somethingunguessable'
     )
+=end    
   end
 
   before :each do
@@ -70,7 +73,8 @@ describe "Linking Tool", :js => true do
 
     click_button "Create Manuscript Record"
 
-    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+    expect(page).to have_content("Manage Manuscripts")    
+    #expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     expect(Manuscript.count).to eq(count + 1)
 
@@ -91,7 +95,8 @@ describe "Linking Tool", :js => true do
 
     click_button "Create Manuscript Record"
 
-    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+    expect(page).to have_content("Manage Manuscripts")    
+    #expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     expect(Manuscript.count).to eq(count + 1)
 
@@ -102,14 +107,26 @@ describe "Linking Tool", :js => true do
     expect(entry_ids.include?(second_entry_id)).to be_truthy
   end
 
+  it "should show an EntryManuscript for the last created link" do
+    visit entry_manuscripts_path
+
+    expect(page).to have_content(Manuscript.last.public_id)
+    expect(page).to have_content(Entry.find(3).public_id)
+
+    expect(page).to have_content(EntryManuscript.last.id)
+  end
+
   it "should link an Entry to an existing Manuscript" do
     entry = Entry.find(2)
     visit linking_tool_by_entry_path id: entry.id
 
+    expect(page).to have_content("Add SDBM")
     # use manuscript created in previous test
     first(".link-to-manuscript-link", visible: true).trigger('click')
 
-    expect(find(".modal-title", visible: true).text.include?("Successfully Linked")).to be_truthy
+    expect(page).not_to have_content("Manage Entries")
+    expect(page).to have_content("Manage Manuscripts")    
+#    expect(find(".modal-title", visible: true).text.include?("Successfully Linked")).to be_truthy
 
     entry.reload
 
@@ -127,7 +144,8 @@ describe "Linking Tool", :js => true do
 
     find("#persist-entries-manuscript-link").trigger('click')
 
-    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+    expect(page).not_to have_content("Add SDBM_#{entry_id}")    
+#    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     entries = Manuscript.last.entries
     entry_ids = entries.map(&:id)
@@ -146,9 +164,8 @@ describe "Linking Tool", :js => true do
 
     find("#persist-entries-manuscript-link").trigger('click')
 
-    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
-
-    manuscript.reload
+    sleep 2
+    expect(page).to have_content("SDBM_MS")
 
     em = manuscript.entry_manuscripts.select { |em| em.entry_id == entry_id }.first
     expect(em.relation_type).to eq('possible')
@@ -165,7 +182,8 @@ describe "Linking Tool", :js => true do
 
     find("#persist-entries-manuscript-link").trigger('click')
 
-    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+    expect(page).to have_content("Add SDBM_#{entry_id}")    
+#    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     manuscript.reload
 
@@ -180,28 +198,30 @@ describe "Linking Tool", :js => true do
     # remove all except the last entry
 
     entryCount = manuscript.entries.length
-    (entryCount - 2).times do |i|
+    (entryCount - 1).times do |i|
       entry_id = manuscript.entries[i].id
       first("input[name='entry_id_#{entry_id}'][value='unlink']").trigger('click')
     end
-    sleep 1
     
     find_by_id("persist-entries-manuscript-link").trigger("click")
     #expect(find("div#modal.modal.fade.in")).to have_content("hasdfa")
     #click_button "Save changes"
-    expect(page).to have_content("Success")
-    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+    #expect(page).to have_content("Success")
+    expect(page).to have_content("SDBM_MS")    
+#    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
     manuscript.reload
 
     # remove the last entry
 
+    expect(manuscript.entries.count).to eq(1)
     entry = manuscript.entries.first
     entry_id = entry.id
 
     first("input[name='entry_id_#{entry_id}'][value='unlink']").trigger('click')
     find_by_id("persist-entries-manuscript-link").trigger("click")
     #click_button "Save changes"
-    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
+    expect(page).to have_content("SDBM_MS")    
+#    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
     manuscript.reload
 

@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-sm-12">
             <div ng-show="!source.source_type.name">
-                <p>A source is the origin of information for an entry. Sources can include auction and sale catalogs, collection catalogues, published or unpublished inventories, censuses, an individual (you or someone else) who has made direct observations about a manuscript(s), etc. From the dropdown menu, select one of six Source Types (see definitions below) that best describes your source.</p>
+                <p>A <b>Source</b> is the origin of information for an <b>Entry</b>. <b>Sources</b> can include auction and sale catalogs, collection catalogues, published or unpublished inventories, censuses, an individual (you or someone else) who has made direct observations about a manuscript(s), etc. From the dropdown menu, select one of six <b>Source Types</b> (see definitions below) that best describes your <b>Source</b>.</p>
             </div>
             <div ng-show="source.source_type.name">
                 <p ng-show="source.source_type.name == 'auction_catalog'">Use this type for auction or sale catalogs for a specific sale event. For online-only auctions (such as eBay) or sale events, use the SOURCE TYPE: Online-only Auction or Bookseller Website.</p>
@@ -39,7 +39,7 @@
         <div class="col-sm-12">
             <div ng-show="!showFields()">
                 
-                <p><b>Personal Observation</b>:  Use this type when recording data acquired via direct personal observation or indirect knowledge of a manuscript. It is mandatory that you understand the SDBM data model before creating a Personal Observation. Please review the instructional content, located within the <b><span class="glyphicon glyphicon-question-sign"></span> Help</b> menu at the top of the screen, before creating your entry.</p>
+                <p><b>Personal Observation</b>:  Use this type when recording data acquired via direct personal observation or indirect knowledge of a manuscript. It is mandatory that you understand the SDBM data model before creating a Personal Observation. Please review the instructional content, located within the <b><span class="glyphicon glyphicon-question-sign"></span> Help</b> menu at the top of the screen, before creating your <b>Entry</b>.</p>
 
                 <p><b>Auction/Dealer Catalog</b>: Use for auction or sale catalogs for a specific sale event. For online-only auctions (such as eBay) or sale events, use the SOURCE TYPE: Online-only Auction or Bookseller Website.</p>
 
@@ -104,14 +104,12 @@
                           </a>
                         </div>
                         <div class="row">
-                            <label class="col-sm-4 control-label">
-                                <span>Authority Name</span>
-                            </label>
+                            <div class="col-sm-4 label.control-label">Authority Name</div>
                             <div class="col-sm-8">                            
                                 <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find or Create Authority Name</a>
                                 <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                     <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
-                                    {{ source_agent.agent.name }}
+                                    <a target="_blank" href='/names/{{ source_agent.agent.id }}'>{{ source_agent.agent.name }}</a>
                                 </div>
                             </div>
                         </div>

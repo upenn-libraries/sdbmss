@@ -3,13 +3,7 @@ require "rails_helper"
 describe "User Notifications", :js => true do
   
   before :all do
-    User.where(username: 'testuser').delete_all
-    @user = User.create!(
-      email: 'testuser@test.com',
-      username: 'testuser',
-      password: 'somethingunguessable',
-      role: 'admin'
-    )
+    @user = User.where(role: "admin").first
     @user2 = User.create!(
       email: 'other@test.com',
       username: 'other',

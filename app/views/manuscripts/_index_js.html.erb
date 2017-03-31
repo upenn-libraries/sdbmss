@@ -38,7 +38,7 @@
                 orderable: false,
                 render: function (data, type, full, meta) {
                     var result = '<span class="btn-group options-btn-group">';
-                    //result += '<a onclick="addBookmark(' + data + ', \'Manuscript\');" class="btn btn-xs btn-default control-bookmark bookmark-link" in_bookmarks="/manuscripts/' + data + '"><span class="glyphicon glyphicon-bookmark"></span></a>';
+                    result += full[manageManuscripts.dataTable.getColumnIndex("BookmarkWatch")];
                     //result += '<a class="btn btn-xs btn-success" href="/' + manageManuscripts.options.resourceName + '/' + data + '/edit/">Edit</a>';
                     //result += '<a class="btn btn-xs btn-danger delete-link" href="/' + manageManuscripts.options.resourceName + '/' + data + '.json">Delete</a>';
                     result += '<a class="btn btn-xs btn-info linking-tool-link" target="_blank" href="/linkingtool/manuscript/' + data + '">Linking Tool</a></span>';
@@ -75,11 +75,11 @@
                 dbSortField: 'reviewed'
             },
             {
-                title: 'Created By',
+                title: 'Added By',
                 dbSortField: 'created_by'
             },
             {
-                title: 'Created On',
+                title: 'Added On',
                 dbSortField: 'created_at',
             },
             {
@@ -89,6 +89,11 @@
             {
                 title: 'Updated On',
                 dbSortField: 'updated_at',
+            },
+            {
+                title: "BookmarkWatch",
+                visible: false,
+                searchable: false
             }
         ];
      };
@@ -106,7 +111,8 @@
              result.created_by || "",
              result.created_at || "",
              result.updated_by || "",
-             result.updated_at || ""
+             result.updated_at || "",
+             result.bookmarkwatch
          ];
      };
 
@@ -120,6 +126,10 @@
          resourceNamePlural: "<%= resource_name.pluralize %>",
          showOnlyRecordsCreatedByUser: onlyMine,
          searchNameField: "name"
+     });
+
+     $('#search_results').on('draw.dt', function () {
+        bindRemoteAjaxCallback();
      });
 
  });

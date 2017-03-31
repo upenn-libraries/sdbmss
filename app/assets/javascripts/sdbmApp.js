@@ -107,10 +107,14 @@ var BOOKMARK_SCOPE;
                 // TODO: deal with nesting?
                 for(var key in obj) {
                     if(key == "order") {
-                      // order should not be considered 'non-blank'
+                      // ignore order
+                    } else if (key == "$$hashKey") {
+                      // and this
                     }
                     else if(obj[key]) {
-                      blank = isBlankThing(obj[key]); 
+                      blank = isBlankThing(obj[key]);
+                      // one blank field shouldn't override earlier non-blank fields...
+                      if (blank == false) return false;
                     }
                 }
             }
@@ -128,6 +132,7 @@ var BOOKMARK_SCOPE;
                (Array.isArray(obj) && obj.length === 0)) {
                 blank = true;
             } else if (typeof(obj) == 'string' || Array.isArray(obj)) {
+                //console.log('array or string', obj);
                 // strings and arrays (non-empty) are non-blank
             } else if (typeof(obj) === 'number') {
                 // noop: treat all numbers as non-blank
@@ -328,6 +333,127 @@ var BOOKMARK_SCOPE;
                 window.location = "/dashboard";
             }
         };
+    });
+
+    // anchor
+    sdbmApp.controller("DericciGameCtrl", function ($scope, $http, $modal, $sce) {
+      EntryScope = $scope;
+      $scope.records = [];
+      $scope.current_record = undefined;
+      $scope.current_url = "";
+      $scope.current_index = 0;
+      $scope.saving = false;
+      $scope.gameID = $("#game_id").val();
+      $scope.progress = {complete: 0, skipped: 0};
+      $http.get("/dericci_games/" + $scope.gameID + ".json", {
+      }).then(function (response) {
+//        console.log(response);
+        $scope.records = response.data.dericci_records;
+        $scope.current_url = $sce.trustAsResourceUrl($scope.records[0].url);
+        $scope.current_record = $scope.records[0];
+        $scope.setProgress();
+        $scope.initial = $scope.progress.complete;
+      }, function(response) {
+          alert("An error occurred when initializing the game.");
+      });
+      $scope.selectRecord = function (record) {
+        $scope.current_record = record;
+        $scope.current_index = $scope.records.indexOf(record);
+        $scope.current_url = $sce.trustAsResourceUrl($scope.current_record.url);
+      };
+      $scope.findName = function (model) {
+        $scope.name = {};
+        var modal = $modal.open({
+          templateUrl: "selectNameAuthority.html",
+          controller: "SelectNameAuthorityCtrl",
+          resolve: {
+            recordType: function () { return "names"; },
+            model: function () { return $scope.name; },
+            type: function () { return "is_author"; },
+            base: function () { return model.name; }
+          },
+          size: 'lg'
+        });
+        modal.result.then( function (results) {
+          model.skipped = false;
+          if ($scope.current_record.dericci_links.filter(function (dl) { return dl.name_id == $scope.name.id; }).length <= 0) {
+            $scope.current_record.dericci_links.push({name_id: $scope.name.id, name: $scope.name.name});
+            $scope.setProgress();
+          } else {
+            alert("You have already selected that name!");
+          }
+        });
+      };
+      $scope.isLinked = function (record) {
+        return record && $scope.actualLinks(record).length > 0;
+      };
+      $scope.actualLinks = function (record) {
+        return record && record.dericci_links.filter(function (l) { return l.name_id; });
+      };
+      $scope.skip = function (model) {
+        if ($scope.actualLinks(model) <= 0) {
+          model.skipped = true;
+          $scope.next();
+          $scope.setProgress();
+        }
+      };
+      $scope.next = function () {
+        var i = ($scope.current_index + 1) % $scope.records.length;
+        $scope.selectRecord($scope.records[i]);
+      };
+      $scope.prev = function () {
+        var i = ($scope.records.length + $scope.current_index - 1) % $scope.records.length;
+        $scope.selectRecord($scope.records[i]);
+      };
+      $scope.removeLink = function (record, link) {
+        var i = record.dericci_links.indexOf(link);
+        if (i != -1) {
+          // existing!
+          if (record.dericci_links[i].id) {
+            record.dericci_links[i]._destroy = true;
+          } else {
+            record.dericci_links.splice(i, 1);
+          }
+          $scope.setProgress();
+        }
+      };
+      $scope.setProgress = function () {
+        $scope.progress = {
+          complete: Math.floor(100 * ($scope.records.filter( function (r) { return $scope.isLinked(r); }).length / 20)),
+          skipped: Math.floor(100 * ($scope.records.filter( function (r) { return r.skipped; }).length / 20))
+        };
+      };
+      $scope.activeRecords = function(element) {
+        return !element._destroy;
+      };
+
+      $scope.save = function () {
+        var records = angular.copy($scope.records).filter( function (r) { return r.dericci_links.length > 0; }).map( function (r) {
+          r.dericci_links_attributes = r.dericci_links;
+          return r;
+        });
+        $http.put("/dericci_games/" + $scope.gameID + ".json", { dericci_game: {id: $scope.gameId, skipped: $scope.progress.skipped, completed: $scope.progress.complete, dericci_records_attributes: records} }).then(function (response) {
+          if (response.data.message == "Success!") {
+            $scope.saving = true;
+            window.location = "/dericci_games/";
+          } else {
+            //console.log(response);
+          }
+        });
+      };
+
+      $(window).bind('beforeunload', function() {
+          if (!$scope.saving && $scope.progress.complete != $scope.initial) {
+              /*
+              console.log("originalEntryViewModel=");
+              console.log(angular.toJson($scope.originalEntryViewModel));
+              console.log("current entry=");
+              console.log(angular.toJson($scope.entry));
+              */
+            return "You have unsubmitted changes";
+          }
+          return;
+      });
     });
 
     /* Controller for selecting a source*/
@@ -587,6 +713,14 @@ var BOOKMARK_SCOPE;
 
         EntryScope = $scope;
 
+        $scope.expand = function (e) {
+          $(e.currentTarget).parent().parent('.expandable').addClass('expanded');
+        }
+
+        $scope.reduce = function (e) {
+          $(e.currentTarget).parent().parent('.expandable').removeClass('expanded')
+        }
+
         $scope.selectSourceModal = function (model, type) {
           if ($scope.mergeEdit !== false) {
             var modal = $modal.open({
@@ -603,7 +737,7 @@ var BOOKMARK_SCOPE;
             modal.result.then(function () {
               $scope.populateEntryViewModel($scope.entry);
             }, function () {
-              console.log('dismissed');
+              //console.log('dismissed');
             });
           }
         }
@@ -870,7 +1004,7 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.removeRecord = function (anArray, record) {
-          if (sdbmutil.isBlankThing(record) || window.confirm("Are you sure you want to remove this field and its contents?")) {
+          var doremove = function (anArray, record) {
             var i;
             for (i = 0; i < anArray.length; i++) {
                 if (anArray[i] === record) {
@@ -886,10 +1020,18 @@ var BOOKMARK_SCOPE;
             if($.grep(anArray, $scope.activeRecords).length === 0) {
                 //anArray.push({});
             }
-
-            setTimeout( function () {            
-              $scope.affixer();
-            }, 2000);
+          };
+          if (sdbmutil.isBlankThing(record)) doremove(anArray, record);
+          else {            
+            dataConfirmModal.confirm({
+              title: 'Confirm',
+              text: 'Are you sure you want to remove this field and its contents?',
+              commit: 'Yes',
+              cancel: 'Cancel',
+              zIindex: 10099,
+              onConfirm: function() { doremove(anArray, record); $scope.$apply(); },
+              onCancel:  function() { }
+            });
           }
         };
 
@@ -1019,13 +1161,6 @@ var BOOKMARK_SCOPE;
             // save copy at this point, so we have something to
             // compare to, when navigating away from page
             $scope.originalEntryViewModel = angular.copy(entry);
-            //$scope.affixer();
-            //
-            //
-            //
-            //setTimeout( function () {
-            //  $scope.affixer();
-            //}, 2000);
         };
 
         $scope.postEntrySave = function(entry) {
@@ -1122,11 +1257,13 @@ var BOOKMARK_SCOPE;
                 if (prov.dates) {
                   for (var j = 0; j < prov.dates.length; j++) {
                     var date = prov.dates[j];
+                    //console.log(date);
                     if (date.type == "Start") prov.start_date = date.date;
                     else if (date.type == "End") prov.end_date = date.date;
                     else if (date.type == "Associated") prov.associated_date += date.date + "\t";
                   }
                 }
+                entryToSave.provenance[i].dates = [];
               }
             }
 
@@ -1242,10 +1379,32 @@ var BOOKMARK_SCOPE;
             }
 
           });
+
+          if (entry2.provenance) {
+            for (var i = 0; i < entry2.provenance.length; i++) {
+              var prov = entry2.provenance[i];
+              prov.start_date = "", prov.end_date = "", prov.associated_date = "";
+              if (prov.dates) {
+                for (var j = 0; j < prov.dates.length; j++) {
+                  var date = prov.dates[j];
+                  if (date.type == "Start") prov.start_date = date.date;
+                  else if (date.type == "End") prov.end_date = date.date;
+                  else if (date.type == "Associated") prov.associated_date += date.date + "\t";
+                }
+              }
+              entry2.provenance[i].dates = [];
+              if (entry2.provenance[i].associated_date.length <= 0) {
+                delete entry2.provenance[i].associated_date;
+              }
+            }
+          }
+
+//          console.log(angular.toJson(entry1), angular.toJson(entry2));
           // note: changing a numerical field, then restoring the original and saving will still trigger 'unsaved' because one is a string and the other is a number (in the JSON)
           return angular.toJson(entry1) !== angular.toJson(entry2);
         }
 
+        // unfortunately, this can't be reworked with a modal, because browser/javascript doesn't let you
         $(window).bind('beforeunload', function() {
             if ($scope.warnWhenLeavingPage && $scope.checkForChanges($scope.originalEntryViewModel, $scope.entry)) {
                 /*
@@ -1254,7 +1413,7 @@ var BOOKMARK_SCOPE;
                 console.log("current entry=");
                 console.log(angular.toJson($scope.entry));
                 */
-                return "You have unsaved changes";
+              return "You have unsaved changes";
             }
             return;
         });
@@ -1708,15 +1867,16 @@ var BOOKMARK_SCOPE;
                             op: "AND",
                             //approved: "*",
                             source: "SDBM_SOURCE_" + scope.entry.source.id,
-                            catalog_or_lot_number: cat_lot_no
+                            catalog_or_lot_number_search: cat_lot_no
                         },
                         success: function(data, textStatus, jqXHR) {
-                            var results = data.data || [];
+                            var results = data.results || [];
+                            console.log(results);
                             if(results.length > 0) {
-                                var msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='http://localhost:3000/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
+                                var msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number_search%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
                                 var editMode = !!scope.entry.id;
                                 if (editMode) {
-                                    msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='http://localhost:3000/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
+                                    msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number_search%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
                                     results.forEach(function (result) {
                                         if(result.id == scope.entry.id) {
                                             // search returned the entry we're editing, so don't warn
@@ -1880,7 +2040,7 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.removeRecord = function (anArray, record) {
-          if (sdbmutil.isBlankThing(record) || window.confirm("Are you sure you want to remove this field?")) {
+          var doremove = function (anArray, record) {
             var i;
             for (i = 0; i < anArray.length; i++) {
                 if (anArray[i] === record) {
@@ -1892,6 +2052,18 @@ var BOOKMARK_SCOPE;
                     break;
                 }
             }
+          };
+          if (sdbmutil.isBlankThing(record)) doremove(anArray, record);
+          else {            
+            dataConfirmModal.confirm({
+              title: 'Confirm',
+              text: 'Are you sure you want to remove this field and its contents?',
+              commit: 'Yes',
+              cancel: 'Cancel',
+              zIindex: 10099,
+              onConfirm: function() { doremove(anArray, record); $scope.$apply(); },
+              onCancel:  function() { }
+            });
           }
         };
 
@@ -1975,7 +2147,8 @@ var BOOKMARK_SCOPE;
               sdbmutil.redirectToEntryCreatePage(source.id);
               return;
             }
-
+            window.location = "/sources/" + $scope.source.id;
+            /*
             var modalInstance = $modal.open({
                 templateUrl: 'postSourceSave.html',
                 backdrop: 'static',
@@ -1987,7 +2160,7 @@ var BOOKMARK_SCOPE;
               }, function() {
                   // runs when promise is rejected (modal is dismissed)
                   sdbmutil.redirectToSourceEditPage(source.id);
-            });
+            });*/
         };
 
         $scope.similarSourcesModal = null;
@@ -2415,6 +2588,7 @@ var BOOKMARK_SCOPE;
       }
     }
     $scope.addtag = function (bookmark, tag) {
+      if (tag.length <= 0) return;
       if (bookmark.tags.indexOf(tag) == -1) {
         bookmark.tags.push(tag);
         bookmark.newtag = "";
@@ -2594,62 +2768,6 @@ var BOOKMARK_SCOPE;
 
 }());
 //function toggleSidebar() 
-
-function exportCSV(url) {
-  $.get(url).done(function (e) {
-      if (e.error) {
-          if (e.error == "at limit") {
-              addNotification("You have reached your export limit.  Download or delete some of your exports <a href='/downloads/'>here</a>.", "danger");
-          }
-          return;
-      }
-
-      var myDownloadComplete = false;
-      $('#user-nav a').css({color: 'green'});
-      addNotification("CSV Export is being prepared...", "info");
-      var download = JSON.parse(e);
-      var url = "/downloads/" + download.id;
-      var count = 0;
-      var interval = setInterval( function () {
-          $.ajax({url: url, data: {ping: true}}).done( function (r) {
-              //window.location = url;
-              if (r != "in progress" && !myDownloadComplete) {
-                  addNotification(download.filename + " is ready - <a href='" + url + "'>download file</a>", "success", true);
-                  $('#user-nav a').css({color: ''});
-                  $('#downloads-count').text(download.count);
-                  window.clearInterval(interval);
-                  myDownloadComplete = true;
-              } else {
-                  count += 1;
-              }
-
-              if (count > 1000) window.clearInterval(interval);                    
-          }).error( function (r) {
-              console.log('error', r);
-              window.clearInterval(interval);
-          });
-      }, 1000);
-  }).error( function (e) {
-      console.log('error', e);
-  })
-}
-
-function addNotification (message, type, permanent) {
-  var notification = $('<div><a class="close" data-dismiss="alert" aria-label="close">&times;</a>' + message + "</div>");
-  notification.addClass('alert').addClass('alert-' + type).addClass('alert-absolute');
-  
-  notification.hide();
-  $('.alerts-absolute').append(notification);
-  notification.fadeIn();
-  
-  if (!permanent) {
-    setTimeout(function () {
-      notification.fadeOut('slow', function () {
-        notification.remove();
-      });
-    }, 10000)
-  } // fade out after ten seconds;
-}
 
 // this works!  maybe not a good idea?
 function addBookmark(id, type) {

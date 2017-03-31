@@ -21,8 +21,8 @@
 
       <dt>Source</dt>
       <dd>
-            <%= link_to entry.source.display_value, source_path(entry.source) %> (<%= entry.source.source_type.display_name %>)
-        </dd>
+          <%= link_to entry.source.display_value, source_path(entry.source) %> (<%= entry.source.source_type.display_name %>)
+      </dd>
 
         <% if entry.catalog_or_lot_number.present? %>
       <dt>Cat./Lot #</dt>
@@ -133,7 +133,7 @@
         <% end %>
     </dl>
     <div class="text-center text-muted">
-      <span class="glyphicon glyphicon-time"></span> Created At <%= entry.created_at.to_formatted_s(:long) %>
+      <span class="glyphicon glyphicon-time"></span> Added On <%= entry.created_at.to_formatted_s(:long) %>
     </div>
     </div>
     <% end %>

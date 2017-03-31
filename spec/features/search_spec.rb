@@ -13,15 +13,11 @@ describe "Blacklight Search", :js => true do
     # that these tests don't exercise everything as thoroughly as they
     # should, but they're probably good enough.
 
-    SDBMSS::ReferenceData.create_all
+#    SDBMSS::ReferenceData.create_all
 
     SDBMSS::Util.wait_for_solr_to_be_current
 
-    @user = User.create!(
-      email: 'search@search.com',
-      username: 'search',
-      password: 'somethingunguessable',
-    )
+    @user = User.where(role: "admin").first
   end
 
   # Returns a record from Hill catalog
@@ -36,6 +32,22 @@ describe "Blacklight Search", :js => true do
   it "should load main landing page" do
     visit root_path
     expect(page).to have_selector("input#q")
+  end
+
+  it "should show my public entries" do
+    visit root_path
+    fill_in 'user_login', :with => @user.username
+    fill_in 'user_password', :with => 'somethingunguessable'
+    click_button 'Log in'
+    expect(page).to have_content 'Signed in successfully'
+
+    e = Entry.create!(source: Source.last, created_by: @user)
+    e.index!
+
+    visit dashboard_contributions_path
+    click_link "See Your Public Entries"
+
+    expect(page).to have_content(e.public_id)
   end
 
   it "should display all entries" do
@@ -165,12 +177,6 @@ describe "Blacklight Search", :js => true do
     name = Name.last
     visit name_path(name)
     expect(page).to have_xpath("//dd[contains(.,'#{name.public_id}')]")
-  end
-
-  it "should load show Profile page" do
-    user = User.last
-    visit profile_path(user.username)
-    expect(page).to have_content(user.username)
   end
 
   it "should load show Manuscript page" do

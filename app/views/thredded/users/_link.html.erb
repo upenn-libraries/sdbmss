@@ -1,0 +1,9 @@
+<% if user %>
+  <% if !user.thredded_anonymous? %>
+<%= render partial: "shared/username_with_profile_link", locals: { user: user } %>
+  <% else %>
+    <%= user.thredded_display_name %>
+  <% end %>
+<% else %>
+<em><%= t 'thredded.null_user_name' %></em>
+<% end %>

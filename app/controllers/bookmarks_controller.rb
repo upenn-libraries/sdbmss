@@ -86,14 +86,6 @@ class BookmarksController < ApplicationController
     #render partial: 'shared/my_bookmarks', locals: {bookmarks: @bookmarks_sorted, can_merge: can_merge, can_link: can_link}
   end
 
-  def show
-    if params[:id] && Bookmark.exists?(params[:id].to_i)
-      @bookmark = Bookmark.find(params[:id])
-      @name = @bookmark.document_type.to_s
-      render layout: false
-    end
-  end
-
   def create
     if Bookmark.where({user: current_user, document_id: params[:document_id], document_type: params[:document_type]}).count > 0
       flash[:error] = "That record is already bookmarked."
@@ -135,29 +127,6 @@ class BookmarksController < ApplicationController
     #redirect_to :back
   end
 
-  # fix me: why are we checking for bookmarks when not logged in?
-  def check
-    if current_user
-      render json: {bookmark_tracker: current_user.bookmark_tracker}
-    else
-      render json: {error: "no_user"}
-    end
-  end
-
-  def delete_all
-    ids = params[:id]
-    if !ids
-    elsif ids.kind_of? Array
-      ids.each do |id|
-        Bookmark.find(id).destroy
-      end
-    else
-      Bookmark.find(ids).destroy
-    end
-    current_user.increment!(:bookmark_tracker)
-    redirect_to bookmarks_path
-  end
-
   def addtag
     newtag = params[:tag]
     if newtag
@@ -192,7 +161,7 @@ class BookmarksController < ApplicationController
       end
     end
   end
- 
+
   def details_for_render(bookmark)
     return bookmark.document.bookmark_details
   end

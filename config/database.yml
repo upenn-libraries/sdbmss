@@ -29,6 +29,7 @@ staging:
 test:
   <<: *development
   database: <%= ENV["SDBMSS_DB_NAME"] %>_test
+  #engine:   MyISAM  
 
 production:
   <<: *development

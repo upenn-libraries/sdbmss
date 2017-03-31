@@ -38,8 +38,20 @@
                         </div>
                     </div>
                     <div class="col-xs-8">
-                        <%= render partial: "shared/username_with_profile_link", locals: {user: @user} %><br>
-                        <span class="text-muted">User Level: <em><%= @user.role %></em></span>
+                        <span class="dropdown">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                              <%= @user.to_s %>
+                              <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                              <li><em style="padding: 20px;" class='text-muted'><span class="glyphicon glyphicon-briefcase"></span> <%= @user.role %></em></li>
+                              <li><a href="<%= new_private_message_path(user_id: [@user.id]) %>"><span class="glyphicon glyphicon-envelope"></span> Send Message</a></li>
+                              <% if current_user == @user %>
+                              <li><%= link_to edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
+                              <% end %>
+                            </ul>
+                          </span>
+                        <p class="text-muted">User Level: <em><%= @user.role %></em></p>
                     </div>
                 </div>
             </div>

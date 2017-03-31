@@ -320,9 +320,9 @@
             $('#faq-required').prop('disabled', false);
             $('#faq-warning').hide();
             $('#faq-success').show();
-            $('a[href=#signup]').attr("data-toggle", "pill");
-            $('a[href=#signup]').parent('li').removeClass('disabled').addClass('active');
-            $('a[href=#faq]').parent('li').removeClass('active');
+            $('a[href="#signup"]').attr("data-toggle", "pill");
+            $('a[href="#signup"]').parent('li').removeClass('disabled').addClass('active');
+            $('a[href="#faq"]').parent('li').removeClass('active');
             $('#signup').addClass('in active');
             $('#faq').removeClass('in active');
         } else {
@@ -330,8 +330,8 @@
             $('#faq-warning').show();
             $('#faq-warning #count').text(remaining + " remaining.");
             $('#faq-success').hide();
-            $('a[href=#signup]').attr("data-toggle", "");
-            $('a[href=#signup]').parent('li').removeClass('active').addClass('disabled');
+            $('a[href="#signup"]').attr("data-toggle", "");
+            $('a[href="#signup"]').parent('li').removeClass('active').addClass('disabled');
             //$('a[href=#faq]').parent('li').removeClass('active');
             $('#signup').removeClass('in active');
             $('#faq').addClass('in active');

@@ -1,0 +1,55 @@
+<% content_for :breadcrumbs do %>
+  <%= render partial: "dericci_games/breadcrumbs" %>
+<% end %>
+<div class="row">
+  <div class="col-sm-5">
+    <h3>Dericci Record <%= @record.id %></h3>
+    <dl class="document-metadata dl-horizontal dl-invert">
+      <dt>Name</dt>
+      <dd><%= @record.name %></dd>
+    
+      <dt>Dates</dt>
+      <dd><%= @record.dates || "Unknown" %></dd>
+
+      <dt>Place</dt>
+      <dd><%= @record.place || "Unknown" %></dd>
+ 
+      <dt>PDF</dt>
+      <dd><%= link_to "Hosted at the UK Senate House Archives", @record.url %></dd>
+
+      <dt>Number of Cards</dt>
+      <dd><%= @record.cards || "Unknown" %></dd>
+      
+      <dt>File Size</dt>
+      <dd><%= @record.size || "Unknown" %></dd>
+      
+      <dt>Other Info</dt>
+      <dd><%= @record.other_info || "None" %></dd>
+
+      <dt>Senate House ID#</dt>
+      <dd><%= @record.senate_house || "Unknown" %></dd>
+    </dl>
+
+    <% if @record.dericci_links.group_by(&:name_id).each do |name_id, dericci_links| %>
+        <% if dericci_links.sum(&:reliability) > 3 %>
+            <%= link_to dericci_links.first.name.name, name_path(dericci_links.first.name) %>
+            <% dericci_links.each do |dl| %>
+                <% if dl.other_info.present? %>
+                    <p><%= dl.other_info %></p>
+                <% end %>
+                <div class='text-right text-muted'>identified by <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by, up: true } %></div>
+            <% end %>
+        <% else %>
+            <p class="text-muted">This name is not linked to any records in the Dericci Archives.</p>
+        <% end %>
+    <% end.empty? %>
+        <p class="text-muted">This name is not linked to any records in the Dericci Archives.</p>
+    <% end %>
+
+
+    <%# render partial: "show", locals: {record: @record} %>
+  </div>
+  <div class="col-sm-7">
+    <iframe src="<%= @record.url %>" frameborder="0" style="width: 100%; height: 600px;"></iframe>
+  </div>
+</div>

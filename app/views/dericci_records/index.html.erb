@@ -1,0 +1,66 @@
+<% content_for :breadcrumbs do %>
+  <%= render partial: "dericci_games/breadcrumbs" %>
+<% end %>
+<div class="row">
+  <div class="col-sm-12">
+    <p>Welcome to the <b>Seymour de Ricci Bibliotheca Britannica Manuscripta Digitized Archive</b>, a searchable database containing the digitized notes of the historian and bibliographer Seymour Montefiore Robert Rosso de Ricci (1881-1942) made for the compilation of his unfinished Bibliotheca Britannica Manuscripta. This project was intended as a companion work to his Census of Medieval and Renaissance Manuscripts in the United States and Canada, published between 1935 and 1940. De Ricci's notes, compiled in thirty-four boxes containing over 60,000 index cards and originally bequeathed to the Institute for Historical Research in London, are currently housed in the Senate House Library at the University of London <a href="http://www.shl.lon.ac.uk/specialcollections/dericciindex.shtml" target="_blank">(more info)</a>.</p>
+    <p>In collaboration with the <b>Senate House Library</b>, the <b>Schoenberg Institute for Manuscript Studies</b> has made this valuable resource available online in downloadable pdf files. The cards are arranged by individual Collectors (listed by last name) and Repositories (by town, institution, or college). You can browse by collector or repository or search by keyword, date, or place.</p>
+    <p>We will be updating this page with his <em>Dated Sales</em> and <em>Miscellaneous Notes</em> in the near future.  In the meantime, you can view the archive in its original site <a href="http://sceti.library.upenn.edu/dericci/">here</a>.</p>
+    <p>We would like to extend our gratitude to Dr. Marc Leroy de Ricci for kindly granting permission to publish the archive online.</p>
+  </div>
+</div>
+<%= form_tag dericci_records_path, :method => 'get', class: "form-inline" do %>
+<div class="row" style="margin-bottom: 10px;">
+  <div class="col-sm-12 text-center">
+      <%= select_tag "field", options_for_select({"Name" => "name","Date" => "dates","Place" => "place"}, params[:field]), class: "form-control" %>
+      <%= text_field_tag :term, params[:term], class: "form-control" %>
+      <div class="input-group">
+        <%= submit_tag "Search", :name => nil, class: "form-control" %>
+        <div class="input-group-btn">
+          <%= link_to "Clear", dericci_records_path, class: "btn btn-warning" %>
+        </div>
+      </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12 text-center">
+    <ul class="pagination">
+      <% ('a'..'z').to_a.each do |letter| %>
+        <li class='<%= letter == params[:letter] ? "active" : "" %>'><%= link_to letter.capitalize, params.merge(:letter => letter).except(:page) %></li>
+      <% end %>
+      <li class='<%= !params[:letter] ? "active" : "" %>'><%= link_to "All", params.except(:letter).except(:page) %></li>
+    </ul>
+  </div>
+  <div class="col-sm-3">
+    Showing <%= @offset %> to <%= [@offset + @count, @total].min %> of <%= @total %>
+  </div>
+  <div class="col-sm-6 text-center">
+    <ul class="pagination">
+    <% if @page > 2 %>
+      <li><%= link_to "First", params.merge(:page => 0) %></li>
+      <li class='disabled'><a href="" class="disabled">...</a></li>
+    <% end %>
+    <% @pages.each do |p| %>
+      <li class="<%= p == @page ? 'active' : '' %>"><%= link_to p + 1, params.merge(:page => p) %></li>
+    <% end %>
+    <% if @page < @num_pages - 2 %>
+      <li class='disabled'><a href="" class="disabled">...</a></li>
+      <li><%= link_to "Last", params.merge(:page => @num_pages) %></li>
+    <% end %>
+    </ul>
+  </div>
+  <div class="col-sm-3 text-right">
+    Show <%= select_tag "limit", options_for_select([10, 20, 50, 100], params[:limit]), class: "form-control" %>
+  </div>
+</div>
+<% end %>
+<div class="row">
+  <div class="col-sm-12">
+      <% if @total <= 0 %>
+        <p class="text-muted text-center">No matching records found.</p>
+      <% end %>
+      <% @records.each do |record| %>
+          <%= render partial: "show", locals: {record: record} %>
+      <% end %>
+  </div>
+</div>

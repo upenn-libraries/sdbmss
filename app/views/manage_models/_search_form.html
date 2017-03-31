@@ -1,70 +1,75 @@
-<%= form_tag(request.path, method: :get, class: "form-horizontal search-form sdbmss-form") do %>
-    <div class="row">
-        <div class="col-sm-12 text-right mobile-center">
-            <% if can? :review, model_class %>
-                <label class="checkbox-inline">
+<ul class="nav navbar-left navbar-nav">
+    <li>
+        <% if can? :review, model_class %>
+            <label>
+                <% if model_class == Entry %>
+                    <%= check_box_tag :unapproved_only, 1, params[:unapproved_only] %> Limit to records needing approval
+                <% else %>
                     <%= check_box_tag :unreviewed_only, 1, params[:unreviewed_only] %> Limit to records needing review
-                </label>
-            <% end %>
+                <% end %>
+            </label>
+        <% end %>            
+    </li>
+</ul>
+
+<div class="navbar-right">
+
+<ul class="nav navbar-nav pull-left">
+    <li>
+        <a href="" class="" id="addSearch">
+            <span class="glyphicon glyphicon-plus"></span> add term
+        </a>
+    </li>
+</ul>
+
+
+<div class="search-form form-inline search-fieldset pull-left navbar-form">
+    <div class="search-block input-group">
+        <div class="input-group-btn">
+            <button type='button' class="btn btn-warning search-remove"> <span class="glyphicon glyphicon-remove"></span> </button>
+        </div>
+        <%= text_field_tag :search_value, params[:search_value], size: 18, placeholder: "Enter your search term...", class: "form-control" %>
+        <select class="form-control" name="search_field">
+        <% Array(@search_fields).each do |field| %>            
+            <% display_field_option = field.gsub('_search', '').gsub('_at', '_on').gsub('created', 'added').humanize %>
+            <option value="<%= field %>" type="<%= @fields.include?(field) ? 'field' : (@filters.include?(field) ? 'filter' : 'date') %>"><%= display_field_option %></option>
+        <% end -%>
+        </select>
+        <select class="form-control" name="search_option">
+        <% Array(@filter_options).each do |option| %>
+            <option value="<%= option %>" class="option filter_option">
+                <% if option == 'with' %>
+                    <%= "Equals" %>
+                <% elsif option == 'without' %>
+                    <%= "Does Not Equal" %>
+                <% else %>
+                    <%= option.humanize %>
+                <% end %>
+            </option>
+        <% end %>
+        <% Array(@field_options).each do |option| %>
+            <option value="<%= option %>" class="option field_option"><%= option.humanize %></option>
+        <% end %>
+        <% Array(@date_options).each do |option| %>                
+            <option value="<%= option %>" class="option date_option"><%= option.humanize %></option>
+        <% end %>
+        </select>
+    </div>
+</div>
+
+<div class="form-inline pull-left navbar-form">
+    <div class="input-group form-submission">
+        <select name="op" id="search_op" class="form-control">
+            <option value="AND">All</option>
+            <option value="OR">Any</option>
+        </select>
+        <div class="input-group-btn">
+            <button id="search_submit" type="submit" class="btn btn-primary">
+                <span class="hide-mobile">Search</span>
+                <span class="glyphicon glyphicon-search"></span>
+            </button>
         </div>
     </div>
-    <div class="row search-fieldset">
-        <div class="col-sm-12 search-block">
-            <div class="input-group">
-                <div class="input-group-btn">
-                    <button type='button' class="btn btn-warning search-remove"> <span class="glyphicon glyphicon-remove"></span> </button>
-                </div>
-                <%= text_field_tag :search_value, params[:search_value], size: 26, placeholder: "Enter your search term...", class: "form-control" %>
-                <select class="form-control" name="search_field">
-                <% Array(@search_fields).each do |field| %>
-                    <!-- replace 'at' in 'created at' with 'on' -->
-                    <option value="<%= field %>" type="<%= @fields.include?(field) ? 'field' : (@filters.include?(field) ? 'filter' : 'date') %>"><%= field.humanize.gsub(/\sat/, ' on') %></option>
-                <% end -%>
-                </select>
-                <select class="form-control" name="search_option">
-                <% Array(@filter_options).each do |option| %>
-                    <option value="<%= option %>" class="option filter_option">
-                        <% if option == 'with' %>
-                            <%= "Equals" %>
-                        <% elsif option == 'without' %>
-                            <%= "Does Not Equal" %>
-                        <% else %>
-                            <%= option.humanize %>
-                        <% end %>
-                    </option>
-                <% end %>
-                <% Array(@field_options).each do |option| %>
-                    <option value="<%= option %>" class="option field_option"><%= option.humanize %></option>
-                <% end %>
-                <% Array(@date_options).each do |option| %>
-                    <option value="<%= option %>" class="option date_option"><%= option.humanize %></option>
-                <% end %>
-                </select>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-4">
-            <a href="" class="" id="addSearch">
-                <span class="glyphicon glyphicon-plus"></span> add term
-            </a>
-        </div>
-        <div class="col-xs-3">
-            <span id="spinner" style='display: none;'><img alt="working..." src="<%= asset_path "spinner.gif" %>"/> loading search results...</span>
-        </div>
-        <div class="col-xs-5 text-right">
-            <div class="input-group">
-            <select name="op" id="search_op" class="form-control">
-                <option value="AND">All</option>
-                <option value="OR">Any</option>
-            </select>
-            <div class="input-group-btn">
-                <button id="search_submit" type="submit" class="btn btn-primary">
-                    <span class="hide-mobile">Search</span>
-                    <span class="glyphicon glyphicon-search"></span>
-                </button>
-            </div>
-            </div>
-        </div>
-    </div>
-<% end %>
+</div>
+
+</div>

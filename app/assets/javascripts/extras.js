@@ -2,6 +2,7 @@
 // This assumes application.js has been included.
 
 //= require jquery.qtip.min
+//= require jquery.ui.touch-punch.min
 //= require angular.1.3.16
 //= require angular-sanitize.min
 //= require angular-cookies.1.3.16.min

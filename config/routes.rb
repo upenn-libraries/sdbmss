@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  mount Thredded::Engine => '/forum'
+  
   root :to => "catalog#index"
 
   resources :accounts, except: [:show] do
@@ -25,6 +27,7 @@ Rails.application.routes.draw do
   end
 
   resources :watches, only: [:index, :create, :destroy]
+  resources :ratings, only: [:create, :destroy]
 
   resources :groups do
     collection {
@@ -33,6 +36,10 @@ Rails.application.routes.draw do
   end
   resources :group_users
   
+  resources :dericci_records
+  resources :dericci_games
+  resources :dericci_links
+
   resources :replies
   resources :notifications, only: [:index, :show, :update, :destroy]
   #resources :notifications_settings, only: [:edit]
@@ -81,7 +88,10 @@ Rails.application.routes.draw do
   get "/project_history/", to: 'community#project_history', as: 'project_history'
   get "/user_agreement/", to: 'community#user_agreement', as: 'user_agreement'
   get '/community/', to: 'community#show', as: 'community'
-  get '/dashboard/', to: 'dashboard#show', as: 'dashboard'
+  get '/dashboard/', to: 'dashboard#contributions'
+  get '/dashboard/contributions'
+  get '/dashboard/activity'
+  get '/dashboard/forum'
 
 #  resources :delayed_jobs, only: [:index]
 

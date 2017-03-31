@@ -1,0 +1,8 @@
+<span class='btn btn-xs btn-default'>
+  <% if (w = model.bookmarks.select{ |b| b.user_id == current_user.id }.first) %>
+    <%= render partial: "bookmarks/delete", locals: {bookmark: w} %>
+  <% else %>
+    <%= render partial: "bookmarks/add", locals: {document: model}  %>
+  <% end %>
+</span>
+<span class='btn btn-xs btn-default'><%= render partial: "nav/watch", locals: {watchable: model } %></span>

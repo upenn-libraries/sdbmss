@@ -5,11 +5,14 @@ describe "Dashboard", :js => true do
 
   context "when regular user is logged in " do
     before :all do
-      @user = User.create!(
+      @user = User.where(role: "contributor").first
+=begin
+      User.create!(
         email: 'testuser@testdashboard.com',
         username: 'testdashboard',
         password: 'somethingunguessable'
       )
+=end      
     end
 
     before :each do
@@ -28,12 +31,7 @@ describe "Dashboard", :js => true do
 
   context "when admin user is logged in " do
     before :all do
-      @admin_user = User.create!(
-        email: 'testadminuser@testdashboard.com',
-        username: 'testdashboardadmin',
-        password: 'somethingunguessable',
-        role: 'admin',
-      )
+      @admin_user = User.where(role: "admin").first
     end
 
     before :each do

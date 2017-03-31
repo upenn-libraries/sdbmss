@@ -31,7 +31,8 @@ class Ability
 
 
     if ['contributor', 'editor', 'super_editor', 'admin'].member? user.role
-      can [:edit, :update], :all, :created_by_id => user.id
+      can [:edit, :update, :show], :all, :created_by_id => user.id
+      can [:index, :new], DericciGame
 
       can :destroy, [Comment, Reply], :created_by_id => user.id
       cannot :manage, Page
@@ -40,7 +41,7 @@ class Ability
       can :unlink, :all, :created_by_id => user.id
       can :history, :all
 
-      can :index, Entry
+      can :index, [Entry, Source, Manuscript, Comment]
 
       can :manage, PrivateMessage, :created_by_id => user.id
       can :manage, PrivateMessage do |pm|
@@ -49,7 +50,6 @@ class Ability
     end
 
     if ['editor', 'super_editor', 'admin'].member? user.role
-      can :index, [Entry, Manuscript, Source]
       can :unlink, :all
       can :edit, Manuscript
 

@@ -65,6 +65,9 @@ class Source < ActiveRecord::Base
   has_many :entries
   has_many :source_agents, inverse_of: :source
 
+  has_many :bookmarks, as: :document, dependent: :destroy
+  
+
  # validates_inclusion_of :whether_mss, in: HAS_MANUSCRIPT_TYPES.map(&:first), message: 'whether_mss is invalid', allow_blank: true
   validates_inclusion_of :medium, in: MEDIUM_TYPES.map(&:first), message: 'medium is invalid', allow_blank: true
   #validates_presence_of :date, if: :date_required
@@ -114,6 +117,7 @@ class Source < ActiveRecord::Base
     end
 
     string :location
+    text :location
     string :medium
     string :date
     text :date, :more_like_this => true
@@ -139,18 +143,6 @@ class Source < ActiveRecord::Base
     date :created_at
     date :updated_at
     boolean :reviewed
-  end
-
-  def agent_name
-    (source_agents.map { |sa| sa.agent.name }).join("")
-  end
-
-  def agent_id
-    source_agents.first ? source_agents.first.agent_id : nil
-  end
-
-  def has_agent
-    return self.source_agents.count > 0
   end
 
   def public_id
@@ -202,50 +194,6 @@ class Source < ActiveRecord::Base
   def get_institutions_as_names
     source_agents = get_institutions
     source_agents.map{ |a| a.agent ? a.agent.name : "" }.join(" | ")
-  end
-
-  def get_source_agent_with_role(role)
-    puts "deprecated #{__method__}"
-    source_agents.select { |sa| sa.role == role }.first
-  end
-
-  # returns a SourceAgent object
-  def get_seller_or_holder
-    puts "deprecated #{__method__}"
-    get_source_agent_with_role(SourceAgent::ROLE_SELLER_OR_HOLDER)
-  end
-
-  # returns an Name object
-  def get_seller_or_holder_as_name
-    puts "deprecated #{__method__}"
-    sa = get_seller_or_holder
-    sa.agent if sa
-  end
-
-  # returns a SourceAgent object
-  def get_selling_agent
-    puts "deprecated #{__method__}"
-    get_source_agent_with_role(SourceAgent::ROLE_SELLING_AGENT)
-  end
-
-  # returns an Name object
-  def get_selling_agent_as_name
-    puts "deprecated #{__method__}"
-    sa = get_selling_agent
-    sa.agent if sa
-  end
-
-  # returns a SourceAgent object
-  def get_institution
-    puts "deprecated #{__method__}"
-    get_source_agent_with_role(SourceAgent::ROLE_INSTITUTION)
-  end
-
-  # returns an Name object
-  def get_institution_as_name
-    puts "deprecated #{__method__}"
-    sa = get_institution
-    sa.agent if sa
   end
 
   def medium_for_display
@@ -358,7 +306,7 @@ class Source < ActiveRecord::Base
   end
 
   def update_count
-    Source.reset_counters(self.id, :entries)
+    Source.reset_counters(id, :entries)
   end
 
   def merge_into (target)
@@ -378,11 +326,11 @@ class Source < ActiveRecord::Base
   end
 
   def self.fields
-    ["title", "date", "agent_name", "author", "created_by", "updated_by", "source_type"]
+    ["title", "date", "agent_name", "author", "created_by", "updated_by", "source_type", "location"]
   end
 
   def self.filters
-    ["id", "location", "agent_id"]
+    ["id", "agent_id"]
   end
 
   def search_result_format
@@ -396,7 +344,7 @@ class Source < ActiveRecord::Base
       author: author,
       selling_agent: get_selling_agents_as_names,#(selling_agent = get_selling_agent_as_name).present? ? selling_agent.name : "",
       institution: get_institutions_as_names, #(institution_agent = get_institution_as_name).present? ? institution_agent.name : "",
-      whether_mss: whether_mss,
+      #whether_mss: whether_mss,
       medium: medium,
       date_accessed: date_accessed,
       location_institution: location_institution,

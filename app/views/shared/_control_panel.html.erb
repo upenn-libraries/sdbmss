@@ -1,24 +1,24 @@
-<div id="control-panel">
-  <div class="bookmarks-collapse collapse width in">
+<div id="control-panel" class="collapse width in">
+  <div class="scroll-box">
     <% if current_user %>
     <div class="panel panel-default">
-        <div class="panel-heading" style="white-space: nowrap">
+        <div class="panel-heading" style="white-space: nowrap; padding-top: 10px">
             <div class="user-icon">
               <span class="glyphicon glyphicon-user"></span>
             </div>
             <div class="user-info">
               <span class="dropdown">
-                <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                <a href="" class="dropdown-toggle" data-toggle="dropdown" style="color: white;">
                   <%= current_user.to_s %>
                   <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="<%= profile_path(username: current_user.username) %>"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
-                  <li><a href="<%= private_messages_path %>"><span class="glyphicon glyphicon-envelope"></span> My Messages</a></li>
-                  <li><%= link_to edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
+                  <li><a href="<%= main_app.profile_path(username: current_user.username) %>"><span class="glyphicon glyphicon-user"></span> My Profile</a></li>
+                  <li><a href="<%= main_app.private_messages_path %>"><span class="glyphicon glyphicon-envelope"></span> My Messages</a></li>
+                  <li><%= link_to main_app.edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
                   <% if current_user && !current_user.to_s.blank? %>
                     <li>
-                      <%= link_to(destroy_user_session_path, :onclick => "localStorage.clear();") do %>
+                      <%= link_to(main_app.destroy_user_session_path, :onclick => "localStorage.clear();") do %>
                         <span class="glyphicon glyphicon-log-out"></span> <%= t('blacklight.header_links.logout') %>
                       <% end %>
                     </li>
@@ -32,13 +32,13 @@
           <ul class="nav">
             <%= render partial: "nav/notifications" %>
             <li>
-              <a href="<%= dashboard_path %>"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a>
+              <a href="<%= main_app.dashboard_contributions_path %>"><span class="glyphicon glyphicon-dashboard"></span> Dashboard</a>
             </li>
             <li>
                 <a href="/bookmarks"><span class="glyphicon glyphicon-bookmark"></span> Bookmarks</a>
             </li>
             <li>
-                <a href="/downloads"><span class="glyphicon glyphicon-export"></span> Exports</a>
+                <a href="/downloads"><span class="glyphicon glyphicon-floppy-save"></span> Exports</a>
             </li>
             <li>
                 <a href="/groups"><span class="glyphicon glyphicon-globe"></span> Groups</a>
@@ -66,7 +66,7 @@
                   <a href="/entries/new">From a Source</a>
                 </li>
                 <li>
-                  <%= link_to "Based on Personal Observation", new_source_path({create_entry: 1, source_type: 4}) %>
+                  <%= link_to "Based on Personal Observation", main_app.new_source_path({create_entry: 1, source_type: 4}) %>
                 </li>
               </ul>
             </li>
@@ -76,56 +76,78 @@
         </div>
       </div>
     </div>
-  <% else %>
-    <div class="panel-default panel">
-      <div class="panel-heading">
-        <span class="h4">
-          <span class="glyphicon glyphicon-info-sign"></span>
-          About Us
-        </span>
-      </div>
-      <div class="panel-body">
-        <ul class="nav">
-          <% Page.where(category: 'about').each do |page| %>
-            <li><%= link_to page.name, page_path(page.name) %></li>
-          <% end %>
-        </ul>
-      </div>
-    </div>
-    <div class="panel-default panel">
-      <div class="panel-heading">
-        <span class="h4">
-          <span class="glyphicon glyphicon-question-sign"></span>
-          Help
-        </span>
-      </div>
-      <div class="panel-body">
-        <ul class="nav">
-          <% Page.where(category: 'help').each do |page| %>
-            <li><%= link_to page.name, page_path(page.name) %></li>
-          <% end %>
-          <li><a href="https://www.youtube.com/channel/UCsVZp-1724xPIW8MwIdKoyg/videos">Video Tutorials</a></li>
-          <li><a href="mailto:sdbm@pobox.upenn.edu">Email Us</a></li>
-        </ul>
-      </div>
-    </div>
+  <% end %>
+
+    <% if !current_user %>
     <div class="panel panel-default">
       <div class="panel-heading">
         <span class="h4">
           <span class="glyphicon glyphicon-log-in"></span> Login
         </span>
       </div>
-      <div class="panel-body" style="padding: 10px;">
-        <%= render partial: 'devise/sessions/new', locals: {resource: User.new, resource_name: 'user', devise_mapping: Devise.mappings[:user]} %>      
-        <%= link_to "Sign up", new_registration_path('user') %><br />
-        <%= link_to "Forgot your password?", new_password_path('user') %><br />
+      <div class="panel-body">
+        <div style="padding: 0px 10px;">
+          <%= render partial: 'devise/sessions/new', locals: {resource: User.new, resource_name: 'user', devise_mapping: Devise.mappings[:user]} %>      
+        </div>
+        <ul class="nav">
+          <li>
+            <%= link_to(new_registration_path('user')) do %>
+              <span class="glyphicon glyphicon-log-in"></span> Sign up
+            <% end %>
+          </li>
+          <li>
+            <%= link_to(new_password_path('user')) do %>
+              <span class="glyphicon glyphicon-question-sign"></span> Forgot your password?
+            <% end %>
+          </li>
+        </ul>
       </div>
     </div>
-  <% end %>
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <span class="h4">
+          <span class="glyphicon glyphicon-link"></span>
+          Related Links
+        </span>
+      </div>
+      <div class="panel-body">
+        <ul class="nav">
+          <li>
+            <a href="https://schoenberginstitute.org/" title="The Schoenberg Institute for Manuscript Studies">
+              <span class="glyphicon glyphicon-book"></span>
+              The Schoenberg Institute for Manuscript Studies
+            </a>
+          </li>
+          <li>
+            <a href="http://dla.library.upenn.edu/dla/medren/search.html?fq=collection_facet%3A%22Lawrence%20J.%20Schoenberg%20Collection%22" title="Online digital facsimiles">
+              <span class="glyphicon glyphicon-picture"></span>
+              Penn in Hand
+            </a>
+          </li>
+          <li>
+            <a href="http://openn.library.upenn.edu/html/0001.html" title="Downloadable digital images and metadata">
+              <span class="glyphicon glyphicon-picture"></span>
+              OPenn
+            </a>
+          </li>
+          <li>
+            <a href="http://sceti.library.upenn.edu/ljscatalog/index.html" title="A printed catalog of early manuscripts">
+              <span class="glyphicon glyphicon-folder-close"></span>
+              Transformation of Knowledge
+            </a>
+          </li>
+          <li>
+            <a href="http://sceti.library.upenn.edu/legacy/" title="Online Exhibit">
+              <span class="glyphicon glyphicon-education"></span>
+              A Legacy Inscribed
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <% end %>
+    <div>
+      <a href="https://www.neh.gov/" target="_blank"><%= image_tag 'neh_logo_horizlarge.png', class: "img img-neh" %></a>
+    </div>
   </div>
-  <a id='collapse-control' class="btn btn-default" data-toggle="collapse" data-target=".bookmarks-collapse">
-    <span class="glyphicon glyphicon-menu-hamburger hide-collapsed"></span>
-    <span class="glyphicon glyphicon-chevron-left show-collapsed" style="font-size: 20px; color: #444;"></span>
-    <!--<span class="glyphicon glyphicon-chevron-left show-collapsed"></span>-->
-  </a>
 </div>

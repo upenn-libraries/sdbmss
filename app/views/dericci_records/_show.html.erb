@@ -1,0 +1,8 @@
+<p>
+  <%= link_to record.name, dericci_record_path(record) %>
+  <small class='text-muted'>
+    <%= "#{record.cards} #{'card'.pluralize(record.cards)}" %>, 
+    <%= record.size %>
+  </small>
+  <span class="text-muted pull-right"><%= record.dates || "Dates Unknown" %></span>
+</p>

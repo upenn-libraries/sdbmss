@@ -23,6 +23,9 @@ class User < ActiveRecord::Base
   has_many :notifications
   has_one :notification_setting
 
+  has_many :ratings
+  has_many :rated, -> { distinct }, through: :ratings
+
   has_many :watches
   has_many :watched_entries, -> { distinct }, through: :watches, source: :watched, source_type: "Entry"
   has_many :watched_sources, -> { distinct }, through: :watches, source: :watched, source_type: "Source"
@@ -109,6 +112,14 @@ class User < ActiveRecord::Base
 
   def new_notifications
     notifications.where(active: true)
+  end
+
+  def name
+    username
+  end
+
+  def admin
+    role == "admin"
   end
 
   # override devise's msg to display if user is prevented from logging in

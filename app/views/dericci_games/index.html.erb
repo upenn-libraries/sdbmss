@@ -1,0 +1,38 @@
+<% content_for :breadcrumbs do %>
+  <%= render partial: "breadcrumbs" %>
+<% end %>
+<div class="row">
+  <div class="col-sm-3"></div>
+  <div class="col-sm-6 text-center">
+    <a href="/dericci_games/new" class="btn btn-primary"><span class="glyphicon glyphicon-tower"></span> New Game!</a>
+    <table class="table table-responsive">
+      <thead>
+        <tr>
+          <td>Game ID</td>
+          <td>Completed</td>
+          <td>Skipped</td>
+          <td>Date</td>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @games.each do |game| %>
+          <tr>
+            <td>
+              <%= link_to(dericci_game_path(game), class: 'btn btn-default btn-sm') do %>
+                <span class="glyphicon glyphicon-tower"></span>  <%= "Game_#{game.id}" %>
+              <% end %>
+            </td>
+            <td class='bg-success'><%= game.completed.to_i %>%</td>
+            <td class='bg-warning'><%= game.skipped.to_i %>%</td>
+            <td><%= game.created_at.to_formatted_s(:long) %></td>
+          </tr>
+        <% end.empty? %>
+          <tr>
+            <td colspan="4" class="text-center text-muted">No games availabe.</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="col-sm-3"></div>
+</div>

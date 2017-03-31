@@ -6,7 +6,7 @@
         <li class="link <%= disabled %>"><a href="<%= merge_name_path(@model.id) %>"><span class="glyphicon glyphicon-transfer"></span> Merge</a></li>
         <% if !@model.reviewed %>
             <li class="link <%= disabled %>">
-                <%= link_to(name_path(@model, reviewed: true), :method => :put) do %>
+                <%= link_to(name_path(@model, reviewed: true), :method => :put, :data => {:confirm => "Can you confirm that the name conforms to the <a href='/pages/SDBM%20Naming%20Standards' target='_blank'>SDBM Naming Standards</a>?"}) do %>
                     <span class="glyphicon glyphicon-ok"></span> Approve
                 <% end %>
             </li>

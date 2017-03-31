@@ -4,7 +4,7 @@ require "rails_helper"
 describe "Manage entries", :js => true do
 
   before :all do
-    SDBMSS::ReferenceData.create_all
+#    SDBMSS::ReferenceData.create_all
 
     @unapproved_entry = Entry.new(
       source: Source.last,
@@ -15,12 +15,7 @@ describe "Manage entries", :js => true do
 
     SDBMSS::Util.wait_for_solr_to_be_current
 
-    @user = User.create!(
-      email: 'testuser@testadminsearch.com',
-      username: 'testadminsearch',
-      password: 'somethingunguessable',
-      role: 'admin'
-    )
+    @user = User.where(role: "admin").first
   end
 
   before :each do
@@ -39,6 +34,7 @@ describe "Manage entries", :js => true do
 
   it "should show table of entries" do
     visit entries_path
+    expect(page).to have_content(Entry.first.entry_dates.first.display_value)
   end
 
   it "should search" do
@@ -72,7 +68,9 @@ describe "Manage entries", :js => true do
 
     visit entries_path
     all(".entry-delete-link").last.trigger('click')
-    sleep(1)
+    expect(page).to have_content("Are you sure you want to delete entry")
+    click_button "Yes"
+    sleep 1.1
 
     expect(Entry.all.count).to eq(count - 1)
   end
@@ -210,5 +208,22 @@ describe "Manage entries", :js => true do
 
     expect(count).to eq(count2)
   end
+
+  it "should correctly display the RSS feed" do
+    visit feed_path(format: :rss)
+
+    expect(source).to have_content(Entry.last(2)[0].to_s)
+  end
+
+  it "should display a citation correctly" do
+    visit entry_path(Entry.first)
+
+    expect(page).to have_content("Cite")
+
+    click_link "Cite"
+    now = DateTime.now.to_formatted_s(:date_mla)    
+    expect(page).to have_content("Schoenberg Database of Manuscripts. The Schoenberg Institute for Manuscript Studies, University of Pennsylvania Libraries. Web. #{now}: #{Entry.first.public_id}.")
+  end
+
 
 end

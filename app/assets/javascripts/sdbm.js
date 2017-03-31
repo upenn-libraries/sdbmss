@@ -11,8 +11,65 @@
 
 var SDBM = SDBM || {};
 
+function addNotification (message, type, permanent) {
+  var notification = $('<div><a class="close" data-dismiss="alert" aria-label="close">&times;</a>' + message + "</div>");
+  notification.addClass('alert').addClass('alert-' + type).addClass('alert-absolute');
+  
+  notification.hide();
+  $('.alerts-absolute').append(notification);
+  notification.fadeIn();
+  
+  if (!permanent) {
+    setTimeout(function () {
+      notification.fadeOut('slow', function () {
+        notification.remove();
+      });
+    }, 10000)
+  } // fade out after ten seconds;
+}
+
+function exportCSV(url) {
+  $.get(url).done(function (e) {
+      if (e.error) {
+          if (e.error == "at limit") {
+              addNotification("You have reached your export limit.  Download or delete some of your exports <a href='/downloads/'>here</a>.", "danger");
+          }
+          return;
+      }
+
+      var myDownloadComplete = false;
+      $('#user-nav a').css({color: 'green'});
+      addNotification("CSV Export is being prepared...", "info");
+      var download = JSON.parse(e);
+      var url = "/downloads/" + download.id;
+      var count = 0;
+      var interval = setInterval( function () {
+          $.ajax({url: url, data: {ping: true}}).done( function (r) {
+              //window.location = url;
+              if (r != "in progress" && !myDownloadComplete) {
+                  addNotification(download.filename + " is ready - <a href='" + url + "'>download file</a>", "success", true);
+                  $('#user-nav a').css({color: ''});
+                  $('#downloads-count').text(download.count);
+                  window.clearInterval(interval);
+                  myDownloadComplete = true;
+              } else {
+                  count += 1;
+              }
+
+              if (count > 1000) window.clearInterval(interval);                    
+          }).error( function (r) {
+              console.log('error', r);
+              window.clearInterval(interval);
+          });
+      }, 1000);
+  }).error( function (e) {
+      console.log('error', e);
+  })
+};
+
 
 $(document).ready(bindRemoteAjaxCallback);
+
 
 function bindRemoteAjaxCallback (){
   $('a[data-remote]').on('ajax:success', function (event, xhr, status, result) {
@@ -184,8 +241,8 @@ $(document).ready( function (e) {
     $('input').attr('autocomplete','off');
 
     // remember control panel display from last set (localstorage memory)
-    if (localStorage.sdbm_hide_panel == "true") {
-        $('#control-panel .bookmarks-collapse').removeClass('in');
+    if (localStorage.getItem('sdbm_hide_panel') == "true") {
+        $('#control-panel').removeClass('in');
         $('.main-content').addClass('in');
     } else {
 
@@ -193,10 +250,10 @@ $(document).ready( function (e) {
 
     // set control panel display (localstorage) memory
     $('#collapse-control').click( function (e) {
-        if ($('#control-panel .bookmarks-collapse').hasClass('in')) {
-            localStorage.sdbm_hide_panel = true;
+        if ($('#control-panel').hasClass('in')) {
+            localStorage.setItem('sdbm_hide_panel', true);
         } else {
-            localStorage.sdbm_hide_panel = false;
+            localStorage.setItem('sdbm_hide_panel', false);
         }
     });
 

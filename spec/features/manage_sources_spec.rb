@@ -4,11 +4,7 @@ require "rails_helper"
 describe "Manage sources", :js => true do
 
   before :all do
-    @user = User.create!(
-      email: 'testuser@testlanguage.com',
-      username: 'languagetestuser',
-      password: 'somethingunguessable'
-    )
+    @user = User.where(role: "admin").first
     @source = Source.create!(
       source_type: SourceType.auction_catalog,
       title: "my test source",

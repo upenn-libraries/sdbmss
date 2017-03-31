@@ -7,15 +7,17 @@ module DataEntryHelpers
     find_by_id('search-name').click
     expect(page).not_to have_content('To begin searching')
     if page.all('tr', :text => value).count <= 0
-      expect(page).to have_content("Propose #{value}")
+      expect(page).to have_content("Propose '#{value}")
       find_by_id('propose-name').click
       expect(page).to have_content("This window asks you to create an authorized name")
       click_button('Create')
       expect(page).not_to have_content("Error")
     else
-      first('tr', :text => value).first('td').first('a.btn').click
+      within '#select-name-table' do
+        first('tr', :text => value).first('td').first('a.btn').click
+      end
     end
-    expect(page).not_to have_content("Select")
+    expect(page).not_to have_content("in Name Authority")
     # New "More Like This" results method means it is harder to automate this
     #expect(page).to have_css(".well-name-authority", :text => value)
   end
@@ -27,17 +29,28 @@ module DataEntryHelpers
     find_by_id('search-model').click
     expect(page).not_to have_content('To begin searching')
     if page.all('tr', :text => value).count <= 0
-      expect(page).to have_content("Propose #{value}")
+      expect(page).to have_content("Propose '#{value}")
       find_by_id('propose-model').click
       expect(page).to have_content("This window asks you to create an authorized name")
       click_button('Create')
       expect(page).not_to have_content("Error")
     else
-      first('tr', :text => value).first('td').first('a.btn').click
+      within '#select-model-table' do
+        first('tr', :text => value).first('td').first('a.btn').click
+      end
     end
-    expect(page).not_to have_content("Select #{value}")
+    expect(page).not_to have_content("in Name Authority")
     # New "More Like This" results method means it is harder to automate this
     #expect(page).to have_css(".well-name-authority", :text => value)
+  end
+
+  def open_source_create_modal
+    find_by_id("select_source").click
+    expect(page).to have_content("Search for Existing Source")
+    fill_in "date", with: "2014"
+    expect(page).to have_content("Unable to find the Source you are looking for?")
+    find_by_id("create_source").trigger('click')
+    expect(page).to have_content("Not sure what your source type is?")
   end
 
 
@@ -216,7 +229,7 @@ module DataEntryHelpers
 
     entry_place = entry.entry_places.first
     expect(entry_place.observed_name).to eq('Somewhere in Italy')
-    expect(entry_place.place.name).to eq('Italy')
+    expect(entry_place.place.name).to eq('Italy, Tuscany, Florence')
 
     entry_use = entry.entry_uses.first
     expect(entry_use.use).to eq('Some mysterious office or other')

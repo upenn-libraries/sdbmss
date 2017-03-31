@@ -12,7 +12,7 @@
                                     <div class="item <%= version == ul.first ? 'active' : '' %> <%= version.event == 'destroy' ? 'bg-danger' : ( version.event == 'create' ? 'bg-success' : 'bg-info') %>">
                                         <% muted = (version.event == 'create' && !version.item) || (version.event == 'destroy' && version.item) %> 
                                         <div class='row <%= muted ? "text-muted" : "" %>'>
-                                            <div class="col-sm-2 text-right"><%= version.created_at.to_formatted_s(:short) %></div>
+                                            <div class="col-sm-2 text-right"><%= version.created_at.to_formatted_s(:long) %></div>
                                             <div class="col-sm-1"><%= User.find(version.whodunnit) %></div>
                                             <div class='col-sm-2'><span class=""><%= formatter.action %></span></div>
                                             <div class='col-sm-5'>

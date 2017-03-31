@@ -2,16 +2,14 @@
 require 'json'
 require "rails_helper"
 
+#ActiveRecord::Base.logger = Logger.new(STDOUT) if defined?(ActiveRecord::Base)
+
 describe "Manage Merging Sources", :js => true do
 
   before :all do
-    @user = User.create!(
-      email: 'testuser@test.com',
-      username: 'adminuser',
-      password: 'somethingunguessable',
-      role: 'admin'
-    )
-    SDBMSS::ReferenceData.create_all
+    @user = User.where(role: "admin").first
+
+#    SDBMSS::ReferenceData.create_all
   end
 
   before :each do
@@ -29,7 +27,7 @@ describe "Manage Merging Sources", :js => true do
   def create_sources
     ct = Entry.count
 
-    source = Source.new(
+    @source = Source.new(
       title: "The Book Repository",
       source_type: SourceType.auction_catalog,
       source_agents_attributes: [
@@ -39,9 +37,9 @@ describe "Manage Merging Sources", :js => true do
         }
       ]
     )
-    source.save!
+    @source.save!
 
-    source2 = Source.new(
+    @source2 = Source.new(
       title: "The Milkman Conspiracy",
       source_type: SourceType.auction_catalog,
       source_agents_attributes: [
@@ -51,15 +49,15 @@ describe "Manage Merging Sources", :js => true do
         }
       ]
     )
-    source2.save!
+    @source2.save!
 
-    visit new_entry_path :source_id => source.id
+    visit new_entry_path :source_id => @source.id
     fill_in 'folios', with: '7'
     first(".save-button").click
     
     sleep 1.1
 
-    visit new_entry_path :source_id => source2.id
+    visit new_entry_path :source_id => @source2.id
 
     find_by_id('add_title').click
     fill_in 'title_0', with: 'Test Title'
@@ -72,17 +70,25 @@ describe "Manage Merging Sources", :js => true do
 
   it "should successfully merge two sources together, combining all their entries" do
     create_sources
-    source = Source.last
-    source2 = Source.last(2)[1]
+    
+    c1 = Entry.where(source_id: @source.id).count
+    c2 = Entry.where(source_id: @source2.id).count
 
-    c1 = Entry.where(source_id: source.id).count
-    c2 = Entry.where(source_id: source2.id).count
+    @source.merge_into(@source2)
 
-    source.merge_into(source2)
+    expect(@source.deleted).to be_truthy
 
-    expect(source.deleted).to be_truthy
+    @source2.index!
+    @source2.entries.each do |e|
+      e.index!
+    end
 
-    expect(source2.entries_count).to eq(Entry.where(source_id: source2.id).count)
+    @source2 = Source.find(@source2.id)
+
+    expect(@source2.entries_count).to eq(Entry.where(source_id: @source2.id).count)
+
+    visit source_path(@source2)
+    expect(page).to have_content(@source2.public_id)
   end
 
 end

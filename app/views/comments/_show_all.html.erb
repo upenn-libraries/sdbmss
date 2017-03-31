@@ -21,7 +21,7 @@
                 <span class="glyphicon glyphicon-remove"></span> Delete
               <% end %>
               <br>
-              <a onclick="$('#comment_<%= comment.id %> .comment-toggle').toggleClass('hide');" href="" class='comment-toggle'>
+              <a onclick="$('#comment_<%= comment.id %> .comment-toggle').toggleClass('hide');" class='comment-toggle'>
                 <span class="glyphicon glyphicon-edit"></span>
                 Edit
               </a><br>  
@@ -29,6 +29,14 @@
             By <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
             At <%= comment.created_at.to_formatted_s(:date_and_time) %>
           </div>
+          <div class="col-sm-9">
+            <% if (r = current_user.ratings.where(ratable_type: "Comment", ratable_id: comment.id).first) %>
+              <%= render partial: "ratings/delete", locals: {rating: r } %>
+            <% else %>
+              <%= render partial: "ratings/create", locals: {ratable: comment } %>
+            <% end %>
+          </div>
+          <div class="col-sm-3"></div>
           <% if can? :edit, comment %>
             <div class="col-sm-12">
               <%= render partial: "comments/edit_form", locals: {comment: comment} %>
@@ -54,7 +62,7 @@
               <%= link_to(reply_path(reply, format: 'html'),  method: :delete, format: 'json', data: { confirm: 'Are you sure?' }) do %>
                 <span class="glyphicon glyphicon-remove"></span> Delete
               <% end %>
-              <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');" href="">
+              <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');">
                 <span class="glyphicon glyphicon-edit"></span>
                 Edit
               </a>

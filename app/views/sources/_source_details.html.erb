@@ -45,7 +45,7 @@
             <dd><%= source.whether_mss||"Unknown" %></dd>-->
 
         <dt># Entries</dt>
-            <dd>This source has <a target="_blank" class='badge' href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries.count, "entry") %></a> in the database.</dd>
+            <dd>This source has <a target="_blank" class='badge' href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries.where(deprecated: false).count, "entry") %></a> in the database.</dd>
 <% if !defined?(abbreviate) || !abbreviate %>
 <% if source.medium.present? || source.date_accessed.present? || source.location_institution.present? || source.location.present? || source.link.present? %>
         <% if source.medium.present? %>
@@ -70,7 +70,7 @@
 
         <% if source.link.present? %>
         <dt>Online Link/<br/>Call No.</dt>
-            <dd><a href="<%= source.link %>"><%= source.link %></a></dd>
+            <dd class="one-line"><a href="<%= source.link %>"><%= source.link %></a></dd>
         <% end %>
 
 <% end %>

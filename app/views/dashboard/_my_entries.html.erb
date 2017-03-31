@@ -11,8 +11,8 @@
         </span>
     </div>
     <div class="col-sm-4 text-center">
-        <a href="/entries?created_by=<%= current_user.username %>" class='btn btn-default'>Manage My Entries</a>
-        <a href="<%= search_by_facet_value("created_by", current_user.username) %>" class='btn btn-default'>See My Public Entries</a>
+        <a href="/entries?created_by=<%= current_user.username %>" class='btn btn-default'>Manage Your Entries</a>
+        <a href="<%= search_by_facet_value("created_by", current_user.username) %>" class='btn btn-default'>See Your Public Entries</a>
     </div>
     <div class="col-sm-4 text-right">
         <% if num_entries > 0 %>

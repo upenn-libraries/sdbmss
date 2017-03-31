@@ -10,10 +10,13 @@ describe "Date Entry Workflow", :js => true do
     # that these tests don't exercise everything as thoroughly as they
     # should, but they're probably good enough.
 
-    SDBMSS::ReferenceData.create_all
+# does this remember the reference data from the last text?
+#    SDBMSS::ReferenceData.create_all
 
     SDBMSS::Util.wait_for_solr_to_be_current
 
+    @user = User.where(role: "admin").first
+=begin    
     @user = User.create!(
       email: 'search@search.com',
       username: 'search',
@@ -21,6 +24,7 @@ describe "Date Entry Workflow", :js => true do
     )
     @user.role = 'admin'
     @user.save!
+=end    
   end
 
   before :each do

@@ -30,6 +30,8 @@ class Entry < ActiveRecord::Base
   include CreatesActivity
   include Notified
 
+  extend SolrSearchable
+
   belongs_to :source, counter_cache: :entries_count
 
   # entries have institution/collection for "Other published sources" only
@@ -42,6 +44,9 @@ class Entry < ActiveRecord::Base
 
   belongs_to :superceded_by, class_name: "Entry"
   has_many :supercedes, class_name: "Entry", :foreign_key => :superceded_by_id
+
+  has_many :bookmarks, as: :document, dependent: :destroy
+  has_many :bookmarkers, through: :bookmarks, source: :user
 
   has_many :entry_manuscripts, inverse_of: :entry, dependent: :destroy
   has_many :manuscripts, through: :entry_manuscripts
@@ -165,10 +170,6 @@ class Entry < ActiveRecord::Base
 
   after_create :update_source_status
 
-  def self.where_provenance_includes(name)
-    joins(:provenance).where(provenance: { provenance_agent_id: name.id }).distinct
-  end
-
   def public_id
     SDBMSS::IDS.get_public_id_for_model(self.class, id)
   end
@@ -178,19 +179,16 @@ class Entry < ActiveRecord::Base
   end
 
   # returns all Entry objects for this entry's Manuscript
-  def get_entries_for_manuscript
-    ms = manuscript
-    ms ? ms.entries : []
-  end
-
-  def get_num_entries_for_manuscript
-    get_entries_for_manuscript.count
-  end
 
   def get_sale
     sales.first
   end
 
+  # returns all Entry objects for this entry's Manuscript
+  def get_entries_for_manuscript
+    ms = manuscript
+    ms ? ms.entries : []
+  end
 
   # new 'get_sale_agent' methods now that an entry can have multiple of each
 
@@ -220,33 +218,6 @@ class Entry < ActiveRecord::Base
 
   def get_sale_buyers_names
     get_sale_agents_names(SaleAgent::ROLE_BUYER)
-  end
-
-  # FIX ME: old methods, to be removed
-  def get_sale_selling_agent_name
-    puts "deprecated #{__method__}"
-    get_sale_agent_name(SaleAgent::ROLE_SELLING_AGENT)
-  end
-
-  def get_sale_seller_or_holder_name
-    puts "deprecated #{__method__}"
-    get_sale_agent_name(SaleAgent::ROLE_SELLER_OR_HOLDER)
-  end
-
-  def get_sale_buyer_name
-    puts "deprecated #{__method__}"
-    get_sale_agent_name(SaleAgent::ROLE_BUYER)
-  end
-
-  def get_sale_agent_name(role)
-    puts "deprecated #{__method__}"    
-    t = get_sale
-    if t
-      sa = t.get_sale_agent_with_role(role)
-      if sa && sa.agent
-        return sa.agent.name
-      end
-    end
   end
 
   def sale
@@ -328,7 +299,7 @@ class Entry < ActiveRecord::Base
     )
   end
 
-  # every bookmarkable record has a 'bookmark_details' method to return whatever information should be displayed for the bookmark
+  # details for public display, slimmer than 'as_flat_hash' and without things like user groups included
   def bookmark_details
     results = { 
       manuscript: manuscript ? manuscript.id : nil,
@@ -356,12 +327,7 @@ class Entry < ActiveRecord::Base
   # export. Obviously, decisions have to be made here about how to
   # represent the nested associations for display and there has to be
   # some information tweaking/loss.
-  def test_load
-    {
-      authors: entry_authors.map(&:display_value).join("; ")
-    }
-  end
-
+  
   def as_flat_hash
     # for performance, we avoid using has_many->through associations
     # because they always hit the db and circumvent the preloading
@@ -416,6 +382,10 @@ class Entry < ActiveRecord::Base
       deprecated: deprecated,
       superceded_by_id: superceded_by_id
     }
+  end
+
+  def search_result_format
+    as_flat_hash
   end
 
   def to_citation
@@ -530,7 +500,6 @@ class Entry < ActiveRecord::Base
     end
 
     #### Source info
-
     define_field(:string, :source_date, :stored => true) do
       source.date
     end
@@ -604,16 +573,16 @@ class Entry < ActiveRecord::Base
 
     #### Details
 
-    define_field(:string, :title,:stored => true, :multiple => true) do
+    define_field(:string, :title, :stored => true, :multiple => true) do
       entry_titles.map(&:title)
     end
     define_field(:string, :title_flat,:stored => true) do
       entry_titles.map(&:title).join("; ")
     end
 
-#    define_field(:text, :title_search, :stored => true) do
-#      entry_titles.map(&:display_value)
-#    end
+    define_field(:text, :title_search, :stored => true) do
+      entry_titles.map(&:display_value)
+    end
 
     define_field(:string, :author, :stored => true, :multiple => true) do
       authors.map(&:name)
@@ -621,6 +590,11 @@ class Entry < ActiveRecord::Base
     define_field(:text, :author_search, :stored => true) do
       entry_authors.map(&:display_value)
     end
+    define_field(:string, :author_flat, :stored => true) do
+      authors.map(&:name).join("; ")
+    end
+
+
 
     define_field(:string, :manuscript_date, :stored => true, :multiple => true) do
       entry_dates.select {
@@ -663,6 +637,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :artist, :stored => true, :multiple => true) do
       artists.map(&:name)
     end
+    
     define_field(:string, :artist_flat, :stored => true) do
       artists.map(&:name).join("; ")
     end
@@ -693,7 +668,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :material, :stored => true, :multiple => true) do
       entry_materials.map(&:material)
     end
-    define_field(:string, :material_flat, :stored => true, :multiple => true) do
+    define_field(:string, :material_flat, :stored => true) do
       entry_materials.map(&:material).join("; ")
     end
     define_field(:text, :material_search, :stored => true) do
@@ -767,6 +742,10 @@ class Entry < ActiveRecord::Base
       manuscript_binding
     end
 
+    define_field(:string, :binding, :stored => true) do
+      manuscript_binding
+    end
+
     define_field(:date, :created_at, :stored => true) { created_at }
     define_field(:string, :created_by, :stored => true) { created_by ? created_by.username : "" }
     define_field(:date, :updated_at, :stored => true) { updated_at }
@@ -827,6 +806,61 @@ class Entry < ActiveRecord::Base
 
   def to_i
     id
+  end
+
+  # I don't love having to duplicate all the fields AGAIN here, but inheriting it all from blacklight doesn't seem to work
+  # 
+
+def do_csv_search(params, download)
+    s = do_search(params)
+    
+    objects = []
+    puts "Objects:: #{objects.count}"
+    s.results.in_groups_of(300, false) do |group|
+      ids = group.map(&:id)
+      #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
+      objects = objects + Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash }
+      puts "Objects:: #{objects.count}"
+    end
+    # any possible 'speed up' would need to be done here:
+
+    puts "Objects:: #{objects.count}"
+    headers = objects.first.keys
+    filename = download.filename
+    user = download.user
+    id = download.id
+    path = "/tmp/#{id}_#{user}_#{filename}"
+    
+    csv_file = CSV.open(path, "wb") do |csv|
+      csv << headers
+      objects.each do |r|
+        csv << r.values 
+      end
+    end
+
+    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+      zipfile.add(filename, path)
+    end
+
+    File.delete(path) if File.exist?(path)
+
+    download.update({status: 1, filename: "#{filename}.zip"})
+    #download.created_by.notify("Your download '#{download.filename}' is ready.")
+  end  
+
+  def self.filters
+    [
+      "source", "approved", "width", "provenance_date", "price", "num_lines", "num_columns", "miniatures_unspec_size", "miniatures_small", "miniatures_large", "miniatures_fullpage", "manuscript_date",
+      "initials_historiated", "initials_decorated", "height", "folios", "updated_by", "created_by", "entry_id", "manuscript_id"
+    ]
+  end
+
+  def self.fields
+    ["binding_search", "catalog_or_lot_number_search", "sale_seller_search", "sale_buyer_search", "sale_selling_agent_search", "source_search", "institution_search", "title_search", "author_search", "artist_search", "scribe_search", "place_search", "language_search", "material_search", "language_search", "provenance_search"]
+  end
+
+  def self.dates
+    ["created_at", "updated_at"]
   end
 
   private

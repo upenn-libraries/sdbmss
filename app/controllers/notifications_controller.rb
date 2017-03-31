@@ -1,6 +1,8 @@
 class NotificationsController < ApplicationController
   def index
-    @notifications = current_user.notifications
+    @page = params[:page].to_i || 0
+    @pages = (current_user.notifications.count / 20.0).ceil
+    @notifications = current_user.notifications.offset(@page * 20).order("id DESC")
   end
 
   def update

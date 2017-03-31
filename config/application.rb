@@ -34,7 +34,7 @@ module SDBMSS
 
     # this is passed into Blacklight configuration and used by our own
     # ResourceSearch mechanism
-    config.sdbmss_max_search_results = 50000
+    config.sdbmss_max_search_results = 500000
 
     config.sdbmss_show_testing_message = false
 

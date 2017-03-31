@@ -97,8 +97,8 @@ module SolrSearchable
     reviewed = params[:reviewed] && params[:reviewed] == "1" ? false : nil
 
     filters = filters_for_search(params)
-    params = params_for_search(params)
     dates = dates_for_search(params)
+    params = params_for_search(params)
 
     s = self.search do
       
@@ -113,9 +113,9 @@ module SolrSearchable
                 if op && op == 'does not contain'
                   fulltext "-" + v.gsub(' ', '+'), :fields => [field]
                 elsif op && op == 'blank'
-                  with field, nil
+                  with field.gsub('_search', ''), nil
                 elsif op && op == 'not blank'
-                  without field, nil
+                  without field.gsub('_search', ''), nil
                 elsif op && op == 'before'
                   with(field).less_than v
                 elsif op && op == 'after'

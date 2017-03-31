@@ -1,3 +1,5 @@
+require 'uri'
+
 class PagesController < ApplicationController
 
   load_and_authorize_resource :only => [:index, :edit, :create, :update, :destroy]
@@ -37,7 +39,7 @@ class PagesController < ApplicationController
   def show
     @page = Page.find_by(name: params[:name])
     if @page.ext == "pdf"
-      redirect_to "/#{@page.location}/#{@page.filename}"
+      redirect_to "/#{@page.location}/#{URI.encode @page.filename}"
     else
       @filecontents = nil
       File.open(Rails.root.join('public', "#{@page.location}", @page.filename), 'r') do |file|
@@ -92,6 +94,7 @@ class PagesController < ApplicationController
     @page = Page.find_by(name: params[:name])
     if File.delete(Rails.root.join('public', "#{@page.location}", @page.filename))
       @page.destroy!
+      flash[:error] = "#{@page.name} successfully deleted."
     end
     redirect_to pages_path
   end
@@ -111,7 +114,7 @@ class PagesController < ApplicationController
   end
 
   def sanitize(original)
-    ActionController::Base.helpers.sanitize original, tags: %w(figcaption figure img p table td tr th tbody li ul ol span div code b i br strong em a legend h1 h2 h3 h4 h5), attributes: %w(src href class style)
+    ActionController::Base.helpers.sanitize original, tags: %w(figcaption figure img p table td tr th tbody li ul ol span div code b i br strong em a legend h1 h2 h3 h4 h5), attributes: %w(src href class style target)
   end
 
 end

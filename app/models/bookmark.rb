@@ -1,11 +1,16 @@
 class Bookmark < ActiveRecord::Base
 
-  belongs_to :user, polymorphic: true
+  belongs_to :user
   belongs_to :document, polymorphic: true
 
   validates :user_id, presence: true
   validates :document_type, presence: true
   validates :document_id, presence: true
+
+  validates :user_id, uniqueness: { 
+    scope: [:document_id, :document_type],
+    message: "you can only bookmark a record once"
+  }
 
   delegate :public_id, to: :document, prefix: true, allow_nil: true
 

@@ -46,19 +46,27 @@ var load_session = false;
         this.dataTable = manageRecords.createTable(".sdbm-table");
 
         $(".sdbm-table").on("click", ".delete-link", function(event) {
-            if(confirm("Are you sure you want to delete this record?")) {
-                $.ajax({
-                    url: $(event.target).attr("href"),
-                    method: 'DELETE',
-                    error: function(xhr) {
-                        var error = $.parseJSON(xhr.responseText).error;
-                        alert("An error occurred deleting this record: " + error);
-                    },
-                    success: function(data, textStatus, jqXHR) {
-                        manageRecords.dataTable.reload();                    
-                    }
-                });
-            }
+            dataConfirmModal.confirm({
+                title: 'Confirm',
+                text: 'Are you sure you want to delete this record?',
+                commit: 'Yes',
+                cancel: 'Cancel',
+                zIindex: 10099,
+                onConfirm: function() { 
+                    $.ajax({
+                        url: $(event.target).attr("href"),
+                        method: 'DELETE',
+                        error: function(xhr) {
+                            var error = $.parseJSON(xhr.responseText).error;
+                            alert("An error occurred deleting this record: " + error);
+                        },
+                        success: function(data, textStatus, jqXHR) {
+                            manageRecords.dataTable.reload();                    
+                        }
+                    });
+                },
+                onCancel:  function() { }
+            });
             return false;
         });
         
@@ -103,6 +111,7 @@ var load_session = false;
                             SDBM.showErrorModal("#modal", data.error);
                         }
                         manageRecords.dataTable.reload();
+                        $("#group_modal").modal("toggle");
                     },
                     error: function() {
                         console.log('error!!');
@@ -134,6 +143,7 @@ var load_session = false;
                             SDBM.showErrorModal("#modal", data.error);
                         }
                         manageRecords.dataTable.reload();
+                        $("#group_modal").modal("toggle");
                     },
                     error: function() {
                         SDBM.showErrorModal("#modal", "An error occurred removing record(s) from a user group");
@@ -198,10 +208,10 @@ var load_session = false;
 
                 manageRecords.searchAjax(params, dt_params, callback);
             },
-            heightBuffer: 400,
+            heightBuffer: 280,
             columns: manageRecords.getColumns(),
             order: manageRecords.getDefaultSort(),
-            fixedColumns: manageRecords.options.fixedColumns
+            fixedColumns: manageRecords.options.fixedColumns, 
         });
 
         $("#search_results").on('draw.dt', function () {
@@ -323,7 +333,7 @@ var load_session = false;
             }
         }
 //        $("input[name='search_value']").first().val(qs.term);
-        if(qs.unreviewed_only === '1') {
+        if(qs && qs.unreviewed_only === '1') {
             $("input[name='unreviewed_only']").prop('checked', true);
         }
         manageRecords.showOrHideMarkCheckedRecordsButton();
@@ -350,7 +360,7 @@ var load_session = false;
             }
         }
 //        $("input[name='search_value']").first().val(qs.term);
-        if(qs.unreviewed_only === '1') {
+        if(qs && qs.unreviewed_only === '1') {
             $("input[name='unreviewed_only']").prop('checked', true);
         }
         manageRecords.showOrHideMarkCheckedRecordsButton();
@@ -361,7 +371,8 @@ var load_session = false;
     SDBM.ManageRecords.prototype.createFormSubmitHandler = function () {
         var manageRecords = this;
 
-        return function() {
+        return function(e) {
+            e.preventDefault();
 //          var url = manageRecords.persistFormStateToURL();
 //          history.pushState({ url: url }, '', url);
             manageRecords.reloadTable();
@@ -481,12 +492,12 @@ var load_session = false;
                 dbSortField: 'reviewed'
             },
             {
-                title: 'Created By',
+                title: 'Added By',
                 width: "10%",
                 dbSortField: 'created_by'
             },
             {
-                title: 'Created On',
+                title: 'Added On',
                 width: "10%",
                 dbSortField: 'created_at'
             },
@@ -544,15 +555,19 @@ var load_session = false;
     }
 
     SDBM.ManageRecords.prototype.exportCSV = function() {
-        
-        if (confirm('Would you like to download the current search results as a CSV file?')) {
-            
-            var url = this.getCSVSearchUrl();
-
-            exportCSV(url);
-            /* do search, then poll to see if download is completed */
-        }
-
+        var t = this;
+        dataConfirmModal.confirm({
+            title: 'Confirm',
+            text: 'Would you like to download the current search results as a CSV file?',
+            commit: 'Yes',
+            cancel: 'Cancel',
+            zIindex: 10099,
+            onConfirm: function() { 
+                var url = t.getCSVSearchUrl();
+                exportCSV(url);
+            },
+            onCancel:  function() { }
+        });
     };
     
 }());

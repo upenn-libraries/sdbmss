@@ -76,12 +76,15 @@ describe "Data entry", :js => true do
   end
 
   before :all do
-    User.where(username: 'testuser').delete_all
-    @user = User.create!(
+    #User.where(username: 'testuser').delete_all
+    @user = User.where(role: 'admin').first
+=begin
+    User.create!(
       email: 'testuser@test.com',
       username: 'testuser',
       password: 'somethingunguessable'
     )
+=end    
 
     @source = Source.find_or_create_by(
       title: "A Sample Test Source With a Highly Unique Name",
@@ -213,6 +216,8 @@ describe "Data entry", :js => true do
       page.evaluate_script('window.confirm = function() { return true; }')
 
       find_by_id("delete_title_0").click
+      expect(page).to have_content("Are you sure you want to remove this field and its contents?")
+      click_button "Yes"
 
       first(".save-button").click
 

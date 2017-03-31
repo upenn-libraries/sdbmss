@@ -80,12 +80,7 @@ describe "Paper trail", :js => true do
 
 
   before :all do
-    User.where(username: 'testuser').delete_all
-    @user = User.create!(
-      email: 'testuser@test.com',
-      username: 'testuser',
-      password: 'somethingunguessable'
-    )
+    @user = User.where(role: "admin").first
 
     @source = Source.find_or_create_by(
       title: "A Sample Test Source With a Highly Unique Name",
@@ -248,7 +243,10 @@ describe "Paper trail", :js => true do
 
         t = find('#title_0').value
 
-        find('#delete_title_0').click
+        find_by_id("delete_title_0").click
+        expect(page).to have_content("Are you sure you want to remove this field and its contents?")
+        click_button "Yes"
+
         first(".save-button").click
         
         sleep(1.1)

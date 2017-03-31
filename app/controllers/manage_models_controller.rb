@@ -36,7 +36,7 @@ class ManageModelsController < ApplicationController
     model_class_lstr.pluralize
   end
 
-  def index
+  def index    
     #if params[:widescreen] == 'true'
       render :layout => 'widescreen'
     #end
@@ -119,7 +119,6 @@ class ManageModelsController < ApplicationController
   end
 
   def destroy
-    # mark as deleted, don't actually destroy the record
     if deletable?(@model)
       #@model.deleted = true
       if @model.destroy

@@ -27,7 +27,7 @@ class AccountsController < SearchableAuthorityController
       user = User.find_by(username: params[:username])
       if user.present?
         sign_in(:user, user)
-        redirect_to dashboard_path
+        redirect_to dashboard_contributions_path
       else
         render body: "ERROR: User not found: #{params[:username]}"
       end
@@ -60,6 +60,7 @@ class AccountsController < SearchableAuthorityController
           end
         end
       end
+      flash[:notice] = "Invitations sent!"
     end
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }
@@ -105,8 +106,8 @@ class AccountsController < SearchableAuthorityController
   def model_params
     params.require(model_class_lstr.to_sym).permit(:username, :fullname, :institutional_affiliation, :email, :email_is_public, :password, :password_confirmation, :role, :bio, :active, 
       :notification_setting_attributes => [
-        :id, :user_id, :on_update, :on_comment, :on_reply, :on_message, :on_new_user, :on_group,
-        :email_on_new_user, :email_on_update, :email_on_comment, :email_on_reply, :email_on_message, :email_on_group
+        :id, :user_id, :on_update, :on_comment, :on_reply, :on_message, :on_new_user, :on_group, :on_forum_post,
+        :email_on_new_user, :email_on_update, :email_on_comment, :email_on_reply, :email_on_message, :email_on_group, :email_on_forum_post
         ]
       )
   end

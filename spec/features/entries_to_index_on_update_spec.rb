@@ -8,7 +8,7 @@ require 'net/http'
 describe "entries_to_index_on_update" do
 
   before :all do
-    SDBMSS::ReferenceData.create_all
+#    SDBMSS::ReferenceData.create_all
 
     SDBMSS::Util.wait_for_solr_to_be_current
   end

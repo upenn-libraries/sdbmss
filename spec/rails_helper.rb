@@ -3,7 +3,13 @@ ENV["RAILS_ENV"] ||= 'test'
 
 require 'simplecov'
 
-SimpleCov.start 'rails'
+# filter out legacy code from coverage
+SimpleCov.start 'rails' do
+  add_filter 'lib/sdbmss/legacy.rb'
+  add_filter 'lib/sdbmss/csv.rb'
+  add_filter 'lib/sdbmss/viaf_reconcilliation.rb'
+end
+
 puts "SimpleCov started"
 
 require 'spec_helper'
@@ -69,13 +75,14 @@ RSpec.configure do |config|
 
   config.include SDBMSS::Capybara::AlertConfirmer
 
+  DatabaseCleaner.strategy = :truncation
+  DatabaseCleaner.start
+  DatabaseCleaner.clean
+  Sunspot::remove_all!
+  SDBMSS::SeedData.create
+  SDBMSS::ReferenceData.create_all
+  SDBMSS::Mysql.create_functions
   config.before(:all) do
-    DatabaseCleaner.strategy = :truncation
-    DatabaseCleaner.start
-    DatabaseCleaner.clean
-    Sunspot::remove_all!
-    SDBMSS::SeedData.create
-    SDBMSS::Mysql.create_functions
   end
 
   # This is commented out b/c it seems the browser doesn't always hang

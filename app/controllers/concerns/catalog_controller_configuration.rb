@@ -48,8 +48,10 @@ module CatalogControllerConfiguration
       config.index.title_field = ''
       config.index.display_type_field = 'format'
 
-      # FIX ME: replace with optimized CSV export from ENTRIESCONTROLLER
+      # REMOVE: replaced by new csv method
+=begin
       config.index.respond_to.csv = Proc.new {
+        puts "is this still being used????"
         # this gets executed within a format.csv { ... } scope
 
         count = @response["response"]["numFound"]
@@ -69,6 +71,7 @@ module CatalogControllerConfiguration
           render status: :request_entity_too_large, content_type: "text/html", body: error_msg
         end
       }
+=end
 
       # NOTE: the wiki docs say about the :single option that "Only one
       # value can be selected at a time. When the value is selected, the
@@ -186,7 +189,7 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'sale_buyer_search' }
       end
 
-      config.add_search_field('catalog_or_lot_number', label: "Catalog or Lot Number") do |field|
+      config.add_search_field('catalog_or_lot_number', label: "Catalog/Lot Number") do |field|
         field.include_in_simple_select = false
         field.solr_local_parameters = { :qf => 'catalog_or_lot_number_search' }
       end
@@ -347,7 +350,7 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'manuscript' }
       end
 
-      config.add_search_field 'created_by' do |field|
+      config.add_search_field 'added_by' do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = false
         field.solr_local_parameters = { :qf => 'created_by' }
@@ -368,14 +371,14 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'approved' }
       end
 
-      config.add_search_field 'created_at' do |field|
+      config.add_search_field 'added_on' do |field|
         field.include_in_advanced_search = true
         field.is_numeric_field = false
         field.include_in_simple_select = false
         field.solr_local_parameters = { :qf => 'created_at'}
       end
 
-      config.add_search_field 'updated_at' do |field|
+      config.add_search_field 'updated_on' do |field|
         field.include_in_advanced_search = true
         field.is_numeric_field = false
         field.include_in_simple_select = false
@@ -393,6 +396,8 @@ module CatalogControllerConfiguration
       config.add_sort_field 'source_date desc', :label => 'Source Date (desc)'
       config.add_sort_field 'source_agent_sort asc', :label => 'Source Agent (asc)'
       config.add_sort_field 'source_agent_sort desc', :label => 'Source Agent (desc)'
+      config.add_sort_field 'catalog_or_lot_number_search asc', :label => 'Catalog/Lot Number (asc)'
+      config.add_sort_field 'catalog_or_lot_number_search desc', :label => 'Catalog/Lot Number (desc)'
 #      config.add_sort_field 'title_flat asc', :label => 'Title'
 #      config.add_sort_field 'title_flat desc', :label => 'Title (desc)'
 #      config.add_sort_field 'manuscript_date_flat asc', :label => 'Manuscript Date'
@@ -420,8 +425,8 @@ module CatalogControllerConfiguration
       # fix me: despite needing an enourmous amount of configuration, blacklight doesn't let you easily customize something as simple as a dropdown menu
 
       config.add_results_collection_tool(:bookmark_all)
-      config.add_results_collection_tool(:save_current_search)
-#      config.add_results_collection_tool(:save_search)
+#      config.add_results_collection_tool(:save_current_search)
+      config.add_results_collection_tool(:save_search)
 
       config.show.document_actions.delete(:email)
       config.show.document_actions.delete(:sms)

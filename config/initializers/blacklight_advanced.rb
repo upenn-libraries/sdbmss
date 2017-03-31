@@ -50,6 +50,30 @@ module Blacklight
   end
 end
 
+# because we are using blacklight and sunspot, I have to override this method since blacklight 
+# expects sunspot(solr) to index by ID as a number, but sunspot needs to index it by a string (Entry ID)
+# 
+# to compensate, since it's literally a string change, I just do it here...
+
+module Blacklight::SearchHelper
+  def fetch_one(id, extra_controller_params)
+    old_solr_doc_params = Deprecation.silence(Blacklight::SearchHelper) do
+      solr_doc_params(id)
+    end
+
+    if default_solr_doc_params(id) != old_solr_doc_params
+      Deprecation.warn Blacklight::SearchHelper, "The #solr_doc_params method is deprecated. Instead, you should provide a custom SolrRepository implementation for the additional behavior you're offering. The current behavior will be removed in Blacklight 6.0"
+      extra_controller_params = extra_controller_params.merge(old_solr_doc_params)
+    end
+
+    # here!
+    id = "Entry #{id}"
+
+    solr_response = repository.find id, extra_controller_params
+    [solr_response, solr_response.documents.first]
+  end
+end
+
 module Blacklight::Solr
   module SearchBuilderBehavior
     def add_facet_paging_to_solr(solr_params)
@@ -184,6 +208,14 @@ module BlacklightAdvancedSearch
     # override default search constraints display, since we're moving facets elsewhere
     def render_constraints(localized_params = params)
       render_constraints_query(localized_params)
+    end
+
+    def query_has_constraints?(localized_params = params)
+      if is_advanced_search? localized_params
+        true
+      else    
+        !(localized_params[:q].blank?)
+      end
     end
 
     # ... which is what we're doing here!

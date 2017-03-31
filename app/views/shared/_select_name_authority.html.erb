@@ -15,7 +15,7 @@
 
     <div class="row">
         <div class='col-sm-12'>
-            <table class='table table-condensed' style="margin-bottom: 0px;">
+            <table class='table table-condensed' style="margin-bottom: 0px;" id="select-name-table">
                 <thead>
                     <tr>
                         <th></th>
@@ -61,7 +61,7 @@
     <div class="modal-footer">
         <div class='row'>
             <div class='col-sm-8 text-left'>
-                Can't find the {{ type | humanize }} you are looking for? <button href="" class="btn btn-default one-line" style="max-width: 100%" id='propose-name' ng-click="createName()">Propose {{ searchTerm || ("New " + type | humanize ) }}</button>
+                Can't find the {{ type | humanize }} you are looking for? <button href="" class="btn btn-primary one-line" style="max-width: 100%" id='propose-name' ng-click="createName()"><strong>Propose</strong> '{{ searchTerm || ("New " + type | humanize ) }}'</button>
             </div>
             <div class='col-sm-4'>
                 <button class="btn btn-warning" ng-click="cancel()">Cancel</button>

@@ -3,8 +3,11 @@ class ActivitiesController < ApplicationController
 
   before_action :authenticate_user!
 
+  load_and_authorize_resource :only => [:index]
+
   def show_all
     if params[:mine]
+      # finds last 7 days of activity - maybe too much?
       start_date = Activity.where(user: current_user).order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
       @activities = Activity.where(user: current_user).where("created_at > ?", start_date).order("created_at desc").group_by { |a| a.created_at.to_date }      
     elsif params[:watched]
@@ -27,7 +30,6 @@ class ActivitiesController < ApplicationController
         "item_type = 'Source' and item_id in (#{source_ids})"
       ]
       query_string = queries.join(" or ")
-      puts "#{query_string}";
 
       start_date = Activity.where(query_string).order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
       @activities = Activity.where(query_string).where("created_at > ?", start_date).order("created_at desc").group_by { |a| a.created_at.to_date }
@@ -35,6 +37,7 @@ class ActivitiesController < ApplicationController
       start_date = Activity.order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
       @activities = Activity.where("created_at > ?", start_date).order("created_at desc").group_by { |a| a.created_at.to_date }
     end
+    @versions = PaperTrail::Version.where(transaction_id: @activities.map{ |date, activities| activities.map(&:transaction_id) }.flatten.uniq).includes(:item)
     render partial: "activities/show_all"
   end
 

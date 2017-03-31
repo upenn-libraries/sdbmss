@@ -14,11 +14,33 @@
         </dl>
         <%= render partial: "main", locals: { name: name } %>
 
+        <dl class="document-metadata dl-horizontal dl-invert">
+            <dt>
+                Dericci Archive     
+            </dt>
+            <dd>
+                <% if name.dericci_links.group_by(&:dericci_record_id).each do |dericci_record_id, dericci_links| %>
+                    <% if dericci_links.sum(&:reliability) > 3 %>
+                        <%= link_to dericci_links.first.dericci_record.name, dericci_record_path(dericci_links.first.dericci_record) %>
+                        <% dericci_links.each do |dl| %>
+                            <% if dl.other_info.present? %>
+                                <p><%= dl.other_info %></p>
+                            <% end %>
+                            <div class='text-right text-muted'>identified by <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by, up: true } %></div>
+                        <% end %>
+                    <% else %>
+                        <p class="text-muted">This name is not linked to any records in the De Ricci Archives.</p>
+                    <% end %>
+                <% end.empty? %>
+                    <p class="text-muted">This name is not linked to any records in the De Ricci Archives.</p>
+                <% end %>
+            </dd>
+        </dl>
     </div>
-    <div class="col-sm-5">
+    <div class="col-sm-6">
         
         <h2 class="text-center"><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
-        <p class='text-center text-muted'>Share additional information about this name in the box below. Your comments will be displayed publicly.</[>
+        <p class='text-center text-muted'>Share additional information about this name in the box below. Your comments will be displayed publicly.</p>
 
         <%= render partial: "comments/show_all", locals: {comments: name.comments.where(public: true), record: name} %>
 

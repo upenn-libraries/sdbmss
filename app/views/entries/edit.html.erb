@@ -1,5 +1,6 @@
 <% content_for :head do %>
 <%= stylesheet_link_tag "extras", media: "all" %>
+<%= javascript_include_tag "extras" %>
 
 <style type="text/css">
 
@@ -213,7 +214,10 @@ label.col-sm-2-and-half {
               <span ng-repeat="badDataItem in badData">{{ badDataItem }}</span>. Saving the record on this page may cause data loss.
           </div>
 
-          <p>If you are confused or unsure of how to use a data field, check the <strong>Tooltip</strong> by clicking on the <span class="tooltip-icon">?</span>icon.</p>
+          <p><strong>Always</strong> check the tooltips to find out the correct type and format of the data to be entered in a field. Tooltips are accessed by clicking on the <span class="tooltip-icon">?</span> icon next to the field label.</p>
+ 
+          <p>Your data entry will be reviewed by SDBM staff for approval. If there are problems with your data entry, we will be in touch to discuss how to better enter your data to ensure greater accessibility and use by other users.</p>
+
 
       </div>
     </div>
@@ -410,14 +414,19 @@ label.col-sm-2-and-half {
           </a>
         </div>
           <div class="col-sm-12">
-            <span class='control-label'><span sdbm-tooltip="entry_title_as_recorded">As Recorded</span>
-              <span class="input-group">
-                  <input maxlength="255" id="title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.title">
-                  <div id="title_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
+            <span class='control-label expandable'>
+              <span class="expandable-table">
+                <span sdbm-tooltip="entry_title_as_recorded">As Recorded</span>
+                <input maxlength="255" id="title_{{ $index }}" type="text" ng-focus="expand($event)" ng-blur="reduce($event)" class="form-control entry-title" data-ng-model="entry_title.title">
+                <div id="title_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
               </span>
             </span>
-            <span class="control-label"><span sdbm-tooltip="entry_common_title">Standard Title</span>
-              <input input maxlength="255" id="common_title_{{ $index }}" type="text" class="form-control" data-ng-model="entry_title.common_title">
+
+            <span class="control-label expandable">
+              <span class="expandable-table">
+                <span sdbm-tooltip="entry_common_title">Standard Title</span>
+                <input input maxlength="255" id="common_title_{{ $index }}" type="text" ng-blur="reduce($event)" ng-focus="expand($event)" class="form-control" data-ng-model="entry_title.common_title">
+              </span>
             </span>
           </div>
       </div>
@@ -442,8 +451,11 @@ label.col-sm-2-and-half {
           </a>
         </div>
         <div class="col-sm-12">
-            <span class='control-label'><span sdbm-tooltip="entry_author_as_recorded">As Recorded</span>
-              <input input maxlength="255" id="author_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_author.observed_name">
+            <span class='control-label expandable'>
+              <span class="expandable-table">
+                <span sdbm-tooltip="entry_author_as_recorded">As Recorded</span>
+                <input input maxlength="255" id="author_observed_name_{{ $index }}" type="text" class="form-control author-as-recorded" data-ng-model="entry_author.observed_name" ng-focus="expand($event)" ng-blur="reduce($event)">
+              </span>
             </span>
             
             <span class='control-label' sdbm-tooltip="entry_author">Authority Name
@@ -488,11 +500,12 @@ label.col-sm-2-and-half {
           </a>
         </div>
         <div class="col-sm-12">
-          <span class='control-label'><span sdbm-tooltip="entry_date_as_recorded">As Recorded</span>
-          <div class="input-group">
-              <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/entry_dates/parse_observed_date.json">
-              <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
-          </div>
+          <span class='control-label expandable'>
+            <span class="expandable-table">
+              <span sdbm-tooltip="entry_date_as_recorded">As Recorded</span>
+               <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/entry_dates/parse_observed_date.json" ng-focus="expand($event)" ng-blur="reduce($event)">
+                <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
+            </span>
           </span>
           <span class='control-label'><span sdbm-tooltip="entry_date_for_search">Range for Search</span>
           <span ng-class="{ 'has-error': !entryForm['date_normalized_start_' + $index].$valid }">
@@ -526,8 +539,11 @@ label.col-sm-2-and-half {
           </a>
         </div>
         <div class="col-sm-12">
-          <span class='control-label'><span sdbm-tooltip="entry_artist_as_recorded">As Recorded</span>
-            <input input maxlength="255" id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name">
+          <span class='control-label expandable'>
+            <span class="expandable-table">
+              <span sdbm-tooltip="entry_artist_as_recorded">As Recorded</span>
+              <input input maxlength="255" id="artist_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_artist.observed_name" ng-focus="expand($event)" ng-blur="reduce($event)">
+            </span>
           </span>
           
           <span class='control-label' sdbm-tooltip="entry_artist">Authority Name</span>
@@ -569,10 +585,13 @@ label.col-sm-2-and-half {
           </a>
         </div>
         <div class="col-sm-12">
-          <span class='control-label'><span sdbm-tooltip="entry_scribe_as_recorded">As Recorded</span>
-            <input input maxlength="255" id="scribe_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_scribe.observed_name">
+          <span class='control-label expandable'>
+            <span class="expandable-table">
+              <span sdbm-tooltip="entry_scribe_as_recorded">As Recorded</span>
+              <input input maxlength="255" id="scribe_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_scribe.observed_name" ng-focus="expand($event)" ng-blur="reduce($event)">
+            </span>
           </span>
-          
+
           <span class='control-label' sdbm-tooltip="entry_scribe">Authority Name</span>
           <div class="btn-group name-authority-group" role="group">
             <a id="find_scribe_name_authority_{{ $index }}" ng-if='entry_scribe.scribe.id == undefined' ng-init="entry_scribe.scribe = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', entry_scribe.scribe, 'is_scribe', entry_scribe.observed_name)">Find or Create Authority Name</a>
@@ -606,8 +625,11 @@ label.col-sm-2-and-half {
           </a>
         </div>
           <div class="col-sm-12">
-            <span class='control-label'><span sdbm-tooltip="entry_place_as_recorded">As Recorded</span>
-              <input input maxlength="255" id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name">
+            <span class='control-label expandable'>
+              <span class="expandable-table">
+                <span sdbm-tooltip="entry_place_as_recorded">As Recorded</span>
+                <input input maxlength="255" id="place_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_place.observed_name" ng-focus="expand($event)" ng-blur="reduce($event)">
+              </span>
             </span>
             
             <span class='control-label' sdbm-tooltip="entry_place">Authority Name</span>
@@ -677,8 +699,12 @@ label.col-sm-2-and-half {
           </a>
         </div>
         <div class="col-sm-12">
-          <span class='control-label' sdbm-tooltip="entry_use">Use</span>
-          <input maxlength="255" id="use_{{ $index }}" type="text" class="form-control" data-ng-model="entry_use.use">
+          <span class='control-label expandable'>
+            <span class="expandable-table">
+              <span sdbm-tooltip="entry_use">Use</span>
+              <input maxlength="255" id="use_{{ $index }}" type="text" class="form-control" data-ng-model="entry_use.use" ng-focus="expand($event)" ng-blur="reduce($event)">
+            </span>
+          </span>
         </div>              
       </div>
     </div>
@@ -859,15 +885,19 @@ label.col-sm-2-and-half {
         <div class="col-sm-12">
           <div class="row provenance-row">
             <div class="col-sm-2">
-              <label sdbm-tooltip="entry_provenance_agent_as_recorded" class='control-label one-line'>Name as Recorded</label>       
+              <div class="control-label">
+                <span sdbm-tooltip="entry_provenance_agent_as_recorded">Name As Recorded</span>              
+              </div>
             </div>
-            <div class="col-sm-4">
-              <input input maxlength="255" id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name" size="12">
+            <div class="col-sm-4 expandable">
+                <span class="expandable-table">
+                  <input input maxlength="255" id="provenance_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="prov.observed_name" size="12" ng-focus="expand($event)" ng-blur="reduce($event)">
+                </span>
             </div>
             <div class="col-sm-2">
               <span class='control-label one-line' sdbm-tooltip="entry_provenance_agent">Authority Name</span>
             </div>
-            <div class="col-sm-4 text-right">
+            <div class="col-sm-4">
               <div class="btn-group name-authority-group">
                 <a id='find_provenance_name_authority_{{ $index }}' ng-if='prov.provenance_agent.id == undefined' ng-init="prov.provenance_agent = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', prov.provenance_agent, 'is_provenance_agent', prov.observed_name)" style="width: 100%">Find or Create Authority Name</a>
                 <div ng-if='prov.provenance_agent != undefined && prov.provenance_agent.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
@@ -950,7 +980,7 @@ label.col-sm-2-and-half {
             Created by {{ entry.created_by }} on {{ entry.created_at }}
         </label>
     </div>
-
+<!--
     <div class="row">
       <div class="col-sm-12">
         <span class="h4">User Groups</span>
@@ -986,7 +1016,7 @@ label.col-sm-2-and-half {
           </select>
         </div>
       </div>
-    </div>        
+    </div>  -->      
 
 </fieldset>
 
@@ -1002,6 +1032,15 @@ label.col-sm-2-and-half {
   <% end %>
 
 </form>
+
+<script type="text/ng-template" id="ExpandAsRecorded.html">
+  <div class="modal-body form-horizontal text-center">
+    <form action="" class="form form-inline as-recorded-form" ng-submit="done($event)">
+      <label for="" class="control-label as-recorded-cell">As Recorded</label>
+      <textarea type="text" class="form-control as-recorded-cell as-recorded-input" ng-change="onUpdate()" id="focusMe" ng-model="as_recorded" maxlength="255" autofocus></textarea>
+    </form>
+  </div>
+</script>
 
 <script type="text/ng-template" id="postEntrySave.html">
     <div class="modal-header">

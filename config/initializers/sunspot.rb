@@ -8,4 +8,7 @@ class EntryAdapter < Sunspot::Adapters::InstanceAdapter
   end
 end
 
-Sunspot::Adapters::InstanceAdapter.register(EntryAdapter, Entry)
+# FIX ME: I disabled this, does it break blacklight, as claimed? so far it doesn't seem to
+# see more: https://github.com/projectblacklight/blacklight/wiki/Sunspot-for-indexing 
+
+#Sunspot::Adapters::InstanceAdapter.register(EntryAdapter, Entry)

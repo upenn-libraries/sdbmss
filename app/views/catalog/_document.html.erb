@@ -9,155 +9,159 @@
 <% if entry.nil? %>
     <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
 <% else %>
-<div class='row document-heading'>
-  <div class="col-xs-11">
-      <span class='h4'>
-        <%# data-context-href triggers an HTTP callback before loading the entry page; this makes prev/next links on individual Entry page work %>
-        <a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a>
-      </span>
-      <% if !entry.approved %>
-        <span>
-          <small class="text-danger"><span class="glyphicon glyphicon-alert"></span> Unapproved</small>
-        </span>
-      <% end %>
+<div class="panel panel-default document">
+  <div class="panel-heading">
+    <div class='row'>
+      <div class="col-xs-10">
+          <span class='h4'>
+            <%# data-context-href triggers an HTTP callback before loading the entry page; this makes prev/next links on individual Entry page work %>
+            <a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a>
+          </span>
+          <% if !entry.approved %>
+            <span>
+              <small class="text-danger"><span class="glyphicon glyphicon-alert"></span> Unapproved</small>
+            </span>
+          <% end %>
+      </div>
+      <div class="col-xs-2 text-right">
+          <span class="document-preview"><%= render partial: 'catalog/bookmark_control', locals: {document: document} %></span>        
+      </div>
+    </div>
   </div>
-  <div class="col-xs-1 text-right" style="padding: 0px;">
-      <span class="document-preview"><%= render partial: 'catalog/bookmark_control', locals: {document: document} %></span>        
-  </div>
-</div>
-
-<div class="document <%= render_document_class document %>" itemscope itemtype="<%= document.itemtype %>">
-    <dl class="document-metadata dl-horizontal dl-invert">
-        <% manuscripts_str = render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
-        <% if manuscripts_str.present? %>
-        <div class='text-center'>
-            <%= manuscripts_str %>
-        </div>
-        <% end %>
-
-      <% entry.supercedes.each do |superceded| %>
-        <dt></dt>
-        <dd class='text-warning'>This entry supercedes the deprecated entry <a href="/entries/<%= superceded.id %>" class="bg-warning text-warning"><%= superceded.public_id %></a>.</dd>
-      <% end %>
-
-	    <dt>Source</dt>
-	    <dd>
-            <%= link_to entry.source.display_value, source_path(entry.source) %> (<%= entry.source.source_type.display_name %>)
-        </dd>
-
-        <% if entry.catalog_or_lot_number.present? %>
-	    <dt>Cat./Lot #</dt>
-	    <dd><%= entry.catalog_or_lot_number %></dd>
-        <% end %>
-
-        <% if entry.institution.present? %>
-	    <dt>Institution/Collection</dt>
-	    <dd><%= entry.institution %></dd>
-        <% end %>
-        
-        <% if (sale = entry.get_sale).present? %>
-
-          <% if (selling_agents = sale.get_selling_agents).present? %>
-              <dt>Selling Agent(s)</dt>
-              <dd>
-                  <% selling_agents.each do |selling_agent| %>
-                      <a href="<%= name_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a><br>
-                  <% end %>
-              </dd>
-          <% end %>
-
-          <% if (sellers_or_holders = sale.get_sellers_or_holders).present? %>
-              <dt>Seller(s)</dt>
-              <dd>
-                  <% sellers_or_holders.each do |seller_or_holder| %>
-                      <a href="<%= name_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a><br>
-                  <% end %>
-              </dd>
-          <% end %>
-
-          <% if (buyers = sale.get_buyers).present? %>
-              <dt>Buyer(s)</dt>
-              <dd>
-                  <% buyers.each do |buyer| %>
-                      <a href="<%= name_path(buyer.agent) %>"><%= buyer.agent.name %></a><br>
-                  <% end %>
-              </dd>
-          <% end %>
-
-        <% end %>
-
-
-        <% if entry.entry_titles.length > 0 %>
-	    <dt>Titles</dt>
-        <dd>
-        <% entry.entry_titles.each do |entry_title| %>
-          <%= entry_title.title %> <% if entry_title.common_title.present? %>[<%= entry_title.common_title %>]<% end %><br/>
-        <% end %>
-        </dd>
-        <% end %>
-
-        <% if entry.entry_authors.length > 0 %>
-        <dt>Authors</dt>
-        <dd>
-        <% entry.entry_authors.each do |entry_author| %>
-          <% if entry_author.observed_name.present? %>
-            <%= entry_author.observed_name %>
-            <% if entry_author.role %>(<%= entry_author.role %>)<% end %>
-            <% if entry_author.author %>
-            (<%= link_to entry_author.author.name, name_path(entry_author.author) %>)
+  <div class="panel-body">
+    <div class="<%= render_document_class document %>" itemscope itemtype="<%= document.itemtype %>">
+        <dl class="document-metadata dl-horizontal dl-invert">
+            <% manuscripts_str = render partial: "shared/entry_manuscripts", locals: { entry: entry } %>
+            <% if manuscripts_str.present? %>
+            <div class='text-center'>
+                <%= manuscripts_str %>
+            </div>
             <% end %>
-          <% elsif entry_author.author %>
-            <%= link_to entry_author.author.name, name_path(entry_author.author) %>
-            <% if entry_author.role %>(<%= entry_author.role %>)<% end %>
+
+          <% entry.supercedes.each do |superceded| %>
+            <dt></dt>
+            <dd class='text-warning'>This entry supercedes the deprecated entry <a href="/entries/<%= superceded.id %>" class="bg-warning text-warning"><%= superceded.public_id %></a>.</dd>
           <% end %>
-          <br/>
-        <% end %>
-        </dd>
-        <% end %>
 
-        <% if entry.entry_dates.length > 0 %>
-        <dt>Dates</dt>
-        <dd>
-        <% entry.entry_dates.each do |entry_date| %>
-          <%= entry_date.display_value %><br/>
-        <% end %>
-        </dd>
-        <% end %>
+    	    <dt>Source</dt>
+    	    <dd>
+                <%= link_to entry.source.display_value, source_path(entry.source) %> (<%= entry.source.source_type.display_name %>)
+            </dd>
 
-        <% if entry.entry_places.length > 0 %>
-        <dt>Places</dt>
-        <dd>
-        <% entry.entry_places.each do |entry_place| %>
-          <%= entry_place.display_value %><br/>
-        <% end %>
-        </dd>
-        <% end %>
+            <% if entry.catalog_or_lot_number.present? %>
+    	    <dt>Cat./Lot #</dt>
+    	    <dd><%= entry.catalog_or_lot_number %></dd>
+            <% end %>
 
-        <% if entry.folios.present? %>
-        <dt>Folios</dt>
-        <dd>
-            <%= entry.folios %>
-        </dd>
-        <% end %>
+            <% if entry.institution.present? %>
+    	    <dt>Institution/Collection</dt>
+    	    <dd><%= entry.institution %></dd>
+            <% end %>
+            
+            <% if (sale = entry.get_sale).present? %>
 
-        <% if (provenance_count = entry.provenance.length) > 0 %>
-        <dt>Provenance Info</dt>
-        <dd>
-            This entry has <%= provenance_count %> provenance records involving:<br/>
-            <% entry.unique_provenance_agents.each do |unique_provenance_agent| %>
-                <% if unique_provenance_agent[:agent].present? %>
-                <a href="<%= url_for unique_provenance_agent[:agent] %>"><%= unique_provenance_agent[:agent] %></a>
-                <% else %>
-                  <%= unique_provenance_agent[:name] %>
+              <% if (selling_agents = sale.get_selling_agents).present? %>
+                  <dt>Selling Agent(s)</dt>
+                  <dd>
+                      <% selling_agents.each do |selling_agent| %>
+                          <a href="<%= name_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a><br>
+                      <% end %>
+                  </dd>
+              <% end %>
+
+              <% if (sellers_or_holders = sale.get_sellers_or_holders).present? %>
+                  <dt>Seller(s)</dt>
+                  <dd>
+                      <% sellers_or_holders.each do |seller_or_holder| %>
+                          <a href="<%= name_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a><br>
+                      <% end %>
+                  </dd>
+              <% end %>
+
+              <% if (buyers = sale.get_buyers).present? %>
+                  <dt>Buyer(s)</dt>
+                  <dd>
+                      <% buyers.each do |buyer| %>
+                          <a href="<%= name_path(buyer.agent) %>"><%= buyer.agent.name %></a><br>
+                      <% end %>
+                  </dd>
+              <% end %>
+
+            <% end %>
+
+
+            <% if entry.entry_titles.length > 0 %>
+    	    <dt>Titles</dt>
+            <dd>
+            <% entry.entry_titles.each do |entry_title| %>
+              <%= entry_title.title %> <% if entry_title.common_title.present? %>[<%= entry_title.common_title %>]<% end %><br/>
+            <% end %>
+            </dd>
+            <% end %>
+
+            <% if entry.entry_authors.length > 0 %>
+            <dt>Authors</dt>
+            <dd>
+            <% entry.entry_authors.each do |entry_author| %>
+              <% if entry_author.observed_name.present? %>
+                <%= entry_author.observed_name %>
+                <% if entry_author.role %>(<%= entry_author.role %>)<% end %>
+                <% if entry_author.author %>
+                (<%= link_to entry_author.author.name, name_path(entry_author.author) %>)
                 <% end %>
-                <br/>
+              <% elsif entry_author.author %>
+                <%= link_to entry_author.author.name, name_path(entry_author.author) %>
+                <% if entry_author.role %>(<%= entry_author.role %>)<% end %>
+              <% end %>
+              <br/>
             <% end %>
-        </dd>
+            </dd>
+            <% end %>
+
+            <% if entry.entry_dates.length > 0 %>
+            <dt>Dates</dt>
+            <dd>
+            <% entry.entry_dates.each do |entry_date| %>
+              <%= entry_date.display_value %><br/>
+            <% end %>
+            </dd>
+            <% end %>
+
+            <% if entry.entry_places.length > 0 %>
+            <dt>Places</dt>
+            <dd>
+            <% entry.entry_places.each do |entry_place| %>
+              <%= entry_place.display_value %><br/>
+            <% end %>
+            </dd>
+            <% end %>
+
+            <% if entry.folios.present? %>
+            <dt>Folios</dt>
+            <dd>
+                <%= entry.folios %>
+            </dd>
+            <% end %>
+
+            <% if (provenance_count = entry.provenance.length) > 0 %>
+            <dt>Provenance Info</dt>
+            <dd>
+                This entry has <%= provenance_count %> provenance records involving:<br/>
+                <% entry.unique_provenance_agents.each do |unique_provenance_agent| %>
+                    <% if unique_provenance_agent[:agent].present? %>
+                    <a href="<%= url_for unique_provenance_agent[:agent] %>"><%= unique_provenance_agent[:agent] %></a>
+                    <% else %>
+                      <%= unique_provenance_agent[:name] %>
+                    <% end %>
+                    <br/>
+                <% end %>
+            </dd>
+            <% end %>
+        </dl>
         <% end %>
-
-        <dt></dt>
-        <dd><%= link_to "View complete record...", entry_path(entry) %></dd>
-    </dl>
-    <% end %>
-
+    </div>
+  </div>
+  <div class="panel-footer text-center">
+    <%= link_to "View complete record...", entry_path(entry) %>
+  </div>
 </div>

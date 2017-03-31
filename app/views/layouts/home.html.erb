@@ -1,0 +1,127 @@
+<%# unforunately, this is slightly modified copy of blacklight.html.erb; there's no way to shoehorn 'ng-app' into that layout -%>
+<!DOCTYPE html>
+<html lang="en" class="no-js" data-ng-app="sdbmApp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <!-- Mobile viewport optimization h5bp.com/ad -->
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <!-- Internet Explorer use the highest version available -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Mobile IE allows us to activate ClearType technology for smoothing fonts for easy reading -->
+    <!--[if IEMobile]>
+      <meta http-equiv="cleartype" content="on">
+    <![endif]-->
+    <link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Sarala" rel="stylesheet">
+    <title><%= render_page_title %></title>
+    <%= opensearch_description_tag application_name, main_app.opensearch_catalog_url(:format => 'xml') %>
+    <%= favicon_link_tag 'favicon.ico' %>
+    <%= stylesheet_link_tag "application", media: "all" %>
+    <%# stylesheet_link_tag "extras" %>
+    <%= javascript_include_tag "application" %>
+    <%# javascript_include_tag "extras" %>
+    <% if Rails.env.development? || Rails.env.staging? %>
+      <%= javascript_include_tag "development" %>
+    <% end %>
+    <!-- disable animations when running tests -->
+    <% if Rails.env.test? %>
+      <style type="text/css">
+        div, a, span, footer, header, ul, .modal, .modal-title, .fade, .collapse, .modal-open {
+            -webkit-transition: none !important;
+            -moz-transition: none !important;
+            -ms-transition: none !important;
+            -o-transition: none !important;
+            transition: none !important;
+        }
+/*        div.modal.fade.ng-isolate-scope.in {
+          display: none !important;
+        }*/
+
+        .modal-backdrop, .fade {
+          display: none !important;
+        }
+        .fade.in {
+          display: block !important;
+        }
+        .control-panel {
+          position: relative;
+        }
+        .main-content {
+          width: calc(100% - 288px);
+          position: relative;
+          float: right;
+        }
+      </style>
+      <script type='text/javascript'>
+        $(".fade").removeClass("fade");
+      </script>
+    <%end%>
+
+    <!-- yeah, this is not a great way of doing this... -->
+    <style type="text/css">
+      <% if can? :manage, Page %>
+        .qtip-titlebar {
+          display: block;
+        }
+      <% else %>
+        .qtip-titlebar {
+          display: none;
+        }
+      <% end %>
+    </style>
+
+    <%= csrf_meta_tags %>
+    <%= content_for(:head) %>
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+  </head>
+  <body data-offset="50" class="<%= render_body_class %>">
+  <!-- control panel - or 'login' panel, when logged out -->  
+  <%= render :partial => 'shared/header_navbar' %>
+
+  <%= render partial: 'shared/control_panel' %>
+  <!-- -->
+  <div class="main-content-wrapper">
+    <div class="main-content" style="padding-top: 20px;">
+      <%# render :partial => 'shared/search_navbar' %>
+
+      <%# this is from blacklight %>
+      <%= render partial: 'shared/ajax_modal' %>
+
+      <div id="main-container" class="container">
+
+        <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
+        <!--  breadcrumbs -->
+        <% if content_for :breadcrumbs %>
+        <ol class="breadcrumb">
+          <%= yield :breadcrumbs %>
+        </ol>
+        <% end %>
+        
+        <!-- not sure why, but setting overflow: hidden seems to solve some of the scroll-bar issues I was having... -->
+        <div class="row" style="overflow: hidden;">
+          <div class="col-sm-12">
+            <%= yield %>
+          </div>
+        </div>
+      </div>
+      <%# this is SDBM-specific modal code %>
+      <%= render :partial => 'shared/modal' %>
+      
+      <%= render :partial => 'shared/footer' %>
+    </div>
+  </div>
+  <div class="alerts-absolute"></div>
+  </body>
+</html>

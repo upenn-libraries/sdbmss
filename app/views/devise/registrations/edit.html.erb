@@ -15,12 +15,13 @@
     <p class='text-left text-muted'>Please provide some information about yourself to help us and other
         users get to know you. Your profile information will be accessible to
         other users from your user name as it appears in entries, manuscript
-        records, or comments that you have created or responded to.</p>
+        records, or comments that you have created or responded to. You can also choose what Notifications on your activity 
+        you will receive and set them to be received by email or through the SDBM application, or both.</p>
   </div>
   <div class="col-sm-12 text-center">
     <ul class="nav nav-tabs">
       <li class="active"><a data-toggle="tab" href="#profile-settings">Profile</a></li>
-      <li><a data-toggle="tab" href="#account-settings">Account</a></li>
+      <li><a data-toggle="tab" href="#account-settings">Password</a></li>
       <li><a data-toggle="tab" href="#notification-settings">Notifications</a></li>
     </ul>
   </div>
@@ -90,10 +91,10 @@
                     <label class='control-label'>On Update To My Watched Records</label><br>
                     <span class="text-muted">Note: Records you create are 'watched' by default</span>
                   </td>
-                  <td class='toggle-container'>
+                  <td class=''>
                     <%= notification_f.check_box :on_update, class: 'form-control' %>
                   </td>
-                  <td class='toggle-container'>
+                  <td class=''>
                     <%= notification_f.check_box :email_on_update, class: 'form-control' %>
                   </td>
                 </tr>
@@ -102,10 +103,10 @@
                     <label class='control-label'>On Comment To My Watched Records</label><br>
                     <span class="text-muted">Note: Records you create are 'watched' by default</span>                    
                   </td>
-                  <td class='toggle-container'>
+                  <td class=''>
                     <%= notification_f.check_box :on_comment, class: 'form-control'  %>
                   </td>
-                  <td class='toggle-container'>
+                  <td class=''>
                     <%= notification_f.check_box :email_on_comment, class: 'form-control'  %>
                   </td>
                 </tr>
@@ -113,10 +114,10 @@
                   <td>
                     <label class='control-label'>On Reply To My Comments</label><br>
                   </td>
-                  <td class='toggle-container'>
+                  <td class=''>
                     <%= notification_f.check_box :on_reply, class: 'form-control'  %>
                   </td>
-                  <td class='toggle-container'>
+                  <td class=''>
                     <%= notification_f.check_box :email_on_reply, class: 'form-control'  %>
                   </td>
                 </tr>
@@ -124,10 +125,10 @@
                   <td>
                     <label class='control-label'>On Private Message</label><br>
                   </td>
-                  <td class='toggle-container'>
+                  <td class=''>
                     <%= notification_f.check_box :on_message, class: 'form-control'  %>
                   </td>
-                  <td class='toggle-container'>
+                  <td class=''>
                     <%= notification_f.check_box :email_on_message, class: 'form-control'  %>
                   </td>
                 </tr>
@@ -135,10 +136,10 @@
                   <td>
                     <label class='control-label'>On Group Invite</label><br>
                   </td>
-                  <td class='toggle-container'>
+                  <td class=''>
                     <%= notification_f.check_box :on_group, class: 'form-control'  %>
                   </td>
-                  <td class='toggle-container'>
+                  <td class=''>
                     <%= notification_f.check_box :email_on_group, class: 'form-control'  %>
                   </td>
                 </tr>
@@ -147,10 +148,10 @@
                   <td>
                     <label class='control-label'>On New User Registration</label><br>
                   </td>
-                  <td class='toggle-container'>
+                  <td class=''>
                     <%= notification_f.check_box :on_new_user, class: 'form-control'  %>
                   </td>
-                  <td class='toggle-container'>
+                  <td class=''>
                     <%= notification_f.check_box :email_on_new_user, class: 'form-control'  %>
                   </td>
                 </tr>
@@ -158,11 +159,23 @@
                   <td>
                     <label class='control-label'>On Any Comment</label><br>
                   </td>
-                  <td class='toggle-container'>
+                  <td class=''>
                     <%= notification_f.check_box :on_all_comment, class: 'form-control'  %>
                   </td>
-                  <td class='toggle-container'>
+                  <td class=''>
                     <%= notification_f.check_box :email_on_all_comment, class: 'form-control'  %>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <label class='control-label'>On Forum Post</label><br>
+                    <span class="text-muted">When someone posts to a forum topic you are following.</span>
+                  </td>
+                  <td class=''>
+                    <%= notification_f.check_box :on_forum_post, class: 'form-control'  %>
+                  </td>
+                  <td class=''>
+                    <%= notification_f.check_box :email_on_forum_post, class: 'form-control'  %>
                   </td>
                 </tr>
                 <% end %>

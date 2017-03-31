@@ -32,6 +32,8 @@ class Name < ActiveRecord::Base
 
   belongs_to :reviewed_by, :class_name => 'User'
 
+  has_many :bookmarks, as: :document, dependent: :destroy  
+
   has_many :entry_artists, foreign_key: "artist_id"
   has_many :artist_entries, -> {distinct},  through: :entry_artists, source: :entry
 
@@ -53,6 +55,10 @@ class Name < ActiveRecord::Base
   has_many :agent_sources, -> {distinct},  through: :source_agents, source: :source
 
   has_many :comments, as: :commentable
+
+  has_many :dericci_links
+  has_many :dericci_records, through: :dericci_links
+
 
   validates_presence_of :name
 
@@ -136,7 +142,7 @@ class Name < ActiveRecord::Base
   end
 
   def self.dates
-    super + []
+    super
   end
 
   def search_result_format
@@ -163,6 +169,12 @@ class Name < ActiveRecord::Base
       updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
     }
   end
+
+  ###
+  # 
+  # This is all used only for creating reference data
+  #
+  ###
 
   # constructor for a Provenance Agent. takes same args as #new
   def self.agent(*args)
@@ -309,7 +321,8 @@ class Name < ActiveRecord::Base
   end
 
   def public_id
-    is_provenance_agent ?  "SDBM_AGENT_#{id}" : SDBMSS::IDS.get_public_id_for_model(self.class, id)
+    #is_provenance_agent ?  "SDBM_AGENT_#{id}" : SDBMSS::IDS.get_public_id_for_model(self.class, id)
+    SDBMSS::IDS.get_public_id_for_model(self.class, id)
   end
 
   def to_s

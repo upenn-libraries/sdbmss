@@ -5,12 +5,8 @@ require "rails_helper"
 describe "Manage Names", :js => true do
 
   before :all do
-    @user = User.create!(
-      email: 'testuser@test.com',
-      username: 'adminuser',
-      password: 'somethingunguessable',
-      role: 'admin'
-    )
+    @user = User.where(role: "admin").first
+
   end
 
   before :each do

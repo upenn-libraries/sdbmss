@@ -28,8 +28,16 @@ class SearchableAuthorityController < ManageModelsController
   end
 
   def format_search(s)
+    bookmarkable = [Source, Manuscript, Name].include? model_class
     results = s.results.map do |obj|
-      obj.search_result_format
+      if bookmarkable
+        obj.search_result_format.merge({
+          bookmarkwatch: (render_to_string partial: "nav/bookmark_watch_table", locals: {model: obj }, layout: false, formats: [:html]),  
+          can_edit: can?(:edit, obj)
+        })
+      else
+        obj.search_result_format
+      end
     end
     respond_to do |format|
       format.json {

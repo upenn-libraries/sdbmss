@@ -43,7 +43,7 @@ describe "Sign up / Edit Profile", :js => true do
     fill_in 'user_fullname', :with => "newfullname"
     fill_in 'user_institutional_affiliation', :with => "newaffiliation"
     fill_in 'user_bio', :with => 'newbio'
-    click_link "Account"
+    click_link "Password"
     fill_in 'user_password', :with => 'newpassword'
     fill_in 'user_password_confirmation', :with => 'newpassword'
     fill_in 'user_current_password', :with => 'somethingunguessable'
