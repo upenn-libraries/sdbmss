@@ -690,7 +690,9 @@ $(document).ready(function() {
                         <a class="sdbmss-has-tooltip linking-tool-link" data-tooltip-template="linking_tool_search_tips" href="#"><span class="glyphicon glyphicon-search"></span> Search Tips</a>
                     </li>
                 </ul>
+                <%= form_tag(request.path, method: :get, id: "link-search") do %>
                 <%= render partial: "linking_tool/show_form" %>                    
+                <% end %>
             </div>
         </div>
     </nav>

@@ -31,7 +31,13 @@ class CatalogController < ApplicationController
   end
 
   def index
-    super
+    respond_to do |format|
+      format.rss { redirect_to feed_path(format: :rss) }
+      format.atom {redirect_to feed_path(format: :rss) }
+      format.html { super }
+      format.json { super }
+      format.csv { super }
+    end
     #puts "********* #{current_search_session.inspect} *************"
   end
 
