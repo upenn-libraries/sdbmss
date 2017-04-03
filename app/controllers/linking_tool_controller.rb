@@ -4,6 +4,10 @@
 class LinkingToolController < ApplicationController
 
   def options
+    @search_fields = Entry.search_fields
+    @fields = Entry.fields
+    @filters = Entry.filters
+    @dates = Entry.dates
     @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
     @field_options = ["contains", "does not contain", "blank", "not blank"]
     @date_options = ["before", "after", "near", "exact"]
