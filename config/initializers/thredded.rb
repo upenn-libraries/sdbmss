@@ -155,6 +155,22 @@ module Thredded
       end
     end
   end
+
+  class CreateMessageboard
+    #disabled auto-create first topic/post
+   def initialize(messageboard, user)
+      @messageboard = messageboard
+      @user = user
+    end
+
+    def run
+      Messageboard.transaction do
+        fail ActiveRecord::Rollback unless @messageboard.save
+      end
+      true
+    end
+
+  end
 end
 
 Thredded::ApplicationController.send :include, ThreddedNullUserPermissions
