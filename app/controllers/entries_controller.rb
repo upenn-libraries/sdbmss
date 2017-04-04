@@ -53,7 +53,7 @@ class EntriesController < SearchableAuthorityController
       :entry_uses, :entry_materials, 
       {:entry_manuscripts => [:manuscript]}, 
       :source, :bookmarks, :watches,
-    ).where(id: ids).order("FIELD(id, #{ids.join(', ')})").map { |e| 
+    ).where(id: ids).order(ids.count > 0 ? "FIELD(id, #{ids.join(', ')})" : "id desc").map { |e| 
       e.as_flat_hash.merge({ 
         can_edit: can?(:edit, e), 
         # FIX ME this can probably be further improved (sped up) by not rendering repeated html, even if it is a small amount (instead use template in JS)
