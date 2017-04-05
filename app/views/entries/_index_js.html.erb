@@ -193,8 +193,6 @@
             delete(params["approved"]);
          }
 
-         params["deprecated"] = "*";
-
          if(onlyMine.length > 0) {
              params["created_by"] = [onlyMine];
              params["created_by_option"] = ["with"];
