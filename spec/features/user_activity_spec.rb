@@ -12,11 +12,7 @@ describe "User Activity", :js => true do
   end
 
   before :each do
-    visit root_path
-    fill_in 'user_login', :with => @user.username
-    fill_in 'user_password', :with => 'somethingunguessable'
-    click_button 'Log in'
-    expect(page).to have_content 'Signed in successfully'
+      login(@user, 'somethingunguessable')
   end
 
   def doActivity(id)

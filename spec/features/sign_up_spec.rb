@@ -31,11 +31,7 @@ describe "Sign up / Edit Profile", :js => true do
       password: 'somethingunguessable'
     )
 
-    visit root_path
-    fill_in 'user_login', :with => user.username
-    fill_in 'user_password', :with => 'somethingunguessable'
-    click_button 'Log in'
-    expect(page).to have_content 'Signed in successfully'
+    login(user, 'somethingunguessable')
 
     visit edit_user_registration_path
     fill_in 'user_email', :with => "newemail@newemail.com"

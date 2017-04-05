@@ -31,15 +31,12 @@ describe "Blacklight Search", :js => true do
 
   it "should load main landing page" do
     visit root_path
+    find('#dismiss-welcome').click
     expect(page).to have_selector("input#q")
   end
 
   it "should show my public entries" do
-    visit root_path
-    fill_in 'user_login', :with => @user.username
-    fill_in 'user_password', :with => 'somethingunguessable'
-    click_button 'Log in'
-    expect(page).to have_content 'Signed in successfully'
+    login(@user, 'somethingunguessable')
 
     e = Entry.create!(source: Source.last, created_by: @user)
     e.index!
@@ -52,6 +49,8 @@ describe "Blacklight Search", :js => true do
 
   it "should display all entries" do
     visit root_path
+    find('#dismiss-welcome').click
+
     click_button('search')
     expect(page).to have_selector("#documents")
 
@@ -65,6 +64,8 @@ describe "Blacklight Search", :js => true do
 
   it "should display results for an Author facet" do
     visit root_path
+    find('#dismiss-welcome').click
+
     click_button('search')
     expect(page).to have_selector("#documents")
 
@@ -74,6 +75,8 @@ describe "Blacklight Search", :js => true do
 
   it "should display list of Author facet values" do
     visit root_path
+    find('#dismiss-welcome').click
+
     click_button('search')
     expect(page).to have_selector("#documents")
 
@@ -196,13 +199,11 @@ describe "Blacklight Search", :js => true do
 
   it "should bookmark an Entry and remove it" do
     skip "New bookmark method implemented"
-    visit root_path
-    fill_in 'user_login', :with => @user.username
-    fill_in 'user_password', :with => 'somethingunguessable'
-    click_button 'Log in'
-    expect(page).to have_content 'Signed in successfully'
+    login(@user, 'somethingunguessable')
 
     visit root_path
+    find('#dismiss-welcome').click
+
     fill_in "q", with: "Tomkinson"
     click_button('search')
     expect(page).to have_selector("#documents")
@@ -236,11 +237,7 @@ describe "Blacklight Search", :js => true do
       document_type: "SolrDocument"
     )
 
-    visit root_path
-    fill_in 'user_login', :with => @user.username
-    fill_in 'user_password', :with => 'somethingunguessable'
-    click_button 'Log in'
-    expect(page).to have_content 'Signed in successfully'
+    login(@user, 'somethingunguessable')
 
     visit bookmarks_path
     expect(page).to have_link(entry.public_id)
@@ -257,6 +254,8 @@ describe "Blacklight Search", :js => true do
   it "should add search to History" do
     skip "Search History only saved when logged in"
     visit root_path
+    find('#dismiss-welcome').click
+
     fill_in "q", with: "My Unique Search"
     click_button('search')
     expect(page).to have_selector("#documents")
