@@ -851,7 +851,7 @@ def do_csv_search(params, download)
   def self.filters
     [
       "source", "approved", "width", "provenance_date", "price", "num_lines", "num_columns", "miniatures_unspec_size", "miniatures_small", "miniatures_large", "miniatures_fullpage", "manuscript_date",
-      "initials_historiated", "initials_decorated", "height", "folios", "updated_by", "created_by", "entry_id", "manuscript_id"
+      "initials_historiated", "initials_decorated", "height", "folios", "updated_by", "created_by", "entry_id", "manuscript_id", "deprecated"
     ]
   end
 
@@ -861,6 +861,10 @@ def do_csv_search(params, download)
 
   def self.dates
     ["created_at", "updated_at"]
+  end
+
+  def self.search_fields
+    super - ["deprecated"]
   end
 
   private
