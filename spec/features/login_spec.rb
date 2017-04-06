@@ -21,7 +21,12 @@ describe "Login", :js => true do
   end
 
   it "should disallow login" do
-    login(@user_inactive, 'somethingunguessable')
+    visit root_path
+    find('#dismiss-welcome').click
+    fill_in 'user_login', :with => user.username
+    fill_in 'user_password', :with => password
+    click_button 'Log in'
+    expect(page).to have_content 'Your account has been de-activated.'
   end
 
   it "should allow login_as" do

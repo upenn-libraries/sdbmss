@@ -85,7 +85,7 @@ describe "Manage entries", :js => true do
     expect(page).to have_selector("#mark-as-approved")
     find("#mark-as-approved").click
 
-    expect(page).to have_content("No records found")
+    expect(page).to have_content("There are no records to display.")
 
     @unapproved_entry.reload
     expect(@unapproved_entry.approved).to be true
@@ -118,7 +118,7 @@ describe "Manage entries", :js => true do
   it "should perform a search on any field without error" do
     visit entries_path
 
-    expect(page.first("select[name='search_field']").all("option").length).to eq(43)
+    expect(page.first("select[name='search_field']").all("option").length).to eq(38)
 
     40.times do |i|
       page.first("input[name='search_value']").set "Test String"

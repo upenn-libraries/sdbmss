@@ -116,7 +116,7 @@ describe "Linking Tool", :js => true do
     entry = Entry.find(2)
     visit linking_tool_by_entry_path id: entry.id
 
-    expect(page).to have_content("Add SDBM")
+    expect(page).to have_content("Link to SDBM")
     # use manuscript created in previous test
     first(".link-to-manuscript-link", visible: true).trigger('click')
 
@@ -181,6 +181,7 @@ describe "Linking Tool", :js => true do
     expect(page).to have_content("Add SDBM_#{entry_id}")    
 #    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
+    SDBMSS::Util.wait_for_solr_to_be_current
     manuscript.reload
 
     entry_ids = manuscript.entries.map(&:id)
@@ -207,6 +208,7 @@ describe "Linking Tool", :js => true do
 #    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
     manuscript.reload
 
+    SDBMSS::Util.wait_for_solr_to_be_current
     # remove the last entry
 
     expect(manuscript.entries.count).to eq(1)

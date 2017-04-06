@@ -128,11 +128,11 @@ describe "Blacklight Search", :js => true do
 
     find_by_id('advanced-search-submit').click
 
-    entry_one = get_hill_entry_by_cat_num(1)
-    entry_nine = get_hill_entry_by_cat_num(9)
+    entry_one = Entry.where("height > 250").where("height < 260").first
+    entry_nine = Entry.where("height > 250").where("height < 260").last
 
     expect(page).to have_link(entry_one.public_id)
-    expect(page).not_to have_link(entry_nine.public_id)
+    expect(page).to have_link(entry_nine.public_id)
   end
 
   it "should load show Entry page" do
