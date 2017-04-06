@@ -2106,6 +2106,20 @@ so that gray backdrop shvows up correctly */
   padding: 8px 0px;
   margin-left: 25px;
 }*/
+.list-collapse {
+  display: inline-block;
+  margin: 0px;
+}
+.list-collapse.collapsing, .list-collapse {
+  opacity: 1;
+  height: 100% !important;
+}
+.list-collapse span:nth-child(n + 4) {
+  display: none;
+}
+.list-collapse.in span:nth-child(n + 4) {
+  display: inline-block;
+}
 /*
 
 Private Message Styling

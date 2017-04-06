@@ -1,0 +1,24 @@
+<style>
+  th:nth-child(n + 2), td:nth-child(n + 2) {
+    text-align: center;
+  }
+</style>
+<h3 class="text-center">User Behavior and Feedback</h3>
+<table class="table table-responsive table-bordered">
+  <thead>
+    <tr>
+      <th></th>
+      <th>Created</th>
+      <th>Confirms</th>
+      <th>Disputes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Names</th>
+      <td><%= Name.where(created_by: @user).count %></td>
+      <td><%= Rating.where(ratable_type: Name, qualifier: 'confirm', ratable_id: Name.select(:id).where(created_by: @user).map(&:id)).count %></td>
+      <td><%= Rating.where(ratable_type: Name, qualifier: 'dispute', ratable_id: Name.select(:id).where(created_by: @user).map(&:id)).count %></td>
+    </tr>
+  </tbody>
+</table>

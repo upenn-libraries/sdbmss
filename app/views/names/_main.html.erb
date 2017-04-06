@@ -1,5 +1,65 @@
 <dl class="document-metadata dl-horizontal dl-invert">
 
+<dt>
+    <% if (r = name.ratings.where(user: current_user).first) %>
+        <% if r.qualifier == "confirm" %>
+            <%= link_to rating_path(r), :method => :delete, class: 'ratings rated' do %>
+              <span class="glyphicon glyphicon-thumbs-up"></span>
+            <% end %>
+            /
+            <%= link_to rating_path(r, qualifier: "dispute"), :method => :put, class: 'ratings' do %>
+              <span class="glyphicon glyphicon-thumbs-down"></span>
+            <% end %>
+        <% else %>
+            <%= link_to rating_path(r, qualifier: "confirm"), :method => :put, class: 'ratings' do %>
+              <span class="glyphicon glyphicon-thumbs-up"></span>
+            <% end %>
+            /
+            <%= link_to rating_path(r), :method => :delete, class: 'ratings rated' do %>
+              <span class="glyphicon glyphicon-thumbs-down"></span>
+            <% end %>
+        <% end %>
+    <% elsif current_user %>
+        <%= link_to(ratings_path(ratable_id: name.id, ratable_type: name.class.name, user_id: current_user.id, qualifier: "confirm"), method: :post, class: "ratings") do %>
+            <span class="glyphicon glyphicon-thumbs-up"></span>
+        <% end %>
+        /
+        <%= link_to(ratings_path(ratable_id: name.id, ratable_type: name.class.name, user_id: current_user.id, qualifier: "dispute"), method: :post, class: "ratings") do %>
+            <span class="glyphicon glyphicon-thumbs-down"></span>
+        <% end %>
+    <% end %>
+</dt>
+<dd>
+    <div class="list-collapse confirms">
+        <span class="glyphicon glyphicon-thumbs-up"></span> 
+        <% if (confirms = name.ratings.where(qualifier: "confirm")).count > 0 %>
+            Confirmed by 
+            <% confirms.each do |rating| %>
+                <span><%= link_to rating.user.to_s, profile_path(rating.user.username) %></span>
+            <% end %>            
+            <% if confirms.count > 3 %>
+                <a data-toggle="collapse" data-target=".confirms">(<%= confirms.count %>)...</a>
+            <% end %>
+        <% else %>
+            <span class="text-muted">This name has not been confirmed.</span>
+        <% end %>
+    </div>
+    <div class="list-collapse disputes">
+        <span class="glyphicon glyphicon-thumbs-down"></span> 
+        <% if (disputes = name.ratings.where(qualifier: "dispute")).count > 0 %>
+            Disputed by 
+            <% disputes.each do |rating| %>
+                <span><%= link_to rating.user.to_s, profile_path(rating.user.username) %></span>
+            <% end %>        
+            <% if disputes.count > 3 %>
+                <a data-toggle="collapse" data-target=".disputes">(<%= disputes.count %>)...</a>
+            <% end %>
+        <% else %>
+            <span class="text-muted">This name has not been disputed.</span>
+        <% end %>
+    </div>
+</dd>
+
 <% if name.confirmed %>
 <dt></dt>
 <dd>
