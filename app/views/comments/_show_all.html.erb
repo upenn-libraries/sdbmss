@@ -30,10 +30,12 @@
             At <%= comment.created_at.to_formatted_s(:date_and_time) %>
           </div>
           <div class="col-sm-9">
-            <% if (r = current_user.ratings.where(ratable_type: "Comment", ratable_id: comment.id).first) %>
-              <%= render partial: "ratings/delete", locals: {rating: r } %>
-            <% else %>
-              <%= render partial: "ratings/create", locals: {ratable: comment } %>
+            <% if current_user %>
+              <% if (r = current_user.ratings.where(ratable_type: "Comment", ratable_id: comment.id).first) %>
+                <%= render partial: "ratings/delete", locals: {rating: r } %>
+              <% else %>
+                <%= render partial: "ratings/create", locals: {ratable: comment } %>
+              <% end %>
             <% end %>
           </div>
           <div class="col-sm-3"></div>
