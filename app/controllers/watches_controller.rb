@@ -27,7 +27,10 @@ class WatchesController < ApplicationController
   end
 
   def index
-    @watches = current_user.watches
+    @total = current_user.watches.count
+    @page = params[:page].to_i || 0
+    @per_page = 20
+    @watches = current_user.watches.offset(@page * @per_page).limit(@per_page)
   end
 
   private

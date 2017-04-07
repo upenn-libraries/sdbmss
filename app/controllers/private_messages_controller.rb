@@ -70,6 +70,9 @@ class PrivateMessagesController < ApplicationController
         @chains.push(chain)
       end
     end
+    @page = params[:page] || 0
+    @total = @chains.count
+    @per_page = 10
     @chains = @chains.sort { |a, b| b.latest.created_at <=> a.latest.created_at }
   end
   
