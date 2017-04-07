@@ -317,7 +317,6 @@ var load_session = false;
     };
 
     SDBM.ManageRecords.prototype.setFormStateFromURL = function() {
-        console.log('yeah?');
         var manageRecords = this;
         var qs = new URI().query(true);
         var j = 0;
