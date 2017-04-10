@@ -218,7 +218,8 @@ describe "Manage entries", :js => true do
 
     click_link "Cite"
     now = DateTime.now.to_formatted_s(:date_mla)    
-    expect(page).to have_content("Schoenberg Database of Manuscripts. The Schoenberg Institute for Manuscript Studies, University of Pennsylvania Libraries. Web. #{now}: #{Entry.first.public_id}.")
+    result = "Schoenberg Database of Manuscripts. The Schoenberg Institute for Manuscript Studies, University of Pennsylvania Libraries. Web. #{now}: #{Entry.first.public_id}."
+    expect(page).to have_content(result)
   end
 
 
