@@ -10,7 +10,9 @@
 
         <h2 class='h2 text-center'><%= name.public_id %></h2>
 
-        <%= render partial: "ratings/rate", locals: {ratable: name} %>
+        <div class="text-center">
+            <%= render partial: "ratings/rate", locals: {ratable: name} %>
+        </div>
 
         <%= render partial: "main", locals: { name: name } %>
 

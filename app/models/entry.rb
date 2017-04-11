@@ -30,6 +30,8 @@ class Entry < ActiveRecord::Base
   include CreatesActivity
   include Notified
 
+  include Ratable
+
   extend SolrSearchable
 
   belongs_to :source, counter_cache: :entries_count
@@ -808,10 +810,14 @@ class Entry < ActiveRecord::Base
     id
   end
 
+  def dispute_reasons
+    ["Malicious information", "Misleading data", "Refers to multiple manuscripts", "Other"].map{ |n| [n, n] }
+  end  
+
   # I don't love having to duplicate all the fields AGAIN here, but inheriting it all from blacklight doesn't seem to work
   # 
 
-def do_csv_search(params, download)
+  def do_csv_search(params, download)
     s = do_search(params)
     
     objects = []

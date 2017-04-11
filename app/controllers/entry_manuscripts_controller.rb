@@ -9,6 +9,10 @@ class EntryManuscriptsController < SearchableAuthorityController
     @page_title = "Manage Links"
   end
 
+  def show
+    redirect_to manuscript_path(EntryManuscript.find(params[:id]).manuscript)
+  end
+
   # updates multiple EntryManuscript records at once; this is used for
   # the Linking Tool
   def update_multiple
