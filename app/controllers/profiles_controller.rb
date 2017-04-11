@@ -33,9 +33,9 @@ class ProfilesController < ApplicationController
         p = Entry.joins(:source).select(:id, :created_at).where({created_by: @user, :sources => {:source_type_id => 4}})
 
         render json: {
-            names: (n.to_a + Rating.select(:id, :created_at, :qualifier).where(ratable_type: Name, ratable_id: n.map(&:id)).order("created_at asc").to_a).sort { |a, b| a.created_at <=> b.created_at },
-            entrymanuscripts: (em.to_a + Rating.select(:id, :created_at, :qualifier).where(ratable_type: EntryManuscript, ratable_id: em.map(&:id)).order("created_at asc").to_a).sort { |a, b| a.created_at <=> b.created_at },
-            observations: (p.to_a + Rating.select(:id, :created_at, :qualifier).where(ratable_type: Entry, ratable_id: p.map(&:id)).order("created_at asc").to_a).sort { |a, b| a.created_at <=> b.created_at }
+            Names: (n.to_a + Rating.select(:id, :created_at, :qualifier).where(ratable_type: Name, ratable_id: n.map(&:id)).order("created_at asc").to_a).sort { |a, b| a.created_at <=> b.created_at },
+            Links: (em.to_a + Rating.select(:id, :created_at, :qualifier).where(ratable_type: EntryManuscript, ratable_id: em.map(&:id)).order("created_at asc").to_a).sort { |a, b| a.created_at <=> b.created_at },
+            Observations: (p.to_a + Rating.select(:id, :created_at, :qualifier).where(ratable_type: Entry, ratable_id: p.map(&:id)).order("created_at asc").to_a).sort { |a, b| a.created_at <=> b.created_at }
         }
 =begin        
         render json: {
