@@ -1,7 +1,11 @@
 class RatingsController < ApplicationController
 
+  load_and_authorize_resource :only => [:update, :destroy, :create]
+
   def create
-    r = Rating.create!(ratings_params)
+    r = Rating.new(ratings_params)
+    r.user = current_user
+    r.save!
     button_html = (render_to_string partial: "delete", locals: {rating: r }, layout: false)
     respond_to do |format|
       format.json {
@@ -41,6 +45,6 @@ class RatingsController < ApplicationController
   private
 
   def ratings_params
-    params.permit(:id, :ratable_id, :ratable_type, :user_id, :user_level, :qualifier)
+    params.permit(:id, :ratable_id, :ratable_type, :qualifier, :reason)
   end
 end

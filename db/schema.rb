@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170406153154) do
+ActiveRecord::Schema.define(version: 20170410185449) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -580,9 +580,10 @@ ActiveRecord::Schema.define(version: 20170406153154) do
     t.integer  "ratable_id",   limit: 4
     t.string   "ratable_type", limit: 255
     t.string   "user_level",   limit: 255
-    t.datetime "created_at",                                   null: false
-    t.datetime "updated_at",                                   null: false
-    t.string   "qualifier",    limit: 255, default: "confirm"
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
+    t.string   "qualifier",    limit: 255,   default: "confirm"
+    t.text     "reason",       limit: 65535
   end
 
   create_table "replies", force: :cascade do |t|

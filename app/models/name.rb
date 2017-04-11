@@ -23,6 +23,8 @@ class Name < ActiveRecord::Base
   include HasPaperTrail
   include CreatesActivity
   include Notified
+
+  include Ratable
   
   extend SolrSearchable
 
@@ -31,8 +33,6 @@ class Name < ActiveRecord::Base
   belongs_to :entry
 
   belongs_to :reviewed_by, :class_name => 'User'
-
-  has_many :ratings, as: :ratable
 
   has_many :bookmarks, as: :document, dependent: :destroy  
 
@@ -329,6 +329,10 @@ class Name < ActiveRecord::Base
       results: results,
       error: error,
     }
+  end
+
+  def dispute_reasons
+    ["Wrong VIAF number", "Name refers to more than one individual", "Does not follow formatting standards", "Other"].map{ |n| [n, n] }
   end
 
   def public_id
