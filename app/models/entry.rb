@@ -811,7 +811,7 @@ class Entry < ActiveRecord::Base
   end
 
   def dispute_reasons
-    ["Malicious information", "Misleading data", "Refers to multiple manuscripts", "Other"].map{ |n| [n, n] }
+    ["Malicious information", "Misleading data", "Refers to multiple manuscripts", "Other"]
   end  
 
   # I don't love having to duplicate all the fields AGAIN here, but inheriting it all from blacklight doesn't seem to work

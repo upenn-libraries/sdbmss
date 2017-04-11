@@ -30,10 +30,13 @@ class EntryManuscriptsController < SearchableAuthorityController
           em.destroy!
         elsif record["id"]
           em = EntryManuscript.find(record["id"])
+          em.updated_by = current_user;
           em.update_attributes!(attrs)
         else
           em = EntryManuscript.new(attrs)
           em.manuscript_id = manuscript.id
+          em.created_by = current_user;
+          em.updated_by = current_user;
           em.save!
         end
         @entry_manuscripts << em

@@ -35,32 +35,31 @@
             <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-default">
                 <span class="glyphicon glyphicon-thumbs-up"></span> 
                 Confirmed by <%= confirms.count %> <%= "user".pluralize(confirms.count) %>
-                <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu">
-                <% if confirms.count <= 0 %>
-                    <li class="text-muted"><a>No confirms.</a></li>
-                <% end %>                               
-                <% confirms.each do |rating| %>
-                    <li>
-                        <%= link_to profile_path(rating.user.username) do %>
-                            <span class="glyphicon glyphicon-user"></span> <%= rating.user.to_s %>
-                        <% end %>
-                    </li>
-                <% end %>
-            </ul>
+            <% if confirms.count > 0 %>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <% confirms.each do |rating| %>
+                        <li>
+                            <%= link_to profile_path(rating.user.username) do %>
+                                <span class="glyphicon glyphicon-user"></span> <%= rating.user.to_s %>
+                            <% end %>
+                        </li>
+                    <% end %>
+                </ul>
+            <% else %>
+                </a> <!-- ;) -->
+            <% end %>                               
     </span>
     <span class="dropdown">
         <% disputes = ratable.ratings.where(qualifier: "dispute") %>
             <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-default">
                 <span class="glyphicon glyphicon-thumbs-down"></span> 
                 Disputed by <%= disputes.count %> <%= "user".pluralize(disputes.count) %>
+            <% if disputes.count > 0 %>
                 <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-                <% if disputes.count <= 0 %>
-                    <li class="text-muted"><a>No disputes.</a></li>
-                <% end %>
                 <% disputes.group_by(&:reason).each do |reason, ratings| %>
                   <li class="dropdown-header"><%= reason %></li>
                   <% ratings.each do |rating| %>
@@ -72,6 +71,9 @@
                   <% end %>
                 <% end %>
             </ul>
+            <% else %>
+            </a>
+            <% end %>
     </span>
 
 
@@ -90,7 +92,7 @@
                 <% if r %>
                     <%= form_tag(rating_path(r), method: "put") do %>
                         <%= hidden_field_tag('qualifier', 'dispute') %>
-                        <%= select_tag('reason', options_for_select(ratable.dispute_reasons), class: "form-control") %>
+                        <%= select_tag('reason', options_for_select(ratable.dispute_reasons.map{ |n| [n, n] }), class: "form-control") %>
                         <%= text_field_tag('reason', '', placeholder: 'Enter a custom reason...', class: "form-control hide", disabled: true) %>
                         <%= submit_tag('Dispute', class: 'form-control btn btn-sm btn-danger') %>
                     <% end %>
@@ -99,7 +101,7 @@
                         <%= hidden_field_tag('ratable_type', ratable.class.name) %>
                         <%= hidden_field_tag('ratable_id', ratable.id) %>
                         <%= hidden_field_tag('qualifier', 'dispute') %>
-                        <%= select_tag('reason', options_for_select(ratable.dispute_reasons), class: "form-control") %>
+                        <%= select_tag('reason', options_for_select(ratable.dispute_reasons.map{ |n| [n, n] }), class: "form-control") %>
                         <%= text_field_tag('reason', '', placeholder: 'Enter a custom reason...', class: "form-control hide", disabled: true) %>
                         <%= submit_tag('Dispute', class: 'form-control btn btn-sm btn-danger') %>
                     <% end %>

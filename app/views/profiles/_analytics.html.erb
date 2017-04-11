@@ -1,24 +1,31 @@
-<style>
-  th:nth-child(n + 2), td:nth-child(n + 2) {
-    text-align: center;
-  }
-</style>
 <h3 class="text-center">User Behavior and Feedback</h3>
-<table class="table table-responsive table-bordered">
+<table class="table table-responsive table-bordered text-center">
   <thead>
     <tr>
-      <th></th>
-      <th>Created</th>
-      <th>Confirms</th>
-      <th>Disputes</th>
+      <td></td>
+      <td>Created</td>
+      <td>Confirms</td>
+      <td>Disputes</td>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th>Names</th>
-      <td><%= Name.where(created_by: @user).count %></td>
-      <td><%= Rating.where(ratable_type: Name, qualifier: 'confirm', ratable_id: Name.select(:id).where(created_by: @user).map(&:id)).count %></td>
-      <td><%= Rating.where(ratable_type: Name, qualifier: 'dispute', ratable_id: Name.select(:id).where(created_by: @user).map(&:id)).count %></td>
+      <td>Names</td>
+      <td><%= (n = Name.select(:id).where(created_by: @user)).count %></td>
+      <td><%= Rating.where(ratable_type: Name, qualifier: 'confirm', ratable_id: n.map(&:id)).count %></td>
+      <td><%= Rating.where(ratable_type: Name, qualifier: 'dispute', ratable_id: n.map(&:id)).count %></td>
+    </tr>
+    <tr>
+      <td>Links</td>
+      <td><%= (em = EntryManuscript.select(:id).where(created_by: @user)).count %></td>
+      <td><%= Rating.where(ratable_type: EntryManuscript, qualifier: 'confirm', ratable_id: em.map(&:id)).count %></td>
+      <td><%= Rating.where(ratable_type: EntryManuscript, qualifier: 'dispute', ratable_id: em.map(&:id)).count %></td>
+    </tr>
+    <tr>
+      <td>Personal Observations</td>
+      <td><%= (p = Entry.joins(:source).select(:id).where({created_by: @user, :sources => {:source_type_id => 4}})).count %></td>
+      <td><%= Rating.where(ratable_type: Entry, qualifier: 'confirm', ratable_id: p.map(&:id)).count %></td>
+      <td><%= Rating.where(ratable_type: Entry, qualifier: 'dispute', ratable_id: p.map(&:id)).count %></td>
     </tr>
   </tbody>
 </table>
