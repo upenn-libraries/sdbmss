@@ -43,37 +43,7 @@
 </script>
 <% end %>
 <h3 class="text-center">User Behavior and Feedback</h3>
-<!--
-<table class="table table-responsive table-bordered text-center">
-  <thead>
-    <tr>
-      <td></td>
-      <td>Created</td>
-      <td>Confirms</td>
-      <td>Disputes</td>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Names</td>
-      <td><%# (n = Name.select(:id).where(created_by: @user)).count %></td>
-      <td><%# Rating.where(ratable_type: Name, qualifier: 'confirm', ratable_id: n.map(&:id)).count %></td>
-      <td><%# Rating.where(ratable_type: Name, qualifier: 'dispute', ratable_id: n.map(&:id)).count %></td>
-    </tr>
-    <tr>
-      <td>Links</td>
-      <td><%# (em = EntryManuscript.select(:id).where(created_by: @user)).count %></td>
-      <td><%# Rating.where(ratable_type: EntryManuscript, qualifier: 'confirm', ratable_id: em.map(&:id)).count %></td>
-      <td><%# Rating.where(ratable_type: EntryManuscript, qualifier: 'dispute', ratable_id: em.map(&:id)).count %></td>
-    </tr>
-    <tr>
-      <td>Personal Observations</td>
-      <td><%# (p = Entry.joins(:source).select(:id).where({created_by: @user, :sources => {:source_type_id => 4}})).count %></td>
-      <td><%# Rating.where(ratable_type: Entry, qualifier: 'confirm', ratable_id: p.map(&:id)).count %></td>
-      <td><%# Rating.where(ratable_type: Entry, qualifier: 'dispute', ratable_id: p.map(&:id)).count %></td>
-    </tr>
-  </tbody>
-</table>-->
+
 <div id="Names" style="width: 100%; height: 500px; margin-bottom: 10px;"></div>
 <div id="Links" style="width: 100%; height: 500px; margin-bottom: 10px;"></div>
 <div id="Observations" style="width: 100%; height: 500px; margin-bottom: 10px;"></div>

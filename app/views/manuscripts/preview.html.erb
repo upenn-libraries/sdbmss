@@ -11,6 +11,7 @@
       font-weight: bold;
       text-align: left;
       padding-right: 10px;
+      overflow: hidden;
       *background: white;
     }
     th {
@@ -25,7 +26,7 @@
         //console.log(json);
         var data = [], columns = [{title: ""}], first = [];
         for (var i = 0 ; i < json.length; i++) {
-          columns.push({title: "SDBM_" + json[i]["id"]});
+          columns.push({title: "SDBM_" + json[i]["Id"]});
         }
         for (var key in json[0]) {
           d = [key];
@@ -50,7 +51,7 @@
           scrollX: true,
           fixedHeader: true,
           dom: "t",
-          scrollY: 'calc(100vh - 240px)',
+          scrollY: 'calc(100vh - 300px)',
           scrollCollapse: true,
         }
         var table = $('#example').dataTable(datatables_options);
@@ -60,9 +61,18 @@
     });
   </script>
 <% end %>
+
+<% content_for :breadcrumbs do %>
+    <%= render partial: "breadcrumbs" %>
+<% end %>
+
+<% content_for :control_tools do %>
+    <%= render partial: "tools" %>
+<% end %>
+
 <div class="row">
   <div class="col-sm-12">
-    <div class="text-center"><span class="h3"><%= @manuscript.public_id %></span></div>
+    <div class="text-center"><h3 class="h2"><%= @manuscript.public_id %></h3></div>
     <p class="text-info">Note: This <b>Manuscript Record</b> aggregates <b>Entries</b> citing a manuscript that is mentioned in <b>Sources</b> or <b>Observations</b>.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries.</p>
   </div>
 </div>

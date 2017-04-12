@@ -38,7 +38,7 @@ class ManuscriptsController < SearchableAuthorityController
     ).order("sources.date desc, sources.date_accessed desc")
     respond_to do |format|
       format.html {  render "preview" }
-      format.json { render json: @entries.map{ |e| e.public_view }} # FIX ME: will want a better display here, so we can have links, all that good stuff :)
+      format.json { render json: @entries.map{ |e| e.public_view.map{ |key, value| [key.to_s.titleize, value]}.to_h }} # FIX ME: will want a better display here, so we can have links, all that good stuff :)
     end
   end
 
