@@ -1,5 +1,6 @@
 class EntryAuthor < ActiveRecord::Base
 
+  include PublicView
   include CertaintyFlags
   include DisplayableName
   include HasPaperTrail
@@ -42,6 +43,10 @@ class EntryAuthor < ActiveRecord::Base
 
   def to_fields
     {name: author ? author.name : nil, observed_name: observed_name}
+  end
+
+  def name_authority
+    (author ? "<a href='/names/#{author_id}'>#{author}</a> " : "")
   end
 
 end

@@ -1,5 +1,6 @@
 class EntryPlace < ActiveRecord::Base
 
+  include PublicView
   include CertaintyFlags
   include DisplayableName
   include HasPaperTrail
@@ -19,6 +20,10 @@ class EntryPlace < ActiveRecord::Base
 
   def to_fields
     {observed_name: observed_name, name: place ? place.name : nil}
+  end
+
+  def name_authority
+    (place ? "<a href='/places/#{place_id}'>#{place}</a> " : "")
   end
 
 end

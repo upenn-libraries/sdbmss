@@ -18,7 +18,35 @@ class ManuscriptsController < SearchableAuthorityController
     @fields + @filters + @dates
   end
 
+  def preview
+    @manuscript_titles = @manuscript.all_titles
+    #@entries = @manuscript.entries.joins(:source).order("date desc, date_accessed desc")
+    @entries = @manuscript.entries.includes(
+      :created_by, :updated_by, :contributors, :groups, :institution, 
+      {:sales => [{:sale_agents => :agent}]}, 
+      {:entry_authors => [:author]}, 
+      :entry_titles, 
+      :entry_dates, 
+      {:entry_artists => [:artist]}, 
+      {:entry_scribes => [:scribe]}, 
+      {:entry_languages => [:language]}, 
+      {:entry_places => [:place]}, 
+      {:provenance => [:provenance_agent]}, 
+      :entry_uses, :entry_materials, 
+      {:entry_manuscripts => [:manuscript]}, 
+      :source, :bookmarks, :watches,
+    ).order("sources.date desc, sources.date_accessed desc")
+    respond_to do |format|
+      format.html {  render "preview" }
+      format.json { render json: @entries.map{ |e| e.public_view }} # FIX ME: will want a better display here, so we can have links, all that good stuff :)
+    end
+  end
+
   def show
+    if params[:preview]
+      preview
+      return
+    end
     flash.now[:notice] = "Note: This manuscript record aggregates entries citing a manuscript that is mentioned in sources or observations.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
 
     #@manuscript_comment = ManuscriptComment.new(manuscript: @manuscript)

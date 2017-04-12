@@ -1,6 +1,8 @@
 
 class Provenance < ActiveRecord::Base
 
+  include PublicView
+  include CertaintyFlags
   include HasPaperTrail
 
   belongs_to :entry
@@ -112,6 +114,18 @@ class Provenance < ActiveRecord::Base
   def get_acquisition_method_for_display
     result = ACQUISITION_METHOD_TYPES.select { |record| record[0] == acquisition_method }.first
     result ? result[1] : nil
+  end
+
+  def name_authority
+    (provenance_agent ? "<a href='/names/#{provenance_agent_id}'>#{provenance_agent}</a> " : "")
+  end
+
+  def dates
+    [start_date, end_date].reject(&:nil?).join(' to ') + (associated_date ? " #{associated_date}" : "")
+  end
+
+  def public_view
+    (((name_authority + observed).length > 0) ? (name_authority + observed) : ('No name recorded.')) + certainty_flags + dates + (comment ? "<br><em>#{comment}</em>" : "")
   end
 
 end

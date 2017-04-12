@@ -1,6 +1,7 @@
 
 class SaleAgent < ActiveRecord::Base
 
+  include PublicView
   include CertaintyFlags
   include HasPaperTrail
 
@@ -27,6 +28,14 @@ class SaleAgent < ActiveRecord::Base
 
   def entry
     sale.entry
+  end
+
+  def name_authority
+    (agent ? "<a href='/names/#{agent_id}'>#{agent}</a> " : "")
+  end
+
+  def observed
+    ""
   end
 
 end

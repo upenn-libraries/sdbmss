@@ -1,5 +1,6 @@
 class EntryScribe < ActiveRecord::Base
 
+  include PublicView
   include CertaintyFlags
   include DisplayableName
   include HasPaperTrail
@@ -33,6 +34,10 @@ class EntryScribe < ActiveRecord::Base
 
   def to_fields
     {name: scribe ? scribe.name : nil, observed_name: observed_name}
+  end
+
+  def name_authority
+    (scribe ? "<a href='/names/#{scribe_id}'>#{scribe}</a> " : "")
   end
 
 end
