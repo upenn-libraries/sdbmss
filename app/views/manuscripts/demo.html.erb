@@ -39,11 +39,12 @@
           scrollX: true,
           fixedHeader: true,
           dom: "t",
-          scrollY: 'calc(100vh - 300px)',
+          scrollY: 'calc(100vh - 350px)',
           //scrollCollapse: true,
         }
         var table = $('#example').dataTable(datatables_options);
         new $.fn.dataTable.FixedColumns( table );
+
         //
     });
   </script>
@@ -68,7 +69,12 @@
     <tr>
       <th></th>
       <% @entries.each do |entry| %>
-        <th><%= link_to entry.public_id, entry_path(entry) %></th>
+        <th class='text-center'>
+          <%= link_to entry.public_id, entry_path(entry) %>
+          <p>
+            <%= render partial: "ratings/rate", locals: {ratable: @manuscript.entry_manuscripts.where(entry: entry).first, up: true } %>
+          </p>
+        </th>
       <% end %>
     </tr>
   </thead>
@@ -396,23 +402,19 @@
         <td>
         <% entry.provenance.each do |provenance| %>
           <% if provenance.start_date.present? || provenance.end_date.present? %>
-            <%= format_fuzzy_date(provenance.start_date) %>
+            (<%= format_fuzzy_date(provenance.start_date) %>
             <% if provenance.start_date.present? && provenance.end_date.present? %>
              to 
             <% end %>
-            <%= format_fuzzy_date(provenance.end_date) %>
+            <%= format_fuzzy_date(provenance.end_date) %>)
           <% end %>
           <% if provenance.associated_date.present? %>
-              <span class="text-muted"><%= provenance.associated_date.split("\t").join(", ") %> (Associated)</span>
+              <span>(<%= provenance.associated_date.split("\t").join(", ") %>)</span>
           <% elsif !(provenance.start_date.present? && provenance.end_date.present? && provenance.associated_date.present?) %>
               (No date)
           <% end %>
           <%= render partial: "shared/provenance_name", locals: { provenance: provenance } %>
           <br>
-          <% if provenance.comment %>
-            <span class="text-muted"><%= provenance.comment %></span>
-            <br>
-          <% end %>
         <% end %>
         </td>
       <% end %>

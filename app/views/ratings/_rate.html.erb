@@ -30,9 +30,9 @@
         <% end %>
     <% end %>
     </span>
-    <span class='dropdown'>
+    <span class="<%= defined?(up) ? 'dropup' : 'dropdown' %>">
         <% confirms = ratable.ratings.where(qualifier: "confirm") %>
-            <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-default">
+            <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-default dropdown-toggle">
                 <span class="glyphicon glyphicon-thumbs-up"></span> 
                 Confirmed by <%= confirms.count %> <%= "user".pluralize(confirms.count) %>
             <% if confirms.count > 0 %>
@@ -51,7 +51,7 @@
                 </a> <!-- ;) -->
             <% end %>                               
     </span>
-    <span class="dropdown">
+    <span class="<%= defined?(up) ? 'dropup' : 'dropdown' %>">
         <% disputes = ratable.ratings.where(qualifier: "dispute") %>
             <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-default">
                 <span class="glyphicon glyphicon-thumbs-down"></span> 
