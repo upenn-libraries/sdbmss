@@ -26,7 +26,6 @@
     $(document).ready(function () {
       $('#main-container').toggleClass('container').toggleClass('container-fluid');
 
-        //console.log(data, columns, first);
         var datatables_options = {
           //data: data,
           //columns: columns,
@@ -39,13 +38,11 @@
           scrollX: true,
           fixedHeader: true,
           dom: "t",
-          scrollY: 'calc(100vh - 350px)',
+          scrollY: 'calc(100vh - 300px)',
           //scrollCollapse: true,
         }
         var table = $('#example').dataTable(datatables_options);
         new $.fn.dataTable.FixedColumns( table );
-
-        //
     });
   </script>
 <% end %>
@@ -70,15 +67,20 @@
       <th></th>
       <% @entries.each do |entry| %>
         <th class='text-center'>
-          <%= link_to entry.public_id, entry_path(entry) %>
-          <p>
-            <%= render partial: "ratings/rate", locals: {ratable: @manuscript.entry_manuscripts.where(entry: entry).first, up: true } %>
-          </p>
+          <%= link_to entry.public_id, entry_path(entry) %>          
         </th>
       <% end %>
     </tr>
   </thead>
   <tbody>
+    <tr>
+      <td></td>
+      <% @entries.each do |entry| %>
+        <td>
+          <%= render partial: "ratings/rate", locals: {ratable: @manuscript.entry_manuscripts.where(entry: entry).first } %>
+        </td>
+      <% end %>
+    </tr>
     <tr class='primary-important'>
       <td>Source</td>
       <% @entries.count.times do %>
