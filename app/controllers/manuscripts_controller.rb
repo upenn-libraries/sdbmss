@@ -18,8 +18,30 @@ class ManuscriptsController < SearchableAuthorityController
     @fields + @filters + @dates
   end
 
+  def demo
+    @entries = @manuscript.entries.preload(
+      :created_by, :updated_by, :contributors, :groups, :institution, 
+      {:sales => [{:sale_agents => :agent}]}, 
+      {:entry_authors => [:author]}, 
+      :entry_titles, 
+      :entry_dates, 
+      {:entry_artists => [:artist]}, 
+      {:entry_scribes => [:scribe]}, 
+      {:entry_languages => [:language]}, 
+      {:entry_places => [:place]}, 
+      {:provenance => [:provenance_agent]}, 
+      :entry_uses, :entry_materials, 
+      {:entry_manuscripts => [:manuscript]}, 
+      {:source => [{:source_agents => :agent}, :source_type]}, :bookmarks, :watches,
+    ).sort { |a, b| b.source.date <=> a.source.date }
+    # I use 'sort' rather than the query-based order because of a rails issue:
+    # https://github.com/rails/rails/issues/6769
+    # that breaks associated field ordering (i.e. provenance)
+    render "demo"
+  end
+
   def preview
-    @manuscript_titles = @manuscript.all_titles
+    #@manuscript_titles = @manuscript.all_titles
     #@entries = @manuscript.entries.joins(:source).order("date desc, date_accessed desc")
     @entries = @manuscript.entries.includes(
       :created_by, :updated_by, :contributors, :groups, :institution, 
@@ -45,6 +67,10 @@ class ManuscriptsController < SearchableAuthorityController
   def show
     if params[:preview]
       preview
+      return
+    end
+    if params[:demo]
+      demo
       return
     end
     flash.now[:notice] = "Note: This manuscript record aggregates entries citing a manuscript that is mentioned in sources or observations.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."

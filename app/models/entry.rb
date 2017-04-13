@@ -52,25 +52,25 @@ class Entry < ActiveRecord::Base
 
   has_many :entry_manuscripts, inverse_of: :entry, dependent: :destroy
   has_many :manuscripts, through: :entry_manuscripts
-  has_many :entry_titles, inverse_of: :entry, dependent: :destroy
-  has_many :entry_authors, inverse_of: :entry, dependent: :destroy
+  has_many :entry_titles, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
+  has_many :entry_authors, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :authors, through: :entry_authors
-  has_many :entry_dates, inverse_of: :entry, dependent: :destroy
-  has_many :entry_artists, inverse_of: :entry, dependent: :destroy
+  has_many :entry_dates, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
+  has_many :entry_artists, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :artists, through: :entry_artists
-  has_many :entry_scribes, inverse_of: :entry, dependent: :destroy
+  has_many :entry_scribes, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :scribes, through: :entry_scribes
-  has_many :entry_languages, inverse_of: :entry, dependent: :destroy
+  has_many :entry_languages, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :languages, through: :entry_languages
-  has_many :entry_materials, inverse_of: :entry, dependent: :destroy
-  has_many :entry_places, inverse_of: :entry, dependent: :destroy
+  has_many :entry_materials, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
+  has_many :entry_places, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :places, through: :entry_places
-  has_many :entry_uses, inverse_of: :entry, dependent: :destroy
+  has_many :entry_uses, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   
 #  has_many :entry_comments, dependent: :destroy
   has_many :comments, as: :commentable
   has_many :sales, inverse_of: :entry, dependent: :destroy
-  has_many :provenance, inverse_of: :entry, dependent: :destroy
+  has_many :provenance, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
 
   accepts_nested_attributes_for :entry_titles, allow_destroy: true
   accepts_nested_attributes_for :entry_authors, allow_destroy: true
@@ -330,7 +330,7 @@ class Entry < ActiveRecord::Base
     {
       id: id,
       manuscript: manuscript ? manuscript.id : nil,
-      source: "<a href='<%= source_path(source) %>'>#{source.display_value}</a>",
+      source: "<a href='/sources/#{source.id}'>#{source.display_value}</a>",
       source_type: source.source_type.display_name,
       catalog_or_lot_number: catalog_or_lot_number,
       # transaction information
