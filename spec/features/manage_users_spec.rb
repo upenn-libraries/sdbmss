@@ -33,7 +33,7 @@ describe "Manage Users", :js => true do
     fill_in 'user_password', with: "12345678"
     fill_in 'user_password_confirmation', with: "12345678"
     fill_in 'user_bio', with: "Some dude"
-    click_button "Create User"
+    click_button 'Create User'
 
     u = User.find_by(username: "brandnewuser")
     expect(u.email).to eq("brandnewuser@upenn.edu")

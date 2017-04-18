@@ -24,7 +24,7 @@ function addNotification (message, type, permanent) {
       notification.fadeOut('slow', function () {
         notification.remove();
       });
-    }, 10000);
+    }, 10000)
   } // fade out after ten seconds;
 }
 
@@ -46,17 +46,17 @@ function exportCSV(url) {
       var interval = setInterval( function () {
           $.ajax({url: url, data: {ping: true}}).done( function (r) {
               //window.location = url;
-            if (r != "in progress" && !myDownloadComplete) {
-                addNotification(download.filename + " is ready - <a href='" + url + "'>download file</a>", "success", true);
-                $('#user-nav a').css({color: ''});
-                $('#downloads-count').text(download.count);
-                window.clearInterval(interval);
-                myDownloadComplete = true;
-            } else {
-                count += 1;
-            }
+              if (r != "in progress" && !myDownloadComplete) {
+                  addNotification(download.filename + " is ready - <a href='" + url + "'>download file</a>", "success", true);
+                  $('#user-nav a').css({color: ''});
+                  $('#downloads-count').text(download.count);
+                  window.clearInterval(interval);
+                  myDownloadComplete = true;
+              } else {
+                  count += 1;
+              }
 
-            if (count > 1000) window.clearInterval(interval);
+              if (count > 1000) window.clearInterval(interval);                    
           }).error( function (r) {
               console.log('error', r);
               window.clearInterval(interval);
@@ -64,8 +64,9 @@ function exportCSV(url) {
       }, 1000);
   }).error( function (e) {
       console.log('error', e);
-  });
-}
+  })
+};
+
 
 $(document).ready(bindRemoteAjaxCallback);
 

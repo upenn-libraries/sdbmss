@@ -2,15 +2,15 @@
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
   $(document).ready(function () {
-    $.get(window.location.href + ".json", function (result) {
+    $.get("<%= profile_path(@user.username) %>.json", function (result) {
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
 
-      function drawChart() {
-        for (key in result) {            
+      function drawChart() {      
+        console.log(result);
+        for (key in result) {              
           var confirms = 0, disputes = 0, records = 0;
-          //console.log(result);
-          var t = result[key].map( (r) => {
+          var t = result[key].map( function (r) {
             if (r.qualifier == "confirm") confirms += 1;
             else if (r.qualifier == "dispute") disputes += 1;
             else records += 1;
@@ -35,10 +35,10 @@
           };
 
           var chart = new google.visualization.AreaChart(document.getElementById(key));
-          chart.draw(data, options);          
+          chart.draw(data, options);     
         }
       }
-    })
+    });
   });
 </script>
 <% end %>
