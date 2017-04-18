@@ -458,10 +458,10 @@ $(document).ready(function() {
         for (var i = 0; i < entryManuscripts.length; i++) {
             if (!entryManuscripts[i].changed) {}
             else if (entryManuscripts[i]._destroy) {
-                $('#workspace_wrapper td[title="SDBM_' + entryManuscripts[i].entry_id + '"').parent('tr').removeClass('linking-tool-changed').addClass('linking-tool-deleted');
+                $('#workspace_wrapper td[title="SDBM_' + entryManuscripts[i].entry_id + '"]').parent('tr').removeClass('linking-tool-changed').addClass('linking-tool-deleted');
                 deleted += 1;
             } else {
-                $('#workspace_wrapper td[title="SDBM_' + entryManuscripts[i].entry_id + '"').parent('tr').removeClass('linking-tool-deleted').addClass('linking-tool-changed');
+                $('#workspace_wrapper td[title="SDBM_' + entryManuscripts[i].entry_id + '"]').parent('tr').removeClass('linking-tool-deleted').addClass('linking-tool-changed');
                 changed += 1;
             }
         }
