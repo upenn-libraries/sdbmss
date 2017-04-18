@@ -6,6 +6,10 @@
     Note: This entry records a mention or observation of a manuscript
     in or by a source. Do not assume that the manuscript is held by the
     University of Pennsylvania Libraries.</p>-->
+<% if entry.source.source_type.name == SourceType::OBSERVATION %>
+    <%= render partial: "ratings/rate", locals: {ratable: entry} %>
+    <div style="padding-top: 10px;"></div>
+<% end %>
 
 <% if entry.deprecated %>
     <p style="color: red;">
@@ -40,6 +44,7 @@
         <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, new_manuscript: true, original_entry: entry.id, source_type: 4}) %>
     <% end %>
 </p>
+
 
 <!-- TODO: use a DL element here instead of a table? or use bootstrap rows and cols? layout will be tricky -->
 <table class="table table-striped">

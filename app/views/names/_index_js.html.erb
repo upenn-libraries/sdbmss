@@ -114,10 +114,18 @@ load_session = '<%= params[:last_search] %>' == 'true';
                 title: 'Reviewed',
                 dbSortField: 'reviewed'
             },
-            {
+            /*{
                 title: 'Confirmed',
                 dbSortField: 'confirmed'
+            },*/
+            {
+                title: 'Confirms',
+                dbSortField: 'confirms'
             },
+            {
+                title: 'Disputes',
+                dbSortField: 'disputes'
+            },            
             {
                 title: 'Added By',
                 dbSortField: 'created_by'
@@ -157,7 +165,9 @@ load_session = '<%= params[:last_search] %>' == 'true';
              result.sale_agents_count,
              result.provenance_count,
              result.reviewed.toString(),
-             result.confirmed.toString(),
+             //result.confirmed.toString(),
+             result.confirms,
+             result.disputes,
              result.created_by || "",
              result.created_at || "",
              result.updated_by || "",

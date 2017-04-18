@@ -1,5 +1,6 @@
 class EntryLanguage < ActiveRecord::Base
 
+  include PublicView
   include CertaintyFlags
   include HasPaperTrail
 
@@ -11,6 +12,14 @@ class EntryLanguage < ActiveRecord::Base
 
   def to_s
     (language ? language.name : "") + certainty_flags
+  end
+
+  def name_authority
+    (language ? "<a href='/languages/#{language_id}'>#{language}</a> " : "")
+  end
+
+  def observed
+    ""
   end
 
 end

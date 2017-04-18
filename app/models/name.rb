@@ -23,6 +23,8 @@ class Name < ActiveRecord::Base
   include HasPaperTrail
   include CreatesActivity
   include Notified
+
+  include Ratable
   
   extend SolrSearchable
 
@@ -131,10 +133,18 @@ class Name < ActiveRecord::Base
     date :updated_at
     boolean :reviewed
     boolean :confirmed
+
+    integer :confirms do
+      ratings.where(qualifier: "confirm").count
+    end
+
+    integer :disputes do
+      ratings.where(qualifier: "dispute").count
+    end    
   end
 
   def self.filters
-    super + ["viaf_id", "authors_count", "artists_count", "scribes_count", "provenance_count", "source_agents_count"]
+    super + ["viaf_id", "authors_count", "artists_count", "scribes_count", "provenance_count", "source_agents_count", "confirms", "disputes"]
   end
 
   def self.fields
@@ -162,7 +172,8 @@ class Name < ActiveRecord::Base
       is_provenance_agent: is_provenance_agent,
       is_scribe: is_scribe,
       reviewed: reviewed,
-      confirmed: confirmed,
+      confirms: ratings.where(qualifier: "confirm").count,
+      disputes: ratings.where(qualifier: "dispute").count,
       created_by: created_by.present? ? created_by.username : "(none)",
       created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
       updated_by: updated_by.present? ? updated_by.username : "(none)",
@@ -318,6 +329,10 @@ class Name < ActiveRecord::Base
       results: results,
       error: error,
     }
+  end
+
+  def dispute_reasons
+    ["Wrong VIAF number", "Name refers to more than one individual", "Does not follow formatting standards", "Other"]
   end
 
   def public_id

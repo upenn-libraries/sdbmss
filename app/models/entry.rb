@@ -30,6 +30,8 @@ class Entry < ActiveRecord::Base
   include CreatesActivity
   include Notified
 
+  include Ratable
+
   extend SolrSearchable
 
   belongs_to :source, counter_cache: :entries_count
@@ -50,25 +52,25 @@ class Entry < ActiveRecord::Base
 
   has_many :entry_manuscripts, inverse_of: :entry, dependent: :destroy
   has_many :manuscripts, through: :entry_manuscripts
-  has_many :entry_titles, inverse_of: :entry, dependent: :destroy
-  has_many :entry_authors, inverse_of: :entry, dependent: :destroy
+  has_many :entry_titles, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
+  has_many :entry_authors, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :authors, through: :entry_authors
-  has_many :entry_dates, inverse_of: :entry, dependent: :destroy
-  has_many :entry_artists, inverse_of: :entry, dependent: :destroy
+  has_many :entry_dates, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
+  has_many :entry_artists, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :artists, through: :entry_artists
-  has_many :entry_scribes, inverse_of: :entry, dependent: :destroy
+  has_many :entry_scribes, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :scribes, through: :entry_scribes
-  has_many :entry_languages, inverse_of: :entry, dependent: :destroy
+  has_many :entry_languages, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :languages, through: :entry_languages
-  has_many :entry_materials, inverse_of: :entry, dependent: :destroy
-  has_many :entry_places, inverse_of: :entry, dependent: :destroy
+  has_many :entry_materials, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
+  has_many :entry_places, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :places, through: :entry_places
-  has_many :entry_uses, inverse_of: :entry, dependent: :destroy
+  has_many :entry_uses, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   
 #  has_many :entry_comments, dependent: :destroy
   has_many :comments, as: :commentable
   has_many :sales, inverse_of: :entry, dependent: :destroy
-  has_many :provenance, inverse_of: :entry, dependent: :destroy
+  has_many :provenance, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
 
   accepts_nested_attributes_for :entry_titles, allow_destroy: true
   accepts_nested_attributes_for :entry_authors, allow_destroy: true
@@ -321,6 +323,53 @@ class Entry < ActiveRecord::Base
     (results.select { |k, v| !v.blank? }).transform_keys{ |key| key.to_s.humanize }
   end
 
+  # returns the entire entry, all the information in as complete a form as possible, for wherever this might be needed
+
+  def public_view
+    a = ActionController::Base.new
+    {
+      id: id,
+      manuscript: manuscript ? manuscript.id : nil,
+      source: "<a href='/sources/#{source.id}'>#{source.display_value}</a>",
+      source_type: source.source_type.display_name,
+      catalog_or_lot_number: catalog_or_lot_number,
+      # transaction information
+      selling_agents: sale ? sale.get_selling_agents.map(&:public_view).join('<br>') : '',
+      sellers: sale ? sale.get_sellers_or_holders.map(&:public_view).join('<br>') : '',
+      buyers: sale ? sale.get_buyers.map(&:public_view).join('<br>') : '',
+      sold: sale ? sale.sold : '',
+      sale_date: sale ? SDBMSS::Util.format_fuzzy_date(sale.date) : '',
+      price: sale ? sale.get_complete_price_for_display : '',
+      #manuscript details
+      titles: entry_titles.join('<br>'),
+      authors: entry_authors.map(&:public_view).join('<br>'),
+      dates: entry_dates.join('<br>'),
+      artists: entry_artists.map(&:public_view).join('<br>'),
+      scribes: entry_scribes.map(&:public_view).join('<br>'),
+      places: entry_places.map(&:public_view).join('<br>'),
+      languages: entry_languages.map(&:public_view).join('<br>'),
+      uses: entry_uses.join('<br>'),
+      materials: entry_materials.join('<br>'),
+      folios: folios,
+      num_lines: num_lines,
+      num_columns: num_columns,
+      height: height,
+      width: width,
+      alt_size: alt_size,
+      miniatures_fullpage: miniatures_fullpage,
+      miniatures_large: miniatures_large,
+      miniatures_small: miniatures_small,
+      miniatures_unspec_size: miniatures_unspec_size,
+      initials_historiated: initials_historiated,
+      initials_decorated: initials_decorated,
+      manuscript_binding: manuscript_binding,
+      manuscript_link:  manuscript_link ? SDBMSS::Util.link_protocol(manuscript_link) : '',
+      other_info: other_info,
+      # provenance
+      provenance: provenance.map(&:public_view).join('<br>')
+    }
+  end
+
   # returns a "complete" representation of this entry, including
   # associated data, as a flat (ie non-nested) Hash. This is used to
   # return rows for the table view, and also used for CSV
@@ -328,6 +377,7 @@ class Entry < ActiveRecord::Base
   # represent the nested associations for display and there has to be
   # some information tweaking/loss.
   
+
   def as_flat_hash
     # for performance, we avoid using has_many->through associations
     # because they always hit the db and circumvent the preloading
@@ -808,10 +858,14 @@ class Entry < ActiveRecord::Base
     id
   end
 
+  def dispute_reasons
+    ["Malicious information", "Misleading data", "Refers to multiple manuscripts", "Other"]
+  end  
+
   # I don't love having to duplicate all the fields AGAIN here, but inheriting it all from blacklight doesn't seem to work
   # 
 
-def do_csv_search(params, download)
+  def do_csv_search(params, download)
     s = do_search(params)
     
     objects = []

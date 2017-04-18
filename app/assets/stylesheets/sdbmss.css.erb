@@ -885,12 +885,10 @@ div#search_results_length {
 li.provenance {
   border: 1px solid #f8f8f8 !important;
   border-radius: 5px !important;
-  background: aliceblue;
   margin: 5px 2px;
   box-shadow: 0px 0px 4px 0px #d6e1ea inset;
 }
 li.provenance:hover, li.provenance:focus {
-  background-color: aliceblue;
   cursor: move;
 }
 .provenance_remove {
@@ -2106,6 +2104,20 @@ so that gray backdrop shvows up correctly */
   padding: 8px 0px;
   margin-left: 25px;
 }*/
+.list-collapse {
+  display: inline-block;
+  margin: 0px;
+}
+.list-collapse.collapsing, .list-collapse {
+  opacity: 1;
+  height: 100% !important;
+}
+.list-collapse span:nth-child(n + 4) {
+  display: none;
+}
+.list-collapse.in span:nth-child(n + 4) {
+  display: inline-block;
+}
 /*
 
 Private Message Styling
@@ -2364,7 +2376,7 @@ Private Message Styling
   display: table-cell;
 }
 .textarea-btn {
-  height: calc(100% + 14px);
+  height: 100%;
 }
 
 .navbar-default .navbar-collapse {
@@ -2397,9 +2409,16 @@ a.ratings {
   color: #333;
 }
 a.ratings.rated {
-  color: crimson;
+  color: #2196F3;
 }
 .checkbox-inline {
   padding: 15px 10px;
   color: #777;
+}
+.ratings-modal .form-control {
+  margin-bottom: 4px;
+}
+.primary-important {
+  background-color: #777 !important;
+  color: white !important;
 }

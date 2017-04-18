@@ -1,0 +1,449 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "extras", media: "all" %>
+  <%= javascript_include_tag "extras" %>
+  <style>
+    td {
+      min-width: 400px;
+      max-width: 400px;
+    }
+    td:first-child {
+      min-width: 150px;
+      font-weight: bold;
+      text-align: left;
+      padding-right: 10px;
+      overflow: hidden;
+      *background: white;
+    }
+    th {
+      font-size: 18px;
+    }
+    .DTFC_LeftBodyWrapper {
+      box-shadow: 4px 0px 10px -6px #777;
+      margin-right: 10px;
+    }
+  </style>
+  <script>
+    $(document).ready(function () {
+      $('#main-container').toggleClass('container').toggleClass('container-fluid');
+
+        var datatables_options = {
+          //data: data,
+          //columns: columns,
+          paging: false,
+          ordering: false,
+          searching: false,
+          fixedColumns: {
+            leftColumns: 1
+          },
+          scrollX: true,
+          fixedHeader: true,
+          dom: "t",
+          scrollY: 'calc(100vh - 300px)',
+          //scrollCollapse: true,
+        }
+        var table = $('#example').dataTable(datatables_options);
+        new $.fn.dataTable.FixedColumns( table );
+    });
+  </script>
+<% end %>
+
+<% content_for :breadcrumbs do %>
+    <%= render partial: "breadcrumbs" %>
+<% end %>
+
+<% content_for :control_tools do %>
+    <%= render partial: "tools" %>
+<% end %>
+
+<div class="row">
+  <div class="col-sm-12">
+    <div class="text-center"><h3 class="h2"><%= @manuscript.public_id %></h3></div>
+    <p class="text-info">Note: This <b>Manuscript Record</b> aggregates <b>Entries</b> citing a manuscript that is mentioned in <b>Sources</b> or <b>Observations</b>.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries.</p>
+  </div>
+</div>
+<table id="example" class="display sdbm-table table-striped dataTable compact" cellspacing="0" width="100%">
+  <thead>
+    <tr>
+      <th></th>
+      <% @entries.each do |entry| %>
+        <th class='text-center'>
+          <%= link_to entry.public_id, entry_path(entry) %>          
+        </th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td></td>
+      <% @entries.each do |entry| %>
+        <td>
+          <%= render partial: "ratings/rate", locals: {ratable: @manuscript.entry_manuscripts.where(entry: entry).first } %>
+        </td>
+      <% end %>
+    </tr>
+    <tr class='primary-important'>
+      <td>Source</td>
+      <% @entries.count.times do %>
+        <td></td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Source</td>     
+      <% @entries.each do |entry| %>
+        <td><%= link_to entry.source.display_value, source_path(entry.source) %> (<%= entry.source.source_type.display_name %>)</td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Source Type</td>     
+      <% @entries.each do |entry| %>
+        <td><%= entry.source.source_type.display_name %></td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Institution/Collection</td>     
+      <% @entries.each do |entry| %>
+        <td><%= entry.institution %></td>
+      <% end %>
+    </tr>
+    <tr class='primary-important'>
+      <td>Transaction Information</td>
+      <% @entries.count.times do %>
+        <td></td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>
+        Sale Agent(s)
+      </td>
+      <% @entries.each do |entry| %>
+        <td>
+          <% selling_agents = entry.sale ? entry.sale.get_selling_agents : [] %>
+          <% selling_agents.each do |selling_agent| %>
+              <a href="<%= name_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a><br>
+          <% end %>
+        </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>
+        Seller(s)
+      </td>
+      <% @entries.each do |entry| %>
+        <td>
+          <% sellers = entry.sale ? entry.sale.get_sellers_or_holders : [] %>
+          <% sellers.each do |seller| %>
+              <a href="<%= name_path(seller.agent) %>"><%= seller.agent.name %></a><br>
+          <% end %>
+        </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>
+        Buyer(s)
+      </td>
+      <% @entries.each do |entry| %>
+        <td>
+          <% buyers = entry.sale ? entry.sale.get_buyers : [] %>
+          <% buyers.each do |buyer| %>
+              <a href="<%= name_path(buyer.agent) %>"><%= buyer.agent.name %></a><br>
+          <% end %>
+        </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Sold</td>      
+      <% @entries.each do |entry| %>
+        <td>
+          <% entry.sale ? entry.sale.sold : "" %>
+        </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Date Sold</td>      
+      <% @entries.each do |entry| %>
+        <td>
+          <% entry.sale ? SDBMSS::Util.format_fuzzy_date(entry.sale.date) : "" %>
+        </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Price</td>      
+      <% @entries.each do |entry| %>
+        <td>
+          <% entry.sale ? entry.sale.get_complete_price_for_display : "" %>
+        </td>
+      <% end %>
+    </tr>
+    <tr class="primary-important">
+      <td>Manuscript Details</td>
+      <% @entries.count.times do %>
+        <td></td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Title(s)</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <% entry.entry_titles.each do |entry_title| %>
+              <%= entry_title %><br/>
+            <% end %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Author(s)</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <% entry.entry_authors.each do |entry_author| %>
+              <%= render partial: "shared/entry_author", object: entry_author %> <br>
+            <% end %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Date(s)</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <% entry.entry_dates.each do |entry_date| %>
+              <%= entry_date.display_value %><br/>
+            <% end %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Artist(s)</td>
+      <% @entries.each do |entry| %>
+          <td>
+              <% entry.entry_artists.each do |entry_artist| %>
+                  <%= render partial: "shared/entry_artist", object: entry_artist %>
+                  <br/>
+              <% end %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Scribe(s)</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <% entry.entry_scribes.each do |entry_scribe| %>
+              <%= render partial: "shared/entry_scribe", object: entry_scribe %>
+              <br/>
+            <% end %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Language(s)</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <% entry.entry_languages.each do |entry_language| %>
+              <%= render partial: "shared/language", locals: {entry_language: entry_language} %> <br>
+            <% end %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Place(s)</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <% entry.entry_places.each do |entry_place| %>
+              <%= render partial: "shared/place", locals: {entry_place: entry_place} %> <br>
+            <% end %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Material(s)</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= entry.entry_materials.map { |entry_material| entry_material }.join(", ") %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Use(s)</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <% entry.entry_uses.each do |entry_use| %>
+                <%= entry_use.use %><br/>
+            <% end %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Folios</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= entry.folios %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Lines</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= entry.num_lines %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Columns</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= entry.num_columns %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Height</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= entry.height %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Width</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= entry.width %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Alternate Size</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= entry.alt_size %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Full-Page Miniatures</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= entry.miniatures_fullpage %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Large Miniatures</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= entry.miniatures_large %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Small Miniatures</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= entry.miniatures_small %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Unspec. Sized Miniatures</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= entry.miniatures_unspec_size %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Historiated Initials</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= entry.initials_historiated %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Decorated Initials</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= entry.initials_decorated %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Binding</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= entry.manuscript_binding %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Manuscript Link</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <% if entry.manuscript_link %>
+              <%= link_to(entry.manuscript_link, SDBMSS::Util.link_protocol(entry.manuscript_link)) %>
+            <% end %>
+          </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Other Info</td>
+      <% @entries.each do |entry| %>
+          <td>
+            <%= simple_format(entry.other_info) %>
+          </td>
+      <% end %>
+    </tr>
+    <tr class="primary-important">
+      <td>Provenance</td>
+      <% @entries.count.times do %>
+        <td></td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Provenance</td>
+      <% @entries.each do |entry| %>
+        <td>
+        <% entry.provenance.each do |provenance| %>
+          <% if provenance.start_date.present? || provenance.end_date.present? %>
+            (<%= format_fuzzy_date(provenance.start_date) %>
+            <% if provenance.start_date.present? && provenance.end_date.present? %>
+             to 
+            <% end %>
+            <%= format_fuzzy_date(provenance.end_date) %>)
+          <% end %>
+          <% if provenance.associated_date.present? %>
+              <span>(<%= provenance.associated_date.split("\t").join(", ") %>)</span>
+          <% elsif !(provenance.start_date.present? && provenance.end_date.present? && provenance.associated_date.present?) %>
+              (No date)
+          <% end %>
+          <%= render partial: "shared/provenance_name", locals: { provenance: provenance } %>
+          <br>
+        <% end %>
+        </td>
+      <% end %>
+    </tr>
+    <tr class="primary-important">
+      <td>About This Entry</td>
+      <% @entries.count.times do %>
+        <td></td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Added</td>
+      <% @entries.each do |entry| %>
+      <td>
+          by <%= render partial: "shared/username_with_profile_link", locals: { user: entry.created_by , up: true } %>
+          on <%= entry.created_at.to_formatted_s(:date_and_time) %>
+      </td>
+      <% end %>
+    </tr>
+    <tr>
+      <td>Updated</td>
+      <% @entries.each do |entry| %>
+      <td>
+          by <%= render partial: "shared/username_with_profile_link", locals: { user: entry.updated_by, up: true } %>
+          on <%= entry.updated_at %>
+      </td>
+      <% end %>
+    </tr>
+  </tbody>
+</table>

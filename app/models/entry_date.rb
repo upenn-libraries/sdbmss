@@ -90,6 +90,10 @@ class EntryDate < ActiveRecord::Base
     val + certainty_flags
   end
 
+  def to_s
+    display_value
+  end
+
   def to_fields
     {observed_date: observed_date, start_date: date_normalized_start, end_date: date_normalized_end}
   end

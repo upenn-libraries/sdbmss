@@ -239,6 +239,7 @@ $(document).ready( function (e) {
 
     // disable site-wide autocomplete
     $('input').attr('autocomplete','off');
+    //$('[data-toggle="popover"]').popover(); 
 
     // remember control panel display from last set (localstorage memory)
     if (localStorage.getItem('sdbm_hide_panel') == "true") {

@@ -8,10 +8,12 @@
 
     <div class="col-sm-6">
 
-        <dl class="document-show-heading dl-horizontal dl-invert">
-            <dt></dt>
-            <dd class='h2'><%= name.public_id %></dd>
-        </dl>
+        <h2 class='h2 text-center'><%= name.public_id %></h2>
+
+        <div class="text-center">
+            <%= render partial: "ratings/rate", locals: {ratable: name} %>
+        </div>
+
         <%= render partial: "main", locals: { name: name } %>
 
         <dl class="document-metadata dl-horizontal dl-invert">

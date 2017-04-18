@@ -17,6 +17,8 @@ class EntryManuscript < ActiveRecord::Base
   include UserFields
   include HasPaperTrail
   include CreatesActivity
+  include Ratable
+
   extend SolrSearchable
 
   def create_activity(action_name, current_user, transaction_id)
@@ -66,6 +68,10 @@ class EntryManuscript < ActiveRecord::Base
 
   def public_id
     id.to_s
+  end
+
+  def dispute_reasons
+    ["Unreliable data", "Duplicate information", "Multiple/conflicting manuscripts","Other"]
   end
 
   def search_result_format
