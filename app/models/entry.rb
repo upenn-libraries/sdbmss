@@ -578,7 +578,7 @@ class Entry < ActiveRecord::Base
       source.get_institutions.map { |i| i.agent ? i.agent.name : "" }
       #source.get_institution_as_name.try(:name) || institution.try(:name)
     end
-    define_field(:string, :institution_search, :stored => true) do
+    define_field(:text, :institution_search, :stored => true) do
       source.get_institutions_as_names
       #source.get_institution_as_name.try(:name) || institution.try(:name)
     end

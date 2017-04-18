@@ -11,7 +11,7 @@ describe "Manage Users", :js => true do
   end
 
   before :each do
-      login(@user, 'somethingunguessable')
+    login(@user, 'somethingunguessable')
   end
 
   after :each do
