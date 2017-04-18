@@ -17,15 +17,12 @@ describe "Login", :js => true do
   end
 
   it "should allow login" do
-    visit root_path
-    fill_in 'user_login', :with => @user_active.username
-    fill_in 'user_password', :with => 'somethingunguessable'
-    click_button 'Log in'
-    expect(page).to have_content 'Signed in successfully'
+    login(@user_active, 'somethingunguessable')
   end
 
   it "should disallow login" do
     visit root_path
+    find('#dismiss-welcome').click
     fill_in 'user_login', :with => @user_inactive.username
     fill_in 'user_password', :with => 'somethingunguessable'
     click_button 'Log in'
@@ -33,22 +30,13 @@ describe "Login", :js => true do
   end
 
   it "should allow login_as" do
-    visit root_path
-    fill_in 'user_login', :with => @admin.username
-    fill_in 'user_password', :with => 'somethingunguessable'
-    click_button 'Log in'
-    expect(page).to have_content 'Signed in successfully'
-
+    login(@admin, 'somethingunguessable')
     visit login_as_path username: @user_active.username
     expect(page.status_code).to eq(200)
   end
 
   it "should disallow login_as" do
-    visit root_path
-    fill_in 'user_login', :with => @user_active.username
-    fill_in 'user_password', :with => 'somethingunguessable'
-    click_button 'Log in'
-    expect(page).to have_content 'Signed in successfully'
+    login(@user_active, 'somethingunguessable')
 
     visit login_as_path username: @admin.username
     expect(page.status_code).to eq(403)

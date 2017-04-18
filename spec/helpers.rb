@@ -8,6 +8,18 @@ module SDBMSS
     #
     # Adapted from:
     # <https://gist.github.com/michaelglass/8610317>
+
+    module Login    
+      def login(user, password)
+        visit root_path
+        find('#dismiss-welcome').click
+        fill_in 'user_login', :with => user.username
+        fill_in 'user_password', :with => password
+        click_button 'Log in'
+        expect(page).to have_content 'Signed in successfully'
+      end
+    end
+
     module AlertConfirmer
 
       def reject_confirm_from &block

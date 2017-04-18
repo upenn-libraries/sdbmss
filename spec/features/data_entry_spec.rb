@@ -98,11 +98,7 @@ describe "Data entry", :js => true do
   context "when user is logged in" do
 
     before :each do
-      visit root_path
-      fill_in 'user_login', :with => @user.username
-      fill_in 'user_password', :with => 'somethingunguessable'
-      click_button 'Log in'
-      expect(page).to have_content 'Signed in successfully'
+      login(@user, 'somethingunguessable')
     end
 
     require "lib/data_entry_helpers"
@@ -778,18 +774,20 @@ describe "Data entry", :js => true do
 
       expect(page).to have_content("Known errors in the Source should be preserved but can be noted")
 
+      # putting thise here made it save properly, not sure why!
+      fill_in "cat_lot_no", with: "M. 1"
+
       first(".save-button").trigger('click')
       
+      SDBMSS::Util.wait_for_solr_to_be_current
       # note: this fails frequently, for some unknown reason -> no 'sleep duration' seems to affect this...
       expect(page).not_to have_content("Known errors in the Source should be preserved but can be noted")
 
       expect(page).to have_content("This entry has been identified as belonging to manuscript record SDBM_MS_2, which has 2 entries in the SDBM.")
     end
-
-end
+  end
 
   context "when user is not logged in" do
-
     it "should disallow creating Sources if not logged in" do
       visit new_entry_path
       expect(page).not_to have_css("#select_source")
@@ -800,7 +798,5 @@ end
       visit new_entry_path :source_id => @source.id
       expect(page).to have_content("You need to sign in")
     end
-
   end
-
 end

@@ -15,16 +15,16 @@ describe "entries_to_index_on_update" do
 
   it "should work on all models" do
     place = Place.find_by(name: 'Italy, Tuscany, Florence')
-    expect(place.entries_to_index_on_update.count).to eq(1)
+    expect(place.entries_to_index_on_update.count).to eq(3)
 
     language = Language.find_by(name: 'French')
     expect(language.entries_to_index_on_update.count).to eq(1)
 
     name = Name.find_by(name: "Sotheby's")
-    expect(name.entries_to_index_on_update.count).to eq(4)
+    expect(name.entries_to_index_on_update.count).to eq(7)
 
     source = Source.find_by(title: "Catalogue 213: Fine and Important Manuscripts and Printed Books")
-    expect(source.entries_to_index_on_update.count).to eq(6)
+    expect(source.entries_to_index_on_update.count).to eq(8)
   end
 
 end

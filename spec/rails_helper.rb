@@ -74,6 +74,7 @@ RSpec.configure do |config|
   config.include FactoryGirl::Syntax::Methods
 
   config.include SDBMSS::Capybara::AlertConfirmer
+  config.include SDBMSS::Capybara::Login
 
   DatabaseCleaner.strategy = :truncation
   DatabaseCleaner.start
