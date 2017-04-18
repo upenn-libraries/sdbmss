@@ -277,8 +277,8 @@ var SDBM = SDBM || {};
         return this.dataTable.rows().nodes().length * this.getRowHeight();
     };
 
-    SDBM.Table.prototype.reload = function() {
-        this.dataTable.ajax.reload();
+    SDBM.Table.prototype.reload = function(callback) {
+        this.dataTable.ajax.reload(callback);
     };
 
     // given a row that's an Array, find the value at the index for the columnName

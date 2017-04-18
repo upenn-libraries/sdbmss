@@ -84,6 +84,8 @@ $(document).ready(function() {
     var headingId = '<%= @mode == 'by_entry' ? @entry.public_id : @manuscript.public_id %>';
 
     var unsavedChanges;
+    var changed = [];
+
     function setUnsavedChanges(truth) {
         unsavedChanges = truth;
         if (unsavedChanges == false) {
@@ -125,7 +127,7 @@ $(document).ready(function() {
 
     var getActiveEntryManuscripts = function() {
         return entryManuscripts.filter(function (entry_manuscript) {
-            return !entry_manuscript._destroy;
+            return true;//!entry_manuscript._destroy;
         });
     };
 
@@ -143,15 +145,17 @@ $(document).ready(function() {
         if (!entryIdAlreadyExistsInWorkspace(entryId)) {
             entryManuscripts.push({
                 entry_id: entryId,
-                relation_type: relation
+                relation_type: relation,
+                changed: true
             });
             setUnsavedChanges(true);
+            //changes.push(entryId);
         }
     };
 
     var changeWorkspaceEntry = function (entryId, relation) {
-        if(relation != 'unlink') {
-            if (!entryIdAlreadyExistsInWorkspace(entryId)) {
+        if(true) {//relation != 'unlink') {
+            if (!entryIdAlreadyExistsInWorkspace(entryId)) { // does this ever happen?
                 entryManuscripts.push({
                     entry_id: entryId,
                     relation_type: relation
@@ -159,16 +163,23 @@ $(document).ready(function() {
             } else {
                 $.each(entryManuscripts, function (idx, workspaceEntry) {
                     if(workspaceEntry.entry_id == entryId) {
+                        if (relation == 'unlink') {
+                            workspaceEntry._destroy = 1;
+                        } else {
+                            delete workspaceEntry._destroy;                           
+                        }
                         workspaceEntry.relation_type = relation;
+                        workspaceEntry.changed = true;
                     }
                 });
             }
         } else {
-            deleteWorkspaceEntry(entryId);            
+            //deleteWorkspaceEntry(entryId);            
         }
+        //changes.push(entryId);
         setUnsavedChanges(true);
     };
-
+/*
     var deleteWorkspaceEntry = function(entryIdToDelete) {
         // FIX ME - what is the purpose of this?
         if(mode == 'by_entry' && entryId == entryIdToDelete) {
@@ -196,7 +207,7 @@ $(document).ready(function() {
             }
         }
         setUnsavedChanges(true);
-    };
+    };*/
 
     var isInWorkspace = function(entryId, relationType) {
         var inWorkspace = false;
@@ -430,7 +441,7 @@ $(document).ready(function() {
     $(document).on("click", ".add-entry-link", function (event) {
         var entryId = $(event.target).data("entryId");
         addWorkspaceEntry(entryId, "is");
-        workspaceTable.reload();
+        workspaceTable.reload(highlightRows); 
         return false;
     });
 
@@ -438,9 +449,25 @@ $(document).ready(function() {
         var entryId = $(event.target).data("entryId");
         var value = $(event.target).val();
         changeWorkspaceEntry(entryId, value);
-        workspaceTable.reload();
+        workspaceTable.reload(highlightRows); 
         return false;
     });
+
+    function highlightRows() {
+        var deleted = 0, changed = 0;
+        for (var i = 0; i < entryManuscripts.length; i++) {
+            if (!entryManuscripts[i].changed) {}
+            else if (entryManuscripts[i]._destroy) {
+                $('#workspace_wrapper td[title="SDBM_' + entryManuscripts[i].entry_id + '"').parent('tr').removeClass('linking-tool-changed').addClass('linking-tool-deleted');
+                deleted += 1;
+            } else {
+                $('#workspace_wrapper td[title="SDBM_' + entryManuscripts[i].entry_id + '"').parent('tr').removeClass('linking-tool-deleted').addClass('linking-tool-changed');
+                changed += 1;
+            }
+        }
+        $("#changes").text(changed + " changed");        
+        $("#deletes").text(deleted + " deleted");
+    }
 
     $(document).on("click", ".link-to-manuscript-link", function (event) {
 
@@ -671,6 +698,8 @@ $(document).ready(function() {
     <div style="margin-bottom: 6px">
         <span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>
         <button id="persist-entries-manuscript-link" class="btn btn-primary btn-xs" style="margin-left: 40px"></button>
+        <span class="text-success bg-success linking-tool-change-info" id="changes">0 changed</span>
+        <span class="text-danger bg-danger linking-tool-change-info" id="deletes">0 deleted</span>
     </div>
 
     <table id="workspace" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
