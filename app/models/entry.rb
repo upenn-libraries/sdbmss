@@ -578,7 +578,7 @@ class Entry < ActiveRecord::Base
       source.get_institutions.map { |i| i.agent ? i.agent.name : "" }
       #source.get_institution_as_name.try(:name) || institution.try(:name)
     end
-    define_field(:text, :institution_search, :stored => true) do
+    define_field(:string, :institution_search, :stored => true) do
       source.get_institutions_as_names
       #source.get_institution_as_name.try(:name) || institution.try(:name)
     end
@@ -904,7 +904,7 @@ class Entry < ActiveRecord::Base
 
   def self.filters
     [
-      "source", "approved", "width", "provenance_date", "price", "num_lines", "num_columns", "miniatures_unspec_size", "miniatures_small", "miniatures_large", "miniatures_fullpage", "manuscript_date",
+      "source", "approved", "width", "provenance_date", "sale_price", "num_lines", "num_columns", "miniatures_unspec_size", "miniatures_small", "miniatures_large", "miniatures_fullpage", "manuscript_date",
       "initials_historiated", "initials_decorated", "height", "folios", "updated_by", "created_by", "entry_id", "manuscript_id", "deprecated"
     ]
   end
