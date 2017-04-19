@@ -1,6 +1,5 @@
 class EntryAuthor < ActiveRecord::Base
 
-  include PublicView
   include CertaintyFlags
   include DisplayableName
   include HasPaperTrail

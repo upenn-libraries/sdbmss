@@ -5,6 +5,7 @@
     td {
       min-width: 400px;
       max-width: 400px;
+      border-right: 1px solid #ddd;
     }
     td:first-child {
       min-width: 150px;
@@ -19,10 +20,14 @@
     }
     .DTFC_LeftBodyWrapper {
       box-shadow: 4px 0px 10px -6px #777;
-      margin-right: 10px;
+      padding-right: 10px;
+    }
+    th, td {
+      overflow-x: hidden;
     }
   </style>
   <script>
+  var t;
     $(document).ready(function () {
       $('#main-container').toggleClass('container').toggleClass('container-fluid');
 
@@ -37,11 +42,14 @@
           },
           scrollX: true,
           fixedHeader: true,
-          dom: "t",
+          dom: '<J<"columns">>t',
           scrollY: 'calc(100vh - 300px)',
+          colResize: true,
+
           //scrollCollapse: true,
         }
         var table = $('#example').dataTable(datatables_options);
+
         new $.fn.dataTable.FixedColumns( table );
     });
   </script>
@@ -76,7 +84,7 @@
     <tr>
       <td></td>
       <% @entries.each do |entry| %>
-        <td>
+        <td class='text-center'>
           <%= render partial: "ratings/rate", locals: {ratable: @manuscript.entry_manuscripts.where(entry: entry).first } %>
         </td>
       <% end %>

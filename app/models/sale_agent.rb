@@ -1,7 +1,6 @@
 
 class SaleAgent < ActiveRecord::Base
 
-  include PublicView
   include CertaintyFlags
   include HasPaperTrail
 

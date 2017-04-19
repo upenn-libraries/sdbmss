@@ -23,7 +23,7 @@
           var data = google.visualization.arrayToDataTable(t);
 
           var options = {
-            title: key,
+            //title: key,
             hAxis: {title: 'Year',  titleTextStyle: {color: '#000', fontSize: 20}, textStyle: {color: '#333399', fontSize: 10}},
             vAxis: {minValue: 0},
             isStacked: true,
@@ -42,8 +42,11 @@
   });
 </script>
 <% end %>
-<h3 class="text-center">User Behavior and Feedback</h3>
-
+<h4 class="text-center"><a href="/names?created_by=<%= @user.username %>">Names</a></h4>
 <div id="Names" style="width: 100%; height: 500px; margin-bottom: 10px;"></div>
+
+<h4 class="text-center"><a href="/entry_manuscripts?created_by=<%= @user.username %>">Links</a></h4>
 <div id="Links" style="width: 100%; height: 500px; margin-bottom: 10px;"></div>
+
+<h4 class="text-center"><a href="/sources?created_by=<%= @user.username %>&source_type=observation">Observations</a></h4>
 <div id="Observations" style="width: 100%; height: 500px; margin-bottom: 10px;"></div>

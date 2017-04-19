@@ -521,7 +521,6 @@ var BOOKMARK_SCOPE;
             }
             return path;
         };
-
         $scope.findSourceCandidates = function () {
             var source_type, source_type_options;
             if ($scope.source_type) {

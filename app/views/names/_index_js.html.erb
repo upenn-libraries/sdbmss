@@ -191,7 +191,9 @@ load_session = '<%= params[:last_search] %>' == 'true';
      if (window.screen.width > 640) {
         config.fixedColumns = 3
      }
-     new ManageNames(config);
+     var manageNames = new ManageNames(config);
+     manageNames.setFormStateFromURL();
+    manageNames.dataTable.reload();         
 
  });
 

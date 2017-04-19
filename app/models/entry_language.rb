@@ -1,6 +1,5 @@
 class EntryLanguage < ActiveRecord::Base
 
-  include PublicView
   include CertaintyFlags
   include HasPaperTrail
 

@@ -1,7 +1,6 @@
 
 class Provenance < ActiveRecord::Base
 
-  include PublicView
   include CertaintyFlags
   include HasPaperTrail
 
@@ -122,10 +121,6 @@ class Provenance < ActiveRecord::Base
 
   def dates
     [start_date, end_date].reject(&:nil?).join(' to ') + (associated_date ? " #{associated_date}" : "")
-  end
-
-  def public_view
-    (((name_authority + observed).length > 0) ? (name_authority + observed) : ('No name recorded.')) + certainty_flags + dates + (comment ? "<br><em>#{comment}</em>" : "")
   end
 
 end

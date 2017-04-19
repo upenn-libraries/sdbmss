@@ -323,53 +323,6 @@ class Entry < ActiveRecord::Base
     (results.select { |k, v| !v.blank? }).transform_keys{ |key| key.to_s.humanize }
   end
 
-  # returns the entire entry, all the information in as complete a form as possible, for wherever this might be needed
-
-  def public_view
-    a = ActionController::Base.new
-    {
-      id: id,
-      manuscript: manuscript ? manuscript.id : nil,
-      source: "<a href='/sources/#{source.id}'>#{source.display_value}</a>",
-      source_type: source.source_type.display_name,
-      catalog_or_lot_number: catalog_or_lot_number,
-      # transaction information
-      selling_agents: sale ? sale.get_selling_agents.map(&:public_view).join('<br>') : '',
-      sellers: sale ? sale.get_sellers_or_holders.map(&:public_view).join('<br>') : '',
-      buyers: sale ? sale.get_buyers.map(&:public_view).join('<br>') : '',
-      sold: sale ? sale.sold : '',
-      sale_date: sale ? SDBMSS::Util.format_fuzzy_date(sale.date) : '',
-      price: sale ? sale.get_complete_price_for_display : '',
-      #manuscript details
-      titles: entry_titles.join('<br>'),
-      authors: entry_authors.map(&:public_view).join('<br>'),
-      dates: entry_dates.join('<br>'),
-      artists: entry_artists.map(&:public_view).join('<br>'),
-      scribes: entry_scribes.map(&:public_view).join('<br>'),
-      places: entry_places.map(&:public_view).join('<br>'),
-      languages: entry_languages.map(&:public_view).join('<br>'),
-      uses: entry_uses.join('<br>'),
-      materials: entry_materials.join('<br>'),
-      folios: folios,
-      num_lines: num_lines,
-      num_columns: num_columns,
-      height: height,
-      width: width,
-      alt_size: alt_size,
-      miniatures_fullpage: miniatures_fullpage,
-      miniatures_large: miniatures_large,
-      miniatures_small: miniatures_small,
-      miniatures_unspec_size: miniatures_unspec_size,
-      initials_historiated: initials_historiated,
-      initials_decorated: initials_decorated,
-      manuscript_binding: manuscript_binding,
-      manuscript_link:  manuscript_link ? SDBMSS::Util.link_protocol(manuscript_link) : '',
-      other_info: other_info,
-      # provenance
-      provenance: provenance.map(&:public_view).join('<br>')
-    }
-  end
-
   # returns a "complete" representation of this entry, including
   # associated data, as a flat (ie non-nested) Hash. This is used to
   # return rows for the table view, and also used for CSV
@@ -905,12 +858,12 @@ class Entry < ActiveRecord::Base
   def self.filters
     [
       "source", "approved", "width", "provenance_date", "sale_price", "num_lines", "num_columns", "miniatures_unspec_size", "miniatures_small", "miniatures_large", "miniatures_fullpage", "manuscript_date",
-      "initials_historiated", "initials_decorated", "height", "folios", "updated_by", "created_by", "entry_id", "manuscript_id", "deprecated"
+    "initials_historiated", "initials_decorated", "height", "folios", "updated_by", "created_by", "entry_id", "manuscript_id", "deprecated"
     ]
   end
 
   def self.fields
-    ["binding_search", "catalog_or_lot_number_search", "sale_seller_search", "sale_buyer_search", "sale_selling_agent_search", "source_search", "institution_search", "title_search", "author_search", "artist_search", "scribe_search", "place_search", "language_search", "material_search", "language_search", "provenance_search"]
+    ["complete_entry", "binding_search", "catalog_or_lot_number_search", "sale_seller_search", "sale_buyer_search", "sale_selling_agent_search", "source_search", "institution_search", "title_search", "author_search", "artist_search", "scribe_search", "place_search", "language_search", "material_search", "language_search", "provenance_search"]
   end
 
   def self.dates
