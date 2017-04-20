@@ -99,7 +99,6 @@ class PrivateMessagesController < ApplicationController
 
   def show
     @chain = Chain.new(@message, current_user)
-    # FIX ME: how to mark messages as READ, but only after the page loads
     @chain.messages.each { |message| message.delay.read(current_user) }
   end
 

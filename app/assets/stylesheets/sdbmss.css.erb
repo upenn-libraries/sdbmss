@@ -1917,6 +1917,20 @@ so that gray backdrop shvows up correctly */
   height: calc(100vh - 50px);
   white-space: normal;
   border-top: 2px solid white;
+  height: calc(100vh - 50px);
+  overflow-x: hidden;
+  -webkit-transition-property: width;
+  -moz-transition-property: width;
+  transition-property: width;
+  -webkit-transition-duration: 0.35s;
+  -moz-transition-duration: 0.35s;
+  transition-duration: 0.35s;
+  -webkit-transition-timing-function: linear;
+  -moz-transition-timing-function: linear;
+  transition-timing-function: linear;
+  -webkit-transition-delay: 0s;
+  -moz-transition-delay: 0s;
+  transition-delay: 0s;
 }
 #control-panel .control-label {
   color: white;
@@ -1969,23 +1983,7 @@ so that gray backdrop shvows up correctly */
   font-size: 36px;
   color: white;
 }
-/* FIX ME: this should really be renamed */
-#control-panel {
-  height: calc(100vh - 50px);
-  overflow-x: hidden;
-  -webkit-transition-property: width;
-  -moz-transition-property: width;
-  transition-property: width;
-  -webkit-transition-duration: 0.35s;
-  -moz-transition-duration: 0.35s;
-  transition-duration: 0.35s;
-  -webkit-transition-timing-function: linear;
-  -moz-transition-timing-function: linear;
-  transition-timing-function: linear;
-  -webkit-transition-delay: 0s;
-  -moz-transition-delay: 0s;
-  transition-delay: 0s;
-}
+
 #collapse-control {
   border-radius: 0px;
   border: none;

@@ -183,7 +183,6 @@ var SDBM = SDBM || {};
         var the_table = this.dataTable;
         $('.wide').replaceWith('<a id="widescreen" class="btn btn-default" title="Widescreen View"><span class="glyphicon glyphicon-resize-full"></span></a>');
         $('#widescreen').click( function () {
-            // fix me: when we start wide, header columns break (in a big way), otherwise they just break in a SMALL way
             $("#main-container").toggleClass('container-fluid').toggleClass('container');
             $("#widescreen > span").toggleClass('glyphicon-resize-small').toggleClass('glyphicon-resize-full');
             if ($('#main-container').hasClass('container-fluid')) {

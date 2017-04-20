@@ -25,15 +25,6 @@ table.dataTable.compact tbody td {
 /**** begin SDBM specific customizations to table styling ****/
 
 /*
- * put left and right borders on this container, otherwise a tall table
- *  without enough rows to fill it completely looks weird. FIX ME: does it?
- */
-.dataTables_scroll {
-    /* border-left: 1px solid #ddd; */
-    /* border-right: 1px solid #ddd; */
-}
-
-/*
  * eliminate margin-top, otherwise the left & right borders of surrounding
  * .dataTables_scroll element extend above the table and make it look weird.  
  */

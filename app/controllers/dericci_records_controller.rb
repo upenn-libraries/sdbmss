@@ -1,4 +1,3 @@
-# fix me: change to strict catalog management system for records; remove GAME functionality
 class DericciRecordsController < ApplicationController
 
   def index
