@@ -5,3 +5,6 @@
 <li class="  <%= current_page?(polymorphic_path(@model)) ? 'active' : '' %>">
   <a href="<%= polymorphic_path(@model) %>"><%= @model.public_id %></a>
 </li>
+<li class="  <%= current_page?(polymorphic_path(@model, :table => true)) ? 'active' : '' %>">
+  <a href="<%= polymorphic_path(@model, :table => true) %>">Table View</a>
+</li>

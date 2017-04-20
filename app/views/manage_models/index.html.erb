@@ -120,7 +120,7 @@ $("#addSearch").click( function (e) {
     // fix me: add something here to dynamically change table height -> 
 
     var p = $('.search-block').eq(0).clone();
-    p.find("input", "select").val("");
+    p.find("input", "select").val("").attr('disabled', false);
     p.find('.form-submission').remove();
     $(".search-fieldset").append(p);
     p.find(".search-remove").click( function (e) {

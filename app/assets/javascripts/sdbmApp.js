@@ -483,11 +483,11 @@ var BOOKMARK_SCOPE;
             sdbmutil.promiseErrorHandlerFactory("Error loading Source data for this page")
           );
           //$scope.$emit('changeSource', source)
-        }
+        };
 
         $scope.cancelSelectSource = function () {
           $scope.$emit('cancelSource');
-        }
+        };
 
         $scope.createSource = function () {
           var modalScope = $rootScope.$new();
@@ -503,7 +503,7 @@ var BOOKMARK_SCOPE;
               $modalInstance.close();
             }
           });
-        }
+        };
 
         $scope.createSourceURL = function () {
             var path = "/sources/new?create_entry=1";
@@ -521,7 +521,11 @@ var BOOKMARK_SCOPE;
             }
             return path;
         };
+        $scope.searches_count = 0;
         $scope.findSourceCandidates = function () {
+            // don't interrupt existing search
+            // flag ongoing search
+
             var source_type, source_type_options;
             if ($scope.source_type) {
               source_type = [$scope.source_type];
@@ -532,27 +536,34 @@ var BOOKMARK_SCOPE;
             }
             if($scope.title.length > 1 || $scope.date.length > 1 || $scope.agent.length > 1) {
                 $scope.searchAttempted = true;
-                var title = $scope.title.length > 1 ? $scope.title : '';
-                var date = $scope.date.length > 1 ? $scope.date : '';
-                var agent = $scope.agent.length > 1 ? $scope.agent : '';
-                $http.get("/sources/search.json", {
-                    params: {
-                        order: $scope.order,
-                        date: date,
-                        title: title,
-                        agent: agent,
-                        limit: $scope.limit,
-                        "source_type[]": source_type,
-                        "source_type_option[]": source_type_options,
-                        id: $scope.source_id,
-                        id_option: "without"
+                // create a closure here so that I can store the index of the current search, then check on the results whether it is still the latest search
+                (function () {
+                  var title = $scope.title.length > 1 ? $scope.title : '';
+                  var date = $scope.date.length > 1 ? $scope.date : '';
+                  var agent = $scope.agent.length > 1 ? $scope.agent : '';
+                  // index of current search
+                  var i = ++$scope.searches_count;
+                  $http.get("/sources/search.json", {
+                      params: {
+                          order: $scope.order,
+                          date: date,
+                          title: title,
+                          agent: agent,
+                          limit: $scope.limit,
+                          "source_type[]": source_type,
+                          "source_type_option[]": source_type_options,
+                          id: $scope.source_id,
+                          id_option: "without"
+                      }
+                  }).then(function (response) {
+                    if (i >= $scope.searches_count) {
+                      $scope.total = response.data.total;
+                      $scope.sources = response.data.results;
                     }
-                }).then(function (response) {
-                    $scope.total = response.data.total;
-                    $scope.sources = response.data.results;
-                }, function(response) {
-                    alert("An error occurred searching for sources");
-                });
+                  }, function(response) {
+                      alert("An error occurred searching for sources");
+                  });
+                })();
             } else {
               $scope.searchAttempted = false;
               $scope.sources = [];

@@ -394,7 +394,7 @@ $(document).ready(function() {
                 'complete': function () {
                     $("#spinner").hide();
                     // FIX ME: for some reason, radiobuttons do not appear on first load of workspacetable -> this is a hacky fix to make them do that :/
-                    workspaceTable.reload();
+                    workspaceTable.reload(highlightRows);
                 }
             });
         }
@@ -407,6 +407,10 @@ $(document).ready(function() {
         potentialMatches = null;
         resultsTable.reload();
     };
+
+    $('#workspace').on( 'order.dt', function () {
+        setTimeout(highlightRows, 10); // this callback doesn't happen at the right time, so I wrapped it in setTimeout to lower its priority
+    } );
 
     // TODO: fix row highlighting broken by fixed column datatable plugin
 

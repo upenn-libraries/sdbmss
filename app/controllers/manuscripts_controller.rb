@@ -18,7 +18,7 @@ class ManuscriptsController < SearchableAuthorityController
     @fields + @filters + @dates
   end
 
-  def demo
+  def table
     @entries = @manuscript.entries.preload(
       :created_by, :updated_by, :contributors, :groups, :institution, 
       {:sales => [{:sale_agents => :agent}]}, 
@@ -41,8 +41,8 @@ class ManuscriptsController < SearchableAuthorityController
   end
 
   def show
-    if params[:demo]
-      demo
+    if params[:table]
+      table
       return
     end
     flash.now[:notice] = "Note: This manuscript record aggregates entries citing a manuscript that is mentioned in sources or observations.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."

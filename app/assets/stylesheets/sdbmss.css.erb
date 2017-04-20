@@ -941,8 +941,7 @@ li.provenance:hover, li.provenance:focus {
   max-width: calc(100% - 40px);
 }
 #source-form .remove-link-container:before {
-  width: 30vw;
-  left: -30vw;
+  display: none;
 }
 #source-form .remove-link-container {
   background: none;
@@ -2437,4 +2436,14 @@ tr.linking-tool-changed {
 }
 tr.linking-tool-changed td, tr.linking-tool-deleted td {
   background: none !important;
+}
+tr.linking-tool-changed td:first-child:before {
+  content: "*";
+  position: absolute;
+  left: -12px;
+}
+tr.linking-tool-deleted td:first-child:before {
+  content: "!";
+  position: absolute;
+  left: -12px;
 }
