@@ -1003,7 +1003,7 @@ var BOOKMARK_SCOPE;
           for (var i = 0; i < anArray.length; i++) {
             anArray[i].order = i;
           }
-          setTimeout( function () {            
+          setTimeout( function () {
             $scope.affixer();
           }, 2000);
         };

@@ -111,7 +111,7 @@ load_session = '<%= params[:last_search] %>' == 'true';
                 dbSortField: 'provenance_count'
             },
             {
-                title: 'Reviewed',
+                title: 'Approved',
                 dbSortField: 'reviewed'
             },
             /*{
@@ -189,7 +189,7 @@ load_session = '<%= params[:last_search] %>' == 'true';
      };
      // arbitrary screen width for fixed columns...
      if (window.screen.width > 640) {
-        config.fixedColumns = 3
+        config.fixedColumns = 4
      }
      var manageNames = new ManageNames(config);
      manageNames.setFormStateFromURL();

@@ -343,6 +343,19 @@ $(document).ready(function() {
         }
     });
 
+    workspaceTable.reload = function(callback) {
+        this.scrolltop = $(this.selector + "_wrapper .dataTables_scrollBody").scrollTop();
+        //console.log('scroll...',  this.scrolltop, $(this.selector + "_wrapper .dataTables_scrollBody"), this.selector, $(this.selector + "_wrapper .dataTables_scrollBody").scrollTop());
+        var t = this;
+        this.dataTable.ajax.reload(function () {
+            if (callback) callback();
+            setTimeout(function () {
+                //console.log(t.scrolltop);
+                $(t.selector + "_wrapper .dataTables_scrollBody").scrollTop(t.scrolltop);
+            }, 10);
+        });
+    };
+
     var resultsTable = new SDBM.EntryTable("#search_results", {
         dom: '<"clear"><"H linking_table_header"<"row"<"col-sm-3"l><"col-sm-9 text-right"<"spinner">rip>>>JRt<"F">',
         //dom: '<"row"<"col-sm-5"li><"col-sm-7 text-right" p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t',
@@ -409,7 +422,8 @@ $(document).ready(function() {
     };
 
     $('#workspace').on( 'order.dt', function () {
-        setTimeout(highlightRows, 10); // this callback doesn't happen at the right time, so I wrapped it in setTimeout to lower its priority
+        highlightRows();
+        //setTimeout(highlightRows, 10); // this callback doesn't happen at the right time, so I wrapped it in setTimeout to lower its priority
     } );
 
     // TODO: fix row highlighting broken by fixed column datatable plugin
@@ -458,19 +472,21 @@ $(document).ready(function() {
     });
 
     function highlightRows() {
-        var deleted = 0, changed = 0;
-        for (var i = 0; i < entryManuscripts.length; i++) {
-            if (!entryManuscripts[i].changed) {}
-            else if (entryManuscripts[i]._destroy) {
-                $('#workspace_wrapper td[title="SDBM_' + entryManuscripts[i].entry_id + '"]').parent('tr').removeClass('linking-tool-changed').addClass('linking-tool-deleted');
-                deleted += 1;
-            } else {
-                $('#workspace_wrapper td[title="SDBM_' + entryManuscripts[i].entry_id + '"]').parent('tr').removeClass('linking-tool-deleted').addClass('linking-tool-changed');
-                changed += 1;
+        setTimeout(function () {
+            var deleted = 0, changed = 0;
+            for (var i = 0; i < entryManuscripts.length; i++) {
+                if (!entryManuscripts[i].changed) {}
+                else if (entryManuscripts[i]._destroy) {
+                    $('#workspace_wrapper td[title="SDBM_' + entryManuscripts[i].entry_id + '"]').parent('tr').removeClass('linking-tool-changed').addClass('linking-tool-deleted');
+                    deleted += 1;
+                } else {
+                    $('#workspace_wrapper td[title="SDBM_' + entryManuscripts[i].entry_id + '"]').parent('tr').removeClass('linking-tool-deleted').addClass('linking-tool-changed');
+                    changed += 1;
+                }
             }
-        }
-        $("#changes").text(changed + " changed");        
-        $("#deletes").text(deleted + " deleted");
+            $("#changes").text(changed + " changed");        
+            $("#deletes").text(deleted + " deleted");
+        }, 1)
     }
 
     $(document).on("click", ".link-to-manuscript-link", function (event) {

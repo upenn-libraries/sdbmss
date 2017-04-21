@@ -3,7 +3,7 @@ class ManuscriptsController < SearchableAuthorityController
   include MarkAsReviewed
   include LogActivity
 
-  before_action :set_manuscript, only: [:show, :edit, :entry_candidates, :citation]
+  before_action :set_manuscript, only: [:show, :edit, :entry_candidates, :citation, :table]
 
   load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_reviewed]
 
@@ -19,6 +19,7 @@ class ManuscriptsController < SearchableAuthorityController
   end
 
   def table
+    @model = @manuscript
     @entries = @manuscript.entries.preload(
       :created_by, :updated_by, :contributors, :groups, :institution, 
       {:sales => [{:sale_agents => :agent}]}, 
@@ -37,14 +38,9 @@ class ManuscriptsController < SearchableAuthorityController
     # I use 'sort' rather than the query-based order because of a rails issue:
     # https://github.com/rails/rails/issues/6769
     # that breaks associated field ordering (i.e. provenance)
-    render "demo"
   end
 
   def show
-    if params[:table]
-      table
-      return
-    end
     flash.now[:notice] = "Note: This manuscript record aggregates entries citing a manuscript that is mentioned in sources or observations.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
 
     #@manuscript_comment = ManuscriptComment.new(manuscript: @manuscript)
