@@ -1,0 +1,51 @@
+<!-- dispute modal -->
+<% if current_user %>
+<a href="" data-toggle="modal" data-target="#request_advancement">Request Advancement</a>
+<div class="modal fade ratings-modal" id="request_advancement">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <span class="modal-title h4">Would you like to advance to a higher user level?</span>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <h4 class="text-center">New SDBM User Levels:</h4>
+          <ul>
+            <li>
+          <b>Contributor</b>: Contributors can create Entries, Sources, Names, and Manuscript Records; comment on other entries; link entries; and create manuscript records. Contributors can edit and manage only the Entries, Sources, Names, and Manuscript Records they create.
+            </li>
+            <li>
+          <b>Editor</b>: Editors can do all things that Contributors can do, plus edit all Manuscript records, manage Names, and approve all Entries, Sources, Names, and Manuscript Records.
+            </li>
+            <li>
+          <b>Super Editor</b>: Super Editors can do all things that Editors can do; <b>plus</b>, edit legacy data (entries added to the database before October 15, 2015)
+            </li>
+            <li>
+          <b>Admin</b>: Admins (Administrators) are New SDBM staff who can do all things that Contributors and Editors can do, plus edit and delete all Entries, Sources, Names, and Manuscript Records. 
+            </li>
+          </ul>
+          <%= form_tag("/private_messages", method: :post) do %>
+            <% User.where(role: "admin").each do |user| %>
+              <%= hidden_field_tag "to_user[]", user.id %>
+            <% end %>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <%= text_field_tag :title, "I would like to request user advancement, please!", class: "form-control", required: true, placeholder: "Subject" %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <%= text_area_tag :message, '', class: "form-control", rows: 5, required: true, placeholder: "Message" %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12"><%= submit_tag %></div>
+            </div>
+          <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<% end %>

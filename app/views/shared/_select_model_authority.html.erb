@@ -1,15 +1,12 @@
 <script type="text/ng-template" id="selectModelAuthority.html">
     <div class="modal-header">
-        <h3 class="modal-title">Find {{ type | humanize }} in Name Authority
-            <small class='form-inline'>
-                <form class='input-group' ng-submit="autocomplete()">   
-                    <input autofocus type="text" id="searchModelAuthority" class="search-form form-control" ng-model="nameSearchString">
-                    <span class='input-group-btn'>
-                        <input type="submit" class="btn btn-default" value="Search" id='search-model'>Search</input>
-                    </span>
-                </form>
-            </small>
-        </h3>
+        <h3 class="modal-title text-center">Find {{ type | humanize }} in Name Authority</h3>
+        <form class='input-group' ng-submit="autocomplete()">   
+            <input autofocus type="text" id="searchModelAuthority" class="search-form form-control" ng-model="nameSearchString">
+            <span class='input-group-btn'>
+                <input type="submit" class="btn btn-default" value="Search" id='search-model'>Search</input>
+            </span>
+        </form>
     </div>
     <div class="modal-body form-horizontal compress-whitespace fit-screen">
 
