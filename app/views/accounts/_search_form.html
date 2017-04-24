@@ -30,8 +30,7 @@
             <%= text_field_tag :search_value, params[:search_value], size: 18, placeholder: "Enter your search term...", class: "form-control" %>
             <select class="form-control" name="search_field">
             <% Array(@search_fields).each do |field| %>
-                <!-- replace 'at' in 'created at' with 'on' -->
-                <option value="<%= field %>" type="<%= @fields.include?(field) ? 'field' : (@filters.include?(field) ? 'filter' : 'date') %>"><%= field.humanize.gsub(/\sat/, ' on') %></option>
+                <option value="<%= field[1] %>" type="<%= @fields.include?(field) ? 'field' : (@filters.include?(field) ? 'filter' : 'date') %>"><%= field[0] %></option>
             <% end -%>
             </select>
             <select class="form-control" name="search_option">

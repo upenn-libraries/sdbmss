@@ -58,10 +58,6 @@ class EntryManuscript < ActiveRecord::Base
     boolean :reviewed
   end
 
-  def self.filters
-    ["id", "created_by", "updated_by"]
-  end
-
   def self.fields
     []
   end

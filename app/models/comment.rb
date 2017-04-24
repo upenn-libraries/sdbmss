@@ -59,13 +59,16 @@ class Comment < ActiveRecord::Base
   end
 
   def self.fields
-    fields = super.unshift("comment")
-    fields.delete("name")
+    fields = super.unshift(["Comment", "comment"])
+    fields.delete(["Name", "name"])
     fields
   end
 
   def self.filters
-    super + ["commentable_id", "commentable_type"]
+    super + [
+      ["Commentable ID", "commentable_id"], 
+      ["Commentable Type", "commentable_type"]
+    ]
   end
 
   def search_result_format

@@ -7,15 +7,24 @@ module SolrSearchable
   # DATES: allow for searching based on a date range (i.e. before/after)
 
   def filters
-    ["id"]
+    [
+      ["Id", "id"],
+      ["Added By", "created_by"], 
+      ["Updated By",  "updated_by"]
+    ]
   end
 
   def fields
-    ["name", "created_by", "updated_by"]
+    [
+      ["Name", "name"]
+    ]
   end
 
   def dates
-    ["created_at", "updated_at"]
+    [
+      ["Added on", "created_at"], 
+      ["Updated on", "updated_at"]
+    ]
   end
 
   def search_fields
@@ -25,8 +34,8 @@ module SolrSearchable
   def params_for_search(params)
     permitted = []
     self.fields.each do |field|
-      permitted.push(field.to_sym)
-      permitted.push({field.to_sym => []})
+      permitted.push(field[1].to_sym)
+      permitted.push({field[1].to_sym => []})
     end
     params.permit(permitted)
   end
@@ -34,8 +43,8 @@ module SolrSearchable
   def filters_for_search(params)
     permitted = []
     self.filters.each do |filter|
-      permitted.push(filter.to_sym)
-      permitted.push({filter.to_sym => []})
+      permitted.push(filter[1].to_sym)
+      permitted.push({filter[1].to_sym => []})
     end
     params.permit(permitted)
   end
@@ -43,14 +52,14 @@ module SolrSearchable
   def dates_for_search(params)
     permitted = []
     self.dates.each do |date|
-      permitted.push(date.to_sym)
-      permitted.push({date.to_sym => []})
+      permitted.push(date[1].to_sym)
+      permitted.push({date[1].to_sym => []})
     end
     params.permit(permitted)
   end
 
   def options_for_search(params)
-    params.permit(self.search_fields.map do |s| {s + "_option" => []} end, self.search_fields.map do |s| s + "_option" end)
+    params.permit(self.search_fields.map do |s|  {s[1] + "_option" => []} end, self.search_fields.map do |s| s[1] + "_option" end)
   end
 
   def do_csv_search(params, download)

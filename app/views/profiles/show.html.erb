@@ -48,7 +48,7 @@
                           </span>
                         <p class="text-muted">User Level: <em><%= @user.role %></em></p>
                     </div>
-                    <% if current_user == @user %>
+                    <% if current_user == @user && @user.role != "admin" %>
                         <div class="col-xs-12">
                             <p><%= render partial: "shared/request_advancement" %></p>
                         </div>

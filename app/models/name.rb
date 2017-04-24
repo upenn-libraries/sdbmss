@@ -144,11 +144,20 @@ class Name < ActiveRecord::Base
   end
 
   def self.filters
-    super + ["viaf_id", "authors_count", "artists_count", "scribes_count", "provenance_count", "source_agents_count", "confirms", "disputes"]
+    super + [
+      ["VIAF", "viaf_id"], 
+      ["Author Count", "authors_count"], 
+      ["Artist Count", "artists_count"], 
+      ["Scribe Count", "scribes_count"], 
+      ["Provenance Count", "provenance_count"], 
+      ["Source Agent Count", "source_agents_count"],
+      ["Confirmed", "confirms"], 
+      ["Disputed", "disputes"]
+    ]
   end
 
   def self.fields
-    super + ["comment"]
+    super + [["Other Info", "comment"]]
   end
 
   def self.dates

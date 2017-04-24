@@ -857,21 +857,61 @@ class Entry < ActiveRecord::Base
 
   def self.filters
     [
-      "source", "approved", "width", "provenance_date", "sale_price", "num_lines", "num_columns", "miniatures_unspec_size", "miniatures_small", "miniatures_large", "miniatures_fullpage", "manuscript_date",
-    "initials_historiated", "initials_decorated", "height", "folios", "updated_by", "created_by", "entry_id", "manuscript_id", "deprecated"
+      ["Entry Id", "entry_id"], 
+      ["Source ID (Full)", "source"], 
+      ["Approved", "approved"],
+      ["Width", "width"], 
+      #["Provenance Date", "provenance_date"],
+      ["Price", "sale_price"], 
+      ["Lines", "num_lines"], 
+      ["Columns", "num_columns"], 
+      ["Unspecified Miniatures", "miniatures_unspec_size"], 
+      ["Small Miniatures", "miniatures_small"], 
+      ["Large Miniatures", "miniatures_large"], 
+      ["Fullpage Miniatures", "miniatures_fullpage"], 
+      #["Manuscript Date", "manuscript_date"],
+      ["Historiated Initals", "initials_historiated"],
+      ["Decorated Initials", "initials_decorated"],
+      ["Height", "height"], 
+      ["Folios", "folios"], 
+      ["Updated By", "updated_by"], 
+      ["Created By", "created_by"], 
+      ["Manuscript ID", "manuscript_id"], 
+      ["Deprecated", "deprecated"]
     ]
   end
 
   def self.fields
-    ["complete_entry", "binding_search", "catalog_or_lot_number_search", "sale_seller_search", "sale_buyer_search", "sale_selling_agent_search", "source_search", "institution_search", "title_search", "author_search", "artist_search", "scribe_search", "place_search", "language_search", "material_search", "language_search", "provenance_search"]
+    [
+      ["All Fields", "complete_entry"], 
+      ["Binding", "binding_search"], 
+      ["Catalog or Lot #", "catalog_or_lot_number_search"],
+      ["Seller", "sale_seller_search"], 
+      ["Buyer", "sale_buyer_search"], 
+      ["Selling Agent", "sale_selling_agent_search"], 
+      ["Source", "source_search"], 
+      ["Institution", "institution_search"], 
+      ["Title", "title_search"],
+      ["Author", "author_search"], 
+      ["Artist", "artist_search"], 
+      ["Scribe", "scribe_search"], 
+      ["Place", "place_search"], 
+      ["Language", "language_search"], 
+      ["Material", "material_search"], 
+      ["Provenance", "provenance_search"],
+      ["Use", "use_search"]
+    ]
   end
 
   def self.dates
-    ["created_at", "updated_at"]
+    [
+      ["Added On", "created_at"], 
+      ["Updated On", "updated_at"]
+    ]
   end
 
   def self.search_fields
-    super - ["deprecated"]
+    super - ["Deprecated", "deprecated"]
   end
 
   private
