@@ -46,6 +46,9 @@ Rails.application.routes.draw do
 
   #resources :agents, only: [:show]
 
+  get '/dla/schoenberg/record.html', to: 'legacy#index'
+  get '/dla/schoenberg/search.html', to: 'legacy#index'
+
   get '/bookmarks/export', to: 'bookmarks#export', as: 'export_bookmarks'
   get '/bookmarks/reload', to: 'bookmarks#reload', as: 'reload_bookmarks'
   resources :bookmarks do
