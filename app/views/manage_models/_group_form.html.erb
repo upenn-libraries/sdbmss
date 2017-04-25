@@ -2,18 +2,22 @@
 <p>First, select entries by clicking on the box to the left of each entry.  Next, select from the dropdown menu which group to add entries to or remove entries from.  Then, click <b>Add Entry(s)</b> or <b>Remove Entry(s)</b>. The User Group name will appear in the corresponding column below.</p>
 
 <div class="input-group" style="width: 100%;">
-  <input type="submit" value="Add" class='form-control' id="add-to-group" style="max-width: 50px;"/>
-  <input type="submit" value="Remove" class='form-control' id="remove-from-group" style="max-width: 80px;"/>
-  <% groups = Group.joins(:group_users).where(:group_users => {user: current_user, role: "Manager"}) %>
+  <input type="submit" value="Add" class='group-form-control form-control' id="add-to-group" style="max-width: 50px;"/>
+  <input type="submit" value="Remove" class='group-form-control form-control' id="remove-from-group" style="max-width: 80px;"/>
+  <% groups = Group.joins(:group_users).where(:group_users => {user: current_user}) %> <!-- don't have to be a manager to add records... -->
   <% if groups.count > 0 %>  
-  <select class='form-control' id="group-select" style="max-width: 200px;">
+  <select class='group-form-control form-control' id="group-select" style="max-width: 200px;">
     <% groups.each do |group| %>
       <option value="<%= group.id %>"><%= group.name %></option>
     <% end %>
   </select>
   <% else %>
-  <select name="" id="" class="form-control disabled" style="max-width: 240px" disabled>
+  <select name="" id="" class="group-form-control form-control disabled" style="max-width: 240px" disabled>
     <option value="nil">You have no user groups.</option>
   </select>
   <% end %>
+  <label for="" class="control-label group-form-control">
+    Allow editing?
+    <input type="checkbox" class="" value="true" id="editable"></input>
+  </label>
 </div>

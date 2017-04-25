@@ -98,7 +98,7 @@
     </div>
     <div class="col-sm-6">
         <h2 class='text-center'><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
-        <% if @model.public or @model.members.include? current_user %>
+        <% if @model.public or @model.users.include? current_user %>
             <p class='text-muted text-center'>Leave a comment to contribute to the ongoing discussion.</p>
             <%= render partial: "comments/show_all", locals: {comments: @model.comments.where(public: true), record: @model} %>
         <% else %>

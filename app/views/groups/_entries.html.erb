@@ -11,7 +11,16 @@
   <div id="all_entries" class="tab-pane fade in active">
     <% entries.each do |entry| %>
       <p class='one-line'>
-        <strong><%= link_to "#{entry.public_id}", entry_path(entry) %></strong> <%= entry.to_s %>
+        <strong>
+          <% if can? :edit, entry %>
+            <%= link_to edit_entry_path(entry) do %>
+              <span class="glyphicon glyphicon-edit"></span>
+            <% end %>
+          <% else %>
+            <span class="text-muted"><span class="glyphicon glyphicon-edit"></span></span>
+          <% end %>
+          <%= link_to "#{entry.public_id}", entry_path(entry) %>
+        </strong> <%= entry.to_s %>
       </p>
     <% end %>
   </div>
@@ -21,7 +30,18 @@
         <strong><%= link_to "#{source.public_id}", source_path(source) %></strong> <%= source.to_s %>
         <div style="padding-left: 20px">
           <% entries.select { |e| e.source_id == source.id }.each do |entry| %>
-            <p class='one-line'><strong><%= link_to "#{entry.public_id}", entry_path(entry) %></strong> <%= entry.to_s %></p>
+            <p class='one-line'>
+              <strong>
+                <% if can? :edit, entry %>
+                  <%= link_to edit_entry_path(entry) do %>
+                    <span class="glyphicon glyphicon-edit"></span>
+                  <% end %>
+                <% else %>
+                  <span class="text-muted"><span class="glyphicon glyphicon-edit"></span></span>
+                <% end %>
+                <%= link_to "#{entry.public_id}", entry_path(entry) %>
+              </strong> <%= entry.to_s %>
+            </p>
           <% end %>
         </div>
       </p>
@@ -37,7 +57,18 @@
         <% end %>
         <div style="padding-left: 20px">
           <% entries.select { |e| e.manuscript == mss }.each do |entry| %>
-            <p class='one-line'><strong><%= link_to "#{entry.public_id}", entry_path(entry) %></strong> <%= entry.to_s %></p>
+            <p class='one-line'>
+              <strong>
+                <% if can? :edit, entry %>
+                  <%= link_to edit_entry_path(entry) do %>
+                    <span class="glyphicon glyphicon-edit"></span>
+                  <% end %>
+                <% else %>
+                  <span class="text-muted"><span class="glyphicon glyphicon-edit"></span></span>
+                <% end %>
+                <%= link_to "#{entry.public_id}", entry_path(entry) %>
+              </strong> <%= entry.to_s %>
+            </p>
           <% end %>
         </div>
       </p>

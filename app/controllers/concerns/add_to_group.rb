@@ -14,12 +14,13 @@ module AddToGroup
   def add_to_group
     ids = params[:ids]
     group = Group.find(params[:group_id])
+    editable = params[:editable] || false
     error = nil
     if ids.present?
       ids = ids.map(&:to_i)
       records = model_class.where(id: ids).select {|r| can? :edit, r }
       records.each do |record|
-        GroupRecord.create(record: record, group: group)
+        GroupRecord.create(record: record, group: group, editable: editable)
       end
       if ids.count > records.count
         error = "You do not have permission to change group status for the following records: #{ids - records.map(&:id)}"

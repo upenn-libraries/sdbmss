@@ -99,13 +99,14 @@ var load_session = false;
                 ids.push($(element).val());
             });
             var group_id = $('#group-select').val();
-            
+            var editable = $('#editable').attr('checked') || false;
+
             if (ids.length > 0) {
                 $("#spinner").show();
                 $.ajax({
                     url: '/' + manageRecords.options.resourceName + '/add_to_group.json',
                     type: 'POST',
-                    data: { ids: ids, group_id: group_id },
+                    data: { ids: ids, group_id: group_id, editable: editable },
                     success: function(data, textStatus, jqXHR) {
                         if (data.error) {
                             SDBM.showErrorModal("#modal", data.error);
