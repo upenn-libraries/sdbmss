@@ -110,6 +110,7 @@ var SDBM = SDBM || {};
             // properly.
             // https://datatables.net/forums/discussion/24675/radio-button-checked-problem
             // 
+            // saves things like sorting, column visibility, etc. in localstorage
             stateSave: true,
             autoWidth: false,
             ajax: function (dt_params, callback, settings) {
@@ -208,14 +209,19 @@ var SDBM = SDBM || {};
         var dropdown = $('#column-control');
         var num_columns = the_table.columns()[0].length;
         for (var i = 0; i < num_columns; i++) {
-            var option = $('<a class="dropdown-item list-group-item" index=' + i + '></a>');
-            option.html($('th').eq(i).html());
-            option.click( function (e) {
-                var n = Number($(this).attr('index'));
-                the_table.columns([n]).visible(!the_table.columns( [n]).visible()[0]);
-                $(this).toggleClass('disabled');
-            });
-            dropdown.append(option);
+            if (!sdbmTable.columns[i].never_show) {
+                var option = $('<a class="dropdown-item list-group-item" index=' + i + '></a>');
+                option.html(sdbmTable.columns[i].title);
+                if (!the_table.column(i).visible()) {
+                    option.addClass('disabled');
+                }
+                option.click( function (e) {
+                    var n = Number($(this).attr('index'));
+                    the_table.columns([n]).visible(!the_table.columns( [n]).visible()[0]);
+                    $(this).toggleClass('disabled');
+                });
+                dropdown.append(option);
+            }
         }
 
         if(this.options.fixedColumns) {
@@ -593,12 +599,14 @@ var SDBM = SDBM || {};
                 {
                     title: "Can Edit",
                     visible: false,
-                    searchable: false
+                    searchable: false,
+                    never_show: true
                 },
                 {
                     title: "BookmarkWatch",
                     visible: false,
-                    searchable: false
+                    searchable: false,
+                    never_show: true
                 }
             ]
         };
