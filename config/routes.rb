@@ -42,13 +42,9 @@ Rails.application.routes.draw do
 
   resources :replies
   resources :notifications, only: [:index, :show, :update, :destroy]
-  #resources :notifications_settings, only: [:edit]
 
-  #resources :agents, only: [:show]
-
-  get '/dla/schoenberg/record.html', to: 'legacy#index'
-  get '/dla/schoenberg/search.html', to: 'legacy#index'
-
+  get '/dla/schoenberg/:q', to: 'legacy#index'
+  
   get '/bookmarks/export', to: 'bookmarks#export', as: 'export_bookmarks'
   get '/bookmarks/reload', to: 'bookmarks#reload', as: 'reload_bookmarks'
   resources :bookmarks do

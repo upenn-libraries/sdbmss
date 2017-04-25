@@ -16,9 +16,9 @@ class LegacyController < ApplicationController
       </div>
     ).html_safe
     if Entry.exists?(id: entry_id)
-      redirect_to entry_path(Entry.find(entry_id))
+      redirect_to entry_path(Entry.find(entry_id)), status: 301
     else
-      redirect_to root_path
+      redirect_to root_path, status: 301
     end
   end
 end
