@@ -1,0 +1,29 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h3 class="text-center">The New Schoenberg Database of Manuscripts</h3>
+    <div class="alert alert-success">You have been <strong>redirected</strong> from the old Schoenberg Database website.  Records from the old database should be preserved, however links to static pages and searches may not translate to our new site.</div>
+    <p>The Schoenberg Database of Manuscripts aggregates observations of premodern manuscripts drawn from over 12,000 auction and sales catalogues, inventories, catalogues from institutional and private collections, and other sources that document sales and locations of these books from around the world. Using 36 possible fields, entries in the Schoenberg Database of Manuscripts (SDBM) record data from observations made in these sources and assist researchers in locating and identifying particular manuscripts, establishing provenance, and aggregating descriptive information about specific classes or types of manuscripts.</p>
+    <p>The New Schoenberg Database of Manuscripts, in development since 2014, allows you -- the members of its user community -- to become active, contributing partners in its development. Users can add entries, comment on other users entries, aggregate entries to created “manuscript records,” and help us build an authority file of persons and institutions associated with the movement of manuscripts across time and place.</p>
+  </div>
+  <div class="col-sm-2"></div>
+  <div class="col-sm-8">
+    <div class="alert alert-danger">
+    <div class="text-center h5">
+      <a href="#params" class="btn btn-default btn-small" data-toggle="collapse" data=target="#params">Expand Query</a>
+    </div>
+    <div class="collapse" id="params">
+      <table class="table table-responsive table-striped">
+        <tbody>
+          <% params.except(:controller, :action, :format).each do |key, value| %>
+            <tr>
+              <th><%= key %></th>
+              <td class='text-right'><%= value %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    </div>
+  </div>
+  <div class="col-sm-2"></div>
+</div>
