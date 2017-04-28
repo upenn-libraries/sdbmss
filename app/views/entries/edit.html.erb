@@ -165,6 +165,8 @@ label.col-sm-2-and-half {
     <% @page_title = "Create new entry - " + application_name %>
 <% end %>
 
+<input type="hidden" id="num_drafts" value="<%= current_user.entries.where(draft: true).count %>" />
+
 <% if @entry.persisted? %>
 <input type="hidden" id="entry_id" value="<%= @entry.id %>" />
 <% end %>

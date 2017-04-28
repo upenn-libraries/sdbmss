@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170410185449) do
+ActiveRecord::Schema.define(version: 20170428155324) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -159,6 +159,7 @@ ActiveRecord::Schema.define(version: 20170410185449) do
     t.integer  "superceded_by_id",         limit: 4
     t.boolean  "unverified_legacy_record",               default: false
     t.boolean  "confirmed",                              default: false
+    t.boolean  "draft",                                  default: false
   end
 
   add_index "entries", ["approved_by_id"], name: "index_entries_on_approved_by_id", using: :btree
@@ -356,6 +357,7 @@ ActiveRecord::Schema.define(version: 20170410185449) do
     t.integer "record_id",   limit: 4
     t.string  "record_type", limit: 255
     t.integer "group_id",    limit: 4
+    t.boolean "editable",                default: false
   end
 
   create_table "group_users", force: :cascade do |t|
@@ -709,7 +711,7 @@ ActiveRecord::Schema.define(version: 20170410185449) do
   add_index "sources", ["source_type_id"], name: "index_sources_on_source_type_id", using: :btree
   add_index "sources", ["updated_by_id"], name: "index_sources_on_updated_by_id", using: :btree
 
-  create_table "thredded_categories", force: :cascade, :options => "ENGINE=MyISAM" do |t|
+  create_table "thredded_categories", force: :cascade do |t|
     t.integer  "messageboard_id", limit: 4,   null: false
     t.string   "name",            limit: 191, null: false
     t.string   "description",     limit: 255
@@ -804,7 +806,7 @@ ActiveRecord::Schema.define(version: 20170410185449) do
 
   add_index "thredded_post_notifications", ["post_id", "post_type"], name: "index_thredded_post_notifications_on_post", using: :btree
 
-  create_table "thredded_posts", force: :cascade, :options => "ENGINE=MyISAM" do |t|
+  create_table "thredded_posts", force: :cascade do |t|
     t.integer  "user_id",          limit: 4
     t.text     "content",          limit: 65535
     t.string   "ip",               limit: 255
@@ -864,7 +866,7 @@ ActiveRecord::Schema.define(version: 20170410185449) do
   add_index "thredded_topic_categories", ["category_id"], name: "index_thredded_topic_categories_on_category_id", using: :btree
   add_index "thredded_topic_categories", ["topic_id"], name: "index_thredded_topic_categories_on_topic_id", using: :btree
 
-  create_table "thredded_topics", force: :cascade, :options => "ENGINE=MyISAM" do |t|
+  create_table "thredded_topics", force: :cascade do |t|
     t.integer  "user_id",          limit: 4
     t.integer  "last_user_id",     limit: 4
     t.string   "title",            limit: 255,                 null: false

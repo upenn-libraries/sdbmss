@@ -516,6 +516,7 @@ class EntriesController < SearchableAuthorityController
     # Rails convention, because Rails' wrapped parameters feature
     # doesn't pick up the *_attributes fields that way.
     params.permit(
+      :draft,
       :source_id,
       :catalog_or_lot_number,
       :institution_id,

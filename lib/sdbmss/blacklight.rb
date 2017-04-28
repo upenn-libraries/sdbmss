@@ -130,6 +130,10 @@ module SDBMSS::Blacklight
       end
     end
 
+    def show_drafts(solr_parameters)
+      solr_parameters['fq'] << 'draft:false'
+    end
+
     def handle_facet_prefix(solr_parameters)
       if blacklight_params[:prefix].present?
         # 'id' key probably comes from routing setup internal to Blacklight

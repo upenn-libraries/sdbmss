@@ -1224,7 +1224,8 @@ var BOOKMARK_SCOPE;
             });
         };
 
-        $scope.save = function () {
+        $scope.save = function (draft) {
+            $scope.entry.draft = draft || false;
             // Transform angular's view models to JSON payload that
             // API expects: attach a bunch of things to Entry resource
             $scope.currentlySaving = true;
@@ -1520,6 +1521,7 @@ var BOOKMARK_SCOPE;
             // error callback
             sdbmutil.promiseErrorHandlerFactory("Error initializing dropdown options on this page, can't proceed.")
         );
+        $scope.num_drafts = $("#num_drafts").val();
 
     });
 

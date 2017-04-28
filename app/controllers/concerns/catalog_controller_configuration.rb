@@ -456,6 +456,7 @@ module CatalogControllerConfiguration
     self.search_params_logic << :show_approved
     self.search_params_logic << :show_created_by_user
     self.search_params_logic << :show_deprecated
+    self.search_params_logic << :show_drafts
 
     self.search_params_logic << :translate_manuscript_date
     self.search_params_logic << :translate_provenance_date

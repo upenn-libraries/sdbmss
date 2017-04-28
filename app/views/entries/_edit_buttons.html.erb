@@ -1,8 +1,9 @@
     <div class="row" style="padding-bottom: 20px;" ng-show="!entry.deprecated">
         <div class="col-sm-6">
-            <button class="btn btn-primary save-button" ng-click="save()" ng-disabled="entryForm.$invalid || currentlySaving || !entry.source">Save</button>
+            <button class="btn btn-primary save-button" ng-click="save(false)" ng-disabled="entryForm.$invalid || currentlySaving || !entry.source">Save</button>
+            <button ng-if="entry.draft || !entry.id" ng-click="save(true)" class="btn btn-default save-button" ng-disabled="entryForm.$invalid || currentlySaving || !entry.source || (!entry.draft && num_drafts >= 5)">Save as Draft</button>
             <a class="btn btn-warning" id='cancelEdit' href="{{ entry.id ? '/entries/' + entry.id : '/dashboard'}}">Cancel</a>
-
+            <span class="text-muted" ng-if="!entry.id && num_drafts >= 5"><br>You have reached your limit for the number of draft entries you can save.</span>
         </div>
         <div class="col-sm-6 text-right" ng-if="entry && draft">
             <span class="text-info">An unsaved version from <b>{{ draft.updated_object.toLocaleDateString() }}</b>, <b>{{ draft.updated_object.toLocaleTimeString() }}</b> has been detected </span>
