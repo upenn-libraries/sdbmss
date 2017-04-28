@@ -722,7 +722,7 @@ var BOOKMARK_SCOPE;
     sdbmApp.controller("EntryCtrl", function ($scope, $http, $filter, Entry, Source, sdbmutil, $modal) {
 
         EntryScope = $scope;
-
+        
         $scope.expand = function (e) {
           $(e.currentTarget).parent().parent('.expandable').addClass('expanded');
         }
@@ -771,6 +771,9 @@ var BOOKMARK_SCOPE;
                 base: function () { return base }
               },
               size: 'lg'
+          })
+          modal.result.then(function () {
+            $scope.saveDraft();
           });
         }
 
@@ -1171,6 +1174,16 @@ var BOOKMARK_SCOPE;
             // save copy at this point, so we have something to
             // compare to, when navigating away from page
             $scope.originalEntryViewModel = angular.copy(entry);
+
+            $scope.draft = localStorage.getItem('sdbmEntryDraft');
+            if ($scope.draft) {
+              $scope.draft = angular.fromJson($scope.draft);
+              $scope.draft.updated_object = new Date($scope.draft.updated * 1000)
+              // if it's the WRONG draft, though
+              if ($scope.draft.updated < $scope.entry.cumulative_updated_at || $scope.draft.id != $scope.entry.id || $scope.draft.source.id != $scope.entry.source.id) {
+                $scope.draft = undefined;
+              }
+            }
         };
 
         $scope.postEntrySave = function(entry) {
@@ -1354,6 +1367,27 @@ var BOOKMARK_SCOPE;
             }
         };
 
+        $scope.loadDraft = function () {
+          //var entry = angular.fromJson(localStorage.getItem('sdbmEntryDraft'));
+          if ($scope.draft) {
+            // only if more recently saved version
+            if ($scope.draft.updated > $scope.entry.cumulative_updated_at && $scope.draft.id == $scope.entry.id) {
+              $scope.entry = angular.copy($scope.draft);
+              $scope.populateEntryViewModel($scope.entry)
+            }
+          }
+        }
+        
+        $scope.saveDraft = function () {
+          var entry = angular.copy($scope.entry);
+          entry.updated = (new Date()).getTime() / 1000;
+          localStorage.setItem('sdbmEntryDraft', angular.toJson(entry));
+        }
+
+        $('#entry-form').change('input', function () {
+          $scope.saveDraft();          
+        });
+
         $scope.markSourceAsEntered = function() {
             $http.post("/sources/" + $scope.entry.source.id + "/update_status", { status: 'Entered' }).then(
                 function() {
@@ -1412,7 +1446,7 @@ var BOOKMARK_SCOPE;
 //          console.log(angular.toJson(entry1), angular.toJson(entry2));
           // note: changing a numerical field, then restoring the original and saving will still trigger 'unsaved' because one is a string and the other is a number (in the JSON)
           return angular.toJson(entry1) !== angular.toJson(entry2);
-        }
+        };
 
         // unfortunately, this can't be reworked with a modal, because browser/javascript doesn't let you
         $(window).bind('beforeunload', function() {
@@ -1481,6 +1515,7 @@ var BOOKMARK_SCOPE;
                       );
                     }
                 }
+
             },
             // error callback
             sdbmutil.promiseErrorHandlerFactory("Error initializing dropdown options on this page, can't proceed.")
@@ -1881,7 +1916,6 @@ var BOOKMARK_SCOPE;
                         },
                         success: function(data, textStatus, jqXHR) {
                             var results = data.results || [];
-                            console.log(results);
                             if(results.length > 0) {
                                 var msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number_search%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
                                 var editMode = !!scope.entry.id;
