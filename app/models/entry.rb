@@ -878,7 +878,8 @@ class Entry < ActiveRecord::Base
       ["Updated By", "updated_by"], 
       ["Created By", "created_by"], 
       ["Manuscript ID", "manuscript_id"], 
-      ["Deprecated", "deprecated"]
+      ["Deprecated", "deprecated"],
+      ["Draft", "draft"]
     ]
   end
 
@@ -912,7 +913,7 @@ class Entry < ActiveRecord::Base
   end
 
   def self.search_fields
-    super - ["Deprecated", "deprecated"]
+    super - ["Deprecated", "deprecated"] - ["Draft", "draft"]
   end
 
   private

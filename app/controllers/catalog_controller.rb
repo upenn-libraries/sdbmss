@@ -11,6 +11,7 @@ class CatalogController < ApplicationController
   include CatalogControllerConfiguration
 
   #layout "home", :only => [:index]
+  load_and_authorize_resource :only => [:show], :class => Entry
 
   # Overrides Blacklight::Catalog#show to check for existence and send
   # 404 if necessary

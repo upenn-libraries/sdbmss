@@ -13,9 +13,11 @@
   <li class="  <%= current_page?(entry_path(@entry)) ? 'active' : '' %>">
     <a href="/entries/<%= @entry.id %>"><%= @entry.public_id %></a>
   </li>
+  <% if can? :edit, @entry %>
   <li class="  <%= current_page?(controller: 'entries', action: 'edit') ? 'active' : '' %>">
     <a href="/entries/<%= @entry.id %>/edit">Edit <%= @entry.public_id %></a>
   </li>
+  <% end %>
   <% if current_page?(controller: 'entries', action: 'history') %>
   <li class="  active">
     <a href="/entries/<%= @entry.id %>/history">Change History for <%= @entry.public_id %></a>

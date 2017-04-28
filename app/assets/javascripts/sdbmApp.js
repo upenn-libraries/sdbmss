@@ -1374,7 +1374,8 @@ var BOOKMARK_SCOPE;
             // only if more recently saved version
             if ($scope.draft.updated > $scope.entry.cumulative_updated_at && $scope.draft.id == $scope.entry.id) {
               $scope.entry = angular.copy($scope.draft);
-              $scope.populateEntryViewModel($scope.entry)
+              $scope.populateEntryViewModel($scope.entry);
+              $scope.draft = undefined;
             }
           }
         }

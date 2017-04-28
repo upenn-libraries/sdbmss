@@ -1,11 +1,12 @@
 <% if entry.nil? %>
 <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
 <% else %>
-
 <!--<p>
     Note: This entry records a mention or observation of a manuscript
     in or by a source. Do not assume that the manuscript is held by the
     University of Pennsylvania Libraries.</p>-->
+<div class="<%= entry.draft ? 'text-muted' : '' %>">
+
 <% if entry.source.source_type.name == SourceType::OBSERVATION %>
     <%= render partial: "ratings/rate", locals: {ratable: entry} %>
     <div style="padding-top: 10px;"></div>
@@ -22,6 +23,17 @@
 
 <% if !entry.approved %>
     <div class="alert alert-warning">Warning: This entry has not been approved yet.  The data may be incorrect or unreliable, or may not conform to the general data standards.</div>
+<% end %>
+
+<% if entry.draft %>
+    <div class="alert text-muted alert-warning" style="background: #f8f8f8; border-color: #eee; position: relative;">
+        This entry is a draft and has not yet been published.
+        <% if can? :edit, entry %>
+            <%= link_to(entry_path(entry.id, draft: false, cumulative_updated_at: entry.cumulative_updated_at), :method => :patch, :title => "Publish?", :class => "btn btn-sm btn-default pull-right publish-btn", :data => {:confirm => "Are you sure you wish to publish this entry?  It will become publicly viewable from this point forward."}) do %>
+            <span class="glyphicon glyphicon-file"></span>
+          <% end %>
+        <% end %>
+    </div>
 <% end %>
 
 <% if entry.unverified_legacy_record %>
@@ -515,3 +527,5 @@
 <div class="spacer-40px"></div>
 
 <% end %>
+
+</div>

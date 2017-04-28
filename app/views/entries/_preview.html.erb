@@ -8,6 +8,11 @@
         <% if !entry.approved %>
               <span class="text-warning"><span class="glyphicon glyphicon-alert"></span> Unapproved</span>
         <% end %>
+        <% if entry.draft && can?(:edit, entry) %>
+          <%= link_to(entry_path(entry.id, draft: false, cumulative_updated_at: entry.cumulative_updated_at), :method => :patch, :title => "Publish?", :class => "btn btn-sm btn-default pull-right publish-btn", :data => {:confirm => "Are you sure you wish to publish this entry?  It will become publicly viewable from this point forward."}) do %>
+            <span class="glyphicon glyphicon-file"></span>
+          <% end %>
+        <% end %>
     </div>
     <div class="panel-body">
     <dl class="document-metadata">
