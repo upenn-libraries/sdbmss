@@ -5,7 +5,7 @@
   <%# end %>
 </datalist>-->
 
-<select id="select_users" name="ids[]" id="" multiple="multiple">
+<select id="select_users" name="ids[]" id="" multiple="multiple" class="form-control">
   <% users.each do |user| %>
     <option value="<%= user.id %>"><%= user.username %></option>
   <% end %>

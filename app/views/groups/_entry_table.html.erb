@@ -1,0 +1,28 @@
+<table class="table table-responsive table-striped group-table">
+  <tbody>
+    <% entries.each do |entry| %>
+      <tr>
+        <td class="edit-buttons">
+          <div class="btn-group">
+            <% if can? :edit, entry %>
+              <%= link_to "Edit", edit_entry_path(entry), class: 'btn btn-xs btn-success' %>
+            <% else %>
+              <a class="btn btn-default btn-xs disabled">Edit</a>
+            <% end %>
+            <% if can? :link, entry %>
+              <%= link_to "Linking Tool", linking_tool_by_entry_path(entry), class: 'btn btn-xs btn-info' %>
+            <% else %>
+              <a class="btn btn-default btn-xs disabled">Linking Tool</a>
+            <% end %>
+          </div>
+        </td>
+        <td>
+          <%= link_to entry.public_id, entry_path(entry) %>
+        </td>
+        <td title="<%= entry.to_s %>">
+          <span class="one-line"><%= entry.to_s %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
