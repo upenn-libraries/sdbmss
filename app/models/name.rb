@@ -341,7 +341,7 @@ class Name < ActiveRecord::Base
   end
 
   def dispute_reasons
-    ["Wrong VIAF number", "Ambiguous identity", "Does not follow formatting standards", "Other"]
+    ["Wrong VIAF number", "Name refers to more than one individual", "Does not follow formatting standards", "Name contains incorrect information", "Other"]
   end
 
   def public_id

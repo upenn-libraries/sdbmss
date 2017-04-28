@@ -67,7 +67,7 @@ class EntryManuscript < ActiveRecord::Base
   end
 
   def dispute_reasons
-    ["Unreliable data", "Duplicate information", "Multiple/conflicting manuscripts","Other"]
+    ["Incorrectly linked", "Other"]
   end
 
   def search_result_format
