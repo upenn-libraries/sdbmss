@@ -15,7 +15,7 @@ class CatalogController < ApplicationController
   # Overrides Blacklight::Catalog#show to check for existence and send
   # 404 if necessary
   def show
-    flash.now[:notice] = "Note: This entry records a mention or observation of a manuscript in a source.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
+    #flash.now[:notice] = ""
 
     @entry = Entry.find_by(id: params[:id])
     entry = @entry
@@ -26,7 +26,7 @@ class CatalogController < ApplicationController
     #  @entry_comment.build_comment
       super
     else
-      render_404
+      render "not_found", status: 404
     end
   end
 
@@ -39,6 +39,28 @@ class CatalogController < ApplicationController
       format.csv { super }
     end
     #puts "********* #{current_search_session.inspect} *************"
+  end
+
+  def legacy
+    host = request.host
+    forwarded_host = request.env["HTTP_X_FORWARDED_SERVER"]
+    flash[:success] = "You have been redirected from the old Schoenberg Database website.  Records from the old database should be preserved, however links to static pages and searches may not translate to our new site."
+    if host != forwarded_host
+      entry_id = params[:id].to_s.gsub('SCHOENBERG_', '')
+      if entry_id.present?   
+        redirect_to entry_url(entry_id).gsub(host, forwarded_host), status: 301
+      else
+        # redirect to landing page (same page, with new host)
+        redirect_to request.url.gsub(host, forwarded_host), status: 301
+      end
+    else
+      entry_id = params[:id].to_s.gsub('SCHOENBERG_', '')
+      if entry_id.present?
+        redirect_to entry_url(entry_id).gsub(host, forwarded_host), status: 301
+      else
+        # renders legacy/index
+      end
+    end
   end
 
   # This override sets username field when devise creates the guest

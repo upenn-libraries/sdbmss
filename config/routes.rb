@@ -43,7 +43,7 @@ Rails.application.routes.draw do
   resources :replies
   resources :notifications, only: [:index, :show, :update, :destroy]
 
-  get '/dla/schoenberg/:q', to: 'legacy#index'
+  get '/dla/schoenberg/:q', to: 'catalog#legacy'
   
   get '/bookmarks/export', to: 'bookmarks#export', as: 'export_bookmarks'
   get '/bookmarks/reload', to: 'bookmarks#reload', as: 'reload_bookmarks'

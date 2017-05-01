@@ -7,9 +7,9 @@
     <a href="/entries">Manage Entries</a>
   </li>
 <% end %>
-<% if !@entry.id %>
+<% if @entry && !@entry.id %>
   <li class="  active"><a href="">New Entry</a></li>
-<% else %>
+<% elsif @entry %>
   <li class="  <%= current_page?(entry_path(@entry)) ? 'active' : '' %>">
     <a href="/entries/<%= @entry.id %>"><%= @entry.public_id %></a>
   </li>

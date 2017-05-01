@@ -1,0 +1,18 @@
+<% content_for :breadcrumbs do %>
+  <%= render partial: "breadcrumbs", locals: {edit: false} %>
+<% end %>
+
+<div class="row">
+  <div class="col-sm-4"></div>
+  <div class="col-sm-4">
+    <div class="panel panel-danger">
+      <div class="panel-heading text-center">
+        <h3>Entry not found.</h3>
+      </div>
+      <div class="panel-body text-center">
+        <p>No entry exists with that ID number.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4"></div>
+</div>
