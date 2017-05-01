@@ -866,7 +866,7 @@ ActiveRecord::Schema.define(version: 20170501133137) do
   add_index "thredded_topic_categories", ["category_id"], name: "index_thredded_topic_categories_on_category_id", using: :btree
   add_index "thredded_topic_categories", ["topic_id"], name: "index_thredded_topic_categories_on_topic_id", using: :btree
 
-  create_table "thredded_topics",  :options => "ENGINE=MyISAM", force: :cascade do |t|
+  create_table "thredded_topics", :options => "ENGINE=MyISAM", force: :cascade do |t|
     t.integer  "user_id",          limit: 4
     t.integer  "last_user_id",     limit: 4
     t.string   "title",            limit: 255,                 null: false

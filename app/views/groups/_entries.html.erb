@@ -9,38 +9,22 @@
 <br>
 <div class="tab-content">
   <div id="all_entries" class="tab-pane fade in active">
-    <% entries.each do |entry| %>
-      <p class='one-line'>
-        <strong><%= link_to "#{entry.public_id}", entry_path(entry) %></strong> <%= entry.to_s %>
-      </p>
-    <% end %>
+    <%= render partial: "entry_table", locals: {entries: entries} %>
   </div>
   <div id="by_sources" class="tab-pane fade">
     <% sources.each do |source| %>
-      <p>
-        <strong><%= link_to "#{source.public_id}", source_path(source) %></strong> <%= source.to_s %>
-        <div style="padding-left: 20px">
-          <% entries.select { |e| e.source_id == source.id }.each do |entry| %>
-            <p class='one-line'><strong><%= link_to "#{entry.public_id}", entry_path(entry) %></strong> <%= entry.to_s %></p>
-          <% end %>
-        </div>
-      </p>
+      <p class="h4 text-center"><%= link_to source.public_id, source_path(source) %></p>
+      <%= render partial: "entry_table", locals: {entries:  entries.select { |e| e.source_id == source.id }} %>
     <% end %>
   </div>
   <div id="by_manuscripts" class="tab-pane fade">
     <% manuscripts.each do |mss| %>
-      <p>
         <% if mss.nil? %>
-          <p><strong>Unlinked</strong></p>
+          <p class="h4 text-center">Unlinked</p>
         <% else %>
-          <strong><%= link_to "#{mss.public_id}", manuscript_path(mss) %></strong> <%= mss.to_s %>
+          <p class="h4 text-center"><%= link_to "#{mss.public_id}", manuscript_path(mss) %></p> <%= mss.to_s %>
         <% end %>
-        <div style="padding-left: 20px">
-          <% entries.select { |e| e.manuscript == mss }.each do |entry| %>
-            <p class='one-line'><strong><%= link_to "#{entry.public_id}", entry_path(entry) %></strong> <%= entry.to_s %></p>
-          <% end %>
-        </div>
-      </p>
+        <%= render partial: "entry_table", locals: {entries:  entries.select { |e| e.manuscript == mss }} %>
     <% end %>
   </div>
 </div>

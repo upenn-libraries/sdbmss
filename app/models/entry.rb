@@ -40,9 +40,12 @@ class Entry < ActiveRecord::Base
   belongs_to :institution, class_name: "Name"
 
   has_many :group_records, as: :record
+  has_many :group_editable_records, -> { where editable: true}, class_name: "GroupRecord", as: :record
+  has_many :editing_groups, through: :group_editable_records, :source => :group
   has_many :groups, through: :group_records
   has_many :group_users,  -> { where confirmed: true }, through: :groups
-  has_many :contributors, source: :user, through: :group_users
+  has_many :editing_group_users,  -> { where confirmed: true }, through: :editing_groups, :source => :group_users
+  has_many :contributors, source: :user, through: :editing_group_users
 
   belongs_to :superceded_by, class_name: "Entry"
   has_many :supercedes, class_name: "Entry", :foreign_key => :superceded_by_id

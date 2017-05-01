@@ -3,6 +3,11 @@
     header {
         position: relative;
     }
+    .thredded--post--content {
+        max-height: 97px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
 </style>
 <script type="text/javascript">
     $(window).load(function(){
@@ -42,7 +47,7 @@
             <li><strong>Email or Download Search Results</strong> or export the entire contents of the SDBM for your own use under a <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 Unported License</a></li>
         </ul>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-5">
         <div class="panel panel-home">
             <div class="panel-heading">
                 <span class="h4">New Features</span>
@@ -58,13 +63,13 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-7">
         <div class="panel panel-home">
             <div class="panel-heading">
                 <span class='h4'>Recent Forum Discussion</span>
             </div>
             <div class="panel-body">
-                <% Thredded::Post.order('id DESC').last(10).each do |post| %>
+                <% Thredded::Post.order('id DESC').last(6).each do |post| %>
                     <% post_user_link = link_to(post.user.username, main_app.profile_path(post.user.username)) %>
                     <% topic = post.to_model.postable %>
                     <header>

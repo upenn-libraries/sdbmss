@@ -1193,6 +1193,11 @@ fieldset[disabled=disabled] legend {
 fieldset[disabled=disabled] a {
   pointer-events: none;
 }
+.group-form-control {
+  display: table-cell;
+  line-height: 25px;
+  vertical-align: middle;
+}
 
 .list-group-item.disabled, .list-group-item.disabled:hover, .list-group-item.disabled:focus {
   cursor: pointer;
@@ -2441,4 +2446,18 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
   position: absolute;
   right: 5px;
   top: 5px;
+}
+/* group table */
+.edit-buttons {
+  min-width: 129px;
+}
+.group-table td {
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  padding: 2px 8px !important;
+}
+.group-table {
+  max-width: 100%;
+  display: block;
+  overflow: hidden;
 }
