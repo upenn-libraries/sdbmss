@@ -22,7 +22,7 @@ describe "Login", :js => true do
 
   it "should disallow login" do
     visit root_path
-    find('#dismiss-welcome').click
+    #find('#dismiss-welcome').click
     fill_in 'user_login', :with => @user_inactive.username
     fill_in 'user_password', :with => 'somethingunguessable'
     click_button 'Log in'

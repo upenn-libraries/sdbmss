@@ -12,7 +12,7 @@ module SDBMSS
     module Login    
       def login(user, password)
         visit root_path
-        find('#dismiss-welcome').click
+        #find('#dismiss-welcome').click
         fill_in 'user_login', :with => user.username
         fill_in 'user_password', :with => password
         click_button 'Log in'

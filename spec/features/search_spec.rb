@@ -31,7 +31,7 @@ describe "Blacklight Search", :js => true do
 
   it "should load main landing page" do
     visit root_path
-    find('#dismiss-welcome').click
+    #find('#dismiss-welcome').click
     expect(page).to have_selector("input#q")
   end
 
@@ -49,7 +49,7 @@ describe "Blacklight Search", :js => true do
 
   it "should display all entries" do
     visit root_path
-    find('#dismiss-welcome').click
+    #find('#dismiss-welcome').click
 
     click_button('search')
     expect(page).to have_selector("#documents")
@@ -64,7 +64,7 @@ describe "Blacklight Search", :js => true do
 
   it "should display results for an Author facet" do
     visit root_path
-    find('#dismiss-welcome').click
+    #find('#dismiss-welcome').click
 
     click_button('search')
     expect(page).to have_selector("#documents")
@@ -75,7 +75,7 @@ describe "Blacklight Search", :js => true do
 
   it "should display list of Author facet values" do
     visit root_path
-    find('#dismiss-welcome').click
+    #find('#dismiss-welcome').click
 
     click_button('search')
     expect(page).to have_selector("#documents")
