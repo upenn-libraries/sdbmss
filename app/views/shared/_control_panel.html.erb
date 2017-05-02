@@ -87,9 +87,6 @@
       </div>
       <div class="panel-body">
         <div style="padding: 0px 10px;">
-          <%= render :partial=>'/flash_msg', layout: 'shared/flash_messages' %>
-        </div>
-        <div style="padding: 0px 10px;">
           <%= render partial: 'devise/sessions/new', locals: {resource: User.new, resource_name: 'user', devise_mapping: Devise.mappings[:user]} %>      
         </div>
         <ul class="nav">

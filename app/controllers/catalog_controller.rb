@@ -15,8 +15,8 @@ class CatalogController < ApplicationController
   # Overrides Blacklight::Catalog#show to check for existence and send
   # 404 if necessary
   def show
-    #flash.now[:notice] = ""
 
+    #flash.now[:notice] = ""
     @entry = Entry.find_by(id: params[:id])
     entry = @entry
     # JIRA(sdbm-176)
@@ -38,28 +38,36 @@ class CatalogController < ApplicationController
       format.json { super }
       format.csv { super }
     end
-    #puts "********* #{current_search_session.inspect} *************"
   end
 
   def legacy
     host = request.host
     forwarded_host = request.env["HTTP_X_FORWARDED_SERVER"]
-    flash[:success] = "You have been redirected from the old Schoenberg Database website.  Records from the old database should be preserved, however links to static pages and searches may not translate to our new site."
-    if host != forwarded_host
-      entry_id = params[:id].to_s.gsub('SCHOENBERG_', '')
-      if entry_id.present?   
-        redirect_to entry_url(entry_id).gsub(host, forwarded_host), status: 301
+    announcement = '<p class="text-center"><span class="h3">Welcome to the new Schoenberg Database of Manuscripts</span></p>'
+    entry_id = params[:id].to_s.include?('SCHOENBERG_') ? params[:id].to_s.gsub('SCHOENBERG_', '') : nil
+    if entry_id.present?
+      if Entry.exists? entry_id
+        announcement += "<p class='text-center'>SCHOENBERG_#{entry_id} has been imported into the new database as SDBM_#{entry_id} in October 2015, however data may have been updated or modified since then.</p>"
       else
-        # redirect to landing page (same page, with new host)
-        redirect_to request.url.gsub(host, forwarded_host), status: 301
+        announcement += "<p class='text-center'>The page you are looking for cannot be found.  If you know the ID of the record you are looking for, try searching in the top search-bar.</p>"
       end
+      flash[:announce] = announcement.html_safe
+      redirect_to entry_url(entry_id, host: forwarded_host), status: 301
+    elsif host != forwarded_host
+      puts 'but not here, right'
+      redirect_to request.url.gsub(host, forwarded_host), status: 301, :session => session
     else
-      entry_id = params[:id].to_s.gsub('SCHOENBERG_', '')
-      if entry_id.present?
-        redirect_to entry_url(entry_id).gsub(host, forwarded_host), status: 301
-      else
-        # renders legacy/index
+      announcement += %q(
+      <p class='text-center'>The address you were attempting to reach is no longer available, as it does not conform to the new site architecture.  Please consult our <a href="/pages/FAQ">FAQ</a> and <a href="/pages/user manual">User Manual</a> resources for assistance in navigating the new application.</p>
+      <p class='text-center'><a href="#params" class="btn btn-default btn-small" data-toggle="collapse" data=target="#params">Original query paremeters <span class='caret'></span></a></p>
+        <div class="collapse" id="params"><table class="table table-responsive table-striped" style="margin-top: 10px;"><tbody>)
+      params.except(:controller, :action, :format).each do |key, value|
+        announcement += "<tr><th>#{key}</th><td class='text-right'>#{value}</td></tr>"
       end
+      announcement += %q(</tbody></table></div>)
+      flash[:announce] = announcement.html_safe
+      (@response, @document_list) = search_results(ActionController::Parameters.new, search_params_logic)
+      render "index"
     end
   end
 
