@@ -1116,9 +1116,29 @@ var BOOKMARK_SCOPE;
             }
         };
 
+        // disable for session
+        $scope.disableBackup = function () {
+          $scope.backup = false;
+          localStorage.setItem($scope.entry.current_user + '_backup', false);
+        }
+        // enable for session
+        $scope.enableBackup = function () {
+          $scope.backup = true;
+          localStorage.setItem($scope.entry.current_user + '_backup', true);
+        }
+
         // does some processing on Entry data structure retrieved via
         // API so that it can be used with the Angular form bindings
         $scope.populateEntryViewModel = function(entry) {
+
+            if (entry.backup !== undefined) {
+              $scope.backup = entry.backup;
+            }
+            // check if session disabled...
+            var backup = localStorage.getItem($scope.entry.current_user + '_backup');
+            if (backup !== undefined && backup !== null) {
+              $scope.backup = angular.fromJson(backup);
+            }
 
             // make blank initial rows, as needed, for user to fill out
             $scope.associations.forEach(function (assoc) {
@@ -1175,12 +1195,17 @@ var BOOKMARK_SCOPE;
             // compare to, when navigating away from page
             $scope.originalEntryViewModel = angular.copy(entry);
 
-            $scope.draft = localStorage.getItem('sdbmEntryDraft');
+            if (entry.id) {
+              var key = 'sdbmDraft_' + entry.id + '_' + entry.current_user;
+            } else {
+              var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.current_user;              
+            }
+            $scope.draft = localStorage.getItem(key);
             if ($scope.draft) {
               $scope.draft = angular.fromJson($scope.draft);
               $scope.draft.updated_object = new Date($scope.draft.updated * 1000)
               // if it's the WRONG draft, though
-              if ($scope.draft.updated < $scope.entry.cumulative_updated_at || $scope.draft.id != $scope.entry.id || $scope.draft.source.id != $scope.entry.source.id) {
+              if ($scope.draft.updated < $scope.entry.cumulative_updated_at) {
                 $scope.draft = undefined;
               }
             }
@@ -1340,6 +1365,7 @@ var BOOKMARK_SCOPE;
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
                 ).finally(function() {
                     // $scope.currentlySaving = false;
+                  $scope.clearDraft();
                 });
             } else {
 
@@ -1363,6 +1389,7 @@ var BOOKMARK_SCOPE;
                     $scope.postEntrySave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
                 ).finally(function() {
+                  $scope.clearDraft();
                     // $scope.currentlySaving = false;
                 });
             }
@@ -1372,21 +1399,38 @@ var BOOKMARK_SCOPE;
           //var entry = angular.fromJson(localStorage.getItem('sdbmEntryDraft'));
           if ($scope.draft) {
             // only if more recently saved version
-            if ($scope.draft.updated > $scope.entry.cumulative_updated_at && $scope.draft.id == $scope.entry.id) {
-              $scope.entry = angular.copy($scope.draft);
-              $scope.populateEntryViewModel($scope.entry);
-              $scope.draft = undefined;
-            }
+            $scope.entry = angular.copy($scope.draft);
+            $scope.populateEntryViewModel($scope.entry);
+            $scope.draft = undefined;          
           }
         }
         
         $scope.saveDraft = function () {
-          var entry = angular.copy($scope.entry);
-          entry.updated = (new Date()).getTime() / 1000;
-          localStorage.setItem('sdbmEntryDraft', angular.toJson(entry));
+          if ($scope.backup) {            
+            var entry = angular.copy($scope.entry);
+            entry.updated = (new Date()).getTime() / 1000;
+            if (entry.id) {
+              var key = 'sdbmDraft_' + entry.id + '_' + entry.current_user;
+            } else {
+              var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.current_user;
+            }
+            localStorage.setItem(key, angular.toJson(entry));
+          }
+        }
+
+        $scope.clearDraft = function () {
+          if (entry.id) {
+            var key = 'sdbmDraft_' + entry.id + '_' + entry.current_user;
+          } else {
+            var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.current_user;
+          }
+          localStorage.removeItem(key);
         }
 
         $('#entry-form').change('input', function () {
+          $scope.saveDraft();          
+        });
+        $('#entry-form').change('select', function () {
           $scope.saveDraft();          
         });
 
@@ -1511,6 +1555,8 @@ var BOOKMARK_SCOPE;
                           {id: sourceId},
                           function(source) {
                               $scope.entry.source = source;
+                              $scope.entry.current_user = source.current_user;
+                              $scope.backup = source.backup;
                               $scope.populateEntryViewModel($scope.entry);
                           },
                           sdbmutil.promiseErrorHandlerFactory("Error loading Source data for this page")

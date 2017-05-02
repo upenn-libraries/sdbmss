@@ -45,45 +45,63 @@
             <dd><%= source.whether_mss||"Unknown" %></dd>-->
 
         <dt># Entries</dt>
-            <dd>This source has <a target="_blank" class='badge' href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries.where(deprecated: false).count, "entry") %></a> in the database.</dd>
-<% if !defined?(abbreviate) || !abbreviate %>
-<% if source.medium.present? || source.date_accessed.present? || source.location_institution.present? || source.location.present? || source.link.present? %>
-        <% if source.medium.present? %>
-        <dt>Method of Access</dt>
-            <dd><%= source.medium_for_display %></dd>
+        <dd>
+            This source has <a target="_blank" class='badge' href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries.where(deprecated: false).count, "entry") %></a> in the database.
+        </dd>
+        <% if (drafts = source.entries.where(draft: true)).count > 0%>
+        <dt>Drafts</dt>
+        <dd class='text-muted'>
+            <% drafts.group_by(&:created_by).each do |user, d| %>
+                <span><%= render partial: "shared/username_with_profile_link", locals: { user: user } %> has <%= d.count %> <%= "draft".pluralize(d.count) %>.</span><br>
+            <% end %>
+        </dd>
         <% end %>
-
-        <% if source.date_accessed.present? %>
-        <dt>Date Accessed</dt>
-            <dd><%= format_fuzzy_date(source.date_accessed) %></dd>
-        <% end %>
+        <% if !defined?(abbreviate) || !abbreviate %>
+            <% if source.medium.present? || source.date_accessed.present? || source.location_institution.present? || source.location.present? || source.link.present? %>
+                <% if source.medium.present? %>
         
-        <% if source.location_institution.present? %>
+        <dt>Method of Access</dt>
+        <dd><%= source.medium_for_display %></dd>
+        
+                <% end %>
+
+                <% if source.date_accessed.present? %>
+
+        <dt>Date Accessed</dt>
+        <dd><%= format_fuzzy_date(source.date_accessed) %></dd>
+                
+                <% end %>
+        
+                <% if source.location_institution.present? %>
+    
         <dt>Institution</dt>
-            <dd><%= source.location_institution %></dd>
-        <% end %>
+        <dd><%= source.location_institution %></dd>
+    
+                <% end %>
 
-        <% if source.location.present? %>
+                <% if source.location.present? %>
+
         <dt>City, Country</dt>
-            <dd><%= source.location %></dd>
-        <% end %>
+        <dd><%= source.location %></dd>
 
-        <% if source.link.present? %>
+                <% end %>
+
+                <% if source.link.present? %>
+        
         <dt>Online Link/<br/>Call No.</dt>
-            <dd class="one-line"><a href="<%= source.link %>"><%= source.link %></a></dd>
-        <% end %>
-
-<% end %>
+        <dd class="one-line"><a href="<%= source.link %>"><%= source.link %></a></dd>
+                
+                <% end %>
+            <% end %>
 
         <dt>Created By</dt>
-            <dd><%= render partial: "shared/username_with_profile_link", locals: { user: source.created_by } %></dd>
+        <dd><%= render partial: "shared/username_with_profile_link", locals: { user: source.created_by } %></dd>
 
         <dt>Status</dt>
-            <dd><%= source.status||"Unknown" %></dd>
+        <dd><%= source.status||"Unknown" %></dd>
 
         <dt>Other Info</dt>
-            <dd><%= source.other_info || "No other info recorded" %></dd>
-
-</dl>
+        <dd><%= source.other_info || "No other info recorded" %></dd>
+    </dl>
 
 <% end %>
