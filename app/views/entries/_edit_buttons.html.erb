@@ -13,7 +13,7 @@
                 Restore
             </a>            
         </span>
-        <a href="" data-toggle="modal" data-target="#backupSettings" class="btn btn-default">
+        <a href="" data-toggle="modal" data-target="#backupSettings" class="btn btn-default" ng-if="entry.id || entry.source">
             <span class="glyphicon glyphicon-refresh"></span> Auto-backup {{ backup ? 'enabled' : 'disabled' }}
         </a>
     </div>
@@ -29,13 +29,41 @@
         <div class="modal-content">
         <div class="modal-header text-center">
             <span class="h3">Would you like the SDBM to auto-backup your work?</span>
-            <a href="#backupSettings" id="dismiss-welcome" data-dismiss="modal" data-target="#Welcome" class='pull-right' style="color: #333;"><span class="glyphicon glyphicon-remove"></span></a>
+            <a href="#backupSettings" id="dismiss-welcome" data-dismiss="modal" data-target="#backupSettings" class='pull-right' style="color: #333;"><span class="glyphicon glyphicon-remove"></span></a>
         </div>
         <div class="modal-body">
             <p>The SDBM allows you to auto-backup your work by saving in progress data in the browser's local storage.  In the event that your page is closed without saving, you may be able to recover your work.  However, you may also opt-out of this feature if you desire.</p>
-            <p><a href="" class="btn btn-default" ng-click="disableBackup()">Opt out for current session</a><em class="text-muted">e.g. you are on a public computer</em></p>
-            <p><a href="" class="btn btn-default">Disable this feature for my account</a><em class="text-muted">feature will be deactivated regardless of location</em></p>
-            <p><a href="" class="btn btn-default" ng-click="enableBackup()">Keep enabled</a><em class="text-muted">will work as normal</em></p>
+            <table class="table table-responsive">
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="radio" class="form-control" value="enabled" ng-model="backup">
+                        </td>
+                        <td style="vertical-align: middle;">
+                            Alway enabled
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="radio" class="form-control" value="temporarily_disabled" ng-model="backup">
+                        </td>
+                        <td style="vertical-align: middle;">
+                            Disable for current session
+                        </td>
+                    </tr>
+                    <tr class='table-danger'>
+                        <td>
+                            <input type="radio" class="form-control" value="disabled" ng-model="backup">
+                        </td>
+                        <td style="vertical-align: middle;">
+                            Always disabled
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan="2"><input type="submit" class="form-control text-center" value="Confirm" ng-click="setBackup()" data-dismiss="modal" data-target="#backupSettings" href="#backupSettings"></input></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

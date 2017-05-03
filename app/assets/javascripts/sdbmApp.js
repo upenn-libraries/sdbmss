@@ -745,6 +745,8 @@ var BOOKMARK_SCOPE;
                 size: 'lg'
             });
             modal.result.then(function () {
+              $scope.entry.username = $scope.entry.source.username;
+              $scope.entry.user_id = $scope.entry.source.user_id;
               $scope.populateEntryViewModel($scope.entry);
             }, function () {
               //console.log('dismissed');
@@ -1116,29 +1118,43 @@ var BOOKMARK_SCOPE;
             }
         };
 
-        // disable for session
-        $scope.disableBackup = function () {
-          $scope.backup = false;
-          localStorage.setItem($scope.entry.current_user + '_backup', false);
-        }
-        // enable for session
-        $scope.enableBackup = function () {
-          $scope.backup = true;
-          localStorage.setItem($scope.entry.current_user + '_backup', true);
-        }
-
+        $scope.setBackup = function () {
+          if ($scope.backup == "temporarily_disabled") {
+            localStorage.setItem('sdbm_' + $scope.entry.username + '_backup', false);            
+          } else if ($scope.backup == "enabled") {
+            localStorage.removeItem('sdbm_' + $scope.entry.username + '_backup');
+            $.ajax('/users', {
+              method: 'put', data: {user: {backup: true}},
+              success: function () {
+                console.log('success!');
+              }
+            });
+          } else if ($scope.backup == "disabled") {
+            localStorage.removeItem('sdbm_' + $scope.entry.username + '_backup');
+            $.ajax('/users', {
+              method: 'put', data: {user: {backup: false}},
+              success: function () {
+                console.log('success!');
+              }
+            });
+          }
+        };
+  
         // does some processing on Entry data structure retrieved via
         // API so that it can be used with the Angular form bindings
         $scope.populateEntryViewModel = function(entry) {
 
+            // from user setting, has first priority
             if (entry.backup !== undefined) {
-              $scope.backup = entry.backup;
+              console.log(entry.backup, entry.backup == false, entry.backup === false);
+              $scope.backup = entry.backup === false ? "disabled" : "enabled";
             }
             // check if session disabled...
-            var backup = localStorage.getItem($scope.entry.current_user + '_backup');
+            var backup = localStorage.getItem('sdbm_' + $scope.entry.username + '_backup');
             if (backup !== undefined && backup !== null) {
-              $scope.backup = angular.fromJson(backup);
+              $scope.backup = "temporarily_disabled";
             }
+            //$scope.backup = "temporarily_disabled";
 
             // make blank initial rows, as needed, for user to fill out
             $scope.associations.forEach(function (assoc) {
@@ -1196,9 +1212,9 @@ var BOOKMARK_SCOPE;
             $scope.originalEntryViewModel = angular.copy(entry);
 
             if (entry.id) {
-              var key = 'sdbmDraft_' + entry.id + '_' + entry.current_user;
+              var key = 'sdbmDraft_' + entry.id + '_' + entry.username;
             } else {
-              var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.current_user;              
+              var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.username;              
             }
             $scope.draft = localStorage.getItem(key);
             if ($scope.draft) {
@@ -1406,13 +1422,13 @@ var BOOKMARK_SCOPE;
         }
         
         $scope.saveDraft = function () {
-          if ($scope.backup) {            
+          if ($scope.backup == "enabled") {            
             var entry = angular.copy($scope.entry);
             entry.updated = (new Date()).getTime() / 1000;
             if (entry.id) {
-              var key = 'sdbmDraft_' + entry.id + '_' + entry.current_user;
+              var key = 'sdbmDraft_' + entry.id + '_' + entry.username;
             } else {
-              var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.current_user;
+              var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.username;
             }
             localStorage.setItem(key, angular.toJson(entry));
           }
@@ -1420,9 +1436,9 @@ var BOOKMARK_SCOPE;
 
         $scope.clearDraft = function () {
           if (entry.id) {
-            var key = 'sdbmDraft_' + entry.id + '_' + entry.current_user;
+            var key = 'sdbmDraft_' + entry.id + '_' + entry.username;
           } else {
-            var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.current_user;
+            var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.username;
           }
           localStorage.removeItem(key);
         }
@@ -1555,8 +1571,10 @@ var BOOKMARK_SCOPE;
                           {id: sourceId},
                           function(source) {
                               $scope.entry.source = source;
-                              $scope.entry.current_user = source.current_user;
-                              $scope.backup = source.backup;
+                              $scope.entry.username = $scope.entry.source.username;
+                              $scope.entry.user_id = $scope.entry.source.user_id;
+                              $scope.entry.backup = $scope.entry.source.backup;
+                              //$scope.backup = source.backup;
                               $scope.populateEntryViewModel($scope.entry);
                           },
                           sdbmutil.promiseErrorHandlerFactory("Error loading Source data for this page")

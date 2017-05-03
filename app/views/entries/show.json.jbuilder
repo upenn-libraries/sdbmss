@@ -178,7 +178,8 @@ if @entry.comments.present?
   end
 end
 
-json.current_user current_user.username
+json.username current_user.username
+json.user_id current_user.id
 json.backup current_user.backup
 
 if @bookmarks

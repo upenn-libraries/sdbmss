@@ -15,4 +15,5 @@ json.source_agents source.source_agents do |source_agent|
 end
 
 json.backup current_user.backup
-json.current_user current_user.username
+json.username current_user.username
+json.user_id current_user.id
