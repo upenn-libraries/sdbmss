@@ -747,6 +747,7 @@ var BOOKMARK_SCOPE;
             modal.result.then(function () {
               $scope.entry.username = $scope.entry.source.username;
               $scope.entry.user_id = $scope.entry.source.user_id;
+              $scope.entry.backup = $scope.entry.source.backup;
               $scope.populateEntryViewModel($scope.entry);
             }, function () {
               //console.log('dismissed');
@@ -1146,7 +1147,7 @@ var BOOKMARK_SCOPE;
 
             // from user setting, has first priority
             if (entry.backup !== undefined) {
-              console.log(entry.backup, entry.backup == false, entry.backup === false);
+              //console.log(entry.backup, entry.backup == false, entry.backup === false);
               $scope.backup = entry.backup === false ? "disabled" : "enabled";
             }
             // check if session disabled...

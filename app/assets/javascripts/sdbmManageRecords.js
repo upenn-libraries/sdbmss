@@ -99,8 +99,8 @@ var load_session = false;
                 ids.push($(element).val());
             });
             var group_id = $('#group-select').val();
-            var editable = $('#editable').attr('checked') || false;
-
+            var editable = $('#editable').prop('checked') || false;
+            
             if (ids.length > 0) {
                 $("#spinner").show();
                 $.ajax({
@@ -108,15 +108,15 @@ var load_session = false;
                     type: 'POST',
                     data: { ids: ids, group_id: group_id, editable: editable },
                     success: function(data, textStatus, jqXHR) {
-                        if (data.error) {
-                            SDBM.showErrorModal("#modal", data.error);
+                        if (data.response) {
+                            SDBM.showModal("#modal", {title: "Records Added.", body: data.response });
                         }
                         manageRecords.dataTable.reload();
                         $("#group_modal").modal("toggle");
                     },
                     error: function() {
-                        console.log('error!!');
-                        SDBM.showErrorModal("#modal", "An error occurred adding record(s) to a user group");
+                        //console.log('error!!');
+                        SDBM.showErrorModal("#modal", "An unspecified error occurred adding record(s) to a user group");
                     },
                     complete: function() {
                         $("#spinner").hide();
