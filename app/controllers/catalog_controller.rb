@@ -15,9 +15,6 @@ class CatalogController < ApplicationController
   # Overrides Blacklight::Catalog#show to check for existence and send
   # 404 if necessary
   def show
-    respond_to do |format|
-      format.html
-    end
    
     #flash.now[:notice] = ""
     @entry = Entry.find_by(id: params[:id])
@@ -28,6 +25,10 @@ class CatalogController < ApplicationController
     #  @entry_comment = EntryComment.new(entry: entry)
     #  @entry_comment.build_comment
       super
+      
+      respond_to do |format|
+        format.html
+      end
     else
       render "not_found", status: 404
     end
