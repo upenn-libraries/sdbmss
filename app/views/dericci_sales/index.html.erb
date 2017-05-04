@@ -1,0 +1,22 @@
+<% content_for :breadcrumbs do %>
+  <%= render partial: "dericci_games/breadcrumbs" %>
+<% end %>
+<div class="row">
+  <div class="col-sm-12">
+    <h3>Archive of Dated Sales</h3>
+  </div>
+  <div class="col-sm-12">
+    <table class="table table-responsive table-bordered">
+      <tbody>
+        <% @sales.each do |sale| %>
+          <tr>
+            <td><%= link_to sale.name, sale.link %></td>
+            <td><%= sale.cards %></td>
+            <td><%= sale.size %></td>
+            <td class='text-right'><%= sale.senate_house %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

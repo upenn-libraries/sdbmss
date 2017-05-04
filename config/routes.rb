@@ -39,6 +39,8 @@ Rails.application.routes.draw do
   resources :dericci_records
   resources :dericci_games
   resources :dericci_links
+  resources :dericci_notes, only: [:index]
+  resources :dericci_sales, only: [:index]
 
   resources :replies
   resources :notifications, only: [:index, :show, :update, :destroy]

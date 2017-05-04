@@ -120,6 +120,8 @@ describe "Linking Tool", :js => true do
     # use manuscript created in previous test
     first(".link-to-manuscript-link", visible: true).trigger('click')
 
+    click_button "Yes"
+
     expect(page).not_to have_content("Manage Entries")
     expect(page).to have_content("Manage Manuscripts")    
 #    expect(find(".modal-title", visible: true).text.include?("Successfully Linked")).to be_truthy

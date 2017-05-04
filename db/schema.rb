@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170502160308) do
+ActiveRecord::Schema.define(version: 20170504191007) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -104,6 +104,16 @@ ActiveRecord::Schema.define(version: 20170502160308) do
   add_index "dericci_links", ["created_by_id"], name: "index_dericci_links_on_created_by_id", using: :btree
   add_index "dericci_links", ["updated_by_id"], name: "index_dericci_links_on_updated_by_id", using: :btree
 
+  create_table "dericci_notes", force: :cascade do |t|
+    t.string   "name",         limit: 255
+    t.string   "cards",        limit: 255
+    t.string   "size",         limit: 255
+    t.string   "senate_house", limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.string   "link",         limit: 255
+  end
+
   create_table "dericci_records", force: :cascade do |t|
     t.string  "name",         limit: 255
     t.string  "dates",        limit: 255
@@ -113,6 +123,16 @@ ActiveRecord::Schema.define(version: 20170502160308) do
     t.string  "size",         limit: 255
     t.text    "other_info",   limit: 16777215
     t.string  "senate_house", limit: 255
+  end
+
+  create_table "dericci_sales", force: :cascade do |t|
+    t.string   "name",         limit: 255
+    t.string   "cards",        limit: 255
+    t.string   "size",         limit: 255
+    t.string   "senate_house", limit: 255
+    t.string   "link",         limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
   create_table "downloads", force: :cascade do |t|

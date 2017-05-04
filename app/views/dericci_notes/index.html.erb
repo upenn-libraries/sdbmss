@@ -1,0 +1,29 @@
+<% content_for :breadcrumbs do %>
+  <%= render partial: "dericci_games/breadcrumbs" %>
+<% end %>
+<div class="row">
+  <div class="col-sm-6">
+    <h3>Archive of Miscellaneous Notes</h3>
+  </div>
+  <div class="col-sm-6 text-right">
+    <ul class="pagination">
+      <% (1 + DericciNote.count / 20).times do |i| %>
+        <li class="<%= @page == i ? 'active' : '' %>"><%= link_to (i + 1), dericci_notes_path(page: i) %></li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="col-sm-12">
+    <table class="table table-responsive table-bordered">
+      <tbody>
+        <% @notes.each do |note| %>
+          <tr>
+            <td><%= link_to note.name, note.link %></td>
+            <td><%= note.cards %></td>
+            <td><%= note.size %></td>
+            <td class='text-right'><%= note.senate_house %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
