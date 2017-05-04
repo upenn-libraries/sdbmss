@@ -146,7 +146,8 @@ $(document).ready(function() {
             entryManuscripts.push({
                 entry_id: entryId,
                 relation_type: relation,
-                changed: true
+                changed: true,
+                added: true
             });
             setUnsavedChanges(true);
             //changes.push(entryId);
@@ -473,26 +474,30 @@ $(document).ready(function() {
 
     function highlightRows() {
         setTimeout(function () {
-            var deleted = 0, changed = 0;
+            var deleted = 0, changed = 0, added = 0;
             for (var i = 0; i < entryManuscripts.length; i++) {
                 if (!entryManuscripts[i].changed) {}
                 else if (entryManuscripts[i]._destroy) {
                     $('#workspace_wrapper td[title="SDBM_' + entryManuscripts[i].entry_id + '"]').parent('tr').removeClass('linking-tool-changed').addClass('linking-tool-deleted');
                     deleted += 1;
+                } else if (entryManuscripts[i].added ) {
+                    $('#workspace_wrapper td[title="SDBM_' + entryManuscripts[i].entry_id + '"]').parent('tr').removeClass('linking-tool-deleted').addClass('linking-tool-added');
+                    added += 1;
                 } else {
                     $('#workspace_wrapper td[title="SDBM_' + entryManuscripts[i].entry_id + '"]').parent('tr').removeClass('linking-tool-deleted').addClass('linking-tool-changed');
                     changed += 1;
                 }
             }
             $("#changes").text(changed + " changed");        
+            $("#additions").text(added + " added");        
             $("#deletes").text(deleted + " deleted");
         }, 1)
     }
 
     $(document).on("click", ".link-to-manuscript-link", function (event) {
 
+        var manuscriptId = $(event.target).data("manuscriptId");
         var linktomss = function() {
-            var manuscriptId = $(event.target).data("manuscriptId");
             // create a single EntryManuscript record
             $.ajax({
                 url: "/entry_manuscripts.json",
@@ -527,21 +532,17 @@ $(document).ready(function() {
             });
         }
         
-        if (!unsavedChanges) {
-            linktomss();
-        } else {
-            dataConfirmModal.confirm({
-                title: 'Confirm',
-                text: "You have unsaved changes that will be lost - continue?",
-                commit: 'Yes',
-                cancel: 'Cancel',
-                zIindex: 10099,
-                onConfirm: function() { 
-                    linktomss();
-                },
-                onCancel:  function() { }
-            });
-        }
+        dataConfirmModal.confirm({
+            title: 'Are you sure you want to link this Entry to an existing manuscript?',
+            text: "Entry SDBM_" + entryId + " will be attached to SDBM_MS_" + manuscriptId + ", and all your current unsaved changes in this workspace will be lost.",
+            commit: 'Yes',
+            cancel: 'Cancel',
+            zIindex: 10099,
+            onConfirm: function() { 
+                linktomss();
+            },
+            onCancel:  function() { }
+        });
 
         return false;
     });
@@ -718,8 +719,9 @@ $(document).ready(function() {
     <div style="margin-bottom: 6px">
         <span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>
         <button id="persist-entries-manuscript-link" class="btn btn-primary btn-sm" style="margin-left: 40px"></button>
-        <span class="text-success bg-success linking-tool-change-info" id="changes">0 changed</span>
-        <span class="text-danger bg-danger linking-tool-change-info" id="deletes">0 deleted</span>
+        <span class="alert alert-success linking-tool-change-info" id="additions">0 added</span>
+        <span class="alert alert-danger linking-tool-change-info" id="deletes">0 deleted</span>
+        <span class="alert alert-info linking-tool-change-info" id="changes">0 changed</span>
     </div>
 
     <table id="workspace" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">

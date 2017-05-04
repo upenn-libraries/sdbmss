@@ -52,7 +52,6 @@ class EntryManuscriptsController < SearchableAuthorityController
         }
       end
     end
-
       @transaction_id = PaperTrail.transaction_id
     end
   end

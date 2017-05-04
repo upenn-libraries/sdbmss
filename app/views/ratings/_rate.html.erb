@@ -93,7 +93,7 @@
                     <%= form_tag(rating_path(r), method: "put") do %>
                         <%= hidden_field_tag('qualifier', 'dispute') %>
                         <%= select_tag('reason', options_for_select(ratable.dispute_reasons.map{ |n| [n, n] }), class: "form-control") %>
-                        <%= text_field_tag('reason', '', placeholder: 'Enter a custom reason...', class: "form-control hide", disabled: true) %>
+                        <%= text_field_tag('reason', '', placeholder: 'Enter your reason...', class: "form-control hide", disabled: true) %>
                         <%= submit_tag('Dispute', class: 'form-control btn btn-sm btn-danger') %>
                     <% end %>
                 <% else %>
@@ -102,10 +102,11 @@
                         <%= hidden_field_tag('ratable_id', ratable.id) %>
                         <%= hidden_field_tag('qualifier', 'dispute') %>
                         <%= select_tag('reason', options_for_select(ratable.dispute_reasons.map{ |n| [n, n] }), class: "form-control") %>
-                        <%= text_field_tag('reason', '', placeholder: 'Enter a custom reason...', class: "form-control hide", disabled: true) %>
+                        <%= text_field_tag('reason', '', placeholder: 'Enter your reason...', class: "form-control hide", disabled: true) %>
                         <%= submit_tag('Dispute', class: 'form-control btn btn-sm btn-danger') %>
                     <% end %>
                 <% end %>
+                <p class="text-muted">If you would like to add more information about why you are disputing this record, please leave a <b>comment</b> in the discussion section of the page.</p>
               </div>
             </div>
           </div>
