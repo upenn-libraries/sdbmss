@@ -109,7 +109,7 @@ var load_session = false;
                     data: { ids: ids, group_id: group_id, editable: editable },
                     success: function(data, textStatus, jqXHR) {
                         if (data.response) {
-                            SDBM.showModal("#modal", {title: "Records Added.", body: data.response });
+                            SDBM.showModal("#modal", {title: "Records Added To Group", body: data.response });
                         }
                         manageRecords.dataTable.reload();
                         $("#group_modal").modal("toggle");
@@ -140,8 +140,8 @@ var load_session = false;
                     type: 'POST',
                     data: { ids: ids, group_id: group_id },
                     success: function(data, textStatus, jqXHR) {
-                        if (data.error) {
-                            SDBM.showErrorModal("#modal", data.error);
+                        if (data.response) {
+                            SDBM.showModal("#modal", {title: "Records Removed From Group", body: data.response });
                         }
                         manageRecords.dataTable.reload();
                         $("#group_modal").modal("toggle");

@@ -58,13 +58,14 @@ module AddToGroup
     group = Group.find(params[:group_id])
     count = group.group_records.where(:record_type => model_class, :record_id => ids).count
     group.group_records.where(:record_type => model_class, :record_id => ids).destroy_all
-    model_class.where(:id => ids).index
-    error = nil 
-    if ids.count > count
-      error = "You do not have permission to change group status for the following records: #{ids - records.map(&:id)}"
+    SDBMSS::IndexJob.perform_later(Entry.to_s, ids)
+    response = "#{count} #{'record'.pluralize(count)} removed from '#{group.name}'"
+    unpermitted = ids.count - count
+    if unpermitted > 0
+      response += "You do not have permission to change group status for #{unpermitted} #{'record'.pluralize(unpermitted)}"
     end
     respond_to do |format|
-      format.json { render :json => {error: error}, :status => :ok }
+      format.json { render :json => {response: response}, :status => :ok }
       format.html { redirect_to entry_path(ids.first) }
     end
   end
