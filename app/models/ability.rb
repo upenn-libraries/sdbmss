@@ -75,6 +75,7 @@ class Ability
     cannot :manage, [Group]
     can [:edit, :update, :destroy], Group, admin: { :id => user.id }
 
+    can :show, Entry
     cannot :show, Entry do |entry|
       (entry.created_by != user && !entry.contributors.include?(user)) && entry.draft
     end

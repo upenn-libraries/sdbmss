@@ -16,6 +16,7 @@ class LinkingToolController < ApplicationController
   def by_entry
     authorize! :link, Entry
     @mode = "by_entry"
+    puts "what #{params[:id]}"
     @entry = Entry.find(params[:id].to_i)
     options
     if @entry.manuscript.blank?
