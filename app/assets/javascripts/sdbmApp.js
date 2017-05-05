@@ -1124,7 +1124,7 @@ var BOOKMARK_SCOPE;
             localStorage.setItem('sdbm_' + $scope.entry.username + '_backup', false);            
           } else if ($scope.backup == "enabled") {
             localStorage.removeItem('sdbm_' + $scope.entry.username + '_backup');
-            $.ajax('/users', {
+            $.ajax('/users/', {
               method: 'put', data: {user: {backup: true}},
               success: function () {
                 console.log('success!');
@@ -1132,7 +1132,7 @@ var BOOKMARK_SCOPE;
             });
           } else if ($scope.backup == "disabled") {
             localStorage.removeItem('sdbm_' + $scope.entry.username + '_backup');
-            $.ajax('/users', {
+            $.ajax('/users/', {
               method: 'put', data: {user: {backup: false}},
               success: function () {
                 console.log('success!');
