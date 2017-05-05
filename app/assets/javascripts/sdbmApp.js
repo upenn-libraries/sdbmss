@@ -1219,7 +1219,7 @@ var BOOKMARK_SCOPE;
             }
             $scope.draft = localStorage.getItem(key);
             if ($scope.draft) {
-              $scope.draft = angular.fromJson(atob($scope.draft));
+              $scope.draft = angular.fromJson($scope.draft);
               $scope.draft.updated_object = new Date($scope.draft.updated * 1000)
               // if it's the WRONG draft, though
               if ($scope.draft.updated < $scope.entry.cumulative_updated_at) {
@@ -1431,7 +1431,7 @@ var BOOKMARK_SCOPE;
             } else {
               var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.username;
             }
-            localStorage.setItem(key, btoa(angular.toJson(entry)));
+            localStorage.setItem(key, angular.toJson(entry));
           }
         }
 
