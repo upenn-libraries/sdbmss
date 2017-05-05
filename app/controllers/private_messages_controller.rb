@@ -89,11 +89,25 @@ class PrivateMessagesController < ApplicationController
         @message.user_messages.create!({user_id: user.id, method: "To"})
         user.notify("#{current_user.to_s} sent you a message.", @message, "message")
       end
-      flash[:success] = "Message sent to #{users.map(&:username).join(', ')}."
-      redirect_to @message
+      respond_to do |format|
+        format.html {
+          flash[:success] = "Message sent to #{users.map(&:username).join(', ')}."
+          redirect_to @message          
+        }
+        format.json {
+          render json: {message: "Message sent successfully", status: "success"}
+        }
+      end
     else
-      flash[:error] = "Invalid message.  Both a message and a title are required."
-      redirect_to new_message_path
+      respond_to do |format|
+        format.html {
+          flash[:error] = "Invalid message.  Both a message and a title are required."
+          redirect_to new_message_path
+        }
+        format.json {
+          render json: {message: "Message could not be sent", status: "failure"}
+        }
+      end
     end
   end
 

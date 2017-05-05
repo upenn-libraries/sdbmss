@@ -195,7 +195,7 @@ var SDBM = SDBM || {};
             //$('.sdbm-table').toggleClass('full-width');
             //$('.search_results').toggleClass('full-width');
         });
-        $('.spinner').replaceWith('<span id="spinner" style="display: none;"><img alt="working..." src="/assets/spinner.gif"> loading...</span>');
+        $('.spinner').replaceWith('<span id="spinner" style="display: none;"><img alt="working..." src="' + $("#spinner-src").attr('src') + '"> loading...</span>');
         $('.csv').replaceWith('<a id="export-csv" class="btn btn-default" title="Export to CSV"><span class="glyphicon glyphicon-floppy-save"></span></a>');
         $('.columns').replaceWith('<div class="btn-group">' + 
             '<a class="btn btn-default dropdown-toggle" title="Show/Hide Columns" data-toggle="dropdown"><span class="glyphicon glyphicon-edit"></span></a>' +

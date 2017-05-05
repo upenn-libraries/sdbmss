@@ -61,7 +61,7 @@
               <div class="row">
                 <div class="col-sm-7">
                   <ul class="list-inline" style="margin-bottom: 0px;">
-                    <li class=""><strong><span class="glyphicon glyphicon-tag"></span> Tags</strong> </li>
+                    <li class=""><span class="btn btn-xs"><span class="glyphicon glyphicon-tag"></span> Tags</span> </li>
                     <li ng-if="bookmark.tags.length <= 0" class="text-muted">This bookmark has no tags.</li>
                     <li ng-repeat="tag in bookmark.tags" class="btn-group">
                       <a class="btn btn-default btn-xs" ng-class="{'btn-primary' : tag == search_tag}" href="" ng-click="searchTag(tag);">{{ tag }}</a>
