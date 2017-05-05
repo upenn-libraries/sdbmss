@@ -2704,6 +2704,7 @@ var BOOKMARK_SCOPE;
       if (bookmark.tags.indexOf(tag) == -1) {
         bookmark.tags.push(tag);
         bookmark.newtag = "";
+        bookmark.showAddTag = false;
         $http.get('/bookmarks/' + bookmark.id + '/addtag?tag=' + tag).then( function (e) {
           //console.log(e);
         });
@@ -2711,8 +2712,12 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.searchTag = function (tag) {
-      $('input[name=tag-search]').val(tag);
-      $scope.search_tag = tag;
+      if ($scope.search_tag == tag) {
+        $scope.search_tag = "";
+      } else {        
+        $scope.search_tag = tag;
+      }
+      $('input[name=tag-search]').val($scope.search_tag);
       if (!$scope.search_tag || $scope.search_tag.length <= 0) {
         $scope.all_bookmarks_display = $scope.all_bookmarks;
       } else {        

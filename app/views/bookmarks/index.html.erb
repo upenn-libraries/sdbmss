@@ -12,10 +12,10 @@
     <h5>How to create a Bookmark:</h5>
     <ol>
       <li>
-        Click the Bookmark icon where it appears in an <b>Entry</b>, <b>Source</b>, <b>Manuscript Record</b>, or <b>Name Authority Record</b>.
+        Click the <strong><span class="glyphicon glyphicon-bookmark"></span> Bookmark</strong> icon where it appears in an <b>Entry</b>, <b>Source</b>, <b>Manuscript Record</b>, or <b>Name Authority Record</b> 'Tools', in the left-sidebar control panel.
       </li>
       <li>
-        To view your bookmarks, click the <b>Bookmarks</b> icon in the top-horizontal navigation bar. You must be logged in to view your bookmarks.
+        To view your bookmarks, click the <b>Bookmarks</b> icon in the left-sidebar control panel. You must be logged in to view your bookmarks.
       </li>
     </ol>
   </div>
@@ -58,10 +58,32 @@
               </dl>
             </div>
             <div class="panel-footer">
-              <ul class="list-inline">
-                <li ng-if="bookmark.tags.length <= 0" class="text-muted">This bookmark has no tags.</li>
-                <li ng-repeat="tag in bookmark.tags" class="bookmark-tag">{{ tag }}</li>
-              </ul>
+              <div class="row">
+                <div class="col-sm-7">
+                  <ul class="list-inline" style="margin-bottom: 0px;">
+                    <li class=""><strong><span class="glyphicon glyphicon-tag"></span> Tags</strong> </li>
+                    <li ng-if="bookmark.tags.length <= 0" class="text-muted">This bookmark has no tags.</li>
+                    <li ng-repeat="tag in bookmark.tags" class="btn-group">
+                      <a class="btn btn-default btn-xs" ng-class="{'btn-primary' : tag == search_tag}" href="" ng-click="searchTag(tag);">{{ tag }}</a>
+                      <a href="" class='btn btn-default btn-xs remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></a>
+                    </li>
+                  </ul>
+                </div>
+                <div class="col-sm-5 text-right">
+                  <a ng-show="!bookmark.showAddTag" href="" class="btn btn-xs btn-default" ng-click="bookmark.showAddTag = !bookmark.showAddTag">
+                    <span class="glyphicon glyphicon-plus"></span> Add Tag
+                  </a>
+                  <div class="form-inline" style="position: absolute; right: 10px; top: -6px;">
+                    <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
+                      <input type='text' class='form-control' placeholder="New tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
+                      <div class="input-group-btn">
+                        <a href="" class="btn btn-default add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="glyphicon glyphicon-plus"></span> Add</a>
+                        <a href="" class="btn btn-warning add-bookmark-tag-confirm" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Cancel</a>                        
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           </div>
