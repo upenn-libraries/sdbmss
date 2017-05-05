@@ -39,7 +39,6 @@ describe "Linking Tool", :js => true do
   it "should load" do
     entry = Entry.last
 
-    puts entry.id, linking_tool_by_entry_path(id: entry.id)
     visit linking_tool_by_entry_path(id: entry.id)
     expect(page).to have_content("Entry Queue for creating Links")
     #expect(page).to have_content("Search for possible links")

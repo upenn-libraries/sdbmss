@@ -11,21 +11,25 @@ class CatalogController < ApplicationController
   include CatalogControllerConfiguration
 
   #layout "home", :only => [:index]
-  load_and_authorize_resource :only => [:show], :class => Entry
+  #authorize_resource :only => [:show], :class => Entry
 
   # Overrides Blacklight::Catalog#show to check for existence and send
   # 404 if necessary
   def show
-    flash.now[:notice] = "Note: This entry records a mention or observation of a manuscript in a source.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
 
     @entry = Entry.find_by(id: params[:id])
     entry = @entry
     # JIRA(sdbm-176)
 #    entry = Entry.find_by(id: params[:id], approved: true)
     if entry.present?
+      if can? :show, entry
+        flash.now[:notice] = "Note: This entry records a mention or observation of a manuscript in a source.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
     #  @entry_comment = EntryComment.new(entry: entry)
     #  @entry_comment.build_comment
-      super
+        super
+      else
+        render_access_denied
+      end
     else
       render_404
     end
