@@ -2,7 +2,7 @@
   <%= stylesheet_link_tag "extras", media: "all" %>
   <%= javascript_include_tag "extras" %>
 <% end %>
-<div ng-controller="ManageBookmarks" ng-init='search_tag = "<%= params[:tag] %>"'>
+<div ng-controller="ManageBookmarks" ng-init='search_term = "<%= params[:tag] %>"'>
 <div class="row">
   <div class="col-sm-12 text-center">
     <h1><span class="glyphicon glyphicon-bookmark"></span> Bookmarks</h1>
@@ -27,9 +27,9 @@
       <li><a href="#Name" data-toggle="tab">Names</a></li>
       <li class="pull-right">
         <span class="input-group">
-          <input type="text" class="form-control" name="tag-search" placeholder="Filter By Tag..." size=32 ng-model="tagSearch" ng-keyup="$event.keyCode == 13 && searchTag(tagSearch)">
+          <input type="text" class="form-control" name="tag-search" placeholder="Filter By Tag..." size=32 ng-model="search_term" ng-keyup="$event.keyCode == 13 && searchTag(search_term)">
           <span class="input-group-btn">
-            <a href="" class="btn btn-primary bookmark-search" ng-click="searchTag(tagSearch)">Search <span class="glyphicon glyphicon-tag"></span></a>
+            <a href="" class="btn btn-primary bookmark-search" ng-click="searchTag(search_term)"><span class="glyphicon glyphicon-tag"></span> Filter</a>
             <a href="" class="btn btn-default" ng-click="searchTag('')"><span>Clear</span></a>
           </span>
         </span>
@@ -40,14 +40,16 @@
     <div class="tab-content">
       <div class="tab-pane fade" ng-class="{'in active' : name == 'Entry'}" id="{{ name }}" ng-repeat="(name, bookmarks) in all_bookmarks_display" style="padding-top: 10px;">
         
-        <p class="text-muted text-center">You have {{ bookmarks.length }} bookmarks of this type.</p>
+        <p class="text-muted text-center">You have {{ bookmarks.length }} {{ name }} bookmark(s) of this type
+          <span ng-if="tagSearch && tagSearch.length > 0"> with the tag <span class="btn btn-primary btn-xs" ng-click="searchTag(tagSearch)">{{ tagSearch }}</span></span>
+        </p>
 
         <div class="row">
           <div class="col-sm-12" ng-repeat="bookmark in bookmarks">
           <div class="panel panel-default">
             <div class="panel-heading">
               <strong><a href="{{ bookmark.link }}">{{ bookmark.public_id }}</a></strong>
-              <a class='remove-bookmark control-bookmark pull-right' ng-click="removeBookmark(name, bookmark)">
+              <a class='remove-bookmark control-bookmark pull-right' ng-click="removeBookmark(name, bookmark)" title="Remove bookmark">
                 <span class="glyphicon glyphicon-remove"></span>
               </a> 
             </div>
@@ -64,8 +66,8 @@
                     <li class=""><span class="btn btn-xs"><span class="glyphicon glyphicon-tag"></span> Tags</span> </li>
                     <li ng-if="bookmark.tags.length <= 0" class="text-muted">This bookmark has no tags.</li>
                     <li ng-repeat="tag in bookmark.tags" class="btn-group">
-                      <a class="btn btn-default btn-xs" ng-class="{'btn-primary' : tag == search_tag}" href="" ng-click="searchTag(tag);">{{ tag }}</a>
-                      <a href="" class='btn btn-default btn-xs remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></a>
+                      <a class="btn btn-default btn-xs" ng-class="{'btn-primary' : tag == tagSearch}" href="" ng-click="searchTag(tag);">{{ tag }}</a>
+                      <a href="" class='btn btn-default btn-xs remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)" title="Remove tag '{{ tag }}'"><span class="glyphicon glyphicon-remove"></span></a>
                     </li>
                   </ul>
                 </div>

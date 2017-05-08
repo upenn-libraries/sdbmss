@@ -2712,20 +2712,20 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.searchTag = function (tag) {
-      if ($scope.search_tag == tag) {
-        $scope.search_tag = "";
-      } else {        
-        $scope.search_tag = tag;
+      if ($scope.tagSearch == tag) {
+        $scope.tagSearch = "";
+      } else {
+        $scope.tagSearch = tag;
       }
-      $('input[name=tag-search]').val($scope.search_tag);
-      if (!$scope.search_tag || $scope.search_tag.length <= 0) {
+      $('input[name=tag-search]').val($scope.tagSearch);
+      if (!$scope.tagSearch || $scope.tagSearch.length <= 0) {
         $scope.all_bookmarks_display = $scope.all_bookmarks;
       } else {        
         $scope.all_bookmarks_display = {};
         for (var key in $scope.all_bookmarks) {
           $scope.all_bookmarks_display[key] = [];
           for (var i = 0; i < $scope.all_bookmarks[key].length; i++) {
-            if ($scope.all_bookmarks[key][i].tags.indexOf($scope.search_tag) != -1) {
+            if ($scope.all_bookmarks[key][i].tags.indexOf($scope.tagSearch) != -1) {
               $scope.all_bookmarks_display[key].push($scope.all_bookmarks[key][i]);
             }
           }
@@ -2740,8 +2740,8 @@ var BOOKMARK_SCOPE;
         $scope.all_bookmarks = e.data.bookmarks;
         $scope.all_bookmarks_display = $scope.all_bookmarks;
         $scope.bookmark_tracker = e.bookmark_tracker;
-        if ($scope.search_tag && $scope.search_tag.length > 0) {
-          $scope.searchTag($scope.search_tag);
+        if ($scope.search_term && $scope.search_term.length > 0) {
+          $scope.searchTag($scope.search_term)//$scope.tagSearch);
         }
       });
     }
@@ -2753,7 +2753,7 @@ var BOOKMARK_SCOPE;
           $scope.all_bookmarks[name].splice(i, 1);
           var id = bookmark.document_id, type = bookmark.document_type;
           $scope.$apply();        
-          $scope.searchTag($scope.search_tag);
+          $scope.searchTag($scope.tagSearch);
           addNotification(type + ' ' + id + ' un-bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
         }).error( function (e) {
           console.log('error', e);
@@ -2773,7 +2773,7 @@ var BOOKMARK_SCOPE;
           $scope.active = type;
           $scope.all_bookmarks[type].unshift(e);
           $scope.$apply();
-          $scope.searchTag($scope.search_tag);
+          $scope.searchTag($scope.tagSearch);
           addNotification(type + ' ' + id + ' bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'success');
         } else {
           console.log(e.error);
@@ -2843,44 +2843,19 @@ var BOOKMARK_SCOPE;
       exportCSV(url);
     }
 
-    $scope.toggleSidebar = function (skip) {
-      if (!skip) $('.sidebar, .main-content').addClass('transition');
-      $('.sidebar').toggleClass('in');
-      $('.main-content').toggleClass('in');
-      setTimeout(function () {
-        if ($('.sidebar').hasClass('in')) {
-          $('.toggle-sidebar').html('<span class="glyphicon glyphicon-remove"></span>');
-          localStorage.sidebar_open = "true";
-        } else {
-          $('.toggle-sidebar').html('<span class="glyphicon glyphicon-bookmark"></span>');
-          localStorage.sidebar_open = "false";
-        }
-        $('.sidebar, .main-content').removeClass('transition');
-      }, 500);
-    }
-
     // should this be fixed, eventually?  is there any reason for this to be here, instead of hard-coded?
     $scope.tabs = ["Entry", "Manuscript", "Name", "Source"];
     $scope.all_bookmarks = {Entry: [], Manuscript: [], Name: [], Source: []};
 
     // load tag from url
-    if (window.location.search && window.location.search.indexOf('tag=') != -1) {
+    /*if (window.location.search && window.location.search.indexOf('tag=') != -1) {
       var search  = decodeURIComponent(window.location.search.split('tag=')[1]);
       $scope.tagSearch = search;
       $scope.searchTag(search);
-    }
-
-    $scope.addTabToStorage = function (name) {
-      $scope.active = name;
-      if (localStorage) localStorage.sidebar_tab = name;
-    }
-
-    if (localStorage && localStorage.sidebar_open == "true" && $('.sidebar').length > 0) {
-      $scope.toggleSidebar(true);
-    }
+    }*/
 
     $scope.loadBookmarks();
-    
+
   });
 
 }());
