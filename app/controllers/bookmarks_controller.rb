@@ -91,7 +91,7 @@ class BookmarksController < ApplicationController
       flash[:error] = "That record is already bookmarked."
       render json: {error: "already bookmarked"}
     else
-      @bookmark = Bookmark.create({user: current_user, document_id: params[:document_id], document_type: params[:document_type]})
+      @bookmark = Bookmark.create({user_id: current_user.id, user_type: 'User', document_id: params[:document_id], document_type: params[:document_type]})
       @bookmark.save!
 
       button_html = (render_to_string partial: "delete", locals: {bookmark: @bookmark }, layout: false)
