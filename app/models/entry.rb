@@ -386,7 +386,8 @@ class Entry < ActiveRecord::Base
       updated_by: updated_by ? updated_by.username : "",
       approved: approved,
       deprecated: deprecated,
-      superceded_by_id: superceded_by_id
+      superceded_by_id: superceded_by_id,
+      draft: draft
     }
   end
 
@@ -858,6 +859,11 @@ class Entry < ActiveRecord::Base
     download.update({status: 1, filename: "#{filename}.zip"})
     #download.created_by.notify("Your download '#{download.filename}' is ready.")
   end  
+
+  def custom_scope
+    puts 'mhm'
+    with :draft, false
+  end
 
   def self.filters
     [

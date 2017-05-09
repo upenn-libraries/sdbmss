@@ -74,6 +74,7 @@ class Ability
     can [:edit, :update], Entry, contributors: { :id => user.id }
     cannot :manage, [Group]
     can [:edit, :update, :destroy], Group, admin: { :id => user.id }
+    can [:destroy], Entry, {created_by_id: user.id, draft: true}
 
     can :show, Entry
     cannot :show, Entry do |entry|

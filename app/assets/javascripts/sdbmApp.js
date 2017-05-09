@@ -207,6 +207,10 @@ var BOOKMARK_SCOPE;
         var getOriginalEntry = function () {
             return URI().search(true).original_entry;
         };
+
+        var createNewEntry = function () {
+          return URI().search(true).create_entry;
+        }
         /* returns the path to the Create Entry page for a source,
            optionally passing along the 'manuscript_id' parameter if
            there is one.
@@ -289,6 +293,7 @@ var BOOKMARK_SCOPE;
             getManuscriptId: getManuscriptId,
             getNewManuscript: getNewManuscript,
             getOriginalEntry: getOriginalEntry,
+            createNewEntry: createNewEntry,
             /* Returns a fn that can be used as error callback on angular promises */
             promiseErrorHandlerFactory: function(msg) {
                 return function(response) {
@@ -1266,8 +1271,22 @@ var BOOKMARK_SCOPE;
             });
         };
 
+        $scope.saveAsDraft = function () {
+          console.log('huh');
+          dataConfirmModal.confirm({
+            title: 'Save As Draft',
+            text: 'Are you sure you would like to save this entry as a draft?  You can only save up to 10 drafts at any given time, as we like to encourage our users to contribute their data publicly to the database.',
+            commit: 'Save as Draft',
+            cancel: 'Cancel',
+            zIindex: 10099,
+            onConfirm: function() { $scope.save(true) },
+            onCancel:  function() { }
+          });
+        }
+
         $scope.save = function (draft) {
             $scope.entry.draft = draft || false;
+
             // Transform angular's view models to JSON payload that
             // API expects: attach a bunch of things to Entry resource
             $scope.currentlySaving = true;
@@ -2255,10 +2274,12 @@ var BOOKMARK_SCOPE;
             $scope.populateSourceViewModel($scope.source);
             
             // if this source has been created to add an entry to a Manuscript record
-            if (sdbmutil.getManuscriptId() || sdbmutil.getNewManuscript()) {
+            if (sdbmutil.getManuscriptId() || sdbmutil.getNewManuscript() || sdbmutil.createNewEntry()) {
               sdbmutil.redirectToEntryCreatePage(source.id);
               return;
             }
+
+
             window.location = "/sources/" + $scope.source.id;
             /*
             var modalInstance = $modal.open({

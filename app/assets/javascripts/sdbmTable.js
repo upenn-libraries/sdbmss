@@ -597,6 +597,12 @@ var SDBM = SDBM || {};
                     orderable: false
                 },
                 {
+                    title: "Draft",
+                    visible: false,
+                    searchable: false,
+                    never_show: true
+                },
+                {
                     title: "Can Edit",
                     visible: false,
                     searchable: false,
@@ -616,7 +622,9 @@ var SDBM = SDBM || {};
         $(selector).on('draw.dt', function () {
             sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
                 var data = sdbmTable.dataTable.row(row).data();
-                if(!data[sdbmTable.getColumnIndex("Is Approved")]) {
+                if (data[sdbmTable.getColumnIndex("Draft")]) {
+                    $(row).addClass('info draft');
+                } else if(!data[sdbmTable.getColumnIndex("Is Approved")]) {
                     $(row).addClass('warning unapproved');
                 }
 
@@ -709,6 +717,7 @@ var SDBM = SDBM || {};
                             result.approved,
                             result.deprecated,
                             result.superceded_by_id,
+                            result.draft,
                             result.can_edit,
                             result.bookmarkwatch
                         ];

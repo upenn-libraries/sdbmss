@@ -86,7 +86,12 @@ class EntriesController < SearchableAuthorityController
 
     @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
     @field_options = ["contains", "does not contain", "blank", "not blank"]
-    @date_options = ["before", "after", "near", "exact"]
+    @date_options = ["before", "after", "near", "exact"]    
+
+    if current_user.role != "admin"
+      params.merge!("draft" => ["false"], "draft_option" => ["with"])
+    end
+
     if params[:format] == 'csv'
       if current_user.downloads.count >= 5
         render json: {error: 'at limit'}
@@ -350,6 +355,10 @@ class EntriesController < SearchableAuthorityController
     # action.
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }
+      format.html { 
+        flash[:notice] = "Entry #{@entry.public_id} has been deleted."
+        redirect_to dashboard_contributions_path
+      }
     end
   end
 

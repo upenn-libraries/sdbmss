@@ -125,7 +125,7 @@
                  var params = manageEntries.translateSearchParams(sdbmTable, dt_params);
                  //console.log(params, "FIX ME: is this happening twice?");
                  // hide drafts from table view
-                 params["draft"] = false;
+                 //params["draft"] = false;
                  sdbmTable.searchAndUpdateTable(params, callback, {
                      complete: function () {
                          $("#spinner").hide();
