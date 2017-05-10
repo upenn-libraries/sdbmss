@@ -38,6 +38,12 @@ class  DericciGamesController < ApplicationController
     end
   end
 
+  def stats
+    respond_to do |format|
+      format.json { render json: DericciLink.select(:created_at, :reliability, :name_id, :dericci_record_id).order(:created_at) }
+    end
+  end
+
   private
 
   def user_reliability(user)

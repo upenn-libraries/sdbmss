@@ -37,7 +37,11 @@ Rails.application.routes.draw do
   resources :group_users
   
   resources :dericci_records
-  resources :dericci_games
+  resources :dericci_games do
+    collection {
+      get 'stats'
+    }
+  end
   resources :dericci_links do
     collection {
       delete 'delete_many'

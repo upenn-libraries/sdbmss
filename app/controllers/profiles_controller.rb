@@ -37,25 +37,6 @@ class ProfilesController < ApplicationController
             Links: (em.to_a + Rating.select(:id, :created_at, :qualifier).where(ratable_type: EntryManuscript, ratable_id: em.map(&:id)).order("created_at asc").to_a).sort { |a, b| a.created_at <=> b.created_at },
             Observations: (p.to_a + Rating.select(:id, :created_at, :qualifier).where(ratable_type: Entry, ratable_id: p.map(&:id)).order("created_at asc").to_a).sort { |a, b| a.created_at <=> b.created_at }
         }
-=begin        
-        render json: {
-          names: {
-            count: n.count,
-            confirms: Rating.where(ratable_type: Name, qualifier: 'confirm', ratable_id: n.map(&:id)).count,
-            disputes: Rating.where(ratable_type: Name, qualifier: 'dispute', ratable_id: n.map(&:id)).count
-          },
-          entrymanuscripts: {
-            count: em.count,
-            confirms: Rating.where(ratable_type: EntryManuscript, qualifier: 'confirm', ratable_id: em.map(&:id)).count,
-            disputes: Rating.where(ratable_type: EntryManuscript, qualifier: 'dispute', ratable_id: em.map(&:id)).count
-          },
-          observations: {
-            count: p.count,
-            confirms: Rating.where(ratable_type: Entry, qualifier: 'confirm', ratable_id: p.map(&:id)).count,
-            disputes: Rating.where(ratable_type: Entry, qualifier: 'dispute', ratable_id: p.map(&:id)).count
-          }
-        }
-=end
       end   
     end
   end

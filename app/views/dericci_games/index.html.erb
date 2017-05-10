@@ -1,10 +1,64 @@
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+  $(document).ready(function () {
+    $.get("/dericci_games/stats.json", function (result) {
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      var total = 10155;
+
+      function drawChart() {      
+        console.log(result);
+        
+        // dericcirecordid_nameid : reliability
+        var records = {};
+        var t = [];
+
+        // each link
+        for (var i = 0; i < result.length; i++) {
+          var r = result[i];
+          var record_id = r.dericci_record_id + "_" + r.name_id;
+          if (!records[record_id]) records[record_id] = r.reliability;
+          else records[record_id] += r.reliability;
+        
+          var possible = 0, confirmed = 0;
+          for (var key in records) {
+            if (records[key] >= 4) confirmed += 1;
+            else if (records[key] > 0) possible += 1;
+          }
+          t.push([new Date(r.created_at.split('T')[0]), total - (confirmed + possible), possible, confirmed]);
+        }
+        
+        t.unshift(['Date', 'Unlinked', 'Completed', 'Possible']);
+        
+        var data = google.visualization.arrayToDataTable(t);
+        
+        var options = {
+          //title: key,
+          hAxis: {title: 'Year',  titleTextStyle: {color: '#000', fontSize: 20}, textStyle: {color: '#333399', fontSize: 10}},
+          vAxis: {minValue: 0},
+          isStacked: 'percent',
+          height: 500,
+          //width: 360,
+          selectionMode: 'multiple',
+          backgroundColor: {fill: "#ffffff", strokeWidth: 0},
+          explorer: {}
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById("stats"));
+        chart.draw(data, options);     
+      }
+    });
+  });
+</script>
+
+
 <% content_for :breadcrumbs do %>
   <%= render partial: "breadcrumbs" %>
 <% end %>
 <div class="row">
-  <div class="col-sm-3"></div>
   <div class="col-sm-6 text-center">
-    <a href="/dericci_games/new" class="btn btn-primary"><span class="glyphicon glyphicon-tower"></span> New Game!</a>
+    <h3>My Current Games</h3>
     <table class="table table-responsive">
       <thead>
         <tr>
@@ -28,11 +82,14 @@
           </tr>
         <% end.empty? %>
           <tr>
-            <td colspan="4" class="text-center text-muted">No games availabe.</td>
+            <td colspan="4" class="text-center text-muted">You have not played any games yet.</td>
           </tr>
         <% end %>
       </tbody>
     </table>
   </div>
-  <div class="col-sm-3"></div>
+  <div class="col-sm-6 text-right">
+    <a href="/dericci_games/new" class="btn btn-primary"><span class="glyphicon glyphicon-tower"></span> New Game!</a><br>
+    <div id="stats" style="width: 100%; height: 500px; margin-bottom: 10px;"></div>
+  </div>
 </div>
