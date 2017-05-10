@@ -46,7 +46,7 @@
 
         <dt># Entries</dt>
         <dd>
-            This source has <a target="_blank" class='badge' href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries.where(deprecated: false).count, "entry") %></a> in the database.
+            This source has <a target="_blank" class='badge one-line' href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries.where(deprecated: false).count, "entry") %></a> in the database.
         </dd>
         <% if (drafts = source.entries.where(draft: true)).count > 0%>
         <dt>Drafts</dt>
@@ -88,8 +88,12 @@
 
                 <% if source.link.present? %>
         
-        <dt>Online Link/<br/>Call No.</dt>
-        <dd class="one-line"><a href="<%= source.link %>"><%= source.link %></a></dd>
+        <dt>Online Link/Call No.</dt>
+        <dd>
+            <div class="one-line">
+                <a href="<%= source.link %>" title="<%= source.link %>"><%= source.link %></a>
+            </div>
+        </dd>
                 
                 <% end %>
             <% end %>

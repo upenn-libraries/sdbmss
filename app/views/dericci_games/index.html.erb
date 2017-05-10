@@ -21,15 +21,17 @@
           if (!records[record_id]) records[record_id] = r.reliability;
           else records[record_id] += r.reliability;
         
+
           var possible = 0, confirmed = 0;
           for (var key in records) {
             if (records[key] >= 4) confirmed += 1;
             else if (records[key] > 0) possible += 1;
           }
+          //console.log(records);
           t.push([new Date(r.created_at.split('T')[0]), total - (confirmed + possible), possible, confirmed]);
         }
         
-        t.unshift(['Date', 'Unlinked', 'Completed', 'Possible']);
+        t.unshift(['Date', 'Unlinked', 'Possible', 'Completed']);
         
         var data = google.visualization.arrayToDataTable(t);
         

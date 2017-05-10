@@ -925,6 +925,12 @@ class Entry < ActiveRecord::Base
     super - ["Deprecated", "deprecated"] - ["Draft", "draft"]
   end
 
+  def create_activity(action_name, current_user, transaction_id)
+    if !self.draft
+      super(action_name, current_user, transaction_id)
+    end
+  end
+
   private
 
   def update_source_status
