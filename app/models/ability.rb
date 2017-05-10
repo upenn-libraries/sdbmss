@@ -33,6 +33,7 @@ class Ability
     if ['contributor', 'editor', 'super_editor', 'admin'].member? user.role
       can [:edit, :update, :show], :all, :created_by_id => user.id
       can [:index, :new], DericciGame
+      can :create, DericciLink
 
       can :destroy, [Comment, Reply], :created_by_id => user.id
       cannot :manage, Page

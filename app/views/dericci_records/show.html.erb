@@ -1,3 +1,14 @@
+<% content_for :control_tools do %>
+  <%= render partial: "nav/bookmark_watch", locals: {model: @record} %>
+  <% if (s = Source.where(title: "De Ricci Digitized Archive").first) %>
+    <li>
+      <%= link_to new_entry_path(source_id: s.id, url: request.original_url ) do %>
+        <span class="glyphicon glyphicon-plus"></span> Add Entry Based on De Ricci Record
+      <% end %>
+    </li>
+  <% end %>
+<% end %>
+
 <% content_for :breadcrumbs do %>
   <%= render partial: "dericci_games/breadcrumbs" %>
 <% end %>
@@ -28,23 +39,61 @@
 
       <dt>Senate House ID#</dt>
       <dd><%= @record.senate_house || "Unknown" %></dd>
-    </dl>
 
-    <% if @record.dericci_links.group_by(&:name_id).each do |name_id, dericci_links| %>
-        <% if dericci_links.sum(&:reliability) > 3 %>
-            <%= link_to dericci_links.first.name.name, name_path(dericci_links.first.name) %>
-            <% dericci_links.each do |dl| %>
-                <% if dl.other_info.present? %>
-                    <p><%= dl.other_info %></p>
-                <% end %>
-                <div class='text-right text-muted'>identified by <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by, up: true } %></div>
-            <% end %>
-        <% else %>
-            <p class="text-muted">This name is not linked to any records in the Dericci Archives.</p>
+      <dt>SDBM Name Authority</dt>
+      <dd>
+        <% if @record.dericci_links.group_by(&:name_id).each do |name_id, dericci_links| %>
+            <% reliability = [(100 * (dericci_links.sum(&:reliability) / 4.0)).to_i, 100].min %>
+            <% name = dericci_links.first.name %>
+
+            <div class="progress" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
+              <div class="progress-bar progress-bar-<%= reliability >= 100 ? 'success' : 'info' %> progress-bar-striped" role="progressbar"
+              aria-valuenow="<%= reliability %>" aria-valuemin="0" aria-valuemax="100" style="width:<%= reliability %>%">
+                <%= name.name %> <%= reliability %>%
+              </div>
+            </div>
+
+            <div class="modal fade" id="<%= name.public_id %>">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <span class="h5 modal-title">
+                      <%= link_to name_path(name) do %>
+                        <%= name.public_id %>
+                      <% end %>                      
+                    </span>
+                    <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <p>This De Ricci record has been linked to <%= link_to name.name, name_path(name) %> by </p>
+                      <% dericci_links.each do |dl| %>
+                            <!-- not working (dropdown I mean) for some reason... -->
+                            <span><%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
+                            <% if dl.other_info.present? %>
+                                <em class='text-muted'>(<%= dl.other_info %>)</em>
+                            <% end %></span><br>
+                      <% end %>                    
+                  </div>
+                  <div class="modal-footer text-center">
+                    <% if current_user && current_user.role != "contributor" && reliability < 100 && !dericci_links.map(&:created_by_id).include?(current_user.id) %>
+                        <%= link_to "Confirm Link", dericci_links_path(dericci_record_id: @record.id, name_id: name.id, from_record: true), method: :post, class: "btn btn-default" %>
+                    <% end %>
+
+                    <% if current_user && current_user.role == "admin" %>
+                        <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id)), method: :delete, class: "btn btn-danger" %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+        <% end.empty? %>
+            <p class="text-muted">This name is not linked to any records in the De Ricci Archives.</p>
         <% end %>
-    <% end.empty? %>
-        <p class="text-muted">This name is not linked to any records in the Dericci Archives.</p>
-    <% end %>
+      </dd>
+    </dl>
 
 
     <%# render partial: "show", locals: {record: @record} %>

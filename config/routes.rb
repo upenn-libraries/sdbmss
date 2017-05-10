@@ -38,7 +38,11 @@ Rails.application.routes.draw do
   
   resources :dericci_records
   resources :dericci_games
-  resources :dericci_links
+  resources :dericci_links do
+    collection {
+      delete 'delete_many'
+    }
+  end
   resources :dericci_notes, only: [:index]
   resources :dericci_sales, only: [:index]
 

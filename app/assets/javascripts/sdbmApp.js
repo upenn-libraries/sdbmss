@@ -211,6 +211,10 @@ var BOOKMARK_SCOPE;
         var createNewEntry = function () {
           return URI().search(true).create_entry;
         }
+
+        var prepopulatedURL = function () {
+          return URI().search(true).url;
+        }
         /* returns the path to the Create Entry page for a source,
            optionally passing along the 'manuscript_id' parameter if
            there is one.
@@ -294,6 +298,7 @@ var BOOKMARK_SCOPE;
             getNewManuscript: getNewManuscript,
             getOriginalEntry: getOriginalEntry,
             createNewEntry: createNewEntry,
+            prepopulatedURL: prepopulatedURL,
             /* Returns a fn that can be used as error callback on angular promises */
             promiseErrorHandlerFactory: function(msg) {
                 return function(response) {
@@ -1601,6 +1606,9 @@ var BOOKMARK_SCOPE;
                       );
                     }
                 }
+                if (sdbmutil.prepopulatedURL()) {
+                  $scope.entry.manuscript_link = sdbmutil.prepopulatedURL();
+                }
 
             },
             // error callback
@@ -2865,8 +2873,8 @@ var BOOKMARK_SCOPE;
     }
 
     // should this be fixed, eventually?  is there any reason for this to be here, instead of hard-coded?
-    $scope.tabs = ["Entry", "Manuscript", "Name", "Source"];
-    $scope.all_bookmarks = {Entry: [], Manuscript: [], Name: [], Source: []};
+    $scope.tabs = ["Entry", "Manuscript", "Name", "Source", "De Ricci"];
+    $scope.all_bookmarks = {Entry: [], Manuscript: [], Name: [], Source: [], De_Ricci: []};
 
     // load tag from url
     /*if (window.location.search && window.location.search.indexOf('tag=') != -1) {

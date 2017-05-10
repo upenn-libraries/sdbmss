@@ -56,11 +56,27 @@
 <% end %>
 <div class="row">
   <div class="col-sm-12">
+    <table class="table table-responsive sdbm-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th></th>
+          <th># Cards</th>
+          <th>File Size</th>
+          <th>SDBM Links</th>
+          <th class="text-right">Dates</th>
+        </tr>
+      </thead>
+      <tbody>
       <% if @total <= 0 %>
-        <p class="text-muted text-center">No matching records found.</p>
+        <tr>
+          <td colSpan="6" class="text-muted text-center">No matching records found.</td>
+        </tr>
       <% end %>
       <% @records.each do |record| %>
-          <%= render partial: "show", locals: {record: record} %>
+          <%= render partial: "row", locals: {record: record} %>
       <% end %>
+      </tbody>
+    </table>
   </div>
 </div>
