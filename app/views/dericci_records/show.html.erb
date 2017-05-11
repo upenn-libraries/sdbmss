@@ -69,11 +69,13 @@
                   <div class="modal-body">
                     <p>This De Ricci record has been linked to <%= link_to name.name, name_path(name) %> by </p>
                       <% dericci_links.each do |dl| %>
-                            <!-- not working (dropdown I mean) for some reason... -->
-                            <span><%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
+                          <span>
+                            <span class="label label-info"><%= dl.reliability * 25 %>%</span>
+                            <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
                             <% if dl.other_info.present? %>
                                 <em class='text-muted'>(<%= dl.other_info %>)</em>
-                            <% end %></span><br>
+                            <% end %>
+                          </span><br>
                       <% end %>                    
                   </div>
                   <div class="modal-footer text-center">

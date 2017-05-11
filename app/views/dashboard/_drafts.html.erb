@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-sm-4">
-        <span data-toggle="collapse" href="#myEntries" class='h3 small-caps'>Unpublished 'Draft' Entries
+        <span data-toggle="collapse" href="#myDrafts" class='h3 small-caps'>Unpublished 'Draft' Entries
             <span class="caret"></span>
         </span>
     </div>
@@ -10,6 +10,6 @@
         <span class="text-muted">You have <%= drafts.count %> <%= "draft".pluralize(drafts.count) %> out of a possible 10</span>            
     </div>
 </div>
-<div class="collapse in list-group list-group-no-border-side" id="myEntries" style="padding: 0px 5px;">
+<div class="collapse in list-group list-group-no-border-side" id="myDrafts" style="padding: 0px 5px;">
     <%= render partial: "profiles/tiles", locals: {records: drafts} %>
 </div>

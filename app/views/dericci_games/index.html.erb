@@ -1,6 +1,6 @@
-<script src="https://www.gstatic.com/charts/loader.js"></script>
+<!--<script src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
-  $(document).ready(function () {
+/*  $(document).ready(function () {
     $.get("/dericci_games/stats.json", function (result) {
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
@@ -42,7 +42,7 @@
           isStacked: 'percent',
           height: 500,
           //width: 360,
-          selectionMode: 'multiple',
+          //selectionMode: 'multiple',
           backgroundColor: {fill: "#ffffff", strokeWidth: 0},
           explorer: {}
         };
@@ -51,23 +51,74 @@
         chart.draw(data, options);     
       }
     });
-  });
-</script>
-
+  });*/
+</script>-->
+<% content_for :head do %>
+  <style>
+    .huge {
+      font-size: 72px;
+      color: #222;
+      line-height: 54px;
+    }
+    .stats {
+      font-size: 100px;
+      line-height: 80px;
+      color: darksalmon;
+      font-weight: bold;
+      font-variant: small-caps;
+    }
+    .btn-special {
+      width: 100%;
+      height: 100%;
+      font-size: 72px;
+      line-height: 56px;
+      padding-bottom: 15px;
+    }
+  </style>
+<% end %>
 
 <% content_for :breadcrumbs do %>
   <%= render partial: "breadcrumbs" %>
 <% end %>
 <div class="row">
-  <div class="col-sm-6 text-center">
+  <div class="col-sm-7">
+    <!--
+    <div id="stats" style="width: 100%; height: 500px; margin-bottom: 10px;"></div>-->
+    <div class="text-right huge">the</div>
+    <div class="text-right huge">De Ricci</div>
+    <div class="text-center huge">Digitized</div>
+    <div class="text-left huge">Archive</div>
+    <div class="text-center huge" style="letter-spacing: 16px; font-variant: small-caps; font-weight: bold; color: white; background: #222;">game</div>
+    <div class="stats text-right">
+      <% players = DericciGame.select(:created_by_id).distinct.count %>
+      <%= players %> <%= "Player".pluralize(players) %>
+    </div>
+    <div class="stats text-left" style="color: darkcyan;">
+      <%= DericciGame.count %> <%= "Game".pluralize(DericciGame.count) %> Played
+    </div>
+    <% links = DericciLink.group(:dericci_record_id, :name_id).sum(:reliability) %>
+    <% reliable = links.select{ |k, v| v >= 4 }.count %>
+    <% possible = links.select{ |k, v| v >= 0 && v < 4 }.count %>
+    <div class="huge text-center" style="background: darkseagreen; color: white; font-variant: small-caps; font-size: 48px;">
+      <%= reliable %> Confirmed <%= "Links".pluralize(reliable) %> Created
+    </div>
+    <div class="huge text-center bg-info text-info" style="font-variant: small-caps; font-size: 48px;">
+      <%= possible %> Possible <%= "Links".pluralize(possible) %> Created
+    </div>
+  </div>
+  <div class="col-sm-5 text-center">
+    <a href="/dericci_games/new" class="btn btn-default btn-special text-center">
+      <div class="glyphicon glyphicon-tower" style="font-size: 72px; display: block; margin: 15px 0px;"></div>
+      Play<br>
+      Game
+    </a><br>
     <h3>My Current Games</h3>
     <table class="table table-responsive">
       <thead>
         <tr>
-          <td>Game ID</td>
+          <td></td>
           <td>Completed</td>
           <td>Skipped</td>
-          <td>Date</td>
         </tr>
       </thead>
       <tbody>
@@ -75,23 +126,18 @@
           <tr>
             <td>
               <%= link_to(dericci_game_path(game), class: 'btn btn-default btn-sm') do %>
-                <span class="glyphicon glyphicon-tower"></span>  <%= "Game_#{game.id}" %>
+                <span class="glyphicon glyphicon-tower"></span>  <%= game.created_at.to_formatted_s(:long) %>
               <% end %>
             </td>
             <td class='bg-success'><%= game.completed.to_i %>%</td>
             <td class='bg-warning'><%= game.skipped.to_i %>%</td>
-            <td><%= game.created_at.to_formatted_s(:long) %></td>
           </tr>
         <% end.empty? %>
           <tr>
-            <td colspan="4" class="text-center text-muted">You have not played any games yet.</td>
+            <td colspan="3" class="text-center text-muted">You have not played any games yet.</td>
           </tr>
         <% end %>
       </tbody>
     </table>
-  </div>
-  <div class="col-sm-6 text-right">
-    <a href="/dericci_games/new" class="btn btn-primary"><span class="glyphicon glyphicon-tower"></span> New Game!</a><br>
-    <div id="stats" style="width: 100%; height: 500px; margin-bottom: 10px;"></div>
   </div>
 </div>

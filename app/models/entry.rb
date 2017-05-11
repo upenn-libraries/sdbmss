@@ -827,16 +827,13 @@ class Entry < ActiveRecord::Base
     s = do_search(params)
     
     objects = []
-    puts "Objects:: #{objects.count}"
     s.results.in_groups_of(300, false) do |group|
       ids = group.map(&:id)
       #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
       objects = objects + Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash }
-      puts "Objects:: #{objects.count}"
     end
     # any possible 'speed up' would need to be done here:
 
-    puts "Objects:: #{objects.count}"
     headers = objects.first.keys
     filename = download.filename
     user = download.user
