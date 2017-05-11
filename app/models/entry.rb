@@ -823,27 +823,32 @@ class Entry < ActiveRecord::Base
   # I don't love having to duplicate all the fields AGAIN here, but inheriting it all from blacklight doesn't seem to work
   # 
 
-  def do_csv_search(params, download)
-    s = do_search(params)
+  def self.do_csv_search(params, download)
+    
+    offset = 0
     
     objects = []
-    s.results.in_groups_of(300, false) do |group|
-      ids = group.map(&:id)
-      #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
-      objects = objects + Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash }
-    end
-    # any possible 'speed up' would need to be done here:
-
-    headers = objects.first.keys
     filename = download.filename
     user = download.user
     id = download.id
     path = "/tmp/#{id}_#{user}_#{filename}"
+    headers = nil
     
-    csv_file = CSV.open(path, "wb") do |csv|
-      csv << headers
-      objects.each do |r|
-        csv << r.values 
+    loop do
+      s = do_search(params.merge({:limit => 300, :offset => offset}))
+      offset += 300
+      ids = s.results.map(&:id)
+      #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
+      objects = Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash }
+      break if objects.first.nil?
+      csv_file = CSV.open(path, "ab") do |csv|
+        if headers.nil? && objects.first
+          headers = objects.first.keys
+          csv << headers
+        end
+        objects.each do |r|
+          csv << r.values 
+        end
       end
     end
 
@@ -856,11 +861,6 @@ class Entry < ActiveRecord::Base
     download.update({status: 1, filename: "#{filename}.zip"})
     #download.created_by.notify("Your download '#{download.filename}' is ready.")
   end  
-
-  def custom_scope
-    puts 'mhm'
-    with :draft, false
-  end
 
   def self.filters
     [

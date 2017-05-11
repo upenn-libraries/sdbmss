@@ -63,7 +63,7 @@ module SolrSearchable
   end
 
   def do_csv_search(params, download)
-    s = do_search(params)
+    s = do_search(params.merge({:limit => self.count, :offset => 0}))
     
     # any possible 'speed up' would need to be done here:
     results = s.results.map do |obj|
@@ -241,11 +241,11 @@ module SolrSearchable
 
       # a CSV search is unpaginated, so the entire search results are returned
 
-      if format != 'csv'
-        paginate :per_page => limit, :page => page
-      else
-        paginate :page => 1, :per_page => self.all.count
-      end
+      paginate :per_page => limit, :page => page
+      #if format != 'csv'
+      #else
+      #  paginate :page => 1, :per_page => self.count
+      #end
 
       order.present? ? order_by(order[:field], order[:direction]) : order_by(:score, :desc)
     end
