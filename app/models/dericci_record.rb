@@ -25,4 +25,9 @@ class DericciRecord < ActiveRecord::Base
   def to_s
     name
   end
+
+  def preview
+    name
+  end
+
 end
