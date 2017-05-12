@@ -11,6 +11,7 @@
       border-bottom-right-radius: 0px;
       box-shadow: 2px 1px 4px #393c3e inset;
       background: #525659;
+      font-size: 32px;
     }
     .game-nav {
       padding-left: 15px;
@@ -84,7 +85,9 @@
         <div class="col-sm-3">
         </div>
         <div class="col-sm-12">
-          <h4 class="h4"><a href="{{ current_url }}" target="_blank">{{ current_record.name }}</a></h4>
+          <h4 class="h4 text-center" style="background: #525659; border-radius: 4px; margin-top: 4px;">
+            <a href="{{ current_url }}" target="_blank" style="color: white; font-size: 32px;">{{ current_record.name }}</a>
+          </h4>
           <dl class="document-metadata dl-horizontal dl-invert">
             <dt>Name</dt>
             <dd>{{ current_record.name }}</dd>

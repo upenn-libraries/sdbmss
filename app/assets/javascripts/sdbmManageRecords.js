@@ -545,29 +545,19 @@ var load_session = false;
         for (var field in qs) {
             if (Array.isArray(qs[field])) {
                 if (field.indexOf('[]') == -1) {
-                    qs[field + "[]"] = qs[field]
-                    delete qs[field]
+                    qs[field + "[]"] = qs[field];
+                    delete qs[field];
                 }
             }
         }
 
         return URI(manageRecords.getSearchURL('csv')).search(qs);
-    }
+    };
 
     SDBM.ManageRecords.prototype.exportCSV = function() {
         var t = this;
-        dataConfirmModal.confirm({
-            title: 'Confirm',
-            text: 'Would you like to download the current search results as a CSV file?',
-            commit: 'Yes',
-            cancel: 'Cancel',
-            zIindex: 10099,
-            onConfirm: function() { 
-                var url = t.getCSVSearchUrl();
-                exportCSV(url);
-            },
-            onCancel:  function() { }
-        });
+        var url = t.getCSVSearchUrl();
+        exportCSV(url);
     };
     
 }());

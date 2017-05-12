@@ -41,9 +41,58 @@ class CatalogController < ApplicationController
       format.atom {redirect_to feed_path(format: :rss) }
       format.html { super }
       format.json { super }
-      format.csv { super }
+      format.csv { 
+        if current_user.downloads.count >= 5
+          render json: {error: 'at limit'}
+          return
+        else
+          @d = Download.create({filename: "entries.csv", user_id: current_user.id})
+          CatalogController.new.delay.do_csv_search(params, search_params_logic, @d)
+          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count} 
+        end
+      }
     end
     #puts "********* #{current_search_session.inspect} *************"
+  end
+
+  def do_csv_search(params, search_params_logic, download)
+    # merge per-page params
+
+    page = 1
+    
+    objects = []
+    filename = download.filename
+    user = download.user
+    id = download.id
+    path = "/tmp/#{id}_#{user}_#{filename}"
+    headers = nil
+    
+    loop do
+      (@response, @document_list) = search_results(params.merge({:page => page, :per_page => 100}), search_params_logic)
+      #s = do_search(params.merge({:limit => 300, :offset => offset}))
+      page += 1
+      ids = @response.response["docs"].map { |doc| doc["entry_id"] }
+      #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
+      objects = Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash }
+      break if objects.first.nil?
+      csv_file = CSV.open(path, "ab") do |csv|
+        if headers.nil? && objects.first
+          headers = objects.first.keys
+          csv << headers
+        end
+        objects.each do |r|
+          csv << r.values 
+        end
+      end
+    end
+
+    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+      zipfile.add(filename, path)
+    end
+
+    File.delete(path) if File.exist?(path)
+
+    download.update({status: 1, filename: "#{filename}.zip"})
   end
 
   # This override sets username field when devise creates the guest

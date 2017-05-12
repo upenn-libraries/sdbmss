@@ -108,7 +108,7 @@ module SolrSearchable
     filters = filters_for_search(params)
     dates = dates_for_search(params)
     params = params_for_search(params)
-
+    
     s = self.search do
       
       fulltext_search = lambda { |p, o| 

@@ -59,10 +59,12 @@
       font-size: 72px;
       color: #222;
       line-height: 54px;
+      letter-spacing: -2px;
+      font-weight: bold;
     }
     .stats {
-      font-size: 100px;
-      line-height: 80px;
+      font-size: 32px;
+      line-height: 30px;
       color: darksalmon;
       font-weight: bold;
       font-variant: small-caps;
@@ -73,6 +75,14 @@
       font-size: 72px;
       line-height: 56px;
       padding-bottom: 15px;
+      color: white;
+      background: #333;
+      border: none;
+    }
+    .btn-special-sm {
+      font-size: 14px;
+      line-height: 14px;
+      padding-bottom: 4px;
     }
   </style>
 <% end %>
@@ -81,15 +91,15 @@
   <%= render partial: "breadcrumbs" %>
 <% end %>
 <div class="row">
-  <div class="col-sm-7">
+  <div class="col-sm-1"></div>
+  <div class="col-sm-5">
     <!--
     <div id="stats" style="width: 100%; height: 500px; margin-bottom: 10px;"></div>-->
     <div class="text-right huge">the</div>
-    <div class="text-right huge">De Ricci</div>
-    <div class="text-center huge">Digitized</div>
-    <div class="text-left huge">Archive</div>
-    <div class="text-center huge" style="letter-spacing: 16px; font-variant: small-caps; font-weight: bold; color: white; background: #222;">game</div>
-    <div class="stats text-right">
+    <div class="text-right huge">de ricci</div>
+    <div class="text-center huge">digitized</div>
+    <div class="text-left huge" style="margin-bottom: 25px;">archive</div>
+    <div class="stats text-left">
       <% players = DericciGame.select(:created_by_id).distinct.count %>
       <%= players %> <%= "Player".pluralize(players) %>
     </div>
@@ -99,13 +109,14 @@
     <% links = DericciLink.group(:dericci_record_id, :name_id).sum(:reliability) %>
     <% reliable = links.select{ |k, v| v >= 4 }.count %>
     <% possible = links.select{ |k, v| v >= 0 && v < 4 }.count %>
-    <div class="huge text-center" style="background: darkseagreen; color: white; font-variant: small-caps; font-size: 48px;">
-      <%= reliable %> Confirmed <%= "Links".pluralize(reliable) %> Created
+    <div class="stats text-center" style="color: darkseagreen;">
+      <%= reliable %> Confirmed <%= "Links".pluralize(reliable) %>
     </div>
-    <div class="huge text-center bg-info text-info" style="font-variant: small-caps; font-size: 48px;">
-      <%= possible %> Possible <%= "Links".pluralize(possible) %> Created
+    <div class="stats text-right" style="color: #00BCD4;">
+      <%= possible %> Possible <%= "Links".pluralize(possible) %>
     </div>
   </div>
+  <div class="col-sm-1"></div>
   <div class="col-sm-5 text-center">
     <a href="/dericci_games/new" class="btn btn-default btn-special text-center">
       <div class="glyphicon glyphicon-tower" style="font-size: 72px; display: block; margin: 15px 0px;"></div>
@@ -114,23 +125,27 @@
     </a><br>
     <h3>My Current Games</h3>
     <table class="table table-responsive">
-      <thead>
-        <tr>
-          <td></td>
-          <td>Completed</td>
-          <td>Skipped</td>
-        </tr>
-      </thead>
       <tbody>
-        <% if @games.each do |game| %>
+        <% if @games.reverse.each do |game| %>
           <tr>
             <td>
-              <%= link_to(dericci_game_path(game), class: 'btn btn-default btn-sm') do %>
+              <%= link_to(dericci_game_path(game), class: 'btn btn-default btn-special btn-special-sm btn-sm') do %>
                 <span class="glyphicon glyphicon-tower"></span>  <%= game.created_at.to_formatted_s(:long) %>
               <% end %>
             </td>
-            <td class='bg-success'><%= game.completed.to_i %>%</td>
-            <td class='bg-warning'><%= game.skipped.to_i %>%</td>
+            <td>
+              <div class="progress">
+                <div class="progress-bar progress-bar-success" role="progressbar" style="width:<%= game.completed.to_i %>%; min-width: 15%; max-width: 85%;">
+                  <%= game.completed.to_i %>% Completed
+                </div>
+                <div class="progress-bar progress-bar-warning" role="progressbar" style="width:<%= game.skipped.to_i %>%; min-width: 15%; max-width: 85%;">
+                  <%= game.skipped.to_i %>% Skipped
+                </div>
+                <% if game.skipped.to_i + game.completed.to_i <= 0 %>
+                  <span class="text-muted">Not started</span>
+                <% end %>
+              </div>
+            </td>
           </tr>
         <% end.empty? %>
           <tr>

@@ -24,49 +24,58 @@ function addNotification (message, type, permanent) {
       notification.fadeOut('slow', function () {
         notification.remove();
       });
-    }, 10000)
+    }, 10000);
   } // fade out after ten seconds;
 }
 
 function exportCSV(url) {
-  $.get(url).done(function (e) {
-      if (e.error) {
-          if (e.error == "at limit") {
-              addNotification("You have reached your export limit.  Download or delete some of your exports <a href='/downloads/'>here</a>.", "danger");
-          }
-          return;
-      }
-
-      var myDownloadComplete = false;
-      $('#user-nav a').css({color: 'green'});
-      addNotification("CSV Export is being prepared...", "info");
-      var download = JSON.parse(e);
-      var url = "/downloads/" + download.id;
-      var count = 0;
-      var interval = setInterval( function () {
-          $.ajax({url: url, data: {ping: true}}).done( function (r) {
-              //window.location = url;
-              if (r != "in progress" && !myDownloadComplete) {
-                  addNotification(download.filename + " is ready - <a href='" + url + "'>download file</a>", "success", true);
-                  $('#user-nav a').css({color: ''});
-                  $('#downloads-count').text(download.count);
-                  window.clearInterval(interval);
-                  myDownloadComplete = true;
-              } else {
-                  count += 1;
+  dataConfirmModal.confirm({
+    title: 'Download CSV?',
+    text: 'Are you sure you would like to download your current search as a CSV file?  It may take some time.',
+    commit: 'Yes',
+    cancel: 'Cancel',
+    zIindex: 10099,
+    onConfirm: function() {
+      $.get(url).done(function (e) {
+          if (e.error) {
+              if (e.error == "at limit") {
+                  addNotification("You have reached your export limit.  Download or delete some of your exports <a href='/downloads/'>here</a>.", "danger");
               }
+              return;
+          }
 
-              if (count > 1000) window.clearInterval(interval);                    
-          }).error( function (r) {
-              console.log('error', r);
-              window.clearInterval(interval);
-          });
-      }, 1000);
-  }).error( function (e) {
-      console.log('error', e);
-  })
-};
+          var myDownloadComplete = false;
+          $('#user-nav a').css({color: 'green'});
+          addNotification("CSV Export is being prepared...", "info");
+          var download = JSON.parse(e);
+          var url = "/downloads/" + download.id;
+          var count = 0;
+          var interval = setInterval( function () {
+              $.ajax({url: url, data: {ping: true}}).done( function (r) {
+                  //window.location = url;
+                  if (r != "in progress" && !myDownloadComplete) {
+                      addNotification(download.filename + " is ready - <a href='" + url + "'>download file</a>", "success", true);
+                      $('#user-nav a').css({color: ''});
+                      $('#downloads-count').text(download.count);
+                      window.clearInterval(interval);
+                      myDownloadComplete = true;
+                  } else {
+                      count += 1;
+                  }
 
+                  if (count > 1000) { window.clearInterval(interval); }
+              }).error( function (r) {
+                  console.log('error', r);
+                  window.clearInterval(interval);
+              });
+          }, 1000);
+      }).error( function (e) {
+          console.log('error', e);
+      });
+    },
+    onCancel:  function() { }
+  });
+}
 
 $(document).ready(bindRemoteAjaxCallback);
 
