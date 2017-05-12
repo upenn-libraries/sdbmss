@@ -2873,8 +2873,8 @@ var BOOKMARK_SCOPE;
     }
 
     // should this be fixed, eventually?  is there any reason for this to be here, instead of hard-coded?
-    $scope.tabs = ["Entry", "Manuscript", "Name", "Source", "De Ricci"];
-    $scope.all_bookmarks = {Entry: [], Manuscript: [], Name: [], Source: [], De_Ricci: []};
+    $scope.tabs = ["Entry", "Manuscript", "Name", "Source", "DericciRecord"];
+    $scope.all_bookmarks = {Entry: [], Manuscript: [], Name: [], Source: [], DericciRecord: []};
 
     // load tag from url
     /*if (window.location.search && window.location.search.indexOf('tag=') != -1) {

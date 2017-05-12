@@ -21,11 +21,11 @@
   </div>
   <div class="col-sm-12">
     <ul class="nav nav-tabs">
-      <li class="active"><a href="#Entry" data-toggle="tab">Entries</a></li>
-      <li><a href="#Manuscript" data-toggle="tab">Manuscript Records</a></li>
-      <li><a href="#Source" data-toggle="tab">Sources</a></li>
-      <li><a href="#Name" data-toggle="tab">Names</a></li>
-      <li><a href="#DericciRecord" data-toggle="tab">De Ricci Record</a></li>
+      <li class="active"><a href="#Entry" data-toggle="tab">Entries <span class="badge">{{ all_bookmarks_display["Entry"].length }}</span></a></li>
+      <li><a href="#Manuscript" data-toggle="tab">Manuscript Records <span class="badge">{{ all_bookmarks_display["Manuscript"].length }}</span></a></li>
+      <li><a href="#Source" data-toggle="tab">Sources <span class="badge">{{ all_bookmarks_display["Source"].length }}</span></a></li>
+      <li><a href="#Name" data-toggle="tab">Names <span class="badge">{{ all_bookmarks_display["Name"].length }}</span></a></li>
+      <li><a href="#DericciRecord" data-toggle="tab">De Ricci Record <span class="badge">{{ all_bookmarks_display["DericciRecord"].length }}</span></a></li>
       <li class="pull-right">
         <span class="input-group">
           <input type="text" class="form-control" name="tag-search" placeholder="Filter By Tag..." size=32 ng-model="search_term" ng-keyup="$event.keyCode == 13 && searchTag(search_term)">
@@ -41,7 +41,7 @@
     <div class="tab-content">
       <div class="tab-pane fade" ng-class="{'in active' : name == 'Entry'}" id="{{ name }}" ng-repeat="(name, bookmarks) in all_bookmarks_display" style="padding-top: 10px;">
         
-        <p class="text-muted text-center">You have {{ bookmarks.length }} {{ name }} bookmark(s) of this type
+        <p class="text-muted text-center">You have {{ bookmarks.length }} bookmark{{ bookmarks.length == 1 ? '' : 's' }} of this type
           <span ng-if="tagSearch && tagSearch.length > 0"> with the tag <span class="btn btn-primary btn-xs" ng-click="searchTag(tagSearch)">{{ tagSearch }}</span></span>
         </p>
 

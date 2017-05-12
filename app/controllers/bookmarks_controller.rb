@@ -14,7 +14,7 @@ class BookmarksController < ApplicationController
     else
       @bookmarks = current_user.bookmarks.all
     end
-    @bookmarks_sorted = {'Entry' => [], 'Source' => [], 'Manuscript' => [], 'Name' => [], 'De Ricci' => []}
+    @bookmarks_sorted = {'Entry' => [], 'Source' => [], 'Manuscript' => [], 'Name' => [], 'DericciRecord' => []}
     @bookmarks.each do |bookmark|
       if bookmark.document.nil?
       elsif bookmark.document_type == nil
@@ -61,7 +61,7 @@ class BookmarksController < ApplicationController
     else
       @bookmarks = current_user.bookmarks.all
     end
-    @bookmarks_sorted = {'Entry' => [], 'Source' => [], 'Manuscript' => [], 'Name' => []}
+    @bookmarks_sorted = {'Entry' => [], 'Source' => [], 'Manuscript' => [], 'Name' => [], 'DericciRecord' => []}
     @bookmarks.each do |bookmark|
       if bookmark.document_type == nil
       elsif !bookmark.document

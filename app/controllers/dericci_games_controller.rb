@@ -19,8 +19,8 @@ class  DericciGamesController < ApplicationController
   def new
     @game = DericciGame.create!(created_by: current_user)
 
-    # this is quite the query!
-    @records = DericciRecord.where("(id IN (SELECT dericci_record_id from (SELECT * FROM dericci_links GROUP BY dericci_record_id HAVING sum(reliability) < 4) A where A.created_by_id <> #{current_user.id})) OR ((id NOT IN (SELECT dericci_record_id FROM dericci_links WHERE true)))").limit(20).order("RAND()")
+    # this is quite the query! -> and quite slow! but it should limit things correctly
+    @records = DericciRecord.where("(id IN (SELECT dericci_record_id from (SELECT * FROM dericci_links GROUP BY dericci_record_id, name_id HAVING sum(reliability) < 4) A where A.created_by_id <> #{current_user.id})) OR ((id NOT IN (SELECT dericci_record_id FROM dericci_links WHERE true)))").limit(20).order("RAND()")
     puts @records.count
     @game.dericci_game_records.create!(@records.map{ |r| {dericci_record: r}})
     redirect_to dericci_game_path(@game)
