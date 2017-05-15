@@ -37,7 +37,7 @@
                 <div class="user-info">
                   <span class="dropdown">
                     <a href="" class="dropdown-toggle" data-toggle="dropdown" style="color: white;">
-                      <%= current_user.to_s %>
+                      <%= @user.to_s %>
                       <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
@@ -48,7 +48,7 @@
                       <% end %>                  
                     </ul>
                   </span><br>
-                  <span class="text-muted" style="color: #eee;" sdbm-tooltip="user_levels">User Level: <em><%= current_user.role %></em></span>
+                  <span class="text-muted" style="color: #eee;" sdbm-tooltip="user_levels">User Level: <em><%= @user.role %></em></span>
                 </div>
             </div>
         </div>
