@@ -92,12 +92,12 @@
             </div>
             
         <% end.empty? %>
-            <p class="text-muted">This name is not linked to any records in the De Ricci Archives.</p>
+            <p class="text-muted">This name is not linked to any names in the SDBM Name Authority.</p>
         <% end %>
       </dd>
     </dl>
 
-
+    <%= render partial: "comments/show_all", locals: {comments: @record.comments.where(public: true), record: @record} %>
     <%# render partial: "show", locals: {record: @record} %>
   </div>
   <div class="col-sm-7">

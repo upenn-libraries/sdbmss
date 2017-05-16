@@ -96,7 +96,7 @@ class EntriesController < SearchableAuthorityController
       if current_user.downloads.count >= 5
         render json: {error: 'at limit'}
         return
-      end      
+      end   
       @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv", user_id: current_user.id})
 
       Entry.delay.do_csv_search(params, @d)

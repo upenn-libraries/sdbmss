@@ -1,5 +1,7 @@
 class DericciRecordsController < ApplicationController
 
+  before_action :set_model, only: [:show, :edit, :update, :destroy]
+
   def index
     @count = params[:limit] ? params[:limit].to_i : 20
     @page = params[:page] ? params[:page].to_i : 0
@@ -14,7 +16,24 @@ class DericciRecordsController < ApplicationController
   end
 
   def show
-    @record = DericciRecord.find(params[:id]) 
+  end
+
+  def edit
+  end
+
+  def update
+    @record.update(dericci_record_params)
+    redirect_to dericci_record_path(@record)
+  end
+
+  private
+
+  def set_model
+    @record = DericciRecord.find(params[:id])
+  end
+
+  def dericci_record_params
+    params.require(:dericci_record).permit(:name, :url, :size, :cards, :senate_house, :other_info, :place, :dates, :flagged)
   end
 
 end

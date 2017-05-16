@@ -3,6 +3,7 @@ class DericciRecord < ActiveRecord::Base
   has_many :names, through: :dericci_links
 
   has_many :bookmarks, as: :document, dependent: :destroy
+  has_many :comments, as: :commentable
  
   include Watchable 
 

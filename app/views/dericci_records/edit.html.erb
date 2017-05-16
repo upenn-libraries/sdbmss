@@ -1,0 +1,75 @@
+<% content_for :head do %>
+  <script type="text/javascript">
+    $(document).ready( function() {
+      $('#url-input').change(function (e) {
+        $("#dericci_record_<%= @record.id %>_preview").attr('src', $('input[name="dericci_record[url]"]').val());
+      });
+    });
+  </script>
+  <style>
+    .document-metadata dd {
+      border: none;
+    }
+  </style>
+<% end %>
+
+<% content_for :control_tools do %>
+  <%= render partial: "nav/bookmark_watch", locals: {model: @record} %>
+  <% if (s = Source.where(title: "De Ricci Digitized Archive").first) %>
+    <li>
+      <%= link_to new_entry_path(source_id: s.id, url: request.original_url ) do %>
+        <span class="glyphicon glyphicon-plus"></span> Add Entry Based on De Ricci Record
+      <% end %>
+    </li>
+  <% end %>
+<% end %>
+
+<% content_for :breadcrumbs do %>
+  <%= render partial: "dericci_games/breadcrumbs" %>
+<% end %>
+<div class="row">
+  <div class="col-sm-5">
+    <h3>Dericci Record <%= @record.id %></h3>
+    <%= form_for @record do |f| %>
+    <dl class="document-metadata dl-horizontal dl-invert">
+      <dt>Name</dt>
+      <dd><%= f.text_field :name, class: 'form-control' %></dd>
+    
+      <dt>Dates</dt>
+      <dd><%= f.text_field :dates, class: 'form-control' %></dd>
+
+      <dt>Place</dt>
+      <dd><%= f.text_field :place, class: 'form-control' %></dd>
+ 
+      <dt>PDF</dt>
+      <dd><%= f.text_field :url, class: 'form-control', id: 'url-input' %></dd>
+
+      <dt>Number of Cards</dt>
+      <dd><%= f.text_field :cards, class: 'form-control' %></dd>
+      
+      <dt>File Size</dt>
+      <dd><%= f.text_field :size, class: 'form-control' %></dd>
+      
+      <dt>Other Info</dt>
+      <dd><%= f.text_field :other_info, class: 'form-control' %></dd>
+
+      <dt>Senate House ID#</dt>
+      <dd><%= f.text_field :senate_house, class: 'form-control' %></dd>
+      
+      <dt>
+        Flagged 
+      </dt>
+      <dd><%= f.check_box :flagged, class: 'form-control' %></dd>
+
+      <dt></dt>
+      <dd><%= f.submit "Update Dericci Record", class: 'form-control' %></dd>
+    </dl>
+    <% end %>
+
+    <%# render partial: "comments/show_all", locals: {comments: @record.comments.where(public: true), record: @record} %>
+    <%# render partial: "show", locals: {record: @record} %>
+  </div>
+  <div class="col-sm-7">
+    <iframe src="<%= @record.url %>" frameborder="0" style="width: 100%; height: 600px;" id="dericci_record_<%= @record.id %>_preview"></iframe>
+  </div>
+</div>

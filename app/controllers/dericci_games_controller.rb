@@ -63,7 +63,7 @@ class  DericciGamesController < ApplicationController
 
   def game_params
     p = params.require(:dericci_game).permit(
-      :skipped, :completed, :dericci_records_attributes => [:id, :dericci_links_attributes => [:id, :name_id, :other_info, :_destroy]])
+      :skipped, :completed, :dericci_records_attributes => [:id, :flagged, :dericci_links_attributes => [:id, :name_id, :other_info, :_destroy]])
     # this incredibly inelegant solution is here because for some reason deep_merge would not do what it was supposed to...
     p[:dericci_records_attributes].each do |dra|
       dra[:dericci_links_attributes].each do |dla|

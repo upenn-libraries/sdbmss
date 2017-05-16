@@ -387,6 +387,9 @@ var BOOKMARK_SCOPE;
         modal.result.then( function (results) {
           model.skipped = false;
           if ($scope.current_record.dericci_links.filter(function (dl) { return dl.name_id == $scope.name.id; }).length <= 0) {
+            for (var i = 0; i < $scope.current_record.dericci_links.length; i++) {
+              $scope.removeLink($scope.current_record, $scope.current_record.dericci_links[i]);
+            }
             $scope.current_record.dericci_links.push({name_id: $scope.name.id, name: $scope.name.name});
             $scope.setProgress();
           } else {
