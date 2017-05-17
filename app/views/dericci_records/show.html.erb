@@ -43,44 +43,34 @@
       <dt>SDBM Name Authority</dt>
       <dd>
         <% if @record.dericci_links.group_by(&:name_id).each do |name_id, dericci_links| %>
-            <% reliability = [(100 * (dericci_links.sum(&:reliability) / 4.0)).to_i, 100].min %>
-            <% name = dericci_links.first.name %>
-
-            <div class="progress" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
-              <div class="progress-bar progress-bar-<%= reliability >= 100 ? 'success' : 'info' %> progress-bar-striped" role="progressbar"
-              aria-valuenow="<%= reliability %>" aria-valuemin="0" aria-valuemax="100" style="width:<%= reliability %>%">
-                <%= name.name %> <%= reliability %>%
-              </div>
+            <% name = dericci_links.first.name %>            
+            <div class="btn btn-info btn-xs" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
+              <%= name.name %> <span class="badge"><%= dericci_links.count %></span>
             </div>
 
             <div class="modal fade" id="<%= name.public_id %>">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                  <div class="modal-header">
-                    <span class="h5 modal-title">
-                      <%= link_to name_path(name) do %>
-                        <%= name.public_id %>
-                      <% end %>                      
-                    </span>
+                  <div class="modal-body">
                     <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
                       <span aria-hidden="true">&times;</span>
                     </button>
-                  </div>
-                  <div class="modal-body">
                     <p>This De Ricci record has been linked to <%= link_to name.name, name_path(name) %> by </p>
                       <% dericci_links.each do |dl| %>
-                          <span>
-                            <span class="label label-info"><%= dl.reliability * 25 %>%</span>
+                          <span class='btn btn-xs btn-default'>
                             <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
-                            <% if dl.other_info.present? %>
-                                <em class='text-muted'>(<%= dl.other_info %>)</em>
-                            <% end %>
-                          </span><br>
+                          </span>
+                          <% if dl.other_info.present? %>
+                            <span class='text-muted'> <%= dl.other_info %></span>
+                          <% else %>
+                            <span class="text-muted"> no additional information provided</span>
+                          <% end %>
+                          <br>
                       <% end %>                    
                   </div>
                   <div class="modal-footer text-center">
-                    <% if current_user && current_user.role != "contributor" && reliability < 100 && !dericci_links.map(&:created_by_id).include?(current_user.id) %>
-                        <%= link_to "Confirm Link", dericci_links_path(dericci_record_id: @record.id, name_id: name.id, from_record: true), method: :post, class: "btn btn-default" %>
+                    <% if current_user && current_user.role != "contributor" && !@record.verified_id %>
+                        <%= link_to "Confirm Link", dericci_record_path(:dericci_record => {id: @record.id, verified_id: name.id}), method: :put, class: "btn btn-default" %>
                     <% end %>
 
                     <% if current_user && current_user.role == "admin" %>

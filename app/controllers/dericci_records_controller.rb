@@ -33,7 +33,7 @@ class DericciRecordsController < ApplicationController
   end
 
   def dericci_record_params
-    params.require(:dericci_record).permit(:name, :url, :size, :cards, :senate_house, :other_info, :place, :dates, :flagged)
+    params.require(:dericci_record).permit(:name, :url, :size, :cards, :senate_house, :other_info, :place, :dates, :flagged, :verified_id)
   end
 
 end

@@ -20,8 +20,8 @@ class  DericciGamesController < ApplicationController
     @game = DericciGame.create!(created_by: current_user)
 
     # this is quite the query! -> and quite slow! but it should limit things correctly
-    @records = DericciRecord.where("(id IN (SELECT dericci_record_id from (SELECT * FROM dericci_links GROUP BY dericci_record_id, name_id HAVING sum(reliability) < 4) A where A.created_by_id <> #{current_user.id})) OR ((id NOT IN (SELECT dericci_record_id FROM dericci_links WHERE true)))").limit(20).order("RAND()")
-    puts @records.count
+    #@records = DericciRecord.where("(id IN (SELECT dericci_record_id from (SELECT * FROM dericci_links GROUP BY dericci_record_id, name_id HAVING sum(reliability) < 4) A where A.created_by_id <> #{current_user.id})) OR ((id NOT IN (SELECT dericci_record_id FROM dericci_links WHERE true)))").limit(20).order("RAND()")
+    @records = DericciRecord.where({flagged: false, verified_id: nil}).order("cards desc").limit(15)
     @game.dericci_game_records.create!(@records.map{ |r| {dericci_record: r}})
     redirect_to dericci_game_path(@game)
   end
@@ -63,7 +63,7 @@ class  DericciGamesController < ApplicationController
 
   def game_params
     p = params.require(:dericci_game).permit(
-      :skipped, :completed, :dericci_records_attributes => [:id, :flagged, :dericci_links_attributes => [:id, :name_id, :other_info, :_destroy]])
+      :skipped, :completed, :flagged, :dericci_records_attributes => [:id, :flagged, :dericci_links_attributes => [:id, :name_id, :other_info, :_destroy]])
     # this incredibly inelegant solution is here because for some reason deep_merge would not do what it was supposed to...
     p[:dericci_records_attributes].each do |dra|
       dra[:dericci_links_attributes].each do |dla|

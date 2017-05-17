@@ -91,6 +91,9 @@
                 <div class="progress-bar progress-bar-warning" role="progressbar" style="width:<%= game.skipped.to_i %>%; min-width: 15%; max-width: 85%;">
                   <%= game.skipped.to_i %>% Skipped
                 </div>
+                <div class="progress-bar progress-bar-danger" role="progressbar" style="width:<%= game.flagged.to_i %>%; min-width: 15%; max-width: 85%;">
+                  <%= game.flagged.to_i %>% Flagged
+                </div>
                 <% if game.skipped.to_i + game.completed.to_i <= 0 %>
                   <span class="text-muted">Not started</span>
                 <% end %>
