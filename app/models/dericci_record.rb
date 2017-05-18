@@ -2,6 +2,8 @@ class DericciRecord < ActiveRecord::Base
   has_many :dericci_links
   has_many :names, through: :dericci_links
 
+  belongs_to :verified, class_name: "Name"
+
   has_many :bookmarks, as: :document, dependent: :destroy
   has_many :comments, as: :commentable
  

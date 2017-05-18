@@ -53,6 +53,7 @@ class Ability
     if ['editor', 'super_editor', 'admin'].member? user.role
       can :unlink, :all
       can :edit, Manuscript
+      can :manage, DericciRecord
 
       cannot :deprecate, :all
       #cannot [:edit, :destroy, :merge], [Source, Entry]

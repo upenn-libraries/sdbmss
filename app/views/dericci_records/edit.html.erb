@@ -22,6 +22,13 @@
       <% end %>
     </li>
   <% end %>
+  <% if can? :manage, DericciRecord %>
+  <li>
+    <%= link_to(new_dericci_record_path) do %>
+      <span class="glyphicon glyphicon-plus"></span> New De Ricci Record
+    <% end %>
+  </li>
+  <% end %>
 <% end %>
 
 <% content_for :breadcrumbs do %>
@@ -29,7 +36,7 @@
 <% end %>
 <div class="row">
   <div class="col-sm-5">
-    <h3>Dericci Record <%= @record.id %></h3>
+    <h3><%= !@record.id ? "New" : "" %> De Ricci Record <%= @record.id %></h3>
     <%= form_for @record do |f| %>
     <dl class="document-metadata dl-horizontal dl-invert">
       <dt>Name</dt>
@@ -56,18 +63,19 @@
       <dt>Senate House ID#</dt>
       <dd><%= f.text_field :senate_house, class: 'form-control' %></dd>
       
+      <dt>Verified ID#</dt>
+      <dd><%= f.text_field :verified_id, class: 'form-control' %></dd>
+      
       <dt>
         Flagged 
       </dt>
       <dd><%= f.check_box :flagged, class: 'form-control' %></dd>
 
       <dt></dt>
-      <dd><%= f.submit "Update Dericci Record", class: 'form-control' %></dd>
+      <dd><%= f.submit "#{@record.id ? 'Update' : 'Save New'} De Ricci Record", class: 'form-control' %></dd>
     </dl>
     <% end %>
 
-    <%# render partial: "comments/show_all", locals: {comments: @record.comments.where(public: true), record: @record} %>
-    <%# render partial: "show", locals: {record: @record} %>
   </div>
   <div class="col-sm-7">
     <iframe src="<%= @record.url %>" frameborder="0" style="width: 100%; height: 600px;" id="dericci_record_<%= @record.id %>_preview"></iframe>

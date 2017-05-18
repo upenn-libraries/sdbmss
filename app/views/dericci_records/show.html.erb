@@ -1,3 +1,8 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "extras" %>
+  <%= javascript_include_tag "extras" %>
+<% end %>
+
 <% content_for :control_tools do %>
   <%= render partial: "nav/bookmark_watch", locals: {model: @record} %>
   <% if (s = Source.where(title: "De Ricci Digitized Archive").first) %>
@@ -7,41 +12,76 @@
       <% end %>
     </li>
   <% end %>
+
+  <% if can? :manage, DericciRecord %>
+  <li>
+    <%= link_to(new_dericci_record_path) do %>
+      <span class="glyphicon glyphicon-plus"></span> New De Ricci Record
+    <% end %>
+  </li>
+  <% end %>
 <% end %>
 
 <% content_for :breadcrumbs do %>
   <%= render partial: "dericci_games/breadcrumbs" %>
 <% end %>
 <div class="row">
+  <% if @record.flagged %>
+    <div class="col-sm-12">
+      <div class="alert alert-danger">
+        <span class="glyphicon glyphicon-flag pull-right"></span>
+        This De Ricci Record has been flagged as needing further admin attention.  It may contain information on multiple distinct entities.
+      </div>
+    </div>
+  <% end %>
   <div class="col-sm-5">
+    <%= hidden_field_tag :record_id, @record.id, id: "record-id" %>
     <h3>Dericci Record <%= @record.id %></h3>
-    <dl class="document-metadata dl-horizontal dl-invert">
-      <dt>Name</dt>
-      <dd><%= @record.name %></dd>
+    <table class="table table-responsive sdbm-table">
+      <tr><td>Name</td>
+      <td><%= @record.name %></td></tr>
     
-      <dt>Dates</dt>
-      <dd><%= @record.dates || "Unknown" %></dd>
+      <tr><td>Dates</td>
+      <td><%= @record.dates || "Unknown" %></td></tr>
 
-      <dt>Place</dt>
-      <dd><%= @record.place || "Unknown" %></dd>
+      <tr><td>Place</td>
+      <td><%= @record.place || "Unknown" %></td></tr>
  
-      <dt>PDF</dt>
-      <dd><%= link_to "Hosted at the UK Senate House Archives", @record.url %></dd>
+      <tr><td>PDF</td>
+      <td><%= link_to "Hosted at the UK Senate House Archives", @record.url %></td></tr>
 
-      <dt>Number of Cards</dt>
-      <dd><%= @record.cards || "Unknown" %></dd>
+      <tr><td>Number of Cards</td>
+      <td><%= @record.cards || "Unknown" %></td></tr>
       
-      <dt>File Size</dt>
-      <dd><%= @record.size || "Unknown" %></dd>
+      <tr><td>File Size</td>
+      <td><%= @record.size || "Unknown" %></td></tr>
       
-      <dt>Other Info</dt>
-      <dd><%= @record.other_info || "None" %></dd>
+      <tr><td>Other Info</td>
+      <td><%= @record.other_info || "None" %></td></tr>
 
-      <dt>Senate House ID#</dt>
-      <dd><%= @record.senate_house || "Unknown" %></dd>
+      <tr><td>Senate House ID#</td>
+      <td><%= @record.senate_house || "Unknown" %></td></tr>
 
-      <dt>SDBM Name Authority</dt>
-      <dd>
+      <tr><td>Verified Name</td>
+      <td ng-controller="DericciRecordCtrl">        
+        <% if @record.verified_id %>
+          <%= link_to @record.verified.public_id, name_path(@record.verified), class: 'btn btn-xs btn-default' %>
+        <% elsif can? :edit, @record %>
+          <div href="" ng-if="!name || !name.name" ng-click="findName(record)" class="btn btn-default btn-xs">Find Verified Name <span class="glyphicon glyphicon-plus"></span></div>
+          <div class="btn-group" ng-if="name && name.name">
+            <a href="" class="btn btn-warning btn-xs">{{ name.name }}</a>
+            <a href="" class="btn btn-default btn-xs" ng-click="remove()"><span class='glyphicon glyphicon-remove'></span></a>
+            <a href="" class="btn btn-success btn-xs" ng-click="save()">Save</a>
+          </div>
+        <% else %>
+          <span class="text-muted">A verified SDBM Name has not been identified yet.</span>
+        <% end %>
+      </td></tr>
+
+      <tr><td>
+        Possible Names
+      </td>
+      <td>
         <% if @record.dericci_links.group_by(&:name_id).each do |name_id, dericci_links| %>
             <% name = dericci_links.first.name %>            
             <div class="btn btn-info btn-xs" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
@@ -84,8 +124,8 @@
         <% end.empty? %>
             <p class="text-muted">This name is not linked to any names in the SDBM Name Authority.</p>
         <% end %>
-      </dd>
-    </dl>
+      </td></tr>
+    </table>
 
     <%= render partial: "comments/show_all", locals: {comments: @record.comments.where(public: true), record: @record} %>
     <%# render partial: "show", locals: {record: @record} %>
@@ -94,3 +134,4 @@
     <iframe src="<%= @record.url %>" frameborder="0" style="width: 100%; height: 600px;"></iframe>
   </div>
 </div>
+<%= render "dericci_games/select_name_authority" %>

@@ -21,7 +21,7 @@ class  DericciGamesController < ApplicationController
 
     # this is quite the query! -> and quite slow! but it should limit things correctly
     #@records = DericciRecord.where("(id IN (SELECT dericci_record_id from (SELECT * FROM dericci_links GROUP BY dericci_record_id, name_id HAVING sum(reliability) < 4) A where A.created_by_id <> #{current_user.id})) OR ((id NOT IN (SELECT dericci_record_id FROM dericci_links WHERE true)))").limit(20).order("RAND()")
-    @records = DericciRecord.where({flagged: false, verified_id: nil}).order("cards desc").limit(15)
+    @records = DericciRecord.where.not("id in (?)", DericciLink.where(created_by: current_user).map(&:dericci_record_id)).where({verified_id: nil, flagged: false}).order("cards desc").limit(15)
     @game.dericci_game_records.create!(@records.map{ |r| {dericci_record: r}})
     redirect_to dericci_game_path(@game)
   end

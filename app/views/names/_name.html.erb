@@ -8,19 +8,25 @@
 
     <div class="col-sm-6">
 
-        <h2 class='h2 text-center'><%= name.public_id %></h2>
+        <h3><%= name.public_id %></h3>
 
-        <div class="text-center">
+        <div class="text-center" style="margin-bottom: 5px;">
             <%= render partial: "ratings/rate", locals: {ratable: name} %>
         </div>
 
-        <%= render partial: "main", locals: { name: name } %>
-
-        <dl class="document-metadata dl-horizontal dl-invert">
-            <dt>
-                Dericci Archive     
-            </dt>
-            <dd>
+        <table class="table table-responsive sdbm-table">
+            <%= render partial: "main", locals: { name: name } %>
+    
+            <% if name.dericci_record %>
+            <tr><td>Verified De Ricci</td>
+            <td>
+              <%= link_to name.dericci_record.public_id, dericci_record_path(name.dericci_record), class: 'btn btn-default btn-xs' %>
+            </td></tr>
+            <% end %>
+            <tr><td>
+                Possible De Ricci     
+            </td>
+            <td>
                 <% if name.dericci_links.group_by(&:dericci_record_id).each do |dericci_record_id, dericci_links| %>
 
                     <% reliability = [(100 * (dericci_links.sum(&:reliability) / 4.0)).to_i, 100].min %>
@@ -72,8 +78,8 @@
                 <% end.empty? %>
                     <p class="text-muted">This name is not linked to any records in the De Ricci Archives.</p>
                 <% end %>
-            </dd>
-        </dl>
+            </td></tr>
+        </table>
     </div>
     <div class="col-sm-6">
         

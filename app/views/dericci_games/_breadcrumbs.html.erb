@@ -3,8 +3,12 @@
 <li><%= link_to "Dated Sales", dericci_sales_path %></li>
 <li><%= link_to "De Ricci Digitized Archive", dericci_records_path %></li>
 <% if defined? @record %>
-  <li><%= link_to @record.public_id, dericci_record_path(@record) %></li>
-  <% if can? :edit, @record %>
-    <li><%= link_to "Edit #{@record.public_id}", edit_dericci_record_path(@record) %></li>
+  <% if @record.id %>
+    <li><%= link_to @record.public_id, dericci_record_path(@record) %></li>
+    <% if can? :edit, @record %>
+      <li><%= link_to "Edit #{@record.public_id}", edit_dericci_record_path(@record) %></li>
+    <% end %>
+  <% else %>
+    <li class='active'><%= link_to "New De Ricci Record", new_dericci_record_path %></li>
   <% end %>
 <% end %>

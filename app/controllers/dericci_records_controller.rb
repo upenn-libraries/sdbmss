@@ -16,14 +16,28 @@ class DericciRecordsController < ApplicationController
   end
 
   def show
+    respond_to do |format|
+      format.html {}
+      format.json { render json: @record }
+    end
   end
 
   def edit
   end
 
+  def new
+    @record = DericciRecord.new
+    render "edit"
+  end
+
   def update
     @record.update(dericci_record_params)
-    redirect_to dericci_record_path(@record)
+    respond_to do |format|
+      format.html {
+        redirect_to dericci_record_path(@record)        
+      }
+      format.json { render json: {success: true}}
+    end
   end
 
   private

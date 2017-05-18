@@ -62,13 +62,56 @@
 <% content_for :breadcrumbs do %>
   <%= render partial: "breadcrumbs" %>
 <% end %>
+<div class="modal fade" id="instructions">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4><span class="glyphicon glyphicon-question-sign"></span> Welcome to the De Ricci Game!</h4>
+      </div>
+      <div class="modal-body">
+        <p>The <strong>De Ricci Game</strong> invites you to contribute to the database by matching cards from the <strong>De Ricci Digitized Archive</strong> to names in the growing Schoenberg Database Name Authority.  You will be presented with a list of 15 De Ricci records, and will be asked to perform one of the following actions:</p>
+        <div class="row">
+          <div class="col-xs-2 text-right">
+            <span class="glyphicon glyphicon-check lead text-success"></span>
+          </div>
+          <div class="col-xs-10">
+            <p><strong>Link To a Name</strong> - identify a name in the SDBM Name Authority and suggest that the two are linked</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-2 text-right">
+            <span class="glyphicon glyphicon-flag lead text-danger"></span>
+          </div>
+          <div class="col-xs-10">
+            <p><strong>Flag as Needing Review</strong> - notify admin that this record needs to be refined before it can be accurately linked, e.g.</p>
+            <ul>
+              <li>It contains references to multiple possible names, and needs to be broken into several records</li>
+              <li>The names or information contained are not relevant or applicable to names in the SDBM</li>
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-2 text-right">
+            <span class="glyphicon glyphicon-unchecked lead game-skipped"></span>
+          </div>
+          <div class="col-xs-10">
+            <p><strong>Skip Record</strong> - if you are unsure or don't have information to conclusively link or flag a name, skip it!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <input type="hidden" class="hidden" id="game_id" value="<%= @game.id %>">
 <div data-ng-controller="DericciGameCtrl" data-ng-cloak>
   <div class="row" style="margin-bottom: 10px;">
-    <div class="col-sm-10">
+    <div class="col-sm-2">
+      <div class="btn btn-default btn-lg text-center" data-toggle="modal" href="#instructions" data-target="#instructions" style="width: 100%;"><span class="glyphicon glyphicon-question-sign"></span> Help</div>
+    </div>
+    <div class="col-sm-8">
       <div class="progress">
         <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" style="width: {{ progress.complete == 100 ? 90 : progress.complete || 5 }}%">
-          {{ progress.complete }}% Complete
+          {{ progress.complete }}% Linked
         </div>
         <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" style="width: {{ progress.skipped == 100 ? 90 : progress.skipped || 5 }}%">
           {{ progress.skipped }}% Skipped

@@ -1,3 +1,12 @@
+<% content_for :control_tools do %>
+  <% if can? :manage, DericciRecord %>
+  <li>
+    <%= link_to(new_dericci_record_path) do %>
+      <span class="glyphicon glyphicon-plus"></span> New De Ricci Record
+    <% end %>
+  </li>
+  <% end %>
+<% end %>
 <% content_for :breadcrumbs do %>
   <%= render partial: "dericci_games/breadcrumbs" %>
 <% end %>

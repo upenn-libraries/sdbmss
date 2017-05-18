@@ -345,7 +345,40 @@ var BOOKMARK_SCOPE;
         };
     });
 
-    // anchor
+    sdbmApp.controller('DericciRecordCtrl', function ($scope, $http, $modal, $sce) {
+      $scope.record_id = $("#record-id").val();
+      $http.get("/dericci_records/" + $scope.record_id + ".json", {}).then(function (response) {
+        $scope.record = response.data;
+      });
+      $scope.findName = function (model) {
+        $scope.name = {};
+        var modal = $modal.open({
+          templateUrl: "selectNameAuthority.html",
+          controller: "SelectNameAuthorityCtrl",
+          resolve: {
+            recordType: function () { return "names"; },
+            model: function () { return $scope.name; },
+            type: function () { return "is_author"; },
+            base: function () { return model.name; }
+          },
+          size: 'lg',
+          backdrop: false
+        });
+        modal.result.then( function (results) {
+          $scope.record.verified_id = $scope.name.id;
+        });
+      };
+      $scope.save = function () {
+        $http.put('/dericci_records/' + $scope.record_id + '.json', {verified_id: $scope.record.verified_id}).then(function (response) {
+          window.location.reload();
+        });
+      };
+      $scope.remove = function () {
+        $scope.record.verified_id = null;
+        $scope.name = null;
+      };
+    });
+
     sdbmApp.controller("DericciGameCtrl", function ($scope, $http, $modal, $sce) {
       EntryScope = $scope;
       $scope.records = [];
@@ -392,6 +425,8 @@ var BOOKMARK_SCOPE;
               $scope.removeLink($scope.current_record, $scope.current_record.dericci_links[i]);
             }
             $scope.current_record.dericci_links.push({name_id: $scope.name.id, name: $scope.name.name});
+            // remove 'flagged'
+            $scope.current_record.flagged = false;
             $scope.next();
             $scope.setProgress();
           } else {
@@ -414,6 +449,7 @@ var BOOKMARK_SCOPE;
       };
       $scope.flag = function (record) {
         record.flagged = true;
+        record.dericci_links = [];
         $scope.next();
         $scope.setProgress();
       }
