@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170222212923) do
+ActiveRecord::Schema.define(version: 20170518131456) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -84,6 +84,7 @@ ActiveRecord::Schema.define(version: 20170222212923) do
     t.integer  "completed",     limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "flagged",       limit: 4, default: 0
   end
 
   add_index "dericci_games", ["created_by_id"], name: "index_dericci_games_on_created_by_id", using: :btree
@@ -104,15 +105,40 @@ ActiveRecord::Schema.define(version: 20170222212923) do
   add_index "dericci_links", ["created_by_id"], name: "index_dericci_links_on_created_by_id", using: :btree
   add_index "dericci_links", ["updated_by_id"], name: "index_dericci_links_on_updated_by_id", using: :btree
 
+  create_table "dericci_notes", force: :cascade do |t|
+    t.string   "name",         limit: 255
+    t.string   "cards",        limit: 255
+    t.string   "size",         limit: 255
+    t.string   "senate_house", limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.string   "link",         limit: 255
+  end
+
   create_table "dericci_records", force: :cascade do |t|
-    t.string  "name",         limit: 255
-    t.string  "dates",        limit: 255
-    t.string  "place",        limit: 255
-    t.string  "url",          limit: 255
-    t.integer "cards",        limit: 4
-    t.string  "size",         limit: 255
-    t.text    "other_info",   limit: 16777215
-    t.string  "senate_house", limit: 255
+    t.string  "name",          limit: 255
+    t.string  "dates",         limit: 255
+    t.string  "place",         limit: 255
+    t.string  "url",           limit: 255
+    t.integer "cards",         limit: 4
+    t.string  "size",          limit: 255
+    t.text    "other_info",    limit: 16777215
+    t.string  "senate_house",  limit: 255
+    t.boolean "flagged",                        default: false
+    t.integer "created_by_id", limit: 4
+    t.integer "verified_id",   limit: 4
+  end
+
+  add_index "dericci_records", ["created_by_id"], name: "index_dericci_records_on_created_by_id", using: :btree
+
+  create_table "dericci_sales", force: :cascade do |t|
+    t.string   "name",         limit: 255
+    t.string   "cards",        limit: 255
+    t.string   "size",         limit: 255
+    t.string   "senate_house", limit: 255
+    t.string   "link",         limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
   create_table "downloads", force: :cascade do |t|
@@ -159,6 +185,7 @@ ActiveRecord::Schema.define(version: 20170222212923) do
     t.integer  "superceded_by_id",         limit: 4
     t.boolean  "unverified_legacy_record",               default: false
     t.boolean  "confirmed",                              default: false
+    t.boolean  "draft",                                  default: false
   end
 
   add_index "entries", ["approved_by_id"], name: "index_entries_on_approved_by_id", using: :btree
@@ -356,6 +383,7 @@ ActiveRecord::Schema.define(version: 20170222212923) do
     t.integer "record_id",   limit: 4
     t.string  "record_type", limit: 255
     t.integer "group_id",    limit: 4
+    t.boolean "editable",                default: false
   end
 
   create_table "group_users", force: :cascade do |t|
@@ -465,9 +493,9 @@ ActiveRecord::Schema.define(version: 20170222212923) do
 
   create_table "notification_settings", force: :cascade do |t|
     t.integer  "user_id",              limit: 4
-    t.boolean  "on_update"
-    t.boolean  "on_comment"
-    t.boolean  "on_reply"
+    t.boolean  "on_update",                      default: true
+    t.boolean  "on_comment",                     default: true
+    t.boolean  "on_reply",                       default: true
     t.datetime "created_at",                                     null: false
     t.datetime "updated_at",                                     null: false
     t.boolean  "on_message",                     default: true
@@ -580,8 +608,10 @@ ActiveRecord::Schema.define(version: 20170222212923) do
     t.integer  "ratable_id",   limit: 4
     t.string   "ratable_type", limit: 255
     t.string   "user_level",   limit: 255
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
+    t.string   "qualifier",    limit: 255,   default: "confirm"
+    t.text     "reason",       limit: 65535
   end
 
   create_table "replies", force: :cascade do |t|
@@ -707,7 +737,7 @@ ActiveRecord::Schema.define(version: 20170222212923) do
   add_index "sources", ["source_type_id"], name: "index_sources_on_source_type_id", using: :btree
   add_index "sources", ["updated_by_id"], name: "index_sources_on_updated_by_id", using: :btree
 
-  create_table "thredded_categories", force: :cascade, :options => "ENGINE=MyISAM" do |t|
+  create_table "thredded_categories", force: :cascade do |t|
     t.integer  "messageboard_id", limit: 4,   null: false
     t.string   "name",            limit: 191, null: false
     t.string   "description",     limit: 255
@@ -802,7 +832,7 @@ ActiveRecord::Schema.define(version: 20170222212923) do
 
   add_index "thredded_post_notifications", ["post_id", "post_type"], name: "index_thredded_post_notifications_on_post", using: :btree
 
-  create_table "thredded_posts", force: :cascade, :options => "ENGINE=MyISAM" do |t|
+  create_table "thredded_posts", force: :cascade do |t|
     t.integer  "user_id",          limit: 4
     t.text     "content",          limit: 65535
     t.string   "ip",               limit: 255
@@ -862,7 +892,7 @@ ActiveRecord::Schema.define(version: 20170222212923) do
   add_index "thredded_topic_categories", ["category_id"], name: "index_thredded_topic_categories_on_category_id", using: :btree
   add_index "thredded_topic_categories", ["topic_id"], name: "index_thredded_topic_categories_on_topic_id", using: :btree
 
-  create_table "thredded_topics", force: :cascade, :options => "ENGINE=MyISAM" do |t|
+  create_table "thredded_topics", force: :cascade do |t|
     t.integer  "user_id",          limit: 4
     t.integer  "last_user_id",     limit: 4
     t.string   "title",            limit: 255,                 null: false
@@ -983,6 +1013,7 @@ ActiveRecord::Schema.define(version: 20170222212923) do
     t.boolean  "active",                                  default: true
     t.string   "institutional_affiliation", limit: 255
     t.integer  "bookmark_tracker",          limit: 4,     default: 0
+    t.boolean  "backup",                                  default: true
   end
 
   add_index "users", ["created_by_id"], name: "index_users_on_created_by_id", using: :btree
