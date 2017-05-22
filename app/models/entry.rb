@@ -339,7 +339,7 @@ class Entry < ActiveRecord::Base
     sale_buyer = (sale.get_buyers_names if sale && sale.get_buyers.count > 0)
     {
       id: id,
-      manuscript: manuscript ? manuscript.id : nil,
+      manuscript: entry_manuscripts.count > 0 ? entry_manuscripts.map{ |em| {id: em.manuscript_id, relation: em.relation_type} } : nil,
       groups: groups.map{ |group| [group.id, group.name] }.to_s,
       source_date: SDBMSS::Util.format_fuzzy_date(source.date),
       source_title: source.title,
