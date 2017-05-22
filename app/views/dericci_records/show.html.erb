@@ -65,7 +65,9 @@
       <tr><td>Verified Name</td>
       <td ng-controller="DericciRecordCtrl">        
         <% if @record.verified_id %>
-          <%= link_to @record.verified.public_id, name_path(@record.verified), class: 'btn btn-xs btn-default' %>
+          <%= link_to name_path(@record.verified), class: 'btn btn-xs btn-default' do %>
+            <span class="glyphicon glyphicon-queen"></span> <%= @record.verified.name %>
+          <% end %>
         <% elsif can? :edit, @record %>
           <div href="" ng-if="!name || !name.name" ng-click="findName(record)" class="btn btn-default btn-xs">Find Verified Name <span class="glyphicon glyphicon-plus"></span></div>
           <div class="btn-group" ng-if="name && name.name">
@@ -109,10 +111,6 @@
                       <% end %>                    
                   </div>
                   <div class="modal-footer text-center">
-                    <% if current_user && current_user.role != "contributor" && !@record.verified_id %>
-                        <%= link_to "Confirm Link", dericci_record_path(:dericci_record => {id: @record.id, verified_id: name.id}), method: :put, class: "btn btn-default" %>
-                    <% end %>
-
                     <% if current_user && current_user.role == "admin" %>
                         <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id)), method: :delete, class: "btn btn-danger" %>
                     <% end %>

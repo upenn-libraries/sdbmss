@@ -10,7 +10,7 @@
 
         <h3><%= name.public_id %></h3>
 
-        <div class="text-center" style="margin-bottom: 5px;">
+        <div class="text-left" style="margin-bottom: 5px;">
             <%= render partial: "ratings/rate", locals: {ratable: name} %>
         </div>
 
@@ -20,7 +20,9 @@
             <% if name.dericci_record %>
             <tr><td>Verified De Ricci</td>
             <td>
-              <%= link_to name.dericci_record.public_id, dericci_record_path(name.dericci_record), class: 'btn btn-default btn-xs' %>
+              <%= link_to dericci_record_path(name.dericci_record), class: 'btn btn-default btn-xs' do %>
+                <span class="glyphicon glyphicon-queen"></span> <%= name.dericci_record.name %>
+              <% end %>
             </td></tr>
             <% end %>
             <tr><td>
@@ -29,44 +31,33 @@
             <td>
                 <% if name.dericci_links.group_by(&:dericci_record_id).each do |dericci_record_id, dericci_links| %>
 
-                    <% reliability = [(100 * (dericci_links.sum(&:reliability) / 4.0)).to_i, 100].min %>
                     <% record = dericci_links.first.dericci_record %>
 
-                    <div class="progress" data-toggle="modal" data-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
-                      <div class="progress-bar progress-bar-<%= reliability >= 100 ? 'success' : 'info' %> progress-bar-striped" role="progressbar"
-                      aria-valuenow="<%= reliability %>" aria-valuemin="0" aria-valuemax="100" style="width:<%= reliability %>%">
-                        <%= record.name %> <%= reliability %>%
-                      </div>
+                    <div class="btn btn-info btn-xs" data-toggle="modal" data-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
+                      <%= record.name %> <span class="badge"><%= dericci_links.count %></span>
                     </div>
 
                     <div class="modal fade" id="Dericci_<%= record.id %>">
                       <div class="modal-dialog" role="document">
                         <div class="modal-content">
-                          <div class="modal-header">
-                            <span class="h5 modal-title">
-                              <%= link_to dericci_record_path(record) do %>
-                                De Ricci <%= record.id %>
-                              <% end %>                      
-                            </span>
+                          <div class="modal-body">
                             <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                             </button>
-                          </div>
-                          <div class="modal-body">
                             <p>This name has been linked to <%= link_to record.name, dericci_record_path(record) %> by </p>
                               <% dericci_links.each do |dl| %>
-                                    <!-- not working (dropdown I mean) for some reason... -->
-                                    <span><%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
-                                    <% if dl.other_info.present? %>
-                                        <em class='text-muted'>(<%= dl.other_info %>)</em>
-                                    <% end %></span><br>
+                                 <span class='btn btn-xs btn-default'>
+                                    <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
+                                  </span>
+                                  <% if dl.other_info.present? %>
+                                    <span class='text-muted'> <%= dl.other_info %></span>
+                                  <% else %>
+                                    <span class="text-muted"> no additional information provided</span>
+                                  <% end %>
+                                  <br>
                               <% end %>                    
                           </div>
-                          <div class="modal-footer text-center">
-                            <% if current_user && current_user.role != "contributor" && reliability < 100 && !dericci_links.map(&:created_by_id).include?(current_user.id) %>
-                                <%= link_to "Confirm Link", dericci_links_path(dericci_record_id: record.id, name_id: name.id, from_name: true), method: :post, class: "btn btn-default" %>
-                            <% end %>
-
+                          <div class="modal-footer text-center">                          
                             <% if current_user && current_user.role == "admin" %>
                                 <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id), from_name: true), method: :delete, class: "btn btn-danger" %>
                             <% end %>

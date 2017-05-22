@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170517142450) do
+ActiveRecord::Schema.define(version: 20170522132919) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -127,9 +127,11 @@ ActiveRecord::Schema.define(version: 20170517142450) do
     t.boolean "flagged",                        default: false
     t.integer "created_by_id", limit: 4
     t.integer "verified_id",   limit: 4
+    t.integer "updated_by_id", limit: 4
   end
 
   add_index "dericci_records", ["created_by_id"], name: "index_dericci_records_on_created_by_id", using: :btree
+  add_index "dericci_records", ["updated_by_id"], name: "index_dericci_records_on_updated_by_id", using: :btree
 
   create_table "dericci_sales", force: :cascade do |t|
     t.string   "name",         limit: 255
@@ -493,9 +495,9 @@ ActiveRecord::Schema.define(version: 20170517142450) do
 
   create_table "notification_settings", force: :cascade do |t|
     t.integer  "user_id",              limit: 4
-    t.boolean  "on_update"
-    t.boolean  "on_comment"
-    t.boolean  "on_reply"
+    t.boolean  "on_update",                      default: true
+    t.boolean  "on_comment",                     default: true
+    t.boolean  "on_reply",                       default: true
     t.datetime "created_at",                                     null: false
     t.datetime "updated_at",                                     null: false
     t.boolean  "on_message",                     default: true

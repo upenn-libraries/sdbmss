@@ -9,10 +9,20 @@ class DericciRecordsController < ApplicationController
     @offset = @page * @count
     term = params[:term] || ""
     field = params[:field] || "name"
-    @total = DericciRecord.where("#{field} LIKE '%#{term}%'").where("name LIKE '#{letter}%'").count
+    @total = DericciRecord.where("#{field} LIKE '%#{term}%'").where("name LIKE '#{letter}%'")
+    @records = DericciRecord.where("#{field} LIKE '%#{term}%'").where("name LIKE '#{letter}%'")
+    if params[:verified_id]
+      @total = @total.where(verified_id: nil)
+      @records = @records.where(verified_id: nil)
+    end
+    if params[:flagged]
+      @total = @total.where(flagged: true)
+      @records = @records.where(flagged: true)
+    end
+    @total = @total.count
     @num_pages = (@total / @count).to_i
     @pages = [*[@page-2,0].max..[@page+2,@num_pages].min] 
-    @records = DericciRecord.where("#{field} LIKE '%#{term}%'").where("name LIKE '#{letter}%'").limit(@count).offset(@offset)
+    @records = @records.limit(@count).offset(@offset)
   end
 
   def show
@@ -31,7 +41,7 @@ class DericciRecordsController < ApplicationController
   end
 
   def update
-    @record.update(dericci_record_params)
+    @record.update_by(current_user, dericci_record_params)
     respond_to do |format|
       format.html {
         redirect_to dericci_record_path(@record)        

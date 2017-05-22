@@ -4,7 +4,7 @@ class DericciLinksController < ApplicationController
 
   def create
     d = DericciLink.new(dericci_link_params)
-    d.update(reliability: user_reliability(current_user), created_by: current_user)
+    d.update(created_by: current_user)
     d.save!
     flash[:success] = "You have successfully added your confirmation to this De Ricci record link!"
     if params[:from_name]
@@ -33,21 +33,6 @@ class DericciLinksController < ApplicationController
 
   def dericci_link_params
     params.permit(:name_id, :dericci_record_id)
-  end
-
-  def user_reliability(user)
-    case user.role
-      when "contributor"
-        1
-      when "editor"
-        2
-      when "super-editor"
-        3
-      when "admin"
-        4
-      else
-        0
-    end
   end
 
 end

@@ -11,7 +11,7 @@
       border-bottom-right-radius: 0px;
       box-shadow: 2px 1px 4px #393c3e inset;
       background: #525659;
-      font-size: 32px;
+      font-size: 22px;
     }
     .game-nav > li > a.text-danger {
       color: red;
@@ -169,6 +169,11 @@
             <dt>Senate House ID#</dt>
             <dd>{{ current_record.senate_house || "Unknown" }}</dd>
           </dl>
+    
+          <div class="input-group textarea-group" style="margin-bottom: 10px;">
+            <textarea name="" id="" cols="30" rows="2" ng-model="current_record.comment" placeholder="Leave a comment here..." class="form-control"></textarea>
+          </div>
+
           <div class="panel panel-default" ng-repeat="comment in current_record.comments">
             <div class="panel-body comment" ng-bind-html="comment.comment">
             </div>

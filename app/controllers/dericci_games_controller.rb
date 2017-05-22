@@ -40,35 +40,24 @@ class  DericciGamesController < ApplicationController
 
   def stats
     respond_to do |format|
-      format.json { render json: DericciLink.select(:created_at, :reliability, :name_id, :dericci_record_id).order(:created_at) }
+      format.json { render json: DericciLink.select(:created_at, :name_id, :dericci_record_id).order(:created_at) }
     end
   end
 
   private
 
-  def user_reliability(user)
-    case user.role
-      when "contributor"
-        1
-      when "editor"
-        2
-      when "super-editor"
-        3
-      when "admin"
-        4
-      else
-        0
-    end
-  end
-
   def game_params
     p = params.require(:dericci_game).permit(
-      :skipped, :completed, :flagged, :dericci_records_attributes => [:id, :flagged, :dericci_links_attributes => [:id, :name_id, :other_info, :_destroy]])
+      :skipped, :completed, :flagged, :dericci_records_attributes => [:id, :flagged, dericci_links_attributes: [:id, :name_id, :other_info, :_destroy], comments_attributes: [:commentable_id, :commentable_type, :comment]])
     # this incredibly inelegant solution is here because for some reason deep_merge would not do what it was supposed to...
     p[:dericci_records_attributes].each do |dra|
       dra[:dericci_links_attributes].each do |dla|
         dla[:created_by_id] = current_user.id
-        dla[:reliability] = user_reliability(current_user)
+      end
+      if dra[:comments_attributes]
+        dra[:comments_attributes].each do |ca|
+          ca[:created_by_id] = current_user.id
+        end
       end
     end
     p

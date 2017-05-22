@@ -1,5 +1,12 @@
 <tr>
-  <td><%= link_to record.name, dericci_record_path(record) %></td>
+  <td>
+    <% if record.flagged %>
+      <span class="btn btn-xs btn-danger">
+        <span class="glyphicon glyphicon-flag"></span>
+      </span>
+    <% end %>
+    <%= link_to record.name, dericci_record_path(record) %>
+  </td>
   <td>
     <span class="btn-group">
       <%= render partial: "nav/bookmark_watch_table", locals: {model: record} %>
@@ -9,12 +16,14 @@
   <td class="text-muted"><%= record.size %></td>
   <td>
   <% record.dericci_links.group_by(&:name_id).each do |name_id, links| %>
-    <% reliability = [(100 * (links.sum(&:reliability) / 4.0)).to_i, 100].min %>
-    <% if reliability >= 100 %>
-      <span class="text-success glyphicon glyphicon-link" title="This record is reliably linked to a name is the SDBM name authority"></span>
-    <% elsif reliability > 0 %>
-      <span class="text-info glyphicon glyphicon-link" title="This record is tentatively linked to a name is the SDBM name authority"></span>
-    <% end %>
+    <span class="btn btn-info btn-xs">
+      <span class="glyphicon glyphicon-link" title="This record is linked to a name is the SDBM name authority (possible)"></span>
+    </span>
+  <% end %>
+  <% if record.verified %>
+    <span class="btn btn-xs btn-success">
+      <span class="glyphicon glyphicon-link" title="This record is linked to a name is the SDBM name authority (verified)"></span>
+    </span>
   <% end %>
   </td>
   <td class="text-muted text-right"><%= record.dates || "Unknown" %></td>

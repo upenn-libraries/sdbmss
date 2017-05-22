@@ -8,8 +8,10 @@ class DericciRecord < ActiveRecord::Base
   has_many :comments, as: :commentable
  
   include Watchable 
+  include UserFields
 
   accepts_nested_attributes_for :dericci_links, allow_destroy: true
+  accepts_nested_attributes_for :comments
 
   def public_id
     "De Ricci #{id}"

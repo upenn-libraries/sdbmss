@@ -30,50 +30,63 @@
       padding-bottom: 4px;
     }
   </style>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+      var data = google.visualization.arrayToDataTable([
+        ['Description', 'Proportion'],
+        ['Possibly Linked (<%= possible = DericciRecord.where({verified_id: nil, flagged: false}).joins(:dericci_links).group('dericci_records.id').count.count %>)', <%= possible %>],
+        ['Definitely Linked (<%= definite = DericciRecord.where.not(verified_id: nil).where(flagged: false).count %>)',  <%= definite %>],
+        ['In Progress (<%= flagged = DericciRecord.where(flagged: true).count %>)', <%= flagged %> ],
+        ['Unlinked (<%= unlinked = DericciRecord.count - (flagged + definite + possible) %>)', <%= unlinked %>],
+        //['Sleep',    7]
+      ]);
+
+      var options = {
+        title: 'The De Ricci Digitized Archive',
+        colors: ["#AE9A4A", "#AE724A", "#7F8FA8", "#306F63"],
+        titleTextStyle: { 
+          color: "#222",
+          fontName: "Sarala",
+          fontSize: 28,
+          bold: true,
+          italic: false 
+        },
+        pieHole: 0.3,
+        legend: {
+          alignment: "center",
+          position: "right",
+          textStyle: {
+            color: "#222",
+            fontName: "Sarala",
+            fontSize: 14,
+            bold: false,
+            italic: true           
+          }
+        }
+      };
+
+      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+      chart.draw(data, options);
+    }
+  </script>
 <% end %>
 
 <% content_for :breadcrumbs do %>
   <%= render partial: "breadcrumbs" %>
 <% end %>
 <div class="row">
-  <div class="col-sm-1"></div>
-  <div class="col-sm-5">
-    <!--
-    <div id="stats" style="width: 100%; height: 500px; margin-bottom: 10px;"></div>-->
-    <div class="text-right huge">the</div>
-    <div class="text-right huge">de ricci</div>
-    <div class="text-center huge">digitized</div>
-    <div class="text-left huge" style="margin-bottom: 25px;">archive</div>
-    <div class="stats text-left">
-      <% players = DericciGame.select(:created_by_id).distinct.count %>
-      <%= players %> <%= "Player".pluralize(players) %>
-    </div>
-    <div class="stats text-left" style="color: darkcyan;">
-      <%= DericciGame.count %> <%= "Game".pluralize(DericciGame.count) %> Played
-    </div>
-    <% links = DericciLink.group(:dericci_record_id, :name_id).sum(:reliability) %>
-    <% reliable = links.select{ |k, v| v >= 4 }.count %>
-    <% possible = links.select{ |k, v| v >= 0 && v < 4 }.count %>
-    <div class="stats text-center" style="color: darkseagreen;">
-      <%= reliable %> Confirmed <%= "Links".pluralize(reliable) %>
-    </div>
-    <div class="stats text-right" style="color: #00BCD4;">
-      <%= possible %> Possible <%= "Links".pluralize(possible) %>
-    </div>
-    <div class="text-center stats">
-      <% unlinked = DericciRecord.count - DericciRecord.includes(:dericci_links).where.not(:dericci_links => {id: nil}).count %>
-      <%= unlinked %> <%= "record".pluralize(unlinked) %> still unlinked!
-    </div>
+  <div class="col-sm-7">
+    <div id="piechart" style="width: 100%; height: 500px;"></div>
     <div class="text-center huge">KEEP PLAYING!</div>
   </div>
-  <div class="col-sm-1"></div>
   <div class="col-sm-5 text-center">
-    <a href="/dericci_games/new" class="btn btn-default btn-special text-center">
-      <div class="glyphicon glyphicon-tower" style="font-size: 72px; display: block; margin: 15px 0px;"></div>
-      Play<br>
-      Game
-    </a><br>
-    <h3>My Current Games</h3>
+    <h3>My Games</h3>
     <table class="table table-responsive">
       <tbody>
         <% if @games.reverse.each do |game| %>
@@ -85,13 +98,13 @@
             </td>
             <td>
               <div class="progress">
-                <div class="progress-bar progress-bar-success" role="progressbar" style="width:<%= game.completed.to_i %>%; min-width: 15%; max-width: 85%;">
+                <div class="progress-bar progress-bar-success" role="progressbar" style="width:<%= game.completed.to_i %>%;">
                   <%= game.completed.to_i %>% Completed
                 </div>
-                <div class="progress-bar progress-bar-warning" role="progressbar" style="width:<%= game.skipped.to_i %>%; min-width: 15%; max-width: 85%;">
+                <div class="progress-bar progress-bar-warning" role="progressbar" style="width:<%= game.skipped.to_i %>%;">
                   <%= game.skipped.to_i %>% Skipped
                 </div>
-                <div class="progress-bar progress-bar-danger" role="progressbar" style="width:<%= game.flagged.to_i %>%; min-width: 15%; max-width: 85%;">
+                <div class="progress-bar progress-bar-danger" role="progressbar" style="width:<%= game.flagged.to_i %>%;">
                   <%= game.flagged.to_i %>% Flagged
                 </div>
                 <% if game.skipped.to_i + game.completed.to_i <= 0 %>
@@ -107,5 +120,8 @@
         <% end %>
       </tbody>
     </table>
+    <a href="/dericci_games/new" class="btn btn-default btn-lg text-center" style="width: 100%">
+      <span class="glyphicon glyphicon-tower"></span> New Game
+    </a>
   </div>
 </div>

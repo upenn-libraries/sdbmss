@@ -361,8 +361,8 @@ var BOOKMARK_SCOPE;
             type: function () { return "is_author"; },
             base: function () { return model.name; }
           },
-          size: 'lg',
-          backdrop: false
+          size: 'lg'//,
+          //backdrop: false
         });
         modal.result.then( function (results) {
           $scope.record.verified_id = $scope.name.id;
@@ -415,8 +415,8 @@ var BOOKMARK_SCOPE;
             type: function () { return "is_author"; },
             base: function () { return model.name; }
           },
-          size: 'lg',
-          backdrop: false
+          size: 'lg'//,
+          //backdrop: false
         });
         modal.result.then( function (results) {
           model.skipped = false;
@@ -475,9 +475,9 @@ var BOOKMARK_SCOPE;
       };
       $scope.setProgress = function () {
         $scope.progress = {
-          complete: Math.floor(100 * ($scope.records.filter( function (r) { return $scope.isLinked(r); }).length / 20)),
-          skipped: Math.floor(100 * ($scope.records.filter( function (r) { return r.skipped; }).length / 20)),
-          flagged: Math.floor(100 * ($scope.records.filter( function (r) { return r.flagged; }).length / 20))
+          complete: Math.round(100 * ($scope.records.filter( function (r) { return $scope.isLinked(r); }).length / 15)),
+          skipped: Math.round(100 * ($scope.records.filter( function (r) { return r.skipped; }).length / 15)),
+          flagged: Math.round(100 * ($scope.records.filter( function (r) { return r.flagged; }).length / 15))
         };
       };
       $scope.activeRecords = function(element) {
@@ -488,13 +488,15 @@ var BOOKMARK_SCOPE;
         var records = angular.copy($scope.records).filter( function (r) { return r.dericci_links.length > 0 || r.flagged; }).map( function (r) {
           r.dericci_links_attributes = r.dericci_links;
           if (r.dericci_links_attributes.length <= 0 ) r.dericci_links_attributes = ["null"];
+          if (r.comment) {
+            r.comments_attributes = [{comment: r.comment, commentable_type: "DericciRecord", commentable_id: r.id}];
+          }
           return r;
         });
-        console.log( {dericci_game: {id: $scope.gameId, skipped: $scope.progress.skipped, flagged: $scope.progress.flagged, completed: $scope.progress.complete, dericci_records_attributes: records}});
         $http.put("/dericci_games/" + $scope.gameID + ".json", { dericci_game: {id: $scope.gameId, skipped: $scope.progress.skipped, flagged: $scope.progress.flagged, completed: $scope.progress.complete, dericci_records_attributes: records} }).then(function (response) {
           if (response.data.message == "Success!") {
             $scope.saving = true;
-            //window.location = "/dericci_games/";
+            window.location = "/dericci_games/";
           } else {
             //console.log(response);
           }
