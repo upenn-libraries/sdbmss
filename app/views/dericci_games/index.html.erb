@@ -39,12 +39,13 @@
 
       var data = google.visualization.arrayToDataTable([
         ['Description', 'Proportion'],
-        ['Possibly Linked (<%= possible = DericciRecord.where({verified_id: nil, flagged: false}).joins(:dericci_links).group('dericci_records.id').count.count %>)', <%= possible %>],
-        ['Definitely Linked (<%= definite = DericciRecord.where.not(verified_id: nil).where(flagged: false).count %>)',  <%= definite %>],
-        ['In Progress (<%= flagged = DericciRecord.where(flagged: true).count %>)', <%= flagged %> ],
+        ['Possibly Linked (<%= possible = DericciRecord.where({verified_id: nil}).joins(:dericci_links).group('dericci_records.id').count.count %>)', <%= possible %>],
+        ['Definitely Linked (<%= definite = DericciRecord.where.not(verified_id: nil).count %>)',  <%= definite %>],
+        ['In Progress (<%= flagged = DericciRecord.joins(:dericci_record_flags).group('dericci_records.id').count.count  %>)', <%= flagged %> ],
         ['Unlinked (<%= unlinked = DericciRecord.count - (flagged + definite + possible) %>)', <%= unlinked %>],
         //['Sleep',    7]
       ]);
+      console.log(data);
 
       var options = {
         title: 'The De Ricci Digitized Archive',
@@ -54,12 +55,14 @@
           fontName: "Sarala",
           fontSize: 28,
           bold: true,
-          italic: false 
+          italic: false,
+          align: "center"
         },
+        sliceVisibilityThreshold: 0.0001,
         pieHole: 0.3,
         legend: {
-          alignment: "center",
-          position: "right",
+          alignment: "end",
+          position: "bottom",
           textStyle: {
             color: "#222",
             fontName: "Sarala",
@@ -81,12 +84,43 @@
   <%= render partial: "breadcrumbs" %>
 <% end %>
 <div class="row">
-  <div class="col-sm-7">
+  <div class="col-sm-4">
     <div id="piechart" style="width: 100%; height: 500px;"></div>
   </div>
-  <div class="col-sm-5 text-center">
+  <div class="col-sm-4">
+    <p>The <strong>De Ricci Game</strong> invites you to contribute to the database by matching cards from the <strong>De Ricci Digitized Archive</strong> to names in the growing Schoenberg Database Name Authority.  You will be presented with a list of 15 De Ricci records, and will be asked to perform one of the following actions:</p>
+    <div class="row">
+      <div class="col-xs-2 text-right">
+        <span class="glyphicon glyphicon-check lead text-success"></span>
+      </div>
+      <div class="col-xs-10">
+        <p><strong>Link To a Name</strong> - identify a name in the SDBM Name Authority and suggest that the two are linked</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-2 text-right">
+        <span class="glyphicon glyphicon-flag lead text-danger"></span>
+      </div>
+      <div class="col-xs-10">
+        <p><strong>Flag as Needing Review</strong> - notify admin that this record needs to be refined before it can be accurately linked, e.g.</p>
+        <ul>
+          <li>It contains references to multiple possible names, and needs to be broken into several records</li>
+          <li>The names or information contained are not relevant or applicable to names in the SDBM</li>
+        </ul>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-2 text-right">
+        <span class="glyphicon glyphicon-unchecked lead game-skipped"></span>
+      </div>
+      <div class="col-xs-10">
+        <p><strong>Skip Record</strong> - if you are unsure or don't have information to conclusively link or flag a name, skip it!</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4 text-center">
     <h3>My Games</h3>
-    <table class="table table-responsive" style="height: 300px; overflow-y: scroll;">
+    <table class="table table-responsive" style="max-height: 300px; overflow-y: scroll;">
       <tbody>
         <% if @games.reverse.each do |game| %>
           <tr>

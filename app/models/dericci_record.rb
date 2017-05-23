@@ -2,6 +2,8 @@ class DericciRecord < ActiveRecord::Base
   has_many :dericci_links
   has_many :names, through: :dericci_links
 
+  has_many :dericci_record_flags
+
   belongs_to :verified, class_name: "Name"
 
   has_many :bookmarks, as: :document, dependent: :destroy
@@ -11,6 +13,7 @@ class DericciRecord < ActiveRecord::Base
   include UserFields
 
   accepts_nested_attributes_for :dericci_links, allow_destroy: true
+  accepts_nested_attributes_for :dericci_record_flags, allow_destroy: true
   accepts_nested_attributes_for :comments
 
   def public_id

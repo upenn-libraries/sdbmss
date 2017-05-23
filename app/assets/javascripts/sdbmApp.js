@@ -426,7 +426,7 @@ var BOOKMARK_SCOPE;
             }
             $scope.current_record.dericci_links.push({name_id: $scope.name.id, name: $scope.name.name});
             // remove 'flagged'
-            $scope.current_record.flagged = false;
+            $scope.current_record.dericci_record_flags = [];
             $scope.next();
             $scope.setProgress();
           } else {
@@ -441,18 +441,27 @@ var BOOKMARK_SCOPE;
         return record && record.dericci_links.filter(function (l) { return l.name_id; });
       };
       $scope.skip = function (model) {
-        if ($scope.actualLinks(model) <= 0 && !model.flagged) {
+        if ($scope.actualLinks(model) <= 0 && model.dericci_record_flags.length <= 0) {
           model.skipped = true;
         }
         $scope.next();
         $scope.setProgress();
       };
       $scope.flag = function (record) {
-        record.flagged = true;
-        record.dericci_links = [];
-        $scope.next();
-        $scope.setProgress();
-      }
+        // modal to choose reason from dropdown
+        $scope.current_flag = {};
+        $scope.flag_modal = $modal.open({
+          templateUrl: "flagReason.html",
+          scope: $scope,
+          size: 'lg'
+        });
+        $scope.flag_modal.result.then( function (results) {
+          record.dericci_record_flags = [$scope.current_flag];
+          record.dericci_links = [];
+          $scope.next();
+          $scope.setProgress();
+        });
+      };
       $scope.next = function () {
         var i = ($scope.current_index + 1) % $scope.records.length;
         $scope.selectRecord($scope.records[i]);
@@ -477,7 +486,7 @@ var BOOKMARK_SCOPE;
         $scope.progress = {
           complete: Math.round(100 * ($scope.records.filter( function (r) { return $scope.isLinked(r); }).length / 15)),
           skipped: Math.round(100 * ($scope.records.filter( function (r) { return r.skipped; }).length / 15)),
-          flagged: Math.round(100 * ($scope.records.filter( function (r) { return r.flagged; }).length / 15))
+          flagged: Math.round(100 * ($scope.records.filter( function (r) { return r.dericci_record_flags.length > 0; }).length / 15))
         };
       };
       $scope.activeRecords = function(element) {
@@ -485,12 +494,13 @@ var BOOKMARK_SCOPE;
       };
 
       $scope.save = function () {
-        var records = angular.copy($scope.records).filter( function (r) { return r.dericci_links.length > 0 || r.flagged; }).map( function (r) {
+        var records = angular.copy($scope.records).filter( function (r) { return r.dericci_links.length > 0 || r.dericci_record_flags.length > 0; }).map( function (r) {
           r.dericci_links_attributes = r.dericci_links;
           if (r.dericci_links_attributes.length <= 0 ) r.dericci_links_attributes = ["null"];
           if (r.comment) {
             r.comments_attributes = [{comment: r.comment, commentable_type: "DericciRecord", commentable_id: r.id}];
           }
+          r.dericci_record_flags_attributes = r.dericci_record_flags;
           return r;
         });
         $http.put("/dericci_games/" + $scope.gameID + ".json", { dericci_game: {id: $scope.gameId, skipped: $scope.progress.skipped, flagged: $scope.progress.flagged, completed: $scope.progress.complete, dericci_records_attributes: records} }).then(function (response) {

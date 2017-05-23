@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170522132919) do
+ActiveRecord::Schema.define(version: 20170523132341) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -115,6 +115,14 @@ ActiveRecord::Schema.define(version: 20170522132919) do
     t.string   "link",         limit: 255
   end
 
+  create_table "dericci_record_flags", force: :cascade do |t|
+    t.integer  "dericci_record_id", limit: 4
+    t.text     "reason",            limit: 65535
+    t.integer  "created_by_id",     limit: 4
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
+
   create_table "dericci_records", force: :cascade do |t|
     t.string  "name",          limit: 255
     t.string  "dates",         limit: 255
@@ -124,10 +132,10 @@ ActiveRecord::Schema.define(version: 20170522132919) do
     t.string  "size",          limit: 255
     t.text    "other_info",    limit: 16777215
     t.string  "senate_house",  limit: 255
-    t.boolean "flagged",                        default: false
     t.integer "created_by_id", limit: 4
     t.integer "verified_id",   limit: 4
     t.integer "updated_by_id", limit: 4
+    t.boolean "out_of_scope",                   default: false
   end
 
   add_index "dericci_records", ["created_by_id"], name: "index_dericci_records_on_created_by_id", using: :btree

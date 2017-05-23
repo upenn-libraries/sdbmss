@@ -1,6 +1,7 @@
 class DericciRecordsController < ApplicationController
 
   before_action :set_model, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource :only => [:edit, :update]
 
   def index
     @count = params[:limit] ? params[:limit].to_i : 20
@@ -16,8 +17,8 @@ class DericciRecordsController < ApplicationController
       @records = @records.where(verified_id: nil)
     end
     if params[:flagged]
-      @total = @total.where(flagged: true)
-      @records = @records.where(flagged: true)
+      @total = @total.joins(:dericci_record_flags)
+      @records = @records.joins(:dericci_record_flags)
     end
     @total = @total.count
     @num_pages = (@total / @count).to_i
@@ -57,7 +58,7 @@ class DericciRecordsController < ApplicationController
   end
 
   def dericci_record_params
-    params.require(:dericci_record).permit(:name, :url, :size, :cards, :senate_house, :other_info, :place, :dates, :flagged, :verified_id)
+    params.require(:dericci_record).permit(:name, :url, :size, :cards, :senate_house, :other_info, :place, :dates, :verified_id, :out_of_scope, :dericci_record_flags_attributes => [:id, :reason, :_destroy])
   end
 
 end

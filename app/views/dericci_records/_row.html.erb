@@ -1,8 +1,9 @@
 <tr>
   <td>
-    <% if record.flagged %>
+    <% if (flags = record.dericci_record_flags.count) > 0 %>
       <span class="btn btn-xs btn-danger">
         <span class="glyphicon glyphicon-flag"></span>
+        <span class="badge"><%= flags %></span>
       </span>
     <% end %>
     <%= link_to record.name, dericci_record_path(record) %>

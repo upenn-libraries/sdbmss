@@ -26,17 +26,18 @@
   <%= render partial: "dericci_games/breadcrumbs" %>
 <% end %>
 <div class="row">
-  <% if @record.flagged %>
+  <% @record.dericci_record_flags.each do |flag| %>
     <div class="col-sm-12">
       <div class="alert alert-danger">
-        <span class="glyphicon glyphicon-flag pull-right"></span>
-        This De Ricci Record has been flagged as needing further admin attention.  It may contain information on multiple distinct entities.
+        <strong><span class="glyphicon glyphicon-flag"></span> Flagged - </strong>
+        <%= flag.reason %>
+        <strong> - <%= link_to flag.created_by.to_s, profile_path(flag.created_by.username) %></strong>
       </div>
     </div>
   <% end %>
   <div class="col-sm-5">
     <%= hidden_field_tag :record_id, @record.id, id: "record-id" %>
-    <h3>Dericci Record <%= @record.id %></h3>
+    <h3>De Ricci <%= @record.id %></h3>
     <table class="table table-responsive sdbm-table">
       <tr><td>Name</td>
       <td><%= @record.name %></td></tr>
@@ -62,67 +63,73 @@
       <tr><td>Senate House ID#</td>
       <td><%= @record.senate_house || "Unknown" %></td></tr>
 
-      <tr><td>Verified Name</td>
-      <td ng-controller="DericciRecordCtrl">        
-        <% if @record.verified_id %>
-          <%= link_to name_path(@record.verified), class: 'btn btn-xs btn-default' do %>
-            <span class="glyphicon glyphicon-queen"></span> <%= @record.verified.name %>
-          <% end %>
-        <% elsif can? :edit, @record %>
-          <div href="" ng-if="!name || !name.name" ng-click="findName(record)" class="btn btn-default btn-xs">Find Verified Name <span class="glyphicon glyphicon-plus"></span></div>
-          <div class="btn-group" ng-if="name && name.name">
-            <a href="" class="btn btn-warning btn-xs">{{ name.name }}</a>
-            <a href="" class="btn btn-default btn-xs" ng-click="remove()"><span class='glyphicon glyphicon-remove'></span></a>
-            <a href="" class="btn btn-success btn-xs" ng-click="save()">Save</a>
-          </div>
-        <% else %>
-          <span class="text-muted">A verified SDBM Name has not been identified yet.</span>
-        <% end %>
-      </td></tr>
-
-      <tr><td>
-        Possible Names
-      </td>
-      <td>
-        <% if @record.dericci_links.group_by(&:name_id).each do |name_id, dericci_links| %>
-            <% name = dericci_links.first.name %>            
-            <div class="btn btn-info btn-xs" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
-              <%= name.name %> <span class="badge"><%= dericci_links.count %></span>
+      <% if @record.out_of_scope %>
+        <tr>
+          <td colSpan="2" class="text-muted">De Ricci <%= @record.id %> is out of scope for the SDBM Name Authority</td>
+        </tr>
+      <% else %>
+        <tr><td>Verified Name</td>
+        <td ng-controller="DericciRecordCtrl">        
+          <% if @record.verified_id %>
+            <%= link_to name_path(@record.verified), class: 'btn btn-xs btn-default' do %>
+              <span class="glyphicon glyphicon-queen"></span> <%= @record.verified.name %>
+            <% end %>
+          <% elsif can? :edit, @record %>
+            <div href="" ng-if="!name || !name.name" ng-click="findName(record)" class="btn btn-default btn-xs">Find Verified Name <span class="glyphicon glyphicon-plus"></span></div>
+            <div class="btn-group" ng-if="name && name.name">
+              <a href="" class="btn btn-warning btn-xs">{{ name.name }}</a>
+              <a href="" class="btn btn-default btn-xs" ng-click="remove()"><span class='glyphicon glyphicon-remove'></span></a>
+              <a href="" class="btn btn-success btn-xs" ng-click="save()">Save</a>
             </div>
+          <% else %>
+            <span class="text-muted">A verified SDBM Name has not been identified yet.</span>
+          <% end %>
+        </td></tr>
 
-            <div class="modal fade" id="<%= name.public_id %>">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-body">
-                    <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                    <p>This De Ricci record has been linked to <%= link_to name.name, name_path(name) %> by </p>
-                      <% dericci_links.each do |dl| %>
-                          <span class='btn btn-xs btn-default'>
-                            <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
-                          </span>
-                          <% if dl.other_info.present? %>
-                            <span class='text-muted'> <%= dl.other_info %></span>
-                          <% else %>
-                            <span class="text-muted"> no additional information provided</span>
-                          <% end %>
-                          <br>
-                      <% end %>                    
-                  </div>
-                  <div class="modal-footer text-center">
-                    <% if current_user && current_user.role == "admin" %>
-                        <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id)), method: :delete, class: "btn btn-danger" %>
-                    <% end %>
+        <tr><td>
+          Possible Names
+        </td>
+        <td>
+          <% if @record.dericci_links.group_by(&:name_id).each do |name_id, dericci_links| %>
+              <% name = dericci_links.first.name %>            
+              <div class="btn btn-info btn-xs" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
+                <%= name.name %> <span class="badge"><%= dericci_links.count %></span>
+              </div>
+
+              <div class="modal fade" id="<%= name.public_id %>">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-body">
+                      <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                      <p>This De Ricci record has been linked to <%= link_to name.name, name_path(name) %> by </p>
+                        <% dericci_links.each do |dl| %>
+                            <span class='btn btn-xs btn-default'>
+                              <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
+                            </span>
+                            <% if dl.other_info.present? %>
+                              <span class='text-muted'> <%= dl.other_info %></span>
+                            <% else %>
+                              <span class="text-muted"> no additional information provided</span>
+                            <% end %>
+                            <br>
+                        <% end %>                    
+                    </div>
+                    <div class="modal-footer text-center">
+                      <% if current_user && current_user.role == "admin" %>
+                          <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id)), method: :delete, class: "btn btn-danger" %>
+                      <% end %>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            
-        <% end.empty? %>
-            <p class="text-muted">This name is not linked to any names in the SDBM Name Authority.</p>
-        <% end %>
-      </td></tr>
+              
+          <% end.empty? %>
+              <p class="text-muted">This name is not linked to any names in the SDBM Name Authority.</p>
+          <% end %>
+        </td></tr>
+      <% end %>
     </table>
 
     <%= render partial: "comments/show_all", locals: {comments: @record.comments.where(public: true), record: @record} %>

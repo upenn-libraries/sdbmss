@@ -10,6 +10,9 @@
     .document-metadata dd {
       border: none;
     }
+    .btn-checkbox:checked + label.btn {
+      opacity: 0.5;
+    }
   </style>
 <% end %>
 
@@ -34,10 +37,27 @@
 <% content_for :breadcrumbs do %>
   <%= render partial: "dericci_games/breadcrumbs" %>
 <% end %>
+
+<%= form_for @record do |f| %>
+<div class="row">
+        <%= f.fields_for :dericci_record_flags do |ff| %>
+    <div class="col-sm-12">
+      <div class="alert alert-danger">
+          <strong><span class="glyphicon glyphicon-flag"></span> Flagged - </strong>
+          <%= ff.object.reason %>
+          <strong> - <%= link_to ff.object.created_by.to_s, profile_path(ff.object.created_by.username) %></strong>
+          <%= ff.hidden_field :id %>
+          <%= ff.check_box :_destroy, {id: "flag#{ff.object.id}", style: "display: none;", class: 'btn-checkbox'} %>
+          <label for="flag<%= ff.object.id %>" class="pull-right btn btn-danger btn-xs">Remove Flag
+          </label>
+      </div>
+    </div>
+        <% end %>
+</div>
+
 <div class="row">
   <div class="col-sm-5">
     <h3><%= !@record.id ? "New" : "" %> De Ricci Record <%= @record.id %></h3>
-    <%= form_for @record do |f| %>
     <dl class="document-metadata dl-horizontal dl-invert">
       <dt>Name</dt>
       <dd><%= f.text_field :name, class: 'form-control' %></dd>
@@ -67,17 +87,17 @@
       <dd><%= f.text_field :verified_id, class: 'form-control' %></dd>
       
       <dt>
-        Flagged 
+        Out of Scope 
       </dt>
-      <dd><%= f.check_box :flagged, class: 'form-control' %></dd>
+      <dd><%= f.check_box :out_of_scope, class: 'form-control' %></dd>
 
       <dt></dt>
       <dd><%= f.submit "#{@record.id ? 'Update' : 'Save New'} De Ricci Record", class: 'form-control' %></dd>
     </dl>
-    <% end %>
 
   </div>
   <div class="col-sm-7">
     <iframe src="<%= @record.url %>" frameborder="0" style="width: 100%; height: 600px;" id="dericci_record_<%= @record.id %>_preview"></iframe>
   </div>
 </div>
+<% end %>

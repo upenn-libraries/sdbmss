@@ -21,7 +21,7 @@ class  DericciGamesController < ApplicationController
 
     # this is quite the query! -> and quite slow! but it should limit things correctly
     #@records = DericciRecord.where("(id IN (SELECT dericci_record_id from (SELECT * FROM dericci_links GROUP BY dericci_record_id, name_id HAVING sum(reliability) < 4) A where A.created_by_id <> #{current_user.id})) OR ((id NOT IN (SELECT dericci_record_id FROM dericci_links WHERE true)))").limit(20).order("RAND()")
-    @records = DericciRecord.where.not("id in (?)", DericciLink.where(created_by: current_user).map(&:dericci_record_id)).where({verified_id: nil, flagged: false}).order("cards desc").limit(15)
+    @records = DericciRecord.where(out_of_scope: false).where.not("id in (?)", [0] + DericciLink.where(created_by: current_user).map(&:dericci_record_id) + DericciRecordFlag.where(created_by: current_user).map(&:dericci_record_id)).where({verified_id: nil}).order("cards desc").limit(15)
     @game.dericci_game_records.create!(@records.map{ |r| {dericci_record: r}})
     redirect_to dericci_game_path(@game)
   end
@@ -48,7 +48,11 @@ class  DericciGamesController < ApplicationController
 
   def game_params
     p = params.require(:dericci_game).permit(
-      :skipped, :completed, :flagged, :dericci_records_attributes => [:id, :flagged, dericci_links_attributes: [:id, :name_id, :other_info, :_destroy], comments_attributes: [:commentable_id, :commentable_type, :comment]])
+      :skipped, :completed, :flagged, :dericci_records_attributes => [:id, 
+        dericci_links_attributes: [:id, :name_id, :other_info, :_destroy], 
+        comments_attributes: [:commentable_id, :commentable_type, :comment],
+        dericci_record_flags_attributes: [:id, :reason]
+      ])
     # this incredibly inelegant solution is here because for some reason deep_merge would not do what it was supposed to...
     p[:dericci_records_attributes].each do |dra|
       dra[:dericci_links_attributes].each do |dla|
@@ -57,6 +61,11 @@ class  DericciGamesController < ApplicationController
       if dra[:comments_attributes]
         dra[:comments_attributes].each do |ca|
           ca[:created_by_id] = current_user.id
+        end
+      end
+      if dra[:dericci_record_flags_attributes]
+        dra[:dericci_record_flags_attributes].each do |drfa|
+          drfa[:created_by_id] = current_user.id
         end
       end
     end
