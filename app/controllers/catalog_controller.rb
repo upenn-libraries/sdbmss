@@ -30,7 +30,7 @@ class CatalogController < ApplicationController
         format.html
       end
     else
-      render "not_found", status: 404
+      render "not_found.html", status: 404
     end
   end
 
