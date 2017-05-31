@@ -1,7 +1,4 @@
-<li class='<%= current_page?(dericci_games_path) ? "active" : "" %>'><%= link_to "Games", dericci_games_path %></li>
-<li class='<%= current_page?(dericci_notes_path) ? "active" : "" %>'><%= link_to "Miscellaneous Notes", dericci_notes_path %></li>
-<li class='<%= current_page?(dericci_sales_path) ? "active" : "" %>'><%= link_to "Dated Sales", dericci_sales_path %></li>
-<li class='<%= current_page?(dericci_records_path) ? "active" : "" %>'><%= link_to "De Ricci Digitized Archive", dericci_records_path %></li>
+<li class='<%= current_page?(dericci_records_path) ? "active" : "" %>'><%= link_to "Collectors & Repositories", dericci_records_path %></li>
 <% if defined? @record %>
   <% if @record.id %>
     <li class='<%= current_page?( dericci_record_path(@record)) ? "active" : "" %>'><%= link_to @record.public_id, dericci_record_path(@record) %></li>
@@ -12,3 +9,6 @@
     <li class='active'><%= link_to "New De Ricci Record", new_dericci_record_path %></li>
   <% end %>
 <% end %>
+<li class='<%= current_page?(dericci_notes_path) ? "active" : "" %>'><%= link_to "Miscellaneous Notes", dericci_notes_path %></li>
+<li class='<%= current_page?(dericci_sales_path) ? "active" : "" %>'><%= link_to "Dated Sales", dericci_sales_path %></li>
+<li class='<%= current_page?(dericci_games_path) ? "active" : "" %>'><%= link_to "Play the Name Game", dericci_games_path %></li>
