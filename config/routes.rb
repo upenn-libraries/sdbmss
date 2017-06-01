@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   resources :replies
   resources :notifications, only: [:index, :show, :update, :destroy]
 
+  get '/dla/schoenberg', to: 'catalog#legacy'
   get '/dla/schoenberg/:path', to: 'catalog#legacy'
   get '/dla/schoenberg/feeds/search.rss', to: 'catalog#legacy'
   
