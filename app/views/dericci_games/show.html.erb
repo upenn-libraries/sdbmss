@@ -13,6 +13,12 @@
       background: #525659;
       font-size: 22px;
     }
+    .game-nav > li.active a.btn:last-child {
+      border-color: #525659;
+      border-radius: 0px;
+      background: #525659;
+      color: white;
+    }
     .game-nav > li > a.text-danger {
       color: red;
       font-weight: bold;
@@ -42,11 +48,15 @@
     .my-btn-group {
       display: table;
       width: 100%;
-      margin-bottom: 10px;
     }
     .my-btn-group .btn {
       float: none;
       display: table-cell;
+    }
+    .my-btn-group .btn:last-child {
+      width: 100%;
+      max-width: 100px;
+      text-align: left;
     }
     .dl-dericci {
       background: #525659;
@@ -107,7 +117,7 @@
 <div data-ng-controller="DericciGameCtrl" data-ng-cloak>
   <div class="row" style="margin-bottom: 10px;">
     <div class="col-sm-2">
-      <div class="btn btn-default btn-lg text-center" data-toggle="modal" href="#instructions" data-target="#instructions" style="width: 100%;"><span class="glyphicon glyphicon-question-sign"></span> Help</div>
+      <div class="btn btn-default btn-lg text-center" data-toggle="modal" href="#instructions" data-target="#instructions" style="width: 100%;"><span class="glyphicon glyphicon-question-sign"></span> Instructions</div>
     </div>
     <div class="col-sm-8">
       <div class="progress">
@@ -129,18 +139,17 @@
   </div>
   <div class="row">
     <div class="col-sm-5" style="padding-right: 0px;">
-      <div class="my-btn-group btn-group" style="padding-right: 10px;">
-        <a href="" style="width: 1px;" class="btn btn-default btn-lg" ng-click="prev()"><span class="glyphicon glyphicon-chevron-left"></span></a>
-        <a href="" class="btn btn-success btn-lg" ng-click="findName(current_record);"><span class="glyphicon glyphicon-search"></span> Find Name</a>
-        <a href="" class="btn btn-danger btn-lg" ng-click="flag(current_record)"><span class="glyphicon glyphicon-flag"></span> Flag</a>
-        <a href="" style="width: 1px;" class="btn btn-default btn-lg" ng-click="skip(current_record)"><span class="glyphicon glyphicon-chevron-right"></span></a>
-      </div>
       <ul class="game-nav nav nav-pills nav-stacked">
         <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }">
-          <a href="" class="one-line" ng-click="selectRecord(record)" ng-class="{ 'game-linked': isLinked(record), 'game-skipped': record.skipped, 'text-danger' : record.dericci_record_flags.length > 0 }">
-            <span class="glyphicon glyphicon-blank" ng-class="{ 'glyphicon-check': isLinked(record), 'glyphicon-unchecked': record.skipped, 'glyphicon-flag' : record.dericci_record_flags.length > 0 }"></span>
-            {{ record.name }}
-          </a>
+          <span class="btn-group my-btn-group">
+            <a href="" class="btn btn-success btn-xs" ng-click="findName(record);"><span class="glyphicon glyphicon-search"></span> Find Name</a>
+            <a href="" class="btn btn-danger btn-xs" ng-click="flag(record)"><span class="glyphicon glyphicon-flag"></span> Flag</a>
+            <a href="" class="btn btn-warning btn-xs" ng-click="skip(record)"><span class="glyphicon glyphicon-chevron-right"></span> Skip</a>
+            <a href="" class="btn btn-default btn-xs one-line" ng-click="selectRecord(record)" ng-class="{ 'game-linked': isLinked(record), 'game-skipped': record.skipped, 'text-danger' : record.dericci_record_flags.length > 0 }">
+              <span class="glyphicon glyphicon-blank" ng-class="{ 'glyphicon-check': isLinked(record), 'glyphicon-unchecked': record.skipped, 'glyphicon-flag' : record.dericci_record_flags.length > 0 }"></span>
+              {{ record.name }}
+            </a>
+          </span>
         </li>
       </ul>
     </div>

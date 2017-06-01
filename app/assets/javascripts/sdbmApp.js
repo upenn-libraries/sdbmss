@@ -406,6 +406,7 @@ var BOOKMARK_SCOPE;
       };
       $scope.findName = function (model) {
         $scope.name = {};
+        $scope.selectRecord(model);
         var modal = $modal.open({
           templateUrl: "selectNameAuthority.html",
           controller: "SelectNameAuthorityCtrl",
@@ -441,14 +442,17 @@ var BOOKMARK_SCOPE;
         return record && record.dericci_links.filter(function (l) { return l.name_id; });
       };
       $scope.skip = function (model) {
+        $scope.selectRecord(model);
         if ($scope.actualLinks(model) <= 0 && model.dericci_record_flags.length <= 0) {
           model.skipped = true;
         }
         $scope.next();
         $scope.setProgress();
       };
+      
       $scope.flag = function (record) {
         // modal to choose reason from dropdown
+        $scope.selectRecord(record);
         $scope.current_flag = {};
         $scope.flag_modal = $modal.open({
           templateUrl: "flagReason.html",
