@@ -54,18 +54,20 @@ class  DericciGamesController < ApplicationController
         dericci_record_flags_attributes: [:id, :reason]
       ])
     # this incredibly inelegant solution is here because for some reason deep_merge would not do what it was supposed to...
-    p[:dericci_records_attributes].each do |dra|
-      dra[:dericci_links_attributes].each do |dla|
-        dla[:created_by_id] = current_user.id
-      end
-      if dra[:comments_attributes]
-        dra[:comments_attributes].each do |ca|
-          ca[:created_by_id] = current_user.id
+    if p[:dericci_records_attributes]
+      p[:dericci_records_attributes].each do |dra|
+        dra[:dericci_links_attributes].each do |dla|
+          dla[:created_by_id] = current_user.id
         end
-      end
-      if dra[:dericci_record_flags_attributes]
-        dra[:dericci_record_flags_attributes].each do |drfa|
-          drfa[:created_by_id] = current_user.id
+        if dra[:comments_attributes]
+          dra[:comments_attributes].each do |ca|
+            ca[:created_by_id] = current_user.id
+          end
+        end
+        if dra[:dericci_record_flags_attributes]
+          dra[:dericci_record_flags_attributes].each do |drfa|
+            drfa[:created_by_id] = current_user.id
+          end
         end
       end
     end

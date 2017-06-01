@@ -10,8 +10,9 @@ class DericciRecordsController < ApplicationController
     @offset = @page * @count
     term = params[:term] || ""
     field = params[:field] || "name"
-    @total = DericciRecord.where("#{field} LIKE '%#{term}%'").where("name LIKE '#{letter}%'")
-    @records = DericciRecord.where("#{field} LIKE '%#{term}%'").where("name LIKE '#{letter}%'")
+    type = params[:type] || ''
+    @total = DericciRecord.where("#{field} LIKE '%#{term}%'").where("name LIKE '#{letter}%'").where("senate_house like ?", "%#{type}%")
+    @records = DericciRecord.where("#{field} LIKE '%#{term}%'").where("name LIKE '#{letter}%'").where("senate_house like ?", "%#{type}%")
     if params[:verified_id]
       @total = @total.where(verified_id: nil)
       @records = @records.where(verified_id: nil)

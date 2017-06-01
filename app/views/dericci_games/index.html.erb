@@ -143,6 +143,9 @@
       <span class="glyphicon glyphicon-tower"></span> New Game
     </a>
     <h3>My Games</h3>
+    <% if @games.count >= 5 %>
+      <div class="alert alert-success">You have played <%= @games.count %> games!  <%= render partial: "shared/request_advancement" %></div>
+    <% end %>
     <table class="table table-responsive" style="max-height: 300px; overflow-y: scroll;">
       <tbody>
         <% if @games.reverse.each do |game| %>
