@@ -61,12 +61,10 @@ class CatalogController < ApplicationController
       redirect_to root_url.gsub(host, forwarded_host)
     elsif host != forwarded_host
       announcement = %q(
-        <p class='text-center'><a href="#params" class="btn btn-default btn-xs" data-toggle="collapse" data=target="#params">Original query paremeters <span class='caret'></span></a></p>
-        <div class="collapse" id="params"><table class="table table-responsive table-striped" style="margin-top: 10px;"><tbody>)
+        <p><b>Original query paremeters </b></p>)
       params.except(:controller, :action, :format).each do |key, value|
-        announcement += "<tr><th>#{key}</th><td class='text-right'>#{value}</td></tr>"
+        announcement += "<p><b>#{key}:</b> #{value}</p>"
       end
-      announcement += %q(</tbody></table></div>)
       flash[:announce] = announcement.html_safe
       @link = root_url.gsub(host, forwarded_host)
       @host = forwarded_host

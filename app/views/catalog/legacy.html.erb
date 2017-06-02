@@ -12,53 +12,59 @@
     <title><%= render_page_title %></title>
 
     <link href="https://fonts.googleapis.com/css?family=Sarala" rel="stylesheet">
-    <%= stylesheet_link_tag "application", media: "all" %>
-    <%= javascript_include_tag "application" %>
+    <style>
+      body {
+        font-family: Sarala, sans-serif;
+        color: white;
+        background: #374f73;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        text-align: center;
+      }
+      .btn {
+        width: 100%;
+        background: white;
+        color: #333;
+        padding: 10px;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+      table {
+        width: 100%;
+        border-spacing: 10px 0px;
+      }
+      td, th {
+        width: 50%;
+      }
+      th {
+        text-align: right;
+      }
+      td {
+        text-align: left;
+      }
+    </style>
 </head>
 <body>
-  <div id="header-navbar" class="navbar navbar-default navbar-static-top" role="navigation">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-12 text-center">
-          <span class="pull-left">
-          </span>
-          <%= image_tag 'sims.png', class: "img img-responsive hide-mobile-lg", usemap:"#Map" %>
-          <map name="Map" id="Map">
-            <area href="https://schoenberginstitute.org/" alt="Facebook" target="_blank" shape=poly coords="0,0, 400,0, 400,25, 0,25"> 
-            <area href="http://www.library.upenn.edu/" alt="Facebook" target="_blank" shape=poly coords="0,25, 400,25, 400,50, 0,50"> 
-          </map>
-          <span class="pull-right hide-mobile" style="line-height: 50px;">
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="container">
-    <div class="row">
-      <div class="col-sm-2"></div>
-      <div class="col-sm-8 text-center">
-        <br>
-        <h1 class="text-center">
-          the NEW<br> 
-          Schoenberg Database of Manuscripts
-        </h1>
-        <div style="font-size: 160px; font-weight: bold;">
-          404
-        </div>
-        <p><b>Sorry!</b> The page you are looking for is no longer available on our new site.  The path and query information is preserved below.</p>
-        <div><%= flash[:announce] %></div>
-        <p>
-          <a class="btn btn-primary btn-lg text-center" href="<%= @link %>">          
-            Enter The Site          
-          </a>
-        </p>
-        <p class='text-muted text-left'>
-            The Schoenberg Database of Manuscripts  aggregates observations of pre-modern manuscripts drawn from over 12,000 auction and sales catalogues, inventories, catalogues from institutional and private collections, and other sources that document sales and locations of these books from around the world.
-        </p>
-      </div>
-      <div class="col-sm-2"></div>
+    <h1 class="text-center">
+      the NEW<br> 
+      Schoenberg Database of Manuscripts
+    </h1>
+    <div style="font-size: 160px; font-weight: bold; line-height: 132px;">
+      404
     </div>
+    <p><b>Sorry!</b> The page you are looking for is no longer available on our new site.  The path and query information is preserved below.</p>
+    <div style="background: #688bbf; border-radius: 6px;"><%= flash[:announce] %></div>
+    <p>
+      <a class="btn" href="<%= @link %>">          
+        Enter The New Site          
+      </a>
+    </p>
+    <p class='text-muted text-left'>
+        The Schoenberg Database of Manuscripts  aggregates observations of pre-modern manuscripts drawn from over 12,000 auction and sales catalogues, inventories, catalogues from institutional and private collections, and other sources that document sales and locations of these books from around the world.
+    </p>
   </div>
 </body>
 </html>
