@@ -57,21 +57,20 @@ class CatalogController < ApplicationController
       end
       flash[:announce] = announcement.html_safe
       redirect_to entry_url(entry_id, host: forwarded_host), status: 301
+    elsif params[:path] == "index"
+      redirect_to root_url.gsub(host, forwarded_host)
     elsif host != forwarded_host
-      puts 'but not here, right'
-      redirect_to request.url.gsub(host, forwarded_host), status: 301, :session => session
-    else
-      announcement += %q(
-      <p class='text-center'>The address you were attempting to reach is no longer available, as it does not conform to the new site architecture.  Please consult our <a href="/pages/FAQ">FAQ</a> and <a href="/pages/user manual">User Manual</a> resources for assistance in navigating the new application.</p>
-      <p class='text-center'><a href="#params" class="btn btn-default btn-small" data-toggle="collapse" data=target="#params">Original query paremeters <span class='caret'></span></a></p>
+      announcement = %q(
+        <p class='text-center'><a href="#params" class="btn btn-default btn-xs" data-toggle="collapse" data=target="#params">Original query paremeters <span class='caret'></span></a></p>
         <div class="collapse" id="params"><table class="table table-responsive table-striped" style="margin-top: 10px;"><tbody>)
       params.except(:controller, :action, :format).each do |key, value|
         announcement += "<tr><th>#{key}</th><td class='text-right'>#{value}</td></tr>"
       end
       announcement += %q(</tbody></table></div>)
       flash[:announce] = announcement.html_safe
-      (@response, @document_list) = search_results(ActionController::Parameters.new, search_params_logic)
-      render "index"
+      @link = root_url.gsub(host, forwarded_host)
+      # needs to render without normal layout
+      render "legacy", status: 404, layout: false
     end
   end
 
