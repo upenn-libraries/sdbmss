@@ -69,6 +69,7 @@ class CatalogController < ApplicationController
       announcement += %q(</tbody></table></div>)
       flash[:announce] = announcement.html_safe
       @link = root_url.gsub(host, forwarded_host)
+      @host = forwarded_host
       # needs to render without normal layout
       render "legacy", status: 404, layout: false
     end

@@ -12,8 +12,8 @@
     <title><%= render_page_title %></title>
 
     <link href="https://fonts.googleapis.com/css?family=Sarala" rel="stylesheet">
-    <%= stylesheet_link_tag "application", media: "all" %>
-    <%= javascript_include_tag "application" %>
+    <%= stylesheet_link_tag "application", media: "all", host: @host, protocol: "https" %>
+    <%= javascript_include_tag "application", host: @host, protocol: "https" %>
 </head>
 <body>
   <div id="header-navbar" class="navbar navbar-default navbar-static-top" role="navigation">
@@ -22,7 +22,7 @@
         <div class="col-sm-12 text-center">
           <span class="pull-left">
           </span>
-          <%= image_tag'sims.png', class: "img img-responsive hide-mobile-lg", usemap:"#Map" %>
+          <%= image_tag 'sims.png', class: "img img-responsive hide-mobile-lg", usemap:"#Map" %>
           <map name="Map" id="Map">
             <area href="https://schoenberginstitute.org/" alt="Facebook" target="_blank" shape=poly coords="0,0, 400,0, 400,25, 0,25"> 
             <area href="http://www.library.upenn.edu/" alt="Facebook" target="_blank" shape=poly coords="0,25, 400,25, 400,50, 0,50"> 
