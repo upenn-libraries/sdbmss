@@ -65,7 +65,7 @@ class CatalogController < ApplicationController
       params.except(:controller, :action, :format).each do |key, value|
         announcement += "<p><b>#{key}:</b> #{value}</p>"
       end
-      flash[:announce] = announcement.html_safe
+      flash.now[:announce] = announcement.html_safe
       @link = root_url.gsub(host, forwarded_host)
       @host = forwarded_host
       # needs to render without normal layout
