@@ -6,11 +6,20 @@
             <a href="/accounts">Manage Accounts</a>
         </li>
     <% else %>
-        <li class="breadcrumb">
+        <li class="">
             <a href="/community">Community</a>
         </li>
     <% end %>
         <li class="  active"><a href=""><%= @user %></a></li>
+    <% if @user == current_user %>
+      <li><%= link_to main_app.edit_user_registration_path do %>My Settings <% end %></li>
+    <% elsif can?(:edit, @user) %>
+        <li class="edit_name">
+            <a href="<%= edit_account_path(@user) %>">
+                Edit User: <%= @user.username %>                
+            </a>
+        </li>
+    <% end %>
 <% end %>
 
 <% if can? :manage, User %>
