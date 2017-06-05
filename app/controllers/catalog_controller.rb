@@ -51,7 +51,7 @@ class CatalogController < ApplicationController
     entry_id = params[:id].to_s.include?('SCHOENBERG_') ? params[:id].to_s.gsub('SCHOENBERG_', '') : nil
     if entry_id.present?
       if Entry.exists? entry_id
-        announcement += "<p class='text-center'>SCHOENBERG_#{entry_id} has been imported into the new database as SDBM_#{entry_id} in October 2015, however data may have been updated or modified since then.</p>"
+        announcement += "<p class='text-center'>SCHOENBERG_#{entry_id} no longer exists. It is now SDBM_#{entry_id} and may have been edited since the old SDBM was transferred to the new SDBM in October 2015. The old website is no longer active.</p>"
       else
         announcement += "<p class='text-center'>The page you are looking for cannot be found.  If you know the ID of the record you are looking for, try searching in the top search-bar.</p>"
       end
