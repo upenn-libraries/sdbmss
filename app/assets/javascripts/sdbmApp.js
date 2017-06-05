@@ -2065,15 +2065,21 @@ var BOOKMARK_SCOPE;
             $(element).focusout(function(event) {
                 $("#cat_lot_no_warning").text("");
                 var cat_lot_no = $(element).val();
+                var query = {
+                    search_field: "advanced",
+                    op: "AND",
+                    //approved: "*",
+                    source: "SDBM_SOURCE_" + scope.entry.source.id,
+                };
+                if (cat_lot_no.length >= 2) {
+                  query.catalog_or_lot_number_search = cat_lot_no                  
+                }
+                else {
+                  query.catalog_or_lot_number = cat_lot_no                  
+                }
                 if(cat_lot_no) {
                     $.ajax("/entries.json", {
-                        data: {
-                            search_field: "advanced",
-                            op: "AND",
-                            //approved: "*",
-                            source: "SDBM_SOURCE_" + scope.entry.source.id,
-                            catalog_or_lot_number_search: cat_lot_no
-                        },
+                        data: query,
                         success: function(data, textStatus, jqXHR) {
                             var results = data.results || [];
                             if(results.length > 0) {
