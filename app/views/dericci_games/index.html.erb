@@ -2,7 +2,7 @@
   <style>
     .huge {
       font-size: 72px;
-      color: #222;
+      color: #ae724a;
       line-height: 54px;
       letter-spacing: -2px;
       font-weight: bold;
@@ -36,11 +36,50 @@
       line-height: 0.9em;
       letter-spacing: -2px;
       text-align: right;
-      background: #333;
+      background: #306f63;
+      box-shadow: 4px 4px 0px #ae724a;
       color: white;
       margin-left: -16px;
       margin-top: 0px;
       padding-right: 8px;
+    }
+    .chart {
+      float: left;
+      width: 400px;
+      padding: 15px;
+    }
+    #piechart {
+      height: 100%;
+      margin-top: -35px;
+    }
+    .main-content h4 {
+      text-align: center;
+      font-weight: bold;
+      padding: 8px;
+    }
+    .progress {
+      margin-bottom: 0px;
+    }
+    .progress-bar-success {
+      background-color: #AE9A4A;
+    }
+    .progress-bar-warning {
+      background-color: #306F63;
+    }
+    .progress-bar-danger {
+      background-color: #7F8FA8;
+    }
+    .table td {
+      padding: 2px;
+    }
+    h4.banner {
+      box-shadow: none;
+      border-radius: 5px 0px 5px 0px;
+      width: calc(100% - 20px);
+      text-align: center;
+      margin-top: 2px;
+      color: white;
+      padding: 8px;
     }
   </style>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -58,21 +97,13 @@
         ['Unlinked (<%= unlinked = DericciRecord.count - (flagged + definite + possible) %>)', <%= unlinked %>],
         //['Sleep',    7]
       ]);
-      console.log(data);
+      //console.log(data);
 
       var options = {
-        title: 'The Wheel of Progress',
         colors: ["#AE9A4A", "#AE724A", "#7F8FA8", "#306F63"],
-        titleTextStyle: { 
-          color: "#222",
-          fontName: "Sarala",
-          fontSize: 21,
-          bold: true,
-          italic: false,
-          align: "center"
-        },
         sliceVisibilityThreshold: 0.0001,
         pieHole: 0.3,
+        backgroundColor: "transparent",
         legend: {
           alignment: "end",
           position: "bottom",
@@ -97,87 +128,116 @@
   <%= render partial: "breadcrumbs" %>
 <% end %>
 <div class="row">
-  <div class="col-sm-3"></div>
-  <div class="col-sm-6 text-center">
-    <h1 class='huge'><span class="special">The De Ricci Digitized Archive</span>Name Game </h1>  
+  <div class="col-sm-12 text-center">
+    <h1>The De Ricci Digitized Archive Name Game</h1>  
   </div>
-  <div class="col-sm-3"></div>
-</div>
-<div class="row">
-  <div class="col-sm-4">
-    <div id="piechart" style="width: 100%; height: 200px;"></div>
-  </div>
-  <div class="col-sm-4">
-    <p>The <strong>De Ricci Digitized Archive Name Game</strong> invites you to contribute to the database by matching cards from the <strong>De Ricci Digitized Archive</strong> to name records in the growing Schoenberg Database Name Authority.  To play, click <span class="btn btn-default btn-xs"><span class="glyphicon glyphicon-tower"></span> New Game</span>. You will be presented with a list of 15 names of collectors and repositories appearing in the archive.  You will be asked to perform one of the following actions:</p>
-    <div class="row">
-      <div class="col-xs-2 text-right">
-        <span class="glyphicon glyphicon-check lead text-success"></span>
-      </div>
-      <div class="col-xs-10">
-        <p><strong>Link To a Name</strong> - identify a name in the SDBM Name Authority and suggest that the two are linked</p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-2 text-right">
-        <span class="glyphicon glyphicon-flag lead text-danger"></span>
-      </div>
-      <div class="col-xs-10">
-        <p><strong>Flag as Needing Review</strong> - notify admin that this record needs to be refined before it can be accurately linked, e.g.</p>
-        <ul>
-          <li>It contains references to multiple possible names, and needs to be broken into several records</li>
-          <li>The names or information contained are not relevant or applicable to name records in the SDBM</li>
-        </ul>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-2 text-right">
-        <span class="glyphicon glyphicon-unchecked lead game-skipped"></span>
-      </div>
-      <div class="col-xs-10">
-        <p><strong>Skip Record</strong> - if you are unsure or don't have information to conclusively link or flag a name, skip it!</p>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-4 text-center">
-    <a href="/dericci_games/new" class="btn btn-default btn-lg text-center" style="width: 100%">
-      <span class="glyphicon glyphicon-tower"></span> New Game
-    </a>
-    <h3>My Games</h3>
+  <div class="col-sm-12 text-center">
+    <!-- request advancement -->
     <% if @games.count >= 5  && current_user.role != "admin" && current_user.role != "super_editor" %>
       <div class="alert alert-success">You have played <%= @games.count %> games!  <%= render partial: "shared/request_advancement" %></div>
     <% end %>
-    <table class="table table-responsive" style="max-height: 300px; overflow-y: scroll;">
-      <tbody>
-        <% if @games.reverse.each do |game| %>
-          <tr>
-            <td>
-              <%= link_to(dericci_game_path(game), class: 'btn btn-default btn-xs') do %>
-                <span class="glyphicon glyphicon-tower"></span>  <%= game.created_at.to_formatted_s(:long) %>
-              <% end %>
-            </td>
-            <td>
-              <div class="progress">
-                <div class="progress-bar progress-bar-success" role="progressbar" style="width:<%= game.completed.to_i %>%;">
-                  <%= game.completed.to_i %>% Completed
-                </div>
-                <div class="progress-bar progress-bar-warning" role="progressbar" style="width:<%= game.skipped.to_i %>%;">
-                  <%= game.skipped.to_i %>% Skipped
-                </div>
-                <div class="progress-bar progress-bar-danger" role="progressbar" style="width:<%= game.flagged.to_i %>%;">
-                  <%= game.flagged.to_i %>% Flagged
-                </div>
-                <% if game.skipped.to_i + game.completed.to_i <= 0 %>
-                  <span class="text-muted">Not started</span>
+    <!-- -->
+    <%= link_to new_dericci_game_path, class: 'btn btn-sm btn-default' do %>
+      <span class="glyphicon glyphicon-tower"></span> Start a <strong>New Game</strong>
+    <% end %>
+    <a data-toggle="collapse" data-target="#mygames" class="btn btn-sm btn-default">My Games <span class="badge"><%= @games.count %></span> <span class="caret"></span></a>
+    <div class="collapse" id="mygames">
+      <table class="table table-responsive text-left" style="max-height: 300px; overflow-y: scroll; margin-top: 5px;">
+        <tbody>
+          <% if @games.reverse.each do |game| %>
+            <tr>
+              <td>
+                <%= link_to(dericci_game_path(game), class: 'btn btn-default btn-xs') do %>
+                  <span class="glyphicon glyphicon-tower"></span> Resume 
                 <% end %>
-              </div>
-            </td>
-          </tr>
-        <% end.empty? %>
-          <tr>
-            <td colspan="3" class="text-center text-muted">You have not played any games yet.</td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+              </td>
+              <td>
+                <%= game.created_at.to_formatted_s(:long) %>
+              </td>
+              <td>
+                <div class="progress">
+                  <div class="progress-bar progress-bar-success" role="progressbar" style="width:<%= game.completed.to_i %>%;">
+                    <%= game.completed.to_i %>% Completed
+                  </div>
+                  <div class="progress-bar progress-bar-warning" role="progressbar" style="width:<%= game.skipped.to_i %>%;">
+                    <%= game.skipped.to_i %>% Skipped
+                  </div>
+                  <div class="progress-bar progress-bar-danger" role="progressbar" style="width:<%= game.flagged.to_i %>%;">
+                    <%= game.flagged.to_i %>% Flagged
+                  </div>
+                  <% if game.skipped.to_i + game.completed.to_i <= 0 %>
+                    <span class="text-muted">Not started</span>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end.empty? %>
+            <tr>
+              <td colspan="3" class="text-center text-muted">You have not played any games yet.</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="chart">
+      <h4 class="text-center">The Wheel of Progress</h4>
+      <div id="piechart" style="height: 400px; width: 100%;"></div>
+      <h4 class='banner' style="background: #009688;"><%= (users_count = DericciGame.group(:created_by).count.count) %> <%= "user".pluralize(users_count) %> <%= "is".pluralize(users_count) %> playing the Name Game!</h4>
+      <h4 class='banner' style="background: #8BC34A;"><%= (links_count = DericciLink.count) %> <%= "link".pluralize(links_count) %> <%= "has".pluralize(links_count) %> been suggested!</h4>
+      <h4 class='banner' style="background: #00bcd4;"><%= (flags_count = DericciRecordFlag.count) %> <%= "flag".pluralize(flags_count) %> <%= "has".pluralize(flags_count) %> been identified!</h4>
+    </div>
+     
+    <p>Seymour Montefiore Robert Rosso de Ricci (1881-1942) created over 60,000 index cards for his unfinished Bibliotheca Britannica Manuscripta project, all of which have been converted to pdf files to form the Seymour de Ricci Bibliotheca Britannica Manuscripta Digitized Archive. These cards contain a wealth of information about collectors, collections, sale results, former shelfmarks, bibliography, and many other notable things about manuscripts and their owners.  </p>
+     
+    <p>A section of the archive is dedicated to collectors and repositories and organized by name. We are working to link cards to associated names in the SDBM Name Authority (read more). We need your help! So, we’ve created the De Ricci Digitized Archive Name Game to encourage you, our user community members, to help us out.</p>
+     
+    <h4>Why Play?</h4>
+    <p>Play the Name Game to advance from Contributor to Editor. Good linking and flagging of records will help us evaluate your database skills and ability to recognize and sort through valuable data. Or, if you are already an editor, play because you will be making valuable connections between two great sources of information. You might even think it’s fun!</p>
+     
+    <h4>Rules of the Name Game</h4>
+    <p>The goal is to link De Ricci pdfs to corresponding Name Authority records. Each link must be reviewed by an Editor, Super Editor, or Admin (read more about user levels) before it will appear in the corresponding SDBM Name Authority record. Once a link is confirmed, it will appear in the corresponding SDBM Name Authority Record so that all users can easily access whatever information the De Ricci card contains. To advance from Contributor to Editor, you must complete 5 games. Once your games are complete, Admin will review your links, rejections, and skips for accuracy and then determine whether you qualify for advancement (read more about advancing here).</p>
+
+    <h5>
+      <strong>Got another idea for a data-enriching game? <%= link_to "Suggest one via the community forum!", thredded_path %></strong>
+    </h5>
+     
+    <h4>De Ricci Name Game Instructions</h4>
+
+    <ul>
+    <li>Click New Game. A new game will automatically load.</li>
+    <li>A list of 15 names appears in the left column. Click on a name to reveal the corresponding De Ricci card for that name.</li>
+    <li>Click the Find Name button to search the SDBM Name Authority for the name described in the De Ricci card. The name in its original De Ricci card format will automatically appear in the search box. Edit the name to search the database more fully. You may need to try several variations of the name to find it. </li>
+    <li>If you find the name, click Select within the search window.</li>
+    <li>If you do not find the name in the SDBM Name Authority, Close the search window. Click the > button to skip to the next name. It is highly unlikely that you will find a matching SDBM Name for every De Ricci card you receive in the game. If you don’t find a match, skip it!</li>
+    <li>Click Flag as Needing Review if you find a name that has been processed incorrectly, such as a De Ricci card that contains references to multiple names, or a name that doesn’t apply to the SDBM.</li>
+    <li>Click Submit to send your game results to the SDBM admins. Any matches that you found between the De Ricci cards and the SDBM Name Authority will be catalogued.</li>
+    <li>Access previous games by clicking on the game date on your My Games page.</li>
+    </ul> 
+     
+     
+    <h4>Game Results</h4>
+     
+    <p>Once an SDBM Admin has approved the match between an SDBM Name and a De Ricci card, that De Ricci card will be cited in the name’s record in the SDBM Name Authority. When this happens, that De Ricci card will no longer appear in the De Ricci Game. You will receive an email notifying you if one of the names you matched has been confirmed as reliable. Matched names contribute to your advancement from a Contributor to Editor user level.</p>
+     
+    <h4>FAQ</h4>
+     
+    <p><strong>I matched a De Ricci card to an SDBM Name during my game. But when I look at that Name record in the SDBM, I don’t see the De Ricci card reference. Why?</strong></p>
+    <p class='text-muted'>SDBM Admins must review every match between a De Ricci card and an SDBM Name. You will receive an email whenever a match you’ve made has been confirmed as reliable. Post in the SDBM Name Authority messageboard on the Forum if you would like a status update on names you have matched.</p>
+     
+    <p><strong>I found a name in a De Ricci card that isn’t in the SDBM Name Authority, but it should be. How do I add it to the SDBM? </strong></p>
+    <p class="text-muted">At this time, we have not provided an avenue for users to accomplish this. Names in the SDBM Name Authority are connected to entries and sources within the SDBM, whereas many of the sources described in the De Ricci Archive have not been entered into the SDBM yet. We are working on a solution to this problem.</p>
+     
+    <p><strong>How many times do I have to play the game in order to advance user levels within the SDBM?</strong></p>
+    <p class="text-muted">You must play at least 5 games before the SDBM Admins review your user level. Keep in mind that user advancement is only partially determined by the quality of your De Ricci games. Your other work in the SDBM also contributes to your user level. The SDBM admins advance a user only when they have appropriately demonstrated their understanding of the SDBM. Contact the SDBM admins if you want to request an advancement.</p>
+     
+    <p><strong>What do I do if I’m not sure about a match between a De Ricci card and an SDBM Name? </strong></p>
+    <p class="text-muted">Skip it! The name will continue to appear in other games, where it can be matched later. You can access your previous games anytime from the game homepage to return to names that you skipped.</p>
+     
+    <p><strong>Why are most of the names referenced in the De Ricci cards not in the SDBM Name Authority?</strong></p>
+    <p class="text-muted">Names appear in the SDBM Name Authority because they appear in entries and sources in the SDBM. Many of the sources described in the De Ricci cards have not been entered into the SDBM yet.</p>
   </div>
 </div>

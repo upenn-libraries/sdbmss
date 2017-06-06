@@ -17,4 +17,6 @@
 
 ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.uncountable %w( provenance )
+  inflect.irregular 'is', 'are'
+  inflect.irregular 'has', 'have'
 end
