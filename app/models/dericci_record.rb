@@ -25,6 +25,8 @@ class DericciRecord < ActiveRecord::Base
       name: name,
       size: size,
       cards: cards,
+      url: url,
+      place: place,
       dates: dates
     }
     (results.select { |k, v| !v.blank? }).transform_keys{ |key| key.to_s.humanize }

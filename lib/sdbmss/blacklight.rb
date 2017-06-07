@@ -37,7 +37,7 @@ module Blacklight
         render_facet_limit(display_facet, options)
       end.compact, "\n")
     end
-
+    
   end
 end
 

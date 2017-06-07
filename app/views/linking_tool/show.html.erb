@@ -379,15 +379,15 @@ $(document).ready(function() {
                 "orderable": false,
                 "render": function (data, type, full, meta) {
                     var entryId = data[resultsTable.getColumnIndex("ID")];
-                    var manuscriptId = data[resultsTable.getColumnIndex("Manuscript")];
+                    var manuscripts = data[resultsTable.getColumnIndex("Manuscript")];
                     if(mode == 'by_entry') {
-                        if(manuscriptId) {
-                            return '<a href="#" data-manuscript-id="' + manuscriptId + '" class="link-to-manuscript-link">Link to SDBM_MS_' + manuscriptId + '</a>';
+                        if(manuscripts && manuscripts.length > 0) {
+                            return '<a href="#" data-manuscript-id="' + manuscripts[0].id + '" class="link-to-manuscript-link">Link to SDBM_MS_' + manuscripts[0].id + '</a>';
                         } else {
                             return '<a href="#" data-entry-id="' + entryId + '" class="add-entry-link">Add to queue</a>';
                         }
                     } else {
-                        if(!manuscriptId) {
+                        if(!manuscripts) {
                             return '<a href="#" data-entry-id="' + entryId + '" class="add-entry-link">Add SDBM_' + entryId + ' to manuscript record</a>';
                         }
                     }
@@ -402,8 +402,8 @@ $(document).ready(function() {
             // ajax and subsequent searchAndUpdateTable using
             // promises, but I can't figure that out right now
             var params = translateSearchParams(sdbmTable, dt_params); 
-            params["approved"] = "*";
-            params["deprecated"] = "false";
+            
+            params["linking_tool"] = true;
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {
                     $("#spinner").hide();

@@ -1,0 +1,73 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+    <!-- Mobile viewport optimization h5bp.com/ad -->
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <!-- Internet Explorer use the highest version available -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title><%= render_page_title %></title>
+
+    <link href="https://fonts.googleapis.com/css?family=Sarala" rel="stylesheet">
+    <style>
+      body {
+        font-family: Sarala, sans-serif;
+        color: white;
+        background: #374f73;
+      }
+      .container {
+        max-width: 800px;
+        margin: auto;
+        text-align: center;
+      }
+      .btn {
+        width: 100%;
+        background: white;
+        color: #333;
+        padding: 10px;
+        text-decoration: none;
+        border-radius: 5px;
+      }
+      .btn:hover, .btn:focus, .btn:active {
+        box-shadow: 2px 2px 5px -1px gray inset;
+      }
+      table {
+        width: 100%;
+        border-spacing: 10px 0px;
+      }
+      td, th {
+        width: 50%;
+      }
+      th {
+        text-align: right;
+      }
+      td {
+        text-align: left;
+      }
+    </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">
+      the NEW<br> 
+      Schoenberg Database of Manuscripts
+    </h1>
+    <div style="font-size: 160px; font-weight: bold; line-height: 132px;">
+      404
+    </div>
+    <p><b>Sorry!</b> The page you are looking for is no longer available on our new site.  The path and query information is preserved below.</p>
+    <div style="background: #688bbf; border-radius: 6px;"><%= flash[:announce] %></div>
+    <p>
+      <a class="btn" href="<%= @link %>">          
+        Enter The New Site          
+      </a>
+    </p>
+    <p class='text-muted text-left'>
+        The Schoenberg Database of Manuscripts  aggregates observations of pre-modern manuscripts drawn from over 12,000 auction and sales catalogues, inventories, catalogues from institutional and private collections, and other sources that document sales and locations of these books from around the world.
+    </p>
+  </div>
+</body>
+</html>

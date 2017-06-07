@@ -88,9 +88,10 @@ class EntriesController < SearchableAuthorityController
     @field_options = ["contains", "does not contain", "blank", "not blank"]
     @date_options = ["before", "after", "near", "exact"]    
 
-    if current_user.role != "admin"
-      params.merge!("draft" => ["false"], "draft_option" => ["with"])
-    end
+    params.merge!("role" => current_user.role)
+    #if current_user.role != "admin"
+    #  params.merge!("draft" => ["false"], "draft_option" => ["with"])
+    #end
 
     if params[:format] == 'csv'
       if current_user.downloads.count >= 5

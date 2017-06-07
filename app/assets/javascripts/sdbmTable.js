@@ -44,6 +44,16 @@
 
 var SDBM = SDBM || {};
 
+function relation (type) {
+    if (type == "partial") {
+        return "<span class='glyphicon glyphicon-asterisk'></span>";
+    } else if (type == "possible") {
+        return "<span class='glyphicon glyphicon-question-sign'></span>";
+    } else {
+        return "";
+    }
+}
+
 (function () {
 
     "use strict";
@@ -327,7 +337,9 @@ var SDBM = SDBM || {};
                     title: 'Manuscript',
                     render: function (data, type, full, meta) {
                         if(data) {
-                            return '<a href="/manuscripts/' + data + '/" target="_blank">SDBM_MS_' + data + '</a>';
+                            return data.map(function (d) {
+                                return '<a href="/manuscripts/' + d.id + '/" target="_blank">' + relation(d.relation) + ' SDBM_MS_' + d.id + '</a>';                                
+                            }).join(", ");
                         }
                         return '';
                     }
