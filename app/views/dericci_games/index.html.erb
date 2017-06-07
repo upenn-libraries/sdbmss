@@ -133,7 +133,7 @@
   </div>
   <div class="col-sm-12 text-center">
     <!-- request advancement -->
-    <% if @games.count >= 5  && current_user.role != "admin" && current_user.role != "super_editor" %>
+    <% if @games.count >= 10  && current_user.role != "admin" && current_user.role != "super_editor" %>
       <div class="alert alert-success">You have played <%= @games.count %> games!  <%= render partial: "shared/request_advancement" %></div>
     <% end %>
     <!-- -->

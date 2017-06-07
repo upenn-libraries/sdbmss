@@ -29,12 +29,13 @@
     .progress {
       height: 46px;
       margin-bottom: 0px;
-      min-width: 5%;
+      margin: 0px 15px 10px 15px;
     }
     .progress-bar {
       line-height: 46px;
       font-size: 18px;
       font-weight: bold;
+      min-width: 5%;
     }
     .glyphicon-blank {
       width: 14px;
@@ -45,6 +46,13 @@
     .game-skipped {
       color: #f0ad4e !important;
     }
+    .game-flagged {
+      color: #a94442 !important;
+    }
+    .btn-full {
+      width: calc(100% - 30px);
+      margin: 10px 15px 10px 15px;
+    }
     .my-btn-group {
       display: table;
       width: 100%;
@@ -52,6 +60,9 @@
     .my-btn-group .btn {
       float: none;
       display: table-cell;
+    }
+    .my-btn-group .btn-default {
+      border: none;
     }
     .my-btn-group .btn:last-child {
       width: 100%;
@@ -68,58 +79,51 @@
     .dl-dericci dt {
       color: white;
     }
+    .lead {
+      margin: 0px;
+    }
   </style>
 <% end %>
 <% content_for :breadcrumbs do %>
   <%= render partial: "breadcrumbs" %>
+  <li class="active"><a href="">Now Playing</a></li>
 <% end %>
-<div class="modal fade" id="instructions">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4><span class="glyphicon glyphicon-question-sign"></span> Welcome to the De Ricci Game!</h4>
-      </div>
-      <div class="modal-body">
-        <p>The <strong>De Ricci Game</strong> invites you to contribute to the database by matching cards from the <strong>De Ricci Digitized Archive</strong> to names in the growing Schoenberg Database Name Authority.  You will be presented with a list of 15 De Ricci records, and will be asked to perform one of the following actions:</p>
-        <div class="row">
-          <div class="col-xs-2 text-right">
-            <span class="glyphicon glyphicon-check lead text-success"></span>
-          </div>
-          <div class="col-xs-10">
-            <p><strong>Link To a Name</strong> - identify a name in the SDBM Name Authority and suggest that the two are linked</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-2 text-right">
-            <span class="glyphicon glyphicon-flag lead text-danger"></span>
-          </div>
-          <div class="col-xs-10">
-            <p><strong>Flag as Needing Review</strong> - notify admin that this record needs to be refined before it can be accurately linked, e.g.</p>
-            <ul>
-              <li>It contains references to multiple possible names, and needs to be broken into several records</li>
-              <li>The names or information contained are not relevant or applicable to names in the SDBM</li>
-            </ul>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-2 text-right">
-            <span class="glyphicon glyphicon-unchecked lead game-skipped"></span>
-          </div>
-          <div class="col-xs-10">
-            <p><strong>Skip Record</strong> - if you are unsure or don't have information to conclusively link or flag a name, skip it!</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+
 <input type="hidden" class="hidden" id="game_id" value="<%= @game.id %>">
 <div data-ng-controller="DericciGameCtrl" data-ng-cloak>
-  <div class="row" style="margin-bottom: 10px;">
-    <div class="col-sm-2">
-      <div class="btn btn-default btn-lg text-center" data-toggle="modal" href="#instructions" data-target="#instructions" style="width: 100%;"><span class="glyphicon glyphicon-question-sign"></span> Instructions</div>
+  <div class="row">
+    <div class="col-sm-12 text-center">
+      <h4 data-toggle="collapse" data-target="#instructions"><span class="glyphicon glyphicon-question-sign"></span> Instructions <span class="caret"></span></h4>
     </div>
+  </div>
+  <div class="row collapse in" id="instructions" style="margin-bottom: 10px;">
+    <div class="col-sm-12 text-justify">
+      <p>The <strong class='lead'>De Ricci Name Game</strong> invites you to contribute to the database by matching cards from the <strong>De Ricci Digitized Archive</strong> to names in the growing <strong>Schoenberg Database Name Authority</strong>.  You will be presented with a list of 15 De Ricci records, and will be asked to perform one of the following actions:</p>
+    </div>
+    <div class="col-sm-2"></div>
     <div class="col-sm-8">
+      <p>
+        <span class="glyphicon glyphicon-check lead text-success"></span>
+        <strong>Link To a Name</strong> - identify a name in the SDBM Name Authority and suggest that the two are linked
+      </p>
+      <p>
+        <span class="glyphicon glyphicon-unchecked lead game-skipped"></span>
+        <strong>Skip Record</strong> - if you are unsure or don't have information to conclusively link or flag a name, skip it!
+      </p>
+      <p>
+        <span class="glyphicon glyphicon-flag lead text-danger"></span>
+        <strong>Flag as Needing Review</strong> - notify admin that this record needs to be refined before it can be accurately linked, e.g.
+      </p>
+      <ul>
+        <li>It contains references to multiple possible names, and needs to be broken into several records</li>
+        <li>The names or information contained are not relevant or applicable to names in the SDBM</li>
+        <li>The names does not exist in the SDBM Name Authority, but it should be added</li>
+      </ul>
+    </div>
+    <div class="col-sm-2"></div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4" style="padding-right: 0px;">
       <div class="progress">
         <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" 
         style="width: {{ progress.complete }}%;">
@@ -134,26 +138,25 @@
           {{ progress.flagged }}% Flagged
         </div>
       </div>
-    </div>
-    <div class="col-sm-2 text-right"><a href="" class="btn btn-primary btn-lg" style="width: 100%;" ng-class="{ 'disabled': progress.complete + progress.skipped + progress.flagged < 99 }" ng-click="save()">Submit</a></div>
-  </div>
-  <div class="row">
-    <div class="col-sm-5" style="padding-right: 0px;">
       <ul class="game-nav nav nav-pills nav-stacked">
         <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }">
           <span class="btn-group my-btn-group">
-            <a href="" class="btn btn-success btn-xs" ng-click="findName(record);"><span class="glyphicon glyphicon-search"></span> Find Name</a>
-            <a href="" class="btn btn-danger btn-xs" ng-click="flag(record)"><span class="glyphicon glyphicon-flag"></span> Flag</a>
-            <a href="" class="btn btn-warning btn-xs" ng-click="skip(record)"><span class="glyphicon glyphicon-chevron-right"></span> Skip</a>
-            <a href="" class="btn btn-default btn-xs one-line" ng-click="selectRecord(record)" ng-class="{ 'game-linked': isLinked(record), 'game-skipped': record.skipped, 'text-danger' : record.dericci_record_flags.length > 0 }">
+            <a href="" class="btn btn-success btn-xs" ng-click="findName(record);"><span class="glyphicon glyphicon-check"></span> Link</a>
+            <a href="" class="btn btn-danger btn-xs" ng-click="flag(record, 'Record needs to be broken up')"><span class="glyphicon glyphicon-flag"></span> N/A </a>
+            <a href="" class="btn btn-default btn-xs one-line" ng-click="selectRecord(record)" ng-class="{ 'game-linked': isLinked(record), 'game-skipped': record.skipped, 'game-flagged' : record.dericci_record_flags.length > 0 }">
               <span class="glyphicon glyphicon-blank" ng-class="{ 'glyphicon-check': isLinked(record), 'glyphicon-unchecked': record.skipped, 'glyphicon-flag' : record.dericci_record_flags.length > 0 }"></span>
+              <span class="badge">{{ record.cards }} card(s)</span>
               {{ record.name }}
             </a>
           </span>
         </li>
       </ul>
+      <a href="" class="btn btn-default btn-lg btn-full" ng-class="{ 'disabled': progress.complete + progress.skipped + progress.flagged < 99 }" ng-click="save()">
+        <span class="glyphicon glyphicon-ok-sign"></span>
+        Submit
+      </a>
     </div>
-    <div class="col-sm-7" style="padding-left: 0px;">
+    <div class="col-sm-8" style="padding-left: 0px;">
       <iframe id="current-card" ng-src="{{ current_url }}" frameborder="0" style="height: 400px; width: 100%; background: #525659; margin-bottom: -5px;">Hello!</iframe>
       <div class="row">
         <div class="col-sm-12">
@@ -181,11 +184,13 @@
 
             <dt>Senate House ID#</dt>
             <dd>{{ current_record.senate_house || "Unknown" }}</dd>
+ 
+            <div class="input-group textarea-group" style="padding: 4px;">
+              <textarea name="" id="" cols="30" rows="2" ng-model="current_record.comment" placeholder="Leave a comment here..." class="form-control"></textarea>
+            </div>
+   
           </dl>
     
-          <div class="input-group textarea-group" style="margin-bottom: 10px;">
-            <textarea name="" id="" cols="30" rows="2" ng-model="current_record.comment" placeholder="Leave a comment here..." class="form-control"></textarea>
-          </div>
 
           <div class="panel panel-default" ng-repeat="comment in current_record.comments">
             <div class="panel-body comment" ng-bind-html="comment.comment">

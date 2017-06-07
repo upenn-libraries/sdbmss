@@ -407,7 +407,7 @@ var BOOKMARK_SCOPE;
       $scope.findName = function (model) {
         $scope.name = {};
         $scope.selectRecord(model);
-        var modal = $modal.open({
+        $scope.modal = $modal.open({
           templateUrl: "selectNameAuthority.html",
           controller: "SelectNameAuthorityCtrl",
           resolve: {
@@ -416,10 +416,11 @@ var BOOKMARK_SCOPE;
             type: function () { return "is_author"; },
             base: function () { return model.name; }
           },
+          scope: $scope,
           size: 'lg'//,
           //backdrop: false
         });
-        modal.result.then( function (results) {
+        $scope.modal.result.then( function (results) {
           model.skipped = false;
           if ($scope.current_record.dericci_links.filter(function (dl) { return dl.name_id == $scope.name.id; }).length <= 0) {
             for (var i = 0; i < $scope.current_record.dericci_links.length; i++) {
@@ -448,23 +449,25 @@ var BOOKMARK_SCOPE;
         }
         $scope.next();
         $scope.setProgress();
+        $scope.modal.dismiss('cancel');
       };
       
-      $scope.flag = function (record) {
+      $scope.flag = function (record, reason) {
         // modal to choose reason from dropdown
         $scope.selectRecord(record);
-        $scope.current_flag = {};
-        $scope.flag_modal = $modal.open({
+        $scope.current_flag = {reason: reason};
+        /*$scope.flag_modal = $modal.open({
           templateUrl: "flagReason.html",
           scope: $scope,
           size: 'lg'
-        });
-        $scope.flag_modal.result.then( function (results) {
-          record.dericci_record_flags = [$scope.current_flag];
-          record.dericci_links = [];
-          $scope.next();
-          $scope.setProgress();
-        });
+        });*/
+        record.dericci_record_flags = [$scope.current_flag];
+        record.dericci_links = [];
+        $scope.next();
+        $scope.setProgress();
+        $scope.modal.dismiss('cancel');
+        /*$scope.flag_modal.result.then( function (results) {
+        });*/
       };
       $scope.next = function () {
         var i = ($scope.current_index + 1) % $scope.records.length;
