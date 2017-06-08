@@ -13,6 +13,9 @@
         </button>
       </div>
       <div class="modal-body">
+        <p>
+          Progress through the SDBM user levels to perform more advanced functions, such as: editing Manuscript Records, managing names in the SDBM Name Authority, and correcting legacy data. All users begin at the Contributor level. You must play at least ten De Ricci Name Games before you may request advancement.
+        </p>
         <h4 class="text-center">New SDBM User Levels:</h4>
           <ul class='list-group'>
             <li class='list-group-item <%= current_user.role == "contributor" ? "active" : "" %>'>
@@ -45,11 +48,16 @@
             </div>
             <div class="form-group row">
               <div class="col-sm-12">
-                <%= text_area_tag :message, '', class: "form-control", rows: 5, required: true, placeholder: "Enter any additional information or comments you would like to add..." %>
+                <%= text_area_tag :message, '', class: "form-control", rows: 5, required: true, placeholder: "Do you have questions or comments about user advancement? Tell us about them here." %>
               </div>
             </div>
             <div class="form-group row">
               <div class="col-sm-12"><%= submit_tag "Send Request", class: "form-control" %></div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 text-center">
+                An SDBM admin will review your work and contact you regarding your status.
+              </div>
             </div>
           <% end %>
       </div>
