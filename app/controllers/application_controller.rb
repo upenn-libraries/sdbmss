@@ -18,12 +18,15 @@ class ApplicationController < ActionController::Base
 
   helper_method :sdbmss_search_action_path
 
-  # register user activity
-  after_filter :user_activity
-
   rescue_from ActionController::InvalidAuthenticityToken do 
     reset_session
+    cookies.delete :_session_id
+    flash[:notice] = "Your session has expired; please re-enter your login information."
+    redirect_to root_path
   end
+
+  # register user activity
+  after_filter :user_activity
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :password, :password_confirmation, :remember_me) }
