@@ -21,6 +21,10 @@ class ApplicationController < ActionController::Base
   # register user activity
   after_filter :user_activity
 
+  rescue_from ActionController::InvalidAuthenticityToken do 
+    reset_session
+  end
+
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :password, :password_confirmation, :remember_me) }
     devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:login, :username, :email, :password, :remember_me) }
