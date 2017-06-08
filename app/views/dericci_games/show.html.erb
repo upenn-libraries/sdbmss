@@ -35,7 +35,7 @@
       line-height: 46px;
       font-size: 18px;
       font-weight: bold;
-      min-width: 5%;
+      min-width: 12%;
     }
     .glyphicon-blank {
       width: 14px;
@@ -126,15 +126,15 @@
     <div class="col-sm-4" style="padding-right: 0px;">
       <div class="progress">
         <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" 
-        style="width: {{ progress.complete }}%;">
+        style="width: {{ progressWidth('complete') }}%;">
           {{ progress.complete }}% Linked
         </div>
         <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" 
-        style="width: {{ progress.skipped }}%;">
+        style="width: {{ progressWidth('skipped') }}%;">
           {{ progress.skipped }}% Skipped
         </div>
         <div class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" 
-        style="width: {{ progress.flagged }}%;">
+        style="width: {{ progressWidth('flagged') }}%;">
           {{ progress.flagged }}% Flagged
         </div>
       </div>

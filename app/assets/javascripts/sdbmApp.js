@@ -404,6 +404,9 @@ var BOOKMARK_SCOPE;
         $scope.current_index = $scope.records.indexOf(record);
         $scope.current_url = $sce.trustAsResourceUrl($scope.current_record.url);
       };
+      $scope.progressWidth = function(key) {
+        return Math.min($scope.progress[key], 100 - (Math.max($scope.progress.skipped, 12) + Math.max($scope.progress.flagged, 12) + Math.max($scope.progress.complete, 12) - Math.max($scope.progress[key], 12)));
+      };
       $scope.findName = function (model) {
         $scope.name = {};
         $scope.selectRecord(model);
@@ -463,9 +466,12 @@ var BOOKMARK_SCOPE;
         });*/
         record.dericci_record_flags = [$scope.current_flag];
         record.dericci_links = [];
+        record.skipped = false;
         $scope.next();
         $scope.setProgress();
-        $scope.modal.dismiss('cancel');
+        if ($scope.modal) {
+          $scope.modal.dismiss('cancel');          
+        }
         /*$scope.flag_modal.result.then( function (results) {
         });*/
       };
