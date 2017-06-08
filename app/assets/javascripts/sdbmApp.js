@@ -455,6 +455,11 @@ var BOOKMARK_SCOPE;
         $scope.modal.dismiss('cancel');
       };
       
+      $scope.needsWork = function (record) {
+        return record.dericci_record_flags.filter(function (f) {
+          return f.reason == "Record needs to be broken up";
+        }).length > 0;
+      }
       $scope.flag = function (record, reason) {
         // modal to choose reason from dropdown
         $scope.selectRecord(record);

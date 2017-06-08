@@ -82,6 +82,17 @@
     .lead {
       margin: 0px;
     }
+    .broken-flag {
+      position: absolute;
+      width: 640px;
+      right: 10px;
+      margin-top: 10px;
+      margin-right: 15px;
+      opacity: 0.4;
+    }
+    .broken-flag:hover {
+      opacity: 1;
+    }
   </style>
 <% end %>
 <% content_for :breadcrumbs do %>
@@ -141,10 +152,9 @@
       <ul class="game-nav nav nav-pills nav-stacked">
         <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }">
           <span class="btn-group my-btn-group">
-            <a href="" class="btn btn-success btn-xs" ng-click="findName(record);"><span class="glyphicon glyphicon-check"></span> Link</a>
-            <a href="" class="btn btn-danger btn-xs" ng-click="flag(record, 'Record needs to be broken up')"><span class="glyphicon glyphicon-flag"></span> N/A </a>
+            <a href="" class="btn btn-success btn-xs" ng-click="findName(record);"><span class="glyphicon glyphicon-search"></span> Start Search</a>
             <a href="" class="btn btn-default btn-xs one-line" ng-click="selectRecord(record)" ng-class="{ 'game-linked': isLinked(record), 'game-skipped': record.skipped, 'game-flagged' : record.dericci_record_flags.length > 0 }">
-              <span class="glyphicon glyphicon-blank" ng-class="{ 'glyphicon-check': isLinked(record), 'glyphicon-unchecked': record.skipped, 'glyphicon-flag' : record.dericci_record_flags.length > 0 }"></span>
+              <span class="glyphicon glyphicon-blank" ng-class="{ 'glyphicon-check': isLinked(record), 'glyphicon-unchecked': record.skipped, 'glyphicon-flag' : record.dericci_record_flags.length > 0, 'glyphicon-warning-sign' : needsWork(record) }"></span>
               <span class="badge">{{ record.cards }} card(s)</span>
               {{ record.name }}
             </a>
@@ -157,6 +167,10 @@
       </a>
     </div>
     <div class="col-sm-8" style="padding-left: 0px;">
+      <p class="text-right text-danger">
+        Do you see any problems with this .pdf file or record information?
+        <a href="" class="btn btn-danger btn-xs" ng-click="flag(current_record, 'Record needs to be broken up')"><span class="glyphicon glyphicon-warning-sign"></span> Flag For Review</a>
+      </p>
       <iframe id="current-card" ng-src="{{ current_url }}" frameborder="0" style="height: 400px; width: 100%; background: #525659; margin-bottom: -5px;">Hello!</iframe>
       <div class="row">
         <div class="col-sm-12">
