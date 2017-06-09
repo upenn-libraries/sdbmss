@@ -18,11 +18,10 @@ class ApplicationController < ActionController::Base
 
   helper_method :sdbmss_search_action_path
 
-  #rescue_from ActionController::InvalidAuthenticityToken do 
-  #  reset_session
-  #  flash[:notice] = "Your session has expired; please re-enter your login information."
-  #  redirect_to root_path
-  #end
+  rescue_from ActionController::InvalidAuthenticityToken do 
+    flash[:notice] = "Your session has expired; please re-enter your login information."
+    redirect_to root_path
+  end
 
   # register user activity
   after_filter :user_activity
