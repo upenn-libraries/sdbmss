@@ -17,11 +17,15 @@
         <table class="table table-responsive sdbm-table">
             <%= render partial: "main", locals: { name: name } %>
     
-            <% if name.dericci_record %>
+            <% if name.dericci_records.count > 0 %>
             <tr><td>Verified De Ricci</td>
             <td>
-              <%= link_to dericci_record_path(name.dericci_record), class: 'btn btn-default btn-xs' do %>
-                <span class="glyphicon glyphicon-queen"></span> <%= name.dericci_record.name %>
+              <% name.dericci_records.each do |dericci_record| %>
+                <p>
+                  <%= link_to dericci_record_path(dericci_record), class: 'btn btn-default btn-xs' do %>
+                    <span class="glyphicon glyphicon-queen"></span> <%= dericci_record.name %>
+                  <% end %>
+                </p>
               <% end %>
             </td></tr>
             <% end %>

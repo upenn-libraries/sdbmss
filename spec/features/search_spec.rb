@@ -179,7 +179,7 @@ describe "Blacklight Search", :js => true do
   it "should load show Name page" do
     name = Name.last
     visit name_path(name)
-    expect(page).to have_xpath("//dd[contains(.,'#{name.public_id}')]")
+    expect(page).to have_content("#{name.public_id}")
   end
 
   it "should load show Manuscript page" do

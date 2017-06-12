@@ -120,12 +120,12 @@ describe "Manage entries", :js => true do
 
     expect(page.first("select[name='search_field']").all("option").length).to eq(39)
 
-    40.times do |i|
+
+    39.times do |i|
       page.first("input[name='search_value']").set "Test String"
-      option = page.first("select[name='search_field']").all("option")[i]
+      option = page.all("select[name='search_field'] option")[i]
       option.select_option
       find('#search_submit').click()
-      # puts "Option: #{option.value}, success"
     end
   end
 

@@ -87,7 +87,7 @@
                 <%= render partial: "activities/show_all", locals: {collapsed: true} %>
             </div>
             <div class="tab-pane fade in active" id="contributions">
-                <%= render partial: "tiles", locals: {records: @user.entries.last(10).reverse } %>
+                <%= render partial: "tiles", locals: {records: @user.entries.where(draft: false).last(10).reverse } %>
             </div>            
             <div class="tab-pane fade" id="analytics">
                 <%= render partial: "analytics" %>

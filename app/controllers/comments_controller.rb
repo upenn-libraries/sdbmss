@@ -12,7 +12,7 @@ class CommentsController < SearchableAuthorityController
   def create
     @comment = Comment.new(comment_params)
     @comment.save_by(current_user)
-    if defined?(@comment.commentable.created_by) && @comment.commentable.created_by != current_user
+    if defined?(@comment.commentable.created_by) && @comment.commentable.created_by != current_user && @comment.commentable.created_by
       @comment.commentable.created_by.notify(
         "#{current_user.to_s} has commented on #{@comment.commentable.public_id}",
         @comment, 
