@@ -404,6 +404,32 @@ var BOOKMARK_SCOPE;
         $scope.current_index = $scope.records.indexOf(record);
         $scope.current_url = $sce.trustAsResourceUrl($scope.current_record.url);
       };
+      $scope.getClass = function (record) {
+        if ($scope.isLinked(record)) return 'glyphicon-check';
+        else if (record.skipped) return 'glyphicon-unchecked';
+        else if ($scope.needsWork(record)) return 'glyphicon-warning-sign';
+        else if (record.dericci_record_flags.length > 0) return 'glyphicon-flag';
+        else return 'glyphicon-search';
+//        { 'glyphicon-check': isLinked(record), 'glyphicon-unchecked': record.skipped, 'glyphicon-flag' : record.dericci_record_flags.length > 0, 'glyphicon-warning-sign' : needsWork(record), 'glyphicon-search' : !record.skipped && record.dericci_record_flags.length <= 0 && !isLinked(record) }
+      };
+      $scope.unflag = function (record) {
+        record.dericci_record_flags = [];
+        $scope.next();
+      }
+      $scope.getText = function (record) {
+        if ($scope.isLinked(record)) return 'Linked';
+        else if (record.skipped) return 'Skipped';
+        else if ($scope.needsWork(record)) return 'Flagged';
+        else if (record.dericci_record_flags.length > 0) return 'Flagged';
+        else return 'Find';
+      };
+      $scope.getButton = function (record) {
+        if ($scope.isLinked(record)) return 'btn-success';
+        else if (record.skipped) return 'btn-warning';
+        else if ($scope.needsWork(record)) return 'btn-danger';
+        else if (record.dericci_record_flags.length > 0) return 'btn-info';
+        else return 'btn-primary';
+      };
       $scope.progressWidth = function(key) {
         return Math.min($scope.progress[key], 100 - (Math.max($scope.progress.skipped, 12) + Math.max($scope.progress.flagged, 12) + Math.max($scope.progress.complete, 12) - Math.max($scope.progress[key], 12)));
       };

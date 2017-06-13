@@ -58,10 +58,12 @@
     <div class="modal-footer">
         <div class='row'>
             <div class='col-sm-12 text-right'>
-                <span class='text-muted'>Can't find the name?</span>
-                <button class="btn btn-danger" ng-click="flag(current_record, 'Name is Out of Scope')"><span class="glyphicon glyphicon-flag"></span> Name is Out of Scope</button>
-                <button class="btn btn-danger" ng-click="flag(current_record, 'Name needs to be added to SDBM Name Authority')"><span class="glyphicon glyphicon-flag"></span> Name needs to be added to SDBM Name Authority</button>
-                <button class="btn btn-warning" ng-click="skip(current_record)"><span class="glyphicon glyphicon-chevron-right"></span> Skip</button>
+                <span class='text-muted'>Can't find the name? Should it be added to the SDBM Name Authority?</span>
+                <span class="btn-group">
+                    <button class="btn btn-info" ng-click="flag(current_record, 'Name is Out of Scope')">Yes</button>
+                    <button class="btn btn-warning" ng-click="flag(current_record, 'Name needs to be added to SDBM Name Authority')">No</button>
+                    <button class="btn btn-default" ng-click="skip(current_record)">Not Sure</button>
+                </span>
             </div>
         </div>
     </div>

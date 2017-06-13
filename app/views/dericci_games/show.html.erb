@@ -12,10 +12,14 @@
       box-shadow: 2px 1px 4px #393c3e inset;
       background: #525659;
       font-size: 22px;
-    }
+    }/*
     .game-nav > li.active a.btn:last-child {
       border-color: #525659;
       border-radius: 0px;
+      background: #525659;
+      color: white;
+    }*/
+    a.btn.active, a.btn.active:hover, a.btn.active:focus {
       background: #525659;
       color: white;
     }
@@ -50,7 +54,7 @@
       color: #a94442 !important;
     }
     .btn-full {
-      width: calc(100% - 30px);
+      width: calc(100% - 15px);
       margin: 10px 15px 10px 15px;
     }
     .my-btn-group {
@@ -61,14 +65,14 @@
       float: none;
       display: table-cell;
     }
-    .my-btn-group .btn-default {
+    /*.my-btn-group .btn-default {
       border: none;
-    }
-    .my-btn-group .btn:last-child {
+    }*/
+    /*.my-btn-group .btn:last-child {
       width: 100%;
       max-width: 100px;
       text-align: left;
-    }
+    }*/
     .dl-dericci {
       background: #525659;
       color: white;
@@ -92,6 +96,14 @@
     }
     .broken-flag:hover {
       opacity: 1;
+    }
+    .btn[disabled=disabled] {
+      opacity: 0.6;
+      -webkit-filter: grayscale(70%);
+      -ms-filter: grayscale(70%);
+      -moz-filter: grayscale(70%);
+      -o-filter: grayscale(70%);
+      filter: grayscale(70%);
     }
   </style>
 <% end %>
@@ -134,29 +146,16 @@
     <div class="col-sm-2"></div>
   </div>
   <div class="row">
-    <div class="col-sm-4" style="padding-right: 0px;">
-      <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" 
-        style="width: {{ progressWidth('complete') }}%;">
-          {{ progress.complete }}% Linked
-        </div>
-        <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" 
-        style="width: {{ progressWidth('skipped') }}%;">
-          {{ progress.skipped }}% Skipped
-        </div>
-        <div class="progress-bar progress-bar-danger progress-bar-striped" role="progressbar" 
-        style="width: {{ progressWidth('flagged') }}%;">
-          {{ progress.flagged }}% Flagged
-        </div>
-      </div>
-      <ul class="game-nav nav nav-pills nav-stacked">
+    <div class="col-sm-4" style="">
+      <p class='text-center'>Select a <span class='lead'>Record</span> and click <span class="lead text-primary"><span class="glyphicon glyphicon-search"></span> Find</span></p>
+      <ul class="game-nav nav nav-pills nav-stacked" style="margin-top: 15px;">
         <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }">
           <span class="btn-group my-btn-group">
-            <a href="" class="btn btn-success btn-xs" ng-click="findName(record);"><span class="glyphicon glyphicon-search"></span> Start Search</a>
-            <a href="" class="btn btn-default btn-xs one-line" ng-click="selectRecord(record)" ng-class="{ 'game-linked': isLinked(record), 'game-skipped': record.skipped, 'game-flagged' : record.dericci_record_flags.length > 0 }">
-              <span class="glyphicon glyphicon-blank" ng-class="{ 'glyphicon-check': isLinked(record), 'glyphicon-unchecked': record.skipped, 'glyphicon-flag' : record.dericci_record_flags.length > 0, 'glyphicon-warning-sign' : needsWork(record) }"></span>
-              <span class="badge">{{ record.cards }} card(s)</span>
+            <a href="" class="btn btn-default btn-sm one-line text-left" ng-class="{'active': current_record == record}" ng-click="selectRecord(record)">
               {{ record.name }}
+            </a>
+            <a href="" class="btn btn-sm" ng-class="getButton(record)" ng-disabled="record != current_record" ng-click="record == current_record ? findName(record) : ''" style="width: 90px;">
+              <span class="glyphicon" ng-class="getClass(record)"></span> {{ getText(record) }}
             </a>
           </span>
         </li>
@@ -166,10 +165,15 @@
         Submit
       </a>
     </div>
-    <div class="col-sm-8" style="padding-left: 0px;">
+    <div class="col-sm-8" style="">
       <p class="text-right text-danger">
-        Do you see any problems with this .pdf file or record information?
-        <a href="" class="btn btn-danger btn-xs" ng-click="flag(current_record, 'Record needs to be broken up')"><span class="glyphicon glyphicon-warning-sign"></span> Flag For Review</a>
+        Is there a problem with this .pdf file?
+        <a href="" class="btn btn-danger btn-xs" ng-click="flag(current_record, 'Record needs to be broken up')" ng-if="!needsWork(current_record)">
+          <span class="glyphicon glyphicon-warning-sign"></span> Flag For Review
+        </a>
+        <a href="" class="btn btn-default btn-xs" ng-click="unflag(current_record)" ng-if="needsWork(current_record)">
+          <span class="glyphicon glyphicon-warning-sign"></span> Unflag Record
+        </a>        
       </p>
       <iframe id="current-card" ng-src="{{ current_url }}" frameborder="0" style="height: 400px; width: 100%; background: #525659; margin-bottom: -5px;">Hello!</iframe>
       <div class="row">
