@@ -54,7 +54,11 @@
             </div>
             <div class="panel-body">
                 <ul>
-                    <li>VIAF-based Name Authority</li>
+                    <li>VIAF-based Name Authority 
+                        <% if (p = Page.where(name: "SDBM Name Authority").last) %>
+                            <%= link_to("(Read More)", page_path(p)) %>
+                        <% end %>
+                    </li>
                     <li>Enhanced Provenance data</li>
                     <li>Create Groups to collaborate with other users</li>
                     <li>Communicate with other users via private messages or public forum</li>
