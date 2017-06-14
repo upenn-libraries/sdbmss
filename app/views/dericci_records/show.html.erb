@@ -28,8 +28,8 @@
 <div class="row">
   <% @record.dericci_record_flags.each do |flag| %>
     <div class="col-sm-12">
-      <div class="alert alert-danger">
-        <strong><span class="glyphicon glyphicon-flag"></span> Flagged - </strong>
+      <div class="alert <%= DericciRecordFlag.reasons.include?(flag.reason) ? 'alert-info' : 'alert-danger' %>">
+        <strong><span class="glyphicon <%= DericciRecordFlag.reasons.include?(flag.reason) ? 'glyphicon-flag' : 'glyphicon-warning-sign' %>"></span> Flagged - </strong>
         <%= flag.reason %>
         <strong> - <%= link_to flag.created_by.to_s, profile_path(flag.created_by.username) %></strong>
       </div>
