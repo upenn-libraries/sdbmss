@@ -1,6 +1,6 @@
 <script type="text/ng-template" id="selectNameAuthority.html">
     <div class="modal-header">
-        <h3 class="modal-title text-center">Find '{{ current_record.name }}' in SDBM Name Authority</h3>
+        <h3 class="modal-title text-center">Find '{{ nameSearchString }}' in SDBM Name Authority</h3>
         <form class='input-group' ng-submit="autocomplete()">
             <input autofocus type="text" id="searchNameAuthority" class="form-control search-form" ng-model="nameSearchString">
             <span class='input-group-btn'>
@@ -32,7 +32,7 @@
                         <td colspan="9">{{ warning }}</td>
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index" >
-                        <td><a class='selectName btn btn-success btn-sm' ng-click='selectSuggestion(s)'>Link</a></td>
+                        <td><a class='selectName btn btn-success btn-sm' ng-click='selectSuggestion(s)'><span class='glyphicon glyphicon-check'></span> Link</a></td>
                         <td class='text-left'><a href="/names/{{ s.id }}" target="_blank">{{ s.name }}</a></td>
                         <td>{{ s.viaf_id }}</td>
                         <td>{{ s.authors_count }}</td>

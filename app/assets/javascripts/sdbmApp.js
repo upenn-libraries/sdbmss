@@ -469,13 +469,13 @@ var BOOKMARK_SCOPE;
         return record && $scope.actualLinks(record).length > 0;
       };
       $scope.actualLinks = function (record) {
-        return record && record.dericci_links.filter(function (l) { return l.name_id; });
+        return record && record.dericci_links.filter(function (l) { return l.name_id && !l._destroy; });
       };
       $scope.skip = function (model) {
         $scope.selectRecord(model);
-        if ($scope.actualLinks(model) <= 0 && model.dericci_record_flags.length <= 0) {
-          model.skipped = true;
-        }
+        model.dericci_links = [];
+        model.dericci_record_flags = [];
+        model.skipped = true;
         $scope.next();
         $scope.setProgress();
         $scope.modal.dismiss('cancel');
