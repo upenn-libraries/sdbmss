@@ -56,7 +56,7 @@
                 <ul>
                     <li>VIAF-based Name Authority 
                         <% if (p = Page.where(name: "SDBM Name Authority").last) %>
-                            <%= link_to("(Read More)", page_path(p)) %>
+                            <%= link_to("(Read More)", page_path(p.name)) %>
                         <% end %>
                     </li>
                     <li>Enhanced Provenance data</li>
