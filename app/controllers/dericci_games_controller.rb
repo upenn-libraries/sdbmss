@@ -32,7 +32,7 @@ class  DericciGamesController < ApplicationController
       game.update!(game_params)
       @transaction_id = PaperTrail.transaction_id
     end
-    flash[:success] = "Thank you for playing the Dericci Archives Game!"
+    flash[:success] = '<span class="glyphicon glyphicon-tower"></span><span class="glyphicon glyphicon-bishop"></span><span class="glyphicon glyphicon-queen"></span><span class="glyphicon glyphicon-pawn"></span>Thank you for playing the Dericci Archives Game!'.html_safe
     respond_to do |format|
       format.json { render json: {message: "Success!"} }
     end
@@ -51,7 +51,7 @@ class  DericciGamesController < ApplicationController
       :skipped, :completed, :flagged, :dericci_records_attributes => [:id, 
         dericci_links_attributes: [:id, :name_id, :other_info, :_destroy], 
         comments_attributes: [:commentable_id, :commentable_type, :comment],
-        dericci_record_flags_attributes: [:id, :reason]
+        dericci_record_flags_attributes: [:id, :reason, :_destroy]
       ])
     # this incredibly inelegant solution is here because for some reason deep_merge would not do what it was supposed to...
     if p[:dericci_records_attributes]

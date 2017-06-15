@@ -156,13 +156,13 @@
               </td>
               <td>
                 <div class="progress">
-                  <div class="progress-bar progress-bar-success" role="progressbar" style="width:<%= game.completed.to_i %>%;">
+                  <div class="progress-bar progress-bar-success" role="progressbar" style="width:<%= game.completed.to_i.floor %>%;">
                     <%= game.completed.to_i %>% Completed
                   </div>
-                  <div class="progress-bar progress-bar-warning" role="progressbar" style="width:<%= game.skipped.to_i %>%;">
+                  <div class="progress-bar progress-bar-warning" role="progressbar" style="width:<%= game.skipped.to_i.floor %>%;">
                     <%= game.skipped.to_i %>% Skipped
                   </div>
-                  <div class="progress-bar progress-bar-danger" role="progressbar" style="width:<%= game.flagged.to_i %>%;">
+                  <div class="progress-bar progress-bar-danger" role="progressbar" style="width:<%= game.flagged.to_i.ceil %>%;">
                     <%= game.flagged.to_i %>% Flagged
                   </div>
                   <% if game.skipped.to_i + game.completed.to_i <= 0 %>

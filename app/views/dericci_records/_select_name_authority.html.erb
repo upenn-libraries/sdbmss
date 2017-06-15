@@ -58,11 +58,8 @@
     <div class="modal-footer">
         <div class='row'>
             <div class='col-sm-12 text-right'>
-                <span class='text-muted'>Can't find the name? Should it be added to the SDBM Name Authority?</span>
                 <span class="btn-group">
-                    <button class="btn btn-info" ng-click="flag(current_record, 'The names or information contained are not relevant or applicable to names in the SDBM')">Yes</button>
-                    <button class="btn btn-warning" ng-click="flag(current_record, 'The name described here should be added to the SDBM Name Authority')">No</button>
-                    <button class="btn btn-default" ng-click="skip(current_record)">Not Sure</button>
+                    <button class="btn btn-default" ng-click="cancel()">Cancel</button>
                 </span>
             </div>
         </div>

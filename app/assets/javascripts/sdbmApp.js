@@ -382,19 +382,24 @@ var BOOKMARK_SCOPE;
     sdbmApp.controller("DericciGameCtrl", function ($scope, $http, $modal, $sce) {
       EntryScope = $scope;
       $scope.records = [];
+
+      // the current position in the list, and the URL of the PDF to display
       $scope.current_record = undefined;
       $scope.current_url = "";
       $scope.current_index = 0;
+
+      // flag for avoiding multiple submits
       $scope.saving = false;
+
+      $scope.reasons = ["The names or information contained are not relevant or applicable to names in the SDBM", "The name described here should be added to the SDBM Name Authority"];
       $scope.gameID = $("#game_id").val();
-      $scope.progress = {complete: 0, skipped: 0};
+      $scope.progress = {complete: 0, skipped: 0, flagged: 0};
       $http.get("/dericci_games/" + $scope.gameID + ".json", {
       }).then(function (response) {
 //        console.log(response);
         $scope.records = response.data.dericci_records;
         $scope.current_url = $sce.trustAsResourceUrl($scope.records[0].url);
         $scope.current_record = $scope.records[0];
-        $scope.setProgress();
         $scope.initial = $scope.progress.complete;
       }, function(response) {
           alert("An error occurred when initializing the game.");
@@ -404,18 +409,14 @@ var BOOKMARK_SCOPE;
         $scope.current_index = $scope.records.indexOf(record);
         $scope.current_url = $sce.trustAsResourceUrl($scope.current_record.url);
       };
+      // display based on status of record in game
       $scope.getClass = function (record) {
         if ($scope.isLinked(record)) return 'glyphicon-check';
         else if (record.skipped) return 'glyphicon-unchecked';
         else if ($scope.needsWork(record)) return 'glyphicon-warning-sign';
         else if (record.dericci_record_flags.length > 0) return 'glyphicon-flag';
         else return 'glyphicon-search';
-//        { 'glyphicon-check': isLinked(record), 'glyphicon-unchecked': record.skipped, 'glyphicon-flag' : record.dericci_record_flags.length > 0, 'glyphicon-warning-sign' : needsWork(record), 'glyphicon-search' : !record.skipped && record.dericci_record_flags.length <= 0 && !isLinked(record) }
       };
-      $scope.unflag = function (record) {
-        record.dericci_record_flags = [];
-        $scope.next();
-      }
       $scope.getText = function (record) {
         if ($scope.isLinked(record)) return 'Linked';
         else if (record.skipped) return 'Skipped';
@@ -430,9 +431,24 @@ var BOOKMARK_SCOPE;
         else if (record.dericci_record_flags.length > 0) return 'btn-info';
         else return 'btn-primary';
       };
-      $scope.progressWidth = function(key) {
-        return Math.min($scope.progress[key], 100 - (Math.max($scope.progress.skipped, 12) + Math.max($scope.progress.flagged, 12) + Math.max($scope.progress.complete, 12) - Math.max($scope.progress[key], 12)));
+      // remove flag
+      $scope.unflag = function (record) {
+        $scope.remove_flags(record);
+        $scope.next();
       };
+      // remove ALL flags
+      $scope.remove_flags = function (record) {
+        for (var i = 0; i < record.dericci_record_flags.length; i++) {
+          record.dericci_record_flags[i]._destroy = true;
+        }
+      };
+      // remove ALL links
+      $scope.remove_links = function (record) {
+        for (var i = 0; i < record.dericci_links.length; i++) {
+          record.dericci_links[i]._destroy = true;
+        }
+      };
+      // open name select modal
       $scope.findName = function (model) {
         $scope.name = {};
         $scope.selectRecord(model);
@@ -446,8 +462,7 @@ var BOOKMARK_SCOPE;
             base: function () { return model.name; }
           },
           scope: $scope,
-          size: 'lg'//,
-          //backdrop: false
+          size: 'lg'
         });
         $scope.modal.result.then( function (results) {
           model.skipped = false;
@@ -457,59 +472,70 @@ var BOOKMARK_SCOPE;
             }
             $scope.current_record.dericci_links.push({name_id: $scope.name.id, name: $scope.name.name});
             // remove 'flagged'
-            $scope.current_record.dericci_record_flags = [];
+            console.log('mhmmham');
+            $scope.remove_flags(model);
             $scope.next();
-            $scope.setProgress();
           } else {
             alert("You have already selected that name!");
           }
         });
       };
+      // helper methods for determining status
       $scope.isLinked = function (record) {
         return record && $scope.actualLinks(record).length > 0;
       };
       $scope.actualLinks = function (record) {
         return record && record.dericci_links.filter(function (l) { return l.name_id && !l._destroy; });
       };
-      $scope.skip = function (model) {
-        $scope.selectRecord(model);
-        model.dericci_links = [];
-        model.dericci_record_flags = [];
-        model.skipped = true;
-        $scope.next();
-        $scope.setProgress();
-        $scope.modal.dismiss('cancel');
-      };
-      
       $scope.needsWork = function (record) {
         return record.dericci_record_flags.filter(function (f) {
-          return f.reason == "Record needs to be broken up";
+          return !f._destroy && $scope.reasons.indexOf(f.reason) == -1;
         }).length > 0;
-      }
-      $scope.flag = function (record, reason) {
-        // modal to choose reason from dropdown
-        $scope.selectRecord(record);
-        $scope.current_flag = {reason: reason};
-        /*$scope.flag_modal = $modal.open({
+      };
+
+      $scope.skip = function (model) {
+        $scope.selectRecord(model);
+        $scope.remove_links(model);
+        $scope.remove_flags(model);
+        model.skipped = true;
+        $scope.next();
+        $scope.modal.dismiss('cancel');
+      };
+      // special 'reporting error' flag, requiring custom reason
+      $scope.flag_review = function (record) {
+        $scope.current_flag = {reason: "Record needs to be broken up"};
+        $scope.flag_modal = $modal.open({
           templateUrl: "flagReason.html",
           scope: $scope,
           size: 'lg'
-        });*/
-        record.dericci_record_flags = [$scope.current_flag];
-        record.dericci_links = [];
+        });
+        $scope.flag_modal.result.then(function (results) {
+          $scope.remove_flags(record);
+          record.dericci_record_flags.push($scope.current_flag);
+          $scope.remove_links(record);
+          record.skipped = false;
+          $scope.next();
+        });
+      };
+      // simple flag from name select modal
+      $scope.flag = function (record, reason) {
+        $scope.selectRecord(record);
+        $scope.current_flag = {reason: reason};
+        
+        $scope.remove_flags(record);
+        record.dericci_record_flags.push($scope.current_flag); 
+        $scope.remove_links(record);
         record.skipped = false;
         $scope.next();
-        $scope.setProgress();
         if ($scope.modal) {
           $scope.modal.dismiss('cancel');          
         }
-        /*$scope.flag_modal.result.then( function (results) {
-        });*/
       };
       $scope.next = function () {
         var i = ($scope.current_index + 1) % $scope.records.length;
         $scope.selectRecord($scope.records[i]);
       };
+      // no longer used, but kept for completeness
       $scope.prev = function () {
         var i = ($scope.records.length + $scope.current_index - 1) % $scope.records.length;
         $scope.selectRecord($scope.records[i]);
@@ -523,21 +549,24 @@ var BOOKMARK_SCOPE;
           } else {
             record.dericci_links.splice(i, 1);
           }
-          $scope.setProgress();
         }
       };
-      $scope.setProgress = function () {
-        $scope.progress = {
-          complete: Math.round(100 * ($scope.records.filter( function (r) { return $scope.isLinked(r); }).length / 15)),
-          skipped: Math.round(100 * ($scope.records.filter( function (r) { return r.skipped; }).length / 15)),
-          flagged: Math.round(100 * ($scope.records.filter( function (r) { return r.dericci_record_flags.length > 0; }).length / 15))
-        };
-      };
+      // used for enabling/disabling the game 'submit' button
+      $scope.canSubmit = function () {
+        return $scope.records.filter(function (r) {
+          return !$scope.isLinked(r) && !(r.dericci_record_flags.filter(function (f) { return !f._destroy;}).length > 0) && !r.skipped;
+        }).length <= 0;
+      }
       $scope.activeRecords = function(element) {
         return !element._destroy;
       };
 
       $scope.save = function () {
+        $scope.progress = {
+          completed: Math.floor( 100 * $scope.records.filter(function (r) { return $scope.isLinked(r); }).length / 15),
+          skipped: Math.floor( 100 * $scope.records.filter(function (r) { return r.skipped; }).length / 15),
+          flagged: Math.ceil( 100 * $scope.records.filter(function (r) { return r.dericci_record_flags.filter(function (f) { return !f._destroy; }).length > 0 }).length / 15)
+        }
         var records = angular.copy($scope.records).filter( function (r) { return r.dericci_links.length > 0 || r.dericci_record_flags.length > 0; }).map( function (r) {
           r.dericci_links_attributes = r.dericci_links;
           if (r.dericci_links_attributes.length <= 0 ) r.dericci_links_attributes = ["null"];
@@ -545,9 +574,12 @@ var BOOKMARK_SCOPE;
             r.comments_attributes = [{comment: r.comment, commentable_type: "DericciRecord", commentable_id: r.id}];
           }
           r.dericci_record_flags_attributes = r.dericci_record_flags;
+          delete r.dericci_links;
+          delete r.comment;
+          delete r.dericci_record_flags;
           return r;
         });
-        $http.put("/dericci_games/" + $scope.gameID + ".json", { dericci_game: {id: $scope.gameId, skipped: $scope.progress.skipped, flagged: $scope.progress.flagged, completed: $scope.progress.complete, dericci_records_attributes: records} }).then(function (response) {
+        $http.put("/dericci_games/" + $scope.gameID + ".json", { dericci_game: {id: $scope.gameId, skipped: $scope.progress.skipped, flagged: $scope.progress.flagged, completed: $scope.progress.completed, dericci_records_attributes: records} }).then(function (response) {
           if (response.data.message == "Success!") {
             $scope.saving = true;
             window.location = "/dericci_games/";
