@@ -164,10 +164,10 @@
     <div class="col-sm-8" style="">
       <p class="text-right text-danger">
         Is there a problem with this .pdf file?
-        <a href="" class="btn btn-danger btn-xs" ng-click="flag_review(current_record)" ng-if="!needsWork(current_record)">
+        <a href="" class="btn btn-danger btn-xs" ng-click="flag_review(current_record)" ng-if="current_record && !needsWork(current_record)">
           <span class="glyphicon glyphicon-warning-sign"></span> Flag For Review
         </a>
-        <a href="" class="btn btn-default btn-xs" ng-click="unflag(current_record)" ng-if="needsWork(current_record)">
+        <a href="" class="btn btn-default btn-xs" ng-click="unflag(current_record)" ng-if="current_record && needsWork(current_record)">
           <span class="glyphicon glyphicon-warning-sign"></span> Unflag Record
         </a>        
       </p>

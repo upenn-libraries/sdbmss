@@ -32,7 +32,7 @@
                         <td colspan="9">{{ warning }}</td>
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index" >
-                        <td><a class='selectName btn btn-success btn-sm' ng-click='selectSuggestion(s)'><span class='glyphicon glyphicon-check'></span> Link</a></td>
+                        <td><a class='selectName btn btn-success btn-sm' id="select_name_{{ $index }}" ng-click='selectSuggestion(s)'><span class='glyphicon glyphicon-check'></span> Link</a></td>
                         <td class='text-left'><a href="/names/{{ s.id }}" target="_blank">{{ s.name }}</a></td>
                         <td>{{ s.viaf_id }}</td>
                         <td>{{ s.authors_count }}</td>

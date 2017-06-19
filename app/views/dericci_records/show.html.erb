@@ -75,7 +75,7 @@
               <span class="glyphicon glyphicon-queen"></span> <%= @record.verified.name %>
             <% end %>
           <% elsif can? :edit, @record %>
-            <div href="" ng-if="!name || !name.name" ng-click="findName(record)" class="btn btn-default btn-xs">Find Verified Name <span class="glyphicon glyphicon-plus"></span></div>
+            <a id="verify" href="" ng-if="!name || !name.name" ng-click="findName(record)" class="btn btn-default btn-xs">Find Verified Name <span class="glyphicon glyphicon-plus"></span></a>
             <div class="btn-group" ng-if="name && name.name">
               <a href="" class="btn btn-warning btn-xs">{{ name.name }}</a>
               <a href="" class="btn btn-default btn-xs" ng-click="remove()"><span class='glyphicon glyphicon-remove'></span></a>
@@ -92,9 +92,9 @@
         <td>
           <% if @record.dericci_links.group_by(&:name_id).each do |name_id, dericci_links| %>
               <% name = dericci_links.first.name %>            
-              <div class="btn btn-info btn-xs" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
+              <a href="" class="btn btn-info btn-xs" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
                 <%= name.name %> <span class="badge"><%= dericci_links.count %></span>
-              </div>
+              </a>
 
               <div class="modal fade" id="<%= name.public_id %>">
                 <div class="modal-dialog" role="document">

@@ -451,7 +451,7 @@ var BOOKMARK_SCOPE;
       // open name select modal
       $scope.findName = function (model) {
         $scope.name = {};
-        $scope.selectRecord(model);
+        //$scope.selectRecord(model);
         $scope.modal = $modal.open({
           templateUrl: "selectNameAuthority.html",
           controller: "SelectNameAuthorityCtrl",
@@ -472,7 +472,7 @@ var BOOKMARK_SCOPE;
             }
             $scope.current_record.dericci_links.push({name_id: $scope.name.id, name: $scope.name.name});
             // remove 'flagged'
-            console.log('mhmmham');
+            //console.log('mhmmham');
             $scope.remove_flags(model);
             $scope.next();
           } else {
