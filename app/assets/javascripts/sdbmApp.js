@@ -865,6 +865,98 @@ var BOOKMARK_SCOPE;
 
     });
 
+    sdbmApp.controller("ImportCtrl", function ($scope, $http, Entry, Source, sdbmutil, $modal) {
+      $scope.entries = [];
+      $scope.current = 0;
+
+      $scope.multifields = ["authors", "artists", "dates", "titles", "scribes", "materials", "uses", "places", "provenance"];
+      $scope.observed_name = {
+        titles: "title",
+        dates: "observed_date",
+        uses: "use",
+        materials: "material"
+      }
+      $scope.handleFile = function ($event) {
+        var input = $event.target;
+        $("#spinner-src").show();
+        if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+          alert('The File APIs are not fully supported in this browser.');
+          return;
+        }
+
+        if (!input) {
+          alert("Um, couldn't find the fileinput element.");
+        }
+        else if (!input.files) {
+          alert("This browser doesn't seem to support the `files` property of file inputs.");
+        }
+        else if (!input.files[0]) {
+          alert("Please select a file before clicking 'Load'");
+        }
+        else {
+          var file = input.files[0];
+          var fr = new FileReader();
+          fr.onload = function () {
+            var results = $.csv.toObjects(fr.result);
+            for (var i = 0; i < results.length; i++) {
+              var entry = new Entry(results[i]);
+              // split fields with potentially multiple values
+              for (var j = 0; j < $scope.multifields.length; j++) {
+                if (entry[$scope.multifields[j]]) {
+                  (function () {
+                    var key = $scope.observed_name[$scope.multifields[j]] || "observed_name";
+                    // rename for rails params (titles => entry_titles_attributes)
+                    var k = $scope.multifields[j] == "provenance" ? "provenance_attributes" : "entry_" + $scope.multifields[j] + "_attributes";
+                    entry[k] = $.csv.toArray(entry[$scope.multifields[j]], {separator: ";"}).map( function (f) {
+                      var r = {};
+                      r[key] = f;
+                      return r;
+                    });
+                    delete entry[$scope.multifields[j]];
+                  })()
+                }
+              }
+              // since alt_size has to be in a finite set of options, need to remove it HERE if not (causes validation error)
+              if (!entry.alt_size || entry.alt_size.length <= 0) delete entry["alt_size"];
+
+              // languages require an authority name; there is no 'as recorded' -> need to figure THIS out
+              delete entry["languages"];
+
+              entry.source = $scope.source;
+              entry.source_id = $scope.source.id;
+              $scope.entries.push(entry);
+            }
+            $scope.$apply(function () {
+              $("#spinner-src").hide();
+            });
+          };
+          fr.readAsText(file);
+        }
+      };
+
+      $scope.selectSourceModal = function () {
+        var modal = $modal.open({
+            templateUrl: "selectSource.html",
+            controller: "SelectSourceCtrl",
+            resolve: {
+                  model: function () { return $scope },
+                  type: function () { return null },
+                  base: ""
+            },
+            size: 'lg'
+        });
+      };
+
+      $scope.save = function () {
+        $http.post("/entries/upload.js", { entries: $scope.entries }).then(
+            function() {
+                sdbmutil.redirectToDashboard();
+            },
+            sdbmutil.promiseErrorHandlerFactory("There was an error marking source as Entered")            
+        );
+      };
+    });
+
     /* Entry screen controller */
     sdbmApp.controller("EntryCtrl", function ($scope, $http, $filter, Entry, Source, sdbmutil, $modal) {
 
@@ -1836,6 +1928,23 @@ var BOOKMARK_SCOPE;
           }
         }, true);
 
+      }
+    });
+
+    // detect changes to file input element (not otherwise implemented with ng-change in angularjs) -> taken from https://stackoverflow.com/questions/20146713/ng-change-on-input-type-file
+    sdbmApp.directive("ngUploadChange", function () {
+      return { 
+        scope: {
+            ngUploadChange:"&"
+        },
+        link: function($scope, $element, $attrs) {
+            $element.on("change",function(event){
+                $scope.ngUploadChange({$event: event})
+            })
+            $scope.$on("$destroy",function(){
+                $element.off();
+            });
+        }
       }
     });
 

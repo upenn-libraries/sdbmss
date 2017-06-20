@@ -33,6 +33,21 @@ class EntriesController < SearchableAuthorityController
 
   load_and_authorize_resource :only => [:index, :edit, :update, :destroy, :mark_as_approved, :deprecate]
 
+  def import
+  end
+
+  def upload
+    params["entries"].each do |param|
+      filter = entry_params_for_create_and_edit(param)
+      puts filter[:source_id]
+      Entry.create!(filter)
+    end
+
+    respond_to do |format|
+      format.js { render json: {error: "not implemented"}}
+    end
+  end
+
   def model_class
     Entry
   end
@@ -202,7 +217,7 @@ class EntriesController < SearchableAuthorityController
   def create
     success = false
     ActiveRecord::Base.transaction do
-      filtered = entry_params_for_create_and_edit
+      filtered = entry_params_for_create_and_edit(params)
       @entry = Entry.new(filtered)
       @entry.created_by_id = current_user.id
       @entry.source_id = params[:source_id]
@@ -284,7 +299,7 @@ class EntriesController < SearchableAuthorityController
     if params[:cumulative_updated_at].to_s == @entry.cumulative_updated_at.to_s
       ActiveRecord::Base.transaction do
 
-        filtered = entry_params_for_create_and_edit
+        filtered = entry_params_for_create_and_edit(params)
         success = @entry.update_by(current_user, filtered)
         if success
           if params[:new_comment].present?
@@ -520,7 +535,7 @@ class EntriesController < SearchableAuthorityController
     params[:id] = "Entry #{params[:id]}"
   end
 
-  def entry_params_for_create_and_edit
+  def entry_params_for_create_and_edit(params)
     # Note that we don't call require(:entry), which is the typical
     # Rails convention, because Rails' wrapped parameters feature
     # doesn't pick up the *_attributes fields that way.
