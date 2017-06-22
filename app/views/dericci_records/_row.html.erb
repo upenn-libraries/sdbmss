@@ -9,9 +9,11 @@
     <%= link_to record.name, dericci_record_path(record) %>
   </td>
   <td>
+    <% if current_user %>
     <span class="btn-group">
       <%= render partial: "nav/bookmark_watch_table", locals: {model: record} %>
     </span>
+    <% end %>
   </td>
   <td class="text-muted"><%= "#{record.cards} #{'card'.pluralize(record.cards)}" %></td>
   <td class="text-muted"><%= record.size %></td>

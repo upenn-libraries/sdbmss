@@ -3,22 +3,24 @@
   <%= javascript_include_tag "extras" %>
 <% end %>
 
-<% content_for :control_tools do %>
-  <%= render partial: "nav/bookmark_watch", locals: {model: @record} %>
-  <% if (s = Source.where(title: "De Ricci Digitized Archive").first) %>
+<% if current_user %>
+  <% content_for :control_tools do %>
+    <%= render partial: "nav/bookmark_watch", locals: {model: @record} %>
+    <% if (s = Source.where(title: "De Ricci Digitized Archive").first) %>
+      <li>
+        <%= link_to new_entry_path(source_id: s.id, url: request.original_url ) do %>
+          <span class="glyphicon glyphicon-plus"></span> Add Entry Based on De Ricci Record
+        <% end %>
+      </li>
+    <% end %>
+
+    <% if can? :manage, DericciRecord %>
     <li>
-      <%= link_to new_entry_path(source_id: s.id, url: request.original_url ) do %>
-        <span class="glyphicon glyphicon-plus"></span> Add Entry Based on De Ricci Record
+      <%= link_to(new_dericci_record_path) do %>
+        <span class="glyphicon glyphicon-plus"></span> New De Ricci Record
       <% end %>
     </li>
-  <% end %>
-
-  <% if can? :manage, DericciRecord %>
-  <li>
-    <%= link_to(new_dericci_record_path) do %>
-      <span class="glyphicon glyphicon-plus"></span> New De Ricci Record
     <% end %>
-  </li>
   <% end %>
 <% end %>
 
