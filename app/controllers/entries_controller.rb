@@ -27,7 +27,7 @@ class EntriesController < SearchableAuthorityController
   before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate, :verify, :personal_observation]
   include AddToGroup
 
-  before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy, :similar, :mark_as_approved, :deprecate]
+  before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy, :similar, :mark_as_approved, :deprecate, :import, :upload]
 
   respond_to :html, :json
 
