@@ -115,6 +115,8 @@ group :development do
   gem 'capistrano-rails', '~> 1.1.0'
   gem 'pry-rails'
 
+  gem 'pry-rails'
+
   # This can autogenerate ERD diagrams from ActiveRecord models and
   # schema. This causes problems when it's enabled for anything
   # besides running "bundle exec erd" (but I can't remember exactly

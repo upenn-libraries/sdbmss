@@ -16,7 +16,6 @@ class CatalogController < ApplicationController
   # Overrides Blacklight::Catalog#show to check for existence and send
   # 404 if necessary
   def show
-
     @entry = Entry.find_by(id: params[:id])
     entry = @entry
     # JIRA(sdbm-176)
@@ -27,11 +26,14 @@ class CatalogController < ApplicationController
     #  @entry_comment = EntryComment.new(entry: entry)
     #  @entry_comment.build_comment
         super
+        respond_to do |format|
+          format.html
+        end
       else
-        render_access_denied
+        render_access_denied      
       end
     else
-      render_404
+      render "not_found.html", status: 404
     end
   end
 
@@ -52,7 +54,35 @@ class CatalogController < ApplicationController
         end
       }
     end
-    #puts "********* #{current_search_session.inspect} *************"
+  end
+
+  def legacy
+    host = request.host
+    forwarded_host = request.env["HTTP_X_FORWARDED_SERVER"]
+    announcement = '<p class="text-center"><span class="h3">Welcome to the new Schoenberg Database of Manuscripts</span></p>'
+    entry_id = params[:id].to_s.include?('SCHOENBERG_') ? params[:id].to_s.gsub('SCHOENBERG_', '') : nil
+    if entry_id.present?
+      if Entry.exists? entry_id
+        announcement += "<p class='text-center'>SCHOENBERG_#{entry_id} no longer exists. It is now SDBM_#{entry_id} and may have been edited since the old SDBM was transferred to the new SDBM in October 2015. The old website is no longer active.</p>"
+      else
+        announcement += "<p class='text-center'>The page you are looking for cannot be found.  If you know the ID of the record you are looking for, try searching in the top search-bar.</p>"
+      end
+      flash[:announce] = announcement.html_safe
+      redirect_to entry_url(entry_id, host: forwarded_host), status: 301
+    elsif params[:path] == "index"
+      redirect_to root_url.gsub(host, forwarded_host)
+    elsif host != forwarded_host
+      announcement = %q(
+        <p><b>Original query paremeters </b></p>)
+      params.except(:controller, :action, :format).each do |key, value|
+        announcement += "<p><b>#{key}:</b> #{value}</p>"
+      end
+      flash.now[:announce] = announcement.html_safe
+      @link = root_url.gsub(host, forwarded_host)
+      @host = forwarded_host
+      # needs to render without normal layout
+      render "legacy", status: 404, layout: false
+    end
   end
 
   def do_csv_search(params, search_params_logic, download)

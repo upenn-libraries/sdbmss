@@ -345,7 +345,7 @@ class Entry < ActiveRecord::Base
     sale_buyer = (sale.get_buyers_names if sale && sale.get_buyers.count > 0)
     {
       id: id,
-      manuscript: manuscript ? manuscript.id : nil,
+      manuscript: entry_manuscripts.count > 0 ? entry_manuscripts.map{ |em| {id: em.manuscript_id, relation: em.relation_type} } : nil,
       groups: groups.map{ |group| [group.id, group.name] }.to_s,
       source_date: SDBMSS::Util.format_fuzzy_date(source.date),
       source_title: source.title,
@@ -892,22 +892,22 @@ class Entry < ActiveRecord::Base
   def self.fields
     [
       ["All Fields", "complete_entry"], 
-      ["Binding", "binding_search"], 
+      ["Source", "source_search"], 
       ["Catalog or Lot #", "catalog_or_lot_number_search"],
+      ["Selling Agent", "sale_selling_agent_search"], 
       ["Seller", "sale_seller_search"], 
       ["Buyer", "sale_buyer_search"], 
-      ["Selling Agent", "sale_selling_agent_search"], 
-      ["Source", "source_search"], 
       ["Institution", "institution_search"], 
       ["Title", "title_search"],
       ["Author", "author_search"], 
       ["Artist", "artist_search"], 
       ["Scribe", "scribe_search"], 
-      ["Place", "place_search"], 
+      ["Binding", "binding_search"], 
       ["Language", "language_search"], 
       ["Material", "material_search"], 
+      ["Place", "place_search"], 
+      ["Use", "use_search"],
       ["Provenance", "provenance_search"],
-      ["Use", "use_search"]
     ]
   end
 

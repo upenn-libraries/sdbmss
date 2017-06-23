@@ -100,6 +100,9 @@ module SolrSearchable
     limit = params[:limit].present? ? params[:limit].to_i : 50
     page = params[:limit] ? (params[:offset].to_i / params[:limit].to_i) + 1 : 1
     s_op = params[:op].present? ? params[:op] : 'AND'
+    role = params[:role].present? ? params[:role] : 'guest'
+
+    linking_tool = params[:linking_tool].present?
 
     options = options_for_search(params)
 
@@ -237,6 +240,11 @@ module SolrSearchable
         else
           params[:q] = ([params[:q]] + new_q).join(" #{s_op} ")
         end
+        if linking_tool
+          params[:q] += ' AND (_query_:"{!edismax qf=\'deprecated\'}false") AND (_query_:"{!edismax qf=\'approved\'}true") AND (_query_:"{!edismax qf=\'draft\'}false")'
+        elsif role != "admin" && self.model_name.to_s == 'Entry'
+          params[:q] += ' AND (_query_:"{!edismax qf=\'draft\'}false")'
+        end
       end
 
       # a CSV search is unpaginated, so the entire search results are returned
@@ -248,6 +256,7 @@ module SolrSearchable
       #end
 
       order.present? ? order_by(order[:field], order[:direction]) : order_by(:score, :desc)
+
     end
 
     return s

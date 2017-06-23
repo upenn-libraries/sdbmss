@@ -75,7 +75,7 @@
                             return '<div class="text-danger text-center bg-danger">This Record is DEPRECATED</div>';
                          } else {
                             var entryId = full[sdbmTable.getColumnIndex("ID")];
-                            var manuscriptId = full[sdbmTable.getColumnIndex("Manuscript")];
+                            var manuscriptId = full[sdbmTable.getColumnIndex("Manuscript")] ? full[sdbmTable.getColumnIndex("Manuscript")][0].id : null;
                             var linkingToolURL = manuscriptId ? '/linkingtool/manuscript/' + manuscriptId : '/linkingtool/entry/' + entryId;
 
                             var editable = full[sdbmTable.getColumnIndex("Can Edit")];
