@@ -14,7 +14,7 @@
           <li>Otherwise, click <span class="btn btn-default btn-xs">'Can’t find the name?'</span>.  You will be asked whether the name should be added to the SDBM Name Authority.</li>
           <ul>
             <li>If you think it should be in the SDBM Name Authority, click <span class="btn btn-xs btn-info">Yes</span> at the bottom of the search window. This action will flag the name in the De Ricci Digitized Archive, where SDBM Editors and Admins can add it to the Name Authority.</li>
-            <li>If the name shouldn’t be added, click <span class="btn btn-xs btn-warning">No</span>. Choose this option when the name cannot correspond to the <%= link_to "SDBM Naming Standards", page_path(Page.where(name: "SDBM Name Authority").first.to_s) %>. This action flags the name for review by SDBM Admins.</li>
+            <li>If the name shouldn’t be added, click <span class="btn btn-xs btn-warning">No</span>. Choose this option when the name cannot correspond to the <%= link_to "SDBM Naming Standards", page_path(name: Page.where(name: "SDBM Name Authority").first.to_s) %>. This action flags the name for review by SDBM Admins.</li>
             <li>If you’re unsure about which action to take, click <span class="btn btn-xs btn-default">Not Sure</span>. This option lets you skip the name. </li>
           </ul>
         </ul>
