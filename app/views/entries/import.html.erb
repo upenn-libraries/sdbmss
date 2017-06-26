@@ -1,0 +1,105 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "extras", media: "all" %>
+  <%= javascript_include_tag "extras" %>
+  <%= javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.8.3/jquery.csv.js" %>
+<% end %>
+
+<div ng-controller="ImportCtrl">
+
+  <div class="row">
+    <div class="col-sm-12">
+      <h1 class='text-center'>Bulk Import</h1>
+    </div>
+  </div>
+  
+  <div class="row" ng-if="!source">
+    <div class="col-sm-12 text-center"><a ng-click="selectSourceModal()" class="btn btn-default" id="select_source">Select/Create a Source</a></div>
+  </div>
+
+  <div class="source-info" ng-if="source">
+    <div class="source-container">
+      <div class="form-group row">
+        <div class="col-sm-8 label-alignment source-name">
+          <a href="/sources/{{ source.id }}">SDBM_SOURCE_{{ source.id }}</a> - {{ source.display_value }} ({{ source.source_type.display_name }})
+        </div>
+        <div class="col-sm-4 text-right">
+            <a href="" class="btn btn-danger" ng-click="selectSourceModal();">Change Source</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12">
+      <p>This is the place to import data into the SDBM.  Once your file has been examined, it will be presented for your inspection.</p>
+      <input type="file" class="form-control" id="file" ng-upload-change="handleFile($event)" ng-disabled="!source"></input>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="panel panel-default" style="position: absolute; top: 75px; right: 20px; max-width: 300px;">
+        <div class="panel-heading">
+          <h4>Upload</h4>
+        </div>
+        <div class="panel-body">
+          <p>
+            Have you reviewed the entries and verified that your data has accurately translated to our data model?  In that case, feel free to begin your 
+            <a href="" class="btn btn-default btn-sm" ng-click="save()">Upload</a>
+          </p>
+        </div>
+      </div>
+      <ul class="nav nav-tabs" style="margin-top: 10px;">
+        <li ng-repeat="entry in entries track by $index" ng-class="{ 'active' : $index == 0 }"><a href="#entry_{{ $index }}" data-toggle="tab" data-target="#entry_{{ $index }}">Entry {{ $index }}</a></li>      
+      </ul>
+      <span id="spinner-src" src="<%= asset_path "spinner.gif" %>" style="display: none;"></span>
+      <div class="tab-content">
+        <div ng-repeat="entry in entries track by $index" id="entry_{{ $index }}" class="tab-pane fade in" ng-class="{ 'active' : $index == 0 }">
+          <h4>Title(s)</h4>
+          <ul class="list-unstyled">
+            <li ng-repeat="title in entry.entry_titles_attributes">{{ title.title }}</li>
+          </ul>
+          <h4>Author(s)</h4>
+          <ul class="list-unstyled">
+            <li ng-repeat="author in entry.entry_authors_attributes">{{ author.observed_name }}</li>
+          </ul>
+          <h4>Date(s)</h4>
+          <ul class="list-unstyled">
+            <li ng-repeat="date in entry.entry_dates_attributes">{{ date.observed_date }}</li>
+          </ul>
+          <h4>Artist(s)</h4>
+          <ul class="list-unstyled">
+            <li ng-repeat="artist in entry.entry_artists_attributes">{{ artist.observed_name }}</li>
+          </ul>
+          <h4>Scribe(s)</h4>
+          <ul class="list-unstyled">
+            <li ng-repeat="scribe in entry.entry_scribes_attributes">{{ scribe.observed_name }}</li>
+          </ul>
+          <h4>Place(s)</h4>
+          <ul class="list-unstyled">
+            <li ng-repeat="place in entry.entry_places_attributes">{{ place.observed_name }}</li>
+          </ul>
+          <h4>Language(s)</h4>
+          <ul class="list-unstyled">
+            <li ng-repeat="language in entry.entry_languages_attributes">{{ language }}</li>
+          </ul>
+          <h4>Use(s)</h4>
+          <ul class="list-unstyled">
+            <li ng-repeat="use in entry.entry_uses_attributes">{{ use.use }}</li>
+          </ul>
+          <h4>Material(s)</h4>
+          <ul class="list-unstyled">
+            <li ng-repeat="material in entry.entry_materials_attributes">{{ material.observed_name }}</li>
+          </ul>
+          <h4>Provenance(s)</h4>
+          <ul class="list-unstyled">
+            <li ng-repeat="provenance in entry.provenance_attributes">{{ provenance.observed_name }}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= render "shared/select_source" %>
+<%= render "shared/create_source" %>

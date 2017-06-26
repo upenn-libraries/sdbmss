@@ -409,6 +409,13 @@ var BOOKMARK_SCOPE;
         $scope.current_index = $scope.records.indexOf(record);
         $scope.current_url = $sce.trustAsResourceUrl($scope.current_record.url);
       };
+
+      $scope.cantFind = function () {
+        $('.cantfind').toggleClass('in');
+        $('#cantfindtoggle').toggleClass('active');
+        $('#select-name-table td > a').toggleClass('disabled');
+      };
+
       // display based on status of record in game
       $scope.getClass = function (record) {
         if ($scope.isLinked(record)) return 'glyphicon-check';
@@ -426,15 +433,20 @@ var BOOKMARK_SCOPE;
       };
       $scope.getButton = function (record) {
         if ($scope.isLinked(record)) return 'btn-success';
-        else if (record.skipped) return 'btn-warning';
+        else if (record.skipped) return 'btn-default disabled';
         else if ($scope.needsWork(record)) return 'btn-danger';
-        else if (record.dericci_record_flags.length > 0) return 'btn-info';
+        else if (record.dericci_record_flags.length > 0) {
+          if (record.dericci_record_flags[0].reason == $scope.reasons[0])
+            return 'btn-warning';
+          else
+            return 'btn-info';
+        }
         else return 'btn-primary';
       };
       // remove flag
       $scope.unflag = function (record) {
         $scope.remove_flags(record);
-        $scope.next();
+        //$scope.next();
       };
       // remove ALL flags
       $scope.remove_flags = function (record) {
@@ -474,7 +486,7 @@ var BOOKMARK_SCOPE;
             // remove 'flagged'
             //console.log('mhmmham');
             $scope.remove_flags(model);
-            $scope.next();
+            //$scope.next();
           } else {
             alert("You have already selected that name!");
           }
@@ -498,7 +510,7 @@ var BOOKMARK_SCOPE;
         $scope.remove_links(model);
         $scope.remove_flags(model);
         model.skipped = true;
-        $scope.next();
+        //$scope.next();
         $scope.modal.dismiss('cancel');
       };
       // special 'reporting error' flag, requiring custom reason
@@ -514,7 +526,7 @@ var BOOKMARK_SCOPE;
           record.dericci_record_flags.push($scope.current_flag);
           $scope.remove_links(record);
           record.skipped = false;
-          $scope.next();
+          //$scope.next();
         });
       };
       // simple flag from name select modal
@@ -526,7 +538,7 @@ var BOOKMARK_SCOPE;
         record.dericci_record_flags.push($scope.current_flag); 
         $scope.remove_links(record);
         record.skipped = false;
-        $scope.next();
+        //$scope.next();
         if ($scope.modal) {
           $scope.modal.dismiss('cancel');          
         }

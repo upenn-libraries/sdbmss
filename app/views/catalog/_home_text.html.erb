@@ -19,7 +19,7 @@
 <div class="row">
     <div class="col-sm-12">
         <p>
-            <b>Welcome to the Schoenberg Database of Manuscripts (SDBM)!</b> The SDBM aggregates observations of pre-modern manuscripts drawn from over 12,000 auction and sales catalogues, inventories, catalogues from institutional and private collections, and other sources that document sales and locations of these books from around the world.
+            <b>Welcome to the Schoenberg Database of Manuscripts (SDBM)!</b> The SDBM aggregates observations of pre-modern manuscripts drawn from over 12,000 auction and sales catalogs, inventories, catalogs from institutional and private collections, and other sources that document sales and locations of these books from around the world.
         </p>
     </div>
     <div class="col-sm-12">
@@ -55,9 +55,7 @@
             <div class="panel-body">
                 <ul>
                     <li>VIAF-based Name Authority 
-                        <% if (p = Page.where(name: "SDBM Name Authority").last) %>
-                            <%= link_to("(Read More)", page_path(p.name)) %>
-                        <% end %>
+                        <%= link_to "(Read More)", page_path(Page.where(name: "SDBM Name Authority").first.to_s) %>                        
                     </li>
                     <li>Enhanced Provenance data</li>
                     <li>Create Groups to collaborate with other users</li>

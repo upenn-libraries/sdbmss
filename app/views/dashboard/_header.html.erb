@@ -6,8 +6,8 @@
     <div class="col-sm-12">
         <div class="well" style="">
             <div class="row">
-                <div class="col-sm-8">
-                    <div class='h2'><%= current_user.to_s %>'s Dashboard</div>                            
+                <div class="col-sm-7">
+                    <span class='h1'><%= current_user.to_s %>'s Dashboard</span>                            
                       <ul class="list-inline" style="margin-bottom: 0px;">
                         <li class=""><span class="btn btn-xs"><span class="glyphicon glyphicon-tag"></span> Tags</span> </li>
                         <% if current_user.tags.count <= 0 %>                            
@@ -30,14 +30,11 @@
                     </ul>
                 </div>
                 
-                <div class="col-sm-4 text-center">
-                    <div class="panel panel-defaul">
-                        <div class="panel-body">
-                            <h4 class="h4"><a href="/dericci_records">NEW: Browse the de Ricci Digitized Archives</a></h4>
-                            <p><a href="/dericci_games" class="btn btn-primary"><span class="glyphicon glyphicon-tower"></span> Play the de Recci Archive Game!</a></p>
-                        </div>
-                    </div>
+                <% if can? :index, DericciGame %>
+                <div class="col-sm-5 text-right">
+                    <p><a href="/dericci_games" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-tower"></span> Play the De Ricci Digitized Archive Game!</a></p>
                 </div>
+                <% end %>
             
             </div>            
         </div>

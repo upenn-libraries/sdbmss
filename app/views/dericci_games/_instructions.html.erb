@@ -1,0 +1,37 @@
+<div class="panel panel-default">
+  <div class="panel-heading text-center" data-toggle="collapse" data-target="#instructions">
+    <strong class='h4'><span class="glyphicon glyphicon-question-sign"></span> De Ricci Name Game Instructions <span class="caret"></span></strong>
+  </div>
+  <div class="panel-body panel-collapse collapse in" id="instructions">
+    <ol>
+      <% if newgame %>
+        <li>Click <span class='btn btn-default btn-xs'><span class="glyphicon glyphicon-tower"></span> Start a New Game</span> A new game of 15 De Ricci Cards will automatically load.</li>
+      <% end %>
+      <li>Click on a name in the left-side list to reveal the corresponding De Ricci card for that name.</li>
+      <li>Click the <span class="btn btn-xs btn-primary">Find</span> button to search the <strong>SDBM Name Authority</strong> for the name described in the De Ricci card. The name in its original De Ricci card format will automatically appear in the search window. Edit the name to search the database more fully. You may need to try several variations of the name to find it.
+        <ul>
+          <li>If you find the name, click <span class="btn btn-xs btn-success">Link</span>.</li>
+          <li>Otherwise, click <span class="btn btn-default btn-xs">'Can’t find the name?'</span>.  You will be asked whether the name should be added to the SDBM Name Authority.</li>
+          <ul>
+            <li>If you think it should be in the SDBM Name Authority, click <span class="btn btn-xs btn-info">Yes</span> at the bottom of the search window. This action will flag the name in the De Ricci Digitized Archive, where SDBM Editors and Admins can add it to the Name Authority.</li>
+            <li>If the name shouldn’t be added, click <span class="btn btn-xs btn-warning">No</span>. Choose this option when the name cannot correspond to the <%= link_to "SDBM Naming Standards", page_path(Page.where(name: "SDBM Name Authority").first.to_s) %>. This action flags the name for review by SDBM Admins.</li>
+            <li>If you’re unsure about which action to take, click <span class="btn btn-xs btn-default">Not Sure</span>. This option lets you skip the name. </li>
+          </ul>
+        </ul>
+      </li>
+      <li>Once you make your decision, the search window will disappear and the game will automatically load the next De Ricci card in the series. The button to the right of the previous name will now display your decision (Linked, Flagged, or Skipped). </li>
+      <li>To change your selection:
+        <ul>
+          <li>Click on the name. </li>
+          <li>Click on the button to the right, which displays your current decision. </li>
+          <li>The search window will open, allowing you to begin the search process again.</li>
+        </ul>
+      </li>
+      <li>
+        If you notice an issue with a De Ricci card .pdf file, click the <span class="btn btn-danger btn-xs">Flag for Review</span> button directly above the De Ricci card. Occasionally, you may find that a .pdf file was processed incorrectly, resulting in references to multiple names or a name that doesn’t apply to the SDBM. Choose this option to alert SDBM Admins to the problem.
+      </li>
+      <li>Once you’ve reviewed every name, click Submit to send your game results to the SDBM Admins. Any links that you created between the De Ricci cards and the SDBM Name Authority will be catalogued.</li>
+      <li>Access all of your previous games by clicking the My Games drop-down on your De Ricci Game homepage. Click the Resume button next to a game to open it. </li>
+    </ol> 
+  </div>
+</div>
