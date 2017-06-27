@@ -120,6 +120,7 @@ function relation (type) {
             // properly.
             // https://datatables.net/forums/discussion/24675/radio-button-checked-problem
             // 
+            // saves things like sorting, column visibility, etc. in localstorage
             stateSave: true,
             autoWidth: false,
             ajax: function (dt_params, callback, settings) {
@@ -193,7 +194,6 @@ function relation (type) {
         var the_table = this.dataTable;
         $('.wide').replaceWith('<a id="widescreen" class="btn btn-default" title="Widescreen View"><span class="glyphicon glyphicon-resize-full"></span></a>');
         $('#widescreen').click( function () {
-            // fix me: when we start wide, header columns break (in a big way), otherwise they just break in a SMALL way
             $("#main-container").toggleClass('container-fluid').toggleClass('container');
             $("#widescreen > span").toggleClass('glyphicon-resize-small').toggleClass('glyphicon-resize-full');
             if ($('#main-container').hasClass('container-fluid')) {
@@ -205,8 +205,8 @@ function relation (type) {
             //$('.sdbm-table').toggleClass('full-width');
             //$('.search_results').toggleClass('full-width');
         });
-        $('.spinner').replaceWith('<span id="spinner" style="display: none;"><img alt="working..." src="assets/spinner.gif"> loading...</span>');
-        $('.csv').replaceWith('<a id="export-csv" class="btn btn-default disabled" disabled="disabled" title="Export to CSV"><span class="glyphicon glyphicon-floppy-save"></span></a>');
+        $('.spinner').replaceWith('<span id="spinner" style="display: none;"><img alt="working..." src="' + $("#spinner-src").attr('src') + '"> loading...</span>');
+        $('.csv').replaceWith('<a id="export-csv" class="btn btn-default" title="Export to CSV"><span class="glyphicon glyphicon-floppy-save"></span></a>');
         $('.columns').replaceWith('<div class="btn-group">' + 
             '<a class="btn btn-default dropdown-toggle" title="Show/Hide Columns" data-toggle="dropdown"><span class="glyphicon glyphicon-edit"></span></a>' +
             '<div id="column-control" class="dropdown-menu list-group">' +
@@ -219,14 +219,19 @@ function relation (type) {
         var dropdown = $('#column-control');
         var num_columns = the_table.columns()[0].length;
         for (var i = 0; i < num_columns; i++) {
-            var option = $('<a class="dropdown-item list-group-item" index=' + i + '></a>');
-            option.html($('th').eq(i).html());
-            option.click( function (e) {
-                var n = Number($(this).attr('index'));
-                the_table.columns([n]).visible(!the_table.columns( [n]).visible()[0]);
-                $(this).toggleClass('disabled');
-            });
-            dropdown.append(option);
+            if (!sdbmTable.columns[i].never_show) {
+                var option = $('<a class="dropdown-item list-group-item" index=' + i + '></a>');
+                option.html(sdbmTable.columns[i].title);
+                if (!the_table.column(i).visible()) {
+                    option.addClass('disabled');
+                }
+                option.click( function (e) {
+                    var n = Number($(this).attr('index'));
+                    the_table.columns([n]).visible(!the_table.columns( [n]).visible()[0]);
+                    $(this).toggleClass('disabled');
+                });
+                dropdown.append(option);
+            }
         }
 
         if(this.options.fixedColumns) {
@@ -287,8 +292,8 @@ function relation (type) {
         return this.dataTable.rows().nodes().length * this.getRowHeight();
     };
 
-    SDBM.Table.prototype.reload = function() {
-        this.dataTable.ajax.reload();
+    SDBM.Table.prototype.reload = function(callback) {
+        this.dataTable.ajax.reload(callback);
     };
 
     // given a row that's an Array, find the value at the index for the columnName
@@ -604,14 +609,22 @@ function relation (type) {
                     orderable: false
                 },
                 {
+                    title: "Draft",
+                    visible: false,
+                    searchable: false,
+                    never_show: true
+                },
+                {
                     title: "Can Edit",
                     visible: false,
-                    searchable: false
+                    searchable: false,
+                    never_show: true
                 },
                 {
                     title: "BookmarkWatch",
                     visible: false,
-                    searchable: false
+                    searchable: false,
+                    never_show: true
                 }
             ]
         };
@@ -621,7 +634,9 @@ function relation (type) {
         $(selector).on('draw.dt', function () {
             sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
                 var data = sdbmTable.dataTable.row(row).data();
-                if(!data[sdbmTable.getColumnIndex("Is Approved")]) {
+                if (data[sdbmTable.getColumnIndex("Draft")]) {
+                    $(row).addClass('info draft');
+                } else if(!data[sdbmTable.getColumnIndex("Is Approved")]) {
                     $(row).addClass('warning unapproved');
                 }
 
@@ -714,6 +729,7 @@ function relation (type) {
                             result.approved,
                             result.deprecated,
                             result.superceded_by_id,
+                            result.draft,
                             result.can_edit,
                             result.bookmarkwatch
                         ];

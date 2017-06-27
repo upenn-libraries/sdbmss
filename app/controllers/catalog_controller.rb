@@ -11,23 +11,26 @@ class CatalogController < ApplicationController
   include CatalogControllerConfiguration
 
   #layout "home", :only => [:index]
+  #authorize_resource :only => [:show], :class => Entry
 
   # Overrides Blacklight::Catalog#show to check for existence and send
   # 404 if necessary
   def show
-   
-    #flash.now[:notice] = ""
     @entry = Entry.find_by(id: params[:id])
     entry = @entry
     # JIRA(sdbm-176)
 #    entry = Entry.find_by(id: params[:id], approved: true)
     if entry.present?
+      if can? :show, entry
+        flash.now[:notice] = "Note: This entry records a mention or observation of a manuscript in a source.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
     #  @entry_comment = EntryComment.new(entry: entry)
     #  @entry_comment.build_comment
-      super
-      
-      respond_to do |format|
-        format.html
+        super
+        respond_to do |format|
+          format.html
+        end
+      else
+        render_access_denied      
       end
     else
       render "not_found.html", status: 404
@@ -40,7 +43,16 @@ class CatalogController < ApplicationController
       format.atom {redirect_to feed_path(format: :rss) }
       format.html { super }
       format.json { super }
-      format.csv { super }
+      format.csv { 
+        if current_user.downloads.count >= 5
+          render json: {error: 'at limit'}
+          return
+        else
+          @d = Download.create({filename: "entries.csv", user_id: current_user.id})
+          CatalogController.new.delay.do_csv_search(params, search_params_logic, @d)
+          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count} 
+        end
+      }
     end
   end
 
@@ -71,6 +83,46 @@ class CatalogController < ApplicationController
       # needs to render without normal layout
       render "legacy", status: 404, layout: false
     end
+  end
+
+  def do_csv_search(params, search_params_logic, download)
+    # merge per-page params
+
+    page = 1
+    
+    objects = []
+    filename = download.filename
+    user = download.user
+    id = download.id
+    path = "/tmp/#{id}_#{user}_#{filename}"
+    headers = nil
+    
+    loop do
+      (@response, @document_list) = search_results(params.merge({:page => page, :per_page => 100}), search_params_logic)
+      #s = do_search(params.merge({:limit => 300, :offset => offset}))
+      page += 1
+      ids = @response.response["docs"].map { |doc| doc["entry_id"] }
+      #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
+      objects = Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash }
+      break if objects.first.nil?
+      csv_file = CSV.open(path, "ab") do |csv|
+        if headers.nil? && objects.first
+          headers = objects.first.keys
+          csv << headers
+        end
+        objects.each do |r|
+          csv << r.values 
+        end
+      end
+    end
+
+    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+      zipfile.add(filename, path)
+    end
+
+    File.delete(path) if File.exist?(path)
+
+    download.update({status: 1, filename: "#{filename}.zip"})
   end
 
   # This override sets username field when devise creates the guest

@@ -2,7 +2,7 @@
 # as possible, to facilitate using the same representation for
 # updating the database.
 
-json.(@entry, :id, :folios, :catalog_or_lot_number, :transaction_type, :folios, :num_columns, :num_lines, :height, :width, :alt_size, :manuscript_binding, :other_info, :manuscript_link, :miniatures_fullpage, :miniatures_large, :miniatures_small, :miniatures_unspec_size, :initials_historiated, :initials_decorated, :unverified_legacy_record, :deprecated, :superceded_by_id)
+json.(@entry, :id, :draft, :folios, :catalog_or_lot_number, :transaction_type, :folios, :num_columns, :num_lines, :height, :width, :alt_size, :manuscript_binding, :other_info, :manuscript_link, :miniatures_fullpage, :miniatures_large, :miniatures_small, :miniatures_unspec_size, :initials_historiated, :initials_decorated, :unverified_legacy_record, :deprecated, :superceded_by_id)
 
 json.cumulative_updated_at @entry.cumulative_updated_at
 
@@ -178,8 +178,11 @@ if @entry.comments.present?
   end
 end
 
-#json.bookmarked current_user.bookmarks.where(document: @entry).present?
-#json.watched current_user.watches.where(watched: @entry).present?
+if current_user
+  json.username current_user.username
+  json.user_id current_user.id
+  json.backup current_user.backup
+end
 
 if @bookmarks
   json.bookmarks = @bookmarks

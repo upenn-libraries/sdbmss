@@ -323,7 +323,7 @@ module CatalogControllerConfiguration
       config.add_search_field('price') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'sale_price' }
+        field.solr_local_parameters = { :qf => 'price' }
       end
 
       config.add_search_field('provenance_date', label: "Provenance Date") do |field|
@@ -438,7 +438,7 @@ module CatalogControllerConfiguration
       config.add_show_tools_partial(:linking_tool_by_manuscript, partial: 'nav/linking_tool_by_manuscript', if: :show_linking_tool_by_manuscript?)
       config.add_show_tools_partial(:deprecate_entry, partial: 'nav/deprecate_entry', if: :show_deprecate_entry?)
       config.add_show_tools_partial(:entry_history, partial: 'nav/entry_history', if: :show_entry_history_link?)
-      config.add_show_tools_partial(:export_csv, partial: 'nav/export_csv', if: :show_export_csv_link?)
+      #config.add_show_tools_partial(:export_csv, partial: 'nav/export_csv', if: :show_export_csv_link?)
       #config.add_show_tools_partial(:email)
       #config.add_show_tools_partial(:sms)
       #config.add_show_tools_partial(:citation)
@@ -456,6 +456,7 @@ module CatalogControllerConfiguration
     self.search_params_logic << :show_approved
     self.search_params_logic << :show_created_by_user
     self.search_params_logic << :show_deprecated
+    self.search_params_logic << :show_drafts
 
     self.search_params_logic << :translate_manuscript_date
     self.search_params_logic << :translate_provenance_date

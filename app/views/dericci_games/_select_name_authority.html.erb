@@ -1,15 +1,12 @@
 <script type="text/ng-template" id="selectNameAuthority.html">
     <div class="modal-header">
-        <h3 class="modal-title text-center">Find in Name Authority
-            <div class='form-inline'>
-            <form class='input-group' ng-submit="autocomplete()">
-                <input autofocus type="text" id="searchNameAuthority" class="form-control search-form" ng-model="nameSearchString">
-                <span class='input-group-btn'>
-                    <input type='submit' class='btn btn-default' value='Search' id='search-name'>Search</a>
-                </span>
-            </form>
-            </div>
-        </h3>
+        <h3 class="modal-title text-center">Find '{{ nameSearchString }}' in SDBM Name Authority</h3>
+        <form class='input-group' ng-submit="autocomplete()">
+            <input autofocus type="text" id="searchNameAuthority" class="form-control search-form" ng-model="nameSearchString">
+            <span class='input-group-btn'>
+                <input type='submit' class='btn btn-default' value='Search' id='search-name'>Search</a>
+            </span>
+        </form>        
     </div>
     <div class="modal-body form-horizontal compress-whitespace fit-screen">
 
@@ -19,7 +16,7 @@
                 <thead style="background: darkcyan; color: white;">
                     <tr>
                         <th></th>
-                        <th class='text-left'>Name</th>
+                        <th class='text-left'>SDBM Name</th>
                         <th>VIAF ID</th>
                         <th>As Author</th>
                         <th>As Artist</th>
@@ -35,7 +32,7 @@
                         <td colspan="9">{{ warning }}</td>
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index" >
-                        <td><a class='selectName btn btn-default btn-sm' ng-click='selectSuggestion(s)'>Select</a></td>
+                        <td><a class='selectName btn btn-success btn-sm' ng-click='selectSuggestion(s)'><span class='glyphicon glyphicon-check'></span> Link</a></td>
                         <td class='text-left'><a href="/names/{{ s.id }}" target="_blank">{{ s.name }}</a></td>
                         <td>{{ s.viaf_id }}</td>
                         <td>{{ s.authors_count }}</td>
@@ -60,10 +57,18 @@
     </div>
     <div class="modal-footer">
         <div class='row'>
-            <div class='col-sm-8 text-left'>                
+            <div class="col-sm-12 fade cantfind text-center">
+                <span class='text-muted'>Should '{{ nameSearchString }}' be added to the SDBM Name Authority?</span>
             </div>
-            <div class='col-sm-4'>
-                <button class="btn btn-warning" ng-click="cancel()">Close</button>
+            <div class='col-sm-3 text-left'>
+                <a href="" ng-click="cantFind()" id="cantfindtoggle" class="btn btn-default">Can't find the name?</a>
+            </div>
+            <div class="col-sm-9 fade text-right cantfind" id="">
+                <span class="btn-group">
+                    <button class="btn btn-info" ng-click="flag(current_record, 'The name described here should be added to the SDBM Name Authority')">Yes</button>
+                    <button class="btn btn-warning" ng-click="flag(current_record, 'The names or information contained are not relevant or applicable to names in the SDBM')">No</button>
+                    <button class="btn btn-default" ng-click="skip(current_record)">Not Sure</button>
+                </span>
             </div>
         </div>
     </div>

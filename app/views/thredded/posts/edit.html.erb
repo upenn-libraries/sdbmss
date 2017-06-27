@@ -1,0 +1,23 @@
+<% content_for :thredded_page_title, 'Edit Post' %>
+<% content_for :thredded_page_id, 'thredded--edit-post' %>
+<% content_for :thredded_breadcrumbs do %>
+  <ul class="thredded--navigation-breadcrumbs">
+    <li><%= link_to t('thredded.nav.all_messageboards'), messageboards_path %></li>
+    <li><%= link_to @post.postable.messageboard.name, messageboard_topics_path(@post.postable.messageboard) %></li>
+    <li><%= link_to @post.postable.title, topic_path(@post.postable) %></li>
+    <li><%= link_to t('thredded.nav.edit_post'), edit_post_path(@post) %></li>
+  </ul>
+<% end %>
+
+<%= thredded_page do %>
+  <section class="thredded--main-section">
+    <%= render 'thredded/posts/form',
+               messageboard: (messageboard unless @post.private_topic_post?),
+               topic:        topic,
+               post:         @post,
+               preview_url:  (@post.private_topic_post? ? private_topic_private_post_preview_path(@post.postable, @post)
+                                                        : messageboard_topic_post_preview_path(messageboard, @post.postable, @post)),
+               button_text:  t('thredded.posts.form.update_btn'),
+               button_submitting_text: t('thredded.posts.form.update_btn_submitting')%>
+  </section>
+<% end %>

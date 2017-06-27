@@ -29,11 +29,7 @@ describe "Linking Tool", :js => true do
   end
 
   before :each do
-    visit root_path
-    fill_in 'user_login', :with => @user.username
-    fill_in 'user_password', :with => 'somethingunguessable'
-    click_button 'Log in'
-    expect(page).to have_content 'Signed in successfully'
+    login(@user, 'somethingunguessable')
   end
 
   after :each do
@@ -43,7 +39,7 @@ describe "Linking Tool", :js => true do
   it "should load" do
     entry = Entry.last
 
-    visit linking_tool_by_entry_path id: entry.id
+    visit linking_tool_by_entry_path(id: entry.id)
     expect(page).to have_content("Entry Queue for creating Links")
     #expect(page).to have_content("Search for possible links")
 
@@ -120,9 +116,11 @@ describe "Linking Tool", :js => true do
     entry = Entry.find(2)
     visit linking_tool_by_entry_path id: entry.id
 
-    expect(page).to have_content("Add SDBM")
+    expect(page).to have_content("Link to SDBM")
     # use manuscript created in previous test
     first(".link-to-manuscript-link", visible: true).trigger('click')
+
+    click_button "Yes"
 
     expect(page).not_to have_content("Manage Entries")
     expect(page).to have_content("Manage Manuscripts")    
@@ -185,6 +183,7 @@ describe "Linking Tool", :js => true do
     expect(page).to have_content("Add SDBM_#{entry_id}")    
 #    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
 
+    SDBMSS::Util.wait_for_solr_to_be_current
     manuscript.reload
 
     entry_ids = manuscript.entries.map(&:id)
@@ -211,6 +210,7 @@ describe "Linking Tool", :js => true do
 #    expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
     manuscript.reload
 
+    SDBMSS::Util.wait_for_solr_to_be_current
     # remove the last entry
 
     expect(manuscript.entries.count).to eq(1)

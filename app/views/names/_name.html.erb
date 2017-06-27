@@ -8,34 +8,73 @@
 
     <div class="col-sm-6">
 
-        <dl class="document-show-heading dl-horizontal dl-invert">
-            <dt></dt>
-            <dd class='h2'><%= name.public_id %></dd>
-        </dl>
-        <%= render partial: "main", locals: { name: name } %>
+        <h3><%= name.public_id %></h3>
 
-        <dl class="document-metadata dl-horizontal dl-invert">
-            <dt>
-                Dericci Archive     
-            </dt>
-            <dd>
+        <div class="text-left" style="margin-bottom: 5px;">
+            <%= render partial: "ratings/rate", locals: {ratable: name} %>
+        </div>
+
+        <table class="table table-responsive sdbm-table">
+            <%= render partial: "main", locals: { name: name } %>
+    
+            <% if name.dericci_records.count > 0 %>
+            <tr><td>Verified De Ricci</td>
+            <td>
+              <% name.dericci_records.each do |dericci_record| %>
+                <p>
+                  <%= link_to dericci_record_path(dericci_record), class: 'btn btn-default btn-xs' do %>
+                    <span class="glyphicon glyphicon-queen"></span> <%= dericci_record.name %>
+                  <% end %>
+                </p>
+              <% end %>
+            </td></tr>
+            <% end %>
+            <tr><td>
+                Possible De Ricci     
+            </td>
+            <td>
                 <% if name.dericci_links.group_by(&:dericci_record_id).each do |dericci_record_id, dericci_links| %>
-                    <% if dericci_links.sum(&:reliability) > 3 %>
-                        <%= link_to dericci_links.first.dericci_record.name, dericci_record_path(dericci_links.first.dericci_record) %>
-                        <% dericci_links.each do |dl| %>
-                            <% if dl.other_info.present? %>
-                                <p><%= dl.other_info %></p>
+
+                    <% record = dericci_links.first.dericci_record %>
+
+                    <div class="btn btn-info btn-xs" data-toggle="modal" data-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
+                      <%= record.name %> <span class="badge"><%= dericci_links.count %></span>
+                    </div>
+
+                    <div class="modal fade" id="Dericci_<%= record.id %>">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-body">
+                            <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                            <p>This name has been linked to <%= link_to record.name, dericci_record_path(record) %> by </p>
+                              <% dericci_links.each do |dl| %>
+                                 <span class='btn btn-xs btn-default'>
+                                    <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
+                                  </span>
+                                  <% if dl.other_info.present? %>
+                                    <span class='text-muted'> <%= dl.other_info %></span>
+                                  <% else %>
+                                    <span class="text-muted"> no additional information provided</span>
+                                  <% end %>
+                                  <br>
+                              <% end %>                    
+                          </div>
+                          <div class="modal-footer text-center">                          
+                            <% if current_user && current_user.role == "admin" %>
+                                <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id), from_name: true), method: :delete, class: "btn btn-danger" %>
                             <% end %>
-                            <div class='text-right text-muted'>identified by <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by, up: true } %></div>
-                        <% end %>
-                    <% else %>
-                        <p class="text-muted">This name is not linked to any records in the De Ricci Archives.</p>
-                    <% end %>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                 <% end.empty? %>
                     <p class="text-muted">This name is not linked to any records in the De Ricci Archives.</p>
                 <% end %>
-            </dd>
-        </dl>
+            </td></tr>
+        </table>
     </div>
     <div class="col-sm-6">
         

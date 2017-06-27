@@ -190,21 +190,23 @@ class User < ActiveRecord::Base
   # override default searchable fields and results
 
   def self.fields
-    fields = super
-    fields.delete('name')
-    ['username'] + fields + ['fullname', 'email', 'role']
+    [
+      ["Username", 'username'],
+      ["Full Name", 'fullname'], 
+      ["Email", 'email'],
+      ["User Level", 'role']
+    ]
   end
 
   def self.filters  
-    filters = super
-    filters.delete('created_by')
-    filters.delete('updated_by')
-    filters + ['active']
+    [
+      ["Id", "id"]
+    ]
   end
 
   def self.dates
     dates = super
-    dates + ['last_sign_in_at']
+    dates + [["Last Seen", 'last_sign_in_at']]
   end
 
   def search_result_format

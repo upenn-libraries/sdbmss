@@ -6,11 +6,20 @@
             <a href="/accounts">Manage Accounts</a>
         </li>
     <% else %>
-        <li class="breadcrumb">
+        <li class="">
             <a href="/community">Community</a>
         </li>
     <% end %>
         <li class="  active"><a href=""><%= @user %></a></li>
+    <% if @user == current_user %>
+      <li><%= link_to main_app.edit_user_registration_path do %>My Settings <% end %></li>
+    <% elsif can?(:edit, @user) %>
+        <li class="edit_name">
+            <a href="<%= edit_account_path(@user) %>">
+                Edit User: <%= @user.username %>                
+            </a>
+        </li>
+    <% end %>
 <% end %>
 
 <% if can? :manage, User %>
@@ -29,33 +38,32 @@
 <div class="row">
     <div class="col-sm-4">
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-4">
-                        <div class="panel panel-default text-center" style="margin: 0px;">
-                            <div class="panel-body"><span class="glyphicon glyphicon-user"></span></div>
-                        </div>
-                    </div>
-                    <div class="col-xs-8">
-                        <span class="dropdown">
-                            <a href="" class="dropdown-toggle" data-toggle="dropdown">
-                              <%= @user.to_s %>
-                              <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                              <li><em style="padding: 20px;" class='text-muted'><span class="glyphicon glyphicon-briefcase"></span> <%= @user.role %></em></li>
-                              <li><a href="<%= new_private_message_path(user_id: [@user.id]) %>"><span class="glyphicon glyphicon-envelope"></span> Send Message</a></li>
-                              <% if current_user == @user %>
-                              <li><%= link_to edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
-                              <% end %>
-                            </ul>
-                          </span>
-                        <p class="text-muted">User Level: <em><%= @user.role %></em></p>
-                    </div>
+        <div class="panel panel-default" style="border-color: #374f73">
+            <div class="panel-heading" style="background: #374f73; border-color: #374f73;">
+                <div class="user-icon">
+                  <span class="glyphicon glyphicon-user"></span>
+                </div>
+                <div class="user-info">
+                  <span class="dropdown">
+                    <a href="" class="dropdown-toggle" data-toggle="dropdown" style="color: white;">
+                      <%= @user.to_s %>
+                      <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><em style="padding: 20px;" class='text-muted'><span class="glyphicon glyphicon-briefcase"></span> <%= @user.role %></em></li>
+                      <li><a href="<%= new_private_message_path(user_id: [@user.id]) %>"><span class="glyphicon glyphicon-envelope"></span> Send Message</a></li>
+                      <% if current_user == @user %>
+                      <li><%= link_to edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
+                      <% end %>                  
+                    </ul>
+                  </span><br>
+                  <span class="text-muted" style="color: #eee;" sdbm-tooltip="user_levels">User Level: <em><%= @user.role %></em></span>
                 </div>
             </div>
         </div>
+        <% if current_user == @user && @user.role != "admin" && @user.role != "super_editor" %>
+            <p><%= render partial: "shared/request_advancement" %></p>
+        <% end %>
 
         <p class="text-info"><%= @display[:email] %></p>
         <p class="text-muted"><%= @display[:biography] %></p>
@@ -69,6 +77,9 @@
         <ul class="ajax-tabs nav nav-tabs custom-tabs">
             <li class='active'><a data-toggle='tab' href="#contributions">Contributions</a></li>
             <li><a data-toggle='tab' href="#activity" href="">Activity</a></li>
+            <% if can? :edit, @user %>
+                <li><a data-toggle='tab' href="#analytics" href="">Analytics</a></li>
+            <% end %>
         </ul>
 
         <div class="tab-content">
@@ -76,7 +87,10 @@
                 <%= render partial: "activities/show_all", locals: {collapsed: true} %>
             </div>
             <div class="tab-pane fade in active" id="contributions">
-                <%= render partial: "tiles", locals: {records: @user.entries.last(10).reverse } %>
+                <%= render partial: "tiles", locals: {records: @user.entries.where(draft: false).last(10).reverse } %>
+            </div>            
+            <div class="tab-pane fade" id="analytics">
+                <%= render partial: "analytics" %>
             </div>
         </div>
     </div>

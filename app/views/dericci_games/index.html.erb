@@ -1,38 +1,243 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "extras" %>
+  <%= javascript_include_tag "extras" %>
+  <style>
+    .huge {
+      font-size: 72px;
+      color: #ae724a;
+      line-height: 54px;
+      letter-spacing: -2px;
+      font-weight: bold;
+    }
+    .stats {
+      font-size: 32px;
+      line-height: 30px;
+      color: darksalmon;
+      font-weight: bold;
+      font-variant: small-caps;
+    }
+    .btn-special {
+      width: 100%;
+      height: 100%;
+      font-size: 72px;
+      line-height: 56px;
+      padding-bottom: 15px;
+      color: white;
+      background: #333;
+      border: none;
+    }
+    .btn-special-sm {
+      font-size: 14px;
+      line-height: 14px;
+      padding-bottom: 4px;
+    }
+    .special {
+      display: inline-block;
+      font-size: 0.4em;
+      width: 172px;
+      line-height: 0.9em;
+      letter-spacing: -2px;
+      text-align: right;
+      background: #306f63;
+      box-shadow: 4px 4px 0px #ae724a;
+      color: white;
+      margin-left: -16px;
+      margin-top: 0px;
+      padding-right: 8px;
+    }
+    .chart {
+      float: left;
+      width: 400px;
+      padding: 15px;
+    }
+    #piechart {
+      height: 100%;
+      margin-top: -35px;
+    }
+    .indent {
+      padding-left: 25px;
+    }
+    .main-content h4 {
+      text-align: center;
+      font-weight: bold;
+      padding: 8px;
+    }
+    .progress {
+      margin-bottom: 0px;
+    }
+    .progress-bar-success {
+      background-color: #AE9A4A;
+    }
+    .progress-bar-warning {
+      background-color: #306F63;
+    }
+    .progress-bar-danger {
+      background-color: #7F8FA8;
+    }
+    .table td {
+      padding: 2px;
+    }
+    h4.banner {
+      box-shadow: none;
+      border-radius: 5px 0px 5px 0px;
+      width: calc(100% - 20px);
+      text-align: center;
+      margin-top: 2px;
+      color: white;
+      padding: 8px;
+    }
+  </style>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+
+      var data = google.visualization.arrayToDataTable([
+        ['Description', 'Proportion'],
+        ['Possibly Linked (<%= possible = DericciRecord.where({verified_id: nil}).joins(:dericci_links).group('dericci_records.id').count.count %>)', <%= possible %>],
+        ['Definitely Linked (<%= definite = DericciRecord.where.not(verified_id: nil).count %>)',  <%= definite %>],
+        ['In Progress (<%= flagged = DericciRecord.joins(:dericci_record_flags).group('dericci_records.id').count.count  %>)', <%= flagged %> ],
+        ['Unlinked (<%= unlinked = DericciRecord.count - (flagged + definite + possible) %>)', <%= unlinked %>],
+        //['Sleep',    7]
+      ]);
+      //console.log(data);
+
+      var options = {
+        colors: ["#AE9A4A", "#AE724A", "#7F8FA8", "#306F63"],
+        sliceVisibilityThreshold: 0.0001,
+        pieHole: 0.3,
+        backgroundColor: "transparent",
+        legend: {
+          alignment: "end",
+          position: "bottom",
+          textStyle: {
+            color: "#222",
+            fontName: "Sarala",
+            fontSize: 14,
+            bold: false,
+            italic: true           
+          }
+        }
+      };
+
+      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+      chart.draw(data, options);
+    }
+  </script>
+<% end %>
+
 <% content_for :breadcrumbs do %>
   <%= render partial: "breadcrumbs" %>
 <% end %>
 <div class="row">
-  <div class="col-sm-3"></div>
-  <div class="col-sm-6 text-center">
-    <a href="/dericci_games/new" class="btn btn-primary"><span class="glyphicon glyphicon-tower"></span> New Game!</a>
-    <table class="table table-responsive">
-      <thead>
-        <tr>
-          <td>Game ID</td>
-          <td>Completed</td>
-          <td>Skipped</td>
-          <td>Date</td>
-        </tr>
-      </thead>
-      <tbody>
-        <% if @games.each do |game| %>
-          <tr>
-            <td>
-              <%= link_to(dericci_game_path(game), class: 'btn btn-default btn-sm') do %>
-                <span class="glyphicon glyphicon-tower"></span>  <%= "Game_#{game.id}" %>
-              <% end %>
-            </td>
-            <td class='bg-success'><%= game.completed.to_i %>%</td>
-            <td class='bg-warning'><%= game.skipped.to_i %>%</td>
-            <td><%= game.created_at.to_formatted_s(:long) %></td>
-          </tr>
-        <% end.empty? %>
-          <tr>
-            <td colspan="4" class="text-center text-muted">No games availabe.</td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+  <div class="col-sm-12 text-center">
+    <h1>The De Ricci Digitized Archive Name Game</h1>  
   </div>
-  <div class="col-sm-3"></div>
+  <div class="col-sm-12 text-center">
+    <!-- request advancement -->
+    <% if @games.count >= 10  && current_user.role != "admin" && current_user.role != "super_editor" %>
+      <div class="alert alert-success">You have played <%= @games.count %> games!  <%= render partial: "shared/request_advancement" %></div>
+    <% end %>
+    <!-- -->
+    <%= link_to new_dericci_game_path, class: 'btn btn-sm btn-default' do %>
+      <span class="glyphicon glyphicon-tower"></span> Start a <strong>New Game</strong>
+    <% end %>
+    <a data-toggle="collapse" data-target="#mygames" class="btn btn-sm btn-default">My Games <span class="badge"><%= @games.count %></span> <span class="caret"></span></a>
+    <div class="collapse" id="mygames">
+      <table class="table table-responsive text-left" style="max-height: 300px; overflow-y: scroll; margin-top: 5px;">
+        <tbody>
+          <% if @games.reverse.each do |game| %>
+            <tr>
+              <td>
+                <%= link_to(dericci_game_path(game), class: 'btn btn-default btn-xs') do %>
+                  <span class="glyphicon glyphicon-tower"></span> Go To Game 
+                <% end %>
+              </td>
+              <td>
+                <%= game.created_at.to_formatted_s(:long) %>
+              </td>
+              <td>
+                <div class="progress">
+                  <div class="progress-bar progress-bar-success" role="progressbar" style="width:<%= game.completed.to_i.floor %>%;">
+                    <%= game.completed.to_i %>% Completed
+                  </div>
+                  <div class="progress-bar progress-bar-warning" role="progressbar" style="width:<%= game.skipped.to_i.floor %>%;">
+                    <%= game.skipped.to_i %>% Skipped
+                  </div>
+                  <div class="progress-bar progress-bar-danger" role="progressbar" style="width:<%= game.flagged.to_i.ceil %>%;">
+                    <%= game.flagged.to_i %>% Flagged
+                  </div>
+                  <% if game.skipped.to_i + game.completed.to_i <= 0 %>
+                    <span class="text-muted">Not started</span>
+                  <% end %>
+                </div>
+              </td>
+            </tr>
+          <% end.empty? %>
+            <tr>
+              <td colspan="3" class="text-center text-muted">You have not played any games yet.</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="chart">
+      <h4 class="text-center">The Wheel of Progress</h4>
+      <div id="piechart" style="height: 400px; width: 100%;"></div>
+      <h4 class='banner' style="background: #009688;"><%= (users_count = DericciGame.group(:created_by).count.count) %> <%= "user".pluralize(users_count) %> <%= "is".pluralize(users_count) %> playing the Name Game!</h4>
+      <h4 class='banner' style="background: #8BC34A;"><%= (links_count = DericciLink.count) %> <%= "link".pluralize(links_count) %> <%= "has".pluralize(links_count) %> been suggested!</h4>
+      <h4 class='banner' style="background: #00bcd4;"><%= (flags_count = DericciRecordFlag.count) %> <%= "flag".pluralize(flags_count) %> <%= "has".pluralize(flags_count) %> been identified!</h4>
+    </div>
+     
+    <p style="margin-top: 10px;">Seymour Montefiore Robert Rosso de Ricci (1881-1942) created over 60,000 index cards for his unfinished Bibliotheca Britannica Manuscripta project, all of which have been converted to pdf files to form the <a href="/dericci_records">Seymour de Ricci Bibliotheca Britannica Manuscripta Digitized Archive</a>. These cards contain a wealth of information about collectors, collections, sale results, former shelfmarks, bibliography, and many other notable things about manuscripts and their owners.</p>
+     
+    <p>A section of the archive is dedicated to collectors and repositories and organized by name. We are working to link cards to associated names in the SDBM Name Authority <%= link_to "(Read More)", page_path(name: Page.where(name: "SDBM Name Authority").first.to_s) %>. We need your help! So, we’ve created the De Ricci Digitized Archive Name Game to encourage you, our user community members, to help us out.</p>
+     
+    <h4>Why Play?</h4>
+    <p>Play the Name Game to advance from Contributor to Editor. Good linking and flagging of records will help us evaluate your database skills, including your ability to recognize and sort through valuable data. Or, if you are already an editor, play because you will be making valuable connections between two great sources of information. You might even think it’s fun!</p>
+     
+    <h4>Rules of the Name Game</h4>
+    <p>The Name Game goal is to link PDFs of the De Ricci cards to corresponding SDBM Name Authority records. Each link must be reviewed and confirmed by an Editor, Super Editor, or Admin <span sdbm-tooltip="user_levels"></span> The PDF will then appear in the corresponding SDBM Name Authority record, so that all users can easily access whatever information the De Ricci card contains. To advance from Contributor to Editor, you must complete at least 10 games. Once your games are complete, click the Request Advancement button on the Name Game page. SDBM Admins will review your links, flags, rejections, and skips for accuracy and then determine whether you qualify for advancement <span sdbm-tooltip="user_levels"></span> The Name Game only applies to advancement from the Contributor to Editor level.</p>
+
+    <h5>
+      <strong>Got another idea for a data-enriching game? <%= link_to "Suggest one via the community forum!", thredded_path %></strong>
+    </h5>
+
+  </div>
+  <div class="col-sm-12">
+    <%= render partial: "instructions", locals: {newgame: true} %>
+   
+    <h4>Game Results</h4>
+     
+    <p>Once an SDBM Admin has approved the match between an SDBM Name and a De Ricci card, that De Ricci card will be cited in the name’s record in the SDBM Name Authority. When this happens, that De Ricci card will no longer appear in the De Ricci Game. You will receive an email notifying you if one of the names you matched has been confirmed as reliable. Matched names contribute to your advancement from a Contributor to Editor user level.</p>
+     
+    <h4>FAQ</h4>
+     
+    <ol>
+      <li>
+        <strong>I matched a De Ricci card to an SDBM Name during my game. But when I look at that Name record in the SDBM, I don’t see the De Ricci card reference. Why?</strong>
+        <p class='text-muted indent'>SDBM Admins must review every match between a De Ricci card and an SDBM Name. You will receive an email whenever a match you’ve made has been confirmed as reliable. Post in the SDBM Name Authority messageboard on the Forum if you would like a status update on names you have matched.</p></li>
+       
+      <li><strong>I found a name in a De Ricci card that isn’t in the SDBM Name Authority, but it should be. How do I add it to the SDBM?</strong>
+        <p class='text-muted indent'>Flag the name within the Name Game. This will alert the SDBM Admins that the name should be added to the Name Authority.</p>
+      </li>
+       
+      <li><strong>How many times do I have to play the game in order to advance user levels within the SDBM?</strong>
+        <p class="text-muted indent">You must play at least 10 games before the SDBM Admins review your user level. Keep in mind that user advancement is only partially determined by the quality of your De Ricci games. Your other work in the SDBM also contributes to your user level. The SDBM Admins advance a user only when they have appropriately demonstrated their understanding of the SDBM. Contact the SDBM Admins if you want to request an advancement.</p></li>
+       
+      <li><strong>What do I do if I’m not sure about a match between a De Ricci card and an SDBM Name?</strong> 
+        <p class="text-muted indent">Skip it! The name will continue to appear in other games, where it can be matched later. Access your previous games anytime from the game homepage to return to names that you skipped.</p></li>
+       
+      <li><strong>Why are most of the names referenced in the De Ricci cards not in the SDBM Name Authority?</strong>
+       <p class="text-muted indent">Names appear in the SDBM Name Authority because they appear in entries and sources in the SDBM. Many of the sources described in the De Ricci cards have not been entered into the SDBM yet. Flag these names to alert SDBM Admins, and they will add them to the SDBM Name Authority.</p></li>
+    </ol> 
+
+  </div>
 </div>

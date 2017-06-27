@@ -21,3 +21,7 @@
 
 en:
   hello: "Hello world"
+  thredded:
+    topics:
+      form:
+        content_label: "Initial Post"

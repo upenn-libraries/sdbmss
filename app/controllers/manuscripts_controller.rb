@@ -3,7 +3,7 @@ class ManuscriptsController < SearchableAuthorityController
   include MarkAsReviewed
   include LogActivity
 
-  before_action :set_manuscript, only: [:show, :edit, :entry_candidates, :citation]
+  before_action :set_manuscript, only: [:show, :edit, :entry_candidates, :citation, :table]
 
   load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_reviewed]
 
@@ -16,6 +16,28 @@ class ManuscriptsController < SearchableAuthorityController
     @filters = ["id"]
     @dates = ["created_at", "updated_at"]
     @fields + @filters + @dates
+  end
+
+  def table
+    @model = @manuscript
+    @entries = @manuscript.entries.preload(
+      :created_by, :updated_by, :contributors, :groups, :institution, 
+      {:sales => [{:sale_agents => :agent}]}, 
+      {:entry_authors => [:author]}, 
+      :entry_titles, 
+      :entry_dates, 
+      {:entry_artists => [:artist]}, 
+      {:entry_scribes => [:scribe]}, 
+      {:entry_languages => [:language]}, 
+      {:entry_places => [:place]}, 
+      {:provenance => [:provenance_agent]}, 
+      :entry_uses, :entry_materials, 
+      {:entry_manuscripts => [:manuscript]}, 
+      {:source => [{:source_agents => :agent}, :source_type]}, :bookmarks, :watches,
+    ).sort { |a, b| b.source.date <=> a.source.date }
+    # I use 'sort' rather than the query-based order because of a rails issue:
+    # https://github.com/rails/rails/issues/6769
+    # that breaks associated field ordering (i.e. provenance)
   end
 
   def show

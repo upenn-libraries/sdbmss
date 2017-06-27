@@ -1,4 +1,5 @@
-
+require "lib/data_entry_helpers"
+include DataEntryHelpers
 require "rails_helper"
 
 describe "Manage sources", :js => true do
@@ -14,11 +15,7 @@ describe "Manage sources", :js => true do
   end
 
   before :each do
-    visit root_path
-    fill_in 'user_login', :with => @user.username
-    fill_in 'user_password', :with => 'somethingunguessable'
-    click_button 'Log in'
-    expect(page).to have_content 'Signed in successfully'
+      login(@user, 'somethingunguessable')
   end
 
   it "should show list of Sources" do
@@ -88,12 +85,14 @@ describe "Manage sources", :js => true do
   end
 
   it "should create a new Source" do
-    visit new_source_path
+    visit new_entry_path
+
+    open_source_create_modal
 
     select "Auction/Dealer Catalog", from: 'source_type'
     #find("#source_type").set("Auction/Dealer Catalog")
     sleep 1
-    fill_in "title", with: "Completely unique source"
+    find('#title').set 'Completely unique source'
     click_button "Save"
 
     sleep 1
@@ -104,7 +103,7 @@ describe "Manage sources", :js => true do
     s = Source.last
     visit edit_source_path(s)
 
-    fill_in "title", with: "Utterly specific title"
+    find('#title').set 'Utterly specific title'
     click_button "Save"
 
     sleep 1

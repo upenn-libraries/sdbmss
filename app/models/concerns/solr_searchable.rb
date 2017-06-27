@@ -7,15 +7,24 @@ module SolrSearchable
   # DATES: allow for searching based on a date range (i.e. before/after)
 
   def filters
-    ["id"]
+    [
+      ["Id", "id"],
+      ["Added By", "created_by"], 
+      ["Updated By",  "updated_by"]
+    ]
   end
 
   def fields
-    ["name", "created_by", "updated_by"]
+    [
+      ["Name", "name"]
+    ]
   end
 
   def dates
-    ["created_at", "updated_at"]
+    [
+      ["Added on", "created_at"], 
+      ["Updated on", "updated_at"]
+    ]
   end
 
   def search_fields
@@ -25,8 +34,8 @@ module SolrSearchable
   def params_for_search(params)
     permitted = []
     self.fields.each do |field|
-      permitted.push(field.to_sym)
-      permitted.push({field.to_sym => []})
+      permitted.push(field[1].to_sym)
+      permitted.push({field[1].to_sym => []})
     end
     params.permit(permitted)
   end
@@ -34,8 +43,8 @@ module SolrSearchable
   def filters_for_search(params)
     permitted = []
     self.filters.each do |filter|
-      permitted.push(filter.to_sym)
-      permitted.push({filter.to_sym => []})
+      permitted.push(filter[1].to_sym)
+      permitted.push({filter[1].to_sym => []})
     end
     params.permit(permitted)
   end
@@ -43,18 +52,18 @@ module SolrSearchable
   def dates_for_search(params)
     permitted = []
     self.dates.each do |date|
-      permitted.push(date.to_sym)
-      permitted.push({date.to_sym => []})
+      permitted.push(date[1].to_sym)
+      permitted.push({date[1].to_sym => []})
     end
     params.permit(permitted)
   end
 
   def options_for_search(params)
-    params.permit(self.search_fields.map do |s| {s + "_option" => []} end, self.search_fields.map do |s| s + "_option" end)
+    params.permit(self.search_fields.map do |s|  {s[1] + "_option" => []} end, self.search_fields.map do |s| s[1] + "_option" end)
   end
 
   def do_csv_search(params, download)
-    s = do_search(params)
+    s = do_search(params.merge({:limit => self.count, :offset => 0}))
     
     # any possible 'speed up' would need to be done here:
     results = s.results.map do |obj|
@@ -91,6 +100,7 @@ module SolrSearchable
     limit = params[:limit].present? ? params[:limit].to_i : 50
     page = params[:limit] ? (params[:offset].to_i / params[:limit].to_i) + 1 : 1
     s_op = params[:op].present? ? params[:op] : 'AND'
+    role = params[:role].present? ? params[:role] : 'guest'
 
     linking_tool = params[:linking_tool].present?
 
@@ -101,7 +111,7 @@ module SolrSearchable
     filters = filters_for_search(params)
     dates = dates_for_search(params)
     params = params_for_search(params)
-
+    
     s = self.search do
       
       fulltext_search = lambda { |p, o| 
@@ -231,17 +241,19 @@ module SolrSearchable
           params[:q] = ([params[:q]] + new_q).join(" #{s_op} ")
         end
         if linking_tool
-          params[:q] += ' AND (_query_:"{!edismax qf=\'deprecated\'}false") AND (_query_:"{!edismax qf=\'approved\'}true")'
+          params[:q] += ' AND (_query_:"{!edismax qf=\'deprecated\'}false") AND (_query_:"{!edismax qf=\'approved\'}true") AND (_query_:"{!edismax qf=\'draft\'}false")'
+        elsif role != "admin" && self.model_name.to_s == 'Entry'
+          params[:q] += ' AND (_query_:"{!edismax qf=\'draft\'}false")'
         end
       end
 
       # a CSV search is unpaginated, so the entire search results are returned
 
-      if format != 'csv'
-        paginate :per_page => limit, :page => page
-      else
-        paginate :page => 1, :per_page => self.all.count
-      end
+      paginate :per_page => limit, :page => page
+      #if format != 'csv'
+      #else
+      #  paginate :page => 1, :per_page => self.count
+      #end
 
       order.present? ? order_by(order[:field], order[:direction]) : order_by(:score, :desc)
 

@@ -86,12 +86,18 @@ class EntriesController < SearchableAuthorityController
 
     @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
     @field_options = ["contains", "does not contain", "blank", "not blank"]
-    @date_options = ["before", "after", "near", "exact"]
+    @date_options = ["before", "after", "near", "exact"]    
+
+    params.merge!("role" => current_user.role)
+    #if current_user.role != "admin"
+    #  params.merge!("draft" => ["false"], "draft_option" => ["with"])
+    #end
+
     if params[:format] == 'csv'
       if current_user.downloads.count >= 5
         render json: {error: 'at limit'}
         return
-      end      
+      end   
       @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv", user_id: current_user.id})
 
       Entry.delay.do_csv_search(params, @d)
@@ -350,6 +356,10 @@ class EntriesController < SearchableAuthorityController
     # action.
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }
+      format.html { 
+        flash[:notice] = "Entry #{@entry.public_id} has been deleted."
+        redirect_to dashboard_contributions_path
+      }
     end
   end
 
@@ -516,6 +526,7 @@ class EntriesController < SearchableAuthorityController
     # Rails convention, because Rails' wrapped parameters feature
     # doesn't pick up the *_attributes fields that way.
     params.permit(
+      :draft,
       :source_id,
       :catalog_or_lot_number,
       :institution_id,

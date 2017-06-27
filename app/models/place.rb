@@ -63,18 +63,6 @@ class Place < ActiveRecord::Base
     SDBMSS::IDS.get_public_id_for_model(self.class, id)
   end
 
-  def self.filters
-    super + ["viaf_id", "authors_count", "artists_count", "scribes_count", "provenance_count", "source_agents_count"]
-  end
-
-  def self.fields
-    super + ["comment"]
-  end
-
-  def self.dates
-    super + []
-  end
-
   def search_result_format
     {
       id: id,

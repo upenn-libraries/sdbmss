@@ -1,7 +1,12 @@
-<li class="">
-  <a href="<%= accounts_path %>">Manage <%= @model.class.name.pluralize %>
-  </a>
-</li>
+<% if can? :manage, User %>
+    <li class=" ">
+        <a href="/accounts">Manage Accounts</a>
+    </li>
+<% else %>
+    <li class="breadcrumb">
+        <a href="/community">Community</a>
+    </li>
+<% end %>
 <li class=" <%= edit ? '' : 'active' %>">
   <a href="<%= profile_path(@model.username) %>"><%= @model %>
   </a>

@@ -14,7 +14,7 @@ class BookmarksController < ApplicationController
     else
       @bookmarks = current_user.bookmarks.all
     end
-    @bookmarks_sorted = {'Entry' => [], 'Source' => [], 'Manuscript' => [], 'Name' => []}
+    @bookmarks_sorted = {'Entry' => [], 'Source' => [], 'Manuscript' => [], 'Name' => [], 'DericciRecord' => []}
     @bookmarks.each do |bookmark|
       if bookmark.document.nil?
       elsif bookmark.document_type == nil
@@ -61,7 +61,7 @@ class BookmarksController < ApplicationController
     else
       @bookmarks = current_user.bookmarks.all
     end
-    @bookmarks_sorted = {'Entry' => [], 'Source' => [], 'Manuscript' => [], 'Name' => []}
+    @bookmarks_sorted = {'Entry' => [], 'Source' => [], 'Manuscript' => [], 'Name' => [], 'DericciRecord' => []}
     @bookmarks.each do |bookmark|
       if bookmark.document_type == nil
       elsif !bookmark.document
@@ -91,7 +91,7 @@ class BookmarksController < ApplicationController
       flash[:error] = "That record is already bookmarked."
       render json: {error: "already bookmarked"}
     else
-      @bookmark = Bookmark.create({user_id: current_user.id, user_type: "User", document_id: params[:document_id], document_type: params[:document_type]})
+      @bookmark = Bookmark.create({user_id: current_user.id, user_type: 'User', document_id: params[:document_id], document_type: params[:document_type]})
       @bookmark.save!
 
       button_html = (render_to_string partial: "delete", locals: {bookmark: @bookmark }, layout: false)

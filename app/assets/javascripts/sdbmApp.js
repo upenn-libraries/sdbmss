@@ -207,6 +207,14 @@ var BOOKMARK_SCOPE;
         var getOriginalEntry = function () {
             return URI().search(true).original_entry;
         };
+
+        var createNewEntry = function () {
+          return URI().search(true).create_entry;
+        }
+
+        var prepopulatedURL = function () {
+          return URI().search(true).url;
+        }
         /* returns the path to the Create Entry page for a source,
            optionally passing along the 'manuscript_id' parameter if
            there is one.
@@ -289,6 +297,8 @@ var BOOKMARK_SCOPE;
             getManuscriptId: getManuscriptId,
             getNewManuscript: getNewManuscript,
             getOriginalEntry: getOriginalEntry,
+            createNewEntry: createNewEntry,
+            prepopulatedURL: prepopulatedURL,
             /* Returns a fn that can be used as error callback on angular promises */
             promiseErrorHandlerFactory: function(msg) {
                 return function(response) {
@@ -335,32 +345,11 @@ var BOOKMARK_SCOPE;
         };
     });
 
-    // anchor
-    sdbmApp.controller("DericciGameCtrl", function ($scope, $http, $modal, $sce) {
-      EntryScope = $scope;
-      $scope.records = [];
-      $scope.current_record = undefined;
-      $scope.current_url = "";
-      $scope.current_index = 0;
-      $scope.saving = false;
-      $scope.gameID = $("#game_id").val();
-      $scope.progress = {complete: 0, skipped: 0};
-      $http.get("/dericci_games/" + $scope.gameID + ".json", {
-      }).then(function (response) {
-//        console.log(response);
-        $scope.records = response.data.dericci_records;
-        $scope.current_url = $sce.trustAsResourceUrl($scope.records[0].url);
-        $scope.current_record = $scope.records[0];
-        $scope.setProgress();
-        $scope.initial = $scope.progress.complete;
-      }, function(response) {
-          alert("An error occurred when initializing the game.");
+    sdbmApp.controller('DericciRecordCtrl', function ($scope, $http, $modal, $sce) {
+      $scope.record_id = $("#record-id").val();
+      $http.get("/dericci_records/" + $scope.record_id + ".json", {}).then(function (response) {
+        $scope.record = response.data;
       });
-      $scope.selectRecord = function (record) {
-        $scope.current_record = record;
-        $scope.current_index = $scope.records.indexOf(record);
-        $scope.current_url = $sce.trustAsResourceUrl($scope.current_record.url);
-      };
       $scope.findName = function (model) {
         $scope.name = {};
         var modal = $modal.open({
@@ -372,35 +361,193 @@ var BOOKMARK_SCOPE;
             type: function () { return "is_author"; },
             base: function () { return model.name; }
           },
-          size: 'lg'
+          size: 'lg'//,
+          //backdrop: false
         });
         modal.result.then( function (results) {
+          $scope.record.verified_id = $scope.name.id;
+        });
+      };
+      $scope.save = function () {
+        $http.put('/dericci_records/' + $scope.record_id + '.json', {verified_id: $scope.record.verified_id}).then(function (response) {
+          window.location.reload();
+        });
+      };
+      $scope.remove = function () {
+        $scope.record.verified_id = null;
+        $scope.name = null;
+      };
+    });
+
+    sdbmApp.controller("DericciGameCtrl", function ($scope, $http, $modal, $sce) {
+      EntryScope = $scope;
+      $scope.records = [];
+
+      // the current position in the list, and the URL of the PDF to display
+      $scope.current_record = undefined;
+      $scope.current_url = "";
+      $scope.current_index = 0;
+
+      // flag for avoiding multiple submits
+      $scope.saving = false;
+
+      $scope.reasons = ["The names or information contained are not relevant or applicable to names in the SDBM", "The name described here should be added to the SDBM Name Authority"];
+      $scope.gameID = $("#game_id").val();
+      $scope.progress = {complete: 0, skipped: 0, flagged: 0};
+      $http.get("/dericci_games/" + $scope.gameID + ".json", {
+      }).then(function (response) {
+//        console.log(response);
+        $scope.records = response.data.dericci_records;
+        $scope.current_url = $sce.trustAsResourceUrl($scope.records[0].url);
+        $scope.current_record = $scope.records[0];
+        $scope.initial = $scope.progress.complete;
+      }, function(response) {
+          alert("An error occurred when initializing the game.");
+      });
+      $scope.selectRecord = function (record) {
+        $scope.current_record = record;
+        $scope.current_index = $scope.records.indexOf(record);
+        $scope.current_url = $sce.trustAsResourceUrl($scope.current_record.url);
+      };
+
+      $scope.cantFind = function () {
+        $('.cantfind').toggleClass('in');
+        $('#cantfindtoggle').toggleClass('active');
+        $('#select-name-table td > a').toggleClass('disabled');
+      };
+
+      // display based on status of record in game
+      $scope.getClass = function (record) {
+        if ($scope.isLinked(record)) return 'glyphicon-check';
+        else if (record.skipped) return 'glyphicon-unchecked';
+        else if ($scope.needsWork(record)) return 'glyphicon-warning-sign';
+        else if (record.dericci_record_flags.length > 0) return 'glyphicon-flag';
+        else return 'glyphicon-search';
+      };
+      $scope.getText = function (record) {
+        if ($scope.isLinked(record)) return 'Linked';
+        else if (record.skipped) return 'Skipped';
+        else if ($scope.needsWork(record)) return 'Flagged';
+        else if (record.dericci_record_flags.length > 0) return 'Flagged';
+        else return 'Find';
+      };
+      $scope.getButton = function (record) {
+        if ($scope.isLinked(record)) return 'btn-success';
+        else if (record.skipped) return 'btn-default disabled';
+        else if ($scope.needsWork(record)) return 'btn-danger';
+        else if (record.dericci_record_flags.length > 0) {
+          if (record.dericci_record_flags[0].reason == $scope.reasons[0])
+            return 'btn-warning';
+          else
+            return 'btn-info';
+        }
+        else return 'btn-primary';
+      };
+      // remove flag
+      $scope.unflag = function (record) {
+        $scope.remove_flags(record);
+        //$scope.next();
+      };
+      // remove ALL flags
+      $scope.remove_flags = function (record) {
+        for (var i = 0; i < record.dericci_record_flags.length; i++) {
+          record.dericci_record_flags[i]._destroy = true;
+        }
+      };
+      // remove ALL links
+      $scope.remove_links = function (record) {
+        for (var i = 0; i < record.dericci_links.length; i++) {
+          record.dericci_links[i]._destroy = true;
+        }
+      };
+      // open name select modal
+      $scope.findName = function (model) {
+        $scope.name = {};
+        //$scope.selectRecord(model);
+        $scope.modal = $modal.open({
+          templateUrl: "selectNameAuthority.html",
+          controller: "SelectNameAuthorityCtrl",
+          resolve: {
+            recordType: function () { return "names"; },
+            model: function () { return $scope.name; },
+            type: function () { return "is_author"; },
+            base: function () { return model.name; }
+          },
+          scope: $scope,
+          size: 'lg'
+        });
+        $scope.modal.result.then( function (results) {
           model.skipped = false;
           if ($scope.current_record.dericci_links.filter(function (dl) { return dl.name_id == $scope.name.id; }).length <= 0) {
+            for (var i = 0; i < $scope.current_record.dericci_links.length; i++) {
+              $scope.removeLink($scope.current_record, $scope.current_record.dericci_links[i]);
+            }
             $scope.current_record.dericci_links.push({name_id: $scope.name.id, name: $scope.name.name});
-            $scope.setProgress();
+            // remove 'flagged'
+            //console.log('mhmmham');
+            $scope.remove_flags(model);
+            //$scope.next();
           } else {
             alert("You have already selected that name!");
           }
         });
       };
+      // helper methods for determining status
       $scope.isLinked = function (record) {
         return record && $scope.actualLinks(record).length > 0;
       };
       $scope.actualLinks = function (record) {
-        return record && record.dericci_links.filter(function (l) { return l.name_id; });
+        return record && record.dericci_links.filter(function (l) { return l.name_id && !l._destroy; });
       };
+      $scope.needsWork = function (record) {
+        return record.dericci_record_flags.filter(function (f) {
+          return !f._destroy && $scope.reasons.indexOf(f.reason) == -1;
+        }).length > 0;
+      };
+
       $scope.skip = function (model) {
-        if ($scope.actualLinks(model) <= 0) {
-          model.skipped = true;
-          $scope.next();
-          $scope.setProgress();
+        $scope.selectRecord(model);
+        $scope.remove_links(model);
+        $scope.remove_flags(model);
+        model.skipped = true;
+        //$scope.next();
+        $scope.modal.dismiss('cancel');
+      };
+      // special 'reporting error' flag, requiring custom reason
+      $scope.flag_review = function (record) {
+        $scope.current_flag = {reason: "Record needs to be broken up"};
+        $scope.flag_modal = $modal.open({
+          templateUrl: "flagReason.html",
+          scope: $scope,
+          size: 'lg'
+        });
+        $scope.flag_modal.result.then(function (results) {
+          $scope.remove_flags(record);
+          record.dericci_record_flags.push($scope.current_flag);
+          $scope.remove_links(record);
+          record.skipped = false;
+          //$scope.next();
+        });
+      };
+      // simple flag from name select modal
+      $scope.flag = function (record, reason) {
+        $scope.selectRecord(record);
+        $scope.current_flag = {reason: reason};
+        
+        $scope.remove_flags(record);
+        record.dericci_record_flags.push($scope.current_flag); 
+        $scope.remove_links(record);
+        record.skipped = false;
+        //$scope.next();
+        if ($scope.modal) {
+          $scope.modal.dismiss('cancel');          
         }
       };
       $scope.next = function () {
         var i = ($scope.current_index + 1) % $scope.records.length;
         $scope.selectRecord($scope.records[i]);
       };
+      // no longer used, but kept for completeness
       $scope.prev = function () {
         var i = ($scope.records.length + $scope.current_index - 1) % $scope.records.length;
         $scope.selectRecord($scope.records[i]);
@@ -414,25 +561,37 @@ var BOOKMARK_SCOPE;
           } else {
             record.dericci_links.splice(i, 1);
           }
-          $scope.setProgress();
         }
       };
-      $scope.setProgress = function () {
-        $scope.progress = {
-          complete: Math.floor(100 * ($scope.records.filter( function (r) { return $scope.isLinked(r); }).length / 20)),
-          skipped: Math.floor(100 * ($scope.records.filter( function (r) { return r.skipped; }).length / 20))
-        };
-      };
+      // used for enabling/disabling the game 'submit' button
+      $scope.canSubmit = function () {
+        return $scope.records.filter(function (r) {
+          return !$scope.isLinked(r) && !(r.dericci_record_flags.filter(function (f) { return !f._destroy;}).length > 0) && !r.skipped;
+        }).length <= 0;
+      }
       $scope.activeRecords = function(element) {
         return !element._destroy;
       };
 
       $scope.save = function () {
-        var records = angular.copy($scope.records).filter( function (r) { return r.dericci_links.length > 0; }).map( function (r) {
+        $scope.progress = {
+          completed: Math.floor( 100 * $scope.records.filter(function (r) { return $scope.isLinked(r); }).length / 15),
+          skipped: Math.floor( 100 * $scope.records.filter(function (r) { return r.skipped; }).length / 15),
+          flagged: Math.ceil( 100 * $scope.records.filter(function (r) { return r.dericci_record_flags.filter(function (f) { return !f._destroy; }).length > 0 }).length / 15)
+        }
+        var records = angular.copy($scope.records).filter( function (r) { return r.dericci_links.length > 0 || r.dericci_record_flags.length > 0; }).map( function (r) {
           r.dericci_links_attributes = r.dericci_links;
+          if (r.dericci_links_attributes.length <= 0 ) r.dericci_links_attributes = ["null"];
+          if (r.comment) {
+            r.comments_attributes = [{comment: r.comment, commentable_type: "DericciRecord", commentable_id: r.id}];
+          }
+          r.dericci_record_flags_attributes = r.dericci_record_flags;
+          delete r.dericci_links;
+          delete r.comment;
+          delete r.dericci_record_flags;
           return r;
         });
-        $http.put("/dericci_games/" + $scope.gameID + ".json", { dericci_game: {id: $scope.gameId, skipped: $scope.progress.skipped, completed: $scope.progress.complete, dericci_records_attributes: records} }).then(function (response) {
+        $http.put("/dericci_games/" + $scope.gameID + ".json", { dericci_game: {id: $scope.gameId, skipped: $scope.progress.skipped, flagged: $scope.progress.flagged, completed: $scope.progress.completed, dericci_records_attributes: records} }).then(function (response) {
           if (response.data.message == "Success!") {
             $scope.saving = true;
             window.location = "/dericci_games/";
@@ -483,11 +642,11 @@ var BOOKMARK_SCOPE;
             sdbmutil.promiseErrorHandlerFactory("Error loading Source data for this page")
           );
           //$scope.$emit('changeSource', source)
-        }
+        };
 
         $scope.cancelSelectSource = function () {
           $scope.$emit('cancelSource');
-        }
+        };
 
         $scope.createSource = function () {
           var modalScope = $rootScope.$new();
@@ -503,7 +662,7 @@ var BOOKMARK_SCOPE;
               $modalInstance.close();
             }
           });
-        }
+        };
 
         $scope.createSourceURL = function () {
             var path = "/sources/new?create_entry=1";
@@ -521,8 +680,11 @@ var BOOKMARK_SCOPE;
             }
             return path;
         };
-
+        $scope.searches_count = 0;
         $scope.findSourceCandidates = function () {
+            // don't interrupt existing search
+            // flag ongoing search
+
             var source_type, source_type_options;
             if ($scope.source_type) {
               source_type = [$scope.source_type];
@@ -533,27 +695,34 @@ var BOOKMARK_SCOPE;
             }
             if($scope.title.length > 1 || $scope.date.length > 1 || $scope.agent.length > 1) {
                 $scope.searchAttempted = true;
-                var title = $scope.title.length > 1 ? $scope.title : '';
-                var date = $scope.date.length > 1 ? $scope.date : '';
-                var agent = $scope.agent.length > 1 ? $scope.agent : '';
-                $http.get("/sources/search.json", {
-                    params: {
-                        order: $scope.order,
-                        date: date,
-                        title: title,
-                        agent: agent,
-                        limit: $scope.limit,
-                        "source_type[]": source_type,
-                        "source_type_option[]": source_type_options,
-                        id: $scope.source_id,
-                        id_option: "without"
+                // create a closure here so that I can store the index of the current search, then check on the results whether it is still the latest search
+                (function () {
+                  var title = $scope.title.length > 1 ? $scope.title : '';
+                  var date = $scope.date.length > 1 ? $scope.date : '';
+                  var agent = $scope.agent.length > 1 ? $scope.agent : '';
+                  // index of current search
+                  var i = ++$scope.searches_count;
+                  $http.get("/sources/search.json", {
+                      params: {
+                          order: $scope.order,
+                          date: date,
+                          title: title,
+                          agent: agent,
+                          limit: $scope.limit,
+                          "source_type[]": source_type,
+                          "source_type_option[]": source_type_options,
+                          id: $scope.source_id,
+                          id_option: "without"
+                      }
+                  }).then(function (response) {
+                    if (i >= $scope.searches_count) {
+                      $scope.total = response.data.total;
+                      $scope.sources = response.data.results;
                     }
-                }).then(function (response) {
-                    $scope.total = response.data.total;
-                    $scope.sources = response.data.results;
-                }, function(response) {
-                    alert("An error occurred searching for sources");
-                });
+                  }, function(response) {
+                      alert("An error occurred searching for sources");
+                  });
+                })();
             } else {
               $scope.searchAttempted = false;
               $scope.sources = [];
@@ -712,7 +881,7 @@ var BOOKMARK_SCOPE;
     sdbmApp.controller("EntryCtrl", function ($scope, $http, $filter, Entry, Source, sdbmutil, $modal) {
 
         EntryScope = $scope;
-
+        
         $scope.expand = function (e) {
           $(e.currentTarget).parent().parent('.expandable').addClass('expanded');
         }
@@ -735,6 +904,9 @@ var BOOKMARK_SCOPE;
                 size: 'lg'
             });
             modal.result.then(function () {
+              $scope.entry.username = $scope.entry.source.username;
+              $scope.entry.user_id = $scope.entry.source.user_id;
+              $scope.entry.backup = $scope.entry.source.backup;
               $scope.populateEntryViewModel($scope.entry);
             }, function () {
               //console.log('dismissed');
@@ -761,6 +933,9 @@ var BOOKMARK_SCOPE;
                 base: function () { return base }
               },
               size: 'lg'
+          })
+          modal.result.then(function () {
+            $scope.saveDraft();
           });
         }
 
@@ -993,7 +1168,7 @@ var BOOKMARK_SCOPE;
           for (var i = 0; i < anArray.length; i++) {
             anArray[i].order = i;
           }
-          setTimeout( function () {            
+          setTimeout( function () {
             $scope.affixer();
           }, 2000);
         };
@@ -1103,9 +1278,43 @@ var BOOKMARK_SCOPE;
             }
         };
 
+        $scope.setBackup = function () {
+          if ($scope.backup == "temporarily_disabled") {
+            localStorage.setItem('sdbm_' + $scope.entry.username + '_backup', false);            
+          } else if ($scope.backup == "enabled") {
+            localStorage.removeItem('sdbm_' + $scope.entry.username + '_backup');
+            $.ajax('/users/', {
+              method: 'put', data: {user: {backup: true}},
+              success: function () {
+                console.log('success!');
+              }
+            });
+          } else if ($scope.backup == "disabled") {
+            localStorage.removeItem('sdbm_' + $scope.entry.username + '_backup');
+            $.ajax('/users/', {
+              method: 'put', data: {user: {backup: false}},
+              success: function () {
+                console.log('success!');
+              }
+            });
+          }
+        };
+  
         // does some processing on Entry data structure retrieved via
         // API so that it can be used with the Angular form bindings
         $scope.populateEntryViewModel = function(entry) {
+
+            // from user setting, has first priority
+            if (entry.backup !== undefined) {
+              //console.log(entry.backup, entry.backup == false, entry.backup === false);
+              $scope.backup = entry.backup === false ? "disabled" : "enabled";
+            }
+            // check if session disabled...
+            var backup = localStorage.getItem('sdbm_' + $scope.entry.username + '_backup');
+            if (backup !== undefined && backup !== null) {
+              $scope.backup = "temporarily_disabled";
+            }
+            //$scope.backup = "temporarily_disabled";
 
             // make blank initial rows, as needed, for user to fill out
             $scope.associations.forEach(function (assoc) {
@@ -1161,6 +1370,21 @@ var BOOKMARK_SCOPE;
             // save copy at this point, so we have something to
             // compare to, when navigating away from page
             $scope.originalEntryViewModel = angular.copy(entry);
+
+            if (entry.id) {
+              var key = 'sdbmDraft_' + entry.id + '_' + entry.username;
+            } else {
+              var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.username;              
+            }
+            $scope.draft = localStorage.getItem(key);
+            if ($scope.draft) {
+              $scope.draft = angular.fromJson($scope.draft);
+              $scope.draft.updated_object = new Date($scope.draft.updated * 1000)
+              // if it's the WRONG draft, though
+              if ($scope.draft.updated < $scope.entry.cumulative_updated_at) {
+                $scope.draft = undefined;
+              }
+            }
         };
 
         $scope.postEntrySave = function(entry) {
@@ -1201,7 +1425,22 @@ var BOOKMARK_SCOPE;
             });
         };
 
-        $scope.save = function () {
+        $scope.saveAsDraft = function () {
+          console.log('huh');
+          dataConfirmModal.confirm({
+            title: 'Save As Draft',
+            text: 'Are you sure you would like to save this entry as a draft?  You can only save up to 10 drafts at any given time, as we like to encourage our users to contribute their data publicly to the database.',
+            commit: 'Save as Draft',
+            cancel: 'Cancel',
+            zIindex: 10099,
+            onConfirm: function() { $scope.save(true) },
+            onCancel:  function() { }
+          });
+        }
+
+        $scope.save = function (draft) {
+            $scope.entry.draft = draft || false;
+
             // Transform angular's view models to JSON payload that
             // API expects: attach a bunch of things to Entry resource
             $scope.currentlySaving = true;
@@ -1316,6 +1555,7 @@ var BOOKMARK_SCOPE;
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
                 ).finally(function() {
                     // $scope.currentlySaving = false;
+                  $scope.clearDraft();
                 });
             } else {
 
@@ -1339,10 +1579,50 @@ var BOOKMARK_SCOPE;
                     $scope.postEntrySave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
                 ).finally(function() {
+                  $scope.clearDraft();
                     // $scope.currentlySaving = false;
                 });
             }
         };
+
+        $scope.loadDraft = function () {
+          //var entry = angular.fromJson(localStorage.getItem('sdbmEntryDraft'));
+          if ($scope.draft) {
+            // only if more recently saved version
+            $scope.entry = angular.copy($scope.draft);
+            $scope.populateEntryViewModel($scope.entry);
+            $scope.draft = undefined;          
+          }
+        }
+        
+        $scope.saveDraft = function () {
+          if ($scope.backup == "enabled") {            
+            var entry = angular.copy($scope.entry);
+            entry.updated = (new Date()).getTime() / 1000;
+            if (entry.id) {
+              var key = 'sdbmDraft_' + entry.id + '_' + entry.username;
+            } else {
+              var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.username;
+            }
+            localStorage.setItem(key, angular.toJson(entry));
+          }
+        }
+
+        $scope.clearDraft = function () {
+          if (entry.id) {
+            var key = 'sdbmDraft_' + entry.id + '_' + entry.username;
+          } else {
+            var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.username;
+          }
+          localStorage.removeItem(key);
+        }
+
+        $('#entry-form').change('input', function () {
+          $scope.saveDraft();          
+        });
+        $('#entry-form').change('select', function () {
+          $scope.saveDraft();          
+        });
 
         $scope.markSourceAsEntered = function() {
             $http.post("/sources/" + $scope.entry.source.id + "/update_status", { status: 'Entered' }).then(
@@ -1402,7 +1682,7 @@ var BOOKMARK_SCOPE;
 //          console.log(angular.toJson(entry1), angular.toJson(entry2));
           // note: changing a numerical field, then restoring the original and saving will still trigger 'unsaved' because one is a string and the other is a number (in the JSON)
           return angular.toJson(entry1) !== angular.toJson(entry2);
-        }
+        };
 
         // unfortunately, this can't be reworked with a modal, because browser/javascript doesn't let you
         $(window).bind('beforeunload', function() {
@@ -1465,16 +1745,25 @@ var BOOKMARK_SCOPE;
                           {id: sourceId},
                           function(source) {
                               $scope.entry.source = source;
+                              $scope.entry.username = $scope.entry.source.username;
+                              $scope.entry.user_id = $scope.entry.source.user_id;
+                              $scope.entry.backup = $scope.entry.source.backup;
+                              //$scope.backup = source.backup;
                               $scope.populateEntryViewModel($scope.entry);
                           },
                           sdbmutil.promiseErrorHandlerFactory("Error loading Source data for this page")
                       );
                     }
                 }
+                if (sdbmutil.prepopulatedURL()) {
+                  $scope.entry.manuscript_link = sdbmutil.prepopulatedURL();
+                }
+
             },
             // error callback
             sdbmutil.promiseErrorHandlerFactory("Error initializing dropdown options on this page, can't proceed.")
         );
+        $scope.num_drafts = $("#num_drafts").val();
 
     });
 
@@ -1860,18 +2149,23 @@ var BOOKMARK_SCOPE;
             $(element).focusout(function(event) {
                 $("#cat_lot_no_warning").text("");
                 var cat_lot_no = $(element).val();
+                var query = {
+                    search_field: "advanced",
+                    op: "AND",
+                    //approved: "*",
+                    source: "SDBM_SOURCE_" + scope.entry.source.id,
+                };
+                if (cat_lot_no.length >= 2) {
+                  query.catalog_or_lot_number_search = cat_lot_no                  
+                }
+                else {
+                  query.catalog_or_lot_number = cat_lot_no                  
+                }
                 if(cat_lot_no) {
                     $.ajax("/entries.json", {
-                        data: {
-                            search_field: "advanced",
-                            op: "AND",
-                            //approved: "*",
-                            source: "SDBM_SOURCE_" + scope.entry.source.id,
-                            catalog_or_lot_number_search: cat_lot_no
-                        },
+                        data: query,
                         success: function(data, textStatus, jqXHR) {
                             var results = data.results || [];
-                            console.log(results);
                             if(results.length > 0) {
                                 var msg = "Warning! An entry with that catalog number may already exist <a target='_blank' href='/catalog?utf8=%E2%9C%93&op=AND&catalog_or_lot_number_search%5B%5D=" + cat_lot_no + "&source%5B%5D=SDBM_SOURCE_" + scope.entry.source.id + "&sort=entry_id+asc&search_field=advanced&commit=Search'>(see here)</a>.";
                                 var editMode = !!scope.entry.id;
@@ -2143,10 +2437,12 @@ var BOOKMARK_SCOPE;
             $scope.populateSourceViewModel($scope.source);
             
             // if this source has been created to add an entry to a Manuscript record
-            if (sdbmutil.getManuscriptId() || sdbmutil.getNewManuscript()) {
+            if (sdbmutil.getManuscriptId() || sdbmutil.getNewManuscript() || sdbmutil.createNewEntry()) {
               sdbmutil.redirectToEntryCreatePage(source.id);
               return;
             }
+
+
             window.location = "/sources/" + $scope.source.id;
             /*
             var modalInstance = $modal.open({
@@ -2592,6 +2888,7 @@ var BOOKMARK_SCOPE;
       if (bookmark.tags.indexOf(tag) == -1) {
         bookmark.tags.push(tag);
         bookmark.newtag = "";
+        bookmark.showAddTag = false;
         $http.get('/bookmarks/' + bookmark.id + '/addtag?tag=' + tag).then( function (e) {
           //console.log(e);
         });
@@ -2599,16 +2896,20 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.searchTag = function (tag) {
-      $('input[name=tag-search]').val(tag);
-      $scope.search_tag = tag;
-      if (!$scope.search_tag || $scope.search_tag.length <= 0) {
+      if ($scope.tagSearch == tag) {
+        $scope.tagSearch = "";
+      } else {
+        $scope.tagSearch = tag;
+      }
+      $('input[name=tag-search]').val($scope.tagSearch);
+      if (!$scope.tagSearch || $scope.tagSearch.length <= 0) {
         $scope.all_bookmarks_display = $scope.all_bookmarks;
       } else {        
         $scope.all_bookmarks_display = {};
         for (var key in $scope.all_bookmarks) {
           $scope.all_bookmarks_display[key] = [];
           for (var i = 0; i < $scope.all_bookmarks[key].length; i++) {
-            if ($scope.all_bookmarks[key][i].tags.indexOf($scope.search_tag) != -1) {
+            if ($scope.all_bookmarks[key][i].tags.indexOf($scope.tagSearch) != -1) {
               $scope.all_bookmarks_display[key].push($scope.all_bookmarks[key][i]);
             }
           }
@@ -2623,8 +2924,8 @@ var BOOKMARK_SCOPE;
         $scope.all_bookmarks = e.data.bookmarks;
         $scope.all_bookmarks_display = $scope.all_bookmarks;
         $scope.bookmark_tracker = e.bookmark_tracker;
-        if ($scope.search_tag && $scope.search_tag.length > 0) {
-          $scope.searchTag($scope.search_tag);
+        if ($scope.search_term && $scope.search_term.length > 0) {
+          $scope.searchTag($scope.search_term)//$scope.tagSearch);
         }
       });
     }
@@ -2636,7 +2937,7 @@ var BOOKMARK_SCOPE;
           $scope.all_bookmarks[name].splice(i, 1);
           var id = bookmark.document_id, type = bookmark.document_type;
           $scope.$apply();        
-          $scope.searchTag($scope.search_tag);
+          $scope.searchTag($scope.tagSearch);
           addNotification(type + ' ' + id + ' un-bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
         }).error( function (e) {
           console.log('error', e);
@@ -2656,7 +2957,7 @@ var BOOKMARK_SCOPE;
           $scope.active = type;
           $scope.all_bookmarks[type].unshift(e);
           $scope.$apply();
-          $scope.searchTag($scope.search_tag);
+          $scope.searchTag($scope.tagSearch);
           addNotification(type + ' ' + id + ' bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'success');
         } else {
           console.log(e.error);
@@ -2726,44 +3027,19 @@ var BOOKMARK_SCOPE;
       exportCSV(url);
     }
 
-    $scope.toggleSidebar = function (skip) {
-      if (!skip) $('.sidebar, .main-content').addClass('transition');
-      $('.sidebar').toggleClass('in');
-      $('.main-content').toggleClass('in');
-      setTimeout(function () {
-        if ($('.sidebar').hasClass('in')) {
-          $('.toggle-sidebar').html('<span class="glyphicon glyphicon-remove"></span>');
-          localStorage.sidebar_open = "true";
-        } else {
-          $('.toggle-sidebar').html('<span class="glyphicon glyphicon-bookmark"></span>');
-          localStorage.sidebar_open = "false";
-        }
-        $('.sidebar, .main-content').removeClass('transition');
-      }, 500);
-    }
-
     // should this be fixed, eventually?  is there any reason for this to be here, instead of hard-coded?
-    $scope.tabs = ["Entry", "Manuscript", "Name", "Source"];
-    $scope.all_bookmarks = {Entry: [], Manuscript: [], Name: [], Source: []};
+    $scope.tabs = ["Entry", "Manuscript", "Name", "Source", "DericciRecord"];
+    $scope.all_bookmarks = {Entry: [], Manuscript: [], Name: [], Source: [], DericciRecord: []};
 
     // load tag from url
-    if (window.location.search && window.location.search.indexOf('tag=') != -1) {
+    /*if (window.location.search && window.location.search.indexOf('tag=') != -1) {
       var search  = decodeURIComponent(window.location.search.split('tag=')[1]);
       $scope.tagSearch = search;
       $scope.searchTag(search);
-    }
-
-    $scope.addTabToStorage = function (name) {
-      $scope.active = name;
-      if (localStorage) localStorage.sidebar_tab = name;
-    }
-
-    if (localStorage && localStorage.sidebar_open == "true" && $('.sidebar').length > 0) {
-      $scope.toggleSidebar(true);
-    }
+    }*/
 
     $scope.loadBookmarks();
-    
+
   });
 
 }());

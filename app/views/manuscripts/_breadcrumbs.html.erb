@@ -3,5 +3,8 @@
   </a>
 </li>
 <li class="  <%= current_page?(polymorphic_path(@model)) ? 'active' : '' %>">
-  <a href="<%= polymorphic_path(@model) %>"><%= @model.public_id %></a>
+  <a href="<%= polymorphic_path(@model) %>"><%= @model. public_id %></a>
+</li>
+<li class="  <%= current_page?(table_manuscript_path(@model)) ? 'active' : '' %>">
+  <a href="<%= table_manuscript_path(@model) %>">Table View</a>
 </li>

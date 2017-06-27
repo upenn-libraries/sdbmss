@@ -1,6 +1,7 @@
 
 class Provenance < ActiveRecord::Base
 
+  include CertaintyFlags
   include HasPaperTrail
 
   belongs_to :entry
@@ -112,6 +113,14 @@ class Provenance < ActiveRecord::Base
   def get_acquisition_method_for_display
     result = ACQUISITION_METHOD_TYPES.select { |record| record[0] == acquisition_method }.first
     result ? result[1] : nil
+  end
+
+  def name_authority
+    (provenance_agent ? "<a href='/names/#{provenance_agent_id}'>#{provenance_agent}</a> " : "")
+  end
+
+  def dates
+    [start_date, end_date].reject(&:nil?).join(' to ') + (associated_date ? " #{associated_date}" : "")
   end
 
 end

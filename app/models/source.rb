@@ -326,11 +326,22 @@ class Source < ActiveRecord::Base
   end
 
   def self.fields
-    ["title", "date", "agent_name", "author", "created_by", "updated_by", "source_type", "location"]
+    [
+     ["Title", "title"], 
+     ["Date", "date"], 
+     ["Source Agent", "agent_name"], 
+     ["Author", "author"], 
+     ["Source Type", "source_type"], 
+     ["Location", "location"],
+     ["Location/Institution", "location_institution"]
+    ]
   end
 
   def self.filters
-    ["id", "agent_id"]
+    [
+      ["Id", "id"], 
+      ["Source Agent Id", "agent_id"]
+    ]
   end
 
   def search_result_format

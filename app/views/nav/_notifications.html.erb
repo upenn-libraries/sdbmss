@@ -5,7 +5,7 @@
   <span class="caret"></span>
 </a>
 <div class="collapse" id="notifications-dropdown">
-  <%= render partial: "notifications/index", locals: {notifications: current_user.notifications.last(10).reverse } %>
+  <%= render partial: "notifications/index", locals: {notifications: current_user.notifications.where(active: true).last(10).reverse } %>
   <div class='text-center'><%= link_to "Manage Notifications", main_app.notifications_path, class: "btn btn-xs btn-primary" %></div>
 </div>
 </li>

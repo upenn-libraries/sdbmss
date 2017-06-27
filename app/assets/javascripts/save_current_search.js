@@ -1,4 +1,3 @@
-// fix me: blank or facet searches (alone) are not saved
 function saveCurrentSearch () {
   var t = $("#save_current_search");
   t.addClass("disabled");

@@ -17,11 +17,7 @@ describe "Manage languages", :js => true do
   context "when admin is logged in" do
 
     before :each do
-      visit root_path
-      fill_in 'user_login', :with => @user.username
-      fill_in 'user_password', :with => 'somethingunguessable'
-      click_button 'Log in'
-      expect(page).to have_content 'Signed in successfully'
+      login(@user, 'somethingunguessable')
     end
 
     it "should show list of Languages" do
@@ -118,11 +114,7 @@ describe "Manage languages", :js => true do
     end
 
     before :each do
-      visit root_path
-      fill_in 'user_login', :with => @admin.username
-      fill_in 'user_password', :with => 'somethingunguessable'
-      click_button 'Log in'
-      expect(page).to have_content 'Signed in successfully'
+      login(@admin, 'somethingunguessable')
     end
 
     it "should show list of Languages" do

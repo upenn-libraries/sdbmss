@@ -8,7 +8,7 @@
         <% if !@response.empty? && current_user %>
         <!-- line up this text with pagination -->
         <div style="margin: 0px 0px 10px 0px;">
-            <a class="btn btn-default export-csv disabled" onclick="/*exportCSV('entries<%= search_results_as_csv_path %>')*/" disabled="disabled">Download results as CSV</a>
+            <a class="btn btn-default export-csv" onclick="exportCSV('<%= search_results_as_csv_path %>')">Download results as CSV</a>
         </div>
         <% end %>
     </div>

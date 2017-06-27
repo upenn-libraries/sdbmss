@@ -1,0 +1,125 @@
+<div>
+    <% if current_user %>
+    <span class="btn btn-sm btn-default">
+        <% if (r = ratable.ratings.where(user: current_user).first) %>
+            <% if r.qualifier == "confirm" %>
+                <%= link_to rating_path(r), :method => :delete, class: 'ratings rated' do %>
+                  <span class="glyphicon glyphicon-thumbs-up"></span>
+                <% end %>
+                /
+                <a class="ratings" data-toggle="modal" data-target="#dispute_<%= ratable.class.name %>_<%= ratable.id %>">
+                    <span class="glyphicon glyphicon-thumbs-down"></span>
+                </a>
+            <% else %>
+                <%= link_to rating_path(r, qualifier: "confirm", reason: ""), :method => :put, class: 'ratings' do %>
+                  <span class="glyphicon glyphicon-thumbs-up"></span>
+                <% end %>
+                /
+                <%= link_to rating_path(r), :method => :delete, class: 'ratings rated' do %>
+                  <span class="glyphicon glyphicon-thumbs-down"></span>
+                <% end %>
+            <% end %>
+        <% else %>
+            <%= link_to(ratings_path(ratable_id: ratable.id, ratable_type: ratable.class.name, qualifier: "confirm"), method: :post, class: "ratings") do %>
+                <span class="glyphicon glyphicon-thumbs-up"></span>
+            <% end %>
+            /
+            <a class='ratings' data-toggle="modal" data-target="#dispute_<%= ratable.class.name %>_<%= ratable.id %>">
+                <span class="glyphicon glyphicon-thumbs-down"></span>
+            </a>
+        <% end %>
+    <% end %>
+    </span>
+    <span class="<%= defined?(up) ? 'dropup' : 'dropdown' %>">
+        <% confirms = ratable.ratings.where(qualifier: "confirm") %>
+            <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-default dropdown-toggle">
+                <span class="glyphicon glyphicon-thumbs-up"></span> 
+                Confirmed by <%= confirms.count %> <%= "user".pluralize(confirms.count) %>
+            <% if confirms.count > 0 %>
+                    <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <% confirms.each do |rating| %>
+                        <li>
+                            <%= link_to profile_path(rating.user.username) do %>
+                                <span class="glyphicon glyphicon-user"></span> <%= rating.user.to_s %>
+                            <% end %>
+                        </li>
+                    <% end %>
+                </ul>
+            <% else %>
+                </a> <!-- ;) -->
+            <% end %>                               
+    </span>
+    <span class="<%= defined?(up) ? 'dropup' : 'dropdown' %>">
+        <% disputes = ratable.ratings.where(qualifier: "dispute") %>
+            <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-default">
+                <span class="glyphicon glyphicon-thumbs-down"></span> 
+                Disputed by <%= disputes.count %> <%= "user".pluralize(disputes.count) %>
+            <% if disputes.count > 0 %>
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <% disputes.group_by(&:reason).each do |reason, ratings| %>
+                  <li class="dropdown-header"><%= reason %></li>
+                  <% ratings.each do |rating| %>
+                    <li>
+                        <%= link_to profile_path(rating.user.username) do%>
+                            <span class="glyphicon glyphicon-user"></span> <%= rating.user.to_s %>
+                        <% end %>
+                    </li>
+                  <% end %>
+                <% end %>
+            </ul>
+            <% else %>
+            </a>
+            <% end %>
+    </span>
+
+
+    <!-- dispute modal -->
+    <% if current_user %>
+        <div class="modal fade ratings-modal" id="dispute_<%= ratable.class.name %>_<%= ratable.id %>">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header text-center">
+                <span class="modal-title h4">What is your reason for disputing this record?</span>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <% if r %>
+                    <%= form_tag(rating_path(r), method: "put") do %>
+                        <%= hidden_field_tag('qualifier', 'dispute') %>
+                        <%= select_tag('reason', options_for_select(ratable.dispute_reasons.map{ |n| [n, n] }), class: "form-control") %>
+                        <%= text_field_tag('reason', '', placeholder: 'Enter your reason...', class: "form-control hide", disabled: true) %>
+                        <%= submit_tag('Dispute', class: 'form-control btn btn-sm btn-danger') %>
+                    <% end %>
+                <% else %>
+                    <%= form_tag('/ratings') do %>
+                        <%= hidden_field_tag('ratable_type', ratable.class.name) %>
+                        <%= hidden_field_tag('ratable_id', ratable.id) %>
+                        <%= hidden_field_tag('qualifier', 'dispute') %>
+                        <%= select_tag('reason', options_for_select(ratable.dispute_reasons.map{ |n| [n, n] }), class: "form-control") %>
+                        <%= text_field_tag('reason', '', placeholder: 'Enter your reason...', class: "form-control hide", disabled: true) %>
+                        <%= submit_tag('Dispute', class: 'form-control btn btn-sm btn-danger') %>
+                    <% end %>
+                <% end %>
+                <p class="text-muted">If you would like to add more information about why you are disputing this record, please leave a <b>comment</b> in the discussion section of the page.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+    <% end %>
+</div>
+
+<script>
+    $('select[name="reason"]').change(function (e) {
+        if ($(this).val() == "Other") {
+            $(this).parent('form').find('input[name="reason"]').removeClass('hide').attr({disabled: false});
+        } else {
+            $(this).parent('form').find('input[name="reason"]').addClass('hide').attr({disabled: true});
+        }
+    });
+</script>

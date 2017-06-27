@@ -17,6 +17,8 @@ class EntryManuscript < ActiveRecord::Base
   include UserFields
   include HasPaperTrail
   include CreatesActivity
+  include Ratable
+
   extend SolrSearchable
 
   def create_activity(action_name, current_user, transaction_id)
@@ -56,16 +58,16 @@ class EntryManuscript < ActiveRecord::Base
     boolean :reviewed
   end
 
-  def self.filters
-    ["id", "created_by", "updated_by"]
-  end
-
   def self.fields
     []
   end
 
   def public_id
     id.to_s
+  end
+
+  def dispute_reasons
+    ["Incorrectly linked", "Other"]
   end
 
   def search_result_format

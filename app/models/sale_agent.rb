@@ -29,4 +29,12 @@ class SaleAgent < ActiveRecord::Base
     sale.entry
   end
 
+  def name_authority
+    (agent ? "<a href='/names/#{agent_id}'>#{agent}</a> " : "")
+  end
+
+  def observed
+    ""
+  end
+
 end

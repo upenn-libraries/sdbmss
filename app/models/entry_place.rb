@@ -21,4 +21,8 @@ class EntryPlace < ActiveRecord::Base
     {observed_name: observed_name, name: place ? place.name : nil}
   end
 
+  def name_authority
+    (place ? "<a href='/places/#{place_id}'>#{place}</a> " : "")
+  end
+
 end

@@ -45,6 +45,8 @@
     </div>
 </div>
 
+<span id="spinner-src" src="<%= asset_path "spinner.gif" %>" style="display: none;"></span>
+
 <nav class="navbar navbar-default" style="margin: 0px 0px 9px 0px;">
     <%= form_tag(request.path, method: :get, class: 'search-form') do %>
     <a class='navbar-brand' href="#manage_records_info" data-toggle="modal" data-target="#manage_records_info">
@@ -120,7 +122,7 @@ $("#addSearch").click( function (e) {
     // fix me: add something here to dynamically change table height -> 
 
     var p = $('.search-block').eq(0).clone();
-    p.find("input", "select").val("");
+    p.find("input", "select").val("").attr('disabled', false);
     p.find('.form-submission').remove();
     $(".search-fieldset").append(p);
     p.find(".search-remove").click( function (e) {

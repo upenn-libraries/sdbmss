@@ -1,0 +1,33 @@
+<tr>
+  <td>
+    <% if (flags = record.dericci_record_flags.count) > 0 %>
+      <span class="btn btn-xs btn-danger">
+        <span class="glyphicon glyphicon-flag"></span>
+        <span class="badge"><%= flags %></span>
+      </span>
+    <% end %>
+    <%= link_to record.name, dericci_record_path(record) %>
+  </td>
+  <td>
+    <% if current_user %>
+    <span class="btn-group">
+      <%= render partial: "nav/bookmark_watch_table", locals: {model: record} %>
+    </span>
+    <% end %>
+  </td>
+  <td class="text-muted"><%= "#{record.cards} #{'card'.pluralize(record.cards)}" %></td>
+  <td class="text-muted"><%= record.size %></td>
+  <td>
+  <% record.dericci_links.group_by(&:name_id).each do |name_id, links| %>
+    <span class="btn btn-info btn-xs">
+      <span class="glyphicon glyphicon-link" title="This record is linked to a name is the SDBM name authority (possible)"></span>
+    </span>
+  <% end %>
+  <% if record.verified %>
+    <span class="btn btn-xs btn-success">
+      <span class="glyphicon glyphicon-link" title="This record is linked to a name is the SDBM name authority (verified)"></span>
+    </span>
+  <% end %>
+  </td>
+  <td class="text-muted text-right"><%= record.dates || "Unknown" %></td>
+</tr>

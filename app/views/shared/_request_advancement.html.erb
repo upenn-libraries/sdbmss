@@ -1,0 +1,95 @@
+<% if current_user %>
+<a href="" data-toggle="modal" data-target="#request-advancement" class="btn btn-default btn-sm">
+  <span class="glyphicon glyphicon-king"></span>
+  Request Advancement
+</a>
+<div class="modal fade ratings-modal" id="request-advancement">
+  <div class="modal-lg modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <span class="modal-title h2">Would you like to advance to a higher user level?</span>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Progress through the SDBM user levels to perform more advanced functions, such as: editing Manuscript Records, managing names in the SDBM Name Authority, and correcting legacy data. All users begin at the Contributor level. You must play at least ten De Ricci Name Games before you may request advancement.
+        </p>
+        <h4 class="text-center">New SDBM User Levels:</h4>
+          <ul class='list-group'>
+            <li class='list-group-item <%= current_user.role == "contributor" ? "active" : "" %>'>
+          <b>Contributor</b>: Contributors can create Entries, Sources, Names, and Manuscript Records; comment on other entries; link entries; and create manuscript records. Contributors can edit and manage only the Entries, Sources, Names, and Manuscript Records they create.
+            </li>
+            <li class='list-group-item <%= current_user.role == "editor" ? "active" : "" %>'>
+          <b>Editor</b>: Editors can do all things that Contributors can do, plus edit all Manuscript records, manage Names, and approve all Entries, Sources, Names, and Manuscript Records.
+            </li>
+            <li class='list-group-item'>
+          <b>Super Editor</b>: Super Editors can do all things that Editors can do; <b>plus</b>, edit legacy data (entries added to the database before October 15, 2015)
+            </li>
+            <li class='list-group-item disabled'>
+          <b>Admin</b>: Admins (Administrators) are New SDBM staff who can do all things that Contributors and Editors can do, plus edit and delete all Entries, Sources, Names, and Manuscript Records. 
+            </li>
+          </ul>
+          <%= form_tag("/private_messages", method: :post, id: "request-advancement-form") do %>
+            <% User.where(role: "admin").each do |user| %>
+              <%= hidden_field_tag "to_user[]", user.id %>
+            <% end %>
+            <%= hidden_field_tag "from_user", current_user.username %>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <%= text_field_tag :title, "I would like to request user advancement, please!", class: "form-control", required: true, placeholder: "Subject" %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <%= select_tag "role", options_for_select(current_user.role == "contributor" ? [["Editor", "editor"], ["Super Editor", "super_editor"]] : [["Super Editor", "super_editor"]]), class: "form-control", required: true, placeholder: "Subject" %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12">
+                <%= text_area_tag :message, '', class: "form-control", rows: 5, required: true, placeholder: "Do you have questions or comments about user advancement? Tell us about them here." %>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-sm-12"><%= submit_tag "Send Request", class: "form-control" %></div>
+            </div>
+            <div class="row">
+              <div class="col-sm-12 text-center">
+                An SDBM admin will review your work and contact you regarding your status.
+              </div>
+            </div>
+          <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  $("#request-advancement-form").submit( function (e) {
+    e.preventDefault();
+    var form = $("#request-advancement-form");
+    var message = form.find('textarea[name=message]').val();
+    var title = form.find('input[name=title]').val();
+    var role = form.find('select[name=role]').val();
+    var from_user = form.find('input[name=from_user]').val();
+    var to_users = []
+    form.find('input[name="to_user[]"]').each(function (e) { to_users.push($(this).val()); });
+    var data = {
+      message: from_user + " has requested to be elevated to " + role + " status.<br><br>" + message,
+      to_user: to_users,
+      title: title
+    };
+    $.ajax('/private_messages.json', {
+      method: "post",
+      data: data,
+      success: function (response) {
+        if (status == "success") {
+          // do something?
+          alert("Your request has been successfully sent!");
+        }
+        $("#request-advancement").modal("hide");
+      }
+    });
+  });
+</script>
+<% end %>

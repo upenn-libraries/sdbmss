@@ -3,10 +3,15 @@
     header {
         position: relative;
     }
+    .thredded--post--content {
+        max-height: 97px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
 </style>
 <script type="text/javascript">
     $(window).load(function(){
-     //   $('#Welcome').modal('show');
+//        $('#Welcome').modal('show');
     });
 </script>
 <% end %>
@@ -14,7 +19,7 @@
 <div class="row">
     <div class="col-sm-12">
         <p>
-            The Schoenberg Database of Manuscripts  aggregates observations of pre-modern manuscripts drawn from over 12,000 auction and sales catalogues, inventories, catalogues from institutional and private collections, and other sources that document sales and locations of these books from around the world.
+            <b>Welcome to the Schoenberg Database of Manuscripts (SDBM)!</b> The SDBM aggregates observations of pre-modern manuscripts drawn from over 12,000 auction and sales catalogs, inventories, catalogs from institutional and private collections, and other sources that document sales and locations of these books from around the world.
         </p>
     </div>
     <div class="col-sm-12">
@@ -42,14 +47,16 @@
             <li><strong>Email or Download Search Results</strong> or export the entire contents of the SDBM for your own use under a <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 Unported License</a></li>
         </ul>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-5">
         <div class="panel panel-home">
             <div class="panel-heading">
                 <span class="h4">New Features</span>
             </div>
             <div class="panel-body">
                 <ul>
-                    <li>VIAF-based Name Authority</li>
+                    <li>VIAF-based Name Authority
+                        <%= link_to "(Read More)", page_path(name: Page.where(name: "SDBM Name Authority").first.to_s) %>                        
+                    </li>
                     <li>Enhanced Provenance data</li>
                     <li>Create Groups to collaborate with other users</li>
                     <li>Communicate with other users via private messages or public forum</li>
@@ -58,13 +65,13 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-7">
         <div class="panel panel-home">
             <div class="panel-heading">
                 <span class='h4'>Recent Forum Discussion</span>
             </div>
             <div class="panel-body">
-                <% Thredded::Post.order('id DESC').last(10).each do |post| %>
+                <% Thredded::Post.order('id DESC').last(6).each do |post| %>
                     <% post_user_link = link_to(post.user.username, main_app.profile_path(post.user.username)) %>
                     <% topic = post.to_model.postable %>
                     <header>
@@ -98,7 +105,7 @@
         <div class="modal-content">
         <div class="modal-header text-center">
             <span class="h3">Recent Changes to the New SDBM</span>
-            <a href="#Welcome" data-dismiss="modal" data-target="#Welcome" class='pull-right' style="color: #333;"><span class="glyphicon glyphicon-remove"></span></a>
+            <a href="#Welcome" id="dismiss-welcome" data-dismiss="modal" data-target="#Welcome" class='pull-right' style="color: #333;"><span class="glyphicon glyphicon-remove"></span></a>
         </div>
         <div class="modal-body">
             <p>

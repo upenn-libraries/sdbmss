@@ -100,8 +100,6 @@ h1, .h1, h2, .h2, h3, .h3, legend {
   margin: 0px 50px 10px 50px;
 }
 .thredded--post {
-  margin: 0px 0px 10px 50px;
-  box-shadow: 4px 4px 8px -6px #374f73; 
 }
 .thredded--post--content {
   font-size: 14px;
@@ -453,7 +451,6 @@ h1, .h1, h2, .h2, h3, .h3, legend {
 .remove-bookmark {
     *border: 3px solid #FB9E9C;
     color: #FB9E9C;
-    margin-right: 10px;
 }
 .remove-bookmark:hover, .remove-bookmark:active, .remove-bookmark:focus {
   border-color: #a94442;
@@ -843,6 +840,8 @@ div#search_results_length {
   left: inherit;
   max-height: 400px;
   overflow-y: scroll;
+  margin: 0px;
+  padding: 0px;
 }
 
 .inline-right {
@@ -887,12 +886,10 @@ div#search_results_length {
 li.provenance {
   border: 1px solid #f8f8f8 !important;
   border-radius: 5px !important;
-  background: aliceblue;
   margin: 5px 2px;
   box-shadow: 0px 0px 4px 0px #d6e1ea inset;
 }
 li.provenance:hover, li.provenance:focus {
-  background-color: aliceblue;
   cursor: move;
 }
 .provenance_remove {
@@ -945,8 +942,7 @@ li.provenance:hover, li.provenance:focus {
   max-width: calc(100% - 40px);
 }
 #source-form .remove-link-container:before {
-  width: 30vw;
-  left: -30vw;
+  display: none;
 }
 #source-form .remove-link-container {
   background: none;
@@ -1195,6 +1191,11 @@ fieldset[disabled=disabled] legend {
 }
 fieldset[disabled=disabled] a {
   pointer-events: none;
+}
+.group-form-control {
+  display: table-cell;
+  line-height: 25px;
+  vertical-align: middle;
 }
 
 .list-group-item.disabled, .list-group-item.disabled:hover, .list-group-item.disabled:focus {
@@ -1651,7 +1652,8 @@ so that gray backdrop shvows up correctly */
     border: none;
   }
   .thredded--post {
-    margin: 0px 0px 10px 0px;
+    margin: 0px 0px 0px 0px;
+    box-shadow: none;
   }
   .catalog-search-form {
     width: 100%;
@@ -1921,6 +1923,20 @@ so that gray backdrop shvows up correctly */
   height: calc(100vh - 50px);
   white-space: normal;
   border-top: 2px solid white;
+  height: calc(100vh - 50px);
+  overflow-x: hidden;
+  -webkit-transition-property: width;
+  -moz-transition-property: width;
+  transition-property: width;
+  -webkit-transition-duration: 0.35s;
+  -moz-transition-duration: 0.35s;
+  transition-duration: 0.35s;
+  -webkit-transition-timing-function: linear;
+  -moz-transition-timing-function: linear;
+  transition-timing-function: linear;
+  -webkit-transition-delay: 0s;
+  -moz-transition-delay: 0s;
+  transition-delay: 0s;
 }
 #control-panel .control-label {
   color: white;
@@ -1973,23 +1989,7 @@ so that gray backdrop shvows up correctly */
   font-size: 36px;
   color: white;
 }
-/* FIX ME: this should really be renamed */
-#control-panel {
-  height: calc(100vh - 50px);
-  overflow-x: hidden;
-  -webkit-transition-property: width;
-  -moz-transition-property: width;
-  transition-property: width;
-  -webkit-transition-duration: 0.35s;
-  -moz-transition-duration: 0.35s;
-  transition-duration: 0.35s;
-  -webkit-transition-timing-function: linear;
-  -moz-transition-timing-function: linear;
-  transition-timing-function: linear;
-  -webkit-transition-delay: 0s;
-  -moz-transition-delay: 0s;
-  transition-delay: 0s;
-}
+
 #collapse-control {
   border-radius: 0px;
   border: none;
@@ -2108,6 +2108,20 @@ so that gray backdrop shvows up correctly */
   padding: 8px 0px;
   margin-left: 25px;
 }*/
+.list-collapse {
+  display: inline-block;
+  margin: 0px;
+}
+.list-collapse.collapsing, .list-collapse {
+  opacity: 1;
+  height: 100% !important;
+}
+.list-collapse span:nth-child(n + 4) {
+  display: none;
+}
+.list-collapse.in span:nth-child(n + 4) {
+  display: inline-block;
+}
 /*
 
 Private Message Styling
@@ -2300,9 +2314,8 @@ Private Message Styling
 }
 .img-neh {
   width: 100%;
-  margin: 10px 0px;
-  padding: 15px 10px;
-  border-top: 2px solid white;
+  margin: 15px 0px;
+  padding: 0px 10px;
 }
 #control-panel .panel-body {
   background: none;
@@ -2343,14 +2356,14 @@ Private Message Styling
   color: #999;
   pointer-events: none;
 }
-#control-panel .user-icon {
+.user-icon {
   display: table-cell;
   vertical-align: middle;
   width: 50px;
   font-size: 32px;
   color: white;
 }
-#control-panel .user-info {
+.user-info {
   display: table-cell;
 }
 
@@ -2366,7 +2379,7 @@ Private Message Styling
   display: table-cell;
 }
 .textarea-btn {
-  height: calc(100% + 14px);
+  height: 100%;
 }
 
 .navbar-default .navbar-collapse {
@@ -2399,12 +2412,84 @@ a.ratings {
   color: #333;
 }
 a.ratings.rated {
-  color: crimson;
+  color: #2196F3;
 }
 .checkbox-inline {
   padding: 15px 10px;
   color: #777;
 }
+.ratings-modal .form-control {
+  margin-bottom: 4px;
+}
+.primary-important {
+  background-color: #777 !important;
+  color: white !important;
+}
+.linking-tool-change-info {
+  padding: 2px 10px;
+  margin: 0px 10px;
+}
+tr.linking-tool-deleted {
+  background: #f2dede !important;
+  text-decoration: line-through;
+}
+tr.linking-tool-changed {
+  background: #d9edf7 !important;
+  font-weight: bold;
+}
+tr.linking-tool-added {
+  background: #dff0d8 !important;
+  font-weight: bold;
+}
+tr.linking-tool-changed td, tr.linking-tool-deleted td {
+  background: none !important;
+}
+.publish-btn, .delete-draft-btn {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+.delete-draft-btn {
+  right: 40px;
+}
+/* group table */
+.edit-buttons {
+  min-width: 129px;
+}
+.group-table td {
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  padding: 2px 8px !important;
+}
+.group-table {
+  max-width: 100%;
+  display: block;
+  overflow: hidden;
+}
+/*
+ new alert color scheme to better fit new design
+ */
+.alert-danger {
+  background: #a94442;
+  border-color: #a94442;
+  color: white;
+}
+.alert-info {
+  background-color: #31708f;
+  border-color: #31708f;
+  color: white;
+}
+.alert-success {
+  background-color: #3c763d;
+  border-color: #3c763d;
+  color: white;
+}
+.alert a {
+  text-decoration: underline;
+  font-weight: bold;
+  color: inherit;
+}
+/* ...comment out if need be */
 .alert-announce {
   background-color: #374f73;
   border-color: #374f73;

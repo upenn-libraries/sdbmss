@@ -30,6 +30,8 @@ class Entry < ActiveRecord::Base
   include CreatesActivity
   include Notified
 
+  include Ratable
+
   extend SolrSearchable
 
   belongs_to :source, counter_cache: :entries_count
@@ -38,9 +40,12 @@ class Entry < ActiveRecord::Base
   belongs_to :institution, class_name: "Name"
 
   has_many :group_records, as: :record
+  has_many :group_editable_records, -> { where editable: true}, class_name: "GroupRecord", as: :record
+  has_many :editing_groups, through: :group_editable_records, :source => :group
   has_many :groups, through: :group_records
   has_many :group_users,  -> { where confirmed: true }, through: :groups
-  has_many :contributors, source: :user, through: :group_users
+  has_many :editing_group_users,  -> { where confirmed: true }, through: :editing_groups, :source => :group_users
+  has_many :contributors, source: :user, through: :editing_group_users
 
   belongs_to :superceded_by, class_name: "Entry"
   has_many :supercedes, class_name: "Entry", :foreign_key => :superceded_by_id
@@ -50,25 +55,25 @@ class Entry < ActiveRecord::Base
 
   has_many :entry_manuscripts, inverse_of: :entry, dependent: :destroy
   has_many :manuscripts, through: :entry_manuscripts
-  has_many :entry_titles, inverse_of: :entry, dependent: :destroy
-  has_many :entry_authors, inverse_of: :entry, dependent: :destroy
+  has_many :entry_titles, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
+  has_many :entry_authors, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :authors, through: :entry_authors
-  has_many :entry_dates, inverse_of: :entry, dependent: :destroy
-  has_many :entry_artists, inverse_of: :entry, dependent: :destroy
+  has_many :entry_dates, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
+  has_many :entry_artists, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :artists, through: :entry_artists
-  has_many :entry_scribes, inverse_of: :entry, dependent: :destroy
+  has_many :entry_scribes, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :scribes, through: :entry_scribes
-  has_many :entry_languages, inverse_of: :entry, dependent: :destroy
+  has_many :entry_languages, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :languages, through: :entry_languages
-  has_many :entry_materials, inverse_of: :entry, dependent: :destroy
-  has_many :entry_places, inverse_of: :entry, dependent: :destroy
+  has_many :entry_materials, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
+  has_many :entry_places, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :places, through: :entry_places
-  has_many :entry_uses, inverse_of: :entry, dependent: :destroy
+  has_many :entry_uses, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   
 #  has_many :entry_comments, dependent: :destroy
   has_many :comments, as: :commentable
   has_many :sales, inverse_of: :entry, dependent: :destroy
-  has_many :provenance, inverse_of: :entry, dependent: :destroy
+  has_many :provenance, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
 
   accepts_nested_attributes_for :entry_titles, allow_destroy: true
   accepts_nested_attributes_for :entry_authors, allow_destroy: true
@@ -328,6 +333,7 @@ class Entry < ActiveRecord::Base
   # represent the nested associations for display and there has to be
   # some information tweaking/loss.
   
+
   def as_flat_hash
     # for performance, we avoid using has_many->through associations
     # because they always hit the db and circumvent the preloading
@@ -380,7 +386,8 @@ class Entry < ActiveRecord::Base
       updated_by: updated_by ? updated_by.username : "",
       approved: approved,
       deprecated: deprecated,
-      superceded_by_id: superceded_by_id
+      superceded_by_id: superceded_by_id,
+      draft: draft
     }
   end
 
@@ -408,7 +415,7 @@ class Entry < ActiveRecord::Base
   # auto_index should be set to false (via ENV) to prevent migration
   # script from indexing, but we want it to be ON for normal
   # operation.
-  searchable  :unless => :deleted, :auto_index => (ENV.fetch('SDBMSS_SUNSPOT_AUTOINDEX', 'true') == 'true'),
+  searchable  :unless =>  :deleted, :auto_index => (ENV.fetch('SDBMSS_SUNSPOT_AUTOINDEX', 'true') == 'true'),
              :include => @@includes do
 
     # Simple wrapper around DSL field definition methods like #text,
@@ -752,6 +759,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :updated_by, :stored => true) { updated_by ? updated_by.username : "" }
     define_field(:boolean, :approved, :stored => true) { approved }
     define_field(:boolean, :deprecated, :stored => true) { deprecated }
+    define_field(:boolean, :draft, :stored => true) { draft }
 
     #### Provenance
 
@@ -808,33 +816,39 @@ class Entry < ActiveRecord::Base
     id
   end
 
+  def dispute_reasons
+    ["Malicious/misleading data", "I disagree with some of the data", "Other"]
+  end  
+
   # I don't love having to duplicate all the fields AGAIN here, but inheriting it all from blacklight doesn't seem to work
   # 
 
-def do_csv_search(params, download)
-    s = do_search(params)
+  def self.do_csv_search(params, download)
+    
+    offset = 0
     
     objects = []
-    puts "Objects:: #{objects.count}"
-    s.results.in_groups_of(300, false) do |group|
-      ids = group.map(&:id)
-      #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
-      objects = objects + Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash }
-      puts "Objects:: #{objects.count}"
-    end
-    # any possible 'speed up' would need to be done here:
-
-    puts "Objects:: #{objects.count}"
-    headers = objects.first.keys
     filename = download.filename
     user = download.user
     id = download.id
     path = "/tmp/#{id}_#{user}_#{filename}"
+    headers = nil
     
-    csv_file = CSV.open(path, "wb") do |csv|
-      csv << headers
-      objects.each do |r|
-        csv << r.values 
+    loop do
+      s = do_search(params.merge({:limit => 300, :offset => offset}))
+      offset += 300
+      ids = s.results.map(&:id)
+      #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
+      objects = Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash }
+      break if objects.first.nil?
+      csv_file = CSV.open(path, "ab") do |csv|
+        if headers.nil? && objects.first
+          headers = objects.first.keys
+          csv << headers
+        end
+        objects.each do |r|
+          csv << r.values 
+        end
       end
     end
 
@@ -850,21 +864,68 @@ def do_csv_search(params, download)
 
   def self.filters
     [
-      "source", "approved", "width", "provenance_date", "price", "num_lines", "num_columns", "miniatures_unspec_size", "miniatures_small", "miniatures_large", "miniatures_fullpage", "manuscript_date",
-      "initials_historiated", "initials_decorated", "height", "folios", "updated_by", "created_by", "entry_id", "manuscript_id", "deprecated"
+      ["Entry Id", "entry_id"], 
+      ["Source ID (Full)", "source"], 
+      ["Approved", "approved"],
+      ["Width", "width"], 
+      #["Provenance Date", "provenance_date"],
+      ["Price", "sale_price"], 
+      ["Lines", "num_lines"], 
+      ["Columns", "num_columns"], 
+      ["Unspecified Miniatures", "miniatures_unspec_size"], 
+      ["Small Miniatures", "miniatures_small"], 
+      ["Large Miniatures", "miniatures_large"], 
+      ["Fullpage Miniatures", "miniatures_fullpage"], 
+      #["Manuscript Date", "manuscript_date"],
+      ["Historiated Initals", "initials_historiated"],
+      ["Decorated Initials", "initials_decorated"],
+      ["Height", "height"], 
+      ["Folios", "folios"], 
+      ["Updated By", "updated_by"], 
+      ["Created By", "created_by"], 
+      ["Manuscript ID", "manuscript_id"], 
+      ["Deprecated", "deprecated"],
+      ["Draft", "draft"]
     ]
   end
 
   def self.fields
-    ["binding_search", "catalog_or_lot_number_search", "sale_seller_search", "sale_buyer_search", "sale_selling_agent_search", "source_search", "institution_search", "title_search", "author_search", "artist_search", "scribe_search", "place_search", "language_search", "material_search", "language_search", "provenance_search"]
+    [
+      ["All Fields", "complete_entry"], 
+      ["Source", "source_search"], 
+      ["Catalog or Lot #", "catalog_or_lot_number_search"],
+      ["Selling Agent", "sale_selling_agent_search"], 
+      ["Seller", "sale_seller_search"], 
+      ["Buyer", "sale_buyer_search"], 
+      ["Institution", "institution_search"], 
+      ["Title", "title_search"],
+      ["Author", "author_search"], 
+      ["Artist", "artist_search"], 
+      ["Scribe", "scribe_search"], 
+      ["Binding", "binding_search"], 
+      ["Language", "language_search"], 
+      ["Material", "material_search"], 
+      ["Place", "place_search"], 
+      ["Use", "use_search"],
+      ["Provenance", "provenance_search"],
+    ]
   end
 
   def self.dates
-    ["created_at", "updated_at"]
+    [
+      ["Added On", "created_at"], 
+      ["Updated On", "updated_at"]
+    ]
   end
 
   def self.search_fields
-    super - ["deprecated"]
+    super - ["Deprecated", "deprecated"] - ["Draft", "draft"]
+  end
+
+  def create_activity(action_name, current_user, transaction_id)
+    if !self.draft
+      super(action_name, current_user, transaction_id)
+    end
   end
 
   private

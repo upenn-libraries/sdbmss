@@ -163,7 +163,7 @@ class Manuscript < ActiveRecord::Base
   end
 
   def self.fields
-    super + ["location"]
+    super + [["Last Known Location", "location"]]
   end
 
 end

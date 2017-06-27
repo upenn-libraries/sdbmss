@@ -70,4 +70,7 @@ class EntryArtist < ActiveRecord::Base
     {name: artist ? artist.name : nil, observed_name: observed_name}
   end
 
+  def name_authority
+    (artist ? "<a href='/names/#{artist_id}'>#{artist}</a> " : "")
+  end
 end

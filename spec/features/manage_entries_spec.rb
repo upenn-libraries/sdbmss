@@ -19,11 +19,7 @@ describe "Manage entries", :js => true do
   end
 
   before :each do
-    visit root_path
-    fill_in 'user_login', :with => @user.username
-    fill_in 'user_password', :with => 'somethingunguessable'
-    click_button 'Log in'
-    expect(page).to have_content 'Signed in successfully'
+    login(@user, 'somethingunguessable')
   end
 
   it "should return JSON results successfully", js: false do
@@ -89,7 +85,7 @@ describe "Manage entries", :js => true do
     expect(page).to have_selector("#mark-as-approved")
     find("#mark-as-approved").click
 
-    expect(page).to have_content("No records found")
+    expect(page).to have_content("There are no records to display.")
 
     @unapproved_entry.reload
     expect(@unapproved_entry.approved).to be true
@@ -122,14 +118,14 @@ describe "Manage entries", :js => true do
   it "should perform a search on any field without error" do
     visit entries_path
 
-    expect(page.first("select[name='search_field']").all("option").length).to eq(43)
+    expect(page.first("select[name='search_field']").all("option").length).to eq(39)
 
-    40.times do |i|
+
+    39.times do |i|
       page.first("input[name='search_value']").set "Test String"
-      option = page.first("select[name='search_field']").all("option")[i]
+      option = page.all("select[name='search_field'] option")[i]
       option.select_option
       find('#search_submit').click()
-      # puts "Option: #{option.value}, success"
     end
   end
 
@@ -222,7 +218,8 @@ describe "Manage entries", :js => true do
 
     click_link "Cite"
     now = DateTime.now.to_formatted_s(:date_mla)    
-    expect(page).to have_content("Schoenberg Database of Manuscripts. The Schoenberg Institute for Manuscript Studies, University of Pennsylvania Libraries. Web. #{now}: #{Entry.first.public_id}.")
+    result = "Schoenberg Database of Manuscripts. The Schoenberg Institute for Manuscript Studies, University of Pennsylvania Libraries. Web. #{now}: #{Entry.first.public_id}."
+    expect(page).to have_content(result)
   end
 
 

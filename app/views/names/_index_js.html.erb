@@ -111,13 +111,21 @@ load_session = '<%= params[:last_search] %>' == 'true';
                 dbSortField: 'provenance_count'
             },
             {
-                title: 'Reviewed',
+                title: 'Approved',
                 dbSortField: 'reviewed'
             },
-            {
+            /*{
                 title: 'Confirmed',
                 dbSortField: 'confirmed'
+            },*/
+            {
+                title: 'Confirms',
+                dbSortField: 'confirms'
             },
+            {
+                title: 'Disputes',
+                dbSortField: 'disputes'
+            },            
             {
                 title: 'Added By',
                 dbSortField: 'created_by'
@@ -137,7 +145,8 @@ load_session = '<%= params[:last_search] %>' == 'true';
             {
                 title: 'BookmarkWatch',
                 visible: false,
-                searchable: false
+                searchable: false,
+                never_show: true
             }
         ];
      };
@@ -157,7 +166,9 @@ load_session = '<%= params[:last_search] %>' == 'true';
              result.sale_agents_count,
              result.provenance_count,
              result.reviewed.toString(),
-             result.confirmed.toString(),
+             //result.confirmed.toString(),
+             result.confirms,
+             result.disputes,
              result.created_by || "",
              result.created_at || "",
              result.updated_by || "",
@@ -179,9 +190,11 @@ load_session = '<%= params[:last_search] %>' == 'true';
      };
      // arbitrary screen width for fixed columns...
      if (window.screen.width > 640) {
-        config.fixedColumns = 3
+        config.fixedColumns = 4
      }
-     new ManageNames(config);
+     var manageNames = new ManageNames(config);
+     //manageNames.setFormStateFromURL();
+     manageNames.dataTable.reload();         
 
  });
 

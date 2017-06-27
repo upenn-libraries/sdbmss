@@ -96,7 +96,8 @@
         <div class='panel panel-default'>
             <% if @similar.present? %>
                 <div class='panel-heading'><b>Suggestions</b></div>
-                <table class='table table-striped'>
+                <div class="panel-body" style="overflow-x: scroll;">
+                <table class='table table-striped table-responsive'>
                     <thead>
                         <tr>
                             <th>Merge</th>
@@ -126,6 +127,7 @@
                         <% end %>
                     </tbody>
                 </table>
+                </div>
             <% else %>
                 <b>No suggested names found, use manual search above.</b>
             <% end %>

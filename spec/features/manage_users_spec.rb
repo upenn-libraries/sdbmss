@@ -11,11 +11,7 @@ describe "Manage Users", :js => true do
   end
 
   before :each do
-    visit root_path
-    fill_in 'user_login', :with => @user.username
-    fill_in 'user_password', :with => 'somethingunguessable'
-    click_button 'Log in'
-    expect(page).to have_content 'Signed in successfully'
+    login(@user, 'somethingunguessable')
   end
 
   after :each do
@@ -37,7 +33,7 @@ describe "Manage Users", :js => true do
     fill_in 'user_password', with: "12345678"
     fill_in 'user_password_confirmation', with: "12345678"
     fill_in 'user_bio', with: "Some dude"
-    click_button "Create User"
+    click_button 'Create User'
 
     u = User.find_by(username: "brandnewuser")
     expect(u.email).to eq("brandnewuser@upenn.edu")

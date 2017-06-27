@@ -144,13 +144,16 @@
          return null;
      };
 
-     new ManageEntryManuscripts({
+     var manageEntryManuscripts = new ManageEntryManuscripts({
          resourceName: "<%= resource_name %>",
          resourceNameSingular: "<%= resource_name.singularize %>",
          resourceNamePlural: "<%= resource_name.pluralize %>",
          showOnlyRecordsCreatedByUser: showOnlyRecordsCreatedByUser,
          searchNameField: "id"
      });
+
+     manageEntryManuscripts.setFormStateFromURL();
+     manageEntryManuscripts.dataTable.reload();    
 
  });
 

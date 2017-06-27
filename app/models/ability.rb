@@ -32,7 +32,7 @@ class Ability
 
     if ['contributor', 'editor', 'super_editor', 'admin'].member? user.role
       can [:edit, :update, :show], :all, :created_by_id => user.id
-      can [:index, :new], DericciGame
+      can :create, DericciLink
 
       can :destroy, [Comment, Reply], :created_by_id => user.id
       cannot :manage, Page
@@ -52,6 +52,7 @@ class Ability
     if ['editor', 'super_editor', 'admin'].member? user.role
       can :unlink, :all
       can :edit, Manuscript
+      can :manage, DericciRecord
 
       cannot :deprecate, :all
       #cannot [:edit, :destroy, :merge], [Source, Entry]
@@ -62,6 +63,7 @@ class Ability
     end
 
     if ['super_editor'].member? user.role
+      can [:index, :new], DericciGame
       # allow super-editors to edit legacy records
       can [:edit, :update, :verify, :deprecate], Entry, :unverified_legacy_record => true
     end
@@ -74,6 +76,12 @@ class Ability
     can [:edit, :update], Entry, contributors: { :id => user.id }
     cannot :manage, [Group]
     can [:edit, :update, :destroy], Group, admin: { :id => user.id }
+    can [:destroy], Entry, {created_by_id: user.id, draft: true}
+
+    can :show, Entry
+    cannot :show, Entry do |entry|
+      (entry.created_by != user && !entry.contributors.include?(user)) && entry.draft
+    end
 =begin
     the old definitions - I am keeping them here now just for reference...
 

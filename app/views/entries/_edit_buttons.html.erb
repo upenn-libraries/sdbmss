@@ -1,11 +1,69 @@
-    <div class="row text-center" style="padding-bottom: 20px;" ng-show="!entry.deprecated">
-        <div class="col-sm-12">
-            <button class="btn btn-primary save-button" ng-click="save()" ng-disabled="entryForm.$invalid || currentlySaving || !entry.source">Save</button>
-            <a class="btn btn-warning" id='cancelEdit' href="{{ entry.id ? '/entries/' + entry.id : '/dashboard'}}">Cancel</a>
+<div class="row" style="padding-bottom: 20px;" ng-show="!entry.deprecated">
+    <div class="col-sm-4">
+        <button class="btn btn-primary save-button" ng-click="save(false)" ng-disabled="entryForm.$invalid || currentlySaving || !entry.source">Save</button>
+        <button ng-if="entry.draft || (!entry.id && !sdbmutil.getManuscriptId() && !sdbmutil.getNewManuscript())" ng-click="saveAsDraft()" class="btn btn-default save-button" ng-disabled="entryForm.$invalid || currentlySaving || !entry.source || (!entry.draft && num_drafts >= 10)" title="You may save up to 10 drafts at a time." >Save as Draft</button>
+        <a class="btn btn-warning" id='cancelEdit' href="{{ entry.id ? '/entries/' + entry.id : '/dashboard'}}">Cancel</a>
+    </div>
+    <div class="col-sm-8 text-right">
+        <span ng-if="entry && draft" >
+            <span class="text-info">An unsaved version from <b>{{ draft.updated_object.toLocaleDateString() }}</b>, <b>{{ draft.updated_object.toLocaleTimeString() }}</b> has been detected </span>
+            <a href="" class="btn btn-default" ng-click="loadDraft()">
+                <span class="glyphicon glyphicon-repeat"></span>
+                Restore
+            </a>            
+        </span>
+        <a href="" data-toggle="modal" data-target="#backupSettings" class="btn btn-default" ng-if="entry.id || entry.source">
+            <span class="glyphicon glyphicon-refresh"></span> Auto-backup {{ backup == 'enabled' ? 'enabled' : 'disabled' }}
+        </a>
+    </div>
+    <div class="col-sm-12 label-alignment" ng-show="entryForm.$invalid">
+        <div style="color: red;">
+            You must correct the form inputs highlighted in red before you can save this form.
         </div>
-        <div class="col-sm-14 label-alignment">
-            <div ng-show="entryForm.$invalid" style="color: red;">
-                You must correct the form inputs highlighted in red before you can save this form.
+    </div>
+</div>
+
+<div class="modal fade" id="backupSettings">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-center">
+                <span class="h3">Would you like the SDBM to auto-backup your work?</span>
+                <a href="#backupSettings" id="dismiss-welcome" data-dismiss="modal" data-target="#backupSettings" class='pull-right' style="color: #333;"><span class="glyphicon glyphicon-remove"></span></a>
+            </div>
+            <div class="modal-body">
+                <p>The SDBM allows you to auto-backup your work by saving in progress data in the browser's local storage.  In the event that your page is closed without saving, you may be able to recover your work.  However, you may also opt-out of this feature if you desire.</p>
+                <table class="table table-responsive">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input type="radio" class="form-control" value="enabled" ng-model="backup">
+                            </td>
+                            <td style="vertical-align: middle;">
+                                Always enabled
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" class="form-control" value="temporarily_disabled" ng-model="backup">
+                            </td>
+                            <td style="vertical-align: middle;">
+                                Disable for current session
+                            </td>
+                        </tr>
+                        <tr class='table-danger'>
+                            <td>
+                                <input type="radio" class="form-control" value="disabled" ng-model="backup">
+                            </td>
+                            <td style="vertical-align: middle;">
+                                Always disabled
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colSpan="2"><input type="submit" class="form-control text-center" value="Confirm" ng-click="setBackup()" data-dismiss="modal" data-target="#backupSettings" href="#backupSettings"></input></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+</div>

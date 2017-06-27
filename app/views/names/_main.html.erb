@@ -1,32 +1,30 @@
-<dl class="document-metadata dl-horizontal dl-invert">
-
 <% if name.confirmed %>
-<dt></dt>
-<dd>
+<tr><td></td>
+<td>
     <strong class="text-success">Confirmed <span class="glyphicon glyphicon-ok"></span></strong>
-</dd>
+</td></tr>
 <% end %>
 
-<dt>Name</dt>
-<dd>
+<tr><td>Name</td>
+<td>
     <%= name.name %>
-</dd>
+</td></tr>
 
 <% if name.viaf_id.present? %>
-<dt>
+<tr><td>
     <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="glyphicon glyphicon-globe"></span> VIAF ID</a>
-</dt>
-<dd>
+</td>
+<td>
     <a href="http://viaf.org/viaf/<%= name.viaf_id %>/"><%= name.viaf_id %></a>
-</dd>
+</td></tr>
 <% end %>
 
 <% count_sources = name.agent_sources.count %>
 <% if count_sources || 0 > 0 %>
-<dt># Sources</dt>
-<dd>
+<tr><td># Sources</td>
+<td>
     This agent is found in <%= link_to "#{count_sources} source".pluralize(count_sources), sources_path({agent_id: name.id}), class: "badge" %>
-</dd>
+</td></tr>
 <% end %>
 
 <!-- FIX ME: public-facing COUNT will only show number of non-deleted entries : BUT includes deprecated records -->
@@ -36,8 +34,8 @@
 <% has_entries = (count_authors + count_artists + count_scribes) > 0 %>
 
 <% if (!name.is_provenance_agent) || has_entries %>                
-<dt># Entries</dt>
-<dd>
+<tr><td># Entries</td>
+<td>
     <% if count_authors > 0 %>
     This name is listed as the author of <a class='badge' href="<%= search_by_facet_value('author', name.name) %>"><%= "#{count_authors} entry".pluralize(count_authors) %></a><br/>
     <% end %>
@@ -53,7 +51,7 @@
     <% if !has_entries %>
     No entries found containing this name as an author, artist, or scribe.
     <% end %>
-</dd>
+</td></tr>
 <% end %>
 
 <% count_selling_agent = Entry.with_sale_agent_and_role(name, 'selling_agent').count || 0 -%>
@@ -62,8 +60,8 @@
 <% has_transactions = (count_selling_agent + count_seller_or_holder + count_buyer) > 0 -%>
 
 <% if has_transactions -%>
-    <dt># Transactions</dt>
-    <dd>
+    <tr><td># Transactions</td>
+    <td>
 
         <% if count_selling_agent > 0 %>
         This agent is the selling agent in <a class='badge' href="<%= search_by_facet_value('sale_selling_agent', name.name) %>"><%= "#{count_selling_agent} entry".pluralize(count_selling_agent) %></a><br/>
@@ -76,22 +74,19 @@
         <% if count_buyer > 0 %>
         This agent is the buyer in <a class='badge' href="<%= search_by_facet_value('sale_buyer', name.name) %>"><%= "#{count_buyer} entry".pluralize(count_buyer) %></a>
         <% end %>
-    </dd>
+    </td></tr>
 <% end %>
 
 <% count_provenance = name.provenance_entries.count %>
 <% if count_provenance > 0 %>
-    <dt># Provenance</dt>
-    <dd>
+    <tr><td># Provenance</td>
+    <td>
         This agent is found in the provenance of <a class='badge' href="<%= search_by_facet_value('provenance', name.name) %>"><%= "#{count_provenance} entry".pluralize(count_provenance) %></a>
-    </dd>
+    </td></tr>
 <% end %>
 <% if name.other_info.present? %>
-    <dt>Other Info</dt>
-    <dd><%= name.other_info %></dd>
+    <tr><td>Other Info</td>
+    <td><%= name.other_info %></td></tr>
 <% end %>
 
-
 <%= render partial: "shared/user_info", locals: {model: name} %>
-
-</dl>

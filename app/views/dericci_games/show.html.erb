@@ -11,16 +11,35 @@
       border-bottom-right-radius: 0px;
       box-shadow: 2px 1px 4px #393c3e inset;
       background: #525659;
+      font-size: 22px;
+    }/*
+    .game-nav > li.active a.btn:last-child {
+      border-color: #525659;
+      border-radius: 0px;
+      background: #525659;
+      color: white;
+    }*/
+    a.btn.active, a.btn.active:hover, a.btn.active:focus {
+      background: #525659;
+      color: white;
+    }
+    .game-nav > li > a.text-danger {
+      color: red;
+      font-weight: bold;
     }
     .game-nav {
       padding-left: 15px;
     }
     .progress {
-      height: 34px;
+      height: 46px;
       margin-bottom: 0px;
+      margin: 0px 15px 10px 15px;
     }
     .progress-bar {
-      line-height: 34px;
+      line-height: 46px;
+      font-size: 18px;
+      font-weight: bold;
+      min-width: 12%;
     }
     .glyphicon-blank {
       width: 14px;
@@ -31,61 +50,110 @@
     .game-skipped {
       color: #f0ad4e !important;
     }
+    .game-flagged {
+      color: #a94442 !important;
+    }
+    .btn-full {
+      width: calc(100% - 15px);
+      margin: 10px 15px 10px 15px;
+    }
     .my-btn-group {
       display: table;
       width: 100%;
-      margin-bottom: 10px;
     }
     .my-btn-group .btn {
       float: none;
       display: table-cell;
+      white-space: normal;
+    }
+    /*.my-btn-group .btn-default {
+      border: none;
+    }*/
+    /*.my-btn-group .btn:last-child {
+      width: 100%;
+      max-width: 100px;
+      text-align: left;
+    }*/
+    .dl-dericci {
+      background: #525659;
+      color: white;
+    }
+    .dl-dericci dd {
+      border: none;
+    }
+    .dl-dericci dt {
+      color: white;
+    }
+    .lead {
+      margin: 0px;
+    }
+    .broken-flag {
+      position: absolute;
+      width: 640px;
+      right: 10px;
+      margin-top: 10px;
+      margin-right: 15px;
+      opacity: 0.4;
+    }
+    .broken-flag:hover {
+      opacity: 1;
+    }
+    .btn[disabled=disabled] {
+      opacity: 0.6;
+      -webkit-filter: grayscale(70%);
+      -ms-filter: grayscale(70%);
+      -moz-filter: grayscale(70%);
+      -o-filter: grayscale(70%);
+      filter: grayscale(70%);
     }
   </style>
 <% end %>
 <% content_for :breadcrumbs do %>
   <%= render partial: "breadcrumbs" %>
+  <li class="active"><a href="">Now Playing</a></li>
 <% end %>
+
 <input type="hidden" class="hidden" id="game_id" value="<%= @game.id %>">
 <div data-ng-controller="DericciGameCtrl" data-ng-cloak>
-  <div class="row" style="margin-bottom: 10px;">
-    <div class="col-sm-11">
-      <div class="progress">
-        <div class="progress-bar progress-bar-striped progress-bar-success active" role="progressbar" style="width: {{ progress.complete == 100 ? 95 : progress.complete || 3 }}%">
-          {{ progress.complete }}% Complete
-        </div>
-        <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" style="width: {{ progress.skipped == 100 ? 97 : progress.skipped || 3 }}%">
-          {{ progress.skipped }}% Skipped
-        </div>
-      </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <%= render partial: "instructions", locals: {newgame: false} %>
     </div>
-    <div class="col-sm-1 text-right"><a href="" class="btn btn-primary" ng-class="{ 'disabled': progress.complete + progress.skipped < 100 }" ng-click="save()">Submit</a></div>
   </div>
   <div class="row">
-    <ul class="game-nav nav nav-pills nav-stacked col-sm-4" style="padding-right: 0px;">
-      <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }">
-        <a href="" class="one-line" ng-click="selectRecord(record)" ng-class="{ 'game-linked': isLinked(record), 'game-skipped': record.skipped }">
-          <span class="glyphicon glyphicon-blank" ng-class="{ 'glyphicon-check': isLinked(record), 'glyphicon-unchecked': record.skipped }"></span>
-          {{ record.name }}
+    <div class="col-sm-4" style="">
+      <p class='text-center'>Select a <span class='lead'>Record</span> and click <span class="lead text-primary"><span class="glyphicon glyphicon-search"></span> Find</span></p>
+      <ul class="game-nav nav nav-pills nav-stacked" style="margin-top: 15px;">
+        <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }">
+          <span class="btn-group my-btn-group">
+            <a href="" class="btn btn-default btn-sm one-line text-left" ng-class="{'active': current_record == record}" ng-click="selectRecord(record)">
+              {{ record.name }}
+            </a>
+            <a href="" class="btn btn-sm" ng-class="getButton(record)" ng-disabled="record != current_record" ng-click="record == current_record ? findName(record) : ''" style="width: 90px;">
+              <span class="glyphicon" ng-class="getClass(record)"></span> {{ getText(record) }}
+            </a>
+          </span>
+        </li>
+      </ul>
+      <a href="" class="btn btn-default btn-lg btn-full" ng-class="{ 'disabled': !canSubmit() }" ng-click="save()">
+        <span class="glyphicon glyphicon-ok-sign"></span>
+        Submit
+      </a>
+    </div>
+    <div class="col-sm-8" style="">
+      <p class="text-right text-danger">
+        Is there a problem with this .pdf file?
+        <a href="" class="btn btn-danger btn-xs" ng-click="flag_review(current_record)" ng-if="current_record && !needsWork(current_record)">
+          <span class="glyphicon glyphicon-warning-sign"></span> Flag For Review
         </a>
-      </li>
-    </ul>
-    <div class="col-sm-8" style="padding-left: 0px;">
-      <iframe id="current-card" ng-src="{{ current_url }}" frameborder="0" style="height: 500px; width: 100%; background: #525659;">Hello!</iframe>
+        <a href="" class="btn btn-default btn-xs" ng-click="unflag(current_record)" ng-if="current_record && needsWork(current_record)">
+          <span class="glyphicon glyphicon-warning-sign"></span> Unflag Record
+        </a>        
+      </p>
+      <iframe id="current-card" ng-src="{{ current_url }}" frameborder="0" style="height: 400px; width: 100%; background: #525659; margin-bottom: -5px;">Hello!</iframe>
       <div class="row">
-        <div class="col-sm-3"></div>
-        <div class="col-sm-6 text-center">          
-          <div class="my-btn-group btn-group">
-            <a href="" style="width: 1px;" class="btn btn-default" ng-click="prev()"><span class="glyphicon glyphicon-chevron-left"></span></a>
-            <a href="" class="btn btn-warning" ng-class="{'disabled' : current_record && isLinked(current_record) }" ng-click="skip(current_record)">Skip</a>
-            <a href="" class="btn btn-default" ng-click="findName(current_record);">Find Name</a>
-            <a href="" style="width: 1px;" class="btn btn-default" ng-click="next()"><span class="glyphicon glyphicon-chevron-right"></span></a>
-          </div>
-        </div>
-        <div class="col-sm-3">
-        </div>
         <div class="col-sm-12">
-          <h4 class="h4"><a href="{{ current_url }}" target="_blank">{{ current_record.name }}</a></h4>
-          <dl class="document-metadata dl-horizontal dl-invert">
+          <dl class="document-metadata dl-horizontal dl-invert dl-dericci">
             <dt>Name</dt>
             <dd>{{ current_record.name }}</dd>
           
@@ -96,7 +164,7 @@
             <dd>{{ current_record.place || "Unknown" }}</dd>
        
             <dt>PDF</dt>
-            <dd><a href="{{ current_record.url }}" target="_blank">Hosted at the UK Senate House Archives</a></dd>
+            <dd><a href="{{ current_record.url }}" target="_blank" class='btn btn-xs btn-default'>Hosted at the UK Senate House Archives</a></dd>
 
             <dt>Number of Cards</dt>
             <dd>{{ current_record.cards || "Unknown" }}</dd>
@@ -109,7 +177,28 @@
 
             <dt>Senate House ID#</dt>
             <dd>{{ current_record.senate_house || "Unknown" }}</dd>
+ 
+            <div class="input-group textarea-group" style="padding: 4px;">
+              <textarea name="" id="" cols="30" rows="2" ng-model="current_record.comment" placeholder="Leave a comment here..." class="form-control"></textarea>
+            </div>
+   
           </dl>
+    
+
+          <div class="panel panel-default" ng-repeat="comment in current_record.comments">
+            <div class="panel-body comment" ng-bind-html="comment.comment">
+            </div>
+            <div class="panel-footer">
+              <div class="row">
+                <div class="col-xs-6">
+                  {{ comment.created_by }}
+                </div>
+                <div class="col-xs-6 text-right">
+                  {{ comment.created_at }}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="row" ng-if="current_record" ng-repeat="dericci_link in actualLinks(current_record) | filter: activeRecords" >
@@ -117,7 +206,6 @@
           <div class="input-group" style="margin-bottom: 5px;">
             <textarea class="form-control" ng-model="dericci_link.other_info" placeholder="Add more information here, if needed..."></textarea>
             <span class="input-group-addon">
-              {{ dericci_link.name }} <br>
               <a target="_blank" href="/names/{{ dericci_link.name_id }}" class="">
                 SDBM_NAME_{{ dericci_link.name_id }}
               </a>
@@ -132,3 +220,20 @@
 </div>
 </div>
 <%= render "select_name_authority" %>
+<script type="text/ng-template" id="flagReason.html">
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-sm-12 text-danger text-center">Please provide a reason for flagging this De Ricci Record as requiring further attention.</div>
+        <div class="col-sm-2"><label for="" class="control-label">Reason</label></div>
+        <div class="col-sm-10">
+          <div class="input-group">
+            <input class="form-control" ng-model="current_flag.reason" >              
+            </select>
+            <div class="input-group-btn">
+              <a href="" class="btn btn-default" ng-click="current_flag.reason.length > 0 ? flag_modal.close() : '';">Done</a>
+            </div>
+          </div>
+        </div>        
+      </div>
+    </div>
+</script>

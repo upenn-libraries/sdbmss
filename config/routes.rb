@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   end
 
   resources :watches, only: [:index, :create, :destroy]
-  resources :ratings, only: [:create, :destroy]
+  resources :ratings, only: [:create, :destroy, :update]
 
   resources :groups do
     collection {
@@ -37,8 +37,18 @@ Rails.application.routes.draw do
   resources :group_users
   
   resources :dericci_records
-  resources :dericci_games
-  resources :dericci_links
+  resources :dericci_games do
+    collection {
+      get 'stats'
+    }
+  end
+  resources :dericci_links do
+    collection {
+      delete 'delete_many'
+    }
+  end
+  resources :dericci_notes, only: [:index]
+  resources :dericci_sales, only: [:index]
 
   resources :replies
   resources :notifications, only: [:index, :show, :update, :destroy]
@@ -168,6 +178,7 @@ Rails.application.routes.draw do
       get 'search'
     end
     member do
+      get 'table'
       get 'citation'
       get 'entry_candidates'
       get 'manage_entries'

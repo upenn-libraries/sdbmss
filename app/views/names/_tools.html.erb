@@ -12,7 +12,8 @@
             </li>
         <% end %>
     <% end %>
-    <% if !@model.confirmed and can? :edit, Name %>
+    <!-- fix me: remove this properly... -->
+    <% if false #if !@model.confirmed and can? :edit, Name %>
         <li class="link <%= disabled %>">
             <%= link_to(name_path(@model, confirmed: true), :method => :put, :data => {:confirm => "Do you have adequate information to assert that this name refers to a real individual?"}) do %>
                 <span class="glyphicon glyphicon-ok"></span> Confirm

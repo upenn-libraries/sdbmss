@@ -22,7 +22,7 @@
       
     <div class="field form-group row">
         <%= f.label :name, class: "col-sm-2 control-label" %>
-        <div class="col-sm-4">
+        <div class="col-sm-10">
             <%= f.text_field :name, :class => 'form-control', :data => { 'ng-model' => 'entity.name', 'ng-init' => "entity.name='#{SDBMSS::Util.escape(@model.name)}'" } %>
         </div>
     </div>
@@ -87,7 +87,7 @@
     </div>
     <div class="field form-group row">
         <%= f.label :other_info, class: "col-sm-2 control-label" %>
-        <div class="col-sm-8">
+        <div class="col-sm-10">
             <%= f.text_field :other_info, :class => 'form-control', :data => { 'ng-model' => 'entity.other_info', 'ng-init' => "entity.other_info=\"#{j(@model.other_info)}\"" } %>
         </div>
     </div>
