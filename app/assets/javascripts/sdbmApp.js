@@ -897,7 +897,7 @@ var BOOKMARK_SCOPE;
           var file = input.files[0];
           var fr = new FileReader();
           fr.onload = function () {
-            var results = $.csv.toObjects(fr.result);
+            var results = $.csv.toObjects(fr.result, {delimiter: ''});
             for (var i = 0; i < results.length; i++) {
               var entry = new Entry(results[i]);
               // split fields with potentially multiple values
@@ -907,6 +907,7 @@ var BOOKMARK_SCOPE;
                     var key = $scope.observed_name[$scope.multifields[j]] || "observed_name";
                     // rename for rails params (titles => entry_titles_attributes)
                     var k = $scope.multifields[j] == "provenance" ? "provenance_attributes" : "entry_" + $scope.multifields[j] + "_attributes";
+                    console.log(entry[$scope.multifields[j]]);
                     entry[k] = $.csv.toArray(entry[$scope.multifields[j]], {separator: ";"}).map( function (f) {
                       var r = {};
                       r[key] = f;

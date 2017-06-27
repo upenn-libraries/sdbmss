@@ -32,7 +32,7 @@
   <div class="row">
     <div class="col-sm-12">
       <p>This is the place to import data into the SDBM.  Once your file has been examined, it will be presented for your inspection.</p>
-      <input type="file" class="form-control" id="file" ng-upload-change="handleFile($event)" ng-disabled="!source"></input>
+      <input type="file" class="form-control" id="file" accept=".csv" ng-upload-change="handleFile($event)" ng-disabled="!source"></input>
     </div>
   </div>
 
