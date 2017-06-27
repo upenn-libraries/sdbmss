@@ -22,7 +22,7 @@ class CatalogController < ApplicationController
 #    entry = Entry.find_by(id: params[:id], approved: true)
     if entry.present?
       if can? :show, entry
-        flash.now[:notice] = "Note: This entry records a mention or observation of a manuscript in a source.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
+        #flash.now[:notice] = "Note: This entry records a mention or observation of a manuscript in a source.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
     #  @entry_comment = EntryComment.new(entry: entry)
     #  @entry_comment.build_comment
         super
