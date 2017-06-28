@@ -895,8 +895,11 @@ var BOOKMARK_SCOPE;
         else {
           var file = input.files[0];
           var fr = new FileReader();
+          fr.onprogress = function (e) {
+            console.log(e);
+          }
           fr.onload = function () {
-            var results = $.csv.toObjects(fr.result, {delimiter: '~'});
+            var results = $.csv.toObjects(fr.result, {delimiter: '^', onParseEntry: function () { $scope.progress(); }});
             for (var i = 0; i < results.length; i++) {
               var entry = new Entry(results[i]);
               // split fields with potentially multiple values
@@ -906,7 +909,7 @@ var BOOKMARK_SCOPE;
                     var key = $scope.observed_name[$scope.multifields[j]] || "observed_name";
                     // rename for rails params (titles => entry_titles_attributes)
                     var k = $scope.multifields[j] == "provenance" ? "provenance_attributes" : "entry_" + $scope.multifields[j] + "_attributes";
-                    entry[k] = $.csv.toArray(entry[$scope.multifields[j]], {separator: ";", delimiter: '~'}).map( function (f) {
+                    entry[k] = $.csv.toArray(entry[$scope.multifields[j]], {separator: ";", delimiter: '^'}).map( function (f) {
                       var r = {};
                       r[key] = f;
                       return r;
@@ -932,6 +935,12 @@ var BOOKMARK_SCOPE;
           fr.readAsText(file);
         }
       };
+
+      $scope.loaded = 0;
+      $scope.progress = function () {
+        $scope.loaded += 1;
+        console.log($scope.loaded);
+      }
 
       $scope.selectSourceModal = function () {
         var modal = $modal.open({
