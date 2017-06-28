@@ -51,9 +51,16 @@
       </div>
     </div>
   </div>
+  <div class="row">
+    <div class="col-sm-12 text-center">
+      <div id="spinner"><img src="<%= asset_path "spinner.gif" %>"></img> Loading...</div>
+    </div>
+  </div>
   <div class="row" ng-if="entries.length > 0">
     <div class="col-sm-12">
-      <div class="alert alert-success text-center" style="margin-top: 10px;">{{ entries.length }} entries loaded.</div>
+      <div class="text-center text-muted" id="progress" style="margin: 10px;">{{ entries.length }} entries loaded</div>
+    </div>
+    <div class="col-sm-12">
       <div class="form-group">
         <div class="input-group">
           <span class="input-group-addon">Select Entry (For Review)</span>

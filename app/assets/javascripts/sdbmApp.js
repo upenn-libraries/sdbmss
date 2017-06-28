@@ -868,6 +868,7 @@ var BOOKMARK_SCOPE;
     sdbmApp.controller("ImportCtrl", function ($scope, $http, Entry, Source, sdbmutil, $modal) {
       $scope.entries = [];
       $scope.entry_index = 0;
+      $("#spinner").hide()
 
       $scope.multifields = ["authors", "artists", "dates", "titles", "scribes", "materials", "uses", "places", "provenance"];
       $scope.observed_name = {
@@ -893,13 +894,11 @@ var BOOKMARK_SCOPE;
           alert("Please select a file before clicking 'Load'");
         }
         else {
+          $("#spinner").show()
           var file = input.files[0];
           var fr = new FileReader();
-          fr.onprogress = function (e) {
-            console.log(e);
-          }
           fr.onload = function () {
-            var results = $.csv.toObjects(fr.result, {delimiter: '^', onParseEntry: function () { $scope.progress(); }});
+            var results = $.csv.toObjects(fr.result, {delimiter: '^'});
             for (var i = 0; i < results.length; i++) {
               var entry = new Entry(results[i]);
               // split fields with potentially multiple values
@@ -930,17 +929,12 @@ var BOOKMARK_SCOPE;
             }
             $scope.$apply(function () {
               // stop loading-wheel
+              $("#spinner").hide()
             });
           };
           fr.readAsText(file);
         }
       };
-
-      $scope.loaded = 0;
-      $scope.progress = function () {
-        $scope.loaded += 1;
-        console.log($scope.loaded);
-      }
 
       $scope.selectSourceModal = function () {
         var modal = $modal.open({
