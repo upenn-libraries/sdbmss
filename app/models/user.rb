@@ -37,6 +37,10 @@ class User < ActiveRecord::Base
   before_validation :assign_default_role
   before_create :create_notification_setting
 
+  has_many :dericci_games, foreign_key: "created_by_id"
+  has_many :dericci_game_records, through: :dericci_games
+  has_many :played_records, -> { distinct }, through: :dericci_game_records, source: :dericci_record
+
   # one of the devise class methods above seems to give us
   # "validates_confirmation_of :password" so we don't need it
   # explicitly
