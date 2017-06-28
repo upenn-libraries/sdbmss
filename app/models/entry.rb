@@ -334,7 +334,9 @@ class Entry < ActiveRecord::Base
   # some information tweaking/loss.
   
 
-  def as_flat_hash
+  def as_flat_hash(options={})
+    csv = defined? options[:csv]
+
     # for performance, we avoid using has_many->through associations
     # because they always hit the db and circumvent the preloading
     # done in with_associations scope.
@@ -345,8 +347,8 @@ class Entry < ActiveRecord::Base
     sale_buyer = (sale.get_buyers_names if sale && sale.get_buyers.count > 0)
     {
       id: id,
-      manuscript: entry_manuscripts.count > 0 ? entry_manuscripts.map{ |em| {id: em.manuscript_id, relation: em.relation_type} } : nil,
-      groups: groups.map{ |group| [group.id, group.name] }.to_s,
+      manuscript: csv ? entry_manuscripts.map{ |em| em.manuscript.public_id }.join(", ") : (entry_manuscripts.count > 0 ? entry_manuscripts.map{ |em| {id: em.manuscript_id, relation: em.relation_type} } : nil),
+      groups: groups.map{ |group| [group.id, group.name] }.join(", "),
       source_date: SDBMSS::Util.format_fuzzy_date(source.date),
       source_title: source.title,
       source_catalog_or_lot_number: catalog_or_lot_number,
@@ -833,13 +835,12 @@ class Entry < ActiveRecord::Base
     id = download.id
     path = "/tmp/#{id}_#{user}_#{filename}"
     headers = nil
-    
     loop do
       s = do_search(params.merge({:limit => 300, :offset => offset}))
       offset += 300
       ids = s.results.map(&:id)
       #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
-      objects = Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash }
+      objects = Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash(csv: true) }
       break if objects.first.nil?
       csv_file = CSV.open(path, "ab") do |csv|
         if headers.nil? && objects.first
