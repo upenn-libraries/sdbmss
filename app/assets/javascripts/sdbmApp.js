@@ -867,7 +867,7 @@ var BOOKMARK_SCOPE;
 
     sdbmApp.controller("ImportCtrl", function ($scope, $http, Entry, Source, sdbmutil, $modal) {
       $scope.entries = [];
-      $scope.current = 0;
+      $scope.entry_index = 0;
 
       $scope.multifields = ["authors", "artists", "dates", "titles", "scribes", "materials", "uses", "places", "provenance"];
       $scope.observed_name = {
@@ -878,7 +878,6 @@ var BOOKMARK_SCOPE;
       }
       $scope.handleFile = function ($event) {
         var input = $event.target;
-        $("#spinner-src").show();
         if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
           alert('The File APIs are not fully supported in this browser.');
           return;
@@ -897,7 +896,7 @@ var BOOKMARK_SCOPE;
           var file = input.files[0];
           var fr = new FileReader();
           fr.onload = function () {
-            var results = $.csv.toObjects(fr.result, {delimiter: ''});
+            var results = $.csv.toObjects(fr.result, {delimiter: '~'});
             for (var i = 0; i < results.length; i++) {
               var entry = new Entry(results[i]);
               // split fields with potentially multiple values
@@ -907,14 +906,13 @@ var BOOKMARK_SCOPE;
                     var key = $scope.observed_name[$scope.multifields[j]] || "observed_name";
                     // rename for rails params (titles => entry_titles_attributes)
                     var k = $scope.multifields[j] == "provenance" ? "provenance_attributes" : "entry_" + $scope.multifields[j] + "_attributes";
-                    console.log(entry[$scope.multifields[j]]);
-                    entry[k] = $.csv.toArray(entry[$scope.multifields[j]], {separator: ";"}).map( function (f) {
+                    entry[k] = $.csv.toArray(entry[$scope.multifields[j]], {separator: ";", delimiter: '~'}).map( function (f) {
                       var r = {};
                       r[key] = f;
                       return r;
                     });
                     delete entry[$scope.multifields[j]];
-                  })()
+                  })();
                 }
               }
               // since alt_size has to be in a finite set of options, need to remove it HERE if not (causes validation error)
@@ -928,7 +926,7 @@ var BOOKMARK_SCOPE;
               $scope.entries.push(entry);
             }
             $scope.$apply(function () {
-              $("#spinner-src").hide();
+              // stop loading-wheel
             });
           };
           fr.readAsText(file);
