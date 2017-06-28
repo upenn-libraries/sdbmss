@@ -37,25 +37,11 @@
   </div>
 
   <div class="row">
-    <div class="col-sm-12">
-      <div class="panel panel-default" style="position: absolute; top: 75px; right: 20px; max-width: 300px;">
-        <div class="panel-heading">
-          <h4>Upload</h4>
-        </div>
-        <div class="panel-body">
-          <p>
-            Have you reviewed the entries and verified that your data has accurately translated to our data model?  In that case, feel free to begin your 
-            <a href="" class="btn btn-default btn-sm" ng-click="save()">Upload</a>
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
     <div class="col-sm-12 text-center">
       <div id="spinner"><img src="<%= asset_path "spinner.gif" %>"></img> Loading...</div>
     </div>
   </div>
+
   <div class="row" ng-if="entries.length > 0">
     <div class="col-sm-12">
       <div class="text-center text-muted" id="progress" style="margin: 10px;">{{ entries.length }} entries loaded</div>
@@ -67,6 +53,8 @@
           <input type="number" ng-model="entry_index" min="0" max="{{ entries.length - 1 }}" class="form-control">
         </div>
       </div>
+    </div>
+    <div class="col-sm-8">
       <div class="">
         <h4>Title(s)</h4>
         <ul class="list-unstyled">
@@ -108,6 +96,19 @@
         <ul class="list-unstyled">
           <li ng-repeat="provenance in entries[entry_index].provenance_attributes">{{ provenance.observed_name }}</li>
         </ul>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4>Upload</h4>
+        </div>
+        <div class="panel-body">
+          <p>
+            Have you reviewed the entries and verified that your data has accurately translated to our data model?  In that case, feel free to begin your 
+            <a href="" class="btn btn-default btn-sm" ng-click="save()">Upload</a>
+          </p>
+        </div>
       </div>
     </div>
   </div>
