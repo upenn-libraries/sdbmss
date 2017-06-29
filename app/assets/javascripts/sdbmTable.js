@@ -349,7 +349,6 @@ function relation (type) {
                     sdbmssMinWidth: "100px",
                     sdbmssMaxWidth: "100px",
                     render: function (data, type, full, meta) {
-                        data = JSON.parse(data);
                         var result = "";
                         for (var i = 0; i < data.length; i++) {
                             result += '<a target="_blank" href="/groups/' + data[i][0] + '">' + data[i][1] + '</a> ';
