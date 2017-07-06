@@ -272,8 +272,12 @@ module SDBMSS
         if (m = /(to|-)/.match(date_str))
           pieces = date_str.split(/\s*#{m}\s*/)
           if pieces.length == 2
+            if pieces[1].length < pieces[0].length && pieces[1].to_i != 0 && pieces[0].to_i != 0
+              pieces[1] = pieces[0][0, pieces[0].length - pieces[1].length] + pieces[1]
+            end
             start_date_range = parse_approximate_date_str_into_year_range(pieces[0])
             end_date_range = parse_approximate_date_str_into_year_range(pieces[1])
+            # handle abbreviated second date (i.e. 1430-32)
             return [start_date_range[0], end_date_range[1] || end_date_range[0]]
           end
         end

@@ -47,8 +47,12 @@ class ManuscriptsController < SearchableAuthorityController
     #manuscript_comment.build_comment
 
     @manuscript_titles = @manuscript.all_titles
-    @entries = @manuscript.entries.joins(:source).order("date desc, date_accessed desc")
-    @entries.reject { |e| e.source.date.blank? && e.source.date_accessed.blank? }.each do |e|
+    @entries = @manuscript.entries.reject { |e| e.source.date.blank? && e.source.date_accessed.blank? }.sort do |a, b|
+      a_date = a.source.date || a.source.date_accessed
+      b_date = b.source.date || b.source.date_accessed
+      b_date <=> a_date
+    end
+    @entries.each do |e|
       if e.institution
         @location_source = e.source
         @location_name = e.institution
