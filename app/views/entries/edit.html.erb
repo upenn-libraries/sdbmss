@@ -804,12 +804,22 @@ label.col-sm-2-and-half {
         
         <label for="height" class="control-label col-xs-6"><span sdbm-tooltip="entry_height">Height (mm)</span></label>
         <div class="col-xs-6">
-          <input ng-class="{ 'has-error': !entryForm['height'].$valid }" type="text" class="form-control" id="height" name="height" ng-pattern="/^[0-9]*$/" data-ng-model="entry.height">
+          <div class="input-group">
+            <input ng-class="{ 'has-error': !entryForm['height'].$valid }" type="text" class="form-control" id="height" name="height" ng-pattern="/^[0-9]*$/" data-ng-model="entry.height">
+            <span class="input-group-btn">
+              <a href="" ng-click="convertInchesToMillimeter(entry, 'height')" class="btn btn-default"><span class="glyphicon glyphicon-grain"></span></a>
+            </span>
+          </div>
         </div>
 
         <label for="width" class="control-label col-xs-6"><span sdbm-tooltip="entry_width">Width (mm)</span></label>
         <div class="col-xs-6">
-          <input ng-class="{ 'has-error': !entryForm['width'].$valid }" type="text" class="form-control" id="width" name="width" ng-pattern="/^[0-9]*$/" data-ng-model="entry.width">
+          <div class="input-group">
+            <input ng-class="{ 'has-error': !entryForm['width'].$valid }" type="text" class="form-control" id="width" name="width" ng-pattern="/^[0-9]*$/" data-ng-model="entry.width">
+            <span class="input-group-btn">
+              <a href="" ng-click="convertInchesToMillimeter(entry, 'width')" class="btn btn-default"><span class="glyphicon glyphicon-grain"></span></a>
+            </span>
+          </div>
         </div>
         
         <label for="alt_size" class="control-label col-xs-6"><span sdbm-tooltip="entry_alt_size">Alt Size</span></label>
@@ -1107,3 +1117,14 @@ label.col-sm-2-and-half {
 <%= render "shared/select_model_authority" %>
 <%= render "shared/select_source" %>
 <%= render "shared/create_source" %>
+<script type="text/ng-template" id="ConvertInchesToMillimeters">
+    <div class="modal-header">
+      <h3 class="modal-title">Convert Inches to Millimeters</h3>
+    </div>
+    <div class="modal-body form-horizontal compress-whitespace">
+      <p>
+        Convert <input type="number" class="form-control" ng-model="inches" ng-change="convert()"> inches into <input type="number" class="form-control" ng-model="millimeters"> millimeters
+      </p>
+      <p class="text-right"><a href="" class="btn btn-default" ng-click="confirm();">Done</a></p>
+    </div>
+</script>

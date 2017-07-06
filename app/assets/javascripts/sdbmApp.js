@@ -877,6 +877,18 @@ var BOOKMARK_SCOPE;
 
     });
 
+    sdbmApp.controller("ConvertInchesToMillimetersCtrl", function ($scope, $modalInstance, model, field) {
+      $scope.confirm = function () {
+        console.log('mgm', $scope.millimeters, model);
+        model[field] = $scope.millimeters;
+        $modalInstance.close();
+      };
+
+      $scope.convert = function () {
+        $scope.millimeters = Math.floor(25.4 * $scope.inches);
+      }
+    });
+
     /* Entry screen controller */
     sdbmApp.controller("EntryCtrl", function ($scope, $http, $filter, Entry, Source, sdbmutil, $modal) {
 
@@ -914,6 +926,24 @@ var BOOKMARK_SCOPE;
           }
         }
         
+        $scope.convertInchesToMillimeter = function (model, field) {
+          var modal = $modal.open({
+            templateUrl: "ConvertInchesToMillimeters",
+            controller: "ConvertInchesToMillimetersCtrl",
+            resolve: {
+              //recordType: function () { return recordType; },
+              model: function () { return model; },
+              field: function () { return field; },
+              //type: function () { return type; },
+              //base: function () { return base; }
+            },
+            size: 'sm'
+          });
+          modal.result.then(function () {
+            //$scope.saveDraft();
+          });
+        };
+
         $scope.selectNameAuthorityModal = function (recordType, model, type, base) {
           base = base || ""
 
