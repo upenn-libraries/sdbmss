@@ -204,7 +204,8 @@ class User < ActiveRecord::Base
 
   def self.filters  
     [
-      ["Id", "id"]
+      ["Id", "id"],
+      ["Active", "active"]
     ]
   end
 

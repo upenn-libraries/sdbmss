@@ -55,6 +55,7 @@
         var query = this.oldCreateSearchParams(dt_params);
         if (!$("input[name='inactive_only']").prop('checked')) {
             query.active = true;
+            console.log('mgm', query);
         }
         return query;
      }
