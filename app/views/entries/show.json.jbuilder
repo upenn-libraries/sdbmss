@@ -79,7 +79,7 @@ end
 
 if @entry.entry_languages.present?
   json.entry_languages @entry.entry_languages.order(:order) do |entry_language|
-    json.(entry_language, :id, :uncertain_in_source, :supplied_by_data_entry)
+    json.(entry_language, :id, :uncertain_in_source, :supplied_by_data_entry, :observed_name)
     json.order entry_language.order.to_i
     if entry_language.language
       json.language do
@@ -91,7 +91,7 @@ end
 
 if @entry.entry_materials.present?
   json.entry_materials @entry.entry_materials.order(:order) do |entry_material|
-    json.(entry_material, :id, :material, :uncertain_in_source, :supplied_by_data_entry)
+    json.(entry_material, :id, :material, :uncertain_in_source, :supplied_by_data_entry, :observed_name)
     json.order entry_material.order.to_i
   end
 end

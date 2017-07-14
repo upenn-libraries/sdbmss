@@ -868,15 +868,15 @@ var BOOKMARK_SCOPE;
     sdbmApp.controller("ImportCtrl", function ($scope, $http, Entry, Source, sdbmutil, $modal) {
       $scope.entries = [];
       $scope.entry_index = 0;
-      $("#spinner").hide()
-
-      $scope.multifields = ["authors", "artists", "dates", "titles", "scribes", "materials", "uses", "places", "provenance"];
+      $("#spinner").hide();
+      $scope.multifields = ["authors", "artists", "dates", "titles", "scribes", "materials", "uses", "places", "provenance", "languages"];
       $scope.observed_name = {
         titles: "title",
         dates: "observed_date",
         uses: "use",
         materials: "material"
-      }
+      };
+      EntryScope = $scope;
       $scope.handleFile = function ($event) {
         var input = $event.target;
         if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
@@ -898,39 +898,72 @@ var BOOKMARK_SCOPE;
           var file = input.files[0];
           var fr = new FileReader();
           fr.onload = function () {
-            var results = $.csv.toObjects(fr.result, {delimiter: '"'});
-            for (var i = 0; i < results.length; i++) {
-              var entry = new Entry(results[i]);
-              // split fields with potentially multiple values
-              for (var j = 0; j < $scope.multifields.length; j++) {
-                if (entry[$scope.multifields[j]]) {
-                  (function () {
-                    var key = $scope.observed_name[$scope.multifields[j]] || "observed_name";
-                    // rename for rails params (titles => entry_titles_attributes)
-                    var k = $scope.multifields[j] == "provenance" ? "provenance_attributes" : "entry_" + $scope.multifields[j] + "_attributes";
-                    entry[k] = $.csv.toArray(entry[$scope.multifields[j]], {separator: ";", delimiter: '"'}).map( function (f) {
-                      var r = {};
-                      r[key] = f;
-                      return r;
-                    });
-                    delete entry[$scope.multifields[j]];
-                  })();
+            try {              
+              var results = $.csv.toObjects(fr.result, {delimiter: '"'});
+              for (var i = 0; i < results.length; i++) {
+                var entry = new Entry(results[i]);
+                // split fields with potentially multiple values
+                entry.catalog_or_lot_number = entry.source_catalog_or_lot_number;
+                entry["sales_attributes"] = [{
+                  price: entry.sale_price
+                  //sold: entry.sale_sold
+                }];
+                var buyers = $.csv.toArray(entry.sale_buyer, {separator: ";", delimiter: '"'}).map(function (f, index) {
+                  return {observed_name: f, order: index, role: "buyer"};
+                }).filter(function (e) { return e.observed_name.length > 0 });;
+
+                var sellers = $.csv.toArray(entry.sale_seller_or_holder, {separator: ";", delimiter: '"'}).map(function (f, index) {
+                  return {observed_name: f, order: index, role: "seller_or_holder"};
+                }).filter(function (e) { return e.observed_name.length > 0 });;
+
+                var selling_agents = $.csv.toArray(entry.sale_selling_agent, {separator: ";", delimiter: '"'}).map(function (f, index) {
+                  return {observed_name: f, order: index, role: "selling_agent"};
+                }).filter(function (e) { return e.observed_name.length > 0 });
+                entry.sales_attributes[0]["sale_agents_attributes"] = buyers.concat(sellers).concat(selling_agents);
+                
+                for (var j = 0; j < $scope.multifields.length; j++) {
+
+                  if (entry[$scope.multifields[j]]) {
+                    (function () {
+                      var key = $scope.observed_name[$scope.multifields[j]] || "observed_name";
+                      // rename for rails params (titles => entry_titles_attributes)
+                      var k = $scope.multifields[j] == "provenance" ? "provenance_attributes" : "entry_" + $scope.multifields[j] + "_attributes";
+                      entry[k] = $.csv.toArray(entry[$scope.multifields[j]], {separator: ";", delimiter: '"'}).map( function (f, index) {
+                        var r = {};
+                        r[key] = f;
+                        r.order = index;
+                        if (key == "material" || key == "language") {
+                          r["observed_name"] = f;
+                        }
+                        return r;
+                      });
+                      delete entry[$scope.multifields[j]];
+                    })();
+                  }
+
                 }
+                // since alt_size has to be in a finite set of options, need to remove it HERE if not (causes validation error)
+                if (!entry.alt_size || entry.alt_size.length <= 0) delete entry["alt_size"];
+
+                // languages require an authority name; there is no 'as recorded' -> need to figure THIS out
+                //delete entry["languages"];
+
+                entry.source = $scope.source;
+                entry.source_id = $scope.source.id;
+                $scope.entries.push(entry);
               }
-              // since alt_size has to be in a finite set of options, need to remove it HERE if not (causes validation error)
-              if (!entry.alt_size || entry.alt_size.length <= 0) delete entry["alt_size"];
-
-              // languages require an authority name; there is no 'as recorded' -> need to figure THIS out
-              delete entry["languages"];
-
-              entry.source = $scope.source;
-              entry.source_id = $scope.source.id;
-              $scope.entries.push(entry);
+              $scope.$apply(function () {
+                // stop loading-wheel
+                $("#spinner").hide()
+                $scope.checkCatOrLotNumbers();
+              });
             }
-            $scope.$apply(function () {
-              // stop loading-wheel
+            catch (err) {
+              console.log(err);
               $("#spinner").hide()
-            });
+              $scope.csv_parse_error = true;
+              $scope.$apply();
+            }
           };
           fr.readAsText(file);
         }
@@ -949,10 +982,69 @@ var BOOKMARK_SCOPE;
         });
       };
 
-      $scope.save = function () {
-        $http.post("/entries/upload.js", { entries: $scope.entries }).then(
-            function() {
-                sdbmutil.redirectToDashboard();
+      $scope.duplicates = [];
+      $scope.progress = 0;
+      $scope.saving = false;
+      $scope.cancel_save = false;
+      $scope.checked = false;
+
+      $scope.cancel = function () {
+        $scope.cancel_save = true;
+      };
+      $scope.errors = {};
+      $scope.percentage = function () {
+        return Math.round(100 * Math.min(1, $scope.progress / $scope.entries.length));
+      };
+      $scope.jump = function (n) {
+        $scope.entry_index = Number(n);      
+      }
+      $scope.checkCatOrLotNumbers = function () {
+        var cat_or_lot_numbers = $scope.entries.map( function (e) { return e.source_catalog_or_lot_number; });
+        var unique = {};
+        var duplicates = [];
+        for (var i = 0; i < cat_or_lot_numbers.length; i++) {
+          if (unique[cat_or_lot_numbers[i]] === 1) {
+            unique[cat_or_lot_numbers[i]] += 1;
+            duplicates.push(cat_or_lot_numbers[i]);
+          } else if (!unique[cat_or_lot_numbers[i]]) {
+            unique[cat_or_lot_numbers[i]] = 1;
+          }
+        }
+        $scope.duplicates = duplicates;
+      };
+      $scope.save = function (index) {
+        if (index > $scope.entries.length || $scope.cancel_save) {
+          //$scope.saving = false;
+          if (index > $scope.entries.length && !$scope.checked) {
+            $scope.checked = true;
+            $scope.saving = false;
+            $scope.progress = 0;
+            $scope.errors = {};
+          } else {
+            $scope.saved = true;
+          }
+          return;
+        }
+        $scope.saving = true;        
+        $http.post("/entries/upload.js", { entries: $scope.entries.slice(index, index + 10), check: !$scope.checked }).then(
+            function(e) {
+              if (e.data.errors && e.data.errors.length > 0) {
+                for (var i = 0; i < e.data.errors.length; i++) {
+                  if (e.data.errors[i]) {
+                    if (!$scope.errors[$scope.progress + i]) {
+                      $scope.errors[$scope.progress + i] = [];
+                    }
+                    for (var key in e.data.errors[i]) {
+                      var error = {};
+                      error[key] = e.data.errors[i][key];
+                      $scope.errors[$scope.progress + i].push(error);
+                    }
+                  }
+                }
+              }
+              $scope.progress += 10;
+              $scope.save($scope.progress);
+                //sdbmutil.redirectToDashboard();
             },
             sdbmutil.promiseErrorHandlerFactory("There was an error marking source as Entered")            
         );
@@ -1100,11 +1192,11 @@ var BOOKMARK_SCOPE;
             },
             {
                 field: 'entry_languages',
-                foreignKeyObjects: ['language']
+                foreignKeyObjects: ['observed_name', 'language']
             },
             {
                 field: 'entry_materials',
-                properties: ['material']
+                properties: ['observed_name', 'material']
             },
             {
                 field: 'entry_places',

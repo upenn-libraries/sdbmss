@@ -31,20 +31,45 @@ class EntriesController < SearchableAuthorityController
 
   respond_to :html, :json
 
-  load_and_authorize_resource :only => [:index, :edit, :update, :destroy, :mark_as_approved, :deprecate]
+  load_and_authorize_resource :only => [:index, :edit, :update, :destroy, :mark_as_approved, :deprecate, :import, :upload]
 
   def import
   end
 
   def upload
+    errors = []
+    check = params[:check]
+    puts "ASLKFJSALFJDSFDSLKJFDSFFFFFFFFFJS***************************** #{check}"
     params["entries"].each do |param|
       filter = entry_params_for_create_and_edit(param)
       puts filter[:source_id]
-      Entry.create!(filter)
+      # option: use valid? to check all entries without saving, so the user can check validations without huge overhead FIRST
+      # 
+      # i.e. have params 'check' to determine whether it is SAVING or CHECKING, require 'check' first...
+      # 
+      # e = Entry.create(filter)
+      if check
+        e = Entry.new(filter)
+        e.valid?
+      else
+        e = Entry.create(filter)
+      end
+
+      if e.errors.count > 0
+        errors.push(e.errors.messages)
+      else
+        errors.push(nil)
+      end
     end
 
     respond_to do |format|
-      format.js { render json: {error: "not implemented"}}
+      format.js {
+        if errors.count > 0
+          render json: {errors: errors}
+        else
+          render json: {message: "Sucess", succes: true}
+        end      
+      }    
     end
   end
 
@@ -556,8 +581,8 @@ class EntriesController < SearchableAuthorityController
       :entry_dates_attributes => [ :id, :order, :observed_date, :date_normalized_start, :date_normalized_end, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_artists_attributes => [ :id, :order, :observed_name, :artist_id, :role, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_scribes_attributes => [ :id, :order, :observed_name, :scribe_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_languages_attributes => [ :id, :order, :language_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_materials_attributes => [ :id, :order, :material, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_languages_attributes => [ :id, :order, :observed_name, :language_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_materials_attributes => [ :id, :order, :observed_name, :material, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_places_attributes => [ :id, :order, :observed_name, :place_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_uses_attributes => [ :id, :order, :use, :_destroy ],
       :sales_attributes  => [

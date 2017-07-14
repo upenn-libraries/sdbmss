@@ -48,6 +48,7 @@ class Ability
       can :manage, PrivateMessage do |pm|
         pm.users.include? user
       end
+      cannot [:import, :upload], Entry
     end
 
     if ['editor', 'super_editor', 'admin'].member? user.role

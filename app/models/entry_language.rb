@@ -7,10 +7,10 @@ class EntryLanguage < ActiveRecord::Base
   belongs_to :language, counter_cache: :entries_count
 
   validates_presence_of :entry
-  validates_presence_of :language
+  validate :observed_or_authority
 
   def to_s
-    (language ? language.name : "") + certainty_flags
+    (language ? language.name : observed_name.to_s) + certainty_flags
   end
 
   def name_authority
@@ -19,6 +19,14 @@ class EntryLanguage < ActiveRecord::Base
 
   def observed
     ""
+  end
+
+  private
+
+  def observed_or_authority
+    if observed_name.blank? && language.blank?
+      errors[:base] << "Either an observed value or authority name are required (or both)"
+    end
   end
 
 end

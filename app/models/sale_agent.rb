@@ -37,4 +37,8 @@ class SaleAgent < ActiveRecord::Base
     ""
   end
 
+  def display_value
+    
+  end
+
 end
