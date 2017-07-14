@@ -67,7 +67,7 @@
                         <% if selling_agent.agent %>
                           <a href="<%= name_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a><br>
                         <% else %>
-                          selling_agent.observed_name <br>
+                          <%= selling_agent.observed_name %><br>
                         <% end %>
                       <% end %>
                   </dd>
@@ -80,7 +80,7 @@
                         <% if seller_or_holder.agent %>
                           <a href="<%= name_path(seller_or_holder.agent) %>"><%= seller_or_holder.agent.name %></a><br>
                         <% else %>
-                          seller_or_holder.observed_name <br>
+                          <%= seller_or_holder.observed_name %><br>
                         <% end %>
                       <% end %>
                   </dd>
@@ -93,7 +93,7 @@
                         <% if buyer.agent %>
                           <a href="<%= name_path(buyer.agent) %>"><%= buyer.agent.name %></a><br>
                         <% else %>
-                          buyer.observed_name <br>
+                          <%= buyer.observed_name %><br>
                         <% end %>
                       <% end %>
                   </dd>

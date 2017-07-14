@@ -52,7 +52,8 @@ class EntriesController < SearchableAuthorityController
         e = Entry.new(filter)
         e.valid?
       else
-        e = Entry.create(filter)
+        e = Entry.new(filter)
+        e.save_by(current_user)
       end
 
       if e.errors.count > 0

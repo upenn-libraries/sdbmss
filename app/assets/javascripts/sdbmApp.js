@@ -877,6 +877,7 @@ var BOOKMARK_SCOPE;
         materials: "material"
       };
       EntryScope = $scope;
+      $scope.starttime = 0;
       $scope.handleFile = function ($event) {
         var input = $event.target;
         if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
@@ -905,7 +906,7 @@ var BOOKMARK_SCOPE;
                 // split fields with potentially multiple values
                 entry.catalog_or_lot_number = entry.source_catalog_or_lot_number;
                 entry["sales_attributes"] = [{
-                  price: entry.sale_price
+                  other_currency: entry.sale_price
                   //sold: entry.sale_sold
                 }];
                 var buyers = $.csv.toArray(entry.sale_buyer, {separator: ";", delimiter: '"'}).map(function (f, index) {
@@ -1013,13 +1014,17 @@ var BOOKMARK_SCOPE;
         $scope.duplicates = duplicates;
       };
       $scope.save = function (index) {
+        if (index == 0) {
+          $scope.starttime = new Date();
+          // reset errors on save.start
+          $scope.errors = {};
+        }
         if (index > $scope.entries.length || $scope.cancel_save) {
           //$scope.saving = false;
           if (index > $scope.entries.length && !$scope.checked) {
             $scope.checked = true;
             $scope.saving = false;
             $scope.progress = 0;
-            $scope.errors = {};
           } else {
             $scope.saved = true;
           }
@@ -1044,6 +1049,8 @@ var BOOKMARK_SCOPE;
               }
               $scope.progress += 10;
               $scope.save($scope.progress);
+              var sofar = new Date() - $scope.starttime;
+              $scope.remaining = (sofar * $scope.entries.length / $scope.progress) - sofar;  // remaining milliseconds, estimated
                 //sdbmutil.redirectToDashboard();
             },
             sdbmutil.promiseErrorHandlerFactory("There was an error marking source as Entered")            
