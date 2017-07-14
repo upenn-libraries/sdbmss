@@ -119,6 +119,8 @@ Rails.application.routes.draw do
       post 'add_to_group'
       post 'remove_from_group'
       get 'types'
+      get 'import'
+      post 'upload'
     }
     member {
       patch '/revert_confirm/', to: 'entries#revert_confirm'

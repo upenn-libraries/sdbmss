@@ -237,18 +237,6 @@ label.col-sm-2-and-half {
       <div class="col-sm-12 text-center"><a ng-click="selectSourceModal(entry, null)" class="btn btn-default" id="select_source">Select/Create a Source</a></div>
     </div>
 
-    <div class="source-info" id="selectSource" ng-if="selecting_source" data-ng-controller="SelectSourceCtrl" ng-init="source_type = selecting_source_type; source_id = old_source_id">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <span class="h3">Search for new Source </span>
-          <a href="" class="btn btn-warning pull-right" data-ng-click="cancelSelectSource()">Cancel</a>
-        </div>
-        <div class="panel-body">
-          <%= render partial: "source_selection_form", :locals => {utility: "edit"} %>
-        </div>
-      </div>
-    </div>
-
     <div class="source-info" ng-if="entry.source">
       <div class="source-container">
           <div class="form-group row">
@@ -366,6 +354,13 @@ label.col-sm-2-and-half {
                         </a>
                       </div>
                       <div class="col-sm-12">
+                        <span class='control-label expandable'>
+                          <span class="expandable-table">
+                            <span sdbm-tooltip="sale_agent_as_recorded">As Recorded</span>
+                            <input input maxlength="255" id="sale_agent_observed_name_{{ $index }}" type="text" class="form-control author-as-recorded" data-ng-model="sale_agent.observed_name" ng-focus="expand($event)" ng-blur="reduce($event)">
+                          </span>
+                        </span>
+
                         <span class='control-label' sdbm-tooltip="entry_sale_agent">Authority Name</span>
                         
                         <div class="btn-group name-authority-group" role="group">
@@ -667,8 +662,14 @@ label.col-sm-2-and-half {
           </a>
         </div>
         <div class="col-sm-12">
-          <span class='control-label' sdbm-tooltip="entry_language">Language</span>
+          <span class='control-label expandable'>
+            <span class="expandable-table">
+              <span sdbm-tooltip="entry_language_as_recorded">As Recorded</span>
+              <input input maxlength="255" id="language_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_language.observed_name" ng-focus="expand($event)" ng-blur="reduce($event)">
+            </span>
+          </span>
 
+          <span class='control-label' sdbm-tooltip="entry_language">Authority Name</span>
           <div class="btn-group name-authority-group" role="group">                    
             <a id="find_language_name_authority_{{ $index }}" ng-if='entry_language.language.id == undefined' ng-init="entry_language.language = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('languages', entry_language.language, 'language')">Find or Create Authority Name</a>
             <div ng-if='entry_language.language != undefined && entry_language.language.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
@@ -732,7 +733,13 @@ label.col-sm-2-and-half {
           </a>
         </div>
         <div class="col-sm-12">
-          <span sdbm-tooltip="entry_material" class="control-label">Material</span>
+          <span class='control-label expandable'>
+            <span class="expandable-table">
+              <span sdbm-tooltip="entry_material_as_recorded">As Recorded</span>
+              <input input maxlength="255" id="language_observed_name_{{ $index }}" type="text" class="form-control" data-ng-model="entry_material.observed_name" ng-focus="expand($event)" ng-blur="reduce($event)">
+            </span>
+          </span>
+          <span class='control-label' sdbm-tooltip="entry_material">Authority Name</span>
           <div class="input-group">
               <select ng-model="entry_material.material" id="material_{{ $index }}" class="form-control">
                 <option value="{{material.value}}" ng-repeat="material in optionsMaterial" ng-selected="entry_material.material == material.value">{{ material.label }}</option>

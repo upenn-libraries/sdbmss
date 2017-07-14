@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170523132341) do
+ActiveRecord::Schema.define(version: 20170712160006) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -277,9 +277,10 @@ ActiveRecord::Schema.define(version: 20170523132341) do
     t.integer  "language_id",            limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "uncertain_in_source",              default: false
-    t.boolean  "supplied_by_data_entry",           default: false
+    t.boolean  "uncertain_in_source",                default: false
+    t.boolean  "supplied_by_data_entry",             default: false
     t.integer  "order",                  limit: 4
+    t.string   "observed_name",          limit: 255
   end
 
   add_index "entry_languages", ["entry_id"], name: "index_entry_languages_on_entry_id", using: :btree
@@ -321,6 +322,7 @@ ActiveRecord::Schema.define(version: 20170523132341) do
     t.boolean  "uncertain_in_source",                default: false
     t.boolean  "supplied_by_data_entry",             default: false
     t.integer  "order",                  limit: 4
+    t.string   "observed_name",          limit: 255
   end
 
   add_index "entry_materials", ["entry_id"], name: "index_entry_materials_on_entry_id", using: :btree

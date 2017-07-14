@@ -1730,7 +1730,6 @@ so that gray backdrop shvows up correctly */
   }
   #sortAndPerPage {
     white-space: nowrap;
-    overflow-x: hidden;
     text-overflow: ellipsis;
     text-align: center;
   }
@@ -1792,6 +1791,11 @@ so that gray backdrop shvows up correctly */
   }
 }
 @media (max-width: 1024px) {
+  .page_links, .search-widgets {
+    width: 100%;
+    text-align: center;
+    display: block;
+  }
   #control-panel {
     position: fixed;
     height: 100%;
@@ -1922,7 +1926,6 @@ so that gray backdrop shvows up correctly */
   z-index: 100;
   height: calc(100vh - 50px);
   white-space: normal;
-  border-top: 2px solid white;
   height: calc(100vh - 50px);
   overflow-x: hidden;
   -webkit-transition-property: width;
@@ -2488,6 +2491,10 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
   text-decoration: underline;
   font-weight: bold;
   color: inherit;
+}
+.btn-primary {  
+  background-color: #374f73;
+  border-color: #374f73;
 }
 /* ...comment out if need be */
 .alert-announce {

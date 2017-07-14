@@ -27,11 +27,52 @@ class EntriesController < SearchableAuthorityController
   before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate, :verify, :personal_observation]
   include AddToGroup
 
-  before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy, :similar, :mark_as_approved, :deprecate]
+  before_action :authenticate_user!, only: [:index, :new, :create, :edit, :update, :destroy, :similar, :mark_as_approved, :deprecate, :import, :upload]
 
   respond_to :html, :json
 
-  load_and_authorize_resource :only => [:index, :edit, :update, :destroy, :mark_as_approved, :deprecate]
+  load_and_authorize_resource :only => [:index, :edit, :update, :destroy, :mark_as_approved, :deprecate, :import, :upload]
+
+  def import
+  end
+
+  def upload
+    errors = []
+    check = params[:check]
+    puts "ASLKFJSALFJDSFDSLKJFDSFFFFFFFFFJS***************************** #{check}"
+    params["entries"].each do |param|
+      filter = entry_params_for_create_and_edit(param)
+      puts filter[:source_id]
+      # option: use valid? to check all entries without saving, so the user can check validations without huge overhead FIRST
+      # 
+      # i.e. have params 'check' to determine whether it is SAVING or CHECKING, require 'check' first...
+      # 
+      # e = Entry.create(filter)
+      if check
+        e = Entry.new(filter)
+        e.valid?
+      else
+        e = Entry.new(filter)
+        e.save_by(current_user)
+      end
+
+      if e.errors.count > 0
+        errors.push(e.errors.messages)
+      else
+        errors.push(nil)
+      end
+    end
+
+    respond_to do |format|
+      format.js {
+        if errors.count > 0
+          render json: {errors: errors}
+        else
+          render json: {message: "Sucess", succes: true}
+        end      
+      }    
+    end
+  end
 
   def model_class
     Entry
@@ -203,7 +244,7 @@ class EntriesController < SearchableAuthorityController
   def create
     success = false
     ActiveRecord::Base.transaction do
-      filtered = entry_params_for_create_and_edit
+      filtered = entry_params_for_create_and_edit(params)
       @entry = Entry.new(filtered)
       @entry.created_by_id = current_user.id
       @entry.source_id = params[:source_id]
@@ -285,7 +326,7 @@ class EntriesController < SearchableAuthorityController
     if params[:cumulative_updated_at].to_s == @entry.cumulative_updated_at.to_s
       ActiveRecord::Base.transaction do
 
-        filtered = entry_params_for_create_and_edit
+        filtered = entry_params_for_create_and_edit(params)
         success = @entry.update_by(current_user, filtered)
         if success
           if params[:new_comment].present?
@@ -521,7 +562,7 @@ class EntriesController < SearchableAuthorityController
     params[:id] = "Entry #{params[:id]}"
   end
 
-  def entry_params_for_create_and_edit
+  def entry_params_for_create_and_edit(params)
     # Note that we don't call require(:entry), which is the typical
     # Rails convention, because Rails' wrapped parameters feature
     # doesn't pick up the *_attributes fields that way.
@@ -542,8 +583,8 @@ class EntriesController < SearchableAuthorityController
       :entry_dates_attributes => [ :id, :order, :observed_date, :date_normalized_start, :date_normalized_end, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_artists_attributes => [ :id, :order, :observed_name, :artist_id, :role, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_scribes_attributes => [ :id, :order, :observed_name, :scribe_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_languages_attributes => [ :id, :order, :language_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
-      :entry_materials_attributes => [ :id, :order, :material, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_languages_attributes => [ :id, :order, :observed_name, :language_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
+      :entry_materials_attributes => [ :id, :order, :observed_name, :material, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_places_attributes => [ :id, :order, :observed_name, :place_id, :uncertain_in_source, :supplied_by_data_entry, :_destroy ],
       :entry_uses_attributes => [ :id, :order, :use, :_destroy ],
       :sales_attributes  => [
