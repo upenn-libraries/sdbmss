@@ -34,7 +34,7 @@ class ManuscriptsController < SearchableAuthorityController
       :entry_uses, :entry_materials, 
       {:entry_manuscripts => [:manuscript]}, 
       {:source => [{:source_agents => :agent}, :source_type]}, :bookmarks, :watches,
-    ).sort { |a, b| b.source.date <=> a.source.date }
+    ).sort { |a, b| (b.source.date || b.source.date_accessed) <=> (a.source.date || a.source.date_accessed) }
     # I use 'sort' rather than the query-based order because of a rails issue:
     # https://github.com/rails/rails/issues/6769
     # that breaks associated field ordering (i.e. provenance)
