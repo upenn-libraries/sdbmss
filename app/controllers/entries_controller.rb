@@ -39,8 +39,7 @@ class EntriesController < SearchableAuthorityController
   def upload
     errors = []
     check = params[:check]
-    puts "ASLKFJSALFJDSFDSLKJFDSFFFFFFFFFJS***************************** #{check}"
-    params["entries"].each do |param|
+    params["entries"].to_a.each do |param|
       filter = entry_params_for_create_and_edit(param)
       puts filter[:source_id]
       # option: use valid? to check all entries without saving, so the user can check validations without huge overhead FIRST

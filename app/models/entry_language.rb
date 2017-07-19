@@ -13,6 +13,10 @@ class EntryLanguage < ActiveRecord::Base
     (language ? language.name : observed_name.to_s) + certainty_flags
   end
 
+  def display_value
+    to_s
+  end
+
   def name_authority
     (language ? "<a href='/languages/#{language_id}'>#{language}</a> " : "")
   end

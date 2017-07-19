@@ -241,6 +241,7 @@ module SolrSearchable
           params[:q] = ([params[:q]] + new_q).join(" #{s_op} ")
         end
         if linking_tool
+          # NOTE: remove 'approved' thing here to make unapproved records show up in linking tool...
           params[:q] += ' AND (_query_:"{!edismax qf=\'deprecated\'}false") AND (_query_:"{!edismax qf=\'approved\'}true") AND (_query_:"{!edismax qf=\'draft\'}false")'
         elsif role != "admin" && self.model_name.to_s == 'Entry'
           params[:q] += ' AND (_query_:"{!edismax qf=\'draft\'}false")'

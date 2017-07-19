@@ -909,17 +909,22 @@ var BOOKMARK_SCOPE;
                   other_currency: entry.sale_price
                   //sold: entry.sale_sold
                 }];
-                var buyers = $.csv.toArray(entry.sale_buyer, {separator: ";", delimiter: '"'}).map(function (f, index) {
-                  return {observed_name: f, order: index, role: "buyer"};
-                }).filter(function (e) { return e.observed_name.length > 0 });;
-
-                var sellers = $.csv.toArray(entry.sale_seller_or_holder, {separator: ";", delimiter: '"'}).map(function (f, index) {
-                  return {observed_name: f, order: index, role: "seller_or_holder"};
-                }).filter(function (e) { return e.observed_name.length > 0 });;
-
-                var selling_agents = $.csv.toArray(entry.sale_selling_agent, {separator: ";", delimiter: '"'}).map(function (f, index) {
-                  return {observed_name: f, order: index, role: "selling_agent"};
-                }).filter(function (e) { return e.observed_name.length > 0 });
+                var buyers = [], sellers = [], selling_agents = [];
+                if (entry.sale_buyer) {
+                  buyers = $.csv.toArray(entry.sale_buyer, {separator: ";", delimiter: '"'}).map(function (f, index) {
+                    return {observed_name: f, order: index, role: "buyer"};
+                  }).filter(function (e) { return e.observed_name.length > 0 });;
+                }
+                if (entry.sale_seller_or_holder) {
+                  sellers = $.csv.toArray(entry.sale_seller_or_holder, {separator: ";", delimiter: '"'}).map(function (f, index) {
+                    return {observed_name: f, order: index, role: "seller_or_holder"};
+                  }).filter(function (e) { return e.observed_name.length > 0 });;                  
+                }
+                if (entry.sale_selling_agent) {                  
+                  selling_agents = $.csv.toArray(entry.sale_selling_agent, {separator: ";", delimiter: '"'}).map(function (f, index) {
+                    return {observed_name: f, order: index, role: "selling_agent"};
+                  }).filter(function (e) { return e.observed_name.length > 0 });
+                }
                 entry.sales_attributes[0]["sale_agents_attributes"] = buyers.concat(sellers).concat(selling_agents);
                 
                 for (var j = 0; j < $scope.multifields.length; j++) {
