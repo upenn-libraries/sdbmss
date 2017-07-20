@@ -13,7 +13,7 @@
         <% end %>
         
             <dt>Title</dt>
-            <dd><%= source.title %></dd>
+            <dd><%= source.title || "(No title)" %></dd>
 
         <% if (author = source.author).present? %>
             <dt>Author</dt>

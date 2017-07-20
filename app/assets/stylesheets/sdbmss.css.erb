@@ -1872,6 +1872,12 @@ so that gray backdrop shvows up correctly */
     a[href]:after {
         content: "";
     }
+    #control-panel, #sortAndPerPage, .bookmark, #previousNextDocument, .breadcrumb, #emailLink, #smsLink, #citationLink, input, textarea, select, .comments, .btn {
+      display: none !important;
+    }
+    .main-content-wrapper, .main-content {
+      height: auto;
+    }
 
 }
 
@@ -2312,10 +2318,17 @@ Private Message Styling
   border-radius: 0px;
   margin: 0px;
 }
+.img-brands {
+  margin-top: 50px;
+}
 .img-neh {
+  image-rendering: pixelated;
   width: 100%;
-  margin: 15px 0px;
+  margin: 0px;
   padding: 0px 10px;
+}
+.img-did {
+  padding: 0px;
 }
 #control-panel .panel-body {
   background: none;

@@ -465,6 +465,12 @@ function relation (type) {
                 {
                     sdbmssMinWidth: "70px",
                     sdbmssMaxWidth: "70px",
+                    sdbmssSortField: 'missing_authority_names',
+                    title: 'Missing Names'
+                },
+                {
+                    sdbmssMinWidth: "70px",
+                    sdbmssMaxWidth: "70px",
                     sdbmssSortField: 'folios',
                     title: 'Folios'
                 },
@@ -705,6 +711,7 @@ function relation (type) {
                             result.materials,
                             result.places,
                             result.uses,
+                            result.missing_authority_names,
                             result.folios,
                             result.num_columns,
                             result.num_lines,

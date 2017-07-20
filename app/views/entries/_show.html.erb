@@ -407,14 +407,17 @@
         <% provenance_all.each do |provenance| %>
         <tr>
             <td class="col-sm-2 text-right record-label">
-                <% if provenance.start_date.present? || provenance.end_date.present? %>
-                    <%= format_fuzzy_date(provenance.start_date) %>
-                    <% if provenance.start_date.present? && provenance.end_date.present? %> to <% end %>
-                    <%= format_fuzzy_date(provenance.end_date) %>
-                <% elsif provenance.associated_date.present? %>
+                <% if provenance.start_date.present? %>
+                    <%= format_fuzzy_date(provenance.start_date) %> <span class="text-muted"> (Start) </span>
+                <% end %>
+                <% if provenance.end_date.present? %>
+                    <%= format_fuzzy_date(provenance.end_date) %> <span class="text-muted"> (End) </span>
+                <% end %>
+                <% if provenance.associated_date.present? %>
                     <span class="text-muted"><%= provenance.associated_date.split("\t").join(", ") %> (Associated)</span>
-                <% else %>
-                    (No date)
+                <% end %>
+                <% if !provenance.start_date.present? && !provenance.end_date.present? && !provenance.associated_date.present? %>
+                    <span class="text-muted">(No Date)</span>
                 <% end %>
             </td>
             <td class="col-sm-10">

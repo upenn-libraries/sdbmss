@@ -261,6 +261,10 @@ class Source < ActiveRecord::Base
 =end
     title_str = title || "(No title)"
 
+    if author
+      title_str = "#{title_str} - #{author}"
+    end
+
     if source_type.name == "online"
       date_accessed_str = ""
       if date_accessed

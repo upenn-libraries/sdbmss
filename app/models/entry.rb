@@ -249,6 +249,13 @@ class Entry < ActiveRecord::Base
     t.price if t
   end
 
+  def missing_authority_names
+    entry_authors.where(author_id: nil).where.not(observed_name: nil).count + 
+    entry_artists.where(artist_id: nil).where.not(observed_name: nil).count + 
+    entry_scribes.where(scribe_id: nil).where.not(observed_name: nil).count + 
+    provenance.where(provenance_agent_id: nil).where.not(observed_name: nil).count
+  end
+
   # returns list of the hashes representing unique Agents found in
   # this Entry's provenance, ordered alphabetically. Each hash
   # has :name key and optionally an :agent key.
@@ -365,6 +372,7 @@ class Entry < ActiveRecord::Base
       materials: entry_materials.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:material).join("; "),
       places: entry_places.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       uses: entry_uses.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:use).join("; "),
+      missing_authority_names: missing_authority_names,
       folios: folios,
       num_columns: num_columns,
       num_lines: num_lines,
@@ -884,6 +892,7 @@ class Entry < ActiveRecord::Base
       ["Updated By", "updated_by"], 
       ["Created By", "created_by"], 
       ["Manuscript ID", "manuscript_id"], 
+      ["Missing Authority Names", "missing_authority_names"],
       ["Deprecated", "deprecated"],
       ["Draft", "draft"]
     ]
