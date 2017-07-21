@@ -121,7 +121,7 @@ group :development do
   # schema. This causes problems when it's enabled for anything
   # besides running "bundle exec erd" (but I can't remember exactly
   # what the probs were) which is why it's commented out.
-  #gem 'rails-erd', '~> 1.3.1'
+  #gem 'rails-erd', require: false, group: :development
 end
 
 group :test, :development do

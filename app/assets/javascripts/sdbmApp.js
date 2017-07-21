@@ -886,7 +886,7 @@ var BOOKMARK_SCOPE;
 
       $scope.convert = function () {
         $scope.millimeters = Math.floor(25.4 * $scope.inches);
-      }
+      };
     });
 
     /* Entry screen controller */
@@ -896,11 +896,11 @@ var BOOKMARK_SCOPE;
         
         $scope.expand = function (e) {
           $(e.currentTarget).parent().parent('.expandable').addClass('expanded');
-        }
+        };
 
         $scope.reduce = function (e) {
-          $(e.currentTarget).parent().parent('.expandable').removeClass('expanded')
-        }
+          $(e.currentTarget).parent().parent('.expandable').removeClass('expanded');
+        };
 
         $scope.selectSourceModal = function (model, type) {
           if ($scope.mergeEdit !== false) {
@@ -909,8 +909,8 @@ var BOOKMARK_SCOPE;
                 controller: "SelectSourceCtrl",
                 resolve: {
                   //recordType: function () { return recordType },
-                  model: function () { return model },
-                  type: function () { return type },
+                  model: function () { return model; },
+                  type: function () { return type; },
                   base: ""
                 },
                 size: 'lg'
@@ -924,7 +924,7 @@ var BOOKMARK_SCOPE;
               //console.log('dismissed');
             });
           }
-        }
+        };
         
         $scope.convertInchesToMillimeter = function (model, field) {
           var modal = $modal.open({
@@ -945,7 +945,7 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.selectNameAuthorityModal = function (recordType, model, type, base) {
-          base = base || ""
+          base = base || "";
 
           if (recordType == 'languages' || recordType == 'places') {
             var templateUrl = "selectModelAuthority.html";
