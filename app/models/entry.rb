@@ -550,21 +550,21 @@ class Entry < ActiveRecord::Base
     #### Sale info
 
     define_field(:string, :sale_selling_agent, :stored => true, :multiple => true) do
-      get_sale ? get_sale.get_selling_agents.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
+      get_sale ? get_sale.get_selling_agents.map{ |sa| sa.display_value } : [] #fix me -> change to multiple field, map name from selling agent
     end
     define_field(:text, :sale_selling_agent_search, :stored => true) do
       get_sale_selling_agents_names
     end
 
     define_field(:string, :sale_seller, :stored => true, :multiple => true) do
-      get_sale ? get_sale.get_sellers_or_holders.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
+      get_sale ? get_sale.get_sellers_or_holders.map{ |sa| sa.display_value } : [] #fix me -> change to multiple field, map name from selling agent
     end
     define_field(:text, :sale_seller_search, :stored => true) do
       get_sale_sellers_or_holders_names
     end
 
     define_field(:string, :sale_buyer, :stored => true, :multiple => true) do
-      get_sale ? get_sale.get_buyers.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
+      get_sale ? get_sale.get_buyers.map{ |sa| sa.display_value } : [] #fix me -> change to multiple field, map name from selling agent
     end
     define_field(:text, :sale_buyer_search, :stored => true) do
       get_sale_buyers_names
