@@ -490,7 +490,8 @@ class Entry < ActiveRecord::Base
       provenance_names +
       supercedes.map(&:id) +
       # comments
-      comments.select(&:public).map(&:comment)
+      comments.select(&:public).map(&:comment) +
+      [created_by ? created_by.username : "", updated_by ? updated_by.username : ""]
 
       fields.map(&:to_s).select(&:present?).join "\n"
     end
