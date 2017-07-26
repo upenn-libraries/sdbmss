@@ -1,5 +1,5 @@
 <%= content_for :head do %>
-<script src="https://www.gstatic.com/charts/loader.js"></script>
+<%= javascript_include_tag "loader" %>
 <script>
   $(document).ready(function () {
     $.get("<%= profile_path(@user.username) %>.json", function (result) {
@@ -30,8 +30,19 @@
             height: 500,
             width: 720,
             selectionMode: 'multiple',
-            backgroundColor: {fill: "#ffffff", strokeWidth: 1},
-            explorer: {}
+            //backgroundColor: {fill: "#ffffff", strokeWidth: 1},
+            //explorer: {},
+            fontName: 'Sarala',
+            fontSize: 12,
+            legend: {
+                alignment: "left",
+                position: "top"
+            },
+            chartArea: {
+                width: "100%",
+                left: 50,
+                top: 20
+            }            
           };
 
           var chart = new google.visualization.AreaChart(document.getElementById(key));

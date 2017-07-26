@@ -300,7 +300,8 @@ var BOOKMARK_SCOPE;
             createNewEntry: createNewEntry,
             prepopulatedURL: prepopulatedURL,
             /* Returns a fn that can be used as error callback on angular promises */
-            promiseErrorHandlerFactory: function(msg) {
+            promiseErrorHandlerFactory: function(msg, callback) {
+                if (callback) callback();
                 return function(response) {
                     var append_str = "";
                     if(response.data && response.data.errors) {
@@ -1582,7 +1583,9 @@ var BOOKMARK_SCOPE;
             if(entryToSave.id) {
                 entryToSave.$update(
                     $scope.postEntrySave,
-                    sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
+                    sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry", function () {
+                      $scope.currentlySaving = false;
+                    })
                 ).finally(function() {
                     // $scope.currentlySaving = false;
                   $scope.clearDraft();
@@ -1607,8 +1610,10 @@ var BOOKMARK_SCOPE;
 
                 entryToSave.$save(
                     $scope.postEntrySave,
-                    sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
-                ).finally(function() {
+                    sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry", function () {
+                      $scope.currentlySaving = false;
+                    })
+                  ).finally(function() {
                   $scope.clearDraft();
                     // $scope.currentlySaving = false;
                 });
