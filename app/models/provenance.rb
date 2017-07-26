@@ -123,4 +123,12 @@ class Provenance < ActiveRecord::Base
     [start_date, end_date].reject(&:nil?).join(' to ') + (associated_date ? " #{associated_date}" : "")
   end
 
+  def display_value
+    # fix me: add date here, or as a separate field
+    v = []
+    v.push(provenance_agent.name) if provenance_agent 
+    v.push("(#{observed_name})") if observed_name
+    v.join(" ")
+  end
+
 end

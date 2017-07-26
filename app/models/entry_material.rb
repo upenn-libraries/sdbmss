@@ -26,6 +26,10 @@ class EntryMaterial < ActiveRecord::Base
     ["Other", "Other"],
   ]
 
+  def display_value
+    to_s
+  end
+
   def to_s
     (material || "") + certainty_flags
   end

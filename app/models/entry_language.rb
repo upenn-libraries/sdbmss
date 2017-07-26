@@ -9,6 +9,10 @@ class EntryLanguage < ActiveRecord::Base
   validates_presence_of :entry
   validates_presence_of :language
 
+  def display_value
+    to_s
+  end
+
   def to_s
     (language ? language.name : "") + certainty_flags
   end

@@ -347,10 +347,12 @@ class Entry < ActiveRecord::Base
     # because they always hit the db and circumvent the preloading
     # done in with_associations scope.
 
+    # FIX ME: missing institution field?
+
     sale = get_sale
-    sale_selling_agent = (sale.get_selling_agents_names if sale && sale.get_selling_agents.count > 0)
-    sale_seller_or_holder = (sale.get_sellers_or_holders_names if sale && sale.get_sellers_or_holders.count > 0)
-    sale_buyer = (sale.get_buyers_names if sale && sale.get_buyers.count > 0)
+    sale_selling_agents = sale ? sale.sale_agents.where(role: "selling_agent") : []#(sale.get_selling_agents_names if sale && sale.get_selling_agents.count > 0)
+    sale_seller_or_holders = sale ? sale.sale_agents.where(role: "seller_or_holder") : [] #(sale.get_sellers_or_holders_names if sale && sale.get_sellers_or_holders.count > 0)
+    sale_buyers = sale ? sale.sale_agents.where(role: "buyer") : [] #(sale.get_buyers_names if sale && sale.get_buyers.count > 0)
     {
       id: id,
       manuscript: options[:csv].present? ? (entry_manuscripts.map{ |em| em.manuscript.public_id }.join("; ")) : (entry_manuscripts.count > 0 ? entry_manuscripts.map{ |em| {id: em.manuscript_id, relation: em.relation_type} } : nil),
@@ -358,18 +360,18 @@ class Entry < ActiveRecord::Base
       source_date: SDBMSS::Util.format_fuzzy_date(source.date),
       source_title: source.title,
       source_catalog_or_lot_number: catalog_or_lot_number,
-      sale_selling_agent: sale_selling_agent,
-      sale_seller_or_holder: sale_seller_or_holder,
-      sale_buyer: sale_buyer,
+      sale_selling_agent: sale_selling_agents.map(&:display_value).join("; "),
+      sale_seller_or_holder: sale_seller_or_holders.map(&:display_value).join("; "),
+      sale_buyer: sale_buyers.map(&:display_value).join("; "),
       sale_sold: (sale.sold if sale),
       sale_price: (sale.get_complete_price_for_display if sale),
-      titles: entry_titles.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:title).join("; "),
+      titles: entry_titles.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       authors: entry_authors.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       dates: entry_dates.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       artists: entry_artists.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       scribes: entry_scribes.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
-      languages: entry_languages.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:language).map(&:name).join("; "),
-      materials: entry_materials.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:material).join("; "),
+      languages: entry_languages.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
+      materials: entry_materials.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       places: entry_places.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       uses: entry_uses.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:use).join("; "),
       missing_authority_names: missing_authority_names,
@@ -388,7 +390,7 @@ class Entry < ActiveRecord::Base
       manuscript_binding: manuscript_binding,
       manuscript_link: manuscript_link,
       other_info: other_info,
-      provenance: provenance.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map { |prov| prov.provenance_agent ? prov.provenance_agent.name : prov.observed_name }.join("; "),
+      provenance: provenance.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       created_at: created_at ? created_at.to_formatted_s(:date_and_time) : nil,
       created_by: created_by ? created_by.username : "",
       updated_at: updated_at ? updated_at.to_formatted_s(:date_and_time) : nil,
@@ -449,25 +451,26 @@ class Entry < ActiveRecord::Base
         # https://github.com/sunspot/sunspot/issues/331
         @__receiver__.id,
         public_id,
-        manuscript ? manuscript.display_value : nil,
+        #manuscript ? manuscript.display_value : nil,
         # source info
         source.display_value,
+        source.date,
         catalog_or_lot_number,
         # sale
-        get_sale_selling_agents_names,
-        get_sale_sellers_or_holders_names,
-        get_sale_buyers_names,
-        get_sale_price
+        sale ? sale.price : ""
       ] +
+      (sale ? sale.sale_agents.map(&:display_value) : []) +
       # details
+      groups.map(&:name) +
+      manuscripts.map(&:public_id) + 
       entry_titles.map(&:display_value) +
       entry_authors.map(&:display_value) +
       entry_dates.map(&:display_value) +
       entry_artists.map(&:display_value) +
       entry_scribes.map(&:display_value) +
-      languages.map(&:name) +
-      entry_materials.map(&:material) +
-      places.map(&:name) +
+      languages.map(&:display_value) +
+      entry_materials.map(&:display_value) +
+      places.map(&:name) +                      # fix me
       entry_uses.map(&:use) +
       [
         folios,
@@ -487,7 +490,7 @@ class Entry < ActiveRecord::Base
         initials_decorated,
       ] +
       # provenance
-      provenance_names +
+      provenance.map(&:display_value) +
       supercedes.map(&:id) +
       # comments
       comments.select(&:public).map(&:comment) +

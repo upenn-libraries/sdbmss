@@ -29,6 +29,13 @@ class SaleAgent < ActiveRecord::Base
     sale.entry
   end
 
+  def display_value
+    v = []
+    v.push(agent.name) if agent
+    v.push("(#{observed_name})") if observed_name
+    v.join(" ")
+  end
+
   def name_authority
     (agent ? "<a href='/names/#{agent_id}'>#{agent}</a> " : "")
   end
