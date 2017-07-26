@@ -68,7 +68,7 @@ function relation (type) {
             height: 'full',
             heightBuffer: 280,
             responsive: true,
-            dom: '<"row"<"col-sm-5 mobile-center"li><"col-sm-7 text-right mobile-center"<"spinner"> p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t'
+            dom: '<"row"<"col-sm-5 mobile-center"li><"col-sm-7 text-right mobile-center"<"spinner"> p<"btn-group btn-table-tool"<"reset"><"wide"><"csv"><"columns">J>>>t'
         };
 
         this.options = $.extend({}, defaults, options);
@@ -213,7 +213,11 @@ function relation (type) {
             '</div>' +
             '</div>'
         );
-
+        $('.reset').replaceWith('<a id="reset-columns" class="btn btn-default" title="Reset Table"><span class="glyphicon glyphicon-erase"></span></a>');
+        $("#reset-columns").click( function () {
+            localStorage["DataTables_search_results_" + window.location.pathname] = "";
+            window.location = window.location.origin + window.location.pathname;
+        });
         // new column hide/show function
 
         var dropdown = $('#column-control');
