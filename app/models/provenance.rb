@@ -120,15 +120,11 @@ class Provenance < ActiveRecord::Base
   end
 
   def dates
-    [start_date, end_date].reject(&:nil?).join(' to ') + (associated_date ? " #{associated_date}" : "")
+    [start_date, end_date].reject(&:blank?).join(' to ') + (associated_date ? " #{associated_date}" : "")
   end
 
   def display_value
-    # fix me: add date here, or as a separate field
-    v = []
-    v.push(provenance_agent.name) if provenance_agent 
-    v.push("(#{observed_name})") if observed_name
-    v.join(" ")
+    [provenance_agent ? provenance_agent.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags, dates.present? ? "[#{dates}]" : nil].reject(&:blank?).join(" ")
   end
 
 end

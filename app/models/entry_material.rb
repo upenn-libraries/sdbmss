@@ -27,11 +27,11 @@ class EntryMaterial < ActiveRecord::Base
   ]
 
   def display_value
-    to_s
+    [material ? material : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags].reject(&:blank?).join(" ")
   end
 
   def to_s
-    (material || "") + certainty_flags
+    display_value
   end
 
   def to_fields

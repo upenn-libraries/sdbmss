@@ -8,7 +8,7 @@ class EntryTitle < ActiveRecord::Base
   validates_presence_of :entry
 
   def display_value
-    (title || "") + (common_title.present? ? " [#{common_title}]" : "") + certainty_flags
+    [title, common_title ? "(#{common_title})" : nil, certainty_flags].reject(&:blank?).join(" ")
   end
 
   def to_s

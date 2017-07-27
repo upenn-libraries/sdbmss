@@ -1,5 +1,9 @@
 <% if entry_language.language %>
-<%= link_to entry_language.language.name, language_path(entry_language.language) -%>
+  <%= link_to entry_language.language.name, language_path(entry_language.language) -%>
+  <% if entry_language.observed_name.present? %>
+    (recorded as <%= entry_language.observed_name %>)
+  <% end %>
 <% else %>
-<%= entry_language %>
+  <%= entry_language.observed_name %>
 <% end %>
+<%= entry_language.certainty_flags %>

@@ -9,9 +9,7 @@
 <% else %>
   <span class="text-muted">No agent or name information recorded.</span>
 <% end %>
-<% if (acquisition_method = provenance.get_acquisition_method_for_display).present? %>
-- <%= acquisition_method %>
-<% end %>
+<%= provenance.certainty_flags %>
 
 <% if provenance.comment %>
 <br/><%= provenance.comment %>

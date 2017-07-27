@@ -326,9 +326,9 @@ function relation (type) {
                     render: function (data, type, full, meta) {
                         if(data) {
                             if(full[sdbmTable.getColumnIndex("Is Approved")]) {
-                                return '<a href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
+                                return '<a title="SDBM_' + data + '" href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
                             } else {
-                                return '<a class="text-muted" href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
+                                return '<a title="SDBM_' + data + '" class="text-muted" href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
                             }
                         }
                         return '';
@@ -342,7 +342,7 @@ function relation (type) {
                     render: function (data, type, full, meta) {
                         if(data) {
                             return data.map(function (d) {
-                                return '<a href="/manuscripts/' + d.id + '/" target="_blank">' + relation(d.relation) + ' SDBM_MS_' + d.id + '</a>';                                
+                                return '<a title="SDBM_MS_' + d.id + '" href="/manuscripts/' + d.id + '/" target="_blank">' + relation(d.relation) + ' SDBM_MS_' + d.id + '</a>';
                             }).join(", ");
                         }
                         return '';
@@ -378,6 +378,12 @@ function relation (type) {
                     sdbmssMaxWidth: "100px",
                     sdbmssSortField: 'catalog_or_lot_number',
                     title: 'Cat or Lot #'
+                },
+                {
+                    sdbmssMinWidth: "150px",
+                    sdbmssMaxWidth: "150px",
+                    sdbmssSortField: 'institution',
+                    title: 'Institution'
                 },
                 {
                     sdbmssMinWidth: "150px",
@@ -701,6 +707,7 @@ function relation (type) {
                             result.source_date,
                             result.source_title,
                             result.source_catalog_or_lot_number,
+                            result.institution,
                             result.sale_selling_agent,
                             result.sale_seller_or_holder,
                             result.sale_buyer,

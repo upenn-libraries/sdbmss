@@ -10,11 +10,11 @@ class EntryLanguage < ActiveRecord::Base
   validates_presence_of :language
 
   def display_value
-    to_s
+    [language ? language.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags].reject(&:blank?).join(" ")
   end
 
   def to_s
-    (language ? language.name : "") + certainty_flags
+    display_value
   end
 
   def name_authority

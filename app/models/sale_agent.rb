@@ -30,10 +30,7 @@ class SaleAgent < ActiveRecord::Base
   end
 
   def display_value
-    v = []
-    v.push(agent.name) if agent
-    v.push("(#{observed_name})") if observed_name
-    v.join(" ")
+    [agent ? agent.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags].reject(&:blank?).join(" ")
   end
 
   def name_authority

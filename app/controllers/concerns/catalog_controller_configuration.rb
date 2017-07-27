@@ -84,7 +84,7 @@ module CatalogControllerConfiguration
       config.add_facet_field 'sale_seller', :label => 'Seller', :collapse => false, :limit => 3
       config.add_facet_field 'sale_selling_agent', :label => 'Selling Agent', :collapse => false, :limit => 3
       config.add_facet_field 'sale_buyer', :label => 'Buyer', :collapse => false, :limit => 3
-      config.add_facet_field 'institution', :label => 'Institution', :collapse => false, :limit => 3
+      config.add_facet_field 'source_institution', :label => 'Source Institution', :collapse => false, :limit => 3
       config.add_facet_field 'source_display', :label => 'Source', :collapse => false, :limit => 3
       config.add_facet_field 'source_type', :label => 'Source Type', :collapse => false, :limit => 3
       config.add_facet_field 'provenance', :label => 'Provenance', :limit => 3

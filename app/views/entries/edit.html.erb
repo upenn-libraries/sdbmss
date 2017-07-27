@@ -4,6 +4,14 @@
 
 <style type="text/css">
 
+.before-certainty {
+  border-bottom-right-radius: 0px;
+  border-top-right-radius: 0px;
+}
+.certainty {
+  background: white;
+}
+
 .section {
   padding: 10px 0px !important;
 }
@@ -419,8 +427,8 @@ label.col-sm-2-and-half {
             <span class='control-label expandable'>
               <span class="expandable-table">
                 <span sdbm-tooltip="entry_title_as_recorded">As Recorded</span>
-                <input maxlength="255" id="title_{{ $index }}" type="text" ng-focus="expand($event)" ng-blur="reduce($event)" class="form-control entry-title" data-ng-model="entry_title.title">
-                <div id="title_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
+                <input maxlength="255" id="title_{{ $index }}" type="text" ng-focus="expand($event)" ng-blur="reduce($event)" class="form-control entry-title before-certainty" data-ng-model="entry_title.title">
+                <div id="title_certainty_flags_{{ $index }}" class="input-group-addon clickable certainty" sdbm-certainty-flags="entry_title"><span class="glyphicon"></span></div>
               </span>
             </span>
 
@@ -505,8 +513,8 @@ label.col-sm-2-and-half {
           <span class='control-label expandable'>
             <span class="expandable-table">
               <span sdbm-tooltip="entry_date_as_recorded">As Recorded</span>
-               <input id="date_observed_date_{{ $index }}" type="text" class="form-control" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/entry_dates/parse_observed_date.json" ng-focus="expand($event)" ng-blur="reduce($event)">
-                <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
+               <input id="date_observed_date_{{ $index }}" type="text" class="form-control before-certainty" data-ng-model="entry_date.observed_date" sdbm-approximate-date-string="date_normalized_start_{{ $index }}, date_normalized_end_{{ $index }}" sdbm-approximate-date-string-url="/entry_dates/parse_observed_date.json" ng-focus="expand($event)" ng-blur="reduce($event)">
+                <div id="entry_date_certainty_flags_{{ $index }}" class="input-group-addon clickable certainty" sdbm-certainty-flags="entry_date"><span class="glyphicon"></span></div>
             </span>
           </span>
           <span class='control-label'><span sdbm-tooltip="entry_date_for_search">Range for Search</span>
@@ -734,10 +742,10 @@ label.col-sm-2-and-half {
         <div class="col-sm-12">
           <span sdbm-tooltip="entry_material" class="control-label">Material</span>
           <div class="input-group">
-              <select ng-model="entry_material.material" id="material_{{ $index }}" class="form-control">
+              <select ng-model="entry_material.material" id="material_{{ $index }}" class="form-control before-certainty">
                 <option value="{{material.value}}" ng-repeat="material in optionsMaterial" ng-selected="entry_material.material == material.value">{{ material.label }}</option>
               </select>
-              <div id="material_certainty_flags_{{ $index }}" class="input-group-addon clickable" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
+              <div id="material_certainty_flags_{{ $index }}" class="input-group-addon clickable certainty" sdbm-certainty-flags="entry_scribe"><span class="glyphicon"></span></div>
           </div>
         </div>
       </div>
