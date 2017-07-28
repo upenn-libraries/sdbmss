@@ -10,32 +10,6 @@ class NamesController < SearchableAuthorityController
 
   before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy, :merge]
 
-  def format_search(s)
-    bookmarkable = [Source, Manuscript, Name].include? model_class
-    ids = s.results.map(&:id)
-    # includes ... figure out queries
-    objects = Name.includes(:author_entries, :artist_entries, :scribe_entries, :provenance_entries, :sale_entries, :agent_sources).where(id: ids)
-    results = objects.map do |obj|
-      obj.search_result_format.merge({
-        bookmarkwatch: (render_to_string partial: "nav/bookmark_watch_table", locals: {model: obj }, layout: false, formats: [:html]),  
-        can_edit: can?(:edit, obj)
-      })
-    end
-    respond_to do |format|
-      format.json {
-        render json: {
-                 limit: s.results.count,
-                 offset: s.results.offset,
-                 total: s.total,
-                 results: results,
-               }
-      }
-      format.csv {
-        make_csv(results, @d)
-      }
-    end
-  end
-
   def model_class
     Name
   end

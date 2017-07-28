@@ -121,7 +121,9 @@ class Source < ActiveRecord::Base
     string :medium
     string :date
     text :date, :more_like_this => true
-    integer :entries_count
+    integer :entries_count do
+      entries.where(deprecated: false).count
+    end
     string :source_type do
       source_type.display_name
     end
@@ -353,7 +355,7 @@ class Source < ActiveRecord::Base
       id: id,
       date: SDBMSS::Util.format_fuzzy_date(date),
       source_type: source_type.display_name,
-      entries_count: entries_count || 0,
+      entries_count: entries.where(deprecated: false).count,
       title: title,
       display_value: display_value,
       author: author,

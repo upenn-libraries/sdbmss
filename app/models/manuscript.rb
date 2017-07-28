@@ -42,7 +42,9 @@ class Manuscript < ActiveRecord::Base
     string :location
     integer :id
     boolean :reviewed
-    integer :entries_count
+    integer :entries_count do
+      entries.where(deprecated: false).count
+    end
     date :created_at
     date :updated_at
   end
@@ -153,7 +155,7 @@ class Manuscript < ActiveRecord::Base
       name: name,
       location: location,
       url: url,
-      entries_count: entries_count,
+      entries_count: entries.where(deprecated: false).count,
       reviewed: reviewed,
       created_by: created_by.present? ? created_by.username : "(none)",
       created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",

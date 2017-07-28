@@ -125,12 +125,24 @@ class Name < ActiveRecord::Base
     end
     string :viaf_id
     integer :created_by_id
-    integer :artists_count
-    integer :authors_count
-    integer :scribes_count
-    integer :source_agents_count
-    integer :sale_agents_count
-    integer :provenance_count
+    integer :artists_count do
+      artist_entries.length
+    end
+    integer :authors_count do
+      author_entries.length
+    end
+    integer :scribes_count do
+      scribe_entries.length
+    end
+    integer :source_agents_count do
+      agent_sources.length
+    end
+    integer :sale_agents_count do
+      sale_entries.length
+    end    
+    integer :provenance_count do
+      provenance_entries.length
+    end
     date :created_at
     date :updated_at
     boolean :reviewed

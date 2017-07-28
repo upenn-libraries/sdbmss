@@ -51,7 +51,6 @@ describe "Manage Names", :js => true do
 
     #author2 should no longer appear in NAME LIST
     visit names_path
-    screenshot_and_open_image
     expect(page).not_to have_content("#{author2.name}")
   end
 
