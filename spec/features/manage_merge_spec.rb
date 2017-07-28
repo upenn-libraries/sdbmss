@@ -33,7 +33,7 @@ describe "Manage Names", :js => true do
     expect(page).to have_content("Merge")
 
     #select most recently created author (author2) to MERGE
-    first('.merge-link').trigger('click')
+    first("#merge_#{author2.id}").trigger('click')
 
     expect(page).to have_content("Merge")
     expect(page).to have_content(author2.id)
@@ -51,6 +51,7 @@ describe "Manage Names", :js => true do
 
     #author2 should no longer appear in NAME LIST
     visit names_path
+    screenshot_and_open_image
     expect(page).not_to have_content("#{author2.name}")
   end
 

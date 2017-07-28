@@ -77,7 +77,8 @@ describe "User Activity", :js => true do
     visit names_path
     
     expect(page).to have_content("Delete")
-    first(".delete-link").trigger('click')
+    
+    first("#delete_#{Name.last.id}").trigger('click')
     expect(page).to have_content("Are you sure you want to delete this record?")
     click_button "Yes"
     expect(page).not_to have_content('Stacker Pentecost')

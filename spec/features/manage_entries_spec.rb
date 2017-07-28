@@ -63,7 +63,8 @@ describe "Manage entries", :js => true do
     page.evaluate_script('window.confirm = function() { return true; }')
 
     visit entries_path
-    all(".entry-delete-link").last.trigger('click')
+    first("#delete_#{Entry.last.id}").trigger("click")
+    #all(".entry-delete-link").last.trigger('click')
     expect(page).to have_content("Are you sure you want to delete entry")
     click_button "Yes"
     sleep 1.1
@@ -87,7 +88,6 @@ describe "Manage entries", :js => true do
 
     expect(page).to have_content("There are no records to display.")
 
-    @unapproved_entry.reload
     expect(@unapproved_entry.approved).to be true
     expect(@unapproved_entry.approved_by_id).to eq(@user.id)
   end
