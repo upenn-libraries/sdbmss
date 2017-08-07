@@ -174,6 +174,7 @@ class Entry < ActiveRecord::Base
   validates_length_of :manuscript_link, maximum: 1024
 
   after_create :update_source_status
+  after_save :update_counters
 
   def public_id
     SDBMSS::IDS.get_public_id_for_model(self.class, id)
@@ -958,6 +959,49 @@ class Entry < ActiveRecord::Base
   def update_source_status
     if source.status == Source::TYPE_STATUS_TO_BE_ENTERED
       source.update!(status: Source::TYPE_STATUS_PARTIALLY_ENTERED)
+    end
+  end
+
+  def update_counters
+    # deleting is handled separately (in entries controller) since it is actually a quasi-destroy
+    if deleted
+      return
+    end
+
+    entry_authors.group_by(&:author_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_author|
+      author = entry_author.first.author
+      Name.update_counters(author.id, :authors_count => author.author_entries.count - author.authors_count)
+    end
+    entry_artists.group_by(&:artist_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_artist|
+      artist = entry_artist.first.artist
+      Name.update_counters(artist.id, :artists_count => artist.artist_entries.count - artist.artists_count)
+    end
+    entry_scribes.group_by(&:scribe_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_scribe|
+      scribe = entry_scribe.first.scribe
+      Name.update_counters(scribe.id, :scribes_count => scribe.scribe_entries.count - scribe.scribes_count)
+    end
+    # sale agent
+    if sale
+      sale.sale_agents.group_by(&:agent_id).keep_if{ |k, v| v.length > 1}.each do |k, sale_agent|
+        agent = sale_agent.first.agent
+        Name.update_counters(agent.id, :sale_agents_count => agent.sale_entries.count - agent.sale_agents_count)
+      end    
+    end
+
+    # place, language FIX ME add these
+    entry_places.group_by(&:place_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_place|
+      place = entry_place.first.place
+      Place.update_counters(place.id, :entries_count => place.entries.uniq.count - place.entries_count)
+    end
+    entry_languages.group_by(&:language_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_language|
+      language = entry_language.first.language
+      Language.update_counters(language.id, :entries_count => language.entries.uniq.count - language.entries_count)
+    end
+
+    # provenance
+    provenance.group_by(&:provenance_agent_id).keep_if{ |k, v| v.length > 1}.each do |k, provenance|
+      provenance_agent = provenance.first.provenance_agent
+      Name.update_counters(provenance_agent.id, :provenance_count => provenance_agent.provenance_entries.count - provenance_agent.provenance_count)
     end
   end
 

@@ -47,7 +47,7 @@
 
          var sdbmTable = new SDBM.EntryTable("#search_results", {
              heightBuffer: 280,
-             fixedColumns: 3,
+             //fixedColumns: 3,
              prependColumns: [
                  {
                      sdbmssMinWidth: "25px",
@@ -130,6 +130,7 @@
                  sdbmTable.searchAndUpdateTable(params, callback, {
                      complete: function () {
                          $("#spinner").hide();
+                         console.log('complete');
 //                          renewBookmarks();
 
                          if(showApprovalControls()) {

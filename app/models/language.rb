@@ -38,9 +38,7 @@ class Language < ActiveRecord::Base
     text :name, :more_like_this => true
     string :name
     integer :id
-    integer :entries_count do
-      entries.where(deprecated: false).count
-    end
+    integer :entries_count
     integer :created_by_id
     date :created_at
     date :updated_at
@@ -68,7 +66,7 @@ class Language < ActiveRecord::Base
       id: id,
       public_id: public_id,
       name: name,
-      entries_count: entries.where(deprecated: false).count,
+      entries_count: entries_count,
       reviewed: reviewed,
       created_by: created_by.present? ? created_by.username : "(none)",
       created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",

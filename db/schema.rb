@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170523132341) do
+ActiveRecord::Schema.define(version: 20170807171227) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -277,9 +277,10 @@ ActiveRecord::Schema.define(version: 20170523132341) do
     t.integer  "language_id",            limit: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "uncertain_in_source",              default: false
-    t.boolean  "supplied_by_data_entry",           default: false
+    t.boolean  "uncertain_in_source",                default: false
+    t.boolean  "supplied_by_data_entry",             default: false
     t.integer  "order",                  limit: 4
+    t.string   "observed_name",          limit: 255
   end
 
   add_index "entry_languages", ["entry_id"], name: "index_entry_languages_on_entry_id", using: :btree
@@ -321,6 +322,7 @@ ActiveRecord::Schema.define(version: 20170523132341) do
     t.boolean  "uncertain_in_source",                default: false
     t.boolean  "supplied_by_data_entry",             default: false
     t.integer  "order",                  limit: 4
+    t.string   "observed_name",          limit: 255
   end
 
   add_index "entry_materials", ["entry_id"], name: "index_entry_materials_on_entry_id", using: :btree
@@ -489,6 +491,7 @@ ActiveRecord::Schema.define(version: 20170523132341) do
     t.datetime "reviewed_at"
     t.integer  "provenance_count",    limit: 4,     default: 0,     null: false
     t.boolean  "confirmed",                         default: false
+    t.boolean  "problem",                           default: false
   end
 
   add_index "names", ["created_by_id"], name: "index_names_on_created_by_id", using: :btree
@@ -842,7 +845,7 @@ ActiveRecord::Schema.define(version: 20170523132341) do
 
   add_index "thredded_post_notifications", ["post_id", "post_type"], name: "index_thredded_post_notifications_on_post", using: :btree
 
-  create_table "thredded_posts", :options => "ENGINE=MyISAM", force: :cascade do |t|
+  create_table "thredded_posts", :options => "ENGINE=MyISAM" , force: :cascade do |t|
     t.integer  "user_id",          limit: 4
     t.text     "content",          limit: 65535
     t.string   "ip",               limit: 255
@@ -902,7 +905,7 @@ ActiveRecord::Schema.define(version: 20170523132341) do
   add_index "thredded_topic_categories", ["category_id"], name: "index_thredded_topic_categories_on_category_id", using: :btree
   add_index "thredded_topic_categories", ["topic_id"], name: "index_thredded_topic_categories_on_topic_id", using: :btree
 
-  create_table "thredded_topics", :options => "ENGINE=MyISAM", force: :cascade do |t|
+  create_table "thredded_topics", :options => "ENGINE=MyISAM" , force: :cascade do |t|
     t.integer  "user_id",          limit: 4
     t.integer  "last_user_id",     limit: 4
     t.string   "title",            limit: 255,                 null: false

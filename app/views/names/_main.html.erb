@@ -21,7 +21,7 @@
 <% end %>
 
 <!-- FIX ME: public-facing COUNT will only show number of non-deleted entries : BUT includes deprecated records -->
-<% count_authors = name.author_entries.count || 0 %>
+<% count_authors = name.authors_count || 0 %>
 <% count_artists = name.artist_entries.count || 0 %>
 <% count_scribes = name.scribe_entries.count || 0 %>
 <% has_entries = (count_authors + count_artists + count_scribes) > 0 %>
