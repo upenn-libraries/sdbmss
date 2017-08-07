@@ -347,6 +347,8 @@ class EntriesController < SearchableAuthorityController
 
     @entry.watches.destroy_all
 
+    # fix me: here, update all counters for associated names (decrease by 1)
+
     Sunspot.remove(@entry)
 
     # if we call respond_with(@entry), which is more rails-ish, the
