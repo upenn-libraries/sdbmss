@@ -145,6 +145,8 @@ class Source < ActiveRecord::Base
     boolean :reviewed
   end
 
+  after_save :update_counters
+
   def public_id
     SDBMSS::IDS.get_public_id_for_model(self.class, id)
   end
@@ -396,6 +398,18 @@ class Source < ActiveRecord::Base
       if value.present?
         errors.add(field_symbol, "Value '#{value}' not allowed in field #{field} when source_type = #{source_type.name}")
       end
+    end
+  end
+
+
+  def update_counters
+    if deleted
+      return
+    end
+
+    source_agents.group_by(&:agent_id).keep_if{ |k, v| v.length > 1}.each do |k, source_agent|
+      agent = source_agent.first.agent
+      Name.update_counters(agent.id, :source_agents_count => agent.agent_sources.count - agent.source_agents_count)
     end
   end
 

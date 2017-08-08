@@ -353,6 +353,9 @@ class SourcesController < SearchableAuthorityController
         error = @source.errors.to_s
       else
         @source.watches.destroy_all
+        @source.source_agents.uniq.each do |source_agent|
+          Name.decrement_counter(:source_agents_count, source_agent.id)
+        end
       end
     else
       error = "Can't mark a source as deleted if it has entries"

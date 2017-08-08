@@ -13,6 +13,10 @@ class EntryPlace < ActiveRecord::Base
     [place ? place.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags ].reject(&:blank?).join(" ")
   end
 
+  def facet_value
+    place ? place.name : observed_name
+  end
+
   def to_s
     (place && place.name ? place.name : "") + certainty_flags
   end

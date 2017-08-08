@@ -11,6 +11,11 @@ class EntryTitle < ActiveRecord::Base
     [title, common_title ? "(#{common_title})" : nil, certainty_flags].reject(&:blank?).join(" ")
   end
 
+  # fix me: what is the best value for faceting? 
+  def facet_value
+    common_title ? common_title : title
+  end
+
   def to_s
     display_value
   end

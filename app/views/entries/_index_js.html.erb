@@ -130,9 +130,7 @@
                  sdbmTable.searchAndUpdateTable(params, callback, {
                      complete: function () {
                          $("#spinner").hide();
-                         console.log('complete');
-//                          renewBookmarks();
-
+                         
                          if(showApprovalControls()) {
                             //$(".approve-control").show();
                             //$('.unreviewed_only').show();//.css({"display": "table-cell"});

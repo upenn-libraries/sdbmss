@@ -367,6 +367,7 @@ class EntriesController < SearchableAuthorityController
     @entry.languages.uniq.each do |language|
       Language.decrement_counter(:entries_count, language.id)
     end
+    
     if @entry.sale
       @entry.sale.sale_agents.uniq.each do |sale_agent|
         Name.decrement_counter(:sale_agents_count, sale_agent.id)

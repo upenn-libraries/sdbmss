@@ -128,9 +128,7 @@ class Name < ActiveRecord::Base
     integer :artists_count
     integer :authors_count # test
     integer :scribes_count
-    integer :source_agents_count do
-      agent_sources.length
-    end
+    integer :source_agents_count
     integer :sale_agents_count
     integer :provenance_count
     date :created_at
@@ -175,16 +173,17 @@ class Name < ActiveRecord::Base
       viaf_id: viaf_id,
       other_info: other_info,
       authors_count: authors_count,
-      artists_count: artist_entries.length,
-      scribes_count: scribe_entries.length,
-      source_agents_count: agent_sources.length,
-      sale_agents_count: sale_entries.length,
-      provenance_count: provenance_entries.length,
+      artists_count: artists_count,
+      scribes_count: scribes_count,
+      source_agents_count: source_agents_count,
+      sale_agents_count: sale_agents_count,
+      provenance_count: provenance_count,
       is_artist: is_artist,
       is_author: is_author,
       is_provenance_agent: is_provenance_agent,
       is_scribe: is_scribe,
       reviewed: reviewed,
+      #problem: problem,
       confirms: ratings.where(qualifier: "confirm").count,
       disputes: ratings.where(qualifier: "dispute").count,
       created_by: created_by.present? ? created_by.username : "(none)",

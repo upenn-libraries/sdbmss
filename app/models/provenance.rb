@@ -127,4 +127,8 @@ class Provenance < ActiveRecord::Base
     [provenance_agent ? provenance_agent.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags, dates.present? ? "[#{dates}]" : nil].reject(&:blank?).join(" ")
   end
 
+  def facet_value
+    provenance_agent ? provenance_agent.name : observed_name
+  end
+
 end

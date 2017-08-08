@@ -27,6 +27,10 @@ class EntryScribe < ActiveRecord::Base
     [scribe ? scribe.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags].reject(&:blank?).join(" ")
   end
 
+  def facet_value
+    scribe ? scribe.name : observed_name
+  end
+
   def to_s
     (scribe ? scribe.name : "") + certainty_flags
   end

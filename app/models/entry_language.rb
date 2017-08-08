@@ -13,6 +13,10 @@ class EntryLanguage < ActiveRecord::Base
     [language ? language.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags].reject(&:blank?).join(" ")
   end
 
+  def facet_value
+    language ? language.name : observed_name
+  end
+
   def to_s
     display_value
   end
