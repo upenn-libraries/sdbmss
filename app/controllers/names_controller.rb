@@ -33,7 +33,9 @@ class NamesController < SearchableAuthorityController
   end
 
   def problems
-    @problems = Name.where(problem: true)
+    @total = Name.where(problem: true).count
+    @page = params[:page].to_i || 0
+    @problems = Name.where(problem: true).offset(@page * 50).limit(50)
   end
 
   def suggest
@@ -115,7 +117,7 @@ class NamesController < SearchableAuthorityController
     else
       p = params
     end
-    p.permit(:name, :other_info, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe, :confirmed, :reviewed)
+    p.permit(:name, :other_info, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe, :confirmed, :reviewed, :problem)
   end
 
   def merge_params
