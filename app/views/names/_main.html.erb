@@ -12,7 +12,7 @@
 </td></tr>
 <% end %>
 
-<% count_sources = name.agent_sources.count %>
+<% count_sources = name.source_agents_count %>
 <% if count_sources || 0 > 0 %>
 <tr><td># Sources</td>
 <td>
@@ -22,8 +22,8 @@
 
 <!-- FIX ME: public-facing COUNT will only show number of non-deleted entries : BUT includes deprecated records -->
 <% count_authors = name.authors_count || 0 %>
-<% count_artists = name.artist_entries.count || 0 %>
-<% count_scribes = name.scribe_entries.count || 0 %>
+<% count_artists = name.artists_count || 0 %>
+<% count_scribes = name.scribes_count || 0 %>
 <% has_entries = (count_authors + count_artists + count_scribes) > 0 %>
 
 <% if (!name.is_provenance_agent) || has_entries %>                
@@ -70,7 +70,7 @@
     </td></tr>
 <% end %>
 
-<% count_provenance = name.provenance_entries.count %>
+<% count_provenance = name.provenance_count %>
 <% if count_provenance > 0 %>
     <tr><td># Provenance</td>
     <td>

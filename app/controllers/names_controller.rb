@@ -32,6 +32,10 @@ class NamesController < SearchableAuthorityController
     super
   end
 
+  def problems
+    @problems = Name.where(problem: true)
+  end
+
   def suggest
     name = params[:name]
     check_exists = params[:check_exists].present? ? params[:check_exists] == 'true' : true

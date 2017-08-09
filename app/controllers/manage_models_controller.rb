@@ -47,15 +47,15 @@ class ManageModelsController < ApplicationController
   end
 
   def show
-    if !@model.reviewed?
-      flash.now[:alert] = "This #{@model.model_name.to_s} has not yet been reviewed and may not conform to our data standards."
-    end
+    #if !@model.reviewed?
+      #flash.now[:alert] = "This #{@model.model_name.to_s} has not yet been reviewed and may not conform to our data standards."
+    #end
   end
 
   def edit
-    if !@model.reviewed?
-      flash.now[:alert] = "This #{@model.model_name.to_s} has not yet been reviewed and may not conform to our data standards."
-    end
+    #if !@model.reviewed?
+      #flash.now[:alert] = "This #{@model.model_name.to_s} has not yet been reviewed and may not conform to our data standards."
+    #end
   end
 
   def create

@@ -135,6 +135,7 @@ class Name < ActiveRecord::Base
     date :updated_at
     boolean :reviewed
     boolean :confirmed
+    boolean :problem
 
     integer :confirms do
       ratings.where(qualifier: "confirm").count
@@ -154,7 +155,8 @@ class Name < ActiveRecord::Base
       ["Provenance Count", "provenance_count"], 
       ["Source Agent Count", "source_agents_count"],
       ["Confirmed", "confirms"], 
-      ["Disputed", "disputes"]
+      ["Disputed", "disputes"],
+      ["Problem", "problem"]
     ]
   end
 
@@ -183,7 +185,7 @@ class Name < ActiveRecord::Base
       is_provenance_agent: is_provenance_agent,
       is_scribe: is_scribe,
       reviewed: reviewed,
-      #problem: problem,
+      problem: problem,
       confirms: ratings.where(qualifier: "confirm").count,
       disputes: ratings.where(qualifier: "dispute").count,
       created_by: created_by.present? ? created_by.username : "(none)",

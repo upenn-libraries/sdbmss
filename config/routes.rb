@@ -196,6 +196,7 @@ Rails.application.routes.draw do
       get 'search'
       get 'suggest'
       get 'more_like_this'
+      get 'problems'
     end
     member do
       patch '/revert_confirm/', to: 'names#revert_confirm'

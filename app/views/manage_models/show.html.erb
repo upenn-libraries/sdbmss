@@ -6,6 +6,10 @@
   <%= render partial: "tools" %>
 <% end %>
 
+<% if !@model.reviewed %>
+  <div class="alert alert-warning"><span class="glyphicon glyphicon-info-sign"></span> This <%= @model.model_name.to_s %> has not yet been reviewed and may not conform to our data standards.</div>
+<% end %>
+
 <div class="row">
   <div class="col-sm-6">
     <dl class="document-show-heading dl-horizontal dl-invert">

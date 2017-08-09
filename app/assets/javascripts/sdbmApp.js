@@ -758,8 +758,10 @@ var BOOKMARK_SCOPE;
       }, 10);
 
       $scope.selectSuggestion = function (s) {
-        $scope.suggestion = s;
-        $scope.selectName();
+        if (!s.problem) {
+          $scope.suggestion = s;
+          $scope.selectName();          
+        }
       }
 
       $scope.selectName = function () {
