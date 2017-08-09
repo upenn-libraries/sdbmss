@@ -300,7 +300,8 @@ var BOOKMARK_SCOPE;
             createNewEntry: createNewEntry,
             prepopulatedURL: prepopulatedURL,
             /* Returns a fn that can be used as error callback on angular promises */
-            promiseErrorHandlerFactory: function(msg) {
+            promiseErrorHandlerFactory: function(msg, callback) {
+                if (callback) callback();
                 return function(response) {
                     var append_str = "";
                     if(response.data && response.data.errors) {
@@ -745,8 +746,10 @@ var BOOKMARK_SCOPE;
       }, 10);
 
       $scope.selectSuggestion = function (s) {
-        $scope.suggestion = s;
-        $scope.selectName();
+        if (!s.problem) {
+          $scope.suggestion = s;
+          $scope.selectName();          
+        }
       }
 
       $scope.selectName = function () {
@@ -1002,8 +1005,8 @@ var BOOKMARK_SCOPE;
         return Math.round(100 * Math.min(1, $scope.progress / $scope.entries.length));
       };
       $scope.jump = function (n) {
-        $scope.entry_index = Number(n);      
-      }
+        $scope.entry_index = Number(n);
+      };
       $scope.checkCatOrLotNumbers = function () {
         var cat_or_lot_numbers = $scope.entries.map( function (e) { return e.source_catalog_or_lot_number; });
         var unique = {};
@@ -1026,7 +1029,7 @@ var BOOKMARK_SCOPE;
       };
 
       $scope.save = function (index) {
-        if (index == 0) {
+        if (index === 0) {
           $scope.starttime = new Date();
           // reset errors on save.start
           $scope.errors = {};
@@ -1042,7 +1045,7 @@ var BOOKMARK_SCOPE;
           }
           return;
         }
-        $scope.saving = true;        
+        $scope.saving = true;
         $http.post("/entries/upload.js", { entries: $scope.entries.slice(index, index + 10), check: !$scope.checked }).then(
             function(e) {
               if (e.data.errors && e.data.errors.length > 0) {
@@ -1065,8 +1068,20 @@ var BOOKMARK_SCOPE;
               $scope.remaining = $scope.timedisplay((sofar * $scope.entries.length / $scope.progress) - sofar);  // remaining milliseconds, estimated
                 //sdbmutil.redirectToDashboard();
             },
-            sdbmutil.promiseErrorHandlerFactory("There was an error marking source as Entered")            
+            sdbmutil.promiseErrorHandlerFactory("There was an error marking source as Entered")
         );
+      };
+    });
+
+    sdbmApp.controller("ConvertInchesToMillimetersCtrl", function ($scope, $modalInstance, model, field) {
+      $scope.confirm = function () {
+        console.log('mgm', $scope.millimeters, model);
+        model[field] = $scope.millimeters;
+        $modalInstance.close();
+      };
+
+      $scope.convert = function () {
+        $scope.millimeters = Math.floor(25.4 * $scope.inches);
       };
     });
 
@@ -1077,11 +1092,11 @@ var BOOKMARK_SCOPE;
         
         $scope.expand = function (e) {
           $(e.currentTarget).parent().parent('.expandable').addClass('expanded');
-        }
+        };
 
         $scope.reduce = function (e) {
-          $(e.currentTarget).parent().parent('.expandable').removeClass('expanded')
-        }
+          $(e.currentTarget).parent().parent('.expandable').removeClass('expanded');
+        };
 
         $scope.selectSourceModal = function (model, type) {
           if ($scope.mergeEdit !== false) {
@@ -1090,8 +1105,8 @@ var BOOKMARK_SCOPE;
                 controller: "SelectSourceCtrl",
                 resolve: {
                   //recordType: function () { return recordType },
-                  model: function () { return model },
-                  type: function () { return type },
+                  model: function () { return model; },
+                  type: function () { return type; },
                   base: ""
                 },
                 size: 'lg'
@@ -1105,10 +1120,28 @@ var BOOKMARK_SCOPE;
               //console.log('dismissed');
             });
           }
-        }
+        };
         
+        $scope.convertInchesToMillimeter = function (model, field) {
+          var modal = $modal.open({
+            templateUrl: "ConvertInchesToMillimeters",
+            controller: "ConvertInchesToMillimetersCtrl",
+            resolve: {
+              //recordType: function () { return recordType; },
+              model: function () { return model; },
+              field: function () { return field; },
+              //type: function () { return type; },
+              //base: function () { return base; }
+            },
+            size: 'sm'
+          });
+          modal.result.then(function () {
+            //$scope.saveDraft();
+          });
+        };
+
         $scope.selectNameAuthorityModal = function (recordType, model, type, base) {
-          base = base || ""
+          base = base || "";
 
           if (recordType == 'languages' || recordType == 'places') {
             var templateUrl = "selectModelAuthority.html";
@@ -1745,7 +1778,9 @@ var BOOKMARK_SCOPE;
             if(entryToSave.id) {
                 entryToSave.$update(
                     $scope.postEntrySave,
-                    sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
+                    sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry", function () {
+                      $scope.currentlySaving = false;
+                    })
                 ).finally(function() {
                     // $scope.currentlySaving = false;
                   $scope.clearDraft();
@@ -1770,8 +1805,10 @@ var BOOKMARK_SCOPE;
 
                 entryToSave.$save(
                     $scope.postEntrySave,
-                    sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry")
-                ).finally(function() {
+                    sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry", function () {
+                      $scope.currentlySaving = false;
+                    })
+                  ).finally(function() {
                   $scope.clearDraft();
                     // $scope.currentlySaving = false;
                 });

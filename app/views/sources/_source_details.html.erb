@@ -13,7 +13,7 @@
         <% end %>
         
             <dt>Title</dt>
-            <dd><%= source.title %></dd>
+            <dd><%= source.title || "(No title)" %></dd>
 
         <% if (author = source.author).present? %>
             <dt>Author</dt>
@@ -46,7 +46,7 @@
 
         <dt># Entries</dt>
         <dd>
-            This source has <a target="_blank" class='badge one-line' href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries.where(deprecated: false).count, "entry") %></a> in the database.
+            This source has <a target="_blank" class='badge one-line' href="<%= search_advanced_path(source: source.public_id) %>"><%= SDBMSS::Util.to_many(source.entries_count, "entry") %></a> in the database.
         </dd>
         <% if (drafts = source.entries.where(draft: true)).count > 0%>
         <dt>Drafts</dt>

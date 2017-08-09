@@ -29,6 +29,14 @@ class SaleAgent < ActiveRecord::Base
     sale.entry
   end
 
+  def display_value
+    [agent ? agent.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags].reject(&:blank?).join(" ")
+  end
+
+  def facet_value
+    agent ? agent.name : observed_name
+  end
+
   def name_authority
     (agent ? "<a href='/names/#{agent_id}'>#{agent}</a> " : "")
   end

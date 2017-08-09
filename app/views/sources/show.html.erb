@@ -24,7 +24,7 @@
             <%= render partial: "source_details", locals: { source: @source, details: @details } %>
         
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-6 comments">
         <h2 class='text-center'><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
         <p class='text-muted text-center'>Share additional information about this source - your comments will be displayed publicly.</p>
         <%= render partial: "comments/show_all", locals: {comments: @source.comments.where(public: true), record: @source} %>

@@ -145,6 +145,8 @@ class Source < ActiveRecord::Base
     boolean :reviewed
   end
 
+  after_save :update_counters
+
   def public_id
     SDBMSS::IDS.get_public_id_for_model(self.class, id)
   end
@@ -261,6 +263,10 @@ class Source < ActiveRecord::Base
 =end
     title_str = title || "(No title)"
 
+    if author
+      title_str = "#{title_str} - #{author}"
+    end
+
     if source_type.name == "online"
       date_accessed_str = ""
       if date_accessed
@@ -349,7 +355,7 @@ class Source < ActiveRecord::Base
       id: id,
       date: SDBMSS::Util.format_fuzzy_date(date),
       source_type: source_type.display_name,
-      entries_count: entries_count || 0,
+      entries_count: entries_count,
       title: title,
       display_value: display_value,
       author: author,
@@ -392,6 +398,18 @@ class Source < ActiveRecord::Base
       if value.present?
         errors.add(field_symbol, "Value '#{value}' not allowed in field #{field} when source_type = #{source_type.name}")
       end
+    end
+  end
+
+
+  def update_counters
+    if deleted
+      return
+    end
+
+    source_agents.group_by(&:agent_id).keep_if{ |k, v| v.length > 1}.each do |k, source_agent|
+      agent = source_agent.first.agent
+      Name.update_counters(agent.id, :source_agents_count => agent.agent_sources.count - agent.source_agents_count)
     end
   end
 

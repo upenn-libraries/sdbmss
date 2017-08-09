@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170712160006) do
+ActiveRecord::Schema.define(version: 20170807171227) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -491,6 +491,7 @@ ActiveRecord::Schema.define(version: 20170712160006) do
     t.datetime "reviewed_at"
     t.integer  "provenance_count",    limit: 4,     default: 0,     null: false
     t.boolean  "confirmed",                         default: false
+    t.boolean  "problem",                           default: false
   end
 
   add_index "names", ["created_by_id"], name: "index_names_on_created_by_id", using: :btree
@@ -844,7 +845,7 @@ ActiveRecord::Schema.define(version: 20170712160006) do
 
   add_index "thredded_post_notifications", ["post_id", "post_type"], name: "index_thredded_post_notifications_on_post", using: :btree
 
-  create_table "thredded_posts", :options => "ENGINE=MyISAM", force: :cascade do |t|
+  create_table "thredded_posts", :options => "ENGINE=MyISAM" , force: :cascade do |t|
     t.integer  "user_id",          limit: 4
     t.text     "content",          limit: 65535
     t.string   "ip",               limit: 255
@@ -904,7 +905,7 @@ ActiveRecord::Schema.define(version: 20170712160006) do
   add_index "thredded_topic_categories", ["category_id"], name: "index_thredded_topic_categories_on_category_id", using: :btree
   add_index "thredded_topic_categories", ["topic_id"], name: "index_thredded_topic_categories_on_topic_id", using: :btree
 
-  create_table "thredded_topics", :options => "ENGINE=MyISAM", force: :cascade do |t|
+  create_table "thredded_topics", :options => "ENGINE=MyISAM" , force: :cascade do |t|
     t.integer  "user_id",          limit: 4
     t.integer  "last_user_id",     limit: 4
     t.string   "title",            limit: 255,                 null: false

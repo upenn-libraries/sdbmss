@@ -68,7 +68,7 @@ function relation (type) {
             height: 'full',
             heightBuffer: 280,
             responsive: true,
-            dom: '<"row"<"col-sm-5 mobile-center"li><"col-sm-7 text-right mobile-center"<"spinner"> p<"btn-group btn-table-tool"<"wide"><"csv"><"columns">J>>>t'
+            dom: '<"row"<"col-sm-5 mobile-center"li><"col-sm-7 text-right mobile-center"<"spinner"> p<"btn-group btn-table-tool"<"reset"><"wide"><"csv"><"columns">J>>>t'
         };
 
         this.options = $.extend({}, defaults, options);
@@ -124,6 +124,7 @@ function relation (type) {
             stateSave: true,
             autoWidth: false,
             ajax: function (dt_params, callback, settings) {
+                //console.log('table ajax');
                 options.ajax(sdbmTable, dt_params, callback, settings);
             },
             /*colVis: {
@@ -213,7 +214,11 @@ function relation (type) {
             '</div>' +
             '</div>'
         );
-
+        $('.reset').replaceWith('<a id="reset-columns" class="btn btn-default" title="Reset Table"><span class="glyphicon glyphicon-erase"></span></a>');
+        $("#reset-columns").click( function () {
+            localStorage["DataTables_search_results_" + window.location.pathname] = "";
+            window.location = window.location.origin + window.location.pathname;
+        });
         // new column hide/show function
 
         var dropdown = $('#column-control');
@@ -293,6 +298,7 @@ function relation (type) {
     };
 
     SDBM.Table.prototype.reload = function(callback) {
+        //console.log('table reload');
         this.dataTable.ajax.reload(callback);
     };
 
@@ -322,9 +328,9 @@ function relation (type) {
                     render: function (data, type, full, meta) {
                         if(data) {
                             if(full[sdbmTable.getColumnIndex("Is Approved")]) {
-                                return '<a href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
+                                return '<a title="SDBM_' + data + '" href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
                             } else {
-                                return '<a class="text-muted" href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
+                                return '<a title="SDBM_' + data + '" class="text-muted" href="/entries/' + data + '/" target="_blank">SDBM_' + data + '</a>';
                             }
                         }
                         return '';
@@ -338,7 +344,7 @@ function relation (type) {
                     render: function (data, type, full, meta) {
                         if(data) {
                             return data.map(function (d) {
-                                return '<a href="/manuscripts/' + d.id + '/" target="_blank">' + relation(d.relation) + ' SDBM_MS_' + d.id + '</a>';                                
+                                return '<a title="SDBM_MS_' + d.id + '" href="/manuscripts/' + d.id + '/" target="_blank">' + relation(d.relation) + ' SDBM_MS_' + d.id + '</a>';
                             }).join(", ");
                         }
                         return '';
@@ -349,7 +355,6 @@ function relation (type) {
                     sdbmssMinWidth: "100px",
                     sdbmssMaxWidth: "100px",
                     render: function (data, type, full, meta) {
-                        data = JSON.parse(data);
                         var result = "";
                         for (var i = 0; i < data.length; i++) {
                             result += '<a target="_blank" href="/groups/' + data[i][0] + '">' + data[i][1] + '</a> ';
@@ -375,6 +380,12 @@ function relation (type) {
                     sdbmssMaxWidth: "100px",
                     sdbmssSortField: 'catalog_or_lot_number',
                     title: 'Cat or Lot #'
+                },
+                {
+                    sdbmssMinWidth: "150px",
+                    sdbmssMaxWidth: "150px",
+                    sdbmssSortField: 'institution',
+                    title: 'Institution'
                 },
                 {
                     sdbmssMinWidth: "150px",
@@ -462,6 +473,12 @@ function relation (type) {
                     sdbmssMaxWidth: "200px",
                     sdbmssSortField: 'use_flat',
                     title: 'Use'
+                },
+                {
+                    sdbmssMinWidth: "70px",
+                    sdbmssMaxWidth: "70px",
+                    sdbmssSortField: 'missing_authority_names',
+                    title: 'Missing Names'
                 },
                 {
                     sdbmssMinWidth: "70px",
@@ -692,6 +709,7 @@ function relation (type) {
                             result.source_date,
                             result.source_title,
                             result.source_catalog_or_lot_number,
+                            result.institution,
                             result.sale_selling_agent,
                             result.sale_seller_or_holder,
                             result.sale_buyer,
@@ -706,6 +724,7 @@ function relation (type) {
                             result.materials,
                             result.places,
                             result.uses,
+                            result.missing_authority_names,
                             result.folios,
                             result.num_columns,
                             result.num_lines,

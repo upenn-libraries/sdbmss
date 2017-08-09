@@ -36,9 +36,12 @@ class EntryAuthor < ActiveRecord::Base
 
   # used for indexing entry_artist with entry
   def display_value
-    val = super(author)
-    val += role ? " (" + role + ")": ""
+    [author ? author.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags, role ? "[#{role.humanize}]" : nil].reject(&:blank?).join(" ")
   end
+
+  def facet_value
+    author ? author.name : observed_name
+  end  
 
   def to_fields
     {name: author ? author.name : nil, observed_name: observed_name}

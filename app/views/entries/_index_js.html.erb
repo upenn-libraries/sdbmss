@@ -47,6 +47,7 @@
 
          var sdbmTable = new SDBM.EntryTable("#search_results", {
              heightBuffer: 280,
+             //fixedColumns: 3,
              prependColumns: [
                  {
                      sdbmssMinWidth: "25px",
@@ -102,7 +103,7 @@
 
                             // destroy
                             if (canDestroy) {
-                                result += '<a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#" target="_blank">Delete</a>'
+                                result += '<a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#"  id="delete_' + entryId + '"target="_blank">Delete</a>'
                             }
 
                             // linking tool
@@ -129,8 +130,7 @@
                  sdbmTable.searchAndUpdateTable(params, callback, {
                      complete: function () {
                          $("#spinner").hide();
-//                          renewBookmarks();
-
+                         
                          if(showApprovalControls()) {
                             //$(".approve-control").show();
                             //$('.unreviewed_only').show();//.css({"display": "table-cell"});

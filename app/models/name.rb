@@ -126,7 +126,7 @@ class Name < ActiveRecord::Base
     string :viaf_id
     integer :created_by_id
     integer :artists_count
-    integer :authors_count
+    integer :authors_count # test
     integer :scribes_count
     integer :source_agents_count
     integer :sale_agents_count
@@ -135,6 +135,7 @@ class Name < ActiveRecord::Base
     date :updated_at
     boolean :reviewed
     boolean :confirmed
+    boolean :problem
 
     integer :confirms do
       ratings.where(qualifier: "confirm").count
@@ -154,7 +155,8 @@ class Name < ActiveRecord::Base
       ["Provenance Count", "provenance_count"], 
       ["Source Agent Count", "source_agents_count"],
       ["Confirmed", "confirms"], 
-      ["Disputed", "disputes"]
+      ["Disputed", "disputes"],
+      ["Problem", "problem"]
     ]
   end
 
@@ -172,17 +174,18 @@ class Name < ActiveRecord::Base
       name: name,
       viaf_id: viaf_id,
       other_info: other_info,
-      authors_count: authors_count || 0,
-      artists_count: artists_count || 0,
-      scribes_count: scribes_count || 0,
-      source_agents_count: source_agents_count || 0,
-      sale_agents_count: sale_agents_count || 0,
-      provenance_count: provenance_count || 0,
+      authors_count: authors_count,
+      artists_count: artists_count,
+      scribes_count: scribes_count,
+      source_agents_count: source_agents_count,
+      sale_agents_count: sale_agents_count,
+      provenance_count: provenance_count,
       is_artist: is_artist,
       is_author: is_author,
       is_provenance_agent: is_provenance_agent,
       is_scribe: is_scribe,
       reviewed: reviewed,
+      problem: problem,
       confirms: ratings.where(qualifier: "confirm").count,
       disputes: ratings.where(qualifier: "dispute").count,
       created_by: created_by.present? ? created_by.username : "(none)",

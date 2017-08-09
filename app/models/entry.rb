@@ -174,6 +174,7 @@ class Entry < ActiveRecord::Base
   validates_length_of :manuscript_link, maximum: 1024
 
   after_create :update_source_status
+  after_save :update_counters
 
   def public_id
     SDBMSS::IDS.get_public_id_for_model(self.class, id)
@@ -247,6 +248,13 @@ class Entry < ActiveRecord::Base
   def get_sale_price
     t = get_sale
     t.price if t
+  end
+
+  def missing_authority_names
+    entry_authors.where(author_id: nil).where.not(observed_name: nil).count + 
+    entry_artists.where(artist_id: nil).where.not(observed_name: nil).count + 
+    entry_scribes.where(scribe_id: nil).where.not(observed_name: nil).count + 
+    provenance.where(provenance_agent_id: nil).where.not(observed_name: nil).count
   end
 
   # returns list of the hashes representing unique Agents found in
@@ -334,28 +342,32 @@ class Entry < ActiveRecord::Base
   # some information tweaking/loss.
   
 
-  def as_flat_hash
+  def as_flat_hash(options: {})
+
     # for performance, we avoid using has_many->through associations
     # because they always hit the db and circumvent the preloading
     # done in with_associations scope.
 
+    # FIX ME: missing institution field?
+
     sale = get_sale
-    sale_selling_agent = (sale.get_selling_agents_names if sale && sale.get_selling_agents.count > 0)
-    sale_seller_or_holder = (sale.get_sellers_or_holders_names if sale && sale.get_sellers_or_holders.count > 0)
-    sale_buyer = (sale.get_buyers_names if sale && sale.get_buyers.count > 0)
+    sale_selling_agents = sale ? sale.sale_agents.where(role: "selling_agent") : []#(sale.get_selling_agents_names if sale && sale.get_selling_agents.count > 0)
+    sale_seller_or_holders = sale ? sale.sale_agents.where(role: "seller_or_holder") : [] #(sale.get_sellers_or_holders_names if sale && sale.get_sellers_or_holders.count > 0)
+    sale_buyers = sale ? sale.sale_agents.where(role: "buyer") : [] #(sale.get_buyers_names if sale && sale.get_buyers.count > 0)
     {
       id: id,
-      manuscript: entry_manuscripts.count > 0 ? entry_manuscripts.map{ |em| {id: em.manuscript_id, relation: em.relation_type} } : nil,
-      groups: groups.map{ |group| [group.id, group.name] }.to_s,
+      manuscript: options[:csv].present? ? (entry_manuscripts.map{ |em| em.manuscript.public_id }.join("; ")) : (entry_manuscripts.count > 0 ? entry_manuscripts.map{ |em| {id: em.manuscript_id, relation: em.relation_type} } : nil),
+      groups: options[:csv].present? ? groups.map{ |group| group.name }.join("; ") : groups.map{ |group| [group.id, group.name] },
       source_date: SDBMSS::Util.format_fuzzy_date(source.date),
       source_title: source.title,
       source_catalog_or_lot_number: catalog_or_lot_number,
-      sale_selling_agent: sale_selling_agent,
-      sale_seller_or_holder: sale_seller_or_holder,
-      sale_buyer: sale_buyer,
+      institution: (institution ? institution.to_s : ""),
+      sale_selling_agent: sale_selling_agents.map(&:display_value).join("; "),
+      sale_seller_or_holder: sale_seller_or_holders.map(&:display_value).join("; "),
+      sale_buyer: sale_buyers.map(&:display_value).join("; "),
       sale_sold: (sale.sold if sale),
       sale_price: (sale.get_complete_price_for_display if sale),
-      titles: entry_titles.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:title).join("; "),
+      titles: entry_titles.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       authors: entry_authors.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       dates: entry_dates.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       artists: entry_artists.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
@@ -364,6 +376,7 @@ class Entry < ActiveRecord::Base
       materials: entry_materials.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       places: entry_places.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       uses: entry_uses.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:use).join("; "),
+      missing_authority_names: missing_authority_names,
       folios: folios,
       num_columns: num_columns,
       num_lines: num_lines,
@@ -379,7 +392,7 @@ class Entry < ActiveRecord::Base
       manuscript_binding: manuscript_binding,
       manuscript_link: manuscript_link,
       other_info: other_info,
-      provenance: provenance.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map { |prov| prov.provenance_agent ? prov.provenance_agent.name : prov.observed_name }.join("; "),
+      provenance: provenance.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       created_at: created_at ? created_at.to_formatted_s(:date_and_time) : nil,
       created_by: created_by ? created_by.username : "",
       updated_at: updated_at ? updated_at.to_formatted_s(:date_and_time) : nil,
@@ -440,25 +453,27 @@ class Entry < ActiveRecord::Base
         # https://github.com/sunspot/sunspot/issues/331
         @__receiver__.id,
         public_id,
-        manuscript ? manuscript.display_value : nil,
+        #manuscript ? manuscript.display_value : nil,
         # source info
         source.display_value,
+        source.date,
         catalog_or_lot_number,
+        institution ? institution.to_s : "",
         # sale
-        get_sale_selling_agents_names,
-        get_sale_sellers_or_holders_names,
-        get_sale_buyers_names,
-        get_sale_price
+        sale ? sale.price : ""
       ] +
+      (sale ? sale.sale_agents.map(&:display_value) : []) +
       # details
+      groups.map(&:name) +
+      manuscripts.map(&:public_id) + 
       entry_titles.map(&:display_value) +
       entry_authors.map(&:display_value) +
       entry_dates.map(&:display_value) +
       entry_artists.map(&:display_value) +
       entry_scribes.map(&:display_value) +
-      languages.map(&:name) +
-      entry_materials.map(&:material) +
-      places.map(&:name) +
+      entry_languages.map(&:display_value) +
+      entry_materials.map(&:display_value) +
+      entry_places.map(&:display_value) + 
       entry_uses.map(&:use) +
       [
         folios,
@@ -478,10 +493,11 @@ class Entry < ActiveRecord::Base
         initials_decorated,
       ] +
       # provenance
-      provenance_names +
+      provenance.map(&:display_value) +
       supercedes.map(&:id) +
       # comments
-      comments.select(&:public).map(&:comment)
+      comments.select(&:public).map(&:comment) +
+      [created_by ? created_by.username : "", updated_by ? updated_by.username : ""]
 
       fields.map(&:to_s).select(&:present?).join "\n"
     end
@@ -531,12 +547,19 @@ class Entry < ActiveRecord::Base
     define_field(:string, :source_title, :stored => true) do
       source.title
     end
-    define_field(:string, :institution, :stored => true, :multiple => true) do
+
+    define_field(:string, :source_institution, :stored => true, :multiple => true) do
       source.get_institutions.map { |i| i.agent ? i.agent.name : "" }
+    end
+
+    define_field(:string, :institution, :stored => true, :multiple => false) do
+      institution.to_s
+      #source.get_institutions.map { |i| i.agent ? i.agent.name : "" } + (institution ? [institution] : [])
       #source.get_institution_as_name.try(:name) || institution.try(:name)
     end
     define_field(:text, :institution_search, :stored => true) do
-      source.get_institutions_as_names
+      institution.to_s
+      #source.get_institutions_as_names + (institution ? " #{institution}" : "")
       #source.get_institution_as_name.try(:name) || institution.try(:name)
     end
 
@@ -550,24 +573,28 @@ class Entry < ActiveRecord::Base
     #### Sale info
 
     define_field(:string, :sale_selling_agent, :stored => true, :multiple => true) do
-      get_sale ? get_sale.get_selling_agents.map{ |sa| sa.display_value } : [] #fix me -> change to multiple field, map name from selling agent
+      (sale = get_sale) ? sale.sale_agents.where(role: "selling_agent").map(&:facet_value) : []
     end
     define_field(:text, :sale_selling_agent_search, :stored => true) do
-      get_sale_selling_agents_names
+      (sale = get_sale) ? sale.sale_agents.where(role: "selling_agent").map(&:display_value).join("; ") : ""
     end
 
     define_field(:string, :sale_seller, :stored => true, :multiple => true) do
-      get_sale ? get_sale.get_sellers_or_holders.map{ |sa| sa.display_value } : [] #fix me -> change to multiple field, map name from selling agent
+#      get_sale ? get_sale.get_sellers_or_holders.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
+      (sale = get_sale) ? sale.sale_agents.where(role: "seller_or_holder").map(&:facet_value) : []
     end
     define_field(:text, :sale_seller_search, :stored => true) do
-      get_sale_sellers_or_holders_names
+#      get_sale_sellers_or_holders_names
+      (sale = get_sale) ? sale.sale_agents.where(role: "seller_or_holder").map(&:display_value).join("; ") : ""
     end
 
     define_field(:string, :sale_buyer, :stored => true, :multiple => true) do
-      get_sale ? get_sale.get_buyers.map{ |sa| sa.display_value } : [] #fix me -> change to multiple field, map name from selling agent
+#      get_sale ? get_sale.get_buyers.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
+      (sale = get_sale) ? sale.sale_agents.where(role: "seller_or_holder").map(&:facet_value) : []
     end
     define_field(:text, :sale_buyer_search, :stored => true) do
-      get_sale_buyers_names
+#      get_sale_buyers_names
+      (sale = get_sale) ? sale.sale_agents.where(role: "seller_or_holder").map(&:display_value).join("; ") : ""
     end
 
     define_field(:string, :sale_sold, :stored => true) do
@@ -581,10 +608,10 @@ class Entry < ActiveRecord::Base
     #### Details
 
     define_field(:string, :title, :stored => true, :multiple => true) do
-      entry_titles.map(&:title)
+      entry_titles.map(&:facet_value)
     end
     define_field(:string, :title_flat,:stored => true) do
-      entry_titles.map(&:title).join("; ")
+      entry_titles.map(&:display_value).join("; ")
     end
 
     define_field(:text, :title_search, :stored => true) do
@@ -592,16 +619,14 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:string, :author, :stored => true, :multiple => true) do
-      authors.map(&:name)
+      entry_authors.map(&:facet_value)
     end
     define_field(:text, :author_search, :stored => true) do
       entry_authors.map(&:display_value)
     end
     define_field(:string, :author_flat, :stored => true) do
-      authors.map(&:name).join("; ")
+      entry_authors.map(&:display_value).join("; ")
     end
-
-
 
     define_field(:string, :manuscript_date, :stored => true, :multiple => true) do
       entry_dates.select {
@@ -642,54 +667,54 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:string, :artist, :stored => true, :multiple => true) do
-      artists.map(&:name)
+      entry_artists.map(&:facet_value)
     end
     
     define_field(:string, :artist_flat, :stored => true) do
-      artists.map(&:name).join("; ")
+      entry_artists.map(&:display_value).join("; ")
     end
     define_field(:text, :artist_search, :stored => true) do
       entry_artists.map(&:display_value)
     end
 
     define_field(:string, :scribe, :stored => true, :multiple => true) do
-      scribes.map(&:name)
+      entry_scribes.map(&:facet_value)
     end
     define_field(:string, :scribe_flat, :stored => true) do
-      scribes.map(&:name).join("; ")
+      entry_scribes.map(&:display_value).join("; ")
     end
     define_field(:text, :scribe_search, :stored => true) do
       entry_scribes.map(&:display_value)
     end
 
     define_field(:string, :language, :stored => true, :multiple => true) do
-      languages.map(&:name)
+      entry_languages.map(&:facet_value)
     end
     define_field(:string, :language_flat, :stored => true) do
-      languages.map(&:name).join("; ")
+      entry_languages.map(&:display_value).join("; ")
     end
     define_field(:text, :language_search, :stored => true) do
-      languages.map(&:name)
+      entry_languages.map(&:display_value)
     end
 
     define_field(:string, :material, :stored => true, :multiple => true) do
-      entry_materials.map(&:material)
+      entry_materials.map(&:facet_value)
     end
     define_field(:string, :material_flat, :stored => true) do
-      entry_materials.map(&:material).join("; ")
+      entry_materials.map(&:display_value).join("; ")
     end
     define_field(:text, :material_search, :stored => true) do
-      entry_materials.map(&:material)
+      entry_materials.map(&:display_value)
     end
 
     define_field(:string, :place, :stored => true, :multiple => true) do
-      places.map(&:name)
+      entry_places.map(&:facet_value)
     end
     define_field(:string, :place_flat, :stored => true) do
-      places.map(&:name).join("; ")
+      entry_places.map(&:display_value).join("; ")
     end
     define_field(:text, :place_search, :stored => true) do
-      places.map(&:name)
+      entry_places.map(&:display_value)
     end
 
     define_field(:string, :use, :stored => true, :multiple => true) do
@@ -764,11 +789,11 @@ class Entry < ActiveRecord::Base
     #### Provenance
 
     define_field(:string, :provenance, :stored => true, :multiple => true) do
-      provenance_names
+      provenance.map(&:facet_value)
     end
 
     define_field(:text, :provenance_search, :stored => true) do
-      provenance_names
+      provenance.map(&:display_value).join("; ")
     end
 
     define_field(:string, :provenance_date, :stored => true, :multiple => true) do
@@ -833,13 +858,12 @@ class Entry < ActiveRecord::Base
     id = download.id
     path = "/tmp/#{id}_#{user}_#{filename}"
     headers = nil
-    
     loop do
       s = do_search(params.merge({:limit => 300, :offset => offset}))
       offset += 300
       ids = s.results.map(&:id)
       #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
-      objects = Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash }
+      objects = Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash({options: {csv: true}}) }
       break if objects.first.nil?
       csv_file = CSV.open(path, "ab") do |csv|
         if headers.nil? && objects.first
@@ -884,6 +908,7 @@ class Entry < ActiveRecord::Base
       ["Updated By", "updated_by"], 
       ["Created By", "created_by"], 
       ["Manuscript ID", "manuscript_id"], 
+      ["Missing Authority Names", "missing_authority_names"],
       ["Deprecated", "deprecated"],
       ["Draft", "draft"]
     ]
@@ -933,6 +958,49 @@ class Entry < ActiveRecord::Base
   def update_source_status
     if source.status == Source::TYPE_STATUS_TO_BE_ENTERED
       source.update!(status: Source::TYPE_STATUS_PARTIALLY_ENTERED)
+    end
+  end
+
+  def update_counters
+    # deleting is handled separately (in entries controller) since it is actually a quasi-destroy
+    if deleted
+      return
+    end
+
+    entry_authors.group_by(&:author_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_author|
+      author = entry_author.first.author
+      Name.update_counters(author.id, :authors_count => author.author_entries.count - author.authors_count) unless author.nil?
+    end
+    entry_artists.group_by(&:artist_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_artist|
+      artist = entry_artist.first.artist
+      Name.update_counters(artist.id, :artists_count => artist.artist_entries.count - artist.artists_count) unless artist.nil?
+    end
+    entry_scribes.group_by(&:scribe_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_scribe|
+      scribe = entry_scribe.first.scribe
+      Name.update_counters(scribe.id, :scribes_count => scribe.scribe_entries.count - scribe.scribes_count) unless scribe.nil?
+    end
+    # sale agent
+    if sale
+      sale.sale_agents.group_by(&:agent_id).keep_if{ |k, v| v.length > 1}.each do |k, sale_agent|
+        agent = sale_agent.first.agent
+        Name.update_counters(agent.id, :sale_agents_count => agent.sale_entries.count - agent.sale_agents_count) unless agent.nil?
+      end    
+    end
+
+    # place, language FIX ME add these
+    entry_places.group_by(&:place_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_place|
+      place = entry_place.first.place
+      Place.update_counters(place.id, :entries_count => place.entries.uniq.count - place.entries_count) unless place.nil?
+    end
+    entry_languages.group_by(&:language_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_language|
+      language = entry_language.first.language
+      Language.update_counters(language.id, :entries_count => language.entries.uniq.count - language.entries_count) unless language.nil?
+    end
+
+    # provenance
+    provenance.group_by(&:provenance_agent_id).keep_if{ |k, v| v.length > 1}.each do |k, provenance|
+      provenance_agent = provenance.first.provenance_agent
+      Name.update_counters(provenance_agent.id, :provenance_count => provenance_agent.provenance_entries.count - provenance_agent.provenance_count) unless provenance_agent.nil?
     end
   end
 

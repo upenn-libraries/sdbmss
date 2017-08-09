@@ -1,11 +1,92 @@
-<h1>Database Statistics</h1>
+<% content_for :head do %>
+    <%= javascript_include_tag "loader" %>
+    <script>
+        $(document).ready(function () {
+            var ready = false;
+            google.charts.load('current', {'packages':['corechart']});
+            google.charts.setOnLoadCallback(doChart);
+            
+            function doChart() {
+                ready = true;               
+                $.get("/community/stats.json", {quantity: $("#quantity").val(), measure: $("#measure").val()}, function (result) {
+                    var results = [["User", "Index", "Days Active", "User Level", "Entries"]].concat(result.data);
+
+                    var data = google.visualization.arrayToDataTable(results);
+
+                    var options = {
+                        vAxis: {title: 'Days Active'},
+                        bubble: {
+                            textStyle: {
+                                color: 'black',
+                                bold: true
+                            }
+                        },
+                        colors: ['#e0440e', '#e6693e', '#ec8f6e', '#f3b49f', '#f6c7b6'],
+                        fontName: 'Sarala',
+                        fontSize: 12,
+                        legend: {
+                            alignment: "center",
+                            position: "in"
+                        },
+                        hAxis: {
+                            textPosition: "none"
+                        },
+                        chartArea: {
+                            width: "100%",
+                            height: "90%",
+                            left: 50,
+                            top: 20
+                        }
+                    };
+
+                    var chart = new google.visualization.BubbleChart(document.getElementById('series_chart_div'));
+                    chart.draw(data, options);
+                });
+            }
+
+            $("#submit").click(function (e) {
+                if (ready) {
+                    doChart();
+                }
+            })
+      });
+    </script>
+<% end %>
+
+<h3 class='text-center form-inline'>
+    Last
+    <select name="" id="quantity" class="form-control">
+        <option value="1" selected>1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+    </select>
+    <select name="" id="measure" class="form-control">
+        <option value="day">Day</option>
+        <option value="week" selected>Week</option>
+        <option value="month">Month</option>
+    </select>
+    <a id="submit" class="btn btn-primary">Update</a>
+</h1>
+
+<div id="series_chart_div" style="width: 800px; height: 360px; margin: auto;"></div>
+
+<h2 class='text-center'>Database Statistics</h2>
 
 <p><%= number_with_delimiter(Entry.count) %> entries</p>
 <p><%= number_with_delimiter(Provenance.count) %> records of provenance information</p>
 <p><%= number_with_delimiter(Source.count) %> sources</p>
 <p><%= number_with_delimiter(User.count) %> users</p>
     
-<h1>User Community</h1>
+<h2 class='text-center'>User Community</h2>
 
 <table class="table table-compressed">
     <thead>

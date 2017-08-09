@@ -25,7 +25,9 @@ class EntryManuscriptsController < SearchableAuthorityController
     if params[:cumulative_updated_at].to_s == manuscript.cumulative_updated_at.to_s
       params[:entry_manuscripts].each do |record|
         attrs = record.permit(:id, :entry_id, :manuscript_id, :relation_type, :_destroy)
-        if record["_destroy"]
+        if !Entry.exists? record["entry_id"]
+          # pass 
+        elsif record["_destroy"]
           em = EntryManuscript.find(record["id"])
           em.destroy!
         elsif record["id"]

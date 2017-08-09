@@ -10,7 +10,11 @@ class EntryPlace < ActiveRecord::Base
   validates_presence_of :entry
 
   def display_value
-    super place
+    [place ? place.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags ].reject(&:blank?).join(" ")
+  end
+
+  def facet_value
+    place ? place.name : observed_name
   end
 
   def to_s

@@ -50,8 +50,11 @@ class EntryArtist < ActiveRecord::Base
 
   # used for indexing entry_artist with entry
   def display_value
-    val = super(artist)
-    val += " (#{role})" if role
+    [artist ? artist.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags, role ? "[#{format_role}]" : nil].reject(&:blank?).join(" ")
+  end
+
+  def facet_value
+    artist ? artist.name : observed_name
   end
 
   def format_role

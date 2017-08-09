@@ -41,6 +41,7 @@ class Ability
       can :unlink, :all, :created_by_id => user.id
       can :history, :all
 
+      can [:index, :new], DericciGame
       can :index, [Entry, Source, Manuscript, Comment]
 
       can :manage, PrivateMessage, :created_by_id => user.id
@@ -64,7 +65,6 @@ class Ability
     end
 
     if ['super_editor'].member? user.role
-      can [:index, :new], DericciGame
       # allow super-editors to edit legacy records
       can [:edit, :update, :verify, :deprecate], Entry, :unverified_legacy_record => true
     end

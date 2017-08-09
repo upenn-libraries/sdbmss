@@ -120,7 +120,15 @@ class Provenance < ActiveRecord::Base
   end
 
   def dates
-    [start_date, end_date].reject(&:nil?).join(' to ') + (associated_date ? " #{associated_date}" : "")
+    [start_date, end_date].reject(&:blank?).join(' to ') + (associated_date ? " #{associated_date}" : "")
+  end
+
+  def display_value
+    [provenance_agent ? provenance_agent.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags, dates.present? ? "[#{dates}]" : nil].reject(&:blank?).join(" ")
+  end
+
+  def facet_value
+    provenance_agent ? provenance_agent.name : observed_name
   end
 
 end

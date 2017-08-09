@@ -84,7 +84,7 @@ module CatalogControllerConfiguration
       config.add_facet_field 'sale_seller', :label => 'Seller', :collapse => false, :limit => 3
       config.add_facet_field 'sale_selling_agent', :label => 'Selling Agent', :collapse => false, :limit => 3
       config.add_facet_field 'sale_buyer', :label => 'Buyer', :collapse => false, :limit => 3
-      config.add_facet_field 'institution', :label => 'Institution', :collapse => false, :limit => 3
+      config.add_facet_field 'source_institution', :label => 'Source Institution', :collapse => false, :limit => 3
       config.add_facet_field 'source_display', :label => 'Source', :collapse => false, :limit => 3
       config.add_facet_field 'source_type', :label => 'Source Type', :collapse => false, :limit => 3
       config.add_facet_field 'provenance', :label => 'Provenance', :limit => 3
@@ -396,8 +396,8 @@ module CatalogControllerConfiguration
       config.add_sort_field 'source_date desc', :label => 'Source Date (desc)'
       config.add_sort_field 'source_agent_sort asc', :label => 'Source Agent (asc)'
       config.add_sort_field 'source_agent_sort desc', :label => 'Source Agent (desc)'
-      config.add_sort_field 'catalog_or_lot_number_search asc', :label => 'Catalog/Lot Number (asc)'
-      config.add_sort_field 'catalog_or_lot_number_search desc', :label => 'Catalog/Lot Number (desc)'
+      config.add_sort_field 'catalog_or_lot_number asc', :label => 'Catalog/Lot Number (asc)'
+      config.add_sort_field 'catalog_or_lot_number desc', :label => 'Catalog/Lot Number (desc)'
 #      config.add_sort_field 'title_flat asc', :label => 'Title'
 #      config.add_sort_field 'title_flat desc', :label => 'Title (desc)'
 #      config.add_sort_field 'manuscript_date_flat asc', :label => 'Manuscript Date'

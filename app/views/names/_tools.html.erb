@@ -11,6 +11,19 @@
                 <% end %>
             </li>
         <% end %>
+        <% if !@model.problem and can? :edit, @model%>
+            <li class="link <%= disabled %>">
+                <%= link_to(name_path(@model, problem: true), :method => :put, :data => {:confirm => "Would you like to flag this name as being problematic?"}) do %>
+                    <span class="glyphicon glyphicon-ok"></span> Flag Problem
+                <% end %>
+            </li>
+        <% elsif @model.problem and can? :edit, @model%>
+            <li class="link <%= disabled %>">
+                <%= link_to(name_path(@model, problem: false), :method => :put, :data => {:confirm => "Has this name been improved so that it is a valid Name Authority resource?"}) do %>
+                    <span class="glyphicon glyphicon-ok"></span> Unflag Problem
+                <% end %>
+            </li>
+        <% end %>
     <% end %>
     <!-- fix me: remove this properly... -->
     <% if false #if !@model.confirmed and can? :edit, Name %>

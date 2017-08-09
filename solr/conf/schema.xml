@@ -328,8 +328,9 @@
     <field name="source_agent_sort" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="source_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="source_title" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="institution" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="institution" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="institution_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="source_institution" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="catalog_or_lot_number" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="catalog_or_lot_number_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="sale_selling_agent" stored="true" type="string" multiValued="true" indexed="true"/>

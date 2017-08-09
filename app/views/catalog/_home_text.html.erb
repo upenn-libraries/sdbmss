@@ -71,7 +71,7 @@
                 <span class='h4'>Recent Forum Discussion</span>
             </div>
             <div class="panel-body">
-                <% Thredded::Post.order('id DESC').last(6).each do |post| %>
+                <% Thredded::Post.order('id DESC').first(6).each do |post| %>
                     <% post_user_link = link_to(post.user.username, main_app.profile_path(post.user.username)) %>
                     <% topic = post.to_model.postable %>
                     <header>

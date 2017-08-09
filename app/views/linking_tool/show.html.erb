@@ -526,6 +526,7 @@ $(document).ready(function() {
                 },
                 error: function(xhr) {
                     var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
+                    console.log(error);
                     SDBM.showErrorModal("#modal", error);
                 }
             });

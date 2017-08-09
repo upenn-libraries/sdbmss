@@ -34,21 +34,29 @@ class ManuscriptsController < SearchableAuthorityController
       :entry_uses, :entry_materials, 
       {:entry_manuscripts => [:manuscript]}, 
       {:source => [{:source_agents => :agent}, :source_type]}, :bookmarks, :watches,
-    ).sort { |a, b| b.source.date <=> a.source.date }
+    ).sort do |a, b|
+      a_date = a.source.date.present? ? a.source.date.to_i : a.source.date_accessed.to_i
+      b_date = b.source.date.present? ? b.source.date.to_i : b.source.date_accessed.to_i
+      b_date <=> a_date
+    end
     # I use 'sort' rather than the query-based order because of a rails issue:
     # https://github.com/rails/rails/issues/6769
     # that breaks associated field ordering (i.e. provenance)
   end
 
   def show
-    flash.now[:notice] = "Note: This manuscript record aggregates entries citing a manuscript that is mentioned in sources or observations.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
+    #flash.now[:notice] = "Note: This manuscript record aggregates entries citing a manuscript that is mentioned in sources or observations.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
 
     #@manuscript_comment = ManuscriptComment.new(manuscript: @manuscript)
     #manuscript_comment.build_comment
 
     @manuscript_titles = @manuscript.all_titles
-    @entries = @manuscript.entries.joins(:source).order("date desc, date_accessed desc")
-    @entries.reject { |e| e.source.date.blank? && e.source.date_accessed.blank? }.each do |e|
+    @entries = @manuscript.entries.sort do |a, b|
+      a_date = a.source.date.present? ? a.source.date.to_i : a.source.date_accessed.to_i
+      b_date = b.source.date.present? ? b.source.date.to_i : b.source.date_accessed.to_i
+      b_date <=> a_date
+    end
+    @entries.each do |e|
       if e.institution
         @location_source = e.source
         @location_name = e.institution
@@ -101,6 +109,7 @@ class ManuscriptsController < SearchableAuthorityController
 
   def citation
     respond_to do |format|
+      format.html
       format.js
     end
   end

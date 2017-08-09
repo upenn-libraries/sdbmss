@@ -9,12 +9,16 @@ class EntryLanguage < ActiveRecord::Base
   validates_presence_of :entry
   validate :observed_or_authority
 
-  def to_s
-    (language ? language.name : observed_name.to_s) + certainty_flags
+  def display_value
+    [language ? language.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags].reject(&:blank?).join(" ")
   end
 
-  def display_value
-    to_s
+  def facet_value
+    language ? language.name : observed_name
+  end
+
+  def to_s
+    display_value
   end
 
   def name_authority

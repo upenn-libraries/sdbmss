@@ -87,7 +87,7 @@
       padding: 8px;
     }
   </style>
-  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <%= javascript_include_tag "loader" %>
   <script type="text/javascript">
     google.charts.load('current', {'packages':['corechart']});
     google.charts.setOnLoadCallback(drawChart);
@@ -108,6 +108,17 @@
         colors: ["#AE9A4A", "#AE724A", "#7F8FA8", "#306F63"],
         sliceVisibilityThreshold: 0.0001,
         pieHole: 0.3,
+        fontName: 'Sarala',
+        fontSize: 12,
+        legend: {
+            alignment: "center",
+            position: "in"
+        },
+        chartArea: {
+            width: "100%",
+            left: 50,
+            top: 20
+        },
         backgroundColor: "transparent",
         legend: {
           alignment: "end",
