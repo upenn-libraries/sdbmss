@@ -6,7 +6,7 @@ class EntryMaterial < ActiveRecord::Base
   belongs_to :entry
 
   validates_presence_of :entry
-  validates_presence_of :material
+  validate :observed_or_dropdown
 
   MATERIAL_TYPES = [
     ["Bamboo", "Bamboo"],
@@ -40,6 +40,14 @@ class EntryMaterial < ActiveRecord::Base
 
   def to_fields
     {material: material}
+  end
+
+  private
+
+  def observed_or_dropdown
+    if observed_name.blank? && material.blank?
+      errors[:base] << "Either an observed value or value from the dropdown are required (or both)"
+    end
   end
 
 end

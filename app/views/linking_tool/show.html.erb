@@ -326,8 +326,6 @@ $(document).ready(function() {
 
             var params = sdbmTable.translateParamsToBlacklight(dt_params);
 
-            //params["approved"] = "";
-
             params.entry_id = getActiveEntryManuscripts().length > 0 ? $.map(getActiveEntryManuscripts(), function(item) { return item.entry_id; }) : ['nil'];
             
             // prevent an empty workspace from returning ALL entries
@@ -404,6 +402,7 @@ $(document).ready(function() {
             var params = translateSearchParams(sdbmTable, dt_params); 
             
             params["linking_tool"] = true;
+            
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {
                     $("#spinner").hide();

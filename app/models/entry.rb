@@ -574,7 +574,6 @@ class Entry < ActiveRecord::Base
 
     define_field(:string, :sale_selling_agent, :stored => true, :multiple => true) do
       (sale = get_sale) ? sale.sale_agents.where(role: "selling_agent").map(&:facet_value) : []
-       #fix me -> change to multiple field, map name from selling agent
     end
     define_field(:text, :sale_selling_agent_search, :stored => true) do
       (sale = get_sale) ? sale.sale_agents.where(role: "selling_agent").map(&:display_value).join("; ") : ""
@@ -970,38 +969,38 @@ class Entry < ActiveRecord::Base
 
     entry_authors.group_by(&:author_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_author|
       author = entry_author.first.author
-      Name.update_counters(author.id, :authors_count => author.author_entries.count - author.authors_count)
+      Name.update_counters(author.id, :authors_count => author.author_entries.count - author.authors_count) unless author.nil?
     end
     entry_artists.group_by(&:artist_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_artist|
       artist = entry_artist.first.artist
-      Name.update_counters(artist.id, :artists_count => artist.artist_entries.count - artist.artists_count)
+      Name.update_counters(artist.id, :artists_count => artist.artist_entries.count - artist.artists_count) unless artist.nil?
     end
     entry_scribes.group_by(&:scribe_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_scribe|
       scribe = entry_scribe.first.scribe
-      Name.update_counters(scribe.id, :scribes_count => scribe.scribe_entries.count - scribe.scribes_count)
+      Name.update_counters(scribe.id, :scribes_count => scribe.scribe_entries.count - scribe.scribes_count) unless scribe.nil?
     end
     # sale agent
     if sale
       sale.sale_agents.group_by(&:agent_id).keep_if{ |k, v| v.length > 1}.each do |k, sale_agent|
         agent = sale_agent.first.agent
-        Name.update_counters(agent.id, :sale_agents_count => agent.sale_entries.count - agent.sale_agents_count)
+        Name.update_counters(agent.id, :sale_agents_count => agent.sale_entries.count - agent.sale_agents_count) unless agent.nil?
       end    
     end
 
     # place, language FIX ME add these
     entry_places.group_by(&:place_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_place|
       place = entry_place.first.place
-      Place.update_counters(place.id, :entries_count => place.entries.uniq.count - place.entries_count)
+      Place.update_counters(place.id, :entries_count => place.entries.uniq.count - place.entries_count) unless place.nil?
     end
     entry_languages.group_by(&:language_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_language|
       language = entry_language.first.language
-      Language.update_counters(language.id, :entries_count => language.entries.uniq.count - language.entries_count)
+      Language.update_counters(language.id, :entries_count => language.entries.uniq.count - language.entries_count) unless language.nil?
     end
 
     # provenance
     provenance.group_by(&:provenance_agent_id).keep_if{ |k, v| v.length > 1}.each do |k, provenance|
       provenance_agent = provenance.first.provenance_agent
-      Name.update_counters(provenance_agent.id, :provenance_count => provenance_agent.provenance_entries.count - provenance_agent.provenance_count)
+      Name.update_counters(provenance_agent.id, :provenance_count => provenance_agent.provenance_entries.count - provenance_agent.provenance_count) unless provenance_agent.nil?
     end
   end
 

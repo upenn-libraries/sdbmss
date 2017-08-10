@@ -5,7 +5,6 @@
     td {
       min-width: 400px;
       max-width: 400px;
-      border-right: 1px solid #ddd;
     }
     td:first-child {
       min-width: 150px;
@@ -124,7 +123,7 @@
         <td>
           <% selling_agents = entry.sale ? entry.sale.get_selling_agents : [] %>
           <% selling_agents.each do |selling_agent| %>
-              <a href="<%= name_path(selling_agent.agent) %>"><%= selling_agent.agent.name %></a><br>
+              <a href="<%= name_path(selling_agent.agent) %>"><%= selling_agent.display_value %></a><br>
           <% end %>
         </td>
       <% end %>
@@ -137,7 +136,7 @@
         <td>
           <% sellers = entry.sale ? entry.sale.get_sellers_or_holders : [] %>
           <% sellers.each do |seller| %>
-              <a href="<%= name_path(seller.agent) %>"><%= seller.agent.name %></a><br>
+              <a href="<%= name_path(seller.agent) %>"><%= seller.display_value %></a><br>
           <% end %>
         </td>
       <% end %>
@@ -150,7 +149,7 @@
         <td>
           <% buyers = entry.sale ? entry.sale.get_buyers : [] %>
           <% buyers.each do |buyer| %>
-              <a href="<%= name_path(buyer.agent) %>"><%= buyer.agent.name %></a><br>
+              <a href="<%= name_path(buyer.agent) %>"><%= buyer.display_value %></a><br>
           <% end %>
         </td>
       <% end %>

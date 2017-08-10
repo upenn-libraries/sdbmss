@@ -2,10 +2,22 @@
   <%= stylesheet_link_tag "extras", media: "all" %>
   <%= javascript_include_tag "extras" %>
   <%= javascript_include_tag "https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/0.8.3/jquery.csv.js" %>
+  <style>
+    .input-group-label {
+      border-right: 1px solid #cccccc !important;
+    }
+    .input-group-label + .input-group-addon {
+      background: white;
+      color: #777;
+      white-space: normal;
+    }
+    .panel-danger.active {
+      box-shadow: 0px 0px 0px 1px #ff7171;
+    }
+  </style>
 <% end %>
 
-<div ng-controller="ImportCtrl">
-
+<div ng-controller="ImportCtrl" data-ng-cloak>
   <div class="row">
     <div class="col-sm-12">
       <h1 class='text-center'>Bulk Import</h1>
@@ -29,71 +41,240 @@
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-sm-12">
-      <p>This is the place to import data into the SDBM.  Once your file has been examined, it will be presented for your inspection.</p>
-      <input type="file" class="form-control" id="file" ng-upload-change="handleFile($event)" ng-disabled="!source"></input>
+  <!-- instruction modal -->
+  <div class="modal fade" id="csvInfo">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header text-center">
+            <span class="h3">CSV Formatting Requirements</span>
+            <a href="#Welcome" id="dismiss-welcome" data-dismiss="modal" data-target="#Welcome" class='pull-right' style="color: #333;"><span class="glyphicon glyphicon-remove"></span></a>
+        </div>
+        <div class="modal-body">
+          <h4>
+            RULES
+          </h4>
+          <ul>
+            <li>
+              , - comma separated
+            </li>
+            <li>
+              " - double quote delimited
+            </li>
+            <li>
+              NO DOUBLE QUOTES ALLOWED IN ROWS - REPLACE WITH SINGLE QUOTES              
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
 
+  <!-- File upload -->
   <div class="row">
     <div class="col-sm-12">
-      <div class="panel panel-default" style="position: absolute; top: 75px; right: 20px; max-width: 300px;">
-        <div class="panel-heading">
-          <h4>Upload</h4>
+      <p>This is the place to import data into the SDBM.  Once your file has been examined, it will be presented for your inspection.</p>
+      <div class="input-group">
+        <input type="file" class="form-control" id="file" accept=".csv" ng-upload-change="handleFile($event)" ng-disabled="!source"></input>
+        <span class="input-group-btn">
+          <a class="btn btn-default" data-toggle="modal" data-target="#csvInfo" href="#csvInfo" ng-disabled="!source">
+            <span class="glyphicon glyphicon-question-sign"></span>
+          </a>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- loading icon, error display -->
+  <div class="row">
+    <div class="col-sm-12 text-center">
+      <div id="spinner" style="width: 100%; margin: 10px 0px;"><img src="<%= asset_path "spinner.gif" %>"></img> Loading...</div>
+    </div>
+  </div>
+
+  <div class="row" ng-if="csv_parse_error">
+    <div class="col-sm-12">
+      <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> There was an error parsing your CSV file! Make sure it conforms to the <a href="#csvInfo" data-toggle="modal" data-target="#csvInfo">formatting standards</a>.</div>
+    </div>
+  </div>
+
+  <!-- entries navigation -->
+  <div class="row" ng-if="entries.length > 0">
+    <div class="col-sm-12">
+      <div class="text-center text-muted" id="progress" style="margin: 10px;">{{ entries.length }} entries loaded</div>
+    </div>
+    <div class="col-sm-12">
+      <div class="form-group">
+        <div class="input-group">
+          <span class="input-group-addon">Select Entry (For Review)</span>
+          <input type="number" ng-model="entry_index" min="0" max="{{ entries.length - 1 }}" class="form-control">
         </div>
+      </div>
+    </div>
+    <div class="col-sm-12">
+      <div class="alert alert-warning">
+        <ul class="list-inline">
+          <li><strong>Warning: The following catalog or lot numbers are used multiple times:</strong></li>
+          <li ng-repeat="duplicate in duplicates track by $index">
+            {{ duplicate }}
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-sm-8">
+      <div class="">
+        <h4>Transaction Information</h4>
+        <ul class="list-inline">
+          <li class='input-group'>
+            <span class='input-group-addon input-group-label'>Cat. or Lot Number </span>
+            <span class="input-group-addon">{{ entries[entry_index].source_catalog_or_lot_number }}</span>
+          </li>
+          <li class='input-group'>
+            <span class='input-group-addon input-group-label'>Transaction Type </span>
+            <span class="input-group-addon">{{ entries[entry_index].source_transaction_type }}</span>
+          </li>          
+          <li class='input-group'>
+            <span class='input-group-addon input-group-label'>Sale Price</span>
+            <span class="input-group-addon">{{ entries[entry_index].sale_price }}</span>
+          </li>
+        </ul>
+        <h4>Selling Agent(s)</h4>
+        <ul class="list-unstyled">
+          <li ng-repeat="sale_agent in entries[entry_index].sales_attributes[0].sale_agents_attributes">{{ sale_agent.observed_name }} <span class="text-muted">({{ sale_agent.role }})</span></li>
+        </ul>        
+        <h4>Title(s)</h4>
+        <ul class="list-unstyled">
+          <li ng-repeat="title in entries[entry_index].entry_titles_attributes">{{ title.title }}</li>
+        </ul>
+        <h4>Author(s)</h4>
+        <ul class="list-unstyled">
+          <li ng-repeat="author in entries[entry_index].entry_authors_attributes">{{ author.observed_name }}</li>
+        </ul>
+        <h4>Date(s)</h4>
+        <ul class="list-unstyled">
+          <li ng-repeat="date in entries[entry_index].entry_dates_attributes">{{ date.observed_date }}</li>
+        </ul>
+        <h4>Artist(s)</h4>
+        <ul class="list-unstyled">
+          <li ng-repeat="artist in entries[entry_index].entry_artists_attributes">{{ artist.observed_name }}</li>
+        </ul>
+        <h4>Scribe(s)</h4>
+        <ul class="list-unstyled">
+          <li ng-repeat="scribe in entries[entry_index].entry_scribes_attributes">{{ scribe.observed_name }}</li>
+        </ul>
+        <h4>Place(s)</h4>
+        <ul class="list-unstyled">
+          <li ng-repeat="place in entries[entry_index].entry_places_attributes">{{ place.observed_name }}</li>
+        </ul>
+        <h4>Language(s)</h4>
+        <ul class="list-unstyled">
+          <li ng-repeat="language in entries[entry_index].entry_languages_attributes">{{ language.observed_name }}</li>
+        </ul>
+        <h4>Use(s)</h4>
+        <ul class="list-unstyled">
+          <li ng-repeat="use in entries[entry_index].entry_uses_attributes">{{ use.use }}</li>
+        </ul>
+        <h4>Material(s)</h4>
+        <ul class="list-unstyled">
+          <li ng-repeat="material in entries[entry_index].entry_materials_attributes">{{ material.observed_name }}</li>
+        </ul>
+        <h4>Provenance(s)</h4>
+        <ul class="list-unstyled">
+          <li ng-repeat="provenance in entries[entry_index].provenance_attributes">{{ provenance.observed_name }}</li>
+        </ul>
+        <h4>Other Info</h4>
+        <ul class="list-inline">
+          <li class="input-group">
+              <span class='input-group-addon input-group-label'>Historiated Initials</span>
+              <span class='input-group-addon'>{{ entries[entry_index].initials_historiated }}</span>
+          </li>          
+           <li class="input-group">
+              <span class='input-group-addon input-group-label'>Decorated Initials</span>
+              <span class='input-group-addon'>{{ entries[entry_index].initials_decorated }}</span>
+          </li>
+           <li class="input-group">
+              <span class='input-group-addon input-group-label'>Fullpage Miniatures</span>
+              <span class='input-group-addon'>{{ entries[entry_index].miniatures_fullpage }}</span>
+          </li>
+            <li class="input-group">
+              <span class='input-group-addon input-group-label'>Large Miniatures</span>
+              <span class='input-group-addon'>{{ entries[entry_index].miniatures_large }}</span>
+            </li>
+            <li class="input-group">
+              <span class='input-group-addon input-group-label'>Small Miniatures</span>
+              <span class='input-group-addon'>{{ entries[entry_index].miniatures_small }}</span>
+            </li>
+            <li class="input-group">
+              <span class='input-group-addon input-group-label'>Unspec. Miniatures</span>
+              <span class='input-group-addon'>{{ entries[entry_index].miniatures_unspec_size }}</span>
+            </li>
+            <li class="input-group">
+              <span class='input-group-addon input-group-label'>Folios</span>
+              <span class='input-group-addon'>{{ entries[entry_index].folios }}</span>
+            </li>
+            <li class="input-group">
+              <span class='input-group-addon input-group-label'>Lines</span>
+              <span class='input-group-addon'>{{ entries[entry_index].lines }}</span>
+            </li>
+            <li class="input-group">
+              <span class='input-group-addon input-group-label'>Columns</span>
+              <span class='input-group-addon'>{{ entries[entry_index].columns }}</span>
+            </li>
+            <li class="input-group">
+              <span class='input-group-addon input-group-label'>Height(mm)</span>
+              <span class='input-group-addon'>{{ entries[entry_index].height }}</span>
+            </li>
+            <li class="input-group">
+              <span class='input-group-addon input-group-label'>Width(mm)</span>
+              <span class='input-group-addon'>{{ entries[entry_index].width }}</span>
+            </li>
+            <li class="input-group">
+              <span class='input-group-addon input-group-label'>Alt. Size</span>
+              <span class='input-group-addon'>{{ entries[entry_index].alt_size }}</span>
+            </li>
+            <li class="input-group">
+              <span class='input-group-addon input-group-label'>Binding</span>
+              <span class='input-group-addon'>{{ entries[entry_index].manuscript_binding }}</span>
+            </li>
+            <li class="input-group">
+              <span class='input-group-addon input-group-label'>Manuscript URL</span>
+              <span class='input-group-addon'>{{ entries[entry_index].manuscript_link }}</span>
+            </li>
+            <li class="input-group">
+              <span class='input-group-addon input-group-label'>Other Info</span>
+              <span class='input-group-addon'>{{ entries[entry_index].other_info }}</span>
+            </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="panel panel-default">
         <div class="panel-body">
           <p>
             Have you reviewed the entries and verified that your data has accurately translated to our data model?  In that case, feel free to begin your 
-            <a href="" class="btn btn-default btn-sm" ng-click="save()">Upload</a>
+            <a href="" class="btn btn-default btn-lg" ng-click="save(0)" ng-if="!checked && saving != true" style="width: 100%;">Check</a>
+            <a href="" class="btn btn-primary btn-lg" ng-click="save(0)" ng-if="checked && saving != true" style="width: 100%;">Upload</a>
+            <a href="" class="btn btn-danger btn-lg" ng-click="cancel()" ng-if="saved != true && saving == true" style="width: 100%;">Cancel</a>
           </p>
         </div>
+        <div class="panel-footer" ng-if="saving == true">
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: {{ 100 * progress / entries.length }}%">
+              <span>{{ percentage() }}% Complete</span>
+            </div>
+          </div>
+          <p class="text-center text-muted" ng-if="saving">{{ remaining }}</p>
+          <p class="text-center text-muted" ng-if="saved == true">Upload Complete.  Thanks!</p>
+        </div>
       </div>
-      <ul class="nav nav-tabs" style="margin-top: 10px;">
-        <li ng-repeat="entry in entries track by $index" ng-class="{ 'active' : $index == 0 }"><a href="#entry_{{ $index }}" data-toggle="tab" data-target="#entry_{{ $index }}">Entry {{ $index }}</a></li>      
-      </ul>
-      <span id="spinner-src" src="<%= asset_path "spinner.gif" %>" style="display: none;"></span>
-      <div class="tab-content">
-        <div ng-repeat="entry in entries track by $index" id="entry_{{ $index }}" class="tab-pane fade in" ng-class="{ 'active' : $index == 0 }">
-          <h4>Title(s)</h4>
+      <div class="panel panel-danger" ng-repeat="(index, error) in errors track by $index" ng-class="{'active' : index == entry_index }">
+        <div class="panel-heading">
+          <h4><a href="" ng-click="jump(index)" style="color: #880000;">Row #{{ index }}</a></h4>
+        </div>
+        <div class="panel-body">
           <ul class="list-unstyled">
-            <li ng-repeat="title in entry.entry_titles_attributes">{{ title.title }}</li>
-          </ul>
-          <h4>Author(s)</h4>
-          <ul class="list-unstyled">
-            <li ng-repeat="author in entry.entry_authors_attributes">{{ author.observed_name }}</li>
-          </ul>
-          <h4>Date(s)</h4>
-          <ul class="list-unstyled">
-            <li ng-repeat="date in entry.entry_dates_attributes">{{ date.observed_date }}</li>
-          </ul>
-          <h4>Artist(s)</h4>
-          <ul class="list-unstyled">
-            <li ng-repeat="artist in entry.entry_artists_attributes">{{ artist.observed_name }}</li>
-          </ul>
-          <h4>Scribe(s)</h4>
-          <ul class="list-unstyled">
-            <li ng-repeat="scribe in entry.entry_scribes_attributes">{{ scribe.observed_name }}</li>
-          </ul>
-          <h4>Place(s)</h4>
-          <ul class="list-unstyled">
-            <li ng-repeat="place in entry.entry_places_attributes">{{ place.observed_name }}</li>
-          </ul>
-          <h4>Language(s)</h4>
-          <ul class="list-unstyled">
-            <li ng-repeat="language in entry.entry_languages_attributes">{{ language }}</li>
-          </ul>
-          <h4>Use(s)</h4>
-          <ul class="list-unstyled">
-            <li ng-repeat="use in entry.entry_uses_attributes">{{ use.use }}</li>
-          </ul>
-          <h4>Material(s)</h4>
-          <ul class="list-unstyled">
-            <li ng-repeat="material in entry.entry_materials_attributes">{{ material.observed_name }}</li>
-          </ul>
-          <h4>Provenance(s)</h4>
-          <ul class="list-unstyled">
-            <li ng-repeat="provenance in entry.provenance_attributes">{{ provenance.observed_name }}</li>
+            <li ng-repeat="(key, value) in error track by $index">
+              <strong>{{ key }}</strong> - <span class="text-muted">{{ value }}</span>
+            </li>
           </ul>
         </div>
       </div>
@@ -103,3 +284,23 @@
 
 <%= render "shared/select_source" %>
 <%= render "shared/create_source" %>
+<script type="text/ng-template" id="similarSources.html">
+    <div class="modal-header">
+        <h3 class="modal-title">Warning: similar sources found!</h3>
+    </div>
+    <div class="modal-body form-horizontal">
+
+        <p>There already exist sources in the database similar to the
+        one you are trying to create. Click an existing source below
+        to use it, or confirm that you really want to create your
+        source.</p>
+
+        <p style="margin-left: 2em;">
+            <div ng-repeat="source in similarSources"><a ng-click="sdbmutil.redirectToEntryCreatePage(source.id)" href="#">SDBM_SOURCE_{{ source.id }} - {{ source.display_value }}</a></div>
+        </p>
+
+        <button class="btn btn-primary" ng-click="confirmCreate()">Create my new source anyway</button>
+        <button class="btn btn-warning" ng-click="cancelCreate()">Cancel</button>
+
+    </div>
+</script>

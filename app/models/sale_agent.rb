@@ -45,4 +45,8 @@ class SaleAgent < ActiveRecord::Base
     ""
   end
 
+  def display_value
+    agent ? agent.name : observed_name
+  end
+
 end

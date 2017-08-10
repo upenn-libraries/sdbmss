@@ -74,15 +74,15 @@ class Sale < ActiveRecord::Base
   end
 
   def get_selling_agents_names
-    get_selling_agents.map{ |sa| sa.agent ? sa.agent.name : "" }.join(" | ")
+    get_selling_agents.map{ |sa| "#{sa.agent} (#{sa.observed_name})" }.join(" ; ")
   end
 
   def get_sellers_or_holders_names
-    get_sellers_or_holders.map{ |sa| sa.agent ? sa.agent.name : "" }.join(" | ")
+    get_sellers_or_holders.map{ |sa| "#{sa.agent} (#{sa.observed_name})" }.join(" ; ")
   end
 
   def get_buyers_names
-    get_buyers.map{ |sa| sa.agent ? sa.agent.name : "" }.join(" | ")
+    get_buyers.map{ |sa| "#{sa.agent} (#{sa.observed_name})" }.join(" ; ")
   end
 
   def get_sale_agent_with_role(role)

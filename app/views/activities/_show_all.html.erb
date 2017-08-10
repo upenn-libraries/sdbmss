@@ -36,7 +36,7 @@
                 </div>
               </div>
             </div>
-            <div class="panel-body text-muted">
+            <div class="panel-body text-muted" style="overflow: hidden; text-overflow: ellipsis;">
               <div class="row">
                 <div class="col-xs-12">
                   <% version = PaperTrail::Version.where(transaction_id: activity.transaction_id) %>
