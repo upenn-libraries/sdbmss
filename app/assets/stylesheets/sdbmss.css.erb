@@ -678,10 +678,6 @@ h1 { font-size: 30px; margin-top: 0; }
   background-color: #eee1be;
   border-color: #cab98e;
 }
-.facet_limit-active .panel-heading {
-  background-color: #dff0d8;
-  border-color: #d6e9c6;
-}
 
 /* customizing actual blacklight form (rather than content) is frustrating, sO I just hide it here... */
 #facets .top-panel-heading {
@@ -2509,9 +2505,15 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
   font-weight: bold;
   color: inherit;
 }
-.btn-primary {  
+.btn-primary, .panel-primary > .panel-heading {  
   background-color: #4e76b3;
   border-color: #4e76b3;
+}
+.panel-primary {
+   border-color: #4e76b3; 
+}
+.bg-primary {
+  background: #4E76B4;
 }
 /* ...comment out if need be */
 .alert-announce {
@@ -2525,4 +2527,21 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 }
 .pills-home a:hover, .pills-home a:focus, .pills-home a:active {
   background: #5374A6 !important;
+}
+.facet-values .remove .glyphicon {
+  vertical-align: inherit;
+}
+.facet_limit-active .panel-heading {
+  background-color: #3c763d;
+  border-color: #3c763d;
+  color: white;
+}
+.facet_limit-active {
+  border-color: #3c763d; 
+}
+.appliedFilter .filterName:after {
+  padding: 0px 2px;
+}
+.panel-heading.collapse-toggle .panel-title:after {
+  color: inherit;
 }
