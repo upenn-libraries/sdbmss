@@ -14,7 +14,7 @@ class EntryLanguage < ActiveRecord::Base
   end
 
   def facet_value
-    language ? language.name : observed_name
+    language ? language.name : nil
   end
 
   def to_s

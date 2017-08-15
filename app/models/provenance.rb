@@ -128,7 +128,7 @@ class Provenance < ActiveRecord::Base
   end
 
   def facet_value
-    provenance_agent ? provenance_agent.name : observed_name
+    provenance_agent ? provenance_agent.name : nil
   end
 
 end

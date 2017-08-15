@@ -28,7 +28,7 @@ class EntryScribe < ActiveRecord::Base
   end
 
   def facet_value
-    scribe ? scribe.name : observed_name
+    scribe ? scribe.name : nil
   end
 
   def to_s

@@ -34,7 +34,7 @@ class SaleAgent < ActiveRecord::Base
   end
 
   def facet_value
-    agent ? agent.name : observed_name
+    agent ? agent.name : nil
   end
 
   def name_authority

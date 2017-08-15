@@ -40,7 +40,7 @@ class EntryAuthor < ActiveRecord::Base
   end
 
   def facet_value
-    author ? author.name : observed_name
+    author ? author.name : nil
   end  
 
   def to_fields
