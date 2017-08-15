@@ -219,8 +219,8 @@ var load_session = false;
             sdbmTable.dataTable.rows().nodes().each(function (row, idx, api) {
                 var data = sdbmTable.dataTable.row(row).data();
                 // because sometimes it's a string, and sometimes its a boolean.  it just is.
-                if(!data[sdbmTable.getColumnIndex("Reviewed")] || data[sdbmTable.getColumnIndex("Reviewed")] == 'false') {
-                    $(row).addClass('warning unapproved')
+                if(!data[sdbmTable.getColumnIndex("Approved")] || data[sdbmTable.getColumnIndex("Approved")] == 'false') {
+                    $(row).addClass('warning unapproved');
                 }
             });
         });
@@ -487,7 +487,7 @@ var load_session = false;
                 dbSortField: 'entries_count'
             },
             {
-                title: 'Reviewed',
+                title: 'Approved',
                 width: "10%",
                 dbSortField: 'reviewed'
             },
