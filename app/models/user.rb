@@ -79,7 +79,7 @@ class User < ActiveRecord::Base
   include Blacklight::User
   include UserFields
   include HasPaperTrail
-  include CreatesActivity
+  #include CreatesActivity
   extend SolrSearchable
 
   def all_messages
