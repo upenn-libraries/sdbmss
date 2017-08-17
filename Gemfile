@@ -100,6 +100,8 @@ gem 'data-confirm-modal'
 
 gem 'thredded', '~> 0.9.4'
 
+gem 'whenever', :require => false
+
 # bundle exec rake doc:rails generates the Rails API under doc/api.
 group :doc do
   gem 'sdoc', '~> 0.4.0'
