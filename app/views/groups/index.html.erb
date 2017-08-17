@@ -1,44 +1,67 @@
+<% content_for :breadcrumbs do %>
+  <li class="active"><a href="">Manage Groups</a></li>
+<% end %>
+
 <div class="row">
-  <div class="col-sm-1"></div>
-  <div class="col-sm-10">
-    <h2 class="text-center">User Groups</h2>
-    <p>Groups provide a workspace for gathering related data within the SDBM, as well as a meeting point for collaboration between users. Once a group is created, you can add specific <b>Entries</b> to the group page, as well as invite other users to join you. Groups include a discussion area for messages between users about the group work. Any user can create a group within the database.</p>
-    <p>If you create a new group, you automatically become the manager of that group. You may invite other users to the group, and elevate them to manager status if desired. As a manager, you can also elevate the user permission level for users within the group. For example, if you are the manager of a group and invite a user with only <b>Contributor</b> level permissions, you can elevate them to <b>Editor</b> level within the group. This would allow that user to perform more advanced tasks, such as editing, on the entries included in the group. The elevated status for invited users is only applicable to entries within that group, not within the entire database.</p>
+  <div class="col-sm-12">
+    <h1 class="text-center">User Groups</h1>
+    <p class="text-muted">Groups provide a workspace for gathering related data within the SDBM, as well as a meeting point for collaboration between users. Once a group is created, you can add specific <b>Entries</b> to the group page, as well as invite other users to join you. Groups include a discussion area for messages between users about the group work. Any user can create a group within the database.</p>
+    <p class="text-muted">If you create a new group, you automatically become the manager of that group. You may invite other users to the group, and elevate them to manager status if desired. As a manager, you can also elevate the user permission level for users within the group. For example, if you are the manager of a group and invite a user with only <b>Contributor</b> level permissions, you can elevate them to <b>Editor</b> level within the group. This would allow that user to perform more advanced tasks, such as editing, on the entries included in the group. The elevated status for invited users is only applicable to entries within that group, not within the entire database.</p>
   </div>
-  <div class="col-sm-1"></div>
 </div>
 <div class="row">
-  <div class="col-sm-1"></div>
-  <div class="col-sm-10">
-
     <% if @groups_requests.count > 0 %>
-      <h3 class="h3 text-center">
-        Group Requests
-      </h3>
-      <%= render partial: "table", locals: {groups: @groups_requests } %>
+      <div class="col-sm-4">
+        <span class="h4">
+          Group Requests
+        </span>
+      </div>
+      <div class="col-sm-4 text-center"></div>
+      <div class="col-sm-4 text-right"></div>
+      <div class="col-sm-12">
+        <%= render partial: "table", locals: {groups: @groups_requests } %>
+      </div>
     <% end %>
     
-    <% if @groups_invites.count > 0 %>
-      <h3 class="h3 text-center">
-        Invites
-      </h3>
-      <%= render partial: "table", locals: {groups: @groups_invites } %>
+    <% if @groups_invites.count > 0 %>    
+      <div class="col-sm-4">
+        <span class="h4">
+          Invites
+        </span>
+      </div>
+      <div class="col-sm-4 text-center"></div>
+      <div class="col-sm-4 text-right"></div>
+      <div class="col-sm-12">
+        <%= render partial: "table", locals: {groups: @groups_invites } %>
+      </div>
     <% end %>
 
-    <h3 class="h3 text-center">
-      Manager Of
-    </h3>
-    <div class='text-center'>
-      <%= link_to(new_group_path) do %>
-        <span class="glyphicon glyphicon-plus"></span> Add New
-      <% end %>
+    <div class="col-sm-4">
+      <span class="h4">
+        Manager Of
+      </span>
     </div>
-    <%= render partial: "table", locals: {groups: @groups_admin } %>
+    <div class="col-sm-4 text-center"></div>
+    <div class="col-sm-4 text-right">
+        <%= link_to(new_group_path, class: "btn btn-default btn-xs") do %>
+          <span class="glyphicon glyphicon-plus"></span> Add New
+        <% end %>
+    </div>
+    <div class="col-sm-12">
+      <%= render partial: "table", locals: {groups: @groups_admin } %>
+    </div>
     
-    <h3 class="h3 text-center">
-      Member Of
-    </h3>
-    <%= render partial: "table", locals: {groups: @groups_member } %>
+
+    <div class="col-sm-4">
+      <span class="h4">
+        Member Of
+      </span>      
+    </div>
+    <div class="col-sm-4 text-center"></div>
+    <div class="col-sm-4 text-right"></div>  
+    <div class="col-sm-12">
+      <%= render partial: "table", locals: {groups: @groups_member } %>
+    </div>
   
   </div>
 </div>

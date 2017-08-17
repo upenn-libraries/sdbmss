@@ -42,8 +42,7 @@
      ManageEntries.prototype = Object.create(SDBM.ManageRecords.prototype);
 
      ManageEntries.prototype.createTable = function (selector) {
-
-         var manageEntries = this;
+        var manageEntries = this;
 
          var sdbmTable = new SDBM.EntryTable("#search_results", {
              heightBuffer: 280,
@@ -209,7 +208,8 @@
      ManageEntries.prototype.createFormSubmitHandler = function () {
          var manageEntries = this;
          return function(event) {
-             manageEntries.doSearch(false);
+            event.preventDefault();
+            manageEntries.doSearch(false);
          };
      };
 
@@ -248,10 +248,10 @@
         bindRemoteAjaxCallback();
      });
 
-     $(".search-form").submit(function (e) {
+/*     $(".search-form").submit(function (e) {
         e.preventDefault();
         manageEntries.doSearch(false);
-     });
+     });*/
 
     $(document).on("click", ".entry-delete-link", function (event) {
         var sdbmTable = manageEntries.dataTable;

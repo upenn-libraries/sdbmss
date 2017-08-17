@@ -205,6 +205,9 @@ var load_session = false;
                     var params = manageRecords.createSearchParams(dt_params);
                 }
 
+                if (params.reviewed) {
+                    params.unreviewed_only = 1;
+                }
                 $("#spinner").show();
 
                 manageRecords.searchAjax(params, dt_params, callback);
@@ -333,7 +336,7 @@ var load_session = false;
             }
         }
 //        $("input[name='search_value']").first().val(qs.term);
-        if(qs && qs.unreviewed_only === '1') {
+        if(qs && (qs.unreviewed_only === '1' || qs.reviewed === '1')) {
             $("input[name='unreviewed_only']").prop('checked', true);
         }
         manageRecords.showOrHideMarkCheckedRecordsButton();

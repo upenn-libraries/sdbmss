@@ -590,11 +590,11 @@ class Entry < ActiveRecord::Base
 
     define_field(:string, :sale_buyer, :stored => true, :multiple => true) do
 #      get_sale ? get_sale.get_buyers.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
-      (sale = get_sale) ? sale.sale_agents.where(role: "seller_or_holder").map(&:facet_value) : []
+      (sale = get_sale) ? sale.sale_agents.where(role: "buyer").map(&:facet_value) : []
     end
     define_field(:text, :sale_buyer_search, :stored => true) do
 #      get_sale_buyers_names
-      (sale = get_sale) ? sale.sale_agents.where(role: "seller_or_holder").map(&:display_value).join("; ") : ""
+      (sale = get_sale) ? sale.sale_agents.where(role: "buyer").map(&:display_value).join("; ") : ""
     end
 
     define_field(:string, :sale_sold, :stored => true) do
