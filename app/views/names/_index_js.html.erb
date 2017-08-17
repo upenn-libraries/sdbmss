@@ -24,10 +24,8 @@ load_session = '<%= params[:last_search] %>' == 'true';
      var ManageNames = function(options) {
         SDBM.ManageRecords.call(this, options);
      };
-console.log(1);     
      ManageNames.prototype = Object.create(SDBM.ManageRecords.prototype);
 
-console.log(2);
      ManageNames.prototype.getColumns = function() {
         var manageRecords = this;
 

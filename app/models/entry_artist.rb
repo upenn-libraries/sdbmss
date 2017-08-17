@@ -54,7 +54,7 @@ class EntryArtist < ActiveRecord::Base
   end
 
   def facet_value
-    artist ? artist.name : observed_name
+    artist ? artist.name : nil
   end
 
   def format_role

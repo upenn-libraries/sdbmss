@@ -28,7 +28,7 @@
                 className: 'text-center unreviewed_only',
                 render: function (data, type, full, meta) {
                     if(manageManuscripts.getUnreviewedOnly() === 1) {
-                        return '<input type="checkbox" name="review" value="' + full[manageManuscripts.dataTable.getColumnIndex("Manuscript ID")] + '"/>';
+                        return '<input type="checkbox" name="review" value="' + full[manageManuscripts.dataTable.getColumnIndex("ID")] + '"/>';
                     }
                     return '';
                 }
@@ -47,7 +47,7 @@
                 }
             },
             {
-                title: 'View Manuscript',
+                title: 'ID',
                 dbSortField: 'id',
                 render: function (data, type, full, meta) {
                     var str = '<a target="_blank" href="/manuscripts/' + data + '/">SDBM_MS_' + data + '</a>';
@@ -71,7 +71,7 @@
                 dbSortField: 'entries_count'
             },
             {
-                title: 'Reviewed',
+                title: 'Approved',
                 dbSortField: 'reviewed'
             },
             {

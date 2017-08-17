@@ -14,7 +14,7 @@ class EntryPlace < ActiveRecord::Base
   end
 
   def facet_value
-    place ? place.name : observed_name
+    place ? place.name : nil
   end
 
   def to_s

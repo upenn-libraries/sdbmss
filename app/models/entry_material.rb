@@ -31,7 +31,7 @@ class EntryMaterial < ActiveRecord::Base
   end
 
   def facet_value
-    material ? material : observed_name
+    material ? material : nil
   end
 
   def to_s

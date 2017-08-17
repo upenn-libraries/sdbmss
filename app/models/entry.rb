@@ -573,7 +573,7 @@ class Entry < ActiveRecord::Base
     #### Sale info
 
     define_field(:string, :sale_selling_agent, :stored => true, :multiple => true) do
-      (sale = get_sale) ? sale.sale_agents.where(role: "selling_agent").map(&:facet_value) : []
+      (sale = get_sale) ? sale.sale_agents.where(role: "selling_agent").select(&:facet_value).map(&:facet_value) : []
     end
     define_field(:text, :sale_selling_agent_search, :stored => true) do
       (sale = get_sale) ? sale.sale_agents.where(role: "selling_agent").map(&:display_value).join("; ") : ""
@@ -581,7 +581,7 @@ class Entry < ActiveRecord::Base
 
     define_field(:string, :sale_seller, :stored => true, :multiple => true) do
 #      get_sale ? get_sale.get_sellers_or_holders.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
-      (sale = get_sale) ? sale.sale_agents.where(role: "seller_or_holder").map(&:facet_value) : []
+      (sale = get_sale) ? sale.sale_agents.where(role: "seller_or_holder").select(&:facet_value).map(&:facet_value) : []
     end
     define_field(:text, :sale_seller_search, :stored => true) do
 #      get_sale_sellers_or_holders_names
@@ -590,7 +590,7 @@ class Entry < ActiveRecord::Base
 
     define_field(:string, :sale_buyer, :stored => true, :multiple => true) do
 #      get_sale ? get_sale.get_buyers.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
-      (sale = get_sale) ? sale.sale_agents.where(role: "buyer").map(&:facet_value) : []
+      (sale = get_sale) ? sale.sale_agents.where(role: "buyer").select(&:facet_value).map(&:facet_value) : []
     end
     define_field(:text, :sale_buyer_search, :stored => true) do
 #      get_sale_buyers_names
@@ -608,7 +608,7 @@ class Entry < ActiveRecord::Base
     #### Details
 
     define_field(:string, :title, :stored => true, :multiple => true) do
-      entry_titles.map(&:facet_value)
+      entry_titles.select(&:facet_value).map(&:facet_value)
     end
     define_field(:string, :title_flat,:stored => true) do
       entry_titles.map(&:display_value).join("; ")
@@ -619,7 +619,7 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:string, :author, :stored => true, :multiple => true) do
-      entry_authors.map(&:facet_value)
+      entry_authors.select(&:facet_value).map(&:facet_value)
     end
     define_field(:text, :author_search, :stored => true) do
       entry_authors.map(&:display_value)
@@ -667,7 +667,7 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:string, :artist, :stored => true, :multiple => true) do
-      entry_artists.map(&:facet_value)
+      entry_artists.select(&:facet_value).map(&:facet_value)
     end
     
     define_field(:string, :artist_flat, :stored => true) do
@@ -678,7 +678,7 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:string, :scribe, :stored => true, :multiple => true) do
-      entry_scribes.map(&:facet_value)
+      entry_scribes.select(&:facet_value).map(&:facet_value)
     end
     define_field(:string, :scribe_flat, :stored => true) do
       entry_scribes.map(&:display_value).join("; ")
@@ -688,7 +688,7 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:string, :language, :stored => true, :multiple => true) do
-      entry_languages.map(&:facet_value)
+      entry_languages.select(&:facet_value).map(&:facet_value)
     end
     define_field(:string, :language_flat, :stored => true) do
       entry_languages.map(&:display_value).join("; ")
@@ -698,7 +698,7 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:string, :material, :stored => true, :multiple => true) do
-      entry_materials.map(&:facet_value)
+      entry_materials.select(&:facet_value).map(&:facet_value)
     end
     define_field(:string, :material_flat, :stored => true) do
       entry_materials.map(&:display_value).join("; ")
@@ -708,7 +708,7 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:string, :place, :stored => true, :multiple => true) do
-      entry_places.map(&:facet_value)
+      entry_places.select(&:facet_value).map(&:facet_value)
     end
     define_field(:string, :place_flat, :stored => true) do
       entry_places.map(&:display_value).join("; ")
@@ -789,7 +789,7 @@ class Entry < ActiveRecord::Base
     #### Provenance
 
     define_field(:string, :provenance, :stored => true, :multiple => true) do
-      provenance.map(&:facet_value)
+      provenance.select(&:facet_value).map(&:facet_value)
     end
 
     define_field(:text, :provenance_search, :stored => true) do

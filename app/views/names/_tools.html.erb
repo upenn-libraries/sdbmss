@@ -13,7 +13,7 @@
         <% end %>
         <% if !@model.problem and can? :edit, @model%>
             <li class="link <%= disabled %>">
-                <%= link_to(name_path(@model, problem: true), :method => :put, :data => {:confirm => "Would you like to flag this name as being problematic?"}) do %>
+                <%= link_to(name_path(@model, problem: true, reviewed: true), :method => :put, :data => {:confirm => "Would you like to flag this name as being problematic?"}) do %>
                     <span class="glyphicon glyphicon-ok"></span> Flag Problem
                 <% end %>
             </li>

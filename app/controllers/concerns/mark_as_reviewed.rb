@@ -21,7 +21,9 @@ module MarkAsReviewed
           model.delay.index
           @transaction_id = PaperTrail.transaction_id
           @model = model
-          log_activity
+          if defined? log_activity
+            log_activity
+          end
         end
       end
     end
