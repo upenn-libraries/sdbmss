@@ -845,8 +845,43 @@ class Entry < ActiveRecord::Base
     ["Malicious/misleading data", "I disagree with some of the data", "Other"]
   end  
 
-  # I don't love having to duplicate all the fields AGAIN here, but inheriting it all from blacklight doesn't seem to work
-  # 
+
+  def do_csv_dump
+    puts 'huhu'
+    params = ActionController::Parameters.new
+    
+    filename = "#{self.model_name.to_s.pluralize.underscore}.csv"
+    path = "public/static/docs/#{filename}"
+    offset = 0
+    
+    objects = []
+    headers = nil
+    loop do
+      puts 'each time'
+      s = do_search(params.merge({:limit => 300, :offset => offset}))
+      offset += 300
+      ids = s.results.map(&:id)
+      #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
+      objects = Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash({options: {csv: true}}) }
+      break if objects.first.nil?
+      csv_file = CSV.open(path, "ab") do |csv|
+        if headers.nil? && objects.first
+          headers = objects.first.keys
+          csv << headers
+        end
+        objects.each do |r|
+          csv << r.values 
+        end
+      end
+    end
+
+    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+      zipfile.add(filename, path)
+    end
+
+    File.delete(path) if File.exist?(path)
+  end
+
 
   def self.do_csv_search(params, download)
     
@@ -886,6 +921,8 @@ class Entry < ActiveRecord::Base
     #download.created_by.notify("Your download '#{download.filename}' is ready.")
   end  
 
+  # I don't love having to duplicate all the fields AGAIN here, but inheriting it all from blacklight doesn't seem to work
+  # 
   def self.filters
     [
       ["Entry Id", "entry_id"], 

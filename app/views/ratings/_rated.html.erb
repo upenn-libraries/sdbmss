@@ -1,0 +1,43 @@
+<span class="<%= defined?(up) ? 'dropup' : 'dropdown' %>">
+    <% confirms = ratable.ratings.where(qualifier: "confirm") %>
+        <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-default dropdown-toggle">
+            Confirmed by <%= confirms.count %> <%= "user".pluralize(confirms.count) %>
+        <% if confirms.count > 0 %>
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <% confirms.each do |rating| %>
+                    <li>
+                        <%= link_to profile_path(rating.user.username) do %>
+                            <span class="glyphicon glyphicon-user"></span> <%= rating.user.to_s %>
+                        <% end %>
+                    </li>
+                <% end %>
+            </ul>
+        <% else %>
+            </a> <!-- ;) -->
+        <% end %>                               
+</span>
+<span class="<%= defined?(up) ? 'dropup' : 'dropdown' %>">
+    <% disputes = ratable.ratings.where(qualifier: "dispute") %>
+        <a data-toggle="dropdown" data-placement="bottom" class="btn btn-sm btn-default">
+            Disputed by <%= disputes.count %> <%= "user".pluralize(disputes.count) %>
+        <% if disputes.count > 0 %>
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu">
+            <% disputes.group_by(&:reason).each do |reason, ratings| %>
+              <li class="dropdown-header"><%= reason %></li>
+              <% ratings.each do |rating| %>
+                <li>
+                    <%= link_to profile_path(rating.user.username) do%>
+                        <span class="glyphicon glyphicon-user"></span> <%= rating.user.to_s %>
+                    <% end %>
+                </li>
+              <% end %>
+            <% end %>
+        </ul>
+        <% else %>
+        </a>
+        <% end %>
+</span>

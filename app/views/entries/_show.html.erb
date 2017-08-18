@@ -8,7 +8,8 @@
 <div class="<%= entry.draft ? 'text-muted' : '' %>">
 
 <% if entry.source.source_type.name == SourceType::OBSERVATION %>
-    <%= render partial: "ratings/rate", locals: {ratable: entry} %>
+    <p>Is this personal observation useful? <%= render partial: "ratings/rate", locals: {ratable: entry} %></p>
+    <div><%= render partial: "ratings/rated", locals: {ratable: entry} %></div>
     <div style="padding-top: 10px;"></div>
 <% end %>
 

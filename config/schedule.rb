@@ -31,5 +31,8 @@ set :environment, "development"
 
 every 1.day do
   #command "echo 'you can use raw cron syntax too'"
-  runner "Language.delay.do_csv_search(ActionController::Parameters.new, Download.create(user_id: 47))"
+  runner "Language.delay.do_csv_dump"
+  runner "Place.delay.do_csv_dump"
+  runner "Source.delay.do_csv_dump"
+  runner "Name.delay.do_csv_dump"
 end

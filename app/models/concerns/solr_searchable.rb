@@ -62,6 +62,34 @@ module SolrSearchable
     params.permit(self.search_fields.map do |s|  {s[1] + "_option" => []} end, self.search_fields.map do |s| s[1] + "_option" end)
   end
 
+  def do_csv_dump
+    s = do_search(ActionController::Parameters.new.merge({:limit => self.count, :offset => 0}))
+    
+    results = s.results.map do |obj|
+      obj.search_result_format
+    end
+
+    headers = results.first.keys
+    filename = "#{self.model_name.to_s.pluralize.underscore}.csv"
+    path = "public/static/docs/#{filename}"
+    
+    File.delete("#{path}.zip") if File.exist?("#{path}.zip")
+
+    csv_file = CSV.open(path, "wb") do |csv|
+      csv << headers
+      results.each do |r|
+        csv << r.values 
+      end
+    end
+
+    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+      zipfile.add(filename, path)
+    end
+
+    File.delete(path) if File.exist?(path)
+
+  end
+
   def do_csv_search(params, download)
     s = do_search(params.merge({:limit => self.count, :offset => 0}))
     

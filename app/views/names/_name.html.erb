@@ -11,7 +11,8 @@
         <h3><%= name.public_id %></h3>
 
         <div class="text-left" style="margin-bottom: 5px;">
-            <%= render partial: "ratings/rate", locals: {ratable: name} %>
+            <p>Is this a real person? <%= render partial: "ratings/rate", locals: {ratable: name} %></p>
+            <div><%= render partial: "ratings/rated", locals: {ratable: name} %></div>
         </div>
 
         <table class="table table-responsive sdbm-table">

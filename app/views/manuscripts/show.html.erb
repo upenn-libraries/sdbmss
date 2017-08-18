@@ -203,19 +203,18 @@
                                         <div class="col-sm-6">
                                             <span class="h4">
                                                 <a href="<%= url_for entry %>" title="<%= entry.public_id %>"><%= entry.public_id %></a>
-                                            </span>
+                                            </span><br>
+                                            <span class="h5"><%= entry.source_id == 34611 ? "This provenance is based on a personal observation of the SDBM" : entry.source.display_value %></span>
+                                            <% if (type = entry.entry_manuscripts.where(manuscript_id: @manuscript.id).last.relation_type) != "is" %>
+                                            <div class="text-muted">
+                                                (<%= type %>)
+                                            </div>
+                                            <% end %>
                                         </div>
                                         <div class="col-sm-6 text-right">
-                                            <%= render partial: "ratings/rate", locals: {ratable: @manuscript.entry_manuscripts.where(entry: entry).first } %>
+                                            <p>Is this link correct? <%= render partial: "ratings/rate", locals: {ratable: @manuscript.entry_manuscripts.where(entry: entry).first } %></p>
+                                            <div><%= render partial: "ratings/rated", locals: {ratable: @manuscript.entry_manuscripts.where(entry: entry).first } %></div>
                                         </div>
-                                        <div class="col-sm-12" data-toggle="collapse" href="#entry_provenance_<%= index %>">
-                                            <span class="h4"><%= entry.source_id == 34611 ? "This provenance is based on a personal observation of the SDBM" : entry.source.display_value %></span>
-                                        </div>
-                                        <% if (type = entry.entry_manuscripts.where(manuscript_id: @manuscript.id).last.relation_type) != "is" %>
-                                        <div class="col-sm-12 mobile-center text-muted">
-                                            (<%= type %>)
-                                        </div>
-                                        <% end %>
                                     </div>
                                 </div>
                                 <div class="collapse in panel-collapse list-group" id="entry_provenance_<%= index %>">
