@@ -846,8 +846,7 @@ class Entry < ActiveRecord::Base
   end  
 
 
-  def do_csv_dump
-    puts 'huhu'
+  def self.do_csv_dump
     params = ActionController::Parameters.new
     
     filename = "#{self.model_name.to_s.pluralize.underscore}.csv"
@@ -857,7 +856,6 @@ class Entry < ActiveRecord::Base
     objects = []
     headers = nil
     loop do
-      puts 'each time'
       s = do_search(params.merge({:limit => 300, :offset => offset}))
       offset += 300
       ids = s.results.map(&:id)
@@ -874,6 +872,8 @@ class Entry < ActiveRecord::Base
         end
       end
     end
+
+    File.delete("#{path}.zip") if File.exist?("#{path}.zip")
 
     Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
       zipfile.add(filename, path)

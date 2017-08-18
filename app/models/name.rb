@@ -161,7 +161,7 @@ class Name < ActiveRecord::Base
   end
 
   def self.fields
-    super + [["Other Info", "comment"]]
+    super + [["Other Info", "other_info"]]
   end
 
   def self.dates
