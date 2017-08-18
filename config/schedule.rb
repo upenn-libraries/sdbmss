@@ -29,8 +29,7 @@ env :SDBMSS_DB_USER, ENV['SDBMSS_DB_USER']
 set :output, '/tmp/cron.log'
 set :environment, "development"
 
-every 1.day do
-  #command "echo 'you can use raw cron syntax too'"
+every :monday, :at => '1am' do
   runner "Language.delay.do_csv_dump"
   runner "Place.delay.do_csv_dump"
   runner "Source.delay.do_csv_dump"

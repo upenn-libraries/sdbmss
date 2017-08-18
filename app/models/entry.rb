@@ -852,11 +852,13 @@ class Entry < ActiveRecord::Base
     filename = "#{self.model_name.to_s.pluralize.underscore}.csv"
     path = "public/static/docs/#{filename}"
     offset = 0
+
+    File.delete("#{path}.zip") if File.exist?("#{path}.zip")
     
     objects = []
     headers = nil
     loop do
-      s = do_search(params.merge({:limit => 300, :offset => offset}))
+      s = do_search(params.merge({:limit => 300, :offset => offset, :order => "entry_id asc"}))
       offset += 300
       ids = s.results.map(&:id)
       #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
@@ -873,7 +875,6 @@ class Entry < ActiveRecord::Base
       end
     end
 
-    File.delete("#{path}.zip") if File.exist?("#{path}.zip")
 
     Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
       zipfile.add(filename, path)
@@ -894,7 +895,7 @@ class Entry < ActiveRecord::Base
     path = "/tmp/#{id}_#{user}_#{filename}"
     headers = nil
     loop do
-      s = do_search(params.merge({:limit => 300, :offset => offset}))
+      s = do_search(params.merge({:limit => 300, :offset => offset})) # fix me: add 'order' param if sorting not working properly?
       offset += 300
       ids = s.results.map(&:id)
       #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
