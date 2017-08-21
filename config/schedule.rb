@@ -29,9 +29,10 @@ env :SDBMSS_DB_USER, ENV['SDBMSS_DB_USER']
 set :output, '/tmp/cron.log'
 set :environment, "development"
 
-every :monday, :at => '1am' do
+every :tuesday, :at => '1am' do
   runner "Language.delay.do_csv_dump"
   runner "Place.delay.do_csv_dump"
   runner "Source.delay.do_csv_dump"
   runner "Name.delay.do_csv_dump"
+  runner "Entry.delay.do_csv_dump"
 end
