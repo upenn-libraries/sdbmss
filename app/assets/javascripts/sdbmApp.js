@@ -1075,7 +1075,6 @@ var BOOKMARK_SCOPE;
 
     sdbmApp.controller("ConvertInchesToMillimetersCtrl", function ($scope, $modalInstance, model, field) {
       $scope.confirm = function () {
-        console.log('mgm', $scope.millimeters, model);
         model[field] = $scope.millimeters;
         $modalInstance.close();
       };
@@ -1133,7 +1132,7 @@ var BOOKMARK_SCOPE;
               //type: function () { return type; },
               //base: function () { return base; }
             },
-            size: 'sm'
+            size: 'lg'
           });
           modal.result.then(function () {
             //$scope.saveDraft();

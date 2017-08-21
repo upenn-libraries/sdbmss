@@ -84,6 +84,10 @@ label.col-sm-1-and-half {
 label.col-sm-2-and-half {
     padding-right: 0;
  }
+.numerical-fields input, .numerical-fields .btn  {
+  margin-top: 1px;
+  margin-bottom: 1px;
+}
  
 </style>
 
@@ -1136,10 +1140,9 @@ label.col-sm-2-and-half {
     <div class="modal-header">
       <h3 class="modal-title">Convert Inches to Millimeters</h3>
     </div>
-    <div class="modal-body form-horizontal compress-whitespace">
+    <div class="modal-body form-horizontal form-inline compress-whitespace">
       <p>
         Convert <input type="number" class="form-control" ng-model="inches" ng-change="convert()"> inches into <input type="number" class="form-control" ng-model="millimeters"> millimeters
-      </p>
-      <p class="text-right"><a href="" class="btn btn-default" ng-click="confirm();">Done</a></p>
+        <a href="" class="btn btn-default pull-right" ng-click="confirm();">Done</a></p>
     </div>
 </script>
