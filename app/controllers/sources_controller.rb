@@ -137,6 +137,9 @@ class SourcesController < SearchableAuthorityController
   def update
     success = false
     ActiveRecord::Base.transaction do
+      if params[:source_type_id] && can?(:update_type, @source)
+        @source.update_attribute(:source_type_id, params[:source_type_id].to_i)
+      end
       filtered = source_params_for_create_and_edit
       success = @source.update_by(current_user, filtered)
       if success

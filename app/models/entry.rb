@@ -128,7 +128,7 @@ class Entry < ActiveRecord::Base
   scope :with_author, ->(name) { joins(:entry_authors).where("entry_authors.author_id = #{name.id}").distinct }
 
   # an agent is a Name object; role is a string
-  scope :with_sale_agent_and_role, ->(agent, role) { joins(:sales => :sale_agents).where("sale_agents.agent_id = ? and role = ?", agent.id, role) }
+  scope :with_sale_agent_and_role, -> (agent, role) { joins(:sales => :sale_agents).where("deprecated=false and sale_agents.agent_id = ? and role = ?", agent.id, role).distinct }
 
   scope :approved_only, -> { where(approved: true) }
 
@@ -182,6 +182,52 @@ class Entry < ActiveRecord::Base
 
   def manuscript
     entry_manuscripts.select { |em| em.relation_type == EntryManuscript::TYPE_RELATION_IS}.map(&:manuscript).first
+  end
+
+  def decrement_counters
+    objects = []
+
+    authors.uniq.each do |author|
+      Name.decrement_counter(:authors_count, author.id)
+      objects.push(author)
+    end
+    artists.uniq.each do |artist|
+      Name.decrement_counter(:artists_count, artist.id)
+      objects.push(artist)
+    end
+    scribes.uniq.each do |scribe|
+      Name.decrement_counter(:scribes_count, scribe.id)
+      objects.push(scribe)
+    end
+    provenance.uniq.each do |prov|
+      Name.decrement_counter(:provenance_count, prov.id)
+      objects.push(prov)
+    end
+    places.uniq.each do |place|
+      Place.decrement_counter(:entries_count, place.id)
+      objects.push(place)
+    end
+    languages.uniq.each do |language|
+      Language.decrement_counter(:entries_count, language.id)
+      objects.push(language)
+    end
+    
+    if sale
+      sale.sale_agents.map(&:agent).uniq.each do |sale_agent|
+        Name.decrement_counter(:sale_agents_count, sale_agent.id)
+        objects.push(sale_agent)
+      end
+    end
+    # sources
+    Source.decrement_counter(:entries_count, source.id)
+    objects.push(source)
+
+    manuscripts.uniq.each do |mss|
+      Manuscript.decrement_counter(:entries_count, mss.id)
+      objects.push(mss)
+    end
+
+    objects.each(&:index)
   end
 
   # returns all Entry objects for this entry's Manuscript
@@ -1001,44 +1047,44 @@ class Entry < ActiveRecord::Base
 
   def update_counters
     # deleting is handled separately (in entries controller) since it is actually a quasi-destroy
-    if deleted
+    if deleted || deprecated
       return
     end
 
-    entry_authors.group_by(&:author_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_author|
+    entry_authors.group_by(&:author_id).keep_if{ |k, v| v.length >= 1}.each do |k, entry_author|
       author = entry_author.first.author
-      Name.update_counters(author.id, :authors_count => author.author_entries.count - author.authors_count) unless author.nil?
+      Name.update_counters(author.id, :authors_count => author.author_entries.where(deprecated: false).count - author.authors_count) unless author.nil?
     end
-    entry_artists.group_by(&:artist_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_artist|
+    entry_artists.group_by(&:artist_id).keep_if{ |k, v| v.length >= 1}.each do |k, entry_artist|
       artist = entry_artist.first.artist
-      Name.update_counters(artist.id, :artists_count => artist.artist_entries.count - artist.artists_count) unless artist.nil?
+      Name.update_counters(artist.id, :artists_count => artist.artist_entries.where(deprecated: false).count - artist.artists_count) unless artist.nil?
     end
-    entry_scribes.group_by(&:scribe_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_scribe|
+    entry_scribes.group_by(&:scribe_id).keep_if{ |k, v| v.length >= 1}.each do |k, entry_scribe|
       scribe = entry_scribe.first.scribe
-      Name.update_counters(scribe.id, :scribes_count => scribe.scribe_entries.count - scribe.scribes_count) unless scribe.nil?
+      Name.update_counters(scribe.id, :scribes_count => scribe.scribe_entries.where(deprecated: false).count - scribe.scribes_count) unless scribe.nil?
     end
     # sale agent
     if sale
-      sale.sale_agents.group_by(&:agent_id).keep_if{ |k, v| v.length > 1}.each do |k, sale_agent|
+      sale.sale_agents.group_by(&:agent_id).keep_if{ |k, v| v.length >= 1}.each do |k, sale_agent|
         agent = sale_agent.first.agent
-        Name.update_counters(agent.id, :sale_agents_count => agent.sale_entries.count - agent.sale_agents_count) unless agent.nil?
+        Name.update_counters(agent.id, :sale_agents_count => agent.sale_entries.where(deprecated: false).count - agent.sale_agents_count) unless agent.nil?
       end    
     end
 
     # place, language FIX ME add these
-    entry_places.group_by(&:place_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_place|
+    entry_places.group_by(&:place_id).keep_if{ |k, v| v.length >= 1}.each do |k, entry_place|
       place = entry_place.first.place
-      Place.update_counters(place.id, :entries_count => place.entries.uniq.count - place.entries_count) unless place.nil?
+      Place.update_counters(place.id, :entries_count => place.entries.where(deprecated: false).uniq.count - place.entries_count) unless place.nil?
     end
-    entry_languages.group_by(&:language_id).keep_if{ |k, v| v.length > 1}.each do |k, entry_language|
+    entry_languages.group_by(&:language_id).keep_if{ |k, v| v.length >= 1}.each do |k, entry_language|
       language = entry_language.first.language
-      Language.update_counters(language.id, :entries_count => language.entries.uniq.count - language.entries_count) unless language.nil?
+      Language.update_counters(language.id, :entries_count => language.entries.where(deprecated: false).uniq.count - language.entries_count) unless language.nil?
     end
 
     # provenance
-    provenance.group_by(&:provenance_agent_id).keep_if{ |k, v| v.length > 1}.each do |k, provenance|
+    provenance.group_by(&:provenance_agent_id).keep_if{ |k, v| v.length >= 1}.each do |k, provenance|
       provenance_agent = provenance.first.provenance_agent
-      Name.update_counters(provenance_agent.id, :provenance_count => provenance_agent.provenance_entries.count - provenance_agent.provenance_count) unless provenance_agent.nil?
+      Name.update_counters(provenance_agent.id, :provenance_count => provenance_agent.provenance_entries.where(deprecated: false).count - provenance_agent.provenance_count) unless provenance_agent.nil?
     end
   end
 

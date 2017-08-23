@@ -386,40 +386,8 @@ class EntriesController < SearchableAuthorityController
     @entry.save
 
     @entry.watches.destroy_all
-
-    # fix me: here, update all counters for associated names (decrease by 1)
-
-    @entry.authors.uniq.each do |author|
-      Name.decrement_counter(:authors_count, author.id)
-    end
-    @entry.artists.uniq.each do |artist|
-      Name.decrement_counter(:artists_count, artist.id)
-    end
-    @entry.scribes.uniq.each do |scribe|
-      Name.decrement_counter(:scribes_count, scribe.id)
-    end
-    @entry.provenance.uniq.each do |prov|
-      Name.decrement_counter(:provenance_count, prov.id)
-    end
-    @entry.places.uniq.each do |place|
-      Place.decrement_counter(:entries_count, place.id)
-    end
-    @entry.languages.uniq.each do |language|
-      Language.decrement_counter(:entries_count, language.id)
-    end
     
-    if @entry.sale
-      @entry.sale.sale_agents.uniq.each do |sale_agent|
-        Name.decrement_counter(:sale_agents_count, sale_agent.id)
-      end
-    end
-    # sources
-    Source.decrement_counter(:entries_count, @entry.source.id)
-
-    @entry.manuscripts.uniq.each do |mss|
-      Manuscript.decrement_counter(:entries_count, mss.id)
-    end
-
+    @entry.decrement_counters
     Sunspot.remove(@entry)
 
     # if we call respond_with(@entry), which is more rails-ish, the
@@ -570,6 +538,8 @@ class EntriesController < SearchableAuthorityController
             em.destroy
           end
         end
+
+        @entry.decrement_counters
 
         Sunspot.index @entry
       end

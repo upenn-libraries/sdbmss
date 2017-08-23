@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170807171227) do
+ActiveRecord::Schema.define(version: 20170823144650) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -743,6 +743,7 @@ ActiveRecord::Schema.define(version: 20170807171227) do
     t.boolean  "reviewed",                           default: false
     t.integer  "reviewed_by_id",       limit: 4
     t.datetime "reviewed_at"
+    t.boolean  "legacy",                             default: false
   end
 
   add_index "sources", ["created_by_id"], name: "index_sources_on_created_by_id", using: :btree
@@ -750,7 +751,7 @@ ActiveRecord::Schema.define(version: 20170807171227) do
   add_index "sources", ["source_type_id"], name: "index_sources_on_source_type_id", using: :btree
   add_index "sources", ["updated_by_id"], name: "index_sources_on_updated_by_id", using: :btree
 
-  create_table "thredded_categories", :options => "ENGINE=MyISAM", force: :cascade do |t|
+  create_table "thredded_categories", force: :cascade do |t|
     t.integer  "messageboard_id", limit: 4,   null: false
     t.string   "name",            limit: 191, null: false
     t.string   "description",     limit: 255
@@ -845,7 +846,7 @@ ActiveRecord::Schema.define(version: 20170807171227) do
 
   add_index "thredded_post_notifications", ["post_id", "post_type"], name: "index_thredded_post_notifications_on_post", using: :btree
 
-  create_table "thredded_posts", :options => "ENGINE=MyISAM" , force: :cascade do |t|
+  create_table "thredded_posts", force: :cascade do |t|
     t.integer  "user_id",          limit: 4
     t.text     "content",          limit: 65535
     t.string   "ip",               limit: 255
@@ -905,7 +906,7 @@ ActiveRecord::Schema.define(version: 20170807171227) do
   add_index "thredded_topic_categories", ["category_id"], name: "index_thredded_topic_categories_on_category_id", using: :btree
   add_index "thredded_topic_categories", ["topic_id"], name: "index_thredded_topic_categories_on_topic_id", using: :btree
 
-  create_table "thredded_topics", :options => "ENGINE=MyISAM" , force: :cascade do |t|
+  create_table "thredded_topics", force: :cascade do |t|
     t.integer  "user_id",          limit: 4
     t.integer  "last_user_id",     limit: 4
     t.string   "title",            limit: 255,                 null: false
