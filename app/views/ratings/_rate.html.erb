@@ -12,7 +12,7 @@
             <%= link_to rating_path(r, qualifier: "confirm", reason: ""), :method => :put, class: 'ratings btn btn-default btn-sm' do %>
               <span class="glyphicon glyphicon-thumbs-up"></span>
             <% end %>
-            <%= link_to rating_path(r), :method => :delete, class: 'ratings rated btn btn-default btn-sm' do %>
+            <%= link_to rating_path(r), :method => :delete, class: 'ratings rated disputed btn btn-default btn-sm' do %>
               <span class="glyphicon glyphicon-thumbs-down"></span>
             <% end %>
         <% end %>
