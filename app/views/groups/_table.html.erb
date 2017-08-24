@@ -1,6 +1,6 @@
-<table class="table table-bordered table-hover">  
+<table class="table">  
   <% if groups.count > 0 %>
-  <thead style="background: #eee">
+  <thead>
     <tr>
       <th>Name</th>
       <th>Users</th>
@@ -23,18 +23,14 @@
       <td><%= group.entries.count %></td>
       <td><%= group.public %></td>
       <td class='text-right col-sm-4'>
-        <ul class="list-inline">
+        <div class="btn-group">
         <% if can?(:edit, group) %>
-          <li>
-            <%= link_to(group_path(group, format: 'html'),  method: :delete, data: { confirm: 'Are you sure?' }) do %>
+            <%= link_to(group_path(group, format: 'html'),  method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger btn-xs') do %>
               <span class="glyphicon glyphicon-remove"></span> Delete
             <% end %>
-          </li>
-          <li>
-            <%= link_to(edit_group_path(group)) do %>
+            <%= link_to(edit_group_path(group), class: 'btn btn-success btn-xs') do %>
               <span class="glyphicon glyphicon-edit"></span> Edit
             <% end %>
-          </li>          
         <% end %>
         <% group_user = group.group_users.where(user_id: current_user)[0] %>
         <% if group_user.confirmed %>
@@ -44,11 +40,11 @@
             <% destroy_group_word = "Cancel Request" %>
           <% else %>
             <% destroy_group_word = "Reject Invitation" %>
-            <li><%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put %></li>
+            <%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put, class: "btn btn-default btn-xs" %></li>
           <% end %>
         <% end %>
-        <li><%= link_to destroy_group_word, group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to leave this group?" } %></li>
-        </ul>
+        <%= link_to destroy_group_word, group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to leave this group?" }, class: "btn btn-xs btn-default" %>
+        </div>
       </td>
     </tr>
     <% end %>

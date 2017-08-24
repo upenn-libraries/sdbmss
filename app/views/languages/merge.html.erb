@@ -1,0 +1,98 @@
+<% content_for :breadcrumbs do %>
+  <%= render partial: "breadcrumbs", locals: {edit: false} %>
+<% end %>
+
+<div class="row">
+  <div class="col-sm-12">
+    <h2 class="text-center">Merge <%= @model.public_id %> into <%= @target ? @target.public_id  : "???" %></h2>    
+  </div>
+  <div class="col-sm-5">
+
+    <div class="panel <%= @target ? 'panel-danger' : 'panel-default' %>">
+      <div class="panel-heading">
+        <h4 class="text-center"><%= link_to @model.public_id, language_path(@model) %></h4>
+      </div>
+      <div class="panel-body">
+        <dl class="document-metadata dl-horizontal dl-invert">
+          <dt>Name</dt>
+          <dd>
+              <%= @model.name %>
+          </dd>
+          <dt># Entries</dt>
+          <dd>
+              This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+  </div>
+  <div class="col-sm-2 text-center">
+    
+    <% if @target %>
+      <%= form_tag merge_language_path(@model) do %>
+      <div class="">
+          <div class="panel-body text-center">
+              <div><span class='h3'>Confirm</span></div>
+              <p>Are you sure? <strong><%= @model.public_id %></strong> will be <strong class="text-danger">deleted.</strong></p>
+                  <input type="hidden" name="confirm" value="yes"/>
+                  <input type="hidden" name="target_id" value="<%= @target.id %>"/>
+              <button class="btn btn-primary">Yes</button>
+
+              <a class="btn btn-warning" href="<%= merge_language_path(@model) %>">Cancel</a>
+          </div>
+      </div>
+      <span class="glyphicon glyphicon-arrow-right chevron"></span>
+      <div class="">
+          <div class="panel-body text-center">
+              <%= link_to "Swap Languages", merge_language_path(@target, :target_id => @model.id), class: 'btn btn-info' %>
+          </div>
+      </div>
+      <% end %>
+    <% end %>
+
+  </div>
+  <div class="col-sm-5">
+    <% if @target %>
+
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <h4 class="text-center"><%= link_to @target.public_id, language_path(@target) %></h4>
+        </div>
+        <div class="panel-body">
+          <dl class="document-metadata dl-horizontal dl-invert">
+            <dt>Name</dt>
+            <dd>
+                <%= @target.name %>
+            </dd>
+            <dt># Entries</dt>
+            <dd>
+                This <%= @target.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@target.class.to_s.underscore, @target.name) %>" class="badge"><%= SDBMSS::Util.to_many(@target.entries_count, "entry") %></a>
+            </dd>
+          </dl>
+        </div>
+      </div>
+
+    <% elsif @suggestions %>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h4 class="text-center">Suggestions</h4>
+        </div>
+        <div class="panel-body">
+          <table class="table">
+            <tbody>
+              <% @suggestions.each do |suggestion| %>
+                <tr>
+                  <td><%= link_to " #{suggestion.public_id}", language_path(suggestion), :target => "_blank" %></td>
+                  <td class='text-center'><%= suggestion.name %></td>
+                  <td class='text-right'><%= link_to "Merge", merge_language_path(@model, :target_id => suggestion.id), class: "btn btn-primary btn-sm" %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

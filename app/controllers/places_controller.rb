@@ -11,4 +11,32 @@ class PlacesController < SearchableAuthorityController
   def model_class
     Place
   end
+
+  def merge
+    @model = Place.find(params[:id])
+
+    # select
+    if !params[:target_id]
+      @suggestions = @model.more_like_this.results
+    # confirm
+    else      
+      @target = Place.find(params[:target_id])
+    end
+
+    if params[:confirm]
+      # merge!
+      ActiveRecord::Base.transaction do
+        id = @model.public_id
+        @model.entry_places.update_all(:place_id => @target.id)
+        @model.destroy!
+        flash[:success] = "#{id} has been successfully merged into #{@target.public_id}"
+        @target.entries.index
+        Place.update_counters(@target.id, :entries_count => @target.entries.count - @target.entries_count)
+        redirect_to place_path(@target)
+      end
+    else
+      # nothing, handle normally
+    end
+  end
+
 end

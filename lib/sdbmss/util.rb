@@ -318,7 +318,7 @@ module SDBMSS
         # handle circa and exact years
         circa = false
         date_str_without_circa = date_str.dup
-        ["circa", "ca.", "about", "c."].each do |circa_str|
+        ["circa", "ca.", "about", "c.", "probably"].each do |circa_str|
           match = /^#{circa_str}/.match(date_str)
           if !circa && match.present?
             circa = true

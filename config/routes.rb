@@ -166,6 +166,8 @@ Rails.application.routes.draw do
     }
     member do
       get 'history'
+      get 'merge'
+      post 'merge'
       patch '/revert_confirm/', to: 'languages#revert_confirm'
       patch '/revert/', to: 'languages#revert'
     end
@@ -216,6 +218,8 @@ Rails.application.routes.draw do
       get 'more_like_this'
     }
     member do
+      get 'merge'
+      post 'merge'
       get 'history'
       patch '/revert_confirm/', to: 'places#revert_confirm'
       patch '/revert/', to: 'places#revert'

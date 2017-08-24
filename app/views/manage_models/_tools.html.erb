@@ -4,5 +4,12 @@
         <span class="glyphicon glyphicon-list-alt"></span> Change History
       <% end %>
     </li>
+<% end %>
+<% if can?(:merge, @model.class) %>
+  <li>
+    <%= link_to(polymorphic_path([:merge, @model])) do %>
+      <span class="glyphicon glyphicon-transfer"></span> Merge</a>
+    <% end %>
+  </li>
     <!-- eventually, merge will be here? -->
 <% end %>

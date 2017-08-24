@@ -22,11 +22,12 @@ load_session = '<%= params[:last_search] %>' == 'true';
 
      // Subclass of SDBM.ManageRecords tailored for display of names (ie users)
      var ManageNames = function(options) {
-         SDBM.ManageRecords.call(this, options);
+        SDBM.ManageRecords.call(this, options);
      };
-     
+console.log(1);     
      ManageNames.prototype = Object.create(SDBM.ManageRecords.prototype);
 
+console.log(2);
      ManageNames.prototype.getColumns = function() {
         var manageRecords = this;
 
@@ -193,9 +194,11 @@ load_session = '<%= params[:last_search] %>' == 'true';
      if (window.screen.width > 640) {
         config.fixedColumns = 4
      }
+
      var manageNames = new ManageNames(config);
      //manageNames.setFormStateFromURL();
-     manageNames.dataTable.reload();         
+
+     //manageNames.dataTable.reload();         
 
  });
 

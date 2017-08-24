@@ -238,11 +238,13 @@ module BlacklightAdvancedSearch
         #            :remove => search_action_path(remove_facet_params(facet, val, localized_params)),
         #            :classes => ["filter", "filter-" + facet.parameterize]
         #          )
-        content_tag(:li, :class => "constraint-value appliedFilter") do
-          content_tag(:span, facet_field_label(facet_config.key), :class => "filterName selected") +
-          content_tag(:span, facet_display_value(facet, val), :class => "selected") +
+        content_tag(:li, :class => "facet-values list-unstyled appliedFilter") do
+          content_tag(:span, :class => "facet-label") do
+            content_tag(:span, facet_field_label(facet_config.key), :class => "filterName selected") +
+            content_tag(:span, facet_display_value(facet, val), :class => "selected")
+          end +
           # remove link
-          link_to(content_tag(:span, '', :class => "glyphicon glyphicon-remove") + content_tag(:span, '[remove]', :class => 'sr-only'), search_action_path(remove_facet_params(facet, val, localized_params)), :class=>"remove")
+          link_to(content_tag(:span, '', :class => "glyphicon glyphicon-remove") + content_tag(:span, '[remove]', :class => 'sr-only'), search_action_path(remove_facet_params(facet, val, localized_params)), :class=>"remove facet-count")
         end
       
       end, "\n")
