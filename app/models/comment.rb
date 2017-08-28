@@ -79,7 +79,7 @@ class Comment < ActiveRecord::Base
       comment: comment,
       is_accepted: is_accepted,
       reviewed: reviewed,
-      created_by: created_by.username,
+      created_by: created_by.present? ? created_by.username : "(none)",
       created_at: created_at.to_formatted_s(:date_and_time),
       updated_by: updated_by.present? ? updated_by.username : "(none)",
       updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""

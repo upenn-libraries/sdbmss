@@ -37,7 +37,11 @@ class CommentsController < SearchableAuthorityController
 
   def show
     @comment = Comment.find(params[:id])
-    redirect_to polymorphic_path(@comment.commentable, anchor: "comment_#{@comment.id}")
+    if @comment.commentable
+      redirect_to polymorphic_path(@comment.commentable, anchor: "comment_#{@comment.id}")
+    else
+      @comments = Comment.where(commentable_id: @comment.commentable_id, commentable_type: @comment.commentable_type)
+    end
   end
 
   def edit

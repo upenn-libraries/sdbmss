@@ -1,7 +1,128 @@
 <% content_for :head do %>
-    <%= javascript_include_tag "loader" %>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" type="text/javascript"></script>
     <script>
         $(document).ready(function () {
+
+            function doChart() {
+
+                $.get("/community/stats.json", {quantity: $("#quantity").val(), measure: $("#measure").val()}, function (result) {
+
+                    d3.select("svg").remove();
+                    var results = result.data;//[["User", "Index", "Days Active", "User Level", "Entries"]].concat(result.data);
+ 
+                    var w = 1025,
+                        h = 503;
+
+                    var mydata = results.map(function (e) { return e[4]; });
+                    var mylabels = results.map(function (e) { return e[0]; })
+                    console.log('mydata', mydata, 'mylabel', mylabels);
+
+                    var nodes = d3.range(results.length).map(function(d) { console.log(d, mydata[d]); return {radius: mydata[d] * 3 + 10 }; }),
+                        color = d3.scale.category20c();
+
+                    var force = d3.layout.force()
+                        .gravity(0.05)
+                        .charge(function(d, i) { return i ? 0 : -2000; })
+                        .nodes(nodes)
+                        .size([w, h]);
+
+                    var root = nodes[0];
+                    root.radius = 0;
+                    root.fixed = true;
+
+                    force.start();
+
+                    var svg = d3.select("#body").append("svg:svg")
+                        .attr("width", w)
+                        .attr("height", h);
+
+                    svg.selectAll("circle")
+                        .data(nodes.slice(1))
+                      .enter().append("svg:circle")
+                        .attr("r", function(d) { return d.radius; })
+                        .style("fill", function(d, i) { return color(i % 4); });
+
+                    svg.selectAll("text")
+                        .data(mylabels)
+                        .enter().append("svg:text")
+                        .text(function(d) {return d;})
+                        .attr("font-family", "sans-serif")
+                        .attr("fill", "black")
+                        .attr("text-anchor", "middle");
+
+                    force.on("tick", function(e) {
+                      var q = d3.geom.quadtree(nodes),
+                          i = 0,
+                          n = nodes.length;
+
+                      while (++i < n) {
+                        q.visit(collide(nodes[i]));
+                      }
+
+                      svg.selectAll("text")
+                          .data(nodes.slice(1))
+                          .attr("x", function(d) { return d.x; })
+                          .attr("y", function(d) { return d.y; })
+                          .attr("text-shadow", "0 4px 0 #000")
+                          .attr("font-size", function(d) { return d.radius/7 + "px"} );
+                      
+                      svg.selectAll("circle")
+                          .attr("cx", function(d) { return d.x; })
+                          .attr("cy", function(d) { return d.y; });
+
+
+
+                    });
+
+                    svg.on("mousemove", function() {
+                      //console.log(d3.event);
+                      //var p1 = d3.svg.mouse(this);
+                      root.px = d3.event.clientX;//p1[0];
+                      root.py = d3.event.clientY;//p1[1];
+                      force.resume();
+                    });
+
+                    function collide(node) {
+                      var r = node.radius + 16,
+                          nx1 = node.x - r,
+                          nx2 = node.x + r,
+                          ny1 = node.y - r,
+                          ny2 = node.y + r;
+                      return function(quad, x1, y1, x2, y2) {
+                        if (quad.point && (quad.point !== node)) {
+                          var x = node.x - quad.point.x,
+                              y = node.y - quad.point.y,
+                              l = Math.sqrt(x * x + y * y),
+                              r = node.radius + quad.point.radius;
+                          if (l < r) {
+                            l = (l - r) / l * .5;
+                            node.x -= x *= l;
+                            node.y -= y *= l;
+                            quad.point.x += x;
+                            quad.point.y += y;
+                          }
+                        }
+                        return x1 > nx2
+                            || x2 < nx1
+                            || y1 > ny2
+                            || y2 < ny1;
+                      };
+                    }                    
+
+                });
+
+            }
+
+
+            $("#submit").click(function (e) {
+                doChart();
+            });
+
+            doChart();
+
+        });
+    
+    /*    $(document).ready(function () {
             var ready = false;
             google.charts.load('current', {'packages':['corechart']});
             google.charts.setOnLoadCallback(doChart);
@@ -49,7 +170,7 @@
                     doChart();
                 }
             })
-      });
+      });*/
     </script>
 <% end %>
 
@@ -77,7 +198,8 @@
     <a id="submit" class="btn btn-primary">Update</a>
 </h1>
 
-<div id="series_chart_div" style="width: 800px; height: 360px; margin: auto;"></div>
+<!--<div id="series_chart_div" style="width: 800px; height: 360px; margin: auto;"></div>-->
+<div id="body"></div>
 
 <h2 class='text-center'>Database Statistics</h2>
 
