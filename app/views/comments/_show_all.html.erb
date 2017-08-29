@@ -1,7 +1,7 @@
 <% if user_signed_in? && defined?(record) %>
   <%= render partial: "comments/form", locals: { record: record } %>
 <% end %>
-<% comments.reverse.each do |comment| %>
+<% comments.each do |comment| %>
   <div class="panel-default panel" id="comment_<%= comment.id %>" name="comment_<%= comment.id %>">
     <div class="panel-body comment">
       <% if comment.deleted %>

@@ -1,5 +1,14 @@
 <% content_for :head do %>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js" type="text/javascript"></script>
+    <style>
+        circle {
+            stroke: #000;            
+        }
+        text {
+            font-family: inherit;
+            font-size: 14px;
+        }
+    </style>
     <script>
         $(document).ready(function () {
 
@@ -15,9 +24,12 @@
 
                     var mydata = results.map(function (e) { return e[4]; });
                     var mylabels = results.map(function (e) { return e[0]; })
-                    console.log('mydata', mydata, 'mylabel', mylabels);
+                    //console.log('mydata', mydata, 'mylabel', mylabels);
 
-                    var nodes = d3.range(results.length).map(function(d) { console.log(d, mydata[d]); return {radius: mydata[d] * 3 + 10 }; }),
+                    var max = mydata.sort(function (a, b) { return b - a; })[0];
+                    console.log(max);
+
+                    var nodes = d3.range(mydata.length).map(function(d) { return {radius: (2 * h / 3) * mydata[d] / max }; }),
                         color = d3.scale.category20c();
 
                     var force = d3.layout.force()
@@ -38,9 +50,11 @@
 
                     svg.selectAll("circle")
                         .data(nodes.slice(1))
-                      .enter().append("svg:circle")
+                        .enter().append("svg:circle")
                         .attr("r", function(d) { return d.radius; })
                         .style("fill", function(d, i) { return color(i % 4); });
+                        
+                    svg.selectAll("circle").append("title").data(mydata).text(function (d, i) { return mylabels[i] + " - " + d + " records"; })
 
                     svg.selectAll("text")
                         .data(mylabels)
@@ -48,7 +62,7 @@
                         .text(function(d) {return d;})
                         .attr("font-family", "sans-serif")
                         .attr("fill", "black")
-                        .attr("text-anchor", "middle");
+                        .attr("text-anchor", "middle")
 
                     force.on("tick", function(e) {
                       var q = d3.geom.quadtree(nodes),
@@ -68,19 +82,17 @@
                       
                       svg.selectAll("circle")
                           .attr("cx", function(d) { return d.x; })
-                          .attr("cy", function(d) { return d.y; });
-
-
+                          .attr("cy", function(d) { return d.y; })
 
                     });
-
+/*
                     svg.on("mousemove", function() {
                       //console.log(d3.event);
                       //var p1 = d3.svg.mouse(this);
                       root.px = d3.event.clientX;//p1[0];
                       root.py = d3.event.clientY;//p1[1];
                       force.resume();
-                    });
+                    });*/
 
                     function collide(node) {
                       var r = node.radius + 16,
@@ -177,7 +189,7 @@
 <h3 class='text-center form-inline'>
     Last
     <select name="" id="quantity" class="form-control">
-        <option value="1" selected>1</option>
+        <option value="1">1</option>
         <option value="2">2</option>
         <option value="3">3</option>
         <option value="4">4</option>
@@ -189,11 +201,12 @@
         <option value="10">10</option>
         <option value="11">11</option>
         <option value="12">12</option>
+        <option value="36" selected>36</option>
     </select>
     <select name="" id="measure" class="form-control">
         <option value="day">Day</option>
-        <option value="week" selected>Week</option>
-        <option value="month">Month</option>
+        <option value="week">Week</option>
+        <option value="month" selected>Month</option>
     </select>
     <a id="submit" class="btn btn-primary">Update</a>
 </h1>
