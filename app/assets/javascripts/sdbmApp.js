@@ -418,6 +418,10 @@ var BOOKMARK_SCOPE;
         else if (record.dericci_record_flags.length > 0) return 'glyphicon-flag';
         else return 'glyphicon-search';
       };
+      $scope.cantFind = function () {
+        $(".cantfind").toggleClass("in");
+      }
+
       $scope.getText = function (record) {
         if ($scope.isLinked(record)) return 'Linked';
         else if (record.skipped) return 'Skipped';
