@@ -51,7 +51,13 @@ Rails.application.routes.draw do
   resources :dericci_sales, only: [:index]
 
   resources :replies
-  resources :notifications, only: [:index, :show, :update, :destroy]
+  #resources :notifications, only: [:index, :show, :update, :destroy]
+  resources :notifications do
+    collection {
+      get 'read_many'
+      delete 'delete_many'
+    }
+  end
 
   get '/dla/schoenberg', to: 'catalog#legacy'
   get '/dla/schoenberg/:path', to: 'catalog#legacy'

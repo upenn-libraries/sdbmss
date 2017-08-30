@@ -1,61 +1,91 @@
-  <nav class="navbar navbar-default">
-    <div class="navbar-header">
-      <div class="navbar-brand">
-        Notifications
-      </div>
-    </div>
-    <div class="nav navbar-nav navbar-right" style="margin-right: 15px;">
-      <ul class="pagination">
-        <% @pages.times do |p| %>
-          <% if @page == p %>
-            <li class="active"><a href=""><%= p + 1 %></a></li>
-          <% else %>
-            <li><%= link_to p + 1, notifications_path(page: p) %></li>
-          <% end %>
+<% content_for :head do %>
+  <style>
+    .pagination {
+      margin: 0px;
+    }
+    .notification-btn {
+      width: 100%;
+      margin-bottom: 5px;
+    }
+    .notification-btn .btn:first-child {
+      width: calc(100% - 212px);
+      text-align: left;
+    }
+  </style>
+<% end %>
+<% content_for :breadcrumbs do %>
+  <li class="active"><%= link_to "Manage Notifications", notifications_path %></li>
+  <li><%= link_to main_app.edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> Notification Settings <% end %></li>
+<% end %>
+<div class="row">
+  <div class="col-sm-12 text-center">
+    <h3 class="h3 text-center">Notifications</h3>
+    <p class="text-muted">Notifications are sent in response to various actions and events that can happen in the database and our community.  You can control when and how you receive your notifications from your user settings.</p>
+  </div>
+  <div class="col-sm-6">
+    <ul class="pagination">
+      <% @pages.times do |p| %>
+        <% if @page == p %>
+          <li class="active"><a href=""><%= p + 1 %></a></li>
+        <% else %>
+          <li><%= link_to p + 1, notifications_path(page: p) %></li>
         <% end %>
-      </ul>
+      <% end %>
+    </ul>
+  </div>
+  <div class="col-sm-6 text-right">
+    <div class="btn-group">
+      <%= link_to read_many_notifications_path(ids: @notifications.map(&:id), active: false), class: 'btn btn-default' do %>
+        <span class="glyphicon glyphicon-ok-circle"></span> Mark All as Read
+      <% end %>
+      <%= link_to delete_many_notifications_path(ids: @notifications.map(&:id)), :method => :delete, class: 'btn btn-danger' do %>
+        <span class="glyphicon glyphicon-remove"></span> Delete All
+      <% end %>      
     </div>
-  </nav>
-  <ul class="list-group">
-  <% if @notifications.count <= 0 %>
-    <li class="text-muted list-group-item text-center">You have no notifications.</li>
-  <% end %>
-  <% @notifications.each do |notification| %>
-    <li class="list-group-item">
-      <% if notification.title %>
-      <div class="row">
-        <div class="col-xs-7 one-line">
-          <% if notification.notified %>
-            <% 
-              if notification.notified.class == User
-                url = main_app.profile_path(notification.notified.username)
-              elsif notification.notified_type == "Thredded::Post"
-                url = Thredded::UrlsHelper.post_permalink_path(notification.notified)
-              else      
-                url = main_app.polymorphic_url(notification.notified)
-              end
-            %>
-            <%= link_to url, :title => notification.title do %>
-              <% if notification.active %>
-                <span class="glyphicon glyphicon-exclamation-sign" style="color: #2196F3"></span>
-                <span class="title"><%= notification.title %></span>
-              <% else %>
-                <span class="title"><%= notification.title %></span>
-              <% end %>
+  </div>
+  <div class="col-sm-12">
+<% if @notifications.count <= 0 %>
+  <div class="text-muted text-center alert alert-info">You have no notifications.</li>
+<% end %>
+<% @notifications.each do |notification| %>
+  <div class="btn-group notification-btn">
+    <% if notification.title %>
+      <div class="btn-default btn one-line text-left">
+        <% if notification.notified %>
+          <% 
+            if notification.notified.class == User
+              url = main_app.profile_path(notification.notified.username)
+            elsif notification.notified_type == "Thredded::Post"
+              url = Thredded::UrlsHelper.post_permalink_path(notification.notified)
+            else      
+              url = main_app.polymorphic_url(notification.notified)
+            end
+          %>
+          <%= link_to url, :title => notification.title do %>
+            <% if notification.active %>
+              <span class="glyphicon glyphicon-exclamation-sign"></span>
+              <span class="title"><%= notification.title %></span>
+            <% else %>
+              <span class="title"><%= notification.title %></span>
             <% end %>
-          <% else %>
-            <span class="title text-muted"><span class="glyphicon glyphicon-warning-sign text-warning"></span> <%= notification.title %></span>
           <% end %>
-        </div>
-        <div class="col-xs-5 text-right text-info one-line">
-          <%= notification.created_at.to_formatted_s(:long) %>
-          <span class="glyphicon glyphicon-ok-circle" data-id="<%= notification.id %>"></span>
-          <%= link_to(notification_path(notification, format: 'html'),  method: :delete) do %>
-            <span class="glyphicon glyphicon-remove"></span> Delete
-          </div>
-        </div>
+        <% else %>
+          <span class="title text-muted"><span class="glyphicon glyphicon-warning-sign text-warning"></span> <%= notification.title %></span>
+        <% end %>
+        <%= notification.created_at.to_formatted_s(:long) %>
+      </div>
+      <% if notification.active %>
+        <%= link_to notification_path(notification, active: false), method: :put, class: 'btn btn-default' do %>
+          <span class="glyphicon glyphicon-ok-circle"></span> Mark as Read
+        <% end %>
+      <% else %>
+        <a class="btn btn-default disabled"><span class="glyphicon glyphicon-ok-circle"></span> Mark as Read</a>
       <% end %>
+      <%= link_to(notification_path(notification, format: 'html'), method: :delete, class: "btn btn-danger") do %>
+        <span class="glyphicon glyphicon-remove"></span> Delete
       <% end %>
-    </li>
-  <% end %>
-  </ul>
+    <% end %>
+  </div>
+<% end %>
+  </div>
+</div>

@@ -17,7 +17,23 @@ class NotificationsController < ApplicationController
           render json: {error: "Problem updating notification!"}
         end
       }
+      format.html { redirect_to notifications_path }
     end
+  end
+
+  def show
+  end
+
+  def read_many
+    @notifications = Notification.where(id: params[:ids])
+    @notifications.update_all(active: false)
+    redirect_to notifications_path
+  end
+
+  def delete_many
+    @notifications = Notification.where(id: params[:ids])
+    @notifications.destroy_all
+    redirect_to notifications_path
   end
 
   def destroy
