@@ -1,8 +1,6 @@
 <%= render partial: "header", locals: {title: "NEW"} %>
 
-<h3 class="text-center">New Private Message</h3>
-
-<div class="panel panel-default">
+<div class="panel panel-default" style="margin-top: 10px;">
   <div class="panel-body">
     <%= render partial: "form", locals: {message: nil, from: [], title: nil} %>
   </div>

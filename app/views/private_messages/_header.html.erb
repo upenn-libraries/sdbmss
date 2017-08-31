@@ -1,7 +1,16 @@
+<% content_for :head do %>
+<style>
+  .nav .pagination a {
+    padding: 4px 12px;
+  }
+</style>
+<% end %>
 <div class="row">
   <div class="col-sm-12">
-    <nav class="navbar navbar-default">
-    <ul class="nav navbar-nav">
+
+    <h3 class="text-center h3">Private Messages</h3>
+
+    <div class="nav nav-tabs">
       <li class="<%= title == 'INBOX' ? 'active' : '' %>">
         <%= link_to(private_messages_path, class: "") do |l| %>
           INBOX <span class="glyphicon glyphicon-inbox"></span>
@@ -17,14 +26,33 @@
         <a href=""><%= @chain.messages.first.title %>(...)</a>
       </li>
       <% end %>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
+      
       <li class="<%= title == 'NEW' ? 'active' : '' %>">
         <%= link_to(new_private_message_path, class: "") do |l| %>
           <span class="glyphicon glyphicon-envelope"></span> NEW
         <% end %>
-      </li>    
+      </li>
+      <% if defined?(@chains) %>
+        <ul class="pagination navbar-right">
+          <% (@total.to_f / @per_page).ceil.times do |p| %>
+            <li class="<%= @page == p ? 'active' : '' %>">
+              <%= link_to (p + 1), private_messages_path(page: p) %>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>    
+    </div>
+  </div>
+</div>
+
+<!--
+<div class="row">
+  <div class="col-sm-12">
+    <nav class="navbar navbar-default">
+    <ul class="nav navbar-nav">
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
     </ul>
     </nav>
   </div>
-</div>
+</div>-->

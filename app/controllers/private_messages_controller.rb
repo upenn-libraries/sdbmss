@@ -70,10 +70,10 @@ class PrivateMessagesController < ApplicationController
         @chains.push(chain)
       end
     end
-    @page = params[:page] || 0
+    @page = params[:page].to_i
     @total = @chains.count
     @per_page = 10
-    @chains = @chains.sort { |a, b| b.latest.created_at <=> a.latest.created_at }
+    @chains = @chains.sort { |a, b| b.latest.created_at <=> a.latest.created_at }[(@page * @per_page)..(@page * @per_page + @per_page)]
   end
   
   def new
