@@ -638,6 +638,7 @@ class Entry < ActiveRecord::Base
 #      get_sale ? get_sale.get_buyers.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
       (sale = get_sale) ? sale.sale_agents.where(role: "buyer").select(&:facet_value).map(&:facet_value) : []
     end
+
     define_field(:text, :sale_buyer_search, :stored => true) do
 #      get_sale_buyers_names
       (sale = get_sale) ? sale.sale_agents.where(role: "buyer").map(&:display_value).join("; ") : ""

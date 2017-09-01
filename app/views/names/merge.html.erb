@@ -24,7 +24,9 @@
             </div>
         <% else %>
             <div class="panel-body">
-                <%= render partial: "main", locals: {name: @model} %>
+                <table class="table">
+                    <%= render partial: "main", locals: {name: @model} %>
+                </table>
             </div>
         <% end %>
     </div>

@@ -418,6 +418,10 @@ var BOOKMARK_SCOPE;
         else if (record.dericci_record_flags.length > 0) return 'glyphicon-flag';
         else return 'glyphicon-search';
       };
+      $scope.cantFind = function () {
+        $(".cantfind").toggleClass("in");
+      }
+
       $scope.getText = function (record) {
         if ($scope.isLinked(record)) return 'Linked';
         else if (record.skipped) return 'Skipped';
@@ -746,17 +750,15 @@ var BOOKMARK_SCOPE;
       }, 10);
 
       $scope.selectSuggestion = function (s) {
-        if (!s.problem) {
-          $scope.suggestion = s;
-          $scope.selectName();          
-        }
-      }
+        $scope.suggestion = s;
+        $scope.selectName();          
+      };
 
       $scope.selectName = function () {
         model.id = $scope.suggestion.id; 
         model.name = $scope.suggestion.name;
         $modalInstance.close();
-      }
+      };
 
       $scope.autocomplete = function () {
           var url  = "/" + recordType + "/more_like_this.json";
