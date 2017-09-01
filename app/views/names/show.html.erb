@@ -6,6 +6,6 @@
   <div class="alert alert-warning"><span class="glyphicon glyphicon-info-sign"></span> This Name has not yet been reviewed and may not conform to our data standards.</div>
 <% end %>
 <% if @model.problem %>
-  <div class="alert alert-danger"><span class="glyphicon glyphicon-warning-sign"></span> Warning! This name has been flagged as problematic and should not be used until it can be brought in line with SDBM Name Authority Standards</div>
+  <div class="alert alert-danger"><span class="lead"><span class="glyphicon glyphicon-warning-sign"></span> Warning!</span> This name has been flagged as problematic because the identity of this Authority Name is uncertain. It should not be used until a proper identification is made and it is brought in line with SDBM Name Authority Standards. If you have information to help us identify this Authority Name, please leave a comment in the Name Authority Record.</div>
 <% end %>
 <%= render partial: "name", object: @model %>
