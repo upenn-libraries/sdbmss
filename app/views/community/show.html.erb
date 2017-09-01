@@ -7,37 +7,43 @@
         }
         circle:hover {
             opacity: 0.9;
+            stroke-width: 2;
         }
         text {
             font-family: inherit;
             font-size: 14px;
+            font-weight: bold;
             text-anchor: middle;
+        }
+        .loading {
+            position: absolute;
+            left: calc(50% - 32px); 
+            top: 160px;          
         }
     </style>
     <script>
+        function loadCharts() {
 
-        function doChart() {
-
-            var w = 503, h = 503;
+            $(".loading").fadeIn();
+            $("#community-search .form-control").attr("disabled", true);
+            var w = d3.select("#body1").node().getBoundingClientRect().width, h = w;
             d3.select("svg").remove();            
-            d3.select("svg").remove();            
-            var svg1 = d3.select("#body").append("svg:svg")
-                        .attr("width", w)
-                        .attr("height", h);
+            d3.select("svg").remove();
+            var svg1 = d3.select("#body1").append("svg:svg")
+                .attr("width", w)
+                .attr("height", h);
 
-            var svg2 = d3.select("#body").append("svg:svg")
-                                    .attr("width", w)
-                                    .attr("height", h);
+            var svg2 = d3.select("#body2").append("svg:svg")
+                .attr("width", w)
+                .attr("height", h);
 
             var format = d3.format(",d");
-
-            var color = d3.scaleOrdinal(d3.schemeCategory20c);
 
             var pack = d3.pack()
                 .size([w, h])
                 .padding(1.5);
         
-            function loadChart (svg, mydata) {
+            function doChart (svg, mydata) {
                 var root = d3.hierarchy({children: mydata})
                   .sum(function(d) { return d.value; })
                   
@@ -52,22 +58,27 @@
                 .attr("r", function(d) { return d.r; })
                 .style("fill", function(d) { console.log(d, d.color, d.data.color); return d.data.color; });
 
-                /*node.append("clipPath")
-                .attr("id", function(d) { return "clip-" + d.id; })
+                node.append("clipPath")
+                .attr("id", function(d) { return "clip-" + d.data.id; })
                 .append("use")
-                .attr("xlink:href", function(d) { return "#" + d.id; });*/
+                .attr("xlink:href", function(d) { return "#" + d.data.id; });
 
                 node.append("text")
                 .attr("clip-path", function(d) { return "url(#clip-" + d.data.id + ")"; })
-                .selectAll("tspan")
+                .selectAll("a")
                 .data(function(d) { return d.data.id.split(/(?=[A-Z][^A-Z])/g); })
-                .enter().append("tspan")
+                .enter().append("a")
+                .attr("xlink:href", function (d) { return "/profiles/"+ d; })
+                .attr("target", "_blank")
                 .attr("x", 0)
                 .attr("y", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
                 .text(function(d) { return d; });
 
                 node.append("title")
                   .text(function(d) { return d.data.id + "\n" + format(d.data.value); });
+                
+                $(".loading").fadeOut();                
+                $("#community-search .form-control").attr("disabled", false);
             }
 
             var entry_colors = {
@@ -85,24 +96,21 @@
             };
 
             $.get("/community/stats.json", {quantity: $("#quantity").val(), measure: $("#measure").val()}, function (result) {
-                var entries = result.entries;//[["User", "Index", "Days Active", "User Level", "Entries"]].concat(result.data);
-                var activity = result.activity;
+                var entries = result.entries; // username, count, role
+                var activity = result.activity; // usernmae, count, role
 
-                var mydata = entries.map(function (e) { return {value: e[4], id: e[0], color: entry_colors[e[3]]}; });                
-                loadChart(svg1, mydata);
-                var mydata = activity.map(function (e) { return {value: e[1], id: e[0], color: activity_colors[e[2]]}; });                
-                loadChart(svg2, mydata);
+                doChart(svg1, entries.map(function (e) { return {value: e[1], id: e[0], color: entry_colors[e[2]]}; }));
+                doChart(svg2, activity.map(function (e) { return {value: e[1], id: e[0], color: activity_colors[e[2]]}; }));
             });
 
         }
 
 
         $(document).ready(function () {
-            doChart();
-
+            loadCharts();
 
             $("#submit").click(function (e) {
-                doChart();
+                loadCharts();
             });
         });
 
@@ -113,10 +121,10 @@
     <div class="col-sm-12 text-center">
         <h3 class="h3 text-muted">The User Community</h3>
     </div>
-    <div class="col-sm-6 text-right">
-        Show me the user activity in the last
+    <div class="col-sm-6 text-right mobile-center" style="line-height: 32px;">
+        Show me the user activity in the last:
     </div>
-    <div class="col-sm-6 form-inline">
+    <div class="col-sm-6 form-inline" id="community-search">
         <span class="input-group" style="width: 100%">
             <select name="" id="quantity" class="form-control" style="max-width: 100px;">
                 <option value="1">1</option>
@@ -145,16 +153,21 @@
 
 <!--<div id="series_chart_div" style="width: 800px; height: 360px; margin: auto;"></div>-->
 <div class="row">
-    <div class="col-sm-12" id="body">
+    <div class="loading"><img src="<%= asset_path "spinner.gif" %>" alt=""> loading...</div>
+    <div class="col-sm-6" id="body1">
+        <h3 class="text-muted text-center">New Entries Added</h3>
+    </div>
+    <div class="col-sm-6" id="body2">
+        <h3 class="text-muted text-center">Changes Made</h3>  
     </div>
 </div>
-
+<!--
 <h2 class='text-center'>Database Statistics</h2>
 
-<p><%= number_with_delimiter(Entry.count) %> entries</p>
-<p><%= number_with_delimiter(Provenance.count) %> records of provenance information</p>
-<p><%= number_with_delimiter(Source.count) %> sources</p>
-<p><%= number_with_delimiter(User.count) %> users</p>
+<p><%# number_with_delimiter(Entry.count) %> entries</p>
+<p><%# number_with_delimiter(Provenance.count) %> records of provenance information</p>
+<p><%# number_with_delimiter(Source.count) %> sources</p>
+<p><%# number_with_delimiter(User.count) %> users</p>
     
 <h2 class='text-center'>User Community</h2>
 
@@ -166,11 +179,12 @@
         </tr>
     </thead>
     <tbody>
-        <% User.statistics.sort { |a,b| a[:num_entries] <=> b[:num_entries] }.reverse.each do |record| %>
+        <%# User.statistics.sort { |a,b| a[:num_entries] <=> b[:num_entries] }.reverse.each do |record| %>
             <tr>
-                <td><a href="<%= profile_path(record[:username]) %>"><%= record[:username] %></a></td>
-                <td><%= record[:num_entries] %></td>
+                <td><a href="<%# profile_path(record[:username]) %>"><%# record[:username] %></a></td>
+                <td><%# record[:num_entries] %></td>
             </tr>
-        <% end %>
+        <%# end %>
     </tbody>
 </table>
+-->
