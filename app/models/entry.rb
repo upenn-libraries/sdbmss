@@ -202,7 +202,7 @@ class Entry < ActiveRecord::Base
     provenance.uniq.each do |prov|
       if prov.provenance_agent
         Name.decrement_counter(:provenance_count, prov.provenance_agent_id)
-        objects.push(provenance_agent)
+        objects.push(prov.provenance_agent)
       end
     end
     places.uniq.each do |place|
