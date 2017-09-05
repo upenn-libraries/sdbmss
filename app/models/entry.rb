@@ -200,8 +200,10 @@ class Entry < ActiveRecord::Base
       objects.push(scribe)
     end
     provenance.uniq.each do |prov|
-      Name.decrement_counter(:provenance_count, prov.id)
-      objects.push(prov)
+      if prov.provenance_agent
+        Name.decrement_counter(:provenance_count, prov.provenance_agent_id)
+        objects.push(provenance_agent)
+      end
     end
     places.uniq.each do |place|
       Place.decrement_counter(:entries_count, place.id)
