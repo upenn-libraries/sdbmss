@@ -5,6 +5,20 @@
     <p>Users can export data in the form of .csv files from their Search Results, Bookmarks page, or their Manage pages.</p>
     <p>To create an export, select the <span class="glyphicon glyphicon-floppy-save"></span> icon that appears on the Bookmarks and Manage pages or at the bottom of Search Results pages. Two notifications will appear in the bottom right corner of the screen: one when the export has started, and another when the export is complete.  When the export is complete, the file will appear below.  Any exported .csv file selected for export from these pages will remain on this page for 24 hours after it was created.</p>
     <ul class="list-group">
+      <% if File.exists?("public/static/docs/dump.sql.zip") %>
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-sm-6 text-left">
+            <strong>MYSQL DUMP</strong> <span class="text-muted">dump.sql.zip</span>
+          </div>
+          <div class="col-sm-6 text-right">            
+            <%= link_to("static/docs/dump.sql.zip", class: 'btn btn-default btn-sm') do %>
+              <span class="glyphicon glyphicon-download"></span> Download
+            <% end %>
+          </div>
+        </div>
+      </li>
+      <% end %>
     <% ["entries", "names", "places", "languages", "sources"].each do |model| %>
       <% if File.exists?("public/static/docs/#{model}.csv.zip") %>
       <li class="list-group-item">
