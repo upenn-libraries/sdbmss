@@ -19,14 +19,14 @@
         </div>
       </li>
       <% end %>
-      <% if File.exists?("public/static/docs/dump.sql.gp") %>
+      <% if File.exists?("public/static/docs/dump.sql.gz") %>
       <li class="list-group-item">
         <div class="row">
           <div class="col-sm-6 text-left">
-            <strong>MYSQL DUMP</strong> <span class="text-muted">dump.sql.gp</span>
+            <strong>MYSQL DUMP</strong> <span class="text-muted">dump.sql.gz</span>
           </div>
           <div class="col-sm-6 text-right">            
-            <%= link_to("static/docs/dump.sql.gp", class: 'btn btn-default btn-sm') do %>
+            <%= link_to("static/docs/dump.sql.gz", class: 'btn btn-default btn-sm') do %>
               <span class="glyphicon glyphicon-download"></span> Download
             <% end %>
           </div>
