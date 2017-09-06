@@ -19,6 +19,20 @@
         </div>
       </li>
       <% end %>
+      <% if File.exists?("public/static/docs/dump.sql.gp") %>
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-sm-6 text-left">
+            <strong>MYSQL DUMP</strong> <span class="text-muted">dump.sql.gp</span>
+          </div>
+          <div class="col-sm-6 text-right">            
+            <%= link_to("static/docs/dump.sql.gp", class: 'btn btn-default btn-sm') do %>
+              <span class="glyphicon glyphicon-download"></span> Download
+            <% end %>
+          </div>
+        </div>
+      </li>
+      <% end %>
     <% ["entries", "names", "places", "languages", "sources"].each do |model| %>
       <% if File.exists?("public/static/docs/#{model}.csv.zip") %>
       <li class="list-group-item">
