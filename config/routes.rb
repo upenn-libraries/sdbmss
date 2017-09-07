@@ -2,7 +2,6 @@ Rails.application.routes.draw do
 
   mount Thredded::Engine => '/forum'
 
-  match "*path", to: "errors#render_404", via: :all
   
   root :to => "catalog#index"
 
@@ -93,6 +92,7 @@ Rails.application.routes.draw do
   # because Rails won't be able to find the catalog view files from
   # the blacklight gem.
   blacklight_for :catalog
+  get "/advanced/", to: 'advanced#index'
 
   resources :comments do
     collection {
@@ -266,4 +266,7 @@ Rails.application.routes.draw do
 
   devise_for :users, :controllers => { :registrations => "registrations" }
 
+  # matches unmatched path - needs to remain as LAST route
+  
+  match "*path", to: "errors#render_404", via: :all
 end
