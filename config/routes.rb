@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
   mount Thredded::Engine => '/forum'
+
+  match "*path", to: "errors#render_404", via: :all
   
   root :to => "catalog#index"
 
