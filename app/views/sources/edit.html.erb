@@ -445,7 +445,9 @@
           <div class="col-sm-2"></div>
           <div class="col-sm-10">
             <button class="btn btn-primary" ng-click="save()" ng-disabled="form.$invalid || currentlySaving">Save</button>
-            <a class="btn btn-warning" href="<%= new_entry_path %>">Cancel</a>
+            <% if @source && @source.id %>
+                <a class="btn btn-warning" href="<%= source_path(@source) %>">Cancel</a>
+            <% end %>
             <div ng-show="currentlySaving" style="display: inline;">
                 <img id="spinner" alt="working..." src="<%= asset_path "spinner.gif" %>" style="margin-left: 10px; margin-right: 10px;"/> Working, please wait...
             </div>

@@ -663,14 +663,14 @@ class Entry < ActiveRecord::Base
       entry_titles.map(&:display_value).join("; ")
     end
 
-    define_field(:text, :title_search, :stored => true) do
+    define_field(:text, :title_search, :stored => true, :more_like_this => true) do
       entry_titles.map(&:display_value)
     end
 
     define_field(:string, :author, :stored => true, :multiple => true) do
       entry_authors.select(&:facet_value).map(&:facet_value)
     end
-    define_field(:text, :author_search, :stored => true) do
+    define_field(:text, :author_search, :stored => true, :more_like_this => true) do
       entry_authors.map(&:display_value)
     end
     define_field(:string, :author_flat, :stored => true) do
@@ -742,7 +742,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :language_flat, :stored => true) do
       entry_languages.map(&:display_value).join("; ")
     end
-    define_field(:text, :language_search, :stored => true) do
+    define_field(:text, :language_search, :stored => true, :more_like_this => true) do
       entry_languages.map(&:display_value)
     end
 
@@ -762,7 +762,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :place_flat, :stored => true) do
       entry_places.map(&:display_value).join("; ")
     end
-    define_field(:text, :place_search, :stored => true) do
+    define_field(:text, :place_search, :stored => true, :more_like_this => true) do
       entry_places.map(&:display_value)
     end
 

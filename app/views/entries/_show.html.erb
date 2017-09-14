@@ -506,7 +506,8 @@
     <img id="spinner" alt="working..." src="<%= asset_path "spinner.gif" %>"/> Loading, please wait...
 </div>
 
-<table id="similar-entries-table" class="table table-striped" style="display: none">
+<% if @suggestions && @suggestions.length > 0 %>
+<table id="similar-entries-table" class="table table-striped" style="width: 100%; overflow: hidden;">
     <thead>
         <tr>
             <th class="col-sm-12" colspan="2"><b>There are <span id="total-similar-entries"></span> other entries that might describe the same manuscript as this entry. Here are the top candidates:</b></th>
@@ -517,7 +518,12 @@
         <tr>
             <td class="col-sm-12">
                 <div id="similar-entries">
-
+                    <% @suggestions.each do |suggestion| %>
+                        <%= link_to entry_path(suggestion) do %> 
+                            <%= suggestion.public_id %> - <%= suggestion.entry_titles.map(&:title).join(", ") %>
+                        <% end %>
+                        <br>
+                    <% end %>
                 </div>
                 <br/>
                 To link these entries, use the <a href="<%= linking_tool_by_entry_path(entry.id) %>">Linking tool</a>.
@@ -525,6 +531,7 @@
         </tr>
     </tbody>
 </table>
+<% end %>
     
 <%= render partial: "comments/show_all", locals: {comments: entry.comments.where(public: true), record: entry} %>
 

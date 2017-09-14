@@ -680,7 +680,7 @@ var BOOKMARK_SCOPE;
 
             var source_type, source_type_options;
             if ($scope.source_type) {
-              source_type = [$scope.source_type];
+              source_type = [$scope.source_type.replace("/", " ")]; // for some reason cannot search with / character in string...
               source_type_options = ["contains"];
             } else {
               source_type = ["Personal Observation", "Provenance Observation"];

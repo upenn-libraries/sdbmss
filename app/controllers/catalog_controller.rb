@@ -17,6 +17,14 @@ class CatalogController < ApplicationController
   # 404 if necessary
   def show
     @entry = Entry.find_by(id: params[:id])
+    #if @entry.manuscripts.count <= 0
+    s = Sunspot.more_like_this(@entry) do
+      fields :title_search, :place_search, :author_search, :language_search
+      #minimum_term_frequency 3
+      order_by :score, :desc
+    end
+    @suggestions = s.results.last(10)
+    #end
     entry = @entry
     # JIRA(sdbm-176)
 #    entry = Entry.find_by(id: params[:id], approved: true)
