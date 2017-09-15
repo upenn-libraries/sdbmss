@@ -6,13 +6,13 @@ xml.rss :version => "2.0" do
     xml.title "Schoenberg Database of Manuscripts"
     #xml.author "The University of Pennsylvania Libraries"
     xml.description "A History of Manuscript Transmission"
-    xml.link "https://www.sdbm.library.upenn.edu"
+    xml.link "https://www.sdbm.library.upenn.edu", :rel => "nofollow"
     xml.language "en"
 
     for entry in @entries
       xml.item do
 
-        xml.link entry_url(entry)
+        xml.link entry_url(entry), :rel => "nofollow"
         xml.title entry.public_id
         xml.pubDate entry.created_at.to_s(:rfc822)
         text = ""

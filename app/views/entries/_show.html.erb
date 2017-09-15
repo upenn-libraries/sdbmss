@@ -520,6 +520,9 @@
                 <div id="similar-entries">
                     <% @suggestions.each do |suggestion| %>
                         <%= link_to entry_path(suggestion) do %> 
+                            <% if @linked.include? suggestion.id %>
+                                <span class="glyphicon glyphicon-plus"></span>
+                            <% end %>
                             <%= suggestion.public_id %> - <%= suggestion.entry_titles.map(&:title).join(", ") %>
                         <% end %>
                         <br>

@@ -18,9 +18,13 @@ class CatalogController < ApplicationController
   def show
     @entry = Entry.find_by(id: params[:id])
     #if @entry.manuscripts.count <= 0
+    
+    @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
     s = Sunspot.more_like_this(@entry) do
       fields :title_search, :place_search, :author_search, :language_search
+      # without :id, [collect entry_ids from manuscript]
       #minimum_term_frequency 3
+      boost_by_relevance true
       order_by :score, :desc
     end
     @suggestions = s.results.last(10)
