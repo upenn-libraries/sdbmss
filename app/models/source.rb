@@ -211,8 +211,8 @@ class Source < ActiveRecord::Base
     id
   end
 
-  def results
-    bookmark_details = { 
+  def bookmark_details
+    results = { 
       type: source_type.display_name,
       date: SDBMSS::Util.format_fuzzy_date(date),
       author: author,
