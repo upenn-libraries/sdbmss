@@ -710,6 +710,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :manuscript_date_flat, :stored => true) do
       entry_dates.map(&:normalized_date_range_str).join("; ")
     end
+    # add date text field, reindex (for MORE_LIKE_THIS suggestions method, seems to be an important consideration)
 
     define_field(:string, :manuscript_public_id, :stored => true, :multiple => true) do
       manuscripts.map(&:public_id)

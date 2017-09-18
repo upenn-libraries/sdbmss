@@ -27,7 +27,7 @@ class CatalogController < ApplicationController
       boost_by_relevance true
       order_by :score, :desc
     end
-    @suggestions = s.results.last(10)
+    @suggestions = []#s.results.last(10)
     #end
     entry = @entry
     # JIRA(sdbm-176)
