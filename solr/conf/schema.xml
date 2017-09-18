@@ -352,6 +352,7 @@
     <!-- for faceting -->
     <field name="manuscript_date_range" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="manuscript_date_flat" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="manuscript_date_search" stored="true" type="text" multiValued="true" indexed="true"/>
     <field name="manuscript_public_id" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="artist" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="artist_flat" stored="true" type="string" multiValued="false" indexed="true"/>
