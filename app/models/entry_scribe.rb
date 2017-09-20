@@ -7,6 +7,7 @@ class EntryScribe < ActiveRecord::Base
   belongs_to :entry
   belongs_to :scribe, class_name: 'Name', counter_cache: :scribes_count
 
+  validates_length_of :observed_name, :minimum => 0, :maximum => 255, :allow_blank => true
   validates_presence_of :entry
 
   validate do |entry_scribe|

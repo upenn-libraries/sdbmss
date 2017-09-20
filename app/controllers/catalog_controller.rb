@@ -21,13 +21,13 @@ class CatalogController < ApplicationController
     
     @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
     s = Sunspot.more_like_this(@entry) do
-      fields :title_search, :place_search, :author_search, :language_search
+      fields :title_search, :place_search, :author_search, :language_search, :manuscript_date_search, :folios_search
       # without :id, [collect entry_ids from manuscript]
       #minimum_term_frequency 3
       boost_by_relevance true
       order_by :score, :desc
     end
-    @suggestions = []#s.results.last(10)
+    @suggestions = s.results.first(10)
     #end
     entry = @entry
     # JIRA(sdbm-176)

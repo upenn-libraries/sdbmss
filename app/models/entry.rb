@@ -711,7 +711,7 @@ class Entry < ActiveRecord::Base
       entry_dates.map(&:normalized_date_range_str).join("; ")
     end
 
-    define_field(:text, :manuscript_date_search, :stored => true) do
+    define_field(:text, :manuscript_date_search, :stored => true, :more_like_this => true) do
       entry_dates.map(&:normalized_date_range_str)
     end
     # add date text field, reindex (for MORE_LIKE_THIS suggestions method, seems to be an important consideration)
@@ -793,6 +793,8 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:integer, :folios, :stored => true) { folios }
+    define_field(:text, :folios_search, :stored => true, :more_like_this => true) { folios.to_s }
+    
     define_field(:integer, :num_columns, :stored => true) { num_columns }
 
     define_field(:integer, :num_lines, :stored => true) { num_lines }

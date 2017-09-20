@@ -6,6 +6,7 @@ class EntryTitle < ActiveRecord::Base
   belongs_to :entry
 
   validates_presence_of :entry
+  validates_length_of :title, :minimum => 0, :maximum => 255, :allow_blank => true
 
   def display_value
     [title, common_title ? "(#{common_title})" : nil, certainty_flags].reject(&:blank?).join(" ")

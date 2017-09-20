@@ -1,4 +1,4 @@
-N = 100
+N = 1000
 fields = Entry.first.as_flat_hash.map{ |key, value| [key, [0, 0]]}.to_h
 
 EntryManuscript.first(N).each do |em|
@@ -7,7 +7,7 @@ EntryManuscript.first(N).each do |em|
       e1 = entry.as_flat_hash
       e2 = em.entry.as_flat_hash
       e1.each do |k, v|
-        fields[k] = [Levenshtein.normalized_distance(e1[k].to_s, e2[k].to_s), fields[k][1] + 1]
+        fields[k] = [fields[k][0] + Levenshtein.normalized_distance(e1[k].to_s, e2[k].to_s), fields[k][1] + 1]        
       end
     end
   end

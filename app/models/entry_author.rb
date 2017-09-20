@@ -20,6 +20,7 @@ class EntryAuthor < ActiveRecord::Base
 
   validates_presence_of :entry
   validates_inclusion_of :role, in: TYPES_ROLES.map(&:first), allow_nil: true
+  validates_length_of :observed_name, :minimum => 0, :maximum => 255, :allow_blank => true
 
   validate do |entry_author|
     if !(entry_author.author.present? || entry_author.observed_name.present?)

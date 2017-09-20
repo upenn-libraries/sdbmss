@@ -81,7 +81,7 @@ class Ability
     can [:edit, :update, :destroy], Group, admin: { :id => user.id }
     can [:destroy], Entry, {created_by_id: user.id, draft: true}
 
-    cannot [:import], Entry
+    #cannot [:import], Entry
 
     can :show, Entry
     cannot :show, Entry do |entry|

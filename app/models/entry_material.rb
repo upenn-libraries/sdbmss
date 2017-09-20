@@ -7,6 +7,7 @@ class EntryMaterial < ActiveRecord::Base
 
   validates_presence_of :entry
   validate :observed_or_dropdown
+  validates_length_of :material, :minimum => 0, :maximum => 255, :allow_blank => true
 
   MATERIAL_TYPES = [
     ["Bamboo", "Bamboo"],

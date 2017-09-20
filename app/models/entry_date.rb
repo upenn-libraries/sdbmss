@@ -21,6 +21,7 @@ class EntryDate < ActiveRecord::Base
   belongs_to :entry
 
   validates_presence_of :entry
+  validates_length_of :observed_date, :minimum => 0, :maximum => 255, :allow_blank => true
 
   validates :date_normalized_start, numericality: { only_integer: true }, allow_blank: true
   validates :date_normalized_end, numericality: { only_integer: true }, allow_blank: true

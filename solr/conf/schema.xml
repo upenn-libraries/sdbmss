@@ -373,6 +373,7 @@
     <field name="use_flat" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="use_search" stored="true" type="text" multiValued="true" indexed="true"/>
     <field name="folios" stored="true" type="sint" multiValued="false" indexed="true"/>
+    <field name="folios_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="num_columns" stored="true" type="sint" multiValued="false" indexed="true"/>
 
     <field name="missing_authority_names" stored="true" type="sint" multiValued="false" indexed="true"/>

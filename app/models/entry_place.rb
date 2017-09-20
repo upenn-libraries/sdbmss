@@ -8,6 +8,7 @@ class EntryPlace < ActiveRecord::Base
   belongs_to :place, counter_cache: :entries_count
 
   validates_presence_of :entry
+  validates_length_of :observed_name, :minimum => 0, :maximum => 255, :allow_blank => true
 
   def display_value
     [place ? place.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags ].reject(&:blank?).join(" ")

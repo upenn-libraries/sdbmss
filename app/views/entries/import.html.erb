@@ -237,7 +237,7 @@
             </li>
             <li class="input-group">
               <span class='input-group-addon input-group-label'>Manuscript URL</span>
-              <span class='input-group-addon'>{{ entries[entry_index].manuscript_link }}</span>
+              <span class='input-group-addon'><a href="{{ entries[entry_index].manuscript_link }}" target="_blank">{{ entries[entry_index].manuscript_link }}</a></span>
             </li>
             <li class="input-group">
               <span class='input-group-addon input-group-label'>Other Info</span>
@@ -272,8 +272,8 @@
         </div>
         <div class="panel-body">
           <ul class="list-unstyled">
-            <li ng-repeat="(key, value) in error track by $index">
-              <strong>{{ key }}</strong> - <span class="text-muted">{{ value }}</span>
+            <li ng-repeat="e in error track by $index">
+              <span class="text-muted" ng-repeat="(key, value) in e track by $index"><strong>{{ key }}</strong> {{ value[0] }}</span>
             </li>
           </ul>
         </div>

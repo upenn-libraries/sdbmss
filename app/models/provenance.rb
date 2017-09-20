@@ -4,6 +4,8 @@ class Provenance < ActiveRecord::Base
   include CertaintyFlags
   include HasPaperTrail
 
+  validates_length_of :observed_name, :minimum => 0, :maximum => 255, :allow_blank => true
+
   belongs_to :entry
   belongs_to :provenance_agent, class_name: 'Name', counter_cache: :provenance_count
 
