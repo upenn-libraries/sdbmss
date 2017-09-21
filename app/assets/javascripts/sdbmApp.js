@@ -941,10 +941,19 @@ var BOOKMARK_SCOPE;
                       var k = $scope.multifields[j] == "provenance" ? "provenance_attributes" : "entry_" + $scope.multifields[j] + "_attributes";
                       entry[k] = $.csv.toArray(entry[$scope.multifields[j]], {separator: ";", delimiter: '"'}).map( function (f, index) {
                         var r = {};
+                        var temp = f.split(":")
+                        f = temp[0]
                         r[key] = f;
                         r.order = index;
                         if (key == "material" || key == "language") {
                           r["observed_name"] = f;
+                        }
+                        if (temp[1]) {
+                          // authors -> author_id
+                          if ($scope.multifields[j] == "provenance")
+                            r["provenance_agent_id"] = temp[1];
+                          else
+                            r[$scope.multifields[j].replace(/s\b/, "") + "_id"] = temp[1];
                         }
                         return r;
                       });
