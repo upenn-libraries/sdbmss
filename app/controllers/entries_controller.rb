@@ -407,6 +407,18 @@ class EntriesController < SearchableAuthorityController
   # this action returns differently formatted JSON results depending
   # on param 'full'
   def similar
+    s = Sunspot.more_like_this(@entry) do
+      fields :title_search, :place_search, :author_search, :language_search, :manuscript_date_search, :folios_search
+      # without :id, [collect entry_ids from manuscript]
+      #minimum_term_frequency 3
+      boost_by_relevance true
+      order_by :score, :desc
+      paginate :per_page => 10, :page => 1
+    end
+    respond_to do |format|
+      format.json { render :json => s.results.map(&:id) }
+    end
+=begin
     return
     similar = SDBMSS::SimilarEntries.new(@entry)
     if params[:full].present?
@@ -428,6 +440,7 @@ class EntriesController < SearchableAuthorityController
         format.json
       end
     end
+=end    
   end
 
   def mark_as_approved

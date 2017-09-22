@@ -11,7 +11,7 @@
     }
   </style>
 <script type="text/javascript">
-
+var table;
 function setOptions (p) {
     var t = p.find("select[name=search_field]");
     var updateOptions = function (e) {
@@ -399,9 +399,12 @@ $(document).ready(function() {
             // seems like there should be a way to do this conditional
             // ajax and subsequent searchAndUpdateTable using
             // promises, but I can't figure that out right now
-            var params = translateSearchParams(sdbmTable, dt_params); 
-            
-            params["linking_tool"] = true;
+            var params = translateSearchParams(sdbmTable, dt_params);                 
+            if (!potentialMatches) {                
+                params["linking_tool"] = true;
+            } else {
+                params = {entry_id: potentialMatches, op: "OR"};
+            }
             
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {
@@ -412,6 +415,7 @@ $(document).ready(function() {
             });
         }
     });
+    table = resultsTable;
 
 //    $("#search_results").wrap("<div id='scrollTop'></div>");
 //    $('#scrollTop').doubleScroll();
@@ -598,31 +602,22 @@ $(document).ready(function() {
         return false;
     });
 
+
+/* 
+    the method I use here is to ajax a list of the suggested IDs, then do an 
+    OR search for those entries, rather than trying to force dataTables to use a 
+    custom URL which seems to break everything 
+*/
     $("#show-matches").click(function () {
         $("#spinner").show();
-
-        var url, key;
-        if(mode == 'by_entry') {
-            url = '/entries/' + entryId + '/similar.json',
-            key = 'similar';
-        } else {
-            url = '/manuscripts/' + manuscriptId + '/entry_candidates.json',
-            key = 'entry_candidates';
-        }
+        var url = '/entries/' + entryId + '/similar.json';
 
         $.ajax({
             url: url,
             type: 'GET',
             success: function(data, textStatus, jqXHR) {
-                if(data[key] && data[key].length > 0)  {
-                    potentialMatches = data[key];
-                    resultsTable.reload();
-                } else {
-                    SDBM.showModal("#modal", {
-                        title: "No matches found",
-                        body: "No matches found"
-                    });
-                }
+                potentialMatches = data;
+                resultsTable.reload();
             },
             error: function(xhr) {
                 var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
@@ -716,12 +711,17 @@ $(document).ready(function() {
     <% end %>    
 <% end %>
 <div id="linking-tool">
-    <div style="margin-bottom: 6px">
-        <span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>
-        <button id="persist-entries-manuscript-link" class="btn btn-primary btn-sm" style="margin-left: 40px"></button>
-        <span class="alert alert-success linking-tool-change-info" id="additions">0 added</span>
-        <span class="alert alert-danger linking-tool-change-info" id="deletes">0 deleted</span>
-        <span class="alert alert-info linking-tool-change-info" id="changes">0 changed</span>
+    <div class="row">
+        <div class='text-left col-sm-8' style="margin-bottom: 6px">
+            <span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>
+            <button id="persist-entries-manuscript-link" class="btn btn-primary btn-sm" style="margin-left: 40px"></button>
+            <span class="alert alert-success linking-tool-change-info" id="additions">0 added</span>
+            <span class="alert alert-danger linking-tool-change-info" id="deletes">0 deleted</span>
+            <span class="alert alert-info linking-tool-change-info" id="changes">0 changed</span>
+        </div>
+        <div class="col-sm-4 text-right">
+            <a id="show-matches" href="" class="btn btn-default"><span class="glyphicon gylphicon-question-sign"></span> Suggest Possible Links</a>
+        </div>
     </div>
 
     <table id="workspace" class="sdbm-table table dataTable table-striped table-bordered nowrap compact" style="width: 100%">
