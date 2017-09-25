@@ -115,7 +115,11 @@
             <td class="col-sm-2 text-right record-label">Selling Agent(s)</td>
             <td class="col-sm-10">
                 <% selling_agents.each do |selling_agent| %>
-                    <a href="<%= name_path(selling_agent.agent) %>"><%= selling_agent.display_value %></a><br>
+                    <% if selling_agent.agent %>
+                        <a href="<%= name_path(selling_agent.agent) %>"><%= selling_agent.display_value %></a><br>
+                    <% else %>
+                        <%= selling_agent.display_value %>
+                    <% end %>                  
                 <% end %>
             </td>
         </tr>
@@ -126,7 +130,11 @@
             <td class="col-sm-2 text-right record-label">Seller(s)</td>
             <td class="col-sm-10">
                 <% sellers_or_holders.each do |seller_or_holder| %>
-                    <a href="<%= name_path(seller_or_holder.agent) %>"><%= seller_or_holder.display_value %></a><br>
+                    <% if seller_or_holder.agent %>
+                        <a href="<%= name_path(seller_or_holder.agent) %>"><%= seller_or_holder.display_value %></a><br>
+                    <% else %>
+                        <%= seller_or_holder.display_value %>
+                    <% end %>                    
                 <% end %>
             </td>
         </tr>
@@ -137,7 +145,11 @@
             <td class="col-sm-2 text-right record-label">Buyer(s)</td>
             <td class="col-sm-10">
                 <% buyers.each do |buyer| %>
-                    <a href="<%= name_path(buyer.agent) %>"><%= buyer.display_value %></a><br>
+                    <% if buyer.agent %>
+                        <a href="<%= name_path(buyer.agent) %>"><%= buyer.display_value %></a><br>
+                    <% else %>
+                        <%= buyer.display_value %>
+                    <% end %>
                 <% end %>
             </td>
         </tr>
