@@ -2350,14 +2350,34 @@ Private Message Styling
   text-transform: uppercase;
   font-size: 18px;
 }
+#control-panel .dropdown-menu {
+  width: 100%;
+  background-color: #5879ab;
+  border-radius: 0px;
+}
+#control-panel .dropdown-menu a {
+  padding: 8px 15px;
+  color: white;
+}
 #control-panel a {
   color: white;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
 }
-#control-panel .dropdown-menu a {
-  color: #333;
+#control-panel .dropdown-menu {
+  margin: 0px;
+  padding: 0px;
+}
+#control-panel .dropdown a:hover, 
+#control-panel .dropdown a:focus, 
+#control-panel .dropdown a:active, 
+#control-panel .dropdown-menu a:hover, 
+#control-panel .dropdown-menu a:focus,  
+#control-panel .dropdown-menu a:active {
+  text-decoration: none;
+  background-color: #799cd1 !important;
+  color: white !important;
 }
 #control-panel .nav > li > a {
   padding: 8px 15px;
@@ -2386,12 +2406,13 @@ Private Message Styling
 
 .textarea-group {
   width: 100%;
+  height: 100%;
 }
 .textarea-group textarea {
   width: 100%;
 }
 .textarea-group-btn {
-  height: 10px;
+  height: 100%;
   width: 1% !important;
   display: table-cell;
 }

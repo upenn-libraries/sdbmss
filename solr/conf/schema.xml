@@ -342,6 +342,7 @@
     <field name="sale_price" stored="true" type="sdouble" multiValued="false" indexed="true"/>
     <field name="provenance" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="provenance_search" stored="true" type="text" multiValued="true" indexed="true"/>
+    <field name="provenance_composite" stored="true" type="text" indexed="true"/>
     <field name="title" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="title_flat" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="title_search" stored="true" type="text" multiValued="true" indexed="true"/>

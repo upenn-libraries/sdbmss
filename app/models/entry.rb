@@ -838,6 +838,10 @@ class Entry < ActiveRecord::Base
 
     #### Provenance
 
+    define_field(:text, :provenance_composite, :stored => true) do
+      (((sale = get_sale) ? sale.sale_agents.map(&:display_value) : []) + provenance.map(&:display_value) + (institution ? [institution.display_value] : []) + [source.display_value]).join(" ")
+    end
+
     define_field(:string, :provenance, :stored => true, :multiple => true) do
       provenance.select(&:facet_value).map(&:facet_value)
     end
