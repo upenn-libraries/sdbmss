@@ -233,6 +233,10 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'provenance_search' }
       end
 
+      config.add_search_field('all provenance') do |field|
+        field.solr_local_parameters = { :qf => 'provenance_composite' }
+      end
+
       config.add_search_field('comment') do |field|
         field.include_in_simple_select = false
         field.solr_local_parameters = { :qf => 'comment_search' }
@@ -323,7 +327,7 @@ module CatalogControllerConfiguration
       config.add_search_field('price') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'price' }
+        field.solr_local_parameters = { :qf => 'sale_price' }
       end
 
       config.add_search_field('provenance_date', label: "Provenance Date") do |field|
