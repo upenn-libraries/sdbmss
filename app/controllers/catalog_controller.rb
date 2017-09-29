@@ -18,25 +18,23 @@ class CatalogController < ApplicationController
   def show
     @entry = Entry.find_by(id: params[:id])
     #if @entry.manuscripts.count <= 0
-    
-    @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
-    s = Sunspot.more_like_this(@entry) do
-      fields :title_search, :place_search, :author_search, :language_search
-      # without :id, [collect entry_ids from manuscript]
-      #minimum_term_frequency 3
-      boost_by_relevance true
-      order_by :score, :desc
-    end
-    @suggestions = []#s.results.last(10)
     #end
     entry = @entry
     # JIRA(sdbm-176)
 #    entry = Entry.find_by(id: params[:id], approved: true)
     if entry.present?
       if can? :show, entry
-        #flash.now[:notice] = "Note: This entry records a mention or observation of a manuscript in a source.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
-    #  @entry_comment = EntryComment.new(entry: entry)
-    #  @entry_comment.build_comment
+        
+        @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
+        s = Sunspot.more_like_this(@entry) do
+          fields :title_search, :place_search, :author_search, :language_search
+          # without :id, [collect entry_ids from manuscript]
+          #minimum_term_frequency 3
+          boost_by_relevance true
+          order_by :score, :desc
+        end
+        @suggestions = []#s.results.last(10)
+    
         super
         respond_to do |format|
           format.html

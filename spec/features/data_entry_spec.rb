@@ -215,6 +215,7 @@ describe "Data entry", :js => true do
       find('#title').set 'Very Rare Books'
 
       find_by_id('add_source_agent').click
+      expect(page).to have_content('Find or Create Authority Name')
       add_name_authority('find_source_agent_name_authority_0', "Sotheby's")
       #fill_autocomplete_select_or_create_entity 'selling_agent', with: "Sotheby's"
       #select "Yes", from: 'whether_mss'
@@ -225,7 +226,7 @@ describe "Data entry", :js => true do
       fill_in 'link', with: "HM851 .L358 2010"
       #fill_in 'comments', with: 'This info is correct'
 
-      click_button('Save')
+      find('#savesource').click
 
       expect(page).to have_content("SDBM_SOURCE")
       #expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
@@ -248,7 +249,7 @@ describe "Data entry", :js => true do
     end
 
     it "should restrict source agent roles as appropriate for a given source" do
-      s = Source.last
+      s = Source.where(source_type_id: 1).last
       expect(s.source_type).to eq(SourceType.auction_catalog)
 
       count = s.source_agents.count
@@ -275,7 +276,7 @@ describe "Data entry", :js => true do
       fill_in 'link', with: "HM851 .L358 2010"
       fill_in 'comments', with: 'This info is correct'
 
-      click_button('Save')
+      find('#savesource').click
 
       expect(page).to have_content("SDBM_SOURCE")
 
@@ -307,7 +308,7 @@ describe "Data entry", :js => true do
       find('#title').set 'Test source wirh no date'
       fill_in 'author', with: 'Jeff'
 
-      click_button('Save')
+      find('#savesource').click
 
       expect(page).to have_content("SDBM_SOURCE")
 #      expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
@@ -342,7 +343,7 @@ describe "Data entry", :js => true do
 #      find_by_id('remove_selling_agent_name_authority_0').click
       find_by_id('add_source_agent').click
       add_name_authority('find_source_agent_name_authority_0', "Sotheby's")
-      click_button('Save')
+      find('#savesource').click
 
       # expect that page has filtered out the field values that are
       # not valid for the new source type
@@ -378,7 +379,7 @@ describe "Data entry", :js => true do
       #find_by_id('remove_selling_agent_name_authority_0').click
       find_by_id('add_source_agent').click
       add_name_authority('find_source_agent_name_authority_0', "Sotheby's")
-      click_button('Save')
+      find('#savesource').click
 
 #      expect(find(".modal-title", visible: true).text.include?("Warning: similar sources found!")).to be_truthy
        expect(page).to have_content("SDBM_SOURCE")
@@ -715,7 +716,7 @@ describe "Data entry", :js => true do
       select 'Auction/Dealer Catalog', from: 'source_type'
       fill_in 'source_date', with: '2015-02-28'
       find('#title').set 'Sample Catalog'
-      click_button 'Save'
+      find('#savesource').click
 
       expect(page).to have_content("SDBM_SOURCE")
 
@@ -767,10 +768,10 @@ describe "Data entry", :js => true do
 
       click_link "Create A Personal Observation"
 
-      expect(page).to have_content("Create a New Personal Observation")
+      expect(page).to have_content("Create Personal Observation Source")
 
       fill_in "author", with: "Totally Unique Personal Observation Source" 
-      click_button "Save"
+      find('#savesource').click
 
       expect(page).to have_content("Known errors in the Source should be preserved but can be noted")
 
