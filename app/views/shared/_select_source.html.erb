@@ -68,7 +68,9 @@
                 </td>
                 <td>
                     <% if true %>
-                        <a href="/sources/{{ source.id }}" target="_blank">{{ source.display_value }}</a> ({{ source.entries_count }} {{ source.entries_count == 1 ? 'entry' : 'entries' }})
+                        <span ng-class="{'text-danger' : source.problem}"><a href="/sources/{{ source.id }}" target="_blank"  ng-class="{'text-danger' : source.problem}">{{ source.display_value }}</a> ({{ source.entries_count }} {{ source.entries_count == 1 ? 'entry' : 'entries' }})
+                            <span class="" ng-if="source.problem" sdbm-tooltip="problemSource"></span>   
+                        </span>
                     <% else %>
                         <a href="/sources/{{ source.id }}" target="_blank">{{ source.display_value }}</a> ({{ source.entries_count }} {{ source.entries_count == 1 ? 'entry' : 'entries' }}) {{ source.source_type }}
                     <% end %>

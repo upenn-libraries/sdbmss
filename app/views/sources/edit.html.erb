@@ -4,8 +4,18 @@
 <% end %>
 
 <% content_for :breadcrumbs do %>
-<% @model = @source %>
-  <%= render partial: "manage_models/breadcrumbs", locals: {edit: true} %>
+    <% if @model && @model.id %>
+        <% @model = @source %>
+        <%= render partial: "manage_models/breadcrumbs", locals: {edit: true} %>
+    <% else %>
+        <li>
+            <%= link_to "Manage Sources", sources_path %>
+        </li>
+        <li class='active'>
+            <a href="">Step 1: Personal Observation Source</a>
+        </li>
+        <li><a class="disabled">Step 2: Personal Observation Entry</a></li>
+    <% end %>
 <% end %>
 
 <% content_for :control_tools do %>
@@ -47,7 +57,7 @@
 
     <div class="row">
         <div class="col-sm-12">
-            <p><strong>Always</strong> check the tooltips to find out the correct type and format of the data to be entered in a field. Tooltips are accessed by clicking on the <span class="tooltip-icon">?</span> icon next to the field label.</p>
+            <p>Always check the tooltips to find out the correct type and format of the data to be entered in a field. Tooltips are accessed by clicking on the <span class="tooltip-icon">?</span> icon next to the field label.</p>
 
             <p>Your data entry will be reviewed by SDBM staff for approval. If there are problems with your data entry, we will be in touch to discuss how to better enter your data to ensure greater accessibility and use by other users.</p>
 
@@ -59,7 +69,7 @@
                 <p ng-show="source.source_type.name == 'collection_catalog'">Use for published catalogs of institutional or private individual collections.</p>
                 <p ng-show="source.source_type.name == 'online'">Use this type for online-only auctions, such as eBay, or for bookseller websites providing non-dated sale lists. This field is intended for information found only online and not referring to a specific, dated sale.</p>
                 <p ng-show="source.source_type.name == 'observation'">
-                    Use this type when recording data acquired via direct personal observation or indirect knowledge of a manuscript. It is mandatory that you understand the SDBM data model before creating a Personal Observation. Please review the instructional content, located within the <b><span class="glyphicon glyphicon-question-sign"></span> Help</b> menu at the top of the screen, before creating your entry.
+                    Use this type when recording data acquired via direct personal observation or indirect knowledge of a manuscript. We ask that you provide information about your Personal Observation so that other users can better assess your information. Once you create this Source record, you will be prompted to enter the Entry data. The SDBM Data Model requires that Source data and Entry data (data about a specific manuscript) are recorded separately. To read more about the data model, <a href="/pages/New%20Data%20Model">click here</a>.
                 </p>
                 <p ng-show="source.source_type.name == 'other_published'">Use this type for any other published source not applicable to the previous SOURCE TYPES (e.g., an inventory published in a journal article).</p>
                 <p ng-show="source.source_type.name == 'unpublished'">Use for any unpublished data sources (e.g. in-house finding aids or inventories, personal communications via email, etc).</p>
@@ -255,15 +265,21 @@
             </div>
 
             <div class="form-group row">
-                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Title</span></label>
+                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Description</span></label>
                 <div class="col-sm-5">
                     <input type="text" class="form-control" id="title" ng-model="source.title">
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-sm-12">
+                    <p style="border-bottom: 1px solid #e5e5e5;">If you are <b>directly observing</b> the manuscript(s), add the location or institution where you made this observation:</p>
+                </div>
+            </div>
+
             <div class="form-group row">
                 <label class="col-sm-2 control-label">
-                  <span><span sdbm-tooltip="source_institution">Institution(s)</span></span>  
+                  <span><span sdbm-tooltip="source_institution">Institution/Location(s)</span></span>  
                   <div class="add-link-container">
                     <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
                       Add new <span class="glyphicon glyphicon-plus"></span>
@@ -442,11 +458,19 @@
 
 
         <div class="row">
-          <div class="col-sm-2"></div>
-          <div class="col-sm-10">
-            <button class="btn btn-primary" ng-click="save()" ng-disabled="form.$invalid || currentlySaving">Save</button>
+          <div class="col-sm-12 text-center">
+            <% if !params[:create_entry].nil? %>
+                <button class="btn btn-primary btn-lg" ng-click="save()" ng-disabled="form.$invalid || currentlySaving">
+                    <span class="glyphicon glyphicon-arrow-right"></span> Continue to Entry Details
+                </button>
+            <% else %>
+                <button class="btn btn-primary btn-lg" ng-click="save()" ng-disabled="form.$invalid || currentlySaving">Save</button>
+            <% end %>
+            
             <% if @source && @source.id %>
-                <a class="btn btn-warning" href="<%= source_path(@source) %>">Cancel</a>
+                <a class="btn btn-warning btn-lg" href="<%= source_path(@source) %>">Cancel</a>
+            <% else %>
+                <a class="btn btn-warning btn-lg" href="<%= dashboard_activity_path %>">Cancel</a>            
             <% end %>
             <div ng-show="currentlySaving" style="display: inline;">
                 <img id="spinner" alt="working..." src="<%= asset_path "spinner.gif" %>" style="margin-left: 10px; margin-right: 10px;"/> Working, please wait...

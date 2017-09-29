@@ -156,7 +156,11 @@ class SourcesController < SearchableAuthorityController
         end
       }
       format.html {
-        render "edit"
+        if success
+          redirect_to source_path(@source)
+        else
+          render 'edit'
+        end
       }
     end
   end
@@ -465,6 +469,8 @@ class SourcesController < SearchableAuthorityController
       :medium,
       :date_accessed,
       :location,
+      :problem,
+      :reviewed,
       :location_institution,
       :link,
       :status,

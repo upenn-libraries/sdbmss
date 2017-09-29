@@ -161,7 +161,7 @@ class ManageModelsController < ApplicationController
   end
 
   def model_params
-    params.require(model_class_lstr.to_sym).permit(:name)
+    params.require(model_class_lstr.to_sym).permit(:name, :reviewed, :problem)
   end
 
   # this implementation checks the entries_count field if it exists

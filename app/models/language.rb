@@ -39,6 +39,7 @@ class Language < ActiveRecord::Base
     string :name
     integer :id
     integer :entries_count
+    boolean :problem
     integer :created_by_id
     date :created_at
     date :updated_at
@@ -68,6 +69,7 @@ class Language < ActiveRecord::Base
       name: name,
       entries_count: entries_count,
       reviewed: reviewed,
+      problem: problem,
       created_by: created_by.present? ? created_by.username : "(none)",
       created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
       updated_by: updated_by.present? ? updated_by.username : "(none)",

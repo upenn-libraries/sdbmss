@@ -24,12 +24,14 @@
                 </thead>
                 <tbody class=''>
                     <tr ng-show="warning.length > 0">
-                        <td colspan="9">{{ warning }}</td>
+                        <td colspan="5">{{ warning }}</td>
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index">
                         <td><a class='selectModel btn btn-default btn-small' ng-click='selectSuggestion(s)'>Select</a></td>
                         <td>{{ s.id }}</td>
-                        <td><a href="/{{ type }}s/{{ s.id }}" target="_blank">{{ s.name }}</a></td>
+                        <td><a href="/{{ type }}s/{{ s.id }}" target="_blank" ng-class="{'text-danger' : s.problem}">{{ s.name }}</a>
+                            <span class="" ng-if="s.problem" sdbm-tooltip="problemModel"></span>   
+                        </td>
                         <td>{{ s.entries_count }}</td>
                         <td>{{ s.reviewed ? "Yes" : "No" }}
                             <!--<span class='glyphicon' ng-class="s.reviewed ? 'glyphicon-ok' : 'glyphicon-remove'"></span>-->

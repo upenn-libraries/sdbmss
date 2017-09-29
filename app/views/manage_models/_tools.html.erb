@@ -11,5 +11,26 @@
       <span class="glyphicon glyphicon-transfer"></span> Merge</a>
     <% end %>
   </li>
-    <!-- eventually, merge will be here? -->
+<% end %>
+<% if can? :edit, @model %>
+  <% if !@model.reviewed %>
+      <li class="link">
+          <%= link_to(polymorphic_path(@model, @model.class.to_s.underscore.to_sym => {id: @model.id, reviewed: true}), :method => :put, :data => {:confirm => "Can you confirm that the #{@model.class.name} conforms to the SDBM Data Standards</a>?"}) do %>
+              <span class="glyphicon glyphicon-ok"></span> Approve
+          <% end %>
+      </li>
+  <% end %>
+  <% if !@model.problem %>
+      <li class="link">
+          <%= link_to(polymorphic_path(@model, @model.class.to_s.underscore.to_sym => {id: @model.id, reviewed: true, problem: true}), :method => :put, :data => {:confirm => "Would you like to flag this #{@model.class.name} as being problematic?"}) do %>
+              <span class="glyphicon glyphicon-ok"></span> Flag Problem
+          <% end %>
+      </li>
+  <% elsif @model.problem %>
+      <li class="link">
+          <%= link_to(polymorphic_path(@model, @model.class.to_s.underscore.to_sym => {id: @model.id, problem: false}), :method => :put, :data => {:confirm => "Has this name been improved so that it is a valid #{@model.class.name} resource?"}) do %>
+              <span class="glyphicon glyphicon-ok"></span> Unflag Problem
+          <% end %>
+      </li>
+  <% end %>
 <% end %>

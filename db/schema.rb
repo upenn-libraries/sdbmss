@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170823144650) do
+ActiveRecord::Schema.define(version: 20170929181813) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -427,6 +427,7 @@ ActiveRecord::Schema.define(version: 20170823144650) do
     t.boolean  "reviewed",                   default: false
     t.integer  "reviewed_by_id", limit: 4
     t.datetime "reviewed_at"
+    t.boolean  "problem",                    default: false
   end
 
   add_index "languages", ["created_by_id"], name: "index_languages_on_created_by_id", using: :btree
@@ -563,6 +564,7 @@ ActiveRecord::Schema.define(version: 20170823144650) do
     t.boolean  "reviewed",                   default: false
     t.integer  "reviewed_by_id", limit: 4
     t.datetime "reviewed_at"
+    t.boolean  "problem",                    default: false
   end
 
   add_index "places", ["created_by_id"], name: "index_places_on_created_by_id", using: :btree
@@ -744,6 +746,7 @@ ActiveRecord::Schema.define(version: 20170823144650) do
     t.integer  "reviewed_by_id",       limit: 4
     t.datetime "reviewed_at"
     t.boolean  "legacy",                             default: false
+    t.boolean  "problem",                            default: false
   end
 
   add_index "sources", ["created_by_id"], name: "index_sources_on_created_by_id", using: :btree

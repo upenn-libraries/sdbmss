@@ -122,6 +122,7 @@ class Source < ActiveRecord::Base
     string :date
     text :date, :more_like_this => true
     integer :entries_count
+    boolean :problem
     string :source_type do
       source_type.display_name
     end
@@ -346,7 +347,8 @@ class Source < ActiveRecord::Base
   def self.filters
     [
       ["Id", "id"], 
-      ["Source Agent Id", "agent_id"]
+      ["Source Agent Id", "agent_id"],
+      ["Problem", "problem"]
     ]
   end
 
@@ -367,6 +369,7 @@ class Source < ActiveRecord::Base
       location_institution: location_institution,
       location: location,
       link: link,
+      problem: problem,
       #comments: comments,
       created_by: created_by.present? ? created_by.username : "(none)",
       created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",

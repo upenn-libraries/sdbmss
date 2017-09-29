@@ -2629,7 +2629,7 @@ var BOOKMARK_SCOPE;
                     }
                 });
             }
-            return 'Create a New ' + sourceTypeForTitle;
+            return 'Create ' + sourceTypeForTitle + ' Source';
         };
 
         $scope.showFields = function() {
