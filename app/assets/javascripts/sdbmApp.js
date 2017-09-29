@@ -941,7 +941,7 @@ var BOOKMARK_SCOPE;
                       var k = $scope.multifields[j] == "provenance" ? "provenance_attributes" : "entry_" + $scope.multifields[j] + "_attributes";
                       entry[k] = $.csv.toArray(entry[$scope.multifields[j]], {separator: ";", delimiter: '"'}).map( function (f, index) {
                         var r = {};
-                        var temp = f.split(":")
+                        var temp = f.split("::::")
                         f = temp[0]
                         r[key] = f;
                         r.order = index;
