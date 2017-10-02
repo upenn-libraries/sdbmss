@@ -1780,11 +1780,11 @@ var BOOKMARK_SCOPE;
                 entryToSave.$update(
                     $scope.postEntrySave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry", function () {
-                      $scope.currentlySaving = false;
                     })
                 ).finally(function() {
+                    $scope.currentlySaving = false;
+                    $scope.clearDraft();
                     // $scope.currentlySaving = false;
-                  $scope.clearDraft();
                 });
             } else {
 
@@ -1807,10 +1807,10 @@ var BOOKMARK_SCOPE;
                 entryToSave.$save(
                     $scope.postEntrySave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry", function () {
-                      $scope.currentlySaving = false;
                     })
                   ).finally(function() {
-                  $scope.clearDraft();
+                    $scope.clearDraft();
+                    $scope.currentlySaving = false;
                     // $scope.currentlySaving = false;
                 });
             }

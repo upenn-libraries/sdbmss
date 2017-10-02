@@ -16,7 +16,7 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <% if @model.problem %>
+        <% if @source.problem === true %>
           <div class="alert alert-danger"><span class="lead"><span class="glyphicon glyphicon-warning-sign"></span> Warning!</span> This source has been flagged as problematic because the purpose or data recorded is uncertain. Use only if you have no other options. If you have information to help us better identify this Source, please leave a comment.</div>
         <% end %>
     </div>
