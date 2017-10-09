@@ -427,8 +427,10 @@ class Name < ActiveRecord::Base
     self.deleted = true
     self.save!
 
-    # reindex affected entries
-    SDBMSS::IndexJob.perform_later(Entry.to_s, entry_ids)
+    # slice into managable chunks to avoid running out of space in mysql 
+    entry_ids.each_slice(200) do |slice|
+      SDBMSS::IndexJob.perform_later(Entry.to_s, slice)
+    end
   end
 
   def update_count()
