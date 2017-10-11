@@ -408,7 +408,7 @@ class EntriesController < SearchableAuthorityController
   # on param 'full'
   def similar
     s = Sunspot.more_like_this(@entry) do
-      fields :title_search, :place_search, :author_search, :language_search, :manuscript_date_search, :folios_search
+      fields :title_search, :place_search, :language_search, :artist_search, :scribe_search, :use_search, :binding_search, :folios_search
       # without :id, [collect entry_ids from manuscript]
       #minimum_term_frequency 3
       boost_by_relevance true

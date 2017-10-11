@@ -727,7 +727,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :artist_flat, :stored => true) do
       entry_artists.map(&:display_value).join("; ")
     end
-    define_field(:text, :artist_search, :stored => true) do
+    define_field(:text, :artist_search, :stored => true, :more_like_this => true) do
       entry_artists.map(&:display_value)
     end
 
@@ -737,7 +737,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :scribe_flat, :stored => true) do
       entry_scribes.map(&:display_value).join("; ")
     end
-    define_field(:text, :scribe_search, :stored => true) do
+    define_field(:text, :scribe_search, :stored => true, :more_like_this => true) do
       entry_scribes.map(&:display_value)
     end
 
@@ -757,7 +757,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :material_flat, :stored => true) do
       entry_materials.map(&:display_value).join("; ")
     end
-    define_field(:text, :material_search, :stored => true) do
+    define_field(:text, :material_search, :stored => true, :more_like_this => true) do
       entry_materials.map(&:display_value)
     end
 
@@ -777,7 +777,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :use_flat, :stored => true) do
       entry_uses.map(&:use).join("; ")
     end
-    define_field(:text, :use_search, :stored => true) do
+    define_field(:text, :use_search, :stored => true, :more_like_this => true) do
       entry_uses.map(&:use)
     end
 
@@ -826,7 +826,7 @@ class Entry < ActiveRecord::Base
     define_field(:integer, :initials_decorated, :stored => true) { initials_decorated }
     define_field(:string, :initials_decorated_range, :stored => true) { SDBMSS::Util.range_bucket(initials_decorated) }
 
-    define_field(:text, :binding_search, :stored => true) do
+    define_field(:text, :binding_search, :stored => true, :more_like_this => true) do
       manuscript_binding
     end
 
