@@ -30,7 +30,10 @@ class PlacesController < SearchableAuthorityController
         @model.entry_places.update_all(:place_id => @target.id)
         @model.destroy!
         flash[:success] = "#{id} has been successfully merged into #{@target.public_id}"
-        @target.entries.index
+        entry_ids = @target.entries.map(&:id)
+        entry_ids.each_slice(200) do |slice|
+          SDBMSS::IndexJob.perform_later(Entry.to_s, slice)
+        end
         Place.update_counters(@target.id, :entries_count => @target.entries.count - @target.entries_count)
         redirect_to place_path(@target)
       end
