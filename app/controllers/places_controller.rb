@@ -34,7 +34,7 @@ class PlacesController < SearchableAuthorityController
         entry_ids.each_slice(200) do |slice|
           SDBMSS::IndexJob.perform_later(Entry.to_s, slice)
         end
-        Place.update_counters(@target.id, :entries_count => @target.entries.count - @target.entries_count)
+        Place.update_counters(@target.id, :entries_count => @target.entries.where(deprecated: false, draft: false).count - @target.entries_count)
         redirect_to place_path(@target)
       end
     else

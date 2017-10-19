@@ -34,7 +34,7 @@ class LanguagesController < SearchableAuthorityController
         entry_ids.each_slice(200) do |slice|
           SDBMSS::IndexJob.perform_later(Entry.to_s, slice)
         end
-        Language.update_counters(@target.id, :entries_count => @target.entries.count - @target.entries_count)
+        Language.update_counters(@target.id, :entries_count => @target.entries.where(deprecated: false, draft: false).count - @target.entries_count)
         redirect_to language_path(@target)
       end
     else

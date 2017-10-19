@@ -323,7 +323,7 @@ class Source < ActiveRecord::Base
 
     Entry.where(source_id: self.id).update_all(source_id: target_id)
 
-    target.update_count
+#    target.update_count
     target.save!
 
     self.deleted = true

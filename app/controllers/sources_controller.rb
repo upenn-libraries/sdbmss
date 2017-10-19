@@ -345,6 +345,7 @@ class SourcesController < SearchableAuthorityController
         log_activity
         flash[:success] = "#{id} has been successfully merged into #{@target.public_id}"
       end
+      Source.update_counters(@target.id, :entries_count => @target.entries.where(deprecated: false, draft: false).count - @target.entries_count)
       # FIX ME: handle errors here, if the merge is not succesful?
       #render "merge_success"
       redirect_to source_path(@target)
@@ -354,7 +355,7 @@ class SourcesController < SearchableAuthorityController
   # we don't ever destroy anything, we just mark it as deleted
   def destroy
     error = nil
-    if @source.entries_count.to_i == 0
+    if @source.entries.count.to_i == 0
       @source.deleted = true
       if !@source.save_by(current_user)
         error = @source.errors.to_s
@@ -364,8 +365,10 @@ class SourcesController < SearchableAuthorityController
           Name.decrement_counter(:source_agents_count, source_agent.id)
         end
       end
+    elsif @source.entries.where(deprecated: true).count > 0
+      error = "The source cannot be deleted because it is still used in some entries (including deprecated entries)"
     else
-      error = "Can't mark a source as deleted if it has entries"
+      error = "The source cannot be deleted because it is still used in some entries"
     end
 
     # if we call respond_with(@entry), which is more rails-ish, the
