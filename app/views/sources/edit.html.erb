@@ -9,7 +9,7 @@
         <%= render partial: "manage_models/breadcrumbs", locals: {edit: true} %>
     <% else %>
         <li>
-            <%= link_to "Manage Sources", sources_path %>
+          <%= link_to "Cancel", dashboard_contributions_path %>
         </li>
         <li class='active'>
             <a href="">Step 1: Personal Observation Source</a>
@@ -51,7 +51,9 @@
 
     <div class="row">
         <div class="col-sm-12 text-center">
-            <legend>{{ getPageTitle() }}</legend>
+            <legend>
+                {{ getPageTitle() }}
+            </legend>
         </div>
     </div>
 
@@ -151,17 +153,30 @@
                     </a>
                   </div>
                 </label>
-                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-5'>
+                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-10'>
                     <div class="input-block form-group" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
                         <div class="remove-link-container">
                           <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
                             <span class="glyphicon glyphicon-remove"></span>
                           </a>
                         </div>
-                        <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find or Create Authority Name</a>
-                        <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
-                            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
-                            {{ source_agent.agent.name }}
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="" class="control-label">As Recorded</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" ng-model="source_agent.observed_name" ng-change="source_agent.role = 'selling_agent'">
+                            </div>
+                            <div class="col-sm-2">
+                                <label for="" class="control-label">Authority Name</label>
+                            </div>
+                            <div class="col-sm-4">                        
+                                <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find or Create Authority Name</a>
+                                <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                    <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                    {{ source_agent.agent.name }}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -195,18 +210,31 @@
                     </a>
                   </div>
                 </label>
-                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-5'>
+                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-10'>
                     <div class="input-block form-group" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
                         <div class="remove-link-container">
                           <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
                             <span class="glyphicon glyphicon-remove"></span>
                           </a>
                         </div>
-                        <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find or Create Authority Name</a>
-                        <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
-                            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
-                            {{ source_agent.agent.name }}
-                        </div>                            
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="" class="control-label">As Recorded</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" ng-model="source_agent.observed_name" ng-change="source_agent.role = 'selling_agent'">
+                            </div>
+                            <div class="col-sm-2">
+                                <label for="" class="control-label">Authority Name</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find or Create Authority Name</a>
+                                <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                    <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                    {{ source_agent.agent.name }}
+                                </div>                            
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -223,18 +251,31 @@
                     </a>
                   </div>
                 </label>
-                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-5'>
+                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-10'>
                     <div class="input-block form-group" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
                         <div class="remove-link-container">
                           <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
                             <span class="glyphicon glyphicon-remove"></span>
                           </a>
-                        </div>                           
-                        <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find or Create Authority Name</a>
-                        <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
-                            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
-                            {{ source_agent.agent.name }}
-                        </div>                           
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="" class="control-label">As Recorded</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" ng-model="source_agent.observed_name" ng-change="source_agent.role = 'institution'">
+                            </div>
+                            <div class="col-sm-2">
+                                <label for="" class="control-label">Authority Name</label>
+                            </div>
+                            <div class="col-sm-4">                           
+                                <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find or Create Authority Name</a>
+                                <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                    <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                    {{ source_agent.agent.name }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -286,17 +327,30 @@
                     </a>
                   </div>
                 </label>
-                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-5'>
+                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-10'>
                     <div class="input-block form-group row" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
                         <div class="remove-link-container">
                           <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
                             <span class="glyphicon glyphicon-remove"></span>
                           </a>
-                        </div>                         
-                        <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find or Create Authority Name</a>
-                        <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
-                            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
-                            {{ source_agent.agent.name }}
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="" class="control-label">As Recorded</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" ng-model="source_agent.observed_name" ng-change="source_agent.role = 'institution'">
+                            </div>
+                            <div class="col-sm-2">
+                                <label for="" class="control-label">Authority Name</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find or Create Authority Name</a>
+                                <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                    <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                    {{ source_agent.agent.name }}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -333,18 +387,31 @@
                     </a>
                   </div>
                 </label>
-                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-5'>
+                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='col-sm-10'>
                     <div class="input-block form-group" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
                         <div class="remove-link-container">
                           <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
                             <span class="glyphicon glyphicon-remove"></span>
                           </a>
-                        </div>                                                   
-                        <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find or Create Authority Name</a>
-                        <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
-                            <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
-                            {{ source_agent.agent.name }}
-                        </div>                            
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <label for="" class="control-label">As Recorded</label>
+                            </div>
+                            <div class="col-sm-4">
+                                <input type="text" class="form-control" ng-model="source_agent.observed_name" ng-change="source_agent.role = 'institution'">
+                            </div>
+                            <div class="col-sm-2">
+                                <label for="" class="control-label">Authority Name</label>
+                            </div>
+                            <div class="col-sm-4">                        
+                                <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find or Create Authority Name</a>
+                                <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
+                                    <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
+                                    {{ source_agent.agent.name }}
+                                </div>
+                            </div>
+                        </div>       
                     </div>
                 </div>
             </div>

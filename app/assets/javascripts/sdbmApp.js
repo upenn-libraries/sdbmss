@@ -643,6 +643,9 @@ var BOOKMARK_SCOPE;
 
         $scope.createSource = function () {
           var modalScope = $rootScope.$new();
+          modalScope.date = $scope.date;
+          modalScope.title = $scope.title;
+          modalScope.agent = $scope.agent;
           modalScope.model = model;
           modalScope.modalInstance = $modal.open({
             templateUrl: 'createSource.html',
@@ -2565,7 +2568,7 @@ var BOOKMARK_SCOPE;
         $scope.associations = [
             {
                 field: 'source_agents',
-                properties: ['agent_id'],
+                properties: ['observed_name'],
                 foreignKeyObjects: ['agent']
             }
         ];
@@ -2573,7 +2576,7 @@ var BOOKMARK_SCOPE;
         $scope.pageTitle = "";
 
         $scope.source_type = $scope.source ? $scope.source.source_type : "";
-        $scope.source = undefined;
+        //$scope.source = undefined;
 
         $scope.source_agents = [];
 
@@ -2629,7 +2632,11 @@ var BOOKMARK_SCOPE;
                     }
                 });
             }
-            return 'Create ' + sourceTypeForTitle + ' Source';
+            if (sourceTypeForTitle == "Personal Observation") {
+              return 'Step 1: Describe The Source Of Your ' + sourceTypeForTitle;              
+            } else {
+              return 'Create ' + sourceTypeForTitle + ' Source';              
+            }
         };
 
         $scope.showFields = function() {
@@ -2858,6 +2865,17 @@ var BOOKMARK_SCOPE;
             else
               $scope.source.medium = '';
             $scope.source.source_agents = [];
+
+            if ($scope.date) {
+              $scope.source.date = $scope.date;
+            }
+            if ($scope.title) {
+              $scope.source.title = $scope.title;
+            }
+            if ($scope.agent) {
+              $scope.source.source_agents.push({observed_name: $scope.agent});
+            }
+            //$scope.$apply();
           }
         };
 

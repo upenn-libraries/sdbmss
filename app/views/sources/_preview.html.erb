@@ -31,21 +31,33 @@
         <% if (institutions = source.get_institutions).present? %>
         <dt>Institution</dt>
             <% institutions.each do |institution| %>
-                <dd><a class='badge' href="<%= url_for institution.agent %>"><%= institution.agent.name %></a></dd>
+                <dd>
+                    <% if institution.agent %>
+                        <a class='badge' href="<%= url_for institution.agent %>"><%= institution.agent.name %></a>
+                    <% end %>
+                    <%= "(#{institution.observed_name})" if institution.observed_name %></dd>
             <% end %>
         <% end %>
 
         <% if (selling_agents = source.get_selling_agents).present? %>
         <dt>Selling Agent</dt>
             <% selling_agents.each do |selling_agent| %>
-                <dd><a class='badge' href="<%= url_for selling_agent.agent %>"><%= selling_agent.agent.name %></a></dd>
+                <dd>
+                    <% if selling_agent.agent %>
+                        <a class='badge' href="<%= url_for selling_agent.agent %>"><%= selling_agent.agent.name %></a>
+                    <% end %>
+                    <%= "(#{selling_agent.observed_name})" if selling_agent.observed_name %></dd>
             <% end %>
         <% end %>
 
         <% if (sellers_or_holders = source.get_sellers_or_holders).present? %>
         <dt>Seller</dt>
             <% sellers_or_holders.each do |seller_or_holder| %>
-                <dd><a class='badge' href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a></dd>
+                <dd>
+                    <% if seller_or_holder.agent %>
+                        <a class='badge' href="<%= url_for seller_or_holder.agent %>"><%= seller_or_holder.agent.name %></a>
+                    <% end %>
+                    <%= "(#{seller_or_holder.observed_name})" if seller_or_holder.observed_name %></dd>
             <% end %>
         <% end %>
 

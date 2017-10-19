@@ -94,7 +94,17 @@ label.col-sm-2-and-half {
 <% end %>
 
 <% content_for :breadcrumbs do %>
-  <%= render partial: "catalog/breadcrumbs", locals: {edit: true} %>
+  <% if @source_id && Source.find(@source_id).source_type.to_s == "Personal Observation" %>
+        <li>
+          <%= link_to "Cancel", dashboard_contributions_path %>
+        </li>
+        <li>
+            <a class="disabled">Step 1: Personal Observation Source</a>
+        </li>
+        <li class='active'><a>Step 2: Personal Observation Entry</a></li>
+  <% else %>
+    <%= render partial: "catalog/breadcrumbs", locals: {edit: true} %>
+  <% end %>
 <% end %>
 
 <% content_for :control_tools do %>

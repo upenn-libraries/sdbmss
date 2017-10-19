@@ -82,7 +82,7 @@
 
             <div class="form-group row">
                 <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
-                <div class="col-sm-6">
+                <div class="col-sm-10">
                     <input type="text" class="form-control" id="title" ng-model="source.title" required />
                 </div>
             </div>
@@ -96,7 +96,7 @@
                     </a>
                   </div>
                 </label>
-                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='pull-left col-sm-6' style="margin-left: 15px">
+                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='pull-left col-sm-10'>
                     <div class="input-block form-group" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
                         <div class="remove-link-container">
                           <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
@@ -104,8 +104,18 @@
                           </a>
                         </div>
                         <div class="row">
-                            <div class="col-sm-4 label.control-label">Authority Name</div>
-                            <div class="col-sm-8">                            
+                            <div class="col-sm-2">
+                                <label class='control-label'>
+                                    As Recorded
+                                </label>
+                            </div>
+                            <div class='col-sm-4'>
+                                <input class="form-control" ng-model="source_agent.observed_name" ng-init="source_agent.role = 'selling_agent'">
+                            </div>
+                            <label class="col-sm-2 control-label">
+                                <span>Authority Name</span>
+                            </label>
+                            <div class="col-sm-4">                            
                                 <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find or Create Authority Name</a>
                                 <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                     <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
@@ -121,7 +131,7 @@
             <!--
             <div class="form-group row">
                 <label for="institution" class="col-sm-2 control-label">Seller</label>
-                <div class="col-sm-6">
+                <div class="col-sm-10">
                 </div>
             </div>
             -->
@@ -131,7 +141,7 @@
         <div class="auction-source-container" ng-show="source.source_type.name == 'online'">
             <div class="form-group row">
                 <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_website_name">Website Name</span></label>
-                <div class="col-sm-6">
+                <div class="col-sm-10">
                     <input type="text" class="form-control" id="title" ng-model="source.title" required />
                 </div>
             </div>
@@ -145,7 +155,7 @@
                     </a>
                   </div>
                 </label>
-                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='pull-left col-sm-6' style="margin-left: 15px">
+                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='pull-left col-sm-10' >
                     <div class="input-block form-group" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
                         <div class="remove-link-container">
                           <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
@@ -153,10 +163,18 @@
                           </a>
                         </div>
                         <div class="row">
-                            <label class="col-sm-4 control-label">
-                                <spanf>Authority Name</span>
+                            <div class="col-sm-2">
+                                <label class='control-label'>
+                                    As Recorded
+                                </label>
+                            </div>
+                            <div class='col-sm-4'>
+                                <input class="form-control" ng-model="source_agent.observed_name" ng-init="source_agent.role = 'selling_agent'">
+                            </div>
+                            <label class="col-sm-2 control-label">
+                                <span>Authority Name</span>
                             </label>
-                            <div class="col-sm-8">                            
+                            <div class="col-sm-4">                            
                                 <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'selling_agent', 'is_provenance_agent')">Find or Create Authority Name</a>
                                 <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                     <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
@@ -173,14 +191,14 @@
 
             <div class="form-group row">
                 <label class="col-sm-2 control-label">
-                  <span><span sdbm-tooltip="source_institution">Institution/Collection(s)</span></span>  
+                  <span><span sdbm-tooltip="source_institution">Institution/ Collection(s)</span></span>  
                   <div class="add-link-container">
                     <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
                       Add new <span class="glyphicon glyphicon-plus"></span>
                     </a>
                   </div>
                 </label>
-                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='pull-left col-sm-6' style="margin-left: 15px">
+                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='pull-left col-sm-10' >
                     <div class="input-block form-group" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
                         <div class="remove-link-container">
                           <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
@@ -188,10 +206,18 @@
                           </a>
                         </div>
                         <div class="row">
-                            <label class="col-sm-4 control-label">
+                            <div class="col-sm-2">
+                                <label class='control-label'>
+                                    As Recorded
+                                </label>
+                            </div>
+                            <div class='col-sm-4'>
+                                <input class="form-control" ng-model="source_agent.observed_name" ng-init="source_agent.role = 'institution'">
+                            </div>
+                            <label class="col-sm-2 control-label">
                                 <span>Authority Name</span>
                             </label>
-                            <div class="col-sm-8">                            
+                            <div class="col-sm-4">                             
                                 <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find or Create Authority Name</a>
                                 <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                     <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
@@ -205,14 +231,14 @@
 
             <div class="form-group row">
                 <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
-                <div class="col-sm-6">
+                <div class="col-sm-10">
                     <input type="text" class="form-control" id="title" ng-model="source.title">
                 </div>
             </div>
 
             <div class="form-group row">
                 <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_author">Publication Author</span></label>
-                <div class="col-sm-6">
+                <div class="col-sm-10">
                     <input type="text" class="form-control" id="author" ng-model="source.author">
                 </div>
             </div>
@@ -223,14 +249,14 @@
 
             <div class="form-group row">
                 <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_source_name">Source Name</label>
-                <div class="col-sm-6">
+                <div class="col-sm-10">
                     <input type="text" class="form-control" id="title" ng-model="source.title">
                 </div>
             </div>
 
             <div class="form-group row">
                 <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_observer">Observer</span></label>
-                <div class="col-sm-6">
+                <div class="col-sm-10">
                     <input type="text" class="form-control" id="author" ng-model="source.author">
                 </div>
             </div>
@@ -241,14 +267,14 @@
 
             <div class="form-group row">
                 <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
-                <div class="col-sm-6">
+                <div class="col-sm-10">
                     <input type="text" class="form-control" id="title" ng-model="source.title">
                 </div>
             </div>
 
             <div class="form-group row">
                 <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_author">Publication Author</span></label>
-                <div class="col-sm-6">
+                <div class="col-sm-10">
                     <input type="text" class="form-control" id="author" ng-model="source.author">
                 </div>
             </div>
@@ -259,14 +285,14 @@
 
             <div class="form-group row">
                 <label class="col-sm-2 control-label">
-                  <span><span sdbm-tooltip="source_institution">Institution/Collection(s)</span></span>  
+                  <span><span sdbm-tooltip="source_institution">Institution/ Collection(s)</span></span>  
                   <div class="add-link-container">
                     <a a id="add_source_agent" class="clickable" data-ng-click="addRecord(source.source_agents)" title="Add">
                       Add new <span class="glyphicon glyphicon-plus"></span>
                     </a>
                   </div>
                 </label>
-                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='pull-left col-sm-6' style="margin-left: 15px">
+                <div ui-sortable="sortableOptions" ng-model="source.source_agents" class='pull-left col-sm-10' >
                     <div class="input-block form-group" ng-repeat="source_agent in source.source_agents | filter:activeRecords">
                         <div class="remove-link-container">
                           <a class="clickable" data-ng-click="removeRecord(source.source_agents, source_agent)" title="Remove">
@@ -274,10 +300,18 @@
                           </a>
                         </div>
                         <div class="row">
-                            <label class="col-sm-4 control-label">
+                            <div class="col-sm-2">
+                                <label class='control-label'>
+                                    As Recorded
+                                </label>
+                            </div>
+                            <div class='col-sm-4'>
+                                    <input class="form-control" ng-model="source_agent.observed_name" ng-init="source_agent.role = 'institution'">
+                            </div>
+                            <label class="col-sm-2 control-label">
                                 <span>Authority Name</span>
                             </label>
-                            <div class="col-sm-8">                            
+                            <div class="col-sm-4">                            
                                 <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find or Create Authority Name</a>
                                 <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                     <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
@@ -291,14 +325,14 @@
 
             <div class="form-group row">
                 <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_source_name">Source Name</span></label>
-                <div class="col-sm-6">
+                <div class="col-sm-10">
                     <input type="text" class="form-control" id="title" ng-model="source.title">
                 </div>
             </div>
 
             <div class="form-group row">
                 <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_author_creator">Author/Creator</span></label>
-                <div class="col-sm-6">
+                <div class="col-sm-10">
                     <input type="text" class="form-control" id="author" ng-model="source.author">
                 </div>
             </div>
@@ -358,14 +392,14 @@
                 <span sdbm-tooltip="source_institution_location_seen" ng-show="source.medium != 'private_collection'">Institution</span>
                 <span sdbm-tooltip="source_institution_location_seen" ng-show="source.medium == 'private_collection'">Collection</span>
             </label>
-            <div class="col-sm-6">
+            <div class="col-sm-10">
                 <input type="text" class="form-control" name="location_institution" id="location_institution" ng-model="source.location_institution" />
             </div>
         </div>
 
         <div class="form-group row" ng-show="source.medium != 'internet'">
             <label for="city" class="col-sm-2 control-label"><span sdbm-tooltip="source_location_seen">Location (City, Country)</span></label>
-            <div class="col-sm-6">
+            <div class="col-sm-10">
                 <input type="text" class="form-control" name="location" id="location" ng-model="source.location" />
             </div>
         </div>

@@ -478,7 +478,7 @@ class SourcesController < SearchableAuthorityController
       :link,
       :status,
       :other_info,
-      :source_agents_attributes => [ :id, :agent_id, :role, :_destroy ],
+      :source_agents_attributes => [ :id, :agent_id, :role, :_destroy, :observed_name ],
     )
   end
 

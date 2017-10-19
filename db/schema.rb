@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170929181813) do
+ActiveRecord::Schema.define(version: 20171019185148) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -696,11 +696,12 @@ ActiveRecord::Schema.define(version: 20170929181813) do
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
   create_table "source_agents", force: :cascade do |t|
-    t.integer  "source_id",  limit: 4
-    t.integer  "agent_id",   limit: 4
-    t.string   "role",       limit: 255
+    t.integer  "source_id",     limit: 4
+    t.integer  "agent_id",      limit: 4
+    t.string   "role",          limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "observed_name", limit: 255
   end
 
   add_index "source_agents", ["agent_id"], name: "index_source_agents_on_agent_id", using: :btree

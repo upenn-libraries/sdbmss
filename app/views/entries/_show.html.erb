@@ -18,12 +18,13 @@
 </div>
 
 <% if entry.deprecated %>
-    <p style="color: red;">
-        This entry has been deprecated. The data on this page is considered incorrect or unreliable and should NOT be cited or used.
+    <div class="alert alert-danger">
+        <span class="glyphicon glyphicon-warning-sign"></span>
+        This entry has been <strong>deprecated</strong>. The data on this page is considered incorrect or unreliable and should <strong>NOT</strong> be cited or used.
         <% if (superceded_by = entry.superceded_by).present? %>
             <br/>The following entry supercedes it: <a href="<%= entry_path superceded_by %>"><%= superceded_by.public_id %></a>
         <% end %>
-    </p>
+    </div>
 <% end %>
 
 <% if !entry.approved %>

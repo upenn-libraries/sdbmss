@@ -6,7 +6,7 @@ json.source_type do
 end
 
 json.source_agents source.source_agents do |source_agent|
-  json.(source_agent, :id, :role)
+  json.(source_agent, :id, :role, :observed_name)
   if source_agent.agent
     json.agent do
       json.(source_agent.agent, :id, :name)

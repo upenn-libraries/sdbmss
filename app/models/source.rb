@@ -105,15 +105,15 @@ class Source < ActiveRecord::Base
     #join(:name, :target => Name, :type => :text, :join => { :from => :name, :to => :agent_name})
 
     integer :agent_id, :multiple => true do
-      source_agents.map(&:agent_id)
+      source_agents.select(&:agent_id).map(&:agent_id)
     end
 
     string :agent_name, :multiple => true do
-      source_agents.map(&:agent).map(&:name)
+      source_agents.map { |sa| sa.agent ? sa.agent.name : sa.observed_name }
     end
 
     text :agent_name do
-      source_agents.map(&:agent).map(&:name)
+      source_agents.map { |sa| sa.agent ? sa.agent.name : sa.observed_name }
     end
 
     string :location
