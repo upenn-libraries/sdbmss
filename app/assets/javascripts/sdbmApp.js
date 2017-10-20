@@ -2568,7 +2568,7 @@ var BOOKMARK_SCOPE;
         $scope.associations = [
             {
                 field: 'source_agents',
-                properties: ['observed_name'],
+                properties: ['observed_name', 'agent_id'],
                 foreignKeyObjects: ['agent']
             }
         ];

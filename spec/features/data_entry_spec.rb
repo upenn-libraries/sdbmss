@@ -768,7 +768,7 @@ describe "Data entry", :js => true do
 
       click_link "Create A Personal Observation"
 
-      expect(page).to have_content("Create Personal Observation Source")
+      expect(page).to have_content("Describe The Source Of Your Personal Observation")
 
       fill_in "author", with: "Totally Unique Personal Observation Source" 
       find('#savesource').click
