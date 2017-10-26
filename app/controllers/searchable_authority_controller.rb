@@ -104,7 +104,7 @@ class SearchableAuthorityController < ManageModelsController
     n.index!
     s = n.more_like_this do
       fields :name
-      paginate page: 1, per_page: 10
+      paginate page: params[:page], per_page: 10
       order_by :score, :desc
     end
     results = s.results

@@ -743,6 +743,7 @@ var BOOKMARK_SCOPE;
 
     sdbmApp.controller("SelectNameAuthorityCtrl", function ($scope, $http, $modalInstance, $modal, recordType, model, type, base) {
       $scope.suggestions = [];
+      $scope.page = 1;
       $scope.type = type.replace('is_', '');
       $scope.warning = "To begin searching, enter search term in the search bar.";
 
@@ -763,6 +764,16 @@ var BOOKMARK_SCOPE;
         $modalInstance.close();
       };
 
+      $scope.prevPage = function () {
+        $scope.page = Math.max(1, $scope.page - 1);
+        $scope.autocomplete();
+      }
+
+      $scope.nextPage = function () {
+        $scope.page += 1;
+        $scope.autocomplete();
+      }
+
       $scope.autocomplete = function () {
           var url  = "/" + recordType + "/more_like_this.json";
           var searchTerm = $scope.nameSearchString; // redundant?
@@ -775,7 +786,7 @@ var BOOKMARK_SCOPE;
             return;
           }
           $http.get(url, {
-              params: $.extend({ autocomplete: 1, name: searchTerm, limit: 15 }, {})
+              params: $.extend({ autocomplete: 1, name: searchTerm, page: $scope.page }, {})
           }).then(function (response) {
               // transform data from API call into format expected by autocomplete
               var exactMatch = false;

@@ -15,24 +15,30 @@
             <table class='table table-condensed' style="margin-bottom: 0px;" id="select-name-table">
                 <thead style="background: darkcyan; color: white;">
                     <tr>
-                        <th></th>
-                        <th class='text-left'>SDBM Name</th>
+                        <th style="width: 90px;">
+                            <div class="btn-group">
+                                <a href="" ng-disabled="page <= 1" ng-click="prevPage()" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-menu-left"></span></a>
+                                <span class="btn btn-xs btn-default">{{ page }}</span>
+                                <a href="" ng-click="nextPage()" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-menu-right"></span></a>
+                            </div>
+                        </th>
+                        <th class='text-left'>Name</th>
                         <th>VIAF ID</th>
-                        <th>As Author</th>
-                        <th>As Artist</th>
-                        <th>As Scribe</th>
-                        <th>As Proven.</th>
-                        <th>As Src. Ag.</th>
+                        <th title="As Author">Auth.</th>
+                        <th title="As Artist">Art.</th>
+                        <th title="As Scribe">Scrb.</th>
+                        <th title="As Provenance Agent">Prov.</th>
+                        <th title="As Source Agent">Src.</th>
                         <th>Reviewed</th>
                         <th>Confirmed</th>
                     </tr>
                 </thead>
-                <tbody class='text-center'>
+                <tbody>
                     <tr ng-show="warning.length > 0">
                         <td colspan="9">{{ warning }}</td>
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index" >
-                        <td><a class='selectName btn btn-success btn-sm' ng-click='selectSuggestion(s)'><span class='glyphicon glyphicon-check'></span> Link</a></td>
+                        <td><a class='selectName btn btn-success btn-xs' ng-click='selectSuggestion(s)'><span class='glyphicon glyphicon-check'></span> Link</a></td>
                         <td class='text-left'><a href="/names/{{ s.id }}" target="_blank">{{ s.name }}</a></td>
                         <td>{{ s.viaf_id }}</td>
                         <td>{{ s.authors_count }}</td>
