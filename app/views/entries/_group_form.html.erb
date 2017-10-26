@@ -1,5 +1,5 @@
 <% if can? :edit, entry %>
-<%= form_tag('add_to_group', method: :post) do %>
+<%= form_tag('/entries/add_to_group', method: :post) do %>
 <div class="input-group" style="width: 100%;">
   <%= hidden_field_tag 'ids[]', [entry.id] %>
   <% groups = Group.joins(:group_users).where(:group_users => {user: current_user, role: "Manager"}) %>
@@ -16,6 +16,10 @@
     <option value="nil">You have no user groups.</option>
   </select>
   <% end %>
+  <label for="" class="control-label">
+    Make Editable?
+    <%= check_box_tag :editable, true, class: "form-control" %>
+  </label>
 </div>
 <% end %>
 <% else %>

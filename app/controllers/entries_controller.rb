@@ -80,7 +80,7 @@ class EntriesController < SearchableAuthorityController
   def format_search(s)
     ids = s.results.map(&:id)
     results = Entry.includes(
-      :created_by, :updated_by, :contributors, :groups, :institution, 
+      :created_by, :updated_by, :contributors, {:group_records => [:group]}, :institution, 
       {:sales => [{:sale_agents => :agent}]}, 
       {:entry_authors => [:author]}, 
       :entry_titles, 

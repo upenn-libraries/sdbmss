@@ -2,10 +2,14 @@ class  DericciGamesController < ApplicationController
   
   include LogActivity
 
-  load_and_authorize_resource :only => [:index, :show, :new, :update]
+  load_and_authorize_resource :only => [:show, :new, :update]
 
   def index
-    @games = DericciGame.where(created_by: current_user)
+    if current_user
+      @games = DericciGame.where(created_by: current_user)
+    else
+      render "splash"
+    end
   end
 
   def show

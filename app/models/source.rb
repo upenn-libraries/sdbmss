@@ -161,7 +161,6 @@ class Source < ActiveRecord::Base
   #   [TYPE_UNPUBLISHED].member? source_type
   # end
 
-
   def get_source_agents_with_role(role)
     source_agents.select { |sa| sa.role == role }
   end

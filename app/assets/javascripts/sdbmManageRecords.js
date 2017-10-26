@@ -58,7 +58,8 @@ var load_session = false;
                         method: 'DELETE',
                         error: function(xhr) {
                             var error = $.parseJSON(xhr.responseText).error;
-                            alert("An error occurred deleting this record: " + error);
+                            SDBM.showModal("#modal", {title: "ERROR: Could not delete record", body: error });
+                            //alert("An error occurred deleting this record: " + error);
                         },
                         success: function(data, textStatus, jqXHR) {
                             manageRecords.dataTable.reload();                    
@@ -256,7 +257,8 @@ var load_session = false;
                     else
                         $('.unreviewed_only').hide();//.css({"display": "none"});*/
                 } else {
-                    alert("An error occurred fetching search results: " + data.error);
+                    SDBM.showModal("#modal", {title: "ERROR: Could not fetch search results", body: data.error });
+                    //alert("An error occurred fetching search results: " + data.error);
                 }
             },
             error: function() {

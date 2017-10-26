@@ -355,11 +355,11 @@ function relation (type) {
                     sdbmssMinWidth: "100px",
                     sdbmssMaxWidth: "100px",
                     render: function (data, type, full, meta) {
-                        var result = "";
+                        var result = [];
                         for (var i = 0; i < data.length; i++) {
-                            result += '<a target="_blank" href="/groups/' + data[i][0] + '">' + data[i][1] + '</a> ';
+                            result.push('<a target="_blank" href="/groups/' + data[i][0] + '">' + data[i][1] + (data[i][2] ? ' <span class="text-muted">(editable)</span>' : '') + '</a>');
                         }
-                        return result;
+                        return result.join(", ");
                     },
                     orderable: false
                 },

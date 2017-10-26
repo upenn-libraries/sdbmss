@@ -1,4 +1,3 @@
 <% if current_user %>
   <%= button_to "Save Search", save_search_path(Search.find(search_session["id"])), :method => :put, :class => 'btn btn-default pull-right' %>
 <% end %>
-<a href="/feed.rss" class="btn btn-default"><span class="badge badge-primary">RSS</span></a>

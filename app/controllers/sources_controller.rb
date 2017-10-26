@@ -366,7 +366,7 @@ class SourcesController < SearchableAuthorityController
         end
       end
     elsif @source.entries.where(deprecated: true).count > 0
-      error = "The source cannot be deleted because it is still used in some entries (including deprecated entries)"
+      error = "The source cannot be deleted because it is still used in some entries (including the following deprecated entries: #{@source.entries.where(deprecated: true).map(&:public_id).join(", ")})"
     else
       error = "The source cannot be deleted because it is still used in some entries"
     end

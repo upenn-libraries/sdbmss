@@ -405,7 +405,7 @@ class Entry < ActiveRecord::Base
     {
       id: id,
       manuscript: options[:csv].present? ? (entry_manuscripts.map{ |em| em.manuscript.public_id }.join("; ")) : (entry_manuscripts.count > 0 ? entry_manuscripts.map{ |em| {id: em.manuscript_id, relation: em.relation_type} } : nil),
-      groups: options[:csv].present? ? groups.map{ |group| group.name }.join("; ") : groups.map{ |group| [group.id, group.name] },
+      groups: options[:csv].present? ? group_records.map{ |group_record| group_record.group.name }.join("; ") : group_records.map{ |group_record| [group_record.group_id, group_record.group.name, group_record.editable] },
       source_date: SDBMSS::Util.format_fuzzy_date(source.date),
       source_title: source.title,
       source_catalog_or_lot_number: catalog_or_lot_number,
@@ -916,7 +916,7 @@ class Entry < ActiveRecord::Base
       offset += 300
       ids = s.results.map(&:id)
       #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
-      objects = Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash({options: {csv: true}}) }
+      objects = Entry.includes(:created_by, :updated_by, {:group_records => [:groups]}, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash({options: {csv: true}}) }
       break if objects.first.nil?
       csv_file = CSV.open(path, "ab") do |csv|
         if headers.nil? && objects.first

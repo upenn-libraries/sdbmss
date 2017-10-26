@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171019185148) do
+ActiveRecord::Schema.define(version: 20171025140501) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -514,18 +514,18 @@ ActiveRecord::Schema.define(version: 20171019185148) do
     t.datetime "updated_at",                                     null: false
     t.boolean  "on_message",                     default: true
     t.boolean  "email_on_message",               default: true
-    t.boolean  "email_on_comment",               default: false
-    t.boolean  "email_on_reply",                 default: false
-    t.boolean  "email_on_update",                default: false
+    t.boolean  "email_on_comment",               default: true
+    t.boolean  "email_on_reply",                 default: true
+    t.boolean  "email_on_update",                default: true
     t.boolean  "on_new_user",                    default: false
     t.boolean  "email_on_new_user",              default: false
     t.boolean  "on_group",                       default: true
-    t.boolean  "email_on_group",                 default: false
+    t.boolean  "email_on_group",                 default: true
     t.boolean  "on_all_comment",                 default: true
     t.boolean  "email_on_all_comment",           default: false
     t.boolean  "auto_watch",                     default: true
     t.boolean  "on_forum_post",                  default: true
-    t.boolean  "email_on_forum_post",            default: false
+    t.boolean  "email_on_forum_post",            default: true
   end
 
   create_table "notifications", force: :cascade do |t|
