@@ -18,7 +18,7 @@ class ProfilesController < ApplicationController
           email: @user.email_is_public ? @user.email : "This user's email is not publicly available.",
           last_seen: @user.updated_at ? @user.updated_at.to_formatted_s(:long) : "",
           role: @user.role,
-          biography: @user.bio || "This user has chosen not to share any biographical details.",
+          biography: @user.bio.present? ? @user.bio : "This user has chosen not to share any biographical details.",
           institution: @user.institutional_affiliation  || "Unaffiliated",
           sources_created: @user.sources.count,
           entries_created: @user.entries.where(deprecated: false).count

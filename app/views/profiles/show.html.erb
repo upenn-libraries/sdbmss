@@ -37,35 +37,30 @@
 
 <div class="row">
     <div class="col-sm-4">
-
-        <div class="panel panel-default" style="border-color: #374f73">
-            <div class="panel-heading" style="background: #374f73; border-color: #374f73;">
-                <div class="user-icon">
-                  <span class="glyphicon glyphicon-user"></span>
-                </div>
-                <div class="user-info">
-                  <span class="dropdown">
-                    <a href="" class="dropdown-toggle" data-toggle="dropdown" style="color: white;">
-                      <%= @user.to_s %>
-                      <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                      <li><em style="padding: 20px;" class='text-muted'><span class="glyphicon glyphicon-briefcase"></span> <%= @user.role %></em></li>
-                      <li><a href="<%= new_private_message_path(user_id: [@user.id]) %>"><span class="glyphicon glyphicon-envelope"></span> Send Message</a></li>
-                      <% if current_user == @user %>
-                      <li><%= link_to edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
-                      <% end %>                  
-                    </ul>
-                  </span><br>
-                  <span class="text-muted" style="color: #eee;" sdbm-tooltip="user_levels">User Level: <em><%= @user.role %></em></span>
-                </div>
-            </div>
+        <div class="user-icon" style="width: 45%;">
+            <%= image_tag Thredded.avatar_url.call(@user), class: 'img img-responsive dashboard-profile-picture' %>
         </div>
-        <% if current_user == @user && @user.role != "admin" && @user.role != "super_editor" %>
-            <p><%= render partial: "shared/request_advancement" %></p>
-        <% end %>
+        <div class="user-info">
+            <span class="dropdown">
+                <a href="" class="dropdown-toggle" data-toggle="dropdown" >
+                  <%= @user.to_s %>
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu" style="background: white !important;">
+                  <li><em style="padding: 20px;" class='text-muted'><span class="glyphicon glyphicon-briefcase"></span> <%= @user.role %></em></li>
+                  <li><a href="<%= new_private_message_path(user_id: [@user.id]) %>"><span class="glyphicon glyphicon-envelope"></span> Send Message</a></li>
+                  <% if current_user == @user %>
+                  <li><%= link_to edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
+                  <% end %>                  
+                </ul>
+            </span>
+            <p class="text-muted" sdbm-tooltip="user_levels">User Level: <em><%= @user.role %></em></p>
+            <p class="text-info"><%= @display[:email] %></p>
+            <% if current_user == @user && @user.role != "admin" && @user.role != "super_editor" %>
+                <p><%= render partial: "shared/request_advancement" %></p>
+            <% end %>
+        </div>
 
-        <p class="text-info"><%= @display[:email] %></p>
         <p class="text-muted"><%= @display[:biography] %></p>
         <strong><%= @display[:institution] %></strong>
         <div class='text-center text-muted' style="border-top: 1px solid #ddd; margin-top: 8px; padding-top: 8px;">

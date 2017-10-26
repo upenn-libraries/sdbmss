@@ -235,8 +235,9 @@ Rails.application.routes.draw do
   end
 
   # use 'username' as identifier here for nicer URLs
-  resources :profiles, only: [:show], param: :username
-
+  # 10-26-2017: have to specifically allow '.' character or else it gets used as the URL format
+  get 'profiles/:username' => 'profiles#show', :constraints =>{:username =>/.*/}, :as => 'profile'
+  
   resources :provenance do
     collection {
       get 'parse_observed_date'

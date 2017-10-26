@@ -1630,8 +1630,15 @@ so that gray backdrop shvows up correctly */
 }
 /* RESPONSIVE */
 @media (max-width: 767px) {
+  .nav > li > a {
+    padding: 10px 4px;
+  }
   .search-block .form-control {
     width: 100% !important;
+  }
+  .dashboard-header {
+    font-size: 34px !important;
+    line-height: 42px !important;
   }
   .search-block .search-remove {
     height: 100%;
@@ -2404,6 +2411,8 @@ Private Message Styling
 }
 .user-info {
   display: table-cell;
+  vertical-align: middle;
+  padding-left: 10px;
 }
 
 .textarea-group {
@@ -2597,4 +2606,26 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 }
 .user-info .dropdown-menu {
   position: absolute !important;
+  background: #4d6b98 !important;
+}
+.dashboard-header {
+  font-size: 56px;
+  font-weight: normal;
+  line-height: 100px;
+  letter-spacing: -2px;
+}
+.dashboard-profile-picture {
+  float: left;
+  border-radius: 50%;
+}
+.btn-tag {
+  background: #777;
+  border-color: #777;            
+}
+.btn-tag:hover, .btn-tag:active, .btn-tag:focus {
+  background: #999;
+  border-color: #999;
+}
+.list-inline .btn-group {
+  margin: 1px;
 }

@@ -2,9 +2,9 @@
   <div class="scroll-box">
     <% if current_user %>
     <div class="panel panel-default">
-        <div class="panel-heading" style="white-space: nowrap; padding-top: 10px">
+        <div class="panel-heading" style="white-space: nowrap; padding-top: 10px; background: #4d6b98;">
             <div class="user-icon">
-              <span class="glyphicon glyphicon-user"></span>
+              <%= image_tag Thredded.avatar_url.call(current_user), class: 'img img-responsive dashboard-profile-picture' %>
             </div>
             <div class="user-info">
               <span class="dropdown">
