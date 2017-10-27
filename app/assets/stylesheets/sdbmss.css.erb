@@ -73,7 +73,7 @@ a {
 .thredded-nav {
   margin: -18px 0px 10px 0px;
   background: #f5f5f5;
-  border: 1px solid #eee;
+  border: 1px solid #ddd;
   border-top: none;
   border-bottom-right-radius: 5px;
   border-bottom-left-radius: 5px;
@@ -120,7 +120,7 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
   font-size: 14px;
 }
 .thredded--navigation--search input[type="search"], .thredded--navigation--search input[type="search"]:focus {
-  margin: -1px 0px 0 0;
+  margin: 0px 0px 0 0;
   -webkit-margin-end: 0px;
 }
 .thredded--navigation-breadcrumbs a, li.thredded--navigation-breadcrumbs--item-no-link {
@@ -561,15 +561,16 @@ li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab 
   color: white;
 }
 .home-emphasis {
-  color: #943f42;
+  /*color: #943f42;*/
+  color: black;
 }
-.panel-home {
+/*.panel-home {
   border-color: #943f42;
 }
 .panel-home .panel-heading {
   background: #943f42;
   color: white;
-}
+}*/
 .thredded--post--avatar {
   left: inherit;
   top: inherit;
@@ -2621,7 +2622,7 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
   background: #4d6b98 !important;
 }
 .dashboard-header {
-  font-size: 56px;
+  font-size: 46px;
   font-weight: normal;
   line-height: 100px;
   letter-spacing: -2px;
@@ -2631,8 +2632,8 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
   border-radius: 50%;
 }
 .btn-tag {
-  background: #777;
-  border-color: #777;            
+  background-color: #4d6b98;
+  border-color: #4d6b98;          
 }
 .btn-tag:hover, .btn-tag:active, .btn-tag:focus {
   background: #999;
@@ -2640,4 +2641,11 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 }
 .list-inline .btn-group {
   margin: 1px;
+}
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+  background-color: #4d6b98;
+  color: white;
+}
+.thredded--post-moderation-record--moderation-state-notice a, .thredded--post-moderation-record--content-changed-notice a, .thredded--link, .thredded--messageboard, .thredded--post--user a, .thredded--post--topic a, .thredded--post--user-and-topic a, .thredded--post--edit, .thredded--post--delete, .thredded--post--content a, .thredded--topic-header--participants--participant > a, .thredded--topic-header--started-by a, .thredded--topic-header--edit-topic, .thredded--topic-header--follow-info form input[type=submit], .thredded--topic-header--follow-info form button, .thredded--topics--title a, .thredded--topics--started-by a, .thredded--topics--updated-by a {
+  color: #4D6B97;
 }
