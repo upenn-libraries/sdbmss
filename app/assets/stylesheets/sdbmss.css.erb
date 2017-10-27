@@ -20,7 +20,7 @@ textarea { resize:vertical ; }
 
 h1, .h1, h2, .h2, h3, .h3, legend {
   /*font-family: Dosis;*/
-  font-weight: bold;
+  font-weight: normal;
 }
 a {
   /*color: #4e76b3; ... eventually */
@@ -71,17 +71,28 @@ a {
   border-color: #204d74;
 }
 .thredded-nav {
-  margin: 0px;
+  margin: -18px 0px 10px 0px;
+  background: #f5f5f5;
+  border: 1px solid #eee;
+  border-top: none;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 .thredded-nav .col-sm-4 {
-  margin-bottom: 10px;
+  margin-top: -18px;
+}
+li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab a:active {
+  background: #f5f5f5 !important;
 }
 .thredded--topic-header {
   margin-bottom: 2rem;
 }
-.thredded--topic-header--title {
-  text-align: center;
-  font-family: Dosis;
+.thredded--navigation-breadcrumbs li {
+  font-weight: normal;
+}
+.thredded--main-section {
+  padding: 10px;
+  margin-top: -10px;
 }
 .dashboard-forum-posts-count {
   position: static;
@@ -98,6 +109,7 @@ a {
 .thredded--navigation--search  {
   position: relative;
   float: right;
+  margin-right: -15px;
 }
 .thredded--topics--topic {
   margin: 0px 50px 10px 50px;
