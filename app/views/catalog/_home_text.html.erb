@@ -59,7 +59,7 @@
     </div>
     <div class="col-sm-12">
         <h3 class='h3'>Recent Announcements</h3>
-        <% posts = Thredded::Messageboard.where(name: "Announcements").last ? Thredded::Messageboard.where(name: "Announcements").last.posts.order("created_at desc").first(6) : [] %>
+        <% posts = Thredded::Messageboard.where(name: "News & Announcements").last ? Thredded::Messageboard.where(name: "News & Announcements").last.posts.order("created_at desc").first(6) : [] %>
         <% if (posts.each do |post| %>
             <div class="panel panel-default">
                 <div class="panel-body">
