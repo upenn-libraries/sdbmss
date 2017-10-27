@@ -59,7 +59,8 @@
     </div>
     <div class="col-sm-12">
         <h3 class='h3'>Recent Announcements</h3>
-        <% if (Thredded::Messageboard.where(name: "Announcements").last.posts.order("created_at desc").first(6).each do |post| %>
+        <% posts = Thredded::Messageboard.where(name: "Announcements").last ? Thredded::Messageboard.where(name: "Announcements").last.posts.order("created_at desc").first(6) : [] %>
+        <% if (posts.each do |post| %>
             <div class="panel panel-default">
                 <div class="panel-body">
                     <% post_user_link = link_to(post.user.username, main_app.profile_path(post.user.username)) %>
