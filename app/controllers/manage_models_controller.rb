@@ -167,7 +167,7 @@ class ManageModelsController < ApplicationController
   # this implementation checks the entries_count field if it exists
   def deletable?(object)
     deletable = true
-    if object.respond_to?(:entries_count) && (object.entries_count || 0)  > 0
+    if object.respond_to?(:entries_count) && (object.entries_count || 0)  > 0 && object.entries.count > 0
       deletable = false
     end
     deletable
