@@ -2,7 +2,7 @@
     <tr><td>Added</td>
     <td>
         by <%= render partial: "shared/username_with_profile_link", locals: { user: model.created_by } %>
-        on <%= model.created_at.to_formatted_s(:date_and_time) %>
+        on <%= model.created_at.to_formatted_s(:date_and_time) %> <br>
     </td></tr>
 <% end %>
 <% if model.updated_at.present? && model.updated_at != model.created_at %>

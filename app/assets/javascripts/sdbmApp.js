@@ -2508,6 +2508,95 @@ var BOOKMARK_SCOPE;
         };
     });
 
+    sdbmApp.controller('PlaceCtrl', function ($scope, $http, $modal, Place, sdbmutil) {
+
+      var place_id = $("#place_id").val();
+      if (place_id) {
+        Place.get({id: place_id},
+          function(place) {
+              $scope.place = place;
+              if ($scope.place.parent === undefined || $scope.place.parent === null) {
+                $scope.place.parent = {};
+              }
+          },
+          sdbmutil.promiseErrorHandlerFactory("Error loading Source data for this page")
+        )
+      } else {
+        $scope.place = new Place();
+        $scope.place.parent = {};
+      }
+
+      // for now, just getty
+      $scope.queryAuthority = function () {
+        $http.get("http://vocab.getty.edu/sparql.json?query=select%20%3FSubject%20%3FTerm%20%3FParent%20%3FParents%20%3FLat%20%3FLong%20%7B%0A%20%20%3FSubject%20luc%3Aterm%20%22" + $scope.place.name + "%22%3B%20skos%3AinScheme%20tgn%3A%20%3B%20a%20%3Ftyp.%0A%20%20%3Ftyp%20rdfs%3AsubClassOf%20gvp%3ASubject%3B%20rdfs%3Alabel%20%3FType.%0A%20%20filter%20(%3Ftyp%20!%3D%20gvp%3ASubject)%0A%20%20optional%20%7B%3FSubject%20gvp%3AprefLabelGVP%20%5Bxl%3AliteralForm%20%3FTerm%5D%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AbroaderPreferred%20%3FParent%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AparentString%20%3FParents%7D%0A%20%20optional%20%7B%3FSubject%20foaf%3Afocus%2Fwgs%3Alat%20%3FLat%7D%0A%20%20optional%20%7B%3FSubject%20foaf%3Afocus%2Fwgs%3Along%20%3FLong%7D%0A%7D&toc=Finding_Subjects&implicit=true&equivalent=false&_form=/queriesF").then(function(response) {
+        //$http.get("http://vocab.getty.edu/resource/getty/search?q=" + $scope.place.name + "&luceneIndex=Brief&indexDataset=TGN&_form=%2Fresource%2Fgetty%2Fsearch").then( function (response) {
+          $scope.suggestions = response;
+          $scope.modal = $modal.open({
+            templateUrl: 'queryGetty.html',
+            backdrop: 'static',
+            size: 'lg',
+            scope: $scope
+          });
+        });
+      };
+
+      $scope.setAuthorityId = function (authority) {
+        $scope.place.authority_id = authority.uri;
+        $scope.place.name = authority.Term.value;
+        $scope.place.latitude = authority.Lat.value;
+        $scope.place.longitude = authority.Long.value;
+        console.log('not yet implemented: lookup parent by getty ID', authority.Parent.value);
+        $scope.modal.close();
+      }
+
+      $scope.selectNameAuthorityModal = function (model, type, base) {
+        base = base || "";
+        var templateUrl = "selectModelAuthority.html";
+
+        var modal = $modal.open({
+            templateUrl: templateUrl,
+            controller: "SelectNameAuthorityCtrl",
+            resolve: {
+              recordType: function () { return 'places' },
+              model: function () { return model },
+              type: function () { return type },
+              base: function () { return base }
+            },
+            size: 'lg'
+        });
+      };
+
+      $scope.removeNameAuthority = function (model, submodel) {
+        model[submodel] = {};
+      };
+
+      $scope.postSave = function (response) {
+        $scope.currentlySaving = false;
+        window.location = "/places/" + $scope.place.id;
+      };
+
+      $scope.save = function () {
+        $scope.currentlySaving = true;
+        if ($scope.place.parent && $scope.place.parent.id) {
+          $scope.place.parent_id = $scope.place.parent.id;
+        };
+        if ($scope.place.id) {          
+          $scope.place.$update(
+            $scope.postSave,
+            sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
+          );
+        } else {
+          $scope.place.$save(
+            $scope.postSave,
+            sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
+          );
+        }
+      };
+
+      EntryScope = $scope;
+
+    });
+
 //    sdbmApp.controller("SourceCtrl", function ($scope, $http, $modal, Source, sdbmutil) {
     sdbmApp.controller('SourceCtrl', function ($scope, $http, $modal, Source, sdbmutil) {
 

@@ -107,7 +107,14 @@ class ManageModelsController < ApplicationController
         }
       end
     else
-      render 'edit'
+      respond_to do |format|
+        format.html {
+          render 'edit'
+        }
+        format.json {
+          render json: @model  #fix me: better error reporting here
+        }
+      end
     end
   end
 

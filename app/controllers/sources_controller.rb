@@ -15,10 +15,10 @@ class SourcesController < SearchableAuthorityController
 
   load_and_authorize_resource :only => [:edit, :update, :destroy, :merge]
 
+  # fix me: delete this?
   DEFAULT_SEARCH_FIELD_HANDLER = Proc.new { |fieldname, params, query|
     query.where("#{fieldname} like ?", "%#{params[fieldname]}%")
   }
-
   SEARCH_FIELDS = [
     ["title", "Title", DEFAULT_SEARCH_FIELD_HANDLER ],
     ["date", "Date", Proc.new { |fieldname, params, query|
@@ -36,6 +36,7 @@ class SourcesController < SearchableAuthorityController
     ["author", "Author", DEFAULT_SEARCH_FIELD_HANDLER ],
   ]
 
+  # (not this)
   def search_fields
     @filters = ["id", "location", "agent_id"]
     @fields = ["title", "date", "agent_name", "author", "created_by", "updated_by", "source_type"]
@@ -45,6 +46,7 @@ class SourcesController < SearchableAuthorityController
 
   # return just the query strings which are combined in an array, then joined with either AND or OR to create one final query - but will it work with the unique cases above?
 
+  # fix me: deleete this?
   A_DEFAULT_SEARCH_HANDLER = lambda { |fieldname, params, query| 
     return "#{fieldname} like '%#{params[fieldname]}%'"
   }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171025140501) do
+ActiveRecord::Schema.define(version: 20171031194330) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -553,18 +553,23 @@ ActiveRecord::Schema.define(version: 20171025140501) do
   add_index "pages", ["name"], name: "index_pages_on_name", unique: true, using: :btree
 
   create_table "places", force: :cascade do |t|
-    t.string   "name",           limit: 255
-    t.integer  "entry_id",       limit: 4
+    t.string   "name",             limit: 255
+    t.integer  "entry_id",         limit: 4
     t.datetime "created_at"
-    t.integer  "created_by_id",  limit: 4
+    t.integer  "created_by_id",    limit: 4
     t.datetime "updated_at"
-    t.integer  "updated_by_id",  limit: 4
-    t.integer  "entries_count",  limit: 4,   default: 0,     null: false
-    t.boolean  "deleted",                    default: false
-    t.boolean  "reviewed",                   default: false
-    t.integer  "reviewed_by_id", limit: 4
+    t.integer  "updated_by_id",    limit: 4
+    t.integer  "entries_count",    limit: 4,                            default: 0,     null: false
+    t.boolean  "deleted",                                               default: false
+    t.boolean  "reviewed",                                              default: false
+    t.integer  "reviewed_by_id",   limit: 4
     t.datetime "reviewed_at"
-    t.boolean  "problem",                    default: false
+    t.boolean  "problem",                                               default: false
+    t.decimal  "latitude",                     precision: 10, scale: 6
+    t.decimal  "longitude",                    precision: 10, scale: 6
+    t.integer  "parent_id",        limit: 4
+    t.integer  "authority_id",     limit: 4
+    t.string   "authority_source", limit: 255
   end
 
   add_index "places", ["created_by_id"], name: "index_places_on_created_by_id", using: :btree

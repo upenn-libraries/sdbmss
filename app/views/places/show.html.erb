@@ -1,0 +1,50 @@
+<% content_for :breadcrumbs do %>
+  <%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
+<% end %>
+
+<% content_for :control_tools do %>
+  <%= render partial: "manage_models/tools" %>
+<% end %>
+
+<% if @model.problem %>
+  <div class="alert alert-danger"><span class="lead"><span class="glyphicon glyphicon-warning-sign"></span> Warning!</span> This <%= @model.class.name %> has been flagged as problematic because the purpose or data recorded is uncertain. Use only if you have no other options. If you have information to help us better identify this <%= @model.class.name %>, please leave a comment.</div>
+<% end %>
+
+<% if !@model.reviewed %>
+  <div class="alert alert-warning"><span class="glyphicon glyphicon-info-sign"></span> This <%= @model.model_name.to_s %> has not yet been reviewed and may not conform to our data standards.</div>
+<% end %>
+
+<div class="row">
+  <div class="col-sm-6">
+    <dl class="document-show-heading dl-horizontal dl-invert">
+        <dt></dt>
+        <dd class='h2'><%= @model.public_id %></dd>
+    </dl>
+
+    <dl class="document-metadata dl-horizontal dl-invert">
+      <dt>Name</dt>
+      <dd>
+          <%= @model.name %>
+      </dd>
+      <dt># Entries</dt>
+      <dd>
+          This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
+      </dd>
+      <dt>Parent</dt>
+      <dd>
+        <% if @model.parent %>
+          <%= link_to @model.parent.name, place_path(@model.parent) %>
+        <% else %>
+          <span class="text-muted">This place does not have any parent assigned to it.</span>
+        <% end %>
+      </dd>
+      <dt>Coordinates</dt>
+      <dd><%= @model.latitude ? @model.latitude.to_f : "?" %>, <%= @model.longitude ? @model.longitude.to_f : "?" %></dd>
+      <dt>Place Authority</dt>
+      <dd><%= link_to "#{@model.authority_id}", "#{@model.authority_source}/#{@model.authority_id}" %></dd>
+    </dl>
+
+    <%= render partial: "shared/user_info", locals: {model: @model} %>
+
+  </div>
+</div>

@@ -12,6 +12,14 @@ class PlacesController < SearchableAuthorityController
     Place
   end
 
+  def show
+    super
+    respond_to do |format|
+      format.html { }
+      format.json { render json: @model.search_result_format }
+    end
+  end
+
   def merge
     @model = Place.find(params[:id])
 
@@ -40,6 +48,10 @@ class PlacesController < SearchableAuthorityController
     else
       # nothing, handle normally
     end
+  end
+
+  def model_params
+    params.require(:place).permit(:name, :reviewed, :problem, :latitude, :longitude, :authority_source, :authority_id, :parent_id)
   end
 
 end
