@@ -1,11 +1,16 @@
   <% if @model.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@model.errors.count, "error") %> prevented this model from being saved:</h2>
+    <div id="error_explanation" class="alert alert-danger">
+      <span class='lead'>
+        <span class="glyphicon glyphicon-warning-sign"></span>
+        <%= pluralize(@model.errors.count, "error") %> prevented save
+      </span>
 
-      <ul>
-      <% @model.errors.full_messages.each do |message| %>
+      <ul class='list-inline'>
+      <% @model.errors.messages.each do |key, messages| %>
           <%# this partial allows for another layer to intercept, so that messages can be customized at template level %>
-          <li><%= render partial: "error_message", locals: { message: message } %></li>
+          <% messages.each do |message| %>
+            <li><%= render partial: "error_message", locals: { key: key, message: message } %></li>
+          <% end %>
       <% end %>
       </ul>
     </div>
