@@ -79,21 +79,8 @@ class EntriesController < SearchableAuthorityController
 
   def format_search(s)
     ids = s.results.map(&:id)
-    results = Entry.includes(
-      :created_by, :updated_by, :contributors, {:group_records => [:group]}, :institution, 
-      {:sales => [{:sale_agents => :agent}]}, 
-      {:entry_authors => [:author]}, 
-      :entry_titles, 
-      :entry_dates, 
-      {:entry_artists => [:artist]}, 
-      {:entry_scribes => [:scribe]}, 
-      {:entry_languages => [:language]}, 
-      {:entry_places => [:place]}, 
-      {:provenance => [:provenance_agent]}, 
-      :entry_uses, :entry_materials, 
-      {:entry_manuscripts => [:manuscript]}, 
-      :source, :bookmarks, :watches,
-    ).where(id: ids).order(ids.count > 0 ? "FIELD(id, #{ids.join(', ')})" : "id desc").map { |e| 
+    # cinludes bookmarks/watches??
+    results = Entry.with_associations.includes(:bookmarks, :watches).where(id: ids).order(ids.count > 0 ? "FIELD(id, #{ids.join(', ')})" : "id desc").map { |e| 
       e.as_flat_hash.merge({ 
         can_edit: can?(:edit, e), 
         # FIX ME this can probably be further improved (sped up) by not rendering repeated html, even if it is a small amount (instead use template in JS)

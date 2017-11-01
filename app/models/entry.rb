@@ -89,6 +89,7 @@ class Entry < ActiveRecord::Base
   accepts_nested_attributes_for :group_records, allow_destroy: true
 
   # list of args to pass to Entry.includes in various places, for fetching a 'complete' entry
+=begin 
   @@includes = [
     :institution,
     :entry_titles,
@@ -111,6 +112,31 @@ class Entry < ActiveRecord::Base
       :source_type,
       {:source_agents => [:agent]}
     ]
+  ]
+=end
+  @@includes = [
+    # try including bookmarks, watches?
+    :created_by, 
+    :updated_by, 
+    :institution,
+    :entry_titles,
+    :entry_dates,
+    :entry_uses,
+    :entry_materials,
+    :comments,
+    :supercedes,
+    :groups,
+    :manuscripts,
+    {:group_records => [:group]}, 
+    {:sales => [:sale_agents => [:agent]]},
+    {:entry_authors => [:author]},
+    {:entry_artists => [:artist]},
+    {:entry_scribes => [:scribe]},
+    {:entry_languages => [:language]},
+    {:entry_places => [:place]},
+    {:provenance => [:provenance_agent]},
+    {:entry_manuscripts => [:manuscript]},
+    {:source => [:source_agents,:source_type]}
   ]
 
   default_scope { where(deleted: false) }
@@ -299,10 +325,10 @@ class Entry < ActiveRecord::Base
   end
 
   def missing_authority_names
-    entry_authors.where(author_id: nil).where.not(observed_name: nil).count + 
-    entry_artists.where(artist_id: nil).where.not(observed_name: nil).count + 
-    entry_scribes.where(scribe_id: nil).where.not(observed_name: nil).count + 
-    provenance.where(provenance_agent_id: nil).where.not(observed_name: nil).count
+    entry_authors.select{ |ea| ea.author_id.blank? && ea.observed_name.present? }.length + 
+    entry_artists.select{ |ea| ea.artist_id.blank? && ea.observed_name.present? }.length + 
+    entry_scribes.select{ |ea| ea.scribe_id.blank? && ea.observed_name.present? }.length + 
+    provenance.select{ |ea| ea.provenance_agent_id.blank? && ea.observed_name.present? }.length
   end
 
   # returns list of the hashes representing unique Agents found in
@@ -399,12 +425,12 @@ class Entry < ActiveRecord::Base
     # FIX ME: missing institution field?
 
     sale = get_sale
-    sale_selling_agents = sale ? sale.sale_agents.where(role: "selling_agent") : []#(sale.get_selling_agents_names if sale && sale.get_selling_agents.count > 0)
-    sale_seller_or_holders = sale ? sale.sale_agents.where(role: "seller_or_holder") : [] #(sale.get_sellers_or_holders_names if sale && sale.get_sellers_or_holders.count > 0)
-    sale_buyers = sale ? sale.sale_agents.where(role: "buyer") : [] #(sale.get_buyers_names if sale && sale.get_buyers.count > 0)
+    sale_selling_agents = sale ? sale.sale_agents.select{ |sa| sa.role == "selling_agent" } : []#(sale.get_selling_agents_names if sale && sale.get_selling_agents.count > 0)
+    sale_seller_or_holders = sale ? sale.sale_agents.select{ |sa| sa.role == "seller_or_holder" } : [] #(sale.get_sellers_or_holders_names if sale && sale.get_sellers_or_holders.count > 0)
+    sale_buyers = sale ? sale.sale_agents.select{ |sa| sa.role == "buyer" } : [] #(sale.get_buyers_names if sale && sale.get_buyers.count > 0)
     {
       id: id,
-      manuscript: options[:csv].present? ? (entry_manuscripts.map{ |em| em.manuscript.public_id }.join("; ")) : (entry_manuscripts.count > 0 ? entry_manuscripts.map{ |em| {id: em.manuscript_id, relation: em.relation_type} } : nil),
+      manuscript: options[:csv].present? ? (entry_manuscripts.map{ |em| em.manuscript.public_id }.join("; ")) : (entry_manuscripts.length > 0 ? entry_manuscripts.map{ |em| {id: em.manuscript_id, relation: em.relation_type} } : nil),
       groups: options[:csv].present? ? group_records.map{ |group_record| group_record.group.name }.join("; ") : group_records.map{ |group_record| [group_record.group_id, group_record.group.name, group_record.editable] },
       source_date: SDBMSS::Util.format_fuzzy_date(source.date),
       source_title: source.title,
@@ -621,29 +647,29 @@ class Entry < ActiveRecord::Base
     #### Sale info
 
     define_field(:string, :sale_selling_agent, :stored => true, :multiple => true) do
-      (sale = get_sale) ? sale.sale_agents.where(role: "selling_agent").select(&:facet_value).map(&:facet_value) : []
+      (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "selling_agent" }.select(&:facet_value).map(&:facet_value) : []
     end
     define_field(:text, :sale_selling_agent_search, :stored => true) do
-      (sale = get_sale) ? sale.sale_agents.where(role: "selling_agent").map(&:display_value).join("; ") : ""
+      (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "selling_agent" }.map(&:display_value).join("; ") : ""
     end
 
     define_field(:string, :sale_seller, :stored => true, :multiple => true) do
 #      get_sale ? get_sale.get_sellers_or_holders.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
-      (sale = get_sale) ? sale.sale_agents.where(role: "seller_or_holder").select(&:facet_value).map(&:facet_value) : []
+      (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "seller_or_holder" }.select(&:facet_value).map(&:facet_value) : []
     end
     define_field(:text, :sale_seller_search, :stored => true) do
 #      get_sale_sellers_or_holders_names
-      (sale = get_sale) ? sale.sale_agents.where(role: "seller_or_holder").map(&:display_value).join("; ") : ""
+      (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "seller_or_holder" }.map(&:display_value).join("; ") : ""
     end
 
     define_field(:string, :sale_buyer, :stored => true, :multiple => true) do
 #      get_sale ? get_sale.get_buyers.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
-      (sale = get_sale) ? sale.sale_agents.where(role: "buyer").select(&:facet_value).map(&:facet_value) : []
+      (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "buyer" }.select(&:facet_value).map(&:facet_value) : []
     end
 
     define_field(:text, :sale_buyer_search, :stored => true) do
 #      get_sale_buyers_names
-      (sale = get_sale) ? sale.sale_agents.where(role: "buyer").map(&:display_value).join("; ") : ""
+      (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "buyer" }.map(&:display_value).join("; ") : ""
     end
 
     define_field(:string, :sale_sold, :stored => true) do
@@ -916,7 +942,7 @@ class Entry < ActiveRecord::Base
       offset += 300
       ids = s.results.map(&:id)
       #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
-      objects = Entry.includes(:created_by, :updated_by, {:group_records => [:groups]}, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash({options: {csv: true}}) }
+      objects = Entry.with_associations.where(id: ids).map { |e| e.as_flat_hash({options: {csv: true}}) }
       break if objects.first.nil?
       csv_file = CSV.open(path, "ab") do |csv|
         if headers.nil? && objects.first
@@ -953,7 +979,7 @@ class Entry < ActiveRecord::Base
       offset += 300
       ids = s.results.map(&:id)
       #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
-      objects = Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash({options: {csv: true}}) }
+      objects = Entry.with_associations.where(id: ids).map { |e| e.as_flat_hash({options: {csv: true}}) }
       break if objects.first.nil?
       csv_file = CSV.open(path, "ab") do |csv|
         if headers.nil? && objects.first
