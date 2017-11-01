@@ -2543,8 +2543,10 @@ var BOOKMARK_SCOPE;
       $scope.setAuthorityId = function (authority) {
         $scope.place.authority_id = authority.uri;
         $scope.place.name = authority.Term.value;
-        $scope.place.latitude = authority.Lat.value;
-        $scope.place.longitude = authority.Long.value;
+        if (authority.Lat)
+          $scope.place.latitude = authority.Lat.value;
+        if (authority.Long)
+          $scope.place.longitude = authority.Long.value;
         console.log('not yet implemented: lookup parent by getty ID', authority.Parent.value);
         $scope.modal.close();
       }
