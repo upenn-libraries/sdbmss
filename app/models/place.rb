@@ -45,6 +45,8 @@ class Place < ActiveRecord::Base
     text :name, :more_like_this => true
     string :name
     integer :id
+    integer :authority_id
+    string :authority_source
     boolean :reviewed
     boolean :problem
     integer :created_by_id
@@ -57,6 +59,14 @@ class Place < ActiveRecord::Base
   def entries_to_index_on_update
     Entry.with_associations.joins(:entry_places).where({ entry_places: { place_id: id} })
   end
+
+  def self.filters
+    super + [
+      ["Authority Id", "authority_id"], 
+      ["Authority Source", "authority_source"]
+    ]
+  end
+
 
   def to_s
     name

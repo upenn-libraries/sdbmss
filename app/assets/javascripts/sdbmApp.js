@@ -2547,8 +2547,38 @@ var BOOKMARK_SCOPE;
           $scope.place.latitude = authority.Lat.value;
         if (authority.Long)
           $scope.place.longitude = authority.Long.value;
-        console.log('not yet implemented: lookup parent by getty ID', authority.Parent.value);
-        $scope.modal.close();
+        // check for getty ID in sdbm already
+        var parent_id = authority.Parent ? authority.Parent.value.split("/")[authority.Parent.value.split("/").length - 1] : false;
+        if (parent_id) {
+
+          $http.get("/places/search.json?offset=0&limit=50&order=id+desc&op=AND&authority_id%5B%5D=" + parent_id + "&authority_id_option%5B%5D=with").then(function (response) {
+            if (response.data.results.length === 1) {
+              if (!$scope.place.parent || !$scope.place.parent.id) {
+                $scope.place.parent = response.data.results[0];
+              } else if ($scope.place.parent.id === response.data.results[0].id) {
+                console.log("SDBM Parent already exists and matches Getty information");
+              } else { // already exists, but does NOT match
+                dataConfirmModal.confirm({
+                  title: 'Override SDBM Parent Place',
+                  text: 'We have detected that the parent location described in Getty exists in the SDBM, but is not the record currently specified.  Would you like to override the current parent location?',
+                  commit: 'Override',
+                  cancel: 'Cancel',
+                  zIindex: 10099,
+                  onConfirm: function() { $scope.place.parent = response.data.results[0]; $scope.$digest(); },
+                  onCancel:  function() { }
+                });
+              }
+            } else if (response.data.results.length > 1) {
+              console.log('Error: Multiple possible matches found.');
+            } else {
+              console.log('No Parent found by Getty ID in SDBM Place Authority.');
+            }
+            $scope.modal.close();
+          });
+        } else {
+          console.log('No Parent specified in Getty record.')
+          $scope.modal.close();
+        }
       }
 
       $scope.selectNameAuthorityModal = function (model, type, base) {
