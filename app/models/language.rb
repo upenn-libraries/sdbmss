@@ -17,7 +17,7 @@ class Language < ActiveRecord::Base
   validate do |name_obj|
     if name_obj.name.present? && (!name_obj.persisted? || name_obj.name_changed?)
       if (existing_name = self.class.find_by(name: name_obj.name)).present? && name_obj.id != existing_name.id
-        errors[:name] << { message: "Place name is already used by record ##{existing_name.id} for '#{existing_name.name}'", name: { id: existing_name.id, name: existing_name.name } }
+        errors[:name] << { message: "Language name is already used by record ##{existing_name.id} for '#{existing_name.name}'", name: { id: existing_name.id, name: existing_name.name } }
       end
     end
   end 

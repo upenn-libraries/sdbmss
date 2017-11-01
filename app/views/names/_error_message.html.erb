@@ -1,10 +1,4 @@
-<!-- FIX ME: there's got to be a better way of using the ID number than pattern matching it here? -->
-<%= message %>
-<% if (message.include?("Name is already used") || message.include?("Viaf is already used")) && !message.include?("deleted") %>
-    <% if @model.id %>
-      <br>
-	    <a href="<%= merge_name_path(@model, target_id: message.match(/\#(\d+)/)[1]) %>">
-	    	Click here to merge <%= @model.public_id %> into SDBM_NAME_<%= message.match(/\#(\d+)/)[1] %> instead.
-	    </a>
-	<% end %>
+<%= message[:message] %>
+<% if (message[:message].include?("Name is already used") || message[:message].include?("Viaf ID is already used")) && !message[:message].include?("deleted") && can?(:merge, @model) %>
+  <%= link_to "Merge #{@model.class.name}?", merge_name_path(@model, :action => "merge", :target_id => message[:name][:id]) %>
 <% end %>
