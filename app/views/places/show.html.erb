@@ -41,7 +41,13 @@
       <dt>Coordinates</dt>
       <dd><%= @model.latitude ? @model.latitude.to_f : "?" %>, <%= @model.longitude ? @model.longitude.to_f : "?" %></dd>
       <dt>Place Authority</dt>
-      <dd><%= link_to "#{@model.authority_id}", "#{@model.authority_source}/#{@model.authority_id}" %></dd>
+      <dd>
+        <% if @model.authority_id %>
+          <%= link_to "#{@model.authority_id}", "#{@model.authority_source}/#{@model.authority_id}" %>
+        <% else %>
+          <span class="text-muted">This place is linked to no exteral authority yet.</span>
+        <% end %>
+      </dd>
     </dl>
 
     <%= render partial: "shared/user_info", locals: {model: @model} %>
