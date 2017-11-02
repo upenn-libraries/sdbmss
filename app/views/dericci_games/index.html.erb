@@ -89,54 +89,58 @@
   </style>
   <%= javascript_include_tag "loader" %>
   <script type="text/javascript">
-    google.charts.load('current', {'packages':['corechart']});
-    google.charts.setOnLoadCallback(drawChart);
+    $(document).ready(function () {        
+      if (google && google.charts) {
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
 
-    function drawChart() {
+        function drawChart() {
 
-      var data = google.visualization.arrayToDataTable([
-        ['Description', 'Proportion'],
-        ['Possibly Linked (<%= possible = DericciRecord.where({verified_id: nil}).joins(:dericci_links).group('dericci_records.id').count.count %>)', <%= possible %>],
-        ['Definitely Linked (<%= definite = DericciRecord.where.not(verified_id: nil).count %>)',  <%= definite %>],
-        ['In Progress (<%= flagged = DericciRecord.joins(:dericci_record_flags).group('dericci_records.id').count.count  %>)', <%= flagged %> ],
-        ['Unlinked (<%= unlinked = DericciRecord.count - (flagged + definite + possible) %>)', <%= unlinked %>],
-        //['Sleep',    7]
-      ]);
-      //console.log(data);
+          var data = google.visualization.arrayToDataTable([
+            ['Description', 'Proportion'],
+            ['Possibly Linked (<%= possible = DericciRecord.where({verified_id: nil}).joins(:dericci_links).group('dericci_records.id').count.count %>)', <%= possible %>],
+            ['Definitely Linked (<%= definite = DericciRecord.where.not(verified_id: nil).count %>)',  <%= definite %>],
+            ['In Progress (<%= flagged = DericciRecord.joins(:dericci_record_flags).group('dericci_records.id').count.count  %>)', <%= flagged %> ],
+            ['Unlinked (<%= unlinked = DericciRecord.count - (flagged + definite + possible) %>)', <%= unlinked %>],
+            //['Sleep',    7]
+          ]);
+          //console.log(data);
 
-      var options = {
-        colors: ["#AE9A4A", "#AE724A", "#7F8FA8", "#306F63"],
-        sliceVisibilityThreshold: 0.0001,
-        pieHole: 0.3,
-        fontName: 'Sarala',
-        fontSize: 12,
-        legend: {
-            alignment: "center",
-            position: "in"
-        },
-        chartArea: {
-            width: "100%",
-            left: 50,
-            top: 20
-        },
-        backgroundColor: "transparent",
-        legend: {
-          alignment: "end",
-          position: "bottom",
-          textStyle: {
-            color: "#222",
-            fontName: "Sarala",
-            fontSize: 14,
-            bold: false,
-            italic: true           
-          }
+          var options = {
+            colors: ["#AE9A4A", "#AE724A", "#7F8FA8", "#306F63"],
+            sliceVisibilityThreshold: 0.0001,
+            pieHole: 0.3,
+            fontName: 'Sarala',
+            fontSize: 12,
+            legend: {
+                alignment: "center",
+                position: "in"
+            },
+            chartArea: {
+                width: "100%",
+                left: 50,
+                top: 20
+            },
+            backgroundColor: "transparent",
+            legend: {
+              alignment: "end",
+              position: "bottom",
+              textStyle: {
+                color: "#222",
+                fontName: "Sarala",
+                fontSize: 14,
+                bold: false,
+                italic: true           
+              }
+            }
+          };
+
+          var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+
+          chart.draw(data, options);
         }
-      };
-
-      var chart = new google.visualization.PieChart(document.getElementById('piechart'));
-
-      chart.draw(data, options);
-    }
+      }
+    })
   </script>
 <% end %>
 

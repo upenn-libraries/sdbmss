@@ -23,11 +23,16 @@ class Place < ActiveRecord::Base
   validate do |name_obj|
     if name_obj.name.present? && (!name_obj.persisted? || name_obj.name_changed?)
       if (existing_name = self.class.find_by(name: name_obj.name)).present? && name_obj.id != existing_name.id
-        errors[:name] << { message: "Place name is already used by record ##{existing_name.id} for '#{existing_name.name}'", name: { id: existing_name.id, name: existing_name.name } }
+        errors[:Name] << "Place name is already used by record #{existing_name.public_id} -> '#{existing_name.name}'"
       end
     end
-  end 
-
+    n = name_obj
+    while (n = n.parent) do
+      if n.id == name_obj.id
+        errors[:Circular] << " - Please don't assign a place to be the parent of a chain that includes itself."
+      end
+    end
+  end
 
   searchable :unless => :deleted do
     string :created_by do
@@ -69,7 +74,7 @@ class Place < ActiveRecord::Base
 
 
   def to_s
-    name
+    [name, parent ? parent.to_s : nil].reject(&:blank?).join(", ")
   end
 
   def public_id

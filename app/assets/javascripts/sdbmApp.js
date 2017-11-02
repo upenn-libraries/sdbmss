@@ -303,6 +303,7 @@ var BOOKMARK_SCOPE;
             promiseErrorHandlerFactory: function(msg, callback) {
                 if (callback) callback();
                 return function(response) {
+                  //console.log(response);
                     var append_str = "";
                     if(response.data && response.data.errors) {
                         // interpret Rails validation errors
@@ -1676,7 +1677,6 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.saveAsDraft = function () {
-          console.log('huh');
           dataConfirmModal.confirm({
             title: 'Save As Draft',
             text: 'Are you sure you would like to save this entry as a draft?  You can only save up to 10 drafts at any given time, as we like to encourage our users to contribute their data publicly to the database.',
@@ -2612,6 +2612,7 @@ var BOOKMARK_SCOPE;
       };
 
       $scope.postSave = function (response) {
+        //console.log(response);
         $scope.currentlySaving = false;
         window.location = "/places/" + $scope.place.id;
       };
@@ -2766,7 +2767,7 @@ var BOOKMARK_SCOPE;
                 return "Edit SDBM_SOURCE_" + $scope.source.id;
             }
             var sourceTypeForTitle = "Source";
-            if($scope.source && $scope.source.source_type) {
+            if($scope.source && $scope.source.source_type && $scope.optionsSourceType) {
                 $scope.optionsSourceType.forEach(function (item) {
                     if(item.name === $scope.source.source_type.name) {
                         sourceTypeForTitle = item.display_name;

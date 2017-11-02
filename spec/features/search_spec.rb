@@ -156,6 +156,7 @@ describe "Blacklight Search", :js => true do
       deleted: true
     )
     entry.save!
+    SDBMSS::Util.wait_for_solr_to_be_current
 
     sleep(0.5)
 

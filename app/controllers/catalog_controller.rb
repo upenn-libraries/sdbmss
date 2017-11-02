@@ -18,7 +18,11 @@ class CatalogController < ApplicationController
   def show
     @entry = Entry.find_by(id: params[:id])
     #if @entry.manuscripts.count <= 0
-    @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
+    #end
+    entry = @entry
+    # JIRA(sdbm-176)
+#    entry = Entry.find_by(id: params[:id], approved: true)
+    if entry.present?
 =begin
     s = Sunspot.more_like_this(@entry) do
       fields :title_search, :place_search, :author_search, :language_search, :manuscript_date_search, :folios_search
@@ -30,11 +34,7 @@ class CatalogController < ApplicationController
     end
     @suggestions = s.results.first(10)
 =end
-    #end
-    entry = @entry
-    # JIRA(sdbm-176)
-#    entry = Entry.find_by(id: params[:id], approved: true)
-    if entry.present?
+      @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
       if can? :show, entry
         
         @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []

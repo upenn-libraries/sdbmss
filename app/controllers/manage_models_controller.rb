@@ -103,7 +103,11 @@ class ManageModelsController < ApplicationController
           end
         }
         format.json {
-          render json: @model
+          if @model.errors.count > 0
+            render json: { errors: @model.errors.messages }, status: :unprocessable_entity
+          else
+            render json: @model
+          end
         }
       end
     else
@@ -112,7 +116,11 @@ class ManageModelsController < ApplicationController
           render 'edit'
         }
         format.json {
-          render json: @model  #fix me: better error reporting here
+          if @model.errors.count > 0
+            render json: { errors: @model.errors.messages }, status: :unprocessable_entity
+          else
+            render json: @model
+          end
         }
       end
     end

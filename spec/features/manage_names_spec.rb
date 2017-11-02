@@ -44,7 +44,7 @@ describe "Manage Names", :js => true do
     fill_in 'name_name', :with => "Another Joe Schmoe"
     click_button 'Update Name'
 
-    expect(page).to have_content("Click here to merge")
+    expect(page).to have_content("Merge Name?")
   end
 
   it "should show suggestions for names to merge into" do

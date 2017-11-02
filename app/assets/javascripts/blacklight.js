@@ -3,7 +3,6 @@
 // These javascript files are compiled in via the Rails asset pipeline:
 //= require blacklight/core
 //= require blacklight/autofocus
-//= require bookmark_toggle
 //= require save_current_search
 //= require blacklight/ajax_modal
 //= require blacklight/search_context

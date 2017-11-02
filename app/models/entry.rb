@@ -133,7 +133,7 @@ class Entry < ActiveRecord::Base
     {:entry_artists => [:artist]},
     {:entry_scribes => [:scribe]},
     {:entry_languages => [:language]},
-    {:entry_places => [:place]},
+    {:entry_places => [:place => [:parent => [:parent => [:parent => [:parent => [:parent]]]]]]},
     {:provenance => [:provenance_agent]},
     {:entry_manuscripts => [:manuscript]},
     {:source => [:source_agents,:source_type]}

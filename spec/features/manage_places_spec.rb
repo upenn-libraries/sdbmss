@@ -56,7 +56,9 @@ describe "Manage places", :js => true do
       expect(Place.where(name: "Klingon").count).to eq(0)
       visit new_place_path
       fill_in "place_name", with: "Klingon"
-      click_button "Create Place"
+      click_link "Save New Place"
+
+      expect(page).to have_content("This place was used")
 
       expect(Place.where(name: "Klingon").count).to eq(1)
       place = Place.where(name: "Klingon").first
@@ -68,9 +70,8 @@ describe "Manage places", :js => true do
 
       visit edit_place_path :id => place.id
       fill_in "place_name", with: "This should change to unreviewed"
-      click_button "Update Place"
-
-      expect(page).to have_content 'Your changes have been saved'
+      click_link "Save #{place.public_id}"
+      expect(page).to have_content("This place was used")
 
       place = Place.find(place.id)
     end

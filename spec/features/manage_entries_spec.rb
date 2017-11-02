@@ -56,22 +56,6 @@ describe "Manage entries", :js => true do
     expect(all("#search_results tbody tr").count).to eq(Entry.all.count)
   end
 
-  it "should delete an entry" do
-    count = Entry.all.count
-
-    # mock out the confirm dialogue
-    page.evaluate_script('window.confirm = function() { return true; }')
-
-    visit entries_path
-    first("#delete_#{Entry.last.id}").trigger("click")
-    #all(".entry-delete-link").last.trigger('click')
-    expect(page).to have_content("Are you sure you want to delete entry")
-    click_button "Yes"
-    sleep 1.1
-
-    expect(Entry.all.count).to eq(count - 1)
-  end
-
   it "should mark entry as approved" do
 
     visit entries_path
@@ -88,8 +72,28 @@ describe "Manage entries", :js => true do
 
     expect(page).to have_content("There are no records to display.")
 
-    expect(@unapproved_entry.approved).to be true
-    expect(@unapproved_entry.approved_by_id).to eq(@user.id)
+    visit entry_path(@unapproved_entry)
+
+    expect(page).not_to have_content("This entry has not been approved yet")
+
+    expect(Entry.find(@unapproved_entry.id).approved).to be true
+    expect(Entry.find(@unapproved_entry.id).approved_by_id).to eq(@user.id)
+  end
+
+  it "should delete an entry" do
+    count = Entry.all.count
+
+    # mock out the confirm dialogue
+    page.evaluate_script('window.confirm = function() { return true; }')
+
+    visit entries_path
+    first("#delete_#{Entry.last.id}").trigger("click")
+    #all(".entry-delete-link").last.trigger('click')
+    expect(page).to have_content("Are you sure you want to delete entry")
+    click_button "Yes"
+    sleep 1.1
+
+    expect(Entry.all.count).to eq(count - 1)
   end
 
   it "should mark entry as deprecated" do

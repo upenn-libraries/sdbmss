@@ -29,24 +29,35 @@ describe "Browse Dericci Records", :js => true do
     click_link "Start a New Game"
     expect(page).to have_content("Instructions")
 
+    game = DericciGame.last
+
     15.times do |i|
       within "ul.game-nav li:nth-child(#{i + 1})" do
-        find(".btn-default").click
+        #find(".btn-default").click
         find(".btn-primary").click
       end
-      expect(page).to have_content("George Danton Mssr")
+      expect(page).to have_content("Find '#{game.dericci_records[i].name}' in SDBM Name Authority")
       if i < 5
-        first(".selectName").click
+        if all(".selectName").count > 0
+          first(".selectName").click
+        else
+          find('#cantfindtoggle').click
+          expect(page).to have_content("Not Sure")
+          click_link "Not Sure"  
+        end
       elsif i < 10
+        find('#cantfindtoggle').click
+        expect(page).to have_content("Not Sure")
         click_button "Yes"
       else
-        click_button "Not Sure"
+        find('#cantfindtoggle').click
+        expect(page).to have_content("Not Sure")
+        click_button "No"
       end
     end
 
     click_link 'Submit'
-    sleep 1
-    expect(page).not_to have_content("Linked")
+    expect(page).to have_content("Thank you for playing the Dericci Archives Game!")
   end
 
 end
