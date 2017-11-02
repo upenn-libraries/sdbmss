@@ -107,7 +107,14 @@ class ManageModelsController < ApplicationController
         }
       end
     else
-      render 'edit'
+      respond_to do |format|
+        format.html {
+          render 'edit'
+        }
+        format.json {
+          render json: @model  #fix me: better error reporting here
+        }
+      end
     end
   end
 
@@ -161,13 +168,13 @@ class ManageModelsController < ApplicationController
   end
 
   def model_params
-    params.require(model_class_lstr.to_sym).permit(:name)
+    params.require(model_class_lstr.to_sym).permit(:name, :reviewed, :problem)
   end
 
   # this implementation checks the entries_count field if it exists
   def deletable?(object)
     deletable = true
-    if object.respond_to?(:entries_count) && (object.entries_count || 0)  > 0
+    if object.respond_to?(:entries_count) && (object.entries_count || 0)  > 0 && object.entries.count > 0
       deletable = false
     end
     deletable

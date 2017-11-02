@@ -18,6 +18,8 @@ class Place < ActiveRecord::Base
 
   validates_presence_of :name
 
+  belongs_to :parent, class_name: "Place"
+
   validate do |name_obj|
     if name_obj.name.present? && (!name_obj.persisted? || name_obj.name_changed?)
       if (existing_name = self.class.find_by(name: name_obj.name)).present? && name_obj.id != existing_name.id
@@ -43,7 +45,10 @@ class Place < ActiveRecord::Base
     text :name, :more_like_this => true
     string :name
     integer :id
+    integer :authority_id
+    string :authority_source
     boolean :reviewed
+    boolean :problem
     integer :created_by_id
     integer :entries_count
     date :created_at
@@ -54,6 +59,14 @@ class Place < ActiveRecord::Base
   def entries_to_index_on_update
     Entry.with_associations.joins(:entry_places).where({ entry_places: { place_id: id} })
   end
+
+  def self.filters
+    super + [
+      ["Authority Id", "authority_id"], 
+      ["Authority Source", "authority_source"]
+    ]
+  end
+
 
   def to_s
     name
@@ -70,10 +83,16 @@ class Place < ActiveRecord::Base
       name: name,
       entries_count: entries_count,
       reviewed: reviewed,
+      problem: problem,
+      parent: parent ? {id: parent.id, name: parent.name} : nil,
+      latitude: latitude,
+      longitude: longitude,
+      authority_id: authority_id,
       created_by: created_by.present? ? created_by.username : "(none)",
       created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
       updated_by: updated_by.present? ? updated_by.username : "(none)",
-      updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
+      updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : "",
+      authority_source: authority_source
     }
   end
 

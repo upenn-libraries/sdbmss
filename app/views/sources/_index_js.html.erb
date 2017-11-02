@@ -150,6 +150,10 @@ $(document).ready(function() {
                  orderable: false
              },
              {
+                title: "Problem",
+                dbSortField: "problem",
+             },
+             {
                  title: 'Added By',
                  dbSortField: 'created_by'
              },
@@ -203,6 +207,7 @@ $(document).ready(function() {
              result.location_institution,
              result.location,
              result.link,
+             result.problem,
              result.created_by || "",
              result.created_at || "",
              result.updated_by || "",

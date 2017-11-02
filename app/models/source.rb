@@ -105,15 +105,15 @@ class Source < ActiveRecord::Base
     #join(:name, :target => Name, :type => :text, :join => { :from => :name, :to => :agent_name})
 
     integer :agent_id, :multiple => true do
-      source_agents.map(&:agent_id)
+      source_agents.select(&:agent_id).map(&:agent_id)
     end
 
     string :agent_name, :multiple => true do
-      source_agents.map(&:agent).map(&:name)
+      source_agents.map { |sa| sa.agent ? sa.agent.name : sa.observed_name }
     end
 
     text :agent_name do
-      source_agents.map(&:agent).map(&:name)
+      source_agents.map { |sa| sa.agent ? sa.agent.name : sa.observed_name }
     end
 
     string :location
@@ -122,6 +122,7 @@ class Source < ActiveRecord::Base
     string :date
     text :date, :more_like_this => true
     integer :entries_count
+    boolean :problem
     string :source_type do
       source_type.display_name
     end
@@ -159,7 +160,6 @@ class Source < ActiveRecord::Base
   # def date_required
   #   [TYPE_UNPUBLISHED].member? source_type
   # end
-
 
   def get_source_agents_with_role(role)
     source_agents.select { |sa| sa.role == role }
@@ -322,13 +322,16 @@ class Source < ActiveRecord::Base
 
     Entry.where(source_id: self.id).update_all(source_id: target_id)
 
-    target.update_count
+#    target.update_count
     target.save!
 
     self.deleted = true
     self.save!
 
-    SDBMSS::IndexJob.perform_later(Entry.to_s, entry_ids)
+    # slice into managable chunks to avoid running out of space in mysql 
+    entry_ids.each_slice(200) do |slice|
+      SDBMSS::IndexJob.perform_later(Entry.to_s, slice)
+    end
   end
 
   def self.fields
@@ -346,7 +349,8 @@ class Source < ActiveRecord::Base
   def self.filters
     [
       ["Id", "id"], 
-      ["Source Agent Id", "agent_id"]
+      ["Source Agent Id", "agent_id"],
+      ["Problem", "problem"]
     ]
   end
 
@@ -367,6 +371,7 @@ class Source < ActiveRecord::Base
       location_institution: location_institution,
       location: location,
       link: link,
+      problem: problem,
       #comments: comments,
       created_by: created_by.present? ? created_by.username : "(none)",
       created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",

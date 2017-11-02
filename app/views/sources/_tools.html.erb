@@ -8,6 +8,26 @@
                 Merge this source
               </a>
             </li>
+            <% if !source.reviewed %>
+              <li class="link">
+                  <%= link_to(source_path(source, reviewed: true), :method => :put, :data => {:confirm => "Can you confirm that the #{source.class.name} conforms to the SDBM Data Standards</a>?"}) do %>
+                      <span class="glyphicon glyphicon-ok"></span> Approve
+                  <% end %>
+              </li>
+            <% end %>
+            <% if !source.problem %>
+              <li class="link">
+                  <%= link_to(source_path(source, reviewed: true, problem: true), :method => :put, :data => {:confirm => "Would you like to flag this #{source.class.name} as being problematic?"}) do %>
+                      <span class="glyphicon glyphicon-ok"></span> Flag Problem
+                  <% end %>
+              </li>
+            <% elsif source.problem %>
+              <li class="link">
+                  <%= link_to(source_path(source, problem: false), :method => :put, :data => {:confirm => "Has this name been improved so that it is a valid #{source.class.name} resource?"}) do %>
+                      <span class="glyphicon glyphicon-ok"></span> Unflag Problem
+                  <% end %>
+              </li>
+            <% end %>
         <% end %>
     <% end %>
 <% end %>

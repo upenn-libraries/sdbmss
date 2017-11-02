@@ -418,7 +418,6 @@ class Name < ActiveRecord::Base
     target.is_scribe ||= self.is_scribe
     target.is_provenance_agent ||= self.is_provenance_agent
 
-    target.update_count
     target.save
     
     # but ... CAN't SAVE when name is BLANK (nil)
@@ -427,8 +426,19 @@ class Name < ActiveRecord::Base
     self.deleted = true
     self.save!
 
-    # reindex affected entries
-    SDBMSS::IndexJob.perform_later(Entry.to_s, entry_ids)
+    # slice into managable chunks to avoid running out of space in mysql 
+    entry_ids.each_slice(200) do |slice|
+      SDBMSS::IndexJob.perform_later(Entry.to_s, slice)
+    end
+
+    Name.update_counters(target.id, 
+      :authors_count => target.author_entries.where(deprecated: false, draft: false).count - target.authors_count,
+      :artists_count => target.artist_entries.where(deprecated: false, draft: false).count - target.artists_count,
+      :scribes_count => target.scribe_entries.where(deprecated: false, draft: false).count - target.scribes_count,
+      :sale_agents_count => target.sale_entries.where(deprecated: false, draft: false).count - target.sale_agents_count,
+      :provenance_count => target.provenance_entries.where(deprecated: false, draft: false).count - target.provenance_count,
+      :source_agents_count => target.agent_sources.count - target.source_agents_count
+    )
   end
 
   def update_count()

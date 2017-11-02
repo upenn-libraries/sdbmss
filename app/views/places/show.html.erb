@@ -1,9 +1,9 @@
 <% content_for :breadcrumbs do %>
-  <%= render partial: "breadcrumbs", locals: {edit: false} %>
+  <%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
 <% end %>
 
 <% content_for :control_tools do %>
-  <%= render partial: "tools" %>
+  <%= render partial: "manage_models/tools" %>
 <% end %>
 
 <% if @model.problem %>
@@ -29,6 +29,25 @@
       <dt># Entries</dt>
       <dd>
           This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
+      </dd>
+      <dt>Parent</dt>
+      <dd>
+        <span class="glyphicon glyphicon-globe"></span>
+        <% if @model.parent %>
+          <%= render partial: "parent", locals: {model: @model } %>        
+        <% else %>
+          <span class="text-muted">This place has no parent set.</span>
+        <% end %>
+      </dd>
+      <dt>Coordinates</dt>
+      <dd><%= @model.latitude ? @model.latitude.to_f : "?" %>, <%= @model.longitude ? @model.longitude.to_f : "?" %></dd>
+      <dt>Place Authority</dt>
+      <dd>
+        <% if @model.authority_id %>
+          <%= link_to "#{@model.authority_id}", "#{@model.authority_source}/#{@model.authority_id}" %>
+        <% else %>
+          <span class="text-muted">This place is linked to no exteral authority yet.</span>
+        <% end %>
       </dd>
     </dl>
 

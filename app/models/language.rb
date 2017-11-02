@@ -17,7 +17,7 @@ class Language < ActiveRecord::Base
   validate do |name_obj|
     if name_obj.name.present? && (!name_obj.persisted? || name_obj.name_changed?)
       if (existing_name = self.class.find_by(name: name_obj.name)).present? && name_obj.id != existing_name.id
-        errors[:name] << { message: "Place name is already used by record ##{existing_name.id} for '#{existing_name.name}'", name: { id: existing_name.id, name: existing_name.name } }
+        errors[:name] << { message: "Language name is already used by record ##{existing_name.id} for '#{existing_name.name}'", name: { id: existing_name.id, name: existing_name.name } }
       end
     end
   end 
@@ -39,6 +39,7 @@ class Language < ActiveRecord::Base
     string :name
     integer :id
     integer :entries_count
+    boolean :problem
     integer :created_by_id
     date :created_at
     date :updated_at
@@ -68,6 +69,7 @@ class Language < ActiveRecord::Base
       name: name,
       entries_count: entries_count,
       reviewed: reviewed,
+      problem: problem,
       created_by: created_by.present? ? created_by.username : "(none)",
       created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
       updated_by: updated_by.present? ? updated_by.username : "(none)",

@@ -20,7 +20,7 @@ textarea { resize:vertical ; }
 
 h1, .h1, h2, .h2, h3, .h3, legend {
   /*font-family: Dosis;*/
-  font-weight: bold;
+  font-weight: normal;
 }
 a {
   /*color: #4e76b3; ... eventually */
@@ -71,17 +71,28 @@ a {
   border-color: #204d74;
 }
 .thredded-nav {
-  margin: 0px;
+  margin: -18px 0px 10px 0px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-top: none;
+  border-bottom-right-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 .thredded-nav .col-sm-4 {
-  margin-bottom: 10px;
+  margin-top: -18px;
+}
+li.active.forum-tab a, li.forum-tab a:hover, li.forum-tab a:focus, li.forum-tab a:active {
+  background: #f5f5f5 !important;
 }
 .thredded--topic-header {
   margin-bottom: 2rem;
 }
-.thredded--topic-header--title {
-  text-align: center;
-  font-family: Dosis;
+.thredded--navigation-breadcrumbs li {
+  font-weight: normal;
+}
+.thredded--main-section {
+  padding: 10px;
+  margin-top: -10px;
 }
 .dashboard-forum-posts-count {
   position: static;
@@ -98,6 +109,7 @@ a {
 .thredded--navigation--search  {
   position: relative;
   float: right;
+  margin-right: -15px;
 }
 .thredded--topics--topic {
   margin: 0px 50px 10px 50px;
@@ -108,7 +120,7 @@ a {
   font-size: 14px;
 }
 .thredded--navigation--search input[type="search"], .thredded--navigation--search input[type="search"]:focus {
-  margin: -1px 0px 0 0;
+  margin: 0px 0px 0 0;
   -webkit-margin-end: 0px;
 }
 .thredded--navigation-breadcrumbs a, li.thredded--navigation-breadcrumbs--item-no-link {
@@ -549,15 +561,16 @@ a {
   color: white;
 }
 .home-emphasis {
-  color: #943f42;
+  /*color: #943f42;*/
+  color: black;
 }
-.panel-home {
+/*.panel-home {
   border-color: #943f42;
 }
 .panel-home .panel-heading {
   background: #943f42;
   color: white;
-}
+}*/
 .thredded--post--avatar {
   left: inherit;
   top: inherit;
@@ -1630,8 +1643,15 @@ so that gray backdrop shvows up correctly */
 }
 /* RESPONSIVE */
 @media (max-width: 767px) {
+  .nav > li > a {
+    padding: 10px 4px;
+  }
   .search-block .form-control {
     width: 100% !important;
+  }
+  .dashboard-header {
+    font-size: 34px !important;
+    line-height: 42px !important;
   }
   .search-block .search-remove {
     height: 100%;
@@ -2404,6 +2424,8 @@ Private Message Styling
 }
 .user-info {
   display: table-cell;
+  vertical-align: middle;
+  padding-left: 10px;
 }
 
 .textarea-group {
@@ -2522,8 +2544,8 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
   color: white;
 }
 .alert-info {
-  background-color: #31708f;
-  border-color: #31708f;
+  background-color: #4d6b98;
+  border-color: #4d6b98;
   color: white;
 }
 .alert-success {
@@ -2531,10 +2553,25 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
   border-color: #3c763d;
   color: white;
 }
+.alert-warning {
+  background-color: #d68c1e;
+  border-color: #d68c1e;
+  color: white;
+}
 .alert a {
   text-decoration: underline;
   font-weight: bold;
   color: inherit;
+}
+.alert .modal {
+  color: black;
+}
+.alert .modal a, .alert a.btn {
+  color: initial;
+  text-decoration: none;
+}
+.alert {
+  margin-bottom: 10px;
 }
 .btn-primary, .panel-primary > .panel-heading {  
   background-color: #4e76b3;
@@ -2579,4 +2616,36 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 }
 .panel-heading.collapse-toggle .panel-title:after {
   color: inherit;
+}
+.user-info .dropdown-menu {
+  position: absolute !important;
+  background: #4d6b98 !important;
+}
+.dashboard-header {
+  font-size: 46px;
+  font-weight: normal;
+  line-height: 100px;
+  letter-spacing: -2px;
+}
+.dashboard-profile-picture {
+  float: left;
+  border-radius: 50%;
+}
+.btn-tag {
+  background-color: #4d6b98;
+  border-color: #4d6b98;          
+}
+.btn-tag:hover, .btn-tag:active, .btn-tag:focus {
+  background: #999;
+  border-color: #999;
+}
+.list-inline .btn-group {
+  margin: 1px;
+}
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+  background-color: #4d6b98;
+  color: white;
+}
+.thredded--post-moderation-record--moderation-state-notice a, .thredded--post-moderation-record--content-changed-notice a, .thredded--link, .thredded--messageboard, .thredded--post--user a, .thredded--post--topic a, .thredded--post--user-and-topic a, .thredded--post--edit, .thredded--post--delete, .thredded--post--content a, .thredded--topic-header--participants--participant > a, .thredded--topic-header--started-by a, .thredded--topic-header--edit-topic, .thredded--topic-header--follow-info form input[type=submit], .thredded--topic-header--follow-info form button, .thredded--topics--title a, .thredded--topics--started-by a, .thredded--topics--updated-by a {
+  color: #4D6B97;
 }

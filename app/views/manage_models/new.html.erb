@@ -1,6 +1,7 @@
 <%= stylesheet_link_tag "extras", media: "all" %>
+<%= javascript_include_tag "extras" %>
 
-<h1>New <%= resource_name.singularize.capitalize %></h1>
+<h1 class='text-center'>New <%= resource_name.singularize.capitalize %></h1>
 
 <%= render 'form' %>
 

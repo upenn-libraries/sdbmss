@@ -3,6 +3,7 @@ class SourceAgent < ActiveRecord::Base
   belongs_to :agent, class_name: 'Name', counter_cache: :source_agents_count
 
   validate :validate_role
+  validate :observed_or_authority  
 
   include HasPaperTrail
 
@@ -22,7 +23,6 @@ class SourceAgent < ActiveRecord::Base
     [ROLE_RECIPIENT, "Recipient"],
   ]
 
-  validates_presence_of :agent
   validates_presence_of :source
 
   def self.valid_roles_for_source_type(source_type_code)
@@ -52,6 +52,12 @@ class SourceAgent < ActiveRecord::Base
   def validate_role
     if !valid_roles_for_source_type.include?(role)
       errors.add(:role, "'#{role}' role not allowed in SourceAgent records for sources whose source_type = #{source.source_type.name}")
+    end
+  end
+
+  def observed_or_authority
+    if observed_name.blank? && agent.blank?
+      errors[:base] << "Either an observed value or authority name are required (or both)"
     end
   end
 

@@ -1,10 +1,7 @@
 <% if entry.nil? %>
 <p>Error: couldn't retrieve model object from database for Solr document id = <%= document.id %></p>
 <% else %>
-<!--<p>
-    Note: This entry records a mention or observation of a manuscript
-    in or by a source. Do not assume that the manuscript is held by the
-    University of Pennsylvania Libraries.</p>-->
+
 <div class="<%= entry.draft ? 'text-muted' : '' %>">
 
 <% if entry.source.source_type.name == SourceType::OBSERVATION %>
@@ -14,20 +11,24 @@
 <% end %>
 
 <div class="alert alert-info">
-    Note: This entry records a mention or observation of a manuscript in a source.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries.
+    <span class="glyphicon glyphicon-info-sign"></span> <strong>Note:</strong> This entry records a mention or observation of a manuscript in a source. Do not assume that the manuscript is held by the University of Pennsylvania Libraries.
 </div>
 
 <% if entry.deprecated %>
-    <p style="color: red;">
-        This entry has been deprecated. The data on this page is considered incorrect or unreliable and should NOT be cited or used.
+    <div class="alert alert-danger">
+        <span class="glyphicon glyphicon-ban-circle"></span>
+        This entry has been <strong>deprecated</strong>. The data on this page is considered incorrect or unreliable and should <strong>NOT</strong> be cited or used.
         <% if (superceded_by = entry.superceded_by).present? %>
             <br/>The following entry supercedes it: <a href="<%= entry_path superceded_by %>"><%= superceded_by.public_id %></a>
         <% end %>
-    </p>
+    </div>
 <% end %>
 
 <% if !entry.approved %>
-    <div class="alert alert-warning">Warning: This entry has not been approved yet.  The data may be incorrect or unreliable, or may not conform to the general data standards.</div>
+    <div class="alert alert-warning">
+        <span class="glyphicon glyphicon-warning-sign"></span>
+        <strong>Warning:</strong> This entry has not been approved yet.  The data may be incorrect or unreliable, or may not conform to the general data standards.
+    </div>
 <% end %>
 
 <% if entry.draft %>
@@ -491,11 +492,14 @@
                             <span>This entry is being edited by </span>
                         <% end %>
                         <span class="list-inline">
-                        <% entry.groups.each do |group| %>
+                        <% entry.group_records.each do |group_record| %>
                             <li>
-                                <%= link_to group.name, group_path(group) %>
-                                <% if can? :edit, group %>
-                                    <%= link_to remove_from_group_entries_path(ids: [entry.id], group_id: group.id), :method => :post, :format => :html do %>
+                                <%= link_to group_record.group.name, group_path(group_record.group) %>
+                                <% if group_record.editable %>
+                                    <span class="text-muted">(Editable)</span>
+                                <% end %>
+                                <% if can? :edit, group_record.group %>
+                                    <%= link_to remove_from_group_entries_path(ids: [entry.id], group_id: group_record.group.id), :method => :post, :format => :html do %>
                                       <span class="glyphicon glyphicon-remove"></span>
                                     <% end %>
                                 <% end %>

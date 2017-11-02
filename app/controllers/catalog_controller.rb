@@ -18,7 +18,6 @@ class CatalogController < ApplicationController
   def show
     @entry = Entry.find_by(id: params[:id])
     #if @entry.manuscripts.count <= 0
-    
     @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
 =begin
     s = Sunspot.more_like_this(@entry) do
@@ -37,9 +36,17 @@ class CatalogController < ApplicationController
 #    entry = Entry.find_by(id: params[:id], approved: true)
     if entry.present?
       if can? :show, entry
-        #flash.now[:notice] = "Note: This entry records a mention or observation of a manuscript in a source.  Do not assume that the manuscript is held by the University of Pennsylvania Libraries."
-    #  @entry_comment = EntryComment.new(entry: entry)
-    #  @entry_comment.build_comment
+        
+        @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
+        s = Sunspot.more_like_this(@entry) do
+          fields :title_search, :place_search, :author_search, :language_search
+          # without :id, [collect entry_ids from manuscript]
+          #minimum_term_frequency 3
+          boost_by_relevance true
+          order_by :score, :desc
+        end
+        @suggestions = []#s.results.last(10)
+    
         super
         respond_to do |format|
           format.html
@@ -118,7 +125,7 @@ class CatalogController < ApplicationController
       page += 1
       ids = @response.response["docs"].map { |doc| doc["entry_id"] }
       #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
-      objects = Entry.includes(:created_by, :updated_by, :groups, :institution, {:sales => [{:sale_agents => :agent}]}, {:entry_authors => [:author]}, :entry_titles, :entry_dates, {:entry_artists => [:artist]}, {:entry_scribes => [:scribe]}, {:entry_languages => [:language]}, {:entry_places => [:place]}, {:provenance => [:provenance_agent]}, :entry_uses, :entry_materials, {:entry_manuscripts => [:manuscript]}, :source).where(id: ids).map { |e| e.as_flat_hash({options: {csv: true}}) }
+      objects = Entry.with_associations.where(id: ids).map { |e| e.as_flat_hash({options: {csv: true}}) }
       break if objects.first.nil?
       csv_file = CSV.open(path, "ab") do |csv|
         if headers.nil? && objects.first

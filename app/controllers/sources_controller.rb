@@ -15,10 +15,10 @@ class SourcesController < SearchableAuthorityController
 
   load_and_authorize_resource :only => [:edit, :update, :destroy, :merge]
 
+  # fix me: delete this?
   DEFAULT_SEARCH_FIELD_HANDLER = Proc.new { |fieldname, params, query|
     query.where("#{fieldname} like ?", "%#{params[fieldname]}%")
   }
-
   SEARCH_FIELDS = [
     ["title", "Title", DEFAULT_SEARCH_FIELD_HANDLER ],
     ["date", "Date", Proc.new { |fieldname, params, query|
@@ -36,6 +36,7 @@ class SourcesController < SearchableAuthorityController
     ["author", "Author", DEFAULT_SEARCH_FIELD_HANDLER ],
   ]
 
+  # (not this)
   def search_fields
     @filters = ["id", "location", "agent_id"]
     @fields = ["title", "date", "agent_name", "author", "created_by", "updated_by", "source_type"]
@@ -45,6 +46,7 @@ class SourcesController < SearchableAuthorityController
 
   # return just the query strings which are combined in an array, then joined with either AND or OR to create one final query - but will it work with the unique cases above?
 
+  # fix me: deleete this?
   A_DEFAULT_SEARCH_HANDLER = lambda { |fieldname, params, query| 
     return "#{fieldname} like '%#{params[fieldname]}%'"
   }
@@ -156,7 +158,11 @@ class SourcesController < SearchableAuthorityController
         end
       }
       format.html {
-        render "edit"
+        if success
+          redirect_to source_path(@source)
+        else
+          render 'edit'
+        end
       }
     end
   end
@@ -341,6 +347,7 @@ class SourcesController < SearchableAuthorityController
         log_activity
         flash[:success] = "#{id} has been successfully merged into #{@target.public_id}"
       end
+      Source.update_counters(@target.id, :entries_count => @target.entries.where(deprecated: false, draft: false).count - @target.entries_count)
       # FIX ME: handle errors here, if the merge is not succesful?
       #render "merge_success"
       redirect_to source_path(@target)
@@ -350,7 +357,7 @@ class SourcesController < SearchableAuthorityController
   # we don't ever destroy anything, we just mark it as deleted
   def destroy
     error = nil
-    if @source.entries_count.to_i == 0
+    if @source.entries.count.to_i == 0
       @source.deleted = true
       if !@source.save_by(current_user)
         error = @source.errors.to_s
@@ -360,8 +367,10 @@ class SourcesController < SearchableAuthorityController
           Name.decrement_counter(:source_agents_count, source_agent.id)
         end
       end
+    elsif @source.entries.where(deprecated: true).count > 0
+      error = "The source cannot be deleted because it is still used in some entries (including the following deprecated entries: #{@source.entries.where(deprecated: true).map(&:public_id).join(", ")})"
     else
-      error = "Can't mark a source as deleted if it has entries"
+      error = "The source cannot be deleted because it is still used in some entries"
     end
 
     # if we call respond_with(@entry), which is more rails-ish, the
@@ -465,11 +474,13 @@ class SourcesController < SearchableAuthorityController
       :medium,
       :date_accessed,
       :location,
+      :problem,
+      :reviewed,
       :location_institution,
       :link,
       :status,
       :other_info,
-      :source_agents_attributes => [ :id, :agent_id, :role, :_destroy ],
+      :source_agents_attributes => [ :id, :agent_id, :role, :_destroy, :observed_name ],
     )
   end
 

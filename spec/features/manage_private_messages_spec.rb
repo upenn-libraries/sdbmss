@@ -35,8 +35,6 @@ describe "Manage Private Messages", :js => true do
   it "should allow a user to send a new private message" do
     visit new_private_message_path(user_id: [@user2.id])
     
-    expect(page).to have_content("New Private Message")
-
     fill_in "title", with: "Welcome!"
     fill_in "message", with: "This is a welcome message."
 

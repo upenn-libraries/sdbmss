@@ -1,43 +1,34 @@
-
 <% is_contributor = current_user.role == 'contributor' %>
 <% possessive = is_contributor ? "Your" : "" %>
 
 <div class="row">
-    <div class="col-sm-12">
-        <div class="well" style="">
-            <div class="row">
-                <div class="col-sm-7">
-                    <span class='h1'><%= current_user.to_s %>'s Dashboard</span>                            
-                      <ul class="list-inline" style="margin-bottom: 0px;">
-                        <li class=""><span class="btn btn-xs"><span class="glyphicon glyphicon-tag"></span> Tags</span> </li>
-                        <% if current_user.tags.count <= 0 %>                            
-                            <li>
-                                <span class="text-muted">You do not have any tags yet.</span>
-                            </li>
-                        <% end %>
-                    <% current_user.tags.each do |tag| %>
-                        <li>
-                            <div class="btn-group">
-                            <%= link_to(main_app.bookmarks_path(tag: tag[0]), class: "btn btn-xs btn-default") do %>
-                                <%= "#{tag[0]}" %>
-                            <% end %>
-                            <span class="btn btn-xs btn-info">
-                                <%= tag[1] %>
-                            </span>
-                            </div>
-                        </li>
-                    <% end %>
-                    </ul>
-                </div>
-                
-                <% if can? :index, DericciGame %>
-                <div class="col-sm-5 text-right">
-                    <p><a href="/dericci_games" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-tower"></span> Play the De Ricci Digitized Archive Game!</a></p>
-                </div>
+    <div class="col-sm-12 text-center">
+        <%= image_tag Thredded.avatar_url.call(current_user), class: 'img img-responsive dashboard-profile-picture' %>
+        <span class='h1 dashboard-header text-muted'><%= current_user.to_s %>'s Dashboard</span>                            
+        <ul class="list-inline" style="margin-bottom: 0px;">
+            <li>
+                <span class="btn btn-info btn-xs btn-tag">
+                    <span class="glyphicon glyphicon-tag"></span>
+                </span> Tags:
+            </li>
+            <% if current_user.tags.count <= 0 %>                            
+                <li>
+                    <span class="text-muted">You do not have any tags yet.</span>
+                </li>
+            <% end %>
+        <% current_user.tags.each do |tag| %>
+            <li>
+                <div class="btn-group">
+                <%= link_to(main_app.bookmarks_path(tag: tag[0]), class: "btn btn-xs btn-default") do %>
+                    <%= "#{tag[0]}" %>
                 <% end %>
-            
-            </div>            
-        </div>
+                <span class="btn btn-xs btn-info btn-tag">
+                    <%= tag[1] %>
+                </span>
+                </div>
+            </li>
+        <% end %>
+        </ul>
     </div>
 </div>
 
@@ -45,13 +36,13 @@
     <div class="col-sm-12">
         <ul id='dashboard-tabs' class="nav nav-tabs dashboard-tabs">
             <li class="<%= request.original_fullpath == main_app.dashboard_contributions_path ? 'active' : ''%>">
-                <a href="<%= main_app.dashboard_contributions_path %>"><span class="glyphicon glyphicon-gift"></span> Your Contributions</a>
+                <a href="<%= main_app.dashboard_contributions_path %>"><span class="glyphicon glyphicon-gift"></span> Contributions</a>
             </li>
             <li class="<%= request.original_fullpath == main_app.dashboard_activity_path ? 'active' : ''%>">
                 <a href="<%= main_app.dashboard_activity_path %>"><span class="glyphicon glyphicon-sunglasses"></span> Activity</a>
             </li>
             <% count = Thredded::Post.where("created_at > ?", current_user.thredded_user_detail.last_seen_at).count %>
-            <li class="<%= request.original_fullpath.include?(thredded.root_path) ? 'active' : ''%>">
+            <li class="<%= request.original_fullpath.include?(thredded.root_path) ? 'active' : ''%> forum-tab">
                 <a href="<%= thredded.root_path %>" class="forum-nav <%= count > 0 ? 'thredded--topic-unread' : 'thredded--topic-read' %>"><span class="glyphicon glyphicon-comment"></span> Forum
                     <div class="thredded--topics--posts-count dashboard-forum-posts-count"><%= count %></div>
                 </a>

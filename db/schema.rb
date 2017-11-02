@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170823144650) do
+ActiveRecord::Schema.define(version: 20171031194330) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -427,6 +427,7 @@ ActiveRecord::Schema.define(version: 20170823144650) do
     t.boolean  "reviewed",                   default: false
     t.integer  "reviewed_by_id", limit: 4
     t.datetime "reviewed_at"
+    t.boolean  "problem",                    default: false
   end
 
   add_index "languages", ["created_by_id"], name: "index_languages_on_created_by_id", using: :btree
@@ -513,18 +514,18 @@ ActiveRecord::Schema.define(version: 20170823144650) do
     t.datetime "updated_at",                                     null: false
     t.boolean  "on_message",                     default: true
     t.boolean  "email_on_message",               default: true
-    t.boolean  "email_on_comment",               default: false
-    t.boolean  "email_on_reply",                 default: false
-    t.boolean  "email_on_update",                default: false
+    t.boolean  "email_on_comment",               default: true
+    t.boolean  "email_on_reply",                 default: true
+    t.boolean  "email_on_update",                default: true
     t.boolean  "on_new_user",                    default: false
     t.boolean  "email_on_new_user",              default: false
     t.boolean  "on_group",                       default: true
-    t.boolean  "email_on_group",                 default: false
+    t.boolean  "email_on_group",                 default: true
     t.boolean  "on_all_comment",                 default: true
     t.boolean  "email_on_all_comment",           default: false
     t.boolean  "auto_watch",                     default: true
     t.boolean  "on_forum_post",                  default: true
-    t.boolean  "email_on_forum_post",            default: false
+    t.boolean  "email_on_forum_post",            default: true
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -552,17 +553,23 @@ ActiveRecord::Schema.define(version: 20170823144650) do
   add_index "pages", ["name"], name: "index_pages_on_name", unique: true, using: :btree
 
   create_table "places", force: :cascade do |t|
-    t.string   "name",           limit: 255
-    t.integer  "entry_id",       limit: 4
+    t.string   "name",             limit: 255
+    t.integer  "entry_id",         limit: 4
     t.datetime "created_at"
-    t.integer  "created_by_id",  limit: 4
+    t.integer  "created_by_id",    limit: 4
     t.datetime "updated_at"
-    t.integer  "updated_by_id",  limit: 4
-    t.integer  "entries_count",  limit: 4,   default: 0,     null: false
-    t.boolean  "deleted",                    default: false
-    t.boolean  "reviewed",                   default: false
-    t.integer  "reviewed_by_id", limit: 4
+    t.integer  "updated_by_id",    limit: 4
+    t.integer  "entries_count",    limit: 4,                            default: 0,     null: false
+    t.boolean  "deleted",                                               default: false
+    t.boolean  "reviewed",                                              default: false
+    t.integer  "reviewed_by_id",   limit: 4
     t.datetime "reviewed_at"
+    t.boolean  "problem",                                               default: false
+    t.decimal  "latitude",                     precision: 10, scale: 6
+    t.decimal  "longitude",                    precision: 10, scale: 6
+    t.integer  "parent_id",        limit: 4
+    t.integer  "authority_id",     limit: 4
+    t.string   "authority_source", limit: 255
   end
 
   add_index "places", ["created_by_id"], name: "index_places_on_created_by_id", using: :btree
@@ -694,11 +701,12 @@ ActiveRecord::Schema.define(version: 20170823144650) do
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
   create_table "source_agents", force: :cascade do |t|
-    t.integer  "source_id",  limit: 4
-    t.integer  "agent_id",   limit: 4
-    t.string   "role",       limit: 255
+    t.integer  "source_id",     limit: 4
+    t.integer  "agent_id",      limit: 4
+    t.string   "role",          limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "observed_name", limit: 255
   end
 
   add_index "source_agents", ["agent_id"], name: "index_source_agents_on_agent_id", using: :btree
@@ -744,6 +752,7 @@ ActiveRecord::Schema.define(version: 20170823144650) do
     t.integer  "reviewed_by_id",       limit: 4
     t.datetime "reviewed_at"
     t.boolean  "legacy",                             default: false
+    t.boolean  "problem",                            default: false
   end
 
   add_index "sources", ["created_by_id"], name: "index_sources_on_created_by_id", using: :btree

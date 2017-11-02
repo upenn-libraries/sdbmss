@@ -2,7 +2,7 @@
 <%= javascript_include_tag "loader" %>
 <script>
   $(document).ready(function () {
-    $.get("<%= profile_path(@user.username) %>.json", function (result) {
+    $.get("<%= profile_path(@user.username) %>?format=json", function (result) {
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
 

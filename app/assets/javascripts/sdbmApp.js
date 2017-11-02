@@ -643,6 +643,9 @@ var BOOKMARK_SCOPE;
 
         $scope.createSource = function () {
           var modalScope = $rootScope.$new();
+          modalScope.date = $scope.date;
+          modalScope.title = $scope.title;
+          modalScope.agent = $scope.agent;
           modalScope.model = model;
           modalScope.modalInstance = $modal.open({
             templateUrl: 'createSource.html',
@@ -740,6 +743,7 @@ var BOOKMARK_SCOPE;
 
     sdbmApp.controller("SelectNameAuthorityCtrl", function ($scope, $http, $modalInstance, $modal, recordType, model, type, base) {
       $scope.suggestions = [];
+      $scope.page = 1;
       $scope.type = type.replace('is_', '');
       $scope.warning = "To begin searching, enter search term in the search bar.";
 
@@ -760,6 +764,16 @@ var BOOKMARK_SCOPE;
         $modalInstance.close();
       };
 
+      $scope.prevPage = function () {
+        $scope.page = Math.max(1, $scope.page - 1);
+        $scope.autocomplete();
+      }
+
+      $scope.nextPage = function () {
+        $scope.page += 1;
+        $scope.autocomplete();
+      }
+
       $scope.autocomplete = function () {
           var url  = "/" + recordType + "/more_like_this.json";
           var searchTerm = $scope.nameSearchString; // redundant?
@@ -772,7 +786,7 @@ var BOOKMARK_SCOPE;
             return;
           }
           $http.get(url, {
-              params: $.extend({ autocomplete: 1, name: searchTerm, limit: 15 }, {})
+              params: $.extend({ autocomplete: 1, name: searchTerm, page: $scope.page }, {})
           }).then(function (response) {
               // transform data from API call into format expected by autocomplete
               var exactMatch = false;
@@ -1789,11 +1803,11 @@ var BOOKMARK_SCOPE;
                 entryToSave.$update(
                     $scope.postEntrySave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry", function () {
-                      $scope.currentlySaving = false;
                     })
                 ).finally(function() {
+                    $scope.currentlySaving = false;
+                    $scope.clearDraft();
                     // $scope.currentlySaving = false;
-                  $scope.clearDraft();
                 });
             } else {
 
@@ -1816,10 +1830,10 @@ var BOOKMARK_SCOPE;
                 entryToSave.$save(
                     $scope.postEntrySave,
                     sdbmutil.promiseErrorHandlerFactory("There was an error saving this entry", function () {
-                      $scope.currentlySaving = false;
                     })
                   ).finally(function() {
-                  $scope.clearDraft();
+                    $scope.clearDraft();
+                    $scope.currentlySaving = false;
                     // $scope.currentlySaving = false;
                 });
             }
@@ -2503,6 +2517,127 @@ var BOOKMARK_SCOPE;
         };
     });
 
+    sdbmApp.controller('PlaceCtrl', function ($scope, $http, $modal, Place, sdbmutil) {
+
+      var place_id = $("#place_id").val();
+      if (place_id) {
+        Place.get({id: place_id},
+          function(place) {
+              $scope.place = place;
+              if ($scope.place.parent === undefined || $scope.place.parent === null) {
+                $scope.place.parent = {};
+              }
+          },
+          sdbmutil.promiseErrorHandlerFactory("Error loading Source data for this page")
+        )
+      } else {
+        $scope.place = new Place();
+        $scope.place.parent = {};
+      }
+
+      // for now, just getty
+      $scope.queryAuthority = function () {
+        $http.get("http://vocab.getty.edu/sparql.json?query=select%20%3FSubject%20(coalesce(%3FlabEn%2C%20%3FlabGVP)%20as%20%3FLabel)%20%3FParent%20%3FParents%20%3FLat%20%3FLong%20%7B%0A%20%20%3FSubject%20luc%3Aterm%20%22" + $scope.place.name + "%22%3B%20skos%3AinScheme%20tgn%3A%20%3B%20a%20%3Ftyp.%0A%20%20%3Ftyp%20rdfs%3AsubClassOf%20gvp%3ASubject%3B%20rdfs%3Alabel%20%3FType.%0A%20%20filter%20(%3Ftyp%20!%3D%20gvp%3ASubject)%0A%20%20optional%20%7B%3FSubject%20xl%3AprefLabel%20%5Bxl%3AliteralForm%20%3FlabEn%3B%20dct%3Alanguage%20gvp_lang%3Aen%5D%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AprefLabelGVP%20%5Bxl%3AliteralForm%20%3FlabGVP%5D%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AbroaderPreferred%20%3FParent%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AparentString%20%3FParents%7D%0A%20%20optional%20%7B%3FSubject%20foaf%3Afocus%2Fwgs%3Alat%20%3FLat%7D%0A%20%20optional%20%7B%3FSubject%20foaf%3Afocus%2Fwgs%3Along%20%3FLong%7D%0A%7D&toc=Places_with_English_or_GVP_Label&implicit=true&equivalent=false&_form=/queriesF").then(function(response) {
+        //$http.get("http://vocab.getty.edu/resource/getty/search?q=" + $scope.place.name + "&luceneIndex=Brief&indexDataset=TGN&_form=%2Fresource%2Fgetty%2Fsearch").then( function (response) {
+          $scope.suggestions = response;
+          $scope.modal = $modal.open({
+            templateUrl: 'queryGetty.html',
+            backdrop: 'static',
+            size: 'lg',
+            scope: $scope
+          });
+        });
+      };
+
+      $scope.setAuthorityId = function (authority) {
+        $scope.place.authority_id = authority.uri;
+        $scope.place.name = authority.Label.value;
+        if (authority.Lat)
+          $scope.place.latitude = authority.Lat.value;
+        if (authority.Long)
+          $scope.place.longitude = authority.Long.value;
+        // check for getty ID in sdbm already
+        var parent_id = authority.Parent ? authority.Parent.value.split("/")[authority.Parent.value.split("/").length - 1] : false;
+        if (parent_id) {
+
+          $http.get("/places/search.json?offset=0&limit=50&order=id+desc&op=AND&authority_id%5B%5D=" + parent_id + "&authority_id_option%5B%5D=with").then(function (response) {
+            if (response.data.results.length === 1) {
+              if (!$scope.place.parent || !$scope.place.parent.id) {
+                $scope.place.parent = response.data.results[0];
+              } else if ($scope.place.parent.id === response.data.results[0].id) {
+                console.log("SDBM Parent already exists and matches Getty information");
+              } else { // already exists, but does NOT match
+                dataConfirmModal.confirm({
+                  title: 'Override SDBM Parent Place',
+                  text: 'We have detected that the parent location described in Getty exists in the SDBM, but is not the record currently specified.  Would you like to override the current parent location?',
+                  commit: 'Override',
+                  cancel: 'Cancel',
+                  zIindex: 10099,
+                  onConfirm: function() { $scope.place.parent = response.data.results[0]; $scope.$digest(); },
+                  onCancel:  function() { }
+                });
+              }
+            } else if (response.data.results.length > 1) {
+              console.log('Error: Multiple possible matches found.');
+            } else {
+              console.log('No Parent found by Getty ID in SDBM Place Authority.');
+            }
+            $scope.modal.close();
+          });
+        } else {
+          console.log('No Parent specified in Getty record.')
+          $scope.modal.close();
+        }
+      }
+
+      $scope.selectNameAuthorityModal = function (model, type, base) {
+        base = base || "";
+        var templateUrl = "selectModelAuthority.html";
+
+        var modal = $modal.open({
+            templateUrl: templateUrl,
+            controller: "SelectNameAuthorityCtrl",
+            resolve: {
+              recordType: function () { return 'places' },
+              model: function () { return model },
+              type: function () { return type },
+              base: function () { return base }
+            },
+            size: 'lg'
+        });
+      };
+
+      $scope.removeNameAuthority = function (model, submodel) {
+        model[submodel] = {};
+      };
+
+      $scope.postSave = function (response) {
+        $scope.currentlySaving = false;
+        window.location = "/places/" + $scope.place.id;
+      };
+
+      $scope.save = function () {
+        $scope.currentlySaving = true;
+        if ($scope.place.parent && $scope.place.parent.id) {
+          $scope.place.parent_id = $scope.place.parent.id;
+        };
+        if ($scope.place.id) {          
+          $scope.place.$update(
+            $scope.postSave,
+            sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
+          );
+        } else {
+          $scope.place.$save(
+            $scope.postSave,
+            sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
+          );
+        }
+      };
+
+      EntryScope = $scope;
+
+    });
+
 //    sdbmApp.controller("SourceCtrl", function ($scope, $http, $modal, Source, sdbmutil) {
     sdbmApp.controller('SourceCtrl', function ($scope, $http, $modal, Source, sdbmutil) {
 
@@ -2574,7 +2709,7 @@ var BOOKMARK_SCOPE;
         $scope.associations = [
             {
                 field: 'source_agents',
-                properties: ['agent_id'],
+                properties: ['observed_name', 'agent_id'],
                 foreignKeyObjects: ['agent']
             }
         ];
@@ -2582,7 +2717,7 @@ var BOOKMARK_SCOPE;
         $scope.pageTitle = "";
 
         $scope.source_type = $scope.source ? $scope.source.source_type : "";
-        $scope.source = undefined;
+        //$scope.source = undefined;
 
         $scope.source_agents = [];
 
@@ -2638,7 +2773,11 @@ var BOOKMARK_SCOPE;
                     }
                 });
             }
-            return 'Create a New ' + sourceTypeForTitle;
+            if (sourceTypeForTitle == "Personal Observation") {
+              return 'Step 1: Describe The Source Of Your ' + sourceTypeForTitle;              
+            } else {
+              return 'Create ' + sourceTypeForTitle + ' Source';              
+            }
         };
 
         $scope.showFields = function() {
@@ -2867,6 +3006,17 @@ var BOOKMARK_SCOPE;
             else
               $scope.source.medium = '';
             $scope.source.source_agents = [];
+
+            if ($scope.date) {
+              $scope.source.date = $scope.date;
+            }
+            if ($scope.title) {
+              $scope.source.title = $scope.title;
+            }
+            if ($scope.agent) {
+              $scope.source.source_agents.push({observed_name: $scope.agent});
+            }
+            //$scope.$apply();
           }
         };
 

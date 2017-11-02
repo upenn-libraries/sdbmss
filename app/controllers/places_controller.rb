@@ -12,6 +12,14 @@ class PlacesController < SearchableAuthorityController
     Place
   end
 
+  def show
+    super
+    respond_to do |format|
+      format.html { }
+      format.json { render json: @model.search_result_format }
+    end
+  end
+
   def merge
     @model = Place.find(params[:id])
 
@@ -30,13 +38,20 @@ class PlacesController < SearchableAuthorityController
         @model.entry_places.update_all(:place_id => @target.id)
         @model.destroy!
         flash[:success] = "#{id} has been successfully merged into #{@target.public_id}"
-        @target.entries.index
-        Place.update_counters(@target.id, :entries_count => @target.entries.count - @target.entries_count)
+        entry_ids = @target.entries.map(&:id)
+        entry_ids.each_slice(200) do |slice|
+          SDBMSS::IndexJob.perform_later(Entry.to_s, slice)
+        end
+        Place.update_counters(@target.id, :entries_count => @target.entries.where(deprecated: false, draft: false).count - @target.entries_count)
         redirect_to place_path(@target)
       end
     else
       # nothing, handle normally
     end
+  end
+
+  def model_params
+    params.require(:place).permit(:name, :reviewed, :problem, :latitude, :longitude, :authority_source, :authority_id, :parent_id)
   end
 
 end

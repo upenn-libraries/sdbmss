@@ -58,7 +58,8 @@ var load_session = false;
                         method: 'DELETE',
                         error: function(xhr) {
                             var error = $.parseJSON(xhr.responseText).error;
-                            alert("An error occurred deleting this record: " + error);
+                            SDBM.showModal("#modal", {title: "ERROR: Could not delete record", body: error });
+                            //alert("An error occurred deleting this record: " + error);
                         },
                         success: function(data, textStatus, jqXHR) {
                             manageRecords.dataTable.reload();                    
@@ -256,7 +257,8 @@ var load_session = false;
                     else
                         $('.unreviewed_only').hide();//.css({"display": "none"});*/
                 } else {
-                    alert("An error occurred fetching search results: " + data.error);
+                    SDBM.showModal("#modal", {title: "ERROR: Could not fetch search results", body: data.error });
+                    //alert("An error occurred fetching search results: " + data.error);
                 }
             },
             error: function() {
@@ -495,6 +497,11 @@ var load_session = false;
                 dbSortField: 'reviewed'
             },
             {
+                title: 'Problem',
+                width: "10%",
+                dbSortField: 'problem'
+            },
+            {
                 title: 'Added By',
                 width: "10%",
                 dbSortField: 'created_by'
@@ -519,7 +526,7 @@ var load_session = false;
 
     // translates a search result object into an Array used to populate datatable
     SDBM.ManageRecords.prototype.searchResultToTableRow = function (result) {
-        return [ null, result.id, result.id, result[this.options.searchNameField], result.entries_count || 0, result.reviewed, result.created_by || "", result.created_at || "", result.updated_by || "", result.updated_at || "" ];
+        return [ null, result.id, result.id, result[this.options.searchNameField], result.entries_count || 0, result.reviewed, result.problem, result.created_by || "", result.created_at || "", result.updated_by || "", result.updated_at || "" ];
     };
 
     SDBM.ManageRecords.prototype.showOrHideMarkCheckedRecordsButton = function() {
