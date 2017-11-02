@@ -1,0 +1,4 @@
+<% if model.parent %>
+  <%= render partial: "parent", locals: {model: model.parent} %> <span class="text-muted">/</span>
+  <%= link_to model.parent.name, place_path(model.parent) %>
+<% end %>

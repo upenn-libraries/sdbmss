@@ -76,7 +76,7 @@
         <tbody>
           <tr ng-repeat="result in suggestions.data.results.bindings" ng-init="result.uri = result.Subject.value.split('/')[result.Subject.value.split('/').length - 1]">
             <td><a ng-click="setAuthorityId(result)" class='btn btn-xs btn-default'>Select {{ result.uri }}</a></td>
-            <td><a href="{{ result.Subject.value }}" target="_blank">{{ result.Term.value }}</a></td>
+            <td><a href="{{ result.Subject.value }}" target="_blank">{{ result.Label.value }}</a></td>
             <td><a href="{{ result.Parent.value }}" target="_blank">{{ result.Parents.value.split(", ")[0] }}</a>, {{ result.Parents.value.split(", ").slice(1,1000).join(", ") }}</td>
           </tr>
         </tbody>

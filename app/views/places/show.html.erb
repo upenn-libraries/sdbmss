@@ -32,10 +32,11 @@
       </dd>
       <dt>Parent</dt>
       <dd>
+        <span class="glyphicon glyphicon-globe"></span>
         <% if @model.parent %>
-          <%= link_to @model.parent.name, place_path(@model.parent) %>
+          <%= render partial: "parent", locals: {model: @model } %>        
         <% else %>
-          <span class="text-muted">This place does not have any parent assigned to it.</span>
+          <span class="text-muted">This place has no parent set.</span>
         <% end %>
       </dd>
       <dt>Coordinates</dt>
