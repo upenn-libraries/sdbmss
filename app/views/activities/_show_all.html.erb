@@ -29,7 +29,9 @@
                 <div class="col-xs-6">
                   <%= activity.format_event %>
                   <% link_text = SDBMSS::IDS.get_public_id_for_model(activity.item_type, activity.item_id) %>
-                  <% if !link_text %><% link_text = "#{activity.item_type} ##{activity.item_id}" %><% end %>
+                  <% if !link_text %>
+                    <% link_text = "#{activity.item_type} ##{activity.item_id}" %>
+                  <% end %>
                   <% if activity.event != 'destroy' %>
                     <a href="<%= activity.link %>" target="_blank"><%= link_text %></a>
                   <% else %>
@@ -44,7 +46,7 @@
             <div class="panel-body text-muted" style="overflow: hidden; text-overflow: ellipsis;">
               <div class="row">
                 <div class="col-xs-12">
-                  <% version = PaperTrail::Version.where(transaction_id: activity.transaction_id) %>
+                  <% version = @versions.select{ |v| v.transaction_id == activity.transaction_id } %>
                   <% if version.count > 0 %>
                     <%= render partial: 'activities/version', locals: {version: EntryVersionFormatter.new(version)} %>
                   <% elsif activity.event == 'destroy' %>
@@ -52,16 +54,7 @@
                   <% else %>
                      No changes to display
                   <% end %>
-                </div>
-                <!--
-                <div class="col-xs-2 text-right">
-                  <%# if (r = current_user.ratings.where(ratable_type: "Activity", ratable_id: activity.id).first) %>
-                    <%# render partial: "ratings/delete", locals: {rating: r } %>
-                  <%# else %>
-                    <%# render partial: "ratings/create", locals: {ratable: activity } %>
-                  <%# end %>
-                </div>
-              -->
+                </div>                
               </div>
             </div>
           </div>
