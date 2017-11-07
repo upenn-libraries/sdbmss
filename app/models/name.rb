@@ -297,6 +297,7 @@ class Name < ActiveRecord::Base
           xmldoc.xpath("//ns:record/ns:recordData", "ns" => VIAF::NS::LC).each do |record_data|
             cluster = record_data.xpath("ns:VIAFCluster", "ns" => VIAF::NS::VIAF).first
 
+            # fix me: user name_type in Name record to designate person ("Personal") or institution ("Corporate")
             name_type = cluster.xpath("ns:nameType", "ns" => VIAF::NS::VIAF).first
             viaf_id = cluster.xpath("ns:viafID", "ns" => VIAF::NS::VIAF).first
 
