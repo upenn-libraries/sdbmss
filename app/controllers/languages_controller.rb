@@ -6,7 +6,7 @@ class LanguagesController < SearchableAuthorityController
 
   include Revert
 
-  load_and_authorize_resource :only => [:index, :edit, :update, :destroy, :mark_as_reviewed]
+  load_and_authorize_resource :only => [:index, :edit, :update, :destroy, :mark_as_reviewed, :merge]
 
   def model_class
     Language
