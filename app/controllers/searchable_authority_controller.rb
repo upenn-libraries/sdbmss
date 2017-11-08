@@ -61,10 +61,7 @@ class SearchableAuthorityController < ManageModelsController
     @dates = model_class.dates
     @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
     @field_options = ["contains", "does not contain", "blank", "not blank", "before", "after"]
-    @date_options = ["before", "after", "near", "exact"]
-    if params[:widescreen] == 'true'
-      render :layout => 'widescreen'
-    end
+    @date_options = ["before", "after", "near", "exact"]    
   end
 
   def search
