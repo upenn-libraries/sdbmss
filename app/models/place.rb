@@ -72,6 +72,13 @@ class Place < ActiveRecord::Base
     ]
   end
 
+  def ancestors
+    if parent
+      [name] + parent.ancestors
+    else
+      [name]
+    end
+  end
 
   def to_s
     [name, parent ? parent.to_s : nil].reject(&:blank?).join(", ")

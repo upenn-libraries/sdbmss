@@ -788,7 +788,7 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:string, :place, :stored => true, :multiple => true) do
-      entry_places.select(&:facet_value).map(&:facet_value)
+      places.map(&:ancestors).flatten.uniq
     end
     define_field(:string, :place_flat, :stored => true) do
       entry_places.map(&:display_value).join("; ")

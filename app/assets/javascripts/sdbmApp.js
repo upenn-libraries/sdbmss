@@ -835,8 +835,10 @@ var BOOKMARK_SCOPE;
 
 
         var template = "";
-        if (recordType == 'languages' || recordType == 'places') {
+        if (recordType == 'languages') {
           template = 'createEntityWithName.html';
+        } else if ( recordType == 'places') {
+          template = 'createPlace.html';
         } else {
           template = 'createName.html';
         }
@@ -845,7 +847,7 @@ var BOOKMARK_SCOPE;
 
         var controller = "";
         if (recordType == 'languages') controller = "CreateLanguageModalCtrl";
-        else if (recordType == 'places') controller = "CreatePlaceModalCtrl";
+        else if (recordType == 'places') controller = "PlaceModalCtrl";
         else controller = "CreateNameModalCtrl";
 
         var modalInstance = $modal.open({
@@ -2523,6 +2525,136 @@ var BOOKMARK_SCOPE;
         };
     });
 
+    sdbmApp.controller('PlaceModalCtrl', function ($scope, $http, $modal, $modalInstance, Place, sdbmutil, modalParams) {
+    
+      $scope.place = new Place();
+      $scope.place.parent = {};
+      $scope.place.name = modalParams.name;
+
+      $scope.goBack = function () {
+        $modalInstance.close();
+        if (modalParams.back) {
+          var modal = $modal.open({
+              templateUrl: "selectModelAuthority.html",
+              controller: "SelectNameAuthorityCtrl", //112
+              resolve: {
+                recordType: function () { return modalParams.back.recordType },
+                model: function () { return modalParams.back.model },
+                type: function () { return modalParams.back.type },
+                base: function () { return modalParams.name }
+              },
+              size: 'lg'
+          });
+        }
+      }
+    
+      // for now, just getty
+      $scope.queryAuthority = function () {
+        if (!$scope.querying) {
+          $scope.querying = true;        
+          $http.get("http://vocab.getty.edu/sparql.json?query=select%20%3FSubject%20(coalesce(%3FlabEn%2C%20%3FlabGVP)%20as%20%3FLabel)%20%3FParent%20%3FParents%20%3FLat%20%3FLong%20%7B%0A%20%20%3FSubject%20luc%3Aterm%20%22" + $scope.place.name + "%22%3B%20skos%3AinScheme%20tgn%3A%20%3B%20a%20%3Ftyp.%0A%20%20%3Ftyp%20rdfs%3AsubClassOf%20gvp%3ASubject%3B%20rdfs%3Alabel%20%3FType.%0A%20%20filter%20(%3Ftyp%20!%3D%20gvp%3ASubject)%0A%20%20optional%20%7B%3FSubject%20xl%3AprefLabel%20%5Bxl%3AliteralForm%20%3FlabEn%3B%20dct%3Alanguage%20gvp_lang%3Aen%5D%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AprefLabelGVP%20%5Bxl%3AliteralForm%20%3FlabGVP%5D%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AbroaderPreferred%20%3FParent%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AparentString%20%3FParents%7D%0A%20%20optional%20%7B%3FSubject%20foaf%3Afocus%2Fwgs%3Alat%20%3FLat%7D%0A%20%20optional%20%7B%3FSubject%20foaf%3Afocus%2Fwgs%3Along%20%3FLong%7D%0A%7D&toc=Places_with_English_or_GVP_Label&implicit=true&equivalent=false&_form=/queriesF").then(function(response) {
+          //$http.get("http://vocab.getty.edu/resource/getty/search?q=" + $scope.place.name + "&luceneIndex=Brief&indexDataset=TGN&_form=%2Fresource%2Fgetty%2Fsearch").then( function (response) {          
+            $scope.querying = false;
+            $scope.suggestions = response;
+            $scope.modal = $modal.open({
+              templateUrl: 'queryGetty.html',
+              backdrop: 'static',
+              size: 'lg',
+              scope: $scope
+            });
+          });
+        }
+      };
+
+      $scope.setAuthorityId = function (authority) {
+        $scope.place.authority_id = authority.uri;
+        $scope.place.name = authority.Label.value;
+        if (authority.Lat)
+          $scope.place.latitude = authority.Lat.value;
+        if (authority.Long)
+          $scope.place.longitude = authority.Long.value;
+        // check for getty ID in sdbm already
+        var parent_id = authority.Parent ? authority.Parent.value.split("/")[authority.Parent.value.split("/").length - 1] : false;
+        if (parent_id) {
+
+          $http.get("/places/search.json?offset=0&limit=50&order=id+desc&op=AND&authority_id%5B%5D=" + parent_id + "&authority_id_option%5B%5D=with").then(function (response) {
+            if (response.data.results.length === 1) {
+              if (!$scope.place.parent || !$scope.place.parent.id) {
+                $scope.place.parent = response.data.results[0];
+              } else if ($scope.place.parent.id === response.data.results[0].id) {
+                console.log("SDBM Parent already exists and matches Getty information");
+              } else { // already exists, but does NOT match
+                dataConfirmModal.confirm({
+                  title: 'Override SDBM Parent Place',
+                  text: 'We have detected that the parent location described in Getty exists in the SDBM, but is not the record currently specified.  Would you like to override the current parent location?',
+                  commit: 'Override',
+                  cancel: 'Cancel',
+                  zIindex: 10099,
+                  onConfirm: function() { $scope.place.parent = response.data.results[0]; $scope.$digest(); },
+                  onCancel:  function() { }
+                });
+              }
+            } else if (response.data.results.length > 1) {
+              console.log('Error: Multiple possible matches found.');
+            } else {
+              console.log('No Parent found by Getty ID in SDBM Place Authority.');
+            }
+            $scope.modal.close();
+          });
+        } else {
+          console.log('No Parent specified in Getty record.')
+          $scope.modal.close();
+        }
+      }
+
+      $scope.selectNameAuthorityModal = function (model, type, base) {
+        base = base || "";
+        var templateUrl = "selectModelAuthority.html";
+
+        var modal = $modal.open({
+            templateUrl: templateUrl,
+            controller: "SelectNameAuthorityCtrl",
+            resolve: {
+              recordType: function () { return 'places' },
+              model: function () { return model },
+              type: function () { return type },
+              base: function () { return base }
+            },
+            size: 'lg'
+        });
+      };
+
+      $scope.removeNameAuthority = function (model, submodel) {
+        model[submodel] = {};
+      };
+
+      $scope.postSave = function (response) {
+        $scope.currentlySaving = false;
+        $modalInstance.close($scope.place);
+      };
+
+      $scope.save = function () {
+        $scope.currentlySaving = true;
+        if ($scope.place.parent && $scope.place.parent.id) {
+          $scope.place.parent_id = $scope.place.parent.id;
+        };
+        if ($scope.place.id) {          
+          $scope.place.$update(
+            $scope.postSave,
+            sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
+          );
+        } else {
+          $scope.place.$save(
+            $scope.postSave,
+            sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
+          );
+        }
+      };
+
+      EntryScope = $scope;
+
+    });
+
     sdbmApp.controller('PlaceCtrl', function ($scope, $http, $modal, Place, sdbmutil) {
 
       var place_id = $("#place_id").val();
@@ -2543,16 +2675,20 @@ var BOOKMARK_SCOPE;
 
       // for now, just getty
       $scope.queryAuthority = function () {
-        $http.get("http://vocab.getty.edu/sparql.json?query=select%20%3FSubject%20(coalesce(%3FlabEn%2C%20%3FlabGVP)%20as%20%3FLabel)%20%3FParent%20%3FParents%20%3FLat%20%3FLong%20%7B%0A%20%20%3FSubject%20luc%3Aterm%20%22" + $scope.place.name + "%22%3B%20skos%3AinScheme%20tgn%3A%20%3B%20a%20%3Ftyp.%0A%20%20%3Ftyp%20rdfs%3AsubClassOf%20gvp%3ASubject%3B%20rdfs%3Alabel%20%3FType.%0A%20%20filter%20(%3Ftyp%20!%3D%20gvp%3ASubject)%0A%20%20optional%20%7B%3FSubject%20xl%3AprefLabel%20%5Bxl%3AliteralForm%20%3FlabEn%3B%20dct%3Alanguage%20gvp_lang%3Aen%5D%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AprefLabelGVP%20%5Bxl%3AliteralForm%20%3FlabGVP%5D%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AbroaderPreferred%20%3FParent%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AparentString%20%3FParents%7D%0A%20%20optional%20%7B%3FSubject%20foaf%3Afocus%2Fwgs%3Alat%20%3FLat%7D%0A%20%20optional%20%7B%3FSubject%20foaf%3Afocus%2Fwgs%3Along%20%3FLong%7D%0A%7D&toc=Places_with_English_or_GVP_Label&implicit=true&equivalent=false&_form=/queriesF").then(function(response) {
-        //$http.get("http://vocab.getty.edu/resource/getty/search?q=" + $scope.place.name + "&luceneIndex=Brief&indexDataset=TGN&_form=%2Fresource%2Fgetty%2Fsearch").then( function (response) {
-          $scope.suggestions = response;
-          $scope.modal = $modal.open({
-            templateUrl: 'queryGetty.html',
-            backdrop: 'static',
-            size: 'lg',
-            scope: $scope
+        if (!$scope.querying) {
+          $scope.querying = true;
+          $http.get("http://vocab.getty.edu/sparql.json?query=select%20%3FSubject%20(coalesce(%3FlabEn%2C%20%3FlabGVP)%20as%20%3FLabel)%20%3FParent%20%3FParents%20%3FLat%20%3FLong%20%7B%0A%20%20%3FSubject%20luc%3Aterm%20%22" + $scope.place.name + "%22%3B%20skos%3AinScheme%20tgn%3A%20%3B%20a%20%3Ftyp.%0A%20%20%3Ftyp%20rdfs%3AsubClassOf%20gvp%3ASubject%3B%20rdfs%3Alabel%20%3FType.%0A%20%20filter%20(%3Ftyp%20!%3D%20gvp%3ASubject)%0A%20%20optional%20%7B%3FSubject%20xl%3AprefLabel%20%5Bxl%3AliteralForm%20%3FlabEn%3B%20dct%3Alanguage%20gvp_lang%3Aen%5D%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AprefLabelGVP%20%5Bxl%3AliteralForm%20%3FlabGVP%5D%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AbroaderPreferred%20%3FParent%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AparentString%20%3FParents%7D%0A%20%20optional%20%7B%3FSubject%20foaf%3Afocus%2Fwgs%3Alat%20%3FLat%7D%0A%20%20optional%20%7B%3FSubject%20foaf%3Afocus%2Fwgs%3Along%20%3FLong%7D%0A%7D&toc=Places_with_English_or_GVP_Label&implicit=true&equivalent=false&_form=/queriesF").then(function(response) {
+          //$http.get("http://vocab.getty.edu/resource/getty/search?q=" + $scope.place.name + "&luceneIndex=Brief&indexDataset=TGN&_form=%2Fresource%2Fgetty%2Fsearch").then( function (response) {
+            $scope.querying = false;
+            $scope.suggestions = response;
+            $scope.modal = $modal.open({
+              templateUrl: 'queryGetty.html',
+              backdrop: 'static',
+              size: 'lg',
+              scope: $scope
+            });
           });
-        });
+        }
       };
 
       $scope.setAuthorityId = function (authority) {
