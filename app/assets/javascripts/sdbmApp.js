@@ -750,6 +750,8 @@ var BOOKMARK_SCOPE;
 
       $scope.nameSearchString = base || "";
 
+      $scope.method = "similar";
+
       setTimeout( function () {
         $('.search-form').focus();
       }, 10);
@@ -776,7 +778,11 @@ var BOOKMARK_SCOPE;
       }
 
       $scope.autocomplete = function () {
-          var url  = "/" + recordType + "/more_like_this.json";
+          if ($scope.method == "similar") {            
+            var url  = "/" + recordType + "/more_like_this.json";
+          } else {
+            var url = "/" + recordType + "/search.json";
+          }
           var searchTerm = $scope.nameSearchString; // redundant?
           $scope.searchTerm = searchTerm;
 
@@ -787,7 +793,7 @@ var BOOKMARK_SCOPE;
             return;
           }
           $http.get(url, {
-              params: $.extend({ autocomplete: 1, name: searchTerm, page: $scope.page }, {})
+              params: $.extend({ autocomplete: 1, name: searchTerm, page: $scope.page, offset: ($scope.page - 1) * 10, limit: 10 }, {})
           }).then(function (response) {
               // transform data from API call into format expected by autocomplete
               var exactMatch = false;
