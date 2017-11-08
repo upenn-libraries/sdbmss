@@ -1,0 +1,30 @@
+<%= render "shared/create_entity_with_name" %>
+<%= render "shared/select_model_authority" %>
+<script type="text/ng-template" id="queryGetty.html">
+    <div class="modal-header">
+      <h3 class="modal-title text-center">Find {{ place.name }} in Getty TGN Vocab</h3>
+    </div>
+
+    <div class="modal-body form-horizontal compress-whitespace fit-screen">
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Ancestors</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="result in suggestions.data.results.bindings" ng-init="result.uri = result.Subject.value.split('/')[result.Subject.value.split('/').length - 1]">
+            <td><a ng-click="setAuthorityId(result)" class='btn btn-xs btn-default'>Select {{ result.uri }}</a></td>
+            <td><a href="{{ result.Subject.value }}" target="_blank">{{ result.Label.value }}</a></td>
+            <td><a href="{{ result.Parent.value }}" target="_blank">{{ result.Parents.value.split(", ")[0] }}</a>, {{ result.Parents.value.split(", ").slice(1,1000).join(", ") }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal-footer text-right">
+      <a class="btn btn-default" ng-click="modal.close()">Cancel</a>
+    </div>
+</script>
