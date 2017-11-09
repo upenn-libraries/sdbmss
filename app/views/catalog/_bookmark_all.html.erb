@@ -1,14 +1,10 @@
-<!-- FIX ME: temporarily disabled due to memory issue when triggering bookmark for 50+ docs at once -->
-
-<!-- is 'bookmark all' ever an appropriate action, though? -->
-<% if false #current_user %>
+<% if current_user %>
 <div class="btn-group">
-  <button type='button' class="bookmark-all btn btn-default" onclick="$('.bookmark[data-method=post]').click()">
-    <span class="glyphicon glyphicon-bookmark"></span>
-    Bookmark All
-  </button>
-  <button type='button' class="bookmark-all btn btn-default" onclick="$('.bookmark[data-method=delete]').click()">
-    Clear
-  </button>
+  <%= link_to(bookmarks_path(documents: @document_list.map{ |d| {id: d.model_object.id, type: d.model_object.class.to_s}}), remote: true, id: "bookmark_all", method: :post, "data-type" => "json", class: "btn btn-default") do %>
+    <span class="glyphicon glyphicon-bookmark"></span> Bookmark All</span>
+  <% end %>
+  <%= link_to(clear_bookmarks_path(ids: Bookmark.where(document: @document_list.map(&:model_object), user: current_user).map(&:id)), :method => :delete, remote: true, class: "btn btn-default", id: "unbookmark_all") do %>
+    <span class="bookmark-text">Clear</span>
+  <% end %>
 </div>
 <% end %>

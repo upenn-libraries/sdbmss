@@ -1,3 +1,3 @@
-<%= link_to(bookmarks_path(document_id: document.id, document_type: document.class.to_s), remote: true, method: :post, "data-type" => "json", class: "bookmark") do %>
+<%= link_to(bookmarks_path(documents: [{type: document.class.to_s, id: document.id}]), remote: true, id: "#{document.class.to_s}_#{document.id}", method: :post, "data-type" => "json", class: "bookmark") do %>
   <span class="glyphicon glyphicon-bookmark"></span> <span class="bookmark-text">Bookmark</span>
 <% end %>

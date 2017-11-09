@@ -79,11 +79,21 @@ function exportCSV(url) {
 
 $(document).ready(bindRemoteAjaxCallback);
 
-
 function bindRemoteAjaxCallback (){
   $('a[data-remote]').on('ajax:success', function (event, xhr, status, result) {
-    $(this).replaceWith($(result.responseJSON.button));
-    bindRemoteAjaxCallback();
+      console.log('result.responseJSON', result.responseJSON);
+      var errors = [];
+      for (var key in result.responseJSON.results) {
+        if (result.responseJSON.results[key].button_html) {
+          $("#" + key).replaceWith(result.responseJSON.results[key].button_html);          
+        } else if (result.responseJSON.results[key].error) {
+          errors.push(result.responseJSON.results[key].error);
+        }
+      }
+      if (errors.length > 0) {
+        console.log("ERRORS: ", errors);        
+      }
+      bindRemoteAjaxCallback();
   });
 
   $('a[data-remote]').on('ajax:error', function (event, xhr, status, error) {
