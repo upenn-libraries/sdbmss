@@ -75,6 +75,17 @@
 
     <% elsif @suggestions %>
 
+      <%= form_tag merge_place_path(@model) do %>
+        <div class="input-group">
+          <input type="text" class="form-control" name="target_id" placeholder="Enter the target record ID">
+          <span class="input-group-btn">
+            <input type="submit" value="Select" class="btn btn-default">Select</input>
+          </span>
+        </div>
+      <% end %>
+
+      <br>
+
       <div class="panel panel-primary">
         <div class="panel-heading">
           <h4 class="text-center">Suggestions</h4>
