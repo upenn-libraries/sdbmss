@@ -9,12 +9,17 @@
     <table class="table table-hover">
     <thead>      
       <tr>
-        <td class="text-center" colSpan="2">
+        <td class="text-left">
           <ul class="pagination">
             <% (@total / @per_page).times do |i| %>
               <li class="<%= i == @page  ? 'active' : '' %>"><%= link_to (i + 1), watches_path(page: i) %></li>
             <% end %>
           </ul>
+        </td>
+        <td class="text-right col-sm-2">
+          <%= link_to delete_many_watches_path(ids: @watches.map(&:id)), :method => :delete, id: "Unwatch_All", class: "btn btn-default btn-sm" do %>
+            <span class="glyphicon glyphicon-eye-close"></span> Unwatch All (On Page)
+          <% end %>
         </td>
       </tr>
     </thead>

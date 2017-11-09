@@ -27,7 +27,12 @@ Rails.application.routes.draw do
     }
   end
 
-  resources :watches, only: [:index, :create, :destroy]
+  resources :watches, only: [:create, :destroy, :update]
+  resources :watches do
+    collection {
+      delete 'delete_many'
+    }
+  end
   resources :ratings, only: [:create, :destroy, :update]
 
   resources :groups do

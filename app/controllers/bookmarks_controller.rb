@@ -92,9 +92,9 @@ class BookmarksController < ApplicationController
       @bookmark = Bookmark.create({user_id: current_user.id, user_type: 'User', document_id: document[:id], document_type: document[:type]})
       if @bookmark.save
         button_html = (render_to_string partial: "delete", locals: {bookmark: @bookmark }, layout: false)
-        results["#{document[:type]}_#{document[:id]}"] = { button_html: button_html }
+        results["Bookmark_#{document[:type]}_#{document[:id]}"] = { button_html: button_html }
       else
-        results["#{document[:type]}_#{document[:id]}"] = { error: "Could not bookmark #{document[:id]}" }
+        results["Bookmark_#{document[:type]}_#{document[:id]}"] = { error: "Could not bookmark #{document[:id]}" }
       end
       #flash[:message] = "Bookmark created."
     end
@@ -110,7 +110,7 @@ class BookmarksController < ApplicationController
     bookmarks = Bookmark.includes(:document).where(id: params[:ids])
     documents = bookmarks.map(&:document)
     if bookmarks.destroy_all
-      results = documents.map { |document| ["#{document.class.name}_#{document.id}", {button_html: (render_to_string partial: "add", locals: {document: document }, layout: false)}]}.to_h
+      results = documents.map { |document| ["Bookmark_#{document.class.name}_#{document.id}", {button_html: (render_to_string partial: "add", locals: {document: document }, layout: false)}]}.to_h
       respond_to do |format|
         format.json {
           render json: { success: 'success', status_code: '200', results: results, method: 'post' } 

@@ -1,3 +1,3 @@
-<%= link_to(watches_path(watched_id: watchable.id, watched_type: watchable.class.to_s, user_id: current_user.id), :method => :post, :remote => true) do %>
+<%= link_to(watches_path(watched: [id: watchable.id, type: watchable.class.to_s]), :method => :post, :remote => true, id: "Watch_#{watchable.class.to_s}_#{watchable.id}") do %>
     <span class="glyphicon glyphicon-eye-open"></span> <span class="watch-text">Watch</span>
 <% end %>

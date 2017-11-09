@@ -1,28 +1,35 @@
 class WatchesController < ApplicationController
 
   def create
-    w = Watch.create!(watches_params)
-    button_html = (render_to_string partial: "delete", locals: {watch: w }, layout: false)
+    results = {}
+    watches_params[:watched].each do |watched|
+      if (w = Watch.create(watched_id: watched[:id], watched_type: watched[:type], user: current_user))
+        results["Watch_#{watched[:type]}_#{watched[:id]}"] = {button_html: (render_to_string partial: "delete", locals: {watch: w }, layout: false)}
+      end
+    end
     respond_to do |format|
       format.json {
-        render json: { success: 'success', status_code: '200', button: button_html }
+        render json: { success: 'success', status_code: '200', results: results }
       }
     end
   end
 
   def destroy
-    w = Watch.find(params[:id])
-    w.destroy!
+    watches = Watch.where(id: params[:ids])
+    watched = watches.map(&:watched)
+    if watches.destroy_all
+      results = watched.map { |w| ["Watch_#{w.class.name}_#{w.id}", {button_html: (render_to_string partial: "add", locals: {watchable: w }, layout: false)}]}.to_h
+      respond_to do |format|
+        format.json {
+          render json: { success: 'success', status_code: '200', results: results, method: 'post' } 
+        }
+        format.html {
+          flash[:notice] = "<span class='glyphicon glyphicon-eye-close'></span> #{watched.count} Records <b>Unwatched</b>".html_safe
+          redirect_to watches_path          
+        }
+      end
+    else
 
-    button_html = (render_to_string partial: "add", locals: {watchable: w.watched }, layout: false)
-    respond_to do |format|
-      format.json {
-        render json: { success: 'success', status_code: '200', button: button_html }
-      }
-      format.html {
-        flash[:success] = "You are no longer watching #{w.watched.public_id}"
-        redirect_to watches_path
-      }
     end
   end
 
@@ -36,6 +43,6 @@ class WatchesController < ApplicationController
   private
 
   def watches_params
-    params.permit(:id, :watched_id, :watched_type, :user_id)
+    params.permit(:ids, :watched => [:id, :type])
   end
 end

@@ -81,7 +81,7 @@ $(document).ready(bindRemoteAjaxCallback);
 
 function bindRemoteAjaxCallback (){
   $('a[data-remote]').on('ajax:success', function (event, xhr, status, result) {
-      console.log('result.responseJSON', result.responseJSON);
+      //console.log('result.responseJSON', result.responseJSON);
       var errors = [];
       for (var key in result.responseJSON.results) {
         if (result.responseJSON.results[key].button_html) {
