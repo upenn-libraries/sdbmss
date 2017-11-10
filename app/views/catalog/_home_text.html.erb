@@ -19,7 +19,7 @@
 <div class="row">
     <div class="col-sm-12">
         <p>
-            <b>Welcome to the Schoenberg Database of Manuscripts (SDBM)!</b> The SDBM aggregates observations of pre-modern manuscripts drawn from over 12,000 auction and sales catalogs, inventories, catalogs from institutional and private collections, and other sources that document sales and locations of these books from around the world.
+            <span class='lead'>Welcome to the Schoenberg Database of Manuscripts!</span> The SDBM aggregates observations of pre-modern manuscripts drawn from over 12,000 auction and sales catalogs, inventories, catalogs from institutional and private collections, and other sources that document sales and locations of these books from around the world.
         </p>
     </div>
     <div class="col-sm-12">
@@ -33,20 +33,20 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-12">
-        <h3 class="">
-            <span class="home-emphasis">Join Our Community!</span>
-            <small> and gain access to all of the SDBM's 
-                <strong class="home-emphasis">NEW INTERACTIVE FEATURES</strong>
-            </small>
-        </h3>
+    <div class="col-sm-6">
+        <h2 class='text-center'><small>Here's what you can do</small></h2>
         <ul>
             <li><strong>Contribute Data</strong>, including your own personal observations of a manuscript or group of manuscripts.</li>
             <li><strong>Engage With Other Users</strong> to facilitate research and conversations about both the history of manuscript transmission and the data gathered in the process of recording this history.</li>
             <li><strong>Manage Your Contributions</strong>, track your search history, bookmark, tag and download your results.</li>
-            <li><strong>Email or Download Search Results</strong> or export the entire contents of the SDBM for your own use under a <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 Unported License</a></li>
+            <li><strong>Download Search Results</strong> for your own use under a <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 Unported License</a></li>
         </ul>
-
+    </div>
+    <div class="col-sm-6">
+        <h2 class='text-center'>
+            <small>New Interactive Features</small>
+        </h2>
+        
         <ul>
             <li>VIAF-based Name Authority
                 <%= link_to "(Read More)", page_path(name: Page.where(name: "SDBM Name Authority").first.to_s) %>                        
