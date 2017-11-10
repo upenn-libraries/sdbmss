@@ -2812,7 +2812,7 @@ var BOOKMARK_SCOPE;
         $scope.removeNameAuthority = function (model, submodel) {
           if ($scope.mergeEdit !== false) {
             model[submodel] = null;
-            model['observed_name'] = null;
+            //model['observed_name'] = null;
           }
         }
 
