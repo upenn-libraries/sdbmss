@@ -22,16 +22,16 @@
         <option value="www.geonames.org">GeoNames.org</option>
       </select>
     </div>
-    <label for="" class="control-label col-sm-2">
-      Authority Id
+    <label for="" class="control-label col-sm-2" ng-click="queryURL()" href="">
+      <span class="glyphicon glyphicon-export"></span> Authority Id
     </label>
     <div class="col-sm-4">
       <div class="input-group">
-        <div class="input-group-btn">
+        <span class="input-group-btn">
           <a href="" class="btn btn-default" ng-click="queryAuthority()" ng-disabled="place.authority_source != 'http://vocab.getty.edu/tgn'">
             <span class="glyphicon glyphicon-globe"></span>
           </a>
-        </div>
+        </span>
         <input type="text" class="form-control" ng-model="place.authority_id">
       </div>
     </div>
