@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171110194041) do
+ActiveRecord::Schema.define(version: 20171110202012) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -493,7 +493,7 @@ ActiveRecord::Schema.define(version: 20171110194041) do
     t.integer  "provenance_count",    limit: 4,     default: 0,     null: false
     t.boolean  "confirmed",                         default: false
     t.boolean  "problem",                           default: false
-    t.string   "type",                limit: 255
+    t.string   "subtype",             limit: 255
   end
 
   add_index "names", ["created_by_id"], name: "index_names_on_created_by_id", using: :btree

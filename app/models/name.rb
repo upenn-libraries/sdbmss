@@ -124,6 +124,7 @@ class Name < ActiveRecord::Base
       }
     end
     string :viaf_id
+    string :subtype
     integer :created_by_id
     integer :artists_count
     integer :authors_count # test
@@ -156,7 +157,8 @@ class Name < ActiveRecord::Base
       ["Source Agent Count", "source_agents_count"],
       ["Confirmed", "confirms"], 
       ["Disputed", "disputes"],
-      ["Problem", "problem"]
+      ["Problem", "problem"],
+      ["Type", "subtype"]
     ]
   end
 
@@ -174,6 +176,7 @@ class Name < ActiveRecord::Base
       name: name,
       viaf_id: viaf_id,
       other_info: other_info,
+      subtype: subtype,
       authors_count: authors_count,
       artists_count: artists_count,
       scribes_count: scribes_count,
@@ -261,6 +264,23 @@ class Name < ActiveRecord::Base
     find_or_create_by_flag(name, :is_scribe)
   end
 
+  def lookup_type
+    cql = "(local.personalNames all \"#{viaf_id}\" or local.corporateNames all \"#{viaf_id}\")"
+    response = VIAF.sru_search(cql)
+
+    if response.code == '200'
+      xmldoc = Nokogiri::XML(response.body)
+      number_of_records = xmldoc.xpath("//ns:numberOfRecords", "ns" => VIAF::NS::LC).first
+      if number_of_records
+        xmldoc.xpath("//ns:record/ns:recordData", "ns" => VIAF::NS::LC).each do |record_data|
+          cluster = record_data.xpath("ns:VIAFCluster", "ns" => VIAF::NS::VIAF).first
+          name_type = cluster.xpath("ns:nameType", "ns" => VIAF::NS::VIAF).first
+          self.update(subtype: name_type.text)
+        end
+      end
+    end
+  end
+
   # Finds suggestions for the passed-in name string, based on results
   # from searching VIAF. return value is a Hash with keys
   # "already_exists" and "results".
@@ -315,7 +335,7 @@ class Name < ActiveRecord::Base
                   results << {
                     name: name,
                     viaf_id: viaf_id.text,
-                    type: name_type.text
+                    subtype: name_type.text
                   }
                 end
               end
@@ -326,7 +346,7 @@ class Name < ActiveRecord::Base
                   results << {
                     name: name,
                     viaf_id: viaf_id.text,
-                    type: name_type.text
+                    subtype: name_type.text
                   }
               end
             else

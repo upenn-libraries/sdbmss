@@ -3309,9 +3309,8 @@ var BOOKMARK_SCOPE;
         $scope.useSuggestion = function(suggestion) {
             $scope.entity.name = suggestion.name;
             $scope.entity.viaf_id = suggestion.viaf_id;
-            $scope.entity.type = suggestion.type || "Unknown";
+            $scope.entity.subtype = suggestion.subtype || "Unknown";
         };
-
 
         $scope.saveResponse = function(response) {
           //console.log(response);
@@ -3420,8 +3419,9 @@ var BOOKMARK_SCOPE;
       console.log(suggestion);
       $scope.entity.name = suggestion.name;
       $scope.entity.viaf_id = suggestion.viaf_id;
-      $scope.entity.type = suggestion.type || "Unknown";
+      $scope.entity.subtype = suggestion.subtype || "Unknown";
     };
+    EntryScope = $scope;
   });
 
  sdbmApp.controller('ManageBookmarks', function ($scope, $sce, $location, $http) {

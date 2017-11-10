@@ -44,9 +44,9 @@
         <% end %>
     </div>
     <div class="field form-group row">
-        <label for="type" class="col-sm-2 control-label">Type</label>
+        <label for="subtype" class="col-sm-2 control-label">Subtype</label>
         <div class="col-sm-4">            
-            <%= f.select(:type, options_for_select([['Unknown', 'Unknown'], ['Organization', 'Corporate'], ['Person', 'Personal']]), {}, {'ng-model' => 'entity.type', class: "form-control"}) %>
+            <%= f.select(:subtype, options_for_select([['Unknown', 'Unknown'], ['Organization', 'Corporate'], ['Person', 'Personal']]), {}, {'ng-model' => 'entity.subtype', class: "form-control"}) %>
         </div>
     </div>
     <div class="field form-group row">

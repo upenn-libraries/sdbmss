@@ -12,6 +12,11 @@
 </td></tr>
 <% end %>
 
+<tr>
+    <td>Name Type</td>
+    <td><%= name.subtype || "Unknown" %></td>
+</tr>
+
 <% count_sources = name.source_agents_count %>
 <% if count_sources || 0 > 0 %>
 <tr><td># Sources</td>
