@@ -347,8 +347,7 @@ class Source < ActiveRecord::Base
   end
 
   def self.filters
-    [
-      ["Id", "id"], 
+    super + [
       ["Source Agent Id", "agent_id"],
       ["Problem", "problem"]
     ]
