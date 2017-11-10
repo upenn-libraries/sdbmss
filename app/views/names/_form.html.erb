@@ -44,6 +44,12 @@
         <% end %>
     </div>
     <div class="field form-group row">
+        <label for="type" class="col-sm-2 control-label">Type</label>
+        <div class="col-sm-4">            
+            <%= f.select(:type, options_for_select([['Unknown', 'Unknown'], ['Organization', 'Corporate'], ['Person', 'Personal']]), {}, {'ng-model' => 'entity.type', class: "form-control"}) %>
+        </div>
+    </div>
+    <div class="field form-group row">
         <%= f.label :flags, class: "col-sm-2 control-label" %>
         <div class="col-sm-4">
             Specify this name to be used as:<br/>

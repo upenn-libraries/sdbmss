@@ -314,7 +314,8 @@ class Name < ActiveRecord::Base
                   found_lc_name = true
                   results << {
                     name: name,
-                    viaf_id: viaf_id.text
+                    viaf_id: viaf_id.text,
+                    type: name_type.text
                   }
                 end
               end
@@ -324,7 +325,8 @@ class Name < ActiveRecord::Base
                   name = data.xpath("ns:text", "ns" => VIAF::NS::VIAF).first.text
                   results << {
                     name: name,
-                    viaf_id: viaf_id.text
+                    viaf_id: viaf_id.text,
+                    type: name_type.text
                   }
               end
             else

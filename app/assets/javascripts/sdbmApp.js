@@ -3309,6 +3309,7 @@ var BOOKMARK_SCOPE;
         $scope.useSuggestion = function(suggestion) {
             $scope.entity.name = suggestion.name;
             $scope.entity.viaf_id = suggestion.viaf_id;
+            $scope.entity.type = suggestion.type || "Unknown";
         };
 
 
@@ -3416,8 +3417,10 @@ var BOOKMARK_SCOPE;
     };
 
     $scope.useSuggestion = function(suggestion) {
-        $scope.entity.name = suggestion.name;
-        $scope.entity.viaf_id = suggestion.viaf_id;
+      console.log(suggestion);
+      $scope.entity.name = suggestion.name;
+      $scope.entity.viaf_id = suggestion.viaf_id;
+      $scope.entity.type = suggestion.type || "Unknown";
     };
   });
 
