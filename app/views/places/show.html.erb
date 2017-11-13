@@ -5,6 +5,7 @@
     }
     svg {
       float: right;
+      z-index: -2;
     }
     path {
       fill: #aaa;
@@ -164,6 +165,9 @@
 <% end %>
 
 <div class="row">
+  <div class="col-sm-6 pull-right" id="map">
+
+  </div>  
   <div class="col-sm-6">
     <dl class="document-show-heading dl-horizontal dl-invert">
         <dt></dt>
@@ -205,8 +209,5 @@
 
     <%= render partial: "shared/user_info", locals: {model: @model} %>
 
-  </div>
-  <div class="col-sm-6" id="map">
-
-  </div>
+  </div>  
 </div>
