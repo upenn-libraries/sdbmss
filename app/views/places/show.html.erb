@@ -16,17 +16,18 @@
   </style>
   <%= javascript_include_tag "data" %>
   <script type='text/javascript'>
+    var projectile, circle;
     $(document).ready(function () {
 
       var feature;
 
-      var projection = d3.geo.azimuthal()
+      projection = d3.geo.azimuthal()
           .scale(380)
           .origin([-71.03,42.37])
           .mode("orthographic")
           .translate([400, 400]);
 
-      var circle = d3.geo.greatCircle()
+      circle = d3.geo.greatCircle()
           .origin(projection.origin());
 
       // TODO fix d3.geo.azimuthal to be consistent with scale
@@ -106,11 +107,31 @@
         }
       }
 
-      $("#center").click(function () {
-        if (point[0], point[1]) {          
-          projection.origin(point);
-          circle.origin(point)
-          refresh();
+      $("#center").click(function () {      
+        if (point[0], point[1]) {
+          var start_projection = projection.origin();
+          var start_circle = circle.origin();
+          var start_time = new Date();
+          var t = 0;
+          var interval = setInterval(function () {
+            var new_time = new Date();
+            var dt = (new_time - start_time) / 1000;
+            t += dt;
+            projection.origin([
+              start_projection[0] + t * (point[0] - start_projection[0]),
+              start_projection[1] + t * (point[1] - start_projection[1])
+            ]);
+            circle.origin([
+              start_circle[0] + t * (point[0] - start_circle[0]),
+              start_circle[1] + t * (point[1] - start_circle[1])
+            ]);
+            if (t >= 1) {
+              clearInterval(interval);
+              circle.origin(point);
+              projection.origin(point);
+            }
+            refresh();
+          }, 10);
         }
       });
 
