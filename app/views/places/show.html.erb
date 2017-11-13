@@ -49,7 +49,7 @@
           .on("mousedown", mousedown);
       var point = [<%= @model.longitude %>, <%= @model.latitude %>];
 
-      d3.json("/world-countries.json", function(collection) {
+      d3.json("/static/world-countries.json", function(collection) {
         if (point[0] && point[1]) {          
           collection.features.push({ "type":"Feature",
               "properties": {"name": "<%= @model.name %>"},
