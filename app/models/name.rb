@@ -265,18 +265,13 @@ class Name < ActiveRecord::Base
   end
 
   def lookup_type
-    cql = "(local.personalNames all \"#{viaf_id}\" or local.corporateNames all \"#{viaf_id}\")"
-    response = VIAF.sru_search(cql)
-
-    if response.code == '200'
-      xmldoc = Nokogiri::XML(response.body)
-      number_of_records = xmldoc.xpath("//ns:numberOfRecords", "ns" => VIAF::NS::LC).first
-      if number_of_records
-        xmldoc.xpath("//ns:record/ns:recordData", "ns" => VIAF::NS::LC).each do |record_data|
-          cluster = record_data.xpath("ns:VIAFCluster", "ns" => VIAF::NS::VIAF).first
-          name_type = cluster.xpath("ns:nameType", "ns" => VIAF::NS::VIAF).first
-          self.update(subtype: name_type.text)
-        end
+    xmldoc = Nokogiri::XML(response.body)
+    number_of_records = xmldoc.xpath("//ns:numberOfRecords", "ns" => VIAF::NS::LC).first
+    if number_of_records
+      xmldoc.xpath("//ns:record/ns:recordData", "ns" => VIAF::NS::LC).each do |record_data|
+        cluster = record_data.xpath("ns:VIAFCluster", "ns" => VIAF::NS::VIAF).first
+        name_type = cluster.xpath("ns:nameType", "ns" => VIAF::NS::VIAF).first
+        self.update(subtype: name_type.text)
       end
     end
   end
