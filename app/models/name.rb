@@ -135,7 +135,6 @@ class Name < ActiveRecord::Base
     date :created_at
     date :updated_at
     boolean :reviewed
-    boolean :confirmed
     boolean :problem
 
     integer :confirms do
@@ -155,8 +154,8 @@ class Name < ActiveRecord::Base
       ["Scribe Count", "scribes_count"], 
       ["Provenance Count", "provenance_count"], 
       ["Source Agent Count", "source_agents_count"],
-      ["Confirmed", "confirms"], 
-      ["Disputed", "disputes"],
+      ["# of Confirms", "confirms"], 
+      ["# of Disputes", "disputes"],
       ["Problem", "problem"],
       ["Type", "subtype"]
     ]

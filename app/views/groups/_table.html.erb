@@ -29,7 +29,7 @@
               <span class="glyphicon glyphicon-remove"></span> Delete
             <% end %>
             <%= link_to(edit_group_path(group), class: 'btn btn-success btn-xs') do %>
-              <span class="glyphicon glyphicon-edit"></span> Edit
+              <span class="glyphicon glyphicon-edit"></span> Manage
             <% end %>
         <% end %>
         <% group_user = group.group_users.where(user_id: current_user)[0] %>
