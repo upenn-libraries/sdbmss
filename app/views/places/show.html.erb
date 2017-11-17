@@ -226,9 +226,22 @@
           <span class="text-muted">This place is linked to no exteral authority yet.</span>
         <% end %>
       </dd>
+      <% if @model.created_at.present? %>
+          <dt>Added</dt>
+          <dd>
+              by <%= render partial: "shared/username_with_profile_link", locals: { user: @model.created_by } %>
+              <br>on <%= @model.created_at.to_formatted_s(:date_and_time) %> <br>
+          </dd>
+      <% end %>
+      <% if @model.updated_at.present? && @model.updated_at != @model.created_at %>
+          <dt>Last Updated</dt>
+          <dd>
+              by <%= render partial: "shared/username_with_profile_link", locals: { user: @model.updated_by } %>
+              <br>on <%= @model.updated_at %>
+          </dd>
+      <% end %>
     </dl>
 
-    <%= render partial: "shared/user_info", locals: {model: @model} %>
 
   </div>  
 </div>
