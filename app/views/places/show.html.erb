@@ -188,7 +188,7 @@
       <dt># Entries</dt>
       <dd>
           <% if @model.entries_count > 0 %>
-            This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
+            This <%= @model.class.to_s.underscore %> is used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
           <% else %>
             <span class="text-muted">This place is not directly used in any entries.</span>
           <% end %>
