@@ -19,6 +19,7 @@ class Place < ActiveRecord::Base
   validates_presence_of :name
 
   belongs_to :parent, class_name: "Place"
+  has_many :children,  class_name: "Place", foreign_key: "parent_id"
 
   validate do |name_obj|
     if name_obj.name.present? && (!name_obj.persisted? || name_obj.name_changed?)

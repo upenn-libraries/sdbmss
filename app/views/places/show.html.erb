@@ -165,8 +165,14 @@
 <% end %>
 
 <div class="row">
-  <div class="col-sm-6 pull-right" id="map">
+  <div class="col-sm-6 pull-right">
+    <p class='text-muted text-right'>
+      <span class="glyphicon glyphicon-info-sign"></span>
+      Note: Coordinates locations for regions or countries are for reference only, and do not imply that the place of production or activity is limited to that specific point.
+    </p>
 
+    <div id="map">
+    </div>
   </div>  
   <div class="col-sm-6">
     <dl class="document-show-heading dl-horizontal dl-invert">
@@ -181,7 +187,11 @@
       </dd>
       <dt># Entries</dt>
       <dd>
-          This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
+          <% if @model.entries_count > 0 %>
+            This <%= @model.class.to_s.underscore %> was used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
+          <% else %>
+            <span class="text-muted">This place is not directly used in any entries.</span>
+          <% end %>
       </dd>
       <dt>Parent</dt>
       <dd>
@@ -191,6 +201,17 @@
         <% else %>
           <span class="text-muted">This place has no parent set.</span>
         <% end %>
+      </dd>
+      <dt>Children</dt>
+      <dd>
+        <ul class="list-unstyled">
+          <% @model.children.each do |child| %>
+            <li><span class="text-muted">/</span>  <%= link_to child.name, place_path(child) %></li>
+          <% end %>
+          <% if @model.children.count <= 0 %>
+            <li><span class="text-muted">This place does not contain any other places.</span></li>
+          <% end %>
+        </ul>
       </dd>
       <dt>
         Coordinates

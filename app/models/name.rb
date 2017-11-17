@@ -380,7 +380,7 @@ class Name < ActiveRecord::Base
   end
 
   def as_flat_hash
-    {id: id, name: name, viaf_id: viaf_id, created_at: created_at, created_by: created_by, other_info: other_info }
+    {id: id, name: name, viaf_id: viaf_id, subtype: subtype, created_at: created_at, created_by: created_by, other_info: other_info }
   end
 
   def bookmark_details
