@@ -47,7 +47,6 @@ class EntryVersionFormatter
     'Provenance.entry_id',
     'Comment.commentable_id',
     'Comment.commentable_type',
-    'Place.authority_id',
     'Place.parent_id'
   ]
 
@@ -92,9 +91,6 @@ class EntryVersionFormatter
   def details
     # cache 'details' b/c this method gets called several times
     if @details == nil
-
-      # TODO: for FK fields to things like names, we should display
-      # something more meaningful than just numeric ID
 
       if version.respond_to? :count
         details = []
@@ -191,7 +187,7 @@ class EntryVersionFormatter
   end
 
   def self.isClass (field)
-    return field.include?('_id') && field.downcase != "viaf_id"
+    return field.include?('_id') && field.downcase != "viaf_id" && field.downcase != "authority_id"
   end
 
 end
