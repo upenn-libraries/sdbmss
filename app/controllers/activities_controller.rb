@@ -9,7 +9,7 @@ class ActivitiesController < ApplicationController
     if params[:mine]
       # finds last 7 days of activity - maybe too much?
       start_date = Activity.where(user: current_user).order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
-      @activities = Activity.where(user: current_user).where("created_at > ?", start_date).order("created_at desc").group_by { |a| a.created_at.to_date }      
+      @activities = Activity.where(user: current_user).where("created_at > ?", start_date).order("created_at desc")     
     elsif params[:watched]
       #creates a long custom SQL query to collect the activity for all the records you are watching...
       
@@ -32,12 +32,13 @@ class ActivitiesController < ApplicationController
       query_string = queries.join(" or ")
 
       start_date = Activity.where(query_string).order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
-      @activities = Activity.where(query_string).where("created_at > ?", start_date).order("created_at desc").group_by { |a| a.created_at.to_date }
+      @activities = Activity.where(query_string).where("created_at > ?", start_date).order("created_at desc")
     else
       start_date = Activity.order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
-      @activities = Activity.includes(:user).where("created_at > ?", start_date).order("created_at desc").group_by { |a| a.created_at.to_date }
+      @activities = Activity.includes(:user).where("created_at > ?", start_date).order("created_at desc")
     end
-    @versions = PaperTrail::Version.where(transaction_id: @activities.map{ |date, activities| activities.map(&:transaction_id) }.flatten.uniq).includes(:item)
+    @versions = PaperTrail::Version.where(transaction_id: @activities.map(&:transaction_id).flatten.uniq).includes(:item).order("created_at DESC")
+    @users = User.where(id: @versions.map(&:whodunnit).uniq)
     @details = EntryVersionFormatter.new(@versions).details
     render partial: "activities/list"
     #render partial: "activities/show_all"

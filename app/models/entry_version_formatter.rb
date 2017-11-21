@@ -92,21 +92,23 @@ class EntryVersionFormatter
 
   def details
     versions = Array(version)
-    @names = Name.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| NAME_IDS.include?(k) ? v : nil } }.flatten.select(&:present?))
-    @users = User.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| USER_IDS.include?(k) ? v : nil } }.flatten.select(&:present?))
-    @places = Place.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "place_id" ? v : nil } }.flatten.select(&:present?))
-    @languages = Language.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "language_id" ? v : nil } }.flatten.select(&:present?))
-    @sources = Source.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "source_id" ? v : nil } }.flatten.select(&:present?))
+    @names = Name.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| NAME_IDS.include?(k) ? v : nil } }.flatten.select(&:present?).uniq)
+    @users = User.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| USER_IDS.include?(k) ? v : nil } }.flatten.select(&:present?).uniq)
+    @places = Place.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "place_id" ? v : nil } }.flatten.select(&:present?).uniq)
+    @languages = Language.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "language_id" ? v : nil } }.flatten.select(&:present?).uniq)
+    @sources = Source.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "source_id" ? v : nil } }.flatten.select(&:present?).uniq)
     details = {}
-    version.each do |v|
-      if !details.key? v.whodunnit
-        details[v.whodunnit] = {}
-      end
+    versions.group_by(&:transaction_id).each do |id,vers|
+      vers.each do |v|
+        if !details.key? v.created_at.to_date
+          details[v.created_at.to_date] = {}
+        end
 
-      if !details[v.whodunnit].key? v.created_at.to_formatted_s(:long)
-        details[v.whodunnit][v.created_at.to_formatted_s(:long)] = []
+        if !details[v.created_at.to_date].key? v.whodunnit
+          details[v.created_at.to_date][v.whodunnit] = []
+        end
+        details[v.created_at.to_date][v.whodunnit].push detail(v)
       end
-      details[v.whodunnit][v.created_at.to_formatted_s(:long)] +=  detail(v)
     end
     details
   end
@@ -192,7 +194,7 @@ class EntryVersionFormatter
         end
       end
     end
-    return details
+    return {version: version, details: details.join("<br>")}
   end
 
   def skip (h)

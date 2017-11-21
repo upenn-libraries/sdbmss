@@ -14,6 +14,10 @@ module SDBMSS
 
     class << self
 
+      def format_event(event)
+        {"update" => "edited", "destroy" => "deleted", "create" => "added"}[event]
+      end
+
       # Does a SQL select query in batches, passing each row to the
       # code block
       def batch(conn, sql, ctx: nil, limit: 1000, batch_wrapper: nil, silent: false, &block)
