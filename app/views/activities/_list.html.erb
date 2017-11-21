@@ -1,0 +1,54 @@
+<% collapsed ||= false %>
+<% if @activities.count <= 0 %>
+  <div class="row">
+    <div class="col-sm-10 text-muted text-center">
+      <p>There is no recent activity to display.</p>
+    </div>
+  </div>
+<% else %>
+  <div class="row">
+    <div class="col-sm-10 text-muted text-center">
+      <p class="">Showing only last 7 days of activity.</p>
+    </div>
+  </div>
+<% end %>
+<% @details.each do |user, date| %>
+  <div class="row" style="border-bottom: 1px solid #eee; padding-bottom: 10px;">
+    <div class="col-sm-10">
+      <div class="collapse in">
+        <h5 class='text-center'>
+          <a href="">User #<%= user %></a>
+          <%# render partial: "shared/username_with_profile_link", locals: { user: user } %>
+            <span data-toggle='collapse' href='#activity_<%= date %>_<%= user %>'>modified <%= "?? record".pluralize(2) %> <span class="caret"></span>
+          </span>
+        </h5>
+      
+        <% date.each do |datetime, details| %>
+        <div class="collapse activity_date_<%= date %> <%= (collapsed && index > 0) ? '' : 'in' %>" id="activity_<%= date %>_<%= user %>">
+          <% details.each do |detail| %>
+          <div class="panel panel-default activity">
+            <div class="panel-heading">
+              <div class="row">
+                <div class="col-xs-6">
+                  <span class="text-muted">Need Version Summary Here</span>
+                </div>
+                <div class="col-xs-6 text-right">
+                  <%= datetime %>
+                </div>
+              </div>
+            </div>
+            <div class="panel-body text-muted" style="overflow: hidden; text-overflow: ellipsis;">
+              <div class="row">
+                <div class="col-xs-12">
+                  <%= sanitize simple_format detail %>
+                </div>                
+              </div>
+            </div>
+          </div>
+          <% end %>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

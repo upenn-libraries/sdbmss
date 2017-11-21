@@ -94,9 +94,19 @@ class EntryVersionFormatter
     versions = Array(version)
     @names = Name.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| NAME_IDS.include?(k) ? v : nil } }.flatten.select(&:present?))
     @users = User.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| USER_IDS.include?(k) ? v : nil } }.flatten.select(&:present?))
-    details = []
+    @places = Place.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "place_id" ? v : nil } }.flatten.select(&:present?))
+    @languages = Language.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "language_id" ? v : nil } }.flatten.select(&:present?))
+    @sources = Source.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "source_id" ? v : nil } }.flatten.select(&:present?))
+    details = {}
     version.each do |v|
-      details +=  detail(v)
+      if !details.key? v.whodunnit
+        details[v.whodunnit] = {}
+      end
+
+      if !details[v.whodunnit].key? v.created_at.to_formatted_s(:long)
+        details[v.whodunnit][v.created_at.to_formatted_s(:long)] = []
+      end
+      details[v.whodunnit][v.created_at.to_formatted_s(:long)] +=  detail(v)
     end
     details
   end
@@ -136,11 +146,11 @@ class EntryVersionFormatter
         if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}")
           if EntryVersionFormatter.isClass(field)
             f = toClass(field)
-            if f.exists?(values[0])
-              values[0] = f.find(values[0])
+            if (obj = f.select{|e| e.id == values[0]}.first)
+              values[0] = obj
             end
-            if f.exists?(values[1])
-              values[1] = f.find(values[1])
+            if (obj = f.select{|e| e.id == values[1]}.first)
+              values[1] = obj
             end
           elsif field == "date" && version.item_type == "Source"
             values[0] = SDBMSS::Util.format_fuzzy_date(values[0])
@@ -159,8 +169,8 @@ class EntryVersionFormatter
         if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}") && value.present?
           if EntryVersionFormatter.isClass(field)
             f = toClass(field)
-            if f.exists?(value)
-              value = f.find(value)
+            if (obj = f.select{|e| e.id == value}.first)
+              value = obj
             end
           elsif field == "date" && version.item_type == "Source"
             value = SDBMSS::Util.format_fuzzy_date(value)
@@ -174,8 +184,8 @@ class EntryVersionFormatter
         if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}") && value.present?
           if EntryVersionFormatter.isClass(field)
             f = toClass(field)
-            if f.exists?(value)
-              value = f.find(value)
+            if (obj = f.select{|e| e.id == value}.first)
+              value = obj
             end
           end
           details << "<b>#{field.titlecase}</b> #{value}"
@@ -196,7 +206,14 @@ class EntryVersionFormatter
       return @users
     elsif ['entry_id'].include? field
       return Entry
+    elsif ['source_id'].include? field
+      return @sources
+    elsif ['place_id'].include? field
+      return @places
+    elsif ['language_id'].include? field
+      return @languages
     else
+      puts "WARNING: THIS SHOULDN't HAPPEN!!! (entry_version_formatter.rb)"
       return field.gsub('_id', '').capitalize.classify.constantize
     end
   end
