@@ -38,7 +38,7 @@ class ActivitiesController < ApplicationController
       @activities = Activity.includes(:user).where("created_at > ?", start_date).order("created_at desc").group_by { |a| a.created_at.to_date }
     end
     @versions = PaperTrail::Version.where(transaction_id: @activities.map{ |date, activities| activities.map(&:transaction_id) }.flatten.uniq).includes(:item)
-    render partial: "activities/show_all"
+    #render partial: "activities/show_all"
   end
 
   def index

@@ -50,6 +50,9 @@ class EntryVersionFormatter
     'Place.parent_id'
   ]
 
+  NAME_IDS = ['author_id', 'artist_id', 'scribe_id', 'source_agent_id', 'sale_agent_id', 'provenance_agent_id', 'agent_id', 'institution_id']
+  USER_IDS = ['created_by_id', 'updated_by_id', 'approved_by_id', 'reviewed_by_id']    
+
   def initialize(version)
     if not EntryTitle.last
       et = EntryTitle.new
@@ -87,8 +90,20 @@ class EntryVersionFormatter
     return key.gsub("_id", "")
   end
 
-  # returns an array of strings
   def details
+    versions = Array(version)
+    @names = Name.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| NAME_IDS.include?(k) ? v : nil } }.flatten.select(&:present?))
+    @users = User.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| USER_IDS.include?(k) ? v : nil } }.flatten.select(&:present?))
+    details = []
+    version.each do |v|
+      details +=  detail(v)
+    end
+    details
+  end
+
+
+  # returns an array of strings
+  def old_details
     # cache 'details' b/c this method gets called several times
     if @details == nil
 
@@ -120,7 +135,7 @@ class EntryVersionFormatter
       skip(version.changeset).each do |field, values|
         if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}")
           if EntryVersionFormatter.isClass(field)
-            f = EntryVersionFormatter.toClass(field)
+            f = toClass(field)
             if f.exists?(values[0])
               values[0] = f.find(values[0])
             end
@@ -143,7 +158,7 @@ class EntryVersionFormatter
         value = values[1]
         if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}") && value.present?
           if EntryVersionFormatter.isClass(field)
-            f = EntryVersionFormatter.toClass(field)
+            f = toClass(field)
             if f.exists?(value)
               value = f.find(value)
             end
@@ -158,7 +173,7 @@ class EntryVersionFormatter
       skip(obj.attributes).each do |field, value|
         if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}") && value.present?
           if EntryVersionFormatter.isClass(field)
-            f = EntryVersionFormatter.toClass(field)
+            f = toClass(field)
             if f.exists?(value)
               value = f.find(value)
             end
@@ -174,11 +189,11 @@ class EntryVersionFormatter
     h.select { |key, val| !@skip.include?(key) }
   end
 
-  def self.toClass (field)
+  def toClass (field)
     if ['author_id', 'artist_id', 'scribe_id', 'source_agent_id', 'sale_agent_id', 'provenance_agent_id', 'agent_id', 'institution_id'].include? field
-      return Name
+      return @names
     elsif ['created_by_id', 'updated_by_id', 'approved_by_id', 'reviewed_by_id'].include? field
-      return User
+      return @users
     elsif ['entry_id'].include? field
       return Entry
     else
