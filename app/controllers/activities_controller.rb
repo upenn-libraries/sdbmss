@@ -49,9 +49,15 @@ class ActivitiesController < ApplicationController
     @page = (params["page"] || 1).to_i
     @activities = []
     last = 0
-    @activities = Activity.joins(:user).where(params_for_index).order(id: :desc).limit(@page_size).offset((@page - 1) * @page_size)
-    @total = Activity.joins(:user).where(params_for_index).count
+    #start_date = Activity.order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
+    @activities = Activity.includes(:user).where(params_for_index).limit(@page_size).offset((@page - 1) * @page_size).order("created_at desc")
+    @versions = PaperTrail::Version.where(transaction_id: @activities.map(&:transaction_id).flatten.uniq).includes(:item).order("created_at DESC")
+    @users = User.where(id: @versions.map(&:whodunnit).uniq)
+    @details = EntryVersionFormatter.new(@versions).details
+    puts @details.keys, @versions.count, @activities.count
+    @total = Activity.includes(:user).where(params_for_index).count
 
+    #@activities = Activity.joins(:user).where(params_for_index).order(id: :desc).limit(@page_size).offset((@page - 1) * @page_size)
     @num_pages = @total / @page_size
     @num_pages += 1 if @total % @page_size > 0
 
@@ -60,14 +66,6 @@ class ActivitiesController < ApplicationController
       records_affected: Hash[Activity.joins(:user).where(params_for_index).group(:item_type).select(:item_id).distinct.count.sort_by { |_, v| -v }],
       active_users: Hash[Activity.joins(:user).where(params_for_index).group(:username).count.sort_by { |_, v| -v }]
     }
-
-    @summary[:actions_performed][:total] = @total
-    @summary[:records_affected][:total] = Activity.joins(:user).where(params_for_index).select(:item_id).distinct.count
-    @summary[:active_users][:total] = @summary[:active_users].count
-
-    if params[:more]
-      render partial: "activities/more"
-    end
   end
 
   def params_for_index

@@ -19,7 +19,7 @@
       <% activities.group_by { |a| a.user }.each do |user, user_activities| %>
         <h5 class='text-center'>
             <%= render partial: "shared/username_with_profile_link", locals: { user: user } %>
-              <span data-toggle='collapse' href='#activity_<%= date %>_<%= user.id %>'>modified <%= "#{user_activities.count} record".pluralize(user_activities.count) %> <span class="caret"></span></span>
+            <span data-toggle='collapse' href='#activity_<%= date %>_<%= user.id %>'>modified <%= "#{user_activities.count} record".pluralize(user_activities.count) %> <span class="caret"></span></span>
         </h5>
         <div class="collapse activity_date_<%= date %> <%= (collapsed && index > 0) ? '' : 'in' %>" id="activity_<%= date %>_<%= user.id %>">
         <% user_activities.each do |activity| %>

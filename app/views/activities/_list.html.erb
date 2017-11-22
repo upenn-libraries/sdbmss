@@ -20,12 +20,31 @@
       <div class="collapse in">
         <h5 class='text-center'>
             <% user = @users.select{ |u| u.id == user_id.to_i }.first %>
-            <%= render partial: "shared/username_with_profile_link", locals: { user: user } %>
-            <span data-toggle='collapse' href='#activity_<%= date %>_<%= user %>'>modified <%= "#{details.count} record".pluralize(details.count) %> <span class="caret"></span>
+            <!-- using partials makes this take longer?? -->
+            <% if user.present? %>
+              <span class="<%= defined?(up) ? 'dropup' : 'dropdown' %>">
+                <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                  <%= user.to_s %>
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><em style="padding: 20px;" class='text-muted'><span class="glyphicon glyphicon-briefcase"></span> <%= user.role %></em></li>
+                  <li><a href="<%= main_app.profile_path(username: user.username) %>"><span class="glyphicon glyphicon-user"></span> Profile</a></li>
+                  <li><a href="<%= main_app.new_private_message_path(user_id: [user.id]) %>"><span class="glyphicon glyphicon-envelope"></span> Send Message</a></li>
+                  <% if current_user == user %>
+                  <li><%= link_to main_app.edit_user_registration_path do %> <span class="glyphicon glyphicon-cog"></span> My Settings <% end %></li>
+                  <% end %>
+                </ul>
+              </span>
+            <% else %>
+              Unknown
+            <% end %>
+
+            <span data-toggle='collapse' href='#activity_<%= date %>_<%= user_id %>'>modified <%= "#{details.count} record".pluralize(details.count) %> <span class="caret"></span>
           </span>
         </h5>
-      
-        <div class="collapse activity_date_<%= date %> <%= (collapsed && index > 0) ? '' : 'in' %>" id="activity_<%= date %>_<%= user %>">
+        
+        <div class="collapse activity_date_<%= date %> <%= (collapsed && index > 0) ? '' : 'in' %>" id="activity_<%= date %>_<%= user_id %>">
           <% details.group_by{ |d| d[:version].transaction_id }.each do |transaction_id, detail_list| %>
           <div class="panel panel-default activity">
             <div class="panel-heading">

@@ -96,48 +96,39 @@ class EntryVersionFormatter
     @users = User.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| USER_IDS.include?(k) ? v : nil } }.flatten.select(&:present?).uniq)
     @places = Place.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "place_id" ? v : nil } }.flatten.select(&:present?).uniq)
     @languages = Language.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "language_id" ? v : nil } }.flatten.select(&:present?).uniq)
-    @sources = Source.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "source_id" ? v : nil } }.flatten.select(&:present?).uniq)
+    @sources = Source.includes(:source_type, :source_agents => [:agent]).where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "source_id" ? v : nil } }.flatten.select(&:present?).uniq)
+    @entry_manuscripts = EntryManuscript.where(id: versions.select{ |v| v.item_type == "EntryManuscript" }.map(&:item_id).uniq)
+    @source_types = SourceType.all
     details = {}
     versions.group_by(&:transaction_id).each do |id,vers|
       vers.each do |v|
-        if !details.key? v.created_at.to_date
-          details[v.created_at.to_date] = {}
+        days = (Date.today - v.created_at.to_date)
+        if days == 0
+          date = "Today"
+        elsif days == 1
+          date = "Yesterday"
+        elsif days < 7
+          date = v.created_at.strftime("%A")
+        else
+          date = v.created_at.to_date
+        end 
+        if !details.key? date
+          details[date] = {}
         end
 
-        if !details[v.created_at.to_date].key? v.whodunnit
-          details[v.created_at.to_date][v.whodunnit] = []
+        if !details[date].key? v.whodunnit
+          details[date][v.whodunnit] = []
         end
-        details[v.created_at.to_date][v.whodunnit].push detail(v)
+        details[date][v.whodunnit].push detail(v)
       end
     end
     details
   end
 
-
-  # returns an array of strings
-  def old_details
-    # cache 'details' b/c this method gets called several times
-    if @details == nil
-
-      if version.respond_to? :count
-        details = []
-        version.each do |v|
-          details += detail (v)
-        end
-        @details = details
-      else
-        @details = detail (version)
-      end
-    end
-    @details
-  end
-
-  # FIX ME: this needs work, to be both more descriptive and more robust
-
   def detail (version)
     details = []
     if version.item_type == "EntryManuscript"
-      item = EntryManuscript.where(id: version.item_id).first
+      item = @entry_manuscripts.select{ |em| em.id == version.item_id}.first
       if item
         details << "<b>#{item.entry.public_id}</b> has been linked to <b>#{item.manuscript.public_id}</b>"
       else
@@ -214,8 +205,10 @@ class EntryVersionFormatter
       return @places
     elsif ['language_id'].include? field
       return @languages
+    elsif ['source_type_id'].include? field
+      return @source_types
     else
-      puts "WARNING: THIS SHOULDN't HAPPEN!!! (entry_version_formatter.rb)"
+      puts "WARNING: THIS SHOULDN't HAPPEN!!! (entry_version_formatter.rb) #{field}"
       return field.gsub('_id', '').capitalize.classify.constantize
     end
   end

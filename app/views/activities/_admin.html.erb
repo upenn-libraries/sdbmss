@@ -14,9 +14,7 @@
     </div>
     <div class="col-sm-2 text-right">
         <div class="input-group">
-            <span class="input-group-btn">
-                <%= submit_tag "Filter", class: 'btn-default btn' %>
-            </span>
+            <%= submit_tag "Filter", class: 'form-control' %>
             <span class="input-group-btn">
                 <%= link_to "Clear", activities_path, class: "btn btn-warning" %>
             </span>
@@ -28,33 +26,28 @@
 
 <%= render partial: "activities/summary", locals: {summary: @summary} %>
 
-<ul id='activity' class='list-group list-group-no-border'>
-    <%= render partial: "activities/more" %>
-</ul>
 <div class="row">
     <div class="col-sm-12 text-center">
-        <a id="loadMore" class='btn btn-default'>Load More...</a>
+        <ul class="pagination">
+            <% first = [@page - 3, 2].max %>
+            <% last = [@page + 3, @num_pages].min %>
+            <li class="<%= 'active' if @page == 1 %>"><%= link_to "First", params.merge(:page => 1) %></li>
+            <% if @page > 4 %>
+                <li><a class="disabled text-muted">...</a></li>
+            <% end %>
+            <% (last - first).times do |i| %>
+                <li class="<%= first + i == @page ? 'active' : '' %>">
+                    <%= link_to first + i, params.merge(:page => first + i) %>
+                </li>
+            <% end %>
+            <% if @page < @num_pages - 3 %>
+                <li><a class="disabled text-muted">...</a></li>
+            <% end %>
+            <li class="<%= 'active' if @page == @num_pages %>"><%= link_to "Last", params.merge(:page => @num_pages) %></li>
+        </ul>
     </div>
 </div>
-<script>
-    var page = 1;
-    var total_pages = <%= @num_pages %>;
-    if (page >= total_pages) $('#loadMore').addClass('disabled').text('All Activity Loaded...');
 
-    $('#loadMore').click(function (e) {
-        page += 1;
-        if (page >= total_pages) $('#loadMore').addClass('disabled').text('All Activity Loaded...');
-        query = window.location.href.split("?")[1]
-        $.get("?" + query + '&more=true&page=' + page, function (result) {
-            var more = $(result);
-            more.hide();
-            $('#activity').append(more);
-            more.slideDown();
-            $('html, body').animate({
-                scrollTop: $("#loadMore").offset().top
-            }, 500);
-        });
-    });
-
-
-</script>
+<ul id='activity' class='list-group list-group-no-border'>
+    <%= render partial: "activities/list" %>
+</ul>
