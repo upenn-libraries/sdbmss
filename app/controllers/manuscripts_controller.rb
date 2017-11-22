@@ -8,6 +8,7 @@ class ManuscriptsController < SearchableAuthorityController
   load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_reviewed]
 
   rescue_from ActionController::UnknownFormat, with: :render_404
+  rescue_from ActionController::InvalidCrossOriginRequest, with: :render_404
 
   def model_class
     Manuscript

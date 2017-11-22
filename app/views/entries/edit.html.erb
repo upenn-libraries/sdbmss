@@ -108,66 +108,66 @@ label.col-sm-2-and-half {
 <% end %>
 
 <% content_for :control_tools do %>
-        <ul class="nav">
-            <% if @entry.id %>
-              <%= render partial: "nav/bookmark_watch", locals: {model: @entry } %>
-            <% else %>
-              <li class="disabled"><a href=""><span class="glyphicon glyphicon-bookmark"></span> Bookmark</a></li>
-              <li class="disabled"><a href=""><span class="glyphicon glyphicon-eye-open"></span> Watch</a></li>
-            <% end %>
-            <% if @entry.source && can?(:edit, @entry.source) %>
-              <li role="presentation">
-                <a role="menuitem" tabindex="-1" href="/sources/<%= @entry.source.id %>/edit" target="_blank">
-                  <span class="glyphicon glyphicon-edit"></span>
-                  Edit source <%= @entry.source.public_id %>
-                </a>
-              </li>
-            <% else %>
-              <!-- disabled -->
-              <li role="presentation" class='disabled'>
-                <a role="menuitem" tabindex="-1" href="" target="">
-                  <span class="glyphicon glyphicon-edit"></span>
-                  Edit Source
-                </a>
-              </li>
-            <% end %>
-            <% if @entry.id %>
-              <li role="presentation">
-                <a role="menuitem" tabindex="-1" href="/entries/<%= @entry.id %>/history" target="_blank">
-                  <span class="glyphicon glyphicon-list-alt"></span> 
-                  View history
-                </a>
-              </li>
-              <li role="presentation">
-                <a href="/linkingtool/entry/<%= @entry.id %>" target="_blank">
-                  <span class="glyphicon glyphicon-link"></span>
-                  Linking Tool for <%= @entry.public_id %>
-                </a>
-              </li>
-            <% else %>
-              <!-- disabled -->
-              <li role="presentation" class='disabled'>
-                <a role="menuitem" tabindex="-1" href="">
-                  <span class="glyphicon glyphicon-list-alt"></span> 
-                  View history
-                </a>
-              </li>
-              <li role="presentation" class='disabled'>
-                <a href="">
-                  <span class="glyphicon glyphicon-link"></span>
-                  Linking Tool
-                </a>
-              </li>
-            <% end %>
-            <% if @entry.source %>
-              <li class="divider"></li>
-              <li>
-                <%= link_to(new_entry_path(source_id: @entry.source)) do %>
-                  <span class="glyphicon glyphicon-plus"></span> Add Entry From <%= @entry.source.public_id %>
-                <% end %>
-              </li>
-            <% end %>
-        </ul>
+  <ul class="nav">
+      <% if @entry.id %>
+        <%= render partial: "nav/bookmark_watch", locals: {model: @entry } %>
+      <% else %>
+        <li class="disabled"><a href=""><span class="glyphicon glyphicon-bookmark"></span> Bookmark</a></li>
+        <li class="disabled"><a href=""><span class="glyphicon glyphicon-eye-open"></span> Watch</a></li>
+      <% end %>
+      <% if @entry.source && can?(:edit, @entry.source) %>
+        <li role="presentation">
+          <a role="menuitem" tabindex="-1" href="/sources/<%= @entry.source.id %>/edit" target="_blank">
+            <span class="glyphicon glyphicon-edit"></span>
+            Edit source <%= @entry.source.public_id %>
+          </a>
+        </li>
+      <% else %>
+        <!-- disabled -->
+        <li role="presentation" class='disabled'>
+          <a role="menuitem" tabindex="-1" href="" target="">
+            <span class="glyphicon glyphicon-edit"></span>
+            Edit Source
+          </a>
+        </li>
+      <% end %>
+      <% if @entry.id %>
+        <li role="presentation">
+          <a role="menuitem" tabindex="-1" href="/entries/<%= @entry.id %>/history" target="_blank">
+            <span class="glyphicon glyphicon-list-alt"></span> 
+            View history
+          </a>
+        </li>
+        <li role="presentation">
+          <a href="/linkingtool/entry/<%= @entry.id %>" target="_blank">
+            <span class="glyphicon glyphicon-link"></span>
+            Linking Tool for <%= @entry.public_id %>
+          </a>
+        </li>
+      <% else %>
+        <!-- disabled -->
+        <li role="presentation" class='disabled'>
+          <a role="menuitem" tabindex="-1" href="">
+            <span class="glyphicon glyphicon-list-alt"></span> 
+            View history
+          </a>
+        </li>
+        <li role="presentation" class='disabled'>
+          <a href="">
+            <span class="glyphicon glyphicon-link"></span>
+            Linking Tool
+          </a>
+        </li>
+      <% end %>
+      <% if @entry.source %>
+        <li class="divider"></li>
+        <li>
+          <%= link_to(new_entry_path(source_id: @entry.source)) do %>
+            <span class="glyphicon glyphicon-plus"></span> Add Entry From <%= @entry.source.public_id %>
+          <% end %>
+        </li>
+      <% end %>
+  </ul>
 <% end %>
 
 <% content_for :add_entry do %>
