@@ -4,6 +4,7 @@ class DericciRecordsController < ApplicationController
   load_and_authorize_resource :only => [:edit, :update]
 
   def index
+    flash.now[:alert] = "<span class='lead'>Warning!</span> The server hosting the De Ricci Digitized Archive is not available.  Our records and workspace will not function correctly.".html_safe
     @count = params[:limit] ? params[:limit].to_i : 20
     @page = params[:page] ? params[:page].to_i : 0
     letter = params[:letter] || ""
@@ -28,6 +29,7 @@ class DericciRecordsController < ApplicationController
   end
 
   def show
+    flash.now[:alert] = "<span class='lead'>Warning!</span> The server hosting the De Ricci Digitized Archive is not available.  Our records and workspace will not function correctly.".html_safe
     respond_to do |format|
       format.html {}
       format.json { render json: @record }

@@ -5,6 +5,7 @@ class  DericciGamesController < ApplicationController
   load_and_authorize_resource :only => [:show, :new, :update]
 
   def index
+    flash.now[:alert] = "<span class='lead'>Warning!</span> The server hosting the De Ricci Digitized Archive is not available.  Our records and workspace will not function correctly.".html_safe
     if current_user
       @games = DericciGame.where(created_by: current_user)
     else
@@ -13,6 +14,7 @@ class  DericciGamesController < ApplicationController
   end
 
   def show
+    flash.now[:alert] = "<span class='lead'>Warning!</span> The server hosting the De Ricci Digitized Archive is not available.  Our records and workspace will not function correctly.".html_safe
     @game = DericciGame.find(params[:id])
     respond_to do |format|
       format.html {}
@@ -21,6 +23,7 @@ class  DericciGamesController < ApplicationController
   end
 
   def new
+    flash.now[:alert] = "<span class='lead'>Warning!</span> The server hosting the De Ricci Digitized Archive is not available.  Our records and workspace will not function correctly.".html_safe
     @game = DericciGame.create!(created_by: current_user)
 
     # this is quite the query! -> and quite slow! but it should limit things correctly
