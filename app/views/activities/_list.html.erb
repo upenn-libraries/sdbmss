@@ -56,7 +56,7 @@
                     <% link_text = "#{activity.item_type} ##{activity.item_id}" %>
                   <% end %>
                   <% if activity.event != 'destroy' %>
-                    <a href="" target="_blank"><%= link_text %></a>
+                    <a href="<%= polymorphic_path(activity.item) %>" target="_blank"><%= link_text %></a>
                   <% else %>
                     <span class="text-danger"><%= link_text %></span>
                   <% end %>
