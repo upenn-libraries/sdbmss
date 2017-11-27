@@ -79,7 +79,7 @@
 
         <div class="tab-content">
             <div id="activity" class="tab-pane fade">
-                <%= render partial: "activities/show_all", locals: {collapsed: true} %>
+                <%= render partial: "activities/list", locals: {collapsed: true} %>
             </div>
             <div class="tab-pane fade in active" id="contributions">
                 <%= render partial: "tiles", locals: {records: @user.entries.where(draft: false).last(10).reverse } %>

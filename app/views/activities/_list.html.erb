@@ -44,7 +44,7 @@
           </span>
         </h5>
         
-        <div class="collapse activity_date_<%= date %> <%= (collapsed && index > 0) ? '' : 'in' %>" id="activity_<%= date %>_<%= user_id %>">
+        <div class="collapse activity_date_<%= date %> <%= collapsed ? '' : 'in' %>" id="activity_<%= date %>_<%= user_id %>">
           <% details.group_by{ |d| d[:version].transaction_id }.each do |transaction_id, detail_list| %>
           <div class="panel panel-default activity">
             <div class="panel-heading">

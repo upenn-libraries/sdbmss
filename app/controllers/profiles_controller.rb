@@ -25,7 +25,10 @@ class ProfilesController < ApplicationController
         }
         @online = @user.updated_at && @user.updated_at > 10.minutes.ago
         start_date = Activity.where(user: current_user).order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
-        @activities = Activity.where(user: @user).where("created_at > ?", start_date).order("created_at desc").group_by { |a| a.created_at.to_date }
+        @activities = Activity.where(user: @user).where("created_at > ?", start_date).order("created_at desc")
+        @versions = PaperTrail::Version.where(transaction_id: @activities.map(&:transaction_id).flatten.uniq).includes(:item).order("created_at DESC")
+        @users = User.where(id: @versions.map(&:whodunnit).uniq)
+        @details = EntryVersionFormatter.new(@versions).details        
       end
       format.json do
         n = Name.select(:id, :created_at).where(created_by: @user).order("created_at asc")
