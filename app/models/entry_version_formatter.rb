@@ -125,6 +125,27 @@ class EntryVersionFormatter
     details
   end
 
+  # returns an array of strings
+  def simple_details
+    # cache 'details' b/c this method gets called several times
+    if @details == nil
+
+      # TODO: for FK fields to things like names, we should display
+      # something more meaningful than just numeric ID
+
+      if version.respond_to? :count
+        details = []
+        version.each do |v|
+          details += detail (v)
+        end
+        @details = details
+      else
+        @details = detail (version)
+      end
+    end
+    @details
+  end
+
   def detail (version)
     details = []
     if version.item_type == "EntryManuscript"
