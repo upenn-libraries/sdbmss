@@ -54,7 +54,6 @@ class ActivitiesController < ApplicationController
     @versions = PaperTrail::Version.where(transaction_id: @activities.map(&:transaction_id).flatten.uniq).includes(:item).order("created_at DESC")
     @users = User.where(id: @versions.map(&:whodunnit).uniq)
     @details = EntryVersionFormatter.new(@versions).details
-    puts @details.keys, @versions.count, @activities.count
     @total = Activity.includes(:user).where(params_for_index).count
 
     #@activities = Activity.joins(:user).where(params_for_index).order(id: :desc).limit(@page_size).offset((@page - 1) * @page_size)

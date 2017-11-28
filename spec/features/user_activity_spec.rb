@@ -56,7 +56,7 @@ describe "User Activity", :js => true do
     sleep 1.1
     visit activities_path
     expect(page).to have_content('edited SDBM_10')
-    expect(page).to have_content("Title Book of Ours")
+    expect(page).to have_content("Book of Ours")
   end
 
   it "should create a new name and show it in the activity" do

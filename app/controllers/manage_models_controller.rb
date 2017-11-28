@@ -136,24 +136,27 @@ class ManageModelsController < ApplicationController
   def destroy
     if deletable?(@model)
       #@model.deleted = true
-      if @model.destroy
-        respond_to do |format|
-          format.json {
-            render status: :ok, json: {}
-          }
-          format.html {
-            redirect_to names_path
-          }
-        end
-      else
-        respond_to do |format|
-          format.json {
-            render status: :unprocessable_entity, json: { "error" => @model.errors.join("; ") }
-          }
-          format.html {
-            flash[:error] = @model.errors.join("; ")
-            redirect_to :action => "edit", :id => @model.id
-          }
+      ActiveRecord::Base.transaction do
+        if @model.destroy
+          respond_to do |format|
+            format.json {
+              render status: :ok, json: {}
+            }
+            format.html {
+              redirect_to names_path
+            }
+          end
+          @transaction_id = PaperTrail.transaction_id
+        else
+          respond_to do |format|
+            format.json {
+              render status: :unprocessable_entity, json: { "error" => @model.errors.join("; ") }
+            }
+            format.html {
+              flash[:error] = @model.errors.join("; ")
+              redirect_to :action => "edit", :id => @model.id
+            }
+          end
         end
       end
     else

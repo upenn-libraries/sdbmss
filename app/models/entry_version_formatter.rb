@@ -136,11 +136,11 @@ class EntryVersionFormatter
       if version.respond_to? :count
         details = []
         version.each do |v|
-          details += detail (v)
+          details += old_detail (v)
         end
         @details = details
       else
-        @details = detail (version)
+        @details = old_detail (version)
       end
     end
     @details
@@ -230,6 +230,83 @@ class EntryVersionFormatter
       return @source_types
     else
       puts "WARNING: THIS SHOULDN't HAPPEN!!! (entry_version_formatter.rb) #{field}"
+      return field.gsub('_id', '').capitalize.classify.constantize
+    end
+  end
+
+  # note: this is a really clumsy way of not updating the change history display, so instead I duplicate the IMPROVED activity loading with the old version...
+
+  def old_detail (version)
+    details = []
+    if version.item_type == "EntryManuscript"
+      item = EntryManuscript.where(id: version.item_id).first
+      if item
+        details << "<b>#{item.entry.public_id}</b> has been linked to <b>#{item.manuscript.public_id}</b>"
+      else
+        details << "<b>EntryManuscript #{version.item_id}</b> was deleted."  
+      end
+    elsif version.event == 'update'
+      skip(version.changeset).each do |field, values|
+        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}")
+          if EntryVersionFormatter.isClass(field)
+            f = EntryVersionFormatter.toClass(field)
+            if f.exists?(values[0])
+              values[0] = f.find(values[0])
+            end
+            if f.exists?(values[1])
+              values[1] = f.find(values[1])
+            end
+          elsif field == "date" && version.item_type == "Source"
+            values[0] = SDBMSS::Util.format_fuzzy_date(values[0])
+            values[1] = SDBMSS::Util.format_fuzzy_date(values[1])
+          end
+          if values[0].present?
+            details << "<b>#{field.titlecase}</b> changed from #{values[0]} to #{values[1]}"
+          elsif values[1].present?
+            details << "<b>#{field.titlecase}</b> set to #{values[1]}"
+          end
+        end
+      end
+    elsif version.event == 'create'
+      skip(version.changeset).each do |field, values|
+        value = values[1]
+        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}") && value.present?
+          if EntryVersionFormatter.isClass(field)
+            f = EntryVersionFormatter.toClass(field)
+            if f.exists?(value)
+              value = f.find(value)
+            end
+          elsif field == "date" && version.item_type == "Source"
+            value = SDBMSS::Util.format_fuzzy_date(value)
+          end
+          details << "<b>#{field.titlecase}</b> set to #{value}"
+        end
+      end
+    elsif version.event == 'destroy'
+      obj = version.reify
+      skip(obj.attributes).each do |field, value|
+        if !IGNORE_FIELDS.include?("#{version.item_type}.#{field}") && !GENERIC_IGNORE_FIELDS.include?("#{field}") && value.present?
+          if EntryVersionFormatter.isClass(field)
+            f = EntryVersionFormatter.toClass(field)
+            if f.exists?(value)
+              value = f.find(value)
+            end
+          end
+          details << "<b>#{field.titlecase}</b> #{value}"
+        end
+      end
+    end
+    return details
+  end
+
+  def self.toClass (field)
+    if ['author_id', 'artist_id', 'scribe_id', 'source_agent_id', 'sale_agent_id', 'provenance_agent_id', 'agent_id', 'institution_id'].include? field
+      return Name
+    elsif ['created_by_id', 'updated_by_id', 'approved_by_id', 'reviewed_by_id'].include? field
+      return User
+    elsif ['entry_id'].include? field
+      return Entry
+    else
       return field.gsub('_id', '').capitalize.classify.constantize
     end
   end
