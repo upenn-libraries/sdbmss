@@ -1071,6 +1071,10 @@ class Entry < ActiveRecord::Base
     super - ["Deprecated", "deprecated"] - ["Draft", "draft"]
   end
 
+  def self.similar_fields
+    [:title_search, :place_search, :language_search, :artist_search, :scribe_search, :use_search, :binding_search, :folios_search, :author_search, :manuscript_date_search, :material_search]
+  end
+
   def create_activity(action_name, current_user, transaction_id)
     if !self.draft
       super(action_name, current_user, transaction_id)

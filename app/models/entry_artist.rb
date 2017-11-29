@@ -27,7 +27,8 @@ class EntryArtist < ActiveRecord::Base
     ["Coll", "Collaborators"],
     ["Mast", "Master"],
     ["Assi", "Assistant"],
-    ["Rela", "Related"]
+    ["Rela", "Related"],
+    ["Attr", "Attributed"]
   ]
 
   belongs_to :entry
