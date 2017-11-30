@@ -5,6 +5,8 @@ class SourcesController < SearchableAuthorityController
   include MarkAsReviewed
   include LogActivity
 
+  include Revert
+
   wrap_parameters include: Source.attribute_names - ['created_at', 'created_by', 'updated_at', 'updated_by'] + ['source_agents']
 
   before_action :set_source, only: [:show, :edit, :update, :destroy, :update_status]

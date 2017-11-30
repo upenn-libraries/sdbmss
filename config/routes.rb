@@ -267,6 +267,8 @@ Rails.application.routes.draw do
       post 'merge'
       get 'history'
       post 'update_status'
+      patch '/revert/', to: 'sources#revert'
+      patch '/revert_confirm/', to: 'sources#revert_confirm'
     end
   end
 

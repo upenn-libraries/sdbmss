@@ -79,6 +79,8 @@ function exportCSV(url) {
 
 $(document).ready(bindRemoteAjaxCallback);
 
+
+// fix me: make consistent between ratings, bookmarks, watch, etc.
 function bindRemoteAjaxCallback (){
   $('a[data-remote]').on('ajax:success', function (event, xhr, status, result) {
       //console.log('result.responseJSON', result.responseJSON);
