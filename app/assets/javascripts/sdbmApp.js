@@ -3503,17 +3503,15 @@ var BOOKMARK_SCOPE;
 
     $scope.removeBookmark = function (name, bookmark) {
       var i = $scope.all_bookmarks[name].indexOf(bookmark);
-      if (i >= 0) {
-        $.ajax({url: '/bookmarks/' + bookmark.id, method: 'delete'}).done( function (e) {
-          $scope.all_bookmarks[name].splice(i, 1);
-          var id = bookmark.document_id, type = bookmark.document_type;
-          $scope.$apply();        
-          $scope.searchTag($scope.tagSearch);
-          addNotification(type + ' ' + id + ' un-bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
-        }).error( function (e) {
-          console.log('error', e);
-        });
-      }
+      $.ajax({url: '/bookmarks/delete_all?ids[]=' + bookmark.id, method: 'delete' }).done( function (e) {
+        $scope.all_bookmarks[name].splice(i, 1);
+        var id = bookmark.document_id, type = bookmark.document_type;
+        $scope.$apply();        
+        $scope.searchTag($scope.tagSearch);
+        addNotification(type + ' ' + id + ' un-bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
+      }).error( function (e) {
+        console.log('error', e);
+      });
     }
 
     $scope.addBookmark = function (id, type) {

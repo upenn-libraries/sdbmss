@@ -73,7 +73,7 @@ Rails.application.routes.draw do
   get '/bookmarks/reload', to: 'bookmarks#reload', as: 'reload_bookmarks'
   resources :bookmarks do
     collection {
-      delete 'delete_all'
+      delete 'delete_all', to: 'bookmarks#destroy'
       get 'check'
     }
     member {
@@ -115,7 +115,6 @@ Rails.application.routes.draw do
   get '/community/', to: 'community#show', as: 'community'
   get '/community/stats', to: 'community#stats'
 
-  get '/dashboard/', to: 'dashboard#contributions'
   get '/dashboard/contributions'
   get '/dashboard/activity'
   get '/dashboard/forum'
