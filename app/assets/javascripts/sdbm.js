@@ -85,15 +85,21 @@ function bindRemoteAjaxCallback (){
   $('a[data-remote]').on('ajax:success', function (event, xhr, status, result) {
       //console.log('result.responseJSON', result.responseJSON);
       var errors = [];
-      for (var key in result.responseJSON.results) {
-        if (result.responseJSON.results[key].button_html) {
-          $("#" + key).replaceWith(result.responseJSON.results[key].button_html);          
-        } else if (result.responseJSON.results[key].error) {
-          errors.push(result.responseJSON.results[key].error);
-        }
+      console.log(result.responseJSON);
+      if (result.responseJSON.button) {
+        $(this).replaceWith(result.responseJSON.button);
       }
-      if (errors.length > 0) {
-        console.log("ERRORS: ", errors);        
+      else {
+        for (var key in result.responseJSON.results) {
+          if (result.responseJSON.results[key].button_html) {
+            $("." + key).html(result.responseJSON.results[key].button_html);          
+          } else if (result.responseJSON.results[key].error) {
+            errors.push(result.responseJSON.results[key].error);
+          }
+        }
+        if (errors.length > 0) {
+          console.log("ERRORS: ", errors);        
+        }
       }
       bindRemoteAjaxCallback();
   });
