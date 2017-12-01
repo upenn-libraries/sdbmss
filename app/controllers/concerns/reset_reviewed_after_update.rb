@@ -1,4 +1,6 @@
 
+# fix me: no longer used, remove?
+
 # For controllers that need to reset 'reviewed' flag on a model object
 # after the #update action is finished. This is safe to include on a
 # resource controller whose model doesn't have a 'reviewed' flag, in

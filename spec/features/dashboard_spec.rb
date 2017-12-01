@@ -1,4 +1,3 @@
-
 require "rails_helper"
 
 describe "Dashboard", :js => true do

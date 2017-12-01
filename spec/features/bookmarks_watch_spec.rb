@@ -110,6 +110,39 @@ describe "Bookmark", :js => true do
       expect("#control-panel").not_to have_content('Watched') 
     end
 
+    it "should bookmark/watch and remove for Manuscript Records" do
+      visit manuscripts_path
+      first('.bookmark').click
+      first('.watch').click
+
+      visit manuscript_path(Manuscript.last)
+      expect(page).to have_content('Bookmarked')
+      expect(page).to have_content('Watched')
+
+      first('.bookmark-delete').click
+      first('.watch-delete').click
+
+      expect(page).not_to have_content('Bookmarked')
+      expect("#control-panel").not_to have_content('Watched')
+    end
+
+    it "should bookmark/watch and remove for Dericci Records" do
+      visit dericci_records_path
+      expect(page).to have_content(DericciRecord.order("name ASC").first.name)
+      first('.bookmark').click
+      first('.watch').click
+
+      visit dericci_record_path(DericciRecord.order("name ASC").first)
+      expect(page).to have_content('Bookmarked')
+      expect(page).to have_content('Watched')
+
+      first('.bookmark-delete').click
+      first('.watch-delete').click
+
+      expect(page).not_to have_content('Bookmarked')
+      expect("#control-panel").not_to have_content('Watched') 
+    end
+
     it "should display all watched records" do
       visit sources_path
       first('.DTFC_LeftWrapper .bookmark').click

@@ -44,6 +44,11 @@ class DericciRecordsController < ApplicationController
     render "edit"
   end
 
+  def create
+    @record = DericciRecord.create!(dericci_record_params)
+    redirect_to dericci_record_path(@record)
+  end
+
   def update
     @record.update_by(current_user, dericci_record_params)
     respond_to do |format|
