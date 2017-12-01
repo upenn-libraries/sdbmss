@@ -71,7 +71,7 @@
                 <%= link_to(download_path(d)) do %>
                   <span class="glyphicon glyphicon-floppy-save"></span>
                 <% end %>
-                <%= link_to(delete_download_path(d), data: {:confirm => 'Are you sure?'}) do %>
+                <%= link_to(delete_download_path(d), data: {:confirm => 'Are you sure?'}, class: "delete-download") do %>
                   <span class="glyphicon glyphicon-trash"></span>
                 <% end %>
               </span>

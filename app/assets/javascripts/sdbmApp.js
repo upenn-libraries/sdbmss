@@ -384,6 +384,7 @@ var BOOKMARK_SCOPE;
     sdbmApp.controller("DericciGameCtrl", function ($scope, $http, $modal, $sce) {
       EntryScope = $scope;
       $scope.records = [];
+      $scope.indicator = "We hope you are enjoying the De Ricci Game!";
 
       // the current position in the list, and the URL of the PDF to display
       $scope.current_record = undefined;
@@ -457,6 +458,8 @@ var BOOKMARK_SCOPE;
       // open name select modal
       $scope.findName = function (model) {
         $scope.name = {};
+
+        $scope.indicator = "";
         //$scope.selectRecord(model);
         $scope.modal = $modal.open({
           templateUrl: "selectNameAuthority.html",
@@ -471,7 +474,8 @@ var BOOKMARK_SCOPE;
           size: 'lg'
         });
         $scope.modal.result.then( function (results) {
-          model.skipped = false;
+          model.skipped = false;          
+          $scope.indicator = "We hope you are enjoying the De Ricci Game!";
           if ($scope.current_record.dericci_links.filter(function (dl) { return dl.name_id == $scope.name.id; }).length <= 0) {
             for (var i = 0; i < $scope.current_record.dericci_links.length; i++) {
               $scope.removeLink($scope.current_record, $scope.current_record.dericci_links[i]);
@@ -484,6 +488,8 @@ var BOOKMARK_SCOPE;
           } else {
             alert("You have already selected that name!");
           }
+        }, function () {
+          $scope.indicator = "We hope you are enjoying the De Ricci Game!";
         });
       };
       // helper methods for determining status

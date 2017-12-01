@@ -126,16 +126,16 @@
       <ul class="game-nav nav nav-pills nav-stacked" style="margin-top: 15px;">
         <li ng-repeat="record in records" ng-class="{ 'active' : current_record == record }">
           <span class="btn-group my-btn-group">
-            <a href="" class="btn btn-default btn-sm one-line text-left" ng-class="{'active': current_record == record}" ng-click="selectRecord(record)">
+            <a href="" class="btn btn-default btn-sm one-line text-left view-name" ng-class="{'active': current_record == record}" ng-click="selectRecord(record)">
               {{ record.name }}
             </a>
-            <a href="" class="btn btn-sm" ng-class="getButton(record)" ng-disabled="record != current_record" ng-click="record == current_record ? findName(record) : ''" style="width: 90px;">
+            <a href="" class="btn btn-sm find-name" ng-class="getButton(record)" ng-disabled="record != current_record" ng-click="record == current_record ? findName(record) : ''" style="width: 90px;">
               <span class="glyphicon" ng-class="getClass(record)"></span> {{ getText(record) }}
             </a>
           </span>
         </li>
       </ul>
-      <a href="" class="btn btn-default btn-lg btn-full" ng-class="{ 'disabled': !canSubmit() }" ng-click="save()">
+      <a href="" class="btn btn-default btn-lg btn-full" id='save-game' ng-class="{ 'disabled': !canSubmit() }" ng-click="save()">
         <span class="glyphicon glyphicon-ok-sign"></span>
         Submit
       </a>

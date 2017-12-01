@@ -85,14 +85,14 @@ describe "Browse Dericci Records", :js => true do
   end
 
   it "should allow an admin to add a verified link" do
-    visit dericci_record_path(DericciRecord.first)
+    visit dericci_record_path(@d)
     expect(page).to have_content("Find Verified Name")
     click_link("verify")
-    expect(page).to have_content("Find '#{DericciRecord.first}' in SDBM Name Authority")
-
+    expect(page).to have_content("Find '#{@d}' in SDBM Name Authority")
+    expect(page).to have_content("Link")
     expect(page).to have_content("Camillo")
     first(".selectName").click
-    expect(page).not_to have_content("Find '#{DericciRecord.first}' in SDBM Name Authority")
+    expect(page).not_to have_content("Find '#{@d}' in SDBM Name Authority")
     expect(page).not_to have_content("Find Verified Name")
     expect(page).to have_content "Save"
     click_link("Save")
@@ -103,7 +103,7 @@ describe "Browse Dericci Records", :js => true do
     visit dericci_records_path
     check "verified_id"
     find("#search-dericci").click
-    expect(page).not_to have_content(DericciRecord.first.name)
+    expect(page).not_to have_content(@d.name)
 
     check "flagged"
     find("#search-dericci").click
@@ -111,9 +111,9 @@ describe "Browse Dericci Records", :js => true do
   end
 
   it "should allow an admin to remove verified link" do
-    visit dericci_record_path(DericciRecord.first)
+    visit dericci_record_path(@d)
     expect(page).not_to have_content("Find Verified Name")
-    visit edit_dericci_record_path(DericciRecord.first)
+    visit edit_dericci_record_path(@d)
     fill_in "dericci_record_verified_id", with: nil
     click_button "Update De Ricci Record"
     expect(page).to have_content("Find Verified Name")

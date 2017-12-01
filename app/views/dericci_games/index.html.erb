@@ -157,17 +157,17 @@
       <div class="alert alert-success">You have played <%= @games.count %> games!  <%= render partial: "shared/request_advancement" %></div>
     <% end %>
     <!-- -->
-    <%= link_to new_dericci_game_path, class: 'btn btn-sm btn-default' do %>
+    <%= link_to new_dericci_game_path, class: 'btn btn-sm btn-default', id: "new-game" do %>
       <span class="glyphicon glyphicon-tower"></span> Start a <strong>New Game</strong>
     <% end %>
-    <a data-toggle="collapse" data-target="#mygames" class="btn btn-sm btn-default">My Games <span class="badge"><%= @games.count %></span> <span class="caret"></span></a>
+    <a data-toggle="collapse" data-target="#mygames" id="open-games" class="btn btn-sm btn-default">My Games <span class="badge"><%= @games.count %></span> <span class="caret"></span></a>
     <div class="collapse" id="mygames">
       <table class="table table-responsive text-left" style="max-height: 300px; overflow-y: scroll; margin-top: 5px;">
         <tbody>
           <% if @games.reverse.each do |game| %>
             <tr>
               <td>
-                <%= link_to(dericci_game_path(game), class: 'btn btn-default btn-xs') do %>
+                <%= link_to(dericci_game_path(game), class: 'btn btn-default btn-xs play-game') do %>
                   <span class="glyphicon glyphicon-tower"></span> Go To Game 
                 <% end %>
               </td>

@@ -71,9 +71,9 @@
             </div>
             <div class="col-sm-9 fade text-right cantfind" id="">
                 <span class="btn-group">
-                    <button class="btn btn-info" ng-click="flag(current_record, 'The name described here should be added to the SDBM Name Authority')">Yes</button>
-                    <button class="btn btn-warning" ng-click="flag(current_record, 'The names or information contained are not relevant or applicable to names in the SDBM')">No</button>
-                    <button class="btn btn-default" ng-click="skip(current_record)">Not Sure</button>
+                    <button class="btn btn-info" id="flag-add" ng-click="flag(current_record, 'The name described here should be added to the SDBM Name Authority')">Yes</button>
+                    <button class="btn btn-warning" id="flag-scope" ng-click="flag(current_record, 'The names or information contained are not relevant or applicable to names in the SDBM')">No</button>
+                    <button class="btn btn-default" id="skip" ng-click="skip(current_record)">Not Sure</button>
                 </span>
             </div>
         </div>

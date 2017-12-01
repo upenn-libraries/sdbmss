@@ -1,3 +1,5 @@
+# fix me: no longer used (only created through game)
+
 class DericciLinksController < ApplicationController
 
   load_and_authorize_resource :only => [:create, :destroy]
