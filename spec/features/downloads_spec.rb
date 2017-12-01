@@ -23,14 +23,6 @@ describe "Downloads", :js => true do
       click_link 'names.csv'
     end
 
-    it "should delete a download from the downloads page" do
-      visit downloads_path
-      expect(page).to have_content('names.csv')
-      first('.delete-download').click
-      expect(page).to have_content("Are you sure?")
-      first('.btn-danger').click
-      expect(page).not_to have_content("names.csv")
-    end
   end
 
 end
