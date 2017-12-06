@@ -14,7 +14,7 @@ class Manuscript < ActiveRecord::Base
 
   include Watchable
   include UserFields
-  include IndexAfterUpdate
+  #include IndexAfterUpdate
   include HasPaperTrail
   include CreatesActivity
   extend SolrSearchable
@@ -81,27 +81,6 @@ class Manuscript < ActiveRecord::Base
   # this Manuscript AND all its pertinent associations.
   def cumulative_updated_at
     SDBMSS::Util.cumulative_updated_at(self, [:entry_manuscripts])
-  end
-
-  # returns an array of entry IDs
-  # 
-  # deprecated: similar entry suggestions not currently enabled
-  def entry_candidates
-    puts "deprecated"
-    candidate_ids = Set.new
-    linked_entries.each do |entry|
-      SDBMSS::SimilarEntries.new(entry).each do |similar_entry|
-        entry = similar_entry[:entry]
-        if entry.manuscript.blank?
-          candidate_ids.add entry.id
-        end
-      end
-    end
-    candidate_ids
-  end
-
-  def entries_to_index_on_update
-    Entry.with_associations.joins(:entry_manuscripts).where({ entry_manuscripts: { manuscript_id: id} })
   end
 
   def to_citation

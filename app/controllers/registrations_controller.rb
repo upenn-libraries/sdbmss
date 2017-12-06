@@ -23,7 +23,7 @@ class RegistrationsController < Devise::RegistrationsController
         <p>Matija Budisin - Project Assistant</p>
         <p>Emma Cawlfield - Project Assistant</p>
         ),
-        created_by: User.find(2) # fix me: this feels a little iffy, maybe set the user account from ENV_VARIABLE?
+        created_by: User.find(2) # 12-06-17 fix me: this feels a little iffy, maybe set the user account from ENV_VARIABLE?
       )
       UserMessage.create!(private_message: p, user: resource)
       resource.notify("You have a new message.", p, "message")

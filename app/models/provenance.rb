@@ -117,10 +117,6 @@ class Provenance < ActiveRecord::Base
     result ? result[1] : nil
   end
 
-  def name_authority
-    (provenance_agent ? "<a href='/names/#{provenance_agent_id}'>#{provenance_agent}</a> " : "")
-  end
-
   def dates
     [start_date, end_date].reject(&:blank?).join(' to ') + (associated_date ? " #{associated_date}" : "")
   end

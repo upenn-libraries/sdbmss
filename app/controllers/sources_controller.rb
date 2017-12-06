@@ -17,28 +17,7 @@ class SourcesController < SearchableAuthorityController
 
   load_and_authorize_resource :only => [:edit, :update, :destroy, :merge]
 
-  # fix me: delete this?
-  DEFAULT_SEARCH_FIELD_HANDLER = Proc.new { |fieldname, params, query|
-    query.where("#{fieldname} like ?", "%#{params[fieldname]}%")
-  }
-  SEARCH_FIELDS = [
-    ["title", "Title", DEFAULT_SEARCH_FIELD_HANDLER ],
-    ["date", "Date", Proc.new { |fieldname, params, query|
-       query.where("#{fieldname} like ?", "%#{params[fieldname].gsub('-', '').gsub('/', '')}%")
-     }
-    ],
-    ["selling_agent", "Selling Agent", Proc.new { |fieldname, params, query|
-       query.joins(source_agents: [ :agent ] ).where("source_agents.role = \"#{SourceAgent::ROLE_SELLING_AGENT}\" AND names.name like ?", "%#{params[fieldname]}%")
-     }
-    ],
-    ["institution", "Institution", Proc.new { |fieldname, params, query|
-       query.joins(source_agents: [ :agent ] ).where("source_agents.role = \"#{SourceAgent::ROLE_INSTITUTION}\" AND names.name like ?", "%#{params[fieldname]}%")
-     }
-    ],
-    ["author", "Author", DEFAULT_SEARCH_FIELD_HANDLER ],
-  ]
-
-  # (not this)
+  # 12-06-17 fix me: is this used anywhere? I don't think so!
   def search_fields
     @filters = ["id", "location", "agent_id"]
     @fields = ["title", "date", "agent_name", "author", "created_by", "updated_by", "source_type"]
@@ -46,42 +25,12 @@ class SourcesController < SearchableAuthorityController
     @fields + @filters + @dates
   end
 
-  # return just the query strings which are combined in an array, then joined with either AND or OR to create one final query - but will it work with the unique cases above?
-
-  # fix me: deleete this?
-  A_DEFAULT_SEARCH_HANDLER = lambda { |fieldname, params, query| 
-    return "#{fieldname} like '%#{params[fieldname]}%'"
-  }
-
-  A_SEARCH_FIELDS = [
-    ["title", "Title", A_DEFAULT_SEARCH_HANDLER ],
-    ["date", "Date", lambda { |fieldname, params, query| 
-        return "#{fieldname} like '%#{params[fieldname].gsub('-', '').gsub('/', '')}%'"
-      }
-    ],
-    ["author", "Author", A_DEFAULT_SEARCH_HANDLER],
-    ["selling_agent", "Selling Agent", lambda { |fieldname, params, query| 
-        return "source_agents.role = \"#{SourceAgent::ROLE_SELLING_AGENT}\" AND names.name like '%#{params[fieldname]}%'"
-      },
-      lambda { |query|  return query.joins(source_agents: [ :agent] ) }
-    ],
-    ["institution", "Institution", lambda { |fieldname, params, query| 
-        return "source_agents.role = \"#{SourceAgent::ROLE_INSTITUTION}\" AND names.name like '%#{params[fieldname]}%'"
-      },
-      lambda { |query|  return query.joins(source_agents: [ :agent] ) }
-    ]
-  ]
-
   def new
     @source = Source.new
     respond_to do |format|
       format.html { render "edit" }
     end
   end
-
-#  def index
-#    @search_fields = SEARCH_FIELDS
-#  end
 
   # various date separators (hyphenated!)
   def search
@@ -175,9 +124,8 @@ class SourcesController < SearchableAuthorityController
     end
   end
 
-  # TODO: this is kinda slow and needs to be optimized
+  # 12-06-17 fix me: is this used?
   def similar
-    puts "is this used anywhere?"
     get_similar
 
     respond_to do |format|
@@ -189,6 +137,7 @@ class SourcesController < SearchableAuthorityController
     Source
   end
 
+  # 12-06-17 fix me: is this the old search method that can now be removed?
   def search_name_field
     "title"
   end
@@ -248,6 +197,8 @@ class SourcesController < SearchableAuthorityController
       return ["date desc", "title"]
     end
   end
+
+  # 12-06-17 fix me: (to here)
 
   # change the status of a Source
   def update_status

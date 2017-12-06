@@ -93,15 +93,4 @@ class CommentsController < SearchableAuthorityController
     params.permit(:commentable_id, :commentable_type, :comment)
   end
 
-  def model_params
-    puts 'comment.rb: deprecated'
-    params.require(model_class_lstr.to_sym).permit(
-      :comment, :is_correction, :is_accepted,
-      :entry_comments_attributes => [ :id, :entry_id ],
-      :manuscript_comments_attributes => [ :manuscript_id ],
-      :source_comments_attributes => [ :source_id ],
-      :name_comments_attributes => [ :name_id ]
-    )
-  end
-
 end

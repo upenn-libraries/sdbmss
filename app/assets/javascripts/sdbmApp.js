@@ -1209,21 +1209,6 @@ var BOOKMARK_SCOPE;
           //model['observed_name'] = null;
         }
 
-        // affixes the association name and 'add' button to side, so that it is in view when list is long
-        // fix me: no longer used
-        $scope.affixer = function () {
-          $('.side-title').each( function () {
-            // ignore this if the list is short: temp fix?
-            if ( $(this).closest('.row').height() < $(window).height() - 500) return;
-            else if ( $(window).height() < 600) return;
-
-            var top = $(this).closest('.row').offset().top;
-            var bottom = $(document).height() - (top + $(this).closest('.row').height());
-            $(this).affix({offset: {top: top, bottom: bottom} }); //Try it
-            $(this).data('bs.affix').options.offset = {top: top, bottom: bottom};
-          });
-        };
-
         $scope.sortableOptions = {
           axis: 'y',
           placeholder: "input-block-placeholder",

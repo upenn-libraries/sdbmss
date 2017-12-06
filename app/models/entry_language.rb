@@ -22,10 +22,6 @@ class EntryLanguage < ActiveRecord::Base
     display_value
   end
 
-  def name_authority
-    (language ? "<a href='/languages/#{language_id}'>#{language}</a> " : "")
-  end
-
   def observed
     ""
   end

@@ -14,13 +14,6 @@ class ManuscriptsController < SearchableAuthorityController
     Manuscript
   end
 
-  def search_fields
-    @fields = ["name", "location", "created_by", "updated_by"]
-    @filters = ["id"]
-    @dates = ["created_at", "updated_at"]
-    @fields + @filters + @dates
-  end
-
   def table
     @model = @manuscript
     @entries = @manuscript.entries.preload(
@@ -85,17 +78,6 @@ class ManuscriptsController < SearchableAuthorityController
     end
   end
 
-  def update
-    super
-  end
-
-  def entry_candidates
-    @candidate_ids = @manuscript.entry_candidates
-    respond_to do |format|
-      format.json
-    end
-  end
-
   def search_result_format(obj)
     {
       id: obj.id,
@@ -116,6 +98,7 @@ class ManuscriptsController < SearchableAuthorityController
     end
   end
 
+# 12-06-17 fix me: this is no longer available anywhere in the public interface - but should it be?
   def destroy
     if deletable?(@model)
       if @model.destroy

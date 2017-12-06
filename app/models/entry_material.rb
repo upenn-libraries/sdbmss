@@ -39,10 +39,6 @@ class EntryMaterial < ActiveRecord::Base
     display_value
   end
 
-  def to_fields
-    {material: material}
-  end
-
   private
 
   def observed_or_dropdown

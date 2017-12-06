@@ -1,4 +1,4 @@
-# fix me: no longer used (only created through game)
+# used only for confirming (adding a new link) or removing links made during a game session
 
 class DericciLinksController < ApplicationController
 

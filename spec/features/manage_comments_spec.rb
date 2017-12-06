@@ -53,7 +53,6 @@ describe "Manage Comments", :js => true do
   end
 
   it "should allow a user to delete their comments" do
-    skip "because of some poltergeist garbage :("
     visit comments_path
 
     first('#search_results a').click
@@ -62,12 +61,12 @@ describe "Manage Comments", :js => true do
 
     first('a[data-method="delete"]').click
     
-    # even though the element is visible (screenshot), and can be detected (i.e. had_css, etc.), clicking 'confirm' fails, for some reason...
     expect(page).to have_content('Are you sure?')
-    first('button.btn-danger').click
+    
+    first('.btn.btn-danger.commit').click
 
-    expect(page).not_to have_content('That\'s ridiculous.')
     expect(page).to have_content('This comment has been deleted.')
+    expect(page).not_to have_content('That\'s ridiculous.')
   end
 
   it "should properly notify the owner of the commented record" do

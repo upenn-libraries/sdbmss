@@ -50,8 +50,19 @@ describe "De Ricci Game", :js => true do
         end        
         expect(page).not_to have_content("in SDBM Name Authority")
       end
+      views[0].click
+      expect(page).to have_content("SDBM_NAME_")
+      fill_in 'other-info', with: 'Some other things to consider are...'
+      fill_in 'comment', with: 'This is a very interesting card!!!'
       find('#save-game').click
       expect(page).to have_content("Thank you for playing the Dericci Archives Game!")
     end
   end
+
+  it "should require the user to be logged in" do
+    page.reset!
+    visit dericci_games_path
+    expect(page).to have_content("Welcome to the De Ricci Digitized Archive Name Game! You must create an account or log in to play....")
+  end
+
 end

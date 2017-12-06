@@ -6,7 +6,6 @@
 # and views.
 class ManageModelsController < ApplicationController
   include ResourceSearch
-  #include ResetReviewedAfterUpdate
 
   before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy]
 

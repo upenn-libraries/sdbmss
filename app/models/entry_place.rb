@@ -22,12 +22,4 @@ class EntryPlace < ActiveRecord::Base
     (place && place.name ? place.name : "") + certainty_flags
   end
 
-  def to_fields
-    {observed_name: observed_name, name: place ? place.name : nil}
-  end
-
-  def name_authority
-    (place ? "<a href='/places/#{place_id}'>#{place}</a> " : "")
-  end
-
 end

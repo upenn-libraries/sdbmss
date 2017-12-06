@@ -52,4 +52,53 @@ describe "Manage Private Messages", :js => true do
     expect(page).to have_content(@user.username)
     expect(page).to have_content(@user2.username)
   end
+
+  it "should allow a user to view any message chain that includes them" do
+    visit new_private_message_path(user_id: [@user2.id])
+    fill_in "title", with: "Welcome!"
+    fill_in "message", with: "This is a welcome message."
+
+    click_button "Send Message"
+
+    expect(page).to have_content("Welcome!")
+    expect(page).to have_content("This is a welcome message.")
+    expect(page).to have_content(@user.username)
+    expect(page).to have_content(@user2.username)
+
+    page.reset!
+    login(@user2, "somethingunguessable")
+    visit private_messages_path
+    expect(page).to have_content("Welcome!")
+
+    visit notifications_path
+    expect(page).to have_content("#{@user} sent you a message")
+  end
+
+  it "should allow a user to reply to a private message" do
+    visit new_private_message_path(user_id: [@user2.id])
+    fill_in "title", with: "Welcome!"
+    fill_in "message", with: "This is a welcome message."
+
+    click_button "Send Message"
+
+    expect(page).to have_content("Welcome!")
+    expect(page).to have_content("This is a welcome message.")
+    expect(page).to have_content(@user.username)
+    expect(page).to have_content(@user2.username)
+
+    page.reset!
+    login(@user2, "somethingunguessable")
+
+    visit private_message_path(@user2.private_messages.last)
+    expect(page).to have_content('Reply')
+    click_button 'Reply'
+
+    fill_in 'message', with: 'This is a message reply!!'
+    click_button 'Send Message'
+
+    expect(page).to have_content('This is a message reply!!')
+
+    visit private_messages_path
+  end
+
 end

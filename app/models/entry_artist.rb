@@ -71,11 +71,4 @@ class EntryArtist < ActiveRecord::Base
     (artist ? artist.name : "") + certainty_flags
   end
 
-  def to_fields
-    {name: artist ? artist.name : nil, observed_name: observed_name}
-  end
-
-  def name_authority
-    (artist ? "<a href='/names/#{artist_id}'>#{artist}</a> " : "")
-  end
 end

@@ -102,7 +102,7 @@ class PrivateMessagesController < ApplicationController
       respond_to do |format|
         format.html {
           flash[:error] = "Invalid message.  Both a message and a title are required."
-          redirect_to new_message_path
+          redirect_to new_private_message_path
         }
         format.json {
           render json: {message: "Message could not be sent", status: "failure"}
@@ -114,16 +114,6 @@ class PrivateMessagesController < ApplicationController
   def show
     @chain = Chain.new(@message, current_user)
     @chain.messages.each { |message| message.delay.read(current_user) }
-  end
-
-  # fix me: this is not accessible anyway, not really needed (at the moment) - no great way of handling it atm either
-  def destroy
-    @message.user_messages.where(user_id: current_user.id).each do |um|
-      um.destroy!
-    end
-    flash[:error] = "Message deleted."
-    redirect_to private_messages_path
-    # how should this be handled?!
   end
 
   private
