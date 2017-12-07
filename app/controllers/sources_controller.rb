@@ -137,68 +137,7 @@ class SourcesController < SearchableAuthorityController
     Source
   end
 
-  # 12-06-17 fix me: is this the old search method that can now be removed?
-  def search_name_field
-    "title"
-  end
-
-  def search_exact_enabled
-    false
-  end
-
-  def search_query_base
-    search_model_class.all.includes([:created_by])
-  end
-
-  def search_query
-    query = super
-
-    if params["from"] && params["to"]
-      # handle range of IDs for a 'Jump To' search
-      query = query.where("id >= ? and id <= ?", params["from"], params["to"])
-    elsif params["agent"]
-      # handle queries for either Institution or Selling Agent (this
-      # happens from the Add New Entry workflow)
-      query = query.joins(source_agents: [ :agent ] ).where('names.name like ?', "%#{params["agent"]}%")
-    end
-    
-    queries = []
-
-    j = params['op'] && params['op'] == 'OR' ? " OR " : " AND "
-    # always process these fields (used on both Add New Entry workflow and
-    # Manage Sources screen)
-    A_SEARCH_FIELDS.each do |field|
-      fieldname = field[0]
-      handler = field[2]
-      # modified to handle multiple field names, again, as in advanced search
-      if params[fieldname].present?
-        if field[3]
-          query = field[3].call(query)
-        end
-        if params[fieldname].kind_of? Array
-          params[fieldname].each do |q|
-            p = params.dup
-            p[fieldname] = q
-            queries += [handler.call(fieldname, p, query)]
-          end
-        else
-          queries  += [handler.call(fieldname, params, query)]
-        end
-      end
-    end
-    query.where(queries.join(j)).with_associations
-#    query.with_associations
-  end
-
-  def search_results_order
-    if params["order"]
-      return [ search_model_class.to_s.underscore.pluralize + "." + params["order"] ]
-    else
-      return ["date desc", "title"]
-    end
-  end
-
-  # 12-06-17 fix me: (to here)
+  # fix me: 12-07-17 remove update_status, and related code in sdbmApp.js and entries/edit.html.erb
 
   # change the status of a Source
   def update_status

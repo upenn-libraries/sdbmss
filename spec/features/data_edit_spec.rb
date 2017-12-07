@@ -67,13 +67,13 @@ describe "Data entry", :js => true do
   # overlaps over DOM elements and can interfere with subsequent
   # interactions with the page, we have this abstraction to hover out
   # of it afterwards.
-  def click_certainty_flag(field)
-    find_by_id(field).click
+  #def click_certainty_flag(field)
+  #  find_by_id(field).click
     # hover over something else--the navbar element here is just
     # arbitrary
-    first('#header-navbar').hover
-    sleep(2)
-  end
+  #  first('#header-navbar').hover
+  #  sleep(2)
+  #end
 
   before :all do
     #User.where(username: 'testuser').delete_all

@@ -1,4 +1,8 @@
 module DataEntryHelpers
+  def click_certainty_flag(field)
+    find_by_id(field).click
+  end
+  
   def add_name_authority(id, value)
     find_by_id(id).click
     expect(page).to have_content('in Name Authority')

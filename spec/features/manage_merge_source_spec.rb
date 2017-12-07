@@ -70,9 +70,9 @@ describe "Manage Merging Sources", :js => true do
     c1 = Entry.where(source_id: @source.id).count
     c2 = Entry.where(source_id: @source2.id).count
 
-    @source.merge_into(@source2)
+    visit merge_source_path(@source1)
 
-    expect(@source.deleted).to be_truthy
+    
 
     @source2.index!
     @source2.entries.each do |e|

@@ -1419,7 +1419,7 @@ var BOOKMARK_SCOPE;
             anArray[i].order = i;
           }
           setTimeout( function () {
-            $scope.affixer();
+            //$scope.affixer();
           }, 2000);
         };
 
