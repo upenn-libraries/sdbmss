@@ -64,7 +64,7 @@
         <div class="text-center form-inline">
         <%= form_tag(request.path, method: :get, class: "form-horizontal form-inline sdbmss-form text-center") do %>
                 <label class="control-label">Find by unique ID</label>
-                <button class="btn btn-primary">Select</button>
+                <button class="btn btn-primary" id='select-specific'>Select</button>
                 <input type="text" name="target_id" class="form-control" placeholder="Enter Source ID here..."></p>
         <% end %>
         </div>

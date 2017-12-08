@@ -71,7 +71,7 @@ describe "Manage sources", :js => true do
 
   it "should delete a Source" do
     # this is a very rough test!
-    skip "contributor user cannot delete sources"
+    skip "so anything with a confirmation popup is untestable for the time being :("
     count = Source.count
 
     # mock out the confirm dialogue

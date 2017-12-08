@@ -17,14 +17,6 @@ class SourcesController < SearchableAuthorityController
 
   load_and_authorize_resource :only => [:edit, :update, :destroy, :merge]
 
-  # 12-06-17 fix me: is this used anywhere? I don't think so!
-  def search_fields
-    @filters = ["id", "location", "agent_id"]
-    @fields = ["title", "date", "agent_name", "author", "created_by", "updated_by", "source_type"]
-    @dates = ["created_at", "updated_at"]
-    @fields + @filters + @dates
-  end
-
   def new
     @source = Source.new
     respond_to do |format|
@@ -124,7 +116,7 @@ class SourcesController < SearchableAuthorityController
     end
   end
 
-  # 12-06-17 fix me: is this used?
+  # used for merge suggestions
   def similar
     get_similar
 
@@ -166,6 +158,11 @@ class SourcesController < SearchableAuthorityController
         end
       }
     end
+  end
+
+  # used in merge, public_view (i.e. a way of standardizing 'name', 'title', etc. I guess...)
+  def search_name_field
+    "title"
   end
 
   # returns JSON containing type constants
