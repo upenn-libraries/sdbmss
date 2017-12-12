@@ -48,6 +48,7 @@ class Ability
       can :manage, PrivateMessage do |pm|
         pm.users.include? user
       end
+      can :manage, Rating
       cannot [:import, :upload], Entry
     end
 

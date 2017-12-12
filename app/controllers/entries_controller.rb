@@ -164,6 +164,8 @@ class EntriesController < SearchableAuthorityController
   # since we return arrays instead of objects with more meaningful
   # keys.
 
+  # fix me 12-11-2017 - is this needed? I think not, since manage entries/linking tool don't use blacklight anymore...
+
   def render_search_results_as_json
     retval = {
       draw: params[:draw],

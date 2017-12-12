@@ -226,5 +226,24 @@ describe "Manage entries", :js => true do
     expect(page).to have_content(result)
   end
 
+  it "should allow a user to upload entries from a flat csv file" do
+    skip "not implemented yet"
+  end
+
+  it "should try to download a search result from manage entries table" do
+    skip "not implemented yet"
+  end
+
+  it "should allow a user to create an entry from composite provenance on a manuscript record" do
+    skip "not implemented yet"
+  end
+
+  it "should show suggestions of similar records in the linking tool" do
+    skip "not implemented yet"
+  end  
+
+  it "should verify a legacy entry" do
+    skip "not implemented yet"
+  end
 
 end
