@@ -117,7 +117,6 @@ class BookmarksController < ApplicationController
         }
       end
     else
-
     end
   end
 

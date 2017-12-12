@@ -55,6 +55,22 @@ describe EntryDate do
       expect(EntryDate.parse_observed_date("second quarter of the 9th century")).to eq([826, 851])
     end
 
+    it "parses first quarter of century date" do
+      expect(EntryDate.parse_observed_date("first quarter of the 9th century")).to eq([801, 826])
+    end
+
+    it "parses 4th quarter of century date" do
+      expect(EntryDate.parse_observed_date("4th quarter of the 9th century")).to eq([876, 901])
+    end
+
+    it "parses second third of century date" do
+      expect(EntryDate.parse_observed_date("second third of the 9th century")).to eq([834, 867])
+    end
+
+    it "parses last third of century date" do
+      expect(EntryDate.parse_observed_date("last third of the 9th century")).to eq([867, 901])
+    end
+
     it "parses first half of century date" do
       expect(EntryDate.parse_observed_date("first half of the 14th century")).to eq([1300, 1351])
     end

@@ -60,7 +60,11 @@ class AccountsController < SearchableAuthorityController
           end
         end
       end
-      flash[:notice] = "Invitations sent!"
+      if users.count === 1 && users.first === current_user
+        flash[:notice] = "Request sent!"
+      else
+        flash[:notice] = "#{"Invitation".pluralize(users)} sent!"
+      end
     end
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }

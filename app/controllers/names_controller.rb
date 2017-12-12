@@ -2,7 +2,6 @@ class NamesController < SearchableAuthorityController
 
   include LogActivity
   include MarkAsReviewed
-  #include ResetReviewedAfterUpdate
 
   include Revert
 

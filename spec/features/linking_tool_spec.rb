@@ -37,13 +37,12 @@ describe "Linking Tool", :js => true do
   end
 
   it "should load" do
-    entry = Entry.last
+    entry = Entry.last(2)[0]
 
     visit linking_tool_by_entry_path(id: entry.id)
-    expect(page).to have_content("Entry Queue for creating Links")
-    #expect(page).to have_content("Search for possible links")
-
-    expect(find_by_id("workspace").find("tbody").all("tr").length).to eq(1)
+    expect(page).to have_content("Click here for instructions")
+    expect(page).to have_content(Entry.last.source.title)
+    expect(all("#workspace tbody tr").count).to eq(1)
 
     expect(find_by_id("search_results").find("tbody").all("tr").length).to be > 0
   end
@@ -64,10 +63,11 @@ describe "Linking Tool", :js => true do
   it "should create a new Manuscript out of ONE entry" do
     count = Manuscript.count
 
-    entry = Entry.first
+    entry = Entry.first(2)[1]
     visit linking_tool_by_entry_path id: entry.id
-
-    click_button "Create Manuscript Record"
+    expect(page).to have_content("Click here for instructions")
+    expect(page).to have_content(Entry.last.source.title)
+    find('#persist-entries-manuscript-link').click
 
     expect(page).to have_content("Manage Manuscripts")    
     #expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
@@ -83,13 +83,13 @@ describe "Linking Tool", :js => true do
   it "should create a new Manuscript out of two entries" do
     count = Manuscript.count
 
-    entry = Entry.find(3)
+    entry = Entry.last(3)[0]
     visit linking_tool_by_entry_path id: entry.id
 
     second_entry_id = first(".add-entry-link", visible: true)["data-entry-id".to_sym].to_i
     first(".add-entry-link", visible: true).trigger('click')
 
-    click_button "Create Manuscript Record"
+    find('#persist-entries-manuscript-link').click
 
     expect(page).to have_content("Manage Manuscripts")    
     #expect(find(".modal-title", visible: true).text.include?("Success")).to be_truthy
@@ -107,13 +107,13 @@ describe "Linking Tool", :js => true do
     visit entry_manuscripts_path
 
     expect(page).to have_content(Manuscript.last.public_id)
-    expect(page).to have_content(Entry.find(3).public_id)
+    expect(page).to have_content(Entry.last(3)[0].public_id)
 
     expect(page).to have_content(EntryManuscript.last.id)
   end
 
   it "should link an Entry to an existing Manuscript" do
-    entry = Entry.find(2)
+    entry = Entry.find(3)
     visit linking_tool_by_entry_path id: entry.id
 
     expect(page).to have_content("Link to SDBM")

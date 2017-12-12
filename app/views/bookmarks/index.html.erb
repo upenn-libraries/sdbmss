@@ -73,12 +73,15 @@
                   </ul>
                 </div>
                 <div class="col-sm-5 text-right">
-                  <a ng-show="!bookmark.showAddTag" href="" class="btn btn-xs btn-default" ng-click="bookmark.showAddTag = !bookmark.showAddTag">
+                  <a ng-show="!bookmark.showAddTag" href="" class="btn btn-xs btn-default btn-add-tag" ng-click="bookmark.showAddTag = !bookmark.showAddTag">
                     <span class="glyphicon glyphicon-plus"></span> Add Tag
                   </a>
                   <div class="form-inline" style="position: absolute; right: 10px; top: -6px;">
                     <div class="input-group add-bookmark-tag" ng-show="bookmark.showAddTag">
-                      <input type='text' class='form-control' placeholder="New tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
+                      <div class="input-group-addon">
+                        <span class="text-muted">Tag:</span>
+                      </div>
+                      <input type='text' class='form-control new-bookmark-tag' placeholder="New tag..." ng-model="bookmark.newtag" ng-keyup="$event.keyCode == 13 && addtag(bookmark, bookmark.newtag)">
                       <div class="input-group-btn">
                         <a href="" class="btn btn-default add-bookmark-tag-confirm" ng-click="addtag(bookmark, bookmark.newtag)"><span class="glyphicon glyphicon-plus"></span> Add</a>
                         <a href="" class="btn btn-warning add-bookmark-tag-confirm" ng-click="bookmark.showAddTag = !bookmark.showAddTag">Cancel</a>                        

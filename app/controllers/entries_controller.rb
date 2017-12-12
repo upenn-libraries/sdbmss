@@ -164,6 +164,8 @@ class EntriesController < SearchableAuthorityController
   # since we return arrays instead of objects with more meaningful
   # keys.
 
+  # fix me 12-11-2017 - is this needed? I think not, since manage entries/linking tool don't use blacklight anymore...
+
   def render_search_results_as_json
     retval = {
       draw: params[:draw],
@@ -395,12 +397,12 @@ class EntriesController < SearchableAuthorityController
   # on param 'full'
   def similar
     s = Sunspot.more_like_this(@entry) do
-      fields :title_search, :place_search, :language_search, :artist_search, :scribe_search, :use_search, :binding_search, :folios_search
+      fields *similar_params.keys.map(&:to_sym)
       # without :id, [collect entry_ids from manuscript]
       #minimum_term_frequency 3
       boost_by_relevance true
       order_by :score, :desc
-      paginate :per_page => 10, :page => 1
+      paginate :per_page => params[:limit], :page => 1
     end
     respond_to do |format|
       format.json { render :json => s.results.map(&:id) }
@@ -562,6 +564,10 @@ class EntriesController < SearchableAuthorityController
   def set_entry
     @entry = Entry.find(params[:id])
     params[:id] = "Entry #{params[:id]}"
+  end
+
+  def similar_params
+    params.require(:fields).permit(*Entry.similar_fields)
   end
 
   def entry_params_for_create_and_edit(params)

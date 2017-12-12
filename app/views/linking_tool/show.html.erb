@@ -9,6 +9,15 @@
         line-height: 36px;
         margin: 0px 10px;
     }
+    .control-label input[type=checkbox] {
+        margin: 0px;
+    }
+    .control-label:hover {
+        opacity: 0.8;
+    }
+    input[type=checkbox]:checked + label {
+        background: #5cb85c !important;
+    }
   </style>
 <script type="text/javascript">
 var table;
@@ -612,12 +621,20 @@ $(document).ready(function() {
         $("#spinner").show();
         var url = '/entries/' + entryId + '/similar.json';
 
+        var fields = $.map($('.suggestion-field:checked'), function (e) { return e.value; });
+        var data = {fields: {}, limit: 50};
+        for (var i = 0; i < fields.length; i++) {
+            data.fields[fields[i]] = true;
+        }
+
         $.ajax({
             url: url,
             type: 'GET',
+            data: data,
             success: function(data, textStatus, jqXHR) {
                 potentialMatches = data;
                 resultsTable.reload();
+                $('#suggestions-modal').modal('hide')                
             },
             error: function(xhr) {
                 var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
@@ -648,8 +665,8 @@ $(document).ready(function() {
     });
     
     $("#linking-tool-heading-id").text(headingId);
-    $("#workspace-table-title").text(
-        mode == 'by_entry' ? "Entry Queue for creating Links" : "Entries for " + headingId);
+    /*$("#workspace-table-title").text(
+        mode == 'by_entry' ? "Entry Queue for creating Links" : "Entries for " + headingId);*/
     $("#persist-entries-manuscript-link").text(
         mode == 'by_entry' ? "Create Manuscript Record" : "Save changes");
 
@@ -674,7 +691,7 @@ $(document).ready(function() {
 
 <div class="row">
     <div class="col-sm-12">
-        <h4><a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#">Click here for instructions</a> on how to link entries to manuscript records</h4>
+        <p><a class="sdbmss-has-tooltip" data-tooltip-template="linking_tool_<%= @mode %>_instructions" href="#"><span class="glyphicon glyphicon-info-sign"></span> Click here for instructions</a> on how to link entries to manuscript records</p>
         <% if @mode == 'by_entry' %>
             <p>This page allows you to create a <b>manuscript record</b> from this entry by linking it to one or more existing entries citing the same manuscript, in order to track its transmission and location across time.  You may create a manuscript record with one entry if you cannot find other entries to link to a single entry.</p>
             <p>If a <b>manuscript record</b> already exists, you can simply link this entry to it. Use the search window below to find other possible links and enter them in the entry queue to help determine whether a link really exists.</p>
@@ -712,15 +729,17 @@ $(document).ready(function() {
 <% end %>
 <div id="linking-tool">
     <div class="row">
-        <div class='text-left col-sm-8' style="margin-bottom: 6px">
-            <span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>
-            <button id="persist-entries-manuscript-link" class="btn btn-primary btn-sm" style="margin-left: 40px"></button>
-            <span class="alert alert-success linking-tool-change-info" id="additions">0 added</span>
-            <span class="alert alert-danger linking-tool-change-info" id="deletes">0 deleted</span>
-            <span class="alert alert-info linking-tool-change-info" id="changes">0 changed</span>
+        <div class='text-left col-sm-8 form-inline' style="margin-bottom: 6px">
+            <!--<span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>-->
+            <div class="input-group">
+                <button id="persist-entries-manuscript-link" class="form-control"></button>
+                <span class="input-group-addon input-group-addon-success linking-tool-change-info" id="additions">0 added</span>
+                <span class="input-group-addon input-group-addon-danger linking-tool-change-info" id="deletes">0 deleted</span>
+                <span class="input-group-addon input-group-addon-info linking-tool-change-info" id="changes">0 changed</span>
+            </div>
         </div>
         <div class="col-sm-4 text-right">
-            <a id="show-matches" href="" class="btn btn-default"><span class="glyphicon gylphicon-question-sign"></span> Suggest Possible Links</a>
+            <a class='btn btn-default' href="" data-toggle="modal" data-target="#suggestions-modal"><span class="glyphicon glyphicon-question-sign"></span> Find Suggested Links</a>
         </div>
     </div>
 
@@ -759,3 +778,36 @@ $(document).ready(function() {
     </table>
 </div>
 <span id="spinner-src" src="<%= asset_path "spinner.gif" %>" style="display: none;"></span>
+<div class="modal fade" id="suggestions-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title h3 text-center">Find Suggested Links</div>
+                <button type="button" class="close" data-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p class="text-muted text-center">Select the fields that you wish to consider when searching for similar record.</p>
+                    </div>
+                    <div class="col-xs-12 form-inline text-center">
+                        <ul class="list-inline">
+                        <% Entry.similar_fields.each_with_index do |field, index| %>
+                            <li>
+                                <input id="suggestion-field-<%= field %>" type="checkbox" value="<%= field %>" class="form-control suggestion-field">
+                                    <label for="suggestion-field-<%= field %>" class="control-label label label-default">
+                                        <%= field.to_s.gsub("_search", "").humanize %>
+                                    </label>
+                                </input>
+                            </li>
+                        <% end %>
+                        </ul>
+                    </div>                   
+                    <div class="col-xs-12 text-center">
+                        <input type="submit" class="form-control" id="show-matches" value="Get Suggestions!"></input>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

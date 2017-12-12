@@ -5,6 +5,8 @@ class SourcesController < SearchableAuthorityController
   include MarkAsReviewed
   include LogActivity
 
+  include Revert
+
   wrap_parameters include: Source.attribute_names - ['created_at', 'created_by', 'updated_at', 'updated_by'] + ['source_agents']
 
   before_action :set_source, only: [:show, :edit, :update, :destroy, :update_status]
@@ -15,71 +17,12 @@ class SourcesController < SearchableAuthorityController
 
   load_and_authorize_resource :only => [:edit, :update, :destroy, :merge]
 
-  # fix me: delete this?
-  DEFAULT_SEARCH_FIELD_HANDLER = Proc.new { |fieldname, params, query|
-    query.where("#{fieldname} like ?", "%#{params[fieldname]}%")
-  }
-  SEARCH_FIELDS = [
-    ["title", "Title", DEFAULT_SEARCH_FIELD_HANDLER ],
-    ["date", "Date", Proc.new { |fieldname, params, query|
-       query.where("#{fieldname} like ?", "%#{params[fieldname].gsub('-', '').gsub('/', '')}%")
-     }
-    ],
-    ["selling_agent", "Selling Agent", Proc.new { |fieldname, params, query|
-       query.joins(source_agents: [ :agent ] ).where("source_agents.role = \"#{SourceAgent::ROLE_SELLING_AGENT}\" AND names.name like ?", "%#{params[fieldname]}%")
-     }
-    ],
-    ["institution", "Institution", Proc.new { |fieldname, params, query|
-       query.joins(source_agents: [ :agent ] ).where("source_agents.role = \"#{SourceAgent::ROLE_INSTITUTION}\" AND names.name like ?", "%#{params[fieldname]}%")
-     }
-    ],
-    ["author", "Author", DEFAULT_SEARCH_FIELD_HANDLER ],
-  ]
-
-  # (not this)
-  def search_fields
-    @filters = ["id", "location", "agent_id"]
-    @fields = ["title", "date", "agent_name", "author", "created_by", "updated_by", "source_type"]
-    @dates = ["created_at", "updated_at"]
-    @fields + @filters + @dates
-  end
-
-  # return just the query strings which are combined in an array, then joined with either AND or OR to create one final query - but will it work with the unique cases above?
-
-  # fix me: deleete this?
-  A_DEFAULT_SEARCH_HANDLER = lambda { |fieldname, params, query| 
-    return "#{fieldname} like '%#{params[fieldname]}%'"
-  }
-
-  A_SEARCH_FIELDS = [
-    ["title", "Title", A_DEFAULT_SEARCH_HANDLER ],
-    ["date", "Date", lambda { |fieldname, params, query| 
-        return "#{fieldname} like '%#{params[fieldname].gsub('-', '').gsub('/', '')}%'"
-      }
-    ],
-    ["author", "Author", A_DEFAULT_SEARCH_HANDLER],
-    ["selling_agent", "Selling Agent", lambda { |fieldname, params, query| 
-        return "source_agents.role = \"#{SourceAgent::ROLE_SELLING_AGENT}\" AND names.name like '%#{params[fieldname]}%'"
-      },
-      lambda { |query|  return query.joins(source_agents: [ :agent] ) }
-    ],
-    ["institution", "Institution", lambda { |fieldname, params, query| 
-        return "source_agents.role = \"#{SourceAgent::ROLE_INSTITUTION}\" AND names.name like '%#{params[fieldname]}%'"
-      },
-      lambda { |query|  return query.joins(source_agents: [ :agent] ) }
-    ]
-  ]
-
   def new
     @source = Source.new
     respond_to do |format|
       format.html { render "edit" }
     end
   end
-
-#  def index
-#    @search_fields = SEARCH_FIELDS
-#  end
 
   # various date separators (hyphenated!)
   def search
@@ -173,9 +116,8 @@ class SourcesController < SearchableAuthorityController
     end
   end
 
-  # TODO: this is kinda slow and needs to be optimized
+  # used for merge suggestions
   def similar
-    puts "is this used anywhere?"
     get_similar
 
     respond_to do |format|
@@ -187,65 +129,7 @@ class SourcesController < SearchableAuthorityController
     Source
   end
 
-  def search_name_field
-    "title"
-  end
-
-  def search_exact_enabled
-    false
-  end
-
-  def search_query_base
-    search_model_class.all.includes([:created_by])
-  end
-
-  def search_query
-    query = super
-
-    if params["from"] && params["to"]
-      # handle range of IDs for a 'Jump To' search
-      query = query.where("id >= ? and id <= ?", params["from"], params["to"])
-    elsif params["agent"]
-      # handle queries for either Institution or Selling Agent (this
-      # happens from the Add New Entry workflow)
-      query = query.joins(source_agents: [ :agent ] ).where('names.name like ?', "%#{params["agent"]}%")
-    end
-    
-    queries = []
-
-    j = params['op'] && params['op'] == 'OR' ? " OR " : " AND "
-    # always process these fields (used on both Add New Entry workflow and
-    # Manage Sources screen)
-    A_SEARCH_FIELDS.each do |field|
-      fieldname = field[0]
-      handler = field[2]
-      # modified to handle multiple field names, again, as in advanced search
-      if params[fieldname].present?
-        if field[3]
-          query = field[3].call(query)
-        end
-        if params[fieldname].kind_of? Array
-          params[fieldname].each do |q|
-            p = params.dup
-            p[fieldname] = q
-            queries += [handler.call(fieldname, p, query)]
-          end
-        else
-          queries  += [handler.call(fieldname, params, query)]
-        end
-      end
-    end
-    query.where(queries.join(j)).with_associations
-#    query.with_associations
-  end
-
-  def search_results_order
-    if params["order"]
-      return [ search_model_class.to_s.underscore.pluralize + "." + params["order"] ]
-    else
-      return ["date desc", "title"]
-    end
-  end
+  # fix me: 12-07-17 remove update_status, and related code in sdbmApp.js and entries/edit.html.erb
 
   # change the status of a Source
   def update_status
@@ -274,6 +158,11 @@ class SourcesController < SearchableAuthorityController
         end
       }
     end
+  end
+
+  # used in merge, public_view (i.e. a way of standardizing 'name', 'title', etc. I guess...)
+  def search_name_field
+    "title"
   end
 
   # returns JSON containing type constants

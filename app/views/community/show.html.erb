@@ -44,41 +44,43 @@
                 .padding(1.5);
         
             function doChart (svg, mydata) {
-                var root = d3.hierarchy({children: mydata})
-                  .sum(function(d) { return d.value; })
-                  
-                var node = svg.selectAll(".node")
-                .data(pack(root).leaves())
-                .enter().append("g")
-                .attr("class", "node")
-                .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+                if (mydata.length > 0) {
+                    var root = d3.hierarchy({children: mydata})
+                      .sum(function(d) { return d.value; })                
 
-                node.append("circle")
-                .attr("id", function(d) { return d.data.id; })
-                .attr("r", function(d) { return d.r; })
-                .style("fill", function(d) { console.log(d, d.color, d.data.color); return d.data.color; });
+                    var node = svg.selectAll(".node")
+                    .data(pack(root).leaves())
+                    .enter().append("g")
+                    .attr("class", "node")
+                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
-                node.append("clipPath")
-                .attr("id", function(d) { return "clip-" + d.data.id; })
-                .append("use")
-                .attr("xlink:href", function(d) { return "#" + d.data.id; });
+                    node.append("circle")
+                    .attr("id", function(d) { return d.data.id; })
+                    .attr("r", function(d) { return d.r; })
+                    .style("fill", function(d) { return d.data.color; });
 
-                node.append("text")
-                .attr("clip-path", function(d) { return "url(#clip-" + d.data.id + ")"; })
-                .selectAll("a")
-                .data(function(d) { return d.data.id.split(/(?=[A-Z][^A-Z])/g); })
-                .enter().append("a")
-                .attr("xlink:href", function (d) { return "/profiles/"+ d; })
-                .attr("target", "_blank")
-                .attr("x", 0)
-                .attr("y", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
-                .text(function(d) { return d; });
+                    node.append("clipPath")
+                    .attr("id", function(d) { return "clip-" + d.data.id; })
+                    .append("use")
+                    .attr("xlink:href", function(d) { return "#" + d.data.id; });
 
-                node.append("title")
-                  .text(function(d) { return d.data.id + "\n" + format(d.data.value); });
-                
-                $(".loading").fadeOut();                
-                $("#community-search .form-control").attr("disabled", false);
+                    node.append("text")
+                    .attr("clip-path", function(d) { return "url(#clip-" + d.data.id + ")"; })
+                    .selectAll("a")
+                    .data(function(d) { return d.data.id.split(/(?=[A-Z][^A-Z])/g); })
+                    .enter().append("a")
+                    .attr("xlink:href", function (d) { return "/profiles/"+ d; })
+                    .attr("target", "_blank")
+                    .attr("x", 0)
+                    .attr("y", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
+                    .text(function(d) { return d; });
+
+                    node.append("title")
+                      .text(function(d) { return d.data.id + "\n" + format(d.data.value); });
+                    
+                    $(".loading").fadeOut();                
+                    $("#community-search .form-control").attr("disabled", false);
+                }
             }
 
             var entry_colors = {
@@ -101,6 +103,7 @@
 
                 doChart(svg1, entries.map(function (e) { return {value: e[1], id: e[0], color: entry_colors[e[2]]}; }));
                 doChart(svg2, activity.map(function (e) { return {value: e[1], id: e[0], color: activity_colors[e[2]]}; }));
+                $("#done").html("Thank you for supporting the SDBM community!")
             });
 
         }
@@ -110,6 +113,7 @@
             loadCharts();
 
             $("#submit").click(function (e) {
+                $("#done").html("");
                 loadCharts();
             });
         });
@@ -151,7 +155,6 @@
     </div>
 </div>
 
-<!--<div id="series_chart_div" style="width: 800px; height: 360px; margin: auto;"></div>-->
 <div class="row">
     <div class="loading"><img src="<%= asset_path "spinner.gif" %>" alt=""> loading...</div>
     <div class="col-sm-6" id="body1">
@@ -160,31 +163,7 @@
     <div class="col-sm-6" id="body2">
         <h3 class="text-muted text-center">Changes Made</h3>  
     </div>
+    <div class="col-sm-12 text-center text-muted" id="done">
+        
+    </div>
 </div>
-<!--
-<h2 class='text-center'>Database Statistics</h2>
-
-<p><%# number_with_delimiter(Entry.count) %> entries</p>
-<p><%# number_with_delimiter(Provenance.count) %> records of provenance information</p>
-<p><%# number_with_delimiter(Source.count) %> sources</p>
-<p><%# number_with_delimiter(User.count) %> users</p>
-    
-<h2 class='text-center'>User Community</h2>
-
-<table class="table table-compressed">
-    <thead>
-        <tr>
-            <th>Username</th>
-            <th># Entries Contributed</th>
-        </tr>
-    </thead>
-    <tbody>
-        <%# User.statistics.sort { |a,b| a[:num_entries] <=> b[:num_entries] }.reverse.each do |record| %>
-            <tr>
-                <td><a href="<%# profile_path(record[:username]) %>"><%# record[:username] %></a></td>
-                <td><%# record[:num_entries] %></td>
-            </tr>
-        <%# end %>
-    </tbody>
-</table>
--->

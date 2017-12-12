@@ -27,7 +27,8 @@ class EntryArtist < ActiveRecord::Base
     ["Coll", "Collaborators"],
     ["Mast", "Master"],
     ["Assi", "Assistant"],
-    ["Rela", "Related"]
+    ["Rela", "Related"],
+    ["Attr", "Attributed"]
   ]
 
   belongs_to :entry
@@ -70,11 +71,4 @@ class EntryArtist < ActiveRecord::Base
     (artist ? artist.name : "") + certainty_flags
   end
 
-  def to_fields
-    {name: artist ? artist.name : nil, observed_name: observed_name}
-  end
-
-  def name_authority
-    (artist ? "<a href='/names/#{artist_id}'>#{artist}</a> " : "")
-  end
 end

@@ -34,7 +34,7 @@
       <%= select_tag "field", options_for_select({"Name" => "name","Date" => "dates","Place" => "place"}, params[:field]), class: "form-control" %>
       <%= text_field_tag :term, params[:term], class: "form-control" %>
       <div class="input-group">
-        <%= submit_tag "Search", :name => nil, class: "form-control" %>
+        <%= submit_tag "Search", :name => nil, class: "form-control", id: "search-dericci" %>
         <div class="input-group-btn">
           <%= link_to "Clear", dericci_records_path, class: "btn btn-warning" %>
         </div>

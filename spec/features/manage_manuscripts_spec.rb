@@ -21,4 +21,19 @@ describe "Manage manuscripts", :js => true do
     expect(page).to have_content("Manage Manuscript Records")
   end
 
+  it "should load public view" do
+    visit manuscript_path(Manuscript.last)
+    expect(page).to have_content(Manuscript.last.public_id)
+    Manuscript.last.entries.each do |entry|
+      expect(page).to have_content(entry.public_id)
+    end
+
+    visit table_manuscript_path(Manuscript.last)
+    expect(page).to have_content(Manuscript.last.public_id)
+    Manuscript.last.entries.each do |entry|
+      expect(page).to have_content(entry.public_id)
+    end
+
+  end
+
 end

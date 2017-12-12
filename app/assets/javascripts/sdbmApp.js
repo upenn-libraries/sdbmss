@@ -384,6 +384,7 @@ var BOOKMARK_SCOPE;
     sdbmApp.controller("DericciGameCtrl", function ($scope, $http, $modal, $sce) {
       EntryScope = $scope;
       $scope.records = [];
+      $scope.indicator = "We hope you are enjoying the De Ricci Game!";
 
       // the current position in the list, and the URL of the PDF to display
       $scope.current_record = undefined;
@@ -457,6 +458,8 @@ var BOOKMARK_SCOPE;
       // open name select modal
       $scope.findName = function (model) {
         $scope.name = {};
+
+        $scope.indicator = "";
         //$scope.selectRecord(model);
         $scope.modal = $modal.open({
           templateUrl: "selectNameAuthority.html",
@@ -471,7 +474,8 @@ var BOOKMARK_SCOPE;
           size: 'lg'
         });
         $scope.modal.result.then( function (results) {
-          model.skipped = false;
+          model.skipped = false;          
+          $scope.indicator = "We hope you are enjoying the De Ricci Game!";
           if ($scope.current_record.dericci_links.filter(function (dl) { return dl.name_id == $scope.name.id; }).length <= 0) {
             for (var i = 0; i < $scope.current_record.dericci_links.length; i++) {
               $scope.removeLink($scope.current_record, $scope.current_record.dericci_links[i]);
@@ -484,6 +488,8 @@ var BOOKMARK_SCOPE;
           } else {
             alert("You have already selected that name!");
           }
+        }, function () {
+          $scope.indicator = "We hope you are enjoying the De Ricci Game!";
         });
       };
       // helper methods for determining status
@@ -1203,21 +1209,6 @@ var BOOKMARK_SCOPE;
           //model['observed_name'] = null;
         }
 
-        // affixes the association name and 'add' button to side, so that it is in view when list is long
-        // fix me: no longer used
-        $scope.affixer = function () {
-          $('.side-title').each( function () {
-            // ignore this if the list is short: temp fix?
-            if ( $(this).closest('.row').height() < $(window).height() - 500) return;
-            else if ( $(window).height() < 600) return;
-
-            var top = $(this).closest('.row').offset().top;
-            var bottom = $(document).height() - (top + $(this).closest('.row').height());
-            $(this).affix({offset: {top: top, bottom: bottom} }); //Try it
-            $(this).data('bs.affix').options.offset = {top: top, bottom: bottom};
-          });
-        };
-
         $scope.sortableOptions = {
           axis: 'y',
           placeholder: "input-block-placeholder",
@@ -1428,7 +1419,7 @@ var BOOKMARK_SCOPE;
             anArray[i].order = i;
           }
           setTimeout( function () {
-            $scope.affixer();
+            //$scope.affixer();
           }, 2000);
         };
 
@@ -3503,17 +3494,15 @@ var BOOKMARK_SCOPE;
 
     $scope.removeBookmark = function (name, bookmark) {
       var i = $scope.all_bookmarks[name].indexOf(bookmark);
-      if (i >= 0) {
-        $.ajax({url: '/bookmarks/' + bookmark.id, method: 'delete'}).done( function (e) {
-          $scope.all_bookmarks[name].splice(i, 1);
-          var id = bookmark.document_id, type = bookmark.document_type;
-          $scope.$apply();        
-          $scope.searchTag($scope.tagSearch);
-          addNotification(type + ' ' + id + ' un-bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
-        }).error( function (e) {
-          console.log('error', e);
-        });
-      }
+      $.ajax({url: '/bookmarks/delete_all?ids[]=' + bookmark.id, method: 'delete' }).done( function (e) {
+        $scope.all_bookmarks[name].splice(i, 1);
+        var id = bookmark.document_id, type = bookmark.document_type;
+        $scope.$apply();        
+        $scope.searchTag($scope.tagSearch);
+        addNotification(type + ' ' + id + ' un-bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
+      }).error( function (e) {
+        console.log('error', e);
+      });
     }
 
     $scope.addBookmark = function (id, type) {

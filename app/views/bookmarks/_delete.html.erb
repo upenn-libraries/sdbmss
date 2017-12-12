@@ -1,3 +1,3 @@
-<%= link_to(clear_bookmarks_path(ids: [bookmark.id]), :method => :delete, remote: true, class: "bookmark", id: "Bookmark_#{bookmark.document_type}_#{bookmark.document_id}") do %>
-  <span class="glyphicon glyphicon-bookmark"></span> <span class="bookmark-text">Bookmark</span>
+<%= link_to(delete_all_bookmarks_path(ids: [bookmark.id]), :method => :delete, remote: true, class: "bookmark-delete bookmark Bookmark_#{bookmark.document_type}_#{bookmark.document_id}") do %>
+  <span class="glyphicon glyphicon-bookmark"></span> <span class="bookmark-text">Bookmarked</span>
 <% end %>

@@ -654,16 +654,13 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:string, :sale_seller, :stored => true, :multiple => true) do
-#      get_sale ? get_sale.get_sellers_or_holders.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
       (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "seller_or_holder" }.select(&:facet_value).map(&:facet_value) : []
     end
     define_field(:text, :sale_seller_search, :stored => true) do
-#      get_sale_sellers_or_holders_names
       (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "seller_or_holder" }.map(&:display_value).join("; ") : ""
     end
 
     define_field(:string, :sale_buyer, :stored => true, :multiple => true) do
-#      get_sale ? get_sale.get_buyers.map{ |sa| sa.agent ? sa.agent.name : ""} : [] #fix me -> change to multiple field, map name from selling agent
       (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "buyer" }.select(&:facet_value).map(&:facet_value) : []
     end
 
@@ -981,10 +978,9 @@ class Entry < ActiveRecord::Base
     path = "/tmp/#{id}_#{user}_#{filename}"
     headers = nil
     loop do
-      s = do_search(params.merge({:limit => 300, :offset => offset})) # fix me: add 'order' param if sorting not working properly?
+      s = do_search(params.merge({:limit => 300, :offset => offset})) # 12-06-17 fix me: add 'order' param if sorting not working properly?
       offset += 300
       ids = s.results.map(&:id)
-      #objects = objects + Entry.includes(:sales, :entry_authors, :entry_titles, :entry_dates, :entry_artists, :entry_scribes, :entry_languages, :entry_places, :provenance, :entry_uses, :entry_materials, :entry_manuscripts, :source).includes(:authors, :artists, :scribes, :manuscripts, :languages, :places).where(id: ids).map { |e| e.as_flat_hash }
       objects = Entry.with_associations.where(id: ids).map { |e| e.as_flat_hash({options: {csv: true}}) }
       break if objects.first.nil?
       csv_file = CSV.open(path, "ab") do |csv|
@@ -1069,6 +1065,10 @@ class Entry < ActiveRecord::Base
 
   def self.search_fields
     super - ["Deprecated", "deprecated"] - ["Draft", "draft"]
+  end
+
+  def self.similar_fields
+    [:title_search, :place_search, :language_search, :artist_search, :scribe_search, :use_search, :binding_search, :folios_search, :author_search, :manuscript_date_search, :material_search]
   end
 
   def create_activity(action_name, current_user, transaction_id)

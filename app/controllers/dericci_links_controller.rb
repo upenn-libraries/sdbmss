@@ -1,3 +1,5 @@
+# used only for confirming (adding a new link) or removing links made during a game session
+
 class DericciLinksController < ApplicationController
 
   load_and_authorize_resource :only => [:create, :destroy]

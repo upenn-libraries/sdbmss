@@ -40,7 +40,7 @@
               Unknown
             <% end %>
 
-            <span data-toggle='collapse' href='#activity_<%= date %>_<%= user_id %>'>modified <%= "#{details.count} record".pluralize(details.count) %> <span class="caret"></span>
+            <span data-toggle='collapse' href='#activity_<%= date %>_<%= user_id %>'>modified <%= "#{details.group_by{ |d| d[:version].transaction_id }.count} record".pluralize(details.group_by{ |d| d[:version].transaction_id }.count) %> <span class="caret"></span>
           </span>
         </h5>
         

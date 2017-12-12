@@ -4,67 +4,6 @@ require "rails_helper"
 
 describe "Paper trail", :js => true do
 
-  # Fill an autocomplete field using value in :with option. If a
-  # block is given, yields to it to allow for selection.
-  def fill_autocomplete(field, options = {})
-    # adapted from http://ruby-journal.com/how-to-do-jqueryui-autocomplete-with-capybara-2/
-
-    # This version here works with the autocomplete in jQuery UI
-    # 1.11.2. WARNING: This code is very fragile! We have to simulate
-    # interaction with DOM EXACTLY.
-
-    page.execute_script %Q{ $('##{field}').trigger('focus') }
-
-    # clear the field first
-    fill_in field, :with => ""
-
-    # capybara's fill_in doesn't trigger the DOM events autocomplete
-    # listens for; use send_keys instead
-    find_by_id(field).native.send_keys(options[:with])
-
-    # wait for an autocomplete UL element to appear
-    find('ul.ui-autocomplete', visible: true)
-
-    # yield to block to handle the selection
-    if block_given?
-      yield field, options
-    end
-  end
-
-  # Specialized case of #fill_autocomplete for inputs that show a
-  # modal popup for creating new entities. This selects the value
-  # given in :with option if it's available, otherwise creates it in
-  # the modal popup that should appear.
-  def fill_autocomplete_select_or_create_entity(field, options = {})
-    value = options[:with]
-
-    fill_autocomplete(field, options) do
-      found_value = nil
-      all("ul.ui-autocomplete li.ui-menu-item", visible: true).each do |li|
-        if li.text == value || li.text == value + " (unreviewed)"
-          found_value = li.text
-        end
-      end
-      if found_value.present?
-        value_escaped = found_value.gsub("'", "\\\\'")
-        selector = %Q{ul.ui-autocomplete:visible li.ui-menu-item:contains("#{value_escaped}")}
-      else
-        # select the 1st option, which should pop up the modal to create an entity
-        selector = %Q{ul.ui-autocomplete:visible li.ui-menu-item:eq(0)}
-      end
-      page.execute_script %Q{ $('#{selector}').click() }
-
-      if !found_value.present?
-        expect(find(".modal-title", visible: true).text.include?("Create")).to be_truthy
-        click_button('Create')
-        sleep(0.75)
-        # this next line should be used instead of a sleep, but doesn't work for some reason
-        # expect(page).to have_no_selector(".modal-title", visible: true)
-      end
-    end
-    #page.save_screenshot("screenshot_#{field}.png")
-  end
-
   # clicks the certainty flag icon to toggle it to its next state.
   # Since clicking also brings up the mouseover tooltip, which
   # overlaps over DOM elements and can interfere with subsequent
@@ -74,8 +13,8 @@ describe "Paper trail", :js => true do
     find_by_id(field).click
     # hover over something else--the navbar element here is just
     # arbitrary
-    first('#header-navbar').hover
-    sleep(2)
+    #first('#header-navbar').hover
+    #sleep(2)
   end
 
 

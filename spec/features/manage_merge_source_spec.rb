@@ -51,7 +51,8 @@ describe "Manage Merging Sources", :js => true do
     fill_in 'folios', with: '7'
     first(".save-button").click
     
-    sleep 1.1
+    expect(page).to have_content('Warning: This entry has not been approved yet. The data may be incorrect or unreliable, or may not conform to the general data standards.')
+    #sleep 1.1
 
     visit new_entry_path :source_id => @source2.id
 
@@ -59,7 +60,7 @@ describe "Manage Merging Sources", :js => true do
     fill_in 'title_0', with: 'Test Title'
     first(".save-button").click
 
-    sleep 1.1
+    expect(page).to have_content('Warning: This entry has not been approved yet. The data may be incorrect or unreliable, or may not conform to the general data standards.')
 
     expect(Entry.count).to eq(ct + 2)
   end
@@ -70,9 +71,17 @@ describe "Manage Merging Sources", :js => true do
     c1 = Entry.where(source_id: @source.id).count
     c2 = Entry.where(source_id: @source2.id).count
 
-    @source.merge_into(@source2)
+    visit merge_source_path(@source)
 
-    expect(@source.deleted).to be_truthy
+    fill_in 'target_id', with: @source2.id
+    click_button 'select-specific'
+
+    expect(page).to have_content("Merge #{@source.public_id}")
+    expect(page).to have_content("#{@source2.public_id}")
+
+    click_button("Yes")
+    
+    expect(page).to have_content("#{@source.public_id} has been successfully merged into #{@source2.public_id}")
 
     @source2.index!
     @source2.entries.each do |e|
@@ -82,10 +91,10 @@ describe "Manage Merging Sources", :js => true do
     @source2 = Source.find(@source2.id)
 
     # counters don't work in specs?
-    #expect(@source2.entries_count).to eq(Entry.where(source_id: @source2.id).count)
 
     visit source_path(@source2)
     expect(page).to have_content(@source2.public_id)
+    expect(@source2.entries_count).to eq(Entry.where(source_id: @source2.id).count)
   end
 
 end

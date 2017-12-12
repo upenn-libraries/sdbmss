@@ -44,12 +44,4 @@ class EntryAuthor < ActiveRecord::Base
     author ? author.name : nil
   end  
 
-  def to_fields
-    {name: author ? author.name : nil, observed_name: observed_name}
-  end
-
-  def name_authority
-    (author ? "<a href='/names/#{author_id}'>#{author}</a> " : "")
-  end
-
 end
