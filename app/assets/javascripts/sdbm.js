@@ -82,6 +82,7 @@ $(document).ready(bindRemoteAjaxCallback);
 
 // 12-06-17 fix me: make consistent between ratings, bookmarks, watch, etc.
 function bindRemoteAjaxCallback (){
+  //selector = selector === undefined ? 
   $('a[data-remote]').on('ajax:success', function (event, xhr, status, result) {
       //console.log('result.responseJSON', result.responseJSON);
       var errors = [];
@@ -100,6 +101,7 @@ function bindRemoteAjaxCallback (){
           console.log("ERRORS: ", errors);        
         }
       }
+      $('a[data-remote]').unbind('ajax:success');
       bindRemoteAjaxCallback();
   });
 
