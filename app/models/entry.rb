@@ -607,10 +607,10 @@ class Entry < ActiveRecord::Base
       source.display_value
     end
     define_field(:text, :source_agent, :stored => true) do
-      (source.source_agents.map { |s| s.agent.name }).join("; ")
+      source.source_agents.map(&:facet_value).join("; ")
     end
     define_field(:string, :source_agent_sort, :stored => true) do
-      (source.source_agents.map { |s| s.agent.name }).join("; ")
+      source.source_agents.map(&:facet_value).join("; ")
     end
     define_field(:string, :source_type, :stored => true) do
       source.source_type.display_name

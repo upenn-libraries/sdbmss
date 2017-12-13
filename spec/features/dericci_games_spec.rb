@@ -62,7 +62,7 @@ describe "De Ricci Game", :js => true do
   it "should require the user to be logged in" do
     page.reset!
     visit dericci_games_path
-    expect(page).to have_content("Welcome to the De Ricci Digitized Archive Name Game! You must create an account or log in to play....")
+    expect(page).to have_content("Welcome to the De Ricci Digitized Archive Name Game! You must create an account or log in to play")
   end
 
 end

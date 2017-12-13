@@ -47,6 +47,10 @@ class SourceAgent < ActiveRecord::Base
     self.class.valid_roles_for_source_type(source.source_type.name)
   end
 
+  def facet_value
+    agent ? agent.name : nil
+  end  
+
   private
 
   def validate_role
