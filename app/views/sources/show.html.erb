@@ -1,5 +1,10 @@
 <% content_for :control_tools do %>
     <%= render partial: "tools", locals: {source: @source, edit: false} %>
+    <li>
+        <%= link_to history_source_path(@source) do %>
+            <span class="glyphicon glyphicon-list-alt"></span> View change history
+        <% end %>
+    </li>
     <li class="divider"></li>
     <% if !["provenance_observation", "observation"].include?(@model.source_type.name) || @model.created_by == current_user %>
     <li>
