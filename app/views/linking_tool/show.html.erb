@@ -21,6 +21,7 @@
   </style>
 <script type="text/javascript">
 var table;
+var bookmarked_entries;
 function setOptions (p) {
     var t = p.find("select[name=search_field]");
     var updateOptions = function (e) {
@@ -683,8 +684,13 @@ $(document).ready(function() {
             url: '/bookmarks/reload.json?details=true',
             type: 'GET',
             success: function (data, textStatus, jqXHR) {
-                potentialMatches = data.bookmarks.Entry.map(function (e) { return e.document_id; });
-                resultsTable.reload();
+                bookmarked_entries = data.bookmarks.Entry;
+                var tags = jQuery.unique(bookmarked_entries.map(function (e) { return e.tags; }).reduce(function (a, b) { return a.concat(b); }, []));
+                $('.tag-option').remove();
+                for (var i = 0; i < tags.length; i++) {
+                    $("#bookmark-tag").append("<option class='tag-option' value='" + tags[i] + "'>" + tags[i] + "</tag>");                    
+                }
+                $("#load-bookmarks-modal").modal();                
             },
             error: function (xhr) {
                 var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
@@ -694,6 +700,25 @@ $(document).ready(function() {
                 $("#spinner").hide();
             }
         });
+    });
+
+    $("#load-bookmarks-into-table").click(function (e) {
+        if (bookmarked_entries === undefined) {
+            console.warn("Bookmarked Entries have not been loaded!");
+            return;
+        } else {
+            var tag = $("#bookmark-tag").val();
+            if (tag === "All Bookmarks") {
+                potentialMatches = bookmarked_entries.map(function (e) { return e.document_id; });
+                resultsTable.reload();
+                $("#load-bookmarks-modal").modal();
+            } else {
+                potentialMatches = bookmarked_entries.filter(function (e) { return e.tags.indexOf(tag) !== -1; }).map(function (e) { return e.document_id; });
+                resultsTable.reload();
+                $("#load-bookmarks-modal").modal();
+            }
+        }
+        resultsTable.reload();
     });
 
     $(window).bind('beforeunload', function() {
@@ -828,6 +853,32 @@ $(document).ready(function() {
                     </div>                   
                     <div class="col-xs-12 text-center">
                         <input type="submit" class="form-control" id="show-matches" value="Get Suggestions!"></input>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="load-bookmarks-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title h3 text-center">Load Bookmarked Entries To Table</div>
+                <button type="button" class="close" data-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <p class="text-muted text-center">Optional: Select a tag to limit the results:</p>
+                    </div>
+                    <div class="col-xs-12 text-center form-inline">
+                        <span class='control-label'>Tag: </span>
+                        <div class="input-group">
+                            <select name="" id="bookmark-tag" class='form-control'>
+                                <option value="All Bookmarks">All Bookmarks</option>
+                            </select>
+                            <input type="submit" class="form-control" id="load-bookmarks-into-table" value="Load Bookmarks"></input>
+                        </div>
                     </div>
                 </div>
             </div>
