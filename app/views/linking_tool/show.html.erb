@@ -412,7 +412,7 @@ $(document).ready(function() {
             if (!potentialMatches) {                
                 params["linking_tool"] = true;
             } else {
-                params = {entry_id: potentialMatches, op: "OR"};
+                params = {entry_id: potentialMatches, op: "OR", order: params.order, limit: params.limit, offset: params.offset};
             }
             
             sdbmTable.searchAndUpdateTable(params, callback, {
@@ -678,6 +678,24 @@ $(document).ready(function() {
         });
     });
 
+    $("#load-bookmarks").click(function (e) {
+        $.ajax({
+            url: '/bookmarks/reload.json?details=true',
+            type: 'GET',
+            success: function (data, textStatus, jqXHR) {
+                potentialMatches = data.bookmarks.Entry.map(function (e) { return e.document_id; });
+                resultsTable.reload();
+            },
+            error: function (xhr) {
+                var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
+                SDBM.showErrorModal("#modal", error);                
+            },
+            complete: function () {
+                $("#spinner").hide();
+            }
+        });
+    });
+
     $(window).bind('beforeunload', function() {
         if (unsavedChanges) {
             return "You have unsaved changes";
@@ -729,7 +747,7 @@ $(document).ready(function() {
 <% end %>
 <div id="linking-tool">
     <div class="row">
-        <div class='text-left col-sm-8 form-inline' style="margin-bottom: 6px">
+        <div class='text-left col-sm-6 form-inline' style="margin-bottom: 6px">
             <!--<span style="font-size: 14px; font-weight: bold;"><span id="workspace-table-title"></span></span>-->
             <div class="input-group">
                 <button id="persist-entries-manuscript-link" class="form-control"></button>
@@ -738,8 +756,13 @@ $(document).ready(function() {
                 <span class="input-group-addon input-group-addon-info linking-tool-change-info" id="changes">0 changed</span>
             </div>
         </div>
-        <div class="col-sm-4 text-right">
-            <a class='btn btn-default' href="" data-toggle="modal" data-target="#suggestions-modal"><span class="glyphicon glyphicon-question-sign"></span> Find Suggested Links</a>
+        <div class="col-sm-6 text-right">
+            <div class="btn-group">
+                <a href="" class="btn btn-default" id="load-bookmarks">
+                    <span class="glyphicon glyphicon-bookmark"></span> Load Bookmarks
+                </a>
+                <a class='btn btn-default' href="" data-toggle="modal" data-target="#suggestions-modal"><span class="glyphicon glyphicon-question-sign"></span> Find Suggested Links</a>
+            </div>
         </div>
     </div>
 
