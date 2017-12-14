@@ -51,7 +51,7 @@ class PlacesController < SearchableAuthorityController
   end
 
   def model_params
-    params.require(:place).permit(:name, :reviewed, :problem, :latitude, :longitude, :authority_source, :authority_id, :parent_id)
+    params.require(:place).permit(:name, :reviewed, :problem, :latitude, :longitude, :authority_source, :authority_id, :parent_id, :evidence)
   end
 
 end

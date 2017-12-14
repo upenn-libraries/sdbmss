@@ -23,29 +23,29 @@
       var feature;
 
       projection = d3.geo.azimuthal()
-          .scale(380)
+          .scale(300)
           .origin([-71.03,42.37])
           .mode("orthographic")
-          .translate([400, 400]);
+          .translate([320, 320]);
 
       circle = d3.geo.greatCircle()
           .origin(projection.origin());
 
       // TODO fix d3.geo.azimuthal to be consistent with scale
       var scale = {
-        orthographic: 380,
-        stereographic: 380,
-        gnomonic: 380,
-        equidistant: 380 / Math.PI * 2,
-        equalarea: 380 / Math.SQRT2
+        orthographic: 300,
+        stereographic: 300,
+        gnomonic: 300,
+        equidistant: 300 / Math.PI * 2,
+        equalarea: 300 / Math.SQRT2
       };
 
       var path = d3.geo.path()
           .projection(projection);
 
       var svg = d3.select("#map").append("svg:svg")
-          .attr("width", 800)
-          .attr("height", 800)
+          .attr("width", 640)
+          .attr("height", 640)
           .on("mousedown", mousedown);
       var point = [<%= @model.longitude %>, <%= @model.latitude %>];
 
@@ -175,11 +175,9 @@
     </div>
   </div>  
   <div class="col-sm-6">
-    <dl class="document-show-heading dl-horizontal dl-invert">
-        <dt></dt>
-        <dd class='h2'><%= @model.public_id %></dd>
-    </dl>
-
+    <h2 class="text-center">
+      <%= @model.public_id %>
+    </h2>
     <dl class="document-metadata dl-horizontal dl-invert">
       <dt>Name</dt>
       <dd>
@@ -203,16 +201,19 @@
         <% end %>
       </dd>
       <dt>Children</dt>
-      <dd>
-        <ul class="list-unstyled">
-          <% @model.children.each do |child| %>
-            <li><span class="text-muted">/</span>  <%= link_to child.name, place_path(child) %></li>
+      <% if @model.children.count <= 0 %>
+        <dd>
+          <span class="text-muted">This place does not contain any other places.</span>
+        </dd>
+      <% else %>
+        <dd style="padding: 0px;">
+          <ul class="list-inline text-center">
+          <% @model.children.order(:name).each do |child| %>
+            <li style="font-size: <%= 12 + [10, child.children.count].min %>px;"><span class="text-muted"></span>  <%= link_to child.name, place_path(child) %></li>
           <% end %>
-          <% if @model.children.count <= 0 %>
-            <li><span class="text-muted">This place does not contain any other places.</span></li>
-          <% end %>
-        </ul>
-      </dd>
+          </ul>
+        </dd>
+      <% end %>
       <dt>
         Coordinates
         <span class="glyphicon glyphicon-map-marker" id="center"></span>
@@ -224,6 +225,14 @@
           <%= link_to "#{@model.authority_id}", "#{@model.authority_source}/#{@model.authority_id}" %>
         <% else %>
           <span class="text-muted">This place is linked to no exteral authority yet.</span>
+        <% end %>
+      </dd>
+      <dt>Evidence</dt>
+      <dd>
+        <% if @model.evidence %>
+          <%= @model.evidence %>
+        <% else %>
+          <span class="text-muted">There is no additional evidence recorded.</span>
         <% end %>
       </dd>
       <% if @model.created_at.present? %>
@@ -242,6 +251,10 @@
       <% end %>
     </dl>
 
+    <h2 class="text-center"><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
+    <p class='text-muted'>Share additional information about this place in the box below. Your comments will be displayed publicly.</p>
+
+    <%= render partial: "comments/show_all", locals: {comments: @model.comments.where(public: true), record: @model} %>
 
   </div>  
 </div>

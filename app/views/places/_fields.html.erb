@@ -29,12 +29,18 @@
     <div class="col-sm-4">
       <div class="input-group">
         <span class="input-group-btn">
-          <a href="" class="btn btn-default" ng-click="queryAuthority()" ng-disabled="place.authority_source != 'http://vocab.getty.edu/tgn'">
+          <a href="" class="btn btn-default" ng-click="queryAuthority()">
             <span class="glyphicon glyphicon-globe"></span>
           </a>
         </span>
         <input type="text" class="form-control" ng-model="place.authority_id">
       </div>
+    </div>
+  </div>
+  <div class="field form-group row">
+    <label for="" class="control-label col-sm-2">Evidence</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" ng-model="place.evidence">
     </div>
   </div>
   <div class="field form-group row">

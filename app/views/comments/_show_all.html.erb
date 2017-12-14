@@ -2,7 +2,7 @@
   <%= render partial: "comments/form", locals: { record: record } %>
 <% end %>
 <% comments.each do |comment| %>
-  <div class="panel-default panel" id="comment_<%= comment.id %>" name="comment_<%= comment.id %>">
+  <div class="panel-default panel panel-comment" id="comment_<%= comment.id %>" name="comment_<%= comment.id %>">
     <div class="panel-body comment">
       <% if comment.deleted %>
         <div class="row">
@@ -12,24 +12,10 @@
         </div>
       <% else %>
         <div class="row">
-        <div class="col-sm-9 comment-toggle" style='border-bottom: 1px solid #eee; margin-bottom: 10px; padding-bottom: 10px;'>
-            <%= sanitize simple_format(comment.comment), tags: %w(code b i br strong em a), attributes: %w(href) %>
+          <div class="col-xs-5">
+            <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
           </div>
-          <div class="col-sm-3 comment-toggle text-right">
-            <% if can? :edit, comment %>
-              <%= link_to(comment_path(comment, format: 'html'),  method: :delete, data: { confirm: 'Are you sure?' }) do %>
-                <span class="glyphicon glyphicon-remove"></span> Delete
-              <% end %>
-              <br>
-              <a onclick="$('#comment_<%= comment.id %> .comment-toggle').toggleClass('hide');" class='comment-toggle'>
-                <span class="glyphicon glyphicon-edit"></span>
-                Edit
-              </a><br>  
-            <% end %>
-            By <%= render partial: "shared/username_with_profile_link", locals: { user: comment.created_by } %><br/>
-            At <%= comment.created_at.to_formatted_s(:date_and_time) %>
-          </div>
-          <div class="col-sm-9">
+          <div class="col-xs-2 text-center">
             <% if current_user %>
               <% if (r = current_user.ratings.where(ratable_type: "Comment", ratable_id: comment.id).first) %>
                 <%= render partial: "ratings/delete", locals: {rating: r } %>
@@ -38,7 +24,22 @@
               <% end %>
             <% end %>
           </div>
-          <div class="col-sm-3"></div>
+          <div class="col-xs-5 text-right">
+            <%= comment.created_at.to_formatted_s(:date_and_time) %>
+          </div>
+          <div class="col-sm-12 comment-toggle">
+            <%= sanitize simple_format(comment.comment), tags: %w(code b i br strong em a), attributes: %w(href) %>
+          </div>
+          <div class="comment-controls">
+            <% if can? :edit, comment %>
+              <%= link_to(comment_path(comment, format: 'html'),  method: :delete, data: { confirm: 'Are you sure?' }) do %>
+                <span class="glyphicon glyphicon-remove"></span>
+              <% end %>
+              <a onclick="$('#comment_<%= comment.id %> .comment-toggle').toggleClass('hide');" class='comment-toggle'>
+                <span class="glyphicon glyphicon-edit"></span>
+              </a><br>  
+            <% end %>
+          </div>
           <% if can? :edit, comment %>
             <div class="col-sm-12">
               <%= render partial: "comments/edit_form", locals: {comment: comment} %>
@@ -50,28 +51,29 @@
     <div class="panel-footer">
       <!-- can only reply to a non-deleted comment -->
       <% comment.replies.each do |reply| %>
-        <div class="row" id="reply_<%= reply.id %>" style="border-bottom: 1px solid #ddd; margin-bottom: 5px; padding-bottom: 5px;">
+        <div class="row panel-comment" id="reply_<%= reply.id %>" style="border-bottom: 1px solid #ddd; margin-bottom: 5px; padding-bottom: 5px;">
           <% if reply.deleted %>
             <div class="col-sm-12">
               <p class="text-muted">This reply has been deleted.</p>
             </div>
           <% else %>
-            <div class="col-sm-9 reply-toggle">
+            <div class="col-sm-6">
+              <%= render partial: "shared/username_with_profile_link", locals: { user: reply.created_by } %><br/>
+            </div>
+            <div class="col-sm-6 text-right">
+              <%= reply.created_at.to_formatted_s(:date_and_time) %>
+            </div>
+            <div class="col-sm-12 reply-toggle">
               <p><%= sanitize simple_format(reply.reply), tags: %w(code b i br strong em a), attributes: %w(href) %></p>
             </div>
-            <div class="col-sm-3 text-right reply-toggle">
+            <div class="comment-controls">
               <% if can? :edit, reply %>
               <%= link_to(reply_path(reply, format: 'html'),  method: :delete, format: 'json', data: { confirm: 'Are you sure?' }) do %>
-                <span class="glyphicon glyphicon-remove"></span> Delete
+                <span class="glyphicon glyphicon-remove"></span>
               <% end %>
               <a onclick="$('#reply_<%= reply.id %> .reply-toggle').toggleClass('hide');">
-                <span class="glyphicon glyphicon-edit"></span>
-                Edit
-              </a>
-                <br>
+                <span class="glyphicon glyphicon-edit"></span></a>
               <% end %>
-              By <%= render partial: "shared/username_with_profile_link", locals: { user: reply.created_by } %><br/>
-              At <%= reply.created_at.to_formatted_s(:date_and_time) %>
             </div>
 
             <%= form_tag reply_path(reply), :method => 'put', :class => 'reply-toggle hide' do %>

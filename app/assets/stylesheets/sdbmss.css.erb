@@ -2584,9 +2584,30 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 .bg-primary {
   background: #4E76B4;
 }
+.panel-comment {
+  position: relative;
+}
+.comment-controls {
+  position: absolute;
+  right: -36px;
+  top: 10px;
+}
+.comment .ratings.rated {
+  background: none;
+  border: none;
+  color: #2196F3;
+}
 .comment-toggle {
   overflow: hidden;
   text-overflow: ellipsis;
+  border-top: 1px solid #eee; 
+  margin-top: 5px; 
+  padding-top: 5px;
+}
+.reply-toggle {
+  border-top: 1px solid #ddd; 
+  margin-top: 5px; 
+  padding-top: 5px;
 }
 /* ...comment out if need be */
 .alert-announce {

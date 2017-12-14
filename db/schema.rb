@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171110202012) do
+ActiveRecord::Schema.define(version: 20171214145058) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -546,12 +546,12 @@ ActiveRecord::Schema.define(version: 20171110202012) do
     t.string   "filename",   limit: 255
     t.string   "name",       limit: 255
     t.string   "category",   limit: 255, default: "upload"
-    t.datetime "created_at",             default: '2017-01-12 15:31:00'
-    t.datetime "updated_at",             default: '2017-01-12 15:31:00'
+    t.datetime "created_at",             default: '2017-01-20 18:04:43'
+    t.datetime "updated_at",             default: '2017-01-20 18:04:44'
   end
 
-  add_index "pages", ["filename"], name: "index_pages_on_filename", unique: true, using: :btree
-  add_index "pages", ["name"], name: "index_pages_on_name", unique: true, using: :btree
+  add_index "pages", ["filename"], name: "index_pages_on_filename", using: :btree
+  add_index "pages", ["name"], name: "index_pages_on_name", using: :btree
 
   create_table "places", force: :cascade do |t|
     t.string   "name",             limit: 255
@@ -560,17 +560,18 @@ ActiveRecord::Schema.define(version: 20171110202012) do
     t.integer  "created_by_id",    limit: 4
     t.datetime "updated_at"
     t.integer  "updated_by_id",    limit: 4
-    t.integer  "entries_count",    limit: 4,                            default: 0,     null: false
-    t.boolean  "deleted",                                               default: false
-    t.boolean  "reviewed",                                              default: false
+    t.integer  "entries_count",    limit: 4,                              default: 0,     null: false
+    t.boolean  "deleted",                                                 default: false
+    t.boolean  "reviewed",                                                default: false
     t.integer  "reviewed_by_id",   limit: 4
     t.datetime "reviewed_at"
-    t.boolean  "problem",                                               default: false
-    t.decimal  "latitude",                     precision: 10, scale: 6
-    t.decimal  "longitude",                    precision: 10, scale: 6
+    t.boolean  "problem",                                                 default: false
+    t.decimal  "latitude",                       precision: 10, scale: 6
+    t.decimal  "longitude",                      precision: 10, scale: 6
     t.integer  "parent_id",        limit: 4
     t.integer  "authority_id",     limit: 4
     t.string   "authority_source", limit: 255
+    t.text     "evidence",         limit: 65535
   end
 
   add_index "places", ["created_by_id"], name: "index_places_on_created_by_id", using: :btree

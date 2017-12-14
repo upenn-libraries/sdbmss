@@ -2660,6 +2660,13 @@ var BOOKMARK_SCOPE;
       $scope.url1 = "http://vocab.getty.edu/sparql.json?query=select%20%3FSubject%20(coalesce(%3FlabEn%2C%20%3FlabGVP)%20as%20%3FLabel)%20%3FParent%20%3FParents%20%3FLat%20%3FLong%20%7B%0A%20%20%3FSubject%20luc%3Aterm%20%22";
       $scope.url2 = "%22%3B%20skos%3AinScheme%20tgn%3A%20%3B%20a%20%3Ftyp.%0A%20%20%3Ftyp%20rdfs%3AsubClassOf%20gvp%3ASubject%3B%20rdfs%3Alabel%20%3FType.%0A%20%20filter%20(%3Ftyp%20!%3D%20gvp%3ASubject)%0A%20%20optional%20%7B%3FSubject%20xl%3AprefLabel%20%5Bxl%3AliteralForm%20%3FlabEn%3B%20dct%3Alanguage%20gvp_lang%3Aen%5D%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AprefLabelGVP%20%5Bxl%3AliteralForm%20%3FlabGVP%5D%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AbroaderPreferred%20%3FParent%7D%0A%20%20optional%20%7B%3FSubject%20gvp%3AparentString%20%3FParents%7D%0A%20%20optional%20%7B%3FSubject%20foaf%3Afocus%2Fwgs%3Alat%20%3FLat%7D%0A%20%20optional%20%7B%3FSubject%20foaf%3Afocus%2Fwgs%3Along%20%3FLong%7D%0A%7D&toc=Places_with_English_or_GVP_Label&implicit=true&equivalent=false&_form=/queriesF";
 
+      $scope.geourl = function (term) {
+        return "https://secure.geonames.org/searchJSON?q=" + term + "&maxRows=10&username=sdbm";
+      }
+      $scope.gettyurl = function (term) {
+        return $scope.url1 + term + $scope.url2;
+      }
+
       var place_id = $("#place_id").val();
       if (place_id) {
         Place.get({id: place_id},
@@ -2675,32 +2682,46 @@ var BOOKMARK_SCOPE;
         $scope.place = new Place();
         $scope.place.parent = {};
       }
-
     
       $scope.queryURL = function () {
-        console.log('mhm');
         window.open($scope.url0 + $scope.place.name + $scope.url2, "_blank");
       }
 
       // for now, just getty
       $scope.queryAuthority = function () {
         if (!$scope.querying) {
-          $scope.querying = true;        
-          $http.get($scope.url1 + $scope.place.name + $scope.url2).then(function(response) {
-          //$http.get("http://vocab.getty.edu/resource/getty/search?q=" + $scope.place.name + "&luceneIndex=Brief&indexDataset=TGN&_form=%2Fresource%2Fgetty%2Fsearch").then( function (response) {          
-            $scope.querying = false;
-            $scope.suggestions = response;
-            $scope.modal = $modal.open({
-              templateUrl: 'queryGetty.html',
-              backdrop: 'static',
-              size: 'lg',
-              scope: $scope
+          $scope.querying = true;
+          if ($scope.place.authority_source.indexOf("getty") !== -1) {            
+            $http.get($scope.gettyurl($scope.place.name)).then(function(response) {
+              $scope.querying = false;
+              $scope.suggestions = response;
+              $scope.modal = $modal.open({
+                templateUrl: 'queryGetty.html',
+                backdrop: 'static',
+                size: 'lg',
+                scope: $scope
+              });
             });
-          });
+          } else if ($scope.place.authority_source.indexOf("geonames") !== -1) {
+            $http.get($scope.geourl($scope.place.name)).then(function (response) {
+              $scope.suggestions = response;
+              console.log($scope.suggestions);
+              $scope.querying = false;
+              $scope.modal = $modal.open({
+                templateUrl: 'queryGeo.html',
+                backdrop: 'static',
+                size: 'lg',
+                scope: $scope
+              });
+            });
+          } else {
+            $scope.querying = false;
+            alert("There is no query API set up for this Authority Source");
+          }
         }
       };
 
-      $scope.setAuthorityId = function (authority) {
+      $scope.setGettyAuthorityId = function (authority) {
         $scope.place.authority_id = authority.uri;
         $scope.place.name = authority.Label.value;
         if (authority.Lat)
@@ -2739,6 +2760,14 @@ var BOOKMARK_SCOPE;
           console.log('No Parent specified in Getty record.')
           $scope.modal.close();
         }
+      }
+
+      $scope.setGeoAuthorityId = function (authority) {
+        $scope.place.authority_id = authority.geonameId;
+        $scope.place.name = authority.name;
+        $scope.place.longitude = authority.lng;
+        $scope.place.latitude = authority.lat;
+        $scope.modal.close();
       }
 
       $scope.selectNameAuthorityModal = function (model, type, base) {

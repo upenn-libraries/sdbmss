@@ -21,6 +21,8 @@ class Place < ActiveRecord::Base
   belongs_to :parent, class_name: "Place"
   has_many :children,  class_name: "Place", foreign_key: "parent_id"
 
+  has_many :comments, as: :commentable
+
   validate do |name_obj|
     if name_obj.name.present? && (!name_obj.persisted? || name_obj.name_changed?)
       if (existing_name = self.class.find_by(name: name_obj.name)).present? && name_obj.id != existing_name.id
@@ -49,6 +51,7 @@ class Place < ActiveRecord::Base
       updated_by ? updated_by.username: ""
     end
     text :name, :more_like_this => true
+    text :evidence
     string :name
     integer :id
     integer :authority_id
@@ -101,6 +104,7 @@ class Place < ActiveRecord::Base
       latitude: latitude,
       longitude: longitude,
       authority_id: authority_id,
+      evidence: evidence,
       created_by: created_by.present? ? created_by.username : "(none)",
       created_at: created_at.present? ? created_at.to_formatted_s(:long) : "",
       updated_by: updated_by.present? ? updated_by.username : "(none)",

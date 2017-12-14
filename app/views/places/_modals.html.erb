@@ -16,9 +16,44 @@
         </thead>
         <tbody>
           <tr ng-repeat="result in suggestions.data.results.bindings" ng-init="result.uri = result.Subject.value.split('/')[result.Subject.value.split('/').length - 1]">
-            <td><a ng-click="setAuthorityId(result)" class='btn btn-xs btn-default'>Select {{ result.uri }}</a></td>
+            <td><a ng-click="setGettyAuthorityId(result)" class='btn btn-xs btn-default'>Select {{ result.uri }}</a></td>
             <td><a href="{{ result.Subject.value }}" target="_blank">{{ result.Label.value }}</a></td>
             <td><a href="{{ result.Parent.value }}" target="_blank">{{ result.Parents.value.split(", ")[0] }}</a>, {{ result.Parents.value.split(", ").slice(1,1000).join(", ") }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="modal-footer text-right">
+      <a class="btn btn-default" ng-click="modal.close()">Cancel</a>
+    </div>
+</script>
+<script type="text/ng-template" id="queryGeo.html">
+    <div class="modal-header">
+      <h3 class="modal-title text-center">Find {{ place.name }} in Getty TGN Vocab</h3>
+    </div>
+
+    <div class="modal-body form-horizontal compress-whitespace fit-screen">
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Lat.</th>
+            <th>Long.</th>
+            <th>Country</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="result in suggestions.data.geonames">
+            <td><a ng-click="setGeoAuthorityId(result)" class='btn btn-xs btn-default'>Select {{ result.geonameId }}</a></td>
+            <td><a href="www.geonames.org/{{ result.geonameId }}" target="_blank">{{ result.name }}</a></td>
+            <td>{{ result.lat }}</td>
+            <td>{{ result.lng }}</td>
+            <td>{{ result.countryName }}</td>
+          </tr>
+          <tr ng-if="suggestions.data.geonames.length <= 0">
+            <td colSpan="5" class="text-center text-muted">No results found.</td>
           </tr>
         </tbody>
       </table>

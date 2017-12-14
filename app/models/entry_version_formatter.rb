@@ -94,7 +94,7 @@ class EntryVersionFormatter
     versions = Array(version)
     @names = Name.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| NAME_IDS.include?(k) ? v : nil } }.flatten.select(&:present?).uniq)
     @users = User.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| USER_IDS.include?(k) ? v : nil } }.flatten.select(&:present?).uniq)
-    @places = Place.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "place_id" ? v : nil } }.flatten.select(&:present?).uniq)
+    @places = Place.includes(:parent).where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "place_id" ? v : nil } }.flatten.select(&:present?).uniq)
     @languages = Language.where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "language_id" ? v : nil } }.flatten.select(&:present?).uniq)
     @sources = Source.includes(:source_type, :source_agents => [:agent]).where(id: versions.map(&:changeset).map { |e| e.map { |k, v| k == "source_id" ? v : nil } }.flatten.select(&:present?).uniq)
     @entry_manuscripts = EntryManuscript.where(id: versions.select{ |v| v.item_type == "EntryManuscript" }.map(&:item_id).uniq)

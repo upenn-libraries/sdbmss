@@ -110,6 +110,11 @@
                 }
             },
             {
+                title: "Evidence",
+                width: "15%",
+                orderable: false
+            },
+            {
                 title: 'Added By',
                 width: "10%",
                 dbSortField: 'created_by'
@@ -140,7 +145,7 @@
 
     // translates a search result object into an Array used to populate datatable
     SDBM.ManageRecords.prototype.searchResultToTableRow = function (result) {
-        return [ null, result.id, result.id, result[this.options.searchNameField], result.entries_count || 0, result.reviewed, result.problem, result.parent, result.latitude, result.longitude, result.authority_id, result.created_by || "", result.created_at || "", result.updated_by || "", result.updated_at || "", result.authority_source ];
+        return [ null, result.id, result.id, result[this.options.searchNameField], result.entries_count || 0, result.reviewed, result.problem, result.parent, result.latitude, result.longitude, result.authority_id, result.evidence, result.created_by || "", result.created_at || "", result.updated_by || "", result.updated_at || "", result.authority_source ];
     };
 
     new SDBM.ManageRecords({
