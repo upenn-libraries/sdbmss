@@ -512,6 +512,8 @@ class Entry < ActiveRecord::Base
     #
     # field_type should be a symbol that matches a DSL field, like
     # :text or :integer
+    
+
     def define_field(field_type, *args, &block)
       # last argument should be hash of options, so add to it
       args.last[:as] = args[0].to_s
@@ -637,6 +639,10 @@ class Entry < ActiveRecord::Base
       #source.get_institution_as_name.try(:name) || institution.try(:name)
     end
 
+    # allows for mixed number/character log numbers to be ordered numerically
+    define_field(:string, :catalog_or_lot_number_sort, :stored => true) do
+      catalog_or_lot_number.gsub(/[^0-9]/, "").gsub(/(\d+)/, '000000\1').gsub(/0*([0-9]{6,})/, '\1')
+    end
     define_field(:string, :catalog_or_lot_number, :stored => true) do
       catalog_or_lot_number
     end
