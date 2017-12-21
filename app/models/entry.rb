@@ -641,7 +641,7 @@ class Entry < ActiveRecord::Base
 
     # allows for mixed number/character log numbers to be ordered numerically
     define_field(:string, :catalog_or_lot_number_sort, :stored => true) do
-      catalog_or_lot_number.gsub(/[^0-9]/, "").gsub(/(\d+)/, '000000\1').gsub(/0*([0-9]{6,})/, '\1')
+      catalog_or_lot_number.to_s.gsub(/[^0-9]/, "").gsub(/(\d+)/, '000000\1').gsub(/0*([0-9]{6,})/, '\1')
     end
     define_field(:string, :catalog_or_lot_number, :stored => true) do
       catalog_or_lot_number
