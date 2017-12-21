@@ -105,7 +105,7 @@ gem 'whenever', :require => false
 # bundle exec rake doc:rails generates the Rails API under doc/api.
 group :doc do
   gem 'sdoc', '~> 0.4.0'
-  gem 'yard', '~> 0.8.0'
+  gem 'yard', '~> 0.9.11'
 end
 
 group :development do
