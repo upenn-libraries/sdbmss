@@ -1,5 +1,5 @@
 <% content_for :head do %>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.0/d3.min.js" type="text/javascript"></script>
+    <%= javascript_include_tag "data" %>
     <style>
         circle {
             stroke: #000;
@@ -22,100 +22,82 @@
         }
     </style>
     <script>
-        function loadCharts() {
 
-            $(".loading").fadeIn();
-            $("#community-search .form-control").attr("disabled", true);
-            var w = d3.select("#body1").node().getBoundingClientRect().width, h = w;
-            d3.select("svg").remove();            
-            d3.select("svg").remove();
-            var svg1 = d3.select("#body1").append("svg:svg")
-                .attr("width", w)
-                .attr("height", h);
+        var ENTRY_COLORS = {
+            admin: "#6A9E98",
+            contributor: "#4D648D",
+            editor: "#64B058",
+            super_editor: "#236A62"
+        }
 
-            var svg2 = d3.select("#body2").append("svg:svg")
-                .attr("width", w)
-                .attr("height", h);
+        var ACTIVITY_COLORS = {
+            admin: "#AA5939",
+            contributor: "#D4A76A",
+            editor: "#BE5F7C",
+            super_editor: "#D4886A"
+        };
+        var activity_chart, entry_chart;
 
-            var format = d3.format(",d");
-
-            var pack = d3.pack()
-                .size([w, h])
-                .padding(1.5);
-        
-            function doChart (svg, mydata) {
-                if (mydata.length > 0) {
-                    var root = d3.hierarchy({children: mydata})
-                      .sum(function(d) { return d.value; })                
-
-                    var node = svg.selectAll(".node")
-                    .data(pack(root).leaves())
-                    .enter().append("g")
-                    .attr("class", "node")
-                    .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-
-                    node.append("circle")
-                    .attr("id", function(d) { return d.data.id; })
-                    .attr("r", function(d) { return d.r; })
-                    .style("fill", function(d) { return d.data.color; });
-
-                    node.append("clipPath")
-                    .attr("id", function(d) { return "clip-" + d.data.id; })
-                    .append("use")
-                    .attr("xlink:href", function(d) { return "#" + d.data.id; });
-
-                    node.append("text")
-                    .attr("clip-path", function(d) { return "url(#clip-" + d.data.id + ")"; })
-                    .selectAll("a")
-                    .data(function(d) { return d.data.id.split(/(?=[A-Z][^A-Z])/g); })
-                    .enter().append("a")
-                    .attr("xlink:href", function (d) { return "/profiles/"+ d; })
-                    .attr("target", "_blank")
-                    .attr("x", 0)
-                    .attr("y", function(d, i, nodes) { return 13 + (i - nodes.length / 2 - 0.5) * 10; })
-                    .text(function(d) { return d; });
-
-                    node.append("title")
-                      .text(function(d) { return d.data.id + "\n" + format(d.data.value); });
-                    
-                    $(".loading").fadeOut();                
-                    $("#community-search .form-control").attr("disabled", false);
-                }
-            }
-
-            var entry_colors = {
-                admin: "#6A9E98",
-                contributor: "#4D648D",
-                editor: "#64B058",
-                super_editor: "#236A62"
-            };
-
-            var activity_colors = {
-                admin: "#AA5939",
-                contributor: "#D4A76A",
-                editor: "#BE5F7C",
-                super_editor: "#D4886A"
-            };
+        function doChart() {
+            $("#spinner").show();
+            if (entry_chart && entry_chart.destroy) entry_chart.destroy();
+            if (activity_chart && activity_chart.destroy) activity_chart.destroy();
 
             $.get("/community/stats.json", {quantity: $("#quantity").val(), measure: $("#measure").val()}, function (result) {
                 var entries = result.entries; // username, count, role
                 var activity = result.activity; // usernmae, count, role
+                
+                var entry_users = entries.map(function (e) { return e[0]; });
+                var entry_counts = entries.map(function (e) { return Math.log10(e[1]); });
+                var entry_colors = entries.map(function (e) { return ENTRY_COLORS[e[2]]; });
+                
+                var activity_users = activity.map(function (e) { return e[0]; });
+                var activity_counts = activity.map(function (e) { return Math.log10(e[1]); });
+                var activity_colors = activity.map(function (e) { return ACTIVITY_COLORS[e[2]]; });
+                
 
-                doChart(svg1, entries.map(function (e) { return {value: e[1], id: e[0], color: entry_colors[e[2]]}; }));
-                doChart(svg2, activity.map(function (e) { return {value: e[1], id: e[0], color: activity_colors[e[2]]}; }));
-                $("#done").html("Thank you for supporting the SDBM community!")
+                //$("#done").html("Thank you for supporting the SDBM community!")
+            
+                
+                entry_chart = new Chart(document.getElementById('entries-chart').getContext('2d'), {
+                    data: {
+                        labels: entry_users,
+                        datasets: [{
+                            label: "Contributions",
+                            data: entry_counts,
+                            backgroundColor: entry_colors                        
+                        }]
+                    },
+                    type: 'polarArea',
+                    options: {
+                    }
+                });
+
+                activity_chart = new Chart(document.getElementById('activities-chart').getContext('2d'), {
+                    data: {
+                        labels: activity_users,
+                        datasets: [{
+                            label: "Contributions",
+                            data: activity_counts,
+                            backgroundColor: activity_colors                        
+                        }]
+                    },
+                    type: 'polarArea',
+                    options: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                });
+
+                $("#spinner").hide();
+                        
             });
-
         }
 
-
         $(document).ready(function () {
-            loadCharts();
-
-            $("#submit").click(function (e) {
-                $("#done").html("");
-                loadCharts();
-            });
+            $("#submit").click(doChart); 
+            doChart();
         });
 
     </script>
@@ -156,12 +138,14 @@
 </div>
 
 <div class="row">
-    <div class="loading"><img src="<%= asset_path "spinner.gif" %>" alt=""> loading...</div>
+    <div class="loading"><img id="spinner" src="<%= asset_path "spinner.gif" %>" alt=""> loading...</div>
     <div class="col-sm-6" id="body1">
         <h3 class="text-muted text-center">New Entries Added</h3>
+        <canvas height="400" width="400" id="entries-chart"></canvas>
     </div>
     <div class="col-sm-6" id="body2">
-        <h3 class="text-muted text-center">Changes Made</h3>  
+        <h3 class="text-muted text-center">Changes Made</h3> 
+        <canvas height="400" width="400" id="activities-chart"></canvas>
     </div>
     <div class="col-sm-12 text-center text-muted" id="done">
         

@@ -1,6 +1,5 @@
 <% content_for :head do %>
-  <%= stylesheet_link_tag "extras" %>
-  <%= javascript_include_tag "extras" %>
+  <%= javascript_include_tag "data" %>
   <style>
     .huge {
       font-size: 72px;
@@ -87,60 +86,39 @@
       padding: 8px;
     }
   </style>
-  <%= javascript_include_tag "loader" %>
-  <script type="text/javascript">
-    $(document).ready(function () {        
-      if (google && google.charts) {
-        google.charts.load('current', {'packages':['corechart']});
-        google.charts.setOnLoadCallback(drawChart);
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+  <script>
 
-        function drawChart() {
+    $(document).ready(function () {
 
-          var data = google.visualization.arrayToDataTable([
-            ['Description', 'Proportion'],
-            ['Possibly Linked (<%= possible = DericciRecord.where({verified_id: nil}).joins(:dericci_links).group('dericci_records.id').count.count %>)', <%= possible %>],
-            ['Definitely Linked (<%= definite = DericciRecord.where.not(verified_id: nil).count %>)',  <%= definite %>],
-            ['In Progress (<%= flagged = DericciRecord.joins(:dericci_record_flags).group('dericci_records.id').count.count  %>)', <%= flagged %> ],
-            ['Unlinked (<%= unlinked = DericciRecord.count - (flagged + definite + possible) %>)', <%= unlinked %>],
-            //['Sleep',    7]
-          ]);
-          //console.log(data);
-
-          var options = {
-            colors: ["#AE9A4A", "#AE724A", "#7F8FA8", "#306F63"],
-            sliceVisibilityThreshold: 0.0001,
-            pieHole: 0.3,
-            fontName: 'Sarala',
-            fontSize: 12,
-            legend: {
-                alignment: "center",
-                position: "in"
-            },
-            chartArea: {
-                width: "100%",
-                left: 50,
-                top: 20
-            },
-            backgroundColor: "transparent",
-            legend: {
-              alignment: "end",
-              position: "bottom",
-              textStyle: {
-                color: "#222",
-                fontName: "Sarala",
-                fontSize: 14,
-                bold: false,
-                italic: true           
-              }
+      var chart = new Chart(document.getElementById("piechart").getContext('2d'),
+        {
+          type:"doughnut",
+          data:
+          {
+            "labels": ["Possibly Linked","Definitely Linked","In Progress", "Unlinked"],
+            "datasets": [
+              {
+                "label":"My First Dataset",
+                "data":[
+                  <%= (possible = DericciRecord.where({verified_id: nil}).joins(:dericci_links).group('dericci_records.id').count.count) %>,
+                  <%= (definite = DericciRecord.where.not(verified_id: nil).count) %>,
+                  <%= (flagged = DericciRecord.joins(:dericci_record_flags).group('dericci_records.id').count.count)  %>,
+                  <%= DericciRecord.count - (flagged + definite + possible) %>
+                ],
+                "backgroundColor":["#AE9A4A", "#AE724A", "#7F8FA8", "#306F63"]
+              }]
+          }, 
+          options: {
+            title: {
+              display: true,
+              text: "The Wheel of Progress"
             }
-          };
+          }
+        });
 
-          var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+    });
 
-          chart.draw(data, options);
-        }
-      }
-    })
   </script>
 <% end %>
 
@@ -204,8 +182,7 @@
 <div class="row">
   <div class="col-sm-12">
     <div class="chart">
-      <h4 class="text-center">The Wheel of Progress</h4>
-      <div id="piechart" style="height: 400px; width: 100%;"></div>
+      <canvas height="400" width="400" id="piechart"></canvas>
       <h4 class='banner' style="background: #009688;"><%= (users_count = DericciGame.group(:created_by).count.count) %> <%= "user".pluralize(users_count) %> <%= "is".pluralize(users_count) %> playing the Name Game!</h4>
       <h4 class='banner' style="background: #8BC34A;"><%= (links_count = DericciLink.count) %> <%= "link".pluralize(links_count) %> <%= "has".pluralize(links_count) %> been suggested!</h4>
       <h4 class='banner' style="background: #00bcd4;"><%= (flags_count = DericciRecordFlag.count) %> <%= "flag".pluralize(flags_count) %> <%= "has".pluralize(flags_count) %> been identified!</h4>
