@@ -401,6 +401,7 @@ var BOOKMARK_SCOPE;
       }).then(function (response) {
 //        console.log(response);
         $scope.records = response.data.dericci_records;
+        console.log($scope.records);
         $scope.current_url = $sce.trustAsResourceUrl($scope.records[0].url);
         $scope.current_record = $scope.records[0];
         $scope.initial = $scope.progress.complete;
