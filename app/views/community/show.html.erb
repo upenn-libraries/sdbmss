@@ -21,7 +21,7 @@
             top: 160px;          
         }
     </style>
-    <script>
+    <script>        
 
         var ENTRY_COLORS = {
             admin: "#6A9E98",
@@ -47,11 +47,11 @@
                 var entries = result.entries; // username, count, role
                 var activity = result.activity; // usernmae, count, role
                 
-                var entry_users = entries.map(function (e) { return e[0]; });
+                var entry_users = entries.map(function (e) { return e[0] + ": " + e[1]; });
                 var entry_counts = entries.map(function (e) { return Math.log10(e[1]); });
                 var entry_colors = entries.map(function (e) { return ENTRY_COLORS[e[2]]; });
                 
-                var activity_users = activity.map(function (e) { return e[0]; });
+                var activity_users = activity.map(function (e) { return e[0] + ": " + e[1]; });
                 var activity_counts = activity.map(function (e) { return Math.log10(e[1]); });
                 var activity_colors = activity.map(function (e) { return ACTIVITY_COLORS[e[2]]; });
                 
@@ -70,6 +70,31 @@
                     },
                     type: 'polarArea',
                     options: {
+                        layout: {
+                            padding: { top: 10 }
+                        },
+                        legend: {
+                            display: false
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    return data.labels[tooltipItem.index];
+                                }
+                            }
+                        },
+                        scale: {
+                            ticks: {
+                                stepSize: 1,
+                                callback: function (value, index, values) {
+                                    //console.log(value, index, values);
+                                    return Math.pow(10, value);
+                                }
+                            },
+                            gridLines: {
+                                tickMarkLength: 0
+                            }
+                        }
                     }
                 });
 
@@ -84,11 +109,33 @@
                     },
                     type: 'polarArea',
                     options: {
+                        layout: {
+                            padding: { top: 10 }
+                        },
                         legend: {
                             display: false
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    return data.labels[tooltipItem.index];
+                                }
+                            }
+                        },
+                        scale: {
+                            ticks: {
+                                stepSize: 1,
+                                callback: function (value, index, values) {
+                                    //console.log(value, index, values);
+                                    return Math.pow(10, value);
+                                }
+                            },
+                            gridLines: {
+                                tickMarkLength: 0
+                            }
                         }
                     }
-                });
+                });                
 
                 $("#spinner").hide();
                         
@@ -105,7 +152,7 @@
 
 <div class='row'>
     <div class="col-sm-12 text-center">
-        <h3 class="h3 text-muted">The User Community</h3>
+        <legend class="h1">The User Community</legend>
     </div>
     <div class="col-sm-6 text-right mobile-center" style="line-height: 32px;">
         Show me the user activity in the last:
@@ -113,7 +160,7 @@
     <div class="col-sm-6 form-inline" id="community-search">
         <span class="input-group" style="width: 100%">
             <select name="" id="quantity" class="form-control" style="max-width: 100px;">
-                <option value="1">1</option>
+                <option value="1" selected>1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
@@ -125,14 +172,14 @@
                 <option value="10">10</option>
                 <option value="11">11</option>
                 <option value="12">12</option>
-                <option value="36" selected>36</option>
+                <option value="36">36</option>
             </select>
             <select name="" id="measure" class="form-control" style="max-width: 100px;">
                 <option value="day">Day</option>
                 <option value="week">Week</option>
                 <option value="month" selected>Month</option>
             </select>
-            <input id="submit" type="submit" class="form-control" style="max-width: 100px;"></a>
+            <input id="submit" type="submit" class="form-control" style="max-width: 100px;" value="Submit"></a>
         </span>
     </div>
 </div>
