@@ -1941,6 +1941,58 @@ so that gray backdrop shvows up correctly */
   margin-bottom: 4px;
 }
 
+/* dashboard activity feed */
+
+#activity-pane .col-sm-10::after {
+  content: "";
+  position: absolute;
+  height: calc(100% + 10px);
+  width: 5px;
+  background: #f5f5f5;
+  right: -4px;
+  top: 0px;
+  z-index: -2;
+}
+
+#activity-pane .h4 {
+  background: #f5f5f5;
+  padding: 10px 0px;
+  border-radius: 5px;
+  text-align: center;
+}
+#activity-pane .h4:hover {
+  color: #666;
+}
+
+#activity-pane .h4::before {
+  content: '';
+  position: absolute;
+  height: 0;
+  width: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 10px solid #f5f5f5;
+  top: calc(50% - 5px);
+  left: 5px;
+}
+
+#activity-pane .panel-heading {
+  border: none;
+  border-radius: 4px;
+}
+#activity-pane .panel, #activity-pane .panel-body {
+  border: none;
+  border-radius: 0px;
+  box-shadow: none;
+}
+#activity_tabs li.active a {
+  background: none;
+  color: black;
+  font-weight: bold;
+  border-bottom: 2px solid black;
+  border-radius: 0px;
+}
+
 #my_activity .row {
   margin-bottom: 15px;
 }

@@ -56,7 +56,7 @@ describe EntryDate do
     end
 
     it "parses first quarter of century date" do
-      expect(EntryDate.parse_observed_date("first quarter of the 9th century")).to eq([801, 826])
+      expect(EntryDate.parse_observed_date("first quarter of the 9th century")).to eq([800, 826])
     end
 
     it "parses 4th quarter of century date" do

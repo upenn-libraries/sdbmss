@@ -11,6 +11,11 @@
 
 var SDBM = SDBM || {};
 
+var base_ten = Math.log(10);
+if (Math.log10 === undefined) Math.log10 = function (n) {
+  return Math.log(n) / base_ten;
+};
+
 function addNotification (message, type, permanent) {
   var notification = $('<div><a class="close" data-dismiss="alert" aria-label="close">&times;</a>' + message + "</div>");
   notification.addClass('alert').addClass('alert-' + type).addClass('alert-absolute');
