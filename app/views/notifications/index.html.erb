@@ -8,7 +8,7 @@
       margin-bottom: 5px;
     }
     .notification-btn .btn:first-child {
-      width: calc(100% - 212px);
+      width: calc(100% - 214px);
       text-align: left;
     }
   </style>
@@ -36,7 +36,7 @@
   <div class="col-sm-6 text-right">
     <div class="btn-group">
       <%= link_to read_many_notifications_path(ids: @notifications.map(&:id), active: false), class: 'btn btn-default' do %>
-        <span class="glyphicon glyphicon-ok-circle"></span> Mark All as Read
+        <span class="glyphicon glyphicon-ok-circle"></span> Read All
       <% end %>
       <%= link_to delete_many_notifications_path(ids: @notifications.map(&:id)), :method => :delete, class: 'btn btn-danger' do %>
         <span class="glyphicon glyphicon-remove"></span> Delete All
