@@ -161,13 +161,18 @@
                         <dd>
                             <%= link_to @location.public_id, entry_path(@location) %><br>
                         </dd>
+                    <% end %>
+                    <% if @location_source %>
                         <dt class='text-success'>Source</dt>
                         <dd>
                             <%= link_to @location_source, source_path(@location_source) %><br>
                         </dd>
+                    <% end %>
+                    <% if @location_name %>
                         <dt class='text-success'>Location</dt>
                         <dd><%= link_to @location_name, name_path(@location_name) %></dd>
-                    <% else %>
+                    <% end %>
+                    <% if not @location %>
                         No entry containing verifiable location information exists.
                     <% end %>
                 </dl>
