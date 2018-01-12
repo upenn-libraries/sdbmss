@@ -21,13 +21,13 @@
     <%= render partial: "errors" %>
       
     <div class="field form-group row">
-        <%= f.label :name, class: "col-sm-2 control-label" %>
+        <%= f.label :name, class: "col-sm-2 control-label", "sdbm-tooltip" => "edit_name_name" %>
         <div class="col-sm-10">
             <%= f.text_field :name, :class => 'form-control', :data => { 'ng-model' => 'entity.name', 'ng-init' => "entity.name='#{SDBMSS::Util.escape(@model.name)}'" } %>
         </div>
     </div>
     <div class="field form-group row">
-        <label for="viaf_id" class="col-sm-2 control-label">
+        <label for="viaf_id" class="col-sm-2 control-label" sdbm-tooltip="edit_name_viaf">
             <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="glyphicon glyphicon-export"></span> VIAF ID</a>
         </label>
         <div class="col-sm-4">
@@ -44,7 +44,7 @@
         <% end %>
     </div>
     <div class="field form-group row">
-        <label for="subtype" class="col-sm-2 control-label">Subtype</label>
+        <label for="subtype" class="col-sm-2 control-label" sdbm-tooltip="edit_name_subtype">Subtype</label>
         <div class="col-sm-4">            
             <%= f.select(:subtype, options_for_select([['Unknown', 'Unknown'], ['Organization', 'Corporate'], ['Person', 'Personal']]), {}, {'ng-model' => 'entity.subtype', class: "form-control", 'ng-init' => "entity.subtype='#{@model.subtype || "Unknown"}'"}) %>
         </div>
@@ -92,7 +92,7 @@
         </div>
     </div>
     <div class="field form-group row">
-        <%= f.label :other_info, class: "col-sm-2 control-label" %>
+        <%= f.label :other_info, class: "col-sm-2 control-label", "sdbm-tooltip" => "edit_name_other" %>
         <div class="col-sm-10">
             <%= f.text_field :other_info, :class => 'form-control', :data => { 'ng-model' => 'entity.other_info', 'ng-init' => "entity.other_info=\"#{j(@model.other_info)}\"" } %>
         </div>
