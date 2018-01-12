@@ -1,21 +1,21 @@
   <div class="field form-group row">
-    <label for="" class="control-label col-sm-2">Name</label>
+    <label for="" class="control-label col-sm-2" sdbm-tooltip="place_name">Name</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" ng-model="place.name" name="place_name">
     </div>
   </div>
   <div class="field form-group row">
-    <label for="" class="control-label col-sm-2">Latitude</label>
+    <label for="" class="control-label col-sm-2" sdbm-tooltip="place_latitude">Latitude</label>
     <div class="col-sm-4">
       <input type="text" class="form-control" ng-model="place.latitude">
     </div>
-    <label for="" class="control-label col-sm-2">Longitude</label>
+    <label for="" class="control-label col-sm-2" sdbm-tooltip="place_longitude">Longitude</label>
     <div class="col-sm-4">
       <input type="text" class="form-control" ng-model="place.longitude">
     </div>
   </div>
   <div class="field form-group row">
-    <label for="" class="control-label col-sm-2">Authority Source</label>
+    <label for="" class="control-label col-sm-2" sdbm-tooltip="place_authoritysource">Authority Source</label>
     <div class="col-sm-4">
       <select name="" id="" class="form-control" ng-model="place.authority_source">
         <option value="http://vocab.getty.edu/tgn">Getty.edu</option>
@@ -38,13 +38,13 @@
     </div>
   </div>
   <div class="field form-group row">
-    <label for="" class="control-label col-sm-2">Evidence</label>
+    <label for="" class="control-label col-sm-2" sdbm-tooltip="place_evidence">Evidence</label>
     <div class="col-sm-10">
       <input type="text" class="form-control" ng-model="place.evidence">
     </div>
   </div>
   <div class="field form-group row">
-    <label for="" class="control-label col-sm-2">Parent</label>
+    <label for="" class="control-label col-sm-2" sdbm-tooltip="place_parent">Parent</label>
     <div class="col-sm-10">
       <a ng-show='place.parent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal(place.parent, 'place')">
         Find or Create Parent Place
