@@ -14,135 +14,39 @@
     .point {
       fill: deepskyblue;
     }
+    #map {
+      width: 100%;
+      height: 500px;
+    }  
   </style>
-  <%= javascript_include_tag "data" %>
+  <%# javascript_include_tag "data" %>
+  <%= javascript_include_tag "leaflet" %>
+  <%= stylesheet_link_tag "leaflet", media: "all" %>
+
   <script type='text/javascript'>
-    var projectile, circle;
     $(document).ready(function () {
 
-      var feature;
+      var sdbmIcon = L.icon({
+        iconUrl: '<%= asset_path "marker_icon.png" %>',
 
-      projection = d3.geo.azimuthal()
-          .scale(300)
-          .origin([-71.03,42.37])
-          .mode("orthographic")
-          .translate([320, 320]);
-
-      circle = d3.geo.greatCircle()
-          .origin(projection.origin());
-
-      // TODO fix d3.geo.azimuthal to be consistent with scale
-      var scale = {
-        orthographic: 300,
-        stereographic: 300,
-        gnomonic: 300,
-        equidistant: 300 / Math.PI * 2,
-        equalarea: 300 / Math.SQRT2
-      };
-
-      var path = d3.geo.path()
-          .projection(projection);
-
-      var svg = d3.select("#map").append("svg:svg")
-          .attr("width", 640)
-          .attr("height", 640)
-          .on("mousedown", mousedown);
-      var point = [<%= @model.longitude %>, <%= @model.latitude %>];
-
-      d3.json("/static/world-countries.json", function(collection) {
-        if (point[0] && point[1]) {          
-          collection.features.push({ "type":"Feature",
-              "properties": {"name": "<%= @model.name %>"},
-              "geometry": {
-                "type":"Point",
-                "coordinates":point},"id":"Point"});
-        }
-        feature = svg.selectAll("path")
-            .data(collection.features)
-          .enter().append("svg:path")
-            .attr("d", clip).attr("class", function (d) { return d.geometry.type == "Point" ? "point" : "path"; });
-
-        feature.append("svg:title")
-            .text(function(d) { return d.properties.name; });
-        
-        // rotate to point
-        if (point[0], point[1]) {          
-          projection.origin(point);
-          circle.origin(point)
-          refresh();
-        }
+        iconSize:     [64, 64], // size of the icon
+        iconAnchor:   [32, 64], // point of the icon which will correspond to marker's location
+        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
       });
 
-      d3.select(window)
-          .on("mousemove", mousemove)
-          .on("mouseup", mouseup);
+      var map = L.map('map');
+      <% if @model.latitude && @model.longitude %>
+        var latitude = <%= @model.latitude || 0 %>;
+        var longitude = <%= @model.longitude || 0 %>;
+        map.setView([latitude, longitude], 13);
+        map.setZoom(<%= @model.ancestors.count %> + 3);
+        L.marker([latitude, longitude], {icon: sdbmIcon}).addTo(map);
+      <% else %>
+        map.setView([60, 0], 13);        
+        map.setZoom(2);
+      <% end %>
 
-      d3.select("select").on("change", function() {
-        projection.mode(this.value).scale(scale[this.value]);
-        refresh(750);
-      });
-
-      var m0,
-          o0;
-
-      function mousedown() {
-        m0 = [d3.event.pageX, d3.event.pageY];
-        o0 = projection.origin();
-        d3.event.preventDefault();
-      }
-
-      function mousemove() {
-        if (m0) {
-          var m1 = [d3.event.pageX, d3.event.pageY],
-              o1 = [o0[0] + (m0[0] - m1[0]) / 8, o0[1] + (m1[1] - m0[1]) / 8];
-          projection.origin(o1);
-          circle.origin(o1)
-          refresh();
-        }
-      }
-
-      function mouseup() {
-        if (m0) {
-          mousemove();
-          m0 = null;
-        }
-      }
-
-      $("#center").click(function () {      
-        if (point[0], point[1]) {
-          var start_projection = projection.origin();
-          var start_circle = circle.origin();
-          var start_time = new Date();
-          var t = 0;
-          var interval = setInterval(function () {
-            var new_time = new Date();
-            var dt = (new_time - start_time) / 1000;
-            t += dt;
-            projection.origin([
-              start_projection[0] + t * (point[0] - start_projection[0]),
-              start_projection[1] + t * (point[1] - start_projection[1])
-            ]);
-            circle.origin([
-              start_circle[0] + t * (point[0] - start_circle[0]),
-              start_circle[1] + t * (point[1] - start_circle[1])
-            ]);
-            if (t >= 1) {
-              clearInterval(interval);
-              circle.origin(point);
-              projection.origin(point);
-            }
-            refresh();
-          }, 10);
-        }
-      });
-
-      function refresh(duration) {
-        (duration ? feature.transition().duration(duration) : feature).attr("d", clip);
-      }
-
-      function clip(d) {
-        return path(circle.clip(d));
-      }
+      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {}).addTo(map);
 
     });
   </script>
@@ -166,11 +70,11 @@
 
 <div class="row">
   <div class="col-sm-6 pull-right">
-    <p class='text-muted text-right'>
+    <p class="text-muted text-center">
       <span class="glyphicon glyphicon-info-sign"></span>
       Note: Coordinates locations for regions or countries are for reference only, and do not imply that the place of production or activity is limited to that specific point.
     </p>
-
+    
     <div id="map">
     </div>
   </div>  

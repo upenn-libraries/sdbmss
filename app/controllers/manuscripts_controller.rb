@@ -26,7 +26,7 @@ class ManuscriptsController < SearchableAuthorityController
       {:entry_scribes => [:scribe]}, 
       {:entry_languages => [:language]}, 
       {:entry_places => [:place]}, 
-      {:provenance => [:provenance_agent]}, 
+      {:provenance => [:provenance_agent]},
       :entry_uses, :entry_materials, 
       {:entry_manuscripts => [:manuscript]}, 
       {:source => [{:source_agents => :agent}, :source_type]}, :bookmarks, :watches,
