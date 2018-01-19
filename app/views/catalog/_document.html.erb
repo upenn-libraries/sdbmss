@@ -143,7 +143,12 @@
             <dt>Places</dt>
             <dd>
             <% entry.entry_places.each do |entry_place| %>
-              <%= entry_place.display_value %><br/>
+              <% if entry_place.place_id %> 
+                <%= link_to entry_place.display_value, place_path(entry_place.place) %>
+              <% else %>
+                <%= entry_place.display_value %>
+              <% end %>
+              <br/>
             <% end %>
             </dd>
             <% end %>

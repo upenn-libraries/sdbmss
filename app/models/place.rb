@@ -72,7 +72,8 @@ class Place < ActiveRecord::Base
   def self.filters
     super + [
       ["Authority Id", "authority_id"], 
-      ["Authority Source", "authority_source"]
+      ["Authority Source", "authority_source"],
+      ["Problem", "problem"]
     ]
   end
 

@@ -1,9 +1,6 @@
 <% if entry_place.place %>
-  <%= link_to entry_place.place.name, place_path(entry_place.place) -%>
-  <% if entry_place.observed_name.present? %>
-    (recorded as <%= entry_place.observed_name %>)
-  <% end %>
+  <%= link_to entry_place.display_value, place_path(entry_place.place) -%>
 <% else %>
-  <%= entry_place.observed_name %>
+  <%= entry_place.display_value %>
 <% end %>
 <%= entry_place.certainty_flags %>
