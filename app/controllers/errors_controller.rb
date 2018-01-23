@@ -1,5 +1,7 @@
 class ErrorsController < ApplicationController
 
+  rescue_from ActionController::InvalidCrossOriginRequest, with: :render_404
+
   def render_404
     respond_to do |format|
       format.html { render :file => "#{Rails.root}/public/404", :layout => false, :status => :not_found }
