@@ -28,6 +28,8 @@ module SDBMSS
           public_id = "SDBM_PLACE_#{id}"
         when "Language"
           public_id = "SDBM_LNG_#{id}"
+        when "Comment"
+          public_id = "SDBM_COMMENT_#{id}"
         end
         public_id
       end

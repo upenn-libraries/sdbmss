@@ -40,12 +40,12 @@
               Unknown
             <% end %>
 
-            <span data-toggle='collapse' href='#activity_<%= date %>_<%= user_id %>'>modified <%= "#{details.group_by{ |d| d[:version].transaction_id }.count} record".pluralize(details.group_by{ |d| d[:version].transaction_id }.count) %> <span class="caret"></span>
+            <span data-toggle='collapse' href='#activity_<%= date %>_<%= user_id %>'>modified <%= "#{details.count} record".pluralize(details.count) %> <span class="caret"></span>
           </span>
         </h5>
         
         <div class="collapse activity_date_<%= date %> <%= collapsed ? '' : 'in' %>" id="activity_<%= date %>_<%= user_id %>">
-          <% details.group_by{ |d| d[:version].transaction_id }.each do |transaction_id, detail_list| %>
+          <% details.each do |transaction_id, detail| %>
           <div class="panel panel-default activity">
             <div class="panel-heading">
               <div class="row">
@@ -69,13 +69,13 @@
             <div class="panel-body text-muted" style="overflow: hidden; text-overflow: ellipsis;">
               <div class="row">
                 <div class="col-xs-12">
-                  <% detail_list.each do |detail| %>
+                  <%# detail_list.each do |detail| %>
                     <% if detail[:version].event == "destroy" %>
                       <span class="text-danger">(Record was deleted.)</span>
                     <% else %>
                       <%= sanitize simple_format detail[:details] %>
                     <% end %>
-                  <% end %>
+                  <%# end %>
                 </div>                
               </div>
             </div>

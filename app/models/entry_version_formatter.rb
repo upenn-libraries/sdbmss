@@ -100,6 +100,9 @@ class EntryVersionFormatter
     @entry_manuscripts = EntryManuscript.where(id: versions.select{ |v| v.item_type == "EntryManuscript" }.map(&:item_id).uniq)
     @source_types = SourceType.all
     details = {}
+
+    # fix me: comments not appearing due to missing transaction ID
+
     versions.group_by(&:transaction_id).each do |id,vers|
       vers.each do |v|
         days = (Date.today - v.created_at.to_date)
@@ -117,9 +120,14 @@ class EntryVersionFormatter
         end
 
         if !details[date].key? v.whodunnit
-          details[date][v.whodunnit] = []
+          details[date][v.whodunnit] = {}
         end
-        details[date][v.whodunnit].push detail(v)
+
+        if !details[date][v.whodunnit].key? id
+          details[date][v.whodunnit][id] = detail(v)
+        else
+          details[date][v.whodunnit][id][:details] += "<br>" + detail(v)[:details]
+        end          
       end
     end
     details
