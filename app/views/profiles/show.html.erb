@@ -98,7 +98,7 @@ $(document).ready( function () {
 
     var loading = false;
 
-    load_activity("/activities/show_all.json?mine=true", 0);
+    load_activity("/activities/show_all.json?user=<%= @user.id %>", 0);
     /*$("#activity-pane").load("/activities/show_all?watched=true",function(result){
         loading = false;    
     });*/
