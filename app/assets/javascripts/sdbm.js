@@ -33,6 +33,65 @@ function addNotification (message, type, permanent) {
   } // fade out after ten seconds;
 }
 
+function load_activity (url, day) {
+  $("#loader").show();
+  loading = true;
+  //console.log('href');
+  $.get(url, {day: day}, function(result){      
+      //var loaded = JSON.parse(result);
+      //console.log(loaded);
+      var loaded = result;
+      //console.log('mmm!');
+      if (loaded.activities && loaded.activities[0]) {
+
+          var date = loaded.activities[0].date;
+          var date_header = $("<h4 class='text-center'><a class='float-right' data-toggle='collapse' data-target='.activity-" + date + "'>" + date + " <span class='caret'></span></a></h4>");
+          var date_body = $("<div class='collapse collapse in'></div>");
+          $("#activity-content").append(date_header);
+          $("#activity-content").append(date_body);
+
+          for (var user in loaded.activities[0].activities) {
+              var user_header = $("<p class='text-center' data-toggle='collapse' data-target='#activity-" + date + "-" + user + "'</p>");
+              var user_body = $("<div class='list-group collapse collapse in activity-" + date + "' id='activity-" + date + "-" + user + "'></div>");
+
+              date_body.append(user_header);
+              date_body.append(user_body);
+
+              var details = loaded.activities[0].activities;
+              var count = 0;
+
+              for (var title in details[user]) {
+                  count++;
+                  var cl = 'list-group-item-';
+                  if (title.indexOf('edited') === 0) cl += 'info';
+                  else if (title.indexOf('added') === 0) cl += 'success';
+                  else if (title.indexOf('deleted') === 0) cl += 'danger';
+                  else cl = '';
+
+                  user_body.append($("<div class='list-group-item " + cl + "'><h4 class='list-group-item-heading'>" + title + "</h4> <p class='list-group-item-text'>" + details[user][title] + "</p></div>"));                    
+                  //console.log(title, details[user][title]);
+              }
+              user_header.html('<a href="/profiles/' + user + '" target="_blank">' + user + '</a> modified ' + count + ' record' + (count > 1 ? 's' : '') + ' <span class="caret"></span>');
+          }
+          //var users = .activities;
+
+      }
+
+      //bindRemoteAjaxCallback();
+      //console.log("DAY",day);
+      if (day < 6) {
+          //day++;
+          load_activity(url, ++day);
+      } else {
+          loading = false;
+          $("#loader").hide();        
+      }
+
+  });
+
+}
+
+
 function exportCSV(url) {
   dataConfirmModal.confirm({
     title: 'Download CSV?',

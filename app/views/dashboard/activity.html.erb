@@ -31,65 +31,10 @@
 $(document).ready( function () {
 
     var loading = false;
-    var day = 0;
-
-    function load (url) {
-        loading = true;
-        //console.log('href');
-        $.get(url, {day: day}, function(result){      
-            //var loaded = JSON.parse(result);
-            //console.log(loaded);
-            var loaded = result;
-            //console.log('mmm!');
-            if (loaded.activities && loaded.activities[0]) {
-
-                var date = loaded.activities[0].date;
-                var date_header = $("<h4 class='text-center'><a class='float-right' data-toggle='collapse' data-target='.activity-" + date + "'>" + date + " <span class='caret'></span></a></h4>");
-                var date_body = $("<div class='collapse collapse in'></div>");
-                $("#activity-content").append(date_header);
-                $("#activity-content").append(date_body);
-
-                for (var user in loaded.activities[0].activities) {
-                    var user_header = $("<p class='text-center'><a data-toggle='collapse' data-target='#activity-" + date + "-" + user + "'>" + user + " <span class='caret'></span></a></p>");
-                    var user_body = $("<div class='list-group collapse collapse in activity-" + date + "' id='activity-" + date + "-" + user + "'></div>");
-
-                    date_body.append(user_header);
-                    date_body.append(user_body);
-
-                    var details = loaded.activities[0].activities;
-                    for (var title in details[user]) {
-                        var cl = 'list-group-item-';
-                        if (title.indexOf('edited') === 0) cl += 'info';
-                        else if (title.indexOf('added') === 0) cl += 'success';
-                        else if (title.indexOf('deleted') === 0) cl += 'danger';
-                        else cl = '';
-
-                        user_body.append($("<div class='list-group-item " + cl + "'><h4 class='list-group-item-heading'>" + title + "</h4> <p class='list-group-item-text'>" + details[user][title] + "</p></div>"));                    
-                        //console.log(title, details[user][title]);
-                    }
-                }
-                //var users = .activities;
-
-            }
-
-            //bindRemoteAjaxCallback();
-            //console.log("DAY",day);
-            if (day < 6) {
-                day++;
-                load(url);
-            } else {
-                loading = false;
-                $("#loader").hide();        
-            }
-
-        });
-
-    }
-
+    //var day = 0;
     //$("#spinner").show();
 
     $('#activity_tabs a').click( function (e) {
-        $("#loader").show();
     });
     $('.ajax-tabs').on('click','a',function (e) {
         e.preventDefault();
@@ -98,16 +43,17 @@ $(document).ready( function () {
         $("#activity-content").html("");
         if (loading) {}
         else if (typeof url !== "undefined") {
-            day = 0;
             var tab = $(this), href = this.hash;
             tab.tab('show')
-            load(url);
+            load_activity(url, 0);
             // ajax load from data-url
         } else {
             $(this).tab('show');
             //bindRemoteAjaxCallback();
         }
     });
+
+    load_activity('/activities/show_all.json?watched=true', 0);
     
     /*$("#activity-pane").load("/activities/show_all?watched=true",function(result){
         loading = false;    
