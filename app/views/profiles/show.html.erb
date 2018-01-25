@@ -79,7 +79,9 @@
 
         <div class="tab-content">
             <div id="activity" class="tab-pane fade">
-                <%= render partial: "activities/list", locals: {collapsed: true} %>
+                <div id="activity-content">
+                </div>
+                <%# render partial: "activities/list", locals: {collapsed: true} %>
             </div>
             <div class="tab-pane fade in active" id="contributions">
                 <%= render partial: "tiles", locals: {records: @user.entries.where(draft: false).last(10).reverse } %>
@@ -90,3 +92,15 @@
         </div>
     </div>
 </div>
+
+<script type='text/javascript'>
+$(document).ready( function () {
+
+    var loading = false;
+
+    load_activity("/activities/show_all.json?user=<%= @user.id %>", 0);
+    /*$("#activity-pane").load("/activities/show_all?watched=true",function(result){
+        loading = false;    
+    });*/
+});
+</script>

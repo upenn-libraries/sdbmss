@@ -5,7 +5,6 @@
 class AccountsController < SearchableAuthorityController
 
   include MarkAsReviewed
-  #include LogActivity
   include AddToGroup
 
   before_action :require_admin, only: [:index, :new, :create, :edit, :destroy, :login_as]

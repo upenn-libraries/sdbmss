@@ -10,28 +10,34 @@ class CommentsController < SearchableAuthorityController
   end
 
   def create
-    @comment = Comment.new(comment_params)
-    @comment.save_by(current_user)
-    if defined?(@comment.commentable.created_by) && @comment.commentable.created_by != current_user && @comment.commentable.created_by
-      @comment.commentable.created_by.notify(
-        "#{current_user.to_s} has commented on #{@comment.commentable.public_id}",
-        @comment, 
-        "comment"
-      )
-    end
-    User.where(role: "admin").each do |user|
-      user.notify(
-        "#{current_user.to_s} has commented on #{@comment.commentable.public_id}",
-        @comment, 
-        "all_comment"
-      )
+    ActiveRecord::Base.transaction do
+      @comment = Comment.new(comment_params)
+      @comment.save_by(current_user)
+      if defined?(@comment.commentable.created_by) && @comment.commentable.created_by != current_user && @comment.commentable.created_by
+        @comment.commentable.created_by.notify(
+          "#{current_user.to_s} has commented on #{@comment.commentable.public_id}",
+          @comment, 
+          "comment"
+        )
+      end
+      User.where(role: "admin").each do |user|
+        user.notify(
+          "#{current_user.to_s} has commented on #{@comment.commentable.public_id}",
+          @comment, 
+          "all_comment"
+        )
+      end
+      @transaction_id = PaperTrail.transaction_id      
     end
     redirect_to polymorphic_path(@comment.commentable, anchor: "comment_#{@comment.id}")
   end
 
   def update
-    @comment = Comment.find(params[:id])
-    @comment.update_by(current_user, comment_params)
+    ActiveRecord::Base.transaction do
+      @comment = Comment.find(params[:id])
+      @comment.update_by(current_user, comment_params)
+      @transaction_id = PaperTrail.transaction_id      
+    end
     redirect_to polymorphic_path(@comment.commentable) + "#comment_#{@comment.id}"
   end
 
@@ -53,26 +59,29 @@ class CommentsController < SearchableAuthorityController
     @comment = Comment.find(params[:id])
     # mark as deleted, don't actually destroy the record
     if deletable?(@comment)
-      @comment.deleted = true
-      if @comment.save
-        respond_to do |format|
-          format.json {
-            render status: :ok, json: {}
-          }
-          format.html {
-            redirect_to polymorphic_path(@comment.commentable)
-          }
+      ActiveRecord::Base.transaction do
+        @comment.deleted = true
+        if @comment.save
+          respond_to do |format|
+            format.json {
+              render status: :ok, json: {}
+            }
+            format.html {
+              redirect_to polymorphic_path(@comment.commentable)
+            }
+          end
+        else
+          respond_to do |format|
+            format.json {
+              render status: :unprocessable_entity, json: { "error" => @comment.errors.join("; ") }
+            }
+            format.html {
+              flash[:error] = @comment.errors.join("; ")
+              redirect_to polymorphic_path(@comment.commentable)
+            }
+          end
         end
-      else
-        respond_to do |format|
-          format.json {
-            render status: :unprocessable_entity, json: { "error" => @comment.errors.join("; ") }
-          }
-          format.html {
-            flash[:error] = @comment.errors.join("; ")
-            redirect_to polymorphic_path(@comment.commentable)
-          }
-        end
+        @transaction_id = PaperTrail.transaction_id      
       end
     else
       respond_to do |format|
