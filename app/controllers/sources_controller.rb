@@ -81,7 +81,7 @@ class SourcesController < SearchableAuthorityController
 
   def update
     # for checking which source_agent counters to manually update
-    source_agents = @source.source_agents.map(&:agent_id)
+    agents = @source.source_agents.map(&:agent)
     success = false
     ActiveRecord::Base.transaction do
       if params[:source_type_id] && can?(:update_type, @source)
@@ -92,9 +92,6 @@ class SourcesController < SearchableAuthorityController
       if success
         @transaction_id = PaperTrail.transaction_id
         # for some reason, certain ways of removing a source_agent.agent don't update the counter cache, so we do it manually here
-        (source_agents - @source.source_agents.map(&:agent_id)).each do |agent_id|
-          Name.decrement_counter(:source_agents_count, agent_id)            
-        end
       end
     end
     respond_to do |format|
@@ -259,8 +256,9 @@ class SourcesController < SearchableAuthorityController
         error = @source.errors.to_s
       else
         @source.watches.destroy_all
+
         @source.source_agents.uniq.each do |source_agent|
-          Name.decrement_counter(:source_agents_count, source_agent.id)
+          Name.decrement_counter(:source_agents_count, source_agent.agent_id)         
         end
       end
     elsif @source.entries.where(deprecated: true).count > 0

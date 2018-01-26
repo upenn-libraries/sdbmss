@@ -200,7 +200,7 @@ class Entry < ActiveRecord::Base
   validates_length_of :manuscript_link, maximum: 1024
 
   after_create :update_source_status
-  after_save :update_counters
+  #after_save :update_counters
 
   def public_id
     SDBMSS::IDS.get_public_id_for_model(self.class, id)

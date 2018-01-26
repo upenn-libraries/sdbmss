@@ -21,7 +21,7 @@
 <% if count_sources || 0 > 0 %>
 <tr><td># Sources</td>
 <td>
-    This agent is found in <%= link_to "#{count_sources} source".pluralize(count_sources), sources_path({agent_id: name.id}), class: "badge" %>
+    This agent has been used as an agent <%= link_to "#{count_sources} time".pluralize(count_sources), sources_path({agent_id: name.id}), class: "badge" %> in our sources
 </td></tr>
 <% end %>
 
@@ -35,15 +35,15 @@
 <tr><td># Entries</td>
 <td>
     <% if count_authors > 0 %>
-    This name is listed as the author of <a class='badge' href="<%= search_by_facet_value('author', name.name) %>"><%= "#{count_authors} entry".pluralize(count_authors) %></a><br/>
+    This name is used as an author <a class='badge' href="<%= search_by_facet_value('author', name.name) %>"><%= "#{count_authors} time".pluralize(count_authors) %> in our entries</a><br/>
     <% end %>
 
     <% if count_artists > 0 %>
-    This name is listed as the artist of <a class='badge' href="<%= search_by_facet_value('artist', name.name) %>"><%= "#{count_artists} entry".pluralize(count_artists) %></a><br/>
+    This name used as an artist <a class='badge' href="<%= search_by_facet_value('artist', name.name) %>"><%= "#{count_artists} time".pluralize(count_artists) %></a> in our entries<br/>
     <% end %>
 
     <% if count_scribes > 0 %>
-    This name is listed as the scribe of <a class='badge' href="<%= search_by_facet_value('scribe', name.name) %>"><%= "#{count_scribes} entry".pluralize(count_scribes) %></a><br/>
+    This name is used as a scribe <a class='badge' href="<%= search_by_facet_value('scribe', name.name) %>"><%= "#{count_scribes} time".pluralize(count_scribes) %></a> in our entries<br/>
     <% end %>
 
     <% if !has_entries %>
@@ -62,15 +62,15 @@
     <td>
 
         <% if count_selling_agent > 0 %>
-        This agent is the selling agent in <a class='badge' href="<%= search_by_facet_value('sale_selling_agent', name.name) %>"><%= "#{count_selling_agent} entry".pluralize(count_selling_agent) %></a><br/>
+        This agent is used as a selling agent <a class='badge' href="<%= search_by_facet_value('sale_selling_agent', name.name) %>"><%= "#{count_selling_agent} time".pluralize(count_selling_agent) %></a> in our entries<br/>
         <% end %>
 
         <% if count_seller_or_holder > 0 %>
-        This agent is the seller in <a class='badge' href="<%= search_by_facet_value('sale_seller', name.name) %>"><%= "#{count_seller_or_holder} entry".pluralize(count_seller_or_holder) %></a><br/>
+        This agent is used as a seller <a class='badge' href="<%= search_by_facet_value('sale_seller', name.name) %>"><%= "#{count_seller_or_holder} times".pluralize(count_seller_or_holder) %></a> in our entries<br/>
         <% end %>
         
         <% if count_buyer > 0 %>
-        This agent is the buyer in <a class='badge' href="<%= search_by_facet_value('sale_buyer', name.name) %>"><%= "#{count_buyer} entry".pluralize(count_buyer) %></a>
+        This agent is used as a buyer <a class='badge' href="<%= search_by_facet_value('sale_buyer', name.name) %>"><%= "#{count_buyer} times".pluralize(count_buyer) %> </a> in our entries
         <% end %>
     </td></tr>
 <% end %>
@@ -79,7 +79,7 @@
 <% if count_provenance > 0 %>
     <tr><td># Provenance</td>
     <td>
-        This agent is found in the provenance of <a class='badge' href="<%= search_by_facet_value('provenance', name.name) %>"><%= "#{count_provenance} entry".pluralize(count_provenance) %></a>
+        This agent is used in provenance <a class='badge' href="<%= search_by_facet_value('provenance', name.name) %>"><%= "#{count_provenance} times".pluralize(count_provenance) %></a> in our entries
     </td></tr>
 <% end %>
 <% if name.other_info.present? %>

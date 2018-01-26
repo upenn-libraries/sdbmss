@@ -256,7 +256,10 @@ var BOOKMARK_SCOPE;
              */
             replaceEntityObjectsWithIds: function (objectArray, relatedObjectName) {
                 objectArray.forEach(function (element, index, array) {
-                    if(element[relatedObjectName]) {
+                  console.log(JSON.stringify(element), element);
+                    if (element._destroy === 1) {
+                      // noop; this fixes a bug related to counters where the ROW would be deleted and the name removed at the same time, which confused the rails counter-cache
+                    } else if(element[relatedObjectName]) {
                         element[relatedObjectName + "_id"] = element[relatedObjectName].id;
                         delete element[relatedObjectName];
                     } else if (element[relatedObjectName] === null) {
@@ -3022,19 +3025,7 @@ var BOOKMARK_SCOPE;
 
 
             window.location = "/sources/" + $scope.source.id;
-            /*
-            var modalInstance = $modal.open({
-                templateUrl: 'postSourceSave.html',
-                backdrop: 'static',
-                size: 'lg',
-                scope: $scope
-            });
-            modalInstance.result.then(function () {
-                  // noop
-              }, function() {
-                  // runs when promise is rejected (modal is dismissed)
-                  sdbmutil.redirectToSourceEditPage(source.id);
-            });*/
+                        
         };
 
         $scope.similarSourcesModal = null;
@@ -3138,16 +3129,18 @@ var BOOKMARK_SCOPE;
                 return valid;
             });
 
-            sdbmutil.replaceEntityObjectsWithIds(sourceToSave.source_agents, "agent");
-
             // strip out blank objects
-            $scope.associations.forEach(function (assoc) {
-                sdbmutil.filterBlankRecords(sourceToSave, assoc);
-                if(sourceToSave[assoc.field].length === 0) {
-                    delete sourceToSave[assoc.field];
-                }
-            });
 
+            for (var i = 0; i < $scope.associations.length; i++) {
+              var assoc = $scope.associations[0];
+              sdbmutil.filterBlankRecords(sourceToSave, assoc);
+              if(sourceToSave[assoc.field].length === 0) {
+                delete sourceToSave[assoc.field];
+              }
+            }
+
+            sdbmutil.replaceEntityObjectsWithIds(sourceToSave.source_agents, "agent");
+            
             // append '_attributes' for Rails' accept_nested_attributes
             sourceToSave.source_agents_attributes = sourceToSave.source_agents;
             delete sourceToSave.source_agents;
