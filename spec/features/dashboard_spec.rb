@@ -22,7 +22,7 @@ describe "Dashboard", :js => true do
     it "should show activity tab of dashboard page" do
       visit dashboard_activity_path
 
-      expect(page).to have_content("There is no recent activity to display")
+      expect(page).to have_content("There is no more recent activity to display")
     end
 
     # fix me: need check for when there is content in activity & contributions

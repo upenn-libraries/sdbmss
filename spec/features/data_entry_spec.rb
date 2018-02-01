@@ -784,7 +784,7 @@ describe "Data entry", :js => true do
       # note: this fails frequently, for some unknown reason -> no 'sleep duration' seems to affect this...
       expect(page).not_to have_content("Known errors in the Source should be preserved but can be noted")
 
-      expect(page).to have_content("This entry has been identified as belonging to manuscript record SDBM_MS_2, which has 2 entries in the SDBM.")
+      expect(page).to have_content("This entry has been identified as belonging to manuscript record #{Entry.last.manuscripts.last.public_id}, which has #{Entry.last.manuscripts.last.entries.count} entries in the SDBM.")
     end
   end
 

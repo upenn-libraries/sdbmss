@@ -75,6 +75,8 @@ function load_activity (url, day) {
           }
           //var users = .activities;
 
+      } else {
+        $("#activity-content").append("<p class='text-muted text-center'>There is no more recent activity to display</p>");
       }
 
       //bindRemoteAjaxCallback();

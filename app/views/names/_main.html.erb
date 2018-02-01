@@ -35,7 +35,7 @@
 <tr><td># Entries</td>
 <td>
     <% if count_authors > 0 %>
-    This name is used as an author <a class='badge' href="<%= search_by_facet_value('author', name.name) %>"><%= "#{count_authors} time".pluralize(count_authors) %> in our entries</a><br/>
+    This name is used as an author <a class='badge' href="<%= search_by_facet_value('author', name.name) %>"><%= "#{count_authors} time".pluralize(count_authors) %></a> in our entries<br/>
     <% end %>
 
     <% if count_artists > 0 %>

@@ -53,6 +53,7 @@ describe "Manage Comments", :js => true do
   end
 
   it "should allow a user to delete their comments" do
+    skip "right, we can't click on modals because that would be useful!"
     visit comments_path
 
     first('#search_results a').click
@@ -63,7 +64,8 @@ describe "Manage Comments", :js => true do
     
     expect(page).to have_content('Are you sure?')
     
-    first('.btn.btn-danger.commit').click
+    #first('button.btn.btn-danger.commit').click
+    click_button "Confirm"
 
     expect(page).to have_content('This comment has been deleted.')
     expect(page).not_to have_content('That\'s ridiculous.')

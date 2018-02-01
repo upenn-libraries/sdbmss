@@ -255,18 +255,19 @@ var BOOKMARK_SCOPE;
              * replace it with that object's 'id' attribute.
              */
             replaceEntityObjectsWithIds: function (objectArray, relatedObjectName) {
-                objectArray.forEach(function (element, index, array) {
-                  console.log(JSON.stringify(element), element);
-                    if (element._destroy === 1) {
-                      // noop; this fixes a bug related to counters where the ROW would be deleted and the name removed at the same time, which confused the rails counter-cache
-                    } else if(element[relatedObjectName]) {
-                        element[relatedObjectName + "_id"] = element[relatedObjectName].id;
-                        delete element[relatedObjectName];
-                    } else if (element[relatedObjectName] === null) {
-                        element[relatedObjectName + "_id"] = null;
-                        delete element[relatedObjectName];
-                    }
-                });
+                if (objectArray !== undefined) {                  
+                  objectArray.forEach(function (element, index, array) {
+                      if (element._destroy === 1) {
+                        // noop; this fixes a bug related to counters where the ROW would be deleted and the name removed at the same time, which confused the rails counter-cache
+                      } else if(element[relatedObjectName]) {
+                          element[relatedObjectName + "_id"] = element[relatedObjectName].id;
+                          delete element[relatedObjectName];
+                      } else if (element[relatedObjectName] === null) {
+                          element[relatedObjectName + "_id"] = null;
+                          delete element[relatedObjectName];
+                      }
+                  });
+                }
             },
             parseRailsErrors: parseRailsErrors,
             /*
