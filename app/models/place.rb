@@ -19,7 +19,7 @@ class Place < ActiveRecord::Base
   validates_presence_of :name
 
   belongs_to :parent, class_name: "Place"
-  has_many :children,  class_name: "Place", foreign_key: "parent_id"
+  has_many :children,  class_name: "Place", foreign_key: "parent_id", :dependent => :restrict_with_error
 
   has_many :comments, as: :commentable
 

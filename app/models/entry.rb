@@ -1018,6 +1018,7 @@ class Entry < ActiveRecord::Base
       ["Source ID (Full)", "source"], 
       ["Approved", "approved"],
       ["Width", "width"], 
+      ["Source Date", "source_date"],
       #["Provenance Date", "provenance_date"],
       ["Price", "sale_price"], 
       ["Lines", "num_lines"], 
@@ -1043,7 +1044,7 @@ class Entry < ActiveRecord::Base
   def self.fields
     [
       ["All Fields", "complete_entry"], 
-      ["Source", "source_search"], 
+      ["Source", "source_search"],  
       ["Catalog or Lot #", "catalog_or_lot_number_search"],
       ["Selling Agent", "sale_selling_agent_search"], 
       ["Seller", "sale_seller_search"], 
