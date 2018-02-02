@@ -56,6 +56,9 @@ class Place < ActiveRecord::Base
     integer :id
     integer :authority_id
     string :authority_source
+    float :latitude
+    float :longitude
+    string :parent
     boolean :reviewed
     boolean :problem
     integer :created_by_id
