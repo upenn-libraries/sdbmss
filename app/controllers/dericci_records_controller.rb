@@ -22,6 +22,10 @@ class DericciRecordsController < ApplicationController
       @total = @total.joins(:dericci_record_flags)
       @records = @records.joins(:dericci_record_flags)
     end
+    if params[:linked]
+      @total = @total.joins(:dericci_links)
+      @records = @records.joins(:dericci_links)
+    end
     @total = @total.count
     @num_pages = (@total / @count).to_i
     @pages = [*[@page-2,0].max..[@page+2,@num_pages].min] 
