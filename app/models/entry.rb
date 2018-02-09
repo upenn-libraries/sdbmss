@@ -655,7 +655,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :sale_selling_agent, :stored => true, :multiple => true) do
       (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "selling_agent" }.select(&:facet_value).map(&:facet_value) : []
     end
-    define_field(:text, :sale_selling_agent_search, :stored => true) do
+    define_field(:text, :sale_selling_agent_search, :stored => true, :more_like_this => true) do
       (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "selling_agent" }.map(&:display_value).join("; ") : ""
     end
 
@@ -822,7 +822,7 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:integer, :folios, :stored => true) { folios }
-    define_field(:text, :folios_search, :stored => true, :more_like_this => true) { folios.to_s }
+    #define_field(:text, :folios_search, :stored => true, :more_like_this => true) { folios.to_s }
     
     define_field(:integer, :num_columns, :stored => true) { num_columns }
 
@@ -881,7 +881,7 @@ class Entry < ActiveRecord::Base
       provenance.select(&:facet_value).map(&:facet_value)
     end
 
-    define_field(:text, :provenance_search, :stored => true) do
+    define_field(:text, :provenance_search, :more_like_this => true, :stored => true) do
       provenance.map(&:display_value).join("; ")
     end
 
@@ -1075,7 +1075,7 @@ class Entry < ActiveRecord::Base
   end
 
   def self.similar_fields
-    [:title_search, :place_search, :language_search, :artist_search, :scribe_search, :use_search, :binding_search, :folios_search, :author_search, :manuscript_date_search, :material_search]
+    [:title_search, :place_search, :language_search, :artist_search, :scribe_search, :use_search, :binding_search, :author_search, :manuscript_date_search, :material_search, :provenance_search, :sale_selling_agent_search]
   end
 
   def create_activity(action_name, current_user, transaction_id)

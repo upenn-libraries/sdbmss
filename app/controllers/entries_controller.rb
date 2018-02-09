@@ -396,8 +396,19 @@ class EntriesController < SearchableAuthorityController
   # this action returns differently formatted JSON results depending
   # on param 'full'
   def similar
+    model = @entry
+    tolerance = params[:tolerance].to_i
     s = Sunspot.more_like_this(@entry) do
       fields *similar_params.keys.map(&:to_sym)
+
+      all_of do
+        similar_ranges.keys.map(&:to_sym).each do |p|
+          if model.present?
+            puts p, model
+            with(p).between((model[p].to_i - tolerance)..(model[p].to_i + tolerance))
+          end
+        end
+      end
       # without :id, [collect entry_ids from manuscript]
       #minimum_term_frequency 3
       boost_by_relevance true
@@ -568,6 +579,10 @@ class EntriesController < SearchableAuthorityController
 
   def similar_params
     params.require(:fields).permit(*Entry.similar_fields)
+  end
+
+  def similar_ranges
+    params.require(:fields).permit(:folios, :num_columns, :num_lines, :height, :width)
   end
 
   def entry_params_for_create_and_edit(params)

@@ -623,7 +623,7 @@ $(document).ready(function() {
         var url = '/entries/' + entryId + '/similar.json';
 
         var fields = $.map($('.suggestion-field:checked'), function (e) { return e.value; });
-        var data = {fields: {}, limit: 50};
+        var data = {fields: {}, limit: 50, tolerance: $("#tolerance").val() };
         for (var i = 0; i < fields.length; i++) {
             data.fields[fields[i]] = true;
         }
@@ -633,9 +633,14 @@ $(document).ready(function() {
             type: 'GET',
             data: data,
             success: function(data, textStatus, jqXHR) {
-                potentialMatches = data;
-                resultsTable.reload();
-                $('#suggestions-modal').modal('hide')                
+                if (data.length > 0) {                    
+                    potentialMatches = data;;
+                    resultsTable.reload();
+                    $('#suggestions-modal').modal('hide')                
+                } else {
+                    //$('#suggestions-modal').modal('hide')                
+                    alert("No matches found under your selected criteria - try broadening your search.");
+                }
             },
             error: function(xhr) {
                 var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
@@ -838,7 +843,10 @@ $(document).ready(function() {
                     <div class="col-sm-12">
                         <p class="text-muted text-center">Select the fields that you wish to consider when searching for similar record.</p>
                     </div>
-                    <div class="col-xs-12 form-inline text-center">
+                    <div class="col-xs-6 form-inline">
+                        <p class="text-info">
+                            <b>Text fields</b>
+                        </p>
                         <ul class="list-inline">
                         <% Entry.similar_fields.each_with_index do |field, index| %>
                             <li>
@@ -850,7 +858,25 @@ $(document).ready(function() {
                             </li>
                         <% end %>
                         </ul>
-                    </div>                   
+                    </div>
+                    <div class="col-xs-6 form-inline">
+                        <p class="text-info"><b>Numerical fields</b> may provide more precise or less ambiguous results, but not all entries have values in all fields.</p>
+                        <ul class="list-inline">
+                            <% [:folios, :num_columns, :num_lines, :height, :width].each do |field, index| %>
+                                <li>
+                                    <input type="checkbox" id="suggestion-range-<%= field %>" value="<%= field %>" class="form-control suggestion-field">
+                                        <label for="suggestion-range-<%= field %>" class="control-label label label-default">
+                                            <%= field.to_s.gsub("num_", "").humanize %>
+                                        </label>
+                                    </input>
+                                </li>
+                            <% end %>
+                        </ul>
+                        <label for="" class="control-label">Threshold
+                            <input type="number" min="1" max="25" id="tolerance" class="form-control" value="10">
+                            </input>
+                        </label>
+                    </div>                  
                     <div class="col-xs-12 text-center">
                         <input type="submit" class="form-control" id="show-matches" value="Get Suggestions!"></input>
                     </div>
