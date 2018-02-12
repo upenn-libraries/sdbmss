@@ -1,0 +1,99 @@
+<% content_for :head do %>
+  <%= javascript_include_tag "leaflet", rel: "nofollow" %>
+  <%= javascript_include_tag "leaflet-provider", rel: "nofollow" %>
+  <%= stylesheet_link_tag "leaflet", media: "all" %>
+  <style>
+    #map {
+      height: calc(100vh - 240px);
+      width: 100%;
+      border: 1px solid black;
+    }
+    #spinner {
+      margin: auto;
+    }
+  </style>
+  <script>
+    $(document).ready(function () {
+      $("#spinner").hide();
+      var map;
+
+      $("#search_submit").click( function () {
+        $("#spinner").show();
+
+         var params = {};
+         params["op"] = $("select[name='op']").val();
+
+         $(".search-block").each(function(idx, element) {
+             var search_field = $(element).find("select[name='search_field']").first().val() + "[]";
+             var search_value = $(element).find("input[name='search_value']").first().val();
+             if (search_value == "" ) search_value = "*";
+             var search_option = $(element).find("select[name='search_option']").first().val();
+             var search_option_field = $(element).find("select[name='search_field']").first().val() + "_option[]";
+            if (!params[search_field]) {
+                params[search_field] = [search_value];
+            }
+            else {
+                params[search_field].push(search_value);
+            }
+
+            if (!params[search_option_field]) {
+                params[search_option_field] = [search_option];
+            } else {
+                params[search_option_field].push(search_option);
+            }            
+         });
+
+         params["limit"] = 100000; // get ALL places
+
+        $.get("/places/search.json", params, function (results) {
+          $("#spinner").hide();
+
+          if (map) {
+            map.off();
+            map.remove();
+          }
+          map = L.map('map');
+
+          var sdbmIcon = L.icon({
+            iconUrl: '<%= asset_path "map-pin.svg" %>',
+
+            iconSize:     [32, 32], // size of the icon
+            iconAnchor:   [16, 32], // point of the icon which will correspond to marker's location
+            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+          });
+
+          for (var i = 0; i < results.results.length; i++) {
+            if (results.results[i].latitude && results.results[i].longitude) {
+              L.marker([results.results[i].latitude, results.results[i].longitude], {icon: sdbmIcon, title: results.results[i].name}).addTo(map);            
+            }
+          }
+
+          map.setView([60, 0], 13);        
+          map.setZoom(3);
+
+          var Stamen_TonerLite = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.{ext}', {
+            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+            subdomains: 'abcd',
+            minZoom: 0,
+            maxZoom: 20,
+            ext: 'png'
+          });
+          Stamen_TonerLite.addTo(map);
+        });
+      });
+
+    });
+  </script>
+<% end %>
+
+<div class="row">
+  <div class="col-sm-12 text-center">
+    <h3>Places, Mapped</h3>
+    <%= render partial: "search_form" %>
+  </div>
+  <div class="col-sm-12 text-center">
+    <span id="spinner"><img src="<%= asset_path "spinner.gif" %>"></img> loading...</span>
+    <div id="map">
+    </div>
+  </div>
+</div>

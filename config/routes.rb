@@ -228,6 +228,7 @@ Rails.application.routes.draw do
       post 'mark_as_reviewed'
       get 'search'
       get 'more_like_this'
+      get 'map'
     }
     member do
       get 'merge'

@@ -20,6 +20,16 @@ class PlacesController < SearchableAuthorityController
     end
   end
 
+  def map
+    @search_fields = model_class.search_fields
+    @fields = model_class.fields
+    @filters = model_class.filters
+    @dates = model_class.dates
+    @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
+    @field_options = ["contains", "does not contain", "blank", "not blank", "before", "after"]
+    @date_options = ["before", "after", "near", "exact"]    
+  end
+
   def merge
     @model = Place.find(params[:id])
 
