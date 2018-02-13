@@ -206,6 +206,9 @@ function relation (type) {
             //$('.sdbm-table').toggleClass('full-width');
             //$('.search_results').toggleClass('full-width');
         });
+
+        //$(".mapmode").replaceWith($("<a href='' class='btn btn-default'><span class='glyphicon glyphicon-picture'></span></a>"));
+        
         $('.spinner').replaceWith('<span id="spinner" style="display: none;"><img alt="working..." src="' + $("#spinner-src").attr('src') + '"> loading...</span>');
         $('.csv').replaceWith('<a id="export-csv" class="btn btn-default" title="Export to CSV"><span class="glyphicon glyphicon-floppy-save"></span></a>');
         $('.columns').replaceWith('<div class="btn-group">' + 

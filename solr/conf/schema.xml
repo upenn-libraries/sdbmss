@@ -314,6 +314,7 @@
     <field name="manuscript" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="manuscript_id" stored="true" type="sint" multiValued="false" indexed="true"/>
     <field name="source_date" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="source_date_search" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="supercede" stored="true" type="sint" multiValued="true" indexed="true" />
 
     <field name="groups" stored="true" type="text" multiValued="false" indexed="true"/>

@@ -15,6 +15,7 @@
   <script>
     $(document).ready(function () {
       $("#spinner").hide();
+      $("#search_results").after($("<div id='map'></div>"));
       var map;
 
       $("#search_submit").click( function () {

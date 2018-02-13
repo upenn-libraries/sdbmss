@@ -602,6 +602,11 @@ class Entry < ActiveRecord::Base
     define_field(:string, :source_date, :stored => true) do
       source.date
     end
+    define_field(:text, :source_date_search, :stored => true) do
+      source.date
+    end
+    
+
     define_field(:string, :source, :stored => true) do
       source.public_id
     end
@@ -1018,7 +1023,6 @@ class Entry < ActiveRecord::Base
       ["Source ID (Full)", "source"], 
       ["Approved", "approved"],
       ["Width", "width"], 
-      ["Source Date", "source_date"],
       #["Provenance Date", "provenance_date"],
       ["Price", "sale_price"], 
       ["Lines", "num_lines"], 
@@ -1060,6 +1064,7 @@ class Entry < ActiveRecord::Base
       ["Place", "place_search"], 
       ["Use", "use_search"],
       ["Provenance", "provenance_search"],
+      ["Source Date", "source_date_search"],
     ]
   end
 
