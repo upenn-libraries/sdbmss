@@ -3,24 +3,44 @@
 <%= stylesheet_link_tag "leaflet", media: "all" %>
 <style>
     #map {
-      height: calc(100vh - 240px);
-      width: 100%;
+      position: absolute;
+      top: 70px;
+      left: 10px;
+      height: calc(100% - 80px);
+      width: calc(100% - 20px);
       border: 1px solid black;
+      display: none;
     }
-    #spinner {
-      margin: auto;
+    #close-map {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        z-index: 1000;
     }
+    #main-container .navbar {
+        z-index: 1000;
+    }
+
 </style>
 <script type="text/javascript">
 
  $(document).ready(function() {
-    /*
-    $("#spinner").hide();
-    $("#search_results").after($("<div id='map'></div>"));
+    //$("#spinner").hide();
+    $("#search_results").after($("<div id='map'><button id='close-map' type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>"));
+    
     var map;
+    $('#close-map').click(function () {
+        $("#map").hide();
+        //$("#search_results_wrapper").show();
+    });
 
-    //$("#search_submit").click( function () {
-        $("#spinner").show();
+    $("#search_submit").click( function () {
+        $("#map").show();
+        //$("#search_results_wrapper").hide();
+          if (map) {
+            map.off();
+            map.remove();
+          }
 
          var params = {};
          params["op"] = $("select[name='op']").val();
@@ -50,10 +70,6 @@
         $.get("/places/search.json", params, function (results) {
           $("#spinner").hide();
 
-          if (map) {
-            map.off();
-            map.remove();
-          }
           map = L.map('map');
 
           var sdbmIcon = L.icon({
@@ -82,7 +98,7 @@
           });
           Stamen_TonerLite.addTo(map);
         });
-    //});*/
+    });
 
      SDBM.setPageFullWidth();
 

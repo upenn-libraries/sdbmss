@@ -77,6 +77,7 @@ class Place < ActiveRecord::Base
       ["Authority Id", "authority_id"], 
       ["Authority Source", "authority_source"],
       ["Problem", "problem"],
+      ["Parent", "parent"],
       ["Latitude", "latitude"],
       ["Longitude", "longitude"]
     ]
