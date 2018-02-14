@@ -58,7 +58,9 @@ class Place < ActiveRecord::Base
     string :authority_source
     float :latitude
     float :longitude
-    string :parent
+    string :parent do
+      parent.nil? ? nil : parent.name
+    end
     boolean :reviewed
     boolean :problem
     integer :created_by_id
