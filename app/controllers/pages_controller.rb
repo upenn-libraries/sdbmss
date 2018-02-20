@@ -38,7 +38,9 @@ class PagesController < ApplicationController
 
   def show
     @page = Page.find_by(name: params[:name])
-    if @page.ext == "pdf"
+    if @page.nil?
+      render_404
+    elsif @page.ext == "pdf"
       redirect_to "/#{@page.location}/#{URI.encode @page.filename}"
     else
       @filecontents = nil
