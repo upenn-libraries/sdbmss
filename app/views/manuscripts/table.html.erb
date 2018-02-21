@@ -170,7 +170,7 @@
       <td>Sold</td>      
       <% @entries.each do |entry| %>
         <td>
-          <% entry.sale ? entry.sale.sold : "" %>
+          <%= entry.sale ? entry.sale.sold : "" %>
         </td>
       <% end %>
     </tr>
@@ -178,7 +178,7 @@
       <td>Date Sold</td>      
       <% @entries.each do |entry| %>
         <td>
-          <% entry.sale ? SDBMSS::Util.format_fuzzy_date(entry.sale.date) : "" %>
+          <%= entry.sale ? SDBMSS::Util.format_fuzzy_date(entry.sale.date) : "" %>
         </td>
       <% end %>
     </tr>
@@ -186,7 +186,7 @@
       <td>Price</td>      
       <% @entries.each do |entry| %>
         <td>
-          <% entry.sale ? entry.sale.get_complete_price_for_display : "" %>
+          <%= entry.sale ? entry.sale.get_complete_price_for_display : "" %>
         </td>
       <% end %>
     </tr>

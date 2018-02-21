@@ -440,6 +440,7 @@ class Entry < ActiveRecord::Base
       sale_seller_or_holder: sale_seller_or_holders.map(&:display_value).join("; "),
       sale_buyer: sale_buyers.map(&:display_value).join("; "),
       sale_sold: (sale.sold if sale),
+      sale_date: (SDBMSS::Util.format_fuzzy_date(sale.date) if sale),
       sale_price: (sale.get_complete_price_for_display if sale),
       titles: entry_titles.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
       authors: entry_authors.sort{ |a, b| a.order.to_i <=> b.order.to_i }.map(&:display_value).join("; "),
@@ -677,6 +678,10 @@ class Entry < ActiveRecord::Base
 
     define_field(:string, :sale_sold, :stored => true) do
       get_sale_sold
+    end
+
+    define_field(:string, :sale_date, :stored => true) do
+      sale.date if sale
     end
 
     define_field(:double, :sale_price, :stored => true) do
@@ -1019,6 +1024,7 @@ class Entry < ActiveRecord::Base
       ["Approved", "approved"],
       ["Width", "width"], 
       ["Source Date", "source_date"],
+      ["Sale Date", "sale_date"],
       #["Provenance Date", "provenance_date"],
       ["Price", "sale_price"], 
       ["Lines", "num_lines"], 

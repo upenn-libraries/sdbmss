@@ -417,6 +417,12 @@ function relation (type) {
                 {
                     sdbmssMinWidth: "100px",
                     sdbmssMaxWidth: "100px",
+                    sdbmssSortField: 'sale_date',
+                    title: 'Sale Date',
+                },
+                {
+                    sdbmssMinWidth: "100px",
+                    sdbmssMaxWidth: "100px",
                     sdbmssSortField: 'sale_price',
                     title: 'Price'
                 },
@@ -714,6 +720,7 @@ function relation (type) {
                             result.sale_seller_or_holder,
                             result.sale_buyer,
                             result.sale_sold,
+                            result.sale_date,
                             result.sale_price,
                             result.titles,
                             result.authors,

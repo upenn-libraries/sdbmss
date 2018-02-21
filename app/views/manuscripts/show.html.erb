@@ -127,9 +127,9 @@
     <div class='col-sm-5'> 
             <div class="panel panel-default">
                 <div class="panel-body text-muted">
-                    <span class='h3'>Last Known Location <small>(Deprecated Field)</small>
-                    </span><br>
-                    <p><%= @manuscript.location %></p>
+                    <span class='h3'>Last Known Location </span><br>
+                    <p>This field existed in a previous version of the SDBM, but our new data model does not support it. When more recent data is available you will see a Most Recently Observed Location below.</p>
+                    <p class='text-center'><b><%= @manuscript.location %></b></p>
                     <p>Can you verify this information? <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %></p>
                 </div>
             </div>
