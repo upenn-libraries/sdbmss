@@ -58,7 +58,9 @@ class Place < ActiveRecord::Base
     string :authority_source
     float :latitude
     float :longitude
-    string :parent
+    string :parent do
+      parent.nil? ? nil : parent.name
+    end
     boolean :reviewed
     boolean :problem
     integer :created_by_id
@@ -76,7 +78,10 @@ class Place < ActiveRecord::Base
     super + [
       ["Authority Id", "authority_id"], 
       ["Authority Source", "authority_source"],
-      ["Problem", "problem"]
+      ["Problem", "problem"],
+      ["Parent", "parent"],
+      ["Latitude", "latitude"],
+      ["Longitude", "longitude"]
     ]
   end
 
