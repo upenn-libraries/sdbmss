@@ -134,7 +134,7 @@ class Entry < ActiveRecord::Base
     {:entry_scribes => [:scribe]},
     {:entry_languages => [:language]},
     {:entry_places => [:place => [:parent => [:parent => [:parent => [:parent => [:parent]]]]]]},
-    {:provenance => [:provenance_agent]},
+    {:provenance => [:provenance_agent => [:associated_place]]},
     {:entry_manuscripts => [:manuscript]},
     {:source => [:source_agents,:source_type]}
   ]
@@ -893,6 +893,10 @@ class Entry < ActiveRecord::Base
 
     define_field(:text, :provenance_search, :more_like_this => true, :stored => true) do
       provenance.map(&:display_value).join("; ")
+    end
+
+    define_field(:string, :provenance_place, :multiple => true, :stored => true) do
+      provenance.map(&:provenance_agent).map{ |pa| (pa && pa.associated_place) ? pa.associated_place.name : nil}.reject(&:blank?)
     end
 
     define_field(:string, :provenance_date, :stored => true, :multiple => true) do

@@ -88,6 +88,7 @@ module CatalogControllerConfiguration
       config.add_facet_field 'source_display', :label => 'Source', :collapse => false, :limit => 3
       config.add_facet_field 'source_type', :label => 'Source Type', :collapse => false, :limit => 3
       config.add_facet_field 'provenance', :label => 'Provenance', :limit => 3
+      config.add_facet_field 'provenance_place', :label => 'Provenance Place', :limit => 3
       config.add_facet_field 'manuscript_date_range', :label => 'Manuscript Date', :limit => 3
       config.add_facet_field 'manuscript_public_id', :label => 'Manuscript', :limit => 3
       config.add_facet_field 'place', :label => 'Place', :limit => 3

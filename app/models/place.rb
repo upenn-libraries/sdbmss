@@ -21,6 +21,8 @@ class Place < ActiveRecord::Base
   belongs_to :parent, class_name: "Place"
   has_many :children,  class_name: "Place", foreign_key: "parent_id", :dependent => :restrict_with_error
 
+  has_many :names, class_name: "Name", foreign_key: "associated_place_id", :dependent => :restrict_with_error
+
   has_many :comments, as: :commentable
 
   validate do |name_obj|
