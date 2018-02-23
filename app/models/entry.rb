@@ -428,7 +428,7 @@ class Entry < ActiveRecord::Base
     sale_selling_agents = sale ? sale.sale_agents.select{ |sa| sa.role == "selling_agent" } : []#(sale.get_selling_agents_names if sale && sale.get_selling_agents.count > 0)
     sale_seller_or_holders = sale ? sale.sale_agents.select{ |sa| sa.role == "seller_or_holder" } : [] #(sale.get_sellers_or_holders_names if sale && sale.get_sellers_or_holders.count > 0)
     sale_buyers = sale ? sale.sale_agents.select{ |sa| sa.role == "buyer" } : [] #(sale.get_buyers_names if sale && sale.get_buyers.count > 0)
-    {
+    flat_hash = {
       id: id,
       manuscript: options[:csv].present? ? (entry_manuscripts.map{ |em| em.manuscript.public_id }.join("; ")) : (entry_manuscripts.length > 0 ? entry_manuscripts.map{ |em| {id: em.manuscript_id, relation: em.relation_type} } : nil),
       groups: options[:csv].present? ? group_records.map{ |group_record| group_record.group.name }.join("; ") : group_records.map{ |group_record| [group_record.group_id, group_record.group.name, group_record.editable] },
@@ -477,6 +477,10 @@ class Entry < ActiveRecord::Base
       superceded_by_id: superceded_by_id,
       draft: draft
     }
+    if options[:csv].present?
+      flat_hash[:coordinates] = entry_places.map(&:place).reject(&:blank?).map{ |p| p.latitude.present? ? "(#{p.latitude},#{p.longitude})" : nil}.reject(&:blank?).join("; ")
+    end
+    flat_hash
   end
 
   def search_result_format

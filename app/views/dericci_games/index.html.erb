@@ -183,7 +183,7 @@
   <div class="col-sm-12">
     <div class="chart">
       <canvas height="400" width="400" id="piechart"></canvas>
-      <h4 class='banner' style="background: #009688;"><%= (users_count = DericciGame.group(:created_by).count.count) %> <%= "user".pluralize(users_count) %> <%= "is".pluralize(users_count) %> playing the Name Game!</h4>
+      <h4 class='banner' style="background: #009688;"><%= (users_count = DericciGame.group(:created_by).count.count) %> <%= "user".pluralize(users_count) %> <%= "has".pluralize(users_count) %> played the Name Game!</h4>
       <h4 class='banner' style="background: #8BC34A;"><%= (links_count = DericciLink.count) %> <%= "link".pluralize(links_count) %> <%= "has".pluralize(links_count) %> been suggested!</h4>
       <h4 class='banner' style="background: #00bcd4;"><%= (flags_count = DericciRecordFlag.count) %> <%= "flag".pluralize(flags_count) %> <%= "has".pluralize(flags_count) %> been identified!</h4>
     </div>
