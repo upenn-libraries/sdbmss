@@ -16,7 +16,7 @@ class DericciRecordsController < ApplicationController
     @records = DericciRecord.where("#{field} LIKE '%#{term}%'").where("name LIKE '#{letter}%'").where("senate_house like ?", "%#{type}%")
     if params[:verified_id]
       @total = @total.where(verified_id: nil)
-      @records = @records.where(verified_id: nil)
+      @records = @records.where(verified_id: nil)      
     end
     if params[:flagged]
       @total = @total.joins(:dericci_record_flags)
@@ -55,6 +55,11 @@ class DericciRecordsController < ApplicationController
 
   def update
     @record.update_by(current_user, dericci_record_params)
+    @record.dericci_links.where(name_id: @record.verified_id).map(&:created_by).each do |created_by|
+      if created_by != current_user
+        created_by.notify("#{current_user} has verified a link you made between a De Ricci Card and an SDBM Name - thanks for your help!", @record, "update")
+      end
+    end
     respond_to do |format|
       format.html {
         redirect_to dericci_record_path(@record)        

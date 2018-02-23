@@ -1,10 +1,13 @@
 <tr>
   <td>
-    <% if (flags = record.dericci_record_flags.count) > 0 %>
-      <span class="btn btn-xs btn-danger">
-        <span class="glyphicon glyphicon-flag"></span>
-        <span class="badge"><%= flags %></span>
-      </span>
+    <% record.dericci_record_flags.each do |flag| %>
+      <% if flag.reason == DericciRecordFlag.reasons[0] %>
+        <span class="glyphicon glyphicon-flag text-danger"></span>
+      <% elsif flag.reason == DericciRecordFlag.reasons[1] %>
+        <span class="glyphicon glyphicon-flag text-success"></span>
+      <% else %>
+        <span class="glyphicon glyphicon-flag text-warning"></span>
+      <% end %>
     <% end %>
     <%= link_to record.name, dericci_record_path(record) %>
   </td>

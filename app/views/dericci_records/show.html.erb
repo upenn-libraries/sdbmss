@@ -30,7 +30,7 @@
 <div class="row">
   <% @record.dericci_record_flags.each do |flag| %>
     <div class="col-sm-12">
-      <div class="alert <%= DericciRecordFlag.reasons.include?(flag.reason) ? 'alert-info' : 'alert-danger' %>">
+      <div class="alert <%= (DericciRecordFlag.reasons[0] == flag.reason ? 'alert-danger' : (DericciRecordFlag.reasons[1] == flag.reason) ? 'alert-success' : 'alert-warning') %>">
         <strong><span class="glyphicon <%= DericciRecordFlag.reasons.include?(flag.reason) ? 'glyphicon-flag' : 'glyphicon-warning-sign' %>"></span> Flagged - </strong>
         <%= flag.reason %>
         <strong> - <%= link_to flag.created_by.to_s, profile_path(flag.created_by.username) %></strong>
