@@ -32,18 +32,28 @@
               <span class="glyphicon glyphicon-edit"></span> Manage
             <% end %>
         <% end %>
-        <% group_user = group.group_users.where(user_id: current_user)[0] %>
-        <% if group_user.confirmed %>
-          <% destroy_group_word = "Leave Group" %>
-        <% else %>
-          <% if group_user.created_by == current_user %>
-            <% destroy_group_word = "Cancel Request" %>
-          <% else %>
-            <% destroy_group_word = "Reject Invitation" %>
-            <%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put, class: "btn btn-default btn-xs" %></li>
-          <% end %>
+
+        <% if not group.users.include? current_user %>
+            <p class='text-center'>
+                <%= link_to(add_to_group_accounts_path(ids: [current_user.id], group_id: group.id), :method => :post) do %>
+                    <span class="glyphicon glyphicon-pencil"></span> Request Membership
+                <% end %>
+            </p>
         <% end %>
-        <%= link_to destroy_group_word, group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to leave this group?" }, class: "btn btn-xs btn-default" %>
+        
+        <% if (group_user = group.group_users.where(user_id: current_user).first) %>
+          <% if group_user.confirmed %>
+            <% destroy_group_word = "Leave Group" %>
+          <% else %>
+            <% if group_user.created_by == current_user %>
+              <% destroy_group_word = "Cancel Request" %>
+            <% else %>
+              <% destroy_group_word = "Reject Invitation" %>
+              <%= link_to "Accept Invitation", group_user_path(group_user, group_user: {confirmed: true}), :method => :put, class: "btn btn-default btn-xs" %></li>
+            <% end %>
+          <% end %>
+          <%= link_to destroy_group_word, group_user_path(group_user), :method => :delete, data: { confirm: "Are you sure you would like to leave this group?" }, class: "btn btn-xs btn-default" %>
+        <% end %>
         </div>
       </td>
     </tr>
