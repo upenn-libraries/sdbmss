@@ -46,7 +46,9 @@
         <!--
         <span class="text-muted">Created By: <%# render partial: "shared/username_with_profile_link", locals: { user: @model.created_by } %></span>
         -->
-        <p><%= @model.description %></p>
+        <p>
+            <%= sanitize simple_format(@model.description), tags: %w(code b i br strong em a), attributes: %w(href) %>
+        </p>
 
         <div class="list-inline">
             <li class='h4'>Managers</li>
