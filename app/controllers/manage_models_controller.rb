@@ -149,7 +149,7 @@ class ManageModelsController < ApplicationController
         else
           respond_to do |format|
             format.json {
-              render status: :unprocessable_entity, json: { "error" => @model.errors.join("; ") }
+              render status: :unprocessable_entity, json: { "error" => "Record could not be deleted for unknown reaons.  Make sure it is not linked to other active objects." }
             }
             format.html {
               flash[:error] = @model.errors.join("; ")
