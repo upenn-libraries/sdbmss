@@ -120,6 +120,16 @@ class EntriesController < SearchableAuthorityController
     #  params.merge!("draft" => ["false"], "draft_option" => ["with"])
     #end
 
+    # Dates are treated as strings, so need a bit of manipulating
+    [:source_date, :sale_date].each do |date_key|
+      if params[date_key]
+        params[date_key] = Array(params[date_key])
+        params[date_key].map! do | date |
+          date.gsub('-', '').gsub('/', '').ljust(8, "*")
+        end
+      end
+    end
+
     if params[:format] == 'csv'
       if current_user.downloads.count >= 5
         render json: {error: 'at limit'}
