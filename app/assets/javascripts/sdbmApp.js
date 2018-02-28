@@ -375,7 +375,9 @@ var BOOKMARK_SCOPE;
         });
       };
       $scope.save = function () {
-        $http.put('/dericci_records/' + $scope.record_id + '.json', {verified_id: $scope.record.verified_id}).then(function (response) {
+        $scope.record.verified_id = $scope.name.id;
+        var url = '/dericci_records/' + $scope.record_id + '.json';
+        $http.put(url, {verified_id: $scope.record.verified_id}).then(function (response) {
           window.location.reload();
         });
       };
@@ -383,6 +385,7 @@ var BOOKMARK_SCOPE;
         $scope.record.verified_id = null;
         $scope.name = null;
       };
+      EntryScope = $scope;
     });
 
     sdbmApp.controller("DericciGameCtrl", function ($scope, $http, $modal, $sce) {
