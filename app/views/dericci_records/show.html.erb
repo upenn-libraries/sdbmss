@@ -93,7 +93,7 @@
         </td>
         <td>
           <% if @record.dericci_links.group_by(&:name_id).each do |name_id, dericci_links| %>
-              <% name = dericci_links.first.name %>            
+              <% name = dericci_links.first.name %>
               <a href="" class="btn btn-info btn-xs" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
                 <%= name.name %> <span class="badge"><%= dericci_links.count %></span>
               </a>

@@ -428,6 +428,9 @@ class Name < ActiveRecord::Base
     SourceAgent.where(agent_id: self.id).update_all({ agent_id: target_id })
     Provenance.where(provenance_agent_id: self.id).update_all({ provenance_agent_id: target_id })
 
+    DericciLink.where(name_id: self.id).update_all({ name_id: target_id })
+    DericciRecord.where(verified_id: self.id).update_all({verified_id: target_id})
+
     # update flags on the target
     target.is_artist ||= self.is_artist
     target.is_author ||= self.is_author
