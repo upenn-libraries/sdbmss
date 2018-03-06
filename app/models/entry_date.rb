@@ -86,7 +86,7 @@ class EntryDate < ActiveRecord::Base
     else
       val += " (#{date_normalized_start} to #{date_normalized_end})"
     end
-    val + certainty_flags
+    val
   end
 
   def to_s
