@@ -3468,7 +3468,7 @@ var BOOKMARK_SCOPE;
       var index = bookmark.tags.indexOf(tag);
       if (index != -1) {
         bookmark.tags.splice(index, 1);
-        $http.get('/bookmarks/' + bookmark.id + '/removetag?tag=' + tag).then( function (e) {
+        $http.put('/bookmarks/' + bookmark.id, {tags: bookmark.tags.join(',')}).then( function (e) {
         });
       }
     }
@@ -3478,8 +3478,7 @@ var BOOKMARK_SCOPE;
         bookmark.tags.push(tag);
         bookmark.newtag = "";
         bookmark.showAddTag = false;
-        $http.get('/bookmarks/' + bookmark.id + '/addtag?tag=' + tag).then( function (e) {
-          //console.log(e);
+        $http.put('/bookmarks/' + bookmark.id, {tags: bookmark.tags.join(',')}).then( function (e) {
         });
       }
     }
@@ -3507,7 +3506,7 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.loadBookmarks = function () {
-      $http.get('/bookmarks/reload.json?details=true').then( function (e) {
+      $http.get('/bookmarks.json?details=true').then( function (e) {
         if (e.error) return;
         
         $scope.all_bookmarks = e.data.bookmarks;
@@ -3526,7 +3525,7 @@ var BOOKMARK_SCOPE;
         var id = bookmark.document_id, type = bookmark.document_type;
         $scope.$apply();        
         $scope.searchTag($scope.tagSearch);
-        addNotification(type + ' ' + id + ' un-bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
+        addNotification(type + ' ' + id + ' un-bookmarked!', 'warning');
       }).error( function (e) {
         console.log('error', e);
       });
