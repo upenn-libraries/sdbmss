@@ -58,7 +58,11 @@
         }
       </style>
       <script type='text/javascript'>
-        $(".fade").removeClass("fade");
+        $(document).ready(function () {          
+          $(".fade").removeClass("fade");
+          $.support.transition = false;
+          jQuery.fx.off = true;
+        });
       </script>
     <%end%>
 

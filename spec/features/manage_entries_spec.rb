@@ -122,10 +122,10 @@ describe "Manage entries", :js => true do
   it "should perform a search on any field without error" do
     visit entries_path
 
-    expect(page.first("select[name='search_field']").all("option").length).to eq(40)
+    expect(page.first("select[name='search_field']").all("option").length).to eq(42)
 
 
-    40.times do |i|
+    42.times do |i|
       page.first("input[name='search_value']").set "Test String"
       option = page.all("select[name='search_field'] option")[i]
       option.select_option
@@ -207,12 +207,6 @@ describe "Manage entries", :js => true do
     count2 = page.find('#search_results_info').text.match(/of\s([\d,]+)\s/)[1].gsub(",", "").to_i
 
     expect(count).to eq(count2)
-  end
-
-  it "should correctly display the RSS feed" do
-    visit feed_path(format: :rss)
-
-    expect(source).to have_content(Entry.last(2)[0].to_s)
   end
 
   it "should display a citation correctly" do
