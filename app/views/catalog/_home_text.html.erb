@@ -17,6 +17,7 @@
 <script type="text/javascript">
     $(window).load(function(){
 //        $('#Welcome').modal('show');
+        $('#Survey').modal('show');
     });
 </script>
 <% end %>
@@ -97,21 +98,30 @@
     </div>
 </div>
 
+<div class="modal fade" id="Survey">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdVlU5AUc8O1b9uNnKRZLgb5sIIIClH8vwb_dg3HgVeJaVRhw/viewform?embedded=true" width="760" height="2200" style="width: 100%;" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" id="Welcome">
     <div class="modal-dialog">
         <div class="modal-content">
-        <div class="modal-header text-center">
-            <span class="h3">Recent Changes to the New SDBM</span>
-            <a href="#Welcome" id="dismiss-welcome" data-dismiss="modal" data-target="#Welcome" class='pull-right' style="color: #333;"><span class="glyphicon glyphicon-remove"></span></a>
-        </div>
-        <div class="modal-body">
-            <p>
-                As of April 1, 2017, thanks to input from the user community, we have made a number of changes to the design and functionality of the database.  We hope this improves your experience.  If you have questions or comments on the new changes, please post in the <a href="/forum" target="_blank">community forum</a>.  We appreciate your feedback and support!
-            </p>
-            <p>Thanks,</p>
-            <p class="text-muted"> - The SDBM Team</p>
+            <div class="modal-header text-center">
+                <span class="h3">Recent Changes to the New SDBM</span>
+                <a href="#Welcome" id="dismiss-welcome" data-dismiss="modal" data-target="#Welcome" class='pull-right' style="color: #333;"><span class="glyphicon glyphicon-remove"></span></a>
+            </div>
+            <div class="modal-body">
+                <p>
+                    As of April 1, 2017, thanks to input from the user community, we have made a number of changes to the design and functionality of the database.  We hope this improves your experience.  If you have questions or comments on the new changes, please post in the <a href="/forum" target="_blank">community forum</a>.  We appreciate your feedback and support!
+                </p>
+                <p>Thanks,</p>
+                <p class="text-muted"> - The SDBM Team</p>
+            </div>
         </div>
     </div>
-</div>
 </div>
