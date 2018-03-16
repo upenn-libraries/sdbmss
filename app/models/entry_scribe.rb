@@ -25,7 +25,7 @@ class EntryScribe < ActiveRecord::Base
   end
 
   def display_value
-    [scribe ? scribe.name : nil, observed_name ? "(#{observed_name})" : nil].reject(&:blank?).join(" ").html_safe
+    [scribe ? scribe.name : nil, observed_name.present? ? "(#{observed_name})" : nil].reject(&:blank?).join(" ").html_safe
   end
 
   def facet_value

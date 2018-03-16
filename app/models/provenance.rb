@@ -122,7 +122,7 @@ class Provenance < ActiveRecord::Base
   end
 
   def display_value
-    [provenance_agent ? provenance_agent.name : nil, observed_name ? "(#{observed_name})" : nil, dates.present? ? "[#{dates}]" : nil].reject(&:blank?).join(" ")
+    [provenance_agent ? provenance_agent.name : nil, observed_name.present? ? "(#{observed_name})" : nil, dates.present? ? "[#{dates}]" : nil].reject(&:blank?).join(" ")
   end
 
   def facet_value

@@ -28,7 +28,7 @@ class EntryMaterial < ActiveRecord::Base
   ]
 
   def display_value
-    [material ? material : nil, observed_name ? "(#{observed_name})" : nil].reject(&:blank?).join(" ")
+    [material ? material : nil, observed_name.present? ? "(#{observed_name})" : nil].reject(&:blank?).join(" ")
   end
 
   def facet_value
