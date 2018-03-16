@@ -107,7 +107,7 @@ class AccountsController < SearchableAuthorityController
   end
 
   def model_params
-    params.require(model_class_lstr.to_sym).permit(:username, :fullname, :institutional_affiliation, :email, :email_is_public, :password, :password_confirmation, :role, :bio, :active, :backup,
+    params.require(model_class_lstr.to_sym).permit(:active_survey, :username, :fullname, :institutional_affiliation, :email, :email_is_public, :password, :password_confirmation, :role, :bio, :active, :backup,
       :notification_setting_attributes => [
         :id, :user_id, :on_update, :on_comment, :on_reply, :on_message, :on_new_user, :on_group, :on_forum_post,
         :email_on_new_user, :email_on_update, :email_on_comment, :email_on_reply, :email_on_message, :email_on_group, :email_on_forum_post

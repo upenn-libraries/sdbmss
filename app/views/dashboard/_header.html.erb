@@ -1,20 +1,31 @@
 <% is_contributor = current_user.role == 'contributor' %>
 <% possessive = is_contributor ? "Your" : "" %>
 <% content_for :head do %>
-<script>
-$(document).ready(function () {
-    if (localStorage.getItem('sdbm_hide_survey') !== "1") {
-        $('#Survey').modal('show');
-    } 
-    $('#Survey').on('hidden.bs.modal', function () {
-        localStorage.setItem('sdbm_hide_survey', "1");
-    });
-});
-</script>
-
+    <% if current_user.active_survey %>
+        <script>
+        $(document).ready(function () {
+            if (localStorage.getItem('sdbm_hide_survey') !== "1") {
+                $('#Survey').modal('show');
+            } 
+            $('#Survey').on('hidden.bs.modal', function () {
+                localStorage.setItem('sdbm_hide_survey', "1");
+                <% if current_user %>
+                    $.ajax({
+                        url: "<%= account_path(current_user) %>.json",
+                        data: {user: { active_survey: false }},
+                        method: 'put',
+                        success: function (data) {
+                            //console.log(data, 'success!');
+                        }
+                    })
+                <% end %>
+            });
+        });
+        </script>
+    <% end %>
 <% end %>
 
-
+<% if current_user.active_survey %>
 <div class="modal fade" id="Survey">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -24,7 +35,7 @@ $(document).ready(function () {
         </div>
     </div>
 </div>
-
+<% end %>
 
 <div class="row">
     <div class="col-sm-12 text-center">
