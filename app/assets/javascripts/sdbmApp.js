@@ -479,10 +479,12 @@ var BOOKMARK_SCOPE;
             base: function () { return model.name; }
           },
           scope: $scope,
-          size: 'lg'
+          size: 'lg',
+          backdrop: false,
+          windowClass: "modal-left"
         });
         $scope.modal.result.then( function (results) {
-          model.skipped = false;          
+          model.skipped = false;
           $scope.indicator = "We hope you are enjoying the De Ricci Game!";
           if ($scope.current_record.dericci_links.filter(function (dl) { return dl.name_id == $scope.name.id; }).length <= 0) {
             for (var i = 0; i < $scope.current_record.dericci_links.length; i++) {
