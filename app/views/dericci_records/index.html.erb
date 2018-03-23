@@ -63,19 +63,7 @@
     Showing <%= @offset %> to <%= [@offset + @count, @total].min %> of <%= @total %>
   </div>
   <div class="col-sm-6 text-center">
-    <ul class="pagination">
-    <% if @page > 2 %>
-      <li><%= link_to "First", params.merge(:page => 0) %></li>
-      <li class='disabled'><a href="" class="disabled">...</a></li>
-    <% end %>
-    <% @pages.each do |p| %>
-      <li class="<%= p == @page ? 'active' : '' %>"><%= link_to p + 1, params.merge(:page => p) %></li>
-    <% end %>
-    <% if @page < @num_pages - 2 %>
-      <li class='disabled'><a href="" class="disabled">...</a></li>
-      <li><%= link_to "Last", params.merge(:page => @num_pages) %></li>
-    <% end %>
-    </ul>
+    <%= render partial: "shared/pagination", locals: {page: @page, pages: @num_pages, model_class: DericciRecord, action: nil } %>   
   </div>
   <div class="col-sm-3 text-right">
     Show <%= select_tag "limit", options_for_select([10, 20, 50, 100], params[:limit]), class: "form-control" %>

@@ -480,7 +480,8 @@ var BOOKMARK_SCOPE;
           },
           scope: $scope,
           size: 'lg',
-          backdrop: false,
+          backdropClass: "modal-left",
+          //backdrop: false,
           windowClass: "modal-left"
         });
         $scope.modal.result.then( function (results) {

@@ -28,31 +28,7 @@
   </div>
   <!-- note: decent pagination system, for reuse maybe? -->
   <div class="col-sm-6">
-    <ul class="pagination">
-      <% if @page >= 3 %>
-        <li><%= link_to "First", notifications_path(page: 0) %></li>
-      <% end %>
-      <% if @page >= 4 %>
-        <li class="text-muted"><a href="">...</a></li>
-      <% end %>
-
-      <% @pages.times do |p| %>
-
-        <% if @page == p %>
-          <li class="active"><a href=""><%= p + 1 %></a></li>
-        <% elsif (@page - p).abs < 3 %>
-          <li><%= link_to p + 1, notifications_path(page: p) %></li>
-        <% end %>
-        
-      <% end %>
-
-      <% if @page <= @pages - 4 %>
-        <li class="text-muted"><a href="">...</a></li>
-      <% end %>
-      <% if @page <= @pages - 3 %>
-        <li><%= link_to "Last", notifications_path(page: @pages - 1) %></li>
-      <% end %>
-    </ul>
+    <%= render partial: "shared/pagination", locals: {page: @page, pages: @pages, model_class: Notification, action: nil } %>
   </div>
   <div class="col-sm-6 text-right">
     <div class="btn-group">
