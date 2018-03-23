@@ -2,6 +2,9 @@
   <%= stylesheet_link_tag "extras", media: "all" %>
   <%= javascript_include_tag "extras" %>
   <style>
+    tr.disabled td {
+        background-color: #ddd !important;
+    }
     .form-inline .input-group > .form-control {
         width: auto;
     }
@@ -427,6 +430,24 @@ $(document).ready(function() {
     });
     table = resultsTable;
 
+    $("#search_results").on('draw.dt', function () {
+        resultsTable.dataTable.rows().nodes().each(function (row, idx, api) {
+            var data = resultsTable.dataTable.row(row).data();
+            for (var i = 0; i < entryManuscripts.length; i++) {
+                if (entryManuscripts[i].entry_id === data[resultsTable.getColumnIndex("ID")]) {
+                    $(row).addClass('disabled');
+                }
+            }
+            
+        /*if (data[sdbmTable.getColumnIndex("Draft")]) {
+            $(row).addClass('info draft');
+        } else if(!data[sdbmTable.getColumnIndex("Is Approved")]) {
+            $(row).addClass('warning unapproved');
+        }*/
+        });
+    });
+
+
 //    $("#search_results").wrap("<div id='scrollTop'></div>");
 //    $('#scrollTop').doubleScroll();
 
@@ -791,7 +812,11 @@ $(document).ready(function() {
                 <a href="" class="btn btn-default" id="load-bookmarks">
                     <span class="glyphicon glyphicon-bookmark"></span> Load Bookmarks
                 </a>
-                <a class='btn btn-default' href="" data-toggle="modal" data-target="#suggestions-modal"><span class="glyphicon glyphicon-question-sign"></span> Find Suggested Links</a>
+                <% if @entry.present? %>
+                    <a class='btn btn-warning' title="IN DEVELOPMENT" href="" data-toggle="modal" tidata-target="#suggestions-modal"><span class="glyphicon glyphicon-exclamation-sign"></span> Find Suggested Links</a>
+                <% else %>
+                    <a href="" class="btn btn-default disabled">Find Suggested Links</a>
+                <% end %>
             </div>
         </div>
     </div>
@@ -872,7 +897,7 @@ $(document).ready(function() {
                                 </li>
                             <% end %>
                         </ul>
-                        <label for="" class="control-label">Threshold
+                        <label for="" class="control-label">Range
                             <input type="number" min="1" max="25" id="tolerance" class="form-control" value="10">
                             </input>
                         </label>

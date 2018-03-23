@@ -1085,7 +1085,7 @@ class Entry < ActiveRecord::Base
   end
 
   def self.similar_fields
-    [:title_search, :place_search, :language_search, :artist_search, :scribe_search, :use_search, :binding_search, :author_search, :manuscript_date_search, :material_search, :provenance_search, :sale_selling_agent_search]
+    [:title_search, :place_search, :language_search, :artist_search, :scribe_search, :use_search, :binding_search, :author_search, :manuscript_date_search, :material_search]
   end
 
   def create_activity(action_name, current_user, transaction_id)
