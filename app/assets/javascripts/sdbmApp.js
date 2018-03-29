@@ -992,6 +992,8 @@ var BOOKMARK_SCOPE;
                           // authors -> author_id
                           if ($scope.multifields[j] == "provenance")
                             r["provenance_agent_id"] = temp[1];
+                          else if ($scope.multifields[j] == "materials") // materials don't have an authority name, just observed and "MATERIAL"
+                            r["material"] = temp[1];
                           else
                             r[$scope.multifields[j].replace(/s\b/, "") + "_id"] = temp[1];
                         }
