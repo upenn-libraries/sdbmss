@@ -787,15 +787,15 @@ var BOOKMARK_SCOPE;
       $scope.prevPage = function () {
         $scope.page = Math.max(1, $scope.page - 1);
         $scope.autocomplete();
-      }
+      };
 
       $scope.nextPage = function () {
         $scope.page += 1;
         $scope.autocomplete();
-      }
+      };
 
       $scope.autocomplete = function () {
-          if ($scope.method == "similar") {            
+          if ($scope.method == "similar") {
             var url  = "/" + recordType + "/more_like_this.json";
           } else {
             var url = "/" + recordType + "/search.json";

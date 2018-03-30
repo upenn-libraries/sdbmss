@@ -1,12 +1,16 @@
 <script type="text/ng-template" id="selectNameAuthority.html">
     <div class="modal-header">
+        <button type="button" class="close" data-dismiss="dialog" data-ng-click="cancel($event)">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+         </button>
         <h3 class="modal-title text-center">Find '{{ nameSearchString }}' in SDBM Name Authority</h3>
         <form class='input-group' ng-submit="autocomplete()">
             <input autofocus type="text" id="searchNameAuthority" class="form-control search-form" ng-model="nameSearchString">
             <span class='input-group-btn'>
                 <input type='submit' class='btn btn-default' value='Search' id='search-name'>Search</a>
             </span>
-        </form>        
+        </form>
     </div>
     <div class="modal-body form-horizontal compress-whitespace fit-screen">
 
