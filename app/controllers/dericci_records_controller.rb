@@ -12,21 +12,20 @@ class DericciRecordsController < ApplicationController
     term = params[:term] || ""
     field = params[:field] || "name"
     type = params[:type] || ''
-    @total = DericciRecord.where("#{field} LIKE '%#{term}%'").where("name LIKE '#{letter}%'").where("senate_house like ?", "%#{type}%")
     @records = DericciRecord.where("#{field} LIKE '%#{term}%'").where("name LIKE '#{letter}%'").where("senate_house like ?", "%#{type}%")
     if params[:verified_id]
-      @total = @total.where(verified_id: nil)
       @records = @records.where(verified_id: nil)      
     end
     if params[:flagged]
-      @total = @total.joins(:dericci_record_flags)
       @records = @records.joins(:dericci_record_flags)
     end
     if params[:linked]
-      @total = @total.joins(:dericci_links)
       @records = @records.joins(:dericci_links)
     end
-    @total = @total.count
+    if params[:in_scope]
+      @records = @records.where(out_of_scope: false)
+    end
+    @total = @records.count
     @num_pages = (@total / @count).to_i
     @pages = [*[@page-2,0].max..[@page+2,@num_pages].min] 
     @records = @records.limit(@count).offset(@offset)

@@ -1,6 +1,15 @@
 <% if user_signed_in? && defined?(record) %>
   <%= render partial: "comments/form", locals: { record: record } %>
 <% end %>
+<% comments = comments.sort_by(&:created_at) %>
+<p class="text-center">
+  <% if params[:comment_sort] == "desc" %>
+    <% comments = comments.reverse %>
+    <%= link_to "Sort by Oldest First", params.merge({:comment_sort => "asc"}), class: "btn btn-sm btn-default" %>
+  <% else %>
+    <%= link_to "Sort by Newest First", params.merge({:comment_sort => "desc"}), class: "btn btn-sm btn-default" %>
+  <% end %>
+</p>
 <% comments.each do |comment| %>
   <div class="panel-default panel panel-comment" id="comment_<%= comment.id %>" name="comment_<%= comment.id %>">
     <div class="panel-body comment">

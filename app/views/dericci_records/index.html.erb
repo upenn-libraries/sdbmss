@@ -34,6 +34,10 @@
           Linked
           <%= check_box_tag 'linked', nil, params[:linked], class: 'form-control' %>
         </label>
+        <label for="" class="control-label">
+          In Scope
+          <%= check_box_tag 'in_scope', nil, params[:in_scope], class: 'form-control' %>
+        </label>
       <% end %>
       <%= select_tag "field", options_for_select({"Name" => "name","Date" => "dates","Place" => "place"}, params[:field]), class: "form-control" %>
       <%= text_field_tag :term, params[:term], class: "form-control" %>

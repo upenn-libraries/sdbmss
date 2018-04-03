@@ -7,6 +7,11 @@ class RatingsController < ApplicationController
     r.user = current_user
     r.save!
     r.ratable.index
+    r.ratable.created_by.notify(
+      "#{current_user.to_s} has rated your #{r.ratable_type}",
+      r.ratable,
+      "update"
+    )
     button_html = (render_to_string partial: "delete", locals: {rating: r }, layout: false)
     respond_to do |format|
       format.json {

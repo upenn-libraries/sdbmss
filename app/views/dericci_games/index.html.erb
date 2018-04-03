@@ -96,17 +96,18 @@
           type:"doughnut",
           data:
           {
-            "labels": ["Possibly Linked","Definitely Linked","Flagged", "Unlinked"],
+            "labels": ["Out of Scope", "Possibly Linked","Definitely Linked","Flagged", "Unlinked"],
             "datasets": [
               {
                 "label":"My First Dataset",
                 "data":[
+                  <%= (@outofscope = DericciRecord.where({out_of_scope: true}).count) %>,
                   <%= (@possible = DericciRecord.where({verified_id: nil}).joins(:dericci_links).group('dericci_records.id').count.count) %>,
                   <%= (@definite = DericciRecord.where.not(verified_id: nil).count) %>,
                   <%= (@flagged = DericciRecord.joins(:dericci_record_flags).group('dericci_records.id').count.count)  %>,
                   <%= DericciRecord.count - (@flagged + @definite + @possible) %>
                 ],
-                "backgroundColor":["#AE9A4A", "#AE724A", "#7F8FA8", "#306F63"]
+                "backgroundColor":["#8BC311", "#56C34A", "#AE724A", "#7F8FA8", "#306F63"]
               }]
           }, 
           options: {
@@ -143,8 +144,8 @@
     <% inprogress = @games.select { |g| g.completed.to_i + g.skipped.to_i + g.flagged.to_i < 100 } %>
     <a data-toggle="collapse" data-target="#completed-games" class="btn btn-sm btn-default">Completed Games <span class="badge"><%= completed.count %></span> <span class="caret"></span></a>
     <a data-toggle="collapse" data-target="#in-progress" class="btn btn-sm btn-default">In Progress <span class="badge"><%= inprogress.count %></span> <span class="caret"></span></a>
-    <%= render partial: "list", locals: {title: "Completed Games", games: completed } %>
     <%= render partial: "list", locals: {title: "In Progress", games: inprogress } %>
+    <%= render partial: "list", locals: {title: "Completed Games", games: completed } %>
   </div>
 </div>
 <div class="row">
@@ -152,7 +153,8 @@
     <div class="chart">
       <canvas height="480" width="480" id="piechart"></canvas>
       <h4 class='banner' style="background: #009688;"><%= (users_count = DericciGame.group(:created_by).count.count) %> <%= "user".pluralize(users_count) %> <%= "has".pluralize(users_count) %> played the Name Game!</h4>
-      <h4 class='banner' style="background: #8BC34A;"><%= @possible %> De Ricci <%= "Record".pluralize(@possible) %> have Potential Links!</h4>
+      <h4 class='banner' style="background: #8BC311;"><%= @outofscope %> De Ricci <%= "Record".pluralize(@outofscope) %> identified as Out of Scope!</h4>
+      <h4 class='banner' style="background: #56C34A;"><%= @possible %> De Ricci <%= "Record".pluralize(@possible) %> have Potential Links!</h4>
       <h4 class='banner' style="background: #00bcd4;"><%= @flagged %> De Ricci <%= "Record".pluralize(@flagged) %> have been Flagged for further work.</h4>
       <h4 class='banner' style="background: #002cd4;"><%= @definite %> De Ricci <%= "Record".pluralize(@definite) %> are definitively linked to an SDBM Name!</h4>
     </div>
