@@ -152,11 +152,11 @@
   <div class="col-sm-12">
     <div class="chart">
       <canvas height="480" width="480" id="piechart"></canvas>
-      <h4 class='banner' style="background: #009688;"><%= (users_count = DericciGame.group(:created_by).count.count) %> <%= "user".pluralize(users_count) %> <%= "has".pluralize(users_count) %> played the Name Game!</h4>
-      <h4 class='banner' style="background: #8BC311;"><%= @outofscope %> De Ricci <%= "Record".pluralize(@outofscope) %> identified as Out of Scope!</h4>
-      <h4 class='banner' style="background: #56C34A;"><%= @possible %> De Ricci <%= "Record".pluralize(@possible) %> have Potential Links!</h4>
-      <h4 class='banner' style="background: #00bcd4;"><%= @flagged %> De Ricci <%= "Record".pluralize(@flagged) %> have been Flagged for further work.</h4>
-      <h4 class='banner' style="background: #002cd4;"><%= @definite %> De Ricci <%= "Record".pluralize(@definite) %> are definitively linked to an SDBM Name!</h4>
+      <h4 class='banner' style="background: #009688;"><%= (users_count = DericciGame.group(:created_by).count.count) %> <%= "user".pluralize(users_count) %> <%= "has".pluralize(users_count) %> played the Name Game</h4>
+      <h4 class='banner' style="background: #8BC311;"><%= @outofscope %> De Ricci <%= "Record".pluralize(@outofscope) %> identified as Out of Scope</h4>
+      <h4 class='banner' style="background: #56C34A;"><%= @possible %> De Ricci <%= "Record".pluralize(@possible) %> have Potential Links</h4>
+      <h4 class='banner' style="background: #00bcd4;"><%= @flagged %> De Ricci <%= "Record".pluralize(@flagged) %> have been Flagged for further work</h4>
+      <h4 class='banner' style="background: #002cd4;"><%= @definite %> De Ricci <%= "Record".pluralize(@definite) %> are definitively linked to an SDBM Name</h4>
     </div>
      
     <p style="margin-top: 10px;">Seymour Montefiore Robert Rosso de Ricci (1881-1942) created over 60,000 index cards for his unfinished Bibliotheca Britannica Manuscripta project, all of which have been converted to pdf files to form the <a href="/dericci_records">Seymour de Ricci Bibliotheca Britannica Manuscripta Digitized Archive</a>. These cards contain a wealth of information about collectors, collections, sale results, former shelfmarks, bibliography, and many other notable things about manuscripts and their owners.</p>
