@@ -367,7 +367,11 @@ var BOOKMARK_SCOPE;
             type: function () { return "is_author"; },
             base: function () { return model.name; }
           },
-          size: 'lg'//,
+          size: 'lg',
+          backdropClass: "modal-left",
+          //backdrop: false,
+          windowClass: "modal-left"
+          //,
           //backdrop: false
         });
         modal.result.then( function (results) {
