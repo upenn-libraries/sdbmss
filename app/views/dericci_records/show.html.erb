@@ -1,6 +1,34 @@
 <% content_for :head do %>
   <%= stylesheet_link_tag "extras" %>
   <%= javascript_include_tag "extras" %>
+  <style>
+    #select-name-table thead tr {
+      height: 20px;
+    }
+    .modal-left {
+      max-width: 50%;
+      box-shadow: 10px 0px 24px -5px rgba(0,0,0,0.5);
+    }
+    .modal-left .modal-dialog {
+      margin: 0px;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    .modal-left .modal-content {
+      height: 100%;
+      border-radius: 0px;
+    }
+    .modal-left .modal-body, .modal-left .modal-header {
+      padding: 0px;
+    }
+    .modal-left .modal-header {
+      padding: 10px 5px;
+    }
+    .modal-left .modal-title {
+      margin-bottom: 25px;
+    }
+  </style>
 <% end %>
 
 <% if current_user %>
@@ -30,7 +58,7 @@
 <div class="row">
   <% @record.dericci_record_flags.each do |flag| %>
     <div class="col-sm-12">
-      <div class="alert <%= DericciRecordFlag.reasons.include?(flag.reason) ? 'alert-info' : 'alert-danger' %>">
+      <div class="alert <%= (DericciRecordFlag.reasons[0] == flag.reason ? 'alert-danger' : (DericciRecordFlag.reasons[1] == flag.reason) ? 'alert-success' : 'alert-warning') %>">
         <strong><span class="glyphicon <%= DericciRecordFlag.reasons.include?(flag.reason) ? 'glyphicon-flag' : 'glyphicon-warning-sign' %>"></span> Flagged - </strong>
         <%= flag.reason %>
         <strong> - <%= link_to flag.created_by.to_s, profile_path(flag.created_by.username) %></strong>
@@ -93,7 +121,7 @@
         </td>
         <td>
           <% if @record.dericci_links.group_by(&:name_id).each do |name_id, dericci_links| %>
-              <% name = dericci_links.first.name %>            
+              <% name = dericci_links.first.name %>
               <a href="" class="btn btn-info btn-xs" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
                 <%= name.name %> <span class="badge"><%= dericci_links.count %></span>
               </a>
@@ -126,7 +154,6 @@
                   </div>
                 </div>
               </div>
-              
           <% end.empty? %>
               <p class="text-muted">This name is not linked to any names in the SDBM Name Authority.</p>
           <% end %>
@@ -141,4 +168,5 @@
     <iframe src="<%= @record.url %>" frameborder="0" style="width: 100%; height: 600px;"></iframe>
   </div>
 </div>
-<%= render "dericci_records/select_name_authority" %>
+<%= render "shared/select_name_authority" %>
+<%= render "shared/create_name" %>

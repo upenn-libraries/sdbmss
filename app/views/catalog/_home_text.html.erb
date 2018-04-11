@@ -15,28 +15,33 @@
     }
 </style>
 <script type="text/javascript">
-    $(window).load(function(){
-//        $('#Welcome').modal('show');
+    $(document).ready(function () {
+        $('#Survey').on('hidden.bs.modal', function () {
+            localStorage.setItem('sdbm_hide_survey', "1");
+            <% if current_user %>
+                $.ajax({
+                    url: "<%= account_path(current_user) %>.json",
+                    data: {user: { active_survey: false }},
+                    method: 'put',
+                    success: function (data) {
+                        //console.log(data, 'success!');
+                    }
+                })
+            <% end %>
+        });
     });
 </script>
 <% end %>
 
 <div class="row">
     <div class="col-sm-12">
-        <p>
-            <span class='lead'>Welcome to the Schoenberg Database of Manuscripts!</span> The SDBM aggregates observations of pre-modern manuscripts drawn from over 12,000 auction and sales catalogs, inventories, catalogs from institutional and private collections, and other sources that document sales and locations of these books from around the world.
+        <p class='text-center'>
+            <span class='lead'>Welcome to the Schoenberg Database of Manuscripts!</span> 
         </p>
-    </div>
-    <div class="col-sm-12">
-        <h3 class="text-center home-emphasis">
-            Search the Database
-            <br><small>Everyone is invited to search the database.  Use the search bar below, or click the <b>facets</b> to the right.</small>
-        </h3>
-        <div class="panel panel-search">
-            <div class="panel-body">
-                <%= render partial: "search_form" %>
-            </div>
-        </div>
+        <p>
+            The SDBM continuously aggregates and updates observations of pre-modern manuscripts drawn from over 12,000 auction and sales catalogs, inventories, catalogs from institutional and private collections, and other sources that document sales and locations of these books from around the world.
+        </p>
+        <p>We invite members of our user community to <b>Log In</b> and help us to build and maintain this resource.</p>
     </div>
     <div class="col-sm-6">
         <h2 class='text-center'><small>Here's what you can do</small></h2>
@@ -63,8 +68,28 @@
         </ul>
     </div>
     <div class="col-sm-12">
-        <h3 class='h3'>Recent Announcements</h3>
-        <% posts = Thredded::Messageboard.where(name: "News & Announcements").last ? Thredded::Messageboard.where(name: "News & Announcements").last.posts.order("created_at desc").first(6) : [] %>
+        <h3 class="text-center home-emphasis">
+            Search the Database
+            <br><small>Everyone is invited to search the database.  Use the search bar below, or click the <b>facets</b> to the right.</small>
+        </h3>
+        <div class="panel panel-search">
+            <div class="panel-body">
+                <%= render partial: "search_form" %>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12 text-center">
+        <br>
+        <p>
+        Do you have any suggestions for how we can improve the SDBM? 
+        <a class="btn btn-info" onclick="$('#Survey').modal('show');">Complete our survey</a>
+        </p>
+    </div>
+    <div class="col-sm-12">
+        <h3 class='h3 text-center'>Recent Activity</h3>
+        <% posts = Thredded::Post.last(6) %>
         <% if (posts.each do |post| %>
             <div class="panel panel-default">
                 <div class="panel-body">
@@ -97,21 +122,30 @@
     </div>
 </div>
 
-
 <div class="modal fade" id="Welcome">
     <div class="modal-dialog">
         <div class="modal-content">
-        <div class="modal-header text-center">
-            <span class="h3">Recent Changes to the New SDBM</span>
-            <a href="#Welcome" id="dismiss-welcome" data-dismiss="modal" data-target="#Welcome" class='pull-right' style="color: #333;"><span class="glyphicon glyphicon-remove"></span></a>
-        </div>
-        <div class="modal-body">
-            <p>
-                As of April 1, 2017, thanks to input from the user community, we have made a number of changes to the design and functionality of the database.  We hope this improves your experience.  If you have questions or comments on the new changes, please post in the <a href="/forum" target="_blank">community forum</a>.  We appreciate your feedback and support!
-            </p>
-            <p>Thanks,</p>
-            <p class="text-muted"> - The SDBM Team</p>
+            <div class="modal-header text-center">
+                <span class="h3">Recent Changes to the New SDBM</span>
+                <a href="#Welcome" id="dismiss-welcome" data-dismiss="modal" data-target="#Welcome" class='pull-right' style="color: #333;"><span class="glyphicon glyphicon-remove"></span></a>
+            </div>
+            <div class="modal-body">
+                <p>
+                    As of April 1, 2017, thanks to input from the user community, we have made a number of changes to the design and functionality of the database.  We hope this improves your experience.  If you have questions or comments on the new changes, please post in the <a href="/forum" target="_blank">community forum</a>.  We appreciate your feedback and support!
+                </p>
+                <p>Thanks,</p>
+                <p class="text-muted"> - The SDBM Team</p>
+            </div>
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="Survey">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdVlU5AUc8O1b9uNnKRZLgb5sIIIClH8vwb_dg3HgVeJaVRhw/viewform?embedded=true" width="760" height="2200" style="width: 100%;" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+            </div>
+        </div>
+    </div>
 </div>

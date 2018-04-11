@@ -119,7 +119,7 @@
                     <% if selling_agent.agent %>
                         <a href="<%= name_path(selling_agent.agent) %>"><%= selling_agent.display_value %></a><br>
                     <% else %>
-                        <%= selling_agent.display_value %>
+                        <%= selling_agent.display_value %> <%= selling_agent.certainty_flags %>
                     <% end %>                  
                 <% end %>
             </td>
@@ -134,7 +134,7 @@
                     <% if seller_or_holder.agent %>
                         <a href="<%= name_path(seller_or_holder.agent) %>"><%= seller_or_holder.display_value %></a><br>
                     <% else %>
-                        <%= seller_or_holder.display_value %>
+                        <%= seller_or_holder.display_value %> <%= seller_or_holder.certainty_flags %>
                     <% end %>                    
                 <% end %>
             </td>
@@ -149,7 +149,7 @@
                     <% if buyer.agent %>
                         <a href="<%= name_path(buyer.agent) %>"><%= buyer.display_value %></a><br>
                     <% else %>
-                        <%= buyer.display_value %>
+                        <%= buyer.display_value %> <%= buyer.certainty_flags %>
                     <% end %>
                 <% end %>
             </td>
@@ -202,7 +202,7 @@
             <td class="col-sm-2 text-right record-label" colspan="2">Titles</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_titles.each do |entry_title| %>
-                    <%= entry_title.display_value %><br/>
+                    <%= entry_title.display_value %>  <%= entry_title.certainty_flags %><br/>
                 <% end %>
             </td>
         </tr>
@@ -225,7 +225,7 @@
             <td class="col-sm-2 text-right record-label" colspan="2">Manuscript Dates</td>
             <td class="col-sm-10" colspan="10">
                 <% entry_dates.each do |entry_date| %>
-                    <%= entry_date.display_value %><br/>
+                    <%= entry_date.display_value %>  <%= entry_date.certainty_flags %><br/>
                 <% end %>
             </td>
         </tr>
@@ -271,7 +271,9 @@
         <tr>
             <td class="col-sm-2 text-right record-label" colspan="2">Materials</td>
             <td class="col-sm-10" colspan="10">
-                <%= entry_materials.map { |entry_material| entry_material.display_value }.join("; ") %>
+                <% entry_materials.each do |entry_material| %>
+                    <%= entry_material.display_value %> <%= entry_material.certainty_flags %><br>
+                <% end %>
             </td>
         </tr>
         <% end %>

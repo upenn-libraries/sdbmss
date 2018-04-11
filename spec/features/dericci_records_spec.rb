@@ -88,11 +88,11 @@ describe "Browse Dericci Records", :js => true do
     visit dericci_record_path(@d)
     expect(page).to have_content("Find Verified Name")
     click_link("verify")
-    expect(page).to have_content("Find '#{@d}' in SDBM Name Authority")
-    expect(page).to have_content("Link")
+    expect(page).to have_content("in Name Authority")
+    expect(page).to have_content("Select")
     expect(page).to have_content("Camillo")
     first(".selectName").click
-    expect(page).not_to have_content("Find '#{@d}' in SDBM Name Authority")
+    expect(page).not_to have_content("in Name Authority")
     expect(page).not_to have_content("Find Verified Name")
     expect(page).to have_content "Save"
     click_link("Save")
@@ -104,7 +104,6 @@ describe "Browse Dericci Records", :js => true do
     check "verified_id"
     find("#search-dericci").click
     expect(page).not_to have_content(@d.name)
-
     check "flagged"
     find("#search-dericci").click
     expect(page).to have_content('No matching records found.')

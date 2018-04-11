@@ -10,6 +10,17 @@
   </div>
 </div>
 <div class="row">
+    <div class="col-sm-4">
+      <span class="h4">
+        Public Groups
+      </span>
+    </div>
+    <div class="col-sm-4 text-center"></div>
+    <div class="col-sm-4 text-right"></div>
+    <div class="col-sm-12">
+      <%= render partial: "table", locals: {groups: Group.where(public: true) } %>
+    </div>
+
     <% if @groups_requests.count > 0 %>
       <div class="col-sm-4">
         <span class="h4">

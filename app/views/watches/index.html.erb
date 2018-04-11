@@ -10,11 +10,7 @@
     <thead>      
       <tr>
         <td class="text-left">
-          <ul class="pagination">
-            <% (@total / @per_page).times do |i| %>
-              <li class="<%= i == @page  ? 'active' : '' %>"><%= link_to (i + 1), watches_path(page: i) %></li>
-            <% end %>
-          </ul>
+          <%= render partial: "shared/pagination", locals: {page: @page, pages: (@total / @per_page.to_f).ceil, model_class: Watch, action: nil } %>
         </td>
         <td class="text-right col-sm-2">
           <%= link_to delete_many_watches_path(ids: @watches.map(&:id)), :method => :delete, id: "Unwatch_All", class: "btn btn-default btn-sm" do %>

@@ -367,7 +367,11 @@ var BOOKMARK_SCOPE;
             type: function () { return "is_author"; },
             base: function () { return model.name; }
           },
-          size: 'lg'//,
+          size: 'lg',
+          backdropClass: "modal-left",
+          //backdrop: false,
+          windowClass: "modal-left"
+          //,
           //backdrop: false
         });
         modal.result.then( function (results) {
@@ -375,7 +379,9 @@ var BOOKMARK_SCOPE;
         });
       };
       $scope.save = function () {
-        $http.put('/dericci_records/' + $scope.record_id + '.json', {verified_id: $scope.record.verified_id}).then(function (response) {
+        $scope.record.verified_id = $scope.name.id;
+        var url = '/dericci_records/' + $scope.record_id + '.json';
+        $http.put(url, {verified_id: $scope.record.verified_id}).then(function (response) {
           window.location.reload();
         });
       };
@@ -383,6 +389,7 @@ var BOOKMARK_SCOPE;
         $scope.record.verified_id = null;
         $scope.name = null;
       };
+      EntryScope = $scope;
     });
 
     sdbmApp.controller("DericciGameCtrl", function ($scope, $http, $modal, $sce) {
@@ -476,10 +483,13 @@ var BOOKMARK_SCOPE;
             base: function () { return model.name; }
           },
           scope: $scope,
-          size: 'lg'
+          size: 'lg',
+          backdropClass: "modal-left",
+          //backdrop: false,
+          windowClass: "modal-left"
         });
         $scope.modal.result.then( function (results) {
-          model.skipped = false;          
+          model.skipped = false;
           $scope.indicator = "We hope you are enjoying the De Ricci Game!";
           if ($scope.current_record.dericci_links.filter(function (dl) { return dl.name_id == $scope.name.id; }).length <= 0) {
             for (var i = 0; i < $scope.current_record.dericci_links.length; i++) {
@@ -781,15 +791,15 @@ var BOOKMARK_SCOPE;
       $scope.prevPage = function () {
         $scope.page = Math.max(1, $scope.page - 1);
         $scope.autocomplete();
-      }
+      };
 
       $scope.nextPage = function () {
         $scope.page += 1;
         $scope.autocomplete();
-      }
+      };
 
       $scope.autocomplete = function () {
-          if ($scope.method == "similar") {            
+          if ($scope.method == "similar") {
             var url  = "/" + recordType + "/more_like_this.json";
           } else {
             var url = "/" + recordType + "/search.json";
@@ -975,8 +985,8 @@ var BOOKMARK_SCOPE;
                       var k = $scope.multifields[j] == "provenance" ? "provenance_attributes" : "entry_" + $scope.multifields[j] + "_attributes";
                       entry[k] = $.csv.toArray(entry[$scope.multifields[j]], {separator: ";", delimiter: '"'}).map( function (f, index) {
                         var r = {};
-                        var temp = f.split("::::")
-                        f = temp[0]
+                        var temp = f.split("::::");
+                        f = temp[0];
                         r[key] = f;
                         r.order = index;
                         if (key == "material" || key == "language") {
@@ -986,8 +996,13 @@ var BOOKMARK_SCOPE;
                           // authors -> author_id
                           if ($scope.multifields[j] == "provenance")
                             r["provenance_agent_id"] = temp[1];
+                          else if ($scope.multifields[j] == "materials") // materials don't have an authority name, just observed and "MATERIAL"
+                            r["material"] = temp[1];
                           else
                             r[$scope.multifields[j].replace(/s\b/, "") + "_id"] = temp[1];
+                        }
+                        if (temp[2] && $scope.multifields[j] == "provenance") { // third field for provenance evidence
+                            r["comment"] = temp[2];
                         }
                         return r;
                       });
@@ -3465,7 +3480,7 @@ var BOOKMARK_SCOPE;
       var index = bookmark.tags.indexOf(tag);
       if (index != -1) {
         bookmark.tags.splice(index, 1);
-        $http.get('/bookmarks/' + bookmark.id + '/removetag?tag=' + tag).then( function (e) {
+        $http.put('/bookmarks/' + bookmark.id, {tags: bookmark.tags.join(',')}).then( function (e) {
         });
       }
     }
@@ -3475,8 +3490,7 @@ var BOOKMARK_SCOPE;
         bookmark.tags.push(tag);
         bookmark.newtag = "";
         bookmark.showAddTag = false;
-        $http.get('/bookmarks/' + bookmark.id + '/addtag?tag=' + tag).then( function (e) {
-          //console.log(e);
+        $http.put('/bookmarks/' + bookmark.id, {tags: bookmark.tags.join(',')}).then( function (e) {
         });
       }
     }
@@ -3504,7 +3518,7 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.loadBookmarks = function () {
-      $http.get('/bookmarks/reload.json?details=true').then( function (e) {
+      $http.get('/bookmarks.json?details=true').then( function (e) {
         if (e.error) return;
         
         $scope.all_bookmarks = e.data.bookmarks;
@@ -3523,7 +3537,7 @@ var BOOKMARK_SCOPE;
         var id = bookmark.document_id, type = bookmark.document_type;
         $scope.$apply();        
         $scope.searchTag($scope.tagSearch);
-        addNotification(type + ' ' + id + ' un-bookmarked! <a data-dismiss="alert" aria-label="close" onclick="addBookmark(' + id + ',\'' + type + '\')">Undo</a>', 'warning');
+        addNotification(type + ' ' + id + ' un-bookmarked!', 'warning');
       }).error( function (e) {
         console.log('error', e);
       });

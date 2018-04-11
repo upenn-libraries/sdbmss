@@ -30,7 +30,7 @@ class SaleAgent < ActiveRecord::Base
   end
 
   def display_value
-    [agent ? agent.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags].reject(&:blank?).join(" ")
+    [agent ? agent.name : nil, observed_name.present? ? "(#{observed_name})" : nil].reject(&:blank?).join(" ")
   end
 
   def facet_value
@@ -39,10 +39,6 @@ class SaleAgent < ActiveRecord::Base
 
   def observed
     ""
-  end
-
-  def display_value
-    agent ? agent.name : observed_name
   end
 
 end

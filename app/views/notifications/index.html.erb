@@ -19,27 +19,24 @@
 <% end %>
 <div class="row">
   <div class="col-sm-12 text-center">
-    <h3 class="h3 text-center">Notifications</h3>
+    <h3 class="h3 text-center">
+      Notifications
+      <br>
+      <small><span class="text-info"><%= @unread %> Unread</span>, <span class="text-muted"><%= @total %> Total</span></small>
+    </h3>
     <p class="text-muted">Notifications are sent in response to various actions and events that can happen in the database and our community.  You can control when and how you receive your notifications from your user settings.</p>
   </div>
+  <!-- note: decent pagination system, for reuse maybe? -->
   <div class="col-sm-6">
-    <ul class="pagination">
-      <% @pages.times do |p| %>
-        <% if @page == p %>
-          <li class="active"><a href=""><%= p + 1 %></a></li>
-        <% else %>
-          <li><%= link_to p + 1, notifications_path(page: p) %></li>
-        <% end %>
-      <% end %>
-    </ul>
+    <%= render partial: "shared/pagination", locals: {page: @page, pages: @pages, model_class: Notification, action: nil } %>
   </div>
   <div class="col-sm-6 text-right">
     <div class="btn-group">
-      <%= link_to read_many_notifications_path(ids: @notifications.map(&:id), active: false), class: 'btn btn-default' do %>
-        <span class="glyphicon glyphicon-ok-circle"></span> Read All
+      <%= link_to read_many_notifications_path(ids: @notifications.map(&:id), active: false, page: @page), class: 'btn btn-default' do %>
+        <span class="glyphicon glyphicon-ok-circle"></span> Mark All On Page As Read
       <% end %>
-      <%= link_to delete_many_notifications_path(ids: @notifications.map(&:id)), :method => :delete, class: 'btn btn-danger' do %>
-        <span class="glyphicon glyphicon-remove"></span> Delete All
+      <%= link_to delete_many_notifications_path(ids: @notifications.map(&:id), page: @page), :method => :delete, class: 'btn btn-danger' do %>
+        <span class="glyphicon glyphicon-remove"></span> Delete All On Page
       <% end %>      
     </div>
   </div>

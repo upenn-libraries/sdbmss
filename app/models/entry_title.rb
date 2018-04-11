@@ -9,7 +9,7 @@ class EntryTitle < ActiveRecord::Base
   validates_length_of :title, :minimum => 0, :maximum => 255, :allow_blank => true
 
   def display_value
-    [title, common_title ? "(#{common_title})" : nil, certainty_flags].reject(&:blank?).join(" ")
+    [title, common_title ? "(#{common_title})" : nil].reject(&:blank?).join(" ").html_safe
   end
 
   def facet_value

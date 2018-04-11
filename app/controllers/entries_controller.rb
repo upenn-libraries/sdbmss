@@ -41,7 +41,9 @@ class EntriesController < SearchableAuthorityController
     check = params[:check]
     params["entries"].to_a.each do |param|
       filter = entry_params_for_create_and_edit(param)
-      puts filter[:source_id]
+      filter[:draft] = false # making sure 'draft' is understood properly by public catalog view...
+
+      #puts filter[:source_id]
       # option: use valid? to check all entries without saving, so the user can check validations without huge overhead FIRST
       # 
       # i.e. have params 'check' to determine whether it is SAVING or CHECKING, require 'check' first...
@@ -119,6 +121,16 @@ class EntriesController < SearchableAuthorityController
     #if current_user.role != "admin"
     #  params.merge!("draft" => ["false"], "draft_option" => ["with"])
     #end
+
+    # Dates are treated as strings, so need a bit of manipulating
+    [:source_date, :sale_date].each do |date_key|
+      if params[date_key]
+        params[date_key] = Array(params[date_key])
+        params[date_key].map! do | date |
+          date.gsub('-', '').gsub('/', '').ljust(8, "*")
+        end
+      end
+    end
 
     if params[:format] == 'csv'
       if current_user.downloads.count >= 5

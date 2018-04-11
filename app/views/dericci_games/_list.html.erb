@@ -1,0 +1,39 @@
+<div class="collapse" id="<%= title.parameterize %>">
+  <h5 class="text-center text-info"><%= title %></h5>
+  <table class="table table-responsive text-left" style="max-height: 300px; overflow-y: scroll; margin-top: 5px;">
+    <tbody>
+      <% if games.reverse.each do |game| %>
+        <tr>
+          <td>
+            <%= link_to(dericci_game_path(game), class: 'btn btn-default btn-xs play-game') do %>
+              <span class="glyphicon glyphicon-tower"></span> Go To Game 
+            <% end %>
+          </td>
+          <td>
+            <%= game.created_at.to_formatted_s(:long) %>
+          </td>
+          <td>
+            <div class="progress">
+              <div class="progress-bar progress-bar-success" role="progressbar" style="width:<%= game.completed.to_i.floor %>%;">
+                <%= game.completed.to_i %>% Completed
+              </div>
+              <div class="progress-bar progress-bar-warning" role="progressbar" style="width:<%= game.skipped.to_i.floor %>%;">
+                <%= game.skipped.to_i %>% Skipped
+              </div>
+              <div class="progress-bar progress-bar-danger" role="progressbar" style="width:<%= game.flagged.to_i.ceil %>%;">
+                <%= game.flagged.to_i %>% Flagged
+              </div>
+              <% if game.skipped.to_i + game.completed.to_i <= 0 %>
+                <div class="text-muted text-center">Not started</div>
+              <% end %>
+            </div>
+          </td>
+        </tr>
+      <% end.empty? %>
+        <tr>
+          <td colspan="3" class="text-center text-muted">No games to display.</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

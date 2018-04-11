@@ -52,7 +52,7 @@ class EntryArtist < ActiveRecord::Base
 
   # used for indexing entry_artist with entry
   def display_value
-    [artist ? artist.name : nil, observed_name ? "(#{observed_name})" : nil, certainty_flags, role ? "[#{format_role}]" : nil].reject(&:blank?).join(" ")
+    [artist ? artist.name : nil, observed_name.present? ? "(#{observed_name})" : nil, role ? "[#{format_role}]" : nil].reject(&:blank?).join(" ").html_safe
   end
 
   def facet_value

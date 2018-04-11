@@ -30,7 +30,7 @@ describe "Groups", :js => true do
 
     it "should allow the user to invite other users to join" do
       visit groups_path
-      click_link 'The Society of the Friends of the Constitution'
+      first(:link, 'The Society of the Friends of the Constitution').click
 
       expect(page).to have_content('The Society of the Friends of the Constitution')
       expect(page).to have_content('This group does not have permission to edit any entries at the moment.')
@@ -51,7 +51,7 @@ describe "Groups", :js => true do
       login(@contributor, 'somethingunguessable')
       visit groups_path
       expect(page).to have_content('The Society of the Friends of the Constitution')
-      click_link 'Accept Invitation'
+      first(:link, 'Accept Invitation').click
       expect(page).to have_content('The Society of the Friends of the Constitution')
       expect(page).not_to have_content 'Accept Invitation'
     end
@@ -120,7 +120,7 @@ describe "Groups", :js => true do
       visit group_path(Group.first)
       expect(page).to have_content('Request Membership')
       find('#collapse-control').click
-      click_link 'Request Membership'
+      first(:link, 'Request Membership').click
       expect(page).to have_content('You have requested membership in this group')
       
       page.reset!

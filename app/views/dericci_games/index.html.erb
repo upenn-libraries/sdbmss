@@ -96,17 +96,18 @@
           type:"doughnut",
           data:
           {
-            "labels": ["Possibly Linked","Definitely Linked","In Progress", "Unlinked"],
+            "labels": ["Out of Scope", "Possibly Linked","Definitely Linked","Flagged", "Unlinked"],
             "datasets": [
               {
                 "label":"My First Dataset",
                 "data":[
-                  <%= (possible = DericciRecord.where({verified_id: nil}).joins(:dericci_links).group('dericci_records.id').count.count) %>,
-                  <%= (definite = DericciRecord.where.not(verified_id: nil).count) %>,
-                  <%= (flagged = DericciRecord.joins(:dericci_record_flags).group('dericci_records.id').count.count)  %>,
-                  <%= DericciRecord.count - (flagged + definite + possible) %>
+                  <%= (@outofscope = DericciRecord.where({out_of_scope: true}).count) %>,
+                  <%= (@possible = DericciRecord.where({verified_id: nil}).joins(:dericci_links).group('dericci_records.id').count.count) %>,
+                  <%= (@definite = DericciRecord.where.not(verified_id: nil).count) %>,
+                  <%= (@flagged = DericciRecord.joins(:dericci_record_flags).group('dericci_records.id').count.count)  %>,
+                  <%= DericciRecord.count - (@flagged + @definite + @possible) %>
                 ],
-                "backgroundColor":["#AE9A4A", "#AE724A", "#7F8FA8", "#306F63"]
+                "backgroundColor":["#8BC311", "#56C34A", "#AE724A", "#7F8FA8", "#306F63"]
               }]
           }, 
           options: {
@@ -138,54 +139,24 @@
     <%= link_to new_dericci_game_path, class: 'btn btn-sm btn-default', id: "new-game" do %>
       <span class="glyphicon glyphicon-tower"></span> Start a <strong>New Game</strong>
     <% end %>
-    <a data-toggle="collapse" data-target="#mygames" id="open-games" class="btn btn-sm btn-default">My Games <span class="badge"><%= @games.count %></span> <span class="caret"></span></a>
-    <div class="collapse" id="mygames">
-      <table class="table table-responsive text-left" style="max-height: 300px; overflow-y: scroll; margin-top: 5px;">
-        <tbody>
-          <% if @games.reverse.each do |game| %>
-            <tr>
-              <td>
-                <%= link_to(dericci_game_path(game), class: 'btn btn-default btn-xs play-game') do %>
-                  <span class="glyphicon glyphicon-tower"></span> Go To Game 
-                <% end %>
-              </td>
-              <td>
-                <%= game.created_at.to_formatted_s(:long) %>
-              </td>
-              <td>
-                <div class="progress">
-                  <div class="progress-bar progress-bar-success" role="progressbar" style="width:<%= game.completed.to_i.floor %>%;">
-                    <%= game.completed.to_i %>% Completed
-                  </div>
-                  <div class="progress-bar progress-bar-warning" role="progressbar" style="width:<%= game.skipped.to_i.floor %>%;">
-                    <%= game.skipped.to_i %>% Skipped
-                  </div>
-                  <div class="progress-bar progress-bar-danger" role="progressbar" style="width:<%= game.flagged.to_i.ceil %>%;">
-                    <%= game.flagged.to_i %>% Flagged
-                  </div>
-                  <% if game.skipped.to_i + game.completed.to_i <= 0 %>
-                    <div class="text-muted text-center">Not started</div>
-                  <% end %>
-                </div>
-              </td>
-            </tr>
-          <% end.empty? %>
-            <tr>
-              <td colspan="3" class="text-center text-muted">You have not played any games yet.</td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
+
+    <% completed = @games.select { |g| g.completed.to_i + g.skipped.to_i + g.flagged.to_i >= 100 } %>
+    <% inprogress = @games.select { |g| g.completed.to_i + g.skipped.to_i + g.flagged.to_i < 100 } %>
+    <a data-toggle="collapse" data-target="#completed-games" class="btn btn-sm btn-default">Completed Games <span class="badge"><%= completed.count %></span> <span class="caret"></span></a>
+    <a data-toggle="collapse" data-target="#in-progress" class="btn btn-sm btn-default">In Progress <span class="badge"><%= inprogress.count %></span> <span class="caret"></span></a>
+    <%= render partial: "list", locals: {title: "In Progress", games: inprogress } %>
+    <%= render partial: "list", locals: {title: "Completed Games", games: completed } %>
   </div>
 </div>
 <div class="row">
   <div class="col-sm-12">
     <div class="chart">
-      <canvas height="400" width="400" id="piechart"></canvas>
-      <h4 class='banner' style="background: #009688;"><%= (users_count = DericciGame.group(:created_by).count.count) %> <%= "user".pluralize(users_count) %> <%= "is".pluralize(users_count) %> playing the Name Game!</h4>
-      <h4 class='banner' style="background: #8BC34A;"><%= (links_count = DericciLink.count) %> <%= "link".pluralize(links_count) %> <%= "has".pluralize(links_count) %> been suggested!</h4>
-      <h4 class='banner' style="background: #00bcd4;"><%= (flags_count = DericciRecordFlag.count) %> <%= "flag".pluralize(flags_count) %> <%= "has".pluralize(flags_count) %> been identified!</h4>
+      <canvas height="480" width="480" id="piechart"></canvas>
+      <h4 class='banner' style="background: #009688;"><%= (users_count = DericciGame.group(:created_by).count.count) %> <%= "user".pluralize(users_count) %> <%= "has".pluralize(users_count) %> played the Name Game</h4>
+      <h4 class='banner' style="background: #8BC311;"><%= @outofscope %> De Ricci <%= "Record".pluralize(@outofscope) %> identified as Out of Scope</h4>
+      <h4 class='banner' style="background: #56C34A;"><%= @possible %> De Ricci <%= "Record".pluralize(@possible) %> have Potential Links</h4>
+      <h4 class='banner' style="background: #00bcd4;"><%= @flagged %> De Ricci <%= "Record".pluralize(@flagged) %> have been Flagged for further work</h4>
+      <h4 class='banner' style="background: #002cd4;"><%= @definite %> De Ricci <%= "Record".pluralize(@definite) %> are definitively linked to an SDBM Name</h4>
     </div>
      
     <p style="margin-top: 10px;">Seymour Montefiore Robert Rosso de Ricci (1881-1942) created over 60,000 index cards for his unfinished Bibliotheca Britannica Manuscripta project, all of which have been converted to pdf files to form the <a href="/dericci_records">Seymour de Ricci Bibliotheca Britannica Manuscripta Digitized Archive</a>. These cards contain a wealth of information about collectors, collections, sale results, former shelfmarks, bibliography, and many other notable things about manuscripts and their owners.</p>

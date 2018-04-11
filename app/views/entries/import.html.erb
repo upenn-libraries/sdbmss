@@ -169,11 +169,15 @@
         </ul>
         <h4>Place(s)</h4>
         <ul class="list-unstyled">
-          <li ng-repeat="place in entries[entry_index].entry_places_attributes">{{ place.observed_name }}</li>
+          <li ng-repeat="place in entries[entry_index].entry_places_attributes">{{ place.observed_name }}
+            <a href="/places/{{place.place_id}}" ng-if="place.place_id" target="_blank">SDBM_PLACE_{{place.place_id}}</a>
+          </li>
         </ul>
         <h4>Language(s)</h4>
         <ul class="list-unstyled">
-          <li ng-repeat="language in entries[entry_index].entry_languages_attributes">{{ language.observed_name }}</li>
+          <li ng-repeat="language in entries[entry_index].entry_languages_attributes">{{ language.observed_name }}
+            <a href="/languages/{{language.language_id}}" ng-if="language.language_id" target="_blank">SDBM_LNG_{{language.language_id}}</a>
+          </li>
         </ul>
         <h4>Use(s)</h4>
         <ul class="list-unstyled">
@@ -187,6 +191,7 @@
         <ul class="list-unstyled">
           <li ng-repeat="provenance in entries[entry_index].provenance_attributes">{{ provenance.observed_name }}
             <a href="/names/{{provenance.provenance_agent_id}}" ng-if="provenance.provenance_agent_id" target="_blank">SDBM_NAME_{{provenance.provenance_agent_id}}</a>
+            <p class="text-muted" ng-if="provenance.comment">{{ provenance.comment }}</p>
           </li>
         </ul>
         <h4>Other Info</h4>
