@@ -1000,7 +1000,10 @@ var BOOKMARK_SCOPE;
                             r["material"] = temp[1];
                           else
                             r[$scope.multifields[j].replace(/s\b/, "") + "_id"] = temp[1];
-                        }                  
+                        }
+                        if (temp[2] && $scope.multifields[j] == "provenance") { // third field for provenance evidence
+                            r["comment"] = temp[2];
+                        }
                         return r;
                       });
                       delete entry[$scope.multifields[j]];

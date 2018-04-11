@@ -191,6 +191,7 @@
         <ul class="list-unstyled">
           <li ng-repeat="provenance in entries[entry_index].provenance_attributes">{{ provenance.observed_name }}
             <a href="/names/{{provenance.provenance_agent_id}}" ng-if="provenance.provenance_agent_id" target="_blank">SDBM_NAME_{{provenance.provenance_agent_id}}</a>
+            <p class="text-muted" ng-if="provenance.comment">{{ provenance.comment }}</p>
           </li>
         </ul>
         <h4>Other Info</h4>
