@@ -1000,7 +1000,7 @@ var BOOKMARK_SCOPE;
                             r["material"] = temp[1];
                           else
                             r[$scope.multifields[j].replace(/s\b/, "") + "_id"] = temp[1];
-                        }
+                        }                  
                         return r;
                       });
                       delete entry[$scope.multifields[j]];
