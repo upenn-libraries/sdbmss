@@ -96,11 +96,17 @@ gem "database_cleaner", "~> 1.4.1"
 # for compressing csv exports to .zip
 gem "rubyzip"
 
+#gem "linkeddata"
+#gem "rdf-turtle"
+gem "bunny"
+
 gem 'data-confirm-modal'
 
 gem 'thredded', '~> 0.9.4'
 
 gem 'whenever', :require => false
+
+gem 'rake', '< 11.0'
 
 # bundle exec rake doc:rails generates the Rails API under doc/api.
 group :doc do

@@ -25,6 +25,8 @@ class Name < ActiveRecord::Base
   include Notified
 
   include Ratable
+
+  include TellBunny
   
   extend SolrSearchable
 

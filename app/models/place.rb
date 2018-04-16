@@ -7,6 +7,8 @@ class Place < ActiveRecord::Base
   include CreatesActivity
   extend SolrSearchable
 
+  include TellBunny
+
   default_scope { where(deleted: false) }
 
   belongs_to :entry
@@ -123,5 +125,19 @@ class Place < ActiveRecord::Base
       authority_source: authority_source
     }
   end
+
+  def to_rdf
+    %Q(
+      sdbm:places/#{id} sdbm:places_id #{id}
+      sdbm:places/#{id} sdbm:places_name #{name}
+      sdbm:places/#{id} sdbm:places_authority_id #{authority_id}
+      sdbm:places/#{id} sdbm:places_authority_source #{authority_source}
+      sdbm:places/#{id} sdbm:parent_id #{parent_id}
+      sdbm:places/#{id} sdbm:places_evidence #{evidence}
+      sdbm:places/#{id} sdbm:places_latitude #{latitude}
+      sdbm:places/#{id} sdbm:places_longitude #{longitude}
+    )
+  end
+
 
 end
