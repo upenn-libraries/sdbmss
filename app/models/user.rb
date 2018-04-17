@@ -187,7 +187,10 @@ class User < ActiveRecord::Base
       n.save!
     end
     if can_email(category)
-      NotificationMailer.delay.notification_email(n)
+      # DelayedJob doesn't like in-memory-only active-records, so I create a generic object here...
+      require 'ostruct'
+      m = OpenStruct.new(title: title, notified: record, category: category, user: n.user)
+      NotificationMailer.delay.notification_email(m)
     end
   end
 
