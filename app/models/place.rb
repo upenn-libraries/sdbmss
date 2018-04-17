@@ -128,16 +128,17 @@ class Place < ActiveRecord::Base
 
   def to_rdf
     %Q(
-      sdbm:places/#{id} sdbm:places_id #{id}
-      sdbm:places/#{id} sdbm:places_name #{name}
-      sdbm:places/#{id} sdbm:places_authority_id #{authority_id}
-      sdbm:places/#{id} sdbm:places_authority_source #{authority_source}
-      sdbm:places/#{id} sdbm:parent_id #{parent_id}
-      sdbm:places/#{id} sdbm:places_evidence #{evidence}
-      sdbm:places/#{id} sdbm:places_latitude #{latitude}
-      sdbm:places/#{id} sdbm:places_longitude #{longitude}
+      sdbm:places/#{id}
+      a       sdbm:places
+      sdbm:places_id #{id}
+      sdbm:places_name #{name}
+      sdbm:places_authority_id #{authority_id}
+      sdbm:places_authority_source #{authority_source}
+      sdbm:places_parent_id #{parent_id}
+      sdbm:places_latitude #{latitude}
+      sdbm:places_longitude #{longitude}
+      sdbm:places_deleted #{deleted}
     )
   end
-
 
 end

@@ -12,6 +12,8 @@ class Language < ActiveRecord::Base
   include CreatesActivity
   extend SolrSearchable
 
+  include TellBunny
+
   validates_presence_of :name
 
   validate do |name_obj|
@@ -71,6 +73,15 @@ class Language < ActiveRecord::Base
       updated_by: updated_by.present? ? updated_by.username : "(none)",
       updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
     }
+  end
+
+  def to_rdf
+    %Q(
+      sdbm:languages/#{id}
+      a       sdbm:languages
+      sdbm:languages_id #{id}
+      sdbm:languages_name #{name}
+    )
   end
 
 end

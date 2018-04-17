@@ -468,4 +468,19 @@ class Name < ActiveRecord::Base
     Name.reset_counters(self.id, :entry_authors, :entry_artists, :entry_scribes, :sale_agents, :source_agents, :provenance)
   end
 
+  def to_rdf
+    %Q(
+      sdbm:names/#{id}
+      a       sdbm:names
+      sdbm:names_id #{id}
+      sdbm:names_name #{name}
+      sdbm:names_viaf_id #{viaf_id}
+      sdbm:names_subtype #{subtype}
+      sdbm:names_other_info #{other_info}
+      sdbm:names_deleted #{deleted}
+    )
+    #  rdfs:label "dericci_links #1" ;
+    
+  end
+
 end

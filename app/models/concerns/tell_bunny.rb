@@ -18,15 +18,44 @@ module TellBunny
       # close the connection
       connection.stop
     end
+
+    # after destroy
+
+
   end
+
+  # manually add to each class?
+  # 
+  # entries
+  # entry_titles
+  # entry_authors
+  # entry_dates
+  # entry_scribes
+  # entry_artists
+  # entry_places
+  # entry_languages
+  # entry_manuscripts
+  # entry_uses
+  # entry_materials
+  # provenance
+  # sales
+  # sale_agents
+  # 
+  #x- places
+  #x- languages
+  #x- names
+  #x- manuscripts
+  # 
+  #x- sources
+  #x- source_agents
+  #x- source_types
+  # 
+  #x- dericci_links
+  #x- dericci_records
 
   def to_rdf
     %Q(
-      sdbm:names/#{id} sdbm:names_id #{id}
-      sdbm:names/#{id} sdbm:names_name #{name}
-      sdbm:names/#{id} sdbm:names_viaf_id #{viaf_id}
-      sdbm:names/#{id} sdbm:names_other_info #{other_info}
-      sdbm:names/#{id} sdbm:names_subtype #{subtype}
+      # sdbm:names/#{id} sdbm:names_id #{id}      
     )
   end
 end
