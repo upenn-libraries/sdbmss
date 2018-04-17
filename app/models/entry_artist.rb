@@ -4,6 +4,8 @@ class EntryArtist < ActiveRecord::Base
   include DisplayableName
   include HasPaperTrail
 
+  include TellBunny
+
   TYPES_ROLES = [
     ["Work", "Workshop"], 
     ["Styl", "Style"], 
@@ -69,6 +71,21 @@ class EntryArtist < ActiveRecord::Base
 
   def to_s
     (artist ? artist.name : "") + certainty_flags
+  end
+
+  def to_rdf
+    %Q(
+      sdbm:entry_artists/#{id}
+      a       sdbm:entry_artists
+      sdbm:entry_artists_id #{id}
+      sdbm:entry_artists_observed_name #{observed_name}
+      sdbm:entry_artists_artist_id #{artist_id}
+      sdbm:entry_artists_entry_id #{entry_id}
+      sdbm:entry_artists_role #{role}
+      sdbm:entry_artists_order #{order}
+      sdbm:entry_artists_supplied_by_data_entry #{supplied_by_data_entry}
+      sdbm:entry_artists_uncertain_in_source #{uncertain_in_source}
+    )
   end
 
 end

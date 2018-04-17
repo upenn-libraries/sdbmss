@@ -31,7 +31,7 @@ module TellBunny
   # entry_authors
   # entry_dates
   # entry_scribes
-  # entry_artists
+  #x- entry_artists
   # entry_places
   # entry_languages
   # entry_manuscripts
