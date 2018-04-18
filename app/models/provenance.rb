@@ -3,6 +3,7 @@ class Provenance < ActiveRecord::Base
 
   include CertaintyFlags
   include HasPaperTrail
+  include TellBunny
 
   validates_length_of :observed_name, :minimum => 0, :maximum => 255, :allow_blank => true
 
@@ -127,6 +128,32 @@ class Provenance < ActiveRecord::Base
 
   def facet_value
     provenance_agent ? provenance_agent.name : nil
+  end
+
+  def to_rdf
+    %Q(
+      sdbm:provenance/#{id}
+      a       sdbm:provenance
+      sdbm:provenance_id #{id}
+      sdbm:provenance_observed_name #{observed_name}
+      sdbm:provenance_entry_id #{entry_id}      
+      sdbm:provenance_provenance_agent_id #{provenance_agent_id}      
+      sdbm:provenance_order #{order}
+      sdbm:provenance_supplied_by_data_entry #{supplied_by_data_entry}
+      sdbm:provenance_uncertain_in_source #{uncertain_in_source}
+      sdbm:provenance_associated_date #{associated_date}
+      sdbm:provenance_associated_date_normalized_start #{associated_date_normalized_start}
+      sdbm:provenance_associated_date_normalized_end #{associated_date_normalized_end}
+      sdbm:provenance_start_date #{start_date}
+      sdbm:provenance_start_date_normalized_start #{start_date_normalized_start}
+      sdbm:provenance_start_date_normalized_end #{start_date_normalized_end}
+      sdbm:provenance_end_date #{end_date}
+      sdbm:provenance_end_date_normalized_start #{end_date_normalized_start}
+      sdbm:provenance_end_date_normalized_end #{end_date_normalized_end}
+      sdbm:provenance_comment #{comment}
+      sdbm:provenance_direct_transfer #{direct_transfer}
+      sdbm:provenance_acquisition_method #{acquisition_method}
+    )
   end
 
 end

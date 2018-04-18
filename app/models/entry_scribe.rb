@@ -4,6 +4,8 @@ class EntryScribe < ActiveRecord::Base
   include DisplayableName
   include HasPaperTrail
 
+  include TellBunny
+
   belongs_to :entry
   belongs_to :scribe, class_name: 'Name', counter_cache: :scribes_count
 
@@ -34,6 +36,20 @@ class EntryScribe < ActiveRecord::Base
 
   def to_s
     (scribe ? scribe.name : "") + certainty_flags
+  end
+
+  def to_rdf
+    %Q(
+      sdbm:entry_scribes/#{id}
+      a       sdbm:entry_scribes
+      sdbm:entry_scribes_id #{id}
+      sdbm:entry_scribes_observed_name #{observed_name}
+      sdbm:entry_scribes_entry_id #{entry_id}      
+      sdbm:entry_scribes_scribe_id #{scribe_id}      
+      sdbm:entry_scribes_order #{order}
+      sdbm:entry_scribes_supplied_by_data_entry #{supplied_by_data_entry}
+      sdbm:entry_scribes_uncertain_in_source #{uncertain_in_source}
+    )
   end
 
 end

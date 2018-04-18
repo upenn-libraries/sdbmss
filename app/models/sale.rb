@@ -37,6 +37,7 @@ class Sale < ActiveRecord::Base
 
   include UserFields
   include HasPaperTrail
+  include TellBunny
 
   belongs_to :entry
 
@@ -135,6 +136,21 @@ class Sale < ActiveRecord::Base
 
   def get_complete_price_for_display
     [get_price_normalized, currency, other_currency].select { |o| o.present? }.join(" ")
+  end
+
+
+  def to_rdf
+    %Q(
+      sdbm:sales/#{id}
+      a       sdbm:sales
+      sdbm:sales_id #{id}
+      sdbm:sales_entry_id #{entry_id}      
+      sdbm:sales_date #{date}
+      sdbm:sales_price #{price}      
+      sdbm:sales_currency #{currency}
+      sdbm:sales_other_currency #{other_currency}
+      sdbm:sales_sold #{sold}
+    )
   end
 
 end

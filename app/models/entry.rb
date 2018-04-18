@@ -31,6 +31,7 @@ class Entry < ActiveRecord::Base
   include Notified
 
   include Ratable
+  include TellBunny
 
   extend SolrSearchable
 
@@ -1102,6 +1103,35 @@ class Entry < ActiveRecord::Base
     if !self.draft
       super(action_name, current_user, transaction_id)
     end
+  end
+
+  def to_rdf
+    %Q(
+      sdbm:entries/#{id}
+      a       sdbm:entries
+      sdbm:entries_catalog_or_lot_number #{catalog_or_lot_number}
+      sdbm:entries_folios #{folios}
+      sdbm:entries_num_columns #{num_columns}
+      sdbm:entries_num_lines #{num_lines}
+      sdbm:entries_height #{height}
+      sdbm:entries_width #{width}
+      sdbm:entries_alt_size #{alt_size}
+      sdbm:entries_manuscript_binding #{manuscript_binding}
+      sdbm:entries_other_info #{other_info}
+      sdbm:entries_manuscript_link #{manuscript_link}
+      sdbm:entries_miniatures_fullpage #{miniatures_fullpage}
+      sdbm:entries_miniatures_large #{miniatures_large}
+      sdbm:entries_miniatures_small #{miniatures_small}
+      sdbm:entries_miniatures_unspec_size #{miniatures_unspec_size}
+      sdbm:entries_initials_historiated #{initials_historiated}
+      sdbm:entries_initials_decorated #{initials_decorated}
+      sdbm:entries_transaction_type #{transaction_type}
+      sdbm:entries_deprecated #{deprecated}
+      sdbm:entries_unverified_legacy_record #{unverified_legacy_record}
+      sdbm:entries_institution_id #{institution_id}
+      sdbm:entries_superceded_by_id #{superceded_by_id}
+      sdbm:entries_source_id #{source_id}
+    )
   end
 
   private

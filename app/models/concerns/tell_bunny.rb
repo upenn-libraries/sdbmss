@@ -26,20 +26,20 @@ module TellBunny
 
   # manually add to each class?
   # 
-  # entries
-  # entry_titles
-  # entry_authors
-  # entry_dates
-  # entry_scribes
+  #x- entries
+  #x- entry_titles
+  #x- entry_authors
+  #x- entry_dates
+  #x- entry_scribes
   #x- entry_artists
-  # entry_places
-  # entry_languages
-  # entry_manuscripts
-  # entry_uses
-  # entry_materials
-  # provenance
-  # sales
-  # sale_agents
+  #x- entry_places
+  #x- entry_languages
+  #x- entry_manuscripts
+  #x- entry_uses
+  #x- entry_materials
+  #x- provenance
+  #x- sales
+  #x- sale_agents
   # 
   #x- places
   #x- languages

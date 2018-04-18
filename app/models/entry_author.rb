@@ -4,6 +4,8 @@ class EntryAuthor < ActiveRecord::Base
   include DisplayableName
   include HasPaperTrail
 
+  include TellBunny
+
   TYPES_ROLES = [
     ['Attr', 'Attributed'],
     ['Tr', 'Translator'],
@@ -43,5 +45,20 @@ class EntryAuthor < ActiveRecord::Base
   def facet_value
     author ? author.name : nil
   end  
+
+  def to_rdf
+    %Q(
+      sdbm:entry_authors/#{id}
+      a       sdbm:entry_authors
+      sdbm:entry_authors_id #{id}
+      sdbm:entry_authors_observed_name #{observed_name}
+      sdbm:entry_authors_author_id #{author_id}
+      sdbm:entry_authors_entry_id #{entry_id}
+      sdbm:entry_authors_role #{role}
+      sdbm:entry_authors_order #{order}
+      sdbm:entry_authors_supplied_by_data_entry #{supplied_by_data_entry}
+      sdbm:entry_authors_uncertain_in_source #{uncertain_in_source}
+    )
+  end
 
 end
