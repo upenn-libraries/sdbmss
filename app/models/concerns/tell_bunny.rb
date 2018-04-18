@@ -11,7 +11,7 @@ module TellBunny
 
       ch = connection.create_channel
 
-      q = ch.queue("test")
+      q = ch.queue("sdbm")
 
       q.publish("#{model.to_rdf}")
 
@@ -20,7 +20,19 @@ module TellBunny
     end
 
     # after destroy
+    after_destroy do |model|
+      puts "AFTER DESTROY"
+      connection = Bunny.new
+      connection.start
 
+      ch = connection.create_channel
+
+      q = ch.queue("sdbm")
+
+      q.publish("DESTROY sdbm:#{model.class.name.pluralize.underscore}/#{model.id}")
+
+      connection.stop
+    end
 
   end
 
