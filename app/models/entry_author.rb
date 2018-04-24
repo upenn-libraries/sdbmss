@@ -51,13 +51,13 @@ class EntryAuthor < ActiveRecord::Base
       sdbm:entry_authors/#{id}
       a       sdbm:entry_authors
       sdbm:entry_authors_id #{id}
-      sdbm:entry_authors_observed_name #{observed_name}
-      sdbm:entry_authors_author_id #{author_id}
-      sdbm:entry_authors_entry_id #{entry_id}
-      sdbm:entry_authors_role #{role}
+      sdbm:entry_authors_observed_name '#{observed_name}'
+      sdbm:entry_authors_author_id <https://sdbm.library.upenn.edu/names/#{author_id}>
+      sdbm:entry_authors_entry_id <https://sdbm.library.upenn.edu/entries/#{entry_id}>
+      sdbm:entry_authors_role '#{role}'
       sdbm:entry_authors_order #{order}
-      sdbm:entry_authors_supplied_by_data_entry #{supplied_by_data_entry}
-      sdbm:entry_authors_uncertain_in_source #{uncertain_in_source}
+      sdbm:entry_authors_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
+      sdbm:entry_authors_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
     )
   end
 

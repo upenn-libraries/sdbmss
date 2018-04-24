@@ -13,8 +13,8 @@ class EntryUse < ActiveRecord::Base
       sdbm:entry_uses/#{id}
       a       sdbm:entry_uses
       sdbm:entry_uses_id #{id}
-      sdbm:entry_uses_use #{use}
-      sdbm:entry_uses_entry_id #{entry_id}      
+      sdbm:entry_uses_use '#{use}'
+      sdbm:entry_uses_entry_id <https://sdbm.library.upenn.edu/entries/#{entry_id}>
       sdbm:entry_uses_order #{order}
     )
   end

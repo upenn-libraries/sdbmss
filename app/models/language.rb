@@ -80,7 +80,7 @@ class Language < ActiveRecord::Base
       sdbm:languages/#{id}
       a       sdbm:languages
       sdbm:languages_id #{id}
-      sdbm:languages_name #{name}
+      sdbm:languages_name '#{name}'
     )
   end
 

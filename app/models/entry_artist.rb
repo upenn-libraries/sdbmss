@@ -78,13 +78,13 @@ class EntryArtist < ActiveRecord::Base
       sdbm:entry_artists/#{id}
       a       sdbm:entry_artists
       sdbm:entry_artists_id #{id}
-      sdbm:entry_artists_observed_name #{observed_name}
-      sdbm:entry_artists_artist_id #{artist_id}
-      sdbm:entry_artists_entry_id #{entry_id}
-      sdbm:entry_artists_role #{role}
+      sdbm:entry_artists_observed_name '#{observed_name}'
+      sdbm:entry_artists_artist_id <https://sdbm.library.upenn.edu/names/#{artist_id}>
+      sdbm:entry_artists_entry_id <https://sdbm.library.upenn.edu/entries/#{entry_id}>
+      sdbm:entry_artists_role '#{role}'
       sdbm:entry_artists_order #{order}
-      sdbm:entry_artists_supplied_by_data_entry #{supplied_by_data_entry}
-      sdbm:entry_artists_uncertain_in_source #{uncertain_in_source}
+      sdbm:entry_artists_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
+      sdbm:entry_artists_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
     )
   end
 

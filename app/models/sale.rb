@@ -144,12 +144,12 @@ class Sale < ActiveRecord::Base
       sdbm:sales/#{id}
       a       sdbm:sales
       sdbm:sales_id #{id}
-      sdbm:sales_entry_id #{entry_id}      
-      sdbm:sales_date #{date}
+      sdbm:sales_entry_id <https://sdbm.library.upenn.edu/entries/#{entry_id}>
+      sdbm:sales_date '#{date}'
       sdbm:sales_price #{price}      
-      sdbm:sales_currency #{currency}
-      sdbm:sales_other_currency #{other_currency}
-      sdbm:sales_sold #{sold}
+      sdbm:sales_currency '#{currency}'
+      sdbm:sales_other_currency '#{other_currency}'
+      sdbm:sales_sold '#{sold}'
     )
   end
 

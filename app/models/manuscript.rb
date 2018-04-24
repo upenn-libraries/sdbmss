@@ -152,9 +152,9 @@ class Manuscript < ActiveRecord::Base
       sdbm:manuscripts/#{id}
       a       sdbm:manuscripts
       sdbm:manuscripts_id #{id}
-      sdbm:manuscripts_name #{name}
-      sdbm:manuscripts_location #{location}
-      sdbm:manuscripts_url #{url}
+      sdbm:manuscripts_name '#{name}'
+      sdbm:manuscripts_location '#{location}'
+      sdbm:manuscripts_url '#{url}'
     )
   end
 

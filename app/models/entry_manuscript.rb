@@ -19,6 +19,8 @@ class EntryManuscript < ActiveRecord::Base
   include CreatesActivity
   include Ratable
 
+  include TellBunny
+
   extend SolrSearchable
 
   def create_activity(action_name, current_user, transaction_id)
@@ -82,6 +84,17 @@ class EntryManuscript < ActiveRecord::Base
       updated_by: updated_by.present? ? updated_by.username : "(none)",
       updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : ""
     }
+  end
+
+  def to_rdf
+    %Q(
+      sdbm:entry_manuscripts/#{id}
+      a       sdbm:entry_manuscripts
+      sdbm:entry_manuscripts_id #{id}
+      sdbm:entry_manuscripts_entry_id <https://sdbm.library.upenn.edu/entries/#{entry_id}>
+      sdbm:entry_manuscripts_manuscript_id <https://sdbm.library.upenn.edu/manuscripts/#{manuscript_id}>
+      sdbm:entry_manuscripts_relation_type '#{relation_type}'
+    )
   end
 
 end

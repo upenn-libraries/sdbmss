@@ -48,13 +48,12 @@ class SaleAgent < ActiveRecord::Base
       sdbm:sale_agents/#{id}
       a       sdbm:sale_agents
       sdbm:sale_agents_id #{id}
-      sdbm:sale_agents_sale_id #{sale_id}      
-      sdbm:sale_agents_observed_name #{observed_name}
-      sdbm:sale_agents_agent_id #{provenance_agent_id}      
-      sdbm:sale_agents_order #{order}
-      sdbm:sale_agents_role #{role}
-      sdbm:sale_agents_supplied_by_data_entry #{supplied_by_data_entry}
-      sdbm:sale_agents_uncertain_in_source #{uncertain_in_source}
+      sdbm:sale_agents_sale_id <https://sdbm.library.upenn.edu/sales/#{sale_id}>
+      sdbm:sale_agents_observed_name '#{observed_name}'
+      sdbm:sale_agents_agent_id <https://sdbm.library.upenn.edu/names/#{agent_id}>
+      sdbm:sale_agents_role '#{role}'
+      sdbm:sale_agents_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
+      sdbm:sale_agents_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
     )
   end
 

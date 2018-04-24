@@ -473,11 +473,11 @@ class Name < ActiveRecord::Base
       sdbm:names/#{id}
       a       sdbm:names
       sdbm:names_id #{id}
-      sdbm:names_name #{name}
-      sdbm:names_viaf_id #{viaf_id}
-      sdbm:names_subtype #{subtype}
-      sdbm:names_other_info #{other_info}
-      sdbm:names_deleted #{deleted}
+      sdbm:names_name '#{name}'
+      sdbm:names_viaf_id '#{viaf_id}'
+      sdbm:names_subtype '#{subtype}'
+      sdbm:names_other_info '#{other_info}'
+      sdbm:names_deleted '#{deleted}'^^xsd:boolean
     )
     #  rdfs:label "dericci_links #1" ;
     

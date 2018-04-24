@@ -131,13 +131,13 @@ class Place < ActiveRecord::Base
       sdbm:places/#{id}
       a       sdbm:places
       sdbm:places_id #{id}
-      sdbm:places_name #{name}
-      sdbm:places_authority_id #{authority_id}
-      sdbm:places_authority_source #{authority_source}
-      sdbm:places_parent_id #{parent_id}
+      sdbm:places_name '#{name}'
+      sdbm:places_authority_id '#{authority_id}'
+      sdbm:places_authority_source '#{authority_source}'
+      sdbm:places_parent_id <https://sdbm.library.upenn.edu/places/#{parent_id}>
       sdbm:places_latitude #{latitude}
       sdbm:places_longitude #{longitude}
-      sdbm:places_deleted #{deleted}
+      sdbm:places_deleted '#{deleted}'^^xsd:boolean
     )
   end
 

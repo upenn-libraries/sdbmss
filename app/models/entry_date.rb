@@ -110,13 +110,13 @@ class EntryDate < ActiveRecord::Base
       sdbm:entry_dates/#{id}
       a       sdbm:entry_dates
       sdbm:entry_dates_id #{id}
-      sdbm:entry_dates_observed_date #{observed_date}
-      sdbm:entry_dates_date_normalized_start #{date_normalized_start}
-      sdbm:entry_dates_date_normalized_end #{date_normalized_end}
-      sdbm:entry_dates_entry_id #{entry_id}
+      sdbm:entry_dates_observed_date '#{observed_date}'
+      sdbm:entry_dates_date_normalized_start '#{date_normalized_start}'
+      sdbm:entry_dates_date_normalized_end '#{date_normalized_end}'
+      sdbm:entry_dates_entry_id <https://sdbm.library.upenn.edu/entries/#{entry_id}>
       sdbm:entry_dates_order #{order}
-      sdbm:entry_dates_supplied_by_data_entry #{supplied_by_data_entry}
-      sdbm:entry_dates_uncertain_in_source #{uncertain_in_source}
+      sdbm:entry_dates_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
+      sdbm:entry_dates_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
     )
   end
 

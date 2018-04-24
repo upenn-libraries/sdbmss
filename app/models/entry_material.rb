@@ -46,12 +46,12 @@ class EntryMaterial < ActiveRecord::Base
       sdbm:entry_materials/#{id}
       a       sdbm:entry_materials
       sdbm:entry_materials_id #{id}
-      sdbm:entry_materials_material #{material}
-      sdbm:entry_materials_observed_name #{observed_name}
-      sdbm:entry_materials_entry_id #{entry_id}      
+      sdbm:entry_materials_material '#{material}'
+      sdbm:entry_materials_observed_name '#{observed_name}'
+      sdbm:entry_materials_entry_id <https://sdbm.library.upenn.edu/entries/#{entry_id}>
       sdbm:entry_materials_order #{order}
-      sdbm:entry_materials_supplied_by_data_entry #{supplied_by_data_entry}
-      sdbm:entry_materials_uncertain_in_source #{uncertain_in_source}
+      sdbm:entry_materials_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
+      sdbm:entry_materials_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
     )
   end
 

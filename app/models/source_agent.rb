@@ -57,10 +57,10 @@ class SourceAgent < ActiveRecord::Base
       sdbm:source_agents/#{id}
       a       sdbm:source_agents
       sdbm:source_agents_id #{id}
-      sdbm:source_agents_observed_name #{observed_name}
-      sdbm:source_agents_agent_id #{agent_id}
-      sdbm:source_agents_role #{role}
-      sdbm:source_agents_source_id #{source_id}
+      sdbm:source_agents_observed_name '#{observed_name}'
+      sdbm:source_agents_agent_id <https://sdbm.library.upenn.edu/names/#{agent_id}>
+      sdbm:source_agents_role '#{role}'
+      sdbm:source_agents_source_id <https://sdbm.library.upenn.edu/sources/#{source_id}>
     )
   end
 

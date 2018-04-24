@@ -408,19 +408,19 @@ map:sources_title a d2rq:PropertyBridge;
     %Q(
       sdbm:sources/#{id}
       a       sdbm:sources
-      sdbm:sources_source_type_id #{source_type_id}
+      sdbm:sources_source_type_id <https://sdbm.library.upenn.edu/source_types/#{source_type_id}>
       sdbm:sources_id #{id}
-      sdbm:sources_legacy #{legacy}
-      sdbm:sources_date_accessed #{date_accessed}
-      sdbm:sources_medium #{medium}
-      sdbm:sources_location #{location}
-      sdbm:sources_location_institution #{location_institution}
-      sdbm:sources_status #{status}
-      sdbm:sources_other_info #{other_info}
-      sdbm:sources_deleted #{deleted}
-      sdbm:sources_author #{author}
-      sdbm:sources_title #{title}
-      sdbm:sources_date #{date}
+      sdbm:sources_legacy '#{legacy}'^^xsd:boolean
+      sdbm:sources_date_accessed '#{date_accessed}'
+      sdbm:sources_medium '#{medium}'
+      sdbm:sources_location '#{location}'
+      sdbm:sources_location_institution '#{location_institution}'
+      sdbm:sources_status '#{status}'
+      sdbm:sources_other_info '#{other_info}'
+      sdbm:sources_deleted '#{deleted}'^^xsd:boolean
+      sdbm:sources_author '#{author}'
+      sdbm:sources_title '#{title}'
+      sdbm:sources_date '#{date}'
     )
     #  rdfs:label "dericci_links #1" ;
     

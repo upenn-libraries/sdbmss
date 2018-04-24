@@ -5,18 +5,20 @@ module TellBunny
   extend ActiveSupport::Concern
 
   included do
-    after_save do |model|
-      connection = Bunny.new
-      connection.start
+    after_commit do |model|
+      if model.persisted?
+        connection = Bunny.new
+        connection.start
 
-      ch = connection.create_channel
+        ch = connection.create_channel
 
-      q = ch.queue("sdbm")
+        q = ch.queue("sdbm")
 
-      q.publish("#{model.to_rdf}")
+        q.publish("#{model.to_rdf}")
 
-      # close the connection
-      connection.stop
+        # close the connection
+        connection.stop
+      end
     end
 
     # after destroy
@@ -38,32 +40,32 @@ module TellBunny
 
   # manually add to each class?
   # 
-  #x- entries
-  #x- entry_titles
-  #x- entry_authors
-  #x- entry_dates
-  #x- entry_scribes
-  #x- entry_artists
-  #x- entry_places
-  #x- entry_languages
-  #x- entry_manuscripts
-  #x- entry_uses
-  #x- entry_materials
-  #x- provenance
-  #x- sales
-  #x- sale_agents
+  #tx- entries
+  #tx- entry_titles
+  #tx- entry_authors
+  #tx- entry_dates
+  #tx- entry_scribes
+  #tx- entry_artists
+  #tx- entry_places
+  #tx- entry_languages
+  #tx- entry_manuscripts
+  #tx- entry_uses
+  #tx -entry_materials
+  #tx- provenance
+  #tx- sales
+  #tx- sale_agents
   # 
-  #x- places
-  #x- languages
-  #x- names
-  #x- manuscripts
+  #tx- places
+  #tx- languages
+  #tx- names
+  #tx- manuscripts
   # 
-  #x- sources
-  #x- source_agents
-  #x- source_types
+  #tx- sources
+  #tx- source_agents
+  #tx- source_types
   # 
-  #x- dericci_links
-  #x- dericci_records
+  #tx- dericci_links
+  #tx- dericci_records
 
   def to_rdf
     %Q(
