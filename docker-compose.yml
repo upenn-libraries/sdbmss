@@ -1,13 +1,11 @@
-
 db:
-  image: mysql/mysql-server:5.5
+  image: mysql/mysql-server:5.7
   env_file: .docker-environment
   ports:
-    - "3306:3306"
+    - "3307:3307"
   volumes:
-    - my.cnf:/etc/my.cnf
-    - docker_data/mysql:/var/lib/mysql
-
+    #- my.cnf:/etc/my.cnf --> user ENV variables to setup mysql db instead
+    - docker_data:/var/lib/mysql
 solr:
   build: .
   ports:
@@ -21,15 +19,14 @@ solr:
 
 rails:
   build: .
+  env_file: .docker-environment
   ports:
-    - "3000:3000"
+    - "8080:3000"
   links:
     - db
     - solr
   volumes:
-    - .:/usr/src/app
-  env_file: .docker-environment
-  
+    - .:/usr/src/app  
 delayedjob:
   build: .
   links:

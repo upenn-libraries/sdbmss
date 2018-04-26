@@ -130,12 +130,12 @@ ActiveRecord::Schema.define(version: 20180316185301) do
     t.string  "url",           limit: 255
     t.integer "cards",         limit: 4
     t.string  "size",          limit: 255
-    t.text    "other_info",    limit: 16777215
+    t.text    "other_info",    limit: 65535
     t.string  "senate_house",  limit: 255
     t.integer "created_by_id", limit: 4
     t.integer "verified_id",   limit: 4
     t.integer "updated_by_id", limit: 4
-    t.boolean "out_of_scope",                   default: false
+    t.boolean "out_of_scope",                default: false
   end
 
   add_index "dericci_records", ["created_by_id"], name: "index_dericci_records_on_created_by_id", using: :btree
@@ -468,6 +468,14 @@ ActiveRecord::Schema.define(version: 20180316185301) do
   add_index "manuscripts", ["reviewed_by_id"], name: "index_manuscripts_on_reviewed_by_id", using: :btree
   add_index "manuscripts", ["updated_by_id"], name: "index_manuscripts_on_updated_by_id", using: :btree
 
+  create_table "name_comments", force: :cascade do |t|
+    t.integer "name_id",    limit: 4
+    t.integer "comment_id", limit: 4
+  end
+
+  add_index "name_comments", ["comment_id"], name: "index_name_comments_on_comment_id", using: :btree
+  add_index "name_comments", ["name_id"], name: "index_name_comments_on_name_id", using: :btree
+
   create_table "names", force: :cascade do |t|
     t.string   "name",                limit: 255
     t.integer  "entry_id",            limit: 4
@@ -546,12 +554,12 @@ ActiveRecord::Schema.define(version: 20180316185301) do
     t.string   "filename",   limit: 255
     t.string   "name",       limit: 255
     t.string   "category",   limit: 255, default: "upload"
-    t.datetime "created_at",             default: '2017-01-20 18:04:43'
-    t.datetime "updated_at",             default: '2017-01-20 18:04:44'
+    t.datetime "created_at",             default: '2018-04-23 14:52:14'
+    t.datetime "updated_at",             default: '2018-04-23 14:52:14'
   end
 
-  add_index "pages", ["filename"], name: "index_pages_on_filename", using: :btree
-  add_index "pages", ["name"], name: "index_pages_on_name", using: :btree
+  add_index "pages", ["filename"], name: "index_pages_on_filename", unique: true, using: :btree
+  add_index "pages", ["name"], name: "index_pages_on_name", unique: true, using: :btree
 
   create_table "places", force: :cascade do |t|
     t.string   "name",             limit: 255
@@ -1119,6 +1127,8 @@ ActiveRecord::Schema.define(version: 20180316185301) do
   add_foreign_key "manuscripts", "users", column: "created_by_id"
   add_foreign_key "manuscripts", "users", column: "reviewed_by_id"
   add_foreign_key "manuscripts", "users", column: "updated_by_id"
+  add_foreign_key "name_comments", "comments"
+  add_foreign_key "name_comments", "names"
   add_foreign_key "names", "entries", on_delete: :cascade
   add_foreign_key "names", "users", column: "created_by_id"
   add_foreign_key "names", "users", column: "reviewed_by_id"

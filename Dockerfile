@@ -3,13 +3,13 @@
 # this is used not only by Rails but related processes as well
 # (delayed_worker, Solr)
 
-FROM rails:4.2.3
+FROM rails:4.2.5
 
 RUN apt-get update && apt-get install -y openjdk-7-jdk
 
 WORKDIR /opt
-RUN curl -L -O https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 && tar xjf phantomjs-1.9.8-linux-x86_64.tar.bz2 && ln -s phantomjs-1.9.8-linux-x86_64 phantomjs
-ENV PATH "$PATH:/opt/phantomjs/bin"
+#RUN curl -L -O https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 && tar xjf phantomjs-1.9.8-linux-x86_64.tar.bz2 && ln -s phantomjs-1.9.8-linux-x86_64 phantomjs
+#ENV PATH "$PATH:/opt/phantomjs/bin"
 
 # copying Gemfiles first takes advantage of image caching
 WORKDIR /tmp
@@ -27,9 +27,9 @@ WORKDIR /usr/src/app
 
 COPY . /usr/src/app
 RUN mkdir -p tmp/pids
-RUN bundle exec bin/rake assets:precompile
+#RUN bundle exec bin/rake assets:precompile
 
 # we make sure to rm stale pid file
 CMD rm -f /usr/src/app/tmp/pids/server.pid && bundle exec rails s -b 0.0.0.0
 
-EXPOSE 3000
+EXPOSE 8080
