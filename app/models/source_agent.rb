@@ -6,6 +6,7 @@ class SourceAgent < ActiveRecord::Base
   validate :observed_or_authority  
 
   include HasPaperTrail
+  include TellBunny
 
   ROLE_SELLER_OR_HOLDER = "seller_or_holder"
   ROLE_SELLING_AGENT = "selling_agent"
@@ -50,6 +51,18 @@ class SourceAgent < ActiveRecord::Base
   def facet_value
     agent ? agent.name : nil
   end  
+
+  def to_rdf
+    %Q(
+      sdbm:source_agents/#{id}
+      a       sdbm:source_agents
+      sdbm:source_agents_id #{id}
+      sdbm:source_agents_observed_name '#{observed_name}'
+      sdbm:source_agents_agent_id <https://sdbm.library.upenn.edu/names/#{agent_id}>
+      sdbm:source_agents_role '#{role}'
+      sdbm:source_agents_source_id <https://sdbm.library.upenn.edu/sources/#{source_id}>
+    )
+  end
 
   private
 

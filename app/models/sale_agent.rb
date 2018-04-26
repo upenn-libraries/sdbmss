@@ -4,6 +4,8 @@ class SaleAgent < ActiveRecord::Base
   include CertaintyFlags
   include HasPaperTrail
 
+  include TellBunny
+
   belongs_to :sale
   belongs_to :agent, class_name: 'Name', counter_cache: :sale_agents_count
 
@@ -39,6 +41,20 @@ class SaleAgent < ActiveRecord::Base
 
   def observed
     ""
+  end
+
+  def to_rdf
+    %Q(
+      sdbm:sale_agents/#{id}
+      a       sdbm:sale_agents
+      sdbm:sale_agents_id #{id}
+      sdbm:sale_agents_sale_id <https://sdbm.library.upenn.edu/sales/#{sale_id}>
+      sdbm:sale_agents_observed_name '#{observed_name}'
+      sdbm:sale_agents_agent_id <https://sdbm.library.upenn.edu/names/#{agent_id}>
+      sdbm:sale_agents_role '#{role}'
+      sdbm:sale_agents_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
+      sdbm:sale_agents_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
+    )
   end
 
 end

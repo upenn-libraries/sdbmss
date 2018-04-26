@@ -25,6 +25,8 @@ class Name < ActiveRecord::Base
   include Notified
 
   include Ratable
+
+  include TellBunny
   
   extend SolrSearchable
 
@@ -33,6 +35,8 @@ class Name < ActiveRecord::Base
   belongs_to :entry
 
   belongs_to :reviewed_by, :class_name => 'User'
+
+  belongs_to :associated_place, :class_name => 'Place'
 
   has_many :bookmarks, as: :document, dependent: :destroy  
 
@@ -462,6 +466,21 @@ class Name < ActiveRecord::Base
 
   def update_count()
     Name.reset_counters(self.id, :entry_authors, :entry_artists, :entry_scribes, :sale_agents, :source_agents, :provenance)
+  end
+
+  def to_rdf
+    %Q(
+      sdbm:names/#{id}
+      a       sdbm:names
+      sdbm:names_id #{id}
+      sdbm:names_name '#{name}'
+      sdbm:names_viaf_id '#{viaf_id}'
+      sdbm:names_subtype '#{subtype}'
+      sdbm:names_other_info '#{other_info}'
+      sdbm:names_deleted '#{deleted}'^^xsd:boolean
+    )
+    #  rdfs:label "dericci_links #1" ;
+    
   end
 
 end

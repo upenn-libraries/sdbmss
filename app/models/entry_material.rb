@@ -3,6 +3,8 @@ class EntryMaterial < ActiveRecord::Base
   include CertaintyFlags
   include HasPaperTrail
 
+  include TellBunny
+
   belongs_to :entry
 
   validates_presence_of :entry
@@ -38,6 +40,21 @@ class EntryMaterial < ActiveRecord::Base
   def to_s
     display_value
   end
+
+  def to_rdf
+    %Q(
+      sdbm:entry_materials/#{id}
+      a       sdbm:entry_materials
+      sdbm:entry_materials_id #{id}
+      sdbm:entry_materials_material '#{material}'
+      sdbm:entry_materials_observed_name '#{observed_name}'
+      sdbm:entry_materials_entry_id <https://sdbm.library.upenn.edu/entries/#{entry_id}>
+      sdbm:entry_materials_order #{order}
+      sdbm:entry_materials_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
+      sdbm:entry_materials_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
+    )
+  end
+
 
   private
 

@@ -51,6 +51,7 @@ class Source < ActiveRecord::Base
   include HasPaperTrail
   include CreatesActivity
   extend SolrSearchable
+  include TellBunny
 
   default_scope { where(deleted: false) }
 
@@ -380,6 +381,50 @@ class Source < ActiveRecord::Base
     }
   end
 
+=begin
+map:sources_id a d2rq:PropertyBridge;
+  d2rq:belongsToClassMap map:sources;
+  d2rq:property sdbm:sources_id;
+  d2rq:propertyDefinitionLabel "sources id";
+  d2rq:column "sources.id";
+  d2rq:datatype xsd:integer;
+  .
+map:sources_date a d2rq:PropertyBridge;
+  d2rq:belongsToClassMap map:sources;
+  d2rq:property sdbm:sources_date;
+  d2rq:propertyDefinitionLabel "sources date";
+  d2rq:column "sources.date";
+  .
+map:sources_title a d2rq:PropertyBridge;
+  d2rq:belongsToClassMap map:sources;
+  d2rq:property sdbm:sources_title;
+  d2rq:propertyDefinitionLabel "sources title";
+  d2rq:column "sources.title";
+  .
+=end
+
+
+  def to_rdf
+    %Q(
+      sdbm:sources/#{id}
+      a       sdbm:sources
+      sdbm:sources_source_type_id <https://sdbm.library.upenn.edu/source_types/#{source_type_id}>
+      sdbm:sources_id #{id}
+      sdbm:sources_legacy '#{legacy}'^^xsd:boolean
+      sdbm:sources_date_accessed '#{date_accessed}'
+      sdbm:sources_medium '#{medium}'
+      sdbm:sources_location '#{location}'
+      sdbm:sources_location_institution '#{location_institution}'
+      sdbm:sources_status '#{status}'
+      sdbm:sources_other_info '#{other_info}'
+      sdbm:sources_deleted '#{deleted}'^^xsd:boolean
+      sdbm:sources_author '#{author}'
+      sdbm:sources_title '#{title}'
+      sdbm:sources_date '#{date}'
+    )
+    #  rdfs:label "dericci_links #1" ;
+    
+  end
 
   private
 
