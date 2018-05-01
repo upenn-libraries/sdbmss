@@ -11,16 +11,17 @@ connection.start
 channel = connection.create_channel
 queue = channel.queue("sdbm")
 
-uri = URI.parse("jena/sdbm/update")
+uri = URI.parse("http://jena:3030/sdbm/update")
 
 begin
   puts '[] Waiting for messages. Q: CTRL-C'
   queue.subscribe(block: true) do |_delivery_info, _properties, body|
-    # puts " [x] Received: #{body}"
+    #puts " [x] Received: #{body}, #{_delivery_info}, #{_properties}"
     # turn RDF into queries...
     lines = body.split("\n").reject { |a| a.to_s.length <= 0 }.map(&:strip)
     subject = lines[0].split(":").last
     if lines[0].include? "DESTROY"
+      #puts 'destroy'
       query = %Q(
         PREFIX sdbm: <https://sdbm.library.upenn.edu/>
         DELETE { ?subject ?predicate ?object } 
@@ -29,9 +30,11 @@ begin
           OPTIONAL { ?subject ?predicate ?object }
         }
       )
+      #puts "URI: #{uri}"
       response = Net::HTTP.post_form(uri, {"update" => query})
-      puts "response:  #{response} #{subject}, #{query}"          
+      puts "response:  #{response} #{subject}, #{query}"
     else
+      #puts 'update'
       lines = lines[1..-1]
       lines.each do |triple|
         triple = triple.split(" ")
@@ -49,6 +52,7 @@ begin
               OPTIONAL { ?subject #{predicate} ?object }
             }
           )
+          #puts "URI: #{uri} >> #{query} >> #{triple} >> #{predicate} >> #{object}"
           response = Net::HTTP.post_form(uri, {"update" => query})
           puts "response:  #{response} #{triple}, #{query}"    
         end

@@ -4,7 +4,7 @@
 
 #services:
   rabbitmq:
-    build: ./rabbit
+    image: rabbitmq:latest
     hostname: 'rabbitmq'
     ports:
       - '5672:5672'
