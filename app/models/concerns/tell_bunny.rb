@@ -4,10 +4,13 @@ module TellBunny
 
   extend ActiveSupport::Concern
 
+  #HOST = "165.123.105.243"
+  HOST = 'rabbitmq'
+
   included do
     after_commit do |model|
       if model.persisted?
-        connection = Bunny.new
+        connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
         connection.start
 
         ch = connection.create_channel
@@ -24,7 +27,7 @@ module TellBunny
     # after destroy
     after_destroy do |model|
       puts "AFTER DESTROY"
-      connection = Bunny.new
+      connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
       connection.start
 
       ch = connection.create_channel

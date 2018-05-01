@@ -1,38 +1,72 @@
-db:
-  image: mysql/mysql-server:5.7
-  env_file: .docker-environment
-  ports:
-    - "3307:3307"
-  volumes:
-    #- my.cnf:/etc/my.cnf --> user ENV variables to setup mysql db instead
-    - docker_data:/var/lib/mysql
-solr:
-  build: .
-  ports:
-    - "8983:8983"
-  env_file: .docker-environment
-  links:
-    - db
-  volumes:
-    - .:/usr/src/app
-  command: bundle exec rake sunspot:solr:run
+# note to self: DON'T use docker volume prune... 
 
-rails:
-  build: .
-  env_file: .docker-environment
-  ports:
-    - "8080:3000"
-  links:
-    - db
-    - solr
-  volumes:
-    - .:/usr/src/app  
-delayedjob:
-  build: .
-  links:
-    - db
-    - solr
-  volumes:
-    - .:/usr/src/app
-  env_file: .docker-environment
-  command: bundle exec rake jobs:work
+#version: '2'
+
+#services:
+  rabbitmq:
+    build: ./rabbit
+    hostname: 'rabbitmq'
+    ports:
+      - '5672:5672'
+    environment:
+      - RABBITMQ_ERLANG_COOKIE='secret cookie here' # needed for rabbitmqctl to work
+    #command: rabbitmqctl add_user sdbm sdbm && rabbitmqctl set_permissions -p / sdbm ".*" ".*" ".*"
+  db:
+    image: mysql/mysql-server:5.7
+    env_file: .docker-environment
+    ports:
+      - "3307:3307"
+    volumes:
+      #- my.cnf:/etc/my.cnf --> user ENV variables to setup mysql db instead
+      - docker_data:/var/lib/mysql
+  solr:
+    image: sdbm:latest
+    ports:
+      - "8983:8983"
+    env_file: .docker-environment
+    links:
+      - db
+    volumes:
+      - .:/usr/src/app
+    command: bundle exec rake sunspot:solr:run
+
+  rails:
+    image: sdbm:latest
+    env_file: .docker-environment
+    ports:
+      - "8080:3000"
+    links:
+      - db
+      - solr
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app  
+  delayedjob:
+    image: sdbm:latest
+    links:
+      - db
+      - solr
+    volumes:
+      - .:/usr/src/app
+    env_file: .docker-environment
+    command: bundle exec rake jobs:work
+  jena:
+    #image: stain/jena-fuseki
+    # using dockerfile to add ruby to our image
+    build: ./jena
+    ports:
+      - "3030:3030"
+    volumes:
+      - data:/fuseki
+    environment:
+      - ADMIN_PASSWORD="pw"    
+      - JVM_ARGS=-Xmx3g   # raises memory limits to allow large file to be uploaded
+  interface:
+    build: ./jena
+    command: ruby interface.rb
+    links:
+      - jena
+      - rabbitmq
+#volumes:
+#  docker_data:
+#  data:

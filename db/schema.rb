@@ -555,8 +555,8 @@ ActiveRecord::Schema.define(version: 20180316185301) do
     t.string   "filename",   limit: 255
     t.string   "name",       limit: 255
     t.string   "category",   limit: 255, default: "upload"
-    t.datetime "created_at",             default: '2018-04-23 14:52:14'
-    t.datetime "updated_at",             default: '2018-04-23 14:52:14'
+    t.datetime "created_at",             default: '2018-04-26 20:39:42'
+    t.datetime "updated_at",             default: '2018-04-26 20:39:42'
   end
 
   add_index "pages", ["filename"], name: "index_pages_on_filename", unique: true, using: :btree
