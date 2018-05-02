@@ -1,8 +1,6 @@
-# note to self: DON'T use docker volume prune... 
+version: '2'
 
-#version: '2'
-
-#services:
+services:
   rabbitmq:
     image: rabbitmq:latest
     hostname: 'rabbitmq'
@@ -43,6 +41,8 @@
       - .:/usr/src/app  
   delayedjob:
     image: sdbm:latest
+    depends_on:
+      - db
     links:
       - db
       - solr
@@ -67,6 +67,6 @@
     links:
       - jena
       - rabbitmq
-#volumes:
-#  docker_data:
-#  data:
+volumes:
+  docker_data:
+  data:
