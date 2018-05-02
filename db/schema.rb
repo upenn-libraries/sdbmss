@@ -130,12 +130,12 @@ ActiveRecord::Schema.define(version: 20180316185301) do
     t.string  "url",           limit: 255
     t.integer "cards",         limit: 4
     t.string  "size",          limit: 255
-    t.text    "other_info",    limit: 65535
+    t.text    "other_info",    limit: 16777215
     t.string  "senate_house",  limit: 255
     t.integer "created_by_id", limit: 4
     t.integer "verified_id",   limit: 4
     t.integer "updated_by_id", limit: 4
-    t.boolean "out_of_scope",                default: false
+    t.boolean "out_of_scope",                   default: false
   end
 
   add_index "dericci_records", ["created_by_id"], name: "index_dericci_records_on_created_by_id", using: :btree
@@ -555,12 +555,12 @@ ActiveRecord::Schema.define(version: 20180316185301) do
     t.string   "filename",   limit: 255
     t.string   "name",       limit: 255
     t.string   "category",   limit: 255, default: "upload"
-    t.datetime "created_at",             default: '2018-04-26 20:39:42'
-    t.datetime "updated_at",             default: '2018-04-26 20:39:42'
+    t.datetime "created_at",             default: '2017-01-20 18:04:43'
+    t.datetime "updated_at",             default: '2017-01-20 18:04:44'
   end
 
-  add_index "pages", ["filename"], name: "index_pages_on_filename", unique: true, using: :btree
-  add_index "pages", ["name"], name: "index_pages_on_name", unique: true, using: :btree
+  add_index "pages", ["filename"], name: "index_pages_on_filename", using: :btree
+  add_index "pages", ["name"], name: "index_pages_on_name", using: :btree
 
   create_table "places", force: :cascade do |t|
     t.string   "name",             limit: 255

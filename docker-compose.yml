@@ -2,21 +2,21 @@ version: '2'
 
 services:
   rabbitmq:
-    image: rabbitmq:latest
+    image: rabbitmq:3
     hostname: 'rabbitmq'
     ports:
       - '5672:5672'
     environment:
       - RABBITMQ_ERLANG_COOKIE='secret cookie here' # needed for rabbitmqctl to work
-    #command: rabbitmqctl add_user sdbm sdbm && rabbitmqctl set_permissions -p / sdbm ".*" ".*" ".*"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
   db:
     image: mysql/mysql-server:5.7
     env_file: .docker-environment
     ports:
       - "3307:3307"
     volumes:
-      #- my.cnf:/etc/my.cnf --> user ENV variables to setup mysql db instead
-      - docker_data:/var/lib/mysql
+      - sdbm_data:/var/lib/mysql
   solr:
     image: sdbm:latest
     ports:
@@ -42,7 +42,7 @@ services:
   delayedjob:
     image: sdbm:latest
     depends_on:
-      - db
+      - "db"
     links:
       - db
       - solr
@@ -51,13 +51,11 @@ services:
     env_file: .docker-environment
     command: bundle exec rake jobs:work
   jena:
-    #image: stain/jena-fuseki
-    # using dockerfile to add ruby to our image
     build: ./jena
     ports:
       - "3030:3030"
     volumes:
-      - data:/fuseki
+      - rdf_data:/fuseki
     environment:
       - ADMIN_PASSWORD="pw"    
       - JVM_ARGS=-Xmx3g   # raises memory limits to allow large file to be uploaded
@@ -67,6 +65,9 @@ services:
     links:
       - jena
       - rabbitmq
+    depends_on:
+      - "rabbitmq"
 volumes:
-  docker_data:
-  data:
+  sdbm_data:
+  rdf_data:
+  rabbitmq_data:
