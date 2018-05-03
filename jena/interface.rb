@@ -5,8 +5,28 @@ require 'uri'
 #HOST = "165.123.105.243"
 HOST = 'rabbitmq'
 
-connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
-connection.start
+attempts = 0
+
+begin
+  connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
+  status = connection.start
+rescue Bunny::TCPConnectionFailedForAllHosts
+  puts 'Connection failed: TCPConnectionFailedForAllHosts'
+end
+
+while (status == nil) do
+  sleep 10
+  begin
+    status = connection.start
+  rescue Bunny::TCPConnectionFailedForAllHosts
+    puts "Connection retry ##{attempts} failed: TCPConnectionFailedForAllHosts"
+  end
+  attempts += 1
+  if attempts > 10
+    puts "Connection attemps failed 10 times, stopping"
+    break
+  end
+end
 
 channel = connection.create_channel
 queue = channel.queue("sdbm")
