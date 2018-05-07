@@ -32,13 +32,15 @@ services:
     image: sdbm:latest
     env_file: .docker-environment
     ports:
-      - "8080:3000"
+      - "3000:3000"
+    expose:
+      - "3000"
     links:
       - db
       - solr
       - rabbitmq
     volumes:
-      - .:/usr/src/app  
+      - .:/usr/src/app
   delayedjob:
     image: sdbm:latest
     depends_on:
@@ -56,9 +58,12 @@ services:
       - "3030:3030"
     volumes:
       - rdf_data:/fuseki
+    expose:
+      - "3030"
     environment:
       - ADMIN_PASSWORD="pw"    
       - JVM_ARGS=-Xmx3g   # raises memory limits to allow large file to be uploaded
+      - VIRTUAL_HOST=jena.localhost.com
   interface:
     build: ./jena
     command: ruby interface.rb
@@ -67,6 +72,12 @@ services:
       - rabbitmq
     depends_on:
       - "rabbitmq"
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
 volumes:
   sdbm_data:
   rdf_data:
