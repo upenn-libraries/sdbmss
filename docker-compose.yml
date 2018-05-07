@@ -31,10 +31,10 @@ services:
   rails:
     image: sdbm:latest
     env_file: .docker-environment
-    ports:
-      - "3000:3000"
-    expose:
-      - "3000"
+#    ports:
+#      - "3000:3000"
+#    expose:
+#      - "3000"
     links:
       - db
       - solr
@@ -54,12 +54,12 @@ services:
     command: bundle exec rake jobs:work
   jena:
     build: ./jena
-    ports:
-      - "3030:3030"
+#    ports:
+#      - "3030:3030"
     volumes:
       - rdf_data:/fuseki
-    expose:
-      - "3030"
+#    expose:
+#      - "3030"
     environment:
       - ADMIN_PASSWORD="pw"    
       - JVM_ARGS=-Xmx3g   # raises memory limits to allow large file to be uploaded
