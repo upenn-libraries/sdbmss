@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::Base
+  http_basic_authenticate_with name: ENV["RAILS_USER"], password: ENV["RAILS_PASS"]
+  
   # Adds a few additional behaviors into the application controller 
   include Blacklight::Controller
   # Please be sure to impelement current_user and user_session. Blacklight depends on 
