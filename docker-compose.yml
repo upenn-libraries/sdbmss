@@ -73,6 +73,13 @@ services:
       - rabbitmq
     depends_on:
       - "rabbitmq"
+  nginx:
+    build: ./nginx
+    links:
+      - rails
+      - jena
+    ports:
+      - "8080:80"
   #nginx-proxy:
   #  image: upstreamable/nginx-proxy:alpine
   #  ports:
