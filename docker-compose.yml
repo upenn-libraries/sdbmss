@@ -31,8 +31,8 @@ services:
   rails:
     image: sdbm:latest
     env_file: .docker-environment
-    ports:
-      - "3000:3000"
+    #ports:
+    #  - "3000:3000"
 #    expose:
 #      - "3000"
     links:
@@ -54,8 +54,8 @@ services:
     command: bundle exec rake jobs:work
   jena:
     build: ./jena
-    ports:
-      - "3030:3030"
+    #ports:
+    # - "3030:3030"
     volumes:
       - rdf_data:/fuseki
 #    expose:
