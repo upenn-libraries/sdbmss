@@ -27,6 +27,39 @@ WORKDIR /usr/src/app
 
 COPY . /usr/src/app
 RUN mkdir -p tmp/pids
+
+RUN bundle exec rake \
+  RAILS_ENV=production \
+  SDBMSS_DB_NAME=dummy \
+  SDBMSS_DB_USER=dummy \
+  SDBMSS_APP_HOST=dummy \
+  SDBMSS_SMTP_HOST=dummy \
+  SDBMSS_EMAIL_FROM=dummy \
+  SDBMSS_NOTIFY_EMAIL=dummy \
+  SDBMSS_NOTIFY_EMAIL_PASSWORD=dummy \
+  SDBMSS_BLACKLIGHT_SECRET_KEY=dummy \
+  SDBMSS_DEVISE_SECRET_KEY=dummy \
+  SDBMSS_SECRET_KEY_BASE=dummy \
+  SDBMSS_SECRET_TOKEN=dummy \
+  assets:precompile --trace
+
+RUN bundle exec rake \
+  RAILS_ENV=staging \
+  SDBMSS_DB_NAME=dummy \
+  SDBMSS_DB_USER=dummy \
+  SDBMSS_APP_HOST=dummy \
+  SDBMSS_SMTP_HOST=dummy \
+  SDBMSS_EMAIL_FROM=dummy \
+  SDBMSS_NOTIFY_EMAIL=dummy \
+  SDBMSS_NOTIFY_EMAIL_PASSWORD=dummy \
+  SDBMSS_BLACKLIGHT_SECRET_KEY=dummy \
+  SDBMSS_DEVISE_SECRET_KEY=dummy \
+  SDBMSS_SECRET_KEY_BASE=dummy \
+  SDBMSS_SECRET_TOKEN=dummy \
+  assets:precompile --trace
+
+VOLUME ["/usr/src/app/public"]
+
 #RUN bundle exec bin/rake assets:precompile
 
 # we make sure to rm stale pid file
