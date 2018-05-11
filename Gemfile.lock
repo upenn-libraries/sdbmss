@@ -244,6 +244,8 @@ GEM
     rack (1.6.9)
     rack-accept (0.4.5)
       rack (>= 0.4)
+    rack-handlers (0.7.3)
+      rack
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.7.1)
@@ -395,6 +397,9 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    unicorn-rails (2.2.1)
+      rack
+      unicorn
     warden (1.2.7)
       rack (>= 1.0)
     web-console (2.3.0)
@@ -441,11 +446,12 @@ DEPENDENCIES
   jquery-ui-rails (~> 5.0.3)
   levenshtein (~> 0.2.2)
   mysql2 (~> 0.3.18)
-  nokogiri (~> 1.8.1)
+  nokogiri (~> 1.8.2)
   number_to (~> 0.7.1)
   paper_trail (~> 4.0.0)
   poltergeist (~> 1.6.0)
   pry-rails
+  rack-handlers
   rails (~> 4.2.7.1)
   rake (< 11.0)
   rspec-rails (~> 3.1.0)
@@ -461,6 +467,7 @@ DEPENDENCIES
   turnout (~> 2.1.0)
   uglifier (~> 2.7.2)
   unicorn (~> 4.9.0)
+  unicorn-rails
   web-console (~> 2.1)
   whenever
   yard (~> 0.9.11)

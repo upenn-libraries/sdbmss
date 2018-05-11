@@ -60,9 +60,7 @@ RUN bundle exec rake \
 
 VOLUME ["/usr/src/app/public"]
 
-#RUN bundle exec bin/rake assets:precompile
-
 # we make sure to rm stale pid file
-CMD rm -f /usr/src/app/tmp/pids/server.pid && bundle exec rails s -b 0.0.0.0
+CMD rm -f /usr/src/app/tmp/pids/unicorn.pid && bundle exec rails s unicorn -b 0.0.0.0
 
 EXPOSE 8080
