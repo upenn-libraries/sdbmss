@@ -19,6 +19,21 @@
         </div>
       </li>
       <% end %>
+      <hr></hr>
+      <% if File.exists?("public/static/output.ttl.gz") %>
+      <li class="list-group-item">
+        <div class="row">
+          <div class="col-sm-6 text-left">
+            <strong>RDF Dataset (.ttl)</strong> <span class="text-muted">output.ttl.gz</span>
+          </div>
+          <div class="col-sm-6 text-right">            
+            <%= link_to("static/output.ttl.gz", class: 'btn btn-default btn-sm') do %>
+              <span class="glyphicon glyphicon-download"></span> Download
+            <% end %>
+          </div>
+        </div>
+      </li>
+      <% end %>
       <% if File.exists?("public/static/docs/dump.sql.gz") %>
       <li class="list-group-item">
         <div class="row">
