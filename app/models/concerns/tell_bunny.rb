@@ -4,6 +4,7 @@ module TellBunny
 
   extend ActiveSupport::Concern
 
+=begin
   included do
     after_commit do |model|
       if model.persisted?
@@ -37,6 +38,7 @@ module TellBunny
     end
 
   end
+=end
 
   # manually add to each class?
   # 
