@@ -7,6 +7,8 @@ class Place < ActiveRecord::Base
   include CreatesActivity
   extend SolrSearchable
 
+  include TellBunny
+
   default_scope { where(deleted: false) }
 
   belongs_to :entry
@@ -20,6 +22,8 @@ class Place < ActiveRecord::Base
 
   belongs_to :parent, class_name: "Place"
   has_many :children,  class_name: "Place", foreign_key: "parent_id", :dependent => :restrict_with_error
+
+  has_many :names, class_name: "Name", foreign_key: "associated_place_id", :dependent => :restrict_with_error
 
   has_many :comments, as: :commentable
 
@@ -58,7 +62,9 @@ class Place < ActiveRecord::Base
     string :authority_source
     float :latitude
     float :longitude
-    string :parent
+    string :parent do
+      parent.nil? ? nil : parent.name
+    end
     boolean :reviewed
     boolean :problem
     integer :created_by_id
@@ -76,7 +82,10 @@ class Place < ActiveRecord::Base
     super + [
       ["Authority Id", "authority_id"], 
       ["Authority Source", "authority_source"],
-      ["Problem", "problem"]
+      ["Problem", "problem"],
+      ["Parent", "parent"],
+      ["Latitude", "latitude"],
+      ["Longitude", "longitude"]
     ]
   end
 
@@ -115,6 +124,21 @@ class Place < ActiveRecord::Base
       updated_at: updated_at.present? ? updated_at.to_formatted_s(:long) : "",
       authority_source: authority_source
     }
+  end
+
+  def to_rdf
+    %Q(
+      sdbm:places/#{id}
+      a       sdbm:places
+      sdbm:places_id #{id}
+      sdbm:places_name '#{name}'
+      sdbm:places_authority_id '#{authority_id}'
+      sdbm:places_authority_source '#{authority_source}'
+      sdbm:places_parent_id <https://sdbm.library.upenn.edu/places/#{parent_id}>
+      sdbm:places_latitude #{latitude}
+      sdbm:places_longitude #{longitude}
+      sdbm:places_deleted '#{deleted}'^^xsd:boolean
+    )
   end
 
 end

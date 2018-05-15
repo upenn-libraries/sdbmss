@@ -4,6 +4,8 @@ class EntryPlace < ActiveRecord::Base
   include DisplayableName
   include HasPaperTrail
 
+  include TellBunny
+
   belongs_to :entry
   belongs_to :place, counter_cache: :entries_count
 
@@ -20,6 +22,20 @@ class EntryPlace < ActiveRecord::Base
 
   def to_s
     (place && place.name ? place.name : "") + certainty_flags
+  end
+
+  def to_rdf
+    %Q(
+      sdbm:entry_places/#{id}
+      a       sdbm:entry_places
+      sdbm:entry_places_id #{id}
+      sdbm:entry_places_observed_name '#{observed_name}'
+      sdbm:entry_places_place_id <https://sdbm.library.upenn.edu/places/#{place_id}>
+      sdbm:entry_places_entry_id <https://sdbm.library.upenn.edu/entries/#{entry_id}>
+      sdbm:entry_places_order #{order}
+      sdbm:entry_places_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
+      sdbm:entry_places_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
+    )
   end
 
 end
