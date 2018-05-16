@@ -4,7 +4,8 @@ set :repo_url, 'https://github.com/upenn-libraries/sdbmss.git'
 set :branch, 'master'
 
 # Default deploy_to directory is /var/www/my_app_name
-set :deploy_to, '/var/www/sdbmss/'
+#set :deploy_to, '/var/www/sdbmss/'
+set :deploy_to, '/home/LIBRARY/hellerb/development/sdbmss2/'
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -177,10 +178,41 @@ namespace :deploy do
     end
   end
 
-  after 'deploy:started', 'deploy:god_stop'
-  after 'deploy:publishing', 'deploy:mkdir_pids'
-  after 'deploy:publishing', 'deploy:solr_update'
-  after 'deploy:publishing', 'deploy:god_start'
+  desc "Docker down"
+  task :docker_build do
+    on roles(:all) do
+      within current_path do
+        execute "docker down"
+      end
+    end
+  end
+
+  desc "Docker build"
+  task :docker_build do
+    on roles(:all) do
+      within current_path do
+        execute "docker build . -t sdbm"
+      end
+    end
+  end
+
+  desc "Docker up"
+  task :docker_up do
+    on roles(:all) do
+      within current_path do
+        execute "docker up --build"
+      end
+    end
+  end
+
+  #after 'deploy:started', 'deploy:god_stop'
+  #after 'deploy:publishing', 'deploy:mkdir_pids'
+  #after 'deploy:publishing', 'deploy:solr_update'
+  #after 'deploy:publishing', 'deploy:god_start'
+  
+  after 'deploy:started', 'deploy:docker_down'
+  after 'deploy:publishing', 'deploy:docker_build'
+  after 'deploy:publishing', 'deploy:docker_up'
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do

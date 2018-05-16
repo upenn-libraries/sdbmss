@@ -28,7 +28,7 @@
     $(document).ready(function () {
 
       var sdbmIcon = L.icon({
-        iconUrl: '<%= asset_path "marker_icon.png" %>',
+        iconUrl: '<%= asset_path "map-pin.svg" %>',
 
         iconSize:     [64, 64], // size of the icon
         iconAnchor:   [32, 64], // point of the icon which will correspond to marker's location
@@ -123,6 +123,18 @@
           <ul class="list-inline text-center">
           <% @model.children.order(:name).each do |child| %>
             <li style="font-size: <%= 12 + [10, child.children.count].min %>px;"><span class="text-muted"></span>  <%= link_to child.name, place_path(child) %></li>
+          <% end %>
+          </ul>
+        </dd>
+      <% end %>
+      <dt>Associated Names</dt>
+      <% if @model.names.count <= 0 %>
+        <dd><span class="text-muted">This place is not associated with any names.</span></dd>
+      <% else %>
+        <dd style="padding: 0px;">
+          <ul class="list-inline text-center">
+          <% @model.names.order(:name).each do |name| %>
+            <li><%= link_to name.name, name_path(name) %></li>
           <% end %>
           </ul>
         </dd>

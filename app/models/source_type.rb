@@ -15,6 +15,8 @@ class SourceType < ActiveRecord::Base
   #   ex: DeRicci, censuses, journal articles
   # Unpublished
   #   ex: spreadsheet of Duke Univ. collection, Benjy's spreadsheet, and pretty much everything else.
+
+  include TellBunny
   
   default_scope { order("id = 4 desc") }
 
@@ -52,6 +54,19 @@ class SourceType < ActiveRecord::Base
 
   def to_s
     display_name
+  end
+
+  # SourceType records should rarely, if ever, change
+  def to_rdf
+    %Q(
+      sdbm:source_types/#{id}
+      a       sdbm:source_types
+      sdbm:source_types_id #{id}
+      sdbm:source_types_name '#{name}'
+      sdbm:source_types_display_name '#{display_name}'
+      sdbm:source_types_entries_transaction_field '#{entries_transaction_field}'^^xsd:boolean
+      sdbm:source_types_entries_have_institution_field '#{entries_have_institution_field}'^^xsd:boolean
+    )
   end
 
 end

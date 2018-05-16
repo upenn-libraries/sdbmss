@@ -19,6 +19,8 @@ class Manuscript < ActiveRecord::Base
   include CreatesActivity
   extend SolrSearchable
 
+  include TellBunny
+
   # searchable!
   
   searchable do
@@ -143,6 +145,17 @@ class Manuscript < ActiveRecord::Base
 
   def self.fields
     super + [["Last Known Location", "location"]]
+  end
+
+  def to_rdf
+    %Q(
+      sdbm:manuscripts/#{id}
+      a       sdbm:manuscripts
+      sdbm:manuscripts_id #{id}
+      sdbm:manuscripts_name '#{name}'
+      sdbm:manuscripts_location '#{location}'
+      sdbm:manuscripts_url '#{url}'
+    )
   end
 
 end

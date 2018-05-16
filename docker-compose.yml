@@ -1,41 +1,98 @@
+version: '2'
 
-db:
-  image: mysql/mysql-server:5.5
-  env_file: .docker-environment
-  ports:
-    - "3306:3306"
-  volumes:
-    - my.cnf:/etc/my.cnf
-    - docker_data/mysql:/var/lib/mysql
+services:
+  rabbitmq:
+    image: rabbitmq:3
+    hostname: 'rabbitmq'
+    ports:
+      - '5672:5672'
+    environment:
+      - RABBITMQ_ERLANG_COOKIE='secret cookie here' # needed for rabbitmqctl to work
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+  db:
+    image: mysql/mysql-server:5.7
+    env_file: .docker-environment
+    ports:
+      - "3307:3307"
+    volumes:
+      - sdbm_data:/var/lib/mysql
+  solr:
+    image: sdbm:latest
+    ports:
+      - "8983:8983"
+    env_file: .docker-environment
+    links:
+      - db
+    volumes:
+      - .:/usr/src/app
+    command: bundle exec rake sunspot:solr:run
 
-solr:
-  build: .
-  ports:
-    - "8983:8983"
-  env_file: .docker-environment
-  links:
-    - db
-  volumes:
-    - .:/usr/src/app
-  command: bundle exec rake sunspot:solr:run
-
-rails:
-  build: .
-  ports:
-    - "3000:3000"
-  links:
-    - db
-    - solr
-  volumes:
-    - .:/usr/src/app
-  env_file: .docker-environment
-  
-delayedjob:
-  build: .
-  links:
-    - db
-    - solr
-  volumes:
-    - .:/usr/src/app
-  env_file: .docker-environment
-  command: bundle exec rake jobs:work
+  rails:
+    image: sdbm:latest
+    env_file: .docker-environment
+    logging:
+      options:
+        max-size: 50m
+    #ports:
+    #  - "3000:3000"
+#    expose:
+#      - "3000"
+    links:
+      - db
+      - solr
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
+      - sdbm_docs:/usr/src/app/public/static
+  delayedjob:
+    image: sdbm:latest
+    depends_on:
+      - "db"
+    links:
+      - db
+      - solr
+    volumes:
+      - .:/usr/src/app
+    env_file: .docker-environment
+    command: bundle exec rake jobs:work
+    restart: on-failure
+  jena:
+    build: ./jena
+    #ports:
+    # - "3030:3030"
+    volumes:
+      - rdf_data:/fuseki
+#    expose:
+#      - "3030"
+    environment:
+      - ADMIN_PASSWORD="pw"    
+      - JVM_ARGS=-Xmx3g   # raises memory limits to allow large file to be uploaded
+      - VIRTUAL_HOST=localhost
+      - VIRTUAL_PATH=/jena
+  interface:
+    build: ./jena
+    command: ruby interface.rb
+    links:
+      - jena
+      - rabbitmq
+    depends_on:
+      - "rabbitmq"
+  nginx:
+    build: ./nginx
+    links:
+      - rails
+      - jena
+    ports:
+      - "8080:8080"
+  #nginx-proxy:
+  #  image: upstreamable/nginx-proxy:alpine
+  #  ports:
+  #    - "8080:80"
+  #  volumes:
+  #    - /var/run/docker.sock:/tmp/docker.sock:ro
+volumes:
+  sdbm_docs:
+  sdbm_data:
+  rdf_data:
+  rabbitmq_data:

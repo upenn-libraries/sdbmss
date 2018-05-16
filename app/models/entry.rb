@@ -31,6 +31,7 @@ class Entry < ActiveRecord::Base
   include Notified
 
   include Ratable
+  include TellBunny
 
   extend SolrSearchable
 
@@ -134,7 +135,7 @@ class Entry < ActiveRecord::Base
     {:entry_scribes => [:scribe]},
     {:entry_languages => [:language]},
     {:entry_places => [:place => [:parent => [:parent => [:parent => [:parent => [:parent]]]]]]},
-    {:provenance => [:provenance_agent]},
+    {:provenance => [:provenance_agent => [:associated_place]]},
     {:entry_manuscripts => [:manuscript]},
     {:source => [:source_agents,:source_type]}
   ]
@@ -607,6 +608,11 @@ class Entry < ActiveRecord::Base
     define_field(:string, :source_date, :stored => true) do
       source.date
     end
+    define_field(:text, :source_date_search, :stored => true) do
+      source.date
+    end
+    
+
     define_field(:string, :source, :stored => true) do
       source.public_id
     end
@@ -894,6 +900,10 @@ class Entry < ActiveRecord::Base
       provenance.map(&:display_value).join("; ")
     end
 
+    define_field(:string, :provenance_place, :multiple => true, :stored => true) do
+      provenance.map(&:provenance_agent).map{ |pa| (pa && pa.associated_place) ? pa.associated_place.name : nil}.reject(&:blank?)
+    end
+
     define_field(:string, :provenance_date, :stored => true, :multiple => true) do
       # NOTE: this logic is slightly weird, as there may be a start
       # date but no end date, or vice versa.
@@ -1070,6 +1080,7 @@ class Entry < ActiveRecord::Base
       ["Place", "place_search"], 
       ["Use", "use_search"],
       ["Provenance", "provenance_search"],
+      ["Source Date", "source_date_search"],
     ]
   end
 
@@ -1092,6 +1103,35 @@ class Entry < ActiveRecord::Base
     if !self.draft
       super(action_name, current_user, transaction_id)
     end
+  end
+
+  def to_rdf
+    %Q(
+      sdbm:entries/#{id}
+      a       sdbm:entries
+      sdbm:entries_catalog_or_lot_number '#{catalog_or_lot_number}'
+      sdbm:entries_folios #{folios}
+      sdbm:entries_num_columns #{num_columns}
+      sdbm:entries_num_lines #{num_lines}
+      sdbm:entries_height #{height}
+      sdbm:entries_width #{width}
+      sdbm:entries_alt_size '#{alt_size}'
+      sdbm:entries_manuscript_binding '#{manuscript_binding}'
+      sdbm:entries_other_info '#{other_info}'
+      sdbm:entries_manuscript_link '#{manuscript_link}'
+      sdbm:entries_miniatures_fullpage #{miniatures_fullpage}
+      sdbm:entries_miniatures_large #{miniatures_large}
+      sdbm:entries_miniatures_small #{miniatures_small}
+      sdbm:entries_miniatures_unspec_size #{miniatures_unspec_size}
+      sdbm:entries_initials_historiated #{initials_historiated}
+      sdbm:entries_initials_decorated #{initials_decorated}
+      sdbm:entries_transaction_type #{transaction_type}
+      sdbm:entries_deprecated '#{deprecated}'^^xsd:boolean
+      sdbm:entries_unverified_legacy_record '#{unverified_legacy_record}'xsd:boolean
+      sdbm:entries_institution_id <https://sdbm.library.upenn.edu/names/#{institution_id}>
+      sdbm:entries_superceded_by_id <https://sdbm.library.upenn.edu/entries/#{superceded_by_id}>
+      sdbm:entries_source_id <https://sdbm.library.upenn.edu/sources/#{source_id}>
+    )
   end
 
   private
