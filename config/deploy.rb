@@ -179,7 +179,7 @@ namespace :deploy do
   end
 
   desc "Docker down"
-  task :docker_build do
+  task :docker_down do
     on roles(:all) do
       within current_path do
         execute "docker-compose down"
