@@ -182,7 +182,7 @@ namespace :deploy do
   task :docker_build do
     on roles(:all) do
       within current_path do
-        execute "docker down"
+        execute "docker-compose down"
       end
     end
   end
@@ -200,7 +200,7 @@ namespace :deploy do
   task :docker_up do
     on roles(:all) do
       within current_path do
-        execute "docker up --build"
+        execute "docker-compose up --build"
       end
     end
   end
