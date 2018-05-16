@@ -210,7 +210,7 @@ namespace :deploy do
   #after 'deploy:publishing', 'deploy:solr_update'
   #after 'deploy:publishing', 'deploy:god_start'
   
-  after 'deploy:started', 'deploy:docker_down'
+  after 'deploy:publishing', 'deploy:docker_down'
   after 'deploy:publishing', 'deploy:docker_build'
   after 'deploy:publishing', 'deploy:docker_up'
 
