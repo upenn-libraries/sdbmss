@@ -900,9 +900,9 @@ class Entry < ActiveRecord::Base
       provenance.map(&:display_value).join("; ")
     end
 
-    define_field(:string, :provenance_place, :multiple => true, :stored => true) do
-      provenance.map(&:provenance_agent).map{ |pa| (pa && pa.associated_place) ? pa.associated_place.name : nil}.reject(&:blank?)
-    end
+    #define_field(:string, :provenance_place, :multiple => true, :stored => true) do
+    #  provenance.map(&:provenance_agent).map{ |pa| (pa && pa.associated_place) ? pa.associated_place.name : nil}.reject(&:blank?)
+    #end
 
     define_field(:string, :provenance_date, :stored => true, :multiple => true) do
       # NOTE: this logic is slightly weird, as there may be a start
