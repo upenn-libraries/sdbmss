@@ -5,7 +5,7 @@ set :branch, 'master'
 
 # Default deploy_to directory is /var/www/my_app_name
 #set :deploy_to, '/var/www/sdbmss/'
-set :deploy_to, '/home/LIBRARY/hellerb/development/sdbmss2/'
+set :deploy_to, '/home/LIBRARY/hellerb/development/sdbmss/'
 
 # Default value for :scm is :git
 # set :scm, :git
