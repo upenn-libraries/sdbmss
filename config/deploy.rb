@@ -178,11 +178,20 @@ namespace :deploy do
     end
   end
 
+  desc "Docker prepare"
+  task :docker_prepare do
+    on roles(:all) do
+      within current_path do
+        execute "cp #{shared_path}/.docker-environment #{current_path}/.docker-environment"
+      end
+    end
+  end
+
   desc "Docker down"
   task :docker_down do
     on roles(:all) do
       within current_path do
-        execute "docker-compose down"
+        execute "cd '#{current_path}'; docker-compose down"
       end
     end
   end
@@ -205,11 +214,16 @@ namespace :deploy do
     end
   end
 
+  Rake::Task["bundler:install"].clear_actions
+  Rake::Task["deploy:assets:precompile"].clear_actions
+  Rake::Task["deploy:assets:backup_manifest"].clear_actions
+
   #after 'deploy:started', 'deploy:god_stop'
   #after 'deploy:publishing', 'deploy:mkdir_pids'
   #after 'deploy:publishing', 'deploy:solr_update'
   #after 'deploy:publishing', 'deploy:god_start'
   
+  after 'deploy:publishing', 'deploy:docker_prepare'
   after 'deploy:publishing', 'deploy:docker_down'
   after 'deploy:publishing', 'deploy:docker_build'
   after 'deploy:publishing', 'deploy:docker_up'
