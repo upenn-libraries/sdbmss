@@ -1,0 +1,1 @@
+mysqldump --host=db -u $MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE | gzip > /tmp/sdbm.sql.gz
