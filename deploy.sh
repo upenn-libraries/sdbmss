@@ -32,7 +32,7 @@ then
   ssh $host 'cd $path && docker-compose start'
 elif [ "$command" = 'deploy' ] 
 then
-  ssh $host 'cd $path && docker-compose down && git pull && docker build . -t sdbm && docker-compose up --build'
+  ssh $host 'cd $path && docker-compose down && git pull && docker build . -t sdbm && docker-compose up --build --detach && docker-compose start'
 else
   echo "INVALID COMMAND"
   echo "Required syntax is: ./deploy.sh <HOST> <COMMAND> <BRANCH(optional)>"
