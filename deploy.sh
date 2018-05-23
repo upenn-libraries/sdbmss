@@ -26,13 +26,13 @@ fi
 
 if [ "$command" = 'stop' ] 
 then
-  ssh $host 'cd $path && docker-compose stop'
+  ssh $host 'cd development/sdbmss && docker-compose stop'
 elif [ "$command" = 'start' ] 
 then
-  ssh $host 'cd $path && docker-compose start'
+  ssh $host 'cd development/sdbmss && docker-compose start'
 elif [ "$command" = 'deploy' ] 
 then
-  ssh $host 'cd $path && docker-compose down && git pull && docker build . -t sdbm && docker-compose up --build'
+  ssh $host 'cd development/sdbmss && docker-compose down && git pull && docker build . -t sdbm && docker-compose up --build'
 else
   echo "INVALID COMMAND"
   echo "Required syntax is: ./deploy.sh <HOST> <COMMAND> <BRANCH(optional)>"
