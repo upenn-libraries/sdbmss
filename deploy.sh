@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# ./deploy.sh <HOST> <COMMAND:START/STOP/DEPLOY> <BRANCH>
+# ./deploy.sh <HOST> <COMMAND:START/STOP/DEPLOY> **<BRANCH>** <version?>
 
 path='development/sdbmss'
 

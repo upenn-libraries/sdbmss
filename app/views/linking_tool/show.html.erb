@@ -813,7 +813,7 @@ $(document).ready(function() {
                     <span class="glyphicon glyphicon-bookmark"></span> Load Bookmarks
                 </a>
                 <% if @entry.present? %>
-                    <a class='btn btn-warning' title="IN DEVELOPMENT" href="" data-toggle="modal" tidata-target="#suggestions-modal"><span class="glyphicon glyphicon-exclamation-sign"></span> Find Suggested Links</a>
+                    <a class='btn btn-warning' title="IN DEVELOPMENT" href="" data-toggle="modal" data-target="#suggestions-modal"><span class="glyphicon glyphicon-exclamation-sign"></span> Find Suggested Links</a>
                 <% else %>
                     <a href="" class="btn btn-default disabled">Find Suggested Links</a>
                 <% end %>
@@ -876,7 +876,7 @@ $(document).ready(function() {
                         <% Entry.similar_fields.each_with_index do |field, index| %>
                             <li>
                                 <input id="suggestion-field-<%= field %>" type="checkbox" value="<%= field %>" class="form-control suggestion-field">
-                                    <label for="suggestion-field-<%= field %>" class="control-label label label-default">
+                                    <label for="suggestion-field-<%= field %>" class="control-label">
                                         <%= field.to_s.gsub("_search", "").humanize %>
                                     </label>
                                 </input>
@@ -890,7 +890,7 @@ $(document).ready(function() {
                             <% [:folios, :num_columns, :num_lines, :height, :width].each do |field, index| %>
                                 <li>
                                     <input type="checkbox" id="suggestion-range-<%= field %>" value="<%= field %>" class="form-control suggestion-field">
-                                        <label for="suggestion-range-<%= field %>" class="control-label label label-default">
+                                        <label for="suggestion-range-<%= field %>" class="control-label">
                                             <%= field.to_s.gsub("num_", "").humanize %>
                                         </label>
                                     </input>
@@ -902,7 +902,7 @@ $(document).ready(function() {
                             </input>
                         </label>
                     </div>                  
-                    <div class="col-xs-12 text-center">
+                    <div class="col-xs-12 text-center" style="margin-top: 10px;">
                         <input type="submit" class="form-control" id="show-matches" value="Get Suggestions!"></input>
                     </div>
                 </div>
