@@ -10,7 +10,7 @@ gem 'mysql2', '~> 0.3.18'
 
 # XML parsing. Other gems require nokogiri as well, but we may as well
 # require it too.
-gem 'nokogiri', '~> 1.8.1'
+gem 'nokogiri', '~> 1.8.2'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0.3'
@@ -39,7 +39,8 @@ gem 'jbuilder', '~> 2.2.0'
 
 # Use unicorn as the app server
 gem 'unicorn', '~> 4.9.0'
-
+gem 'unicorn-rails'
+gem 'rack-handlers'
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 

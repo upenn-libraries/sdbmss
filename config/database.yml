@@ -18,7 +18,7 @@ development: &development
   pool: 5
   username: <%= ENV["SDBMSS_DB_USER"] %>
   password: <%= ENV["SDBMSS_DB_PASSWORD"] %>
-  host: <%= ENV["SDBMSS_DB_HOST"] %>
+  host: db
 
 staging:
   <<: *development

@@ -32,9 +32,11 @@ class NamesController < SearchableAuthorityController
   end
 
   def problems
-    @total = Name.where(problem: true).count
+    type = params[:type] || "id"
+    letter = params[:letter] || ""
+    @total = Name.where("#{type} > 0").where("name LIKE '#{letter}%'").where(problem: true).count
     @page = params[:page].to_i || 0
-    @problems = Name.where(problem: true).offset(@page * 50).order("name asc").limit(50)
+    @problems = Name.where("#{type} > 0").where("name LIKE '#{letter}%'").where(problem: true).offset(@page * 50).order("name asc").limit(50)
   end
 
   def suggest

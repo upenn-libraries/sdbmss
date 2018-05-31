@@ -43,6 +43,7 @@ class EntryManuscriptsController < SearchableAuthorityController
         end
         @entry_manuscripts << em
       end
+      manuscript.touch_with_version
 
       respond_to do |format|
         format.json { render :json => {}, :status => :ok }

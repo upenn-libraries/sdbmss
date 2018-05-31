@@ -13,6 +13,24 @@
     <h1 class="text-center">Problematic Names</h1>
     <p class="text-muted">The following names have been flagged as "problems" for failing to conform to SDBM Naming Standards.  Because of this, they may be referring to multiple individuals and the intended identity cannot be determined at this time.  If you have information that would help in cleaning up these names, please help us out!  You can view the names and their respective entry uses below, and any user can leave a comment with whatever useful informaton you wish to share.  Thanks!</p>
   </div>
+  <div class="col-sm-12 text-center">
+    <ul class="pagination">
+      <% ('a'..'z').to_a.each do |letter| %>
+        <li class='<%= letter == params[:letter] ? "active" : "" %>'><%= link_to letter.capitalize, params.merge(:letter => letter).except(:page) %></li>
+      <% end %>
+      <li class='<%= !params[:letter] ? "active" : "" %>'><%= link_to "All", params.except(:letter).except(:page) %></li>
+    </ul>
+  </div>
+  <div class="col-sm-12 text-center">
+     <ul class="pagination">
+        <% ['authors_count', 'artists_count', 'scribes_count', 'provenance_count', 'source_agents_count', "sale_agents_count"].each do |type| %>
+          <li class='<%= type == params[:type] ? "active" : "" %>'>
+            <%= link_to type.gsub('_count', '').humanize, params.merge(:type => type).except(:page) %>
+          </li>
+        <% end %>
+        <li class='<%= !params[:type] ? "active" : "" %>'><%= link_to "All", params.except(:type).except(:page) %></li>
+      </ul> 
+  </div>
   <div class="col-sm-6">
     <div class="dataTables_info" style="margin: 0px;"><%= "Showing #{@page * 50} to #{[(@page + 1) * 50, @total].min} of #{@total}" %></div>
   </div>
@@ -37,38 +55,43 @@
         </tr>
       </thead>
       <tbody>
+        <% if @problems.count <= 0 %>
+          <tr>
+            <td colSpan="9" class='text-muted text-center'>No problematic names found.</td>
+          </tr>
+        <% end %>
         <% @problems.each do |problem| %>
           <tr>
             <td><%= link_to problem.name, name_path(problem), :target => "_blank" %></td>
             <td class='text-center'>
-              <a target="_blank" href="<%= search_by_facet_value('author', problem.name) %>" class="btn btn-default btn-xs"><%= problem.authors_count %></a>
+              <a target="_blank" href="<%= search_by_facet_value('author', problem.name) %>" class=""><%= problem.authors_count %></a>
             </td>
             <td class='text-center'>
-              <a target="_blank" href="<%= search_by_facet_value('artist', problem.name) %>" class="btn btn-default btn-xs"><%= problem.artists_count %></a>
+              <a target="_blank" href="<%= search_by_facet_value('artist', problem.name) %>" class=""><%= problem.artists_count %></a>
             </td>
             <td class='text-center'>
-              <a target="_blank" href="<%= search_by_facet_value('scribe', problem.name) %>" class="btn btn-default btn-xs"><%= problem.scribes_count %></a>
+              <a target="_blank" href="<%= search_by_facet_value('scribe', problem.name) %>" class=""><%= problem.scribes_count %></a>
             </td>
             <td class='text-center'>
-              <a target="_blank" href="<%= search_by_facet_value('provenance', problem.name) %>" class="btn btn-default btn-xs"><%= problem.provenance_count %></a>
+              <a target="_blank" href="<%= search_by_facet_value('provenance', problem.name) %>" class=""><%= problem.provenance_count %></a>
             </td>
             <td class='text-center'>
-              <a target="_blank" href="<%= search_by_facet_value('sale_seller', problem.name) %>" class="btn btn-default btn-xs">
+              <a target="_blank" href="<%= search_by_facet_value('sale_seller', problem.name) %>" class="">
                 <%= (sellers_count = Entry.with_sale_agent_and_role(problem, 'seller').count) %>
               </a>
             </td>
             <td class='text-center'>
-              <a target="_blank" href="<%= search_by_facet_value('sale_buyer', problem.name) %>" class="btn btn-default btn-xs">
+              <a target="_blank" href="<%= search_by_facet_value('sale_buyer', problem.name) %>" class="">
                 <%= (buyers_count = Entry.with_sale_agent_and_role(problem, 'buyer').count) %>
               </a>
             </td>
             <td class='text-center'>
-              <a target="_blank" href="<%= search_by_facet_value('sale_selling_agent', problem.name) %>" class="btn btn-default btn-xs">
+              <a target="_blank" href="<%= search_by_facet_value('sale_selling_agent', problem.name) %>" class="">
                 <%= (selling_agents_count = Entry.with_sale_agent_and_role(problem, 'selling_agent').count) %>
               </a>
             </td>
             <td class='text-center'>
-              <%= link_to "#{problem.source_agents_count} source".pluralize(problem.source_agents_count), sources_path({agent_id: problem.id}), class: "btn btn-default btn-xs" %>
+              <%= link_to "#{problem.source_agents_count} source".pluralize(problem.source_agents_count), sources_path({agent_id: problem.id}), class: "" %>
             </td>
           </tr>
         <% end %>

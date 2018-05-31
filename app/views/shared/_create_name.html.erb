@@ -45,6 +45,13 @@
             </div>
         </div>
 
+        <div class="form-group row">
+            <label for="subtype" class="col-sm-2 control-label" sdbm-tooltip="edit_name_subtype">Subtype</label>
+            <div class="col-sm-4">
+                <%= select_tag(:subtype, options_for_select([['Unknown', 'Unknown'], ['Organization', 'Corporate'], ['Person', 'Personal']]), {'ng-model' => 'entity.subtype', class: "form-control", 'ng-init' => "entity.subtype='Unknown'"}) %>
+            </div>
+        </div>
+
         <div class="form-group row" ng-show="hasViafId">
             <label class="col-sm-2 control-label" sdbm-tooltip="create_name_other">Other Info</label>
             <div class="col-sm-7">

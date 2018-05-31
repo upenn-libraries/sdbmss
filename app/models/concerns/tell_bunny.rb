@@ -4,36 +4,39 @@ module TellBunny
 
   extend ActiveSupport::Concern
 
+  #HOST = "165.123.105.243"
+  HOST = 'rabbitmq'
+
   included do
     after_commit do |model|
       if model.persisted?
-        connection = Bunny.new
-        connection.start
+        #connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
+        Rails.configuration.bunny_connection.start
 
-        ch = connection.create_channel
+        ch = Rails.configuration.bunny_connection.create_channel
 
         q = ch.queue("sdbm")
 
         q.publish("#{model.to_rdf}")
 
         # close the connection
-        connection.stop
+        #Rails.configuration.bunny_connection.stop
       end
     end
 
     # after destroy
     after_destroy do |model|
       puts "AFTER DESTROY"
-      connection = Bunny.new
-      connection.start
+      #connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
+      Rails.configuration.bunny_connection.start
 
-      ch = connection.create_channel
+      ch = Rails.configuration.bunny_connection.create_channel
 
       q = ch.queue("sdbm")
 
       q.publish("DESTROY sdbm:#{model.class.name.pluralize.underscore}/#{model.id}")
 
-      connection.stop
+      #Rails.configuration.bunny_connection.stop
     end
 
   end
