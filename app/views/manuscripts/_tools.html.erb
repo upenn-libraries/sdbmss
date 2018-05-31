@@ -8,5 +8,6 @@
       Construct History<span sdbm-tooltip="manuscript_propose_history"></span>
     </a>
 </li>
+<li><%= link_to "View change history", history_manuscript_path(@manuscript) %></li>
 <%= render partial: "nav/bookmark_watch", locals: {model: @manuscript } %>
 <% end %>

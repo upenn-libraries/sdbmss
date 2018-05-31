@@ -1,0 +1,40 @@
+<% content_for :breadcrumbs do %>
+    <%= render partial: "breadcrumbs" %>
+    <li class="active">
+      <a href="<%= history_manuscript_path(@model) %>">Change History</a>
+    </li>
+<% end %>
+
+<% content_for :control_tools do %>
+    <%= render partial: "tools" %>
+<% end %>
+
+<div class="row">
+  <div class="col-sm-12">
+    <% if @versions.count <= 0 %>
+      <p class="text-muted">This Manuscript has no record of any changes.  <strong>NOTE: Manuscript change history was implemented in June 2018, so older transactions are not recorded.</strong></p>
+    <% end %>
+    <% @versions.order(:created_at => :desc).group_by(&:transaction_id).each do |transaction, versions| %>
+      <h5><%= versions.first.created_at.to_formatted_s(:long) %></h5>
+      <% versions.each do |version| %>
+        <p>
+        <% version.changeset.each do |field, changes| %>
+            <strong><%= field %></strong>
+            <% if changes[0] %>
+              changed from <%= changes[0] %>
+            <% else %>
+              set
+            <% end %>
+
+            <% if changes[1] %>
+              to "<%= changes[1] %>"
+            <% else %>
+              <span class="text-danger">(deleted)</span>
+            <% end %>
+            <br>
+        <% end %>
+        </p>
+      <% end %>
+    <% end %>
+  </div>
+</div>

@@ -15,7 +15,10 @@ class Manuscript < ActiveRecord::Base
   include Watchable
   include UserFields
   #include IndexAfterUpdate
-  include HasPaperTrail
+  #include HasPaperTrail
+  # do this manually, since we want to create versions when record is touched
+  has_paper_trail  
+
   include CreatesActivity
   extend SolrSearchable
 
