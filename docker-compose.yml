@@ -10,6 +10,8 @@ services:
       - RABBITMQ_ERLANG_COOKIE='secret cookie here' # needed for rabbitmqctl to work
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    logging:
+      driver: "journald"
   db:
     image: mysql/mysql-server:5.7
     env_file: .docker-environment
@@ -27,14 +29,14 @@ services:
     volumes:
       - .:/usr/src/app
     command: bundle exec rake sunspot:solr:run
+    logging:
+      driver: "journald"
 
   rails:
     image: sdbm:latest
     env_file: .docker-environment
     logging:
-      options:
-        max-size: "50m"
-        max-file: "7"
+      driver: "journald"
     #ports:
     #  - "3000:3000"
 #    expose:
@@ -58,10 +60,14 @@ services:
     env_file: .docker-environment
     command: bundle exec rake jobs:work
     restart: on-failure
+    logging:
+      driver: "journald"
   jena:
     build: ./jena
     #ports:
     # - "3030:3030"
+    logging:
+      driver: "journald"
     volumes:
       - rdf_data:/fuseki
 #    expose:
@@ -74,6 +80,8 @@ services:
   interface:
     build: ./jena
     command: ruby interface.rb
+    logging:
+      driver: "journald"
     links:
       - jena
       - rabbitmq
@@ -81,6 +89,8 @@ services:
       - "rabbitmq"
   nginx:
     build: ./nginx
+    logging:
+      driver: "journald"
     links:
       - rails
       - jena

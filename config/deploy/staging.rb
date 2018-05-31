@@ -7,7 +7,7 @@
 role :app, %w{hellerb@sdbmdev}
 role :web, %w{hellerb@sdbmdev}
 
-set :branch, 'docker-instance'
+set :branch, 'development'
 
 set :ssh_options, {:forward_agent => true}
 
