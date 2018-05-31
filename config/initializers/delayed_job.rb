@@ -2,7 +2,8 @@
 # poll every 2 sec
 Delayed::Worker.sleep_delay = 2
 # separate log file for delayed_job
-Delayed::Worker.logger = Logger.new(File.join(Rails.root, 'log', 'delayed_job.log'))
+#Delayed::Worker.logger = Logger.new(File.join(Rails.root, 'log', 'delayed_job.log'))
+Delayed::Worker.logger = Logger.new(STDOUT)
 
 # suppress ActiveRecord logging from delayed_job otherwise we see
 # output from tons of queries on the jobs table

@@ -29,9 +29,6 @@ services:
     volumes:
       - .:/usr/src/app
     command: bundle exec rake sunspot:solr:run
-    logging:
-      driver: "journald"
-
   rails:
     image: sdbm:latest
     env_file: .docker-environment
