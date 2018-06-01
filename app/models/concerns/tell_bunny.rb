@@ -3,7 +3,7 @@ module TellBunny
   require 'bunny'
 
   extend ActiveSupport::Concern
-
+=begin
   included do
     after_commit do |model|
       if model.persisted?
@@ -35,8 +35,8 @@ module TellBunny
 
       connection.stop
     end
-
   end
+=end
 
   # manually add to each class?
   # 
