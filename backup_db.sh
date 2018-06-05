@@ -1,1 +1,3 @@
-mysqldump --host=db -u $MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE | gzip > /tmp/sdbm.sql.gz
+#_date=$(date +"%m-%d-%y")
+_file="/tmp/sdbm.sql.gz"
+mysqldump --host=db -u $MYSQL_USER --password=$MYSQL_PASSWORD $MYSQL_DATABASE | gzip > "$_file"

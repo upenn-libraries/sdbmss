@@ -32,6 +32,7 @@ channel = connection.create_channel
 queue = channel.queue("sdbm")
 
 uri = URI.parse("http://jena:3030/sdbm/update")
+http = Net::HTTP.new(uri.host, uri.port)
 
 begin
   puts '[] Waiting for messages. Q: CTRL-C'
@@ -51,7 +52,12 @@ begin
         }
       )
       #puts "URI: #{uri}"
-      response = Net::HTTP.post_form(uri, {"update" => query})
+      
+      request = Net::HTTP::Post.new(uri.request_uri)
+      request.set_form_data({"update" => query})
+      request.basic_auth("admin",  ENV["ADMIN_PASSWORD"])
+      response = http.request(request)
+      #response = Net::HTTP.post_form(uri, {"update" => query})
       puts "response:  #{response} #{subject}, #{query}"
     else
       #puts 'update'
@@ -73,7 +79,11 @@ begin
             }
           )
           #puts "URI: #{uri} >> #{query} >> #{triple} >> #{predicate} >> #{object}"
-          response = Net::HTTP.post_form(uri, {"update" => query})
+          request = Net::HTTP::Post.new(uri.request_uri)
+          request.set_form_data({"update" => query})
+          request.basic_auth("admin", ENV["ADMIN_PASSWORD"])
+          response = http.request(request)          
+          #response = Net::HTTP.post_form(uri, {"update" => query})
           puts "response:  #{response} #{triple}, #{query}"    
         end
       end
