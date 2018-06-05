@@ -13,8 +13,12 @@ RUN apk add ruby ruby-bundler
 
 # TODO schedule regular ruby script
 #RUN mkdir /usr/app 
+#WORKDIR /fuseki
+#COPY shiro.ini ./
+
 WORKDIR /jena-fuseki
 
+COPY shiro.ini ./
 COPY Gemfile ./ 
 #COPY Gemfile.lock ./ 
 RUN bundle install

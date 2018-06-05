@@ -1,4 +1,4 @@
-version: '3'
+version: '2.2'
 
 services:
   rabbitmq:
@@ -10,11 +10,15 @@ services:
       - RABBITMQ_ERLANG_COOKIE='secret cookie here' # needed for rabbitmqctl to work
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
+    cpu_shares: 20
     logging:
       driver: "journald"
+    mem_limit: 2000m
+    mem_reservation: 500m      
   db:
     image: mysql/mysql-server:5.7
     env_file: .docker-environment
+    cpu_shares: 80
     ports:
       - "3307:3307"
     volumes:
@@ -24,6 +28,7 @@ services:
     ports:
       - "8983:8983"
     env_file: .docker-environment
+    cpu_shares: 80
     links:
       - db
     volumes:
@@ -32,6 +37,7 @@ services:
   rails:
     image: sdbm:latest
     env_file: .docker-environment
+    cpu_shares: 80
     logging:
       driver: "journald"
     #ports:
@@ -69,14 +75,19 @@ services:
       - rdf_data:/fuseki
 #    expose:
 #      - "3030"
-    environment:
-      - ADMIN_PASSWORD="pw"    
-      - JVM_ARGS=-Xmx3g   # raises memory limits to allow large file to be uploaded
-      - VIRTUAL_HOST=localhost
-      - VIRTUAL_PATH=/jena
+    mem_limit: 2000m
+    mem_reservation: 500m
+    cpu_shares: 20
+    env_file: .docker-environment
+ #   environment:
+    #  - ADMIN_PASSWORD="pw"    
+#      - JVM_ARGS=-Xmx3g   # raises memory limits to allow large file to be uploaded
+#      - VIRTUAL_HOST=localhost
+#      - VIRTUAL_PATH=/jena
   interface:
     build: ./jena
     command: ruby interface.rb
+    cpu_shares: 20
     logging:
       driver: "journald"
     links:
@@ -84,8 +95,13 @@ services:
       - rabbitmq
     depends_on:
       - "rabbitmq"
+    mem_limit: 2000m
+    mem_reservation: 500m
+    cpu_shares: 20
+    env_file: .docker-environment
   nginx:
     build: ./nginx
+    cpu_shares: 50
     logging:
       driver: "journald"
     links:
