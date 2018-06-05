@@ -26,20 +26,20 @@ fi
 
 if [ "$command" = 'stop' ] 
 then
-  ssh $host 'cd $path && docker-compose stop'
+  ssh $host "cd $path && docker-compose stop"
 elif [ "$command" = 'version' ] 
 then
-  ssh $host 'cd $path && cat VERSION'
+  ssh $host "cd $path && cat VERSION"
 elif [ "$command" = 'start' ]
 then
-  ssh $host 'cd $path && docker-compose start'
+  ssh $host "cd $path && docker-compose start"
 elif [ "$command" = 'deploy' ] 
 then
   if [ "$version" = '']
   then
-    ssh $host 'cd $path && docker-compose down && git pull && /bin/bash build.sh && docker-compose up --build --detach && docker-compose start'
+    ssh $host "cd $path && docker-compose down && git pull && /bin/bash build.sh && docker-compose up --build --detach && docker-compose start"
   else
-    ssh $host 'cd $path && docker-compose down && git pull && echo $version > VERSION && /bin/bash build.sh && docker-compose up --build --detach && docker-compose start'
+    ssh $host "cd $path && docker-compose down && git pull && echo $version > VERSION && /bin/bash build.sh && docker-compose up --build --detach && docker-compose start"
   fi
 else
   echo "INVALID COMMAND"
