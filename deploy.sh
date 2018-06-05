@@ -47,3 +47,4 @@ else
   echo "Available commands are: start, stop and deploy"
   exit
 fi
+
