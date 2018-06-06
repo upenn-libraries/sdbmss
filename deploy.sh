@@ -37,10 +37,10 @@ elif [ "$command" = 'deploy' ]
 then
   if [ "$version" = '']
   then
-    puts "Deploying Patch"
+    echo "Deploying Patch"
     ssh $host "cd $path && docker-compose down && git pull && /bin/bash build.sh && docker-compose up --build --detach && docker-compose start"
   else
-    puts "Deploying Version $version"
+    echo "Deploying Version $version"
     ssh $host "cd $path && docker-compose down && git pull && echo $version > VERSION && /bin/bash build.sh && docker-compose up --build --detach && docker-compose start"
   fi
 else
