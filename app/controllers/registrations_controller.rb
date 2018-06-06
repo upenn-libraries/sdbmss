@@ -18,10 +18,9 @@ class RegistrationsController < Devise::RegistrationsController
         
         <p>The SDBM Project Team</p>       
         
-        <p> Lynn Ransom - Project Manager</p>
+        <p>Lynn Ransom - Project Manager</p>
         <p>Benny Heller - Programmer Analyst</p>
-        <p>Matija Budisin - Project Assistant</p>
-        <p>Emma Cawlfield - Project Assistant</p>
+        <p>Emma Cawlfield - Project Coordinator</p>
         ),
         created_by: User.find(2) # 12-06-17 fix me: this feels a little iffy, maybe set the user account from ENV_VARIABLE?
       )

@@ -76,7 +76,6 @@ services:
     cpu_shares: 20
     env_file: .docker-environment
     restart: on-failure
-#   environment:
 #      - JVM_ARGS=-Xmx3g   # raises memory limits to allow large file to be uploaded
   interface:
     build: ./jena
