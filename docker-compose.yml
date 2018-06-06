@@ -7,7 +7,7 @@ services:
     ports:
       - '5672:5672'
     environment:
-      - RABBITMQ_ERLANG_COOKIE='secret cookie here' # needed for rabbitmqctl to work
+      - RABBITMQ_ERLANG_COOKIE='secret cookie here' # needed for rabbitmqctl to work (??)
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     cpu_shares: 20
@@ -15,6 +15,7 @@ services:
       driver: "journald"
     mem_limit: 2000m
     mem_reservation: 500m      
+    restart: on-failure
   db:
     image: mysql/mysql-server:5.7
     env_file: .docker-environment
@@ -23,6 +24,7 @@ services:
       - "3307:3307"
     volumes:
       - sdbm_data:/var/lib/mysql
+    restart: on-failure
   solr:
     image: sdbm:latest
     ports:
@@ -34,16 +36,14 @@ services:
     volumes:
       - .:/usr/src/app
     command: bundle exec rake sunspot:solr:run
+    restart: on-failure
   rails:
     image: sdbm:latest
     env_file: .docker-environment
     cpu_shares: 80
     logging:
       driver: "journald"
-    #ports:
-    #  - "3000:3000"
-#    expose:
-#      - "3000"
+    restart: on-failure
     links:
       - db
       - solr
@@ -67,23 +67,16 @@ services:
       driver: "journald"
   jena:
     build: ./jena
-    #ports:
-    # - "3030:3030"
     logging:
       driver: "journald"
     volumes:
       - rdf_data:/fuseki
-#    expose:
-#      - "3030"
     mem_limit: 2000m
     mem_reservation: 500m
     cpu_shares: 20
     env_file: .docker-environment
-#    environment:
-#      - ADMIN_PASSWORD="pw"    
+    restart: on-failure
 #      - JVM_ARGS=-Xmx3g   # raises memory limits to allow large file to be uploaded
-#      - VIRTUAL_HOST=localhost
-#      - VIRTUAL_PATH=/jena
   interface:
     build: ./jena
     command: ruby interface.rb
@@ -99,6 +92,7 @@ services:
     mem_reservation: 500m
     cpu_shares: 20
     env_file: .docker-environment
+    restart: on-failure
   nginx:
     build: ./nginx
     cpu_shares: 50
@@ -109,12 +103,7 @@ services:
       - jena
     ports:
       - "8080:8080"
-  #nginx-proxy:
-  #  image: upstreamable/nginx-proxy:alpine
-  #  ports:
-  #    - "8080:80"
-  #  volumes:
-  #    - /var/run/docker.sock:/tmp/docker.sock:ro
+    restart: on-failure
 volumes:
   sdbm_docs:
   sdbm_data:

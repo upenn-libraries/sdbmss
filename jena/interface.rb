@@ -8,7 +8,7 @@ HOST = 'rabbitmq'
 attempts = 0
 
 begin
-  connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
+  connection = Bunny.new(:host => HOST, :port => 5672, :user => ENV["RABBIT_USER"], :pass => ENV["RABBIT_PASSWORD"], :vhost => "/")
   status = connection.start
 rescue Bunny::TCPConnectionFailedForAllHosts
   puts 'Connection failed: TCPConnectionFailedForAllHosts'
