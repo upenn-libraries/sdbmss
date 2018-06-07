@@ -19,6 +19,7 @@ RUN apk add ruby ruby-bundler
 WORKDIR /jena-fuseki
 
 COPY shiro.ini ./
+COPY yasr.min.js ./webapp/js/lib/yasr.min.js
 COPY Gemfile ./ 
 #COPY Gemfile.lock ./ 
 RUN bundle install
