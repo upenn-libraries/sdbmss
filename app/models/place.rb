@@ -56,6 +56,7 @@ class Place < ActiveRecord::Base
     end
     text :name, :more_like_this => true
     text :evidence
+    string :evidence
     string :name
     integer :id
     integer :authority_id
@@ -86,6 +87,12 @@ class Place < ActiveRecord::Base
       ["Parent", "parent"],
       ["Latitude", "latitude"],
       ["Longitude", "longitude"]
+    ]
+  end
+
+  def self.fields
+    super + [
+      ["Other Info", "evidence"]
     ]
   end
 
