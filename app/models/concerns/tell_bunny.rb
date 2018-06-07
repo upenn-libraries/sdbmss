@@ -8,38 +8,13 @@ module TellBunny
   HOST = 'rabbitmq'
 
   included do
-    after_commit do |model|
-      if model.persisted?
-        #connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
-        Rails.configuration.bunny_connection.start
-
-        ch = Rails.configuration.bunny_connection.create_channel
-
-        q = ch.queue("sdbm")
-
-        q.publish("#{model.to_rdf}")
-
-        # close the connection
-        #Rails.configuration.bunny_connection.stop
-      end
-    end
-
+    after_commit :update_bunny
     # after destroy
-    after_destroy do |model|
-      puts "AFTER DESTROY"
-      #connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
-      Rails.configuration.bunny_connection.start
-
-      ch = Rails.configuration.bunny_connection.create_channel
-
-      q = ch.queue("sdbm")
-
-      q.publish("DESTROY sdbm:#{model.class.name.pluralize.underscore}/#{model.id}")
-
-      #Rails.configuration.bunny_connection.stop
-    end
+    after_destroy :destroy_bunny
 
   end
+
+
 
   # manually add to each class?
   # 
@@ -75,4 +50,48 @@ module TellBunny
       # sdbm:names/#{id} sdbm:names_id #{id}      
     )
   end
+  
+  #private
+
+  def update_bunny
+    if self.persisted?
+      #connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
+      begin
+
+        Rails.configuration.bunny_connection.start
+
+        ch = Rails.configuration.bunny_connection.create_channel
+
+        q = ch.queue("sdbm")
+
+        q.publish("#{self.to_rdf}")
+
+      rescue Bunny::TCPConnectionFailed => e
+        puts "(Update) - Connection to RabbitMQ server failed"
+        self.delay(run_at: 1.hour.from_now).update_bunny
+      end
+      # close the connection
+      #Rails.configuration.bunny_connection.stop
+    end
+  end
+
+  def destroy_bunny
+    begin
+      puts "AFTER DESTROY"
+      #connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
+      Rails.configuration.bunny_connection.start
+
+      ch = Rails.configuration.bunny_connection.create_channel
+
+      q = ch.queue("sdbm")
+
+      q.publish("DESTROY sdbm:#{self.class.name.pluralize.underscore}/#{self.id}")
+
+    rescue Bunny::TCPConnectionFailed => e
+      puts "(Destroy) - Connection to RabbitMQ server failed"
+      self.delay(run_at: 1.hour.from_now).destroy_bunny
+    end
+    #Rails.configuration.bunny_connection.stop
+  end
+
 end
