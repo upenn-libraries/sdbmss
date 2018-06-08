@@ -108,20 +108,12 @@
         <legend class="mobile-center">
             <span><%= @manuscript.public_id %></span>
         </legend>
-        <a href="#more_info" data-toggle="modal" data-target="#more_info">
-            <span class="glyphicon glyphicon-info-sign"></span> Click Here For More Info
-        </a>
-        <a class="btn btn-sm btn-default pull-right" data-ajax-modal="trigger" rel="nofollow" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
-        <div id="more_info" class="modal fade panel-body" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <p>This <b>Manuscript Record</b> is a linking node that collects entries referring to the same physical manuscript for easy access and study.  You can use this space to determine current location and provenance, to create your own <b>Personal Observation</b> about this manuscript, or to leave a comment about this manuscript.  You can also construct your own provenance history based on prior entries by clicking the <b>Construct History</b> button in the <b>Tools</b> menu.</p>
-                        <p>If you believe links have been made in error, contact us or simply leave a comment below. Editors, Super-Editors and Admin can change links using the Linking Tool.</p>                        
-                    </div>
-                </div>
-            </div>
-        </div>
+    </div>
+    <div class="col-sm-12">
+        <%= render partial: "pages/partial", locals: {page_name: "Manuscript Instructions"} %>
+        <p>
+            <a class="btn btn-default btn-xs" data-ajax-modal="trigger" rel="nofollow" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
+        </p>
     </div>
     <% if @manuscript.location %>
     <div class='col-sm-5'> 
