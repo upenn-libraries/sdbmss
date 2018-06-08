@@ -8,22 +8,11 @@
     </div>
     <div class="modal-body form-horizontal compress-whitespace">
 
-        <p>This window asks you to create an authorized name to
-        facilitate standardization and searchability for this
-        entity. Type the name of a person or institution into the Name
-        field, then click “Find Suggestions” to access standardized
-        names from the Virtual International Authority File (VIAF). If
-        the name you are searching appears in the list, click on the
-        VIAF ID number to check that this is the name you wish to
-        use. If it is, return to window and click “Use this info” to
-        populate the Name and VIAF ID fields automatically. If the
-        name does not appear in the VIAF suggestions list, you must create your own
-        standardized name by following the SDBM NAME STANDARD: <strong>Last name, First name, Title, Dates <em>(if known)</em>.</strong>
-        You will not need to enter a VIAF ID.</p>
-
-        <p>Tip: Remember that the name of a person or an institution
-        can have variant spellings. If you don’t find a name, consider other
-        possible spellings.</p>
+        <div class="row">
+            <div class="col-sm-12">
+                <%= render partial: "pages/partial", locals: {page_name: "Name Instructions" } %>
+            </div>
+        </div>
 
         <div class="form-group row">
             <label class="col-sm-2 control-label" sdbm-tooltip="create_name_name">Name</label>

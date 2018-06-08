@@ -2582,6 +2582,21 @@ tr.linking-tool-changed td, tr.linking-tool-deleted td {
 .delete-draft-btn {
   right: 40px;
 }
+
+.edit-page {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 1000;
+  opacity: 0.6;
+}
+.edit-page:hover {
+  opacity: 0.9;
+}
+.edit-page:hover + .page-partial {
+  background: #EEFFEE;
+}
+
 /* group table */
 .edit-buttons {
   min-width: 129px;

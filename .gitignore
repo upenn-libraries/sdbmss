@@ -20,7 +20,7 @@
 /public/static/tooltips
 /public/uploads
 
-/public/uploads/*
+/public/static/uploads/*
 /public/static/tooltips/*
 /public/static/docs/*
 
