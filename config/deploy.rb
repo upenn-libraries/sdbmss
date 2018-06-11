@@ -4,8 +4,8 @@ set :repo_url, 'https://github.com/upenn-libraries/sdbmss.git'
 set :branch, 'master'
 
 # Default deploy_to directory is /var/www/my_app_name
-#set :deploy_to, '/var/www/sdbmss/'
-set :deploy_to, '/home/LIBRARY/hellerb/development/sdbmss/'
+set :deploy_to, '/var/www/sdbmss/'
+#set :deploy_to, '/home/LIBRARY/hellerb/development/sdbmss/'
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -27,7 +27,7 @@ set :deploy_to, '/home/LIBRARY/hellerb/development/sdbmss/'
 set :linked_dirs, fetch(:linked_dirs, []).push('tmp/pids', 'log')
 set :linked_dirs, fetch(:linked_dirs, []).push('public/static/tooltips')
 set :linked_dirs, fetch(:linked_dirs, []).push('public/static/docs')
-set :linked_dirs, fetch(:linked_dirs, []).push('public/uploads')
+set :linked_dirs, fetch(:linked_dirs, []).push('public/static/uploads')
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -218,15 +218,15 @@ namespace :deploy do
   Rake::Task["deploy:assets:precompile"].clear_actions
   Rake::Task["deploy:assets:backup_manifest"].clear_actions
 
-  #after 'deploy:started', 'deploy:god_stop'
-  #after 'deploy:publishing', 'deploy:mkdir_pids'
-  #after 'deploy:publishing', 'deploy:solr_update'
-  #after 'deploy:publishing', 'deploy:god_start'
+  after 'deploy:started', 'deploy:god_stop'
+  after 'deploy:publishing', 'deploy:mkdir_pids'
+  after 'deploy:publishing', 'deploy:solr_update'
+  after 'deploy:publishing', 'deploy:god_start'
   
-  after 'deploy:publishing', 'deploy:docker_prepare'
-  after 'deploy:publishing', 'deploy:docker_down'
-  after 'deploy:publishing', 'deploy:docker_build'
-  after 'deploy:publishing', 'deploy:docker_up'
+  #after 'deploy:publishing', 'deploy:docker_prepare'
+  #after 'deploy:publishing', 'deploy:docker_down'
+  #after 'deploy:publishing', 'deploy:docker_build'
+  #after 'deploy:publishing', 'deploy:docker_up'
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
