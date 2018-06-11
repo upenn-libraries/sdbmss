@@ -393,23 +393,23 @@ function relation (type) {
                 {
                     sdbmssMinWidth: "150px",
                     sdbmssMaxWidth: "150px",
-                    sdbmssSortField: 'sale_selling_agent',
+                    sdbmssSortField: 'sale_selling_agent_flat',
                     title: 'Selling Agent',
-                    orderable: false
+                    //orderable: false
                 },
                 {
                     sdbmssMinWidth: "150px",
                     sdbmssMaxWidth: "150px",
-                    sdbmssSortField: 'sale_seller',
+                    sdbmssSortField: 'sale_seller_flat',
                     title: 'Seller',
-                    orderable: false
+                    //orderable: false
                 },
                 {
                     sdbmssMinWidth: "150px",
                     sdbmssMaxWidth: "150px",
-                    sdbmssSortField: 'sale_buyer',
+                    sdbmssSortField: 'sale_buyer_flat',
                     title: 'Buyer',
-                    orderable: false
+                    //orderable: false
                 },
                 {
                     sdbmssMinWidth: "100px",
@@ -565,13 +565,13 @@ function relation (type) {
                     sdbmssMinWidth: "400px",
                     sdbmssMaxWidth: "400px",
                     title: 'Binding',
-                    orderable: false
+                    sdbmssSortField: 'binding'
                 },
                 {
                     sdbmssMinWidth: "400px",
                     sdbmssMaxWidth: "400px",
                     title: 'URL',
-                    orderable: false,
+                    sdbmssSortField: 'manuscript_link',
                     render: function (data, type, full, meta) {
                         if(data) {
                             return '<a href="' + data + '" target="_blank">' + data + '</a>';
@@ -583,13 +583,13 @@ function relation (type) {
                     sdbmssMinWidthImportant: "400px",
                     sdbmssMaxWidthImportant: "400px",
                     title: 'Other Info',
-                    orderable: false
+                    sdbmssSortField: 'other_info'
                 },
                 {
                     sdbmssMinWidth: "500px",
                     sdbmssMaxWidth: "500px",
                     title: 'Provenance',
-                    orderable: false
+                    sdbmssSortField: 'provenance_flat'
                 },
                 {
                     sdbmssMinWidth: "130px",
@@ -631,8 +631,7 @@ function relation (type) {
                     sdbmssMinWidth: "130px",
                     sdbmssMaxWidth: "130px",
                     title: 'Superceded By',
-                    sdbmssSortField: 'superceded_by_id',
-                    orderable: false
+                    sdbmssSortField: 'superceded_by_id'
                 },
                 {
                     title: "Draft",

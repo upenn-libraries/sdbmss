@@ -3,7 +3,7 @@ class ManuscriptsController < SearchableAuthorityController
   include MarkAsReviewed
   include LogActivity
 
-  before_action :set_manuscript, only: [:show, :edit, :entry_candidates, :citation, :table]
+  before_action :set_manuscript, only: [:show, :edit, :entry_candidates, :citation, :table, :history]
 
   load_and_authorize_resource :only => [:edit, :update, :destroy, :mark_as_reviewed]
 
@@ -132,6 +132,11 @@ class ManuscriptsController < SearchableAuthorityController
         }
       end
     end
+  end
+
+  def history
+    @model = Manuscript.find(params[:id])
+    @versions = PaperTrail::Version.where(item_type: "EntryManuscript", transaction_id: @model.versions.map(&:transaction_id))
   end
 
   private

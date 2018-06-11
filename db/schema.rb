@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180316185301) do
+ActiveRecord::Schema.define(version: 20180608191434) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -468,6 +468,14 @@ ActiveRecord::Schema.define(version: 20180316185301) do
   add_index "manuscripts", ["reviewed_by_id"], name: "index_manuscripts_on_reviewed_by_id", using: :btree
   add_index "manuscripts", ["updated_by_id"], name: "index_manuscripts_on_updated_by_id", using: :btree
 
+  create_table "name_comments", force: :cascade do |t|
+    t.integer "name_id",    limit: 4
+    t.integer "comment_id", limit: 4
+  end
+
+  add_index "name_comments", ["comment_id"], name: "index_name_comments_on_comment_id", using: :btree
+  add_index "name_comments", ["name_id"], name: "index_name_comments_on_name_id", using: :btree
+
   create_table "names", force: :cascade do |t|
     t.string   "name",                limit: 255
     t.integer  "entry_id",            limit: 4
@@ -495,6 +503,8 @@ ActiveRecord::Schema.define(version: 20180316185301) do
     t.boolean  "problem",                           default: false
     t.string   "subtype",             limit: 255
     t.integer  "associated_place_id", limit: 4
+    t.string   "startdate",           limit: 255
+    t.string   "enddate",             limit: 255
   end
 
   add_index "names", ["created_by_id"], name: "index_names_on_created_by_id", using: :btree
@@ -1120,6 +1130,8 @@ ActiveRecord::Schema.define(version: 20180316185301) do
   add_foreign_key "manuscripts", "users", column: "created_by_id"
   add_foreign_key "manuscripts", "users", column: "reviewed_by_id"
   add_foreign_key "manuscripts", "users", column: "updated_by_id"
+  add_foreign_key "name_comments", "comments"
+  add_foreign_key "name_comments", "names"
   add_foreign_key "names", "entries", on_delete: :cascade
   add_foreign_key "names", "users", column: "created_by_id"
   add_foreign_key "names", "users", column: "reviewed_by_id"

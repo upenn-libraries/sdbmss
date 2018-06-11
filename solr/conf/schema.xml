@@ -316,6 +316,7 @@
     <field name="source_date" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="source_date_search" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="supercede" stored="true" type="sint" multiValued="true" indexed="true" />
+    <field name="superceded_by_id" stored="true" type="sint" multiValued="false" indexed="true" />
 
     <field name="groups" stored="true" type="text" multiValued="false" indexed="true"/>
 
@@ -336,14 +337,18 @@
     <field name="catalog_or_lot_number_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="sale_selling_agent" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="sale_selling_agent_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="sale_selling_agent_flat" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="sale_seller" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="sale_seller_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="sale_seller_flat" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="sale_buyer" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="sale_buyer_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="sale_buyer_flat" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="sale_sold" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="sale_date" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="sale_price" stored="true" type="sdouble" multiValued="false" indexed="true"/>
     <field name="provenance" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="provenance_flat" stored="true" type="string" multiValued="false" indexed="true"/>
     <!--<field name="provenance_place" stored="true" type="string" multiValued="true" indexed="true"/>-->
     <field name="provenance_search" stored="true" type="text" multiValued="true" indexed="true"/>
     <field name="provenance_composite" stored="true" type="text" indexed="true"/>
@@ -403,9 +408,15 @@
     <field name="miniatures_unspec_size_range" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="initials_historiated_range" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="initials_decorated_range" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="binding_search" stored="true" type="text" multiValued="true" indexed="true"/>
-    <field name="binding" stored="true" type="string" multiValued="true" indexed="true"/>
+    <field name="binding_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="binding" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="comment_search" stored="true" type="text" multiValued="false" indexed="true"/>
+
+    <field name="manuscript_link_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="manuscript_link" stored="true" type="string" multiValued="false" indexed="true"/>
+
+    <field name="other_info_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="other_info" stored="true" type="string" multiValued="false" indexed="true"/>
 
     <field name="provenance_date" stored="true" type="daterange_full" multiValued="true" indexed="true"/>
     

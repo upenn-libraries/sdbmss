@@ -12,10 +12,7 @@
 <% end %>
 <div class="row">
   <div class="col-sm-12">
-    <h1 class="text-center">Seymour de Ricci Bibliotheca Britannica Manuscripta Digitized Archive</h1>
-    <p>Welcome to the <b>Seymour de Ricci Bibliotheca Britannica Manuscripta Digitized Archive</b>, a searchable database containing the digitized notes of the historian and bibliographer Seymour Montefiore Robert Rosso de Ricci (1881-1942) made for the compilation of his unfinished Bibliotheca Britannica Manuscripta. This project was intended as a companion work to his Census of Medieval and Renaissance Manuscripts in the United States and Canada, published between 1935 and 1940. De Ricci's notes, compiled in thirty-four boxes containing over 60,000 index cards and originally bequeathed to the Institute for Historical Research in London, are currently housed in the Senate House Library at the University of London <a href="http://archives.ulrls.lon.ac.uk/default.aspx" target="_blank">(more info)</a>.</p>
-    <p>In collaboration with the <b>Senate House Library</b>, the <b>Schoenberg Institute for Manuscript Studies</b> has made this valuable resource available online in downloadable pdf files. The cards are arranged by individual Collectors (listed by last name) and Repositories (by town, institution, or college). You can browse by collector or repository or search by keyword, date, or place.</p>
-    <p>We would like to extend our gratitude to Dr. Marc Leroy de Ricci for kindly granting permission to publish the archive online.</p>
+    <%= render partial: "pages/partial", locals: {page_name: "De Ricci Archive" } %>
   </div>
 </div>
 <%= form_tag dericci_records_path, :method => 'get', class: "form-inline" do %>

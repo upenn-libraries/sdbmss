@@ -3,8 +3,7 @@
     <legend class='h1'>Static Pages & Tooltips</legend>
   </div>
   <div class="col-sm-12">
-    <p>This page displays all records for all tooltips and uploaded content currently available on the database. Options for editing specific content appears in the right-hand column. Click <b><span class="glyphicon glyphicon-edit"></span> Edit</b> to change the data of a record. Click <b><span class="glyphicon glyphicon-download"></span> Download</b> to download a copy of that record. Click <b><span class="glyphicon glyphicon-remove"></span> Delete</b> to remove that record from the database.</p>
-    <p>When you edit content on this page, you are also editing every page in the database where that content appears. Proceed with caution. Never change any content without the prior consultation of SDBM administrators.</p>
+    <%= render partial: "pages/partial", locals: {page_name: "Page Instructions"} %>
   </div>
   <div class="col-sm-12 text-center">
     <a href="#add_page" data-toggle="modal" data-target="#add_page"><span class="glyphicon glyphicon-plus"></span> Click Here To Add New Page</a>
@@ -24,6 +23,10 @@
   </div>
     
   <div class="col-sm-12">
+    <h3>'Partial' Pages</h3>
+    <% @pages.where(category: 'partial').order('name asc').each do |page| %>
+      <%= render partial: 'page', locals: {page: page} %>
+    <% end %> 
     <h3>'About' Pages</h3>
     <% @pages.where(category: 'about').order('name asc').each do |page| %>
       <%= render partial: 'page', locals: {page: page} %>

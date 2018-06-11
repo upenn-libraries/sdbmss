@@ -1,4 +1,14 @@
 class ApplicationController < ActionController::Base
+  before_filter :authenticate
+
+  def authenticate
+    if Rails.env.staging?
+      authenticate_or_request_with_http_basic do |username, password|
+        username == ENV["RAILS_USER"] && password == ENV["RAILS_PASS"]
+      end 
+    end
+  end
+  
   # Adds a few additional behaviors into the application controller 
   include Blacklight::Controller
   # Please be sure to impelement current_user and user_session. Blacklight depends on 

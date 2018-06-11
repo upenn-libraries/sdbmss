@@ -158,49 +158,18 @@
       <h4 class='banner' style="background: #00bcd4;"><%= @flagged %> De Ricci <%= "Record".pluralize(@flagged) %> have been Flagged for further work</h4>
       <h4 class='banner' style="background: #002cd4;"><%= @definite %> De Ricci <%= "Record".pluralize(@definite) %> are definitively linked to an SDBM Name</h4>
     </div>
-     
-    <p style="margin-top: 10px;">Seymour Montefiore Robert Rosso de Ricci (1881-1942) created over 60,000 index cards for his unfinished Bibliotheca Britannica Manuscripta project, all of which have been converted to pdf files to form the <a href="/dericci_records">Seymour de Ricci Bibliotheca Britannica Manuscripta Digitized Archive</a>. These cards contain a wealth of information about collectors, collections, sale results, former shelfmarks, bibliography, and many other notable things about manuscripts and their owners.</p>
-     
-    <p>A section of the archive is dedicated to collectors and repositories and organized by name. We are working to link cards to associated names in the SDBM Name Authority <%= link_to "(Read More)", page_path(name: Page.where(name: "SDBM Name Authority").first.to_s) %>. We need your help! So, we’ve created the De Ricci Digitized Archive Name Game to encourage you, our user community members, to help us out.</p>
-     
-    <h4>Why Play?</h4>
-    <p>Play the Name Game to advance from Contributor to Editor. Good linking and flagging of records will help us evaluate your database skills, including your ability to recognize and sort through valuable data. Or, if you are already an editor, play because you will be making valuable connections between two great sources of information. You might even think it’s fun!</p>
-     
-    <h4>Rules of the Name Game</h4>
-    <p>The Name Game goal is to link PDFs of the De Ricci cards to corresponding SDBM Name Authority records. Each link must be reviewed and confirmed by an Editor, Super Editor, or Admin <span sdbm-tooltip="user_levels"></span> The PDF will then appear in the corresponding SDBM Name Authority record, so that all users can easily access whatever information the De Ricci card contains. To advance from Contributor to Editor, you must complete at least 10 games. Once your games are complete, click the Request Advancement button on the Name Game page. SDBM Admins will review your links, flags, rejections, and skips for accuracy and then determine whether you qualify for advancement <span sdbm-tooltip="user_levels"></span> The Name Game only applies to advancement from the Contributor to Editor level.</p>
-
-    <h5>
-      <strong>Got another idea for a data-enriching game? <%= link_to "Suggest one via the community forum!", thredded_path %></strong>
-    </h5>
+    <div>
+      <%= render partial: "pages/partial", locals: {page_name: "De Ricci Game Description" } %>
+    </div>
 
   </div>
   <div class="col-sm-12">
     <%= render partial: "instructions", locals: {newgame: true} %>
-   
-    <h4>Game Results</h4>
-     
-    <p>Once an SDBM Admin has approved the match between an SDBM Name and a De Ricci card, that De Ricci card will be cited in the name’s record in the SDBM Name Authority. When this happens, that De Ricci card will no longer appear in the De Ricci Game. You will receive an email notifying you if one of the names you matched has been confirmed as reliable. Matched names contribute to your advancement from a Contributor to Editor user level.</p>
-     
-    <h4>FAQ</h4>
-     
-    <ol>
-      <li>
-        <strong>I matched a De Ricci card to an SDBM Name during my game. But when I look at that Name record in the SDBM, I don’t see the De Ricci card reference. Why?</strong>
-        <p class='text-muted indent'>SDBM Admins must review every match between a De Ricci card and an SDBM Name. You will receive an email whenever a match you’ve made has been confirmed as reliable. Post in the SDBM Name Authority messageboard on the Forum if you would like a status update on names you have matched.</p></li>
-       
-      <li><strong>I found a name in a De Ricci card that isn’t in the SDBM Name Authority, but it should be. How do I add it to the SDBM?</strong>
-        <p class='text-muted indent'>Flag the name within the Name Game. This will alert the SDBM Admins that the name should be added to the Name Authority.</p>
-      </li>
-       
-      <li><strong>How many times do I have to play the game in order to advance user levels within the SDBM?</strong>
-        <p class="text-muted indent">You must play at least 10 games before the SDBM Admins review your user level. Keep in mind that user advancement is only partially determined by the quality of your De Ricci games. Your other work in the SDBM also contributes to your user level. The SDBM Admins advance a user only when they have appropriately demonstrated their understanding of the SDBM. Contact the SDBM Admins if you want to request an advancement.</p></li>
-       
-      <li><strong>What do I do if I’m not sure about a match between a De Ricci card and an SDBM Name?</strong> 
-        <p class="text-muted indent">Skip it! The name will continue to appear in other games, where it can be matched later. Access your previous games anytime from the game homepage to return to names that you skipped.</p></li>
-       
-      <li><strong>Why are most of the names referenced in the De Ricci cards not in the SDBM Name Authority?</strong>
-       <p class="text-muted indent">Names appear in the SDBM Name Authority because they appear in entries and sources in the SDBM. Many of the sources described in the De Ricci cards have not been entered into the SDBM yet. Flag these names to alert SDBM Admins, and they will add them to the SDBM Name Authority.</p></li>
-    </ol> 
-
+  </div>
+  <div class="col-sm-12">
+    <%= render partial: "pages/partial", locals: {page_name: "De Ricci Game Results" } %>
+  </div>
+  <div class="col-sm-12">
+    <%= render partial: "pages/partial", locals: {page_name: "De Ricci Game FAQ" } %>        
   </div>
 </div>

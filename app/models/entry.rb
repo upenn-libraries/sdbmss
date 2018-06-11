@@ -669,11 +669,17 @@ class Entry < ActiveRecord::Base
     define_field(:text, :sale_selling_agent_search, :stored => true, :more_like_this => true) do
       (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "selling_agent" }.map(&:display_value).join("; ") : ""
     end
+    define_field(:string, :sale_selling_agent_flat, :stored => true) do
+      (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "selling_agent" }.map(&:display_value).join("; ") : ""
+    end
 
     define_field(:string, :sale_seller, :stored => true, :multiple => true) do
       (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "seller_or_holder" }.select(&:facet_value).map(&:facet_value) : []
     end
     define_field(:text, :sale_seller_search, :stored => true) do
+      (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "seller_or_holder" }.map(&:display_value).join("; ") : ""
+    end
+    define_field(:string, :sale_seller_flat, :stored => true) do
       (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "seller_or_holder" }.map(&:display_value).join("; ") : ""
     end
 
@@ -683,6 +689,10 @@ class Entry < ActiveRecord::Base
 
     define_field(:text, :sale_buyer_search, :stored => true) do
 #      get_sale_buyers_names
+      (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "buyer" }.map(&:display_value).join("; ") : ""
+    end
+
+    define_field(:string, :sale_buyer_flat, :stored => true) do
       (sale = get_sale) ? sale.sale_agents.select { |sa| sa.role == "buyer" }.map(&:display_value).join("; ") : ""
     end
 
@@ -829,6 +839,10 @@ class Entry < ActiveRecord::Base
       supercedes.map(&:id)
     end
 
+    define_field(:integer, :superceded_by_id, :stored => true) do
+      superceded_by_id
+    end
+
     define_field(:integer, :missing_authority_names, :stored => true) do
       entry_authors.where(author_id: nil).where.not(observed_name: nil).count + 
       entry_artists.where(artist_id: nil).where.not(observed_name: nil).count + 
@@ -870,12 +884,28 @@ class Entry < ActiveRecord::Base
     define_field(:integer, :initials_decorated, :stored => true) { initials_decorated }
     define_field(:string, :initials_decorated_range, :stored => true) { SDBMSS::Util.range_bucket(initials_decorated) }
 
-    define_field(:text, :binding_search, :stored => true, :more_like_this => true) do
+    define_field(:text, :binding_search, :stored => true) do
       manuscript_binding
     end
 
     define_field(:string, :binding, :stored => true) do
       manuscript_binding
+    end
+
+    define_field(:text, :manuscript_link_search, :stored => true) do
+      manuscript_link
+    end
+
+    define_field(:string, :manuscript_link, :stored => true) do
+      manuscript_link
+    end
+
+    define_field(:text, :other_info_search, :stored => true) do
+      other_info
+    end
+
+    define_field(:string, :other_info, :stored => true) do
+      other_info
     end
 
     define_field(:date, :created_at, :stored => true) { created_at }
@@ -900,6 +930,9 @@ class Entry < ActiveRecord::Base
       provenance.map(&:display_value).join("; ")
     end
 
+    define_field(:string, :provenance_flat, :stored => true) do
+      provenance.map(&:display_value).join("; ")
+    end
     #define_field(:string, :provenance_place, :multiple => true, :stored => true) do
     #  provenance.map(&:provenance_agent).map{ |pa| (pa && pa.associated_place) ? pa.associated_place.name : nil}.reject(&:blank?)
     #end
@@ -1034,27 +1067,28 @@ class Entry < ActiveRecord::Base
   def self.filters
     [
       ["Entry Id", "entry_id"], 
+      ["Manuscript ID", "manuscript_id"], 
       ["Source ID (Full)", "source"], 
-      ["Approved", "approved"],
-      ["Width", "width"], 
       ["Source Date", "source_date"],
+      ["Sale Sold", "sale_sold"],
       ["Sale Date", "sale_date"],
-      #["Provenance Date", "provenance_date"],
       ["Price", "sale_price"], 
-      ["Lines", "num_lines"], 
+      ["Missing Authority Names", "missing_authority_names"],
+      ["Folios", "folios"], 
       ["Columns", "num_columns"], 
-      ["Unspecified Miniatures", "miniatures_unspec_size"], 
-      ["Small Miniatures", "miniatures_small"], 
-      ["Large Miniatures", "miniatures_large"], 
+      ["Lines", "num_lines"], 
+      ["Height", "height"], 
+      ["Width", "width"], 
+      ["Alternate Size", "alt_size"], 
       ["Fullpage Miniatures", "miniatures_fullpage"], 
+      ["Large Miniatures", "miniatures_large"], 
+      ["Small Miniatures", "miniatures_small"], 
+      ["Unspecified Miniatures", "miniatures_unspec_size"], 
       ["Historiated Initals", "initials_historiated"],
       ["Decorated Initials", "initials_decorated"],
-      ["Height", "height"], 
-      ["Folios", "folios"], 
       ["Updated By", "updated_by"], 
       ["Created By", "created_by"], 
-      ["Manuscript ID", "manuscript_id"], 
-      ["Missing Authority Names", "missing_authority_names"],
+      ["Approved", "approved"],
       ["Deprecated", "deprecated"],
       ["Draft", "draft"]
     ]
@@ -1064,23 +1098,25 @@ class Entry < ActiveRecord::Base
     [
       ["All Fields", "complete_entry"], 
       ["Source", "source_search"],  
+      ["Source Date", "source_date_search"],
       ["Catalog or Lot #", "catalog_or_lot_number_search"],
+      ["Institution", "institution_search"], 
       ["Selling Agent", "sale_selling_agent_search"], 
-      ["Manuscript Date", "manuscript_date_search"],
       ["Seller", "sale_seller_search"], 
       ["Buyer", "sale_buyer_search"], 
-      ["Institution", "institution_search"], 
       ["Title", "title_search"],
       ["Author", "author_search"], 
+      ["Date", "manuscript_date_search"],
       ["Artist", "artist_search"], 
       ["Scribe", "scribe_search"], 
       ["Binding", "binding_search"], 
+      ["Link", "manuscript_link_search"], 
+      ["Other Info", "other_info_search"], 
       ["Language", "language_search"], 
       ["Material", "material_search"], 
       ["Place", "place_search"], 
       ["Use", "use_search"],
       ["Provenance", "provenance_search"],
-      ["Source Date", "source_date_search"],
     ]
   end
 

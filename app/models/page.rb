@@ -12,12 +12,20 @@ class Page < ActiveRecord::Base
     elsif category == 'tooltip'
       'static/tooltips'
     else
-      'uploads'
+      'static/uploads'
     end
   end
 
   def to_s
     name
+  end
+
+  def path
+    if ext == "pdf"
+      "/#{location}/#{URI.encode filename}"
+    else
+      Rails.root.join('public', "#{location}", filename)
+    end
   end
 
 end
