@@ -4,8 +4,7 @@ set :repo_url, 'https://github.com/upenn-libraries/sdbmss.git'
 set :branch, 'master'
 
 # Default deploy_to directory is /var/www/my_app_name
-#set :deploy_to, '/var/www/sdbmss/'
-set :deploy_to, '/home/LIBRARY/hellerb/development/sdbmss/'
+set :deploy_to, '/var/www/sdbmss/'
 
 # Default value for :scm is :git
 # set :scm, :git
@@ -27,7 +26,7 @@ set :deploy_to, '/home/LIBRARY/hellerb/development/sdbmss/'
 set :linked_dirs, fetch(:linked_dirs, []).push('tmp/pids', 'log')
 set :linked_dirs, fetch(:linked_dirs, []).push('public/static/tooltips')
 set :linked_dirs, fetch(:linked_dirs, []).push('public/static/docs')
-set :linked_dirs, fetch(:linked_dirs, []).push('public/uploads')
+set :linked_dirs, fetch(:linked_dirs, []).push('public/static/uploads')
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -178,55 +177,10 @@ namespace :deploy do
     end
   end
 
-  desc "Docker prepare"
-  task :docker_prepare do
-    on roles(:all) do
-      within current_path do
-        execute "cp #{shared_path}/.docker-environment #{current_path}/.docker-environment"
-      end
-    end
-  end
-
-  desc "Docker down"
-  task :docker_down do
-    on roles(:all) do
-      within current_path do
-        execute "cd '#{current_path}'; docker-compose down"
-      end
-    end
-  end
-
-  desc "Docker build"
-  task :docker_build do
-    on roles(:all) do
-      within current_path do
-        execute "docker build . -t sdbm"
-      end
-    end
-  end
-
-  desc "Docker up"
-  task :docker_up do
-    on roles(:all) do
-      within current_path do
-        execute "docker-compose up --build"
-      end
-    end
-  end
-
-  Rake::Task["bundler:install"].clear_actions
-  Rake::Task["deploy:assets:precompile"].clear_actions
-  Rake::Task["deploy:assets:backup_manifest"].clear_actions
-
-  #after 'deploy:started', 'deploy:god_stop'
-  #after 'deploy:publishing', 'deploy:mkdir_pids'
-  #after 'deploy:publishing', 'deploy:solr_update'
-  #after 'deploy:publishing', 'deploy:god_start'
-  
-  after 'deploy:publishing', 'deploy:docker_prepare'
-  after 'deploy:publishing', 'deploy:docker_down'
-  after 'deploy:publishing', 'deploy:docker_build'
-  after 'deploy:publishing', 'deploy:docker_up'
+  after 'deploy:started', 'deploy:god_stop'
+  after 'deploy:publishing', 'deploy:mkdir_pids'
+  after 'deploy:publishing', 'deploy:solr_update'
+  after 'deploy:publishing', 'deploy:god_start'
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
