@@ -27,6 +27,7 @@ WORKDIR /usr/src/app
 
 COPY . /usr/src/app
 RUN mkdir -p tmp/pids
+RUN rm -rf public/assets
 
 RUN bundle exec rake \
   RAILS_ENV=production \

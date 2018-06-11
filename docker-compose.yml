@@ -28,7 +28,7 @@ services:
   solr:
     image: sdbm:latest
     ports:
-      - "8983:8983"
+      - "8982:8982"
     env_file: .docker-environment
     cpu_shares: 80
     links:
@@ -102,7 +102,7 @@ services:
       - rails
       - jena
     ports:
-      - "8080:8080"
+      - "8880:8080"
     restart: on-failure
 volumes:
   sdbm_docs:
