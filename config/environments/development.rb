@@ -39,6 +39,8 @@ Rails.application.configure do
 
   #config.log_level = :info
 
+  config.logger = Logger.new(STDOUT)
+
   config.serve_static_files = true
 end
 

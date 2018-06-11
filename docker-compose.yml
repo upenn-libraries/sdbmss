@@ -1,41 +1,111 @@
+version: '2.2'
 
-db:
-  image: mysql/mysql-server:5.5
-  env_file: .docker-environment
-  ports:
-    - "3306:3306"
-  volumes:
-    - my.cnf:/etc/my.cnf
-    - docker_data/mysql:/var/lib/mysql
-
-solr:
-  build: .
-  ports:
-    - "8983:8983"
-  env_file: .docker-environment
-  links:
-    - db
-  volumes:
-    - .:/usr/src/app
-  command: bundle exec rake sunspot:solr:run
-
-rails:
-  build: .
-  ports:
-    - "3000:3000"
-  links:
-    - db
-    - solr
-  volumes:
-    - .:/usr/src/app
-  env_file: .docker-environment
-  
-delayedjob:
-  build: .
-  links:
-    - db
-    - solr
-  volumes:
-    - .:/usr/src/app
-  env_file: .docker-environment
-  command: bundle exec rake jobs:work
+services:
+  rabbitmq:
+    image: rabbitmq:3
+    hostname: 'rabbitmq'
+    ports:
+      - '5672:5672'
+    environment:
+      - RABBITMQ_ERLANG_COOKIE='secret cookie here' # needed for rabbitmqctl to work (??)
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    cpu_shares: 20
+    logging:
+      driver: "journald"
+    mem_limit: 2000m
+    mem_reservation: 500m      
+    restart: on-failure
+  db:
+    image: mysql/mysql-server:5.7
+    env_file: .docker-environment
+    cpu_shares: 80
+    ports:
+      - "3307:3307"
+    volumes:
+      - sdbm_data:/var/lib/mysql
+    restart: on-failure
+  solr:
+    image: sdbm:latest
+    ports:
+      - "8983:8983"
+    env_file: .docker-environment
+    cpu_shares: 80
+    links:
+      - db
+    volumes:
+      - .:/usr/src/app
+    command: bundle exec rake sunspot:solr:run
+    restart: on-failure
+  rails:
+    image: sdbm:latest
+    env_file: .docker-environment
+    cpu_shares: 80
+    logging:
+      driver: "journald"
+    restart: on-failure
+    links:
+      - db
+      - solr
+      - rabbitmq
+    volumes:
+      - .:/usr/src/app
+      - sdbm_docs:/usr/src/app/public/static
+  delayedjob:
+    image: sdbm:latest
+    depends_on:
+      - "db"
+    links:
+      - db
+      - solr
+    volumes:
+      - .:/usr/src/app
+    env_file: .docker-environment
+    command: bundle exec rake jobs:work
+    restart: on-failure
+    logging:
+      driver: "journald"
+  jena:
+    build: ./jena
+    logging:
+      driver: "journald"
+    volumes:
+      - rdf_data:/fuseki
+    mem_limit: 2000m
+    mem_reservation: 500m
+    cpu_shares: 20
+    env_file: .docker-environment
+    restart: on-failure
+#      - JVM_ARGS=-Xmx3g   # raises memory limits to allow large file to be uploaded
+  interface:
+    build: ./jena
+    command: ruby interface.rb
+    cpu_shares: 20
+    logging:
+      driver: "journald"
+    links:
+      - jena
+      - rabbitmq
+    depends_on:
+      - "rabbitmq"
+    mem_limit: 2000m
+    mem_reservation: 500m
+    cpu_shares: 20
+    env_file: .docker-environment
+    restart: on-failure
+  nginx:
+    build: ./nginx
+    cpu_shares: 50
+    logging:
+      driver: "journald"
+    links:
+      - rails
+      - jena
+    ports:
+      - "8080:8080"
+    restart: on-failure
+volumes:
+  sdbm_docs:
+  sdbm_data:
+  rdf_data:
+  rabbitmq_data:

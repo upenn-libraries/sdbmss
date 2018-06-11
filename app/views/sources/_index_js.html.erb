@@ -120,12 +120,14 @@ $(document).ready(function() {
                  dbSortField: 'author'
              },
              {
-                 orderable: false, // too difficult to sort by this
-                 title: 'Source Agent'
+                 //orderable: false, // too difficult to sort by this
+                 title: 'Source Agent',
+                 dbSortField: 'agent_name_flat'
              },
              {
-                 orderable: false, // too difficult to sort by this
-                 title: 'Institution/Collection'
+                 //orderable: false, // too difficult to sort by this
+                 title: 'Institution/Collection',
+                 dbSortField: 'agent_name_flat'
              },
              {
                  title: 'Medium',
@@ -134,7 +136,7 @@ $(document).ready(function() {
              {
                  title: "Date Accessed",
                  dbSortField: 'date_accessed',
-                 orderable: false // FIX ME: add indexing or no?
+                 //orderable: false // FIX ME: add indexing or no?
              },
              {
                  title: "Institution/Location",
@@ -146,8 +148,8 @@ $(document).ready(function() {
              },
              {
                  title: "Link",
-                 dbSortField: 'link',
-                 orderable: false
+                 dbSortField: 'link'//,
+                 //orderable: false
              },
              {
                 title: "Problem",

@@ -14,11 +14,11 @@ default: &default
 development: &development
   adapter: mysql2
   encoding: utf8
-  database: <%= ENV["SDBMSS_DB_NAME"] %>
+  database: <%= ENV["MYSQL_DATABASE"] %>
   pool: 5
-  username: <%= ENV["SDBMSS_DB_USER"] %>
-  password: <%= ENV["SDBMSS_DB_PASSWORD"] %>
-  host: <%= ENV["SDBMSS_DB_HOST"] %>
+  username: <%= ENV["MYSQL_USER"] %>
+  password: <%= ENV["MYSQL_PASSWORD"] %>
+  host: db
 
 staging:
   <<: *development
@@ -28,7 +28,7 @@ staging:
 # Do not set this db to the same as development or production.
 test:
   <<: *development
-  database: <%= ENV["SDBMSS_DB_NAME"] %>_test
+  database: <%= ENV["MYSQL_DATABASE"] %>_test
   #engine:   MyISAM  
 
 production:

@@ -1,0 +1,13 @@
+<% if (page = Page.find_by(name: page_name)) %>
+  <% if can? :edit, page %>
+    <%= link_to(edit_page_path(page.name), class: 'edit-page btn btn-success btn-xs') do %>
+      <span class="glyphicon glyphicon-edit"></span> Edit Page
+    <% end %>
+  <% end %>
+  <div class="page-partial">
+    <%= render :file => page.path %>
+  </div>
+<% else %>
+    <p class="text-muted">Missing Partial Page: "<%= page_name %>"</p>
+<% end %>
+

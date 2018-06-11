@@ -35,37 +35,7 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <p class='text-center'>
-            <span class='lead'>Welcome to the Schoenberg Database of Manuscripts!</span> 
-        </p>
-        <p>
-            The SDBM continuously aggregates and updates observations of pre-modern manuscripts drawn from over 12,000 auction and sales catalogs, inventories, catalogs from institutional and private collections, and other sources that document sales and locations of these books from around the world.
-        </p>
-        <p>We invite members of our user community to <b>Log In</b> and help us to build and maintain this resource.</p>
-    </div>
-    <div class="col-sm-6">
-        <h2 class='text-center'><small>Here's what you can do</small></h2>
-        <ul>
-            <li><strong>Contribute Data</strong>, including your own personal observations of a manuscript or group of manuscripts.</li>
-            <li><strong>Engage With Other Users</strong> to facilitate research and conversations about both the history of manuscript transmission and the data gathered in the process of recording this history.</li>
-            <li><strong>Manage Your Contributions</strong>, track your search history, bookmark, tag and download your results.</li>
-            <li><strong>Download Search Results</strong> for your own use under a <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 Unported License</a></li>
-        </ul>
-    </div>
-    <div class="col-sm-6">
-        <h2 class='text-center'>
-            <small>New Interactive Features</small>
-        </h2>
-        
-        <ul>
-            <li>VIAF-based Name Authority
-                <%= link_to "(Read More)", page_path(name: Page.where(name: "SDBM Name Authority").first.to_s) %>                        
-            </li>
-            <li>Enhanced Provenance data</li>
-            <li>Create Groups to collaborate with other users</li>
-            <li>Communicate with other users via private messages or public forum</li>
-            <li>Browse the<a href="/dericci_records"> Seymour de Ricci Bibliotheca Britannica Manuscripta Digitized Archive</a></li>
-        </ul>
+        <%= render partial: "pages/partial", locals: {page_name: "Home Text"} %>
     </div>
     <div class="col-sm-12">
         <h3 class="text-center home-emphasis">

@@ -28,6 +28,8 @@ module SDBMSS
 
     # custom SDBM variables
 
+    config.bunny_connection = Bunny.new(:host => 'rabbitmq', :port => 5672, :user => ENV["RABBIT_USER"], :pass => ENV["RABBIT_PASSWORD"], :vhost => "/")
+
     config.sdbmss_allow_user_signup = true
 
     config.sdbmss_index_after_update_enabled = true

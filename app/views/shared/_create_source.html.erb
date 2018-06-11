@@ -35,35 +35,8 @@
         </div>
     </div>
     
-    <div class="row" >
-        <div class="col-sm-12">
-            <div ng-show="!showFields()">
-                
-                <p><b>Personal Observation</b>:  Use this type when recording data acquired via direct personal observation or indirect knowledge of a manuscript. It is mandatory that you understand the SDBM data model before creating a Personal Observation. Please review the instructional content, located within the <b><span class="glyphicon glyphicon-question-sign"></span> Help</b> menu at the top of the screen, before creating your <b>Entry</b>.</p>
-
-                <p><b>Auction/Dealer Catalog</b>: Use for auction or sale catalogs for a specific sale event. For online-only auctions (such as eBay) or sale events, use the SOURCE TYPE: Online-only Auction or Bookseller Website.</p>
-
-                <p><b>Collection Catalog</b>: Use for published catalogs of institutional or private individual collections.</p>
-
-                <p><b>Online-only Auction or Bookseller Website</b>: Use
-                    for online-only auctions, such as eBay, or for
-                    bookseller websites providing non-dated sale
-                    lists. This field is intended for information found
-                    only online and not referring to a specific, dated
-                    sale. When the data source is an online version of a
-                    print catalog (e.g. a pdf), use the SOURCE TYPE:
-                    Auction/Dealer Catalog.</p>
-
-
-                <p><b>Other Published Source</b>: Use for any other
-                    published source not applicable to the previous SOURCE TYPES (e.g., an
-                    inventory published in a journal article).</p>
-
-                <p><b>Unpublished Source</b>: Use for any unpublished data sources (e.g. in-house finding aids or inventories, personal communications via email, etc).</p>
-                
-                <p>Not sure what your source type is? Email us at <a href="mailto:sdbm@pobox.upenn.edu">sdbm@upenn.edu</a>.</p>
-            </div>
-        </div>
+    <div ng-show="!showFields()">
+        <%= render partial: "pages/partial", locals: {page_name: "Source Instructions"} %>
     </div>
 
     <div class="source-fields-container" ng-show="showFields()">

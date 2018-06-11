@@ -109,6 +109,12 @@
         <td><%= entry.institution %></td>
       <% end %>
     </tr>
+    <tr>
+      <td>Catalog or Lot Number</td>
+      <% @entries.each do |entry| %>
+        <td><%= entry.catalog_or_lot_number %></td>
+      <% end %>
+    </tr>
     <tr class='primary-important'>
       <td>Transaction Information</td>
       <% @entries.count.times do %>

@@ -109,6 +109,10 @@ class Source < ActiveRecord::Base
       source_agents.select(&:agent_id).map(&:agent_id)
     end
 
+    string :agent_name_flat do
+      source_agents.map { |sa| sa.agent ? sa.agent.name : sa.observed_name }.join(";")
+    end
+
     string :agent_name, :multiple => true do
       source_agents.map { |sa| sa.agent ? sa.agent.name : sa.observed_name }
     end
@@ -122,6 +126,13 @@ class Source < ActiveRecord::Base
     string :medium
     string :date
     text :date, :more_like_this => true
+
+    string :date_accessed
+    text :date, :more_like_this => true
+
+    string :link
+    text :link
+
     integer :entries_count
     boolean :problem
     string :source_type do
@@ -337,18 +348,21 @@ class Source < ActiveRecord::Base
 
   def self.fields
     [
-     ["Title", "title"], 
-     ["Date", "date"], 
-     ["Source Agent", "agent_name"], 
-     ["Author", "author"], 
      ["Source Type", "source_type"], 
+     ["Date", "date"], 
+     ["Title", "title"], 
+     ["Author", "author"], 
+     ["Source Agent/Institution", "agent_name"], 
      ["Location", "location"],
-     ["Location/Institution", "location_institution"]
+     ["Location/Institution", "location_institution"],
+     ["Date Accessed", "date_accessed"],
+     ["Link", "link"]
     ]
   end
 
   def self.filters
     super + [
+      ["Medium", "medium"],
       ["Source Agent Id", "agent_id"],
       ["Problem", "problem"]
     ]

@@ -926,7 +926,10 @@ var BOOKMARK_SCOPE;
         materials: "material"
       };
       EntryScope = $scope;
+
+      $scope.chunksize = 10;
       $scope.starttime = 0;
+
       $scope.handleFile = function ($event) {
         var input = $event.target;
         if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
@@ -1106,7 +1109,7 @@ var BOOKMARK_SCOPE;
           return;
         }
         $scope.saving = true;
-        $http.post("/entries/upload.js", { entries: $scope.entries.slice(index, index + 10), check: !$scope.checked }).then(
+        $http.post("/entries/upload.js", { entries: $scope.entries.slice(index, index + $scope.chunksize), check: !$scope.checked }).then(
             function(e) {
               if (e.data.errors && e.data.errors.length > 0) {
                 for (var i = 0; i < e.data.errors.length; i++) {
@@ -1122,7 +1125,7 @@ var BOOKMARK_SCOPE;
                   }
                 }
               }
-              $scope.progress += 10;
+              $scope.progress += $scope.chunksize;
               $scope.save($scope.progress);
               var sofar = new Date() - $scope.starttime;
               $scope.remaining = $scope.timedisplay((sofar * $scope.entries.length / $scope.progress) - sofar);  // remaining milliseconds, estimated

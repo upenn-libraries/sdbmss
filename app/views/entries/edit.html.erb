@@ -206,44 +206,18 @@ label.col-sm-2-and-half {
     </div>
 
     <div class="row">
-      <div class="col-sm-11 text-right">
+      <div class="col-sm-12">
+        <%= render partial: "pages/partial", locals: {page_name: "Entry Instructions"} %>
       </div>
     </div>
+    
+    <div ng-show="entry.deprecated" style="color:red; font-weight: bold;">
+        This entry has been deprecated; you cannot make changes to it. <span ng-show="entry.superceded_by_id">SDBM_{{ entry.superceded_by_id }} supercedes this entry.</span>
+    </div>
 
-    <div class="row">
-      <div class="col-sm-12">
-
-          <p>
-              <span ng-show="edit">You can make edits to your entries in the
-              data fields below.</span>
-              <span ng-show="!edit">Please fill in as much information as
-              possible from the record you are documenting. No fields
-              are mandatory.</span>
-          </p>
-
-          <p>Remember that entries reflect data given in the <b>Source</b>, not necessarily the reality of what the manuscript is.
-              <b>DO NOT CORRECT THE SOURCE'S INFORMATION, EVEN IF YOU THINK IT'S WRONG.</b> Known errors in
-              the Source should be preserved but can be noted in the
-              <b>Comments</b> at the bottom of the page. If you believe the
-              Source description is in error, create a new <b>Personal
-                  Observation</b> entry to record the information you believe to be correct.
-          </p>
-          
-          <div ng-show="entry.deprecated" style="color:red; font-weight: bold;">
-              This entry has been deprecated; you cannot make changes to it. <span ng-show="entry.superceded_by_id">SDBM_{{ entry.superceded_by_id }} supercedes this entry.</span>
-          </div>
-
-          <div ng-show="badData.length > 0" style="color:red; font-weight: bold;">
-              WARNING: Bad data found in fields that can't be displayed in dropdowns: 
-              <span ng-repeat="badDataItem in badData">{{ badDataItem }}</span>. Saving the record on this page may cause data loss.
-          </div>
-
-          <p><strong>Always</strong> check the tooltips to find out the correct type and format of the data to be entered in a field. Tooltips are accessed by clicking on the <span class="tooltip-icon">?</span> icon next to the field label.</p>
- 
-          <p>Your data entry will be reviewed by SDBM staff for approval. If there are problems with your data entry, we will be in touch to discuss how to better enter your data to ensure greater accessibility and use by other users.</p>
-
-
-      </div>
+    <div ng-show="badData.length > 0" style="color:red; font-weight: bold;">
+        WARNING: Bad data found in fields that can't be displayed in dropdowns: 
+        <span ng-repeat="badDataItem in badData">{{ badDataItem }}</span>. Saving the record on this page may cause data loss.
     </div>
 
     <%= render partial: "edit_buttons" %>
