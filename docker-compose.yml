@@ -34,7 +34,7 @@ services:
     links:
       - db
     volumes:
-      - .:/usr/src/app
+      - sdbm_solr:/usr/src/app/solr
     command: bundle exec rake sunspot:solr:run
     restart: on-failure
   rails:
@@ -110,4 +110,5 @@ volumes:
   sdbm_data:
   rdf_data:
   sdbm_assets:
+  sdbm_solr:
   rabbitmq_data:
