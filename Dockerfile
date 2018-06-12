@@ -27,35 +27,6 @@ WORKDIR /usr/src/app
 
 COPY . /usr/src/app
 RUN mkdir -p tmp/pids
-RUN rm -rf public/assets
-
-RUN bundle exec rake \
-  RAILS_ENV=production \
-  SDBMSS_APP_HOST=dummy \
-  SDBMSS_SMTP_HOST=dummy \
-  SDBMSS_EMAIL_FROM=dummy \
-  SDBMSS_NOTIFY_EMAIL=dummy \
-  SDBMSS_NOTIFY_EMAIL_PASSWORD=dummy \
-  SDBMSS_BLACKLIGHT_SECRET_KEY=dummy \
-  SDBMSS_DEVISE_SECRET_KEY=dummy \
-  SDBMSS_SECRET_KEY_BASE=dummy \
-  SDBMSS_SECRET_TOKEN=dummy \
-  assets:precompile --trace
-
-RUN bundle exec rake \
-  RAILS_ENV=staging \
-  SDBMSS_APP_HOST=dummy \
-  SDBMSS_SMTP_HOST=dummy \
-  SDBMSS_EMAIL_FROM=dummy \
-  SDBMSS_NOTIFY_EMAIL=dummy \
-  SDBMSS_NOTIFY_EMAIL_PASSWORD=dummy \
-  SDBMSS_BLACKLIGHT_SECRET_KEY=dummy \
-  SDBMSS_DEVISE_SECRET_KEY=dummy \
-  SDBMSS_SECRET_KEY_BASE=dummy \
-  SDBMSS_SECRET_TOKEN=dummy \
-  assets:precompile --trace
-
-VOLUME ["/usr/src/app/public"]
 
 # we make sure to rm stale pid file
 CMD rm -f /usr/src/app/tmp/pids/server.pid && rm -f /usr/src/app/tmp/pids/unicorn.pid && bundle exec rails s unicorn -b 0.0.0.0
