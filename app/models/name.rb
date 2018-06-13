@@ -72,6 +72,8 @@ class Name < ActiveRecord::Base
 
   validates_presence_of :name
 
+  accepts_nested_attributes_for :name_places, allow_destroy: true
+
   validate do |name_obj|
     if !(name_obj.is_artist || name_obj.is_author || name_obj.is_scribe || name_obj.is_provenance_agent)
       errors[:base] << {message: "Name objects must have at least one flag set" }
@@ -321,6 +323,9 @@ class Name < ActiveRecord::Base
             name_type = cluster.xpath("ns:nameType", "ns" => VIAF::NS::VIAF).first
             viaf_id = cluster.xpath("ns:viafID", "ns" => VIAF::NS::VIAF).first
 
+            birth_date = cluster.xpath("ns:birthDate", "ns" => VIAF::NS::VIAF).first
+            death_date = cluster.xpath("ns:deathDate", "ns" => VIAF::NS::VIAF).first
+
             found_lc_name = false
 
             if name_type.text == "Personal" || name_type.text == "Corporate"
@@ -335,7 +340,9 @@ class Name < ActiveRecord::Base
                   results << {
                     name: name,
                     viaf_id: viaf_id.text,
-                    subtype: name_type.text
+                    subtype: name_type.text,
+                    birth_date: birth_date.text,
+                    death_date: death_date.text
                   }
                 end
               end
@@ -346,7 +353,9 @@ class Name < ActiveRecord::Base
                   results << {
                     name: name,
                     viaf_id: viaf_id.text,
-                    subtype: name_type.text
+                    subtype: name_type.text,
+                    birth_date: birth_date.text,
+                    death_date: death_date.text
                   }
               end
             else

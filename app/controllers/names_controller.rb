@@ -118,7 +118,7 @@ class NamesController < SearchableAuthorityController
     else
       p = params
     end
-    p.permit(:name, :other_info, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe, :confirmed, :reviewed, :problem, :subtype, :startdate, :enddate)
+    p.permit(:name, :other_info, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe, :confirmed, :reviewed, :problem, :subtype, :startdate, :enddate, :name_places_attributes => [:id, :place_id, :notbefore, :notafter, :_destroy])
   end
 
   def merge_params

@@ -1,124 +1,143 @@
-<% content_for :head do %>
-<%= stylesheet_link_tag "extras", media: "all" %>
-<% end %>
+<form class="form-horizontal">
 
-<% if @error.present? %>
-<div class="div">
-  <div class="row">
-    <div class="col-sm-12">
-      <div class="panel-danger">
-        <div class="panel-heading"><%= @error %></div>
+  <div class="row field form-group">
+    <label for="" class="control-label col-sm-2" sdbm-tooltip="edit_name_name">Name</label>
+    <div class="col-sm-10">
+      <input type="text" ng-model="name.name" class="form-control">
+    </div>
+  </div>
+
+  <div class="row field form-group">
+    <label for="" class="control-label col-sm-2" sdbm-tooltip="edit_name_startdate">Start Date</label>
+    <div class="col-sm-4"><input type="text" ng-model="name.startdate" class="form-control"></div>
+
+    <label for="" class="control-label col-sm-2" sdbm-tooltip="edit_name_enddate">End Date</label>
+    <div class="col-sm-4"><input type="text" ng-model="name.enddate" class="form-control"></div>
+  </div>
+
+
+  <div class="field form-group row">
+    <label for="subtype" class="col-sm-2 control-label" sdbm-tooltip="edit_name_subtype">Subtype</label>
+    <div class="col-sm-10">      
+      <select class="form-control" ng-model="name.subtype" ng-options="option[0] as option[1] for option in subtypes"></select>
+    </div>
+  </div>
+
+  <div class="field form-group row">
+    <label for="viaf_id" class="col-sm-2 control-label" sdbm-tooltip="edit_entry_viaf">
+        <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="glyphicon glyphicon-export"></span> VIAF ID</a>
+    </label>
+    <div class="col-sm-4">
+      <input type="text" ng-model="name.viaf_id" class="form-control">
+    </div>
+    <div class="col-sm-3 label-alignment" ng-if="name.viaf_id">
+        <a target="_blank" href="http://viaf.org/viaf/{{ name.viaf_id }}/">View VIAF record</a>
+    </div>
+    <div class="col-sm-3 text-right" ng-if="!name.viaf_id">
+      <button type="button" ng-click="findSuggestions(name.name, true)" ng-disabled="loading" class="btn btn-primary one-line" style="max-width: 100%;">Find Suggestions in VIAF</button>
+    </div>
+  </div>
+
+  <div class="field form-group row">
+    <label for="" class="col-sm-2 control-label">Flags</label>
+    <div class="col-sm-4">
+        Specify this name to be used as:<br/>
+        <label>
+          <input type="checkbox" ng-model="name.is_artist"> Artist
+        </label>
+        <br/>
+        <label>
+          <input type="checkbox" ng-model="name.is_author"> Author
+        </label>
+        <br/>
+        <label>
+          <input type="checkbox" ng-model="name.is_scribe"> Scribe
+        </label>
+        <br/>
+        <label>
+          <input type="checkbox" ng-model="name.is_provenance_agent"> Provenance Agent
+        </label>
+    </div>
+    <div class="col-sm-6">
+      <div ng-show="showSuggestions">
+        <table ng-show="suggestions.length > 0" class="table table-striped table-compressed">
+            <thead>
+                <tr>
+                    <th class="col-sm-6"><b>Name</b></th>
+                    <th class="col-sm-2"><b>VIAF ID</b></th>
+                    <th class="col-sm-2"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="suggestion in suggestions">
+                    <td class="col-sm-6">{{ suggestion.name }}</td>
+                    <td class="col-sm-2"><a target="_blank" href="http://viaf.org/viaf/{{ suggestion.viaf_id }}/">{{ suggestion.viaf_id }}</a></td>
+                    <td class="col-sm-2"><a ng-click="useSuggestion(suggestion)" href="#">Use this info</a></td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
+      <div ng-show="!loading && suggestions.length == 0">No suggestions found.</div>
+    </div>
+  </div>
+
+  <div class="field form-group row">
+    <label for="" class="col-sm-2 control-label" sdbm-tooltip="edit_name_other">Other Info</label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" ng-model="name.other_info">
+      </div>
+  </div>
+
+  <div class="field form-group row">
+    <label for="" class="col-sm-2 control-label">
+      <span sdbm-tooltip="associated_place">Places</span>
+      <p class="add-link-container">
+        <a a id="add_use" class="clickable" data-ng-click="addRecord(name.name_places)" title="Add">
+          <span class="glyphicon glyphicon-plus"></span>
+          add new
+        </a>
+      </p>
+    </label>
+    <div class="col-sm-10" ui-sortable="sortableOptions" ng-model="name.name_places" class='col-sm-12'>
+      <div class="row input-block" data-ng-repeat="name_place in name.name_places | filter: activeRecords">
+        <div class="remove-link-container">
+          <a class="clickable" data-ng-click="removeRecord(name.name_places, name_place)" title="Remove">
+            <span class="glyphicon glyphicon-remove"></span>
+          </a>
+        </div>
+        <div class="form-inline row">
+          <div class="col-sm-4">
+            <div class="btn-group name-authority-group" role="group" style="width: 100%; margin-left: 16px;">          
+              <a id="find_place_name_authority_{{ $index }}" ng-if='name_place.place.id == undefined' ng-init="name_place.place = {id: null}" class="btn btn-add-name" ng-click="selectNameAuthorityModal('places', name_place.place, 'place', name_place.observed_name)">Find or Create Authority Name</a>
+              <div ng-if='name_place.place != undefined && name_place.place.id != undefined' class="form-control well well-sm well-name-authority btn btn-info">
+                <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(name_place, 'place')"></a>
+                <a href="/places/{{ name_place.place.id }}" target="_blank">{{ name_place.place.name }}</a>
+              </div>
+            </div>
+          </div>
+
+          <label class='control-label col-sm-1' sdbm-tooltip="name_place_notbefore">Not Before</label>
+          <div class='col-sm-3'>
+              <input type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/^[0-9\-]*$/" data-ng-model="name_place.notbefore">
+          </div>
+          <label class='control-label col-sm-1' sdbm-tooltip="name_place_notafter">Not After</label>
+          <div class='col-sm-3'>
+              <input type="text" class="form-control" placeholder="YYYY-MM-DD" ng-pattern="/^[0-9\-]*$/" data-ng-model="name_place.notafter">
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<% end %>
 
-<div class="row">
-  <div class="col-sm-12">
-  <div class="wrapper" ng-controller="CreateNameCtrl">
-  <%= form_for(@model, html: { class: "form-horizontal" }) do |f| %>
-    <%= render partial: "errors" %>
-      
-    <div class="field form-group row">
-        <%= f.label :name, class: "col-sm-2 control-label", "sdbm-tooltip" => "edit_name_name" %>
-        <div class="col-sm-10">
-            <%= f.text_field :name, :class => 'form-control', :data => { 'ng-model' => 'entity.name', 'ng-init' => "entity.name='#{SDBMSS::Util.escape(@model.name)}'" } %>
-        </div>
+  <div class="form-group field row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-10">
+      <a href="" class="btn btn-primary" ng-click="save()">Save</a>      
+      <a href="/names/{{ name.id }}" ng-if="name.id" class="btn btn-default">Cancel</a>
+      <a href="/names" ng-if="!name.id" class="btn btn-default">Cancel</a>
     </div>
-    <div class="field form-group row">
-        <%= f.label "Start Date", class: "col-sm-2 control-label", "sdbm-tooltip" => "edit_name_start_date" %>
-        <div class="col-sm-4">
-            <%= f.text_field :startdate, :class => 'form-control', :data => { 'ng-model' => 'entity.startdate', 'ng-init' => "entity.startdate='#{SDBMSS::Util.escape(@model.startdate)}'", 'placeholder' => "YYYY", 'ng-pattern' => "/^[0-9\-]*$/" } %>
-        </div>
+  </div>
+</form>
 
-        <%= f.label "End Date", class: "col-sm-2 control-label", "sdbm-tooltip" => "edit_name_end_date" %>
-        <div class="col-sm-4">
-            <%= f.text_field :enddate, :class => 'form-control', :data => { 'ng-model' => 'entity.enddate', 'ng-init' => "entity.enddate='#{SDBMSS::Util.escape(@model.enddate)}'", 'placeholder' => "YYYY", 'ng-pattern' => "/^[0-9\-]*$/" } %>
-        </div>
-    </div>
-    <div class="field form-group row">
-        <label for="viaf_id" class="col-sm-2 control-label" sdbm-tooltip="edit_entry_viaf">
-            <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="glyphicon glyphicon-export"></span> VIAF ID</a>
-        </label>
-        <div class="col-sm-4">
-            <%= f.text_field :viaf_id, :class => 'form-control', :data => {'ng-model' => 'entity.viaf_id','ng-init' => "entity.viaf_id='#{@model.viaf_id}'"} %>
-        </div>
-        <% if @model.viaf_id.present? %>
-        <div class="col-sm-3 label-alignment">
-            <a target="_blank" href="http://viaf.org/viaf/<%= @model.viaf_id %>/">View VIAF record</a>
-        </div>
-        <% else %>
-        <div class="col-sm-3 text-right">
-          <button type="button" ng-click="findSuggestions(entity.name, true)" ng-disabled="loading" class="btn btn-primary one-line" style="max-width: 100%;">Find Suggestions in VIAF</button>
-        </div>
-        <% end %>
-    </div>
-    <div class="field form-group row">
-        <label for="subtype" class="col-sm-2 control-label" sdbm-tooltip="edit_name_subtype">Subtype</label>
-        <div class="col-sm-4">            
-            <%= f.select(:subtype, options_for_select([['Unknown', 'Unknown'], ['Organization', 'Corporate'], ['Person', 'Personal']]), {}, {'ng-model' => 'entity.subtype', class: "form-control", 'ng-init' => "entity.subtype='#{@model.subtype || "Unknown"}'"}) %>
-        </div>
-    </div>
-    <div class="field form-group row">
-        <%= f.label :flags, class: "col-sm-2 control-label" %>
-        <div class="col-sm-4">
-            Specify this name to be used as:<br/>
-            <label>
-                <%= f.check_box :is_artist %> Artist
-            </label>
-            <br/>
-            <label>
-                <%= f.check_box :is_author %> Author
-            </label>
-            <br/>
-            <label>
-                <%= f.check_box :is_scribe %> Scribe
-            </label>
-            <br/>
-            <label>
-                <%= f.check_box :is_provenance_agent %> Provenance Agent
-            </label>
-        </div>
-        <div class="col-sm-6">
-          <div ng-show="showSuggestions">
-            <table ng-show="suggestions.length > 0" class="table table-striped table-compressed">
-                <thead>
-                    <tr>
-                        <th class="col-sm-6"><b>Name</b></th>
-                        <th class="col-sm-2"><b>VIAF ID</b></th>
-                        <th class="col-sm-2"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr data-ng-repeat="suggestion in suggestions">
-                        <td class="col-sm-6">{{ suggestion.name }}</td>
-                        <td class="col-sm-2"><a target="_blank" href="http://viaf.org/viaf/{{ suggestion.viaf_id }}/">{{ suggestion.viaf_id }}</a></td>
-                        <td class="col-sm-2"><a ng-click="useSuggestion(suggestion)" href="#">Use this info</a></td>
-                    </tr>
-                </tbody>
-            </table>
-          </div>
-          <div ng-show="!loading && suggestions.length == 0">No suggestions found.</div>
-        </div>
-    </div>
-    <div class="field form-group row">
-        <%= f.label :other_info, class: "col-sm-2 control-label", "sdbm-tooltip" => "edit_name_other" %>
-        <div class="col-sm-10">
-            <%= f.text_field :other_info, :class => 'form-control', :data => { 'ng-model' => 'entity.other_info', 'ng-init' => "entity.other_info=\"#{j(@model.other_info)}\"" } %>
-        </div>
-    </div>
-    <div class="actions row">
-        <div class="col-sm-4 col-sm-offset-2">
-            <%= f.submit :class => 'btn btn-primary' %>
-            <% if !@model.new_record? %>
-              <!-- FIX ME: ajax? -->
-              <%= link_to 'Delete',  name_path(@model, format: 'html'),  method: :delete, class: "btn btn-danger", format: 'json', data: { confirm: 'Are you sure?' } %>
-            <% end %>
-            <%= link_to 'Cancel', names_path, class: "btn btn-default" %>
-        </div>
-    </div>
-  <% end %>
-  </div>
-  </div>
-</div>
+<%= render "places/create_modal" %>
+<%= render "shared/select_model_authority" %>

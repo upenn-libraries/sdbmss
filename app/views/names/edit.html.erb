@@ -1,0 +1,26 @@
+<%= stylesheet_link_tag "extras", media: "all" %>
+<%= javascript_include_tag "extras" %>
+
+<% model_id = @model.respond_to?(:public_id) ? @model.send(:public_id) : model_class.to_s + " record #" + @model.id.to_s %>
+
+<% @page_title = "Edit #{model_id} - " + application_name %>
+
+<% content_for :breadcrumbs do %>
+  <% if model_class == Name %>
+    <%= render partial: "manage_models/breadcrumbs", locals: {edit: true, last_search: session[:last_name_search]} %>
+  <% else %>
+    <%= render partial: "manage_models/breadcrumbs", locals: {edit: true} %>
+  <% end %>
+<% end %>
+
+<% content_for :control_tools do %>
+  <%= render partial: 'tools', locals: {edit: true} %>
+<% end %>
+
+<h1 class='text-center'>Editing <%= model_id %></h1>
+
+<input type="hidden" id="name_id" value="<%= @model.id %>">
+
+<div ng-controller="NameCtrl">
+  <%= render 'form' %>
+</div>

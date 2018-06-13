@@ -869,7 +869,7 @@ var BOOKMARK_SCOPE;
         var controller = "";
         if (recordType == 'languages') controller = "CreateLanguageModalCtrl";
         else if (recordType == 'places') controller = "PlaceModalCtrl";
-        else controller = "CreateNameModalCtrl";
+        else controller = "NameCtrl";
 
         var modalInstance = $modal.open({
             templateUrl: template,
@@ -3440,14 +3440,126 @@ var BOOKMARK_SCOPE;
         $scope.entityName = "place";
     });
 
-    sdbmApp.controller('NameCtrl', function ($scope, $http, Name, $modal, sdbmutil) {
+    sdbmApp.controller('NameCtrl', function ($scope, $http, $modalInstance, $modal, sdbmutil, modalParams, Name) {
+      $scope.entityFactory = function() { return new Name(); };
       EntryScope = $scope;
+      $scope.currentlySaving = false;
 
       var name_id = $("#name_id").val();
       if (name_id) {
         $scope.name = Name.get({id: name_id})
       } else {
         $scope.name = new Name();
+        $scope.name.name_places = [{}];
+        entity.name = modalParams.name;
+        entity[modalParams.type] = true;
+        
+        $scope.entity_attributes = function(entity) {
+          entity.name = modalParams.name;
+          entity[modalParams.type] = true;
+        };
+      }
+
+      baseCreateEntityModalCtrl($scope, $http, $modalInstance, sdbmutil);
+
+      $scope.goBack = function () {
+        $modalInstance.close();
+        if (modalParams.back) {
+          var modal = $modal.open({
+              templateUrl: "selectNameAuthority.html",
+              controller: "SelectNameAuthorityCtrl", //112
+              resolve: {
+                recordType: function () { return modalParams.back.recordType },
+                model: function () { return modalParams.back.model },
+                type: function () { return modalParams.back.type },
+                base: function () { return modalParams.name }
+              },
+              size: 'lg'
+          });
+        }
+      }
+
+      $scope.postSave = function (response) {
+        $scope.currentlySaving = false;
+        $modalInstance.close();
+        //window.location = "/names/" + $scope.name.id;        
+      };
+
+      $scope.subtypes = [
+        ["Unknown", "Unknown"],
+        ["Corporate", "Organization"],
+        ["Personal", "Person"]
+      ];
+
+      $scope.findSuggestions = function(name) {
+        $scope.message = "";
+        $scope.showSuggestions = true;
+        $scope.loading = true;
+        $http.get("/names/suggest.json", {
+            params: {
+                name: name,
+                check_exists: false
+            }
+        }).then(function (response) {
+            $scope.suggestions = response.data.results;
+        }, function() {
+            $scope.message = "Error loading suggestions.";
+        }).finally(function () {
+            $scope.loading = false;
+        });
+      };
+
+      $scope.useSuggestion = function(suggestion) {
+        console.log(suggestion);
+        $scope.name.name = suggestion.name;
+        $scope.name.viaf_id = suggestion.viaf_id;
+        $scope.name.subtype = suggestion.subtype || "Unknown";
+        $scope.name.startdate = suggestion.birth_date;
+        $scope.name.enddate = suggestion.death_date;
+      };
+
+      $scope.save = function () {
+        $scope.currentlySaving = true;
+        $scope.name.name_places_attributes = [];
+        for (var i = 0; i < $scope.name.name_places.length; i++) {
+          $scope.name.name_places_attributes.push({
+            id: $scope.name.name_places[i].id,
+            place_id: $scope.name.name_places[i].place.id,
+            notbefore: $scope.name.name_places[i].notbefore,
+            notafter: $scope.name.name_places[i].notafter,
+            _destroy: $scope.name.name_places[i]._destroy
+          });
+        }
+
+        if ($scope.name.id) {          
+          $scope.name.$update(
+            $scope.postSave,
+            sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
+          );
+        } else {
+          $scope.name.$save(
+            $scope.postSave,
+            sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
+          );
+        }
+      };
+
+      $scope.removeNameAuthority = function (model, submodel) {
+        model[submodel] = null;
+      }
+
+      $scope.sortableOptions = {
+        axis: 'y',
+        placeholder: "input-block-placeholder",
+        cancel: ".ui-sortable-locked, .ui-sortable-locked + .input-block, input, select, textarea, a",
+        scroll: false,
+        containment: 'parent',
+        forcePlaceholderSize: true,
+        tolerance: 'pointer',
+        start: function(e, ui){
+        },
+        stop: function (e, ui) {
+        }
       }
 
       $scope.addRecord = function (anArray) {
