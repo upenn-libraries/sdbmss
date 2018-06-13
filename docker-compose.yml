@@ -97,13 +97,16 @@ services:
   nginx:
     build: ./nginx
     cpu_shares: 50
+    volumes:
+      - /etc/nginx/certs:/etc/nginx/certs
     logging:
       driver: "journald"
     links:
       - rails
       - jena
     ports:
-      - "8880:8880"
+      - "8880:80"
+      - "8443:443"
     restart: on-failure
 volumes:
   sdbm_docs:
