@@ -98,7 +98,7 @@ services:
     build: ./nginx
     cpu_shares: 50
     volumes:
-      - /etc/nginx/certs:/etc/nginx/certs
+      - /etc/httpd/ssl:/etc/httpd/ssl
     logging:
       driver: "journald"
     links:
