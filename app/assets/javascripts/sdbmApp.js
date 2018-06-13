@@ -3440,6 +3440,71 @@ var BOOKMARK_SCOPE;
         $scope.entityName = "place";
     });
 
+    sdbmApp.controller('NameCtrl', function ($scope, $http, Name, $modal, sdbmutil) {
+      EntryScope = $scope;
+
+      var name_id = $("#name_id").val();
+      if (name_id) {
+        $scope.name = Name.get({id: name_id})
+      } else {
+        $scope.name = new Name();
+      }
+
+      $scope.addRecord = function (anArray) {
+        anArray.push({});        
+      };
+      $scope.removeRecord = function (anArray, record) {
+        var doremove = function (anArray, record) {
+          var i;
+          for (i = 0; i < anArray.length; i++) {
+              if (anArray[i] === record) {
+                  if(record.id) {
+                      record._destroy = 1;
+                  } else {
+                      anArray.splice(i, 1);
+                  }
+                  break;
+              }
+          }
+        };
+        if (sdbmutil.isBlankThing(record)) doremove(anArray, record);
+        else {            
+          dataConfirmModal.confirm({
+            title: 'Confirm',
+            text: 'Are you sure you want to remove this field and its contents?',
+            commit: 'Yes',
+            cancel: 'Cancel',
+            zIindex: 10099,
+            onConfirm: function() { doremove(anArray, record); $scope.$apply(); },
+            onCancel:  function() { }
+          });
+        }
+      };
+
+      $scope.selectNameAuthorityModal = function (recordType, model, type, base) {
+        base = base || "";
+
+        if (recordType == 'languages' || recordType == 'places') {
+          var templateUrl = "selectModelAuthority.html";
+        } else {
+          var templateUrl = "selectNameAuthority.html";
+        }
+
+        var modal = $modal.open({
+            templateUrl: templateUrl,
+            controller: "SelectNameAuthorityCtrl",
+            resolve: {
+              recordType: function () { return recordType },
+              model: function () { return model },
+              type: function () { return type },
+              base: function () { return base }
+            },
+            size: 'lg'
+        });
+      }
+
+    });
+
     sdbmApp.controller('CreateNameCtrl', function ($scope, $http) {
       $scope.entityFactory = function() { return new Name(); };
 

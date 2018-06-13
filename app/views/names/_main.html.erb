@@ -13,17 +13,6 @@
 <% end %>
 
 <tr>
-    <td><span class="glyphicon glyphicon-map-marker"></span> Associated Place</td>
-    <td>
-        <% if name.associated_place %>
-            <%= link_to name.associated_place.name, place_path(name.associated_place) %>
-        <% else %>
-            <span class="text-muted">This name has not been associated to a place yet.</span>
-        <% end %>
-    </td>
-</tr>
-
-<tr>
     <td>Name Type</td>
     <td><%= name.subtype || "Unknown" %></td>
 </tr>

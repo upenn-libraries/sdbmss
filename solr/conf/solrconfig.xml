@@ -143,10 +143,10 @@
        <openSearcher>false</openSearcher> 
      </autoCommit>
 
-     <autoSoftCommit> 
-       <maxTime>5000</maxTime> 
-     </autoSoftCommit>
    -->
+     <autoSoftCommit> 
+       <maxTime>2000</maxTime> 
+     </autoSoftCommit>
   </updateHandler>
 
   <query>

@@ -36,7 +36,10 @@ class Name < ActiveRecord::Base
 
   belongs_to :reviewed_by, :class_name => 'User'
 
-  belongs_to :associated_place, :class_name => 'Place'
+  #belongs_to :associated_place, :class_name => 'Place'
+
+  has_many :name_places
+  has_many :places, -> {distinct}, through: :name_places
 
   has_many :bookmarks, as: :document, dependent: :destroy  
 
