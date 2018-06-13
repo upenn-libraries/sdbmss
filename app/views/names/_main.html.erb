@@ -13,6 +13,27 @@
 <% end %>
 
 <tr>
+    <td>
+        Places/Nationalities
+    </td>
+    <td>
+        <ul class="list-unstyled">
+            <% if name.name_places.count <= 0 %>
+                <li class="text-muted">This name has no associated places or nationalities.</li>
+            <% else %>
+                <% name.name_places.each do |name_place| %>
+                <li>
+                    <%= link_to place_path(name_place.place) do %>
+                        <%= name_place.display_value %>
+                    <% end %>
+                </li>
+                <% end %>
+            <% end %>
+        </ul>
+    </td>
+</tr>
+
+<tr>
     <td>Name Type</td>
     <td><%= name.subtype || "Unknown" %></td>
 </tr>

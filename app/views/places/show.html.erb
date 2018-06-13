@@ -127,18 +127,22 @@
           </ul>
         </dd>
       <% end %>
-      <dt>Associated Names</dt>
-      <% if @model.names.count <= 0 %>
-        <dd><span class="text-muted">This place is not associated with any names.</span></dd>
-      <% else %>
-        <dd style="padding: 0px;">
-          <ul class="list-inline text-center">
-          <% @model.names.order(:name).each do |name| %>
-            <li><%= link_to name.name, name_path(name) %></li>
+      <dt>Associated Named Entities</dt>
+      <dd>
+        <ul class="list-unstyled text-right">
+          <% if @model.name_places.count <= 0 %>
+            <li class="text-muted">This place is not associated with any names.</li>
+          <% else %>
+            <% @model.name_places.joins(:name).order("names.name").each do |name_place| %>
+              <li>
+                <%= link_to name_path(name_place.name) do %>
+                  <%= name_place.display_value('name') %>
+                <% end %>
+              </li>
+            <% end %>
           <% end %>
-          </ul>
-        </dd>
-      <% end %>
+        </ul>
+      </dd>
       <dt>
         Coordinates
         <span class="glyphicon glyphicon-map-marker" id="center"></span>

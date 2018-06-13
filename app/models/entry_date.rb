@@ -81,7 +81,9 @@ class EntryDate < ActiveRecord::Base
 
   def display_value
     val = observed_date || ""
-    if date_normalized_end.blank?
+    if date_normalized_end.blank? && date_normalized_start.blank?
+      val # noop
+    elsif date_normalized_end.blank?
       val += " (after #{date_normalized_start})"
     elsif date_normalized_start.blank?
       val += " (before #{date_normalized_end})"

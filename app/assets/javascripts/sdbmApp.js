@@ -3495,13 +3495,15 @@ var BOOKMARK_SCOPE;
       $scope.currentlySaving = true;
       $scope.name.name_places_attributes = [];
       for (var i = 0; i < $scope.name.name_places.length; i++) {
-        $scope.name.name_places_attributes.push({
-          id: $scope.name.name_places[i].id,
-          place_id: $scope.name.name_places[i].place.id,
-          notbefore: $scope.name.name_places[i].notbefore,
-          notafter: $scope.name.name_places[i].notafter,
-          _destroy: $scope.name.name_places[i]._destroy
-        });
+        if ($scope.name.name_places[i].place && $scope.name.name_places[i].place.id) {          
+          $scope.name.name_places_attributes.push({
+            id: $scope.name.name_places[i].id,
+            place_id: $scope.name.name_places[i].place.id,
+            notbefore: $scope.name.name_places[i].notbefore,
+            notafter: $scope.name.name_places[i].notafter,
+            _destroy: $scope.name.name_places[i]._destroy
+          });
+        }
       }
 
       if ($scope.name.id) {          
@@ -3601,7 +3603,7 @@ var BOOKMARK_SCOPE;
       $scope.name = Name.get({id: name_id})
     } else {
       $scope.name = new Name();
-      $scope.name.name_places = [{}];
+      $scope.name.name_places = [];
       
       //$scope.name.name = modalParams.name;
       //$scope.name[modalParams.type] = true;
@@ -3633,7 +3635,7 @@ var BOOKMARK_SCOPE;
 
     $scope.postSave = function (response) {
       $scope.currentlySaving = false;
-      $modalInstance.close();
+      $modalInstance.close($scope.name);
     };
 
     $scope.subtypes = [
@@ -3673,13 +3675,15 @@ var BOOKMARK_SCOPE;
       $scope.currentlySaving = true;
       $scope.name.name_places_attributes = [];
       for (var i = 0; i < $scope.name.name_places.length; i++) {
-        $scope.name.name_places_attributes.push({
-          id: $scope.name.name_places[i].id,
-          place_id: $scope.name.name_places[i].place.id,
-          notbefore: $scope.name.name_places[i].notbefore,
-          notafter: $scope.name.name_places[i].notafter,
-          _destroy: $scope.name.name_places[i]._destroy
-        });
+        if ($scope.name.name_places[i].place && $scope.name.name_places[i].place.id) {          
+          $scope.name.name_places_attributes.push({
+            id: $scope.name.name_places[i].id,
+            place_id: $scope.name.name_places[i].place.id,
+            notbefore: $scope.name.name_places[i].notbefore,
+            notafter: $scope.name.name_places[i].notafter,
+            _destroy: $scope.name.name_places[i]._destroy
+          });
+        }
       }
 
       if ($scope.name.id) {          
