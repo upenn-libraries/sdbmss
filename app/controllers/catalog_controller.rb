@@ -80,7 +80,7 @@ class CatalogController < ApplicationController
 
   def legacy
     host = request.host
-    forwarded_host = request.env["HTTP_X_FORWARDED_SERVER"]
+    forwarded_host = "sdbm.library.upenn.edu" #request.env["HTTP_X_FORWARDED_SERVER"]
     announcement = '<p class="text-center"><span class="h3">Welcome to the new Schoenberg Database of Manuscripts</span></p>'
     entry_id = params[:id].to_s.include?('SCHOENBERG_') ? params[:id].to_s.gsub('SCHOENBERG_', '') : nil
     if entry_id.present?
