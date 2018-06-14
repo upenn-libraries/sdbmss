@@ -92,7 +92,7 @@ class CatalogController < ApplicationController
       flash[:announce] = announcement.html_safe
       redirect_to entry_url(entry_id, host: forwarded_host), status: 301
     elsif params[:path] == "index"
-      redirect_to root_url.gsub(host, forwarded_host)
+      redirect_to root_url.to_s.gsub(host, forwarded_host)
     elsif host != forwarded_host
       announcement = %q(
         <p><b>Original query paremeters </b></p>)
@@ -100,7 +100,7 @@ class CatalogController < ApplicationController
         announcement += "<p><b>#{key}:</b> #{value}</p>"
       end
       flash.now[:announce] = announcement.html_safe
-      @link = root_url.gsub(host, forwarded_host)
+      @link = root_url.to_s.gsub(host, forwarded_host)
       @host = forwarded_host
       # needs to render without normal layout
       render "legacy", status: 404, layout: false
