@@ -105,8 +105,8 @@ services:
       - rails
       - jena
     ports:
-      - "8880:80"
-      - "8443:443"
+      - "80:80"
+      - "443:443"
     restart: on-failure
 volumes:
   sdbm_docs:
