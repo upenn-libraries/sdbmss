@@ -488,6 +488,8 @@ class Name < ActiveRecord::Base
       sdbm:names_name '#{name}'
       sdbm:names_viaf_id '#{viaf_id}'
       sdbm:names_subtype '#{subtype}'
+      sdbm:names_startdate '#{startdate}'
+      sdbm:names_enddate '#{enddate}'
       sdbm:names_other_info '#{other_info}'
       sdbm:names_deleted '#{deleted}'^^xsd:boolean
     )

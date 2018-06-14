@@ -1,5 +1,7 @@
 class NamePlace < ActiveRecord::Base
 
+  include TellBunny
+
   belongs_to :name
   belongs_to :place
 
@@ -20,6 +22,18 @@ class NamePlace < ActiveRecord::Base
       val += " (#{notbefore} to #{notafter})"
     end
     val
+  end
+
+  def to_rdf
+    %Q(
+      sdbm:name_places/#{id}
+      a       sdbm:name_places
+      sdbm:name_places_id #{id}
+      sdbm:name_places_place_id <https://sdbm.library.upenn.edu/places/#{place_id}>
+      sdbm:name_places_name_id <https://sdbm.library.upenn.edu/names/#{name_id}>
+      sdbm:name_places_notbefore #{notbefore}
+      sdbm:name_places_notafter #{notafter}
+    )
   end
 
 end

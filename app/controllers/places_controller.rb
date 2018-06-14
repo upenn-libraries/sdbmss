@@ -14,6 +14,13 @@ class PlacesController < SearchableAuthorityController
 
   def show
     super
+    # pagination variables for associated names
+    @page = params[:page].to_i || 0
+    @total = @model.name_places.joins(:name).where("names.name like ?", "#{params[:letter]}%").offset(@page * 10).order("names.name").count
+    @lower = @page * 10
+    @upper = [@total, (@page + 1) * 10].min
+    @pages = (@total / 10).ceil
+    @name_places = @model.name_places.joins(:name).where("names.name like ?", "#{params[:letter]}%").offset(@page * 10).order("names.name").limit(10)
     respond_to do |format|
       format.html { }
       format.json { render json: @model.search_result_format }
