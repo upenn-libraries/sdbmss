@@ -100,7 +100,7 @@ class CatalogController < ApplicationController
         announcement += "<p><b>#{key}:</b> #{value}</p>"
       end
       flash.now[:announce] = announcement.html_safe
-      logger.error "HOST: #{host}, FORWARDED_HOST: #{forwarded_host}"
+      #logger.error "HOST: #{host}, FORWARDED_HOST: #{forwarded_host}"
       @link = root_url.gsub(host.to_s, forwarded_host.to_s)
       @host = forwarded_host
       # needs to render without normal layout

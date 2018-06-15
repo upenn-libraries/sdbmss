@@ -7,7 +7,7 @@ class NamePlace < ActiveRecord::Base
 
   validates_presence_of :place
 
-  def display_value (mode)
+  def display_value (mode = 'place')
     if mode == 'name'
       val = name.name
     else
