@@ -3441,7 +3441,7 @@ var BOOKMARK_SCOPE;
     });
 
   // editing name angular controller - similar to createnamectrl, which is for the modal that pops up from the source/entry pages
-  sdbmApp.controller('NameCtrl', function ($scope, $http, sdbmutil, Name) {
+  sdbmApp.controller('NameCtrl', function ($scope, $http, sdbmutil, Name, $modal) {
     EntryScope = $scope;
     $scope.currentlySaving = false;
 
@@ -3492,6 +3492,12 @@ var BOOKMARK_SCOPE;
     };
 
     $scope.save = function () {
+      // apply order
+      var array = $scope.name.name_places.filter( function (e) { return !e._destroy; });
+      for (var i = 0; i < array.length; i++) {
+        array[i].order = i;
+      }
+      // railsy attributes
       $scope.currentlySaving = true;
       $scope.name.name_places_attributes = [];
       for (var i = 0; i < $scope.name.name_places.length; i++) {
@@ -3501,6 +3507,7 @@ var BOOKMARK_SCOPE;
             place_id: $scope.name.name_places[i].place.id,
             notbefore: $scope.name.name_places[i].notbefore,
             notafter: $scope.name.name_places[i].notafter,
+            order: $scope.name.name_places[i].order,
             _destroy: $scope.name.name_places[i]._destroy
           });
         }
@@ -3589,7 +3596,9 @@ var BOOKMARK_SCOPE;
           size: 'lg'
       });
     }
-
+    $scope.activeRecords = function(element) {
+      return !element._destroy;
+    };
   });
 
   // very similar to NameCtrl, but with modal-specific behavior.  There might be a better way to do this, but I haven't found it yet
@@ -3672,6 +3681,12 @@ var BOOKMARK_SCOPE;
     };
 
     $scope.save = function () {
+      // apply order
+      var array = $scope.name.name_places.filter( function (e) { return !e._destroy; });
+      for (var i = 0; i < array.length; i++) {
+        array[i].order = i;
+      }
+      // convert torails-y attributes
       $scope.currentlySaving = true;
       $scope.name.name_places_attributes = [];
       for (var i = 0; i < $scope.name.name_places.length; i++) {
@@ -3681,6 +3696,7 @@ var BOOKMARK_SCOPE;
             place_id: $scope.name.name_places[i].place.id,
             notbefore: $scope.name.name_places[i].notbefore,
             notafter: $scope.name.name_places[i].notafter,
+            order: $scope.name.name_places[i].order,
             _destroy: $scope.name.name_places[i]._destroy
           });
         }
@@ -3716,6 +3732,10 @@ var BOOKMARK_SCOPE;
       stop: function (e, ui) {
       }
     }
+
+    $scope.activeRecords = function(element) {
+      return !element._destroy;
+    };
 
     $scope.addRecord = function (anArray) {
       anArray.push({});        

@@ -219,6 +219,7 @@ Rails.application.routes.draw do
       patch '/revert/', to: 'names#revert'
       get 'history'
       get 'merge'
+      get 'timeline'
       post 'merge'
     end
   end

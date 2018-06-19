@@ -38,7 +38,7 @@ class Name < ActiveRecord::Base
 
   #belongs_to :associated_place, :class_name => 'Place'
 
-  has_many :name_places
+  has_many :name_places, :dependent => :destroy
   has_many :places, -> {distinct}, through: :name_places
 
   has_many :bookmarks, as: :document, dependent: :destroy  
@@ -133,6 +133,12 @@ class Name < ActiveRecord::Base
     end
     string :viaf_id
     string :subtype
+    string :places do
+      places.map(&:name).join("; ")      
+    end
+    text :places do
+      places.map(&:name).join("; ")      
+    end
     integer :created_by_id
     integer :artists_count
     integer :authors_count # test
@@ -170,7 +176,7 @@ class Name < ActiveRecord::Base
   end
 
   def self.fields
-    super + [["Other Info", "other_info"]]
+    super + [["Other Info", "other_info"], ["Places", "places"]]
   end
 
   def self.dates
@@ -184,6 +190,7 @@ class Name < ActiveRecord::Base
       viaf_id: viaf_id,
       other_info: other_info,
       subtype: subtype,
+      places: places.map(&:name).join("; "),
       authors_count: authors_count,
       artists_count: artists_count,
       scribes_count: scribes_count,

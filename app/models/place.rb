@@ -25,7 +25,7 @@ class Place < ActiveRecord::Base
 
   #has_many :names, class_name: "Name", foreign_key: "associated_place_id", :dependent => :restrict_with_error
 
-  has_many :name_places
+  has_many :name_places, :dependent => :destroy
   has_many :names, -> {distinct}, through: :name_places
 
   has_many :comments, as: :commentable

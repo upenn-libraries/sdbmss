@@ -81,6 +81,11 @@
 <% end %>
 
 <div class="row">
+  <div class="col-sm-12">
+    <h2 class="text-center">
+      <%= @model.public_id %>
+    </h2>
+  </div>
   <div class="col-sm-6 pull-right">
     <p class="text-muted text-center">
       <span class="glyphicon glyphicon-info-sign"></span>
@@ -97,9 +102,6 @@
 
   </div>  
   <div class="col-sm-6">
-    <h2 class="text-center">
-      <%= @model.public_id %>
-    </h2>
     <dl class="document-metadata dl-horizontal dl-invert">
       <dt>Name</dt>
       <dd>
@@ -129,67 +131,13 @@
         </dd>
       <% else %>
         <dd style="padding: 0px;">
-          <ul class="list-inline text-center">
+          <ul class="list-inline text-right">
           <% @model.children.order(:name).each do |child| %>
             <li style="font-size: <%= 12 + [10, child.children.count].min %>px;"><span class="text-muted"></span>  <%= link_to child.name, place_path(child) %></li>
           <% end %>
           </ul>
         </dd>
       <% end %>
-      <dt style="width: 100%;">Associated Named Entities</dt>
-      <dd style="padding: 0px;" class="text-center">
-        <ul class="pagination pagination-narrow">
-          <% ('a'..'z').to_a.each do |letter| %>
-            <li class='<%= letter == params[:letter] ? "active" : "" %>'><%= link_to letter.capitalize, params.merge(:letter => letter).except(:page) %></li>
-          <% end %>
-          <li class='<%= !params[:letter] ? "active" : "" %>'><%= link_to "All", params.except(:letter).except(:page) %></li>
-        </ul>
-        <% if @total <= 0 %>
-          <p class="text-muted">This place is not associated with any names.</p>
-        <% else %>
-          <p class="text-muted"> Showing names <%= @lower %> to <%= @upper %> of <%= @total %> in total.</p>
-
-          <!-- I didn't setup the shared pagination partial to handle a list within another models 'show' page, so I quasi-duplicated it here -->
-
-          <!-- also having to reload the page each click is annoying - maybe have this using tabs/javascript? -->
-          <ul class="pagination">
-          <% if @page >= 3 %>
-            <li><%= link_to "First", params.merge(page: 0) %></li>
-          <% end %>
-          <% if @page >= 4 %>
-            <li class="text-muted"><a href="">...</a></li>
-          <% end %>
-
-          <% @pages.times do |p| %>
-
-            <% if @page == p %>
-              <li class="active"><a href=""><%= p + 1 %></a></li>
-            <% elsif (@page - p).abs < 3 %>
-              <li><%= link_to p + 1, params.merge(page: p) %></li>
-            <% end %>
-            
-          <% end %>
-
-          <% if @page <= @pages - 4 %>
-            <li class="text-muted"><a href="">...</a></li>
-          <% end %>
-          <% if @page <= @pages - 3 %>
-            <li><%= link_to "Last", params.merge(page: @pages - 1) %></li>
-          <% end %>
-          </ul>
-
-          <ul class="list-unstyled text-right">
-              <% @name_places.each do |name_place| %>
-                <li>
-                  <%= link_to name_path(name_place.name) do %>
-                    <%= name_place.display_value('name') %>
-                  <% end %>
-                </li>
-              <% end %>
-          </ul>
-        <% end %>
-
-      </dd>
       <dt>
         Coordinates
         <span class="glyphicon glyphicon-map-marker" id="center"></span>
@@ -210,7 +158,34 @@
         <% else %>
           <span class="text-muted">There is no additional evidence recorded.</span>
         <% end %>
-      </dd>
+      </dd>      
+      <dt style="width: 100%;">Associated Named Entities</dt>
+      <dd style="padding: 0px;">
+        
+        <p class="text-muted"><%= @model.name %> is associated with <%= "#{@model.names.count} #{'name'.pluralize(@model.names.count)}" %> </p>
+
+        <ul class="pagination pagination-narrow pagination-streamline">
+          <% (@name_places.count / 100.0).ceil.times do |i| %>
+            <li class="<%= i == 0 ? 'active' : '' %>"><a data-toggle="tab" href="#page-<%= i %>"><%= i + 1 %></a></li>            
+          <% end %>
+        </ul>
+
+        <% i = 0 %>
+        <div class="tab-content">
+        <% @name_places.in_groups_of(100, false) do |name_places| %>
+          <div id="page-<%= i %>" class="tab-pane fade <%= i == 0 ? 'active in' : '' %>">
+            <p class="text-muted">Showing <%= "name".pluralize(name_places.count) %> <%= i * 100 %> to <%= i * 100 + name_places.count %>:</p>
+            <ul class="list-unstyled">
+              <% name_places.each do |name_place| %>
+                <li><%= link_to name_place.display_value("name"), name_path(name_place.name) %></li>
+              <% end %>
+            </ul>
+          </div>
+          <% i += 1 %>
+        <% end %>
+        </div>
+
+      </dd>     
       <% if @model.created_at.present? %>
           <dt>Added</dt>
           <dd>

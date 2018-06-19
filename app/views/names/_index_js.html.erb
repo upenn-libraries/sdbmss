@@ -90,6 +90,10 @@ load_session = '<%= params[:last_search] %>' == 'true';
                 dbSortField: 'subtype'
             },
             {
+                title: 'Places',
+                dbSortField: 'places'
+            },
+            {
                 title: 'As Author',
                 dbSortField: 'authors_count'
             },
@@ -163,6 +167,7 @@ load_session = '<%= params[:last_search] %>' == 'true';
              result.viaf_id,
              result.other_info,
              result.subtype,
+             result.places,
              result.authors_count,
              result.artists_count,
              result.scribes_count,

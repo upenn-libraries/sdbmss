@@ -7,7 +7,7 @@ class NamesController < SearchableAuthorityController
 
   load_and_authorize_resource :only => [:index, :edit, :update, :destroy, :mark_as_reviewed, :merge]
 
-  before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy, :merge]
+  before_action :set_model, only: [:show, :show_json, :edit, :update, :destroy, :merge, :timeline]
 
   def model_class
     Name
@@ -29,6 +29,13 @@ class NamesController < SearchableAuthorityController
   def search
     session[:last_name_search] = params
     super
+  end
+
+  def timeline
+    @dated_provenance = @model.provenance.joins(:entry).where.not(start_date_normalized_start: [nil, ''])
+    respond_to do |format|
+      format.json
+    end
   end
 
   def problems
@@ -118,7 +125,7 @@ class NamesController < SearchableAuthorityController
     else
       p = params
     end
-    p.permit(:name, :other_info, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe, :confirmed, :reviewed, :problem, :subtype, :startdate, :enddate, :name_places_attributes => [:id, :place_id, :notbefore, :notafter, :_destroy])
+    p.permit(:name, :other_info, :viaf_id, :is_artist, :is_author, :is_provenance_agent, :is_scribe, :confirmed, :reviewed, :problem, :subtype, :startdate, :enddate, :name_places_attributes => [:id, :place_id, :notbefore, :notafter, :order, :_destroy])
   end
 
   def merge_params
