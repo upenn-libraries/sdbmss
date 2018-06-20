@@ -34,6 +34,8 @@ module TellBunny
 
         q.publish("#{self.to_rdf}")
 
+        ch.close()
+
       rescue Bunny::TCPConnectionFailed => e
         puts "(Update) - Connection to RabbitMQ server failed"
         #self.delay(run_at: 1.hour.from_now).update_bunny
@@ -54,6 +56,8 @@ module TellBunny
       q = ch.queue("sdbm")
 
       q.publish("DESTROY sdbm:#{self.class.name.pluralize.underscore}/#{self.id}")
+
+      ch.close()
 
     rescue Bunny::TCPConnectionFailed => e
       puts "(Destroy) - Connection to RabbitMQ server failed"
