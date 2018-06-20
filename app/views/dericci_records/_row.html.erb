@@ -21,12 +21,12 @@
   <td class="text-muted"><%= "#{record.cards} #{'card'.pluralize(record.cards)}" %></td>
   <td class="text-muted"><%= record.size %></td>
   <td>
-  <% record.dericci_links.group_by(&:name_id).each do |name_id, links| %>
+  <% record.dericci_links.where(approved: [false, nil]).group_by(&:name_id).each do |name_id, links| %>
     <span class="btn btn-info btn-xs">
       <span class="glyphicon glyphicon-link" title="This record is linked to a name is the SDBM name authority (possible)"></span>
     </span>
   <% end %>
-  <% if record.verified %>
+  <% record.dericci_links.where(approved: true).group_by(&:name_id).each do |name_id, links| %>
     <span class="btn btn-xs btn-success">
       <span class="glyphicon glyphicon-link" title="This record is linked to a name is the SDBM name authority (verified)"></span>
     </span>

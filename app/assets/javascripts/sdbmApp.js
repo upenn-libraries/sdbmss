@@ -353,6 +353,7 @@ var BOOKMARK_SCOPE;
 
     sdbmApp.controller('DericciRecordCtrl', function ($scope, $http, $modal, $sce) {
       $scope.record_id = $("#record-id").val();
+      $scope.user_id = $("#user-id").val();
       $http.get("/dericci_records/" + $scope.record_id + ".json", {}).then(function (response) {
         $scope.record = response.data;
       });
@@ -381,7 +382,7 @@ var BOOKMARK_SCOPE;
       $scope.save = function () {
         $scope.record.verified_id = $scope.name.id;
         var url = '/dericci_records/' + $scope.record_id + '.json';
-        $http.put(url, {verified_id: $scope.record.verified_id}).then(function (response) {
+        $http.put(url, {dericci_record: {id: $scope.record.id, dericci_links_attributes: [{ name_id: $scope.record.verified_id, dericci_record_id: $scope.record.id, approved: true, created_by_id: $scope.user_id }]}}).then(function (response) {
           window.location.reload();
         });
       };

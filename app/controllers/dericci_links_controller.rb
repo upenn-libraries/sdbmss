@@ -31,10 +31,26 @@ class DericciLinksController < ApplicationController
     end  
   end
 
+  def update_many
+    links = DericciLink.where(id: params[:ids])
+    if links.count > 0
+      links.each do |link|
+        link.update(dericci_link_params)
+      end
+      if params[:from_name]
+        redirect_to name_path(links.first.name_id)
+      else
+        redirect_to dericci_record_path(links.first.dericci_record_id)
+      end
+    else
+      redirect_to dericci_records_path
+    end
+  end
+
   private
 
   def dericci_link_params
-    params.permit(:name_id, :dericci_record_id)
+    params.permit(:name_id, :dericci_record_id, :approved)
   end
 
 end

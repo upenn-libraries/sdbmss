@@ -108,29 +108,67 @@
           <td colSpan="2" class="text-muted">De Ricci <%= @record.id %> is out of scope for the SDBM Name Authority</td>
         </tr>
       <% else %>
-        <tr><td>Verified Name</td>
-        <td ng-controller="DericciRecordCtrl">        
-          <% if @record.verified_id %>
-            <%= link_to name_path(@record.verified), class: 'btn btn-xs btn-default' do %>
-              <span class="glyphicon glyphicon-queen"></span> <%= @record.verified.name %>
-            <% end %>
-          <% elsif can? :edit, @record %>
-            <a id="verify" href="" ng-if="!name || !name.name" ng-click="findName(record)" class="btn btn-default btn-xs">Find Verified Name <span class="glyphicon glyphicon-plus"></span></a>
-            <div class="btn-group" ng-if="name && name.name">
-              <a href="" class="btn btn-warning btn-xs">{{ name.name }}</a>
-              <a href="" class="btn btn-default btn-xs" ng-click="remove()"><span class='glyphicon glyphicon-remove'></span></a>
-              <a href="" class="btn btn-success btn-xs" ng-click="save()">Save</a>
-            </div>
-          <% else %>
-            <span class="text-muted">A verified SDBM Name has not been identified yet.</span>
-          <% end %>
-        </td></tr>
+        <tr>
+          <td>Verified Name (Real)</td>
+          <td>
+            <% if @record.dericci_links.where(approved: true).group_by(&:name_id).each do |name_id, dericci_links| %>
+              <% name = dericci_links.first.name %>
+              <a href="" class="btn btn-default btn-xs" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
+                <%= name.name %> <span class="badge"><%= dericci_links.count %></span>
+              </a>
 
+              <div class="modal fade" id="<%= name.public_id %>">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-body">
+                      <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                      <p>This De Ricci record has been linked to <%= link_to name.name, name_path(name) %> by </p>
+                        <% dericci_links.each do |dl| %>
+                            <span class='btn btn-xs btn-default'>
+                              <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
+                            </span>
+                            <% if dl.other_info.present? %>
+                              <span class='text-muted'> <%= dl.other_info %></span>
+                            <% else %>
+                              <span class="text-muted"> no additional information provided</span>
+                            <% end %>
+                            <br>
+                        <% end %>                    
+                    </div>
+                    <div class="modal-footer text-center">
+                      <% if current_user && current_user.role == "admin" %>
+                          <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id)), method: :delete, class: "btn btn-danger" %>
+                          <%= link_to "Unverify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: false), method: :put, class: "btn btn-default" %>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end.empty? %>
+                <p class="text-muted">This name is not verifiably linked to any names in the SDBM Name Authority.</p>
+            <% end %>
+            <div ng-controller="DericciRecordCtrl">        
+              <% if can? :edit, @record %>
+                <input type="hidden" id="user-id" value="<%= current_user.id %>">
+                <a id="verify" href="" ng-if="!name || !name.name" ng-click="findName(record)" class="btn btn-default btn-xs">Find Verified Name <span class="glyphicon glyphicon-plus"></span></a>
+                <div class="btn-group" ng-if="name && name.name">
+                  <a href="" class="btn btn-warning btn-xs">{{ name.name }}</a>
+                  <a href="" class="btn btn-default btn-xs" ng-click="remove()"><span class='glyphicon glyphicon-remove'></span></a>
+                  <a href="" class="btn btn-success btn-xs" ng-click="save()">Save</a>
+                </div>
+              <% else %>
+                <span class="text-muted">A verified SDBM Name has not been identified yet.</span>
+              <% end %>
+            </div>
+          </td>
+        </tr>
         <tr><td>
           Possible Names
         </td>
         <td>
-          <% if @record.dericci_links.group_by(&:name_id).each do |name_id, dericci_links| %>
+          <% if @record.dericci_links.where(approved: [false, nil]).group_by(&:name_id).each do |name_id, dericci_links| %>
               <% name = dericci_links.first.name %>
               <a href="" class="btn btn-info btn-xs" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
                 <%= name.name %> <span class="badge"><%= dericci_links.count %></span>
@@ -159,15 +197,17 @@
                     <div class="modal-footer text-center">
                       <% if current_user && current_user.role == "admin" %>
                           <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id)), method: :delete, class: "btn btn-danger" %>
+                          <%= link_to "Verify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: true), method: :put, class: "btn btn-default" %>
                       <% end %>
                     </div>
                   </div>
                 </div>
               </div>
           <% end.empty? %>
-              <p class="text-muted">This name is not linked to any names in the SDBM Name Authority.</p>
+              <p class="text-muted">This name has no suggested possible links to any names in the SDBM Name Authority.</p>
           <% end %>
-        </td></tr>
+        </td>
+      </tr>
       <% end %>
     </table>
 

@@ -51,6 +51,7 @@ Rails.application.routes.draw do
   resources :dericci_links do
     collection {
       delete 'delete_many'
+      put 'update_many'
     }
   end
   resources :dericci_notes, only: [:index]

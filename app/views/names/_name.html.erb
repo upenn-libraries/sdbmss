@@ -103,23 +103,59 @@
             <%= render partial: "main", locals: { name: name } %>
     
             <% if name.dericci_records.count > 0 %>
-            <tr><td>Verified De Ricci</td>
-            <td>
-              <% name.dericci_records.each do |dericci_record| %>
-                <p>
-                  <%= link_to dericci_record_path(dericci_record), class: 'btn btn-default btn-xs' do %>
-                    <span class="glyphicon glyphicon-queen"></span> <%= dericci_record.name %>
-                  <% end %>
-                </p>
-              <% end %>
-            </td></tr>
+            <tr>
+              <td>Verified De Ricci</td>
+              <td>
+                <% if name.dericci_links.where(approved: true).group_by(&:dericci_record_id).each do |dericci_record_id, dericci_links| %>
+
+                      <% record = dericci_links.first.dericci_record %>
+
+                      <div class="btn btn-default btn-xs" data-toggle="modal" data-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
+                        <%= record.name %> <span class="badge"><%= dericci_links.count %></span>
+                      </div>
+
+                      <div class="modal fade" id="Dericci_<%= record.id %>">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-body">
+                              <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                              <p>This name has been linked to <%= link_to record.name, dericci_record_path(record) %> by </p>
+                                <% dericci_links.each do |dl| %>
+                                   <span class='btn btn-xs btn-default'>
+                                      <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
+                                    </span>
+                                    <% if dl.other_info.present? %>
+                                      <span class='text-muted'> <%= dl.other_info %></span>
+                                    <% else %>
+                                      <span class="text-muted"> no additional information provided</span>
+                                    <% end %>
+                                    <br>
+                                <% end %>                    
+                            </div>
+                            <div class="modal-footer text-center">                          
+                              <% if current_user && current_user.role == "admin" %>
+                                  <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id), from_name: true), method: :delete, class: "btn btn-danger" %>
+                                  <%= link_to "Unverify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: false, from_name: true), method: :put, class: "btn btn-default" %>     
+                              <% end %>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                  <% end.empty? %>
+                      <p class="text-muted">This name is not verifiably linked to any records in the De Ricci Archives.</p>
+                  <% end %>  
+              </td>
+            </tr>
             <% end %>
             <tr>
               <td>
                   Possible De Ricci     
               </td>
               <td>
-                  <% if name.dericci_links.group_by(&:dericci_record_id).each do |dericci_record_id, dericci_links| %>
+                  <% if name.dericci_links.where(approved: [nil, false]).group_by(&:dericci_record_id).each do |dericci_record_id, dericci_links| %>
 
                       <% record = dericci_links.first.dericci_record %>
 
@@ -150,6 +186,7 @@
                             <div class="modal-footer text-center">                          
                               <% if current_user && current_user.role == "admin" %>
                                   <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id), from_name: true), method: :delete, class: "btn btn-danger" %>
+                                  <%= link_to "Verify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: true, from_name: true), method: :put, class: "btn btn-default" %>                                
                               <% end %>
                             </div>
                           </div>
@@ -157,7 +194,7 @@
                       </div>
 
                   <% end.empty? %>
-                      <p class="text-muted">This name is not linked to any records in the De Ricci Archives.</p>
+                      <p class="text-muted">This name has no suggested possible links to any records in the De Ricci Archives.</p>
                   <% end %>
               </td>
             </tr>
