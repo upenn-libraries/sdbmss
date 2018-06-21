@@ -26,7 +26,7 @@ class DownloadsController < ApplicationController
       #flash[:error] = "Download is still in progress."
       #redirect_to downloads_path
     elsif @download.status >= 1 && !params[:ping]
-      send_file "/tmp/" + @download.get_path, :filename => @download.filename, :type=>"csv", :x_sendfile=>true
+      send_file "tmp/" + @download.get_path, :filename => @download.filename, :type=>"csv", :x_sendfile=>true
       # download is 'deleting'
       @download.update({status: 2})
       # adjust timing of this as appropriate

@@ -102,7 +102,7 @@ module SolrSearchable
     filename = download.filename
     user = download.user
     id = download.id
-    path = "/tmp/#{id}_#{user}_#{filename}"
+    path = "tmp/#{id}_#{user}_#{filename}"
     
     csv_file = CSV.open(path, "wb") do |csv|
       csv << headers

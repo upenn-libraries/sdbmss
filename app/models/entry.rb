@@ -1033,7 +1033,7 @@ class Entry < ActiveRecord::Base
     filename = download.filename
     user = download.user
     id = download.id
-    path = "/tmp/#{id}_#{user}_#{filename}"
+    path = "tmp/#{id}_#{user}_#{filename}"
     headers = nil
     loop do
       s = do_search(params.merge({:limit => 300, :offset => offset})) # 12-06-17 fix me: add 'order' param if sorting not working properly?
