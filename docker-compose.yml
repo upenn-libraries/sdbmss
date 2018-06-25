@@ -15,7 +15,7 @@ services:
       driver: "journald"
     mem_limit: 3700m
     mem_reservation: 2000m      
-    restart: on-failure
+    restart: always
   db:
     image: mysql/mysql-server:5.7
     env_file: .docker-environment
@@ -24,7 +24,7 @@ services:
       - "3307:3307"
     volumes:
       - sdbm_data:/var/lib/mysql
-    restart: on-failure
+    restart: always
   solr:
     image: sdbm:latest
     ports:
@@ -36,14 +36,14 @@ services:
     volumes:
       - sdbm_solr:/usr/src/app/solr
     command: bundle exec rake sunspot:solr:run
-    restart: on-failure
+    restart: always
   rails:
     image: sdbm:latest
     env_file: .docker-environment
     cpu_shares: 80
     logging:
       driver: "journald"
-    restart: on-failure
+    restart: always
     links:
       - db
       - solr
@@ -63,7 +63,7 @@ services:
       - .:/usr/src/app
     env_file: .docker-environment
     command: bundle exec rake jobs:work
-    restart: on-failure
+    restart: always
     logging:
       driver: "journald"
   jena:
@@ -76,7 +76,7 @@ services:
     mem_reservation: 2000m
     cpu_shares: 20
     env_file: .docker-environment
-    restart: on-failure
+    restart: always
 #      - JVM_ARGS=-Xmx3g   # raises memory limits to allow large file to be uploaded
   interface:
     build: ./jena
@@ -93,7 +93,7 @@ services:
     mem_reservation: 2000m
     cpu_shares: 20
     env_file: .docker-environment
-    restart: on-failure
+    restart: always
   nginx:
     build: ./nginx
     cpu_shares: 50
@@ -107,7 +107,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    restart: on-failure
+    restart: always
 volumes:
   sdbm_docs:
   sdbm_data:
