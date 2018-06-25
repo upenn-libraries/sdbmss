@@ -40,6 +40,9 @@ module LogActivity
           if make_entry
             model_object.try(:create_activity, event, current_user, @transaction_id)
           end
+
+          # if activity was from linking tool
+          Rails.logger.warn "HELLO #{model_name}, #{model_objects}"
         end
       else
         # in most cases, model object will be an instance var named

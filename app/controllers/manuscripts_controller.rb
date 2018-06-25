@@ -136,7 +136,9 @@ class ManuscriptsController < SearchableAuthorityController
 
   def history
     @model = Manuscript.find(params[:id])
-    @versions = PaperTrail::Version.where(item_type: "EntryManuscript", transaction_id: @model.versions.map(&:transaction_id))
+    @versions = PaperTrail::Version.where(item_type: "EntryManuscript", transaction_id: Activity.where(item: @model).map(&:transaction_id))
+    @users = User.find(@versions.pluck(:whodunnit))
+    @details = EntryVersionFormatter.new(@versions).details
   end
 
   private

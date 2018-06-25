@@ -157,11 +157,16 @@ class EntryVersionFormatter
   def detail (version)
     details = []
     if version.item_type == "EntryManuscript"
-      item = @entry_manuscripts.select{ |em| em.id == version.item_id}.first
-      if item
-        details << "<b>#{item.entry.public_id}</b> has been linked to <b>#{item.manuscript.public_id}</b>"
-      else
-        details << "<b>EntryManuscript #{version.item_id}</b> was deleted."  
+      if version.event == "destroy"
+        entry_id = version.reify.entry_id
+        details << "<a href='/entries/#{entry_id}'>SDBM_#{entry_id}</a> unlinked"
+      elsif version.event == "create"
+        details << "<a href='/entries/#{version.changeset[:entry_id][1]}'>SDBM_#{version.changeset[:entry_id][1]}</a> linked (#{version.changeset[:relation_type][1]})"
+      elsif version.event == "update"
+        if version.changeset[:relation_type].present?
+          entry_id = version.reify.entry_id
+          details << "<a href='/entries/#{entry_id}'>SDBM_#{entry_id}</a> link changed from (#{version.changeset[:relation_type][0]}) to (#{version.changeset[:relation_type][1]})"
+        end
       end
     elsif version.event == 'update'
       skip(version.changeset).each do |field, values|
@@ -236,6 +241,8 @@ class EntryVersionFormatter
       return @languages
     elsif ['source_type_id'].include? field
       return @source_types
+    elsif ['superceded_by_id'].include? field
+      return Entry
     else
       puts "WARNING: THIS SHOULDN't HAPPEN!!! (entry_version_formatter.rb) #{field}"
       return field.gsub('_id', '').capitalize.classify.constantize
