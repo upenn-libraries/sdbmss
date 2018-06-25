@@ -4,21 +4,6 @@
   </div>
   <div class="col-sm-12">
     <ul class="list-group">
-      <% if File.exists?("public/static/docs/dump.sql.zip") %>
-      <li class="list-group-item">
-        <div class="row">
-          <div class="col-sm-6 text-left">
-            <strong>MYSQL DUMP</strong> <span class="text-muted">dump.sql.zip</span>
-          </div>
-          <div class="col-sm-6 text-right">            
-            <%= link_to("static/docs/dump.sql.zip", class: 'btn btn-default btn-sm') do %>
-              <span class="glyphicon glyphicon-download"></span> Download
-            <% end %>
-          </div>
-        </div>
-      </li>
-      <% end %>
-      <hr></hr>
       <% if File.exists?("public/static/docs/output.ttl.gz") %>
       <li class="list-group-item">
         <div class="row">

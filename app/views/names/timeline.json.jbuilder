@@ -1,14 +1,16 @@
 json.title do
   json.text do
-    json.headline "Provenance Timeline"
     json.text "This is a timeline of all the <b>explicitly dated</b> instances where this name appears in a provenance chain.  For <b>#{@model.name}</b>, #{@dated_provenance.count} out of #{@model.provenance_count} total provenance #{'use'.pluralize(@model.provenance_count)} have explicit date information."
   end
 end
 
 if @dated_provenance.count > 0
   json.events @dated_provenance do |provenance|
+    #json.text do
+    #  json.text render partial: "entries/preview", locals: {record: provenance.entry}, :formats => [:html]
+    #end
     json.text do
-      json.text render partial: "entries/preview", locals: {record: provenance.entry}, :formats => [:html]
+      json.text link_to provenance.entry.public_id, entry_path(provenance.entry)
     end
 
     year, month, day = provenance.start_date_normalized_start.split("-")

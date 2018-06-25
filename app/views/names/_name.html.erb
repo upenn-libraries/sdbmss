@@ -85,14 +85,20 @@
 <%# Partial used to display name details for both Names generically and Agents (which are Names) %>
 
 <%# Why is this in SHARED instead of in NAME?? %>
-<div class="row">
     <% content_for :control_tools do %>        
         <%= render partial: 'tools', locals: {edit: false} %>
     <% end %>
 
+<div class="row">
+  <div class="col-sm-12">
+      <h3><%= name.public_id %></h3>
+  </div>
+</div>
+
+<div class="row">
+
     <div class="col-sm-6">
 
-        <h3><%= name.public_id %></h3>
 
         <div class="text-left" style="margin-bottom: 5px;">
             <p>Is this a real person? <%= render partial: "ratings/rate", locals: {ratable: name} %></p>
@@ -197,24 +203,25 @@
                       <p class="text-muted">This name has no suggested possible links to any records in the De Ricci Archives.</p>
                   <% end %>
               </td>
-            </tr>
-            <tr>
-              <td colSpan="2">
-                <!-- need: list of provenance as : [entry_id, start_date, end_date] -->
-                <div id='timeline-embed' style="width: 100%; height: 600px"></div>
-              </td>
-            </tr>
+            </tr>            
         </table>
     </div>
-    <div class="col-sm-6 comments">
-        
+    <div class="col-sm-6">
         <div id="map"></div>
-
-        <h2 class="text-center"><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
-        <p class='text-center text-muted'>Share additional information about this name in the box below. Your comments will be displayed publicly.</p>
-
-        <%= render partial: "comments/show_all", locals: {comments: name.comments.where(public: true), record: name} %>
-
     </div>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <div id='timeline-embed' style="width: 100%; height: 240px"></div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-2">
+  </div>
+  <div class="col-sm-8 comments">        
+    <h2 class="text-center"><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
+    <p class='text-center text-muted'>Share additional information about this name in the box below. Your comments will be displayed publicly.</p>
 
+    <%= render partial: "comments/show_all", locals: {comments: name.comments.where(public: true), record: name} %>
+  </div>
 </div>
