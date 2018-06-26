@@ -32,7 +32,7 @@ class NamesController < SearchableAuthorityController
   end
 
   def timeline
-    @dated_provenance = @model.provenance.joins(:entry).where.not(start_date_normalized_start: [nil, ''])
+    @dated_provenance = @model.provenance.joins(:entry => [:source => [:source_type]]).where.not(start_date_normalized_start: [nil, ''])
     respond_to do |format|
       format.json
     end

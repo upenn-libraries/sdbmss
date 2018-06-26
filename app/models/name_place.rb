@@ -31,8 +31,8 @@ class NamePlace < ActiveRecord::Base
       sdbm:name_places_id #{id}
       sdbm:name_places_place_id <https://sdbm.library.upenn.edu/places/#{place_id}>
       sdbm:name_places_name_id <https://sdbm.library.upenn.edu/names/#{name_id}>
-      sdbm:name_places_notbefore #{notbefore}
-      sdbm:name_places_notafter #{notafter}
+      sdbm:name_places_notbefore '#{notbefore}'
+      sdbm:name_places_notafter '#{notafter}'
     )
   end
 

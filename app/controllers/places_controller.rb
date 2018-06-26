@@ -21,6 +21,7 @@ class PlacesController < SearchableAuthorityController
     #@upper = [@total, (@page + 1) * 10].min
     #@pages = (@total / 10).ceil
     #@name_places = @model.name_places.joins(:name).where("names.name like ?", "#{params[:letter]}%").offset(@page * 10).order("names.name").limit(10)
+    @page_size = 10
     @name_places = @model.name_places.joins(:name).order("names.name")
     respond_to do |format|
       format.html { }
