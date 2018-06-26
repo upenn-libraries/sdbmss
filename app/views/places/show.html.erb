@@ -30,6 +30,14 @@
   <script type='text/javascript'>
     $(document).ready(function () {
 
+      $("#page-selector").change(function () {
+        //console.log($(this).val());
+        $('.tab-page').removeClass('in');
+        $('.tab-page').removeClass('active');
+        $('#page-' + $(this).val()).addClass('in');
+        $('#page-' + $(this).val()).addClass('active');
+      })
+
       var sdbmIcon = L.icon({
         iconUrl: '<%= asset_path "map-pin.svg" %>',
 
@@ -85,20 +93,16 @@
     <h2 class="text-center">
       <%= @model.public_id %>
     </h2>
-  </div>
-  <div class="col-sm-6 pull-right">
     <p class="text-muted text-center">
       <span class="glyphicon glyphicon-info-sign"></span>
       Note: Coordinates locations for regions or countries are for reference only, and do not imply that the place of production or activity is limited to that specific point.
     </p>
     
+  </div>
+  <div class="col-sm-6 pull-right">
+    
     <div id="map">
     </div>
-
-    <h2 class="text-center"><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
-    <p class='text-muted'>Share additional information about this place in the box below. Your comments will be displayed publicly.</p>
-
-    <%= render partial: "comments/show_all", locals: {comments: @model.comments.where(public: true), record: @model} %>
 
   </div>  
   <div class="col-sm-6">
@@ -124,20 +128,6 @@
           <span class="text-muted">This place has no parent set.</span>
         <% end %>
       </dd>
-      <dt>Children</dt>
-      <% if @model.children.count <= 0 %>
-        <dd>
-          <span class="text-muted">This place does not contain any other places.</span>
-        </dd>
-      <% else %>
-        <dd style="padding: 0px;">
-          <ul class="list-inline text-right">
-          <% @model.children.order(:name).each do |child| %>
-            <li style="font-size: <%= 12 + [10, child.children.count].min %>px;"><span class="text-muted"></span>  <%= link_to child.name, place_path(child) %></li>
-          <% end %>
-          </ul>
-        </dd>
-      <% end %>
       <dt>
         Coordinates
         <span class="glyphicon glyphicon-map-marker" id="center"></span>
@@ -160,21 +150,19 @@
         <% end %>
       </dd>      
       <dt style="width: 100%;">Associated Named Entities</dt>
-      <dd style="padding: 0px;">
+      <dd style="padding: 0px 7px;">
         
         <p class="text-muted"><%= @model.name %> is associated with <%= "#{@model.names.count} #{'name'.pluralize(@model.names.count)}" %> </p>
 
-        <ul class="pagination pagination-narrow pagination-streamline">
-          <% (@name_places.count / 100.0).ceil.times do |i| %>
-            <li class="<%= i == 0 ? 'active' : '' %>"><a data-toggle="tab" href="#page-<%= i %>"><%= i + 1 %></a></li>            
-          <% end %>
-        </ul>
+        <label for="" class="control-label">Page: <input id="page-selector" type="number" class="form-control" value="0" min="0" max="<%= (@name_places.count / @page_size.to_f).ceil - 1 %>"></label>
 
         <% i = 0 %>
         <div class="tab-content">
-        <% @name_places.in_groups_of(100, false) do |name_places| %>
-          <div id="page-<%= i %>" class="tab-pane fade <%= i == 0 ? 'active in' : '' %>">
-            <p class="text-muted">Showing <%= "name".pluralize(name_places.count) %> <%= i * 100 %> to <%= i * 100 + name_places.count %>:</p>
+        <% @name_places.in_groups_of(@page_size, false) do |name_places| %>
+          <div id="page-<%= i %>" class="tab-page tab-pane fade <%= i == 0 ? 'active in' : '' %>">
+            <% if @name_places.count > @page_size %>        
+              <p class="text-muted">Showing <%= "name".pluralize(name_places.count) %> <%= i * @page_size %> to <%= i * @page_size + name_places.count %> of <%= @name_places.count %></p>
+            <% end %>
             <ul class="list-unstyled">
               <% name_places.each do |name_place| %>
                 <li><%= link_to name_place.display_value("name"), name_path(name_place.name) %></li>
@@ -202,4 +190,28 @@
       <% end %>
     </dl>
   </div>  
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <h4>Children</h4>
+    <% if @model.children.count <= 0 %>
+        <span class="text-muted">This place does not contain any other places.</span>
+      </dd>
+    <% else %>
+      <dd style="padding: 0px;">
+        <ul class="list-inline text-left">
+        <% @model.children.order(:name).each do |child| %>
+          <li style="font-size: <%= 12 + [10, child.children.count].min %>px;"><span class="text-muted"></span>  <%= link_to child.name, place_path(child) %></li>
+        <% end %>
+        </ul>
+    <% end %>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-2"></div>
+  <div class="col-sm-8">
+    <h2 class="text-center"><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
+    <p class='text-muted'>Share additional information about this place in the box below. Your comments will be displayed publicly.</p>
+    <%= render partial: "comments/show_all", locals: {comments: @model.comments.where(public: true), record: @model} %>    
+  </div>
 </div>

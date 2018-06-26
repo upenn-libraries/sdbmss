@@ -32,8 +32,7 @@ class NamesController < SearchableAuthorityController
   end
 
   def timeline
-    @colors = ['#F54343', '#FFAD68', '#45A8A8', '#36C436', '#8A5EA2', '#A34279', '#C2E37F', '#F3F388']
-    @dated_provenance = @model.provenance.joins(:entry).where.not(start_date_normalized_start: [nil, ''])
+    @dated_provenance = @model.provenance.joins(:entry => [:source => [:source_type]]).where.not(start_date_normalized_start: [nil, ''])
     respond_to do |format|
       format.json
     end

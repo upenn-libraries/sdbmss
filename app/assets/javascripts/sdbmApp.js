@@ -3600,6 +3600,14 @@ var BOOKMARK_SCOPE;
     $scope.activeRecords = function(element) {
       return !element._destroy;
     };
+
+    $scope.cancel = function () {
+      if ($scope.name.id) {
+        window.location = "/names/" + $scope.name.id;
+      } else {
+        window.location = "/names"
+      }
+    }
   });
 
   // very similar to NameCtrl, but with modal-specific behavior.  There might be a better way to do this, but I haven't found it yet
@@ -3642,6 +3650,8 @@ var BOOKMARK_SCOPE;
         });
       }
     }
+
+    $scope.cancel = $scope.goBack;
 
     $scope.postSave = function (response) {
       $scope.currentlySaving = false;
