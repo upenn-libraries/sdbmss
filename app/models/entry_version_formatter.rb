@@ -159,13 +159,13 @@ class EntryVersionFormatter
     if version.item_type == "EntryManuscript"
       if version.event == "destroy"
         entry_id = version.reify.entry_id
-        details << "<a href='/entries/#{entry_id}'>SDBM_#{entry_id}</a> unlinked"
+        details << "Unlinked <a href='/entries/#{entry_id}'>SDBM_#{entry_id}</a>"
       elsif version.event == "create"
-        details << "<a href='/entries/#{version.changeset[:entry_id][1]}'>SDBM_#{version.changeset[:entry_id][1]}</a> linked (#{version.changeset[:relation_type][1]})"
+        details << "Linked <a href='/entries/#{version.changeset[:entry_id][1]}'>SDBM_#{version.changeset[:entry_id][1]}</a> (#{version.changeset[:relation_type][1]} link)"
       elsif version.event == "update"
         if version.changeset[:relation_type].present?
           entry_id = version.reify.entry_id
-          details << "<a href='/entries/#{entry_id}'>SDBM_#{entry_id}</a> link changed from (#{version.changeset[:relation_type][0]}) to (#{version.changeset[:relation_type][1]})"
+          details << "Changed <a href='/entries/#{entry_id}'>SDBM_#{entry_id}</a> link relation type changed from (#{version.changeset[:relation_type][0]}) to (#{version.changeset[:relation_type][1]})"
         end
       end
     elsif version.event == 'update'
