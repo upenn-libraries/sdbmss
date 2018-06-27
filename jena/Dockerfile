@@ -16,6 +16,12 @@ RUN apk add ruby ruby-bundler
 #WORKDIR /fuseki
 #COPY shiro.ini ./
 
+WORKDIR /jena-fuseki/webapp/js/app
+COPY qonsole-config.js ./
+
+WORKDIR /jena-fuseki/webapp
+COPY dataset.html ./
+
 WORKDIR /jena-fuseki
 
 COPY shiro.ini ./

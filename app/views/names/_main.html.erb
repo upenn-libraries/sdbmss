@@ -14,11 +14,7 @@
 
 <tr>
     <td>
-        <% if name.subtype == "Personal" %>
-            Birth and Death Dates
-        <% else %>
-            Start and End Dates
-        <% end %>
+        Start and End Dates
     </td>
     <td>
         <%= name.startdate || '?' %> to <%= name.enddate || '?' %>
