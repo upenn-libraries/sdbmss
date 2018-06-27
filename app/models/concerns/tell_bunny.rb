@@ -38,10 +38,9 @@ module TellBunny
 
       rescue Bunny::TCPConnectionFailed => e
         puts "(Update) - Connection to RabbitMQ server failed"
-        #self.delay(run_at: 1.hour.from_now).update_bunny
+      else
+        ch.close() if defined? ch
       end
-      # close the connection
-      #Rails.configuration.bunny_connection.stop
     end
   end
 
@@ -61,8 +60,8 @@ module TellBunny
 
     rescue Bunny::TCPConnectionFailed => e
       puts "(Destroy) - Connection to RabbitMQ server failed"
-      #self.delay(run_at: 1.hour.from_now).destroy_bunny
+    else
+        ch.close() if defined? ch      
     end
-    #Rails.configuration.bunny_connection.stop
   end
 end
