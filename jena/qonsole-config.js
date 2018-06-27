@@ -79,12 +79,6 @@ define( [], function() {
           " BIND(xsd:integer(substr(concat(replace(?all_related_end_dates, '-', ''), '0000'), 1, 8)) as ?all_related_end_dates_formatted) .\n" +
           " \n" +
           " FILTER(?all_related_end_dates_formatted > ?enddate) .\n" +
-          " #?all_related_name_places sdbm:name_places_name_id ?all_related_names .\n" +
-          " #?all_related_name_places sdbm:name_places_place_id ?all_related_places .\n" +
-          " #?all_related_places sdbm:places_name ?all_related_places_text .\n" +
-          " #?all_related_places sdbm:places_latitude ?all_related_places_latitude .\n" +
-          " #?all_related_places sdbm:places_longitude ?all_related_places_longitude .\n" +
-          " #BIND(concat(concat(xsd:string(?all_related_places_latitude), ','), xsd:string(?all_related_places_longitude)) as ?all_related_places_coordinates) .\n" +
           "}\n" +
           "LIMIT 1000",
         "prefixes": ["xsd", "sdbm"]
