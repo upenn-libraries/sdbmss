@@ -38,8 +38,6 @@ module TellBunny
 
       rescue Bunny::TCPConnectionFailed => e
         puts "(Update) - Connection to RabbitMQ server failed"
-      else
-        ch.close() if defined? ch
       end
     end
   end
@@ -60,8 +58,6 @@ module TellBunny
 
     rescue Bunny::TCPConnectionFailed => e
       puts "(Destroy) - Connection to RabbitMQ server failed"
-    else
-        ch.close() if defined? ch      
     end
   end
 end
