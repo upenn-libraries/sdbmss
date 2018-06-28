@@ -5,7 +5,7 @@
     <% end %>
   <% end %>
   <div class="page-partial">
-    <%= render :file => page.path %>
+    <%= page.contents %>
   </div>
 <% else %>
     <p class="text-muted">Missing Partial Page: "<%= page_name %>"</p>
