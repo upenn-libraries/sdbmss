@@ -375,6 +375,11 @@ module SDBMSS
         if (match = /(s\.\s([mdclxvi]+)(?!.))/i.match(date_str)).present?
           century = (roman_to_arabic(match[2]) - 1)
         end
+        
+        #roman numeral century like "Saec. XIV"
+        if (match = /(Saec\.\s([mdclxvi]+)(?!.))/i.match(date_str)).present?
+          century = (roman_to_arabic(match[2]) - 1)
+        end
 
         # # match strs like "third century"
         (1..20).each do |n|
