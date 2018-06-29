@@ -15,20 +15,59 @@ define( [], function() {
                  "  ?subject ?predicate ?object\n}\n" +
                  "LIMIT 25"
       },
-      { "name": "Selection of classes",
-        "query": "SELECT DISTINCT ?class ?label ?description\nWHERE {\n" +
-                 "  ?class a owl:Class.\n" +
-                 "  OPTIONAL { ?class rdfs:label ?label}\n" +
-                 "  OPTIONAL { ?class rdfs:comment ?description}\n}\n" +
-                 "LIMIT 25",
-        "prefixes": ["owl", "rdfs"]
-      },
-      { "name": "France",
+      { "name": "Select a Place",
         "query": "SELECT ?subject ?predicate ?object WHERE {\n" +
         "  BIND (<https://sdbm.library.upenn.edu/places/13> as ?subject) .\n" +
         "  ?subject ?predicate ?object . \n " +
         "}\n" +
         " LIMIT 25",
+        "prefixes": ["xsd", "sdbm"]
+      },
+      {
+        "name": "Select a Name",
+        "query": "SELECT ?subject ?predicate ?object WHERE {\n" +
+                "  BIND (<https://sdbm.library.upenn.edu/names/1> as ?subject) .\n" +
+                "  ?subject ?predicate ?object . \n" +
+                "}\n" +
+                "LIMIT 25",
+        "prefixes": ["xsd", "sdbm"]
+      },
+      {
+        "name": "Select a Language",
+        "query": "SELECT ?subject ?predicate ?object WHERE {\n" +
+                "  BIND (<https://sdbm.library.upenn.edu/languages/1> as ?subject) .\n" +
+                "  ?subject ?predicate ?object . \n" +
+                "}\n" +
+                "LIMIT 25",
+        "prefixes": ["xsd", "sdbm"]
+      },
+      {
+        "name": "Select a Source",
+        "query": "SELECT ?subject ?predicate ?object WHERE {\n" +
+                "  BIND (<https://sdbm.library.upenn.edu/sources/1> as ?subject) .\n" +
+                "  ?subject ?predicate ?object . \n" +
+                "}\n" +
+                "LIMIT 25",
+        "prefixes": ["xsd", "sdbm"]
+      },      
+      {
+        "name": "Select an Entry",
+        "query": "SELECT ?subject ?predicate ?object WHERE {\n" +
+                "  BIND (<https://sdbm.library.upenn.edu/entries/1> as ?subject) .\n" +
+                "  ?subject ?predicate ?object . \n" +
+                "}\n" +
+                "LIMIT 25",
+        "prefixes": ["xsd", "sdbm"]
+      },
+      {
+        "name": "Select all Names used as Authors for a given Entry",
+        "query": "SELECT ?subject ?predicate ?object WHERE {\n" +
+                "  BIND (<https://sdbm.library.upenn.edu/entries/1> as ?entry) .\n" +
+                "  ?entryauthor sdbm:entry_authors_entry_id ?entry .\n" +
+                "  ?entryauthor sdbm:entry_authors_author_id ?subject .\n" +
+                "  ?subject ?predicate ?object . \n" +
+                "}\n" +
+                "LIMIT 25",
         "prefixes": ["xsd", "sdbm"]
       },
       {

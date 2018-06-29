@@ -28,6 +28,7 @@ staging:
 # Do not set this db to the same as development or production.
 test:
   <<: *development
+  host: localhost
   database: <%= ENV["MYSQL_DATABASE"] %>_test
   #engine:   MyISAM  
 
