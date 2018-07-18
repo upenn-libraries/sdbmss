@@ -245,7 +245,7 @@
                                 <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find or Create Authority Name</a>
                                 <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                     <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
-                                    {{ source_agent.agent.name }}
+                                    <a href="/names/{{ source_agent.agent.id }}" target="_blank">{{ source_agent.agent.name }}</a>
                                 </div>
                             </div>
                         </div>
@@ -321,7 +321,7 @@
                                 <a id="find_source_agent_name_authority_{{ $index }}" ng-show='source_agent.agent.id == undefined' class="btn btn-add-name" ng-click="selectNameAuthorityModal('names', source_agent, 'institution', 'is_provenance_agent')">Find or Create Authority Name</a>
                                 <div id="show_selling_agent_name_authority_0" ng-if='source_agent.agent != undefined && source_agent.agent.id != undefined' class="well well-sm well-name-authority">
                                     <a class="glyphicon glyphicon-remove" ng-click="removeNameAuthority(source_agent, 'agent')"></a>
-                                    {{ source_agent.agent.name }}
+                                    <a href="/names/{{ source_agent.agent.id }}" target="_blank">{{ source_agent.agent.name }}</a>
                                 </div>
                             </div>
                         </div>

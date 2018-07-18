@@ -200,6 +200,10 @@ function bindRemoteAjaxCallback (){
             $(selectorStr).modal({ keyboard: false, backdrop: 'static' });
             $(selectorStr).find(".close").hide();
         }
+        if (options.class) {
+          $(selectorStr).addClass(options.class);
+          console.log('sanity check: adding class: ', options.class);
+        }
         $(selectorStr).modal('show');
     };
 
@@ -211,7 +215,8 @@ function bindRemoteAjaxCallback (){
             allowDismiss: true,
             showFooter: true,
             title: "An error occurred",
-            body: msg
+            body: msg,
+            class: 'sdbm-error-modal'
         });
     };
 
