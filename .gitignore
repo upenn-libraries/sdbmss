@@ -5,7 +5,7 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # ignore nginx server config
-nginx/nginx.conf
+/nginx/nginx.conf
 
 # Ignore bundler config.
 /.bundle
