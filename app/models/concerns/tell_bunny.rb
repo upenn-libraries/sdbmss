@@ -32,7 +32,9 @@ module TellBunny
 
         q = ch.queue("sdbm")
 
-        q.publish("#{self.to_rdf}")
+        message = self.to_rdf
+        message[:action] = "update"
+        q.publish(message.to_json)
 
         ch.close()
 
@@ -52,7 +54,9 @@ module TellBunny
 
       q = ch.queue("sdbm")
 
-      q.publish("DESTROY sdbm:#{self.class.name.pluralize.underscore}/#{self.id}")
+      message = self.to_rdf
+      message[:action] = "destroy"
+      q.publish(message.to_json)
 
       ch.close()
 
