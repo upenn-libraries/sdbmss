@@ -39,6 +39,19 @@ class EntryScribe < ActiveRecord::Base
   end
 
   def to_rdf
+    {
+      model_class: "entry_scribes",
+      id: id,
+      fields: {
+        observed_name: "'#{observed_name}'",
+        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
+        scribe_id: "<https://sdbm.library.upenn.edu/names/#{scribe_id}>",
+        order: "'#{order}'^^xsd:integer",
+        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
+        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
+      }
+    }
+=begin
     %Q(
       sdbm:entry_scribes/#{id}
       a       sdbm:entry_scribes
@@ -50,6 +63,7 @@ class EntryScribe < ActiveRecord::Base
       sdbm:entry_scribes_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
       sdbm:entry_scribes_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
     )
+=end
   end
 
 end

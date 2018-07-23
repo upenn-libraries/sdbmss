@@ -488,6 +488,20 @@ class Name < ActiveRecord::Base
   end
 
   def to_rdf
+    {
+      model_class: "names",
+      id: id,
+      fields: {
+        name: "'#{name}'",
+        viaf_id: "'#{viaf_id}'",
+        subtype: "'#{subtype}'",
+        startdate: "'#{startdate}'",
+        enddate: "'#{enddate}'",
+        other_info: "'#{other_info}'",
+        deleted: "'#{deleted}'^^xsd:boolean"
+      }
+    }
+=begin
     %Q(
       sdbm:names/#{id}
       a       sdbm:names
@@ -501,7 +515,7 @@ class Name < ActiveRecord::Base
       sdbm:names_deleted '#{deleted}'^^xsd:boolean
     )
     #  rdfs:label "dericci_links #1" ;
-    
+=end    
   end
 
 end

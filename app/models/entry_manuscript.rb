@@ -87,6 +87,16 @@ class EntryManuscript < ActiveRecord::Base
   end
 
   def to_rdf
+    {
+      model_class: "entry_manuscripts",
+      id: id,
+      fields: {
+        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
+        manuscript_id: "<https://sdbm.library.upenn.edu/manuscripts/#{manuscript_id}>",
+        relation_type: "'#{relation_type}'"
+      }
+    }
+=begin
     %Q(
       sdbm:entry_manuscripts/#{id}
       a       sdbm:entry_manuscripts
@@ -95,6 +105,7 @@ class EntryManuscript < ActiveRecord::Base
       sdbm:entry_manuscripts_manuscript_id <https://sdbm.library.upenn.edu/manuscripts/#{manuscript_id}>
       sdbm:entry_manuscripts_relation_type '#{relation_type}'
     )
+=end
   end
 
 end

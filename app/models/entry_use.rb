@@ -9,6 +9,16 @@ class EntryUse < ActiveRecord::Base
   include TellBunny
 
   def to_rdf
+    {
+      model_class: "entry_uses",
+      id: id,
+      fields: {
+        use: "'#{use}'",
+        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
+        order: "'#{order}'^^xsd:integer"
+      }
+    }
+=begin
     %Q(
       sdbm:entry_uses/#{id}
       a       sdbm:entry_uses
@@ -17,6 +27,7 @@ class EntryUse < ActiveRecord::Base
       sdbm:entry_uses_entry_id <https://sdbm.library.upenn.edu/entries/#{entry_id}>
       sdbm:entry_uses_order #{order}
     )
+=end
   end
 
 end

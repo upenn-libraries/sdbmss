@@ -42,6 +42,19 @@ class EntryMaterial < ActiveRecord::Base
   end
 
   def to_rdf
+    {
+      model_class: "entry_materials",
+      id: id,
+      fields: {
+        material: "'#{material}'",
+        observed_name: "'#{observed_name}'",
+        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
+        order: "'#{order}'^^xsd:integer",
+        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
+        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
+      }
+    }
+=begin
     %Q(
       sdbm:entry_materials/#{id}
       a       sdbm:entry_materials
@@ -53,6 +66,7 @@ class EntryMaterial < ActiveRecord::Base
       sdbm:entry_materials_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
       sdbm:entry_materials_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
     )
+=end
   end
 
 

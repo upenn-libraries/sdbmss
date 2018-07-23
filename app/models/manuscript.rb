@@ -151,6 +151,16 @@ class Manuscript < ActiveRecord::Base
   end
 
   def to_rdf
+    {
+      model_class: "manuscripts",
+      id: id,
+      fields: {
+        name: "'#{name}'",
+        location: "'#{location}'",
+        url: "'#{url}'"
+      }
+    }
+=begin
     %Q(
       sdbm:manuscripts/#{id}
       a       sdbm:manuscripts
@@ -159,6 +169,7 @@ class Manuscript < ActiveRecord::Base
       sdbm:manuscripts_location '#{location}'
       sdbm:manuscripts_url '#{url}'
     )
+=end
   end
 
 end

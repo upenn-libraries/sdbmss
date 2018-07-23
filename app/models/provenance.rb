@@ -131,6 +131,31 @@ class Provenance < ActiveRecord::Base
   end
 
   def to_rdf
+    {
+      model_class: "provenance",
+      id: id,
+      fields: {
+        observed_name: "'#{observed_name}'",
+        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
+        provenance_agent_id: "<https://sdbm.library.upenn.edu/names/#{provenance_agent_id}>",
+        order: "'#{order}'^^xsd:integer",
+        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
+        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean",
+        associated_date: "'#{associated_date}'",
+        associated_date_normalized_start: "'#{associated_date_normalized_start}'",
+        associated_date_normalized_end: "'#{associated_date_normalized_end}'",
+        start_date: "'#{start_date}'",
+        start_date_normalized_start: "'#{start_date_normalized_start}'",
+        start_date_normalized_end: "'#{start_date_normalized_end}'",
+        end_date: "'#{end_date}'",
+        end_date_normalized_start: "'#{end_date_normalized_start}'",
+        end_date_normalized_end: "'#{end_date_normalized_end}'",
+        comment: "'#{comment}'",
+        direct_transfer: "'#{direct_transfer}'^^xsd:boolean",
+        acquisition_method: "'#{acquisition_method}'"
+      }
+    }
+=begin
     %Q(
       sdbm:provenance/#{id}
       a       sdbm:provenance
@@ -154,6 +179,7 @@ class Provenance < ActiveRecord::Base
       sdbm:provenance_direct_transfer '#{direct_transfer}'^^xsd:boolean
       sdbm:provenance_acquisition_method '#{acquisition_method}'
     )
+=end
   end
 
 end

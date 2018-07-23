@@ -140,6 +140,19 @@ class Sale < ActiveRecord::Base
 
 
   def to_rdf
+    {
+      model_class: "sales",
+      id: id,
+      fields: {
+        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
+        date: "'#{date}'",
+        price: "'#{price}'^^xsd:decimal",
+        currency: "'#{currency}'",
+        other_currency: "'#{other_currency}'",
+        sold: "'#{sold}'"
+      }
+    }
+=begin
     %Q(
       sdbm:sales/#{id}
       a       sdbm:sales
@@ -151,6 +164,7 @@ class Sale < ActiveRecord::Base
       sdbm:sales_other_currency '#{other_currency}'
       sdbm:sales_sold '#{sold}'
     )
+=end
   end
 
 end

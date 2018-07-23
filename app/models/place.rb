@@ -137,6 +137,20 @@ class Place < ActiveRecord::Base
   end
 
   def to_rdf
+    {
+      model_class: "places",
+      id: id,
+      fields: {
+        name: "'#{name}'",
+        authority_id: "'#{authority_id}'",
+        authority_source: "'#{authority_source}'",
+        parent_id: "<https://sdbm.library.upenn.edu/places/#{parent_id}>",
+        latitude: "#{latitude}^^xsd:decimal",
+        longitude: "#{longitude}^^xsd:decimal",
+        deleted: "'#{deleted}'^^xsd:boolean"
+      }
+    }
+=begin
     %Q(
       sdbm:places/#{id}
       a       sdbm:places
@@ -149,6 +163,7 @@ class Place < ActiveRecord::Base
       sdbm:places_longitude #{longitude}
       sdbm:places_deleted '#{deleted}'^^xsd:boolean
     )
+=end
   end
 
 end

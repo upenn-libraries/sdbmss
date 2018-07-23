@@ -46,6 +46,8 @@ begin
       puts "destroy!!"
       query = %Q(
         PREFIX sdbm: <https://sdbm.library.upenn.edu/>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
         DELETE { ?subject ?predicate ?object }
         WHERE {
           BIND (<https://sdbm.library.upenn.edu/#{message['model_class']}/#{message['id']}> as ?subject) .
@@ -62,6 +64,7 @@ begin
       puts "update"
       query = %Q(
         PREFIX sdbm: <https://sdbm.library.upenn.edu/>        
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
       )
       message['fields'].each do |field, new_value|
         predicate = "sdbm:#{message['model_class']}_#{field}"        

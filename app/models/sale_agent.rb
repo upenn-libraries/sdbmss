@@ -44,6 +44,20 @@ class SaleAgent < ActiveRecord::Base
   end
 
   def to_rdf
+    {
+      model_class: "sale_agents",
+      id: id,
+      fields: {
+        id: "#{id}",
+        sale_id: "<https://sdbm.library.upenn.edu/sales/#{sale_id}>",
+        observed_name: "'#{observed_name}'",
+        agent_id: "<https://sdbm.library.upenn.edu/names/#{agent_id}>",
+        role: "'#{role}'",
+        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
+        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
+      }
+    }
+=begin
     %Q(
       sdbm:sale_agents/#{id}
       a       sdbm:sale_agents
@@ -55,6 +69,7 @@ class SaleAgent < ActiveRecord::Base
       sdbm:sale_agents_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
       sdbm:sale_agents_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
     )
+=end
   end
 
 end
