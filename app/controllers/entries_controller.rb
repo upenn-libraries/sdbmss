@@ -123,7 +123,7 @@ class EntriesController < SearchableAuthorityController
     #end
 
     # Dates are treated as strings, so need a bit of manipulating
-    [:source_date, :sale_date].each do |date_key|
+    [:source_date, :source_date_search, :sale_date].each do |date_key|
       if params[date_key]
         params[date_key] = Array(params[date_key])
         params[date_key].map! do | date |

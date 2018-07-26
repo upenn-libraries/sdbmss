@@ -1069,7 +1069,7 @@ class Entry < ActiveRecord::Base
       ["Entry Id", "entry_id"], 
       ["Manuscript ID", "manuscript_id"], 
       ["Source ID (Full)", "source"], 
-      ["Source Date", "source_date"],
+      #["Source Date", "source_date"],
       ["Sale Sold", "sale_sold"],
       ["Sale Date", "sale_date"],
       ["Price", "sale_price"], 
