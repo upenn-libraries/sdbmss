@@ -145,8 +145,8 @@ class Place < ActiveRecord::Base
         authority_id: "'#{authority_id}'",
         authority_source: "'#{authority_source}'",
         parent_id: "<https://sdbm.library.upenn.edu/places/#{parent_id}>",
-        latitude: "#{latitude}^^xsd:decimal",
-        longitude: "#{longitude}^^xsd:decimal",
+        latitude: "'#{latitude}'^^xsd:decimal",
+        longitude: "'#{longitude}'^^xsd:decimal",
         deleted: "'#{deleted}'^^xsd:boolean"
       }
     }

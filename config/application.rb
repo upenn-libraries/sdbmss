@@ -33,6 +33,24 @@ module SDBMSS
     else
         config.bunny_connection = Bunny.new(:host => 'rabbitmq', :port => 5672, :user => ENV["RABBIT_USER"], :pass => ENV["RABBIT_PASSWORD"], :vhost => "/")
     end
+    config.bunny_connection.start
+    ch = config.bunny_connection.create_channel
+    queue = ch.queue("sdbm_status")
+    queue.subscribe(block: false) do |_delivery_info, _properties, body|
+        contents = JSON.parse(body)
+        puts "HELLO!! #{contents}"
+        if (jena_reponse = JenaResponse.find(contents['id']))
+            if contents['code'] == '200'
+                # success, delete
+                jena_reponse.destroy
+            else
+                puts "Failed. Resending..."
+                # resend, increment sent-counter
+            end
+        else
+            # no longer exists
+        end
+    end
 
     config.sdbmss_allow_user_signup = true
 

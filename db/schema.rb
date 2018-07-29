@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180619150249) do
+ActiveRecord::Schema.define(version: 20180727162224) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -415,6 +415,17 @@ ActiveRecord::Schema.define(version: 20180619150249) do
     t.datetime "updated_at",                                  null: false
     t.text     "description",   limit: 65535
   end
+
+  create_table "jena_responses", force: :cascade do |t|
+    t.text     "message",     limit: 65535
+    t.integer  "status",      limit: 4
+    t.integer  "record_id",   limit: 4
+    t.string   "record_type", limit: 255
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "jena_responses", ["record_type", "record_id"], name: "index_jena_responses_on_record_type_and_record_id", using: :btree
 
   create_table "languages", force: :cascade do |t|
     t.string   "name",           limit: 255

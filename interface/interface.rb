@@ -59,7 +59,11 @@ begin
       request.set_form_data({"update" => query})
       request.basic_auth("admin",  ENV["ADMIN_PASSWORD"])
       response = http.request(request)
-      puts "response:  #{response} #{query}"      
+      if response.code != 200
+        puts "PROBLEM: #{response} #{query}"
+      end
+      status_queue = channel.queue("sdbm_status")
+      status_queue.publish({id: message['response_id'], code: response.code, message: response.message}.to_json)
     elsif message['action'] == "update"
       puts "update"
       query = %Q(
@@ -82,8 +86,11 @@ begin
       request.set_form_data({"update" => query})
       request.basic_auth("admin", ENV["ADMIN_PASSWORD"])
       response = http.request(request)          
-      #response = Net::HTTP.post_form(uri, {"update" => query})
-      puts "response:  #{response} #{query}"  
+      if response.code != 200
+        puts "PROBLEM: #{response} #{query}"
+      end
+      status_queue = channel.queue("sdbm_status")
+      status_queue.publish({id: message['response_id'], code: response.code, message: response.message}.to_json)
     else
       puts "OTHER: #{message}"
     end

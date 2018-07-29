@@ -10,7 +10,7 @@ module TellBunny
     after_commit :update_bunny
     # after destroy
     after_destroy :destroy_bunny
-
+    has_many :jena_responses, as: :record
   end
 
   def to_rdf
@@ -32,8 +32,15 @@ module TellBunny
 
         q = ch.queue("sdbm")
 
+        # delete old response records:
+        self.jena_responses.destroy_all
+
+        # create the latest response record
+        jena_reponse = JenaResponse.create!(record: self, status: 0)
+
         message = self.to_rdf
         message[:action] = "update"
+        message[:response_id] = jena_reponse.id
         q.publish(message.to_json)
 
         ch.close()
@@ -54,7 +61,14 @@ module TellBunny
 
       q = ch.queue("sdbm")
 
+      # delete old response records:
+      self.jena_responses.destroy_all
+
+      # create the latest response record
+      jena_reponse = JenaResponse.create!(record: self, status: 0)
+
       message = self.to_rdf
+      message[:response_id] = jena_reponse.id
       message[:action] = "destroy"
       q.publish(message.to_json)
 
