@@ -38,13 +38,25 @@ module SDBMSS
     queue = ch.queue("sdbm_status")
     queue.subscribe(block: false) do |_delivery_info, _properties, body|
         contents = JSON.parse(body)
-        puts "HELLO!! #{contents}"
-        if (jena_reponse = JenaResponse.find(contents['id']))
+        if (jena_response = JenaResponse.find(contents['id']))
             if contents['code'] == '200'
+                puts "Jena Update was Successful!"
                 # success, delete
-                jena_reponse.destroy
+                jena_response.destroy
             else
-                puts "Failed. Resending..."
+                if jena_response.tries < 3
+                    puts "Failed. Resending..."
+                    jena_response.update(tries: jena_response.tries + 1, message: "#{contents['code']}: #{contents['message']}")
+                    # fix me: handle for DESTROY as well
+                    if jena_response.record.present?
+                        jena_response.record.update_bunny(jena_response.id)
+                    else
+                        jena_response.record.destroy_bunny(jena_response.id)
+                    end
+                else
+                    puts "Failed. Response record retained."
+                    jena_response.update(status: -1)
+                end
                 # resend, increment sent-counter
             end
         else

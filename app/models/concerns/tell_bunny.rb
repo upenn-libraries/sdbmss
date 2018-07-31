@@ -21,7 +21,7 @@ module TellBunny
   
   #private
 
-  def update_bunny
+  def update_bunny(jena_response_id = nil)
     if self.persisted?
       #connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
       begin
@@ -32,15 +32,18 @@ module TellBunny
 
         q = ch.queue("sdbm")
 
-        # delete old response records:
-        self.jena_responses.destroy_all
-
-        # create the latest response record
-        jena_reponse = JenaResponse.create!(record: self, status: 0)
+        # create the latest response record UNLESS this is a 'retry'
+        if jena_response_id.present? && (jena_response = JenaResponse.find(jena_response_id))
+          # nothing
+        else
+          # delete old response records:
+          self.jena_responses.destroy_all
+          jena_response = JenaResponse.create!(record: self, status: 0)
+        end
 
         message = self.to_rdf
         message[:action] = "update"
-        message[:response_id] = jena_reponse.id
+        message[:response_id] = jena_response.id
         q.publish(message.to_json)
 
         ch.close()
@@ -51,7 +54,7 @@ module TellBunny
     end
   end
 
-  def destroy_bunny
+  def destroy_bunny(jena_response_id = nil)
     begin
       puts "AFTER DESTROY"
       #connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
@@ -61,14 +64,17 @@ module TellBunny
 
       q = ch.queue("sdbm")
 
-      # delete old response records:
-      self.jena_responses.destroy_all
-
-      # create the latest response record
-      jena_reponse = JenaResponse.create!(record: self, status: 0)
+      # create the latest response record UNLESS this is a 'retry'
+      if jena_response_id.present? && (jena_response = JenaResponse.find(jena_response_id))
+        # nothing
+      else
+        # delete old response records:
+        self.jena_responses.destroy_all
+        jena_response = JenaResponse.create!(record: self, status: 0)
+      end
 
       message = self.to_rdf
-      message[:response_id] = jena_reponse.id
+      message[:response_id] = jena_response.id
       message[:action] = "destroy"
       q.publish(message.to_json)
 
