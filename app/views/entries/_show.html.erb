@@ -116,12 +116,12 @@
             <td class="col-sm-2 text-right record-label">Selling Agent(s)</td>
             <td class="col-sm-10">
                 <% selling_agents.each do |selling_agent| %>
+                    <% if selling_agent.agent %>
                     <a href="<%= name_path(selling_agent.agent) %>">
                         <%= selling_agent.display_value %>
                     </a>
                     <%= selling_agent.certainty_flags %>
                     <br>
-                    <% if selling_agent.agent %>
                     <% else %>
                         <%= selling_agent.display_value %> <%= selling_agent.certainty_flags %>
                     <% end %>                  
