@@ -146,6 +146,10 @@ begin
     end
 =end    
   end
+rescue SocketError => err
+  puts "SocketError: You were trying to send: #{message}"  
+  status_queue = channel.queue("sdbm_status")
+  status_queue.publish({id: message['response_id'], code: "404", message: err.to_s }.to_json)
 rescue Interrupt =>
   connection.close
   exit(0)

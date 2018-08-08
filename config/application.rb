@@ -33,6 +33,7 @@ module SDBMSS
     else
         config.bunny_connection = Bunny.new(:host => 'rabbitmq', :port => 5672, :user => ENV["RABBIT_USER"], :pass => ENV["RABBIT_PASSWORD"], :vhost => "/")
     end
+=begin
     config.bunny_connection.start
     ch = config.bunny_connection.create_channel
     queue = ch.queue("sdbm_status")
@@ -64,6 +65,8 @@ module SDBMSS
         end
     end
 
+    ch.close()
+=end
     config.sdbmss_allow_user_signup = true
 
     config.sdbmss_index_after_update_enabled = true
