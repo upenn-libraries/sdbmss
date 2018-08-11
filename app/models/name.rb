@@ -68,7 +68,7 @@ class Name < ActiveRecord::Base
   has_many :dericci_links
   has_many :dericci_records, through: :dericci_links
 
-  has_many :dericci_records, foreign_key: "verified_id"
+  #has_many :dericci_records, foreign_key: "verified_id"
 
   validates_presence_of :name
 
