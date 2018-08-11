@@ -434,7 +434,8 @@ map:sources_title a d2rq:PropertyBridge;
         deleted: "'#{deleted}'^^xsd:boolean",
         author: "'#{author}'",
         title: "'#{title}'",
-        date: "'#{date}'"
+        date: "'#{date}'",
+        link: "'#{link}'"
       }
     }
 =begin

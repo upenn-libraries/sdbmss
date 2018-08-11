@@ -38,7 +38,7 @@ module TellBunny
         else
           # delete old response records:
           self.jena_responses.destroy_all
-          jena_response = JenaResponse.create!(record: self, status: 0)
+          jena_response = JenaResponse.create!(record: self, status: 1)
         end
 
         message = self.to_rdf
@@ -50,6 +50,8 @@ module TellBunny
 
       rescue Bunny::TCPConnectionFailed => e
         puts "(Update) - Connection to RabbitMQ server failed"
+        self.jena_responses.destroy_all        
+        JenaResponse.create!(record: self, status: 0, message: "404: Failed to connect from Rails to RabbitMQ: #{e}")
       end
     end
   end
@@ -70,7 +72,7 @@ module TellBunny
       else
         # delete old response records:
         self.jena_responses.destroy_all
-        jena_response = JenaResponse.create!(record: self, status: 0)
+        jena_response = JenaResponse.create!(record: self, status: 1)
       end
 
       message = self.to_rdf
@@ -82,6 +84,8 @@ module TellBunny
 
     rescue Bunny::TCPConnectionFailed => e
       puts "(Destroy) - Connection to RabbitMQ server failed"
+      self.jena_responses.destroy_all
+      JenaResponse.create!(record: self, status: 0, message: "404: Failed to connect from Rails to RabbitMQ: #{e}")
     end
   end
 end

@@ -54,16 +54,21 @@ begin
           OPTIONAL { ?subject ?predicate ?object }
         }
       )
-
-      request = Net::HTTP::Post.new(uri.request_uri)
-      request.set_form_data({"update" => query})
-      request.basic_auth("admin",  ENV["ADMIN_PASSWORD"])
-      response = http.request(request)
-      if response.code != 200
-        puts "PROBLEM: #{response} #{query}"
+      begin
+        request = Net::HTTP::Post.new(uri.request_uri)
+        request.set_form_data({"update" => query})
+        request.basic_auth("admin",  ENV["ADMIN_PASSWORD"])
+        response = http.request(request)
+        if response.code != 200
+          puts "PROBLEM: #{response} #{query}"
+        end
+        status_queue = channel.queue("sdbm_status")
+        status_queue.publish({id: message['response_id'], code: response.code, message: response.message}.to_json)
+      rescue Exception => err
+        #puts "Catching exception HERE #{message} #{err}"
+        status_queue = channel.queue("sdbm_status")
+        status_queue.publish({id: message['response_id'], code: "404", message: err.to_s }.to_json)
       end
-      status_queue = channel.queue("sdbm_status")
-      status_queue.publish({id: message['response_id'], code: response.code, message: response.message}.to_json)
     elsif message['action'] == "update"
       puts "update"
       query = %Q(
@@ -82,15 +87,22 @@ begin
 
         )
       end
-      request = Net::HTTP::Post.new(uri.request_uri)
-      request.set_form_data({"update" => query})
-      request.basic_auth("admin", ENV["ADMIN_PASSWORD"])
-      response = http.request(request)          
-      if response.code != 200
-        puts "PROBLEM: #{response} #{query}"
-      end
-      status_queue = channel.queue("sdbm_status")
-      status_queue.publish({id: message['response_id'], code: response.code, message: response.message}.to_json)
+      begin
+        request = Net::HTTP::Post.new(uri.request_uri)
+        request.set_form_data({"update" => query})
+        request.basic_auth("admin", ENV["ADMIN_PASSWORD"])
+        response = http.request(request) 
+        if response.code != 200
+          puts "PROBLEM: #{response} #{query}"
+        end
+        status_queue = channel.queue("sdbm_status")
+        status_queue.publish({id: message['response_id'], code: response.code, message: response.message}.to_json)
+        #puts "No exception, responses sent."
+      rescue Exception => err
+        #puts "Catching exception HERE #{message} #{err}"
+        status_queue = channel.queue("sdbm_status")
+        status_queue.publish({id: message['response_id'], code: "404", message: err.to_s }.to_json)
+      end     
     else
       puts "OTHER: #{message}"
     end
@@ -146,11 +158,7 @@ begin
     end
 =end    
   end
-rescue SocketError => err
-  puts "SocketError: You were trying to send: #{message}"  
-  status_queue = channel.queue("sdbm_status")
-  status_queue.publish({id: message['response_id'], code: "404", message: err.to_s }.to_json)
-rescue Interrupt =>
+rescue Interrupt => err
   connection.close
   exit(0)
 end      
