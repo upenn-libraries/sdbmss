@@ -1,7 +1,7 @@
 FROM stain/jena-fuseki
 
 # we need ruby for build-in command line HTTP query tools
-RUN apk update -q && apk add ruby
+#RUN apk update -q && apk add ruby
 
 #CMD puts ruby --version
 
@@ -9,7 +9,7 @@ RUN apk update -q && apk add ruby
 #RUN gem install rdoc
 #RUN gem install bunny -include-dependencies
 
-RUN apk add ruby ruby-bundler
+#RUN apk add ruby ruby-bundler
 
 # TODO schedule regular ruby script
 #RUN mkdir /usr/app 
@@ -30,11 +30,11 @@ WORKDIR /jena-fuseki
 COPY shiro.ini ./
 # customizing max number of resultscat 
 COPY yasr.min.js ./webapp/js/lib/yasr.min.js
-COPY Gemfile ./ 
+#COPY Gemfile ./ 
 #COPY Gemfile.lock ./ 
-RUN bundle install
+#RUN bundle install
 
-COPY interface.rb ./
+#COPY interface.rb ./
 
 #RUN ruby interface.rb
 # TODO to check rabbitmq server

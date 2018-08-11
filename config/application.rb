@@ -33,7 +33,40 @@ module SDBMSS
     else
         config.bunny_connection = Bunny.new(:host => 'rabbitmq', :port => 5672, :user => ENV["RABBIT_USER"], :pass => ENV["RABBIT_PASSWORD"], :vhost => "/")
     end
+=begin
+    config.bunny_connection.start
+    ch = config.bunny_connection.create_channel
+    queue = ch.queue("sdbm_status")
+    queue.subscribe(block: false) do |_delivery_info, _properties, body|
+        contents = JSON.parse(body)
+        if (jena_response = JenaResponse.find(contents['id']))
+            if contents['code'] == '200'
+                puts "Jena Update was Successful!"
+                # success, delete
+                jena_response.destroy
+            else
+                if jena_response.tries < 3
+                    puts "Failed. Resending..."
+                    jena_response.update(tries: jena_response.tries + 1, message: "#{contents['code']}: #{contents['message']}")
+                    # fix me: handle for DESTROY as well
+                    if jena_response.record.present?
+                        jena_response.record.update_bunny(jena_response.id)
+                    else
+                        jena_response.record.destroy_bunny(jena_response.id)
+                    end
+                else
+                    puts "Failed. Response record retained."
+                    jena_response.update(status: -1)
+                end
+                # resend, increment sent-counter
+            end
+        else
+            # no longer exists
+        end
+    end
 
+    ch.close()
+=end
     config.sdbmss_allow_user_signup = true
 
     config.sdbmss_index_after_update_enabled = true

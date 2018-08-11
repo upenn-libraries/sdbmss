@@ -10,7 +10,7 @@
 
 map:database a d2rq:Database;
 	d2rq:jdbcDriver "com.mysql.jdbc.Driver";
-	d2rq:jdbcDSN "jdbc:mysql:///sdbm_dump";
+	d2rq:jdbcDSN "jdbc:mysql:///sdbm_for_rdf";
   d2rq:username "sdbm";
   d2rq:password "sdbm";
 	jdbc:autoReconnect "true";
@@ -973,6 +973,18 @@ map:names_subtype a d2rq:PropertyBridge;
 	d2rq:propertyDefinitionLabel "names subtype";
 	d2rq:column "names.subtype";
 .
+map:names_startdate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:names;
+	d2rq:property sdbm:names_startdate;
+	d2rq:propertyDefinitionLabel "names startdate";
+	d2rq:column "names.startdate";
+.
+map:names_enddate a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:names;
+	d2rq:property sdbm:names_enddate;
+	d2rq:propertyDefinitionLabel "names enddate";
+	d2rq:column "names.enddate";
+.
 map:names_entry_id__ref a d2rq:PropertyBridge;
 	d2rq:belongsToClassMap map:names;
 	d2rq:property sdbm:names_entry_id;
@@ -1426,24 +1438,11 @@ map:sources_author a d2rq:PropertyBridge;
 	d2rq:propertyDefinitionLabel "sources author";
 	d2rq:column "sources.author";
 	.
-map:sources_whether_mss a d2rq:PropertyBridge;
-	d2rq:belongsToClassMap map:sources;
-	d2rq:property sdbm:sources_whether_mss;
-	d2rq:propertyDefinitionLabel "sources whether_mss";
-	d2rq:column "sources.whether_mss";
-	.
 map:sources_link a d2rq:PropertyBridge;
 	d2rq:belongsToClassMap map:sources;
 	d2rq:property sdbm:sources_link;
 	d2rq:propertyDefinitionLabel "sources link";
 	d2rq:column "sources.link";
-	.
-map:sources_in_manuscript_table a d2rq:PropertyBridge;
-	d2rq:belongsToClassMap map:sources;
-	d2rq:property sdbm:sources_in_manuscript_table;
-	d2rq:propertyDefinitionLabel "sources in_manuscript_table";
-	d2rq:column "sources.in_manuscript_table";
-	d2rq:datatype xsd:boolean;
 	.
 map:sources_deleted a d2rq:PropertyBridge;
 	d2rq:belongsToClassMap map:sources;
@@ -1500,4 +1499,48 @@ map:sources_source_type_id__ref a d2rq:PropertyBridge;
 	d2rq:property sdbm:sources_source_type_id;
 	d2rq:refersToClassMap map:source_types;
 	d2rq:join "sources.source_type_id => source_types.id";
+.
+
+# Table sales
+map:name_places a d2rq:ClassMap;
+	d2rq:dataStorage map:database;
+	d2rq:uriPattern "name_places/@@name_places.id@@";
+	d2rq:class sdbm:name_places;
+	d2rq:classDefinitionLabel "name_places";
+	.
+map:name_places__label a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:name_places;
+	d2rq:property rdfs:label;
+	d2rq:pattern "name_places #@@name_places.id@@";
+	.
+map:name_places_id a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:name_places;
+	d2rq:property sdbm:name_places_id;
+	d2rq:propertyDefinitionLabel "name_places id";
+	d2rq:column "name_places.id";
+	d2rq:datatype xsd:integer;
+	.
+map:name_places_notbefore a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:name_places;
+	d2rq:property sdbm:name_places_notbefore;
+	d2rq:propertyDefinitionLabel "name_places notbefore";
+	d2rq:column "name_places.notbefore";
+	.
+map:name_places_notafter a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:name_places;
+	d2rq:property sdbm:name_places_notafter;
+	d2rq:propertyDefinitionLabel "name_places notafter";
+	d2rq:column "name_places.notafter";
+	.
+map:name_places_name_id__ref a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:name_places;
+	d2rq:property sdbm:name_places_name_id;
+	d2rq:refersToClassMap map:names;
+	d2rq:join "name_places.name_id => names.id";
+.
+map:name_places_place_id__ref a d2rq:PropertyBridge;
+	d2rq:belongsToClassMap map:name_places;
+	d2rq:property sdbm:name_places_place_id;
+	d2rq:refersToClassMap map:places;
+	d2rq:join "name_places.place_id => places.id";
 .

@@ -53,6 +53,17 @@ class SourceAgent < ActiveRecord::Base
   end  
 
   def to_rdf
+    {
+      model_class: "source_agents",
+      id: id,
+      fields: {
+        observed_name: "'#{observed_name}'",
+        agent_id: "<https://sdbm.library.upenn.edu/names/#{agent_id}>",
+        role: "'#{role}'",
+        source_id: "<https://sdbm.library.upenn.edu/sources/#{source_id}>"
+      }
+    }
+=begin    
     %Q(
       sdbm:source_agents/#{id}
       a       sdbm:source_agents
@@ -62,6 +73,7 @@ class SourceAgent < ActiveRecord::Base
       sdbm:source_agents_role '#{role}'
       sdbm:source_agents_source_id <https://sdbm.library.upenn.edu/sources/#{source_id}>
     )
+=end
   end
 
   private

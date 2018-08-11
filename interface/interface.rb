@@ -1,6 +1,7 @@
 require 'bunny'
 require 'net/http'
 require 'uri'
+require 'json'
 
 #HOST = "165.123.105.243"
 HOST = 'rabbitmq'
@@ -39,6 +40,73 @@ begin
   queue.subscribe(block: true) do |_delivery_info, _properties, body|
     #puts " [x] Received: #{body}, #{_delivery_info}, #{_properties}"
     # turn RDF into queries...
+    puts "Receieved message."
+    message = JSON.parse(body)
+    if message['action'] == "destroy"
+      puts "destroy!!"
+      query = %Q(
+        PREFIX sdbm: <https://sdbm.library.upenn.edu/>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+        DELETE { ?subject ?predicate ?object }
+        WHERE {
+          BIND (<https://sdbm.library.upenn.edu/#{message['model_class']}/#{message['id']}> as ?subject) .
+          OPTIONAL { ?subject ?predicate ?object }
+        }
+      )
+      begin
+        request = Net::HTTP::Post.new(uri.request_uri)
+        request.set_form_data({"update" => query})
+        request.basic_auth("admin",  ENV["ADMIN_PASSWORD"])
+        response = http.request(request)
+        if response.code != 200
+          puts "PROBLEM: #{response} #{query}"
+        end
+        status_queue = channel.queue("sdbm_status")
+        status_queue.publish({id: message['response_id'], code: response.code, message: response.message}.to_json)
+      rescue Exception => err
+        #puts "Catching exception HERE #{message} #{err}"
+        status_queue = channel.queue("sdbm_status")
+        status_queue.publish({id: message['response_id'], code: "404", message: err.to_s }.to_json)
+      end
+    elsif message['action'] == "update"
+      puts "update"
+      query = %Q(
+        PREFIX sdbm: <https://sdbm.library.upenn.edu/>        
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+      )
+      message['fields'].each do |field, new_value|
+        predicate = "sdbm:#{message['model_class']}_#{field}"        
+        query += %Q(
+          DELETE { ?subject #{predicate} ?object } 
+          INSERT { ?subject #{predicate} #{new_value} } 
+          WHERE { 
+            BIND (<https://sdbm.library.upenn.edu/#{message['model_class']}/#{message['id']}> as ?subject) .
+            OPTIONAL { ?subject #{predicate} ?object }
+          };
+
+        )
+      end
+      begin
+        request = Net::HTTP::Post.new(uri.request_uri)
+        request.set_form_data({"update" => query})
+        request.basic_auth("admin", ENV["ADMIN_PASSWORD"])
+        response = http.request(request) 
+        if response.code != 200
+          puts "PROBLEM: #{response} #{query}"
+        end
+        status_queue = channel.queue("sdbm_status")
+        status_queue.publish({id: message['response_id'], code: response.code, message: response.message}.to_json)
+        #puts "No exception, responses sent."
+      rescue Exception => err
+        #puts "Catching exception HERE #{message} #{err}"
+        status_queue = channel.queue("sdbm_status")
+        status_queue.publish({id: message['response_id'], code: "404", message: err.to_s }.to_json)
+      end     
+    else
+      puts "OTHER: #{message}"
+    end
+=begin    
     lines = body.split("\n").reject { |a| a.to_s.length <= 0 }.map(&:strip)
     subject = lines[0].split(":").last
     if lines[0].include? "DESTROY"
@@ -88,8 +156,9 @@ begin
         end
       end
     end
+=end    
   end
-rescue Interrupt =>
+rescue Interrupt => err
   connection.close
   exit(0)
 end      

@@ -108,6 +108,20 @@ class EntryDate < ActiveRecord::Base
   end
 
   def to_rdf
+    {
+      model_class: "entry_dates",
+      id: id,
+      fields: {
+        observed_date: "'#{observed_date}'",
+        date_normalized_start: "'#{date_normalized_start}'",
+        date_normalized_end: "'#{date_normalized_end}'",
+        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
+        order: "'#{order}'^^xsd:integer",
+        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
+        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
+      }
+    }
+=begin
     %Q(
       sdbm:entry_dates/#{id}
       a       sdbm:entry_dates
@@ -120,6 +134,7 @@ class EntryDate < ActiveRecord::Base
       sdbm:entry_dates_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
       sdbm:entry_dates_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
     )
+=end
   end
 
 end

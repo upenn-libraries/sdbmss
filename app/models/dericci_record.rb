@@ -42,6 +42,22 @@ class DericciRecord < ActiveRecord::Base
   end
 
   def to_rdf
+    {
+      model_class: "dericci_records",
+      id: id,
+      fields: {
+        dates: "'#{dates}'",
+        name: "'#{name}'",
+        place: "'#{place}'",
+        url: "'#{url}'",
+        cards: "'#{cards}'^^xsd:integer",
+        size: "'#{size}'",
+        other_info: "'#{other_info}'",
+        senate_house: "'#{senate_house}'",
+        out_of_scope: "'#{out_of_scope}'^^xsd:boolean"
+      }
+    }
+=begin
     %Q(
       sdbm:dericci_records/#{id}
       a       sdbm:dericci_records
@@ -56,6 +72,7 @@ class DericciRecord < ActiveRecord::Base
       sdbm:dericci_records_senate_house '#{senate_house}'
       sdbm:dericci_records_out_of_scope '#{out_of_scope}'^^xsd:boolean
     )
+=end
     #  rdfs:label "dericci_links #1" ;
     
   end

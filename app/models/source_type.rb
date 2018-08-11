@@ -58,6 +58,17 @@ class SourceType < ActiveRecord::Base
 
   # SourceType records should rarely, if ever, change
   def to_rdf
+    {
+      model_class: "source_types",
+      id: id,
+      fields: {
+        name: "'#{name}'",
+        display_name: "'#{display_name}'",
+        entries_transaction_field: "'#{entries_transaction_field}'^^xsd:boolean",
+        entries_have_institution_field: "'#{entries_have_institution_field}'^^xsd:boolean"
+      }
+    }
+=begin
     %Q(
       sdbm:source_types/#{id}
       a       sdbm:source_types
@@ -67,6 +78,7 @@ class SourceType < ActiveRecord::Base
       sdbm:source_types_entries_transaction_field '#{entries_transaction_field}'^^xsd:boolean
       sdbm:source_types_entries_have_institution_field '#{entries_have_institution_field}'^^xsd:boolean
     )
+=end
   end
 
 end

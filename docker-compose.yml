@@ -52,6 +52,8 @@ services:
       - db
       - solr
       - rabbitmq
+    depends_on:
+      - "rabbitmq"
     volumes:
       - .:/usr/src/app
       - sdbm_assets:/usr/src/app/public/assets
@@ -60,6 +62,7 @@ services:
     image: sdbm:latest
     depends_on:
       - "db"
+      - "rabbitmq"
     links:
       - db
       - solr
@@ -83,7 +86,7 @@ services:
     restart: always
 #      - JVM_ARGS=-Xmx3g   # raises memory limits to allow large file to be uploaded
   interface:
-    build: ./jena
+    build: ./interface
     command: ruby interface.rb
     cpu_shares: 20
     logging:

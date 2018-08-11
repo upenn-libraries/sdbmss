@@ -10,7 +10,7 @@ module TellBunny
     after_commit :update_bunny
     # after destroy
     after_destroy :destroy_bunny
-
+    has_many :jena_responses, as: :record
   end
 
   def to_rdf
@@ -21,7 +21,7 @@ module TellBunny
   
   #private
 
-  def update_bunny
+  def update_bunny(jena_response_id = nil)
     if self.persisted?
       #connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
       begin
@@ -32,17 +32,31 @@ module TellBunny
 
         q = ch.queue("sdbm")
 
-        q.publish("#{self.to_rdf}")
+        # create the latest response record UNLESS this is a 'retry'
+        if jena_response_id.present? && (jena_response = JenaResponse.find(jena_response_id))
+          # nothing
+        else
+          # delete old response records:
+          self.jena_responses.destroy_all
+          jena_response = JenaResponse.create!(record: self, status: 1)
+        end
+
+        message = self.to_rdf
+        message[:action] = "update"
+        message[:response_id] = jena_response.id
+        q.publish(message.to_json)
 
         ch.close()
 
       rescue Bunny::TCPConnectionFailed => e
         puts "(Update) - Connection to RabbitMQ server failed"
+        self.jena_responses.destroy_all        
+        JenaResponse.create!(record: self, status: 0, message: "404: Failed to connect from Rails to RabbitMQ: #{e}")
       end
     end
   end
 
-  def destroy_bunny
+  def destroy_bunny(jena_response_id = nil)
     begin
       puts "AFTER DESTROY"
       #connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
@@ -52,12 +66,26 @@ module TellBunny
 
       q = ch.queue("sdbm")
 
-      q.publish("DESTROY sdbm:#{self.class.name.pluralize.underscore}/#{self.id}")
+      # create the latest response record UNLESS this is a 'retry'
+      if jena_response_id.present? && (jena_response = JenaResponse.find(jena_response_id))
+        # nothing
+      else
+        # delete old response records:
+        self.jena_responses.destroy_all
+        jena_response = JenaResponse.create!(record: self, status: 1)
+      end
+
+      message = self.to_rdf
+      message[:response_id] = jena_response.id
+      message[:action] = "destroy"
+      q.publish(message.to_json)
 
       ch.close()
 
     rescue Bunny::TCPConnectionFailed => e
       puts "(Destroy) - Connection to RabbitMQ server failed"
+      self.jena_responses.destroy_all
+      JenaResponse.create!(record: self, status: 0, message: "404: Failed to connect from Rails to RabbitMQ: #{e}")
     end
   end
 end

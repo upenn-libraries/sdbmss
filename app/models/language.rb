@@ -84,12 +84,21 @@ class Language < ActiveRecord::Base
   end
 
   def to_rdf
+    {
+      model_class: "languages",
+      id: id,
+      fields: {
+        name: "'#{name}'"
+      }
+    }
+=begin
     %Q(
       sdbm:languages/#{id}
       a       sdbm:languages
       sdbm:languages_id #{id}
       sdbm:languages_name '#{name}'
     )
+=end
   end
 
 end

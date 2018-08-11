@@ -25,6 +25,17 @@ class NamePlace < ActiveRecord::Base
   end
 
   def to_rdf
+    {
+      model_class: "name_places",
+      id: id,
+      fields: {
+        place_id: "<https://sdbm.library.upenn.edu/places/#{place_id}>",
+        name_id: "<https://sdbm.library.upenn.edu/names/#{name_id}>",
+        notbefore: "'#{notbefore}'",
+        notafter: "'#{notafter}'"
+      }
+    }
+=begin
     %Q(
       sdbm:name_places/#{id}
       a       sdbm:name_places
@@ -34,6 +45,7 @@ class NamePlace < ActiveRecord::Base
       sdbm:name_places_notbefore '#{notbefore}'
       sdbm:name_places_notafter '#{notafter}'
     )
+=end
   end
 
 end

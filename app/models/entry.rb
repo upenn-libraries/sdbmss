@@ -1142,6 +1142,35 @@ class Entry < ActiveRecord::Base
   end
 
   def to_rdf
+    {
+      model_class: "entries",
+      id: id,
+      fields: {
+        catalog_or_lot_number: "'#{catalog_or_lot_number}'",
+        folios: "'#{folios}'^^xsd:integer",
+        num_columns: "'#{num_columns}'^^xsd:integer",
+        num_lines: "'#{num_lines}'^^xsd:integer",
+        height: "'#{height}'^^xsd:integer",
+        width: "'#{width}'^^xsd:integer",
+        alt_size: "'#{alt_size}'",
+        manuscript_binding: "'#{manuscript_binding}'",
+        other_info: "'#{other_info}'",
+        manuscript_link: "'#{manuscript_link}'",
+        miniatures_fullpage: "'#{miniatures_fullpage}'^^xsd:integer",
+        miniatures_large: "'#{miniatures_large}'^^xsd:integer",
+        miniatures_small: "'#{miniatures_small}'^^xsd:integer",
+        miniatures_unspec_size: "'#{miniatures_unspec_size}'^^xsd:integer",
+        initials_historiated: "'#{initials_historiated}'^^xsd:integer",
+        initials_decorated: "'#{initials_decorated}'^^xsd:integer",
+        transaction_type: "'#{transaction_type}'",
+        deprecated: "'#{deprecated}'^^xsd:boolean",
+        unverified_legacy_record: "'#{unverified_legacy_record}'^^xsd:boolean",
+        institution_id: "<https://sdbm.library.upenn.edu/names/#{institution_id}>",
+        superceded_by_id: "<https://sdbm.library.upenn.edu/entries/#{superceded_by_id}>",
+        source_id: "<https://sdbm.library.upenn.edu/sources/#{source_id}>"
+      }
+    }
+=begin
     %Q(
       sdbm:entries/#{id}
       a       sdbm:entries
@@ -1168,6 +1197,7 @@ class Entry < ActiveRecord::Base
       sdbm:entries_superceded_by_id <https://sdbm.library.upenn.edu/entries/#{superceded_by_id}>
       sdbm:entries_source_id <https://sdbm.library.upenn.edu/sources/#{source_id}>
     )
+=end
   end
 
   private
