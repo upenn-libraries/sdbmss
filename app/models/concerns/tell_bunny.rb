@@ -49,9 +49,12 @@ module TellBunny
         ch.close()
 
       rescue Bunny::TCPConnectionFailed => e
-        puts "(Update) - Connection to RabbitMQ server failed"
+        #puts "(Update) - Connection to RabbitMQ server failed"
         self.jena_responses.destroy_all        
         JenaResponse.create!(record: self, status: 0, message: "404: Failed to connect from Rails to RabbitMQ: #{e}")
+      #rescue StandardError => e
+      #  self.jena_responses.destroy_all
+      #  JenaResponse.create!(record: self, status: 0, message: "OTHER: Unknown exception: #{e}")
       end
     end
   end

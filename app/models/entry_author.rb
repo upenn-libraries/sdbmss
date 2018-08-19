@@ -31,7 +31,7 @@ class EntryAuthor < ActiveRecord::Base
   end
 
   after_save do |entry_author|
-    if entry_author.author
+    if entry_author.author && !entry_author.author.is_author
       entry_author.author.is_author = true
       entry_author.author.save!
     end

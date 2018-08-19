@@ -46,7 +46,7 @@ class EntryArtist < ActiveRecord::Base
   end
 
   after_save do |entry_artist|
-    if entry_artist.artist
+    if entry_artist.artist && !entry_artist.artist.is_artist
       entry_artist.artist.is_artist = true
       entry_artist.artist.save!
     end

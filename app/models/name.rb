@@ -104,7 +104,6 @@ class Name < ActiveRecord::Base
     self.name = self.name.mb_chars.normalize    
   end
 
-
   searchable :unless => :deleted do
     string :created_by do
       created_by ? created_by.username : ""
@@ -497,7 +496,7 @@ class Name < ActiveRecord::Base
         subtype: "'#{subtype}'",
         startdate: "'#{startdate}'",
         enddate: "'#{enddate}'",
-        other_info: "'#{other_info}'",
+        other_info: "'#{other_info.gsub("'"){"\\'"}}'",
         deleted: "'#{deleted}'^^xsd:boolean"
       }
     }

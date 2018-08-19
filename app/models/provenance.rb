@@ -76,7 +76,7 @@ class Provenance < ActiveRecord::Base
   # approximate date string.
   
   after_save do |agent|
-    if agent.provenance_agent
+    if agent.provenance_agent && !agent.provenance_agent.is_provenance_agent
       agent.provenance_agent.is_provenance_agent = true
       agent.provenance_agent.save!
     end

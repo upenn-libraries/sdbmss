@@ -20,7 +20,7 @@ class EntryScribe < ActiveRecord::Base
 
 
   after_save do |entry_scribe|
-    if entry_scribe.scribe
+    if entry_scribe.scribe && !entry_scribe.scribe.is_scribe
       entry_scribe.scribe.is_scribe = true
       entry_scribe.scribe.save!
     end
