@@ -496,7 +496,7 @@ class Name < ActiveRecord::Base
         subtype: "'#{subtype}'",
         startdate: "'#{startdate}'",
         enddate: "'#{enddate}'",
-        other_info: "'#{other_info.gsub("'"){"\\'"}}'",
+        other_info: "'#{other_info}'",
         deleted: "'#{deleted}'^^xsd:boolean"
       }
     }
