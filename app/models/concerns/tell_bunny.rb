@@ -33,8 +33,9 @@ module TellBunny
         q = ch.queue("sdbm")
 
         # create the latest response record UNLESS this is a 'retry'
-        if jena_response_id.present? && (jena_response = JenaResponse.find(jena_response_id))
-          # nothing
+
+        if jena_response_id.present? && JenaResponse.exists?(jena_response_id)
+          jena_response = JenaResponse.find(jena_response_id)
         else
           # delete old response records:
           self.jena_responses.destroy_all
@@ -70,8 +71,8 @@ module TellBunny
       q = ch.queue("sdbm")
 
       # create the latest response record UNLESS this is a 'retry'
-      if jena_response_id.present? && (jena_response = JenaResponse.find(jena_response_id))
-        # nothing
+      if jena_response_id.present? && JenaResponse.exists?(jena_response_id)
+        jena_response = JenaResponse.find(jena_response_id)
       else
         # delete old response records:
         self.jena_responses.destroy_all
