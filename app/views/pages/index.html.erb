@@ -27,6 +27,10 @@
     <% @pages.where(category: 'partial').order('name asc').each do |page| %>
       <%= render partial: 'page', locals: {page: page} %>
     <% end %> 
+    <h3>Sparql Sample Queries</h3>
+    <% @pages.where(category: 'sparql').order('name asc').each do |page| %>
+      <%= render partial: 'page', locals: {page: page} %>
+    <% end %> 
     <h3>'About' Pages</h3>
     <% @pages.where(category: 'about').order('name asc').each do |page| %>
       <%= render partial: 'page', locals: {page: page} %>

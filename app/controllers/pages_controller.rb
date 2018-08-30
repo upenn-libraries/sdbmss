@@ -116,7 +116,7 @@ class PagesController < ApplicationController
   end
 
   def sanitize(original)
-    ActionController::Base.helpers.sanitize original, tags: %w(figcaption figure img pre p table td tr th tbody li ul ol span div code b i br strong em a legend h1 h2 h3 h4 h5), attributes: %w(src href class style target)
+    ActionController::Base.helpers.sanitize original, tags: %w(figcaption figure img pre p table td tr th tbody li ul ol span div code b i br strong em a legend h1 h2 h3 h4 h5 textarea), attributes: %w(src href class style target)
   end
 
 end

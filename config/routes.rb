@@ -2,6 +2,7 @@ Rails.application.routes.draw do
 
   mount Thredded::Engine => '/forum'
 
+  get "/sparql-space", :to => "sparql#index"
   
   root :to => "catalog#index"
 

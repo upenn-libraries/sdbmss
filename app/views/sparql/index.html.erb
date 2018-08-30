@@ -1,0 +1,122 @@
+<% content_for :head do %>
+  <%= stylesheet_link_tag "extras", media: "all" %>
+  <%= javascript_include_tag "extras" %>
+		
+		<script>
+			var myCodeMirror;
+			$(document).ready(function () {
+				myCodeMirror = CodeMirror.fromTextArea(document.getElementById("editor"), {
+				  mode:  "sparql",
+			    lineNumbers: true
+				});
+		    myCodeMirror.setSize("calc(100% - 10px)", "154px");
+
+				$("textarea.sample").click(function () {
+					myCodeMirror.setValue($(this).text());
+				});
+
+				$("#query-form").submit(function (e, result) {
+					e.preventDefault();
+					$("#results").empty();
+					var querystring = $("#editor").val() + "\nLIMIT " + $("#limit").val();
+					$.post("/sparql/sdbm/query", {query: querystring}).done( function (data) {
+						console.log(data);
+						var table = $("<table></table>");
+						var header = $("<tr></tr>");
+						for (var i = 0; i < data.head.vars.length; i++) {
+							header.append($("<th>" + data.head.vars[i] + "</th>"));
+						}
+						table.append(header);
+						for (var i = 0; i < data.results.bindings.length; i++) {
+							var row = $("<tr></tr>)");
+							for (var j = 0; j < data.head.vars.length; j++) {
+								row.append($("<td>" + data.results.bindings[i][data.head.vars[j]].value + "</td>"));
+							}
+							table.append(row);
+						}
+						$("#results").append(table);
+					});
+				});
+			});
+		</script>
+	  <style>
+		  body {
+		  	margin: 0px;
+		  }
+	  	textarea {
+	  		width: calc(100% - 20px);
+	  	}
+	  	.sparql-wrapper {
+	  		height: calc(100vh - 120px);
+	  		overflow: hidden;
+	  	}
+	  	.sparql-navigation, .sparql-content {
+	  		position: relative;
+	  		overflow-y: scroll;
+	  		overflow-x: hidden;
+	  		float: right;
+	  	}
+	  	.contents {
+	  		width: 100%;
+	  		padding: 10px;
+	  		overflow: hidden;
+	  	}
+	  	.sparql-content, .sparql-query {
+	  		width: 75%;
+	  	}
+	  	.sparql-content {
+	  		height: calc(100% - 200px);
+	  	}
+	  	.sparql-query {
+	  		height: 199px;
+	  		border-bottom: 1px solid black;
+	  	}
+	  	.sparql-navigation {
+				width: calc(25% - 11px);
+				height: 100%;
+				border-left: 1px solid black;
+				padding-left: 10px;
+	  	}
+	  </style>
+<% end %>
+	<div class="sparql-wrapper">
+		<div class="sparql-navigation">
+			<ul class="list-unstyled">
+				<% @pages.each do |page| %>
+					<li><a href="#<%= page.name.underscore %>"><%= page.name %></a></li>
+				<% end %>
+			</ul>		
+		</div>
+		<div class="sparql-query">
+			<form id="query-form" class="form form-inline" action="https://sdbm.library.upenn.edu/sparql/sdbm/query" method="post">	
+			<textarea name="query" id="editor">
+prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+prefix sdbm: <https://sdbm.library.upenn.edu/>
+SELECT ?subject ?predicate ?object
+WHERE {
+  BIND (<https://sdbm.library.upenn.edu/entries/1> as ?subject) .
+  ?subject ?predicate ?object .
+}
+			</textarea>
+			<label for="limit" class="control-label">Limit
+				<select name="limit" id="limit" class="form-control">
+					<option value="25" selected="true">25</option>
+					<option value="50">50</option>
+					<option value="100">100</option>
+			</select>
+			</label>
+			<input type="submit" class="form-control">
+			</form>
+		</div>
+		<div class="sparql-content">		
+			<div id="results"></div>
+			<div class="contents">
+				<% @pages.each do |page| %>
+					<div id="<%= page.name.underscore %>">
+						<h3><%= page.name %></h3>
+		        <%= render partial: "pages/partial", locals: {page_name: page.name} %>
+					</div>
+				<% end %>				
+			</div>
+		</div>
+	</div>
