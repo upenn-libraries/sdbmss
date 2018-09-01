@@ -1,4 +1,5 @@
 class Page < ActiveRecord::Base
+
   validates :name, uniqueness: true, presence: true
   validates :filename, uniqueness: true, presence: true
 
@@ -30,7 +31,11 @@ class Page < ActiveRecord::Base
 
   def contents
     File.open(Rails.root.join('public', "#{location}", filename), 'r') do |file|
-      @filecontents = sanitize(file.read)
+      if category == "sparql"
+        @filecontents = file.read.html_safe
+      else
+        @filecontents = sanitize(file.read)
+      end
     end
     @filecontents
   end

@@ -2,6 +2,8 @@ require 'uri'
 
 class PagesController < ApplicationController
 
+  include SanitizeHelper
+
   load_and_authorize_resource :only => [:index, :edit, :create, :update, :destroy]
 
   def index
@@ -14,7 +16,11 @@ class PagesController < ApplicationController
       p = Page.new(filename: uploaded_io.original_filename, name: page_params[:name], category: page_params[:category])
       if uploaded_io.content_type == "text/html" && p.ext == "html"
         File.open(Rails.root.join('public', "#{p.location}", uploaded_io.original_filename), 'wb') do |file|
-          file.write(sanitize uploaded_io.read)
+          if p.category == "sparql"
+            file.write(uploaded_io.read)
+          else
+            file.write(sanitize uploaded_io.read)
+          end
         end
         p.save
         if p.errors.count > 0
@@ -45,7 +51,11 @@ class PagesController < ApplicationController
     else
       @filecontents = nil
       File.open(Rails.root.join('public', "#{@page.location}", @page.filename), 'r') do |file|
-        @filecontents = sanitize(file.read)
+        if @page.category == "sparql"
+          @filecontents = file.read
+        else          
+          @filecontents = sanitize(file.read)
+        end
       end 
     end
   end
@@ -56,7 +66,11 @@ class PagesController < ApplicationController
     if @page.ext == "pdf"
     else
       File.open(Rails.root.join('public', "#{@page.location}", @page.filename), 'r') do |file|
-        @filecontents = sanitize(file.read)
+        if @page.category == "sparql"
+          @filecontents = file.read
+        else                  
+          @filecontents = sanitize(file.read)
+        end
       end
     end
   end
@@ -66,7 +80,11 @@ class PagesController < ApplicationController
     if (uploaded_io = page_params[:filename])
       if uploaded_io.content_type == "text/html" && @page.ext == "html"
         File.open(Rails.root.join('public', "#{@page.location}", uploaded_io.original_filename), 'wb') do |file|
-          file.write(sanitize uploaded_io.read)
+          if @page.category == "sparql"
+            file.write(uploaded_io.read)
+          else                    
+            file.write(sanitize uploaded_io.read)
+          end
         end
       elsif uploaded_io.content_type == "application/pdf" && @page.ext == "pdf"
         File.open(Rails.root.join('public', "#{@page.location}", uploaded_io.original_filename), 'wb') do |file|
@@ -78,7 +96,11 @@ class PagesController < ApplicationController
       @page.update(filename: uploaded_io.original_filename, name: page_params[:name])
     elsif params[:contents]
       File.open(Rails.root.join('public', "#{@page.location}", @page.filename), 'wb') do |file|
-        file.write(sanitize params[:contents])
+        if @page.category == "sparql"
+          file.write(params[:contents])
+        else                              
+          file.write(sanitize params[:contents])
+        end
       end
       @page.update(name: page_params[:name])
     else

@@ -9,7 +9,7 @@
 				  mode:  "sparql",
 			    lineNumbers: true
 				});
-		    myCodeMirror.setSize("calc(100% - 10px)", "154px");
+		    myCodeMirror.setSize("calc(100% - 24px)", "154px");
 
 				$("textarea.sample").click(function () {
 					myCodeMirror.setValue($(this).text());
@@ -19,6 +19,7 @@
 					e.preventDefault();
 					$("#results").empty();
 					var querystring = $("#editor").val() + "\nLIMIT " + $("#limit").val();
+					console.log("querystring", querystring);
 					$.post("/sparql/sdbm/query", {query: querystring}).done( function (data) {
 						console.log(data);
 						var table = $("<table></table>");
@@ -90,11 +91,9 @@
 		<div class="sparql-query">
 			<form id="query-form" class="form form-inline" action="https://sdbm.library.upenn.edu/sparql/sdbm/query" method="post">	
 			<textarea name="query" id="editor">
-prefix xsd: <http://www.w3.org/2001/XMLSchema#>
-prefix sdbm: <https://sdbm.library.upenn.edu/>
 SELECT ?subject ?predicate ?object
 WHERE {
-  BIND (<https://sdbm.library.upenn.edu/entries/1> as ?subject) .
+	?subject sdbm:entries_id 1 .
   ?subject ?predicate ?object .
 }
 			</textarea>
