@@ -3,39 +3,73 @@
   <%= javascript_include_tag "extras" %>
 		
 		<script>
-			var myCodeMirror;
+			var editor, results;
 			$(document).ready(function () {
-				myCodeMirror = CodeMirror.fromTextArea(document.getElementById("editor"), {
+				editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
 				  mode:  "sparql",
 			    lineNumbers: true
 				});
-		    myCodeMirror.setSize("calc(100% - 24px)", "154px");
+		    editor.setSize("calc(100% - 24px)", "154px");
 
 				$("textarea.sample").click(function () {
-					myCodeMirror.setValue($(this).text());
+					editor.setValue($(this).text());
 				});
 
 				$("#query-form").submit(function (e, result) {
 					e.preventDefault();
-					$("#results").empty();
+					$("#Results .modal-body").empty();
 					var querystring = $("#editor").val() + "\nLIMIT " + $("#limit").val();
-					console.log("querystring", querystring);
+					var csv = "";
 					$.post("/sparql/sdbm/query", {query: querystring}).done( function (data) {
-						console.log(data);
+						//console.log(querystring, data);
+						results = data;
 						var table = $("<table></table>");
+						table.addClass('table');
+						table.addClass('table-responsive');
+						table.addClass('table-striped');
 						var header = $("<tr></tr>");
 						for (var i = 0; i < data.head.vars.length; i++) {
-							header.append($("<th>" + data.head.vars[i] + "</th>"));
+							header.append($("<th>" + data.head.vars[i] + "</th>"));							
 						}
+						csv += data.head.vars.join(",");
 						table.append(header);
 						for (var i = 0; i < data.results.bindings.length; i++) {
 							var row = $("<tr></tr>)");
+							csv += "\n";
 							for (var j = 0; j < data.head.vars.length; j++) {
-								row.append($("<td>" + data.results.bindings[i][data.head.vars[j]].value + "</td>"));
+								var value = data.results.bindings[i][data.head.vars[j]].value;
+								if (value.indexOf("http") != -1) {
+									// fix me: format with prefixes here
+									value = "<a href='" + value + "' target='_blank'>" + value + "</a>";									
+								}
+								row.append($("<td>" + value + "</td>"));
+								if (data.results.bindings[i][data.head.vars[j]].value != undefined) {
+									csv += data.results.bindings[i][data.head.vars[j]].value;									
+								} else {
+									csv += "";
+								}
+								if (j < 2) {
+									csv += ",";
+								}
 							}
 							table.append(row);
 						}
-						$("#results").append(table);
+
+						// create download buttons
+						var json = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+						$("#Results #download-json").attr({
+							href: "data:" + json,
+							download: "results.json"
+						});
+
+						csv = "data:text/csv;charset=utf-8," + encodeURIComponent(csv);
+						$("#Results #download-csv").attr({
+							href: "data:" + csv,
+							download: "results.csv"
+						});
+
+						$("#Results .modal-body").append(table);
+						$("#Results").modal();
 					});
 				});
 			});
@@ -51,7 +85,7 @@
 	  		height: calc(100vh - 120px);
 	  		overflow: hidden;
 	  	}
-	  	.sparql-navigation, .sparql-content {
+	  	.sparql-navigation, .sparql-content, .sparql-query {
 	  		position: relative;
 	  		overflow-y: scroll;
 	  		overflow-x: hidden;
@@ -70,23 +104,32 @@
 	  	}
 	  	.sparql-query {
 	  		height: 199px;
-	  		border-bottom: 1px solid black;
+	  		border-bottom: 1px solid #374f73;
 	  	}
 	  	.sparql-navigation {
 				width: calc(25% - 11px);
 				height: 100%;
-				border-left: 1px solid black;
+				border-left: 1px solid #374f73;
 				padding-left: 10px;
 	  	}
+	  	.edit-page {
+	  		position: relative;
+	  		right: 0;
+	  		bottom: 0;
+	  	}
+	  	textarea:hover {
+		    background: #eee1be;
+			}
 	  </style>
 <% end %>
 	<div class="sparql-wrapper">
 		<div class="sparql-navigation">
-			<ul class="list-unstyled">
+			<ol class="">
+				<li><strong><a href="#sparql-intro">Introduction</a></strong></li>			
 				<% @pages.each do |page| %>
 					<li><a href="#<%= page.name.underscore %>"><%= page.name %></a></li>
 				<% end %>
-			</ul>		
+			</ol>		
 		</div>
 		<div class="sparql-query">
 			<form id="query-form" class="form form-inline" action="https://sdbm.library.upenn.edu/sparql/sdbm/query" method="post">	
@@ -108,8 +151,10 @@ WHERE {
 			</form>
 		</div>
 		<div class="sparql-content">		
-			<div id="results"></div>
 			<div class="contents">
+				<div id="sparql-intro">					
+	        <%= render partial: "pages/partial", locals: {page_name: "Sparql Intro"} %>
+				</div>
 				<% @pages.each do |page| %>
 					<div id="<%= page.name.underscore %>">
 						<h3><%= page.name %></h3>
@@ -119,3 +164,25 @@ WHERE {
 			</div>
 		</div>
 	</div>
+
+<div class="modal fade" id="Results">
+  <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header text-center">
+              <span class="h3">Query Results</span>
+              <a href="#Results" id="dismiss-welcome" data-dismiss="modal" data-target="#Results" class='pull-right' style="color: #333;"><span class="glyphicon glyphicon-remove"></span></a>
+          </div>
+          <div class="modal-body">
+          </div>
+          <div class="modal-footer">
+          	Download as: 
+          	<a href="" class="btn btn-default btn-sm" id="download-json">
+          		JSON
+          	</a>
+          	<a href="" class="btn btn-default btn-sm" id="download-csv">
+	          	CSV
+	          </a>
+          </div>
+      </div>
+  </div>
+</div>

@@ -21,4 +21,4 @@
 //= require sdbmManageRecords
 //= require sdbmApp
 //= require codemirror
-//= require sparql
+//= require codemirror/modes/sparql
