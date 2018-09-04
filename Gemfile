@@ -109,6 +109,8 @@ gem 'whenever', :require => false
 
 gem 'rake', '< 11.0'
 
+gem 'codemirror-rails'
+
 # bundle exec rake doc:rails generates the Rails API under doc/api.
 group :doc do
   gem 'sdoc', '~> 0.4.0'
