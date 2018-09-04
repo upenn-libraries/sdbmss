@@ -307,7 +307,7 @@ class Source < ActiveRecord::Base
     when SourceType::OTHER_PUBLISHED
       disallowed_fields = []
     when SourceType::UNPUBLISHED
-      disallowed_fields = ["date"]
+      disallowed_fields = []
     when SourceType::PROVENANCE_OBSERVATION
       disallowed_fields = []
     end

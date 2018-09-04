@@ -94,7 +94,7 @@
 
     <div class="source-fields-container" ng-show="showFields()">
 
-        <div class="form-group row" ng-show="source.source_type.name != 'online' && source.source_type.name != 'unpublished'">
+        <div class="form-group row" ng-show="source.source_type.name != 'online'">
             <label for="source_date" class="col-sm-2 control-label">
                 <span sdbm-tooltip="source_date">
                     {{ source.source_type.name == 'observation' ? "Observation Date" : "Source Date" }} 
