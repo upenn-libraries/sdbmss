@@ -24,7 +24,8 @@ namespace :jena do
         #queue.subscribe do |_delivery_info, _properties, body|
         contents = JSON.parse(body)
         puts "Parsed contents: #{contents}"
-        if (jena_response = JenaResponse.find(contents['id']))
+        if JenaResponse.exists? contents['id']
+          jena_response = JenaResponse.find(contents['id'])
           if contents['code'] == '200'
               puts "Jena Update was Successful!"
               # success, delete
