@@ -427,6 +427,7 @@
 
     <field name="approved" stored="true" type="boolean" multiValued="false" indexed="true"/>    
     <field name="deprecated" stored="true" type="boolean" multiValued="false" indexed="true"/>
+<!--    <field name="unverified_legacy_record" stored="true" type="boolean" multiValued="false" indexed="true"/>-->
     <field name="draft" stored="true" type="boolean" multiValued="false" indexed="true"/>
     <field name="confirmed" stored="true" type="boolean" multiValued="false" indexed="true"/>    
 
