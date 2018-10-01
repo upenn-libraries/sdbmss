@@ -627,12 +627,12 @@ function relation (type) {
                     title: 'Deprecated',
                     sdbmssSortField: 'deprecated'
                 },
-                // {
-                //     sdbmssMinWidth: "130px",
-                //     sdbmssMaxWidth: "130px",
-                //     title: 'Legacy',
-                //     sdbmssSortField: 'unverified_legacy_record'
-                // },
+                {
+                    sdbmssMinWidth: "130px",
+                    sdbmssMaxWidth: "130px",
+                    title: 'Legacy',
+                    sdbmssSortField: 'unverified_legacy_record'
+                },
                 {
                     sdbmssMinWidth: "130px",
                     sdbmssMaxWidth: "130px",
@@ -762,7 +762,7 @@ function relation (type) {
                             result.updated_by,
                             result.approved,
                             result.deprecated,
-//                            result.unverified_legacy_record,
+                            result.unverified_legacy_record,
                             result.superceded_by_id,
                             result.draft,
                             result.can_edit,

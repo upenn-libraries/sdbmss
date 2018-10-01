@@ -475,7 +475,7 @@ class Entry < ActiveRecord::Base
       updated_by: updated_by ? updated_by.username : "",
       approved: approved,
       deprecated: deprecated,
-#      unverified_legacy_record: unverified_legacy_record,
+      unverified_legacy_record: unverified_legacy_record,
       superceded_by_id: superceded_by_id,
       draft: draft
     }
@@ -915,7 +915,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :updated_by, :stored => true) { updated_by ? updated_by.username : "" }
     define_field(:boolean, :approved, :stored => true) { approved }
     define_field(:boolean, :deprecated, :stored => true) { deprecated }
-    #define_field(:boolean, :unverified_legacy_record, :stored => true) { unverified_legacy_record }
+    define_field(:boolean, :unverified_legacy_record, :stored => true) { unverified_legacy_record }
     define_field(:boolean, :draft, :stored => true) { draft }
 
     #### Provenance
@@ -1092,7 +1092,7 @@ class Entry < ActiveRecord::Base
       ["Created By", "created_by"], 
       ["Approved", "approved"],
       ["Deprecated", "deprecated"],
-      #["Unverified Legacy Record", "unverified_legacy_record"],
+      ["Unverified Legacy Record", "unverified_legacy_record"],
       ["Draft", "draft"]
     ]
   end
@@ -1167,7 +1167,7 @@ class Entry < ActiveRecord::Base
         initials_decorated: "'#{initials_decorated}'^^xsd:integer",
         transaction_type: "'#{transaction_type}'",
         deprecated: "'#{deprecated}'^^xsd:boolean",
-#        unverified_legacy_record: "'#{unverified_legacy_record}'^^xsd:boolean",
+        unverified_legacy_record: "'#{unverified_legacy_record}'^^xsd:boolean",
         institution_id: "<https://sdbm.library.upenn.edu/names/#{institution_id}>",
         superceded_by_id: "<https://sdbm.library.upenn.edu/entries/#{superceded_by_id}>",
         source_id: "<https://sdbm.library.upenn.edu/sources/#{source_id}>"
