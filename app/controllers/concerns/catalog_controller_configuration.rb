@@ -378,7 +378,7 @@ module CatalogControllerConfiguration
 
       config.add_search_field 'unverified_legacy_record' do |field|
         field.include_in_simple_select = false
-        field.include_in_advanced_search = false
+        field.include_in_advanced_search = true
         field.is_numeric_field = false
         field.solr_local_parameters = { :qf => 'unverified_legacy_record' }
       end
