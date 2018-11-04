@@ -256,7 +256,7 @@ module SolrSearchable
         if params[:q].blank?
           # nothing here...
         elsif not params[:q].include? s_op
-          params[:q] = '(_query_:"{!edismax qf=\'' + params[:qf] + '\'}' + params[:q] + '")'
+          params[:q] = '(_query_:"{!edismax qf=\'' + params[:qf] + '\'}' + params[:q].gsub('"', '\"') + '")'
           params.delete(:qf)
         end
         if params[:q].blank?

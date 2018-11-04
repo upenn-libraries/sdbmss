@@ -3,7 +3,6 @@ require 'net/http'
 require 'uri'
 require 'json'
 
-#HOST = "165.123.105.243"
 HOST = 'rabbitmq'
 
 attempts = 0
@@ -40,10 +39,10 @@ begin
   queue.subscribe(block: true) do |_delivery_info, _properties, body|
     #puts " [x] Received: #{body}, #{_delivery_info}, #{_properties}"
     # turn RDF into queries...
-    puts "Receieved message."
+    # puts "Receieved message."
     message = JSON.parse(body)
     if message['action'] == "destroy"
-      puts "destroy!!"
+      # puts "destroy!!"
       query = %Q(
         PREFIX sdbm: <https://sdbm.library.upenn.edu/>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
@@ -70,7 +69,7 @@ begin
         status_queue.publish({id: message['response_id'], code: "404", message: err.to_s }.to_json)
       end
     elsif message['action'] == "update"
-      puts "update"
+      # puts "update"
       query = %Q(
         PREFIX sdbm: <https://sdbm.library.upenn.edu/>        
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>

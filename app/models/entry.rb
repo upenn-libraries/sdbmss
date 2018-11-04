@@ -632,7 +632,7 @@ class Entry < ActiveRecord::Base
     define_field(:text, :source_search, :stored => true) do
       source.display_value
     end
-    define_field(:string, :source_title, :stored => true) do
+    define_field(:text, :source_title, :stored => true) do
       source.title
     end
 
@@ -1101,6 +1101,7 @@ class Entry < ActiveRecord::Base
     [
       ["All Fields", "complete_entry"], 
       ["Source", "source_search"],  
+      ["Source Title", "source_title"],  
       ["Source Date", "source_date_search"],
       ["Catalog or Lot #", "catalog_or_lot_number_search"],
       ["Institution", "institution_search"], 

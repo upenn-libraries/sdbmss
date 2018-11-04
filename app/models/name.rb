@@ -117,7 +117,7 @@ class Name < ActiveRecord::Base
     text :updated_by do
       updated_by ? updated_by.username: ""
     end
-    text :other_info
+    text :other_info, :as => :other_info_text_pre
     string :other_info
     integer :id
     text :name, :more_like_this => true do

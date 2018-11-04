@@ -57,7 +57,6 @@
       <analyzer type="index">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
-        <filter class="solr.EdgeNGramFilterFactory" minGramSize="2" maxGramSize="10"/>
       </analyzer>
       <analyzer type="query">
         <tokenizer class="solr.WhitespaceTokenizerFactory"/>
@@ -182,7 +181,6 @@
     <!-- *** This field is used by Sunspot! *** -->
     <field name="lng" stored="true" type="tdouble" multiValued="false" indexed="true"/>
     <!-- *** Also Custom dynamic field for substringsearching! -->
-    <dynamicField name="*_textp" stored="false" type="text_pre" multiValued="true" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
     <dynamicField name="random_*" stored="false" type="rand" multiValued="false" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
@@ -192,6 +190,9 @@
     <!-- *** This dynamicField is used by Sunspot! *** -->
     <dynamicField name="*_texts" stored="true" type="text" multiValued="true" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
+    <dynamicField name="*_text_pre" stored="false" type="text_pre" multiValued="true" indexed="true"/>
+    <dynamicField name="*_text_pres" stored="true" type="text_pre" multiValued="true" indexed="true"/>
+
     <dynamicField name="*_b" stored="false" type="boolean" multiValued="false" indexed="true"/>
     <!-- *** This dynamicField is used by Sunspot! *** -->
     <dynamicField name="*_bm" stored="false" type="boolean" multiValued="true" indexed="true"/>
@@ -328,7 +329,7 @@
     <field name="source_agent" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="source_agent_sort" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="source_search" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="source_title" stored="true" type="string" multiValued="false" indexed="true"/>
+    <field name="source_title" stored="true" type="text_pre" multiValued="false" indexed="true"/>
     <field name="institution" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="institution_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="source_institution" stored="true" type="string" multiValued="true" indexed="true"/>
@@ -354,7 +355,7 @@
     <field name="provenance_composite" stored="true" type="text" indexed="true"/>
     <field name="title" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="title_flat" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="title_search" stored="true" type="text" multiValued="true" indexed="true"/>
+    <field name="title_search" stored="true" type="text_pre" multiValued="true" indexed="true"/>
     <field name="author" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="author_flat" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="author_search" stored="true" type="text" multiValued="true" indexed="true"/>
@@ -408,14 +409,14 @@
     <field name="miniatures_unspec_size_range" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="initials_historiated_range" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="initials_decorated_range" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="binding_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="binding_search" stored="true" type="text_pre" multiValued="false" indexed="true"/>
     <field name="binding" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="comment_search" stored="true" type="text" multiValued="false" indexed="true"/>
 
     <field name="manuscript_link_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="manuscript_link" stored="true" type="string" multiValued="false" indexed="true"/>
 
-    <field name="other_info_search" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="other_info_search" stored="true" type="text_pre" multiValued="false" indexed="true"/>
     <field name="other_info" stored="true" type="string" multiValued="false" indexed="true"/>
 
     <field name="provenance_date" stored="true" type="daterange_full" multiValued="true" indexed="true"/>

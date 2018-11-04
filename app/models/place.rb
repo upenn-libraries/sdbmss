@@ -58,7 +58,7 @@ class Place < ActiveRecord::Base
       updated_by ? updated_by.username: ""
     end
     text :name, :more_like_this => true
-    text :evidence
+    text :evidence, :as => :evidence_text_pre
     string :evidence
     string :name
     integer :id
