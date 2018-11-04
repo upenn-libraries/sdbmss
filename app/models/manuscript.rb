@@ -155,9 +155,9 @@ class Manuscript < ActiveRecord::Base
       model_class: "manuscripts",
       id: id,
       fields: {
-        name: "'#{name}'",
-        location: "'#{location}'",
-        url: "'#{url}'"
+        name: "'''#{name}'''",
+        location: "'''#{location}'''",
+        url: "'''#{url}'''"
       }
     }
 =begin

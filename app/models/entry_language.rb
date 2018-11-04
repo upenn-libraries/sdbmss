@@ -33,7 +33,7 @@ class EntryLanguage < ActiveRecord::Base
       model_class: "entry_languages",
       id: id,
       fields: {
-        observed_name: "'#{observed_name}'",
+        observed_name: "'''#{observed_name}'''",
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
         language_id: "<https://sdbm.library.upenn.edu/languages/#{language_id}>",
         order: "'#{order}'^^xsd:integer",

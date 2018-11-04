@@ -31,8 +31,8 @@ class NamePlace < ActiveRecord::Base
       fields: {
         place_id: "<https://sdbm.library.upenn.edu/places/#{place_id}>",
         name_id: "<https://sdbm.library.upenn.edu/names/#{name_id}>",
-        notbefore: "'#{notbefore}'",
-        notafter: "'#{notafter}'"
+        notbefore: "'''#{notbefore}'''",
+        notafter: "'''#{notafter}'''"
       }
     }
 =begin

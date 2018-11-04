@@ -491,12 +491,12 @@ class Name < ActiveRecord::Base
       model_class: "names",
       id: id,
       fields: {
-        name: "'#{name}'",
-        viaf_id: "'#{viaf_id}'",
-        subtype: "'#{subtype}'",
-        startdate: "'#{startdate}'",
-        enddate: "'#{enddate}'",
-        other_info: "'#{other_info}'",
+        name: "'''#{name}'''",
+        viaf_id: "'''#{viaf_id}'''",
+        subtype: "'''#{subtype}'''",
+        startdate: "'''#{startdate}'''",
+        enddate: "'''#{enddate}'''",
+        other_info: "'''#{other_info}'''",
         deleted: "'#{deleted}'^^xsd:boolean"
       }
     }

@@ -112,9 +112,9 @@ class EntryDate < ActiveRecord::Base
       model_class: "entry_dates",
       id: id,
       fields: {
-        observed_date: "'#{observed_date}'",
-        date_normalized_start: "'#{date_normalized_start}'",
-        date_normalized_end: "'#{date_normalized_end}'",
+        observed_date: "'''#{observed_date}'''",
+        date_normalized_start: "'''#{date_normalized_start}'''",
+        date_normalized_end: "'''#{date_normalized_end}'''",
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
         order: "'#{order}'^^xsd:integer",
         supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",

@@ -425,17 +425,17 @@ map:sources_title a d2rq:PropertyBridge;
       fields: {
         source_type_id: "<https://sdbm.library.upenn.edu/source_types/#{source_type_id}>",
         legacy: "'#{legacy}'^^xsd:boolean",
-        date_accessed: "'#{date_accessed}'",
-        medium: "'#{medium}'",
-        location: "'#{location}'",
-        location_institution: "'#{location_institution}'",
-        status: "'#{status}'",
-        other_info: "'#{other_info}'",
+        date_accessed: "'''#{date_accessed}'''",
+        medium: "'''#{medium}'''",
+        location: "'''#{location}'''",
+        location_institution: "'''#{location_institution}'''",
+        status: "'''#{status}'''",
+        other_info: "'''#{other_info}'''",
         deleted: "'#{deleted}'^^xsd:boolean",
-        author: "'#{author}'",
-        title: "'#{title}'",
-        date: "'#{date}'",
-        link: "'#{link}'"
+        author: "'''#{author}'''",
+        title: "'''#{title}'''",
+        date: "'''#{date}'''",
+        link: "'''#{link}'''"
       }
     }
 =begin

@@ -93,7 +93,7 @@ class EntryManuscript < ActiveRecord::Base
       fields: {
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
         manuscript_id: "<https://sdbm.library.upenn.edu/manuscripts/#{manuscript_id}>",
-        relation_type: "'#{relation_type}'"
+        relation_type: "'''#{relation_type}'''"
       }
     }
 =begin

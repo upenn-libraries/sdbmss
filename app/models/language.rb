@@ -88,7 +88,7 @@ class Language < ActiveRecord::Base
       model_class: "languages",
       id: id,
       fields: {
-        name: "'#{name}'"
+        name: "'''#{name}'''"
       }
     }
 =begin

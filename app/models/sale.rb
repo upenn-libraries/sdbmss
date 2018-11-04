@@ -145,11 +145,11 @@ class Sale < ActiveRecord::Base
       id: id,
       fields: {
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        date: "'#{date}'",
+        date: "'''#{date}'''",
         price: "'#{price}'^^xsd:decimal",
-        currency: "'#{currency}'",
-        other_currency: "'#{other_currency}'",
-        sold: "'#{sold}'"
+        currency: "'''#{currency}'''",
+        other_currency: "'''#{other_currency}'''",
+        sold: "'''#{sold}'''"
       }
     }
 =begin

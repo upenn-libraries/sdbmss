@@ -141,9 +141,9 @@ class Place < ActiveRecord::Base
       model_class: "places",
       id: id,
       fields: {
-        name: "'#{name}'",
-        authority_id: "'#{authority_id}'",
-        authority_source: "'#{authority_source}'",
+        name: "'''#{name}'''",
+        authority_id: "'''#{authority_id}'''",
+        authority_source: "'''#{authority_source}'''",
         parent_id: "<https://sdbm.library.upenn.edu/places/#{parent_id}>",
         latitude: "'#{latitude}'^^xsd:decimal",
         longitude: "'#{longitude}'^^xsd:decimal",
