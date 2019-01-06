@@ -306,7 +306,7 @@
          *_flat = 'flattened' str versions of multi-valued fields, used for sorting
     -->
 
-    <field name="complete_entry" stored="true" type="text" multiValued="false" indexed="true"/>
+    <field name="complete_entry" stored="true" type="text_pre" multiValued="false" indexed="true"/>
     
     <!-- 'entry' is full entry ID (SDBM_xxx) -->
     <field name="entry" stored="true" type="string" indexed="true"/>

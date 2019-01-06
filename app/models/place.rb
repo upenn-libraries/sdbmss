@@ -36,6 +36,11 @@ class Place < ActiveRecord::Base
         errors[:Name] << "Place name is already used by record #{existing_name.public_id} -> '#{existing_name.name}'"
       end
     end
+    if (name_obj.authority_id.present? && name_obj.authority_source.present?)
+      if (existing_names = self.class.where(authority_source: name_obj.authority_source, authority_id: name_obj.authority_id).where.not(id: name_obj.id)).count > 0
+        errors[:Name] << "Place authority ID is already used by record #{existing_names.first.public_id} -> '#{existing_names.first.name}'"
+      end
+    end
     n = name_obj
     while (n = n.parent) do
       if n.id == name_obj.id

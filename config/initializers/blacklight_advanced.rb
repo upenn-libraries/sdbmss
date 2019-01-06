@@ -203,10 +203,18 @@ module BlacklightAdvancedSearch
         values = params.include?("#{field}") ? params["#{field}"].dup : []
         if query.kind_of? Array
           query.each do |q|
-            queries << process_query_option(field, values.shift, ParsingNesting::Tree.parse(q, config.advanced_search[:query_parser]).to_query( local_param_hash(field, config) ), options.shift)
+            begin
+              queries << process_query_option(field, values.shift, ParsingNesting::Tree.parse(q, config.advanced_search[:query_parser]).to_query( local_param_hash(field, config) ), options.shift)
+            rescue StandardError => e
+              #
+            end
           end
         else
-          queries << process_query_option(field, values, ParsingNesting::Tree.parse(query, config.advanced_search[:query_parser]).to_query( local_param_hash(field, config) ), options.shift)
+          begin
+              queries << process_query_option(field, values, ParsingNesting::Tree.parse(query, config.advanced_search[:query_parser]).to_query( local_param_hash(field, config) ), options.shift)              
+          rescue StandardError => e
+            #
+          end
         end
       end
       queries.join( ' ' + keyword_op + ' ')
