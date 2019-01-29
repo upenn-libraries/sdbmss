@@ -582,7 +582,7 @@ class Entry < ActiveRecord::Base
       comments.select(&:public).map(&:comment) +
       [created_by ? created_by.username : "", updated_by ? updated_by.username : ""]
 
-      fields.map(&:to_s).select(&:present?).join "\n"
+      fields.map(&:to_s).select(&:present?).join("\n").gsub(',', '')
     end
 
     define_field(:string, :entry, :stored => true) do
