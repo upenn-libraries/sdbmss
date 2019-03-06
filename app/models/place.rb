@@ -67,7 +67,7 @@ class Place < ActiveRecord::Base
     string :evidence
     string :name
     integer :id
-    integer :authority_id
+    string :authority_id
     string :authority_source
     float :latitude
     float :longitude
