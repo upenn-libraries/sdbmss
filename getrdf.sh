@@ -6,6 +6,6 @@ if ! [ -d "public/static/docs" ]; then
 fi
 
 echo "GETTING RDF FROM JENA"
-curl -u admin:$ADMIN_PASSWORD jena:3030/sdbm | gzip > /usr/src/app/public/static/docs/output2.ttl.gz
+curl -u admin:$ADMIN_PASSWORD jena:3030/sdbm | gzip > /usr/src/app/public/static/docs/output.ttl.gz
 
 echo "DONE"
