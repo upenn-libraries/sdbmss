@@ -27,6 +27,7 @@
 						table.addClass('table');
 						table.addClass('table-responsive');
 						table.addClass('table-striped');
+						table.addClass('table-bordered');
 						var header = $("<tr></tr>");
 						for (var i = 0; i < data.head.vars.length; i++) {
 							header.append($("<th>" + data.head.vars[i] + "</th>"));							
@@ -104,12 +105,10 @@
 	  	}
 	  	.sparql-query {
 	  		height: 199px;
-	  		border-bottom: 1px solid #374f73;
 	  	}
 	  	.sparql-navigation {
 				width: calc(25% - 11px);
 				height: 100%;
-				border-left: 1px solid #374f73;
 				padding-left: 10px;
 	  	}
 	  	.edit-page {
@@ -119,6 +118,10 @@
 	  	}
 	  	textarea:hover {
 		    background: #eee1be;
+			}
+			.modal-body {
+				height: calc(100vh - 160px);
+				overflow: scroll;
 			}
 	  </style>
 <% end %>
