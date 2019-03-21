@@ -152,6 +152,10 @@ module CatalogControllerConfiguration
         field.solr_local_parameters = { :qf => 'source_search' }
       end
 
+      config.add_search_field('source_title', label: "Source Title") do |field|
+        field.solr_local_parameters = { :qf => 'source_title' }
+      end
+
       config.add_search_field('groups', label: "User Groups") do |field|
         field.solr_local_parameters = { :qf => 'groups' }
       end
@@ -188,6 +192,10 @@ module CatalogControllerConfiguration
       config.add_search_field('buyer') do |field|
         field.include_in_simple_select = false
         field.solr_local_parameters = { :qf => 'sale_buyer_search' }
+      end
+
+      config.add_search_field('other_info', label: "Other Info") do |field|
+        field.solr_local_parameters = { :qf => 'other_info_search' }
       end
 
       config.add_search_field('catalog_or_lot_number', label: "Catalog/Lot Number") do |field|
@@ -374,6 +382,13 @@ module CatalogControllerConfiguration
         field.include_in_advanced_search = false
         field.is_numeric_field = false
         field.solr_local_parameters = { :qf => 'approved' }
+      end
+
+      config.add_search_field 'unverified_legacy_record' do |field|
+        field.include_in_simple_select = false
+        field.include_in_advanced_search = true
+        field.is_numeric_field = false
+        field.solr_local_parameters = { :qf => 'unverified_legacy_record' }
       end
 
       config.add_search_field 'added_on' do |field|

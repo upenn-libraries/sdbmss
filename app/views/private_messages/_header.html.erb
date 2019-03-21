@@ -36,7 +36,11 @@
         <ul class="pagination navbar-right">
           <% (@total.to_f / @per_page).ceil.times do |p| %>
             <li class="<%= @page == p ? 'active' : '' %>">
-              <%= link_to (p + 1), private_messages_path(page: p) %>
+              <% if @sent_by %>
+                <%= link_to (p + 1), private_messages_path(page: p, sent_by: true) %>
+              <% else %>
+                <%= link_to (p + 1), private_messages_path(page: p) %>
+              <% end %>
             </li>
           <% end %>
         </ul>

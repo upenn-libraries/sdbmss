@@ -27,8 +27,8 @@ class EntryTitle < ActiveRecord::Base
       model_class: "entry_titles",
       id: id,
       fields: {
-        title: "'#{title}'",
-        common_title: "'#{common_title}'",
+        title: "'''#{title}'''",
+        common_title: "'''#{common_title}'''",
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
         order: "'#{order}'^^xsd:integer",
         supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",

@@ -62,8 +62,8 @@ class SourceType < ActiveRecord::Base
       model_class: "source_types",
       id: id,
       fields: {
-        name: "'#{name}'",
-        display_name: "'#{display_name}'",
+        name: "'''#{name}'''",
+        display_name: "'''#{display_name}'''",
         entries_transaction_field: "'#{entries_transaction_field}'^^xsd:boolean",
         entries_have_institution_field: "'#{entries_have_institution_field}'^^xsd:boolean"
       }

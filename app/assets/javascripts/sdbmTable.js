@@ -630,6 +630,12 @@ function relation (type) {
                 {
                     sdbmssMinWidth: "130px",
                     sdbmssMaxWidth: "130px",
+                    title: 'Legacy',
+                    sdbmssSortField: 'unverified_legacy_record'
+                },
+                {
+                    sdbmssMinWidth: "130px",
+                    sdbmssMaxWidth: "130px",
                     title: 'Superceded By',
                     sdbmssSortField: 'superceded_by_id'
                 },
@@ -756,6 +762,7 @@ function relation (type) {
                             result.updated_by,
                             result.approved,
                             result.deprecated,
+                            result.unverified_legacy_record,
                             result.superceded_by_id,
                             result.draft,
                             result.can_edit,

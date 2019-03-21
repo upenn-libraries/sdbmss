@@ -195,6 +195,14 @@
                                 <%= f.email_field :email, class: "form-control" %>
                             </div>
                             <div class="form-group">
+                                <%= f.label :biography, class: "control-label" %>
+                                <br>
+                                <span class="text-info">
+                                    <strong>Required:</strong> A brief note about yourself and why you are interested in using the SDBM helps us to prevent the creation of fake user accounts.
+                                </span>
+                                <%= f.text_area :bio, :class => 'form-control', :required => true %>
+                            </div>
+                            <div class="form-group">
                                 <%= f.label :password, class: "control-label" %>
                                 <% if @validatable %>
                                 <em>(<%= @minimum_password_length %> characters minimum)</em>

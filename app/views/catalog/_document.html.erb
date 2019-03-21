@@ -16,12 +16,13 @@
           <span class='h4'>
             <%# data-context-href triggers an HTTP callback before loading the entry page; this makes prev/next links on individual Entry page work %>
             <a href="<%= url_for entry %>" data-context-href="<%= track_path document, document_counter %>"><%= entry.public_id %></a>
+            <% if !entry.approved %>
+              <small class="text-danger document-disclaimer"><span class="glyphicon glyphicon-alert"></span> Unapproved</small>
+            <% end %>
+            <% if entry.unverified_legacy_record %>
+              <small class="text-warning document-disclaimer"><span class="glyphicon glyphicon-exclamation-sign"></span> Unverified Legacy Record</small>      
+            <% end %>
           </span>
-          <% if !entry.approved %>
-            <span>
-              <small class="text-danger"><span class="glyphicon glyphicon-alert"></span> Unapproved</small>
-            </span>
-          <% end %>
       </div>
       <div class="col-xs-2 text-right">
           <span class="document-preview"><%= render partial: 'catalog/bookmark_control', locals: {document: document} %></span>        

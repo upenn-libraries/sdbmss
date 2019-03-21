@@ -475,6 +475,7 @@ class Entry < ActiveRecord::Base
       updated_by: updated_by ? updated_by.username : "",
       approved: approved,
       deprecated: deprecated,
+      unverified_legacy_record: unverified_legacy_record,
       superceded_by_id: superceded_by_id,
       draft: draft
     }
@@ -581,7 +582,7 @@ class Entry < ActiveRecord::Base
       comments.select(&:public).map(&:comment) +
       [created_by ? created_by.username : "", updated_by ? updated_by.username : ""]
 
-      fields.map(&:to_s).select(&:present?).join "\n"
+      fields.map(&:to_s).select(&:present?).join("\n").gsub(',', '')
     end
 
     define_field(:string, :entry, :stored => true) do
@@ -631,7 +632,7 @@ class Entry < ActiveRecord::Base
     define_field(:text, :source_search, :stored => true) do
       source.display_value
     end
-    define_field(:string, :source_title, :stored => true) do
+    define_field(:text, :source_title, :stored => true) do
       source.title
     end
 
@@ -914,6 +915,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :updated_by, :stored => true) { updated_by ? updated_by.username : "" }
     define_field(:boolean, :approved, :stored => true) { approved }
     define_field(:boolean, :deprecated, :stored => true) { deprecated }
+    define_field(:boolean, :unverified_legacy_record, :stored => true) { unverified_legacy_record }
     define_field(:boolean, :draft, :stored => true) { draft }
 
     #### Provenance
@@ -1090,6 +1092,7 @@ class Entry < ActiveRecord::Base
       ["Created By", "created_by"], 
       ["Approved", "approved"],
       ["Deprecated", "deprecated"],
+      ["Unverified Legacy Record", "unverified_legacy_record"],
       ["Draft", "draft"]
     ]
   end
@@ -1098,6 +1101,7 @@ class Entry < ActiveRecord::Base
     [
       ["All Fields", "complete_entry"], 
       ["Source", "source_search"],  
+      ["Source Title", "source_title"],  
       ["Source Date", "source_date_search"],
       ["Catalog or Lot #", "catalog_or_lot_number_search"],
       ["Institution", "institution_search"], 
@@ -1146,23 +1150,23 @@ class Entry < ActiveRecord::Base
       model_class: "entries",
       id: id,
       fields: {
-        catalog_or_lot_number: "'#{catalog_or_lot_number}'",
+        catalog_or_lot_number: "'''#{catalog_or_lot_number}'''",
         folios: "'#{folios}'^^xsd:integer",
         num_columns: "'#{num_columns}'^^xsd:integer",
         num_lines: "'#{num_lines}'^^xsd:integer",
         height: "'#{height}'^^xsd:integer",
         width: "'#{width}'^^xsd:integer",
-        alt_size: "'#{alt_size}'",
-        manuscript_binding: "'#{manuscript_binding}'",
-        other_info: "'#{other_info}'",
-        manuscript_link: "'#{manuscript_link}'",
+        alt_size: "'''#{alt_size}'''",
+        manuscript_binding: "'''#{manuscript_binding}'''",
+        other_info: "'''#{other_info}'''",
+        manuscript_link: "'''#{manuscript_link}'''",
         miniatures_fullpage: "'#{miniatures_fullpage}'^^xsd:integer",
         miniatures_large: "'#{miniatures_large}'^^xsd:integer",
         miniatures_small: "'#{miniatures_small}'^^xsd:integer",
         miniatures_unspec_size: "'#{miniatures_unspec_size}'^^xsd:integer",
         initials_historiated: "'#{initials_historiated}'^^xsd:integer",
         initials_decorated: "'#{initials_decorated}'^^xsd:integer",
-        transaction_type: "'#{transaction_type}'",
+        transaction_type: "'''#{transaction_type}'''",
         deprecated: "'#{deprecated}'^^xsd:boolean",
         unverified_legacy_record: "'#{unverified_legacy_record}'^^xsd:boolean",
         institution_id: "<https://sdbm.library.upenn.edu/names/#{institution_id}>",

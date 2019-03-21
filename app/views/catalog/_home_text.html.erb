@@ -59,7 +59,7 @@
     </div>
     <div class="col-sm-12">
         <h3 class='h3 text-center'>Recent Activity</h3>
-        <% posts = Thredded::Post.last(6) %>
+        <% posts = Thredded::Post.last(6).reverse %>
         <% if (posts.each do |post| %>
             <div class="panel panel-default">
                 <div class="panel-body">

@@ -29,7 +29,7 @@ class EntryPlace < ActiveRecord::Base
       model_class: "entry_places",
       id: id,
       fields: {
-        observed_name: "'#{observed_name}'",
+        observed_name: "'''#{observed_name}'''",
         place_id: "<https://sdbm.library.upenn.edu/places/#{place_id}>",
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
         order: "'#{order}'^^xsd:integer",

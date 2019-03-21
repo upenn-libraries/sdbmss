@@ -13,7 +13,7 @@ class EntryUse < ActiveRecord::Base
       model_class: "entry_uses",
       id: id,
       fields: {
-        use: "'#{use}'",
+        use: "'''#{use}'''",
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
         order: "'#{order}'^^xsd:integer"
       }

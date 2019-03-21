@@ -36,6 +36,11 @@ class Place < ActiveRecord::Base
         errors[:Name] << "Place name is already used by record #{existing_name.public_id} -> '#{existing_name.name}'"
       end
     end
+    if (name_obj.authority_id.present? && name_obj.authority_source.present?)
+      if (existing_names = self.class.where(authority_source: name_obj.authority_source, authority_id: name_obj.authority_id).where.not(id: name_obj.id)).count > 0
+        errors[:Authority] << "Place authority ID is already used by record #{existing_names.first.public_id} -> '#{existing_names.first.name}'"
+      end
+    end
     n = name_obj
     while (n = n.parent) do
       if n.id == name_obj.id
@@ -58,11 +63,11 @@ class Place < ActiveRecord::Base
       updated_by ? updated_by.username: ""
     end
     text :name, :more_like_this => true
-    text :evidence
+    text :evidence, :as => :evidence_text_pre
     string :evidence
     string :name
     integer :id
-    integer :authority_id
+    string :authority_id
     string :authority_source
     float :latitude
     float :longitude
@@ -141,9 +146,9 @@ class Place < ActiveRecord::Base
       model_class: "places",
       id: id,
       fields: {
-        name: "'#{name}'",
-        authority_id: "'#{authority_id}'",
-        authority_source: "'#{authority_source}'",
+        name: "'''#{name}'''",
+        authority_id: "'''#{authority_id}'''",
+        authority_source: "'''#{authority_source}'''",
         parent_id: "<https://sdbm.library.upenn.edu/places/#{parent_id}>",
         latitude: "'#{latitude}'^^xsd:decimal",
         longitude: "'#{longitude}'^^xsd:decimal",

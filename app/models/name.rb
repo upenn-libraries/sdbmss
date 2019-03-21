@@ -117,7 +117,7 @@ class Name < ActiveRecord::Base
     text :updated_by do
       updated_by ? updated_by.username: ""
     end
-    text :other_info
+    text :other_info, :as => :other_info_text_pre
     string :other_info
     integer :id
     text :name, :more_like_this => true do
@@ -491,12 +491,12 @@ class Name < ActiveRecord::Base
       model_class: "names",
       id: id,
       fields: {
-        name: "'#{name}'",
-        viaf_id: "'#{viaf_id}'",
-        subtype: "'#{subtype}'",
-        startdate: "'#{startdate}'",
-        enddate: "'#{enddate}'",
-        other_info: "'#{other_info}'",
+        name: "'''#{name}'''",
+        viaf_id: "'''#{viaf_id}'''",
+        subtype: "'''#{subtype}'''",
+        startdate: "'''#{startdate}'''",
+        enddate: "'''#{enddate}'''",
+        other_info: "'''#{other_info}'''",
         deleted: "'#{deleted}'^^xsd:boolean"
       }
     }

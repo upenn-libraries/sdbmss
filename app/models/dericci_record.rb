@@ -46,14 +46,14 @@ class DericciRecord < ActiveRecord::Base
       model_class: "dericci_records",
       id: id,
       fields: {
-        dates: "'#{dates}'",
-        name: "'#{name}'",
-        place: "'#{place}'",
-        url: "'#{url}'",
+        dates: "'''#{dates}'''",
+        name: "'''#{name}'''",
+        place: "'''#{place}'''",
+        url: "'''#{url}'''",
         cards: "'#{cards}'^^xsd:integer",
-        size: "'#{size}'",
-        other_info: "'#{other_info}'",
-        senate_house: "'#{senate_house}'",
+        size: "'''#{size}'''",
+        other_info: "'''#{other_info}'''",
+        senate_house: "'''#{senate_house}'''",
         out_of_scope: "'#{out_of_scope}'^^xsd:boolean"
       }
     }

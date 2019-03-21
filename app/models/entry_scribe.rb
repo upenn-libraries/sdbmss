@@ -43,7 +43,7 @@ class EntryScribe < ActiveRecord::Base
       model_class: "entry_scribes",
       id: id,
       fields: {
-        observed_name: "'#{observed_name}'",
+        observed_name: "'''#{observed_name}'''",
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
         scribe_id: "<https://sdbm.library.upenn.edu/names/#{scribe_id}>",
         order: "'#{order}'^^xsd:integer",

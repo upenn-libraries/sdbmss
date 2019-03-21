@@ -46,6 +46,7 @@ class PlacesController < SearchableAuthorityController
         id = @model.public_id
         @model.entry_places.update_all(:place_id => @target.id)
         @model.children.update_all(:parent_id => @target.id)
+        @model.name_places.update_all(:place_id => @target.id)
         @model.destroy!
         flash[:success] = "#{id} has been successfully merged into #{@target.public_id}"
         entry_ids = @target.entries.map(&:id)

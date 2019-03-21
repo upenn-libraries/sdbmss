@@ -46,8 +46,8 @@ class EntryMaterial < ActiveRecord::Base
       model_class: "entry_materials",
       id: id,
       fields: {
-        material: "'#{material}'",
-        observed_name: "'#{observed_name}'",
+        material: "'''#{material}'''",
+        observed_name: "'''#{observed_name}'''",
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
         order: "'#{order}'^^xsd:integer",
         supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",

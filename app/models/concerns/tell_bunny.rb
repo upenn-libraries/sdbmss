@@ -13,6 +13,9 @@ module TellBunny
     has_many :jena_responses, as: :record
   end
 
+  # inherited and overriden by relevent models.
+  # NOTE: use triple single quotes to enclose string literals, to avoid confusion with quotes in the strings themsleves
+
   def to_rdf
     %Q(
       # sdbm:names/#{id} sdbm:names_id #{id}      

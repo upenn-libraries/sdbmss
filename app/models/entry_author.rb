@@ -51,10 +51,10 @@ class EntryAuthor < ActiveRecord::Base
       model_class: "entry_authors",
       id: id,
       fields: {
-        observed_name: "'#{observed_name}'",
+        observed_name: "'''#{observed_name}'''",
         author_id: "<https://sdbm.library.upenn.edu/names/#{author_id}>",
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        role: "'#{role}'",
+        role: "'''#{role}'''",
         order: "'#{order}'^^xsd:integer",
         supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
         uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"

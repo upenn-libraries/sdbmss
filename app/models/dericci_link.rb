@@ -19,7 +19,7 @@ class DericciLink < ActiveRecord::Base
       fields: {
         dericci_record_id: "<https://sdbm.library.upenn.edu/dericci_records/#{dericci_record_id}>",
         name_id: "<https://sdbm.library.upenn.edu/names/#{name_id}>",
-        other_info: "'#{other_info}'"
+        other_info: "'''#{other_info}'''"
       }
     }
 =begin
