@@ -1,16 +1,33 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~>4.2.7.1'
+gem 'rails', '~>4.2.11.1'
 
+gem "actionview", ">= 4.2.11.1"
+gem "nokogiri", "= 1.8.5"
+gem "activejob", ">= 4.2.11"
+gem "rack", ">= 1.6.11"
+gem "loofah", ">= 2.2.3"
+gem "rubyzip", ">= 1.2.2"
+gem "ffi", ">= 1.9.24"
+gem "sprockets", ">= 3.7.2"
+gem "net-ssh", "< 5.0"
+gem "kramdown", "<= 1.16.2"
+gem "sassc", "<= 1.12.1"
+gem 'autoprefixer-rails', '~> 7.1.6'
+
+# gem "bootstrap-sass", ">= 3.4.1"
+    
 # Use sqlite3 as the database for Active Record
 # gem 'sqlite3', group: :development
+
+gem 'logger', '~> 1.2.7'
 
 gem 'mysql2', '~> 0.3.18'
 
 # XML parsing. Other gems require nokogiri as well, but we may as well
 # require it too.
-gem 'nokogiri', '~> 1.8.2'
+# gem 'nokogiri', '~> 1.8.2'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0.3'
@@ -50,7 +67,7 @@ gem "jettywrapper", "~> 2.0.3"
 gem "blacklight_advanced_search", "~> 5.1.3"
 
 # For authentication; used by Blacklight and by SDBMSS
-gem "devise", "~> 3.5.4"
+gem "devise", "~> 4.6.0"
 gem "devise-guests", "~> 0.3.0"
 
 # For roles and permissions checking
@@ -95,7 +112,7 @@ gem "number_to", "~> 0.7.1"
 gem "database_cleaner", "~> 1.4.1"
 
 # for compressing csv exports to .zip
-gem "rubyzip"
+# gem "rubyzip"
 
 #gem "linkeddata"
 #gem "rdf-turtle"
