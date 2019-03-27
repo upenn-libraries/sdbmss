@@ -60,21 +60,26 @@ class CatalogController < ApplicationController
   end
 
   def index
-    respond_to do |format|
-      #format.rss { redirect_to feed_path(format: :rss) }
-      #format.atom {redirect_to feed_path(format: :rss) }
-      format.html { super }
-      format.json { super }
-      format.csv { 
-        if current_user.downloads.count >= 5
-          render json: {error: 'at limit'}
-          return
-        else
-          @d = Download.create({filename: "entries.csv", user_id: current_user.id})
-          CatalogController.new.delay.do_csv_search(params, search_params_logic, @d)
-          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count} 
-        end
-      }
+    begin
+      respond_to do |format|
+        #format.rss { redirect_to feed_path(format: :rss) }
+        #format.atom {redirect_to feed_path(format: :rss) }
+        format.html { super }
+        format.json { super }
+        format.csv { 
+          if current_user.downloads.count >= 5
+            render json: {error: 'at limit'}
+            return
+          else
+            @d = Download.create({filename: "entries.csv", user_id: current_user.id})
+            CatalogController.new.delay.do_csv_search(params, search_params_logic, @d)
+            render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count} 
+          end
+        }
+      end
+    rescue Blacklight::Exceptions::InvalidRequest
+      flash[:error] = "Sorry, I don't understand your search."
+      redirect_to root_path
     end
   end
 
