@@ -10,11 +10,14 @@ class CatalogController < ApplicationController
 
   include CatalogControllerConfiguration
 
+  rescue_from Blacklight::Exceptions::InvalidRequest, with: :render_bad_search
+
   #layout "home", :only => [:index]
   #authorize_resource :only => [:show], :class => Entry
 
   # Overrides Blacklight::Catalog#show to check for existence and send
   # 404 if necessary
+
   def show
     @entry = Entry.find_by(id: params[:id])
     #if @entry.manuscripts.count <= 0
@@ -60,26 +63,21 @@ class CatalogController < ApplicationController
   end
 
   def index
-    begin
-      respond_to do |format|
-        #format.rss { redirect_to feed_path(format: :rss) }
-        #format.atom {redirect_to feed_path(format: :rss) }
-        format.html { super }
-        format.json { super }
-        format.csv { 
-          if current_user.downloads.count >= 5
-            render json: {error: 'at limit'}
-            return
-          else
-            @d = Download.create({filename: "entries.csv", user_id: current_user.id})
-            CatalogController.new.delay.do_csv_search(params, search_params_logic, @d)
-            render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count} 
-          end
-        }
-      end
-    rescue Blacklight::Exceptions::InvalidRequest
-      flash[:error] = "Sorry, I don't understand your search."
-      redirect_to root_path
+    respond_to do |format|
+      #format.rss { redirect_to feed_path(format: :rss) }
+      #format.atom {redirect_to feed_path(format: :rss) }
+      format.html { super }
+      format.json { super }
+      format.csv { 
+        if current_user.downloads.count >= 5
+          render json: {error: 'at limit'}
+          return
+        else
+          @d = Download.create({filename: "entries.csv", user_id: current_user.id})
+          CatalogController.new.delay.do_csv_search(params, search_params_logic, @d)
+          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count} 
+        end
+      }
     end
   end
 
@@ -239,5 +237,17 @@ class CatalogController < ApplicationController
   end
 
   helper_method :search_results_as_csv_path
+
+  def render_bad_search
+    respond_to do |format|
+      format.html {
+        flash[:error] = "Sorry, I don't understand your search."
+        redirect_to root_path        
+      }
+      format.json {
+        render json: { error: "Sorry, I don't understand your search." }
+      }
+    end
+  end
 
 end
