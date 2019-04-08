@@ -1,3 +1,8 @@
+<% content_for :head do %>
+    <%= stylesheet_link_tag "extras", media: "all" %>
+    <%= javascript_include_tag "extras" %>
+<% end %>
+
 <% content_for :control_tools do %>
     <%= render partial: "tools", locals: {source: @source, edit: false} %>
     <li>

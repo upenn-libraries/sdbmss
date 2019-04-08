@@ -24,6 +24,9 @@
   </style>
   <%# javascript_include_tag "data" %>
   <%= javascript_include_tag "leaflet", rel: "nofollow" %>
+  <%= stylesheet_link_tag "extras", media: "all" %>
+  <%= javascript_include_tag "extras" %>
+  
   <%= javascript_include_tag "leaflet-provider", rel: "nofollow" %>
   <%= stylesheet_link_tag "leaflet", media: "all" %>
 
@@ -88,7 +91,7 @@
   <div class="alert alert-warning"><span class="glyphicon glyphicon-info-sign"></span> This <%= @model.model_name.to_s %> has not yet been reviewed and may not conform to our data standards.</div>
 <% end %>
 
-<div class="row">
+<div class="row" >
   <div class="col-sm-12">
     <h2 class="text-center">
       <%= @model.public_id %>
@@ -107,7 +110,7 @@
   </div>  
   <div class="col-sm-6">
     <dl class="document-metadata dl-horizontal dl-invert">
-      <dt>Name</dt>
+      <dt sdbm-tooltip="place_name">Name</dt>
       <dd>
           <%= @model.name %>
       </dd>
@@ -119,7 +122,7 @@
             <span class="text-muted">This place is not directly used in any entries.</span>
           <% end %>
       </dd>
-      <dt>Parent</dt>
+      <dt sdbm-tooltip="place_parent">Parent</dt>
       <dd>
         <span class="glyphicon glyphicon-globe"></span>
         <% if @model.parent %>
@@ -129,11 +132,14 @@
         <% end %>
       </dd>
       <dt>
-        Coordinates
+        <span sdbm-tooltip="place_latitude">Lat. / </span><span sdbm-tooltip="place_longitude">Long.</span>
         <span class="glyphicon glyphicon-map-marker" id="center"></span>
       </dt>
-      <dd><%= @model.latitude ? @model.latitude.to_f : "?" %>, <%= @model.longitude ? @model.longitude.to_f : "?" %></dd>
-      <dt>Place Authority</dt>
+      <dd>
+        <span><%= @model.latitude ? @model.latitude.to_f : "?" %></span>, 
+        <span><%= @model.longitude ? @model.longitude.to_f : "?" %></span>
+      </dd>
+      <dt sdbm-tooltip="place_authoritysource">Place Authority</dt>
       <dd>
         <% if @model.authority_id %>
           <%= link_to "#{@model.authority_id}", "#{@model.authority_source}/#{@model.authority_id}" %>
@@ -141,7 +147,7 @@
           <span class="text-muted">This place is linked to no exteral authority yet.</span>
         <% end %>
       </dd>
-      <dt>Evidence</dt>
+      <dt sdbm-tooltip="place_evidence">Evidence</dt>
       <dd>
         <% if @model.evidence %>
           <%= @model.evidence %>

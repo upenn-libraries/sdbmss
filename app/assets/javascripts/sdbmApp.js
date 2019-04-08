@@ -2540,6 +2540,10 @@ var BOOKMARK_SCOPE;
         };
     });
 
+    sdbmApp.controller('PublicCtrl', function ($scope) {
+      console.log('public controller only');
+    });
+
     sdbmApp.controller('PlaceModalCtrl', function ($scope, $http, $modal, $modalInstance, Place, sdbmutil, modalParams) {
     
       $scope.place = new Place();

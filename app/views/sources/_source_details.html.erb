@@ -1,6 +1,6 @@
 <dl class="document-metadata dl-horizontal dl-invert">
 
-        <dt>Type</dt>
+        <dt sdbm-tooltip="source_type">Type</dt>
         <dd>
             <% if source.source_type.present? %>
                 <%= source.source_type.display_name %>
@@ -8,15 +8,15 @@
         </dd>
 
         <% if source.date.present? %>
-            <dt>Date</dt>
+            <dt sdbm-tooltip="source_date">Date</dt>
             <dd><%= format_fuzzy_date(source.date) %></dd>
         <% end %>
         
-            <dt>Title</dt>
+            <dt sdbm-tooltip="source_publication_title">Title</dt>
             <dd><%= source.title || "(No title)" %></dd>
 
         <% if (author = source.author).present? %>
-            <dt>Author</dt>
+            <dt sdbm-tooltip="source_author_creator">Author</dt>
             <dd><%= source.author %></dd>
         <% end %>
         
@@ -72,35 +72,35 @@
             <% if source.medium.present? || source.date_accessed.present? || source.location_institution.present? || source.location.present? || source.link.present? %>
                 <% if source.medium.present? %>
         
-        <dt>Method of Access</dt>
+        <dt sdbm-tooltip="source_location_type">Method of Access</dt>
         <dd><%= source.medium_for_display %></dd>
         
                 <% end %>
 
                 <% if source.date_accessed.present? %>
 
-        <dt>Date Accessed</dt>
+        <dt sdbm-tooltip="source_date_accessed">Date Accessed</dt>
         <dd><%= format_fuzzy_date(source.date_accessed) %></dd>
                 
                 <% end %>
         
                 <% if source.location_institution.present? %>
     
-        <dt>Institution</dt>
+        <dt sdbm-tooltip="source_institution_location_seen">Institution</dt>
         <dd><%= source.location_institution %></dd>
     
                 <% end %>
 
                 <% if source.location.present? %>
 
-        <dt>City, Country</dt>
+        <dt sdbm-tooltip="source_location_seen">City, Country</dt>
         <dd><%= source.location %></dd>
 
                 <% end %>
 
                 <% if source.link.present? %>
         
-        <dt>Online Link/Call No.</dt>
+        <dt sdbm-tooltip="source_link">Online Link/Call No.</dt>
         <dd>
             <div class="one-line">
                 <a href="<%= source.link %>" title="<%= source.link %>"><%= source.link %></a>
@@ -113,10 +113,10 @@
         <dt>Created By</dt>
         <dd><%= render partial: "shared/username_with_profile_link", locals: { user: source.created_by } %></dd>
 
-        <dt>Status</dt>
+        <dt sdbm-tooltip="source_status">Status</dt>
         <dd><%= source.status||"Unknown" %></dd>
 
-        <dt>Other Info</dt>
+        <dt sdbm-tooltip="source_comments">Other Info</dt>
         <dd><%= source.other_info || "No other info recorded" %></dd>
     </dl>
 

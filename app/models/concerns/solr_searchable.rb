@@ -1,5 +1,7 @@
 module SolrSearchable
 
+  require 'csv'
+
   # each model that depends on SolrSearchable can add to the searchable fields using these methods
   # 
   # FILTERS: check for exact equality

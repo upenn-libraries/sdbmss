@@ -1,10 +1,11 @@
-<tr><td>Name</td>
+<tr>
+    <td sdbm-tooltip="edit_name_name">Name</td>
 <td>
     <%= name.name %>
 </td></tr>
 
 <% if name.viaf_id.present? %>
-<tr><td>
+<tr><td sdbm-tooltip="edit_entry_viaf>
     <a style="color: #333" href="http://www.viaf.org" target="_blank"><span class="glyphicon glyphicon-globe"></span> VIAF ID</a>
 </td>
 <td>
@@ -14,7 +15,7 @@
 
 <tr>
     <td>
-        Start and End Dates
+        <span sdbm-tooltip="edit_name_startdate">Start</span> and <span sdbm-tooltip="edit_name_enddate">End</span> Dates
     </td>
     <td>
         <%= name.startdate || '?' %> to <%= name.enddate || '?' %>
@@ -22,7 +23,7 @@
 </tr>
 
 <tr>
-    <td>
+    <td sdbm-tooltip="edit_name_place">
         Places/Nationalities
     </td>
     <td>
@@ -43,7 +44,7 @@
 </tr>
 
 <tr>
-    <td>Name Type</td>
+    <td sdbm-tooltip="edit_name_subtype">Name Type</td>
     <td><%= name.subtype || "Unknown" %></td>
 </tr>
 
@@ -113,6 +114,6 @@
     </td></tr>
 <% end %>
 <% if name.other_info.present? %>
-    <tr><td>Other Info</td>
+    <tr><td sdbm-tooltip="edit_name_other">Other Info</td>
     <td><%= name.other_info %></td></tr>
 <% end %>
