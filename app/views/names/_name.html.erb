@@ -215,7 +215,8 @@
                       <p class="text-muted">This name has no suggested possible links to any records in the De Ricci Archives.</p>
                   <% end %>
               </td>
-            </tr>            
+            </tr>
+            <%= render partial: "shared/user_info", locals: {model: @model} %>
         </table>
     </div>
     <div class="col-sm-6">
