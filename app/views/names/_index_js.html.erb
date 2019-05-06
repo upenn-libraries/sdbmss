@@ -94,6 +94,14 @@ load_session = '<%= params[:last_search] %>' == 'true';
                 dbSortField: 'places'
             },
             {
+                title: 'Start Date',
+                dbSortField: 'startdate'
+            },
+            {
+                title: 'End Date',
+                dbSortField: 'enddate'
+            },
+            {
                 title: 'As Author',
                 dbSortField: 'authors_count'
             },
@@ -168,6 +176,8 @@ load_session = '<%= params[:last_search] %>' == 'true';
              result.other_info,
              result.subtype,
              result.places,
+             result.startdate,
+             result.enddate,
              result.authors_count,
              result.artists_count,
              result.scribes_count,

@@ -145,6 +145,14 @@ class Name < ActiveRecord::Base
     integer :source_agents_count
     integer :sale_agents_count
     integer :provenance_count
+
+    string :startdate do
+      startdate.present? ? startdate.split("-").in_groups_of(3).first.map{ |d| d.to_s.rjust(2, "01") }.join("").rjust(8, "0") : nil
+    end
+    string :enddate do
+      enddate.present? ? enddate.split("-").in_groups_of(3).first.map{ |d| d.to_s.rjust(2, "01") }.join("").rjust(8, "0") : nil
+    end
+
     date :created_at
     date :updated_at
     boolean :reviewed
@@ -179,7 +187,7 @@ class Name < ActiveRecord::Base
   end
 
   def self.dates
-    super
+    super + [["Start Date", "startdate"], ["End Date", "enddate"]]
   end
 
   def search_result_format
@@ -190,6 +198,8 @@ class Name < ActiveRecord::Base
       other_info: other_info,
       subtype: subtype,
       places: places.map(&:name).join("; "),
+      startdate: startdate,
+      enddate: enddate,
       authors_count: authors_count,
       artists_count: artists_count,
       scribes_count: scribes_count,
