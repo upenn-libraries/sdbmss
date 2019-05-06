@@ -37,7 +37,7 @@ class SourceAgent < ActiveRecord::Base
     when SourceType::OBSERVATION
       valid_roles = [ROLE_INSTITUTION]
     when SourceType::OTHER_PUBLISHED
-      valid_roles = []
+      valid_roles = [ROLE_INSTITUTION]
     when SourceType::UNPUBLISHED
       valid_roles = [ROLE_INSTITUTION]
     end
