@@ -83,8 +83,15 @@ begin
             BIND (<https://sdbm.library.upenn.edu/#{message['model_class']}/#{message['id']}> as ?subject) .
             OPTIONAL { ?subject #{predicate} ?object }
           };
-
         )
+      query += %Q(
+        DELETE { ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?object } 
+        INSERT { ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://sdbm.library.upenn.edu/#{message['model_class']}> } 
+        WHERE { 
+          BIND (<https://sdbm.library.upenn.edu/#{message['model_class']}/#{message['id']}> as ?subject) .
+          OPTIONAL { ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?object }
+        };
+      )
       end
       begin
         request = Net::HTTP::Post.new(uri.request_uri)
