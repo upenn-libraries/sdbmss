@@ -92,6 +92,14 @@ begin
           OPTIONAL { ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?object }
         };
       )
+      query += %Q(
+        DELETE { ?subject sdbm:#{message['model_class']}_id ?object } 
+        INSERT { ?subject sdbm:#{message['model_class']}_id '#{message['id']}'^^xsd:integer } 
+        WHERE { 
+          BIND (<https://sdbm.library.upenn.edu/#{message['model_class']}/#{message['id']}> as ?subject) .
+          OPTIONAL { ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?object }
+        };
+      )
       end
       begin
         request = Net::HTTP::Post.new(uri.request_uri)
