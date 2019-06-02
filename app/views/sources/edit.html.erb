@@ -331,24 +331,6 @@
 
         </div>
         
-        <div class="other-published-container" ng-if="source.source_type.name == 'other_published'">
-
-            <div class="form-group row">
-                <label for="cat_title" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_title">Publication Title</span></label>
-                <div class="col-sm-5">
-                    <input type="text" class="form-control" id="title" ng-model="source.title" required>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label for="cat_author" class="col-sm-2 control-label"><span sdbm-tooltip="source_publication_author">Publication Author</span></label>
-                <div class="col-sm-5">
-                    <input type="text" class="form-control" id="author" ng-model="source.author">
-                </div>
-            </div>
-
-        </div>
-
         <div class="auction-source-container" ng-if="source.source_type.name == 'unpublished' || source.source_type.name == 'other_published'">
 
             <div class="form-group row">
