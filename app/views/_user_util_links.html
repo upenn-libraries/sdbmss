@@ -31,7 +31,9 @@
             <li><%= link_to page.name, main_app.page_path(page.name) %></li>
           <% end %>
           <li><a href="https://www.youtube.com/channel/UCsVZp-1724xPIW8MwIdKoyg/videos">Video Tutorials</a></li>
-          <li><a href="mailto:sdbm@pobox.upenn.edu">Email Us</a></li>
+          <li>
+            <%= mail_to "sdbm@pobox.upenn.edu", "Email Us", encode: "hex" %>
+          </li>
         </ul>
     </li>
   </ul>

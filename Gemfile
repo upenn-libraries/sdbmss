@@ -16,6 +16,10 @@ gem "kramdown", "<= 1.16.2"
 gem "sassc", "<= 1.12.1"
 gem 'autoprefixer-rails', '~> 7.1.6'
 
+gem 'invisible_captcha'
+
+gem 'actionview-encoded_mail_to'
+
 # gem "bootstrap-sass", ">= 3.4.1"
     
 # Use sqlite3 as the database for Active Record

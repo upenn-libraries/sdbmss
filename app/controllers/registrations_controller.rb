@@ -1,6 +1,8 @@
 class RegistrationsController < Devise::RegistrationsController
   protected
 
+  invisible_captcha only: [:create], honeypot: :fullname
+
   def after_sign_up_path_for(resource)
     User.where(role: 'admin').each do |user|
       user.notify("A new user has been created", resource, "new_user")

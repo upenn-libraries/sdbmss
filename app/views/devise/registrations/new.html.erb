@@ -182,6 +182,9 @@
                     <div class="col-sm-6">
                         <% if Rails.configuration.sdbmss_allow_user_signup %>
                         <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+                        
+                        <%= f.invisible_captcha :fullname %>
+
                         <fieldset id="faq-required" disabled>
                             <div class="form-group">
                                 <%= devise_error_messages! %>
