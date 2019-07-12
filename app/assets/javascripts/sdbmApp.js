@@ -104,7 +104,6 @@ var BOOKMARK_SCOPE;
         var isBlankObject = function(obj) {
             var blank = true;
             if(obj !== undefined) {
-                // TODO: deal with nesting?
                 for(var key in obj) {
                     if(key == "order") {
                       // ignore order
@@ -2186,7 +2185,7 @@ var BOOKMARK_SCOPE;
 
             var refocus = function(badValue) {
 
-                // TODO: calling focus() directly here doesn't work in
+                // calling focus() directly here doesn't work in
                 // Firefox (but works in Chrome). Using setTimeout()
                 // is susceptible to race conditions with the
                 // browser's default handling of tab key, but in

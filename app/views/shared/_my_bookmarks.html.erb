@@ -36,7 +36,7 @@
                   <ul class="list-inline">
                     <li ng-if="bookmark.tags.length <= 0" class='text-warning'>This bookmark has no tags.</li>
                     <li ng-repeat="tag in bookmark.tags" class="bookmark-tag" ng-class="{'btn-info btn-lg' : tag == search_tag, 'bg-primary' : tag != search_tag}">
-                        <a href="" ng-click="searchTag(tag);">{{ tag }}</a> <!-- fix me: should this filter in bookmark panel, or go to manage bookmarks search? -->
+                        <a href="" ng-click="searchTag(tag);">{{ tag }}</a>
                         <a href="" class='remove-bookmark-tag-confirm small' ng-click="removetag(bookmark, tag)"><span class="glyphicon glyphicon-remove"></span></a>
                     </li>
                   </ul>

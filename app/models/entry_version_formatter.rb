@@ -101,8 +101,6 @@ class EntryVersionFormatter
     @source_types = SourceType.all
     details = {}
 
-    # fix me: comments not appearing due to missing transaction ID
-
     versions.group_by(&:transaction_id).each do |id,vers|
       vers.each do |v|
         days = (Date.today - v.created_at.to_date)

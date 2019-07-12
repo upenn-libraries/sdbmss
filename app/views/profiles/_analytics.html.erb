@@ -74,7 +74,7 @@ $(document).ready(function () {
 
 $.get("<%= profile_path(@user.username) %>?format=json", function (data) {
     
-  // fix me: should be limited to one year, and ordered by most recent month
+  // limited to one year, and ordered by most recent month
   var additions = sortMonths(data.Names.filter(e => e.qualifier === undefined));
   var confirmed = sortMonths(data.Names.filter(e => e.qualifier === "confirm"));
   var disputed = sortMonths(data.Names.filter(e => e.qualifier === "dispute"));

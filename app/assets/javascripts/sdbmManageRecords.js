@@ -313,7 +313,6 @@ var load_session = false;
     // returns a bookmarkable URL that contains current state of page
     // and search form
 
-    // FIX ME : Add all search options here: page, limit, option, field, etc.
     SDBM.ManageRecords.prototype.persistFormStateToURL = function () {
         var manageRecords = this;
         return URI(manageRecords.getResourceIndexURL()).search({

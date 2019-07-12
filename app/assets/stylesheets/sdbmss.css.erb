@@ -1612,7 +1612,7 @@ so that gray backdrop shvows up correctly */
 .table-compressed > thead > tr > th {
     padding: 4px;
 }
-/* FIX ME: use vw instead of % for this sort of thing?; */
+
 @media (min-width: 768px) {
   .main-content .container {
     max-width: 100vw;
@@ -1894,7 +1894,6 @@ so that gray backdrop shvows up correctly */
 }
 
 @media print {
-    /* TODO: these 2 rules are a hack to hide the sidebar and stretch out #content to 100%. the result is better than nothing, but it does cut off the right side a bit, for reasons I don't yet know. it also looks very different on Chrome than Firefox. there must be a better way... */
     #sidebar {
         width: 0%;
         display: none;

@@ -423,8 +423,6 @@ class Entry < ActiveRecord::Base
     # because they always hit the db and circumvent the preloading
     # done in with_associations scope.
 
-    # FIX ME: missing institution field?
-
     sale = get_sale
     sale_selling_agents = sale ? sale.sale_agents.select{ |sa| sa.role == "selling_agent" } : []#(sale.get_selling_agents_names if sale && sale.get_selling_agents.count > 0)
     sale_seller_or_holders = sale ? sale.sale_agents.select{ |sa| sa.role == "seller_or_holder" } : [] #(sale.get_sellers_or_holders_names if sale && sale.get_sellers_or_holders.count > 0)
@@ -948,10 +946,6 @@ class Entry < ActiveRecord::Base
         end_date = (provenance_item.start_date_normalized_end || provenance_item.end_date_normalized_end)
         # only take the provenance_items with either a start OR end date
         if start_date.present? || end_date.present?
-          # make sure they both have values? TODO: this probably isn't
-          # right: if only one date exists, we should probably use
-          # that by itself (for end date, we would use that date + 1
-          # day)
           start_date = start_date || SDBMSS::Blacklight::DATE_RANGE_FULL_MIN.to_s
           end_date = end_date || SDBMSS::Blacklight::DATE_RANGE_FULL_MAX.to_s
 
@@ -1038,7 +1032,7 @@ class Entry < ActiveRecord::Base
     path = "tmp/#{id}_#{user}_#{filename}"
     headers = nil
     loop do
-      s = do_search(params.merge({:limit => 300, :offset => offset})) # 12-06-17 fix me: add 'order' param if sorting not working properly?
+      s = do_search(params.merge({:limit => 300, :offset => offset}))
       offset += 300
       ids = s.results.map(&:id)
       objects = Entry.with_associations.where(id: ids).map { |e| e.as_flat_hash({options: {csv: true}}) }
@@ -1238,7 +1232,6 @@ class Entry < ActiveRecord::Base
       end    
     end
 
-    # place, language FIX ME add these
     entry_places.group_by(&:place_id).keep_if{ |k, v| v.length >= 1}.each do |k, entry_place|
       place = entry_place.first.place
       Place.update_counters(place.id, :entries_count => place.entries.where(deprecated: false, draft: false).uniq.count - place.entries_count) unless place.nil?

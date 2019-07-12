@@ -1,4 +1,4 @@
-// TODO: PhantomJS, as of 1.9.8, doesn't support
+// PhantomJS, as of 1.9.8, doesn't support
 // Function.prototype.bind() so we use this shim. The dataTables
 // library, and maybe other things, needs this in order to work.
 //

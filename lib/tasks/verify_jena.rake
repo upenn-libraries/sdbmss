@@ -34,12 +34,11 @@ namespace :jena do
               if jena_response.tries < 3
                   puts "Failed. Resending..."
                   jena_response.update(status: 0, tries: jena_response.tries + 1, message: "#{contents['code']}: #{contents['message']}")
-                  # fix me: handle for DESTROY as well
+
                   if jena_response.record.present?
                     jena_response.record.update_bunny(jena_response.id)
                   else
                     resend_destroy(resend_queue,response.record_id, response.record_type, response.id)
-                      #jena_response.record.destroy_bunny(jena_response.id)
                   end
               else
                   puts "Failed. Response record retained."

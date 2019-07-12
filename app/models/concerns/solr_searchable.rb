@@ -208,7 +208,6 @@ module SolrSearchable
           value.each do |v|
             v = v.split(/[-\/]/).join("").ljust(8, '01')
             op = Array(options[field + "_option"]).shift
-            # FIX ME: I used exception handling here because Date parsing for such varied input is awful - probably a better way
             begin
               if op && op == 'before'
                 with(field).between(Date.new(0,1,1)..Date.parse(v))

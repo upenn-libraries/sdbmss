@@ -126,8 +126,6 @@ class SourcesController < SearchableAuthorityController
     Source
   end
 
-  # fix me: 12-07-17 remove update_status, and related code in sdbmApp.js and entries/edit.html.erb
-
   # change the status of a Source
   def update_status
     new_status = params[:status]
@@ -163,7 +161,6 @@ class SourcesController < SearchableAuthorityController
   end
 
   # returns JSON containing type constants
-  # FIX ME: better way of filtering out special 'provenance_observation' source type?
   def types
     data = {
 #       'source_type' => SourceType.all.map { |source_type|
@@ -241,8 +238,6 @@ class SourcesController < SearchableAuthorityController
         flash[:success] = "#{id} has been successfully merged into #{@target.public_id}"
       end
       Source.update_counters(@target.id, :entries_count => @target.entries.where(deprecated: false, draft: false).count - @target.entries_count)
-      # FIX ME: handle errors here, if the merge is not succesful?
-      #render "merge_success"
       redirect_to source_path(@target)
     end
   end
@@ -292,8 +287,6 @@ class SourcesController < SearchableAuthorityController
   end
 
   private
-
-# FIX ME: how to get similar before it exists?!  right now uses levenshtein for that, solr for everything else
 
   def get_similar
     type = @source.source_type || 99

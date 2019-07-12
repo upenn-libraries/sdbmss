@@ -207,8 +207,6 @@ module SDBMSS::Blacklight
       translate_date_to_search_query(solr_parameters, 'source_date')
     end
 
-    # FIX ME: should these be 'translated'?  Or just searched as strings
-
     def translate_manuscript_date(solr_parameters)
       translate_daterange_param(solr_parameters, 'manuscript_date', DATE_RANGE_YEAR_MIN, DATE_RANGE_YEAR_MAX)
     end

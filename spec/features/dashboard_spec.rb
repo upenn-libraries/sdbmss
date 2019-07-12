@@ -24,8 +24,6 @@ describe "Dashboard", :js => true do
 
       expect(page).to have_content("There is no more recent activity to display")
     end
-
-    # fix me: need check for when there is content in activity & contributions
     
   end
 

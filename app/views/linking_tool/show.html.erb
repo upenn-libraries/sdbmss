@@ -55,7 +55,6 @@ function setOptions (p) {
 
 $(document).ready(function() {
     $("#addSearch").click( function (e) {
-        // fix me: add something here to dynamically change table height -> 
         var p = $('.search-block').eq(0).clone();
         p.find('.form-submission').remove();
         p.find("input", "select").val("");
@@ -193,35 +192,6 @@ $(document).ready(function() {
         //changes.push(entryId);
         setUnsavedChanges(true);
     };
-/*
-    var deleteWorkspaceEntry = function(entryIdToDelete) {
-        // FIX ME - what is the purpose of this?
-        if(mode == 'by_entry' && entryId == entryIdToDelete) {
-            SDBM.showErrorModal("#modal", "You can't unlink the main entry.");
-            return;
-        }
-
-        // FIX ME - should the last entry be removeable?  I think it should...
-        if(getActiveEntryManuscripts().length < 1) {
-            SDBM.showErrorModal("#modal", "You can't unlink that record. There must be at least one entry in the table.");
-            return;
-        }
-        
-        var idxToDelete = -1;
-        $.each(entryManuscripts, function (idx, workspaceEntry) {
-            if(workspaceEntry.entry_id == entryIdToDelete) {
-                idxToDelete = idx;
-            }
-        });
-        if (idxToDelete != -1) {
-            if(entryManuscripts[idxToDelete].id) {
-                entryManuscripts[idxToDelete]._destroy = 1;
-            } else {
-                entryManuscripts.splice(idxToDelete, 1);
-            }
-        }
-        setUnsavedChanges(true);
-    };*/
 
     var isInWorkspace = function(entryId, relationType) {
         var inWorkspace = false;
@@ -376,7 +346,6 @@ $(document).ready(function() {
             // it's had a chance to construct all its crazy DOM bits,
             // so it's hard to calculate height dynamically to fit the
             // viewport. This seems pretty decent.
-            // FIX ME: doesn't work, though -> when the window is too small, the right part (search results) just don't appear
             var footer_size = 100;
             var minimum_height = 300;
             return Math.max(minimum_height, $(window).height() - $("#search_results").offset().top - footer_size);
@@ -422,7 +391,7 @@ $(document).ready(function() {
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {
                     $("#spinner").hide();
-                    // FIX ME: for some reason, radiobuttons do not appear on first load of workspacetable -> this is a hacky fix to make them do that :/
+                    // for some reason, radiobuttons do not appear on first load of workspacetable -> this is a hacky fix to make them do that
                     workspaceTable.reload(highlightRows);
                 }
             });
@@ -460,8 +429,6 @@ $(document).ready(function() {
         highlightRows();
         //setTimeout(highlightRows, 10); // this callback doesn't happen at the right time, so I wrapped it in setTimeout to lower its priority
     } );
-
-    // TODO: fix row highlighting broken by fixed column datatable plugin
 
     $("#link-search").submit(function (e) {
         e.preventDefault();
