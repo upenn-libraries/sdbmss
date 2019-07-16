@@ -48,31 +48,6 @@ module CatalogControllerConfiguration
       config.index.title_field = ''
       config.index.display_type_field = 'format'
 
-      # REMOVE: replaced by new csv method
-=begin
-      config.index.respond_to.csv = Proc.new {
-        puts "is this still being used????"
-        # this gets executed within a format.csv { ... } scope
-
-        count = @response["response"]["numFound"]
-        if count <= search_results_max
-          objects = @document_list.map { |document| document.model_object.as_flat_hash }
-
-          headers = objects.first.keys
-          formatter = Proc.new do |object|
-            headers.map { |key| object[key] }
-          end
-          render csv: objects,
-                 filename: "#{search_model_class.to_s.downcase.pluralize}.csv",
-                 headers: headers,
-                 format: formatter
-        else
-          error_msg = "Result set has #{count} records, cannot return more than #{search_results_max}"
-          render status: :request_entity_too_large, content_type: "text/html", body: error_msg
-        end
-      }
-=end
-
       # NOTE: the wiki docs say about the :single option that "Only one
       # value can be selected at a time. When the value is selected, the
       # value of this field is ignored when calculating facet counts for

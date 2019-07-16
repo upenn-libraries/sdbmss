@@ -131,7 +131,6 @@ var BOOKMARK_SCOPE;
                (Array.isArray(obj) && obj.length === 0)) {
                 blank = true;
             } else if (typeof(obj) == 'string' || Array.isArray(obj)) {
-                //console.log('array or string', obj);
                 // strings and arrays (non-empty) are non-blank
             } else if (typeof(obj) === 'number') {
                 // noop: treat all numbers as non-blank
@@ -172,11 +171,9 @@ var BOOKMARK_SCOPE;
 
                 var keep = true;
                 if(assoc.skipChecking === undefined || !assoc.skipChecking(childObject)) {
-                    //console.log('checking ' + objectArrayName + ' record id = ' + childObject.id);
                     keep = false;
                     thingsToCheck.forEach(function (propertyName) {
                         var propertyIsBlank = isBlankThing(childObject[propertyName]);
-                        //console.log('is property ' + propertyName + ' (value=[' + childObject[propertyName] + ']) blank? ' + propertyIsBlank);
                         if(!propertyIsBlank) {
                             keep = true;
                         }
@@ -306,7 +303,6 @@ var BOOKMARK_SCOPE;
             promiseErrorHandlerFactory: function(msg, callback) {
                 if (callback) callback();
                 return function(response) {
-                  //console.log(response);
                     var append_str = "";
                     if(response.data && response.data.errors) {
                         // interpret Rails validation errors
@@ -410,9 +406,7 @@ var BOOKMARK_SCOPE;
       $scope.progress = {complete: 0, skipped: 0, flagged: 0};
       $http.get("/dericci_games/" + $scope.gameID + ".json", {
       }).then(function (response) {
-//        console.log(response);
         $scope.records = response.data.dericci_records;
-        console.log($scope.records);
         $scope.current_url = $sce.trustAsResourceUrl($scope.records[0].url);
         $scope.current_record = $scope.records[0];
         $scope.initial = $scope.progress.complete;
@@ -497,7 +491,6 @@ var BOOKMARK_SCOPE;
             }
             $scope.current_record.dericci_links.push({name_id: $scope.name.id, name: $scope.name.name});
             // remove 'flagged'
-            //console.log('mhmmham');
             $scope.remove_flags(model);
             $scope.next();
           } else {
@@ -618,12 +611,6 @@ var BOOKMARK_SCOPE;
 
       $(window).bind('beforeunload', function() {
           if (!$scope.saving && $scope.progress.complete != $scope.initial) {
-              /*
-              console.log("originalEntryViewModel=");
-              console.log(angular.toJson($scope.originalEntryViewModel));
-              console.log("current entry=");
-              console.log(angular.toJson($scope.entry));
-              */
             return "You have unsubmitted changes";
           }
           return;
@@ -1579,7 +1566,6 @@ var BOOKMARK_SCOPE;
 
             // from user setting, has first priority
             if (entry.backup !== undefined) {
-              //console.log(entry.backup, entry.backup == false, entry.backup === false);
               $scope.backup = entry.backup === false ? "disabled" : "enabled";
             }
             // check if session disabled...
@@ -1664,7 +1650,6 @@ var BOOKMARK_SCOPE;
             $scope.warnWhenLeavingPage = false;
             window.location = "/entries/" + entry.id;
             /*
-            //console.log(entry);
             $scope.entry = entry;
             $scope.populateEntryViewModel($scope.entry);
 
@@ -1754,7 +1739,7 @@ var BOOKMARK_SCOPE;
                         delete entryToSave.sale[role];
                     }
                 });
-                //console.log(entryToSave.sale);*/
+                */
                 entryToSave.sales = [ entryToSave.sale ];
                 delete entryToSave.sale;
             } else {
@@ -1768,7 +1753,6 @@ var BOOKMARK_SCOPE;
                 if (prov.dates) {
                   for (var j = 0; j < prov.dates.length; j++) {
                     var date = prov.dates[j];
-                    //console.log(date);
                     if (date.type == "Start") prov.start_date = date.date;
                     else if (date.type == "End") prov.end_date = date.date;
                     else if (date.type == "Associated") prov.associated_date += date.date + "\t";
@@ -1955,7 +1939,6 @@ var BOOKMARK_SCOPE;
             }
           }
 
-//          console.log(angular.toJson(entry1), angular.toJson(entry2));
           // note: changing a numerical field, then restoring the original and saving will still trigger 'unsaved' because one is a string and the other is a number (in the JSON)
           return angular.toJson(entry1) !== angular.toJson(entry2);
         };
@@ -2175,7 +2158,6 @@ var BOOKMARK_SCOPE;
                     valueToAssign = value.value;
                 }
                 model.assign(scope, valueToAssign);
-                //console.log(valueToAssign);
             };
 
             var eraseModel = function() {
@@ -2195,7 +2177,6 @@ var BOOKMARK_SCOPE;
                     $(element).focus();
                 }, 100);*/
 
-                //console.log(element, badValue, $(element), $(element).tooltip);
                 $(element)
                     .tooltip("option", "content", badValue + " isn't valid input, please change it or select a value from the suggestion box")
                     .tooltip("option", "disabled", false)
@@ -2335,7 +2316,6 @@ var BOOKMARK_SCOPE;
                     } else {
                         invalidInput = false;
                     }
-                    //console.log(scope.form);
                     if (scope.form && scope.form.source_agent)
                     {
                       scope.form.source_agent.$setValidity('text', !invalidInput);
@@ -2819,7 +2799,6 @@ var BOOKMARK_SCOPE;
       };
 
       $scope.postSave = function (response) {
-        //console.log(response);
         $scope.currentlySaving = false;
         window.location = "/places/" + $scope.place.id;
       };
@@ -2889,7 +2868,6 @@ var BOOKMARK_SCOPE;
           $('.merge-into').removeClass('no-edit'); 
           $scope.backupSource = angular.copy($scope.source);
           $scope.mergeEdit = true;
-          //console.log(1, $scope.source_agent); 
         };
         $scope.cancelMergeEdit = function () {
           $('.merge-into').addClass('no-edit');
@@ -3015,7 +2993,6 @@ var BOOKMARK_SCOPE;
                 });
             });
             $scope.source_agents = [];
-            //console.log(source);
         };
 
         $scope.postSourceSave = function(source) {
@@ -3368,7 +3345,6 @@ var BOOKMARK_SCOPE;
         };
 
         $scope.saveResponse = function(response) {
-          //console.log(response);
           $scope.errors = [];
           $scope.saveError = [];
           if (response.data.errors.name) {
@@ -3487,7 +3463,6 @@ var BOOKMARK_SCOPE;
     };
 
     $scope.useSuggestion = function(suggestion) {
-      console.log(suggestion);
       $scope.name.name = suggestion.name;
       $scope.name.viaf_id = suggestion.viaf_id;
       $scope.name.subtype = suggestion.subtype || "Unknown";
@@ -3686,7 +3661,6 @@ var BOOKMARK_SCOPE;
     };
 
     $scope.useSuggestion = function(suggestion) {
-      console.log(suggestion);
       $scope.name.name = suggestion.name;
       $scope.name.viaf_id = suggestion.viaf_id;
       $scope.name.subtype = suggestion.subtype || "Unknown";

@@ -1,8 +1,5 @@
-<!-- I had to override the blacklight class anyway, just to make the "tools" not appear for deprecated records... -->
-<!--<div class="alert alert-info"><%= @disclaimer %></div>-->
 <%= render_document_main_content_partial %>
-<!--<div id="content" class="<%= show_content_classes %>">
-</div>-->
+
 <% content_for :breadcrumbs do %>
   <%= render partial: "breadcrumbs", locals: {edit: false} %>
 <% end %>

@@ -277,13 +277,7 @@ module SolrSearchable
         end
       end
 
-      # a CSV search is unpaginated, so the entire search results are returned
-
       paginate :per_page => limit, :page => page
-      #if format != 'csv'
-      #else
-      #  paginate :page => 1, :per_page => self.count
-      #end
 
       order.present? ? order_by(order[:field], order[:direction]) : order_by(:score, :desc)
 

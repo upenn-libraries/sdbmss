@@ -36,12 +36,9 @@ function addNotification (message, type, permanent) {
 function load_activity (url, day) {
   $("#loader").show();
   loading = true;
-  //console.log('href');
   $.get(url, {day: day}, function(result){      
       //var loaded = JSON.parse(result);
-      //console.log(loaded);
       var loaded = result;
-      //console.log('mmm!');
       if (loaded.activities && loaded.activities[0]) {
 
           var date = loaded.activities[0].date;
@@ -69,7 +66,6 @@ function load_activity (url, day) {
                   else cl = '';
 
                   user_body.append($("<div class='list-group-item " + cl + "'><h4 class='list-group-item-heading'>" + title + "</h4> <p class='list-group-item-text'>" + details[user][title] + "</p></div>"));                    
-                  //console.log(title, details[user][title]);
               }
               user_header.html('<a href="/profiles/' + user + '" target="_blank">' + user + '</a> modified ' + count + ' record' + (count > 1 ? 's' : '') + ' <span class="caret"></span>');
           }
@@ -80,7 +76,6 @@ function load_activity (url, day) {
       }
 
       //bindRemoteAjaxCallback();
-      //console.log("DAY",day);
       if (day < 6) {
           //day++;
           load_activity(url, ++day);
@@ -149,7 +144,6 @@ $(document).ready(bindRemoteAjaxCallback);
 function bindRemoteAjaxCallback (){
   //selector = selector === undefined ? 
   $('a[data-remote]').on('ajax:success', function (event, xhr, status, result) {
-      //console.log('result.responseJSON', result.responseJSON);
       var errors = [];
       if (result.responseJSON.button) {
         $(this).replaceWith(result.responseJSON.button);

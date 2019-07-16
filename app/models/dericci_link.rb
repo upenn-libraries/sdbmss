@@ -22,17 +22,6 @@ class DericciLink < ActiveRecord::Base
         other_info: "'''#{other_info}'''"
       }
     }
-=begin
-    %Q(
-      sdbm:dericci_links/#{id}
-      a       sdbm:dericci_links
-      sdbm:dericci_links_dericci_record_id <https://sdbm.library.upenn.edu/dericci_records/#{dericci_record_id}>
-      sdbm:dericci_links_id #{id}
-      sdbm:dericci_links_name_id <https://sdbm.library.upenn.edu/names/#{name_id}>
-      sdbm:dericci_links_other_info '#{other_info}'
-    )
-    #  rdfs:label "dericci_links #1" ;
-=end
   end
 
 end

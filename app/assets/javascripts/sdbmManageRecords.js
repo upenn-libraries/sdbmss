@@ -116,7 +116,6 @@ var load_session = false;
                         $("#group_modal").modal("toggle");
                     },
                     error: function() {
-                        //console.log('error!!');
                         SDBM.showErrorModal("#modal", "An unspecified error occurred adding record(s) to a user group");
                     },
                     complete: function() {
@@ -474,9 +473,7 @@ var load_session = false;
                 width: "8%",
                 dbSortField: 'id',
                 render: function (data, type, full, meta) {
-                    // /console.log("here", data, type, full, meta);
                     var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '">' + data + '</a>';
-//                    console.log(str);
                     return str;
                 }
             },

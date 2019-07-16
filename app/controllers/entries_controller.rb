@@ -426,30 +426,7 @@ class EntriesController < SearchableAuthorityController
     end
     respond_to do |format|
       format.json { render :json => s.results.map(&:id) }
-    end
-=begin
-    return
-    similar = SDBMSS::SimilarEntries.new(@entry)
-    if params[:full].present?
-      total = similar.count
-      max = params[:max].present? ? params[:max].to_i : 10
-      entries = similar.first(max).map do |similar_entry|
-        similar_entry[:entry]
-      end
-      respond_to do |format|
-        format.json { render :json => { similar: entries.map(&:as_flat_hash), total: total } }
-      end
-    else
-      @similar_ids = Set.new
-      similar.each do |similar_entry|
-        entry = similar_entry[:entry]
-        @similar_ids.add entry.id
-      end
-      respond_to do |format|
-        format.json
-      end
-    end
-=end    
+    end 
   end
 
   def mark_as_approved

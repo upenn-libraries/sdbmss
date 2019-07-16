@@ -110,7 +110,6 @@ module SDBMSS::Blacklight
       # unless a query is specifically filtering on approved field,
       # only show approved records.
       if blacklight_params['approved'].blank?
-# JIRA(sdbm-176) -> show all records, even unapproved ones
         solr_parameters['fq'] << 'approved:*'
       end
     end
