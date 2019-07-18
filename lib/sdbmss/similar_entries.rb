@@ -1,6 +1,4 @@
-# fix me: remove file, since it is no longer used, or keep for reference?
-
-# Engine for discovering similar Entries, which may be the same Manuscript
+# Old (non-solr) prodecure for discovering similar Entries, which may be the same Manuscript
 
 require 'set'
 

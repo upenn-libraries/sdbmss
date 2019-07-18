@@ -6,10 +6,7 @@
 # Entry object even if it didn't change; this is desirable b/c then
 # any changes to associated models will be "group-able" with that
 # Entry through the same transaction_id value in the Version records.
-#
-# TODO: unfortunately, this always touches the Entry object even if
-# none of its fields (or the fields in any associations) have
-# changed. I don't know a good way to avoid this.
+
 module HasTouchCount
 
   extend ActiveSupport::Concern

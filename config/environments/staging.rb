@@ -24,12 +24,6 @@ Rails.application.configure do
   # Disable Rails's static asset server (Apache or nginx will already do this).
   config.serve_static_files = true #false
 
-  # Compress JavaScripts and CSS.
-
-  # TODO: figure out how to use js compression and still have our
-  # Angular controllers written in a sane way. As is, the typical way
-  # of defining them won't compress properly:
-  # http://stackoverflow.com/questions/20340644/angular-unknown-provider-error-after-minification-with-grunt-build-in-yeoman-a
   # config.assets.js_compressor = :uglifier
 
   # config.assets.css_compressor = :sass

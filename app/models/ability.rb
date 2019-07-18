@@ -58,7 +58,6 @@ class Ability
       can :manage, DericciRecord
 
       cannot :deprecate, :all
-      #cannot [:edit, :destroy, :merge], [Source, Entry]
       can :manage, Name
       cannot :review, Name
       # this needs to be RE-Established, since it has been overriden by line 51
@@ -77,7 +76,6 @@ class Ability
     if ['admin'].member? user.role
       can :manage, :all
       can :update_type, Source
-      #can :destroy, :all
     end
 
     can [:edit, :update], Entry, contributors: { :id => user.id }
@@ -89,64 +87,5 @@ class Ability
     cannot :show, Entry do |entry|
       (entry.created_by != user && !entry.contributors.include?(user)) && entry.draft
     end
-=begin
-    the old definitions - I am keeping them here now just for reference...
-
-    if ['contributor', 'editor', 'admin'].member? user.role
-      can :show, :all
-      [Entry, Sale, Language, Manuscript, Name, Place, Source, Comment].each do |clazz|
-        can :create, clazz
-        can :new, clazz
-        can :edit, clazz, :created_by_id => user.id
-        can :update, clazz, :created_by_id => user.id
-        # TODO: should users be able to delete their own records?
-        can :destroy, clazz, :created_by_id => user.id
-        cannot :merge, clazz
-      end
-      can :link, Entry
-      can :link, Manuscript
-      can :index, Entry
-
-      can :history, :all
-      # Decided by Lynn on 6/9/2015: A contributor can edit ANY
-      # manuscript. The thinking here is that a Manuscript isn't
-      # "owned" by the user in the same way as an Entry.
-      
-      can :unlink, Manuscript, :created_by_id => user.id
-      can :unlink, Entry, :created_by_id => user.id
-    end
-
-    if ['editor', 'admin'].member? user.role
-      [Entry, Sale, Language, Manuscript, Name, Place].each do |clazz|
-        can :merge, clazz
-      end
-      [Entry, Source, Manuscript, Name].each do |clazz|
-        can :manage, clazz
-      end
-      [Manuscript, Name].each do |clazz|
-        can :destroy, clazz
-      end
-
-      can :edit, Manuscript
-      can :unlink, Manuscript
-      can :unlink, Entry
-    end
-
-    if ['editor'].member? user.role
-      can :manage, EntryManuscript
-      [Entry, Source].each do |clazz|
-        cannot :destroy, clazz
-        cannot :deprecate, clazz
-        cannot :edit, clazz
-        cannot :merge, clazz
-      end
-    end
-
-    if ['admin'].member? user.role
-      can :manage, :all
-      can :destroy, :all
-    end
-=end
-
   end
 end

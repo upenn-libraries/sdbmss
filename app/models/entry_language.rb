@@ -41,19 +41,6 @@ class EntryLanguage < ActiveRecord::Base
         uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
       }
     }
-=begin
-    %Q(
-      sdbm:entry_languages/#{id}
-      a       sdbm:entry_languages
-      sdbm:entry_languages_id #{id}
-      sdbm:entry_languages_observed_name '#{observed_name}'
-      sdbm:entry_languages_entry_id <https://sdbm.library.upenn.edu/entries/#{entry_id}>
-      sdbm:entry_languages_language_id <https://sdbm.library.upenn.edu/languages/#{language_id}>
-      sdbm:entry_languages_order #{order}
-      sdbm:entry_languages_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
-      sdbm:entry_languages_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
-    )
-=end
   end
 
   private

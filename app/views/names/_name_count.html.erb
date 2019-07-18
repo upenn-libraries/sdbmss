@@ -6,7 +6,6 @@
 </dd>
 <% end %>
 
-<!-- FIX ME: public-facing COUNT will only show number of non-deleted entries : BUT includes deprecated records -->
 <% count_authors = Entry.joins(:entry_authors).where(entry_authors: {author_id: name.id}).distinct.count || 0 %>
 <% count_artists = Entry.joins(:entry_artists).where(entry_artists: {artist_id: name.id}).distinct.count || 0 %>
 <% count_scribes = Entry.joins(:entry_scribes).where(entry_scribes: {scribe_id: name.id}).distinct.count || 0 %>

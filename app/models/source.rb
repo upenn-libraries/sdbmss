@@ -256,23 +256,7 @@ class Source < ActiveRecord::Base
       end
       agent_str += source_agent.agent.name if source_agent.agent && source_agent.agent.name
     end
-=begin
-    if source_type.name == SourceType::AUCTION_CATALOG
-      selling_agent = get_selling_agent
-      agent_str = selling_agent.agent.name if selling_agent && selling_agent.agent
-    elsif source_type.name == SourceType::COLLECTION_CATALOG
-      institution = get_institution
-      agent_str = institution.agent.name if institution && institution.agent
-    else
-      # institution takes precedence for display
-      source_agent = get_institution || get_selling_agent
-      if source_agent && source_agent.agent
-        agent_str = source_agent.agent.name
-      else
-        agent_str = author if author
-      end
-    end
-=end
+
     title_str = title || "(No title)"
 
     if author
@@ -438,26 +422,6 @@ map:sources_title a d2rq:PropertyBridge;
         link: "'''#{link}'''"
       }
     }
-=begin
-    %Q(
-      sdbm:sources/#{id}
-      a       sdbm:sources
-      sdbm:sources_source_type_id <https://sdbm.library.upenn.edu/source_types/#{source_type_id}>
-      sdbm:sources_id #{id}
-      sdbm:sources_legacy '#{legacy}'^^xsd:boolean
-      sdbm:sources_date_accessed '#{date_accessed}'
-      sdbm:sources_medium '#{medium}'
-      sdbm:sources_location '#{location}'
-      sdbm:sources_location_institution '#{location_institution}'
-      sdbm:sources_status '#{status}'
-      sdbm:sources_other_info '#{other_info}'
-      sdbm:sources_deleted '#{deleted}'^^xsd:boolean
-      sdbm:sources_author '#{author}'
-      sdbm:sources_title '#{title}'
-      sdbm:sources_date '#{date}'
-    )
-    #  rdfs:label "dericci_links #1" ;
-=end
   end
 
   private

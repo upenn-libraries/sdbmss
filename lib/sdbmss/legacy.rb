@@ -591,9 +591,6 @@ module SDBMSS::Legacy
       #   create_artist_from_row_pass2(row, ctx)
       # end
 
-      # TODO: do a pass over Names to set IDs for Entrys where they
-      # were created. Do we really need to keep this data?
-
       puts "Second pass over Place records"
 
       SDBMSS::Util.batch(legacy_db,
@@ -1393,13 +1390,12 @@ module SDBMSS::Legacy
 
       deleted = row['ISDELETED'] == 'y'
 
-      # TODO: get rid of hidden field, it no longer makes sense
       hidden = row['HIDDEN_CAT'] == 'y'
 
       # Determine the SourceType and null out irrelevant fields; this
       # means we will lose some data. but since these fields are
       # duplicated in Manuscript, they should get migrated there and
-      # it should be fine. I think. TODO
+      # it should be fine. I think.
       source_type = nil
       case
       when row['SELLER'].present?
@@ -1607,7 +1603,7 @@ module SDBMSS::Legacy
           if em
             manuscript_id = em.manuscript_id
           else
-            # TODO: These manuscripts will only have one 'confirmed'
+            # These manuscripts will only have one 'confirmed'
             # entry, which is annoying, and possibly even bad, but we
             # need it to connect 2 Entries that potentially represent
             # the same MS

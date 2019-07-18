@@ -91,14 +91,6 @@ class Language < ActiveRecord::Base
         name: "'''#{name}'''"
       }
     }
-=begin
-    %Q(
-      sdbm:languages/#{id}
-      a       sdbm:languages
-      sdbm:languages_id #{id}
-      sdbm:languages_name '#{name}'
-    )
-=end
   end
 
 end

@@ -1,3 +1,6 @@
+# Used by corresponding cron task to download RDF data file, and move the zipped file to
+# the appropriate place to be publicly available on the rails app
+
 if ! [ -d "public/static/docs" ]; then
 
 	echo "CREATING STATIC/DOCS"

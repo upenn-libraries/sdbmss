@@ -68,17 +68,6 @@ class SourceType < ActiveRecord::Base
         entries_have_institution_field: "'#{entries_have_institution_field}'^^xsd:boolean"
       }
     }
-=begin
-    %Q(
-      sdbm:source_types/#{id}
-      a       sdbm:source_types
-      sdbm:source_types_id #{id}
-      sdbm:source_types_name '#{name}'
-      sdbm:source_types_display_name '#{display_name}'
-      sdbm:source_types_entries_transaction_field '#{entries_transaction_field}'^^xsd:boolean
-      sdbm:source_types_entries_have_institution_field '#{entries_have_institution_field}'^^xsd:boolean
-    )
-=end
   end
 
 end

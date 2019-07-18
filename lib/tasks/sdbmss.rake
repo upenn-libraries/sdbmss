@@ -76,8 +76,6 @@ namespace :sdbmss do
       entries = manuscript.entries
 
       needs_review = entries.any? { |entry| entry.secondary_source.present? }
-      # TODO: more logic here to determine which clusters of entries
-      # need review. look for identical fields?
 
       entries.each do |entry|
         hash = entry.as_flat_hash

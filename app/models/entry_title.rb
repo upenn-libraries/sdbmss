@@ -35,19 +35,6 @@ class EntryTitle < ActiveRecord::Base
         uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
       }
     }
-=begin
-    %Q(
-      sdbm:entry_titles/#{id}
-      a       sdbm:entry_titles
-      sdbm:entry_titles_id #{id}
-      sdbm:entry_titles_title '#{title}'
-      sdbm:entry_titles_common_title '#{common_title}'
-      sdbm:entry_titles_entry_id <https://sdbm.library.upenn.edu/entries/#{entry_id}>      
-      sdbm:entry_titles_order #{order}
-      sdbm:entry_titles_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
-      sdbm:entry_titles_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
-    )
-=end
   end
 
 end

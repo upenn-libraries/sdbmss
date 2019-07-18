@@ -227,8 +227,6 @@ module SDBMSS
       # (therefore, its end date in an end-exclusive range would be
       # 1501). This is consistent with how incunables are popularly
       # understood as being written before 1501.
-      #
-      # TODO: handle negative dates
 
       def to_bc(date_range)
         if date_range.present?

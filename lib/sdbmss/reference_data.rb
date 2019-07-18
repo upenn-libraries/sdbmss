@@ -1063,8 +1063,6 @@ module SDBMSS::ReferenceData
         common_title: "Hours",
       )
 
-      # TODO: source actually says "XVth c." but we don't yet support
-      # parsing roman numerals
       ed = EntryDate.new(entry: entry, observed_date: "15th c.")
       ed.normalize_observed_date
       ed.save!
@@ -1247,7 +1245,6 @@ module SDBMSS::ReferenceData
       )
       SaleAgent.create!(
         sale: sale,
-        # TODO: we need a way to indicate this is an ebay account name in the Name record
         agent: Name.find_or_create_agent("weisse-lilie-art"),
         role: SaleAgent::ROLE_SELLER_OR_HOLDER
       )

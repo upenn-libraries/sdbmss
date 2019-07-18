@@ -208,7 +208,6 @@ module SolrSearchable
           value.each do |v|
             v = v.split(/[-\/]/).join("").ljust(8, '01')
             op = Array(options[field + "_option"]).shift
-            # FIX ME: I used exception handling here because Date parsing for such varied input is awful - probably a better way
             begin
               if op && op == 'before'
                 with(field).between(Date.new(0,1,1)..Date.parse(v))
@@ -278,13 +277,7 @@ module SolrSearchable
         end
       end
 
-      # a CSV search is unpaginated, so the entire search results are returned
-
       paginate :per_page => limit, :page => page
-      #if format != 'csv'
-      #else
-      #  paginate :page => 1, :per_page => self.count
-      #end
 
       order.present? ? order_by(order[:field], order[:direction]) : order_by(:score, :desc)
 
