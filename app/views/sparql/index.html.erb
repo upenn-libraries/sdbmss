@@ -40,7 +40,6 @@
 							for (var j = 0; j < data.head.vars.length; j++) {
 								var value = data.results.bindings[i][data.head.vars[j]].value;
 								if (value.indexOf("http") != -1) {
-									// fix me: format with prefixes here
 									value = "<a href='" + value + "' target='_blank'>" + value + "</a>";									
 								}
 								row.append($("<td>" + value + "</td>"));
