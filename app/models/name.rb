@@ -501,12 +501,12 @@ class Name < ActiveRecord::Base
       model_class: "names",
       id: id,
       fields: {
-        name: "'''#{name}'''",
+        name: "'''#{name.to_s.gsub("'", "")}'''",
         viaf_id: "'''#{viaf_id}'''",
         subtype: "'''#{subtype}'''",
         startdate: "'''#{startdate}'''",
         enddate: "'''#{enddate}'''",
-        other_info: "'''#{other_info}'''",
+        other_info: "'''#{other_info.to_s.gsub("'", "")}'''",
         deleted: "'#{deleted}'^^xsd:boolean"
       }
     }   

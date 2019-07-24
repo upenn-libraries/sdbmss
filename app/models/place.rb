@@ -146,7 +146,7 @@ class Place < ActiveRecord::Base
       model_class: "places",
       id: id,
       fields: {
-        name: "'''#{name}'''",
+        name: "'''#{name.to_s.gsub("'", "")}'''",
         authority_id: "'''#{authority_id}'''",
         authority_source: "'''#{authority_source}'''",
         parent_id: "<https://sdbm.library.upenn.edu/places/#{parent_id}>",

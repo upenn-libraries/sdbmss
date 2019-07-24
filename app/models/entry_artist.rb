@@ -78,7 +78,7 @@ class EntryArtist < ActiveRecord::Base
       model_class: "entry_artists",
       id: id,
       fields: {
-        observed_name: "'''#{observed_name}'''",
+        observed_name: "'''#{observed_name.to_s.gsub("'", "")}'''",
         artist_id: "<https://sdbm.library.upenn.edu/names/#{artist_id}>",
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
         role: "'''#{role}'''",

@@ -414,7 +414,7 @@ map:sources_title a d2rq:PropertyBridge;
         location: "'''#{location}'''",
         location_institution: "'''#{location_institution}'''",
         status: "'''#{status}'''",
-        other_info: "'''#{other_info}'''",
+        other_info: "'''#{other_info.to_s.gsub("'", "")}'''",
         deleted: "'#{deleted}'^^xsd:boolean",
         author: "'''#{author}'''",
         title: "'''#{title}'''",
