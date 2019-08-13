@@ -379,29 +379,6 @@ class Source < ActiveRecord::Base
     }
   end
 
-=begin
-map:sources_id a d2rq:PropertyBridge;
-  d2rq:belongsToClassMap map:sources;
-  d2rq:property sdbm:sources_id;
-  d2rq:propertyDefinitionLabel "sources id";
-  d2rq:column "sources.id";
-  d2rq:datatype xsd:integer;
-  .
-map:sources_date a d2rq:PropertyBridge;
-  d2rq:belongsToClassMap map:sources;
-  d2rq:property sdbm:sources_date;
-  d2rq:propertyDefinitionLabel "sources date";
-  d2rq:column "sources.date";
-  .
-map:sources_title a d2rq:PropertyBridge;
-  d2rq:belongsToClassMap map:sources;
-  d2rq:property sdbm:sources_title;
-  d2rq:propertyDefinitionLabel "sources title";
-  d2rq:column "sources.title";
-  .
-=end
-
-
   def to_rdf
     {
       model_class: "sources",
@@ -417,7 +394,7 @@ map:sources_title a d2rq:PropertyBridge;
         other_info: "'''#{other_info.to_s.gsub("'", "")}'''",
         deleted: "'#{deleted}'^^xsd:boolean",
         author: "'''#{author}'''",
-        title: "'''#{title}'''",
+        title: "'''#{title.to_s.gsub("'", "")}'''",
         date: "'''#{date}'''",
         link: "'''#{link}'''"
       }

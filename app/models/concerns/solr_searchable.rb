@@ -1,3 +1,7 @@
+# This module is included in any model that has a searchable datatable (Name, Entry, Place, Language, Comment, EntryManuscript, 
+# Manuscript, Source, User) and includes the do_search and do_csv_search methods (which handle search logic and results) and
+# a number of helper functions for generating and filtering search parameters.
+
 module SolrSearchable
 
   require 'csv'
@@ -92,6 +96,9 @@ module SolrSearchable
 
   end
 
+  # CSV searching is the same as usual, but without pagination, and written to file instead of returned to
+  # DataTables as JSON
+
   def do_csv_search(params, download)
     s = do_search(params.merge({:limit => self.count, :offset => 0}))
     
@@ -123,7 +130,13 @@ module SolrSearchable
     #download.created_by.notify("Your download '#{download.filename}' is ready.")
   end
 
+  # This function defines all advanced (and simple) search functionality everywhere except the public catalog view
+  # for Entries, which is handled by Blacklight.
+
   def do_search(params)
+
+  # This first section sets up basic search parameters based on what was requested.
+
     format = params[:format].present? ? params[:format] : 'none'
 
     order = params[:order].present? ? {field: params[:order].split[0], direction: params[:order].split[1]} : {}
@@ -138,20 +151,39 @@ module SolrSearchable
 
     reviewed = params[:reviewed] && params[:reviewed] == "1" ? false : nil
 
+  # Each model has a custom version of these functions (and a list of valid fields) to permit only the
+  # appropriate search fields for each model. 
+
+  # "Params" are any fulltext fields
+  # "Filters" are all non-fulltext fields (numbers, booleans, exact string matches)
+  # "Dates" are specifically for fields that need to allow date comparison
+
     filters = filters_for_search(params)
     dates = dates_for_search(params)
     params = params_for_search(params)
     
     s = self.search do
-      
+  
+  # Fulltext search is defined as a lambda function, since it needs to be able to be combined with non-fulltext
+  # search options as the user decides.
+
       fulltext_search = lambda { |p, o| 
         if params.present?
           p.each do |field, value|
+
+            # Since there are unlimited rows for the advanced search, the user can submit multiple values for the same field
+            # i.e. "Title" for an Entry could be "Bible" and "Book" separately.  So, they are iterated over:
+
             value = Array(value)
             if value.kind_of? Array
               value.each do |v|
+
+                # Each search field can also be qualified in various ways
+
                 op = Array(options[field + "_option"]).shift
-                # if searching for this 'without' the term, right now just add a '-' to the beginning of query to negate it
+                
+                # If searching for this 'without' the term, right now just add a '-' to the beginning of query to negate it
+                
                 if op && op == 'does not contain'
                   fulltext "-" + v.gsub(' ', '+'), :fields => [field]
                 elsif op && op == 'blank'
@@ -174,6 +206,9 @@ module SolrSearchable
       if not reviewed.nil?
         with :reviewed, false
       end
+
+      # The same process for exact-match fields, but this time the search is being run and narrowed (i.e. it is not
+      # using a lambda function)
 
       if filters.present?
         filters.each do |field, value|
@@ -202,6 +237,9 @@ module SolrSearchable
         end
       end
 
+      # The same process for Dates, but with different interpretations of the search field options to correspond
+      # with date-based searching
+
       if dates.present?
         dates.each do |field, value|
           value = Array(value)
@@ -226,7 +264,10 @@ module SolrSearchable
         end
       end
 
-      # in order to use SUNSPOTS 'and'/'or' options, we create a lambda function for fulltext searching (above)
+      # In order to use SUNSPOT'S 'and'/'or' options together with non-fulltext fields,
+      # we create a lambda function for fulltext searching (above)
+
+      # ( This may be an idiosycracy of Sunspot only, but that is the reason for this roundabout approach ) 
 
       if s_op == 'OR'
         any do
@@ -238,10 +279,14 @@ module SolrSearchable
         end
       end
 
-      # unfortunately, sunspot does not natively support MIXING fulltext and exact searches using the "OR" operator - so we do that manually
+      # Unfortunately, sunspot does not natively support MIXING fulltext and exact searches using the "OR" operator 
+      # - so we do that manually
       # 
       # params[:fq] refer to 'filter queries', or queries that refer to a fixed set of objects (exact strings, numbers, etc.)
       # params[:q] refers to fulltext queries
+
+      # What this block of code does is check whether the 'OR' operator is used, and if it has been added by sunspot correctly
+      # to the Solr query - if not, it is added in the proper place
 
       adjust_solr_params do |params|
         new_q = []
@@ -276,6 +321,8 @@ module SolrSearchable
           params[:q] = '(' + params[:q] + ') AND (_query_:"{!edismax qf=\'draft\'}false")'
         end
       end
+
+      # Finally, page number, count and order_by field are accounted for, and the search results are returned
 
       paginate :per_page => limit, :page => page
 
