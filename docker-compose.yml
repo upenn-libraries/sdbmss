@@ -3,6 +3,7 @@ version: '2.2'
 services:
   rabbitmq:
     image: rabbitmq:3
+    env_file: .docker-environment
     hostname: 'rabbitmq'
     ports:
       - '5672:5672'
@@ -12,7 +13,7 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
     cpu_shares: 20
     logging:
-      driver: "journald"
+      driver: "json-file"
     mem_limit: 3700m
     mem_reservation: 2000m      
     restart: always
@@ -21,7 +22,7 @@ services:
     env_file: .docker-environment
     cpu_shares: 80
     logging:
-      driver: "journald"
+      driver: "json-file"
     ports:
       - "3307:3307"
     volumes:
@@ -34,7 +35,7 @@ services:
     env_file: .docker-environment
     cpu_shares: 80
     logging:
-      driver: "journald"
+      driver: "json-file"
     links:
       - db
     volumes:
@@ -46,7 +47,7 @@ services:
     env_file: .docker-environment
     cpu_shares: 80
     logging:
-      driver: "journald"
+      driver: "json-file"
     restart: always
     links:
       - db
@@ -72,11 +73,11 @@ services:
     command: bundle exec rake jobs:work
     restart: always
     logging:
-      driver: "journald"
+      driver: "json-file"
   jena:
     build: ./jena
     logging:
-      driver: "journald"
+      driver: "json-file"
     volumes:
       - rdf_data:/fuseki
     mem_limit: 3700m
@@ -88,9 +89,10 @@ services:
   interface:
     build: ./interface
     command: ruby interface.rb
+    env_file: .docker-environment
     cpu_shares: 20
     logging:
-      driver: "journald"
+      driver: "json-file"
     links:
       - jena
       - rabbitmq
@@ -105,9 +107,9 @@ services:
     build: ./nginx
     cpu_shares: 50
     volumes:
-      - /etc/httpd/ssl:/etc/httpd/ssl
+       - ${PWD}/docker/ssl:/etc/httpd/ssl
     logging:
-      driver: "journald"
+      driver: "json-file"
     links:
       - rails
       - jena
