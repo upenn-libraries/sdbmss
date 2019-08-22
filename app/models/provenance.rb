@@ -135,7 +135,7 @@ class Provenance < ActiveRecord::Base
       model_class: "provenance",
       id: id,
       fields: {
-        observed_name: "'''#{observed_name}'''",
+        observed_name: "'''#{observed_name.to_s.gsub("'", "")}'''",
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
         provenance_agent_id: "<https://sdbm.library.upenn.edu/names/#{provenance_agent_id}>",
         order: "'#{order}'^^xsd:integer",
@@ -150,7 +150,7 @@ class Provenance < ActiveRecord::Base
         end_date: "'''#{end_date}'''",
         end_date_normalized_start: "'''#{end_date_normalized_start}'''",
         end_date_normalized_end: "'''#{end_date_normalized_end}'''",
-        comment: "'''#{comment}'''",
+        comment: "'''#{comment.to_s.gsub("'", "")}'''",
         direct_transfer: "'#{direct_transfer}'^^xsd:boolean",
         acquisition_method: "'''#{acquisition_method}'''"
       }

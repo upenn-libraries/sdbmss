@@ -4,6 +4,7 @@ namespace :sparql do
 	task :test => :environment do
 
 		entities = [ Name, Place, Language, Source, DericciLink, DericciRecord, Entry, EntryArtist, EntryAuthor, EntryDate, EntryLanguage, EntryManuscript, EntryMaterial, EntryPlace, EntryScribe, EntryTitle, EntryUse, Manuscript, NamePlace, Provenance, Sale, SaleAgent, SourceAgent ]
+		# entities = [ Provenance, Sale, SaleAgent, SourceAgent ]
 		
 		total = 0
 		possible = 0
@@ -26,12 +27,12 @@ namespace :sparql do
 				# entity.where("id < 10000").each do | instance |
 				entity.find_in_batches.each do | group |
 					group.each do |instance|
-						f.puts "<https://sdbm.library.upenn.edu/#{class_name}/#{instance.id}> sdbm:#{class_name}_id #{instance.id} ."
-						f.puts "<https://sdbm.library.upenn.edu/#{class_name}/#{instance.id}> rdf:type sdbm:#{class_name} ."
+						f.puts "<https://sdbm.library.upenn.edu/#{class_name}/#{instance.id}> sdbm:#{class_name}_id #{instance.id} ;"
+						f.puts "rdf:type sdbm:#{class_name} ;"
 						instance.to_rdf[:fields].each do | key, value |
-							f.puts "<https://sdbm.library.upenn.edu/#{class_name}/#{instance.id}> sdbm:#{class_name}_#{key} #{value.gsub("\r\n", '').gsub("\\", '')} ."
+							f.puts "sdbm:#{class_name}_#{key} #{value.gsub("\r\n", '').gsub("\\", '')} ;"
 						end
-						f.puts ""
+						f.puts "."
 						count += 1
 						total += 1
 					end

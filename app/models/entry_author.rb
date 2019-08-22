@@ -51,7 +51,7 @@ class EntryAuthor < ActiveRecord::Base
       model_class: "entry_authors",
       id: id,
       fields: {
-        observed_name: "'''#{observed_name}'''",
+        observed_name: "'''#{observed_name.to_s.gsub("'", "")}'''",
         author_id: "<https://sdbm.library.upenn.edu/names/#{author_id}>",
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
         role: "'''#{role}'''",
