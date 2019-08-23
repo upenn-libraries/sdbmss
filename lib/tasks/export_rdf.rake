@@ -4,7 +4,6 @@ namespace :sparql do
 	task :test => :environment do
 
 		entities = [ Name, Place, Language, Source, DericciLink, DericciRecord, Entry, EntryArtist, EntryAuthor, EntryDate, EntryLanguage, EntryManuscript, EntryMaterial, EntryPlace, EntryScribe, EntryTitle, EntryUse, Manuscript, NamePlace, Provenance, Sale, SaleAgent, SourceAgent ]
-		# entities = [ Provenance, Sale, SaleAgent, SourceAgent ]
 		
 		total = 0
 		possible = 0
