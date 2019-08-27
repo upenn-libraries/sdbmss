@@ -52,7 +52,7 @@ begin
 # For example, the 'destroy' query is as follows:
 
       query = %Q(
-        PREFIX sdbm: <https://sdbm.library.upenn.edu/>
+        PREFIX sdbm: <https://sdbm.library.upenn.edu#>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
         DELETE { ?subject ?predicate ?object }
@@ -83,7 +83,7 @@ begin
       end
     elsif message['action'] == "update"
       query = %Q(
-        PREFIX sdbm: <https://sdbm.library.upenn.edu/>        
+        PREFIX sdbm: <https://sdbm.library.upenn.edu#>        
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
       )
       message['fields'].each do |field, new_value|

@@ -453,15 +453,37 @@ class Name < ActiveRecord::Base
     # reindexed after the merge
     entry_ids = entry_ids_to_index_on_update
 
+    ids = EntryArtist.where(artist_id: self.id).pluck(:id)
     EntryArtist.where(artist_id: self.id).update_all({ artist_id: target_id })
+    EntryArtist.where( id: ids ).each(&:update_bunny)
+    
+    ids = EntryAuthor.where(author_id: self.id).pluck(:id)
     EntryAuthor.where(author_id: self.id).update_all({ author_id: target_id })
+    EntryAuthor.where( id: ids ).each(&:update_bunny)
+    
+    ids = EntryScribe.where(scribe_id: self.id).pluck(:id)
     EntryScribe.where(scribe_id: self.id).update_all({ scribe_id: target_id })
-    SaleAgent.where(agent_id: self.id).update_all({ agent_id: target_id })
-    SourceAgent.where(agent_id: self.id).update_all({ agent_id: target_id })
-    Provenance.where(provenance_agent_id: self.id).update_all({ provenance_agent_id: target_id })
+    EntryScribe.where( id: ids ).each(&:update_bunny)
 
+    ids = SaleAgent.where(agent_id: self.id).pluck(:id)
+    SaleAgent.where(agent_id: self.id).update_all({ agent_id: target_id })
+    SaleAgent.where( id: ids ).each(&:update_bunny)
+    
+    ids = SourceAgent.where(agent_id: self.id).pluck(:id)
+    SourceAgent.where(agent_id: self.id).update_all({ agent_id: target_id })
+    SourceAgent.where( id: ids ).each(&:update_bunny)    
+    
+    ids = Provenance.where(provenance_agent_id: self.id).pluck(:id)
+    Provenance.where(provenance_agent_id: self.id).update_all({ provenance_agent_id: target_id })
+    Provenance.where( id: ids ).each(&:update_bunny)
+    
+    ids = DericciLink.where(name_id: self.id).pluck(:id)
     DericciLink.where(name_id: self.id).update_all({ name_id: target_id })
+    DericciLink.where( id: ids ).each(&:update_bunny)
+    
+    ids = DericciRecord.where(verified_id: self.id).pluck(:id)
     DericciRecord.where(verified_id: self.id).update_all({verified_id: target_id})
+    DericciRecord.where( id: ids ).each(&:update_bunny)
 
     # update flags on the target
     target.is_artist ||= self.is_artist

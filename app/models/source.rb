@@ -317,6 +317,7 @@ class Source < ActiveRecord::Base
     entry_ids = entry_ids_to_index_on_merge
 
     Entry.where(source_id: self.id).update_all(source_id: target_id)
+    Entry.where(id: entry_ids).each(&:update_bunny)
 
 #    target.update_count
     target.save!
