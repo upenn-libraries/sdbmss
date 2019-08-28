@@ -123,19 +123,12 @@
                  $("#spinner").show();
 
                  var params = manageEntries.translateSearchParams(sdbmTable, dt_params);
-                 //console.log(params, "FIX ME: is this happening twice?");
-                 // hide drafts from table view
-                 //params["draft"] = false;
                  sdbmTable.searchAndUpdateTable(params, callback, {
                      complete: function () {
                          $("#spinner").hide();
                          
                          if(showApprovalControls()) {
-                            //$(".approve-control").show();
-                            //$('.unreviewed_only').show();//.css({"display": "table-cell"});
                          } else {
-                            //$(".approve-control").hide();
-                            //$('.unreviewed_only').hide();
                          }
                      }
                  });

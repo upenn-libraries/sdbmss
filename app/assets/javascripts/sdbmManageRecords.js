@@ -116,7 +116,6 @@ var load_session = false;
                         $("#group_modal").modal("toggle");
                     },
                     error: function() {
-                        //console.log('error!!');
                         SDBM.showErrorModal("#modal", "An unspecified error occurred adding record(s) to a user group");
                     },
                     complete: function() {
@@ -313,7 +312,6 @@ var load_session = false;
     // returns a bookmarkable URL that contains current state of page
     // and search form
 
-    // FIX ME : Add all search options here: page, limit, option, field, etc.
     SDBM.ManageRecords.prototype.persistFormStateToURL = function () {
         var manageRecords = this;
         return URI(manageRecords.getResourceIndexURL()).search({
@@ -475,9 +473,7 @@ var load_session = false;
                 width: "8%",
                 dbSortField: 'id',
                 render: function (data, type, full, meta) {
-                    // /console.log("here", data, type, full, meta);
                     var str = '<a href="/' + manageRecords.options.resourceName + '/' + data + '">' + data + '</a>';
-//                    console.log(str);
                     return str;
                 }
             },

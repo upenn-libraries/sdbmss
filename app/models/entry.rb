@@ -90,33 +90,8 @@ class Entry < ActiveRecord::Base
   accepts_nested_attributes_for :group_records, allow_destroy: true
 
   # list of args to pass to Entry.includes in various places, for fetching a 'complete' entry
-=begin 
+
   @@includes = [
-    :institution,
-    :entry_titles,
-    :entry_dates,
-    :entry_materials,
-    :entry_uses,
-    :created_by,
-    :updated_by,
-    :entry_manuscripts => [:manuscript],
-    :entry_authors => [:author],
-    :entry_artists => [:artist],
-    :entry_scribes => [:scribe],
-    :entry_languages => [:language],
-    :entry_places => [:place],
-    :sales => [
-      {:sale_agents => [:agent]}
-    ],
-    :provenance => [:provenance_agent],
-    :source => [
-      :source_type,
-      {:source_agents => [:agent]}
-    ]
-  ]
-=end
-  @@includes = [
-    # try including bookmarks, watches?
     :created_by, 
     :updated_by, 
     :institution,
@@ -422,8 +397,6 @@ class Entry < ActiveRecord::Base
     # for performance, we avoid using has_many->through associations
     # because they always hit the db and circumvent the preloading
     # done in with_associations scope.
-
-    # FIX ME: missing institution field?
 
     sale = get_sale
     sale_selling_agents = sale ? sale.sale_agents.select{ |sa| sa.role == "selling_agent" } : []#(sale.get_selling_agents_names if sale && sale.get_selling_agents.count > 0)
@@ -948,10 +921,6 @@ class Entry < ActiveRecord::Base
         end_date = (provenance_item.start_date_normalized_end || provenance_item.end_date_normalized_end)
         # only take the provenance_items with either a start OR end date
         if start_date.present? || end_date.present?
-          # make sure they both have values? TODO: this probably isn't
-          # right: if only one date exists, we should probably use
-          # that by itself (for end date, we would use that date + 1
-          # day)
           start_date = start_date || SDBMSS::Blacklight::DATE_RANGE_FULL_MIN.to_s
           end_date = end_date || SDBMSS::Blacklight::DATE_RANGE_FULL_MAX.to_s
 
@@ -1038,7 +1007,7 @@ class Entry < ActiveRecord::Base
     path = "tmp/#{id}_#{user}_#{filename}"
     headers = nil
     loop do
-      s = do_search(params.merge({:limit => 300, :offset => offset})) # 12-06-17 fix me: add 'order' param if sorting not working properly?
+      s = do_search(params.merge({:limit => 300, :offset => offset}))
       offset += 300
       ids = s.results.map(&:id)
       objects = Entry.with_associations.where(id: ids).map { |e| e.as_flat_hash({options: {csv: true}}) }
@@ -1157,8 +1126,8 @@ class Entry < ActiveRecord::Base
         height: "'#{height}'^^xsd:integer",
         width: "'#{width}'^^xsd:integer",
         alt_size: "'''#{alt_size}'''",
-        manuscript_binding: "'''#{manuscript_binding}'''",
-        other_info: "'''#{other_info}'''",
+        manuscript_binding: "'''#{manuscript_binding.to_s.gsub("'", "")}'''",
+        other_info: "'''#{other_info.to_s.gsub("'", "")}'''",
         manuscript_link: "'''#{manuscript_link}'''",
         miniatures_fullpage: "'#{miniatures_fullpage}'^^xsd:integer",
         miniatures_large: "'#{miniatures_large}'^^xsd:integer",
@@ -1174,34 +1143,6 @@ class Entry < ActiveRecord::Base
         source_id: "<https://sdbm.library.upenn.edu/sources/#{source_id}>"
       }
     }
-=begin
-    %Q(
-      sdbm:entries/#{id}
-      a       sdbm:entries
-      sdbm:entries_catalog_or_lot_number '#{catalog_or_lot_number}'
-      sdbm:entries_folios #{folios}
-      sdbm:entries_num_columns #{num_columns}
-      sdbm:entries_num_lines #{num_lines}
-      sdbm:entries_height #{height}
-      sdbm:entries_width #{width}
-      sdbm:entries_alt_size '#{alt_size}'
-      sdbm:entries_manuscript_binding '#{manuscript_binding}'
-      sdbm:entries_other_info '#{other_info}'
-      sdbm:entries_manuscript_link '#{manuscript_link}'
-      sdbm:entries_miniatures_fullpage #{miniatures_fullpage}
-      sdbm:entries_miniatures_large #{miniatures_large}
-      sdbm:entries_miniatures_small #{miniatures_small}
-      sdbm:entries_miniatures_unspec_size #{miniatures_unspec_size}
-      sdbm:entries_initials_historiated #{initials_historiated}
-      sdbm:entries_initials_decorated #{initials_decorated}
-      sdbm:entries_transaction_type #{transaction_type}
-      sdbm:entries_deprecated '#{deprecated}'^^xsd:boolean
-      sdbm:entries_unverified_legacy_record '#{unverified_legacy_record}'xsd:boolean
-      sdbm:entries_institution_id <https://sdbm.library.upenn.edu/names/#{institution_id}>
-      sdbm:entries_superceded_by_id <https://sdbm.library.upenn.edu/entries/#{superceded_by_id}>
-      sdbm:entries_source_id <https://sdbm.library.upenn.edu/sources/#{source_id}>
-    )
-=end
   end
 
   private
@@ -1238,7 +1179,6 @@ class Entry < ActiveRecord::Base
       end    
     end
 
-    # place, language FIX ME add these
     entry_places.group_by(&:place_id).keep_if{ |k, v| v.length >= 1}.each do |k, entry_place|
       place = entry_place.first.place
       Place.update_counters(place.id, :entries_count => place.entries.where(deprecated: false, draft: false).uniq.count - place.entries_count) unless place.nil?

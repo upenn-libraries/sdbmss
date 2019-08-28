@@ -85,7 +85,6 @@ class EntriesController < SearchableAuthorityController
     results = Entry.with_associations.includes(:bookmarks, :watches).where(id: ids).order(ids.count > 0 ? "FIELD(id, #{ids.join(', ')})" : "id desc").map { |e| 
       e.as_flat_hash.merge({ 
         can_edit: can?(:edit, e), 
-        # FIX ME this can probably be further improved (sped up) by not rendering repeated html, even if it is a small amount (instead use template in JS)
         bookmarkwatch: (render_to_string partial: "nav/bookmark_watch_table", locals: {model: e }, layout: false, formats: [:html]) 
       }) 
     }
@@ -175,8 +174,6 @@ class EntriesController < SearchableAuthorityController
   # widget, which is the only thing that uses (or should use) this,
   # since we return arrays instead of objects with more meaningful
   # keys.
-
-  # fix me 12-11-2017 - is this needed? I think not, since manage entries/linking tool don't use blacklight anymore...
 
   def render_search_results_as_json
     retval = {
@@ -429,30 +426,7 @@ class EntriesController < SearchableAuthorityController
     end
     respond_to do |format|
       format.json { render :json => s.results.map(&:id) }
-    end
-=begin
-    return
-    similar = SDBMSS::SimilarEntries.new(@entry)
-    if params[:full].present?
-      total = similar.count
-      max = params[:max].present? ? params[:max].to_i : 10
-      entries = similar.first(max).map do |similar_entry|
-        similar_entry[:entry]
-      end
-      respond_to do |format|
-        format.json { render :json => { similar: entries.map(&:as_flat_hash), total: total } }
-      end
-    else
-      @similar_ids = Set.new
-      similar.each do |similar_entry|
-        entry = similar_entry[:entry]
-        @similar_ids.add entry.id
-      end
-      respond_to do |format|
-        format.json
-      end
-    end
-=end    
+    end 
   end
 
   def mark_as_approved
@@ -544,9 +518,6 @@ class EntriesController < SearchableAuthorityController
 
         # update manuscript links
         if superceded_by_id.present?
-          # TODO: It may be better to delete the EntryManuscripts and
-          # create new ones for the superceding entry, especially
-          # since EntryManuscript may expand to include other fields.
           EntryManuscript.where(entry_id: @entry.id).each do |em|
             # DE 2015-10-13 Delete the existing EM if one already
             # exists between the superceding entry and the manuscript

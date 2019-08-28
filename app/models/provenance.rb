@@ -135,7 +135,7 @@ class Provenance < ActiveRecord::Base
       model_class: "provenance",
       id: id,
       fields: {
-        observed_name: "'''#{observed_name}'''",
+        observed_name: "'''#{observed_name.to_s.gsub("'", "")}'''",
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
         provenance_agent_id: "<https://sdbm.library.upenn.edu/names/#{provenance_agent_id}>",
         order: "'#{order}'^^xsd:integer",
@@ -150,36 +150,11 @@ class Provenance < ActiveRecord::Base
         end_date: "'''#{end_date}'''",
         end_date_normalized_start: "'''#{end_date_normalized_start}'''",
         end_date_normalized_end: "'''#{end_date_normalized_end}'''",
-        comment: "'''#{comment}'''",
+        comment: "'''#{comment.to_s.gsub("'", "")}'''",
         direct_transfer: "'#{direct_transfer}'^^xsd:boolean",
         acquisition_method: "'''#{acquisition_method}'''"
       }
     }
-=begin
-    %Q(
-      sdbm:provenance/#{id}
-      a       sdbm:provenance
-      sdbm:provenance_id #{id}
-      sdbm:provenance_observed_name '#{observed_name}'
-      sdbm:provenance_entry_id <https://sdbm.library.upenn.edu/entries/#{entry_id}>
-      sdbm:provenance_provenance_agent_id <https://sdbm.library.upenn.edu/names/#{provenance_agent_id}>
-      sdbm:provenance_order #{order}
-      sdbm:provenance_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
-      sdbm:provenance_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
-      sdbm:provenance_associated_date '#{associated_date}'
-      sdbm:provenance_associated_date_normalized_start '#{associated_date_normalized_start}'
-      sdbm:provenance_associated_date_normalized_end '#{associated_date_normalized_end}'
-      sdbm:provenance_start_date '#{start_date}'
-      sdbm:provenance_start_date_normalized_start '#{start_date_normalized_start}'
-      sdbm:provenance_start_date_normalized_end '#{start_date_normalized_end}'
-      sdbm:provenance_end_date '#{end_date}'
-      sdbm:provenance_end_date_normalized_start '#{end_date_normalized_start}'
-      sdbm:provenance_end_date_normalized_end '#{end_date_normalized_end}'
-      sdbm:provenance_comment '#{comment}'
-      sdbm:provenance_direct_transfer '#{direct_transfer}'^^xsd:boolean
-      sdbm:provenance_acquisition_method '#{acquisition_method}'
-    )
-=end
   end
 
 end

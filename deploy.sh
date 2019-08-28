@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Very simple deployment script, that just runs the docker stop/start/build and git pull commands over ssh.  The syntax is as follows:
 # ./deploy.sh <HOST> <COMMAND:START/STOP/DEPLOY> **<BRANCH>** <version?>
 
 path='sdbmss/current'

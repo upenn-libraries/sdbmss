@@ -120,7 +120,7 @@
             <div class="panel panel-default">
                 <div class="panel-body text-muted">
                     <span class='h3'>Last Known Location </span><br>
-                    <p>This field existed in a previous version of the SDBM, but our new data model does not support it. When more recent data is available you will see a Most Recently Observed Location below.</p>
+                    <p>This field existed in a previous version of the SDBM, but our new data model does not support it. When more recent data is available you will see a "Most Recent Observation" below.</p>
                     <p class='text-center'><b><%= @manuscript.location %></b></p>
                     <p>Can you verify this information? <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: @manuscript.id, source_type: 4}) %></p>
                 </div>
@@ -144,7 +144,7 @@
     <div class="col-sm-5">
         <div class="panel panel-success">
             <div class="panel-heading">
-                <span class="h4">Most Recently Observed Location</span>
+                <span class="h4">Most Recent Observation</span>
             </div>
             <div class="panel-body" style="height: 190px; overflow-y: scroll">
                 <dl class="document-metadata">
@@ -246,7 +246,6 @@
                                                             <%= format_fuzzy_date(provenance.start_date) %>
                                                             <% if provenance.start_date.present? && provenance.end_date.present? %><br/>to<br/><% end %>
                                                             <%= format_fuzzy_date(provenance.end_date) %>
-                                                        <%# FIX ME: redundant code from entries/_show.html.erb %>
                                                         <% elsif provenance.associated_date.present? %>
                                                             <%= provenance.associated_date.split("\t").join(", ") %>
                                                         <% else %>

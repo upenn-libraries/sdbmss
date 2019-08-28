@@ -63,17 +63,6 @@ class SourceAgent < ActiveRecord::Base
         source_id: "<https://sdbm.library.upenn.edu/sources/#{source_id}>"
       }
     }
-=begin    
-    %Q(
-      sdbm:source_agents/#{id}
-      a       sdbm:source_agents
-      sdbm:source_agents_id #{id}
-      sdbm:source_agents_observed_name '#{observed_name}'
-      sdbm:source_agents_agent_id <https://sdbm.library.upenn.edu/names/#{agent_id}>
-      sdbm:source_agents_role '#{role}'
-      sdbm:source_agents_source_id <https://sdbm.library.upenn.edu/sources/#{source_id}>
-    )
-=end
   end
 
   private

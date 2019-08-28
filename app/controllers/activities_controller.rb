@@ -48,8 +48,6 @@ class ActivitiesController < ApplicationController
     #render partial: "activities/show_all"
   end
 
-  # fix me: replace 'show all' or 'list' with 'index.json.jbuilder'; it's only one method, no?
-
   def index
     @page_size = 25
     @page = (params["page"] || 1).to_i

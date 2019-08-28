@@ -146,7 +146,7 @@ class Place < ActiveRecord::Base
       model_class: "places",
       id: id,
       fields: {
-        name: "'''#{name}'''",
+        name: "'''#{name.to_s.gsub("'", "")}'''",
         authority_id: "'''#{authority_id}'''",
         authority_source: "'''#{authority_source}'''",
         parent_id: "<https://sdbm.library.upenn.edu/places/#{parent_id}>",
@@ -155,20 +155,6 @@ class Place < ActiveRecord::Base
         deleted: "'#{deleted}'^^xsd:boolean"
       }
     }
-=begin
-    %Q(
-      sdbm:places/#{id}
-      a       sdbm:places
-      sdbm:places_id #{id}
-      sdbm:places_name '#{name}'
-      sdbm:places_authority_id '#{authority_id}'
-      sdbm:places_authority_source '#{authority_source}'
-      sdbm:places_parent_id <https://sdbm.library.upenn.edu/places/#{parent_id}>
-      sdbm:places_latitude #{latitude}
-      sdbm:places_longitude #{longitude}
-      sdbm:places_deleted '#{deleted}'^^xsd:boolean
-    )
-=end
   end
 
 end

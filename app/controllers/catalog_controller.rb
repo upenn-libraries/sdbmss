@@ -20,23 +20,10 @@ class CatalogController < ApplicationController
 
   def show
     @entry = Entry.find_by(id: params[:id])
-    #if @entry.manuscripts.count <= 0
-    #end
+
     entry = @entry
-    # JIRA(sdbm-176)
-#    entry = Entry.find_by(id: params[:id], approved: true)
     if entry.present?
-=begin
-    s = Sunspot.more_like_this(@entry) do
-      fields :title_search, :place_search, :author_search, :language_search, :manuscript_date_search, :folios_search
-      # without :id, [collect entry_ids from manuscript]
-      #minimum_term_frequency 3
-      boost_by_relevance true
-      order_by :score, :desc
-      paginate :per_page => 10, :page => 1
-    end
-    @suggestions = s.results.first(10)
-=end
+
       @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
       if can? :show, entry
         

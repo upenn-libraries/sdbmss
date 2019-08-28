@@ -110,7 +110,6 @@ module SDBMSS::Blacklight
       # unless a query is specifically filtering on approved field,
       # only show approved records.
       if blacklight_params['approved'].blank?
-# JIRA(sdbm-176) -> show all records, even unapproved ones
         solr_parameters['fq'] << 'approved:*'
       end
     end
@@ -206,8 +205,6 @@ module SDBMSS::Blacklight
     def translate_source_date(solr_parameters)
       translate_date_to_search_query(solr_parameters, 'source_date')
     end
-
-    # FIX ME: should these be 'translated'?  Or just searched as strings
 
     def translate_manuscript_date(solr_parameters)
       translate_daterange_param(solr_parameters, 'manuscript_date', DATE_RANGE_YEAR_MIN, DATE_RANGE_YEAR_MAX)

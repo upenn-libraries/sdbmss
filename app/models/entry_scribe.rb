@@ -43,7 +43,7 @@ class EntryScribe < ActiveRecord::Base
       model_class: "entry_scribes",
       id: id,
       fields: {
-        observed_name: "'''#{observed_name}'''",
+        observed_name: "'''#{observed_name.to_s.gsub("'", "")}'''",
         entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
         scribe_id: "<https://sdbm.library.upenn.edu/names/#{scribe_id}>",
         order: "'#{order}'^^xsd:integer",
@@ -51,19 +51,6 @@ class EntryScribe < ActiveRecord::Base
         uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
       }
     }
-=begin
-    %Q(
-      sdbm:entry_scribes/#{id}
-      a       sdbm:entry_scribes
-      sdbm:entry_scribes_id #{id}
-      sdbm:entry_scribes_observed_name '#{observed_name}'
-      sdbm:entry_scribes_entry_id <https://sdbm.library.upenn.edu/entries/#{entry_id}>
-      sdbm:entry_scribes_scribe_id <https://sdbm.library.upenn.edu/names/#{scribe_id}>
-      sdbm:entry_scribes_order #{order}
-      sdbm:entry_scribes_supplied_by_data_entry '#{supplied_by_data_entry}'^^xsd:boolean
-      sdbm:entry_scribes_uncertain_in_source '#{uncertain_in_source}'^^xsd:boolean
-    )
-=end
   end
 
 end

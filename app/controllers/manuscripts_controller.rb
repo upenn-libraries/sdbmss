@@ -98,7 +98,7 @@ class ManuscriptsController < SearchableAuthorityController
     end
   end
 
-# 12-06-17 fix me: this is no longer available anywhere in the public interface - but should it be?
+# this is no longer available anywhere in the public interface - but should it be?
   def destroy
     if deletable?(@model)
       if @model.destroy

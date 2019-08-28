@@ -124,7 +124,6 @@ function relation (type) {
             stateSave: true,
             autoWidth: false,
             ajax: function (dt_params, callback, settings) {
-                //console.log('table ajax');
                 options.ajax(sdbmTable, dt_params, callback, settings);
             },
             /*colVis: {
@@ -301,7 +300,6 @@ function relation (type) {
     };
 
     SDBM.Table.prototype.reload = function(callback) {
-        //console.log('table reload');
         this.dataTable.ajax.reload(callback);
     };
 

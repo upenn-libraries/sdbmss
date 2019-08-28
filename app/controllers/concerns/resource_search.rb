@@ -43,7 +43,6 @@ module ResourceSearch
     search_results_keys.reduce({ }) do |result, key|
       result[key] = obj.send key
       result
-    end
   end
 =begin
   # Classes can override this to modify the results with additional
@@ -81,8 +80,6 @@ module ResourceSearch
       end
 
       objects = search_results_map(objects)
-
-# FIX ME : file size (number of rows) for csv download (limit)
 
       respond_to do |format|
         format.json {
@@ -174,4 +171,5 @@ module ResourceSearch
     query
   end
 =end
+    end
 end

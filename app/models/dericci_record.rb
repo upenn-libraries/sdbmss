@@ -56,25 +56,7 @@ class DericciRecord < ActiveRecord::Base
         senate_house: "'''#{senate_house}'''",
         out_of_scope: "'#{out_of_scope}'^^xsd:boolean"
       }
-    }
-=begin
-    %Q(
-      sdbm:dericci_records/#{id}
-      a       sdbm:dericci_records
-      sdbm:dericci_records_id #{id}
-      sdbm:dericci_records_dates '#{dates}'
-      sdbm:dericci_records_name '#{name}'
-      sdbm:dericci_records_place '#{place}'
-      sdbm:dericci_records_url '#{url}'
-      sdbm:dericci_records_cards #{cards}
-      sdbm:dericci_records_size '#{size}'
-      sdbm:dericci_records_other_info '#{other_info}'
-      sdbm:dericci_records_senate_house '#{senate_house}'
-      sdbm:dericci_records_out_of_scope '#{out_of_scope}'^^xsd:boolean
-    )
-=end
-    #  rdfs:label "dericci_links #1" ;
-    
+    }    
   end
 
 end

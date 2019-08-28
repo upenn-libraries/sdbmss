@@ -256,23 +256,7 @@ class Source < ActiveRecord::Base
       end
       agent_str += source_agent.agent.name if source_agent.agent && source_agent.agent.name
     end
-=begin
-    if source_type.name == SourceType::AUCTION_CATALOG
-      selling_agent = get_selling_agent
-      agent_str = selling_agent.agent.name if selling_agent && selling_agent.agent
-    elsif source_type.name == SourceType::COLLECTION_CATALOG
-      institution = get_institution
-      agent_str = institution.agent.name if institution && institution.agent
-    else
-      # institution takes precedence for display
-      source_agent = get_institution || get_selling_agent
-      if source_agent && source_agent.agent
-        agent_str = source_agent.agent.name
-      else
-        agent_str = author if author
-      end
-    end
-=end
+
     title_str = title || "(No title)"
 
     if author
@@ -333,6 +317,7 @@ class Source < ActiveRecord::Base
     entry_ids = entry_ids_to_index_on_merge
 
     Entry.where(source_id: self.id).update_all(source_id: target_id)
+    Entry.where(id: entry_ids).each(&:update_bunny)
 
 #    target.update_count
     target.save!
@@ -395,29 +380,6 @@ class Source < ActiveRecord::Base
     }
   end
 
-=begin
-map:sources_id a d2rq:PropertyBridge;
-  d2rq:belongsToClassMap map:sources;
-  d2rq:property sdbm:sources_id;
-  d2rq:propertyDefinitionLabel "sources id";
-  d2rq:column "sources.id";
-  d2rq:datatype xsd:integer;
-  .
-map:sources_date a d2rq:PropertyBridge;
-  d2rq:belongsToClassMap map:sources;
-  d2rq:property sdbm:sources_date;
-  d2rq:propertyDefinitionLabel "sources date";
-  d2rq:column "sources.date";
-  .
-map:sources_title a d2rq:PropertyBridge;
-  d2rq:belongsToClassMap map:sources;
-  d2rq:property sdbm:sources_title;
-  d2rq:propertyDefinitionLabel "sources title";
-  d2rq:column "sources.title";
-  .
-=end
-
-
   def to_rdf
     {
       model_class: "sources",
@@ -430,34 +392,14 @@ map:sources_title a d2rq:PropertyBridge;
         location: "'''#{location}'''",
         location_institution: "'''#{location_institution}'''",
         status: "'''#{status}'''",
-        other_info: "'''#{other_info}'''",
+        other_info: "'''#{other_info.to_s.gsub("'", "")}'''",
         deleted: "'#{deleted}'^^xsd:boolean",
         author: "'''#{author}'''",
-        title: "'''#{title}'''",
+        title: "'''#{title.to_s.gsub("'", "")}'''",
         date: "'''#{date}'''",
         link: "'''#{link}'''"
       }
     }
-=begin
-    %Q(
-      sdbm:sources/#{id}
-      a       sdbm:sources
-      sdbm:sources_source_type_id <https://sdbm.library.upenn.edu/source_types/#{source_type_id}>
-      sdbm:sources_id #{id}
-      sdbm:sources_legacy '#{legacy}'^^xsd:boolean
-      sdbm:sources_date_accessed '#{date_accessed}'
-      sdbm:sources_medium '#{medium}'
-      sdbm:sources_location '#{location}'
-      sdbm:sources_location_institution '#{location_institution}'
-      sdbm:sources_status '#{status}'
-      sdbm:sources_other_info '#{other_info}'
-      sdbm:sources_deleted '#{deleted}'^^xsd:boolean
-      sdbm:sources_author '#{author}'
-      sdbm:sources_title '#{title}'
-      sdbm:sources_date '#{date}'
-    )
-    #  rdfs:label "dericci_links #1" ;
-=end
   end
 
   private
