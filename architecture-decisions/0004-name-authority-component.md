@@ -8,12 +8,12 @@ Accepted
 
 ## Context
 
-The issue motivating this decision, and any context that influences or constrains the decision.
+A promise of the SDBM grant proposal was to add a name authority component to the SDBM. Most important are the names of previous and current owners of manuscripts. Some are found in existing authorities; other are not. 
 
 ## Decision
 
-The change that we're proposing or have agreed to implement.
+The decision was to use the Virtual International Authority File <https://viaf.org>, which aggregates many national library authority lists, including the Library of Congress. A helper module `lib/viaf.org` is used by Name forms to allow users to search VIAF for VIAF IDs. Newly added names are approved by admin users of the application.
 
 ## Consequences
 
-What becomes easier or more difficult to do and any risks introduced by the change that will need to be mitigated.
+The VIAF integration streamlines user location of IDs for names and supports SDBM data interoperability, especially in Linked Data contexts.
