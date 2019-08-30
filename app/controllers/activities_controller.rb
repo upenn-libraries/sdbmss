@@ -1,3 +1,5 @@
+# The activities controller is only called (for most users) to create a list of tiles for the dashboard, using the show_all method.
+
 class ActivitiesController < ApplicationController
 
   before_action :authenticate_user!
