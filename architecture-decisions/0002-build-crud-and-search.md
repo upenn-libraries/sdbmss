@@ -16,7 +16,7 @@ The new application needed a more flexible, user contribution, complex search an
 
 The following technologies were select for the following reasons.
 
-- Blacklight was chosen to provide ready Solr-backed searches using technolgoy common in the library, and for which long term product support could be expected.
+- Blacklight was chosen to provide ready Solr-backed searches using technolgoy common in the library, and for which long term product support could be expected. Blacklight was also used for bookmarking.
 - Rails is required by Blacklight
 - MySQL was selected as it was the database of choice within library technology services, and supported by sysadmin staff
 - Solr is required by Blacklight
