@@ -16,4 +16,4 @@ The decision was to use the Virtual International Authority File <https://viaf.o
 
 ## Consequences
 
-The VIAF integration streamlines user location of IDs for names and supports SDBM data interoperability, especially in Linked Data contexts.
+The VIAF integration streamlines user location of IDs for names and supports SDBM data interoperability, especially in Linked Data contexts. VIAF has finalized all IDs, which may require the ID maintenance in the future.
