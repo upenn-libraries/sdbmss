@@ -1,6 +1,12 @@
 
 # Define our own BookmarksController instead of using the one from
 # Blacklight.
+
+# Bookmarks are entirely interacted with through javascript, so all of the controller methods are structured
+# for JSON instead of HTML
+
+# For individual bookmark 'buttons', see the '_bookmark_watch.html.erb' partial
+
 class BookmarksController < ApplicationController
 
   before_action :authenticate_user!, only: [:index, :new, :create, :edit, :show, :update, :destroy]

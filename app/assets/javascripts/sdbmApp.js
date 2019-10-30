@@ -9,6 +9,8 @@
 /* Hints for eslint: */
 /* eslint camelcase:0, no-underscore-dangle:0 */
 /* global alert, angular, console, window, setTimeout, $, SDBM, URI */
+
+
 var EntryScope;
 var BOOKMARK_SCOPE;
 
@@ -28,6 +30,8 @@ var BOOKMARK_SCOPE;
             alert("Error: no meta tag found with csrf-token. Ajax calls won't work.");
         }
     });
+
+// Provides simple shorthand for ajax calls, synergizes well with rails REST endpoints
 
     sdbmApp.factory('Entry', ['$resource',
                               function($resource){
@@ -95,12 +99,17 @@ var BOOKMARK_SCOPE;
                               }]);
 
     /* Globally available utility functions */
+
     sdbmApp.factory('sdbmutil', function () {
+
+        // In the 'Edit Entry' form (and Source, to a lesser degree), you can create sub-blocks that may remain
+        // empty when the form is submitted.  This cleans that up and prevents blank sub-records being created on save.
 
         /* An object is 'blank' if its keys don't have any meaningful
          * values. We use this to filter out records that user has
          * added on UI but not populated.
          */
+    
         var isBlankObject = function(obj) {
             var blank = true;
             if(obj !== undefined) {
@@ -346,6 +355,9 @@ var BOOKMARK_SCOPE;
         };
     });
 
+    // Simple controller allows us to use the select/create name modal controller found throughout
+    // the SDBM application
+
     sdbmApp.controller('DericciRecordCtrl', function ($scope, $http, $modal, $sce) {
       $scope.record_id = $("#record-id").val();
       $scope.user_id = $("#user-id").val();
@@ -387,6 +399,10 @@ var BOOKMARK_SCOPE;
       };
       EntryScope = $scope;
     });
+
+    // This controller is a little more complicated, but is based on the same principle as the DeRicci Record controller
+    // The user is given a list of records, and angular is mostly there for the name select/create interface, as well as
+    // flagging records for various reasons.
 
     sdbmApp.controller("DericciGameCtrl", function ($scope, $http, $modal, $sce) {
       EntryScope = $scope;
@@ -618,6 +634,7 @@ var BOOKMARK_SCOPE;
     });
 
     /* Controller for selecting a source*/
+
     sdbmApp.controller("SelectSourceCtrl", function ($scope, $http, $modalInstance, $modal, $rootScope, Source, sdbmutil, model, type) {
 
         $scope.sdbmutil = sdbmutil;
@@ -749,6 +766,9 @@ var BOOKMARK_SCOPE;
         return output;
       }
     });
+
+    // This controller is only used from within a modal, so it is always called from another parent controller.  This is responsible
+    // for the interface that provides search bar, list and option to select a name and attach it to the parent record.
 
     sdbmApp.controller("SelectNameAuthorityCtrl", function ($scope, $http, $modalInstance, $modal, recordType, model, type, base) {
       $scope.suggestions = [];
@@ -900,6 +920,10 @@ var BOOKMARK_SCOPE;
       }
 
     });
+
+    // This is a pretty basic controller for uploading a file, but it does do some simple parsing on the import CSV,
+    // and some simple error checking.  The import is validated when actually uploaded, but this provides some faster feedback
+    // for easy-to-catch errors.  
 
     sdbmApp.controller("ImportCtrl", function ($scope, $http, Entry, Source, sdbmutil, $modal) {
       $scope.entries = [];
@@ -1123,6 +1147,8 @@ var BOOKMARK_SCOPE;
       };
     });
 
+    // Simple tool on the Edit Entry page!
+
     sdbmApp.controller("ConvertInchesToMillimetersCtrl", function ($scope, $modalInstance, model, field) {
       $scope.confirm = function () {
         model[field] = $scope.millimeters;
@@ -1135,6 +1161,13 @@ var BOOKMARK_SCOPE;
     });
 
     /* Entry screen controller */
+
+    // This is less complicated than it looks!  An entry has fields and also sub-objects, and this controller
+    // therefore calls select name/place/language/source modal controllers.  It also has some pre-save processing
+    // to make sure the data structure is what rails wants.
+
+    // Additional features include auto-saving a 'backup' of the entry.
+
     sdbmApp.controller("EntryCtrl", function ($scope, $http, $filter, Entry, Source, sdbmutil, $modal) {
 
         EntryScope = $scope;
@@ -2519,6 +2552,9 @@ var BOOKMARK_SCOPE;
         };
     });
 
+    // This emtpy controller is simply to allow sdbm directives (specifically tooltips) to be usable on 
+    // public pages (like the public view for a name or entry)
+
     sdbmApp.controller('PublicCtrl', function ($scope) {
       console.log('public controller only');
     });
@@ -3778,6 +3814,9 @@ var BOOKMARK_SCOPE;
       });
     }
   });
+
+  // Bookmarks were once available on any page as a side-bar  - in the current version, this is just a 
+  // slightly more dynamic page where bookmarks can be removed or edited more in real-time.
 
   sdbmApp.controller('ManageBookmarks', function ($scope, $sce, $location, $http) {
 
