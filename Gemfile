@@ -135,7 +135,7 @@ gem 'codemirror-rails'
 # bundle exec rake doc:rails generates the Rails API under doc/api.
 group :doc do
   gem 'sdoc', '~> 0.4.0'
-  gem 'yard', '~> 0.9.11'
+  gem 'yard', '~> 0.9.20'
 end
 
 group :development do

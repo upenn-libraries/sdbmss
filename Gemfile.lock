@@ -420,7 +420,7 @@ GEM
       chronic (>= 0.6.3)
     xpath (2.1.0)
       nokogiri (~> 1.3)
-    yard (0.9.18)
+    yard (0.9.20)
 
 PLATFORMS
   ruby
@@ -490,7 +490,7 @@ DEPENDENCIES
   unicorn-rails
   web-console (~> 2.1)
   whenever
-  yard (~> 0.9.11)
+  yard (~> 0.9.20)
 
 BUNDLED WITH
    1.11.2
