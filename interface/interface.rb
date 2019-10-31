@@ -47,12 +47,12 @@ begin
     message = JSON.parse(body)
     if message['action'] == "destroy"
 
-# The message action will either be "destroy" or "update".  In the case of destroy, the query simply deletes every triple 
+# The message action will either be "destroy" or "update".  In the case of destroy, the query simply deletes every triple
 # with the given entity as its 'subject'.  For update, each field is iterated over and the triple is deleted and rewritten.
 # For example, the 'destroy' query is as follows:
 
       query = %Q(
-        PREFIX sdbm: <https://sdbm.library.upenn.edu#>
+        PREFIX sdbm: <https://sdbm.library.upenn.edu/>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
         DELETE { ?subject ?predicate ?object }
@@ -83,28 +83,28 @@ begin
       end
     elsif message['action'] == "update"
       query = %Q(
-        PREFIX sdbm: <https://sdbm.library.upenn.edu#>        
+        PREFIX sdbm: <https://sdbm.library.upenn.edu/>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
       )
       message['fields'].each do |field, new_value|
-        predicate = "sdbm:#{message['model_class']}_#{field}"        
+        predicate = "sdbm:#{message['model_class']}_#{field}"
 
-# When the record is updated, the process is the same, but as well as the old triple being deleted (for each triple in the 
+# When the record is updated, the process is the same, but as well as the old triple being deleted (for each triple in the
 # record), the new triple is added with the new value.
 
         query += %Q(
-          DELETE { ?subject #{predicate} ?object } 
-          INSERT { ?subject #{predicate} #{new_value} } 
-          WHERE { 
+          DELETE { ?subject #{predicate} ?object }
+          INSERT { ?subject #{predicate} #{new_value} }
+          WHERE {
             BIND (<https://sdbm.library.upenn.edu/#{message['model_class']}/#{message['id']}> as ?subject) .
             OPTIONAL { ?subject #{predicate} ?object }
           };
         )
       end
       query += %Q(
-        DELETE { ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?object } 
-        INSERT { ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://sdbm.library.upenn.edu/#{message['model_class']}> } 
-        WHERE { 
+        DELETE { ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?object }
+        INSERT { ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <https://sdbm.library.upenn.edu/#{message['model_class']}> }
+        WHERE {
           BIND (<https://sdbm.library.upenn.edu/#{message['model_class']}/#{message['id']}> as ?subject) .
           OPTIONAL { ?subject <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> ?object }
         };
@@ -116,7 +116,7 @@ begin
         request = Net::HTTP::Post.new(uri.request_uri)
         request.set_form_data({"update" => query})
         request.basic_auth("admin", ENV["ADMIN_PASSWORD"])
-        response = http.request(request) 
+        response = http.request(request)
         if response.code != 200
           puts "PROBLEM: #{response} #{query}"
         end
@@ -125,10 +125,10 @@ begin
       rescue Exception => err
         status_queue = channel.queue("sdbm_status")
         status_queue.publish({id: message['response_id'], code: "404", message: err.to_s }.to_json)
-      end     
+      end
     else
       puts "OTHER: #{message}"
-    end    
+    end
   end
 rescue Interrupt => err
   connection.close
