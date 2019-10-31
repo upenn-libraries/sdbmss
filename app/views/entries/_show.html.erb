@@ -60,7 +60,7 @@
 <% end %>
 
 <!-- in the future, if you want this to be more open ended (any type of source), just remove the 'source_type' field -->
-<p>Do you have additional information about the manuscript described here? 
+<p>Do you have additional information about the manuscript described here?
     <% if entry.manuscript %>
         <%= link_to "Create A Personal Observation", new_source_path({create_entry: 1, manuscript_id: entry.manuscript.id, source_type: 4}) %>
     <% else %>
@@ -129,7 +129,7 @@
                     <br>
                     <% else %>
                         <%= selling_agent.display_value %> <%= selling_agent.certainty_flags %>
-                    <% end %>                  
+                    <% end %>
                 <% end %>
             </td>
         </tr>
@@ -148,7 +148,7 @@
                         <br>
                     <% else %>
                         <%= seller_or_holder.display_value %> <%= seller_or_holder.certainty_flags %>
-                    <% end %>                    
+                    <% end %>
                 <% end %>
             </td>
         </tr>
@@ -163,7 +163,7 @@
                         <a href="<%= name_path(buyer.agent) %>">
                             <%= buyer.display_value %>
                         </a>
-                        <%= buyer.certainty_flags %>    
+                        <%= buyer.certainty_flags %>
                         <br>
                     <% else %>
                         <%= buyer.display_value %> <%= buyer.certainty_flags %>
@@ -186,7 +186,7 @@
         <tr>
             <td class="col-sm-2 text-right record-label">Date Sold</td>
             <td class="col-sm-10">
-                <%= SDBMSS::Util.format_fuzzy_date(sale.date) %>
+                <%= format_fuzzy_date(sale.date) %>
             </td>
         </tr>
         <% end %>
@@ -523,7 +523,7 @@
                                     <% end %>
                                 <% end %>
                             </li>
-                        <% end %>                
+                        <% end %>
                         </span>
                     </div>
                     <div class="col-sm-6 text-right">
@@ -554,7 +554,7 @@
             <td class="col-sm-12">
                 <div id="similar-entries">
                     <% @suggestions.each do |suggestion| %>
-                        <%= link_to entry_path(suggestion) do %> 
+                        <%= link_to entry_path(suggestion) do %>
                             <% if @linked.include? suggestion.id %>
                                 <span class="glyphicon glyphicon-plus"></span>
                             <% end %>
@@ -570,7 +570,7 @@
     </tbody>
 </table>
 <% end %>
-    
+
 <%= render partial: "comments/show_all", locals: {comments: entry.comments.where(public: true), record: entry} %>
 
 <div class="spacer-40px"></div>
