@@ -84,13 +84,13 @@ Installation
 
 **5. First Time Setup: Rails and SOLR**
 
-  Setup database - perform migration:
+  Setup database - perform setup:
 
-	    docker-compose exec rails bundle exec rake db:migrate
+	    docker-compose exec rails bundle exec rake db:setup
 
   (Optional: Load data from .sql dump)
 
-	    docker cp /tmp/sdbm.sql.gz current_db_1:/tmp/sdbm.sql.gz
+	    docker cp sdbm.sql.gz sdbm_db_1:/tmp/sdbm.sql.gz
 	    docker-compose exec db /bin/bash
 	    cd /tmp
 	    gunzip sdbm.sql.gz
