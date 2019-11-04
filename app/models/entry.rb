@@ -1115,7 +1115,7 @@ class Entry < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "entries",
       id: id,
       fields: {
@@ -1137,12 +1137,15 @@ class Entry < ActiveRecord::Base
         initials_decorated: "'#{initials_decorated}'^^xsd:integer",
         transaction_type: "'''#{transaction_type}'''",
         deprecated: "'#{deprecated}'^^xsd:boolean",
-        unverified_legacy_record: "'#{unverified_legacy_record}'^^xsd:boolean",
-        institution_id: "<https://sdbm.library.upenn.edu/names/#{institution_id}>",
-        superceded_by_id: "<https://sdbm.library.upenn.edu/entries/#{superceded_by_id}>",
-        source_id: "<https://sdbm.library.upenn.edu/sources/#{source_id}>"
+        unverified_legacy_record: "'#{unverified_legacy_record}'^^xsd:boolean"
       }
     }
+
+    map[:fields][:institution_id]   = "<https://sdbm.library.upenn.edu/names/#{institution_id}>"      if institution_id.present?
+    map[:fields][:superceded_by_id] = "<https://sdbm.library.upenn.edu/entries/#{superceded_by_id}>"  if superceded_by_id.present?
+    map[:fields][:source_id]        = "<https://sdbm.library.upenn.edu/sources/#{source_id}>"         if source_id.present?
+
+    map
   end
 
   private
