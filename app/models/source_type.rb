@@ -58,16 +58,18 @@ class SourceType < ActiveRecord::Base
 
   # SourceType records should rarely, if ever, change
   def to_rdf
-    {
+    map = {
       model_class: "source_types",
       id: id,
-      fields: {
-        name: "'''#{name}'''",
-        display_name: "'''#{display_name}'''",
-        entries_transaction_field: "'#{entries_transaction_field}'^^xsd:boolean",
-        entries_have_institution_field: "'#{entries_have_institution_field}'^^xsd:boolean"
-      }
+      fields: {}
     }
+
+    map[:fields][:name]                           = "'''#{name}'''"                                    if name.present?
+    map[:fields][:display_name]                   = "'''#{display_name}'''"                            if display_name.present?
+    map[:fields][:entries_transaction_field]      = "'#{entries_transaction_field}'^^xsd:boolean"      unless entries_transaction_field.nil?
+    map[:fields][:entries_have_institution_field] = "'#{entries_have_institution_field}'^^xsd:boolean" unless entries_have_institution_field.nil?
+
+    map
   end
 
 end

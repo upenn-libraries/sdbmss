@@ -142,19 +142,21 @@ class Place < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "places",
       id: id,
-      fields: {
-        name: "'''#{name.to_s.gsub("'", "")}'''",
-        authority_id: "'''#{authority_id}'''",
-        authority_source: "'''#{authority_source}'''",
-        parent_id: "<https://sdbm.library.upenn.edu/places/#{parent_id}>",
-        latitude: "'#{latitude}'^^xsd:decimal",
-        longitude: "'#{longitude}'^^xsd:decimal",
-        deleted: "'#{deleted}'^^xsd:boolean"
-      }
+      fields: {}
     }
+
+    map[:fields][:name]             = "'''#{name.to_s.gsub("'", "")}'''"                     if name.present?
+    map[:fields][:authority_id]     = "'''#{authority_id}'''"                                if authority_id.present?
+    map[:fields][:authority_source] = "'''#{authority_source}'''"                            if authority_source.present?
+    map[:fields][:parent_id]        = "<https://sdbm.library.upenn.edu/places/#{parent_id}>" if parent_id.present?
+    map[:fields][:latitude]         = "'#{latitude}'^^xsd:decimal"                           if latitude.present?
+    map[:fields][:longitude]        = "'#{longitude}'^^xsd:decimal"                          if longitude.present?
+    map[:fields][:deleted]          = "'#{deleted}'^^xsd:boolean"                            unless deleted.nil?
+
+    map
   end
 
 end

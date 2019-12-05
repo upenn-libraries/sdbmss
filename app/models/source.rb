@@ -381,25 +381,27 @@ class Source < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "sources",
       id: id,
-      fields: {
-        source_type_id: "<https://sdbm.library.upenn.edu/source_types/#{source_type_id}>",
-        legacy: "'#{legacy}'^^xsd:boolean",
-        date_accessed: "'''#{date_accessed}'''",
-        medium: "'''#{medium}'''",
-        location: "'''#{location}'''",
-        location_institution: "'''#{location_institution}'''",
-        status: "'''#{status}'''",
-        other_info: "'''#{other_info.to_s.gsub("'", "")}'''",
-        deleted: "'#{deleted}'^^xsd:boolean",
-        author: "'''#{author}'''",
-        title: "'''#{title.to_s.gsub("'", "")}'''",
-        date: "'''#{date}'''",
-        link: "'''#{link}'''"
-      }
+      fields: {}
     }
+
+    map[:fields][:source_type_id]       = "<https://sdbm.library.upenn.edu/source_types/#{source_type_id}>" if source_type_id.present?
+    map[:fields][:legacy]               = "'#{legacy}'^^xsd:boolean"                                        unless legacy.nil?
+    map[:fields][:date_accessed]        = "'''#{date_accessed}'''"                                          if date_accessed.present?
+    map[:fields][:medium]               = "'''#{medium}'''"                                                 if medium.present?
+    map[:fields][:location]             = "'''#{location}'''"                                               if location.present?
+    map[:fields][:location_institution] = "'''#{location_institution}'''"                                   if location_institution.present?
+    map[:fields][:status]               = "'''#{status}'''"                                                 if status.present?
+    map[:fields][:other_info]           = "'''#{other_info.to_s.gsub("'", "")}'''"                          if other_info.present?
+    map[:fields][:deleted]              = "'#{deleted}'^^xsd:boolean"                                       unless deleted.nil?
+    map[:fields][:author]               = "'''#{author}'''"                                                 if author.present?
+    map[:fields][:title]                = "'''#{title.to_s.gsub("'", "")}'''"                               if title.present?
+    map[:fields][:date]                 = "'''#{date}'''"                                                   if date.present?
+    map[:fields][:link]                 = "'''#{link}'''"                                                   if link.present?
+
+    map
   end
 
   private

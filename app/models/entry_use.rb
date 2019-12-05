@@ -9,15 +9,17 @@ class EntryUse < ActiveRecord::Base
   include TellBunny
 
   def to_rdf
-    {
+    map = {
       model_class: "entry_uses",
       id: id,
-      fields: {
-        use: "'''#{use}'''",
-        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        order: "'#{order}'^^xsd:integer"
-      }
+      fields: {}
     }
+
+    map[:fields][:use]      = "'''#{use}'''"                                         if use.present?
+    map[:fields][:entry_id] = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
+    map[:fields][:order]    = "'#{order}'^^xsd:integer"                              if order.present?
+
+    map
   end
 
 end

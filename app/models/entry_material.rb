@@ -42,18 +42,20 @@ class EntryMaterial < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "entry_materials",
       id: id,
-      fields: {
-        material: "'''#{material}'''",
-        observed_name: "'''#{observed_name}'''",
-        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        order: "'#{order}'^^xsd:integer",
-        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
-        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
-      }
+      fields: {}
     }
+
+    map[:fields][:material]               = "'''#{material}'''"                                    if material.present?
+    map[:fields][:observed_name]          = "'''#{observed_name}'''"                               if observed_name.present?
+    map[:fields][:entry_id]               = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
+    map[:fields][:order]                  = "'#{order}'^^xsd:integer"                              if order.present?
+    map[:fields][:supplied_by_data_entry] = "'#{supplied_by_data_entry}'^^xsd:boolean"             unless supplied_by_data_entry.nil?
+    map[:fields][:uncertain_in_source]    = "'#{uncertain_in_source}'^^xsd:boolean"                unless uncertain_in_source.nil?
+
+    map
   end
 
 

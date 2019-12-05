@@ -132,18 +132,20 @@ class Sale < ActiveRecord::Base
 
 
   def to_rdf
-    {
+    map = {
       model_class: "sales",
       id: id,
-      fields: {
-        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        date: "'''#{date}'''",
-        price: "'#{price}'^^xsd:decimal",
-        currency: "'''#{currency}'''",
-        other_currency: "'''#{other_currency}'''",
-        sold: "'''#{sold}'''"
-      }
+      fields: {}
     }
+
+    map[:fields][:entry_id]       = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
+    map[:fields][:date]           = "'''#{date}'''"                                        if date.present?
+    map[:fields][:price]          = "'#{price}'^^xsd:decimal"                              if price.present?
+    map[:fields][:currency]       = "'''#{currency}'''"                                    if currency.present?
+    map[:fields][:other_currency] = "'''#{other_currency}'''"                              if other_currency.present?
+    map[:fields][:sold]           = "'''#{sold}'''"                                        if sold.present?
+
+    map
   end
 
 end

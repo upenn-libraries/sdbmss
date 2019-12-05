@@ -108,19 +108,21 @@ class EntryDate < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "entry_dates",
       id: id,
-      fields: {
-        observed_date: "'''#{observed_date}'''",
-        date_normalized_start: "'''#{date_normalized_start}'''",
-        date_normalized_end: "'''#{date_normalized_end}'''",
-        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        order: "'#{order}'^^xsd:integer",
-        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
-        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
-      }
+      fields: {}
     }
+
+    map[:fields][:observed_date]          = "'''#{observed_date}'''"                               if observed_date.present?
+    map[:fields][:date_normalized_start]  = "'''#{date_normalized_start}'''"                       if date_normalized_start.present?
+    map[:fields][:date_normalized_end]    = "'''#{date_normalized_end}'''"                         if date_normalized_end.present?
+    map[:fields][:entry_id]               = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
+    map[:fields][:order]                  = "'#{order}'^^xsd:integer"                              if order.present?
+    map[:fields][:supplied_by_data_entry] = "'#{supplied_by_data_entry}'^^xsd:boolean"             unless supplied_by_data_entry.nil?
+    map[:fields][:uncertain_in_source]    = "'#{uncertain_in_source}'^^xsd:boolean"                unless uncertain_in_source.nil?
+
+    map
   end
 
 end

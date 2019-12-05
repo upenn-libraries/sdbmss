@@ -53,16 +53,18 @@ class SourceAgent < ActiveRecord::Base
   end  
 
   def to_rdf
-    {
+    map = {
       model_class: "source_agents",
       id: id,
-      fields: {
-        observed_name: "'''#{observed_name}'''",
-        agent_id: "<https://sdbm.library.upenn.edu/names/#{agent_id}>",
-        role: "'''#{role}'''",
-        source_id: "<https://sdbm.library.upenn.edu/sources/#{source_id}>"
-      }
+      fields: {}
     }
+
+    map[:fields][:observed_name] = "'''#{observed_name}'''"                                if observed_name.present?
+    map[:fields][:agent_id]      = "<https://sdbm.library.upenn.edu/names/#{agent_id}>"    if agent_id.present?
+    map[:fields][:role]          = "'''#{role}'''"                                         if role.present?
+    map[:fields][:source_id]     = "<https://sdbm.library.upenn.edu/sources/#{source_id}>" if source_id.present?
+
+    map
   end
 
   private

@@ -44,19 +44,20 @@ class SaleAgent < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "sale_agents",
       id: id,
-      fields: {
-        # id: "#{id}",
-        sale_id: "<https://sdbm.library.upenn.edu/sales/#{sale_id}>",
-        observed_name: "'''#{observed_name}'''",
-        agent_id: "<https://sdbm.library.upenn.edu/names/#{agent_id}>",
-        role: "'''#{role}'''",
-        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
-        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
-      }
+      fields: {}
     }
+
+    map[:fields][:sale_id]                = "<https://sdbm.library.upenn.edu/sales/#{sale_id}>"  if sale_id.present?
+    map[:fields][:observed_name]          = "'''#{observed_name}'''"                             if observed_name.present?
+    map[:fields][:agent_id]               = "<https://sdbm.library.upenn.edu/names/#{agent_id}>" if agent_id.present?
+    map[:fields][:role]                   = "'''#{role}'''"                                      if role.present?
+    map[:fields][:supplied_by_data_entry] = "'#{supplied_by_data_entry}'^^xsd:boolean"           unless supplied_by_data_entry.nil?
+    map[:fields][:uncertain_in_source]    = "'#{uncertain_in_source}'^^xsd:boolean"              unless uncertain_in_source.nil?
+
+    map
   end
 
 end

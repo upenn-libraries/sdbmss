@@ -151,15 +151,17 @@ class Manuscript < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "manuscripts",
       id: id,
-      fields: {
-        name: "'''#{name}'''",
-        location: "'''#{location}'''",
-        url: "'''#{url}'''"
-      }
+      fields: {}
     }
+
+    map[:fields][:name] = "'''#{name}'''" if name.present?
+    map[:fields][:location] = "'''#{location}'''" if location.present?
+    map[:fields][:url] = "'''#{url}'''" if url.present?
+
+    map
   end
 
 end
