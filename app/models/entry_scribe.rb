@@ -39,18 +39,20 @@ class EntryScribe < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "entry_scribes",
       id: id,
-      fields: {
-        observed_name: "'''#{observed_name.to_s.gsub("'", "")}'''",
-        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        scribe_id: "<https://sdbm.library.upenn.edu/names/#{scribe_id}>",
-        order: "'#{order}'^^xsd:integer",
-        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
-        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
-      }
+      fields: {}
     }
+
+    map[:fields][:observed_name]          = "'''#{observed_name.to_s.gsub("'", "")}'''"            if observed_name.present?
+    map[:fields][:entry_id]               = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
+    map[:fields][:scribe_id]              = "<https://sdbm.library.upenn.edu/names/#{scribe_id}>"  if scribe_id.present?
+    map[:fields][:order]                  = "'#{order}'^^xsd:integer"                              if order.present?
+    map[:fields][:supplied_by_data_entry] = "'#{supplied_by_data_entry}'^^xsd:boolean"             unless supplied_by_data_entry.nil?
+    map[:fields][:uncertain_in_source]    = "'#{uncertain_in_source}'^^xsd:boolean"                unless uncertain_in_source.nil?
+
+    map
   end
 
 end

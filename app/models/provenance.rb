@@ -131,30 +131,32 @@ class Provenance < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "provenance",
       id: id,
-      fields: {
-        observed_name: "'''#{observed_name.to_s.gsub("'", "")}'''",
-        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        provenance_agent_id: "<https://sdbm.library.upenn.edu/names/#{provenance_agent_id}>",
-        order: "'#{order}'^^xsd:integer",
-        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
-        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean",
-        associated_date: "'''#{associated_date}'''",
-        associated_date_normalized_start: "'''#{associated_date_normalized_start}'''",
-        associated_date_normalized_end: "'''#{associated_date_normalized_end}'''",
-        start_date: "'''#{start_date}'''",
-        start_date_normalized_start: "'''#{start_date_normalized_start}'''",
-        start_date_normalized_end: "'''#{start_date_normalized_end}'''",
-        end_date: "'''#{end_date}'''",
-        end_date_normalized_start: "'''#{end_date_normalized_start}'''",
-        end_date_normalized_end: "'''#{end_date_normalized_end}'''",
-        comment: "'''#{comment.to_s.gsub("'", "")}'''",
-        direct_transfer: "'#{direct_transfer}'^^xsd:boolean",
-        acquisition_method: "'''#{acquisition_method}'''"
-      }
+      fields: {}
     }
+
+    map[:fields][:observed_name]                    = "'''#{observed_name.to_s.gsub("'", "")}'''"                     if observed_name.present?
+    map[:fields][:entry_id]                         = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>"          if entry_id.present?
+    map[:fields][:provenance_agent_id]              = "<https://sdbm.library.upenn.edu/names/#{provenance_agent_id}>" if provenance_agent_id.present?
+    map[:fields][:order]                            = "'#{order}'^^xsd:integer"                                       if order.present?
+    map[:fields][:supplied_by_data_entry]           = "'#{supplied_by_data_entry}'^^xsd:boolean"                      unless supplied_by_data_entry.nil?
+    map[:fields][:uncertain_in_source]              = "'#{uncertain_in_source}'^^xsd:boolean"                         unless uncertain_in_source.nil?
+    map[:fields][:associated_date]                  = "'''#{associated_date}'''"                                      if associated_date.present?
+    map[:fields][:associated_date_normalized_start] = "'''#{associated_date_normalized_start}'''"                     if associated_date_normalized_start.present?
+    map[:fields][:associated_date_normalized_end]   = "'''#{associated_date_normalized_end}'''"                       if associated_date_normalized_end.present?
+    map[:fields][:start_date]                       = "'''#{start_date}'''"                                           if start_date.present?
+    map[:fields][:start_date_normalized_start]      = "'''#{start_date_normalized_start}'''"                          if start_date_normalized_start.present?
+    map[:fields][:start_date_normalized_end]        = "'''#{start_date_normalized_end}'''"                            if start_date_normalized_end.present?
+    map[:fields][:end_date]                         = "'''#{end_date}'''"                                             if end_date.present?
+    map[:fields][:end_date_normalized_start]        = "'''#{end_date_normalized_start}'''"                            if end_date_normalized_start.present?
+    map[:fields][:end_date_normalized_end]          = "'''#{end_date_normalized_end}'''"                              if end_date_normalized_end.present?
+    map[:fields][:comment]                          = "'''#{comment.to_s.gsub("'", "")}'''"                           if comment.present?
+    map[:fields][:direct_transfer]                  = "'#{direct_transfer}'^^xsd:boolean"                             unless direct_transfer.nil?
+    map[:fields][:acquisition_method]               = "'''#{acquisition_method}'''"                                   if acquisition_method.present?
+
+    map
   end
 
 end

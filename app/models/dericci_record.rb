@@ -42,21 +42,23 @@ class DericciRecord < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "dericci_records",
       id: id,
-      fields: {
-        dates: "'''#{dates}'''",
-        name: "'''#{name}'''",
-        place: "'''#{place}'''",
-        url: "'''#{url}'''",
-        cards: "'#{cards}'^^xsd:integer",
-        size: "'''#{size}'''",
-        other_info: "'''#{other_info}'''",
-        senate_house: "'''#{senate_house}'''",
-        out_of_scope: "'#{out_of_scope}'^^xsd:boolean"
-      }
-    }    
+      fields: {}
+    }
+
+    map[:fields][:dates]        = "'''#{dates}'''"                 if dates.present?
+    map[:fields][:name]         = "'''#{name}'''"                  if name.present?
+    map[:fields][:place]        = "'''#{place}'''"                 if place.present?
+    map[:fields][:url]          = "'''#{url}'''"                   if url.present?
+    map[:fields][:cards]        = "'#{cards}'^^xsd:integer"        if cards.present?
+    map[:fields][:size]         = "'''#{size}'''"                  if size.present?
+    map[:fields][:other_info]   = "'''#{other_info}'''"            if other_info.present?
+    map[:fields][:senate_house] = "'''#{senate_house}'''"          if senate_house.present?
+    map[:fields][:out_of_scope] = "'#{out_of_scope}'^^xsd:boolean" unless out_of_scope.nil?
+
+    map
   end
 
 end

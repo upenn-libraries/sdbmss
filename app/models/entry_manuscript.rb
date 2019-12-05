@@ -87,15 +87,17 @@ class EntryManuscript < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "entry_manuscripts",
       id: id,
-      fields: {
-        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        manuscript_id: "<https://sdbm.library.upenn.edu/manuscripts/#{manuscript_id}>",
-        relation_type: "'''#{relation_type}'''"
-      }
+      fields: {}
     }
+
+    map[:fields][:entry_id]      = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>"          if entry_id.present?
+    map[:fields][:manuscript_id] = "<https://sdbm.library.upenn.edu/manuscripts/#{manuscript_id}>" if manuscript_id.present?
+    map[:fields][:relation_type] = "'''#{relation_type}'''"                                        if relation_type.present?
+
+    map
   end
 
 end

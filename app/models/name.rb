@@ -519,19 +519,21 @@ class Name < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "names",
       id: id,
-      fields: {
-        name: "'''#{name.to_s.gsub("'", "")}'''",
-        viaf_id: "'''#{viaf_id}'''",
-        subtype: "'''#{subtype}'''",
-        startdate: "'''#{startdate}'''",
-        enddate: "'''#{enddate}'''",
-        other_info: "'''#{other_info.to_s.gsub("'", "")}'''",
-        deleted: "'#{deleted}'^^xsd:boolean"
-      }
-    }   
+      fields: {}
+    }
+
+    map[:fields][:name]       = "'''#{name.to_s.gsub("'", "")}'''"       if name.present?
+    map[:fields][:viaf_id]    = "'''#{viaf_id}'''"                       if viaf_id.present?
+    map[:fields][:subtype]    = "'''#{subtype}'''"                       if subtype.present?
+    map[:fields][:startdate]  = "'''#{startdate}'''"                     if startdate.present?
+    map[:fields][:enddate]    = "'''#{enddate}'''"                       if enddate.present?
+    map[:fields][:other_info] = "'''#{other_info.to_s.gsub("'", "")}'''" if other_info.present?
+    map[:fields][:deleted]    = "'#{deleted}'^^xsd:boolean"              unless deleted.nil?
+
+    map
   end
 
 end

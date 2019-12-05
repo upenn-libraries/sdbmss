@@ -25,16 +25,18 @@ class NamePlace < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "name_places",
       id: id,
-      fields: {
-        place_id: "<https://sdbm.library.upenn.edu/places/#{place_id}>",
-        name_id: "<https://sdbm.library.upenn.edu/names/#{name_id}>",
-        notbefore: "'''#{notbefore}'''",
-        notafter: "'''#{notafter}'''"
-      }
+      fields: {}
     }
+
+    map[:fields][:place_id]  = "<https://sdbm.library.upenn.edu/places/#{place_id}>" if place_id.present?
+    map[:fields][:name_id]   = "<https://sdbm.library.upenn.edu/names/#{name_id}>"   if name_id.present?
+    map[:fields][:notbefore] = "'''#{notbefore}'''"                                  if notbefore.present?
+    map[:fields][:notafter]  = "'''#{notafter}'''"                                   if notafter.present?
+
+    map
   end
 
 end

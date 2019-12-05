@@ -25,18 +25,20 @@ class EntryPlace < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "entry_places",
       id: id,
-      fields: {
-        observed_name: "'''#{observed_name}'''",
-        place_id: "<https://sdbm.library.upenn.edu/places/#{place_id}>",
-        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        order: "'#{order}'^^xsd:integer",
-        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
-        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
-      }
+      fields: {}
     }
+
+    map[:fields][:observed_name]          = "'''#{observed_name}'''"                               if observed_name.present?
+    map[:fields][:place_id]               = "<https://sdbm.library.upenn.edu/places/#{place_id}>"  if place_id.present?
+    map[:fields][:entry_id]               = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
+    map[:fields][:order]                  = "'#{order}'^^xsd:integer"                              if order.present?
+    map[:fields][:supplied_by_data_entry] = "'#{supplied_by_data_entry}'^^xsd:boolean"             unless supplied_by_data_entry.nil?
+    map[:fields][:uncertain_in_source]    = "'#{uncertain_in_source}'^^xsd:boolean"                unless uncertain_in_source.nil?
+
+    map
   end
 
 end
