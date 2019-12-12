@@ -1,4 +1,4 @@
-version: '2.2'
+version: '3.7'
 
 services:
   rabbitmq:
@@ -10,29 +10,22 @@ services:
       - RABBITMQ_ERLANG_COOKIE='secret cookie here' # needed for rabbitmqctl to work (??)
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-    cpu_shares: 20
     logging:
       driver: "journald"
-    mem_limit: 3700m
-    mem_reservation: 2000m      
-    restart: always
   db:
     image: mysql/mysql-server:5.7
     env_file: .docker-environment
-    cpu_shares: 80
     logging:
       driver: "journald"
     ports:
       - "3307:3307"
     volumes:
       - sdbm_data:/var/lib/mysql
-    restart: always
   solr:
     image: sdbm:latest
     ports:
       - "8982:8982"
     env_file: .docker-environment
-    cpu_shares: 80
     logging:
       driver: "journald"
     links:
@@ -40,14 +33,11 @@ services:
     volumes:
       - sdbm_solr:/usr/src/app/solr
     command: bundle exec rake sunspot:solr:run
-    restart: always
   rails:
     image: sdbm:latest
     env_file: .docker-environment
-    cpu_shares: 80
     logging:
       driver: "journald"
-    restart: always
     links:
       - db
       - solr
@@ -70,25 +60,20 @@ services:
       - .:/usr/src/app
     env_file: .docker-environment
     command: bundle exec rake jobs:work
-    restart: always
     logging:
       driver: "journald"
   jena:
-    build: ./jena
+    image: 'jena_sdbm:latest'
     logging:
       driver: "journald"
+    ports:
+      - "3030:3030"
     volumes:
       - rdf_data:/fuseki
-    mem_limit: 3700m
-    mem_reservation: 2000m
-    cpu_shares: 20
     env_file: .docker-environment
-    restart: always
-#      - JVM_ARGS=-Xmx3g   # raises memory limits to allow large file to be uploaded
   interface:
-    build: ./interface
+    image: 'interface:latest'
     command: ruby interface.rb
-    cpu_shares: 20
     logging:
       driver: "journald"
     links:
@@ -96,14 +81,9 @@ services:
       - rabbitmq
     depends_on:
       - "rabbitmq"
-    mem_limit: 3700m
-    mem_reservation: 2000m
-    cpu_shares: 20
     env_file: .docker-environment
-    restart: always
   nginx:
-    build: ./nginx
-    cpu_shares: 50
+    image: 'nginx_sdbm:latest'
     volumes:
       - /etc/httpd/ssl:/etc/httpd/ssl
     logging:
@@ -114,7 +94,6 @@ services:
     ports:
       - "80:80"
       - "443:443"
-    restart: always
 volumes:
   sdbm_docs:
   sdbm_data:
