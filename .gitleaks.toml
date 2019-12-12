@@ -3,9 +3,47 @@ title = "gitleaks config"
 [[rules]]
 description = "Password in string"
 regex = '''(?i)[\w]*(password|secret)[\w]* *[:=>,]+ *['"][\S]{2,}['"]'''
+  # <%= f.password_field :password, :class =\u003e 'form-control' %>
+  [[rules.whitelist]]
+  description = "Don't check form fields in erb files"
+  file = '''(.*?)\.erb$'''
+  regex = '''\w\.password_(field|confirmation)'''
+  [[rules.whitelist]]
+  description = "Don't check comments"
+  regex = '''^\s*#'''
+  [[rules.whitelist]]
+  description = "Don't check YAML files for this rule"
+  file = '''(.*?)\.yml$'''
+  [[rules.whitelist]]
+  description = "don't read specs"
+  file = '''spec/(.*?)'''
+  [[rules.whitelist]]
+  description = "don't read reference_data.rb"
+  file = '''reference_data\.rb'''
+  [[rules.whitelist]]
+  description = "data pull from local copy of legacy SDBM database"
+  file = '''lib/sdbmss/legacy\.rb'''
+  [[rules.whitelist]]
+  description = "null password default in vendor/.../URI.js"
+  file = '''vendor/assets/javascripts/URI\.min\.js'''
 [[rules]]
 description = "Password in YAML config"
 regex = '''(?i)[\w]*(password|secret)[\w]* *: *[\S]{2,}'''
+  [[rules.whitelist]]
+  description = "Don't check Ruby files for this rule"
+  file = '''(.*?)\.e?rb$'''
+  [[rules.whitelist]]
+  description = "don't read specs"
+  file = '''spec/(.*?)'''
+  [[rules.whitelist]]
+  description = "don't read reference_data.rb"
+  file = '''reference_data\.rb'''
+  [[rules.whitelist]]
+  description = "local legacy database pull"
+  file = '''lib/sdbmss/legacy\.rb'''
+  [[rules.whitelist]]
+  description = "null password default in vendor js"
+  file = '''vendor/assets/javascripts/URI\.min\.js'''
 [[rules]]
 description = "AWS"
 regex = '''AKIA[0-9A-Z]{16}'''
@@ -38,26 +76,5 @@ description = "Strip API Key"
 regex = '''(?i)(sk|pk)_(test|live)_[0-9a-zA-Z]{10,32}'''
 
 [whitelist]
-commits = [
-]
-files = [
-  'spec/features/sign_up_spec.rb',
-]
-regexes = [
-  # Values set by Ansible variables
-  '''{{ *[\S]+ *}}''',
-  # Values set by environment variables
-  '''ENV\[['"][\S]+['"]\]''',
-  # References to Docker secret password files
-  '''_+FILE:''',
-  # Postgres password encryption settings
-  '''password_encryption''',
-  # Ansible variables setting Docker secret / config versions
-  '''_version:''',
-  # Development and test database passwords
-  '''password: metridoc_(development|test)''',
-  # Example secret key in Devise initializer
-  '''# config.secret_key =''',
-  # AWS Secrets Manager resource for vault password
-  '''AnsibleVaultPassword''',
-]
+  description = "image whitelists"
+  file = '''(.*?)(jpg|gif|doc|pdf|bin|.gitleaks.toml)$'''
