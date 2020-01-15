@@ -10,12 +10,12 @@ services:
       - RABBITMQ_ERLANG_COOKIE='secret cookie here' # needed for rabbitmqctl to work (??)
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-    logging:
+    # logging:
       # driver: "journald"
   db:
     image: mysql/mysql-server:5.7
     # env_file: .docker-environment
-    logging:
+    # logging:
       # driver: "journald"
     ports:
       - "3307:3307"
@@ -48,7 +48,7 @@ services:
     ports:
       - "8982:8982"
     # env_file: .docker-environment
-    logging:
+    # logging:
       # driver: "journald"
     links:
       - db
@@ -102,7 +102,7 @@ services:
       SDBMSS_SECRET_KEY_BASE:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
-    logging:
+    # logging:
       # driver: "journald"
     links:
       - db
@@ -148,11 +148,11 @@ services:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
     command: bundle exec rake jobs:work
-    logging:
+    # logging:
       # driver: "journald"
   jena:
     image: 'jena_sdbm:latest'
-    logging:
+    # logging:
       # driver: "journald"
     ports:
       - "3030:3030"
@@ -184,7 +184,7 @@ services:
   interface:
     image: 'interface:latest'
     command: ruby interface.rb
-    logging:
+    # logging:
       # driver: "journald"
     links:
       - jena
@@ -218,7 +218,7 @@ services:
     image: 'nginx_sdbm:latest'
     volumes:
       - /etc/httpd/ssl:/etc/httpd/ssl
-    logging:
+    # logging:
       # driver: "journald"
     links:
       - rails
