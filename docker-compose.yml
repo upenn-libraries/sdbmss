@@ -11,12 +11,12 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     logging:
-      driver: "journald"
+      # driver: "journald"
   db:
     image: mysql/mysql-server:5.7
     # env_file: .docker-environment
     logging:
-      driver: "journald"
+      # driver: "journald"
     ports:
       - "3307:3307"
     volumes:
@@ -49,7 +49,7 @@ services:
       - "8982:8982"
     # env_file: .docker-environment
     logging:
-      driver: "journald"
+      # driver: "journald"
     links:
       - db
     volumes:
@@ -103,7 +103,7 @@ services:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
     logging:
-      driver: "journald"
+      # driver: "journald"
     links:
       - db
       - solr
@@ -149,11 +149,11 @@ services:
       SOLR_URL:
     command: bundle exec rake jobs:work
     logging:
-      driver: "journald"
+      # driver: "journald"
   jena:
     image: 'jena_sdbm:latest'
     logging:
-      driver: "journald"
+      # driver: "journald"
     ports:
       - "3030:3030"
     volumes:
@@ -185,7 +185,7 @@ services:
     image: 'interface:latest'
     command: ruby interface.rb
     logging:
-      driver: "journald"
+      # driver: "journald"
     links:
       - jena
       - rabbitmq
@@ -219,7 +219,7 @@ services:
     volumes:
       - /etc/httpd/ssl:/etc/httpd/ssl
     logging:
-      driver: "journald"
+      # driver: "journald"
     links:
       - rails
       - jena
