@@ -29,7 +29,23 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 RUN mkdir -p tmp/pids
 
-RUN RAILS_ENV=production SECRET_KEY_BASE=x bundle exec rake assets:precompile --trace
+RUN RAILS_ENV=production \
+  SECRET_KEY_BASE=x \
+  SDBMSS_APP_HOST=localhost \
+  SDBMSS_EMAIL_FROM=x \
+  SDBMSS_SMTP_HOST=x \
+  SDBMSS_EMAIL_EXCEPTIONS_TO=x \
+  SDBMSS_BLACKLIGHT_SECRET_KEY=x \
+  SDBMSS_NOTIFY_EMAIL=x \
+  SDBMSS_NOTIFY_PASSWORD=x \
+  RABBIT_USER=x \
+  RABBIT_PASSWORD=x \
+  MYSQL_DATABASE=x \
+  MYSQL_USER=x \
+  MYSQL_PASSWORD=x \
+  MYSQL_HOST=x \
+  SDBMSS_DEVISE_SECRET_KEY=x \
+  bundle exec rake assets:precompile --trace
 
 # we make sure to rm stale pid file
 CMD rm -f /usr/src/app/tmp/pids/server.pid && rm -f /usr/src/app/tmp/pids/unicorn.pid && bundle exec rails s unicorn -b 0.0.0.0
