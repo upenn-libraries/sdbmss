@@ -88,6 +88,8 @@ services:
   rails:
     image: sdbm:latest
     # env_file: .docker-environment
+    ports:
+      - "3000:3000"
     environment:
       ADMIN_PASSWORD:
       RAILS_USER:
