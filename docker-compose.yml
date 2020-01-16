@@ -1,5 +1,13 @@
 version: '3.7'
 
+secrets:
+  ssl_wildcard_cert_crt:
+    external: true
+    name: sdbmss_ssl_wildcard_cert_crt
+  ssl_wildcard_cert_key:
+    external: true
+    name: sdbmss_ssl_wildcard_cert_key
+
 services:
   rabbitmq:
     image: rabbitmq:3
@@ -215,6 +223,11 @@ services:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
   nginx:
+    secrets:
+      - source: ssl_wildcard_cert_crt
+        target: /etc/httpd/ssl/library-wildcard.crt
+      - source: ssl_wildcard_cert_key
+        target: /etc/httpd/ssl/library-wildcard.key
     image: 'nginx_sdbm:latest'
     volumes:
       - /etc/httpd/ssl:/etc/httpd/ssl
