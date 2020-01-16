@@ -229,8 +229,6 @@ services:
       - source: ssl_wildcard_cert_key
         target: /etc/httpd/ssl/library-wildcard.key
     image: 'nginx_sdbm:latest'
-    volumes:
-      - /etc/httpd/ssl:/etc/httpd/ssl
     # logging:
       # driver: "journald"
     links:
