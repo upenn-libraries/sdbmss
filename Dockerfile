@@ -17,9 +17,9 @@ ADD Gemfile /tmp/Gemfile
 ADD Gemfile.lock /tmp/Gemfile.lock
 RUN bundle install 
 
-WORKDIR /usr/src/app
-
 RUN RAILS_ENV=production SECRET_KEY_BASE=x bundle exec rake assets:precompile --trace
+
+WORKDIR /usr/src/app
 
 # Copy files so that this image contains a full copy of the
 # application code. In development, docker-compose should define a
