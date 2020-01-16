@@ -92,6 +92,7 @@ services:
       - "3000:3000"
     environment:
       ADMIN_PASSWORD:
+      RAILS_ENV:
       RAILS_USER:
       RAILS_PASS:
       MYSQL_HOST:
@@ -137,6 +138,7 @@ services:
     # env_file: .docker-environment
     environment:
       ADMIN_PASSWORD:
+      RAILS_ENV:
       RAILS_USER:
       RAILS_PASS:
       MYSQL_HOST:
@@ -204,6 +206,7 @@ services:
     # env_file: .docker-environment
     environment:
       ADMIN_PASSWORD:
+      RAILS_ENV:
       RAILS_USER:
       RAILS_PASS:
       MYSQL_HOST:
