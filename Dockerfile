@@ -17,7 +17,6 @@ ADD Gemfile /tmp/Gemfile
 ADD Gemfile.lock /tmp/Gemfile.lock
 RUN bundle install 
 
-RUN RAILS_ENV=production SECRET_KEY_BASE=x bundle exec rake assets:precompile --trace
 
 WORKDIR /usr/src/app
 
@@ -29,6 +28,8 @@ WORKDIR /usr/src/app
 
 COPY . /usr/src/app
 RUN mkdir -p tmp/pids
+
+RUN RAILS_ENV=production SECRET_KEY_BASE=x bundle exec rake assets:precompile --trace
 
 # we make sure to rm stale pid file
 CMD rm -f /usr/src/app/tmp/pids/server.pid && rm -f /usr/src/app/tmp/pids/unicorn.pid && bundle exec rails s unicorn -b 0.0.0.0
