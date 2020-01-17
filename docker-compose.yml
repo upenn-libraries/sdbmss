@@ -7,18 +7,6 @@ secrets:
   ssl_wildcard_cert_key:
     external: true
     name: sdbmss_ssl_wildcard_cert_key
-  ssl_wildcard_cert_crt:
-    external: true
-    name: sdbmss_ssl_wildcard_cert_crt
-  admin_password:
-    external: true
-    name: sdbmss_admin_password
-  rails_user:
-    external: true
-    name: sdbmss_rails_user
-  rails_pass:
-    external: true
-    name: sdbmss_rails_pass
   mysql_database:
     external: true
     name: sdbmss_mysql_database
@@ -31,39 +19,6 @@ secrets:
   mysql_password:
     external: true
     name: sdbmss_mysql_password
-  rabbit_password:
-    external: true
-    name: sdbmss_rabbit_password
-  rabbit_user:
-    external: true
-    name: sdbmss_rabbit_user
-  sdbmss_email_from:
-    external: true
-    name: sdbmss_sdbmss_email_from
-  sdbmss_notify_email:
-    external: true
-    name: sdbmss_sdbmss_notify_email
-  sdbmss_notify_email_password:
-    external: true
-    name: sdbmss_sdbmss_notify_email_password
-  sdbmss_email_exceptions_to:
-    external: true
-    name: sdbmss_sdbmss_email_exceptions_to
-  sdbmss_blacklight_secret_key:
-    external: true
-    name: sdbmss_sdbmss_blacklight_secret_key
-  sdbmss_devise_secret_key:
-    external: true
-    name: sdbmss_sdbmss_devise_secret_key
-  sdbmss_secret_key_base:
-    external: true
-    name: sdbmss_sdbmss_secret_key_base
-  sdbmss_secret_token:
-    external: true
-    name: sdbmss_sdbmss_secret_token
-  solr_url:
-    external: true
-    name: sdbmss_solr_url
 
 services:
   rabbitmq:
@@ -88,11 +43,20 @@ services:
       - "3307:3307"
     volumes:
       - sdbm_data:/var/lib/mysql
+    # We can define ENV vars using secret files because the MySQL image will
+    # recognize value is a path and read it from the file.
+    #
+    # THIS WILL LIKELY NOT WORK WITH OTHER IMAGES
     environment:
-      MYSQL_DATABASE:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_USER:
-      MYSQL_PASSWORD:
+      MYSQL_DATABASE: /run/secrets/mysql_database
+      MYSQL_ROOT_PASSWORD: /run/secrets/mysql_root_password
+      MYSQL_USER: /run/secrets/mysql_user
+      MYSQL_PASSWORD: /run/secrets/mysql_password
+    secrets:
+      - mysql_database
+      - mysql_password
+      - mysql_root_password
+      - mysql_user
   solr:
     image: sdbm:latest
     ports:
