@@ -141,30 +141,51 @@ services:
     ports:
       - "3000:3000"
     environment:
-      ADMIN_PASSWORD:
-      RAILS_ENV:
-      RAILS_USER:
-      RAILS_PASS:
-      MYSQL_HOST:
-      MYSQL_DATABASE:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_USER:
-      MYSQL_PASSWORD:
-      RABBIT_PASSWORD:
-      RABBIT_USER:
-      SDBMSS_APP_HOST:
-      SDBMSS_SMTP_HOST:
-      SDBMSS_EMAIL_FROM:
-      SDBMSS_NOTIFY_EMAIL:
-      SDBMSS_NOTIFY_EMAIL_PASSWORD:
-      SDBMSS_EMAIL_EXCEPTIONS_TO:
-      SDBMSS_BLACKLIGHT_SECRET_KEY:
-      SDBMSS_DEVISE_SECRET_KEY:
-      SDBMSS_SECRET_KEY_BASE:
-      SDBMSS_SECRET_TOKEN:
-      SOLR_URL:
-    # logging:
-      # driver: "journald"
+      ADMIN_PASSWORD: /run/secrets/admin_password
+      RAILS_ENV: /run/secrets/rails_env
+      RAILS_USER: /run/secrets/rails_user
+      RAILS_PASS: /run/secrets/rails_pass
+      MYSQL_HOST: /run/secrets/mysql_host
+      MYSQL_DATABASE: /run/secrets/mysql_database
+      MYSQL_ROOT_PASSWORD: /run/secrets/mysql_root_password
+      MYSQL_USER: /run/secrets/mysql_user
+      MYSQL_PASSWORD: /run/secrets/mysql_password
+      RABBIT_PASSWORD: /run/secrets/rabbit_password
+      RABBIT_USER: /run/secrets/rabbit_user
+      SDBMSS_APP_HOST: /run/secrets/sdbmss_app_host
+      SDBMSS_SMTP_HOST: /run/secrets/sdbmss_smtp_host
+      SDBMSS_EMAIL_FROM: /run/secrets/sdbmss_email_from
+      SDBMSS_NOTIFY_EMAIL: /run/secrets/sdbmss_notify_email
+      SDBMSS_NOTIFY_EMAIL_PASSWORD: /run/secrets/sdbmss_notify_email_password
+      SDBMSS_EMAIL_EXCEPTIONS_TO: /run/secrets/sdbmss_email_exceptions_to
+      SDBMSS_BLACKLIGHT_SECRET_KEY: /run/secrets/sdbmss_blacklight_secret_key
+      SDBMSS_DEVISE_SECRET_KEY: /run/secrets/sdbmss_devise_secret_key
+      SDBMSS_SECRET_KEY_BASE: /run/secrets/sdbmss_secret_key_base
+      SDBMSS_SECRET_TOKEN: /run/secrets/sdbmss_secret_token
+      SOLR_URL: /run/secrets/solr_url
+    secrets:
+      - admin_password
+      - rails_env
+      - rails_user
+      - rails_pass
+      - mysql_host
+      - mysql_database
+      - mysql_root_password
+      - mysql_user
+      - mysql_password
+      - rabbit_password
+      - rabbit_user
+      - sdbmss_app_host
+      - sdbmss_smtp_host
+      - sdbmss_email_from
+      - sdbmss_notify_email
+      - sdbmss_notify_email_password
+      - sdbmss_email_exceptions_to
+      - sdbmss_blacklight_secret_key
+      - sdbmss_devise_secret_key
+      - sdbmss_secret_key_base
+      - sdbmss_secret_token
+      - solr_url
     links:
       - db
       - solr
