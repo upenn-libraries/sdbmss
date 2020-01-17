@@ -7,6 +7,63 @@ secrets:
   ssl_wildcard_cert_key:
     external: true
     name: sdbmss_ssl_wildcard_cert_key
+  ssl_wildcard_cert_crt:
+    external: true
+    name: sdbmss_ssl_wildcard_cert_crt
+  admin_password:
+    external: true
+    name: sdbmss_admin_password
+  rails_user:
+    external: true
+    name: sdbmss_rails_user
+  rails_pass:
+    external: true
+    name: sdbmss_rails_pass
+  mysql_database:
+    external: true
+    name: sdbmss_mysql_database
+  mysql_root_password:
+    external: true
+    name: sdbmss_mysql_root_password
+  mysql_user:
+    external: true
+    name: sdbmss_mysql_user
+  mysql_password:
+    external: true
+    name: sdbmss_mysql_password
+  rabbit_password:
+    external: true
+    name: sdbmss_rabbit_password
+  rabbit_user:
+    external: true
+    name: sdbmss_rabbit_user
+  sdbmss_email_from:
+    external: true
+    name: sdbmss_sdbmss_email_from
+  sdbmss_notify_email:
+    external: true
+    name: sdbmss_sdbmss_notify_email
+  sdbmss_notify_email_password:
+    external: true
+    name: sdbmss_sdbmss_notify_email_password
+  sdbmss_email_exceptions_to:
+    external: true
+    name: sdbmss_sdbmss_email_exceptions_to
+  sdbmss_blacklight_secret_key:
+    external: true
+    name: sdbmss_sdbmss_blacklight_secret_key
+  sdbmss_devise_secret_key:
+    external: true
+    name: sdbmss_sdbmss_devise_secret_key
+  sdbmss_secret_key_base:
+    external: true
+    name: sdbmss_sdbmss_secret_key_base
+  sdbmss_secret_token:
+    external: true
+    name: sdbmss_sdbmss_secret_token
+  solr_url:
+    external: true
+    name: sdbmss_solr_url
 
 services:
   rabbitmq:
@@ -15,11 +72,16 @@ services:
     ports:
       - '5672:5672'
     environment:
-      - RABBITMQ_ERLANG_COOKIE='secret cookie here' # needed for rabbitmqctl to work (??)
+      RABBITMQ_ERLANG_COOKIE: 'secret cookie here' # needed for rabbitmqctl to work (??)
+      RABBIT_PASSWORD: /run/secrets/rabbit_password
+      RABBIT_USER: /run/secrets/rabbit_user
+      ADMIN_PASSWORD: /run/secrets/admin_password
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
-    # logging:
-      # driver: "journald"
+    secrets:
+      - rabbit_password
+      - rabbit_user
+      - admin_password
   db:
     image: mysql/mysql-server:5.7
     # env_file: .docker-environment
@@ -30,27 +92,15 @@ services:
     volumes:
       - sdbm_data:/var/lib/mysql
     environment:
-      ADMIN_PASSWORD:
-      RAILS_USER:
-      RAILS_PASS:
-      MYSQL_HOST:
-      MYSQL_DATABASE:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_USER:
-      MYSQL_PASSWORD:
-      RABBIT_PASSWORD:
-      RABBIT_USER:
-      SDBMSS_APP_HOST:
-      SDBMSS_SMTP_HOST:
-      SDBMSS_EMAIL_FROM:
-      SDBMSS_NOTIFY_EMAIL:
-      SDBMSS_NOTIFY_EMAIL_PASSWORD:
-      SDBMSS_EMAIL_EXCEPTIONS_TO:
-      SDBMSS_BLACKLIGHT_SECRET_KEY:
-      SDBMSS_DEVISE_SECRET_KEY:
-      SDBMSS_SECRET_KEY_BASE:
-      SDBMSS_SECRET_TOKEN:
-      SOLR_URL:
+      MYSQL_DATABASE: /run/secrets/mysql_database
+      MYSQL_ROOT_PASSWORD: /run/secrets/mysql_root_password
+      MYSQL_USER: /run/secrets/mysql_user
+      MYSQL_PASSWORD: /run/secrets/mysql_password
+    secrets:
+      - mysql_database
+      - mysql_password
+      - mysql_root_password
+      - mysql_user
   solr:
     image: sdbm:latest
     ports:
