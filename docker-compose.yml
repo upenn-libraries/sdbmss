@@ -141,19 +141,19 @@ services:
     ports:
       - "3000:3000"
     environment:
+      RAILS_ENV:
+      MYSQL_HOST:
       ADMIN_PASSWORD: /run/secrets/admin_password
-      RAILS_ENV: /run/secrets/rails_env
       RAILS_USER: /run/secrets/rails_user
       RAILS_PASS: /run/secrets/rails_pass
-      MYSQL_HOST: /run/secrets/mysql_host
       MYSQL_DATABASE: /run/secrets/mysql_database
       MYSQL_ROOT_PASSWORD: /run/secrets/mysql_root_password
       MYSQL_USER: /run/secrets/mysql_user
       MYSQL_PASSWORD: /run/secrets/mysql_password
       RABBIT_PASSWORD: /run/secrets/rabbit_password
       RABBIT_USER: /run/secrets/rabbit_user
-      SDBMSS_APP_HOST: /run/secrets/sdbmss_app_host
-      SDBMSS_SMTP_HOST: /run/secrets/sdbmss_smtp_host
+      SDBMSS_APP_HOST:
+      SDBMSS_SMTP_HOST:
       SDBMSS_EMAIL_FROM: /run/secrets/sdbmss_email_from
       SDBMSS_NOTIFY_EMAIL: /run/secrets/sdbmss_notify_email
       SDBMSS_NOTIFY_EMAIL_PASSWORD: /run/secrets/sdbmss_notify_email_password
@@ -165,18 +165,14 @@ services:
       SOLR_URL: /run/secrets/solr_url
     secrets:
       - admin_password
-      - rails_env
       - rails_user
       - rails_pass
-      - mysql_host
       - mysql_database
       - mysql_root_password
       - mysql_user
       - mysql_password
       - rabbit_password
       - rabbit_user
-      - sdbmss_app_host
-      - sdbmss_smtp_host
       - sdbmss_email_from
       - sdbmss_notify_email
       - sdbmss_notify_email_password
