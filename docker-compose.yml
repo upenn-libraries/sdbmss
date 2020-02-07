@@ -58,7 +58,7 @@ services:
       - mysql_root_password
       - mysql_user
   solr:
-    image: sdbm:latest
+    image: 'quay.io/upennlibraries/sdbm:${SDBMSS_IMAGE_TAG}'
     ports:
       - "8982:8982"
     # env_file: .docker-environment
@@ -92,7 +92,7 @@ services:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
   rails:
-    image: sdbm:latest
+    image: 'quay.io/upennlibraries/sdbm:${SDBMSS_IMAGE_TAG}'
     # env_file: .docker-environment
     ports:
       - "3000:3000"
@@ -130,7 +130,7 @@ services:
       - sdbm_assets:/usr/src/app/public/assets
       - sdbm_docs:/usr/src/app/public/static
   delayedjob:
-    image: sdbm:latest
+    image: 'quay.io/upennlibraries/sdbm:${SDBMSS_IMAGE_TAG}'
     depends_on:
       - "db"
       - "rabbitmq"
@@ -167,7 +167,7 @@ services:
     # logging:
       # driver: "journald"
   jena:
-    image: 'jena_sdbm:latest'
+    image: 'quay.io/upennlibraries/sdbm_jena:${SDBMSS_IMAGE_TAG}'
     # logging:
       # driver: "journald"
     ports:
@@ -198,7 +198,7 @@ services:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
   interface:
-    image: 'interface:latest'
+    image: 'quay.io/upennlibraries/sdbmss_interface:${SDBMSS_IMAGE_TAG}'
     command: ruby interface.rb
     # logging:
       # driver: "journald"
@@ -237,7 +237,7 @@ services:
         target: /etc/httpd/ssl/library-wildcard.crt
       - source: ssl_wildcard_cert_key
         target: /etc/httpd/ssl/library-wildcard.key
-    image: 'nginx_sdbm:latest'
+    image: 'quay.io/upennlibraries/sdbm_nginx:${SDBMSS_IMAGE_TAG}'
     # logging:
       # driver: "journald"
     links:
