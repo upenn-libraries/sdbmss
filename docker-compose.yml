@@ -22,7 +22,7 @@ secrets:
 
 services:
   rabbitmq:
-    image: rabbitmq:3
+    image: rabbitmq:3.7
     hostname: 'rabbitmq'
     ports:
       - '5672:5672'
