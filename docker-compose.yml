@@ -48,10 +48,10 @@ services:
     #
     # THIS WILL LIKELY NOT WORK WITH OTHER IMAGES
     environment:
-      MYSQL_DATABASE: /run/secrets/mysql_database
-      MYSQL_ROOT_PASSWORD: /run/secrets/mysql_root_password
-      MYSQL_USER: /run/secrets/mysql_user
-      MYSQL_PASSWORD: /run/secrets/mysql_password
+      MYSQL_DATABASE:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_USER:
+      MYSQL_PASSWORD:
     secrets:
       - mysql_database
       - mysql_password
