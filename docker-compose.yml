@@ -35,7 +35,7 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
 
   db:
-    image: mysql/mysql-server:5.7
+    image: mysql:5.7
     # env_file: .docker-environment
     # logging:
       # driver: "journald"
