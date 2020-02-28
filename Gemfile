@@ -128,7 +128,7 @@ gem 'thredded', '~> 0.9.4'
 
 gem 'whenever', :require => false
 
-gem 'rake', '< 11.0'
+gem 'rake', '< 13.0'
 
 gem 'codemirror-rails'
 
