@@ -90,18 +90,24 @@ Installation
 
   (Optional: Load data from .sql dump)
 
-	    docker cp sdbm.sql.gz sdbm_db_1:/tmp/sdbm.sql.gz
-	    docker-compose exec db /bin/bash
-	    cd /tmp
-	    gunzip sdbm.sql.gz
-	    mysql -u <MYSQL_USER> -p <MYSQL_DATABASE> < sdbm.sql
-	    docker-compose exec rails bundle exec rake db:migrate
+```bash
+docker cp sdbm.sql.gz  $(docker ps -q -f name=sdbmss_db):/tmp/sdbm.sql.gz
+docker exec -it  $(docker ps -q -f name=sdbmss_db) bash
+cd /tmp
+gunzip sdbm.sql.gz
+mysql -u <MYSQL_USER> -p <MYSQL_DATABASE> < sdbm.sql
+rm sdbm.sql # remove the sql file (it's very big)
+exit # exit the MySQL container
+docker exec $(docker ps -q -f name=sdbmss_rails) bundle exec rake db:migrate
+```
 
   **NOTE**: If you are importing from a data file that includes **Page** objects, the database records will be copied, but not the page files.  You will need to move these manually to the appropriate place in the public/static folder (uploads/, tooltips/ or docs/)
 
-	    docker cp /tmp/docs/ current_rails_1:/usr/src/app/public/static/
-	    docker cp /tmp/uploads/ current_rails_1:/usr/src/app/public/static/
-	    docker cp /tmp/tooltips/ current_rails_1:/usr/src/app/public/static/
+```
+docker cp docs $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/static/
+docker cp tooltips $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/static/
+docker cp uploads $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/static/
+```
 
   Index in Solr:
 
@@ -118,7 +124,7 @@ Installation
 
   First time we need to create user and grant permissions.  Use the same values for USER/PASS as set in your .docker-environment file
 
-	    docker-compose exec rabbitmq /bin/bash
+	    docker exec -it $(docker ps -q -f name=sdbmss_rabbitmq) bash
 	    service rabbitmq-server start
 	    rabbitmqctl add_user <RABBIT_USER> <RABBIT_PASSWORD>
 	    rabbitmqctl set_user_tags <RABBIT_USER> adminstrator
@@ -131,16 +137,51 @@ Installation
 
 **8. Jena First Time Setup**
 
-  Loading RDF file as basis for dataset:
+  Regenerate RDF for dataset:
 
-	    docker cp /tmp/output.ttl.gz sdbmss_jena_1:/tmp/output.ttl.gz
+```
+docker exec -t $(docker ps -q -f name=sdbmss_rails) bundle exec rake sparql:test
+docker cp # do what's need to copy the ttl from rails to local
+# gzip it
+docker cp # do what's needed to copy the ttl.gz to jena: #then
+docker exec -it $(docker ps -q -f name=sdbmss_jena) bash
+cd /tmp
+gunzip test.ttl.gz
+cd /jena-fuseki
+./tdbloader --loc=/fuseki/databases/sdbm /tmp/test.ttl
+```
+
+	    
+      docker cp /tmp/output.ttl.gz sdbmss_jena_1:/tmp/output.ttl.gz
 	    docker-compose exec jena /bin/bash
 	    gunzip /tmp/output.ttl.gz
 	    ./tdbloader --loc=/fuseki/databases/sdbm /tmp/output.ttl
 
-  From front-end interface (/sparql), create new dataset "sdbm", then restart the service:
+  From front-end interface (/sparql), create new dataset "sdbm", then scale the services:
 
-	    docker-compose restart jena
+      docker service scale sdbmss_jena=0
+      docker service scale sdbmss_jena=1
+
+      docker service scale sdbmss_rabbitmq=0
+      docker service scale sdbmss_rabbitmq=1
+
+      docker service scale sdbmss_rails=0
+      docker service scale sdbmss_rails=1
+
+Run the Jena verify task to confirm that it works:
+
+      $ /bin/bash -l -c 'docker exec -t $(docker ps -q -f name=sdbmss_rails) bundle exec rake jena:verify'
+      Starting Queue Listening
+      Parsed contents: {"id"=>300122, "code"=>"200", "message"=>"OK"}
+      Jena Update was Successful!
+      Parsed contents: {"id"=>300211, "code"=>"200", "message"=>"OK"}
+      Jena Update was Successful!
+      Parsed contents: {"id"=>300212, "code"=>"200", "message"=>"OK"}
+      Jena Update was Successful!
+      Parsed contents: {"id"=>300213, "code"=>"200", "message"=>"OK"}
+      Jena Update was Successful!
+      # ... etc.
+
 
 **9. Logging**
 
