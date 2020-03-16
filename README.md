@@ -84,9 +84,18 @@ Installation
 
 **5. First Time Setup: Rails and SOLR**
 
+Before you begin, have the folliwing:
+
+- Database backup from previous version sdbm.sql.gz
+
+- Static assets from docs, tooltips, updloads (see: `docker volume inspect sdbmss_sdbm_docs` for location of files on filesystem)
+
+
+
+
   Setup database - perform setup:
 
-	    docker-compose exec rails bundle exec rake db:setup
+	    docker exec $(docker ps -q -f name=sdbmss_rails) bundle exec rake db:setup
 
   (Optional: Load data from .sql dump)
 
@@ -111,29 +120,7 @@ docker cp uploads $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/stati
 
   Index in Solr:
 
-	    docker-compose exec rails bundle exec rake sunspot:reindex
-
-**6. Precompiling Assets**
-
-  Preocompiling assets and performing migrations must be done AFTER the container is running:
-
-	    docker-compose exec rails bundle exec rake assets:precompile
-	    docker-compose restart rails
-
-**7. RabbitMQ First Time Setup**
-
-  First time we need to create user and grant permissions.  Use the same values for USER/PASS as set in your .docker-environment file
-
-	    docker exec -it $(docker ps -q -f name=sdbmss_rabbitmq) bash
-	    service rabbitmq-server start
-	    rabbitmqctl add_user <RABBIT_USER> <RABBIT_PASSWORD>
-	    rabbitmqctl set_user_tags <RABBIT_USER> adminstrator
-	    rabbitmqctl set_permissions -p / <RABBIT_USER> ".*" ".*" ".*"
-
-  Then restart dependent containers:
-
-	    docker-compose restart interface
-	    docker-compose restart rails
+	    docker exec $(docker ps -q -f name=sdbmss_rails) bundle exec rake sunspot:reindex
 
 **8. Jena First Time Setup**
 
@@ -141,23 +128,24 @@ docker cp uploads $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/stati
 
 ```
 docker exec -t $(docker ps -q -f name=sdbmss_rails) bundle exec rake sparql:test
-docker cp # do what's need to copy the ttl from rails to local
+# file should be in ~/deployments/sdbms/test.ttl; gzip it
 # gzip it
-docker cp # do what's needed to copy the ttl.gz to jena: #then
+gzip ~/deployments/sdbms/test.ttl
+docker cp ~/deployments/sdbms/test.ttl.gz $(docker ps -q -f name=sdbmss_jena):/tmp/
 docker exec -it $(docker ps -q -f name=sdbmss_jena) bash
 cd /tmp
 gunzip test.ttl.gz
 cd /jena-fuseki
 ./tdbloader --loc=/fuseki/databases/sdbm /tmp/test.ttl
+# delete the test.ttl
+rm /tmp/test.ttl
+# exit and delete the test.ttl.gz
+exit
+rm ~/deployments/sdbms/test.ttl.gz
 ```
 
-	    
-      docker cp /tmp/output.ttl.gz sdbmss_jena_1:/tmp/output.ttl.gz
-	    docker-compose exec jena /bin/bash
-	    gunzip /tmp/output.ttl.gz
-	    ./tdbloader --loc=/fuseki/databases/sdbm /tmp/output.ttl
 
-  From front-end interface (/sparql), create new dataset "sdbm", then scale the services:
+  From front-end interface (https://<hostname>/sparql), create new persistent dataset "sdbm", then scale the services:
 
       docker service scale sdbmss_jena=0
       docker service scale sdbmss_jena=1
