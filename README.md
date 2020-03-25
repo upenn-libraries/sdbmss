@@ -15,9 +15,13 @@ Installation
 
 **1. Clone the repository**
 
+DEPRECATED -- USING ANSIBLE
+
 	    git clone https://github.com/upenn-libraries/sdbmss.git
 
 **2. Create file .docker-environment in the root folder of the cloned repository.  Define the following environment variables:**
+
+DEPRECATED -- USING ANSIBLE
 
   This is the password for the public access point for the Jena server, both for making updates and for downloading RDF data file
 
@@ -64,11 +68,15 @@ Installation
 
 **3. (Optional) Create a file VERSION in the root folder of the cloned repository.**
 
+DEPRECATED -- USING ANSIBLE
+
   This is used to keep track of the version number for the purpose of tagging different docker images of the source code.  It is used by the script **build.sh**.  It's entire contents should just be:
 
 			0.0.1
 
 **4. Build and Run (First Time)**
+
+DEPRECATED -- USING ANSIBLE
 
   Run *build.sh* or the following command:
 
@@ -130,8 +138,8 @@ docker cp uploads $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/stati
 docker exec -t $(docker ps -q -f name=sdbmss_rails) bundle exec rake sparql:test
 # file should be in ~/deployments/sdbms/test.ttl; gzip it
 # gzip it
-gzip ~/deployments/sdbms/test.ttl
-docker cp ~/deployments/sdbms/test.ttl.gz $(docker ps -q -f name=sdbmss_jena):/tmp/
+gzip ~/deployments/sdbmss/test.ttl
+docker cp ~/deployments/sdbmss/test.ttl.gz $(docker ps -q -f name=sdbmss_jena):/tmp/
 docker exec -it $(docker ps -q -f name=sdbmss_jena) bash
 cd /tmp
 gunzip test.ttl.gz
@@ -172,6 +180,8 @@ Run the Jena verify task to confirm that it works:
 
 
 **9. Logging**
+
+DEPRECATED?
 
   Logging is set in [docker-compose.yml](docker-compose.yml), and may need to be altered depending on the logging drivers available on the parent device.  For the current setup (JournalCtl), the logs may be accessed as follows:
 
