@@ -10,6 +10,11 @@ name of a package in Ruby's standard library.
 
 The application is currently structured to be run through [Docker](https://docs.docker.com/) using a single [docker compose](https://docs.docker.com/compose/) file.
 
+Deployment
+=====
+
+To deploy this application in development or production, consult the [sdbm-config README](https://gitlab.library.upenn.edu/emeryr/sdbm-config/blob/master/README.md) in GitLab.
+
 Installation
 =====
 
