@@ -15,6 +15,12 @@ Deployment
 
 To deploy this application in development or production, consult the [sdbm-config README](https://gitlab.library.upenn.edu/emeryr/sdbm-config/blob/master/README.md) in GitLab.
 
+### Deployment workflow
+
+This illustration represents the current deployment workflow for SDBMSS.
+
+![SDBMSS deployment workflow](sdbmss_deployment.png)
+
 Installation
 =====
 
