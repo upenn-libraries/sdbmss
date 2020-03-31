@@ -11,8 +11,8 @@ fi
 dir="/usr/src/app/public/static/docs"
 
 echo "GETTING LIST OF TTL EXPORTS"
-if ls ${dir}/output*.ttl.gz ; then
-  old_files=${dir}/output*.ttl.gz
+old_files=$(ls ${dir}/output*.ttl.gz)
+if ? ; then
   echo "Found old files: ${old_files}"
 else
   echo "No old files found"
