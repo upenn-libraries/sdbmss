@@ -4,14 +4,14 @@
   </div>
   <div class="col-sm-12">
     <ul class="list-group">
-      <% if File.exists?("public/static/docs/output.ttl.gz") %>
+      <% Dir["public/static/docs/output*.ttl.gz"].each do |ttl| %>
       <li class="list-group-item">
         <div class="row">
           <div class="col-sm-6 text-left">
-            <strong>RDF Dataset (.ttl)</strong> <span class="text-muted">output.ttl.gz</span>
+            <strong>RDF Dataset (.ttl)</strong> <span class="text-muted"><%= File.basename ttl %></span>
           </div>
-          <div class="col-sm-6 text-right">            
-            <%= link_to("static/docs/output.ttl.gz", class: 'btn btn-default btn-sm') do %>
+          <div class="col-sm-6 text-right">
+            <%= link_to(ttl.sub(%r{^public/}, ''), class: 'btn btn-default btn-sm') do %>
               <span class="glyphicon glyphicon-download"></span> Download
             <% end %>
           </div>
@@ -24,7 +24,7 @@
           <div class="col-sm-6 text-left">
             <strong>MYSQL DUMP</strong> <span class="text-muted">dump.sql.gz</span>
           </div>
-          <div class="col-sm-6 text-right">            
+          <div class="col-sm-6 text-right">
             <%= link_to("static/docs/dump.sql.gz", class: 'btn btn-default btn-sm') do %>
               <span class="glyphicon glyphicon-download"></span> Download
             <% end %>
