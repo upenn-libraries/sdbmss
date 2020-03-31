@@ -8,10 +8,10 @@
       <li class="list-group-item">
         <div class="row">
           <div class="col-sm-6 text-left">
-            <strong>RDF Dataset (.ttl)</strong> <span class="text-muted"><%= ttl %></span>
+            <strong>RDF Dataset (.ttl)</strong> <span class="text-muted"><%= File.basename ttl %></span>
           </div>
           <div class="col-sm-6 text-right">
-            <%= link_to(ttl, class: 'btn btn-default btn-sm') do %>
+            <%= link_to(ttl.sub(%r{^public/}, ''), class: 'btn btn-default btn-sm') do %>
               <span class="glyphicon glyphicon-download"></span> Download
             <% end %>
           </div>
