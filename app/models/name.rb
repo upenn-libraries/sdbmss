@@ -27,7 +27,7 @@ class Name < ActiveRecord::Base
   include Ratable
 
   include TellBunny
-  
+
   extend SolrSearchable
 
   default_scope { where(deleted: false) }
@@ -41,7 +41,7 @@ class Name < ActiveRecord::Base
   has_many :name_places, :dependent => :destroy
   has_many :places, -> {distinct}, through: :name_places
 
-  has_many :bookmarks, as: :document, dependent: :destroy  
+  has_many :bookmarks, as: :document, dependent: :destroy
 
   has_many :entry_artists, foreign_key: "artist_id"
   has_many :artist_entries, -> {distinct},  through: :entry_artists, source: :entry
@@ -96,12 +96,12 @@ class Name < ActiveRecord::Base
         name_obj.viaf_id = name_obj.viaf_id.strip unless name_obj.viaf_id.nil?
       end
     end
-  end 
+  end
 
   before_validation :normalize
 
   def normalize
-    self.name = self.name.mb_chars.normalize    
+    self.name = self.name.mb_chars.normalize
   end
 
   searchable :unless => :deleted do
@@ -117,7 +117,7 @@ class Name < ActiveRecord::Base
     text :updated_by do
       updated_by ? updated_by.username: ""
     end
-    text :other_info, :as => :other_info_text_pre
+    text :other_info, :as => :other_info_text
     string :other_info
     integer :id
     text :name, :more_like_this => true do
@@ -133,10 +133,10 @@ class Name < ActiveRecord::Base
     string :viaf_id
     string :subtype
     string :places do
-      places.map(&:name).join("; ")      
+      places.map(&:name).join("; ")
     end
     text :places do
-      places.map(&:name).join("; ")      
+      places.map(&:name).join("; ")
     end
     integer :created_by_id
     integer :artists_count
@@ -164,18 +164,18 @@ class Name < ActiveRecord::Base
 
     integer :disputes do
       ratings.where(qualifier: "dispute").count
-    end    
+    end
   end
 
   def self.filters
     super + [
-      ["VIAF", "viaf_id"], 
-      ["Author Count", "authors_count"], 
-      ["Artist Count", "artists_count"], 
-      ["Scribe Count", "scribes_count"], 
-      ["Provenance Count", "provenance_count"], 
+      ["VIAF", "viaf_id"],
+      ["Author Count", "authors_count"],
+      ["Artist Count", "artists_count"],
+      ["Scribe Count", "scribes_count"],
+      ["Provenance Count", "provenance_count"],
       ["Source Agent Count", "source_agents_count"],
-      ["# of Confirms", "confirms"], 
+      ["# of Confirms", "confirms"],
       ["# of Disputes", "disputes"],
       ["Problem", "problem"],
       ["Type", "subtype"]
@@ -222,7 +222,7 @@ class Name < ActiveRecord::Base
   end
 
   ###
-  # 
+  #
   # This is all used only for creating reference data
   #
   ###
@@ -318,7 +318,7 @@ class Name < ActiveRecord::Base
 
       # include both People (personalNames) and Organizations (corporateNames)
       cql = "(local.personalNames all \"#{name}\" or local.corporateNames all \"#{name}\")"
-      
+
       response = VIAF.sru_search(cql)
 
       if debug
@@ -456,11 +456,11 @@ class Name < ActiveRecord::Base
     ids = EntryArtist.where(artist_id: self.id).pluck(:id)
     EntryArtist.where(artist_id: self.id).update_all({ artist_id: target_id })
     EntryArtist.where( id: ids ).each(&:update_bunny)
-    
+
     ids = EntryAuthor.where(author_id: self.id).pluck(:id)
     EntryAuthor.where(author_id: self.id).update_all({ author_id: target_id })
     EntryAuthor.where( id: ids ).each(&:update_bunny)
-    
+
     ids = EntryScribe.where(scribe_id: self.id).pluck(:id)
     EntryScribe.where(scribe_id: self.id).update_all({ scribe_id: target_id })
     EntryScribe.where( id: ids ).each(&:update_bunny)
@@ -468,19 +468,19 @@ class Name < ActiveRecord::Base
     ids = SaleAgent.where(agent_id: self.id).pluck(:id)
     SaleAgent.where(agent_id: self.id).update_all({ agent_id: target_id })
     SaleAgent.where( id: ids ).each(&:update_bunny)
-    
+
     ids = SourceAgent.where(agent_id: self.id).pluck(:id)
     SourceAgent.where(agent_id: self.id).update_all({ agent_id: target_id })
-    SourceAgent.where( id: ids ).each(&:update_bunny)    
-    
+    SourceAgent.where( id: ids ).each(&:update_bunny)
+
     ids = Provenance.where(provenance_agent_id: self.id).pluck(:id)
     Provenance.where(provenance_agent_id: self.id).update_all({ provenance_agent_id: target_id })
     Provenance.where( id: ids ).each(&:update_bunny)
-    
+
     ids = DericciLink.where(name_id: self.id).pluck(:id)
     DericciLink.where(name_id: self.id).update_all({ name_id: target_id })
     DericciLink.where( id: ids ).each(&:update_bunny)
-    
+
     ids = DericciRecord.where(verified_id: self.id).pluck(:id)
     DericciRecord.where(verified_id: self.id).update_all({verified_id: target_id})
     DericciRecord.where( id: ids ).each(&:update_bunny)
@@ -492,19 +492,19 @@ class Name < ActiveRecord::Base
     target.is_provenance_agent ||= self.is_provenance_agent
 
     target.save
-    
+
     # but ... CAN't SAVE when name is BLANK (nil)
     # self.name = nil
     self.viaf_id = nil
     self.deleted = true
     self.save!
 
-    # slice into managable chunks to avoid running out of space in mysql 
+    # slice into managable chunks to avoid running out of space in mysql
     entry_ids.each_slice(200) do |slice|
       SDBMSS::IndexJob.perform_later(Entry.to_s, slice)
     end
 
-    Name.update_counters(target.id, 
+    Name.update_counters(target.id,
       :authors_count => target.author_entries.where(deprecated: false, draft: false).count - target.authors_count,
       :artists_count => target.artist_entries.where(deprecated: false, draft: false).count - target.artists_count,
       :scribes_count => target.scribe_entries.where(deprecated: false, draft: false).count - target.scribes_count,

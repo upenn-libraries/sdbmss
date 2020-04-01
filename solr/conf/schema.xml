@@ -15,10 +15,10 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<!--  
+<!--
  This is the Solr schema file. This file should be named "schema.xml" and
  should be in the conf directory under the solr home
- (i.e. ./solr/conf/schema.xml by default) 
+ (i.e. ./solr/conf/schema.xml by default)
  or located where the classloader for the Solr webapp can find it.
 
  This example schema is the recommended starting point for users.
@@ -75,15 +75,15 @@
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.StandardFilterFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
-        <filter class="solr.NGramFilterFactory" minGramSize="2" maxGramSize="30"/>        
-        <filter class="solr.ASCIIFoldingFilterFactory" /> 
+        <filter class="solr.NGramFilterFactory" minGramSize="2" maxGramSize="30"/>
+        <filter class="solr.ASCIIFoldingFilterFactory" />
         <filter class="solr.SnowballPorterFilterFactory" language="English" />
       </analyzer>
       <analyzer type="query">
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.StandardFilterFactory"/>
         <filter class="solr.LowerCaseFilterFactory"/>
-        <filter class="solr.ASCIIFoldingFilterFactory" /> 
+        <filter class="solr.ASCIIFoldingFilterFactory" />
         <filter class="solr.SnowballPorterFilterFactory" language="English" />
       </analyzer>
     </fieldType>
@@ -140,7 +140,7 @@
                maxDistErr="0.1"
                units="degrees"
                />
-    
+
   </types>
   <fields>
     <!-- Valid attributes for fields:
@@ -161,9 +161,9 @@
        given field.
        When using MoreLikeThis, fields used for similarity should be
        stored for best performance.
-     termPositions: Store position information with the term vector.  
+     termPositions: Store position information with the term vector.
        This will increase storage costs.
-     termOffsets: Store offset information with the term vector. This 
+     termOffsets: Store offset information with the term vector. This
        will increase storage costs.
      default: a value that should be used if no value is specified
        when adding a document.
@@ -293,7 +293,7 @@
     <dynamicField name="*_llm" stored="false" type="location" multiValued="true" indexed="true"/>
     <dynamicField name="*_lls" stored="true" type="location" multiValued="false" indexed="true"/>
     <dynamicField name="*_llms" stored="true" type="location" multiValued="true" indexed="true"/>
-    
+
     <!-- required by Solr 4 -->
     <field name="_version_" type="string" indexed="true" stored="true" multiValued="false" />
 
@@ -307,7 +307,7 @@
     -->
 
     <field name="complete_entry" stored="true" type="text" multiValued="false" indexed="true"/>
-    
+
     <!-- 'entry' is full entry ID (SDBM_xxx) -->
     <field name="entry" stored="true" type="string" indexed="true"/>
     <field name="entry_id" stored="true" type="sint" multiValued="false" indexed="true"/>
@@ -329,7 +329,7 @@
     <field name="source_agent" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="source_agent_sort" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="source_search" stored="true" type="text" multiValued="false" indexed="true"/>
-    <field name="source_title" stored="true" type="text_pre" multiValued="false" indexed="true"/>
+    <field name="source_title" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="institution" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="institution_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="source_institution" stored="true" type="string" multiValued="true" indexed="true"/>
@@ -355,7 +355,7 @@
     <field name="provenance_composite" stored="true" type="text" indexed="true"/>
     <field name="title" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="title_flat" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="title_search" stored="true" type="text_pre" multiValued="true" indexed="true"/>
+    <field name="title_search" stored="true" type="text" multiValued="true" indexed="true"/>
     <field name="author" stored="true" type="string" multiValued="true" indexed="true"/>
     <field name="author_flat" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="author_search" stored="true" type="text" multiValued="true" indexed="true"/>
@@ -399,7 +399,7 @@
     <field name="miniatures_unspec_size" stored="true" type="sint" multiValued="false" indexed="true"/>
     <field name="initials_historiated" stored="true" type="sint" multiValued="false" indexed="true"/>
     <field name="initials_decorated" stored="true" type="sint" multiValued="false" indexed="true"/>
-    
+
     <field name="num_lines_range" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="height_range" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="width_range" stored="true" type="string" multiValued="false" indexed="true"/>
@@ -409,31 +409,31 @@
     <field name="miniatures_unspec_size_range" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="initials_historiated_range" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="initials_decorated_range" stored="true" type="string" multiValued="false" indexed="true"/>
-    <field name="binding_search" stored="true" type="text_pre" multiValued="false" indexed="true"/>
+    <field name="binding_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="binding" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="comment_search" stored="true" type="text" multiValued="false" indexed="true"/>
 
     <field name="manuscript_link_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="manuscript_link" stored="true" type="string" multiValued="false" indexed="true"/>
 
-    <field name="other_info_search" stored="true" type="text_pre" multiValued="false" indexed="true"/>
+    <field name="other_info_search" stored="true" type="text" multiValued="false" indexed="true"/>
     <field name="other_info" stored="true" type="string" multiValued="false" indexed="true"/>
 
     <field name="provenance_date" stored="true" type="daterange_full" multiValued="true" indexed="true"/>
-    
+
     <field name="created_at" stored="true" type="date" multiValued="false" indexed="true"/>
     <field name="created_by" stored="true" type="string" multiValued="false" indexed="true"/>
     <field name="updated_at" stored="true" type="date" multiValued="false" indexed="true"/>
     <field name="updated_by" stored="true" type="string" multiValued="false" indexed="true"/>
 
-    <field name="approved" stored="true" type="boolean" multiValued="false" indexed="true"/>    
+    <field name="approved" stored="true" type="boolean" multiValued="false" indexed="true"/>
     <field name="deprecated" stored="true" type="boolean" multiValued="false" indexed="true"/>
     <field name="unverified_legacy_record" stored="true" type="boolean" multiValued="false" indexed="true"/>
     <field name="draft" stored="true" type="boolean" multiValued="false" indexed="true"/>
-    <field name="confirmed" stored="true" type="boolean" multiValued="false" indexed="true"/>    
+    <field name="confirmed" stored="true" type="boolean" multiValued="false" indexed="true"/>
 
 </fields>
-  
+
   <!-- Field to use to determine and enforce document uniqueness.
       Unless this field is marked with required="false", it will be a required field
    -->

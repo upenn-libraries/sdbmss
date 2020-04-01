@@ -63,7 +63,7 @@ class Place < ActiveRecord::Base
       updated_by ? updated_by.username: ""
     end
     text :name, :more_like_this => true
-    text :evidence, :as => :evidence_text_pre
+    text :evidence, :as => :evidence_text
     string :evidence
     string :name
     integer :id
@@ -89,7 +89,7 @@ class Place < ActiveRecord::Base
 
   def self.filters
     super + [
-      ["Authority Id", "authority_id"], 
+      ["Authority Id", "authority_id"],
       ["Authority Source", "authority_source"],
       ["Problem", "problem"],
       ["Parent", "parent"],
