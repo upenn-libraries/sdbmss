@@ -3,10 +3,10 @@ version: '3.7'
 secrets:
   ssl_wildcard_cert_crt:
     external: true
-    name: sdbmss_ssl_wildcard_cert_crt
+    name: sdbmss_ssl_wildcard_cert_crt_v3
   ssl_wildcard_cert_key:
     external: true
-    name: sdbmss_ssl_wildcard_cert_key
+    name: sdbmss_ssl_wildcard_cert_key_v2
   mysql_database:
     external: true
     name: sdbmss_mysql_database
