@@ -18,10 +18,37 @@ module TellBunny
 
   def to_rdf
     %Q(
-      # sdbm:names/#{id} sdbm:names_id #{id}      
+      # sdbm:names/#{id} sdbm:names_id #{id}
     )
   end
-  
+
+
+  ##
+  #  If +value+ is present, return a formatted rdf object string based on +data_type+.
+  #
+  # @param [Object] value the value of the property object
+  #
+  def format_triple_object value, data_type, url_base=nil
+    return unless value.present?
+    case data_type
+    when :integer
+      "'#{value}'^^xsd:integer"
+    when :decimal
+      "'#{value}'^^xsd:decimal"
+    when :boolean
+      "'#{value}'^^xsd:boolean"
+    when :string_to_clean
+      "'''#{value.to_s.gsub("'", "")}'''"
+    when :string
+      "'''#{value}'''"
+    when :uri
+      raise "No `url_base` supplied for #{value}" unless url_base.present?
+      "<#{url_base}#{value}>"
+    else
+      raise "Unknown "
+    end
+  end
+
   #private
 
   def update_bunny(jena_response_id = nil)
@@ -54,7 +81,7 @@ module TellBunny
 
       rescue Bunny::TCPConnectionFailed => e
         #puts "(Update) - Connection to RabbitMQ server failed"
-        self.jena_responses.destroy_all        
+        self.jena_responses.destroy_all
         JenaResponse.create!(record: self, status: 0, message: "404: Failed to connect from Rails to RabbitMQ: #{e}")
       #rescue StandardError => e
       #  self.jena_responses.destroy_all

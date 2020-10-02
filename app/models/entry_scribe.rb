@@ -45,12 +45,12 @@ class EntryScribe < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:observed_name]          = "'''#{observed_name.to_s.gsub("'", "")}'''"            if observed_name.present?
-    map[:fields][:entry_id]               = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
-    map[:fields][:scribe_id]              = "<https://sdbm.library.upenn.edu/names/#{scribe_id}>"  if scribe_id.present?
-    map[:fields][:order]                  = "'#{order}'^^xsd:integer"                              if order.present?
-    map[:fields][:supplied_by_data_entry] = "'#{supplied_by_data_entry}'^^xsd:boolean"             unless supplied_by_data_entry.nil?
-    map[:fields][:uncertain_in_source]    = "'#{uncertain_in_source}'^^xsd:boolean"                unless uncertain_in_source.nil?
+    map[:fields][:observed_name]          = format_triple_object observed_name,          :string_to_clean
+    map[:fields][:entry_id]               = format_triple_object entry_id,               :uri,            'https://sdbm.library.upenn.edu/entries/'
+    map[:fields][:scribe_id]              = format_triple_object scribe_id,              :uri,            'https://sdbm.library.upenn.edu/names/'
+    map[:fields][:order]                  = format_triple_object order,                  :integer
+    map[:fields][:supplied_by_data_entry] = format_triple_object supplied_by_data_entry, :boolean
+    map[:fields][:uncertain_in_source]    = format_triple_object uncertain_in_source,    :boolean
 
     map
   end
