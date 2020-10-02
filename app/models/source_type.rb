@@ -17,7 +17,7 @@ class SourceType < ActiveRecord::Base
   #   ex: spreadsheet of Duke Univ. collection, Benjy's spreadsheet, and pretty much everything else.
 
   include TellBunny
-  
+
   default_scope { order("id = 4 desc") }
 
   AUCTION_CATALOG = 'auction_catalog'
@@ -64,10 +64,10 @@ class SourceType < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:name]                           = "'''#{name}'''"                                    if name.present?
-    map[:fields][:display_name]                   = "'''#{display_name}'''"                            if display_name.present?
-    map[:fields][:entries_transaction_field]      = "'#{entries_transaction_field}'^^xsd:boolean"      unless entries_transaction_field.nil?
-    map[:fields][:entries_have_institution_field] = "'#{entries_have_institution_field}'^^xsd:boolean" unless entries_have_institution_field.nil?
+    map[:fields][:name]                           = format_triple_object name,                           :string
+    map[:fields][:display_name]                   = format_triple_object display_name,                   :string
+    map[:fields][:entries_transaction_field]      = format_triple_object entries_transaction_field,      :boolean
+    map[:fields][:entries_have_institution_field] = format_triple_object entries_have_institution_field, :boolean
 
     map
   end
