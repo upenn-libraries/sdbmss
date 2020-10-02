@@ -67,7 +67,7 @@ class Source < ActiveRecord::Base
   has_many :source_agents, inverse_of: :source
 
   has_many :bookmarks, as: :document, dependent: :destroy
-  
+
 
  # validates_inclusion_of :whether_mss, in: HAS_MANUSCRIPT_TYPES.map(&:first), message: 'whether_mss is invalid', allow_blank: true
   validates_inclusion_of :medium, in: MEDIUM_TYPES.map(&:first), message: 'medium is invalid', allow_blank: true
@@ -224,7 +224,7 @@ class Source < ActiveRecord::Base
   end
 
   def bookmark_details
-    results = { 
+    results = {
       type: source_type.display_name,
       date: SDBMSS::Util.format_fuzzy_date(date),
       author: author,
@@ -325,7 +325,7 @@ class Source < ActiveRecord::Base
     self.deleted = true
     self.save!
 
-    # slice into managable chunks to avoid running out of space in mysql 
+    # slice into managable chunks to avoid running out of space in mysql
     entry_ids.each_slice(200) do |slice|
       SDBMSS::IndexJob.perform_later(Entry.to_s, slice)
     end
@@ -333,11 +333,11 @@ class Source < ActiveRecord::Base
 
   def self.fields
     [
-     ["Source Type", "source_type"], 
-     ["Date", "date"], 
-     ["Title", "title"], 
-     ["Author", "author"], 
-     ["Source Agent/Institution", "agent_name"], 
+     ["Source Type", "source_type"],
+     ["Date", "date"],
+     ["Title", "title"],
+     ["Author", "author"],
+     ["Source Agent/Institution", "agent_name"],
      ["Location", "location"],
      ["Location/Institution", "location_institution"],
      ["Date Accessed", "date_accessed"],
@@ -387,19 +387,19 @@ class Source < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:source_type_id]       = "<https://sdbm.library.upenn.edu/source_types/#{source_type_id}>" if source_type_id.present?
-    map[:fields][:legacy]               = "'#{legacy}'^^xsd:boolean"                                        unless legacy.nil?
-    map[:fields][:date_accessed]        = "'''#{date_accessed}'''"                                          if date_accessed.present?
-    map[:fields][:medium]               = "'''#{medium}'''"                                                 if medium.present?
-    map[:fields][:location]             = "'''#{location}'''"                                               if location.present?
-    map[:fields][:location_institution] = "'''#{location_institution}'''"                                   if location_institution.present?
-    map[:fields][:status]               = "'''#{status}'''"                                                 if status.present?
-    map[:fields][:other_info]           = "'''#{other_info.to_s.gsub("'", "")}'''"                          if other_info.present?
-    map[:fields][:deleted]              = "'#{deleted}'^^xsd:boolean"                                       unless deleted.nil?
-    map[:fields][:author]               = "'''#{author}'''"                                                 if author.present?
-    map[:fields][:title]                = "'''#{title.to_s.gsub("'", "")}'''"                               if title.present?
-    map[:fields][:date]                 = "'''#{date}'''"                                                   if date.present?
-    map[:fields][:link]                 = "'''#{link}'''"                                                   if link.present?
+    map[:fields][:source_type_id]       = format_triple_object source_type_id,       :string
+    map[:fields][:legacy]               = format_triple_object legacy,               :boolean
+    map[:fields][:date_accessed]        = format_triple_object date_accessed,        :string
+    map[:fields][:medium]               = format_triple_object medium,               :string
+    map[:fields][:location]             = format_triple_object location,             :string
+    map[:fields][:location_institution] = format_triple_object location_institution, :string
+    map[:fields][:status]               = format_triple_object status,               :string
+    map[:fields][:other_info]           = format_triple_object other_info,           :string_to_clean
+    map[:fields][:deleted]              = format_triple_object deleted,              :boolean
+    map[:fields][:author]               = format_triple_object author,               :string
+    map[:fields][:title]                = format_triple_object title,                :string_to_clean
+    map[:fields][:date]                 = format_triple_object date,                 :string
+    map[:fields][:link]                 = format_triple_object link,                 :string
 
     map
   end

@@ -94,7 +94,16 @@ begin
 
         query += %Q(
           DELETE { ?subject #{predicate} ?object }
+        )
+
+        # Don't insert triples with empty objects
+        unless new_value.to_s.empty?
+          query += %Q(
           INSERT { ?subject #{predicate} #{new_value} }
+          )
+        end
+
+        query += %Q(
           WHERE {
             BIND (<https://sdbm.library.upenn.edu/#{message['model_class']}/#{message['id']}> as ?subject) .
             OPTIONAL { ?subject #{predicate} ?object }
