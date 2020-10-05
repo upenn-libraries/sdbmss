@@ -24,10 +24,24 @@ module TellBunny
 
 
   ##
-  #  If +value+ is present, return a formatted rdf object string based on +data_type+.
+  # If +value+ is present, return a formatted rdf object string based on +data_type+;
+  # otherwise +nil+ is returned.
+  #
+  #     format_triple_object 3, :integer                    # => "'3'^^xsd:integer"
+  #     url_base = 'https://sdbm.library.upenn.edu/names/'
+  #     format_triple_object 22104, :uri, url_base          # => "<https://sdbm.library.upenn.edu/names/22104>"
+  #
+  # Note that when the data type is +uri+, +url_base+ is required and +value+ is appended to +url_base+.
+  #
+  # When +data_type+ is +:string_to_clean+ all +'+ characters are removed from +value+.
   #
   # @param [Object] value the value of the property object
-  #
+  # @param [Symbol] data_type one of +:integer+, +:decimal+, +:boolean',
+  #     +:string+, +:string_to_clean+, or +:uri+
+  # @param [String] url_base a string like +https://sdbm.library.upenn.edu/names/+;
+  #     required if +data_type+ is +:uri+
+  # @return [String, nil] returns a formatted RDF object string or +nil+ if +value+ is blank
+  # @raise [RuntimeError] if +data_type+ is +:uri+ and +url_base+ is blank
   def format_triple_object value, data_type, url_base=nil
     return unless value.present?
     case data_type
