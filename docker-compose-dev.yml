@@ -1,25 +1,5 @@
 version: '3.7'
 
-secrets:
-  ssl_wildcard_cert_crt:
-    external: true
-    name: sdbmss_ssl_wildcard_cert_crt_v3
-  ssl_wildcard_cert_key:
-    external: true
-    name: sdbmss_ssl_wildcard_cert_key_v2
-  mysql_database:
-    external: true
-    name: sdbmss_mysql_database
-  mysql_root_password:
-    external: true
-    name: sdbmss_mysql_root_password
-  mysql_user:
-    external: true
-    name: sdbmss_mysql_user
-  mysql_password:
-    external: true
-    name: sdbmss_mysql_password
-
 services:
   rabbitmq:
     image: rabbitmq:3.7
@@ -52,14 +32,9 @@ services:
     # THIS WILL LIKELY NOT WORK WITH OTHER IMAGES
     environment:
       MYSQL_DATABASE:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+      MYSQL_ROOT_PASSWORD:
       MYSQL_USER:
-      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
-    secrets:
-      - mysql_database
-      - mysql_password
-      - mysql_root_password
-      - mysql_user
+      MYSQL_PASSWORD:
   solr:
     image: rabbitmq:3.7
     image: 'quay.io/upennlibraries/sdbmss:${SDBMSS_IMAGE_TAG}'
@@ -251,13 +226,7 @@ services:
     image: 'quay.io/upennlibraries/sdbm_nginx:${SDBMSS_IMAGE_TAG}'
     restart: always
     volumes:
-      - sdbmsss_nginx/library-wildcard.crt:/etc/httpd/ssl/library-wildcard.crt
-      - sdbmsss_nginx/library-wildcard.key:/etc/httpd/ssl/library-wildcard.key
-    secrets:
-      - source: ssl_wildcard_cert_crt
-        target: /etc/httpd/ssl/library-wildcard.crt
-      - source: ssl_wildcard_cert_key
-        target: /etc/httpd/ssl/library-wildcard.key
+      - ./nginx/ssl:/etc/httpd/ssl
     # logging:
       # driver: "journald"
     links:
@@ -273,3 +242,4 @@ volumes:
   sdbm_assets:
   sdbm_solr:
   rabbitmq_data:
+
