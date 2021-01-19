@@ -15,7 +15,7 @@ class EntryUse < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:use]      = "'''#{use}'''"                                         if use.present?
+    map[:fields][:use]      = "'''#{rdf_string_prep use}'''"                         if use.present?
     map[:fields][:entry_id] = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
     map[:fields][:order]    = "'#{order}'^^xsd:integer"                              if order.present?
 

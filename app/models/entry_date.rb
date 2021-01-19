@@ -114,7 +114,7 @@ class EntryDate < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:observed_date]          = "'''#{observed_date}'''"                               if observed_date.present?
+    map[:fields][:observed_date]          = "'''#{rdf_string_prep observed_date}'''"               if observed_date.present?
     map[:fields][:date_normalized_start]  = "'''#{date_normalized_start}'''"                       if date_normalized_start.present?
     map[:fields][:date_normalized_end]    = "'''#{date_normalized_end}'''"                         if date_normalized_end.present?
     map[:fields][:entry_id]               = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?

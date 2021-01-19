@@ -13,15 +13,32 @@ module TellBunny
     has_many :jena_responses, as: :record
   end
 
+  SINGLE_QUOTE_REGEXP = Regexp.new "'"
+
+  ##
+  # Remove leading and trailing +'+ characters so we don't create TTL strings
+  # with four surrounding single quotes.
+  #
+  # @param value [String] a string value
+  # @return [String]
+  def rdf_string_prep value
+    return                  unless value.is_a? String
+    return value            unless value =~ SINGLE_QUOTE_REGEXP
+    value.strip!
+    value.gsub(/''/, '""')  if value =~ /''/ # replace '' with ""
+    value[0] = ''           while value.start_with? "'" # remove leading '
+    value[-1] = ''          while value.end_with? "'"  # remove trailing '
+    value
+  end
   # inherited and overriden by relevent models.
   # NOTE: use triple single quotes to enclose string literals, to avoid confusion with quotes in the strings themsleves
 
   def to_rdf
     %Q(
-      # sdbm:names/#{id} sdbm:names_id #{id}      
+      # sdbm:names/#{id} sdbm:names_id #{id}
     )
   end
-  
+
   #private
 
   def update_bunny(jena_response_id = nil)
@@ -54,7 +71,7 @@ module TellBunny
 
       rescue Bunny::TCPConnectionFailed => e
         #puts "(Update) - Connection to RabbitMQ server failed"
-        self.jena_responses.destroy_all        
+        self.jena_responses.destroy_all
         JenaResponse.create!(record: self, status: 0, message: "404: Failed to connect from Rails to RabbitMQ: #{e}")
       #rescue StandardError => e
       #  self.jena_responses.destroy_all

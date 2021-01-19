@@ -141,9 +141,9 @@ class Sale < ActiveRecord::Base
     map[:fields][:entry_id]       = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
     map[:fields][:date]           = "'''#{date}'''"                                        if date.present?
     map[:fields][:price]          = "'#{price}'^^xsd:decimal"                              if price.present?
-    map[:fields][:currency]       = "'''#{currency}'''"                                    if currency.present?
-    map[:fields][:other_currency] = "'''#{other_currency}'''"                              if other_currency.present?
-    map[:fields][:sold]           = "'''#{sold}'''"                                        if sold.present?
+    map[:fields][:currency]       = "'''#{rdf_string_prep currency}'''"                    if currency.present?
+    map[:fields][:other_currency] = "'''#{rdf_string_prep other_currency}'''"              if other_currency.present?
+    map[:fields][:sold]           = "'''#{rdf_string_prep sold}'''"                        if sold.present?
 
     map
   end

@@ -48,8 +48,8 @@ class EntryMaterial < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:material]               = "'''#{material}'''"                                    if material.present?
-    map[:fields][:observed_name]          = "'''#{observed_name}'''"                               if observed_name.present?
+    map[:fields][:material]               = "'''#{rdf_string_prep material}'''"                    if material.present?
+    map[:fields][:observed_name]          = "'''#{rdf_string_prep observed_name}'''"               if observed_name.present?
     map[:fields][:entry_id]               = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
     map[:fields][:order]                  = "'#{order}'^^xsd:integer"                              if order.present?
     map[:fields][:supplied_by_data_entry] = "'#{supplied_by_data_entry}'^^xsd:boolean"             unless supplied_by_data_entry.nil?

@@ -29,8 +29,8 @@ class EntryTitle < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:title]                  = "'''#{title.to_s.gsub("'", "")}'''"                    if title.present?
-    map[:fields][:common_title]           = "'''#{common_title.to_s.gsub("'", "")}'''"             if common_title.present?
+    map[:fields][:title]                  = "'''#{rdf_string_prep title}'''"                       if title.present?
+    map[:fields][:common_title]           = "'''#{rdf_string_prep common_title}'''"                if common_title.present?
     map[:fields][:entry_id]               = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
     map[:fields][:order]                  = "'#{order}'^^xsd:integer"                              if order.present?
     map[:fields][:supplied_by_data_entry] = "'#{supplied_by_data_entry}'^^xsd:boolean"             unless supplied_by_data_entry.nil?

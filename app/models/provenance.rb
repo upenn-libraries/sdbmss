@@ -137,7 +137,7 @@ class Provenance < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:observed_name]                    = "'''#{observed_name.to_s.gsub("'", "")}'''"                     if observed_name.present?
+    map[:fields][:observed_name]                    = "'''#{rdf_string_prep observed_name}'''"                        if observed_name.present?
     map[:fields][:entry_id]                         = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>"          if entry_id.present?
     map[:fields][:provenance_agent_id]              = "<https://sdbm.library.upenn.edu/names/#{provenance_agent_id}>" if provenance_agent_id.present?
     map[:fields][:order]                            = "'#{order}'^^xsd:integer"                                       if order.present?
@@ -152,9 +152,9 @@ class Provenance < ActiveRecord::Base
     map[:fields][:end_date]                         = "'''#{end_date}'''"                                             if end_date.present?
     map[:fields][:end_date_normalized_start]        = "'''#{end_date_normalized_start}'''"                            if end_date_normalized_start.present?
     map[:fields][:end_date_normalized_end]          = "'''#{end_date_normalized_end}'''"                              if end_date_normalized_end.present?
-    map[:fields][:comment]                          = "'''#{comment.to_s.gsub("'", "")}'''"                           if comment.present?
+    map[:fields][:comment]                          = "'''#{rdf_string_prep comment}'''"                              if comment.present?
     map[:fields][:direct_transfer]                  = "'#{direct_transfer}'^^xsd:boolean"                             unless direct_transfer.nil?
-    map[:fields][:acquisition_method]               = "'''#{acquisition_method}'''"                                   if acquisition_method.present?
+    map[:fields][:acquisition_method]               = "'''#{rdf_string_prep acquisition_method}'''"                   if acquisition_method.present?
 
     map
   end

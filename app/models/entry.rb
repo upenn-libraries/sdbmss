@@ -1121,23 +1121,23 @@ class Entry < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:catalog_or_lot_number]    = "'''#{catalog_or_lot_number}'''"                               if catalog_or_lot_number.present?
+    map[:fields][:catalog_or_lot_number]    = "'''#{rdf_string_prep catalog_or_lot_number}'''"               if catalog_or_lot_number.present?
     map[:fields][:folios]                   = "'#{folios}'^^xsd:integer"                                     if folios.present?
     map[:fields][:num_columns]              = "'#{num_columns}'^^xsd:integer"                                if num_columns.present?
     map[:fields][:num_lines]                = "'#{num_lines}'^^xsd:integer"                                  if num_lines.present?
     map[:fields][:height]                   = "'#{height}'^^xsd:integer"                                     if height.present?
     map[:fields][:width]                    = "'#{width}'^^xsd:integer"                                      if width.present?
-    map[:fields][:alt_size]                 = "'''#{alt_size}'''"                                            if alt_size.present?
-    map[:fields][:manuscript_binding]       = "'''#{manuscript_binding.to_s.gsub("'", "")}'''"               if manuscript_binding.present?
-    map[:fields][:other_info]               = "'''#{other_info.to_s.gsub("'", "")}'''"                       if other_info.present?
-    map[:fields][:manuscript_link]          = "'''#{manuscript_link}'''"                                     if manuscript_link.present?
+    map[:fields][:alt_size]                 = "'''#{rdf_string_prep alt_size}'''"                            if alt_size.present?
+    map[:fields][:manuscript_binding]       = "'''#{rdf_string_prep manuscript_binding}'''"                  if manuscript_binding.present?
+    map[:fields][:other_info]               = "'''#{rdf_string_prep other_info}'''"                          if other_info.present?
+    map[:fields][:manuscript_link]          = "'''#{rdf_string_prep manuscript_link}'''"                     if manuscript_link.present?
     map[:fields][:miniatures_fullpage]      = "'#{miniatures_fullpage}'^^xsd:integer"                        if miniatures_fullpage.present?
     map[:fields][:miniatures_large]         = "'#{miniatures_large}'^^xsd:integer"                           if miniatures_large.present?
     map[:fields][:miniatures_small]         = "'#{miniatures_small}'^^xsd:integer"                           if miniatures_small.present?
     map[:fields][:miniatures_unspec_size]   = "'#{miniatures_unspec_size}'^^xsd:integer"                     if miniatures_unspec_size.present?
     map[:fields][:initials_historiated]     = "'#{initials_historiated}'^^xsd:integer"                       if initials_historiated.present?
     map[:fields][:initials_decorated]       = "'#{initials_decorated}'^^xsd:integer"                         if initials_decorated.present?
-    map[:fields][:transaction_type]         = "'''#{transaction_type}'''"                                    if transaction_type.present?
+    map[:fields][:transaction_type]         = "'''#{rdf_string_prep transaction_type}'''"                    if transaction_type.present?
     map[:fields][:deprecated]               = "'#{deprecated}'^^xsd:boolean"                                 unless deprecated.nil?
     map[:fields][:unverified_legacy_record] = "'#{unverified_legacy_record}'^^xsd:boolean"                   unless unverified_legacy_record.nil?
     map[:fields][:institution_id]           = "<https://sdbm.library.upenn.edu/names/#{institution_id}>"     if institution_id.present?

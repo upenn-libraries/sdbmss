@@ -31,7 +31,7 @@ class EntryPlace < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:observed_name]          = "'''#{observed_name}'''"                               if observed_name.present?
+    map[:fields][:observed_name]          = "'''#{rdf_string_prep observed_name}'''"               if observed_name.present?
     map[:fields][:place_id]               = "<https://sdbm.library.upenn.edu/places/#{place_id}>"  if place_id.present?
     map[:fields][:entry_id]               = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
     map[:fields][:order]                  = "'#{order}'^^xsd:integer"                              if order.present?

@@ -35,7 +35,7 @@ class EntryLanguage < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:observed_name]          = "'''#{observed_name}'''"                                    if observed_name.present?
+    map[:fields][:observed_name]          = "'''#{rdf_string_prep observed_name}'''"                    if observed_name.present?
     map[:fields][:entry_id]               = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>"      if entry_id.present?
     map[:fields][:language_id]            = "<https://sdbm.library.upenn.edu/languages/#{language_id}>" if language_id.present?
     map[:fields][:order]                  = "'#{order}'^^xsd:integer"                                   if order.present?

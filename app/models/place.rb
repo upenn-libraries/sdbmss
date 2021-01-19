@@ -148,9 +148,9 @@ class Place < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:name]             = "'''#{name.to_s.gsub("'", "")}'''"                     if name.present?
-    map[:fields][:authority_id]     = "'''#{authority_id}'''"                                if authority_id.present?
-    map[:fields][:authority_source] = "'''#{authority_source}'''"                            if authority_source.present?
+    map[:fields][:name]             = "'''#{rdf_string_prep name}'''"                        if name.present?
+    map[:fields][:authority_id]     = "'''#{rdf_string_prep authority_id}'''"                if authority_id.present?
+    map[:fields][:authority_source] = "'''#{rdf_string_prep authority_source}'''"            if authority_source.present?
     map[:fields][:parent_id]        = "<https://sdbm.library.upenn.edu/places/#{parent_id}>" if parent_id.present?
     map[:fields][:latitude]         = "'#{latitude}'^^xsd:decimal"                           if latitude.present?
     map[:fields][:longitude]        = "'#{longitude}'^^xsd:decimal"                          if longitude.present?

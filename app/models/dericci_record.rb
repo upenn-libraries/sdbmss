@@ -48,15 +48,15 @@ class DericciRecord < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:dates]        = "'''#{dates}'''"                 if dates.present?
-    map[:fields][:name]         = "'''#{name}'''"                  if name.present?
-    map[:fields][:place]        = "'''#{place}'''"                 if place.present?
-    map[:fields][:url]          = "'''#{url}'''"                   if url.present?
-    map[:fields][:cards]        = "'#{cards}'^^xsd:integer"        if cards.present?
-    map[:fields][:size]         = "'''#{size}'''"                  if size.present?
-    map[:fields][:other_info]   = "'''#{other_info}'''"            if other_info.present?
-    map[:fields][:senate_house] = "'''#{senate_house}'''"          if senate_house.present?
-    map[:fields][:out_of_scope] = "'#{out_of_scope}'^^xsd:boolean" unless out_of_scope.nil?
+    map[:fields][:dates]        = "'''#{rdf_string_prep dates}'''"                 if dates.present?
+    map[:fields][:name]         = "'''#{rdf_string_prep name}'''"                  if name.present?
+    map[:fields][:place]        = "'''#{rdf_string_prep place}'''"                 if place.present?
+    map[:fields][:url]          = "'''#{rdf_string_prep url}'''"                   if url.present?
+    map[:fields][:cards]        = "'#{cards}'^^xsd:integer"                        if cards.present?
+    map[:fields][:size]         = "'''#{rdf_string_prep size}'''"                  if size.present?
+    map[:fields][:other_info]   = "'''#{rdf_string_prep other_info}'''"            if other_info.present?
+    map[:fields][:senate_house] = "'''#{rdf_string_prep senate_house}'''"          if senate_house.present?
+    map[:fields][:out_of_scope] = "'#{out_of_scope}'^^xsd:boolean"                 unless out_of_scope.nil?
 
     map
   end

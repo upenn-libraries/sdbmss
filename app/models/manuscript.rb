@@ -157,9 +157,9 @@ class Manuscript < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:name] = "'''#{name}'''" if name.present?
-    map[:fields][:location] = "'''#{location}'''" if location.present?
-    map[:fields][:url] = "'''#{url}'''" if url.present?
+    map[:fields][:name] = "'''#{rdf_string_prep name}'''"           if name.present?
+    map[:fields][:location] = "'''#{rdf_string_prep location}'''"   if location.present?
+    map[:fields][:url] = "'''#{url}'''"                             if url.present?
 
     map
   end

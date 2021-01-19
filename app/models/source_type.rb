@@ -64,8 +64,8 @@ class SourceType < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:name]                           = "'''#{name}'''"                                    if name.present?
-    map[:fields][:display_name]                   = "'''#{display_name}'''"                            if display_name.present?
+    map[:fields][:name]                           = "'''#{rdf_string_prep name}'''"                    if name.present?
+    map[:fields][:display_name]                   = "'''#{rdf_string_prep display_name}'''"            if display_name.present?
     map[:fields][:entries_transaction_field]      = "'#{entries_transaction_field}'^^xsd:boolean"      unless entries_transaction_field.nil?
     map[:fields][:entries_have_institution_field] = "'#{entries_have_institution_field}'^^xsd:boolean" unless entries_have_institution_field.nil?
 

@@ -525,12 +525,12 @@ class Name < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:name]       = "'''#{name.to_s.gsub("'", "")}'''"       if name.present?
-    map[:fields][:viaf_id]    = "'''#{viaf_id}'''"                       if viaf_id.present?
-    map[:fields][:subtype]    = "'''#{subtype}'''"                       if subtype.present?
-    map[:fields][:startdate]  = "'''#{startdate}'''"                     if startdate.present?
-    map[:fields][:enddate]    = "'''#{enddate}'''"                       if enddate.present?
-    map[:fields][:other_info] = "'''#{other_info.to_s.gsub("'", "")}'''" if other_info.present?
+    map[:fields][:name]       = "'''#{rdf_string_prep name}'''"          if name.present?
+    map[:fields][:viaf_id]    = "'''#{rdf_string_prep viaf_id}'''"       if viaf_id.present?
+    map[:fields][:subtype]    = "'''#{rdf_string_prep subtype}'''"       if subtype.present?
+    map[:fields][:startdate]  = "'''#{rdf_string_prep startdate}'''"     if startdate.present?
+    map[:fields][:enddate]    = "'''#{rdf_string_prep enddate}'''"       if enddate.present?
+    map[:fields][:other_info] = "'''#{rdf_string_prep other_info}'''"    if other_info.present?
     map[:fields][:deleted]    = "'#{deleted}'^^xsd:boolean"              unless deleted.nil?
 
     map

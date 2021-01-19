@@ -33,8 +33,8 @@ class NamePlace < ActiveRecord::Base
 
     map[:fields][:place_id]  = "<https://sdbm.library.upenn.edu/places/#{place_id}>" if place_id.present?
     map[:fields][:name_id]   = "<https://sdbm.library.upenn.edu/names/#{name_id}>"   if name_id.present?
-    map[:fields][:notbefore] = "'''#{notbefore}'''"                                  if notbefore.present?
-    map[:fields][:notafter]  = "'''#{notafter}'''"                                   if notafter.present?
+    map[:fields][:notbefore] = "'''#{rdf_string_prep notbefore}'''"                  if notbefore.present?
+    map[:fields][:notafter]  = "'''#{rdf_string_prep notafter}'''"                   if notafter.present?
 
     map
   end

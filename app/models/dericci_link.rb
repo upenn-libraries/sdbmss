@@ -21,7 +21,7 @@ class DericciLink < ActiveRecord::Base
 
     map[:fields][:dericci_record_id] = "<https://sdbm.library.upenn.edu/dericci_records/#{dericci_record_id}>" if dericci_record_id.present?
     map[:fields][:name_id]           = "<https://sdbm.library.upenn.edu/names/#{name_id}>"                     if name_id.present?
-    map[:fields][:other_info]        = "'''#{other_info}'''"                                                   if other_info.present?
+    map[:fields][:other_info]        = "'''#{rdf_string_prep other_info}'''"                                   if other_info.present?
 
     map
   end

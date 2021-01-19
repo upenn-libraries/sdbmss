@@ -45,7 +45,7 @@ class EntryScribe < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:observed_name]          = "'''#{observed_name.to_s.gsub("'", "")}'''"            if observed_name.present?
+    map[:fields][:observed_name]          = "'''#{rdf_string_prep observed_name}'''"               if observed_name.present?
     map[:fields][:entry_id]               = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
     map[:fields][:scribe_id]              = "<https://sdbm.library.upenn.edu/names/#{scribe_id}>"  if scribe_id.present?
     map[:fields][:order]                  = "'#{order}'^^xsd:integer"                              if order.present?
