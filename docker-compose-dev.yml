@@ -231,7 +231,7 @@ services:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
   nginx:
-    image: sdbmss
+    image: sdbmss_nginx
     build:
       context: sdbmss_nginx
       dockerfile: Dockerfile
