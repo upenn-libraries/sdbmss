@@ -80,7 +80,7 @@ class EntryArtist < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:observed_name]          = format_triple_object observed_name,          :string_to_clean
+    map[:fields][:observed_name]          = format_triple_object observed_name,          :string
     map[:fields][:artist_id]              = format_triple_object artist_id,              :uri,            'https://sdbm.library.upenn.edu/names/'
     map[:fields][:entry_id]               = format_triple_object entry_id,               :uri,            'https://sdbm.library.upenn.edu/entries/'
     map[:fields][:role]                   = format_triple_object role,                   :string

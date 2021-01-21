@@ -72,8 +72,8 @@ begin
         request.set_form_data({"update" => query})
         request.basic_auth("admin",  ENV["ADMIN_PASSWORD"])
         response = http.request(request)
-        if response.code != 200
-          puts "PROBLEM: #{response} #{query}"
+        if response.code.to_i != 200
+          puts "PROBLEM: #{response}: code #{response.code.inspect} \n #{query}"
         end
         status_queue = channel.queue("sdbm_status")
         status_queue.publish({id: message['response_id'], code: response.code, message: response.message}.to_json)
@@ -89,7 +89,7 @@ begin
       message['fields'].each do |field, new_value|
         predicate = "sdbm:#{message['model_class']}_#{field}"
 
-# When the record is updated, the process is the same, but as well as the old triple being deleted (for each triple in the
+        # When the record is updated, the process is the same, but as well as the old triple being deleted (for each triple in the
 # record), the new triple is added with the new value.
 
         query += %Q(
@@ -119,16 +119,17 @@ begin
         };
       )
 
-# The message response handling is the same in both cases, however.
+      # The message response handling is the same in both cases, however.
 
       begin
         request = Net::HTTP::Post.new(uri.request_uri)
         request.set_form_data({"update" => query})
         request.basic_auth("admin", ENV["ADMIN_PASSWORD"])
         response = http.request(request)
-        if response.code != 200
-          puts "PROBLEM: #{response} #{query}"
+        if response.code.to_i != 200
+          puts "PROBLEM: #{response}: code #{response.code.inspect} \n #{query}"
         end
+
         status_queue = channel.queue("sdbm_status")
         status_queue.publish({id: message['response_id'], code: response.code, message: response.message}.to_json)
       rescue Exception => err

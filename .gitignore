@@ -4,8 +4,8 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile '~/.gitignore_global'
 
-# ignore nginx server config
-/nginx/nginx.conf
+# ignore nginx configuration
+/nginx/
 
 # Ignore bundler config.
 /.bundle
