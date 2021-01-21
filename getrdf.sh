@@ -8,7 +8,39 @@ if ! [ -d "public/static/docs" ]; then
 
 fi
 
+dir="/usr/src/app/public/static/docs"
+
+echo "GETTING LIST OF TTL EXPORTS"
+old_files=$(ls ${dir}/output*.ttl.gz)
+if [ "$?" -eq "0" ]; then
+  echo "Found old files: ${old_files}"
+else
+  echo "No old files found"
+fi
+new_file=${dir}/output-$(date +%Y%m%dT%H%M%S-%Z).ttl.gz
+
+
 echo "GETTING RDF FROM JENA"
-curl -u admin:$ADMIN_PASSWORD jena:3030/sdbm | gzip > /usr/src/app/public/static/docs/output.ttl.gz
+curl -u admin:$ADMIN_PASSWORD jena:3030/sdbm | gzip > ${new_file}
+
+# make sure we exited cleanly
+if [ "$?" -eq "0" ]; then
+  # make sure the file was created
+  if [ -f "${new_file}" ]; then
+    echo "Created new RDF export: ${new_file}"
+  else
+    echo "ERROR: File not created: ${new_file}"
+    exit 1
+  fi
+else
+  echo "ERROR: Error creating RDF backup: ${new_file}"
+  exit 1
+fi
+
+# remove any old files
+if [ -n  "$old_files" ]; then
+  echo "Deleting old files ${old_files}"
+  rm $old_files
+fi
 
 echo "DONE"

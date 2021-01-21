@@ -4,7 +4,7 @@ namespace :sparql do
 	task :test => :environment do
 
 		entities = [ Name, Place, Language, Source, DericciLink, DericciRecord, Entry, EntryArtist, EntryAuthor, EntryDate, EntryLanguage, EntryManuscript, EntryMaterial, EntryPlace, EntryScribe, EntryTitle, EntryUse, Manuscript, NamePlace, Provenance, Sale, SaleAgent, SourceAgent ]
-		
+
 		total = 0
 		possible = 0
 		origin = Time.now
@@ -15,7 +15,7 @@ namespace :sparql do
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix sdbm:  <https://sdbm.library.upenn.edu#> .
+@prefix sdbm:  <https://sdbm.library.upenn.edu/> .
 			)
 			entities.each do |entity|
 				class_name = entity.to_s.underscore.pluralize
@@ -29,6 +29,7 @@ namespace :sparql do
 						f.puts "<https://sdbm.library.upenn.edu/#{class_name}/#{instance.id}> sdbm:#{class_name}_id #{instance.id} ;"
 						f.puts "rdf:type sdbm:#{class_name} ;"
 						instance.to_rdf[:fields].each do | key, value |
+							next if value.nil?
 							f.puts "sdbm:#{class_name}_#{key} #{value.gsub("\r\n", '').gsub("\\", '')} ;"
 						end
 						f.puts "."

@@ -74,7 +74,7 @@ class Provenance < ActiveRecord::Base
   # Returns a 2-item Array with start_date and end_date in the format
   # YYYY or YYYY-MM-DD, depending on how much information is in the
   # approximate date string.
-  
+
   after_save do |agent|
     if agent.provenance_agent && !agent.provenance_agent.is_provenance_agent
       agent.provenance_agent.is_provenance_agent = true
@@ -131,30 +131,32 @@ class Provenance < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "provenance",
       id: id,
-      fields: {
-        observed_name: "'''#{observed_name.to_s.gsub("'", "")}'''",
-        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        provenance_agent_id: "<https://sdbm.library.upenn.edu/names/#{provenance_agent_id}>",
-        order: "'#{order}'^^xsd:integer",
-        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
-        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean",
-        associated_date: "'''#{associated_date}'''",
-        associated_date_normalized_start: "'''#{associated_date_normalized_start}'''",
-        associated_date_normalized_end: "'''#{associated_date_normalized_end}'''",
-        start_date: "'''#{start_date}'''",
-        start_date_normalized_start: "'''#{start_date_normalized_start}'''",
-        start_date_normalized_end: "'''#{start_date_normalized_end}'''",
-        end_date: "'''#{end_date}'''",
-        end_date_normalized_start: "'''#{end_date_normalized_start}'''",
-        end_date_normalized_end: "'''#{end_date_normalized_end}'''",
-        comment: "'''#{comment.to_s.gsub("'", "")}'''",
-        direct_transfer: "'#{direct_transfer}'^^xsd:boolean",
-        acquisition_method: "'''#{acquisition_method}'''"
-      }
+      fields: {}
     }
+
+    map[:fields][:observed_name]                    = format_triple_object observed_name,                    :string
+    map[:fields][:entry_id]                         = format_triple_object entry_id,                         :uri,            'https://sdbm.library.upenn.edu/entries/'
+    map[:fields][:provenance_agent_id]              = format_triple_object provenance_agent_id,              :uri,            'https://sdbm.library.upenn.edu/names/'
+    map[:fields][:order]                            = format_triple_object order,                            :integer
+    map[:fields][:supplied_by_data_entry]           = format_triple_object supplied_by_data_entry,           :boolean
+    map[:fields][:uncertain_in_source]              = format_triple_object uncertain_in_source,              :boolean
+    map[:fields][:associated_date]                  = format_triple_object associated_date,                  :string
+    map[:fields][:associated_date_normalized_start] = format_triple_object associated_date_normalized_start, :string
+    map[:fields][:associated_date_normalized_end]   = format_triple_object associated_date_normalized_end,   :string
+    map[:fields][:start_date]                       = format_triple_object start_date,                       :string
+    map[:fields][:start_date_normalized_start]      = format_triple_object start_date_normalized_start,      :string
+    map[:fields][:start_date_normalized_end]        = format_triple_object start_date_normalized_end,        :string
+    map[:fields][:end_date]                         = format_triple_object end_date,                         :string
+    map[:fields][:end_date_normalized_start]        = format_triple_object end_date_normalized_start,        :string
+    map[:fields][:end_date_normalized_end]          = format_triple_object end_date_normalized_end,          :string
+    map[:fields][:comment]                          = format_triple_object comment,                          :string
+    map[:fields][:direct_transfer]                  = format_triple_object direct_transfer,                  :boolean
+    map[:fields][:acquisition_method]               = format_triple_object acquisition_method,               :string
+
+    map
   end
 
 end

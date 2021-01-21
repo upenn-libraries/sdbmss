@@ -17,7 +17,7 @@ class SourceType < ActiveRecord::Base
   #   ex: spreadsheet of Duke Univ. collection, Benjy's spreadsheet, and pretty much everything else.
 
   include TellBunny
-  
+
   default_scope { order("id = 4 desc") }
 
   AUCTION_CATALOG = 'auction_catalog'
@@ -58,16 +58,18 @@ class SourceType < ActiveRecord::Base
 
   # SourceType records should rarely, if ever, change
   def to_rdf
-    {
+    map = {
       model_class: "source_types",
       id: id,
-      fields: {
-        name: "'''#{name}'''",
-        display_name: "'''#{display_name}'''",
-        entries_transaction_field: "'#{entries_transaction_field}'^^xsd:boolean",
-        entries_have_institution_field: "'#{entries_have_institution_field}'^^xsd:boolean"
-      }
+      fields: {}
     }
+
+    map[:fields][:name]                           = format_triple_object name,                           :string
+    map[:fields][:display_name]                   = format_triple_object display_name,                   :string
+    map[:fields][:entries_transaction_field]      = format_triple_object entries_transaction_field,      :boolean
+    map[:fields][:entries_have_institution_field] = format_triple_object entries_have_institution_field, :boolean
+
+    map
   end
 
 end

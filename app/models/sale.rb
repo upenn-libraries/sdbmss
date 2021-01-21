@@ -41,8 +41,6 @@ class Sale < ActiveRecord::Base
 
   belongs_to :entry
 
-  before_validation :normalize
-
   has_many :sale_agents, dependent: :destroy, inverse_of: :sale
 
   accepts_nested_attributes_for :sale_agents, allow_destroy: true
@@ -51,12 +49,6 @@ class Sale < ActiveRecord::Base
   validates :currency, inclusion: { in: CURRENCY_TYPES.map(&:first) }, allow_nil: true
   validates_numericality_of :price, allow_nil: true
   validates_presence_of :entry
-
-  def normalize
-    if date
-      date.gsub!("-", "")
-    end
-  end
 
   def get_sale_agents_with_role(role)
     sale_agents.select { |ea| ea.role == role }
@@ -140,18 +132,20 @@ class Sale < ActiveRecord::Base
 
 
   def to_rdf
-    {
+    map = {
       model_class: "sales",
       id: id,
-      fields: {
-        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        date: "'''#{date}'''",
-        price: "'#{price}'^^xsd:decimal",
-        currency: "'''#{currency}'''",
-        other_currency: "'''#{other_currency}'''",
-        sold: "'''#{sold}'''"
-      }
+      fields: {}
     }
+
+    map[:fields][:entry_id]       = format_triple_object entry_id,       :uri,    'https://sdbm.library.upenn.edu/entries/'
+    map[:fields][:date]           = format_triple_object date,           :string
+    map[:fields][:price]          = format_triple_object price,          :decimal
+    map[:fields][:currency]       = format_triple_object currency,       :string
+    map[:fields][:other_currency] = format_triple_object other_currency, :string
+    map[:fields][:sold]           = format_triple_object sold,           :string
+
+    map
   end
 
 end

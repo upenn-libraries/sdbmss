@@ -1,25 +1,5 @@
 version: '3.7'
 
-secrets:
-  ssl_wildcard_cert_crt:
-    external: true
-    name: sdbmss_ssl_wildcard_cert_crt_v3
-  ssl_wildcard_cert_key:
-    external: true
-    name: sdbmss_ssl_wildcard_cert_key_v2
-  mysql_database:
-    external: true
-    name: sdbmss_mysql_database
-  mysql_root_password:
-    external: true
-    name: sdbmss_mysql_root_password
-  mysql_user:
-    external: true
-    name: sdbmss_mysql_user
-  mysql_password:
-    external: true
-    name: sdbmss_mysql_password
-
 services:
   rabbitmq:
     image: rabbitmq:3.7
@@ -38,7 +18,7 @@ services:
   db:
     image: mysql:5.7
     restart: always
-    # env_file: .docker-environment
+    env_file: .docker-environment
     # logging:
       # driver: "journald"
     ports:
@@ -51,20 +31,18 @@ services:
     # THIS WILL LIKELY NOT WORK WITH OTHER IMAGES
     environment:
       MYSQL_DATABASE:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+      MYSQL_ROOT_PASSWORD:
       MYSQL_USER:
-      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
-    secrets:
-      - mysql_database
-      - mysql_password
-      - mysql_root_password
-      - mysql_user
+      MYSQL_PASSWORD:
   solr:
-    image: 'quay.io/upennlibraries/sdbmss:${SDBMSS_IMAGE_TAG}'
+    env_file: .docker-environment
     restart: always
+    image: sdbmss
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - "8982:8982"
-    # env_file: .docker-environment
     # logging:
       # driver: "journald"
     links:
@@ -95,9 +73,12 @@ services:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
   rails:
-    image: 'quay.io/upennlibraries/sdbmss:${SDBMSS_IMAGE_TAG}'
+    env_file: .docker-environment
+    image: sdbmss
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: always
-    # env_file: .docker-environment
     ports:
       - "3000:3000"
     environment:
@@ -112,6 +93,7 @@ services:
       MYSQL_PASSWORD:
       RABBIT_PASSWORD:
       RABBIT_USER:
+      SDBMSS_IMAGE_TAG:
       SDBMSS_APP_HOST:
       SDBMSS_SMTP_HOST:
       SDBMSS_EMAIL_FROM:
@@ -134,7 +116,11 @@ services:
       - sdbm_assets:/usr/src/app/public/assets
       - sdbm_docs:/usr/src/app/public/static
   delayedjob:
-    image: 'quay.io/upennlibraries/sdbmss:${SDBMSS_IMAGE_TAG}'
+    env_file: .docker-environment
+    image: sdbmss
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: always
     depends_on:
       - "db"
@@ -144,7 +130,6 @@ services:
       - solr
     volumes:
       - .:/usr/src/app
-    # env_file: .docker-environment
     environment:
       ADMIN_PASSWORD:
       RAILS_ENV:
@@ -157,6 +142,7 @@ services:
       MYSQL_PASSWORD:
       RABBIT_PASSWORD:
       RABBIT_USER:
+      SDBMSS_IMAGE_TAG:
       SDBMSS_APP_HOST:
       SDBMSS_SMTP_HOST:
       SDBMSS_EMAIL_FROM:
@@ -172,15 +158,18 @@ services:
     # logging:
       # driver: "journald"
   jena:
-    image: 'quay.io/upennlibraries/sdbm_jena:${SDBMSS_IMAGE_TAG}'
+    env_file: .docker-environment
+    image: sdbmss_jena
+    build:
+      context: sdbmss_jena
+      dockerfile: Dockerfile
     restart: always
     # logging:
-      # driver: "journald"
+    # driver: "journald"
     ports:
       - "3030:3030"
     volumes:
       - rdf_data:/fuseki
-    # env_file: .docker-environment
     environment:
       ADMIN_PASSWORD:
       RAILS_USER:
@@ -204,17 +193,20 @@ services:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
   interface:
-    image: 'quay.io/upennlibraries/sdbmss_interface:${SDBMSS_IMAGE_TAG}'
+    env_file: .docker-environment
+    image: sdbmss_interface
+    build:
+      context: sdbmss_interface
+      dockerfile: Dockerfile
     restart: always
     command: ruby interface.rb
     # logging:
-      # driver: "journald"
+    # driver: "journald"
     links:
       - jena
       - rabbitmq
     depends_on:
       - "rabbitmq"
-    # env_file: .docker-environment
     environment:
       ADMIN_PASSWORD:
       RAILS_ENV:
@@ -239,13 +231,13 @@ services:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
   nginx:
-    image: 'quay.io/upennlibraries/sdbm_nginx:${SDBMSS_IMAGE_TAG}'
+    image: sdbmss_nginx
+    build:
+      context: sdbmss_nginx
+      dockerfile: Dockerfile
     restart: always
-    secrets:
-      - source: ssl_wildcard_cert_crt
-        target: /etc/httpd/ssl/library-wildcard.crt
-      - source: ssl_wildcard_cert_key
-        target: /etc/httpd/ssl/library-wildcard.key
+    volumes:
+      - ./nginx/ssl:/etc/httpd/ssl
     # logging:
       # driver: "journald"
     links:
@@ -261,3 +253,4 @@ volumes:
   sdbm_assets:
   sdbm_solr:
   rabbitmq_data:
+

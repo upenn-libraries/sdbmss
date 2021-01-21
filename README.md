@@ -10,14 +10,29 @@ name of a package in Ruby's standard library.
 
 The application is currently structured to be run through [Docker](https://docs.docker.com/) using a single [docker compose](https://docs.docker.com/compose/) file.
 
+Deployment
+=====
+
+To deploy this application in development or production, consult the [sdbm-config README](https://gitlab.library.upenn.edu/emeryr/sdbm-config/blob/master/README.md) in GitLab.
+
+### Deployment workflow
+
+This illustration represents the current deployment workflow for SDBMSS.
+
+![SDBMSS deployment workflow](sdbmss_deployment.png)
+
 Installation
 =====
 
 **1. Clone the repository**
 
+DEPRECATED -- USING ANSIBLE
+
 	    git clone https://github.com/upenn-libraries/sdbmss.git
 
 **2. Create file .docker-environment in the root folder of the cloned repository.  Define the following environment variables:**
+
+DEPRECATED -- USING ANSIBLE
 
   This is the password for the public access point for the Jena server, both for making updates and for downloading RDF data file
 
@@ -60,15 +75,19 @@ Installation
 
   URL for SOLR server, using relative location of docker service (using name 'solr' from docker-compose.yml)
 
-			SOLR_URL=http://solr:8983/solr/development
+			SOLR_URL=http://solr:8982/solr/development
 
 **3. (Optional) Create a file VERSION in the root folder of the cloned repository.**
+
+DEPRECATED -- USING ANSIBLE
 
   This is used to keep track of the version number for the purpose of tagging different docker images of the source code.  It is used by the script **build.sh**.  It's entire contents should just be:
 
 			0.0.1
 
 **4. Build and Run (First Time)**
+
+DEPRECATED -- USING ANSIBLE
 
   Run *build.sh* or the following command:
 
@@ -84,65 +103,96 @@ Installation
 
 **5. First Time Setup: Rails and SOLR**
 
-  Setup database - perform migration:
+Before you begin, have the following:
 
-	    docker-compose exec rails bundle exec rake db:migrate
+- Database backup from previous version sdbm.sql.gz
+
+- Static assets from docs, tooltips, updloads (see: `docker volume inspect sdbmss_sdbm_docs` for location of files on filesystem)
+
+
+
+
+  Setup database - perform setup:
+
+	    docker exec $(docker ps -q -f name=sdbmss_rails) bundle exec rake db:setup
 
   (Optional: Load data from .sql dump)
 
-	    docker cp /tmp/sdbm.sql.gz current_db_1:/tmp/sdbm.sql.gz
-	    docker-compose exec db /bin/bash
-	    cd /tmp
-	    gunzip sdbm.sql.gz
-	    mysql -u <MYSQL_USER> -p <MYSQL_DATABASE> < sdbm.sql
-	    docker-compose exec rails bundle exec rake db:migrate
+```bash
+docker cp sdbm.sql.gz  $(docker ps -q -f name=sdbmss_db):/tmp/sdbm.sql.gz
+docker exec -it  $(docker ps -q -f name=sdbmss_db) bash
+cd /tmp
+gunzip sdbm.sql.gz
+mysql -u <MYSQL_USER> -p <MYSQL_DATABASE> < sdbm.sql
+rm sdbm.sql # remove the sql file (it's very big)
+exit # exit the MySQL container
+docker exec $(docker ps -q -f name=sdbmss_rails) bundle exec rake db:migrate
+```
 
   **NOTE**: If you are importing from a data file that includes **Page** objects, the database records will be copied, but not the page files.  You will need to move these manually to the appropriate place in the public/static folder (uploads/, tooltips/ or docs/)
 
-	    docker cp /tmp/docs/ current_rails_1:/usr/src/app/public/static/
-	    docker cp /tmp/uploads/ current_rails_1:/usr/src/app/public/static/
-	    docker cp /tmp/tooltips/ current_rails_1:/usr/src/app/public/static/
+```
+docker cp docs $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/static/
+docker cp tooltips $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/static/
+docker cp uploads $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/static/
+```
 
   Index in Solr:
 
-	    docker-compose exec rails bundle exec rake sunspot:reindex
-
-**6. Precompiling Assets**
-
-  Preocompiling assets and performing migrations must be done AFTER the container is running:
-
-	    docker-compose exec rails bundle exec rake assets:precompile
-	    docker-compose restart rails
-
-**7. RabbitMQ First Time Setup**
-
-  First time we need to create user and grant permissions.  Use the same values for USER/PASS as set in your .docker-environment file
-
-	    docker-compose exec rabbitmq /bin/bash
-	    service rabbitmq-server start
-	    rabbitmqctl add_user <RABBIT_USER> <RABBIT_PASSWORD>
-	    rabbitmqctl set_user_tags <RABBIT_USER> adminstrator
-	    rabbitmqctl set_permissions -p / <RABBIT_USER> ".*" ".*" ".*"
-
-  Then restart dependent containers:
-
-	    docker-compose restart interface
-	    docker-compose restart rails
+	    docker exec $(docker ps -q -f name=sdbmss_rails) bundle exec rake sunspot:reindex
 
 **8. Jena First Time Setup**
 
-  Loading RDF file as basis for dataset:
+  Regenerate RDF for dataset:
 
-	    docker cp /tmp/output.ttl.gz sdbmss_jena_1:/tmp/output.ttl.gz
-	    docker-compose exec jena /bin/bash
-	    gunzip /tmp/output.ttl.gz
-	    ./tdbloader --loc=/fuseki/databases/sdbm /tmp/output.ttl
+```
+docker exec -t $(docker ps -q -f name=sdbmss_rails) bundle exec rake sparql:test
+# file should be in ~/deployments/sdbms/test.ttl; gzip it
+# gzip it
+gzip ~/deployments/sdbmss/test.ttl
+docker cp ~/deployments/sdbmss/test.ttl.gz $(docker ps -q -f name=sdbmss_jena):/tmp/
+docker exec -it $(docker ps -q -f name=sdbmss_jena) bash
+cd /tmp
+gunzip test.ttl.gz
+cd /jena-fuseki
+./tdbloader --loc=/fuseki/databases/sdbm /tmp/test.ttl
+# delete the test.ttl
+rm /tmp/test.ttl
+# exit and delete the test.ttl.gz
+exit
+rm ~/deployments/sdbms/test.ttl.gz
+```
 
-  From front-end interface (/sparql), create new dataset "sdbm", then restart the service:
 
-	    docker-compose restart jena
+  From front-end interface (https://<hostname>/sparql), create new persistent dataset "sdbm", then scale the services:
+
+      docker service scale sdbmss_jena=0
+      docker service scale sdbmss_jena=1
+
+      docker service scale sdbmss_rabbitmq=0
+      docker service scale sdbmss_rabbitmq=1
+
+      docker service scale sdbmss_rails=0
+      docker service scale sdbmss_rails=1
+
+Run the Jena verify task to confirm that it works:
+
+      $ /bin/bash -l -c 'docker exec -t $(docker ps -q -f name=sdbmss_rails) bundle exec rake jena:verify'
+      Starting Queue Listening
+      Parsed contents: {"id"=>300122, "code"=>"200", "message"=>"OK"}
+      Jena Update was Successful!
+      Parsed contents: {"id"=>300211, "code"=>"200", "message"=>"OK"}
+      Jena Update was Successful!
+      Parsed contents: {"id"=>300212, "code"=>"200", "message"=>"OK"}
+      Jena Update was Successful!
+      Parsed contents: {"id"=>300213, "code"=>"200", "message"=>"OK"}
+      Jena Update was Successful!
+      # ... etc.
+
 
 **9. Logging**
+
+DEPRECATED?
 
   Logging is set in [docker-compose.yml](docker-compose.yml), and may need to be altered depending on the logging drivers available on the parent device.  For the current setup (JournalCtl), the logs may be accessed as follows:
 

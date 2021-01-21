@@ -44,19 +44,20 @@ class SaleAgent < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "sale_agents",
       id: id,
-      fields: {
-        # id: "#{id}",
-        sale_id: "<https://sdbm.library.upenn.edu/sales/#{sale_id}>",
-        observed_name: "'''#{observed_name}'''",
-        agent_id: "<https://sdbm.library.upenn.edu/names/#{agent_id}>",
-        role: "'''#{role}'''",
-        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
-        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
-      }
+      fields: {}
     }
+
+    map[:fields][:sale_id]                = format_triple_object sale_id,                :uri,    'https://sdbm.library.upenn.edu/sales/'
+    map[:fields][:observed_name]          = format_triple_object observed_name,          :string
+    map[:fields][:agent_id]               = format_triple_object agent_id,               :uri,    'https://sdbm.library.upenn.edu/names/'
+    map[:fields][:role]                   = format_triple_object role,                   :string
+    map[:fields][:supplied_by_data_entry] = format_triple_object supplied_by_data_entry, :boolean
+    map[:fields][:uncertain_in_source]    = format_triple_object uncertain_in_source,    :boolean
+
+    map
   end
 
 end

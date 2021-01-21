@@ -29,18 +29,20 @@ class EntryLanguage < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "entry_languages",
       id: id,
-      fields: {
-        observed_name: "'''#{observed_name}'''",
-        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        language_id: "<https://sdbm.library.upenn.edu/languages/#{language_id}>",
-        order: "'#{order}'^^xsd:integer",
-        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
-        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
-      }
+      fields: {}
     }
+
+    map[:fields][:observed_name]          = format_triple_object observed_name,          :string
+    map[:fields][:entry_id]               = format_triple_object entry_id,               :uri,    'https://sdbm.library.upenn.edu/entries/'
+    map[:fields][:language_id]            = format_triple_object language_id,            :uri,    'https://sdbm.library.upenn.edu/languages/'
+    map[:fields][:order]                  = format_triple_object order,                  :integer
+    map[:fields][:supplied_by_data_entry] = format_triple_object supplied_by_data_entry, :boolean
+    map[:fields][:uncertain_in_source]    = format_triple_object uncertain_in_source,    :boolean
+
+    map
   end
 
   private
