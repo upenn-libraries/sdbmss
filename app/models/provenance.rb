@@ -137,7 +137,7 @@ class Provenance < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:observed_name]                    = format_triple_object observed_name,                    :string_to_clean
+    map[:fields][:observed_name]                    = format_triple_object observed_name,                    :string
     map[:fields][:entry_id]                         = format_triple_object entry_id,                         :uri,            'https://sdbm.library.upenn.edu/entries/'
     map[:fields][:provenance_agent_id]              = format_triple_object provenance_agent_id,              :uri,            'https://sdbm.library.upenn.edu/names/'
     map[:fields][:order]                            = format_triple_object order,                            :integer
@@ -152,7 +152,7 @@ class Provenance < ActiveRecord::Base
     map[:fields][:end_date]                         = format_triple_object end_date,                         :string
     map[:fields][:end_date_normalized_start]        = format_triple_object end_date_normalized_start,        :string
     map[:fields][:end_date_normalized_end]          = format_triple_object end_date_normalized_end,          :string
-    map[:fields][:comment]                          = format_triple_object comment,                          :string_to_clean
+    map[:fields][:comment]                          = format_triple_object comment,                          :string
     map[:fields][:direct_transfer]                  = format_triple_object direct_transfer,                  :boolean
     map[:fields][:acquisition_method]               = format_triple_object acquisition_method,               :string
 

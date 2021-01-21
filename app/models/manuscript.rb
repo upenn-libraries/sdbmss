@@ -157,9 +157,9 @@ class Manuscript < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:name] = format_triple_object name,         :string
-    map[:fields][:location] = format_triple_object location, :string
-    map[:fields][:url] = format_triple_object url,           :string
+    map[:fields][:name] =     format_triple_object name,         :string
+    map[:fields][:location] = format_triple_object location,     :string
+    map[:fields][:url] =      format_triple_object url,          :string
 
     map
   end

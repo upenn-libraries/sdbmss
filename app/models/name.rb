@@ -525,12 +525,12 @@ class Name < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:name]       = format_triple_object name,       :string_to_clean
+    map[:fields][:name]       = format_triple_object name,       :string
     map[:fields][:viaf_id]    = format_triple_object viaf_id,    :string
     map[:fields][:subtype]    = format_triple_object subtype,    :string
     map[:fields][:startdate]  = format_triple_object startdate,  :string
     map[:fields][:enddate]    = format_triple_object enddate,    :string
-    map[:fields][:other_info] = format_triple_object other_info, :string_to_clean
+    map[:fields][:other_info] = format_triple_object other_info, :string
     map[:fields][:deleted]    = format_triple_object deleted,    :boolean
 
     map
