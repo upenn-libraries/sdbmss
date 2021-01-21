@@ -85,12 +85,6 @@ begin
       query = %Q(
         PREFIX sdbm: <https://sdbm.library.upenn.edu/>
         PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-
-        DELETE { ?subject ?predicate ?object }
-        WHERE {
-          BIND (<https://sdbm.library.upenn.edu/#{message['model_class']}/#{message['id']}> as ?subject) .
-          OPTIONAL { ?subject ?predicate ?object }
-        };
       )
       message['fields'].each do |field, new_value|
         predicate = "sdbm:#{message['model_class']}_#{field}"
@@ -100,7 +94,16 @@ begin
 
         query += %Q(
           DELETE { ?subject #{predicate} ?object }
+        )
+
+        # Don't insert triples with empty objects
+        unless new_value.to_s.empty?
+          query += %Q(
           INSERT { ?subject #{predicate} #{new_value} }
+          )
+        end
+
+        query += %Q(
           WHERE {
             BIND (<https://sdbm.library.upenn.edu/#{message['model_class']}/#{message['id']}> as ?subject) .
             OPTIONAL { ?subject #{predicate} ?object }

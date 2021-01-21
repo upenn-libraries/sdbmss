@@ -8,8 +8,8 @@ class DericciRecord < ActiveRecord::Base
 
   has_many :bookmarks, as: :document, dependent: :destroy
   has_many :comments, as: :commentable
- 
-  include Watchable 
+
+  include Watchable
   include UserFields
   include TellBunny
 
@@ -48,15 +48,15 @@ class DericciRecord < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:dates]        = "'''#{rdf_string_prep dates}'''"                 if dates.present?
-    map[:fields][:name]         = "'''#{rdf_string_prep name}'''"                  if name.present?
-    map[:fields][:place]        = "'''#{rdf_string_prep place}'''"                 if place.present?
-    map[:fields][:url]          = "'''#{rdf_string_prep url}'''"                   if url.present?
-    map[:fields][:cards]        = "'#{cards}'^^xsd:integer"                        if cards.present?
-    map[:fields][:size]         = "'''#{rdf_string_prep size}'''"                  if size.present?
-    map[:fields][:other_info]   = "'''#{rdf_string_prep other_info}'''"            if other_info.present?
-    map[:fields][:senate_house] = "'''#{rdf_string_prep senate_house}'''"          if senate_house.present?
-    map[:fields][:out_of_scope] = "'#{out_of_scope}'^^xsd:boolean"                 unless out_of_scope.nil?
+    map[:fields][:dates]        = format_triple_object dates,        :string
+    map[:fields][:name]         = format_triple_object name,         :string
+    map[:fields][:place]        = format_triple_object place,        :string
+    map[:fields][:url]          = format_triple_object url,          :string
+    map[:fields][:cards]        = format_triple_object cards,        :integer
+    map[:fields][:size]         = format_triple_object size,         :string
+    map[:fields][:other_info]   = format_triple_object other_info,   :string
+    map[:fields][:senate_house] = format_triple_object senate_house, :string
+    map[:fields][:out_of_scope] = format_triple_object out_of_scope, :boolean
 
     map
   end

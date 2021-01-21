@@ -50,12 +50,12 @@ class SaleAgent < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:sale_id]                = "<https://sdbm.library.upenn.edu/sales/#{sale_id}>"  if sale_id.present?
-    map[:fields][:observed_name]          = "'''#{rdf_string_prep observed_name}'''"             if observed_name.present?
-    map[:fields][:agent_id]               = "<https://sdbm.library.upenn.edu/names/#{agent_id}>" if agent_id.present?
-    map[:fields][:role]                   = "'''#{rdf_string_prep role}'''"                      if role.present?
-    map[:fields][:supplied_by_data_entry] = "'#{supplied_by_data_entry}'^^xsd:boolean"           unless supplied_by_data_entry.nil?
-    map[:fields][:uncertain_in_source]    = "'#{uncertain_in_source}'^^xsd:boolean"              unless uncertain_in_source.nil?
+    map[:fields][:sale_id]                = format_triple_object sale_id,                :uri,    'https://sdbm.library.upenn.edu/sales/'
+    map[:fields][:observed_name]          = format_triple_object observed_name,          :string
+    map[:fields][:agent_id]               = format_triple_object agent_id,               :uri,    'https://sdbm.library.upenn.edu/names/'
+    map[:fields][:role]                   = format_triple_object role,                   :string
+    map[:fields][:supplied_by_data_entry] = format_triple_object supplied_by_data_entry, :boolean
+    map[:fields][:uncertain_in_source]    = format_triple_object uncertain_in_source,    :boolean
 
     map
   end

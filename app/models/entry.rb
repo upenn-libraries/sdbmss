@@ -70,7 +70,7 @@ class Entry < ActiveRecord::Base
   has_many :entry_places, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
   has_many :places, through: :entry_places
   has_many :entry_uses, -> { order(:order => :asc) }, inverse_of: :entry, dependent: :destroy
-  
+
 #  has_many :entry_comments, dependent: :destroy
   has_many :comments, as: :commentable
   has_many :sales, inverse_of: :entry, dependent: :destroy
@@ -92,8 +92,8 @@ class Entry < ActiveRecord::Base
   # list of args to pass to Entry.includes in various places, for fetching a 'complete' entry
 
   @@includes = [
-    :created_by, 
-    :updated_by, 
+    :created_by,
+    :updated_by,
     :institution,
     :entry_titles,
     :entry_dates,
@@ -103,7 +103,7 @@ class Entry < ActiveRecord::Base
     :supercedes,
     :groups,
     :manuscripts,
-    {:group_records => [:group]}, 
+    {:group_records => [:group]},
     {:sales => [:sale_agents => [:agent]]},
     {:entry_authors => [:author]},
     {:entry_artists => [:artist]},
@@ -215,7 +215,7 @@ class Entry < ActiveRecord::Base
       Language.decrement_counter(:entries_count, language.id)
       objects.push(language)
     end
-    
+
     if sale
       sale.sale_agents.map(&:agent).uniq.each do |sale_agent|
         Name.decrement_counter(:sale_agents_count, sale_agent.id)
@@ -250,7 +250,7 @@ class Entry < ActiveRecord::Base
 
   def get_sale_agents_names(role)
     t = get_sale
-    
+
     if !t
       return ""
     end
@@ -301,9 +301,9 @@ class Entry < ActiveRecord::Base
   end
 
   def missing_authority_names
-    entry_authors.select{ |ea| ea.author_id.blank? && ea.observed_name.present? }.length + 
-    entry_artists.select{ |ea| ea.artist_id.blank? && ea.observed_name.present? }.length + 
-    entry_scribes.select{ |ea| ea.scribe_id.blank? && ea.observed_name.present? }.length + 
+    entry_authors.select{ |ea| ea.author_id.blank? && ea.observed_name.present? }.length +
+    entry_artists.select{ |ea| ea.artist_id.blank? && ea.observed_name.present? }.length +
+    entry_scribes.select{ |ea| ea.scribe_id.blank? && ea.observed_name.present? }.length +
     provenance.select{ |ea| ea.provenance_agent_id.blank? && ea.observed_name.present? }.length
   end
 
@@ -364,7 +364,7 @@ class Entry < ActiveRecord::Base
 
   # details for public display, slimmer than 'as_flat_hash' and without things like user groups included
   def bookmark_details
-    results = { 
+    results = {
       manuscript: manuscript ? manuscript.id : nil,
       source_date: SDBMSS::Util.format_fuzzy_date(source.date),
       source_title: source.title,
@@ -390,7 +390,7 @@ class Entry < ActiveRecord::Base
   # export. Obviously, decisions have to be made here about how to
   # represent the nested associations for display and there has to be
   # some information tweaking/loss.
-  
+
 
   def as_flat_hash(options: {})
 
@@ -492,7 +492,7 @@ class Entry < ActiveRecord::Base
     #
     # field_type should be a symbol that matches a DSL field, like
     # :text or :integer
-    
+
 
     def define_field(field_type, *args, &block)
       # last argument should be hash of options, so add to it
@@ -521,7 +521,7 @@ class Entry < ActiveRecord::Base
       (sale ? sale.sale_agents.map(&:display_value) : []) +
       # details
       groups.map(&:name) +
-      manuscripts.map(&:public_id) + 
+      manuscripts.map(&:public_id) +
       entry_titles.map(&:display_value) +
       entry_authors.map(&:display_value) +
       entry_dates.map(&:display_value) +
@@ -529,7 +529,7 @@ class Entry < ActiveRecord::Base
       entry_scribes.map(&:display_value) +
       entry_languages.map(&:display_value) +
       entry_materials.map(&:display_value) +
-      entry_places.map(&:display_value) + 
+      entry_places.map(&:display_value) +
       entry_uses.map(&:use) +
       [
         folios,
@@ -585,7 +585,7 @@ class Entry < ActiveRecord::Base
     define_field(:text, :source_date_search, :stored => true) do
       source.date
     end
-    
+
 
     define_field(:string, :source, :stored => true) do
       source.public_id
@@ -751,7 +751,7 @@ class Entry < ActiveRecord::Base
     define_field(:string, :artist, :stored => true, :multiple => true) do
       entry_artists.select(&:facet_value).map(&:facet_value)
     end
-    
+
     define_field(:string, :artist_flat, :stored => true) do
       entry_artists.map(&:display_value).join("; ")
     end
@@ -818,15 +818,15 @@ class Entry < ActiveRecord::Base
     end
 
     define_field(:integer, :missing_authority_names, :stored => true) do
-      entry_authors.where(author_id: nil).where.not(observed_name: nil).count + 
-      entry_artists.where(artist_id: nil).where.not(observed_name: nil).count + 
-      entry_scribes.where(scribe_id: nil).where.not(observed_name: nil).count + 
+      entry_authors.where(author_id: nil).where.not(observed_name: nil).count +
+      entry_artists.where(artist_id: nil).where.not(observed_name: nil).count +
+      entry_scribes.where(scribe_id: nil).where.not(observed_name: nil).count +
       provenance.where(provenance_agent_id: nil).where.not(observed_name: nil).count
     end
 
     define_field(:integer, :folios, :stored => true) { folios }
     #define_field(:text, :folios_search, :stored => true, :more_like_this => true) { folios.to_s }
-    
+
     define_field(:integer, :num_columns, :stored => true) { num_columns }
 
     define_field(:integer, :num_lines, :stored => true) { num_lines }
@@ -955,18 +955,18 @@ class Entry < ActiveRecord::Base
 
   def dispute_reasons
     ["Malicious/misleading data", "I disagree with some of the data", "Other"]
-  end  
+  end
 
 
   def self.do_csv_dump
     params = ActionController::Parameters.new
-    
+
     filename = "#{self.model_name.to_s.pluralize.underscore}.csv"
     path = "public/static/docs/#{filename}"
     offset = 0
 
     File.delete("#{path}.zip") if File.exist?("#{path}.zip")
-    
+
     objects = []
     headers = nil
     loop do
@@ -982,7 +982,7 @@ class Entry < ActiveRecord::Base
           csv << headers
         end
         objects.each do |r|
-          csv << r.values 
+          csv << r.values
         end
       end
     end
@@ -997,9 +997,9 @@ class Entry < ActiveRecord::Base
 
 
   def self.do_csv_search(params, download)
-    
+
     offset = 0
-    
+
     objects = []
     filename = download.filename
     user = download.user
@@ -1018,7 +1018,7 @@ class Entry < ActiveRecord::Base
           csv << headers
         end
         objects.each do |r|
-          csv << r.values 
+          csv << r.values
         end
       end
     end
@@ -1031,34 +1031,34 @@ class Entry < ActiveRecord::Base
 
     download.update({status: 1, filename: "#{filename}.zip"})
     #download.created_by.notify("Your download '#{download.filename}' is ready.")
-  end  
+  end
 
   # I don't love having to duplicate all the fields AGAIN here, but inheriting it all from blacklight doesn't seem to work
-  # 
+  #
   def self.filters
     [
-      ["Entry Id", "entry_id"], 
-      ["Manuscript ID", "manuscript_id"], 
-      ["Source ID (Full)", "source"], 
+      ["Entry Id", "entry_id"],
+      ["Manuscript ID", "manuscript_id"],
+      ["Source ID (Full)", "source"],
       #["Source Date", "source_date"],
       ["Sale Sold", "sale_sold"],
       ["Sale Date", "sale_date"],
-      ["Price", "sale_price"], 
+      ["Price", "sale_price"],
       ["Missing Authority Names", "missing_authority_names"],
-      ["Folios", "folios"], 
-      ["Columns", "num_columns"], 
-      ["Lines", "num_lines"], 
-      ["Height", "height"], 
-      ["Width", "width"], 
-      ["Alternate Size", "alt_size"], 
-      ["Fullpage Miniatures", "miniatures_fullpage"], 
-      ["Large Miniatures", "miniatures_large"], 
-      ["Small Miniatures", "miniatures_small"], 
-      ["Unspecified Miniatures", "miniatures_unspec_size"], 
+      ["Folios", "folios"],
+      ["Columns", "num_columns"],
+      ["Lines", "num_lines"],
+      ["Height", "height"],
+      ["Width", "width"],
+      ["Alternate Size", "alt_size"],
+      ["Fullpage Miniatures", "miniatures_fullpage"],
+      ["Large Miniatures", "miniatures_large"],
+      ["Small Miniatures", "miniatures_small"],
+      ["Unspecified Miniatures", "miniatures_unspec_size"],
       ["Historiated Initals", "initials_historiated"],
       ["Decorated Initials", "initials_decorated"],
-      ["Updated By", "updated_by"], 
-      ["Created By", "created_by"], 
+      ["Updated By", "updated_by"],
+      ["Created By", "created_by"],
       ["Approved", "approved"],
       ["Deprecated", "deprecated"],
       ["Unverified Legacy Record", "unverified_legacy_record"],
@@ -1068,26 +1068,26 @@ class Entry < ActiveRecord::Base
 
   def self.fields
     [
-      ["All Fields", "complete_entry"], 
-      ["Source", "source_search"],  
-      ["Source Title", "source_title"],  
+      ["All Fields", "complete_entry"],
+      ["Source", "source_search"],
+      ["Source Title", "source_title"],
       ["Source Date", "source_date_search"],
       ["Catalog or Lot #", "catalog_or_lot_number_search"],
-      ["Institution", "institution_search"], 
-      ["Selling Agent", "sale_selling_agent_search"], 
-      ["Seller", "sale_seller_search"], 
-      ["Buyer", "sale_buyer_search"], 
+      ["Institution", "institution_search"],
+      ["Selling Agent", "sale_selling_agent_search"],
+      ["Seller", "sale_seller_search"],
+      ["Buyer", "sale_buyer_search"],
       ["Title", "title_search"],
-      ["Author", "author_search"], 
+      ["Author", "author_search"],
       ["Date", "manuscript_date_search"],
-      ["Artist", "artist_search"], 
-      ["Scribe", "scribe_search"], 
-      ["Binding", "binding_search"], 
-      ["Link", "manuscript_link_search"], 
-      ["Other Info", "other_info_search"], 
-      ["Language", "language_search"], 
-      ["Material", "material_search"], 
-      ["Place", "place_search"], 
+      ["Artist", "artist_search"],
+      ["Scribe", "scribe_search"],
+      ["Binding", "binding_search"],
+      ["Link", "manuscript_link_search"],
+      ["Other Info", "other_info_search"],
+      ["Language", "language_search"],
+      ["Material", "material_search"],
+      ["Place", "place_search"],
       ["Use", "use_search"],
       ["Provenance", "provenance_search"],
     ]
@@ -1095,7 +1095,7 @@ class Entry < ActiveRecord::Base
 
   def self.dates
     [
-      ["Added On", "created_at"], 
+      ["Added On", "created_at"],
       ["Updated On", "updated_at"]
     ]
   end
@@ -1121,28 +1121,28 @@ class Entry < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:catalog_or_lot_number]    = "'''#{rdf_string_prep catalog_or_lot_number}'''"               if catalog_or_lot_number.present?
-    map[:fields][:folios]                   = "'#{folios}'^^xsd:integer"                                     if folios.present?
-    map[:fields][:num_columns]              = "'#{num_columns}'^^xsd:integer"                                if num_columns.present?
-    map[:fields][:num_lines]                = "'#{num_lines}'^^xsd:integer"                                  if num_lines.present?
-    map[:fields][:height]                   = "'#{height}'^^xsd:integer"                                     if height.present?
-    map[:fields][:width]                    = "'#{width}'^^xsd:integer"                                      if width.present?
-    map[:fields][:alt_size]                 = "'''#{rdf_string_prep alt_size}'''"                            if alt_size.present?
-    map[:fields][:manuscript_binding]       = "'''#{rdf_string_prep manuscript_binding}'''"                  if manuscript_binding.present?
-    map[:fields][:other_info]               = "'''#{rdf_string_prep other_info}'''"                          if other_info.present?
-    map[:fields][:manuscript_link]          = "'''#{rdf_string_prep manuscript_link}'''"                     if manuscript_link.present?
-    map[:fields][:miniatures_fullpage]      = "'#{miniatures_fullpage}'^^xsd:integer"                        if miniatures_fullpage.present?
-    map[:fields][:miniatures_large]         = "'#{miniatures_large}'^^xsd:integer"                           if miniatures_large.present?
-    map[:fields][:miniatures_small]         = "'#{miniatures_small}'^^xsd:integer"                           if miniatures_small.present?
-    map[:fields][:miniatures_unspec_size]   = "'#{miniatures_unspec_size}'^^xsd:integer"                     if miniatures_unspec_size.present?
-    map[:fields][:initials_historiated]     = "'#{initials_historiated}'^^xsd:integer"                       if initials_historiated.present?
-    map[:fields][:initials_decorated]       = "'#{initials_decorated}'^^xsd:integer"                         if initials_decorated.present?
-    map[:fields][:transaction_type]         = "'''#{rdf_string_prep transaction_type}'''"                    if transaction_type.present?
-    map[:fields][:deprecated]               = "'#{deprecated}'^^xsd:boolean"                                 unless deprecated.nil?
-    map[:fields][:unverified_legacy_record] = "'#{unverified_legacy_record}'^^xsd:boolean"                   unless unverified_legacy_record.nil?
-    map[:fields][:institution_id]           = "<https://sdbm.library.upenn.edu/names/#{institution_id}>"     if institution_id.present?
-    map[:fields][:superceded_by_id]         = "<https://sdbm.library.upenn.edu/entries/#{superceded_by_id}>" if superceded_by_id.present?
-    map[:fields][:source_id]                = "<https://sdbm.library.upenn.edu/sources/#{source_id}>"        if source_id.present?
+    map[:fields][:catalog_or_lot_number]    = format_triple_object catalog_or_lot_number,    :string
+    map[:fields][:folios]                   = format_triple_object folios,                   :integer
+    map[:fields][:num_columns]              = format_triple_object num_columns,              :integer
+    map[:fields][:num_lines]                = format_triple_object num_lines,                :integer
+    map[:fields][:height]                   = format_triple_object height,                   :integer
+    map[:fields][:width]                    = format_triple_object width,                    :integer
+    map[:fields][:alt_size]                 = format_triple_object alt_size,                 :string
+    map[:fields][:manuscript_binding]       = format_triple_object manuscript_binding,       :string
+    map[:fields][:other_info]               = format_triple_object other_info,               :string
+    map[:fields][:manuscript_link]          = format_triple_object manuscript_link,          :string
+    map[:fields][:miniatures_fullpage]      = format_triple_object miniatures_fullpage,      :integer
+    map[:fields][:miniatures_large]         = format_triple_object miniatures_large,         :integer
+    map[:fields][:miniatures_small]         = format_triple_object miniatures_small,         :integer
+    map[:fields][:miniatures_unspec_size]   = format_triple_object miniatures_unspec_size,   :integer
+    map[:fields][:initials_historiated]     = format_triple_object initials_historiated,     :integer
+    map[:fields][:initials_decorated]       = format_triple_object initials_decorated,       :integer
+    map[:fields][:transaction_type]         = format_triple_object transaction_type,         :string
+    map[:fields][:deprecated]               = format_triple_object deprecated,               :boolean
+    map[:fields][:unverified_legacy_record] = format_triple_object unverified_legacy_record, :boolean
+    map[:fields][:institution_id]           = format_triple_object institution_id,           :uri,            'https://sdbm.library.upenn.edu/names/'
+    map[:fields][:superceded_by_id]         = format_triple_object superceded_by_id,         :uri,            'https://sdbm.library.upenn.edu/entries/'
+    map[:fields][:source_id]                = format_triple_object source_id,                :uri,            'https://sdbm.library.upenn.edu/sources/'
 
     map
   end
@@ -1178,7 +1178,7 @@ class Entry < ActiveRecord::Base
       sale.sale_agents.group_by(&:agent_id).keep_if{ |k, v| v.length >= 1}.each do |k, sale_agent|
         agent = sale_agent.first.agent
         Name.update_counters(agent.id, :sale_agents_count => agent.sale_entries.where(deprecated: false, draft: false).count - agent.sale_agents_count) unless agent.nil?
-      end    
+      end
     end
 
     entry_places.group_by(&:place_id).keep_if{ |k, v| v.length >= 1}.each do |k, entry_place|

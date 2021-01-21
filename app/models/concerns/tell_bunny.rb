@@ -22,7 +22,7 @@ module TellBunny
   # @param value [String] a string value
   # @return [String]
   def rdf_string_prep value
-    return                  unless value.is_a? String
+    return                  unless value.present?
     return value            unless value =~ SINGLE_QUOTE_REGEXP
     value.strip!
     value.gsub(/''/, '""')  if value =~ /''/ # replace '' with ""
@@ -30,9 +30,45 @@ module TellBunny
     value[-1] = ''          while value.end_with? "'"  # remove trailing '
     value
   end
+
+  ##
+  # If +value+ is present, return a formatted rdf object string based on +data_type+;
+  # otherwise +nil+ is returned.
+  #
+  #     format_triple_object 3, :integer                    # => "'3'^^xsd:integer"
+  #     url_base = 'https://sdbm.library.upenn.edu/names/'
+  #     format_triple_object 22104, :uri, url_base          # => "<https://sdbm.library.upenn.edu/names/22104>"
+  #
+  # Note that when the data type is +uri+, +url_base+ is required and +value+ is appended to +url_base+.
+  #
+  # @param [Object] value the value of the property object
+  # @param [Symbol] data_type one of +:integer+, +:decimal+, +:boolean',
+  #     +:string+, or +:uri+
+  # @param [String] url_base a string like +https://sdbm.library.upenn.edu/names/+;
+  #     required if +data_type+ is +:uri+
+  # @return [String, nil] returns a formatted RDF object string or +nil+ if +value+ is blank
+  # @raise [RuntimeError] if +data_type+ is +:uri+ and +url_base+ is blank
+  def format_triple_object value, data_type, url_base=nil
+    return unless value.present?
+    case data_type
+    when :integer
+      "'#{value}'^^xsd:integer"
+    when :decimal
+      "'#{value}'^^xsd:decimal"
+    when :boolean
+      "'#{value}'^^xsd:boolean"
+    when :string
+      "'''#{rdf_string_prep value.to_s}'''"
+    when :uri
+      raise "No `url_base` supplied for #{value}" unless url_base.present?
+      "<#{url_base}#{value}>"
+    else
+      raise "Unknown "
+    end
+  end
+
   # inherited and overriden by relevent models.
   # NOTE: use triple single quotes to enclose string literals, to avoid confusion with quotes in the strings themsleves
-
   def to_rdf
     %Q(
       # sdbm:names/#{id} sdbm:names_id #{id}
