@@ -1128,8 +1128,8 @@ class Entry < ActiveRecord::Base
     map[:fields][:height]                   = format_triple_object height,                   :integer
     map[:fields][:width]                    = format_triple_object width,                    :integer
     map[:fields][:alt_size]                 = format_triple_object alt_size,                 :string
-    map[:fields][:manuscript_binding]       = format_triple_object manuscript_binding,       :string_to_clean
-    map[:fields][:other_info]               = format_triple_object other_info,               :string_to_clean
+    map[:fields][:manuscript_binding]       = format_triple_object manuscript_binding,       :string
+    map[:fields][:other_info]               = format_triple_object other_info,               :string
     map[:fields][:manuscript_link]          = format_triple_object manuscript_link,          :string
     map[:fields][:miniatures_fullpage]      = format_triple_object miniatures_fullpage,      :integer
     map[:fields][:miniatures_large]         = format_triple_object miniatures_large,         :integer
