@@ -13,15 +13,23 @@ module TellBunny
     has_many :jena_responses, as: :record
   end
 
-  # inherited and overriden by relevent models.
-  # NOTE: use triple single quotes to enclose string literals, to avoid confusion with quotes in the strings themsleves
+  SINGLE_QUOTE_REGEXP = Regexp.new "'"
 
-  def to_rdf
-    %Q(
-      # sdbm:names/#{id} sdbm:names_id #{id}
-    )
+  ##
+  # Remove leading and trailing +'+ characters so we don't create TTL strings
+  # with four surrounding single quotes.
+  #
+  # @param value [String] a string value
+  # @return [String]
+  def rdf_string_prep value
+    return                  unless value.present?
+    return value            unless value =~ SINGLE_QUOTE_REGEXP
+    value.strip!
+    value.gsub(/''/, '""')  if value =~ /''/ # replace '' with ""
+    value[0] = ''           while value.start_with? "'" # remove leading '
+    value[-1] = ''          while value.end_with? "'"  # remove trailing '
+    value
   end
-
 
   ##
   # If +value+ is present, return a formatted rdf object string based on +data_type+;
@@ -33,11 +41,9 @@ module TellBunny
   #
   # Note that when the data type is +uri+, +url_base+ is required and +value+ is appended to +url_base+.
   #
-  # When +data_type+ is +:string_to_clean+ all +'+ characters are removed from +value+.
-  #
   # @param [Object] value the value of the property object
   # @param [Symbol] data_type one of +:integer+, +:decimal+, +:boolean',
-  #     +:string+, +:string_to_clean+, or +:uri+
+  #     +:string+, or +:uri+
   # @param [String] url_base a string like +https://sdbm.library.upenn.edu/names/+;
   #     required if +data_type+ is +:uri+
   # @return [String, nil] returns a formatted RDF object string or +nil+ if +value+ is blank
@@ -51,16 +57,22 @@ module TellBunny
       "'#{value}'^^xsd:decimal"
     when :boolean
       "'#{value}'^^xsd:boolean"
-    when :string_to_clean
-      "'''#{value.to_s.gsub("'", "")}'''"
     when :string
-      "'''#{value}'''"
+      "'''#{rdf_string_prep value.to_s}'''"
     when :uri
       raise "No `url_base` supplied for #{value}" unless url_base.present?
       "<#{url_base}#{value}>"
     else
       raise "Unknown "
     end
+  end
+
+  # inherited and overriden by relevent models.
+  # NOTE: use triple single quotes to enclose string literals, to avoid confusion with quotes in the strings themsleves
+  def to_rdf
+    %Q(
+      # sdbm:names/#{id} sdbm:names_id #{id}
+    )
   end
 
   #private

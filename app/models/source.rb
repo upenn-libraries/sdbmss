@@ -394,10 +394,10 @@ class Source < ActiveRecord::Base
     map[:fields][:location]             = format_triple_object location,             :string
     map[:fields][:location_institution] = format_triple_object location_institution, :string
     map[:fields][:status]               = format_triple_object status,               :string
-    map[:fields][:other_info]           = format_triple_object other_info,           :string_to_clean
+    map[:fields][:other_info]           = format_triple_object other_info,           :string
     map[:fields][:deleted]              = format_triple_object deleted,              :boolean
     map[:fields][:author]               = format_triple_object author,               :string
-    map[:fields][:title]                = format_triple_object title,                :string_to_clean
+    map[:fields][:title]                = format_triple_object title,                :string
     map[:fields][:date]                 = format_triple_object date,                 :string
     map[:fields][:link]                 = format_triple_object link,                 :string
 

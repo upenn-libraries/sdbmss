@@ -148,7 +148,7 @@ class Place < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:name]             = format_triple_object name,             :string_to_clean
+    map[:fields][:name]             = format_triple_object name,             :string
     map[:fields][:authority_id]     = format_triple_object authority_id,     :string
     map[:fields][:authority_source] = format_triple_object authority_source, :string
     map[:fields][:parent_id]        = format_triple_object parent_id,        :uri,            'https://sdbm.library.upenn.edu/places/'
