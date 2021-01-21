@@ -17,7 +17,7 @@ class Manuscript < ActiveRecord::Base
   #include IndexAfterUpdate
   #include HasPaperTrail
   # do this manually, since we want to create versions when record is touched
-  has_paper_trail  
+  has_paper_trail
 
   include CreatesActivity
   extend SolrSearchable
@@ -25,7 +25,7 @@ class Manuscript < ActiveRecord::Base
   include TellBunny
 
   # searchable!
-  
+
   searchable do
     string :created_by do
       created_by ? created_by.username : ""
@@ -122,7 +122,7 @@ class Manuscript < ActiveRecord::Base
   end
 
   def bookmark_details
-    results = { 
+    results = {
       titles: all_titles.to_a.join(", "),
       location: location,
       url: url,
@@ -151,15 +151,17 @@ class Manuscript < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "manuscripts",
       id: id,
-      fields: {
-        name: "'''#{name}'''",
-        location: "'''#{location}'''",
-        url: "'''#{url}'''"
-      }
+      fields: {}
     }
+
+    map[:fields][:name] =     format_triple_object name,         :string
+    map[:fields][:location] = format_triple_object location,     :string
+    map[:fields][:url] =      format_triple_object url,          :string
+
+    map
   end
 
 end

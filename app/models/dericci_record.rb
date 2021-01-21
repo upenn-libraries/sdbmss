@@ -8,8 +8,8 @@ class DericciRecord < ActiveRecord::Base
 
   has_many :bookmarks, as: :document, dependent: :destroy
   has_many :comments, as: :commentable
- 
-  include Watchable 
+
+  include Watchable
   include UserFields
   include TellBunny
 
@@ -42,21 +42,23 @@ class DericciRecord < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "dericci_records",
       id: id,
-      fields: {
-        dates: "'''#{dates}'''",
-        name: "'''#{name}'''",
-        place: "'''#{place}'''",
-        url: "'''#{url}'''",
-        cards: "'#{cards}'^^xsd:integer",
-        size: "'''#{size}'''",
-        other_info: "'''#{other_info}'''",
-        senate_house: "'''#{senate_house}'''",
-        out_of_scope: "'#{out_of_scope}'^^xsd:boolean"
-      }
-    }    
+      fields: {}
+    }
+
+    map[:fields][:dates]        = format_triple_object dates,        :string
+    map[:fields][:name]         = format_triple_object name,         :string
+    map[:fields][:place]        = format_triple_object place,        :string
+    map[:fields][:url]          = format_triple_object url,          :string
+    map[:fields][:cards]        = format_triple_object cards,        :integer
+    map[:fields][:size]         = format_triple_object size,         :string
+    map[:fields][:other_info]   = format_triple_object other_info,   :string
+    map[:fields][:senate_house] = format_triple_object senate_house, :string
+    map[:fields][:out_of_scope] = format_triple_object out_of_scope, :boolean
+
+    map
   end
 
 end

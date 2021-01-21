@@ -13,15 +13,17 @@ class DericciLink < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "dericci_links",
       id: id,
-      fields: {
-        dericci_record_id: "<https://sdbm.library.upenn.edu/dericci_records/#{dericci_record_id}>",
-        name_id: "<https://sdbm.library.upenn.edu/names/#{name_id}>",
-        other_info: "'''#{other_info}'''"
-      }
+      fields: {}
     }
+
+    map[:fields][:dericci_record_id] = format_triple_object dericci_record_id, :string
+    map[:fields][:name_id]           = format_triple_object name_id,           :uri,   'https://sdbm.library.upenn.edu/names/'
+    map[:fields][:other_info]        = format_triple_object other_info,        :string
+
+    map
   end
 
 end

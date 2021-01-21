@@ -89,7 +89,7 @@ class Place < ActiveRecord::Base
 
   def self.filters
     super + [
-      ["Authority Id", "authority_id"], 
+      ["Authority Id", "authority_id"],
       ["Authority Source", "authority_source"],
       ["Problem", "problem"],
       ["Parent", "parent"],
@@ -142,19 +142,21 @@ class Place < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "places",
       id: id,
-      fields: {
-        name: "'''#{name.to_s.gsub("'", "")}'''",
-        authority_id: "'''#{authority_id}'''",
-        authority_source: "'''#{authority_source}'''",
-        parent_id: "<https://sdbm.library.upenn.edu/places/#{parent_id}>",
-        latitude: "'#{latitude}'^^xsd:decimal",
-        longitude: "'#{longitude}'^^xsd:decimal",
-        deleted: "'#{deleted}'^^xsd:boolean"
-      }
+      fields: {}
     }
+
+    map[:fields][:name]             = format_triple_object name,             :string
+    map[:fields][:authority_id]     = format_triple_object authority_id,     :string
+    map[:fields][:authority_source] = format_triple_object authority_source, :string
+    map[:fields][:parent_id]        = format_triple_object parent_id,        :uri,            'https://sdbm.library.upenn.edu/places/'
+    map[:fields][:latitude]         = format_triple_object latitude,         :decimal
+    map[:fields][:longitude]        = format_triple_object longitude,        :decimal
+    map[:fields][:deleted]          = format_triple_object deleted,          :boolean
+
+    map
   end
 
 end

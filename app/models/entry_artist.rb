@@ -7,25 +7,25 @@ class EntryArtist < ActiveRecord::Base
   include TellBunny
 
   TYPES_ROLES = [
-    ["Work", "Workshop"], 
-    ["Styl", "Style"], 
-    ["Circ", "Circle"], 
-    ["Scho", "School"], 
-    ["Asso", "Associate"], 
-    ["Assos", "Associates"], 
-    ["Atel", "Atelier"], 
-    ["Arti", "Artist"], 
-    ["Grou", "Group"], 
-    ["Styls", "Styles"], 
-    ["Foll", "Follower"], 
-    ["Desc", "Descendant"], 
-    ["Folls", "Followers"], 
-    ["Cont", "Contemporary"], 
-    ["Son", "Son"], 
-    ["Mann", "Manner"], 
-    ["Mini", "Miniatures"], 
-    ["Prov", "Provincial"], 
-    ["Pupi", "Pupil"], 
+    ["Work", "Workshop"],
+    ["Styl", "Style"],
+    ["Circ", "Circle"],
+    ["Scho", "School"],
+    ["Asso", "Associate"],
+    ["Assos", "Associates"],
+    ["Atel", "Atelier"],
+    ["Arti", "Artist"],
+    ["Grou", "Group"],
+    ["Styls", "Styles"],
+    ["Foll", "Follower"],
+    ["Desc", "Descendant"],
+    ["Folls", "Followers"],
+    ["Cont", "Contemporary"],
+    ["Son", "Son"],
+    ["Mann", "Manner"],
+    ["Mini", "Miniatures"],
+    ["Prov", "Provincial"],
+    ["Pupi", "Pupil"],
     ["Coll", "Collaborators"],
     ["Mast", "Master"],
     ["Assi", "Assistant"],
@@ -74,19 +74,21 @@ class EntryArtist < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "entry_artists",
       id: id,
-      fields: {
-        observed_name: "'''#{observed_name.to_s.gsub("'", "")}'''",
-        artist_id: "<https://sdbm.library.upenn.edu/names/#{artist_id}>",
-        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        role: "'''#{role}'''",
-        order: "'#{order}'^^xsd:integer",
-        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
-        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
-      }
+      fields: {}
     }
+
+    map[:fields][:observed_name]          = format_triple_object observed_name,          :string
+    map[:fields][:artist_id]              = format_triple_object artist_id,              :uri,            'https://sdbm.library.upenn.edu/names/'
+    map[:fields][:entry_id]               = format_triple_object entry_id,               :uri,            'https://sdbm.library.upenn.edu/entries/'
+    map[:fields][:role]                   = format_triple_object role,                   :string
+    map[:fields][:order]                  = format_triple_object order,                  :integer
+    map[:fields][:supplied_by_data_entry] = format_triple_object supplied_by_data_entry, :boolean
+    map[:fields][:uncertain_in_source]    = format_triple_object uncertain_in_source,    :boolean
+
+    map
   end
 
 end

@@ -23,18 +23,20 @@ class EntryTitle < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "entry_titles",
       id: id,
-      fields: {
-        title: "'''#{title.to_s.gsub("'", "")}'''",
-        common_title: "'''#{common_title.to_s.gsub("'", "")}'''",
-        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        order: "'#{order}'^^xsd:integer",
-        supplied_by_data_entry: "'#{supplied_by_data_entry}'^^xsd:boolean",
-        uncertain_in_source: "'#{uncertain_in_source}'^^xsd:boolean"
-      }
+      fields: {}
     }
+
+    map[:fields][:title]                  = format_triple_object title,                  :string
+    map[:fields][:common_title]           = format_triple_object common_title,           :string
+    map[:fields][:entry_id]               = format_triple_object entry_id,               :uri,            'https://sdbm.library.upenn.edu/entries/'
+    map[:fields][:order]                  = format_triple_object order,                  :integer
+    map[:fields][:supplied_by_data_entry] = format_triple_object supplied_by_data_entry, :boolean
+    map[:fields][:uncertain_in_source]    = format_triple_object uncertain_in_source,    :boolean
+
+    map
   end
 
 end

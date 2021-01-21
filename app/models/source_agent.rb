@@ -3,7 +3,7 @@ class SourceAgent < ActiveRecord::Base
   belongs_to :agent, class_name: 'Name', counter_cache: :source_agents_count
 
   validate :validate_role
-  validate :observed_or_authority  
+  validate :observed_or_authority
 
   include HasPaperTrail
   include TellBunny
@@ -50,19 +50,21 @@ class SourceAgent < ActiveRecord::Base
 
   def facet_value
     agent ? agent.name : nil
-  end  
+  end
 
   def to_rdf
-    {
+    map = {
       model_class: "source_agents",
       id: id,
-      fields: {
-        observed_name: "'''#{observed_name}'''",
-        agent_id: "<https://sdbm.library.upenn.edu/names/#{agent_id}>",
-        role: "'''#{role}'''",
-        source_id: "<https://sdbm.library.upenn.edu/sources/#{source_id}>"
-      }
+      fields: {}
     }
+
+    map[:fields][:observed_name] = format_triple_object observed_name, :string
+    map[:fields][:agent_id]      = format_triple_object agent_id,      :uri,   'https://sdbm.library.upenn.edu/names/'
+    map[:fields][:role]          = format_triple_object role,          :string
+    map[:fields][:source_id]     = format_triple_object source_id,     :uri,   'https://sdbm.library.upenn.edu/sources/'
+
+    map
   end
 
   private

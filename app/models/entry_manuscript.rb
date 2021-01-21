@@ -87,15 +87,17 @@ class EntryManuscript < ActiveRecord::Base
   end
 
   def to_rdf
-    {
+    map = {
       model_class: "entry_manuscripts",
       id: id,
-      fields: {
-        entry_id: "<https://sdbm.library.upenn.edu/entries/#{entry_id}>",
-        manuscript_id: "<https://sdbm.library.upenn.edu/manuscripts/#{manuscript_id}>",
-        relation_type: "'''#{relation_type}'''"
-      }
+      fields: {}
     }
+
+    map[:fields][:entry_id]      = format_triple_object entry_id,      :uri,   'https://sdbm.library.upenn.edu/entries/'
+    map[:fields][:manuscript_id] = format_triple_object manuscript_id, :uri,   'https://sdbm.library.upenn.edu/manuscripts/'
+    map[:fields][:relation_type] = format_triple_object relation_type, :string
+
+    map
   end
 
 end
