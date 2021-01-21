@@ -71,7 +71,7 @@ gem "jettywrapper", "~> 2.0.3"
 gem "blacklight_advanced_search", "~> 5.1.3"
 
 # For authentication; used by Blacklight and by SDBMSS
-gem "devise", "~> 4.6.0"
+gem "devise", "~> 4.7.1"
 gem "devise-guests", "~> 0.3.0"
 
 # For roles and permissions checking
