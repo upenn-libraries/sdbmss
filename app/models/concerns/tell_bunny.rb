@@ -63,7 +63,7 @@ module TellBunny
       raise "No `url_base` supplied for #{value}" unless url_base.present?
       "<#{url_base}#{value}>"
     else
-      raise "Unknown "
+      raise "Unknown triple object data_type: '#{data_type}'; expected one of :string, :decimal, :boolean, :string, :uri"
     end
   end
 
