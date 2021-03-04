@@ -1,80 +1,88 @@
 title = "gitleaks config"
 
 [[rules]]
-description = "Password in string"
-regex = '''(?i)[\w]*(password|secret)[\w]* *[:=>,]+ *['"][\S]{2,}['"]'''
-  # <%= f.password_field :password, :class =\u003e 'form-control' %>
-  [[rules.whitelist]]
-  description = "Don't check form fields in erb files"
-  file = '''(.*?)\.erb$'''
-  regex = '''\w\.password_(field|confirmation)'''
-  [[rules.whitelist]]
-  description = "Don't check comments"
-  regex = '''^\s*#'''
-  [[rules.whitelist]]
-  description = "Don't check YAML files for this rule"
-  file = '''(.*?)\.yml$'''
-  [[rules.whitelist]]
-  description = "don't read specs"
-  file = '''spec/(.*?)'''
-  [[rules.whitelist]]
-  description = "don't read reference_data.rb"
-  file = '''reference_data\.rb'''
-  [[rules.whitelist]]
-  description = "data pull from local copy of legacy SDBM database"
-  file = '''lib/sdbmss/legacy\.rb'''
-  [[rules.whitelist]]
-  description = "null password default in vendor/.../URI.js"
-  file = '''vendor/assets/javascripts/URI\.min\.js'''
-[[rules]]
-description = "Password in YAML config"
-regex = '''(?i)[\w]*(password|secret)[\w]* *: *[\S]{2,}'''
-  [[rules.whitelist]]
-  description = "Don't check Ruby files for this rule"
-  file = '''(.*?)\.e?rb$'''
-  [[rules.whitelist]]
-  description = "don't read specs"
-  file = '''spec/(.*?)'''
-  [[rules.whitelist]]
-  description = "don't read reference_data.rb"
-  file = '''reference_data\.rb'''
-  [[rules.whitelist]]
-  description = "local legacy database pull"
-  file = '''lib/sdbmss/legacy\.rb'''
-  [[rules.whitelist]]
-  description = "null password default in vendor js"
-  file = '''vendor/assets/javascripts/URI\.min\.js'''
-[[rules]]
-description = "AWS"
-regex = '''AKIA[0-9A-Z]{16}'''
-[[rules]]
-description = "RKCS8"
-regex = '''-----BEGIN PRIVATE KEY-----'''
-[[rules]]
-description = "RSA"
-regex = '''-----BEGIN RSA PRIVATE KEY-----'''
-[[rules]]
-description = "Github"
-regex = '''(?i)github.*['\"][0-9a-zA-Z]{35,40}['\"]'''
-[[rules]]
-description = "SSH"
-regex = '''-----BEGIN OPENSSH PRIVATE KEY-----'''
-[[rules]]
-description = "Facebook"
-regex = '''(?i)facebook.*['\"][0-9a-f]{32}['\"]'''
-[[rules]]
-description = "Twitter"
-regex = '''(?i)twitter.*['\"][0-9a-zA-Z]{35,44}['\"]'''
-[[rules]]
-description = "PGP"
-regex = '''-----BEGIN PGP PRIVATE KEY BLOCK-----'''
-[[rules]]
-description = "Slack token"
-regex = '''xox[baprs]-.*'''
-[[rules]]
-description = "Strip API Key"
-regex = '''(?i)(sk|pk)_(test|live)_[0-9a-zA-Z]{10,32}'''
+  description = "Password in string"
+  regex = '''(?i)[\w]*(password|secret)[\w]* *[:=>,]+ *['"][\S]{2,}['"]'''
+  [rules.allowlist]
+    description = "Exceptions"
+    paths = [
+      '''(.*?)\.erb$''',
+      '''(.*?)\.yml$''',
+      '''spec/(.*?)''',
+      '''reference_data\.rb''',
+      '''lib/sdbmss/legacy\.rb''',
+      '''vendor/assets/javascripts/URI\.min\.js'''
+    ]
+    regexes = [
+      '''\w\.password_(field|confirmation)''',
+      '''^\s*#'''
+    ]
 
-[whitelist]
-  description = "image whitelists"
-  file = '''(.*?)(jpg|gif|doc|pdf|bin|.gitleaks.toml)$'''
+[[rules]]
+  description = "Password in YAML config"
+  regex = '''(?i)[\w]*(password|secret)[\w]* *: *[\S]{2,}'''
+  [rules.allowlist]
+    description = "Exceptions"
+    paths = [
+      '''(.*?)\.e?rb$''',
+      '''spec/(.*?)''',
+      '''reference_data\.rb''',
+      '''lib/sdbmss/legacy\.rb''',
+      '''vendor/assets/javascripts/URI\.min\.js'''
+    ]
+
+[[rules]]
+  description = "AWS"
+  regex = '''AKIA[0-9A-Z]{16}'''
+
+[[rules]]
+  description = "RKCS8"
+  regex = '''-----BEGIN PRIVATE KEY-----'''
+
+[[rules]]
+  description = "RSA"
+  regex = '''-----BEGIN RSA PRIVATE KEY-----'''
+
+[[rules]]
+  description = "Github"
+  regex = '''(?i)github.*['\"][0-9a-zA-Z]{35,40}['\"]'''
+
+[[rules]]
+  description = "SSH"
+  regex = '''-----BEGIN OPENSSH PRIVATE KEY-----'''
+
+[[rules]]
+  description = "Facebook"
+  regex = '''(?i)facebook.*['\"][0-9a-f]{32}['\"]'''
+
+[[rules]]
+  description = "Twitter"
+  regex = '''(?i)twitter.*['\"][0-9a-zA-Z]{35,44}['\"]'''
+
+[[rules]]
+  description = "PGP"
+  regex = '''-----BEGIN PGP PRIVATE KEY BLOCK-----'''
+
+[[rules]]
+  description = "Slack token"
+  regex = '''xox[baprs]-.*'''
+
+[[rules]]
+  description = "Strip API Key"
+  regex = '''(?i)(sk|pk)_(test|live)_[0-9a-zA-Z]{10,32}'''
+
+# Global allowlist
+[allowlist]
+  description = "Global Allowlists"
+  files = [
+    '''(.*?)(jpg|gif|doc|pdf|bin|md)$''',
+    '''\.gitleaks\.toml'''
+  ]
+  regexes = [
+    # Ignore docker set secrets
+    '''(?i)(/run/secrets/)''',
+    # Values set by Ansible variables
+    '''{{ *[\S]+ *}}''',
+    # Values set by environment variables
+    '''ENV\[['"][\S]+['"]\]'''
+  ]
