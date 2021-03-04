@@ -1,0 +1,45 @@
+name: sdbmss
+env_file:
+  - docker.env
+services:
+  rabbitmq:
+    type: compose
+    portforward: 5672
+    services:
+      image: rabbitmq:3.7
+      ports:
+        - 5672:5672
+      hostname: 'rabbitmq'
+      command: rabbitmq-server
+  jena:
+    type: compose
+    portforward: 3030
+    services:
+      image: 'quay.io/upennlibraries/sdbm_jena:development'
+      ports:
+        - 3030:3030
+      volumes:
+        - rdf_data:/fuseki
+  interface:
+    type: compose
+    services:
+      image: 'quay.io/upennlibraries/sdbmss_interface:development'
+      command: ruby interface.rb
+  mysql:
+    type: mysql:5.7
+    portforward: 3307
+#  nginx:
+#    type: compose
+#    portforward:
+#      - 80
+#      - 443
+#    image: 'quay.io/upennlibraries/sdbm_nginx:development'
+#    links:
+#      - rails
+#      - jena
+#    ports:
+#      - 80:80
+#      - 443:443
+
+
+
