@@ -1,5 +1,4 @@
 title = "gitleaks config"
-
 [[rules]]
   description = "Password in string"
   regex = '''(?i)[\w]*(password|secret)[\w]* *[:=>,]+ *['"][\S]{2,}['"]'''
@@ -11,13 +10,15 @@ title = "gitleaks config"
       '''spec/(.*?)''',
       '''reference_data\.rb''',
       '''lib/sdbmss/legacy\.rb''',
+      '''lib/sdbmss/seed_data.rb''',
+      '''jena/jena.env''',
+      '''config/initializers/mailer.rb''',
       '''vendor/assets/javascripts/URI\.min\.js'''
     ]
     regexes = [
       '''\w\.password_(field|confirmation)''',
       '''^\s*#'''
     ]
-
 [[rules]]
   description = "Password in YAML config"
   regex = '''(?i)[\w]*(password|secret)[\w]* *: *[\S]{2,}'''
@@ -27,50 +28,40 @@ title = "gitleaks config"
       '''(.*?)\.e?rb$''',
       '''spec/(.*?)''',
       '''reference_data\.rb''',
+      '''config/secrets.yml''',
       '''lib/sdbmss/legacy\.rb''',
       '''vendor/assets/javascripts/URI\.min\.js'''
     ]
-
 [[rules]]
   description = "AWS"
   regex = '''AKIA[0-9A-Z]{16}'''
-
 [[rules]]
   description = "RKCS8"
   regex = '''-----BEGIN PRIVATE KEY-----'''
-
 [[rules]]
   description = "RSA"
   regex = '''-----BEGIN RSA PRIVATE KEY-----'''
-
 [[rules]]
   description = "Github"
   regex = '''(?i)github.*['\"][0-9a-zA-Z]{35,40}['\"]'''
-
 [[rules]]
   description = "SSH"
   regex = '''-----BEGIN OPENSSH PRIVATE KEY-----'''
-
 [[rules]]
   description = "Facebook"
   regex = '''(?i)facebook.*['\"][0-9a-f]{32}['\"]'''
-
 [[rules]]
   description = "Twitter"
   regex = '''(?i)twitter.*['\"][0-9a-zA-Z]{35,44}['\"]'''
-
 [[rules]]
   description = "PGP"
   regex = '''-----BEGIN PGP PRIVATE KEY BLOCK-----'''
-
 [[rules]]
   description = "Slack token"
   regex = '''xox[baprs]-.*'''
-
 [[rules]]
   description = "Strip API Key"
   regex = '''(?i)(sk|pk)_(test|live)_[0-9a-zA-Z]{10,32}'''
-
 # Global allowlist
 [allowlist]
   description = "Global Allowlists"
