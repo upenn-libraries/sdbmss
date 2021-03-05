@@ -20,6 +20,11 @@ services:
         - 3030:3030
       volumes:
         - rdf_data:/fuseki
+      command:
+        - rm /fuseki/system/tdb.lock
+        - rm /fuseki/databases/sdbm/tdb.lock
+        - cd /jena-fuseki
+        - ./fuseki-server
   interface:
     type: compose
     services:
