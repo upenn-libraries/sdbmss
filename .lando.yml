@@ -30,21 +30,32 @@ services:
     services:
       image: 'quay.io/upennlibraries/sdbmss_interface:development'
       command: ruby interface.rb
-  mysql:
+  db:
     type: mysql:5.7
-    portforward: 3307
-#  nginx:
-#    type: compose
-#    portforward:
-#      - 80
-#      - 443
-#    image: 'quay.io/upennlibraries/sdbm_nginx:development'
-#    links:
-#      - rails
-#      - jena
-#    ports:
-#      - 80:80
-#      - 443:443
-
-
-
+    portforward: true
+    creds:
+      user: sdbm
+      password: sdbm
+      database: sdbm
+  solr:
+    type: compose
+    portforward: true
+    services:
+      image: sdbmss
+      build:
+        context: .
+        dockerfile: Dockerfile
+      ports:
+        - 8982:8982
+      command:
+        - bundle exe rake sunspot:solr:start
+  delayedjob:
+    type: compose
+    portforward: true
+    services:
+      image: sdbmss
+      build:
+        context: .
+        dockerfile: Dockerfile
+      command:
+        - bundle exe rake jobs:work
