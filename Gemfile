@@ -146,6 +146,7 @@ group :development do
   # Use Capistrano for deployment
   gem 'capistrano-rails', '~> 1.1.0'
   gem 'pry-rails'
+  gem 'dotenv-rails'
 
   # This can autogenerate ERD diagrams from ActiveRecord models and
   # schema. This causes problems when it's enabled for anything

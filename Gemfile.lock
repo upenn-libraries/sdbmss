@@ -137,6 +137,10 @@ GEM
       devise
     diff-lcs (1.3)
     docile (1.3.1)
+    dotenv (2.7.6)
+    dotenv-rails (2.7.6)
+      dotenv (= 2.7.6)
+      railties (>= 3.2)
     erubis (2.7.0)
     exception_notification (4.1.4)
       actionmailer (~> 4.0)
@@ -448,6 +452,7 @@ DEPENDENCIES
   delayed_job_active_record (~> 4.0.3)
   devise (~> 4.7.1)
   devise-guests (~> 0.3.0)
+  dotenv-rails
   exception_notification (~> 4.1.1)
   factory_girl_rails (~> 4.0)
   ffi (>= 1.9.24)
@@ -493,4 +498,4 @@ DEPENDENCIES
   yard (~> 0.9.11)
 
 BUNDLED WITH
-   1.11.2
+   1.17.3
