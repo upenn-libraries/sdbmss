@@ -12,6 +12,7 @@ title = "gitleaks config"
       '''lib/sdbmss/legacy\.rb''',
       '''lib/sdbmss/seed_data.rb''',
       '''jena/jena.env''',
+      '''.lando.yml''',
       '''config/initializers/mailer.rb''',
       '''vendor/assets/javascripts/URI\.min\.js'''
     ]
