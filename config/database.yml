@@ -14,15 +14,20 @@ default: &default
 development: &development
   adapter: mysql2
   encoding: utf8
-  database: <%= ENV["MYSQL_DATABASE"] %>
+  database: sdbm
   pool: 5
+  username: root
+  password:
+  host: 127.0.0.1
+  port: 3307
+
+staging:
+  <<: *development
+  database: <%= ENV["MYSQL_DATABASE"] %>
   username: <%= ENV["MYSQL_USER"] %>
   password: <%= ENV["MYSQL_PASSWORD"] %>
   host: <%= ENV["MYSQL_HOST"] %>
   port: <%= ENV["MYSQL_PORT"] %>
-
-staging:
-  <<: *development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -30,8 +35,13 @@ staging:
 test:
   <<: *development
   host: localhost
-  database: <%= ENV["MYSQL_DATABASE"] %>_test
+  database: sdbm_test
   #engine:   MyISAM  
 
 production:
   <<: *development
+  database: <%= ENV["MYSQL_DATABASE"] %>
+  username: <%= ENV["MYSQL_USER"] %>
+  password: <%= ENV["MYSQL_PASSWORD"] %>
+  host: <%= ENV["MYSQL_HOST"] %>
+  port: <%= ENV["MYSQL_PORT"] %>

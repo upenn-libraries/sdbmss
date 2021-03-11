@@ -1,6 +1,6 @@
 name: sdbmss
 env_file:
-  - docker.env
+  - .lando.env
 services:
   rabbitmq:
     type: compose
@@ -11,6 +11,13 @@ services:
         - 5672:5672
       hostname: 'rabbitmq'
       command: rabbitmq-server
+    run:
+      - rabbitmqctl add_user sdbm sdbm
+      - rabbitmqctl set_user_tags sdbm adminstrator
+      - rabbitmqctl set_permissions -p / sdbm ".*" ".*" ".*"
+    overrides:
+      volumes:
+        - rabbitmq_data:/var/lib/rabbitmq
   jena:
     type: compose
     portforward: 3030
@@ -32,11 +39,7 @@ services:
       command: ruby interface.rb
   db:
     type: mysql:5.7
-    portforward: true
-    creds:
-      user: sdbm
-      password: sdbm
-      database: sdbm
+    portforward: 3307
   solr:
     type: compose
     portforward: true
@@ -47,8 +50,7 @@ services:
         dockerfile: Dockerfile
       ports:
         - 8982:8982
-      command:
-        - bundle exe rake sunspot:solr:start
+      command: bundle exec rake sunspot:solr:run
   delayedjob:
     type: compose
     portforward: true
@@ -57,5 +59,14 @@ services:
       build:
         context: .
         dockerfile: Dockerfile
-      command:
-        - bundle exe rake jobs:work
+      command: bundle exec rake jobs:work
+tooling:
+  mysql:
+    service: db
+  rabbitmq:
+    service: rabbitmq
+proxy:
+  solr:
+    - sdbm.solr.lndo.site:8982
+  rabbitmq:
+    - sdbm.rabbitmq.lndo.site
