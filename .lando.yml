@@ -27,7 +27,7 @@ services:
         - 3030:3030
       volumes:
         - rdf_data:/fuseki
-      command: /jena-fuseki/start_jena.sh
+      command: /docker-entrypoint.sh /jena-fuseki/start_jena.sh
   interface:
     type: compose
     services:
