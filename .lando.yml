@@ -11,10 +11,6 @@ services:
         - 5672:5672
       hostname: 'rabbitmq'
       command: rabbitmq-server
-    run:
-      - rabbitmqctl add_user sdbm sdbm
-      - rabbitmqctl set_user_tags sdbm adminstrator
-      - rabbitmqctl set_permissions -p / sdbm ".*" ".*" ".*"
     overrides:
       volumes:
         - rabbitmq_data:/var/lib/rabbitmq
@@ -22,16 +18,16 @@ services:
     type: compose
     portforward: 3030
     services:
-      image: 'quay.io/upennlibraries/sdbm_jena:development'
+#      image: 'quay.io/upennlibraries/sdbm_jena:development'
+      image: jena
+      build:
+        context: sdbmss_jena
+        dockerfile: Dockerfile
       ports:
         - 3030:3030
       volumes:
         - rdf_data:/fuseki
-      command:
-        - rm /fuseki/system/tdb.lock
-        - rm /fuseki/databases/sdbm/tdb.lock
-        - cd /jena-fuseki
-        - ./fuseki-server
+      command: /jena-fuseki/start_jena.sh
   interface:
     type: compose
     services:
@@ -70,3 +66,5 @@ proxy:
     - sdbm.solr.lndo.site:8982
   rabbitmq:
     - sdbm.rabbitmq.lndo.site
+  jena:
+    - sdbm.jena.lndo.site:3030

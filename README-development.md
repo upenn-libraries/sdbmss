@@ -1,6 +1,135 @@
 Installation
 =====
 
+New instructions for Lando (2021-03-11).
+
+1. Clone the repository. 
+
+
+
+Configure the `.env` and `.lando.env` files.
+
+`.env` file:
+
+```dotenv
+# Remove these comments before deploying in development.
+#
+# This file is for use only in the local development environment.
+#
+# These values are used primarily for the Rails and ruby containers
+# running in Lando: Solr, delayed job, and interface, which
+# need to communicate with each other, the database, Jena
+# and rabbitmq.
+RAILS_ENV=development
+SDBMSS_APP_HOST=localhost
+SDBMSS_SMTP_HOST=mail.somewhere.com
+ADMIN_PASSWORD=PASSWORD
+RAILS_USER=USER
+RAILS_PASS=PASSWORD
+RABBIT_PASSWORD=PASSWORD
+RABBIT_USER=USER
+RABBITMQ_HOST=rabbitmq.sdbmss.internal
+SDBMSS_EMAIL_FROM=email@domain.com
+SDBMSS_NOTIFY_EMAIL=email@domain.com
+SDBMSS_NOTIFY_EMAIL_PASSWORD=PASSWORD
+SDBMSS_EMAIL_EXCEPTIONS_TO=email@domain.com
+SDBMSS_BLACKLIGHT_SECRET_KEY=SAME_KEY_AS_ENV
+SDBMSS_DEVISE_SECRET_KEY=SAME_KEY_AS_ENV
+SDBMSS_SECRET_KEY_BASE=SAME_KEY_AS_ENV
+SDBMSS_SECRET_TOKEN=SAME_TOKEN_AS_ENV
+SOLR_URL=http://solr.sdbmss.internal:8982/solr/development
+DB_HOST=db.sdbmss.internal
+DB_PORT=3306
+```
+
+`.lando.env` file:
+
+```dotenv
+# Remove these comments before deploying in development.
+#
+# This file is for use only in the local development environment.
+#
+# These values are used for the Rails container running locally
+# and its communication with Solr, Jena, database, interface,
+# and rabbitmq
+RAILS_ENV=development
+SDBMSS_APP_HOST=localhost
+SDBMSS_SMTP_HOST=mail.somewhere.com
+ADMIN_PASSWORD=PASSWORD
+RAILS_USER=USER
+RAILS_PASS=PASSWORD
+RABBIT_PASSWORD=USER
+RABBIT_USER=USER
+RABBITMQ_HOST=sdbm.rabbitmq.lndo.site
+SDBMSS_EMAIL_FROM=sdbmssdev@gmail.com
+SDBMSS_NOTIFY_EMAIL=sdbmssdev@gmail.com
+SDBMSS_NOTIFY_EMAIL_PASSWORD=PASSWORD
+SDBMSS_EMAIL_EXCEPTIONS_TO=email@domain.com
+SDBMSS_BLACKLIGHT_SECRET_KEY=KEY
+SDBMSS_DEVISE_SECRET_KEY=KEY
+SDBMSS_SECRET_KEY_BASE=KEY
+SDBMSS_SECRET_TOKEN=TOKEN
+SOLR_URL=http://sdbm.solr.lndo.site:8982/solr/development
+DB_HOST=localhost
+DB_PORT=3307
+```
+
+Start lando: `lando start` 
+
+Get data from current sdbm (database, docs, tooltips, uploads); untar; gunzip db;
+
+create database:
+
+```shell
+$ bundle exec rails db:create
+```
+
+Import database data
+```shell
+$ mysql sdbm -u root --host 127.0.0.1 -P 3307 -p < sdbm_data/sdbm.sql
+```
+
+Copy static files into place:
+
+```shell
+cp -r sdbm_data/docs     public/static/
+cp -r sdbm_data/tooltips public/static/
+cp -r sdbm_data/uploads  public/static/
+```
+
+Set up rabbitmq
+
+need to create docker commands to do this
+
+   - rabbitmqctl add_user sdbm sdbm
+   - rabbitmqctl set_user_tags sdbm adminstrator
+   - rabbitmqctl set_permissions -p / sdbm ".*" ".*" ".*"
+
+Generate the RDF:
+
+```
+bundle exec rake sparql:test
+```
+
+Copy the data to the Jena container
+
+```
+docker cp test.ttl $(docker ps -q -f name=sdbmss_jena):/tmp/
+```
+
+Load the data into Jena 
+
+NOTE: The following is much too slow, in fact wasn't finished hours after
+starting. I used jena-fuseki on my local computer and ran tdbloader there,
+copying the resulting files into the container. This was accomplished in about
+10 minutes. Need to add instructions for this.
+
+```
+docker exec -t $(docker ps -q -f name=sdbmss_jena) sh -c 'mkdir /fuseki/databases'
+docker exec -t $(docker ps -q -f name=sdbmss_jena) sh -c 'cd /jena-fuseki && ./tdbloader --loc=/fuseki/databases/sdbm /tmp/test.ttl'
+```
+
+
 **1. Clone the repository**
 
 DEPRECATED -- USING ANSIBLE

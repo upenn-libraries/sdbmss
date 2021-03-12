@@ -18,8 +18,8 @@ development: &development
   pool: 5
   username: root
   password:
-  host: 127.0.0.1
-  port: 3307
+  host: <%= ENV['DB_HOST'] %>
+  port: <%= ENV['DB_PORT'] %>
 
 staging:
   <<: *development
@@ -43,5 +43,5 @@ production:
   database: <%= ENV["MYSQL_DATABASE"] %>
   username: <%= ENV["MYSQL_USER"] %>
   password: <%= ENV["MYSQL_PASSWORD"] %>
-  host: <%= ENV["MYSQL_HOST"] %>
-  port: <%= ENV["MYSQL_PORT"] %>
+  host: <%= ENV["DB_HOST"] %>
+  port: <%= ENV["DB_PORT"] %>

@@ -42,3 +42,4 @@ sdbm_data
 rabbitmq_data
 .lando.env
 .env
+rdf_data

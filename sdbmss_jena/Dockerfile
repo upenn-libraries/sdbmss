@@ -14,4 +14,7 @@ COPY shiro.ini ./
 # customizing max number of resultscat 
 COPY yasr.min.js ./webapp/js/lib/yasr.min.js
 
-CMD rm /fuseki/system/tdb.lock ; rm /fuseki/databases/sdbm/tdb.lock ; ./fuseki-server
+COPY start_jena.sh ./
+RUN chmod 755 ./start_jena.sh
+
+CMD ./start_jena.sh
