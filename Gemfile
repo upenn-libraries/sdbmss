@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 gem 'rails', '~>4.2.11.1'
 
 gem "actionview", ">= 4.2.11.1"
-gem "nokogiri", "= 1.8.5"
+gem "nokogiri", "1.11.4"
 gem "activejob", ">= 4.2.11"
 gem "rack", ">= 1.6.11"
 gem "loofah", ">= 2.2.3"
