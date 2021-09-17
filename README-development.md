@@ -81,7 +81,7 @@ Get data from current sdbm (database, docs, tooltips, uploads); untar; gunzip db
 create database:
 
 ```shell
-$ bundle exec rails db:create
+$ bundle exec rake db:create
 ```
 
 Import database data
@@ -101,9 +101,12 @@ Set up rabbitmq
 
 need to create docker commands to do this
 
-   - rabbitmqctl add_user sdbm sdbm
-   - rabbitmqctl set_user_tags sdbm adminstrator
-   - rabbitmqctl set_permissions -p / sdbm ".*" ".*" ".*"
+
+```shell
+docker exec -t $(docker ps -qf "name=sdbmss_rabbitmq") rabbitmqctl add_user sdbm sdbm
+docker exec -t $(docker ps -qf "name=sdbmss_rabbitmq") rabbitmqctl set_user_tags sdbm administrator
+docker exec -t $(docker ps -qf "name=sdbmss_rabbitmq") rabbitmqctl set_permissions -p / sdbm ".*" ".*" ".*"
+```
 
 Generate the RDF:
 
@@ -111,22 +114,43 @@ Generate the RDF:
 bundle exec rake sparql:test
 ```
 
-Copy the data to the Jena container
+The above task generates the file `./test.ttl`. Copy it to the Jena container:
 
 ```
 docker cp test.ttl $(docker ps -q -f name=sdbmss_jena):/tmp/
 ```
 
-Load the data into Jena 
+### Load the data into Jena 
 
-NOTE: The following is much too slow, in fact wasn't finished hours after
-starting. I used jena-fuseki on my local computer and ran tdbloader there,
-copying the resulting files into the container. This was accomplished in about
-10 minutes. Need to add instructions for this.
+The loader operation takes about an hour.
 
 ```
 docker exec -t $(docker ps -q -f name=sdbmss_jena) sh -c 'mkdir /fuseki/databases'
 docker exec -t $(docker ps -q -f name=sdbmss_jena) sh -c 'cd /jena-fuseki && ./tdbloader --loc=/fuseki/databases/sdbm /tmp/test.ttl'
+```
+
+Clean up the files.
+
+```
+docker exec -t $(docker ps -q -f name=sdbmss_jena) rm /tmp/test.ttl
+rm test.ttl
+```
+
+Create the datset in Jena Fuseki.
+
+Go here and create the sdbm dataset: <https://localhost/sparql/manage.html>
+
+- Click 'add new data set'
+- Enter 'sdbm'
+- Select 'Persistent – dataset will persist across Fuseki restarts'
+- Click 'create dataset'
+
+Scale the services:
+
+```
+docker-compose -f docker-compose-dev.yml restart jena
+docker-compose -f docker-compose-dev.yml restart rabbitmq
+docker-compose -f docker-compose-dev.yml restart rails
 ```
 
 
