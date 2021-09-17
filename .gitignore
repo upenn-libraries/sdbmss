@@ -38,3 +38,6 @@
 .ruby-version
 
 VERSION
+# don't track .env files
+.env
+.lando.env
