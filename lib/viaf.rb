@@ -86,8 +86,8 @@ module VIAF
 
   def self.get_viaf_response(host, path)
     resp = Net::HTTP.get_response(host, path)
-    if %w{ 301 302 }.include? r.code
-      resp = Net::HTTP.get_response(URI.parse(r['location']))
+    if %w{ 301 302 }.include? resp.code
+      resp = Net::HTTP.get_response(URI.parse(resp['location']))
     end
     resp
   end
