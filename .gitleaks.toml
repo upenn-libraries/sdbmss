@@ -31,6 +31,7 @@ title = "gitleaks config"
       '''reference_data\.rb''',
       '''config/secrets.yml''',
       '''lib/sdbmss/legacy\.rb''',
+      '''.lando.yml''',
       '''vendor/assets/javascripts/URI\.min\.js'''
     ]
 [[rules]]
@@ -66,6 +67,9 @@ title = "gitleaks config"
 # Global allowlist
 [allowlist]
   description = "Global Allowlists"
+  commits = [
+    '''b9d1d9891273af1dcd911b3a8a674e870208c437'''
+  ]
   files = [
     '''(.*?)(jpg|gif|doc|pdf|bin|md)$''',
     '''\.gitleaks\.toml'''
