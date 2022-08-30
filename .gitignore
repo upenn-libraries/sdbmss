@@ -41,3 +41,11 @@ VERSION
 # don't track .env files
 .env
 .lando.env
+.env*
+*.key
+*.crt
+rabbitmq_data
+rdf_data
+*.tgz
+sdbm_data
+*.bak
