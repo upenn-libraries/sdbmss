@@ -38,3 +38,11 @@
 .ruby-version
 
 VERSION
+.env*
+*.key
+*.crt
+rabbitmq_data
+rdf_data
+*.tgz
+sdbm_data
+*.bak
