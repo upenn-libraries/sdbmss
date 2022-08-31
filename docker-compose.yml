@@ -60,7 +60,7 @@ services:
       - mysql_root_password
       - mysql_user
   solr:
-    image: 'quay.io/upennlibraries/sdbmss:${SDBMSS_IMAGE_TAG}'
+    image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_web:${SDBMSS_IMAGE_TAG}'
     restart: always
     ports:
       - "8982:8982"
@@ -95,7 +95,7 @@ services:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
   rails:
-    image: 'quay.io/upennlibraries/sdbmss:${SDBMSS_IMAGE_TAG}'
+    image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_web:${SDBMSS_IMAGE_TAG}'
     restart: always
     # env_file: .docker-environment
     ports:
@@ -134,7 +134,7 @@ services:
       - sdbm_assets:/usr/src/app/public/assets
       - sdbm_docs:/usr/src/app/public/static
   delayedjob:
-    image: 'quay.io/upennlibraries/sdbmss:${SDBMSS_IMAGE_TAG}'
+    image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_web:${SDBMSS_IMAGE_TAG}'
     restart: always
     depends_on:
       - "db"
@@ -172,7 +172,7 @@ services:
     # logging:
       # driver: "journald"
   jena:
-    image: 'quay.io/upennlibraries/sdbm_jena:${SDBMSS_IMAGE_TAG}'
+    image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_jena:${SDBMSS_IMAGE_TAG}'
     restart: always
     # logging:
       # driver: "journald"
@@ -204,7 +204,7 @@ services:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
   interface:
-    image: 'quay.io/upennlibraries/sdbmss_interface:${SDBMSS_IMAGE_TAG}'
+    image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_interface:${SDBMSS_IMAGE_TAG}'
     restart: always
     command: ruby interface.rb
     # logging:
@@ -239,7 +239,7 @@ services:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
   nginx:
-    image: 'quay.io/upennlibraries/sdbm_nginx:${SDBMSS_IMAGE_TAG}'
+    image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_nginx:${SDBMSS_IMAGE_TAG}'
     restart: always
     secrets:
       - source: ssl_wildcard_cert_crt
