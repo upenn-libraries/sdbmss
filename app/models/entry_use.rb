@@ -15,9 +15,9 @@ class EntryUse < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:use]      = "'''#{use}'''"                                         if use.present?
-    map[:fields][:entry_id] = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
-    map[:fields][:order]    = "'#{order}'^^xsd:integer"                              if order.present?
+    map[:fields][:use]      = format_triple_object use,      :string
+    map[:fields][:entry_id] = format_triple_object entry_id, :uri,    'https://sdbm.library.upenn.edu/entries/'
+    map[:fields][:order]    = format_triple_object order,    :integer
 
     map
   end

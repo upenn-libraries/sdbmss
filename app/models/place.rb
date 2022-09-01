@@ -89,7 +89,7 @@ class Place < ActiveRecord::Base
 
   def self.filters
     super + [
-      ["Authority Id", "authority_id"], 
+      ["Authority Id", "authority_id"],
       ["Authority Source", "authority_source"],
       ["Problem", "problem"],
       ["Parent", "parent"],
@@ -148,13 +148,13 @@ class Place < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:name]             = "'''#{name.to_s.gsub("'", "")}'''"                     if name.present?
-    map[:fields][:authority_id]     = "'''#{authority_id}'''"                                if authority_id.present?
-    map[:fields][:authority_source] = "'''#{authority_source}'''"                            if authority_source.present?
-    map[:fields][:parent_id]        = "<https://sdbm.library.upenn.edu/places/#{parent_id}>" if parent_id.present?
-    map[:fields][:latitude]         = "'#{latitude}'^^xsd:decimal"                           if latitude.present?
-    map[:fields][:longitude]        = "'#{longitude}'^^xsd:decimal"                          if longitude.present?
-    map[:fields][:deleted]          = "'#{deleted}'^^xsd:boolean"                            unless deleted.nil?
+    map[:fields][:name]             = format_triple_object name,             :string
+    map[:fields][:authority_id]     = format_triple_object authority_id,     :string
+    map[:fields][:authority_source] = format_triple_object authority_source, :string
+    map[:fields][:parent_id]        = format_triple_object parent_id,        :uri,            'https://sdbm.library.upenn.edu/places/'
+    map[:fields][:latitude]         = format_triple_object latitude,         :decimal
+    map[:fields][:longitude]        = format_triple_object longitude,        :decimal
+    map[:fields][:deleted]          = format_triple_object deleted,          :boolean
 
     map
   end
