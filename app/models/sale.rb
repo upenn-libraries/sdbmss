@@ -138,12 +138,12 @@ class Sale < ActiveRecord::Base
       fields: {}
     }
 
-    map[:fields][:entry_id]       = "<https://sdbm.library.upenn.edu/entries/#{entry_id}>" if entry_id.present?
-    map[:fields][:date]           = "'''#{date}'''"                                        if date.present?
-    map[:fields][:price]          = "'#{price}'^^xsd:decimal"                              if price.present?
-    map[:fields][:currency]       = "'''#{currency}'''"                                    if currency.present?
-    map[:fields][:other_currency] = "'''#{other_currency}'''"                              if other_currency.present?
-    map[:fields][:sold]           = "'''#{sold}'''"                                        if sold.present?
+    map[:fields][:entry_id]       = format_triple_object entry_id,       :uri,    'https://sdbm.library.upenn.edu/entries/'
+    map[:fields][:date]           = format_triple_object date,           :string
+    map[:fields][:price]          = format_triple_object price,          :decimal
+    map[:fields][:currency]       = format_triple_object currency,       :string
+    map[:fields][:other_currency] = format_triple_object other_currency, :string
+    map[:fields][:sold]           = format_triple_object sold,           :string
 
     map
   end
