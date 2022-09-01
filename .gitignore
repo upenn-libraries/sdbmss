@@ -49,3 +49,4 @@ rdf_data
 *.tgz
 sdbm_data
 *.bak
+test.ttl*

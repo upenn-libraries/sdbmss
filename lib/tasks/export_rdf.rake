@@ -30,7 +30,7 @@ namespace :sparql do
 						f.puts "rdf:type sdbm:#{class_name} ;"
 						instance.to_rdf[:fields].each do | key, value |
 							next if value.nil?
-							f.puts "sdbm:#{class_name}_#{key} #{value.gsub("\r\n", '').gsub("\\", '')} ;"
+							f.puts "sdbm:#{class_name}_#{key} #{value} ;"
 						end
 						f.puts "."
 						count += 1
