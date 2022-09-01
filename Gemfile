@@ -12,7 +12,7 @@ gem "rubyzip", ">= 1.2.2"
 gem "ffi", ">= 1.9.24"
 gem "sprockets", ">= 3.7.2"
 gem "net-ssh", "< 5.0"
-gem "kramdown", "<= 1.16.2"
+gem "kramdown", "<= 2.3.2"
 gem "sassc", "<= 1.12.1"
 gem 'autoprefixer-rails', '~> 7.1.6'
 
