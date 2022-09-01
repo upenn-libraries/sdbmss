@@ -16,19 +16,23 @@ module TellBunny
   SINGLE_QUOTE_REGEXP = Regexp.new "'"
 
   ##
-  # Remove leading and trailing +'+ characters so we don't create TTL strings
-  # with four surrounding single quotes.
+  # Prepare the string for ingestion in to Jena:
+  #
+  # - Remove control characters Jena can't process
+  # - Escape leading and trailing +'+ as +\'+
+  #
   #
   # @param value [String] a string value
   # @return [String]
   def rdf_string_prep value
     return                  unless value.present?
+    # the next two steps have been moved here from `export_rdf.rake`
+    value.gsub!("\r\n", '') # remove CrLf
+    value.gsub!("\\", '')   # remove "\" to avoid illegal control characters
     return value            unless value =~ SINGLE_QUOTE_REGEXP
     value.strip!
-    value.gsub(/''/, '""')  if value =~ /''/ # replace '' with ""
-    value[0] = ''           while value.start_with? "'" # remove leading '
-    value[-1] = ''          while value.end_with? "'"  # remove trailing '
-    value
+    # replace initial or final "'" with "\'"
+    value.gsub(%r{^'|'$}, %q{\\\'})
   end
 
   ##
@@ -50,6 +54,7 @@ module TellBunny
   # @raise [RuntimeError] if +data_type+ is +:uri+ and +url_base+ is blank
   def format_triple_object value, data_type, url_base=nil
     return unless value.present?
+    return if value =~ %r{\A[^[:alnum:]]*\z}
     case data_type
     when :integer
       "'#{value}'^^xsd:integer"
