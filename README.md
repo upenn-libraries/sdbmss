@@ -75,7 +75,7 @@ DEPRECATED -- USING ANSIBLE
 
   URL for SOLR server, using relative location of docker service (using name 'solr' from docker-compose.yml)
 
-			SOLR_URL=http://solr:8982/solr/development
+			SOLR_URL=http://solr:8983/solr/development
 
 **3. (Optional) Create a file VERSION in the root folder of the cloned repository.**
 
