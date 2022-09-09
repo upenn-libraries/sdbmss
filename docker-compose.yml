@@ -63,7 +63,7 @@ services:
     image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_web:${SDBMSS_IMAGE_TAG}'
     restart: always
     ports:
-      - "8982:8982"
+      - "8983:8983"
     # env_file: .docker-environment
     # logging:
       # driver: "journald"
