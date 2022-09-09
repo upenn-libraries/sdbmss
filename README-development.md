@@ -50,6 +50,11 @@ Generate separate keys (for each) by running rails task secret.
 
 URL for SOLR server, using relative location of docker service (using name 'solr' from docker-compose.yml)
 
+NB: The SOLR port here and everywhere else in the code is `8983`. Previous versions
+of the code had `8982` in some cases. This was wrong and created a conflict
+between Jetty (which was set to `8983` and the docker-compose values, which
+had `8982`).
+
 			SOLR_URL=http://solr:8983/solr/development
 
 **3. Build and Run (First Time)**
