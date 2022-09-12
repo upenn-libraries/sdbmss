@@ -42,7 +42,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8982:8982"
+      - "8983:8983"
     # logging:
       # driver: "journald"
     links:

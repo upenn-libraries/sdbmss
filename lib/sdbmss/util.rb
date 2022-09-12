@@ -507,7 +507,7 @@ module SDBMSS
       # really can take 5 secs, if not more.
       def wait_for_solr_to_be_current
         host = ENV['SOLR_URL'].present? ? URI(ENV['SOLR_URL']).host : 'localhost'
-        uri = "http://#{host}:8982/solr/admin/cores?action=STATUS&core=test"
+        uri = "http://#{host}:8983/solr/admin/cores?action=STATUS&core=test"
         
         current = false
         count = 0
