@@ -5,7 +5,7 @@
 # Do NOT use this when running in a Docker container!
 
 export RAILS_ENV=test
-export SOLR_URL="http://127.0.0.1:8982/solr/test"
+export SOLR_URL="http://127.0.0.1:8983/solr/test"
 
 bundle exec god -c sdbmss_test.god -l log/god_test.log
 
