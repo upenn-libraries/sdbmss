@@ -6,7 +6,7 @@ secrets:
     name: sdbmss_ssl_wildcard_cert_crt_v6
   ssl_wildcard_cert_key:
     external: true
-    name: sdbmss_ssl_wildcard_cert_key_v6
+    name: sdbmss_ssl_wildcard_cert_key_v5
   mysql_database:
     external: true
     name: sdbmss_mysql_database
