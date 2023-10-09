@@ -18,7 +18,7 @@ services:
   db:
     image: mysql:5.7
     restart: always
-    env_file: .docker-environment
+    # env_file: .docker-environment
     # logging:
       # driver: "journald"
     ports:
@@ -35,7 +35,7 @@ services:
       MYSQL_USER:
       MYSQL_PASSWORD:
   solr:
-    env_file: .docker-environment
+    # env_file: .docker-environment
     restart: always
     image: sdbmss
     build:
@@ -73,7 +73,7 @@ services:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
   rails:
-    env_file: .docker-environment
+    # env_file: .docker-environment
     image: sdbmss
     build:
       context: .
@@ -116,7 +116,7 @@ services:
       - sdbm_assets:/usr/src/app/public/assets
       - sdbm_docs:/usr/src/app/public/static
   delayedjob:
-    env_file: .docker-environment
+    # env_file: .docker-environment
     image: sdbmss
     build:
       context: .
@@ -158,7 +158,7 @@ services:
     # logging:
       # driver: "journald"
   jena:
-    env_file: .docker-environment
+    # env_file: .docker-environment
     image: sdbmss_jena
     build:
       context: sdbmss_jena
@@ -193,7 +193,7 @@ services:
       SDBMSS_SECRET_TOKEN:
       SOLR_URL:
   interface:
-    env_file: .docker-environment
+    # env_file: .docker-environment
     image: sdbmss_interface
     build:
       context: sdbmss_interface
