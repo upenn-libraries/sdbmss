@@ -11,6 +11,10 @@ FROM ${IMAGE_NAME}:${IMAGE_TAG}
 # Jessie has been deprecated so we need to update apt/source
 RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie main" > /etc/apt/sources.list
 
+RUN apt-get update && apt-get install -y --force-yes apt-transport-https lsb-release
+
+RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
+
 RUN apt-get update && apt-get install --force-yes -y \
     nodejs \
     openjdk-7-jdk
