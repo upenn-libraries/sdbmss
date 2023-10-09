@@ -16,7 +16,7 @@ services:
       - rabbitmq_data:/var/lib/rabbitmq
 
   db:
-    image: mysql:5.7
+    image: biarms/mysql:5.7
     restart: always
     # env_file: .docker-environment
     # logging:
