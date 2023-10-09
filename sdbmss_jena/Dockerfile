@@ -1,4 +1,7 @@
-FROM stain/jena-fuseki
+ARG JENA_IMAGE_NAME=stain/jena-fuseki
+ARG JENA_IMAGE_TAG=4.8.0
+
+FROM ${JENA_IMAGE_NAME}:${JENA_IMAGE_TAG}
 
 WORKDIR /jena-fuseki/webapp/js/app
 COPY qonsole-config.js ./
