@@ -1,5 +1,13 @@
 version: '3.7'
 
+secrets:
+  ssl_wildcard_cert_crt:
+    external: true
+    name: sdbmss_ssl_wildcard_cert_crt_v10
+  ssl_wildcard_cert_key:
+    external: true
+    name: sdbmss_ssl_wildcard_cert_key_v10
+
 services:
   rabbitmq:
     image: rabbitmq:3.7
@@ -236,8 +244,11 @@ services:
       context: sdbmss_nginx
       dockerfile: Dockerfile
     restart: always
-    volumes:
-      - ./nginx/ssl:/etc/httpd/ssl
+    secrets:
+      - source: ssl_wildcard_cert_crt
+        target: /etc/httpd/ssl/library-wildcard.crt
+      - source: ssl_wildcard_cert_key
+        target: /etc/httpd/ssl/library-wildcard.key
     # logging:
       # driver: "journald"
     links:
