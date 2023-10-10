@@ -3,10 +3,10 @@
 # this is used not only by Rails but related processes as well
 # (delayed_worker, Solr)
 
-ARG IMAGE_NAME=rails
-ARG IMAGE_TAG=4.2.5
+ARG APP_IMAGE_NAME=rails
+ARG APP_IMAGE_TAG=4.2.5
 
-FROM ${IMAGE_NAME}:${IMAGE_TAG}
+FROM ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
 
 # Jessie has been deprecated so we need to update apt/source
 RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie main" > /etc/apt/sources.list
