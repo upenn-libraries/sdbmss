@@ -5,6 +5,9 @@
 
 FROM rails:4.2.5
 
+# Jessie has been deprecated so we need to update apt/source
+RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie main" > /etc/apt/sources.list
+
 RUN apt-get update && apt-get install -y openjdk-7-jdk
 
 WORKDIR /opt
@@ -15,7 +18,7 @@ WORKDIR /opt
 WORKDIR /tmp
 ADD Gemfile /tmp/Gemfile
 ADD Gemfile.lock /tmp/Gemfile.lock
-RUN bundle install 
+RUN bundle install
 
 
 WORKDIR /usr/src/app
