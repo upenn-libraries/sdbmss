@@ -1,13 +1,17 @@
 Installation
 =====
 
-**1. Clone the repository**
+## 1. Clone the repository
 
 DEPRECATED -- USING ANSIBLE
 
 	    git clone https://github.com/upenn-libraries/sdbmss.git
 
-**2. Create file docker environment file `.env` in the root folder of the cloned repository.  Define the following environment variables:**
+## 2. Create file docker environment file `.env`
+
+DEPRECATED -- USING ANSIBLE
+
+Create file docker environment file `.env` in the root folder of the cloned repository.  Define the following environment variables:
 
 This is the password for the public access point for the Jena server, both for making updates and for downloading RDF data file
 
@@ -57,13 +61,17 @@ had `8982`).
 
 			SOLR_URL=http://solr:8983/solr/development
 
-**3. Build and Run (First Time)**
+## 3. Build and Run (First Time)
+
+DEPRECATED -- USING ANSIBLE
 
 Start everything up:
 
 	    docker-compose up --build
 
-**4. RabbitMQ First Time Setup**
+## 4. RabbitMQ First Time Setup
+
+DEPRECATED -- USING ANSIBLE
 
 First time we need to create user and grant permissions.  Use the same values for USER/PASS as set in your .docker-environment file
 
@@ -78,7 +86,7 @@ Then restart dependent containers:
 	    docker-compose -f docker-compose-dev.yml restart rails
 
 
-**5. First Time Setup: Rails and SOLR**
+## 5. First Time Setup: Rails, database,  and SOLR
 
 Setup database - perform setup:
 
@@ -109,7 +117,10 @@ Index in Solr:
 
 	    docker exec $(docker ps -q -f name=sdbmss_rails) bundle exec rake sunspot:reindex
 
-**6. Jena First Time Setup**
+## 6. Jena First Time Setup
+
+
+### Build TTL from the database 
 
 ```
 docker exec -t $(docker ps -q -f name=sdbmss_rails) bundle exec rake sparql:test
@@ -119,6 +130,8 @@ File should be in `.`; gzip it.
 ```
 gzip test.ttl
 ```
+
+### Import the data into Jena
 
 Copy file to Jena container and gunzip it
 
@@ -140,7 +153,7 @@ $ docker exec -t $(docker ps -q -f name=sdbmss_jena) rm /tmp/test.ttl
 rm ~/deployments/sdbmss/test.ttl.gz
 ```
 
-Create the datset in Jena Fuseki.
+### Create the datset in Jena Fuseki.
 
 Go here and create the sdbm dataset: <https://localhost/sparql/manage.html>
 
