@@ -1,4 +1,4 @@
-FROM stain/jena-fuseki
+FROM stain/jena-fuseki:3.14.0
 
 WORKDIR /jena-fuseki/webapp/js/app
 COPY qonsole-config.js ./
@@ -11,7 +11,7 @@ WORKDIR /jena-fuseki
 
 # configuring authentication
 COPY shiro.ini ./
-# customizing max number of resultscat 
+# customizing max number of resultscat
 COPY yasr.min.js ./webapp/js/lib/yasr.min.js
 
 CMD rm /fuseki/system/tdb.lock ; rm /fuseki/databases/sdbm/tdb.lock ; ./fuseki-server
