@@ -53,7 +53,7 @@
   <%= javascript_include_tag "leaflet", rel: "nofollow" %>
   <%= javascript_include_tag "leaflet-provider", rel: "nofollow" %>
   <%= stylesheet_link_tag "leaflet", media: "all" %>
-  
+
   <script type='text/javascript'>
     $(document).ready(function () {
 
@@ -78,8 +78,12 @@
       map.setView([60, 0], 13);
       map.setZoom(2);
 
-      var Stamen_TonerLite = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.{ext}', {
-        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      var Stamen_TonerLite = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}{r}.{ext}', {
+        attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> ' +
+          '<a href="https://stamen.com/" target="_blank">&copy; Stamen Design</a> ' +
+          '&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> ' +
+          '&copy; <a href="https://www.openstreetmap.org/about" target="_blank">OpenStreetMap</a> ' +
+          'contributors',
         subdomains: 'abcd',
         minZoom: 0,
         maxZoom: 20,
@@ -87,7 +91,7 @@
       });
       Stamen_TonerLite.addTo(map);
       //L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {}).addTo(map);
-  
+
       window.timeline = new TL.Timeline('timeline-embed', "/names/<%= name.id %>/timeline.json", {slide_padding_lr: 10});
 
     });
@@ -97,7 +101,7 @@
 <%# Partial used to display name details for both Names generically and Agents (which are Names) %>
 
 <%# Why is this in SHARED instead of in NAME?? %>
-    <% content_for :control_tools do %>        
+    <% content_for :control_tools do %>
         <%= render partial: 'tools', locals: {edit: false} %>
     <% end %>
 
@@ -119,7 +123,7 @@
 
         <table class="table table-responsive sdbm-table">
             <%= render partial: "main", locals: { name: name } %>
-    
+
             <% if name.dericci_records.count > 0 %>
             <tr>
               <td>Verified De Ricci</td>
@@ -150,12 +154,12 @@
                                       <span class="text-muted"> no additional information provided</span>
                                     <% end %>
                                     <br>
-                                <% end %>                    
+                                <% end %>
                             </div>
-                            <div class="modal-footer text-center">                          
+                            <div class="modal-footer text-center">
                               <% if current_user && current_user.role == "admin" %>
                                   <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id), from_name: true), method: :delete, class: "btn btn-danger" %>
-                                  <%= link_to "Unverify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: false, from_name: true), method: :put, class: "btn btn-default" %>     
+                                  <%= link_to "Unverify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: false, from_name: true), method: :put, class: "btn btn-default" %>
                               <% end %>
                             </div>
                           </div>
@@ -164,13 +168,13 @@
 
                   <% end.empty? %>
                       <p class="text-muted">This name is not verifiably linked to any records in the De Ricci Archives.</p>
-                  <% end %>  
+                  <% end %>
               </td>
             </tr>
             <% end %>
             <tr>
               <td>
-                  Possible De Ricci     
+                  Possible De Ricci
               </td>
               <td>
                   <% if name.dericci_links.where(approved: [nil, false]).group_by(&:dericci_record_id).each do |dericci_record_id, dericci_links| %>
@@ -199,12 +203,12 @@
                                       <span class="text-muted"> no additional information provided</span>
                                     <% end %>
                                     <br>
-                                <% end %>                    
+                                <% end %>
                             </div>
-                            <div class="modal-footer text-center">                          
+                            <div class="modal-footer text-center">
                               <% if current_user && current_user.role == "admin" %>
                                   <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id), from_name: true), method: :delete, class: "btn btn-danger" %>
-                                  <%= link_to "Verify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: true, from_name: true), method: :put, class: "btn btn-default" %>                                
+                                  <%= link_to "Verify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: true, from_name: true), method: :put, class: "btn btn-default" %>
                               <% end %>
                             </div>
                           </div>
@@ -231,7 +235,7 @@
 <div class="row">
   <div class="col-sm-2">
   </div>
-  <div class="col-sm-8 comments">        
+  <div class="col-sm-8 comments">
     <h2 class="text-center"><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
     <p class='text-center text-muted'>Share additional information about this name in the box below. Your comments will be displayed publicly.</p>
 
