@@ -3,11 +3,21 @@
 # this is used not only by Rails but related processes as well
 # (delayed_worker, Solr)
 
-FROM rails:4.2.5
+ARG APP_IMAGE_NAME=rails
+ARG APP_IMAGE_TAG=4.2.5
 
+FROM ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
+
+# Jessie has been deprecated so we need to update apt/source
 RUN echo "deb [check-valid-until=no] http://archive.debian.org/debian jessie main" > /etc/apt/sources.list
 
-RUN apt-get update && apt-get install -y openjdk-7-jdk
+RUN apt-get update && apt-get install -y --force-yes apt-transport-https lsb-release
+
+RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
+
+RUN apt-get update && apt-get install --force-yes -y \
+    nodejs \
+    openjdk-7-jdk
 
 WORKDIR /opt
 #RUN curl -L -O https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 && tar xjf phantomjs-1.9.8-linux-x86_64.tar.bz2 && ln -s phantomjs-1.9.8-linux-x86_64 phantomjs
