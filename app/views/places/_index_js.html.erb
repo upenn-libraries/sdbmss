@@ -38,11 +38,11 @@
 
  $(document).ready(function() {
     //$("#spinner").hide();
-    
+
     $("#search_submit").after($("<a id='open-map' title='Map display' class='btn btn-default'><span class='glyphicon glyphicon-map-marker'></span></a>"));
 
     $("#search_results").after($("<div id='map'><button id='close-map' type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div>"));
-    
+
     var map;
     $('#close-map').click(function () {
         $("#map").fadeOut();
@@ -56,7 +56,7 @@
     $("#search_submit").click( function () {
         $("#map").fadeOut();
     });
-    
+
     var loadMap = function () {
         //$("#search_results_wrapper").hide();
           if (map) {
@@ -84,7 +84,7 @@
                 params[search_option_field] = [search_option];
             } else {
                 params[search_option_field].push(search_option);
-            }            
+            }
          });
 
          params["limit"] = 100000; // get ALL places
@@ -111,15 +111,19 @@
           for (var i = 0; i < results.results.length; i++) {
             if (results.results[i].latitude && results.results[i].longitude) {
               var marker = L.marker([results.results[i].latitude, results.results[i].longitude], {icon: sdbmIcon, title: results.results[i].name}).addTo(map);
-              marker.bindPopup("<a href='/places/" + results.results[i].id + "'>" + results.results[i].name + "</a><br><p class='text-muted'>" + results.results[i].latitude + ", " + results.results[i].longitude + "</p>").openPopup();            
+              marker.bindPopup("<a href='/places/" + results.results[i].id + "'>" + results.results[i].name + "</a><br><p class='text-muted'>" + results.results[i].latitude + ", " + results.results[i].longitude + "</p>").openPopup();
             }
           }
 
-          map.setView([60, 0], 13);        
+          map.setView([60, 0], 13);
           map.setZoom(3);
 
-          var Stamen_TonerLite = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.{ext}', {
-            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+          var Stamen_TonerLite = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}{r}.{ext}', {
+            attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> ' +
+                '<a href="https://stamen.com/" target="_blank">&copy; Stamen Design</a> ' +
+                '&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> ' +
+                '&copy; <a href="https://www.openstreetmap.org/about" target="_blank">OpenStreetMap</a> ' +
+                'contributors',
             subdomains: 'abcd',
             minZoom: 0,
             maxZoom: 20,
@@ -150,11 +154,11 @@
                 className: "text-center unreviewed_only",
                 render: function (data, type, full, meta) {
                     //if(manageRecords.getUnreviewedOnly() === 1) {
-                        /*return  '' + 
-                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
-                                '<label for="checkbox_' + meta.row + '">' + 
-                                '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-unchecked unchecked"></a>' + 
-                                '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-check checked"></a>' + 
+                        /*return  '' +
+                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' +
+                                '<label for="checkbox_' + meta.row + '">' +
+                                '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-unchecked unchecked"></a>' +
+                                '<a class="btn btn-default btn-xs btn-blank glyphicon glyphicon-check checked"></a>' +
                                 '</label>' + '';*/
                         return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     //}
