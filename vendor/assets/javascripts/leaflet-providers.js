@@ -224,7 +224,7 @@
 			}
 		},
 		Stamen: {
-			url: 'https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}{r}.{ext}',
+			url: 'https://tiles.stadiamaps.com/tiles/{variant}/{z}/{x}/{y}{r}.{ext}',
 			options: {
 				attribution:
 					'&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> ' +
