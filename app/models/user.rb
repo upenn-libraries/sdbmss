@@ -128,7 +128,7 @@ class User < ActiveRecord::Base
 
   # override devise's msg to display if user is prevented from logging in
   def inactive_message
-    active ? super : "Your account has been de-activated."
+    active ? super : "deactivated"
   end
 
   # devise hook
