@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190306203527) do
+ActiveRecord::Schema.define(version: 20240419190032) do
 
   create_table "activities", force: :cascade do |t|
     t.string   "item_type",      limit: 255, null: false
@@ -1069,7 +1069,7 @@ ActiveRecord::Schema.define(version: 20190306203527) do
     t.integer  "created_by_id",             limit: 4
     t.integer  "updated_by_id",             limit: 4
     t.string   "fullname",                  limit: 255
-    t.boolean  "active",                                  default: true
+    t.boolean  "active",                                  default: false
     t.string   "institutional_affiliation", limit: 255
     t.integer  "bookmark_tracker",          limit: 4,     default: 0
     t.boolean  "backup",                                  default: true
