@@ -128,7 +128,7 @@ class User < ActiveRecord::Base
 
   # override devise's msg to display if user is prevented from logging in
   def inactive_message
-    active ? super : "deactivated"
+    active ? super : "New SDBM accounts are inactive by default. You will receive a welcome email when an administrator has reviewed and activated your account."
   end
 
   # devise hook

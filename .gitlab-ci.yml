@@ -1,6 +1,6 @@
 include:
   - project: "devops/gitlab/ci-templates/docker"
-    ref: "master"
+    ref: "0.0.1"
     file:
       - ".build_docker_image.yml"
       - ".push_docker_image.yml"
