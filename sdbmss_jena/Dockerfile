@@ -1,17 +1,17 @@
 FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND="noninteractive"
-ENV JAVA_VERSION="openjdk-11-jre"
+ENV JRE_PACKAGE="openjdk-11-jre"
 ENV JENA_VERSION="3.14.0"
 
 RUN apt-get update && \
-  apt-get install -y ${JAVA_VERSION} curl && \
+  apt-get install -y ${JRE_PACKAGE} curl && \
   apt-get clean
 
-RUN curl -fsSL "https://archive.apache.org/dist/jena/binaries/apache-jena-${JENA_VERSION}.tar.gz" | tar zxf - && \
+RUN curl -fsSL "https://archive.apache.org/dist/jena/binaries/apache-jena-fuseki-${JENA_VERSION}.tar.gz" | tar zxf - && \
   mv apache-jena* /jena && \
   rm -f jena.tar.gz* && \
-  cd /jena && rm -rf *javadoc* *src* bat
+  cd /jena && rm -rf fuseki.war && chmod 755 fuseki-server
 
 ENV PATH="${PATH}:/jena/bin"
 
