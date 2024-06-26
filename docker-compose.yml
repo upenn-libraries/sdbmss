@@ -172,7 +172,7 @@ services:
     # logging:
       # driver: "journald"
   jena:
-    image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_jena:${SDBMSS_IMAGE_TAG}'
+    image: 'gitlab.library.upenn.edu/sdbm/jena-fuseki:${JENA_FUSEKI_IMAGE_TAG:-056fe67b}'
     restart: always
     # logging:
       # driver: "journald"
