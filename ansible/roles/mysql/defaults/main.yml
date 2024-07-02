@@ -1,0 +1,16 @@
+---
+mysql_database: "sdbm"
+
+mysql_image_name: "mysql"
+
+mysql_image_tag: "5.7"
+
+mysql_user: "sdbm"
+
+mysql_versioned_secrets:
+  password:
+    value: "password"
+    version: "1"
+  root_password:
+    value: "password"
+    version: "1"

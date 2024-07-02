@@ -1,0 +1,10 @@
+---
+rabbitmq_image_name: "rabbitmq"
+rabbitmq_image_tag: "3.7"
+
+rabbitmq_user: "rabbitmq"
+
+rabbitmq_versioned_secrets:
+  password:
+    value: "password"
+    version: "1"

@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  app:
+    deploy:
+      labels:
+        - "traefik.enable=true"
+
+        - "traefik.http.routers.app.entrypoints=web"
+        - "traefik.http.routers.app.rule=Host(`{{ app_url }}`)"
+        - "traefik.http.routers.app.service=app"
+        - "traefik.http.services.app.loadbalancer.server.port={{ app_port }}"
+
+        - "traefik.http.routers.app.middlewares=app_https"
+        - "traefik.http.middlewares.app_https.redirectscheme.scheme=https"
+        - "traefik.http.middlewares.app_https.redirectscheme.permanent=true"
+
+        - "traefik.http.routers.app_secure.entrypoints=websecure"
+        - "traefik.http.routers.app_secure.rule=Host(`{{ app_url }}`)"
+        - "traefik.http.routers.app_secure.service=app_secure"
+        - "traefik.http.services.app_secure.loadbalancer.server.port={{ app_port }}"
+
+        - "traefik.http.routers.app_secure.tls=true"
+        - "traefik.http.routers.app_secure.tls.certresolver=letsencrypt"
+    environment:
+      APP_UID: "1000"
+      APP_GID: "1000"
+    healthcheck:
+      retries: 10
+      start_period: 20s
+    volumes:
+      - /sdbm/ansible/roles/app/files/src/:/home/app/
