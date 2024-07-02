@@ -1,0 +1,9 @@
+---
+- name: Deploy jena
+  docker_stack:
+    name: "sdbm"
+    compose:
+      - "{{ lookup('template', 'docker-compose.yml.j2' ) | from_yaml }}"
+    state: present
+  changed_when: false
+  no_log: true

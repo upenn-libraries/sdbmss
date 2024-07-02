@@ -1,0 +1,8 @@
+---
+- name: "Install deps"
+  ansible.builtin.import_tasks: "install_deps.yml"
+  tags: deps
+
+- name: "Provision Docker Swarm Cluster"
+  ansible.builtin.import_role:
+    name: atosatto.docker-swarm

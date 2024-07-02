@@ -1,0 +1,267 @@
+version: '3.7'
+
+secrets:
+  ssl_wildcard_cert_crt:
+    external: true
+    name: sdbmss_ssl_wildcard_cert_crt_v10
+  ssl_wildcard_cert_key:
+    external: true
+    name: sdbmss_ssl_wildcard_cert_key_v10
+
+services:
+  rabbitmq:
+    image: rabbitmq:3.7
+    restart: always
+    hostname: 'rabbitmq'
+    ports:
+      - '5672:5672'
+    environment:
+      RABBITMQ_ERLANG_COOKIE: 'secret cookie here' # needed for rabbitmqctl to work (??)
+      RABBIT_PASSWORD:
+      RABBIT_USER:
+      ADMIN_PASSWORD:
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+  db:
+    image: ${MYSQL_IMAGE_NAME}:${MYSQL_IMAGE_TAG}
+    restart: always
+    # env_file: .docker-environment
+    # logging:
+      # driver: "journald"
+    ports:
+      - "3307:3307"
+    volumes:
+      - sdbm_data:/var/lib/mysql
+    # We can define ENV vars using secret files because the MySQL image will
+    # recognize value is a path and read it from the file.
+    #
+    # THIS WILL LIKELY NOT WORK WITH OTHER IMAGES
+    environment:
+      MYSQL_DATABASE:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_USER:
+      MYSQL_PASSWORD:
+  solr:
+    # env_file: .docker-environment
+    restart: always
+    image: sdbmss
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8983:8983"
+    # logging:
+      # driver: "journald"
+    links:
+      - db
+    volumes:
+      - sdbm_solr:/usr/src/app/solr
+    command: bundle exec rake sunspot:solr:run
+    environment:
+      ADMIN_PASSWORD:
+      RAILS_USER:
+      RAILS_PASS:
+      MYSQL_HOST:
+      MYSQL_DATABASE:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_USER:
+      MYSQL_PASSWORD:
+      RABBIT_PASSWORD:
+      RABBIT_USER:
+      SDBMSS_APP_HOST:
+      SDBMSS_SMTP_HOST:
+      SDBMSS_EMAIL_FROM:
+      SDBMSS_NOTIFY_EMAIL:
+      SDBMSS_NOTIFY_EMAIL_PASSWORD:
+      SDBMSS_EMAIL_EXCEPTIONS_TO:
+      SDBMSS_BLACKLIGHT_SECRET_KEY:
+      SDBMSS_DEVISE_SECRET_KEY:
+      SDBMSS_SECRET_KEY_BASE:
+      SDBMSS_SECRET_TOKEN:
+      SOLR_URL:
+  rails:
+    # env_file: .docker-environment
+    image: sdbmss
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      RAILS_ENV:
+      MYSQL_HOST:
+      ADMIN_PASSWORD:
+      RAILS_USER:
+      RAILS_PASS:
+      MYSQL_DATABASE:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_USER:
+      MYSQL_PASSWORD:
+      RABBIT_PASSWORD:
+      RABBIT_USER:
+      SDBMSS_IMAGE_TAG:
+      SDBMSS_APP_HOST:
+      SDBMSS_SMTP_HOST:
+      SDBMSS_EMAIL_FROM:
+      SDBMSS_NOTIFY_EMAIL:
+      SDBMSS_NOTIFY_EMAIL_PASSWORD:
+      SDBMSS_EMAIL_EXCEPTIONS_TO:
+      SDBMSS_BLACKLIGHT_SECRET_KEY:
+      SDBMSS_DEVISE_SECRET_KEY:
+      SDBMSS_SECRET_KEY_BASE:
+      SDBMSS_SECRET_TOKEN:
+      SOLR_URL:
+    links:
+      - db
+      - solr
+      - rabbitmq
+    depends_on:
+      - "rabbitmq"
+    volumes:
+      - .:/usr/src/app
+      - sdbm_assets:/usr/src/app/public/assets
+      - sdbm_docs:/usr/src/app/public/static
+  delayedjob:
+    # env_file: .docker-environment
+    image: sdbmss
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    depends_on:
+      - "db"
+      - "rabbitmq"
+    links:
+      - db
+      - solr
+    volumes:
+      - .:/usr/src/app
+    environment:
+      ADMIN_PASSWORD:
+      RAILS_ENV:
+      RAILS_USER:
+      RAILS_PASS:
+      MYSQL_HOST:
+      MYSQL_DATABASE:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_USER:
+      MYSQL_PASSWORD:
+      RABBIT_PASSWORD:
+      RABBIT_USER:
+      SDBMSS_IMAGE_TAG:
+      SDBMSS_APP_HOST:
+      SDBMSS_SMTP_HOST:
+      SDBMSS_EMAIL_FROM:
+      SDBMSS_NOTIFY_EMAIL:
+      SDBMSS_NOTIFY_EMAIL_PASSWORD:
+      SDBMSS_EMAIL_EXCEPTIONS_TO:
+      SDBMSS_BLACKLIGHT_SECRET_KEY:
+      SDBMSS_DEVISE_SECRET_KEY:
+      SDBMSS_SECRET_KEY_BASE:
+      SDBMSS_SECRET_TOKEN:
+      SOLR_URL:
+    command: bundle exec rake jobs:work
+    # logging:
+      # driver: "journald"
+  jena:
+    # env_file: .docker-environment
+    image: sdbmss_jena
+    build:
+      context: sdbmss_jena
+      dockerfile: Dockerfile
+    restart: always
+    # logging:
+    # driver: "journald"
+    ports:
+      - "3030:3030"
+    volumes:
+      - rdf_data:/fuseki
+    environment:
+      ADMIN_PASSWORD:
+      RAILS_USER:
+      RAILS_PASS:
+      MYSQL_HOST:
+      MYSQL_DATABASE:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_USER:
+      MYSQL_PASSWORD:
+      RABBIT_PASSWORD:
+      RABBIT_USER:
+      SDBMSS_APP_HOST:
+      SDBMSS_SMTP_HOST:
+      SDBMSS_EMAIL_FROM:
+      SDBMSS_NOTIFY_EMAIL:
+      SDBMSS_NOTIFY_EMAIL_PASSWORD:
+      SDBMSS_EMAIL_EXCEPTIONS_TO:
+      SDBMSS_BLACKLIGHT_SECRET_KEY:
+      SDBMSS_DEVISE_SECRET_KEY:
+      SDBMSS_SECRET_KEY_BASE:
+      SDBMSS_SECRET_TOKEN:
+      SOLR_URL:
+  interface:
+    # env_file: .docker-environment
+    image: sdbmss_interface
+    build:
+      context: sdbmss_interface
+      dockerfile: Dockerfile
+    restart: always
+    command: ruby interface.rb
+    # logging:
+    # driver: "journald"
+    links:
+      - jena
+      - rabbitmq
+    depends_on:
+      - "rabbitmq"
+    environment:
+      ADMIN_PASSWORD:
+      RAILS_ENV:
+      RAILS_USER:
+      RAILS_PASS:
+      MYSQL_HOST:
+      MYSQL_DATABASE:
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_USER:
+      MYSQL_PASSWORD:
+      RABBIT_PASSWORD:
+      RABBIT_USER:
+      SDBMSS_APP_HOST:
+      SDBMSS_SMTP_HOST:
+      SDBMSS_EMAIL_FROM:
+      SDBMSS_NOTIFY_EMAIL:
+      SDBMSS_NOTIFY_EMAIL_PASSWORD:
+      SDBMSS_EMAIL_EXCEPTIONS_TO:
+      SDBMSS_BLACKLIGHT_SECRET_KEY:
+      SDBMSS_DEVISE_SECRET_KEY:
+      SDBMSS_SECRET_KEY_BASE:
+      SDBMSS_SECRET_TOKEN:
+      SOLR_URL:
+  nginx:
+    image: sdbmss_nginx
+    build:
+      context: sdbmss_nginx
+      dockerfile: Dockerfile
+    restart: always
+    secrets:
+      - source: ssl_wildcard_cert_crt
+        target: /etc/httpd/ssl/library-wildcard.crt
+      - source: ssl_wildcard_cert_key
+        target: /etc/httpd/ssl/library-wildcard.key
+    # logging:
+      # driver: "journald"
+    links:
+      - rails
+      - jena
+    ports:
+      - "80:80"
+      - "443:443"
+volumes:
+  sdbm_docs:
+  sdbm_data:
+  rdf_data:
+  sdbm_assets:
+  sdbm_solr:
+  rabbitmq_data:
+

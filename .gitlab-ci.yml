@@ -1,6 +1,6 @@
 include:
   - project: "devops/gitlab/ci-templates/docker"
-    ref: "0.0.1"
+    ref: "master"
     file:
       - ".build_docker_image.yml"
       - ".push_docker_image.yml"
@@ -8,7 +8,6 @@ include:
   - project: "devops/gitlab/ci-templates/sast"
     ref: "master"
     file:
-      - ".shiftleft_container_scanning.yml"
       - ".trivy_container_scanning.yml"
 
 workflow:
@@ -20,77 +19,15 @@ workflow:
 stages:
   - sast:project
   - build:web
-  - build:interface
-  - build:jena
-  - build:nginx
-  - sast:web
-  - sast:interface
-  - sast:jena
-  - sast:nginx
   - push:web
-  - push:interface
-  - push:jena
-  - push:nginx
   - remove:web
-  - remove:interface
-  - remove:jena
-  - remove:nginx
-
-shiftleft_project_scanning:
-  stage: sast:project
-  extends:
-    - .shiftleft_container_scanning
-  tags:
-    - build
-  allow_failure: true
 
 build_web_image:
   stage: build:web
   extends:
     - .build_docker_image
-  needs:
-    - shiftleft_project_scanning
   variables:
     CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-web"
-  tags:
-    - build
-
-build_interface_image:
-  stage: build:interface
-  extends:
-    - .build_docker_image
-  needs:
-    - shiftleft_project_scanning
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-interface"
-    DOCKER_BUILD_CONTEXT: "sdbmss_interface/"
-    DOCKERFILE_PATH: "sdbmss_interface/"
-  tags:
-    - build
-
-build_jena_image:
-  stage: build:jena
-  extends:
-    - .build_docker_image
-  needs:
-    - shiftleft_project_scanning
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-jena"
-    DOCKER_BUILD_CONTEXT: "sdbmss_jena/"
-    DOCKERFILE_PATH: "sdbmss_jena/"
-  tags:
-    - build
-
-build_nginx_image:
-  stage: build:nginx
-  extends:
-    - .build_docker_image
-  needs:
-    - shiftleft_project_scanning
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-nginx"
-    DOCKER_BUILD_CONTEXT: "sdbmss_nginx/"
-    DOCKERFILE_PATH: "sdbmss_nginx/"
   tags:
     - build
 
@@ -102,42 +39,6 @@ trivy_web_container_scanning:
     - build_web_image
   variables:
     CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-web"
-  tags:
-    - build
-  allow_failure: true
-
-trivy_interface_container_scanning:
-  stage: sast:interface
-  extends:
-    - .trivy_container_scanning
-  needs:
-    - build_interface_image
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-interface"
-  tags:
-    - build
-  allow_failure: true
-
-trivy_jena_container_scanning:
-  stage: sast:jena
-  extends:
-    - .trivy_container_scanning
-  needs:
-    - build_jena_image
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-jena"
-  tags:
-    - build
-  allow_failure: true
-
-trivy_nginx_container_scanning:
-  stage: sast:nginx
-  extends:
-    - .trivy_container_scanning
-  needs:
-    - build_nginx_image
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-nginx"
   tags:
     - build
   allow_failure: true
@@ -154,42 +55,6 @@ push_web_image_to_registry:
   tags:
     - build
 
-push_interface_image_to_registry:
-  stage: push:interface
-  extends:
-    - .push_docker_image
-  needs:
-    - trivy_interface_container_scanning
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-interface"
-    DOCKER_IMAGE_NAME: "sdbmss_interface"
-  tags:
-    - build
-
-push_jena_image_to_registry:
-  stage: push:jena
-  extends:
-    - .push_docker_image
-  needs:
-    - trivy_jena_container_scanning
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-jena"
-    DOCKER_IMAGE_NAME: "sdbmss_jena"
-  tags:
-    - build
-
-push_nginx_image_to_registry:
-  stage: push:nginx
-  extends:
-    - .push_docker_image
-  needs:
-    - trivy_nginx_container_scanning
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-nginx"
-    DOCKER_IMAGE_NAME: "sdbmss_nginx"
-  tags:
-    - build
-
 remove_web_image:
   stage: remove:web
   extends:
@@ -198,45 +63,6 @@ remove_web_image:
     - push_web_image_to_registry
   variables:
     CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-web"
-  rules:
-    - when: always
-  tags:
-    - build
-
-remove_interface_image:
-  stage: remove:interface
-  extends:
-    - .remove_docker_image
-  needs:
-    - push_interface_image_to_registry
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-interface"
-  rules:
-    - when: always
-  tags:
-    - build
-
-remove_jena_image:
-  stage: remove:jena
-  extends:
-    - .remove_docker_image
-  needs:
-    - push_jena_image_to_registry
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-jena"
-  rules:
-    - when: always
-  tags:
-    - build
-
-remove_nginx_image:
-  stage: remove:nginx
-  extends:
-    - .remove_docker_image
-  needs:
-    - push_nginx_image_to_registry
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-nginx"
   rules:
     - when: always
   tags:

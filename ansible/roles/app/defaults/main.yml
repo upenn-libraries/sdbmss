@@ -1,0 +1,28 @@
+---
+app_admin_password: "password"
+app_blacklight_secret_key: "x"
+app_build_docker_image: false
+app_devise_secret_key: "x"
+app_email_exceptions_to: "user@example.com"
+app_email_from: "user@example.com"
+app_host: "localhost"
+app_image_name: "sdbm"
+app_image_registry: "gitlab.library.upenn.edu/sdbm/sdbmss"
+app_image_tag: "main-development"
+app_notify_email: "user@example.com"
+app_notify_email_password: "x"
+app_port: 3000
+app_rails_env: "development"
+app_rails_pass: "password"
+app_rails_user: "rails"
+app_replicas: 1
+app_secret_token: "x"
+app_secret_key_base: "x"
+app_smtp_host: "mail.somewhere.com"
+app_solr_url: "http://{{ solr_custom_env_variables.SOLR_ADMIN_USERNAME }}:{{ solr_custom_env_variables.SOLR_ADMIN_PASSWORD }}@solr-1:8983/solr/sdbm"
+app_url: "sdbm-dev.library.upenn.edu"
+
+app_versioned_secrets:
+  rails_master_key:
+    value: "123456789456123456"
+    version: "1"
