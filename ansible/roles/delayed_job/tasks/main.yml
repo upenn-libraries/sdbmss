@@ -1,0 +1,14 @@
+---
+- name: "Debug - Output docker-compose.yml object"
+  ansible.builtin.debug:
+    msg: "{{ lookup('template', 'docker-compose.yml.j2') | from_yaml }}"
+  when: delayed_job_debug | default (false, true)
+  tags:
+    - debug
+
+- name: "Deploy delayed_job"
+  community.docker.docker_stack:
+    name: "sdbm"
+    compose:
+      - "{{ lookup('template', 'docker-compose.yml.j2') | from_yaml }}"
+    state: present
