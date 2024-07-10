@@ -6,7 +6,7 @@ app_image_tag: "development"
 app_port: 3000
 app_rails_env: "development"
 app_replicas: 1
-app_solr_url: "http://{{ solr_custom_env_variables.SOLR_ADMIN_USERNAME }}:{{ solr_custom_env_variables.SOLR_ADMIN_PASSWORD }}@solr-1:8983/solr/sdbm"
+app_solr_url: "http://solr:8983/solr/development"
 app_url: "sdbm-dev.library.upenn.edu"
 app_versioned_secrets:
   rails_master_key:
