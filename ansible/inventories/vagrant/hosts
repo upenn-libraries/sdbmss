@@ -8,4 +8,4 @@ development
 ansible_user=vagrant
 
 [docker_swarm_manager]
-swarm-01 swarm_labels='["app", "interface", "jena", "mysql", "rabbitmq", "solr-1", "solr-2", "solr-3", "traefik" ,"zookeeper-1", "zookeeper-2", "zookeeper-3"]'
+swarm-01 swarm_labels='["app", "interface", "jena", "mysql", "rabbitmq", "solr", "traefik"]'
