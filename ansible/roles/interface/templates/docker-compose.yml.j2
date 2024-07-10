@@ -12,6 +12,9 @@ services:
         order: "start-first"
         parallelism: 1
       replicas: 1
+    environment:
+      RABBIT_PASSWORD: "{{ rabbitmq_versioned_secrets.password.value }}"
+      RABBIT_USER: "{{ rabbitmq_user }}"
     healthcheck:
       test:
         [
