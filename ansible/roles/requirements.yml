@@ -6,7 +6,7 @@ roles:
     scm: git
     version: master
 
-  - name: solr
-    src: https://gitlab.library.upenn.edu/devops/ansible/roles/solr.git
+  - name: traefik
+    src: https://gitlab.library.upenn.edu/devops/ansible/roles/traefik.git
     scm: git
     version: main
