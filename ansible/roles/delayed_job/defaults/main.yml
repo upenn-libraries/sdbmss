@@ -1,0 +1,13 @@
+---
+
+delayed_job_debug: false
+
+delayed_job_host: "sdbm-dev.library.upenn.int"
+
+delayed_job_image_name: "sdbm"
+delayed_job_image_registry: "gitlab.library.upenn.edu/sdbm/sdbmss"
+delayed_job_image_tag: "development"
+
+delayed_job_port: 8983
+
+delayed_job_replicas: 1

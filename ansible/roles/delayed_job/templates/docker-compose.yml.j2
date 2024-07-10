@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  delayed_job:
+    image: "{{ delayed_job_image_name }}:{{ delayed_job_image_tag }}"
+    command: ["bundle", "exec", "rake", "jobs:work"]
+    deploy:
+      placement:
+        constraints:
+          - "node.labels.app == true"
+      replicas: {{ delayed_job_replicas }}
+      update_config:
+        order: "start-first"
+        parallelism: 1
+    environment:
+      ADMIN_PASSWORD: "{{ app_admin_password }}"
+      MYSQL_DATABASE: "{{ mysql_database }}"
+      MYSQL_HOST: "mysql"
+      MYSQL_PASSWORD: "{{ mysql_versioned_secrets.password.value }}"
+      MYSQL_USER: "{{ mysql_user }}"
+
+      RABBIT_PASSWORD: "{{ rabbitmq_versioned_secrets.password.value }}"
+      RABBIT_USER: "{{ rabbitmq_user }}"
+
+      RAILS_ENV: "{{ app_rails_env }}"
+      RAILS_PASS: "{{ app_rails_pass }}"
+      RAILS_USER: "{{ app_rails_user }}"
+
+      RAILS_LOG_TO_STDOUT: "true"
+      RAILS_SERVE_STATIC_FILES: "true"
+
+      SDBMSS_APP_HOST: "{{ app_host }}"
+      SDBMSS_SMTP_HOST: "{{ app_smtp_host }}"
+      SDBMSS_EMAIL_FROM: "{{ app_email_from }}"
+      SDBMSS_NOTIFY_EMAIL: "{{ app_notify_email }}"
+      SDBMSS_NOTIFY_EMAIL_PASSWORD: "{{ app_notify_email_password }}"
+      SDBMSS_EMAIL_EXCEPTIONS_TO: "{{ app_email_exceptions_to }}"
+      SDBMSS_BLACKLIGHT_SECRET_KEY: "{{ app_blacklight_secret_key }}"
+      SDBMSS_DEVISE_SECRET_KEY: "{{ app_devise_secret_key }}"
+      SDBMSS_SECRET_KEY_BASE: "{{ app_secret_key_base }}"
+      SDBMSS_SECRET_TOKEN: "{{ app_secret_token }}"
+
+      SOLR_URL: "{{ app_solr_url }}"
+    #healthcheck:
+    #  test:
+    #    [
+    #      "CMD-SHELL",
+    #      "curl -fsSL localhost:{{ app_port }} || exit 1",
+    #    ]
+    #  interval: 10s
+    #  retries: 6
+    #  start_period: 10s
+    #  timeout: 10s
+    networks:
+      - mysql
+      - traefik
+
+networks:
+  mysql:
+    external: true
+  traefik:
+    external: true
