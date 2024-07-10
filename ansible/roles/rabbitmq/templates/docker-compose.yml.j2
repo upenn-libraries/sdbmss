@@ -13,14 +13,14 @@ services:
       replicas: 1
     environment:
       #RABBITMQ_ERLANG_COOKIE: 'secret cookie here' # needed for rabbitmqctl to work (??)
-      RABBIT_PASSWORD: "{{ rabbitmq_versioned_secrets.password.value }}"
-      RABBIT_USER: "{{ rabbitmq_user }}"
-    healthcheck:
-      test: ["rabbitmq-diagnostics", "-q", "ping"]
-      interval: 30s
-      retries: 3
-      start_period: 1m
-      timeout: 30s
+      RABBITMQ_DEFAULT_PASS: "{{ rabbitmq_versioned_secrets.password.value }}"
+      RABBITMQ_DEFAULT_USER: "{{ rabbitmq_user }}"
+    #healthcheck:
+    #  test: ["rabbitmq-diagnostics", "check_port_connectivity"]
+    #  interval: 30s
+    #  retries: 3
+    #  start_period: 1m
+    #  timeout: 30s
     logging:
       driver: json-file
       options:
