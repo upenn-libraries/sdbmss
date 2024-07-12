@@ -1,12 +1,6 @@
 version: '3.7'
 
 secrets:
-  ssl_wildcard_cert_crt:
-    external: true
-    name: sdbmss_ssl_wildcard_cert_crt_v10
-  ssl_wildcard_cert_key:
-    external: true
-    name: sdbmss_ssl_wildcard_cert_key_v10
   mysql_database:
     external: true
     name: sdbmss_mysql_database
@@ -241,11 +235,6 @@ services:
   nginx:
     image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_nginx:${SDBMSS_IMAGE_TAG}'
     restart: always
-    secrets:
-      - source: ssl_wildcard_cert_crt
-        target: /etc/httpd/ssl/library-wildcard.crt
-      - source: ssl_wildcard_cert_key
-        target: /etc/httpd/ssl/library-wildcard.key
     # logging:
       # driver: "journald"
     links:
@@ -253,7 +242,7 @@ services:
       - jena
     ports:
       - "80:80"
-      - "443:443"
+
 volumes:
   sdbm_docs:
   sdbm_data:
