@@ -27,12 +27,7 @@ module SDBMSS
     config.active_job.queue_adapter = :delayed_job
 
     # custom SDBM variables
-
-    if Rails.env.test?
-        config.bunny_connection = Bunny.new(:host => 'localhost', :port => 5672, :user => ENV["RABBIT_USER"], :pass => ENV["RABBIT_PASSWORD"], :vhost => "/")
-    else
-        config.bunny_connection = Bunny.new(:host => 'rabbitmq', :port => 5672, :user => ENV["RABBIT_USER"], :pass => ENV["RABBIT_PASSWORD"], :vhost => "/")
-    end
+    config.bunny_connection = Bunny.new(:host => 'rabbitmq', :port => 5672, :user => ENV["RABBIT_USER"], :pass => ENV["RABBIT_PASSWORD"], :vhost => "/")
 
     config.sdbmss_allow_user_signup = true
 
