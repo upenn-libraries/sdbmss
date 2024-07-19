@@ -7,7 +7,7 @@ include:
       - ".rspec.yml"
       - ".rubocop.yml"
   - project: "devops/gitlab/ci-templates/docker"
-    ref: "build_test"
+    ref: "main"
     file:
       - ".amend_manifests.yml"
       - ".build_and_push_docker_images.yml"
@@ -31,7 +31,7 @@ stages:
   - remove_tmp_registry
   - deploy
 
-build_and_push_base_app_image:
+build_and_push_base_image:
   stage: build_and_push:tmp_base_image
   extends:
     - .build_and_push_docker_images
@@ -54,7 +54,7 @@ build_and_push_dev_image:
   extends:
     - .build_and_push_docker_images
   needs:
-    - build_and_push_base_app_image
+    - build_and_push_base_image
   parallel:
     matrix:
       - RUNNER: build-arm
@@ -75,8 +75,8 @@ amend_tmp_base_dev_images:
   extends:
     - .amend_manifests
   needs:
-    - build_and_push_base_app_image
-    - build_and_push_dev_app_image
+    - build_and_push_base_image
+    - build_and_push_dev_image
   variables:
     REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
   tags:
@@ -112,8 +112,8 @@ build_and_push_prod_app_image:
   tags:
     - ${RUNNER}
 
-amend_prod_image:
-  stage: amend_prod_images
+amend_tmp_prod_image:
+  stage: amend_tmp_prod_images
   extends:
     - .amend_manifests
   needs:
@@ -136,7 +136,7 @@ trivy_app_container_scanning:
   after_script:
     - docker logout ${CI_REGISTRY}
   needs:
-    - amend_prod_image
+    - amend_tmp_prod_image
   variables:
     CI_IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_PIPELINE_ID}:${CI_COMMIT_SHORT_SHA}
   allow_failure: true
