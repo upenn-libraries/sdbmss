@@ -1,69 +1,200 @@
 include:
-  - project: "devops/gitlab/ci-templates/docker"
-    ref: "master"
+  - project: "devops/gitlab/ci-templates/deploy"
+    file: ".hashicorp_vault.yml"
+  - project: "devops/gitlab/ci-templates/ruby"
+    ref: "sans-dind"
     file:
-      - ".build_docker_image.yml"
-      - ".push_docker_image.yml"
-      - ".remove_docker_image.yml"
+      - ".rspec.yml"
+      - ".rubocop.yml"
+  - project: "devops/gitlab/ci-templates/docker"
+    ref: "build_test"
+    file:
+      - ".amend_manifests.yml"
+      - ".build_and_push_docker_images.yml"
+      - ".copy_docker_images.yml"
+      - ".remove_tmp_registry.yml"
   - project: "devops/gitlab/ci-templates/sast"
     ref: "master"
     file:
       - ".trivy_container_scanning.yml"
-
-workflow:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_TAG
-    - if: $CI_COMMIT_REF_PROTECTED
+  - template: "Workflows/MergeRequest-Pipelines.gitlab-ci.yml"
 
 stages:
-  - sast:project
-  - build:web
-  - push:web
-  - remove:web
+  - build_and_push:tmp_base_image
+  - build_and_push:tmp_dev_image
+  - amend_tmp_base_dev_images
+  # - test
+  - build_and_push:tmp_prod_image
+  - amend_tmp_prod_images
+  - sast
+  - copy_docker_images
+  - remove_tmp_registry
+  - deploy
 
-build_web_image:
-  stage: build:web
+build_and_push_base_app_image:
+  stage: build_and_push:tmp_base_image
   extends:
-    - .build_docker_image
+    - .build_and_push_docker_images
+  parallel:
+    matrix:
+      - RUNNER: build-arm
+        DOCKER_BUILD_PLATFORM: "linux/arm64"
+      - RUNNER: build
+        DOCKER_BUILD_PLATFORM: "linux/amd64"
   variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-web"
+    DOCKER_BUILD_CONTEXT: "rails_app/"
+    DOCKER_TARGET: "base"
+    DOCKERFILE_PATH: "rails_app/"
+    REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
   tags:
     - build
 
-trivy_web_container_scanning:
-  stage: sast:web
+build_and_push_dev_image:
+  stage: build_and_push:tmp_dev_image
+  extends:
+    - .build_and_push_docker_images
+  needs:
+    - build_and_push_base_app_image
+  parallel:
+    matrix:
+      - RUNNER: build-arm
+        DOCKER_BUILD_PLATFORM: "linux/arm64"
+      - RUNNER: build
+        DOCKER_BUILD_PLATFORM: "linux/amd64"
+  variables:
+    DOCKER_ADDITIONAL_CACHE_TARGETS: "base"
+    DOCKER_BUILD_ARGS: "--build-arg RAILS_ENV=development"
+    DOCKER_BUILD_CONTEXT: "rails_app/"
+    DOCKERFILE_PATH: "rails_app/"
+    REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
+  tags:
+    - build
+
+amend_tmp_base_dev_images:
+  stage: amend_tmp_base_dev_images
+  extends:
+    - .amend_manifests
+  needs:
+    - build_and_push_base_app_image
+    - build_and_push_dev_app_image
+  variables:
+    REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
+  tags:
+    - build
+
+# rspec_app_test:
+#   stage: test
+#   image: ${CI_REGISTRY_IMAGE}/${CI_PIPELINE_ID}:${CI_COMMIT_SHORT_SHA}-development
+#   extends:
+#     - .rspec
+#   needs:
+#     - amend_tmp_base_dev_images
+#   tags:
+#     - build
+
+build_and_push_prod_app_image:
+  stage: build_and_push:tmp_prod_image
+  extends:
+    - .build_and_push_docker_images
+  parallel:
+    matrix:
+      - RUNNER: build-arm
+        DOCKER_BUILD_PLATFORM: "linux/arm64"
+      - RUNNER: build
+        DOCKER_BUILD_PLATFORM: "linux/amd64"
+  variables:
+    DOCKER_BUILD_ARGS: "--build-arg RAILS_ENV=production"
+    DOCKER_BUILD_CONTEXT: "rails_app/"
+    DOCKERFILE_PATH: "rails_app/"
+    REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
+  # needs:
+  #   - rspec_app_test
+  tags:
+    - ${RUNNER}
+
+amend_prod_image:
+  stage: amend_prod_images
+  extends:
+    - .amend_manifests
+  needs:
+    - build_and_push_prod_app_image
+  variables:
+    DOCKER_TARGET: "production"
+    REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
+    TAG_WITH_DOCKER_TARGET: "false"
+  tags:
+    - build
+
+# -- Start - SAST images
+trivy_app_container_scanning:
+  stage: sast
   extends:
     - .trivy_container_scanning
+  before_script:
+    - apk add --no-cache docker
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+  after_script:
+    - docker logout ${CI_REGISTRY}
   needs:
-    - build_web_image
+    - amend_prod_image
   variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-web"
-  tags:
-    - build
+    CI_IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_PIPELINE_ID}:${CI_COMMIT_SHORT_SHA}
   allow_failure: true
+  tags:
+    - build
+# -- End - SAST images
 
-push_web_image_to_registry:
-  stage: push:web
-  extends:
-    - .push_docker_image
-  needs:
-    - trivy_web_container_scanning
+copy_app_docker_images:
+  stage: copy_docker_images
   variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-web"
-    DOCKER_IMAGE_NAME: "sdbmss_web"
+    ORIGINAL_REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
+  needs:
+    - trivy_app_container_scanning
+  extends:
+    - .copy_docker_images
   tags:
     - build
 
-remove_web_image:
-  stage: remove:web
+remove_tmp_registry:
+  stage: remove_tmp_registry
   extends:
-    - .remove_docker_image
-  needs:
-    - push_web_image_to_registry
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-web"
+    - .remove_tmp_registry
   rules:
     - when: always
+  needs:
+    - copy_app_docker_images
+  allow_failure: true
   tags:
     - build
+
+deploy_staging:
+  stage: deploy
+  extends:
+    - .deploy
+  variables:
+    IMAGE_TAG: ${CI_COMMIT_SHORT_SHA}
+  environment:
+    name: staging
+    url: https://sdbmdev.library.upenn.edu
+  needs:
+    - copy_app_docker_images
+  only:
+    - main
+  tags:
+    - deploy
+
+deploy_production:
+  stage: deploy
+  extends:
+    - .deploy
+  variables:
+    IMAGE_TAG: ${CI_COMMIT_SHORT_SHA}
+  environment:
+    name: production
+    url: https://sdbm.library.upenn.edu
+  needs:
+    - copy_app_docker_images
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+(\.[a-zA-Z0-9]+)?$/
+  tags:
+    - deploy
