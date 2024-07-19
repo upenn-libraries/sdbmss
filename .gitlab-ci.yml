@@ -47,7 +47,7 @@ build_and_push_base_image:
     DOCKERFILE_PATH: "rails_app/"
     REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
   tags:
-    - build
+    - ${RUNNER}
 
 build_and_push_dev_image:
   stage: build_and_push:tmp_dev_image
@@ -68,7 +68,7 @@ build_and_push_dev_image:
     DOCKERFILE_PATH: "rails_app/"
     REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
   tags:
-    - build
+    - ${RUNNER}
 
 amend_tmp_base_dev_images:
   stage: amend_tmp_base_dev_images
