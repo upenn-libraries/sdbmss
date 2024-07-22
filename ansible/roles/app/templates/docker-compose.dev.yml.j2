@@ -28,5 +28,6 @@ services:
     healthcheck:
       retries: 10
       start_period: 20s
+      interval: 30s
     volumes:
       - /sdbm/ansible/roles/app/files/src/:/home/app/
