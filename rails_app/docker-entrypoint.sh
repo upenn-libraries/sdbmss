@@ -8,7 +8,7 @@ if [ "$1" = "bundle" -a "$2" = "exec" -a "$3" = "rails" ]; then
     fi
 
     if [ "${RAILS_ENV}" = "development" ]; then
-        bundle config --local path ${PROJECT_ROOT}/vendor/bundle
+        bundle config --local path ${GEM_HOME}
         bundle config set --local with 'development:test:assets'
         bundle install -j$(nproc) --retry 3
     fi
