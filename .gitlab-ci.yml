@@ -65,6 +65,7 @@ build_and_push_dev_image:
     DOCKER_ADDITIONAL_CACHE_TARGETS: "base"
     DOCKER_BUILD_ARGS: "--build-arg RAILS_ENV=development"
     DOCKER_BUILD_CONTEXT: "rails_app/"
+    DOCKER_TARGET: "development"
     DOCKERFILE_PATH: "rails_app/"
     REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
   tags:
@@ -103,8 +104,10 @@ build_and_push_prod_app_image:
       - RUNNER: build
         DOCKER_BUILD_PLATFORM: "linux/amd64"
   variables:
+    DOCKER_ADDITIONAL_CACHE_TARGETS: "base development"
     DOCKER_BUILD_ARGS: "--build-arg RAILS_ENV=production"
     DOCKER_BUILD_CONTEXT: "rails_app/"
+    DOCKER_TARGET: "production"
     DOCKERFILE_PATH: "rails_app/"
     REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
   # needs:
