@@ -1,0 +1,3 @@
+﻿table.cell-overflow-hidden th, table.cell-overflow-hidden td {
+    overflow: hidden;
+}
