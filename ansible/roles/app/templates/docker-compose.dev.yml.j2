@@ -27,7 +27,7 @@ services:
       APP_GID: "1000"
     healthcheck:
       retries: 10
-      start_period: 20s
+      start_period: 30s
       interval: 30s
     volumes:
       - /sdbm/ansible/roles/app/files/src/:/home/app/
