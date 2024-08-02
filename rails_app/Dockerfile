@@ -76,12 +76,12 @@ RUN chmod +x -R "${GEM_PATH}/bin/"
 RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
 
 RUN apt-get update && apt-get install -y --force-yes \
-    default-libmysqlclient-dev \
-    nodejs \
-    openjdk-8-jre \
-    openjdk-8-jre-headless \
-    openjdk-8-jdk \
-    tzdata && \
+      default-libmysqlclient-dev \
+      nodejs \
+      openjdk-8-jre \
+      openjdk-8-jre-headless \
+      openjdk-8-jdk \
+      tzdata && \
   addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app && \
   mkdir -p ${PROJECT_ROOT}/tmp/pids
 
@@ -146,12 +146,12 @@ RUN chmod +x -R "${GEM_HOME}/bin/"
 RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
 
 RUN apt-get update && apt-get install -y --force-yes \
-    libmysqlclient18-dev \
-    nodejs \
-    openjdk-8-jre \
-    openjdk-8-jre-headless \
-    openjdk-8-jdk \
-    tzdata && \
+      default-libmysqlclient-dev \
+      nodejs \
+      openjdk-8-jre \
+      openjdk-8-jre-headless \
+      openjdk-8-jdk \
+      tzdata && \
   addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app && \
   mkdir -p ${PROJECT_ROOT}/tmp/pids
 
