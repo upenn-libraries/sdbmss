@@ -52,6 +52,15 @@
         name: delayed_job
       tags: delayed_job
   post_tasks:
+    - name: "Create cron jobs"
+      ansible.builtin.cron:
+        name: "{{ item.name }}"
+        minute: "{{ item.minute }}"
+        hour: "{{ item.hour }}"
+        day: "{{ item.day }}"
+        weekday: "{{ item.weekday }}"
+        job: "{{ item.job }}"
+      loop: "{{ cronjobs }}"
     - name: Recursively remove project directory
       ansible.builtin.file:
         path: "{{ project_root }}"
