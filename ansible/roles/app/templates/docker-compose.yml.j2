@@ -1,3 +1,5 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+
 version: '3.8'
 
 services:
@@ -5,6 +7,33 @@ services:
     image: "{{ app_image_name }}:{{ app_image_tag }}"
     command: ["bundle", "exec", "rails", "s", "unicorn", "-b", "0.0.0.0"]
     deploy:
+      labels:
+        - "traefik.enable=true"
+
+        {% if is_development == true %}
+        - "traefik.http.routers.app.entrypoints=web"
+        - "traefik.http.routers.app.rule=Host(`{{ app_url }}`)"
+        - "traefik.http.routers.app.service=app"
+        - "traefik.http.services.app.loadbalancer.server.port={{ app_port }}"
+
+        - "traefik.http.routers.app.middlewares=app_https"
+        - "traefik.http.middlewares.app_https.redirectscheme.scheme=https"
+        - "traefik.http.middlewares.app_https.redirectscheme.permanent=true"
+
+        - "traefik.http.routers.app_secure.entrypoints=websecure"
+        - "traefik.http.routers.app_secure.rule=Host(`{{ app_url }}`)"
+        - "traefik.http.routers.app_secure.service=app_secure"
+        - "traefik.http.services.app_secure.loadbalancer.server.port={{ app_port }}"
+
+        - "traefik.http.routers.app_secure.tls=true"
+        - "traefik.http.routers.app_secure.tls.certresolver=letsencrypt"
+        {% else %}
+        - "traefik.http.routers.app.entrypoints=web"
+        - "traefik.http.routers.app.rule=Host(`{{ app_url }}`)"
+        - "traefik.http.routers.app.service=app"
+        - "traefik.http.services.app.loadbalancer.server.port={{ app_port }}"
+        {% endif %}
+
       placement:
         constraints:
           - "node.labels.app == true"
@@ -41,16 +70,28 @@ services:
       SDBMSS_SECRET_TOKEN: "{{ app_secret_token }}"
 
       SOLR_URL: "{{ app_solr_url }}"
+      {% if is_development == true %}
+      APP_UID: "1000"
+      APP_GID: "1000"
+      {% endif %}
     healthcheck:
       test:
         [
           "CMD-SHELL",
           "curl -fsSL localhost:{{ app_port }} || exit 1",
         ]
+      timeout: 10s
+
+      {% if is_development == true %}
+      interval: 30s
+      retries: 10
+      start_period: 30s
+      {% else %}
       interval: 10s
       retries: 6
       start_period: 10s
-      timeout: 10s
+      {% endif %}
+
     networks:
       - mysql
       - rabbitmq
@@ -61,6 +102,12 @@ services:
         uid: "1000"
         gid: "1000"
         mode: 0440
+    volumes:
+      {% if is_development == true %}
+      - /sdbm/ansible/roles/app/files/src/:/home/app/
+      {% else %}
+      - app_storage:/home/app/storage
+      {% endif %}
 
 networks:
   mysql:
@@ -74,3 +121,9 @@ secrets:
   rails_master_key:
     external: true
     name: "{{ 'app_rails_master_key_v' ~ app_versioned_secrets.rails_master_key.version }}"
+
+{% if is_development != true %}
+volumes:
+  app_storage:
+    name: app_storage
+{% endif %}

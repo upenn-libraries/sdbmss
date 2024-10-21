@@ -36,25 +36,11 @@
   tags: versioned_secrets
   no_log: true
 
-- name: Deploy dev app
+- name: Deploy app
   community.docker.docker_stack:
     name: "sdbm"
     compose:
       - "{{ lookup('template', 'docker-compose.yml.j2') | from_yaml }}"
-      - "{{ lookup('template', 'docker-compose.dev.yml.j2') | from_yaml }}"
     state: present
   changed_when: false
   # no_log: true
-  when: is_development | default (false, true)
-  tags: dev_environment
-
-- name: Deploy prod app
-  community.docker.docker_stack:
-    name: "sdbm"
-    compose:
-      - "{{ lookup('template', 'docker-compose.yml.j2') | from_yaml }}"
-      - "{{ lookup('template', 'docker-compose.prod.yml.j2') | from_yaml }}"
-    state: present
-  changed_when: false
-  no_log: true
-  when: not is_development | default (false, true)
