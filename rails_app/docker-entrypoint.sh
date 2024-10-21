@@ -21,9 +21,9 @@ if [ "$1" = "bundle" -a "$2" = "exec" -a "$3" = "rails" ]; then
     # run db migrations
     if [ "$1" = "bundle" -a "$2" = "exec" -a "$3" = "rails" -a "$4" = "s" -a "$5" = "unicorn" ]; then
         if [ "${RAILS_ENV}" = "development" ] || [ "${RAILS_ENV}" = "test" ]; then
-            bundle exec rake db:setup RAILS_ENV=test
+            bundle exec rake db:migrate RAILS_ENV=test
         else
-          bundle exec rake db:setup
+          bundle exec rake db:migrate
         fi
     fi
 
