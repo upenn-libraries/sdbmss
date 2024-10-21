@@ -2,6 +2,9 @@
 ARG APP_IMAGE_NAME=gitlab.library.upenn.edu/sdbm/ruby-2.3.8
 ARG APP_IMAGE_TAG=2ad16fb5
 
+# Bundle home
+ARG BUNDLE_HOME=vendor/bundle
+
 # Bundle version
 ARG BUNDLE_VERSION=1.17.3
 
@@ -14,6 +17,9 @@ ARG RAILS_ENV=development
 
 # Base Image
 FROM ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} as base
+
+ARG BUNDLE_HOME
+ENV BUNDLE_HOME=${BUNDLE_HOME}
 
 ARG BUNDLE_VERSION
 ENV BUNDLE_VERSION=${BUNDLE_VERSION}
@@ -51,6 +57,9 @@ RUN bundle config path ${GEM_HOME} && \
 # Development Image
 FROM ${APP_IMAGE_NAME}:${APP_IMAGE_TAG} as development
 
+ARG BUNDLE_HOME
+ENV BUNDLE_HOME=${BUNDLE_HOME}
+
 ARG BUNDLE_VERSION
 ENV BUNDLE_VERSION=${BUNDLE_VERSION}
 
@@ -66,10 +75,11 @@ ENV RAILS_LOG_TO_STDOUT=true
 
 ENV GEM_PATH="${PROJECT_ROOT}/vendor/bundle/ruby/${RUBY_MAJOR}.0"
 ENV GEM_HOME="${GEM_PATH}"
-
 ENV PATH="${GEM_PATH}/bin:${PATH}"
 
 COPY --chown=app:app --chmod=644 --from=base ${PROJECT_ROOT} ${PROJECT_ROOT}
+
+RUN gem install bundler -v ${BUNDLE_VERSION}
 
 RUN chmod +x -R "${GEM_PATH}/bin/"
 
@@ -140,6 +150,8 @@ ENV GEM_HOME="${GEM_PATH}"
 ENV PATH="${GEM_PATH}/bin:${PATH}"
 
 COPY --chown=app:app --chmod=644 --from=base ${PROJECT_ROOT} ${PROJECT_ROOT}
+
+RUN gem install bundler -v ${BUNDLE_VERSION}
 
 RUN chmod +x -R "${GEM_HOME}/bin/"
 
