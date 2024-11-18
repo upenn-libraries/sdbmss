@@ -13,7 +13,12 @@ if [ "$1" = "bundle" -a "$2" = "exec" -a "$3" = "rails" ]; then
         bundle install -j$(nproc) --retry 3
     fi
 
-    # remove unicorn server.pid
+    # remove unicorn.pid
+    if [ -f ${PROJECT_ROOT}/tmp/pids/unicorn.pid ]; then
+        rm -f ${PROJECT_ROOT}/tmp/pids/unicorn.pid
+    fi
+
+    # remove server.pid
     if [ -f ${PROJECT_ROOT}/tmp/pids/server.pid ]; then
         rm -f ${PROJECT_ROOT}/tmp/pids/server.pid
     fi
