@@ -79,10 +79,6 @@ ENV PATH="${GEM_PATH}/bin:${PATH}"
 
 COPY --chown=app:app --chmod=644 --from=base ${PROJECT_ROOT} ${PROJECT_ROOT}
 
-RUN gem install bundler -v ${BUNDLE_VERSION}
-
-RUN chmod +x -R "${GEM_PATH}/bin/"
-
 RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
 
 RUN apt-get update && apt-get install -y --force-yes \
@@ -101,6 +97,9 @@ COPY --chown=app:app . ${PROJECT_ROOT}
 # WORKDIR /opt
 #RUN curl -L -O https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 && tar xjf phantomjs-1.9.8-linux-x86_64.tar.bz2 && ln -s phantomjs-1.9.8-linux-x86_64 phantomjs
 #ENV PATH "$PATH:/opt/phantomjs/bin"
+
+RUN gem install bundler -v ${BUNDLE_VERSION} && \
+    chmod +x -R "${GEM_HOME}/bin/"
 
 WORKDIR ${PROJECT_ROOT}
 
@@ -151,10 +150,6 @@ ENV PATH="${GEM_PATH}/bin:${PATH}"
 
 COPY --chown=app:app --chmod=644 --from=base ${PROJECT_ROOT} ${PROJECT_ROOT}
 
-RUN gem install bundler -v ${BUNDLE_VERSION}
-
-RUN chmod +x -R "${GEM_HOME}/bin/"
-
 RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
 
 RUN apt-get update && apt-get install -y --force-yes \
@@ -173,6 +168,9 @@ COPY --chown=app:app . ${PROJECT_ROOT}
 # WORKDIR /opt
 #RUN curl -L -O https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 && tar xjf phantomjs-1.9.8-linux-x86_64.tar.bz2 && ln -s phantomjs-1.9.8-linux-x86_64 phantomjs
 #ENV PATH "$PATH:/opt/phantomjs/bin"
+
+RUN gem install bundler -v ${BUNDLE_VERSION} && \
+    chmod +x -R "${GEM_HOME}/bin/"
 
 WORKDIR ${PROJECT_ROOT}
 
