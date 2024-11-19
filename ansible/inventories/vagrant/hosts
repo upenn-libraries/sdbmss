@@ -1,0 +1,11 @@
+[development]
+swarm-01 ansible_host=127.0.0.1 ansible_connection=local
+
+[docker_engine:children]
+development
+
+[docker_engine:vars]
+ansible_user=vagrant
+
+[docker_swarm_manager]
+swarm-01 swarm_labels='["app", "interface", "jena", "mysql", "rabbitmq", "solr", "traefik"]'

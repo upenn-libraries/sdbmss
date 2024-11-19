@@ -1,0 +1,129 @@
+#jinja2: trim_blocks: True, lstrip_blocks: True
+
+version: '3.8'
+
+services:
+  app:
+    image: "{{ app_image_name }}:{{ app_image_tag }}"
+    command: ["bundle", "exec", "rails", "s", "unicorn", "-b", "0.0.0.0"]
+    deploy:
+      labels:
+        - "traefik.enable=true"
+
+        {% if is_development == true %}
+        - "traefik.http.routers.app.entrypoints=web"
+        - "traefik.http.routers.app.rule=Host(`{{ app_url }}`)"
+        - "traefik.http.routers.app.service=app"
+        - "traefik.http.services.app.loadbalancer.server.port={{ app_port }}"
+
+        - "traefik.http.routers.app.middlewares=app_https"
+        - "traefik.http.middlewares.app_https.redirectscheme.scheme=https"
+        - "traefik.http.middlewares.app_https.redirectscheme.permanent=true"
+
+        - "traefik.http.routers.app_secure.entrypoints=websecure"
+        - "traefik.http.routers.app_secure.rule=Host(`{{ app_url }}`)"
+        - "traefik.http.routers.app_secure.service=app_secure"
+        - "traefik.http.services.app_secure.loadbalancer.server.port={{ app_port }}"
+
+        - "traefik.http.routers.app_secure.tls=true"
+        - "traefik.http.routers.app_secure.tls.certresolver=letsencrypt"
+        {% else %}
+        - "traefik.http.routers.app.entrypoints=web"
+        - "traefik.http.routers.app.rule=Host(`{{ app_url }}`)"
+        - "traefik.http.routers.app.service=app"
+        - "traefik.http.services.app.loadbalancer.server.port={{ app_port }}"
+        {% endif %}
+
+      placement:
+        constraints:
+          - "node.labels.app == true"
+      replicas: {{ app_replicas }}
+      update_config:
+        order: "start-first"
+        parallelism: 1
+    environment:
+      ADMIN_PASSWORD: "{{ app_admin_password }}"
+      MYSQL_DATABASE: "{{ mysql_database }}"
+      MYSQL_HOST: "mysql"
+      MYSQL_PASSWORD: "{{ mysql_versioned_secrets.password.value }}"
+      MYSQL_USER: "{{ mysql_user }}"
+
+      RABBIT_PASSWORD: "{{ rabbitmq_versioned_secrets.password.value }}"
+      RABBIT_USER: "{{ rabbitmq_user }}"
+
+      RAILS_ENV: "{{ app_rails_env }}"
+      RAILS_PASS: "{{ app_rails_pass }}"
+      RAILS_USER: "{{ app_rails_user }}"
+
+      RAILS_LOG_TO_STDOUT: "true"
+      RAILS_SERVE_STATIC_FILES: "true"
+
+      SDBMSS_APP_HOST: "{{ app_host }}"
+      SDBMSS_SMTP_HOST: "{{ app_smtp_host }}"
+      SDBMSS_EMAIL_FROM: "{{ app_email_from }}"
+      SDBMSS_NOTIFY_EMAIL: "{{ app_notify_email }}"
+      SDBMSS_NOTIFY_EMAIL_PASSWORD: "{{ app_notify_email_password }}"
+      SDBMSS_EMAIL_EXCEPTIONS_TO: "{{ app_email_exceptions_to }}"
+      SDBMSS_BLACKLIGHT_SECRET_KEY: "{{ app_blacklight_secret_key }}"
+      SDBMSS_DEVISE_SECRET_KEY: "{{ app_devise_secret_key }}"
+      SDBMSS_SECRET_KEY_BASE: "{{ app_secret_key_base }}"
+      SDBMSS_SECRET_TOKEN: "{{ app_secret_token }}"
+
+      SOLR_URL: "{{ app_solr_url }}"
+      {% if is_development == true %}
+      APP_UID: "1000"
+      APP_GID: "1000"
+      {% endif %}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -fsSL localhost:{{ app_port }} || exit 1",
+        ]
+      timeout: 10s
+
+      {% if is_development == true %}
+      interval: 30s
+      retries: 10
+      start_period: 30s
+      {% else %}
+      interval: 10s
+      retries: 6
+      start_period: 10s
+      {% endif %}
+
+    networks:
+      - mysql
+      - rabbitmq
+      - traefik
+    secrets:
+      - source: rails_master_key
+        target: /home/app/config/credentials/{{ app_rails_env }}.key
+        uid: "1000"
+        gid: "1000"
+        mode: 0440
+    volumes:
+      {% if is_development == true %}
+      - /sdbm/ansible/roles/app/files/src/:/home/app/
+      {% else %}
+      - app_storage:/home/app/storage
+      {% endif %}
+
+networks:
+  mysql:
+    external: true
+  rabbitmq:
+    external: true
+  traefik:
+    external: true
+
+secrets:
+  rails_master_key:
+    external: true
+    name: "{{ 'app_rails_master_key_v' ~ app_versioned_secrets.rails_master_key.version }}"
+
+{% if is_development != true %}
+volumes:
+  app_storage:
+    name: app_storage
+{% endif %}

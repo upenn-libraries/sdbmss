@@ -1,0 +1,19 @@
+---
+- name: Create versioned docker secrets
+  community.docker.docker_secret:
+    name: "{{ 'mysql_' ~ item.key ~ '_v' ~ item.value.version }}"
+    data: "{{ item.value.value }}"
+    state: present
+  with_dict:
+    - "{{ mysql_versioned_secrets }}"
+  tags: versioned_secrets
+  no_log: true
+
+- name: Deploy mysql
+  community.docker.docker_stack:
+    name: "sdbm"
+    compose:
+      - "{{ lookup('template', 'docker-compose.yml.j2') | from_yaml }}"
+    state: present
+  changed_when: false
+  no_log: true

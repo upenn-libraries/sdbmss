@@ -1,0 +1,12 @@
+---
+roles:
+  # the original repo can't handle python3 so we will use a fork until it can
+  - name: atosatto.docker-swarm
+    src: https://gitlab.library.upenn.edu/devops/ansible/ansible-dockerswarm.git
+    scm: git
+    version: master
+
+  - name: traefik
+    src: https://gitlab.library.upenn.edu/devops/ansible/roles/traefik.git
+    scm: git
+    version: main

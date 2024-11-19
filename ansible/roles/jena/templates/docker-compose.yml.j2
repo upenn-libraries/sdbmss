@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  jena:
+    image: "{{ jena_image_name }}:{{ jena_image_tag }}"
+    deploy:
+      placement:
+        constraints:
+          - "node.labels.jena == true"
+      update_config:
+        order: "start-first"
+        parallelism: 1
+      replicas: 1
+    #environment:
+    #healthcheck:
+    #  test:
+    #    []
+    #  interval: 30s
+    #  retries: 3
+    #  start_period: 1m
+    #  timeout: 30s
+    logging:
+      driver: json-file
+      options:
+        max-file: "3"
+        max-size: "10m"
+    networks:
+      - jena
+    volumes:
+      - rdf_data:/fuseki
+
+networks:
+  jena:
+    name: jena
+
+volumes:
+  rdf_data:
+    name: rdf_data

@@ -1,0 +1,53 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: "{{ mysql_image_name }}:{{ mysql_image_tag }}"
+    deploy:
+      placement:
+        constraints:
+          - "node.labels.mysql == true"
+      update_config:
+        order: "start-first"
+        parallelism: 1
+      replicas: 1
+    environment:
+      MYSQL_DATABASE: "{{ mysql_database }}"
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+      MYSQL_USER: "{{ mysql_user }}"
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+    #healthcheck:
+    #  test:
+    #    []
+    #  interval: 30s
+    #  retries: 3
+    #  start_period: 1m
+    #  timeout: 30s
+    #logging:
+    #  driver: json-file
+    #  options:
+    #    max-file: "3"
+    #    max-size: "10m"
+    networks:
+      - mysql
+    secrets:
+      - mysql_password
+      - mysql_root_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+networks:
+  mysql:
+    name: mysql
+
+volumes:
+  mysql_data:
+    name: mysql_data
+
+secrets:
+  mysql_password:
+    external: true
+    name: "{{ 'mysql_password_v' ~ mysql_versioned_secrets.password.version }}"
+  mysql_root_password:
+    external: true
+    name: "{{ 'mysql_root_password_v' ~ mysql_versioned_secrets.root_password.version }}"

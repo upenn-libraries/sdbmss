@@ -1,0 +1,28 @@
+---
+# Variables for Vault
+# sdbm_vault_values: "{{ lookup('community.hashi_vault.vault_kv2_get', 'sdbm/vagrant', engine_mount_point='kv-applications') }}"
+
+docker_swarm_addr: "{{ ansible_host }}"
+
+# Docker swarm setup vars
+skip_repo: false
+skip_containerd: false
+skip_engine: false
+skip_cli: false
+skip_swarm: false
+skip_group: false
+skip_docker_py: false
+skip_docker_compose: false
+
+# expose the docker api (only for dev env) to allow IDE's to add remote interpreters for debugging
+docker_daemon_config:
+  hosts: ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"]
+  default-ulimits:
+    nofile:
+      Name: "nofile"
+      Hard: 1048576
+      Soft: 1048576
+docker_service_override: |
+  [Service]
+  ExecStart=
+  ExecStart=/usr/bin/dockerd --containerd=/run/containerd/containerd.sock

@@ -1,0 +1,46 @@
+---
+# If is_development = true and app_build_docker_image = false
+# Pull existing docker image from the registry to reduce build time
+- name: Pull and use docker image from registry
+  block:
+    # Pull registry image
+    - name: Pull the image from the registry
+      community.docker.docker_image:
+        force_source: true
+        force_tag: true
+        name: "{{ app_image_registry ~ ':' ~ app_image_tag }}"
+        repository: "{{ app_image_name ~ ':' ~ app_image_tag }}"
+        source: pull
+      when: is_development and not app_build_docker_image | default (false, true)
+      tags: dev_environment
+  rescue:
+    # An error occurred in the process of pulling the registry so build the image instead
+    - name: Failed to find registry image - building image instead
+      ansible.builtin.import_tasks: "build_docker_image.yml"
+      when: is_development and not app_build_docker_image | default (false, true)
+      tags: dev_environment
+
+# Build the docker image
+- name: "Build docker image"
+  ansible.builtin.import_tasks: "build_docker_image.yml"
+  when: is_development and app_build_docker_image | default (false, true)
+  tags: dev_environment
+
+- name: Create versioned docker secrets
+  community.docker.docker_secret:
+    name: "{{ 'app_' ~ item.key ~ '_v' ~ item.value.version }}"
+    data: "{{ item.value.value }}"
+    state: present
+  with_dict:
+    - "{{ app_versioned_secrets }}"
+  tags: versioned_secrets
+  no_log: true
+
+- name: Deploy app
+  community.docker.docker_stack:
+    name: "sdbm"
+    compose:
+      - "{{ lookup('template', 'docker-compose.yml.j2') | from_yaml }}"
+    state: present
+  changed_when: false
+  # no_log: true

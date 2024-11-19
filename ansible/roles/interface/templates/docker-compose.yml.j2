@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  interface:
+    image: "{{ interface_image_name }}:{{ interface_image_tag }}"
+    command: ["ruby", "interface.rb"]
+    deploy:
+      placement:
+        constraints:
+          - "node.labels.interface == true"
+      update_config:
+        order: "start-first"
+        parallelism: 1
+      replicas: 1
+    environment:
+      RABBIT_PASSWORD: "{{ rabbitmq_versioned_secrets.password.value }}"
+      RABBIT_USER: "{{ rabbitmq_user }}"
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "ps aux | grep 'ruby' || exit 1",
+        ]
+      interval: 30s
+      retries: 3
+      start_period: 1m
+      timeout: 30s
+    logging:
+      driver: json-file
+      options:
+        max-file: "3"
+        max-size: "10m"
+    networks:
+      - jena
+      - rabbitmq
+
+networks:
+  jena:
+    external: true
+  rabbitmq:
+    external: true

@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: "{{ rabbitmq_image_name }}:{{ rabbitmq_image_tag }}"
+    deploy:
+      placement:
+        constraints:
+          - "node.labels.rabbitmq == true"
+      update_config:
+        order: "start-first"
+        parallelism: 1
+      replicas: 1
+    environment:
+      #RABBITMQ_ERLANG_COOKIE: 'secret cookie here' # needed for rabbitmqctl to work (??)
+      RABBITMQ_DEFAULT_PASS: "{{ rabbitmq_versioned_secrets.password.value }}"
+      RABBITMQ_DEFAULT_USER: "{{ rabbitmq_user }}"
+    #healthcheck:
+    #  test: ["rabbitmq-diagnostics", "check_port_connectivity"]
+    #  interval: 30s
+    #  retries: 3
+    #  start_period: 1m
+    #  timeout: 30s
+    logging:
+      driver: json-file
+      options:
+        max-file: "3"
+        max-size: "10m"
+    networks:
+      - rabbitmq
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+networks:
+  rabbitmq:
+    name: rabbitmq
+
+volumes:
+  rabbitmq_data:
+    name: rabbitmq_data
+
