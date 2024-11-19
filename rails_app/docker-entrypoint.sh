@@ -8,6 +8,8 @@ if [ "$1" = "bundle" -a "$2" = "exec" -a "$3" = "rails" ]; then
     fi
 
     if [ "${RAILS_ENV}" = "development" ]; then
+        gem install bundler -v ${BUNDLE_VERSION}
+        chmod +x -R "${GEM_HOME}/bin/"
         bundle config --local path ${GEM_HOME}
         bundle config set --local with 'development:test:assets'
         bundle install -j$(nproc) --retry 3
