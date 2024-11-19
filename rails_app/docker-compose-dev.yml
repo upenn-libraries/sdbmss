@@ -256,7 +256,7 @@ services:
       - jena
     ports:
       - "80:80"
-      - "443:443"
+
 volumes:
   sdbm_docs:
   sdbm_data:

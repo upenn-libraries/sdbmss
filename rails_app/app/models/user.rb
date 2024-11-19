@@ -75,7 +75,7 @@ class User < ActiveRecord::Base
     date :last_sign_in_at
   end
 
-  # Connects this user object to Blacklights Bookmarks. 
+  # Connects this user object to Blacklights Bookmarks.
   include Blacklight::User
   include UserFields
   include HasPaperTrail
@@ -128,7 +128,7 @@ class User < ActiveRecord::Base
 
   # override devise's msg to display if user is prevented from logging in
   def inactive_message
-    active ? super : "Your account has been de-activated."
+    active ? super : "New SDBM accounts are inactive by default. You will receive a welcome email when an administrator has reviewed and activated your account."
   end
 
   # devise hook
@@ -181,6 +181,7 @@ class User < ActiveRecord::Base
   end
 
   def notify(title, record, category)
+    Rails.logger.warn "NOTIFY: #{title} #{record} #{category}"
     n = notifications.new(title: title, notified: record, category: category)
     if can_notify(category)
       n.save!
@@ -198,13 +199,13 @@ class User < ActiveRecord::Base
   def self.fields
     [
       ["Username", 'username'],
-      ["Full Name", 'fullname'], 
+      ["Full Name", 'fullname'],
       ["Email", 'email'],
       ["User Level", 'role']
     ]
   end
 
-  def self.filters  
+  def self.filters
     [
       ["Id", "id"],
       ["Active", "active"]
