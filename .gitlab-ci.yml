@@ -1,243 +1,203 @@
 include:
-  - project: "devops/gitlab/ci-templates/docker"
-    ref: "0.0.1"
+  - project: "devops/gitlab/ci-templates/deploy"
+    file: ".hashicorp_vault.yml"
+  - project: "devops/gitlab/ci-templates/ruby"
+    ref: "sans-dind"
     file:
-      - ".build_docker_image.yml"
-      - ".push_docker_image.yml"
-      - ".remove_docker_image.yml"
+      - ".rspec.yml"
+      - ".rubocop.yml"
+  - project: "devops/gitlab/ci-templates/docker"
+    ref: "1.0.0"
+    file:
+      - ".amend_manifests.yml"
+      - ".build_and_push_docker_images.yml"
+      - ".copy_docker_images.yml"
+      - ".remove_tmp_registry.yml"
   - project: "devops/gitlab/ci-templates/sast"
     ref: "master"
     file:
-      - ".shiftleft_container_scanning.yml"
       - ".trivy_container_scanning.yml"
-
-workflow:
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_TAG
-    - if: $CI_COMMIT_REF_PROTECTED
+  - template: "Workflows/MergeRequest-Pipelines.gitlab-ci.yml"
 
 stages:
-  - sast:project
-  - build:web
-  - build:interface
-  - build:jena
-  - build:nginx
-  - sast:web
-  - sast:interface
-  - sast:jena
-  - sast:nginx
-  - push:web
-  - push:interface
-  - push:jena
-  - push:nginx
-  - remove:web
-  - remove:interface
-  - remove:jena
-  - remove:nginx
+  - build_and_push:tmp_base_image
+  - build_and_push:tmp_dev_image
+  - amend_tmp_base_dev_images
+  # - test
+  - build_and_push:tmp_prod_image
+  - amend_tmp_prod_images
+  - sast
+  - copy_docker_images
+  - remove_tmp_registry
+  - deploy
 
-shiftleft_project_scanning:
-  stage: sast:project
+build_and_push_base_image:
+  stage: build_and_push:tmp_base_image
   extends:
-    - .shiftleft_container_scanning
-  tags:
-    - build
-  allow_failure: true
-
-build_web_image:
-  stage: build:web
-  extends:
-    - .build_docker_image
-  needs:
-    - shiftleft_project_scanning
+    - .build_and_push_docker_images
+  parallel:
+    matrix:
+      - RUNNER: build-arm
+        DOCKER_BUILD_PLATFORM: "linux/arm64"
+      - RUNNER: build
+        DOCKER_BUILD_PLATFORM: "linux/amd64"
   variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-web"
+    DOCKER_BUILD_CONTEXT: "rails_app/"
+    DOCKER_TARGET: "base"
+    DOCKERFILE_PATH: "rails_app/"
+    REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
   tags:
-    - build
+    - ${RUNNER}
 
-build_interface_image:
-  stage: build:interface
+build_and_push_dev_image:
+  stage: build_and_push:tmp_dev_image
   extends:
-    - .build_docker_image
+    - .build_and_push_docker_images
   needs:
-    - shiftleft_project_scanning
+    - build_and_push_base_image
+  parallel:
+    matrix:
+      - RUNNER: build-arm
+        DOCKER_BUILD_PLATFORM: "linux/arm64"
+      - RUNNER: build
+        DOCKER_BUILD_PLATFORM: "linux/amd64"
   variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-interface"
-    DOCKER_BUILD_CONTEXT: "sdbmss_interface/"
-    DOCKERFILE_PATH: "sdbmss_interface/"
+    DOCKER_ADDITIONAL_CACHE_TARGETS: "base"
+    DOCKER_BUILD_ARGS: "--build-arg RAILS_ENV=development"
+    DOCKER_BUILD_CONTEXT: "rails_app/"
+    DOCKER_TARGET: "development"
+    DOCKERFILE_PATH: "rails_app/"
+    REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
   tags:
     - build
 
-build_jena_image:
-  stage: build:jena
+amend_tmp_base_dev_images:
+  stage: amend_tmp_base_dev_images
   extends:
-    - .build_docker_image
+    - .amend_manifests
   needs:
-    - shiftleft_project_scanning
+    - build_and_push_base_image
+    - build_and_push_dev_image
   variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-jena"
-    DOCKER_BUILD_CONTEXT: "sdbmss_jena/"
-    DOCKERFILE_PATH: "sdbmss_jena/"
+    REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
   tags:
     - build
 
-build_nginx_image:
-  stage: build:nginx
+# rspec_app_test:
+#   stage: test
+#   image: ${CI_REGISTRY_IMAGE}/${CI_PIPELINE_ID}:${CI_COMMIT_SHORT_SHA}-development
+#   extends:
+#     - .rspec
+#   needs:
+#     - amend_tmp_base_dev_images
+#   tags:
+#     - build
+
+build_and_push_prod_app_image:
+  stage: build_and_push:tmp_prod_image
   extends:
-    - .build_docker_image
-  needs:
-    - shiftleft_project_scanning
+    - .build_and_push_docker_images
+  parallel:
+    matrix:
+      - RUNNER: build-arm
+        DOCKER_BUILD_PLATFORM: "linux/arm64"
+      - RUNNER: build
+        DOCKER_BUILD_PLATFORM: "linux/amd64"
   variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-nginx"
-    DOCKER_BUILD_CONTEXT: "sdbmss_nginx/"
-    DOCKERFILE_PATH: "sdbmss_nginx/"
+    DOCKER_ADDITIONAL_CACHE_TARGETS: "base development"
+    DOCKER_BUILD_ARGS: "--build-arg RAILS_ENV=production"
+    DOCKER_BUILD_CONTEXT: "rails_app/"
+    DOCKER_TARGET: "production"
+    DOCKERFILE_PATH: "rails_app/"
+    REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
+  # needs:
+  #   - rspec_app_test
+  tags:
+    - ${RUNNER}
+
+amend_tmp_prod_images:
+  stage: amend_tmp_prod_images
+  extends:
+    - .amend_manifests
+  needs:
+    - build_and_push_prod_app_image
+  variables:
+    DOCKER_TARGET: "production"
+    REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
+    TAG_WITH_DOCKER_TARGET: "false"
   tags:
     - build
 
-trivy_web_container_scanning:
-  stage: sast:web
+# -- Start - SAST images
+trivy_app_container_scanning:
+  stage: sast
   extends:
     - .trivy_container_scanning
+  before_script:
+    - apk add --no-cache docker
+    - docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+  after_script:
+    - docker logout ${CI_REGISTRY}
   needs:
-    - build_web_image
+    - amend_tmp_prod_images
   variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-web"
-  tags:
-    - build
+    CI_IMAGE_NAME: ${CI_REGISTRY_IMAGE}/${CI_PIPELINE_ID}:${CI_COMMIT_SHORT_SHA}
   allow_failure: true
-
-trivy_interface_container_scanning:
-  stage: sast:interface
-  extends:
-    - .trivy_container_scanning
-  needs:
-    - build_interface_image
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-interface"
   tags:
     - build
-  allow_failure: true
+# -- End - SAST images
 
-trivy_jena_container_scanning:
-  stage: sast:jena
-  extends:
-    - .trivy_container_scanning
-  needs:
-    - build_jena_image
+copy_app_docker_images:
+  stage: copy_docker_images
   variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-jena"
-  tags:
-    - build
-  allow_failure: true
-
-trivy_nginx_container_scanning:
-  stage: sast:nginx
-  extends:
-    - .trivy_container_scanning
+    ORIGINAL_REGISTRY_REPOSITORY: "${CI_PIPELINE_ID}"
   needs:
-    - build_nginx_image
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-nginx"
-  tags:
-    - build
-  allow_failure: true
-
-push_web_image_to_registry:
-  stage: push:web
+    - trivy_app_container_scanning
   extends:
-    - .push_docker_image
-  needs:
-    - trivy_web_container_scanning
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-web"
-    DOCKER_IMAGE_NAME: "sdbmss_web"
+    - .copy_docker_images
   tags:
     - build
 
-push_interface_image_to_registry:
-  stage: push:interface
+remove_tmp_registry:
+  stage: remove_tmp_registry
   extends:
-    - .push_docker_image
-  needs:
-    - trivy_interface_container_scanning
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-interface"
-    DOCKER_IMAGE_NAME: "sdbmss_interface"
-  tags:
-    - build
-
-push_jena_image_to_registry:
-  stage: push:jena
-  extends:
-    - .push_docker_image
-  needs:
-    - trivy_jena_container_scanning
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-jena"
-    DOCKER_IMAGE_NAME: "sdbmss_jena"
-  tags:
-    - build
-
-push_nginx_image_to_registry:
-  stage: push:nginx
-  extends:
-    - .push_docker_image
-  needs:
-    - trivy_nginx_container_scanning
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-nginx"
-    DOCKER_IMAGE_NAME: "sdbmss_nginx"
-  tags:
-    - build
-
-remove_web_image:
-  stage: remove:web
-  extends:
-    - .remove_docker_image
-  needs:
-    - push_web_image_to_registry
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-web"
+    - .remove_tmp_registry
   rules:
     - when: always
+  needs:
+    - copy_app_docker_images
+  allow_failure: true
   tags:
     - build
 
-remove_interface_image:
-  stage: remove:interface
+deploy_staging:
+  stage: deploy
   extends:
-    - .remove_docker_image
-  needs:
-    - push_interface_image_to_registry
+    - .deploy
   variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-interface"
-  rules:
-    - when: always
+    IMAGE_TAG: ${CI_COMMIT_SHORT_SHA}
+  environment:
+    name: staging
+    url: https://sdbmdev.library.upenn.edu
+  needs:
+    - copy_app_docker_images
+  only:
+    - main
   tags:
-    - build
+    - deploy
 
-remove_jena_image:
-  stage: remove:jena
+deploy_production:
+  stage: deploy
   extends:
-    - .remove_docker_image
-  needs:
-    - push_jena_image_to_registry
+    - .deploy
   variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-jena"
-  rules:
-    - when: always
-  tags:
-    - build
-
-remove_nginx_image:
-  stage: remove:nginx
-  extends:
-    - .remove_docker_image
+    IMAGE_TAG: ${CI_COMMIT_SHORT_SHA}
+  environment:
+    name: production
+    url: https://sdbm.library.upenn.edu
   needs:
-    - push_nginx_image_to_registry
-  variables:
-    CI_IMAGE_NAME: "${CI_PROJECT_ID}-${CI_PIPELINE_ID}-nginx"
+    - copy_app_docker_images
   rules:
-    - when: always
+    - if: $CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+(\.[a-zA-Z0-9]+)?$/
   tags:
-    - build
+    - deploy

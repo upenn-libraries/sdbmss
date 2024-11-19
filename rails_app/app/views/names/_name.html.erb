@@ -1,0 +1,240 @@
+<% content_for :head do %>
+  <style>
+    dd {
+      border: none !important;
+    }
+    svg {
+      float: right;
+      z-index: -2;
+    }
+    path {
+      fill: #aaa;
+      stroke: #fff;
+    }
+    .point {
+      fill: deepskyblue;
+    }
+    #map {
+      width: 100%;
+      height: 500px;
+    }
+    .pagination-narrow > li > a {
+      padding: 6px 3px;
+    }
+/*    .tl-slide-content {
+      width: 100% !important;
+      padding: 0px 0px 0px 24px !important;
+    }
+    .tl-headline-date {
+      padding: 0px 0px 0px 16px;
+    }*/
+    .tl-slide .tl-slide-content-container .tl-slide-content .tl-text {
+      text-align: center !important;
+    }
+    .tl-timeline a {
+      color: #4e76b3 !important;
+    }
+    .tl-headline {
+      color: #666 !important;
+    }
+    .tl-timegroup-message {
+      color: #999 !important;
+    }
+  </style>
+
+<!--
+-->
+  <link title="timeline-styles" rel="stylesheet" href="https://cdn.knightlab.com/libs/timeline3/latest/css/timeline.css">
+  <script src="https://cdn.knightlab.com/libs/timeline3/latest/js/timeline.js"></script>
+
+  <%= stylesheet_link_tag "extras", media: "all" %>
+  <%= javascript_include_tag "extras" %>
+
+  <%= javascript_include_tag "leaflet", rel: "nofollow" %>
+  <%= javascript_include_tag "leaflet-provider", rel: "nofollow" %>
+  <%= stylesheet_link_tag "leaflet", media: "all" %>
+  
+  <script type='text/javascript'>
+    $(document).ready(function () {
+
+      var sdbmIcon = L.icon({
+        iconUrl: '<%= asset_path "map-pin.svg" %>',
+
+        iconSize:     [64, 64], // size of the icon
+        iconAnchor:   [32, 64], // point of the icon which will correspond to marker's location
+        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+      });
+
+
+      var map = L.map('map');
+      <% name.places.each do |place| %>
+        <% if place.latitude && place.longitude %>
+          var latitude = <%= place.latitude || 0 %>;
+          var longitude = <%= place.longitude || 0 %>;
+          L.marker([latitude, longitude], {icon: sdbmIcon}).addTo(map);
+        <% end %>
+      <% end %>
+
+      map.setView([60, 0], 13);
+      map.setZoom(2);
+
+      var Stamen_TonerLite = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.{ext}', {
+        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        subdomains: 'abcd',
+        minZoom: 0,
+        maxZoom: 20,
+        ext: 'png'
+      });
+      Stamen_TonerLite.addTo(map);
+      //L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {}).addTo(map);
+  
+      window.timeline = new TL.Timeline('timeline-embed', "/names/<%= name.id %>/timeline.json", {slide_padding_lr: 10});
+
+    });
+  </script>
+<% end %>
+
+<%# Partial used to display name details for both Names generically and Agents (which are Names) %>
+
+<%# Why is this in SHARED instead of in NAME?? %>
+    <% content_for :control_tools do %>        
+        <%= render partial: 'tools', locals: {edit: false} %>
+    <% end %>
+
+<div class="row">
+  <div class="col-sm-12">
+      <h3><%= name.public_id %></h3>
+  </div>
+</div>
+
+<div class="row">
+
+    <div class="col-sm-6">
+
+
+        <div class="text-left" style="margin-bottom: 5px;">
+            <p>Is this a real person? <%= render partial: "ratings/rate", locals: {ratable: name} %></p>
+            <div><%= render partial: "ratings/rated", locals: {ratable: name} %></div>
+        </div>
+
+        <table class="table table-responsive sdbm-table">
+            <%= render partial: "main", locals: { name: name } %>
+    
+            <% if name.dericci_records.count > 0 %>
+            <tr>
+              <td>Verified De Ricci</td>
+              <td>
+                <% if name.dericci_links.where(approved: true).group_by(&:dericci_record_id).each do |dericci_record_id, dericci_links| %>
+
+                      <% record = dericci_links.first.dericci_record %>
+
+                      <div class="btn btn-default btn-xs" data-toggle="modal" data-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
+                        <%= record.name %> <span class="badge"><%= dericci_links.count %></span>
+                      </div>
+
+                      <div class="modal fade" id="Dericci_<%= record.id %>">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-body">
+                              <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                              <p>This name has been linked to <%= link_to record.name, dericci_record_path(record) %> by </p>
+                                <% dericci_links.each do |dl| %>
+                                   <span class='btn btn-xs btn-default'>
+                                      <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
+                                    </span>
+                                    <% if dl.other_info.present? %>
+                                      <span class='text-muted'> <%= dl.other_info %></span>
+                                    <% else %>
+                                      <span class="text-muted"> no additional information provided</span>
+                                    <% end %>
+                                    <br>
+                                <% end %>                    
+                            </div>
+                            <div class="modal-footer text-center">                          
+                              <% if current_user && current_user.role == "admin" %>
+                                  <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id), from_name: true), method: :delete, class: "btn btn-danger" %>
+                                  <%= link_to "Unverify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: false, from_name: true), method: :put, class: "btn btn-default" %>     
+                              <% end %>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                  <% end.empty? %>
+                      <p class="text-muted">This name is not verifiably linked to any records in the De Ricci Archives.</p>
+                  <% end %>  
+              </td>
+            </tr>
+            <% end %>
+            <tr>
+              <td>
+                  Possible De Ricci     
+              </td>
+              <td>
+                  <% if name.dericci_links.where(approved: [nil, false]).group_by(&:dericci_record_id).each do |dericci_record_id, dericci_links| %>
+
+                      <% record = dericci_links.first.dericci_record %>
+
+                      <div class="btn btn-info btn-xs" data-toggle="modal" data-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
+                        <%= record.name %> <span class="badge"><%= dericci_links.count %></span>
+                      </div>
+
+                      <div class="modal fade" id="Dericci_<%= record.id %>">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-body">
+                              <button type="button" class="close pull-right" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                              <p>This name has been linked to <%= link_to record.name, dericci_record_path(record) %> by </p>
+                                <% dericci_links.each do |dl| %>
+                                   <span class='btn btn-xs btn-default'>
+                                      <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
+                                    </span>
+                                    <% if dl.other_info.present? %>
+                                      <span class='text-muted'> <%= dl.other_info %></span>
+                                    <% else %>
+                                      <span class="text-muted"> no additional information provided</span>
+                                    <% end %>
+                                    <br>
+                                <% end %>                    
+                            </div>
+                            <div class="modal-footer text-center">                          
+                              <% if current_user && current_user.role == "admin" %>
+                                  <%= link_to "Remove Links", delete_many_dericci_links_path(ids: dericci_links.map(&:id), from_name: true), method: :delete, class: "btn btn-danger" %>
+                                  <%= link_to "Verify Links", update_many_dericci_links_path(ids: dericci_links.map(&:id), approved: true, from_name: true), method: :put, class: "btn btn-default" %>                                
+                              <% end %>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                  <% end.empty? %>
+                      <p class="text-muted">This name has no suggested possible links to any records in the De Ricci Archives.</p>
+                  <% end %>
+              </td>
+            </tr>
+            <%= render partial: "shared/user_info", locals: {model: @model} %>
+        </table>
+    </div>
+    <div class="col-sm-6">
+        <div id="map"></div>
+    </div>
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <div id='timeline-embed' style="width: 100%; height: 240px"></div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-2">
+  </div>
+  <div class="col-sm-8 comments">        
+    <h2 class="text-center"><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
+    <p class='text-center text-muted'>Share additional information about this name in the box below. Your comments will be displayed publicly.</p>
+
+    <%= render partial: "comments/show_all", locals: {comments: name.comments.where(public: true), record: name} %>
+  </div>
+</div>

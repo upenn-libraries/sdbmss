@@ -1,0 +1,3 @@
+---
+mysql_image_name: "biarms/mysql"
+mysql_image_tag: "5.7"

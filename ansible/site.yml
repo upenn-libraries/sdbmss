@@ -1,0 +1,74 @@
+---
+- name: "Provision Docker Swarm Cluster"
+  hosts: all
+  become: true
+  collections:
+    - ansible.utils
+    - ansible.netcommon
+  tasks:
+    - name: Provision docker swarm
+      ansible.builtin.import_tasks: "provision_docker.yml"
+
+- name: "Deploy application"
+  hosts: docker_swarm_manager
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Link project source
+      ansible.builtin.import_role:
+        name: app
+        tasks_from: symlink_project
+      tags: app
+    - name: Deploy Traefik
+      ansible.builtin.import_role:
+        name: traefik
+      tags: traefik
+    - name: Deploy Mysql
+      ansible.builtin.import_role:
+        name: mysql
+      tags: mysql
+    - name: Deploy RabbitMQ
+      ansible.builtin.import_role:
+        name: rabbitmq
+      tags: rabbitmq
+    - name: Deploy Jena
+      ansible.builtin.import_role:
+        name: jena
+      tags: jena
+    - name: Deploy Interface
+      ansible.builtin.import_role:
+        name: interface
+      tags: interface
+    - name: Deploy Application
+      ansible.builtin.import_role:
+        name: app
+      tags: app
+    - name: Deploy Solr
+      ansible.builtin.import_role:
+        name: solr
+      tags: solr
+    - name: Deploy Delayed Job
+      ansible.builtin.import_role:
+        name: delayed_job
+      tags: delayed_job
+  post_tasks:
+    - name: "Create cron jobs"
+      ansible.builtin.cron:
+        name: "{{ item.name }}"
+        minute: "{{ item.minute }}"
+        hour: "{{ item.hour }}"
+        day: "{{ item.day }}"
+        weekday: "{{ item.weekday }}"
+        job: "{{ item.job }}"
+      loop: "{{ cronjobs }}"
+    - name: Recursively remove project directory
+      ansible.builtin.file:
+        path: "{{ project_root }}"
+        state: absent
+    - name: Prune images that are older than 2+ hours
+      community.docker.docker_prune:
+        images: true
+        images_filters:
+          dangling: false
+          until: 2h
+      when: not is_development | default(false, true)

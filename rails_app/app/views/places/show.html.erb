@@ -1,0 +1,223 @@
+<% content_for :head do %>
+  <style>
+    dd {
+      border: none !important;
+    }
+    svg {
+      float: right;
+      z-index: -2;
+    }
+    path {
+      fill: #aaa;
+      stroke: #fff;
+    }
+    .point {
+      fill: deepskyblue;
+    }
+    #map {
+      width: 100%;
+      height: 500px;
+    }
+    .pagination-narrow > li > a {
+      padding: 6px 3px;
+    }
+  </style>
+  <%# javascript_include_tag "data" %>
+  <%= javascript_include_tag "leaflet", rel: "nofollow" %>
+  <%= stylesheet_link_tag "extras", media: "all" %>
+  <%= javascript_include_tag "extras" %>
+  
+  <%= javascript_include_tag "leaflet-provider", rel: "nofollow" %>
+  <%= stylesheet_link_tag "leaflet", media: "all" %>
+
+  <script type='text/javascript'>
+    $(document).ready(function () {
+
+      $("#page-selector").change(function () {
+        //console.log($(this).val());
+        $('.tab-page').removeClass('in');
+        $('.tab-page').removeClass('active');
+        $('#page-' + $(this).val()).addClass('in');
+        $('#page-' + $(this).val()).addClass('active');
+      })
+
+      var sdbmIcon = L.icon({
+        iconUrl: '<%= asset_path "map-pin.svg" %>',
+
+        iconSize:     [64, 64], // size of the icon
+        iconAnchor:   [32, 64], // point of the icon which will correspond to marker's location
+        popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+      });
+
+      var map = L.map('map');
+      <% if @model.latitude && @model.longitude %>
+        var latitude = <%= @model.latitude || 0 %>;
+        var longitude = <%= @model.longitude || 0 %>;
+        map.setView([latitude, longitude], 13);
+        map.setZoom(<%= @model.ancestors.count %> + 3);
+        L.marker([latitude, longitude], {icon: sdbmIcon}).addTo(map);
+      <% else %>
+        map.setView([60, 0], 13);        
+        map.setZoom(2);
+      <% end %>
+
+      var Stamen_TonerLite = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.{ext}', {
+        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        subdomains: 'abcd',
+        minZoom: 0,
+        maxZoom: 20,
+        ext: 'png'
+      });
+      Stamen_TonerLite.addTo(map);
+      //L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {}).addTo(map);
+
+    });
+  </script>
+<% end %>
+
+<% content_for :breadcrumbs do %>
+  <%= render partial: "manage_models/breadcrumbs", locals: {edit: false} %>
+<% end %>
+
+<% content_for :control_tools do %>
+  <%= render partial: "manage_models/tools" %>
+<% end %>
+
+<% if @model.problem %>
+  <div class="alert alert-danger"><span class="lead"><span class="glyphicon glyphicon-warning-sign"></span> Warning!</span> This <%= @model.class.name %> has been flagged as problematic because the purpose or data recorded is uncertain. Use only if you have no other options. If you have information to help us better identify this <%= @model.class.name %>, please leave a comment.</div>
+<% end %>
+
+<% if !@model.reviewed %>
+  <div class="alert alert-warning"><span class="glyphicon glyphicon-info-sign"></span> This <%= @model.model_name.to_s %> has not yet been reviewed and may not conform to our data standards.</div>
+<% end %>
+
+<div class="row" >
+  <div class="col-sm-12">
+    <h2 class="text-center">
+      <%= @model.public_id %>
+    </h2>
+    <p class="text-muted text-center">
+      <span class="glyphicon glyphicon-info-sign"></span>
+      Note: Coordinates locations for regions or countries are for reference only, and do not imply that the place of production or activity is limited to that specific point.
+    </p>
+    
+  </div>
+  <div class="col-sm-6 pull-right">
+    
+    <div id="map">
+    </div>
+
+  </div>  
+  <div class="col-sm-6">
+    <dl class="document-metadata dl-horizontal dl-invert">
+      <dt sdbm-tooltip="place_name">Name</dt>
+      <dd>
+          <%= @model.name %>
+      </dd>
+      <dt># Entries</dt>
+      <dd>
+          <% if @model.entries_count > 0 %>
+            This <%= @model.class.to_s.underscore %> is used in <a href="<%= search_by_facet_value(@model.class.to_s.underscore, @model.name) %>" class="badge"><%= SDBMSS::Util.to_many(@model.entries_count, "entry") %></a>
+          <% else %>
+            <span class="text-muted">This place is not directly used in any entries.</span>
+          <% end %>
+      </dd>
+      <dt sdbm-tooltip="place_parent">Parent</dt>
+      <dd>
+        <span class="glyphicon glyphicon-globe"></span>
+        <% if @model.parent %>
+          <%= render partial: "parent", locals: {model: @model } %>        
+        <% else %>
+          <span class="text-muted">This place has no parent set.</span>
+        <% end %>
+      </dd>
+      <dt>
+        <span sdbm-tooltip="place_latitude">Lat. / </span><span sdbm-tooltip="place_longitude">Long.</span>
+        <span class="glyphicon glyphicon-map-marker" id="center"></span>
+      </dt>
+      <dd>
+        <span><%= @model.latitude ? @model.latitude.to_f : "?" %></span>, 
+        <span><%= @model.longitude ? @model.longitude.to_f : "?" %></span>
+      </dd>
+      <dt sdbm-tooltip="place_authoritysource">Place Authority</dt>
+      <dd>
+        <% if @model.authority_id %>
+          <%= link_to "#{@model.authority_id}", "#{@model.authority_source}/#{@model.authority_id}" %>
+        <% else %>
+          <span class="text-muted">This place is linked to no exteral authority yet.</span>
+        <% end %>
+      </dd>
+      <dt sdbm-tooltip="place_evidence">Evidence</dt>
+      <dd>
+        <% if @model.evidence %>
+          <%= @model.evidence %>
+        <% else %>
+          <span class="text-muted">There is no additional evidence recorded.</span>
+        <% end %>
+      </dd>      
+      <dt style="width: 100%;">Associated Named Entities</dt>
+      <dd style="padding: 0px 7px;">
+        
+        <p class="text-muted"><%= @model.name %> is associated with <%= "#{@model.names.count} #{'name'.pluralize(@model.names.count)}" %> </p>
+
+        <label for="" class="control-label">Page: <input id="page-selector" type="number" class="form-control" value="0" min="0" max="<%= (@name_places.count / @page_size.to_f).ceil - 1 %>"></label>
+
+        <% i = 0 %>
+        <div class="tab-content">
+        <% @name_places.in_groups_of(@page_size, false) do |name_places| %>
+          <div id="page-<%= i %>" class="tab-page tab-pane fade <%= i == 0 ? 'active in' : '' %>">
+            <% if @name_places.count > @page_size %>        
+              <p class="text-muted">Showing <%= "name".pluralize(name_places.count) %> <%= i * @page_size %> to <%= i * @page_size + name_places.count %> of <%= @name_places.count %></p>
+            <% end %>
+            <ul class="list-unstyled">
+              <% name_places.each do |name_place| %>
+                <li><%= link_to name_place.display_value("name"), name_path(name_place.name) %></li>
+              <% end %>
+            </ul>
+          </div>
+          <% i += 1 %>
+        <% end %>
+        </div>
+
+      </dd>     
+      <% if @model.created_at.present? %>
+          <dt>Added</dt>
+          <dd>
+              by <%= render partial: "shared/username_with_profile_link", locals: { user: @model.created_by } %>
+              <br>on <%= @model.created_at.to_formatted_s(:date_and_time) %> <br>
+          </dd>
+      <% end %>
+      <% if @model.updated_at.present? && @model.updated_at != @model.created_at %>
+          <dt>Last Updated</dt>
+          <dd>
+              by <%= render partial: "shared/username_with_profile_link", locals: { user: @model.updated_by } %>
+              <br>on <%= @model.updated_at %>
+          </dd>
+      <% end %>
+    </dl>
+  </div>  
+</div>
+<div class="row">
+  <div class="col-sm-12">
+    <h4>Children</h4>
+    <% if @model.children.count <= 0 %>
+        <span class="text-muted">This place does not contain any other places.</span>
+      </dd>
+    <% else %>
+      <dd style="padding: 0px;">
+        <ul class="list-inline text-left">
+        <% @model.children.order(:name).each do |child| %>
+          <li style="font-size: <%= 12 + [10, child.children.count].min %>px;"><span class="text-muted"></span>  <%= link_to child.name, place_path(child) %></li>
+        <% end %>
+        </ul>
+    <% end %>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-2"></div>
+  <div class="col-sm-8">
+    <h2 class="text-center"><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
+    <p class='text-muted'>Share additional information about this place in the box below. Your comments will be displayed publicly.</p>
+    <%= render partial: "comments/show_all", locals: {comments: @model.comments.where(public: true), record: @model} %>    
+  </div>
+</div>
