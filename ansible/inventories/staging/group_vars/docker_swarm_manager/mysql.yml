@@ -1,13 +1,13 @@
 mysql_versioned_secrets:
   mysql_database:
-    value: "{{ sdbm_vault_values.secret.mysql_database }}"
-    version: "{{ sdbm_vault_values.metadata.version }}"
+    value: "{{ sdbmss_vault_values.secret.mysql_database }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
   mysql_password:
-    value: "{{ sdbm_vault_values.secret.mysql_password }}"
-    version: "{{ sdbm_vault_values.metadata.version }}"
+    value: "{{ sdbmss_vault_values.secret.mysql_password }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
   mysql_root_password:
-    value: "{{ sdbm_vault_values.secret.mysql_root_password }}"
-    version: "{{ sdbm_vault_values.metadata.version }}"
+    value: "{{ sdbmss_vault_values.secret.mysql_root_password }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
   mysql_mysql_user:
-    value: "{{ sdbm_vault_values.secret.mysql_mysql_user }}"
-    version: "{{ sdbm_vault_values.metadata.version }}"
+    value: "{{ sdbmss_vault_values.secret.mysql_mysql_user }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"

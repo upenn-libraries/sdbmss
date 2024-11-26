@@ -8,6 +8,6 @@ solr_image_tag: "development"
 
 solr_port: 3000
 
-solr_proxy_host: "sdbm-dev.library.upenn.int"
+solr_proxy_host: "sdbmss-dev.library.upenn.int"
 
 solr_replicas: 1
