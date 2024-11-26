@@ -9,5 +9,5 @@ app_solr_url: "http://{{ solr_custom_env_variables.SOLR_ADMIN_USERNAME }}:{{ sol
 app_url: "sdbm.library.upenn.edu"
 app_versioned_secrets:
   rails_master_key:
-    value: "{{ sdbm_vault_values.secret.rails_master_key }}"
-    version: "{{ sdbm_vault_values.metadata.version }}"
+    value: "{{ sdbmss_vault_values.secret.rails_master_key }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"

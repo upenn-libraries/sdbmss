@@ -31,8 +31,8 @@ Vagrant.configure("2") do |config|
   # Add domains to hosts file
   config.hostsupdater.aliases = {
     "10.10.2.215" => [
-      "sdbm-dev.library.upenn.edu",
-      "sdbm-dev.library.upenn.int"
+      "sdbmss-dev.library.upenn.edu",
+      "sdbmss-dev.library.upenn.int"
     ]
   }
 
