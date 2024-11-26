@@ -18,10 +18,10 @@ include:
   - template: "Workflows/MergeRequest-Pipelines.gitlab-ci.yml"
   - component: gitlab.library.upenn.edu/devops/gitlab/components/deploy/deploy@0.0.15
     inputs:
-      deploy_environment_url: "https://sdbmdev.library.upenn.edu"
+      deploy_environment_url: "https://sdbmss-staging.library.upenn.edu"
       deploy_host: "${DEPLOY_HOST}"
       valid_principals: "${VALID_PRINCIPALS}"
-      vault_auth_role: "${VALID_AUTH_ROLE}"
+      vault_auth_role: "${VAULT_AUTH_ROLE}"
       vault_ssh_client_role: "${VAULT_SSH_CLIENT_ROLE}"
   - component: gitlab.library.upenn.edu/devops/gitlab/components/deploy/deploy@0.0.15
     inputs:
@@ -30,7 +30,7 @@ include:
       deploy_host: "${DEPLOY_HOST}"
       job_suffix: "production"
       valid_principals: "${VALID_PRINCIPALS}"
-      vault_auth_role: "${VALID_AUTH_ROLE}"
+      vault_auth_role: "${VAULT_AUTH_ROLE}"
       vault_ssh_client_role: "${VAULT_SSH_CLIENT_ROLE}"
 
 stages:
