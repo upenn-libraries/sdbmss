@@ -1,6 +1,5 @@
 ---
 is_development: true
-project_root: "/opt/devops"
 
 cronjobs:
   - name: "Cleanup Sessions"

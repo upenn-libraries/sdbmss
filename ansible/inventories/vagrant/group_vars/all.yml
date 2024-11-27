@@ -1,6 +1,6 @@
 ---
 # Variables for Vault
-# sdbmss_vault_values: "{{ lookup('community.hashi_vault.vault_kv2_get', 'sdbm/vagrant', engine_mount_point='kv-applications') }}"
+sdbmss_vault_values: "{{ lookup('community.hashi_vault.vault_kv2_get', 'sdbmss/vagrant', engine_mount_point='kv-applications') }}"
 
 docker_swarm_addr: "{{ ansible_host }}"
 

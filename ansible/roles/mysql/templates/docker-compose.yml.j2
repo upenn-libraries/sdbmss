@@ -40,10 +40,6 @@ networks:
   mysql:
     name: mysql
 
-volumes:
-  mysql_data:
-    name: mysql_data
-
 secrets:
   mysql_password:
     external: true
@@ -51,3 +47,7 @@ secrets:
   mysql_root_password:
     external: true
     name: "{{ 'mysql_root_password_v' ~ mysql_versioned_secrets.root_password.version }}"
+
+volumes:
+  mysql_data:
+    name: mysql_data

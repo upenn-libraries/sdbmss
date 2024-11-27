@@ -1,28 +1,49 @@
 ---
-app_admin_password: "password"
-app_blacklight_secret_key: "x"
 app_build_docker_image: false
-app_devise_secret_key: "x"
-app_email_exceptions_to: "user@example.com"
-app_email_from: "user@example.com"
-app_host: "localhost"
 app_image_name: "sdbm"
 app_image_registry: "gitlab.library.upenn.edu/sdbm/sdbmss"
 app_image_tag: "main-development"
-app_notify_email: "user@example.com"
-app_notify_email_password: "x"
 app_port: 3000
 app_rails_env: "development"
-app_rails_pass: "password"
-app_rails_user: "rails"
+app_rails_user: "ljs"
 app_replicas: 1
-app_secret_token: "x"
-app_secret_key_base: "x"
-app_smtp_host: "mail.somewhere.com"
 app_solr_url: "http://{{ solr_custom_env_variables.SOLR_ADMIN_USERNAME }}:{{ solr_custom_env_variables.SOLR_ADMIN_PASSWORD }}@solr-1:8983/solr/sdbm"
 app_url: "sdbm-dev.library.upenn.edu"
 
 app_versioned_secrets:
+  admin_password:
+    value: "{{ sdbmss_vault_values.secret.admin_password }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
+  blacklight_secret_key:
+    value: "{{ sdbmss_vault_values.secret.sdbmss_blacklight_secret_key }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
+  devise_secret_key:
+    value: "{{ sdbmss_vault_values.secret.sdbmss_devise_secret_key }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
+  email_exceptions_to:
+    value: "{{ sdbmss_vault_values.secret.sdbmss_email_exceptions_to }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
+  email_from:
+    value: "{{ sdbmss_vault_values.secret.sdbmss_email_from }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
+  notify_email:
+    value: "{{ sdbmss_vault_values.secret.sdbmss_notify_email }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
+  notify_email_password:
+    value: "{{ sdbmss_vault_values.secret.sdbmss_notify_email_password }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
   rails_master_key:
-    value: "123456789456123456"
-    version: "1"
+    value: "{{ sdbmss_vault_values.secret.rails_master_key }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
+  rails_pass:
+    value: "{{ sdbmss_vault_values.secret.rails_pass }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
+  secret_key_base:
+    value: "{{ sdbmss_vault_values.secret.sdbmss_secret_key_base }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
+  secret_token:
+    value: "{{ sdbmss_vault_values.secret.sdbmss_secret_token }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
+  smtp_host:
+    value: "{{ sdbmss_vault_values.secret.sdbmss_smtp_host }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
