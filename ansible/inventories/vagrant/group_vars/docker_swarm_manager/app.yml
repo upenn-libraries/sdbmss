@@ -1,14 +1,5 @@
 ---
 app_build_docker_image: false
-app_image_name: "sdbm"
-app_image_registry: "gitlab.library.upenn.edu/sdbm/sdbmss"
 app_image_tag: "development"
-app_port: 3000
-app_rails_env: "development"
-app_replicas: 1
 app_solr_url: "http://solr:8983/solr/development"
 app_url: "sdbm-dev.library.upenn.edu"
-app_versioned_secrets:
-  rails_master_key:
-    value: "d387ab7464fc5b8bb2e5c0dcd4105355"
-    version: "1"

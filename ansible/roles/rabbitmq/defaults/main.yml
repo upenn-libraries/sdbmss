@@ -2,9 +2,9 @@
 rabbitmq_image_name: "rabbitmq"
 rabbitmq_image_tag: "3.7"
 
-rabbitmq_user: "rabbitmq"
+rabbitmq_user: "sdbm"
 
 rabbitmq_versioned_secrets:
   password:
-    value: "password"
-    version: "1"
+    value: "{{ sdbmss_vault_values.secret.rabbit_password }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
