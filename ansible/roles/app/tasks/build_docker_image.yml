@@ -3,6 +3,6 @@
   ansible.builtin.shell:
     cmd: |-
       docker build --build-arg RAILS_ENV="{{ app_rails_env }}" --target={{ app_rails_env }} -t {{ app_image_name }}:{{ app_image_tag }} .
-    chdir: "/sdbm/ansible/roles/app/files/src/"
+    chdir: "/sdbmss/ansible/roles/app/files/src/"
   environment:
     DOCKER_BUILDKIT: "true"

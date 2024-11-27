@@ -1,13 +1,5 @@
 ---
-app_build_docker_image: false
 app_image_name: "gitlab.library.upenn.edu/sdbm/sdbmss"
 app_image_tag: "{{ image_tag }}"
-app_port: 3000
 app_rails_env: "staging"
-app_replicas: 1
-app_solr_url: "http://{{ solr_custom_env_variables.SOLR_ADMIN_USERNAME }}:{{ solr_custom_env_variables.SOLR_ADMIN_PASSWORD }}@solr-1:8983/solr/sdbm"
 app_url: "sdbmss-staging.library.upenn.edu"
-app_versioned_secrets:
-  rails_master_key:
-    value: "{{ sdbmss_vault_values.secret.rails_master_key }}"
-    version: "{{ sdbmss_vault_values.metadata.version }}"

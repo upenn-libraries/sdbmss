@@ -9,8 +9,8 @@ mysql_user: "sdbm"
 
 mysql_versioned_secrets:
   password:
-    value: "password"
-    version: "1"
+    value: "{{ sdbmss_vault_values.secret.mysql_password }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
   root_password:
-    value: "password"
-    version: "1"
+    value: "{{ sdbmss_vault_values.secret.mysql_root_password }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
