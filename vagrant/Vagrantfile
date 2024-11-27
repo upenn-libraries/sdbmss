@@ -8,6 +8,21 @@ def arm_architecture?
   RbConfig::CONFIG['host_cpu'].downcase.start_with?('arm')
 end
 
+# Class to grab the users token from hashicorp vault v2 endpoint using ldap
+class Token
+  def to_s
+    print "HashiCorp Vault username: "
+    hv_user = STDIN.gets.chomp
+
+    print "HashiCorp Vault password: "
+    hv_pass = STDIN.noecho(&:gets).chomp
+
+    Vault.address = "https://vault.library.upenn.edu"
+    vault_instance = Vault.auth.ldap(hv_user, hv_pass)
+    vault_instance.auth.client_token
+  end
+end
+
 # Arrange nodes in reverse order so the manager is the last vm to be provisioned
 cluster = {
   "sdbm-manager" => { :ip => "10.10.2.215", :cpus => 4, :mem => 8192, :port => 2020 }
@@ -31,8 +46,8 @@ Vagrant.configure("2") do |config|
   # Add domains to hosts file
   config.hostsupdater.aliases = {
     "10.10.2.215" => [
-      "sdbm-dev.library.upenn.edu",
-      "sdbm-dev.library.upenn.int"
+      "sdbmss-dev.library.upenn.edu",
+      "sdbmss-dev.library.upenn.int"
     ]
   }
 
@@ -65,20 +80,22 @@ Vagrant.configure("2") do |config|
       # Run the ansible playbook after the manager vm has been provisioned
       if hostname == "sdbm-manager"
         # Add volumes for development
-        cfg.vm.synced_folder "../", "/sdbm"
+        cfg.vm.synced_folder "../", "/sdbmss"
 
         cfg.vm.provision :ansible_local do |ansible|
-          ansible.config_file = "/sdbm/ansible/ansible.cfg"
+          ansible.config_file = "/sdbmss/ansible/ansible.cfg"
           ansible.extra_vars = {
+            ansible_hashi_vault_token: ENV.fetch('VAULT_TOKEN', Token.new),
+            ansible_hashi_vault_url: "https://vault.library.upenn.edu",
             ansible_python_interpreter: "/usr/bin/python3"
           }
           ansible.install_mode = "pip3"
-          ansible.inventory_path = "/sdbm/ansible/inventories/vagrant"
-          ansible.galaxy_role_file = "/sdbm/ansible/roles/requirements.yml"
-          ansible.galaxy_roles_path = "/sdbm/ansible/roles"
+          ansible.inventory_path = "/sdbmss/ansible/inventories/vagrant"
+          ansible.galaxy_role_file = "/sdbmss/ansible/roles/requirements.yml"
+          ansible.galaxy_roles_path = "/sdbmss/ansible/roles"
           ansible.galaxy_command = "ansible-galaxy install -r %{role_file} --force"
           ansible.limit = "all"
-          ansible.playbook = "/sdbm/ansible/site.yml"
+          ansible.playbook = "/sdbmss/ansible/site.yml"
           ansible.verbose = false
         end
       end

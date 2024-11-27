@@ -12,15 +12,14 @@ services:
         parallelism: 1
       replicas: 1
     environment:
-      #RABBITMQ_ERLANG_COOKIE: 'secret cookie here' # needed for rabbitmqctl to work (??)
       RABBITMQ_DEFAULT_PASS: "{{ rabbitmq_versioned_secrets.password.value }}"
       RABBITMQ_DEFAULT_USER: "{{ rabbitmq_user }}"
-    #healthcheck:
-    #  test: ["rabbitmq-diagnostics", "check_port_connectivity"]
-    #  interval: 30s
-    #  retries: 3
-    #  start_period: 1m
-    #  timeout: 30s
+    healthcheck:
+      test: ["rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 30s
+      retries: 3
+      start_period: 1m
+      timeout: 30s
     logging:
       driver: json-file
       options:

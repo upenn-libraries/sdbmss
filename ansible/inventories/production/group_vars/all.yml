@@ -1,2 +1,2 @@
 ---
-sdbm_vault_values: "{{ lookup('community.hashi_vault.vault_kv2_get', 'sdbm/production', engine_mount_point='kv-applications') }}"
+sdbmss_vault_values: "{{ lookup('community.hashi_vault.vault_kv2_get', 'sdbmss/production', engine_mount_point='kv-applications') }}"
