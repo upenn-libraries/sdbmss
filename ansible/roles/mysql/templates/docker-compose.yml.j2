@@ -34,7 +34,7 @@ services:
       - mysql_password
       - mysql_root_password
     volumes:
-      - mysql_data:/var/lib/mysql
+      - sdbm_data:/var/lib/mysql
 
 networks:
   mysql:
@@ -49,5 +49,4 @@ secrets:
     name: "{{ 'mysql_root_password_v' ~ mysql_versioned_secrets.root_password.version }}"
 
 volumes:
-  mysql_data:
-    name: mysql_data
+  sdbm_data:

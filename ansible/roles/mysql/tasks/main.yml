@@ -11,7 +11,7 @@
 
 - name: Deploy mysql
   community.docker.docker_stack:
-    name: "sdbm"
+    name: "sdbmss"
     compose:
       - "{{ lookup('template', 'docker-compose.yml.j2') | from_yaml }}"
     state: present

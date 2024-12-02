@@ -66,6 +66,8 @@ services:
         uid: "1000"
         gid: "1000"
         mode: 0440
+    volumes:
+      - sdbm_solr:/home/app/solr
 
 networks:
   mysql:
@@ -77,3 +79,6 @@ secrets:
   rails_master_key:
     external: true
     name: "{{ 'app_rails_master_key_v' ~ app_versioned_secrets.rails_master_key.version }}"
+
+volumes:
+  sdbm_solr:
