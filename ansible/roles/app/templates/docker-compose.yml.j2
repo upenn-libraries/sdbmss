@@ -106,8 +106,8 @@ services:
       {% if is_development == true %}
       - /sdbmss/ansible/roles/app/files/src/:/home/app/
       {% else %}
-      - sdbm_assets:/usr/src/app/public/assets
-      - sdbm_docs:/usr/src/app/public/static
+      - sdbm_assets:/home/app/public/assets
+      - sdbm_docs:/home/app/public/static
       {% endif %}
 
 networks:
