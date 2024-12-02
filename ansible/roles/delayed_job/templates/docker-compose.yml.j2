@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   delayed_job:
-    image: "{{ delayed_job_image_name }}:{{ delayed_job_image_tag }}"
+    image: "{{ app_image_name }}:{{ app_image_tag }}"
     command: ["bundle", "exec", "rake", "jobs:work"]
     deploy:
       placement:
