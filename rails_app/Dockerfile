@@ -91,7 +91,7 @@ RUN apt-get update && apt-get install -y --force-yes \
   addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app && \
   mkdir -p ${PROJECT_ROOT}/tmp/pids
 
-COPY --chown=app:app --chmod=755 docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/
 COPY --chown=app:app . ${PROJECT_ROOT}
 
 # WORKDIR /opt
@@ -162,7 +162,7 @@ RUN apt-get update && apt-get install -y --force-yes \
   addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app && \
   mkdir -p ${PROJECT_ROOT}/tmp/pids
 
-COPY --chown=app:app --chmod=755 docker-entrypoint.sh /usr/local/bin/
+COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/
 COPY --chown=app:app . ${PROJECT_ROOT}
 
 # WORKDIR /opt
