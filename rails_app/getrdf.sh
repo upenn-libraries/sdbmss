@@ -8,7 +8,7 @@ if ! [ -d "public/static/docs" ]; then
 
 fi
 
-dir="/usr/src/app/public/static/docs"
+dir="/home/app/public/static/docs"
 
 echo "GETTING LIST OF TTL EXPORTS"
 old_files=$(ls ${dir}/output*.ttl.gz)
