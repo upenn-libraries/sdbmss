@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   solr:
-    image: "{{ solr_image_name }}:{{ solr_image_tag }}"
+    image: "{{ app_image_name }}:{{ app_image_tag }}"
     command: ["bundle", "exec", "rake", "sunspot:solr:run"]
     deploy:
       labels:

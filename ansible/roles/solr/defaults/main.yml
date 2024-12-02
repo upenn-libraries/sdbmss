@@ -4,10 +4,6 @@ solr_debug: false
 
 solr_host: "sdbm-dev.library.upenn.int"
 
-solr_image_name: "sdbm"
-solr_image_registry: "gitlab.library.upenn.edu/sdbm/sdbmss"
-solr_image_tag: "development"
-
 solr_port: 8983
 
 solr_replicas: 1
