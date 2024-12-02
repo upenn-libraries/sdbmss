@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -ex
 
 if [ "$1" = "bundle" -a "$2" = "exec" -a "$3" = "rails" ]; then
     if [ ! -z "${APP_UID}" ] && [ ! -z "${APP_GID}" ]; then
