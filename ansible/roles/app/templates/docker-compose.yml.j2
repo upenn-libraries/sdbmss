@@ -5,7 +5,7 @@ version: '3.8'
 services:
   app:
     image: "{{ app_image_name }}:{{ app_image_tag }}"
-    command: ["bundle", "exec", "rails", "s", "unicorn", "-b", "0.0.0.0"]
+    command: ["bundle", "exec", "rails", "s", "unicorn", "-b", "tcp://0.0.0.0:{{ app_port }}"]
     deploy:
       labels:
         - "traefik.enable=true"
