@@ -2,4 +2,5 @@
 app_image_name: "gitlab.library.upenn.edu/sdbm/sdbmss"
 app_image_tag: "{{ image_tag }}"
 app_rails_env: "staging"
+app_solr_url: "http://solr:8983/solr/staging"
 app_url: "sdbmss-staging.library.upenn.edu"
