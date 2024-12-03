@@ -81,16 +81,9 @@ services:
           "curl -fsSL localhost:{{ app_port }} || exit 1",
         ]
       timeout: 10s
-
-      {% if is_development == true %}
       interval: 30s
       retries: 10
       start_period: 30s
-      {% else %}
-      interval: 10s
-      retries: 6
-      start_period: 10s
-      {% endif %}
 
     networks:
       - mysql
