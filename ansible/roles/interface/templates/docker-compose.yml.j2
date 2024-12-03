@@ -19,7 +19,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "ps aux | grep 'ruby' || exit 1",
+          "ps aux | grep '[r]uby' || exit 1",
         ]
       interval: 30s
       retries: 3
