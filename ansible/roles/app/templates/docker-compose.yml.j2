@@ -78,7 +78,7 @@ services:
       test:
         [
           "CMD-SHELL",
-          "curl -fsSL localhost:{{ app_port }} || exit 1",
+          "ps aux | grep '[r]ails worker' || exit 1",
         ]
       timeout: 10s
       interval: 30s
