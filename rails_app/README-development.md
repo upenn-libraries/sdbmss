@@ -90,32 +90,33 @@ Then restart dependent containers:
 
 Setup database - perform setup:
 
-	    docker exec $(docker ps -q -f name=sdbmss_rails) bundle exec rake db:setup
+	    docker exec $(docker ps -q -f name=app) bundle exec rake db:setup
 
 (Optional: Load data from .sql dump)
 
 ```bash
-docker cp sdbm.sql.gz  $(docker ps -q -f name=sdbmss_db):/tmp/sdbm.sql.gz
-docker exec -it  $(docker ps -q -f name=sdbmss_db) bash
+docker cp sdbm.sql.gz  $(docker ps -q -f name=mysql):/tmp/sdbm.sql.gz
+docker exec -it  $(docker ps -q -f name=msysql) bash
 cd /tmp
 gunzip sdbm.sql.gz
-mysql -u <MYSQL_USER> -p <MYSQL_DATABASE> < sdbm.sql
+mysql -u sdbm -p sdbm < sdbm.sql
+# the vagrant env database password is "password"
 rm sdbm.sql # remove the sql file (it's very big)
 exit # exit the MySQL container
-docker exec $(docker ps -q -f name=sdbmss_rails) bundle exec rake db:migrate
+docker exec $(docker ps -q -f name=app) bundle exec rake db:migrate
 ```
 
 **NOTE**: If you are importing from a data file that includes **Page** objects, the database records will be copied, but not the page files.  You will need to move these manually to the appropriate place in the public/static folder (uploads/, tooltips/ or docs/)
 
 ```
-docker cp docs $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/static/
-docker cp tooltips $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/static/
-docker cp uploads $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/static/
+docker cp docs $(docker ps -q -f name=app):/home/app/public/static/
+docker cp tooltips $(docker ps -q -f name=app):/home/app/public/static/
+docker cp uploads $(docker ps -q -f name=app):/home/app/public/static/
 ```
 
 Index in Solr:
 
-	    docker exec $(docker ps -q -f name=sdbmss_rails) bundle exec rake sunspot:reindex
+	    docker exec $(docker ps -q -f name=app) bundle exec rake sunspot:reindex
 
 ## 6. Jena First Time Setup
 
@@ -123,7 +124,7 @@ Index in Solr:
 ### Build TTL from the database 
 
 ```
-docker exec -t $(docker ps -q -f name=sdbmss_rails) bundle exec rake sparql:test
+docker exec -t $(docker ps -q -f name=app) bundle exec rake sparql:test
 ```
 File should be in `.`; gzip it.
 
