@@ -1,6 +1,7 @@
 
 require 'cgi'
 require 'net/http'
+require 'openssl'
 
 # https://www.oclc.org/developer/develop/web-services/viaf/authority-cluster.en.html
 module VIAF
@@ -70,9 +71,10 @@ module VIAF
     get_viaf_response(VIAF::Constants::HOST, path)
   end
 
-  def self.sru_search(query, maximumRecords: 10, startRecord: 1, sortKeys: "holdingscount", httpAccept: "text/xml")
-    path = "/viaf/search?query=#{CGI::escape(query)}&maximumRecords=#{CGI::escape(maximumRecords.to_s)}&startRecord=#{CGI::escape(startRecord.to_s)}&sortKeys=#{CGI::escape(sortKeys.to_s)}&httpAccept=#{CGI::escape(httpAccept.to_s)}"
-    get_viaf_response(VIAF::Constants::HOST, path)
+  def self.sru_search(query, maximumRecords: 10, startRecord: 1, sortKeys: "holdingscount", httpAccept: "application/xml")
+    path = "/viaf/search"
+    query_string = "query=#{CGI::escape(query)}&maximumRecords=#{CGI::escape(maximumRecords.to_s)}&startRecord=#{CGI::escape(startRecord.to_s)}&sortKeys=#{CGI::escape(sortKeys.to_s)}"
+    get_viaf_response(VIAF::Constants::HOST, path, query_string: query_string, httpAccept: httpAccept)
   end
 
   # we use sru_search, not autosuggest
@@ -84,12 +86,36 @@ module VIAF
     get_viaf_response(VIAF::Constants::HOST, path)
   end
 
-  def self.get_viaf_response(host, path)
-    resp = Net::HTTP.get_response(host, path)
-    if %w{ 301 302 }.include? resp.code
-      resp = Net::HTTP.get_response(URI.parse(resp['location']))
+  def self.get_viaf_response(host, path, query_string: nil, httpAccept: 'application/xml')
+    full_path = query_string.present? ? "#{path}?#{query_string.sub(/^\?/, '')}" : path
+    url = "https://#{host}#{full_path}"
+    Rails.logger.debug "URL is '#{url}'"
+    uri = URI.parse(url)
+    resp = make_viaf_request(uri)
+
+    count = 0
+    while %w{ 301 302 307 }.include? resp.code
+      Rails.logger.warn "VIAF response code: #{resp.code} and location: #{resp['location']}"
+      url = resp['location'].starts_with?('/') ? "#{host}#{resp['location']}" : resp['location']
+      uri = URI.parse(url)
+      resp = make_viaf_request(uri)
+
+      count += 1
+      if count > 5
+        Rails.logger.warn "Redirected more than 5 times!"
+        break
+      end
     end
+    Rails.logger.debug "VIAF response code: #{resp.code} and location: #{resp['location']}"
     resp
+  end
+
+  def self.make_viaf_request(uri)
+    http_object = Net::HTTP.new(uri.host, uri.port)
+    http_object.use_ssl = true  # Enable HTTPS
+    http_object.verify_mode = OpenSSL::SSL::VERIFY_PEER  # Verify SSL certificates
+    req = Net::HTTP::Get.new(uri.request_uri, 'Accept' => 'application/xml')
+    http_object.request(req)
   end
 
 end
