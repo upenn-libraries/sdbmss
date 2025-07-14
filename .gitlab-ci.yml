@@ -16,14 +16,14 @@ include:
     file:
       - ".trivy_container_scanning.yml"
   - template: "Workflows/MergeRequest-Pipelines.gitlab-ci.yml"
-  - component: gitlab.library.upenn.edu/devops/gitlab/components/deploy/deploy@latest
+  - component: gitlab.library.upenn.edu/devops/gitlab/components/deploy/deploy@~latest
     inputs:
       deploy_environment_url: "https://sdbmss-staging.library.upenn.edu"
       deploy_host: "${DEPLOY_HOST}"
       valid_principals: "${VALID_PRINCIPALS}"
       vault_auth_role: "${VAULT_AUTH_ROLE}"
       vault_ssh_client_role: "${VAULT_SSH_CLIENT_ROLE}"
-  - component: gitlab.library.upenn.edu/devops/gitlab/components/deploy/deploy@latest
+  - component: gitlab.library.upenn.edu/devops/gitlab/components/deploy/deploy@~latest
     inputs:
       deploy_environment: "production"
       deploy_environment_url: "https://sdbm.library.upenn.edu"
