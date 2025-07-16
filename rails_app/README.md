@@ -119,7 +119,7 @@ Before you begin, have the following:
 
   Setup database - perform setup:
 
-	    docker exec $(docker ps -q -f name=sdbmss_rails) bundle exec rake db:setup
+	    docker exec $(docker ps -q -f name=sdbmss_app) bundle exec rake db:setup
 
   (Optional: Load data from .sql dump)
 
@@ -131,27 +131,27 @@ gunzip sdbm.sql.gz
 mysql -u <MYSQL_USER> -p <MYSQL_DATABASE> < sdbm.sql
 rm sdbm.sql # remove the sql file (it's very big)
 exit # exit the MySQL container
-docker exec $(docker ps -q -f name=sdbmss_rails) bundle exec rake db:migrate
+docker exec $(docker ps -q -f name=sdbmss_app) bundle exec rake db:migrate
 ```
 
   **NOTE**: If you are importing from a data file that includes **Page** objects, the database records will be copied, but not the page files.  You will need to move these manually to the appropriate place in the public/static folder (uploads/, tooltips/ or docs/)
 
 ```
-docker cp docs $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/static/
-docker cp tooltips $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/static/
-docker cp uploads $(docker ps -q -f name=sdbmss_rails):/usr/src/app/public/static/
+docker cp docs $(docker ps -q -f name=sdbmss_app):/usr/src/app/public/static/
+docker cp tooltips $(docker ps -q -f name=sdbmss_app):/usr/src/app/public/static/
+docker cp uploads $(docker ps -q -f name=sdbmss_app):/usr/src/app/public/static/
 ```
 
   Index in Solr:
 
-	    docker exec $(docker ps -q -f name=sdbmss_rails) bundle exec rake sunspot:reindex
+	    docker exec $(docker ps -q -f name=sdbmss_app) bundle exec rake sunspot:reindex
 
 **8. Jena First Time Setup**
 
   Regenerate RDF for dataset:
 
 ```
-docker exec -t $(docker ps -q -f name=sdbmss_rails) bundle exec rake sparql:test
+docker exec -t $(docker ps -q -f name=sdbmss_app) bundle exec rake sparql:test
 # file should be in ~/deployments/sdbms/test.ttl; gzip it
 # gzip it
 gzip ~/deployments/sdbmss/test.ttl
@@ -177,12 +177,12 @@ rm ~/deployments/sdbms/test.ttl.gz
       docker service scale sdbmss_rabbitmq=0
       docker service scale sdbmss_rabbitmq=1
 
-      docker service scale sdbmss_rails=0
-      docker service scale sdbmss_rails=1
+      docker service scale sdbmss_app=0
+      docker service scale sdbmss_app=1
 
 Run the Jena verify task to confirm that it works:
 
-      $ /bin/bash -l -c 'docker exec -t $(docker ps -q -f name=sdbmss_rails) bundle exec rake jena:verify'
+      $ /bin/bash -l -c 'docker exec -t $(docker ps -q -f name=sdbmss_app) bundle exec rake jena:verify'
       Starting Queue Listening
       Parsed contents: {"id"=>300122, "code"=>"200", "message"=>"OK"}
       Jena Update was Successful!
