@@ -5,7 +5,7 @@ include:
       - ".rspec.yml"
       - ".rubocop.yml"
   - project: "devops/gitlab/ci-templates/docker"
-    ref: "1.0.0"
+    ref: "main"
     file:
       - ".amend_manifests.yml"
       - ".build_and_push_docker_images.yml"
