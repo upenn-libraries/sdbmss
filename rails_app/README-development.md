@@ -108,7 +108,9 @@ docker exec $(docker ps -q -f name=app) bundle exec rake db:migrate
 
 **NOTE**: If you are importing from a data file that includes **Page** objects, the database records will be copied, but not the page files.  You will need to move these manually to the appropriate place in the public/static folder (uploads/, tooltips/ or docs/)
 
-```
+```shell
+tar xf sdbm_data.tgz  # if needed
+cd sdbm_data          # if needed
 docker cp docs $(docker ps -q -f name=app):/home/app/public/static/
 docker cp tooltips $(docker ps -q -f name=app):/home/app/public/static/
 docker cp uploads $(docker ps -q -f name=app):/home/app/public/static/
