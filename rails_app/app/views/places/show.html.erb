@@ -26,7 +26,7 @@
   <%= javascript_include_tag "leaflet", rel: "nofollow" %>
   <%= stylesheet_link_tag "extras", media: "all" %>
   <%= javascript_include_tag "extras" %>
-  
+
   <%= javascript_include_tag "leaflet-provider", rel: "nofollow" %>
   <%= stylesheet_link_tag "leaflet", media: "all" %>
 
@@ -57,13 +57,17 @@
         map.setZoom(<%= @model.ancestors.count %> + 3);
         L.marker([latitude, longitude], {icon: sdbmIcon}).addTo(map);
       <% else %>
-        map.setView([60, 0], 13);        
+        map.setView([60, 0], 13);
         map.setZoom(2);
       <% end %>
 
-      var Stamen_TonerLite = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-lite/{z}/{x}/{y}.{ext}', {
-        attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        subdomains: 'abcd',
+
+        var Stamen_TonerLite = L.tileLayer('https://tiles.stadiamaps.com/tiles/stamen_toner_lite/{z}/{x}/{y}{r}.{ext}', {
+            attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> ' +
+                '<a href="https://stamen.com/" target="_blank">&copy; Stamen Design</a> ' +
+                '&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> ' +
+                '&copy; <a href="https://www.openstreetmap.org/about" target="_blank">OpenStreetMap</a> ' +
+                'contributors',        subdomains: 'abcd',
         minZoom: 0,
         maxZoom: 20,
         ext: 'png'
@@ -100,14 +104,14 @@
       <span class="glyphicon glyphicon-info-sign"></span>
       Note: Coordinates locations for regions or countries are for reference only, and do not imply that the place of production or activity is limited to that specific point.
     </p>
-    
+
   </div>
   <div class="col-sm-6 pull-right">
-    
+
     <div id="map">
     </div>
 
-  </div>  
+  </div>
   <div class="col-sm-6">
     <dl class="document-metadata dl-horizontal dl-invert">
       <dt sdbm-tooltip="place_name">Name</dt>
@@ -126,7 +130,7 @@
       <dd>
         <span class="glyphicon glyphicon-globe"></span>
         <% if @model.parent %>
-          <%= render partial: "parent", locals: {model: @model } %>        
+          <%= render partial: "parent", locals: {model: @model } %>
         <% else %>
           <span class="text-muted">This place has no parent set.</span>
         <% end %>
@@ -136,7 +140,7 @@
         <span class="glyphicon glyphicon-map-marker" id="center"></span>
       </dt>
       <dd>
-        <span><%= @model.latitude ? @model.latitude.to_f : "?" %></span>, 
+        <span><%= @model.latitude ? @model.latitude.to_f : "?" %></span>,
         <span><%= @model.longitude ? @model.longitude.to_f : "?" %></span>
       </dd>
       <dt sdbm-tooltip="place_authoritysource">Place Authority</dt>
@@ -154,10 +158,10 @@
         <% else %>
           <span class="text-muted">There is no additional evidence recorded.</span>
         <% end %>
-      </dd>      
+      </dd>
       <dt style="width: 100%;">Associated Named Entities</dt>
       <dd style="padding: 0px 7px;">
-        
+
         <p class="text-muted"><%= @model.name %> is associated with <%= "#{@model.names.count} #{'name'.pluralize(@model.names.count)}" %> </p>
 
         <label for="" class="control-label">Page: <input id="page-selector" type="number" class="form-control" value="0" min="0" max="<%= (@name_places.count / @page_size.to_f).ceil - 1 %>"></label>
@@ -166,7 +170,7 @@
         <div class="tab-content">
         <% @name_places.in_groups_of(@page_size, false) do |name_places| %>
           <div id="page-<%= i %>" class="tab-page tab-pane fade <%= i == 0 ? 'active in' : '' %>">
-            <% if @name_places.count > @page_size %>        
+            <% if @name_places.count > @page_size %>
               <p class="text-muted">Showing <%= "name".pluralize(name_places.count) %> <%= i * @page_size %> to <%= i * @page_size + name_places.count %> of <%= @name_places.count %></p>
             <% end %>
             <ul class="list-unstyled">
@@ -179,7 +183,7 @@
         <% end %>
         </div>
 
-      </dd>     
+      </dd>
       <% if @model.created_at.present? %>
           <dt>Added</dt>
           <dd>
@@ -195,7 +199,7 @@
           </dd>
       <% end %>
     </dl>
-  </div>  
+  </div>
 </div>
 <div class="row">
   <div class="col-sm-12">
@@ -218,6 +222,6 @@
   <div class="col-sm-8">
     <h2 class="text-center"><span class="glyphicon glyphicon-comment"></span> Discussion</h2>
     <p class='text-muted'>Share additional information about this place in the box below. Your comments will be displayed publicly.</p>
-    <%= render partial: "comments/show_all", locals: {comments: @model.comments.where(public: true), record: @model} %>    
+    <%= render partial: "comments/show_all", locals: {comments: @model.comments.where(public: true), record: @model} %>
   </div>
 </div>
