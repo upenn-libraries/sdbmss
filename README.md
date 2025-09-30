@@ -93,10 +93,10 @@ There are number of initial setup steps required to run this SDBM.
 4. Index the database in Solr
 5. Set up Jena
 
-First get the SDBM data files from OneDrive (by permission only):
+First get the SDBM data files from [the SDBM Data folder on SharePoint](https://penno365.sharepoint.com/:f:/r/teams/LIBSDBMDev2025/Shared%20Documents/SDBMData?csf=1&web=1&e=y2Vxme) (by permission only):
 
-- [SDBM DB SQL](https://penno365.sharepoint.com/:u:/r/teams/LIBSDBMDev2025/Shared%20Documents/sdbm.sql.gz?csf=1&web=1&e=ME2yFB) (180MB)
-- [SDBM static data](https://penno365.sharepoint.com/:u:/r/teams/LIBSDBMDev2025/Shared%20Documents/sdbm_data.tgz?csf=1&web=1&e=NYaJ5m) (120MB)
+- `sdbm_data.tgz` (120MB)
+- `sdbm.sql.gz` (33MB)
 
 ### Copy the files to the Vagrant environment
 
@@ -148,7 +148,7 @@ docker exec $(docker ps -q -f name=app) bundle exec rake db:migrate
 Solr should be running in the Solr container. The Solr configuration is in the `solr` directory.
 
 ```bash
-docker exec $(docker ps -q -f name=app) bundle exec rake sunspot:reindex
+docker exec $(docker ps -q -f name=app) bundle exec rake sunspot:reindex > /dev/null 
 ```
 
 This process takes a couple of hours.
