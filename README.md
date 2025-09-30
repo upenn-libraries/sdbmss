@@ -98,6 +98,21 @@ First get the SDBM data files from OneDrive (by permission only):
 - [SDBM DB SQL](https://penno365.sharepoint.com/:u:/r/teams/LIBSDBMDev2025/Shared%20Documents/sdbm.sql.gz?csf=1&web=1&e=ME2yFB) (180MB)
 - [SDBM static data](https://penno365.sharepoint.com/:u:/r/teams/LIBSDBMDev2025/Shared%20Documents/sdbm_data.tgz?csf=1&web=1&e=NYaJ5m) (120MB)
 
+### Copy the files to the Vagrant environment
+
+Download the files and copy them to the `sdbm/vagrant` directory.
+
+```shell
+cp path/to/sdbm.sql.gz sdbm/vagrant/
+cp path/to/sdbm_data.tgz sdbm/vagrant/
+```
+
+Then copy the files to the Vagrant environment:
+
+```shell
+vagrant scp sdbm.sql.gz .
+vagrant scp sdbm_data.tgz .
+```
 
 #### Static assets setup
 
@@ -109,6 +124,7 @@ cd sdbm_data          # if needed
 docker cp docs $(docker ps -q -f name=app):/home/app/public/static/
 docker cp tooltips $(docker ps -q -f name=app):/home/app/public/static/
 docker cp uploads $(docker ps -q -f name=app):/home/app/public/static/
+cd ..
 ```
 
 #### Database setup
@@ -117,7 +133,7 @@ Copy the database SQL gzip file to the MySQL container, gunzip it and load impor
 
 ```bash
 docker cp sdbm.sql.gz  $(docker ps -q -f name=mysql):/tmp/sdbm.sql.gz
-docker exec -it  $(docker ps -q -f name=msysql) bash
+docker exec -it  $(docker ps -q -f name=mysql) bash
 cd /tmp
 gunzip sdbm.sql.gz
 mysql -u sdbm -p sdbm < sdbm.sql
