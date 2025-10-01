@@ -136,7 +136,7 @@ docker cp sdbm.sql.gz  $(docker ps -q -f name=mysql):/tmp/sdbm.sql.gz
 docker exec -it  $(docker ps -q -f name=mysql) bash
 cd /tmp
 gunzip sdbm.sql.gz
-mysql -u sdbm -p sdbm < sdbm.sql
+mysql -u sdbm --password=password sdbm < sdbm.sql
 # the vagrant env database password is "password"
 rm sdbm.sql # remove the sql file (it's very big)
 exit # exit the MySQL container
