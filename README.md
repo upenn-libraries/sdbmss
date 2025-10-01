@@ -82,6 +82,14 @@ Once your vagrant environment is set up you can ssh into the vagrant box to inte
 ```
   docker exec -it $(docker ps -q -f name="sdbmss_app") sh
 ```
+To exit the shell:
+```
+exit
+```
+To further exit the vagrant environment:
+```
+exit
+```
 
 ### First-time setup
 
@@ -100,18 +108,23 @@ First get the SDBM data files from [the SDBM Data folder on SharePoint](https://
 
 ### Copy the files to the Vagrant environment
 
-Download the files and copy them to the `sdbm/vagrant` directory.
+Download the files and copy them to the `sdbmss/vagrant/data` directory.
 
 ```shell
-cp path/to/sdbm.sql.gz sdbm/vagrant/
-cp path/to/sdbm_data.tgz sdbm/vagrant/
+cp path/to/sdbm.sql.gz sdbmss/vagrant/data
+cp path/to/sdbm_data.tgz sdbmss/vagrant/data
 ```
 
 Then copy the files to the Vagrant environment:
 
+Note: You may need to install the vagrant-scp plugin.
+```
+vagrant plugin install vagrant-scp
+```
+
 ```shell
-vagrant scp sdbm.sql.gz .
-vagrant scp sdbm_data.tgz .
+vagrant scp data/sdbm.sql.gz .
+vagrant scp data/sdbm_data.tgz .
 ```
 
 #### Static assets setup
@@ -143,15 +156,23 @@ exit # exit the MySQL container
 docker exec $(docker ps -q -f name=app) bundle exec rake db:migrate
 ```
 
+Remove the database files and data files from the Vagrant environment.
+```
+rm sdbm.sql.gz
+rm sdbm_data.tgz
+rm -rf sdbm_data
+```
+
 #### Solr setup
 
 Solr should be running in the Solr container. The Solr configuration is in the `solr` directory.
+Run this command from the Vagrant environment.
 
 ```bash
 docker exec $(docker ps -q -f name=app) bundle exec rake sunspot:reindex > /dev/null 
 ```
 
-This process takes a couple of hours.
+This process takes 10-20 minutes.
 
 
 #### Jena setup

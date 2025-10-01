@@ -32,11 +32,7 @@ Vagrant.configure("2") do |config|
   config.vagrant.plugins = ["vagrant-hostsupdater", "vagrant-vbguest"]
 
   # Select correct box for arch
-  if arm_architecture?
-    config.vm.box = "bento/ubuntu-22.04-arm64"
-  else
-    config.vm.box = "bento/ubuntu-22.04"
-  end
+   config.vm.box = "bento/ubuntu-22.04"
 
   # Install parallels plugin if user is on mac
   if Vagrant::Util::Platform::darwin?
