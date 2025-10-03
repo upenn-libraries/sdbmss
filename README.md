@@ -80,13 +80,15 @@ Once your vagrant environment is set up you can ssh into the vagrant box to inte
 1. Enter the Vagrant VM by running `vagrant ssh` in the `/vagrant` directory
 2. Start a shell in the `sdbm` container:
 ```
-  docker exec -it $(docker ps -q -f name="sdbmss_app") sh
+docker exec -it $(docker ps -q -f name="sdbmss_app") sh
+
 ```
 To exit the shell:
 ```
 exit
 ```
 To further exit the vagrant environment:
+
 ```
 exit
 ```
@@ -108,23 +110,17 @@ First get the SDBM data files from [the SDBM Data folder on SharePoint](https://
 
 ### Copy the files to the Vagrant environment
 
-Download the files and copy them to the `sdbmss/vagrant/data` directory.
+Download the files and copy them to the `sdbmss/vagrant/data` directory. Then run the vagrant environment:
 
-```shell
-cp path/to/sdbm.sql.gz sdbmss/vagrant/data
-cp path/to/sdbm_data.tgz sdbmss/vagrant/data
+```
+vagrant ssh
 ```
 
-Then copy the files to the Vagrant environment:
+The files that you put in the data directory will be automatically copied over to a directory in the
+docker shell. Make sure you see the files there:
 
-Note: You may need to install the vagrant-scp plugin.
 ```
-vagrant plugin install vagrant-scp
-```
-
-```shell
-vagrant scp data/sdbm.sql.gz .
-vagrant scp data/sdbm_data.tgz .
+ls /sdbmss/vagrant/data/
 ```
 
 #### Static assets setup
@@ -132,6 +128,7 @@ vagrant scp data/sdbm_data.tgz .
 The SDBM relies on a number of user-managed static HTML files: docs, tooltips, and uploads. These are stored in the `sdbm_data.tgz` file. These files should be extracted and copied into the Rails app container.
 
 ```shell
+cd /sdbmss/vagrant/data
 tar xf sdbm_data.tgz  # if needed
 cd sdbm_data          # if needed
 docker cp docs $(docker ps -q -f name=app):/home/app/public/static/
@@ -156,13 +153,6 @@ exit # exit the MySQL container
 docker exec $(docker ps -q -f name=app) bundle exec rake db:migrate
 ```
 
-Remove the database files and data files from the Vagrant environment.
-```
-rm sdbm.sql.gz
-rm sdbm_data.tgz
-rm -rf sdbm_data
-```
-
 #### Solr setup
 
 Solr should be running in the Solr container. The Solr configuration is in the `solr` directory.
@@ -171,9 +161,6 @@ Run this command from the Vagrant environment.
 ```bash
 docker exec $(docker ps -q -f name=app) bundle exec rake sunspot:reindex > /dev/null 
 ```
-
-This process takes 10-20 minutes.
-
 
 #### Jena setup
 
