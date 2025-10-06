@@ -47,15 +47,6 @@ services:
         - "traefik.http.routers.jena.middlewares=jena_stripprefix"
         - "traefik.http.routers.jena.service=jena-svc"
         - "traefik.http.routers.jena.priority=100"
-
-        # HTTPS router (prod)
-        - "traefik.http.routers.jena-secure.entrypoints=websecure"
-        - "traefik.http.routers.jena-secure.rule=Host(`{{ app_url }}`) && PathPrefix(`/sparql`)"
-        - "traefik.http.routers.jena-secure.middlewares=jena_stripprefix"
-        - "traefik.http.routers.jena-secure.tls=true"
-        - "traefik.http.routers.jena-secure.tls.certresolver=letsencrypt"
-        - "traefik.http.routers.jena-secure.service=jena-svc"
-        - "traefik.http.routers.jena-secure.priority=100"
         {% endif %}
     healthcheck:
       test:
@@ -74,12 +65,15 @@ services:
         max-size: "10m"
     networks:
       - traefik
+      - jena
     volumes:
       - rdf_data:/fuseki
 
 networks:
   traefik:
     external: true
+  jena:
+    name: jena
 
 volumes:
   rdf_data:
