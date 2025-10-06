@@ -2,3 +2,4 @@
 jena_image_name: "gitlab.library.upenn.edu/sdbm/jena-fuseki"
 
 jena_image_tag: "1e820787"
+jena_port: 3030
