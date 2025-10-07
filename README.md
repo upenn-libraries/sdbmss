@@ -169,14 +169,60 @@ For this step the TTL file is generated from the database and then loaded into J
 
 ### Build TTL from the database
 
+Within the vagrant environment, navigate to the data folder:
+```
+cd /sdbmss/vagrant/data
+```
+
+Generate the test.ttl file:
 ```
 docker exec -t $(docker ps -q -f name=app) bundle exec rake sparql:test
 ```
-File should be in `.`; gzip it.
 
+Copy the test.ttl file from the docker container to your local directory:
 ```
-gzip test.ttl
+docker cp $(docker ps -q -f name=app):/home/app/test.ttl .
 ```
+
+Stop the Jena service before loading the test.ttl file:
+```
+docker service scale sdbmss_jena=0
+```
+
+Load the test.ttl file into the Jena Fuseki triple database store:
+```
+docker run --rm  --entrypoint /jena-fuseki/tdbloader  --mount source=sdbmss_rdf_data,target=/fuseki  -v "$(pwd)":/data:ro gitlab.library.upenn.edu/sdbm/jena-fuseki:0c0a566a --loc=/fuseki/databases/sdbm /data/test.ttl
+```
+
+Copy the dataset configuration file into the Jena data storage:
+```
+docker run --rm --mount source=sdbmss_rdf_data,target=/fuseki -v "$(pwd)/sdbm.ttl":/tmp/sdbm.ttl:ro alpine sh -c 'mkdir -p /fuseki/configuration && cp /tmp/sdbm.ttl /fuseki/configuration/sdbm.ttl && chmod 0644 /fuseki/configuration/sdbm.ttl'
+```
+
+Now start up the Jena service:
+```
+docker service scale sdbmss_jena=1
+```
+
+Follow the Jena log to see if the service starts correctly:
+```
+docker service logs sdbmss_jena --since 5m -f
+```
+
+The log should look something like the output below:
+```
+sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | Waiting for Fuseki to finish starting up...
+sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Server     INFO  Apache Jena Fuseki 3.14.0
+sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Config     INFO  FUSEKI_HOME=/jena-fuseki
+sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Config     INFO  FUSEKI_BASE=/fuseki
+sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Config     INFO  Shiro file: file:///fuseki/shiro.ini
+sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Config     INFO  Configuration file: /fuseki/config.ttl
+sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Config     INFO  Load configuration: file:///fuseki/configuration/sdbm.ttl
+sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Config     INFO  Register: /sdbm
+sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Server     INFO  Started 2025/10/06 18:04:55 UTC on port 3030
+sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | Fuseki is available :-)
+```
+
 
 ### Import the data into Jena
 
