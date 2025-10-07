@@ -184,6 +184,8 @@ Copy the test.ttl file from the docker container to your local directory:
 docker cp $(docker ps -q -f name=app):/home/app/test.ttl .
 ```
 
+### Import the data into Jena
+
 Stop the Jena service before loading the test.ttl file:
 ```
 docker service scale sdbmss_jena=0
@@ -221,72 +223,6 @@ sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Config     IN
 sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Config     INFO  Register: /sdbm
 sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Server     INFO  Started 2025/10/06 18:04:55 UTC on port 3030
 sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | Fuseki is available :-)
-```
-
-
-### Import the data into Jena
-
-Copy file to Jena container and gunzip it
-
-```
-docker cp test.ttl.gz $(docker ps -q -f name=sdbmss_jena):/tmp/
-docker exec -t $(docker ps -q -f name=sdbmss_jena) gunzip /tmp/test.ttl.gz
-```
-
-Load the data into Jena
-
-```
-docker exec -t $(docker ps -q -f name=sdbmss_jena) sh -c 'cd /jena-fuseki && ./tdbloader --loc=/fuseki/databases/sdbm /tmp/test.ttl'
-```
-
-Clean up the files.
-
-```
-$ docker exec -t $(docker ps -q -f name=sdbmss_jena) rm /tmp/test.ttl
-rm ~/deployments/sdbmss/test.ttl.gz
-```
-
-### Create the datset in Jena Fuseki.
-
-Go here and create the sdbm dataset: <https://localhost/sparql/manage.html>
-
-- Click 'add new data set'
-- Enter 'sdbm'
-- Select 'Persistent – dataset will persist across Fuseki restarts'
-- Click 'create dataset'
-
-Scale the services:
-
-```
-docker-compose -f docker-compose-dev.yml restart jena
-docker-compose -f docker-compose-dev.yml restart rabbitmq
-docker-compose -f docker-compose-dev.yml restart rails
-```
-
-Run the Jena verify task to confirm that it works. Be sure to hide the debugging output.
-
-```
-docker-compose -f docker-compose-dev.yml exec rails bundle exec rake jena:verify | grep -v DEBUG
-```
-
-NB: You may need to run the command more than once.
-
-```
-sdbm01[~]$ docker-compose -f docker-compose-dev.yml exec rails bundle exec rake jena:verify | grep -v DEBUG
-Starting Queue Listening
-No more messages in queue.
-Remaining responses: 764
-$ docker-compose -f docker-compose-dev.yml exec rails bundle exec rake jena:verify | grep -v DEBUG
-Starting Queue Listening
-Parsed contents: {"id"=>300122, "code"=>"200", "message"=>"OK"}
-Jena Update was Successful!
-Parsed contents: {"id"=>300211, "code"=>"200", "message"=>"OK"}
-Jena Update was Successful!
-Parsed contents: {"id"=>300212, "code"=>"200", "message"=>"OK"}
-Jena Update was Successful!
-Parsed contents: {"id"=>300213, "code"=>"200", "message"=>"OK"}
-Jena Update was Successful!
-# ... etc.
 ```
 
 
