@@ -1,4 +1,5 @@
 ---
 jena_image_name: "gitlab.library.upenn.edu/sdbm/jena-fuseki"
 
-jena_image_tag: "1e820787"
+jena_image_tag: "0c0a566a"
+jena_port: 3030
