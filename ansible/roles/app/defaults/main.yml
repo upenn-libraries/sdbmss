@@ -26,6 +26,9 @@ app_versioned_secrets:
   email_from:
     value: "{{ sdbmss_vault_values.secret.sdbmss_email_from }}"
     version: "{{ sdbmss_vault_values.metadata.version }}"
+  jena_admin_password:
+    value: "{{ sdbmss_vault_values.secret.jena_admin_password }}"
+    version: "{{ sdbmss_vault_values.metadata.version }}"
   notify_email:
     value: "{{ sdbmss_vault_values.secret.sdbmss_notify_email }}"
     version: "{{ sdbmss_vault_values.metadata.version }}"
