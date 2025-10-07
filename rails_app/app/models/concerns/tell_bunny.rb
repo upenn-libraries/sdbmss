@@ -123,7 +123,6 @@ module TellBunny
 
   def destroy_bunny(jena_response_id = nil)
     begin
-      puts "AFTER DESTROY"
       #connection = Bunny.new(:host => HOST, :port => 5672, :user => "sdbm", :pass => "sdbm", :vhost => "/")
       Rails.configuration.bunny_connection.start
 
