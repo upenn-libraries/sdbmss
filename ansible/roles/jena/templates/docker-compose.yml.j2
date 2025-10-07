@@ -48,6 +48,8 @@ services:
         - "traefik.http.routers.jena.service=jena-svc"
         - "traefik.http.routers.jena.priority=100"
         {% endif %}
+    environment:
+      ADMIN_PASSWORD: "{{ app_versioned_secrets.jena_admin_password.value }}"
     healthcheck:
       test:
         [
