@@ -51,6 +51,11 @@
       ansible.builtin.import_role:
         name: delayed_job
       tags: delayed_job
+    - name: Deploy chrome
+      ansible.builtin.import_role:
+        name: chrome
+      tags: chrome
+      when: is_development | default (false, true)
   post_tasks:
     - name: "Create cron jobs"
       ansible.builtin.cron:

@@ -1,0 +1,10 @@
+version: "3.8"
+
+services:
+  app:
+    environment:
+      APP_UID: ${UID:-1000}
+      APP_GID: ${GID:-1000}
+      CHROME_URL: "http://chrome:${CHROME_PORT}"
+    volumes:
+      - /sdbmss/ansible/roles/app/files/src/:/home/app

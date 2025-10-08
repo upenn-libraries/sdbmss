@@ -1,0 +1,6 @@
+---
+chrome:
+  image:
+    name: "browserless/chrome"
+    tag: "latest"
+  port: 3333

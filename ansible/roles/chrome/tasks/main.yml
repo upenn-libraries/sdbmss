@@ -1,0 +1,23 @@
+---
+- name: Create chrome dir
+  file:
+    path: "{{ project_root ~ '/chrome' }}"
+    state: directory
+
+- name: Copy docker-compose file
+  copy:
+    src: "../files/docker-compose.yml"
+    dest: "{{ project_root ~ '/chrome/' }}"
+
+- name: Deploy chrome
+  docker_stack:
+    name: "sdbmss"
+    compose:
+      - "{{ project_root ~ '/chrome/docker-compose.yml' }}"
+    state: present
+  changed_when: false
+  environment:
+    CHROME_IMAGE_NAME: "{{ chrome.image.name }}"
+    CHROME_IMAGE_TAG: "{{ chrome.image.tag }}"
+    CHROME_PORT: "{{ chrome.port }}"
+  no_log: true
