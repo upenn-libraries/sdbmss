@@ -1,6 +1,6 @@
 
 require 'json'
-require "rails_helper"
+require "system_helper"
 
 #ActiveRecord::Base.logger = Logger.new(STDOUT) if defined?(ActiveRecord::Base)
 

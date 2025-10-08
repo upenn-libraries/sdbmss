@@ -1,6 +1,6 @@
 
 require 'json'
-require "rails_helper"
+require "system_helper"
 require 'net/http'
 
 describe "User Activity", :js => true do

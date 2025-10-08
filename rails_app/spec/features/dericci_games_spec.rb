@@ -1,4 +1,4 @@
-require "rails_helper"
+require "system_helper"
 
 describe "De Ricci Game", :js => true do
   context "when user is logged in " do

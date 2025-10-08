@@ -1,6 +1,6 @@
 require "lib/data_entry_helpers"
 include DataEntryHelpers
-require "rails_helper"
+require "system_helper"
 
 describe "Manage sources", :js => true do
 

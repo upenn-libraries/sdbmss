@@ -1,4 +1,4 @@
-require "rails_helper"
+require "system_helper"
 
 describe "Data entry", :js => true do
   # Fill an autocomplete field using value in :with option. If a
