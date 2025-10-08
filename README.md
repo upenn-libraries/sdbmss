@@ -95,7 +95,9 @@ exit
 
 ### First-time setup
 
-There are number of initial setup steps required to run this SDBM.
+There are number of initial setup steps required to run this SDBM that are handled by a bash
+script setup.sh stored in the data folder and run from the vagrant environment. The setup script 
+does the following:
 
 1. Copy static assets into the Rails app
 2. Load the database
@@ -125,88 +127,34 @@ ls /sdbmss/vagrant/data/
 
 #### Static assets setup
 
-The SDBM relies on a number of user-managed static HTML files: docs, tooltips, and uploads. These are stored in the `sdbm_data.tgz` file. These files should be extracted and copied into the Rails app container.
-
-```shell
-cd /sdbmss/vagrant/data
-tar xf sdbm_data.tgz  # if needed
-cd sdbm_data          # if needed
-docker cp docs $(docker ps -q -f name=app):/home/app/public/static/
-docker cp tooltips $(docker ps -q -f name=app):/home/app/public/static/
-docker cp uploads $(docker ps -q -f name=app):/home/app/public/static/
-cd ..
-```
+The SDBM relies on a number of user-managed static HTML files: docs, tooltips, and uploads. 
+These are stored in the `sdbm_data.tgz` file. These files will be extracted and copied into 
+the Rails app container. 
 
 #### Database setup
 
-Copy the database SQL gzip file to the MySQL container, gunzip it and load import it.
-
-```bash
-docker cp sdbm.sql.gz  $(docker ps -q -f name=mysql):/tmp/sdbm.sql.gz
-docker exec -it  $(docker ps -q -f name=mysql) bash
-cd /tmp
-gunzip sdbm.sql.gz
-mysql -u sdbm --password=password sdbm < sdbm.sql
-# the vagrant env database password is "password"
-rm sdbm.sql # remove the sql file (it's very big)
-exit # exit the MySQL container
-docker exec $(docker ps -q -f name=app) bundle exec rake db:migrate
-```
+The database SQL file `sdbm.sql.gz` will be loaded into the MYSQL database. 
 
 #### Solr setup
 
-Solr should be running in the Solr container. The Solr configuration is in the `solr` directory.
-Run this command from the Vagrant environment.
-
-```bash
-docker exec $(docker ps -q -f name=app) bundle exec rake sunspot:reindex > /dev/null 
-```
+Solr should be running in the Solr container. The Solr configuration is in the `solr` directory
+and Solr will be re-indexed.
 
 #### Jena setup
 
-For this step the TTL file is generated from the database and then loaded into Jena.
+For this step the TTL file will be generated from the database and then loaded into Jena.
 
+To perform these setup actions, first navigate to the data folder within the vagrant environment,
+and then run the bash script. This should take about 5 minutes.
 
-### Build TTL from the database
-
-Within the vagrant environment, navigate to the data folder:
-```
+```shell
 cd /sdbmss/vagrant/data
+bash setup.sh
 ```
 
-Generate the test.ttl file:
-```
-docker exec -t $(docker ps -q -f name=app) bundle exec rake sparql:test
-```
+#### Check Jena log
 
-Copy the test.ttl file from the docker container to your local directory:
-```
-docker cp $(docker ps -q -f name=app):/home/app/test.ttl .
-```
-
-### Import the data into Jena
-
-Stop the Jena service before loading the test.ttl file:
-```
-docker service scale sdbmss_jena=0
-```
-
-Load the test.ttl file into the Jena Fuseki triple database store:
-```
-docker run --rm  --entrypoint /jena-fuseki/tdbloader  --mount source=sdbmss_rdf_data,target=/fuseki  -v "$(pwd)":/data:ro gitlab.library.upenn.edu/sdbm/jena-fuseki:0c0a566a --loc=/fuseki/databases/sdbm /data/test.ttl
-```
-
-Copy the dataset configuration file into the Jena data storage:
-```
-docker run --rm --mount source=sdbmss_rdf_data,target=/fuseki -v "$(pwd)/sdbm.ttl":/tmp/sdbm.ttl:ro alpine sh -c 'mkdir -p /fuseki/configuration && cp /tmp/sdbm.ttl /fuseki/configuration/sdbm.ttl && chmod 0644 /fuseki/configuration/sdbm.ttl'
-```
-
-Now start up the Jena service:
-```
-docker service scale sdbmss_jena=1
-```
-
-Follow the Jena log to see if the service starts correctly:
+When the setup script is finished running, check the Jena log to see if the service starts correctly:
 ```
 docker service logs sdbmss_jena --since 5m -f
 ```
