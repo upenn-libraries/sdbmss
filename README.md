@@ -125,29 +125,11 @@ docker shell. Make sure you see the files there:
 ls /sdbmss/vagrant/data/
 ```
 
-#### Static assets setup
-
-The SDBM relies on a number of user-managed static HTML files: docs, tooltips, and uploads. 
-These are stored in the `sdbm_data.tgz` file. These files will be extracted and copied into 
-the Rails app container. 
-
-#### Database setup
-
-The database SQL file `sdbm.sql.gz` will be loaded into the MYSQL database. 
-
-#### Solr setup
-
-Solr should be running in the Solr container. The Solr configuration is in the `solr` directory
-and Solr will be re-indexed.
-
-#### Jena setup
-
-For this step the TTL file will be generated from the database and then loaded into Jena.
-
 To perform these setup actions, first navigate to the data folder within the vagrant environment,
 and then run the bash script. This should take about 5 minutes.
 
 ```shell
+vagrant ssh # if needed
 cd /sdbmss/vagrant/data
 bash setup.sh
 ```
