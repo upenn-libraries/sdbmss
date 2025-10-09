@@ -20,21 +20,21 @@ services:
         {% if is_development == true %}
         # HTTP router (dev)
         - "traefik.http.routers.jena.entrypoints=web"
-        - "traefik.http.routers.jena.rule=Host(`{{ app_url }}`) && PathPrefix(`/sparql`)"
+        - "traefik.http.routers.jena.rule=Host(`{{ app_url }}`) && (Path(`/sparql`) || PathPrefix(`/sparql/`))"
         - "traefik.http.routers.jena.middlewares=jena_stripprefix"
         - "traefik.http.routers.jena.service=jena-svc"
         - "traefik.http.routers.jena.priority=100"
 
         # HTTPS redirect (dev)
         - "traefik.http.routers.jena_httpsredir.entrypoints=web"
-        - "traefik.http.routers.jena_httpsredir.rule=Host(`{{ app_url }}`) && PathPrefix(`/sparql`)"
+        - "traefik.http.routers.jena_httpsredir.rule=Host(`{{ app_url }}`) && (Path(`/sparql`) || PathPrefix(`/sparql/`))"
         - "traefik.http.routers.jena_httpsredir.middlewares=jena_https"
         - "traefik.http.middlewares.jena_https.redirectscheme.scheme=https"
         - "traefik.http.middlewares.jena_https.redirectscheme.permanent=true"
 
         # HTTPS router (dev)
         - "traefik.http.routers.jena-secure.entrypoints=websecure"
-        - "traefik.http.routers.jena-secure.rule=Host(`{{ app_url }}`) && PathPrefix(`/sparql`)"
+        - "traefik.http.routers.jena-secure.rule=Host(`{{ app_url }}`) && (Path(`/sparql`) || PathPrefix(`/sparql/`))"
         - "traefik.http.routers.jena-secure.middlewares=jena_stripprefix"
         - "traefik.http.routers.jena-secure.tls=true"
         - "traefik.http.routers.jena-secure.tls.certresolver=letsencrypt"
@@ -43,7 +43,7 @@ services:
         {% else %}
         # HTTP router (prod)
         - "traefik.http.routers.jena.entrypoints=web"
-        - "traefik.http.routers.jena.rule=Host(`{{ app_url }}`) && PathPrefix(`/sparql`)"
+        - "traefik.http.routers.jena.rule=Host(`{{ app_url }}`) && (Path(`/sparql`) || PathPrefix(`/sparql/`))"
         - "traefik.http.routers.jena.middlewares=jena_stripprefix"
         - "traefik.http.routers.jena.service=jena-svc"
         - "traefik.http.routers.jena.priority=100"
