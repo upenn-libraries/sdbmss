@@ -1,6 +1,8 @@
 
-ARG APP_IMAGE_NAME=gitlab.library.upenn.edu/sdbm/ruby-2.3.8
-ARG APP_IMAGE_TAG=2ad16fb5
+#ARG APP_IMAGE_NAME=gitlab.library.upenn.edu/sdbm/ruby-2.3.8
+#ARG APP_IMAGE_TAG=2ad16fb5
+ARG APP_IMAGE_NAME=ruby
+ARG APP_IMAGE_TAG=2.6.10-bullseye
 
 # Bundle home
 ARG BUNDLE_HOME=vendor/bundle
@@ -42,6 +44,9 @@ COPY --chown=app:app Gemfile* .
 
 RUN gem install bundler -v ${BUNDLE_VERSION}
 
+RUN ls ${GEM_HOME}
+RUN echo ${GEM_HOME}
+
 RUN bundle config path ${GEM_HOME} && \
   set -eux; \
   if [ "${RAILS_ENV}" = "development" ]; then \
@@ -79,17 +84,41 @@ ENV PATH="${GEM_PATH}/bin:${PATH}"
 
 COPY --chown=app:app --chmod=644 --from=base ${PROJECT_ROOT} ${PROJECT_ROOT}
 
-RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
+#RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
+#
+#RUN apt-get update && apt-get install -y --force-yes \
+#      default-libmysqlclient-dev \
+#      nodejs \
+#      openjdk-8-jre \
+#      openjdk-8-jre-headless \
+#      openjdk-8-jdk \
+#      tzdata && \
+#  addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app && \
+#  mkdir -p ${PROJECT_ROOT}/tmp/pids
 
-RUN apt-get update && apt-get install -y --force-yes \
+# Debian 11 base
+#FROM ruby:2.6.10-bullseye
+
+# --- system deps + Node 12 from Debian + Java 8 (Temurin) ---
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates curl gnupg wget apt-transport-https \
       default-libmysqlclient-dev \
-      nodejs \
-      openjdk-8-jre \
-      openjdk-8-jre-headless \
-      openjdk-8-jdk \
-      tzdata && \
-  addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app && \
-  mkdir -p ${PROJECT_ROOT}/tmp/pids
+      nodejs npm \
+      tzdata \
+  && wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public \
+       | gpg --dearmor -o /etc/apt/trusted.gpg.d/adoptium.gpg \
+  && echo "deb https://packages.adoptium.net/artifactory/deb $(. /etc/os-release; echo $VERSION_CODENAME) main" \
+       > /etc/apt/sources.list.d/adoptium.list \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends temurin-8-jdk \
+  && rm -rf /var/lib/apt/lists/* \
+  && addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app \
+  && mkdir -p ${PROJECT_ROOT}/tmp/pids
+# your existing user/app setup
+#ARG PROJECT_ROOT=/home/app
+#RUN addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app \
+# && mkdir -p ${PROJECT_ROOT}/tmp/pids
+
 
 COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/
 COPY --chown=app:app . ${PROJECT_ROOT}
@@ -150,17 +179,41 @@ ENV PATH="${GEM_PATH}/bin:${PATH}"
 
 COPY --chown=app:app --chmod=644 --from=base ${PROJECT_ROOT} ${PROJECT_ROOT}
 
-RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
+#RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
+#
+#RUN apt-get update && apt-get install -y --force-yes \
+#      default-libmysqlclient-dev \
+#      nodejs \
+#      openjdk-8-jre \
+#      openjdk-8-jre-headless \
+#      openjdk-8-jdk \
+#      tzdata && \
+#  addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app && \
+#  mkdir -p ${PROJECT_ROOT}/tmp/pids
+# Debian 11 base
+#FROM ruby:2.6.10-bullseye
 
-RUN apt-get update && apt-get install -y --force-yes \
+# --- system deps + Node 12 from Debian + Java 8 (Temurin) ---
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates curl gnupg wget apt-transport-https \
       default-libmysqlclient-dev \
-      nodejs \
-      openjdk-8-jre \
-      openjdk-8-jre-headless \
-      openjdk-8-jdk \
-      tzdata && \
-  addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app && \
-  mkdir -p ${PROJECT_ROOT}/tmp/pids
+      nodejs npm \
+      tzdata \
+  && wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public \
+       | gpg --dearmor -o /etc/apt/trusted.gpg.d/adoptium.gpg \
+  && echo "deb https://packages.adoptium.net/artifactory/deb $(. /etc/os-release; echo $VERSION_CODENAME) main" \
+       > /etc/apt/sources.list.d/adoptium.list \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends temurin-8-jdk \
+  && addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app \
+      && mkdir -p ${PROJECT_ROOT}/tmp/pids \
+  && rm -rf /var/lib/apt/lists/*
+
+# your existing user/app setup
+#ARG PROJECT_ROOT=/home/app
+#RUN addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app \
+# && mkdir -p ${PROJECT_ROOT}/tmp/pids
+
 
 COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/
 COPY --chown=app:app . ${PROJECT_ROOT}
@@ -172,7 +225,13 @@ COPY --chown=app:app . ${PROJECT_ROOT}
 RUN gem install bundler -v ${BUNDLE_VERSION} && \
     chmod +x -R "${GEM_HOME}/bin/"
 
+RUN ls ${GEM_HOME}/gems
+
 WORKDIR ${PROJECT_ROOT}
+
+#RUN #ls /home/app/vendor/bundle/ruby/2.3.0/ruby/2.3.0/gems/rake-10.5.0
+# RUN ls ${GEM_HOME}
+# RUN ls ${GEM_HOME}/ruby/2.6.0/gems/rake-10.5.0
 
 RUN RAILS_ENV=${RAILS_ENV} \
   SECRET_KEY_BASE=x \
