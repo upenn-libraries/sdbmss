@@ -105,6 +105,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       default-libmysqlclient-dev \
       nodejs npm \
       tzdata \
+      chromium \
   && wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public \
        | gpg --dearmor -o /etc/apt/trusted.gpg.d/adoptium.gpg \
   && echo "deb https://packages.adoptium.net/artifactory/deb $(. /etc/os-release; echo $VERSION_CODENAME) main" \
@@ -199,6 +200,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       default-libmysqlclient-dev \
       nodejs npm \
       tzdata \
+      chromium \
   && wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public \
        | gpg --dearmor -o /etc/apt/trusted.gpg.d/adoptium.gpg \
   && echo "deb https://packages.adoptium.net/artifactory/deb $(. /etc/os-release; echo $VERSION_CODENAME) main" \
