@@ -21,9 +21,9 @@ function timestamp() {
 
 # Step 1: Static assets setup
 
-# The SDBM relies on a number of user-managed static HTML files: docs, tooltips, and uploads. 
-# These are stored in the sdbm_data.tgz file. These files will be extracted and copied into 
-# the Rails app container. 
+# The SDBM relies on a number of user-managed static HTML files: docs, tooltips, and uploads.
+# These are stored in the sdbm_data.tgz file. These files will be extracted and copied into
+# the Rails app container.
 
 # Check for files
 if [[ -e sdbm_data.tgz && -e sdbm.sql.gz ]]
@@ -56,7 +56,7 @@ echo "[$CMD] $(timestamp) Static assets loaded."
 
 # Step 2: Database setup
 
-# The database SQL file `sdbm.sql.gz` will be loaded into the MYSQL database. 
+# The database SQL file `sdbm.sql.gz` will be loaded into the MYSQL database.
 
 echo "[$CMD] $(timestamp) Load the database..."
 
@@ -75,7 +75,7 @@ echo "[$CMD] $(timestamp) Database migration completed."
 
 echo "[$CMD] $(timestamp) Set up and re-index Solr..."
 
-docker exec $(docker ps -q -f name=app) bundle exec rake sunspot:reindex > /dev/null 
+docker exec $(docker ps -q -f name=app) bundle exec rake sunspot:reindex > /dev/null
 echo "[$CMD] $(timestamp) Solr re-indexed."
 
 # Step 5: Jena setup
