@@ -3,11 +3,10 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~>4.2.11.1'
 
-gem "actionview", ">= 4.2.11.1"
+gem "actionview"
+gem "activejob"
 gem "nokogiri", "= 1.8.5"
-gem "activejob", ">= 4.2.11"
 gem "rack", ">= 1.6.11"
-gem "loofah", ">= 2.2.3"
 gem "rubyzip", ">= 1.2.2"
 gem "ffi", ">= 1.9.24"
 gem "sprockets", ">= 3.7.2"
@@ -20,18 +19,9 @@ gem 'invisible_captcha'
 
 gem 'actionview-encoded_mail_to'
 
-# gem "bootstrap-sass", ">= 3.4.1"
-    
-# Use sqlite3 as the database for Active Record
-# gem 'sqlite3', group: :development
-
 gem 'logger', '~> 1.2.7'
 
 gem 'mysql2', '~> 0.3.18'
-
-# XML parsing. Other gems require nokogiri as well, but we may as well
-# require it too.
-# gem 'nokogiri', '~> 1.8.2'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0.3'
@@ -41,9 +31,6 @@ gem 'uglifier', '~> 2.7.2'
 
 # Use CoffeeScript for .js.coffee assets and views
 gem 'coffee-rails', '~> 4.0.0'
-
-# See https://github.com/sstephenson/execjs#readme for more supported runtimes
-# gem 'therubyracer',  platforms: :ruby
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.2.1'
@@ -55,15 +42,11 @@ gem 'turbolinks', '~> 2.5.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.2.0'
 
-# Use ActiveModel has_secure_password
-# gem 'bcrypt', '~> 3.1.7'
 
 # Use unicorn as the app server
 gem 'unicorn', '~> 4.9.0'
 gem 'unicorn-rails'
 gem 'rack-handlers'
-# Use debugger
-# gem 'debugger', group: [:development, :test]
 
 # Blacklight
 gem "blacklight", "~> 5.14.0"
@@ -97,7 +80,7 @@ gem 'chronic', '~> 0.10.2'
 gem 'delayed_job', '~> 4.0.6'
 gem 'delayed_job_active_record', '~> 4.0.3'
 
-# neeeded for delayed_job script to run in background
+# needed for delayed_job script to run in background
 gem "daemons", '~> 1.2.2'
 
 # manage and monitor application processes
@@ -115,11 +98,6 @@ gem "number_to", "~> 0.7.1"
 # empties db after each group of tests
 gem "database_cleaner", "~> 1.4.1"
 
-# for compressing csv exports to .zip
-# gem "rubyzip"
-
-#gem "linkeddata"
-#gem "rdf-turtle"
 gem "bunny"
 
 gem 'data-confirm-modal'
