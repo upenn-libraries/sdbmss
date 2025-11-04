@@ -2,6 +2,9 @@ vagrant/*
 !vagrant/Vagrantfile
 
 /rails_app/vendor
+/rails_app/dev/*
+!/rails_app/dev/setup.sh
+!/rails_app/dev/sdbm.ttl
 
 ## Mac stuff
 .DS_Store?

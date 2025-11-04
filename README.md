@@ -96,7 +96,7 @@ exit
 ### First-time setup
 
 There are number of initial setup steps required to run this SDBM that are handled by a bash
-script setup.sh stored in the data folder and run from the vagrant environment. The setup script 
+script setup.sh stored in the rails_app/dev folder and run from the vagrant environment. The setup script 
 does the following:
 
 1. Copy static assets into the Rails app
@@ -112,25 +112,25 @@ First get the SDBM data files from [the SDBM Data folder on SharePoint](https://
 
 ### Copy the files to the Vagrant environment
 
-Download the files and copy them to the `sdbmss/vagrant/data` directory. Then run the vagrant environment:
+Download the files and copy them to the `sdbmss/rails_app/dev` directory. Then run the vagrant environment:
 
 ```
 vagrant ssh
 ```
 
-The files that you put in the data directory will be automatically copied over to a directory in the
+The files that you put in the dev directory will be automatically copied over to a directory in the
 docker shell. Make sure you see the files there:
 
 ```
-ls /sdbmss/vagrant/data/
+ls /sdbmss/rails_app/dev/
 ```
 
-To perform these setup actions, first navigate to the data folder within the vagrant environment,
+To perform these setup actions, first navigate to the dev folder within the vagrant environment,
 and then run the bash script. This should take about 5 minutes.
 
 ```shell
 vagrant ssh # if needed
-cd /sdbmss/vagrant/data
+cd /sdbmss/rails_app/dev
 bash setup.sh
 ```
 
