@@ -1,4 +1,4 @@
-#/usr/bin/env bash
+#!/usr/bin/env bash
 
 set -e  # Exit on any command failure
 
@@ -15,7 +15,7 @@ trap 'echo "Command failed: $BASH_COMMAND"' ERR # prints any bash command that f
 CMD=$(basename $0)
 
 function timestamp() {
-	date +%Y%m%dT%H%M%S-%Z
+  date +%Y%m%dT%H%M%S-%Z
 }
 
 
@@ -30,7 +30,7 @@ if [[ -e sdbm_data.tgz && -e sdbm.sql.gz ]]
 then
   : # do nothing
  else
-	echo "ERROR -- sdbm_data.tgz and/or sdbm.sql.gz not found. Please make sure both are in the current directory."
+  echo "ERROR -- sdbm_data.tgz and/or sdbm.sql.gz not found. Please make sure both are in the current directory."
   exit 1
 fi
 
