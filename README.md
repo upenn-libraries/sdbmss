@@ -110,7 +110,7 @@ First get the SDBM data files from [the SDBM Data folder on SharePoint](https://
 - `sdbm_data.tgz` (120MB)
 - `sdbm.sql.gz` (33MB)
 
-### Copy the files to the Vagrant environment
+### Copy the files to the development environment
 
 Download the files and copy them to the `sdbmss/rails_app/dev` directory. Then run the vagrant environment:
 
