@@ -96,7 +96,7 @@ exit
 ### First-time setup
 
 There are number of initial setup steps required to run this SDBM that are handled by a bash
-script setup.sh stored in the rails_app/dev folder and run from the vagrant environment. The setup script 
+script setup.sh stored in the rails_app/dev folder and run from the vagrant environment. The setup script
 does the following:
 
 1. Copy static assets into the Rails app
