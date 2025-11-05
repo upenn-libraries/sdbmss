@@ -28,10 +28,10 @@ function timestamp() {
 # Check for files
 if [[ -e sdbm_data.tgz && -e sdbm.sql.gz ]]
 then
- 	: # do nothing
+  : # do nothing
  else
 	echo "ERROR -- sdbm_data.tgz and/or sdbm.sql.gz not found. Please make sure both are in the current directory."
-  	exit 1
+  exit 1
 fi
 
 
