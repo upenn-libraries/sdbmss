@@ -51,5 +51,7 @@ sdbm_data
 *.bak
 test.ttl*
 
-/vendor/bundle
-/node_modules
+/vendor
+/dev/*
+!/dev/setup.sh
+!/dev/sdbm.ttl
