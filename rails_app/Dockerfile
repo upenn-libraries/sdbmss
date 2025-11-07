@@ -44,8 +44,8 @@ COPY --chown=app:app Gemfile* .
 
 RUN gem install bundler -v ${BUNDLE_VERSION}
 
-RUN ls ${GEM_HOME}
-RUN echo ${GEM_HOME}
+RUN echo "GEM_HOME=${GEM_HOME}"
+RUN ls "${GEM_HOME}/gems"
 
 RUN bundle config path ${GEM_HOME} && \
   set -eux; \
@@ -84,21 +84,6 @@ ENV PATH="${GEM_PATH}/bin:${PATH}"
 
 COPY --chown=app:app --chmod=644 --from=base ${PROJECT_ROOT} ${PROJECT_ROOT}
 
-#RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
-#
-#RUN apt-get update && apt-get install -y --force-yes \
-#      default-libmysqlclient-dev \
-#      nodejs \
-#      openjdk-8-jre \
-#      openjdk-8-jre-headless \
-#      openjdk-8-jdk \
-#      tzdata && \
-#  addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app && \
-#  mkdir -p ${PROJECT_ROOT}/tmp/pids
-
-# Debian 11 base
-#FROM ruby:2.6.10-bullseye
-
 # --- system deps + Node 12 from Debian + Java 8 (Temurin) ---
 RUN apt-get update && apt-get install -y --no-install-recommends \
       ca-certificates curl gnupg wget apt-transport-https \
@@ -115,23 +100,31 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/* \
   && addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app \
   && mkdir -p ${PROJECT_ROOT}/tmp/pids
-# your existing user/app setup
-#ARG PROJECT_ROOT=/home/app
-#RUN addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app \
-# && mkdir -p ${PROJECT_ROOT}/tmp/pids
 
 
 COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/
 COPY --chown=app:app . ${PROJECT_ROOT}
 
-# WORKDIR /opt
-#RUN curl -L -O https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 && tar xjf phantomjs-1.9.8-linux-x86_64.tar.bz2 && ln -s phantomjs-1.9.8-linux-x86_64 phantomjs
-#ENV PATH "$PATH:/opt/phantomjs/bin"
 
 RUN gem install bundler -v ${BUNDLE_VERSION} && \
     chmod +x -R "${GEM_HOME}/bin/"
 
 WORKDIR ${PROJECT_ROOT}
+
+# Make the bundle path relative so .bundle/config survives stage copies
+RUN bundle config set path 'vendor/bundle' \
+ && bundle config set without 'development test assets' \
+ && bundle config set deployment 'true' \
+ && bundle check || bundle install --jobs 4 --retry 3
+
+# Sanity checks
+RUN ruby -v && bundle -v && cat .bundle/config
+RUN grep -n '^  date ' Gemfile.lock || true
+RUN ls vendor/bundle/ruby/2.6.0/specifications | grep '^rake-' && true
+RUN bundle show rake
+
+RUN echo "GEM_HOME=${GEM_HOME}"
+RUN ls "${GEM_HOME}/gems"
 
 RUN RAILS_ENV=${RAILS_ENV} \
   SECRET_KEY_BASE=x \
@@ -180,20 +173,6 @@ ENV PATH="${GEM_PATH}/bin:${PATH}"
 
 COPY --chown=app:app --chmod=644 --from=base ${PROJECT_ROOT} ${PROJECT_ROOT}
 
-#RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
-#
-#RUN apt-get update && apt-get install -y --force-yes \
-#      default-libmysqlclient-dev \
-#      nodejs \
-#      openjdk-8-jre \
-#      openjdk-8-jre-headless \
-#      openjdk-8-jdk \
-#      tzdata && \
-#  addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app && \
-#  mkdir -p ${PROJECT_ROOT}/tmp/pids
-# Debian 11 base
-#FROM ruby:2.6.10-bullseye
-
 # --- system deps + Node 12 from Debian + Java 8 (Temurin) ---
 RUN apt-get update && apt-get install -y --no-install-recommends \
       ca-certificates curl gnupg wget apt-transport-https \
@@ -211,18 +190,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       && mkdir -p ${PROJECT_ROOT}/tmp/pids \
   && rm -rf /var/lib/apt/lists/*
 
-# your existing user/app setup
-#ARG PROJECT_ROOT=/home/app
-#RUN addgroup app && useradd -m -d ${PROJECT_ROOT} -s /bin/bash -g app app \
-# && mkdir -p ${PROJECT_ROOT}/tmp/pids
-
 
 COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/
 COPY --chown=app:app . ${PROJECT_ROOT}
-
-# WORKDIR /opt
-#RUN curl -L -O https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2 && tar xjf phantomjs-1.9.8-linux-x86_64.tar.bz2 && ln -s phantomjs-1.9.8-linux-x86_64 phantomjs
-#ENV PATH "$PATH:/opt/phantomjs/bin"
 
 RUN gem install bundler -v ${BUNDLE_VERSION} && \
     chmod +x -R "${GEM_HOME}/bin/"
@@ -231,9 +201,17 @@ RUN ls ${GEM_HOME}/gems
 
 WORKDIR ${PROJECT_ROOT}
 
-#RUN #ls /home/app/vendor/bundle/ruby/2.3.0/ruby/2.3.0/gems/rake-10.5.0
-# RUN ls ${GEM_HOME}
-# RUN ls ${GEM_HOME}/ruby/2.6.0/gems/rake-10.5.0
+# Make the bundle path relative so .bundle/config survives stage copies
+RUN bundle config set path 'vendor/bundle' \
+ && bundle config set without 'development test assets' \
+ && bundle config set deployment 'true' \
+ && bundle check || bundle install --jobs 4 --retry 3
+
+# Sanity checks
+RUN ruby -v && bundle -v && cat .bundle/config
+RUN grep -n '^  date ' Gemfile.lock || true
+RUN ls vendor/bundle/ruby/2.6.0/specifications | grep '^rake-' && true
+RUN bundle show rake
 
 RUN RAILS_ENV=${RAILS_ENV} \
   SECRET_KEY_BASE=x \
