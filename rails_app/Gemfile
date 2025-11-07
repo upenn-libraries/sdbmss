@@ -24,6 +24,8 @@ gem 'actionview-encoded_mail_to'
 
 gem 'logger', '~> 1.2.7'
 
+gem 'date', '~> 2.0'
+
 gem 'mysql2'
 gem 'mysql2'
 gem 'bigdecimal', '1.3.5'
@@ -115,7 +117,7 @@ gem 'thredded', '~> 0.9.4'
 
 gem 'whenever', :require => false
 
-gem 'rake', '< 11.0'
+gem 'rake', '10.5.0'
 
 gem 'codemirror-rails'
 
