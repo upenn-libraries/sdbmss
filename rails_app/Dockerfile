@@ -2,7 +2,7 @@
 #ARG APP_IMAGE_NAME=gitlab.library.upenn.edu/sdbm/ruby-2.3.8
 #ARG APP_IMAGE_TAG=2ad16fb5
 ARG APP_IMAGE_NAME=ruby
-ARG APP_IMAGE_TAG=2.6.10-bullseye
+ARG APP_IMAGE_TAG=2.7.8-bullseye
 
 # Bundle home
 ARG BUNDLE_HOME=vendor/bundle
@@ -47,14 +47,14 @@ RUN gem install bundler -v ${BUNDLE_VERSION}
 RUN echo "GEM_HOME=${GEM_HOME}"
 RUN ls "${GEM_HOME}/gems"
 
-RUN bundle config path ${GEM_HOME} && \
+RUN bundle _${BUNDLE_VERSION}_ config path ${GEM_HOME} && \
   set -eux; \
   if [ "${RAILS_ENV}" = "development" ]; then \
-  bundle config set with "development:test:assets"; \
+  bundle _${BUNDLE_VERSION}_ config set with "development:test:assets"; \
   else \
-  bundle config set without "development:test:assets"; \
+  bundle _${BUNDLE_VERSION}_ config set without "development:test:assets"; \
   fi && \
-  MAKE="make -j $(nproc)" bundle install && \
+  MAKE="make -j $(nproc)" bundle _${BUNDLE_VERSION}_ install && \
   rm -rf ${PROJECT_ROOT}/vendor/bundle/ruby/${RUBY_MAJOR}.0/cache/*.gem && \
   find ${PROJECT_ROOT}/vendor/bundle/ruby/${RUBY_MAJOR}.0/gems/ \( -name "*.c" -o -name "*.o" \) -delete
 
@@ -112,16 +112,16 @@ RUN gem install bundler -v ${BUNDLE_VERSION} && \
 WORKDIR ${PROJECT_ROOT}
 
 # Make the bundle path relative so .bundle/config survives stage copies
-RUN bundle config set path 'vendor/bundle' \
- && bundle config set without 'development test assets' \
- && bundle config set deployment 'true' \
- && bundle check || bundle install --jobs 4 --retry 3
+RUN bundle _${BUNDLE_VERSION}_ config set path 'vendor/bundle' \
+ && bundle _${BUNDLE_VERSION}_ config set without 'development test assets' \
+ && bundle _${BUNDLE_VERSION}_ config set deployment 'true' \
+ && bundle _${BUNDLE_VERSION}_ check || bundle _${BUNDLE_VERSION}_ install --jobs 4 --retry 3
 
 # Sanity checks
-RUN ruby -v && bundle -v && cat .bundle/config
+RUN ruby -v && bundle _${BUNDLE_VERSION}_ -v && cat .bundle/config
 RUN grep -n '^  date ' Gemfile.lock || true
-RUN ls vendor/bundle/ruby/2.6.0/specifications | grep '^rake-' && true
-RUN bundle show rake
+RUN ls vendor/bundle/ruby/${RUBY_MAJOR}.0/specifications | grep '^rake-' && true
+RUN bundle _${BUNDLE_VERSION}_ show rake
 
 RUN echo "GEM_HOME=${GEM_HOME}"
 RUN ls "${GEM_HOME}/gems"
@@ -142,11 +142,11 @@ RUN RAILS_ENV=${RAILS_ENV} \
   MYSQL_PASSWORD=x \
   MYSQL_HOST=x \
   SDBMSS_DEVISE_SECRET_KEY=x \
-  bundle exec rake assets:precompile
+  bundle _${BUNDLE_VERSION}_ exec rake assets:precompile
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["bundle", "exec", "rails", "s", "unicorn", "-b", "0.0.0.0"]
+CMD ["bundle", "_${BUNDLE_VERSION}_", "exec", "rails", "s", "unicorn", "-b", "0.0.0.0"]
 
 
 # Production Image
@@ -202,16 +202,17 @@ RUN ls ${GEM_HOME}/gems
 WORKDIR ${PROJECT_ROOT}
 
 # Make the bundle path relative so .bundle/config survives stage copies
-RUN bundle config set path 'vendor/bundle' \
- && bundle config set without 'development test assets' \
- && bundle config set deployment 'true' \
- && bundle check || bundle install --jobs 4 --retry 3
+RUN bundle _${BUNDLE_VERSION}_ config set path 'vendor/bundle' \
+ && bundle _${BUNDLE_VERSION}_ config set without 'development test assets' \
+ && bundle _${BUNDLE_VERSION}_ config set deployment 'true' \
+ && bundle _${BUNDLE_VERSION}_ check || bundle _${BUNDLE_VERSION}_ install --jobs 4 --retry 3
 
 # Sanity checks
-RUN ruby -v && bundle -v && cat .bundle/config
+RUN ruby -v && bundle _${BUNDLE_VERSION}_ -v && cat .bundle/config
 RUN grep -n '^  date ' Gemfile.lock || true
-RUN ls vendor/bundle/ruby/2.6.0/specifications | grep '^rake-' && true
-RUN bundle show rake
+RUN ls vendor/bundle/ruby/${RUBY_MAJOR}.0/specifications | grep '^rake-' && true
+RUN gem install timeout -v '0.4.4'
+RUN bundle _${BUNDLE_VERSION}_ show rake
 
 RUN RAILS_ENV=${RAILS_ENV} \
   SECRET_KEY_BASE=x \
@@ -229,8 +230,8 @@ RUN RAILS_ENV=${RAILS_ENV} \
   MYSQL_PASSWORD=x \
   MYSQL_HOST=x \
   SDBMSS_DEVISE_SECRET_KEY=x \
-  bundle exec rake assets:precompile
+  bundle _${BUNDLE_VERSION}_ exec rake assets:precompile
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["bundle", "exec", "rails", "s", "unicorn", "-b", "0.0.0.0"]
+CMD ["bundle", "_${BUNDLE_VERSION}_", "exec", "rails", "s", "unicorn", "-b", "0.0.0.0"]
