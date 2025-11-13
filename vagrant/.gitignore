@@ -1,0 +1,4 @@
+# Ignore everything in the vagrant dir except the Vagrantfile and gitignore
+/*
+!/Vagrantfile
+!/.gitignore

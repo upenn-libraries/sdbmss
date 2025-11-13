@@ -1,4 +1,4 @@
-vagrant/*
-!vagrant/Vagrantfile
+# Dont track IDE project settings
+.idea
 
-/rails_app/vendor
+.DS_Store
