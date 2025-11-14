@@ -87,7 +87,7 @@ describe "Manage entries", :js => true do
     page.evaluate_script('window.confirm = function() { return true; }')
 
     visit entries_path
-    first("#delete_#{Entry.last.id}").trigger("click")
+    find("#delete_#{Entry.last.id}", match: :first).trigger("click")
     #all(".entry-delete-link").last.trigger('click')
     expect(page).to have_content("Are you sure you want to delete entry")
     click_button "Yes"
@@ -101,7 +101,7 @@ describe "Manage entries", :js => true do
     expect(Entry.where(deprecated: true).count).to be(0)
 
     visit entries_path
-    first(".entry-deprecate-link").trigger('click')
+    find(".entry-deprecate-link", match: :first).trigger('click')
 
     superceded_by_id = Entry.first.id
     fill_in 'superceded_by_id', :with => superceded_by_id
@@ -122,10 +122,10 @@ describe "Manage entries", :js => true do
   it "should perform a search on any field without error" do
     visit entries_path
 
-    expect(page.first("select[name='search_field']").all("option").length).to eq(42)
+    expect(page.find("select[name='search_field']").all("option").length).to eq(49)
 
 
-    42.times do |i|
+    49.times do |i|
       page.first("input[name='search_value']").set "Test String"
       option = page.all("select[name='search_field'] option")[i]
       option.select_option
@@ -215,7 +215,7 @@ describe "Manage entries", :js => true do
     expect(page).to have_content("Cite")
 
     click_link "Cite"
-    now = DateTime.now.to_formatted_s(:date_mla)    
+    now = DateTime.now.to_formatted_s(:date_mla)
     result = "Schoenberg Database of Manuscripts. The Schoenberg Institute for Manuscript Studies, University of Pennsylvania Libraries. Web. #{now}: #{Entry.first.public_id}."
     expect(page).to have_content(result)
   end
@@ -234,7 +234,7 @@ describe "Manage entries", :js => true do
 
   it "should show suggestions of similar records in the linking tool" do
     skip "not implemented yet"
-  end  
+  end
 
   it "should verify a legacy entry" do
     skip "not implemented yet"
