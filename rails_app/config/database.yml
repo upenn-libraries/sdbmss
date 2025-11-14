@@ -13,7 +13,8 @@ default: &default
 # to be no explicit way to set engine in this file.
 development: &development
   adapter: mysql2
-  encoding: utf8
+  encoding: utf8mb4
+  collation: utf8mb4_unicode_ci
   database: <%= ENV["MYSQL_DATABASE"] %>
   pool: 5
   username: <%= ENV["MYSQL_USER"] %>
@@ -25,6 +26,6 @@ staging:
 
 test:
   <<: *development
-  
+
 production:
   <<: *development

@@ -16,6 +16,10 @@ services:
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
       MYSQL_USER: "{{ mysql_user }}"
       MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+      LANG: "C.UTF-8"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
     #healthcheck:
     #  test:
     #    []
