@@ -30,7 +30,7 @@ describe "Groups", :js => true do
 
     it "should allow the user to invite other users to join" do
       visit groups_path
-      first(:link, 'The Society of the Friends of the Constitution').click
+      find(:link, 'The Society of the Friends of the Constitution', match: :first).click
 
       expect(page).to have_content('The Society of the Friends of the Constitution')
       expect(page).to have_content('This group does not have permission to edit any entries at the moment.')
@@ -38,8 +38,8 @@ describe "Groups", :js => true do
       # the multiselect dropdown would be a nightmare to do properly, so....
       expect(page).to have_content('None selected')
       click_button 'None selected'
-      first("input[value='#{@contributor.id}']").trigger "click"
-      first('.multiselect').trigger 'click'
+      find("input[value='#{@contributor.id}']", match: :first).trigger "click"
+      find('.multiselect', match: :first).trigger 'click'
 
       click_button 'Invite'
 
@@ -51,7 +51,7 @@ describe "Groups", :js => true do
       login(@contributor, 'somethingunguessable')
       visit groups_path
       expect(page).to have_content('The Society of the Friends of the Constitution')
-      first(:link, 'Accept Invitation').click
+      find(:link, 'Accept Invitation', match: :first).click
       expect(page).to have_content('The Society of the Friends of the Constitution')
       expect(page).not_to have_content 'Accept Invitation'
     end
@@ -69,7 +69,7 @@ describe "Groups", :js => true do
     it "should allow many entries to be added to a group from the manage table" do
       visit entries_path
       expect(page).to have_content(Entry.last.public_id)
-      first('#select-all').click
+      find('#select-all', match: :first).click
       click_link 'Add/Remove Groups'
 
       expect(page).to have_content('Add/Remove Records From Your Groups')
@@ -91,7 +91,7 @@ describe "Groups", :js => true do
     it "should allow a user to remove records from a group" do
       visit entries_path
       expect(page).to have_content(Entry.last.public_id)
-      first('#select-all').click
+      find('#select-all', match: :first).click
       click_link 'Add/Remove Groups'
       expect(page).to have_content('Add/Remove Records From Your Groups')
       
@@ -120,7 +120,7 @@ describe "Groups", :js => true do
       visit group_path(Group.first)
       expect(page).to have_content('Request Membership')
       find('#collapse-control').click
-      first(:link, 'Request Membership').click
+      find(:link, 'Request Membership', match: :first).click
       expect(page).to have_content('You have requested membership in this group')
       
       page.reset!
@@ -143,7 +143,7 @@ describe "Groups", :js => true do
     it "should allow a user to destroy a group" do
       skip "again, the confirm modal... god"
       visit groups_path
-      first('.btn-danger').click
+      find('.btn-danger', match: :first).click
       expect(page).to have_content 'Are you sure'
       #click_button 'Confirm'
       expect(page).to have_content 'The Society of the Friends of the Constitution was deleted successfully.'

@@ -39,13 +39,13 @@ describe "Manage Comments", :js => true do
   it "should allow a user to edit their comments" do
     visit comments_path
 
-    first('#search_results a').click
+    find('#search_results a', match: :first).click
 
     expect(page).to have_content('interesting observation')
 
-    first('a.comment-toggle').click
+    find('a.comment-toggle', match: :first).click
 
-    first('form.comment-toggle #comment').set "That's ridiculous."
+    find('form.comment-toggle #comment', match: :first).set "That's ridiculous."
 
     click_button "Confirm"
 
@@ -56,11 +56,11 @@ describe "Manage Comments", :js => true do
     skip "right, we can't click on modals because that would be useful!"
     visit comments_path
 
-    first('#search_results a').click
+    find('#search_results a', match: :first).click
 
     expect(page).to have_content('That\'s ridiculous.')
 
-    first('a[data-method="delete"]').click
+    find('a[data-method="delete"]', match: :first).click
     
     expect(page).to have_content('Are you sure?')
     

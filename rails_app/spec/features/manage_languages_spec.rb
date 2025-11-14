@@ -84,7 +84,7 @@ describe "Manage languages", :js => true do
       page.evaluate_script('window.confirm = function() { return true; }')
 
       visit languages_path
-      first(".delete-link").click
+      find(".delete-link", match: :first).click
       sleep(1)
 
       expect(Language.count).to eq(count-1)

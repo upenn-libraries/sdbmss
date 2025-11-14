@@ -24,7 +24,7 @@ describe "User Activity", :js => true do
 
     nw = find_field('title_0').value
 #    puts nw
-    first(".save-button").trigger('click')
+    find(".save-button", match: :first).trigger('click')
     sleep 1.1
 #    puts Entry.find(10).entry_titles
     return old
@@ -49,10 +49,10 @@ describe "User Activity", :js => true do
   it "should correctly display deleting a record associaton" do
     visit edit_entry_path(10)
     sleep(1)
-    first("#delete_title_0").click
+    find("#delete_title_0", match: :first).click
     expect(page).to have_content("Are you sure you want to remove this field and its contents?")
     click_button "Yes"    
-    first(".save-button").click
+    find(".save-button", match: :first).click
     sleep 1.1
     visit activities_path
     expect(page).to have_content('edited SDBM_10')
@@ -78,7 +78,7 @@ describe "User Activity", :js => true do
     
     expect(page).to have_content("Delete")
     
-    first("#delete_#{Name.last.id}").trigger('click')
+    find("#delete_#{Name.last.id}", match: :first).trigger('click')
     expect(page).to have_content("Are you sure you want to delete this record?")
     click_button "Yes"
     expect(page).not_to have_content('Stacker Pentecost')

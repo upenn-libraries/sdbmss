@@ -49,7 +49,7 @@ describe "Manage Merging Sources", :js => true do
 
     visit new_entry_path :source_id => @source.id
     fill_in 'folios', with: '7'
-    first(".save-button").click
+    find(".save-button", match: :first).click
     
     expect(page).to have_content('Warning: This entry has not been approved yet. The data may be incorrect or unreliable, or may not conform to the general data standards.')
     #sleep 1.1
@@ -58,7 +58,7 @@ describe "Manage Merging Sources", :js => true do
 
     find_by_id('add_title').click
     fill_in 'title_0', with: 'Test Title'
-    first(".save-button").click
+    find(".save-button", match: :first).click
 
     expect(page).to have_content('Warning: This entry has not been approved yet. The data may be incorrect or unreliable, or may not conform to the general data standards.')
 

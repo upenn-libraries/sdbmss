@@ -22,7 +22,7 @@ describe "De Ricci Game", :js => true do
       visit dericci_games_path
       expect(page).to have_content("My Games")
       find("#open-games").click
-      first('.play-game').click
+      find('.play-game', match: :first).click
       expect(page).to have_content('Select a Record and click')
 
       views = all('.view-name')
@@ -34,7 +34,7 @@ describe "De Ricci Game", :js => true do
         expect(page).not_to have_content("No results found")
         sleep 1
         if index < 1
-          first(".selectName").click
+          find(".selectName", match: :first).click
         elsif index < 2
           click_link "cantfindtoggle"
           expect(page).to have_content("Not Sure")
