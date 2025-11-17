@@ -114,12 +114,6 @@ RUN bundle config set path 'vendor/bundle' \
  && bundle config set deployment 'true' \
  && bundle check || bundle install --jobs 4 --retry 3
 
-# Sanity checks
-RUN ruby -v && bundle -v && cat .bundle/config
-RUN grep -n '^  date ' Gemfile.lock || true
-RUN ls vendor/bundle/ruby/2.6.0/specifications | grep '^rake-' && true
-RUN bundle show rake
-
 RUN echo "GEM_HOME=${GEM_HOME}"
 RUN ls "${GEM_HOME}/gems"
 
@@ -203,12 +197,6 @@ RUN bundle config set path 'vendor/bundle' \
  && bundle config set without 'development test assets' \
  && bundle config set deployment 'true' \
  && bundle check || bundle install --jobs 4 --retry 3
-
-# Sanity checks
-RUN ruby -v && bundle -v && cat .bundle/config
-RUN grep -n '^  date ' Gemfile.lock || true
-RUN ls vendor/bundle/ruby/2.6.0/specifications | grep '^rake-' && true
-RUN bundle show rake
 
 RUN RAILS_ENV=${RAILS_ENV} \
   SECRET_KEY_BASE=x \
