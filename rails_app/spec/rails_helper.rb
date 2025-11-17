@@ -76,9 +76,7 @@ RSpec.configure do |config|
   config.include SDBMSS::Capybara::AlertConfirmer
   config.include SDBMSS::Capybara::Login
 
-  excluded_tables = %w[pages] # Don't delete static page paths
-
-  DatabaseCleaner.clean_with(:truncation, { except: excluded_tables })
+  DatabaseCleaner.strategy = :truncation
   DatabaseCleaner.start
   DatabaseCleaner.clean
   Sunspot::remove_all!
