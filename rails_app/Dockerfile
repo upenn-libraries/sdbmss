@@ -1,6 +1,3 @@
-
-#ARG APP_IMAGE_NAME=gitlab.library.upenn.edu/sdbm/ruby-2.3.8
-#ARG APP_IMAGE_TAG=2ad16fb5
 ARG APP_IMAGE_NAME=ruby
 ARG APP_IMAGE_TAG=2.6.10-bullseye
 
