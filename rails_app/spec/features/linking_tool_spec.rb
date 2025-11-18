@@ -86,8 +86,8 @@ describe "Linking Tool", :js => true do
     entry = Entry.last(3)[0]
     visit linking_tool_by_entry_path id: entry.id
 
-    second_entry_id = first(".add-entry-link", visible: true)["data-entry-id".to_sym].to_i
-    first(".add-entry-link", visible: true).trigger('click')
+    second_entry_id = find(".add-entry-link", visible: true, match: :first)["data-entry-id".to_sym].to_i
+    find(".add-entry-link", visible: true, match: :first).trigger('click')
 
     find('#persist-entries-manuscript-link').click
 
@@ -118,7 +118,7 @@ describe "Linking Tool", :js => true do
 
     expect(page).to have_content("Link to SDBM")
     # use manuscript created in previous test
-    first(".link-to-manuscript-link", visible: true).trigger('click')
+    find(".link-to-manuscript-link", visible: true, match: :first).trigger('click')
 
     click_button "Yes"
 
@@ -137,8 +137,8 @@ describe "Linking Tool", :js => true do
     count = manuscript.entries.count
 
     visit linking_tool_by_manuscript_path id: manuscript.id
-    entry_id = first(".add-entry-link", visible: true)["data-entry-id".to_sym].to_i
-    first(".add-entry-link", visible: true).trigger('click')
+    entry_id = find(".add-entry-link", visible: true, match: :first)["data-entry-id".to_sym].to_i
+    find(".add-entry-link", visible: true, match: :first).trigger('click')
 
     find("#persist-entries-manuscript-link").trigger('click')
 
@@ -158,7 +158,7 @@ describe "Linking Tool", :js => true do
     entry = manuscript.entries.first
     entry_id = entry.id
 
-    first("input[name='entry_id_#{entry.id}'][value='possible']").trigger('click')
+    find("input[name='entry_id_#{entry.id}'][value='possible']", match: :first).trigger('click')
 
     find("#persist-entries-manuscript-link").trigger('click')
 
@@ -176,7 +176,7 @@ describe "Linking Tool", :js => true do
     entry = manuscript.entries.first
     entry_id = entry.id
 
-    first("input[name='entry_id_#{entry.id}'][value='unlink']").trigger('click')
+    find("input[name='entry_id_#{entry.id}'][value='unlink']", match: :first).trigger('click')
 
     find("#persist-entries-manuscript-link").trigger('click')
 
@@ -199,7 +199,7 @@ describe "Linking Tool", :js => true do
     entryCount = manuscript.entries.length
     (entryCount - 1).times do |i|
       entry_id = manuscript.entries[i].id
-      first("input[name='entry_id_#{entry_id}'][value='unlink']").trigger('click')
+      find("input[name='entry_id_#{entry_id}'][value='unlink']", match: :first).trigger('click')
     end
     
     find_by_id("persist-entries-manuscript-link").trigger("click")
@@ -217,7 +217,7 @@ describe "Linking Tool", :js => true do
     entry = manuscript.entries.first
     entry_id = entry.id
 
-    first("input[name='entry_id_#{entry_id}'][value='unlink']").trigger('click')
+    find("input[name='entry_id_#{entry_id}'][value='unlink']", match: :first).trigger('click')
     find_by_id("persist-entries-manuscript-link").trigger("click")
     #click_button "Save changes"
     expect(page).to have_content("SDBM_MS")    

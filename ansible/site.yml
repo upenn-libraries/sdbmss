@@ -47,6 +47,11 @@
       ansible.builtin.import_role:
         name: solr
       tags: solr
+    - name: Deploy Chrome for testing
+      ansible.builtin.import_role:
+        name: chrome
+      tags: chrome
+      when: is_development | default (false, true)
     - name: Deploy Delayed Job
       ansible.builtin.import_role:
         name: delayed_job

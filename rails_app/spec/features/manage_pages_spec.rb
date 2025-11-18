@@ -101,7 +101,7 @@ describe "Manage Pages", :js => true do
     skip "because poltergeist can't handle a modal popup"
     n = Page.count
     visit pages_path  
-    first("a[data-method='delete']").click
+    find("a[data-method='delete']", match: :first).click
     expect(page).to have_content("Confirm")
     click_button("Confirm")
 
