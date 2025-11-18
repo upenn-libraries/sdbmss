@@ -58,7 +58,7 @@ describe "Manage Bookmarks", :js => true do
     expect(page).to have_content(Entry.last.public_id)
     expect(page).to have_css('.bookmark')
     # generates AJAX error, but passes anyway?
-    first('.bookmark').trigger('click')
+    find('.bookmark', match: :first).trigger('click')
 
     visit bookmarks_path
     sleep 60
@@ -71,15 +71,15 @@ describe "Manage Bookmarks", :js => true do
     click_link 'Add Tag'
     find('.add-bookmark-tag input').set 'New Tag'
 
-    first('.add-bookmark-tag-confirm').click
+    find('.add-bookmark-tag-confirm', match: :first).click
     expect(page).to have_content('New Tag')
 
     fill_in "tag-search", with: "Wrong Tag"
-    first('.bookmark-search').click
+    find('.bookmark-search', match: :first).click
     expect(page).not_to have_content(Bookmark.last.document.public_id)
 
     fill_in "tag-search", with: "New Tag"
-    first('.bookmark-search').click
+    find('.bookmark-search', match: :first).click
     expect(page).to have_content(Bookmark.last.document.public_id)
   end
 
@@ -87,7 +87,7 @@ describe "Manage Bookmarks", :js => true do
     visit bookmarks_path
 
     expect(page).to have_content('New Tag')
-    first('.remove-bookmark-tag-confirm').click
+    find('.remove-bookmark-tag-confirm', match: :first).click
 
     expect(page).not_to have_content('New Tag')
   end
@@ -101,7 +101,7 @@ describe "Manage Bookmarks", :js => true do
     id = Bookmark.last.document.public_id
     expect(page).to have_content(id)
 
-    first('.remove-bookmark').click
+    find('.remove-bookmark', match: :first).click
 
     expect(page).not_to have_content(id)
   end
