@@ -211,9 +211,10 @@ namespace :sdbmss do
       password = "testpassword"
       if (user = User.find_by username: role)
         puts "Found test user #{user.username}; setting password to #{password}"
-        puts "Test user is #{user.inspect}"
         user.password = password
         user.password_confirmation = password
+        user.save
+        puts "Test user is #{user.inspect}"
       else
         puts "Creating test user #{role} with password #{password}"
         user = User.create email: "#{role}@#{role}.com",
