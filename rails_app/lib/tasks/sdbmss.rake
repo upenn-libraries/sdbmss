@@ -205,4 +205,29 @@ namespace :sdbmss do
     puts "You should now run 'bundle exec rake sunspot:reindex'"
   end
 
+  desc "Add/update test users for roles contributor, editor, super_editor, admin"
+  task :add_update_test_users => :environment do |t, args|
+    %w[contributor editor super_editor admin].each do |role|
+      password = "testpassword"
+      if (user = User.find_by username: role)
+        puts "Found test user #{user.username}; setting password to #{password}"
+        puts "Test user is #{user.inspect}"
+        user.password = password
+        user.password_confirmation = password
+      else
+        puts "Creating test user #{role} with password #{password}"
+        user = User.create email: "#{role}@#{role}.com",
+                    username: role,
+                    fullname:"#{role} #{role}",
+                    role: role,
+                    password: password,
+                    password_confirmation: password,
+                    active: true,
+                    reviewed: true
+        puts "Test user is #{user.inspect}"
+
+      end
+    end
+  end
+
 end
