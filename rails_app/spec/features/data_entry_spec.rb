@@ -472,7 +472,7 @@ describe "Data entry", :js => true do
 
       fill_in 'comment', with: 'This info is correct'
 
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       sleep(1.5)
       expect(find(".modal-title", visible: true).text.include?("Successfully saved")).to be_truthy
@@ -591,7 +591,7 @@ describe "Data entry", :js => true do
 
       fill_in 'folios', with: '666'
 
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       expect(page).to have_content("Warning: This entry has not been approved yet.")
       expect(page).to have_content(Entry.last.public_id)
@@ -624,7 +624,7 @@ describe "Data entry", :js => true do
 
       fill_in 'folios', with: '666'
 
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       expect(page).to have_content("Warning: This entry has not been approved yet.")
       expect(page).to have_content(Entry.last.public_id)
@@ -726,7 +726,7 @@ describe "Data entry", :js => true do
 
       fill_in 'cat_lot_no', with: '9090'
 
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       expect(page).to have_content("Warning: This entry has not been approved yet.")
       expect(page).to have_content(Entry.last.public_id)
@@ -778,7 +778,7 @@ describe "Data entry", :js => true do
       # putting thise here made it save properly, not sure why!
       fill_in "cat_lot_no", with: "M. 1"
 
-      first(".save-button").trigger('click')
+      find(".save-button", match: :first).trigger('click')
       
       SDBMSS::Util.wait_for_solr_to_be_current
       # note: this fails frequently, for some unknown reason -> no 'sleep duration' seems to affect this...

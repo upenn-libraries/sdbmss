@@ -72,7 +72,7 @@ describe "Browse Dericci Records", :js => true do
   it "should display a dericci record" do
     visit dericci_records_path
     within ".sdbm-table" do
-      first("a").click
+      find("a", match: :first).click
     end
     expect(page).to have_content(DericciRecord.first.name)
   end
@@ -91,7 +91,7 @@ describe "Browse Dericci Records", :js => true do
     expect(page).to have_content("in Name Authority")
     expect(page).to have_content("Select")
     expect(page).to have_content("Camillo")
-    first(".selectName").click
+    find(".selectName", match: :first).click
     expect(page).not_to have_content("in Name Authority")
     expect(page).not_to have_content("Find Verified Name")
     expect(page).to have_content "Save"

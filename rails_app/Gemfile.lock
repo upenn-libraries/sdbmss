@@ -259,11 +259,6 @@ GEM
       activesupport (>= 3.0, < 6.0)
       request_store (~> 1.1)
     parslet (2.0.0)
-    poltergeist (1.6.0)
-      capybara (~> 2.1)
-      cliver (~> 0.3.1)
-      multi_json (~> 1.0)
-      websocket-driver (>= 0.2.0)
     pr_geohash (1.0.0)
     pry (0.15.2)
       coderay (~> 1.1)
@@ -483,7 +478,7 @@ DEPENDENCIES
   chronic (~> 0.10.2)
   codemirror-rails
   coffee-rails (~> 4.0.0)
-  cuprite (= 0.13)
+  cuprite
   daemons (~> 1.2.2)
   data-confirm-modal
   database_cleaner (~> 1.4.1)
@@ -510,7 +505,6 @@ DEPENDENCIES
   nokogiri
   number_to (~> 0.7.1)
   paper_trail (~> 4.0.0)
-  poltergeist (~> 1.6.0)
   pry-rails
   rack (>= 1.6.11)
   rack-handlers
