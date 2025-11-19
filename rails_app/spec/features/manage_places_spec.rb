@@ -85,7 +85,7 @@ describe "Manage places", :js => true do
       page.evaluate_script('window.confirm = function() { return true; }')
 
       visit places_path
-      first(".delete-link").click
+      find(".delete-link", match: :first).click
       sleep(1)
 
       expect(Place.count).to eq(count-1)
@@ -131,7 +131,7 @@ describe "Manage places", :js => true do
 #
 #      visit places_path
 #      expect(page).to have_content @place.name
-#      first("#unreviewed_only").click
+#      find("#unreviewed_only", match: :first).click
 #      click_button 'Search'
 #
 #      expect(page).to have_selector("#select-all", visible: true)

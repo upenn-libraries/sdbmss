@@ -36,7 +36,7 @@ describe "Manage entries", :js => true do
   it "should search" do
     visit entries_path
 
-    first("input[name='search_value']").native.send_keys "de ricci"
+    find("input[name='search_value']", match: :first).native.send_keys "de ricci"
     find('#search_submit').click()
     sleep 1.1
     expect(page).not_to have_selector("#spinner", visible: true)
@@ -59,13 +59,13 @@ describe "Manage entries", :js => true do
   it "should mark entry as approved" do
 
     visit entries_path
-    first("#unapproved_only").click
+    find("#unapproved_only", match: :first).click
     find('#search_submit').click()
 
     sleep 1.1
 
     expect(page).to have_selector("#select-all", visible: true)
-    first("#select-all").trigger('click')
+    find("#select-all", match: :first).trigger('click')
 
     expect(page).to have_selector("#mark-as-approved")
     find("#mark-as-approved").click
@@ -87,7 +87,7 @@ describe "Manage entries", :js => true do
     page.evaluate_script('window.confirm = function() { return true; }')
 
     visit entries_path
-    first("#delete_#{Entry.last.id}").trigger("click")
+    find("#delete_#{Entry.last.id}", match: :first).trigger("click")
     #all(".entry-delete-link").last.trigger('click')
     expect(page).to have_content("Are you sure you want to delete entry")
     click_button "Yes"
@@ -101,7 +101,7 @@ describe "Manage entries", :js => true do
     expect(Entry.where(deprecated: true).count).to be(0)
 
     visit entries_path
-    first(".entry-deprecate-link").trigger('click')
+    find(".entry-deprecate-link", match: :first).trigger('click')
 
     superceded_by_id = Entry.first.id
     fill_in 'superceded_by_id', :with => superceded_by_id
@@ -122,11 +122,11 @@ describe "Manage entries", :js => true do
   it "should perform a search on any field without error" do
     visit entries_path
 
-    expect(page.first("select[name='search_field']").all("option").length).to eq(42)
+    expect(page.find("select[name='search_field']", match: :first).all("option").length).to eq(42)
 
 
     42.times do |i|
-      page.first("input[name='search_value']").set "Test String"
+      page.find("input[name='search_value']", match: :first).set "Test String"
       option = page.all("select[name='search_field'] option")[i]
       option.select_option
       find('#search_submit').click()
