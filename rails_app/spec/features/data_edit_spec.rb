@@ -160,7 +160,7 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => entry.id
 
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       expect(page).to have_content(entry.public_id)
 
@@ -184,7 +184,7 @@ describe "Data entry", :js => true do
 
       fill_in 'title_0', with: 'Changed Book'
 
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       expect(page).to have_content(entry.public_id)
 
@@ -215,7 +215,7 @@ describe "Data entry", :js => true do
       expect(page).to have_content("Are you sure you want to remove this field and its contents?")
       click_button "Yes"
 
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       expect(page).to have_content("Warning: This entry has not been approved yet.")
       expect(page).to have_content(entry.public_id)
@@ -242,7 +242,7 @@ describe "Data entry", :js => true do
       # underlying entry_title record
       fill_in 'title_0', with: ''
 
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       expect(page).to have_content("Warning: This entry has not been approved yet.")
       expect(page).to have_content(entry.public_id)
@@ -273,7 +273,7 @@ describe "Data entry", :js => true do
       expect(page).not_to have_content('Schmoe, Joe')
       #expect(find_field('author_0').value).to eq('     ')
 
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       expect(page).to have_content(entry.public_id)
 
@@ -293,7 +293,7 @@ describe "Data entry", :js => true do
 
       # make a new entry w/ same Source but diff catalog number
       fill_in 'cat_lot_no', with: "124"
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       expect(page).to have_content("Warning: This entry has not been approved yet.")
       expect(page).to have_content(Entry.last.public_id)
@@ -331,7 +331,7 @@ describe "Data entry", :js => true do
       sleep 1.1
 
       fill_in 'folios', with: '7777'
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
     end
@@ -355,7 +355,7 @@ describe "Data entry", :js => true do
 
       find_by_id('add_title').click
       fill_in 'title_0', with: 'changed title'
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
     end
@@ -377,7 +377,7 @@ describe "Data entry", :js => true do
       sleep 1.1
 
       fill_in 'folios', with: '11111'
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       expect(find(".modal-body", visible: true).text.include?("Another change was made to the record while you were working")).to be_truthy
     end

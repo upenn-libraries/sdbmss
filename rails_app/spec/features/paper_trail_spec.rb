@@ -64,7 +64,7 @@ describe "Paper trail", :js => true do
         visit edit_entry_path (e)
 
         fill_in 'folios', with: 10000
-        first(".save-button").click
+        find(".save-button", match: :first).click
 
         expect(page).to have_content("Warning: This entry has not been approved yet.")
         expect(page).to have_content(e.public_id)
@@ -81,7 +81,7 @@ describe "Paper trail", :js => true do
 
         visit history_entry_path (e)
 
-        f = first('.active', text: 'Folios')
+        f = find('.active', text: 'Folios', match: :first)
         f = f.find('.btn-undo').click()
         
         expect(page).to have_content('Revert to Old Version')
@@ -95,7 +95,7 @@ describe "Paper trail", :js => true do
 
         visit history_entry_path (e)
 
-        f = first('.active', text: 'Folios')
+        f = find('.active', text: 'Folios', match: :first)
         f = f.find('.btn-undo').click()
         
         click_button('Restore')
@@ -116,7 +116,7 @@ describe "Paper trail", :js => true do
         visit edit_entry_path (e)
         fill_in 'title_0', with: 'Hiiipower'
 
-        first('.save-button').click
+        find('.save-button', match: :first).click
         sleep(1.5)
 
         visit entry_path (e)
@@ -134,7 +134,7 @@ describe "Paper trail", :js => true do
 
         visit history_entry_path (e)
 
-        f = first('.active', text: 'Hiiipower')
+        f = find('.active', text: 'Hiiipower', match: :first)
         f = f.find('.btn-undo').click()
 
         expect(page).to have_content(e.public_id)
@@ -149,7 +149,7 @@ describe "Paper trail", :js => true do
 
         visit history_entry_path (e)
 
-        f = first('.active', text: 'Hiiipower')
+        f = find('.active', text: 'Hiiipower', match: :first)
         f = f.find('.btn-undo').click()
 
         click_button('Restore')
@@ -165,7 +165,7 @@ describe "Paper trail", :js => true do
 
         visit history_entry_path (e)
 
-        f = first('.active', text: 'Hiiipower')
+        f = find('.active', text: 'Hiiipower', match: :first)
         expect(f).to have_content('changed Title')
         expect(f).to have_content('Book of Hours')
       end
@@ -182,7 +182,7 @@ describe "Paper trail", :js => true do
         expect(page).to have_content("Are you sure you want to remove this field and its contents?")
         click_button "Yes"
 
-        first(".save-button").click
+        find(".save-button", match: :first).click
         
         sleep(1.1)
 
@@ -190,7 +190,7 @@ describe "Paper trail", :js => true do
         expect(old_count).to eq(new_count + 1)
 
         visit history_entry_path (e)
-        f = first('.active', text: 'Title')
+        f = find('.active', text: 'Title', match: :first)
         expect(f).to have_content('deleted Title')
         f = f.find('.btn-undo').click()
 
@@ -211,7 +211,7 @@ describe "Paper trail", :js => true do
 
         visit history_entry_path e
         
-        f = first('.active', text: 'Title')
+        f = find('.active', text: 'Title', match: :first)
         expect(f).to have_content('added Title')
         f = f.find('.btn-undo').click()
 

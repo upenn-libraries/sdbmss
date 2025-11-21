@@ -137,7 +137,7 @@ describe "Blacklight Advanced Search", :js => true do
 
   	find_by_id('advanced-search-submit').click()
 
-  	expect(first('.appliedFilter')).to have_content('Any')
+  	expect(find('.appliedFilter', match: :first)).to have_content('Any')
 
   	count = countEntries
 

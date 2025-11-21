@@ -16,7 +16,7 @@ describe "Bookmark", :js => true do
       click_button "Search"
 
       expect(page).to have_content(Entry.last.public_id)
-      first('.bookmark').click
+      find('.bookmark', match: :first).click
 
       visit bookmarks_path
       expect(page).to have_content("of this type")
@@ -26,24 +26,24 @@ describe "Bookmark", :js => true do
     it "should allow the user to add tags to their bookmark" do
       visit bookmarks_path
 
-      first('.btn-add-tag').click
+      find('.btn-add-tag', match: :first).click
       expect(page).to have_content('Tag:')
-      first('.new-bookmark-tag').set "new tag"
-      first('.add-bookmark-tag-confirm').click
+      find('.new-bookmark-tag', match: :first).set "new tag"
+      find('.add-bookmark-tag-confirm', match: :first).click
 
       expect(page).to have_content('new tag')
-      first('input[name="tag-search"]').set "new tag"
-      first('.bookmark-search').click
+      find('input[name="tag-search"]', match: :first).set "new tag"
+      find('.bookmark-search', match: :first).click
       expect(page).to have_content(Entry.last.public_id)
     end
 
     it "should not add a tag that is already present" do
       visit bookmarks_path
 
-      first('.btn-add-tag').click
+      find('.btn-add-tag', match: :first).click
       expect(page).to have_content('Tag:')
-      first('.new-bookmark-tag').set "new tag"
-      first('.add-bookmark-tag-confirm').click
+      find('.new-bookmark-tag', match: :first).set "new tag"
+      find('.add-bookmark-tag-confirm', match: :first).click
 
       expect(page).to have_content('new tag')
     end
@@ -53,9 +53,9 @@ describe "Bookmark", :js => true do
       visit bookmarks_path
       expect(page).to have_content(Entry.last.public_id)
       expect(page).to have_content 'new tag'
-      first('.remove-bookmark-tag-confirm').click
+      find('.remove-bookmark-tag-confirm', match: :first).click
       expect(page).not_to have_content 'new tag'
-      first('.remove-bookmark').click
+      find('.remove-bookmark', match: :first).click
       expect(page).to have_content "un-bookmarked"
       visit bookmarks_path
       expect(page).not_to have_content(Entry.last.public_id)
@@ -63,15 +63,15 @@ describe "Bookmark", :js => true do
 
     it "should bookmark/watch and remove for Entries" do
       visit entries_path
-      first('.bookmark').click
-      first('.watch').click
+      find('.bookmark', match: :first).click
+      find('.watch', match: :first).click
 
       visit entry_path(Entry.last)
       expect(page).to have_content('Bookmarked')
       expect(page).to have_content('Watched')
 
-      first('.bookmark-delete').click
-      first('.watch-delete').click
+      find('.bookmark-delete', match: :first).click
+      find('.watch-delete', match: :first).click
 
       expect(page).not_to have_content('Bookmarked')
       expect("#control-panel").not_to have_content('Watched')
@@ -80,15 +80,15 @@ describe "Bookmark", :js => true do
 
     it "should bookmark/watch and remove for Names" do
       visit names_path
-      first('.DTFC_LeftWrapper .bookmark').click
-      first('.DTFC_LeftWrapper .watch').click
+      find('.DTFC_LeftWrapper .bookmark', match: :first).click
+      find('.DTFC_LeftWrapper .watch', match: :first).click
 
       visit name_path(Name.last)
       expect(page).to have_content('Bookmarked')
       expect(page).to have_content('Watched')
 
-      first('.bookmark-delete').click
-      first('.watch-delete').click
+      find('.bookmark-delete', match: :first).click
+      find('.watch-delete', match: :first).click
 
       expect(page).not_to have_content('Bookmarked')
       expect("#control-panel").not_to have_content('Watched')
@@ -96,15 +96,15 @@ describe "Bookmark", :js => true do
 
     it "should bookmark/watch and remove for Sources" do
       visit sources_path
-      first('.DTFC_LeftWrapper .bookmark').click
-      first('.DTFC_LeftWrapper .watch').click
+      find('.DTFC_LeftWrapper .bookmark', match: :first).click
+      find('.DTFC_LeftWrapper .watch', match: :first).click
 
       visit source_path(Source.last)
       expect(page).to have_content('Bookmarked')
       expect(page).to have_content('Watched')
 
-      first('.bookmark-delete').click
-      first('.watch-delete').click
+      find('.bookmark-delete', match: :first).click
+      find('.watch-delete', match: :first).click
 
       expect(page).not_to have_content('Bookmarked')
       expect("#control-panel").not_to have_content('Watched') 
@@ -112,15 +112,15 @@ describe "Bookmark", :js => true do
 
     it "should bookmark/watch and remove for Manuscript Records" do
       visit manuscripts_path
-      first('.bookmark').click
-      first('.watch').click
+      find('.bookmark', match: :first).click
+      find('.watch', match: :first).click
 
       visit manuscript_path(Manuscript.last)
       expect(page).to have_content('Bookmarked')
       expect(page).to have_content('Watched')
 
-      first('.bookmark-delete').click
-      first('.watch-delete').click
+      find('.bookmark-delete', match: :first).click
+      find('.watch-delete', match: :first).click
 
       expect(page).not_to have_content('Bookmarked')
       expect("#control-panel").not_to have_content('Watched')
@@ -129,15 +129,15 @@ describe "Bookmark", :js => true do
     it "should bookmark/watch and remove for Dericci Records" do
       visit dericci_records_path
       expect(page).to have_content(DericciRecord.order("name ASC").first.name)
-      first('.bookmark').click
-      first('.watch').click
+      find('.bookmark', match: :first).click
+      find('.watch', match: :first).click
 
       visit dericci_record_path(DericciRecord.order("name ASC").first)
       expect(page).to have_content('Bookmarked')
       expect(page).to have_content('Watched')
 
-      first('.bookmark-delete').click
-      first('.watch-delete').click
+      find('.bookmark-delete', match: :first).click
+      find('.watch-delete', match: :first).click
 
       expect(page).not_to have_content('Bookmarked')
       expect("#control-panel").not_to have_content('Watched') 
@@ -145,8 +145,8 @@ describe "Bookmark", :js => true do
 
     it "should display all watched records" do
       visit sources_path
-      first('.DTFC_LeftWrapper .bookmark').click
-      first('.DTFC_LeftWrapper .watch').click
+      find('.DTFC_LeftWrapper .bookmark', match: :first).click
+      find('.DTFC_LeftWrapper .watch', match: :first).click
 
       visit watches_path
       expect(page).to have_content(Source.last.public_id)
@@ -154,13 +154,13 @@ describe "Bookmark", :js => true do
 
     it "should allow a user to remove a watched record from the manage-watches page" do
       visit sources_path
-      first('.DTFC_LeftWrapper .bookmark').click
-      first('.DTFC_LeftWrapper .watch').click
+      find('.DTFC_LeftWrapper .bookmark', match: :first).click
+      find('.DTFC_LeftWrapper .watch', match: :first).click
 
       visit watches_path
       expect(page).to have_content(Source.last.public_id)
 
-      first(".watch-delete").click
+      find(".watch-delete", match: :first).click
     end
 
     it "should allow the user to export their bookmarks" do

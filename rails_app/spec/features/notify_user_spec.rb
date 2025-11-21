@@ -56,7 +56,7 @@ describe "User Notifications", :js => true do
 
       visit edit_entry_path(@entry1)
       fill_in "folios", with: 2
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       expect(page).to have_content('Do you have additional information about the manuscript described here?')
 
@@ -100,7 +100,7 @@ describe "User Notifications", :js => true do
 
       visit edit_entry_path(@entry1)
       fill_in "folios", with: 4
-      first(".save-button").click
+      find(".save-button", match: :first).click
 
       expect(@user2.notifications.count).to eq(initial)
     end

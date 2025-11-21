@@ -42,12 +42,6 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  config.before(:each, js: true) do
-    if page.driver.respond_to? :resize
-      page.driver.resize(1920, 1080)
-    end
-  end
-
   # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
 =begin
