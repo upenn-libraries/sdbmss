@@ -14,13 +14,14 @@ Capybara.register_driver(:better_cuprite) do |app|
     app,
     **{
       window_size: [1200, 800],
-      browser_options: remote_chrome ? { 'no-sandbox' => nil } : {},
+      browser_options: { 'no-sandbox': nil },
+      process_timeout: 10,
       inspector: true,
-      js_errors: true
+      js_errors: true,
+      timeout: 10
     }
   )
 end
 
 # Configure Capybara to use :better_cuprite driver by default
 Capybara.default_driver = Capybara.javascript_driver = :better_cuprite
-

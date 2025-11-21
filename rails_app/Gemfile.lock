@@ -452,7 +452,7 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    whenever (1.0.0)
+    whenever (1.1.0)
       chronic (>= 0.6.3)
     xpath (2.1.0)
       nokogiri (~> 1.3)
@@ -478,7 +478,7 @@ DEPENDENCIES
   chronic (~> 0.10.2)
   codemirror-rails
   coffee-rails (~> 4.0.0)
-  cuprite
+  cuprite (= 0.13)
   daemons (~> 1.2.2)
   data-confirm-modal
   database_cleaner (~> 1.4.1)

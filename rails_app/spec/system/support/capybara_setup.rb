@@ -17,15 +17,15 @@ Capybara.server_host = '0.0.0.0'
 
 # Use a hostname that could be resolved in the internal Docker network
 Capybara.app_host = "http://app:3000"
-#
-# RSpec.configure do |config|
-#   # Not loading Bootstrap Icons from CDN to prevent inconsistent errors from accept_confirm
-#   config.before(:each, type: :system) do
-#     page.driver.browser.url_blacklist = [%r{https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css}]
-#   end
-#   # Make sure this hook runs before others
-#   config.prepend_before(:each, type: :system) do
-#     # Use JS driver always
-#     driven_by Capybara.javascript_driver
-#   end
-# end
+
+RSpec.configure do |config|
+  # Not loading Bootstrap Icons from CDN to prevent inconsistent errors from accept_confirm
+  config.before(:each, type: :system) do
+    page.driver.browser.url_blacklist = [%r{https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.2/font/bootstrap-icons.css}]
+  end
+  # Make sure this hook runs before others
+  # config.prepend_before(:each, type: :system) do
+  #   # Use JS driver always
+  #   driven_by Capybara.javascript_driver
+  # end
+end

@@ -144,9 +144,9 @@ end
 
 group :test, :development do
   gem 'rspec-rails', '~> 3.1.0'
+  gem 'cuprite', '0.13'
   gem 'capybara', '~> 2.7.1'
   gem 'capybara-screenshot'
   gem "factory_girl_rails", "~> 4.0"
-  gem 'cuprite'
   gem 'simplecov', :require => false
 end
