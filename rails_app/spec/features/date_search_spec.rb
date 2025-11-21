@@ -1,6 +1,6 @@
 
 require 'json'
-require "rails_helper"
+require "system_helper"
 require 'net/http'
 
 # Test manuscript date search in Solr, mostly to verify end-exclusive

@@ -1,5 +1,5 @@
 
-require "rails_helper"
+require "system_helper"
 
 describe "Sign up / Edit Profile", :js => true do
 

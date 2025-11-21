@@ -1,6 +1,6 @@
 # NOTE: because of how asychnronous this is, it seems to be basically untestable using capybara, so....
 
-require "rails_helper"
+require "system_helper"
 
 describe "Groups", :js => true do
 

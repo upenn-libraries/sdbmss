@@ -1,5 +1,5 @@
 require 'json'
-require "rails_helper"
+require "system_helper"
 require 'net/http'
 
 describe "Date Entry Workflow", :js => true do

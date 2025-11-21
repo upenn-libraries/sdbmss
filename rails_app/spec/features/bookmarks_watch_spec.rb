@@ -1,4 +1,4 @@
-require "rails_helper"
+require "system_helper"
 
 describe "Bookmark", :js => true do
 

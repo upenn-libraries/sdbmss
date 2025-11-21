@@ -1,5 +1,5 @@
 
-require "rails_helper"
+require "system_helper"
 require "csv"
 
 describe "Manage languages", :js => true do

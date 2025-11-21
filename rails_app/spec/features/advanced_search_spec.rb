@@ -1,6 +1,6 @@
 
 require 'json'
-require "rails_helper"
+require "system_helper"
 require 'net/http'
 
 # There's JS on most of these pages. Not all features use JS, but

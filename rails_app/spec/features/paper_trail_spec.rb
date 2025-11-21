@@ -1,6 +1,6 @@
 # paper trail spec
 
-require "rails_helper"
+require "system_helper"
 
 describe "Paper trail", :js => true do
 

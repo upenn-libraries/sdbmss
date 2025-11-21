@@ -1,5 +1,5 @@
 
-require "rails_helper"
+require "system_helper"
 
 describe "Manage manuscripts", :js => true do
 

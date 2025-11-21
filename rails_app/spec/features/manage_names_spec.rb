@@ -1,6 +1,6 @@
 
 require 'json'
-require "rails_helper"
+require "system_helper"
 
 describe "Manage Names", :js => true do
 

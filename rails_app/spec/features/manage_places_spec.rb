@@ -1,5 +1,5 @@
 
-require "rails_helper"
+require "system_helper"
 require "csv"
 
 describe "Manage places", :js => true do
