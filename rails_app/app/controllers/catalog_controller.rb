@@ -5,8 +5,9 @@
 # This is called 'CatalogController' because that's what Blacklight
 # requires us to call its search controller; it's not customizable
 # (because the name is tied to the views directory).
-class CatalogController < ApplicationController  
+class CatalogController < ApplicationController
   include Blacklight::Catalog
+  include CustomFacet
 
   include CatalogControllerConfiguration
 
@@ -26,7 +27,7 @@ class CatalogController < ApplicationController
 
       @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
       if can? :show, entry
-        
+
         @linked = @entry.manuscript ? @entry.manuscript.entries.map(&:id) : []
         s = Sunspot.more_like_this(@entry) do
           fields :title_search, :place_search, :author_search, :language_search
@@ -36,13 +37,13 @@ class CatalogController < ApplicationController
           order_by :score, :desc
         end
         @suggestions = []#s.results.last(10)
-    
+
         super
         respond_to do |format|
           format.html
         end
       else
-        render_access_denied      
+        render_access_denied
       end
     else
       render "not_found.html", status: 404
@@ -55,14 +56,14 @@ class CatalogController < ApplicationController
       #format.atom {redirect_to feed_path(format: :rss) }
       format.html { super }
       format.json { super }
-      format.csv { 
+      format.csv {
         if current_user.downloads.count >= 5
           render json: {error: 'at limit'}
           return
         else
           @d = Download.create({filename: "entries.csv", user_id: current_user.id})
           CatalogController.new.delay.do_csv_search(params, search_params_logic, @d)
-          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count} 
+          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count}
         end
       }
     end
@@ -102,14 +103,14 @@ class CatalogController < ApplicationController
     # merge per-page params
 
     page = 1
-    
+
     objects = []
     filename = download.filename
     user = download.user
     id = download.id
     path = "tmp/#{id}_#{user}_#{filename}"
     headers = nil
-    
+
     loop do
       (@response, @document_list) = search_results(params.merge({:page => page, :per_page => 100}), search_params_logic)
       #s = do_search(params.merge({:limit => 300, :offset => offset}))
@@ -124,7 +125,7 @@ class CatalogController < ApplicationController
           csv << headers
         end
         objects.each do |r|
-          csv << r.values 
+          csv << r.values
         end
       end
     end
@@ -160,7 +161,7 @@ class CatalogController < ApplicationController
   end
 
   # override blacklight method to require that user is logged in
-  # 
+  #
   # this is a workaround to prevent bots from exploding the database with too many (saved) searches
   def find_or_initialize_search_session_from_params params
     if !current_user
@@ -229,7 +230,7 @@ class CatalogController < ApplicationController
     respond_to do |format|
       format.html {
         flash[:error] = "Sorry, I don't understand your search."
-        redirect_to root_path        
+        redirect_to root_path
       }
       format.json {
         render json: { error: "Sorry, I don't understand your search." }

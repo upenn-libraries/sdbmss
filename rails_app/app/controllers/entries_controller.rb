@@ -13,6 +13,7 @@ class EntriesController < SearchableAuthorityController
   # controller, we customize a few things about how search works.
 
   include Blacklight::Catalog
+  include CustomFacet
 
   include CatalogControllerConfiguration
 
@@ -21,7 +22,7 @@ class EntriesController < SearchableAuthorityController
   # the blacklight_advanced_search gem includes this automatically in
   # CatalogController but not here, so we include it explicitly
   include BlacklightAdvancedSearch::Controller
-  
+
   include LogActivity
 
   before_action :set_entry, only: [:show, :show_json, :edit, :update, :destroy, :similar, :history, :deprecate, :verify, :personal_observation]
@@ -45,9 +46,9 @@ class EntriesController < SearchableAuthorityController
 
       #puts filter[:source_id]
       # option: use valid? to check all entries without saving, so the user can check validations without huge overhead FIRST
-      # 
+      #
       # i.e. have params 'check' to determine whether it is SAVING or CHECKING, require 'check' first...
-      # 
+      #
       # e = Entry.create(filter)
       if check
         e = Entry.new(filter)
@@ -70,8 +71,8 @@ class EntriesController < SearchableAuthorityController
           render json: {errors: errors}
         else
           render json: {message: "Sucess", succes: true}
-        end      
-      }    
+        end
+      }
     end
   end
 
@@ -82,11 +83,11 @@ class EntriesController < SearchableAuthorityController
   def format_search(s)
     ids = s.results.map(&:id)
     # cinludes bookmarks/watches??
-    results = Entry.with_associations.includes(:bookmarks, :watches).where(id: ids).order(ids.count > 0 ? "FIELD(id, #{ids.join(', ')})" : "id desc").map { |e| 
-      e.as_flat_hash.merge({ 
-        can_edit: can?(:edit, e), 
-        bookmarkwatch: (render_to_string partial: "nav/bookmark_watch_table", locals: {model: e }, layout: false, formats: [:html]) 
-      }) 
+    results = Entry.with_associations.includes(:bookmarks, :watches).where(id: ids).order(ids.count > 0 ? "FIELD(id, #{ids.join(', ')})" : "id desc").map { |e|
+      e.as_flat_hash.merge({
+        can_edit: can?(:edit, e),
+        bookmarkwatch: (render_to_string partial: "nav/bookmark_watch_table", locals: {model: e }, layout: false, formats: [:html])
+      })
     }
     respond_to do |format|
       format.json {
@@ -110,11 +111,11 @@ class EntriesController < SearchableAuthorityController
     @dates = model_class.dates
 
     @bookmarks = current_user.bookmarks
-    # need to... get the fields configured for blacklight, 
+    # need to... get the fields configured for blacklight,
 
     @filter_options = ["with", "without", "blank", "not blank", "less than", "greater than"]
     @field_options = ["contains", "does not contain", "blank", "not blank"]
-    @date_options = ["before", "after", "near", "exact"]    
+    @date_options = ["before", "after", "near", "exact"]
 
     params.merge!("role" => current_user.role)
     #if current_user.role != "admin"
@@ -135,7 +136,7 @@ class EntriesController < SearchableAuthorityController
       if current_user.downloads.count >= 5
         render json: {error: 'at limit'}
         return
-      end   
+      end
       @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv", user_id: current_user.id})
 
       Entry.delay.do_csv_search(params, @d)
@@ -143,12 +144,12 @@ class EntriesController < SearchableAuthorityController
 
       respond_to do |format|
         format.csv {
-          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count} 
+          render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count}
         }
       end
     elsif params[:format] == 'json'
       s = Entry.do_search(params)
-      format_search s      
+      format_search s
     end
   end
 
@@ -186,7 +187,7 @@ class EntriesController < SearchableAuthorityController
         entry = doc.model_object
         # have to add can_edit here, since this is where current_user is accessible
         !entry.nil? ? entry.as_flat_hash.merge({
-          can_edit: can?(:edit, entry), 
+          can_edit: can?(:edit, entry),
           bookmarkwatch: (render_to_string partial: "nav/bookmark_watch_table", locals: {model: entry }, layout: false, formats: [:html]),
         }) : {}
       end
@@ -214,7 +215,7 @@ class EntriesController < SearchableAuthorityController
   def new
     @entry = Entry.new
     @source_id = params[:source_id]
-=begin    
+=begin
     if @source_id.present?
       respond_to do |format|
         format.html { render "edit" }
@@ -384,7 +385,7 @@ class EntriesController < SearchableAuthorityController
     @entry.save
 
     @entry.watches.destroy_all
-    
+
     @entry.decrement_counters
     Sunspot.remove(@entry)
 
@@ -395,7 +396,7 @@ class EntriesController < SearchableAuthorityController
     # action.
     respond_to do |format|
       format.json { render :json => {}, :status => :ok }
-      format.html { 
+      format.html {
         flash[:notice] = "Entry #{@entry.public_id} has been deleted."
         redirect_to dashboard_contributions_path
       }
@@ -426,7 +427,7 @@ class EntriesController < SearchableAuthorityController
     end
     respond_to do |format|
       format.json { render :json => s.results.map(&:id) }
-    end 
+    end
   end
 
   def mark_as_approved

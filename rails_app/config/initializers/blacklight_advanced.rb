@@ -1,41 +1,13 @@
 
-# 
+#
 # various overrides for blacklight here
-# 
+#
 
 # partially successful attempt to allow blacklight facet sorting with asc/desc option
-# 
+#
 # of course, it doesn't work because SOLR itself doesn't support this
 # - a possible solution would be to figure out a way of loading ALL facets, then select the last X and continue normally
 # - memory issues for large facet list (authors has like 5000, I think?)
-
-module Blacklight::Catalog
-  def facet
-    @facet = blacklight_config.facet_fields[params[:id]]
-    if @facet
-      @response = get_facet_field_response(@facet.key, params)
-      @display_facet = @response.aggregations[@facet.key]
-
-      @pagination = facet_paginator(@facet, @display_facet)
-
-
-      respond_to do |format|
-        # Draw the facet selector for users who have javascript disabled:
-        format.html
-        format.json { render json: render_facet_list_as_json }
-
-        # Draw the partial for the "more" facet modal window:
-        format.js { render :layout => false }
-      end
-    else
-      respond_to do |format|
-        format.html { render "not_found" }
-        format.json { render json: {error: "Facet could not be found."} }
-        format.js { render json: {error: "Facet could not be found."} }
-      end
-    end
-  end
-end
 
 module Blacklight::Solr
   class FacetPaginator
@@ -51,7 +23,7 @@ module Blacklight::Solr
 
     def initialize(all_facet_values, arguments)
       # to_s.to_i will conveniently default to 0 if nil
-      @offset = arguments[:offset].to_s.to_i 
+      @offset = arguments[:offset].to_s.to_i
       @limit = arguments[:limit]
       # count is solr's default
       @sort = arguments[:sort] || "count"
@@ -78,9 +50,9 @@ module Blacklight
   end
 end
 
-# because we are using blacklight and sunspot, I have to override this method since blacklight 
+# because we are using blacklight and sunspot, I have to override this method since blacklight
 # expects sunspot(solr) to index by ID as a number, but sunspot needs to index it by a string (Entry ID)
-# 
+#
 # to compensate, since it's literally a string change, I just do it here...
 
 module Blacklight::SearchHelper
@@ -139,7 +111,7 @@ module Blacklight::Solr
       end
 
       solr_params[:rows] = 0
-    end  
+    end
   end
 end
 
@@ -211,7 +183,7 @@ module BlacklightAdvancedSearch
           end
         else
           begin
-              queries << process_query_option(field, values, ParsingNesting::Tree.parse(query, config.advanced_search[:query_parser]).to_query( local_param_hash(field, config) ), options.shift)              
+              queries << process_query_option(field, values, ParsingNesting::Tree.parse(query, config.advanced_search[:query_parser]).to_query( local_param_hash(field, config) ), options.shift)
           rescue StandardError => e
             #
           end
@@ -240,7 +212,7 @@ module BlacklightAdvancedSearch
   end
 
   module RenderConstraintsOverride
-    
+
     # override default search constraints display, since we're moving facets elsewhere
     def render_constraints(localized_params = params)
       render_constraints_query(localized_params)
@@ -249,7 +221,7 @@ module BlacklightAdvancedSearch
     def query_has_constraints?(localized_params = params)
       if is_advanced_search? localized_params
         true
-      else    
+      else
         !(localized_params[:q].blank?)
       end
     end
@@ -262,7 +234,7 @@ module BlacklightAdvancedSearch
         content << render_filter_element_side(facet, values, localized_params)
       end
 
-      safe_join(content.flatten, "\n")    
+      safe_join(content.flatten, "\n")
     end
 
     def render_filter_element_side(facet, values, localized_params)
@@ -282,7 +254,7 @@ module BlacklightAdvancedSearch
           # remove link
           link_to(content_tag(:span, '', :class => "glyphicon glyphicon-remove") + content_tag(:span, '[remove]', :class => 'sr-only'), search_action_path(remove_facet_params(facet, val, localized_params)), :class=>"remove facet-count")
         end
-      
+
       end, "\n")
     end
 
@@ -315,7 +287,7 @@ module BlacklightAdvancedSearch
             safe_join(content.flatten, "\n")
           end
         else
-          safe_join(content.flatten, "\n")    
+          safe_join(content.flatten, "\n")
         end
       end
     end
