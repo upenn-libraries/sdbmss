@@ -1,0 +1,149 @@
+app_image_name: "${APP_IMAGE_NAME}"
+app_image_tag: "${APP_IMAGE_TAG}"
+interface_image_name: "${INTERFACE_IMAGE_NAME}"
+interface_image_tag: "${INTERFACE_IMAGE_TAG}"
+jena_image_name: "${JENA_IMAGE_NAME}"
+jena_image_tag: "${JENA_IMAGE_TAG}"
+rabbitmq_image_name: "${RABBITMQ_IMAGE_NAME}"
+rabbitmq_image_tag: "${RABBITMQ_IMAGE_TAG}"
+mysql_image_name: "${MYSQL_IMAGE_NAME}"
+mysql_image_tag: "${MYSQL_IMAGE_TAG}"
+
+
+#####
+# Replicas
+#####
+app_url: sdbmss.localhost
+app_port: 3000
+
+app_replicas: 1
+solr_replicas: 1
+delayed_job_replicas: 1
+
+#####
+# TRAEFIK
+#
+# We just take what's defined in ansible role and vagrant inventory
+#####
+# From ansible/vagrant/docker_swarm_manager/traefik.yml
+traefik_dashboard_enable: true
+
+# From ansible/roles/traefik/defaults/main.yml
+# @var traefik_dashboard_enable:description: >
+# Enable the Traefik dashboard
+#traefik_dashboard_enable: false # overridden by vagrant
+
+# @var traefik_dashboard_port:description: >
+# The port used to access the dashboard
+traefik_dashboard_port: 8080
+
+# @var traefik_dashboard_url:description: >
+# The url used to access the dashboard
+traefik_dashboard_url: traefik-dev.library.upenn.edu
+
+# @var traefik_docker_stack_name:description: >
+# The docker stack to deploy traefik to
+traefik_docker_stack_name: "traefik"
+
+# @var traefik_debug:description: >
+# Enable debug mode - this will output the docker-compose template as an object
+traefik_debug: false
+
+# @var traefik_expose_ports:description: >
+# Enable debug mode - Whether or not to run traefik with exposed ports (e.g. 80, 443, etc.)
+traefik_expose_ports: true
+
+# @var traefik_extra_hosts:description: >
+# A list containing the hostname and ip (e.g. "hostname:ip") of extra hosts to add to the container
+traefik_extra_hosts: []
+
+# @var traefik_forwardauth_enable:description: >
+# Enable Forward Auth. This will not only enable Forward Auth for other containers it will be
+# used to protect the Traefik dashboard - if enabled.
+traefik_forwardauth_enable: false
+
+# @var traefik_forwardauth_image_name:description: >
+# The docker image name to use for Forward Auth.
+traefik_forwardauth_image_name: "thomseddon/traefik-forward-auth"
+
+# @var traefik_forwardauth_image_tag:description: >
+# The docker image tag to use for Forward Auth
+traefik_forwardauth_image_tag: "2"
+
+# @var traefik_forwardauth_insecure_cookie:description:>
+# Use insecure cookies with Forward Auth
+traefik_forwardauth_insecure_cookie: "false"
+
+# @var traefik_forwardauth_log_level:description: >
+# Forward Auth log level
+traefik_forwardauth_log_level: "debug"
+
+# @var traefik_forwardauth_logout_redirect:description: >
+# URL to redirect to following logout
+traefik_forwardauth_logout_redirect: "https://example.com/logout"
+
+# @var traefik_forwardauth_oidc_providers_issuer_url:description: >OIDC Issuer URL
+traefik_forwardauth_oidc_providers_issuer_url: "https:/my.oidc.provider"
+
+# @var traefik_forwardauth_oidc_providers_client_id:description: OIDC Client ID
+traefik_forwardauth_oidc_providers_client_id: "providers_oidc_client_id"
+
+# @var traefik_forwardauth_oidc_providers_client_secret:description: OID Client Secret
+traefik_forwardauth_oidc_providers_client_secret: "providers_oidc_client_secret"
+
+# @var traefik_forwardauth_secret:description: Secret used for signing
+traefik_forwardauth_secret: "something-random"
+
+# @var traefik_http_published_port:description: The published http port to expose
+traefik_http_published_port: 80
+
+# @var traefik_http_target_port:description: The target http port to expose
+traefik_http_target_port: 80
+
+# @var traefik_https_published_port:description: The published https port to expose
+traefik_https_published_port: 443
+
+# @var traefik_https_target_port:description: The target https port to expose
+traefik_https_target_port: 443
+
+# @var traefik_image_name:description: The docker image name to use for Traefik
+traefik_image_name: "traefik"
+
+# @var traefik_image_tag:description: The docker image tag to use for Traefik
+traefik_image_tag: "2.9"
+
+# @var traefik_letsencrypt_email:description:
+traefik_letsencrypt_email: "libcoreservices@pobox.upenn.edu"
+
+# @var traefik_log_level:description: Traefik log level
+traefik_log_level: "DEBUG"
+
+# @var traefik_middleware_inflightreq:description:
+traefik_middleware_inflightreq: 50
+
+# @var traefik_middleware_inflightreq_enable:description:
+traefik_middleware_inflightreq_enable: false
+
+# @var traefik_middleware_ratelimit_average:description:
+traefik_middleware_ratelimit_average: 100
+
+# @var traefik_middleware_ratelimit_burst:description:
+traefik_middleware_ratelimit_burst: 50
+
+# @var traefik_middleware_ratelimit_enable:description:
+traefik_middleware_ratelimit_enable: false
+
+# @var traefik_middleware_ratelimit_period:description:
+traefik_middleware_ratelimit_period: 10s
+
+# @var traefik_network_name:description: Traefik network name
+traefik_network_name: "traefik"
+
+# @var traefik_node_constraints:description: Docker swarm nodes to constrain traefik to
+traefik_node_constraints:
+  - traefik
+
+# @var traefik_templates_docker_compose_path:description: >
+# The location of the docker-compose.yml template file
+traefik_templates_docker_compose_path: "docker-compose.yml.j2"
+
