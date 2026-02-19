@@ -4,6 +4,9 @@ sdbmss_vault_values: "{{ lookup('community.hashi_vault.vault_kv2_get', 'sdbmss/v
 
 docker_swarm_addr: "{{ ansible_host }}"
 
+docker_cli_package_version: "5:28.5.2-1~ubuntu.22.04~jammy"
+docker_package_version: "5:28.5.2-1~ubuntu.22.04~jammy"
+
 # Docker swarm setup vars
 skip_repo: false
 skip_containerd: false
