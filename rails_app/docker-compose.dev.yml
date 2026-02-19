@@ -138,6 +138,75 @@ services:
     networks:
     - jena
     - rabbitmq
+  jena:
+    image: ${JENA_IMAGE_NAME}:${JENA_IMAGE_TAG}
+    deploy:
+      placement:
+        constraints:
+        - node.labels.jena == true
+      update_config:
+        order: start-first
+        parallelism: 1
+      replicas: 1
+    environment:
+    - ADMIN_PASSWORD
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -sf http://127.0.0.1:/$$/ping || curl -sf http://127.0.0.1:/ || exit
+        1
+      interval: 30s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: 10m
+    networks:
+    - traefik
+    - jena
+    volumes:
+    - rdf_data:/fuseki
+    labels:
+    - traefik.enable=true
+    - traefik.docker.network=traefik
+    - traefik.http.services.jena-svc.loadbalancer.server.port=
+    - traefik.http.middlewares.jena_stripprefix.stripprefix.prefixes=/sparql
+    - traefik.http.routers.jena.entrypoints=web
+    - traefik.http.routers.jena.rule=Host(`sdbmss.localhost`) && PathPrefix(`/sparql`)
+    - traefik.http.routers.jena.middlewares=jena_stripprefix
+    - traefik.http.routers.jena.service=jena-svc
+    - traefik.http.routers.jena.priority=100
+    - traefik.http.routers.jena_httpsredir.entrypoints=web
+    - traefik.http.routers.jena_httpsredir.rule=Host(`sdbmss.localhost`) && PathPrefix(`/sparql`)
+    - traefik.http.routers.jena_httpsredir.middlewares=jena_https
+    - traefik.http.routers.jena-secure.entrypoints=websecure
+    - traefik.http.routers.jena-secure.rule=Host(`sdbmss.localhost`) && PathPrefix(`/sparql`)
+    - traefik.http.routers.jena-secure.middlewares=jena_stripprefix
+    - traefik.http.routers.jena-secure.tls=true
+    - traefik.http.routers.jena-secure.service=jena-svc
+    - traefik.http.routers.jena-secure.priority=100
+  mysql:
+    image: ${MYSQL_IMAGE_NAME}:${MYSQL_IMAGE_TAG}
+    deploy:
+      placement:
+        constraints:
+        - node.labels.mysql == true
+      update_config:
+        order: start-first
+        parallelism: 1
+      replicas: 1
+    environment:
+    - MYSQL_DATABASE
+    - MYSQL_ROOT_PASSWORD
+    - MYSQL_USER
+    - MYSQL_PASSWORD
+    networks:
+    - mysql
+    volumes:
+    - sdbm_data:/var/lib/mysql
   rabbitmq:
     image: ${RABBITMQ_IMAGE_NAME}:${RABBITMQ_IMAGE_TAG}
     deploy:
@@ -211,56 +280,19 @@ services:
     - traefik.http.routers.solr.rule=Host(`` && PathPrefix(`/solr`))
     - traefik.http.routers.solr.service=solr
     - traefik.http.services.solr.loadbalancer.server.port=
-  jena:
-    image: ${JENA_IMAGE_NAME}:${JENA_IMAGE_TAG}
-    deploy:
-      placement:
-        constraints:
-        - node.labels.jena == true
-      update_config:
-        order: start-first
-        parallelism: 1
-      replicas: 1
+  chrome:
+    image: ${CHROME_IMAGE_NAME}:${CHROME_IMAGE_TAG}
     environment:
-    - ADMIN_PASSWORD
-    healthcheck:
-      test:
-      - CMD-SHELL
-      - curl -sf http://127.0.0.1:/$$/ping || curl -sf http://127.0.0.1:/ || exit
-        1
-      interval: 30s
-      timeout: 5s
-      retries: 10
-      start_period: 20s
-    logging:
-      driver: json-file
-      options:
-        max-file: '3'
-        max-size: 10m
+    - PORT
+    - CONNECTION_TIMEOUT
+    ports:
+    - target: ${CHROME_PORT}
+      published: ${CHROME_PORT}
+      mode: host
+    volumes:
+    - .:/home/app
     networks:
     - traefik
-    - jena
-    volumes:
-    - rdf_data:/fuseki
-    labels:
-    - traefik.enable=true
-    - traefik.docker.network=traefik
-    - traefik.http.services.jena-svc.loadbalancer.server.port=
-    - traefik.http.middlewares.jena_stripprefix.stripprefix.prefixes=/sparql
-    - traefik.http.routers.jena.entrypoints=web
-    - traefik.http.routers.jena.rule=Host(`sdbmss.localhost`) && PathPrefix(`/sparql`)
-    - traefik.http.routers.jena.middlewares=jena_stripprefix
-    - traefik.http.routers.jena.service=jena-svc
-    - traefik.http.routers.jena.priority=100
-    - traefik.http.routers.jena_httpsredir.entrypoints=web
-    - traefik.http.routers.jena_httpsredir.rule=Host(`sdbmss.localhost`) && PathPrefix(`/sparql`)
-    - traefik.http.routers.jena_httpsredir.middlewares=jena_https
-    - traefik.http.routers.jena-secure.entrypoints=websecure
-    - traefik.http.routers.jena-secure.rule=Host(`sdbmss.localhost`) && PathPrefix(`/sparql`)
-    - traefik.http.routers.jena-secure.middlewares=jena_stripprefix
-    - traefik.http.routers.jena-secure.tls=true
-    - traefik.http.routers.jena-secure.service=jena-svc
-    - traefik.http.routers.jena-secure.priority=100
   traefik:
     image: traefik:2.9
     command:
@@ -316,25 +348,6 @@ services:
     - traefik.http.routers.dashboard.service=api@internal
     - traefik.http.routers.dashboard.tls=true
     - traefik.http.services.dashboard.loadbalancer.server.port=8080
-  mysql:
-    image: ${MYSQL_IMAGE_NAME}:${MYSQL_IMAGE_TAG}
-    deploy:
-      placement:
-        constraints:
-        - node.labels.mysql == true
-      update_config:
-        order: start-first
-        parallelism: 1
-      replicas: 1
-    environment:
-    - MYSQL_DATABASE
-    - MYSQL_ROOT_PASSWORD
-    - MYSQL_USER
-    - MYSQL_PASSWORD
-    networks:
-    - mysql
-    volumes:
-    - sdbm_data:/var/lib/mysql
 networks:
   mysql:
     name: mysql
@@ -345,8 +358,8 @@ networks:
   jena:
     name: jena
 volumes:
+  rdf_data:
+  sdbm_data:
   rabbitmq_data:
   sdbm_solr:
-  rdf_data:
   certificates:
-  sdbm_data:
