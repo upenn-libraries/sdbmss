@@ -2,22 +2,14 @@
 """
 generate_dev_compose.py — Generate rails_app/docker-compose.dev.yml for local development.
 
-Usage (run from the project root):
-    python3 rails_app/scripts/generate_dev_compose.py \\
-        ansible/roles/app/templates/docker-compose.yml.j2 \\
-        ansible/roles/delayed_job/templates/docker-compose.yml.j2 \\
-        ansible/roles/interface/templates/docker-compose.yml.j2 \\
-        ansible/roles/rabbitmq/templates/docker-compose.yml.j2 \\
-        ansible/roles/solr/templates/docker-compose.yml.j2 \\
-        ansible/roles/jena/templates/docker-compose.yml.j2 \\
-        ansible/roles/traefik/templates/docker-compose.yml.j2 \\
-        ansible/roles/mysql/templates/docker-compose.yml.j2
+Usage (run from anywhere):
+    python3 rails_app/scripts/generate_dev_compose.py
 
 What it does:
-    Reads each Ansible role's docker-compose.yml.j2 Jinja2 template, renders it
-    using variables from generate_dev_compose.yml, then merges all rendered
-    service definitions into a single docker-compose.dev.yml suitable for
-    local development with plain Docker Compose (not Docker Swarm).
+    Reads each Ansible role's docker-compose template (Jinja2 .j2 or plain YAML),
+    renders it using variables from generate_dev_compose.yml, then merges all
+    rendered service definitions into a single docker-compose.dev.yml suitable
+    for local development with plain Docker Compose (not Docker Swarm).
 
     During processing the script:
       - Strips Swarm-only directives (swarmMode, TLS cert resolvers, HTTPS
@@ -27,6 +19,9 @@ What it does:
       - Converts environment map entries to list form
       - Removes Docker secrets blocks (replaced by plain env vars)
       - Renames *_FILE secret env vars to their plain equivalents
+
+    Non-Jinja2 files (e.g. plain docker-compose.yml) are safe to include: they
+    pass through the Jinja2 renderer unchanged and receive the same transforms.
 
 generate_dev_compose.yml:
     A YAML file of variable overrides supplied to the Jinja2 renderer.
@@ -40,9 +35,42 @@ generate_dev_compose.yml:
 """
 import os
 import re
-import sys
 import yaml
 from jinja2 import Environment
+
+
+# Paths to docker-compose templates, relative to this script's directory.
+TEMPLATE_PATHS = [
+    "../../ansible/roles/app/templates/docker-compose.yml.j2",
+    "../../ansible/roles/delayed_job/templates/docker-compose.yml.j2",
+    "../../ansible/roles/interface/templates/docker-compose.yml.j2",
+    "../../ansible/roles/jena/templates/docker-compose.yml.j2",
+    "../../ansible/roles/mysql/templates/docker-compose.yml.j2",
+    "../../ansible/roles/rabbitmq/templates/docker-compose.yml.j2",
+    "../../ansible/roles/solr/templates/docker-compose.yml.j2",
+    "../../ansible/roles/chrome/files/docker-compose.yml",
+    "../../ansible/roles/traefik/templates/docker-compose.yml.j2",
+]
+
+ENV_VAR_RENAMES = {
+    "MYSQL_ROOT_PASSWORD_FILE": "MYSQL_ROOT_PASSWORD",
+    "MYSQL_PASSWORD_FILE": "MYSQL_PASSWORD",
+}
+
+PATH_RENAMES = {
+    "/sdbmss/ansible/roles/app/files/src/": ".",
+}
+
+LINES_TO_STRIP = [
+    "swarmMode",
+    "swarmModeRefreshSeconds",
+    "providers.swarm.",
+    "redirectscheme",
+    "app_https",
+    "tls.certresolver",
+    "routers.app_secure",
+    "services.app_secure",
+]
 
 
 def preprocess(source):
@@ -125,27 +153,6 @@ def remove_secrets(source):
     return "".join(result)
 
 
-ENV_VAR_RENAMES = {
-    "MYSQL_ROOT_PASSWORD_FILE": "MYSQL_ROOT_PASSWORD",
-    "MYSQL_PASSWORD_FILE": "MYSQL_PASSWORD",
-}
-
-PATH_RENAMES = {
-    "/sdbmss/ansible/roles/app/files/src/": ".",
-}
-
-LINES_TO_STRIP = [
-    "swarmMode",
-    "swarmModeRefreshSeconds",
-    "providers.swarm.",
-    "redirectscheme",
-    "app_https",
-    "tls.certresolver",
-    "routers.app_secure",
-    "services.app_secure",
-]
-
-
 def apply_patches(source):
     for old, new in ENV_VAR_RENAMES.items():
         source = source.replace(old, new)
@@ -211,20 +218,27 @@ ComposeDumper.add_representer(
     lambda dumper, data: dumper.represent_scalar("tag:yaml.org,2002:null", ""),
 )
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-with open(os.path.join(script_dir, "generate_dev_compose.yml")) as f:
-    env_vars = yaml.safe_load(f)
 
-env_vars["is_development"] = True
+def main():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
 
-output_path = os.path.join(script_dir, "../docker-compose.dev.yml")
+    with open(os.path.join(script_dir, "generate_dev_compose.yml")) as f:
+        env_vars = yaml.safe_load(f)
 
-template_paths = sys.argv[1:]
-docs = [render_template(path, env_vars) for path in template_paths]
-merged = merge_compose(docs)
-output = yaml.dump(merged, Dumper=ComposeDumper, default_flow_style=False, sort_keys=False)
+    env_vars["is_development"] = True
 
-with open(output_path, "w") as f:
-    f.write(output)
+    output_path = os.path.join(script_dir, "../docker-compose.dev.yml")
 
-print(f"Written to {output_path}")
+    template_paths = [os.path.join(script_dir, p) for p in TEMPLATE_PATHS]
+    docs = [render_template(path, env_vars) for path in template_paths]
+    merged = merge_compose(docs)
+    output = yaml.dump(merged, Dumper=ComposeDumper, default_flow_style=False, sort_keys=False)
+
+    with open(output_path, "w") as f:
+        f.write(output)
+
+    print(f"Written to {output_path}")
+
+
+if __name__ == "__main__":
+    main()
