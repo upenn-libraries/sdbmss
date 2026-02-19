@@ -32,6 +32,8 @@ generate_dev_compose.yml:
       - Traefik configuration (dashboard port, log level, etc.)
     Edit this file to change which images are used or to adjust local
     service configuration without touching the Ansible role templates.
+
+🤖 Generated with Claude (claude.ai)
 """
 import os
 import re
