@@ -16,3 +16,4 @@ solr/pids/*
 solr/pids
 solr/test/*
 solr/test
+dev
