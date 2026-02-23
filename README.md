@@ -6,7 +6,7 @@ This is the Rails / Blacklight application for the Schoenberg Database of Manusc
 
 ### Working with docker compose locally
 
-See rails_app/README-development.md for instructions to run the SDBM in docker for local development.
+See [`rails_app/README-docker-dev.md`](./rails_app/README-docker-dev.md) for instructions to run the SDBM in docker for local development.
 
 ### Working with the Vagrant environment
 
