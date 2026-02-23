@@ -54,28 +54,15 @@ TEMPLATE_PATHS = [
     "../../ansible/roles/traefik/templates/docker-compose.yml.j2",
 ]
 
-ENV_VAR_RENAMES = {
-    "MYSQL_ROOT_PASSWORD_FILE": "MYSQL_ROOT_PASSWORD",
-    "MYSQL_PASSWORD_FILE": "MYSQL_PASSWORD",
-}
-
-PATH_RENAMES = {
-    "/sdbmss/ansible/roles/app/files/src/": ".",
-}
-
-LINES_TO_STRIP = [
-    "swarmMode",
-    "swarmModeRefreshSeconds",
-    "providers.swarm.",
-    "redirectscheme",
-    "app_https",
-    "tls.certresolver",
-    "routers.app_secure",
-    "services.app_secure",
-]
-
-
 def preprocess(source):
+    """
+    Do a bunch of cleaning before the file is run through the Jinja2 processor:
+
+    - Remove the #jinja2 directive
+    - Remove the secrets section
+    - Simplify the `environment:` section (see simplify_env_line)
+    - Apply a number of arbitrary edits (apply_patches)
+    """
     # Strip #jinja2: directive so yaml.safe_load doesn't choke
     source = re.sub(r"^#jinja2:.*\n", "", source)
     source = remove_secrets(source)
@@ -85,6 +72,32 @@ def preprocess(source):
 
 
 def simplify_env_line(line):
+    """
+    For lines in the `environment:` block. We're going to pull all env variables
+    from `.docker-environment`, so remove all variable values coming from
+    Ansible, and use an array list of variable names instead of the key/values.
+
+    Variable literal values are retained and Jinja2 flow controls are kept.
+
+    Thus:
+
+       environment:
+         SOME_VAR: {{ var_from_ansible }
+         ANOTHER_VAR: "some value"
+         {% if is_development == true %}
+         THIRD_VAR: {{ third_var_from_ansible }
+         {% endif %}
+
+    Becomes:
+
+       environment:
+         - SOME_VAR
+         - ANOTHER_VAR="some value"
+         {% if is_development == true %}
+         - THIRD_VAR
+         {% endif %}
+
+    """
     stripped = line.rstrip()
 
     # Blank lines — pass through
@@ -109,6 +122,11 @@ def simplify_env_line(line):
 
 
 def simplify_environment(source):
+    """
+    Run through the file and reorganize the `environment:` section for the
+    docker compose (non-Ansible) environment. See `simplify_env_line()` for
+    details.
+    """
     lines = source.splitlines(keepends=True)
     result = []
     in_environment = False
@@ -134,6 +152,10 @@ def simplify_environment(source):
 
 
 def remove_secrets(source):
+    """
+    In the docker compose environment dev we use plain variables instead of
+     secrets. Strip the secrets section.
+    """
     lines = source.splitlines(keepends=True)
     result = []
     in_secrets = False
@@ -155,7 +177,30 @@ def remove_secrets(source):
     return "".join(result)
 
 
+ENV_VAR_RENAMES = {
+    "MYSQL_ROOT_PASSWORD_FILE": "MYSQL_ROOT_PASSWORD",
+    "MYSQL_PASSWORD_FILE": "MYSQL_PASSWORD",
+}
+
+PATH_RENAMES = {
+    "/sdbmss/ansible/roles/app/files/src/": ".",
+}
+
+LINES_TO_STRIP = [
+    "swarmMode",
+    "swarmModeRefreshSeconds",
+    "providers.swarm.",
+    "redirectscheme",
+    "app_https",
+    "tls.certresolver",
+    "routers.app_secure",
+    "services.app_secure",
+]
+
 def apply_patches(source):
+    """
+    Apply a number of replacements and skips.
+    """
     for old, new in ENV_VAR_RENAMES.items():
         source = source.replace(old, new)
     for old, new in PATH_RENAMES.items():
@@ -166,6 +211,10 @@ def apply_patches(source):
 
 
 def render_template(template_path, env_vars):
+    """
+    Preprocess and run the template through the Jinja2 processor; return the
+    parsed yaml.
+    """
     with open(template_path) as f:
         source = f.read()
 
@@ -179,7 +228,7 @@ def render_template(template_path, env_vars):
 
 
 def hoist_deploy_labels(svc_def):
-    """Move deploy.labels to top-level labels for non-swarm Docker Compose."""
+    """Move Traefik deploy.labels to top-level labels for non-swarm Docker Compose."""
     deploy = svc_def.get("deploy", {})
     deploy_labels = deploy.pop("labels", None)
     if deploy_labels:
@@ -189,6 +238,9 @@ def hoist_deploy_labels(svc_def):
 
 
 def merge_compose(docs):
+    """
+    Combine the rendered templates. Merge service, networks and volumes.
+    """
     merged = {"version": "3.8", "services": {}}
     networks = {}
     volumes = {}
@@ -212,7 +264,28 @@ def merge_compose(docs):
 
 
 class ComposeDumper(yaml.Dumper):
-    """Custom dumper that renders None values as empty (no 'null')."""
+    """
+    Custom dumper that renders None values as empty (no 'null').
+
+    tag:yaml.org,2002:null the URI for null. This renders "" when the YAML would
+    normally output null; so:
+
+        volumes:
+          rdf_data:
+          sdbm_data:
+          rabbitmq_data:
+          sdbm_solr:
+          certificates:
+
+    Instead of:
+
+        volumes:
+          rdf_data: null
+          sdbm_data: null
+          rabbitmq_data: null
+          sdbm_solr: null
+          certificates: null
+    """
     pass
 
 ComposeDumper.add_representer(
