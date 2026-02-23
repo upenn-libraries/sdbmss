@@ -15,6 +15,7 @@ services:
     environment:
       RABBIT_PASSWORD: "{{ rabbitmq_versioned_secrets.password.value }}"
       RABBIT_USER: "{{ rabbitmq_user }}"
+      ADMIN_PASSWORD: "{{ app_versioned_secrets.jena_admin_password.value }}"
     healthcheck:
       test:
         [
