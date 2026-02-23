@@ -4,6 +4,10 @@ This is the Rails / Blacklight application for the Schoenberg Database of Manusc
 
 ## Developing
 
+### Working with docker compose locally
+
+See rails_app/README-development.md for instructions to run the SDBM in docker for local development.
+
 ### Working with the Vagrant environment
 
 In order to use the integrated development environment you will need to install [Vagrant](https://www.vagrantup.com/docs/installation) [do *not* use the Vagrant version that may be available for your distro repository - explicitly follow instructions at the Vagrant homepage] and the appropriate virtualization software. If you are running Linux or Mac x86 then install [VirtualBox](https://www.virtualbox.org/wiki/Linux_Downloads), if you are using a Mac with ARM processors then install [Parallels](https://www.parallels.com/).
@@ -23,7 +27,7 @@ You may need to update the VirtualBox configuration for the creation of a host-o
 5. Jena Fuseki -- RDF/SPARQL server
 6. Delayed Job -- background job processing (Rails image)
 7. Interface -- service for updating Jena (listens to RabbitMQ queue)
-8. Nginx -- reverse proxy
+8. Traefik -- reverse proxy
 
 #### Starting
 
@@ -131,7 +135,7 @@ and then run the bash script. This should take about 5 minutes.
 ```shell
 vagrant ssh # if needed
 cd /sdbmss/rails_app/dev
-bash setup.sh
+bash setup.sh -e VAGRANT
 ```
 
 #### Check Jena log
