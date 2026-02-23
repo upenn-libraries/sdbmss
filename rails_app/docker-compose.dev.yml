@@ -122,6 +122,7 @@ services:
     environment:
     - RABBIT_PASSWORD
     - RABBIT_USER
+    - ADMIN_PASSWORD
     healthcheck:
       test:
       - CMD-SHELL
