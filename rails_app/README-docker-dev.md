@@ -8,21 +8,15 @@ This is the Rails / Blacklight application for the Schoenberg Database of Manusc
 
 In order to use the docker compose development environment, you will need to have:
 
-- Docker (Linux) or Docker Desktop (macOS)
+- A local installation of Docker (Linux) or Docker Desktop (macOS)
 - A `.docker-environment` file
 
 And, if you're working outside the UPenn network:
 
-- A local image of the SDBM interface service 
+- A local image of the SDBM interface service
 - A local image of the SDBM Jena Fuseki service
 
-TODO: Make SDBM interface and Jena Fuseki images publicly available.
-
-You may need to update the VirtualBox configuration for the creation of a host-only network. This can be done by creating a file `/etc/vbox/networks.conf` containing:
-
-```
-* 10.0.0.0/8
-```
+TODO: Make SDBM interface and Jena Fuseki images or repos publicly available.
 
 #### Docker Services
 
@@ -35,7 +29,7 @@ You may need to update the VirtualBox configuration for the creation of a host-o
 7. Interface -- service for updating Jena (listens to RabbitMQ queue)
 8. Traefik -- reverse proxy
 
-#### Starting
+#### Starting the SDBM
 
 From the [rails_app](.) directory run:
 
@@ -43,11 +37,11 @@ if you've already set up the SDBM:
 ```
 docker compose --env-file=.docker-environment -f docker-compose.dev.yml up
 
-# or, if you don't want log output
+# or, if you don't want the running log output
 docker compose --env-file=.docker-environment -f docker-compose.dev.yml up -d
 ```
 
-NOTE: See below if this is your first time running the SDBM.
+> NOTE: See below if this is your first time running the SDBM.
 
 Once the docker compose start process is finished, you should be able to access the SDBM at [http://sdbmss.localhost](http://sdbmss.localhost).
 
@@ -59,21 +53,49 @@ To stop the development environment, from the [rails_app](.) directory, run:
 docker compose --env-file=.docker-environment -f docker-compose.dev.yml down
 ```
 
-This will remove the containers and networks, but leave the volumes in place, so that you can run the docker compose up command above and return the application's previous state. 
+This will remove the containers and networks, but leave the volumes in place, so that you can run the docker compose up command above and return the application's previous state.
 
-
+If you're run docker compose up without the `-d` option, you can type `Ctrl-c` in that window to kill the processes, but you should still run the `down` command above to make sure that all processes are stopped.
 
 #### Destroying
 
 To remove the containers, networks, and the volumes in order to completely rebuild the SDBM docker environment, run:
 
 ```
-docker compose --env-file=.docker-environment -f docker-compose.dev.yml down
+docker compose --env-file=.docker-environment -f docker-compose.dev.yml down -v
+```
+
+For a completely clean start you may want to remove the SDBM docker image.
+
+Run `docker image ls` to find the image ID:
+
+```
+docker image ls
+REPOSITORY               TAG           IMAGE ID       CREATED         SIZE
+localhost:8000/sdbmss    development   b61aaa017cf0   6 days ago      2GB
+```
+
+The use `docker rmi` to delete it:
+
+```
+docker rmi b61aaa017cf0  # replace b61aaa017cf0 with the actual tag
+```
+
+If the image has multiple tags, you will need to remove all but one of the tags first:
+
+```
+docker image ls
+REPOSITORY               TAG           IMAGE ID       CREATED         SIZE
+localhost:8000/sdbmss    development   b61aaa017cf0   6 days ago      2GB
+localhost:8000/sdbmss    latest .      b61aaa017cf0   6 days ago      2GB
+
+docker rmi localhost:8000/sdbmss:latest
+docker rmi b61aaa017cf0
 ```
 
 #### Restarting
 
-To restart the SDBM, in order to pick up runtime changes from `.docker-environment`, run:
+To restart the SDBM to pick up runtime changes from `.docker-environment`, run:
 
 ```
 docker compose --env-file=.docker-environment -f docker-compose.dev.yml restart
@@ -121,12 +143,12 @@ The SDBM uses rspec for testing. The tests must be run in the running `app` cont
 
 ```
 $ docker exec -it sdbmss-app-1 bash
-root@1234abcdef:/home/app# RAILS_ENV=test bundle exec rspec 
+root@1234abcdef:/home/app# RAILS_ENV=test bundle exec rspec
 ```
 
 > IMPORTANT: Be sure to specify `RAILS_ENV=test`
 
-The tests take about 14 minutes to run. 
+The tests take about 14 minutes to run.
 
 To skip the Javascript tests for quicker run, use the `--tag ~js` flag.
 
@@ -142,7 +164,7 @@ root@1234abcdef:/home/app# RAILS_ENV=test bundle exec rspec --tag js
 
 ### First-time setup
 
-Before you run `docker compose` for the first time, you must provide a `.docker-environment` file and add the `SDBMSS_APP_HOST` to `/etc/hosts`. 
+Before you run `docker compose` for the first time, you must provide a `.docker-environment` file and add the `SDBMSS_APP_HOST` to `/etc/hosts`.
 
 #### `.docker-environment` changes
 
@@ -167,6 +189,8 @@ For example, if you use the default value for `SDBMSS_APP_HOST` in the sample en
 127.0.0.1 sdbmss.localhost
 ```
 
+> NOTE: On macOS you have to add the mapping to /etc/hosts. The change may not be require on Linux.
+
 #### Bring up the application with docker compose
 
 Run docker compose up with the `--build` option to build and set up the SDBM:
@@ -177,11 +201,11 @@ docker compose --env-file=.docker-environment -f docker-compose.dev.yml up --bui
 
 This will pull all required images and build the SDBM `app` image.
 
-Wait for the docker compose process to complete before moving on to the next step, _SDBM develop app data setup_. 
+Wait for the docker compose process to complete before moving on to the next step, **SDBM develop app data setup**.
 
 #### SDBM develop app data setup
 
-There are number of initial setup steps required to run this SDBM that are handled by a bash script setup.sh stored in the rails_app/dev folder. The setup script does the following:
+There are number of initial setup steps required to run the SDBM. They are handled by a bash script [setup.sh](./dev/setup.sh) stored in the [rails_app/dev](./dev) folder. The setup script does the following:
 
 1. Copies static assets into the Rails app
 2. Loads the development database
@@ -196,7 +220,7 @@ First get the SDBM data files from [the SDBM Data folder on SharePoint](https://
 
 ### Copy the files to the development environment
 
-Download the files and copy them to the `sdbmss/rails_app/dev` directory. 
+Download the files and copy them to the `sdbmss/rails_app/dev` directory.
 
 Confirm that the data files are present:
 
@@ -214,7 +238,7 @@ To perform these setup actions, first navigate to the dev folder, and then run t
 
 ```shell
 cd rails_app/dev  # if needed
-bash setup.sh -e LOCAL  # set up for LOCAL docker, as opposed to docker in VAGRANT 
+bash setup.sh -e LOCAL  # set up for LOCAL docker, as opposed to docker in VAGRANT
 ```
 
 #### Check Jena log
