@@ -150,7 +150,7 @@ root@1234abcdef:/home/app# RAILS_ENV=test bundle exec rspec
 
 The tests take about 14 minutes to run.
 
-To skip the Javascript tests for quicker run, use the `--tag ~js` flag.
+To skip the Javascript tests for a quicker run, use the `--tag ~js` flag.
 
 ```
 root@1234abcdef:/home/app# RAILS_ENV=test bundle exec rspec --tag ~js
@@ -209,9 +209,10 @@ There are number of initial setup steps required to run the SDBM. They are handl
 
 1. Copies static assets into the Rails app
 2. Loads the development database
-3. Sets up Solr
-4. Indexes the database in Solr
-5. Sets up the Jena triple store
+3. Adds (or updates) the test users contributor, editor, super_editor, and admin with password `testpassword`
+4. Sets up Solr
+5. Indexes the database in Solr
+6. Sets up the Jena triple store
 
 First get the SDBM data files from [the SDBM Data folder on SharePoint](https://penno365.sharepoint.com/:f:/r/teams/LIBSDBMDev2025/Shared%20Documents/SDBMData?csf=1&web=1&e=y2Vxme) (by permission only):
 
@@ -262,4 +263,8 @@ sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Server     IN
 sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | Fuseki is available :-)
 ```
 
+#### Confirm the SDBM is up and running
 
+Go to [http://sdbmss.localhost](http://sdbmss.localhost) in your browser. You should see the SDBM home page. Put the cursor in the search box and hit enter to see all the records. There should be 274 entries.
+
+Log in as `admin` with password `testpassword` to confirm account set up.

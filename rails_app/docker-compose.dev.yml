@@ -64,6 +64,8 @@ services:
     - traefik.http.routers.app.rule=Host(`sdbmss.localhost`)
     - traefik.http.routers.app.service=app
     - traefik.http.services.app.loadbalancer.server.port=3000
+    build:
+      context: .
   delayed_job:
     image: ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
     command:

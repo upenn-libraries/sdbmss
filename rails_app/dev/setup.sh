@@ -7,9 +7,10 @@ trap 'echo "Command failed: $BASH_COMMAND"' ERR # prints any bash command that f
 # This script sets up the development environment for the Schoenberg Database of Manuscripts by:
 # 1. Copying static assets into the Rails app
 # 2. Loading the database
-# 3. Setting up Solr
-# 4. Indexing the database in Solr
-# 5. Setting up Jena
+# 3. Creating (or updating) the contributor, editor, super_editor, and admin test users (password: testpassword)
+# 4. Setting up Solr
+# 5. Indexing the database in Solr
+# 6. Setting up Jena
 
 CMD=$(basename $0)
 # absolute path to this directory
@@ -187,6 +188,12 @@ echo "[$CMD] $(timestamp) Database loaded."
 docker exec -it $(docker ps -q -f name=${CONTAINER_PREFIX}mysql) rm /tmp/sdbm.sql.gz
 docker exec $(docker ps -q -f name=${CONTAINER_PREFIX}app) bundle exec rake db:migrate
 echo "[$CMD] $(timestamp) Database migration completed."
+
+echo "[$CMD] $(timestamp) Add test users."
+docker exec $(docker ps -q -f name=${CONTAINER_PREFIX}app) bundle exec rake sdbmss:add_update_test_users
+echo "[$CMD] $(timestamp) Test users added."
+
+
 
 # Steps 3 & 4: Solr setup
 # Solr should be running in the Solr container. The Solr configuration is in the solr directory.
