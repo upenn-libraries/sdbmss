@@ -33,6 +33,18 @@ generate_dev_compose.yml:
     Edit this file to change which images are used or to adjust local
     service configuration without touching the Ansible role templates.
 
+    service_patches:
+    An optional section in generate_dev_compose.yml for adding or replacing
+    top-level attributes on any service after the compose file is generated.
+    Useful for dev-only attributes (e.g. `build`) that don't exist in the
+    Ansible role templates. Each key under a service replaces the existing
+    attribute of that name outright — no deep merge is performed.
+
+        service_patches:
+          app:
+            build:
+              context: .
+
 🤖 Generated with Claude (claude.ai)
 """
 import os
@@ -294,6 +306,32 @@ ComposeDumper.add_representer(
 )
 
 
+def apply_service_patches(merged, patches):
+    """
+    Apply patches from the service_patches section of generate_dev_compose.yml.
+
+    For each service in patches, replace (or add) the specified top-level
+    attributes on the merged service definition. Existing attributes with the
+    same key are removed before the new value is set — no deep merge is
+    attempted.
+
+    Example generate_dev_compose.yml entry:
+
+        service_patches:
+          app:
+            build:
+              context: .
+    """
+    for svc_name, attrs in patches.items():
+        svc = merged["services"].get(svc_name)
+        if svc is None:
+            continue
+        for key, value in attrs.items():
+            svc.pop(key, None)
+            svc[key] = value
+    return merged
+
+
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -301,12 +339,15 @@ def main():
         env_vars = yaml.safe_load(f)
 
     env_vars["is_development"] = True
+    service_patches = env_vars.pop("service_patches", {}) or {}
 
     output_path = os.path.join(script_dir, "../docker-compose.dev.yml")
 
     template_paths = [os.path.join(script_dir, p) for p in TEMPLATE_PATHS]
     docs = [render_template(path, env_vars) for path in template_paths]
     merged = merge_compose(docs)
+    if service_patches:
+        merged = apply_service_patches(merged, service_patches)
     output = yaml.dump(merged, Dumper=ComposeDumper, default_flow_style=False, sort_keys=False)
 
     with open(output_path, "w") as f:

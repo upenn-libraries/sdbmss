@@ -1,5 +1,5 @@
 ADMIN_PASSWORD=password
-APP_IMAGE_NAME=localhost:8000/sdbmss
+APP_IMAGE_NAME=sdbmss
 APP_IMAGE_TAG=development
 CHROME_IMAGE_NAME="browserless/chrome"
 CHROME_IMAGE_TAG=latest

@@ -147,3 +147,20 @@ traefik_node_constraints:
 # The location of the docker-compose.yml template file
 traefik_templates_docker_compose_path: "docker-compose.yml.j2"
 
+#####
+# Service patches
+#
+# Add or replace top-level attributes on any service after the compose file
+# is generated. Existing keys are removed before the new value is set.
+# Useful for injecting dev-only attributes like `build` that don't exist in
+# the Ansible role templates.
+#
+# service_patches:
+#   app:
+#     build:
+#       context: .
+service_patches:
+  app:
+    build:
+      context: .
+
