@@ -301,7 +301,6 @@ services:
     networks:
     - traefik
   traefik:
-    image: traefik:2.9
     command:
     - --accesslog=true
     - --certificatesresolvers.letsencrypt.acme.email=libcoreservices@pobox.upenn.edu
@@ -355,6 +354,7 @@ services:
     - traefik.http.routers.dashboard.service=api@internal
     - traefik.http.routers.dashboard.tls=true
     - traefik.http.services.dashboard.loadbalancer.server.port=8080
+    image: traefik:3.6.9
 networks:
   mysql:
     name: mysql

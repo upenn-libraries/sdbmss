@@ -163,4 +163,6 @@ service_patches:
   app:
     build:
       context: .
+  traefik:
+    image: traefik:3.6.9
 
