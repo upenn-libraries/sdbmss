@@ -214,6 +214,7 @@ namespace :sdbmss do
         puts "Test user is #{user.inspect}"
         user.password = password
         user.password_confirmation = password
+        user.save!
       else
         puts "Creating test user #{role} with password #{password}"
         user = User.create email: "#{role}@#{role}.com",
