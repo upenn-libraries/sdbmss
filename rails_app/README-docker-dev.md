@@ -1,270 +1,85 @@
-# SDBM -- Schoenberg Database of Manuscripts
+# SDBM — Local Docker Development
 
-This is the Rails / Blacklight application for the Schoenberg Database of Manuscripts.
+## Prerequisites
 
-## Developing
+- Docker Desktop (macOS) or Docker Engine (Linux)
+- Ruby (to run `bin/tools`)
+- A `.env` file (see below)
+- `sdbmss.localhost` in `/etc/hosts` (see below)
 
-### Working with docker compose locally
+## First-time setup
 
-In order to use the docker compose development environment, you will need to have:
+### 1. Create `.env`
 
-- A local installation of Docker (Linux) or Docker Desktop (macOS)
-- A `.docker-environment` file
-
-And, if you're working outside the UPenn network:
-
-- A local image of the SDBM interface service
-- A local image of the SDBM Jena Fuseki service
-
-TODO: Make SDBM interface and Jena Fuseki images or repos publicly available.
-
-#### Docker Services
-
-1. [The SDBM Rails app](https://sdbmss.localhost/)
-2. Solr
-3. MySQL
-4. RabbitMQ -- queue for Jena updates
-5. Jena Fuseki -- RDF/SPARQL server
-6. Delayed Job -- background job processing (Rails image)
-7. Interface -- service for updating Jena (listens to RabbitMQ queue)
-8. Traefik -- reverse proxy
-
-#### Starting the SDBM
-
-From the [rails_app](.) directory run:
-
-if you've already set up the SDBM:
-```
-docker compose --env-file=.docker-environment -f docker-compose.dev.yml up
-
-# or, if you don't want the running log output
-docker compose --env-file=.docker-environment -f docker-compose.dev.yml up -d
-```
-
-> NOTE: See below if this is your first time running the SDBM.
-
-Once the docker compose start process is finished, you should be able to access the SDBM at [http://sdbmss.localhost](http://sdbmss.localhost).
-
-#### Stopping
-
-To stop the development environment, from the [rails_app](.) directory, run:
+From the `rails_app/` directory:
 
 ```
-docker compose --env-file=.docker-environment -f docker-compose.dev.yml down
+cp docker-environment-sample .env
 ```
 
-This will remove the containers and networks, but leave the volumes in place, so that you can run the docker compose up command above and return the application's previous state.
+Edit `.env` for your environment.
 
-If you're run docker compose up without the `-d` option, you can type `Ctrl-c` in that window to kill the processes, but you should still run the `down` command above to make sure that all processes are stopped.
-
-#### Destroying
-
-To remove the containers, networks, and the volumes in order to completely rebuild the SDBM docker environment, run:
-
-```
-docker compose --env-file=.docker-environment -f docker-compose.dev.yml down -v
-```
-
-For a completely clean start you may want to remove the SDBM docker image.
-
-Run `docker image ls` to find the image ID:
-
-```
-docker image ls
-REPOSITORY               TAG           IMAGE ID       CREATED         SIZE
-localhost:8000/sdbmss    development   b61aaa017cf0   6 days ago      2GB
-```
-
-The use `docker rmi` to delete it:
-
-```
-docker rmi b61aaa017cf0  # replace b61aaa017cf0 with the actual tag
-```
-
-If the image has multiple tags, you will need to remove all but one of the tags first:
-
-```
-docker image ls
-REPOSITORY               TAG           IMAGE ID       CREATED         SIZE
-localhost:8000/sdbmss    development   b61aaa017cf0   6 days ago      2GB
-localhost:8000/sdbmss    latest .      b61aaa017cf0   6 days ago      2GB
-
-docker rmi localhost:8000/sdbmss:latest
-docker rmi b61aaa017cf0
-```
-
-#### Restarting
-
-To restart the SDBM to pick up runtime changes from `.docker-environment`, run:
-
-```
-docker compose --env-file=.docker-environment -f docker-compose.dev.yml restart
-```
-
-For an individual service:
-
-```
-docker compose --env-file=.docker-environment -f docker-compose.dev.yml restart SERVICE_NAME # e.g, 'app'
-```
-
-#### Interacting with the Rails Application
-
-Once the SDBM is running can use docker exec to interact with the running application:
-
-1. Run `docker ps` to get a list of the running container names:
-
-```
-CONTAINER ID   IMAGE                                              COMMAND                   CREATED       STATUS                   PORTS                                                                  NAMES
-3b7b1711b099   localhost:8000/sdbmss:development                  "docker-entrypoint.s…"    2 hours ago   Up 2 hours                                                                                      sdbmss-solr-1
-390172074c32   localhost:8000/sdbmss:development                  "docker-entrypoint.s…"    2 hours ago   Up 2 hours (healthy)                                                                            sdbmss-app-1
-85ca236ca1fe   gitlab.library.upenn.edu/sdbm/jena-fuseki:latest   "/bin/tini -- sh /do…"    2 hours ago   Up 2 hours (unhealthy)   0.0.0.0:3030->3030/tcp, [::]:3030->3030/tcp                            sdbmss-jena-1
-09e809feae15   localhost:8000/sdbmss:development                  "docker-entrypoint.s…"    2 hours ago   Up 2 hours                                                                                      sdbmss-delayed_job-1
-87f7bc9cd72b   gitlab.library.upenn.edu/sdbm/interface:29ddfa21   "ruby interface.rb"       2 hours ago   Up 2 hours (healthy)                                                                            sdbmss-interface-1
-870ef2b77b91   traefik:2.9                                        "/entrypoint.sh --ac…"    2 hours ago   Up 2 hours               0.0.0.0:80->80/tcp, [::]:80->80/tcp, 0.0.0.0:443->443/tcp, [snip...]   sdbmss-traefik-1
-a6307da18b07   browserless/chrome:latest                          "./start.sh"              2 hours ago   Up 2 hours               0.0.0.0:3333->3333/tcp, [::]:3333->3333/tcp                            sdbmss-chrome-1
-8e55260d7cce   biarms/mysql:5.7                                   "/usr/local/bin/dock…"    2 hours ago   Up 2 hours               3306/tcp                                                               sdbmss-mysql-1
-0320eafb450f   rabbitmq:3.7                                       "docker-entrypoint.s…"    2 hours ago   Up 2 hours               4369/tcp, 5671-5672/tcp, 25672/tcp                                     sdbmss-rabbitmq-1
-```
-
-2. Start a shell in the `sdbm` container:
-
-```
-docker exec -it sdbmss-app-1 bash
-```
-
-To exit the shell:
-```
-exit
-```
-
-### Running tests
-
-The SDBM uses rspec for testing. The tests must be run in the running `app` container. To run the tests, docker exec into the container and run rspec as shown below:
-
-```
-$ docker exec -it sdbmss-app-1 bash
-root@1234abcdef:/home/app# RAILS_ENV=test bundle exec rspec
-```
-
-> IMPORTANT: Be sure to specify `RAILS_ENV=test`
-
-The tests take about 14 minutes to run.
-
-To skip the Javascript tests for a quicker run, use the `--tag ~js` flag.
-
-```
-root@1234abcdef:/home/app# RAILS_ENV=test bundle exec rspec --tag ~js
-```
-
-Or to run only the Javascript tests:
-
-```
-root@1234abcdef:/home/app# RAILS_ENV=test bundle exec rspec --tag js
-```
-
-### First-time setup
-
-Before you run `docker compose` for the first time, you must provide a `.docker-environment` file and add the `SDBMSS_APP_HOST` to `/etc/hosts`.
-
-#### `.docker-environment` changes
-
-Copy [`rails_app/docker-environment-sample`](./docker-environment-sample) to [`rails_app/.docker-environment`](./.docker-environment):
-
-```
-cd rails_app
-cp docker-environment-sample .docker-environment
-```
-
-Edit [`rails_app/.docker-environment`](./.docker-environment) for your environment.
-
-> Note especially that `INTERFACE_IMAGE_NAME` and `JENA_IMAGE_NAME` are specific to the U. Penn's network and require UPenn's VPN for offsite access. If you're working outside the network and lack a PennKey and VPN, you'll need to adjust these for your setup.
-
-#### `/etc/hosts` setup
-
-Before you run `docker compose` for the first time, you must add the `SDBMSS_APP_HOST` to `/etc/hosts`.
-
-For example, if you use the default value for `SDBMSS_APP_HOST` in the sample environment file `sdbmss.localhost`, you should add the following to `/etc/hosts`:
+### 2. Add `/etc/hosts` entry
 
 ```
 127.0.0.1 sdbmss.localhost
 ```
 
-> NOTE: On macOS you have to add the mapping to /etc/hosts. The change may not be require on Linux.
+> On macOS this is required. Linux may not need it.
 
-#### Bring up the application with docker compose
+### 3. Get data files
 
-Run docker compose up with the `--build` option to build and set up the SDBM:
+Download from [SDBM Data on SharePoint](https://penno365.sharepoint.com/:f:/r/teams/LIBSDBMDev2025/Shared%20Documents/SDBMData?csf=1&web=1&e=y2Vxme) (by permission only):
 
-```
-docker compose --env-file=.docker-environment -f docker-compose.dev.yml up --build
-```
+- `sdbm_data.tgz` (120 MB)
+- `sdbm.sql.gz` (33 MB)
 
-This will pull all required images and build the SDBM `app` image.
+Place them in `rails_app/dev/data/`.
 
-Wait for the docker compose process to complete before moving on to the next step, **SDBM develop app data setup**.
+### 4. Start the stack
 
-#### SDBM develop app data setup
-
-There are number of initial setup steps required to run the SDBM. They are handled by a bash script [setup.sh](./dev/setup.sh) stored in the [rails_app/dev](./dev) folder. The setup script does the following:
-
-1. Copies static assets into the Rails app
-2. Loads the development database
-3. Adds (or updates) the test users contributor, editor, super_editor, and admin with password `testpassword`
-4. Sets up Solr
-5. Indexes the database in Solr
-6. Sets up the Jena triple store
-
-First get the SDBM data files from [the SDBM Data folder on SharePoint](https://penno365.sharepoint.com/:f:/r/teams/LIBSDBMDev2025/Shared%20Documents/SDBMData?csf=1&web=1&e=y2Vxme) (by permission only):
-
-- `sdbm_data.tgz` (120MB)
-- `sdbm.sql.gz` (33MB)
-
-### Copy the files to the development environment
-
-Download the files and copy them to the `sdbmss/rails_app/dev` directory.
-
-Confirm that the data files are present:
+From `rails_app/`:
 
 ```
-ls rails_app/dev
+bin/tools start
 ```
 
-You should see:
+This builds the interface and Jena images from GitHub, then starts all services.
+
+### 5. Run setup
 
 ```
-sdbm_data.tgz sdbm.sql.gz sdbm.ttl setup.sh
+bin/tools setup
 ```
 
-To perform these setup actions, first navigate to the dev folder, and then run the bash script. This should take about 5 minutes.
+This loads the database, copies static assets, adds test users, reindexes Solr, and loads Jena. Takes about 5 minutes.
 
-```shell
-cd rails_app/dev  # if needed
-bash setup.sh -e LOCAL  # set up for LOCAL docker, as opposed to docker in VAGRANT
+### 6. Confirm
+
+Go to [http://sdbmss.localhost](http://sdbmss.localhost). Log in as `admin` / `testpassword`.
+
+---
+
+## Daily use
+
+| Command                   | What it does                          |
+|---------------------------|---------------------------------------|
+| `bin/tools start`         | Start all services                    |
+| `bin/tools stop`          | Stop all services (volumes preserved) |
+| `bin/tools clean`         | Remove all services and volumes       |
+| `bin/tools start --force` | Rebuild custom images before starting |
+
+All commands run from `rails_app/`.
+
+## Running tests
+
+Tests run inside the app container:
+
+```
+docker exec -it sdbmss-app-1 bash
+RAILS_ENV=test bundle exec rspec
 ```
 
-#### Check Jena log
+Skip JS tests for a faster run: `bundle exec rspec --tag ~js`
 
-When the setup script is finished running, check the Jena log to see if the service starts correctly:
-```
-docker compose logs sdbmss_jena --since 5m -f
-```
-
-The log should look something like the output below:
-```
-sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | Waiting for Fuseki to finish starting up...
-sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Server     INFO  Apache Jena Fuseki 3.14.0
-sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Config     INFO  FUSEKI_HOME=/jena-fuseki
-sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Config     INFO  FUSEKI_BASE=/fuseki
-sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Config     INFO  Shiro file: file:///fuseki/shiro.ini
-sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Config     INFO  Configuration file: /fuseki/config.ttl
-sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Config     INFO  Load configuration: file:///fuseki/configuration/sdbm.ttl
-sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Config     INFO  Register: /sdbm
-sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Server     INFO  Started 2025/10/06 18:04:55 UTC on port 3030
-sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | Fuseki is available :-)
-```
-
-#### Confirm the SDBM is up and running
-
-Go to [http://sdbmss.localhost](http://sdbmss.localhost) in your browser. You should see the SDBM home page. Put the cursor in the search box and hit enter to see all the records. There should be 274 entries.
-
-Log in as `admin` with password `testpassword` to confirm account set up.
+The full suite takes about 14 minutes.

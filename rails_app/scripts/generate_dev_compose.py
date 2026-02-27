@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-generate_dev_compose.py — Generate rails_app/docker-compose.dev.yml for local development.
+generate_dev_compose.py — Generate rails_app/docker-compose.yml for local development.
 
 Usage (run from anywhere):
     python3 rails_app/scripts/generate_dev_compose.py
@@ -8,7 +8,7 @@ Usage (run from anywhere):
 What it does:
     Reads each Ansible role's docker-compose template (Jinja2 .j2 or plain YAML),
     renders it using variables from generate_dev_compose.yml, then merges all
-    rendered service definitions into a single docker-compose.dev.yml suitable
+    rendered service definitions into a single docker-compose.yml suitable
     for local development with plain Docker Compose (not Docker Swarm).
 
     During processing the script:
@@ -86,7 +86,7 @@ def preprocess(source):
 def simplify_env_line(line):
     """
     For lines in the `environment:` block. We're going to pull all env variables
-    from `.docker-environment`, so remove all variable values coming from
+    from `.env`, so remove all variable values coming from
     Ansible, and use an array list of variable names instead of the key/values.
 
     Variable literal values are retained and Jinja2 flow controls are kept.
@@ -341,7 +341,7 @@ def main():
     env_vars["is_development"] = True
     service_patches = env_vars.pop("service_patches", {}) or {}
 
-    output_path = os.path.join(script_dir, "../docker-compose.dev.yml")
+    output_path = os.path.join(script_dir, "../docker-compose.yml")
 
     template_paths = [os.path.join(script_dir, p) for p in TEMPLATE_PATHS]
     docs = [render_template(path, env_vars) for path in template_paths]
