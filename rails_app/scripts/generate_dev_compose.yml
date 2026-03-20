@@ -163,6 +163,45 @@ service_patches:
   app:
     build:
       context: .
+  delayed_job:
+    depends_on:
+      mysql:
+        condition: service_healthy
+  mysql:
+    # Removing MYSQL_USER from mysql env; on startup mysql container tries to
+    # create MYSQL_USER; assuming Rails and delayed_job have MYSQL_USER=root,
+    # we can't have MYSQL_USER=root here because `CREATE USER root ...etc.;`
+    # will fail
+    environment:
+      - MYSQL_DATABASE
+      - MYSQL_ROOT_PASSWORD
+      - MYSQL_PASSWORD
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -uroot -p${MYSQL_ROOT_PASSWORD} 2>/dev/null" ]
   traefik:
     image: traefik:3.6.9
+  solr:
+    ports:
+      - "8983:8983"
 
+#####
+# Service array appends
+#
+# Append items to list-type attributes on any service after the compose file
+# is generated. Unlike service_patches, existing items are preserved and new
+# items are appended. Useful for adding env vars without replacing the full list.
+#
+# service_array_appends:
+#   app:
+#     environment:
+#       - SOLR_TEST_URL
+service_array_appends:
+  app:
+    environment:
+      - SOLR_TEST_URL
+  delayed_job:
+    environment:
+      - SOLR_TEST_URL
+  solr:
+    environment:
+      - SOLR_TEST_URL

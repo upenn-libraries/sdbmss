@@ -44,6 +44,7 @@ services:
     - SOLR_URL
     - APP_UID=1000
     - APP_GID=1000
+    - SOLR_TEST_URL
     healthcheck:
       test:
       - CMD-SHELL
@@ -105,9 +106,13 @@ services:
     - SDBMSS_SECRET_KEY_BASE
     - SDBMSS_SECRET_TOKEN
     - SOLR_URL
+    - SOLR_TEST_URL
     networks:
     - mysql
     - traefik
+    depends_on:
+      mysql:
+        condition: service_healthy
   interface:
     image: ${INTERFACE_IMAGE_NAME}:${INTERFACE_IMAGE_TAG}
     command:
@@ -205,15 +210,18 @@ services:
         order: start-first
         parallelism: 1
       replicas: 1
-    environment:
-    - MYSQL_DATABASE
-    - MYSQL_ROOT_PASSWORD
-    - MYSQL_USER
-    - MYSQL_PASSWORD
     networks:
     - mysql
     volumes:
     - sdbm_data:/var/lib/mysql
+    environment:
+    - MYSQL_DATABASE
+    - MYSQL_ROOT_PASSWORD
+    - MYSQL_PASSWORD
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - mysqladmin ping -h localhost -uroot -p${MYSQL_ROOT_PASSWORD} 2>/dev/null
   rabbitmq:
     image: ${RABBITMQ_IMAGE_NAME}:${RABBITMQ_IMAGE_TAG}
     deploy:
@@ -276,6 +284,7 @@ services:
     - SDBMSS_SECRET_KEY_BASE
     - SDBMSS_SECRET_TOKEN
     - SOLR_URL
+    - SOLR_TEST_URL
     networks:
     - mysql
     - traefik
@@ -287,6 +296,8 @@ services:
     - traefik.http.routers.solr.rule=Host(`` && PathPrefix(`/solr`))
     - traefik.http.routers.solr.service=solr
     - traefik.http.services.solr.loadbalancer.server.port=
+    ports:
+    - 8983:8983
   chrome:
     image: ${CHROME_IMAGE_NAME}:${CHROME_IMAGE_TAG}
     environment:
