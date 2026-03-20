@@ -85,7 +85,7 @@ module SDBMSS
     def start(force_rebuild: false)
       timed('start') do
         load_docker_environment!
-        verify_data_files! if self.class.truthy?(@env['TOOLS_REQUIRE_DATA'])
+        verify_data_files! if self.class.truthy?(env('TOOLS_REQUIRE_DATA', nil))
         ensure_custom_images!(force: force_rebuild)
         run_compose!(%w[up -d])
         wait_for_sdbm_availability!
@@ -166,7 +166,10 @@ module SDBMSS
       run_command!(['docker', 'cp', sql_archive, "#{mysql_id}:/tmp/sdbm.sql.gz"])
 
       log('Loading SQL archive into mysql')
-      run_command!(%W[docker exec -i --workdir /tmp #{mysql_id} sh -c] + ['gunzip -c /tmp/sdbm.sql.gz | mysql -u sdbm --password=password sdbm'])
+      mysql_user     = Shellwords.shellescape(env('MYSQL_USER'))
+      mysql_password = Shellwords.shellescape(env('MYSQL_PASSWORD'))
+      mysql_database = Shellwords.shellescape(env('MYSQL_DATABASE'))
+      run_command!(%W[docker exec -i --workdir /tmp #{mysql_id} sh -c] + ["gunzip -c /tmp/sdbm.sql.gz | mysql -u #{mysql_user} --password=#{mysql_password} #{mysql_database}"])
 
       log('Removing mysql SQL archive')
       run_command!(%W[docker exec #{mysql_id} rm -f /tmp/sdbm.sql.gz])
@@ -186,7 +189,7 @@ module SDBMSS
 
       run_compose!(%w[stop jena])
 
-      image = [@env['JENA_IMAGE_NAME'], @env['JENA_IMAGE_TAG']].compact.join(':')
+      image = [env('JENA_IMAGE_NAME', nil), env('JENA_IMAGE_TAG', nil)].compact.join(':')
       image = 'sdbmss-jena:latest' if image.empty? || image == ':'
 
       run_command!([
@@ -290,20 +293,31 @@ module SDBMSS
       File.write(file_path, updated)
     end
 
+    # Delegates to +Hash#fetch+ on the environment. With no default, raises +KeyError+
+    # if the key is absent; with a default, returns it instead.
+    #
+    # @param key [String] environment variable name
+    # @param args [Array] optional single default value, forwarded to +fetch+
+    # @return [String, nil]
+    # @raises [KeyError] if the key is absent and no default is given
+    def env(key, *args)
+      @env.fetch(key, *args)
+    end
+
     # @return [String, nil] value of +SDBMSS_APP_HOST+ from the environment
     def app_host
-      @env['SDBMSS_APP_HOST']
+      env('SDBMSS_APP_HOST', nil)
     end
 
     # @return [String] Docker volume name prefix derived from +COMPOSE_PROJECT_NAME+
     def compose_volume_prefix
-      "#{@env.fetch('COMPOSE_PROJECT_NAME', 'rails_app')}_"
+      "#{env('COMPOSE_PROJECT_NAME', 'rails_app')}_"
     end
 
     # @return [String] absolute path to the static assets archive
     def data_archive_path
       @data_archive_path ||= begin
-                               path = @env['SDBM_DATA_ARCHIVE'] || File.join(rails_root, 'dev', 'data', 'sdbm_data.tgz')
+                               path = env('SDBM_DATA_ARCHIVE', nil) || File.join(rails_root, 'dev', 'data', 'sdbm_data.tgz')
                                File.expand_path(path, rails_root)
                              end
     end
@@ -311,7 +325,7 @@ module SDBMSS
     # @return [String] absolute path to the SQL dump archive
     def sql_archive_path
       @sql_archive_path ||= begin
-                              path = @env['SDBM_SQL_ARCHIVE'] || File.join(rails_root, 'dev', 'data', 'sdbm.sql.gz')
+                              path = env('SDBM_SQL_ARCHIVE', nil) || File.join(rails_root, 'dev', 'data', 'sdbm.sql.gz')
                               File.expand_path(path, rails_root)
                             end
     end
