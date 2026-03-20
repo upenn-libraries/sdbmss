@@ -35,4 +35,5 @@ SDBMSS_NOTIFY_EMAIL_PASSWORD=x
 SDBMSS_SECRET_KEY_BASE=sdbmsssecretkey
 SDBMSS_SECRET_TOKEN=sdbmsssecrettoken
 SDBMSS_SMTP_HOST=mail.somewhere.com
+SOLR_TEST_URL=http://solr:8983/solr/test
 SOLR_URL=http://solr:8983/solr/development
