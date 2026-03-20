@@ -1,6 +1,15 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  config.before_initialize do
+    test_url = ENV['SOLR_TEST_URL'] || begin
+      uri = URI.parse(ENV['SOLR_URL'] || 'http://localhost:8983/solr/development')
+      "#{uri.scheme}://#{uri.host}:#{uri.port}/solr/test"
+    end
+    ENV['SOLR_URL'] = test_url
+  end
+
+
   # The test environment is used exclusively to run your application's
   # test suite. You never need to work with it otherwise. Remember that
   # your test database is "scratch space" for the test suite and is wiped
