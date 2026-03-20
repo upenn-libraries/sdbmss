@@ -45,13 +45,26 @@ generate_dev_compose.yml:
             build:
               context: .
 
+    service_array_appends:
+    An optional section in generate_dev_compose.yml for appending items to
+    list-type service attributes after the compose file is generated. Unlike
+    service_patches, this merges rather than replaces — existing items are
+    preserved and new items are appended.
+
+        service_array_appends:
+          app:
+            environment:
+              - SOLR_TEST_URL
+
 🤖 Generated with Claude (claude.ai)
+AI Usage Disclosure: Designed and implemented by Claude (Anthropic).
 """
 import os
 import re
 import yaml
 from jinja2 import Environment
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Paths to docker-compose templates, relative to this script's directory.
 TEMPLATE_PATHS = [
@@ -79,7 +92,7 @@ def preprocess(source):
     source = re.sub(r"^#jinja2:.*\n", "", source)
     source = remove_secrets(source)
     source = simplify_environment(source)
-    source = apply_patches(source)
+    source = apply_source_patches(source)
     return source
 
 
@@ -209,7 +222,7 @@ LINES_TO_STRIP = [
     "services.app_secure",
 ]
 
-def apply_patches(source):
+def apply_source_patches(source):
     """
     Apply a number of replacements and skips.
     """
@@ -332,27 +345,70 @@ def apply_service_patches(merged, patches):
     return merged
 
 
-def main():
-    script_dir = os.path.dirname(os.path.abspath(__file__))
+def apply_service_array_appends(merged, appends):
+    """
+    Append items to list-type service attributes from the service_array_appends
+    section of generate_dev_compose.yml.
 
-    with open(os.path.join(script_dir, "generate_dev_compose.yml")) as f:
-        env_vars = yaml.safe_load(f)
+    For each service, each key must reference a list attribute on the service.
+    Items are appended to the existing list. Missing attributes are created.
 
-    env_vars["is_development"] = True
-    service_patches = env_vars.pop("service_patches", {}) or {}
+    Example generate_dev_compose.yml entry:
 
-    output_path = os.path.join(script_dir, "../docker-compose.yml")
+        service_array_appends:
+          app:
+            environment:
+              - SOLR_TEST_URL
 
-    template_paths = [os.path.join(script_dir, p) for p in TEMPLATE_PATHS]
-    docs = [render_template(path, env_vars) for path in template_paths]
-    merged = merge_compose(docs)
+    @param merged [dict] The merged compose structure.
+    @param appends [dict] The service_array_appends mapping from the config file.
+    @return [dict] The merged compose structure with appends applied.
+    """
+    for svc_name, attrs in appends.items():
+        svc = merged["services"].get(svc_name)
+        if svc is None:
+            continue
+        for key, items in attrs.items():
+            existing = svc.setdefault(key, [])
+            existing.extend(items)
+    return merged
+
+
+def load_config() -> dict:
+    """Load and return the generate_dev_compose.yml config dict."""
+    with open(os.path.join(SCRIPT_DIR, "generate_dev_compose.yml")) as f:
+        config = yaml.safe_load(f)
+    config["is_development"] = True
+    return config
+
+
+def render_templates(config: dict) -> list:
+    """Render all Ansible role templates and return parsed YAML docs."""
+    paths = [os.path.join(SCRIPT_DIR, p) for p in TEMPLATE_PATHS]
+    return [render_template(path, config) for path in paths]
+
+
+def apply_patches(merged: dict, config: dict) -> dict:
+    """Apply service_patches and service_array_appends from config to merged compose."""
+    service_patches = config.pop("service_patches", {}) or {}
+    service_array_appends = config.pop("service_array_appends", {}) or {}
     if service_patches:
         merged = apply_service_patches(merged, service_patches)
-    output = yaml.dump(merged, Dumper=ComposeDumper, default_flow_style=False, sort_keys=False)
+    if service_array_appends:
+        merged = apply_service_array_appends(merged, service_array_appends)
+    return merged
 
+
+def main():
+    config = load_config()
+    docs   = render_templates(config)
+    merged = merge_compose(docs)
+    merged = apply_patches(merged, config)
+
+    output = yaml.dump(merged, Dumper=ComposeDumper, default_flow_style=False, sort_keys=False)
+    output_path = os.path.join(SCRIPT_DIR, "../docker-compose.yml")
     with open(output_path, "w") as f:
         f.write(output)
-
     print(f"Written to {output_path}")
 
 
