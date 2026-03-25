@@ -29,10 +29,14 @@ Edit `.env` for your environment.
 
 ### 3. Get data files
 
-Download from [SDBM Data on SharePoint](https://penno365.sharepoint.com/:f:/r/teams/LIBSDBMDev2025/Shared%20Documents/SDBMData?csf=1&web=1&e=y2Vxme) (by permission only):
+The development environment relies on these static and database files:
 
 - `sdbm_data.tgz` (120 MB)
-- `sdbm.sql.gz` (33 MB)
+- `sdbm.sql.gz` (6.3 MB)
+
+Contact Penn Libraries' Digital Library Development team for copies.
+
+Penn Libraries staff can access the files here (permission required): [SDBM Data on SharePoint](https://penno365.sharepoint.com/:f:/r/teams/LIBSDBMDev2025/Shared%20Documents/SDBMData?csf=1&web=1&e=y2Vxme).
 
 Place them in `rails_app/dev/data/`.
 
