@@ -36,7 +36,7 @@ describe SDBMSS::Tools do
       Dir.mktmpdir do |tmpdir|
         rails_root = File.join(tmpdir, 'rails_app')
         FileUtils.mkdir_p(File.join(rails_root, 'lib', 'sdbmss'))
-        File.write(File.join(rails_root, '.docker-environment'), "SDBMSS_APP_HOST=sdbmss.localhost\nCOMPOSE_PROJECT_NAME=sdbmss\n")
+        File.write(File.join(rails_root, '.env'), "SDBMSS_APP_HOST=sdbmss.localhost\nCOMPOSE_PROJECT_NAME=sdbmss\n")
 
         env = {}
         tools = described_class.new(env: env)

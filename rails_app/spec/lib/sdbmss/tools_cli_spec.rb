@@ -3,11 +3,11 @@ require 'sdbmss/tools_cli'
 describe SDBMSS::ToolsCLI do
   describe '#parse!' do
     it 'parses start with force' do
-      cli = described_class.new(argv: %w[start --force])
+      cli = described_class.new(argv: %w[start --force-rebuild])
       command = cli.parse!
 
       expect(command.name).to eq('start')
-      expect(command.options[:force]).to be true
+      expect(command.options[:force_rebuild]).to be true
     end
 
     it 'parses build-image options' do
