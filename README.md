@@ -2,13 +2,26 @@
 
 This is the Rails / Blacklight application for the Schoenberg Database of Manuscripts.
 
+Note that 'sdbmss' is used everywhere in the code because for Ruby versions `< 3.0` 'sdbm' was the
+name of a package in Ruby's standard library. With Ruby 3.0 'sdbm' was moved from Ruby's stdlib to a separate gem.
+
+## Documents
+
+Detailed information about the SDBM application and project has been published to the [SDBM](https://sdbm.library.upenn.edu/). Among other information under the About and Help menus you will find:
+
+- [About the SDBM](https://sdbm.library.upenn.edu/pages/About)
+- [Technical Overview](https://sdbm.library.upenn.edu/pages/Technical%20Overview)
+- [High-level description of the data model](https://sdbm.library.upenn.edu/static/docs/SDBM_data_explanation2019.pdf)
+- [Entry Relationship Diagram](https://sdbm.library.upenn.edu/static/docs/erd.pdf)
+- [FAQ](https://sdbm.library.upenn.edu/pages/FAQ)
+
 ## Developing
 
 ### Working with docker compose locally
 
 See [`rails_app/README-docker-dev.md`](./rails_app/README-docker-dev.md) for instructions to run the SDBM in docker for local development.
 
-### Working with the Vagrant environment
+### Working with the Vagrant environment (Penn Libraries staff only)
 
 In order to use the integrated development environment you will need to install [Vagrant](https://www.vagrantup.com/docs/installation) [do *not* use the Vagrant version that may be available for your distro repository - explicitly follow instructions at the Vagrant homepage] and the appropriate virtualization software. If you are running Linux or Mac x86 then install [VirtualBox](https://www.virtualbox.org/wiki/Linux_Downloads), if you are using a Mac with ARM processors then install [Parallels](https://www.parallels.com/).
 
@@ -97,22 +110,22 @@ To further exit the vagrant environment:
 exit
 ```
 
-### First-time setup
+#### First-time setup (Vagrant environment)
 
 There are number of initial setup steps required to run this SDBM that are handled by a bash
 script setup.sh stored in the rails_app/dev folder and run from the vagrant environment. The setup script
 does the following:
 
-1. Copy static assets into the Rails app
-2. Load the database
-3. Set up Solr
-4. Index the database in Solr
-5. Set up Jena
+1. Copie static assets into the Rails app
+2. Loads the database
+3. Sets up Solr
+4. Indexes the database in Solr
+5. Sets up Jena
 
 First get the SDBM data files from [the SDBM Data folder on SharePoint](https://penno365.sharepoint.com/:f:/r/teams/LIBSDBMDev2025/Shared%20Documents/SDBMData?csf=1&web=1&e=y2Vxme) (by permission only):
 
 - `sdbm_data.tgz` (120MB)
-- `sdbm.sql.gz` (33MB)
+- `sdbm.sql.gz` (6.3MB)
 
 ### Copy the files to the development environment
 
@@ -159,7 +172,9 @@ sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | [2025-10-06 18:04:55] Server     IN
 sdbmss_jena.1.c08kinpat2hp@sdbm-manager    | Fuseki is available :-)
 ```
 
+## Production and staging deployments
 
+The SDBM is currently structured to be deployed to production and staging docker swarm by Ansible. These deployments are managed by a GitLab CI/CD pipeline.
 
 
 
