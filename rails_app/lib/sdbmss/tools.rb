@@ -102,10 +102,26 @@ module SDBMSS
     end
 
     # Removes all Compose services and their volumes (+docker compose down -v+).
-    def clean
+    # Pass +scope: :all+ to also remove custom images.
+    #
+    # @param scope [:containers, :all] what to remove;
+    #   +:containers+ removes services and volumes only (default);
+    #   +:all+ also removes custom images
+    def clean(scope: :containers)
       timed('clean') do
         load_docker_environment!
         run_compose!(%w[down -v])
+        remove_custom_images! if scope == :all
+      end
+    end
+
+    # Removes and rebuilds all custom images listed in +DEFAULT_IMAGES+ without
+    # starting the Compose stack. Useful when upstream image source repos have changed.
+    def rebuild
+      timed('rebuild') do
+        load_docker_environment!
+        remove_custom_images!
+        ensure_custom_images!(force: true)
       end
     end
 
@@ -227,6 +243,20 @@ module SDBMSS
 
       log("Building image #{image_ref} from #{url}")
       run_command!(['docker', 'build', '--pull', '-t', image_ref, url])
+    end
+
+    # Removes all images listed in +DEFAULT_IMAGES+ that currently exist locally.
+    # Silently skips images that are not present.
+    def remove_custom_images!
+      DEFAULT_IMAGES.each do |_url, image_name, tag|
+        ref = "#{image_name}:#{tag}"
+        if image_exists?(ref)
+          log("Removing image #{ref}")
+          run_command!(['docker', 'image', 'rm', ref])
+        else
+          log("Image #{ref} not present; skipping removal")
+        end
+      end
     end
 
     # Builds all images listed in +DEFAULT_IMAGES+ if they do not already exist.

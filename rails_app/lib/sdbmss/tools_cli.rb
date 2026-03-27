@@ -23,11 +23,13 @@ module SDBMSS
 
       case command.name
       when 'start'
-        tools.start(force_rebuild: command.options[:force])
+        tools.start(force_rebuild: command.options[:force_rebuild])
       when 'stop'
         tools.stop
       when 'clean'
-        tools.clean
+        tools.clean(scope: command.options[:scope])
+      when 'rebuild'
+        tools.rebuild
       when 'setup'
         tools.setup
       when 'setup-assets'
@@ -67,7 +69,9 @@ module SDBMSS
       case command_name
       when 'start'
         parse_start
-      when 'stop', 'clean', 'setup', 'setup-assets', 'setup-db', 'setup-jena'
+      when 'clean'
+        parse_clean
+      when 'stop', 'rebuild', 'setup', 'setup-assets', 'setup-db', 'setup-jena'
         parse_simple(command_name)
       when 'build-image'
         parse_build_image
@@ -81,9 +85,10 @@ module SDBMSS
         Usage: ruby bin/tools <command> [options]
 
         Commands:
-          start [--force]                     Start services (docker compose up -d)
+          start [--force-rebuild]             Start services (docker compose up -d)
           stop                                Stop services (docker compose stop)
-          clean                               Remove services and volumes (docker compose down -v)
+          clean [--all]                       Remove services and volumes; --all also removes custom images
+          rebuild                             Remove and rebuild all custom images (no stack start)
           setup                               Run full LOCAL setup flow
           setup-assets                        Run assets setup only
           setup-db                            Run database setup only
@@ -93,7 +98,10 @@ module SDBMSS
 
         Examples:
           ruby bin/tools start
-          ruby bin/tools start --force
+          ruby bin/tools start --force-rebuild
+          ruby bin/tools clean
+          ruby bin/tools clean --all
+          ruby bin/tools rebuild
           ruby bin/tools setup
           ruby bin/tools build-image --url https://github.com/upenn-libraries/sdbm-interface.git --image-name sdbmss-interface --tag latest
       HELP
@@ -112,11 +120,26 @@ module SDBMSS
       Command.new(command_name, {})
     end
 
-    def parse_start
-      options = { force: false }
+    def parse_clean
+      options = { scope: :containers }
       parser = OptionParser.new
-      parser.on('--force', 'Force rebuild custom images before start') do
-        options[:force] = true
+      parser.on('--all', 'Also remove custom images after bringing down the stack') do
+        options[:scope] = :all
+      end
+      parser.on('-h', '--help', 'Show help') do
+        raise ArgumentError, help_text
+      end
+      parser.parse!(@argv)
+      raise ArgumentError, "Unexpected arguments: #{@argv.join(' ')}" unless @argv.empty?
+
+      Command.new('clean', options)
+    end
+
+    def parse_start
+      options = { force_rebuild: false }
+      parser = OptionParser.new
+      parser.on('--force-rebuild', 'Force rebuild custom images before start') do
+        options[:force_rebuild] = true
       end
       parser.on('-h', '--help', 'Show help') do
         raise ArgumentError, help_text
