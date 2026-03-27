@@ -212,6 +212,7 @@ namespace :sdbmss do
       if (user = User.find_by username: role)
         puts "Found test user #{user.username}; setting password to #{password}"
         puts "Test user is #{user.inspect}"
+        user.role = role
         user.password = password
         user.password_confirmation = password
         user.save!
