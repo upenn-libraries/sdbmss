@@ -25,6 +25,7 @@ staging:
 
 test:
   <<: *development
-  
+  database: <%= ENV["MYSQL_TEST_DATABASE"] || "#{ENV['MYSQL_DATABASE']}_test" %>
+
 production:
   <<: *development
