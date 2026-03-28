@@ -2,8 +2,7 @@
 
 This is the Rails / Blacklight application for the Schoenberg Database of Manuscripts.
 
-Note that 'sdbmss' is used everywhere in the code because for Ruby versions `< 3.0` 'sdbm' was the
-name of a package in Ruby's standard library. With Ruby 3.0 'sdbm' was moved from Ruby's stdlib to a separate gem.
+Note that 'sdbmss' is used everywhere in the code because for Ruby versions `< 3.0` 'sdbm' was a package in Ruby's standard library. With Ruby 3.0 'sdbm' was removed from Ruby's stdlib and made a separate gem.
 
 ## Documents
 
@@ -17,9 +16,14 @@ Detailed information about the SDBM application and project has been published t
 
 ## Developing
 
+There are two options for running the SDBM locally:
+
+1. **Docker Compose** — for anyone; see [`rails_app/README-docker-dev.md`](./rails_app/README-docker-dev.md)
+2. **Vagrant** — Penn Libraries staff only; see below
+
 ### Working with docker compose locally
 
-See [`rails_app/README-docker-dev.md`](./rails_app/README-docker-dev.md) for instructions to run the SDBM in docker for local development.
+See [`rails_app/README-docker-dev.md`](./rails_app/README-docker-dev.md) for instructions for running the SDBM in docker for local development.
 
 ### Working with the Vagrant environment (Penn Libraries staff only)
 
@@ -41,6 +45,7 @@ You may need to update the VirtualBox configuration for the creation of a host-o
 6. Delayed Job -- background job processing (Rails image)
 7. Interface -- service for updating Jena (listens to RabbitMQ queue)
 8. Traefik -- reverse proxy
+9. Chrome -- development-only headless browser for specs
 
 #### Starting
 
@@ -116,7 +121,7 @@ There are number of initial setup steps required to run this SDBM that are handl
 script setup.sh stored in the rails_app/dev folder and run from the vagrant environment. The setup script
 does the following:
 
-1. Copie static assets into the Rails app
+1. Copies static assets into the Rails app
 2. Loads the database
 3. Sets up Solr
 4. Indexes the database in Solr
