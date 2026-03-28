@@ -13,17 +13,12 @@ module SDBMSS
   # Most public methods call +load_docker_environment!+ first to populate @env from
   # +.env+, so that file must exist before any command is run.
   #
+  # Required +.env+ keys: +INTERFACE_REPO+, +JENA_REPO+ (git URLs used to build
+  # the interface and Jena custom images).
+  #
   # Initially generated with assistance from GPT-5.2-Codex (OpenAI).
   # Documentation, troubleshooting, and subsequent edits by Claude Sonnet 4.6 (Anthropic).
   class Tools
-    DEFAULT_INTERFACE_REPO = 'https://github.com/upenn-libraries/sdbm-interface.git'.freeze
-    DEFAULT_JENA_REPO = 'https://github.com/upenn-libraries/Jena-Fuseki.git'.freeze
-
-    # Default custom images that must be built locally before the stack can start.
-    DEFAULT_IMAGES = [
-      [DEFAULT_INTERFACE_REPO, 'sdbmss-interface', 'latest'],
-      [DEFAULT_JENA_REPO, 'sdbmss-jena', 'latest']
-    ].freeze
 
     class << self
       # Polls +host+ over HTTP until a 200 response is received or +timeout_seconds+ elapses.
@@ -115,8 +110,8 @@ module SDBMSS
       end
     end
 
-    # Removes and rebuilds all custom images listed in +DEFAULT_IMAGES+ without
-    # starting the Compose stack. Useful when upstream image source repos have changed.
+    # Removes and rebuilds all custom images without starting the Compose stack.
+    # Useful when upstream image source repos have changed.
     def rebuild
       timed('rebuild') do
         load_docker_environment!
@@ -245,10 +240,10 @@ module SDBMSS
       run_command!(['docker', 'build', '--pull', '-t', image_ref, url])
     end
 
-    # Removes all images listed in +DEFAULT_IMAGES+ that currently exist locally.
+    # Removes all custom images (interface, jena, and app) that currently exist locally.
     # Silently skips images that are not present.
     def remove_custom_images!
-      DEFAULT_IMAGES.each do |_url, image_name, tag|
+      custom_images.each do |_url, image_name, tag|
         ref = "#{image_name}:#{tag}"
         if image_exists?(ref)
           log("Removing image #{ref}")
@@ -257,13 +252,21 @@ module SDBMSS
           log("Image #{ref} not present; skipping removal")
         end
       end
+
+      app_ref = "#{env('APP_IMAGE_NAME', 'sdbmss')}:#{env('APP_IMAGE_TAG', 'development')}"
+      if image_exists?(app_ref)
+        log("Removing image #{app_ref}")
+        run_command!(['docker', 'image', 'rm', app_ref])
+      else
+        log("Image #{app_ref} not present; skipping removal")
+      end
     end
 
-    # Builds all images listed in +DEFAULT_IMAGES+ if they do not already exist.
+    # Builds all custom images if they do not already exist.
     #
     # @param force [Boolean] rebuild all images even if they already exist
     def ensure_custom_images!(force: false)
-      DEFAULT_IMAGES.each do |url, image, tag|
+      custom_images.each do |url, image, tag|
         build_image(url: url, image_name: image, tag: tag, force: force)
       end
     end
@@ -386,6 +389,18 @@ module SDBMSS
 
         @env[key.strip] ||= value.strip
       end
+    end
+
+    # Returns remote-built custom images as +[url, image_name, tag]+ triples.
+    # URLs and names/tags are read from the environment so they can be overridden via +.env+.
+    # Raises +KeyError+ if +INTERFACE_REPO+ or +JENA_REPO+ is not set.
+    #
+    # @return [Array<Array<String>>]
+    def custom_images
+      [
+        [env('INTERFACE_REPO'), env('INTERFACE_IMAGE_NAME', 'sdbmss-interface'), env('INTERFACE_IMAGE_TAG', 'latest')],
+        [env('JENA_REPO'),      env('JENA_IMAGE_NAME',      'sdbmss-jena'),      env('JENA_IMAGE_TAG',      'latest')]
+      ]
     end
 
     # @return [Array<String>] base +docker compose+ command
