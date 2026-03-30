@@ -1,252 +1,383 @@
-version: '3.7'
-
-secrets:
-  mysql_database:
-    external: true
-    name: sdbmss_mysql_database
-  mysql_root_password:
-    external: true
-    name: sdbmss_mysql_root_password
-  mysql_user:
-    external: true
-    name: sdbmss_mysql_user
-  mysql_password:
-    external: true
-    name: sdbmss_mysql_password
-
+version: '3.8'
 services:
-  rabbitmq:
-    image: rabbitmq:3.7
-    restart: always
-    hostname: 'rabbitmq'
-    ports:
-      - '5672:5672'
+  app:
+    image: ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
+    command:
+    - bundle
+    - exec
+    - rails
+    - s
+    - unicorn
+    - -b
+    - 0.0.0.0
+    deploy:
+      placement:
+        constraints:
+        - node.labels.app == true
+      replicas: 1
+      update_config:
+        order: start-first
+        parallelism: 1
     environment:
-      RABBITMQ_ERLANG_COOKIE: 'secret cookie here' # needed for rabbitmqctl to work (??)
-      RABBIT_PASSWORD:
-      RABBIT_USER:
-      ADMIN_PASSWORD:
+    - ADMIN_PASSWORD
+    - MYSQL_DATABASE
+    - MYSQL_HOST=mysql
+    - MYSQL_PASSWORD
+    - MYSQL_USER
+    - RABBIT_PASSWORD
+    - RABBIT_USER
+    - RAILS_ENV
+    - RAILS_PASS
+    - RAILS_USER
+    - RAILS_LOG_TO_STDOUT=true
+    - RAILS_SERVE_STATIC_FILES=true
+    - SDBMSS_APP_HOST
+    - SDBMSS_SMTP_HOST
+    - SDBMSS_EMAIL_FROM
+    - SDBMSS_NOTIFY_EMAIL
+    - SDBMSS_NOTIFY_EMAIL_PASSWORD
+    - SDBMSS_EMAIL_EXCEPTIONS_TO
+    - SDBMSS_BLACKLIGHT_SECRET_KEY
+    - SDBMSS_DEVISE_SECRET_KEY
+    - SDBMSS_SECRET_KEY_BASE
+    - SDBMSS_SECRET_TOKEN
+    - SOLR_URL
+    - APP_UID=1000
+    - APP_GID=1000
+    - SOLR_TEST_URL
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - ps aux | grep '[r]ails worker' || exit 1
+      timeout: 10s
+      interval: 30s
+      retries: 10
+      start_period: 30s
+    networks:
+    - mysql
+    - rabbitmq
+    - traefik
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-
-  db:
-    image: mysql:5.7
-    restart: always
-    # env_file: .docker-environment
-    # logging:
-      # driver: "journald"
-    ports:
-      - "3307:3307"
-    volumes:
-      - sdbm_data:/var/lib/mysql
-    # We can define ENV vars using secret files because the MySQL image will
-    # recognize value is a path and read it from the file.
-    #
-    # THIS WILL LIKELY NOT WORK WITH OTHER IMAGES
+    - .:/home/app/
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.app.entrypoints=web
+    - traefik.http.routers.app.rule=Host(`sdbmss.localhost`)
+    - traefik.http.routers.app.service=app
+    - traefik.http.services.app.loadbalancer.server.port=3000
+    build:
+      context: .
+  delayed_job:
+    image: ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
+    command:
+    - bundle
+    - exec
+    - rake
+    - jobs:work
+    deploy:
+      placement:
+        constraints:
+        - node.labels.app == true
+      replicas: 1
+      update_config:
+        order: start-first
+        parallelism: 1
     environment:
-      MYSQL_DATABASE:
-      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
-      MYSQL_USER:
-      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
-    secrets:
-      - mysql_database
-      - mysql_password
-      - mysql_root_password
-      - mysql_user
-  solr:
-    image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_web:${SDBMSS_IMAGE_TAG}'
-    restart: always
-    ports:
-      - "8983:8983"
-    # env_file: .docker-environment
-    # logging:
-      # driver: "journald"
-    links:
-      - db
-    volumes:
-      - sdbm_solr:/usr/src/app/solr
-    command: bundle exec rake sunspot:solr:run
-    environment:
-      ADMIN_PASSWORD:
-      RAILS_USER:
-      RAILS_PASS:
-      MYSQL_HOST:
-      MYSQL_DATABASE:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_USER:
-      MYSQL_PASSWORD:
-      RABBIT_PASSWORD:
-      RABBIT_USER:
-      SDBMSS_APP_HOST:
-      SDBMSS_SMTP_HOST:
-      SDBMSS_EMAIL_FROM:
-      SDBMSS_NOTIFY_EMAIL:
-      SDBMSS_NOTIFY_EMAIL_PASSWORD:
-      SDBMSS_EMAIL_EXCEPTIONS_TO:
-      SDBMSS_BLACKLIGHT_SECRET_KEY:
-      SDBMSS_DEVISE_SECRET_KEY:
-      SDBMSS_SECRET_KEY_BASE:
-      SDBMSS_SECRET_TOKEN:
-      SOLR_URL:
-  rails:
-    image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_web:${SDBMSS_IMAGE_TAG}'
-    restart: always
-    # env_file: .docker-environment
-    ports:
-      - "3000:3000"
-    environment:
-      RAILS_ENV:
-      MYSQL_HOST:
-      ADMIN_PASSWORD:
-      RAILS_USER:
-      RAILS_PASS:
-      MYSQL_DATABASE:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_USER:
-      MYSQL_PASSWORD:
-      RABBIT_PASSWORD:
-      RABBIT_USER:
-      SDBMSS_APP_HOST:
-      SDBMSS_SMTP_HOST:
-      SDBMSS_EMAIL_FROM:
-      SDBMSS_NOTIFY_EMAIL:
-      SDBMSS_NOTIFY_EMAIL_PASSWORD:
-      SDBMSS_EMAIL_EXCEPTIONS_TO:
-      SDBMSS_BLACKLIGHT_SECRET_KEY:
-      SDBMSS_DEVISE_SECRET_KEY:
-      SDBMSS_SECRET_KEY_BASE:
-      SDBMSS_SECRET_TOKEN:
-      SOLR_URL:
-    links:
-      - db
-      - solr
-      - rabbitmq
+    - ADMIN_PASSWORD
+    - MYSQL_DATABASE
+    - MYSQL_HOST=mysql
+    - MYSQL_PASSWORD
+    - MYSQL_USER
+    - RABBIT_PASSWORD
+    - RABBIT_USER
+    - RAILS_ENV
+    - RAILS_PASS
+    - RAILS_USER
+    - RAILS_LOG_TO_STDOUT=true
+    - RAILS_SERVE_STATIC_FILES=true
+    - SDBMSS_APP_HOST
+    - SDBMSS_SMTP_HOST
+    - SDBMSS_EMAIL_FROM
+    - SDBMSS_NOTIFY_EMAIL
+    - SDBMSS_NOTIFY_EMAIL_PASSWORD
+    - SDBMSS_EMAIL_EXCEPTIONS_TO
+    - SDBMSS_BLACKLIGHT_SECRET_KEY
+    - SDBMSS_DEVISE_SECRET_KEY
+    - SDBMSS_SECRET_KEY_BASE
+    - SDBMSS_SECRET_TOKEN
+    - SOLR_URL
+    - SOLR_TEST_URL
+    networks:
+    - mysql
+    - traefik
     depends_on:
-      - "rabbitmq"
-    volumes:
-      - .:/usr/src/app
-      - sdbm_assets:/usr/src/app/public/assets
-      - sdbm_docs:/usr/src/app/public/static
-  delayedjob:
-    image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_web:${SDBMSS_IMAGE_TAG}'
-    restart: always
-    depends_on:
-      - "db"
-      - "rabbitmq"
-    links:
-      - db
-      - solr
-    volumes:
-      - .:/usr/src/app
-    # env_file: .docker-environment
-    environment:
-      ADMIN_PASSWORD:
-      RAILS_ENV:
-      RAILS_USER:
-      RAILS_PASS:
-      MYSQL_HOST:
-      MYSQL_DATABASE:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_USER:
-      MYSQL_PASSWORD:
-      RABBIT_PASSWORD:
-      RABBIT_USER:
-      SDBMSS_APP_HOST:
-      SDBMSS_SMTP_HOST:
-      SDBMSS_EMAIL_FROM:
-      SDBMSS_NOTIFY_EMAIL:
-      SDBMSS_NOTIFY_EMAIL_PASSWORD:
-      SDBMSS_EMAIL_EXCEPTIONS_TO:
-      SDBMSS_BLACKLIGHT_SECRET_KEY:
-      SDBMSS_DEVISE_SECRET_KEY:
-      SDBMSS_SECRET_KEY_BASE:
-      SDBMSS_SECRET_TOKEN:
-      SOLR_URL:
-    command: bundle exec rake jobs:work
-    # logging:
-      # driver: "journald"
-  jena:
-    image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_jena:${SDBMSS_IMAGE_TAG}'
-    restart: always
-    # logging:
-      # driver: "journald"
-    ports:
-      - "3030:3030"
-    volumes:
-      - rdf_data:/fuseki
-    # env_file: .docker-environment
-    environment:
-      ADMIN_PASSWORD:
-      RAILS_USER:
-      RAILS_PASS:
-      MYSQL_HOST:
-      MYSQL_DATABASE:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_USER:
-      MYSQL_PASSWORD:
-      RABBIT_PASSWORD:
-      RABBIT_USER:
-      SDBMSS_APP_HOST:
-      SDBMSS_SMTP_HOST:
-      SDBMSS_EMAIL_FROM:
-      SDBMSS_NOTIFY_EMAIL:
-      SDBMSS_NOTIFY_EMAIL_PASSWORD:
-      SDBMSS_EMAIL_EXCEPTIONS_TO:
-      SDBMSS_BLACKLIGHT_SECRET_KEY:
-      SDBMSS_DEVISE_SECRET_KEY:
-      SDBMSS_SECRET_KEY_BASE:
-      SDBMSS_SECRET_TOKEN:
-      SOLR_URL:
+      mysql:
+        condition: service_healthy
   interface:
-    image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_interface:${SDBMSS_IMAGE_TAG}'
-    restart: always
-    command: ruby interface.rb
-    # logging:
-      # driver: "journald"
-    links:
-      - jena
-      - rabbitmq
-    depends_on:
-      - "rabbitmq"
-    # env_file: .docker-environment
+    image: ${INTERFACE_IMAGE_NAME}:${INTERFACE_IMAGE_TAG}
+    command:
+    - ruby
+    - interface.rb
+    deploy:
+      placement:
+        constraints:
+        - node.labels.interface == true
+      update_config:
+        order: start-first
+        parallelism: 1
+      replicas: 1
     environment:
-      ADMIN_PASSWORD:
-      RAILS_ENV:
-      RAILS_USER:
-      RAILS_PASS:
-      MYSQL_HOST:
-      MYSQL_DATABASE:
-      MYSQL_ROOT_PASSWORD:
-      MYSQL_USER:
-      MYSQL_PASSWORD:
-      RABBIT_PASSWORD:
-      RABBIT_USER:
-      SDBMSS_APP_HOST:
-      SDBMSS_SMTP_HOST:
-      SDBMSS_EMAIL_FROM:
-      SDBMSS_NOTIFY_EMAIL:
-      SDBMSS_NOTIFY_EMAIL_PASSWORD:
-      SDBMSS_EMAIL_EXCEPTIONS_TO:
-      SDBMSS_BLACKLIGHT_SECRET_KEY:
-      SDBMSS_DEVISE_SECRET_KEY:
-      SDBMSS_SECRET_KEY_BASE:
-      SDBMSS_SECRET_TOKEN:
-      SOLR_URL:
-  nginx:
-    image: 'gitlab.library.upenn.edu/sdbm/sdbmss/sdbmss_nginx:${SDBMSS_IMAGE_TAG}'
-    restart: always
-    # logging:
-      # driver: "journald"
-    links:
-      - rails
-      - jena
+    - RABBIT_PASSWORD
+    - RABBIT_USER
+    - ADMIN_PASSWORD
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - ps aux | grep '[r]uby' || exit 1
+      interval: 30s
+      retries: 3
+      start_period: 1m
+      timeout: 30s
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: 10m
+    networks:
+    - jena
+    - rabbitmq
+  jena:
+    image: ${JENA_IMAGE_NAME}:${JENA_IMAGE_TAG}
+    deploy:
+      placement:
+        constraints:
+        - node.labels.jena == true
+      update_config:
+        order: start-first
+        parallelism: 1
+      replicas: 1
+    environment:
+    - ADMIN_PASSWORD
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - curl -sf http://127.0.0.1:/$$/ping || curl -sf http://127.0.0.1:/ || exit
+        1
+      interval: 30s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: 10m
+    networks:
+    - traefik
+    - jena
+    volumes:
+    - rdf_data:/fuseki
+    labels:
+    - traefik.enable=true
+    - traefik.docker.network=traefik
+    - traefik.http.services.jena-svc.loadbalancer.server.port=
+    - traefik.http.middlewares.jena_stripprefix.stripprefix.prefixes=/sparql
+    - traefik.http.routers.jena.entrypoints=web
+    - traefik.http.routers.jena.rule=Host(`sdbmss.localhost`) && PathPrefix(`/sparql`)
+    - traefik.http.routers.jena.middlewares=jena_stripprefix
+    - traefik.http.routers.jena.service=jena-svc
+    - traefik.http.routers.jena.priority=100
+    - traefik.http.routers.jena_httpsredir.entrypoints=web
+    - traefik.http.routers.jena_httpsredir.rule=Host(`sdbmss.localhost`) && PathPrefix(`/sparql`)
+    - traefik.http.routers.jena_httpsredir.middlewares=jena_https
+    - traefik.http.routers.jena-secure.entrypoints=websecure
+    - traefik.http.routers.jena-secure.rule=Host(`sdbmss.localhost`) && PathPrefix(`/sparql`)
+    - traefik.http.routers.jena-secure.middlewares=jena_stripprefix
+    - traefik.http.routers.jena-secure.tls=true
+    - traefik.http.routers.jena-secure.service=jena-svc
+    - traefik.http.routers.jena-secure.priority=100
+  mysql:
+    image: ${MYSQL_IMAGE_NAME}:${MYSQL_IMAGE_TAG}
+    command:
+    - --character-set-server=utf8
+    - --collation-server=utf8_unicode_ci
+    - --init-connect=SET NAMES utf8
+    deploy:
+      placement:
+        constraints:
+        - node.labels.mysql == true
+      update_config:
+        order: start-first
+        parallelism: 1
+      replicas: 1
+    networks:
+    - mysql
+    volumes:
+    - sdbm_data:/var/lib/mysql
+    environment:
+    - MYSQL_DATABASE
+    - MYSQL_ROOT_PASSWORD
+    - MYSQL_PASSWORD
+    healthcheck:
+      test:
+      - CMD-SHELL
+      - mysqladmin ping -h localhost -uroot -p${MYSQL_ROOT_PASSWORD} 2>/dev/null
+  rabbitmq:
+    image: ${RABBITMQ_IMAGE_NAME}:${RABBITMQ_IMAGE_TAG}
+    deploy:
+      placement:
+        constraints:
+        - node.labels.rabbitmq == true
+      update_config:
+        order: start-first
+        parallelism: 1
+      replicas: 1
+    environment:
+    - RABBITMQ_DEFAULT_PASS
+    - RABBITMQ_DEFAULT_USER
+    hostname: rabbitmq
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: 10m
+    networks:
+    - rabbitmq
+    volumes:
+    - rabbitmq_data:/var/lib/rabbitmq
+  solr:
+    image: ${APP_IMAGE_NAME}:${APP_IMAGE_TAG}
+    command:
+    - bundle
+    - exec
+    - rake
+    - sunspot:solr:run
+    deploy:
+      placement:
+        constraints:
+        - node.labels.solr == true
+      replicas: 1
+      update_config:
+        order: start-first
+        parallelism: 1
+    environment:
+    - ADMIN_PASSWORD
+    - MYSQL_DATABASE
+    - MYSQL_HOST=mysql
+    - MYSQL_PASSWORD
+    - MYSQL_USER
+    - RABBIT_PASSWORD
+    - RABBIT_USER
+    - RAILS_ENV
+    - RAILS_PASS
+    - RAILS_USER
+    - RAILS_LOG_TO_STDOUT=true
+    - RAILS_SERVE_STATIC_FILES=true
+    - SDBMSS_APP_HOST
+    - SDBMSS_SMTP_HOST
+    - SDBMSS_EMAIL_FROM
+    - SDBMSS_NOTIFY_EMAIL
+    - SDBMSS_NOTIFY_EMAIL_PASSWORD
+    - SDBMSS_EMAIL_EXCEPTIONS_TO
+    - SDBMSS_BLACKLIGHT_SECRET_KEY
+    - SDBMSS_DEVISE_SECRET_KEY
+    - SDBMSS_SECRET_KEY_BASE
+    - SDBMSS_SECRET_TOKEN
+    - SOLR_URL
+    - SOLR_TEST_URL
+    networks:
+    - mysql
+    - traefik
+    volumes:
+    - sdbm_solr:/home/app/solr
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.solr.entrypoints=web
+    - traefik.http.routers.solr.rule=Host(`` && PathPrefix(`/solr`))
+    - traefik.http.routers.solr.service=solr
+    - traefik.http.services.solr.loadbalancer.server.port=
     ports:
-      - "80:80"
-
+    - 8983:8983
+  chrome:
+    image: ${CHROME_IMAGE_NAME}:${CHROME_IMAGE_TAG}
+    environment:
+    - PORT
+    - CONNECTION_TIMEOUT
+    ports:
+    - target: ${CHROME_PORT}
+      published: ${CHROME_PORT}
+      mode: host
+    volumes:
+    - .:/home/app
+    networks:
+    - traefik
+  traefik:
+    command:
+    - --accesslog=true
+    - --certificatesresolvers.letsencrypt.acme.email=libcoreservices@pobox.upenn.edu
+    - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+    - --certificatesresolvers.letsencrypt.acme.tlschallenge=true
+    - --entrypoints.metrics.address=:8082
+    - --entrypoints.web.address=:80
+    - --entryPoints.web.forwardedHeaders.trustedIPs=127.0.0.1/32,192.168.0.0/16,172.16.0.0/12,10.0.0.0/8,165.123.78.0/23
+    - --entrypoints.websecure.address=:443
+    - --entryPoints.websecure.forwardedHeaders.trustedIPs=10.0.0.0/8,127.0.0.1/32,172.16.0.0/12,192.168.0.0/16,165.123.78.0/23
+    - --log.level=DEBUG
+    - --metrics.prometheus=true
+    - --metrics.prometheus.entrypoint=metrics
+    - --providers.docker=true
+    - --providers.docker.endpoint=unix:///var/run/docker.sock
+    - --providers.docker.exposedbydefault=false
+    - --providers.docker.watch=true
+    - --providers.docker.network=traefik
+    - --api.dashboard=True
+    - --entrypoints.traefik.address=:8080
+    deploy:
+      placement:
+        constraints:
+        - node.labels.traefik==true
+      replicas: 1
+    logging:
+      driver: json-file
+      options:
+        max-file: '3'
+        max-size: 10m
+    networks:
+    - traefik
+    ports:
+    - target: 80
+      published: 80
+      mode: host
+    - target: 443
+      published: 443
+      mode: host
+    - target: 8082
+      published: 8082
+      mode: host
+    - 8080:8080
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - certificates:/letsencrypt
+    labels:
+    - traefik.enable=true
+    - traefik.http.routers.dashboard.rule=Host(`traefik-dev.library.upenn.edu`)
+    - traefik.http.routers.dashboard.entrypoints=traefik
+    - traefik.http.routers.dashboard.service=api@internal
+    - traefik.http.routers.dashboard.tls=true
+    - traefik.http.services.dashboard.loadbalancer.server.port=8080
+    image: traefik:3.6.9
+networks:
+  mysql:
+    name: mysql
+  rabbitmq:
+    name: rabbitmq
+  traefik:
+    name: traefik
+  jena:
+    name: jena
 volumes:
-  sdbm_docs:
-  sdbm_data:
   rdf_data:
-  sdbm_assets:
-  sdbm_solr:
+  sdbm_data:
   rabbitmq_data:
+  sdbm_solr:
+  certificates:

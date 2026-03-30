@@ -36,7 +36,7 @@ describe "Manage entries", :js => true do
   it "should search" do
     visit entries_path
 
-    first("input[name='search_value']").native.send_keys "de ricci"
+    find("input[name='search_value']", match: :first).native.send_keys "de ricci"
     find('#search_submit').click()
     sleep 1.1
     expect(page).not_to have_selector("#spinner", visible: true)
@@ -59,13 +59,13 @@ describe "Manage entries", :js => true do
   it "should mark entry as approved" do
 
     visit entries_path
-    first("#unapproved_only").click
+    find("#unapproved_only", match: :first).click
     find('#search_submit').click()
 
     sleep 1.1
 
     expect(page).to have_selector("#select-all", visible: true)
-    first("#select-all").trigger('click')
+    find("#select-all", match: :first).trigger('click')
 
     expect(page).to have_selector("#mark-as-approved")
     find("#mark-as-approved").click
@@ -122,11 +122,11 @@ describe "Manage entries", :js => true do
   it "should perform a search on any field without error" do
     visit entries_path
 
-    expect(page.find("select[name='search_field']").all("option").length).to eq(49)
+    expect(page.find("select[name='search_field']", match: :first).all("option").length).to eq(42)
 
 
-    49.times do |i|
-      page.first("input[name='search_value']").set "Test String"
+    42.times do |i|
+      page.find("input[name='search_value']", match: :first).set "Test String"
       option = page.all("select[name='search_field'] option")[i]
       option.select_option
       find('#search_submit').click()

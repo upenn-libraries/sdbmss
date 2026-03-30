@@ -1,8 +1,5 @@
-
-#ARG APP_IMAGE_NAME=gitlab.library.upenn.edu/sdbm/ruby-2.3.8
-#ARG APP_IMAGE_TAG=2ad16fb5
 ARG APP_IMAGE_NAME=ruby
-ARG APP_IMAGE_TAG=2.7.8-bullseye
+ARG APP_IMAGE_TAG=2.6.10-bullseye
 
 # Bundle home
 ARG BUNDLE_HOME=vendor/bundle
@@ -117,12 +114,6 @@ RUN bundle _${BUNDLE_VERSION}_ config set path 'vendor/bundle' \
  && bundle _${BUNDLE_VERSION}_ config set deployment 'true' \
  && bundle _${BUNDLE_VERSION}_ check || bundle _${BUNDLE_VERSION}_ install --jobs 4 --retry 3
 
-# Sanity checks
-RUN ruby -v && bundle _${BUNDLE_VERSION}_ -v && cat .bundle/config
-RUN grep -n '^  date ' Gemfile.lock || true
-RUN ls vendor/bundle/ruby/${RUBY_MAJOR}.0/specifications | grep '^rake-' && true
-RUN bundle _${BUNDLE_VERSION}_ show rake
-
 RUN echo "GEM_HOME=${GEM_HOME}"
 RUN ls "${GEM_HOME}/gems"
 
@@ -201,18 +192,13 @@ RUN ls ${GEM_HOME}/gems
 
 WORKDIR ${PROJECT_ROOT}
 
+RUN gem install timeout -v '0.4.4'
+
 # Make the bundle path relative so .bundle/config survives stage copies
 RUN bundle _${BUNDLE_VERSION}_ config set path 'vendor/bundle' \
  && bundle _${BUNDLE_VERSION}_ config set without 'development test assets' \
  && bundle _${BUNDLE_VERSION}_ config set deployment 'true' \
  && bundle _${BUNDLE_VERSION}_ check || bundle _${BUNDLE_VERSION}_ install --jobs 4 --retry 3
-
-# Sanity checks
-RUN ruby -v && bundle _${BUNDLE_VERSION}_ -v && cat .bundle/config
-RUN grep -n '^  date ' Gemfile.lock || true
-RUN ls vendor/bundle/ruby/${RUBY_MAJOR}.0/specifications | grep '^rake-' && true
-RUN gem install timeout -v '0.4.4'
-RUN bundle _${BUNDLE_VERSION}_ show rake
 
 RUN RAILS_ENV=${RAILS_ENV} \
   SECRET_KEY_BASE=x \
