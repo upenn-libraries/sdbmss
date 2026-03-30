@@ -62,15 +62,17 @@ GEM
     bigdecimal (1.3.5)
     binding_of_caller (1.0.1)
       debug_inspector (>= 1.2.0)
-    blacklight (5.14.0)
+    blacklight (6.9.0)
       bootstrap-sass (~> 3.2)
       deprecation
+      globalid
       kaminari (>= 0.15)
       nokogiri (~> 1.6)
-      rails (>= 3.2.6, < 5)
-      rsolr (~> 1.0.11)
-    blacklight_advanced_search (5.1.4)
-      blacklight (~> 5.10)
+      rails (>= 4.2, < 6)
+      rsolr (>= 1.0.6, < 3)
+      twitter-typeahead-rails (= 0.11.1.pre.corejavascript)
+    blacklight_advanced_search (6.4.1)
+      blacklight (~> 6.0, >= 6.0.1)
       parslet
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
@@ -429,6 +431,10 @@ GEM
     turnout (2.1.0)
       rack (~> 1.3)
       rack-accept (~> 0.4)
+    twitter-typeahead-rails (0.11.1.pre.corejavascript)
+      actionpack (>= 3.1)
+      jquery-rails
+      railties (>= 3.1)
     tzinfo (1.2.11)
       thread_safe (~> 0.1)
     uglifier (2.7.2)
@@ -468,8 +474,8 @@ DEPENDENCIES
   activerecord-session_store (~> 0.1.0)
   autoprefixer-rails (~> 7.1.6)
   bigdecimal (= 1.3.5)
-  blacklight (~> 5.14.0)
-  blacklight_advanced_search (~> 5.1.3)
+  blacklight (~> 6.9.0)
+  blacklight_advanced_search (~> 6.4.1)
   bunny
   cancancan (~> 1.12.0)
   capistrano-rails (~> 1.1.0)
@@ -510,6 +516,7 @@ DEPENDENCIES
   rack-handlers
   rails (~> 4.2.11.3)
   rake (= 10.5.0)
+  rsolr (~> 1.0)
   rspec-rails (~> 3.1.0)
   rubyzip (>= 1.2.2)
   sass-rails (~> 5.0.3)
@@ -523,6 +530,7 @@ DEPENDENCIES
   thredded (~> 0.9.4)
   turbolinks (~> 2.5.0)
   turnout (~> 2.1.0)
+  twitter-typeahead-rails (= 0.11.1.pre.corejavascript)
   uglifier (~> 2.7.2)
   unicorn (~> 4.9.0)
   unicorn-rails
