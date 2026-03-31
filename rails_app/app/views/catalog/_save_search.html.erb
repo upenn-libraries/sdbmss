@@ -1,3 +1,7 @@
+<%#
+  OVERRIDE Blacklight v6.9.0 to add check for current_user before showing "Save Search" button
+%>
+
 <% if current_user %>
-  <%= button_to "Save Search", save_search_path(Search.find(search_session["id"])), :method => :put, :class => 'btn btn-default pull-right' %>
+  <%= button_to "Save Search", blacklight.save_search_path(Search.find(search_session["id"])), :method => :put, :class => 'btn btn-default pull-right' %>
 <% end %>
