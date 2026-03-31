@@ -4,12 +4,14 @@ Produced 2026-03-29 as pre-upgrade research. Documents every place the app overr
 monkey-patches, or shadows behavior from an installed gem. Use this when planning the
 Blacklight 5→6 upgrade and any companion gem bumps.
 
+**Last status update:** 2026-03-31 — verified against running BL6 6.9.0 / BAS 6.4.1 codebase.
+
 **Gem versions audited (from inside the app container):**
 
 | Gem | Version |
 |---|---|
-| blacklight | 5.14.0 |
-| blacklight_advanced_search | 5.1.4 |
+| blacklight | 5.14.0 → **6.9.0** |
+| blacklight_advanced_search | 5.1.4 → **6.4.1** |
 | devise | 4.7.3 |
 | devise-guests | 0.3.3 |
 | cancancan | 1.12.0 |
@@ -36,29 +38,29 @@ Files involved:
 
 ---
 
-## Blacklight 5.14.0
+## Blacklight 5.14.0 → 6.9.0
 
-| File | Gem Class / Method Overridden | What the Customization Does | Risk | BL6 Notes |
-|---|---|---|---|---|
-| `config/initializers/blacklight_advanced.rb` | `Blacklight::Catalog#facet` (gem line 81) | Rewrites the facet action to handle missing facets gracefully with a custom 404 branch; passes `order` to paginator | **High** | Method still exists in BL6 at same location; paginator API changed |
-| `config/initializers/blacklight_advanced.rb` | `Blacklight::Solr::FacetPaginator#initialize` (gem line 40) | Adds `@order` attribute (`asc`/`desc`); reverses `all_facet_values` array when order is `asc` | **High** | `FacetPaginator` still in BL6 but constructor args changed; `mattr_accessor` approach for `request_keys` changed |
-| `config/initializers/blacklight_advanced.rb` | `Blacklight::Facet#facet_paginator` (gem line 6) | Passes new `order:` keyword arg to `FacetPaginator.new` alongside existing `sort:`, `offset:`, `limit:` | **High** | In BL6, `Blacklight::Facet` was removed; paginator construction moved into `SearchService` |
-| `config/initializers/blacklight_advanced.rb` | `Blacklight::SearchHelper#fetch_one` (gem line 286, private) | Prepends `"Entry "` to the numeric id before calling `repository.find`, mapping Blacklight's integer IDs to Sunspot's `"Entry N"` string format | **High** | In BL6, `fetch_one` was eliminated; `SearchHelper` became `SearchService`; `SolrRepository#find` is the correct new override point |
-| `config/initializers/blacklight_advanced.rb` | `Blacklight::Solr::SearchBuilderBehavior#add_facet_paging_to_solr` (gem line 198) | Adds `facet.order` Solr parameter support alongside the existing `facet.sort` and `facet.page` params | **High** | Method still in BL6 `SearchBuilderBehavior` but `blacklight_params` accessor and `request_keys` handling changed |
-| `config/initializers/blacklight_advanced.rb` | `Blacklight::SolrResponse::Facets::FacetField` — adds `#order` method | Exposes the `@options[:order]` value set from Solr params | Medium | `FacetField` class still in BL6 at same location |
-| `config/initializers/blacklight_advanced.rb` | `Blacklight::SolrResponse::Facets` (private) `#facet_field_aggregations` | Rewrites the full facet aggregation builder to thread `facet.order` from Solr params into each `FacetField`'s options hash | **High** | `facet_field_aggregations` still exists in BL6 but internal structure of `FacetField` options changed |
-| `lib/sdbmss/blacklight.rb` | `Blacklight::UrlHelperBehavior#url_for_document` (gem line 12) | Falls back to `entry_path(doc["entry_id"])` when the config-based route lookup fails, translating `SolrDocument` back to a numeric Entry URL | **High** | Method exists in BL6 but is now in `Blacklight::Engine` helpers; signature changed; `entry_id` field dependency must be verified |
-| `lib/sdbmss/blacklight.rb` | `Blacklight::FacetsHelperBehavior` — adds `#render_facet_partials_home` (new method, not an override) | Splits facets into "before N" and "after N" groups for two-column layout rendering | Low | `FacetsHelperBehavior` still in BL6; additive method, low conflict risk |
-| `lib/sdbmss/blacklight.rb` | `SDBMSS::Blacklight::SolrResponse < Blacklight::SolrResponse` | Custom subclass that adds an `objects_resultset` attribute for lazy-loading Entry AR objects from Solr results | **High** | `Blacklight::SolrResponse` was reorganized in BL6; subclassing requires updating the constructor and response parsing |
-| `lib/sdbmss/blacklight.rb` | `SDBMSS::Blacklight::DocumentPresenter < Blacklight::DocumentPresenter` — overrides `#document_heading` (gem line 22) | Returns `model_object.public_id` instead of the configured title field | **High** | `Blacklight::DocumentPresenter` was split into `IndexPresenter` / `ShowPresenter` in BL6; `document_heading` no longer exists as a single method |
-| `lib/sdbmss/blacklight.rb` | `SDBMSS::Blacklight::SearchBuilder < Blacklight::Solr::SearchBuilder` — 10 custom processor methods | Adds Solr `fq` filters for approval, deprecation, draft status, user ownership; translates app date-range param syntax into Solr range queries; handles facet prefix | Medium | `Blacklight::Solr::SearchBuilder` still in BL6; processor method pattern unchanged; `blacklight_params` accessor name unchanged |
-| `app/controllers/catalog_controller.rb` | `Blacklight::Catalog` (include) — overrides `show`, `index`, `find_or_initialize_search_session_from_params`, `add_to_search_history`, `create_guest_user`, `facet_list_limit` | `show` adds manuscript linking and 404 handling; `index` adds CSV export; session methods gate-keep behind login and filter empty searches | **High** | `find_or_initialize_search_session_from_params` was renamed `search_session` in BL6; `add_to_search_history` removed |
-| `app/controllers/entries_controller.rb` | `Blacklight::Catalog` + `BlacklightAdvancedSearch::Controller` (include) | Mounts the full BL search stack as a second endpoint for Entry search | **High** | Duplicate of all `catalog_controller.rb` migration concerns |
-| `app/models/solr_document.rb` | `Blacklight::Solr::Document` (include) — overrides `#initialize` | Calls `objects_resultset.add(entry_id)` during construction to register the document in the lazy-load cache | **High** | BL6 `SolrDocument` initializer signature changed; `objects_resultset` is a custom global that must be threaded through differently |
-| `app/models/search_builder.rb` | `Blacklight::SearchBuilder` (inherit) + `Blacklight::Solr::SearchBuilderBehavior` (include) | App's primary search builder; delegates config to `CatalogControllerConfiguration` concern | **High** | Primary BL6 migration target; class exists in BL6 but processor pipeline registration changed |
-| `app/models/user.rb` | `Blacklight::User` (include) | Connects user to BL bookmarks/saved searches tables | Low | `Blacklight::User` still in BL6 at same location; stable |
-| `app/helpers/application_helper.rb` | `Blacklight::BlacklightHelperBehavior#render_bookmarks_control?` and `#render_saved_searches?` | Returns `false` unless current user is signed in (BL default allows guests) | Low | Both methods still in BL6 `BlacklightHelperBehavior` |
-| `app/views/catalog/` (22 files) | All Blacklight default catalog views | Full custom UI; BL6 partials are shadowed where listed below | Medium | **Audited vs Blacklight 6.9.0 (2026-03-31):** all overrides remain needed; `_facet_limit` uses `search_facet_path`; `_search_form` uses `search_state.params_for_search`; `_citation` keeps stock `document_heading(document)` (helper is not deprecated in BL6; only presenter `#document_heading` is); `_constraints` uses `btn-sm` on start-over link. See catalog table. |
+| # | File | Gem Class / Method Overridden | What the Customization Does | Risk | BL6 Status |
+|---|---|---|---|---|---|
+| 1 | `config/initializers/blacklight_advanced.rb` | `Blacklight::Catalog#facet` | Rewrites the facet action to handle missing facets gracefully with a custom 404 branch | **High** | **DONE** — updated in `efeaf02b`; uses `@facet.field` for BL6; verified working |
+| 2 | `config/initializers/blacklight_advanced.rb` | `Blacklight::Solr::FacetPaginator#initialize` | Added `@order` attribute (`asc`/`desc`); reversed `all_facet_values` array when order is `asc` | **High** | **REMOVED** — deleted in `efeaf02b`; Solr never supported per-facet asc/desc; BL6 handles facet pagination internally |
+| 3 | `config/initializers/blacklight_advanced.rb` | `Blacklight::Facet#facet_paginator` | Passed `order:` keyword arg to `FacetPaginator.new` | **High** | **REMOVED** — deleted in `efeaf02b`; `Blacklight::Facet` removed in BL6 |
+| 4 | `config/initializers/blacklight_advanced.rb` | `Blacklight::SearchHelper#fetch_one` | Prepends `"Entry "` to numeric id before `repository.find` (Sunspot ID format) | **High** | **DONE** — override still in place and working; `fetch_one` still exists in BL6 6.9.0 (line 151 of `search_helper.rb`) with same signature. ~~Audit was wrong that it was eliminated~~ — that happens in BL7 |
+| 5 | `config/initializers/blacklight_advanced.rb` | `Blacklight::Solr::SearchBuilderBehavior#add_facet_paging_to_solr` | Added `facet.order` Solr parameter support | **High** | **REMOVED** — deleted in `efeaf02b`; part of the non-functional facet ordering attempt |
+| 6 | `config/initializers/blacklight_advanced.rb` | `Blacklight::SolrResponse::Facets::FacetField` — `#order` method | Exposed `@options[:order]` value from Solr params | Medium | **REMOVED** — deleted in `efeaf02b`; part of facet ordering |
+| 7 | `config/initializers/blacklight_advanced.rb` | `Blacklight::SolrResponse::Facets#facet_field_aggregations` | Rewrote facet aggregation builder to thread `facet.order` | **High** | **REMOVED** — deleted in `efeaf02b`; part of facet ordering |
+| 8 | `lib/sdbmss/blacklight.rb` | `Blacklight::UrlHelperBehavior#url_for_document` | Falls back to `entry_path(doc["entry_id"])` for Sunspot ID format | **High** | **DONE** — override still in place and working; method still exists in BL6 `UrlHelperBehavior` at same location |
+| 9 | `lib/sdbmss/blacklight.rb` | `Blacklight::FacetsHelperBehavior` — `#render_facet_partials_home` | Splits facets into "before/after N" groups for two-column layout | Low | **DONE** — additive method, no conflict; working in BL6 |
+| 10 | `lib/sdbmss/blacklight.rb` | `SDBMSS::Blacklight::SolrResponse < Blacklight::SolrResponse` | Custom subclass adding `objects_resultset` for lazy-loading Entry AR objects | **High** | **DONE** — subclass works in BL6 6.9.0; `attr_accessor :objects_resultset` on the subclass; `SolrDocument#initialize` sets it up. Verified functional |
+| 11 | `lib/sdbmss/blacklight.rb` | `SDBMSS::Blacklight::DocumentPresenter < Blacklight::DocumentPresenter` — `#document_heading` | Returns `model_object.public_id` instead of configured title field | **High** | **DONE** — verified 2026-03-31: show page renders `SDBM_282442` heading correctly via `model_object.public_id` |
+| 12 | `lib/sdbmss/blacklight.rb` | `SDBMSS::Blacklight::SearchBuilder` — 10 custom processor methods | Solr `fq` filters for approval, deprecation, draft, user ownership; date-range translation; facet prefix | Medium | **DONE** — processor chain pattern unchanged in BL6; `blacklight_params` accessor works; `default_processor_chain +=` pattern correct. Updated in `ef328661` to use processor chain instead of `search_params_logic` |
+| 13 | `app/controllers/catalog_controller.rb` | `Blacklight::Catalog` — overrides `show`, `index`, `find_or_initialize_search_session_from_params`, `add_to_search_history`, `create_guest_user`, `facet_list_limit` | Session gating, CSV export, 404 handling, guest user | **High** | **DONE** — ~~audit was wrong~~ that these methods were renamed/removed in BL6 6.9.0; both `find_or_initialize_search_session_from_params` and `add_to_search_history` still exist at `search_context.rb:66,79`. Overrides work. CSV export fixed in `69d372fa` |
+| 14 | `app/controllers/entries_controller.rb` | `Blacklight::Catalog` + `BlacklightAdvancedSearch::Controller` | BL search stack as second endpoint for Entry search | **High** | **DONE** — same overrides as catalog_controller; includes `CatalogControllerConfiguration`; working |
+| 15 | `app/models/solr_document.rb` | `Blacklight::Solr::Document` — overrides `#initialize` | Registers document in `objects_resultset` lazy-load cache | **High** | **DONE** — `#initialize` calls `super` then accesses `@response.objects_resultset`; BL6 `SolrDocument` initializer compatible; verified working (search results render Entry objects) |
+| 16 | `app/models/search_builder.rb` | `Blacklight::SearchBuilder` + `SearchBuilderBehavior` | App's primary search builder; delegates to `CatalogControllerConfiguration` | **High** | **DONE** — exists as thin wrapper; actual search logic lives in `SDBMSS::Blacklight::SearchBuilder` which is set via `config.search_builder_class` |
+| 17 | `app/models/user.rb` | `Blacklight::User` (include) | Connects user to BL bookmarks/saved searches tables | Low | **DONE** — stable across BL versions |
+| 18 | `app/helpers/application_helper.rb` | `Blacklight::BlacklightHelperBehavior#render_bookmarks_control?` and `#render_saved_searches?` | Returns `false` unless signed in | Low | **DONE** — both methods still in BL6 `BlacklightHelperBehavior` |
+| 19 | `app/views/catalog/` (22 files) | All Blacklight default catalog views | Full custom UI | Medium | **DONE** — audited vs BL6 6.9.0 (2026-03-31); all overrides remain needed and functional. See catalog view table below |
 
 ### app/views/catalog/ (Blacklight 6.9.0 audit)
 
@@ -91,12 +93,12 @@ Compared to `blacklight` **6.9.0** (`app/views/catalog/` in the gem). **Shadows 
 
 ---
 
-## Blacklight Advanced Search 5.1.4
+## Blacklight Advanced Search 5.1.4 → 6.4.1
 
-| File | Gem Class / Method Overridden | What the Customization Does | Risk | Upgrade Notes |
-|---|---|---|---|---|
-| `config/initializers/blacklight_advanced.rb` | `BlacklightAdvancedSearch::ParsingNestingParser#process_query` (gem line 4) | Adds support for array-valued fields (`author[]=Cicero&author[]=Sallust`) and custom boolean operators (`blank`, `not blank`, `less than`, `greater than`) | **High** | BAS 6.x for BL6 has a rewritten parser; `process_query` signature and internals changed significantly |
-| `config/initializers/blacklight_advanced.rb` | `BlacklightAdvancedSearch::RenderConstraintsOverride#query_has_constraints?`, `#render_constraints_query`, `#render_search_to_s_q` (gem lines 6, 16, 95) | Overrides constraint rendering to suppress facet display in main search bar; adds `render_constraints_filters_side` for a separate facet display area; supports array-valued queries in constraint labels | **High** | BAS 6.x renamed `RenderConstraintsOverride`; all three overridden methods have different signatures |
+| # | File | Gem Class / Method Overridden | What the Customization Does | Risk | BL6 Status |
+|---|---|---|---|---|---|
+| 1 | `config/initializers/blacklight_advanced.rb` | `BlacklightAdvancedSearch::ParsingNestingParser#process_query` | Adds support for array-valued fields (`author[]=Cicero&author[]=Sallust`) and custom boolean operators (`blank`, `not blank`, `less than`, `greater than`) | **High** | **DONE** — verified 2026-03-31: multi-value OR, AND, and cross-field AND all return correct results. The override operates at the query-building layer which is unchanged between BAS 5.x and 6.x. Custom form JS (`_advanced_search_fields.html.erb`) generates `field[]=val` params correctly |
+| 2 | `config/initializers/blacklight_advanced.rb` | `BlacklightAdvancedSearch::RenderConstraintsOverride#query_has_constraints?`, `#render_constraints_query`, `#render_search_to_s_q` | Overrides constraint rendering to suppress facet display in main search bar; adds `render_constraints_filters_side` for sidebar facets; supports array-valued queries in constraint labels | **High** | **DONE** — verified 2026-03-31: OR search shows "Any of:" prefix, each term displays with field label, remove links correctly preserve `op=OR` and remove only the clicked term |
 
 ---
 
@@ -174,12 +176,22 @@ Compared to `blacklight` **6.9.0** (`app/views/catalog/` in the gem). **Shadows 
 
 ---
 
-## Risk Summary
+## Migration Status Summary (2026-03-31)
 
-| Level | Items |
-|---|---|
-| **High** | BL5→6: `fetch_one`, `FacetPaginator`, `Blacklight::Facet`, `facet_field_aggregations`, `add_facet_paging_to_solr`, `DocumentPresenter`, `url_for_document`, `SolrResponse` subclass, `catalog_controller` session methods, `SolrDocument#initialize`, `SearchBuilder` base class · BAS `ParsingNestingParser` + `RenderConstraintsOverride` · Thredded permission injection |
-| **Medium** | Devise `FailureApp` + `find_for_database_authentication` · Delayed Job `reserve` patch · Thredded `AutoFollowAndNotifyJob` + `CreateMessageboard` · Sunspot `searchable` blocks |
-| **Low** | CanCanCan · PaperTrail · Devise controller/view overrides · Blacklight helper overrides · `Blacklight::User` include · Thredded views · invisible_captcha |
+| Status | Count | Items |
+|---|---|---|
+| **DONE** | 17 | BL: `Catalog#facet`, `fetch_one`, `url_for_document`, `render_facet_partials_home`, `SolrResponse` subclass, `SearchBuilder` (10 processors), `catalog_controller` overrides (show/index/session/guest/facet_limit), `entries_controller`, `SolrDocument#initialize`, `search_builder.rb`, `Blacklight::User`, helper overrides, catalog views (22 files) · BAS: `ParsingNestingParser` |
+| **REMOVED** (intentional) | 5 | BL: `FacetPaginator#initialize`, `Blacklight::Facet#facet_paginator`, `add_facet_paging_to_solr`, `FacetField#order`, `facet_field_aggregations` — all part of non-functional facet asc/desc ordering; deleted in `efeaf02b` |
+| **NEEDS REVIEW** | 0 | — |
+| **NO CHANGE NEEDED (BL6)** | 5 | Devise, Delayed Job, Thredded, CanCanCan, PaperTrail, Sunspot, invisible_captcha — all overrides are independent of Blacklight; verified 2026-03-31 that none are affected by the BL5→6 migration. These gems have their own upgrade paths in Phase 2 |
 
-AI Usage Disclosure: Reviewed, revised, and extended by Claude Sonnet 4.6 (Anthropic).
+### Audit corrections
+
+The original audit (produced against BL5 gem source) contained several inaccuracies about BL6 6.9.0:
+
+- `fetch_one` was **not** eliminated in BL6 — it exists at `search_helper.rb:151` with the same signature (elimination happens in BL7)
+- `find_or_initialize_search_session_from_params` was **not** renamed — it exists at `search_context.rb:66`
+- `add_to_search_history` was **not** removed — it exists at `search_context.rb:79`
+- `Blacklight::DocumentPresenter` was **not** split — it still exists at `document_presenter.rb:4` with `#document_heading` at line 23; `IndexPresenter` and `ShowPresenter` were **added alongside it**, not as replacements
+
+AI Usage Disclosure: Reviewed, revised, and extended by Claude Sonnet 4.6 and Claude Opus 4.6 (Anthropic).
