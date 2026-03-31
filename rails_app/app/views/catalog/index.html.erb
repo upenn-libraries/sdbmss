@@ -1,3 +1,7 @@
+<%#
+  OVERRIDE Blacklight v6.9.0: main column before sidebar for responsive layout; omits BL sitelinks
+    shared/sitelinks_search_box on the home view.
+%>
 <div id="content" class="<%= main_content_classes %>">
   <% unless has_search_parameters? %>
     <%# if there are no input/search related params, display the "home" partial -%>

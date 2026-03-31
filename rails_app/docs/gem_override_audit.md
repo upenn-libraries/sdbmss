@@ -58,25 +58,36 @@ Files involved:
 | `app/models/search_builder.rb` | `Blacklight::SearchBuilder` (inherit) + `Blacklight::Solr::SearchBuilderBehavior` (include) | App's primary search builder; delegates config to `CatalogControllerConfiguration` concern | **High** | Primary BL6 migration target; class exists in BL6 but processor pipeline registration changed |
 | `app/models/user.rb` | `Blacklight::User` (include) | Connects user to BL bookmarks/saved searches tables | Low | `Blacklight::User` still in BL6 at same location; stable |
 | `app/helpers/application_helper.rb` | `Blacklight::BlacklightHelperBehavior#render_bookmarks_control?` and `#render_saved_searches?` | Returns `false` unless current user is signed in (BL default allows guests) | Low | Both methods still in BL6 `BlacklightHelperBehavior` |
-| `app/views/catalog/` (23 files) | All Blacklight default catalog views | Full custom UI; every BL partial from search form to facets to pagination to detail view is overridden | Medium | BL6 ships redesigned partials; app overrides still take precedence but locals passed to partials changed — each file must be diffed against BL6 defaults |
+| `app/views/catalog/` (22 files) | All Blacklight default catalog views | Full custom UI; BL6 partials are shadowed where listed below | Medium | **Audited vs Blacklight 6.9.0 (2026-03-31):** all overrides remain needed; `_facet_limit` uses `search_facet_path`; `_search_form` uses `search_state.params_for_search`; `_citation` keeps stock `document_heading(document)` (helper is not deprecated in BL6; only presenter `#document_heading` is); `_constraints` uses `btn-sm` on start-over link. See catalog table. |
 
-### app/views/catalog/ shadowed partials (detail)
+### app/views/catalog/ (Blacklight 6.9.0 audit)
 
-| Partial | Shadows BL Default | Purpose |
+Compared to `blacklight` **6.9.0** (`app/views/catalog/` in the gem). **Shadows BL6 default** means the app supplies the same relative path as the gem; **App-only** means no BL6 catalog template at that path.
+
+| File | vs BL6 | Purpose / notes |
 |---|---|---|
-| `_bookmark_control.html.erb` | `blacklight/catalog/_bookmark_control` | Custom bookmark toggle UI |
-| `_breadcrumbs.html.erb` | `blacklight/catalog/_breadcrumbs` | Custom breadcrumb display |
-| `_constraints.html.erb` | `blacklight/catalog/_constraints` | Custom active-facet constraint rendering |
-| `_document.html.erb` | `blacklight/catalog/_document` | Custom search result row |
-| `_facet_limit.html.erb` | `blacklight/catalog/_facet_limit` | Custom facet panel |
-| `_facets.html.erb` | `blacklight/catalog/_facets` | Custom facet sidebar |
-| `_results_pagination.html.erb` | `blacklight/catalog/_results_pagination` | Custom pagination |
-| `_search_form.html.erb` | `blacklight/catalog/_search_form` | Custom search bar |
-| `_show_default.html.erb` | `blacklight/catalog/_show_default` | Custom detail view fields |
-| `_show_tools.html.erb` | `blacklight/catalog/_show_tools` | Custom detail-view toolbar |
-| `index.html.erb` | `blacklight/catalog/index` | Full custom search results page |
-| `show.html.erb` | `blacklight/catalog/show` | Full custom detail page |
-| `facet.html.erb` | `blacklight/catalog/facet` | Full custom browse-by-facet page |
+| `_bookmark_control.html.erb` | Shadows | Custom bookmark UI (`model_object` + `bookmarks/*` partials); not BL guest bookmark forms |
+| `_breadcrumbs.html.erb` | **App-only** | BL6 has no `catalog/_breadcrumbs`; app entry breadcrumbs (was mis-labeled as BL5 shadow in older audit) |
+| `_constraints.html.erb` | Shadows | Start-over link forces `search_field=all_fields`; button class aligned with BL6 `btn-sm` |
+| `_document.html.erb` | Shadows | Custom search result row from `document.model_object` |
+| `_facet_limit.html.erb` | Shadows | No ajax-modal “more” link; `search_facet_path`; supports prefix `nil` for A–Z browsing |
+| `_facet_pagination.html.erb` | Shadows (bugfix) | `content_tag :span` for disabled prev/next (avoids stray markup in BL6 default) |
+| `_facets.html.erb` | Shadows | Selected-filters panel, `render_facet_partials_home`, show-more on home |
+| `_home_text.html.erb` | Shadows | Full SDBM home / forum / survey (replaces BL welcome page) |
+| `_results_pagination.html.erb` | Shadows | Pagination + CSV export for signed-in users |
+| `_search_form.html.erb` | Shadows | `sdbmss_search_action_path`, advanced link, mobile layout; `search_state.params_for_search` for hidden fields |
+| `_show_default.html.erb` | Shadows | Detail body via `entries/show` + `model_object` |
+| `_show_header_default.html.erb` | Shadows | `public_id` + email/SMS/cite links (`Entry` Solr id format) |
+| `_show_tools.html.erb` | Shadows | Toolbar `<li>`s only (no BL panel wrapper; fits app `show.html.erb` layout) |
+| `_citation.html.erb` | Shadows | `model_object.to_citation`; title line matches BL6 stock (`document_heading`) |
+| `_bookmark_all.html.erb` | App-only | Bulk bookmark / clear |
+| `_save_current_search.html.erb` | App-only | JS “Save Search” button |
+| `_save_search.html.erb` | App-only | Save search gated on `current_user` |
+| `index.html.erb` | Shadows | Content-before-sidebar order; no sitelinks box |
+| `show.html.erb` | Shadows | `content_for` breadcrumbs / add-entry / control-tools |
+| `facet.html.erb` | Shadows | Full-page facet + constraints + custom A–Z prefix UI |
+| `not_found.html.erb` | App-only | Catalog entry-not-found page |
+| `legacy.html.erb` | App-only | Legacy URL landing |
 
 ---
 

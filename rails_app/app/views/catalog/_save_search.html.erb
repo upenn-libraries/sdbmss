@@ -1,5 +1,6 @@
 <%#
-  OVERRIDE Blacklight v6.9.0 to add check for current_user before showing "Save Search" button
+  App catalog partial (no Blacklight default): show Save Search only for signed-in users; avoids
+    exposing the control to guests while mirroring BL save_search_path behavior.
 %>
 
 <% if current_user %>

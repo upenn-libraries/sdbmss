@@ -1,3 +1,7 @@
+<%#
+  OVERRIDE Blacklight v6.9.0: citation body comes from Entry model_object.to_citation; stock partial
+    uses document export_as_mla/apa/chicago_citation_txt when defined on SolrDocument.
+%>
 <% @documents.each do |document| %>
 
   <h3 class="modal-title"><%= document_heading(document) %></h3>
