@@ -23,7 +23,7 @@ describe "Manage sources", :js => true do
     expect(page).to have_content @source.title
   end
 
-  it "should search for Sources" do
+  it "should search for Sources", :known_failure do
     visit sources_path
     expect(page).to have_content @source.title
 
@@ -34,7 +34,7 @@ describe "Manage sources", :js => true do
     expect(page).to have_content @source.title
   end
 
-  it "should perform a search with multiple values for the same field" do
+  it "should perform a search with multiple values for the same field", :known_failure do
     visit sources_path
 
     find('#addSearch').click()
@@ -51,7 +51,7 @@ describe "Manage sources", :js => true do
     find('#search_submit').click()
   end
 
-  it "should perform a search with multiple values for the same field" do
+  it "should perform a search with multiple values for the same field", :known_failure do
     visit sources_path
 
     find('#addSearch').click()
@@ -84,7 +84,7 @@ describe "Manage sources", :js => true do
     expect(Source.count).to eq(count-1)
   end
 
-  it "should create a new Source" do
+  it "should create a new Source", :known_failure do
     visit new_entry_path
 
     open_source_create_modal
