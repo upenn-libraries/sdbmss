@@ -62,7 +62,7 @@ class CatalogController < ApplicationController
           return
         else
           @d = Download.create({filename: "entries.csv", user_id: current_user.id})
-          CatalogController.new.delay.do_csv_search(params, search_params_logic, @d)
+          CatalogController.new.delay.do_csv_search(params, @d)
           render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count}
         end
       }
@@ -99,7 +99,7 @@ class CatalogController < ApplicationController
     end
   end
 
-  def do_csv_search(params, search_params_logic, download)
+  def do_csv_search(params, download)
     # merge per-page params
 
     page = 1
@@ -112,7 +112,7 @@ class CatalogController < ApplicationController
     headers = nil
 
     loop do
-      (@response, @document_list) = search_results(params.merge({:page => page, :per_page => 100}), search_params_logic)
+      (@response, @document_list) = search_results(params.merge({:page => page, :per_page => 100}))
       #s = do_search(params.merge({:limit => 300, :offset => offset}))
       page += 1
       ids = @response.response["docs"].map { |doc| doc["entry_id"] }
