@@ -196,6 +196,21 @@ class CatalogController < ApplicationController
     end
   end
 
+  def current_search_is_saveable?
+    return false unless current_user
+    if params[:search_field] != "advanced"
+      params[:q].present? || params[:f].present?
+    else
+      empty = true
+      advanced_query.config.search_fields.select do |key, field_def|
+        if params[key].present?
+          empty = false
+        end
+      end
+      !empty
+    end
+  end
+
   # Blacklight::RequestBuilders#solr_facet_params uses this method, if
   # defined, when querying solr and displaying the list of facet values.
   def facet_list_limit
@@ -224,7 +239,7 @@ class CatalogController < ApplicationController
     sdbmss_search_action_path(p)
   end
 
-  helper_method :search_results_as_csv_path
+  helper_method :search_results_as_csv_path, :current_search_is_saveable?
 
   def show_linking_tool_by_entry?
     user_signed_in? && @document.present? && (entry = @document.model_object).present? && !entry.manuscript.present? && can?(:link, entry) && !entry.deprecated
