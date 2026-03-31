@@ -42,6 +42,9 @@ Rails.application.configure do
   config.logger = Logger.new(STDOUT)
 
   config.serve_static_files = true
+
+  # web-console
+  config.web_console.whitelisted_ips = ['172.18.0.0/16', '172.27.0.0/16', '0.0.0.0/0']
 end
 
 # allows for mailer to send correct URLS on development
