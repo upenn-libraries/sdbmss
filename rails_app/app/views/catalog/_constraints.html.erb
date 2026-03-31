@@ -1,4 +1,7 @@
-<!-- this file is just used to override the default blacklight 'start over' link -->
+<%#
+  OVERRIDE Blacklight v6.9.0: start-over link resets to search_field=all_fields (and utf8) so simple
+    search matches the app's default field; stock partial uses start_over_path without those params.
+%>
 <% if query_has_constraints? %>
 
       <div id="appliedParams" class="clearfix constraints-container">

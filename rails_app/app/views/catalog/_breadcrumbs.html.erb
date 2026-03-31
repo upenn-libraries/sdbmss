@@ -1,3 +1,7 @@
+<%#
+  App catalog partial (Blacklight 6 has no catalog/_breadcrumbs): entry navigation, Manage Entries,
+    and edit/history links for the integrated Entry workflow.
+%>
 <% if current_search_session || !current_user %>
   <li class=" ">
     <%= link_back_to_catalog %>
