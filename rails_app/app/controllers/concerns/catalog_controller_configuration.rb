@@ -10,7 +10,7 @@ module CatalogControllerConfiguration
   included do
 
     configure_blacklight do |config|
-      
+
       config.max_per_page = Rails.configuration.sdbmss_max_search_results
 
       config.response_model = SDBMSS::Blacklight::SolrResponse
@@ -30,10 +30,11 @@ module CatalogControllerConfiguration
       }
 
       config.advanced_search = {
-        :query_parser => "edismax"
+        :query_parser => "edismax",
+        :url_key      => "advanced",
       }
 
-      ## Default parameters to send on single-document requests to Solr. These settings are the Blackligt defaults (see SolrHelper#solr_doc_params) or 
+      ## Default parameters to send on single-document requests to Solr. These settings are the Blackligt defaults (see SolrHelper#solr_doc_params) or
       ## parameters included in the Blacklight-jetty document requestHandler.
       config.default_document_solr_params = {
         # keep our solr config simple by avoiding a 'document' querytype
@@ -41,7 +42,7 @@ module CatalogControllerConfiguration
         # :qt => 'document',
         ## These are hard-coded in the blacklight 'document' requestHandler
         :rows => 1,
-        :q => '{!raw f=id v=$id}' 
+        :q => '{!raw f=id v=$id}'
       }
 
       # solr field configuration for search results/index views
@@ -403,7 +404,7 @@ module CatalogControllerConfiguration
       # config.add_sort_field 'author_sort asc, title_sort asc', :label => 'author'
       # config.add_sort_field 'title_sort asc, pub_date_sort desc', :label => 'title'
 
-      # If there are more than this many search results, no spelling ("did you 
+      # If there are more than this many search results, no spelling ("did you
       # mean") suggestion is offered.
       config.spell_max = 5
 
