@@ -77,29 +77,6 @@ module ApplicationHelper
     user_signed_in? && @document.present? && (entry = @document.model_object).present? && can?(:edit, entry)
   end
 
-  def show_linking_tool_by_entry?
-    user_signed_in? && @document.present? && (entry = @document.model_object).present? && !entry.manuscript.present? && can?(:link, entry) && !entry.deprecated
-  end
-
-  def show_linking_tool_by_manuscript?
-    user_signed_in? && @document.present? && (entry = @document.model_object).present? && entry.manuscript.present? && can?(:link, entry.manuscript)
-  end
-
-  def show_verify_entry?
-    user_signed_in? && @document.present? && (entry = @document.model_object).present? && can?(:verify, entry)
-  end
-
-  def show_deprecate_entry?
-    user_signed_in? && @document.present? && (entry = @document.model_object).present? && can?(:deprecate, entry)
-  end
-
-  # determines whether entry history link should be displayed; this is
-  # used multiple places, which is why it's here in ApplicationHelper
-  def show_entry_history_link?
-    # @document.present? && (entry = @document.model_object).present? && entry.versions.count > 0 && can?(:link, entry)
-    user_signed_in? && @document.present? && (entry = @document.model_object).present?
-  end
-
   # only show on Bookmarks page (check for document_list)
   def show_export_csv_link?
     user_signed_in? && @document_list.present?
@@ -132,7 +109,7 @@ module ApplicationHelper
     result = []
     while i < limit do
       value = value2 = nil
-      selected_field = fields.keys.first 
+      selected_field = fields.keys.first
       if queried_fields.length > 0
         fieldname = queried_fields.keys.first
         selected_field = fieldname
@@ -147,7 +124,7 @@ module ApplicationHelper
             if match
               value, value2 = match[1], match[2]
             end
-          end            
+          end
           i += 1
           queried_fields[fieldname].delete(range_str)
           if queried_fields[fieldname].length <= 0
