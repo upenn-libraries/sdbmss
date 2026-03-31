@@ -13,8 +13,8 @@ module Blacklight::UrlHelperBehavior
       route = blacklight_config.show.route.merge(action: :show, id: doc).merge(options)
       route[:controller] = controller_name if route[:controller] == :current
       route
-    elsif doc   
-    # override here, since we are using sunspot, and blacklight expects a different ID format :/   
+    elsif doc
+    # override here, since we are using sunspot, and blacklight expects a different ID format :/
       entry_path(doc["entry_id"])
     else
     # sometimes 'doc' is nil, in which case it is an acceptable url?
@@ -37,7 +37,7 @@ module Blacklight
         render_facet_limit(display_facet, options)
       end.compact, "\n")
     end
-    
+
   end
 end
 
@@ -85,7 +85,7 @@ module SDBMSS::Blacklight
   end
 
   # Specialized response that stores an instance of a ResultSet
-  class SolrResponse < Blacklight::SolrResponse
+  class SolrResponse < Blacklight::Solr::Response
     attr_accessor :objects_resultset
 
   end
@@ -99,7 +99,23 @@ module SDBMSS::Blacklight
 
   end
 
-  class SearchBuilder < Blacklight::Solr::SearchBuilder
+  class SearchBuilder < Blacklight::SearchBuilder
+    include Blacklight::Solr::SearchBuilderBehavior
+    include BlacklightAdvancedSearch::AdvancedSearchBuilder
+
+    self.default_processor_chain += [
+      :show_all_if_no_query,
+      :handle_facet_prefix,
+      :show_approved,
+      :show_created_by_user,
+      :show_deprecated,
+      :show_drafts,
+      :translate_manuscript_date,
+      :translate_provenance_date,
+      :translate_source_date,
+      :add_advanced_search_to_solr,
+    ]
+
     def show_all_if_no_query(solr_parameters)
       # edismax itself doesn't understand '*' but we can pass in q.alt
       # and it will work for some reason
