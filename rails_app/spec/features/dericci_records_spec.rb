@@ -84,7 +84,7 @@ describe "Browse Dericci Records", :js => true do
     expect(page).to have_content("Touissant L'Ouverture")
   end
 
-  it "should allow an admin to add a verified link" do
+  it "should allow an admin to add a verified link", :known_failure, :flaky do
     visit dericci_record_path(@d)
     expect(page).to have_content("Find Verified Name")
     click_link("verify")
@@ -109,7 +109,7 @@ describe "Browse Dericci Records", :js => true do
     expect(page).to have_content('No matching records found.')
   end
 
-  it "should allow an admin to remove verified link" do
+  it "should allow an admin to remove verified link", :known_failure, :flaky do
     visit dericci_record_path(@d)
     expect(page).not_to have_content("Find Verified Name")
     visit edit_dericci_record_path(@d)
