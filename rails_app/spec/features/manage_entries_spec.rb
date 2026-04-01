@@ -38,7 +38,6 @@ describe "Manage entries", :js => true do
 
     find("input[name='search_value']", match: :first).native.send_keys "de ricci"
     find('#search_submit').click()
-    sleep 1.1
     expect(page).not_to have_selector("#spinner", visible: true)
 
     expect(all("#search_results tbody tr").count).to eq(2)
@@ -62,8 +61,6 @@ describe "Manage entries", :js => true do
     find("#unapproved_only", match: :first).click
     find('#search_submit').click()
 
-    sleep 1.1
-
     expect(page).to have_selector("#select-all", visible: true)
     find("#select-all", match: :first).trigger('click')
 
@@ -81,17 +78,18 @@ describe "Manage entries", :js => true do
   end
 
   it "should delete an entry" do
+    entry_to_delete = Entry.last
     count = Entry.all.count
 
     # mock out the confirm dialogue
     page.evaluate_script('window.confirm = function() { return true; }')
 
     visit entries_path
-    find("#delete_#{Entry.last.id}", match: :first).trigger("click")
+    find("#delete_#{entry_to_delete.id}", match: :first).trigger("click")
     #all(".entry-delete-link").last.trigger('click')
     expect(page).to have_content("Are you sure you want to delete entry")
     click_button "Yes"
-    sleep 1.1
+    expect(page).not_to have_css("#delete_#{entry_to_delete.id}")
 
     expect(Entry.all.count).to eq(count - 1)
   end
@@ -106,7 +104,6 @@ describe "Manage entries", :js => true do
     superceded_by_id = Entry.first.id
     fill_in 'superceded_by_id', :with => superceded_by_id
     find("#deprecate").click
-    sleep(1)
     expect(page).to have_content("Entry marked as deprecated.")
 
     entry = Entry.find_by(deprecated: true)
@@ -149,8 +146,7 @@ describe "Manage entries", :js => true do
 
     find('#search_submit').click()
 
-    sleep 2
-
+    expect(page).to have_selector('#search_results_info', text: /of\s[\d,]+/)
     count = page.find('#search_results_info').text.match(/of\s([\d,]+)\s/)[1].gsub(",", "").to_i
 
     visit entries_path
@@ -163,8 +159,7 @@ describe "Manage entries", :js => true do
 
     find('#search_submit').click()
 
-    sleep 2
-
+    expect(page).to have_selector('#search_results_info', text: /of\s[\d,]+/)
     count2 = page.find('#search_results_info').text.match(/of\s([\d,]+)\s/)[1].gsub(",", "").to_i
 
     expect(count).to eq(count2)
@@ -188,8 +183,7 @@ describe "Manage entries", :js => true do
 
     find('#search_submit').click()
 
-    sleep 2
-
+    expect(page).to have_selector('#search_results_info', text: /of\s[\d,]+/)
     count = page.find('#search_results_info').text.match(/of\s([\d,]+)\s/)[1].gsub(",", "").to_i
 
     visit entries_path
@@ -202,8 +196,7 @@ describe "Manage entries", :js => true do
 
     find('#search_submit').click()
 
-    sleep 2
-
+    expect(page).to have_selector('#search_results_info', text: /of\s[\d,]+/)
     count2 = page.find('#search_results_info').text.match(/of\s([\d,]+)\s/)[1].gsub(",", "").to_i
 
     expect(count).to eq(count2)
