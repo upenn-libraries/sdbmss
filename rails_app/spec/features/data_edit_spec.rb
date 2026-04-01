@@ -111,6 +111,11 @@ describe "Data entry", :js => true do
     require "lib/data_entry_helpers"
     include DataEntryHelpers
 
+    before :all do
+      login(@user, 'somethingunguessable')
+      create_entry
+    end
+
     it "should edit an existing Source" do
       source = Source.create!(
         date: "20141215",
@@ -138,9 +143,7 @@ describe "Data entry", :js => true do
     end
 
 
-    it "should show creator on Edit page", :known_failure do
-      create_entry
-
+    it "should show creator on Edit page" do
       entry = Entry.last
 
       visit edit_entry_path :id => entry.id
