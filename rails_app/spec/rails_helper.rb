@@ -51,8 +51,8 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   #
-  # set this to false so that any writes to the db can be seen by
-  # poltergeist driver
+  # must be false for DatabaseCleaner per-example strategy to work
+  # (Poltergeist is gone; project now uses Cuprite)
   config.use_transactional_fixtures = false
 
   # RSpec Rails can automatically mix in different behaviours to your tests
@@ -89,9 +89,10 @@ RSpec.configure do |config|
     DatabaseCleaner.start
   end
 
-  config.after(:each) do
+  config.after(:each) do |example|
     DatabaseCleaner.clean
-    if RSpec.current_example.metadata[:js]
+    if example.metadata[:js]
+      Sunspot::remove_all!
       SDBMSS::SeedData.create
       SDBMSS::ReferenceData.create_all
       SDBMSS::Mysql.create_functions
