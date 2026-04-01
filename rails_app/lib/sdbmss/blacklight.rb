@@ -2,9 +2,7 @@
 # This module contains customized subclasses of things used by
 # Blacklight
 
-
-
-
+# OVERRIDE (customizaton to _facets.html.erb) - if on the home page, render 4 facets, # otherwise it renders them all
 module Blacklight
   module FacetsHelperBehavior
 
@@ -71,13 +69,10 @@ module SDBMSS::Blacklight
 
   end
 
-  class DocumentPresenter < Blacklight::DocumentPresenter
-
-    # used for html title element
-    def document_heading
-      return @document.model_object.public_id
+  class ShowPresenter < ::Blacklight::ShowPresenter
+    def heading
+      document.model_object.public_id
     end
-
   end
 
   class SearchBuilder < Blacklight::SearchBuilder
