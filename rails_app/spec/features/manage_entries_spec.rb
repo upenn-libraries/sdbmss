@@ -6,6 +6,8 @@ describe "Manage entries", :js => true do
   before :all do
 #    SDBMSS::ReferenceData.create_all
 
+    @user = User.where(role: "admin").first
+
     @unapproved_entry = Entry.new(
       source: Source.last,
       created_by: @user,
@@ -14,8 +16,6 @@ describe "Manage entries", :js => true do
     @unapproved_entry.save!
 
     SDBMSS::Util.wait_for_solr_to_be_current
-
-    @user = User.where(role: "admin").first
   end
 
   before :each do
