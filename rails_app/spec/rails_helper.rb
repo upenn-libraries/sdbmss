@@ -93,9 +93,11 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
     if example.metadata[:js]
       Sunspot::remove_all!
+      ActiveRecord::Base.connection.execute("SET FOREIGN_KEY_CHECKS=0")
       SDBMSS::SeedData.create
       SDBMSS::ReferenceData.create_all
       SDBMSS::Mysql.create_functions
+      ActiveRecord::Base.connection.execute("SET FOREIGN_KEY_CHECKS=1")
     end
   end
 
