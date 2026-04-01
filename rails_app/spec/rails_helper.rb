@@ -76,14 +76,26 @@ RSpec.configure do |config|
   config.include SDBMSS::Capybara::AlertConfirmer
   config.include SDBMSS::Capybara::Login
 
-  DatabaseCleaner.strategy = :truncation
-  DatabaseCleaner.start
-  DatabaseCleaner.clean
-  Sunspot::remove_all!
-  SDBMSS::SeedData.create
-  SDBMSS::ReferenceData.create_all
-  SDBMSS::Mysql.create_functions
-  config.before(:all) do
+  config.before(:suite) do
+    DatabaseCleaner.clean_with(:truncation)
+    Sunspot::remove_all!
+    SDBMSS::SeedData.create
+    SDBMSS::ReferenceData.create_all
+    SDBMSS::Mysql.create_functions
+  end
+
+  config.before(:each) do |example|
+    DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+    if RSpec.current_example.metadata[:js]
+      SDBMSS::SeedData.create
+      SDBMSS::ReferenceData.create_all
+      SDBMSS::Mysql.create_functions
+    end
   end
 
   # This is commented out b/c it seems the browser doesn't always hang
