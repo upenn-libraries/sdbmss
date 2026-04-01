@@ -18,7 +18,7 @@ worker_processes(
 )
 
 # Give debugger sessions time to work (byebug, web-console, etc.)
-timeout(ENV["RAILS_ENV"] != "development" ? 86_400 : 60)
+timeout(ENV["RAILS_ENV"] == "development" ? 86_400 : 60)
 
 #logger Logger.new(File.expand_path("../../log/unicorn.log", __FILE__))
 logger Logger.new(STDOUT)
