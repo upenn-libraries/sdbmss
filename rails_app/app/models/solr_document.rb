@@ -25,6 +25,14 @@ class SolrDocument
     @response.objects_resultset.add(self[:entry_id])
   end
 
+  # Sunspot indexes records with ids like "Entry 282452", but routes
+  # expect the numeric entry_id.  Override to_param so that
+  # polymorphic_url(doc) and solr_document_path(doc) produce
+  # /catalog/282452 instead of /catalog/Entry%20282452.
+  def to_param
+    (self["entry_id"] || id.to_s.sub(/\AEntry\s+/, '')).to_s
+  end
+
   # returns the Entry object for this solr document
   def model_object
     @response.objects_resultset.get(self[:entry_id])
