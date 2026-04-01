@@ -15,7 +15,7 @@ module CatalogControllerConfiguration
 
       config.response_model = SDBMSS::Blacklight::SolrResponse
 
-      config.document_presenter_class = SDBMSS::Blacklight::DocumentPresenter
+      config.show.document_presenter_class = SDBMSS::Blacklight::ShowPresenter
 
       config.search_builder_class = SDBMSS::Blacklight::SearchBuilder
 
