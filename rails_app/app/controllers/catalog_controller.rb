@@ -39,9 +39,6 @@ class CatalogController < ApplicationController
         @suggestions = []#s.results.last(10)
 
         super
-        respond_to do |format|
-          format.html
-        end
       else
         render_access_denied
       end
@@ -51,11 +48,18 @@ class CatalogController < ApplicationController
   end
 
   def index
+    (@response, @document_list) = search_results(params)
+
     respond_to do |format|
-      #format.rss { redirect_to feed_path(format: :rss) }
-      #format.atom {redirect_to feed_path(format: :rss) }
-      format.html { super }
-      format.json { super }
+      format.html { store_preferred_view }
+      format.rss  { render :layout => false }
+      format.atom { render :layout => false }
+      format.json do
+        @presenter = Blacklight::JsonPresenter.new(@response,
+                                                   @document_list,
+                                                   facets_from_request,
+                                                   blacklight_config)
+      end
       format.csv {
         if current_user.downloads.count >= 5
           render json: {error: 'at limit'}
@@ -66,6 +70,8 @@ class CatalogController < ApplicationController
           render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count}
         end
       }
+      additional_response_formats(format)
+      document_export_formats(format)
     end
   end
 
