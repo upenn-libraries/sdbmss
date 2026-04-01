@@ -116,6 +116,7 @@ describe "Data entry", :js => true do
     it "should find source by agent on Select Source page", :known_failure, :flaky do
       visit new_entry_path
       find('#select_source').click
+      expect(page).to have_field('agent')
       fill_in 'agent', :with => 'Soth'
       expect(page).to have_content @source.title
       find("#create-entry-link-#{@source.id}").click
@@ -125,14 +126,15 @@ describe "Data entry", :js => true do
     it "should NOT find source by agent on Select Source page" do
       visit new_entry_path
       find('#select_source').click
+      expect(page).to have_field('agent')
       fill_in 'agent', :with => 'Nonexistent'
-      sleep 1.5
       expect(page).to have_content "No source found matching your criteria."
     end
 
     it "should find source by title on Select Source page", :known_failure, :flaky do
       visit new_entry_path
       find('#select_source').click
+      expect(page).to have_field('title')
       fill_in 'title', :with => 'uniq'
       expect(page).to have_content @source.title
       find("#create-entry-link-#{@source.id}").click
@@ -142,8 +144,8 @@ describe "Data entry", :js => true do
     it "should NOT find source by title on Select Source page", :known_failure, :flaky do
       visit new_entry_path
       find('#select_source').click
+      expect(page).to have_field('title')
       fill_in 'title', :with => 'nonexistentjunk'
-      sleep 0.5
       expect(page).to have_content "No source found matching your criteria."
     end
 
