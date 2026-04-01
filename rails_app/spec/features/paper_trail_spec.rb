@@ -44,16 +44,19 @@ describe "Paper trail", :js => true do
     end
 
     require "lib/data_entry_helpers"
-    include DataEntryHelpers    
+    include DataEntryHelpers
+
+    before :all do
+      login(@user, 'somethingunguessable')
+      create_entry
+    end
 
     describe '(for simple changes)' do
 
-      it 'should load the history page successfully', :known_failure do
-        create_entry
-
+      it 'should load the history page successfully' do
         e = Entry.last
 
-        visit history_entry_path (e)
+        visit history_entry_path(e)
 
         expect(page).to have_content("History of changes to #{e.public_id}")
       end
