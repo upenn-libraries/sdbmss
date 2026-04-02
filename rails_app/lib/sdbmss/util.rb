@@ -514,8 +514,14 @@ module SDBMSS
         while (!current && count < 5)
           sleep(1)
           result = Net::HTTP.get(URI(uri))
-          current_str = /<bool name="current">(.+?)<\/bool>/.match(result)[1]
-          current = current_str == 'true'
+          begin
+            json = JSON.parse(result)
+            current = json.dig("status", "test", "index", "current") == true
+          rescue JSON::ParserError
+            # Fall back to XML parsing for older Solr versions
+            current_str = /<bool name="current">(.+?)<\/bool>/.match(result)
+            current = current_str && current_str[1] == 'true'
+          end
           count += 1
         end
       end

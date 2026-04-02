@@ -113,7 +113,7 @@ module CatalogControllerConfiguration
       # or can be specified manually to be different.
 
       config.add_search_field 'all_fields', :label => 'All Fields' do |field|
-        field.solr_local_parameters = { :qf => 'complete_entry' }
+        field.solr_parameters = { :qf => 'complete_entry' }
       end
 
       config.add_search_field('title') do |field|
@@ -125,106 +125,106 @@ module CatalogControllerConfiguration
       end
 
       config.add_search_field('source_display', label: "Source") do |field|
-        field.solr_local_parameters = { :qf => 'source_search' }
+        field.solr_parameters = { :qf => 'source_search' }
       end
 
       config.add_search_field('source_title', label: "Source Title") do |field|
-        field.solr_local_parameters = { :qf => 'source_title' }
+        field.solr_parameters = { :qf => 'source_title' }
       end
 
       config.add_search_field('groups', label: "User Groups") do |field|
-        field.solr_local_parameters = { :qf => 'groups' }
+        field.solr_parameters = { :qf => 'groups' }
       end
 
       config.add_search_field('source_date', label: "Source Date") do |field|
-        field.solr_local_parameters = { :qf => 'source_date' }
+        field.solr_parameters = { :qf => 'source_date' }
       end
 
       config.add_search_field('source', label: "Source ID (Full)") do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'source' }
+        field.solr_parameters = { :qf => 'source' }
       end
 
       config.add_search_field('source_agent', label: "Source Agent") do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'source_agent' }
+        field.solr_parameters = { :qf => 'source_agent' }
       end
 
       config.add_search_field('institution', label: "Institution") do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'institution_search' }
+        field.solr_parameters = { :qf => 'institution_search' }
       end
 
       config.add_search_field('selling_agent') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'sale_selling_agent_search' }
+        field.solr_parameters = { :qf => 'sale_selling_agent_search' }
       end
 
       config.add_search_field('seller') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'sale_seller_search' }
+        field.solr_parameters = { :qf => 'sale_seller_search' }
       end
 
       config.add_search_field('buyer') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'sale_buyer_search' }
+        field.solr_parameters = { :qf => 'sale_buyer_search' }
       end
 
       config.add_search_field('other_info', label: "Other Info") do |field|
-        field.solr_local_parameters = { :qf => 'other_info_search' }
+        field.solr_parameters = { :qf => 'other_info_search' }
       end
 
       config.add_search_field('catalog_or_lot_number', label: "Catalog/Lot Number") do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'catalog_or_lot_number_search' }
+        field.solr_parameters = { :qf => 'catalog_or_lot_number_search' }
       end
 
       config.add_search_field('language') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'language_search' }
+        field.solr_parameters = { :qf => 'language_search' }
       end
 
       config.add_search_field('material') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'material_search' }
+        field.solr_parameters = { :qf => 'material_search' }
       end
 
       config.add_search_field('place') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'place_search' }
+        field.solr_parameters = { :qf => 'place_search' }
       end
 
       config.add_search_field('liturgical_use') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'use_search' }
+        field.solr_parameters = { :qf => 'use_search' }
       end
 
       config.add_search_field('artist') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'artist_search' }
+        field.solr_parameters = { :qf => 'artist_search' }
       end
 
       config.add_search_field('scribe') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'scribe_search' }
+        field.solr_parameters = { :qf => 'scribe_search' }
       end
 
       config.add_search_field('binding') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'binding_search' }
+        field.solr_parameters = { :qf => 'binding_search' }
       end
 
       config.add_search_field('provenance') do |field|
-        field.solr_local_parameters = { :qf => 'provenance_search' }
+        field.solr_parameters = { :qf => 'provenance_search' }
       end
 
       config.add_search_field('all provenance') do |field|
-        field.solr_local_parameters = { :qf => 'provenance_composite' }
+        field.solr_parameters = { :qf => 'provenance_composite' }
       end
 
       config.add_search_field('comment') do |field|
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'comment_search' }
+        field.solr_parameters = { :qf => 'comment_search' }
       end
 
       # NOTE is_numeric_field is NOT part of Blacklight field
@@ -234,121 +234,121 @@ module CatalogControllerConfiguration
       config.add_search_field('folios') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'folios' }
+        field.solr_parameters = { :qf => 'folios' }
       end
 
       config.add_search_field('manuscript_date', label: "Manuscript Date") do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'manuscript_date' }
+        field.solr_parameters = { :qf => 'manuscript_date' }
       end
 
       config.add_search_field('num_lines') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'num_lines' }
+        field.solr_parameters = { :qf => 'num_lines' }
       end
 
       config.add_search_field('num_columns') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'num_columns' }
+        field.solr_parameters = { :qf => 'num_columns' }
       end
 
       config.add_search_field('height') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'height' }
+        field.solr_parameters = { :qf => 'height' }
       end
 
       config.add_search_field('width') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'width' }
+        field.solr_parameters = { :qf => 'width' }
       end
 
       config.add_search_field('miniatures_fullpage') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'miniatures_fullpage' }
+        field.solr_parameters = { :qf => 'miniatures_fullpage' }
       end
 
 #      config.add_search_field('missing_authority_names') do |field|
 #        field.include_in_simple_select = false
 #        field.is_numeric_field = true
-#        field.solr_local_parameters = { :qf => 'missing_authority_names' }
+#        field.solr_parameters = { :qf => 'missing_authority_names' }
 #      end
 
       config.add_search_field('miniatures_large') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'miniatures_large' }
+        field.solr_parameters = { :qf => 'miniatures_large' }
       end
 
       config.add_search_field('miniatures_small') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'miniatures_small' }
+        field.solr_parameters = { :qf => 'miniatures_small' }
       end
 
       config.add_search_field('miniatures_unspec_size') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'miniatures_unspec_size' }
+        field.solr_parameters = { :qf => 'miniatures_unspec_size' }
       end
 
       config.add_search_field('initials_historiated') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'initials_historiated' }
+        field.solr_parameters = { :qf => 'initials_historiated' }
       end
 
       config.add_search_field('initials_decorated') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'initials_decorated' }
+        field.solr_parameters = { :qf => 'initials_decorated' }
       end
 
       config.add_search_field('price') do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'sale_price' }
+        field.solr_parameters = { :qf => 'sale_price' }
       end
 
       config.add_search_field('provenance_date', label: "Provenance Date") do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = true
-        field.solr_local_parameters = { :qf => 'provenance_date' }
+        field.solr_parameters = { :qf => 'provenance_date' }
       end
 
       config.add_search_field 'entry_id', :label => 'Entry ID' do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = false
-        field.solr_local_parameters = { :qf => 'entry_id' }
+        field.solr_parameters = { :qf => 'entry_id' }
       end
 
       config.add_search_field 'entry', :label => 'Entry ID (Full)' do |field|
         field.include_in_simple_select = true
         field.is_numeric_field = false
-        field.solr_local_parameters = { :qf => 'entry' }
+        field.solr_parameters = { :qf => 'entry' }
       end
 
       config.add_search_field 'manuscript', :label => 'Manuscript ID (Full)' do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = false
-        field.solr_local_parameters = { :qf => 'manuscript' }
+        field.solr_parameters = { :qf => 'manuscript' }
       end
 
       config.add_search_field 'added_by' do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = false
-        field.solr_local_parameters = { :qf => 'created_by' }
+        field.solr_parameters = { :qf => 'created_by' }
       end
 
       config.add_search_field 'updated_by' do |field|
         field.include_in_simple_select = false
         field.is_numeric_field = false
-        field.solr_local_parameters = { :qf => 'created_by' }
+        field.solr_parameters = { :qf => 'created_by' }
       end
 
       # don't show this anywhere; this is defined only so that table
@@ -357,28 +357,28 @@ module CatalogControllerConfiguration
         field.include_in_simple_select = false
         field.include_in_advanced_search = false
         field.is_numeric_field = false
-        field.solr_local_parameters = { :qf => 'approved' }
+        field.solr_parameters = { :qf => 'approved' }
       end
 
       config.add_search_field 'unverified_legacy_record' do |field|
         field.include_in_simple_select = false
         field.include_in_advanced_search = true
         field.is_numeric_field = false
-        field.solr_local_parameters = { :qf => 'unverified_legacy_record' }
+        field.solr_parameters = { :qf => 'unverified_legacy_record' }
       end
 
       config.add_search_field 'added_on' do |field|
         field.include_in_advanced_search = true
         field.is_numeric_field = false
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'created_at'}
+        field.solr_parameters = { :qf => 'created_at'}
       end
 
       config.add_search_field 'updated_on' do |field|
         field.include_in_advanced_search = true
         field.is_numeric_field = false
         field.include_in_simple_select = false
-        field.solr_local_parameters = { :qf => 'created_at'}
+        field.solr_parameters = { :qf => 'created_at'}
       end
 
       # "sort results by" select (pulldown)
