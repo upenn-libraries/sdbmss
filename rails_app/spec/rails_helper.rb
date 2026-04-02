@@ -106,22 +106,11 @@ RSpec.configure do |config|
   config.after(:each) do |example|
     DatabaseCleaner.clean
     if example.metadata[:js]
-      begin
-        Sunspot.remove_all!
-      rescue => e
-        Rails.logger.warn "Solr remove_all after test failed: #{e.message}"
-      end
       ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
       SDBMSS::SeedData.create
       SDBMSS::ReferenceData.create_all
       SDBMSS::Mysql.create_functions
       ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
-      begin
-        Sunspot.index(Entry.all)
-        Sunspot.commit
-      rescue => e
-        Rails.logger.warn "Solr reindex after test failed: #{e.message}"
-      end
     end
   end
 
