@@ -35,7 +35,7 @@
        that you fully re-index after changing this setting as it can
        affect both how text is indexed and queried.
   -->
-  <luceneMatchVersion>LUCENE_41</luceneMatchVersion>
+  <luceneMatchVersion>8.11.0</luceneMatchVersion>
 
   <!-- <lib/> directives can be used to instruct Solr to load an Jars
        identified and use them to resolve any "plugins" specified in
@@ -92,14 +92,6 @@
     <!-- Maximum time to wait for a write lock (ms) for an IndexWriter. Default: 1000 -->
     <!-- <writeLockTimeout>1000</writeLockTimeout>  -->
 
-    <!-- The maximum number of simultaneous threads that may be
-         indexing documents at once in IndexWriter; if more than this
-         many threads arrive they will wait for others to finish.
-         Default in Solr/Lucene is 8. -->
-    <maxIndexingThreads>2</maxIndexingThreads> 
-
-    <useCompoundFile>true</useCompoundFile>
-
     <!-- ramBufferSizeMB sets the amount of RAM that may be used by Lucene
          indexing for buffering added documents and deletions before they are
          flushed to the Directory.
@@ -107,22 +99,11 @@
          before flushing.
          If both ramBufferSizeMB and maxBufferedDocs is set, then
          Lucene will flush based on whichever limit is hit first.  -->
-    <ramBufferSizeMB>20</ramBufferSizeMB> -->
+    <ramBufferSizeMB>20</ramBufferSizeMB>
     <maxBufferedDocs>10000</maxBufferedDocs>
 
-    <!-- Expert: Merge Policy 
-         The Merge Policy in Lucene controls how merging of segments is done.
-         The default since Solr/Lucene 3.3 is TieredMergePolicy.
-         The default since Lucene 2.3 was the LogByteSizeMergePolicy,
-         Even older versions of Lucene used LogDocMergePolicy.
-      -->
-    <mergePolicy class="org.apache.lucene.index.TieredMergePolicy">
-      <int name="maxMergeAtOnce">4</int>
-      <int name="segmentsPerTier">4</int>
-    </mergePolicy>
-    
-    <unlockOnStartup>true</unlockOnStartup>
-    
+    <!-- mergePolicy replaced by mergePolicyFactory in Solr 7+; using defaults -->
+
   </indexConfig>
 
   <updateHandler class="solr.DirectUpdateHandler2">
@@ -421,6 +402,9 @@
        queries across multiple shards
     -->
   <requestHandler name="/select" class="solr.SearchHandler">
+    <lst name="defaults">
+      <str name="df">text</str>
+    </lst>
     <arr name="last-components">
       <str>spellcheck</str>
     </arr>
@@ -454,31 +438,7 @@
   <requestHandler name="/update" class="solr.UpdateRequestHandler">
   </requestHandler>
 
-  <requestHandler name="/update/json" class="solr.JsonUpdateRequestHandler">
-        <lst name="defaults">
-         <str name="stream.contentType">application/json</str>
-       </lst>
-  </requestHandler>
-
-  <requestHandler name="/update/csv" class="solr.CSVRequestHandler">
-        <lst name="defaults">
-         <str name="stream.contentType">application/csv</str>
-       </lst>
-  </requestHandler>
-
-  <requestHandler name="/update/extract" 
-                  startup="lazy"
-                  class="solr.extraction.ExtractingRequestHandler" >
-    <lst name="defaults">
-      <str name="lowernames">true</str>
-      <str name="uprefix">ignored_</str>
-
-      <!-- capture link hrefs but ignore div attributes -->
-      <str name="captureAttr">true</str>
-      <str name="fmap.a">links</str>
-      <str name="fmap.div">ignored_</str>
-    </lst>
-  </requestHandler>
+  <!-- /update/json, /update/csv, /update/extract removed — built-in in Solr 8 -->
 
   <requestHandler name="/analysis/field" 
                   startup="lazy"
@@ -510,7 +470,7 @@
 
   <searchComponent name="spellcheck" class="solr.SpellCheckComponent">
 
-    <str name="queryAnalyzerFieldType">textSpell</str>
+    <str name="queryAnalyzerFieldType">text</str>
 
     <!-- Multiple "Spell Checkers" can be declared and used by this
          component
@@ -657,13 +617,23 @@
     </highlighting>
   </searchComponent>
   
-  <requestHandler class="solr.MoreLikeThisHandler" name="/mlt">
+  <!-- MoreLikeThis handler: replaces the removed MoreLikeThisHandler from Solr 4.
+       Sunspot's more_like_this sends requests to /mlt, so we register a standard
+       request handler at that path with the MLT search component enabled. -->
+  <requestHandler name="/mlt" class="solr.SearchHandler">
     <lst name="defaults">
-      <str name="mlt.mintf">1</str>
-      <str name="mlt.mindf">2</str>
+      <str name="mlt">true</str>
+      <str name="mlt.fl">title_search,place_search,author_search,language_search</str>
+      <str name="mlt.boost">true</str>
+      <str name="mlt.count">10</str>
+      <int name="mlt.mintf">1</int>
+      <int name="mlt.mindf">1</int>
     </lst>
+    <arr name="last-components">
+      <str>mlt</str>
+    </arr>
   </requestHandler>
-  
-  <!-- Admin Handlers - This will register all the standard admin RequestHandlers. -->
-  <requestHandler name="/admin/" class="solr.admin.AdminHandlers" />
+
+  <searchComponent name="mlt" class="solr.MoreLikeThisComponent" />
+  <!-- /admin/ handler removed — admin handlers auto-register in Solr 7+ -->
 </config>

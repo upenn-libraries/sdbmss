@@ -90,6 +90,7 @@ module SDBMSS::Blacklight
       :translate_provenance_date,
       :translate_source_date,
       :add_advanced_search_to_solr,
+      :fix_lucene_local_params,
     ]
 
     def show_all_if_no_query(solr_parameters)
@@ -204,6 +205,14 @@ module SDBMSS::Blacklight
 
     def translate_provenance_date(solr_parameters)
       translate_daterange_param(solr_parameters, 'provenance_date', DATE_RANGE_FULL_MIN, DATE_RANGE_FULL_MAX)
+    end
+
+    # Solr 8: {!lucene} local params in q are ignored when defType=edismax
+    # is set as a request parameter. Remove defType so local params take effect.
+    def fix_lucene_local_params(solr_parameters)
+      if solr_parameters[:q].to_s.start_with?('{!lucene}')
+        solr_parameters.delete(:defType)
+      end
     end
   end
 
