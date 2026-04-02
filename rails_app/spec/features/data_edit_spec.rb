@@ -108,14 +108,6 @@ describe "Data entry", :js => true do
       page.reset!
     end
 
-    require "lib/data_entry_helpers"
-    include DataEntryHelpers
-
-    before :all do
-      login(@user, 'somethingunguessable')
-      create_entry
-    end
-
     it "should edit an existing Source" do
       source = Source.create!(
         date: "20141215",
@@ -398,7 +390,7 @@ describe "Data entry", :js => true do
     end
 
     it "should disallow creating Entries if not logged in" do
-      visit new_entry_path :source_id => @source.id
+      visit new_entry_path :source_id => Source.last.id
       expect(page).to have_content("You need to sign in")
     end
 
