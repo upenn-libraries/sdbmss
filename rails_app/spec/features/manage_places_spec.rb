@@ -7,16 +7,15 @@ describe "Manage places", :js => true do
   before :all do
     @admin = User.where(role: "admin").first
     @user = User.where(role: "admin").first
-
-    @place = Place.create!(
-      name: "Martian",
-      created_by: @user,
-    )
   end
 
   context "when contributor is logged in" do
 
     before :each do
+      @place = Place.create!(
+        name: "Martian",
+        created_by: @user,
+      )
       login(@user, 'somethingunguessable')
     end
 
@@ -107,14 +106,11 @@ describe "Manage places", :js => true do
 
   context "when admin is logged in" do
 
-    before :all do
+    before :each do
       @place = Place.create!(
         name: "Pig Latin",
         created_by: @user,
       )
-    end
-
-    before :each do
       login(@admin, 'somethingunguessable')
     end
 

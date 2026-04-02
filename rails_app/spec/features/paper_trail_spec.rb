@@ -43,14 +43,6 @@ describe "Paper trail", :js => true do
       page.reset!
     end
 
-    require "lib/data_entry_helpers"
-    include DataEntryHelpers
-
-    before :all do
-      login(@user, 'somethingunguessable')
-      create_entry
-    end
-
     describe '(for simple changes)' do
 
       it 'should load the history page successfully' do

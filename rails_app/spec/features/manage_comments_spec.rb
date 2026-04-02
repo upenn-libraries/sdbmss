@@ -9,6 +9,7 @@ describe "Manage Comments", :js => true do
   end
 
   before :each do
+    Comment.create!(comment: "This is an interesting observation!", commentable: Entry.first, created_by: @user)
     login(@user, 'somethingunguessable')
   end
 

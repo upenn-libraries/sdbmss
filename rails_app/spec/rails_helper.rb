@@ -1,5 +1,5 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-ENV["RAILS_ENV"] ||= 'test'
+ENV['RAILS_ENV'] ||= 'test'
 
 require 'simplecov'
 
@@ -10,10 +10,10 @@ SimpleCov.start 'rails' do
   add_filter 'lib/sdbmss/viaf_reconcilliation.rb'
 end
 
-puts "SimpleCov started"
+puts 'SimpleCov started'
 
 require 'spec_helper'
-require File.expand_path("../../config/environment", __FILE__)
+require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -78,10 +78,16 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     DatabaseCleaner.clean_with(:truncation)
-    Sunspot::remove_all!
+    Sunspot.remove_all!
+    # Disable FK checks while bootstrapping reference data to avoid
+    # seed ordering issues with strict constraints in the test DB.
+    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
     SDBMSS::SeedData.create
     SDBMSS::ReferenceData.create_all
     SDBMSS::Mysql.create_functions
+    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
+    Sunspot.index(Entry.all)
+    Sunspot.commit
   end
 
   config.before(:each) do |example|
@@ -92,12 +98,14 @@ RSpec.configure do |config|
   config.after(:each) do |example|
     DatabaseCleaner.clean
     if example.metadata[:js]
-      Sunspot::remove_all!
-      ActiveRecord::Base.connection.execute("SET FOREIGN_KEY_CHECKS=0")
+      Sunspot.remove_all!
+      ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
       SDBMSS::SeedData.create
       SDBMSS::ReferenceData.create_all
       SDBMSS::Mysql.create_functions
-      ActiveRecord::Base.connection.execute("SET FOREIGN_KEY_CHECKS=1")
+      ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
+      Sunspot.index(Entry.all)
+      Sunspot.commit
     end
   end
 
@@ -116,5 +124,4 @@ RSpec.configure do |config|
   #     puts meta[:full_description] + "\n Screenshot: #{screenshot_path}"
   #   end
   # end
-
 end
