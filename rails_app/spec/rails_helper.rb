@@ -107,16 +107,28 @@ RSpec.configure do |config|
     if example.metadata[:js]
       # Reset browser BEFORE the slow re-seeding so Capybara's own cleanup
       # hook (which runs after ours in LIFO order) doesn't time out waiting
-      # for a browser that has been idle for 60+ seconds of Solr callbacks.
+      # for a browser that has been idle during Solr callbacks.
       Capybara.reset_sessions!
     end
     DatabaseCleaner.clean
     if example.metadata[:js]
       ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
-      SDBMSS::SeedData.create
-      SDBMSS::ReferenceData.create_all
-      SDBMSS::Mysql.create_functions
-      ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
+      # Suppress Solr during re-seeding: AR after_commit callbacks would try
+      # to hit Solr on every record created, causing Net::ReadTimeout on stale
+      # connections and corrupting the Sunspot connection pool for subsequent
+      # tests.  The before(:suite) hook indexes seed data; after
+      # truncation+reseed the same AUTO_INCREMENT IDs are restored, so Solr
+      # state stays valid without re-indexing.
+      sunspot_session = Sunspot.session
+      Sunspot.session = Sunspot::Rails::StubSessionProxy.new(sunspot_session)
+      begin
+        SDBMSS::SeedData.create
+        SDBMSS::ReferenceData.create_all
+        SDBMSS::Mysql.create_functions
+      ensure
+        Sunspot.session = sunspot_session
+        ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
+      end
     end
   end
 
