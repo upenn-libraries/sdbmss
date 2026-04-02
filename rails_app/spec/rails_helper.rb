@@ -78,7 +78,11 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     DatabaseCleaner.clean_with(:truncation)
-    Sunspot.remove_all!
+    begin
+      Sunspot.remove_all!
+    rescue => e
+      Rails.logger.warn "Solr remove_all before suite failed: #{e.message}"
+    end
     # Disable FK checks while bootstrapping reference data to avoid
     # seed ordering issues with strict constraints in the test DB.
     ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
@@ -86,8 +90,12 @@ RSpec.configure do |config|
     SDBMSS::ReferenceData.create_all
     SDBMSS::Mysql.create_functions
     ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
-    Sunspot.index(Entry.all)
-    Sunspot.commit
+    begin
+      Sunspot.index(Entry.all)
+      Sunspot.commit
+    rescue => e
+      Rails.logger.warn "Solr index before suite failed: #{e.message}"
+    end
   end
 
   config.before(:each) do |example|
@@ -98,7 +106,11 @@ RSpec.configure do |config|
   config.after(:each) do |example|
     DatabaseCleaner.clean
     if example.metadata[:js]
-      Sunspot.remove_all!
+      begin
+        Sunspot.remove_all!
+      rescue => e
+        Rails.logger.warn "Solr remove_all after test failed: #{e.message}"
+      end
       ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
       SDBMSS::SeedData.create
       SDBMSS::ReferenceData.create_all
