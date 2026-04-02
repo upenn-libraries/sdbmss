@@ -104,8 +104,12 @@ RSpec.configure do |config|
       SDBMSS::ReferenceData.create_all
       SDBMSS::Mysql.create_functions
       ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
-      Sunspot.index(Entry.all)
-      Sunspot.commit
+      begin
+        Sunspot.index(Entry.all)
+        Sunspot.commit
+      rescue => e
+        Rails.logger.warn "Solr reindex after test failed: #{e.message}"
+      end
     end
   end
 
