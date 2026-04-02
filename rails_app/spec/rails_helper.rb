@@ -77,15 +77,15 @@ RSpec.configure do |config|
   config.include SDBMSS::Capybara::Login
 
   config.before(:suite) do
+    # Disable FK checks before truncation so MySQL can truncate tables
+    # that have FK references (e.g. users table referenced by many others).
+    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
     DatabaseCleaner.clean_with(:truncation)
     begin
       Sunspot.remove_all!
     rescue => e
       Rails.logger.warn "Solr remove_all before suite failed: #{e.message}"
     end
-    # Disable FK checks while bootstrapping reference data to avoid
-    # seed ordering issues with strict constraints in the test DB.
-    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
     SDBMSS::SeedData.create
     SDBMSS::ReferenceData.create_all
     SDBMSS::Mysql.create_functions
