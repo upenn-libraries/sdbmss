@@ -104,6 +104,12 @@ RSpec.configure do |config|
   end
 
   config.after(:each) do |example|
+    if example.metadata[:js]
+      # Reset browser BEFORE the slow re-seeding so Capybara's own cleanup
+      # hook (which runs after ours in LIFO order) doesn't time out waiting
+      # for a browser that has been idle for 60+ seconds of Solr callbacks.
+      Capybara.reset_sessions!
+    end
     DatabaseCleaner.clean
     if example.metadata[:js]
       ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
