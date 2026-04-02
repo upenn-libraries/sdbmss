@@ -9,7 +9,7 @@
 # - a possible solution would be to figure out a way of loading ALL facets, then select the last X and continue normally
 # - memory issues for large facet list (authors has like 5000, I think?)
 
-Rails.application.config.after_initialize do
+Rails.application.config.to_prepare do
   Blacklight::Catalog.module_eval do
     def facet
       @facet = blacklight_config.facet_fields[params[:id]]
@@ -42,7 +42,7 @@ end
 # expects sunspot(solr) to index by ID as a number, but sunspot needs to index it by a string (Entry ID)
 #
 # to compensate, since it's literally a string change, I just do it here...
-Rails.application.config.after_initialize do
+Rails.application.config.to_prepare do
   Blacklight::SearchHelper.module_eval do
     def fetch_one(id, extra_controller_params)
       id = "Entry #{id}"
