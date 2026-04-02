@@ -13,6 +13,7 @@ Capybara.register_driver(:better_cuprite) do |app|
     },
     inspector: true,
     headless: true,
+    pending_connection_errors: false,
     url: ENV['CHROME_URL']
   )
 end
@@ -99,13 +100,13 @@ RSpec.configure do |config|
   # order dependency and want to debug it, you can fix the order by providing
   # the seed, which is printed after each run.
   #     --seed 1234
-  config.order = :random
+  # config.order = :random
 
   # Seed global randomization in this process using the `--seed` CLI option.
   # Setting this allows you to use `--seed` to deterministically reproduce
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
-  Kernel.srand config.seed
+  # Kernel.srand config.seed
 =end
 
   config.order = :random
