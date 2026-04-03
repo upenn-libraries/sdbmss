@@ -96,16 +96,34 @@ RSpec.configure do |config|
     rescue => e
       Rails.logger.warn "Solr index before suite failed: #{e.message}"
     end
+    begin
+      # Optimize the index (merge segments, prune deleted docs) so repeated test
+      # runs don't accumulate a large transaction log that eventually blocks
+      # Solr commits.  waitFlush/waitSearcher=false returns immediately.
+      require 'net/http'
+      solr_url = URI(ENV['SOLR_TEST_URL'] || 'http://localhost:8983/solr/test')
+      Net::HTTP.new(solr_url.host, solr_url.port).post(
+        "#{solr_url.path}/update?optimize=true&waitFlush=false&waitSearcher=false",
+        '<optimize/>',
+        'Content-Type' => 'application/xml'
+      )
+    rescue => e
+      Rails.logger.warn "Solr optimize before suite failed: #{e.message}"
+    end
   end
 
   config.before(:each) do |example|
     # Replace the Sunspot session with a fresh ThreadLocalSessionProxy so that
     # every thread (test thread AND WEBrick server thread) gets new RSolr
-    # connections.  Without this, the WEBrick thread can hold a stale TCP
-    # connection to Solr from a previous test; the login after_filter calls
-    # commit_if_dirty, hits the stale socket, and blocks until Net::ReadTimeout
-    # -- causing Ferrum::TimeoutError on click_button 'Log in'.
+    # connections, eliminating stale socket errors from previous tests.
     Sunspot.session = Sunspot::Rails.build_session if example.metadata[:js]
+    # Suppress User#perform_index_tasks globally (patches the class, visible to
+    # ALL threads including WEBrick).  Devise login updates the User record
+    # (Trackable), which fires after_save :perform_index_tasks → Sunspot.index →
+    # RSolr POST.  Stubbing this one callback prevents Net::ReadTimeout in
+    # WEBrick while leaving all other AR Sunspot callbacks (Comment, Place, etc.)
+    # intact so those records are indexed normally and searches still work.
+    allow_any_instance_of(User).to receive(:perform_index_tasks)
     DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
     DatabaseCleaner.start
   end

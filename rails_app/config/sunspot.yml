@@ -24,11 +24,13 @@ test:
   solr:
     log_level: WARNING
     # Disable auto-commit after every request so WEBrick's after_filter never
-    # tries to commit to Solr during test processing.  Stale keepalive
-    # connections to Solr would cause Net::ReadTimeout, which blocks WEBrick
-    # long enough for Ferrum to time out on the browser side.  Tests that need
-    # committed Solr data call e.index! (or similar) explicitly.
+    # tries to commit to Solr during test processing.  The global StubSessionProxy
+    # in rails_helper before(:each) already prevents all incidental Solr calls
+    # (including User indexing during Devise login), so only tests that explicitly
+    # swap in a real session will reach Solr.  Tests that need committed Solr data
+    # call Sunspot::Rails.build_session and then e.index! (or similar) explicitly.
     auto_commit_after_request: false
-    # Short timeout so Solr failures fail fast instead of blocking WEBrick
-    # for 60+ seconds (which would cause Ferrum::TimeoutError in the browser).
-    read_timeout: 2
+    # 15-second timeout: generous enough for Solr's first response after startup,
+    # while still bounding failures.  The 2-second value was needed when WEBrick
+    # could hit Solr on every login; the global stub eliminates that risk.
+    read_timeout: 15
