@@ -55,9 +55,9 @@
   <div class="col-sm-12 text-center">
     <ul class="pagination">
       <% ('a'..'z').to_a.each do |letter| %>
-        <li class='<%= letter == params[:letter] ? "active" : "" %>'><%= link_to letter.capitalize, params.merge(:letter => letter).except(:page) %></li>
+        <li class='<%= letter == params[:letter] ? "active" : "" %>'><%= link_to letter.capitalize, request.params.merge(:letter => letter).except(:page) %></li>
       <% end %>
-      <li class='<%= !params[:letter] ? "active" : "" %>'><%= link_to "All", params.except(:letter).except(:page) %></li>
+      <li class='<%= !params[:letter] ? "active" : "" %>'><%= link_to "All", request.params.except(:letter).except(:page) %></li>
     </ul>
   </div>
   <div class="col-sm-3">

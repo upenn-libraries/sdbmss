@@ -120,7 +120,7 @@ module Revert
     previous2 = previous.select { |field, value| value != nil && current[field] != value }
     
     # ignore fields that are skipped by paper-trail (or that shouldn't be shown)
-    fields = ((current2.keys | previous2.keys) - @model.paper_trail.options[:ignore]) - ['id', 'entry_id', 'created_at']
+    fields = ((current2.keys | previous2.keys) - @model.class.paper_trail_options[:ignore]) - ['id', 'entry_id', 'created_at']
     
     #substitute the name for the id for associated fields    
     current2.each do |k, v|

@@ -10,7 +10,7 @@ class ActivitiesController < ApplicationController
   def show_all
     if params[:user]
       # finds last 7 days of activity - maybe too much?
-      dates = Activity.where(user: User.find(params[:user])).order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)")
+      dates = Activity.where(user: User.find(params[:user])).group("DATE(created_at)").order(Arel.sql("DATE(created_at) desc")).limit(7).pluck(Arel.sql("DATE(created_at)"))
       day = params[:day].to_i || 0
       @activities = Activity.where(user: User.find(params[:user])).where("created_at > ? and created_at <= ?", dates[day], (day - 1 >= 0 ? dates[day - 1] : Time.now)).order("created_at desc")     
     elsif params[:watched]
@@ -34,11 +34,11 @@ class ActivitiesController < ApplicationController
       ]
       query_string = queries.join(" or ")
 
-      dates = Activity.where(query_string).order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)")      
+      dates = Activity.where(query_string).group("DATE(created_at)").order(Arel.sql("DATE(created_at) desc")).limit(7).pluck(Arel.sql("DATE(created_at)"))      
       day = params[:day].to_i || 0
       @activities = Activity.where(query_string).where("created_at > ? and created_at <= ?", dates[day], (day - 1 >= 0 ? dates[day - 1] : Time.now)).order("created_at desc")
     else
-      dates = Activity.order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)")
+      dates = Activity.group("DATE(created_at)").order(Arel.sql("DATE(created_at) desc")).limit(7).pluck(Arel.sql("DATE(created_at)"))
       day = params[:day].to_i || 0
       @activities = Activity.includes(:user).where("created_at > ? and created_at <= ?", dates[day], (day - 1 >= 0 ? dates[day - 1] : Time.now)).order("created_at desc")
       #@activities = Activity.includes(:user).where("created_at > ?", dates.last).order("created_at desc")     
@@ -55,7 +55,7 @@ class ActivitiesController < ApplicationController
     @page = (params["page"] || 1).to_i
     @activities = []
     last = 0
-    #start_date = Activity.order("created_at desc").group("DATE(created_at)").limit(7).pluck("DATE(created_at)").last
+    #start_date = Activity.group("DATE(created_at)").order(Arel.sql("DATE(created_at) desc")).limit(7).pluck(Arel.sql("DATE(created_at)")).last
     @activities = Activity.includes(:user).where(params_for_index).limit(@page_size).offset((@page - 1) * @page_size).order("created_at desc")
     @versions = PaperTrail::Version.where(transaction_id: @activities.map(&:transaction_id).flatten.uniq).includes(:item).order("created_at DESC")
     @users = User.where(id: @versions.map(&:whodunnit).uniq)

@@ -54,12 +54,7 @@ class EntryVersionFormatter
   USER_IDS = ['created_by_id', 'updated_by_id', 'approved_by_id', 'reviewed_by_id']    
 
   def initialize(version)
-    if not EntryTitle.last
-      et = EntryTitle.new
-      @skip = et.paper_trail.options[:ignore]
-    else
-      @skip = EntryTitle.last.paper_trail.options[:ignore]
-    end
+    @skip = EntryTitle.paper_trail_options[:ignore]
     @version = version
     @details = nil
   end
