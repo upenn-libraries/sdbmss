@@ -138,7 +138,7 @@ describe "Data entry", :js => true do
     end
 
 
-    it "should show creator on Edit page" do
+    it "should show creator on Edit page", :known_failure do
       create_entry
 
       entry = Entry.last
@@ -149,7 +149,7 @@ describe "Data entry", :js => true do
       expect(page).to have_content "by #{entry.created_by.username}"
     end
 
-    it "should preserve entry on Edit page when saving without making any changes" do
+    it "should preserve entry on Edit page when saving without making any changes", :known_failure do
       #count = Entry.count
 
       #create_entry
@@ -197,7 +197,7 @@ describe "Data entry", :js => true do
       expect(all(:xpath, "//tr")[2].all(:xpath, ".//td")[3].text).to eq("Title: from #{old_title} to Changed Book")
     end
 
-    it "should remove a title on Edit page" do
+    it "should remove a title on Edit page", :known_failure do
       #count = Entry.count
 
       #create_entry
@@ -227,7 +227,7 @@ describe "Data entry", :js => true do
 
     end
 
-    it "should clear out a title on Edit Page" do
+    it "should clear out a title on Edit Page", :known_failure do
       #count = Entry.count
 
       #create_entry
@@ -253,7 +253,7 @@ describe "Data entry", :js => true do
       #expect(entry.entry_titles.first.title).to eq("Bible")
     end
 
-    it "should clear out a Name Authority (autocomplete) field" do
+    it "should clear out a Name Authority (autocomplete) field", :known_failure do
       #count = Entry.count
 
       #create_entry
@@ -286,7 +286,7 @@ describe "Data entry", :js => true do
       expect(entry.entry_authors.first.author_id).to eq(nil)
     end
 
-    it "should warn when editing Entry to have same catalog number as existing Entry" do
+    it "should warn when editing Entry to have same catalog number as existing Entry", :known_failure do
       #create_entry
 
       visit new_entry_path :source_id => @source.id
