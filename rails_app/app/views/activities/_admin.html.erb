@@ -31,19 +31,19 @@
         <ul class="pagination">
             <% first = [@page - 3, 2].max %>
             <% last = [@page + 3, @num_pages].min %>
-            <li class="<%= 'active' if @page == 1 %>"><%= link_to "First", params.merge(:page => 1) %></li>
+            <li class="<%= 'active' if @page == 1 %>"><%= link_to "First", request.params.merge(:page => 1) %></li>
             <% if @page > 4 %>
                 <li><a class="disabled text-muted">...</a></li>
             <% end %>
             <% (last - first).times do |i| %>
                 <li class="<%= first + i == @page ? 'active' : '' %>">
-                    <%= link_to first + i, params.merge(:page => first + i) %>
+                    <%= link_to first + i, request.params.merge(:page => first + i) %>
                 </li>
             <% end %>
             <% if @page < @num_pages - 3 %>
                 <li><a class="disabled text-muted">...</a></li>
             <% end %>
-            <li class="<%= 'active' if @page == @num_pages %>"><%= link_to "Last", params.merge(:page => @num_pages) %></li>
+            <li class="<%= 'active' if @page == @num_pages %>"><%= link_to "Last", request.params.merge(:page => @num_pages) %></li>
         </ul>
     </div>
 </div>

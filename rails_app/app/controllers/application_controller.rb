@@ -71,7 +71,7 @@ class ApplicationController < ActionController::Base
   # contextually determined path. The latter breaks the top nav search
   # box on any page that uses a controller besides CatalogController.
   def sdbmss_search_action_path(options = {})
-    opts = options.dup
+    opts = options.respond_to?(:to_unsafe_h) ? options.to_unsafe_h.dup : options.dup
     # prevent deprecation warnings from Rails
     ["action", "controller"].each do |key|
       if opts.has_key? key
