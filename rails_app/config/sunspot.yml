@@ -29,3 +29,6 @@ test:
     # long enough for Ferrum to time out on the browser side.  Tests that need
     # committed Solr data call e.index! (or similar) explicitly.
     auto_commit_after_request: false
+    # Short timeout so Solr failures fail fast instead of blocking WEBrick
+    # for 60+ seconds (which would cause Ferrum::TimeoutError in the browser).
+    read_timeout: 2
