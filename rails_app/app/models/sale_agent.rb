@@ -1,5 +1,5 @@
 
-class SaleAgent < ActiveRecord::Base
+class SaleAgent < ApplicationRecord
 
   include CertaintyFlags
   include HasPaperTrail

@@ -1,4 +1,4 @@
-class Group < ActiveRecord::Base
+class Group < ApplicationRecord
 
   has_many :group_records, dependent: :destroy, :foreign_key => :group_id
   has_many :entries, through: :group_records, source: :record, source_type: "Entry"

@@ -1,3 +1,3 @@
-class EntryManuscriptActivity < ActiveRecord::Base
+class EntryManuscriptActivity < ApplicationRecord
   belongs_to :activity
 end

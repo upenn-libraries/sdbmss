@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
   helper_method :sdbmss_search_action_path
 
   # register user activity
-  after_filter :user_activity
+  after_action :user_activity
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit(:sign_up, keys: [:username, :email, :password, :password_confirmation, :remember_me, :bio])

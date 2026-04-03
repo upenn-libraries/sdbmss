@@ -1,5 +1,5 @@
 
-class SourceType < ActiveRecord::Base
+class SourceType < ApplicationRecord
 
   # Constants whose string values we use for the 'name' field.
   #

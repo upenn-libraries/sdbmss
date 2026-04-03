@@ -1,21 +1,19 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.2.11.3'
+gem 'rails', '~> 5.2.8'
 
-gem "actionview"
-gem "nokogiri"
-gem "activejob"
-gem "rack", ">= 1.6.11"
+gem "nokogiri", "< 1.16"
+# rack version managed by Rails
 # gem "loofah", "= 2.19.1" # updated to 2.21.1, but that calls for Nokogiri::HTML4, which is not available in 1.8.5
-gem "rubyzip", ">= 1.2.2"
-gem "ffi", ">= 1.9.24"
-gem "json", "~> 2.3.0"
+gem "rubyzip", "~> 2.3"
+gem "ffi", ">= 1.9.24", "< 1.17"
+gem "json", ">= 2.3"
 gem "psych", "~> 3.1"
-gem "rdoc", "~> 6.3"
+gem "rdoc", "~> 6.3.0"
 gem "sprockets", ">= 3.7.2"
-gem "net-ssh", "< 5.0"
-gem "kramdown", "<= 1.16.2"
+# gem "net-ssh" — pin removed for Rails 5.2
+gem "kramdown"
 gem "sassc", ">= 2.0.0"
 gem 'autoprefixer-rails', '~> 7.1.6'
 gem 'html-pipeline', '~> 2.12.3'
@@ -25,12 +23,12 @@ gem 'invisible_captcha'
 
 gem 'actionview-encoded_mail_to'
 
-gem 'logger', '~> 1.2.7'
+# gem 'logger' — pin removed for Rails 5.2
 
-gem 'date', '~> 2.0'
+# gem 'date' — pin removed; Ruby 2.7 ships date natively
 
 gem 'mysql2'
-gem 'bigdecimal', '1.3.5'
+gem 'bigdecimal'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -39,17 +37,17 @@ gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '~> 2.7.2'
 
 # Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.0.0'
+gem 'coffee-rails', '~> 4.2'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails', '~> 4.2.1'
 gem 'jquery-ui-rails', '~> 5.0.3'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
-gem 'turbolinks', '~> 2.5.0'
+gem 'turbolinks', '~> 5.2'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.2.0'
+gem 'jbuilder', '~> 2.11.0'
 
 # Use unicorn as the app server
 gem 'unicorn', '~> 4.9.0'
@@ -60,33 +58,36 @@ gem 'rack-handlers'
 gem "blacklight", "~> 6.9.0"
 gem "twitter-typeahead-rails", "= 0.11.1.pre.corejavascript"
 gem "rsolr", "~> 2.0"
-gem "jettywrapper", "~> 2.0.3"
+# jettywrapper removed — Solr is Dockerized
 gem "blacklight_advanced_search", "~> 6.4.1"
 
 # For authentication; used by Blacklight and by SDBMSS
 gem "devise", "~> 4.7.1"
 gem "devise-guests", "~> 0.3.0"
 
+# Extracted from Rails 5; needed by Blacklight
+gem "responders", "~> 3.0"
+
 # For roles and permissions checking
-gem "cancancan", "~> 1.12.0"
+gem "cancancan", "~> 3.5"
 
 # For indexing records in Solr
 gem 'sunspot_rails', '~> 2.5.0'
 
 # Use database as session store
-gem 'activerecord-session_store', '~> 0.1.0'
+gem 'activerecord-session_store', '~> 1.1'
 
 # for calculating string similarity
 gem 'levenshtein', '~> 0.2.2'
 
 # for auditing model changes
-gem 'paper_trail', '~> 4.0.0'
+gem 'paper_trail', '~> 10.3'
 
 # natural language date parser
 gem 'chronic', '~> 0.10.2'
 
 # async background job processing
-gem 'delayed_job'
+gem 'delayed_job', '~> 4.1.0'
 gem 'delayed_job_active_record'
 
 # neeeded for delayed_job script to run in background
@@ -96,31 +97,33 @@ gem "daemons", '~> 1.2.2'
 gem "god", "~> 0.13.6"
 
 # ability to put entire app in maintenance mode
-gem "turnout", "~> 2.1.0"
+# turnout ~> 2.1.0 requires rack ~> 1.3, incompatible with Rails 5.2 (Rack 2.x)
+# TODO: find a Rack 2-compatible replacement or fork
+# gem "turnout", "~> 2.1.0"
 
 # send email notifications on app exceptions
-gem "exception_notification", "~> 4.1.1"
+gem "exception_notification", "~> 4.5"
 
 # converts fixnums to string equivalents
 gem "number_to", "~> 0.7.1"
 
 # empties db after each group of tests
-gem "database_cleaner", "~> 1.4.1"
+gem "database_cleaner", "~> 2.0"
 
 # for compressing csv exports to .zip
 # gem "rubyzip"
 
 #gem "linkeddata"
 #gem "rdf-turtle"
-gem "bunny"
+gem "bunny", "~> 2.22"
 
 gem 'data-confirm-modal'
 
-gem 'thredded', '~> 0.9.4'
+gem 'thredded', '~> 0.16'
 
 gem 'whenever', :require => false
 
-gem 'rake', '10.5.0'
+# gem 'rake' — pin removed; Rails 5.2 pulls rake 13.x
 
 gem 'codemirror-rails'
 
@@ -132,9 +135,9 @@ end
 
 group :development do
   # in-browser console
-  gem 'web-console', '~> 2.1'
+  gem 'web-console', '~> 3.7'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring', '~> 1.1.0'
+  gem 'spring', '~> 2.1'
   # Use Capistrano for deployment
   gem 'capistrano-rails', '~> 1.1.0'
   gem 'pry-rails'
@@ -147,11 +150,11 @@ group :development do
 end
 
 group :test, :development do
-  gem 'rspec-rails', '~> 3.1.0'
-  gem 'capybara', '~> 2.7.1'
+  gem 'rspec-rails', '~> 5.0'
+  gem 'capybara', '~> 3.35', '< 3.40'
   gem 'capybara-screenshot'
-  gem "factory_girl_rails", "~> 4.0"
+  gem "factory_bot_rails", "~> 5.2"
   gem 'cuprite'
   gem 'simplecov', :require => false
-  gem 'byebug'
+  gem 'byebug', '< 12'
 end

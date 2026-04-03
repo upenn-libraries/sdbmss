@@ -192,10 +192,10 @@ class SourcesController < SearchableAuthorityController
     @source = Source.find(params[:id])
     @target_id = params[:target_id]
     @target = nil
-    
+
     @differences = {}
     show_for_merge(search_result_format(@source)).each { |f, v| @differences[f] = [v] }
-        
+
     #params[:title] = @source.title
     #params[:date] = @source.date
 
@@ -214,9 +214,9 @@ class SourcesController < SearchableAuthorityController
         @target = Source.find_by(id: @target_id)
         show_for_merge(search_result_format(@target)).each do |f, v|
           if @differences[f].present?
-            @differences[f][1] = v; 
-          else 
-            @differences[f] = [nil, v] 
+            @differences[f][1] = v;
+          else
+            @differences[f] = [nil, v]
           end
         end
       end
@@ -253,7 +253,7 @@ class SourcesController < SearchableAuthorityController
         @source.watches.destroy_all
 
         @source.source_agents.uniq.each do |source_agent|
-          Name.decrement_counter(:source_agents_count, source_agent.agent_id)         
+          Name.decrement_counter(:source_agents_count, source_agent.agent_id)
         end
       end
     elsif @source.entries.where(deprecated: true).count > 0

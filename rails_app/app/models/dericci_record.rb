@@ -1,4 +1,4 @@
-class DericciRecord < ActiveRecord::Base
+class DericciRecord < ApplicationRecord
   has_many :dericci_links
   has_many :names, through: :dericci_links
 
