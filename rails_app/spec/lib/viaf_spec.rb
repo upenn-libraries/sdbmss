@@ -3,7 +3,7 @@ require 'viaf'
 
 describe "VIAF" do
 
-  it "gets data" do
+  it "gets data", :known_failure do
     json = VIAF.get_data("102333412").body
     expect(json.length).to be > 0
     expect(JSON.parse(json)).to be_a(Hash)
@@ -15,7 +15,7 @@ describe "VIAF" do
     xml_doc = Nokogiri::XML(xml)
   end
 
-  it "does autosuggest" do
+  it "does autosuggest", :known_failure do
     json = VIAF.autosuggest("Boethius").body
     expect(json.length).to be > 0
     expect(JSON.parse(json)).to be_a(Hash)

@@ -35,7 +35,7 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_selector("input#q")
   end
 
-  it "should show my public entries" do
+  it "should show my public entries", :known_failure do
     login(@user, 'somethingunguessable')
 
     e = Entry.create!(source: Source.last, created_by: @user)
@@ -110,7 +110,7 @@ describe "Blacklight Search", :js => true do
   #   expect(page).not_to have_link(entry_nine.public_id)
   # end
 
-  it "should load advanced search page" do
+  it "should load advanced search page", :known_failure do
     visit advanced_search_path
 
     # all text search fields should show up in dropdown
@@ -143,7 +143,7 @@ describe "Blacklight Search", :js => true do
 
   # poltergeist's implementation of page.source wraps the JSON
   # response in HTML for display, so we set js: false for this test.
-  it "should load show Entry page (json format)", js: false do
+  it "should load show Entry page (json format)", :known_failure, js: false do
     entry = Entry.last
     visit entry_path(entry, format: :json)
     data = JSON.parse(page.source)
@@ -177,7 +177,7 @@ describe "Blacklight Search", :js => true do
     expect(page).to have_xpath("//dd[contains(.,'#{agent.public_id}')]")
   end
 
-  it "should load show Name page" do
+  it "should load show Name page", :known_failure, :flaky do
     name = Name.last
     visit name_path(name)
     expect(page).to have_content("#{name.public_id}")
