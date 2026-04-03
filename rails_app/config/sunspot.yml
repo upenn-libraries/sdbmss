@@ -23,14 +23,13 @@ staging:
 test:
   solr:
     log_level: WARNING
-    # Disable auto-commit after every request so WEBrick's after_filter never
-    # tries to commit to Solr during test processing.  The global StubSessionProxy
-    # in rails_helper before(:each) already prevents all incidental Solr calls
-    # (including User indexing during Devise login), so only tests that explicitly
-    # swap in a real session will reach Solr.  Tests that need committed Solr data
-    # call Sunspot::Rails.build_session and then e.index! (or similar) explicitly.
-    auto_commit_after_request: false
-    # 15-second timeout: generous enough for Solr's first response after startup,
-    # while still bounding failures.  The 2-second value was needed when WEBrick
-    # could hit Solr on every login; the global stub eliminates that risk.
+    # auto_commit_after_request defaults to true — keep it that way so that
+    # records created/edited during a test are committed to Solr by WEBrick's
+    # after_filter, making them immediately searchable.
+    # Login is safe without disabling this: allow_any_instance_of(User).to
+    # receive(:perform_index_tasks) in before(:each) means login never marks
+    # the session dirty, so commit_if_dirty after login is always a no-op.
+    #
+    # 15-second timeout: generous enough for Solr's first response after
+    # startup, while still bounding failures on a stuck/unreachable Solr.
     read_timeout: 15

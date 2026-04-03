@@ -81,10 +81,23 @@ RSpec.configure do |config|
     # that have FK references (e.g. users table referenced by many others).
     ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
     DatabaseCleaner.clean_with(:truncation)
+    # Delete all Solr documents directly via HTTP so stale entries from
+    # previous test runs don't survive into this suite.  Sunspot.remove_all!
+    # goes through the session (which may itself be in a bad state if Solr
+    # was previously stuck), so we hit the update handler directly instead.
     begin
-      Sunspot.remove_all!
+      require 'net/http'
+      require 'uri'
+      solr_url = URI(ENV['SOLR_TEST_URL'] || 'http://localhost:8983/solr/test')
+      http = Net::HTTP.new(solr_url.host, solr_url.port)
+      http.read_timeout = 30
+      http.post(
+        "#{solr_url.path}/update?commit=true",
+        '<delete><query>*:*</query></delete>',
+        'Content-Type' => 'application/xml'
+      )
     rescue => e
-      Rails.logger.warn "Solr remove_all before suite failed: #{e.message}"
+      Rails.logger.warn "Solr delete-all before suite failed: #{e.message}"
     end
     SDBMSS::SeedData.create
     SDBMSS::ReferenceData.create_all
