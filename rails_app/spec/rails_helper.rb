@@ -99,6 +99,13 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do |example|
+    # Replace the Sunspot session with a fresh ThreadLocalSessionProxy so that
+    # every thread (test thread AND WEBrick server thread) gets new RSolr
+    # connections.  Without this, the WEBrick thread can hold a stale TCP
+    # connection to Solr from a previous test; the login after_filter calls
+    # commit_if_dirty, hits the stale socket, and blocks until Net::ReadTimeout
+    # -- causing Ferrum::TimeoutError on click_button 'Log in'.
+    Sunspot.session = Sunspot::Rails.build_session if example.metadata[:js]
     DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
     DatabaseCleaner.start
   end
