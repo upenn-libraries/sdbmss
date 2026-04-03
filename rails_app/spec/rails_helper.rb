@@ -129,7 +129,23 @@ RSpec.configure do |config|
     # Replace the Sunspot session with a fresh ThreadLocalSessionProxy so that
     # every thread (test thread AND WEBrick server thread) gets new RSolr
     # connections, eliminating stale socket errors from previous tests.
-    Sunspot.session = Sunspot::Rails.build_session if example.metadata[:js]
+    if example.metadata[:js]
+      Sunspot.session = Sunspot::Rails.build_session
+      # Re-sync the Solr Entry index at the start of every JS test.  JS tests use
+      # truncation+reseed with StubSessionProxy (no Solr during reseed), so entries
+      # created or modified during a previous test may remain in Solr with IDs that
+      # no longer exist in the DB after truncation.  Removing all Entry docs and
+      # re-indexing the seed entries ensures every test starts from a consistent
+      # Solr state and prevents _bookmark_all / _document view crashes caused by
+      # stale Solr docs returning nil AR objects.
+      begin
+        Sunspot.remove_all(Entry)
+        Sunspot.index(Entry.all)
+        Sunspot.commit
+      rescue => e
+        Rails.logger.warn "Solr Entry resync before JS test failed: #{e.message}"
+      end
+    end
     # Suppress User#perform_index_tasks globally (patches the class, visible to
     # ALL threads including WEBrick).  Devise login updates the User record
     # (Trackable), which fires after_save :perform_index_tasks → Sunspot.index →
