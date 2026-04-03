@@ -56,9 +56,9 @@ class EntryVersionFormatter
   def initialize(version)
     if not EntryTitle.last
       et = EntryTitle.new
-      @skip = et.paper_trail_options[:ignore]
+      @skip = et.paper_trail.options[:ignore]
     else
-      @skip = EntryTitle.last.paper_trail_options[:ignore]
+      @skip = EntryTitle.last.paper_trail.options[:ignore]
     end
     @version = version
     @details = nil

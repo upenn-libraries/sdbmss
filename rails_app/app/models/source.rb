@@ -1,5 +1,5 @@
 
-class Source < ActiveRecord::Base
+class Source < ApplicationRecord
 
   TYPE_BLANK = nil
 

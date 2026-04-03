@@ -1,4 +1,4 @@
-class Watch < ActiveRecord::Base
+class Watch < ApplicationRecord
 
   belongs_to :watched, polymorphic: true
   belongs_to :user

@@ -8,7 +8,7 @@
 # an Entry entails changing EntryAuthor records, but from a user
 # standpoint, it's the Entry that has changed, and that's what we
 # would record here in the Activity.
-class Activity < ActiveRecord::Base
+class Activity < ApplicationRecord
 
   belongs_to :user
   belongs_to :item, polymorphic: true

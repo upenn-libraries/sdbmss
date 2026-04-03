@@ -1,4 +1,4 @@
-class GroupUser < ActiveRecord::Base
+class GroupUser < ApplicationRecord
   belongs_to :user
   belongs_to :group
   belongs_to :created_by, class_name: 'User'
