@@ -23,3 +23,9 @@ staging:
 test:
   solr:
     log_level: WARNING
+    # Disable auto-commit after every request so WEBrick's after_filter never
+    # tries to commit to Solr during test processing.  Stale keepalive
+    # connections to Solr would cause Net::ReadTimeout, which blocks WEBrick
+    # long enough for Ferrum to time out on the browser side.  Tests that need
+    # committed Solr data call e.index! (or similar) explicitly.
+    auto_commit_after_request: false
