@@ -36,7 +36,7 @@ module Revert
         if v.model_name.name != @model.model_name.name
           e = v.send @model.model_name.name.underscore
           if not touched.include? e
-            e.touch_with_version
+            e.touch
             touched.append(e)
           end
         end
@@ -46,7 +46,7 @@ module Revert
         t.save
       end
     end
-    
+
     if destroyed
       redirect_to dashboard_activity_path
     else
@@ -74,7 +74,7 @@ module Revert
       if version_class == @model.class && version.event == 'create'
         @error = "WARNING: If you undo creation of this record, it will be deleted and the change history will no longer be accessible."
       end
-      
+
       if version.event == 'destroy'   #undelete
         if version.item
           @error = "You cannot un-delete this field, it already exists!"
@@ -118,11 +118,11 @@ module Revert
     # select only the fields that are changed between the two versions
     current2 = current.select { |field, value| value != nil && previous[field] != value }
     previous2 = previous.select { |field, value| value != nil && current[field] != value }
-    
+
     # ignore fields that are skipped by paper-trail (or that shouldn't be shown)
     fields = ((current2.keys | previous2.keys) - @model.class.paper_trail_options[:ignore]) - ['id', 'entry_id', 'created_at']
-    
-    #substitute the name for the id for associated fields    
+
+    #substitute the name for the id for associated fields
     current2.each do |k, v|
       if EntryVersionFormatter.isClass(k)
         current2[k] = "#{EntryVersionFormatter.toClass(k).find(v)}"
