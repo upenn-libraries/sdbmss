@@ -46,7 +46,7 @@ module ApplicationHelper
     if @pagination == nil
       raise "params_for_prefix_url called from view where @pagination isn't available"
     end
-    new_params = @pagination.params_for_resort_url('index', params)
+    new_params = @pagination.params_for_resort_url('index', search_state.to_h)
     if prefix != 'all'
       new_params["prefix"] = prefix
     else
@@ -95,7 +95,7 @@ module ApplicationHelper
     fieldnames = fields.keys
 
     # figure out, from #params, the 'simple search' that user did
-    queried_fields = params.dup
+    queried_fields = search_state.to_h.dup
     if queried_fields["search_field"].present?
       queried_fields[queried_fields["search_field"]] = queried_fields["q"]
     end

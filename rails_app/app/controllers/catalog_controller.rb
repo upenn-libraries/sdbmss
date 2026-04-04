@@ -238,7 +238,7 @@ class CatalogController < ApplicationController
   # param to try to get more results, blacklight will complain, since
   # the max is specified in the BL config.
   def search_results_as_csv_path
-    p = params.dup
+    p = search_state.to_h.dup
     p.delete "page"
     p["per_page"] = search_results_max
     p["format"] = "csv"
