@@ -9,7 +9,7 @@ module ApplicationHelper
   # should use #search_advanced_path.
   def search_by_facet_value facet_name, value
     # call helpers from BlacklightUrlHelper
-    sdbmss_search_action_path(add_facet_params(facet_name, value, {}))
+    sdbmss_search_action_path(controller.search_state_class.new({}, blacklight_config, controller).add_facet_params(facet_name, value))
   end
 
   # returns a URL for an advanced search; options is a hash that

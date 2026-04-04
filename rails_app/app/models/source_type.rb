@@ -18,7 +18,7 @@ class SourceType < ApplicationRecord
 
   include TellBunny
 
-  default_scope { order("id = 4 desc") }
+  default_scope { order(Arel.sql("id = 4 desc")) }
 
   AUCTION_CATALOG = 'auction_catalog'
   COLLECTION_CATALOG = 'collection_catalog'
