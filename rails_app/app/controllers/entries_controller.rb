@@ -82,7 +82,7 @@ class EntriesController < SearchableAuthorityController
   def format_search(s)
     ids = s.results.map(&:id)
     # cinludes bookmarks/watches??
-    results = Entry.with_associations.includes(:bookmarks, :watches).where(id: ids).order(ids.count > 0 ? "FIELD(id, #{ids.join(', ')})" : "id desc").map { |e|
+    results = Entry.with_associations.includes(:bookmarks, :watches).where(id: ids).order(Arel.sql(ids.count > 0 ? "FIELD(id, #{ids.join(', ')})" : "id desc")).map { |e|
       e.as_flat_hash.merge({
         can_edit: can?(:edit, e),
         bookmarkwatch: (render_to_string partial: "nav/bookmark_watch_table", locals: {model: e }, layout: false, formats: [:html])
