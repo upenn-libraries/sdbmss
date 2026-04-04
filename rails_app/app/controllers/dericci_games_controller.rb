@@ -1,5 +1,5 @@
 class  DericciGamesController < ApplicationController
-  
+
   include LogActivity
 
   load_and_authorize_resource :only => [:show, :new, :update]
@@ -34,10 +34,9 @@ class  DericciGamesController < ApplicationController
   end
 
   def update
-    ActiveRecord::Base.transaction do    
+    ActiveRecord::Base.transaction do
       game = DericciGame.find(params[:id])
       game.update!(game_params)
-      @transaction_id = PaperTrail.transaction_id
     end
     flash[:success] = '<span class="glyphicon glyphicon-tower"></span><span class="glyphicon glyphicon-bishop"></span><span class="glyphicon glyphicon-queen"></span><span class="glyphicon glyphicon-pawn"></span>Thank you for playing the Dericci Archives Game!'.html_safe
     respond_to do |format|
@@ -55,8 +54,8 @@ class  DericciGamesController < ApplicationController
 
   def game_params
     p = params.require(:dericci_game).permit(
-      :skipped, :completed, :flagged, :dericci_records_attributes => [:id, 
-        dericci_links_attributes: [:id, :name_id, :other_info, :_destroy], 
+      :skipped, :completed, :flagged, :dericci_records_attributes => [:id,
+        dericci_links_attributes: [:id, :name_id, :other_info, :_destroy],
         comments_attributes: [:commentable_id, :commentable_type, :comment],
         dericci_record_flags_attributes: [:id, :reason, :_destroy]
       ])

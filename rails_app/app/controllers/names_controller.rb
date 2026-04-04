@@ -25,7 +25,7 @@ class NamesController < SearchableAuthorityController
     query
   end
 
-  # 
+  #
   def search
     session[:last_name_search] = params
     super
@@ -75,7 +75,6 @@ class NamesController < SearchableAuthorityController
         @target.save!
         id = @model.public_id
         @model.merge_into(@target)
-        @transaction_id = PaperTrail.transaction_id
         @model = @target
         log_activity
         flash[:success] = "#{id} has been successfully merged into #{@target.public_id}"

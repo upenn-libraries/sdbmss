@@ -1,8 +1,9 @@
 class ApplicationController < ActionController::Base
-  # Adds a few additional behaviors into the application controller 
+  # Adds a few additional behaviors into the application controller
   include Blacklight::Controller
-  # Please be sure to impelement current_user and user_session. Blacklight depends on 
-  # these methods in order to perform user specific actions. 
+  include PaperTrail::Rails::Controller
+  # Please be sure to impelement current_user and user_session. Blacklight depends on
+  # these methods in order to perform user specific actions.
 
   layout 'application'
 
@@ -71,7 +72,7 @@ class ApplicationController < ActionController::Base
   # contextually determined path. The latter breaks the top nav search
   # box on any page that uses a controller besides CatalogController.
   def sdbmss_search_action_path(options = {})
-    opts = options.respond_to?(:to_unsafe_h) ? options.to_unsafe_h.dup : options.dup
+    opts = options.dup
     # prevent deprecation warnings from Rails
     ["action", "controller"].each do |key|
       if opts.has_key? key
@@ -86,6 +87,13 @@ class ApplicationController < ActionController::Base
 
   def user_activity
     current_user.try :touch
+  end
+
+  protected
+
+  def info_for_paper_trail
+    @transaction_id ||= SecureRandom.random_number(2_147_483_647)
+    { transaction_id: @transaction_id }
   end
 
 end

@@ -50,7 +50,6 @@ class SourcesController < SearchableAuthorityController
       end
       success = @source.save_by(current_user)
       if success
-        @transaction_id = PaperTrail.transaction_id
       end
     end
     respond_to do |format|
@@ -90,7 +89,6 @@ class SourcesController < SearchableAuthorityController
       filtered = source_params_for_create_and_edit
       success = @source.update_by(current_user, filtered)
       if success
-        @transaction_id = PaperTrail.transaction_id
         # for some reason, certain ways of removing a source_agent.agent don't update the counter cache, so we do it manually here
       end
     end
@@ -232,7 +230,6 @@ class SourcesController < SearchableAuthorityController
           agent = SourceAgent.find(params[:source_agent_id])
           agent.update({:source_id => @target.id})
         end
-        @transaction_id = PaperTrail.transaction_id
         @model = @target
         log_activity
         flash[:success] = "#{id} has been successfully merged into #{@target.public_id}"
