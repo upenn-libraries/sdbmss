@@ -1,4 +1,4 @@
-class RenameSourceCommentColumns < ActiveRecord::Migration
+class RenameSourceCommentColumns < ActiveRecord::Migration[4.2]
   def change
 
     drop_table :source_comments

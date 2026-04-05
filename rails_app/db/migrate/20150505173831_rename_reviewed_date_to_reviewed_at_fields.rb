@@ -1,4 +1,4 @@
-class RenameReviewedDateToReviewedAtFields < ActiveRecord::Migration
+class RenameReviewedDateToReviewedAtFields < ActiveRecord::Migration[4.2]
   def change
     remove_column :languages, :reviewed_date
     remove_column :manuscripts, :reviewed_date

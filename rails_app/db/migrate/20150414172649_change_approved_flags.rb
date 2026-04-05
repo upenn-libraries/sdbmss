@@ -1,4 +1,4 @@
-class ChangeApprovedFlags < ActiveRecord::Migration
+class ChangeApprovedFlags < ActiveRecord::Migration[4.2]
   def change
     remove_foreign_key :names, column: :approved_by_id
     remove_column :names, :approved

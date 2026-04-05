@@ -1,4 +1,4 @@
-class AddFlagsToEntries < ActiveRecord::Migration
+class AddFlagsToEntries < ActiveRecord::Migration[4.2]
   def change
     add_column :entries, :deprecated, :boolean, :default => false
     add_reference :entries, :superceded_by, :index => true

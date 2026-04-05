@@ -1,4 +1,4 @@
-class AddReviewedFieldsToEntryManuscript < ActiveRecord::Migration
+class AddReviewedFieldsToEntryManuscript < ActiveRecord::Migration[4.2]
   def change
     add_column :entry_manuscripts, :reviewed, :boolean, :default => false
     add_reference :entry_manuscripts, :reviewed_by, :index => true

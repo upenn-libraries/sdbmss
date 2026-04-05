@@ -1,4 +1,4 @@
-class CreateEntryScribes < ActiveRecord::Migration
+class CreateEntryScribes < ActiveRecord::Migration[4.2]
   def change
     create_table :entry_scribes do |t|
       t.references :entry, index: true

@@ -1,4 +1,4 @@
-class RenameUserCreatedColumnsForGroups < ActiveRecord::Migration
+class RenameUserCreatedColumnsForGroups < ActiveRecord::Migration[4.2]
   def change
     rename_column :groups, :created_by, :created_by_id
     rename_column :groups, :updated_by, :updated_by_id

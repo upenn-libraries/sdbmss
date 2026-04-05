@@ -1,4 +1,4 @@
-class TweakCommentsFields < ActiveRecord::Migration
+class TweakCommentsFields < ActiveRecord::Migration[4.2]
   def change
     remove_column :entry_comments, :public
     add_column :entry_comments, :public, :boolean, :default => true

@@ -1,4 +1,4 @@
-class AddDericciGameObject < ActiveRecord::Migration
+class AddDericciGameObject < ActiveRecord::Migration[4.2]
   def change
     create_table :dericci_games do |t|
       t.integer :created_by_id, index: true
