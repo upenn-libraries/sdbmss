@@ -4,14 +4,24 @@ require "csv"
 
 describe "Manage languages", :js => true do
 
-  before :all do
+  before :each do
     @admin = User.where(role: "admin").first
     @user = User.where(role: "admin").first
 
-    @language = Language.create!(
-      name: "Martian",
-      created_by: @user,
-    )
+    @language = Language.find_or_create_by(name: "Martian") do |l|
+      l.created_by = @user
+    end
+  end
+
+  after :each do
+    if @language
+      begin
+        Sunspot.remove(@language)
+        Sunspot.commit
+      rescue StandardError
+        # Solr cleanup is best-effort
+      end
+    end
   end
 
   context "when admin is logged in" do
@@ -106,11 +116,10 @@ describe "Manage languages", :js => true do
 
   context "when admin is logged in" do
 
-    before :all do
-      @language = Language.create!(
-        name: "Pig Latin",
-        created_by: @user,
-      )
+    before :each do
+      @language = Language.find_or_create_by(name: "Pig Latin") do |l|
+        l.created_by = @user
+      end
     end
 
     before :each do
