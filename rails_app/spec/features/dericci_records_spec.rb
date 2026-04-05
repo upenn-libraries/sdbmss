@@ -4,17 +4,25 @@ require "rails_helper"
 
 describe "Browse Dericci Records", :js => true do
 
-  before :all do
+  before :each do
     @user = User.where(role: "admin").first
     @user2 = User.where(role: "contributor").first
 
-    @d = DericciRecord.create(name: "Camille Desmoulins", place: "Paris", dates: "1794", senate_house: "[Senate House MS901/3/11]")
-    DericciRecord.create(name: "Georges Danton", place: "Marseilles", dates: "1795", senate_house: "[Senate House MS901/3/11]")
-    DericciRecord.create(name: "Maximilien Robespierre", place: "Toulons", dates: "1796", senate_house: "[Senate House MS901/3/11]")
-    DericciRecord.create(name: "Jean-Paul Marat", place: "Nantes", dates: "1793", senate_house: "[Senate House MS901/3/11]")
+    @d = DericciRecord.find_or_create_by(name: "Camille Desmoulins") do |r|
+      r.place = "Paris"; r.dates = "1794"; r.senate_house = "[Senate House MS901/3/11]"
+    end
+    DericciRecord.find_or_create_by(name: "Georges Danton") do |r|
+      r.place = "Marseilles"; r.dates = "1795"; r.senate_house = "[Senate House MS901/3/11]"
+    end
+    DericciRecord.find_or_create_by(name: "Maximilien Robespierre") do |r|
+      r.place = "Toulons"; r.dates = "1796"; r.senate_house = "[Senate House MS901/3/11]"
+    end
+    DericciRecord.find_or_create_by(name: "Jean-Paul Marat") do |r|
+      r.place = "Nantes"; r.dates = "1793"; r.senate_house = "[Senate House MS901/3/11]"
+    end
 
-    Name.create(name: "Camillo", is_author: true).index
-    Name.create(name: "George Danton", is_author: true).index
+    Name.find_or_create_by(name: "Camillo") { |n| n.is_author = true }.index
+    Name.find_or_create_by(name: "George Danton") { |n| n.is_author = true }.index
   end
 
   before :each do
