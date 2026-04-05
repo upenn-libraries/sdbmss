@@ -11,19 +11,6 @@ describe "Manage languages", :js => true do
     @language = Language.find_or_create_by(name: "Martian") do |l|
       l.created_by = @user
     end
-
-    SDBMSS::Util.wait_for_solr_to_be_current
-  end
-
-  after :each do
-    if @language
-      begin
-        Sunspot.remove(@language)
-        Sunspot.commit
-      rescue StandardError
-        # Solr cleanup is best-effort
-      end
-    end
   end
 
   context "when admin is logged in" do
