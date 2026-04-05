@@ -64,6 +64,28 @@ module SDBMSS::SeedData
       role: 'contributor'
     )
 
+    if Page.count == 0
+      [
+        ["Source Instructions",                      "source_instructions.html"],
+        ["Source Overview",                          "source_overview.html"],
+        ["Entry Instructions",                       "entry_instructions.html"],
+        ["Bookmark Instructions",                    "bookmark_instructions.html"],
+        ["Home Text",                                "home_text.html"],
+        ["Linking Tool Entry Instructions",          "linking_tool_entry_instructions.html"],
+        ["Linking Tool Manuscript Instructions",     "linking_tool_manuscript_instructions.html"],
+        ["Groups Instructions",                      "groups_instructions.html"],
+        ["Place Instructions",                       "place_instructions.html"],
+        ["Language Instructions",                    "language_instructions.html"],
+        ["Name Instructions",                        "name_instructions.html"],
+        ["Manuscript Instructions",                  "manuscript_instructions.html"],
+        ["Watches Instructions",                     "watches_instructions.html"],
+        ["De Ricci Archive",                         "de_ricci_archive.html"],
+        ["Exports Instructions",                     "exports_instructions.html"],
+      ].each do |name, filename|
+        Page.create!(name: name, filename: filename)
+      end
+    end
+
   end
 
 end
