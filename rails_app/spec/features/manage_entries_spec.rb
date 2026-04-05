@@ -20,9 +20,9 @@ describe "Manage entries", :js => true do
   after :each do
     if @unapproved_entry
       begin
-        Sunspot.remove([@unapproved_entry])
+        Sunspot.remove(@unapproved_entry)
         Sunspot.commit
-      rescue => e
+      rescue StandardError
         # Solr cleanup is best-effort
       end
     end
