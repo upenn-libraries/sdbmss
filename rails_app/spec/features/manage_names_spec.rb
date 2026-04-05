@@ -48,12 +48,12 @@ describe "Manage Names", :js => true do
   end
 
   it "should show suggestions for names to merge into" do
+    name1 = Name.create!(name: 'Joe Schmoe', is_author: true, created_by: @user)
+    name2 = Name.create!(name: 'Another Joe Schmoe', is_author: true, created_by: @user)
+    Name.index
     expect(Name.last.name).to eq("Another Joe Schmoe")
-
     visit merge_name_path(Name.last.id)
-
     expect(page).to have_content(Name.last.name)
-
-    expect(page).to have_content(Name.last(2)[0].name)
+    expect(page).to have_content(name1.name)
   end
 end
