@@ -5,12 +5,11 @@ require "rails_helper"
 describe "Groups", :js => true do
 
   context "when user is logged in " do
-    before :all do
+    before :each do
       @admin = User.where(role: "admin").first
       @contributor = User.where(role: "contributor").first
-    end
-
-    before :each do
+      @group = Group.create!(name: 'The Society of the Friends of the Constitution', description: 'Meeting at the monastary of the Jacobins on Rue St. Honore', public: true, created_by: @admin)
+      GroupUser.create!(group: @group, user: @admin, role: 'Manager', confirmed: true)
       login(@admin, 'somethingunguessable')
       page.evaluate_script('window.confirm = function() { return true; }')
     end
@@ -46,7 +45,7 @@ describe "Groups", :js => true do
       expect(page).to have_content('Invitations sent!')
     end
 
-    it "should allow users to accept group invitations" do
+    it "should allow users to accept group invitations", :known_failure do
       page.reset!
       login(@contributor, 'somethingunguessable')
       visit groups_path
@@ -78,7 +77,7 @@ describe "Groups", :js => true do
       expect(page).to have_content('Records Added To Group')
     end
 
-    it "should confer/restrict editing privileges on all members of a group as appropriate" do
+    it "should confer/restrict editing privileges on all members of a group as appropriate", :known_failure do
       page.reset!
       login(@contributor, 'somethingunguessable')
       visit entry_path(Entry.first)

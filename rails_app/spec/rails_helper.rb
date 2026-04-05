@@ -1,5 +1,5 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
-ENV["RAILS_ENV"] ||= 'test'
+ENV['RAILS_ENV'] ||= 'test'
 
 require 'simplecov'
 
@@ -10,10 +10,10 @@ SimpleCov.start 'rails' do
   add_filter 'lib/sdbmss/viaf_reconcilliation.rb'
 end
 
-puts "SimpleCov started"
+puts 'SimpleCov started'
 
 require 'spec_helper'
-require File.expand_path("../../config/environment", __FILE__)
+require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
@@ -51,8 +51,8 @@ RSpec.configure do |config|
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   #
-  # set this to false so that any writes to the db can be seen by
-  # poltergeist driver
+  # must be false for DatabaseCleaner per-example strategy to work
+  # (Poltergeist is gone; project now uses Cuprite)
   config.use_transactional_fixtures = false
 
   # RSpec Rails can automatically mix in different behaviours to your tests
@@ -76,14 +76,98 @@ RSpec.configure do |config|
   config.include SDBMSS::Capybara::AlertConfirmer
   config.include SDBMSS::Capybara::Login
 
-  DatabaseCleaner.strategy = :truncation
-  DatabaseCleaner.start
-  DatabaseCleaner.clean
-  Sunspot::remove_all!
-  SDBMSS::SeedData.create
-  SDBMSS::ReferenceData.create_all
-  SDBMSS::Mysql.create_functions
-  config.before(:all) do
+  config.before(:suite) do
+    # Disable FK checks before truncation so MySQL can truncate tables
+    # that have FK references (e.g. users table referenced by many others).
+    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
+    DatabaseCleaner.clean_with(:truncation)
+    # Delete all Solr documents directly via HTTP so stale entries from
+    # previous test runs don't survive into this suite.  Sunspot.remove_all!
+    # goes through the session (which may itself be in a bad state if Solr
+    # was previously stuck), so we hit the update handler directly instead.
+    begin
+      require 'net/http'
+      require 'uri'
+      solr_url = URI(ENV['SOLR_TEST_URL'] || 'http://localhost:8983/solr/test')
+      http = Net::HTTP.new(solr_url.host, solr_url.port)
+      http.read_timeout = 30
+      http.post(
+        "#{solr_url.path}/update?commit=true",
+        '<delete><query>*:*</query></delete>',
+        'Content-Type' => 'application/xml'
+      )
+    rescue => e
+      Rails.logger.warn "Solr delete-all before suite failed: #{e.message}"
+    end
+    SDBMSS::SeedData.create
+    SDBMSS::ReferenceData.create_all
+    SDBMSS::Mysql.create_functions
+    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
+    begin
+      Sunspot.index(Entry.all)
+      Sunspot.commit
+    rescue => e
+      Rails.logger.warn "Solr index before suite failed: #{e.message}"
+    end
+    begin
+      # Optimize the index (merge segments, prune deleted docs) so repeated test
+      # runs don't accumulate a large transaction log that eventually blocks
+      # Solr commits.  waitFlush/waitSearcher=false returns immediately.
+      require 'net/http'
+      solr_url = URI(ENV['SOLR_TEST_URL'] || 'http://localhost:8983/solr/test')
+      Net::HTTP.new(solr_url.host, solr_url.port).post(
+        "#{solr_url.path}/update?optimize=true&waitFlush=false&waitSearcher=false",
+        '<optimize/>',
+        'Content-Type' => 'application/xml'
+      )
+    rescue => e
+      Rails.logger.warn "Solr optimize before suite failed: #{e.message}"
+    end
+  end
+
+  config.before(:each) do |example|
+    # Replace the Sunspot session with a fresh ThreadLocalSessionProxy so that
+    # every thread (test thread AND WEBrick server thread) gets new RSolr
+    # connections, eliminating stale socket errors from previous tests.
+    Sunspot.session = Sunspot::Rails.build_session if example.metadata[:js]
+    # Suppress User#perform_index_tasks globally (patches the class, visible to
+    # ALL threads including WEBrick).  Devise login updates the User record
+    # (Trackable), which fires after_save :perform_index_tasks → Sunspot.index →
+    # RSolr POST.  Stubbing this one callback prevents Net::ReadTimeout in
+    # WEBrick while leaving all other AR Sunspot callbacks (Comment, Place, etc.)
+    # intact so those records are indexed normally and searches still work.
+    allow_any_instance_of(User).to receive(:perform_index_tasks)
+    DatabaseCleaner.strategy = example.metadata[:js] ? :truncation : :transaction
+    DatabaseCleaner.start
+  end
+
+  config.after(:each) do |example|
+    if example.metadata[:js]
+      # Reset browser BEFORE the slow re-seeding so Capybara's own cleanup
+      # hook (which runs after ours in LIFO order) doesn't time out waiting
+      # for a browser that has been idle during Solr callbacks.
+      Capybara.reset_sessions!
+    end
+    DatabaseCleaner.clean
+    if example.metadata[:js]
+      ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
+      # Suppress Solr during re-seeding: AR after_commit callbacks would try
+      # to hit Solr on every record created, causing Net::ReadTimeout on stale
+      # connections and corrupting the Sunspot connection pool for subsequent
+      # tests.  The before(:suite) hook indexes seed data; after
+      # truncation+reseed the same AUTO_INCREMENT IDs are restored, so Solr
+      # state stays valid without re-indexing.
+      sunspot_session = Sunspot.session
+      Sunspot.session = Sunspot::Rails::StubSessionProxy.new(sunspot_session)
+      begin
+        SDBMSS::SeedData.create
+        SDBMSS::ReferenceData.create_all
+        SDBMSS::Mysql.create_functions
+      ensure
+        Sunspot.session = sunspot_session
+        ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
+      end
+    end
   end
 
   # This is commented out b/c it seems the browser doesn't always hang
@@ -101,5 +185,4 @@ RSpec.configure do |config|
   #     puts meta[:full_description] + "\n Screenshot: #{screenshot_path}"
   #   end
   # end
-
 end
