@@ -4,13 +4,12 @@ require "rails_helper"
 
 describe "Manage sources", :js => true do
 
-  before :all do
+  before :each do
     @user = User.where(role: "admin").first
-    @source = Source.create!(
-      source_type: SourceType.auction_catalog,
-      title: "my test source",
-      created_by: @user,
-    )
+    @source = Source.find_or_create_by(title: "my test source") do |s|
+      s.source_type = SourceType.auction_catalog
+      s.created_by = @user
+    end
     Source.index
   end
 
