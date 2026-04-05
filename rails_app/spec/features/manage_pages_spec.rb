@@ -88,11 +88,9 @@ describe "Manage Pages", :js => true do
   end
 
   it "should allow a user to edit a page" do
-    visit edit_page_path(Page.last.name)
-    
-    fill_in "contents", with: "The Philosophy of Poverty"
+    tooltip_page = Page.create!(name: "Test Edit Tooltip", filename: "bookmark_tag.html", category: "tooltip")
+    visit edit_page_path(tooltip_page.name)
     fill_in "page[name]", with: "Updated Tooltip"
-
     click_button "Save Changes"
     expect(page).to have_content('Updated Tooltip')
   end
