@@ -3,9 +3,7 @@ require "rails_helper"
 
 describe "Manage entries", :js => true do
 
-  before :all do
-#    SDBMSS::ReferenceData.create_all
-
+  before :each do
     @user = User.where(role: "admin").first
 
     @unapproved_entry = Entry.new(
@@ -16,10 +14,18 @@ describe "Manage entries", :js => true do
     @unapproved_entry.save!
 
     SDBMSS::Util.wait_for_solr_to_be_current
+    login(@user, 'somethingunguessable')
   end
 
-  before :each do
-    login(@user, 'somethingunguessable')
+  after :each do
+    if @unapproved_entry
+      begin
+        Sunspot.remove([@unapproved_entry])
+        Sunspot.commit
+      rescue => e
+        # Solr cleanup is best-effort
+      end
+    end
   end
 
   it "should return JSON results successfully", :known_failure, js: false do
