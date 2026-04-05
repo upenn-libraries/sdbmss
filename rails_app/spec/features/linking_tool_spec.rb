@@ -104,12 +104,18 @@ describe "Linking Tool", :js => true do
   end
 
   it "should show an EntryManuscript for the last created link" do
+    user = User.where(role: "admin").first
+    entry = Entry.last(3)[0]
+    manuscript = Manuscript.create!(created_by: user)
+    em = EntryManuscript.create!(entry: entry, manuscript: manuscript, relation_type: 'is')
+    em.index!
+    SDBMSS::Util.wait_for_solr_to_be_current
+
     visit entry_manuscripts_path
 
-    expect(page).to have_content(Manuscript.last.public_id)
-    expect(page).to have_content(Entry.last(3)[0].public_id)
-
-    expect(page).to have_content(EntryManuscript.last.id)
+    expect(page).to have_content(manuscript.public_id)
+    expect(page).to have_content(entry.public_id)
+    expect(page).to have_content(em.id.to_s)
   end
 
   it "should link an Entry to an existing Manuscript" do
