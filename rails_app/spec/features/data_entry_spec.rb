@@ -78,20 +78,21 @@ describe "Data entry", :js => true do
   #  sleep(2)
   #end
 
-  before :all do
-    #User.where(username: 'testuser').delete_all
-    @user = User.where(role: "admin").first
+  before :each do
+    @user = User.where(role: 'admin').first
 
     @source = Source.find_or_create_by(
       title: "A Sample Test Source With a Highly Unique Name",
       date: "2013-11-12",
       source_type: SourceType.auction_catalog,
     )
-    source_agent = SourceAgent.create!(
-      source: @source,
-      role: SourceAgent::ROLE_SELLING_AGENT,
-      agent: Name.find_or_create_agent("Sotheby's")
-    )
+    unless @source.source_agents.exists?(role: SourceAgent::ROLE_SELLING_AGENT)
+      SourceAgent.create!(
+        source: @source,
+        role: SourceAgent::ROLE_SELLING_AGENT,
+        agent: Name.find_or_create_agent("Sotheby's")
+      )
+    end
     Source.index
   end
 
