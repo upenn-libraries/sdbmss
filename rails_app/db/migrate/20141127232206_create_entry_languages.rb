@@ -1,4 +1,4 @@
-class CreateEntryLanguages < ActiveRecord::Migration
+class CreateEntryLanguages < ActiveRecord::Migration[4.2]
   def change
     create_table :entry_languages do |t|
       t.references :entry, index: true

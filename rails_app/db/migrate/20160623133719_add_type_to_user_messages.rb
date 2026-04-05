@@ -1,4 +1,4 @@
-class AddTypeToUserMessages < ActiveRecord::Migration
+class AddTypeToUserMessages < ActiveRecord::Migration[4.2]
   def change
     add_column :user_messages, :type, :string
   end

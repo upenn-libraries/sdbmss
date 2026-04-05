@@ -1,4 +1,4 @@
-class AddUserFieldsAndTimeStampAndApprovalToDericciLinks < ActiveRecord::Migration
+class AddUserFieldsAndTimeStampAndApprovalToDericciLinks < ActiveRecord::Migration[4.2]
   def change
     add_column(:dericci_links, :created_at, :datetime)
     add_reference(:dericci_links, :created_by, index: true)

@@ -1,4 +1,4 @@
-class AddEntryCountToPlace < ActiveRecord::Migration
+class AddEntryCountToPlace < ActiveRecord::Migration[4.2]
   def change
     add_column :places, :entries_count, :integer
     add_column :languages, :entries_count, :integer

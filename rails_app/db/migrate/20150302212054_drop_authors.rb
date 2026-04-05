@@ -1,4 +1,4 @@
-class DropAuthors < ActiveRecord::Migration
+class DropAuthors < ActiveRecord::Migration[4.2]
   def change
     drop_table :authors
   end

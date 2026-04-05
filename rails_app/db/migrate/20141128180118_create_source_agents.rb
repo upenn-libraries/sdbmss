@@ -1,4 +1,4 @@
-class CreateSourceAgents < ActiveRecord::Migration
+class CreateSourceAgents < ActiveRecord::Migration[4.2]
   def change
     create_table :source_agents do |t|
       t.references :source, index: true

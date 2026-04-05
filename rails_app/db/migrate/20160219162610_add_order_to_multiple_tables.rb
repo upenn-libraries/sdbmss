@@ -1,4 +1,4 @@
-class AddOrderToMultipleTables < ActiveRecord::Migration
+class AddOrderToMultipleTables < ActiveRecord::Migration[4.2]
   def change
     add_column :entry_authors, :order, :integer
     add_column :entry_dates, :order, :integer

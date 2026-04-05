@@ -1,4 +1,4 @@
-class AddRoleToEntryAuthor < ActiveRecord::Migration
+class AddRoleToEntryAuthor < ActiveRecord::Migration[4.2]
   def change
     add_column :entry_authors, :role, :string
   end
