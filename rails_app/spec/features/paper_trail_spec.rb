@@ -18,7 +18,7 @@ describe "Paper trail", :js => true do
   end
 
 
-  before :all do
+  before :each do
     @user = User.where(role: "admin").first
 
     @source = Source.find_or_create_by(
@@ -26,11 +26,13 @@ describe "Paper trail", :js => true do
       date: "2013-11-12",
       source_type: SourceType.auction_catalog,
     )
-    source_agent = SourceAgent.create!(
-      source: @source,
-      role: SourceAgent::ROLE_SELLING_AGENT,
-      agent: Name.find_or_create_agent("Sotheby's")
-    )
+    unless @source.source_agents.exists?(role: SourceAgent::ROLE_SELLING_AGENT)
+      SourceAgent.create!(
+        source: @source,
+        role: SourceAgent::ROLE_SELLING_AGENT,
+        agent: Name.find_or_create_agent("Sotheby's")
+      )
+    end
   end
 
   context "when user is logged in" do
