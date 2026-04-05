@@ -158,8 +158,6 @@ describe "Blacklight Search", :js => true do
     entry.save!
     SDBMSS::Util.wait_for_solr_to_be_current
 
-    sleep(0.5)
-
     visit entry_path(entry)
     expect(page.status_code).to eq(404)
   end

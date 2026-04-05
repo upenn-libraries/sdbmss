@@ -1,40 +1,31 @@
 require "rails_helper"
 
 describe "User Notifications", :js => true do
-  
-  before :all do
-    @user = User.where(role: "admin").first
-    @user2 = User.create!(
-      email: 'other@test.com',
-      username: 'other',
-      password: 'totallysecure'
-    )
-    @user.notification_setting.update!(on_update: true, on_comment: true, on_reply: true)
-    @user2.notification_setting.update!(on_update: true, on_comment: true, on_reply: true)
-
-    source = Source.create!(
-      title: "a new source",
-      source_type: SourceType.collection_catalog,
-    )
-
-    #create some records
-    @entry1 = Entry.create!(
-      source: Source.first,
-      created_by_id: @user2.id,
-      approved: true
-    )
-
-    @entry2 = Entry.create!(
-      source: Source.first,
-      created_by_id: @user2.id,
-      approved: true
-    )
-    @user2.watches.create(watched: @entry2)
-  end
 
   context "when user is logged in" do
-  
+
     before :each do
+      @user = User.where(role: "admin").first
+      @user2 = User.create!(
+        email: 'other@test.com',
+        username: 'other',
+        password: 'totallysecure'
+      )
+      @user.notification_setting.update!(on_update: true, on_comment: true, on_reply: true)
+      @user2.notification_setting.update!(on_update: true, on_comment: true, on_reply: true)
+
+      @entry1 = Entry.create!(
+        source: Source.first,
+        created_by_id: @user2.id,
+        approved: true
+      )
+
+      @entry2 = Entry.create!(
+        source: Source.first,
+        created_by_id: @user2.id,
+        approved: true
+      )
+      @user2.watches.create(watched: @entry2)
       login(@user, 'somethingunguessable')
     end
 

@@ -108,9 +108,6 @@ describe "Data entry", :js => true do
       page.reset!
     end
 
-    require "lib/data_entry_helpers"
-    include DataEntryHelpers
-
     it "should edit an existing Source" do
       source = Source.create!(
         date: "20141215",
@@ -138,9 +135,7 @@ describe "Data entry", :js => true do
     end
 
 
-    it "should show creator on Edit page", :known_failure do
-      create_entry
-
+    it "should show creator on Edit page" do
       entry = Entry.last
 
       visit edit_entry_path :id => entry.id
@@ -211,6 +206,7 @@ describe "Data entry", :js => true do
       # mock out the confirm dialogue
       page.evaluate_script('window.confirm = function() { return true; }')
 
+      expect(page).to have_css("#delete_title_0")
       find_by_id("delete_title_0").click
       expect(page).to have_content("Are you sure you want to remove this field and its contents?")
       click_button "Yes"
@@ -240,6 +236,7 @@ describe "Data entry", :js => true do
 
       # clear out the title field; this should result in deletion of
       # underlying entry_title record
+      expect(page).to have_field('title_0')
       fill_in 'title_0', with: ''
 
       find(".save-button", match: :first).click
@@ -264,6 +261,7 @@ describe "Data entry", :js => true do
 
       visit edit_entry_path :id => entry.id
 
+      expect(page).to have_field('author_observed_name_0')
       fill_in 'author_observed_name_0', with: "Joe"
       #fill_in 'author_0', with: '     '
       #fill_autocomplete('author_0', with: '     ')
@@ -392,7 +390,7 @@ describe "Data entry", :js => true do
     end
 
     it "should disallow creating Entries if not logged in" do
-      visit new_entry_path :source_id => @source.id
+      visit new_entry_path :source_id => Source.last.id
       expect(page).to have_content("You need to sign in")
     end
 
