@@ -112,15 +112,18 @@ describe "User Notifications", :js => true do
     it "should NOT notify user on comment if notifications are disabled" do
       @user2.notification_setting.update(on_reply: false)
 
-      initial = @user2.notifications.count
-
       visit entry_path(@entry2)
+      fill_in "comment", with: "An initial comment to enable replies."
+      click_button "Post"
+      expect(page).to have_content("An initial comment to enable replies.")
+
+      initial = @user2.reload.notifications.count  # capture AFTER comment notification
 
       click_link "Add a reply..."
       fill_in "reply", with: "I wasn't."
       click_button "Add Reply"
 
-      expect(@user2.notifications.count).to eq(initial)
+      expect(@user2.reload.notifications.count).to eq(initial)
     end
 
   end
