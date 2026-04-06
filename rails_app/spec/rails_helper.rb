@@ -154,9 +154,7 @@ RSpec.configure do |config|
       # Suppress Solr during re-seeding: AR after_commit callbacks would try
       # to hit Solr on every record created, causing Net::ReadTimeout on stale
       # connections and corrupting the Sunspot connection pool for subsequent
-      # tests.  The before(:suite) hook indexes seed data; after
-      # truncation+reseed the same AUTO_INCREMENT IDs are restored, so Solr
-      # state stays valid without re-indexing.
+      # tests.
       sunspot_session = Sunspot.session
       Sunspot.session = Sunspot::Rails::StubSessionProxy.new(sunspot_session)
       begin
@@ -166,6 +164,27 @@ RSpec.configure do |config|
       ensure
         Sunspot.session = sunspot_session
         ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
+      end
+      # Flush stale Solr docs that tests may have created via the browser.
+      # After truncation+reseed, any indexed records beyond the seeded set
+      # have no corresponding DB rows; the next Solr search returns them,
+      # causing entry_path(nil) crashes.  Delete all Solr docs and re-index
+      # the now-correct seeded entries.
+      begin
+        require 'net/http'
+        require 'uri'
+        solr_url = URI(ENV['SOLR_TEST_URL'] || 'http://localhost:8983/solr/test')
+        http = Net::HTTP.new(solr_url.host, solr_url.port)
+        http.read_timeout = 30
+        http.post(
+          "#{solr_url.path}/update?commit=true",
+          '<delete><query>*:*</query></delete>',
+          'Content-Type' => 'application/xml'
+        )
+        Sunspot.index(Entry.all)
+        Sunspot.commit
+      rescue StandardError => e
+        Rails.logger.warn "Solr flush after JS test failed: #{e.message}"
       end
     end
   end
