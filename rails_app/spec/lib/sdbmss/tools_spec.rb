@@ -248,6 +248,81 @@ describe SDBMSS::Tools do
     end
   end
 
+  describe '#clobber' do
+    let(:tmpdir)     { Dir.mktmpdir }
+    let(:rails_root) { File.join(tmpdir, 'rails_app') }
+    let(:out)        { StringIO.new }
+    let(:tools) do
+      t = described_class.new(env: {}, out: out)
+      allow(t).to receive(:rails_root).and_return(rails_root)
+      allow(t).to receive(:load_docker_environment!)
+      allow(t).to receive(:run_compose!)
+      allow(t).to receive(:remove_custom_images!)
+      allow(t).to receive(:run_command!)
+      allow(t).to receive(:remove_local_files!)
+      t
+    end
+
+    after { FileUtils.remove_entry(tmpdir) }
+
+    it 'runs compose down, removes images, prunes docker, and removes files by default' do
+      expect(tools).to receive(:run_compose!).with(%w[down -v])
+      expect(tools).to receive(:remove_custom_images!)
+      expect(tools).to receive(:run_command!).with(%w[docker system prune -af])
+      expect(tools).to receive(:remove_local_files!)
+
+      tools.clobber
+    end
+
+    it 'skips docker system prune when prune: false' do
+      expect(tools).not_to receive(:run_command!).with(%w[docker system prune -af])
+
+      tools.clobber(prune: false)
+    end
+
+    it 'skips file removal when files: false' do
+      expect(tools).not_to receive(:remove_local_files!)
+
+      tools.clobber(files: false)
+    end
+  end
+
+  describe '#remove_local_files!' do
+    let(:tmpdir)     { Dir.mktmpdir }
+    let(:rails_root) { File.join(tmpdir, 'rails_app') }
+    let(:out)        { StringIO.new }
+    let(:tools) do
+      t = described_class.new(env: {}, out: out)
+      allow(t).to receive(:rails_root).and_return(rails_root)
+      t
+    end
+
+    before { FileUtils.mkdir_p(rails_root) }
+    after  { FileUtils.remove_entry(tmpdir) }
+
+    it 'removes directories that exist' do
+      dir = File.join(rails_root, 'tmp')
+      FileUtils.mkdir_p(dir)
+
+      tools.send(:remove_local_files!)
+
+      expect(Dir.exist?(dir)).to be false
+    end
+
+    it 'skips directories that do not exist without raising' do
+      expect { tools.send(:remove_local_files!) }.not_to raise_error
+    end
+
+    it 'logs removal for present dirs and skip for absent dirs' do
+      FileUtils.mkdir_p(File.join(rails_root, 'tmp'))
+
+      tools.send(:remove_local_files!)
+
+      expect(out.string).to include('Removing tmp')
+      expect(out.string).to include('.bundle not present; skipping')
+    end
+  end
+
   describe '#data_archive_path' do
     it 'defaults to rails_root/dev/data/sdbm_data.tgz' do
       tools = described_class.new(env: {})
