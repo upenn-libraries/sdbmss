@@ -287,7 +287,7 @@ class SourcesController < SearchableAuthorityController
 
   def get_similar
     type = @source.source_type || 99
-    s = Sunspot.more_like_this(@source) do
+    s = mlt_search(@source) do
       fields(:title, :date => 10, :agent_name => 6)
       with :source_type, type
       paginate page: 1, per_page: 10
