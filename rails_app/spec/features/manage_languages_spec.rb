@@ -11,6 +11,8 @@ describe "Manage languages", :js => true do
     @language = Language.find_or_create_by(name: "Martian") do |l|
       l.created_by = @user
     end
+    Language.index
+    Sunspot.commit
   end
 
   context "when admin is logged in" do
@@ -109,6 +111,8 @@ describe "Manage languages", :js => true do
       @language = Language.find_or_create_by(name: "Pig Latin") do |l|
         l.created_by = @user
       end
+      Language.index
+      Sunspot.commit
     end
 
     before :each do

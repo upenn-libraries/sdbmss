@@ -11,6 +11,7 @@ describe "Manage sources", :js => true do
       s.created_by = @user
     end
     Source.index
+    Sunspot.commit
   end
 
   before :each do
