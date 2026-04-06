@@ -65,7 +65,7 @@ describe "Bookmark", :js => true do
       # Bookmark buttons have class "Bookmark_Entry_<id>"
       bookmark_link = find('.bookmark:not(.bookmark-delete)', match: :first)
       match_data = bookmark_link[:class].match(/Bookmark_Entry_(\d+)/)
-      raise "Could not extract entry ID from bookmark button classes: #{bookmark_link[:class].inspect}" unless match_data
+      expect(match_data).not_to be_nil, "Could not extract entry ID from bookmark button classes: #{bookmark_link[:class].inspect}"
       entry_id = match_data[1].to_i
       target = Entry.find(entry_id)
 

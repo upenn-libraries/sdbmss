@@ -27,6 +27,7 @@ describe "Browse Dericci Records", :js => true do
 
     Name.find_or_create_by(name: "Camillo") { |n| n.is_author = true }.index
     Name.find_or_create_by(name: "George Danton") { |n| n.is_author = true }.index
+    Sunspot.commit
   end
 
   before :each do
