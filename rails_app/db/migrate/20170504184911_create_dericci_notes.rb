@@ -1,4 +1,4 @@
-class CreateDericciNotes < ActiveRecord::Migration
+class CreateDericciNotes < ActiveRecord::Migration[4.2]
   def change
     create_table :dericci_notes do |t|
       t.string :name

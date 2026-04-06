@@ -1,9 +1,9 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :dericci_sale do
-    name "MyString"
-    cards "MyString"
-    size "MyString"
-    senate_house "MyString"
-    link "MyString"
+    name { "MyString" }
+    cards { "MyString" }
+    size { "MyString" }
+    senate_house { "MyString" }
+    link { "MyString" }
   end
 end

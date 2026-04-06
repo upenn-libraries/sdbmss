@@ -1,4 +1,4 @@
-class DericciGame < ActiveRecord::Base
+class DericciGame < ApplicationRecord
 
   include CreatesActivity
   include HasPaperTrail

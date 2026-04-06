@@ -1,2 +1,2 @@
-class DericciNote < ActiveRecord::Base
+class DericciNote < ApplicationRecord
 end

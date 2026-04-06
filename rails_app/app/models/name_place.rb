@@ -1,4 +1,4 @@
-class NamePlace < ActiveRecord::Base
+class NamePlace < ApplicationRecord
 
   include TellBunny
 

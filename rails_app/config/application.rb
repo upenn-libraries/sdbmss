@@ -8,6 +8,18 @@ Bundler.require(*Rails.groups)
 
 module SDBMSS
   class Application < Rails::Application
+    config.load_defaults "5.2"
+    # TODO: audit belongs_to associations for optional: true, then remove this override
+    config.active_record.belongs_to_required_by_default = false
+
+    # Psych 3.1+ restricts YAML deserialization to safe classes by default.
+    # The ActiveRecord session store and Blacklight save Ruby objects (like
+    # HashWithIndifferentAccess) into YAML-serialized session data.
+    config.active_record.yaml_column_permitted_classes = [
+      ActiveSupport::HashWithIndifferentAccess,
+      Symbol
+    ]
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

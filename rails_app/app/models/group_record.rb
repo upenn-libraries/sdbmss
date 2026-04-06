@@ -1,4 +1,4 @@
-class GroupRecord < ActiveRecord::Base
+class GroupRecord < ApplicationRecord
   belongs_to :record, polymorphic: true, required: true
   belongs_to :group, required: true
 

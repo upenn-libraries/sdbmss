@@ -1,4 +1,4 @@
-class EntryScribe < ActiveRecord::Base
+class EntryScribe < ApplicationRecord
 
   include CertaintyFlags
   include DisplayableName

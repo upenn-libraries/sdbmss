@@ -1,4 +1,4 @@
-class FixDericciGameTimestampts < ActiveRecord::Migration
+class FixDericciGameTimestampts < ActiveRecord::Migration[4.2]
   def change
     remove_column :dericci_games, :created_at
     remove_column :dericci_games, :updated_at

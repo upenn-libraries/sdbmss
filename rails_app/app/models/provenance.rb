@@ -1,5 +1,5 @@
 
-class Provenance < ActiveRecord::Base
+class Provenance < ApplicationRecord
 
   include CertaintyFlags
   include HasPaperTrail

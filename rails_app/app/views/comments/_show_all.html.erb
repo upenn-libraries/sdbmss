@@ -5,9 +5,9 @@
 <p class="text-center">
   <% if params[:comment_sort] == "desc" %>
     <% comments = comments.reverse %>
-    <%= link_to "Sort by Oldest First", params.merge({:comment_sort => "asc"}), class: "btn btn-sm btn-default" %>
+    <%= link_to "Sort by Oldest First", request.params.merge({:comment_sort => "asc"}), class: "btn btn-sm btn-default" %>
   <% else %>
-    <%= link_to "Sort by Newest First", params.merge({:comment_sort => "desc"}), class: "btn btn-sm btn-default" %>
+    <%= link_to "Sort by Newest First", request.params.merge({:comment_sort => "desc"}), class: "btn btn-sm btn-default" %>
   <% end %>
 </p>
 <% comments.each do |comment| %>

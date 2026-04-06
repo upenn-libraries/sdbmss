@@ -1,4 +1,4 @@
-class EnhancePlaceData < ActiveRecord::Migration
+class EnhancePlaceData < ActiveRecord::Migration[4.2]
   def change
     add_column :places, :latitude, :decimal
     add_column :places, :longitude, :decimal

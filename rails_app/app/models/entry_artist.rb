@@ -1,4 +1,4 @@
-class EntryArtist < ActiveRecord::Base
+class EntryArtist < ApplicationRecord
 
   include CertaintyFlags
   include DisplayableName

@@ -1,4 +1,4 @@
-class CreateDericciRecordFlags < ActiveRecord::Migration
+class CreateDericciRecordFlags < ActiveRecord::Migration[4.2]
   def change
     create_table :dericci_record_flags do |t|
       t.integer :dericci_record_id

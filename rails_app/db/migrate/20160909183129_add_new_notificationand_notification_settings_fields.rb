@@ -1,4 +1,4 @@
-class AddNewNotificationandNotificationSettingsFields < ActiveRecord::Migration
+class AddNewNotificationandNotificationSettingsFields < ActiveRecord::Migration[4.2]
   def change
     add_column :notifications, :url, :string
     add_column :notifications, :title, :string

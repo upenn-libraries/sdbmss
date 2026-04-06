@@ -1,4 +1,4 @@
-class AddUserGroupsEtc < ActiveRecord::Migration
+class AddUserGroupsEtc < ActiveRecord::Migration[4.2]
   def change
     create_table :groups do |t|
       t.text :name

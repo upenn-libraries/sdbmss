@@ -1,4 +1,4 @@
-class CreateSourceComments < ActiveRecord::Migration
+class CreateSourceComments < ActiveRecord::Migration[4.2]
   def change
     create_table :source_comments do |t|
     end

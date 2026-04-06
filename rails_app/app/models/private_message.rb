@@ -1,4 +1,4 @@
-class PrivateMessage < ActiveRecord::Base
+class PrivateMessage < ApplicationRecord
 
   default_scope { where(deleted: false) }
 

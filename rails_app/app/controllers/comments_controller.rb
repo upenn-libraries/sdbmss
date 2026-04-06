@@ -16,18 +16,17 @@ class CommentsController < SearchableAuthorityController
       if defined?(@comment.commentable.created_by) && @comment.commentable.created_by != current_user && @comment.commentable.created_by
         @comment.commentable.created_by.notify(
           "#{current_user.to_s} has commented on #{@comment.commentable.public_id}",
-          @comment, 
+          @comment,
           "comment"
         )
       end
       User.where(role: "admin").each do |user|
         user.notify(
           "#{current_user.to_s} has commented on #{@comment.commentable.public_id}",
-          @comment, 
+          @comment,
           "all_comment"
         )
       end
-      @transaction_id = PaperTrail.transaction_id      
     end
     redirect_to polymorphic_path(@comment.commentable, anchor: "comment_#{@comment.id}")
   end
@@ -36,7 +35,6 @@ class CommentsController < SearchableAuthorityController
     ActiveRecord::Base.transaction do
       @comment = Comment.find(params[:id])
       @comment.update_by(current_user, comment_params)
-      @transaction_id = PaperTrail.transaction_id      
     end
     redirect_to polymorphic_path(@comment.commentable) + "#comment_#{@comment.id}"
   end
@@ -81,7 +79,6 @@ class CommentsController < SearchableAuthorityController
             }
           end
         end
-        @transaction_id = PaperTrail.transaction_id      
       end
     else
       respond_to do |format|

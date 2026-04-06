@@ -1,4 +1,4 @@
-class AddGameItemAndReliability < ActiveRecord::Migration
+class AddGameItemAndReliability < ActiveRecord::Migration[4.2]
   def change
     create_table :dericci_game_record do |t|
       t.integer :dericci_game_id

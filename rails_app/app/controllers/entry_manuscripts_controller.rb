@@ -17,7 +17,7 @@ class EntryManuscriptsController < SearchableAuthorityController
   # the Linking Tool
   def update_multiple
     ActiveRecord::Base.transaction do
-      
+
       manuscript = Manuscript.find params[:manuscript_id]
 
       @entry_manuscripts = []
@@ -26,7 +26,7 @@ class EntryManuscriptsController < SearchableAuthorityController
         params[:entry_manuscripts].each do |record|
           attrs = record.permit(:id, :entry_id, :manuscript_id, :relation_type, :_destroy)
           if !Entry.exists? record["entry_id"]
-            # pass 
+            # pass
           elsif record["_destroy"]
             em = EntryManuscript.find(record["id"])
             em.destroy!
@@ -55,8 +55,7 @@ class EntryManuscriptsController < SearchableAuthorityController
         end
       end
 
-      @transaction_id = PaperTrail.transaction_id
-      manuscript.touch_with_version
+      manuscript.touch
       manuscript.try(:create_activity, "update", current_user, @transaction_id)
     end
   end

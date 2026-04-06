@@ -1,4 +1,4 @@
-class AddRatingObject < ActiveRecord::Migration
+class AddRatingObject < ActiveRecord::Migration[4.2]
   def change
     create_table :ratings do |t|
       t.integer :user_id

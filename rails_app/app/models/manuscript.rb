@@ -1,6 +1,6 @@
 require 'set'
 
-class Manuscript < ActiveRecord::Base
+class Manuscript < ApplicationRecord
 
   has_many :entry_manuscripts, inverse_of: :manuscript
   has_many :entries, through: :entry_manuscripts

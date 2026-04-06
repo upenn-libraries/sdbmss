@@ -1,4 +1,4 @@
-class DericciLink < ActiveRecord::Base
+class DericciLink < ApplicationRecord
   belongs_to :name
   belongs_to :dericci_record
 
