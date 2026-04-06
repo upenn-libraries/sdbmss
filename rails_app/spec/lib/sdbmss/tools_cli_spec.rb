@@ -36,6 +36,37 @@ describe SDBMSS::ToolsCLI do
       end
     end
 
+    it 'parses clobber with no flags (prune: true, files: true)' do
+      cli = described_class.new(argv: %w[clobber])
+      command = cli.parse!
+
+      expect(command.name).to eq('clobber')
+      expect(command.options).to include(prune: true, files: true)
+    end
+
+    it 'parses clobber --no-prune' do
+      cli = described_class.new(argv: %w[clobber --no-prune])
+      command = cli.parse!
+
+      expect(command.options[:prune]).to be false
+      expect(command.options[:files]).to be true
+    end
+
+    it 'parses clobber --no-files' do
+      cli = described_class.new(argv: %w[clobber --no-files])
+      command = cli.parse!
+
+      expect(command.options[:prune]).to be true
+      expect(command.options[:files]).to be false
+    end
+
+    it 'parses clobber --no-prune --no-files' do
+      cli = described_class.new(argv: %w[clobber --no-prune --no-files])
+      command = cli.parse!
+
+      expect(command.options).to include(prune: false, files: false)
+    end
+
     it 'parses clean without flags (scope: :containers)' do
       cli = described_class.new(argv: %w[clean])
       command = cli.parse!
@@ -115,6 +146,21 @@ describe SDBMSS::ToolsCLI do
     it 'calls tools.clean(scope: :all) for clean --all' do
       expect(tools).to receive(:clean).with(scope: :all)
       described_class.new(argv: %w[clean --all], out: out, err: err).run
+    end
+
+    it 'calls tools.clobber with defaults for plain clobber' do
+      expect(tools).to receive(:clobber).with(prune: true, files: true)
+      described_class.new(argv: %w[clobber], out: out, err: err).run
+    end
+
+    it 'calls tools.clobber with prune: false for clobber --no-prune' do
+      expect(tools).to receive(:clobber).with(prune: false, files: true)
+      described_class.new(argv: %w[clobber --no-prune], out: out, err: err).run
+    end
+
+    it 'calls tools.clobber with files: false for clobber --no-files' do
+      expect(tools).to receive(:clobber).with(prune: true, files: false)
+      described_class.new(argv: %w[clobber --no-files], out: out, err: err).run
     end
 
     it 'calls tools.rebuild for rebuild' do
