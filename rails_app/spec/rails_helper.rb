@@ -171,8 +171,6 @@ RSpec.configure do |config|
       # causing entry_path(nil) crashes.  Delete all Solr docs and re-index
       # the now-correct seeded entries.
       begin
-        require 'net/http'
-        require 'uri'
         solr_url = URI(ENV['SOLR_TEST_URL'] || 'http://localhost:8983/solr/test')
         http = Net::HTTP.new(solr_url.host, solr_url.port)
         http.read_timeout = 30
@@ -183,6 +181,7 @@ RSpec.configure do |config|
         )
         Sunspot.index(Entry.all)
         Sunspot.commit
+      # If the HTTP delete fails, skip re-index — no point indexing into a broken Solr.
       rescue StandardError => e
         Rails.logger.warn "Solr flush after JS test failed: #{e.message}"
       end
