@@ -5,10 +5,8 @@ require 'net/http'
 
 describe "User Activity", :js => true do
 
-  before :all do
-#    SDBMSS::ReferenceData.create_all
+  before :each do
     @user = User.where(role: "admin").first
-
   end
 
   before :each do
