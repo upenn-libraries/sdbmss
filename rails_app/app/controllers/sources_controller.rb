@@ -26,14 +26,15 @@ class SourcesController < SearchableAuthorityController
 
   # various date separators (hyphenated!)
   def search
-    if params[:date]
-      params[:date] = Array(params[:date])
-      params[:date].map! do | date |
+    @search_params = params.dup
+    if @search_params[:date]
+      @search_params[:date] = Array(@search_params[:date])
+      @search_params[:date].map! do | date |
         date.gsub('-', '').gsub('/', '')
       end
     end
-    if params[:agent]
-      params[:agent_name] = params[:agent]
+    if @search_params[:agent]
+      @search_params[:agent_name] = @search_params[:agent]
     end
     super
   end
