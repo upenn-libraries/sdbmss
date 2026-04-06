@@ -61,10 +61,21 @@ describe "Bookmark", :js => true do
 
     it "should bookmark/watch and remove for Entries" do
       visit entries_path
-      find('.bookmark', match: :first).click
-      find('.watch', match: :first).click
+      # Derive the target entry from the class of the first visible bookmark button
+      # Bookmark buttons have class "Bookmark_Entry_<id>"
+      bookmark_link = find('.bookmark:not(.bookmark-delete)', match: :first)
+      entry_id = bookmark_link[:class].match(/Bookmark_Entry_(\d+)/)[1].to_i
+      target = Entry.find(entry_id)
 
-      visit entry_path(Entry.last)
+      bookmark_link.click
+      # Wait for bookmark AJAX to complete (button becomes bookmark-delete)
+      expect(page).to have_css(".bookmark-delete.Bookmark_Entry_#{entry_id}")
+
+      find(".Watch_Entry_#{entry_id}").click
+      # Wait for watch AJAX to complete (button becomes watch-delete)
+      expect(page).to have_css(".watch-delete.Watch_Entry_#{entry_id}")
+
+      visit entry_path(target)
       expect(page).to have_content('Bookmarked')
       expect(page).to have_content('Watched')
 
@@ -73,7 +84,6 @@ describe "Bookmark", :js => true do
 
       expect(page).not_to have_content('Bookmarked')
       expect("#control-panel").not_to have_content('Watched')
-
     end
 
     it "should bookmark/watch and remove for Names" do
