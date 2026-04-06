@@ -66,7 +66,7 @@ class CatalogController < ApplicationController
           return
         else
           @d = Download.create({filename: "entries.csv", user_id: current_user.id})
-          CatalogController.new.delay.do_csv_search(params, @d)
+          CatalogController.new.delay.do_csv_search(search_state.to_h, @d)
           render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count}
         end
       }
@@ -93,7 +93,7 @@ class CatalogController < ApplicationController
     elsif host != forwarded_host
       announcement = %q(
         <p><b>Original query paremeters </b></p>)
-      params.except(:controller, :action, :format).each do |key, value|
+      request.query_parameters.each do |key, value|
         announcement += "<p><b>#{key}:</b> #{value}</p>"
       end
       flash.now[:announce] = announcement.html_safe

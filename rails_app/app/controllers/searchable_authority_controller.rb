@@ -65,8 +65,9 @@ class SearchableAuthorityController < ManageModelsController
   end
 
   def search
-    if params[:created_by_user].to_i == 1
-      params.merge!({created_by: current_user.username})
+    @search_params ||= params.dup
+    if @search_params[:created_by_user].to_i == 1
+      @search_params[:created_by] = current_user.username
     end
     if params[:format] == 'csv'
       if current_user.downloads.count >= 5
@@ -79,11 +80,11 @@ class SearchableAuthorityController < ManageModelsController
           render json: {id: @d.id, filename: @d.filename, count: current_user.downloads.count}
         }
       end
-      model_class.delay.do_csv_search(params, @d)
+      model_class.delay.do_csv_search(@search_params, @d)
     else
-      s = model_class.do_search(params)
+      s = model_class.do_search(@search_params)
       format_search s
-    #do_search(params)
+    #do_search(@search_params)
     end
   end
 

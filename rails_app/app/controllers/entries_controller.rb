@@ -116,16 +116,16 @@ class EntriesController < SearchableAuthorityController
     @field_options = ["contains", "does not contain", "blank", "not blank"]
     @date_options = ["before", "after", "near", "exact"]
 
-    params.merge!("role" => current_user.role)
+    search_params = params.dup.merge!("role" => current_user.role)
     #if current_user.role != "admin"
-    #  params.merge!("draft" => ["false"], "draft_option" => ["with"])
+    #  search_params.merge!("draft" => ["false"], "draft_option" => ["with"])
     #end
 
     # Dates are treated as strings, so need a bit of manipulating
     [:source_date, :source_date_search, :sale_date].each do |date_key|
-      if params[date_key]
-        params[date_key] = Array(params[date_key])
-        params[date_key].map! do | date |
+      if search_params[date_key]
+        search_params[date_key] = Array(search_params[date_key])
+        search_params[date_key].map! do | date |
           date.gsub('-', '').gsub('/', '').ljust(8, "*")
         end
       end
@@ -138,8 +138,8 @@ class EntriesController < SearchableAuthorityController
       end
       @d = Download.create({filename: "#{search_model_class.to_s.downcase.pluralize}.csv", user_id: current_user.id})
 
-      Entry.delay.do_csv_search(params, @d)
-#      EntriesController.delay.do_csv_search(params, search_params_logic, @d)
+      Entry.delay.do_csv_search(search_params, @d)
+#      EntriesController.delay.do_csv_search(search_params, search_params_logic, @d)
 
       respond_to do |format|
         format.csv {
@@ -147,7 +147,7 @@ class EntriesController < SearchableAuthorityController
         }
       end
     elsif params[:format] == 'json'
-      s = Entry.do_search(params)
+      s = Entry.do_search(search_params)
       format_search s
     end
   end
@@ -234,7 +234,7 @@ class EntriesController < SearchableAuthorityController
   def compose
     s = Source.new({date: Date.today.strftime("%Y-%m-%d"), title: "Provenance Observation (#{current_user.username}): SDBM_MS_#{params[:manuscript_id]}", author: current_user.username, source_type: SourceType.find(8), created_by: current_user, status: Source::TYPE_STATUS_ENTERED})
     s.save!
-    params[:source_id] = s.id
+    @compose_source_id = s.id
     create
   end
 
@@ -244,7 +244,7 @@ class EntriesController < SearchableAuthorityController
       filtered = entry_params_for_create_and_edit(params)
       @entry = Entry.new(filtered)
       @entry.created_by_id = current_user.id
-      @entry.source_id = params[:source_id]
+      @entry.source_id = @compose_source_id || params[:source_id]
       success = @entry.save
 
       if success
@@ -555,7 +555,7 @@ class EntriesController < SearchableAuthorityController
 
   def set_entry
     @entry = Entry.find(params[:id])
-    params[:id] = "Entry #{params[:id]}"
+    @document_id = "Entry #{params[:id]}"
   end
 
   def similar_params

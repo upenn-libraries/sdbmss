@@ -27,7 +27,7 @@ class NamesController < SearchableAuthorityController
 
   #
   def search
-    session[:last_name_search] = params
+    session[:last_name_search] = request.query_parameters
     super
   end
 
