@@ -28,6 +28,8 @@ module SDBMSS
         tools.stop
       when 'clean'
         tools.clean(scope: command.options[:scope])
+      when 'clobber'
+        tools.clobber(prune: command.options[:prune], files: command.options[:files])
       when 'rebuild'
         tools.rebuild
       when 'setup'
@@ -71,6 +73,8 @@ module SDBMSS
         parse_start
       when 'clean'
         parse_clean
+      when 'clobber'
+        parse_clobber
       when 'stop', 'rebuild', 'setup', 'setup-assets', 'setup-db', 'setup-jena'
         parse_simple(command_name)
       when 'build-image'
@@ -88,6 +92,7 @@ module SDBMSS
           start [--force-rebuild]             Start services (docker compose up -d)
           stop                                Stop services (docker compose stop)
           clean [--all]                       Remove services and volumes; --all also removes custom images
+          clobber [--no-prune] [--no-files]   Full purge: down -v, remove images, docker system prune -af, delete local dirs
           rebuild                             Remove and rebuild all custom images (no stack start)
           setup                               Run full LOCAL setup flow
           setup-assets                        Run assets setup only
@@ -101,6 +106,8 @@ module SDBMSS
           ruby bin/tools start --force-rebuild
           ruby bin/tools clean
           ruby bin/tools clean --all
+          ruby bin/tools clobber
+          ruby bin/tools clobber --no-prune
           ruby bin/tools rebuild
           ruby bin/tools setup
           ruby bin/tools build-image --url https://github.com/upenn-libraries/sdbm-interface.git --image-name sdbmss-interface --tag latest
@@ -118,6 +125,18 @@ module SDBMSS
       raise ArgumentError, "Unexpected arguments: #{@argv.join(' ')}" unless @argv.empty?
 
       Command.new(command_name, {})
+    end
+
+    def parse_clobber
+      options = { prune: true, files: true }
+      parser = OptionParser.new
+      parser.on('--no-prune', 'Skip docker system prune -af') { options[:prune] = false }
+      parser.on('--no-files', 'Skip deletion of .bundle, public/assets, tmp, vendor/bundle') { options[:files] = false }
+      parser.on('-h', '--help', 'Show help') { raise ArgumentError, help_text }
+      parser.parse!(@argv)
+      raise ArgumentError, "Unexpected arguments: #{@argv.join(' ')}" unless @argv.empty?
+
+      Command.new('clobber', options)
     end
 
     def parse_clean
