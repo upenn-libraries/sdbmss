@@ -64,7 +64,9 @@ describe "Bookmark", :js => true do
       # Derive the target entry from the class of the first visible bookmark button
       # Bookmark buttons have class "Bookmark_Entry_<id>"
       bookmark_link = find('.bookmark:not(.bookmark-delete)', match: :first)
-      entry_id = bookmark_link[:class].match(/Bookmark_Entry_(\d+)/)[1].to_i
+      match_data = bookmark_link[:class].match(/Bookmark_Entry_(\d+)/)
+      raise "Could not extract entry ID from bookmark button classes: #{bookmark_link[:class].inspect}" unless match_data
+      entry_id = match_data[1].to_i
       target = Entry.find(entry_id)
 
       bookmark_link.click
