@@ -45,6 +45,8 @@ module CatalogControllerConfiguration
         :q => '{!raw f=id v=$id}'
       }
 
+      config.fetch_many_document_params = { fl: '*' }
+
       # solr field configuration for search results/index views
       config.index.title_field = ''
       config.index.display_type_field = 'format'
