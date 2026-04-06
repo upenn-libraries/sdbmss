@@ -405,7 +405,7 @@ class EntriesController < SearchableAuthorityController
   def similar
     model = @entry
     tolerance = params[:tolerance].to_i
-    s = Sunspot.more_like_this(@entry) do
+    s = mlt_search(@entry) do
       fields *similar_params.keys.map(&:to_sym)
 
       all_of do
