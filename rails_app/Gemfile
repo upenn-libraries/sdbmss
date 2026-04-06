@@ -4,7 +4,6 @@ source 'https://rubygems.org'
 gem 'rails', '~> 5.2.8'
 
 gem "nokogiri", "< 1.16"
-# rack version managed by Rails
 # gem "loofah", "= 2.19.1" # updated to 2.21.1, but that calls for Nokogiri::HTML4, which is not available in 1.8.5
 gem "rubyzip", "~> 2.3"
 gem "ffi", ">= 1.9.24", "< 1.17"
@@ -12,7 +11,6 @@ gem "json", ">= 2.3"
 gem "psych", "~> 3.1"
 gem "rdoc", "~> 6.3.0"
 gem "sprockets", ">= 3.7.2"
-# gem "net-ssh" — pin removed for Rails 5.2
 gem "kramdown"
 gem "sassc", ">= 2.0.0"
 gem 'autoprefixer-rails', '~> 7.1.6'
@@ -22,10 +20,6 @@ gem 'websocket-driver', '~> 0.7.7'
 gem 'invisible_captcha'
 
 gem 'actionview-encoded_mail_to'
-
-# gem 'logger' — pin removed for Rails 5.2
-
-# gem 'date' — pin removed; Ruby 2.7 ships date natively
 
 gem 'mysql2'
 gem 'bigdecimal'
@@ -58,7 +52,6 @@ gem 'rack-handlers'
 gem "blacklight", "~> 6.9.0"
 gem "twitter-typeahead-rails", "= 0.11.1.pre.corejavascript"
 gem "rsolr", "~> 2.0"
-# jettywrapper removed — Solr is Dockerized
 gem "blacklight_advanced_search", "~> 6.4.1"
 
 # For authentication; used by Blacklight and by SDBMSS
@@ -122,8 +115,6 @@ gem 'data-confirm-modal'
 gem 'thredded', '~> 0.16'
 
 gem 'whenever', :require => false
-
-# gem 'rake' — pin removed; Rails 5.2 pulls rake 13.x
 
 gem 'codemirror-rails'
 
