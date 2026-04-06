@@ -1,4 +1,4 @@
-class EntryLanguage < ActiveRecord::Base
+class EntryLanguage < ApplicationRecord
 
   include CertaintyFlags
   include HasPaperTrail

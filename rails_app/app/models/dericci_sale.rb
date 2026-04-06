@@ -1,2 +1,2 @@
-class DericciSale < ActiveRecord::Base
+class DericciSale < ApplicationRecord
 end

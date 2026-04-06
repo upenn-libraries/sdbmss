@@ -1,9 +1,9 @@
 
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :user do
-    email 'test@test.com'
-    password 'somethingreallylong'
+    email { 'test@test.com' }
+    password { 'somethingreallylong' }
   end
 
   factory :admin, class: User do

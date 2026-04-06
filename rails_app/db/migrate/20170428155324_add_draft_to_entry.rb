@@ -1,4 +1,4 @@
-class AddDraftToEntry < ActiveRecord::Migration
+class AddDraftToEntry < ActiveRecord::Migration[4.2]
   def change
     add_column :entries, :draft, :boolean, :default => false
   end

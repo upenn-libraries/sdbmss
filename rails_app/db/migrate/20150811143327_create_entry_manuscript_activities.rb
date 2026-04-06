@@ -1,4 +1,4 @@
-class CreateEntryManuscriptActivities < ActiveRecord::Migration
+class CreateEntryManuscriptActivities < ActiveRecord::Migration[4.2]
   def change
     create_table :entry_manuscript_activities do |t|
       t.references :activity, index: true

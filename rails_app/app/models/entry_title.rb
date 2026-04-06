@@ -1,4 +1,4 @@
-class EntryTitle < ActiveRecord::Base
+class EntryTitle < ApplicationRecord
 
   include CertaintyFlags
   include HasPaperTrail

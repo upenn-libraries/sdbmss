@@ -102,7 +102,7 @@ module BlacklightAdvancedSearch
   module RenderConstraintsOverride
 
     # override default search constraints display, since we're moving facets elsewhere
-    def render_constraints(localized_params = params)
+    def render_constraints(localized_params = search_state.to_h)
       render_constraints_query(localized_params)
     end
 
@@ -140,7 +140,7 @@ module BlacklightAdvancedSearch
             content_tag(:span, facet_display_value(facet, val), :class => "selected")
           end +
           # remove link
-          link_to(content_tag(:span, '', :class => "glyphicon glyphicon-remove") + content_tag(:span, '[remove]', :class => 'sr-only'), search_action_path(remove_facet_params(facet, val, localized_params)), :class=>"remove facet-count")
+          link_to(content_tag(:span, '', :class => "glyphicon glyphicon-remove") + content_tag(:span, '[remove]', :class => 'sr-only'), search_action_path(search_state.remove_facet_params(facet, val)), :class=>"remove facet-count")
         end
 
       end, "\n")

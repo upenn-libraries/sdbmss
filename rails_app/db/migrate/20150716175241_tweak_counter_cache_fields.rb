@@ -1,4 +1,4 @@
-class TweakCounterCacheFields < ActiveRecord::Migration
+class TweakCounterCacheFields < ActiveRecord::Migration[4.2]
   def change
     execute "update languages set entries_count = 0 where entries_count is null;"
     change_column(:languages, :entries_count, :integer, null: false, default: 0)

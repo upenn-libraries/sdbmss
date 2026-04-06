@@ -1,4 +1,4 @@
-class CreateScribes < ActiveRecord::Migration
+class CreateScribes < ActiveRecord::Migration[4.2]
   def change
     create_table :scribes do |t|
       t.string :name

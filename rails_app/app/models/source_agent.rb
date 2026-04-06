@@ -1,4 +1,4 @@
-class SourceAgent < ActiveRecord::Base
+class SourceAgent < ApplicationRecord
   belongs_to :source
   belongs_to :agent, class_name: 'Name', counter_cache: :source_agents_count
 

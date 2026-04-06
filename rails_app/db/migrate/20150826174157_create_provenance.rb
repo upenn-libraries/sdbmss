@@ -1,4 +1,4 @@
-class CreateProvenance < ActiveRecord::Migration
+class CreateProvenance < ActiveRecord::Migration[4.2]
   def change
     create_table :provenance do |t|
       t.references :entry, index: true

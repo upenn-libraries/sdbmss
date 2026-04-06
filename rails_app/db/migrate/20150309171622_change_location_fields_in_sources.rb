@@ -1,4 +1,4 @@
-class ChangeLocationFieldsInSources < ActiveRecord::Migration
+class ChangeLocationFieldsInSources < ActiveRecord::Migration[4.2]
   def change
 
     # current_location => institution
