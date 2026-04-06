@@ -20,18 +20,17 @@ Rails.application.config.to_prepare do
         @pagination = facet_paginator(@facet, @display_facet)
 
         respond_to do |format|
-          # Draw the facet selector for users who have javascript disabled:
-          format.html
+          format.html do
+            # Draw the partial for the "more" facet modal window:
+            return render layout: false if request.xhr?
+            # Otherwise draw the facet selector for users who have javascript disabled.
+          end
           format.json { render json: render_facet_list_as_json }
-
-          # Draw the partial for the "more" facet modal window:
-          format.js { render :layout => false }
         end
       else
         respond_to do |format|
           format.html { render "not_found" }
           format.json { render json: {error: "Facet could not be found."} }
-          format.js { render json: {error: "Facet could not be found."} }
         end
       end
     end

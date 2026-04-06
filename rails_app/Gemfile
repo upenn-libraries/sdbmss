@@ -55,7 +55,7 @@ gem 'unicorn-rails'
 gem 'rack-handlers'
 
 # Blacklight
-gem "blacklight", "~> 6.9.0"
+gem "blacklight", "~> 6.25"
 gem "twitter-typeahead-rails", "= 0.11.1.pre.corejavascript"
 gem "rsolr", "~> 2.0"
 # jettywrapper removed — Solr is Dockerized
