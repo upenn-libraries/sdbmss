@@ -169,7 +169,8 @@ RSpec.configure do |config|
       # After truncation+reseed, any indexed records beyond the seeded set
       # have no corresponding DB rows; the next Solr search returns them,
       # causing entry_path(nil) crashes.  Delete all Solr docs and re-index
-      # the now-correct seeded entries.
+      # all searchable models so that the next test starts with a clean,
+      # consistent Solr state matching the reseeded DB.
       begin
         require 'uri'
         solr_url = URI(ENV['SOLR_TEST_URL'] || 'http://localhost:8983/solr/test')
@@ -180,7 +181,7 @@ RSpec.configure do |config|
           '<delete><query>*:*</query></delete>',
           'Content-Type' => 'application/xml'
         )
-        Sunspot.index(Entry.all)
+        [Entry, Name, Source, Manuscript, Language, Place].each { |model| Sunspot.index(model.all) }
         Sunspot.commit
       # If the HTTP delete fails, skip re-index — no point indexing into a broken Solr.
       rescue StandardError => e
