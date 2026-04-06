@@ -68,10 +68,11 @@ GEM
     bcrypt (3.1.22)
     bigdecimal (4.1.0)
     bindex (0.8.1)
-    blacklight (6.9.0)
+    blacklight (6.25.0)
       bootstrap-sass (~> 3.2)
       deprecation
       globalid
+      jbuilder (~> 2.7)
       kaminari (>= 0.15)
       nokogiri (~> 1.6)
       rails (>= 4.2, < 6)
@@ -489,7 +490,7 @@ DEPENDENCIES
   activerecord-session_store (~> 1.1)
   autoprefixer-rails (~> 7.1.6)
   bigdecimal
-  blacklight (~> 6.9.0)
+  blacklight (~> 6.25)
   blacklight_advanced_search (~> 6.4.1)
   bunny (~> 2.22)
   byebug (< 12)
