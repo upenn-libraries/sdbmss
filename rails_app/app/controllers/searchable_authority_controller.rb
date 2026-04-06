@@ -91,7 +91,7 @@ class SearchableAuthorityController < ManageModelsController
   def get_similar
     s = mlt_search(@model) do
       fields :name
-      paginate page: 1, per_page: 10
+      paginate page: 1, per_page: 20
       order_by :score, :desc
     end
     @similar = s.results
@@ -102,7 +102,7 @@ class SearchableAuthorityController < ManageModelsController
     n.index!
     s = mlt_search(n) do
       fields :name
-      paginate page: params[:page], per_page: 10
+      paginate page: params[:page], per_page: 20
     end
     results = s.results
     respond_to do |format|

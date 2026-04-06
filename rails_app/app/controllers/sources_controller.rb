@@ -291,7 +291,7 @@ class SourcesController < SearchableAuthorityController
     s = mlt_search(@source) do
       fields(:title, :date => 10, :agent_name => 6)
       with :source_type, type
-      paginate page: 1, per_page: 10
+      paginate page: 1, per_page: 20
       order_by :score, :desc
       boost true
     end
