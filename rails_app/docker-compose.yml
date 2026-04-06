@@ -113,6 +113,7 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    restart: on-failure
   interface:
     image: ${INTERFACE_IMAGE_NAME}:${INTERFACE_IMAGE_TAG}
     command:

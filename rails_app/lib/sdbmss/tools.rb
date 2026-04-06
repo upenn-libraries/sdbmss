@@ -1,3 +1,4 @@
+require 'fileutils'
 require 'net/http'
 require 'open3'
 require 'shellwords'
@@ -17,7 +18,7 @@ module SDBMSS
   # the interface and Jena custom images).
   #
   # Initially generated with assistance from GPT-5.2-Codex (OpenAI).
-  # Documentation, troubleshooting, and subsequent edits by Claude Sonnet 4.6 (Anthropic).
+  # Documentation, troubleshooting, +clobber+ command, and subsequent edits by Claude Sonnet 4.6 (Anthropic).
   class Tools
 
     class << self
@@ -107,6 +108,22 @@ module SDBMSS
         load_docker_environment!
         run_compose!(%w[down -v])
         remove_custom_images! if scope == :all
+      end
+    end
+
+    # Full destructive reset: brings down the Compose stack and volumes, removes
+    # custom images, optionally runs +docker system prune -af+ (system-wide purge),
+    # and optionally deletes regenerable local directories.
+    #
+    # @param prune [Boolean] run +docker system prune -af+ (default: +true+)
+    # @param files [Boolean] delete +.bundle+, +public/assets+, +tmp+, +vendor/bundle+ (default: +true+)
+    def clobber(prune: true, files: true)
+      timed('clobber') do
+        load_docker_environment!
+        run_compose!(%w[down -v])
+        remove_custom_images!
+        run_command!(%w[docker system prune -af]) if prune
+        remove_local_files! if files
       end
     end
 
@@ -371,6 +388,21 @@ module SDBMSS
     # @return [String] Docker container ID for the running +mysql+ service
     def mysql_container_id
       @mysql_container_id ||= capture_command!(compose_command + %w[ps -q mysql]).strip
+    end
+
+    LOCAL_CLOBBER_DIRS = %w[.bundle public/assets tmp vendor/bundle].freeze
+
+    # Deletes regenerable local directories inside the Rails root.
+    def remove_local_files!
+      LOCAL_CLOBBER_DIRS.each do |dir|
+        path = File.join(rails_root, dir)
+        if Dir.exist?(path)
+          log("Removing #{dir}")
+          FileUtils.rm_rf(path)
+        else
+          log("#{dir} not present; skipping")
+        end
+      end
     end
 
     # Reads +.env+ and populates @env with any keys not already set.
