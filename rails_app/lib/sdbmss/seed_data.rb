@@ -50,19 +50,23 @@ module SDBMSS::SeedData
       )
     end
 
-    User.create!(
-      username: 'admin',
-      password: 'somethingunguessable',
-      email: "admin@1.com",
-      role: 'admin'
-    )
+    unless User.where(username: 'admin').exists?
+      User.create!(
+        username: 'admin',
+        password: 'somethingunguessable',
+        email: "admin@1.com",
+        role: 'admin'
+      )
+    end
 
-    User.create!(
-      username: 'contributor',
-      password: 'somethingunguessable',
-      email: "contributor@1.com",
-      role: 'contributor'
-    )
+    unless User.where(username: 'contributor').exists?
+      User.create!(
+        username: 'contributor',
+        password: 'somethingunguessable',
+        email: "contributor@1.com",
+        role: 'contributor'
+      )
+    end
 
     if Page.count == 0
       [
