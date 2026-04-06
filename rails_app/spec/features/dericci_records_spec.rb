@@ -11,6 +11,10 @@ describe "Browse Dericci Records", :js => true do
     @d = DericciRecord.find_or_create_by(name: "Camille Desmoulins") do |r|
       r.place = "Paris"; r.dates = "1794"; r.senate_house = "[Senate House MS901/3/11]"
     end
+    # Reset mutable state: sibling tests may have added links/flags or set verified_id.
+    @d.update!(verified_id: nil)
+    @d.dericci_links.destroy_all
+    @d.dericci_record_flags.destroy_all
     DericciRecord.find_or_create_by(name: "Georges Danton") do |r|
       r.place = "Marseilles"; r.dates = "1795"; r.senate_house = "[Senate House MS901/3/11]"
     end
