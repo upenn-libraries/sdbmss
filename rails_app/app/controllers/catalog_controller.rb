@@ -49,7 +49,7 @@ class CatalogController < ApplicationController
   end
 
   def index
-    (@response, @document_list) = search_results(params)
+    (@response, @document_list) = search_service.search_results
 
     respond_to do |format|
       format.html { store_preferred_view }
@@ -57,8 +57,6 @@ class CatalogController < ApplicationController
       format.atom { render :layout => false }
       format.json do
         @presenter = Blacklight::JsonPresenter.new(@response,
-                                                   @document_list,
-                                                   facets_from_request,
                                                    blacklight_config)
       end
       format.csv {
@@ -119,7 +117,8 @@ class CatalogController < ApplicationController
     headers = nil
 
     loop do
-      (@response, @document_list) = search_results(params.merge({:page => page, :per_page => 100}))
+      svc = SDBMSS::Blacklight::SearchService.new(config: blacklight_config, user_params: params.merge({:page => page, :per_page => 100}))
+      (@response, @document_list) = svc.search_results
       #s = do_search(params.merge({:limit => 300, :offset => offset}))
       page += 1
       ids = @response.response["docs"].map { |doc| doc["entry_id"] }
@@ -178,8 +177,8 @@ class CatalogController < ApplicationController
     end
   end
 
-  raise "#add_to_search_history not defined in superclass" if !method_defined?(:add_to_search_history)
-  # Overrides Blacklight::Catalog::SearchContext#add_to_search_history
+  raise "#add_to_search_history not defined in superclass" if !method_defined?(:add_to_search_history) && !private_method_defined?(:add_to_search_history)
+  # Overrides Blacklight::SearchContext#add_to_search_history
   def add_to_search_history search
     if !current_user
       return

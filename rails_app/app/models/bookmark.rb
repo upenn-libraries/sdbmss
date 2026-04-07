@@ -14,10 +14,6 @@ class Bookmark < ApplicationRecord
 
   delegate :public_id, to: :document, prefix: true, allow_nil: true
 
-  if Blacklight::Utils.needs_attr_accessible?
-    attr_accessible :id, :document_id, :document_type, :title
-  end
-
   def to_s
     document.to_s
   end

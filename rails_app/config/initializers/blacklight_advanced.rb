@@ -9,23 +9,24 @@
 # - a possible solution would be to figure out a way of loading ALL facets, then select the last X and continue normally
 # - memory issues for large facet list (authors has like 5000, I think?)
 
+# Override BL7's Catalog#facet to render not_found instead of raising
+# RoutingError when a facet field doesn't exist in the config.
+# (BL7 default raises ActionController::RoutingError, 'Not Found')
 Rails.application.config.to_prepare do
   Blacklight::Catalog.module_eval do
     def facet
       @facet = blacklight_config.facet_fields[params[:id]]
       if @facet
-        @response = get_facet_field_response(@facet.key, params)
+        @response = search_service.facet_field_response(@facet.key)
         @display_facet = @response.aggregations[@facet.field]
-
         @pagination = facet_paginator(@facet, @display_facet)
-
         respond_to do |format|
           format.html do
             # Draw the partial for the "more" facet modal window:
             return render layout: false if request.xhr?
             # Otherwise draw the facet selector for users who have javascript disabled.
           end
-          format.json { render json: render_facet_list_as_json }
+          format.json
         end
       else
         respond_to do |format|
@@ -33,20 +34,6 @@ Rails.application.config.to_prepare do
           format.json { render json: {error: "Facet could not be found."} }
         end
       end
-    end
-  end
-end
-
-# because we are using blacklight and sunspot, I have to override this method since blacklight
-# expects sunspot(solr) to index by ID as a number, but sunspot needs to index it by a string (Entry ID)
-#
-# to compensate, since it's literally a string change, I just do it here...
-Rails.application.config.to_prepare do
-  Blacklight::SearchHelper.module_eval do
-    def fetch_one(id, extra_controller_params)
-      id = "Entry #{id}"
-      solr_response = repository.find id, extra_controller_params
-      [solr_response, solr_response.documents.first]
     end
   end
 end
@@ -153,7 +140,7 @@ module BlacklightAdvancedSearch
         numberOfQueries = advanced_query.keyword_queries.length
         content = []
         advanced_query.keyword_queries.each_pair do |field, query|
-          label = search_field_def_for_key(field)[:label]
+          label = blacklight_config.search_fields[field][:label]
           if query.kind_of? Array
             numberOfQueries += (query.length - 1)
             query.each do |q|
@@ -196,7 +183,7 @@ module BlacklightAdvancedSearch
           # Need to do something to make the inclusive-or search clear
 
           display_as = advanced_query.keyword_queries.collect do |field, query|
-            field = search_field_def_for_key(field)[:label]
+            field = blacklight_config.search_fields[field][:label]
             if query.kind_of? Array
               query = query.join(', ')
             end
@@ -209,7 +196,7 @@ module BlacklightAdvancedSearch
           )
       elsif (advanced_query.keyword_queries.length > 0)
         advanced_query.keyword_queries.each_pair do |field, query|
-          label = search_field_def_for_key(field)[:label]
+          label = blacklight_config.search_fields[field][:label]
 
           content << render_search_to_s_element(label, " #{Array(query).join(', ')}  ")
         end

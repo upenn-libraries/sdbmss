@@ -9,6 +9,8 @@ module CatalogControllerConfiguration
 
   included do
 
+    self.search_service_class = SDBMSS::Blacklight::SearchService
+
     configure_blacklight do |config|
 
       config.max_per_page = Rails.configuration.sdbmss_max_search_results

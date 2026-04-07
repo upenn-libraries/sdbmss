@@ -69,6 +69,17 @@ module SDBMSS::Blacklight
 
   end
 
+  # Custom SearchService that prepends "Entry " to IDs for Sunspot format.
+  # Sunspot indexes records as "Entry 1234" but Blacklight routes use numeric IDs.
+  class SearchService < ::Blacklight::SearchService
+    private
+
+    def fetch_one(id, extra_controller_params)
+      id = "Entry #{id}"
+      super(id, extra_controller_params)
+    end
+  end
+
   class ShowPresenter < ::Blacklight::ShowPresenter
     def heading
       document.model_object.public_id
