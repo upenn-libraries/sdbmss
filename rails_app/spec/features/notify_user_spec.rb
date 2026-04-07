@@ -26,6 +26,7 @@ describe "User Notifications", :js => true do
         approved: true
       )
       @user2.watches.create(watched: @entry2)
+      Sunspot.commit
       login(@user, 'somethingunguessable')
     end
 

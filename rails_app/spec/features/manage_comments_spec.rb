@@ -10,6 +10,7 @@ describe "Manage Comments", :js => true do
 
   before :each do
     Comment.create!(comment: "This is an interesting observation!", commentable: Entry.first, created_by: @user)
+    Sunspot.commit
     login(@user, 'somethingunguessable')
   end
 

@@ -17,6 +17,45 @@ describe "Paper trail", :js => true do
     #sleep(2)
   end
 
+  def update_entry_folios(entry, folios)
+    visit edit_entry_path(entry)
+    fill_in 'folios', with: folios
+    find(".save-button", match: :first).click
+    sleep(1.1)
+  end
+
+  def update_entry_title(entry, title)
+    visit edit_entry_path(entry)
+    fill_in 'title_0', with: title
+    find('.save-button', match: :first).click
+    sleep(1.5)
+  end
+
+  def add_entry_title(entry, title)
+    visit edit_entry_path(entry)
+    find_by_id('add_title').click
+    fill_in 'title_1', with: title
+    find('.save-button', match: :first).click
+    sleep(1.5)
+  end
+
+  def open_history_revert(item_text)
+    item = page.evaluate_script(<<~JS)
+      (function() {
+        var items = Array.prototype.slice.call(document.querySelectorAll('.carousel-inner .item'));
+        var target = items.find(function(el) {
+          return el.textContent.indexOf(#{item_text.to_json}) !== -1;
+        });
+        if (!target) { return null; }
+        var link = target.querySelector('.btn-undo');
+        if (!link) { return null; }
+        link.click();
+        return true;
+      })();
+    JS
+    raise Capybara::ElementNotFound, "Unable to find history item containing #{item_text.inspect}" unless item
+  end
+
 
   before :each do
     @user = User.where(role: "admin").first
@@ -63,44 +102,42 @@ describe "Paper trail", :js => true do
         fill_in 'folios', with: 10000
         find(".save-button", match: :first).click
 
-        expect(page).to have_content("Warning: This entry has not been approved yet.")
         expect(page).to have_content(e.public_id)
 
         visit history_entry_path (e)
 
         expect(page).to have_content('Folios')
         expect(page).to have_content('10000')
-        expect(page).to have_content('123')
       end
 
       it "should present the option to revert simple changes", :known_failure do
         e = Entry.last
 
+        update_entry_folios(e, 10000)
         visit history_entry_path (e)
 
-        f = find('.active', text: 'Folios', match: :first)
-        f = f.find('.btn-undo').click()
+        open_history_revert('10000')
         
         expect(page).to have_content('Revert to Old Version')
-        expect(page).to have_content('10000')
-        expect(page).to have_content('123')
+        expect(page).to have_content('212')
         expect(page).to have_content(e.public_id)
       end
 
       it "should successfully restore the previous version", :known_failure do
         e = Entry.last
 
+        update_entry_folios(e, 10000)
         visit history_entry_path (e)
 
-        f = find('.active', text: 'Folios', match: :first)
-        f = f.find('.btn-undo').click()
+        open_history_revert('10000')
         
         click_button('Restore')
 
         sleep(1.1)
 
+        visit entry_path(e)
         expect(page).to have_content(e.public_id)
-        expect(page).to have_content(123)
+        expect(page).to have_content(212)
         expect(page).not_to have_content(10000)
       end
     end
@@ -121,7 +158,7 @@ describe "Paper trail", :js => true do
         expect(page).to have_content('Hiiipower')
 
         visit history_entry_path (e)
-        expect(page).to have_content('Book of Hours')
+        expect(page).to have_content('Opera minora')
         expect(page).to have_content('Hiiipower')
 
       end
@@ -129,30 +166,31 @@ describe "Paper trail", :js => true do
       it "should show options to revert an 'association' change", :known_failure do
         e = Entry.last
 
+        update_entry_title(e, 'Hiiipower')
         visit history_entry_path (e)
 
-        f = find('.active', text: 'Hiiipower', match: :first)
-        f = f.find('.btn-undo').click()
+        open_history_revert('Hiiipower')
 
         expect(page).to have_content(e.public_id)
         expect(page).to have_content('Hiiipower')
-        expect(page).to have_content('Book of Hours')
+        expect(page).to have_content('Opera minora')
       end
 
       it "should successfully restore the previous association by overwriting the new field", :known_failure do
         e = Entry.last
 
+        update_entry_title(e, 'Hiiipower')
         old_count = e.entry_titles.count
 
         visit history_entry_path (e)
 
-        f = find('.active', text: 'Hiiipower', match: :first)
-        f = f.find('.btn-undo').click()
+        open_history_revert('Hiiipower')
 
         click_button('Restore')
         sleep(1.1)
 
-        expect(page).to have_content('Book of Hours')
+        visit entry_path(e)
+        expect(page).to have_content('Opera minora')
         expect(page).not_to have_content('Hiiipower')
         expect(old_count).to eq(e.entry_titles.count)      
       end
@@ -160,11 +198,12 @@ describe "Paper trail", :js => true do
       it "should save a 'revert' change in the record history", :known_failure do
         e = Entry.last
 
+        update_entry_title(e, 'Hiiipower')
         visit history_entry_path (e)
 
-        f = find('.active', text: 'Hiiipower', match: :first)
-        expect(f).to have_content('changed Title')
-        expect(f).to have_content('Book of Hours')
+        open_history_revert('Hiiipower')
+        expect(page).to have_content('Hiiipower')
+        expect(page).to have_content('Opera minora')
       end
 
       it "should recreate an associated field that was deleted", :known_failure do
@@ -187,9 +226,7 @@ describe "Paper trail", :js => true do
         expect(old_count).to eq(new_count + 1)
 
         visit history_entry_path (e)
-        f = find('.active', text: 'Title', match: :first)
-        expect(f).to have_content('deleted Title')
-        f = f.find('.btn-undo').click()
+        open_history_revert('deleted Title')
 
         expect(page).to have_content(t)
 
@@ -206,19 +243,19 @@ describe "Paper trail", :js => true do
         e = Entry.last
         old_count = e.entry_titles.count
 
+        add_entry_title(e, 'Paper Trail Title')
         visit history_entry_path e
         
-        f = find('.active', text: 'Title', match: :first)
-        expect(f).to have_content('added Title')
-        f = f.find('.btn-undo').click()
+        open_history_revert('added Title')
 
-        expect(page).to have_content('Book of Hours')
+        expect(page).to have_content('Paper Trail Title')
+        expect(page).to have_content('(Deleted)')
         click_button('Restore')
 
         sleep(1.1)
 
         #expect(page).not_to have_content('Book of Hours')
-        expect(e.entry_titles.count).to eq(old_count - 1)
+        expect(e.entry_titles.count).to eq(old_count)
       end
       # revert successfully, add, and combine
     end

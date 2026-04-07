@@ -99,9 +99,20 @@ RSpec.configure do |config|
     rescue => e
       Rails.logger.warn "Solr delete-all before suite failed: #{e.message}"
     end
-    SDBMSS::SeedData.create
-    SDBMSS::ReferenceData.create_all
-    SDBMSS::Mysql.create_functions
+    suite_seed_attempts = 0
+    begin
+      SDBMSS::SeedData.create
+      SDBMSS::ReferenceData.create_all
+      SDBMSS::Mysql.create_functions
+    rescue Mysql2::Error => e
+      suite_seed_attempts += 1
+      if e.message =~ /Deadlock|Duplicate entry/ && suite_seed_attempts <= 3
+        Rails.logger.warn "Before-suite seed attempt #{suite_seed_attempts} failed (#{e.message.split(':').first}), retrying..."
+        sleep(0.5 * suite_seed_attempts)
+        retry
+      end
+      raise
+    end
     ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
     begin
       Sunspot.index(Entry.all)
