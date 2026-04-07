@@ -16,7 +16,9 @@ describe "Blacklight Search", :js => true do
 #    SDBMSS::ReferenceData.create_all
 
     SDBMSS::Util.wait_for_solr_to_be_current
+  end
 
+  before :each do
     @user = User.where(role: "admin").first
   end
 
@@ -113,10 +115,12 @@ describe "Blacklight Search", :js => true do
   it "should load advanced search page", :known_failure do
     visit advanced_search_path
 
+    search_fields = CatalogController.blacklight_config.search_fields.values
+
     # all text search fields should show up in dropdown
-    expect(find_by_id('text_field_0').all("option").length).to eq(30)
+    expect(find_by_id('text_field_0').all("option", visible: :all).length).to eq(search_fields.count { |field_def| !field_def.is_numeric_field })
     # all numeric search fields should show up in dropdown
-    expect(find_by_id('numeric_field_0').all("option").length).to eq(14)
+    expect(find_by_id('numeric_field_0').all("option", visible: :all).length).to eq(search_fields.count { |field_def| field_def.is_numeric_field })
   end
 
   it "should do advanced search using numeric range on Height" do

@@ -53,13 +53,23 @@ module SDBMSS::ReferenceData
       end
       user
     end
+
+    def find_or_create_unscoped(model_class, attrs)
+      record = model_class.unscoped.where(attrs).first
+      return record if record
+
+      model_class.create!(attrs)
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
+      model_class.unscoped.where(attrs).first
+    end
   end
 
   class Manuscripts < RefDataBase
     def initialize
       @m = Manuscript.create!(created_by: lransom)
-      EntryManuscript.create!(manuscript: @m, entry: Entry.last, relation_type: 'is')
-      EntryManuscript.create!(manuscript: @m, entry: Entry.first, relation_type: 'is')
+      [Entry.first, Entry.last].compact.uniq.each do |entry|
+        EntryManuscript.create!(manuscript: @m, entry: entry, relation_type: 'is')
+      end
     end
   end
 
@@ -203,7 +213,7 @@ module SDBMSS::ReferenceData
 
       EntryLanguage.create!(
         entry: entry,
-        language: Language.find_or_create_by(name: 'Latin')
+        language: find_or_create_unscoped(Language, name: 'Latin')
       )
 
       EntryMaterial.create!(
@@ -213,7 +223,7 @@ module SDBMSS::ReferenceData
 
       EntryPlace.create!(
         entry: entry,
-        place: Place.find_or_create_by(name: 'Italy, Tuscany, Florence'),
+        place: find_or_create_unscoped(Place, name: 'Italy, Tuscany, Florence'),
         uncertain_in_source: true
       )
 
@@ -296,7 +306,7 @@ module SDBMSS::ReferenceData
 
       EntryLanguage.create!(
         entry: entry,
-        language: Language.find_or_create_by(name: 'French')
+        language: find_or_create_unscoped(Language, name: 'French')
       )
 
       EntryMaterial.create!(
@@ -306,7 +316,7 @@ module SDBMSS::ReferenceData
 
       EntryPlace.create!(
         entry: entry,
-        place: Place.find_or_create_by(name: 'France, Paris')
+        place: find_or_create_unscoped(Place, name: 'France, Paris')
       )
 
       Provenance.create!(
@@ -468,7 +478,7 @@ module SDBMSS::ReferenceData
 
       EntryLanguage.create!(
         entry: entry,
-        language: Language.find_or_create_by(name: 'Latin')
+        language: find_or_create_unscoped(Language, name: 'Latin')
       )
 
       EntryMaterial.create!(
@@ -478,7 +488,7 @@ module SDBMSS::ReferenceData
 
       EntryPlace.create!(
         entry: entry,
-        place: Place.find_or_create_by(name: 'Italy, Florence')
+        place: find_or_create_unscoped(Place, name: 'Italy, Florence')
       )
 
       # WARNING: we didn't fill in all MS details; we concentrated on
@@ -594,7 +604,7 @@ module SDBMSS::ReferenceData
 
       EntryLanguage.create!(
         entry: entry,
-        language: Language.find_or_create_by(name: 'Latin')
+        language: find_or_create_unscoped(Language, name: 'Latin')
       )
 
       EntryMaterial.create!(
@@ -604,7 +614,7 @@ module SDBMSS::ReferenceData
 
       EntryPlace.create!(
         entry: entry,
-        place: Place.find_or_create_by(name: 'Italy, Ferrara'),
+        place: find_or_create_unscoped(Place, name: 'Italy, Ferrara'),
         uncertain_in_source: true
       )
 
@@ -681,7 +691,7 @@ module SDBMSS::ReferenceData
 
       EntryLanguage.create!(
         entry: entry,
-        language: Language.find_or_create_by(name: 'Latin'),
+        language: find_or_create_unscoped(Language, name: 'Latin'),
         supplied_by_data_entry: true
       )
 
@@ -692,7 +702,7 @@ module SDBMSS::ReferenceData
 
       EntryPlace.create!(
         entry: entry,
-        place: Place.find_or_create_by(name: 'Italy, Naples')
+        place: find_or_create_unscoped(Place, name: 'Italy, Naples')
       )
 
       Provenance.create!(
@@ -907,7 +917,7 @@ module SDBMSS::ReferenceData
 
       EntryLanguage.create!(
         entry: entry,
-        language: Language.find_or_create_by(name: 'Greek')
+        language: find_or_create_unscoped(Language, name: 'Greek')
       )
 
       EntryMaterial.create!(
@@ -999,7 +1009,7 @@ module SDBMSS::ReferenceData
 
       EntryPlace.create!(
         entry: entry,
-        place: Place.find_or_create_by(name: 'Italy, Venice')
+        place: find_or_create_unscoped(Place, name: 'Italy, Venice')
       )
 
       Provenance.create!(
@@ -1063,7 +1073,7 @@ module SDBMSS::ReferenceData
 
       EntryLanguage.create!(
         entry: entry,
-        language: Language.find_or_create_by(name: 'Dutch')
+        language: find_or_create_unscoped(Language, name: 'Dutch')
       )
 
       EntryUse.create!(
@@ -1096,7 +1106,7 @@ module SDBMSS::ReferenceData
 
       EntryLanguage.create!(
         entry: entry,
-        language: Language.find_or_create_by(name: 'Latin')
+        language: find_or_create_unscoped(Language, name: 'Latin')
       )
 
       EntryMaterial.create!(
@@ -1106,7 +1116,7 @@ module SDBMSS::ReferenceData
 
       EntryPlace.create!(
         entry: entry,
-        place: Place.find_or_create_by(name: 'England')
+        place: find_or_create_unscoped(Place, name: 'England')
       )
 
       Provenance.create!(
@@ -1251,7 +1261,7 @@ module SDBMSS::ReferenceData
 
       EntryPlace.create!(
         entry: entry,
-        place: Place.find_or_create_by(name: 'France')
+        place: find_or_create_unscoped(Place, name: 'France')
       )
 
       Provenance.create!(
@@ -1350,7 +1360,7 @@ module SDBMSS::ReferenceData
 
       EntryLanguage.create!(
         entry: entry,
-        language: Language.find_or_create_by(name: 'Greek')
+        language: find_or_create_unscoped(Language, name: 'Greek')
       )
 
       EntryMaterial.create!(

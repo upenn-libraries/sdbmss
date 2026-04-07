@@ -124,12 +124,12 @@ describe "Manage entries", :js => true do
   it "should perform a search on any field without error", :known_failure do
     visit entries_path
 
-    expect(page.find("select[name='search_field']", match: :first).all("option").length).to eq(42)
+    search_field = page.find("select[name='search_field']", visible: :all, match: :first)
+    options = search_field.all("option", visible: :all)
+    expect(options.length).to eq(Entry.search_fields.count)
 
-
-    42.times do |i|
+    options.each do |option|
       page.find("input[name='search_value']", match: :first).set "Test String"
-      option = page.all("select[name='search_field'] option")[i]
       option.select_option
       find('#search_submit').click()
     end
