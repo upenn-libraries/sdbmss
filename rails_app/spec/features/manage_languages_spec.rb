@@ -22,7 +22,6 @@ describe "Manage languages", :js => true do
     end
 
     it "should show list of Languages", :known_failure do
-      Language.index
       visit languages_path
       expect(page).to have_content @language.name
     end
@@ -120,7 +119,6 @@ describe "Manage languages", :js => true do
     end
 
     it "should show list of Languages", :known_failure do
-      Language.index
       visit languages_path
       expect(page).to have_content @language.name
     end

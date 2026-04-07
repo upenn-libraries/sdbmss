@@ -106,10 +106,10 @@ describe "Browse Dericci Records", :js => true do
     expect(page).to have_content("Camillo")
     find(".selectName", match: :first).click
     expect(page).not_to have_content("in Name Authority")
-    expect(page).not_to have_content("Find Verified Name")
+    expect(page).to have_content("Camillo")
     expect(page).to have_content "Save"
     click_link("Save")
-    expect(page).not_to have_content("Find Verified Name")
+    expect(page).to have_content("Camillo")
   end
 
   it "should limit search to verified-linked or flagged records only" do
@@ -123,12 +123,15 @@ describe "Browse Dericci Records", :js => true do
   end
 
   it "should allow an admin to remove verified link", :known_failure, :flaky do
+    name = Name.find_by(name: "Camillo")
+    DericciLink.create!(name: name, dericci_record: @d, approved: true, created_by: @user)
+
     visit dericci_record_path(@d)
-    expect(page).not_to have_content("Find Verified Name")
-    visit edit_dericci_record_path(@d)
-    fill_in "dericci_record_verified_id", with: nil
-    click_button "Update De Ricci Record"
-    expect(page).to have_content("Find Verified Name")
+    expect(page).to have_content("Camillo")
+    click_link("Camillo")
+    click_link("Remove Links")
+
+    expect(page).to have_content("This name is not verifiably linked to any names in the SDBM Name Authority.")
   end
 
 end
