@@ -62,7 +62,7 @@ describe "User Activity", :js => true do
     visit new_name_path
     fill_in 'name_name', with: 'Stacker Pentecost'
     find_by_id('name_is_artist').click
-    click_button 'Create Name'
+    click_link 'Save'
     expect(page).to have_content('Stacker Pentecost')
     visit activities_path
     expect(page).to have_content('added SDBM_NAME_')

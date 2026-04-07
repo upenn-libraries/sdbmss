@@ -10,15 +10,24 @@ describe "Bookmark", :js => true do
     end
 
     it "should allow a user to bookmark an entry from a public search" do
+      target = Entry.create!(source: Source.last, created_by: @admin_user)
+      target.entry_titles.create!(title: "Bookmark Search Unique Title")
+      target.reload
+      target.index!
+      Sunspot.commit
+
       visit root_path
+      fill_in "q", with: "Bookmark Search Unique Title"
       click_button "Search"
 
-      expect(page).to have_content(Entry.last.public_id)
-      find('.bookmark', match: :first).click
+      expect(page).to have_content(target.public_id)
+      within(".document", text: target.public_id) do
+        find('.bookmark', match: :first).click
+      end
 
       visit bookmarks_path
       expect(page).to have_content("of this type")
-      expect(page).to have_content(Entry.last.public_id)
+      expect(page).to have_content(target.public_id)
     end
 
     it "should allow the user to add tags to their bookmark" do

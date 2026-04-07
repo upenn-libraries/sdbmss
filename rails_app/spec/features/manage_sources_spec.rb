@@ -28,6 +28,7 @@ describe "Manage sources", :js => true do
     expect(page).to have_content @source.title
 
     page.fill_in "search_value", :with => "test"
+    page.select "Title", from: "search_field"
     find('#search_submit').click()
     expect(page).not_to have_selector("#spinner", visible: true)
 
@@ -61,10 +62,13 @@ describe "Manage sources", :js => true do
 
     textInputs[0].set "Morgan"
     textInputs[1].set "test"
+    searchOptions[0].find("option", text: "Title").select_option
+    searchOptions[1].find("option", text: "Title").select_option
 
-    #select "any", from: "op"
+    select "Any", from: "search_op"
 
     find('#search_submit').click()
+    expect(page).not_to have_selector("#spinner", visible: true)
 
     expect(page).to have_content @source.title 
   end
@@ -85,14 +89,10 @@ describe "Manage sources", :js => true do
   end
 
   it "should create a new Source", :known_failure do
-    visit new_entry_path
+    visit new_source_path(source_type: SourceType.auction_catalog.id)
 
-    open_source_create_modal
-
-    select "Auction/Dealer Catalog", from: 'source_type'
-    #find("#source_type").set("Auction/Dealer Catalog")
-    sleep 1
     find('#title').set 'Completely unique source'
+    fill_in 'source_date', with: '2014-02-03'
     click_button "Save"
 
     sleep 1

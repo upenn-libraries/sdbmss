@@ -20,8 +20,11 @@ describe "De Ricci Game", :js => true do
 
     it "should allow you to continue a game previously started", :known_failure do
       visit dericci_games_path
-      expect(page).to have_content("My Games")
-      find("#open-games").click
+      find('#new-game').click
+
+      visit dericci_games_path
+      expect(page).to have_content("In Progress")
+      find("[data-target='#in-progress']").click
       find('.play-game', match: :first).click
       expect(page).to have_content('Select a Record and click')
 
