@@ -25,7 +25,7 @@ describe "Login", :js => true do
     fill_in 'user_login', :with => @user_inactive.username
     fill_in 'user_password', :with => 'somethingunguessable'
     click_button 'Log in'
-    expect(page).to have_content 'Your account has been de-activated.'
+    expect(page).to have_content 'New SDBM accounts are inactive by default.'
   end
 
   it "should allow login_as" do

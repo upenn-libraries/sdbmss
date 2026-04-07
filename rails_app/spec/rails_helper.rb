@@ -147,6 +147,9 @@ RSpec.configure do |config|
       # hook (which runs after ours in LIFO order) doesn't time out waiting
       # for a browser that has been idle during Solr callbacks.
       Capybara.reset_sessions!
+      # Brief pause to let WEBrick finish any in-flight request that may
+      # hold a DB lock before we truncate, preventing deadlock on reseed.
+      sleep 1
     end
     DatabaseCleaner.clean
     if example.metadata[:js]
@@ -157,10 +160,21 @@ RSpec.configure do |config|
       # tests.
       sunspot_session = Sunspot.session
       Sunspot.session = Sunspot::Rails::StubSessionProxy.new(sunspot_session)
+      # Retry on MySQL deadlock (can occur when WEBrick finishes an in-flight
+      # request that holds a table lock while we reseed).
+      reseed_attempts = 0
       begin
         SDBMSS::SeedData.create
         SDBMSS::ReferenceData.create_all
         SDBMSS::Mysql.create_functions
+      rescue Mysql2::Error => e
+        reseed_attempts += 1
+        if e.message =~ /Deadlock|Duplicate entry/ && reseed_attempts <= 3
+          Rails.logger.warn "Reseed attempt #{reseed_attempts} failed (#{e.message.split(':').first}), retrying..."
+          sleep(0.5 * reseed_attempts)
+          retry
+        end
+        raise
       ensure
         Sunspot.session = sunspot_session
         ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
@@ -181,7 +195,13 @@ RSpec.configure do |config|
           '<delete><query>*:*</query></delete>',
           'Content-Type' => 'application/xml'
         )
-        [Entry, Name, Source, Manuscript, Language, Place].each { |model| Sunspot.index(model.all) }
+        [Entry, Name, Source, Manuscript, Language, Place].each do |model|
+          begin
+            Sunspot.index(model.all)
+          rescue => e
+            Rails.logger.warn "Solr index #{model} after JS test failed: #{e.message}"
+          end
+        end
         Sunspot.commit
       # If the HTTP delete fails, skip re-index — no point indexing into a broken Solr.
       rescue StandardError => e
