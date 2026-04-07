@@ -40,11 +40,16 @@ describe "Blacklight Search", :js => true do
   it "should show my public entries", :known_failure do
     login(@user, 'somethingunguessable')
 
-    e = Entry.create!(source: Source.last, created_by: @user)
+    source = Source.create!(
+      title: "Test Source for Public Entries",
+      source_type: SourceType.auction_catalog,
+      created_by: @user
+    )
+    e = Entry.create!(source: source, created_by: @user, approved: true)
     e.index!
 
     visit dashboard_contributions_path
-    click_link "See Your Public Entries"
+    find_link("See Your Public Entries").trigger("click")
 
     expect(page).to have_content(e.public_id)
   end
@@ -118,9 +123,13 @@ describe "Blacklight Search", :js => true do
     search_fields = CatalogController.blacklight_config.search_fields.values
 
     # all text search fields should show up in dropdown
-    expect(find_by_id('text_field_0').all("option", visible: :all).length).to eq(search_fields.count { |field_def| !field_def.is_numeric_field })
+    expect(find_by_id('text_field_0').all("option", visible: :all).length).to eq(
+      search_fields.count { |field_def| !field_def.is_numeric_field && field_def.include_in_advanced_search != false }
+    )
     # all numeric search fields should show up in dropdown
-    expect(find_by_id('numeric_field_0').all("option", visible: :all).length).to eq(search_fields.count { |field_def| field_def.is_numeric_field })
+    expect(find_by_id('numeric_field_0').all("option", visible: :all).length).to eq(
+      search_fields.count { |field_def| field_def.is_numeric_field && field_def.include_in_advanced_search != false }
+    )
   end
 
   it "should do advanced search using numeric range on Height" do

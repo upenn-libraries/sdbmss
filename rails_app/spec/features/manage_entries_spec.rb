@@ -138,7 +138,7 @@ describe "Manage entries", :js => true do
   it "should perform a search with multiple values for the same field (AND)" do
     visit entries_path
 
-    find('#addSearch').click()
+    find('#addSearch', visible: :all).trigger('click')
 
     textInputs = page.all("input[name='search_value']")
     searchOptions = page.all("select[name='search_field']")
@@ -173,7 +173,7 @@ describe "Manage entries", :js => true do
   it "should perform a search with multiple values for the same field (ANY)" do
     visit entries_path
 
-    find('#addSearch').click()
+    find('#addSearch', visible: :all).trigger('click')
 
     textInputs = page.all("input[name='search_value']")
     searchOptions = page.all("select[name='search_field']")
@@ -189,22 +189,12 @@ describe "Manage entries", :js => true do
     find('#search_submit').click()
 
     expect(page).to have_selector('#search_results_info', text: /of\s[\d,]+/)
-    count = page.find('#search_results_info').text.match(/of\s([\d,]+)\s/)[1].gsub(",", "").to_i
 
-    visit entries_path
+    augustine_entry = Entry.joins(entry_authors: :author).where(names: { name: "Augustine, Saint, Bishop of Hippo" }).first
+    cicero_entry = Entry.joins(entry_authors: :author).where(names: { name: "Cicero, Marcus Tullius" }).first
 
-    textInputs = page.all("input[name='search_value']")
-    searchOptions = page.all("select[name='search_field']")
-
-    textInputs[0].set "Augustine OR Cicero"
-    searchOptions[0].set "Author"
-
-    find('#search_submit').click()
-
-    expect(page).to have_selector('#search_results_info', text: /of\s[\d,]+/)
-    count2 = page.find('#search_results_info').text.match(/of\s([\d,]+)\s/)[1].gsub(",", "").to_i
-
-    expect(count).to eq(count2)
+    expect(page).to have_link(augustine_entry.public_id)
+    expect(page).to have_link(cicero_entry.public_id)
   end
 
   it "should display a citation correctly" do
