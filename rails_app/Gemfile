@@ -10,10 +10,10 @@ gem "ffi", ">= 1.9.24", "< 1.17"
 gem "json", ">= 2.3"
 gem "psych", "~> 3.1"
 gem "rdoc", "~> 6.3.0"
-gem "sprockets", ">= 3.7.2"
+gem "sprockets", "~> 3.7"
 gem "kramdown"
 gem "sassc", ">= 2.0.0"
-gem 'autoprefixer-rails', '~> 7.1.6'
+gem 'autoprefixer-rails', '>= 9.1.0'
 gem 'html-pipeline', '~> 2.12.3'
 gem 'websocket-driver', '~> 0.7.7'
 
@@ -25,7 +25,7 @@ gem 'mysql2'
 gem 'bigdecimal'
 
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sassc-rails', '>= 2.0'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '~> 2.7.2'
@@ -41,7 +41,7 @@ gem 'jquery-ui-rails', '~> 5.0.3'
 gem 'turbolinks', '~> 5.2'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.11.0'
+gem 'jbuilder', '~> 2.7'
 
 # Use unicorn as the app server
 gem 'unicorn', '~> 4.9.0'
@@ -49,10 +49,12 @@ gem 'unicorn-rails'
 gem 'rack-handlers'
 
 # Blacklight
-gem "blacklight", "~> 6.25"
-gem "twitter-typeahead-rails", "= 0.11.1.pre.corejavascript"
+gem "blacklight", ">= 7.7", "< 7.12"
 gem "rsolr", "~> 2.0"
-gem "blacklight_advanced_search", "~> 6.4.1"
+gem "blacklight_advanced_search", "~> 7.0"
+gem "bootstrap", "~> 4.6"
+gem "font-awesome-rails"
+gem "view_component", "~> 2.82"  # 3.x requires Ruby 3.0+; we're on Ruby 2.7
 
 # For authentication; used by Blacklight and by SDBMSS
 gem "devise", "~> 4.7.1"
@@ -112,11 +114,11 @@ gem "bunny", "~> 2.22"
 
 gem 'data-confirm-modal'
 
-gem 'thredded', '~> 0.16'
+# thredded removed — client confirmed forum is no longer needed (2026-04-07)
 
 gem 'whenever', :require => false
 
-gem 'codemirror-rails'
+# codemirror-rails removed (railties < 6.0 blocker); JS/CSS vendored in vendor/assets/
 
 # bundle exec rake doc:rails generates the Rails API under doc/api.
 group :doc do
