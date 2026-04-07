@@ -1,3 +1,5 @@
+require 'zip'
+
 # This module is included in any model that has a searchable datatable (Name, Entry, Place, Language, Comment, EntryManuscript,
 # Manuscript, Source, User) and includes the do_search and do_csv_search methods (which handle search logic and results) and
 # a number of helper functions for generating and filtering search parameters.
@@ -88,7 +90,7 @@ module SolrSearchable
       end
     end
 
-    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+    ::Zip::File.open("#{path}.zip", ::Zip::File::CREATE) do |zipfile|
       zipfile.add(filename, path)
     end
 
@@ -120,7 +122,7 @@ module SolrSearchable
       end
     end
 
-    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+    ::Zip::File.open("#{path}.zip", ::Zip::File::CREATE) do |zipfile|
       zipfile.add(filename, path)
     end
 

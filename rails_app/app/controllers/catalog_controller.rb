@@ -1,3 +1,4 @@
+require 'zip'
 # -*- encoding : utf-8 -*-
 #
 # THIS HAS NOTHING TO DO WITH 'CATALOGS'!
@@ -136,7 +137,7 @@ class CatalogController < ApplicationController
       end
     end
 
-    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+    ::Zip::File.open("#{path}.zip", ::Zip::File::CREATE) do |zipfile|
       zipfile.add(filename, path)
     end
 

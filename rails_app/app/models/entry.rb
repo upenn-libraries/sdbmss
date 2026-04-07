@@ -1,3 +1,5 @@
+require 'zip'
+
 class Entry < ApplicationRecord
 
   ALT_SIZE_TYPES = [
@@ -988,7 +990,7 @@ class Entry < ApplicationRecord
     end
 
 
-    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+    ::Zip::File.open("#{path}.zip", ::Zip::File::CREATE) do |zipfile|
       zipfile.add(filename, path)
     end
 
@@ -1023,7 +1025,7 @@ class Entry < ApplicationRecord
       end
     end
 
-    Zip::File.open("#{path}.zip", Zip::File::CREATE) do |zipfile|
+    ::Zip::File.open("#{path}.zip", ::Zip::File::CREATE) do |zipfile|
       zipfile.add(filename, path)
     end
 
