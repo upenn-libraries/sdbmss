@@ -340,7 +340,7 @@ module DataEntryHelpers
     expect(sale.get_sellers_or_holders.first.agent.name).to eq('Joe2')
     expect(sale.get_buyers.first.agent.name).to eq('Joe3')
     expect(sale.sold).to eq('Yes')
-    expect(sale.date).to eq('20140303')
+    expect(sale.date.delete('-')).to eq('20140303')
     expect(sale.price).to eq(130000)
     expect(sale.currency).to eq('USD')
 

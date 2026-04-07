@@ -42,7 +42,7 @@ module SDBMSS::ReferenceData
     end
 
     def lransom
-      user = User.find_by(username: 'lransom')
+      user = User.find_by(email: 'lransom@upenn.edu') || User.find_by(username: 'lransom')
       if user.blank?
         user = User.create!(
           username: 'lransom',
@@ -61,6 +61,45 @@ module SDBMSS::ReferenceData
       model_class.create!(attrs)
     rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
       model_class.unscoped.where(attrs).first
+    end
+
+    def find_or_create_name_by_flag(name, flag)
+      record = Name.unscoped.where(name: name).first
+      if record
+        if !record.send(flag)
+          record.send("#{flag}=", true)
+          record.save!
+        end
+        return record
+      end
+
+      attrs = { name: name, flag => true }
+      Name.create!(attrs)
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique, Mysql2::Error => e
+      raise if e.is_a?(Mysql2::Error) && e.message !~ /Duplicate entry|Deadlock/
+
+      record = Name.unscoped.where(name: name).first
+      if record && !record.send(flag)
+        record.send("#{flag}=", true)
+        record.save!
+      end
+      record
+    end
+
+    def find_or_create_agent(name)
+      find_or_create_name_by_flag(name, :is_provenance_agent)
+    end
+
+    def find_or_create_artist(name)
+      find_or_create_name_by_flag(name, :is_artist)
+    end
+
+    def find_or_create_author(name)
+      find_or_create_name_by_flag(name, :is_author)
+    end
+
+    def find_or_create_scribe(name)
+      find_or_create_name_by_flag(name, :is_scribe)
     end
   end
 
@@ -132,7 +171,7 @@ module SDBMSS::ReferenceData
     end
 
     def create_source
-      @hill = Name.find_or_create_agent('Jonathan A. Hill')
+      @hill = find_or_create_agent('Jonathan A. Hill')
       @source = Source.create!(
         source_type: SourceType.auction_catalog,
         date: '20150101',
@@ -193,18 +232,18 @@ module SDBMSS::ReferenceData
 
       EntryAuthor.create!(
         entry: entry,
-        author: Name.find_or_create_author('Augustine, Saint, Bishop of Hippo')
+        author: find_or_create_author('Augustine, Saint, Bishop of Hippo')
       )
 
       EntryAuthor.create!(
         entry: entry,
-        author: Name.find_or_create_author('Pseudo-Augustine, Saint, Bishop of Hippo'),
+        author: find_or_create_author('Pseudo-Augustine, Saint, Bishop of Hippo'),
         observed_name: 'Pseudo-Augustine'
       )
 
       EntryAuthor.create!(
         entry: entry,
-        author: Name.find_or_create_author('Valerius, Bishop of Hippo')
+        author: find_or_create_author('Valerius, Bishop of Hippo')
       )
 
       ed = EntryDate.new(entry: entry, observed_date: 'ca. 1425-1450')
@@ -230,7 +269,7 @@ module SDBMSS::ReferenceData
       Provenance.create!(
         entry: entry,
         comment: 'Bookplate.',
-        provenance_agent: Name.find_or_create_agent('Tomkinson, Michael'),
+        provenance_agent: find_or_create_agent('Tomkinson, Michael'),
         direct_transfer: true
       )
 
@@ -238,14 +277,14 @@ module SDBMSS::ReferenceData
         entry: entry,
         start_date: '19220700',
         comment: 'Bookplate. His sale, July 1922 (day of sale not given), lot. 1027.',
-        provenance_agent: Name.find_or_create_agent("Sotheby's")
+        provenance_agent: find_or_create_agent("Sotheby's")
       )
 
       Provenance.create!(
         entry: entry,
         comment: 'Bookplate.',
         observed_name: 'Bibliotheca Philosophica Hermetica, J. R. Ritman, Amsterdam',
-        provenance_agent: Name.find_or_create_agent('Ritman, J. R.')
+        provenance_agent: find_or_create_agent('Ritman, J. R.')
       )
 
       Provenance.create!(
@@ -291,12 +330,12 @@ module SDBMSS::ReferenceData
 
       EntryAuthor.create!(
         entry: entry,
-        author: Name.find_or_create_author('Bruni, Leonardo')
+        author: find_or_create_author('Bruni, Leonardo')
       )
 
       EntryAuthor.create!(
         entry: entry,
-        author: Name.find_or_create_author('Lebegue, Jean'),
+        author: find_or_create_author('Lebegue, Jean'),
         role: 'Tr'
       )
 
@@ -324,28 +363,28 @@ module SDBMSS::ReferenceData
         end_date: '18030000',
         comment: 'He died in 1803.',
         observed_name: "Comte Charles d'Oultremont (1753-1803)",
-        provenance_agent: Name.find_or_create_agent("d'Oultremont, Charles, Comte")
+        provenance_agent: find_or_create_agent("d'Oultremont, Charles, Comte")
       )
 
       Provenance.create!(
         entry: entry,
         start_date: '18030000',
         end_date: '18300426',
-        provenance_agent: Name.find_or_create_agent("d'Oultremont, Anne-Henriette, Comtesse"),
+        provenance_agent: find_or_create_agent("d'Oultremont, Anne-Henriette, Comtesse"),
         direct_transfer: true
       )
 
       Provenance.create!(
         entry: entry,
         start_date: '18300426',
-        provenance_agent: Name.find_or_create_agent('P. H. Carpentiers'),
+        provenance_agent: find_or_create_agent('P. H. Carpentiers'),
         comment: "Catalogue title: Catalogus van eene fraye verzameling historische, letterkundige, ...boeken, nagalaten door wylen mevrowe de gravin douairiere d'Oultremont...op maendag 26 April 1830."
       )
 
       Provenance.create!(
         entry: entry,
         comment: 'Loose letter to "Dear Yates," datable to 1884 or later with related British Museum request slips (Thompson and Bright: A Family of "Bibliophiles, see also New York, PML. M 266.',
-        provenance_agent: Name.find_or_create_agent('Thompson-Yates, Samuel Ashton')
+        provenance_agent: find_or_create_agent('Thompson-Yates, Samuel Ashton')
       )
 
       entry
@@ -383,7 +422,7 @@ module SDBMSS::ReferenceData
 
       EntryAuthor.create!(
         entry: entry,
-        author: Name.find_or_create_author('Cicero, Marcus Tullius')
+        author: find_or_create_author('Cicero, Marcus Tullius')
       )
 
       # WARNING: we didn't fill in all MS details; we concentrated on
@@ -392,7 +431,7 @@ module SDBMSS::ReferenceData
       Provenance.create!(
         entry: entry,
         comment: 'Arms of Engelhard of Swabia in lower margin fol. 1r: gules, three shamrocks argent (Rietstap, Armorial general, I. P. 614, pl. CCLXIX',
-        provenance_agent: Name.find_or_create_agent('Engelhard of Swabia')
+        provenance_agent: find_or_create_agent('Engelhard of Swabia')
       )
 
       Provenance.create!(
@@ -400,19 +439,19 @@ module SDBMSS::ReferenceData
         end_date: '19071113',
         comment: "Armorial ink-stamped collector's mark: three coquilles, two and one, surounded by the Garter of the Golden Fleece and surmounted by a prince's coronet (fol. Ir, Riestap, pl. CXCVIIII). Catalogue without manuscripts.",
         observed_name: 'Clemens Lothar von Wenzel, Furst von Metternich (1773-1859)',
-        provenance_agent: Name.find_or_create_agent('Metternich, Clemens Wenzel Lothar, Fürst von')
+        provenance_agent: find_or_create_agent('Metternich, Clemens Wenzel Lothar, Fürst von')
       )
 
       Provenance.create!(
         entry: entry,
         comment: 'Bell lived in Gwynned Valley, Pennsylvania.',
         observed_name: 'Dr. Edward Henry Bell',
-        provenance_agent: Name.find_or_create_agent('Bell, Edward Henry')
+        provenance_agent: find_or_create_agent('Bell, Edward Henry')
       )
 
       Provenance.create!(
         entry: entry,
-        provenance_agent: Name.find_or_create_agent('Hartz, Raymond and Elizabeth'),
+        provenance_agent: find_or_create_agent('Hartz, Raymond and Elizabeth'),
         direct_transfer: true
       )
 
@@ -420,7 +459,7 @@ module SDBMSS::ReferenceData
         entry: entry,
         start_date: '19911212',
         comment: 'lot 162',
-        provenance_agent: Name.find_or_create_agent("Sotheby's")
+        provenance_agent: find_or_create_agent("Sotheby's")
       )
 
       Provenance.create!(
@@ -459,7 +498,7 @@ module SDBMSS::ReferenceData
 
       EntryAuthor.create!(
         entry: entry,
-        author: Name.find_or_create_author('Cicero, Marcus Tullius')
+        author: find_or_create_author('Cicero, Marcus Tullius')
       )
 
       ed = EntryDate.new(entry: entry, observed_date: 'ca. 1460-1470')
@@ -468,12 +507,12 @@ module SDBMSS::ReferenceData
 
       EntryArtist.create!(
         entry: entry,
-        artist: Name.find_or_create_artist('Francesco di Antonio del Chierico')
+        artist: find_or_create_artist('Francesco di Antonio del Chierico')
       )
 
       EntryScribe.create!(
         entry: entry,
-        scribe: Name.find_or_create_scribe('Ser Pietro Di Bernardo Cennini')
+        scribe: find_or_create_scribe('Ser Pietro Di Bernardo Cennini')
       )
 
       EntryLanguage.create!(
@@ -515,26 +554,26 @@ module SDBMSS::ReferenceData
       Provenance.create!(
         entry: entry,
         comment: 'bookplate; F. 159 in her library.',
-        provenance_agent: Name.find_or_create_agent('Feltrinelli, Giannalisa'),
+        provenance_agent: find_or_create_agent('Feltrinelli, Giannalisa'),
         direct_transfer: true
       )
 
       Provenance.create!(
         entry: entry,
         start_date: '19971203',
-        provenance_agent: Name.find_or_create_agent("Christie's London"),
+        provenance_agent: find_or_create_agent("Christie's London"),
         direct_transfer: true
       )
 
       Provenance.create!(
         entry: entry,
-        provenance_agent: Name.find_or_create_agent('Bernard Quaritch Ltd.'),
+        provenance_agent: find_or_create_agent('Bernard Quaritch Ltd.'),
         observed_name: 'Bernard Quaritch'
       )
 
       Provenance.create!(
         entry: entry,
-        provenance_agent: Name.find_or_create_agent('Friedlaender, Helmut N.'),
+        provenance_agent: find_or_create_agent('Friedlaender, Helmut N.'),
         comment: 'Bookplate.',
         direct_transfer: true
       )
@@ -542,7 +581,7 @@ module SDBMSS::ReferenceData
       Provenance.create!(
         entry: entry,
         end_date: '20010423',
-        provenance_agent: Name.find_or_create_agent("Christie's NY")
+        provenance_agent: find_or_create_agent("Christie's NY")
       )
 
       entry
@@ -589,12 +628,12 @@ module SDBMSS::ReferenceData
 
       EntryAuthor.create!(
         entry: entry,
-        author: Name.find_or_create_author('Juvenal'),
+        author: find_or_create_author('Juvenal'),
         observed_name: 'Iuvenalis, Decimus Iunius'
       )
       EntryAuthor.create!(
         entry: entry,
-        author: Name.find_or_create_author('Guarino Veronese'),
+        author: find_or_create_author('Guarino Veronese'),
         observed_name: 'Guarino da Verona'
       )
 
@@ -622,7 +661,7 @@ module SDBMSS::ReferenceData
         entry: entry,
         start_date: '17040000',
         comment: 'Inscription on flyleaf',
-        provenance_agent: Name.find_or_create_agent('Malfatti, Valeriano, Baron'),
+        provenance_agent: find_or_create_agent('Malfatti, Valeriano, Baron'),
         observed_name: 'Valeriano Malfatti Barone'
       )
 
@@ -672,7 +711,7 @@ module SDBMSS::ReferenceData
 
       EntryAuthor.create!(
         entry: entry,
-        author: Name.find_or_create_author('Thomas Aquinas, Saint')
+        author: find_or_create_author('Thomas Aquinas, Saint')
       )
 
       ed = EntryDate.new(entry: entry, observed_date: '1480')
@@ -681,12 +720,12 @@ module SDBMSS::ReferenceData
 
       EntryArtist.create!(
         entry: entry,
-        artist: Name.find_or_create_artist('Matteo Felice')
+        artist: find_or_create_artist('Matteo Felice')
       )
 
       EntryScribe.create!(
         entry: entry,
-        scribe: Name.find_or_create_scribe('Crispus, Venceslaus')
+        scribe: find_or_create_scribe('Crispus, Venceslaus')
       )
 
       EntryLanguage.create!(
@@ -709,13 +748,13 @@ module SDBMSS::ReferenceData
         entry: entry,
         start_date: '14801230',
         comment: 'Royal arms on first leaf.',
-        provenance_agent: Name.find_or_create_agent('Ferdinand I of Aragon, King of Naples')
+        provenance_agent: find_or_create_agent('Ferdinand I of Aragon, King of Naples')
       )
 
       Provenance.create!(
         entry: entry,
         acquisition_method: Provenance::TYPE_ACQUISITION_METHOD_BY_DESCENT,
-        provenance_agent: Name.find_or_create_agent('Federico of Aragon')
+        provenance_agent: find_or_create_agent('Federico of Aragon')
       )
 
       Provenance.create!(
@@ -723,35 +762,35 @@ module SDBMSS::ReferenceData
         start_date: '15080000',
         comment: 'Listed in inventory of his Chateau de Gaillon in 1508; his library.',
         observed_name: "Georges d'Amboise (1460-1510), Cardinal",
-        provenance_agent: Name.find_or_create_agent("Amboise, Georges d'"),
+        provenance_agent: find_or_create_agent("Amboise, Georges d'"),
         direct_transfer: true
       )
 
       Provenance.create!(
         entry: entry,
-        provenance_agent: Name.find_or_create_agent("Archbishop's Library-Rouen"),
+        provenance_agent: find_or_create_agent("Archbishop's Library-Rouen"),
         acquisition_method: Provenance::TYPE_ACQUISITION_METHOD_BEQUEST
       )
 
       Provenance.create!(
         entry: entry,
-        provenance_agent: Name.find_or_create_agent('Bourbon, Charles II de, Cardinal')
+        provenance_agent: find_or_create_agent('Bourbon, Charles II de, Cardinal')
       )
 
       Provenance.create!(
         entry: entry,
-        provenance_agent: Name.find_or_create_agent('Bourbon, Charles III de, Cardinal')
+        provenance_agent: find_or_create_agent('Bourbon, Charles III de, Cardinal')
       )
 
       Provenance.create!(
         entry: entry,
-        provenance_agent: Name.find_or_create_agent('Henry IV, King of France'),
+        provenance_agent: find_or_create_agent('Henry IV, King of France'),
         observed_name: 'Henri IV, King of France (1589-1610)'
       )
 
       Provenance.create!(
         entry: entry,
-        provenance_agent: Name.find_or_create_agent('Cabinet de Roi, King of France')
+        provenance_agent: find_or_create_agent('Cabinet de Roi, King of France')
       )
 
       Provenance.create!(
@@ -759,12 +798,12 @@ module SDBMSS::ReferenceData
         start_date: '16040000',
         end_date: '1764000',
         comment: "Jesuits reclaimed the College de Clermont and its library, which included the manuscript, in 1604. Ownership inscription on fol. 1r. Another note, \"Paraphe au desir de l'arrest du 5 juillet 1763/Mesnil,\" referring tothe closing of the College following suppression of the order. No. 539 in 1764 College de Claremont sale.",
-        provenance_agent: Name.find_or_create_agent('College de Clermont')
+        provenance_agent: find_or_create_agent('College de Clermont')
       )
 
       Provenance.create!(
         entry: entry,
-        provenance_agent: Name.find_or_create_agent('Meerman, Gerard'),
+        provenance_agent: find_or_create_agent('Meerman, Gerard'),
         observed_name: 'Gerard Meerman (1722-71)',
         acquisition_method: Provenance::TYPE_ACQUISITION_METHOD_PURCHASE
       )
@@ -773,14 +812,14 @@ module SDBMSS::ReferenceData
         entry: entry,
         start_date: '18240702',
         comment: 'Sold in Part IV of sale, lot 480. Rebound.',
-        provenance_agent: Name.find_or_create_agent('Meerman, Johan'),
+        provenance_agent: find_or_create_agent('Meerman, Johan'),
         observed_name: 'Meerman, Jean (1753-1815)'
       )
 
       Provenance.create!(
         entry: entry,
         comment: 'No. 88 in his Catalogue of the Manuscripts at Ashburnham Place, Appendix, [1861].',
-        provenance_agent: Name.find_or_create_agent('Ashburnham, Bertram, 4th Earl of Ashburnham'),
+        provenance_agent: find_or_create_agent('Ashburnham, Bertram, 4th Earl of Ashburnham'),
         observed_name: 'Bertram, Fourth Early of Ashburnham (1797-1878)'
       )
 
@@ -788,7 +827,7 @@ module SDBMSS::ReferenceData
         entry: entry,
         start_date: '1897000',
         acquisition_method: Provenance::TYPE_ACQUISITION_METHOD_PURCHASE,
-        provenance_agent: Name.find_or_create_agent('Thompson, Henry Yates'),
+        provenance_agent: find_or_create_agent('Thompson, Henry Yates'),
         direct_transfer: true
       )
 
@@ -796,18 +835,18 @@ module SDBMSS::ReferenceData
         entry: entry,
         start_date: '18990501',
         comment: 'Lot 39.',
-        provenance_agent: Name.find_or_create_agent("Sotheby's"),
+        provenance_agent: find_or_create_agent("Sotheby's"),
         direct_transfer: true
       )
 
       Provenance.create!(
         entry: entry,
-        provenance_agent: Name.find_or_create_agent('Emich, Gustave R. von')
+        provenance_agent: find_or_create_agent('Emich, Gustave R. von')
       )
 
       Provenance.create!(
         entry: entry,
-        provenance_agent: Name.find_or_create_agent('De Marinis, Tammaro'),
+        provenance_agent: find_or_create_agent('De Marinis, Tammaro'),
         observed_name: 'Tammaro De Marinis (1878-1969)',
         direct_transfer: true
       )
@@ -816,7 +855,7 @@ module SDBMSS::ReferenceData
         entry: entry,
         start_date: '19251130',
         comment: 'Lot 355.',
-        provenance_agent: Name.find_or_create_agent('Hoepli')
+        provenance_agent: find_or_create_agent('Hoepli')
       )
 
       Provenance.create!(
@@ -829,13 +868,13 @@ module SDBMSS::ReferenceData
         entry: entry,
         start_date: '19980623',
         comment: 'According to catalog entry purchased by present owner in the 1980s in Lugano from a private collection.',
-        provenance_agent: Name.find_or_create_agent("Sotheby's"),
+        provenance_agent: find_or_create_agent("Sotheby's"),
         direct_transfer: true
       )
 
       Provenance.create!(
         entry: entry,
-        provenance_agent: Name.find_or_create_agent('Kraus, H.P.')
+        provenance_agent: find_or_create_agent('Kraus, H.P.')
       )
 
       entry
@@ -849,7 +888,7 @@ module SDBMSS::ReferenceData
     end
 
     def create_source
-      @upenn = Name.find_or_create_agent('University of Pennsylvania')
+      @upenn = find_or_create_agent('University of Pennsylvania')
       @source = Source.create!(
         source_type: SourceType.collection_catalog,
         date: '1965',
@@ -898,16 +937,16 @@ module SDBMSS::ReferenceData
 
       EntryAuthor.create!(
         entry: entry,
-        author: Name.find_or_create_author('Dokeianos, Ioannes'),
+        author: find_or_create_author('Dokeianos, Ioannes'),
         observed_name: 'Ioannes Dokeianus (Johannes Docianus)'
       )
       EntryAuthor.create!(
         entry: entry,
-        author: Name.find_or_create_author('Gregoras, Nicephorus')
+        author: find_or_create_author('Gregoras, Nicephorus')
       )
       EntryAuthor.create!(
         entry: entry,
-        author: Name.find_or_create_author('Gregorios III, Patriarch of Constantinople'),
+        author: find_or_create_author('Gregorios III, Patriarch of Constantinople'),
         observed_name: 'Gregorios of Constantinople (Georgios of Cyprus)'
       )
 
@@ -928,12 +967,12 @@ module SDBMSS::ReferenceData
       Provenance.create!(
         entry: entry,
         comment: 'MS 51.',
-        provenance_agent: Name.find_or_create_agent('Notre Dame of Pilar, Salamanca')
+        provenance_agent: find_or_create_agent('Notre Dame of Pilar, Salamanca')
       )
 
       Provenance.create!(
         entry: entry,
-        provenance_agent: Name.find_or_create_agent('Lakon, Andreas Darmarios Epidaurios')
+        provenance_agent: find_or_create_agent('Lakon, Andreas Darmarios Epidaurios')
       )
 
       entry
@@ -947,7 +986,7 @@ module SDBMSS::ReferenceData
     end
 
     def create_source
-      @pirages = Name.find_or_create_agent('Pirages')
+      @pirages = find_or_create_agent('Pirages')
       @source = Source.create!(
         source_type: SourceType.auction_catalog,
         date: '20150100',
@@ -1004,7 +1043,7 @@ module SDBMSS::ReferenceData
 
       EntryArtist.create!(
         entry: entry,
-        artist: Name.find_or_create_artist('Cortese, Cristoforo, style')
+        artist: find_or_create_artist('Cortese, Cristoforo, style')
       )
 
       EntryPlace.create!(
@@ -1014,7 +1053,7 @@ module SDBMSS::ReferenceData
 
       Provenance.create!(
         entry: entry,
-        provenance_agent: Name.find_or_create_agent('Monastery of San Giorgio Maggiore (Venice, Italy)'),
+        provenance_agent: find_or_create_agent('Monastery of San Giorgio Maggiore (Venice, Italy)'),
         observed_name: 'San Giorgio Maggiore',
         uncertain_in_source: true
       )
@@ -1051,7 +1090,7 @@ module SDBMSS::ReferenceData
         source: @source,
         catalog_or_lot_number: '1',
         transaction_type: Entry::TYPE_TRANSACTION_NONE,
-        institution: Name.find_or_create_artist('Library of Saint Bernard College, Saint Bernard, Alabama'),
+        institution: find_or_create_artist('Library of Saint Bernard College, Saint Bernard, Alabama'),
         folios: 192,
         height: 140,
         width: 100,
@@ -1089,7 +1128,7 @@ module SDBMSS::ReferenceData
         source: @source,
         catalog_or_lot_number: '1',
         transaction_type: Entry::TYPE_TRANSACTION_NONE,
-        institution: Name.find_or_create_artist('Allsopp, Fred W.'),
+        institution: find_or_create_artist('Allsopp, Fred W.'),
         created_by: lransom,
         approved: true
       )
@@ -1187,7 +1226,7 @@ module SDBMSS::ReferenceData
 
       SourceAgent.create!(
         source: @source,
-        agent: Name.find_or_create_agent('Chiu, Jeff'),
+        agent: find_or_create_agent('Chiu, Jeff'),
         role: SourceAgent::ROLE_INSTITUTION
       )
     end
@@ -1213,7 +1252,7 @@ module SDBMSS::ReferenceData
 
       SourceAgent.create!(
         source: @source,
-        agent: Name.find_or_create_agent('Ebay'),
+        agent: find_or_create_agent('Ebay'),
         role: SourceAgent::ROLE_SELLING_AGENT
       )
     end
@@ -1241,12 +1280,12 @@ module SDBMSS::ReferenceData
       )
       SaleAgent.create!(
         sale: sale,
-        agent: Name.find_or_create_agent('Ebay'),
+        agent: find_or_create_agent('Ebay'),
         role: SaleAgent::ROLE_SELLING_AGENT
       )
       SaleAgent.create!(
         sale: sale,
-        agent: Name.find_or_create_agent('weisse-lilie-art'),
+        agent: find_or_create_agent('weisse-lilie-art'),
         role: SaleAgent::ROLE_SELLER_OR_HOLDER
       )
 
@@ -1300,7 +1339,7 @@ module SDBMSS::ReferenceData
 
       SourceAgent.create!(
         source: @source,
-        agent: Name.find_or_create_agent('Marc Van de Wiele'),
+        agent: find_or_create_agent('Marc Van de Wiele'),
         role: SourceAgent::ROLE_SELLING_AGENT
       )
     end
@@ -1327,7 +1366,7 @@ module SDBMSS::ReferenceData
 
       SourceAgent.create!(
         source: @source,
-        agent: Name.find_or_create_agent('Duke University, David Rubenstein Library'),
+        agent: find_or_create_agent('Duke University, David Rubenstein Library'),
         role: SourceAgent::ROLE_INSTITUTION
       )
     end
@@ -1337,7 +1376,7 @@ module SDBMSS::ReferenceData
         source: @source,
         catalog_or_lot_number: 'Greek MS 001',
         transaction_type: Entry::TYPE_TRANSACTION_NONE,
-        institution: Name.find_or_create_agent('Duke University, David Rubenstein Library'),
+        institution: find_or_create_agent('Duke University, David Rubenstein Library'),
         folios: 198,
         num_lines: 41,
         num_columns: 1,
@@ -1399,7 +1438,7 @@ module SDBMSS::ReferenceData
         source: @source,
         catalog_or_lot_number: 'OM 1',
         transaction_type: Entry::TYPE_TRANSACTION_NONE,
-        institution: Name.find_or_create_agent('Villanova University, Falvey Memorial Library'),
+        institution: find_or_create_agent('Villanova University, Falvey Memorial Library'),
         folios: 212,
         num_lines: 26,
         num_columns: 1,
@@ -1419,7 +1458,7 @@ module SDBMSS::ReferenceData
       EntryAuthor.create!(
         entry: entry,
         observed_name: '(pseudo-) Augustine',
-        author: Name.find_or_create_author('Pseudo-Augustine, Saint, Bishop of Hippo')
+        author: find_or_create_author('Pseudo-Augustine, Saint, Bishop of Hippo')
       )
 
       ed = EntryDate.new(entry: entry, observed_date: '14th century')
@@ -1440,7 +1479,7 @@ module SDBMSS::ReferenceData
       Provenance.create!(
         entry: entry,
         comment: 'Provenance info given in De Ricci, II: 2132.',
-        provenance_agent: Name.find_or_create_agent('Leighton, W. J.'),
+        provenance_agent: find_or_create_agent('Leighton, W. J.'),
         direct_transfer: true
       )
 
@@ -1448,14 +1487,14 @@ module SDBMSS::ReferenceData
         entry: entry,
         start_date: '19181114',
         comment: 'Provenance info given in De Ricci, II: 2132.',
-        provenance_agent: Name.find_or_create_agent("Sotheby's"),
+        provenance_agent: find_or_create_agent("Sotheby's"),
         direct_transfer: true
       )
 
       Provenance.create!(
         entry: entry,
         comment: 'Provenance info given in De Ricci, II: 2132.',
-        provenance_agent: Name.find_or_create_agent('James Tregaskis (Firm)'),
+        provenance_agent: find_or_create_agent('James Tregaskis (Firm)'),
         observed_name: 'James Tregaskis',
         direct_transfer: true
       )
@@ -1463,14 +1502,14 @@ module SDBMSS::ReferenceData
       Provenance.create!(
         entry: entry,
         comment: 'Provenance info given in De Ricci, II: 2132.',
-        provenance_agent: Name.find_or_create_agent('John F. Lewis'),
+        provenance_agent: find_or_create_agent('John F. Lewis'),
         direct_transfer: true
       )
 
       Provenance.create!(
         entry: entry,
         comment: 'Provenance info given in De Ricci, II: 2132.',
-        provenance_agent: Name.find_or_create_agent('Villanova College')
+        provenance_agent: find_or_create_agent('Villanova College')
       )
 
       entry

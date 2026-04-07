@@ -81,11 +81,19 @@ describe "Data entry", :js => true do
   before :each do
     @user = User.where(role: 'admin').first
 
-    @source = Source.find_or_create_by(
+    @source = Source.unscoped.where(
       title: "A Sample Test Source With a Highly Unique Name",
       date: "2013-11-12",
-      source_type: SourceType.auction_catalog,
-    )
+      source_type_id: SourceType.auction_catalog.id,
+      deleted: false,
+    ).first
+    if @source.nil?
+      @source = Source.create!(
+        title: "A Sample Test Source With a Highly Unique Name",
+        date: "2013-11-12",
+        source_type_id: SourceType.auction_catalog.id,
+      )
+    end
     unless @source.source_agents.exists?(role: SourceAgent::ROLE_SELLING_AGENT)
       SourceAgent.create!(
         source: @source,
@@ -108,6 +116,8 @@ describe "Data entry", :js => true do
     it "should find source by date on Select Source page", :known_failure, :flaky do
       visit new_entry_path
       find('#select_source').click
+      expect(page).to have_content('Search for Existing Source')
+      expect(page).to have_field('date')
       fill_in 'date', :with => '2013'
       expect(page).to have_content @source.title
       find("#create-entry-link-#{@source.id}").click
