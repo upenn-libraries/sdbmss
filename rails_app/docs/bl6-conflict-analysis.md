@@ -4,6 +4,12 @@
 **Current:** blacklight 5.14.0
 **Target:** blacklight 6.9.0
 
+> **Outcome (2026-04-07):** All items in this analysis were completed. The application was
+> advanced to Blacklight **6.25.0** (beyond the initial 6.9.0 target). All four Gemfile
+> changes were applied, all 11 app patches were resolved, and the upgrade was validated
+> against the test suite. See `gem_override_audit.md` for the full post-upgrade override
+> inventory.
+
 ## Method
 
 Blacklight 6.9.0 runtime dependencies were fetched from the rubygems.org API and

@@ -16,11 +16,11 @@ Blacklight 5→6 upgrade and any companion gem bumps.
 | blacklight_advanced_search | 5.1.4 → **6.4.1** |
 | devise | 4.7.3 |
 | devise-guests | 0.3.3 |
-| cancancan | 1.12.0 |
-| paper_trail | 4.0.2 |
-| sunspot / sunspot_rails | 2.2.0 |
+| cancancan | 3.6.1 |
+| paper_trail | 10.3.1 |
+| sunspot / sunspot_rails | 2.5.0 |
 | delayed_job_active_record | 4.1.11 |
-| thredded | 0.9.4 |
+| thredded | 0.16.16 |
 | invisible_captcha | 1.1.0 |
 
 ---
@@ -109,10 +109,10 @@ Compared to `blacklight` **6.25.0** (`app/views/catalog/` in the gem). **Shadows
 
 | File | Gem Class / Method Overridden | What the Customization Does | Risk | Upgrade Notes |
 |---|---|---|---|---|
-| `config/initializers/devise.rb` | `Devise::FailureApp` (subclass `CustomFailure`) — overrides `#redirect_url` (gem line 115) and `#respond` (gem line 37) | Provides app-specific redirect after auth failure; sets `authentication_keys: [:login]` to enable username-or-email login | Medium | Both methods stable in Devise 4.x; verify `redirect_url` still has no required args if upgrading |
-| `app/controllers/registrations_controller.rb` | `Devise::RegistrationsController` (inherit) — overrides `#after_sign_up_path_for`, `#update_resource`, `#after_update_path_for` | Sends admin notification email on signup; handles password-optional updates; redirects to profile path | Low | Stable Devise override pattern unchanged since Devise 3.x |
-| `app/controllers/application_controller.rb` | Devise mixin — `#configure_permitted_parameters`, `#after_sign_in_path_for` | Permits app-specific signup/update fields; redirects to dashboard after login | Low | `configure_permitted_parameters` contract unchanged |
-| `app/models/user.rb` | `Devise::Models::DatabaseAuthenticatable#find_for_database_authentication` (gem line 235); `#active_for_authentication?`; `#inactive_message`; `#after_database_authentication` (gem line 172, default empty hook) | Allows login by username or email; gates login on `user.active` flag; logs auth event | Medium | `find_for_database_authentication` stable; `active_for_authentication?` hook stable |
+| `config/initializers/devise.rb` | `Devise::FailureApp` (subclass `CustomFailure`) — overrides `#redirect_url` and `#respond` | Provides app-specific redirect after auth failure | Medium | **Phase 2:** `#redirect_url` returns `root_path(subdomain: 'secure')` — hardcoded subdomain looks vestigial; verify this is intentional before upgrading. Both methods stable across Devise 4.x minor versions. Devise 5 (if targeted in Phase 3) has breaking changes to `FailureApp` — assess separately. |
+| `app/controllers/registrations_controller.rb` | `Devise::RegistrationsController` (inherit) — overrides `#after_sign_up_path_for`, `#update_resource`, `#after_update_path_for` | Sends admin notification email on signup; handles password-optional updates; redirects to profile path | Low | Stable Devise override pattern; no changes expected for 4.x minor upgrade |
+| `app/controllers/application_controller.rb` | Devise mixin — `#configure_permitted_parameters`, `#after_sign_in_path_for` | Permits app-specific signup/update fields; redirects to dashboard after login | Low | `configure_permitted_parameters` contract unchanged across Devise 4.x |
+| `app/models/user.rb` | `Devise::Models::DatabaseAuthenticatable#find_for_database_authentication`; `#active_for_authentication?`; `#inactive_message`; `#after_database_authentication` | Allows login by username or email; gates login on `user.active` flag; logs auth event | Medium | **Phase 2:** `#inactive_message` still returns "New SDBM accounts are inactive by default…" — legacy language flagged in user manual audit; update message text when upgrading. All four hooks stable for Devise 4.x minor upgrade. |
 | `app/views/devise/` (all subdirs) | All Devise built-in views | Fully custom-styled Devise views | Low | Additive; app views shadow gem views; no breakage unless Devise changes view locals |
 
 ---
@@ -134,12 +134,14 @@ Compared to `blacklight` **6.25.0** (`app/views/catalog/` in the gem). **Shadows
 
 ---
 
-## PaperTrail 4.0.2
+## PaperTrail 10.3.1
 
 | File | Gem Class / Method Overridden | What the Customization Does | Risk | Upgrade Notes |
 |---|---|---|---|---|
-| `app/models/concerns/has_paper_trail.rb` | `has_paper_trail` call signature | Wraps `has_paper_trail` with a fixed `ignore:` field list to suppress audit noise | Low | PaperTrail 4→8: `ignore:` still accepts an array of symbols; verify field name format after upgrade |
+| `app/models/concerns/has_paper_trail.rb` | `has_paper_trail` call signature | Wraps `has_paper_trail` with a fixed `ignore:` field list to suppress audit noise | Low | **Phase 2 (→14.x):** `ignore:` keyword syntax unchanged. Single change point for all auditable models. |
+| `app/controllers/application_controller.rb` | `#info_for_paper_trail` controller hook | Returns `{ transaction_id: SecureRandom... }` — intended to write custom metadata to versions | **High** | **Dead code since PT 5.** `info_for_paper_trail` was removed in PaperTrail 5; the method is still defined but never called by the gem. Transaction IDs are not being written to versions. PT 10.3.1+ replacement is a `before_action` that sets `PaperTrail.request.controller_info = { transaction_id: ... }`. Must be fixed as part of PT 14 upgrade. |
 | `app/models/user.rb`, `entry.rb`, `source.rb`, `comment.rb` | `HasPaperTrail` concern (include) | All auditable models delegate to the shared wrapper; single change point | Low | |
+| `app/controllers/manuscripts_controller.rb`, `profiles_controller.rb`, `activities_controller.rb`, `app/models/entry_version_formatter.rb` | `version.whodunnit` (read) | Reads whodunnit to look up the user who made each change (`User.where(id: versions.map(&:whodunnit).uniq)`) | Medium | **Phase 2:** `whodunnit` stores a user ID as a string in PT 10+. `User.find(@versions.pluck(:whodunnit))` in `manuscripts_controller.rb:140` uses `find` (not `where`) — will raise `ActiveRecord::RecordNotFound` if any version has a deleted user's whodunnit. Safe to change to `User.where(id: ...)` for consistency with the other callers. Verify whodunnit is actually being populated (see `info_for_paper_trail` dead code note above — whodunnit is set by PT's `set_paper_trail_whodunnit` before_action, which operates separately). |
 
 ---
 
