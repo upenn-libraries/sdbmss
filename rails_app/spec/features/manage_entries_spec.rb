@@ -12,8 +12,7 @@ describe "Manage entries", :js => true do
       folios: 15,
     )
     @unapproved_entry.save!
-
-    SDBMSS::Util.wait_for_solr_to_be_current
+    Sunspot.commit
     login(@user, 'somethingunguessable')
   end
 
