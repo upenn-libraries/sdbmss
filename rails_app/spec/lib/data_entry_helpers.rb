@@ -52,12 +52,13 @@ module DataEntryHelpers
   end
 
   def open_source_create_modal
-    find_by_id("select_source").click
-    expect(page).to have_content("Search for Existing Source")
+    expect(page).to have_selector("#select_source")
+    find_by_id("select_source").trigger("click")
+    expect(page).to have_selector(".modal-title", text: "Search for Existing Source", visible: true)
     fill_in "date", with: "2014"
     expect(page).to have_content("Unable to find the Source you are looking for?")
-    find_by_id("create_source").click
-    expect(page).to have_content("Not sure what your source type is?")
+    find_by_id("create_source").trigger("click")
+    expect(page).to have_selector("#source_type", visible: true)
   end
 
   def create_edit_test_source
