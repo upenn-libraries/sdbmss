@@ -46,6 +46,7 @@ describe "Groups", :js => true do
     end
 
     it "should allow users to accept group invitations", :known_failure do
+      GroupUser.create!(group: @group, user: @contributor, role: 'Member', confirmed: false, created_by: @admin)
       page.reset!
       login(@contributor, 'somethingunguessable')
       visit groups_path
@@ -67,7 +68,7 @@ describe "Groups", :js => true do
 
     it "should allow many entries to be added to a group from the manage table" do
       visit entries_path
-      expect(page).to have_content(Entry.last.public_id)
+      expect(page).to have_content(Entry.first.public_id)
       find('#select-all', match: :first).click
       click_link 'Add/Remove Groups'
 
@@ -78,6 +79,8 @@ describe "Groups", :js => true do
     end
 
     it "should confer/restrict editing privileges on all members of a group as appropriate", :known_failure do
+      GroupUser.create!(group: @group, user: @contributor, role: 'Member', confirmed: true, created_by: @admin)
+      GroupRecord.create!(group: @group, record: Entry.first, editable: true)
       page.reset!
       login(@contributor, 'somethingunguessable')
       visit entry_path(Entry.first)

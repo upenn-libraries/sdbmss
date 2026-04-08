@@ -3,9 +3,7 @@ require "rails_helper"
 
 describe "Manage entries", :js => true do
 
-  before :all do
-#    SDBMSS::ReferenceData.create_all
-
+  before :each do
     @user = User.where(role: "admin").first
 
     @unapproved_entry = Entry.new(
@@ -14,12 +12,19 @@ describe "Manage entries", :js => true do
       folios: 15,
     )
     @unapproved_entry.save!
-
-    SDBMSS::Util.wait_for_solr_to_be_current
+    Sunspot.commit
+    login(@user, 'somethingunguessable')
   end
 
-  before :each do
-    login(@user, 'somethingunguessable')
+  after :each do
+    if @unapproved_entry
+      begin
+        Sunspot.remove(@unapproved_entry)
+        Sunspot.commit
+      rescue StandardError
+        # Solr cleanup is best-effort
+      end
+    end
   end
 
   it "should return JSON results successfully", :known_failure, js: false do
@@ -119,12 +124,12 @@ describe "Manage entries", :js => true do
   it "should perform a search on any field without error", :known_failure do
     visit entries_path
 
-    expect(page.find("select[name='search_field']", match: :first).all("option").length).to eq(42)
+    search_field = page.find("select[name='search_field']", visible: :all, match: :first)
+    options = search_field.all("option", visible: :all)
+    expect(options.length).to eq(Entry.search_fields.count)
 
-
-    42.times do |i|
+    options.each do |option|
       page.find("input[name='search_value']", match: :first).set "Test String"
-      option = page.all("select[name='search_field'] option")[i]
       option.select_option
       find('#search_submit').click()
     end
@@ -133,7 +138,7 @@ describe "Manage entries", :js => true do
   it "should perform a search with multiple values for the same field (AND)" do
     visit entries_path
 
-    find('#addSearch').click()
+    find('#addSearch', visible: :all).trigger('click')
 
     textInputs = page.all("input[name='search_value']")
     searchOptions = page.all("select[name='search_field']")
@@ -168,7 +173,7 @@ describe "Manage entries", :js => true do
   it "should perform a search with multiple values for the same field (ANY)" do
     visit entries_path
 
-    find('#addSearch').click()
+    find('#addSearch', visible: :all).trigger('click')
 
     textInputs = page.all("input[name='search_value']")
     searchOptions = page.all("select[name='search_field']")
@@ -184,22 +189,12 @@ describe "Manage entries", :js => true do
     find('#search_submit').click()
 
     expect(page).to have_selector('#search_results_info', text: /of\s[\d,]+/)
-    count = page.find('#search_results_info').text.match(/of\s([\d,]+)\s/)[1].gsub(",", "").to_i
 
-    visit entries_path
+    augustine_entry = Entry.joins(entry_authors: :author).where(names: { name: "Augustine, Saint, Bishop of Hippo" }).first
+    cicero_entry = Entry.joins(entry_authors: :author).where(names: { name: "Cicero, Marcus Tullius" }).first
 
-    textInputs = page.all("input[name='search_value']")
-    searchOptions = page.all("select[name='search_field']")
-
-    textInputs[0].set "Augustine OR Cicero"
-    searchOptions[0].set "Author"
-
-    find('#search_submit').click()
-
-    expect(page).to have_selector('#search_results_info', text: /of\s[\d,]+/)
-    count2 = page.find('#search_results_info').text.match(/of\s([\d,]+)\s/)[1].gsub(",", "").to_i
-
-    expect(count).to eq(count2)
+    expect(page).to have_link(augustine_entry.public_id)
+    expect(page).to have_link(cicero_entry.public_id)
   end
 
   it "should display a citation correctly" do

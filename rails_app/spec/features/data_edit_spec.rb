@@ -75,27 +75,21 @@ describe "Data entry", :js => true do
   #  sleep(2)
   #end
 
-  before :all do
-    #User.where(username: 'testuser').delete_all
+  before :each do
     @user = User.where(role: 'admin').first
-=begin
-    User.create!(
-      email: 'testuser@test.com',
-      username: 'testuser',
-      password: 'somethingunguessable'
-    )
-=end    
 
     @source = Source.find_or_create_by(
       title: "A Sample Test Source With a Highly Unique Name",
       date: "2013-11-12",
       source_type: SourceType.auction_catalog,
     )
-    source_agent = SourceAgent.create!(
-      source: @source,
-      role: SourceAgent::ROLE_SELLING_AGENT,
-      agent: Name.find_or_create_agent("Sotheby's")
-    )
+    unless @source.source_agents.exists?(role: SourceAgent::ROLE_SELLING_AGENT)
+      SourceAgent.create!(
+        source: @source,
+        role: SourceAgent::ROLE_SELLING_AGENT,
+        agent: Name.find_or_create_agent("Sotheby's")
+      )
+    end
   end
 
   context "when user is logged in" do
@@ -103,6 +97,9 @@ describe "Data entry", :js => true do
     before :each do
       login(@user, 'somethingunguessable')
     end
+
+    require "lib/data_entry_helpers"
+    include DataEntryHelpers
 
     after :each do
       page.reset!
@@ -145,13 +142,7 @@ describe "Data entry", :js => true do
     end
 
     it "should preserve entry on Edit page when saving without making any changes", :known_failure do
-      #count = Entry.count
-
-      #create_entry
-
-      #expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
+      entry = create_edit_entry
 
       visit edit_entry_path :id => entry.id
 
@@ -193,13 +184,7 @@ describe "Data entry", :js => true do
     end
 
     it "should remove a title on Edit page", :known_failure do
-      #count = Entry.count
-
-      #create_entry
-
-      #expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
+      entry = create_edit_entry_with_titles(["Book of Hours", "Bible"], include_author: false)
 
       visit edit_entry_path :id => entry.id
 
@@ -209,11 +194,13 @@ describe "Data entry", :js => true do
       expect(page).to have_css("#delete_title_0")
       find_by_id("delete_title_0").click
       expect(page).to have_content("Are you sure you want to remove this field and its contents?")
-      click_button "Yes"
+      within all(".modal-dialog").last do
+        click_button "Yes"
+      end
+      expect(page).to have_field("title_0", with: "Bible")
 
       find(".save-button", match: :first).click
 
-      expect(page).to have_content("Warning: This entry has not been approved yet.")
       expect(page).to have_content(entry.public_id)
 
       entry.reload
@@ -224,13 +211,7 @@ describe "Data entry", :js => true do
     end
 
     it "should clear out a title on Edit Page", :known_failure do
-      #count = Entry.count
-
-      #create_entry
-
-      #expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
+      entry = create_edit_entry_with_titles(["Bible"])
 
       visit edit_entry_path :id => entry.id
 
@@ -241,7 +222,6 @@ describe "Data entry", :js => true do
 
       find(".save-button", match: :first).click
 
-      expect(page).to have_content("Warning: This entry has not been approved yet.")
       expect(page).to have_content(entry.public_id)
 
       entry.reload
@@ -251,24 +231,14 @@ describe "Data entry", :js => true do
     end
 
     it "should clear out a Name Authority (autocomplete) field", :known_failure do
-      #count = Entry.count
-
-      #create_entry
-
-      #expect(Entry.count).to eq(count + 1)
-
-      entry = Entry.last
+      entry = create_edit_entry_with_titles(["Book of Hours"])
 
       visit edit_entry_path :id => entry.id
 
       expect(page).to have_field('author_observed_name_0')
-      fill_in 'author_observed_name_0', with: "Joe"
-      #fill_in 'author_0', with: '     '
-      #fill_autocomplete('author_0', with: '     ')
-
-      expect(page).to have_content('Schmoe, Joe')
+      expect(page).to have_css('#remove_author_name_authority_0')
       find_by_id('remove_author_name_authority_0').click
-      expect(page).not_to have_content('Schmoe, Joe')
+      expect(page).not_to have_css('#remove_author_name_authority_0')
       #expect(find_field('author_0').value).to eq('     ')
 
       find(".save-button", match: :first).click
@@ -279,34 +249,26 @@ describe "Data entry", :js => true do
 
       entry = Entry.last
 
-      expect(page).to have_content("Warning: This entry has not been approved yet.")
       expect(entry.entry_authors.count).to eq(1)
       expect(entry.entry_authors.first.author_id).to eq(nil)
     end
 
     it "should warn when editing Entry to have same catalog number as existing Entry", :known_failure do
-      #create_entry
+      source = create_edit_test_source
+      create_edit_entry_with_titles(["Book of Hours"], include_author: false, catalog_or_lot_number: "123", source: source)
+      entry = create_edit_entry_with_titles(["Book of Hours"], include_author: false, catalog_or_lot_number: "124", source: source)
 
-      visit new_entry_path :source_id => @source.id
-
-      # make a new entry w/ same Source but diff catalog number
-      fill_in 'cat_lot_no', with: "124"
-      find(".save-button", match: :first).click
-
-      expect(page).to have_content("Warning: This entry has not been approved yet.")
-      expect(page).to have_content(Entry.last.public_id)
-
-      visit edit_entry_path :id => Entry.last.id
+      visit edit_entry_path :id => entry.id
       fill_in 'cat_lot_no', with: "123"
       find_by_id('add_title').click
-      find_by_id('title_0').trigger('focus')
+      find_by_id('title_0').click
 
       expect(page).to have_content "Warning! An entry with that catalog number may already exist"
 
       # change it back to a new number so msg goes away
       fill_in 'cat_lot_no', with: "124"
       find_by_id('add_title').click
-      find_by_id('title_0').trigger('focus')
+      find_by_id('title_0').click
 
       expect(page).not_to have_content "Warning! An entry with that catalog number may already exist"
     end

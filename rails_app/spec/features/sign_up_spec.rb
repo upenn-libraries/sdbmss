@@ -5,21 +5,24 @@ describe "Sign up / Edit Profile", :js => true do
 
   it "should allow sign up", :known_failure do
     visit new_user_registration_path
+    unique_suffix = Time.now.to_i.to_s
     
     # show that you've read the FAQ!
-    10.times do |i|
-        find("label[for=faq#{i+1}]").click
-    end
+    page.execute_script("$('.checkbox').prop('checked', true).trigger('change');")
 
-    fill_in 'user_username', :with => "newuser"
-    fill_in 'user_email', :with => "testy@mctest.com"
+    fill_in 'user_username', :with => "newuser-#{unique_suffix}"
+    fill_in 'user_email', :with => "testy-#{unique_suffix}@mctest.com"
+    fill_in 'user_bio', :with => 'I work with manuscript data.'
     all('#user_password').last.set 'somethingunguessable'
     fill_in 'user_password_confirmation', :with => 'somethingunguessable'
     click_link 'User Agreement'
     click_button 'OK'
+    expect(page).to have_unchecked_field('Agreement', disabled: false)
     find("input[name=Agreement]").set true
+    expect(page).to have_button('Sign up', disabled: false)
+    sleep 4.1
     click_button 'Sign up'
-    expect(page).to have_content 'You have signed up successfully.'
+    expect(page).to have_content 'Welcome! You have signed up successfully.'
 
     expect(current_path).to eq("/users/edit")
   end

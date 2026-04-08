@@ -14,11 +14,12 @@ Capybara.register_driver(:better_cuprite) do |app|
     inspector: true,
     headless: true,
     pending_connection_errors: false,
-    url: ENV['CHROME_URL']
+    url: ENV['CHROME_URL'],
+    timeout: 60
   )
 end
 
-Capybara.default_driver = :better_cuprite
+Capybara.default_driver = :rack_test
 Capybara.javascript_driver = :better_cuprite
 Capybara.default_max_wait_time = 15
 

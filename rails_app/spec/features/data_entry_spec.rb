@@ -78,20 +78,29 @@ describe "Data entry", :js => true do
   #  sleep(2)
   #end
 
-  before :all do
-    #User.where(username: 'testuser').delete_all
-    @user = User.where(role: "admin").first
+  before :each do
+    @user = User.where(role: 'admin').first
 
-    @source = Source.find_or_create_by(
+    @source = Source.unscoped.where(
       title: "A Sample Test Source With a Highly Unique Name",
       date: "2013-11-12",
-      source_type: SourceType.auction_catalog,
-    )
-    source_agent = SourceAgent.create!(
-      source: @source,
-      role: SourceAgent::ROLE_SELLING_AGENT,
-      agent: Name.find_or_create_agent("Sotheby's")
-    )
+      source_type_id: SourceType.auction_catalog.id,
+      deleted: false,
+    ).first
+    if @source.nil?
+      @source = Source.create!(
+        title: "A Sample Test Source With a Highly Unique Name",
+        date: "2013-11-12",
+        source_type_id: SourceType.auction_catalog.id,
+      )
+    end
+    unless @source.source_agents.exists?(role: SourceAgent::ROLE_SELLING_AGENT)
+      SourceAgent.create!(
+        source: @source,
+        role: SourceAgent::ROLE_SELLING_AGENT,
+        agent: Name.find_or_create_agent("Sotheby's")
+      )
+    end
     Source.index
   end
 
@@ -106,7 +115,10 @@ describe "Data entry", :js => true do
 
     it "should find source by date on Select Source page", :known_failure, :flaky do
       visit new_entry_path
-      find('#select_source').click
+      expect(page).to have_selector('#select_source')
+      find('#select_source').trigger('click')
+      expect(page).to have_selector('.modal-title', text: 'Search for Existing Source', visible: true)
+      expect(page).to have_field('date')
       fill_in 'date', :with => '2013'
       expect(page).to have_content @source.title
       find("#create-entry-link-#{@source.id}").click
@@ -115,7 +127,9 @@ describe "Data entry", :js => true do
 
     it "should find source by agent on Select Source page", :known_failure, :flaky do
       visit new_entry_path
-      find('#select_source').click
+      expect(page).to have_selector('#select_source')
+      find('#select_source').trigger('click')
+      expect(page).to have_selector('.modal-title', text: 'Search for Existing Source', visible: true)
       expect(page).to have_field('agent')
       fill_in 'agent', :with => 'Soth'
       expect(page).to have_content @source.title
@@ -125,7 +139,9 @@ describe "Data entry", :js => true do
 
     it "should NOT find source by agent on Select Source page" do
       visit new_entry_path
-      find('#select_source').click
+      expect(page).to have_selector('#select_source')
+      find('#select_source').trigger('click')
+      expect(page).to have_selector('.modal-title', text: 'Search for Existing Source', visible: true)
       expect(page).to have_field('agent')
       fill_in 'agent', :with => 'Nonexistent'
       expect(page).to have_content "No source found matching your criteria."
@@ -133,7 +149,9 @@ describe "Data entry", :js => true do
 
     it "should find source by title on Select Source page", :known_failure, :flaky do
       visit new_entry_path
-      find('#select_source').click
+      expect(page).to have_selector('#select_source')
+      find('#select_source').trigger('click')
+      expect(page).to have_selector('.modal-title', text: 'Search for Existing Source', visible: true)
       expect(page).to have_field('title')
       fill_in 'title', :with => 'uniq'
       expect(page).to have_content @source.title
@@ -143,7 +161,9 @@ describe "Data entry", :js => true do
 
     it "should NOT find source by title on Select Source page", :known_failure, :flaky do
       visit new_entry_path
-      find('#select_source').click
+      expect(page).to have_selector('#select_source')
+      find('#select_source').trigger('click')
+      expect(page).to have_selector('.modal-title', text: 'Search for Existing Source', visible: true)
       expect(page).to have_field('title')
       fill_in 'title', :with => 'nonexistentjunk'
       expect(page).to have_content "No source found matching your criteria."
