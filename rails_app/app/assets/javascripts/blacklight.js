@@ -1,11 +1,5 @@
-// Overrides the default blacklight JS import file, because their import of bootstrap was conflicting with OUR importing of bootstrap, etc.
+// Overrides the default blacklight JS import, requiring the single BL7 bundle
+// plus the app's save_current_search.
 
-// These javascript files are compiled in via the Rails asset pipeline:
-//= require blacklight/core
-//= require blacklight/autofocus
+//= require blacklight/blacklight
 //= require save_current_search
-//= require blacklight/ajax_modal
-//= require blacklight/search_context
-//= require blacklight/collapsable
-
-$('.no-js').removeClass('no-js').addClass('js');

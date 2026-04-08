@@ -13,6 +13,7 @@
 //= require poltergeist_fix
 //= require jquery
 //
+//= require popper
 //= require bootstrap.min
 //= require jquery_ujs
 //= require jquery-ui
