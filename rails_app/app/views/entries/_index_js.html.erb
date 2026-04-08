@@ -82,35 +82,35 @@
 
                             var result = '<span class="btn-group options-btn-group">';
 /*
-                            if (!full[sdbmTable.getColumnIndex("Bookmarked")]) {                            
-                                result += '<a data-type="json" class="bookmark btn btn-xs btn-secondary" data-remote="true" rel="nofollow" data-method="post" href="/bookmarks?document_id=' + entryId + '&amp;document_type=Entry"><span class="fa fa-bookmark"></span></a>';
+                            if (!full[sdbmTable.getColumnIndex("Bookmarked")]) {
+                                result += '<a data-type="json" class="bookmark btn btn-sm btn-secondary" data-remote="true" rel="nofollow" data-method="post" href="/bookmarks?document_id=' + entryId + '&amp;document_type=Entry"><span class="fa fa-bookmark"></span></a>';
                             }*/
                             /*if (!full[sdbmTable.getColumnIndex("Watched")]) {
-                                result += '<a data-type="json" class="btn btn-xs btn-secondary" data-remote="true" rel="nofollow" data-method="post" href="/watches?watched_id=' + entryId + '&amp;watched_type=Entry&user_id=' + user_id + '&button=true"><span class="fa fa-eye"></span></a>';
+                                result += '<a data-type="json" class="btn btn-sm btn-secondary" data-remote="true" rel="nofollow" data-method="post" href="/watches?watched_id=' + entryId + '&amp;watched_type=Entry&user_id=' + user_id + '&button=true"><span class="fa fa-eye"></span></a>';
                             }*/
                             result += full[sdbmTable.getColumnIndex("BookmarkWatch")];
                             // bookmark button
 
-                            //result += '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-xs btn-secondary control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '"><span class="fa fa-bookmark"></span></a>';
+                            //result += '<a onclick="addBookmark(' + entryId + ', \'Entry\');" class="btn btn-sm btn-secondary control-bookmark bookmark-link" in_bookmarks="/entries/' + entryId + '"><span class="fa fa-bookmark"></span></a>';
 
                             // edit
                             if (editable) {
-                                result += '<a class="btn btn-xs btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>';
+                                result += '<a class="btn btn-sm btn-success" href="/entries/' + entryId + '/edit" target="_blank">Edit</a>';
                             } else {
-                                result += '<a class="btn btn-xs btn-secondary disabled">Edit</a>';
+                                result += '<a class="btn btn-sm btn-secondary disabled">Edit</a>';
                             }
 
                             // destroy
                             if (canDestroy) {
-                                result += '<a class="btn btn-xs btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#"  id="delete_' + entryId + '"target="_blank">Delete</a>'
+                                result += '<a class="btn btn-sm btn-danger entry-delete-link ' + (manuscriptId === null ? '' : 'disabled') + '" href="#"  id="delete_' + entryId + '"target="_blank">Delete</a>'
                             }
 
                             // linking tool
-                            result += '<a class="btn btn-xs btn-info find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
+                            result += '<a class="btn btn-sm btn-info find-or-create-manuscript-link" href="' + linkingToolURL + '" target="_blank">Linking Tool</a>';
 
                             // deprecate
                             if (canDeprecate) {
-                                result += '<a href="#" class="btn btn-xs btn-warning entry-deprecate-link">Deprecate</a>';
+                                result += '<a href="#" class="btn btn-sm btn-warning entry-deprecate-link">Deprecate</a>';
                             }
 
                             result += "</span>";
@@ -126,7 +126,7 @@
                  sdbmTable.searchAndUpdateTable(params, callback, {
                      complete: function () {
                          $("#spinner").hide();
-                         
+
                          if(showApprovalControls()) {
                          } else {
                          }
@@ -176,7 +176,7 @@
                 params[search_option_field] = [search_option];
             } else {
                 params[search_option_field].push(search_option);
-            }            
+            }
          });
 
         // prevent 'approved = *' from returning ALL entries for an 'OR' search
@@ -256,7 +256,7 @@
             commit: 'Yes',
             cancel: 'Cancel',
             zIindex: 10099,
-            onConfirm: function() { 
+            onConfirm: function() {
                 $.ajax({
                     url: '/entries/' + entry_id,
                     type: 'DELETE',
@@ -334,7 +334,7 @@
      });
 
      // since the entry-table default is 'wide', adjust the fullscreen icon
-     $("#widescreen > span").toggleClass('fa-compress').toggleClass('fa-expand');    
+     $("#widescreen > span").toggleClass('fa-compress').toggleClass('fa-expand');
 
  });
 
@@ -347,7 +347,7 @@
                 <h4 class="modal-title">Add/Remove Records From Your Groups</h4>
             </div>
             <div class="modal-body">
-                <%= render partial: "manage_models/group_form" %>                            
+                <%= render partial: "manage_models/group_form" %>
             </div>
         </div>
     </div>

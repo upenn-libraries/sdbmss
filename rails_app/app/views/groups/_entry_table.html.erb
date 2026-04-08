@@ -5,14 +5,14 @@
         <td class="edit-buttons">
           <div class="btn-group">
             <% if can? :edit, entry %>
-              <%= link_to "Edit", edit_entry_path(entry), class: 'btn btn-xs btn-success' %>
+              <%= link_to "Edit", edit_entry_path(entry), class: 'btn btn-sm btn-success' %>
             <% else %>
-              <a class="btn btn-secondary btn-xs disabled">Edit</a>
+              <a class="btn btn-secondary btn-sm disabled">Edit</a>
             <% end %>
             <% if can? :link, entry %>
-              <%= link_to "Linking Tool", linking_tool_by_entry_path(entry), class: 'btn btn-xs btn-info' %>
+              <%= link_to "Linking Tool", linking_tool_by_entry_path(entry), class: 'btn btn-sm btn-info' %>
             <% else %>
-              <a class="btn btn-secondary btn-xs disabled">Linking Tool</a>
+              <a class="btn btn-secondary btn-sm disabled">Linking Tool</a>
             <% end %>
           </div>
         </td>

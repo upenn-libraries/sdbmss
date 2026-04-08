@@ -31,8 +31,8 @@
         <%= render partial: "table", locals: {groups: @groups_requests } %>
       </div>
     <% end %>
-    
-    <% if @groups_invites.count > 0 %>    
+
+    <% if @groups_invites.count > 0 %>
       <div class="col-sm-4">
         <span class="h4">
           Invites
@@ -52,25 +52,25 @@
     </div>
     <div class="col-sm-4 text-center"></div>
     <div class="col-sm-4 text-right">
-        <%= link_to(new_group_path, class: "btn btn-secondary btn-xs") do %>
+        <%= link_to(new_group_path, class: "btn btn-secondary btn-sm") do %>
           <span class="fa fa-plus"></span> Add New
         <% end %>
     </div>
     <div class="col-sm-12">
       <%= render partial: "table", locals: {groups: @groups_admin } %>
     </div>
-    
+
 
     <div class="col-sm-4">
       <span class="h4">
         Member Of
-      </span>      
+      </span>
     </div>
     <div class="col-sm-4 text-center"></div>
-    <div class="col-sm-4 text-right"></div>  
+    <div class="col-sm-4 text-right"></div>
     <div class="col-sm-12">
       <%= render partial: "table", locals: {groups: @groups_member } %>
     </div>
-  
+
   </div>
 </div>

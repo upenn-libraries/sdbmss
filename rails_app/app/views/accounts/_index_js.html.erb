@@ -47,7 +47,7 @@
         }
         manageRecords.showOrHideMarkCheckedRecordsButton();
     };
-     
+
      ManageAccounts.prototype = Object.create(SDBM.ManageRecords.prototype);
 
      ManageAccounts.prototype.oldCreateSearchParams = ManageAccounts.prototype.createSearchParams;
@@ -82,7 +82,7 @@
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var str = '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a> '
+                    var str = '<a class="btn btn-sm btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a> '
                     return str;
                 }
             },
@@ -92,8 +92,8 @@
                 title: 'ID',
                 dbSortField: 'id',
                 render: function (data) {
-                    return '<a href="/accounts/' + data + '/edit">' + data + '</a>';    
-                } 
+                    return '<a href="/accounts/' + data + '/edit">' + data + '</a>';
+                }
             },
             {
                 sdbmssMinWidth: "150px",

@@ -15,7 +15,7 @@
      var ManageComments = function(options) {
          SDBM.ManageRecords.call(this, options);
      };
-     
+
      ManageComments.prototype = Object.create(SDBM.ManageRecords.prototype);
 
      ManageComments.prototype.getColumns = function() {
@@ -38,8 +38,8 @@
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var str = '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + full[manageRecords.dataTable.getColumnIndex("ID")] + '/edit/">Edit</a> '
-                            + ' <a class="delete-link btn btn-xs btn-danger" href="/' + manageRecords.options.resourceName + '/' + full[manageRecords.dataTable.getColumnIndex("ID")] + '.json">Delete</a>';
+                    var str = '<a class="btn btn-sm btn-success" href="/' + manageRecords.options.resourceName + '/' + full[manageRecords.dataTable.getColumnIndex("ID")] + '/edit/">Edit</a> '
+                            + ' <a class="delete-link btn btn-sm btn-danger" href="/' + manageRecords.options.resourceName + '/' + full[manageRecords.dataTable.getColumnIndex("ID")] + '.json">Delete</a>';
                     return str;
                 },
                 width: "10%"
@@ -78,7 +78,7 @@
                 sdbmssMinWidth: "100px",
                 //orderable: false,
                 title: 'Manuscript ID',
-                render: function (data, type, full, meta) { 
+                render: function (data, type, full, meta) {
                     if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")] && !full[manageRecords.dataTable.getColumnIndex("Source ID")]  && !full[manageRecords.dataTable.getColumnIndex("Name ID")] ) {
                         return "<span class='text-danger'>(record deleted)</span>"
                     }
@@ -93,7 +93,7 @@
                 sdbmssMinWidth: "100px",
                 //orderable: false,
                 title: 'Source ID',
-                render: function (data, type, full, meta) { 
+                render: function (data, type, full, meta) {
                     if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")] && !full[manageRecords.dataTable.getColumnIndex("Source ID")]  && !full[manageRecords.dataTable.getColumnIndex("Name ID")] ) {
                         return "<span class='text-danger'>(record deleted)</span>"
                     }
@@ -108,7 +108,7 @@
                 sdbmssMinWidth: "100px",
                 //orderable: false,
                 title: 'Name ID',
-                render: function (data, type, full, meta) { 
+                render: function (data, type, full, meta) {
                     if (!full[manageRecords.dataTable.getColumnIndex("Entry ID")] && !full[manageRecords.dataTable.getColumnIndex("Manuscript ID")] && !full[manageRecords.dataTable.getColumnIndex("Source ID")]  && !full[manageRecords.dataTable.getColumnIndex("Name ID")] ) {
                         return "<span class='text-danger'>(record deleted)</span>"
                     }
@@ -209,4 +209,3 @@
  });
 
 </script>
-

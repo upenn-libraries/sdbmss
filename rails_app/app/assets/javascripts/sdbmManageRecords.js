@@ -32,7 +32,7 @@ var load_session = false;
         this.options = $.extend({}, defaults, options);
 
         var manageRecords = this;
-        
+
 //        SDBM.hideNavBar();
 
         window.onpopstate = function(event) {
@@ -42,7 +42,7 @@ var load_session = false;
         };
 
         //manageRecords.setFormStateFromURL();
-        
+
         this.dataTable = manageRecords.createTable(".sdbm-table");
 
         $(".sdbm-table").on("click", ".delete-link", function(event) {
@@ -52,7 +52,7 @@ var load_session = false;
                 commit: 'Yes',
                 cancel: 'Cancel',
                 zIindex: 10099,
-                onConfirm: function() { 
+                onConfirm: function() {
                     $.ajax({
                         url: $(event.target).attr("href"),
                         method: 'DELETE',
@@ -62,7 +62,7 @@ var load_session = false;
                             //alert("An error occurred deleting this record: " + error);
                         },
                         success: function(data, textStatus, jqXHR) {
-                            manageRecords.dataTable.reload();                    
+                            manageRecords.dataTable.reload();
                         }
                     });
                 },
@@ -70,7 +70,7 @@ var load_session = false;
             });
             return false;
         });
-        
+
         $('form.search-form').submit(manageRecords.createFormSubmitHandler());
 
         $('#export-csv').click(function() {
@@ -101,7 +101,7 @@ var load_session = false;
             });
             var group_id = $('#group-select').val();
             var editable = $('#editable').prop('checked') || false;
-            
+
             if (ids.length > 0) {
                 $("#spinner").show();
                 $.ajax({
@@ -161,7 +161,7 @@ var load_session = false;
             $("input[name='review']:checked").each(function (idx, element) {
                 ids.push($(element).val());
             });
-            
+
             if(ids.length > 0) {
                 $("#spinner").show();
                 $.ajax({
@@ -201,7 +201,7 @@ var load_session = false;
                     var params = JSON.parse($('#last_search').attr('data'));
                     manageRecords.setFormStateFromParams(params);
                     load_session = false;
-                } else {                    
+                } else {
                     var params = manageRecords.createSearchParams(dt_params);
                 }
 
@@ -215,7 +215,7 @@ var load_session = false;
             heightBuffer: 280,
             columns: manageRecords.getColumns(),
             order: manageRecords.getDefaultSort(),
-            fixedColumns: manageRecords.options.fixedColumns, 
+            fixedColumns: manageRecords.options.fixedColumns,
         });
 
         $("#search_results").on('draw.dt', function () {
@@ -268,7 +268,7 @@ var load_session = false;
             }
         });
     };
-    
+
     // returns an object to pass to jquery $.ajax() call
     SDBM.ManageRecords.prototype.createSearchParams = function (dt_params) {
         var columns = this.getColumns();
@@ -286,7 +286,7 @@ var load_session = false;
             op: this.getOp()
         };
 
-        for (var i = 0; i < $(".search-block").length; i++) { 
+        for (var i = 0; i < $(".search-block").length; i++) {
             var search_row = $(".search-block").eq(i);
             var term = search_row.find("input[name=search_value]").val();
             var field = search_row.find("select[name=search_field]").val();
@@ -347,8 +347,8 @@ var load_session = false;
         var qs = params;
         var j = 0;
         for (var key in qs) {
-            if (Array.isArray(qs[key]) && key.indexOf('option') == -1) {                
-                
+            if (Array.isArray(qs[key]) && key.indexOf('option') == -1) {
+
                 if (j != 0) $('#addSearch').click();
                 var key_string = key;
                 var option_string = key + "_option";
@@ -368,7 +368,7 @@ var load_session = false;
         }
         manageRecords.showOrHideMarkCheckedRecordsButton();
     }
-    
+
     // factory method that returns a function used for search form
     // submit handler
     SDBM.ManageRecords.prototype.createFormSubmitHandler = function () {
@@ -379,7 +379,7 @@ var load_session = false;
 //          var url = manageRecords.persistFormStateToURL();
 //          history.pushState({ url: url }, '', url);
             manageRecords.reloadTable();
-            
+
             manageRecords.showOrHideMarkCheckedRecordsButton();
             return false;
         };
@@ -393,11 +393,11 @@ var load_session = false;
     SDBM.ManageRecords.prototype.getDefaultSort = function () {
         return [[ 2, "desc" ]];
     };
-    
+
     SDBM.ManageRecords.prototype.getResourceIndexURL = function () {
         return '/' + this.options.resourceName + '/';
     };
-    
+
     SDBM.ManageRecords.prototype.getSearchURL = function (format) {
         var url =  '/' + this.options.resourceName + '/search';
         if(format) {
@@ -417,7 +417,7 @@ var load_session = false;
     SDBM.ManageRecords.prototype.getSearchOption = function() {
         return $("select[name='search_option']").val();
     };
-    
+
     SDBM.ManageRecords.prototype.getUnreviewedOnly = function() {
         if ($("input[name='unreviewed_only']").is(':checked')) {
             $('.hideIfReviewed').removeClass('disabled');
@@ -435,22 +435,22 @@ var load_session = false;
             return 'all';
         }
     }
-    
+
     SDBM.ManageRecords.prototype.getColumns = function () {
         var manageRecords = this;
 
         return [
             {
-                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',//'<a href="#" class="btn btn-secondary btn-blank btn-xs fa fa-square-o hideIfReviewed" id="select-all"></a>',
+                title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',//'<a href="#" class="btn btn-secondary btn-blank btn-sm fa fa-square-o hideIfReviewed" id="select-all"></a>',
                 orderable: false,
                 className: "text-center unreviewed_only",
                 render: function (data, type, full, meta) {
                     //if(manageRecords.getUnreviewedOnly() === 1) {
-                        /*return  '' + 
-                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' + 
-                                '<label for="checkbox_' + meta.row + '">' + 
-                                '<a class="btn btn-secondary btn-xs btn-blank fa fa-square-o unchecked"></a>' + 
-                                '<a class="btn btn-secondary btn-xs btn-blank fa fa-check checked"></a>' + 
+                        /*return  '' +
+                                '<input class="table-checkbox" type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '" id="checkbox_' + meta.row + '"/>' +
+                                '<label for="checkbox_' + meta.row + '">' +
+                                '<a class="btn btn-secondary btn-sm btn-blank fa fa-square-o unchecked"></a>' +
+                                '<a class="btn btn-secondary btn-sm btn-blank fa fa-check checked"></a>' +
                                 '</label>' + '';*/
                         return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
                     //}
@@ -462,8 +462,8 @@ var load_session = false;
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var str = '<a class="btn btn-xs btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a> '
-                            + ' <a class="delete-link btn btn-xs btn-danger" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
+                    var str = '<a class="btn btn-sm btn-success" href="/' + manageRecords.options.resourceName + '/' + data + '/edit/">Edit</a> '
+                            + ' <a class="delete-link btn btn-sm btn-danger" href="/' + manageRecords.options.resourceName + '/' + data + '.json">Delete</a>';
                     return str;
                 },
                 width: "10%"
@@ -537,17 +537,17 @@ var load_session = false;
     SDBM.ManageRecords.prototype.getButtonTextForAddNewRecord = function() {
         return "Add New " + this.options.resourceNameSingular.charAt(0).toUpperCase() + this.options.resourceNameSingular.slice(1);
     };
-    
+
     // handler called when "export csv" link is clicked; this
     // implementation uses #search action on the Rails resource
     // controller
-    
+
     SDBM.ManageRecords.prototype.getCSVSearchUrl = function () {
         var manageRecords = this;
         //var qs = new URI().query(true);
         var qs = manageRecords.search_query;
 
-        // since this data is sent via URI, I have to reformat when there is a list so {name: ["x", "y"]} becomes {name[]: ["x", "y"]} 
+        // since this data is sent via URI, I have to reformat when there is a list so {name: ["x", "y"]} becomes {name[]: ["x", "y"]}
         for (var field in qs) {
             if (Array.isArray(qs[field])) {
                 if (field.indexOf('[]') == -1) {
@@ -565,5 +565,5 @@ var load_session = false;
         var url = t.getCSVSearchUrl();
         exportCSV(url);
     };
-    
+
 }());

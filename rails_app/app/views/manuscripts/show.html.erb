@@ -1,6 +1,6 @@
 <% content_for :head do %>
 <%= stylesheet_link_tag "extras", media: "all" %>
-<style>    
+<style>
     .proposed {
         width: 50%;
         transition: width 1s;
@@ -103,7 +103,7 @@
 <% end %>
 
 <div class="row">
-    
+
     <div class="sdbmss-form <%= @manuscript.location ? 'col-sm-7' : 'col-sm-12' %>">
         <legend class="mobile-center">
             <span><%= @manuscript.public_id %></span>
@@ -112,11 +112,11 @@
     <div class="col-sm-12">
         <%= render partial: "pages/partial", locals: {page_name: "Manuscript Instructions"} %>
         <p>
-            <a class="btn btn-secondary btn-xs" data-blacklight-modal="trigger" rel="nofollow" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
+            <a class="btn btn-secondary btn-sm" data-blacklight-modal="trigger" rel="nofollow" href="/manuscripts/<%= @manuscript.id %>/citation">Cite</a>
         </p>
     </div>
     <% if @manuscript.location %>
-    <div class='col-sm-5'> 
+    <div class='col-sm-5'>
             <div class="card">
                 <div class="card-body text-muted">
                     <span class='h3'>Last Known Location </span><br>
@@ -137,7 +137,7 @@
                 <% @manuscript_titles.each do |title| %>
                     <li class='associated_title' title="<%= title %>"><%= title %></li>
                 <% end %>
-                </ul>                
+                </ul>
             </div>
         </div>
     </div>
@@ -183,7 +183,7 @@
             <tbody>
                 <tr>
                     <td class="mss-entries">
-                        <div class="inner-container">                            
+                        <div class="inner-container">
                             <div class="row" data-toggle="collapse" data-target=".panel-collapse">
                                 <div class="col-sm-12 mobile-center">
                                     <h3>Associated Entries With Provenance Data
@@ -192,7 +192,7 @@
                                     </h3>
                                 </div>
                             </div>
-                            <br>                        
+                            <br>
                             <% @entries.each_with_index do |entry, index| %>
                             <div class="panel panel-provenance <%= entry.source.source_type_id == 8 ? 'panel-warning' : 'panel-default' %>">
                                 <div class="card-header">
@@ -215,7 +215,7 @@
                                     </div>
                                 </div>
                                 <div class="collapse show panel-collapse list-group" id="entry_provenance_<%= index %>">
-                                    <ul class="list-group">                            
+                                    <ul class="list-group">
                                         <% if entry.provenance.count <= 0 %>
                                             <li class="list-group-item">This entry does not have any recorded provenance</li>
                                         <% end %>
@@ -286,7 +286,7 @@
                                     <div class="input-group">
                                         <%= submit_tag "Create", class: 'form-control btn-info', data: {confirm: "Are you sure you would like to create a new Observation?"} %>
                                         <span class="input-group-btn">
-                                            <a id="clearProvenance" class="btn btn-secondary">Clear</a>                    
+                                            <a id="clearProvenance" class="btn btn-secondary">Clear</a>
                                         </span>
                                     </div>
                                 </div>

@@ -81,22 +81,22 @@
     <table class="table table-responsive sdbm-table">
       <tr><td>Name</td>
       <td><%= @record.name %></td></tr>
-    
+
       <tr><td>Dates</td>
       <td><%= @record.dates || "Unknown" %></td></tr>
 
       <tr><td>Place</td>
       <td><%= @record.place || "Unknown" %></td></tr>
- 
+
       <tr><td>PDF</td>
       <td><%= link_to "Hosted at the UK Senate House Archives", @record.url %></td></tr>
 
       <tr><td>Number of Cards</td>
       <td><%= @record.cards || "Unknown" %></td></tr>
-      
+
       <tr><td>File Size</td>
       <td><%= @record.size || "Unknown" %></td></tr>
-      
+
       <tr><td>Other Info</td>
       <td><%= @record.other_info || "None" %></td></tr>
 
@@ -113,7 +113,7 @@
           <td>
             <% if @record.dericci_links.where(approved: true).group_by(&:name_id).each do |name_id, dericci_links| %>
               <% name = dericci_links.first.name %>
-              <a href="" class="btn btn-secondary btn-xs" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
+              <a href="" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
                 <%= name.name %> <span class="badge"><%= dericci_links.count %></span>
               </a>
 
@@ -126,7 +126,7 @@
                       </button>
                       <p>This De Ricci record has been linked to <%= link_to name.name, name_path(name) %> by </p>
                         <% dericci_links.each do |dl| %>
-                            <span class='btn btn-xs btn-secondary'>
+                            <span class='btn btn-sm btn-secondary'>
                               <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
                             </span>
                             <% if dl.other_info.present? %>
@@ -135,7 +135,7 @@
                               <span class="text-muted"> no additional information provided</span>
                             <% end %>
                             <br>
-                        <% end %>                    
+                        <% end %>
                     </div>
                     <div class="modal-footer text-center">
                       <% if current_user && current_user.role == "admin" %>
@@ -149,14 +149,14 @@
             <% end.empty? %>
                 <p class="text-muted">This name is not verifiably linked to any names in the SDBM Name Authority.</p>
             <% end %>
-            <div ng-controller="DericciRecordCtrl">        
+            <div ng-controller="DericciRecordCtrl">
               <% if can? :edit, @record %>
                 <input type="hidden" id="user-id" value="<%= current_user.id %>">
-                <a id="verify" href="" ng-if="!name || !name.name" ng-click="findName(record)" class="btn btn-secondary btn-xs">Find Verified Name <span class="fa fa-plus"></span></a>
+                <a id="verify" href="" ng-if="!name || !name.name" ng-click="findName(record)" class="btn btn-secondary btn-sm">Find Verified Name <span class="fa fa-plus"></span></a>
                 <div class="btn-group" ng-if="name && name.name">
-                  <a href="" class="btn btn-warning btn-xs">{{ name.name }}</a>
-                  <a href="" class="btn btn-secondary btn-xs" ng-click="remove()"><span class='fa fa-times'></span></a>
-                  <a href="" class="btn btn-success btn-xs" ng-click="save()">Save</a>
+                  <a href="" class="btn btn-warning btn-sm">{{ name.name }}</a>
+                  <a href="" class="btn btn-secondary btn-sm" ng-click="remove()"><span class='fa fa-times'></span></a>
+                  <a href="" class="btn btn-success btn-sm" ng-click="save()">Save</a>
                 </div>
               <% end %>
             </div>
@@ -168,7 +168,7 @@
         <td>
           <% if @record.dericci_links.where(approved: [false, nil]).group_by(&:name_id).each do |name_id, dericci_links| %>
               <% name = dericci_links.first.name %>
-              <a href="" class="btn btn-info btn-xs" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
+              <a href="" class="btn btn-info btn-sm" data-toggle="modal" data-target="#<%= name.public_id %>" style="margin-bottom: 4px;">
                 <%= name.name %> <span class="badge"><%= dericci_links.count %></span>
               </a>
 
@@ -181,7 +181,7 @@
                       </button>
                       <p>This De Ricci record has been linked to <%= link_to name.name, name_path(name) %> by </p>
                         <% dericci_links.each do |dl| %>
-                            <span class='btn btn-xs btn-secondary'>
+                            <span class='btn btn-sm btn-secondary'>
                               <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
                             </span>
                             <% if dl.other_info.present? %>
@@ -190,7 +190,7 @@
                               <span class="text-muted"> no additional information provided</span>
                             <% end %>
                             <br>
-                        <% end %>                    
+                        <% end %>
                     </div>
                     <div class="modal-footer text-center">
                       <% if current_user && current_user.role == "admin" %>

@@ -6,7 +6,7 @@
             <span class='input-group-append'>
                 <input type='submit' class='btn btn-secondary' value='Search' id='search-name'>Search</a>
             </span>
-        </form>        
+        </form>
     </div>
     <div class="modal-body form-horizontal compress-whitespace fit-screen">
 
@@ -17,9 +17,9 @@
                     <tr>
                         <th style="width: 90px;">
                             <div class="btn-group">
-                                <a href="" ng-disabled="page <= 1" ng-click="prevPage()" class="btn btn-xs btn-secondary"><span class="fa fa-chevron-left"></span></a>
-                                <span class="btn btn-xs btn-secondary">{{ page }}</span>
-                                <a href="" ng-click="nextPage()" class="btn btn-xs btn-secondary"><span class="fa fa-chevron-right"></span></a>
+                                <a href="" ng-disabled="page <= 1" ng-click="prevPage()" class="btn btn-sm btn-secondary"><span class="fa fa-chevron-left"></span></a>
+                                <span class="btn btn-sm btn-secondary">{{ page }}</span>
+                                <a href="" ng-click="nextPage()" class="btn btn-sm btn-secondary"><span class="fa fa-chevron-right"></span></a>
                             </div>
                         </th>
                         <th class='text-left'>Name</th>
@@ -38,7 +38,7 @@
                         <td colspan="9">{{ warning }}</td>
                     </tr>
                     <tr ng-repeat="s in suggestions track by $index" >
-                        <td><a class='selectName btn btn-success btn-xs' id="select_name_{{ $index }}" ng-click='selectSuggestion(s)'><span class='fa fa-check'></span> Link</a></td>
+                        <td><a class='selectName btn btn-success btn-sm' id="select_name_{{ $index }}" ng-click='selectSuggestion(s)'><span class='fa fa-check'></span> Link</a></td>
                         <td class='text-left'><a href="/names/{{ s.id }}" target="_blank">{{ s.name }}</a></td>
                         <td>{{ s.viaf_id }}</td>
                         <td>{{ s.authors_count }}</td>
@@ -46,7 +46,7 @@
                         <td>{{ s.scribes_count }}</td>
                         <td>{{ s.provenance_count }}</td>
                         <td>{{ s.source_agents_count }}</td>
-                        <td>{{ s.reviewed ? "Yes" : "No" }} 
+                        <td>{{ s.reviewed ? "Yes" : "No" }}
                             <!--<span class='fa' ng-class="s.reviewed ? 'fa-check' : 'fa-times'"></span>-->
                         </td>
                         <td>{{ s.confirmed ? "Yes" : "No" }}
@@ -59,7 +59,7 @@
             </table>
         </div>
     </div>
-        
+
     </div>
     <div class="modal-footer">
         <div class='row'>

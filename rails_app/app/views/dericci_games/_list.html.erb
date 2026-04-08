@@ -5,8 +5,8 @@
       <% if games.reverse.each do |game| %>
         <tr>
           <td>
-            <%= link_to(dericci_game_path(game), class: 'btn btn-secondary btn-xs play-game') do %>
-              <span class="fa fa-building"></span> Go To Game 
+            <%= link_to(dericci_game_path(game), class: 'btn btn-secondary btn-sm play-game') do %>
+              <span class="fa fa-building"></span> Go To Game
             <% end %>
           </td>
           <td>

@@ -19,7 +19,7 @@ var BOOKMARK_SCOPE;
     "use strict";
 
     var sdbmApp = angular.module("sdbmApp", ["ngResource", "ui.bootstrap", "ngAnimate", "ui.sortable", "ngSanitize", "ngCookies"]);
-    
+
     sdbmApp.run(function ($http) {
         // For Rails CSRF
         var csrf_token = $('meta[name="csrf-token"]').attr('content');
@@ -109,7 +109,7 @@ var BOOKMARK_SCOPE;
          * values. We use this to filter out records that user has
          * added on UI but not populated.
          */
-    
+
         var isBlankObject = function(obj) {
             var blank = true;
             if(obj !== undefined) {
@@ -233,7 +233,7 @@ var BOOKMARK_SCOPE;
             var new_manuscript = getNewManuscript();
             if(new_manuscript) {
                 path += "&new_manuscript=" + new_manuscript;
-            }            
+            }
             var original_entry = getOriginalEntry();
             if(original_entry) {
                 path += "&original_entry=" + original_entry;
@@ -260,7 +260,7 @@ var BOOKMARK_SCOPE;
              * replace it with that object's 'id' attribute.
              */
             replaceEntityObjectsWithIds: function (objectArray, relatedObjectName) {
-                if (objectArray !== undefined) {                  
+                if (objectArray !== undefined) {
                   objectArray.forEach(function (element, index, array) {
                       if (element._destroy === 1) {
                         // noop; this fixes a bug related to counters where the ROW would be deleted and the name removed at the same time, which confused the rails counter-cache
@@ -557,14 +557,14 @@ var BOOKMARK_SCOPE;
       $scope.flag = function (record, reason) {
         $scope.selectRecord(record);
         $scope.current_flag = {reason: reason};
-        
+
         $scope.remove_flags(record);
-        record.dericci_record_flags.push($scope.current_flag); 
+        record.dericci_record_flags.push($scope.current_flag);
         $scope.remove_links(record);
         record.skipped = false;
         $scope.next();
         if ($scope.modal) {
-          $scope.modal.dismiss('cancel');          
+          $scope.modal.dismiss('cancel');
         }
       };
       $scope.next = function () {
@@ -786,11 +786,11 @@ var BOOKMARK_SCOPE;
 
       $scope.selectSuggestion = function (s) {
         $scope.suggestion = s;
-        $scope.selectName();          
+        $scope.selectName();
       };
 
       $scope.selectName = function () {
-        model.id = $scope.suggestion.id; 
+        model.id = $scope.suggestion.id;
         model.name = $scope.suggestion.name;
         $modalInstance.close();
       };
@@ -849,9 +849,9 @@ var BOOKMARK_SCOPE;
                   return -1;
               });
               $scope.suggestions = options;
-              $scope.suggestion = $scope.suggestions[0];              
+              $scope.suggestion = $scope.suggestions[0];
               if ($scope.suggestions.length <= 0) $scope.warning = "No results found.  Consider searching for other possible spelling variations.";
-              else $scope.warning = ""; 
+              else $scope.warning = "";
           });
       };
       $scope.cancel = function () {
@@ -923,7 +923,7 @@ var BOOKMARK_SCOPE;
 
     // This is a pretty basic controller for uploading a file, but it does do some simple parsing on the import CSV,
     // and some simple error checking.  The import is validated when actually uploaded, but this provides some faster feedback
-    // for easy-to-catch errors.  
+    // for easy-to-catch errors.
 
     sdbmApp.controller("ImportCtrl", function ($scope, $http, Entry, Source, sdbmutil, $modal) {
       $scope.entries = [];
@@ -962,7 +962,7 @@ var BOOKMARK_SCOPE;
           var file = input.files[0];
           var fr = new FileReader();
           fr.onload = function () {
-            try {              
+            try {
               var results = $.csv.toObjects(fr.result, {delimiter: '"'});
               for (var i = 0; i < results.length; i++) {
                 var entry = new Entry(results[i]);
@@ -981,15 +981,15 @@ var BOOKMARK_SCOPE;
                 if (entry.sale_seller_or_holder) {
                   sellers = $.csv.toArray(entry.sale_seller_or_holder, {separator: ";", delimiter: '"'}).map(function (f, index) {
                     return {observed_name: f, order: index, role: "seller_or_holder"};
-                  }).filter(function (e) { return e.observed_name.length > 0 });;                  
+                  }).filter(function (e) { return e.observed_name.length > 0 });;
                 }
-                if (entry.sale_selling_agent) {                  
+                if (entry.sale_selling_agent) {
                   selling_agents = $.csv.toArray(entry.sale_selling_agent, {separator: ";", delimiter: '"'}).map(function (f, index) {
                     return {observed_name: f, order: index, role: "selling_agent"};
                   }).filter(function (e) { return e.observed_name.length > 0 });
                 }
                 entry.sales_attributes[0]["sale_agents_attributes"] = buyers.concat(sellers).concat(selling_agents);
-                
+
                 for (var j = 0; j < $scope.multifields.length; j++) {
 
                   if (entry[$scope.multifields[j]]) {
@@ -1171,7 +1171,7 @@ var BOOKMARK_SCOPE;
     sdbmApp.controller("EntryCtrl", function ($scope, $http, $filter, Entry, Source, sdbmutil, $modal) {
 
         EntryScope = $scope;
-        
+
         $scope.expand = function (e) {
           $(e.currentTarget).parent().parent('.expandable').addClass('expanded');
         };
@@ -1203,7 +1203,7 @@ var BOOKMARK_SCOPE;
             });
           }
         };
-        
+
         $scope.convertInchesToMillimeter = function (model, field) {
           var modal = $modal.open({
             templateUrl: "ConvertInchesToMillimeters",
@@ -1379,7 +1379,7 @@ var BOOKMARK_SCOPE;
             $scope.setSource(src);
           }
         });
-        
+
         $scope.$on('cancelSource', function (e) {
           $scope.entry.source = $scope.entry.source_bk;
           $scope.selecting_source = false;
@@ -1455,7 +1455,7 @@ var BOOKMARK_SCOPE;
             anArray.push({dates: [{type: "Start"}]});
           } else if (anArray == $scope.entry.group_records) {
             anArray.push({permission: true});
-          } else {            
+          } else {
             anArray.push({});
           }
           for (var i = 0; i < anArray.length; i++) {
@@ -1490,7 +1490,7 @@ var BOOKMARK_SCOPE;
             }
           };
           if (sdbmutil.isBlankThing(record)) doremove(anArray, record);
-          else {            
+          else {
             dataConfirmModal.confirm({
               title: 'Confirm',
               text: 'Are you sure you want to remove this field and its contents?',
@@ -1573,7 +1573,7 @@ var BOOKMARK_SCOPE;
 
         $scope.setBackup = function () {
           if ($scope.backup == "temporarily_disabled") {
-            localStorage.setItem('sdbm_' + $scope.entry.username + '_backup', false);            
+            localStorage.setItem('sdbm_' + $scope.entry.username + '_backup', false);
           } else if ($scope.backup == "enabled") {
             localStorage.removeItem('sdbm_' + $scope.entry.username + '_backup');
             $.ajax('/users/', {
@@ -1592,7 +1592,7 @@ var BOOKMARK_SCOPE;
             });
           }
         };
-  
+
         // does some processing on Entry data structure retrieved via
         // API so that it can be used with the Angular form bindings
         $scope.populateEntryViewModel = function(entry) {
@@ -1632,7 +1632,7 @@ var BOOKMARK_SCOPE;
                 }
                 delete entry.sale.sale_agents;
             }*/
-            
+
             if(!entry.transaction_type) {
                 if(entry.source.source_type.entries_transaction_field !== 'choose') {
                     entry.transaction_type = entry.source.source_type.entries_transaction_field;
@@ -1666,7 +1666,7 @@ var BOOKMARK_SCOPE;
             if (entry.id) {
               var key = 'sdbmDraft_' + entry.id + '_' + entry.username;
             } else {
-              var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.username;              
+              var key = 'sdbmDraft_src-' + entry.source.id + '_' + entry.username;
             }
             $scope.draft = localStorage.getItem(key);
             if ($scope.draft) {
@@ -1820,8 +1820,8 @@ var BOOKMARK_SCOPE;
                 [ entryToSave.entry_scribes, 'scribe' ],
                 [ entryToSave.entry_languages, 'language' ],
                 [ entryToSave.entry_places, 'place' ],
-                [ entryToSave.provenance, 'provenance_agent' ],               
-                [ entryToSave.group_records, 'group' ]                
+                [ entryToSave.provenance, 'provenance_agent' ],
+                [ entryToSave.group_records, 'group' ]
             ];
 
             for(var idx in objectArraysWithRelatedObjects) {
@@ -1884,12 +1884,12 @@ var BOOKMARK_SCOPE;
             // only if more recently saved version
             $scope.entry = angular.copy($scope.draft);
             $scope.populateEntryViewModel($scope.entry);
-            $scope.draft = undefined;          
+            $scope.draft = undefined;
           }
         }
-        
+
         $scope.saveDraft = function () {
-          if ($scope.backup == "enabled") {            
+          if ($scope.backup == "enabled") {
             var entry = angular.copy($scope.entry);
             entry.updated = (new Date()).getTime() / 1000;
             if (entry.id) {
@@ -1911,10 +1911,10 @@ var BOOKMARK_SCOPE;
         }
 
         $('#entry-form').change('input', function () {
-          $scope.saveDraft();          
+          $scope.saveDraft();
         });
         $('#entry-form').change('select', function () {
-          $scope.saveDraft();          
+          $scope.saveDraft();
         });
 
         $scope.markSourceAsEntered = function() {
@@ -1941,8 +1941,8 @@ var BOOKMARK_SCOPE;
             if (assoc.foreignKeyObjects && assoc.foreignKeyObjects.length > 0) {
               var field = assoc.field;
               var key = assoc.foreignKeyObjects[0];
-              
-              if (entry2[field]) {                
+
+              if (entry2[field]) {
                 entry2[field].forEach( function (f) {
                   if (f[key] && !f[key]['id']) {
                     delete f[key];
@@ -1992,7 +1992,7 @@ var BOOKMARK_SCOPE;
 
         SDBM.disableFormSubmissionOnEnter('#entry-form');
 
-        $http.get("/groups.json").then( function (result) {          
+        $http.get("/groups.json").then( function (result) {
             $scope.groups = result.data;
           }
         );
@@ -2128,7 +2128,7 @@ var BOOKMARK_SCOPE;
       return function (scope, element, attrs) {
         var modelName = attrs.encourageNameAuthorityModel;
         var nameType = attrs.encourageNameAuthorityName;
-        
+
         $(element).html('<span class="fa fa-exclamation-triangle"></span> <span class="show-hover">You have not selected an authority name. <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a></span>');
 
         scope.$watch(modelName, function(newValue, oldValue) {
@@ -2145,7 +2145,7 @@ var BOOKMARK_SCOPE;
 
     // detect changes to file input element (not otherwise implemented with ng-change in angularjs) -> taken from https://stackoverflow.com/questions/20146713/ng-change-on-input-type-file
     sdbmApp.directive("ngUploadChange", function () {
-      return { 
+      return {
         scope: {
             ngUploadChange:"&"
         },
@@ -2205,7 +2205,7 @@ var BOOKMARK_SCOPE;
                 // is susceptible to race conditions with the
                 // browser's default handling of tab key, but in
                 // practice, it works.  Need to find a better way.
-                
+
                 /*setTimeout(function() {
                     $(element).focus();
                 }, 100);*/
@@ -2462,10 +2462,10 @@ var BOOKMARK_SCOPE;
                     source: "SDBM_SOURCE_" + scope.entry.source.id,
                 };
                 if (cat_lot_no.length >= 2) {
-                  query.catalog_or_lot_number_search = cat_lot_no                  
+                  query.catalog_or_lot_number_search = cat_lot_no
                 }
                 else {
-                  query.catalog_or_lot_number = cat_lot_no                  
+                  query.catalog_or_lot_number = cat_lot_no
                 }
                 if(cat_lot_no) {
                     $.ajax("/entries.json", {
@@ -2494,7 +2494,7 @@ var BOOKMARK_SCOPE;
             });
         };
     });
-    
+
     sdbmApp.directive("sdbmCertaintyFlags", function($modal, $parse) {
         return function (scope, element, attrs) {
             var modelName = attrs.sdbmCertaintyFlags;
@@ -2552,7 +2552,7 @@ var BOOKMARK_SCOPE;
         };
     });
 
-    // This emtpy controller is simply to allow sdbm directives (specifically tooltips) to be usable on 
+    // This emtpy controller is simply to allow sdbm directives (specifically tooltips) to be usable on
     // public pages (like the public view for a name or entry)
 
     sdbmApp.controller('PublicCtrl', function ($scope) {
@@ -2560,7 +2560,7 @@ var BOOKMARK_SCOPE;
     });
 
     sdbmApp.controller('PlaceModalCtrl', function ($scope, $http, $modal, $modalInstance, Place, sdbmutil, modalParams) {
-    
+
       $scope.place = new Place();
       $scope.place.parent = {};
       $scope.place.name = modalParams.name;
@@ -2585,7 +2585,7 @@ var BOOKMARK_SCOPE;
           });
         }
       }
-    
+
       $scope.queryURL = function () {
         window.open($scope.url0 + $scope.place.name + $scope.url2, "_blank");
       }
@@ -2593,9 +2593,9 @@ var BOOKMARK_SCOPE;
       // for now, just getty
       $scope.queryAuthority = function () {
         if (!$scope.querying) {
-          $scope.querying = true;        
+          $scope.querying = true;
           $http.get($scope.url1 + $scope.place.name + $scope.url2).then(function(response) {
-          //$http.get("http://vocab.getty.edu/resource/getty/search?q=" + $scope.place.name + "&luceneIndex=Brief&indexDataset=TGN&_form=%2Fresource%2Fgetty%2Fsearch").then( function (response) {          
+          //$http.get("http://vocab.getty.edu/resource/getty/search?q=" + $scope.place.name + "&luceneIndex=Brief&indexDataset=TGN&_form=%2Fresource%2Fgetty%2Fsearch").then( function (response) {
             $scope.querying = false;
             $scope.suggestions = response;
             $scope.modal = $modal.open({
@@ -2680,7 +2680,7 @@ var BOOKMARK_SCOPE;
         if ($scope.place.parent && $scope.place.parent.id) {
           $scope.place.parent_id = $scope.place.parent.id;
         };
-        if ($scope.place.id) {          
+        if ($scope.place.id) {
           $scope.place.$update(
             $scope.postSave,
             sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
@@ -2725,7 +2725,7 @@ var BOOKMARK_SCOPE;
         $scope.place = new Place();
         $scope.place.parent = {};
       }
-    
+
       $scope.queryURL = function () {
         window.open($scope.url0 + $scope.place.name + $scope.url2, "_blank");
       }
@@ -2734,7 +2734,7 @@ var BOOKMARK_SCOPE;
       $scope.queryAuthority = function () {
         if (!$scope.querying) {
           $scope.querying = true;
-          if ($scope.place.authority_source.indexOf("getty") !== -1) {            
+          if ($scope.place.authority_source.indexOf("getty") !== -1) {
             $http.get($scope.gettyurl($scope.place.name)).then(function(response) {
               $scope.querying = false;
               $scope.suggestions = response;
@@ -2844,7 +2844,7 @@ var BOOKMARK_SCOPE;
         if ($scope.place.parent && $scope.place.parent.id) {
           $scope.place.parent_id = $scope.place.parent.id;
         };
-        if ($scope.place.id) {          
+        if ($scope.place.id) {
           $scope.place.$update(
             $scope.postSave,
             sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
@@ -2901,7 +2901,7 @@ var BOOKMARK_SCOPE;
 
 
         $scope.beginMergeEdit = function () {
-          $('.merge-into').removeClass('no-edit'); 
+          $('.merge-into').removeClass('no-edit');
           $scope.backupSource = angular.copy($scope.source);
           $scope.mergeEdit = true;
         };
@@ -2962,7 +2962,7 @@ var BOOKMARK_SCOPE;
             }
           };
           if (sdbmutil.isBlankThing(record)) doremove(anArray, record);
-          else {            
+          else {
             dataConfirmModal.confirm({
               title: 'Confirm',
               text: 'Are you sure you want to remove this field and its contents?',
@@ -2996,9 +2996,9 @@ var BOOKMARK_SCOPE;
                 });
             }
             if (sourceTypeForTitle == "Personal Observation") {
-              return 'Step 1: Describe The Source Of Your ' + sourceTypeForTitle;              
+              return 'Step 1: Describe The Source Of Your ' + sourceTypeForTitle;
             } else {
-              return 'Create ' + sourceTypeForTitle + ' Source';              
+              return 'Create ' + sourceTypeForTitle + ' Source';
             }
         };
 
@@ -3033,10 +3033,10 @@ var BOOKMARK_SCOPE;
 
         $scope.postSourceSave = function(source) {
             if (window.location.pathname.indexOf('merge') != -1) {
-              return;    
+              return;
             }
 
-            if ($scope.model) { 
+            if ($scope.model) {
               Source.get(
                 {id: source.id},
                 function(source) {
@@ -3052,7 +3052,7 @@ var BOOKMARK_SCOPE;
 
             $scope.source = source;
             $scope.populateSourceViewModel($scope.source);
-            
+
             // if this source has been created to add an entry to a Manuscript record
             if (sdbmutil.getManuscriptId() || sdbmutil.getNewManuscript() || sdbmutil.createNewEntry()) {
               sdbmutil.redirectToEntryCreatePage(source.id);
@@ -3061,7 +3061,7 @@ var BOOKMARK_SCOPE;
 
 
             window.location = "/sources/" + $scope.source.id;
-                        
+
         };
 
         $scope.similarSourcesModal = null;
@@ -3094,7 +3094,7 @@ var BOOKMARK_SCOPE;
                 // $scope.currentlySaving = false;
             });
         };
-        
+
         $scope.sourceToSave = null;
 
         $scope.getSimilarSources = function (source, callback) {
@@ -3124,7 +3124,7 @@ var BOOKMARK_SCOPE;
 
             $scope.sourceToSave = new Source(angular.copy($scope.source));
             var sourceToSave = $scope.sourceToSave;
-            
+
             var sourceType = sourceToSave.source_type;
 
             sourceToSave.source_type_id = sourceToSave.source_type.id;
@@ -3176,7 +3176,7 @@ var BOOKMARK_SCOPE;
             }
 
             sdbmutil.replaceEntityObjectsWithIds(sourceToSave.source_agents, "agent");
-            
+
             // append '_attributes' for Rails' accept_nested_attributes
             sourceToSave.source_agents_attributes = sourceToSave.source_agents;
             delete sourceToSave.source_agents;
@@ -3192,7 +3192,7 @@ var BOOKMARK_SCOPE;
                 if (sourceToSave.source_type_id == 4) {
                   $scope.createSource($scope.sourceToSave);
                 }
-                else {                  
+                else {
                   // check if similar sources exist before saving new one
                   $scope.getSimilarSources(sourceToSave, function (data) {
                     if(data.similar && data.similar.length > 0) {
@@ -3277,7 +3277,7 @@ var BOOKMARK_SCOPE;
     // you to search for a database object and create one. Specialized
     // controllers should call this fn and modify/supply anything in
     // $scope it needs to.
-    
+
     var baseSelectNameAuthorityModalCtrl = function ($scope, $http, $modalInstance, sdbmutil) {
 
     }
@@ -3471,7 +3471,7 @@ var BOOKMARK_SCOPE;
 
     $scope.postSave = function (response) {
       $scope.currentlySaving = false;
-      window.location = "/names/" + $scope.name.id;        
+      window.location = "/names/" + $scope.name.id;
     };
 
     $scope.subtypes = [
@@ -3516,7 +3516,7 @@ var BOOKMARK_SCOPE;
       $scope.currentlySaving = true;
       $scope.name.name_places_attributes = [];
       for (var i = 0; i < $scope.name.name_places.length; i++) {
-        if ($scope.name.name_places[i].place && $scope.name.name_places[i].place.id) {          
+        if ($scope.name.name_places[i].place && $scope.name.name_places[i].place.id) {
           $scope.name.name_places_attributes.push({
             id: $scope.name.name_places[i].id,
             place_id: $scope.name.name_places[i].place.id,
@@ -3528,7 +3528,7 @@ var BOOKMARK_SCOPE;
         }
       }
 
-      if ($scope.name.id) {          
+      if ($scope.name.id) {
         $scope.name.$update(
           $scope.postSave,
           sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
@@ -3560,7 +3560,7 @@ var BOOKMARK_SCOPE;
     }
 
     $scope.addRecord = function (anArray) {
-      anArray.push({});        
+      anArray.push({});
     };
     $scope.removeRecord = function (anArray, record) {
       var doremove = function (anArray, record) {
@@ -3577,7 +3577,7 @@ var BOOKMARK_SCOPE;
         }
       };
       if (sdbmutil.isBlankThing(record)) doremove(anArray, record);
-      else {            
+      else {
         dataConfirmModal.confirm({
           title: 'Confirm',
           text: 'Are you sure you want to remove this field and its contents?',
@@ -3636,7 +3636,7 @@ var BOOKMARK_SCOPE;
     } else {
       $scope.name = new Name();
       $scope.name.name_places = [];
-      
+
       //$scope.name.name = modalParams.name;
       //$scope.name[modalParams.type] = true;
       $scope.entity_attributes = function(entity) {
@@ -3714,7 +3714,7 @@ var BOOKMARK_SCOPE;
       $scope.currentlySaving = true;
       $scope.name.name_places_attributes = [];
       for (var i = 0; i < $scope.name.name_places.length; i++) {
-        if ($scope.name.name_places[i].place && $scope.name.name_places[i].place.id) {          
+        if ($scope.name.name_places[i].place && $scope.name.name_places[i].place.id) {
           $scope.name.name_places_attributes.push({
             id: $scope.name.name_places[i].id,
             place_id: $scope.name.name_places[i].place.id,
@@ -3726,7 +3726,7 @@ var BOOKMARK_SCOPE;
         }
       }
 
-      if ($scope.name.id) {          
+      if ($scope.name.id) {
         $scope.name.$update(
           $scope.postSave,
           sdbmutil.promiseErrorHandlerFactory("There was an error saving this record")
@@ -3762,7 +3762,7 @@ var BOOKMARK_SCOPE;
     };
 
     $scope.addRecord = function (anArray) {
-      anArray.push({});        
+      anArray.push({});
     };
     $scope.removeRecord = function (anArray, record) {
       var doremove = function (anArray, record) {
@@ -3779,7 +3779,7 @@ var BOOKMARK_SCOPE;
         }
       };
       if (sdbmutil.isBlankThing(record)) doremove(anArray, record);
-      else {            
+      else {
         dataConfirmModal.confirm({
           title: 'Confirm',
           text: 'Are you sure you want to remove this field and its contents?',
@@ -3815,7 +3815,7 @@ var BOOKMARK_SCOPE;
     }
   });
 
-  // Bookmarks were once available on any page as a side-bar  - in the current version, this is just a 
+  // Bookmarks were once available on any page as a side-bar  - in the current version, this is just a
   // slightly more dynamic page where bookmarks can be removed or edited more in real-time.
 
   sdbmApp.controller('ManageBookmarks', function ($scope, $sce, $location, $http) {
@@ -3850,7 +3850,7 @@ var BOOKMARK_SCOPE;
       $('input[name=tag-search]').val($scope.tagSearch);
       if (!$scope.tagSearch || $scope.tagSearch.length <= 0) {
         $scope.all_bookmarks_display = $scope.all_bookmarks;
-      } else {        
+      } else {
         $scope.all_bookmarks_display = {};
         for (var key in $scope.all_bookmarks) {
           $scope.all_bookmarks_display[key] = [];
@@ -3866,7 +3866,7 @@ var BOOKMARK_SCOPE;
     $scope.loadBookmarks = function () {
       $http.get('/bookmarks.json?details=true').then( function (e) {
         if (e.error) return;
-        
+
         $scope.all_bookmarks = e.data.bookmarks;
         $scope.all_bookmarks_display = $scope.all_bookmarks;
         $scope.bookmark_tracker = e.bookmark_tracker;
@@ -3881,7 +3881,7 @@ var BOOKMARK_SCOPE;
       $.ajax({url: '/bookmarks/delete_all?ids[]=' + bookmark.id, method: 'delete' }).done( function (e) {
         $scope.all_bookmarks[name].splice(i, 1);
         var id = bookmark.document_id, type = bookmark.document_type;
-        $scope.$apply();        
+        $scope.$apply();
         $scope.searchTag($scope.tagSearch);
         addNotification(type + ' ' + id + ' un-bookmarked!', 'warning');
       }).error( function (e) {
@@ -3930,19 +3930,19 @@ var BOOKMARK_SCOPE;
       var bookmark_info = bookmark.link.split('/').splice(1,10);
       if (page_info[0] == 'linkingtool') {
         if (bookmark.document_type == "Entry") {
-          return $sce.trustAsHtml('<a data-entry-id="' + bookmark.document_id + '" class="add-entry-link btn btn-info btn-xs">Add to queue</a>');
+          return $sce.trustAsHtml('<a data-entry-id="' + bookmark.document_id + '" class="add-entry-link btn btn-info btn-sm">Add to queue</a>');
         } else if (bookmark.document_type == "Manuscript") {
-          return '<a href="/linkingtool/manuscript/' + bookmark.document_id + '" class="btn btn-info btn-xs">Use this MS</a>';
+          return '<a href="/linkingtool/manuscript/' + bookmark.document_id + '" class="btn btn-info btn-sm">Use this MS</a>';
         }
       } else if (page_info[0] != bookmark_info[0]) { // different record type
         return "";
       } else if (page_info[1] == bookmark_info[1]) { // same record already
         return "";
       } else if (page_info[2] == "merge" && (bookmark.document_type == "Name" || bookmark.document_type == "Source")) {
-        return '<a href="' + window.location.pathname + '?target_id=' + bookmark.document_id + '" class="btn btn-xs btn-info">Merge</a>'
+        return '<a href="' + window.location.pathname + '?target_id=' + bookmark.document_id + '" class="btn btn-sm btn-info">Merge</a>'
       }
     }
-    
+
     $scope.findBookmark = function(type, id) {
       if (!$scope.all_bookmarks[type]) return false;
       for (var i = 0; i < $scope.all_bookmarks[type].length; i++) {
@@ -3965,7 +3965,7 @@ var BOOKMARK_SCOPE;
         if (type == "Entry")
           url += "&entry_id[]=" + $scope.all_bookmarks[type][i].document_id;
         else
-          url += "&id[]=" + $scope.all_bookmarks[type][i].document_id;  
+          url += "&id[]=" + $scope.all_bookmarks[type][i].document_id;
       }
 
       exportCSV(url);
@@ -3987,11 +3987,11 @@ var BOOKMARK_SCOPE;
   });
 
 }());
-//function toggleSidebar() 
+//function toggleSidebar()
 
 // this works!  maybe not a good idea?
 function addBookmark(id, type) {
   //BOOKMARK_SCOPE.addBookmark(id, type);
-  // if removed, have one 
+  // if removed, have one
   //addNotification(type + " " + id + " bookmarked! <span onclick='addBookmark(" + id + ',"' + type + "\")'>Undo<span>", 'info' );
 }

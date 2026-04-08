@@ -179,12 +179,12 @@
     <div class="col-sm-8" style="">
       <p class="text-right text-danger">
         Is there a problem with this .pdf file?
-        <a href="" class="btn btn-danger btn-xs" ng-click="flag_review(current_record)" ng-if="current_record && !needsWork(current_record)">
+        <a href="" class="btn btn-danger btn-sm" ng-click="flag_review(current_record)" ng-if="current_record && !needsWork(current_record)">
           <span class="fa fa-exclamation-triangle"></span> Flag For Review
         </a>
-        <a href="" class="btn btn-secondary btn-xs" ng-click="unflag(current_record)" ng-if="current_record && needsWork(current_record)">
+        <a href="" class="btn btn-secondary btn-sm" ng-click="unflag(current_record)" ng-if="current_record && needsWork(current_record)">
           <span class="fa fa-exclamation-triangle"></span> Unflag Record
-        </a>        
+        </a>
       </p>
       <iframe id="current-card" ng-src="{{ current_url }}" frameborder="0" style="height: 400px; width: 100%; background: #525659; margin-bottom: -5px;">Hello!</iframe>
       <div class="row">
@@ -192,34 +192,34 @@
           <dl class="document-metadata dl-horizontal dl-invert dl-dericci">
             <dt>Name</dt>
             <dd>{{ current_record.name }}</dd>
-          
+
             <dt>Dates</dt>
             <dd>{{ current_record.dates || "Unknown" }}</dd>
 
             <dt>Place</dt>
             <dd>{{ current_record.place || "Unknown" }}</dd>
-       
+
             <dt>PDF</dt>
-            <dd><a href="{{ current_record.url }}" target="_blank" class='btn btn-xs btn-secondary'>Hosted at the UK Senate House Archives</a></dd>
+            <dd><a href="{{ current_record.url }}" target="_blank" class='btn btn-sm btn-secondary'>Hosted at the UK Senate House Archives</a></dd>
 
             <dt>Number of Cards</dt>
             <dd>{{ current_record.cards || "Unknown" }}</dd>
-            
+
             <dt>File Size</dt>
             <dd>{{ current_record.size || "Unknown" }}</dd>
-            
+
             <dt>Other Info</dt>
             <dd>{{ current_record.other_info || "None" }}</dd>
 
             <dt>Senate House ID#</dt>
             <dd>{{ current_record.senate_house || "Unknown" }}</dd>
- 
+
             <div class="input-group textarea-group" style="padding: 4px;">
               <textarea name="" id="comment" cols="30" rows="2" ng-model="current_record.comment" placeholder="Leave a comment here..." class="form-control"></textarea>
             </div>
-   
+
           </dl>
-    
+
 
           <div class="card" ng-repeat="comment in current_record.comments">
             <div class="card-body comment" ng-bind-html="comment.comment">
@@ -263,13 +263,13 @@
         <div class="col-sm-2"><label for="" class="control-label">Reason</label></div>
         <div class="col-sm-10">
           <div class="input-group">
-            <input class="form-control" ng-model="current_flag.reason" >              
+            <input class="form-control" ng-model="current_flag.reason" >
             </select>
             <div class="input-group-append">
               <a href="" class="btn btn-secondary" ng-click="current_flag.reason.length > 0 ? flag_modal.close() : '';">Done</a>
             </div>
           </div>
-        </div>        
+        </div>
       </div>
     </div>
 </script>

@@ -132,7 +132,7 @@
 
                       <% record = dericci_links.first.dericci_record %>
 
-                      <div class="btn btn-secondary btn-xs" data-toggle="modal" data-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
+                      <div class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
                         <%= record.name %> <span class="badge"><%= dericci_links.count %></span>
                       </div>
 
@@ -145,7 +145,7 @@
                               </button>
                               <p>This name has been linked to <%= link_to record.name, dericci_record_path(record) %> by </p>
                                 <% dericci_links.each do |dl| %>
-                                   <span class='btn btn-xs btn-secondary'>
+                                   <span class='btn btn-sm btn-secondary'>
                                       <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
                                     </span>
                                     <% if dl.other_info.present? %>
@@ -181,7 +181,7 @@
 
                       <% record = dericci_links.first.dericci_record %>
 
-                      <div class="btn btn-info btn-xs" data-toggle="modal" data-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
+                      <div class="btn btn-info btn-sm" data-toggle="modal" data-target="#Dericci_<%= record.id %>" style="margin-bottom: 4px;">
                         <%= record.name %> <span class="badge"><%= dericci_links.count %></span>
                       </div>
 
@@ -194,7 +194,7 @@
                               </button>
                               <p>This name has been linked to <%= link_to record.name, dericci_record_path(record) %> by </p>
                                 <% dericci_links.each do |dl| %>
-                                   <span class='btn btn-xs btn-secondary'>
+                                   <span class='btn btn-sm btn-secondary'>
                                       <%= render partial: "shared/username_with_profile_link", locals: { user: dl.created_by } %>
                                     </span>
                                     <% if dl.other_info.present? %>

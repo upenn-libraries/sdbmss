@@ -36,7 +36,7 @@ function setOptions (p) {
         if (results.length > 0) {
             // nothing -> if there's already a 'valid' selected filter option
         } else {
-            p.find("." + type + "_option").first().attr("selected", true);            
+            p.find("." + type + "_option").first().attr("selected", true);
             // redundancy for FIREFOX, set value as well as 'selected'
             var val = p.find("." + type + "_option").first().val();
             p.find("select[name=search_option]").val(val);
@@ -62,7 +62,7 @@ $(document).ready(function() {
         p.find(".search-remove").click( function (e) {
             //var p = $(this).closest('.search-block');
             if ($('.search-block').length > 1) {
-                $(".search-fieldset").find(p).remove();            
+                $(".search-fieldset").find(p).remove();
             } else {                                    // otherwise, clear all the fields
                 p.find("input").each(function (e) {
                     $(this).val("");
@@ -114,7 +114,7 @@ $(document).ready(function() {
         var canUnlink = false;
         var username = '<%= current_user.username %>';
     <% end %>
-    
+
     <% if @mode == 'by_entry' %>
     entryId = <%= @entry.id %>;
     entryManuscripts = [
@@ -179,7 +179,7 @@ $(document).ready(function() {
                         if (relation == 'unlink') {
                             workspaceEntry._destroy = 1;
                         } else {
-                            delete workspaceEntry._destroy;                           
+                            delete workspaceEntry._destroy;
                         }
                         workspaceEntry.relation_type = relation;
                         workspaceEntry.changed = true;
@@ -187,7 +187,7 @@ $(document).ready(function() {
                 });
             }
         } else {
-            //deleteWorkspaceEntry(entryId);            
+            //deleteWorkspaceEntry(entryId);
         }
         //changes.push(entryId);
         setUnsavedChanges(true);
@@ -202,7 +202,7 @@ $(document).ready(function() {
         });
         return inWorkspace;
     };
-    
+
     var potentialMatches = null;
 
     var getRadioButtonHTML = function(sdbmTable, data, value) {
@@ -214,7 +214,7 @@ $(document).ready(function() {
     var getButtonHTML = function(sdbmTable, data, value) {
         var entryId = data[sdbmTable.getColumnIndex("ID")];
         //var checked = isInWorkspace(entryId, value) ? "checked='checked'" : "";
-        return '<a class="btn btn-danger btn-xs toggle-entry-link" data-entry-id="' + entryId + '" name="entry_id_' + entryId + '" value="' + value + '" >Unlink</a>';
+        return '<a class="btn btn-danger btn-sm toggle-entry-link" data-entry-id="' + entryId + '" name="entry_id_' + entryId + '" value="' + value + '" >Unlink</a>';
     };
 
     // Fielded search specific params
@@ -247,7 +247,7 @@ $(document).ready(function() {
                 params[search_option_field] = [search_option];
             } else {
                 params[search_option_field].push(search_option);
-            }            
+            }
          });
          return params;
      };
@@ -298,7 +298,7 @@ $(document).ready(function() {
                         return getRadioButtonHTML(workspaceTable, data, "unlink");
                     else if (username == data[workspaceTable.getColumnIndex("Added By")] || username == manuscriptCreatedBy) {
                         return getRadioButtonHTML(workspaceTable, data, "unlink");
-                    }               
+                    }
                     else
                         return '<span class="text-danger">n/a</span>';
                 }
@@ -310,7 +310,7 @@ $(document).ready(function() {
             var params = sdbmTable.translateParamsToBlacklight(dt_params);
 
             params.entry_id = getActiveEntryManuscripts().length > 0 ? $.map(getActiveEntryManuscripts(), function(item) { return item.entry_id; }) : ['nil'];
-            
+
             // prevent an empty workspace from returning ALL entries
             if (getActiveEntryManuscripts().length > 0)
                 params.op = "OR";
@@ -319,7 +319,7 @@ $(document).ready(function() {
 
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {
-                    $("#spinner").hide();  
+                    $("#spinner").hide();
                 }
             });
         }
@@ -381,13 +381,13 @@ $(document).ready(function() {
             // seems like there should be a way to do this conditional
             // ajax and subsequent searchAndUpdateTable using
             // promises, but I can't figure that out right now
-            var params = translateSearchParams(sdbmTable, dt_params);                 
-            if (!potentialMatches) {                
+            var params = translateSearchParams(sdbmTable, dt_params);
+            if (!potentialMatches) {
                 params["linking_tool"] = true;
             } else {
                 params = {entry_id: potentialMatches, op: "OR", order: params.order, limit: params.limit, offset: params.offset};
             }
-            
+
             sdbmTable.searchAndUpdateTable(params, callback, {
                 'complete': function () {
                     $("#spinner").hide();
@@ -407,7 +407,7 @@ $(document).ready(function() {
                     $(row).addClass('disabled');
                 }
             }
-            
+
         /*if (data[sdbmTable.getColumnIndex("Draft")]) {
             $(row).addClass('info draft');
         } else if(!data[sdbmTable.getColumnIndex("Is Approved")]) {
@@ -455,13 +455,13 @@ $(document).ready(function() {
                 p.find("select[name=search_field]").find("option").first().attr("selected", true).change();
             }
         });
-        setOptions(p);      
+        setOptions(p);
     });
 
     $(document).on("click", ".add-entry-link", function (event) {
         var entryId = $(event.target).data("entryId");
         addWorkspaceEntry(entryId, "is");
-        workspaceTable.reload(highlightRows); 
+        workspaceTable.reload(highlightRows);
         return false;
     });
 
@@ -469,7 +469,7 @@ $(document).ready(function() {
         var entryId = $(event.target).data("entryId");
         var value = $(event.target).val();
         changeWorkspaceEntry(entryId, value);
-        workspaceTable.reload(highlightRows); 
+        workspaceTable.reload(highlightRows);
         return false;
     });
 
@@ -489,8 +489,8 @@ $(document).ready(function() {
                     changed += 1;
                 }
             }
-            $("#changes").text(changed + " changed");        
-            $("#additions").text(added + " added");        
+            $("#changes").text(changed + " changed");
+            $("#additions").text(added + " added");
             $("#deletes").text(deleted + " deleted");
         }, 1)
     }
@@ -533,14 +533,14 @@ $(document).ready(function() {
                 }
             });
         }
-        
+
         dataConfirmModal.confirm({
             title: 'Are you sure you want to link this Entry to an existing manuscript?',
             text: "Entry SDBM_" + entryId + " will be attached to SDBM_MS_" + manuscriptId + ", and all your current unsaved changes in this workspace will be lost.",
             commit: 'Yes',
             cancel: 'Cancel',
             zIindex: 10099,
-            onConfirm: function() { 
+            onConfirm: function() {
                 linktomss();
             },
             onCancel:  function() { }
@@ -601,10 +601,10 @@ $(document).ready(function() {
     });
 
 
-/* 
-    the method I use here is to ajax a list of the suggested IDs, then do an 
-    OR search for those entries, rather than trying to force dataTables to use a 
-    custom URL which seems to break everything 
+/*
+    the method I use here is to ajax a list of the suggested IDs, then do an
+    OR search for those entries, rather than trying to force dataTables to use a
+    custom URL which seems to break everything
 */
     $("#show-matches").click(function () {
         $("#spinner").show();
@@ -621,12 +621,12 @@ $(document).ready(function() {
             type: 'GET',
             data: data,
             success: function(data, textStatus, jqXHR) {
-                if (data.length > 0) {                    
+                if (data.length > 0) {
                     potentialMatches = data;;
                     resultsTable.reload();
-                    $('#suggestions-modal').modal('hide')                
+                    $('#suggestions-modal').modal('hide')
                 } else {
-                    //$('#suggestions-modal').modal('hide')                
+                    //$('#suggestions-modal').modal('hide')
                     alert("No matches found under your selected criteria - try broadening your search.");
                 }
             },
@@ -650,14 +650,14 @@ $(document).ready(function() {
         }
         return false;
     });
-    
+
     $('#workspace_wrapper .dataTables_scrollBody').on('scroll', function (event) {
         $("#search_results_wrapper .dataTables_scrollBody").scrollLeft($(event.target).scrollLeft());
     });
     $('#search_results_wrapper .dataTables_scrollBody').on('scroll', function (event) {
         $("#workspace_wrapper .dataTables_scrollBody").scrollLeft($(event.target).scrollLeft());
     });
-    
+
     $("#linking-tool-heading-id").text(headingId);
     /*$("#workspace-table-title").text(
         mode == 'by_entry' ? "Entry Queue for creating Links" : "Entries for " + headingId);*/
@@ -681,13 +681,13 @@ $(document).ready(function() {
                 var tags = jQuery.unique(bookmarked_entries.map(function (e) { return e.tags; }).reduce(function (a, b) { return a.concat(b); }, []));
                 $('.tag-option').remove();
                 for (var i = 0; i < tags.length; i++) {
-                    $("#bookmark-tag").append("<option class='tag-option' value='" + tags[i] + "'>" + tags[i] + "</tag>");                    
+                    $("#bookmark-tag").append("<option class='tag-option' value='" + tags[i] + "'>" + tags[i] + "</tag>");
                 }
-                $("#load-bookmarks-modal").modal();                
+                $("#load-bookmarks-modal").modal();
             },
             error: function (xhr) {
                 var error = SDBM.parseRailsErrors($.parseJSON(xhr.responseText).errors).join("; ");
-                SDBM.showErrorModal("#modal", error);                
+                SDBM.showErrorModal("#modal", error);
             },
             complete: function () {
                 $("#spinner").hide();
@@ -760,7 +760,7 @@ $(document).ready(function() {
         <li class=" "><%= link_to "Manage Manuscripts", manuscripts_path %></li>
         <li class=" "><%= link_to @manuscript.public_id, manuscript_path(@manuscript) %></li>
         <li class="  active"><a href="">Linking tool for <%= @manuscript.public_id %></a></li>
-    <% end %>    
+    <% end %>
 <% end %>
 <div id="linking-tool">
     <div class="row">
@@ -806,7 +806,7 @@ $(document).ready(function() {
                     </li>
                 </ul>
                 <%= form_tag(request.path, method: :get, id: "link-search") do %>
-                <%= render partial: "linking_tool/show_form" %>                    
+                <%= render partial: "linking_tool/show_form" %>
                 <% end %>
             </div>
         </div>
@@ -867,7 +867,7 @@ $(document).ready(function() {
                             <input type="number" min="1" max="25" id="tolerance" class="form-control" value="10">
                             </input>
                         </label>
-                    </div>                  
+                    </div>
                     <div class="col-12 text-center" style="margin-top: 10px;">
                         <input type="submit" class="form-control" id="show-matches" value="Get Suggestions!"></input>
                     </div>

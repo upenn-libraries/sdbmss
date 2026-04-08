@@ -21,7 +21,7 @@
      var ManageEntryManuscripts = function(options) {
          SDBM.ManageRecords.call(this, options);
      };
-     
+
      ManageEntryManuscripts.prototype = Object.create(SDBM.ManageRecords.prototype);
 
      ManageEntryManuscripts.prototype.getColumns = function() {
@@ -31,14 +31,14 @@
             {
                 sdbmssMinWidth: "20px",
                 sdbmssMaxWidth: "20px",
-                //title: '<a href="#" class="btn btn-secondary btn-xs fa fa-square-o hideIfReviewed" id="select-all"></a>',
+                //title: '<a href="#" class="btn btn-secondary btn-sm fa fa-square-o hideIfReviewed" id="select-all"></a>',
                 title: '<input type="checkbox" id="select-all" class="hideIfReviewed">',
                 orderable: false,
                 className: 'text-center unreviewed_only',
                 render: function (data, type, full, meta) {
                     if(manageRecords.getUnreviewedOnly() === 1) {
-                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';        
-  
+                        return '<input type="checkbox" name="review" value="' + full[manageRecords.dataTable.getColumnIndex("ID")] + '"/>';
+
                     }
                     return '';
                 }
@@ -49,7 +49,7 @@
                 title: 'Options',
                 orderable: false,
                 render: function (data, type, full, meta) {
-                    var str = '<a class="btn btn-xs btn-success" href="/linkingtool/manuscript/' + full[manageRecords.dataTable.getColumnIndex("Manuscript")] + '/">Edit</a>';
+                    var str = '<a class="btn btn-sm btn-success" href="/linkingtool/manuscript/' + full[manageRecords.dataTable.getColumnIndex("Manuscript")] + '/">Edit</a>';
                     return str;
                 },
             },
@@ -153,9 +153,8 @@
      });
 
      manageEntryManuscripts.setFormStateFromURL();
-     manageEntryManuscripts.dataTable.reload();    
+     manageEntryManuscripts.dataTable.reload();
 
  });
 
 </script>
-
