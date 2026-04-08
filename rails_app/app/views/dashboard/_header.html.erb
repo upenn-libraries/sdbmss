@@ -39,7 +39,7 @@
 
 <div class="row">
     <div class="col-sm-12 text-center">
-        <%= image_tag Thredded.avatar_url.call(current_user), class: 'img img-responsive dashboard-profile-picture' %>
+        <%= image_tag "https://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(current_user.email.downcase)}?s=128&d=mm", class: 'img img-fluid dashboard-profile-picture' %>
         <span class='h1 dashboard-header text-muted'><%= current_user.to_s %>'s Dashboard</span>                            
         <ul class="list-inline" style="margin-bottom: 0px;">
             <li>
@@ -76,12 +76,6 @@
             </li>
             <li class="<%= request.original_fullpath == main_app.dashboard_activity_path ? 'active' : ''%>">
                 <a href="<%= main_app.dashboard_activity_path %>"><span class="glyphicon glyphicon-sunglasses"></span> Activity</a>
-            </li>
-            <% count = Thredded::Post.where("created_at > ?", current_user.thredded_user_detail.last_seen_at).count %>
-            <li class="<%= request.original_fullpath.include?(thredded.root_path) ? 'active' : ''%> forum-tab">
-                <a href="<%= thredded.root_path %>" class="forum-nav <%= count > 0 ? 'thredded--topic-unread' : 'thredded--topic-read' %>"><span class="glyphicon glyphicon-comment"></span> Forum
-                    <div class="thredded--topics--posts-count dashboard-forum-posts-count"><%= count %></div>
-                </a>
             </li>
             <!--<li><a data-toggle='tab' href="#groups" data-url="/groups/show_all">Groups</a></li>
             <li><a data-toggle='tab' href="#notifications">Notifications</a></li>-->

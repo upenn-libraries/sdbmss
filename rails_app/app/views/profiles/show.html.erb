@@ -38,7 +38,7 @@
 <div class="row">
     <div class="col-sm-4">
         <div class="user-icon" style="width: 45%;">
-            <%= image_tag Thredded.avatar_url.call(@user), class: 'img img-responsive dashboard-profile-picture' %>
+            <%= image_tag "https://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(@user.email.downcase)}?s=128&d=mm", class: 'img img-fluid dashboard-profile-picture' %>
         </div>
         <div class="user-info">
             <span class="dropdown">

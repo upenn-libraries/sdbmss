@@ -12,11 +12,6 @@
     header {
         position: relative;
     }
-    .thredded--post--content {
-        max-height: 97px;
-        text-overflow: ellipsis;
-        overflow: hidden;
-    }
 </style>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -57,42 +52,9 @@
     <div class="col-sm-12 text-center">
         <br>
         <p>
-        Do you have any suggestions for how we can improve the SDBM? 
+        Do you have any suggestions for how we can improve the SDBM?
         <a class="btn btn-info" onclick="$('#Survey').modal('show');">Complete our survey</a>
         </p>
-    </div>
-    <div class="col-sm-12">
-        <h3 class='h3 text-center'>Recent Activity</h3>
-        <% posts = Thredded::Post.last(6).reverse %>
-        <% if (posts.each do |post| %>
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <% post_user_link = link_to(post.user.username, main_app.profile_path(post.user.username)) %>
-                    <% topic = post.to_model.postable %>
-                    <div class=''>
-                      <%= image_tag post.avatar_url, class: 'thredded--post--avatar' if post.user %>
-                      <h4 class="thredded--post--user-and-topic">
-                        <%=
-                          topic_link = link_to(topic.title, thredded.post_permalink_path(post))
-                          if topic.first_post == post.to_model
-                            t 'thredded.users.user_started_topic_html', user_link: post_user_link, topic_link: topic_link
-                          else
-                            t 'thredded.users.user_posted_in_topic_html', user_link: post_user_link, topic_link: topic_link
-                          end
-                        %>
-                      </h4>
-                      <p class="thredded--post--created-at"><%= time_ago_in_words post.created_at %></p>
-                    </div>
-                    <div class="text-muted"><%= render 'thredded/posts_common/content', post: post %></div>
-                </div>
-            </div>
-        <% end).empty? %>
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <div class="ltext-center text-muted">There are no recent announcements.</div>
-                </div>
-            </div>
-        <% end %>                
     </div>
 </div>
 
@@ -105,7 +67,7 @@
             </div>
             <div class="modal-body">
                 <p>
-                    As of April 1, 2017, thanks to input from the user community, we have made a number of changes to the design and functionality of the database.  We hope this improves your experience.  If you have questions or comments on the new changes, please post in the <a href="/forum" target="_blank">community forum</a>.  We appreciate your feedback and support!
+                    As of April 1, 2017, thanks to input from the user community, we have made a number of changes to the design and functionality of the database.  We hope this improves your experience.  If you have questions or comments on the new changes, please contact us.  We appreciate your feedback and support!
                 </p>
                 <p>Thanks,</p>
                 <p class="text-muted"> - The SDBM Team</p>

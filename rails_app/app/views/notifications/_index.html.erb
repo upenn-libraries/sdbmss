@@ -10,9 +10,7 @@
               <% 
                 if notification.notified.class == User
                   url = main_app.profile_path(notification.notified.username)
-                elsif notification.notified_type == "Thredded::Post"
-                  url = Thredded::UrlsHelper.post_permalink_path(notification.notified)
-                else      
+                else
                   url = main_app.polymorphic_url(notification.notified)
                 end
               %>

@@ -5,9 +5,7 @@
 
         <p>Ask a question, tell us what you like, what you dislike, what you think is missing, what seems broken, and what you find confusing, unexpected, or inconsistent. We especially value specific suggestions on how to make something work better.</p>
 
-        <h3>Option 1: Post A Question or Comment in the <a href="<%= thredded.root_path %>"> Forum</a></h3>
-
-        <h3>Option 2: Send an Email</h3>
+        <h3>Send an Email</h3>
 
         <p>Send an email to <%= mail_to (ENV.fetch('SDBMSS_EMAIL_FROM') || "Error: email address is not defined!") %>.</p>
 
