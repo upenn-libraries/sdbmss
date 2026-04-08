@@ -14,7 +14,7 @@ class DericciRecordsController < ApplicationController
     type = params[:type] || ''
     @records = DericciRecord.where("#{field} LIKE '%#{term}%'").where("name LIKE '#{letter}%'").where("senate_house like ?", "%#{type}%")
     if params[:verified_id]
-      @records = @records.includes(:dericci_links).where(:dericci_links => {:approved => [nil, false]})
+      @records = @records.joins(:dericci_links).where(:dericci_links => {:approved => [nil, false]})
     end
     if params[:flagged]
       @records = @records.joins(:dericci_record_flags)

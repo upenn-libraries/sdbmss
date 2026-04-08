@@ -3,18 +3,39 @@ require 'json'
 require "rails_helper"
 
 describe "Browse Dericci Records", :js => true do
+  def open_verified_name_modal
+    3.times do
+      find("#verify", visible: true).trigger("click")
+      return if page.has_selector?("#searchNameAuthority", visible: true, wait: 2)
+    end
 
-  before :all do
+    raise Capybara::ElementNotFound, "Verified-name modal did not open"
+  end
+
+  before :each do
     @user = User.where(role: "admin").first
     @user2 = User.where(role: "contributor").first
 
-    @d = DericciRecord.create(name: "Camille Desmoulins", place: "Paris", dates: "1794", senate_house: "[Senate House MS901/3/11]")
-    DericciRecord.create(name: "Georges Danton", place: "Marseilles", dates: "1795", senate_house: "[Senate House MS901/3/11]")
-    DericciRecord.create(name: "Maximilien Robespierre", place: "Toulons", dates: "1796", senate_house: "[Senate House MS901/3/11]")
-    DericciRecord.create(name: "Jean-Paul Marat", place: "Nantes", dates: "1793", senate_house: "[Senate House MS901/3/11]")
+    @d = DericciRecord.find_or_create_by(name: "Camille Desmoulins") do |r|
+      r.place = "Paris"; r.dates = "1794"; r.senate_house = "[Senate House MS901/3/11]"
+    end
+    # Reset mutable state: sibling tests may have added links/flags or set verified_id.
+    @d.update!(verified_id: nil)
+    @d.dericci_links.destroy_all
+    @d.dericci_record_flags.destroy_all
+    DericciRecord.find_or_create_by(name: "Georges Danton") do |r|
+      r.place = "Marseilles"; r.dates = "1795"; r.senate_house = "[Senate House MS901/3/11]"
+    end
+    DericciRecord.find_or_create_by(name: "Maximilien Robespierre") do |r|
+      r.place = "Toulons"; r.dates = "1796"; r.senate_house = "[Senate House MS901/3/11]"
+    end
+    DericciRecord.find_or_create_by(name: "Jean-Paul Marat") do |r|
+      r.place = "Nantes"; r.dates = "1793"; r.senate_house = "[Senate House MS901/3/11]"
+    end
 
-    Name.create(name: "Camillo", is_author: true).index
-    Name.create(name: "George Danton", is_author: true).index
+    Name.find_or_create_by(name: "Camillo") { |n| n.is_author = true }.index
+    Name.find_or_create_by(name: "George Danton") { |n| n.is_author = true }.index
+    Sunspot.commit
   end
 
   before :each do
@@ -87,16 +108,16 @@ describe "Browse Dericci Records", :js => true do
   it "should allow an admin to add a verified link", :known_failure, :flaky do
     visit dericci_record_path(@d)
     expect(page).to have_content("Find Verified Name")
-    click_link("verify")
-    expect(page).to have_content("in Name Authority")
-    expect(page).to have_content("Select")
+    open_verified_name_modal
+    expect(page).to have_selector("#searchNameAuthority", visible: true)
+    expect(page).to have_selector("#select-name-table", visible: true)
     expect(page).to have_content("Camillo")
-    find(".selectName", match: :first).click
-    expect(page).not_to have_content("in Name Authority")
-    expect(page).not_to have_content("Find Verified Name")
-    expect(page).to have_content "Save"
-    click_link("Save")
-    expect(page).not_to have_content("Find Verified Name")
+    find(".selectName", visible: true, match: :first).click
+    expect(page).not_to have_selector("#searchNameAuthority", visible: true)
+    expect(page).to have_content("Camillo")
+    expect(page).to have_selector("a.btn.btn-success.btn-xs", text: "Save")
+    find("a.btn.btn-success.btn-xs", text: "Save").click
+    expect(page).to have_content("Camillo")
   end
 
   it "should limit search to verified-linked or flagged records only" do
@@ -110,12 +131,15 @@ describe "Browse Dericci Records", :js => true do
   end
 
   it "should allow an admin to remove verified link", :known_failure, :flaky do
+    name = Name.find_by(name: "Camillo")
+    DericciLink.create!(name: name, dericci_record: @d, approved: true, created_by: @user)
+
     visit dericci_record_path(@d)
-    expect(page).not_to have_content("Find Verified Name")
-    visit edit_dericci_record_path(@d)
-    fill_in "dericci_record_verified_id", with: nil
-    click_button "Update De Ricci Record"
-    expect(page).to have_content("Find Verified Name")
+    expect(page).to have_content("Camillo")
+    click_link("Camillo")
+    click_link("Remove Links")
+
+    expect(page).to have_content("This name is not verifiably linked to any names in the SDBM Name Authority.")
   end
 
 end

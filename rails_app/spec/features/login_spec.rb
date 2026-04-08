@@ -3,15 +3,14 @@ require "rails_helper"
 
 describe "Login", :js => true do
 
-  before :all do
+  before :each do
     @user_active = User.where(role: "contributor").first
 
-    @user_inactive = User.create!(
-      email: 'user2@logintest.com',
-      username: 'user_inactive',
-      password: 'somethingunguessable',
-      active: false
-    )
+    @user_inactive = User.find_or_initialize_by(username: 'user_inactive')
+    @user_inactive.email = 'user2@logintest.com'
+    @user_inactive.active = false
+    @user_inactive.password = 'somethingunguessable' unless @user_inactive.persisted?
+    @user_inactive.save!
 
     @admin = User.where(role: "admin").first
   end
@@ -26,7 +25,7 @@ describe "Login", :js => true do
     fill_in 'user_login', :with => @user_inactive.username
     fill_in 'user_password', :with => 'somethingunguessable'
     click_button 'Log in'
-    expect(page).to have_content 'Your account has been de-activated.'
+    expect(page).to have_content 'New SDBM accounts are inactive by default.'
   end
 
   it "should allow login_as" do

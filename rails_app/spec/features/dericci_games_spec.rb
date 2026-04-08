@@ -2,7 +2,7 @@ require "rails_helper"
 
 describe "De Ricci Game", :js => true do
   context "when user is logged in " do
-    before :all do
+    before :each do
       @admin_user = User.where(role: "admin").first
     end
 
@@ -20,15 +20,18 @@ describe "De Ricci Game", :js => true do
 
     it "should allow you to continue a game previously started", :known_failure do
       visit dericci_games_path
-      expect(page).to have_content("My Games")
-      find("#open-games").click
+      find('#new-game').click
+
+      visit dericci_games_path
+      expect(page).to have_content("In Progress")
+      find("[data-target='#in-progress']").click
       find('.play-game', match: :first).click
       expect(page).to have_content('Select a Record and click')
 
-      views = all('.view-name')
-      all('.find-name').each_with_index  do |n, index|
-        views[index].click
-        n.click
+      all('.game-nav li').each_with_index do |_, index|
+        row = all('.game-nav li')[index]
+        row.find('.view-name').click
+        row.find('.find-name').click
         expect(page).to have_content("in SDBM Name Authority")
         expect(page).to have_content("Link")
         expect(page).not_to have_content("No results found")
@@ -50,7 +53,7 @@ describe "De Ricci Game", :js => true do
         end        
         expect(page).not_to have_content("in SDBM Name Authority")
       end
-      views[0].click
+      all('.game-nav li').first.find('.view-name').click
       expect(page).to have_content("SDBM_NAME_")
       fill_in 'other-info', with: 'Some other things to consider are...'
       fill_in 'comment', with: 'This is a very interesting card!!!'

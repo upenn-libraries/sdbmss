@@ -24,6 +24,94 @@ require 'capybara-screenshot/rspec'
 
 require_relative './helpers'
 
+module TestSuiteSetupHelpers
+  extend self
+
+  SOLR_TEST_MODELS = [Entry, Name, Source, Manuscript, Language, Place].freeze
+
+  def with_foreign_key_checks_disabled
+    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
+    yield
+  ensure
+    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
+  end
+
+  def solr_test_uri
+    @solr_test_uri ||= URI(ENV['SOLR_TEST_URL'] || 'http://localhost:8983/solr/test')
+  end
+
+  def solr_http
+    http = Net::HTTP.new(solr_test_uri.host, solr_test_uri.port)
+    http.read_timeout = 30
+    http
+  end
+
+  def suite_logger
+    Rails.logger
+  end
+
+  def log_setup_warning(message)
+    suite_logger.warn(message)
+  end
+
+  def with_seed_retries(label)
+    attempts = 0
+    begin
+      yield
+    rescue Mysql2::Error => e
+      attempts += 1
+      if e.message =~ /Deadlock|Duplicate entry/ && attempts <= 3
+        log_setup_warning("#{label} attempt #{attempts} failed (#{e.message.split(':').first}), retrying...")
+        sleep(0.5 * attempts)
+        retry
+      end
+      raise
+    end
+  end
+
+  def seed_reference_data!
+    SDBMSS::SeedData.create
+    SDBMSS::ReferenceData.create_all
+    SDBMSS::Mysql.create_functions
+  end
+
+  def delete_all_solr_docs!
+    solr_http.post(
+      "#{solr_test_uri.path}/update?commit=true",
+      '<delete><query>*:*</query></delete>',
+      'Content-Type' => 'application/xml'
+    )
+  end
+
+  def optimize_solr_index!
+    solr_http.post(
+      "#{solr_test_uri.path}/update?optimize=true&waitFlush=false&waitSearcher=false",
+      '<optimize/>',
+      'Content-Type' => 'application/xml'
+    )
+  end
+
+  def reindex_solr_models!(models = SOLR_TEST_MODELS, per_model_logging: false)
+    models.each do |model|
+      begin
+        Sunspot.index(model.all)
+      rescue => e
+        raise unless per_model_logging
+
+        log_setup_warning("Solr index #{model} after JS test failed: #{e.message}")
+      end
+    end
+    Sunspot.commit
+  end
+
+  def flush_and_reindex_solr_after_js!
+    delete_all_solr_docs!
+    reindex_solr_models!(SOLR_TEST_MODELS, per_model_logging: true)
+  rescue StandardError => e
+    log_setup_warning("Solr flush after JS test failed: #{e.message}")
+  end
+end
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -77,51 +165,28 @@ RSpec.configure do |config|
   config.include SDBMSS::Capybara::Login
 
   config.before(:suite) do
-    # Disable FK checks before truncation so MySQL can truncate tables
-    # that have FK references (e.g. users table referenced by many others).
-    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
-    DatabaseCleaner.clean_with(:truncation)
-    # Delete all Solr documents directly via HTTP so stale entries from
-    # previous test runs don't survive into this suite.  Sunspot.remove_all!
-    # goes through the session (which may itself be in a bad state if Solr
-    # was previously stuck), so we hit the update handler directly instead.
-    begin
-      require 'net/http'
-      require 'uri'
-      solr_url = URI(ENV['SOLR_TEST_URL'] || 'http://localhost:8983/solr/test')
-      http = Net::HTTP.new(solr_url.host, solr_url.port)
-      http.read_timeout = 30
-      http.post(
-        "#{solr_url.path}/update?commit=true",
-        '<delete><query>*:*</query></delete>',
-        'Content-Type' => 'application/xml'
-      )
-    rescue => e
-      Rails.logger.warn "Solr delete-all before suite failed: #{e.message}"
+    TestSuiteSetupHelpers.with_foreign_key_checks_disabled do
+      DatabaseCleaner.clean_with(:truncation)
+      begin
+        TestSuiteSetupHelpers.delete_all_solr_docs!
+      rescue => e
+        TestSuiteSetupHelpers.log_setup_warning("Solr delete-all before suite failed: #{e.message}")
+      end
+      TestSuiteSetupHelpers.with_seed_retries('Before-suite seed') do
+        TestSuiteSetupHelpers.seed_reference_data!
+      end
     end
-    SDBMSS::SeedData.create
-    SDBMSS::ReferenceData.create_all
-    SDBMSS::Mysql.create_functions
-    ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
+
     begin
-      Sunspot.index(Entry.all)
-      Sunspot.commit
+      TestSuiteSetupHelpers.reindex_solr_models!([Entry])
     rescue => e
-      Rails.logger.warn "Solr index before suite failed: #{e.message}"
+      TestSuiteSetupHelpers.log_setup_warning("Solr index before suite failed: #{e.message}")
     end
+
     begin
-      # Optimize the index (merge segments, prune deleted docs) so repeated test
-      # runs don't accumulate a large transaction log that eventually blocks
-      # Solr commits.  waitFlush/waitSearcher=false returns immediately.
-      require 'net/http'
-      solr_url = URI(ENV['SOLR_TEST_URL'] || 'http://localhost:8983/solr/test')
-      Net::HTTP.new(solr_url.host, solr_url.port).post(
-        "#{solr_url.path}/update?optimize=true&waitFlush=false&waitSearcher=false",
-        '<optimize/>',
-        'Content-Type' => 'application/xml'
-      )
+      TestSuiteSetupHelpers.optimize_solr_index!
     rescue => e
-      Rails.logger.warn "Solr optimize before suite failed: #{e.message}"
+      TestSuiteSetupHelpers.log_setup_warning("Solr optimize before suite failed: #{e.message}")
     end
   end
 
@@ -147,26 +212,28 @@ RSpec.configure do |config|
       # hook (which runs after ours in LIFO order) doesn't time out waiting
       # for a browser that has been idle during Solr callbacks.
       Capybara.reset_sessions!
+      # Brief pause to let WEBrick finish any in-flight request that may
+      # hold a DB lock before we truncate, preventing deadlock on reseed.
+      sleep 1
     end
     DatabaseCleaner.clean
     if example.metadata[:js]
-      ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=0')
       # Suppress Solr during re-seeding: AR after_commit callbacks would try
       # to hit Solr on every record created, causing Net::ReadTimeout on stale
       # connections and corrupting the Sunspot connection pool for subsequent
-      # tests.  The before(:suite) hook indexes seed data; after
-      # truncation+reseed the same AUTO_INCREMENT IDs are restored, so Solr
-      # state stays valid without re-indexing.
-      sunspot_session = Sunspot.session
-      Sunspot.session = Sunspot::Rails::StubSessionProxy.new(sunspot_session)
-      begin
-        SDBMSS::SeedData.create
-        SDBMSS::ReferenceData.create_all
-        SDBMSS::Mysql.create_functions
-      ensure
-        Sunspot.session = sunspot_session
-        ActiveRecord::Base.connection.execute('SET FOREIGN_KEY_CHECKS=1')
+      # tests.
+      TestSuiteSetupHelpers.with_foreign_key_checks_disabled do
+        sunspot_session = Sunspot.session
+        Sunspot.session = Sunspot::Rails::StubSessionProxy.new(sunspot_session)
+        begin
+          TestSuiteSetupHelpers.with_seed_retries('Reseed') do
+            TestSuiteSetupHelpers.seed_reference_data!
+          end
+        ensure
+          Sunspot.session = sunspot_session
+        end
       end
+      TestSuiteSetupHelpers.flush_and_reindex_solr_after_js!
     end
   end
 

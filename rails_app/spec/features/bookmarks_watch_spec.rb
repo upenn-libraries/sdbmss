@@ -10,15 +10,24 @@ describe "Bookmark", :js => true do
     end
 
     it "should allow a user to bookmark an entry from a public search" do
+      target = Entry.create!(source: Source.last, created_by: @admin_user)
+      target.entry_titles.create!(title: "Bookmark Search Unique Title")
+      target.reload
+      target.index!
+      Sunspot.commit
+
       visit root_path
+      fill_in "q", with: "Bookmark Search Unique Title"
       click_button "Search"
 
-      expect(page).to have_content(Entry.last.public_id)
-      find('.bookmark', match: :first).click
+      expect(page).to have_content(target.public_id)
+      within(".document", text: target.public_id) do
+        find('.bookmark', match: :first).click
+      end
 
       visit bookmarks_path
       expect(page).to have_content("of this type")
-      expect(page).to have_content(Entry.last.public_id)
+      expect(page).to have_content(target.public_id)
     end
 
     it "should allow the user to add tags to their bookmark" do
@@ -61,10 +70,23 @@ describe "Bookmark", :js => true do
 
     it "should bookmark/watch and remove for Entries" do
       visit entries_path
-      find('.bookmark', match: :first).click
-      find('.watch', match: :first).click
+      # Derive the target entry from the class of the first visible bookmark button
+      # Bookmark buttons have class "Bookmark_Entry_<id>"
+      bookmark_link = find('.bookmark:not(.bookmark-delete)', match: :first)
+      match_data = bookmark_link[:class].match(/Bookmark_Entry_(\d+)/)
+      expect(match_data).not_to be_nil, "Could not extract entry ID from bookmark button classes: #{bookmark_link[:class].inspect}"
+      entry_id = match_data[1].to_i
+      target = Entry.find(entry_id)
 
-      visit entry_path(Entry.last)
+      bookmark_link.click
+      # Wait for bookmark AJAX to complete (button becomes bookmark-delete)
+      expect(page).to have_css(".bookmark-delete.Bookmark_Entry_#{entry_id}")
+
+      find(".Watch_Entry_#{entry_id}").click
+      # Wait for watch AJAX to complete (button becomes watch-delete)
+      expect(page).to have_css(".watch-delete.Watch_Entry_#{entry_id}")
+
+      visit entry_path(target)
       expect(page).to have_content('Bookmarked')
       expect(page).to have_content('Watched')
 
@@ -73,7 +95,6 @@ describe "Bookmark", :js => true do
 
       expect(page).not_to have_content('Bookmarked')
       expect("#control-panel").not_to have_content('Watched')
-
     end
 
     it "should bookmark/watch and remove for Names" do

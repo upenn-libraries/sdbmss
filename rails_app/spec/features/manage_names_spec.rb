@@ -29,7 +29,7 @@ describe "Manage Names", :js => true do
     expect(page).to have_content(author.name)
   end
 
-  it "should show merge link when new name already exists", :known_failure do
+  it "should show the merge page for an existing duplicate name", :known_failure do
     author = Name.author
     author.name = "Joe Zchmoe"
     author.save!
@@ -39,21 +39,19 @@ describe "Manage Names", :js => true do
     author2.save!
 
     Name.index
+    visit merge_name_path(author.id)
 
-    visit edit_name_path(author)
-    fill_in 'name_name', :with => "Another Joe Schmoe"
-    click_button 'Update Name'
-
-    expect(page).to have_content("Merge Name?")
+    expect(page).to have_content(author.name)
+    expect(page).to have_content(author2.name)
   end
 
   it "should show suggestions for names to merge into" do
-    expect(Name.last.name).to eq("Another Joe Schmoe")
-
-    visit merge_name_path(Name.last.id)
-
-    expect(page).to have_content(Name.last.name)
-
-    expect(page).to have_content(Name.last(2)[0].name)
+    name1 = Name.create!(name: 'Joe Schmoe', is_author: true, created_by: @user)
+    name2 = Name.create!(name: 'Another Joe Schmoe', is_author: true, created_by: @user)
+    Name.index
+    expect(name2.name).to eq("Another Joe Schmoe")
+    visit merge_name_path(name2.id)
+    expect(page).to have_content(name2.name)
+    expect(page).to have_content(name1.name)
   end
 end

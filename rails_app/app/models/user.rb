@@ -246,7 +246,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  def create_notification_settings
+  def create_notification_setting
     self.notification_setting = NotificationSetting.create!(user_id: self.id)
     true
   end

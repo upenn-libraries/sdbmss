@@ -5,10 +5,8 @@ require 'net/http'
 
 describe "User Activity", :js => true do
 
-  before :all do
-#    SDBMSS::ReferenceData.create_all
+  before :each do
     @user = User.where(role: "admin").first
-
   end
 
   before :each do
@@ -47,6 +45,7 @@ describe "User Activity", :js => true do
   end
 
   it "should correctly display deleting a record associaton" do
+    doActivity(10)
     visit edit_entry_path(10)
     sleep(1)
     find("#delete_title_0", match: :first).click
@@ -63,7 +62,7 @@ describe "User Activity", :js => true do
     visit new_name_path
     fill_in 'name_name', with: 'Stacker Pentecost'
     find_by_id('name_is_artist').click
-    click_button 'Create Name'
+    click_link 'Save'
     expect(page).to have_content('Stacker Pentecost')
     visit activities_path
     expect(page).to have_content('added SDBM_NAME_')
@@ -71,6 +70,9 @@ describe "User Activity", :js => true do
   end
 
   it "should destroy a name record and show it in the activity" do
+    name = Name.create!(name: 'Stacker Pentecost', is_artist: true, created_by: @user)
+    Name.index
+    SDBMSS::Util.wait_for_solr_to_be_current
     # to handle the confirm alert
     page.evaluate_script('window.confirm = function() { return true; }')
 
